@@ -1,34 +1,50 @@
-# MODIF  DATE 05/02/2007   AUTEUR TARDIEU N.TARDIEU 
-# RESPONSABLE JMBHH01 J.M.PROIX
-#
-DEBUT(CODE=_F(NOM='FORMA01A', NIV_PUB_WEB='INTERNET',),);
+# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+# RESPONSABLE PROIX J-M.PROIX
+
+DEBUT(CODE=_F(NOM='FORMA01A',
+              NIV_PUB_WEB='INTERNET',),);
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# -*- coding: iso-8859-1 -*-
 #
 #        TUYAUTERIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS POUTRES
 #     -------------------------------------
 #      CALCUL 1 : LECTURE MAILLAGE MED, SANS COEF FLEX
 #      CALCUL 2 : LECTURE MAILLAGE MED, POU_D_T + POU_C_T, AVEC COEF FLEX
-#
-#
-
 RC = 0.6;
 
 EPTUB = 0.02;
@@ -40,17 +56,10 @@ LG = 3.0;
 #
 # LECTURE DU MAILLAGE AU FORMAT MED
 #
-#
-#
 
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
-
-
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 # DEFINITION DES ELEMENTS FINIS UTILISES
 #
-#
-#
-
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA=('TUY1','TUY2',),
@@ -62,63 +71,41 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
 #
 # DEFINITION DU MATERIAU UTILISE
 #
-#
-#
 
-
-ACIER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
                             NU=0.3,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),);
 #
-# CARACTERISTIQUES DES POUTRES
-#
-#
+# DEFINITION DES CONDITIONS AUX LIMITES ET DU CHARGEMENT
+#   AU POINT A : ENCASTREMENT
+#   AU POINT B : FORCE IMPOSEE
+#                FY = 100000. N (FX,FZ,MX,MY,MZ NULLES)
 #
 
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
+                        DDL_IMPO=_F(GROUP_NO='PA',
+                                    LIAISON='ENCASTRE',),);
+
+CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      FORCE_NODALE=_F(GROUP_NO='PB',
+                                      FY=100000.0,),);
+#
+# CARACTERISTIQUES DES POUTRES : PAS DE COEFFICIENT 
+# DE FLEXIBILITE
 
 CARA_POU=AFFE_CARA_ELEM(MODELE=MODMECA,
-                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE'),
+                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE',),
                                   SECTION='CERCLE',
                                   CARA=('R','EP',),
                                   VALE=(REXT,EPTUB,),),
                         DEFI_ARC=_F(GROUP_MA='COUDE',
                                     CENTRE=(RC,LG,0.0,),),);
 #
-# DEFINITION DES CONDITIONS AUX LIMITES ET DU CHARGEMENT
-#   AU POINT A : ENCASTREMENT
-#   AU POINT B : FORCE IMPOSEE
-#                FY = 100000. N (FX,FZ,MX,MY,MZ NULLES)
-#
-#
-#
-
-
-BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
-                        DDL_IMPO=_F(GROUP_NO='PA',
-                                    DX=0.0,
-                                    DY=0.0,
-                                    DZ=0.0,
-                                    DRX=0.0,
-                                    DRY=0.0,
-                                    DRZ=0.0,),);
-
-# BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
-#                         DDL_IMPO=_F(GROUP_NO='PA',
-#                                     LIAISON='ENCASTRE',)
-#                                     ,);
-
-CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
-                      FORCE_NODALE=_F(GROUP_NO='PB',
-                                      FY=100000.0,),);
-#
 # RESOLUTION DU PROBLEME ELASTIQUE
 #
-#
-#
-
 
 RESU1=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT,
@@ -127,28 +114,27 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=CHARGT,),),);
 #
 # CALCUL DES EFFORTS
-#
-#
 
+RESU1=CALC_ELEM(reuse =RESU1,
+                RESULTAT=RESU1,
+                OPTION='SIEF_ELNO_ELGA',);
 
-CALC_ELEM(reuse =RESU1,
-                OPTION='EFGE_ELNO_DEPL',
-                RESULTAT=RESU1,);
-
+RESU1=CALC_NO(reuse =RESU1,
+              RESULTAT=RESU1,
+              OPTION='SIEF_NOEU_ELGA',);
 # ECRITURE DES RESULTATS AU FORMAT RESULTAT
 #
 # VALEURS MIN ET MAX DES EFFORTS
-#
-#
+
 IMPR_RESU(MODELE=MODMECA,
           RESU=(_F(RESULTAT=RESU1,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='SIEF_ELNO_ELGA',
                    TOUT_CMP='OUI',
                    TOUT='OUI',
                    VALE_MAX='OUI',
                    VALE_MIN='OUI',),
                 _F(RESULTAT=RESU1,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='SIEF_ELNO_ELGA',
                    TOUT_CMP='OUI',
                    GROUP_NO='PB',),),);
 
@@ -156,98 +142,38 @@ IMPR_RESU(MODELE=MODMECA,
           RESU=_F(RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   GROUP_NO='PB',),);
+# ECRITURE DES RESULTATS AU FORMAT MED
 
-# ECRITURE DES RESULTATS AU FORMAT GMSH
-#
-#
-IMPR_RESU(MODELE=MODMECA,FORMAT='MED' ,
-          RESU=(_F(MAILLAGE=MAIL,
-                   RESULTAT=RESU1,
-                   NOM_CHAM=('DEPL','EFGE_ELNO_DEPL',),),),);
-
+IMPR_RESU(MODELE=MODMECA,
+          FORMAT='MED',
+          RESU=_F(MAILLAGE=MAIL,
+                  RESULTAT=RESU1,
+                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',),),);
 # COEF DE FLEXIBILITE POUR
 # COMPARAISON AUX COQUES (MODELISATION B) ET TUYAU (MODELISATION D)
 # RAYON DE COURBURE DES COUDES
 #
 #
-#
-#
+RMOY = (REXT - (EPTUB / 2));
 
-RMOY=REXT-(EPTUB/2)
+RINT = (RMOY - (EPTUB / 2));
 
-RINT=RMOY-(EPTUB/2)
+SINT = (pi * (RINT * RINT));
 
-SINT=pi*(RINT*RINT)
+SEXT = (pi * (REXT * REXT));
 
-SEXT=pi*(REXT*REXT)
-
-SURF=SEXT-SINT
+SURF = (SEXT - SINT);
 
 #CALCUL DU COEFFICIENT DE FLEXIBILITE COUDE SELON RCCM
-#
-#
+LAMBDA = ((EPTUB * RC) / (RMOY * RMOY));
 
-
-LAMBDA=(EPTUB*RC)/(RMOY*RMOY)
-
-FRCCM=1.65/LAMBDA
-
-MAIL2=LIRE_MAILLAGE(FORMAT='MED');
-
+FRCCM = (1.65 / LAMBDA);
 
 #
-# DEFINITION DES ELEMENTS FINIS UTILISES
-#
-#
-#
+# CARACTERISTIQUES DES POUTRES AVEC COEF FLEXIBILITE
 
-
-MODMECA2=AFFE_MODELE(MAILLAGE=MAIL2,
-                    AFFE=(_F(GROUP_MA=('TUY1','TUY2',),
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='POU_D_T',),
-                          _F(GROUP_MA='COUDE',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='POU_C_T',),),);
-#
-# DEFINITION DU MATERIAU UTILISE
-#
-#
-
-
-CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL2,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
-
-#
-# DEFINITION DES CONDITIONS AUX LIMITES ET DU CHARGEMENT
-#   AU POINT A : ENCASTREMENT
-#   AU POINT B : FORCE IMPOSEE
-#                FY = 100000. N (FX,FZ,MX,MY,MZ NULLES)
-
-# BLOQUAG2=AFFE_CHAR_MECA(MODELE=MODMECA2,
-#                         DDL_IMPO=_F(GROUP_NO='PA',
-#                                     DX=0.0,
-#                                     DY=0.0,
-#                                     DZ=0.0,
-#                                     DRX=0.0,
-#                                     DRY=0.0,
-#                                     DRZ=0.0,),);
-
-BLOQUAG2=AFFE_CHAR_MECA_F(MODELE=MODMECA2,
-                        DDL_IMPO=_F(GROUP_NO='PA',
-                                    LIAISON='ENCASTRE',)
-                                    ,);
-
-CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA2,
-                      FORCE_NODALE=_F(GROUP_NO='PB',
-                                      FY=100000.0,),);
-#
-# CARACTERISTIQUES DES POUTRES
-#
-
-CARAFLEX=AFFE_CARA_ELEM(MODELE=MODMECA2,
-                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE'),
+CARAFLEX=AFFE_CARA_ELEM(MODELE=MODMECA,
+                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE',),
                                   SECTION='CERCLE',
                                   CARA=('R','EP',),
                                   VALE=(REXT,EPTUB,),),
@@ -256,25 +182,40 @@ CARAFLEX=AFFE_CARA_ELEM(MODELE=MODMECA2,
                                     RAYON=RC,
                                     COEF_FLEX=FRCCM,),);
 
+RESU2=MECA_STATIQUE(MODELE=MODMECA,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARAFLEX,
+                    EXCIT=(_F(CHARGE=BLOQUAGE,),
+                           _F(CHARGE=CHARGT,),),);
 
-RESU2=MECA_STATIQUE(MODELE=MODMECA2,
-                     CHAM_MATER=CHMAT2,
-                     CARA_ELEM=CARAFLEX,
-                     EXCIT=(_F(CHARGE=BLOQUAG2,),
-                            _F(CHARGE=CHARGT2,),),
-                     );
+RESU2=CALC_ELEM(reuse =RESU2,
+                RESULTAT=RESU2,
+                OPTION='SIEF_ELNO_ELGA',);
 
-CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 , 
-                     OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',),);
+RESU2=CALC_NO(reuse =RESU2,
+              RESULTAT=RESU2,
+              OPTION='SIEF_NOEU_ELGA',);
 
-IMPR_RESU(MODELE=MODMECA2,
-          RESU=(_F(RESULTAT=RESU2,
-                   NOM_CHAM='DEPL',
-                   GROUP_NO='PB',),),)
+IMPR_RESU(RESU=_F(RESULTAT=RESU2,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='PB',),);
+# courbes MFZ et FY le long du tuyau
+# en interactif, courbe directement avec STANLEY
 
-IMPR_RESU(MODELE=MODMECA,FORMAT='MED' ,UNITE=81,
-          RESU=(_F(RESULTAT=RESU2,
-                   NOM_CHAM='DEPL',),),)
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                                 NOM='TUYAU',
+                                 GROUP_MA='TUYAU',),);
+
+EFGE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='EFFORTS',
+                             RESULTAT=RESU2,
+                             NOM_CHAM='SIEF_NOEU_ELGA',
+                             GROUP_NO='TUYAU',
+                             TOUT_CMP='OUI',),);
+
+IMPR_TABLE(TABLE=EFGE,);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NUME_ORDRE=1,

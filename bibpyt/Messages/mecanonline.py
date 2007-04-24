@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -357,25 +357,41 @@ cata_msg={
 
 79: _("""
    Arret par manque de temps CPU au numéro d'instant : %(i1)d
-   lors de l'itération : %(i2)d
-   - Temps moyen par itération : %(r1)f
-   - Temps cpu restant : %(r2)f
-   La base globale est sauvegardée. Elle contient les pas archivés 
-   avant l'arret.
+                                 lors de l'itération : %(i2)d
+      - Temps moyen par itération : %(r1)f
+      - Temps cpu restant         : %(r2)f
+   
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
 """),
 
 80: _("""
    Arret par manque de temps CPU au numéro d'instant : %(i1)d
-   - Temps moyen par %(k1)s : %(r1)f
-   - Temps cpu restant : %(r2)f
-   La base globale est sauvegardée. Elle contient les pas archivés 
-   avant l'arret.
+      - Temps moyen par %(k1)s : %(r1)f
+      - Temps cpu restant      : %(r2)f
+   
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
 """),
 
 81: _("""
    Echec dans la recherche linéaire. Contactez les développeurs.
 """),
 
+82: _("""
+   Arret pour cause de matrice non inversible.
+"""),
+
+83: _("""
+   Arret : absence de convergence avec le nombre d'itérations requis.
+"""),
+
+84: _("""
+   Arret par échec dans le pilotage.
+"""),
+
+85: _("""
+   Arret : absence de convergence au numéro d'instant : %(i1)d
+                                  lors de l'itération : %(i2)d
+"""),
 
 
 }

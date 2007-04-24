@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
+#@ MODIF compor1 Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,10 +26,12 @@ cata_msg={
  hujpla :: nombre de variables internes incorrect:
            NVI > NVIMAX
 """),
+
 2: _("""
  hujddd :: on ne calcule pas DPSIDS pour K=4.
            - vérifiez la programmation -
 """),
+
 3: _("""
  cam-clay :: le coefficient de poisson est négatif
              dans la maille %(k1)s
@@ -42,36 +44,55 @@ cata_msg={
                
                  E < 3*PO*(1+e0)/kapa ***
 """),
+
 4: _("""
  hujeux :: les modélisations autorisées sont 3D D_PLAN ou AXIS
 """),
+
 5: _("""
  hujeux :: K différent de NBMECA pour le mécanisme isotrope
            - vérifiez la programmation -
 """),
+
 6: _("""
  hujeux :: erreur inversion par pivot de Gauss
 """),
+
 7: _("""
  hujcri :: epsi_vp est trop grand:
            !!! l'exponentielle explose !!!
 """),
+
 8: _("""
  hujeux :: mécanisme indéterminé
            - vérifiez la programmation -
 """),
+
+9 : _("""
+Arret suite à l'échec de l'intégration de la loi de comportement.
+"""),
+
 10: _("""
  hujksi :: mot-clé inconnu
 """),
+
 11: _("""
  hujnvi :: modélisation inconnue
 """),
+
 14: _("""
  hujtid :: erreur dans le calcul de la matrice tangente
 """),
+
 15: _("""
  nmcomp :: la loi élastique n'est plus disponible directement avec SIMO_MIEHE : utilisez 
 VMIS_ISOT_LINE avec un SY grand
+"""),
+
+16 : _("""
+Arret suite à l'échec de l'intégration de la loi de comportement.
+
+Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 }

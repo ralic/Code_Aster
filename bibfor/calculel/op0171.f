@@ -1,7 +1,7 @@
       SUBROUTINE OP0171 (IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,9 @@ C
       CHARACTER*24 CNDIRP,CNCHCI,CNCHTP, K24B
       CHARACTER*24 CHLAPM,CHLAPP,CNRESI, NOOBJ
       CHARACTER*76 FMT
-      CHARACTER*132 RAISON
+      CHARACTER*8  VALK
+      INTEGER      VALI(2)
+      REAL*8       VALR(2)
 C
 C ----------------------------------------------------------------------
 C
@@ -318,15 +320,11 @@ C
 C - Y A-T-IL ASSEZ DE TEMPS POUR REFAIRE UNE ITERATION ?
 C
             IF (TPS2(4).GT.0.8D0*TPS2(1)-TPS2(4)) THEN
-              CALL UTDEXC (28, 'OP0171','ARRET PAR MANQUE DE TEMPS CPU')
-              CALL UTIMPI ('S',' AU NUMERO D''ORDRE: ',1,ICOMPT)
-              CALL UTIMPI ('S',' LORS DE L''ITERATION : ',1,ITERL)
-              CALL UTIMPR ('L',' TEMPS MOYEN PAR ITERATION :',1,TPS2(4))
-              CALL UTIMPR ('L',' TEMPS CPU RESTANT: ',1,TPS2(1))
-              CALL UTIMPI ('L',' LA BASE GLOBALE EST SAUVEGARDEE,',0,K)
-              CALL UTIMPI ('S',' ELLE CONTIENT LES PAS ARCHIVES',0,K)
-              CALL UTIMPI ('S',' AVANT L''ARRET' ,0,K)
-              CALL UTFINM()
+              VALI(1) = ICOMPT
+              VALI(2) = ITERL
+              VALR(1) = TPS2(4)
+              VALR(2) = TPS2(1)
+              CALL UTEXCM(28,'MECANONLINE_79',0, VALK, 2, VALI, 2, VALR)
             END IF
 C
 C - ON VA REFAIRE UNE ITERATION
@@ -341,8 +339,7 @@ C
 C
             IF ((PARCRI(9).EQ.0).AND.(ITERL.GE.ITMAXL)) THEN
               WRITE (IFM,FMT)
-              CALL UTEXCP(22,NOMPRO,'ARRET : LE NOMBRE D''ITERATIONS'
-     &             //'MAXIMUM EST ATTEINT')
+              CALL UTEXCP(22, 'MECANONLINE_83')
             ENDIF
 C
           ENDIF

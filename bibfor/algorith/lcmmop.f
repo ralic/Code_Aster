@@ -1,17 +1,18 @@
         SUBROUTINE LCMMOP( FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,
      &                     VINI,X,  DTIME, E,NU,ALPHA,PGL2,MOD,COEFT,
      &                     SIGI,EPSD, DETOT,
-     &                     COEL,NBPHAS,NBFSYM,TOUTMS,DVIN )
+     &           COEL,NBPHAS,NBFSYM,TOUTMS,DVIN,HSR,ITMAX,TOLER,IRET )
         IMPLICIT NONE
-        INTEGER KPG,KSP,NMAT,NBCOMM(NMAT,3),NVI,NBFSYM,NBPHAS
+        INTEGER KPG,KSP,NMAT,NBCOMM(NMAT,3),NVI,NBFSYM,NBPHAS,ITMAX,IRET
         REAL*8 VINI(*),DVIN(*),NU,E,ALPHA,X,DTIME,COEFT(NMAT),COEL(NMAT)
         REAL*8 SIGI(6),EPSD(6),DETOT(6),PGL(3,3)
 C       POUR GAGNER EN TEMPS CPU
         REAL*8 TOUTMS(NBPHAS,NBFSYM,24,6)
+        REAL*8 TOLER,HSR(5,24,24)
         CHARACTER*(*)  FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,8 +127,9 @@ C     ----------------------------------------------------------------
       REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP,DEVG(6),FV,R8DGRD
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP,SIG33(3,3),WORK(3,3)
       REAL*8 DEVGEQ,LCNRTS,DBETA,BETA,DVINEQ,GRANB(6),SQ
+      REAL*8 CRIT, SGNS, EXPBP(24),DY(24),COEFEL(2)
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS,NVLOC
-      INTEGER INDPHA,INDFV,INDORI,DECAL,IPHAS,INDCP,NVIG,INDFA
+      INTEGER INDPHA,INDFV,INDORI,DECAL,IPHAS,INDCP,NVIG,INDFA,IEXP
 C     ----------------------------------------------------------------
 C --  VARIABLES INTERNES
 C
@@ -135,6 +137,10 @@ C
         EVI(ITENS) = VINI(ITENS)
         DEVI(ITENS) = 0.D0
     5 CONTINUE
+      DO 55 I=1,24
+         DY(I)=0.D0
+ 55   CONTINUE
+      IRET=0
 
       CALL CALSIG(FAMI,KPG,KSP,EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,
      &            DETOT,NMAT,COEL,SIGI)
@@ -175,7 +181,7 @@ C         INDORI=INDFV+1
          NUMS=0
          INDCP=NBCOMM(1+IPHAS,2)
 C        Nombre de variables internes de la phase (=monocristal)
-         NVIG=NBCOMM(INDPHA,3)
+C         NVIG=NBCOMM(INDPHA,3)
          DO 51 ITENS=1,6
             DEVG(ITENS) = 0.D0
             EVG(ITENS) = 0.D0
@@ -183,12 +189,13 @@ C        Nombre de variables internes de la phase (=monocristal)
 
          DO 6 IFA=1,NBFSYS
 
-            NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
+C            NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
             NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
             NECRIS=CPMONO(INDCP+5*(IFA-1)+4)
             NECRCI=CPMONO(INDCP+5*(IFA-1)+5)
 
-            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+C            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+            NBSYS=TOUTMS(IPHAS,5,IFA,1)
 
 C           indice de la famille IFA
             INDFA=INDPHA+IFA
@@ -201,6 +208,9 @@ C              VARIABLES INTERNES DU SYST GLIS
                   NUVI=NUVI+1
                   VIS(IV)=VINI(NUVI)
   8            CONTINUE
+               DVIN(NUVI-2)=0.D0
+               DVIN(NUVI-1)=0.D0
+               DVIN(NUVI  )=0.D0
 
 C              CALCUL DE LA SCISSION REDUITE
 C              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
@@ -219,28 +229,40 @@ C
 C              DECAL est le début des systemes de glissement de la
 C              phase en cours
 C              NVIG est le nombre de variables internes dela phase G
-               CALL LCMMEI(COEFT,INDFA,NMAT,NBCOMM,NECRIS,
-     &                  NUMS,VIS,NVIG,VINI(DECAL+1),RP,SQ)
+
+               IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+
+                  IEXP=0
+                  IF (IS.EQ.1) IEXP=1
+                  CALL LCMMFI(COEFT,INDFA,NMAT,NBCOMM,NECRIS,
+     &              IS,NBSYS,VINI(DECAL+1),DY(1),HSR,IEXP,EXPBP,RP)
+ 
+               ENDIF
 C
 C              ECOULEMENT VISCOPLASTIQUE:
 C              ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)
 C              ET L'EXPLICITE (NMVPRK-GERPAS-RK21CO-RDIF01)
 C              CAS IMPLCITE : IL FAUT PRENDRE EN COMPTE DTIME
-C              CAS EXPLICITE : IL NE LE FAUT PAS (C'EST FAIT PAR RDIF01)
+C              CAS EXPLICITE : IL NE LE FAUT PAS (VITESSES)
 C              D'OU :
                DT=1.D0
 C
-               CALL LCMMFL(FAMI,KPG,KSP,TAUS,COEFT,INDFA,NMAT,
-     &                     NBCOMM,NECOUL,RP,NUMS,VIS,
-     &                     NVIG,VINI(DECAL+1),DT,DT,DGAMMA,DP)
+               COEFEL(1)=E
+               COEFEL(2)=NU
 
+               CALL LCMMFE(FAMI,KPG,KSP, TAUS,COEFT,COEFEL,INDFA,NMAT,
+     &         NBCOMM,NECOUL,IS,NBSYS,VINI(DECAL+1),DY(1),RP,VIS(1),
+     &         VIS(2),DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET ,DY)
+     
                IF (DP.GT.0.D0) THEN
 C
 C                 ECROUISSAGE CINEMATIQUE
 C
-                  CALL LCMMEC(TAUS,COEFT,INDFA,NMAT,NBCOMM,NECRCI,VIS,
-     &                  DGAMMA,DP,DALPHA)
-
+                  IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+                      CALL LCMMFC( COEFT,INDFA,NMAT,NBCOMM,NECRCI,
+     &                         ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
+                      IF (IRET.NE.0) GOTO 9999
+                  ENDIF
 C                 DEVG designe ici DEPSVPG
                   DO 9 ITENS=1,6
                      DEVG(ITENS)=DEVG(ITENS)+MS(ITENS)*DGAMMA
@@ -248,7 +270,7 @@ C                 DEVG designe ici DEPSVPG
 
 C                 EVG designe ici EPSVPG
                   IF (LOCA.EQ.'BETA') THEN
-                      GAMMAS=VIS(2)
+                      GAMMAS=VIS(2)+DGAMMA
                       DO 19 ITENS=1,6
                          EVG(ITENS)=EVG(ITENS)+MS(ITENS)*GAMMAS
   19                  CONTINUE
@@ -301,11 +323,13 @@ C     Norme de DEVP cumulée
       DVINEQ = LCNRTS( DEVI ) / 1.5D0
 
       DVIN(7)= DVINEQ
-
-      IF (DVIN(7).EQ.0.D0) THEN
-         DVIN(NVI)=0
-      ELSE
-         DVIN(NVI)=1
-      ENDIF
-
+      DVIN(NVI) = 0
+C 
+C       IF (DVIN(7).EQ.0.D0) THEN
+C          DVIN(NVI)=0
+C       ELSE
+C          DVIN(NVI)=1
+C       ENDIF
+C       
+ 9999 CONTINUE
       END

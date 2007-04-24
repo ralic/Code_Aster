@@ -12,7 +12,7 @@
       LOGICAL LAMORT,LIMPED,LCREA,LMODST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,6 +121,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER IWK1,IWK2,IFORC2,NI,LVALE1,LVALE2,LVALE3,LVALE4,LVALE5
       INTEGER NBPASE,NRPASE,IBID,IRET,IRESOL,IEQ
       LOGICAL LONDE
+      CHARACTER*8   VALK
+      INTEGER       VALI(2)
+      REAL*8        VALR(2)
 
       DATA CHSOL/'&&DLNEWI.SOLUTION'/
       DATA MAPREC/'&&DLNEWI.MAPREC'/
@@ -678,11 +681,10 @@ C ------------- VERIFICATION DU TEMPS DE CALCUL RESTANT
           CALL UTTCPU(2,'FIN',4,TPS2)
           IF (TPS2(1).LT.5.D0 .OR. TPS2(4).GT.TPS2(1)) THEN
             ISTOP = 1
-            WRITE (IFM,*) 'ARRET PAR MANQUE DE TEMPS CPU'//
-     &        ' AU GROUPE DE PAS DE TEMPS : ',I,
-     &        ' AU "PETIT" PAS DE TEMPS : ',J,
-     &        ' TEMPS MOYEN PAR "PETIT" PAS : ',TPS2(4),
-     &        ' TEMPS CPU RESTANT: ',TPS2(1)
+            VALI(1) = I
+            VALI(2) = J
+            VALR(1) = TPS2(4)
+            VALR(2) = TPS2(1)
             GO TO 230
           END IF
 
@@ -692,11 +694,10 @@ C ---------- BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
         CALL UTTCPU(1,'FIN',4,TPS1)
         IF (TPS1(1).LT.5.D0 .AND. I.NE.NBGRPA) THEN
           ISTOP = 1
-          WRITE (IFM,*) 'ARRET PAR MANQUE DE TEMPS CPU'//
-     &      ' AU GROUPE DE PAS DE TEMPS : ',I,
-     &      ' AU "PETIT" PAS DE TEMPS : ',J,
-     &      ' TEMPS MOYEN PAR GROUPE : ',TPS1(4),
-     &      ' TEMPS CPU RESTANT : ',TPS1(1)
+          VALI(1) = I
+          VALI(2) = J
+          VALR(1) = TPS1(4)
+          VALR(2) = TPS1(1)
           GO TO 230
         END IF
 
@@ -774,8 +775,8 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
   290   CONTINUE
 522     CONTINUE
       END IF
-      IF (ISTOP.EQ.1) CALL UTEXCP(28,'OP0048',
-     &                            'ARRET PAR MANQUE DE TEMPS CPU')
+      IF (ISTOP.EQ.1)
+     +      CALL UTEXCM(28, 'DYNAMIQUE_10', 0, VALK, 2, VALI, 2, VALR)
 
 C     --- DESTRUCTION DES OBJETS DE TRAVAIL ---
 

@@ -3,7 +3,7 @@
      &                   SIGF, VINF, IRTET)
         IMPLICIT NONE
 C       ================================================================
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -381,8 +381,7 @@ C -- ERREURS--------------------------------------------------------
       CALL U2MESS('S','ALGORITH4_92')
       GOTO 9999
  45   CONTINUE
-      CALL UTEXCP(23,'LCROUS','OVERFLOW NUMERIQUE : '//
-     &    'LA PLASTICITE CUMULEE EXPLOSE DANS RSLPHI')
+      CALL UTEXCP(23, 'COMPOR1_16')
       GOTO 9999
 C
 C -- PROBABLEMENT UN INCREMENT TROP GRAND DE DEFORMATION-----------

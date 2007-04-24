@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,7 +185,9 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
    %(ktout)s
 """),
 
-41 : _("Plus de 5 fois le meme message d'alarme."),
+41 : _("""
+Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
+"""),
 
 42: _("""
  DEBUG/SDVERI demandé par l'utilisateur mais indisponible sur cette machine
@@ -258,7 +260,7 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 """),
 
 57 : _("""
-   Impossible d'importer %(k1)s dans Messages.
+   Impossible d'importer '%(k1)s' dans Messages.
    Le fichier %(k1)s.py n'existe pas dans le répertoire 'Messages'
    ou bien la syntaxe du fichier est incorrecte.
    

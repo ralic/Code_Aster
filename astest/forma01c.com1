@@ -6,36 +6,109 @@
 #     -------------------------------------
 
 POURSUITE(CODE=_F(NOM='FORMA01C',),);
+#    TRANSFORMATION DES MAILLES LINEAIRES EN QUADRATIQUES PAR PRE_GMSH
+#     -------------------------------------
+#
+# TUYAU    <=> GM10000
+# EFOND    <=> GM10005
+# ENCAST   <=> GM10001
+# SYMETRIE <=> GM10002
+# SURFINT  <=> GM10004
+# SURFEXT  <=> GM10003
 
-COURBE=INTE_MAIL_3D(MAILLAGE=MAIL,
-                    DEFI_SEGMENT=_F(ORIGINE=(0.0,3.0,0.1,),
-                                    EXTREMITE=(0.0,3.0,0.2,),),
-                    INFO=2,);
+PRE_GMSH();
 
-TABDEPT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='DEPBT',
-                                RESULTAT=TEMPE,
-                                NOM_CHAM='TEMP',
-                                CHEMIN=COURBE,
-                                TOUT_CMP='OUI',),);
+MAI1=LIRE_MAILLAGE();
 
-TABDEP0=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='DEPB0',
-                                RESULTAT=RESUT,
+MAIL2=CREA_MAILLAGE(MAILLAGE=MAI1,
+                    LINE_QUAD=_F(TOUT='OUI',),);
+# RENOMMAGE DES GROUPES
+
+MAIL2=DEFI_GROUP(reuse =MAIL2,
+                 MAILLAGE=MAIL2,
+                 CREA_GROUP_MA=(_F(NOM='ENCAST',
+                                   GROUP_MA='GM10001',),
+                                _F(NOM='SYMETRIE',
+                                   GROUP_MA='GM10002',),
+                                _F(NOM='EFOND',
+                                   GROUP_MA='GM10005',),
+                                _F(NOM='SURFINT',
+                                   GROUP_MA='GM10004',),
+                                _F(NOM='SURFEXT',
+                                   GROUP_MA='GM10003',),),);
+# ORIENTATION DES NORMALES AUX COQUES
+# RENTRANTES DANS LE TUYAU
+
+MAIL2=MODI_MAILLAGE(reuse =MAIL2,
+                    MAILLAGE=MAIL2,
+                    ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
+                                  _F(GROUP_MA='EFOND',),),);
+
+MOD2=AFFE_MODELE(MAILLAGE=MAIL2,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='3D',),);
+
+CHM2=AFFE_MATERIAU(MAILLAGE=MAIL2,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MAT,
+                           TEMP_REF=20.0,),);
+
+CHARG=AFFE_CHAR_MECA(MODELE=MOD2,
+                     DDL_IMPO=(_F(GROUP_MA='ENCAST',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),
+                               _F(GROUP_MA='SYMETRIE',
+                                  DZ=0.0,),),
+                     PRES_REP=_F(GROUP_MA='SURFINT',
+                                 PRES=15000000.0,),);
+
+RESUG=MECA_STATIQUE(MODELE=MOD2,
+                    CHAM_MATER=CHM2,
+                    EXCIT=_F(CHARGE=CHARG,),);
+
+RESUG=CALC_ELEM(reuse =RESUG,
+                RESULTAT=RESUG,
+                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+
+# tests de non régression
+
+MAIL2=DEFI_GROUP(reuse =MAIL2,
+                 MAILLAGE=MAIL2,
+                 CREA_GROUP_NO=(_F(GROUP_MA='EFOND',),
+                                _F(GROUP_MA='ENCAST',),
+                                _F(OPTION='PLAN',
+                                   NOM='PLANY',
+                                   POINT=(3.6,3.6,0.0,),
+                                   VECT_NORMALE=(0.0,1.0,0.0,),
+                                   PRECISION=0.001,),
+                                _F(OPTION='ENV_CYLINDRE',
+                                   NOM='REXT',
+                                   POINT=(3.6,3.6,0.0,),
+                                   RAYON=0.2,
+                                   VECT_NORMALE=(1.0,0.0,0.0,),
+                                   PRECISION=0.001,),
+                                _F(INTERSEC=('EFOND','PLANY','REXT',),
+                                   NOM='PB',),),);
+
+TABDEPG=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='DEPB1',
+                                RESULTAT=RESUG,
                                 NOM_CHAM='DEPL',
-                                CHEMIN=COURBE,
+                                GROUP_NO='PB',
                                 TOUT_CMP='OUI',),);
 
-IMPR_TABLE(TABLE=TABDEPT,);
+TEST_TABLE(TABLE=TABDEPG,
+           NOM_PARA='DX',
+           VALE=-0.273376,
+           PRECISION=0.0001,
+           REFERENCE='NON_REGRESSION',);
 
-IMPR_TABLE(TABLE=TABDEP0,);
-
-TITRE = 'TEMPERATURE AU TRAVERS DE LA PAROI';
-
-IMPR_TABLE(TABLE=TABDEPT,
-           FORMAT='XMGRACE',
-           UNITE=29,
-           NOM_PARA=('ABSC_CURV','TEMP',),
-           TITRE=TITRE,);
+TEST_TABLE(TABLE=TABDEPG,
+           NOM_PARA='DY',
+           VALE=0.441,
+           PRECISION=0.0001,
+           REFERENCE='NON_REGRESSION',);
 
 FIN();

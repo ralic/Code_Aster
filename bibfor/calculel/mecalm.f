@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,66 +78,63 @@ C     --- VARIABLES LOCALES ---
       INTEGER LREFE,LVALE,LDEPL,LFREQ,LACCE
       INTEGER IORDR,IORDR1,IORDR2,JORDR,IORDRM
       INTEGER IRET,IRET1,IRET2,IRET3,IRET4,IERD
-      INTEGER NH,NOR,NBOPT,NP,ND,NEQ,NBCHRE,IER
+      INTEGER NH,NOR,NBOPT,NEQ,NBCHRE,IER
       INTEGER IADOU,IADIN,IPUIS
       INTEGER IAUX,II,III,IB,J,JAUX,K,IBID,IE
       INTEGER IOCC,IOPT,IAINST
       INTEGER L1,L2,L3,L4,L5,L6
-      INTEGER N1,N2
-      INTEGER JPA,JOPT,JCHA,JNMO,JCHAP,JCHAD
+      INTEGER N1
+      INTEGER JPA,JOPT,JCHA,JNMO
       INTEGER NBAC,NBPA,NBPARA
       INTEGER NBPASE,NRPASS,NBPASS,TYPESE
       INTEGER ADRECG,ADCRRS
-      INTEGER NBVAL,IAGD,IATYMA,IACMP,ICONX1,ICONX2
+      INTEGER NBVAL
       INTEGER CODSEN,INUME
       INTEGER IINST1,IINST2
-      INTEGER JDIM,JCOOR,JTYPE,NCHARP,NCHARD
-      INTEGER NNOEM,NELEM,NDIM,NNCP,NPASS,VALI
+      INTEGER JDIM,JCOOR,JTYPE
+      INTEGER NNOEM,NELEM,NDIM,NNCP,NPASS
 
-      CHARACTER*1 BASE,TYPCOE,KBID
+      CHARACTER*1 BASE,TYPCOE
       CHARACTER*4 TYPE,K4BID
       CHARACTER*8 K8B,NOMA,CHAREP
       CHARACTER*8 CARELE,Z1Z2(2),KIORD,KIORDM
       CHARACTER*8 LERES0,NOPASE
-      CHARACTER*8 NOMCMP,RESUP,RESUD,CTYPE,SAVCAR(2)
+      CHARACTER*8 NOMCMP,SAVCAR(2)
       CHARACTER*13 INPSCO
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD,OPTION,OPTIO2,NOMCHA,K16B
-      CHARACTER*16 OPTIOP,OPTIOD
       CHARACTER*19 LERES1
-      CHARACTER*19 TABP,TABD
       CHARACTER*19 INFCHA
       CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR
-      CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN,VALK,KCHAP,KCHAD
-      CHARACTER*24 CHAMGD,CHSIG,CHSIGP,CHSIGD,CHSIGN,CHEPSP
-      CHARACTER*24 CHEPS,CHDEPL,CHSGPN,CHSGDN
+      CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN
+      CHARACTER*24 CHAMGD,CHSIG,CHSIGN,CHEPSP
+      CHARACTER*24 CHEPS,CHDEPL
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTIME,CHMETA
       CHARACTER*24 CHNUMC,CHHARM,CHFREQ,CHMASS,CHELEM,SOP
-      CHARACTER*24 CHERRG,CHERRN,LIGREL,CHEPSA,K24B
+      CHARACTER*24 LIGREL,CHEPSA,K24B
       CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3
       CHARACTER*24 CHSIG1,CHSIG2,CHVAR1,CHVAR2,NORME,NOMPAR
       CHARACTER*24 MODEL2,MATE2,CARA2,CHARGE,INFOCH,LESOPT
       CHARACTER*24 CHTETA,CHTESE,CHSIGM,DLAGSI,CHDESE,CHSIC
-      CHARACTER*24 CHVARI,CHDEPM,CHVOIS
+      CHARACTER*24 CHVARI,CHDEPM
       CHARACTER*24 NORECG,NOCRRS,NOMS(2)
       CHARACTER*24 STYPSE
-      CHARACTER*24 LIGRCH,LIGRCP,LIGRCD,LIGRMO
+      CHARACTER*24 LIGRMO
       CHARACTER*24 BLAN24,CHBID,CHSEQ,CHEEQ,CHCMP
       CHARACTER*24 CHTIM1,CHELE1
       CHARACTER*24 CHTIM2,CHELE2
-      CHARACTER*24 CHEND2,CHS,CHSIGF
+      CHARACTER*24 CHEND2,CHSIGF
       CHARACTER*19 CHVARC,CHVREF,CHVAC2
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME,R8B
       REAL*8 ALPHA,PREC,PHASE,FREQ,OMEGA
       REAL*8 R8DEPI,R8DGRD
       REAL*8 RBID
-      REAL*8 TIME1,TIME2,ERP,ERD,S
+      REAL*8 TIME1,TIME2
 
-      COMPLEX*16 C16B,CALPHA,CCOEF,CBID,VALC
+      COMPLEX*16 CALPHA,CCOEF,CBID
 
       LOGICAL EXITIM,EXIPOU,EXIPLA,LBID,EXICAR
-      LOGICAL YATHM
       REAL*8 ZERO,UN
       PARAMETER (ZERO=0.D0,UN=1.D0)
 
@@ -158,11 +155,7 @@ C               12   345678   9012345678901234
       NOCRRS = '&&'//NOMPRO//'_RESU_CREES     '
       NORECG = '&&'//NOMPRO//'_PARA_SENSI     '
       LESOPT = '&&'//NOMPRO//'.LES_OPTION     '
-      KCHAP  = '&&'//NOMPRO//'.CHARGESP  '
-      KCHAD  = '&&'//NOMPRO//'.CHARGESD  '
       NH = 0
-      NCHARP = 0
-      NCHARD = 0
       CHAMGD = BLAN24
       CHGEOM = BLAN24
       CHTEMP = BLAN24
@@ -170,8 +163,6 @@ C               12   345678   9012345678901234
       CHNUMC = BLAN24
       CHHARM = BLAN24
       CHSIG  = BLAN24
-      CHSIGP = BLAN24
-      CHSIGD = BLAN24
       CHSIC  = BLAN24
       CHEPS  = BLAN24
       CHFREQ = BLAN24
@@ -183,9 +174,9 @@ C               12   345678   9012345678901234
       CHELEM = BLAN24
       SOP    = BLAN24
       K24B   = BLAN24
-      CHVARC = '&&MECALM.CHVARC'
-      CHVAC2 = '&&MECALM.CHVAC2'
-      CHVREF = '&&MECALM.CHVREF'
+      CHVARC = '&&'//NOMPRO//'.CHVARC'
+      CHVAC2 = '&&'//NOMPRO//'.CHVAC2'
+      CHVREF = '&&'//NOMPRO//'.CHVREF'
       CHVARI = BLAN24
       BASE = 'G'
       COEF = UN
@@ -386,6 +377,7 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
 
 C============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
         DO 440 IOPT = 1,NBOPT
+C
           OPTION = ZK16(JOPT+IOPT-1)
           CODSEN=0
 C
@@ -718,9 +710,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
               ELSE
-                CHTIME = ' '
                 TIME = ZERO
               END IF
               CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
@@ -777,7 +767,7 @@ C ---- VERIF SENSIBILITE FIN
             END IF
             CHMASS = '&&'//NOMPRO//'.MASD'
             CALL MECACT('V',CHMASS,'MAILLA',NOMA,'POSI',1,'POS',INUME,
-     &                  R8B,C16B,K8B)
+     &                  R8B,CBID,K8B)
             DO 110,IAUX = 1,NBORDR
               CALL JEMARQ()
               CALL JERECU('V')
@@ -802,7 +792,7 @@ C ---- VERIF SENSIBILITE FIN
               END IF
               CHFREQ = '&&'//NOMPRO//'.FREQ'
               CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'FREQ_R',1,'FREQ',
-     &                    IBID,FREQ,C16B,K8B)
+     &                    IBID,FREQ,CBID,K8B)
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
@@ -1146,36 +1136,6 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   170       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTIONS "ERZ1_ELEM_SIGM" ET "ERZ2_ELEM_SIGM"
-C    ------------------------------------------------------------------
-          ELSE IF (OPTION.EQ.'ERZ1_ELEM_SIGM' .OR.
-     &             OPTION.EQ.'ERZ2_ELEM_SIGM') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-               CODSEN = 1
-            ENDIF
-            IF(CODSEN.NE.0) GO TO 900
-C ---- VERIF SENSIBILITE FIN
-            DO 180,IAUX = 1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR = ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
-     &                    RESUCO,IORDR,NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'SIGM_NO'//OPTION(3:4)//'_ELGA  ',
-     &                    IORDR,CHSIGN,OPTION,IRET)
-              IF (IRET.GT.0) GO TO 182
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL ERNOZZ(MODELE,CHSIG,MATE,CHSIGN,OPTION,LIGRMO,
-     &                    IORDR,TIME,RESUCO,LERES1,CHELEM)
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  182         CONTINUE
-              CALL JEDEMA()
-  180       CONTINUE
-C    ------------------------------------------------------------------
 C    -- OPTION "ARCO_ELNO_SIGM"
 C    ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'ARCO_ELNO_SIGM') THEN
@@ -1201,7 +1161,7 @@ C              CALL JEVEUO(KCHA,'L',JCHA)
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET2)
               IF (IRET1.GT.0 .OR. IRET2.GT.0) GO TO 187
-              CHSIGF='&&MECALM.CHAM_SI2D'
+              CHSIGF='&&'//NOMPRO//'.CHAM_SI2D'
               CALL MEARCC(OPTION,MODELE,CHSIG,CHSIGF)
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
@@ -1217,349 +1177,32 @@ C              CALL JEVEUO(KCHA,'L',JCHA)
 C              CALL JEDEMA()
   185       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "ERRE_ELEM_SIGM"
+C    -- OPTIONS DES INDICATEURS D'ERREURS
 C    ------------------------------------------------------------------
-          ELSE IF (OPTION.EQ.'ERRE_ELEM_SIGM') THEN
-C --- EST-CE DE LA THM ?
-            CALL EXITHM ( MODELE, YATHM )
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-               CODSEN = 1
-            ENDIF
-            IF(CODSEN.NE.0) GO TO 900
-C ---- VERIF SENSIBILITE FIN
-C --------- VERIFICATION DU PERIMETRE D'UTILISATION
-            CALL GETVTX(' ','GROUP_MA',1,1,1,K8B,N1)
-            CALL GETVTX(' ','MAILLE'  ,1,1,1,K8B,N2)
-            IF (N1+N2.NE.0) THEN
-               CALL U2MESK('A','CALCULEL5_61',1,OPTION)
-               GOTO 530
-            ENDIF
-C--- RECHERCHE DES VOISINS
-C--- (CHGEOM RECHERCHE A PARTIR DU MODELE ET PAS DES CHARGES)
-            CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,IATYMA,IAGD,IACMP
-     &      ,ICONX1,ICONX2)
-C--- BOUCLE SUR LES NUMEROS D'ORDRE
-            DO 190,IAUX = 1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR = ZI(JORDR+IAUX-1)
-
-C--- SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
-C--- RECUPERE LES CHARGES POUR LE NUMERO D'ORDRE IORDR
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
-     &                    RESUCO,IORDR,NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-
-C--- VERIFIE L'EXISTENCE DU CHAMP
-C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
-              CALL RSEXC2(1,3,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
-     &                    OPTION,IRET)
-              CALL RSEXC2(2,3,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
-     &                    OPTION,IRET)
-              CALL RSEXC2(3,3,RESUCO,'SIRE_ELNO_DEPL',IORDR,CHSIG,
-     &                    OPTION,IRET)
-
-C--- SI AUCUN CHAMP N'EXISTE, ON SORT
-              IF (IRET.GT.0) GO TO 192
-
-C--- VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
-              CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,
-     &                                            LIGRCH,IERD)
-              IF (LIGRCH.NE.LIGRMO) THEN
-                 CALL CODENT(IORDR,'G',KIORD)
-                 VALKM(1)=OPTION
-                 VALKM(2)=KIORD
-                 CALL U2MESK('A','CALCULEL5_62',2,VALKM)
-                 GOTO 192
-              ENDIF
-C ---       POUR DE LA THM :
-C           --------------------------------------------------------
-C ---       * RECUPERATION DU CHAMP DE DEPLACEMENTS A L'INSTANT COURANT
-C           ---------------------------------------------------------
-              IF ( YATHM ) THEN
-                CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
-                IF (IRET1.GT.0) THEN
-                  CALL CODENT(IORDR,'G',KIORD)
-                  VALKM(1)=RESUCO
-                  VALKM(2)=KIORD
-                  CALL U2MESK('A','CALCULEL3_11', 2 ,VALKM)
-                  GO TO 192
-                ENDIF
-              ENDIF
-
-C--- RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
-C--- POUR LE NUMERO D'ORDRE IORDR
-              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-              TIME = ZR(IAINST)
-
-C--- CREE UNE CARTE D'INSTANTS
-               CALL MECHTI(NOMA,TIME,CHTIME)
-
-C--- RECUPERE LE NOM SYMBOLIQUE DU CHAMP DE L'OPTION CALCULEE
-C--- POUR LE NUMERO D'ORDRE IORDR
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-
-C--- CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
-              CALL RESLOC(MODELE,LIGRMO,CHTIME,CHSIG,CHDEPL,
-     &             ZK8(JCHA),NCHAR,MATE,
-     &             CHVOIS,IATYMA,IAGD,IACMP,ICONX1,ICONX2,CHELEM)
-
-C--- VERIFIE L'EXISTENCE DU CHAMP CHELEM
-              CALL EXISD('CHAMP_GD',CHELEM,IRET)
-
-C--- SI LE CHAMP N'EXISTE PAS, ON SORT
-              IF (IRET.EQ.0) THEN
-                 CALL JEDEMA
-                 GOTO 440
-              ENDIF
-
-C--- CALCULE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS LOCAUX
-              CALL ZZGLOB ( CHELEM, OPTION, IORDR, TIME, RESUCO, LERES1)
-
-C--- NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+          ELSE IF ( OPTION.EQ.'ERZ1_ELEM_SIGM' .OR.
+     &              OPTION.EQ.'ERZ2_ELEM_SIGM' .OR.
+     &              OPTION.EQ.'ERRE_ELEM_SIGM' .OR.
+     &              OPTION.EQ.'ERRE_ELNO_ELEM' .OR.
+     &              OPTION.EQ.'QIRE_ELEM_SIGM' .OR.
+     &              OPTION.EQ.'QIRE_ELNO_ELEM' .OR.
+     &              OPTION.EQ.'QIZ1_ELEM_SIGM' .OR.
+     &              OPTION.EQ.'QIZ2_ELEM_SIGM' ) THEN
 C
-  192         CONTINUE
-              CALL JEDEMA()
-  190       CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTION "ERRE_ELNO_ELEM"
-C    ------------------------------------------------------------------
-          ELSE IF (OPTION.EQ.'ERRE_ELNO_ELEM') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-               CODSEN = 1
+            CALL MECA01 ( OPTION, NBORDR, JORDR,
+     &                    NCHAR, JCHA, KCHA, CTYP,
+     &                    RESUCO, RESUC1, LERES1,
+     &                    NOMA, MODELE, LIGRMO, MATE, CARA,
+     &                    TYPESE,
+     &                    IRET )
+C
+            IF ( IRET.EQ.1 ) THEN
+              GOTO 900
+            ELSEIF ( IRET.EQ.2 ) THEN
+              GOTO 530
+            ELSEIF ( IRET.EQ.3 ) THEN
+              GOTO 440
             ENDIF
-            IF(CODSEN.NE.0) GO TO 900
-C ---- VERIF SENSIBILITE FIN
-            DO 230,IAUX = 1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR = ZI(JORDR+IAUX-1)
-              CALL RSEXC2(1,1,RESUCO,'ERRE_ELEM_SIGM',IORDR,CHERRG,
-     &                    OPTION,IRET1)
-              IF (IRET1.GT.0) GO TO 232
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHERRN)
-              CALL RESLGN(LIGRMO,OPTION,CHERRG,CHERRN)
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  232         CONTINUE
-              CALL JEDEMA()
-  230       CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTION "QIRE_ELEM_SIGM"
-C    ------------------------------------------------------------------
-          ELSE IF (OPTION.EQ.'QIRE_ELEM_SIGM') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-               CODSEN = 1
-            ENDIF
-            IF(CODSEN.NE.0) GO TO 900
-C ---- VERIF SENSIBILITE FIN
-
-C--- RECUPERE LES NOMS DES SD RESULTAT
-            CALL GETVID(' ','RESULTAT' ,1,1,1,RESUP,NP)
-            CALL GETVID(' ','RESU_DUAL',1,1,1,RESUD,ND)
-
-C--- RECHERCHE DES VOISINS
-            CALL RESLO2(MODELE,LIGRMO,ZK8(JCHA),CHVOIS,IATYMA,IAGD,
-     &                  IACMP,ICONX1,ICONX2)
-C--- RECUPERE LES NOMS SYMBOLIQUES DES TABLES
-            TABP=' '
-            TABD=' '
-            CALL LTNOTB(RESUP,'ESTI_GLOB',TABP)
-            CALL LTNOTB(RESUD,'ESTI_GLOB',TABD)
-
-C--- BOUCLE SUR LES NUMEROS D'ORDRE
-            DO 600,IAUX = 1,NBORDR
-              CALL JEMARQ()
-              IORDR = ZI(JORDR+IAUX-1)
-C--- CALCULE LE COEFFICIENT S
-C----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE
-            CALL TBLIVA (TABP,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
-     &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERP,VALC,VALK,IRET)
-            CALL TBLIVA (TABD,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
-     &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERD,VALC,VALK,IRET)
-            S=SQRT(ERD/ERP)
-C----- CREE UNE CARTE CONSTANTE
-            CHS='&&OP0069.CH_NEUT_R'
-            CALL MECACT('V',CHS,'MODELE',LIGRMO,'NEUT_R',1,'X1',IBID,S,
-     &            CBID,KBID)
-
-C--- SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
-              CALL MEDOM2(MODELE,MATE,CARA,KCHAP,NCHARP,CTYP,
-     &                    RESUP,IORDR,NBORDR,NPASS,LIGREL)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHAD,NCHARD,CTYP,
-     &                    RESUD,IORDR,NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHAP,'L',JCHAP)
-              CALL JEVEUO(KCHAD,'L',JCHAD)
-
-C--- VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUPRIM
-C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
-              CALL RSEXC2(1,3,RESUP,'SIGM_ELNO_DEPL',IORDR,CHSIGP,
-     &                    OPTION,IRET)
-              CALL RSEXC2(2,3,RESUP,'SIEF_ELNO_ELGA',IORDR,CHSIGP,
-     &                    OPTION,IRET)
-              CALL RSEXC2(3,3,RESUP,'SIRE_ELNO_DEPL',IORDR,CHSIGP,
-     &                    OPTION,IRET)
-
-C--- SI AUCUN CHAMP N'EXISTE, ON SORT
-              IF (IRET.GT.0) GO TO 602
-
-C--- VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUDUAL
-C--- S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
-              CALL RSEXC2(1,3,RESUD,'SIGM_ELNO_DEPL',IORDR,CHSIGD,
-     &                    OPTION,IRET)
-              CALL RSEXC2(2,3,RESUD,'SIEF_ELNO_ELGA',IORDR,CHSIGD,
-     &                    OPTION,IRET)
-              CALL RSEXC2(3,3,RESUD,'SIRE_ELNO_DEPL',IORDR,CHSIGD,
-     &                    OPTION,IRET)
-
-C--- SI AUCUN CHAMP N'EXISTE, ON SORT
-              IF (IRET.GT.0) GO TO 602
-
-C--- RECUPERE LE NOM DE L'OPTION CALCULEE POUR CHACUN DES CHAMPS
-              CALL DISMOI('F','NOM_OPTION',CHSIGP,'CHAM_ELEM',IBID,
-     &                                            OPTIOP,IERD)
-              CALL DISMOI('F','NOM_OPTION',CHSIGD,'CHAM_ELEM',IBID,
-     &                                            OPTIOD,IERD)
-
-C--- VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
-              CALL DISMOI('F','NOM_LIGREL',CHSIGP,'CHAM_ELEM',IBID,
-     &                                            LIGRCP,IERD)
-              CALL DISMOI('F','NOM_LIGREL',CHSIGD,'CHAM_ELEM',IBID,
-     &                                            LIGRCD,IERD)
-              IF ((LIGRCP.NE.LIGRMO).OR.
-     &            (LIGRCD.NE.LIGRMO)) THEN
-                 CALL CODENT(IORDR,'G',KIORD)
-                 VALKM(1)=OPTION
-                 VALKM(2)=KIORD
-                 CALL U2MESK('A','CALCULEL5_62',2,VALKM)
-                 GOTO 602
-              ENDIF
-
-C--- RECUPERE L'ADRESSE JEVEUX DE L'INSTANT DE CALCUL
-C--- POUR LE NUMERO D'ORDRE IORDR
-              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-              TIME = ZR(IAINST)
-
-C--- CREE UNE CARTE D'INSTANTS
-              CALL MECHTI(NOMA,TIME,CHTIME)
-
-C--- RECUPERE LE NOM SYMBOLIQUE DU CHAMP DE L'OPTION CALCULEE
-C--- POUR LE NUMERO D'ORDRE IORDR
-             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-
-C--- CALCULE L'ESTIMATEUR D'ERREUR EN RESIDU LOCAL
-              CALL QIRES1(MODELE,LIGRMO,CHTIME,CHSIGP,CHSIGD,
-     &                    ZK8(JCHAP),ZK8(JCHAD),NCHARP,NCHARD,CHS,
-     &             MATE,CHVOIS,IATYMA,IAGD,IACMP,ICONX1,ICONX2,CHELEM)
-C--- VERIFIE L'EXISTENCE DU CHAMP CHELEM
-              CALL EXISD('CHAMP_GD',CHELEM,IRET)
-
-C--- SI LE CHAMP N'EXISTE PAS, ON SORT
-              IF (IRET.EQ.0) THEN
-                 CALL JEDEMA
-                 GOTO 440
-              ENDIF
-
-C--- CALCULE L'ESTIMATEUR GLOBAL A PARTIR DES ESTIMATEURS LOCAUX
-              CALL ZZGLOB(CHELEM,OPTION,IORDR,TIME,RESUCO,LERES1)
-
-C--- NOTE LE NOM D'UN CHAMP19 DANS UNE SD_RESULTAT
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  602         CONTINUE
-              CALL JEDEMA()
-  600       CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTION "QIRE_ELNO_ELEM"
-C    ------------------------------------------------------------------
-          ELSE IF (OPTION.EQ.'QIRE_ELNO_ELEM') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-               CODSEN = 1
-            ENDIF
-            IF(CODSEN.NE.0) GO TO 900
-C ---- VERIF SENSIBILITE FIN
-            DO 610,IAUX = 1,NBORDR
-              CALL JEMARQ()
-              IORDR = ZI(JORDR+IAUX-1)
-              CALL RSEXC2(1,1,RESUCO,'QIRE_ELEM_SIGM',IORDR,CHERRG,
-     &                    OPTION,IRET1)
-              IF (IRET1.GT.0) GO TO 612
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHERRN)
-              CALL RESLGN(LIGRMO,OPTION,CHERRG,CHERRN)
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  612         CONTINUE
-              CALL JEDEMA()
-  610       CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTIONS "QIZ1_ELEM_SIGM" ET "QIZ2_ELEM_SIGM"
-C    ------------------------------------------------------------------
-          ELSE IF (OPTION.EQ.'QIZ1_ELEM_SIGM' .OR.
-     &             OPTION.EQ.'QIZ2_ELEM_SIGM') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-               CODSEN = 1
-            ENDIF
-            IF(CODSEN.NE.0) GO TO 900
-C ---- VERIF SENSIBILITE FIN
-
-C--- RECUPERE LES NOMS DES SD RESULTAT
-            CALL GETVID(' ','RESULTAT' ,1,1,1,RESUP,NP)
-            CALL GETVID(' ','RESU_DUAL',1,1,1,RESUD,ND)
-
-            DO 620,IAUX = 1,NBORDR
-              CALL JEMARQ()
-              IORDR = ZI(JORDR+IAUX-1)
-
-C--- SAISIE ET VERIFIE LA COHERENCE DES DONNEES MECANIQUES
-              CALL MEDOM2(MODELE,MATE,CARA,KCHAP,NCHARP,CTYP,
-     &                    RESUP,IORDR,NBORDR,NPASS,LIGREL)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHAP,NCHARP,CTYP,
-     &                    RESUD,IORDR,NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHAP,'L',JCHAP)
-              CALL JEVEUO(KCHAD,'L',JCHAD)
-
-C--- RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES LISSE
-C--- DANS LE RESUPRIM
-              CALL RSEXC2(1,1,RESUP,'SIGM_NO'//OPTION(8:9)//'_ELGA  ',
-     &                    IORDR,CHSGPN,OPTION,IRET)
-
-C--- RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES LISSE
-C--- DANS LE RESUDUAL
-              CALL RSEXC2(1,1,RESUD,'SIGM_NO'//OPTION(8:9)//'_ELGA  ',
-     &                    IORDR,CHSGDN,OPTION,IRET)
-
-C--- RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES CALCULE
-C--- DANS LE RESUPRIM
-              CALL RSEXC2(1,2,RESUP,'SIEF_ELGA',IORDR,CHSIGP,OPTION,
-     &                    IRET)
-              CALL RSEXC2(2,2,RESUP,'SIEF_ELGA_DEPL',IORDR,CHSIGP,
-     &                    OPTION,IRET)
-              IF (IRET.GT.0) GO TO 622
-
-C--- RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES CALCULE
-C--- DANS LE RESUDUAL
-              CALL RSEXC2(1,2,RESUD,'SIEF_ELGA',IORDR,CHSIGD,
-     &                    OPTION,IRET)
-              CALL RSEXC2(2,2,RESUD,'SIEF_ELGA_DEPL',IORDR,CHSIGD,
-     &                    OPTION,IRET)
-              IF (IRET.GT.0) GO TO 622
-
-              CALL RSEXC1(RESUC1,OPTION,IORDR,CHELEM)
-
-              CALL QINTZZ(MODELE,LIGRMO,MATE,CHSIGP,CHSIGD,
-     &                  CHSGPN,CHSGDN,CHELEM)
-              CALL ZZGLOB(CHELEM,OPTION,IORDR,TIME,RESUCO,LERES1)
-              CALL ERNOZZ(MODELE,CHSIGP,MATE,CHSGPN,OPTION,LIGRMO,
-     &                    IORDR,TIME,RESUCO,LERES1,CHELEM)
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  622         CONTINUE
-              CALL JEDEMA()
-  620       CONTINUE
+C
 C    ------------------------------------------------------------------
 C    -- OPTION "SING_ELEM"
 C    ------------------------------------------------------------------
@@ -1645,7 +1288,7 @@ C       ERZ2_ELEM_SIGM PAR RAPPORT A ERZ1_ELEM_SIGM
 
 C 3.2 - TRANSFORMATION DE CES DEUX CARTES EN CHAM_ELEM_S
 
-              CHERRS='&&MECALM.ERRE'
+              CHERRS='&&'//NOMPRO//'.ERRE'
 
               IF (IRET1.EQ.0) THEN
                 CALL CELCES(CHERR1(1:19),'V',CHERRS)
@@ -1658,7 +1301,7 @@ C 3.2 - TRANSFORMATION DE CES DEUX CARTES EN CHAM_ELEM_S
                 CALL CELCES(CHERR2(1:19),'V',CHERRS)
               ENDIF
 
-              CHENES='&&MECALM.ENER'
+              CHENES='&&'//NOMPRO//'.ENER'
               CALL CELCES(CHENEG(1:19),'V',CHENES)
 
 C 3.3 - ROUTINE PRINCIPALE QUI CALCULE DANS CHAQUE EF :
@@ -1707,12 +1350,12 @@ C 1 - RECUPERATION DE LA CARTE DE SINGULARITE
 
 C 2 - TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
 
-              CHSINS='&&MECALM.SING'
+              CHSINS='&&'//NOMPRO//'.SING'
               CALL CELCES(CHSING(1:19),'V',CHSINS)
 
 C 3 - TRANSFOMATION DU CHAMP CHSINS ELEM EN ELNO
 
-              CHSINN='&&MECALM.SINN'
+              CHSINN='&&'//NOMPRO//'.SINN'
               CALL CESCES(CHSINS,'ELNO',' ',' ','V',CHSINN)
 
 C 4 - STOCKAGE
@@ -2043,9 +1686,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
               ELSE
-                CHTIME = ' '
                 TIME = ZERO
               END IF
               CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
@@ -2223,9 +1864,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
               ELSE
-                CHTIME = ' '
                 TIME = ZERO
               END IF
               CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
@@ -2273,9 +1912,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
               ELSE
-                CHTIME = ' '
                 TIME = ZERO
               END IF
               CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
@@ -2317,9 +1954,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
               ELSE
-                CHTIME = ' '
                 TIME = ZERO
               END IF
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
@@ -2358,9 +1993,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
               ELSE
-                CHTIME = ' '
                 TIME = ZERO
               END IF
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
@@ -2400,9 +2033,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
               ELSE
-                CHTIME = ' '
                 TIME = ZERO
               END IF
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,

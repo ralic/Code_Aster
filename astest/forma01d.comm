@@ -1,48 +1,58 @@
-# MODIF  DATE 05/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#
-#
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE PROIX J-M.PROIX
+# -*- coding: iso-8859-1 -*-
 #
 #        TUYAUTERIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS POUTRES
 #     -------------------------------------
-#
-#
 
+DEBUT(CODE=_F(NOM='FORMA01D',
+              NIV_PUB_WEB='INTERNET',),);
+              
+              
+# 1 - MISE EN DONNEES : LECTURE DU MAILLAGE
 
-DEBUT(CODE=_F(NOM='FORMA01D',NIV_PUB_WEB='INTERNET'),);
-# 1 - MISE EN DONNEES :
-# INTERFACE AVEC GIBI ET LECTURE DU MAILLAGE
-#
-#
-
-
-MAIL=LIRE_MAILLAGE(FORMAT='MED');
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 #
 # DEFINITION DES ELEMENTS FINIS UTILISES
-#
-#
-
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=(_F(GROUP_MA=('TUY1','TUY2'),
+                   AFFE=(_F(GROUP_MA=('TUY1','TUY2',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='POU_D_T',),
                          _F(GROUP_MA='COUDE',
@@ -50,11 +60,8 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='POU_C_T',),),);
 #
 # DEFINITION DU MATERIAU UTILISE
-#
-#
 
-
-ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
                             NU=0.3,
                             RHO=7800.0,),);
 
@@ -63,24 +70,18 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                             MATER=ACIER,),);
 #
 # CARACTERISTIQUES DES POUTRES
-#
-#
-
 
 CARA_POU=AFFE_CARA_ELEM(MODELE=MODELE,
                         POUTRE=_F(GROUP_MA='TUYAU',
                                   SECTION='CERCLE',
-                                  CARA=('R','EP'),
-                                  VALE=(0.2, 0.02),),
+                                  CARA=('R','EP',),
+                                  VALE=(0.2,0.02,),),
                         DEFI_ARC=_F(GROUP_MA='COUDE',
-                                    CENTRE=(0.6, 3.0, 0.0),
+                                    CENTRE=(0.6,3.0,0.0,),
                                     RAYON=0.6,),);
 #
 # DEFINITION DES CONDITIONS AUX LIMITES 
 #   AU POINT A : ENCASTREMENT
-#
-#
-
 
 BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                         DDL_IMPO=_F(GROUP_NO='PA',
@@ -90,14 +91,9 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
                                     DRX=0.0,
                                     DRY=0.0,
                                     DRZ=0.0,),);
-
-
 # 2 - CALCUL DES CINQ PREMIERS MODES PROPRES
 #
 # CALCUL DES MATRICES ASSEMBLEES K ET M
-#
-#
-
 
 MACRO_MATR_ASSE(MODELE=MODELE,
                 CHAM_MATER=CHMAT,
@@ -109,9 +105,6 @@ MACRO_MATR_ASSE(MODELE=MODELE,
                            _F(MATRICE=CO('MASSE'),
                               OPTION='MASS_MECA',),),);
 #
-#
-#
-
 
 MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
@@ -119,19 +112,14 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                                     NMAX_FREQ=5,),);
 #
 # ECRITURE DES MODES AU FORMAT MED
-#
-#
 
-
-IMPR_RESU(MODELE=MODELE,FORMAT='MED',
+IMPR_RESU(MODELE=MODELE,
+          FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=MODES,
                   NOM_CHAM='DEPL',),);
-
 # 3 - ANALYSE TRANSITOIRE :
 # FORCE APPLIQUEE AU POINT B
-#
-
 
 CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
                       FORCE_NODALE=_F(GROUP_NO='PB',
@@ -139,9 +127,6 @@ CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
 #
 # CALCUL DU VECTEUR ASSEMBLE FY
 #
-#
-#
-
 
 FY_ELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
                        CHARGE=CHARGT,
@@ -155,9 +140,6 @@ FY=ASSE_VECTEUR(VECT_ELEM=FY_ELEM,
 #
 # PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
 #
-#
-#
-
 
 MACRO_PROJ_BASE(BASE=MODES,
                 MATR_ASSE_GENE=(_F(MATRICE=CO('MASS_GEN'),
@@ -167,37 +149,25 @@ MACRO_PROJ_BASE(BASE=MODES,
                 VECT_ASSE_GENE=_F(VECTEUR=CO('VGEN_FY'),
                                   VECT_ASSE=FY,),);
 #
-#
-#
-
 OMEGA = 121.0;
 
 #
 # DEFINITION DE LA FONCTION D'EVOLUTION DE FY
 #
-#
-#
-
 
 EVOL_FY = FORMULE(VALE='cos(OMEGA*INST)',
-                  NOM_PARA='INST');
+                  NOM_PARA='INST',);
 #
-#
-#
-
 
 L_INTERP=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=2.0,
                                       PAS=1.E-4,),);
 
 EVINT_FY=CALC_FONC_INTERP(FONCTION=EVOL_FY,
-                          NOM_RESU='EVOL_FY',
                           LIST_PARA=L_INTERP,
-                          NOM_PARA = 'INST',);
+                          NOM_RESU='EVOL_FY',
+                          NOM_PARA='INST',);
 #
-#
-#
-
 
 LISTER=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=2.0,
@@ -205,13 +175,10 @@ LISTER=DEFI_LIST_REEL(DEBUT=0.0,
 #
 #
 #-----------------------------------------------------------------------
-#
-#
-
 
 TRANGEN1=DYNA_TRAN_MODAL(MASS_GENE=MASS_GEN,
                          RIGI_GENE=RIGI_GEN,
-                         AMOR_REDUIT=(0.02,0.02,0.03,0.04,0.05),
+                         AMOR_REDUIT=(0.02,0.02,0.03,0.04,0.05,),
                          INCREMENT=_F(INST_INIT=0.0,
                                       INST_FIN=2.0,
                                       PAS=1.E-4,),
@@ -221,53 +188,50 @@ TRANGEN1=DYNA_TRAN_MODAL(MASS_GENE=MASS_GEN,
 #
 # RECUPERATION DES DEPLACEMENTS ET VITESSES CALCULES EN B, C, D
 # --------------------------------------------------------------
-#
-#
-
 
 DY_B=RECU_FONCTION(RESU_GENE=TRANGEN1,
-                   NOM_CHAM='DEPL',
                    LIST_INST=LISTER,
                    INTERP_NUME='LIN',
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='PB',
                    INTERPOL='LIN',);
 
 DY_C=RECU_FONCTION(RESU_GENE=TRANGEN1,
-                   NOM_CHAM='DEPL',
                    LIST_INST=LISTER,
                    INTERP_NUME='LIN',
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='PC',
                    INTERPOL='LIN',);
 
 DY_D=RECU_FONCTION(RESU_GENE=TRANGEN1,
-                   NOM_CHAM='DEPL',
                    LIST_INST=LISTER,
                    INTERP_NUME='LIN',
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='PD',
                    INTERPOL='LIN',);
 # IMPRESSION DES DEPLACEMENTS TRANSITOIRES
-#
-#
 
-
-IMPR_FONCTION(UNITE=25,
-              FORMAT='AGRAF',
-              TITRE='DEPLACEMENT DU TUYAU EN B C D ',
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE='PNG',
               COURBE=(_F(FONCTION=DY_B,
-                         LEGENDE='DY_B',),
+                         LEGENDE='DY_B',
+                         COULEUR=1,
+                         FREQ_MARQUEUR=0,),
                       _F(FONCTION=DY_C,
-                         LEGENDE='DY_C',),
+                         LEGENDE='DY_C',
+                         COULEUR=2,
+                         FREQ_MARQUEUR=0,),
                       _F(FONCTION=DY_D,
-                         LEGENDE='DY_D',),),);
+                         LEGENDE='DY_D',
+                         COULEUR=3,
+                         FREQ_MARQUEUR=0,),),
+              TITRE='DEPLACEMENT DU TUYAU EN B C D ',);
 #
 #
 # VALEURS MIN ET MAX DES CONTRAINTES DUES AUX EFFORTS GENERALISES
-#
-#
-
 
 DYNATRAN=REST_BASE_PHYS(RESU_GENE=TRANGEN1,
                         LIST_INST=LISTER,
@@ -275,25 +239,20 @@ DYNATRAN=REST_BASE_PHYS(RESU_GENE=TRANGEN1,
                         TOUT_CHAM='OUI',);
 #
 # CALCUL DES CONTRAINTES DUES AUX EFFORTS GENERALISES
-#
 
 DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
                    MODELE=MODELE,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARA_POU,
-                   OPTION='SIPO_ELNO_DEPL',
-                   RESULTAT=DYNATRAN,);
-
+                   RESULTAT=DYNATRAN,
+                   OPTION='SIPO_ELNO_DEPL',);
 #
 # CALCUL DES CONTRAINTES DUES AUX EFFORTS GENERALISES AUX NOEUDS
-#
 
 DYNATRAN=CALC_NO(reuse =DYNATRAN,
-                 OPTION='SIPO_NOEU_DEPL',
-                 RESULTAT=DYNATRAN,);
-
+                 RESULTAT=DYNATRAN,
+                 OPTION='SIPO_NOEU_DEPL',);
 # INSTANT DES MAX :
-#
 
 EXTR_T=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
@@ -303,9 +262,7 @@ EXTR_T=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   TYPE_RESU='INST',
                   LIST_INST=LISTER,
                   PRECISION=1.0E-6,);
-
 # VALEUR DES MAX :
-#
 
 EXTR_V=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
@@ -316,69 +273,64 @@ EXTR_V=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   LIST_INST=LISTER,
                   PRECISION=1.0E-6,);
 
-IMPR_RESU(MODELE=MODELE,FORMAT='RESULTAT',
+IMPR_RESU(MODELE=MODELE,
+          FORMAT='RESULTAT',
           RESU=(_F(CHAM_GD=EXTR_T,),
                 _F(CHAM_GD=EXTR_V,),),);
-
 # INSTANT DES MIN :
-#
 
 EXTR_TMI=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
-                  OPERATION='EXTR',
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='SIPO_ELNO_DEPL',
-                  TYPE_MAXI='MINI',
-                  TYPE_RESU='INST',
-                  LIST_INST=LISTER,
-                  PRECISION=1.0E-6,);
-
+                    OPERATION='EXTR',
+                    RESULTAT=DYNATRAN,
+                    NOM_CHAM='SIPO_ELNO_DEPL',
+                    TYPE_MAXI='MINI',
+                    TYPE_RESU='INST',
+                    LIST_INST=LISTER,
+                    PRECISION=1.0E-6,);
 # VALEUR DES MAX :
-#
 
 EXTR_VMI=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
-                  OPERATION='EXTR',
-                  RESULTAT=DYNATRAN,
-                  NOM_CHAM='SIPO_ELNO_DEPL',
-                  TYPE_MAXI='MINI',
-                  TYPE_RESU='VALE',
-                  LIST_INST=LISTER,
-                  PRECISION=1.0E-6,);
+                    OPERATION='EXTR',
+                    RESULTAT=DYNATRAN,
+                    NOM_CHAM='SIPO_ELNO_DEPL',
+                    TYPE_MAXI='MINI',
+                    TYPE_RESU='VALE',
+                    LIST_INST=LISTER,
+                    PRECISION=1.0E-6,);
 
-IMPR_RESU(MODELE=MODELE,FORMAT='RESULTAT',
+IMPR_RESU(MODELE=MODELE,
+          FORMAT='RESULTAT',
           RESU=(_F(CHAM_GD=EXTR_TMI,),
                 _F(CHAM_GD=EXTR_VMI,),),);
-
 # TEST_RESU UNIQUEMENT POUR FAIRE TEST
 
 TEST_RESU(RESU=(_F(RESULTAT=DYNATRAN,
-                   INST=2.,
+                   INST=2.0,
                    NOM_CHAM='SIPO_NOEU_DEPL',
                    NOM_CMP='SN',
                    GROUP_NO='PA',
-                   VALE=-4.7673318453025E+06,
+                   VALE=-4815700.0,
+                   PRECISION=(0.005,1e-06,),
                    REFERENCE='NON_REGRESSION',
-                   PRECISION=(0.21E-2,1.E-6,),
                    VERSION='8.04',),
                 _F(RESULTAT=DYNATRAN,
-                   INST=2.,
+                   INST=2.0,
                    NOM_CHAM='SIPO_NOEU_DEPL',
                    NOM_CMP='SVY',
                    GROUP_NO='PA',
-                   VALE=2.2156744703267E+07,
+                   VALE=22146000.0,
+                   PRECISION=(0.05,1e-06,),
                    REFERENCE='NON_REGRESSION',
-                   PRECISION=(3.1E-2,1.E-6,),
                    VERSION='8.04',),
                 _F(RESULTAT=DYNATRAN,
-                   INST=2.,
+                   INST=2.0,
                    NOM_CHAM='SIPO_NOEU_DEPL',
                    NOM_CMP='SMFZ',
                    GROUP_NO='PA',
-                   VALE=-2.5165671972143E+08,
+                   VALE=-262088000.0,
+                   PRECISION=(0.001,1e-06,),
                    REFERENCE='NON_REGRESSION',
-                   PRECISION=(0.05E-2,1.E-6,),
-                   VERSION='8.04',),
-                  ));
+                   VERSION='8.04',),),);
 
 FIN();
-#
 #

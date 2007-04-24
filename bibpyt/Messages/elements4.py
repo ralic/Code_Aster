@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements4 Messages  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,25 +264,26 @@ cata_msg={
   La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
 """),
 
-
-
-
-
-
+67: _("""
+ ! le module de young est nul !
+"""),
 
 
 68: _("""
  Nombre d'itérations internes insuffisant.
 """),
 
+69: _("""
+ ! pb recuperation donnee materiau dans thm_liqu %(k1)s !
+"""),
 
+70: _("""
+ ! pb recuperation donnee materiau dans thm_init %(k1)s !
+"""),
 
-
-
-
-
-
-
+71: _("""
+ ! pb recuperation donnees materiau dans elas %(k1)s !
+"""),
 
 
 72: _("""
@@ -309,6 +310,10 @@ cata_msg={
 77: _("""
  numero de couche  %(i1)d 
   trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
+"""),
+
+78: _("""
+ ! pb recuperation donnee materiau dans thm_diffu %(k1)s !
 """),
 
 

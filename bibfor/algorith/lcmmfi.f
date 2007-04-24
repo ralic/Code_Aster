@@ -5,7 +5,7 @@
         REAL*8 COEFT(NMAT),DY(*),VIND(*),HSR(5,24,24),SQ,EXPBP(*)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,7 +44,7 @@ C ======================================================================
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,B,RP,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D
       REAL*8 TPERD,TABS,PR,DRDP,B1P
-      INTEGER IEI,TNS,NS,IR
+      INTEGER IEI,TNS,NS,IR,NBCOEF,NUMHSR
 C     ----------------------------------------------------------------
 
       IEI=NBCOMM(IFA,3)
@@ -57,6 +57,7 @@ C--------------------------------------------------------------------
          R0=COEFT(IEI-1+1)
          Q=COEFT(IEI-1+2)
          B=COEFT(IEI-1+3)
+         NUMHSR=COEFT(IEI-1+4)
          IF (IEXP.EQ.1) THEN
            DO 10 IR = 1, NBSYS                              
             PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
@@ -69,8 +70,7 @@ C      de LA famille courante;
          SQ=0.D0                                            
            DO 11 IR = 1, NBSYS                              
             PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
-C            SQ = SQ + HSR(IFA,IS,IR)*(1.D0-EXP(-B*PR))      
-            SQ = SQ + HSR(IFA,IS,IR)*EXPBP(IR)      
+            SQ = SQ + HSR(NUMHSR,IS,IR)*EXPBP(IR)      
   11      CONTINUE                                          
             RP=R0+Q*SQ                                      
 

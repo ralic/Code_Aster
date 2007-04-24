@@ -1,8 +1,8 @@
       SUBROUTINE IRRMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,ITMAX,RELA,VIND,
-     &                 MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
+     &                    MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,13 +19,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-
+C RESPONSABLE FLEJOU J-L.FLEJOU
       IMPLICIT NONE
       CHARACTER*8   MOD
       CHARACTER*3   MATCST
       CHARACTER*(*) FAMI
       INTEGER IMAT,NMAT,NDT,NDI,NR,NVI,KPG,KSP,IRET,ITMAX
-      REAL*8  MATERD(NMAT,2),MATERF(NMAT,2),NC,FC,RELA
+      REAL*8  MATERD(NMAT,2),MATERF(NMAT,2),RELA
       REAL*8  VIND(*)
 
 C     ----------------------------------------------------------------
@@ -52,18 +52,31 @@ C         NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C         NR     :  NB DE COMPOSANTES SYSTEME NL
 C         NVI    :  NB DE VARIABLES INTERNES
 C     ----------------------------------------------------------------
-      INTEGER     I,ITERAT
-      CHARACTER*2 CERR(13)
-      CHARACTER*8 NOMC(13),VALM(2)
-      REAL*8      MAT(10),P0,PAS,IRRAD,IRRAF,PE,K,A,B,IRRAT,TEMPT
+      INTEGER     ITERAT,NBCARA
+C     NOMBRE DE PARAMETRES DE LA LOI : NBCARA
+      PARAMETER   (NBCARA = 12 )
+      CHARACTER*2 CERR(NBCARA)
+      CHARACTER*8 NOMCIR(NBCARA)
+      REAL*8      MAT(NBCARA)
+      CHARACTER*8 NOMCEL(3)
 
-      REAL*8      R02,EU,RM,AI0,ETAIS,RR,ALPHA,PHI0,KAPPA,ZETA
-      REAL*8      N0,N1,F0,F1,PASN,EXPPH,SPE,VALR(2),TEMPF,TEMPD
+      REAL*8      P0,IRRAD,IRRAF,PE,K,A,TEMPD,TEMPF
+      REAL*8      R02,EU,RM,AI0,ETAIS,RG0,ALPHA,PHI0,KAPPA,ZETAG,ZETAF
+      REAL*8      N0,N1,F0,F1,PASN,EXPH,EXP0,SPE
+
+      REAL*8       VALRM(11)
+      INTEGER      VALIM(2)
+      CHARACTER*10 VALKM(2)
 
       DATA PE    /2.0D-3/
 
+      DATA NOMCEL /'E       ','NU      ','ALPHA   '/
 
-C     NOM               a t-           a t-+dt/2      a t+ (t-+dt)
+      DATA NOMCIR /'R02     ','EPSI_U  ','RM      ','AI0     ',
+     &             'ETAI_S  ','RG0     ','ALPHA   ','PHI0    ',
+     &             'KAPPA   ','ZETA_F  ','ZETA_G  ','TOLER_ET'/
+
+C     NOM               a t-                          a t+ (t-+dt)
 C     -------------------------------------------------------------
 C     E                 MATERD(1,1)                   MATERF(1,1)
 C     NU                MATERD(2,1)                   MATERF(2,1)
@@ -77,36 +90,23 @@ C     N                 MATERD(8,2)                   MATERF(8,2)
 C     P0                MATERD(9,2)                   MATERF(9,2)
 C     KAPPA             MATERD(10,2)                  MATERF(10,2)
 C     R02               MATERD(11,2)                  MATERF(11,2)
-C     ZETA              MATERD(12,2)                  MATERF(12,2)
+C     ZETAF             MATERD(12,2)                  MATERF(12,2)
 C     PENTE EN PE       MATERD(13,2)                  MATERF(13,2)
 C     PK                MATERD(14,2)                  MATERF(14,2)
 C     PE                MATERD(15,2)                  MATERF(15,2)
 C     CONTRAINTE EN PE  MATERD(16,2)                  MATERF(16,2)
+C     ZETAG             MATERD(17,2)                  MATERF(17,2)
 
-C     AG                               MATERF(17,2)
-C     ZETA                             MATERF(18,2)
+C     IRRADIATION       MATERD(18,2)                  MATERF(18,2)
+C     AGINT             MATERD(19,2)                  MATERF(19,2)
+C     AGINT             MATERD(19,2)                  MATERF(19,2)
 
+C     TOLER SUR SEUIL   MATERD(20,2)                  MATERF(20,2)
+C     ERREUR SUR SEUIL  MATERD(21,2)                  MATERF(21,2)
 
-C -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
+C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
       CALL IRRNVI ( MOD , NDT , NDI, NR )
       NVI = 5
-
-C =================================================================
-C --- DEFINITION DES CHAMPS ---------------------------------------
-C =================================================================
-      NOMC(1)  = 'E       '
-      NOMC(2)  = 'NU      '
-      NOMC(3)  = 'ALPHA   '
-      NOMC(4)  = 'R02     '
-      NOMC(5)  = 'EPSI_U  '
-      NOMC(6)  = 'RM      '
-      NOMC(7)  = 'AI0     '
-      NOMC(8)  = 'ETAI_S  '
-      NOMC(9)  = 'R       '
-      NOMC(10) = 'ALPHA   '
-      NOMC(11) = 'PHI0    '
-      NOMC(12) = 'KAPPA   '
-      NOMC(13) = 'ZETA    '
 
 C === ================================================
 C
@@ -114,29 +114,34 @@ C     RECUPERATION MATERIAU A TEMPD ET IRRAD
 C
 C === ================================================
 C     CARACTERISTIQUES ELASTIQUES A TEMP- ET IRRA-
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',0.D0,
-     &            3,NOMC,MATERD(1,1),CERR(1), 'FM' )
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',0.0D0,
+     &            3,NOMCEL,MATERD(1,1),CERR, 'FM' )
 
 C     TEMPERATURE A T-
       CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
 C     IRRADIATION A T-
       CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
 C     CARACTERISTIQUES MATERIAU A TEMP- ET IRRA-
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','IRRAD3M',0,' ',0.D0,
-     &            10,NOMC(4),MAT,CERR(4), 'FM' )
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','IRRAD3M',0,' ',0.0D0,
+     &            NBCARA,NOMCIR,MAT,CERR, 'FM' )
 
 C     POUR PLUS DE CLARETE, JE RENOMME LES GRANDEURS
-      IF ( CERR(13) .EQ. 'OK' ) THEN
-         ZETA = MAT(10)
+      IF ( CERR(10) .EQ. 'OK' ) THEN
+         ZETAF = MAT(10)
       ELSE
-         ZETA = 1.0D0
+         ZETAF = 1.0D0
+      ENDIF
+      IF ( CERR(11) .EQ. 'OK' ) THEN
+         ZETAG = MAT(11)
+      ELSE
+         ZETAG = 1.0D0
       ENDIF
       R02   = MAT(1)
       EU    = MAT(2)
       RM    = MAT(3)
       AI0   = MAT(4)
       ETAIS = MAT(5)
-      RR    = MAT(6)
+      RG0   = MAT(6)
       ALPHA = MAT(7)
       PHI0  = MAT(8)
       KAPPA = MAT(9)
@@ -151,7 +156,8 @@ C          n->infini              n->0+
       F1 = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
       F0 = 1.0D0 - RM*EXP(EU)/R02
       IF ( ((N0.GT.0.0D0).AND.(F1.GE.0.0D0)) .OR.
-     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) ) THEN
+     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) .OR.
+     &      (N0.EQ.0.0D0) ) THEN
 C        VALEURS PAR DEFAUT
          N1 = EU
 C        VALEUR DE K , N
@@ -185,7 +191,21 @@ C        WHILE TRUE
             IF ( ABS(F1) .LE. RELA ) GOTO 12
             ITERAT=ITERAT+1
             IF (ITERAT.GT.ITMAX) THEN
-               CALL U2MESS('F','ALGORITH4_44')
+               VALKM(1) = 'PREMIERE'
+               VALIM(1) = ITMAX
+               VALRM(1) = F0
+               VALRM(2) = F1
+               VALRM(3) = N1
+               VALRM(4) = PASN
+               VALRM(5) = RM
+               VALRM(6) = EU
+               VALRM(7) = R02
+               VALRM(8) = RELA
+C              VALEURS INITIALES
+               VALRM(9)  = EU - PE
+               VALRM(10) = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
+               VALRM(11) = 1.0D0 - RM*EXP(EU)/R02
+               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,11,VALRM)
             ENDIF
             IF ( F1*F0 .GT. 0.0D0 ) THEN
                F0 = F1
@@ -224,49 +244,77 @@ C     VALEUR DE AI0
 C     VALEUR DE ETAI_S
       MATERD(5,2) = ETAIS
 C     VALEUR DE AG
-      EXPPH = EXP(ALPHA*(PHI0-IRRAD))
-      MATERD(6,2) = RR*(1.0D0-EXPPH/(1.0D0+EXPPH))/3.0D0
+      EXPH = EXP(ALPHA*(PHI0-IRRAD))
+      MATERD(6,2) = RG0/(1.0D0+EXPH)/3.0D0
 C     VALEUR DE KAPPA
       MATERD(10,2) = KAPPA
 C     VALEUR DE R02
       MATERD(11,2) = R02
-C     VALEUR DE ZETA
-      MATERD(12,2) = ZETA
+C     VALEUR DE ZETAF
+      MATERD(12,2) = ZETAF
 C     VALEUR DE PE
       MATERD(15,2) = PE
 C     VALEUR DE LA CONTRAINTE EN PE
       MATERD(16,2) = SPE
-
+C     VALEUR DE ZETAG
+      MATERD(17,2) = ZETAG
+C     IRRADIATION
+      MATERD(18,2) = IRRAD
+C     VALEUR DE AG DEJA INTEGRE
+      IF ( ALPHA .GT. 0.0D0 ) THEN
+         EXP0 = EXP(ALPHA*PHI0)
+         EXPH = EXP(ALPHA*IRRAD)
+         MATERD(19,2) = RG0*LOG((EXP0+EXPH)/(1.0D0+EXP0))/(3.0D0*ALPHA)
+      ELSE
+         MATERD(19,2) = 0.0D0
+      ENDIF
+C     TOLERENCE ET ERREUR SUR LE FRANCHISSEMENT DU SEUIL
+      MATERD(20,2) = MAT(12)
+      MATERD(21,2) = 0.0D0
 
 C === ================================================
 C
 C     RECUPERATION MATERIAU A TEMPF ET IRRAF
 C
 C === ================================================
-C     CARACTERISTIQUES ELASTIQUES A IRRA+
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',0.D0,
-     &            3,NOMC(1),MATERF(1,1),CERR(1), 'FM' )
+C     CARACTERISTIQUES ELASTIQUES A TEMP+ ET IRRA+
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',0.0D0,
+     &            3,NOMCEL,MATERF(1,1),CERR, 'FM' )
 
 C     TEMPERATURE A T+
       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
 C     IRRADIATION A T+
       CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
+C     L'IRRADIATION NE PEUT PAS DECROITRE
+      IF ( IRRAF .LT. IRRAD ) THEN
+         VALRM(1) = TEMPD
+         VALRM(2) = TEMPF
+         CALL U2MESR('I','IRRAD3M_3',2,VALRM)
+         VALRM(1) = IRRAD
+         VALRM(2) = IRRAF
+         CALL U2MESR('F','IRRAD3M_2',2,VALRM)
+      ENDIF
 C     CARACTERISTIQUES MATERIAU A TEMP+ ET IRRA+
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','IRRAD3M',0,' ',0.D0,
-     &            10,NOMC(4),MAT,CERR(4), 'FM' )
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','IRRAD3M',0,' ',0.0D0,
+     &            NBCARA,NOMCIR,MAT,CERR, 'FM' )
 
 C     POUR PLUS DE CLARETE
-      IF ( CERR(13) .EQ. 'OK' ) THEN
-         ZETA = MAT(10)
+      IF ( CERR(10) .EQ. 'OK' ) THEN
+         ZETAF = MAT(10)
       ELSE
-         ZETA = 1.0D0
+         ZETAF = 1.0D0
+      ENDIF
+      IF ( CERR(11) .EQ. 'OK' ) THEN
+         ZETAG = MAT(11)
+      ELSE
+         ZETAG = 1.0D0
       ENDIF
       R02   = MAT(1)
       EU    = MAT(2)
       RM    = MAT(3)
       AI0   = MAT(4)
       ETAIS = MAT(5)
-      RR    = MAT(6)
+      RG0   = MAT(6)
       ALPHA = MAT(7)
       PHI0  = MAT(8)
       KAPPA = MAT(9)
@@ -281,7 +329,8 @@ C          n->infini              n->0+
       F1 = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
       F0 = 1.0D0 - RM*EXP(EU)/R02
       IF ( ((N0.GT.0.0D0).AND.(F1.GT.0.0D0)) .OR.
-     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) ) THEN
+     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) .OR.
+     &      (N0.EQ.0.0D0) ) THEN
 C        VALEURS PAR DEFAUT
          N1 = EU
 C        VALEUR DE K , N
@@ -315,7 +364,21 @@ C        WHILE TRUE
             IF ( ABS(F1) .LE. RELA ) GOTO 22
             ITERAT=ITERAT+1
             IF (ITERAT.GT.ITMAX) THEN
-               CALL U2MESS('F','ALGORITH4_44')
+               VALKM(1) = 'DEUXIEME'
+               VALIM(1) = ITMAX
+               VALRM(1) = F0
+               VALRM(2) = F1
+               VALRM(3) = N1
+               VALRM(4) = PASN
+               VALRM(5) = RM
+               VALRM(6) = EU
+               VALRM(7) = R02
+               VALRM(8) = RELA
+C              VALEURS INITIALES
+               VALRM(9)  = EU - PE
+               VALRM(10) = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
+               VALRM(11) = 1.0D0 - RM*EXP(EU)/R02
+               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,11,VALRM)
             ENDIF
             IF ( F1*F0 .GT. 0.0D0 ) THEN
                F0 = F1
@@ -354,42 +417,35 @@ C     VALEUR DE AI0
 C     VALEUR DE ETAI_S
       MATERF(5,2) = ETAIS
 C     VALEUR DE AG
-      EXPPH = EXP(ALPHA*(PHI0-IRRAF))
-      MATERF(6,2) = RR*(1.0D0-EXPPH/(1.0D0+EXPPH))/3.0D0
+      EXPH = EXP(ALPHA*(PHI0-IRRAF))
+      MATERF(6,2) = RG0/(1.0D0+EXPH)/3.0D0
 C     VALEUR DE KAPPA
       MATERF(10,2) = KAPPA
 C     VALEUR DE R02
       MATERF(11,2) = R02
-C     VALEUR DE ZETA
-      MATERF(12,2) = ZETA
+C     VALEUR DE ZETAF
+      MATERF(12,2) = ZETAF
 C     VALEUR DE PE
       MATERF(15,2) = PE
 C     VALEUR DE LA CONTRAINTE EN PE
       MATERF(16,2) = SPE
-
-
-C     AG   DEPEND :
-C           DE L'IRRADIATION
-C           DE LA TEMPERATURE
-C     ZETA DEPEND
-C           DE LA TEMPERATURE
-      NOMC(1) = 'R       '
-      NOMC(2) = 'ZETA    '
-      NOMC(3) = 'ALPHA   '
-      NOMC(4) = 'PHI0    '
-      VALM(1) = 'TEMP'
-      VALM(2) = 'IRRA'
-      VALR(1) = (TEMPF + TEMPD)*0.5D0
-      VALR(2) = (IRRAF + IRRAD)*0.5D0
-      CALL RCVALA(IMAT,' ','IRRAD3M',2,VALM(1),VALR(1),
-     &            4,NOMC(1),MAT(1),CERR(1), 'FM' )
-
-      EXPPH = EXP(MAT(3)*(MAT(4)-VALR(2)))
-      MATERF(17,2) = MAT(1)*(1.0D0-EXPPH/(1.0D0+EXPPH))/3.0D0
-      MATERF(18,2) = MAT(2)
+C     VALEUR DE ZETAG
+      MATERF(17,2) = ZETAG
+C     IRRADIATION
+      MATERF(18,2) = IRRAF
+C     VALEUR DE AG DEJA INTEGRE
+      IF ( ALPHA .GT. 0.0D0 ) THEN
+         EXP0 = EXP(ALPHA*PHI0)
+         EXPH = EXP(ALPHA*IRRAF)
+         MATERF(19,2) = RG0*LOG((EXPH+EXP0)/(1.0D0+EXP0))/(3.0D0*ALPHA)
+      ELSE
+         MATERF(19,2) = 0.0D0
+      ENDIF
+C     TOLERENCE ET ERREUR SUR LE FRANCHISSEMENT DU SEUIL
+      MATERF(20,2) = MAT(12)
+      MATERF(21,2) = 0.0D0
 
 C -   MATERIAU CONSTANT ?
 C -   ON NE PEUT PAS SAVOIR A L AVANCE DONC NON
       MATCST = 'NON'
-
       END

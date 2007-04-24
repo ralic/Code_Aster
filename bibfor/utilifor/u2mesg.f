@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,41 +24,23 @@ C ======================================================================
 C     ==================================================================
       INTEGER          NEXCEP
       COMMON /UTEXC /  NEXCEP
-C     COMPTEUR D'ERREURS POUR POUVOIR ARRETER EN F S'IL N'Y A QUE DES E
-      INTEGER          NBERRF,NBERRE
-      COMMON /UTNBER/  NBERRF,NBERRE
-C     COMPTEUR D'ALARMES POUR LIMITER LE NOMBRE D'IMPRESSION
-      CHARACTER *80    IDSAUV
-      COMMON /SPGSAV / IDSAUV
-      INTEGER          ICOMAL
-      COMMON /COMSAV / ICOMAL
 C     ------------------------------------------------------------------
-      INTEGER          PREM, RECURS
+      INTEGER          RECURS
       CHARACTER*132    K132B
       CHARACTER *16    COMPEX
       CHARACTER *8     NOMRES, K8B
       LOGICAL          LEXC
       INTEGER          LOUT,IDF,I,LL,LC,ICMD,IMAAP,LXLGUT
 C     ------------------------------------------------------------------
-      SAVE             PREM, RECURS
+      SAVE             RECURS
 C     ------------------------------------------------------------------
-C     POUR CONTOURNER LE PB CRP
-      CHARACTER*16     BID
-      BID = ' '
-
-      IF ( PREM .NE. 16092006 ) THEN
-         PREM = 16092006
-         NBERRF=0
-         NBERRE=0
-      ENDIF
-C
 C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
       IDF  = INDEX('EFIDASXZ',CH1(1:1))
 C
 C --- SE PROTEGER DES APPELS RECURSIFS
       IF ( RECURS .EQ. 1234567890 ) THEN
 C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
-         CALL UTPRIN('F', BID, 'SUPERVIS_55', 0, VALK, 0, VALI, 0, VALR)
+         CALL UTPRIN('F', 'SUPERVIS_55', 0, VALK, 0, VALI, 0, VALR)
          CALL JEFINI('ERREUR')
       ENDIF
       RECURS = 1234567890
@@ -76,37 +58,9 @@ C     --- SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP/UTDEXC
 C        ASTER.ERROR DANS ASTERMODULE.C
          NEXCEP = 21
       ENDIF
-
-      LL=MIN(LEN(IDMESS),80)
-C     --- SI ALARME, ON COMPTE LE NOMBRE D'OCCURENCE
-      IF ( IDF .EQ. 5) THEN
-        IF (IDSAUV(1:LL).EQ.IDMESS(1:LL) ) THEN
-          ICOMAL=ICOMAL+1
-          IF(ICOMAL.EQ.5) THEN
-C     --- ON A ATTEINT LE NOMBRE MAXIMAL D'OCCURENCE POUR L'ALARME
-            CALL UTPRIN('A',BID,'SUPERVIS_41',0, VALK, 0, VALI, 0, VALR)
-            IDF=7
-            GOTO 100
-          ELSE IF(ICOMAL.GT.5) THEN
-            IDF=7
-            GOTO 200
-          ENDIF
-        ELSE
-          ICOMAL=0
-          IDSAUV(1:LL) = IDMESS(1:LL)
-        END IF
-      ELSE IF ( IDF .LE. 0 ) THEN
-        CALL JXABOR()
-      ENDIF
 C
-      IF (IDF.EQ.1)            NBERRE=NBERRE+1
-      IF (IDF.EQ.2 .AND. LEXC) NBERRF=NBERRF+1
+      CALL UTPRIN(CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C
-100   CONTINUE
-      CALL UTPRIN(CH1, BID, IDMESS, NK, VALK, NI, VALI, NR, VALR)
-C
-200   CONTINUE
-
       IF (LEXC) THEN
 C     -- SI L'UTILISATEUR L'A DEMANDE, ON LEVE L'EXCEPTION FATALERROR
 C        AU LIEU D'ARRETER BRUTALEMENT LE CODE (ABORT).
@@ -136,6 +90,7 @@ C        REMONTER LES N JEDEMA COURT-CIRCUITES
  10      CONTINUE
 C
 C        ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
+         LL=MIN(LEN(IDMESS),80)
          K132B= ' <EXCEPTION LEVEE> '//IDMESS(1:LL)
          RECURS = 0
          CALL UEXCEP(NEXCEP,K132B)

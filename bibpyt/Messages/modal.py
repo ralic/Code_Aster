@@ -1,7 +1,8 @@
-#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF modal Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,26 +18,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
-                UIinfo={"groupes":("Modélisation",)},
-                fr="Propagation de fissure avec X-FEM",
-    
-    MODELE        =SIMP(statut='o',typ=modele_sdaster),
-        
-    TABLE         =SIMP(statut='o',typ=table_sdaster),
+def _(x) : return x
 
-    LOI_PROPA     =FACT(statut='o',max=1,
-      LOI            =SIMP(statut='o',typ='TXM',into=("PARIS",),defaut="PARIS"),
-      b_paris        =BLOC( condition = "LOI=='PARIS'",
-        C            =SIMP(statut='o',typ='R',),
-        M            =SIMP(statut='o',typ='R',),),
-            ),
-            
-    RAYON          =SIMP(statut='o',typ='R',),
-          
-    METHODE        =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="SIMPLEXE"),
+cata_msg={
 
-#    RUNGE_KUTTA    =SIMP(statut='f',typ='I',into=("1","2",),defaut=1),
+1: _("""
+Arret du calcul des modes : pas de mode propre dans la bande de fréquence demandée.
+"""),
 
-    INFO           =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
-)  ;
+}

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,7 +17,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
+/* RESPONSABLE                                  COURTOIS M.COURTOIS   */
 /* ------------------------------------------------------------------ */
 
 #include <stdio.h>
@@ -1043,13 +1043,15 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 
 
 /* ------------------------------------------------------------------ */
-void DEFSSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN int ltype,
-                                _IN char *unite, _IN int lunite,
+void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN int ltype,
                                 _IN char *idmess, _IN int lidmess,
                                 _IN INTEGER *nbk, _IN char *valk, _IN int lvk,
                                 _IN INTEGER *nbi, _IN INTEGER *vali,
                                 _IN INTEGER *nbr, _IN double *valr)
 {
+   /*
+      Interface Fortran/Python pour l'affichage des messages
+   */
         PyObject *tup_valk,*tup_vali,*tup_valr,*res;
         char *kvar;
         int i;
@@ -1079,6 +1081,30 @@ void DEFSSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN int ltype,
         Py_DECREF(tup_vali);
         Py_DECREF(tup_valr);
         Py_DECREF(res);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFP(CHKMSG,chkmsg, _OUT INTEGER *iret)
+{
+   /*
+      Interface Fortran/Python pour la vérification que tout s'est bien
+      passé, destinée à etre appelée dans FIN.
+   */
+   PyObject *res, *mess_log;
+   
+   mess_log = PyObject_GetAttrString(static_module, "MessageLog");
+   if (!mess_log) {
+      MYABORT("erreur lors de l'accès à l'objet MessageLog.");
+   }
+   
+   res = PyObject_CallMethod(mess_log, "check_counter", NULL);
+   if (!res) {
+      MYABORT("erreur lors de l'appel à la méthode MessageLog.check_counter");
+   }
+   *iret = (INTEGER)PyLong_AsLong(res);
+   
+   Py_DECREF(res);
+   Py_DECREF(mess_log);
 }
 
 /* ------------------------------------------------------------------ */

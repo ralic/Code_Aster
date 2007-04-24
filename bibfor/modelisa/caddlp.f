@@ -4,7 +4,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,11 +48,12 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C
       INTEGER       NDDLA
       PARAMETER    ( NDDLA = 6)
-      INTEGER      DDLIMP(NDDLA), NDDLI, N1, N2, IOC, I, J, K, IBID
+      INTEGER      DDLIMP(NDDLA), NDDLI,N1,N2,IOC,I,J,K,IBID
       INTEGER      IER, NBEC, JNOMA, NBNOEU, JPRNM, JVAL, IFM, NIV
       INTEGER      JDIREC, JDIMEN, NBNO, IALINO, INO, NBMA, IALIMA
-      INTEGER      INOM, NBCMP, JCOMPT
-      REAL*8       VALIMR(NDDLA), PGL(3,3), DLOC(3), DGLO(3), ZERO
+      INTEGER      INOM, NBCMP, JCOMPT,NN1(3)
+      REAL*8       VALIMR(NDDLA),PGL(3,3),DLOC(3),DGLO(3),ZERO
+      REAL*8       RLN1(3),RGN1(3)
       COMPLEX*16   VALIMC(NDDLA)
 
       CHARACTER*1   K1BID
@@ -176,39 +177,42 @@ C
 C --------- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
 C           ----------------------------------------------
             IF (FONREE.EQ.'REEL') THEN
-              DO 120 J = 1 , 3
-                DDLIMP(J) = 0
-                DLOC(J)   = ZERO
-                CALL GETVR8 ( MOTFAC, MOTCLE(J), IOC,1,1, DLOC(J), N1 )
- 120          CONTINUE
-              CALL UTPVLG ( 1 , 3 , PGL , DLOC , DGLO )
-C
-              DO 122 J = 1 , 3
-                IF ( DGLO(J) .NE. ZERO ) THEN
-                   DDL(J)    = MOTCLE(J)
-                   VALIMR(J) = DGLO(J)
-                   DDLIMP(J) = 1
-                ENDIF
- 122          CONTINUE
-C
-              DO 130 J = 1 , 3
-                DDLIMP(J+3) = 0
-                DDL(J+3)    = ' '
-                DLOC(J)   = ZERO
-                CALL GETVR8 ( MOTFAC, MOTCLE(J+3), IOC,1,1, DLOC(J),N1)
- 130          CONTINUE
-              CALL UTPVLG ( 1 , 3 , PGL , DLOC , DGLO )
-C
-              DO 132 J = 1 , 3
-                IF ( DGLO(J) .NE. ZERO ) THEN
-                   DDL(J+3)    = MOTCLE(J+3)
-                   VALIMR(J+3) = DGLO(J)
-                   DDLIMP(J+3) = 1
-                ENDIF
- 132          CONTINUE
-C
-            END IF
+               DO 120 J = 1 , 3
+                  DDLIMP(J) = 0
+                  DDL(J)    = ' '
+                  DLOC(J)   = ZERO
+                  RLN1(J)   = ZERO
+                  CALL GETVR8(MOTFAC,MOTCLE(J),IOC,1,1,DLOC(J),NN1(J))
+                  IF ( NN1(J) .GE. 1 ) RLN1(J) = 1.0D0
+120            CONTINUE
+               CALL UTPVLG(1,3,PGL,DLOC,DGLO)
+               CALL UTPVLG(1,3,PGL,RLN1,RGN1)
+               DO 122 J = 1 , 3
+                  IF ( RGN1(J) .NE. ZERO ) THEN
+                     DDL(J)    = MOTCLE(J)
+                     VALIMR(J) = DGLO(J)
+                     DDLIMP(J) = 1
+                  ENDIF
+122            CONTINUE
 
+               DO 130 J = 1 , 3
+                  DDLIMP(J+3) = 0
+                  DDL(J+3)    = ' '
+                  DLOC(J)     = ZERO
+                  RLN1(J)     = ZERO
+                  CALL GETVR8(MOTFAC,MOTCLE(J+3),IOC,1,1,DLOC(J),NN1(J))
+                  IF ( NN1(J) .GE. 1 ) RLN1(J) = 1.0D0
+130            CONTINUE
+               CALL UTPVLG(1,3,PGL,DLOC,DGLO)
+               CALL UTPVLG(1,3,PGL,RLN1,RGN1)
+               DO 132 J = 1 , 3
+                  IF ( RGN1(J) .NE. ZERO ) THEN
+                     DDL(J+3)    = MOTCLE(J+3)
+                     VALIMR(J+3) = DGLO(J)
+                     DDLIMP(J+3) = 1
+                  ENDIF
+132            CONTINUE
+            END IF
             IF ( NIV .GE. 2 )  THEN
                I = 0
                DO 77 J = 1,NDDLA
@@ -219,7 +223,7 @@ C
                      WRITE(IFM,1010)       DDL(J), VALIMR(J)
                   ENDIF
                   I = I + 1
- 77            CONTINUE
+77             CONTINUE
             ENDIF
 
             CALL AFDDLI ( ZR(JVAL), ZK8(JVAL), ZC(JVAL),
@@ -228,16 +232,15 @@ C
      &                    VALIMC, MOTCLE, NBEC, ZR(JDIREC+3*(INO-1)),
      &                    ZI(JDIMEN+INO-1), MOD,LISREL,
      &                    ZK8(INOM), NBCMP, ZI(JCOMPT))
- 110     CONTINUE
+110      CONTINUE
          DO 111,K=1,NDDLA
-             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
-     &1,MOTCLE(K))
-  111    CONTINUE
+            IF (ZI(JCOMPT-1+K) .EQ. 0 )
+     &               CALL U2MESK('F','MODELISA2_45',1,MOTCLE(K))
+111      CONTINUE
          CALL JEDETR('&&CADDLP.ICOMPT')
- 100  CONTINUE
+100   CONTINUE
 C
       CALL AFLRCH ( LISREL, CHAR )
-C
       CALL JEDETR('&&CADDLP.VALDDL')
       CALL JEDETR('&&CADDLP.DIRECT')
       CALL JEDETR('&&CADDLP.DIMENSION')
@@ -247,9 +250,9 @@ C
 C
 9999  CONTINUE
 C
- 1020 FORMAT( '"DDL_POUTRE" DANS LE REPERE GLOBAL : ' )
- 1000 FORMAT( /,'NOEUD = ',A8,', ',A8,' = ',1P,E12.5 )
- 1010 FORMAT(                  18X,A8,' = ',1P,E12.5 )
+1020  FORMAT( '"DDL_POUTRE" DANS LE REPERE GLOBAL : ' )
+1000  FORMAT( /,'NOEUD = ',A8,', ',A8,' = ',1P,E12.5 )
+1010  FORMAT(                  18X,A8,' = ',1P,E12.5 )
 C
       CALL JEDEMA()
 C

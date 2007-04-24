@@ -1,6 +1,6 @@
-      SUBROUTINE UTEXCP( NUM, SPGLU, TEXTE )
+      SUBROUTINE UTEXCP( NUM, IDMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILIFOR  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +21,26 @@ C     ------------------------------------------------------------------
 C
 C     ARGUMENTS :
 C        NUM    = NUMERO DE L'EXCEPTION
-C        SPGLU  = NOM DU SOUS-PROGRAMME LEVANT L'EXCEPTION
-C        TEXTE  = MESSAGE EXPLIQUANT POURQUOI L'EXCEPTION EST LEVEE.
+C        IDMESS = IDENTIFIANT DU MESSAGE
 C     ------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER            NUM
-      CHARACTER*(*)           SPGLU, TEXTE
+      INTEGER          NUM
+      CHARACTER* (*)   IDMESS
+C     ------------------------------------------------------------------
+      REAL*8           VALR(1), R8NNEM
+      CHARACTER*8      VALK(1)
+      INTEGER          NR, NK, NI, VALI(1), ISNNEM
       INTEGER          NEXCEP
       COMMON /UTEXC /  NEXCEP
 C
       NEXCEP = NUM
-      CALL U2MESK('Z','JEVEUX_1',1,TEXTE)
+C     ------------------------------------------------------------------
+      NI = 0
+      NK = 0
+      NR = 0
+      VALK(1) = ' '
+      VALI(1) = ISNNEM()
+      VALR(1) = R8NNEM()
+      CALL U2MESG ('Z', IDMESS, NK, VALK, NI, VALI, NR, VALR)
+C     ------------------------------------------------------------------
       END

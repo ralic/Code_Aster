@@ -3,7 +3,7 @@
      1       ITMAX, TOLER, TIMED, TIMEF,YD ,YF,DEPS, DY, R, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     ----------------------------------------------------------------
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,IV,IR,ITMAX,IEXP
 C
       REAL*8          DKOOH(6,6), FKOOH(6,6),TIMED, TIMEF
-      REAL*8          SIGF(6)   , SIGD(6)
+      REAL*8          SIGF(6)   , SIGD(6), DAL
       REAL*8          DEPS(6)   ,     DEPSE(6), DEVI(6),DT
       REAL*8          EPSED(6) , EPSEF(6), H1SIGF(6),VIND(*)
       REAL*8          MATERD(NMAT*2) ,MATERF(NMAT*2)
@@ -80,6 +80,7 @@ C
       CHARACTER*16 NOMFAM,NECOUL,NECRIS,NECRCI
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
+      COMMON/KRDAL/DAL(24)
 C     ----------------------------------------------------------------
 C
       DT=TIMEF-TIMED
@@ -126,18 +127,20 @@ C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA
 
             IF(NECOUL.NE.'KOCKS_RAUCH') THEN
 
-            CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
-     &        ITMAX, TOLER,ALPHAM,DGAMM1,DALPHA, IRET)
+                CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
+     &            ITMAX, TOLER,ALPHAM,DGAMM1,DALPHA, IRET)
 
-            IF (IRET.NE.0) GOTO 9999
+                IF (IRET.NE.0) GOTO 9999
 
-            ALPHAP=ALPHAM+DALPHA
-C           ECROUISSAGE ISOTROPE : CALCUL DE R(P)
-            IEXP=0
-            IF (IS.EQ.1) IEXP=1
-            CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &        IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
+                ALPHAP=ALPHAM+DALPHA
+C               ECROUISSAGE ISOTROPE : CALCUL DE R(P)
+                IEXP=0
+                IF (IS.EQ.1) IEXP=1
+                CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
+     &            IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
+     
             ENDIF
+            
 C           ECOULEMENT VISCOPLASTIQUE
 C           ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)
 C           ET L'EXPLICITE (NMVPRK-GERPAS-RK21CO-RDIF01)
@@ -146,13 +149,18 @@ C           CAS EXPLICITE : IL NE LE FAUT PAS (C'EST FAIT PAR RDIF01)
 C
             GAMMAP=YD(NSFA+IS)+DGAMM1
 
+            
+            IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+             ALPHAP=ALPHAM
+            ENDIF
+            
             CALL LCMMFE( FAMI,KPG,KSP,TAUS,MATERF(NMAT+1),MATERF(1),IFA,
      &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),RP,
-     &      ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+     &      ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET,DAL)
 
-            IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
-             ALPHAP=ALPHAM+DALPHA
-            ENDIF
+C             IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+C              ALPHAP=ALPHAM+DALPHA
+C             ENDIF
 
             DO 9 ITENS=1,6
                DEVI(ITENS)=DEVI(ITENS)+MS(ITENS)*DGAMMA

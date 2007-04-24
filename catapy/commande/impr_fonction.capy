@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,21 +70,22 @@ IMPR_FONCTION=MACRO(nom="IMPR_FONCTION",op=impr_fonction_ops,sd_prod=None,
                                  fr="Valeurs des ordonnées"),
            ),
 
-           # le bloc n'est pas activé (vide) car position n'est pas pris en compte
-           b_forme         =BLOC(condition = "FORMAT != 'TABLEAU'",
-                                 fr="Données de mise en forme de la fonction (cf. doc)",
-           ),
-              LEGENDE         =SIMP(statut='f',typ='TXM',
+           # mots-clés utilisant uniquement aux formats autres que TABLEAU
+           # mais ce serait trop pénible de devoir les supprimer quand on change de format
+           # donc on ne les met pas dans un bloc
+           # "pseudo" bloc mise en forme :
+               LEGENDE         =SIMP(statut='f',typ='TXM',
                                     fr="Légende associée à la fonction" ),
-              STYLE           =SIMP(statut='f',typ='I',val_min=0,
+               STYLE           =SIMP(statut='f',typ='I',val_min=0,
                                     fr="Style de la ligne représentant la fonction",),
-              COULEUR         =SIMP(statut='f',typ='I',val_min=0,
+               COULEUR         =SIMP(statut='f',typ='I',val_min=0,
                                     fr="Couleur associée à la fonction",),
-              MARQUEUR        =SIMP(statut='f',typ='I',val_min=0,
+               MARQUEUR        =SIMP(statut='f',typ='I',val_min=0,
                                     fr="Type du marqueur associé à la fonction",),
-              FREQ_MARQUEUR   =SIMP(statut='f',typ='I',defaut=0,
+               FREQ_MARQUEUR   =SIMP(statut='f',typ='I',defaut=0,
                                     fr="Fréquence d impression du marqueur associé à la fonction", ),
-           # fin bloc b_forme
+           # fin bloc mise en forme
+           
            TRI             =SIMP(statut='f',typ='TXM',defaut="N",
                                  fr="Choix du tri effectué sur les abscisses ou sur les ordonnées",
                                  into=("N","X","Y","XY","YX") ),

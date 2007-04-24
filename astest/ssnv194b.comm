@@ -1,9 +1,8 @@
 # MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
-# TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
-# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, ACIER BAINITIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,8 +17,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE PROIX J-M.PROIX
 
-DEBUT(CODE=_F(NOM='SSNV194A',
+DEBUT(CODE=_F(NOM='SSNV194B',
               NIV_PUB_WEB='INTERNET',));
 
 CUBE=LIRE_MAILLAGE();
@@ -63,9 +63,9 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.001,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=0.0018,
-                                    NOMBRE=4,),
+                                    NOMBRE=140,),
                                  _F(JUSQU_A=TFIN,
-                                    NOMBRE=5,),
+                                    NOMBRE=150,),
                                     ),);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
@@ -105,7 +105,7 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                                    ),)
 
 
-MONO1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
+COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='ECOU_VISC1',
                                     ECRO_ISOT='ECRO_ISOT1',
                                     ECRO_CINE='ECRO_CINE1',
@@ -113,38 +113,44 @@ MONO1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     FAMI_SYST_GLIS='BCC24',),),);
 
 
-ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
-                     MASSIF=(
-                               _F(GROUP_MA='GM1',ANGL_EULER=(-150.646,33.864,55.646,),),
-                               _F(GROUP_MA='GM2',ANGL_EULER=(-137.138,41.5917,142.138,),),
-                               _F(GROUP_MA='GM3',ANGL_EULER=(-166.271,35.46958,171.271,),),
-                               _F(GROUP_MA='GM4',ANGL_EULER=(-77.676,15.61819,154.676,),),
-                               _F(GROUP_MA='GM5',ANGL_EULER=(-78.6463,33.864,155.646,),),
-                               _F(GROUP_MA='GM6',ANGL_EULER=(-65.1378,41.5917,142.138,),),
-                               _F(GROUP_MA='GM7',ANGL_EULER=(-94.2711,35.46958,71.271,),),
-                               _F(GROUP_MA='GM8',ANGL_EULER=(-5.67599,15.61819,154.676,),),
-                               _F(GROUP_MA='GM9',ANGL_EULER=(-6.64634,33.864,155.646,),),
-                               _F(GROUP_MA='GM10',ANGL_EULER=(6.86224,41.5917,142.138,),),
-                               ),);
 
-
+COMPORP=DEFI_COMPOR(POLYCRISTAL=(
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-150.646,33.864,55.646,),),   
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-137.138,41.5917,142.138,),), 
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-166.271,35.46958,171.271,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-77.676,15.61819,154.676,),), 
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-78.6463,33.864,155.646,),),  
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-65.1378,41.5917,142.138,),), 
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-94.2711,35.46958,71.271,),), 
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-5.67599,15.61819,154.676,),),
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(-6.64634,33.864,155.646,),),  
+                        _F(MONOCRISTAL=COMPORT,FRAC_VOL=0.1,ANGL_EULER=(6.86224,41.5917,142.138,),),
+                        ),  
+                    LOCALISATION='BETA',DL=0.,DA=0.,
+                    );
 
 
 SOLNL=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT,
-                     CARA_ELEM=ORIEN,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
                                TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=MONO1,
-                                   DEFORMATION='PETIT',
-                                   ITER_INTE_MAXI=150,
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST),),
+                       INCREMENT=(_F(LIST_INST=LINST,
+                       SUBD_METHODE='EXTRAPOLE',
+                       SUBD_PAS=4,
+                       SUBD_NIVEAU=5),),
+                    COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                                  COMPOR=COMPORP,
+                                  DEFORMATION='PETIT',
+                                  RESO_INTE='RUNGE_KUTTA_2',
+                                  TOUT='OUI',
+                                  RESI_INTE_RELA=1.E-6
+                                  ),),
                      NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                REAC_ITER=1,),),
-                     CONVERGENCE=(_F(ITER_GLOB_MAXI=100,
+                                MATRICE='ELASTIQUE',
+                                REAC_ITER=0,),),
+                     CONVERGENCE=(_F(ITER_GLOB_MAXI=50,
+                                     RESI_GLOB_RELA=1.E-4
                                      ),),);
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
@@ -152,47 +158,46 @@ SOLNL=CALC_ELEM(reuse =SOLNL,
                  OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
 
+# Calcul des moyennes 
+
+INT_SI=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP=('SIXX','SIYY','SIZZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=INT_SI)
+
+INT_EP=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='EPSP_ELGA',
+                                NOM_CMP=('EPXX','EPYY','EPZZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=INT_EP)
+
+# comparaison a la modelisation A - agregat 10 grains
+TEST_TABLE(TABLE=INT_SI, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),PRECISION=0.09,
+           NOM_PARA='INTE_SIZZ', VALE=2.79777E+02, REFERENCE='AUTRE_ASTER',)
+           
+TEST_TABLE(TABLE=INT_EP, FILTRE=_F(NOM_PARA='INST',VALE=TFIN),PRECISION=0.06,
+           NOM_PARA='INTE_EPZZ', VALE=3.07316E-03, REFERENCE='AUTRE_ASTER',)
+           
+
+F_SI=RECU_FONCTION(TABLE=INT_SI,
+                           PARA_X='INST',
+                           PARA_Y='INTE_SIZZ',);
+                       
+F_EP=RECU_FONCTION(TABLE=INT_EP,
+                           PARA_X='INST',
+                           PARA_Y='INTE_EPZZ',);
 
 
-TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='M1',
-                   POINT=1,
-                   PRECISION=(0.0001,1e-06,),
-                   VALE=-25.172,
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=SOLNL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='M1',
-                   POINT=1,
-                   VALE=-1.49584E-03,
-                   PRECISION=(0.0001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=SOLNL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPYY',
-                   MAILLE='M1',
-                   POINT=1,
-                   VALE=-2.70269E-03,
-                   PRECISION=(0.0001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=SOLNL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPYY',
-                   MAILLE='M1',
-                   POINT=1,
-                   VALE=-2.587725E-03,
-                   PRECISION=(0.0001,1e-06,),
-                   REFERENCE='NON_REGRESSION',),),);
+IMPR_FONCTION(
+FORMAT ='XMGRACE',
+UNITE=18,
+#PILOTE='INTERACTIF', 
+COURBE=_F(FONC_X=F_EP, FONC_Y=F_SI))
 
-
-
-#IMPR_RESU(RESU=_F(RESULTAT=SOLNL,INST=TFIN,VALE_MAX='OUI'))
 FIN()
 

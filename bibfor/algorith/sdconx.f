@@ -1,9 +1,9 @@
-      SUBROUTINE SDCONX(RHON,CRIT,FROTT,MU,RHOT,SEUIL0,STACO0,INTE,
-     &                                          COECH,ALGOLA,IOCCC,FISS)
+      SUBROUTINE SDCONX(RHON,CRIT,FROTT,MU,RHOT,SEUIL0,STACO0,STAGLI,
+     &                                     INTE,COECH,ALGOLA,IOCCC,FISS)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 
       REAL*8       RHON,MU,RHOT,SEUIL0,COECH
       INTEGER      CRIT(2),IOCCC
-      CHARACTER*8  FROTT,STACO0,INTE,ALGOLA,FISS
+      CHARACTER*8  FROTT,STACO0,STAGLI,INTE,ALGOLA,FISS
 C
 C   CRÉATION DE LA STRUCTURE DE DONNÉE CONTACT X-FEM
 C
@@ -38,6 +38,7 @@ C       MU     : COEFFICIENT DE FROTTEMENT DE COULOMB
 C       RHOT   : COEF_REGU_FROT
 C       SEUIL0 : SEUIL_INIT
 C       STACO0 : CONTACT INITIAL ("OUI" OU "NON")
+C       STAGLI : CONTACT GLISSIER ("OUI" OU "NON")
 C       INTE   : SCHEMA D'INTEGRATION ("GAUSS" OU "NOEUD")
 C       COECH  : COEFFICIENT DE MISE À L'ECHELLE DES TERMES DE PRESSION
 C                DE CONTACT (CAD DE DE TYPE 'LAGS_C')
@@ -79,6 +80,7 @@ C                   VOIR BOOK VI 11/04/2006)
         RHON=100.D0
         CRIT(1)=4
         STACO0='NON'
+        STAGLI='NON'
         INTE='FPG4'
         COECH=1.D0
         ALGOLA='NON'
@@ -151,7 +153,7 @@ C     ------------------------------------------------------------------
 C          CREATION DU .ECPDON
 C     ------------------------------------------------------------------
 
-      CALL WKVECT(FISS//'.CONTACT.ECPDON','G V I',6,JECPD)
+      CALL WKVECT(FISS//'.CONTACT.ECPDON','G V I',7,JECPD)
 
 C     NB TOTAL DE ZONES DE CONTACT
       ZI(JECPD-1+1)=1
@@ -172,7 +174,11 @@ C     ITER_GEOM_MAXI
 C     STATUT DE CONTACT INITIAL
       IF (STACO0.EQ.'OUI') ZI(JECPD-1+6)=1
       IF (STACO0.EQ.'NON') ZI(JECPD-1+6)=0
-
+      
+C     STATUT DE CONTACT GLISSIER
+      IF (STAGLI.EQ.'OUI') ZI(JECPD-1+7)=1
+      IF (STAGLI.EQ.'NON') ZI(JECPD-1+7)=0
+      
 C     ------------------------------------------------------------------
 C          CREATION DU .METHCO
 C     ------------------------------------------------------------------

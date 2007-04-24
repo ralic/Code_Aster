@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
 import os
 import sys
@@ -51,6 +52,12 @@ class MESSAGE_LOGGER:
       """
       self.init_buffer()
       
+      # est-ce qu'une erreur <E> s'est produite
+      self.erreur_E = False
+      
+      # compteur des alarmes émises { 'id_alarm' : count }
+      self.count_alarm = {}
+      
       # on prépare le dictionnaire des valeurs par défaut des arguments (dicarg) :
       self.default_args = {}
       # initialisation des 10 premiers
@@ -74,6 +81,26 @@ class MESSAGE_LOGGER:
          idmess : identificateur du message
          valk, vali, valr : liste des chaines, entiers ou réels.
       """
+      # récupération du texte du message
+      dictmess = self.get_message(code, idmess, valk, vali, valr)
+      
+      # on le met dans le buffer
+      self.add_to_buffer(dictmess)
+      
+      # si on n'attend pas une suite, ...
+      if len(code) < 2 or code[1] != '+':
+         # mise à jour des compteurs
+         self.update_counter()
+         
+         # on imprime le message en attente
+         self.print_buffer_content()
+
+      return None
+
+# -----------------------------------------------------------------------------
+   def build_dict_args(self, valk, vali, valr):
+      """Construit le dictionnaire de formattage du message.
+      """
       # homogénéisation : uniquement des tuples + strip des chaines de caractères
       valk, vali, valr = map(force_enum, (valk, vali, valr))
       valk    = [k.strip() for k in valk]
@@ -89,23 +116,15 @@ class MESSAGE_LOGGER:
       # valeur spéciale : ktout = concaténation de toutes les chaines
       dicarg['ktout'] = ' '.join(valk)
    
-      # récupération du texte du message
-      dictmess = self.get_message(code, idmess, dicarg)
-      
-      # et on le met dans le buffer
-      self.add_to_buffer(dictmess)
-      
-      # si on n'attend pas une suite, on imprime
-      if len(code) < 2 or code[1] != '+':
-         self.print_buffer_content()
-
-      return None
+      return dicarg
 
 # -----------------------------------------------------------------------------
-   def get_message(self, code, idmess, dicarg):
+   def get_message(self, code, idmess, valk=(), vali=(), valr=()):
       """Retourne le texte du message dans un dictionnaire dont les clés sont :
          'code', 'id_message', 'corps_message'
       """
+      dicarg = self.build_dict_args(valk, vali, valr)
+   
       # décodage : idmess => (catamess, numess)
       idmess  = idmess.strip()
       x = idmess.split("_")
@@ -122,7 +141,7 @@ class MESSAGE_LOGGER:
       except Exception, msg:
          # doit permettre d'éviter la récursivité
          if catamess != 'supervis':
-            print_message('A', 'SUPERVIS_57', valk=(catamess, str(msg)))
+            self.print_message('A', 'SUPERVIS_57', valk=(catamess, str(msg)))
          cata_msg = {}
       
       # corps du message
@@ -138,7 +157,7 @@ class MESSAGE_LOGGER:
          
          dictmess = {
             'code'          : code,
-            'id_message'    : '<%s>' % idmess,
+            'id_message'    : idmess,
             'corps_message' : fmt_msg % dicarg,
             'context_info'  : self.get_context(ctxt_msg, idmess, dicarg),
          }
@@ -177,6 +196,27 @@ Le message %s n'a pas pu etre formaté correctement.
       self._buffer.append(dictmess)
 
 # -----------------------------------------------------------------------------
+   def get_current_code(self):
+      """Retourne le code du message du buffer = code du message le plus grave
+      (cf. dgrav)
+      """
+      dgrav = { '?' : -9, 'I' : 0, 'A' : 1, 'S' : 4, 'Z' : 4, 'E' : 6, 'F' : 10 }
+      
+      current = '?'
+      for dictmess in self._buffer:
+         code = dictmess['code'][0]
+         if dgrav.get(code, -9) > dgrav.get(current, -9):
+            current = code
+      
+      return current
+
+# -----------------------------------------------------------------------------
+   def get_current_id(self):
+      """Retourne l'id du message du buffer = id du premier message
+      """
+      return self._buffer[0]['id_message']
+
+# -----------------------------------------------------------------------------
    def print_buffer_content(self):
       """Extrait l'ensemble des messages du buffer dans un dictionnaire unique,
       imprime le message, et vide le buffer pour le message suivant.
@@ -184,22 +224,17 @@ Le message %s n'a pas pu etre formaté correctement.
          - id   : celui du premier message qui est affiché
          - corps : concaténation de tous les messages.
       """
-      dgrav = { '?' : -9, 'I' : 0, 'A' : 1, 'S' : 4, 'Z' : 4, 'E' : 6, 'F' : 10 }
-      
       if len(self._buffer) < 1:
          return None
       
       # construction du dictionnaire du message global
       dglob = {
-         'code'          : '?',
-         'id_message'    : self._buffer[0]['id_message'],
+         'code'          : self.get_current_code(),
+         'id_message'    : self.get_current_id(),
          'liste_message' : [],
          'liste_context' : [],
       }
       for dictmess in self._buffer:
-         code = dictmess['code'][0]
-         if dgrav.get(code, -9) > dgrav.get(dglob['code'], -9):
-            dglob['code'] = code
          dglob['liste_message'].append(dictmess['corps_message'])
          dglob['liste_context'].append(dictmess['context_info'])
       dglob['corps_message'] = ''.join(dglob['liste_message'])
@@ -214,6 +249,43 @@ Le message %s n'a pas pu etre formaté correctement.
          aster.affiche(unite, txt)
       
       self.init_buffer()
+
+# -----------------------------------------------------------------------------
+   def update_counter(self):
+      """Mise à jour des compteurs et réaction si besoin.
+      Retourne un flag permettant de savoir si on doit afficher le nouveau
+      message (skip_next=False) demandé ou bien l'ignorer (skip_next=True).
+      """
+      nmax_alarm = 5
+      code = self.get_current_code()
+      if code == 'E':
+         self.erreur_E = True
+      elif code == 'A':
+         idmess = self.get_current_id()
+         # nombre d'occurence de cette alarme
+         self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
+         if self.count_alarm[idmess] == nmax_alarm:
+            # Pour mettre en relief le message SUPERVIS_41, on le sépare
+            # de la dernière alarme
+            self.print_buffer_content()
+            dictmess = self.get_message(code, 'SUPERVIS_41',
+                                        valk=idmess, vali=nmax_alarm)
+            self.add_to_buffer(dictmess)
+         elif self.count_alarm[idmess] > nmax_alarm:
+            # count_alarm > 5, on vide le buffer
+            self.init_buffer()
+
+# -----------------------------------------------------------------------------
+   def check_counter(self):
+      """Méthode "jusqu'ici tout va bien" !
+      Si des erreurs <E> se sont produites, on arrete le code en <F>.
+      Appelée par FIN ou directement au cours de l'exécution d'une commande.
+      Retourne un entier : 0 si tout est ok (toujours pour le moment)
+      """
+      iret = 0
+      if self.erreur_E:
+         self.print_message('F', 'SUPERVIS_6')
+      return iret
 
 # -----------------------------------------------------------------------------
    def format_message(self, dictmess):
@@ -237,7 +309,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       # format complet
       format_general = {
          'decal'  : '   ',
-         'header' : """<%(type_message)s> %(id_message)s""",
+         'header' : """<%(type_message)s> %(str_id_message)s""",
          'ligne'  : '%(charv)s %%-%(maxlen)ds %(charv)s',
          'corps'  : """%(header)s
 
@@ -264,6 +336,10 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
       }
       dmsg = dictmess.copy()
       dmsg['type_message'] = self.get_type_message(dictmess['code'])
+      if dmsg['id_message'] != '':
+         dmsg['str_id_message'] = '<%s>' % dmsg['id_message']
+      else:
+         dmsg['str_id_message'] = ''
       
       # format utilisé
       format = format_general

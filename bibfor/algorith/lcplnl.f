@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -209,8 +209,8 @@ C
 C --    VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 C
         CALL LCCONV( LOI,    DY,   DDY, NR, ITMAX, TOLER, ITER, INTG,
-     &               NMAT,NBCOMM,R,RINI,TYPESS, ESSAI, ICOMP, IRTET)
-
+     &               NMAT, MATERF, NBCOMM, R, RINI, TYPESS, ESSAI,
+     &               ICOMP, IRTET)
         IF ( IRTET.GT.0 ) GOTO (1,2,3,4), IRTET
 
 C

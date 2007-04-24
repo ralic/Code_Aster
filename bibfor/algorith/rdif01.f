@@ -4,11 +4,11 @@
      &                     COTHE, COEFF, DCOTHE, DCOEFF,PGL,NBPHAS, E,
      &                     NU,    ALPHA, COEL,X,   DTIME,  SIGI,
      &                     EPSD,  DETOT,
-     &                     DVIN)
+     &                     DVIN, HSR, ITMAX, TOLER, IRET )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,19 +56,19 @@ C           DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 C       ----------------------------------------------------------------
         INTEGER KPG,KSP,IMAT,I,NMAT,NVI,NBCOMM(NMAT,3),NCOE,
-     &          NBPHAS,NBFSYM
+     &          NBPHAS,NBFSYM,IRET,ITMAX
         CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
         CHARACTER*8 MOD
         CHARACTER*(*) FAMI
         CHARACTER*3 MATCST
-        REAL*8 E, NU, ALPHA,PGL(3,3)
+        REAL*8 E, NU, ALPHA,PGL(3,3),TOLER
         REAL*8 X, DTIME,COEL(NMAT)
         REAL*8 COTHE(NMAT),DCOTHE(NMAT)
         REAL*8 COEFF(NMAT),DCOEFF(NMAT)
         REAL*8 SIGI(6),EPSD(6),DETOT(6)
         REAL*8 COEFT(NMAT)
         REAL*8 VINI(NVI)
-        REAL*8 DVIN(NVI)
+        REAL*8 DVIN(NVI),HSR(5,24,24)
 C       POUR GAGNER EN TEMPS CPU
         REAL*8 TOUTMS(NBPHAS,NBFSYM,24,6)
 C
@@ -79,7 +79,7 @@ C
      &                E,NU,ALPHA,NMAT,COEL)
           CALL LCMMON(FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,VINI,
      &     X,DTIME,E,NU,ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,
-     &     COEL,DVIN)
+     &     COEL,DVIN,HSR,ITMAX,TOLER,IRET)
 
         ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
            NCOE=NBCOMM(NMAT,3)
@@ -87,7 +87,7 @@ C
      &                E,NU,ALPHA,NMAT,COEL)
           CALL LCMMOP(FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,
      &     VINI,X,DTIME,E,NU,ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,
-     &     COEL,NBPHAS,NBFSYM,TOUTMS,DVIN)
+     &     COEL,NBPHAS,NBFSYM,TOUTMS,DVIN,HSR,ITMAX,TOLER,IRET)
 
         ELSEIF (LOI(1:9).EQ.'VISCOCHAB') THEN
           NCOE=25

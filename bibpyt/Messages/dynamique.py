@@ -1,4 +1,4 @@
-#@ MODIF dynamique Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF dynamique Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,11 +53,35 @@ cata_msg={
 """),
 
 7: _("""
- Pas de temps maximal (condition CFL) pour le schéma des différences centrées : %(r1)12.5E s
+ Pas de temps maximal (condition CFL) pour le schéma des différences centrées : %(r1)g s
 """),
 
 8: _("""
-  Pas de temps maximal (condition CFL) pour le schéma de Tchamwa-Wilgosz : %(r1)12.5E s
+  Pas de temps maximal (condition CFL) pour le schéma de Tchamwa-Wilgosz : %(r1)g s
+"""),
+
+9: _("""
+   Arret par manque de temps CPU au numéro d'instant : %(i1)d
+      - Temps moyen par pas de temps : %(r1)f
+      - Temps cpu restant            : %(r2)f
+   
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
+"""),
+
+10: _("""
+   Arret par manque de temps CPU au groupe de pas de temps : %(i1)d
+                                 au "petit" pas de temps   : %(i2)d
+      - Temps moyen par "petit" pas : %(r1)f
+      - Temps cpu restant           : %(r2)f
+   
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
+"""),
+
+11: _("""
+ Le pas de temps est trop grand : %(r1)f
+ le pas de temps maximal est    : %(r2)f
+ 
+ Avec le pas de temps maximal, le nombre de pas de calcul est %(i1)d
 """),
 
 }

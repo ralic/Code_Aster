@@ -1,8 +1,8 @@
-        SUBROUTINE LCMMAP (FAMI,KPG,KSP,COMP, MOD,  IMAT,   NMAT,
-     &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI)
+        SUBROUTINE LCMMAP (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT, ANGMAS,
+     &  PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI,HSR)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
+C TOLE CRP_20
 C       ----------------------------------------------------------------
 C       POLYCRISTAL : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
 C                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
@@ -143,7 +144,7 @@ C     ----------------------------------------------------------------
       INTEGER I, IMAT, NBFSYS, IFA,J,ICAMAS,ITAB(8),NBMONO,NBSYS
       INTEGER NBPHAS,ICOMPK,ICOMPI,ICOMPR,DIMK,TABICP(NMAT),NVLOC
       INTEGER INDMAT,INDCP,IMONO,NBVAL,INDLOC,INDCOM,IPHAS,NBFAM
-      INTEGER NUMONO,NVINTG,IDMONO,NBVAL1,NBVAL2,NBVAL3,NBCOEF
+      INTEGER NUMONO,NVINTG,IDMONO,NBVAL1,NBVAL2,NBVAL3,NBCOEF,NBHSR
       LOGICAL IRET
 C     ----------------------------------------------------------------
 C
@@ -214,6 +215,7 @@ C                        puis 2 (ou plus) paramètres localisation
       MATERD(1+1,2)=INDMAT +1
       MATERF(1+1,2)=INDMAT +1
       INDCP=3
+      NBHSR=0
 C     Boucle sur le nombre de monocristaux
       DO 6 IMONO=1,NBMONO
          READ (CPMONO(INDCP),'(I16)') NBFSYS
@@ -222,6 +224,11 @@ C     Boucle sur le nombre de monocristaux
             NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
             NECRIS=CPMONO(INDCP+5*(IFA-1)+4)
             NECRCI=CPMONO(INDCP+5*(IFA-1)+5)
+            
+C           NOMBRE DE MATRICE D'INTERACTION DIFFERENTES            
+            NBHSR=NBHSR+1
+            IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_16')
+
 
 C           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
             CALL LCMAFL(FAMI,KPG,KSP,'-',NMATER,IMAT,NECOUL,NBVAL,
@@ -259,7 +266,7 @@ C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
             NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
             CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
             CALL LCMAEI(FAMI,KPG,KSP,'-',NMATER,IMAT,NECRIS,NECOUL,
-     &            NBVAL,0,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
+     &            NBVAL,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
             MATERD(INDMAT+1,2)=NBVAL
             MATERF(INDMAT+1,2)=NBVAL
             INDMAT=INDMAT+1
@@ -267,10 +274,14 @@ C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
                MATERD(INDMAT+I,2)=VALRES(I)
  505        CONTINUE
             CALL LCMAEI(FAMI,KPG,KSP,'+',NMATER,IMAT,NECRIS,NECOUL,
-     &            NBVAL,0,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
+     &            NBVAL,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
             DO 506 I=1,NBVAL
                MATERF(INDMAT+I,2)=VALRES(I)
  506        CONTINUE
+            IF(NECOUL.EQ.'KOCKS_RAUCH') THEN                     
+               MATERD(INDMAT+11,2)=NBHSR
+               MATERF(INDMAT+11,2)=NBHSR
+            ENDIF
             INDMAT=INDMAT+NBVAL
 
  7       CONTINUE
@@ -335,6 +346,26 @@ C
         CALL DMAT3D(FAMI,IMAT,R8VIDE(),'-',KPG,KSP,REPERE,XYZ,
      &              HOOK)
         CALL D1MA3D(FAMI,IMAT,R8VIDE(),'-',KPG,KSP,REPERE,XYZ,KOOH)
+
+C         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
+
+           DO 67 J=4,6
+           DO 67 I=1,6
+             HOOK(I,J) = HOOK(I,J)*SQRT(2.D0)
+ 67        CONTINUE
+           DO 68 J=1,6
+           DO 68 I=4,6
+             HOOK(I,J) = HOOK(I,J)*SQRT(2.D0)
+ 68        CONTINUE
+           DO 69 J=4,6
+           DO 69 I=1,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 69        CONTINUE
+           DO 70 J=1,6
+           DO 70 I=4,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 70        CONTINUE
+ 
         DO 101 I=1,6
            DO 102 J=1,6
               MATERD(6*(J-1)+I,1)=HOOK(I,J)
@@ -357,6 +388,26 @@ C
         CALL DMAT3D(FAMI,IMAT,R8VIDE(),'+',KPG,KSP,REPERE,XYZ,
      &              HOOKF)
         CALL D1MA3D(FAMI,IMAT,R8VIDE(),'+',KPG,KSP,REPERE,XYZ,KOOH)
+
+C         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
+
+           DO 671 J=4,6
+           DO 671 I=1,6
+             HOOKF(I,J) = HOOKF(I,J)*SQRT(2.D0)
+ 671        CONTINUE
+           DO 681 J=1,6
+           DO 681 I=4,6
+             HOOKF(I,J) = HOOKF(I,J)*SQRT(2.D0)
+ 681        CONTINUE
+           DO 691 J=4,6
+           DO 691 I=1,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 691        CONTINUE
+           DO 701 J=1,6
+           DO 701 I=4,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 701        CONTINUE
+ 
         DO 103 I=1,6
            DO 104 J=1,6
               MATERF(6*(J-1)+I,1)=HOOKF(I,J)

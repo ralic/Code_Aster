@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -172,8 +172,8 @@ OPTION__
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  I1NEUT_I PINDCOI
                                      N1NEUT_R PLST     E4NEUTR  PPINTER  E8NEUTR  PAINTER  E2NEUTI  PCFACE
-                                     E2NEUTI  PLONCHA  CONTX_R  PDONCO
-                              OUT__  I1NEUT_I PINCOCA  I1NEUT_I PINDCOO
+                                     E2NEUTI  PLONCHA  CONTX_R  PDONCO   I1NEUT_I PGLISS   I1NEUT_I PMEMCON
+                              OUT__  I1NEUT_I PINCOCA  I1NEUT_I PINDCOO  I1NEUT_I PINDMEM
     XREACL              548   IN__   DDL_MECA PDEPL_P  E8NEUTR  PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONCHA
                                      CONTX_R  PDONCO
                               OUT__  E1NEUTR  PSEUIL

@@ -12,6 +12,14 @@ INT_SI=POST_ELEM(MODELE=TROISD,
 
 IMPR_TABLE(TABLE=INT_SI)
 
+INT_EP=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='EPSP_ELGA',
+                                NOM_CMP=('EPXX','EPYY','EPZZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=INT_EP)
+
 
 INS=[None]*NB_GRAINS
 EPS=[None]*NB_GRAINS

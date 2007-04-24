@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact2 Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,15 @@ def _(x) : return x
 
 cata_msg={
 
-12: _("""
+1 : _("""
+   Echec lors du traitement du contact.
+"""),
+
+2 : _("""
+   Echec : la matrice de contact est singulière.
+"""),
+
+12 : _("""
 Contact méthode CONTINUE. Une zone de contact contient à la fois des éléments axisymétriques et non axisymétriques ! 
 """),
 

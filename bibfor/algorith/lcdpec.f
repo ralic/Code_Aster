@@ -1,8 +1,8 @@
         SUBROUTINE LCDPEC(VIND,NBCOMM,NMAT,NDT,CPMONO,MATERF,ITER,NVI,
-     &                  ITMAX, TOLER, PGL, TOUTMS,DY, YF, VINF,EPSEQ )
+     &          ITMAX, TOLER, PGL, TOUTMS,DY, YF, VINF,EPSEQ)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,8 +29,9 @@ C     ----------------------------------------------------------------
       REAL*8   VIND(*),VINF(*),DVIN(6),DY(*),YF(*),MATERF(NMAT*2)
       REAL*8   LCNRTE, EPSEQ,PGL(3,3),D,MS(6),DGAMMA,DP,DALPHA
       REAL*8   ALPHAM,DEVI(6),TOUTMS(5,24,6),TOLER
-      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX
+      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX,DAL
       CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,NECRCI,NECOUL
+      COMMON/KRDAL/DAL(24)
 C
 
 C      MONO1=NBCOMM(NMAT,1)
@@ -58,23 +59,7 @@ C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES
             ALPHAM=VIND(NUVI-2) 
             
             IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
-            IFL=NBCOMM(IFA,1)
-            BSD       =MATERF(NMAT+IFL-1+6)
-            GCB       =MATERF(NMAT+IFL-1+7)
-            KDCS      =MATERF(NMAT+IFL-1+8)
-              
-            SOM=0.D0  
-              DO 1 IU = 1, NBSYS
-               IF (IU.NE.IS) THEN
-                 RACR=SQRT(ALPHAM)
-                 ELSE
-                 RACR=0.D0
-                 ENDIF   
-                   SOM   = SOM+RACR         
-  1              CONTINUE
-  
-                 DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
-     &                   (BSD+SOM/KDCS-GCB*ALPHAM)
+                DALPHA=DAL(IS)
             ELSE
 C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA  
             CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,   

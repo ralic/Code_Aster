@@ -5,7 +5,7 @@
       CHARACTER*8 NOCHE8,NOCHS8,NOCMP,KTYPE
       CHARACTER*8 GROUP(NGROUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,8 +110,7 @@ C     --- RECUPERATION DU NUMERO DE MAILLE----
             IF (ZI(ITRMA-1+IMA).NE.0) NBTROU = NBTROU + 1
   100     CONTINUE
           IF (NBTROU.EQ.0) THEN
-            CALL UTEXCP(21,'PRCOCH','ON NE TROUVE PAS DE MAILLE'//
-     &                              'DANS LES GROUPES FOURNIS')
+            CALL U2MESS('S', 'CHAMPS_4')
           ENDIF
 
 
@@ -167,7 +166,7 @@ C                   ET CREATION DES VECTEURS
 
 
         IF (NBVAL.EQ.0) THEN
-          CALL UTEXCP(21,'PRCOCH','ON NE TROUVE PAS DE VALEURS')
+          CALL U2MESS('S', 'CHAMPS_1')
         ENDIF
         CALL WKVECT(CESZ // '.V','G V R',NBVAL,JVAL)
         IF (LTOPO) THEN
@@ -251,8 +250,7 @@ C     --- RECUPERATION DU NUMERO DE NOEUDS----
             IF (ZI(ITRNO-1+IMA).NE.0) NBTROU = NBTROU + 1
  1000     CONTINUE
           IF (NBTROU.EQ.0) THEN
-            CALL UTEXCP(21,'PRCOCH','ON NE TROUVE PAS DE NOEUDS'//
-     &                              'DANS LES GROUPES FOURNIS')
+            CALL U2MESS('S', 'CHAMPS_5')
           ENDIF
 
 
@@ -304,7 +302,7 @@ C                   ET CREATION DES VECTEURS
 70     CONTINUE              
 
         IF (NBVAL.EQ.0) THEN
-          CALL UTEXCP(21,'PRCOCH','ON NE TROUVE PAS DE VALEURS')
+          CALL U2MESS('S','CHAMPS_1')
         ENDIF
 
         CALL WKVECT(CESZ // '.V','G V R',NBVAL,JVAL)

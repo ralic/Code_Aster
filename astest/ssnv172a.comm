@@ -1,5 +1,5 @@
 
-# MODIF  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,7 @@ TFIN3=10.
 
 NPAS = 20;
 
-NPASC = 200;
+NPASC = 1000;
 
 
 LINSTC=DEFI_LIST_REEL(DEBUT=0.0,
@@ -56,6 +56,12 @@ LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN2,
                                     NOMBRE=100,),
+                                    ),);
+LINST2C=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=2.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=TFIN2,
+                                    NOMBRE=500,),
                                     ),);
 LINST3=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.52,
@@ -193,10 +199,10 @@ ACIER2=DEFI_MATERIAU(ELAS=_F(E=275200.,
                                   KDCS   = 22.9,
                                   P      = 0.335,
                                   Q      = 1.12,
-                                  H1      = 1.,
-                                  H2      = 1.,
-                                  H3      = 1.,
-                                  H4      = 1.,
+                                   H1      = 1.,
+                                   H2      = 1.,
+                                   H3      = 1.,
+                                   H4      = 1.,
                                   ),        
                     ECOU_VISC1=_F(N=10.0,
                                   K=40.0,
@@ -361,7 +367,180 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECRO_CINE='ECRO_CINE1',
                                     FAMI_SYST_GLIS='MACLAGE',),),);
                           
+COMPORP=DEFI_COMPOR(POLYCRISTAL=(
+                        _F(MONOCRISTAL=COMPORKR,FRAC_VOL=1,ANGL_EULER=(16.94,69.04,244.55),),   
+                        ),  
+                    LOCALISATION='BETA',DL=0.,DA=0.,
+                    );
 
+# LOI DE COMPORTEMENT KOCKS_RAUCH
+
+IMPLKR=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT2,
+                     CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC3,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPORKR,
+                                   ITER_INTE_MAXI=100,
+                                  # ITER_INTE_PAS=10,
+                                   RESO_INTE='IMPLICITE',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST3C,#INST_FIN=1.05088000,
+                                   SUBD_METHODE='EXTRAPOLE', 
+                                   SUBD_PAS=4,
+                                   SUBD_NIVEAU=5,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                                REAC_ITER=1,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST3,),
+                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
+                                     ITER_GLOB_MAXI=10,),),);
+
+IMPLKR=CALC_ELEM(reuse =IMPLKR,
+                 RESULTAT=IMPLKR,
+                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
+
+TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-463.307,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=IMPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=IMPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-8.3165E-03,
+                   REFERENCE='NON_REGRESSION',),
+                   ),)
+                   
+
+
+# LOI DE COMPORTEMENT KOCKS_RAUCH en Explicite
+
+EXPLKR=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT2,
+                     CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC3,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                   #  COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                   #                COMPOR=COMPORP,
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPORKR,
+                                  # RESI_INTE_RELA=1e-12,
+                                   RESO_INTE='RUNGE_KUTTA_2',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST3C,#INST_FIN=1.05088000,
+                                   SUBD_METHODE='EXTRAPOLE', 
+                                   SUBD_PAS=4,
+                                   SUBD_NIVEAU=5,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                               MATRICE='ELASTIQUE'),),
+                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
+                                     ITER_GLOB_MAXI=10,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST3,),
+                                     )
+
+EXPLKR=CALC_ELEM(reuse =EXPLKR,
+                 RESULTAT=EXPLKR,
+                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
+
+TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-463.3,PRECISION=0.04,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EXPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EXPLKR,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-8.3165E-03,PRECISION=0.01,
+                   REFERENCE='AUTRE_ASTER',),
+                   ),);
+
+# LOI DE COMPORTEMENT KOCKS_RAUCH en Explicite
+
+EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT2,
+                 #    CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC3,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                                   COMPOR=COMPORP,
+                                   RESO_INTE='RUNGE_KUTTA_2',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST3C,#INST_FIN=1.05088000,
+                                   SUBD_METHODE='EXTRAPOLE', 
+                                   SUBD_PAS=4,
+                                   SUBD_NIVEAU=5,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                               MATRICE='ELASTIQUE'),),
+                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
+                                     ITER_GLOB_MAXI=10,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST3,),
+                                     )
+
+EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
+                 RESULTAT=EXPLKRP,
+                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
+
+TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-463.3,PRECISION=0.04,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.01,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-8.3165E-03,PRECISION=0.01,
+                   REFERENCE='AUTRE_ASTER',),
+                   ),);
+
+
+                   
+                   
                           
 # IMPLICITE : TEST DE ECOU_VISC2, ECRO_LINE2, ECRO_CIN2
 
@@ -460,7 +639,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-0.000675943476554,
+                   VALE=-0.00067555,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLCHAB,
                    INST=TFIN,
@@ -468,7 +647,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.82299780001e-05,
+                   VALE=-1.78367e-05,
                    REFERENCE='NON_REGRESSION',),),);
                    
                    
@@ -923,50 +1102,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLTOUT,
                    VALE=-0.000657713498623,
                    REFERENCE='NON_REGRESSION',),),);
 
-# LOI DE COMPORTEMENT KOCKS_RAUCH
 
-IMPLKR=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT2,
-                     CARA_ELEM=ORIENKR,
-                     EXCIT=(_F(CHARGE=TRAC2,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPORKR,
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=100,
-                                   ITER_INTE_PAS=10,
-                                   RESO_INTE='IMPLICITE',
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST2,
-                                   SUBD_METHODE='EXTRAPOLE', 
-                                   SUBD_PAS=4,
-                                   SUBD_NIVEAU=5,),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                                REAC_ITER=1,),),
-                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                                     ITER_GLOB_MAXI=100,),),);
+FIN();
 
-IMPLKR=CALC_ELEM(reuse =IMPLKR,
-                 RESULTAT=IMPLKR,
-                 OPTION=('EPSI_ELGA_DEPL'),);
-
-TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
-                   INST=TFIN2,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-1.3999E+03,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=IMPLKR,
-                   INST=TFIN2,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-9.7506E-03,
-                   REFERENCE='NON_REGRESSION',),),);
-FIN(FORMAT_HDF='OUI',);
                    
-# IMPLICITE : TEST DE ECOU_VISC3, TRES LENT CAR PAS D'ECROUISSAGE

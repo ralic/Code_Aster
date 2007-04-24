@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -291,18 +291,6 @@ cata_msg={
 
 69: _("""
  pas de variable:  %(k1)s  pour la maille:  %(k2)s 
-"""),
-
-70: _("""
- le calcul de l indicateur d erreur ne sait pas traiter les charges du type de  %(k1)s 
-"""),
-
-71: _("""
- le choix  %(k1)s  apparait au moins dans 2 charges.
-"""),
-
-72: _("""
- probleme sur les charges. consulter la documentation
 """),
 
 73: _("""

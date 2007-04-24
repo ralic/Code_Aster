@@ -1,13 +1,12 @@
       SUBROUTINE CAFTHM (CHAR, LIGRMO, NOMA, FONREE )
       IMPLICIT      NONE
-      INTEGER       NBCA, NBET
       CHARACTER*4   FONREE
       CHARACTER*8   CHAR, NOMA
       CHARACTER*(*) LIGRMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,8 +32,6 @@ C ARGUMENTS D'ENTREE:
 C      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C      LIGRMO : NOM DU LIGREL DE MODELE
 C      NOMA   : NOM DU MAILLAGE
-C      NBCA   : NOMBRE D'APPEL A NOCART
-C      NBET   : NOMBRE TOTAL DE MAILLES
 C      FONREE : FONC OU REEL
 C ======================================================================
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -84,22 +81,19 @@ C
 C
 C --- STOCKAGE DE FORCES NULLES SUR TOUT LE MAILLAGE
 C
-      NCMP = 4
-      ZK8(JNCMP)   = 'PFLU'
-      ZK8(JNCMP+1) = 'PFLU1'
-      ZK8(JNCMP+2) = 'PFLU2'
-      ZK8(JNCMP+3) = 'PTHER'
+      NCMP = 3
+      ZK8(JNCMP)   = 'PFLU1'
+      ZK8(JNCMP+1) = 'PFLU2'
+      ZK8(JNCMP+2) = 'PTHER'
 C
       IF (FONREE.EQ.'REEL') THEN
          ZR(JVALV)   = 0.D0
          ZR(JVALV+1) = 0.D0
          ZR(JVALV+2) = 0.D0
-         ZR(JVALV+3) = 0.D0
       ELSE
          ZK8(JVALV)   = '&FOZERO'
          ZK8(JVALV+1) = '&FOZERO'
          ZK8(JVALV+2) = '&FOZERO'
-         ZK8(JVALV+3) = '&FOZERO'
       ENDIF
       CALL NOCART ( CARTE, 1, ' ', 'NOM', 0, ' ', 0, LIGRMO, NCMP )
 C
@@ -113,13 +107,13 @@ C --- STOCKAGE DANS LA CARTE
 C
       DO 10 IOCC = 1, NFLUX
          IF (FONREE.EQ.'REEL') THEN
-            CALL GETVR8 (MOTCLF, 'FLUN_HYDR1',IOCC,1,1,ZR(JVALV+1),N1)
-            CALL GETVR8 (MOTCLF, 'FLUN_HYDR2',IOCC,1,1,ZR(JVALV+2),N2)
-            CALL GETVR8 (MOTCLF, 'FLUN'      ,IOCC,1,1,ZR(JVALV+3),N3)
+            CALL GETVR8 (MOTCLF, 'FLUN_HYDR1',IOCC,1,1,ZR(JVALV),N1)
+            CALL GETVR8 (MOTCLF, 'FLUN_HYDR2',IOCC,1,1,ZR(JVALV+1),N2)
+            CALL GETVR8 (MOTCLF, 'FLUN'      ,IOCC,1,1,ZR(JVALV+2),N3)
          ELSE
-            CALL GETVID(MOTCLF, 'FLUN_HYDR1',IOCC,1,1,ZK8(JVALV+1),N1)
-            CALL GETVID(MOTCLF, 'FLUN_HYDR2',IOCC,1,1,ZK8(JVALV+2),N2)
-            CALL GETVID(MOTCLF, 'FLUN'      ,IOCC,1,1,ZK8(JVALV+3),N3)
+            CALL GETVID(MOTCLF, 'FLUN_HYDR1',IOCC,1,1,ZK8(JVALV),N1)
+            CALL GETVID(MOTCLF, 'FLUN_HYDR2',IOCC,1,1,ZK8(JVALV+1),N2)
+            CALL GETVID(MOTCLF, 'FLUN'      ,IOCC,1,1,ZK8(JVALV+2),N3)
          END IF
 C
 C --- TEST SUR LES CAL

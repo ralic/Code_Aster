@@ -1,156 +1,142 @@
-
-# MODIF  DATE 05/02/2007   AUTEUR TARDIEU N.TARDIEU 
-# RESPONSABLE JMBHH01 J.M.PROIX
+# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+# RESPONSABLE PROIX J-M.PROIX
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 #        TUYAUTERIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS MASSIFS
-#
-#
+# -*- coding: iso-8859-1 -*-
 
 DEBUT(CODE=_F(NOM='FORMA01C',
               NIV_PUB_WEB='INTERNET',),);
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
-
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(GROUP_MA='EFOND',),
-                               _F(GROUP_MA='SURFINT',),
-                               _F(GROUP_MA='SURFEXT',),
-                               _F(GROUP_MA='ENCAST',),
-                               _F(OPTION='PLAN',
-                                  NOM='PLANY',
-                                  POINT=(3.6,3.6,0.0,),
-                                  VECT_NORMALE=(0.0,1.0,0.0,),
-                                  PRECISION=0.001,),
-                               _F(OPTION='ENV_CYLINDRE',
-                                  NOM='REXT',
-                                  POINT=(3.6,3.6,0.0,),
-                                  RAYON=0.2,
-                                  VECT_NORMALE=(1.0,0.0,0.0,),
-                                  PRECISION=0.001,),
-                               _F(INTERSEC=('EFOND','PLANY','REXT',),
-                                  NOM='PB',),),);
-
-
 # ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
-#
-#
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
                                  _F(GROUP_MA='EFOND',),),);
-
-
-# DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL THERMIQUE
-#
-#
-
-MODETH=AFFE_MODELE(MAILLAGE=MAIL,
-                   AFFE=_F(GROUP_MA=('V','SURFINT','SURFEXT',),
-                           PHENOMENE='THERMIQUE',
-                           MODELISATION='3D',),);
-
-
-# DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL MECANIQUE
-#
-#
-
-MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='3D',),);
-
-
 # DEFINITION DU MATERIAU UTILISE POUR LE CALCUL THERMOMECANIQUE
-#
 
 INCLUDE_MATERIAU(NOM_AFNOR='A42',
                  TYPE_MODELE='REF',
                  VARIANTE='A',
                  TYPE_VALE='NOMI',
                  NOM_MATER='MAT',
-                 EXTRACTION=(_F(COMPOR='ELAS',
-                                TEMP_EVAL=20.0,),
+                 EXTRACTION=(_F(COMPOR='ELAS', TEMP_EVAL=20.0,),
                              _F(COMPOR='THER',
                                 TEMP_EVAL=20.0,),),
                  INFO=2,);
 
 
-#MAT=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
-#                          NU=0.3,
-#                          ALPHA=1.092e-05,),
-#                  THER=_F(LAMBDA=54.6,
-#                          RHO_CP=3710000.0,),);
-
-CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
+# champ de materiau pour le calcul thermique
+CHMATHER=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F(TOUT='OUI',
-                          MATER=MAT,
-                          TEMP_REF=20.0,),);
+                          MATER=MAT),);
 
 
+
+# DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL THERMIQUE
+
+MODETH=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(GROUP_MA=('V','SURFINT','SURFEXT',),
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='3D',),);
 # DEFINITION DES CONDITIONS AUX LIMITES THERMIQUES
 #    TEMPERATURE IMPOSEE SUR LA FACE INTERNE DU TUBE
 #     ET ECHANGE NUL SUR LA FACE EXTERNE DU TUBE
 #     CALCUL DU TRANSITOIRE THERMIQUE
-#
-#
-#
 
-F_TEMP=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,20.0,
-                           10.0,70.0,),
-                     PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);
+F_TEMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,20.0,
+                           10.0,70.0,
+                           ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
 H=DEFI_CONSTANTE(VALE=0.0,);
 
 T_EXT=DEFI_CONSTANTE(VALE=20.0,);
 
 BLOQTH=AFFE_CHAR_CINE_F(MODELE=MODETH,
-                        THER_IMPO=_F(GROUP_NO='SURFINT',
+                        THER_IMPO=_F(GROUP_MA='SURFINT',
                                      TEMP=F_TEMP,),);
 
 ECHATH=AFFE_CHAR_THER_F(MODELE=MODETH,
-                      ECHANGE=_F(GROUP_MA='SURFEXT',
-                                 COEF_H=H,
-                                 TEMP_EXT=T_EXT,),);
+                        ECHANGE=_F(GROUP_MA='SURFEXT',
+                                   COEF_H=H,
+                                   TEMP_EXT=T_EXT,),);
 
 INST=DEFI_LIST_REEL(VALE=(5.0,10.0,),);
 
 TEMPE=THER_LINEAIRE(MODELE=MODETH,
-                    CHAM_MATER=CHM,
-                    EXCIT=(_F(CHARGE=BLOQTH),
-                           _F(CHARGE=ECHATH)),
+                    CHAM_MATER=CHMATHER,
+                    EXCIT=(_F(CHARGE=BLOQTH,),
+                           _F(CHARGE=ECHATH,),),
                     INCREMENT=_F(LIST_INST=INST,),
                     TEMP_INIT=_F(VALE=20.0,),);
 
 
+
+# champs de materiau dependant ou non  de la temperature (en version 9)
+# champ de materiau incluant la temperature pour le calcul thermomecanique
+CHMECATH=AFFE_MATERIAU(MAILLAGE=MAIL,
+                        AFFE_VARC=(_F(TOUT='OUI',
+                                     EVOL=TEMPE,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',
+                                     VALE_REF=20),),
+                        AFFE=_F(TOUT='OUI',
+                                MATER=MAT),);
+
+# champ de materiau independant de la temperature pour le calcul mecanique seul
+CHMINDT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+
+
+
+# DEFINITION DES ELEMENTS FINIS UTILISES POUR LE CALCUL MECANIQUE
+
+MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
 # DEFINITION DES CONDITIONS AUX LIMITES  CALCUL THERMO-MECANIQUE
 #    ENCASTREMENT SUR LA SECTION ENCAST ET EFOND
 #    SYMETRIE PAR RAPPORT AU PLAN XOY
 #    CHARGEMENT THERMIQUE
-#
-#
-#
 
 BLOQUE=AFFE_CHAR_CINE(MODELE=MODMECA,
                       MECA_IMPO=(_F(GROUP_MA=('ENCAST','EFOND',),
@@ -160,29 +146,106 @@ BLOQUE=AFFE_CHAR_CINE(MODELE=MODMECA,
                                  _F(GROUP_MA='SYMETRIE',
                                     DZ=0.0,),),);
 
-CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
-                      TEMP_CALCULEE=TEMPE,);
-
-
+# CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
+#                       TEMP_CALCULEE=TEMPE,);
 # CALCUL THERMO-MECANIQUE ET EXTRACTION DE RESULTATS
-#
-#
-#
 
 RESUT=MECA_STATIQUE(MODELE=MODMECA,
-                    CHAM_MATER=CHM,
-                    EXCIT=(_F(CHARGE=CHARGT),
-                           _F(CHARGE=BLOQUE)),
+                    CHAM_MATER=CHMECATH,
+                    EXCIT=(#_F(CHARGE=CHARGT,),
+                           _F(CHARGE=BLOQUE,),),
                     LIST_INST=INST,);
 
 RESUT=CALC_ELEM(reuse =RESUT,
                 RESULTAT=RESUT,
                 LIST_INST=INST,
-                OPTION='SIGM_ELNO_DEPL',);
+                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+#
+# CAS DE CHARGE MECANIQUE  1 FORCE   2 PRESSION
+# conditions aux limites communes
 
-RESUT=CALC_ELEM(reuse =RESUT,
-                RESULTAT=RESUT,
-                OPTION='EQUI_ELNO_SIGM',);
+BLOQU1=AFFE_CHAR_CINE(MODELE=MODMECA,
+                      MECA_IMPO=(_F(GROUP_MA='ENCAST',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                 _F(GROUP_MA='SYMETRIE',
+                                    DZ=0.0,),),);
+
+# Effort surfacique sur EFOND
+
+REXT= 0.2
+
+EPTUB = 0.02;
+
+FYTOT = 100000.0;
+
+RINT = (REXT - EPTUB);
+
+SINT = (pi * (RINT * RINT));
+
+SEXT = (pi * (REXT * REXT));
+
+SFON = (SEXT - SINT);
+
+FYREP = (FYTOT / SFON);
+
+
+CHARG1=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      FORCE_FACE=_F(GROUP_MA='EFOND',
+                                    FY=FYREP,),);
+
+RESU1=MECA_STATIQUE(MODELE=MODMECA,
+                    CHAM_MATER=CHMINDT,
+                    EXCIT=(_F(CHARGE=CHARG1,),
+                           _F(CHARGE=BLOQU1,),),);
+
+RESU1=CALC_ELEM(reuse =RESU1,
+                RESULTAT=RESU1,
+                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+# pression interne
+PRES = 15000000.0;
+
+
+CHARG2=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      PRES_REP=_F(GROUP_MA='SURFINT',
+                                  PRES=PRES,),);
+
+RESU2=MECA_STATIQUE(MODELE=MODMECA,
+                    CHAM_MATER=CHMINDT,
+                    EXCIT=(_F(CHARGE=CHARG2,),
+                           _F(CHARGE=BLOQU1,),),);
+
+RESU2=CALC_ELEM(reuse =RESU2,
+                RESULTAT=RESU2,
+                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+
+# Impression des resultats au format MED pour visu SALOME
+IMPR_RESU(MODELE=MODMECA,
+          FORMAT='MED',
+          RESU=(_F(MAILLAGE=MAIL,),
+                _F(RESULTAT=TEMPE,),
+                _F(RESULTAT=RESU1,),
+                _F(RESULTAT=RESU2,),
+                _F(RESULTAT=RESUT,),),);
+
+TS=MACR_LIGN_COUPE(RESULTAT=RESU1,
+                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   LIGN_COUPE=_F(NB_POINTS=20,
+                                 COOR_ORIG=(0.18,3.,0,),
+                                 COOR_EXTR=(0.2,3.,0,),),);
+
+IMPR_TABLE(TABLE=TS,);
+
+IMPR_TABLE(TABLE=TS,
+           FORMAT='XMGRACE',
+           PILOTE='PNG',
+           UNITE=29,
+           NOM_PARA=('ABSC_CURV','SIYY',),
+           TITRE='SIYY = f(EPAIS)',);
+
+
+# TESTS DE NON REGRESSION
 
 TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    INST=10.0,
@@ -200,71 +263,23 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.01.13',),),);
 
-
-#
-# CAS DE CHARGE MECANIQUE  1 FORCE   2 PRESSION
-#FYTOT = 100000.0;
-#EPTUB = 0.02;
-#REXT = 0.2;
-
-REXT = 0.2;
-
-EPTUB = 0.02;
-
-FYTOT = 100000.0;
-
-RINT = (REXT - EPTUB);
-
-SINT = (pi * (RINT * RINT));
-
-SEXT = (pi * (REXT * REXT));
-
-SFON = (SEXT - SINT);
-
-FYREP = (FYTOT / SFON);
-
-
-BLOQU1=AFFE_CHAR_CINE(MODELE=MODMECA,
-                      MECA_IMPO=(_F(GROUP_MA='ENCAST',
-                                    DX=0.0,
-                                    DY=0.0,
-                                    DZ=0.0,),
-                                 _F(GROUP_MA='SYMETRIE',
-                                    DZ=0.0,),),);
-
-CHARG1=AFFE_CHAR_MECA(MODELE=MODMECA,
-                      FORCE_FACE=_F(GROUP_MA='EFOND',
-                                    FY=FYREP,),);
-
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
-
-RESU1=MECA_STATIQUE(MODELE=MODMECA,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CHARG1),
-                           _F(CHARGE=BLOQU1)),
-                    );
-
-RESU1=CALC_ELEM(reuse =RESU1,
-                RESULTAT=RESU1,
-                OPTION='SIGM_ELNO_DEPL',);
-PRES = 15000000.0;
-
-
-CHARG2=AFFE_CHAR_MECA(MODELE=MODMECA,
-                      PRES_REP=_F(GROUP_MA='SURFINT',
-                                  PRES=PRES,),);
-
-RESU2=MECA_STATIQUE(MODELE=MODMECA,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=(_F(CHARGE=CHARG2),
-                           _F(CHARGE=BLOQU1)),
-                    );
-
-RESU2=CALC_ELEM(reuse =RESU2,
-                RESULTAT=RESU2,
-                OPTION='SIGM_ELNO_DEPL',);
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='EFOND',),
+                               _F(GROUP_MA='ENCAST',),
+                               _F(OPTION='PLAN',
+                                  NOM='PLANY',
+                                  POINT=(3.6,3.6,0.0,),
+                                  VECT_NORMALE=(0.0,1.0,0.0,),
+                                  PRECISION=0.001,),
+                               _F(OPTION='ENV_CYLINDRE',
+                                  NOM='REXT',
+                                  POINT=(3.6,3.6,0.0,),
+                                  RAYON=0.2,
+                                  VECT_NORMALE=(1.0,0.0,0.0,),
+                                  PRECISION=0.001,),
+                               _F(INTERSEC=('EFOND','PLANY','REXT',),
+                                  NOM='PB',),),);
 
 TABDEP1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='DEPB1',
@@ -279,10 +294,6 @@ TABDEP2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 NOM_CHAM='DEPL',
                                 GROUP_NO='PB',
                                 TOUT_CMP='OUI',),);
-
-IMPR_TABLE(TABLE=TABDEP1,);
-
-IMPR_TABLE(TABLE=TABDEP2,);
 
 TEST_TABLE(TABLE=TABDEP1,
            NOM_PARA='DX',
@@ -308,12 +319,7 @@ TEST_TABLE(TABLE=TABDEP2,
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
-IMPR_RESU(MODELE=MODMECA,
-          FORMAT='MED',
-          RESU=(_F(MAILLAGE=MAIL,),
-                _F(RESULTAT=TEMPE,),
-                _F(RESULTAT=RESUT,
-                   NOM_CHAM=('DEPL','EQUI_ELNO_SIGM',),),),);
+# Calcul des resultantes aux extremites
 
 RESU1=CALC_NO(reuse =RESU1,
               RESULTAT=RESU1,
@@ -342,6 +348,4 @@ IMPR_TABLE(TABLE=FAPP,);
 IMPR_TABLE(TABLE=REAC,);
 
 FIN();
-
-
 #

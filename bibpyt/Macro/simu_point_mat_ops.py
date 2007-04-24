@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,8 +17,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
-          SUIVI_DDL,ARCHIVAGE,SIGM_IMPOSE,EPSI_IMPOSE,MODELISATION, INFO, **args) :
+def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,RECH_LINEAIRE,SIGM_INIT,EPSI_INIT,VARI_INIT,
+          COMP_ELAS,SUIVI_DDL,ARCHIVAGE,SIGM_IMPOSE,EPSI_IMPOSE,MODELISATION, INFO, **args) :
 
   """Simulation de la reponse d'un point materiel"""
 
@@ -38,6 +38,8 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
   POST_RELEVE_T   = self.get_cmd('POST_RELEVE_T')
   CALC_TABLE      = self.get_cmd('CALC_TABLE')
   CALC_ELEM       = self.get_cmd('CALC_ELEM')
+  CREA_CHAMP       = self.get_cmd('CREA_CHAMP')
+#  IMPR_RESU       = self.get_cmd('IMPR_RESU')
 
   from Accas import _F
   from Utilitai.UniteAster import UniteAster
@@ -330,12 +332,148 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
   for i in xrange(nbsig) :
     iks=CMP_SIG[i]
     l_char.append(  _F(CHARGE=__S[i],FONC_MULT=SIG[iks])  )
+
+
+
+# Etat initial
+  SIGINI={}
+  VARINI={}
+  LCSIG=[]
+  LVSIG=[]
+  init_dico={}
+  etatinit=0
+
+# --contraintes initiales
+  if SIGM_INIT:        
+      etatinit=1                                                     
+      SIGINI=SIGM_INIT[0].cree_dict_valeurs(SIGM_INIT[0].mc_liste)   
+      for i in SIGINI.keys():                                        
+          if SIGINI[i]!=None :                                       
+              LCSIG.append(i)                                        
+              LVSIG.append(SIGINI[i])                                
+
+      __SIG_INIT=CREA_CHAMP(MAILLAGE=__MA,                           
+                OPERATION='AFFE',                                    
+                TYPE_CHAM='CART_SIEF_R',                             
+                AFFE=_F(TOUT='OUI',                                  
+                        NOM_CMP=LCSIG,                               
+                        VALE=LVSIG,))                                
+      init_dico['SIGM']=__SIG_INIT                                   
+          
+# --variables internes initiales
+  if VARI_INIT:        
+      etatinit=1
+      lnomneu=[]
+      lnomvar=[]
+      VARINI=VARI_INIT[0].cree_dict_valeurs(VARI_INIT[0].mc_liste)
+      nbvari=len(VARINI['VALE'])
+      for i in range(nbvari):
+          lnomneu.append('X'+str(i+1))
+          lnomvar.append('V'+str(i+1))
+
+      __NEUT=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_NEUT_R', MAILLAGE=__MA,
+        AFFE=_F( MAILLE ='VOLUME', NOM_CMP = lnomneu, VALE = VARINI['VALE']))
+        
+      __VAR_INIT=CREA_CHAMP(MODELE=__MO,
+                   OPERATION='ASSE',
+                   TYPE_CHAM='ELGA_VARI_R',
+                   ASSE=_F(TOUT='OUI',CHAM_GD=__NEUT,
+                           NOM_CMP=lnomneu,NOM_CMP_RESU=lnomvar))
+      init_dico['VARI']=__VAR_INIT
+#      IMPR_RESU(MODELE=__MO,RESU=_F(CHAM_GD=__VAR_INIT))
+          
+  # --deformations initiales
+  if EPSI_INIT:
+      etatinit=1
+      EPSINI={}
+      LCDEPL=[]
+      LNDEPL=[]
+      LVDEPL=[]
+      LIST_AFFE=[]
+      mon_dico={}
+      mon_dico["NOEUD"]='P0'
+      mon_dico["NOM_CMP"]=("DX","DY","DZ")
+      mon_dico["VALE"]=(0.,0.,0.)
+      LIST_AFFE.append(mon_dico)
+      
+      EPSINI=EPSI_INIT[0].cree_dict_valeurs(EPSI_INIT[0].mc_liste)
+      mon_dico={}
+      mon_dico["NOEUD"]='P1'
+      mon_dico["NOM_CMP"]='DX'
+      mon_dico["VALE"]=EPSINI['EPXX']
+      LIST_AFFE.append(mon_dico)
+      mon_dico={}
+      mon_dico["NOEUD"]='P2'
+      mon_dico["NOM_CMP"]='DY'
+      mon_dico["VALE"]=EPSINI['EPYY']
+      LIST_AFFE.append(mon_dico)
+      if MODELISATION=="3D": 
+          mon_dico={}
+          mon_dico["NOEUD"]='P3'
+          mon_dico["NOM_CMP"]='DZ'
+          mon_dico["VALE"]=EPSINI['EPZZ']
+          LIST_AFFE.append(mon_dico)
+          mon_dico={}
+          mon_dico["NOEUD"]='P1'
+          mon_dico["NOM_CMP"]='DY'
+          mon_dico["VALE"]=EPSINI['EPXY']
+          LIST_AFFE.append(mon_dico)
+          mon_dico={}
+          mon_dico["NOEUD"]='P2'
+          mon_dico["NOM_CMP"]='DX'
+          mon_dico["VALE"]=EPSINI['EPXY']
+          LIST_AFFE.append(mon_dico)
+          mon_dico={}
+          mon_dico["NOEUD"]='P1'
+          mon_dico["NOM_CMP"]='DZ'
+          mon_dico["VALE"]=EPSINI['EPXZ']
+          LIST_AFFE.append(mon_dico)
+          mon_dico={}
+          mon_dico["NOEUD"]='P3'
+          mon_dico["NOM_CMP"]='DX'
+          mon_dico["VALE"]=EPSINI['EPXZ']
+          LIST_AFFE.append(mon_dico)
+          mon_dico={}
+          mon_dico["NOEUD"]='P2'
+          mon_dico["NOM_CMP"]='DZ'
+          mon_dico["VALE"]=EPSINI['EPYZ']
+          LIST_AFFE.append(mon_dico)
+          mon_dico={}
+          mon_dico["NOEUD"]='P3'
+          mon_dico["NOM_CMP"]='DY'
+          mon_dico["VALE"]=EPSINI['EPYZ']
+          LIST_AFFE.append(mon_dico)
+      else:
+          mon_dico={}
+          mon_dico["NOEUD"]='P1',
+          mon_dico["NOM_CMP"]='DY'
+          mon_dico["VALE"]=EPSINI['EPXY']
+          LIST_AFFE.append(mon_dico)
+          mon_dico={}
+          mon_dico["NOEUD"]='P2'
+          mon_dico["NOM_CMP"]='DX'
+          mon_dico["VALE"]=EPSINI['EPXY']
+          LIST_AFFE.append(mon_dico)
+      __DEP_INI=CREA_CHAMP(MAILLAGE=__MA,
+                   OPERATION='AFFE',
+                   TYPE_CHAM='NOEU_DEPL_R',
+                   AFFE=LIST_AFFE)
+      init_dico['DEPL']=__DEP_INI
+#      IMPR_RESU(RESU=_F(CHAM_GD=__DEP_INI))
+                  
+
+
       
 # -- Deroulement du calcul
   motscles={} 
-  motscles['COMP_INCR']   = COMP_INCR.List_F()
+  if   COMP_INCR  : 
+      motscles['COMP_INCR']   = COMP_INCR.List_F()
+  if   COMP_ELAS   : 
+      motscles['COMP_ELAS']   = COMP_ELAS.List_F()
   motscles['CONVERGENCE'] = CONVERGENCE.List_F()
   motscles['NEWTON']      = NEWTON.List_F()
+  if   RECH_LINEAIRE   : 
+      motscles['RECH_LINEAIRE']      = RECH_LINEAIRE.List_F()
   motscles['INCREMENT']   = INCREMENT.List_F()
   
   if   SUIVI_DDL   : 
@@ -343,19 +481,30 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
      
   if   ARCHIVAGE   : 
      motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
-     
 
-  __EVOL = STAT_NON_LINE(
-    MODELE = __MO, 
-    CHAM_MATER = __CHMAT, 
-    EXCIT = l_char,**motscles)
+  if   etatinit == 1  : 
+
+      __EVOL = STAT_NON_LINE(
+        MODELE = __MO, 
+        CHAM_MATER = __CHMAT,
+        ETAT_INIT=init_dico,
+        EXCIT = l_char,**motscles)
+
+
+  else:  
+
+      __EVOL = STAT_NON_LINE(
+        MODELE = __MO, 
+        CHAM_MATER = __CHMAT, 
+        EXCIT = l_char,**motscles)
 
 
   __EVOL = CALC_ELEM(reuse = __EVOL,
     RESULTAT = __EVOL,
     OPTION = ('SIEF_ELNO_ELGA','EPSI_ELNO_DEPL','VARI_ELNO_ELGA')
     )
-    
+  
+#  IMPR_RESU(RESU=_F(RESULTAT=__EVOL))  
      
 # -- Recuperation des courbes
 
@@ -416,7 +565,7 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
 
   self.DeclareOut('REPONSE',self.sd)
   
-  REPONSE=CALC_TABLE( TABLE=__REP_EPSI,
+  REPONSE=CALC_TABLE( TABLE=__REP_EPSI,TITRE='TABLE ',
            ACTION=(
                    _F(OPERATION='COMB',TABLE=__REP_SIGM,NOM_PARA=('INST'), ),
                    _F(OPERATION='COMB',TABLE=__REP_INV ,NOM_PARA=('INST'), ),

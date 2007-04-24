@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
       MODL_AXIS           =SIMP(statut='f',typ='TXM',into=("NON",)),
       ITER_CONT_MAXI      =SIMP(statut='f',typ='I',defaut=30),
       CONTACT_INIT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+      GLISSIERE           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
       ALGO_LAGR           =SIMP(statut='f',typ='TXM',defaut="VERSION1",into=("NON","VERSION1","VERSION2" , ) ),
       COEF_ECHELLE        =SIMP(statut='f',typ='R',defaut=1.E+6),
       b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramères du frottement de Coulomb",

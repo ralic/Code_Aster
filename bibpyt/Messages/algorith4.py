@@ -1,21 +1,21 @@
-#@ MODIF algorith4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith4 Messages  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -171,7 +171,7 @@ cata_msg={
 """),
 
 37: _("""
- erreurf_t < 0 ! 
+ erreurf_t < 0 !
 """),
 
 38: _("""
@@ -198,9 +198,9 @@ cata_msg={
  erreur - valeur de fac_t_c negative ou > 1   !!!!
 """),
 
-44: _("""
- la dichotomie pour irrad3m n a pas trouve de solution pour le nombre d iteration donne.
-"""),
+
+
+
 
 45: _("""
  la modelisation 1d n est pas autorisee
@@ -223,7 +223,7 @@ cata_msg={
 """),
 
 50: _("""
-  comportement inattendu :  %(k1)s 
+  comportement inattendu :  %(k1)s
 """),
 
 51: _("""
@@ -359,7 +359,7 @@ cata_msg={
 """),
 
 84: _("""
- integration elastoplastique de loi multi-critere : erreur de programmation 
+ integration elastoplastique de loi multi-critere : erreur de programmation
 """),
 
 85: _("""
@@ -411,7 +411,7 @@ cata_msg={
 """),
 
 97: _("""
- on ne traite pas actuellement plusieurs nom_cham simultanement, on ne considere que le premier argument 
+ on ne traite pas actuellement plusieurs nom_cham simultanement, on ne considere que le premier argument
 """),
 
 98: _("""

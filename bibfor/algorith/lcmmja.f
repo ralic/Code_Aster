@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C       ----------------------------------------------------------------
 C     ALLOCATION DYNAMIQUE
       REAL*8          SIGF(6),DDVIS(3,3),DDVIR(NVI),DRSDPR(NVI)
       REAL*8          FHOOK(6,6),CRITR,DGAMM2,DP2,DALPH2
-      REAL*8          EXPBP(24)
+      REAL*8          EXPBP(24),DAL(24)
       REAL*8          PGL(3,3),MS(6),VIS(3),TAUS,TIMED, TIMEF
       REAL*8          P,DP,YF(*),DY(*),DRDY(NR,NR),SMSMS(6,6),DFDGA
       REAL*8          MATERF(NMAT*2), DT,RP,DADV(3),DFDTAR,DFDALR,DFDRR
@@ -78,6 +78,7 @@ C     ----------------------------------------------------------------
       IRET=0
       CALL R8INIR ( NR*NR, 0.D0 , DRDY, 1 )
       CALL R8INIR ( 36, 0.D0 , MSDGDT, 1 )
+      CALL R8INIR ( 24, 0.D0 , DAL, 1 )
       DT=TIMEF-TIMED
       CALL LCEQVN ( NDT , YF(1)       , SIGF )
       NBFSYS=NBCOMM(NMAT,2)
@@ -140,7 +141,7 @@ C           CALCUL DE R(P) : RP=R0+Q*(1.D0-EXP(-B*P))
             CALL LCMMFE( FAMI,KPG,KSP,TAUS,MATERF(NMAT+1),MATERF(1),IFA,
      &                  NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),
      &      DY(NSFA+1),RP,ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,
-     &      HSR,IRET)
+     &      HSR,IRET,DAL)
             GAMMAP=VIND(NUVI+2)+DGAMMA
 
             IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
@@ -192,7 +193,7 @@ C                 CALCUL DE R(P)
                   CALL LCMMFE(FAMI,KPG,KSP,TAUS,MATERF(NMAT+1),
      &                    MATERF(1),IFA,NMAT,NBCOMM,NECOUL,IS,NBSYS,
      &                    VIND(NSFV+1),DY(NSFA+1),RR,ALPHAR,GAMMAR,DT,
-     &                    DALPH2,DGAMM2,DP2,CRITR,SGNR,HSR,IRET)
+     &                    DALPH2,DGAMM2,DP2,CRITR,SGNR,HSR,IRET,DAL)
                   GAMMAR=VIND(NUVR-6+2)+DGAMM2
 
                   IF(NECOUL.EQ.'KOCKS_RAUCH') THEN

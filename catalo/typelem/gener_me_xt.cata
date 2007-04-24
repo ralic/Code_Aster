@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -206,10 +206,6 @@ OPTION__
                                      E8NEUTI  PLONCHA  E33NEUTR PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST
                               OUT__  E90NEUTR PDEXFEM
-    ENER_RELA2          310   IN__   DDL_MECA PDEPSOL  E33NEUTR PPINTTO  E128NEUI PCNSETO  CMATERC  PMATERC 
-                                     E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  NGEOMER  PGEOMER
-                                     N1NEUT_R PLSN     N1NEUT_R PLST 
-                              OUT__  E1NEUTR  PENERG1  E1NEUTR  PENERG2
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
                                      N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST 
@@ -217,7 +213,7 @@ OPTION__
     FULL_MECA           539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  
+                                     ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST 
@@ -234,7 +230,7 @@ OPTION__
     RAPH_MECA           539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  
+                                     ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST 
@@ -258,7 +254,7 @@ OPTION__
     RIGI_MECA_TANG      539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  
+                                     ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO
                                      E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MMATUUR  PMATUUR
@@ -275,8 +271,8 @@ OPTION__
                                      ZVARIPG  PVARI_R
     XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      N1NEUT_R PLST     E18NEUTR PPINTER  E24NEUTR PAINTER  E15NEUTI PCFACE
-                                     E2NEUTI  PLONCHA  CONTX_R  PDONCO
-                              OUT__  E1NEUTI  PINCOCA  E1NEUTI  PINDCOO
+                                     E2NEUTI  PLONCHA  CONTX_R  PDONCO   E1NEUTI  PGLISS   E1NEUTI  PMEMCON
+                              OUT__  E1NEUTI  PINCOCA  E1NEUTI  PINDCOO  E1NEUTI  PINDMEM
     XFEM_SMPLX_INIT     118   IN__   NGEOMER  PGEOMER  
                               OUT__  E1NEUTR  PMEAST   N3NEUT_R PNIELNO
     XFEM_SMPLX_CALC     118   IN__   N1NEUT_R PLSNO    N3NEUT_R PGRLS    E1NEUTR  PGRANDF  N3NEUT_R PNIELNO

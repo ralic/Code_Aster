@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -489,10 +489,9 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
               END IF
             ELSE IF ((.NOT.CONVER) .AND. ITEMAX .AND. (.NOT.ARRET)) THEN
               WRITE (IFM,FMT1)
-              WRITE(K8B ,'(I8)') NUMORD
-              WRITE(K8B2,'(I8)') ITERAT
-              CALL UTEXCP(22,NOMPRO,'ABSENCE DE CONVERGENCE AU NUMERO'
-     &               //' D''ORDRE : '//K8B//', ITERATION : '//K8B2)
+              ITAB(1) = NUMORD
+              ITAB(2) = ITERAT
+              CALL UTEXCM(22,'MECANONLINE_85', 0, K8B, 2, ITAB, 0, RTAB)
             END IF
             WRITE (IFM,FMT1)
 

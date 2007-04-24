@@ -1,7 +1,7 @@
         SUBROUTINE LCMMSG(NOMFAM,NBSYS,NUSYS,PGL,MS)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,14 +33,42 @@ C
       INTEGER NBSYS,NUSYS, K, J
 C     ----------------------------------------------------------------
 C TOLE CRP_20
-      NBSYS=0
+      
+      IF (NUSYS.EQ.0) THEN
+        NBSYS=0
+        IF (NOMFAM.EQ.'BCC24')          THEN
+             NBSYS=24
+             GOTO 9999
+         ELSEIF (NOMFAM.EQ.'OCTAEDRIQUE')THEN
+             NBSYS=12
+             GOTO 9999
+         ELSEIF (NOMFAM.EQ.'CUBIQUE1')   THEN
+             NBSYS=12
+             GOTO 9999
+         ELSEIF (NOMFAM.EQ.'CUBIQUE2')   THEN
+             NBSYS=12
+             GOTO 9999
+         ELSEIF (NOMFAM.EQ.'BASAL')      THEN
+             NBSYS=3
+             GOTO 9999
+         ELSEIF (NOMFAM.EQ.'PRISMATIQUE')THEN
+             NBSYS=3
+             GOTO 9999
+         ELSEIF (NOMFAM.EQ.'MACLAGE')    THEN
+             NBSYS=1
+             GOTO 9999
+         ELSEIF (NOMFAM.EQ.'UNIAXIAL')   THEN
+             NBSYS=1
+             GOTO 9999
+         ENDIF
+      ENDIF
+      
+      
       SQRT2=SQRT(2.D0)
       SQRT3=SQRT(3.D0)
       CALL LCINVN( 6 , 0.D0 , MS )
       IF (NOMFAM.EQ.'BASAL') THEN
 C HCP LATTICE, BASAL PLANE {001}={0001}
-         NBSYS=3
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=0.D0
          N(1,2)=0.D0
          N(1,3)=1.D0
@@ -60,8 +88,6 @@ C HCP LATTICE, BASAL PLANE {001}={0001}
          L(3,2)=1.D0/SQRT2
          L(3,3)=0.D0
       ELSE IF (NOMFAM.EQ.'PRISMATIQUE') THEN
-         NBSYS=3
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=0.D0
          N(1,2)=0.D0
          N(1,3)=0.D0
@@ -87,8 +113,6 @@ C   N ET L DOIVENT ETRE UNITAIRES
  120  CONTINUE
       ELSE IF (NOMFAM.EQ.'OCTAEDRIQUE') THEN
 C FCC LATTICE
-         NBSYS=12
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=1.D0
          N(1,2)=1.D0
          N(1,3)=1.D0
@@ -173,8 +197,6 @@ C   N ET L DOIVENT ETRE UNITAIRES
          CALL U2MESS('F','ALGORITH4_69')
       ELSE IF (NOMFAM.EQ.'CUBIQUE1') THEN
 C BCC LATTICE, {110} SLIP
-         NBSYS=12
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=0.D0
          N(1,2)=1.D0
          N(1,3)=1.D0
@@ -255,8 +277,6 @@ C   N ET L DOIVENT ETRE UNITAIRES
  123  CONTINUE
          ELSE IF (NOMFAM.EQ.'CUBIQUE2') THEN
 C BCC LATTICE, {211} SLIP
-         NBSYS=12
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=2.D0
          N(1,2)=-1.D0
          N(1,3)=1.D0
@@ -339,8 +359,6 @@ C   N ET L DOIVENT ETRE UNITAIRES
 
        ELSE IF (NOMFAM.EQ.'BCC24') THEN
 C BCC LATTICE, {110} SLIP
-         NBSYS=24
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=0.D0
          N(1,2)=1.D0
          N(1,3)=1.D0
@@ -504,8 +522,6 @@ C   N ET L DOIVENT ETRE UNITAIRES
 
       ELSE IF (NOMFAM.EQ.'MACLAGE') THEN
 C FCC LATTICE
-         NBSYS=1
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=1.D0
          N(1,2)=1.D0
          N(1,3)=1.D0
@@ -523,8 +539,6 @@ C   N ET L DOIVENT ETRE UNITAIRES
       ELSE IF (NOMFAM.EQ.'RL') THEN
          CALL U2MESS('F','ALGORITH4_71')
       ELSE IF (NOMFAM.EQ.'UNIAXIAL') THEN
-         NBSYS=1
-         IF (NUSYS.EQ.0)  GOTO 9999
          N(1,1)=1.D0
          N(1,2)=0.D0
          N(1,3)=0.D0

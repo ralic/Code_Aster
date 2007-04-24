@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,6 +173,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 C
+      ITMAX    = INT(CRIT(1))
       TOLER    = CRIT(3)
       METING = 'RUNGE_KUTTA'
       LOI  = COMP(1)
@@ -190,7 +191,7 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,RBID,RBID,1,
+      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,RBID,RBID,0,
      &             TYPMA,HSR,MATERD,MATERF,MATCST,
      &    NBCOMM,CPMONO,ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
 C
@@ -286,9 +287,9 @@ C      POUR POLYCRISTAL
 
       CALL GERPAS(  FAMI,KPG,KSP,
      &              COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
-     &              NVI,NMAT,VINF,DTIME,TOLER,YMFS,COTHE,
+     &              NVI,NMAT,VINF,DTIME,ITMAX,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,ANGMAS,
-     &              SIGI,EPSD,DETOT,X)
+     &              SIGI,EPSD,DETOT,X,HSR)
       IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +2
 
 
@@ -311,14 +312,23 @@ C
 
       IF ((LOI(1:8).EQ.'MONOCRIS').OR.(LOI(1:8).EQ.'POLYCRIS')) THEN
 
-        CALL LCDPEQ ( VIND , VINF, EPSEQ)
-        VINF (NVI-1) = VIND (NVI-1) + EPSEQ
+         CALL LCDPEQ ( VIND , VINF, EPSEQ)
+         
+         IF (LOI(1:8).EQ.'MONOCRIS') THEN
 
-        IF (EPSEQ.EQ.0.D0) THEN
-        VINF (NVI) = 0.D0
-        ELSE
-        VINF (NVI) = 1.D0
-        ENDIF
+            VINF (NVI-1) = VIND (NVI-1) + EPSEQ
+           
+         ELSEIF (LOI(1:8).EQ.'POLYCRIS') THEN
+
+            VINF (7) = VIND (7) + EPSEQ
+
+         ENDIF
+
+         IF (EPSEQ.EQ.0.D0) THEN
+            VINF (NVI) = 0.D0
+         ELSE
+            VINF (NVI) = 1.D0
+         ENDIF
 
       ENDIF
 

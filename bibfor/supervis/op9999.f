@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IUNIFI
+      INTEGER      IUNIFI, ICHK
       INTEGER      IEND, IVERI, IFM, NOCC, IUNERR, IUNRES
       LOGICAL      ULEXIS
       CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
@@ -53,7 +53,7 @@ C
 
 
 C     TEST ERREUR E SANS ERREUR F
-      CALL FSIE()
+      CALL CHKMSG(ICHK)
 
       IF ( ICOND .NE. 0 ) GOTO 9999
 C     -----  FIN DE LA ZONE DE TEST ------------------------------------

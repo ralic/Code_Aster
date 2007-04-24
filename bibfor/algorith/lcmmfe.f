@@ -1,15 +1,15 @@
         SUBROUTINE LCMMFE( FAMI,KPG,KSP,TAUS,COEFT,MATERF,IFA,NMAT,
      &      NBCOMM,NECOUL,IS,NBSYS,VIND,DY,RP,ALPHAP,GAMMAP,DT,DALPHA,
-     &      DGAMMA,DP,CRIT,SGNS,HSR,IRET)
+     &      DGAMMA,DP,CRIT,SGNS,HSR,IRET,DAL)
         IMPLICIT NONE
-        INTEGER KPG,KSP,IFA,NMAT,NBCOMM(NMAT,3),IRET
+        INTEGER KPG,KSP,IFA,NMAT,NBCOMM(NMAT,3),IRET,NUMHSR
         REAL*8 TAUS,COEFT(NMAT),ALPHAP,DGAMMA,DP,DT,DTIME,TAUMU,TAUV
-        REAL*8 RP,SGNS,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT)
+        REAL*8 RP,SGNS,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT),DAL(*)
         CHARACTER*(*) FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,10 +46,12 @@ C           GAMMAP  :  GAMMA A T ACTUEL
 C           DT      :  INTERVALLE DE TEMPS EVENTULLEMENT REDECOUPE
 C     OUT:
 C           DGAMMA  :  DEF PLAS
+C           DALPHA  :  VARIABLE r pour Kocks-Rauch
 C           DP      :  DEF PLAS CUMULEE
 C           CRIT    :  CRITERE
 C           SGNS    :  SIGNE DE GAMMA
 C           IRET    :  CODE RETOUR
+C    VAR    DAL    :  dr
 C ======================================================================
 
 C     ----------------------------------------------------------------
@@ -63,6 +65,7 @@ C     ----------------------------------------------------------------
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
+      IRET=0
       PTIT=R8MIEM()
       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
 C-------------------------------------------------------------
@@ -149,11 +152,13 @@ C------------------------------------------------------------
           KDCS      =COEFT(IFL-1+8)
           P         =COEFT(IFL-1+9)
           Q         =COEFT(IFL-1+10)
+          NUMHSR=COEFT(IFL-1+11)
 
           CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
 
           TAUV=ABS(TAUS)-TAU0
-
+          CRIT=TAUV
+          
           IF (ABS(TAUS).LT.PTIT) THEN
              SGNS=1.D0
           ELSE
@@ -167,12 +172,12 @@ C------------------------------------------------------------
            TAUMU=0.D0
 
              DO 1 IU = 1, NBSYS
-             R=VIND(3*(IU-1)+1)
-             TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
+             R=VIND(3*(IU-1)+1)+DAL(IU)
+             TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*R
                IF (IU.NE.IS) THEN
-               RACR=SQRT(VIND(3*(IU-1)+1))
+                   RACR=SQRT(R)
                ELSE
-               RACR=0.D0
+                   RACR=0.D0
                ENDIF
              SOM = SOM+RACR
   1          CONTINUE
@@ -192,23 +197,24 @@ C------------------------------------------------------------
                GOTO 9999
                ENDIF
 
-             DGAMMA=GAMMA0*EXP(-DELTAG/K/TABS*
-     &        (1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)*SGNS
+               DGAMMA=GAMMA0*EXP(-DELTAG/K/TABS*
+     &        (1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)*SGNS*DT
 
-             DP=ABS(DGAMMA)
+               DP=ABS(DGAMMA)
 
-             DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
+               DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
      &               (BSD+SOM/KDCS-GCB*VIND(3*(IS-1)+1))
+               DAL(IS)=DALPHA
 
              ELSE
-             DGAMMA=0.D0
-             DP=0.D0
-             DALPHA=0.D0
+               DGAMMA=0.D0
+               DP=0.D0
+               DALPHA=0.D0
              ENDIF
            ELSE
-           DGAMMA=0.D0
-           DP=0.D0
-           DALPHA=0.D0
+              DGAMMA=0.D0
+              DP=0.D0
+              DALPHA=0.D0
            ENDIF
        ENDIF
 9999   CONTINUE

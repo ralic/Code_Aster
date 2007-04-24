@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_compor SD  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,7 @@ from SD import *
 class sd_compor(AsBase):
     nomj = SDNom(fin=8)
     CPRK = AsVK16()
-    CPRI = AsVI(lonmax=7, )
+    CPRI = AsVI()
+    CPRR = Facultatif(AsVR())
 
 

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,10 @@ OPTION__
         PCFACE   NEUT_I
         PLONCHA  NEUT_I
         PDONCO   XCONTAC
+        PGLISS   NEUT_I
+        PMEMCON  NEUT_I
+
    OUT__
         PINCOCA NEUT_I ELEM__
         PINDCOO NEUT_I ELEM__ 
+        PINDMEM NEUT_I ELEM__

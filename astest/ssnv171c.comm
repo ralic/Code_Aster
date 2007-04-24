@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
@@ -136,7 +136,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=1.88738425E-03,
+                   VALE=1.88744E-03,
                    PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MONOEXPL,
@@ -154,7 +154,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    NOM_CMP='EPYY',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.823915e-05,
+                   VALE=-6.8248e-05,
                    PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MONOEXPL,
@@ -163,7 +163,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    NOM_CMP='V43',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=4.813675e-04,
+                   VALE=4.81432e-04,
                    PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),
                    ),);

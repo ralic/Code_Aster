@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,5 +22,5 @@ POST_CHAM_XFEM=OPER(nom="POST_CHAM_XFEM",op= 196,sd_prod=resultat_sdaster,
     MAILLAGE = SIMP(statut='o',typ=maillage_sdaster),
     MODELE   = SIMP(statut='o',typ=modele_sdaster,),
     RESULTAT = SIMP(statut='o',typ=resultat_sdaster),
-    NOM_CHAM = SIMP(statut='o',typ='TXM',into=("DEPL","SIEF_ELGA"),)
+    NOM_CHAM = SIMP(statut='o',typ='TXM',into=("DEPL",),)
 );                     

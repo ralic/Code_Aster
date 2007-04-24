@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -30,9 +30,9 @@ GRANDEUR_SIMPLE__
                 ORIE_ARC : TROISIEME ANGLE NAUTIQUE DEFINISSANT LE PLAN DE L ARC
                 C_FLEX, I_SIGM : COEFFICIENT DE FLEXIBILITE ET INDICE DE
                 CONTRAINTES DANS LES DIRECTIONS Y ET Z
-                C_FLEX_Y, I_SIGM_Y : COEFFCIENT DE FLEXIBILITE ET INDICE DE
+                C_FLEX_Y, I_SIGM_Y : COEFFICIENT DE FLEXIBILITE ET INDICE DE
                 CONTRAINTES DANS LA DIRECTION Y
-                C_FLEX_Y, I_SIGM_Y : COEFFCIENT DE FLEXIBILITE ET INDICE DE
+                C_FLEX_Y, I_SIGM_Y : COEFFICIENT DE FLEXIBILITE ET INDICE DE
                 CONTRAINTES DANS LA DIRECTION Z
                  >>
     CAARPO   = R    RCOURB   ORIE_ARC C_FLEX   I_SIGM   C_FLEX_Y I_SIGM_Y C_FLEX_Z I_SIGM_Z
@@ -62,7 +62,7 @@ GRANDEUR_SIMPLE__
                     A65      A66      A67      A68      A69      A70      A71      A72
                     A73      A74      A75      A76      A77      A78      REPA
 
-<<  CADISK : MATRICE DE RIGIDITE DES ELEMENTS DISCRET (MODELISATION='DIS_XXXX')
+<<  CADISK : MATRICE DE RIGIDITE DES ELEMENTS DISCRETS (MODELISATION='DIS_XXXX')
         K1,K2,...K78 : COEFFICIENTS DE LA MATRICE DE RIGIDITE
         REPK :  TYPE DU REPERE (=1 REPERE GLOBAL, =2 REPERE LOCAL)
         ETA : COEFFICIENT DE L AMORTISSEMENT HYSTERETIQUE >>
@@ -250,8 +250,8 @@ GRANDEUR_SIMPLE__
 <<  DOMMAG   : DOMMAGE
        DOMA     :
        TRIAX    : TAUX DE TRIAXIALITE
-       SI_ENDO  : CONTRAINTE EQUIVALENTE D ENDOMMAGEMENT
-       COENDO   : CONTRAINTE EQUIVALENTE D ENDOMMAGEMENT NORMALISEE
+       SI_ENDO  : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT
+       COENDO   : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT NORMALISEE
        DOM_LEM  : ENDOMMAGEMENT DE LEMAITRE
        D_CUMULE : ENDOMMAGEMENT DE LEMAITRE  CUMULE >>
     DOMMAG   = R    DOMA     TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE
@@ -274,13 +274,13 @@ GRANDEUR_SIMPLE__
                     P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
                     VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y
                     VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR
-<<  ERREUR  : GRANDEUR LIEE A L ESTIMATEUR D ERREUR EN RESIDU
-     Pour chaque element :
+<<  ERREUR  : GRANDEUR LIEE A L'ESTIMATEUR D'ERREUR EN RESIDU
+     Pour chaque élément :
        ERREST : erreur absolue
        NUEST  : erreur relative
        SIGCAL : norme du tenseur des contraintes
-       TERMRE : erreur absolue du résidu de l equation d equilibre
-       TERMR2 : erreur relative du résidu de l equation d equilibre
+       TERMRE : erreur absolue du résidu de l'équation d'équilibre
+       TERMR2 : erreur relative du résidu de l'équation d'équilibre
        TERMSA : erreur absolue des sauts de contraintes sur chaque bord
        TERMS2 : erreur relative des sauts de contraintes sur chaque bord
        TERMNO : erreur absolue des sauts entre les contraintes normales
@@ -289,7 +289,7 @@ GRANDEUR_SIMPLE__
                 et la force de Neumann >>
     ERREUR   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2
                     ERTABS   ERTREL   TERMNO   TERMN2   TERMVO   TERMV2   TERMV1   TERMSA
-                    TERMS2   TERMS1   TERMFL   TERMF2   TERMF1   TERMEC   TERME2   TERME1   
+                    TERMS2   TERMS1   TERMFL   TERMF2   TERMF1   TERMEC   TERME2   TERME1
 <<  FACY_R   : GRANDEUR LIEE A LA FATIGUE A GRAND NOMBRE DE CYCLES SOUS
                CHARGEMENT MULTIAXIAL
        DTAUM1  : PREMIERE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS
@@ -332,9 +332,9 @@ GRANDEUR_SIMPLE__
        NBRUP2  : NOMBRE DE CYCLES AVANT RUPTURE (FONCTION DE SIGEQ2 ET D UNE
                  COURBE DE WOHLER)
        ENDO2   : ENDOMMAGEMENT ASSOCIE A NBRUP2 (ENDO2=1/NBRUP2)
-       VMIS    : MESURE D AMPLITUDE DE CONTRAINTE SELON LE CRITERE
+       VMIS    : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE
                  DE VON MISES
-       TRESCA  : MESURE D AMPLITUDE DE CONTRAINTE SELON LE CRITERE
+       TRESCA  : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE
                  DE TRESCA >>
     FACY_R   = R    DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1  EPNMAX1  EPNMOY1
                     SIGEQ1   NBRUP1   ENDO1    DTAUM2   VNM2X    VNM2Y    VNM2Z    SINMAX2
@@ -374,8 +374,8 @@ GRANDEUR_SIMPLE__
     FORC_R   = R    FX       FY       FZ       MX       MY       MZ       BX       REP
                     ALPHA    BETA     GAMMA    PLAN
     FREQ_R   = R    FREQ
-    FTHM_F   = K8   PFLU     PFLU1    PFLU2    PTHER
-    FTHM_R   = R    PFLU     PFLU1    PFLU2    PTHER
+    FTHM_F   = K8   PFLU1    PFLU2    PTHER
+    FTHM_R   = R    PFLU1    PFLU2    PTHER
     G        = R    GTHETA   FIC1     FIC2     K1       K2       K3       BETA
     GEOM_R   = R    X        Y        Z        W
     G_DEPL_R = R    D_DX_X   D_DX_Y   D_DX_Z   D_DY_X   D_DY_Y   D_DY_Z   D_DZ_X   D_DZ_Y
@@ -524,7 +524,7 @@ GRANDEUR_SIMPLE__
     IZ : MOMENT D INERTIE PRINCIPAL PAR RAPPORT A Z
     D : DIAMETRE DE LA TUYAUTERIE
     EP : EPAISSEUR DE LA TUYAUTERIE
-    SN : AMPLITUDE DE VARIARTION DES CONTRAINTES LINEARISEES
+    SN : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
     SALT : AMPLITUDE DE CONTRAINTE
     U_TOTAL : FACTEUR D USAGE
     TYPEKE : TYPE DE CALCUL DE KE : SOIT KE_MECA, SOIT KE_MIXTE
@@ -555,7 +555,6 @@ GRANDEUR_SIMPLE__
                     QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
                     VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
                     SI_ARC   SI_CONS  SI_NORM
-
 <<  QXX QXY QYX QYY QZX QZY : CONTRAINTES GENERALISEES
                                POUR ASSUMED STRAIN QUAS4 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY

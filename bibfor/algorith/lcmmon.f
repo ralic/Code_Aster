@@ -1,15 +1,15 @@
         SUBROUTINE LCMMON( FAMI,KPG,KSP,COMP,NBCOMM,CPMONO,NMAT,NVI,
      &                     VINI,X,  DTIME, E,NU,ALPHA,PGL,MOD,COEFT,
      &                     SIGI,EPSD, DETOT,
-     &                     COEL,DVIN )
+     &                     COEL,DVIN, HSR,ITMAX,TOLER,IRET )
         IMPLICIT NONE
-        INTEGER KPG,KSP,NMAT,NBCOMM(NMAT,3),NVI
+        INTEGER KPG,KSP,NMAT,NBCOMM(NMAT,3),NVI,ITMAX,IRET
         REAL*8 VINI(*),DVIN(*),NU,E,ALPHA,X,DTIME,COEFT(NMAT),COEL(NMAT)
-        REAL*8 SIGI(6),EPSD(6),DETOT(6),PGL(3,3)
+        REAL*8 SIGI(6),EPSD(6),DETOT(6),PGL(3,3),HSR(5,24,24),TOLER
         CHARACTER*(*) FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -56,10 +56,11 @@ C
 C     ----------------------------------------------------------------
       CHARACTER*8 MOD
       CHARACTER*16 NOMFAM,NMATER,NECOUL,NECRIS,NECRCI,CPMONO(5*NMAT+1)
-      REAL*8 VIS(3),DT
+      REAL*8 VIS(3),DT,DY(24),EXPBP(24),COEFEL(2),CRIT,SGNS
       REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP,SQ
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP,SIG33(3,3),WORK(3,3)
-      INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS
+      INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS,NSFV
+      INTEGER IEXP
 C     ----------------------------------------------------------------
 C --  VARIABLES INTERNES
 C
@@ -67,6 +68,9 @@ C
         EVI(ITENS) = VINI(ITENS)
         DEVI(ITENS) = 0.D0
     5 CONTINUE
+      DO 15 I=1,24
+         DY(I)=0.D0
+ 15   CONTINUE
 
       CALL CALSIG(FAMI,KPG,KSP,EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,
      &              DETOT,NMAT,COEL,SIGI)
@@ -75,6 +79,8 @@ C
 
       NUVI=6
       NUMS=0
+C     NSFV : debut de la famille IFA dans les variables internes       
+      NSFV=6
 
       DO 6 IFA=1,NBFSYS
 
@@ -109,24 +115,36 @@ C           TAU      : SCISSION REDUITE TAU=SIG:MS
 C
 C           ECROUISSAGE ISOTROPE
 C
-            CALL LCMMEI(COEFT,IFA,NMAT,NBCOMM,NECRIS,
-     &                  NUMS,VIS,NVI,VINI(7),RP,SQ)
-C
+            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+               IEXP=0
+               IF (IS.EQ.1) IEXP=1
+               CALL LCMMFI(COEFT,IFA,NMAT,NBCOMM,NECRIS,
+     &        IS,NBSYS,VINI(NSFV+1),DY(1),HSR,IEXP,EXPBP,RP)
+            ENDIF
+
 C           ECOULEMENT VISCOPLASTIQUE:
 C           ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)
 C           ET L'EXPLICITE (NMVPRK-GERPAS-RK21CO-RDIF01)
 C           CAS IMPLCITE : IL FAUT PRENDRE EN COMPTE DTIME
-C           CAS EXPLICITE : IL NE LE FAUT PAS (C'EST FAIT PAR RDIF01)
+C           CAS EXPLICITE : IL NE LE FAUT PAS (ON CALCULE DES VITESSES)
 C           D'OU :
             DT=1.D0
-C
-            CALL LCMMFL(FAMI,KPG,KSP,TAUS,COEFT,IFA,NMAT,NBCOMM,
-     &                  NECOUL,RP,NUMS,VIS,NVI,VINI,DT,DT,DGAMMA,DP)
-C
-C           ECROUISSAGE CINEMATIQUE
-C
-            CALL LCMMEC(TAUS,COEFT,IFA,NMAT,NBCOMM,NECRCI,VIS,DGAMMA,DP,
-     &                  DALPHA)
+C          
+            COEFEL(1)=E
+            COEFEL(2)=NU
+
+            CALL LCMMFE(FAMI,KPG,KSP,TAUS,COEFT,COEFEL,IFA,NMAT,NBCOMM,
+     &      NECOUL,IS,NBSYS,VINI(NSFV+1),DY(1),RP,VIS(1),VIS(2),DT,
+     &      DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET,DY)
+     
+            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+C              ECROUISSAGE CINEMATIQUE
+C              ITMAX=100
+C              TOLER=1.D-6
+               CALL LCMMFC( COEFT,IFA,NMAT,NBCOMM,NECRCI,
+     &           ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
+               IF (IRET.NE.0) GOTO 9999
+            ENDIF
 
             DO 9 ITENS=1,6
                DEVI(ITENS)=DEVI(ITENS)+MS(ITENS)*DGAMMA
@@ -136,6 +154,8 @@ C
             DVIN(NUVI-1)=DGAMMA
             DVIN(NUVI  )=DP
   7     CONTINUE
+  
+        NSFV=NSFV+NBSYS*3
 
   6   CONTINUE
 C
@@ -144,4 +164,6 @@ C
       DO 30 ITENS=1,6
         DVIN(ITENS)= DEVI(ITENS)
    30 CONTINUE
+
+ 9999 CONTINUE
       END

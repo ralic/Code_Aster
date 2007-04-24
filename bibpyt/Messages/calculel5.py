@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,15 +283,6 @@ cata_msg={
 60: _("""
  La combinaison de chargements de type 'rotation' est déconseillée.
  Veuillez plutot utiliser un chargement de type 'force interne'.
-"""),
-
-61: _("""
- TOUT = 'OUI' obligatoire avec l'option %(k1)s , pas de calcul de champ d'erreur.
-"""),
-
-62: _("""
- Le champ de contraintes n'a pas été calculé sur tout le modèle.
- On ne calcule pas l'option %(k1)s pour le numero d'ordre %(k2)s
 """),
 
 63: _("""

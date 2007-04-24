@@ -1,0 +1,786 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 24/04/2007 - 18:39:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010786 DU 2007-04-16 14:04:19
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.16, les cas tests ssnv199b et d s'arretent par manque de temps CPU (R)
+FONCTIONNALITE
+   Les deux tests ssnv199b et ssnv199d manquent d'un petit peu de temps sur Calibre4.
+   Je passe le tps_job à 300 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv199b et ssnv199d sur calibre4
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010787 DU 2007-04-16 14:34:38
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.18, le cas test ssls200a termine NOOK (C)
+FONCTIONNALITE
+   Suite au chantier variable de commande, ssls200a est NOOK.
+   La plus grosse variation est de l'ordre de 1e-6. On ajuste les tolérances.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssls200a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010803 DU 2007-04-23 11:36:41
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.19, le cas test ssnv504j s'arrete par manque de temps CPU (C)
+FONCTIONNALITE
+   J'augmente le temps à 3500 s bien que le test passe avec moins (peut-être très dépendant
+   de la charge mémoire de la machine, et donc augmentation temps système qui là est très
+   raisonnable) :
+   
+   ssnv504j     <A>_ALARM           2406.35    15.10  2421.45  2576.73
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv504j sur Calibre
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010804 DU 2007-04-23 12:45:26
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Suite fiche 10780 : arguments de utprin
+FONCTIONNALITE
+   Les arguments de la passerelle fortran-python (utprin) sont modifiés. On supprime la liste
+   des unités logiques.
+   
+   Cela n'avait pas été fait lors de la restitution de la fiche 10780 car il faut mettre à
+   jour le fantome CRP.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010805 DU 2007-04-23 14:17:42
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Bloc vide dans la catalogue de IMPR_FONCTION
+FONCTIONNALITE
+   Il y avait un BLOC vide dans le catalogue d'IMPR_FONCTION.
+   
+   Les mot-clés concernant la mise en forme des courbes n'ont de sens qu'aux formats autres
+   que TABLEAU.
+   
+   Cependant, il serait fastidieux de devoir supprimer ces mots-clés simplement quand on
+   repasse au format TABLEAU. On décide donc de supprimer ce bloc, les mots-clés étant
+   simplement ignorés au format TABLEAU.
+   
+   A reporter en version 8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 23/04/2007 - 15:36:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010609 DU 2007-03-06 08:09:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Performance intxc3xa9gration IRRAD3M
+FONCTIONNALITE
+   Les éventuels problèmes d'intégration de la loi étaient liés au gonflement sous
+   irradiation et au fluage sous irradiation. Les corrections consistent à améliorer les
+   méthodes numériques de ces 2 phénomènes.
+   
+   Pour le gonflement : il est possible d'intégrer les expressions. On utilise donc
+   maintenant les formules intégrées plutôt que la forme différentielle. Cela veut dire que
+   quelque soit le pas de chargement les valeurs liées au gonflement sont exactes.
+   
+   Pour le Fluage : Le problème vient du franchissement du seuil qui est fonction de
+   variables observables et internes. La seule façon d'améliorer le franchissement du seuil
+   est d'une part de définir un critère de convergence spécifique et d'autre part de
+   déclencher un redécoupage des pas de temps en fonction d'une précision souhaité sur le
+   franchissement du seuil.
+   
+   Pour le matériau IRRAD3M (R5.03.23)
+   |   IRRAD3M
+   |      R02, RM, EPSI_U, KAPPA           : plasticité
+   |      AI0, ETAI_S,  ZETA_F, TOLER_ET   : fluage
+   |      RG0, ALPHA, PHI0, ZETA_G         : gonflement
+   
+   Vérification : Passage de tous les cas tests IRRAD3M
+   |   ssna117a  ssna117b  ssna117c  ssna118a  ssnp132a  ssnv190a  ssnv190b
+   |   * Pas de changement des valeurs de référence
+   |   * Quelques LIST_INST sont modifiés => pas de temps plus grand, pour tester le
+   déclenchement de la subdivision
+   
+   Catalogue de messages pour la loi IRRAD3M :
+   |   irrad3m.py
+   
+   Fortran modifiés : Pour les irr*.f ajout de la carte RESPONSABLE
+   |   irrcvg.f irrcvx.f irrini.f irrjac.f  irrjpl.f irrmat.f irrres.f
+   |   lcconv.f lcplnl.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.23
+VALIDATION
+   Passage de tous les cas tests IRRAD3M
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010672 DU 2007-03-21 12:21:36
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   affe_char_meca ddl_poutre : plantage
+FONCTIONNALITE
+   Le problème venait du fait que d'imposer un ddl à ZERO dans un repère local ne correspond
+   pas forcement à des DDL nuls dans le repère global. De la même façon imposer des ddl non
+   nul dans un repère local peut conduire à imposer des DDL nuls dans le repère global. Le
+   problème était donc de traduire les ddl locaux en DDL globaux, sans tester une valeur
+   numérique NULLE sur les DDL globaux. Cette valeur pouvant être due soit à une combinaison
+   des ddl locaux, soit à une absence de conditions, et imposer ZERO ou rien ce n'est pas la
+   même chose pour des déplacements.
+   
+   Le nouveau cas test SSLL118 permet de valider la bonne "traduction" des ddl locaux en DDL
+   globaux en tenant compte de la présence ou non des conditions sur les ddl locaux et non
+   plus sur les valeurs nulles des DDL globaux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.01.118
+VALIDATION
+   nouveau cas test SSLL118a
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010345 DU 2006-12-04 16:17:25
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   AFFE_CARA_ELEM : Pour les coques 'ANGLE_REP' et 'VECTEUR' ne sont exclusifs
+FONCTIONNALITE
+   Ajout de EXCLUS('ANGL_REP','VECTEUR') sous le mot clef COQUE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage dans eficas
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 23/04/2007 - 13:37:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010797 DU 2007-04-19 12:44:31
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+   Modification du cas test rccm09b
+FONCTIONNALITE
+   Petites modifications du cas test rccm09b (cas test introduit il y a deux semaines pour la
+   validation du facteur d'amorcage dans POST_RCCM) :
+   
+   - modification du nombre d'occurrences des transitoires pour être cohérent avec rccm09a ;
+   - modification de la géométrie (fissure plus profonde) pour faciliter la comparaison avec
+   une solution analytique (fissure dans un milieu infini)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.04.147
+VALIDATION
+   rccm09b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 23/04/2007 - 13:55:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010788 DU 2007-04-17 07:18:15
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+   incohxc3xa9rences capy X-FEM
+FONCTIONNALITE
+   Suite à la mise à jour de la doc U4, des incohérences ont été détectées dans deux
+   catalogues de commandes sur X-FEM :
+   
+   PROPA_XFEM : la méthode par défault n'était pas appelable : on la remplace par la méthode
+   SIMPLEXE
+   
+   POST_CHAM_XFEM : on disait pouvoir post-traiter le champ de contraintes aux points de
+   Gauss, or c'est faux, le seul chmap disponible est le champ de déplacement : suppression
+   de SIEF_ELGA dans la liste des champs possibles
+   
+   aucun impact sur la doc, puisque la doc tient DEJA compte de ces changements.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests xfem
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010274 DU 2006-11-17 09:55:23
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   NEW8.3.22, le test ssnv182b s'arrete par manque de MEMOIRE (R)
+FONCTIONNALITE
+   problème de mémoire ssnv182b sous rocks en NEW8
+   
+   réponse : 
+   sur Rocks, en NEW8, ssnv182b passe sans problème sans rien changer.
+   fiche sans suite
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv182b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR gnicolas     NICOLAS Gérald         DATE 23/04/2007 - 14:52:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010743 DU 2007-04-03 08:20:56
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Champs aux points de Gauss :  repérage des éléments de référence
+FONCTIONNALITE
+   Dans le programme UTEREF, les tableaux NBPG00, LIREFE et FAPG étaient dimensionnés à 10.
+   Or ils sont utilisés dans ELREF2 comme des tableaux dimensionnés à NBFAMX=20. La
+   correction est faite pour être cohérent.
+   J'ai vérifié que dans tous les programmes appelant ELREF2 le dimensionnement était
+   correct. C'est le cas.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test transmis à la création de la fiche
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010768 DU 2007-04-06 12:53:30
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Adimensionnement des indicateurs d'erreur en HM stationnaire
+FONCTIONNALITE
+   Dans le calcul de l'indicateur d'erreur en THM, les contributions dues aux termes
+   mécanique et hydraulique ne sont pas pas de même ordre de grandeur, du fait des écarts
+   d'unités entre les variables déplacements et pression. Pour évaluer correctement l'erreur,
+   il est nécessaire de rendre adimensionnel le calcul de l'indicateur. La solution retenue
+   consiste à passer en argument de la commande CALC_ELEM ces valeurs caractéristiques sous
+   forme de réels. Les mots-clés sont LONGUEUR, PRESSION et TEMPERATURE . Ils n'apparaissent
+   que dans le cas d'un calcul d'indicateur d'erreur par résidu pour de la THM, repéré par le
+   mot-clé ERRE_HM='OUI'.
+   Les cas-test wtnp116a et b changent. Une erreur dans la solution analytique est corrigée :
+   le coefficient 1/K de THM_LIQU passe de 3.77e-9 à 0. Les nouveaux mots-clés
+   d'adimensionnement sont pris en compte. Cela conduit à modifier les valeurs de
+   non-régression des TEST_RESU sur les indicateurs d'erreur.
+   
+   J'en profite pour faire du ménage.
+   Pour les programmes concernés par cette restitution, les messages spécifiques aux calculs
+   d'indicateurs d'erreur sont basculés de calculel4, calculel5 et elements4 vers indicateur.py.
+   Je soulage de 369 lignes (-13,2%) le programme MECALM qui pilote les calculs des options
+   de CALC_ELEM en mécanique. Je crée MECA01 qui regroupe toutes les opérations effectuées
+   dans le cadre des indicateurs d'erreur. Cela correspond aux options 'ERZ1_ELEM_SIGM',
+   'ERZ2_ELEM_SIGM', 'ERRE_ELEM_SIGM', 'ERRE_ELNO_ELEM', 'QIRE_ELEM_SIGM', 'QIRE_ELNO_ELEM',
+   'QIZ1_ELEM_SIGM' et 'QIZ2_ELEM_SIGM'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01,R4.10.04,V7.32.116
+VALIDATION
+   wtnp116a, wtnp116b
+NB_JOURS_TRAV  : 15.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR markovic     MARKOVIC Damijan       DATE 23/04/2007 - 17:37:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010356 DU 2006-12-06 09:15:38
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   XFEM : Introduction du CONTACT GLISSIERE
+FONCTIONNALITE
+   La nouvelle option permet d'imposer un contact glissière 
+   sur les lèvres des fissures dans le cas de la modélisation 
+   avec X-FEM. L'idée est d'empêcher le décollement de deux 
+   surfaces une fois que celles-ci sont rentrées en contact, 
+   soit par l'évolution cinématique du modèle soit par 
+   l'activation du contact initial dans l'opérateur de 
+   définition de la fissure.
+   On l'introduit dans la syntaxe de l'opérateur DEFI_FISS en 
+   tant qu'option du mot clé CONTACT:
+   
+   FISS1= DEFI_FISS_XFEM(....
+   CONTACT=_F(.....
+   		   GLISSIERE='OUI',
+   		    .....
+   		   ),
+   );
+   
+   Par défaut le statut du contact glissière est 'NON'. Si on 
+   active cette option, on empêche le décollement des 
+   surfaces en contact X-FEM (elles peuvent seulement glisser 
+   l'une par rapport à l'autre) ce qui équivaut à un 
+   indicateur de contact INDCO toujours 1 dans te0532.f pour 
+   le point de vérification de contact (i.e. point 
+   d'intégration). La nouvelle option peut avoir des valeurs 
+   différentes sur des fissures différentes (par ex. une 
+   fissure avec contact glissière et autre sans).
+   
+   Modifications dans les fichiers sources:
+   
+   -	Catalogue Python defi_fiss_xfem.capy: ajout de 
+   l'option GLISSIERE dans la syntaxe de l'opérateur;
+   -	Routine op0041.f: récupération du statut de 
+   GLISSIERE à partir de fichier de commande;
+   -	Routine sdconx.f: ajout de l'argument STAGLI dans 
+   l'appel de la routine et ajout de l'objet JEVEUX 
+   correspondant dans la SD contact X-FEM (dans l'objet 
+   FISSi.CONTACT.ECPDON dont la taille augmente à 7). Ici on 
+   renseigne sa valeur (1 ou 0).
+   -	Routine xconli.f: création de deux nouveaux champs 
+   élémentaires:  CEL4=DEFICO(1:16)//.'GL' qu'on va remplir 
+   avec les valeurs du statut de contact glissière et 
+   CEL5=DEFICO(1:16)//.'MC' qui va stocker la mémoire du 
+   contact (si dans un point il y a déjà eu du contact). Ce 
+   statut sera initialisé à l'identique avec le statut de 
+   contact initial CEL1=DEFICO(1:16)//.'IN' 
+   -	Routine xmmbca.f: ajout d'un nouveau champ 
+   d'entrée (DEFICO(1:16)//'.GL' ) pour le calcul avec 
+   l'option XCVBCA (te0532) dont le paramètre sera 'PGLISS'. 
+   Ajout ici également du champ d'entrée contenant la mémoire 
+   du contact (DEFICO(1:16)//'.MC' ) avec le 
+   paramètre 'PMEMCON' et du champ de sortie pour la mémoire 
+   du contact CMEMCO avec le paramètre 'PINDMEM' qui sera 
+   copié après le calcul dans DEFICO(1:16)//'.MC' 
+   -	Routine te0532.f. Pour les points postulés en 
+   contact où la pression est avérée positive, on vérifie la 
+   valeur du statut glissière. Si cela vaut 1, et au même 
+   temps il y a eu dans le passé, au moins une fois, du 
+   contact (MEMCO=1), on force le contact on attribue la 
+   valeur 1 à l?indicateur de contact (INDCO=1). S?il n'y a 
+   pas du contact glissière, on passe par les anciens blocs. 
+   Lors des vérifications, une fois que sur un point de Gauss 
+   on confirme le contact, le statut de la mémoire du contact 
+   (champ CMEMCO) passe à 1.
+   -	Les catalogues des types d'élément fini pour XFEM: 
+   on ajoute partout les paramètres 'PGLISS' , 'PMEMCON' 
+   et 'PINDMEM' dans l'option XCVBCA 
+   -	Le xcvbca.cata: ajout des 
+   paramètres  'PGLISS' , 'PMEMCON' et 'PINDMEM'
+   
+   Inventaire des fichiers impactés:
+   -	defi_fiss_xfem.capy
+   -	op0041.f
+   -	sdconx.f
+   -	xconli.f
+   -	xmmbca.f
+   -	te0532.f
+   -	xcvbca.cata
+   -	gener_me_xh.cata
+   -	gener_me_xht.cata
+   -	gener_me_xt.cata
+   -	gener_mecpl2_xh.cata
+   -	gener_mecpl2_xht.cata
+   -	gener_medpl2_xh.cata
+   -	gener_medpl2_xht.cata
+   
+   
+   Documentation impactée: D4.10.02 SD Defi_fiss
+   
+   Validation avec le cas-test: ssnv201a (V6.04.201)
+   
+   Le travail à été entièrement réalisé par Ionel Nistor 
+   (IFP), dans le cadre de la collaboration EDF/IFP sur la 
+   méthode XFEM (multi-fissuration, grands glissements, voir 
+   par exemple les fiches 10340, 10608, 10708).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.201, R7.02.12
+VALIDATION
+   ssnv201a
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 23/04/2007 - 17:37:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010720 DU 2007-03-30 08:19:35
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   validation option ERROR_LAGR
+FONCTIONNALITE
+   La fiche 9155 a été classé sans_suite
+   On avait oubilé de supprimer les fichiers qui avaient été restitués en partie.
+   
+   
+   suppression de 
+   - error_lagr.cata
+   - ener_rela.cata
+   - ener_rela2.cata  
+   
+   modif :
+   - gener_me3d_3.cata
+   - gener_me_xh.cata
+   - gener_me_xht.cata
+   - gener_me_xt.cata
+   - meca_hexs8.cata
+   
+   remarque : 
+   les te0322, te0310 et te0312 n'ont jamais été restitués.-
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests xfem
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 23/04/2007 - 13:38:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010632 DU 2007-03-12 08:08:05
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Adaptation du POLYCRISTAL aux nouveaux comportements du MONOCRISTAL
+FONCTIONNALITE
+   Restitution POLYCRISTAL
+   
+   But : permettre au comportement POLYCRISTAL d'utiliser tous les comportements du
+   MONOCRSISTAL : en particulier le comportement de l'acier bainitique, (famille de systèmes
+   de glissement BCC24, matrice d'interaction complète, orthotropie) et Kocks-Rauch.
+   
+   Pour cela on appelle maintenant dans les routines du comporement POLYCRISTAL les mêmes
+   routines d'accès aux « composantes » du comportement que MONOCRISTAL.
+   
+   Validation : 
+   Ajout de POLYCRISTAL dans sslv120a et ssnv172a ( ELAS_ORTH et KOCKS_RAUCH)
+   Ajout d'une modélisation b à ssnv194 :
+   SSNV194A réalise un mini calcul d'agrégat à 10 grains, avec MONOCRISTAL, et des
+   caractéristiques d'acier bainitique.
+   le nouveau test SSNV194B réalise un calcul similaire par homogénéisation, donc avec
+   POLYCRISTAL, sur un point matériel. On retrouve des contraintes et déformations moyennes
+   proches du test monocristal.
+   
+   Vérification par un astout : passage des l'ensemble des tests monocristal / polycristal :
+   ssnv171b, ssnv171c, ssnv172a, ssnv172b, zmat004a, zmat007a, ssnv194a, ssnv194b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.172, V6.04.194
+VALIDATION
+   SSNV194B, SSNV172A, SSLV120A
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010766 DU 2007-04-06 12:13:12
+TYPE anomalie concernant Code_Aster (VERSION 8.5)
+TITRE
+   ELAS_ORTH et POLYCRISTAL : possiblitxc3xa9 de rxc3xa9sultats faux
+FONCTIONNALITE
+   AL découverte grâce à la restitution de Lionel sur l'élasticité orthotrope : dans le cas
+   du monocristal,(comportements MONOCRISTAL et POLYCRISTAL) et d'une élasticité orthotrope,
+   on ne prenait pas bien en compte les termes en racine(2) : ceci donnait des résultats faux
+   dès que le repère d'orthotropie n'était
+   plus dirigé selon les axes globaux.
+   
+   Cette situation n'était pas testée (et pas utilisée dans les études). On teste maintenant
+   toutes ces possibilités dans le test SSLV120A :  ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE
+   SOUS SON PROPRE POIDS. On teste :
+   
+   - l'élasticité orthotrope, avec MECA_STATIQUE et STAT_NON_LINE
+   - la ême chose en changeant l'orientation du repère
+   - l'ensemble de ces tests avec MONOCRISTAL implicite et explicite et POLYCRISTAL
+   
+   les corrections portent sur les deux seules routines LCMMAP et LCMMAT.
+   
+   Restitution en NEW8 et NEW9.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 7.3.15
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.3.15
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SSLV120A
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010767 DU 2007-04-06 12:43:14
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   renommage des tests FORMA01
+FONCTIONNALITE
+   Suite à la restitution des nouveaux tests FORMA01 cette semaine, intégrant l'utilisation
+   de SALOME, il a été choisi pour que tous les anciens fichiers soient nettoyés, de les
+   rentrer avec les modélisation K,L,M,N, en NEW9 et en NEW8.
+   
+   Pour que la dénonimation redevienne cohérente avec la doc, on les renomme A,B,C,D.
+   
+   A faire en NEW9 et en NEW8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.15.100
+VALIDATION
+   forma01
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010742 DU 2007-04-03 08:13:07
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   possibiltxc3xa9 d'utiliser le mot clxc3xa9 ETAT_INIT dans SIMU_POINT_MAT
+FONCTIONNALITE
+   Pour prendre en compte un état initial, les mots-clés suivants ont été ajoutés à
+   SIMU_POINT_MAT :
+   
+             SIGM_INIT=FACT(statut='f',
+                    SIXX = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
+                    SIYY = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
+                    SIZZ = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
+                    SIXY = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
+                    SIXZ = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
+                    SIYZ = SIMP(statut='f',typ='R',max=1,defaut=0.0E+0),
+                               ),
+             EPSI_INIT=FACT(statut='f',
+                    EPXX = SIMP(statut='o',typ='R',max=1),
+                    EPYY = SIMP(statut='o',typ='R',max=1),
+                    EPZZ = SIMP(statut='o',typ='R',max=1),
+                    EPXY = SIMP(statut='o',typ='R',max=1),
+                    EPXZ = SIMP(statut='o',typ='R',max=1),
+                    EPYZ = SIMP(statut='o',typ='R',max=1),
+                               ),
+             VARI_INIT=FACT(statut='f',
+                    VALE = SIMP(statut='o',typ='R',max='**'),
+                               ),
+   
+   Les variables internes sont à fournir dans l'ordre et en totalité.
+   
+   On teste cette fonctionnalité dans SSNV160E : 
+   un premier STAT_NON_LINE se fait avec contraites intiales uniquement, puis un deuxième
+   STAT_NON_LINE est effectué avec tous les champs initiaux correspondant à l'instant atteint
+   précédemment.
+   Les résultats sont comparés à ceux de la modélisation C.
+   
+   On en profite pour ajouter le mot-clé facteur RECH_LINEAIRE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.12
+VALIDATION
+   ssnv160e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT forma01a                        proix J-M.PROIX          270    270      0
+ CASTEST AJOUT forma01b                        proix J-M.PROIX          279    279      0
+ CASTEST AJOUT forma01c                        proix J-M.PROIX          351    351      0
+ CASTEST AJOUT forma01d                        proix J-M.PROIX          336    336      0
+ CASTEST AJOUT ssll118a                       flejou J-L.FLEJOU         135    135      0
+ CASTEST AJOUT ssnv160e                        proix J-M.PROIX          193    193      0
+ CASTEST AJOUT ssnv194b                        proix J-M.PROIX          203    203      0
+ CASTEST AJOUT ssnv201a                     markovic D.MARKOVIC         380    380      0
+ CASTEST MODIF rccm09b                       galenne E.GALENNE          255     34     20
+ CASTEST MODIF sslv120a                        proix J-M.PROIX          845    503    138
+ CASTEST MODIF ssna117a                       flejou J-L.FLEJOU         195    111    150
+ CASTEST MODIF ssna117b                       flejou J-L.FLEJOU         186     92    139
+ CASTEST MODIF ssna117c                       flejou J-L.FLEJOU         122     51     96
+ CASTEST MODIF ssna118a                       flejou J-L.FLEJOU         298    178    304
+ CASTEST MODIF ssnp132a                       flejou J-L.FLEJOU         203    116    251
+ CASTEST MODIF ssnv126a                        proix J-M.PROIX          462    390    305
+ CASTEST MODIF ssnv171b                        proix J-M.PROIX          330     34     18
+ CASTEST MODIF ssnv171c                        proix J-M.PROIX          358      4      4
+ CASTEST MODIF ssnv172a                        proix J-M.PROIX         1108    184     48
+ CASTEST MODIF ssnv172b                        proix J-M.PROIX          197      1      1
+ CASTEST MODIF ssnv190a                       flejou J-L.FLEJOU         295    202    249
+ CASTEST MODIF ssnv190b                       flejou J-L.FLEJOU         380    156    502
+ CASTEST MODIF ssnv194a                        proix J-M.PROIX          198      1      1
+ CASTEST MODIF wtnp116a                     gnicolas G.NICOLAS          453     88     79
+ CASTEST MODIF wtnp116b                     gnicolas G.NICOLAS          534    123     97
+ CASTEST MODIF zmat004a                        proix J-M.PROIX          429      1      1
+ CASTEST MODIF zmat007a                        proix J-M.PROIX          393     16     12
+ CASTEST SUPPR forma01k.comm                   proix J-M.PROIX          253      0    253
+ CASTEST SUPPR forma01l.comm                   proix J-M.PROIX          262      0    262
+ CASTEST SUPPR forma01m.comm                   proix J-M.PROIX          334      0    334
+ CASTEST SUPPR forma01n.comm                   proix J-M.PROIX          319      0    319
+CATALOGU MODIF compelem/grandeur_simple__   gnicolas G.NICOLAS          632     15     16
+CATALOGU MODIF options/erre_elem_sigm       gnicolas G.NICOLAS           48      5      5
+CATALOGU MODIF options/xcvbca               markovic D.MARKOVIC          38      5      1
+CATALOGU MODIF typelem/gener_me3d_3         markovic D.MARKOVIC         667      1      5
+CATALOGU MODIF typelem/gener_mecpl2_xh      markovic D.MARKOVIC         180      3      3
+CATALOGU MODIF typelem/gener_mecpl2_xht     markovic D.MARKOVIC         182      3      3
+CATALOGU MODIF typelem/gener_medhb2         gnicolas G.NICOLAS          183      9      8
+CATALOGU MODIF typelem/gener_medpl2_xh      markovic D.MARKOVIC         181      3      3
+CATALOGU MODIF typelem/gener_medpl2_xht     markovic D.MARKOVIC         183      3      3
+CATALOGU MODIF typelem/gener_me_xh          markovic D.MARKOVIC         275      3     10
+CATALOGU MODIF typelem/gener_me_xht         markovic D.MARKOVIC         277      3     10
+CATALOGU MODIF typelem/gener_me_xt          markovic D.MARKOVIC         282      3      7
+CATALOGU MODIF typelem/meca_hexs8           markovic D.MARKOVIC         564      1      5
+CATALOGU SUPPR options/ener_rela2           markovic D.MARKOVIC          37      0     37
+CATALOGU SUPPR options/ener_rela            markovic D.MARKOVIC          34      0     34
+CATALOGU SUPPR options/error_lagr           markovic D.MARKOVIC          35      0     35
+CATALOPY MODIF commande/affe_cara_elem        flejou J-L.FLEJOU         563      3      2
+CATALOPY MODIF commande/calc_elem           gnicolas G.NICOLAS          524     27      4
+CATALOPY MODIF commande/defi_fiss_xfem      markovic D.MARKOVIC          59      2      1
+CATALOPY MODIF commande/defi_materiau         flejou J-L.FLEJOU        2753      5      3
+CATALOPY MODIF commande/impr_fonction       courtois M.COURTOIS         135      7      6
+CATALOPY MODIF commande/post_cham_xfem       geniaut S.GENIAUT           26      2      2
+CATALOPY MODIF commande/propa_xfem           geniaut S.GENIAUT           42      3      3
+CATALOPY MODIF commande/simu_point_mat         proix J-M.PROIX          211     70      4
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3655     30      4
+ FORTRAN AJOUT algorith/lcmhsr                 proix J-M.PROIX          206    206      0
+ FORTRAN AJOUT calculel/meca01              gnicolas G.NICOLAS          634    634      0
+ FORTRAN MODIF algeline/op0045              courtois M.COURTOIS        1057      2      3
+ FORTRAN MODIF algorith/calcms                 proix J-M.PROIX           85      2      1
+ FORTRAN MODIF algorith/conori              courtois M.COURTOIS         413      3      3
+ FORTRAN MODIF algorith/dldiff              courtois M.COURTOIS         475     12     14
+ FORTRAN MODIF algorith/dlnewi              courtois M.COURTOIS         794     14     13
+ FORTRAN MODIF algorith/gerpas                 proix J-M.PROIX          230     12      6
+ FORTRAN MODIF algorith/irrcvg                flejou J-L.FLEJOU         110     49     51
+ FORTRAN MODIF algorith/irrcvx                flejou J-L.FLEJOU          82     47     49
+ FORTRAN MODIF algorith/irrini                flejou J-L.FLEJOU         177     13     11
+ FORTRAN MODIF algorith/irrjac                flejou J-L.FLEJOU         296     74     88
+ FORTRAN MODIF algorith/irrjpl                flejou J-L.FLEJOU         175    105     41
+ FORTRAN MODIF algorith/irrmat                flejou J-L.FLEJOU         451    139     83
+ FORTRAN MODIF algorith/irrres                flejou J-L.FLEJOU         173     52     57
+ FORTRAN MODIF algorith/lcconv                flejou J-L.FLEJOU         114      6      4
+ FORTRAN MODIF algorith/lcdpec                 proix J-M.PROIX           91      5     20
+ FORTRAN MODIF algorith/lcmaei                 proix J-M.PROIX          110     17    153
+ FORTRAN MODIF algorith/lcmate                 proix J-M.PROIX          131      3      3
+ FORTRAN MODIF algorith/lcmmap                 proix J-M.PROIX          504     57      6
+ FORTRAN MODIF algorith/lcmmat                 proix J-M.PROIX          377     43      7
+ FORTRAN MODIF algorith/lcmmfe                 proix J-M.PROIX          221     14      8
+ FORTRAN MODIF algorith/lcmmfi                 proix J-M.PROIX           98      4      4
+ FORTRAN MODIF algorith/lcmmja                 proix J-M.PROIX          256      5      4
+ FORTRAN MODIF algorith/lcmmjf                 proix J-M.PROIX          238      3      3
+ FORTRAN MODIF algorith/lcmmji                 proix J-M.PROIX           66      6      4
+ FORTRAN MODIF algorith/lcmmon                 proix J-M.PROIX          169     38     16
+ FORTRAN MODIF algorith/lcmmop                 proix J-M.PROIX          335     48     24
+ FORTRAN MODIF algorith/lcmmre                 proix J-M.PROIX          198     14      6
+ FORTRAN MODIF algorith/lcmmsg                 proix J-M.PROIX          570     31     17
+ FORTRAN MODIF algorith/lcmmvx                 proix J-M.PROIX          115      4      2
+ FORTRAN MODIF algorith/lcplnl                flejou J-L.FLEJOU         251      3      3
+ FORTRAN MODIF algorith/lcrous              courtois M.COURTOIS         401      2      3
+ FORTRAN MODIF algorith/nmvprk                 proix J-M.PROIX          359     14      4
+ FORTRAN MODIF algorith/op0041              markovic D.MARKOVIC         260      5      4
+ FORTRAN MODIF algorith/op0070              courtois M.COURTOIS         926      8     13
+ FORTRAN MODIF algorith/op0186              courtois M.COURTOIS         621      4      5
+ FORTRAN MODIF algorith/rdif01                 proix J-M.PROIX          106      7      7
+ FORTRAN MODIF algorith/rk21co                 proix J-M.PROIX          107      8      6
+ FORTRAN MODIF algorith/sdconx              markovic D.MARKOVIC         205     11      5
+ FORTRAN MODIF algorith/xconli              markovic D.MARKOVIC         400     83     12
+ FORTRAN MODIF algorith/xmmbca              markovic D.MARKOVIC         196     36      5
+ FORTRAN MODIF calculel/mecalm              gnicolas G.NICOLAS         2418     50    419
+ FORTRAN MODIF calculel/op0171              courtois M.COURTOIS         395     10     13
+ FORTRAN MODIF calculel/resloc              gnicolas G.NICOLAS          456     78     46
+ FORTRAN MODIF elements/erhmb2              gnicolas G.NICOLAS          438     83     75
+ FORTRAN MODIF elements/erhms2              gnicolas G.NICOLAS          338     83     90
+ FORTRAN MODIF elements/erhmv2              gnicolas G.NICOLAS          259     57     61
+ FORTRAN MODIF elements/te0497              gnicolas G.NICOLAS          513    230    133
+ FORTRAN MODIF elements/te0532              markovic D.MARKOVIC         260     28      9
+ FORTRAN MODIF modelisa/caddlp                flejou J-L.FLEJOU         259     32     29
+ FORTRAN MODIF modelisa/cafthm              gnicolas G.NICOLAS          138     11     17
+ FORTRAN MODIF prepost/prcoch               courtois M.COURTOIS         329      5      7
+ FORTRAN MODIF supervis/op9999              courtois M.COURTOIS         152      3      3
+ FORTRAN MODIF utilifor/u2mesg              courtois M.COURTOIS         106      6     51
+ FORTRAN MODIF utilifor/utexcp              courtois M.COURTOIS          46     17      6
+ FORTRAN MODIF utilitai/uteref              gnicolas G.NICOLAS          314      7      7
+ FORTRAN SUPPR supervis/fsie                courtois M.COURTOIS          32      0     32
+  PYTHON AJOUT Messages/irrad3m               flejou J-L.FLEJOU          65     65      0
+  PYTHON AJOUT Messages/modal               courtois M.COURTOIS          29     29      0
+  PYTHON MODIF Macro/simu_point_mat_ops        proix J-M.PROIX          580    153      4
+  PYTHON MODIF Messages/algorith4             flejou J-L.FLEJOU         424      4      4
+  PYTHON MODIF Messages/calculel4           gnicolas G.NICOLAS          407      1     13
+  PYTHON MODIF Messages/calculel5           gnicolas G.NICOLAS          484      1     10
+  PYTHON MODIF Messages/champs              courtois M.COURTOIS          45     12      5
+  PYTHON MODIF Messages/compor1             courtois M.COURTOIS          98     22      1
+  PYTHON MODIF Messages/contact2            courtois M.COURTOIS          38     10      2
+  PYTHON MODIF Messages/dynamique           courtois M.COURTOIS          87     27      3
+  PYTHON MODIF Messages/elements4           gnicolas G.NICOLAS          439     17     12
+  PYTHON MODIF Messages/indicateur          gnicolas G.NICOLAS          129    104     11
+  PYTHON MODIF Messages/mecanonline         courtois M.COURTOIS         397     21      5
+  PYTHON MODIF Messages/supervis            courtois M.COURTOIS         273      5      3
+  PYTHON MODIF SD/sd_compor                    proix J-M.PROIX           29      3      2
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         554     99     23
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   12        3081      3081             +3081
+ MODIF :  110       41249      4673    4355      +318
+ SUPPR :    8        1306              1306     -1306
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  130       45636      7754    5661     +2093 

@@ -1,4 +1,4 @@
-#@ MODIF champs Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF champs Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,10 +22,9 @@ def _(x) : return x
 
 cata_msg={
 
-
-
-
-
+1 : _("""
+ On ne trouve pas de valeurs dans le champ.
+"""),
 
 2: _("""
  Impossible de récupérer le nom du champ.
@@ -33,6 +32,14 @@ cata_msg={
 
 3: _("""
  La composante %(k1)s du champ  n'existe pas.
+"""),
+
+4 : _("""
+ On ne trouve pas de mailles dans les groupes fournis.
+"""),
+
+5 : _("""
+ On ne trouve pas de noeuds dans les groupes fournis.
 """),
 
 }

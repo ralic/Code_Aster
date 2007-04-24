@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -284,8 +284,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                             
                                  
 #    statique ou dynamique non lineaire : evol_noli                                
-     b_noli          =BLOC( condition = "AsType(RESULTAT) == evol_noli",fr="options evol noli",
-          TYPE_OPTION =SIMP(statut='f',typ='TXM',defaut='TOUTES',
+     b_noli          =BLOC( condition = "AsType(RESULTAT) == evol_noli",fr="options mecaniques non lineaires",
+          TYPE_OPTION =SIMP(statut='f',typ='TXM',defaut='TOUTES',fr="type d'options mecaniques non lineaires",
                            into=("SIGM_MASSIF","SIGM_STRUCT","EPSI","ENER","CRIT",
                                  "VARI","INDI_ERREUR","TOUTES","AUTRES"),
                           ),
@@ -320,7 +320,19 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="Nom du champ pour VALE_NCOU_MAXI"),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="Nom de la composante pour VALE_NCOU_MAXI"),
-               
+
+               b_erreur_re=BLOC(condition ="OPTION in ('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM') or \
+                                          (type(OPTION)==type(()) and 'ERRE_ELEM_SIGM' in OPTION) or \
+                                          (type(OPTION)==type(()) and 'ERRE_ELNO_ELEM' in OPTION)",
+                 ERRE_THM   =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
+                                   fr="Indicateur d'erreur spatiale pour les modélisations THM",
+                                   ang="Spatial error indicators for THM models"),
+                 b_ERRE_THM=BLOC(condition = "ERRE_THM == 'OUI'",
+                               regles=(ENSEMBLE('LONGUEUR','PRESSION'),),
+                   LONGUEUR=SIMP(statut='o',typ='R',val_min=0.0,fr="Longueur caractéristique du problème"),
+                   PRESSION=SIMP(statut='o',typ='R',val_min=0.0,fr="Pression caractéristique du problème"),
+                   TEMPERATURE=SIMP(statut='f',typ='R',val_min=0.0,fr="Température caractéristique du problème"),),),
+
                b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM_SIGM','QIZ1_ELEM_SIGM','QIZ2_ELEM_SIGM') or \
                                         (type(OPTION)==type(()) and 'QIRE_ELEM_SIGM' in OPTION) or \
                                         (type(OPTION)==type(()) and 'QIZ1_ELEM_SIGM' in OPTION) or \
@@ -425,14 +437,25 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                     NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour VALE_NCOU_MAXI"),),
                                  ),
 
-
           b_indi_erreur         =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELEM_SIGM",
                            into=("ERRE_ELEM_SIGM","ERRE_ELNO_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "SING_ELEM","SING_ELNO_ELEM",) ),
-               
+
+               b_erreur_re=BLOC(condition ="OPTION in ('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM') or \
+                                          (type(OPTION)==type(()) and 'ERRE_ELEM_SIGM' in OPTION) or \
+                                          (type(OPTION)==type(()) and 'ERRE_ELNO_ELEM' in OPTION)",
+                 ERRE_THM   =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
+                                   fr="Indicateur d'erreur spatiale pour les modélisations THM",
+                                   ang="Spatial error indicators for THM models"),
+                 b_ERRE_THM=BLOC(condition = "ERRE_THM == 'OUI'",
+                               regles=(ENSEMBLE('LONGUEUR','PRESSION'),),
+                   LONGUEUR=SIMP(statut='o',typ='R',val_min=0.0,fr="Longueur caractéristique du problème"),
+                   PRESSION=SIMP(statut='o',typ='R',val_min=0.0,fr="Pression caractéristique du problème"),
+                   TEMPERATURE=SIMP(statut='f',typ='R',val_min=0.0,fr="Température caractéristique du problème"),),),
+
                b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM_SIGM','QIZ1_ELEM_SIGM','QIZ2_ELEM_SIGM') or \
                                         (type(OPTION)==type(()) and 'QIRE_ELEM_SIGM' in OPTION) or \
                                         (type(OPTION)==type(()) and 'QIZ1_ELEM_SIGM' in OPTION) or \

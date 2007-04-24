@@ -15,7 +15,7 @@
       INTEGER      NBPASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,6 +103,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       REAL*8        OMEG, DEUXPI
       INTEGER       IWK1,IWK2,IFORC1,IDEPL1,IVITE1,IACCE1
       INTEGER       NRPASE,IBID,IRET,JAUX,JSTD,IRESOL,LACCE
+      CHARACTER*8   VALK
+      INTEGER       VALI(1)
+      REAL*8        VALR(2)
 
 C
 C     -----------------------------------------------------------------
@@ -177,14 +180,10 @@ C
        ENDIF
  11   CONTINUE
        IF (IMAX.EQ.1) THEN
-          NPATOT = NINT((T1-T0)/DTMAX)
-          CALL UTDEBM('F','DLDIFF','PAS TROP GRAND')
-          CALL UTIMPR('L','PAS UTILISATEUR TROP GRAND:',1,DT)
-          CALL UTIMPR('L','PAS MAX POUR LE CALCUL:',1,DTMAX)
-          CALL UTIMPK('L','!!!!!!!!!!!!!!!!!!!!!!',1,' ')
-          CALL UTIMPK('L','AVEC LE PAS MAX,   ',1,' ')
-          CALL UTIMPI('L','NB DE PAS DE CALCUL : ',1,NPATOT)
-          CALL UTFINM()
+          VALI(1) = NINT((T1-T0)/DTMAX)
+          VALR(1) = DT
+          VALR(2) = DTMAX
+          CALL U2MESG('F', 'DYNAMIQUE_11', 0, VALK, 1, VALI, 2, VALR)
        ENDIF
 C
 C     --- ARCHIVAGE ---
@@ -385,10 +384,9 @@ C ------------- VERIFICATION DU TEMPS DE CALCUL RESTANT
         IF ( TPS1(1) .LT. 5.D0  .OR. TPS1(4).GT.TPS1(1) ) THEN
            IF ( I .NE. NPATOT ) THEN
             ISTOP = 1
-            WRITE(IFM,*)'ARRET PAR MANQUE DE TEMPS CPU'//
-     &       ' AU PAS DE TEMPS : ',I,
-     &       ' TEMPS MOYEN PAR PAS : ',TPS1(4),
-     &       ' TEMPS CPU RESTANT : ',TPS1(1)
+            VALI(1) = I
+            VALR(1) = TPS1(4)
+            VALR(2) = TPS1(1)
             GOTO 9999
            ENDIF
         ENDIF
@@ -462,7 +460,7 @@ C ------------- ARCHIVAGE DU DERNIER INSTANT DE CALCUL
       ENDIF
 
       IF (ISTOP.EQ.1)
-     &       CALL UTEXCP(28,'OP0048','ARRET PAR MANQUE DE TEMPS CPU')
+     +   CALL UTEXCM(28, 'DYNAMIQUE_9', 0, VALK, 1, VALI, 2, VALR)
 C
 C     --- DESTRUCTION DES OBJETS DE TRAVAIL ---
 C

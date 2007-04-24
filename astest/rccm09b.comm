@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 23/04/2007   AUTEUR GALENNE E.GALENNE 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,14 +69,13 @@ MATERIO=AFFE_MATERIAU (MAILLAGE=MAILLAGE,
 #  Conditions aux limites
 #
 BLOCAGE = AFFE_CHAR_MECA(MODELE=MODEMECA,
-                         DDL_IMPO=(_F(GROUP_MA='LINF',  DY=0.0,),
-                                   _F(GROUP_NO='PF0',   DX=0.0,),
-                                   _F(GROUP_NO='GBLOC', DY=0.0,),),);                                         
+                         DDL_IMPO=(_F(GROUP_NO='PF0',   DY=0.0,),
+                                   _F(GROUP_NO='GBLOC', DY=0.0,DX=0.0,),),);                                         
 
 
 FORC_IMP = AFFE_CHAR_MECA(MODELE=MODEMECA,
-                          FORCE_CONTOUR=(_F(GROUP_MA='LSUP',  FY= 10.,),
-                                         _F(GROUP_MA='LINF2', FY=-10.,),),);                             
+                          FORCE_CONTOUR=(_F(GROUP_MA='LSUP',  FY= 3.,),
+                                         _F(GROUP_MA='LINF2', FY=-3.,),),);                             
 
 #
 # Transitoire 1
@@ -100,7 +99,7 @@ RESU1=CALC_ELEM(reuse=RESU1, RESULTAT=RESU1,
 RESU1=CALC_NO(reuse=RESU1, RESULTAT=RESU1,
               OPTION='SIGM_NOEU_DEPL',);  
                                                        
-Xo = 130. ;
+Xo = 143. ;
 Xr = Xo - rayon ;                 
 TAB_SIG1 = MACR_LIGN_COUPE( RESULTAT=RESU1,
                             NOM_CHAM='SIGM_NOEU_DEPL',
@@ -128,6 +127,16 @@ TABK = POST_K1_K2_K3(MODELISATION='D_PLAN',
                      TOUT_ORDRE='OUI',);
 
 IMPR_TABLE(TABLE=TABK,);
+
+TEST_TABLE(  TABLE=TABK,
+             FILTRE=(_F(  NOM_PARA = 'INST',
+                           VALE   = 1.   ),
+                     _F(  NOM_PARA = 'METHODE',
+                           VALE_I   = 3   ),),
+             REFERENCE='ANALYTIQUE',
+             NOM_PARA='K1_MAX',
+             PRECISION=1.E-2,
+             VALE=   2.8739E+03 )
 
 #
 # Transitoire 2
@@ -186,22 +195,24 @@ TEST_TABLE(  TABLE=FAMOR,
                            VALE   = 90.   ),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 3.63025E-04      )
+             PRECISION=1.E-5,
+             VALE= 1.321302E-03      )
 
 TEST_TABLE(  TABLE=FAMOR,
              FILTRE=_F(  NOM_PARA = 'THETA',
                            VALE   = 180.   ),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 5.88913E-01      )
-
+             PRECISION=1.E-5,
+             VALE= 6.730039E-01     )
 
 TEST_TABLE(  TABLE=FAMOR,
              FILTRE=_F(  NOM_PARA = 'THETA',
-                           VALE   = 270.   ),
-             REFERENCE='NON_REGRESSION',
+                           VALE   = 180.   ),
+             REFERENCE='ANALYTIQUE',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 3.63025E-04      )
+             PRECISION=1.5E-1,
+             VALE= 6.067E-01      )
 
 FAMOR2=POST_RCCM(TYPE_RESU_MECA = 'EVOLUTION',
                  OPTION = 'AMORCAGE',
@@ -210,10 +221,10 @@ FAMOR2=POST_RCCM(TYPE_RESU_MECA = 'EVOLUTION',
                  TITRE='Calcul du facteur d amorcage',
                  TRANSITOIRE=(_F(TABL_SIGM_THETA = TAB_SIG1,
                                  INST = (0., 1. ),
-                                 NB_OCCUR = 1 ),
+                                 NB_OCCUR = 2 ),
                               _F(TABL_SIGM_THETA = TAB_SIG2,
                                  INST = (0., 1., 2., ),
-                                 NB_OCCUR = 2 ),),
+                                 NB_OCCUR = 1 ),),
                  )
 
 IMPR_TABLE(TABLE = FAMOR2 )
@@ -223,19 +234,22 @@ TEST_TABLE(  TABLE=FAMOR2,
                            VALE   = 90.   ),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 1.07562E-03      )
+             PRECISION=1.E-5,
+             VALE= 1.785656E-03      )
 
 TEST_TABLE(  TABLE=FAMOR2,
              FILTRE=_F(  NOM_PARA = 'THETA',
                            VALE   = 180.   ),
              REFERENCE='NON_REGRESSION',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 1.74491E+00      )
+             PRECISION=1.E-5,
+             VALE= 9.095228E-01     )
 
 TEST_TABLE(  TABLE=FAMOR2,
              FILTRE=_F(  NOM_PARA = 'THETA',
-                           VALE   = 270.   ),
-             REFERENCE='NON_REGRESSION',
+                           VALE   = 180.   ),
+             REFERENCE='ANALYTIQUE',
              NOM_PARA='FACT_AMORCAGE',
-             VALE= 1.07562E-03      )
+             PRECISION=1.5E-1,
+             VALE= 8.199E-01      )
 FIN( )

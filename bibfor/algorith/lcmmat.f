@@ -1,10 +1,11 @@
-        SUBROUTINE LCMMAT (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,IMPEXP,
+        SUBROUTINE LCMMAT (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,
      &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI,
      &   HSR,TOUTMS)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
+C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +37,6 @@ C           COMP   :  GRANDEUR COMPOR
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION  MAXIMUM DE MATER
-C           IMPEXP : 0 IMPLICITE, 1 EXPLICITE
 C          ANGMAS  :  TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C       OUT MATERD :  COEFFICIENTS MATERIAU A T
 C           PGL    : MATRICE DE PASSAGE GLOBAL LOCAL
@@ -88,8 +88,8 @@ C     ----------------------------------------------------------------
       CHARACTER*(*)   FAMI
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI
       CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,NOMFAM
-      INTEGER I, ICOMPO, IMAT, NBFSYS, IFA,J,DIMTMS,IMPEXP
-      INTEGER MONO1,NBSYST,IEI,NBSYS, IS, IR
+      INTEGER I, ICOMPO, IMAT, NBFSYS, IFA,J,DIMTMS
+      INTEGER MONO1,NBSYST,IEI,NBSYS, IS, IR, NBHSR
 C     ----------------------------------------------------------------
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -134,6 +134,7 @@ C
       CPMONO(5*NBFSYS+1)=ZK16(ICOMPO-1+5*NBFSYS+1)
 
       NBCOMM(1,1)=1
+      NBHSR=0
 
       DO 6 IFA=1,NBFSYS
 
@@ -141,7 +142,9 @@ C
          NECOUL=CPMONO(5*(IFA-1)+3)
          NECRIS=CPMONO(5*(IFA-1)+4)
          NECRCI=CPMONO(5*(IFA-1)+5)
-
+         
+         NBHSR=NBHSR+1
+         IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_16')
 
 C        COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
          CALL LCMAFL(FAMI,KPG,KSP,'-',NMATER,IMAT,NECOUL,NBVAL,VALRES,
@@ -165,7 +168,7 @@ C        COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
          NOMFAM=CPMONO(5*(IFA-1)+1)
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
          CALL LCMAEI(FAMI,KPG,KSP,'-',NMATER,IMAT,NECRIS,NECOUL,NBVAL,
-     &            IMPEXP,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
+     &            VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
          NVINI=NBCOMM(IFA,3)
          DO 503 I=1,NBVAL
             MATERD(NVINI-1+I,2)=VALRES(I)
@@ -209,7 +212,7 @@ C     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
          NBCOMM(IFA,3)=NVINI+NBVAL
 
          CALL LCMAEI(FAMI,KPG,KSP,'+',NMATER,IMAT,NECRIS,NECOUL,NBVAL,
-     &       IMPEXP,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
+     &       VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
          NVINI=NBCOMM(IFA,3)
          DO 506 I=1,NBVAL
             MATERF(NVINI-1+I,2)=VALRES(I)
@@ -267,6 +270,22 @@ C
         CALL D1MA3D(FAMI,IMAT,R8VIDE(),'-',KPG,KSP,REPERE,XYZ,
      &              KOOH)
 
+           DO 67 J=4,6
+           DO 67 I=1,6
+             HOOK(I,J) = HOOK(I,J)*SQRT(2.D0)
+ 67        CONTINUE
+           DO 68 J=1,6
+           DO 68 I=4,6
+             HOOK(I,J) = HOOK(I,J)*SQRT(2.D0)
+ 68        CONTINUE
+           DO 69 J=4,6
+           DO 69 I=1,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 69        CONTINUE
+           DO 70 J=1,6
+           DO 70 I=4,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 70        CONTINUE
 
         DO 101 I=1,6
            DO 102 J=1,6
@@ -295,6 +314,23 @@ C
      &              '+',KPG,KSP,REPERE,XYZ,HOOKF)
         CALL D1MA3D(FAMI,IMAT,R8VIDE(),
      &              '+',KPG,KSP,REPERE,XYZ,KOOH)
+     
+           DO 671 J=4,6
+           DO 671 I=1,6
+             HOOKF(I,J) = HOOKF(I,J)*SQRT(2.D0)
+ 671        CONTINUE
+           DO 681 J=1,6
+           DO 681 I=4,6
+             HOOKF(I,J) = HOOKF(I,J)*SQRT(2.D0)
+ 681        CONTINUE
+           DO 691 J=4,6
+           DO 691 I=1,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 691        CONTINUE
+           DO 701 J=1,6
+           DO 701 I=4,6
+             KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
+ 701        CONTINUE
         DO 103 I=1,6
            DO 104 J=1,6
               MATERF(6*(J-1)+I,1)=HOOKF(I,J)

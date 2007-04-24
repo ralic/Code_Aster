@@ -4,11 +4,11 @@
      &                   KP,    EE,      A,       H, PGL,NBPHAS,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
      &                   ALPHA, COEL, X,       PAS,     SIGI,   EPSD,
-     &                   DETOT)
+     &                   DETOT,HSR,ITMAX,TOLER,IRET)
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C     ----------------------------------------------------------------
 
       INTEGER    KPG,KSP,NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I,NBFSYM,
-     &           NBPHAS
+     &           NBPHAS,ITMAX,IRET
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
       CHARACTER*(*)   FAMI
@@ -72,7 +72,7 @@ C     ----------------------------------------------------------------
       REAL*8 COTHE(NMAT),DCOTHE(NMAT)
       REAL*8 SIGI(6),EPSD(6),DETOT(6)
       REAL*8 Y(NVI)
-      REAL*8 F(NVI)
+      REAL*8 F(NVI),HSR(5,24,24),TOLER
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
       REAL*8 EE(NVI),A(NVI)
 C      POUR GAGNER EN TEMPS CPU
@@ -82,7 +82,8 @@ C
         CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
      &              CPMONO,NBFSYM,TOUTMS,
      &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
-     &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F)
+     &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
+     &              HSR,ITMAX, TOLER, IRET)
         DO 10 I=1,NVI
           A(I)=F(I)
           Y(I)=Y(I)+A(I)*H
@@ -96,7 +97,8 @@ C
       CALL RDIF01(FAMI,KPG,KSP,COMP,MOD,IMAT,MATCST,NBCOMM,
      &            CPMONO,NBFSYM,TOUTMS,
      &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
-     &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F)
+     &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,F,
+     &              HSR,ITMAX, TOLER, IRET)
       HS2=0.5D0*H
       DO 12 I=1,NVI
         EE(I)=(F(I)-A(I))*HS2

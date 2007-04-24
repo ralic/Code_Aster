@@ -1,13 +1,13 @@
       SUBROUTINE GERPAS( FAMI, KPG, KSP,
      &                   COMP,    MOD,    IMAT, MATCST,NBCOMM,
      &                   CPMONO, NBPHAS, NVI,     NMAT,  Y,
-     &                   PAS,     EPS,    TOLY,  COTHE, COEFF,
+     &                   PAS,  ITMAX,   EPS,    TOLY,  COTHE, COEFF,
      &                   DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL, ANGMAS,
-     &                   SIGI,    EPSD,   DETOT, X )
+     &                   SIGI,    EPSD,   DETOT, X , HSR)
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C     OUT X       :  INSTANT COURANT
 C     -
       INTEGER  NMAT,IMAT,NBCOMM(NMAT,3),NE,NY,NA,NVI,KPOK,IP,I,II
-      INTEGER  NBPHAS,NBFSYM,KPG,KSP
+      INTEGER  NBPHAS,NBFSYM,KPG,KSP,ITMAX,IRET
 C     NOMBRE MAXI DE FAMILLES DE SYSTEMES DE GLISSEMENT / MONOCRISTAL
       PARAMETER (NBFSYM=5)
 C      POUR GAGNER EN TEMPS CPU
@@ -67,7 +67,7 @@ C      POUR GAGNER EN TEMPS CPU
       CHARACTER*8  MOD
       CHARACTER*3  MATCST
       CHARACTER*(*) FAMI
-      REAL*8 E, NU, ALPHA, COEL(NMAT)
+      REAL*8 E, NU, ALPHA, COEL(NMAT),HSR(5,24,24)
       REAL*8 X, PAS, H, TOLY, XOUT, XR, W, WZ, DMG0
       REAL*8 DMG1,EPS
       REAL*8 COTHE(NMAT),DCOTHE(NMAT)
@@ -85,6 +85,7 @@ C
       ENDIF
 C
       DMG1=0.0D0
+      IRET=0
 C
       MAXOUT=MAXDOM-(EPS)
       NE=0
@@ -117,7 +118,12 @@ C
      &            COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBFSYM,TOUTMS,
      &            NVI,NMAT,Y,KPOK,WK(NE+1),WK(NA+1),H,PGL,NBPHAS,
      &            COTHE,COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,X,PAS,
-     &            SIGI,EPSD,DETOT)
+     &            SIGI,EPSD,DETOT,HSR,ITMAX,EPS,IRET)
+      IF (IRET.GT.0) THEN
+          GOTO 9999
+      ENDIF
+      
+      
       W=ABS(WK(1))/YMFS(1)
       DO 70 I=2,NVI
         WZ=ABS(WK(I))/YMFS(I)
