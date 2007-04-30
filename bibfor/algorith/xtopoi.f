@@ -1,11 +1,7 @@
       SUBROUTINE XTOPOI(MODELE,FISS)
-      IMPLICIT NONE 
-
-      CHARACTER*8   MODELE,FISS
-
-C     ------------------------------------------------------------------
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,62 +20,94 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
-C          BUT : AJOUTER À LA SD FISS_XFEM LES DONNÉES 
-C                TOPOLOGIQUES CONCERNANT LA DÉCOUPE DES ÉLÉMENTS
-C                POUR L'INTÉGRATION 
-C                    
-C
-C  IN         MODELE    : NOM DE L'OBJET MODELE	 
-C  IN/OUT     FISS      : NOM DE LA SD FISS_XFEM
-C
-C
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C
-      INTEGER       JNOMA
-      CHARACTER*8   LPAIN(2),LPAOUT(5)
-      CHARACTER*19  LCHIN(2),LCHOUT(5)
-      CHARACTER*19  LIGREL,CHGEOM,PINTTO,CNSETO,HEAVTO,LONCHA,CRITER
-
+      IMPLICIT NONE 
+      CHARACTER*8   MODELE,FISS
+C     
 C ----------------------------------------------------------------------
-
+C
+C ROUTINE XFEM (METHODE XFEM - PREPARATION)
+C
+C AJOUTER À LA SD FISS_XFEM LES DONNÉES TOPOLOGIQUES CONCERNANT 
+C LA DÉCOUPE DES ÉLÉMENTS POUR L'INTÉGRATION 
+C      
+C ----------------------------------------------------------------------
+C
+C
+C  IN  MODELE : NOM DE L'OBJET MODELE	 
+C  I/O FISS   : NOM DE LA SD FISS_XFEM
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      NBOUT,NBIN
+      PARAMETER    (NBOUT=5, NBIN=2)
+      CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
+      CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
+C
+      INTEGER      JNOMA
+      CHARACTER*19 LIGREL,CHGEOM
+      CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,CRITER
+      LOGICAL      DEBUG
+      INTEGER      IFM,NIV,IFMDBG,NIVDBG 
+      CHARACTER*16 OPTION 
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
+      CALL INFDBG('XFEM',IFM,NIV)
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)      
+C
+C --- INITIALISATIONS
+C 
       LIGREL = MODELE//'.MODELE'
-
-C     RÉCUPÉRATION DE LA GÉOMETRIE
+      OPTION = 'TOPOSE'
+      IF (NIVDBG.GE.2) THEN
+        DEBUG  = .TRUE.
+      ELSE
+        DEBUG  = .FALSE.
+      ENDIF
       CALL JEVEUO(MODELE//'.MODELE    .NOMA','L',JNOMA)
       CHGEOM = ZK8(JNOMA)//'.COORDO'
-
-C     1) CRÉATION DU .TOPOSE
-C     -----------------------
-
-      PINTTO=FISS//'.TOPOSE.PINTTO'
-      CNSETO=FISS//'.TOPOSE.CNSETO'
-      HEAVTO=FISS//'.TOPOSE.HEAVTO'
-      LONCHA=FISS//'.TOPOSE.LONCHAM'
-      CRITER=FISS//'.TOPOSE.CRITER'
-
-      LPAIN(1) = 'PGEOMER'
-      LCHIN(1) = CHGEOM
-      LPAIN(2) = 'PLEVSET'
-      LCHIN(2) = FISS//'.LNNO'
-
+C
+C --- INITIALISATION DES CHAMPS POUR CALCUL
+C
+      CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
+     &            NBOUT ,LPAOUT,LCHOUT)
+C
+C --- RECUPERATION DES DONNEES XFEM (TOPOSE)
+C
+      PINTTO = FISS(1:8)//'.TOPOSE.PIN'
+      CNSETO = FISS(1:8)//'.TOPOSE.CNS'
+      HEAVTO = FISS(1:8)//'.TOPOSE.HEA'
+      LONCHA = FISS(1:8)//'.TOPOSE.LON'
+      CRITER = FISS(1:8)//'.TOPOSE.CRI'
+C       
+C --- CREATION DES LISTES DES CHAMPS IN
+C
+      LPAIN(1)  = 'PGEOMER'
+      LCHIN(1)  = CHGEOM
+      LPAIN(2)  = 'PLEVSET'
+      LCHIN(2)  = FISS//'.LNNO'
+C       
+C --- CREATION DES LISTES DES CHAMPS OUT
+C
       LPAOUT(1) = 'PPINTTO'
       LCHOUT(1) = PINTTO
       LPAOUT(2) = 'PCNSETO'
@@ -90,8 +118,17 @@ C     -----------------------
       LCHOUT(4) = LONCHA
       LPAOUT(5) = 'PCRITER'
       LCHOUT(5) = CRITER
-
-      CALL CALCUL('C','TOPOSE',LIGREL,2,LCHIN,LPAIN,5,LCHOUT,LPAOUT,'G')
-
+C
+C --- APPEL A CALCUL
+C      
+      CALL CALCUL('C',OPTION,LIGREL,NBIN ,LCHIN ,LPAIN ,
+     &                              NBOUT,LCHOUT,LPAOUT,'G')
+C
+      IF (DEBUG) THEN
+        CALL DBGCAL(OPTION,IFMDBG,
+     &              NBIN  ,LPAIN ,LCHIN ,
+     &              NBOUT ,LPAOUT,LCHOUT)
+      ENDIF 
+C 
       CALL JEDEMA()
       END

@@ -1,9 +1,7 @@
       SUBROUTINE OP0010(IER)
-      IMPLICIT NONE
-      INTEGER           IER
-
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,14 +19,26 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
-C     ------------------------------------------------------------------
-C                       OPERATEUR PROPA_XFEM :
-C     CALCUL DE LA FISSURE APRES PROPAGATION AU PAS DE TEMPS SUIVANT
-C     ------------------------------------------------------------------
-C     OUT : IER = NOMBRE D'ERREURS RENCONTREES
-C     ------------------------------------------------------------------
-
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      IMPLICIT NONE
+      INTEGER           IER
+C      
+C ----------------------------------------------------------------------
+C
+C OPERATEUR PROPA_XFEM
+C
+C CALCUL DE LA FISSURE APRES PROPAGATION AU PAS DE TEMPS SUIVANT
+C
+C ----------------------------------------------------------------------
+C
+C
+C OUT IER   : CODE RETOUR ERREUR COMMANDE
+C               IER = 0 => TOUT S'EST BIEN PASSE
+C               IER > 0 => NOMBRE D'ERREURS RENCONTREES
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -43,104 +53,103 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNUM,JEXATR
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-
-      INTEGER        I,IFM,NIV,IBID,IRET,IRET2,NDIM,ADDIM,JFISS,JMAIL,
-     &               JCARAF,JCMCF,JFON,NMAEN1,NMAEN2,NMAEN3,CLSM,JCONX1,
-     &               JCONX2,NBMA,NBMAE
-      REAL*8         LCMIN,CFLPRO,DELTAT,RAYON,PFI(3),VOR(3),
-     &               ORI(3),NORME
-      CHARACTER*8    K8B,MODEL,NOMA,FISS,FISPRE,ALGOLA
-      CHARACTER*16   K16B
+      CHARACTER*32    JEXATR
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER        IFM,NIV,IBID,NDIM,
+     &               JCARAF,CLSM,JCONX1,
+     &               JCONX2,NBMA
+      INTEGER        IADRMA,JDIME
+      REAL*8         LCMIN,CFLPRO,DELTAT
+      CHARACTER*8    K8BID,NOMA,NOMO,FISS,FISPRE
+      INTEGER        NFISS,JFISS,JNFIS
+      CHARACTER*16   K16BID
       CHARACTER*19   CNSVT,CNSVN,GRLT,GRLN,CNSLT,CNSLN,CNSEN,CNSBAS,
      &               CNSENR,NOESOM,ISOZRO,NORESI,CNXINV
-      CHARACTER*24   OBJMA,CHFOND,LISMAE,LISNOE
-      COMPLEX*16     CBID
-
-C-----------------------------------------------------------------------
-C     DEBUT
-C-----------------------------------------------------------------------
-
+      CHARACTER*24   LISMAE,LISNOE,SDCONT
+      INTEGER        JXC,JXSDC
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      CALL INFMAJ()
-      CALL INFNIV(IFM,NIV)
-
-      CALL GETRES(FISS,K16B,K16B)
-
-C  RECUPERATION DU MODELE, DU MAILLAGE ET DE SES CARACTERISTIQUES
-      CALL GETVID(' ','MODELE',1,1,1,MODEL,IBID)
-      OBJMA = MODEL//'.MODELE    .NOMA'
-      CALL JEVEUO(OBJMA,'L',JMAIL)
-      NOMA = ZK8(JMAIL)
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
-      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8B,IRET)
-      CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
-      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
-
-C  CONNECTIVITE INVERSEE
+      CALL INFMAJ()      
+      CALL INFDBG('XFEM',IFM,NIV)  
+C
+C --- NOM DU CONCEPT FISSURE
+C
+      CALL GETRES(FISS,K16BID,K16BID)
+C
+C --- NOM DU MODELE
+C      
+      CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+C
+C --- NOM DU MAILLAGE ATTACHE AU MODELE
+C
+      CALL JEVEUO(NOMO(1:8)//'.MODELE    .NOMA','L',IADRMA)
+      NOMA  = ZK8(IADRMA)
+C
+C --- DIMENSION DU PROBLEME
+C
+      CALL JEVEUO(NOMA//'.DIME','L',JDIME)
+      NDIM  = ZI(JDIME-1+6)
+      IF ((NDIM.LT.2).OR.(NDIM.GT.3)) THEN
+        CALL U2MESS('F','XFEM_18')
+      ENDIF
+      CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
+      CALL JEVEUO(NOMA(1:8)//'.CONNEX','L',JCONX1)
+      CALL JEVEUO(JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',JCONX2)
+C
+C --- CONNECTIVITE INVERSEE
+C
       CNXINV = '&&XPRREO.CNCINV'
-      CALL CNCINV (NOMA,IBID,0,'V',CNXINV)
-
-C  RECUPERATION DE LA FISSURE PRECEDENTE
-      CALL JEVEUO(MODEL//'.FISS','L',JFISS)
+      CALL CNCINV(NOMA,IBID,0,'V',CNXINV)
+C      
+C --- RECUPERATION DE LA FISSURE PRECEDENTE
+C
+      CALL JEVEUO(NOMO//'.FISS','L',JFISS)
       FISPRE = ZK8(JFISS)
-
-C  RECUPERATION DES LEVEL SETS ET GRADIENTS
+C      
+C --- ACCES AUX OBJETS POUR MULTIFISSURATION DANS 
+C
+      CALL JEVEUO(NOMO//'.NFIS','L',JNFIS)
+      NFISS  = ZI(JNFIS)  
+      IF (NFISS.GT.1) THEN
+        CALL U2MESS('F','XFEM2_6')
+      ENDIF
+C
+C --- PRISE EN COMPTE DU CONTACT
+C      
+      CALL JEVEUO(NOMO(1:8)//'.CONT'  ,'L',JXC)
+      CALL JEVEUO(NOMO(1:8)//'.SDCONT','L',JXSDC)
+      SDCONT = ZK24(JXSDC)
+      IF (SDCONT(1:1).NE.' ') THEN            
+        CALL XCONTA(NOMA  ,NOMO  ,NDIM  ,NFISS,FISS  ,
+     &              SDCONT)      
+      ENDIF      
+C
+C --- RECUPERATION DES LEVEL SETS ET GRADIENTS
+C
       CNSLT = '&&OP0010.CNSLT'
       CNSLN = '&&OP0010.CNSLN'
-      GRLT = '&&OP0010.GRLT'
-      GRLN = '&&OP0010.GRLN'
+      GRLT  = '&&OP0010.GRLT'
+      GRLN  = '&&OP0010.GRLN'
       CALL CNOCNS(FISPRE//'.LTNO','V',CNSLT)
       CALL CNOCNS(FISPRE//'.LNNO','V',CNSLN)
       CALL CNOCNS(FISPRE//'.GRLTNO','V',GRLT)
       CALL CNOCNS(FISPRE//'.GRLNNO','V',GRLN)
-
-C  DUPLICATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
+C
+C --- DUPLICATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
+C
       LISMAE = FISS//'.GROUP_MA_ENRI'
       LISNOE = FISS//'.GROUP_NO_ENRI'
       CALL JEDUPO(FISPRE//'.GROUP_MA_ENRI','G',LISMAE,.FALSE.)
       CALL JEDUPO(FISPRE//'.GROUP_NO_ENRI','G',LISNOE,.FALSE.)
-
-C  RECUPERATION DES CARACTERISTIQUES DU FOND DE FISSURE
+C
+C --- RECUPERATION DES CARACTERISTIQUES DU FOND DE FISSURE
+C
       CALL JEDUPO(FISPRE//'.CARAFOND','G',FISS//'.CARAFOND',.FALSE.)
       CALL JEVEUO(FISS//'.CARAFOND','L',JCARAF)
-      RAYON = ZR(JCARAF)
-      IF (NDIM.EQ.3) THEN
-         DO 101 I=1,3
-            VOR(I) = ZR(JCARAF+I)
-            ORI(I) = ZR(JCARAF+3+I)
- 101     CONTINUE
-      CALL JEVEUO(FISPRE//'.FONDFISS','L',JFON)
-      DO 102 I=1,3
-            PFI(I) = ZR(JFON-1+I)
- 102  CONTINUE
-      ENDIF
-
-C  DUPLICATION DES DONNEES DE CONTACT
-      CALL JEDUPO(FISPRE//'.CONTACT.ECPDON','G',FISS//'.CONTACT.ECPDON',
-     &            .FALSE.)
-      CALL JEDUPO(FISPRE//'.CONTACT.METHCO','G',FISS//'.CONTACT.METHCO',
-     &            .FALSE.)
-      CALL JEDUPO(FISPRE//'.CONTACT.XFEM','G',FISS//'.CONTACT.XFEM',
-     &            .FALSE.)
-
-      CALL JEEXIN(FISPRE//'.CONTACT.CARACF',IRET)
-      IF (IRET.EQ.0) THEN
-         ALGOLA = 'NON'
-      ELSE
-         CALL JEDUPO(FISPRE//'.CONTACT.CARACF','G',
-     &               FISS//'.CONTACT.CARACF',.FALSE.)
-         CALL JEVEUO(FISS//'.CONTACT.CARACF','L',JCMCF)
-         IF ((ZR(JCMCF-1+9)).EQ.(0.D0)) THEN
-            ALGOLA = 'NON'
-         ELSEIF ((ZR(JCMCF-1+9)).EQ.(1.D0)) THEN
-            ALGOLA = 'VERSION1'
-         ELSEIF ((ZR(JCMCF-1+9)).EQ.(2.D0)) THEN
-            ALGOLA = 'VERSION2'
-         ENDIF
-      ENDIF
 
 C-----------------------------------------------------------------------
 C     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
@@ -166,7 +175,7 @@ C      IF (NIV.GT.1)
 C      IF (NIV.GT.1)
       WRITE(IFM,902)
 
-      CALL XPRCFL(MODEL,CNSVT,CFLPRO,LCMIN)
+      CALL XPRCFL(NOMO,CNSVT,CFLPRO,LCMIN)
 
 C-----------------------------------------------------------------------
 C     AJUSTEMENT DE VT
@@ -189,7 +198,7 @@ C      IF (NIV.GT.1)
 C      IF (NIV.GT.1)
       WRITE(IFM,904)
 
-      CALL XPRLS(MODEL,NOMA,CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN,DELTAT)
+      CALL XPRLS(NOMO,NOMA,CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN,DELTAT)
 
       CALL JEDETR(CNSVT)
       CALL JEDETR(CNSVN)
@@ -205,7 +214,7 @@ C      IF (NIV.GT.1)
       NOESOM = '&&OP0010.NOESOM'
       NORESI = '&&OP0010.NORESI'
 
-      CALL XPRINI(MODEL,NOMA,FISPRE,FISS,CNSLN,CNSLT,GRLT,NOESOM,NORESI)
+      CALL XPRINI(NOMO,NOMA,FISPRE,FISS,CNSLN,CNSLT,GRLT,NOESOM,NORESI)
 
 C-----------------------------------------------------------------------
 C     REINITIALISATION DE LSN
@@ -214,7 +223,7 @@ C-----------------------------------------------------------------------
       DELTAT = LCMIN*0.9D0
       ISOZRO = '&&OP0010.ISOZRO'
 
-      CALL XPRREI(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,DELTAT,
+      CALL XPRREI(NOMO,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,DELTAT,
      &            LCMIN,'LN',ISOZRO,CNXINV)
 
 C-----------------------------------------------------------------------
@@ -226,7 +235,7 @@ C      IF (NIV.GT.1)
 C      IF (NIV.GT.1)
       WRITE(IFM,906)
 
-      CALL XPRREO(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,GRLT,
+      CALL XPRREO(NOMO,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,GRLT,
      &            DELTAT,LCMIN,ISOZRO,CNXINV)
       CALL JEDETR(ISOZRO)
 C-----------------------------------------------------------------------
@@ -238,7 +247,7 @@ C      IF (NIV.GT.1)
 C      IF (NIV.GT.1)
       WRITE(IFM,907)
 
-      CALL XPRREI(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLT,CNSLT,GRLT,DELTAT,
+      CALL XPRREI(NOMO,NOMA,FISS,NOESOM,NORESI,CNSLT,CNSLT,GRLT,DELTAT,
      &            LCMIN,'LT',ISOZRO,CNXINV)
       CALL JEDETR(ISOZRO)
       CALL JEDETR(NOESOM)
@@ -283,13 +292,11 @@ C-----------------------------------------------------------------------
       CNSEN='&&OP0010.CNSEN'
       CNSENR='&&OP0010.CNSENR'
       IF (NDIM .EQ. 3) THEN
-        CALL NORMEV(VOR,NORME)
-        IF (NORME.LT.1.D-10) CALL U2MESS('F','ALGORITH9_15')
-        CALL XNRCH3(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,PFI,VOR,ORI,
-     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
+        CALL XNRCH3(NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
+     &              FISS,LISMAE,LISNOE)
       ELSEIF (NDIM .EQ. 2) THEN
-        CALL XNRCH2(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
-     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
+        CALL XNRCH2(NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
+     &              FISS,LISMAE,LISNOE)
       ENDIF
 
       CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR')
@@ -299,32 +306,16 @@ C-----------------------------------------------------------------------
 C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE
 C-----------------------------------------------------------------------
 
-      CHFOND = FISS//'.FONDFISS'
       CNSBAS='&&OP0010.CNSBAS'
       IF (NDIM .EQ. 3) THEN
-        CALL XBASLO(MODEL,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
+        CALL XBASLO(NOMO,NOMA,FISS ,GRLT,GRLN,CNSBAS)
       ELSEIF (NDIM .EQ. 2) THEN
-        CALL XBASL2(MODEL,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
+        CALL XBASL2(NOMO,NOMA,FISS ,GRLT,GRLN,CNSBAS)
       ENDIF
 
       CALL CNSCNO(CNSBAS,' ','NON','G',FISS//'.BASLOC')
       CALL DETRSD('CHAM_NO_S',CNSBAS)
 
-C-----------------------------------------------------------------------
-C     STRUCTURE DE DONNEES SUR LE CONTACT
-C-----------------------------------------------------------------------
-
-C     SEULEMENT S'IL Y A DES MAILLES DE CONTACT
-      IF (NMAEN1+NMAEN2+NMAEN3.GT.0) THEN
-C       APPEL À L'ALGORITHME DE RESTRICTION DE L'ESPACE DES
-C       MULTIPLICATUERS DE LAGRANGE DE CONTACT
-        IF (ALGOLA.NE.'NON') THEN
-          WRITE(IFM,*)'ACTIVATION DE L''ALGORITHME DE RESTRICTION DE '//
-     &                'L''ESPACE DES MULTIPLICATEURS DE '//
-     &                'PRESSION DE CONTACT'
-          CALL XLAGSP(ALGOLA,NDIM,NOMA,CNSLT,CNSLN,GRLN,GRLT,FISS)
-        ENDIF
-      ENDIF
 
 C-----------------------------------------------------------------------
 C     FIN

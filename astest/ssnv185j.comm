@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE[0],
                        ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
                                     VECT_ORIE=(0. ,0. ,1. ),
                                     PT_ORIGIN=(0. ,20. ,15. ),),
-                       CONTACT=_F(ALGO_LAGR='NON',),);
+                       );
 
 #----------------------------------------------
 #                   CHARGEMENTS

@@ -1,7 +1,7 @@
       SUBROUTINE NMIRET ( CODRET , TABRET )
-
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,46 +19,52 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
-
+C
       IMPLICIT NONE
       LOGICAL       TABRET(0:10)
-      CHARACTER*24  CODRET
-
+      CHARACTER*19  CODRET
+C 
 C ----------------------------------------------------------------------
 C
-C STAT_NON_LINE : RESUME LES CODES RETOURS DES TE
+C ROUTINE MECA_NON_LINE (CALCUL)
 C
-C IN   CODRET  : CHAM_ELEM ISSU DES TE
-C OUT  TABRET  : TABRET(0) = .TRUE. UN CODE RETOUR NON NUL EXISTE
+C RESUME LES CODES RETOURS DES TE
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  CODRET  : CHAM_ELEM ISSU DES TE
+C OUT TABRET  : TABRET(0) = .TRUE. UN CODE RETOUR NON NUL EXISTE
 C                TABRET(I) = .TRUE. CODE RETOUR I RENCONTRE
 C                             SINON .FALSE.
 C                I VALANT DE 1 A 10
-C ----------------------------------------------------------------------
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-      INTEGER            ZI
-      INTEGER VALI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-      INTEGER       IRET, JCESK, JCESD, JCESV, JCESL, NBMAIL, ICMP,
-     &              IMA, IPT, ISP, IAD
+C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
+C
+      INTEGER       IRET, JCESK, JCESD, JCESV, JCESL, NBMAIL, ICMP
+      INTEGER       IMA, IAD,VALI
       CHARACTER*8   NOMGD
       CHARACTER*19  CHAMNS
-C-----------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
 C
       DO 10 IRET = 0 , 10
@@ -70,21 +76,28 @@ C
       CHAMNS = '&&NMIRET.CHAMNS'
       CALL CELCES ( CODRET , 'V' , CHAMNS )
 C
+C --- ACCES AU CHAM_ELEM_S
+C
       CALL JEVEUO ( CHAMNS//'.CESK', 'L', JCESK )
       CALL JEVEUO ( CHAMNS//'.CESD', 'L', JCESD )
       CALL JEVEUO ( CHAMNS//'.CESV', 'L', JCESV )
       CALL JEVEUO ( CHAMNS//'.CESL', 'L', JCESL )
 
 C     CHAM_ELEM/ELGA MAIS EN FAIT : 1 POINT ET 1 SOUS_POINT PAR ELEMENT
-      IF ((ZI(JCESD-1+3).NE.1).OR.(ZI(JCESD-1+4).NE.1))
-     &   CALL U2MESS('F','ALGORITH8_9')
+      IF ((ZI(JCESD-1+3).NE.1).OR.(ZI(JCESD-1+4).NE.1)) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
 
       NOMGD = ZK8(JCESK-1+2)
-      IF ( NOMGD .NE. 'CODE_I' ) CALL U2MESS('F','ALGORITH8_10')
+      IF ( NOMGD .NE. 'CODE_I' ) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF  
 C
       NBMAIL = ZI(JCESD-1+1)
       ICMP   = ZI(JCESD-1+2)
-      IF ( ICMP .NE. 1 ) CALL U2MESS('F','ALGORITH8_11')
+      IF ( ICMP .NE. 1 ) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF  
 C
       DO 20 IMA = 1 , NBMAIL
 
@@ -97,7 +110,7 @@ C
             TABRET(IRET) = .TRUE.
          ELSE
             VALI = IRET
-            CALL U2MESG('A', 'ALGORITH13_67',0,' ',1,VALI,0,0.D0)
+            CALL U2MESG('A', 'MECANONLINE2_67',0,' ',1,VALI,0,0.D0)
          ENDIF
 C
  20   CONTINUE

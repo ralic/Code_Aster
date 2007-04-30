@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF contact Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,19 +90,9 @@ cata_msg={
  Contact methodes discretes. Erreur de dimensionnement des tableaux apcoef et apddl : contacter les developpeurs
 """),
 
-
-
-
-
-
 27: _("""
  Contact methodes discretes. On n'a pas trouve de noeud maitre proche du noeud esclave : contacter les developpeurs
 """),
-
-
-
-
-
 
 30: _("""
  Contact methodes discretes. On ne sait pas traiter ce type de maille
@@ -120,48 +110,8 @@ cata_msg={
  Contact. Erreur dans la definition symetrique : contacter les developpeurs
 """),
 
-44: _("""
- Contact methode CONTINUE. Ne correspond a aucune methode du mot cle FORMULATION.
-"""),
-
-45: _("""
- Contact methode CONTINUE. Ne correspond a aucune methode du mot cle INTEGRATION.
-"""),
-
-46: _("""
- Contact methode CONTINUE. Ne correspond a aucune methode du mot cle FROTTEMENT.
-"""),
-
-47: _("""
- Contact methodes discretes. Ne correspond a aucune methode du mot cle METHODE.            
-"""),
-
-48: _("""
- Contact. Les methodes de contact sont differentes pour les zones de contact.
-"""),
-
-49: _("""
- Contact. Ne correspond a aucune methode du mot cle APPARIEMENT.
-"""),
-
-50: _("""
- Contact. Ne correspond a aucune methode du mot cle PROJECTION.             
-"""),
-
-51: _("""
- Contact. Ne correspond a aucune methode du mot cle RECHERCHE.
-"""),
-
-52: _("""
- Contact. Ne correspond a aucune methode du mot cle LISSAGE.
-"""),
-
-53: _("""
- Contact. Ne correspond a aucune methode du mot cle NORMALE.
-"""),
-
 54: _("""
- Contact. On ne peut pas utiliser une direction d'appariement fixe si l'appariement n'est pas nodal.
+ Contact. On ne peut pas utiliser une direction d'appariement fixe VECT_NORM_ESCL si l'appariement n'est pas nodal.
 """),
 
 55: _("""
@@ -172,17 +122,6 @@ cata_msg={
  Contact. La commande VECT_ORIE_POU n'intervient pas en 2D.
 """),
 
-57: _("""
- Contact. Ne correspond a aucune methode du mot cle REAC_GEOM.
-"""),
-
-58: _("""
- Contact. Ne correspond a aucune methode du mot cle STOP_SINGULIER.
-"""),
-
-59: _("""
- Contact. Ne correspond a aucune methode du mot cle SANS_NOEUD_QUAD.
-"""),
 
 60: _("""
  Contact methodes discretes. Vous utilisez des mailles de type SEG2/SEG3 en 3D sans definir un repere pour l'appariement. Voir les mots-clefs VECT_Y et VECT_ORIE_POU.
@@ -240,10 +179,6 @@ cata_msg={
  Contact methode CONTINUE. Pour l'option SANS_GROUP_NO, l'intégration aux noeuds est obligatoire.
 """),
 
-98: _("""
-  le statut du contact a change %(i1)d fois au point de contact no %(i2)d 
-  sur la maille esclave %(k1)s
-  --> presence de flip-flop !!
-"""),
+
 
 }

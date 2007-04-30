@@ -1,11 +1,7 @@
       SUBROUTINE XTOPOC(MODELE,FISS)
-      IMPLICIT NONE 
-
-      CHARACTER*8   MODELE,FISS
-
-C     ------------------------------------------------------------------
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,67 +20,104 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
-C          BUT : AJOUTER À LA SD FISS_XFEM LES DONNÉES 
-C                TOPOLOGIQUES CONCERNANT LES FACETTES DE CONTACT 
-C                    
-C
-C  IN         MODELE    : NOM DE L'OBJET MODELE	 
-C  IN/OUT     FISS      : NOM DE LA SD FISS_XFEM
-C
-C
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C
-      INTEGER       JNOMA
-      CHARACTER*8   LPAIN(5),LPAOUT(5)
-      CHARACTER*19  LCHIN(5),LCHOUT(5)
-      CHARACTER*19  LIGREL,CHGEOM,PINTER,AINTER,CFACE,LONCHA,BASECO
-
+      IMPLICIT NONE 
+      CHARACTER*8   MODELE,FISS
+C     
 C ----------------------------------------------------------------------
-
+C
+C ROUTINE XFEM (METHODE XFEM - PREPARATION)
+C
+C AJOUTER À LA SD FISS_XFEM LES DONNÉES TOPOLOGIQUES CONCERNANT 
+C LES FACETTES DE CONTACT
+C      
+C ----------------------------------------------------------------------
+C
+C
+C  IN  MODELE : NOM DE L'OBJET MODELE	 
+C  I/O FISS   : NOM DE LA SD FISS_XFEM
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      NBOUT,NBIN
+      PARAMETER    (NBOUT=5, NBIN=5)
+      CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
+      CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
+C
+      INTEGER      JNOMA
+      CHARACTER*19 LIGREL,CHGEOM
+      CHARACTER*19 PINTER,AINTER,CFACE,FACLON,BASECO
+      CHARACTER*19 LNNO,GRLNNO,LTNO,GRLTNO
+      LOGICAL      DEBUG
+      CHARACTER*16 OPTION
+      INTEGER      IFMDBG,NIVDBG      
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)      
+C
+C --- INITIALISATIONS
+C 
       LIGREL = MODELE//'.MODELE'
-
-C     RÉCUPÉRATION DE LA GÉOMETRIE
       CALL JEVEUO(MODELE//'.MODELE    .NOMA','L',JNOMA)
       CHGEOM = ZK8(JNOMA)//'.COORDO'
-
-C     CRÉATION DU .TOPOFAC
-C     --------------------
-
-      PINTER=FISS//'.TOPOFAC.PINTER'
-      AINTER=FISS//'.TOPOFAC.AINTER'
-      CFACE =FISS//'.TOPOFAC.CFACE'
-      LONCHA=FISS//'.TOPOFAC.LONCHAM'
-      BASECO=FISS//'.TOPOFAC.BASECO'
-
-      LPAIN(1) = 'PGEOMER'
-      LCHIN(1) = CHGEOM
-      LPAIN(2) = 'PLSN'
-      LCHIN(2) = FISS//'.LNNO'
-      LPAIN(3) = 'PLST'
-      LCHIN(3) = FISS//'.LTNO'
-      LPAIN(4) = 'PGRADLN'
-      LCHIN(4) = FISS//'.GRLNNO'
-      LPAIN(5) = 'PGRADLT'
-      LCHIN(5) = FISS//'.GRLTNO'
-
+      IF (NIVDBG.GE.2) THEN
+        DEBUG  = .TRUE.
+      ELSE
+        DEBUG  = .FALSE.
+      ENDIF
+      OPTION = 'TOPOFA'      
+C
+C --- INITIALISATION DES CHAMPS POUR CALCUL
+C
+      CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
+     &            NBOUT ,LPAOUT,LCHOUT) 
+C
+C --- RECUPERATION DES DONNEES XFEM
+C
+      LNNO   = FISS(1:8)//'.LNNO'     
+      LTNO   = FISS(1:8)//'.LTNO'
+      GRLNNO = FISS(1:8)//'.GRLNNO'     
+      GRLTNO = FISS(1:8)//'.GRLTNO'      
+      PINTER = FISS(1:8)//'.TOPOFAC.PI'
+      AINTER = FISS(1:8)//'.TOPOFAC.AI'
+      CFACE  = FISS(1:8)//'.TOPOFAC.CF'
+      FACLON = FISS(1:8)//'.TOPOFAC.LO'
+      BASECO = FISS(1:8)//'.TOPOFAC.BA'
+C       
+C --- CREATION DES LISTES DES CHAMPS IN
+C
+      LPAIN(1)  = 'PGEOMER'
+      LCHIN(1)  = CHGEOM
+      LPAIN(2)  = 'PLSN'
+      LCHIN(2)  = LNNO
+      LPAIN(3)  = 'PLST'
+      LCHIN(3)  = LTNO
+      LPAIN(4)  = 'PGRADLN'
+      LCHIN(4)  = GRLNNO
+      LPAIN(5)  = 'PGRADLT'
+      LCHIN(5)  = GRLTNO
+C       
+C --- CREATION DES LISTES DES CHAMPS OUT
+C
       LPAOUT(1) = 'PPINTER'
       LCHOUT(1) = PINTER
       LPAOUT(2) = 'PAINTER'
@@ -92,18 +125,19 @@ C     --------------------
       LPAOUT(3) = 'PCFACE'
       LCHOUT(3) = CFACE
       LPAOUT(4) = 'PLONCHA'
-      LCHOUT(4) = LONCHA
+      LCHOUT(4) = FACLON
       LPAOUT(5) = 'PBASECO'
       LCHOUT(5) = BASECO
+C
+      IF (DEBUG) THEN
+        CALL DBGCAL(OPTION,IFMDBG,
+     &              NBIN  ,LPAIN ,LCHIN ,
+     &              NBOUT ,LPAOUT,LCHOUT)
+      ENDIF 
+C  
+      CALL CALCUL('C',OPTION,LIGREL,NBIN  ,LCHIN ,LPAIN,
+     &                              NBOUT ,LCHOUT,LPAOUT,'G') 
 
-      CALL CALCUL('C','TOPOFA',LIGREL,5,LCHIN,LPAIN,5,LCHOUT,LPAOUT,'G')
-
-C      CALL IMPRSD('CHAMP',PINTER,6,'PINTER')
-C      CALL IMPRSD('CHAMP',AINTER,6,'AINTER')
-C      CALL IMPRSD('CHAMP',CFACE ,6,'CFACE' )
-C      CALL IMPRSD('CHAMP',LONCHA,6,'LONCHA')
-C      CALL IMPRSD('CHAMP',BASECO,6,'BASECO')
-
-
+C
       CALL JEDEMA()
       END

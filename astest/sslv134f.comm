@@ -1,4 +1,4 @@
-# MODIF  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -195,7 +195,6 @@ FFX=DEFI_FISS_XFEM(MODELE=MO,
                    ORIE_FOND=_F(PFON_INI=(-0.005,0.0,0.0,),
                                 VECT_ORIE=(0.0,1.0,0.0,),
                                 PT_ORIGIN=(0.0,0.0,0.0,),),
-                   CONTACT=_F(),
                    INFO=1,);
 
 KLMAX1=CALC_G( 

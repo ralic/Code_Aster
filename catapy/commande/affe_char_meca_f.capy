@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -253,18 +253,13 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                 NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
                 REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
                         into=("AUTOMATIQUE","CONTROLE","SANS")),
-                b_reac_sans     =BLOC(condition = "REAC_GEOM == 'SANS' ",
-                                 fr="Parametre de la reactualisation geometrique",
-                      
-                                 ),
+
                 b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
                                  fr="Parametre de la reactualisation geometrique",
                       NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
                       
                                  ),
-                b_reac_auto     =BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
-                      fr="Parametre de la reactualisation geometrique auto",
-                                 ), 
+
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
@@ -285,15 +280,11 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
 
                 REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
                                       into=("AUTOMATIQUE","CONTROLE","SANS")),
-                b_reac_sans     =BLOC(condition = "REAC_GEOM == 'SANS' ",fr="Parametre de la reactualisation geometrique",
-                                 ),
+
                 b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",fr="Parametre de la reactualisation geometrique",
                       NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
 
                                  ),
-                b_reac_auto     =BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
-                      fr="Parametre de la reactualisation geometrique auto",
-                                 ), 
 
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -320,14 +311,11 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                 
                 REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
                                       into=("AUTOMATIQUE","CONTROLE","SANS")),
-                b_reac_sans     =BLOC(condition = "REAC_GEOM == 'SANS' ",fr="Paramètre de la réactualisation géométrique",
-                                 ),
+
                 b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",fr="Paramètre de la réactualisation géométrique",
                       NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
                                  ),
-                b_reac_auto     =BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
-                     fr="Paramètre de la réactualisation géométrique auto",
-                                 ), 
+
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),

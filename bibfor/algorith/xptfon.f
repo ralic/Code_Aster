@@ -8,7 +8,7 @@
       CHARACTER*19  CNSLT,CNSLN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       CHARACTER*19    NOMT19,MAI
       CHARACTER*24    PARA
       CHARACTER*32    JEXATR
-      LOGICAL         DEJA,FABORD,PTBORD
+      LOGICAL         DEJA,FABORD
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()

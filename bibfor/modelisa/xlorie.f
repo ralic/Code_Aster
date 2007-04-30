@@ -1,0 +1,104 @@
+      SUBROUTINE XLORIE(FISS,NDIM)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+      INTEGER     NDIM
+      CHARACTER*8 FISS
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE XFEM (CREATION DES SD)
+C
+C LECTURE DONNEES ORIENTATION FOND DE FISSURE - CREATION XCARFO
+C
+C ----------------------------------------------------------------------
+C
+C
+C OUT FISS   : NOM DE LA SD FISS_XFEM 
+C                 FISS//'.CARAFOND'    
+C IN  NDIM   : DIMENSION DE L'ESPACE    
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      I,IBID,IOCC
+      REAL*8       PFI(3),VOR(3),ORI(3),RAYON,NORME
+      CHARACTER*24 XCARFO
+      INTEGER      JCARAF
+      INTEGER      XXMMVD,ZXCAR
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- CREATION DU VECTEUR DE STOCKAGE
+C
+      ZXCAR  = XXMMVD('ZXCAR') 
+      XCARFO = FISS(1:8)//'.CARAFOND'
+      CALL WKVECT(XCARFO,'G V R',ZXCAR,JCARAF)
+C
+C --- REMPLISSAGE DU VECTEUR DE STOCKAGE
+C   
+      CALL GETVR8(' ','RAYON_ENRI',1,1,1,RAYON,IBID)   
+      ZR(JCARAF) = RAYON
+C
+      CALL GETFAC('ORIE_FOND',IOCC)
+      IF (IOCC .EQ. 0) THEN
+        IF (NDIM .EQ. 3) CALL U2MESS('F','XFEM_20')
+      ELSEIF (IOCC .EQ. 1) THEN
+        IF (NDIM .EQ. 2) CALL U2MESS('F','XFEM_21')
+        CALL GETVR8('ORIE_FOND','PFON_INI' ,1,1,3,PFI,IBID)
+        CALL GETVR8('ORIE_FOND','VECT_ORIE',1,1,3,VOR,IBID)
+        CALL GETVR8('ORIE_FOND','PT_ORIGIN',1,1,3,ORI,IBID)
+C
+C --- NORMALISATION VECT_ORIE
+C
+        IF (NDIM .EQ. 3) THEN
+          CALL NORMEV(VOR,NORME)
+          IF (NORME.LT.1.D-10) CALL U2MESS('F','ALGORITH9_15')
+        ENDIF         
+        DO 100 I = 1,3
+          ZR(JCARAF+I)   = VOR(I)
+          ZR(JCARAF+3+I) = ORI(I)
+          ZR(JCARAF+6+I) = PFI(I)          
+ 100    CONTINUE
+      ELSE
+        CALL U2MESS('F','XFEM_22')
+      ENDIF      
+C
+      CALL JEDEMA()
+      END

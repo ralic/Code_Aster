@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa2 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,41 +35,9 @@ cata_msg={
 """),
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 9: _("""
   %(k1)s  n'existe pas
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -158,25 +126,6 @@ cata_msg={
 32: _("""
  la structure etudiee n'est pas une poutre droite.
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 37: _("""
@@ -276,7 +225,8 @@ cata_msg={
 """),
 
 61: _("""
-  mot cle facteur inconnu : %(k1)s 
+Le mot-clef facteur < %(k1)s > est inconnu. Contactez les développeurs.
+Note DVP: erreur de cohérence fortran/catalogue. 
 """),
 
 62: _("""

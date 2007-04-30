@@ -6,7 +6,7 @@
      &                  USUFIX,SDDYNA)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)      
+      CALL INFDBG('CONTACT',IFM,NIV)       
 C
 C --- AFFICHAGE
 C      
@@ -91,8 +91,8 @@ C
 C --- INITIALISATION DES CHAMPS DE DEPLACEMENT
 C 
       CALL COPISD('CHAMP_GD','V',DEPMOI,DEPPLU)    
-      CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
-      CALL JEVEUO(DDEPLA(1:19)//'.VALE','L',JDDEPL)
+      CALL JEVEUO(DEPDEL(1:19)//'.VALE','E',JDEPDE)
+      CALL JEVEUO(DDEPLA(1:19)//'.VALE','E',JDDEPL)
       CALL ZZZERO(NEQ,JDEPDE)
       CALL ZZZERO(NEQ,JDDEPL)  
 C

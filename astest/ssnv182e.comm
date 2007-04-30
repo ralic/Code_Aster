@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,8 +51,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  FONC_LT=LT,
                                  FONC_LN=LN,
                                  ),
-                    GROUP_MA_ENRI='SURF',
-                    CONTACT=_F(INTEGRATION='GAUSS',
+                    GROUP_MA_ENRI='SURF',);
+                    
+CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
+                                     METHODE = 'XFEM',
+                                     INTEGRATION='GAUSS',
                                COEF_REGU_CONT=100.,
                                ITER_CONT_MAXI=4,
                                CONTACT_INIT='OUI',
@@ -63,11 +66,13 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                ITER_FROT_MAXI=6,
                                COEF_REGU_FROT=1000.,
                                SEUIL_INIT=-5,
-                               ),
-                    INFO=1,);
+                                    ),
+                          MODELE=MODELEIN,
+                          ),                    
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
+                         CONTACT=CTXFEM,                         
                          INFO=1,);
 
 E=1.0E6
@@ -90,10 +95,10 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                           DX=0.0,
                                           DY=-1.E-6,),),
                     INFO=1,);
-
+                    
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                                INFO=1,);
+                      CONTACT_XFEM='OUI',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
@@ -105,6 +110,7 @@ IMPR_RESU(MODELE=MODELEK,FORMAT='ASTER',UNITE=20,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CHXFEM,),
+                          _F(CHARGE=CTXFEM,),                   
                           _F(CHARGE=CH1,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='SURF',),

@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa6 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,14 +145,6 @@ cata_msg={
  l'indicateur :  %(k1)s de position des multiplicateurs de lagrange associes a une relation lineaire n'est pas correct.
 """),
 
-
-
-
-
-
-32: _("""
- methode de contact inconnue (dvlp)
-"""),
 
 33: _("""
  il faut coef_group ou fonc_group

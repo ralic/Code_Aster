@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,16 +73,27 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (0. ,a ,h ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(0. ,20. ,h ),),
-                    CONTACT=_F(ALGO_LAGR='NON',
+                    );
+                    
+
+CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
+                                      METHODE = 'XFEM',
+                                     ALGO_LAGR='NON',
                                COEF_ECHELLE=1.,
                                INTEGRATION='GAUSS',
-                               CONTACT_INIT='OUI',),
-                    INFO=1,
-                    );
+                               CONTACT_INIT='OUI',
+                                    ),
+                          MODELE=MODELEIN,
+                          ),                     
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT=CTXFEM,
+                         INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',
+                      CONTACT_XFEM='OUI',);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -145,6 +156,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
+                          _F(CHARGE=CTXFEM,), 
                           _F(CHARGE=CH1,),
                           _F(CHARGE=CH2,),),
                    COMP_ELAS=_F(RELATION='ELAS',

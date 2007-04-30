@@ -1,8 +1,8 @@
-      SUBROUTINE DIMECO(CHAR,NOMA,NDIM,NZOCO,NSUCO,NMACO,NNOCO,
-     &                  NMANO,NNOMA,NMAMA)     
+      SUBROUTINE DIMECO(CHAR  ,NOMA  ,NDIM  ,NZOCO ,NSUCO ,
+     &                  NMACO ,NNOCO ,NMANO ,NNOMA ,NMAMA )     
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,6 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C 
       IMPLICIT     NONE
       CHARACTER*8  CHAR
@@ -31,17 +32,15 @@ C
       INTEGER      NMANO
       INTEGER      NNOMA
       INTEGER      NMAMA
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : CALICO
+C      
 C ----------------------------------------------------------------------
 C
-C CONSTRUCTION DU TABLEAU CONTENANT LES LONGUEURS DES DIFFERENTS 
-C VECTEURS 
-C ET LE NOMBRE DE NOEUDS ESCLAVES MAXIMUM POUR CHAQUE ZONE.
-C CALCUL DU NOMBRE MAXIMAL DE NOEUDS ESCLAVES DANS CHAQUE ZONE.
-C DIMENSIONNEMENT DES TABLEAUX CONTENANT LES INFORMATIONS 
-C POUR METHODES "PENALISATION" ET "LAGRANGIEN" 
+C ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+C
+C CONSTRUCTION DU VECTEUR D'INFORMATION SUR LES LONGUEURS
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  NOMA   : NOM DU MAILLAGE
@@ -76,31 +75,33 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX ----------------
 C
-      CHARACTER*24 NDIMCO,PSURNO,PZONE,FROTE,PENAL,COMAFO
-      INTEGER      JDIM,JSUNO,JZONE,JFRO,JPENA,JCOMA
+      CHARACTER*24 NDIMCO,PSURNO,PZONE
+      INTEGER      JDIM,JSUNO,JZONE
       INTEGER      NESMAX,NESM,NSURF
       INTEGER      IOC,I1,I2
       INTEGER      NBNO1,NBNO2
       INTEGER      CFMMVD,ZDIME
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
+C 
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+C 
       PSURNO = CHAR(1:8)//'.CONTACT.PSUNOCO'
       PZONE  = CHAR(1:8)//'.CONTACT.PZONECO'    
-      CALL JEVEUO(PZONE,'L',JZONE)
+      CALL JEVEUO(PZONE ,'L',JZONE)
       CALL JEVEUO(PSURNO,'L',JSUNO)
-C
-      ZDIME  = CFMMVD('ZDIME')      
+      ZDIME  = CFMMVD('ZDIME')       
+C 
+C --- CREATION DE LA STRUCTURE DE DONNEES DE CONTACT
+C 
       NDIMCO = CHAR(1:8)//'.CONTACT.NDIMCO'    
       CALL WKVECT(NDIMCO,'G V I',ZDIME+NZOCO,JDIM)
-      
-C ======================================================================
-C --- TABLEAU CONTENANT LES LONGUEURS DES DIFFERENTS VECTEURS ----------
-C --- ET LE NOMBRE DE NOEUDS ESCLAVES MAXIMUM POUR CHAQUE ZONE ---------
-C ======================================================================
-
+C 
+C --- TABLEAU CONTENANT LES LONGUEURS DES DIFFERENTS VECTEURS 
+C --- ET LE NOMBRE DE NOEUDS ESCLAVES MAXIMUM POUR CHAQUE ZONE 
+C
       ZI(JDIM)   = NDIM
       ZI(JDIM+1) = NZOCO
       ZI(JDIM+2) = NSUCO
@@ -109,14 +110,12 @@ C ======================================================================
       ZI(JDIM+5) = NMANO
       ZI(JDIM+6) = NNOMA
       ZI(JDIM+7) = NMAMA
-
-C ======================================================================
-C --- CALCUL DU NOMBRE MAXIMAL DE NOEUDS ESCLAVES DANS CHAQUE ZONE -----
+C 
+C --- CALCUL DU NOMBRE MAXIMAL DE NOEUDS ESCLAVES DANS CHAQUE ZONE 
 C --- ON COMPTE LES NOEUDS DE LA 2E SURFACE POUR 
-C --- 'NODAL' ET 'MAIT_ESCL' -------------------------------------------
-C --- LE MAX DES NOEUDS DES 1ERE ET 2EME SURFACE POUR 'MAIT_ESCL_SYME'--
+C --- 'NODAL' ET 'MAIT_ESCL' 
+C --- LE MAX DES NOEUDS DES 1ERE ET 2EME SURFACE POUR 'MAIT_ESCL_SYME'
 C
-C ======================================================================
       NESMAX = 0
       DO 20 IOC = 1,NZOCO
         NESM = 0
@@ -135,19 +134,8 @@ C ======================================================================
         END IF
         ZI(JDIM+8+IOC) = NESM
    20 CONTINUE
-C ======================================================================
+C 
       ZI(JDIM+8) = NESMAX
-C ======================================================================
-C --- DIMENSIONNEMENT DES TABLEAUX CONTENANT LES INFORMATIONS 
-C --- POUR METHODES "PENALISATION" ET "LAGRANGIEN" 
-C ======================================================================
-
-      FROTE  = CHAR(1:8)//'.CONTACT.FROTE'
-      PENAL  = CHAR(1:8)//'.CONTACT.PENAL'
-      COMAFO = CHAR(1:8)//'.CONTACT.COMAFO'
-      CALL WKVECT(FROTE,'G V R',NESMAX,JFRO)
-      CALL WKVECT(PENAL,'G V R',2*NESMAX,JPENA)
-      CALL WKVECT(COMAFO,'G V R',NESMAX,JCOMA)
 C
       CALL JEDEMA()
       END

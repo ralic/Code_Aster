@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith6 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,33 +22,7 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- vecteurs tangents nuls lors  de la projection du point de contact  sur la maille maitre  %(k1)s 
-"""),
 
-2: _("""
- element inconnu  sur la maille maitre  %(k1)s 
-"""),
-
-3: _("""
- vecteur normal nul  sur le noeud maitre  %(k1)s 
-"""),
-
-4: _("""
- plus de 3 noeuds exclus  sur la maille esclave  %(k1)s  par l'option sans_group_no ou sans_noeud
-"""),
-
-5: _("""
- l'element porte par la   la maille esclave  %(k1)s  n'est pas du bon type pour un fond de fissure , elle est de type  %(k2)s 
-"""),
-
-6: _("""
- schema d'integration inconnu  sur la maille  %(k1)s 
-"""),
-
-7: _("""
- code erreur introuvable (dvlp)
-"""),
 
 8: _("""
  erreur point integration (dvlp)

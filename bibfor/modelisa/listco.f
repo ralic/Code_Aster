@@ -1,8 +1,8 @@
-      SUBROUTINE LISTCO (CHAR,MOTFAC,NOMA,NTRAV,NZOCO,ORDSTC,
-     &                   NMACO,NNOCO,NNOQUA)
-     
+      SUBROUTINE LISTCO(CHAR  ,MOTFAC,NOMA  ,NTRAV ,NZOCO ,
+     &                  ORDSTC,NMACO ,NNOCO ,NNOQUA)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,12 +30,15 @@ C
       INTEGER      NMACO
       INTEGER      NNOCO
       INTEGER      NNOQUA
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : CALICO
+C      
 C ----------------------------------------------------------------------
 C
-C STOCKAGE DES MAILLES ET NOEUDS DE CONTACT DES DIFFERENTES SURFACES.
+C ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+C
+C STOCKAGE DES MAILLES ET NOEUDS DE CONTACT
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
@@ -84,72 +87,68 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
-C --- NOMS JEVEUX
-      SYMECO  = CHAR(1:8)//'.CONTACT.SYMECO'
-      CALL JEVEUO(SYMECO,'L',JSYME)
-      NSYME = ZI(JSYME)
-
-
+C 
+C --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
+C 
+      SYMECO = CHAR(1:8)//'.CONTACT.SYMECO'
       PZONE  = CHAR(1:8)//'.CONTACT.PZONECO'
       PSURMA = CHAR(1:8)//'.CONTACT.PSUMACO'
       PSURNO = CHAR(1:8)//'.CONTACT.PSUNOCO'
       PNOQUA = CHAR(1:8)//'.CONTACT.PNOEUQU'
+      CONTMA = CHAR(1:8)//'.CONTACT.MAILCO'
+      CONTNO = CHAR(1:8)//'.CONTACT.NOEUCO'
+      CONOQU = CHAR(1:8)//'.CONTACT.NOEUQU'  
+C            
       CALL JEVEUO(PZONE,'L',JZONE)
       CALL JEVEUO(PSURMA,'L',JSUMA)
       CALL JEVEUO(PSURNO,'L',JSUNO)
       CALL JEVEUO(PNOQUA,'L',JNOQUA)
-
-      CONTMA = CHAR(1:8)//'.CONTACT.MAILCO'
-      CONTNO = CHAR(1:8)//'.CONTACT.NOEUCO'
-      CONOQU = CHAR(1:8)//'.CONTACT.NOEUQU'     
+      CALL JEVEUO(SYMECO,'L',JSYME)
+C
+C --- INITIALISATIONS
+C  
+      NSYME  = ZI(JSYME)      
+      NZOCP  = NZOCO - NSYME
+      IWRITE = 0      
+C
+C --- CREATION DES SD
+C        
       CALL WKVECT(CONTMA,'G V I',NMACO,JMACO)
       CALL WKVECT(CONTNO,'G V I',NNOCO,JNOCO)
       IF (NNOQUA.NE.0) THEN
         CALL WKVECT(CONOQU,'G V I',3*NNOQUA,JNOQU)
       END IF
-
-C --- AFFECTATION DU TABLEAU DE TRAVAIL ET INITIALISATION
-      CALL WKVECT ('&&LISTCO.TRAV','V V K8',NTRAV,JTRAV)
-                             
+      CALL WKVECT('&&LISTCO.TRAV','V V K8',NTRAV,JTRAV)
+C                             
 C --- ON NE BOUCLE QUE SUR LES ZONES PRINCIPALES: 
-      NZOCP = NZOCO - NSYME
-
-      IWRITE = 0
+C
        
       DO 11 IOC = 1,NZOCP
-         IREAD  = IOC
-         IWRITE = IOC
-         CALL LIEXCO (CHAR,MOTFAC,NOMA,IREAD,IWRITE,JTRAV,ORDSTC,
-     +                   JZONE,JSUMA,JSUNO,JNOQUA,
-     +                   JMACO,JNOCO,JNOQU)
+        IREAD  = IOC
+        IWRITE = IOC
+        CALL LIEXCO(CHAR  ,MOTFAC,NOMA  ,IREAD ,IWRITE,
+     &              JTRAV ,ORDSTC,JZONE ,JSUMA ,JSUNO ,
+     &              JNOQUA,JMACO ,JNOCO ,JNOQU)
    11 CONTINUE  
-
+C
 C --- ON BOUCLE SUR LES ZONES PRINCIPALES MAIS ON AGIT SUR LES 
-C      ZONES SYMETRIQUES
+C --- ZONES SYMETRIQUES
+C
       IF (NSYME.GT.0) THEN  
-
-         IF (ORDSTC.EQ.1) ORDSTC = 0
-         IF (ORDSTC.EQ.0) ORDSTC = 1
-
          DO 6 IOC = 1,NZOCP
             IREAD = IOC
             DO 7 ISY = 1,NSYME       
                IF (ZI(JSYME+ISY) .EQ.IOC) THEN
                 IWRITE = IWRITE+1
-                CALL LIEXCO (CHAR,MOTFAC,NOMA,IREAD,IWRITE,JTRAV,ORDSTC,
-     +                 JZONE,JSUMA,JSUNO,JNOQUA,
-     +                 JMACO,JNOCO,JNOQU)
+                CALL LIEXCO(CHAR  ,MOTFAC,NOMA  ,IREAD ,IWRITE,
+     &                      JTRAV ,ORDSTC,JZONE ,JSUMA ,JSUNO ,
+     &                      JNOQUA,JMACO ,JNOCO ,JNOQU)
                ENDIF
   7         CONTINUE             
   6      CONTINUE      
-         IF (ORDSTC.EQ.1) ORDSTC = 0
-         IF (ORDSTC.EQ.0) ORDSTC = 1   
       ENDIF
-
-      CALL JEDETR ('&&LISTCO.TRAV')
-
-C ----------------------------------------------------------------------
 C
+      CALL JEDETR ('&&LISTCO.TRAV')
+C      
       CALL JEDEMA()
       END

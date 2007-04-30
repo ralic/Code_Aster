@@ -1,7 +1,7 @@
       SUBROUTINE OP0070 (IER)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
       INTEGER      NREAVI, NONDP
       INTEGER      NBOBSE, NUINS0
       INTEGER      NBOBAR, NUOBSE, NBPASE, NIVEAU
-      INTEGER      IFLAMB,  DININS,  ITAB(2)
+      INTEGER      IFLAMB, DININS
       INTEGER      JACCGP, JDEPGP, JRESTA, JRESTD, JRESTV, JVITGP
       INTEGER      NBMODE, NUMA, FDECUP
 C
@@ -79,7 +79,7 @@ C
       REAL*8       DIINST,     INSTAM,     INSTAP,   INST(5)
       REAL*8       TPS1(4),  TPS2(4),   TPS3(4)
       REAL*8       PARCON(5),  TPS1M,      VALR(3)
-      REAL*8       NDYNRE, RTAB(2)
+      REAL*8       NDYNRE
 C
       CHARACTER*8  RESULT, MODEDE, MAILLA, SCONEL, MCONEL, K8BID
       CHARACTER*8  MAILL2, BASENO
@@ -112,7 +112,7 @@ C
       CHARACTER*24 VALMOI(8), VALPLU(8), SECMBR(8), POUGD(8)
       CHARACTER*24 SECOLD(8), RIGID
       CHARACTER*24 LISINS, VITINI, ACCINI, CHGRFL
-      CHARACTER*24 DEFICU, RESOCU, KTAB(2)
+      CHARACTER*24 DEFICU, RESOCU
       CHARACTER*19 RESUL2,KPRMO,NDYNKK
       CHARACTER*19 USUMOI,USUPLU,USUINI,USUFIX
       LOGICAL      LSSTRU,NDYNLO
@@ -182,8 +182,8 @@ C ----------------------------------------------------------------------
 C -- TITRE
 
       CALL TITRE ()
-      CALL INFMAJ
-      CALL INFNIV (IFM,NIV)
+      CALL INFMAJ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV) 
 
 C ======================================================================
 C               RECUPERATION DES OPERANDES ET INITIALISATION
@@ -262,7 +262,7 @@ C -- CREATION DES VECTEURS D'INCONNUS
      &            FOINER, DEPENT, VITENT, ACCENT, DEPENM, VITENM,
      &            ACCENM, VITMOI, ACCMOI, DEPGEO, VITPLU, ACCPLU,
      &            NEQ,    NUMEDD, NBPASE, INPSCO, VITINI,
-     &            ACCINI, SDDYNA)
+     &            ACCINI, SDDYNA)    
 
 C -- MAILLAGE SOUS-TENDU PAR LE MODELE
 
@@ -430,7 +430,7 @@ C -- ET COMMUNIQUENT PAR LA VARIABLE NIVEAU
 
       CALL NMIBLE(NIVEAU,
      &            PREMIE, MAILLA, DEFICO, OLDGEO, NEWGEO,
-     &            DEPMOI, DEPGEO, MAXB,   DEPLAM,
+     &            DEPMOI, DEPGEO, MAXB,   DEPLAM, RESOCO,
      &            COMGEO, CSEUIL, COBCA,
      &            NEQ   , DEPDEL, DDEPLA, DEPPLU, LIGRCF,
      &            CARTCF, MODELE, LISCHA, SOLVEU, NUMEDD,
@@ -439,6 +439,7 @@ C -- ET COMMUNIQUENT PAR LA VARIABLE NIVEAU
      &            ACCINI, INST, FONACT(9),USUMOI,
      &            USUPLU, USUINI, USUFIX, VECNOD, VECNOX,
      &            VECNOY, VECNOZ,SDDYNA)
+     
 
 C ======================================================================
 C   PHASE DE PREDICTION : INTERPRETEE COMME UNE DIRECTION DE DESCENTE
@@ -508,6 +509,7 @@ C -- CALCUL DES FORCES SUIVEUSES
      &             K24BID, COMPLU, 0,      0,      K13BID,
      &             K8BID,  SECOLD, CNFOLD, FOPREC,
      &             SECMBR,SDDYNA)
+
       IF (NDYNLO(SDDYNA,'DYNAMIQUE')) THEN
         CALL NMCHAR ('INER', MODELE, NUMEDD, MATE  , CARELE,
      &               COMPOR, LISCHA, CARCRI, INST  , DEPMOI,
@@ -517,6 +519,7 @@ C -- CALCUL DES FORCES SUIVEUSES
      &               CHONDP, COMPLU, 0,      0,      K13BID,
      &               K8BID,  SECOLD, CNFOLD, FOPREC,
      &               SECMBR,SDDYNA)
+
       ENDIF
 
 C -- FORCES D'INERTIE POUR L'ESTIMATION DE LA CONVERGENCE
@@ -665,7 +668,7 @@ C ======================================================================
 C --- VERIFICATION DE LA CONVERGENCE
 C --- METHODE CONTACT CONTINUE
       CALL NMTBLE(NIVEAU,PREMIE,
-     &            MAILLA, DEFICO, OLDGEO, NEWGEO,
+     &            MAILLA, DEFICO, RESOCO, OLDGEO, NEWGEO,
      &            DEPMOI, DEPGEO, MAXB,   DEPLAM,
      &            COMGEO, CSEUIL, COBCA,  FONACT(9),
      &            DEPPLU, INST,   DECOL,  MODELE,
@@ -868,43 +871,11 @@ C -- ON COMMENCE PAR ARCHIVER LE PAS DE TEMPS PRECEDENT
       ENDIF
       CALL COPISD(' ','G',LISCHA,LISCH2)
 
-      IF (MTCPUI) THEN
-        ITAB(1)=NUMINS
-        ITAB(2)=ITERAT
-        RTAB(1)=TPS2(4)
-        RTAB(2)=TPS2(1)
-        CALL UTEXCM(28,'MECANONLINE_79',0,K8BID,2,ITAB,2,RTAB)
+C -- GESTION DES ERREURS ET EXCEPTIONS
 
-      ELSE IF (MTCPUP) THEN
-        KTAB(1)='increment de charge'
-        ITAB(1)=NUMINS
-        RTAB(1)=TPS1(4)
-        RTAB(2)=TPS1(1)
-        CALL UTEXCM(28,'MECANONLINE_80',1,KTAB ,1,ITAB,2,RTAB)
-
-      ELSE IF (ECHLDC) THEN
-        CALL UTEXCP(23, 'COMPOR1_9')
-
-      ELSE IF (ECHEQU) THEN
-        CALL UTEXCP(25, 'MECANONLINE_82')
-
-      ELSE IF (ECHCON(1)) THEN
-        CALL UTEXCP(26, 'CONTACT2_1')
-
-      ELSE IF (ECHCON(2)) THEN
-        CALL UTEXCP(27, 'CONTACT2_2')
-
-      ELSE IF (ITEMAX) THEN
-        CALL UTEXCP(22, 'MECANONLINE_83')
-      
-      ELSE IF (ECHPIL) THEN
-        CALL UTEXCP(22, 'MECANONLINE_84')
-
-      ELSE
-        CALL U2MESS('F','ALGORITH9_38')
-
-      ENDIF
-
+      CALL NMERRO(MTCPUI,MTCPUP,ITEMAX,NUMINS,ITERAT,
+     &            ECHLDC,ECHEQU,ECHCON,ECHPIL,TPS2(4),
+     &            TPS1(4),TPS2(1))
 
 
 C ======================================================================

@@ -1,7 +1,7 @@
-      SUBROUTINE CFDISC(DEFICO,RESOCO,TYPALC,TYPALF,FROT3D,MATTAN)
+      SUBROUTINE CFDISC(DEFICO,RESOCZ,TYPALC,TYPALF,FROT3D,MATTAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,12 +21,12 @@ C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*24 DEFICO
-      CHARACTER*14 RESOCO
-      INTEGER      TYPALC
-      INTEGER      TYPALF
-      INTEGER      FROT3D
-      INTEGER      MATTAN
+      CHARACTER*24  DEFICO
+      CHARACTER*(*) RESOCZ
+      INTEGER       TYPALC
+      INTEGER       TYPALF
+      INTEGER       FROT3D
+      INTEGER       MATTAN
 C      
 C ----------------------------------------------------------------------
 C
@@ -87,7 +87,7 @@ C
       INTEGER      JCOCO
       INTEGER      IMETH,IZONE,IBID
       LOGICAL      LFROTT
-      CHARACTER*24 RESOCZ
+      CHARACTER*24 RESOCO
 C
 C ----------------------------------------------------------------------
 C
@@ -98,7 +98,7 @@ C
       TYPALF = 0
       MATTAN = 0
       FROT3D = 0
-      RESOCZ(1:14) = RESOCO
+      RESOCO = RESOCZ
 C
 C --- Y A T-IL DU CONTACT/FROTTEMENT DANS LE CALCUL ?
 C
@@ -172,6 +172,14 @@ C
         TYPALF = 0
         MATTAN = 0
         FROT3D = 0
+      ELSE IF  (IMETH.EQ.11) THEN
+        TYPALC = -3
+        MATTAN = 1
+        FROT3D = 1 
+      ELSE IF  (IMETH.EQ.12) THEN
+        TYPALC = -3
+        MATTAN = 1
+        FROT3D = 1                
       ELSE
         CALL U2MESS('F','CONTACT_86')
       ENDIF
@@ -179,7 +187,7 @@ C
 C --- FROTTEMENT METHODE CONTINUE
 C
       IF (TYPALC.EQ.-3) THEN
-        CALL MMINFP(IZONE,DEFICO,RESOCZ,'FROTTEMENT',
+        CALL MMINFP(IZONE,DEFICO,RESOCO,'FROTTEMENT',
      &              IBID,R8BID,K24BID,LFROTT)
         IF (LFROTT) THEN
           TYPALF = -3

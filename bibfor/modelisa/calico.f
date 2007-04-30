@@ -1,9 +1,7 @@
       SUBROUTINE CALICO(CHARZ,NOMAZ,LIGRMZ,NDIM,FONREE)
-C ======================================================================
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
-C RESPONSABLE MABBAS M.ABBAS
-C TOLE CRP_20
+C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +18,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE MABBAS M.ABBAS
+C TOLE CRP_20
 C
       IMPLICIT      NONE
       CHARACTER*(*) CHARZ
@@ -252,52 +252,40 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*8    K8BID,CHAR,NOMA,NOMO
-      CHARACTER*16   K16BID,NOMCMD,MOTFAC,TYPF
-      INTEGER        IBID,IER,NOC
-      CHARACTER*16   PHENOM,MODELI
-      INTEGER        NSYME
-      INTEGER        INDQUA
-      INTEGER        NZOCO,NSUCO,NMACO,NNOCO,NNOQUA,NZOCP,NTRAV
-      INTEGER        NMANO,NNOMA,NMAMA,ORDSTC
+      CHARACTER*8    CHAR,NOMA,NOMO
+      CHARACTER*16   MOTFAC
+      INTEGER        NSYME,NZOCO,NZOCP
+C
+      DATA MOTFAC    /'CONTACT'/      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      CALL GETRES(K8BID,K16BID,NOMCMD)
-
-      MOTFAC = 'CONTACT'
-      NOMO = LIGRMZ(1:8)
-      CHAR = CHARZ
-      NOMA = NOMAZ
-C ======================================================================
-C --- RECUPERATION DU NOM DU PHENOMENE ET DE LA  MODELISATION
-C ======================================================================
-      CALL DISMOI('F','PHENOMENE',NOMO,'MODELE',IBID,PHENOM,IER)
-      CALL DISMOI('F','MODELISATION',NOMO,'MODELE',IBID,MODELI,IER)
-
-C ======================================================================
+C --- INITIALISATIONS
+C
+      NOMO   = LIGRMZ(1:8)
+      CHAR   = CHARZ
+      NOMA   = NOMAZ
+      NSYME  = 0  
+      NZOCO  = 0  
+      NZOCP  = 0  
+C 
 C --- RECUPERATION DU NOMBRE DE ZONES DE CONTACT (NOMBRE D'OCCURENCES)
-C ======================================================================
-      NZOCO = 0
+C
       IF (MOTFAC.EQ.'CONTACT') THEN
         CALL GETFAC(MOTFAC,NZOCO)
       ELSE
         CALL U2MESK('F','MODELISA2_61',1,MOTFAC)
       END IF
-
+C
       IF (NZOCO.EQ.0) THEN
         GOTO 999
       ENDIF
-
-C ======================================================================
+C 
 C --- DETERMINATION DU NOMBRE DE ZONES DE CONTACT SYMETRIQUES
 C --- REMPLISSAGE DE LA SD ASSOCIEE
-C ======================================================================
-
-      NSYME = 0
-
+C 
       CALL SYMECO(CHAR,MOTFAC,NZOCO,NSYME)
 
 C --> NSYME : NOMBRE TOTAL DE SURFACES SYMETRIQUES DE CONTACT
@@ -306,129 +294,23 @@ C --- NZOCP : NOMBRE ZONES PRINCIPALES DE CONTACT
 
       NZOCO = NZOCO + NSYME
       NZOCP = NZOCO - NSYME
-
-
-C ======================================================================
-C --- SI LA METHODE EST 'PENALISATION' OU 'CONTINUE' -> INDQUA = 1
-C --- CE DRAPEAU SERVIRA DANS L'APPEL DE NBNOEL ET PERMETTRA DE
-C --- TRAITER LES NOEUDS MILIEUX DES MAILLES QUADRATIQUES
-C ======================================================================
-
-      CALL QUADCO (CHAR,MOTFAC,NZOCP,INDQUA)
-
-C ======================================================================
-C --- PREMIERE PASSE
-C --- DETERMINATION DU NOMBRE TOTAL DE SURFACES, DE MAILLES ET DE NOEUDS
-C --- REMPLISSAGE DES POINTEURS PZONE, PSURMA, PSURNO ET PNOQUA
-C ======================================================================
-
-C --- CHOIX DE L'ORDRE DE STOCKAGE DANS LES VECTEURS
-      CALL GETVTX (MOTFAC,'METHODE',1,1,1,TYPF,NOC)
-      IF(TYPF(1:8).EQ.'CONTINUE') THEN
-        ORDSTC = 1
-      ELSE
-        ORDSTC = 0
-      ENDIF
-
-      CALL POINCO (CHAR,MOTFAC,NOMA,NZOCO,ORDSTC,INDQUA,
-     &             NSUCO,NMACO,NNOCO,NNOQUA,NTRAV)
-
-C --> NSUCO  : NOMBRE TOTAL DE SURFACES DE CONTACT
-C --> NMACO  : NOMBRE TOTAL DE MAILLES DES SURFACES DE CONTACT
-C --> NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES DE CONTACT
-C --> NNOQUA : NOMBRE TOTAL DE NOEUDS QUADRATIQUES DES SURFACES DE
-C              CONTACT
-C --> NTRAV  : NOMBRE MAXIMUM DE GROUPES ET DE MAILLES IMPLIQUES DANS
-C              LE CONTACT (TOUTES ZONES CONFONDUES)
-
-C ======================================================================
+C 
 C --- RECUPERATION DES CARACTERISTIQUES DU CONTACT
-C ======================================================================
-
-      CALL CARACO(CHAR,MOTFAC,NOMA,NOMO,NDIM,NZOCO,NNOQUA)
-
-C ======================================================================
-C --- REMPLISSAGE DES TABLEAUX METHCO, JEUSUP, CONTMA ET CONTNO
-C ======================================================================
-
-      CALL LISTCO(CHAR,MOTFAC,NOMA,NTRAV,NZOCO,ORDSTC,
-     &            NMACO,NNOCO,NNOQUA)
-
-C ======================================================================
-C --- ELIMINATION DES REDONDANCES DE NOEUDS ET DE MAILLES AU SEIN
-C --- D'UNE MEME SURFACE. MODIFICATION DES POINTEURS.
-C --- STOCKAGE DES NOEUDS DECLARES SOUS 'SANS_NOEUD' ET 'SANS_GROUP_NO'.
-C ======================================================================
-
-      CALL ELIMCO(CHAR,NOMA,NZOCO,NSUCO,NMACO,NNOCO,NNOQUA)
-
-C ======================================================================
-C --- CONSTRUCTION DES CONNECTIVITES INVERSES
-C ======================================================================
-
-      CALL TABLCO(CHAR,NOMA,NZOCO,NSUCO,NMACO,NNOCO,
-     &            NMANO,NNOMA,NMAMA)
-
-C --> NMANO  : DIMENSION DU TABLEAU INVERSE NOEUDS->MAILLES
-C --> NNOMA  : DIMENSION DU TABLEAU DIRECT MAILLES->NOEUDS
-C --> NMAMA  : DIMENSION DU TABLEAU DONNANT POUR CHAQUE MAILLE
-C              DE CONTACT LA LISTE
-C              DES MAILLES DE CONTACT DE LA MEME SURFACE ADJACENTES
-C              (ON STOCKE LA POSITION DANS CONTMA, PAS LE NUMERO ABSOLU)
-
-C ======================================================================
-C --- LONGUEURS DES DIFFERENTS VECTEURS
-C --- NOMBRE DE NOEUDS ESCLAVES MAXIMUM POUR CHAQUE ZONE
-C --- CALCUL DU NOMBRE MAXIMAL DE NOEUDS ESCLAVES DANS CHAQUE ZONE
-C --- DIMENSIONNEMENT DES TABLEAUX CONTENANT LES INFORMATIONS
-C --- POUR METHODES "PENALISATION" ET "LAGRANGIEN"
-C ======================================================================
-
-      CALL DIMECO(CHAR,NOMA,NDIM,NZOCO,NSUCO,NMACO,NNOCO,
-     &                  NMANO,NNOMA,NMAMA)
-
-
-C ======================================================================
-C --- REMPLISSAGE DES TABLEAUX CONTENANT LES INFORMATIONS
-C --- POUR LA METHODE CONTINUE
-C ======================================================================
-
-      CALL CONTCO(CHAR,NOMA,NNOCO)
-
-C ======================================================================
-C --- RECUPERATION DES CARACTERISTIQUES DE POUTRE
-C ======================================================================
-
-      CALL CAPOCO(CHAR,MOTFAC,NOMA)
-
-C ======================================================================
-C --- RECUPERATION DES CARACTERISTIQUES DE COQUE
-C ======================================================================
-
-      CALL CACOCO(CHAR,MOTFAC,NOMA)
-
-C ======================================================================
-C --- RELATIONS LINEAIRES POUR MAILLES QUADRATIQUES SURFACIQUES
-C ---  RELATION LINEAIRE ENTRE NOEUD MILIEU ET NOEUDS SOMMETS
-C ---  ELIMINATION DES NOEUDS MILIEUX DU CONTACT DANS EXNOEL
-C --- CECI EST FAIT:
-C ---	POUR LES QUAD8  -> SYSTEMATIQUEMENT
-C ---	POUR LES QUAD9  -> SEULEMENT POUR LES COQUE_3D
-C --- POUR TOUTES LES AUTRES MAILLES QUADRATIQUES EN CONTACT,
-C --- LES NOEUDS MILIEUX SONT DANS
-C ======================================================================
-
-      CALL CACOEQ(FONREE,CHAR,NOMA)
-
-C ======================================================================
+C 
+      CALL CARACO(CHAR  ,MOTFAC,FONREE,NOMA  ,NOMO  ,
+     &            NDIM  ,NZOCO)
+C    
+C --- LECTURE DES MAILLES DE CONTACT  ET CREATION DES SDS
+C   
+      CALL LIMACO(CHAR  ,MOTFAC,FONREE,NOMA  ,NDIM  ,
+     &            NZOCP ,NZOCO)
+C
 C --- IMPRESSIONS SUR LES ZONES/SURFACES/MAILLES/NOEUDS DE CONTACT
-C ======================================================================
-
+C 
       CALL SURFCO(CHAR,NOMA)
-
-
+C
  999  CONTINUE
-C ======================================================================
+C 
       CALL JEDEMA()
 C
       END

@@ -1,5 +1,4 @@
-#@ MODIF elements4 Messages  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
-# -*- coding: iso-8859-1 -*-
+#@ MODIF elements4 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,10 +35,6 @@ cata_msg={
 
 4: _("""
  ! pb rcvala biot_coef  %(k1)s 
-"""),
-
-5: _("""
- le vecteur tau1 (direction1 du frottement) est nul. les gradients des level sets sont surement colineaires en ce point.
 """),
 
 6: _("""
@@ -264,10 +259,6 @@ cata_msg={
   La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
 """),
 
-67: _("""
- ! le module de young est nul !
-"""),
-
 
 68: _("""
  Nombre d'itérations internes insuffisant.
@@ -275,14 +266,6 @@ cata_msg={
 
 69: _("""
  ! pb recuperation donnee materiau dans thm_liqu %(k1)s !
-"""),
-
-70: _("""
- ! pb recuperation donnee materiau dans thm_init %(k1)s !
-"""),
-
-71: _("""
- ! pb recuperation donnees materiau dans elas %(k1)s !
 """),
 
 
@@ -315,11 +298,6 @@ cata_msg={
 78: _("""
  ! pb recuperation donnee materiau dans thm_diffu %(k1)s !
 """),
-
-
-
-
-
 
 79: _("""
  la loi de comportement n'existe pas pour la  modelisation dktg :  %(k1)s 

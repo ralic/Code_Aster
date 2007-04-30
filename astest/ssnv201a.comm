@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,22 +95,26 @@ FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,5. ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(2.5,2.5,5. ),),
-                    CONTACT=_F(INTEGRATION='GAUSS',
+                    INFO=1,
+                    );
+ 
+CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS1,
+                                      METHODE = 'XFEM',
+                                    INTEGRATION='GAUSS',
                                COEF_REGU_CONT=100., 
                                ITER_CONT_MAXI=40,   
                                CONTACT_INIT='NON',
                                GLISSIERE='OUI',    
                                COEF_ECHELLE=1.e6,
                                FROTTEMENT='SANS',
-                              ),
-                    INFO=1,
-                    );
- 
-                                                                
+                                    ),
+                          MODELE=MODELEIN,
+                          ), 
+                                                                                          
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS1,
-                         INFO=2,
-                        );
+                         CONTACT=CTXFEM,
+                         INFO=1,);
 
 E=100.0E6
 nu=0.
@@ -168,7 +172,8 @@ VARY=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='CONSTANT',)
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
-                      LIAISON_XFEM='OUI',);
+                      LIAISON_XFEM='OUI',
+                      CONTACT_XFEM='OUI',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,
@@ -178,7 +183,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,              
                    EXCIT=(_F(CHARGE=ENCASTR,),
                           _F(CHARGE=CHZ,FONC_MULT=VARZ),
-                          _F(CHARGE=CHY,FONC_MULT=VARY), 
+                          _F(CHARGE=CHY,FONC_MULT=VARY),
+                          _F(CHARGE=CTXFEM,),                             
                           _F(CHARGE=CHXFEM,),),                  
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -134,8 +134,6 @@ FISS1=DEFI_FISS_XFEM(MODELE=MO,
                                   PT_ORIGIN=(0.0,
                                              0.0,
                                              0.0),),
-                     INFO=1,
-                     CONTACT=_F(),
                      );
 
 

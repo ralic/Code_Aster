@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,7 +115,6 @@ FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(2.5,2.5,12.5 ),),
-                    INFO=1,
                     );
 
                     
@@ -128,7 +127,6 @@ FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,37.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(2.5,2.5,37.5 ),),
-                    INFO=1,
                     );
                     
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,7 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
             
     RAYON          =SIMP(statut='o',typ='R',),
           
-    METHODE        =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="SIMPLEXE"),
+    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND",),defaut="SIMPLEXE"),
 
 #    RUNGE_KUTTA    =SIMP(statut='f',typ='I',into=("1","2",),defaut=1),
 

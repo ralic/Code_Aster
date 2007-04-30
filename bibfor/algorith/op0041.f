@@ -1,10 +1,7 @@
       SUBROUTINE OP0041(IER)
-      IMPLICIT NONE
-      INTEGER           IER
-
-
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,238 +20,258 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
-C                       OPERATEUR DEFI_FISS_XFEM :
-C                INITIALISATION DES CHAMPS NECESSAIRES A XFEM
-C                 - LEVEL-SETS
-C                 - GRADIENTS DES LEVEL-SETS
-C                 - MAILLES ENRICHIES DE LA ZONE FISSURE
-C                 - POINTS DU FOND DE FISSURE
+      IMPLICIT NONE
+      INTEGER           IER
+C      
+C ----------------------------------------------------------------------
 C
-C     N.B.: TOUTE MODIFICATION EFFECTUE APRES LE CALCUL DES LEVEL SETS &
+C OPERATEUR DEFI_FISS_XFEM
+C
+C INITIALISATION DES CHAMPS NECESSAIRES A XFEM
+C        - LEVEL-SETS
+C        - GRADIENTS DES LEVEL-SETS
+C        - MAILLES ENRICHIES DE LA ZONE FISSURE
+C        - POINTS DU FOND DE FISSURE
+C
+C ----------------------------------------------------------------------
+C
+C N.B.: TOUTE MODIFICATION EFFECTUE APRES LE CALCUL DES LEVEL SETS &
 C        LEURS GRADIENT DOIT ETRE REPERCUTEE DANS OP0010 : PROPA_XFEM
 C        (MIS A PART L'APPEL A SDCONX A LA FIN)
-C     ------------------------------------------------------------------
-C     OUT : IER = 0 => TOUT S'EST BIEN PASSE
-C     : IER > 0 => NOMBRE D'ERREURS RENCONTREES
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16             ZK16
-      CHARACTER*24                      ZK24
-      CHARACTER*32                               ZK32
-      CHARACTER*80                                        ZK80
-      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNUM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      I,IFM,NIV,IBID,ME1,ME2,NVAL,IADRMA,IOCCC,CRIT(2),IRAY
-      INTEGER      NMAEN1,NMAEN2,NMAEN3,IOCC2,NBMAE,NBNOE,NDIM,ADDIM
-      INTEGER      JCARAF
-      REAL*8       PFI(3),VOR(3),ORI(3),NORME,RHON,MU,RHOT,SEUIL0,RAYON
-      REAL*8       COECH
-      CHARACTER*8  FISS,MODE,NFONF,NFONG,MAFIS,FONFIS,NOMA,METH
-      CHARACTER*8  FROTT,STACO0,INTE,ALGOLA,STAGLI
+C OUT IER   : CODE RETOUR ERREUR COMMANDE
+C               IER = 0 => TOUT S'EST BIEN PASSE
+C               IER > 0 => NOMBRE D'ERREURS RENCONTREES
+C
+C CONCEPT SORTANT: FISS DE TYPE FISS_XFEM
+C
+C     CONDENU DE LA SD FISS_XFEM
+C         FISS//'.GROUP_MA_ENRI'
+C         FISS//'.GROUP_NO_ENRI'
+C         FISS//'.LTNO' 
+C         FISS//'.LNNO'
+C         FISS//'.GRLTNO' 
+C         FISS//'.GRLNNO'
+C         FISS//'.MAILFISS .INDIC'
+C         FISS//'.MAILFISS  .HEAV'
+C         FISS//'.MAILFISS  .CTIP'
+C         FISS//'.MAILFISS  .HECT'
+C         FISS//'.FONDFISS'
+C         FISS//'.FONDMULT' 
+C         FISS//'.BASLOC'
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      IFM,NIV,IBID
+      INTEGER      ME1,ME2,IADRMA
+      INTEGER      NDIM,JDIME
+      CHARACTER*8  FISS,NOMO,NFONF,NFONG,MAFIS,FONFIS,NOMA,METH
       CHARACTER*16 K16BID
       CHARACTER*19 CNSLT,CNSLN,GRLT,GRLN,CNSEN,CNSBAS,CNSENR
-      CHARACTER*24 OBJMA,CHFOND,LISMAE,LISNOE
+      CHARACTER*19 LTNO,LNNO,GRLTNO,GRLNNO,STNOR,STNO,BASLOC
+      CHARACTER*24 LISMAE,LISNOE
 C
-C-----------------------------------------------------------------------
-C     DEBUT
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('XFEM',IFM,NIV)  
+C
+C --- NOM DU CONCEPT FISSURE
 C
       CALL GETRES(FISS,K16BID,K16BID)
-      CALL GETVID(' ','MODELE',1,1,1,MODE,IBID)
+C
+C --- NOM DU MODELE
+C      
+      CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
+C
+C --- MOT-CLEFS DEFINITION FISSURE
+C      
       CALL GETVID('DEFI_FISS','FONC_LT',1,1,1,NFONF,ME1)
       CALL GETVID('DEFI_FISS','FONC_LN',1,1,1,NFONG,ME1)
       CALL GETVID('DEFI_FISS','GROUP_MA_FISS',1,1,1,MAFIS,ME2)
       CALL GETVID('DEFI_FISS','GROUP_MA_FOND',1,1,1,FONFIS,ME2)
-      CALL GETVR8(' ','RAYON_ENRI',1,1,1,RAYON,IRAY)
-      CALL GETFAC('CONTACT',IOCCC)
-      IF (IOCCC.EQ.1) THEN
-        CALL GETVR8('CONTACT','COEF_REGU_CONT',1,1,1,RHON,IBID)
-        CALL GETVIS('CONTACT','ITER_CONT_MAXI',1,1,1,CRIT(1),IBID)
-        CALL GETVID('CONTACT','INTEGRATION',1,1,1,INTE,IBID)
-        CALL GETVID('CONTACT','CONTACT_INIT',1,1,1,STACO0,IBID)
-        CALL GETVID('CONTACT','GLISSIERE',1,1,1,STAGLI,IBID)
-        CALL GETVID('CONTACT','ALGO_LAGR',1,1,1,ALGOLA,IBID)
-        CALL GETVR8('CONTACT','COEF_ECHELLE',1,1,1,COECH,IBID)
-        CALL GETVID('CONTACT','FROTTEMENT',1,1,1,FROTT,IBID)
-        IF (FROTT.EQ.'COULOMB') THEN
-          CALL GETVR8('CONTACT','COULOMB',1,1,1,MU,IBID)
-          CALL GETVIS('CONTACT','ITER_FROT_MAXI',1,1,1,CRIT(2),IBID)
-          CALL GETVR8('CONTACT','COEF_REGU_FROT',1,1,1,RHOT,IBID)
-          CALL GETVR8('CONTACT','SEUIL_INIT',1,1,1,SEUIL0,IBID)
-        ENDIF
+C
+C --- NOM DU MAILLAGE ATTACHE AU MODELE
+C
+      CALL JEVEUO(NOMO(1:8)//'.MODELE    .NOMA','L',IADRMA)
+      NOMA  = ZK8(IADRMA)
+C
+C --- DIMENSION DU PROBLEME
+C
+      CALL JEVEUO(NOMA//'.DIME','L',JDIME)
+      NDIM  = ZI(JDIME-1+6)
+      IF ((NDIM.LT.2).OR.(NDIM.GT.3)) THEN
+        CALL U2MESS('F','XFEM_18')
       ENDIF
 C
-      OBJMA = MODE//'.MODELE    .NOMA'
-      CALL JEVEUO(OBJMA,'L',IADRMA)
-      NOMA = ZK8(IADRMA)
-
-      CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
-      NDIM=ZI(ADDIM-1+6)
-
-C  VECTEUR DE STOCKAGE DES DONNEES DE FOND DE FISSURE DANS LA SD
-      CALL WKVECT(FISS//'.CARAFOND','G V R',7,JCARAF)
-      ZR(JCARAF) = RAYON
-
-      CALL GETFAC('ORIE_FOND',IOCC2)
-      IF (IOCC2 .EQ. 0) THEN
-        IF (NDIM .EQ. 3) CALL U2MESS('F','ALGORITH9_20')
-      ELSEIF (IOCC2 .EQ. 1) THEN
-        IF (NDIM .EQ. 2) CALL U2MESS('F','ALGORITH9_21')
-        CALL GETVR8('ORIE_FOND','PFON_INI',1,1,3,PFI,IBID)
-        CALL GETVR8('ORIE_FOND','VECT_ORIE',1,1,3,VOR,IBID)
-        CALL GETVR8('ORIE_FOND','PT_ORIGIN',1,1,3,ORI,IBID)
-        DO 100 I=1,3
-          ZR(JCARAF+I) = VOR(I)
-          ZR(JCARAF+3+I) = ORI(I)
- 100    CONTINUE
-      ELSE
-        CALL U2MESS('F','ALGORITH9_22')
-      ENDIF
-
-C  RECUPERATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
+C --- STOCKAGE DES DONNEES ORIENTATION FOND DE FISSURE
+C     ON ENRICHI LA SD FISS_XFEM DE 
+C         FISS//'.CARAFOND' 
+C
+      CALL XLORIE(FISS,NDIM)
+C
+C --- RECUPERATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
+C     ON ENRICHI LA SD FISS_XFEM DE 
+C         FISS//'.GROUP_MA_ENRI'
+C         FISS//'.GROUP_NO_ENRI'
+C
       LISMAE = '&&OP0041.LISTE_MA_ENRICH'
-      CALL RELIEM(' ',NOMA,'NU_MAILLE',' ',1,1,
-     &                     'GROUP_MA_ENRI','GROUP_MA',LISMAE,NBMAE)
-      CALL JEDUPO(LISMAE,'G',FISS//'.GROUP_MA_ENRI',.FALSE.)
-
       LISNOE = '&&OP0041.LISTE_NO_ENRICH'
-      CALL RELIEM(' ',NOMA,'NU_NOEUD',' ',1,1,
-     &                     'GROUP_MA_ENRI','GROUP_MA',LISNOE,NBNOE)
-      CALL JEDUPO(LISNOE,'G',FISS//'.GROUP_NO_ENRI',.FALSE.)
-
+      CALL XLENRI(NOMA  ,FISS  ,LISMAE,LISNOE)
 C
 C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL-SETS
+C
+C     ON ENRICHI LA SD FISS_XFEM DE 
+C         FISS//'.LTNO' 
+C         FISS//'.LNNO'
+C 
 C-----------------------------------------------------------------------
 C
-      CNSLT='&&OP0041.CNSLT'
-      CNSLN='&&OP0041.CNSLN'
+      CNSLT  = '&&OP0041.CNSLT'
+      CNSLN  = '&&OP0041.CNSLN'
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSLT)
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSLN)
       IF (ME1.EQ.1) THEN
-        METH='FONCTION'
+        METH = 'FONCTION'
       ELSEIF (ME2.EQ.1) THEN
-        METH='GROUP_MA'
+        METH = 'GROUP_MA'
       ELSE
-        CALL U2MESS('F','ALGORITH9_23')
+        CALL U2MESS('F','XFEM_23')
       ENDIF
-
+C
       CALL XINILS(IFM,NOMA,METH,NFONF,NFONG,CNSLT,CNSLN)
-
-      CALL CNSCNO(CNSLT,' ','NON','G',FISS//'.LTNO')
-      CALL CNSCNO(CNSLN,' ','NON','G',FISS//'.LNNO')
-
-      IF (NIV.GT.1) THEN
-        CALL IMPRSD('CHAMP',FISS//'.LTNO',IFM,'FISSURE.LTNO=')
-        CALL IMPRSD('CHAMP',FISS//'.LNNO',IFM,'FISSURE.LNNO=')
+C
+C --- CREATION DES CHAM_NO DES LEVEL-SETS
+C
+      LTNO   = FISS(1:8)//'.LTNO'
+      LNNO   = FISS(1:8)//'.LNNO'      
+      CALL CNSCNO(CNSLT,' ','NON','G',LTNO)
+      CALL CNSCNO(CNSLN,' ','NON','G',LNNO)
+C
+      IF (NIV.GE.2) THEN
+        CALL IMPRSD('CHAMP',LTNO,IFM,'FISSURE.LTNO=')
+        CALL IMPRSD('CHAMP',LNNO,IFM,'FISSURE.LNNO=')
       END IF
 C
 C-----------------------------------------------------------------------
 C     CALCUL DES GRADIENTS DES LEVEL-SETS
+C
+C     ON ENRICHI LA SD FISS_XFEM DE 
+C         FISS//'.GRLTNO' 
+C         FISS//'.GRLNNO'
+C
 C-----------------------------------------------------------------------
 C
-      GRLT = '&&OP0041.GRLT'
-      GRLN = '&&OP0041.GRLN'
-
-      CALL XGRALS(IFM,MODE,NOMA,FISS,GRLT,GRLN)
-
-      CALL CNSCNO ( GRLT,' ','NON','G',FISS//'.GRLTNO' )
-      CALL CNSCNO ( GRLN,' ','NON','G',FISS//'.GRLNNO' )
-
-      IF (NIV.GT.1) THEN
-        CALL IMPRSD('CHAMP',FISS//'.GRLTNO',IFM,'FISSURE.GRLTNO=')
-        CALL IMPRSD('CHAMP',FISS//'.GRLNNO',IFM,'FISSURE.GRLNNO=')
+      GRLT   = '&&OP0041.GRLT'
+      GRLN   = '&&OP0041.GRLN'
+C
+      CALL XGRALS(IFM,NOMO,NOMA,FISS,GRLT,GRLN)
+C
+C --- CREATION DES CHAM_NO DES GRADIENTS DES LEVEL-SETS
+C
+      GRLTNO = FISS(1:8)//'.GRLTNO'
+      GRLNNO = FISS(1:8)//'.GRLNNO'
+      CALL CNSCNO( GRLT,' ','NON','G',GRLTNO)
+      CALL CNSCNO( GRLN,' ','NON','G',GRLNNO)
+C
+      IF (NIV.GE.2) THEN
+        CALL IMPRSD('CHAMP',GRLTNO,IFM,'FISSURE.GRLTNO=')
+        CALL IMPRSD('CHAMP',GRLNNO,IFM,'FISSURE.GRLNNO=')
       END IF
 C
 C-----------------------------------------------------------------------
 C     CALCUL DE L'ENRICHISSEMENT, DES POINTS DU FOND DE FISSURE
+C
+C     ON ENRICHI LA SD FISS_XFEM DE 
+C         FISS//'.MAILFISS .INDIC'
+C         FISS//'.MAILFISS  .HEAV'
+C         FISS//'.MAILFISS  .CTIP'
+C         FISS//'.MAILFISS  .HECT'
+C         FISS//'.FONDFISS'
+C         FISS//'.FONDMULT' 
+C
 C-----------------------------------------------------------------------
 C
-      CNSEN='&&OP0041.CNSEN'
-      CNSENR='&&OP0041.CNSENR'
-
+      CNSEN  = '&&OP0041.CNSEN'
+      CNSENR = '&&OP0041.CNSENR'
+C
       IF (NDIM .EQ. 3) THEN
-
-        CALL NORMEV(VOR,NORME)
-        IF (NORME.LT.1.D-10) CALL U2MESS('F','ALGORITH9_15')
-
-        CALL XNRCH3(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,PFI,VOR,ORI,
-     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
-
+        CALL XNRCH3(NOMA  ,CNSLT ,CNSLN ,CNSEN ,CNSENR,
+     &              FISS  ,LISMAE,LISNOE)
       ELSEIF (NDIM .EQ. 2) THEN
-
-        CALL XNRCH2(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
-     &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
-
+        CALL XNRCH2(NOMA  ,CNSLT ,CNSLN ,CNSEN ,CNSENR,
+     &              FISS  ,LISMAE,LISNOE)
+      ENDIF    
+C
+C --- CREATION DU CHAM_NO POUR LE STATUT DES NOEUDS
+C   
+      STNO   = FISS(1:8)//'.STNO'
+      CALL CNSCNO(CNSEN ,' ','NON','G',STNO)
+      IF (NIV.GE.2) THEN
+        CALL IMPRSD('CHAMP',STNO,IFM,'FISSURE.STNO=')
       ENDIF
-
-      CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR')
-      CALL CNSCNO(CNSEN,' ','NON','G',FISS//'.STNO')
-
-      IF (NIV.GT.2) THEN
-        CALL IMPRSD('CHAMP',FISS//'.STNO',IFM,'FISSURE.STNO=')
-      END IF
+C      
+C --- CREATION DU CHAM_NO POUR LA VISUALISATION
+C           
+      STNOR  = FISS(1:8)//'.STNOR' 
+      CALL CNSCNO(CNSENR,' ','NON','G',STNOR)      
 C
 C-----------------------------------------------------------------------
 C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE
+C
+C     ON ENRICHI LA SD FISS_XFEM DE 
+C         FISS//'.BASLOC'
+C         
 C-----------------------------------------------------------------------
 C
-      CHFOND = FISS//'.FONDFISS'
-      CNSBAS='&&OP0041.CNSBAS'
+      CNSBAS = '&&OP0041.CNSBAS'
+C      
       IF (NDIM .EQ. 3) THEN
-        CALL XBASLO(MODE,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
+        CALL XBASLO(NOMO  ,NOMA  ,FISS  ,GRLT  ,GRLN  ,
+     &              CNSBAS)
       ELSEIF (NDIM .EQ. 2) THEN
-        CALL XBASL2(MODE,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
+        CALL XBASL2(NOMO  ,NOMA  ,FISS  ,GRLT  ,GRLN  ,
+     &              CNSBAS)
       ENDIF
-
-      CALL CNSCNO(CNSBAS,' ','NON','G',FISS//'.BASLOC')
+C
+      BASLOC = FISS(1:8)//'.BASLOC'
+      CALL CNSCNO(CNSBAS,' ','NON','G',BASLOC)
+C
+      IF (NIV.GE.2) THEN
+        CALL IMPRSD('CHAMP',BASLOC,IFM,'FISSURE.BASLOC=')
+      ENDIF
+C
+C --- MENAGE
+C
       CALL DETRSD('CHAM_NO_S',CNSBAS)
-
-
-      IF (NIV.GT.2) THEN
-        CALL IMPRSD('CHAMP',FISS//'.BASLOC',IFM,'FISSURE.BASLOC=')
-      ENDIF
+      CALL DETRSD('CHAM_NO_S',CNSLT)
+      CALL DETRSD('CHAM_NO_S',CNSLN)
+      CALL DETRSD('CHAM_NO_S',GRLT)
+      CALL DETRSD('CHAM_NO_S',GRLN)      
+      CALL DETRSD('CHAM_NO_S',CNSEN)
+      CALL DETRSD('CHAM_NO_S',CNSENR)
+      CALL DETRSD('CHAM_NO_S',CNSBAS) 
+      CALL JEDETR(LISMAE)
+      CALL JEDETR(LISNOE)
 C
-C-----------------------------------------------------------------------
-C     STRUCTURE DE DONNEES SUR LE CONTACT
-C-----------------------------------------------------------------------
-C
-C     SEULEMENT S'IL Y A DES MAILLES DE CONTACT
-      IF (NMAEN1+NMAEN2+NMAEN3.GT.0) THEN
-
-        CALL SDCONX(RHON,CRIT,FROTT,MU,RHOT,SEUIL0,STACO0,STAGLI,INTE,
-     &                                          COECH,ALGOLA,IOCCC,FISS)
-
-C       APPEL À L'ALGORITHME DE RESTRICTION DE L'ESPACE DES
-C       MULTIPLICATUERS DE LAGRANGE DE CONTACT
-        IF (ALGOLA.NE.'NON') THEN
-          WRITE(IFM,*)'ACTIVATION DE L''ALGORITHME DE RESTRICTION DE '//
-     &                'L''ESPACE DES MULTIPLICATEURS DE '//
-     &                'PRESSION DE CONTACT'
-          CALL XLAGSP(ALGOLA,NDIM,NOMA,CNSLT,CNSLN,GRLN,GRLT,FISS)
-
-        ENDIF
-
-      ENDIF
-C
-C-----------------------------------------------------------------------
-C     FIN
-C-----------------------------------------------------------------------
-
       CALL JEDEMA()
       END

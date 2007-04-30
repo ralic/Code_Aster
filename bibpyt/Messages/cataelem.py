@@ -1,4 +1,4 @@
-#@ MODIF cataelem Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF cataelem Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,4 +93,12 @@ cata_msg={
 18: _("""
  stop d
 """),
+
+20: _("""
+ Erreur lors de l'accès à la composante %(i1)d dans le champ de nom %(k1)s et de type %(k2)s.
+ Les arguments sont hors bornes ou la composante est déjà affectée (écrasement).
+ Contactez les développeurs.
+"""),
+
+
 }

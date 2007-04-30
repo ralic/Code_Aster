@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith8 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,17 +54,7 @@ cata_msg={
  format de colonne inconnu (dvlp)
 """),
 
-9: _("""
- erreur cham_elem_s
-"""),
 
-10: _("""
-  bug 1
-"""),
-
-11: _("""
-  bug 2
-"""),
 
 12: _("""
  f reste toujours negative

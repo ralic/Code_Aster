@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,7 +111,7 @@ FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(0. ,20. ,15. ),),
-                    CONTACT=_F(ALGO_LAGR='NON',),);
+                    );
 
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(FONC_LT=LT2,FONC_LN=LN2,),
@@ -119,7 +119,7 @@ FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,-15. ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(0. ,20. ,-15. ),),
-                    CONTACT=_F(ALGO_LAGR='NON',),);
+                    );
 
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=(FISS1,FISS2),INFO=1,);

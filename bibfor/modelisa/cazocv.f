@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCV(CHAR,MOTFAC,IREAD,IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,20 +18,24 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*8  CHAR
       CHARACTER*16 MOTFAC
       INTEGER      IREAD
       INTEGER      IWRITE  
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : CAZOCO
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE DISCRETE - LECTURE DONNEES)
 C
 C LECTURE DES PRINCIPALES CARACTERISTIQUES DU CONTACT (SURFACE IREAD)
 C REMPLISSAGE DE LA SD 'DEFICO' (SURFACE IWRITE) POUR 
-C LA METHODE SANS CONTACT
+C LA METHODE SANS CONTACT (METHODE DITE 'VERIF')
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')

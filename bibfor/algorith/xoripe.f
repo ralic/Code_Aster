@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,25 +44,28 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
+      CHARACTER*32     JEXNUM, JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8        R8B,ARMIN,PREC,G2(3),G3(3),NEXT(3),NORME
       REAL*8        CO(3,3),AB(3),AC(3),N2D(3),DDOT
       COMPLEX*16    CBID
       INTEGER       JNOMA,NGR,IGR,JGR,N1,NBELT,ITYPEL,IEL,IMA,NBMA,J
-      INTEGER       JMAIL,CPT,NBMAIL,IRET,NBPAR,JCOOR,JM3D,IBID,I,JVECNO
+      INTEGER       JMAIL,CPT,NBMAIL,IRET,NBPAR,JCOOR,JM3D,IBID,JVECNO
       INTEGER       NUMA3D,NUMA2D,NBNOM3,NBNOM2,JCONX1,JCONX2,INO,NUNO
       INTEGER       ICH,JCESD(3),JCESV(3),JCESL(3),IAD,NIT,IT,NSE,ISE,IN
       INTEGER       NDIME,ICMP,NDIM,ID(3),INTEMP,NSEORI,IFM,NIV,NNCP
-      CHARACTER*8   TYPMA,NOMA,K8BID,NOMAIL,K8B
+      CHARACTER*8   NOMA,K8BID,NOMAIL,K8B
       CHARACTER*2   KDIM
       CHARACTER*16  NOTYPE
       CHARACTER*19  LIGREL,NOMT19,CHS(3)
       CHARACTER*24  MAMOD,LIEL,GRMAPE,NOMMAI,NOMOB,PARA,VECNOR
+      CHARACTER*19  PINTTO,CNSETO,LONCHA
+C
 C ----------------------------------------------------------------------
-
+C
       CALL JEMARQ()
+      CALL INFDBG('XFEM',IFM,NIV)        
 
 C     NOMBRE DE SOUS-TRIA RE-ORIENTES
       NSEORI=0.D0
@@ -210,9 +213,13 @@ C     ------------------------------------------------------------------
       CHS(2)  = '&&XORIPE.CNSETO'
       CHS(3)  = '&&XORIPE.LONCHA'
 
-      CALL CELCES(FISS//'.TOPOSE.PINTTO','V', CHS(1))
-      CALL CELCES(FISS//'.TOPOSE.CNSETO','V', CHS(2))
-      CALL CELCES(FISS//'.TOPOSE.LONCHAM','V',CHS(3))
+      PINTTO = FISS(1:8)//'.TOPOSE.PIN'
+      CNSETO = FISS(1:8)//'.TOPOSE.CNS'
+      LONCHA = FISS(1:8)//'.TOPOSE.LON'
+
+      CALL CELCES(PINTTO,'V',CHS(1))
+      CALL CELCES(CNSETO,'V',CHS(2))
+      CALL CELCES(LONCHA,'V',CHS(3))
 
       DO 40 ICH=1,3
         CALL JEVEUO(CHS(ICH)//'.CESD','L',JCESD(ICH))
@@ -290,7 +297,7 @@ C             ON INVERSE LES SOMMETS 2 ET 3
 
 C     ON SAUVE LE NOUVEAU CHAM_ELEM MODIFIE A LA PLACE DE L'ANCIEN
       CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',
-     &                               NNCP,'G',FISS//'.TOPOSE.CNSETO')
+     &                               NNCP,'G',CNSETO)
 
 C     ------------------------------------------------------------------
 C     FIN
@@ -301,7 +308,6 @@ C     ------------------------------------------------------------------
 
  999  CONTINUE
 
-      CALL INFNIV(IFM,NIV)
       WRITE(IFM,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES =',NSEORI
 
       CALL JEDETR('&&XORIPE.GRMAPE')

@@ -1,4 +1,4 @@
-#@ MODIF contactdebg Messages  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contactdebg Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

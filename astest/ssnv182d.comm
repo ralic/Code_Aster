@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,17 +47,28 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X-1. ');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     GROUP_MA_ENRI='SURF',
-                    CONTACT=_F(ALGO_LAGR='NON',
-                               CONTACT_INIT='OUI',
-                               COEF_ECHELLE=1.,
-                               FROTTEMENT='SANS',
-                               ),
                     INFO=1,);
 
+CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
+                                     METHODE='XFEM',
+                                    ITER_CONT_MAXI=30,
+                                 COEF_REGU_CONT=100.0,
+                                 INTEGRATION='FPG4',
+                                 FROTTEMENT='SANS',
+                                 GLISSIERE='NON',
+                                 CONTACT_INIT='OUI',
+                                 COEF_ECHELLE=1.0,
+                                 ALGO_LAGR='NON',
+                                    ),
+                          MODELE=MODELEIN,
+                          ),
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         INFO=1,);
+                         CONTACT=CTXFEM);
+                         
+                         
+                         
 
 E=100.0E6
 nu=0.
@@ -82,7 +93,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                                INFO=1,);
+                      CONTACT_XFEM='OUI',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
@@ -91,6 +102,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CHXFEM,),
+                          _F(CHARGE=CTXFEM,),                       
                           _F(CHARGE=CH1,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='SURF',),

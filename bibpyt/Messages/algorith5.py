@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith5 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -406,27 +406,9 @@ cata_msg={
  dimension de l'espace incorrecte (dvlp)
 """),
 
-94: _("""
- sd introuvable (dvlp)
-"""),
 
-95: _("""
- matrice singuliere lors du  calcul du repere local tangent au  noeud maitre  %(k1)s  sur la maille maitre  %(k2)s  vecteurs tangents colineaires ?
-"""),
 
-96: _("""
- matrice singuliere lors  de la projection du point de contact  sur la maille maitre  %(k1)s  vecteurs tangents colineaires ?
-"""),
 
-97: _("""
- newton echoue lors du calcul du repere local tangent au  noeud maitre  %(k1)s  sur la maille maitre  %(k2)s 
-"""),
 
-98: _("""
- newton echoue lors  de la projection du point de contact  sur la maille maitre  %(k1)s 
-"""),
 
-99: _("""
- vecteurs tangents nuls au noeud maitre  %(k1)s  sur la maille maitre  %(k2)s 
-"""),
 }

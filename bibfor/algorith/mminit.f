@@ -3,7 +3,7 @@
      &                  MAXB)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -83,7 +83,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)     
+      CALL INFDBG('CONTACT',IFM,NIV)    
 C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> INITIALISATIONS' 
@@ -102,7 +102,7 @@ C
         CALL COPISD('CHAMP_GD','V',ACCPLU,ACCINI)
       END IF
 C
-C --- COORDONNEES INITALES DES NOEUDS
+C --- COORDONNEES INITIALES DES NOEUDS
 C      
       OLDGEO = NOMA//'.COORDO'
 C

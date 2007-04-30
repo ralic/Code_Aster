@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith13 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,9 +347,7 @@ cata_msg={
     temps de chute compris entre  %(r3)f et  %(r4)f 
 """),
 
-67: _("""
-  code retour non traite  %(i1)d 
-"""),
+
 
 68: _("""
  pb.interpolation vitesse:evol_char  : %(k1)s instant    : %(r1)f 

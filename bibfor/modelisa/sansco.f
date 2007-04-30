@@ -1,0 +1,79 @@
+      SUBROUTINE SANSCO(CHAR  ,MOTFAC ,NOMA  ,NZOCO ,NNOCO ,
+     &                  FORM)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C REPONSABLE
+C
+      IMPLICIT      NONE
+      CHARACTER*8   CHAR
+      CHARACTER*16  MOTFAC
+      CHARACTER*8   NOMA
+      INTEGER       NZOCO
+      INTEGER       NNOCO
+      INTEGER       FORM
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES MAILLEES - LECTURE DONNEES)
+C
+C LECTURE DES NOEUDS DANS LE MOT-CLEF SANS_GROUP_NO
+C      
+C ----------------------------------------------------------------------
+C
+C
+C NB: ON ELIMINE LES NOEUDS N'APPARTENANT PAS AUX SURFACES DE CONTACT
+C 
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NZOCO  : NOMBRE DE ZONES DE CONTACT
+C IN  NNOCO  : NOMBRE TOTAL DE NOEUDS DES SURFACES
+C IN  FORM   : TYPE DE FORMULATION (DISCRET/CONTINUE/XFEM)
+C
+C ----------------------------------------------------------------------
+C
+      CHARACTER*24 SANSN,PSANS
+      INTEGER      NUMSUR
+C
+C ----------------------------------------------------------------------
+C
+C
+C --- INITIALISATIONS
+C
+      IF (FORM.EQ.1) THEN
+        NUMSUR = 2
+      ELSEIF (FORM.EQ.2) THEN
+        NUMSUR = 1 
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF   
+C
+C --- TRAITEMENT MOT-CLEF SANS_GROUP_NO/SANS_NOEUD
+C
+      SANSN  = CHAR(1:8)//'.CONTACT.SSNOCO'
+      PSANS  = CHAR(1:8)//'.CONTACT.PSSNOCO'
+C
+C --- APPEL            
+C      
+      CALL SANSNO(CHAR  ,MOTFAC ,NOMA  ,NZOCO ,NNOCO ,
+     &            'SANS_GROUP_NO','SANS_NOEUD',
+     &            SANSN,PSANS,NUMSUR)
+C 
+      END

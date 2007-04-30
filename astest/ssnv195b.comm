@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,13 +118,7 @@ FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,12.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(2.5,2.5,12.5 ),),
-                    CONTACT=_F(INTEGRATION='GAUSS',
-                               COEF_REGU_CONT=100., 
-                               ITER_CONT_MAXI=40,   
-                               CONTACT_INIT='OUI',    
-                               COEF_ECHELLE=1.,
-                               FROTTEMENT='SANS',
-                                ),
+                    
                     INFO=1,
                     );
 
@@ -138,20 +132,38 @@ FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI= (2.5 ,0. ,37.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(2.5,2.5,37.5 ),),
-                    CONTACT=_F(INTEGRATION='GAUSS',
-                               COEF_REGU_CONT=100., 
-                               ITER_CONT_MAXI=40,   
-                               CONTACT_INIT='OUI',    
-                               COEF_ECHELLE=1.,
-                               FROTTEMENT='SANS',
-                               ),
                     INFO=1,
                     );
                     
-
+                    
+CTXFEM = AFFE_CHAR_MECA( CONTACT=(_F(METHODE='XFEM',
+                                     INTEGRATION='GAUSS',
+                                     COEF_REGU_CONT=100., 
+                                     ITER_CONT_MAXI=40,   
+                                     CONTACT_INIT='OUI',    
+                                     COEF_ECHELLE=1.,
+                                     FROTTEMENT='SANS',
+                                     FISS_MAIT = FISS1,
+                                    ),
+                                  _F(METHODE='XFEM',
+                                     INTEGRATION='GAUSS',
+                                     COEF_REGU_CONT=100., 
+                                     ITER_CONT_MAXI=40,   
+                                     CONTACT_INIT='OUI',    
+                                     COEF_ECHELLE=1.,
+                                     FROTTEMENT='SANS',
+                                     FISS_MAIT = FISS2,
+                                    ),  
+                                ),
+                                MODELE=MODELEIN,
+                          ),
+                          
+                          
+                          
                                                                 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),
+                         CONTACT=CTXFEM,
                          INFO=2,
                         );
 
@@ -194,6 +206,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 
         
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      CONTACT_XFEM='OUI',
                       LIAISON_XFEM='OUI',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -203,6 +216,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,              
                    EXCIT=(_F(CHARGE=CH1,), 
+                          _F(CHARGE=CTXFEM,),
                           _F(CHARGE=CHXFEM,),),                  
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),

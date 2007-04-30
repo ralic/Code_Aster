@@ -2,7 +2,7 @@
      &                  VECNTD,NEQ,VECNTX,VECNTY,
      &                  VECNTZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)      
+      CALL INFDBG('CONTACT',IFM,NIV)        
 C      
 C --- RECUPERATION DE QUELQUES DONNEES      
 C
@@ -131,6 +131,7 @@ C
         IZONE  = ZI(JMAESC+3*(IMA-1)+2)
         CALL MMINFP(IZONE,DEFICO,K24BLA,'SEUIL_INIT',
      &              IBID,LAMBDA,K24BID,LBID)
+        LAMBDA = -ABS(LAMBDA)
         CALL MMINFP(IZONE,DEFICO,K24BLA,'INTEGRATION',
      &              TYCO,R8BID,K24BID,LBID)
         CALL MMINFP(IZONE,DEFICO,K24BLA,'LISSAGE',

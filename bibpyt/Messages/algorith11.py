@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith11 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,9 +182,6 @@ cata_msg={
  probleme de dimension :ni 2d, ni 3d
 """),
 
-44: _("""
- aucun type_elem du ligrel ne connait le parametre de l'option
-"""),
 
 45: _("""
  inter douteuse
@@ -204,10 +201,6 @@ cata_msg={
 
 49: _("""
  uniquement c_plan/d_plan disponible  en xfem
-"""),
-
-50: _("""
- le nombre  d'aretes coupees par la fissure est superieur au critere de dimentionement initiallement prevu. il faut augmenter le parametre mxar dans la routine xlagsp.
 """),
 
 51: _("""
@@ -238,27 +231,11 @@ cata_msg={
      Ce message est normal si le contact est activé sur la fissure.
 """),
 
-57: _("""
- aucune maille de fissure n'a ete trouvee. suite des calculs risquee.
-"""),
 
-58: _("""
-  -> Aucun point du fond de fissure n'a été trouvé !
-  -> Risque & Conseil :
-     Ce message est normal si vous souhaitiez définir une interface (et non une fissure).
-     Si vous souhaitiez définir une fissure, la définition des level sets (Méthode XFEM)
-     ne permet pas de trouver de points du fond de fissure à l'intèrieur de la structure.
-     Il doit y avoir une erreur lors de la définition de la level set tangente.
-     Vérifier la définition des level sets.
-"""),
 
-59: _("""
- ne pas utiliser le mot-cle rayon_enri lorsque le fond de fissure est en dehors de la structure
-"""),
 
-60: _("""
- le point initial de fissure n'est pas un point de bord de fissure, bien que la fissure soit debouchante. assurez-vous de la bonne definition de pfon_ini.
-"""),
+
+
 
 61: _("""
   -> Lors de l'orientation des points du fond de fissure, le point du fond de
@@ -342,11 +319,6 @@ cata_msg={
  pas d'interpolation possible.
 """),
 
-
-
-
-
-
 81: _("""
  STOP_SINGULIER=DECOUPE nécessite la subdivision automatique du pas de temps (SUBD_PAS).
 """),
@@ -356,6 +328,7 @@ cata_msg={
 83: _("""
  Arret par manque de temps CPU.
 """),
+
 85: _("""
  On veut affecter un comportement %(k1)s avec la relation %(k2)s sur une maille deja affectee par un autre comportement %(k3)s %(k4)s
 """),
@@ -371,19 +344,9 @@ cata_msg={
  &arret debordement assemblage:ligne 
 """),
 
-
-
-
-
-
 90: _("""
  &arret debordement assemblage:colonne 
 """),
-
-
-
-
-
 
 92: _("""
  arret nombre de sous-structure invalide il en faut au minimum: %(i1)d 

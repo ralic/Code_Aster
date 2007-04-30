@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,7 +76,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBOCC(6), I, IFACE, IGREL, INEMA, IRET,
-     &             NDIM, NBET, IRET2,IBID
+     &             NDIM,IRET2,IBID
       CHARACTER*5  PARAM(7),PARA
       CHARACTER*8  CHAR, NOMA, NOMO
       CHARACTER*16 TYPE, OPER , CHREP(6), MOTFAC

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,7 +158,6 @@ FF2=DEFI_FISS_XFEM(MODELE=MO,
                                 VECT_ORIE=(0.0, 1.0, 0.0),
                                 PT_ORIGIN=(0.0, 0.0, 0.0),),
                    INFO=1,
-                   CONTACT=_F(),
                   );
 
 GLMO1=CALC_G(OPTION='K_G_MODA',

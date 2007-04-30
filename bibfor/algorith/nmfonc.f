@@ -2,7 +2,7 @@
      &                  LISCHA,FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C RESPONSABLE MABBAS M.ABBAS
 
       IMPLICIT NONE
       INTEGER      ZFON
-      LOGICAL      FONACT(ZFON),MATSYM
+      LOGICAL      FONACT(ZFON)
       REAL*8       PARCRI
       CHARACTER*19 SOLVEU,LISCHA
       CHARACTER*24 MODELE
@@ -82,12 +82,12 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      IBID,NOCC,JINFC,NBCHAR
-      INTEGER      TYPALC,TYPALF,NFIS
-      INTEGER      JSOLVE,IFISS,IXFEM,ICONT,IUNIL
-      INTEGER      ICONTX,ICHAR
+      INTEGER      TYPALC,TYPALF
+      INTEGER      JSOLVE,IXFEM,ICONT,IUNIL,ICHAR
       REAL*8       R8VIDE
       CHARACTER*8  K8BID
       CHARACTER*16 NOMCMD,K16BID
+      LOGICAL      LCONTX
 C
 C ---------------------------------------------------------------------
 C
@@ -138,29 +138,22 @@ C     X-FEM
 C
 C ----------------------------------------------------------------------
 
-      CALL JEEXIN(MODELE(1:8)//'.FISS',IXFEM)
+      CALL JEEXIN(MODELE(1:8)//'.FISS',IXFEM)    
       IF (IXFEM.NE.0) THEN
         FONACT(6) = .TRUE.
       ENDIF
 
-C --- X-FEM ET CONTACT (METHODE CONTINUE)
+C --- X-FEM ET CONTACT 
       IF (FONACT(6)) THEN
         CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
         IF (ZK24(JSOLVE)(1:5).NE.'MUMPS') 
      &                 CALL U2MESS('A','ALGORITH7_87')
+        CALL XCORDO(MODELE(1:8),DEFICO,LCONTX)
         
-        CALL JEVEUO(MODELE(1:8)//'.NFIS','L',NFIS)
-        NFIS = ZI(NFIS)
-        CALL JEVEUO(MODELE(1:8)//'.FISS','L',IFISS)
-        CALL XCORDO(IFISS,NFIS,DEFICO)
-        CALL JEVEUO(ZK8(IFISS)//'.CONTACT.XFEM','L',ICONTX)
-
-        IF (ICONTX.NE.0) THEN
+        IF (LCONTX) THEN
           FONACT(5) = .TRUE.
           FONACT(9) = .TRUE.
         ENDIF
-      ELSE
-        ICONTX = 0
       ENDIF
 
 
@@ -170,9 +163,9 @@ C     CONTACT / FROTTEMENT
 C
 C ----------------------------------------------------------------------
 
-      CALL JEEXIN(DEFICO(1:16)//'.METHCO',ICONT)
+      CALL JEEXIN(DEFICO(1:16)//'.METHCO',ICONT)        
       IF (ICONT.NE.0) THEN
-        CALL CFDISC(DEFICO,'              ',TYPALC,TYPALF,IBID,IBID)
+        CALL CFDISC(DEFICO,' ',TYPALC,TYPALF,IBID,IBID)
         IF (ABS(TYPALC).EQ.3) THEN
           FONACT(5) = .TRUE.
           IF (ABS(TYPALF).EQ.3) THEN

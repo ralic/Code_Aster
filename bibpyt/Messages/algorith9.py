@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith9 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,11 +50,6 @@ cata_msg={
  la charge  %(k1)s  n'est pas compatible avec fonc_mult
 """),
 
-
-
-
-
-
 9: _("""
  composante non trouvee dans la numerotation
 """),
@@ -95,21 +90,9 @@ cata_msg={
  coeff_var_amor non nul et amortissement non present
 """),
 
-20: _("""
- orie_fond manquant
-"""),
 
-21: _("""
- orie_fond non necessaire
-"""),
 
-22: _("""
- trop de orie_fond
-"""),
 
-23: _("""
- erreur dans le choix de la methode de calcul des level-sets.
-"""),
 
 24: _("""
  charge de contact non traitee
@@ -140,9 +123,7 @@ cata_msg={
 """),
 
 31: _("""
- La fréquence propre vaut %(r1)f.
- C'est une fréquence propre du système.
- La matrice est singulière.
+ pour l'instant, on ne peut pas deriver sur base modale dans dyna_line_harm 
 """),
 
 34: _("""
@@ -159,10 +140,6 @@ cata_msg={
 
 37: _("""
  attention, arret=non donc poursuite du calcul sans avoir eu convergence
-"""),
-
-38: _("""
- erreur dans la gestion des erreurs
 """),
 
 39: _("""
@@ -216,21 +193,6 @@ cata_msg={
 51: _("""
  aucune maille enrichie
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 55: _("""
  mauvaise definition de l'interspectre.
@@ -308,6 +270,15 @@ cata_msg={
  attention, mode instable
 """),
 
+
+
+
+
+
+
+
+
+
 80: _("""
  pour utiliser le comportement "hydr" il faut surcharger le code en "mode developpement" avec les routines "permea" et "satura".
 """),
@@ -379,12 +350,6 @@ cata_msg={
 97: _("""
  la pression de vapeur n est pas une variable interne pour la loi de couplage  %(k1)s 
 """),
-
-
-
-
-
-
 
 
 99: _("""

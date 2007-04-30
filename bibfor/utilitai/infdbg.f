@@ -1,7 +1,7 @@
       SUBROUTINE INFDBG(OPTIOZ,IFM,NIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,9 +45,15 @@ C ----------------------------------------------------------------------
 C
       OPTION = OPTIOZ     
 C
-      IF (OPTION(1:7).EQ.'CONTACT') THEN
+      IF (OPTION.EQ.'CONTACT') THEN
         CALL INFNIV(IFM,NIV)
-C        NIV = 2
+      ELSEIF (OPTION.EQ.'XFEM') THEN
+        CALL INFNIV(IFM,NIV) 
+      ELSEIF (OPTION.EQ.'MECA_NON_LINE') THEN
+        CALL INFNIV(IFM,NIV)         
+      ELSEIF (OPTION.EQ.'PRE_CALCUL') THEN
+        CALL INFNIV(IFM,NIV) 
+        NIV = 1                
       ELSE
         CALL INFNIV(IFM,NIV)
       ENDIF

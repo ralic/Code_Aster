@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,19 +55,23 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
-                    CONTACT=_F(INTEGRATION='GAUSS',
+                    INFO=1,);
+
+CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
+                                      METHODE = 'XFEM',
+                                      INTEGRATION='GAUSS',
                                COEF_REGU_CONT=100.,
                                ITER_CONT_MAXI=4,
                                CONTACT_INIT='OUI',
                                COEF_ECHELLE=1.,
-#                               FROTTEMENT='SANS',
                                FROTTEMENT='COULOMB',
                                COULOMB=1.0,
                                ITER_FROT_MAXI=6,
                                COEF_REGU_FROT=1000.,
                                SEUIL_INIT=-1.E11,
-                               ),
-                    INFO=1,);
+                                    ),
+                          MODELE=MODELEIN,
+                          ),  
 
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
@@ -82,6 +86,7 @@ IMPR_RESU(FORMAT='IDEAS',
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
+                         CONTACT=CTXFEM,
                          INFO=1,);
 
 E=100.0E6
@@ -109,6 +114,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
+                      CONTACT_XFEM='OUI',
                                 INFO=1,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -118,15 +124,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1,),
+                          _F(CHARGE=CTXFEM,),                   
                           _F(CHARGE=CHXFEM,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-#                   NEWTON=_F(MATRICE='ELASTIQUE',),
-#                   CONVERGENCE=_F(ITER_GLOB_MAXI=8,
-#                                  RESI_GLOB_MAXI=1e-11,
-#                                  RESI_GLOB_RELA=1e-06,
-#                                  ),
                    SOLVEUR=_F(METHODE='LDLT',
                               RENUM='RCMK',
                               STOP_SINGULIER='OUI',

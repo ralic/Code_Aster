@@ -1,7 +1,7 @@
       SUBROUTINE XCONEL(MOX,CHFIS,BASE,OPT,PARAM,CHGLO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,10 +20,11 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      CHARACTER*(*) BASE,OPT,PARAM
-      CHARACTER*16  CHFIS
+      CHARACTER*(*) OPT,PARAM
+      CHARACTER*1   BASE
+      CHARACTER*11  CHFIS
       CHARACTER*19  CHGLO
-      CHARACTER*8  MOX
+      CHARACTER*8   MOX
 
 C--------------------------------------------------------------------
 C  BUT: CONCATENER LES CHAMPS ELEMENTAIRES DES SD FISS_XFEM 
@@ -37,118 +38,146 @@ C  CHFIS   IN    K19 : SUFFIXE DU NOM DU CHAMP ELEMENTAIRE A CONCATENER
 C  CHGLO   OUT   K19 : CHAMP GLOBAL RESULTANT
 C  BASE    IN    K1  : BASE DE CREATION POUR CHGLO : G/V/L
 C
-C--------------------------------------------------------------------
-C---- COMMUNS NORMALISES  JEVEUX
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
       INTEGER ZI
-      COMMON /IVARJE/ZI(1)
+      COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
+      COMMON /RVARJE/ ZR(1)
       COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
+      COMMON /CVARJE/ ZC(1)
       LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
+      COMMON /LVARJE/ ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C-----FIN COMMUN NORMALISES  JEVEUX------------------------------------
-
-      INTEGER NFIS,NNCP 
-      INTEGER IMA,NBCMP,IPT,ICMP,II,NFISMX
-      INTEGER IBID,ISP,IAD1,IAD2,JCESFV,JINDIC,JG,NMAENR,I,NBPT,NBSP
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER NFISS,NNCP 
+      INTEGER IMA,NBCMP,IPT,ICMP,IGRP,NFISMX
+      INTEGER IBID,ISP,IAD1,IAD2,JCESFV,NMAENR,I,NBPT,NBSP
       INTEGER JNFIS,JCE1K,JCE1D,JCE1C,JCE1V,JCE1L,JNBPT,JNBSP,JNBCMP 
       INTEGER NBMAM,NCMP1,IFIS,JCESD,JCESL,JCESV,JMOFIS,JCESFD,JCESFL
       CHARACTER*3  TSCA
-      CHARACTER*16  MOTFAC 
-      CHARACTER*19  CES, CESF,CFISS
-      CHARACTER*24  INDIC,GRP(3) 
-      PARAMETER     (NFISMX=100)
+      CHARACTER*19 CES, CESF,LIGREL
+      CHARACTER*24 XINDIC,GRP(3) 
+      INTEGER      JINDIC,JGRP
+      PARAMETER    (NFISMX=100)
       CHARACTER*8  FISS(NFISMX),MA,NOMGD,NOMFIS
-C     ------------------------------------------------------------------
-
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      CES  = '&&XCONEL.CES'
-      CESF = '&&XCONEL.CESF'
-        
-C     1.RECUPERATION D'INFORMATIONS DANS MOX
-
+C
+C --- INITIALISATIONS
+C      
+      CES    = '&&XCONEL.CES'
+      CESF   = '&&XCONEL.CESF'
+      LIGREL = MOX(1:8)//'.MODELE'
+C
+C --- ACCES AUX FISSURES
+C     
+      CALL JEVEUO(MOX//'.FISS','L',JMOFIS) 
       CALL JEVEUO(MOX//'.NFIS','L',JNFIS)
-      NFIS = ZI(JNFIS)
-
-      CALL GETVID(' ', 'FISSURE', 1,1,0,FISS , NFIS )
-      NFIS = -NFIS
-      
-      IF (NFIS .GT. NFISMX) CALL U2MESI ('F', 'XFEM_2', 1, NFISMX)
-      
-      CALL GETVID(' ', 'FISSURE', 1,1,NFIS,FISS , IBID )
-
+      NFISS = ZI(JNFIS)
+      CALL GETVID(' ', 'FISSURE', 1,1,0,FISS , NFISS)
+C
+C --- NOMBRE DE FISSURES
+C
+      NFISS = -NFISS
+      IF (NFISS .GT. NFISMX) THEN
+        CALL U2MESI ('F', 'XFEM_2', 1, NFISMX)
+      ENDIF
+C      
+C --- RECUPERER LES FISSURES
+C        
+      CALL GETVID(' ', 'FISSURE', 1,1,NFISS,FISS , IBID )
       CALL JEVEUO(MOX//'.FISS','L',JMOFIS) 
       NOMFIS = ZK8(JMOFIS)
-        
-      CALL CELCES(NOMFIS//CHFIS,'V',CESF)
-     
+C     
+C --- TRANSFO CHAM_ELEM -> CHAM_ELEM_S
+C        
+      CALL CELCES(NOMFIS(1:8)//CHFIS,'V',CESF)
+C     
+C --- ACCES AU CHAM_ELEM_S
+C     
       CALL JEVEUO(CESF//'.CESK','L',JCE1K)
       CALL JEVEUO(CESF//'.CESD','L',JCE1D)
       CALL JEVEUO(CESF//'.CESC','L',JCE1C)
       CALL JEVEUO(CESF//'.CESV','L',JCE1V)
       CALL JEVEUO(CESF//'.CESL','L',JCE1L)
-
-      MA = ZK8(JCE1K-1+1)
+C     
+C --- INFOS DU CHAM_ELEM_S
+C  
+      MA    = ZK8(JCE1K-1+1)
       NOMGD = ZK8(JCE1K-1+2)
       NBMAM = ZI(JCE1D-1+1)
       NCMP1 = ZI(JCE1D-1+2)
       
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR'
      &           ,IBID,TSCA,IBID)
-      
-C     2- CREATION DE 3 OBJETS CONTENANT LES NOMBRES DE POINTS,
-C         SOUS-POINTS ET CMPS POUR CHAQUE MAILLE :
-C     -----------------------------------------------------------
-      CALL WKVECT('&&XCONEL.NBPT','V V I',NBMAM,JNBPT)
-      CALL WKVECT('&&XCONEL.NBSP','V V I',NBMAM,JNBSP)
+C      
+C --- CREATION DE 3 OBJETS CONTENANT LES NOMBRES DE POINTS,
+C --- SOUS-POINTS ET CMPS POUR CHAQUE MAILLE :
+C   
+      CALL WKVECT('&&XCONEL.NBPT' ,'V V I',NBMAM,JNBPT)
+      CALL WKVECT('&&XCONEL.NBSP' ,'V V I',NBMAM,JNBSP)
       CALL WKVECT('&&XCONEL.NBCMP','V V I',NBMAM,JNBCMP)
       DO 10,IMA = 1,NBMAM
-        ZI(JNBPT-1+IMA) = ZI(JCE1D-1+5+4* (IMA-1)+1)
-        ZI(JNBSP-1+IMA) = ZI(JCE1D-1+5+4* (IMA-1)+2)
+        ZI(JNBPT-1+IMA)  = ZI(JCE1D-1+5+4* (IMA-1)+1)
+        ZI(JNBSP-1+IMA)  = ZI(JCE1D-1+5+4* (IMA-1)+2)
         ZI(JNBCMP-1+IMA) = ZI(JCE1D-1+5+4* (IMA-1)+3)
    10 CONTINUE
-   
-   
+C
+C --- CREATION DU CHAM_ELEM_S
+C  
       CALL CESCRE('V',CES,'ELEM',MA,NOMGD,NCMP1,ZK8(JCE1C),
      &              ZI(JNBPT),ZI(JNBSP),ZI(JNBCMP))
-                
+C     
+C --- ACCES AU CHAM_ELEM_S
+C                
       CALL JEVEUO(CES//'.CESD','L',JCESD)
       CALL JEVEUO(CES//'.CESL','L',JCESL)
       CALL JEVEUO(CES//'.CESV','L',JCESV)
 
-      DO 20 IFIS = 1,NFIS 
-                       
-        GRP(1)=FISS(IFIS)//'.MAILFISS  .HEAV'
-        GRP(2)=FISS(IFIS)//'.MAILFISS  .CTIP'
-        GRP(3)=FISS(IFIS)//'.MAILFISS  .HECT'
-            
-        CALL JEVEUO(MOX//'.FISS','L',JMOFIS) 
-        NOMFIS = ZK8(JMOFIS-1 + IFIS)
-        CALL CELCES(NOMFIS//CHFIS,'V',CESF)
+      DO 20 IFIS = 1,NFISS 
+C
+C --- INFORMATIONS SUR LA FISSURE
+C                        
+        GRP(1) = FISS(IFIS)//'.MAILFISS  .HEAV'
+        GRP(2) = FISS(IFIS)//'.MAILFISS  .CTIP'
+        GRP(3) = FISS(IFIS)//'.MAILFISS  .HECT'
+C
+C --- ACCES FISSURE COURANTE
+C        
+        NOMFIS = ZK8(JMOFIS-1 + IFIS)             
+
+        CALL CELCES(NOMFIS(1:8)//CHFIS,'V',CESF)
         
         CALL JEVEUO(CESF//'.CESD','L',JCESFD)
         CALL JEVEUO(CESF//'.CESL','L',JCESFL)
         CALL JEVEUO(CESF//'.CESV','L',JCESFV)
       
-      
-        INDIC=FISS(IFIS)//'.MAILFISS .INDIC'
-        CALL JEVEUO(INDIC,'L',JINDIC) 
+C
+C --- ACCES AU CHAMP INDICATEUR    
+C          
+        XINDIC = FISS(IFIS)//'.MAILFISS .INDIC'
+        CALL JEVEUO(XINDIC,'L',JINDIC) 
         
-        DO 1000, II = 1,3 
-C-COPIER LE CHAMP 'CHFIS' POUR LES MAILLES '.HEAV','.CTIP' ET '.HECT'
-          IF (ZI(JINDIC-1+2*(II-1)+1).EQ.1) THEN
-C            GRP=FISS(IFIS)//'.MAILFISS  .HEAV'
-            CALL JEVEUO(GRP(II),'L',JG)
-            NMAENR=ZI(JINDIC-1+2*II)      
+        DO 1000  IGRP = 1,3 
+C
+C --- ON COPIE LES CHAMPS CORRESP. AUX ELEM. HEAV, CTIP ET HECT
+C
+          IF (ZI(JINDIC-1+2*(IGRP-1)+1).EQ.1) THEN
+            CALL JEVEUO(GRP(IGRP),'L',JGRP)
+            NMAENR = ZI(JINDIC-1+2*IGRP)      
             DO 120 I=1,NMAENR
-              IMA=ZI(JG-1+I)
+            
+              IMA   = ZI(JGRP-1+I)
               NBPT  = ZI(JNBPT -1 + IMA)
               NBSP  = ZI(JNBSP -1 + IMA)
               NBCMP = ZI(JNBCMP-1 + IMA)
@@ -196,18 +225,17 @@ C            GRP=FISS(IFIS)//'.MAILFISS  .HEAV'
         CALL DETRSD('CHAM_ELEM_S',CESF)
       
  20   CONTINUE         
-
-      CALL CESCEL(CES,MOX//'.MODELE',OPT,PARAM,'OUI',NNCP,BASE,CHGLO)
-      
-C      CALL ASSERT(NNCP .EQ. 0)
-      
-C      IF (NNCP .GT. 0) CALL U2MESI ('F', 'XFEM_3', 1, NNCP)
-      
-      CALL DETRSD('CHAM_ELEM_S',CES)
-      
+C
+C --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
+C
+      CALL CESCEL(CES,LIGREL,OPT,PARAM,'OUI',NNCP,BASE,CHGLO)
+C
+C --- MENAGE
+C    
+      CALL DETRSD('CHAM_ELEM_S',CES)    
       CALL JEDETR('&&XCONEL.NBPT')
       CALL JEDETR('&&XCONEL.NBSP')
       CALL JEDETR('&&XCONEL.NBCMP')
-        
+C        
       CALL JEDEMA()
       END

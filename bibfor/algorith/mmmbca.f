@@ -1,9 +1,9 @@
       SUBROUTINE MMMBCA(NOMA,DEFICO,OLDGEO,DEPPLU,
      &                  INST,MMCVCA,DECOL,USUFIX,VECNTD,
      &                  NEQ,VECNTX,VECNTY,VECNTZ,PREMIE)
-C ======================================================================
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*8   NOMA
       CHARACTER*19  USUFIX
@@ -88,7 +90,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)   
+      CALL INFDBG('CONTACT',IFM,NIV)   
 C
 C --- AFFICHAGE
 C      

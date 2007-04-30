@@ -1,13 +1,8 @@
-      SUBROUTINE XBASLO(MODELE,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
-      IMPLICIT NONE
-
-      CHARACTER*8     MODELE,NOMA
-      CHARACTER*19    GRLT,GRLN,CNSBAS
-      CHARACTER*24    CHFOND
-
-
+      SUBROUTINE XBASLO(MODELE,NOMA  ,FISS  ,GRLT  ,GRLN  ,
+     &                  CNSBAS)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,75 +21,92 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
-C     FONCTION REALISEE : CREATION D'UN CHAM_EL QUI CONTIENT LA BASE
-C                         LOCALE AU POINT DU FOND DE FISSURE ASSOCIE
-C ----------------------------------------------------------------------
-C ENTREE:
-C      MODELE  : NOM DE L'OBJET MODELE
-C      NOMA    : NOM DE L'OBJET MAILLAGE
-C      CHFOND  : NOM DES POINTS DU FOND DE FISSURE
-C      GRLT    : GRADIENTS DE LA LEVEL-SET TANGENTE
-C      GRLN    : GRADIENTS DE LA LEVEL-SET NORMALE
-C
-C SORTIE:
-C      CNSBAS  : CHAM_NO_S BASE LOCALE DE FONFIS
+      IMPLICIT NONE
+      CHARACTER*8     MODELE,NOMA,FISS
+      CHARACTER*19    GRLT,GRLN,CNSBAS
+C      
 C ----------------------------------------------------------------------
 C
-C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C ROUTINE XFEM (PREPARATION)
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*1 K1BID
-C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C CREATION D'UN CHAM_EL QUI CONTIENT LA BASE
+C LOCALE AU POINT DU FOND DE FISSURE ASSOCIE - CAS 3D
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  FISS   : NOM DE LA FISSURE 
+C IN  NOMA   : NOM DU MAILLAGE  
+C IN  MODELE : NOM DE L'OBJET MODELE
+C IN  GRLT   : CHAM_NO_S DES GRADIENTS DE LA LEVEL-SET TANGENTE
+C IN  GRLN   : CHAM_NO_S DES GRADIENTS DE LA LEVEL-SET NORMALE
+C OUT CNSBAS : CHAM_NO_S BASE LOCALE DE FONFIS
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER           NBCMP
+      PARAMETER         (NBCMP = 9)
+      CHARACTER*8       LICMP(NBCMP)
 C
       CHARACTER*24      COORN
-      CHARACTER*19      LIGREL
-      CHARACTER*8       LICMP(9),K8BID
-      INTEGER           IFON,IADRCO,IADRMA,JGSV,JGSL,JGT,JGN
-      INTEGER           LONG,LNOFF,NBNO,IRET,INO,J
+      CHARACTER*24      XFONFI
+      INTEGER           IFON
+      CHARACTER*8       K8BID
+      INTEGER           IADRCO,JGSV,JGSL,JGT,JGN
+      INTEGER           LONG,NFON,NBNO,IRET,INO,J
       REAL*8            XI1,YI1,ZI1,XJ1,YJ1,ZJ1,XIJ,YIJ,ZIJ,EPS,D,NORM2
       REAL*8            XM,YM,ZM,XIM,YIM,ZIM,S,DMIN,XN,YN,ZN,A(3)
       REAL*8            R8MAEM
 C
+      DATA LICMP / 'X1','X2','X3',
+     &             'X4','X5','X6',
+     &             'X7','X8','X9'/        
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
-      CALL JEVEUO(CHFOND,'L',IFON)
-      CALL JELIRA(CHFOND,'LONMAX',LONG,K8BID)
-      LNOFF=LONG/4
-
-C     RÉCUPÉRATION DES GRADIENTS DE LST ET LSN
+C
+C --- ACCES AUX OBJETS: NOM DES POINTS DU FOND DE FISSURE
+C      
+      XFONFI = FISS(1:8)//'.FONDFISS'
+      CALL JEVEUO(XFONFI,'L',IFON)
+      CALL JELIRA(XFONFI,'LONMAX',LONG,K8BID)
+      NFON = LONG/4
+C
+C --- RÉCUPÉRATION DES GRADIENTS DE LST ET LSN
+C
       CALL JEVEUO(GRLT//'.CNSV','L',JGT)
       CALL JEVEUO(GRLN//'.CNSV','L',JGN)
-
+C
+C --- ACCES AU MAILLAGE
+C
       COORN = NOMA//'.COORDO    .VALE'
       CALL JEVEUO(COORN,'L',IADRCO)
-
-      LICMP(1)  = 'X1'
-      LICMP(2)  = 'X2'
-      LICMP(3)  = 'X3'
-      LICMP(4)  = 'X4'
-      LICMP(5)  = 'X5'
-      LICMP(6)  = 'X6'
-      LICMP(7)  = 'X7'
-      LICMP(8)  = 'X8'
-      LICMP(9)  = 'X9'
-      CALL CNSCRE(NOMA,'NEUT_R',9,LICMP,'V',CNSBAS)
+      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IRET)
+C
+C --- CREATION DU CHAM_NO
+C
+      CALL CNSCRE(NOMA,'NEUT_R',NBCMP,LICMP,'V',CNSBAS)
       CALL JEVEUO(CNSBAS//'.CNSV','E',JGSV)
       CALL JEVEUO(CNSBAS//'.CNSL','E',JGSL)
-      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IRET)
+
 
 C     CALCUL DES PROJETÉS DES NOEUDS SUR LE FOND DE FISSURE
       EPS = 1.D-12
@@ -106,7 +118,7 @@ C       COORD DU NOEUD M DU MAILLAGE
 C       INITIALISATION
         DMIN = R8MAEM()
 C       BOUCLE SUR PT DE FONFIS (ALGO VOIR )
-        DO 110 J=1,LNOFF-1
+        DO 110 J=1,NFON-1
 C         COORD PT I, ET J
           XI1 = ZR(IFON-1+4*(J-1)+1)
           YI1 = ZR(IFON-1+4*(J-1)+2)
@@ -153,6 +165,6 @@ C       STOCKAGE DU PROJETÉ ET DES GRADIENTS
           ZL(JGSL-1+9*(INO-1)+J+6)=.TRUE.
  120    CONTINUE
  100  CONTINUE
-      CALL JXVERI(' ',' ')
+C
       CALL JEDEMA()
       END
