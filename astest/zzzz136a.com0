@@ -4,7 +4,8 @@
 #                  INDICE _U     REPERE: 'UTILISATEUR'  AVEC  ANGL_NAUT
 #                  INDICE _C     REPERE: 'CYLINDRIQUE'
 #
-#       VALIDATION POST_RELEVE_T 3D, OPERANDE TRAC_DIR 
+#       VALIDATION POST_RELEVE_T 3D ET MACR_LIGN_COUPE EN 3D,
+#                                    OPERANDE TRAC_DIR 
 #                                    OPERANDE INVARIANT
 #                                    OPERANDE ELEM_PRINCIPAUX
 #
@@ -15,6 +16,10 @@
 #                       D'UN VECTEUR
 #
 POURSUITE(CODE=_F(  NOM = 'ZZZZ136A'))
+
+#######################################################################
+#            I -  VALIDATION POST_RELEVE_T  EN 3D                     #
+#######################################################################   
 
 # ---------------------------------------------------------------------
 #  s1_g: CHEMIN P7 P8, REPERE GLOBAL
@@ -2275,6 +2280,1152 @@ TEST_TABLE(      TABLE=PRIN_NO,
                 REFERENCE='ANALYTIQUE',
                  NOM_PARA='PRIN_3',
                      VALE=  3.40890E-01   )
+
+#######################################################################
+#            II -  VALIDATION MACR_LIGN_COUPE  EN 3D                  #
+####################################################################### 
+
+# ---------------------------------------------------------------------
+# M1L_G: LISTE DE NOEUDS P7 P8, REPERE GLOBAL
+
+
+TEST_TABLE(      TABLE=M1L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= 1.28413E-01           )
+
+TEST_TABLE(      TABLE=M1L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= -2.83838E-02           )
+
+TEST_TABLE(      TABLE=M1L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= -1.84551E-01          )
+
+TEST_TABLE(      TABLE=M1L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE=  2.16093E-01          )
+
+TEST_TABLE(      TABLE=M1L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE=-9.39100E-02            )
+
+TEST_TABLE(      TABLE=M1L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE= -1.73470E-01          )
+
+# ---------------------------------------------------------------------
+#  M1_L: LISTE DE NOEUDS P7 P8,, REPERE LOCAL, VECT_Y: (1. 1. 0.)
+
+
+TEST_TABLE(      TABLE=M1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= 1.28413E-01           )
+
+TEST_TABLE(      TABLE=M1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= -2.83838E-02          )
+
+TEST_TABLE(      TABLE=M1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= -1.84551E-01          )
+
+TEST_TABLE(      TABLE=M1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE= 2.16093E-01      )
+
+TEST_TABLE(      TABLE=M1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE= -9.39100E-02          )
+
+TEST_TABLE(      TABLE=M1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE= -1.73470E-01           )
+
+# ---------------------------------------------------------------------
+#  M1_U: LISTE DE NOEUDS P7 P8, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )
+
+
+TEST_TABLE(      TABLE=M1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= 1.28413E-01         )
+
+TEST_TABLE(      TABLE=M1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= -2.83838E-02          )
+
+TEST_TABLE(      TABLE=M1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= -1.84551E-01           )
+
+TEST_TABLE(      TABLE=M1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE= 2.16093E-01           )
+
+TEST_TABLE(      TABLE=M1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE= -9.39100E-02    )
+
+TEST_TABLE(      TABLE=M1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE= -1.73470E-01            )
+
+# ---------------------------------------------------------------------
+# M2L_G: LISTE DE NOEUDS P9 P10, REPERE GLOBAL
+
+
+TEST_TABLE(      TABLE=M2L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= 8.92203E-02          )
+
+TEST_TABLE(      TABLE=M2L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= 8.92203E-02          )
+
+TEST_TABLE(      TABLE=M2L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= 4.28641E-01          )
+
+TEST_TABLE(      TABLE=M2L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE=  2.67618E-01       )
+
+TEST_TABLE(      TABLE=M2L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE=  -1.12407E-01         )
+
+TEST_TABLE(      TABLE=M2L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE= -1.12407E-01          )
+
+# ---------------------------------------------------------------------
+# M2L_L: LISTE DE NOEUDS P9 P10 REPERE LOCAL, VECT_Y: (0. 1. 0.)
+
+
+TEST_TABLE(      TABLE=M2L_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE=   3.56838E-01         )
+
+TEST_TABLE(      TABLE=M2L_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE=  -1.78397E-01         )
+
+TEST_TABLE(      TABLE=M2L_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= 4.28641E-01           )
+
+TEST_TABLE(      TABLE=M2L_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                  CRITERE='ABSOLU',
+                PRECISION=1.E-10,
+                     VALE=  0.                   )
+
+TEST_TABLE(      TABLE=M2L_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE= -1.58968E-01          )
+
+TEST_TABLE(      TABLE=M2L_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                  CRITERE='ABSOLU',
+                PRECISION=1.E-10,
+                     VALE= 0.                     )
+
+# ---------------------------------------------------------------------
+#  M2_U: LISTE DE NOEUDS P9 P10, UTILISATEUR, ANGL_NAUT: ( 45. 0. 0. )
+
+
+TEST_TABLE(      TABLE=M2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE=3.56838E-01            )
+
+TEST_TABLE(      TABLE=M2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE=-1.78397E-01            )
+
+TEST_TABLE(      TABLE=M2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE=4.28641E-01            )
+
+TEST_TABLE(      TABLE=M2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                CRITERE='ABSOLU',
+                PRECISION=1.E-10,
+                 NOM_PARA='SIXY',
+                     VALE=0.           )
+
+TEST_TABLE(      TABLE=M2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE=-1.58968E-01            )
+
+TEST_TABLE(      TABLE=M2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                CRITERE='ABSOLU',
+                PRECISION=1.E-10,
+                 NOM_PARA='SIYZ',
+                     VALE=0.             )
+
+# ---------------------------------------------------------------------
+# M3L_G: LISTE DE NOEUDS P11 P12, REPERE GLOBAL
+
+
+TEST_TABLE(      TABLE=M3L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= -2.83838E-02         )
+
+TEST_TABLE(      TABLE=M3L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= 1.28413E-01           )
+
+TEST_TABLE(      TABLE=M3L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE=-1.84551E-01           )
+
+TEST_TABLE(      TABLE=M3L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE=2.16093E-01            )
+
+TEST_TABLE(      TABLE=M3L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE=-1.73470E-01            )
+
+TEST_TABLE(      TABLE=M3L_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE=-9.39100E-02          )
+
+# ---------------------------------------------------------------------
+#  M3_L: LISTE DE NOEUDS P11 P12, REPERE LOCAL, VECT_Y: (-1. 0. 0.)
+
+
+TEST_TABLE(      TABLE=M3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= 1.28413E-01          )
+
+TEST_TABLE(      TABLE=M3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= -2.83838E-02           )
+
+TEST_TABLE(      TABLE=M3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= -1.84551E-01          )
+
+TEST_TABLE(      TABLE=M3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE=  -2.16093E-01         )
+
+TEST_TABLE(      TABLE=M3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE= -9.39100E-02           )
+
+TEST_TABLE(      TABLE=M3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE= 1.73470E-01         )
+
+# ---------------------------------------------------------------------
+#  M3_U: LISTE DE NOEUDS P11 P12, REPERE UTILISATEUR, ANGL_NAUT: (90. 0. 0.)
+
+
+TEST_TABLE(      TABLE=M3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= 1.28413E-01           )
+
+TEST_TABLE(      TABLE=M3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= -2.83838E-02           )
+
+TEST_TABLE(      TABLE=M3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= -1.84551E-01           )
+
+TEST_TABLE(      TABLE=M3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE= -2.16093E-01           )
+
+TEST_TABLE(      TABLE=M3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE= -9.39100E-02           )
+
+TEST_TABLE(      TABLE=M3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE= 1.73470E-01          )
+
+# ---------------------------------------------------------------------
+# M4L_C: LISTE DE NOEUDS P7 P11, REPERE CYLINDRIQUE, 
+#        ORIGINE:(0. 0. 0.), AXE_Z: (0. 0. 1.)
+
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE= 2.23201E-01           )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= -4.68468E-01           )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= -2.94210E-01           )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE= 3.29707E-01           )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE= 3.29707E-01           )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE= -2.04348E-02          )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.85271E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXX',
+                     VALE=  5.11916E-01           )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.85271E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYY',
+                     VALE= -3.48136E-01          )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.85271E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIZZ',
+                     VALE= -6.21663E-01          )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.85271E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXY',
+                     VALE=  -1.71225E-01          )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.85271E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIXZ',
+                     VALE=  -1.71225E-01         )
+
+TEST_TABLE(      TABLE=M4L_C,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.85271E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='SIYZ',
+                     VALE=  1.52287E-02        )
+
+# ---------------------------------------------------------------------
+#  N1_G: LISTE DE NOEUDS P7 P8, REPERE GLOBAL
+
+
+TEST_TABLE(      TABLE=N1_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.35049E-07            )
+
+TEST_TABLE(      TABLE=N1_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-1.97008E-07            )
+
+TEST_TABLE(      TABLE=N1_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.27769E-07            )
+
+TEST_TABLE(      TABLE=N1_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.19094E-07            )
+
+TEST_TABLE(      TABLE=N1_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-1.90295E-07            )
+
+TEST_TABLE(      TABLE=N1_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.29749E-08            )
+
+# ---------------------------------------------------------------------
+#  N1_L: CHEMIN P7 P8, REPERE LOCAL, VECT_Y: (1. 1. 0.)
+
+
+TEST_TABLE(      TABLE=N1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.35049E-07            )
+
+TEST_TABLE(      TABLE=N1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-1.97008E-07            )
+
+TEST_TABLE(      TABLE=N1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.27769E-07            )
+
+TEST_TABLE(      TABLE=N1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.19094E-07            )
+
+TEST_TABLE(      TABLE=N1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-1.90295E-07            )
+
+TEST_TABLE(      TABLE=N1_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.29749E-08            )
+
+# ---------------------------------------------------------------------
+#  N1_U: CHEMIN P7 P8, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )
+
+
+TEST_TABLE(      TABLE=N1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.35049E-07            )
+
+TEST_TABLE(      TABLE=N1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-1.97008E-07            )
+
+TEST_TABLE(      TABLE=N1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.27769E-07            )
+
+TEST_TABLE(      TABLE=N1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.19094E-07            )
+
+TEST_TABLE(      TABLE=N1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-1.90295E-07            )
+
+TEST_TABLE(      TABLE=N1_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.29749E-08            )
+
+# ---------------------------------------------------------------------
+#  N2_G: CHEMIN P9 P10, REPERE GLOBAL
+
+
+TEST_TABLE(      TABLE=N2_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.17656E-07            )
+
+TEST_TABLE(      TABLE=N2_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-2.17656E-07            )
+
+TEST_TABLE(      TABLE=N2_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-9.07308E-08            )
+
+TEST_TABLE(      TABLE=N2_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-1.94172E-07            )
+
+TEST_TABLE(      TABLE=N2_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-1.94172E-07            )
+
+TEST_TABLE(      TABLE=N2_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=6.65551E-08            )
+
+# ---------------------------------------------------------------------
+#  N2_L: LISTE DE NOEUDS P9 P10, REPERE LOCAL, VECT_Y: (0. 1. 0.)
+
+
+TEST_TABLE(      TABLE=N2_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-3.07813E-07            )
+
+TEST_TABLE(      TABLE=N2_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                  CRITERE='ABSOLU',
+                PRECISION=1.E-10,
+                     VALE=0.                     )
+
+TEST_TABLE(      TABLE=N2_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-9.07308E-08            )
+
+TEST_TABLE(      TABLE=N2_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.74601E-07            )
+
+TEST_TABLE(      TABLE=N2_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                  CRITERE='ABSOLU', 
+                PRECISION=1.E-10,
+                     VALE=0.                    )
+
+TEST_TABLE(      TABLE=N2_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=6.65551E-08            )
+
+
+# ---------------------------------------------------------------------
+#  N2_U: LISTE DE NOEUDS P9 P10, REPERE UTILISATEUR, ANGL_NAUT: ( 45. 0. 0. )
+
+
+
+TEST_TABLE(      TABLE=N2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-3.07813E-07            )
+
+TEST_TABLE(      TABLE=N2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                  CRITERE='ABSOLU', 
+                     VALE=0.            )
+
+TEST_TABLE(      TABLE=N2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-9.07308E-08            )
+
+TEST_TABLE(      TABLE=N2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.74601E-07            )
+
+TEST_TABLE(      TABLE=N2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                  CRITERE='ABSOLU', 
+                PRECISION=1.E-10,
+                     VALE=0.                     )
+
+TEST_TABLE(      TABLE=N2_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=6.65551E-08            )
+
+# ---------------------------------------------------------------------
+#  N3_G: LISTE DE NOEUDS P11 P12, REPERE GLOBAL
+
+
+TEST_TABLE(      TABLE=N3_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-1.97008E-07            )
+
+TEST_TABLE(      TABLE=N3_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-2.35049E-07            )
+
+TEST_TABLE(      TABLE=N3_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.27769E-07            )
+
+TEST_TABLE(      TABLE=N3_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-1.90295E-07            )
+
+TEST_TABLE(      TABLE=N3_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=-2.19094E-07            )
+
+TEST_TABLE(      TABLE=N3_G,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.29749E-08            )
+
+# ---------------------------------------------------------------------
+# N3_L: LISTE DE NOEUDS P11 P12, REPERE LOCAL, VECT_Y: (-1. 0. 0.)
+
+
+TEST_TABLE(      TABLE=N3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.35049E-07            )
+
+TEST_TABLE(      TABLE=N3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=1.97008E-07            )
+
+TEST_TABLE(      TABLE=N3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.27769E-07            )
+
+TEST_TABLE(      TABLE=N3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.19094E-07            )
+
+TEST_TABLE(      TABLE=N3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=1.90295E-07            )
+
+TEST_TABLE(      TABLE=N3_L,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.29749E-08            )
+
+# ---------------------------------------------------------------------
+#  N3_U: LISTE DE NOEUDS P11 P12, REPERE UTILISATEUR, ANGL_NAUT: ( 90. 0. 0. )
+
+
+TEST_TABLE(      TABLE=N3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.35049E-07            )
+
+TEST_TABLE(      TABLE=N3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=1.97008E-07            )
+
+TEST_TABLE(      TABLE=N3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.27769E-07            )
+
+TEST_TABLE(      TABLE=N3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DX',
+                     VALE=-2.19094E-07            )
+
+TEST_TABLE(      TABLE=N3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DY',
+                     VALE=1.90295E-07            )
+
+TEST_TABLE(      TABLE=N3_U,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 5.00000E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='DZ',
+                     VALE=-1.29749E-08            )
+
+# ---------------------------------------------------------------------
+#  O1_TDX: LISTE DE NOEUDS P7 P8, TRAC_DIR, DIRECTION: (1. 0. 0.)
+
+
+TEST_TABLE(      TABLE=O1_TDX,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_1',
+                     VALE= 2.23201E-01          )
+
+TEST_TABLE(      TABLE=O1_TDX,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_2',
+                     VALE= 3.29707E-01          )
+
+TEST_TABLE(      TABLE=O1_TDX,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_3',
+                     VALE= -3.41003E-02         )
+
+
+# ---------------------------------------------------------------------
+#  O1_TDY: CHEMIN P7 P8, TRAC_DIR, DIRECTION: (0. 1. 0.)
+
+
+TEST_TABLE(      TABLE=O1_TDY,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_1',
+                     VALE=  3.29707E-01          )
+
+TEST_TABLE(      TABLE=O1_TDY,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_2',
+                     VALE=  -2.94210E-01          )
+
+TEST_TABLE(      TABLE=O1_TDY,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_3',
+                     VALE= -2.04348E-02          )
+
+# ---------------------------------------------------------------------
+# O1_TDZ: LISTE DE NOEUDS P7 P8, TRAC_DIR, DIRECTION: (0. 0. 1.)
+
+
+TEST_TABLE(      TABLE=O1_TDZ,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_1',
+                     VALE= -3.41003E-02           )
+
+TEST_TABLE(      TABLE=O1_TDZ,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_2',
+                     VALE= -2.04348E-02          )
+
+TEST_TABLE(      TABLE=O1_TDZ,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TR_DIR_3',
+                     VALE= -4.68468E-01          )
+
+# ---------------------------------------------------------------------
+# P1_TDX: LISTE DE NOEUDS P7 P8, TRAC_DIR, DIRECTION: (1. 0. 0.)
+
+
+TEST_TABLE(      TABLE=P1_TDX,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TRAC_DIR',
+                     VALE=-2.35049E-07            )
+
+# ---------------------------------------------------------------------
+# P2_TDX: LISTE DE NOEUDS P9 P10, TRAC_DIR, DIRECTION: (-1. 1. 0.)
+
+
+TEST_TABLE(      TABLE=P2_TDX,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 0.00000E+00,     
+                            CRITERE = 'ABSOLU',         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TRAC_DIR',
+                  CRITERE='ABSOLU',
+                PRECISION=1.E-10,
+                     VALE=0.            )
+
+TEST_TABLE(      TABLE=P2_TDX,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                            VALE = 6.09476E-01,         ),
+                REFERENCE='AUTRE_ASTER',
+                 NOM_PARA='TRAC_DIR',
+                  CRITERE='ABSOLU',
+                PRECISION=1.E-10,
+                     VALE=0.            )
+
+
+# ---------------------------------------------------------------------
+# OPERANDE  INVARIANT
+#
+
+TEST_TABLE(      TABLE=INVA_M,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='VMIS',
+                     VALE= 8.48000E-01   )
+
+TEST_TABLE(      TABLE=INVA_M,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='TRESCA',
+                     VALE= 8.56452E-01   )
+
+TEST_TABLE(      TABLE=INVA_M,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='TRACE',
+                     VALE= -5.39478E-01   )
+
+TEST_TABLE(      TABLE=INVA_M,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 0.00000E+00,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='DETER',
+                     VALE= 8.23975E-02   )
+
+# ---------------------------------------------------------------------
+# OPERANDE  ELEM_PRINCIPAUX
+#
+
+TEST_TABLE(      TABLE=PRIN_M,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_1',
+                     VALE= -3.01801E-01   )
+
+TEST_TABLE(      TABLE=PRIN_M,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_2',
+                     VALE= -1.23611E-01   )
+
+TEST_TABLE(      TABLE=PRIN_M,
+                   FILTRE=_F(  NOM_PARA = 'ABSC_CURV', 
+                               VALE = 5.00000E-01,   ),
+                REFERENCE='ANALYTIQUE',
+                 NOM_PARA='PRIN_3',
+                     VALE=  3.40890E-01   )
+
+
+
 
 FIN( )
 #

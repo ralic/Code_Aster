@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
+#& MODIF COMMUN  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -125,7 +125,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "KIT_THM",
                                         "KIT_THHM",
                                         "VMIS_ASYM_LINE",
-                                        "ELAS_THER",
                                         "KIT_DDI",
                                         "GLRC_DAMAGE",
                                         "GLRC_DM",
@@ -276,7 +275,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "DRUCKER_PRAGER",
                                        "HOEK_BROWN_EFF",
                                        "HOEK_BROWN_TOT",
-                                       "ELAS_THER",
                                        "MAZARS",
                                        "ENDO_ISOT_BETON",
 # THMC
@@ -309,7 +307,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        ),),
 
 
-           ELAS_THER       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            GAZ             =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            LIQU_SATU       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            LIQU_GAZ_ATM    =SIMP(statut='c',typ='I',defaut=2,into=(2,)),

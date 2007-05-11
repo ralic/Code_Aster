@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CYLINDRE SOUMIS A CHOC THERMIQUE ET CHARGEMENT MECANIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -430,7 +430,11 @@ MAT2=DEFI_MATERIAU(      ELAS_FO=_F(  E = E_FO,
 
 MATER2=AFFE_MATERIAU(   MAILLAGE=MAYA,
                                 AFFE=_F(  TOUT = 'OUI',
-                                       MATER = MAT2)
+                                       MATER = MAT2),
+                                AFFE_VARC=_F(TOUT='OUI',
+                                       NOM_VARC='TEMP',
+                                       EVOL=THERL,
+                                       NOM_CHAM='TEMP',),
                          )
 
 PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
@@ -442,8 +446,6 @@ PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
                                           25.,     0.,       )
                         )
 
-TEMPER=AFFE_CHAR_MECA(      MODELE=MODEL2,
-                             TEMP_CALCULEE=THERL )
 
 ROTA=AFFE_CHAR_MECA(        MODELE=MODEL2,
                              ROTATION=( 2400.,0.,1.,0.,)
@@ -487,8 +489,7 @@ CALCNL=STAT_NON_LINE(
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),EXCIT=(
-                             _F( 
-                CHARGE = TEMPER), _F( 
+                              _F( 
                 CHARGE = PRES,
                 FONC_MULT = PRES_FO), _F( 
                 CHARGE = ROTA,
@@ -504,8 +505,6 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
                           RESULTAT=CALCNL,
                             MODELE=MODEL2,
                         CHAM_MATER=MATER2,
-                             EXCIT=_F( 
-                CHARGE = TEMPER)
               )
 
 CALCNL=CALC_NO( reuse=CALCNL,   RESULTAT=CALCNL,  MODELE=MODEL2,

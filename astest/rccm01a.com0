@@ -491,18 +491,22 @@ TEMPb=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',
                         _F(  INST = 2.,  CHAM_GD = CHT1b),
                         _F(  INST = 3.,  CHAM_GD = CHT1b))  )
 
-CHTHERb=AFFE_CHAR_MECA(  MODELE=MO,     TEMP_CALCULEE=TEMPb )
+CHMTMb=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', MATER = MAT),
+                        AFFE_VARC=_F(TOUT = 'OUI',
+                                     EVOL=TEMPb,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',
+                                     VALE_REF=0.),)
 
 
-RESU2b=MECA_STATIQUE(  MODELE=MO,      CHAM_MATER=CHMAT,
+RESU2b=MECA_STATIQUE(  MODELE=MO,      CHAM_MATER=CHMTMb,
                        LIST_INST=LINST,
-                       EXCIT=( _F(  CHARGE = CHTHERb),
-                               _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),     )
+                       EXCIT=(_F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),     )
 
-CALC_ELEM( reuse= RESU2b ,RESULTAT= RESU2b ,   MODELE=MO,      CHAM_MATER=CHMAT,
+CALC_ELEM( reuse= RESU2b ,RESULTAT= RESU2b ,   MODELE=MO,      CHAM_MATER=CHMTMb,
                        LIST_INST=LINST,
-                       EXCIT=( _F(  CHARGE = CHTHERb),
-                               _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),
+                       EXCIT=(_F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),
                        OPTION=( 'SIGM_ELNO_DEPL',
                         )
                     )
@@ -522,16 +526,14 @@ TEST_RESU(RESU=(
        MAILLE = 'M3',    NOEUD = 'N10',    NOM_CMP = 'SIYY',    VALE = -360.))
             )
 
-RESUTHb=MECA_STATIQUE(  MODELE=MO,    CHAM_MATER=CHMAT,
+RESUTHb=MECA_STATIQUE(  MODELE=MO,    CHAM_MATER=CHMTMb,
                         LIST_INST=LINST,
-                        EXCIT=( _F( CHARGE = CHTHERb),
-                                _F( CHARGE = CHMEC0)),
+                        EXCIT=( _F( CHARGE = CHMEC0)),
                       )
 
-CALC_ELEM( reuse= RESUTHb ,RESULTAT= RESUTHb ,   MODELE=MO,    CHAM_MATER=CHMAT,
+CALC_ELEM( reuse= RESUTHb ,RESULTAT= RESUTHb ,   MODELE=MO,    CHAM_MATER=CHMTMb,
                         LIST_INST=LINST,
-                        EXCIT=( _F( CHARGE = CHTHERb),
-                                _F( CHARGE = CHMEC0)),
+                        EXCIT=(_F( CHARGE = CHMEC0)),
                         OPTION='SIGM_ELNO_DEPL'
                       )
 

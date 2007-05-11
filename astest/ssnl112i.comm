@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE THERMOPLASTICITE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,15 +61,6 @@ MATER=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,
 
 #
 
-CHMAT=AFFE_MATERIAU(
-                            MAILLAGE=MAIL,
-                            AFFE=_F(  TOUT = 'OUI',
-                                   MATER = MATER,
-                                   TEMP_REF = 50.0)
-
-                         )
-
-#
 
 CARBA=AFFE_CARA_ELEM(   MODELE=MOD,
                         BARRE=_F(  GROUP_MA = 'TOUT',
@@ -146,11 +137,15 @@ LIAISON=AFFE_CHAR_MECA(
                             )
 
 #
-
-DEFTHER=AFFE_CHAR_MECA(
-                                MODELE=MOD,
-                                TEMP_CALCULEE=TEMPRESU
-                             )
+CHMTM=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                         AFFE=_F(  TOUT = 'OUI',
+                                   MATER = MATER,),
+                         AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMPRESU,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',
+                                       VALE_REF = 50.0),
+                         )
 
 #
 
@@ -158,10 +153,9 @@ DEFTHER=AFFE_CHAR_MECA(
 UELAS=MECA_STATIQUE(
 
                      MODELE=MOD,
-                 CHAM_MATER=CHMAT,
+                 CHAM_MATER=CHMTM,
                  CARA_ELEM=CARBA,EXCIT=(
-                _F(  CHARGE = LIAISON),
-                _F(  CHARGE = DEFTHER)),
+                _F(  CHARGE = LIAISON),),
                   LIST_INST=LINST,
 
 
@@ -177,12 +171,10 @@ CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
 U=STAT_NON_LINE(
                             MODELE=MOD,
-                        CHAM_MATER=CHMAT,
+                        CHAM_MATER=CHMTM,
                          CARA_ELEM=CARBA,EXCIT=(
                              _F(
-                CHARGE = LIAISON),
-                             _F(
-                CHARGE = DEFTHER)),
+                CHARGE = LIAISON),),
                          COMP_INCR=_F(
                 RELATION = 'PINTO_MENEGOTTO'),
                          INCREMENT=_F(

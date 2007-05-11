@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,15 +66,6 @@ ACIER=DEFI_MATERIAU(
                 SY = 200.)
               )
 
-CM=AFFE_MATERIAU(
-
-               MAILLAGE=MA,
-
-                AFFE=_F(
-                TOUT = 'OUI',
-                MATER = ACIER,
-                TEMP_REF = 0.0)
-              )
 
 F1_T=DEFI_FONCTION(
 
@@ -167,11 +158,6 @@ TEMPRESU=CREA_RESU(
                 CHAM_GD = TEMPIMPO)
               )
 
-DEFOTHER=AFFE_CHAR_MECA(
-
-                      MODELE=MO,
-               TEMP_CALCULEE=TEMPRESU
-              )
 
 LIAISON=AFFE_CHAR_MECA(
 
@@ -188,14 +174,28 @@ LIAISON=AFFE_CHAR_MECA(
                 LIAISON_UNIF=_F( MAILLE = ('BAS1','BAS2','BAS3',), DDL = 'DY')
               )
 
+CM=AFFE_MATERIAU(
+
+               MAILLAGE=MA,
+
+                AFFE=_F(
+                   TOUT = 'OUI',
+                   MATER = ACIER,
+                   TEMP_REF = 0.0),
+                AFFE_VARC=_F(
+                   NOM_VARC='TEMP',
+                   TOUT='OUI',
+                   EVOL=TEMPRESU,
+                   NOM_CHAM='TEMP',),
+              )
+
 
 UELAS=MECA_STATIQUE(
 
                      MODELE=MO,
                  CHAM_MATER=CM,EXCIT=(
 
-                 _F( CHARGE = LIAISON),
-                 _F( CHARGE = DEFOTHER)),
+                 _F( CHARGE = LIAISON),),
                   LIST_INST=L_INST,
 
                  SOLVEUR=_F( METHODE = 'LDLT'),
@@ -397,8 +397,7 @@ U=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,EXCIT=(
                              _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = DEFOTHER)),
+                CHARGE = LIAISON),),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
                 TOUT = 'OUI'),

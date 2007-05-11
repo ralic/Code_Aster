@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2002   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CYLINDRE SOUMIS A UN CHOC THERMIQUE ET A UN CHARGEMENT MECANIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -418,7 +418,11 @@ MAT2=DEFI_MATERIAU(      ELAS_FO=_F(  E = E_FO,
 
 MATER2=AFFE_MATERIAU(   MAILLAGE=MAYA,
                                 AFFE=_F(  TOUT = 'OUI',
-                                       MATER = MAT2)
+                                       MATER = MAT2),
+                                AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=THERL,
+                                        NOM_VARC='TEMP',
+                                        NOM_CHAM='TEMP',),
                          )
 
 PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
@@ -429,9 +433,6 @@ PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
                                           20.,     5.5E6,     
                                           25.,     0.,       )
                         )
-
-TEMPER=AFFE_CHAR_MECA(      MODELE=MODEL2,
-                             TEMP_CALCULEE=THERL )
 
 ROTA=AFFE_CHAR_MECA(        MODELE=MODEL2,
                              ROTATION=( 2400.,0.,0.,1.,)
@@ -480,7 +481,6 @@ CALCNL=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),EXCIT=(
                              _F( 
-                CHARGE = TEMPER), _F( 
                 CHARGE = PRES), _F( 
                 CHARGE = ROTA,
                 FONC_MULT = ROTA_FO), _F( 
@@ -495,8 +495,6 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
                           RESULTAT=CALCNL,
                             MODELE=MODEL2,
                         CHAM_MATER=MATER2,
-                             EXCIT=_F( 
-                CHARGE = TEMPER) 
               )
 
 TEST_RESU(RESU=( 

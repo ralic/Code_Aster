@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE COMPRESSION-DILATATION POUR ETUDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,7 +102,6 @@ T =THER_LINEAIRE(MODELE    = MOTHER,
 #-------------------------------------------------------
 
 CLMECA=AFFE_CHAR_MECA(MODELE       = MOMECA,
-                      TEMP_CALCULEE= T,
                       DDL_IMPO     =(_F(GROUP_MA='BAS',
                                         DZ=0.0,),
                                      _F(GROUP_MA='COTEG',
@@ -119,8 +118,18 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',
                         100.,1.,
                         300.,1.),)
 
+CHMTM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),
+                    AFFE_VARC=_F( TOUT='OUI',
+                                  EVOL=T,
+                                  NOM_VARC='TEMP',
+                                  NOM_CHAM='TEMP',
+                                  VALE_REF = 0.0),
+                   )
+
 U=STAT_NON_LINE(MODELE    = MOMECA,
-                CHAM_MATER= CHMAT,
+                CHAM_MATER= CHMTM,
                 EXCIT     =(_F(CHARGE = CLMECA,),
                             _F(CHARGE = CHMECA,
                                FONC_MULT = FCT),),

@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF factor Messages  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,52 +121,81 @@ Causes possibles :
 """),
 
 #-----------------------------------------------------------------------------------------------
-
-
-
-
-
-#-----------------------------------------------------------------------------------------------
-
-
-
-
+53: _("""
+Solveur MUMPS :
+  Mumps manque de mémoire lors de la factorisation de la matrice.
+Solution :
+  Il faut augmenter la valeur du mot clé  SOLVEUR/PCENT_PIVOT.
+Remarque : on a le droit de dépasser la valeur 100.
+"""),
 
 #-----------------------------------------------------------------------------------------------
-
-
-
-
-
-#-----------------------------------------------------------------------------------------------
-
-
-
-
-
-#-----------------------------------------------------------------------------------------------
-
-
-
-
+54: _("""
+Solveur MUMPS :
+  Mumps manque de mémoire lors de la factorisation de la matrice.
+Solution :
+  Il faut augmenter la mémoire donnée à Mumps.
+  Pour cela, il faut diminuer le pourcentage de mémoire donné à JEVEUX.
+  C'est à dire diminuer la valeur du paramètre "mem_aster" du menu "Options" d'ASTK.
+Remarque :
+  On peut par exemple choisir mem_aster=50 ce qui correspond à un partage
+  équitable (50/50) de la mémoire entre JEVEUX et Mumps.
+"""),
 
 #-----------------------------------------------------------------------------------------------
-
-
-
-
-
-#-----------------------------------------------------------------------------------------------
-
-
-
-
+55: _("""
+Solveur MUMPS :
+  Problème dans le solveur MUMPS.
+  Le code retour de mumps (INFOG(1)) est : %(i1)d
+Solution :
+  Consulter le manuel d'utilisation de Mumps.
+  Prévenir l'équipe de développement de Code_Aster.
+"""),
 
 #-----------------------------------------------------------------------------------------------
+56: _("""
+Solveur MUMPS :
+  Il ne faut pas utiliser TYPE_RESOL = '%(k1)s'
+  Pour une matrice non-symétrique.
+Solution :
+  Il faut utiliser TYPE_RESOL = 'NONSYM' (ou 'AUTO').
+"""),
 
+#-----------------------------------------------------------------------------------------------
+57: _("""
+Solveur MUMPS :
+  La solution du système linéaire est trop imprécise :
+  Erreur calculée   : %(r1)g
+  Erreur acceptable : %(r2)g   (RESI_RELA)
+Solution :
+  On peut augmenter la valeur du mot clé SOLVEUR/RESI_RELA.
+"""),
 
+#-----------------------------------------------------------------------------------------------
+58: _("""
+Solveur MUMPS :
+  La matrice est singulière.
+Solution :
+  On peut essayer d'aller plus loin en précisant : STOP_SINGULIER='NON'
+"""),
 
+#-----------------------------------------------------------------------------------------------
+59: _("""
+Solveur MUMPS :
+  La matrice est déjà factorisée. On ne fait rien.
+Solution :
+  Il y a sans doute une erreur de programmation.
+  Contactez l'assistance.
+"""),
 
+#-----------------------------------------------------------------------------------------------
+60: _("""
+Solveur MUMPS :
+  Limite atteinte : le solveur Mumps est utilisé par plus de 5 matrices simultanément.
+Solution :
+  Il faut corriger le programme (PARAMETER (NMXINS=5) dans amumps.f)
+  Contactez l'assistance.
+"""),
 
 #-----------------------------------------------------------------------------------------------
 61: _("""

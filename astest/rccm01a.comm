@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,17 +138,22 @@ TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',
                         _F(  INST = 2.,  CHAM_GD = CHT1),
                         _F(  INST = 3.,  CHAM_GD = CHT1))  )
 
-CHTHER=AFFE_CHAR_MECA(  MODELE=MO,     TEMP_CALCULEE=TEMP )
 
 #----------------------------------------------------------------------
 # CHARGEMENTS MECANIQUE + THERMIQUE
 
+CHMTM=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', MATER = MAT),
+                        AFFE_VARC=_F(TOUT = 'OUI',
+                                     EVOL=TEMP,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',
+                                     VALE_REF=0.),)
 
 
-RESU2=MECA_STATIQUE(  MODELE=MO,      CHAM_MATER=CHMAT,
+RESU2=MECA_STATIQUE(  MODELE=MO,      CHAM_MATER=CHMTM,
                        LIST_INST=LINST,
-                       EXCIT=( _F(  CHARGE = CHTHER),
-                               _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),     )
+                       EXCIT=( _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),     )
 
 CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,
                        LIST_INST=LINST,
@@ -175,10 +180,9 @@ CHMEC0=AFFE_CHAR_MECA(  MODELE=MO,
                                    _F( GROUP_NO = 'CD',  DY = 0.0)) )
 
 
-RESUTH=MECA_STATIQUE(  MODELE=MO,    CHAM_MATER=CHMAT,
+RESUTH=MECA_STATIQUE(  MODELE=MO,    CHAM_MATER=CHMTM,
                         LIST_INST=LINST,
-                        EXCIT=( _F( CHARGE = CHTHER),
-                                _F( CHARGE = CHMEC0,  FONC_MULT = FCTMUL)),
+                        EXCIT=( _F( CHARGE = CHMEC0,  FONC_MULT = FCTMUL)),
                       )
 
 CALC_ELEM( reuse= RESUTH ,RESULTAT= RESUTH ,

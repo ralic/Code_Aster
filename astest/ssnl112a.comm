@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ISOT. BARRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,14 +47,6 @@ MATER=DEFI_MATERIAU(         ELAS=_F(  E = 2.E11,
                                        SY = 2.E8 )
                           )
 
-#
-
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                         AFFE=_F(  TOUT = 'OUI',
-                                   MATER = MATER,
-                                   TEMP_REF = 50.0)
-
-                         )
 
 #
 
@@ -116,18 +108,23 @@ LIAISON=AFFE_CHAR_MECA(    MODELE=MOD,
 
 #
 
-DEFTHER=AFFE_CHAR_MECA(         MODELE=MOD,
-                         TEMP_CALCULEE=TEMPRESU
-                      )
+CHMTM=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                         AFFE=_F(  TOUT = 'OUI',
+                                   MATER = MATER,),
+                         AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMPRESU,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',
+                                       VALE_REF = 50.0),
+                         )
 
 #
 
 
 UELAS=MECA_STATIQUE(      MODELE=MOD,
-                       CHAM_MATER=CHMAT,
+                       CHAM_MATER=CHMTM,
                         CARA_ELEM=CARBA,
-                            EXCIT=( _F(  CHARGE = LIAISON),
-                                    _F(  CHARGE = DEFTHER)),
+                            EXCIT=_F(  CHARGE = LIAISON),
                         LIST_INST=LINST,
 
                      )
@@ -140,10 +137,9 @@ CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
 
 U=STAT_NON_LINE(      MODELE=MOD,
-                  CHAM_MATER=CHMAT,
+                  CHAM_MATER=CHMTM,
                    CARA_ELEM=CARBA,
-                       EXCIT=( _F( CHARGE = LIAISON),
-                               _F( CHARGE = DEFTHER)),
+                       EXCIT= _F( CHARGE = LIAISON),
                    COMP_INCR= _F( RELATION = 'VMIS_ISOT_LINE'),
                    INCREMENT= _F( LIST_INST = LINST,
                                   NUME_INST_INIT = 0,
@@ -166,7 +162,7 @@ CALC_NO(reuse=U,  OPTION='FORC_NODA',
 
 MASS = POST_ELEM(MODELE=MOD,
                  CARA_ELEM=CARBA,
-                 CHAM_MATER=CHMAT,
+                 CHAM_MATER=CHMTM,
                  MASS_INER=_F(TOUT='OUI'),)
 
 TEST_TABLE(TABLE=MASS,

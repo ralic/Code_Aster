@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,20 +194,6 @@ MATFIC=DEFI_MATERIAU(
                          )
 
 #
-CHMATA=AFFE_MATERIAU(  MAILLAGE=MA,
-                                 AFFE=_F( TOUT = 'OUI',
-                                       MATER = MAT)
-                          )
-
-#
-CHMATB=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
-                                _F( TOUT = 'OUI',
-                                      MATER = MAT),
-                                _F( GROUP_MA = 'VBLOCON',
-                                      MATER = MATFIC))
-                         )
-
-#
 # -------------------------------------------------------------------
 #                    DEBUT DU THERMO-MECANIQUE A  T = 0.312 S
 # -------------------------------------------------------------------
@@ -236,11 +222,31 @@ TEMP1=CREA_RESU(reuse=TEMP1,OPERATION='AFFE',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=RESU1,
                          INST=0.312,),);
+
+CHMTA1=AFFE_MATERIAU(  MAILLAGE=MA,
+                                 AFFE=_F( TOUT = 'OUI',
+                                       MATER = MAT),
+                                 AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMP1,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',),
+                          )
+CHMTB1=AFFE_MATERIAU(  MAILLAGE=MA,
+                                 AFFE=(_F( TOUT = 'OUI',
+                                        MATER = MAT),
+                                       _F( GROUP_MA = 'VBLOCON',
+                                        MATER = MATFIC),),
+                                 AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMP1,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',),
+                          )
+
 #
 # FISSURE BLOQUEE
 #
 CH1A=AFFE_CHAR_MECA(           MODELE=MO,
-                                TEMP_CALCULEE=TEMP1,DDL_IMPO=(
+                               DDL_IMPO=(
                                      _F(  GROUP_NO = 'LP10P11',
                                                 DX = 0.),
                                               _F(  GROUP_NO = 'LPOP11',
@@ -255,13 +261,13 @@ CH1A=AFFE_CHAR_MECA(           MODELE=MO,
 #
 INSME1A=DEFI_LIST_REEL(VALE=0.312);
 CHDEP1A=MECA_STATIQUE(        MODELE=MO,
-                              CHAM_MATER=CHMATA,
+                              CHAM_MATER=CHMTA1,
                                    LIST_INST=INSME1A,
                                    EXCIT=_F( CHARGE = CH1A),
                           )
 
 CALC_ELEM( reuse= CHDEP1A ,RESULTAT= CHDEP1A ,         MODELE=MO,
-                              CHAM_MATER=CHMATA,
+                              CHAM_MATER=CHMTA1,
                                    EXCIT=_F( CHARGE = CH1A),
                                   OPTION=( 'EPSI_ELGA_DEPL',
                                            'SIGM_ELNO_DEPL',
@@ -286,7 +292,7 @@ SIGM1A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 # FISSURE NON BLOQUEE
 #
 CH1B=AFFE_CHAR_MECA(           MODELE=MO,
-                                TEMP_CALCULEE=TEMP1,DDL_IMPO=(
+                                DDL_IMPO=(
                                      _F(  GROUP_NO = 'LP10P11',
                                                 DX = 0.),
                                               _F(  GROUP_NO = 'LPOP11',
@@ -308,7 +314,7 @@ CH1B=AFFE_CHAR_MECA(           MODELE=MO,
 CHDEP1B=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMATB,
+                        CHAM_MATER=CHMTB1,
                              EXCIT=_F(
                 CHARGE = CH1B),
                          COMP_ELAS=_F(
@@ -327,7 +333,7 @@ CALC_ELEM( reuse=CHDEP1B,
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHDEP1B,
                             MODELE=MO,
-                        CHAM_MATER=CHMATB
+                        CHAM_MATER=CHMTB1
               )
 
 #
@@ -381,11 +387,31 @@ TEMP2=CREA_RESU(reuse=TEMP2,OPERATION='AFFE',
                          INST=12.48,),);
 #                         INST=0.312,),);
 
+CHMTA2=AFFE_MATERIAU(  MAILLAGE=MA,
+                                 AFFE=_F( TOUT = 'OUI',
+                                       MATER = MAT),
+                                 AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMP2,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',),
+                          )
+
+CHMTB2=AFFE_MATERIAU(  MAILLAGE=MA,
+                                 AFFE=(_F( TOUT = 'OUI',
+                                        MATER = MAT),
+                                       _F( GROUP_MA = 'VBLOCON',
+                                        MATER = MATFIC),),
+                                 AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMP2,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',),
+                          )
+
 #
 # FISSURE BLOQUEE
 #
 CH2A=AFFE_CHAR_MECA(           MODELE=MO,
-                                TEMP_CALCULEE=TEMP2,DDL_IMPO=(
+                                DDL_IMPO=(
                                      _F(  GROUP_NO = 'LP10P11',
                                                 DX = 0.),
                                               _F(  GROUP_NO = 'LPOP11',
@@ -400,13 +426,13 @@ CH2A=AFFE_CHAR_MECA(           MODELE=MO,
 #
 INSME2A=DEFI_LIST_REEL(VALE=12.48);
 CHDEP2A=MECA_STATIQUE(         MODELE=MO,
-                               CHAM_MATER=CHMATA,
+                               CHAM_MATER=CHMTA2,
                                     LIST_INST=INSME2A,
                                     EXCIT=_F( CHARGE = CH2A),
                            )
 
 CALC_ELEM( reuse= CHDEP2A ,RESULTAT= CHDEP2A ,          MODELE=MO,
-                               CHAM_MATER=CHMATA,
+                               CHAM_MATER=CHMTA2,
                                     EXCIT=_F( CHARGE = CH2A),
                                    OPTION=( 'EPSI_ELGA_DEPL',
                                             'SIGM_ELNO_DEPL',
@@ -433,7 +459,7 @@ SIGM2A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 # FISSURE NON BLOQUEE
 #
 CH2B=AFFE_CHAR_MECA(           MODELE=MO,
-                                TEMP_CALCULEE=TEMP2,DDL_IMPO=(
+                                DDL_IMPO=(
                                      _F(  GROUP_NO = 'LP10P11',
                                                 DX = 0.),
                                               _F(  GROUP_NO = 'LPOP11',
@@ -455,7 +481,7 @@ CH2B=AFFE_CHAR_MECA(           MODELE=MO,
 CHDEP2B=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMATB,
+                        CHAM_MATER=CHMTB2,
                              EXCIT=_F(
                 CHARGE = CH2B),
                          COMP_ELAS=_F(
@@ -474,7 +500,7 @@ CALC_ELEM( reuse=CHDEP2B,
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHDEP2B,
                             MODELE=MO,
-                        CHAM_MATER=CHMATB
+                        CHAM_MATER=CHMTB2
               )
 
 #
@@ -526,11 +552,33 @@ TEMP3=CREA_RESU(reuse=TEMP3,OPERATION='AFFE',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=RESU3,
                          INST=312.,),);
+
+CHMTA3=AFFE_MATERIAU(  MAILLAGE=MA,
+                                 AFFE=_F( TOUT = 'OUI',
+                                       MATER = MAT),
+                                 AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMP3,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',),
+                          )
+
+CHMTB3=AFFE_MATERIAU(  MAILLAGE=MA,
+                                 AFFE=(_F( TOUT = 'OUI',
+                                        MATER = MAT),
+                                       _F( GROUP_MA = 'VBLOCON',
+                                        MATER = MATFIC),),
+                                 AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMP3,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',),
+                          )
+
+
 #
 # FISSURE BLOQUEE
 #
 CH3A=AFFE_CHAR_MECA(           MODELE=MO,
-                                TEMP_CALCULEE=TEMP3,DDL_IMPO=(
+                                DDL_IMPO=(
                                      _F(  GROUP_NO = 'LP10P11',
                                                 DX = 0.),
                                               _F(  GROUP_NO = 'LPOP11',
@@ -545,13 +593,13 @@ CH3A=AFFE_CHAR_MECA(           MODELE=MO,
 #
 INSME3A=DEFI_LIST_REEL(VALE=312.);
 CHDEP3A=MECA_STATIQUE(         MODELE=MO,
-                               CHAM_MATER=CHMATA,
+                               CHAM_MATER=CHMTA3,
                                     LIST_INST=INSME3A,
                                     EXCIT=_F( CHARGE = CH3A),
                             )
 
 CALC_ELEM( reuse= CHDEP3A ,RESULTAT= CHDEP3A ,          MODELE=MO,
-                               CHAM_MATER=CHMATA,
+                               CHAM_MATER=CHMTA3,
                                     EXCIT=_F( CHARGE = CH3A),
                                    OPTION=( 'EPSI_ELGA_DEPL',
                                             'SIGM_ELNO_DEPL',
@@ -577,7 +625,7 @@ SIGM3A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 # FISSURE NON BLOQUEE
 #
 CH3B=AFFE_CHAR_MECA(           MODELE=MO,
-                                TEMP_CALCULEE=TEMP3,DDL_IMPO=(
+                                DDL_IMPO=(
                                      _F(  GROUP_NO = 'LP10P11',
                                                 DX = 0.),
                                               _F(  GROUP_NO = 'LPOP11',
@@ -599,7 +647,7 @@ CH3B=AFFE_CHAR_MECA(           MODELE=MO,
 CHDEP3B=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMATB,
+                        CHAM_MATER=CHMTB3,
                              EXCIT=_F(
                 CHARGE = CH3B),
                          COMP_ELAS=_F(
@@ -618,7 +666,7 @@ CALC_ELEM( reuse=CHDEP3B,
                   'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHDEP3B,
                             MODELE=MO,
-                        CHAM_MATER=CHMATB
+                        CHAM_MATER=CHMTB3
               )
 
 #

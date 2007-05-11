@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,6 +79,7 @@ TEMP2    = [None]*nb_calc1
 MAM      = [None]*nb_calc1
 MOM      = [None]*nb_calc1
 CHMATM   = [None]*nb_calc1
+CHMTM    = [None]*nb_calc1
 CLIMM    = [None]*nb_calc1
 CHM      = [None]*nb_calc1
 DEPLA    = [None]*nb_calc1
@@ -195,10 +196,15 @@ for num_calc in range(0,nb_calc1) :
                MODELE_2=MOT2[num_calc],
                TOUT_ORDRE='OUI')        
 
-# CL D'ENCASTREMENT + TEMP_CALCULEE + ETIREMENT REPARTIE                                 
+   CHMTM[num_calc]=AFFE_MATERIAU(MAILLAGE=MAM[num_calc],
+                       AFFE=_F(GROUP_MA='GM38',
+                                MATER=ACIER_M,),
+                       AFFE_VARC=_F( TOUT='OUI',EVOL=TEMP2[num_calc],
+                                      NOM_VARC='TEMP',NOM_CHAM='TEMP',),)
+
+# CL D'ENCASTREMENT + ETIREMENT REPARTIE                                 
    CLIMM[num_calc]=AFFE_CHAR_MECA(
              MODELE=MOM[num_calc],
-             TEMP_CALCULEE=TEMP2[num_calc],     
              DDL_IMPO=(_F(GROUP_NO='GM39',DX=0.0,DY=0.0),
                        _F(GROUP_NO='GM40',DX=0.0,DY=0.0),),);        
    CHM[num_calc]=AFFE_CHAR_MECA(MODELE=MOM[num_calc],
@@ -207,7 +213,7 @@ for num_calc in range(0,nb_calc1) :
 
 # CALCUL ELASTIQUE VIA STAT_NON_LINE OU MECA_STATIQUE
    DEPLA[num_calc]=STAT_NON_LINE(MODELE=MOM[num_calc],
-                       CHAM_MATER=CHMATM[num_calc],
+                       CHAM_MATER=CHMTM[num_calc],
                        EXCIT=(_F(CHARGE=CLIMM[num_calc],),
                               _F(CHARGE=CHM[num_calc],
                                  FONC_MULT=F_INST,),),
@@ -244,7 +250,7 @@ for num_calc in range(0,nb_calc1) :
 
 # CALCUL DE L'ENERGIE POTENTIELLE DE DEFORMATION
    ENER[num_calc]=POST_ELEM(MODELE=MOM[num_calc],
-                     CHAM_MATER=CHMATM[num_calc],
+                     CHAM_MATER=CHMTM[num_calc],
                      CHARGE=(CLIMM[num_calc],CHM[num_calc]),
                      RESULTAT=DEPLA[num_calc],
                      ENER_POT=_F(TOUT='OUI',),);

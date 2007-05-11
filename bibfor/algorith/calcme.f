@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,8 +114,8 @@ C ======================================================================
          IF ( OPTION(10:14).EQ.'_ELAS' ) THEN
             CALL U2MESS('F','ALGORITH_67')
          ENDIF
-         CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
-     &                                           NCRA1,ELAS,CODRET,'FM')
+         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+     &                                 NCRA1(1),ELAS(1),CODRET,'FM')
          YOUNG  = ELAS(1)
          NU     = ELAS(2)
          ALPHA0 = ELAS(3)
@@ -127,22 +127,12 @@ C ======================================================================
          NU     = ELAS(2)
          ALPHA0 = ELAS(3)
       ENDIF
-      IF (MECA.EQ.'ELAS_THER')  THEN
-         IF ( OPTION(10:14).EQ.'_ELAS' ) THEN
-            CALL U2MESS('F','ALGORITH_67')
-         ENDIF
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
-     &                                 NCRA1(1),ELAS(1),CODRET,'FM')
-         YOUNG  = ELAS(1)
-         NU     = ELAS(2)
-         ALPHA0 = ELAS(3)
-      ENDIF
 C ======================================================================
 C --- CALCUL DES CONTRAINTES -------------------------------------------
 C ======================================================================
 C --- LOI ELASTIQUE ----------------------------------------------------
 C ======================================================================
-      IF ((MECA.EQ.'ELAS').OR.(MECA.EQ.'ELAS_THER')) THEN
+      IF ((MECA.EQ.'ELAS')) THEN
          IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
            DO 101 I=1,3

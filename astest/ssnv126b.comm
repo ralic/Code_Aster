@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE RELAXATION EN AXIS VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,8 +206,13 @@ ACIER=DEFI_MATERIAU(      ELAS_FO=_F(    E = F_E,
 
 MAT=AFFE_MATERIAU(            MAILLAGE=EPROU,
                                     AFFE=_F(  MAILLE = 'MA1',
-                                           MATER = ACIER,
-                                           TEMP_REF = 1000.))
+                                           MATER = ACIER,),
+                                    AFFE_VARC=_F( TOUT='OUI',
+                                           EVOL=CTHER,
+                                           NOM_VARC='TEMP',
+                                           NOM_CHAM='TEMP',
+                                           VALE_REF=1000.),)
+
 
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                              
@@ -227,7 +232,7 @@ LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                                          )
 
 COND_LIM=AFFE_CHAR_MECA(             MODELE=EPAXI,
-                                 TEMP_CALCULEE=CTHER,DDL_IMPO=(
+                                 DDL_IMPO=(
                                    
                              _F( NOEUD = 'N1',      DX = 0., DY = 0.),
                              _F( NOEUD = 'N8',      DX = 0.),

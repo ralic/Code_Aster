@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,27 +182,22 @@ TEST_RESU(
 CHMECA=AFFE_CHAR_MECA( 
             MODELE=MOMECA,DDL_IMPO=(
            _F( GROUP_NO = 'GRNO1',  DY = 0.),
-           _F( GROUP_NO = 'GRNO3',  DY = 0.)),
-          TEMP_CALCULEE=TEMPE
-                                                                )
+           _F( GROUP_NO = 'GRNO3',  DY = 0.)),)
 
 #
-TEMPEO=THER_LINEAIRE(  MODELE=MOTHER,   CHAM_MATER=CM1,
-          EXCIT=_F( CHARGE = CHTHER),
-          TEMP_INIT=_F( CHAM_NO = T0),
-          INCREMENT=_F( LIST_INST = L_INST)
-                        )
 
-CHMECAO=AFFE_CHAR_MECA( 
-            MODELE=MOMECA,DDL_IMPO=(
-           _F( GROUP_NO = 'GRNO1',  DY = 0.),
-           _F( GROUP_NO = 'GRNO3',  DY = 0.)),
-          TEMP_CALCULEE=TEMPEO
-                                                                )
+CTM1=AFFE_MATERIAU( 
+            MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT1,),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TEMPE,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=0.),)
 
 U=STAT_NON_LINE( 
                             MODELE=MOMECA,
-                        CHAM_MATER=CM1,
+                        CHAM_MATER=CTM1,
                              EXCIT=_F( 
                 CHARGE = CHMECA),
                          COMP_INCR=_F( 
@@ -244,9 +239,18 @@ TEST_RESU(RESU=(
             REFERENCE = 'NON_REGRESSION'))
           )
 
+CTM2=AFFE_MATERIAU( 
+            MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT2,),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TEMPE,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=0.),)
+
 V=STAT_NON_LINE( 
                             MODELE=MOMECA,
-                        CHAM_MATER=CM2,
+                        CHAM_MATER=CTM2,
                              EXCIT=_F( 
                 CHARGE = CHMECA),
                          COMP_INCR=_F( 

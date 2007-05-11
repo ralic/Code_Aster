@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,9 +31,9 @@ C 0.2. ==> COMMUNS
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      REAL*8             ZR
+      REAL*8             ZR,R8B
       COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
+      COMPLEX*16         ZC,C16B
       COMMON  / CVARJE / ZC(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
@@ -53,7 +53,7 @@ C
       INTEGER IE, N1, N2, N3, NX, I
       INTEGER IOC, NBOCC, NB, JMODL
       INTEGER IEQ, NBEQUA
-      INTEGER IBID, KVALE
+      INTEGER IBID, KVALE,NBORDR
       INTEGER NRPASS, NBPASS
       INTEGER ADRECG
 C
@@ -241,17 +241,16 @@ C
 C --- STOCKAGE
 C
       IF (ELTF .AND. TYPRES(1:9).NE.'EVOL_CHAR' ) THEN
-        CALL JEDUP1(LERES0//'           .MODL','G',LERES1//'.MODL')
-        CALL JEDUP1(LERES0//'           .MATE','G',LERES1//'.MATE')
-        CALL JEDUP1(LERES0//'           .CARA','G',LERES1//'.CARA')
+        CALL RSORAC(LERES1,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,NBORDR,1,
+     &              IBID)
+
         CALL GETVID(' ','MODELE_2',0,1,1,MODEL2,N1)
-        CALL JELIRA(LERES0//'           .MODL','LONUTI',NB,K8B)
         CALL JEVEUO(LERES1//'.MODL','E',JMODL)
-        DO 70 I=1,NB
+        DO 70 I=1,NBORDR
           ZK8(JMODL+I-1)=MODEL2
  70     CONTINUE
       ENDIF
-        
+
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
 C
 C

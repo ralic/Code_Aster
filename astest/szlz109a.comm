@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2005   AUTEUR F1BHHAJ J.ANGLES 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE  DOMMAGE DE LEMAITRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-DEBUT(  CODE=_F(  NOM = 'SZLZ109A',NIV_PUB_WEB='INTERNET')  )
+DEBUT(  CODE=_F(  NOM = 'SZLZ109A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 TAUN1=DEFI_FONCTION(    NOM_PARA='INST',
                            VALE=(    43.11,         300.,

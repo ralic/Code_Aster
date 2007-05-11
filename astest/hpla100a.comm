@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,13 +104,30 @@ CHROT=AFFE_CHAR_MECA(  MODELE=MO,
                     _F(  GROUP_NO = 'HAUT',   DY = 0.)) )
 
 CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLIN,
            DDL_IMPO=_F(  GROUP_NO = 'TOUT',   DY = 0.) )
 
 CHDI2=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLI2,DDL_IMPO=(
+           DDL_IMPO=(
            _F(  GROUP_NO = 'BAS',    DY = 0.),
                     _F(  GROUP_NO = 'HAUT',   DY = 0.)) )
+
+CHMTM=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MAT,),
+                        AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMPLIN,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',
+                                       VALE_REF = 0.0),
+                    )
+
+CHMTM2=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MAT, ),
+                        AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMPLI2,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',
+                                       VALE_REF = 0.0),
+                     )
 
 # ------------------------------------------------------------------
 
@@ -144,7 +161,7 @@ CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
 
 DEPLDIL=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMTM,
                    EXCIT=_F( CHARGE = CHDIL),
                          )
 
@@ -158,7 +175,7 @@ CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
 
 DEPLDI2=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMTM2,
                    EXCIT=_F( CHARGE = CHDI2),
                          )
 

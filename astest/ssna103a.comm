@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CALAGE DES PARAMETRES DU MODELE DE WEIBULL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,8 +63,6 @@ ACIER=DEFI_MATERIAU(
                         SIGM_REFE = 2600.0E0)
              )
 
-CM=AFFE_MATERIAU(   MAILLAGE=M,
-                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER)  )
 
 ZERO=DEFI_CONSTANTE(   VALE=0. )
 
@@ -167,26 +165,35 @@ MAILLAGE=M,
                AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = -150.)
                     )
 
-CHTEMP1=AFFE_CHAR_MECA(   MODELE=MO, 
-                     TEMP_CALCULEE=TEMP50
-                          )
+CM=AFFE_MATERIAU(   MAILLAGE=M,
+                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER),)
 
-CHTEMP2=AFFE_CHAR_MECA(   MODELE=MO, 
-                     TEMP_CALCULEE=TEMP100
-                          )
+CM50=AFFE_MATERIAU(   MAILLAGE=M,
+                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+                         AFFE_VARC=_F(TOUT='OUI',
+                                  CHAMP_GD=TEMP50,
+                                  NOM_VARC='TEMP',),)
 
-CHTEMP3=AFFE_CHAR_MECA(   MODELE=MO, 
-                     TEMP_CALCULEE=TEMP150
-                          )
+
+CM100=AFFE_MATERIAU(   MAILLAGE=M,
+                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+                         AFFE_VARC=_F(TOUT='OUI',
+                                  CHAMP_GD=TEMP100,
+                                  NOM_VARC='TEMP',),)
+
+CM150=AFFE_MATERIAU(   MAILLAGE=M,
+                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+                         AFFE_VARC=_F(TOUT='OUI',
+                                  CHAMP_GD=TEMP150,
+                                  NOM_VARC='TEMP',),)
 
 L_INST=DEFI_LIST_REEL(    DEBUT=0.,
                             INTERVALLE=_F(  JUSQU_A = 150.,  NOMBRE = 15)
                         )
 
 U1=STAT_NON_LINE( 
-             MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
-              _F(  CHARGE = CHARG50),
-              _F(  CHARGE = CHTEMP1)),
+             MODELE=MO,    CHAM_MATER=CM50,EXCIT=( 
+              _F(  CHARGE = CHARG50),),
               COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE',
                              RESI_INTE_RELA = 1.E-6,
                              ITER_INTE_MAXI = 100),
@@ -197,9 +204,8 @@ U1=STAT_NON_LINE(
                         )
 
 U2=STAT_NON_LINE( 
-             MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
-              _F(  CHARGE = CHARG100),
-              _F(  CHARGE = CHTEMP2)),
+             MODELE=MO,    CHAM_MATER=CM100,EXCIT=( 
+              _F(  CHARGE = CHARG100),),
               COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE',
                              RESI_INTE_RELA = 1.E-6,
                              ITER_INTE_MAXI = 100),
@@ -210,9 +216,8 @@ U2=STAT_NON_LINE(
                         )
 
 U3=STAT_NON_LINE( 
-             MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
-              _F(  CHARGE = CHARG150),
-              _F(  CHARGE = CHTEMP3)),
+             MODELE=MO,    CHAM_MATER=CM150,EXCIT=( 
+              _F(  CHARGE = CHARG150),),
               NEWTON=_F( REAC_ITER = 1),
               COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE',
                              RESI_INTE_RELA = 1.E-6,

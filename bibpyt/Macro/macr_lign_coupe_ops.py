@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ def crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,resin,mail,nomgrma):
        elif dime ==3 :
           LCMP=['DX','DY','DZ']
           TYPE_CHAM='VECT_3D'
-  elif NOM_CHAM in ('SIGM_NOEU_DEPL','SIEF_ELNO_ELGA','SIGM_NOEU_SIEF','SIGM_NOEU_ELGA','SIGM_NOEU_COQU'):
+  elif NOM_CHAM in ('SIGM_NOEU_DEPL','SIEF_ELNO_ELGA','SIGM_NOEU_SIEF','SIGM_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_DEPL'):
        if dime == 2:
           LCMP=['SIXX','SIYY','SIZZ','SIXY']
           TYPE_CHAM='TENS_2D'
@@ -47,72 +47,78 @@ def crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,resin,mail,nomgrma):
           TYPE_CHAM='TENS_3D'
 
 
-  if m['TYPE']=='SEGMENT':
-    # --- determination des angles nautiques
-    cx1=m['COOR_EXTR'][0]-m['COOR_ORIG'][0]
-    cx2=m['COOR_EXTR'][1]-m['COOR_ORIG'][1]
-    cx3=0.
-    if dime == 3:
-      cx3=m['COOR_EXTR'][2]-m['COOR_ORIG'][2]
-    nvx=sqrt(cx1**2+cx2**2+cx3**2)
-    if abs(nvx) < epsi:
-       UTMESS('F', "MACR_LIGN_COUPE", "definition incorrecte de la ligne de coupe")
-    cx1=cx1/nvx
-    cx2=cx2/nvx
-    cx3=cx3/nvx
-    cy1=m['VECT_Y'][0]
-    cy2=m['VECT_Y'][1]
-    cy3=0.
-    if dime == 3:
-      cy3=m['VECT_Y'][2]
-    nvy=sqrt(cy1**2+cy2**2+cy3**2)
-    if abs(nvy) < epsi:
-       UTMESS('F', "MACR_LIGN_COUPE", "valeurs incorrectes pour VECT_Y")
-    cy1=cy1/nvy
-    cy2=cy2/nvy
-    cy3=cy3/nvy
-    if ((abs(cx1-cy1)<epsi and abs(cx2-cy2)<epsi and  abs(cx3-cy3)<epsi) or \
-       (abs(cx1+cy1)<epsi and abs(cx2+cy2)<epsi and  abs(cx3+cy3)<epsi)):
-       UTMESS('F', "MACR_LIGN_COUPE", "valeurs incorrectes pour VECT_Y: x colineaire a y")
-    if abs(cx1*cy1+cx2*cy2+cx3*cy3) > epsi  :
-      cz1=cx2*cy3-cx3*cy2
-      cz2=cx3*cy1-cx1*cy3
-      cz3=cx1*cy2-cx2*cy1
-      nvz=sqrt(cz1**2+cz2**2+cz3**2)
-      cz1=cz1/nvz
-      cz2=cz2/nvz
-      cz3=cz3/nvz
-      cy1=cz2*cx3-cz3*cx2
-      cy2=cz3*cx1-cz1*cx3
-      cy3=cz1*cx2-cz2*cx1
+  if m['TYPE']=='SEGMENT' and m['REPERE'] != 'CYLINDRIQUE' :
+  
+    if m['REPERE'] == 'LOCAL':
+      # --- determination des angles nautiques
+      cx1=m['COOR_EXTR'][0]-m['COOR_ORIG'][0]
+      cx2=m['COOR_EXTR'][1]-m['COOR_ORIG'][1]
+      cx3=0.
+      if dime == 3:
+        cx3=m['COOR_EXTR'][2]-m['COOR_ORIG'][2]
+      nvx=sqrt(cx1**2+cx2**2+cx3**2)
+      if abs(nvx) < epsi:
+         UTMESS('F', "MACR_LIGN_COUPE", "definition incorrecte de la ligne de coupe")
+      cx1=cx1/nvx
+      cx2=cx2/nvx
+      cx3=cx3/nvx
+      cy1=m['VECT_Y'][0]
+      cy2=m['VECT_Y'][1]
+      cy3=0.
+      if dime == 3:
+        cy3=m['VECT_Y'][2]
       nvy=sqrt(cy1**2+cy2**2+cy3**2)
+      if abs(nvy) < epsi:
+         UTMESS('F', "MACR_LIGN_COUPE", "valeurs incorrectes pour VECT_Y")
       cy1=cy1/nvy
       cy2=cy2/nvy
       cy3=cy3/nvy
-      UTMESS('A','MACR_LIGN_COUPE','LE VECTEUR Y N EST PAS ORTHOGONAL A LA LIGNE DE COUPE'
+      if ((abs(cx1-cy1)<epsi and abs(cx2-cy2)<epsi and  abs(cx3-cy3)<epsi) or \
+         (abs(cx1+cy1)<epsi and abs(cx2+cy2)<epsi and  abs(cx3+cy3)<epsi)):
+         UTMESS('F', "MACR_LIGN_COUPE", "valeurs incorrectes pour VECT_Y: x colineaire a y")
+      if abs(cx1*cy1+cx2*cy2+cx3*cy3) > epsi  :
+        cz1=cx2*cy3-cx3*cy2
+        cz2=cx3*cy1-cx1*cy3
+        cz3=cx1*cy2-cx2*cy1
+        nvz=sqrt(cz1**2+cz2**2+cz3**2)
+        cz1=cz1/nvz
+        cz2=cz2/nvz
+        cz3=cz3/nvz
+        cy1=cz2*cx3-cz3*cx2
+        cy2=cz3*cx1-cz1*cx3
+        cy3=cz1*cx2-cz2*cx1
+        nvy=sqrt(cy1**2+cy2**2+cy3**2)
+        cy1=cy1/nvy
+        cy2=cy2/nvy
+        cy3=cy3/nvy
+        UTMESS('A','MACR_LIGN_COUPE','LE VECTEUR Y N EST PAS ORTHOGONAL A LA LIGNE DE COUPE'
               +'LE VECTEUR Y A ETE ORTHONORMALISE POUR VOUS')
-      UTMESS('A','MACR_LIGN_COUPE','VECT_Y=('+str(cy1)+','+str(cy2)+','+str(cy3)+')')
-    else:     
-      cz1=cx2*cy3-cx3*cy2
-      cz2=cx3*cy1-cx1*cy3
-      cz3=cx1*cy2-cx2*cy1
-    beta=0.
-    gamma=0.
-    if dime ==2:
-      alpha = atan2(cx2,cx1)
-    else:
-      if cx1**2 + cx2**2 > epsi :
-        alpha=atan2(cx2,cx1)
-        beta=asin(cx3)
-        gamma=atan2(cy3,cz3)
+        UTMESS('A','MACR_LIGN_COUPE','VECT_Y=('+str(cy1)+','+str(cy2)+','+str(cy3)+')')
+      else:     
+        cz1=cx2*cy3-cx3*cy2
+        cz2=cx3*cy1-cx1*cy3
+        cz3=cx1*cy2-cx2*cy1
+      beta=0.
+      gamma=0.
+      if dime ==2:
+        alpha = atan2(cx2,cx1)
       else:
-#        alpha=atan2(cy1,cz1)
-        alpha=atan2(-cy1,cy2)
-        beta=asin(cx3)
-        gamma=0.
-    alpha=alpha*180/pi
-    beta=beta*180/pi
-    gamma=gamma*180/pi
+        if cx1**2 + cx2**2 > epsi :
+          alpha=atan2(cx2,cx1)
+          beta=-asin(cx3)
+          gamma=atan2(cy3,cz3)
+        else:
+          alpha=atan2(-cy1,cy2)
+          beta=-asin(cx3)
+          gamma=0.
+      alpha=alpha*180/pi
+      beta=beta*180/pi
+      gamma=gamma*180/pi
+
+    elif m['REPERE'] == 'UTILISATEUR':
+      alpha=m['ANGL_NAUT'][0]
+      beta =m['ANGL_NAUT'][1]
+      gamma=m['ANGL_NAUT'][2]
 
     motscles={}
     motscles['MODI_CHAM']=[]
@@ -128,29 +134,183 @@ def crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,resin,mail,nomgrma):
     
     
   if m['TYPE']=='ARC':
+    if m['REPERE'] == 'UTILISATEUR' or m['REPERE'] == 'LOCAL' :
+         UTMESS("F","MACR_LIGN_COUPE","LE TYPE "+m['TYPE']+"N'EST PAS COHERENT AVEC LE CHOIX DU REPERE ( REPERE "+m['REPERE']+" ).")
+    else:
+      motscles={}
+      motscles['MODI_CHAM']=[]
+      motscles['DEFI_REPERE']=[]
+      motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM),)
+      ORIGINE=[]
+      ORIGINE.append(m['CENTRE'][0])
+      ORIGINE.append(m['CENTRE'][1])
+      if dime ==3:
+        ORIGINE.append(m['CENTRE'][2])
+        AXE_Z=[]
+        AXE_Z.append(m['DNOR'][0])
+        AXE_Z.append(m['DNOR'][1])
+        AXE_Z.append(m['DNOR'][2])
+        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=ORIGINE,AXE_Z=AXE_Z),)
+      elif dime ==2:
+        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=ORIGINE,),)
+      __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+
+
+
+  if m['TYPE'][:5]=='GROUP' or m['TYPE']=='SEGMENT':
+  
+    if m['TYPE'][:5]=='GROUP' and m['REPERE'] == 'LOCAL':
+     # determination du repère local (v1,v2,v3)    
+     # ---------------------------------------
+      noma=mail.nom
+      collgrma=aster.getcolljev(noma.ljust(8)+'.GROUPEMA')
+      collcnx =aster.getcolljev(noma.ljust(8)+'.CONNEX')
+      coord   =aster.getvectjev(noma.ljust(8)+'.COORDO    .VALE')
+      cnom    =aster.getvectjev(noma.ljust(8)+'.NOMNOE')
+      
+      numa=collgrma[nomgrma.ljust(8)]
+      dictu={}
+#     initialisations
+      for ima in numa:
+        n1=collcnx[ima][0]
+        n2=collcnx[ima][1]
+        dictu[n1]=[]
+        dictu[n2]=[]
+#     determination du vecteur tangent (v1) + normalisation
+      for ima in numa:
+        vectu1=[]
+        vectu2=[]
+        n1=collcnx[ima][0]
+        n2=collcnx[ima][1]
+        ux=coord[3*(n2-1)]-coord[3*(n1-1)]
+        uy=coord[3*(n2-1)+1]-coord[3*(n1-1)+1]
+        vectu1.append(ux)
+        vectu1.append(uy)
+        vectu2.append(ux)
+        vectu2.append(uy)
+        if dime ==3 : 
+          uz=coord[3*(n2-1)+2]-coord[3*(n1-1)+2]
+          vectu1.append(uz)
+          vectu2.append(uz)
+        dictu[n1].append(vectu1)
+        dictu[n2].append(vectu2)
+      for i in dictu:
+        if len(dictu[i])==2:
+          dictu[i][0][0]=dictu[i][0][0]+dictu[i][1][0]
+          dictu[i][0][1]=dictu[i][0][1]+dictu[i][1][1]
+          if dime==3:dictu[i][0][2]=dictu[i][0][2]+dictu[i][1][2]
+          del dictu[i][1]
+      for i in dictu:
+        if dime==2:
+          norm=sqrt(dictu[i][0][0]**2+dictu[i][0][1]**2)
+          dictu[i][0][0]=dictu[i][0][0]/norm
+          dictu[i][0][1]=dictu[i][0][1]/norm
+        elif dime==3:
+          norm=sqrt(dictu[i][0][0]**2+dictu[i][0][1]**2+dictu[i][0][2]**2)
+          dictu[i][0][0]=dictu[i][0][0]/norm
+          dictu[i][0][1]=dictu[i][0][1]/norm
+          dictu[i][0][2]=dictu[i][0][2]/norm
+#     determination du vecteur normal (v2):
+#     on projete VECT_Y sur le plan orthogonal au vecteur v1.
+#     (ce vecteur normal est obtenu par 2 produits vectoriels successifs en 3D)
+      if dime==3:
+        norm=sqrt(m['VECT_Y'][0]**2+m['VECT_Y'][1]**2+m['VECT_Y'][2]**2)
+        tmpy=[m['VECT_Y'][0]/norm,m['VECT_Y'][1]/norm,m['VECT_Y'][2]/norm]
+      j=0
+      __resu=[None]*(len(dictu)+1)
+      __resu[0]=resin
+      for i in dictu:
+          j=j+1
+          vecty=[]
+          if dime==2:
+             vecty.append(-dictu[i][0][1])
+             vecty.append(dictu[i][0][0])
+             dictu[i].append(vecty)
+          elif dime==3:
+             # v3= v1 vectoriel vect_y
+             vectz=[]
+             vectz.append(dictu[i][0][1]*tmpy[2]-dictu[i][0][2]*tmpy[1])
+             vectz.append(dictu[i][0][2]*tmpy[0]-dictu[i][0][0]*tmpy[2])
+             vectz.append(dictu[i][0][0]*tmpy[1]-dictu[i][0][1]*tmpy[0])
+             normz=sqrt(vectz[0]**2+vectz[1]**2+vectz[2]**2)
+             vectz[0]=vectz[0]/normz
+             vectz[1]=vectz[1]/normz
+             vectz[2]=vectz[2]/normz
+             vecty.append(vectz[1]*dictu[i][0][2]-vectz[2]*dictu[i][0][1])
+             vecty.append(vectz[2]*dictu[i][0][0]-vectz[0]*dictu[i][0][2])
+             vecty.append(vectz[0]*dictu[i][0][1]-vectz[1]*dictu[i][0][0])
+             normy=sqrt(vecty[0]**2+vecty[1]**2+vecty[2]**2)
+             vecty[0]=vecty[0]/normy
+             vecty[1]=vecty[1]/normy
+             vecty[2]=vecty[2]/normy
+             dictu[i].append(vecty)
+             dictu[i].append(vectz)
+          cx1=dictu[i][0][0]
+          cx2=dictu[i][0][1]
+          cy1=dictu[i][1][0]
+          cy2=dictu[i][1][1]
+          if dime==3:
+             cx3=dictu[i][0][2]
+             cy3=dictu[i][1][2]
+             cz1=dictu[i][2][0]
+             cz2=dictu[i][2][1]
+             cz3=dictu[i][2][2]
+
+     # determination des angles nautiques (alpha,beta,gamma)
+     # ----------------------------------------------------
+          beta=0.
+          gamma=0.
+          if dime ==2:
+            alpha = atan2(cx2,cx1)
+          else:
+            if cx1**2 + cx2**2 > epsi :
+              alpha=atan2(cx2,cx1)
+              beta=-asin(cx3)
+              gamma=atan2(cy3,cz3)
+            else:
+              alpha=atan2(-cy1,cy2)
+              beta=-asin(cx3)
+              gamma=0.
+          alpha=alpha*180/pi
+          beta=beta*180/pi
+          gamma=gamma*180/pi
+          motscles={}
+          motscles['MODI_CHAM']=[]
+          motscles['DEFI_REPERE']=[]
+          noeu=dictu.keys()
+          motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM,NOEUD=cnom[noeu[j-1]-1]),)
+          ANGL_NAUT=[]
+          ANGL_NAUT.append(alpha)
+          if dime ==3:
+            ANGL_NAUT.append(beta)
+            ANGL_NAUT.append(gamma)
+          motscles['DEFI_REPERE'].append(_F(REPERE='UTILISATEUR',ANGL_NAUT=ANGL_NAUT),)
+          __resu[j]=MODI_REPERE(RESULTAT=__resu[j-1],**motscles)
+      __remodr=__resu[j]
+
+  
     motscles={}
     motscles['MODI_CHAM']=[]
     motscles['DEFI_REPERE']=[]
     motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM),)
-    ORIGINE=[]
-    ORIGINE.append(m['CENTRE'][0])
-    ORIGINE.append(m['CENTRE'][1])
-    if dime ==3:
-      vy = m['VECT_Y']
-      dn = m['DNOR']
-      if vy != dn :
-        message = 'AVEC TYPE=ARC, IL FAUT OBLIGATOIREMENT QUE VECT_Y SOIT EGAL A DNOR \n POUR EXPRIMER LE RESULTAT DANS LE REPERE LOCAL. \n'
-        message = message +' ON POURSUIT LE CALCUL EN PRENANT VECT_Y = DNOR.'
-        UTMESS('A','MACR_LIGN_COUPE',message)
-      ORIGINE.append(m['CENTRE'][2])
-      AXE_Z=[]
-      AXE_Z.append(m['DNOR'][0])
-      AXE_Z.append(m['DNOR'][1])
-      AXE_Z.append(m['DNOR'][2])
-      motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=ORIGINE,AXE_Z=AXE_Z),)
-    elif dime ==2:
-      motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=ORIGINE,),)
-    __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+    if m['REPERE'] == 'CYLINDRIQUE' :
+      if dime ==3:
+        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=m['ORIGINE'],AXE_Z=m['AXE_Z']),)
+      elif dime ==2:
+        motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=m['ORIGINE'],),)
+      __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+    elif m['REPERE'] == 'UTILISATEUR':
+      alpha=m['ANGL_NAUT'][0]
+      beta =m['ANGL_NAUT'][1]
+      gamma=m['ANGL_NAUT'][2]
+      ANGL_NAUT=[]
+      ANGL_NAUT.append(alpha)
+      if dime ==3:
+        ANGL_NAUT.append(beta)
+        ANGL_NAUT.append(gamma)
+      motscles['DEFI_REPERE'].append(_F(REPERE='UTILISATEUR',ANGL_NAUT=ANGL_NAUT),)
+      __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+
 
   return __remodr
 
@@ -187,7 +347,22 @@ def crea_noeu_lig_coup(dimension,pt1,pt2,anglj,dnor):
     y=pt2[1]+b*cos(anglr)+sin(anglr)*(a*d3-c*d1)/d
     z=pt2[2]+c*cos(anglr)+sin(anglr)*(b*d1-a*d2)/d
     return x,y,z
+########################################################################
+# determination de la distance min entre 2 points consécutifs de la ligne de coupe
 
+def dist_min_deux_points(mail):
+  from math import sqrt  
+  import aster
+  nno=aster.getvectjev(mail.nom.ljust(8)+'.DIME')[0]
+  l_coor1=[]
+  l_coor2=[]
+  for i in range(nno-1):
+    l_coor1=aster.getvectjev(mail.nom.ljust(8)+'.COORDO    .VALE',3*(i),3)
+    l_coor2=aster.getvectjev(mail.nom.ljust(8)+'.COORDO    .VALE',3*(i+1),3)
+    d=sqrt( (l_coor1[0]-l_coor2[0])**2+(l_coor1[1]-l_coor2[1])**2+(l_coor1[2]-l_coor2[2])**2)
+    if i == 0 : dist=d
+    else      : dist=min(d,dist)
+  return dist
 ########################################################################
 # script PYTHON de creation d un maillage de ligne de coupe
 
@@ -339,8 +514,9 @@ def crea_mail_lig_coup(dimension,lignes,groups,arcs):
 
 
 ########################################################################
-def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
-               MODELE,GROUP_MA,MAILLE,**args):
+def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
+              NOM_CHAM,MODELE,**args):
+
   """
      Ecriture de la macro MACR_LIGN_COUPE
   """
@@ -360,21 +536,68 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
   POST_RELEVE_T  =self.get_cmd('POST_RELEVE_T')
   CREA_TABLE     =self.get_cmd('CREA_TABLE')
   MODI_REPERE    =self.get_cmd('MODI_REPERE')
+  CREA_RESU      =self.get_cmd('CREA_RESU')
+  CREA_MAILLAGE  =self.get_cmd('CREA_MAILLAGE')
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
-  
-  nomresu=RESULTAT.nom
-  l_modele=aster.getvectjev(nomresu.ljust(19)+'.MODL')
-  n_modele=string.strip(l_modele[0])
-  if n_modele=='' :
-     if MODELE==None:
-       UTMESS('F', "MACR_LIGN_COUPE", "nom du modele absent dans le concept resultat "+nomresu)
-     else : n_modele=MODELE.nom
+
+  mcORDR={}
+
+  if RESULTAT != None:
+    if args['NUME_ORDRE'] != None :
+      mcORDR['NUME_ORDRE']=args['NUME_ORDRE']
+    elif args['LIST_ORDRE']  != None:
+      mcORDR['LIST_ORDRE']=args['LIST_ORDRE']
+    elif args['INST']  != None:
+      mcORDR['INST']=args['INST']
+    elif args['INST']  != None:
+      mcORDR['INST']=args['INST']
+    elif args['LIST_INST']  != None:
+      mcORDR['LIST_INST']=args['LIST_INST']
+    else :
+      mcORDR['TOUT_ORDRE']='OUI'
+
+    nomresu=RESULTAT.nom
+    l_modele=aster.getvectjev(nomresu.ljust(19)+'.MODL')
+    n_modele=string.strip(l_modele[0])
+    if n_modele=='' :
+      if MODELE==None:
+        UTMESS('F', "MACR_LIGN_COUPE", "nom du modele absent dans le concept resultat "+nomresu)
+      else : n_modele=MODELE.nom
+
+  elif CHAM_GD != None:
+    mcORDR['TOUT_ORDRE']='OUI'
+    if MODELE==None:
+      UTMESS('F', "MACR_LIGN_COUPE", "veuillez renseigner le MODELE si vous utilisez un CHAM_GD ")
+    else : n_modele=MODELE.nom
+    # récupération de la grandeur du champ
+    n_cham=CHAM_GD.nom
+    catagd=aster.getvectjev("&CATA.GD.NOMGD")
+    desc=aster.getvectjev(string.ljust(n_cham,19)+'.DESC')
+    if desc!= None:
+      nomgd=catagd[desc[0]-1]
+    else:
+      celd=aster.getvectjev(string.ljust(n_cham,19)+'.CELD')
+      nomgd=catagd[celd[0]-1]
+    # détermination du type de résultat à créer
+    if   nomgd[:6] == 'TEMP_R' : TYPE_RESU='EVOL_THER'
+    elif nomgd[:6] == 'DEPL_R' : TYPE_RESU='EVOL_ELAS'
+    elif nomgd[:6] == 'SIEF_R' :
+       if   NOM_CHAM[:4]=='SIGM':TYPE_RESU='EVOL_ELAS'
+       elif NOM_CHAM[:4]=='SIEF':TYPE_RESU='EVOL_NOLI'
+    # création d'un concept résultat à partir du champ CHAM_GD
+    __resuch=CREA_RESU(OPERATION='AFFE',
+                       NOM_CHAM=NOM_CHAM, TYPE_RESU=TYPE_RESU,
+                       AFFE=_F(CHAM_GD=CHAM_GD,INST=0.),)
+    RESULTAT=__resuch
   l_mailla=aster.getvectjev(n_modele.ljust(8)+'.MODELE    .NOMA')
   n_mailla=string.strip(l_mailla[0])
   dime=aster.getvectjev(n_mailla.ljust(8)+'.DIME')[5]
-  collgrno=aster.getcolljev(n_mailla.ljust(8)+'.GROUPENO')
+  collgrma=aster.getcolljev(n_mailla.ljust(8)+'.GROUPEMA')
+  typma=aster.getvectjev(n_mailla.ljust(8)+'.TYPMAIL')
+  connex=aster.getcolljev(n_mailla.ljust(8)+'.CONNEX')
+  ltyma =aster.getvectjev("&CATA.TM.NOMTM")
 
   lignes=[]
   groups=[]
@@ -399,6 +622,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
            arcs.append((m['COOR_ORIG'],m['CENTRE'],m['NB_POINTS'],m['ANGLE'],m['DNOR']))
       elif m['TYPE']=='GROUP_NO':
         ngrno=m['GROUP_NO'].ljust(8).upper()
+        collgrno=aster.getcolljev(n_mailla.ljust(8)+'.GROUPENO')  
         if ngrno not in collgrno.keys() :
           UTMESS('F', "MACR_LIGN_COUPE", "le group_no "+ngrno+" n est pas dans le maillage "+n_mailla)
         grpn=collgrno[ngrno]
@@ -406,6 +630,26 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
         for node in grpn:
           l_coor_group.append(aster.getvectjev(n_mailla.ljust(8)+'.COORDO    .VALE',3*(node-1),3))
         groups.append(l_coor_group)
+      elif m['TYPE']=='GROUP_MA':
+        ngrma=m['GROUP_MA'].ljust(8).upper()
+        if ngrma not in collgrma.keys() :
+          UTMESS('F', "MACR_LIGN_COUPE", "le group_ma "+ngrma+" n est pas dans le maillage "+n_mailla)
+        grpm=collgrma[ngrma]
+        for ma in grpm:
+          if ltyma[typma[ma-1]-1][:3] != 'SEG' :
+             nomma=aster.getvectjev(n_mailla.ljust(8)+'.NOMMAI')
+             UTMESS('F', "MACR_LIGN_COUPE", "le group_ma "+ngrma+" contient la maille "+
+                    nomma[ma-1]+"qui n'est pas de type SEG.")
+        __mailla=CREA_MAILLAGE(MAILLAGE= m['MAILLAGE'],)
+        __mailla=DEFI_GROUP( reuse=__mailla,MAILLAGE= __mailla,
+                            CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',NOM=str(m['GROUP_MA']),GROUP_MA=m['GROUP_MA']),)
+        collgrno=aster.getcolljev(__mailla.nom.ljust(8)+'.GROUPENO')  
+        grpn=collgrno[str(m['GROUP_MA']).ljust(8)]
+        l_coor_group=[ngrma,]
+        for node in grpn:
+          l_coor_group.append(aster.getvectjev(n_mailla.ljust(8)+'.COORDO    .VALE',3*(node-1),3))
+        groups.append(l_coor_group)
+
   
   if arcs!=[] and (lignes!=[] or groups!=[]) :
     message = 'On ne peut pas combiner des lignes de coupes de type ARC avec des lignes de coupes SEGMENT ou GROUP_NO. \n'
@@ -426,18 +670,21 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
   UL.EtatInit(UNITE_MAILLAGE)
 
   # Lecture du maillage de seg2 contenant toutes les lignes de coupe
-
   __macou=LIRE_MAILLAGE(UNITE=UNITE_MAILLAGE,);
-
+  
+  # distance min entre 2 points de la ligne de coupe (utile pour PROJ_CHAMP)
+  dmin=dist_min_deux_points(__macou)
+  
   motscles={}
   iocc=1
   motscles['CREA_GROUP_NO']=[]
   for m in LIGN_COUPE :
-      if m['TYPE'] != 'GROUP_NO' :
+      if m['TYPE'] in ('GROUP_NO','GROUP_MA') :
+        motscles['CREA_GROUP_NO'].append(_F(GROUP_MA=m[m['TYPE']].ljust(8).upper(),) )
+      else :
         motscles['CREA_GROUP_NO'].append(_F(GROUP_MA='LICOU'+str(iocc),) )
         iocc=iocc+1
-      elif m['GROUP_NO']!=None :
-        motscles['CREA_GROUP_NO'].append(_F(GROUP_MA=m['GROUP_NO'].ljust(8).upper(),) )
+
   __macou=DEFI_GROUP( reuse =__macou , MAILLAGE=__macou , **motscles );
 
   if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
@@ -453,97 +700,140 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
 
   motscles={}
   motscles['VIS_A_VIS']=[]
-  if GROUP_MA != None :
-    motscles['VIS_A_VIS'].append(_F(GROUP_MA_1 = GROUP_MA,TOUT_2='OUI'),)     
-  if MAILLE != None :
-    motscles['VIS_A_VIS'].append(_F(MAILLE_1 = MAILLE,TOUT_2='OUI'),)     
-    
+  motscles[mcORDR.keys()[0]]=mcORDR.values()[0]
+  if args['VIS_A_VIS']!=None:
+    for v in args['VIS_A_VIS']:
+      if v['GROUP_MA_1']!=None:
+         motscles['VIS_A_VIS'].append(_F(GROUP_MA_1 = v['GROUP_MA_1'],TOUT_2='OUI'),) 
+      elif v['MAILLE_1']!=None:
+         motscles['VIS_A_VIS'].append(_F(MAILLE_1 = v['MAILLE_1'],TOUT_2='OUI'),)  
+
   if n_modele in self.get_global_contexte().keys() : MODELE_1=self.get_global_contexte()[n_modele]
   else                                             : MODELE_1=self.jdc.current_context[n_modele]
   __recou=PROJ_CHAMP(METHODE='ELEM',
                      RESULTAT=RESULTAT,
                      MODELE_1=MODELE_1,
+                     DISTANCE_MAX=dmin*0.001,
                      MODELE_2=__mocou,
                      TYPE_CHAM='NOEU',
-                     NOM_CHAM=NOM_CHAM, **motscles);     
+                     NOM_CHAM=NOM_CHAM, **motscles);
 
-
-
-  # Expression des contraintes aux noeuds ou des déplacements dans le repere local
   __remodr=__recou
   icham=0
   ioc2=0
-  jarc=0
   mcACTION=[]
   angtab=[]
+  
   if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
-   if  NOM_CHAM in ('DEPL','SIEF_ELNO_ELGA','SIGM_NOEU_DEPL','SIGM_NOEU_SIEF','SIGM_NOEU_ELGA','SIGM_NOEU_COQU'):icham=1
+  
+   if  NOM_CHAM in ('DEPL','SIEF_ELNO_ELGA','SIGM_NOEU_DEPL','SIGM_NOEU_SIEF','SIGM_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_DEPL'):icham=1
+ 
    for m in LIGN_COUPE :
-      if m['TYPE'] =='ARC' : jarc=jarc+1
-      if m['VECT_Y'] !=None and icham==1:
-        if m['TYPE'] =='ARC' :  nomgrma=arcgma[jarc-1]
-        else                 :  nomgrma=' '
-        __remodr=crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,__recou,__macou,nomgrma)
 
-        if m['TYPE'] != 'GROUP_NO' :
-          ioc2=ioc2+1
-          groupe='LICOU'+str(ioc2)
-          if m['INTITULE'] !=None : intitl=m['INTITULE']
-          else                    : intitl='l.coupe'+str(ioc2)
-        elif m['GROUP_NO']!=None :
-          groupe=m['GROUP_NO'].ljust(8).upper()
-          if m['INTITULE'] !=None : intitl=m['INTITULE']
-          else                    : intitl=groupe
-        mcACTION.append( _F(INTITULE  = intitl,
+     motscles={}
+     motscles['OPERATION']=m['OPERATION']
+     if m['NOM_CMP']!=None:
+       motscles['NOM_CMP']=m['NOM_CMP']
+       if m['TRAC_NOR']!=None:
+          motscles['TRAC_NOR']=m['TRAC_NOR']
+       elif m['TRAC_DIR']!=None:
+          motscles['TRAC_DIR']=m['TRAC_DIR']
+          motscles['DIRECTION']=m['DIRECTION']
+     elif m['INVARIANT']!=None:
+       motscles['INVARIANT']=m['INVARIANT']
+     elif m['RESULTANTE']!=None:
+       motscles['RESULTANTE']=m['RESULTANTE']
+     elif m['ELEM_PRINCIPAUX']!=None:
+       motscles['ELEM_PRINCIPAUX']=m['ELEM_PRINCIPAUX']
+     else:
+       motscles['TOUT_CMP']='OUI'
+
+     # on définit le groupe de noeud pour post_releve_t
+     if m['TYPE'] in ('GROUP_NO','GROUP_MA'):
+         groupe=m[m['TYPE']].ljust(8).upper()
+         nomgrma=groupe
+     else: 
+         ioc2=ioc2+1
+         groupe='LICOU'+str(ioc2)
+         nomgrma=' '
+
+     # on definit l'intitulé
+     if m['INTITULE'] !=None                    : intitl=m['INTITULE']
+     elif  m['TYPE'] in ('GROUP_NO','GROUP_MA') : intitl=groupe
+     else                                       : intitl='l.coupe'+str(ioc2)
+
+
+     # Expression des contraintes aux noeuds ou des déplacements dans le repere local
+     if m['REPERE'] != 'GLOBAL':
+
+        if  icham==1:
+
+          if m['REPERE']=='POLAIRE':
+            mcACTION.append( _F(INTITULE  = intitl,
+                            RESULTAT  = __remodr,
+                            REPERE    = m['REPERE'],
+                            GROUP_NO  = groupe,
+                            NOM_CHAM  = NOM_CHAM,**motscles ),)
+          else:
+            __remodr=crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,__recou,__macou,nomgrma)
+            mcACTION.append( _F(INTITULE  = intitl,
                             RESULTAT  = __remodr,
                             GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM,
-                            TOUT_CMP  = 'OUI',
-                            OPERATION = 'EXTRACTION', )           )
+                            NOM_CHAM  = NOM_CHAM,**motscles ),)
 
-      else:
+        else:
+          UTMESS('A','MACR_LIGN_COUPE','LE CHAMP '+NOM_CHAM+' N EST PAS TRAITE PAR MACR_LIGNE_COUPE EN REPERE '+m['REPERE']+'.'
+                     +'LE CALCUL EST EFFECTUE EN REPERE GLOBAL.') 
 
-
-  # Production d'une table pour toutes les lignes de coupe
-        if m['VECT_Y'] !=None:
-           UTMESS('A','MACR_LIGN_COUPE','LE CHAMP '+NOM_CHAM+' N EST PAS TRAITE PAR MACR_LIGNE_COUPE EN REPERE LOCAL.'
-                   +'LE CALCUL EST EFFECTUE EN REPERE GLOBAL.')
-
-        if m['TYPE'] != 'GROUP_NO' :
-           ioc2=ioc2+1
-           groupe='LICOU'+str(ioc2)
-           if m['INTITULE'] !=None : intitl=m['INTITULE']
-           else                    : intitl='l.coupe'+str(ioc2)
-        elif m['GROUP_NO']!=None :
-           groupe=m['GROUP_NO'].ljust(8).upper()
-           if m['INTITULE'] !=None : intitl=m['INTITULE']
-           else                    : intitl=groupe
-        mcACTION.append( _F(INTITULE  = intitl,
+          mcACTION.append( _F(INTITULE  = intitl,
                             RESULTAT  = __recou,
                             GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM,
-                            TOUT_CMP  = 'OUI',
-                            OPERATION = 'EXTRACTION', )           )
- 
+                            NOM_CHAM  = NOM_CHAM,**motscles ),)
+
+     # Expression des contraintes aux noeuds ou des déplacements dans le repere global
+     else:
+  
+          mcACTION.append( _F(INTITULE  = intitl,
+                            RESULTAT  = __recou,
+                            GROUP_NO  = groupe,
+                            NOM_CHAM  = NOM_CHAM,**motscles ),)
+
+  
   elif AsType(RESULTAT).__name__ in ('evol_ther',) :
 
      for m in LIGN_COUPE :
-        if m['TYPE'] != 'GROUP_NO' :
+
+        motscles={}
+        motscles['OPERATION']=m['OPERATION']
+        if m['NOM_CMP']!=None:
+          motscles['NOM_CMP']=m['NOM_CMP']
+          if m['TRAC_NOR']!=None:
+             motscles['TRAC_NOR']=m['TRAC_NOR']
+          elif m['TRAC_DIR']!=None:
+             motscles['TRAC_DIR']=m['TRAC_DIR']
+             motscles['DIRECTION']=m['DIRECTION']
+        elif m['INVARIANT']!=None:
+          motscles['INVARIANT']=m['INVARIANT']
+        elif m['RESULTANTE']!=None:
+          motscles['RESULTANTE']=m['RESULTANTE']
+        elif m['ELEM_PRINCIPAUX']!=None:
+          motscles['ELEM_PRINCIPAUX']=m['ELEM_PRINCIPAUX']
+        else:
+          motscles['TOUT_CMP']='OUI'
+
+        if m['TYPE'] not in ('GROUP_NO','GROUP_MA') :
           ioc2=ioc2+1
           groupe='LICOU'+str(ioc2)
           if m['INTITULE'] !=None : intitl=m['INTITULE']
           else                    : intitl='l.coupe'+str(ioc2)
-        elif m['GROUP_NO']!=None :
-          groupe=m['GROUP_NO'].ljust(8).upper()
+        else:
+          groupe=m[m['TYPE']].ljust(8).upper()
           if m['INTITULE'] !=None : intitl=m['INTITULE']
           else                    : intitl=groupe
         mcACTION.append( _F(INTITULE  = intitl,
                             RESULTAT  = __recou,
                             GROUP_NO  = groupe,
-                            NOM_CHAM  = NOM_CHAM,
-                            TOUT_CMP  = 'OUI',
-                            OPERATION = 'EXTRACTION', )           )
- 
+                            NOM_CHAM  = NOM_CHAM, **motscles ),)
  
   __tabitm=POST_RELEVE_T(ACTION=mcACTION,);
 
@@ -567,8 +857,11 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,
     dictab['ANGLE']=tmp
 
 ###
-  del dictab['NOEUD']
-  del dictab['RESU']
+
+  if 'RESU' in dictab.para:
+    del dictab['RESU']
+  if 'NOEUD' in dictab.para:
+    del dictab['NOEUD']
   dprod = dictab.dict_CREA_TABLE()
 
   nomres=CREA_TABLE(**dprod)

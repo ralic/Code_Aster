@@ -1,21 +1,21 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DE SECTION RECTANGULAIRE  (ENCASTREE-LIBRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE JMBHH01 J.M.PROIX
 #CAS_TEST__: SSLL104A
@@ -30,7 +30,7 @@
 #----------------------------------------------------------------------
 
 
-DEBUT(CODE=_F(  NOM = 'SSLL104A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(  NOM = 'SSLL104A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 
@@ -57,26 +57,26 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 # --------- PB PLAN + NOEUDS 'A ET B' ENCASTRES
 #
 CH1=AFFE_CHAR_MECA(  MODELE=MO1,
-          DDL_IMPO=_F( 
-                    NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0., 
+          DDL_IMPO=_F(
+                    NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
                                 DRX = 0., DRY = 0., DRZ = 0.),
-           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,  
+           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,
                                    KY = 2.E-3, KZ = 3.E-3)
                     )
 
 CH2=AFFE_CHAR_MECA(  MODELE=MO2,
-          DDL_IMPO=_F( 
-                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0., 
+          DDL_IMPO=_F(
+                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
                                DRX = 0., DRY = 0., DRZ = 0.),
-           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,  
+           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,
                                     KY = 2.E-3, KZ = 3.E-3)
                     )
 
 CH3=AFFE_CHAR_MECA(  MODELE=MO3,
-          DDL_IMPO=_F( 
-                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0., 
+          DDL_IMPO=_F(
+                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
                                DRX = 0., DRY = 0., DRZ = 0.),
-           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,  
+           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,
                                     KY = 2.E-3, KZ = 3.E-3)
                     )
 
@@ -88,54 +88,54 @@ CH3=AFFE_CHAR_MECA(  MODELE=MO3,
 CELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
                          VERIF=( 'MAILLE',  'NOEUD',  ),
             POUTRE=
-               _F(  GROUP_MA = 'TOUT',  
+               _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
-                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2', 
-                             'AY1',  'AZ1',  'AY2',  'AZ2',   
-                             'IY1',  'JX1',  'IY2',  'JX2', ), 
-                    VALE = (  1.,     1.,     1.,     1.,  
-                              1.,     1.,     1.,     1., 
+                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2',
+                             'AY1',  'AZ1',  'AY2',  'AZ2',
+                             'IY1',  'JX1',  'IY2',  'JX2', ),
+                    VALE = (  1.,     1.,     1.,     1.,
+                              1.,     1.,     1.,     1.,
                               1.,     1.,     1.,     1.,   )),
                      )
 
 CELEM2=AFFE_CARA_ELEM(   MODELE=MO2,
                          VERIF=( 'MAILLE',  'NOEUD',  ),
             POUTRE=
-               _F(  GROUP_MA = 'TOUT',  
+               _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
-                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2', 
-                             'AY1',  'AZ1',  'AY2',  'AZ2',   
-                             'IY1',  'JX1',  'IY2',  'JX2', ), 
-                    VALE = (  1.,     1.,     1.,     1.,  
-                              1.,     1.,     1.,     1., 
+                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2',
+                             'AY1',  'AZ1',  'AY2',  'AZ2',
+                             'IY1',  'JX1',  'IY2',  'JX2', ),
+                    VALE = (  1.,     1.,     1.,     1.,
+                              1.,     1.,     1.,     1.,
                               1.,     1.,     1.,     1.,   )),
                      )
 
 CELEM3=AFFE_CARA_ELEM(   MODELE=MO3,
                          VERIF=( 'MAILLE',  'NOEUD',  ),
             POUTRE=
-               _F(  GROUP_MA = 'TOUT',  
+               _F(  GROUP_MA = 'TOUT',
                     SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
-                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2', 
-                             'AY1',  'AZ1',  'AY2',  'AZ2',   
-                             'IY1',  'JX1',  'IY2',  'JX2', ), 
-                    VALE = (  1.,     1.,     1.,     1.,  
-                              1.,     1.,     1.,     1., 
+                    CARA = ( 'A1',   'IZ1',  'A2',   'IZ2',
+                             'AY1',  'AZ1',  'AY2',  'AZ2',
+                             'IY1',  'JX1',  'IY2',  'JX2', ),
+                    VALE = (  1.,     1.,     1.,     1.,
+                              1.,     1.,     1.,     1.,
                               1.,     1.,     1.,     1.,   )),
                      )
 
 # ------------------------------------------------------------------
 
 MELR1=CALC_MATR_ELEM(  MODELE=MO1,            CHARGE=CH1,
-                       CARA_ELEM=CELEM1,   
+                       CARA_ELEM=CELEM1,
                        CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
 
 MELR2=CALC_MATR_ELEM(  MODELE=MO2,            CHARGE=CH2,
-                       CARA_ELEM=CELEM2,   
+                       CARA_ELEM=CELEM2,
                        CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
 
 MELR3=CALC_MATR_ELEM(  MODELE=MO3,            CHARGE=CH3,
-                       CARA_ELEM=CELEM3,   
+                       CARA_ELEM=CELEM3,
                        CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
 
 NUM1=NUME_DDL(  MATR_RIGI=MELR1  )
@@ -189,7 +189,7 @@ VECASS2=RESO_LDLT( reuse=VECASS2,   MATR_FACT=MATASS2,
 VECASS3=RESO_LDLT( reuse=VECASS3,   MATR_FACT=MATASS3,
                             CHAM_NO=VECASS3  )
 
-TEST_RESU(CHAM_NO=(  
+TEST_RESU(CHAM_NO=(
      # DEPLACEMENTS
          _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
            NOEUD = 'N11',       NOM_CMP = 'DX',    VALE = -6.4663837862E+00),

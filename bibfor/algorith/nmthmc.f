@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C =====================================================================
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM
       PARAMETER   ( DMTHMC = 7  )
       PARAMETER   ( DMHYDR = 3  )
-      PARAMETER   ( DMMECA = 12 )
+      PARAMETER   ( DMMECA = 11 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
       CHARACTER*16  THMC, THER, HYDR, MECA, MOCLES(2)
@@ -99,7 +99,6 @@ C =====================================================================
      &              'LAIGLE'          ,
      &              'HOEK_BROWN_EFF'  ,
      &              'HOEK_BROWN_TOT'  ,
-     &              'ELAS_THER'       ,
      &              'MAZARS'          ,
      &              'ENDO_ISOT_BETON' ,
      &              'DRUCKER_PRAGER'  /
@@ -280,9 +279,6 @@ C =====================================================================
      &          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
             CALL U2MESS('F','ALGORITH8_43')
          ENDIF
-         IF ( MECA.EQ.'ELAS_THER') THEN
-            CALL U2MESS('F','ALGORITH8_44')
-         ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
             CALL U2MESS('F','ALGORITH8_44')
          ENDIF
@@ -308,9 +304,6 @@ C =====================================================================
      &          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
             CALL U2MESS('F','ALGORITH8_43')
          ENDIF
-         IF ( MECA.EQ.'ELAS_THER' ) THEN
-            CALL U2MESS('F','ALGORITH8_46')
-         ENDIF
          IF ( MECA.EQ.'BARCELONE' .AND.
      &        (THMC.NE.'LIQU_GAZ' .AND.
      &         THMC.NE.'LIQU_VAPE_GAZ')) THEN
@@ -334,9 +327,6 @@ C =====================================================================
      &        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
             CALL U2MESS('F','ALGORITH8_49')
          ENDIF
-         IF ( MECA.EQ.'ELAS_THER' ) THEN
-            CALL U2MESS('F','ALGORITH8_50')
-         ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
             CALL U2MESS('F','ALGORITH8_50')
          ENDIF
@@ -356,9 +346,6 @@ C =====================================================================
          ENDIF
          IF ( THMC.NE.'LIQU_VAPE' ) THEN
             CALL U2MESS('F','ALGORITH8_52')
-         ENDIF
-         IF ( MECA.EQ.'ELAS_THER' ) THEN
-            CALL U2MESS('F','ALGORITH8_53')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
             CALL U2MESS('F','ALGORITH8_53')

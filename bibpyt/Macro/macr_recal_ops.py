@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 07/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -996,7 +996,7 @@ if __name__ == '__main__':
           prof.WriteExportTo(new_fichier_export)
        except:
           UTMESS('F',NOMPRO,"Probleme : Impossible d'ecrire le fichier export : " + new_fichier_export)
-       prof.WriteExportTo('/tmp/exp')
+       if debug: prof.WriteExportTo('/tmp/exp')
 
 
        # chemin vers as_run

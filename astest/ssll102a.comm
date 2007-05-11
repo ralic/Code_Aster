@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1015,8 +1015,15 @@ TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                         _F(  INST = 3.,  CHAM_GD = CHT3))
                   )
 
+CHMTM=AFFE_MATERIAU(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F),
+                  AFFE_VARC=_F( TOUT='OUI',
+                                EVOL=TEMP,
+                                NOM_VARC='TEMP',
+                                NOM_CHAM='TEMP',),
+                     );
+
 CHG1=AFFE_CHAR_MECA(   MODELE=MO,
-                           TEMP_CALCULEE=TEMP,
                           DDL_IMPO=_F(  GROUP_NO = 'A',   DX = 0.,   DY = 0.,
                                      DZ = 0.,  DRX = 0.,  DRY = 0.,  DRZ = 0.),
               FORCE_NODALE=_F(  GROUP_NO = 'B',  FX = 5.7735026919E-01,
@@ -1025,7 +1032,7 @@ CHG1=AFFE_CHAR_MECA(   MODELE=MO,
                         )
 
 U2=MECA_STATIQUE(      MODELE=MO,
-                        CHAM_MATER=CHMAT_F,     CARA_ELEM=CAREL,
+                        CHAM_MATER=CHMTM,     CARA_ELEM=CAREL,
                          LIST_INST=LINST,
                              EXCIT=_F(   CHARGE = CHG1)        )
 

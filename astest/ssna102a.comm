@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,40 +128,7 @@ LIAI=AFFE_CHAR_MECA(
                                          COEF_IMPO = 0.))
                        )
 
-#
-# --------------------------------------------------------------------
-#      CONTACT UNILATERAL : FORMULATION MAITRE-ESCLAVE (3 ZONES)
-# --------------------------------------------------------------------
-#
 
-CONTSY=AFFE_CHAR_MECA( 
-                           MODELE=MOD,CONTACT=(
-                               _F(  GROUP_MA_MAIT = 'LAB1',
-                                         GROUP_MA_ESCL = 'CEP2',
-STOP_SINGULIER='NON',
-
-                                         SANS_GROUP_NO = ('PA1', 'PP2',),
-                                         REAC_GEOM = 'CONTROLE',
-                                         NB_REAC_GEOM=2,
-                                         APPARIEMENT = 'MAIT_ESCL_SYME',
-                                         RECHERCHE = 'NOEUD_BOUCLE'),
-                               _F(  GROUP_MA_MAIT = 'CME2',
-                                         GROUP_MA_ESCL = 'CEP3',
-STOP_SINGULIER='NON',
-                                         REAC_GEOM = 'CONTROLE',
-                                         NB_REAC_GEOM=2,
-                                         APPARIEMENT = 'MAIT_ESCL_SYME',
-                                         RECHERCHE = 'NOEUD_BOUCLE'),
-                               _F(  GROUP_MA_MAIT = 'CME3',
-STOP_SINGULIER='NON',
-                                         GROUP_MA_ESCL = 'LCD4',
-                                         REAC_GEOM = 'CONTROLE',
-                                         NB_REAC_GEOM=2,
-                                         SANS_GROUP_NO = ('PM3', 'PD4',),
-                                         APPARIEMENT = 'MAIT_ESCL_SYME',
-                                         RECHERCHE = 'NOEUD_BOUCLE')),
-                           INFO=2
-                       )
 CONT=AFFE_CHAR_MECA( 
                            MODELE=MOD,CONTACT=(
                                _F(  GROUP_MA_MAIT = 'LAB1',
@@ -288,7 +255,7 @@ TEST_RESU(
                   RESULTAT = RESU,
                   NUME_ORDRE = 1,
                   REFERENCE = 'NON_REGRESSION',
-                  VERSION   = '6.2.8',
+                  VERSION   = '9.0.22',
                   NOM_CHAM = 'DEPL',
                   GROUP_NO = 'PA4',
                   NOM_CMP = 'DY',
@@ -332,153 +299,10 @@ TEST_TABLE(    TABLE=REACENC,
 TEST_TABLE(     TABLE=REACENC,
                 NOM_PARA='DY',
                 REFERENCE='NON_REGRESSION',
-                VERSION = '6.2.8',
+                VERSION = '9.0.22',
                 VALE=1.7475291318274E+04,          
                 PRECISION=1.E-10,
                 CRITERE='RELATIF' )
-
-RESU2=STAT_NON_LINE( 
-SOLVEUR=_F(SYME='OUI',),
-                          MODELE=MOD,
-                          CHAM_MATER=CHMAT,EXCIT=(
-                          _F(  CHARGE = BLOQ),
-                                _F(  CHARGE = DEPL,   FONC_MULT = FONC),
-                                _F(  CHARGE = LIAI),
-                                _F(  CHARGE = CONTSY)),
-                          COMP_ELAS=_F(  RELATION = 'ELAS'),
-                          NEWTON=_F(  MATRICE = 'ELASTIQUE'),
-                          INCREMENT=_F(  LIST_INST = LINST),
-                          CONVERGENCE=_F( 
-                                        RESI_GLOB_MAXI = 1.E-6,
-                                        ITER_GLOB_MAXI = 50,
-                                        ARRET = 'OUI'),
-                          INFO=1
-                       )
-
-#
-# --------------------------------------------------------------------
-#                    CALCUL DES CONTRAINTES AUX NOEUDS
-# --------------------------------------------------------------------
-#  
-
-RESU2=CALC_ELEM( reuse=RESU2,  RESULTAT=RESU2,
-                       OPTION='SIEF_ELNO_ELGA',
-                  )
-
-RESU2=CALC_NO( reuse=RESU2,  RESULTAT=RESU2,  
-                     OPTION='SIEF_NOEU_ELGA'
-                  )
-
-#
-# --------------------------------------------------------------------
-#          CALCUL DES FORCES NODALES ET DES REACTIONS NODALES
-# --------------------------------------------------------------------
-#
-
-
-RESU2=CALC_NO( reuse=RESU2,  RESULTAT=RESU2,  EXCIT=(
-                     _F(  CHARGE = BLOQ),
-                           _F(  CHARGE = DEPL,
-                             FONC_MULT = FONC),
-                           _F(  CHARGE = LIAI),
-                           _F(  CHARGE = CONTSY)),
-                     OPTION='REAC_NODA'
-                  )
-
-#
-# --------------------------------------------------------------------
-#             IMPRESSIONS AU FORMAT CASTEM ET ENSIGHT
-#       IMPRESSION AU FORMAT LISTING DU DEPLACEMENT DU POINT PA4
-# --------------------------------------------------------------------
-#                COMPARAISON SOURCE EXTRENE
-# --------------------------------------------------------------------
-
-TEST_RESU(
-            RESU=_F( 
-                  RESULTAT = RESU2,
-                  NUME_ORDRE = 1,
-                  REFERENCE = 'SOURCE_EXTERNE',
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'PA4',
-                  NOM_CMP = 'DY',
-                  VALE = -0.81,
-                  PRECISION = 4.0E-2,
-                  CRITERE = 'RELATIF')
-           )
-
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_RESU(
-            RESU=_F( 
-                  RESULTAT = RESU2,
-                  NUME_ORDRE = 1,
-                  REFERENCE = 'NON_REGRESSION',
-                  VERSION   = '7.3.23',
-                  NOM_CHAM = 'DEPL',
-                  GROUP_NO = 'PA4',
-                  NOM_CMP = 'DY',
-                  VALE = -8.4121016905018E-01,
-                  PRECISION = 1.0E-10,
-                  CRITERE = 'RELATIF')
-           )
-
-#
-# --------------------------------------------------------------------
-#                CALCUL DE LA REACTION A L'ENCASTREMENT
-# --------------------------------------------------------------------
-#                COMPARAISON SOURCE EXTRENE
-# --------------------------------------------------------------------
-
-
-REACEN2=POST_RELEVE_T( 
-                 ACTION=_F(  RESULTAT = RESU2,
-                          INST = 1.,
-                          INTITULE = 'ENCASTREMENT',
-                          NOM_CHAM = 'REAC_NODA',
-                          REPERE = 'GLOBAL',
-                          OPERATION = 'EXTRACTION',
-                          GROUP_NO = 'LBC4',
-                          RESULTANTE = ('DX', 'DY',))
-              )
-
-#
-
-TEST_TABLE(    TABLE=REACEN2,
-               NOM_PARA='DY',
-               REFERENCE='SOURCE_EXTERNE',
-               VALE=17229.58,          
-               PRECISION=1.6E-2,
-               CRITERE='RELATIF' )
-
-# --------------------------------------------------------------------
-#                NON REGRESSION
-# --------------------------------------------------------------------
-
-TEST_TABLE(     TABLE=REACEN2,
-                NOM_PARA='DY',
-                REFERENCE='NON_REGRESSION',
-                VERSION = '7.3.23',
-                VALE=1.7492307043099E+04,          
-                PRECISION=1.E-10,
-                CRITERE='RELATIF' )
-
-
-DEFI_FICHIER(ACTION='ASSOCIER',
-UNITE=37,)
-
-IMPR_RESU(RESU=_F(
-                  RESULTAT=RESU,
-                  NOM_CHAM='DEPL',
-                  ),
-          UNITE=37,
-          FORMAT='GMSH',
-          VERSION=1.2,
-          
-          
-);
-
 
 
 

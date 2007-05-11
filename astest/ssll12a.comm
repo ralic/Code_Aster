@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TREILLIS DE BARRES SOUS TROIS SOLLICITATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,11 +71,18 @@ CHARGE_1=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                         LIAISON_OBLIQUE=_F(  NOEUD = 'C',
                                           ANGL_NAUT = ( 30.,  0.,  0., ),
                                           DY = 0.),
-                         TEMP_CALCULEE=TEMP_IMP                     )
+                                            )
+
+CH_MATM=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI', MATER = MATERIAU),
+                             AFFE_VARC=_F( TOUT='OUI',
+                                     NOM_VARC='TEMP',
+                                     CHAMP_GD=TEMP_IMP,),
+                      )
 
 STATIQU1=MECA_STATIQUE(  MODELE=MODELE,
                               EXCIT=_F(   CHARGE = CHARGE_1),
-                              CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
+                              CHAM_MATER=CH_MATM,  CARA_ELEM=CARA_ELE)
 
 STATIQU1=CALC_ELEM(reuse=STATIQU1,    OPTION='EFGE_ELNO_DEPL',
                          EXCIT=_F( CHARGE = CHARGE_1),  RESULTAT=STATIQU1)
@@ -136,11 +143,11 @@ CHARGE_4=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                                           DY = -0.015),FORCE_NODALE=(
                         _F(  NOEUD = 'E',  FY = -150.E+03),
                                      _F(  NOEUD = 'F',  FY = -100.E+03)),
-                         TEMP_CALCULEE=TEMP_IMP                     )
+                                          )
 
 STATIQU4=MECA_STATIQUE(  MODELE=MODELE,
                              EXCIT=_F(   CHARGE = CHARGE_4),
-                              CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
+                              CHAM_MATER=CH_MATM,  CARA_ELEM=CARA_ELE)
 
 STATIQU4=CALC_ELEM( reuse=STATIQU4,    OPTION='EFGE_ELNO_DEPL',
                           EXCIT=_F( CHARGE = CHARGE_4),  RESULTAT=STATIQU4)

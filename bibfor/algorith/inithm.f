@@ -5,7 +5,7 @@
       REAL*8        PHI0,EM,ALPHA0,K0,CS,BIOT,EPSVM,EPSV,DEPSV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,13 +43,8 @@ C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
       IF (YAMEC.EQ.1) THEN
-           IF (MECA.EQ.'ELAS_THER')  THEN
-               CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+          CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
      +                                 NCRA1(1),ELAS(1),CODRET,'FM')
-           ELSE
-               CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,
-     &           ELAS,CODRET,'FM')
-           ENDIF
           YOUNG  = ELAS(1)
           NU     = ELAS(2)
           ALPHA0 = ELAS(3)

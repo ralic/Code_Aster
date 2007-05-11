@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 # TITRE TEST HM 2D, MODELISATION THMC=LIQU_GAZ_ATM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,7 +182,7 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                           EXCIT=_F( CHARGE = CHARHO),
                           COMP_INCR=_F( RELATION = 'KIT_THM',PARM_THETA=1.,
                                         ITER_INTE_MAXI = 5,
-                      RELATION_KIT = ('ELAS_THER', 'LIQU_GAZ_ATM',  'HYDR_UTIL',)),
+                      RELATION_KIT = ('ELAS', 'LIQU_GAZ_ATM',  'HYDR_UTIL',)),
                          INCREMENT=_F( LIST_INST = LI),
                           NEWTON=_F( MATRICE = 'TANGENTE',
                                   REAC_ITER = 121),

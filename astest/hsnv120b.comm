@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TRACTION THERMIQUE HYPER-ELASTICITE NON LINEAIRE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,22 +59,6 @@ ACIER_T=DEFI_MATERIAU(
                TRACTION=_F(  SIGM = COU_TRAC)
              )
 
-CHP_MATL=AFFE_MATERIAU( 
-               MAILLAGE=MA,
-                   AFFE=_F( 
-               TOUT = 'OUI',
-               MATER = ACIER_L,
-               TEMP_REF = 20.)
-             )
-
-CHP_MATT=AFFE_MATERIAU( 
-               MAILLAGE=MA,
-                   AFFE=_F( 
-               TOUT = 'OUI',
-               MATER = ACIER_T,
-               TEMP_REF = 20.)
-             )
-
 L_INST=DEFI_LIST_REEL( 
               DEBUT=0.0,INTERVALLE=(
               
@@ -123,10 +107,28 @@ TEMP=CREA_RESU(
                CHAM_GD = CHP_TEMP)
              )
 
-CHR_TEMP=AFFE_CHAR_MECA( 
-                      MODELE=MO,
-               TEMP_CALCULEE=TEMP
-             )
+CHP_MATL=AFFE_MATERIAU( 
+               MAILLAGE=MA,
+                   AFFE=_F( 
+               TOUT = 'OUI',
+               MATER = ACIER_L,),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TEMP,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=20.),)
+
+CHP_MATT=AFFE_MATERIAU( 
+               MAILLAGE=MA,
+                   AFFE=_F( 
+               TOUT = 'OUI',
+               MATER = ACIER_T,),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TEMP,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=20.),)
+
 
 CHR_LIAI=AFFE_CHAR_MECA( 
               MODELE=MO,DDL_IMPO=(
@@ -146,7 +148,6 @@ VL=STAT_NON_LINE(
                         CHAM_MATER=CHP_MATL,EXCIT=(
                              _F( 
                 CHARGE = CHR_LIAI), _F( 
-                CHARGE = CHR_TEMP), _F( 
                 CHARGE = CHR_FORC,
                 FONC_MULT = F_CHAR)),
                          COMP_ELAS=_F( 
@@ -174,7 +175,6 @@ VT=STAT_NON_LINE(
                         CHAM_MATER=CHP_MATT,EXCIT=(
                              _F( 
                 CHARGE = CHR_LIAI), _F( 
-                CHARGE = CHR_TEMP), _F( 
                 CHARGE = CHR_FORC,
                 FONC_MULT = F_CHAR)),
                          COMP_ELAS=_F( 

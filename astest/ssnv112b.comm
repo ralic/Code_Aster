@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 07/05/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,9 @@ EVOL   = STAT_NON_LINE (
              NEWTON= _F(
                REAC_ITER= 1,
                ),
-            ) ;             
+             CONVERGENCE=_F(RESI_REFE_RELA=1.E-3,
+                            SIGM_REFE = 60 ,
+                            EPSI_REFE = 3.E-4),            ) ;             
 EVOL = CALC_ELEM (reuse=EVOL,
               RESULTAT= EVOL,
               

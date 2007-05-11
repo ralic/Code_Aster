@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -226,7 +226,7 @@ C --------------------------------------------------------------
           IF (PRCHN1.NE.PRCHN2) THEN
              CNS1 = '&&OP0195.CNS1'
              CALL CNOCNS(CHOU,'V',CNS1)
-             CALL DETRSD('PROF_CHNO',PRCHN2)
+          IF (PRCHN2(1:8).EQ.CHOU(1:8)) CALL DETRSD('PROF_CHNO',PRCHN2)
              CALL CNSCNO(CNS1,PRCHN1,'NON','G',CHOU)
              CALL DETRSD('CHAM_NO_S',CNS1)
           END IF

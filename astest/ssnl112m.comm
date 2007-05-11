@@ -1,4 +1,4 @@
-# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ECMI.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,11 +138,15 @@ LIAISON=AFFE_CHAR_MECA(
                             )
 
 #
-
-DEFTHER=AFFE_CHAR_MECA(
-                                MODELE=MOD,
-                                TEMP_CALCULEE=TEMPRESU
-                             )
+CHMTM=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                         AFFE=_F(  TOUT = 'OUI',
+                                   MATER = MATER,),
+                         AFFE_VARC=_F( TOUT='OUI',
+                                       EVOL=TEMPRESU,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',
+                                       VALE_REF = 50.0),
+                         )
 
 #
 
@@ -150,10 +154,9 @@ DEFTHER=AFFE_CHAR_MECA(
 UELAS=MECA_STATIQUE(
 
                      MODELE=MOD,
-                 CHAM_MATER=CHMAT,
+                 CHAM_MATER=CHMTM,
                  CARA_ELEM=CARBA,EXCIT=(
-                _F(  CHARGE = LIAISON),
-                _F(  CHARGE = DEFTHER)),
+                _F(  CHARGE = LIAISON),),
                   LIST_INST=LINST,
 
 
@@ -169,12 +172,10 @@ CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
 U=STAT_NON_LINE(
                             MODELE=MOD,
-                        CHAM_MATER=CHMAT,
+                        CHAM_MATER=CHMTM,
                          CARA_ELEM=CARBA,EXCIT=(
                              _F(
-                CHARGE = LIAISON),
-                             _F(
-                CHARGE = DEFTHER)),
+                CHARGE = LIAISON),),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ECMI_LINE',ALGO_1D='DEBORST',
                 ),
@@ -203,7 +204,7 @@ CALC_NO(reuse=U,  OPTION='FORC_NODA',
 
 MASS = POST_ELEM(MODELE=MOD,
                  CARA_ELEM=CARBA,
-                 CHAM_MATER=CHMAT,
+                 CHAM_MATER=CHMTM,
                  MASS_INER=_F(TOUT='OUI'),)
 
 TEST_TABLE(TABLE=MASS, REFERENCE='ANALYTIQUE',

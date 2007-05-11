@@ -19,7 +19,7 @@ tab = POST_GP(RESULTAT=SIG,
               COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
                            DEFORMATION='PETIT'),
          
-              EXCIT=(_F(CHARGE=CH_THER,),
+              EXCIT=(
                      _F(CHARGE=CH_MECA,),
                      _F(CHARGE=CLIM,)),
               SYME_CHAR='SYME',

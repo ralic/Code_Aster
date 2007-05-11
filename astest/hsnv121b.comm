@@ -1,4 +1,4 @@
-# MODIF  DATE 07/01/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS AXI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,12 +54,6 @@ ACIER_L=DEFI_MATERIAU(        ELAS_FO=_F(  E = YOUNG,
                                            SY = SIGY)
                           )
 
-CHP_MATL=AFFE_MATERIAU(    MAILLAGE=MA,
-                                 AFFE=_F(  TOUT = 'OUI',
-                                        MATER = ACIER_L,
-                                        TEMP_REF = 20.)
-                          )
-
 L_INST=DEFI_LIST_REEL(         DEBUT=0.0,INTERVALLE=(
                               _F(  JUSQU_A = 1.0,  NOMBRE = 1),
                                          _F(  JUSQU_A = 2.0,  NOMBRE = 20))
@@ -93,10 +87,6 @@ TEMP=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                      CHAM_GD = CHP_TEMP)
                      )
 
-CHR_TEMP=AFFE_CHAR_MECA(           MODELE=MO,
-                              TEMP_CALCULEE=TEMP
-                          )
-
 CHR_LIAI=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
                               _F(  NOEUD = 'NO1',  DY = 0.),
                                        _F(  NOEUD = 'NO2',  DY = 0.))
@@ -106,12 +96,21 @@ CHR_TRAC=AFFE_CHAR_MECA(       MODELE=MO,
                               FACE_IMPO=_F(  MAILLE = 'MA2',  DY = 1.)
                           )
 
+CHP_MATL=AFFE_MATERIAU(    MAILLAGE=MA,
+                                 AFFE=_F(  TOUT = 'OUI',
+                                        MATER = ACIER_L,),
+                                 AFFE_VARC=_F( 
+                                        TOUT='OUI',
+                                        EVOL=TEMP,
+                                        NOM_VARC='TEMP',
+                                        NOM_CHAM='TEMP',
+                                        VALE_REF=20.),)
+
 VL=STAT_NON_LINE( 
                             MODELE=MO,
                         CHAM_MATER=CHP_MATL,EXCIT=(
                              _F( 
-                CHARGE = CHR_LIAI), _F( 
-                CHARGE = CHR_TEMP)),
+                CHARGE = CHR_LIAI),),
                          COMP_INCR=_F( 
                 RELATION = 'VMIS_ISOT_LINE',
                 DEFORMATION = 'SIMO_MIEHE'),
@@ -136,7 +135,6 @@ VL=STAT_NON_LINE( reuse=VL,
                 NUME_ORDRE = 1),EXCIT=(
                              _F( 
                 CHARGE = CHR_LIAI), _F( 
-                CHARGE = CHR_TEMP), _F( 
                 CHARGE = CHR_TRAC,
                 FONC_MULT = F_CHAR,
                 TYPE_CHARGE = 'DIDI')),

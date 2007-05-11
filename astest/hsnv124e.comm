@@ -1,5 +1,5 @@
 
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,8 +153,11 @@ RTEMP=CREA_RESU(OPERATION='AFFE',
                 AFFE=_F(CHAM_GD=CHP_TEMP,
                         LIST_INST=LINST,),);
 
-CHR_TEMP=AFFE_CHAR_MECA(MODELE=MOMECA,
-                        TEMP_CALCULEE=RTEMP,);
+CHMATH=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),
+                      AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',EVOL=RTEMP,NOM_CHAM='TEMP',),)
+# FIN PARAM);
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
                        DDL_IMPO=(_F(NOEUD='N3',
@@ -166,12 +169,11 @@ LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
                                     DY=0.0,),),);
 
 U=STAT_NON_LINE(MODELE=MOMECA,
-                CHAM_MATER=CHMATER,
+                CHAM_MATER=CHMATH,
                 CARA_ELEM=CARAELEM,
                 EXCIT=(_F(CHARGE=LIAISON,),
                        _F(CHARGE=PRESSION,
-                          FONC_MULT=COEF,),
-                       _F(CHARGE=CHR_TEMP,),),
+                          FONC_MULT=COEF,),),
                 COMP_INCR=_F(RELATION='VMIS_CINE_LINE',
                                RESI_INTE_RELA=9.9999999999999995E-07,
                                ITER_INTE_MAXI=50,
@@ -233,13 +235,19 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    VALE=210.0,
                    REFERENCE='ANALYTIQUE',),),);
 
+CHMATH2=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER2,),
+                       AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',EVOL=RTEMP,NOM_CHAM='TEMP',),
+);
+
+
 U2=STAT_NON_LINE(MODELE=MOMECA,
-                 CHAM_MATER=CHMATER2,
+                 CHAM_MATER=CHMATH2,
                  CARA_ELEM=CARAELEM,
                  EXCIT=(_F(CHARGE=LIAISON,),
                         _F(CHARGE=PRESSION,
-                           FONC_MULT=COEF,),
-                        _F(CHARGE=CHR_TEMP,),),
+                           FONC_MULT=COEF,),),
                  COMP_INCR=_F(RELATION='VMIS_ECMI_LINE',ALGO_1D='DEBORST',
                                 RESI_INTE_RELA=9.9999999999999995E-07,
                                 ITER_INTE_MAXI=50,
@@ -317,14 +325,18 @@ IMPR_FONCTION(UNITE=8,
                        LEGENDE='ESPP_YY ECMI',),
                        ),);
 
+CHMATH3=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER3,),
+                       AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',EVOL=RTEMP,NOM_CHAM='TEMP',),
+);
 
 U3=STAT_NON_LINE(MODELE=MOMECA,
-                 CHAM_MATER=CHMATER3,
+                 CHAM_MATER=CHMATH3,
                  CARA_ELEM=CARAELEM,
                  EXCIT=(_F(CHARGE=LIAISON,),
                         _F(CHARGE=PRESSION,
-                           FONC_MULT=COEF,),
-                        _F(CHARGE=CHR_TEMP,),),
+                           FONC_MULT=COEF,),),
                  COMP_INCR=_F(RELATION='VISC_CIN1_CHAB',
                                 RESI_INTE_RELA=9.9999999999999995E-07,
                                 ITER_INTE_MAXI=50,

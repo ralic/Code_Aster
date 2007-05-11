@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 07/05/2007   AUTEUR MICHEL S.MICHEL 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,10 +25,20 @@
 
 DEBUT(CODE=_F( NOM = 'SSNP122A',NIV_PUB_WEB='INTERNET'))
 
+# REM : POUR ASSURER LA PERTINENCE DU TEST AVEC LA MODELISATION
+# INCO_GD, ON UTILISE UN MAILLAGE CONTENANT PLUSIEURS MAILLES.
+# EN EFFET, CES ELEMENTS NE PASSENT PAS LE PATCH TEST SUR UN ELEMENT 
+# UNIQUE, CAD QUE  PLUSIEURS SOLUTIONS EXISTENT : ON OBSERVE ALORS UNE 
+# GRANDE SENSIBILITE DE LA SOLUTION OBTENUE PAR RAPPORT AU SOLVEUR 
+# UTILISE
+
 MA=LIRE_MAILLAGE();
+
+
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM= 'ESSAI', TOUT='OUI'),
               CREA_GROUP_NO=(_F(GROUP_MA='AB',),
                              _F(GROUP_MA='DA',),
                              _F(GROUP_MA='CD',),),);
@@ -145,16 +155,16 @@ U_NLG=STAT_NON_LINE(MODELE=MO_NLG,
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 SOLVEUR=_F(METHODE='MUMPS'),
-                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
-                               ITER_GLOB_MAXI=15),);
+                CONVERGENCE=_F(RESI_REFE_RELA=1.E-4,
+                               SIGM_REFE = 500 ,
+                               EPSI_REFE = 1),);
 
 
 TEST_RESU(RESU=(
  _F(RESULTAT = U_L, 
      NOM_CHAM = 'SIEF_ELGA', 
+     TYPE_TEST='MAX',
      INST = 0.93,
-     MAILLE='M1',
-     POINT=1, 
      NOM_CMP = 'SIYY', 
      PRECISION = 1.E-3, 
      VALE = 942.702,
@@ -162,8 +172,7 @@ TEST_RESU(RESU=(
   _F(RESULTAT = U_L,
      NOM_CHAM = 'SIEF_ELGA', 
      INST = 0.93,
-     MAILLE='M1',
-     POINT=1, 
+     TYPE_TEST = 'MAX',
      NOM_CMP = 'SIZZ', 
      PRECISION = 1.E-3, 
      VALE = 135.668,
@@ -171,8 +180,7 @@ TEST_RESU(RESU=(
    _F(RESULTAT = U_L,
       NOM_CHAM = 'VARI_ELGA', 
       INST = 0.93,
-      MAILLE='M1',
-      POINT=1, 
+     TYPE_TEST = 'MAX',
       NOM_CMP = 'V1', 
       PRECISION = 1.E-3, 
       VALE = 0.62986,
@@ -180,8 +188,7 @@ TEST_RESU(RESU=(
    _F(RESULTAT = U_L,
       NOM_CHAM = 'VARI_ELGA', 
       INST = 0.93,
-      MAILLE='M1',
-      POINT=1, 
+      TYPE_TEST = 'MAX',
       NOM_CMP = 'V2', 
       PRECISION = 1.E-3, 
       VALE = 0.22493,
@@ -190,8 +197,7 @@ TEST_RESU(RESU=(
   _F(RESULTAT = U_L, 
      NOM_CHAM = 'SIEF_ELGA', 
      INST = 1.5,
-     MAILLE='M1',
-     POINT=1, 
+     TYPE_TEST = 'MAX',     
      NOM_CMP = 'SIYY', 
      PRECISION = 1.E-3, 
      VALE = 721.687,
@@ -199,26 +205,7 @@ TEST_RESU(RESU=(
   _F(RESULTAT = U_L, 
      NOM_CHAM = 'SIEF_ELGA', 
      INST = 1.5,
-     MAILLE='M1',
-     POINT=2, 
-     NOM_CMP = 'SIYY', 
-     PRECISION = 1.E-3, 
-     VALE = 721.687,
-     REFERENCE = 'NON_REGRESSION'),
-  _F(RESULTAT = U_L, 
-     NOM_CHAM = 'SIEF_ELGA', 
-     INST = 1.5,
-     MAILLE='M1',
-     POINT=3, 
-     NOM_CMP = 'SIYY', 
-     PRECISION = 1.E-3, 
-     VALE = 721.687,
-     REFERENCE = 'NON_REGRESSION'),
-  _F(RESULTAT = U_L, 
-     NOM_CHAM = 'SIEF_ELGA', 
-     INST = 1.5,
-     MAILLE='M1',
-     POINT=4, 
+     TYPE_TEST = 'MIN',     
      NOM_CMP = 'SIYY', 
      PRECISION = 1.E-3, 
      VALE = 721.687,
@@ -268,8 +255,7 @@ TEST_RESU(RESU=(
  _F(RESULTAT = U_NLG, 
      NOM_CHAM = 'SIEF_ELGA', 
      INST = 0.93,
-     MAILLE='M1',
-     POINT=1, 
+     TYPE_TEST = 'MAX',     
      NOM_CMP = 'SIYY', 
      PRECISION = 1.E-3, 
      VALE = 942.702,
@@ -277,8 +263,7 @@ TEST_RESU(RESU=(
   _F(RESULTAT = U_NLG,
      NOM_CHAM = 'SIEF_ELGA', 
      INST = 0.93,
-     MAILLE='M1',
-     POINT=1, 
+     TYPE_TEST = 'MAX',     
      NOM_CMP = 'SIZZ', 
      PRECISION = 1.E-3, 
      VALE = 135.668,
@@ -286,8 +271,7 @@ TEST_RESU(RESU=(
    _F(RESULTAT = U_NLG,
       NOM_CHAM = 'VARI_ELGA', 
       INST = 0.93,
-      MAILLE='M1',
-      POINT=1, 
+      TYPE_TEST = 'MAX',     
       NOM_CMP = 'V1', 
       PRECISION = 1.E-3, 
       VALE = 0.62986,
@@ -295,8 +279,7 @@ TEST_RESU(RESU=(
    _F(RESULTAT = U_NLG,
       NOM_CHAM = 'VARI_ELGA', 
       INST = 0.93,
-      MAILLE='M1',
-      POINT=1, 
+      TYPE_TEST = 'MAX',     
       NOM_CMP = 'V2', 
       PRECISION = 1.E-3, 
       VALE = 0.22493,
@@ -305,8 +288,7 @@ TEST_RESU(RESU=(
   _F(RESULTAT = U_NLG, 
      NOM_CHAM = 'SIEF_ELGA', 
      INST = 1.5,
-     MAILLE='M1',
-     POINT=1, 
+     TYPE_TEST = 'MAX',     
      NOM_CMP = 'SIYY', 
      PRECISION = 1.E-3, 
      VALE = 721.687,
@@ -314,26 +296,7 @@ TEST_RESU(RESU=(
   _F(RESULTAT = U_NLG, 
      NOM_CHAM = 'SIEF_ELGA', 
      INST = 1.5,
-     MAILLE='M1',
-     POINT=2, 
-     NOM_CMP = 'SIYY', 
-     PRECISION = 1.E-3, 
-     VALE = 721.687,
-     REFERENCE = 'NON_REGRESSION'),
-  _F(RESULTAT = U_NLG, 
-     NOM_CHAM = 'SIEF_ELGA', 
-     INST = 1.5,
-     MAILLE='M1',
-     POINT=3, 
-     NOM_CMP = 'SIYY', 
-     PRECISION = 1.E-3, 
-     VALE = 721.687,
-     REFERENCE = 'NON_REGRESSION'),
-  _F(RESULTAT = U_NLG, 
-     NOM_CHAM = 'SIEF_ELGA', 
-     INST = 1.5,
-     MAILLE='M1',
-     POINT=4, 
+     TYPE_TEST = 'MIN',     
      NOM_CMP = 'SIYY', 
      PRECISION = 1.E-3, 
      VALE = 721.687,

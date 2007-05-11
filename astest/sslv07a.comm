@@ -1,4 +1,4 @@
-# MODIF  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -511,12 +511,17 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    REFERENCE='ANALYTIQUE',),
                 ),
           )
-
+#
+# =====================================================================
+#
+# validation de MACR_LIGN_COUPE en repere global
+#
 # pour tester MACR_LIGN_COUPE sur des CHAM_ELEM :
 #-------------------------------------------------
 TB1=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
                      NOM_CHAM= 'SIEF_ELNO_ELGA',
                      LIGN_COUPE = _F( NB_POINTS= 4,
+                                      TYPE='SEGMENT',
                                       COOR_ORIG= (0., 0.0, 1.5),
                                       COOR_EXTR= (0.5, 0.0, 1.5),
                                     ) )
@@ -529,19 +534,102 @@ TEST_TABLE(   TABLE=TB1,
               FILTRE=(_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10,),
                       _F( NOM_PARA = 'ABSC_CURV',  VALE   = 0.,),),
               NOM_PARA='SIZZ', VALE=114777.0, REFERENCE='ANALYTIQUE', )
-#
-# =====================================================================
-#
-# validation de MACR_LIGN_COUPE en repere local
-#
+
 
 RESU=CALC_NO( reuse= RESU ,RESULTAT= RESU ,
                 NUME_ORDRE=1,
                 OPTION=('SIGM_NOEU_DEPL',),
                 )
+
+TB11=MACR_LIGN_COUPE( RESULTAT= RESU,
+                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     LIGN_COUPE = _F(
+                                      TYPE='GROUP_NO',
+                                      GROUP_NO='ABSANSA',
+                                    ) )
+
+TEST_TABLE(    TABLE=TB11,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 0.,),
+               NOM_PARA='SIXX',
+               VALE= -2.23248E-02,
+               REFERENCE = 'NON_REGRESSION',
+          )
+TEST_TABLE(    TABLE=TB11,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 0.,),
+               NOM_PARA='SIZZ',
+               VALE=7.65180E+04,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+
+TB12=MACR_LIGN_COUPE( RESULTAT= RESU,
+                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     LIGN_COUPE = _F( TYPE='GROUP_MA',
+                                      GROUP_MA='B12',
+                                      MAILLAGE=MA,
+                                    ) )
+
+TEST_TABLE(    TABLE=TB12,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 0.,),
+               NOM_PARA='SIXX',
+               VALE= -2.35742E-02,
+               REFERENCE = 'NON_REGRESSION',
+          )
+TEST_TABLE(    TABLE=TB12,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 0.,),
+               NOM_PARA='SIZZ',
+               VALE=7.65180E+04,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+
+# MACR_LIGN_COUPE et champ 'SIGM_NOEU_DEPL' d'un concept CHAM_GD :
+#---------------------------------------------------------------
+
+CHR=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',RESULTAT=RESU,NOM_CHAM='SIGM_NOEU_DEPL',
+               OPERATION='EXTR',NUME_ORDRE=1)
+
+TBCH=MACR_LIGN_COUPE( CHAM_GD=CHR, MODELE=MO,
+                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     LIGN_COUPE = _F( NB_POINTS= 4,TYPE='SEGMENT',
+                                      COOR_ORIG= (0.0, 0.0, 1.5),
+                                      COOR_EXTR= (0.0, 0.5, 1.5),
+                                    ) )
+
+TEST_TABLE(    TABLE=TBCH,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIXX',
+               VALE= -1.57382E-02,
+               REFERENCE = 'NON_REGRESSION',
+          )
+TEST_TABLE(    TABLE=TBCH,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIYY',
+               VALE= 1.36784E-03,
+               REFERENCE = 'NON_REGRESSION',
+          )
+TEST_TABLE(    TABLE=TBCH,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIZZ',
+               VALE= 1.14777E+05,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+
+# MACR_LIGN_COUPE et champ 'SIGM_NOEU_DEPL' extrait d'un RESULTAT:
+#----------------------------------------------------------------
+
 TB2=MACR_LIGN_COUPE( RESULTAT= RESU,
                      NOM_CHAM= 'SIGM_NOEU_DEPL',
                      LIGN_COUPE = _F( NB_POINTS= 4,
+                                      TYPE='SEGMENT',
                                       COOR_ORIG= (0.0, 0.0, 1.5),
                                       COOR_EXTR= (0.0, 0.5, 1.5),
                                     ) )
@@ -606,9 +694,14 @@ TEST_TABLE(    TABLE=TAB2,
                REFERENCE = 'NON_REGRESSION',
           )
 
+# =====================================================================
+#
+# validation de MACR_LIGN_COUPE en repere local
+
 TB3=MACR_LIGN_COUPE( RESULTAT= RESU,
                      NOM_CHAM= 'SIGM_NOEU_DEPL',
                      LIGN_COUPE = _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
+                                      TYPE='SEGMENT',REPERE='LOCAL',
                                       COOR_ORIG= (0.0, 0.0, 1.5),
                                       COOR_EXTR= (0.0, 0.5, 1.5),
                                     ) )
@@ -672,13 +765,15 @@ TEST_TABLE(    TABLE=TAB3,
                VALE= 0., CRITERE='ABSOLU',PRECISION=1.E-8,
                REFERENCE = 'NON_REGRESSION',
           )
-# =====================================================================
+
 #
 # validation de MACR_LIGN_COUPE en repere local sur un CHAM_ELEM
+# --------------------------------------------------------------
 
 TB4=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
                      NOM_CHAM= 'SIEF_ELNO_ELGA',
                      LIGN_COUPE = _F( NB_POINTS= 4,
+                                      TYPE='SEGMENT',
                                       COOR_ORIG= (0., 0., 1.5),
                                       COOR_EXTR= (0., 0.5, 1.5),
                                     ) )
@@ -690,6 +785,7 @@ IMPR_TABLE ( TABLE = TB4,
 TB6=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
                      NOM_CHAM= 'SIEF_ELNO_ELGA',
                      LIGN_COUPE = _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
+                                      TYPE='SEGMENT',REPERE='LOCAL',
                                       COOR_ORIG= (0., 0., 1.5),
                                       COOR_EXTR= (0., 0.5, 1.5),
                                     ) )
@@ -732,18 +828,19 @@ TEST_TABLE(    TABLE=TAB6,
                REFERENCE = 'NON_REGRESSION',
           )
 
-
-# =====================================================================
 #
 # validation de MACR_LIGN_COUPE en repere local avec plusieurs 
 # occurences de LIGN_COUPE
+# ------------------------------------------------------------
 
 TB5=MACR_LIGN_COUPE( RESULTAT= RESU,
                      NOM_CHAM= 'SIGM_NOEU_DEPL',
                      LIGN_COUPE =( _F( NB_POINTS= 4,VECT_Y=(0.,0.,1.),
+                                      TYPE='SEGMENT',REPERE='LOCAL',
                                       COOR_ORIG= (0.0, 0.0, 0.0),
                                       COOR_EXTR= (0.0, 0.5, 1.5),),
                                    _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
+                                      TYPE='SEGMENT',REPERE='LOCAL',
                                       COOR_ORIG= (0.0, 0.0, 0.0),
                                       COOR_EXTR= (0.0, 0.5, 1.5),), ),)
 

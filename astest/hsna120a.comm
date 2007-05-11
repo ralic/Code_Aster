@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,6 @@ MATER   = [None]*nb_calc_total_plus_1
 CHAR1   = [None]*nb_calc_total_plus_1
 CONT   = [None]*nb_calc_total_plus_1
 CHARM   = [None]*nb_calc_total_plus_1
-CHART   = [None]*nb_calc_total_plus_1
 RESU    = [None]*nb_calc_total_plus_1
 REPR    = [None]*nb_calc_total_plus_1
 CHPR    = [None]*nb_calc_total_plus_1
@@ -347,8 +346,12 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 # 3.1.2 Mise en place des materiaux
 #
    MATER[num_calc]=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
-                             TOUT='OUI',
-                             TEMP_REF=20.,),
+                             TOUT='OUI',),
+                                 AFFE_VARC=_F( TOUT='OUI',
+                             EVOL=TEMPT[num_calc],
+                             NOM_VARC='TEMP',
+                             NOM_CHAM='TEMP',
+                             VALE_REF = 20.0),
 #                             GROUP_MA='PLAQUE',),
                              MAILLAGE=MAIL[num_calc],);
 #
@@ -391,10 +394,6 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                                          FY=60.,)),
                                          );
 
-   CHART[num_calc]=AFFE_CHAR_MECA(MODELE=MOD_G[num_calc],
-                       TEMP_CALCULEE = TEMPT[num_calc],
-                                         );
-
 #
 # 3.2 RESOLUTION
 #
@@ -413,8 +412,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                              MATRICE='TANGENTE',),
                    EXCIT=(_F(CHARGE=CHAR1[num_calc],),
                           _F(CHARGE=CONT[num_calc],),
-                          _F(CHARGE=CHARM[num_calc],),
-                          _F(CHARGE=CHART[num_calc],),),
+                          _F(CHARGE=CHARM[num_calc],),),
                    ARCHIVAGE=_F(INST=(90,95,100)),
                            );
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,15 +223,22 @@ TEMPE2=PROJ_CHAMP(METHODE='ELEM',
                    MODELE_2=MODELE,
                    TOUT_ORDRE='OUI',);
 
-CHTT100=AFFE_CHAR_MECA(MODELE=MODELE,
-                       TEMP_CALCULEE=TEMPE2,);
+
+CHMTM=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
+                               GROUP_MA='VOILE',),
+                            _F(MATER=ACIER,
+                               GROUP_MA='CABLE001',),),
+                      AFFE_VARC=_F( TOUT='OUI',
+                            EVOL=TEMPE2,
+                            NOM_VARC='TEMP',
+                            NOM_CHAM='TEMP',),
+                      MAILLAGE=MAILLAGE,);
 
 NLTT100=CALC_PRECONT( MODELE=MODELE,
-                      CHAM_MATER=CHMATER,
+                      CHAM_MATER=CHMTM,
                       CARA_ELEM=CARAELEM,
                       EXCIT=(
-                             _F(CHARGE=CHARMECA,),
-                             _F(CHARGE=CHTT100,),),
+                             _F(CHARGE=CHARMECA,),),
                       COMP_INCR=_F(RELATION='ELAS',
                                    DEFORMATION='PETIT',
                                    TOUT='OUI',),
@@ -240,7 +247,6 @@ NLTT100=CALC_PRECONT( MODELE=MODELE,
                                      ITER_GLOB_MAXI=10,),
                       SOLVEUR=_F(METHODE='MULT_FRONT',),
                       CABLE_BP=( CABLEPR ,),          
-
                       INFO=2,);
                       
 NLTT100=CALC_ELEM(reuse =NLTT100,

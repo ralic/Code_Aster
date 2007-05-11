@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,12 +117,13 @@ MAT=DEFI_MATERIAU(
 #
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                                 AFFE=_F( TOUT = 'OUI', 
-                                      MATER = MAT)
-                         )
+                                      MATER = MAT),
+                                AFFE_VARC=_F( TOUT='OUI',CHAMP_GD=TEMP,
+                                      NOM_VARC='TEMP',),)
 
 #
 CH=AFFE_CHAR_MECA(           MODELE=MO,
-                              TEMP_CALCULEE=TEMP,DDL_IMPO=(
+                              DDL_IMPO=(
                                    _F(  GROUP_NO = 'LP8P9',
                                               DX = 0.),
                                             _F(  GROUP_NO = 'LP9PC2',

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,16 +81,6 @@ CARBA=AFFE_CARA_ELEM(
                         )
 
 #
-
-CM=AFFE_MATERIAU(
-
-               MAILLAGE=MA,
-
-                AFFE=_F(
-                TOUT = 'OUI',
-                MATER = ACIER,
-                TEMP_REF = 0.0)
-              )
 
 F1_T=DEFI_FONCTION(
 
@@ -183,10 +173,19 @@ TEMPRESU=CREA_RESU(
                 CHAM_GD = TEMPIMPO)
               )
 
-DEFOTHER=AFFE_CHAR_MECA(
+CTM=AFFE_MATERIAU(
 
-                      MODELE=MO,
-               TEMP_CALCULEE=TEMPRESU
+               MAILLAGE=MA,
+
+                AFFE=_F(
+                   TOUT = 'OUI',
+                   MATER = ACIER,
+                   TEMP_REF = 0.0),
+                AFFE_VARC=_F( 
+                   TOUT='OUI',
+                   EVOL=TEMPRESU,
+                   NOM_VARC='TEMP',
+                   NOM_CHAM='TEMP',),
               )
 
 LIAISON=AFFE_CHAR_MECA(
@@ -207,10 +206,9 @@ UELAS=MECA_STATIQUE(
 
                      MODELE=MO,
                   CARA_ELEM=CARBA,
-                 CHAM_MATER=CM,EXCIT=(
+                 CHAM_MATER=CTM,EXCIT=(
 
-                 _F( CHARGE = LIAISON),
-                 _F( CHARGE = DEFOTHER)),
+                 _F( CHARGE = LIAISON),),
                   LIST_INST=L_INST,
 
                  SOLVEUR=_F( METHODE = 'LDLT'),
@@ -412,10 +410,9 @@ SIGY3_T=RECU_FONCTION(
 U=STAT_NON_LINE(
                             MODELE=MO,
                          CARA_ELEM=CARBA,
-                        CHAM_MATER=CM,EXCIT=(
+                        CHAM_MATER=CTM,EXCIT=(
                              _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = DEFOTHER)),
+                CHARGE = LIAISON),),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE',
                 TOUT = 'OUI'),

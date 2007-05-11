@@ -14,7 +14,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,13 +68,8 @@ C ---       RECUPERATION DES COEFFICIENTS MECANIQUES ------------------
 C =====================================================================
 
          IF (YAMEC.EQ.1) THEN
-           IF (MECA.EQ.'ELAS_THER')  THEN
-               CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+           CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
      +                             NCRA1(1),ELAS(1),CODRET,'FM')
-           ELSE
-               CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,
-     &           ELAS,CODRET,'FM')
-           ENDIF
            YOUNG  = ELAS(1)
            NU     = ELAS(2)
            ALPHA0 = ELAS(3)

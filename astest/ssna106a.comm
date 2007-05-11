@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX THERMOVISCOPLASTICITE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,25 +71,21 @@ MAT = DEFI_MATERIAU(
 
 CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
                        AFFE =_F(TOUT='OUI',
-                                MATER = MAT,
-                                TEMP_REF = 0.)
-                       ) 
-
+                                MATER = MAT,),
+                       AFFE_VARC=_F( TOUT='OUI',
+                                  EVOL=TEMPE,
+                                  NOM_VARC='TEMP',
+                                  NOM_CHAM='TEMP',VALE_REF=0.),)
                              
 BLOC = AFFE_CHAR_MECA (MODELE = MO,
                        DDL_IMPO=_F(GROUP_NO =('DAB','DCD'),
                                    DY=0.)
                       )
-CALC_T = AFFE_CHAR_MECA (MODELE = MO,
-                         TEMP_CALCULEE= TEMPE
-                                    )
-  
                                   
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
-                         _F( CHARGE = BLOC),
-                         _F( CHARGE = CALC_T),),
+                         _F( CHARGE = BLOC),),
                       COMP_INCR =_F(RELATION ='LEMAITRE',PARM_THETA = 0.5,
                                     ITER_INTE_MAXI = 1000),
                       INCREMENT =_F(LIST_INST =L_INST),

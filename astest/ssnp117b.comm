@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER (PETIT_REAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -471,11 +471,18 @@ RESUTH=THER_LINEAIRE(MODELE=MOD_THER,
 # NBPAS = len(ls)-1 ;
 NBPAS = 168
 for k in range(1,NBPAS+1) :
-  CH_TH = AFFE_CHAR_MECA(MODELE=MOD_THER,
-                         TEMP_CALCULEE=RESUTH)
+
+  CHMTM=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
+                               TOUT='OUI',),
+                      AFFE_VARC=_F( TOUT='OUI',
+                                    EVOL=RESUTH,
+                                    NOM_VARC='TEMP',
+                                    NOM_CHAM='TEMP',),
+                       MAILLAGE=MAIL,)
+
   if ( k == 1 ) :
                      
-    RESU=STAT_NON_LINE(CHAM_MATER=CHMAT,
+    RESU=STAT_NON_LINE(CHAM_MATER=CHMTM,
                        MODELE=MOD_MECA,
                        CONVERGENCE=_F(ITER_GLOB_MAXI=300,
                                       RESI_GLOB_MAXI=1.E-06),
@@ -492,14 +499,13 @@ for k in range(1,NBPAS+1) :
                                  MATRICE='TANGENTE',
                                  REAC_INCR=1,),
                        EXCIT=(_F(CHARGE=COND_LIM,),
-                              _F(CHARGE=CHAR,),
-                              _F(CHARGE=CH_TH),),) 
+                              _F(CHARGE=CHAR,),),) 
 
   else : 
 
     RESU=STAT_NON_LINE(reuse = RESU,
                        ETAT_INIT=_F(EVOL_NOLI=RESU),
-                       CHAM_MATER=CHMAT,
+                       CHAM_MATER=CHMTM,
                        MODELE=MOD_MECA,
                        CONVERGENCE=_F(ITER_GLOB_MAXI=300,
                                       RESI_GLOB_MAXI=1.E-06),
@@ -516,8 +522,7 @@ for k in range(1,NBPAS+1) :
                                  MATRICE='TANGENTE',
                                  REAC_INCR=1,),
                        EXCIT=(_F(CHARGE=COND_LIM,),
-                              _F(CHARGE=CHAR,),
-                              _F(CHARGE=CH_TH),),) 
+                              _F(CHARGE=CHAR,),),) 
 
   CH1=CREA_CHAMP(
                TYPE_CHAM='ELGA_VARI_R',
@@ -549,7 +554,7 @@ for k in range(1,NBPAS+1) :
                                  NUME_FIN=k+1,),);                              
   
   if k < NBPAS :                                   
-    DETRUIRE(CONCEPT=_F(NOM=(CH_SOU,CH1,DISSIP,CH_TH )))                                        
+    DETRUIRE(CONCEPT=_F(NOM=(CH_SOU,CH1,DISSIP,CHMTM )))                                        
 
 # ------------------------------------------------------------
 #  7. TESTS

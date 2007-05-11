@@ -1,21 +1,21 @@
-#@ MODIF asojb SD  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF asojb SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 """
@@ -24,6 +24,8 @@
 from basetype import Type, MetaType
 from asnom import SDNom
 from ascheckers import CheckLog
+import traceback,sys
+from Utilitai.Utmess import U2MESS as UTMESS
 
 # pour utilisation dans eficas
 try:
@@ -65,7 +67,12 @@ class AsBase(Type):
             if name.startswith( 'check_' ):
                 v = getattr(self, name)
                 if callable(v):
-                    v( checker )
+                    try :
+                        v( checker )
+                    except :
+                        UTMESS("E", 'SDVERI_45')
+                        print 40*'-'
+                        traceback.print_exc(file=sys.stdout)
 
         checker.optional = optional
         return checker
@@ -215,7 +222,7 @@ class OJB(AsBase):
             checker = CheckLog()
         # l'objet a déjà été vérifié, on ne fait rien
         if self.nomj() in checker.names.keys():
-           return checker
+            return checker
         checker.visit( self )
         if self.exists:
             self.foreachattr( lambda k,v,obj,c: v.check(k, obj, c),
@@ -224,18 +231,6 @@ class OJB(AsBase):
             if not self.optional and not checker.optional :
                 checker.err( self, "n'existe pas (%r)" %self._parent )
         return checker
-
-    def tous_compris(self, checker, vmin=None, vmax=None):
-        # Vérifie que toutes les valeurs du vecteur sont comprises entre vmin et vmax
-        # Les bornes vmin et vmax sont autorisées
-        assert vmin or vmax, 'Il faut fournir au moins une des valeurs vmin ou vmax'
-        vect = self.get()
-        if not vect : return
-        ier = 0
-        for v in vect :
-           if vmin and v < vmin : ier = 1
-           if vmax and v > vmax : ier = 1
-        if ier == 1 : checker.err( self, "L'objet doit contenir des valeurs dans l'intervalle : %s %s "  % (vmin,vmax))
 
     def dump(self, indent=""):
         if self.optional:

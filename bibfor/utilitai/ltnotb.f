@@ -3,7 +3,7 @@
       CHARACTER*(*)       LITAB , NOMTAB , NOMSD
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,9 @@ C      AU NOM SYMBOLIQUE "NOMTAB"
 C
 C IN  : LITAB  : NOM DE LA SD L_TABLE
 C IN  : NOMTAB : NOM SYMBOLIQUE DE LA TABLE STOCKEE DANS "LITAB"
-C OUT : NOMSD  : NOM DE LA TABLE STOCKEE DANS "LITAB"
+C OUT : NOMSD  : NOM DE LA TABLE STOCKEE (OU A STOCKER) DANS "LITAB"
+C
+C     SI NOMTAB N'EXISTE PAS ENCORE DANS LITAB ON AGRANDIT LITAB
 C     -----------------------------------------------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  -------------------------
       INTEGER         ZI
@@ -53,14 +55,16 @@ C
 C
       LISTAB = LITAB
       CALL JEEXIN ( LISTAB//'.LTNT', IRET )
-      IF ( IRET .EQ. 0 ) THEN
-         CALL U2MESS('F','UTILITAI2_49')
-      ENDIF
+      CALL ASSERT( IRET .GT. 0 )
 C
       NOMSYM = NOMTAB
       CALL JELIRA ( LISTAB//'.LTNT', 'LONMAX', NBTM, K8B)
       CALL JELIRA ( LISTAB//'.LTNT', 'LONUTI', NBTU, K8B)
       CALL JEVEUO ( LISTAB//'.LTNT', 'L', JLTNT )
+
+
+C     1) LE NOMSYM EXISTE DANS LISTAB :
+C     ---------------------------------
       DO 10 I = 1 , NBTU
          IF ( ZK16(JLTNT+I-1) .EQ. NOMSYM ) THEN
             CALL JEVEUO ( LISTAB//'.LTNS', 'L', JLTNS )
@@ -68,12 +72,18 @@ C
             GOTO 9999
          ENDIF
  10   CONTINUE
+
+
+C     2) LE NOMSYM N'EXISTE PAS DANS LISTAB :
+C     ---------------------------------
       NBTU = NBTU + 1
       IF ( NBTU .GT. NBTM ) THEN
          CALL JUVECA ( LISTAB//'.LTNT', NBTU+6 )
          CALL JUVECA ( LISTAB//'.LTNS', NBTU+6 )
       ENDIF
       CALL JEECRA ( LISTAB//'.LTNT', 'LONUTI', NBTU, ' ' )
+      CALL JEECRA ( LISTAB//'.LTNS', 'LONUTI', NBTU, ' ' )
+
       CALL JEVEUO ( LISTAB//'.LTNT', 'E', JLTNT )
       ZK16(JLTNT+NBTU-1) = NOMSYM
       NOOJB='12345678.TB000000  .TBBA'

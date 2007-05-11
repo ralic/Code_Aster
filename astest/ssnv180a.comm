@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/05/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -230,7 +230,8 @@ U=STAT_NON_LINE( MODELE=MO,
 
 U=CALC_ELEM(reuse=U,  
             RESULTAT=U,
-            OPTION=('EPSI_ELNO_DEPL','EPVC_ELGA','EPVC_ELNO','EPFP_ELNO','EPFD_ELNO','EPFD_ELGA'),)
+            OPTION=('EPSI_ELNO_DEPL','EPVC_ELGA','EPVC_ELNO','EPFP_ELGA','EPFD_ELGA',
+                    'EPFP_ELNO','EPFD_ELNO',),)
 
 RELEVE_=POST_RELEVE_T(ACTION=( 
                    _F(  RESULTAT = U,
@@ -331,5 +332,27 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),                    
           ),)
+# TESTS SUR LES DEFORMATIONS DE FLUAGE
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFP_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -4.198E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -1.132E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+        ),)
+
 FIN()
 #

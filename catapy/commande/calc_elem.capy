@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
      CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
      CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
 
-     RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,mode_meca,
-                                mode_stat,mode_stat_depl,mode_stat_acce,mode_stat_forc,
-                                evol_noli,mult_elas,fourier_elas,fourier_ther,
-                                evol_ther,base_modale,
-                                acou_harmo,mode_acou,mode_flamb) ,
-                fr="Résultat d'une commande globale"),
+     RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
+                                      fr="Résultat d'une commande globale"),
                                            
      regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
                     'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),

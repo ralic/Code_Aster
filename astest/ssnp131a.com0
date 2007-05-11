@@ -20,8 +20,7 @@ tab = POST_GP(RESULTAT=RESU,
                            DEFORMATION='PETIT'),
          
               EXCIT=(_F(CHARGE=COND_LIM,),
-                     _F(CHARGE=CHAD,),
-                     _F(CHARGE=CHTEMP,)),
+                     _F(CHARGE=CHAD,),),
               SYME_CHAR='SYME',
          
               DIRECTION=(1., 0., 0.),

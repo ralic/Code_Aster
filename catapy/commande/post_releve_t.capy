@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,9 +30,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
 
            CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,
                                                  cham_elem,),),
-           RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_ther,evol_noli,dyna_trans,
-                                                 mode_meca,mode_flamb,mode_acou,base_modale,mode_stat,
-                                                 mult_elas,fourier_elas,fourier_ther,dyna_harmo,acou_harmo)),
+           RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
 #
 #  1. Sensibilité
 #  1.1. Cas d'un résultat réel

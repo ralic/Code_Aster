@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -368,12 +368,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           elif Lnf1[i]==LNOFO[Nbfond-1] and DTANEX : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
           else : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]*sens
           TlibS[i] = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
-                NOM_CHAM='DEPL',MODELE=MODEL, MAILLE = ListmaS,
+                NOM_CHAM='DEPL',MODELE=MODEL, VIS_A_VIS=_F(MAILLE_1 = ListmaS),
                 LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
                                TYPE='SEGMENT', COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
           if SYME_CHAR=='SANS':
             TlibI[i] = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
-                  NOM_CHAM='DEPL',MODELE=MODEL, MAILLE = ListmaI,
+                  NOM_CHAM='DEPL',MODELE=MODEL, VIS_A_VIS=_F(MAILLE_1 = ListmaI),
                 LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
                                TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
 

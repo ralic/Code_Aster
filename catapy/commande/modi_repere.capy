@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,23 +18,13 @@
 # ======================================================================
 # RESPONSABLE JMBHH01 J.M.PROIX
 def modi_repere_prod(RESULTAT,**args):
-  if AsType(RESULTAT) == evol_elas :    return evol_elas
-  if AsType(RESULTAT) == evol_noli :    return evol_noli
-  if AsType(RESULTAT) == evol_ther :    return evol_ther
-  if AsType(RESULTAT) == dyna_trans :   return dyna_trans
-  if AsType(RESULTAT) == dyna_harmo :   return dyna_harmo
-  if AsType(RESULTAT) == mode_meca :    return mode_meca
-  if AsType(RESULTAT) == mode_flamb :   return mode_flamb
-  if AsType(RESULTAT) == mult_elas :    return mult_elas
-  if AsType(RESULTAT) == base_modale  : return base_modale
-  raise AsException("type de concept resultat non prevu")
+  if AsType(RESULTAT) != None : return AsType(RESULTAT)
 
 MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
                     fr="Calcule des résultats dans le repère cylindrique",
-         RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,mode_meca,
-                                               evol_noli,mult_elas,
-                                               evol_ther,base_modale,mode_flamb) ),
+         RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
+
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
                         'NOEUD_CMP','LIST_INST','LIST_FREQ','NOM_CAS'),),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

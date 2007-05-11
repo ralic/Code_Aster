@@ -1,5 +1,5 @@
 
-# MODIF  DATE 12/03/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -246,13 +246,14 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=2.E5,
                           RHO=7.9999999999999996E-06,
                           ALPHA=1.0000000000000001E-05,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,
-                            TEMP_REF=0.0,),);
+                            MATER=MAT,),
+                    AFFE_VARC=_F( TOUT='OUI',EVOL=TEMPE2,
+                                  NOM_VARC='TEMP',
+                                  NOM_CHAM='TEMP',VALE_REF=0.0),)
 
 CHDIL=AFFE_CHAR_MECA(MODELE=MO,
-                     TEMP_CALCULEE=TEMPE2,
                      DDL_IMPO=_F(GROUP_MA='BAS',
                                  DY=0.0,),);
 
@@ -260,7 +261,7 @@ INSTMECA=DEFI_LIST_REEL(VALE=(0.0,11.0,),);
 
 
 DEPLDIL=MECA_STATIQUE(MODELE=MO,
-                       CHAM_MATER=CHMAT,
+                       CHAM_MATER=CHMTM,
                        EXCIT=_F(CHARGE=CHDIL,),
                        LIST_INST=INSTMECA,
                        );
@@ -282,14 +283,13 @@ IMPR_RESU(RESU=_F(RESULTAT=DEPLDIL,
 
 
 BRIDAGE=AFFE_CHAR_MECA(MODELE=MO,
-                       TEMP_CALCULEE=TEMPE2,
                        DDL_IMPO=(_F(GROUP_MA='BAS',
                                     DY=0.0,),
                                  _F(GROUP_MA='HAUT',
                                     DY=0.0,),),);
 
 DEPLBRID=MECA_STATIQUE(MODELE=MO,
-                       CHAM_MATER=CHMAT,
+                       CHAM_MATER=CHMTM,
                        EXCIT=_F(CHARGE=BRIDAGE,),
                        LIST_INST=INSTMECA,);
 
@@ -308,7 +308,7 @@ IMPR_RESU(RESU=_F(RESULTAT=DEPLBRID,
 
 
 SNLBRID=STAT_NON_LINE(MODELE=MO,
-                      CHAM_MATER=CHMAT,
+                      CHAM_MATER=CHMTM,
                       EXCIT=_F(CHARGE=BRIDAGE,),
                       COMP_INCR=_F(RELATION='ELAS',),
                       INCREMENT=_F(LIST_INST=INSTMECA,),);
@@ -341,8 +341,8 @@ CREA_RESU(reuse =TEMPE2,
                  AFFE=_F(CHAM_GD=CHTEMP0,
                          INST=-1.0,),);
 
+
 BRIDAG2=AFFE_CHAR_MECA(MODELE=MO,
-                       TEMP_CALCULEE=TEMPE2,
                        DDL_IMPO=(_F(GROUP_MA='BAS',
                                     DY=0.0,),
                                  _F(GROUP_MA='HAUT',
@@ -351,7 +351,7 @@ BRIDAG2=AFFE_CHAR_MECA(MODELE=MO,
 INSTMEC2=DEFI_LIST_REEL(VALE=(-1.0,0.0,11.0,),);
 
 SNLBRID2=STAT_NON_LINE(MODELE=MO,
-                       CHAM_MATER=CHMAT,
+                       CHAM_MATER=CHMTM,
                        EXCIT=_F(CHARGE=BRIDAG2,),
                        COMP_INCR=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=INSTMEC2,),);

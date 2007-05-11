@@ -4,7 +4,7 @@
       REAL*8             XYZG1(3,*), RHO, EPAIS, MASS, CDG(*), INERTI(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,29 +24,25 @@ C ======================================================================
 C     CALCULE LE CDG ET LA MASSE D'UNE MAILLE TRIA ET QUAD
 C
 C     ------------------------------------------------------------------
-      CHARACTER*8  ALIAS
       REAL*8       JAC,NX,NY,NZ,SX(9,9),SY(9,9),SZ(9,9),ZERO
       REAL*8       PGL(3,3), XYZL1(3,4)
       REAL*8       XYZG(3,8), XYZL(3,8)
       REAL*8       IGXX, IGYY, IGXY, MATINE(6), IGZZ
       REAL*8       INERT0(6)
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      COMMON /NOMAJE/PGC
-      CHARACTER*6 PGC
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      INTEGER         ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8          ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16      ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL         ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8     ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                     ZK24
+      CHARACTER*32                              ZK32
+      CHARACTER*80                                       ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C --- INITIALISATIONS :
@@ -69,12 +65,7 @@ C
 C --- RECUPERATION DES DONNEES RELATIVES A L'INTEGRATION DES ELEMENTS
 C --- DE TYPE 'FACE6' ET 'FACE8' :
 C     -------------------------
-      IF ( NNOE .EQ. 3 ) THEN
-         ALIAS = 'TR6'
-      ELSEIF( NNOE .EQ. 4 ) THEN
-         ALIAS = 'QU8'
-      ENDIF
-      CALL ELREF4 ( ALIAS, 'RIGI', NDIM, NNO, NNOS, NPG1, IPOIDS, IVF,
+      CALL ELREF4 ( ' ', 'MASS', NDIM, NNO, NNOS, NPG1, IPOIDS, IVF,
      &              IDFDX, JGANO )
       IDFDY  = IDFDX  + 1
 C

@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_calc_ops Macro  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+#@ MODIF macr_cabri_calc_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,9 +111,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
 
 
 
-   # Affectation des materiaux
-   if CHAM_MATER != None:
-      self.DeclareOut('_cham',CHAM_MATER)
+   # Affectation des materiaux (thermique)
    motscles={}
    motscles['AFFE']=[]
    for mat in affemateriau:
@@ -128,7 +126,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                                     MATER = mat['MATER'],
                                     TEMP_REF = mat['TEMP_REF'],) )
       
-   _cham = AFFE_MATERIAU(MAILLAGE=mail,
+   __cham = AFFE_MATERIAU(MAILLAGE=mail,
                     MODELE=modther,
                     AFFE=motscles['AFFE'],
                    )
@@ -273,7 +271,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
       self.DeclareOut('resuther',RESU_THER)   
 
    resuther=THER_LINEAIRE(MODELE=modther,
-                  CHAM_MATER=_cham,
+                  CHAM_MATER=__cham,
                   EXCIT=(_F(CHARGE=cl_th1,),
                          _F(CHARGE=cl_th2,),
                          _F(CHARGE=cl_th3,),
@@ -281,7 +279,36 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                   INCREMENT=_F(LIST_INST=transi1,),
                   TEMP_INIT=_F(VALE=temp_ini,),
                   TITRE='CABRI THERMIQUE &DATE &HEURE',);
-   
+ 
+      # Affectation des materiaux (mécanique)
+   if CHAM_MATER != None:
+      self.DeclareOut('_chamt',CHAM_MATER)
+   motscles={}
+   motscles['AFFE']=[]
+   motscles['AFFE_VARC']=[]
+   for mat in affemateriau:
+      if mat['TOUT'] == None:
+         # Creation de mots-cles pour les AFFE_CHAR_MECA
+         motscles['AFFE'].append(_F(GROUP_MA=mat['GROUP_MA'],
+                                    MATER = mat['MATER'],) )
+         motscles['AFFE_VARC'].append(_F(NOM_VARC='TEMP',GROUP_MA=mat['GROUP_MA'],
+                                         EVOL=resuther,NOM_CHAM='TEMP',
+                                         VALE_REF = mat['TEMP_REF'],))
+      else:
+         # Creation de mots-cles pour les AFFE_CHAR_MECA
+         motscles['AFFE'].append(_F(TOUT='OUI',
+                                    MATER = mat['MATER'],
+                                    TEMP_REF = mat['TEMP_REF'],) )
+         motscles['AFFE_VARC'].append(_F(NOM_VARC='TEMP',TOUT='OUI',
+                                         EVOL=resuther,NOM_CHAM='TEMP',
+                                         VALE_REF = mat['TEMP_REF'],))
+      
+   _chamt = AFFE_MATERIAU(MAILLAGE=mail,
+                    MODELE=modther,
+                    AFFE=motscles['AFFE'],
+                    AFFE_VARC=motscles['AFFE_VARC'],
+                   )
+
    #################################################################
    ########## CONDITIONS AUX LIMITES MECANIQUES
    #################################################################   
@@ -342,8 +369,6 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
             self.DeclareOut('cl_me7',m['CHARGE'])
          if m['TYPE']=="CONT_JOINT":
             self.DeclareOut('cl_me8',m['CHARGE'])
-         if m['TYPE']=="DEFO_THER":
-            self.DeclareOut('cl_me9',m['CHARGE'])
          if m['TYPE']=="SERR_ECROU_1":
             self.DeclareOut('cl_me10',m['CHARGE'])
          if m['TYPE']=="SERR_ECROU_2":
@@ -395,10 +420,6 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                         CONTACT=_F(GROUP_MA_MAIT='SCBJ',
                                    GROUP_MA_ESCL='SCJB',),
                         INFO=2,);
-   # Deformation thermique
-   cl_me9=AFFE_CHAR_MECA(  MODELE=modmeca,
-                           TEMP_CALCULEE=resuther,
-                           INFO=2,);
 
    # Serrage ecrou/goujon (pre-tensionnement)
    cl_me10=AFFE_CHAR_MECA_F(MODELE=modmeca,
@@ -497,7 +518,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
    # Parametres du calcul
    if comp_incr == 1:
       resumeca=STAT_NON_LINE(MODELE=modmeca,
-                  CHAM_MATER=_cham,
+                  CHAM_MATER=_chamt,
                   EXCIT=(_F(CHARGE=cl_me1,),
                          _F(CHARGE=cl_me2,),
                          _F(CHARGE=cl_me3,),
@@ -506,7 +527,6 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                          _F(CHARGE=cl_me6,), 
                          _F(CHARGE=cl_me7,), 
                          _F(CHARGE=cl_me8,), 
-                         _F(CHARGE=cl_me9,), 
                          _F(CHARGE=cl_me10,), 
                          _F(CHARGE=cl_me11,),                            
                   ),
@@ -518,7 +538,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                   TITRE='CABRI THERMOM\xe9CANIQUE &DATE &HEURE',);
    else:
       resumeca=STAT_NON_LINE(MODELE=modmeca,
-                  CHAM_MATER=_cham,
+                  CHAM_MATER=_chamt,
                   EXCIT=(_F(CHARGE=cl_me1,),
                          _F(CHARGE=cl_me2,),
                          _F(CHARGE=cl_me3,),
@@ -527,7 +547,6 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                          _F(CHARGE=cl_me6,), 
                          _F(CHARGE=cl_me7,), 
                          _F(CHARGE=cl_me8,), 
-                         _F(CHARGE=cl_me9,), 
                          _F(CHARGE=cl_me10,), 
                          _F(CHARGE=cl_me11,),                            
                   ),

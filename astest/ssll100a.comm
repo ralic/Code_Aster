@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE STRUCTURE SYMETRIQUE DE POUTRES AVEC UN COUDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,10 +144,12 @@ CHTEMP=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                       MAILLAGE=MA,
                       AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP',  VALE = 100.) )
 
-CH3=AFFE_CHAR_MECA(  MODELE=MOD,     TEMP_CALCULEE=CHTEMP  )
+CHMAT3=AFFE_MATERIAU(  MAILLAGE=MA,
+                         AFFE=_F(  GROUP_MA = 'POUTRE', MATER = MATER),
+                         AFFE_VARC=_F(NOM_VARC='TEMP',CHAMP_GD=CHTEMP, TOUT='OUI',VALE_REF=0.),)
 
-VEL3=CALC_VECT_ELEM( CHARGE=( COND_LIM,  CH3, ),   OPTION='CHAR_MECA',
-                        CHAM_MATER=CHMAT,            CARA_ELEM=CARLEM )
+VEL3=CALC_VECT_ELEM( CHARGE=( COND_LIM, ),   OPTION='CHAR_MECA',
+                        CHAM_MATER=CHMAT3,            CARA_ELEM=CARLEM )
 
 DILA_THE=ASSE_VECTEUR(  VECT_ELEM=VEL3,    NUME_DDL=NUM     )
 
@@ -269,9 +271,6 @@ MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,      NU = NU_F,
                                      TEMP_DEF_ALPHA=0.0,
                                      ALPHA = A_F) )
 
-CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,
-                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F)  )
-
 CHT1=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                        MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',
@@ -298,6 +297,10 @@ TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',      NOM_CHAM='TEMP',
                         _F(  LIST_INST = L_2,  CHAM_GD = CHT2),
                         _F(  INST = 3.,  CHAM_GD = CHT3))     )
 
+CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F),  
+                  AFFE_VARC=_F(NOM_VARC='TEMP',EVOL=TEMP, TOUT='OUI',NOM_CHAM='TEMP',),)
+
 TEST_RESU(RESU=(
             _F(  RESULTAT = TEMP,   NUME_ORDRE = 1,       NOM_CHAM = 'TEMP',
               REFERENCE = 'ANALYTIQUE',
@@ -320,7 +323,6 @@ TEST_RESU(RESU=(
             )
 
 CHG1=AFFE_CHAR_MECA(   MODELE=MOD,
-                           TEMP_CALCULEE=TEMP,
                        FORCE_NODALE=_F(  NOEUD = ('C','E',),   FZ = -1000.),DDL_IMPO=(
             _F(  NOEUD = ('B','C','D','E','F',),  DX = 0., DRY = 0., DRZ = 0.),
                      _F(  NOEUD = ('A','G',),        DX = 0., DY = 0.,  DZ = 0.))

@@ -2,7 +2,7 @@
      &                  INDQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,26 +89,40 @@ C
       INDQUA = 0
 C
       DO 2 IZONE = 1,NZOCP
-        FORM  = ZI(JFORM-1+IZONE)
-        IF (FORM.EQ.1) THEN
-          METH  = ZI(JMETH+ZMETH*(IZONE-1)+6)
-          IF (METH.EQ.7) THEN
-            INDQUA = 1
+        FORM   = ZI(JFORM-1+IZONE)
+        METH   = ZI(JMETH+ZMETH*(IZONE-1)+6)
+        IF (FORM.EQ.1) THEN     
+          IF (METH.EQ.-2) THEN  
+            INDQUA = 1            
+          ELSEIF (METH.EQ.-1) THEN  
+            INDQUA = 0            
           ELSEIF (METH.EQ.0) THEN  
             INDQUA = 0
           ELSEIF (METH.EQ.1) THEN  
             INDQUA = 0
+          ELSEIF (METH.EQ.2) THEN  
+            INDQUA = 0             
+          ELSEIF (METH.EQ.3) THEN  
+            INDQUA = 0 
+          ELSEIF (METH.EQ.4) THEN  
+            INDQUA = 0                        
           ELSEIF (METH.EQ.5) THEN  
-            INDQUA = 1
-          ELSEIF (METH.EQ.-2) THEN  
-            INDQUA = 1
+            INDQUA = 1           
+          ELSEIF (METH.EQ.7) THEN
+            INDQUA = 1            
           ELSEIF (METH.EQ.9) THEN  
             INDQUA = 0  
           ELSE
-            INDQUA = 1
+            CALL ASSERT(.FALSE.)
           ENDIF                                    
         ELSEIF (FORM.EQ.2) THEN
-          INDQUA = 1
+          IF (METH.EQ.6) THEN  
+            INDQUA = 1            
+          ELSEIF (METH.EQ.8) THEN
+            INDQUA = 1
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
         ELSEIF (FORM.EQ.3) THEN
           INDQUA = 1
         ELSE

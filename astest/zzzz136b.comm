@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION POST_RELEVE_T 2D EN DIFFERENTS REPERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,8 @@
 #                  INDICE _C     REPERE: 'CYLINDRIQUE'
 #                  INDICE _P     REPERE: 'POLAIRE'
 #
-#       VALIDATION POST_RELEVE_T 2D, OPERANDE TRAC_DIR
+#       VALIDATION POST_RELEVE_T ET MACR_LIGN_COUPE EN 2D,
+#                                    OPERANDE TRAC_DIR
 #                                    OPERANDE TRAC_NOR
 #                                    OPERANDE INVARIANT
 #                                    OPERANDE ELEM_PRINCIPAUX
@@ -105,6 +106,11 @@ CALC_ELEM( reuse=RESU, RESULTAT=RESU,
                           )
 
 CALC_NO( reuse=RESU, RESULTAT=RESU, OPTION='SIGM_NOEU_DEPL' )
+
+
+#######################################################################
+#            I -  VALIDATION POST_RELEVE_T  EN 2D                     #
+#######################################################################   
 
 #======================================================================
 #
@@ -963,6 +969,797 @@ PRIN_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
 IMPR_TABLE(   TABLE=PRIN_NO,
               NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'NOEUD', 'PRIN_1', 'PRIN_2', 'PRIN_3' )
              )
+
+#######################################################################
+#            II -  VALIDATION MACR_LIGN_COUPE  EN 2D                  #
+####################################################################### 
+
+#======================================================================
+#
+#                     OPERANDE  REPERE
+#
+#======================================================================
+#
+# ==> TENSEUR
+
+
+M1L_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='M1L_G: LISTE DE NOEUDS P1 P2, REPERE GLOBAL',
+                                      ),)
+IMPR_TABLE(TABLE=M1L_G,
+              NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+P1L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST1',
+                                    INTITULE = 'GLOBAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'GLOBAL'),
+         TITRE='P1L_G: LISTE DE NOEUDS P1 P2, REPERE GLOBAL'
+                         )
+
+IMPR_TABLE(   TABLE=P1L_G,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+# --------- 
+
+M1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
+                                      VECT_Y = ( 1., 1.,),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='M1_L: LISTE DE NOEUDS P1 P2, REPERE LOCAL',
+                                      ),)
+IMPR_TABLE(TABLE=M1_L,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+
+
+P1_L=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'LOCAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'LOCAL'),
+         TITRE='P1_L: CHEMIN P1 P2, REPERE LOCAL'
+                         )
+
+IMPR_TABLE(   TABLE=P1_L,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+# --------- 
+
+M1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',
+                                      ANGL_NAUT = ( 0., 0., 0., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='M1_U: LISTE DE NOEUDS P1 P2, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )',
+                                      ),)
+IMPR_TABLE(TABLE=M1_U,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+
+P1_U=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'UTILISAT',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'UTILISATEUR',
+                                    ANGL_NAUT = ( 0., 0., 0., )),
+         TITRE=( 'P1_U: CHEMIN P1 P2, REPERE UTILISATEUR, ',
+                 'ANGL_NAUT: ( 0. 0. 0. )', )
+                         )
+
+IMPR_TABLE(   TABLE=P1_U,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+# ---------
+
+M2_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='M2L_G: LISTE DE NOEUDS P2 P3, REPERE GLOBAL',
+                                      ),)
+IMPR_TABLE(TABLE=M2_G,
+              NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+P2L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+                                    INTITULE = 'GLOBAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'GLOBAL'),
+            TITRE='P2L_G: LISTE DE NOEUDS P2 P3, REPERE GLOBAL'
+                         )
+
+IMPR_TABLE(   TABLE=P2L_G,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+# ---------
+M2_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
+                                      VECT_Y = ( 1., 1.,),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='M2_L: LISTE DE NOEUDS P1 P2, REPERE LOCAL',
+                                      ),)
+IMPR_TABLE(TABLE=M2_L,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+P2_L=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM2,
+                                    INTITULE = 'LOCAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'LOCAL'),
+            TITRE='P2_L: CHEMIN P2 P3, REPERE LOCAL'
+                         )
+
+IMPR_TABLE(   TABLE=P2_L,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+# ---------
+M2_C=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'CYLINDRIQUE',
+                                      ORIGINE = ( 0., 0.,),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='M2L_C:  LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)',
+                                      ),)
+IMPR_TABLE(TABLE=M2_C,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+
+P2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+                                    INTITULE = 'CYLINDR',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'CYLINDRIQUE',
+                                    ORIGINE = ( 0., 0., 0., ),
+                                    AXE_Z = ( 0., 0., 1., )),
+           TITRE=( 'P2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ',
+                     'ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
+                         )
+
+IMPR_TABLE(   TABLE=P2L_C,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+# ---------
+
+M2_P=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'POLAIRE',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='M2L_P:  LISTE DE NOEUDS P2 P3, REPERE POLAIRE',
+                                      ),)
+
+IMPR_TABLE(TABLE=M2_P,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+
+
+P2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+                                    INTITULE = 'POLAIRE',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'POLAIRE'),
+            TITRE='P2L_P: LISTE DE NOEUDS P2 P3, REPERE POLAIRE'
+                         )
+
+IMPR_TABLE(   TABLE=P2L_P,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY' ,)
+             )
+
+# ---------
+M3_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST3',
+                                      INTITULE='M3L_G: LISTE DE NOEUDS P4 P3, REPERE GLOBAL',
+                                      ),)
+IMPR_TABLE(TABLE=M3_G,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+
+P3L_G=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST3',
+                                    INTITULE = 'GLOBAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'GLOBAL'),
+         TITRE='P3L_G: LISTE DE NOEUDS P4 P3, REPERE GLOBAL'
+                         )
+
+IMPR_TABLE(   TABLE=P3L_G,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+# ---------
+
+M3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
+                                      VECT_Y = ( 1., 1., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST3',
+                                      INTITULE='M3_L: LISTE DE NOEUDS P4 P3, REPERE LOCAL',
+                                      ),)
+IMPR_TABLE(TABLE=M3_L,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+P3_L=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM3,
+                                    INTITULE = 'LOCAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'LOCAL'),
+         TITRE='P3_L: CHEMIN P4 P3, REPERE LOCAL'
+                         )
+
+IMPR_TABLE(   TABLE=P3_L,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+# ---------
+
+M3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'UTILISATEUR',
+                                      ANGL_NAUT = ( 45., 0., 0., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST3',
+                                      INTITULE='M3_U: LISTE DE NOEUDS P4 P3, REPERE UTILISATEUR,ANGL_NAUT : ( 45. 0. 0. )',
+                                      ),)
+IMPR_TABLE(TABLE=M3_U,
+   NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+
+P3_U=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM3,
+                                    INTITULE = 'UTILISAT',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'UTILISATEUR',
+                                    ANGL_NAUT = ( 45., 0., 0., )),
+         TITRE=( 'P3_U: CHEMIN P4 P3, REPERE UTILISATEUR, ',
+                 'ANGL_NAUT : ( 45. 0. 0. )', )
+                         )
+
+IMPR_TABLE(   TABLE=P3_U,
+                NOM_PARA=( 'ABSC_CURV', 'SIXX', 'SIYY', 'SIZZ', 'SIXY', )
+             )
+
+#
+# ==> VECTEUR
+
+N1_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='N1_G: CHEMIN P1 P2, REPERE GLOBAL ',
+                                      ),)
+IMPR_TABLE(   TABLE=N1_G,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+
+Z1_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'GLOBAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'GLOBAL'),
+         TITRE='Z1_G: CHEMIN P1 P2, REPERE GLOBAL'
+                         )
+
+IMPR_TABLE(   TABLE=Z1_G,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+# ---------
+
+N1_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
+                                      VECT_Y = ( 1., 1., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='N1_L: CHEMIN P1 P2 REPERE LOCAL',
+                                      ),)
+IMPR_TABLE(   TABLE=N1_L,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY',  )
+             )
+
+Z1_L=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'LOCAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'LOCAL'),
+         TITRE='Z1_L: CHEMIN P1 P2, REPERE LOCAL'
+                         )
+
+IMPR_TABLE(   TABLE=Z1_L,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+# ---------
+
+N1_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',ANGL_NAUT = ( 0., 0., 0., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='N1_U: CHEMIN P1 P2, REPERE UTILISATEUR,ANGL_NAUT : ( 0. 0. 0. )',
+                                      ),)
+IMPR_TABLE(   TABLE=N1_U,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+
+Z1_U=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'UTILISAT',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'UTILISATEUR',
+                                    ANGL_NAUT = ( 0., 0., 0., )),
+         TITRE=( 'Z1_U: CHEMIN P1 P2, REPERE UTILISATEUR, ',
+                 'ANGL_NAUT : ( 0. 0. 0. )', )
+                         )
+
+IMPR_TABLE(   TABLE=Z1_U,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+# ---------
+
+N2_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='N2_G:  CHEMIN P2 P3, REPERE GLOBAL',
+                                      ),)
+IMPR_TABLE(   TABLE=N2_G,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+Z2_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM2,
+                                    INTITULE = 'GLOBAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'GLOBAL'),
+         TITRE='Z2_G: CHEMIN P2 P3, REPERE GLOBAL'
+                         )
+
+IMPR_TABLE(   TABLE=Z2_G,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+# ---------
+
+N2_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
+                                      VECT_Y = ( 1., 1., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='N2_L: CHEMIN P2 P3 REPERE LOCAL',
+                                      ),)
+IMPR_TABLE(   TABLE=N2_L,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY',)
+             )
+
+
+Z2_L=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM2,
+                                    INTITULE = 'LOCAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'LOCAL'),
+         TITRE='Z2_L: CHEMIN P2 P3, REPERE LOCAL'
+                         )
+
+IMPR_TABLE(   TABLE=Z2_L,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+# ---------
+
+N2_C=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'CYLINDRIQUE',
+                                      ORIGINE = ( 0., 0.,),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='N2L_C:  LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)',
+                                      ),)
+
+IMPR_TABLE(   TABLE=N2_C,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+
+Z2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+                                    INTITULE = 'CYLINDR',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'CYLINDRIQUE',
+                                    ORIGINE = ( 0., 0., 0., ),
+                                    AXE_Z = ( 0., 0., 1., )),
+         TITRE=( 'Z2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ',
+                 'ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
+                         )
+
+IMPR_TABLE(   TABLE=Z2L_C,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+# ---------
+
+N2_P=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE = 'POLAIRE',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST2',
+                                      INTITULE='N2L_P:  LISTE DE NOEUDS P2 P3, REPERE POLAIRE',
+                                      ),)
+
+IMPR_TABLE(   TABLE=N2_P,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY',)
+             )
+
+
+Z2L_P=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'LIST2',
+                                    INTITULE = 'POLAIRE',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'POLAIRE'),
+         TITRE='Z2L_P: LISTE DE NOEUDS P2 P3, REPERE POLAIRE'
+                         )
+
+IMPR_TABLE(   TABLE=Z2L_P,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY',)
+             )
+
+# ---------
+
+N3_G=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST3',
+                                      INTITULE='N3_G:  CHEMIN P4 P3, REPERE GLOBAL',
+                                      ),)
+IMPR_TABLE(   TABLE=N3_G,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+Z3_G=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM3,
+                                    INTITULE = 'GLOBAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'GLOBAL'),
+          TITRE='Z3_G: CHEMIN P4 P3, REPERE GLOBAL'
+                         )
+
+IMPR_TABLE(   TABLE=Z3_G,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+# ---------
+
+
+N3_L=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='LOCAL',
+                                      VECT_Y = ( 1., 1., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST3',
+                                      INTITULE='N3_L: CHEMIN P4 P3 REPERE LOCAL',
+                                      ),)
+IMPR_TABLE(   TABLE=N3_L,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY',)
+             )
+
+
+
+Z3_L=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM3,
+                                    INTITULE = 'LOCAL',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'LOCAL'),
+         TITRE='Z3_L: CHEMIN P4 P3, REPERE LOCAL'
+                         )
+
+IMPR_TABLE(   TABLE=Z3_L,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+# ---------
+N3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='UTILISATEUR',ANGL_NAUT = ( 45., 0., 0., ),
+                                      OPERATION='EXTRACTION',
+                                      GROUP_NO='LIST3',
+                                      INTITULE='N3_U: CHEMIN P1 P2, REPERE UTILISATEUR,ANGL_NAUT : ( 45. 0. 0. )',
+                                      ),)
+IMPR_TABLE(   TABLE=N3_U,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+Z3_U=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM3,
+                                    INTITULE = 'UTILISAT',
+                                    RESULTAT = RESU,
+                                    TOUT_CMP = 'OUI',
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    REPERE = 'UTILISATEUR',
+                                    ANGL_NAUT = ( 45., 0., 0., )),
+         TITRE=( 'Z3_U: CHEMIN P4 P3, REPERE UTILISATEUR, ',
+                 'ANGL_NAUT : ( 45. 0. 0. )', )
+                         )
+
+IMPR_TABLE(   TABLE=Z3_U,
+                NOM_PARA=( 'ABSC_CURV', 'DX', 'DY', )
+             )
+
+#======================================================================
+#
+#                     OPERANDE  TRAC_NOR
+#
+#======================================================================
+#
+# ==> TENSEUR
+
+O1_TN=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',GROUP_NO='LIST1',
+                                      OPERATION='EXTRACTION',TRAC_NOR = 'OUI',
+                                      NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                      INTITULE='O1_TN:LISTE DE NOEUDS P1 P2, TRAC_NOR ', 
+                                      ),)
+
+IMPR_TABLE(   TABLE=O1_TN,
+             NOM_PARA=( 'ABSC_CURV', 'TR_NOR_1', 'TR_NOR_2', 'TR_NOR_3', )
+             )
+
+W1_TN=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'TRAC_NOR',
+                                    RESULTAT = RESU,
+               NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    TRAC_NOR = 'OUI'),
+             TITRE='W1_TN: CHEMIN P1 P2, TRAC_NOR '
+                         )
+
+IMPR_TABLE(   TABLE=W1_TN,
+             NOM_PARA=( 'ABSC_CURV', 'TR_NOR_1', 'TR_NOR_2', 'TR_NOR_3', )
+             )
+
+
+#
+# ==> VECTEUR
+#     VOIR TEST TPLL01A
+
+#======================================================================
+#
+#                     OPERANDE  TRAC_DIR
+#
+#======================================================================
+#
+# ==> TENSEUR
+
+O1_TDX=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
+                                      NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                      GROUP_NO='LIST1',DIRECTION = ( 1., 0., 0., ),
+                                      INTITULE='O1_TDX: CHEMIN P1 P2, TRAC_DIR DIRECTION: (1. 0. 0.)',
+                                      ),)
+
+IMPR_TABLE(   TABLE=O1_TDX,
+              NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
+             )
+
+W1_TDX=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'TRAC_DIRX',
+                                    RESULTAT = RESU,
+               NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    TRAC_DIR = 'OUI',
+                                    DIRECTION = ( 1., 0., 0., )),
+             TITRE=( 'W1_TDX: CHEMIN  P1 P2, TRAC_DIR, ',
+                     'DIRECTION: (1. 0. 0.)', )
+                         )
+
+IMPR_TABLE(   TABLE=W1_TDX,
+              NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
+             )
+
+# ---------
+
+O1_TDY=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
+                                      NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                      GROUP_NO='LIST1',DIRECTION = ( 0., 1., 0., ),
+                                      INTITULE='O1_TDY: CHEMIN P1 P2, TRAC_DIR DIRECTION: (0. 1. 0.)',
+                                      ),)
+
+IMPR_TABLE(   TABLE=O1_TDY,
+              NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
+             )
+
+W1_TDY=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'TRAC_DIRY',
+                                    RESULTAT = RESU,
+               NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    TRAC_DIR = 'OUI',
+                                    DIRECTION = ( 0., 1., 0., )),
+             TITRE=( 'W1_TDY: CHEMIN P1 P2, TRAC_DIR, ',
+                     'DIRECTION: (0. 1. 0.)', )
+                         )
+
+IMPR_TABLE(   TABLE=W1_TDY,
+              NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
+             )
+# ---------
+O1_TDXY=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
+                                      NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                      GROUP_NO='LIST1',DIRECTION = ( 1., 1., 0., ),
+                                      INTITULE='O1_TDXY: CHEMIN P1 P2, TRAC_DIR DIRECTION: (0. 1. 0.)',
+                                      ),)
+
+IMPR_TABLE(   TABLE=O1_TDXY,
+              NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
+             )
+
+W1_TDXY=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'TRAC_DIRXY',
+                                    RESULTAT = RESU,
+               NOM_CMP = ( 'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ', ),
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    TRAC_DIR = 'OUI',
+                                    DIRECTION = ( 1., 1., 0., )),
+             TITRE=( 'W1_TDXY: CHEMIN P1 P2, TRAC_DIR, ',
+                     'DIRECTION: (1. 1. 0.)', )
+                         )
+
+IMPR_TABLE(   TABLE=W1_TDXY,
+              NOM_PARA=( 'ABSC_CURV', 'TR_DIR_1', 'TR_DIR_2', 'TR_DIR_3', )
+             )
+
+#
+# ==> VECTEUR
+
+P1_TDX=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',TRAC_DIR = 'OUI',
+                                      NOM_CMP = ( 'DX', 'DY', ),
+                                      GROUP_NO='LIST1',DIRECTION = ( 1., 0., 0., ),
+                                      INTITULE='P1_TDX: CHEMIN P1 P2, TRAC_DIR DIRECTION: (1. 0. 0.)',
+                                      ),)
+
+IMPR_TABLE(   TABLE=P1_TDX,
+              NOM_PARA=( 'ABSC_CURV', 'TRAC_DIR', )
+             )
+
+Z1_TDX=POST_RELEVE_T(  ACTION=_F(  CHEMIN = CHEM1,
+                                    INTITULE = 'TRAC_DIRX',
+                                    RESULTAT = RESU,
+                                    NOM_CMP = ( 'DX', 'DY', ),
+                                    NOM_CHAM = 'DEPL',
+                                    OPERATION = 'EXTRACTION',
+                                    TRAC_DIR = 'OUI',
+                                    DIRECTION = ( 1., 0., 0., )),
+             TITRE=( 'Z1_TDX: CHEMIN P1 P2, TRAC_DIR, ',
+                     'DIRECTION: (1. 0. 0.)', )
+                         )
+
+IMPR_TABLE(   TABLE=Z1_TDX,
+                NOM_PARA=( 'ABSC_CURV', 'TRAC_DIR', )
+             )
+
+
+#======================================================================
+#
+#                     OPERANDE  INVARIANT
+#
+#======================================================================
+#
+INVA_M=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',INVARIANT = 'OUI',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='INVA_M: LISTE DE NOEUDS P1 P2, INVARIANT, A PARTIR DE SIGM_NOEU_DEPL',
+                                      ),)
+
+IMPR_TABLE(   TABLE=INVA_M,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'VMIS', 'TRESCA', 'TRACE', 'DETER'),
+             )
+
+
+INVA_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+                                     INTITULE = 'INVARIANT',
+                                     RESULTAT = RESU,
+                                     NOM_CHAM = 'SIGM_NOEU_DEPL',
+                                     OPERATION = 'EXTRACTION',
+                                     INVARIANT = 'OUI',
+                                  ),
+             TITRE=( 'INVA_P: LISTE DE NOEUDS P1 P2, INVARIANT, ',
+                     'A PARTIR DE SIGM_NOEU_DEPL', )
+                         )
+
+IMPR_TABLE(   TABLE=INVA_P,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'VMIS', 'TRESCA', 'TRACE', 'DETER'),
+             )
+
+
+#======================================================================
+#
+#                     OPERANDE  ELEM_PRINCIPAUX
+#
+#======================================================================
+#
+PRIN_M=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'SIGM_NOEU_DEPL',
+                      LIGN_COUPE = _F(TYPE='GROUP_NO', REPERE='GLOBAL',
+                                      OPERATION='EXTRACTION',ELEM_PRINCIPAUX = 'OUI',
+                                      GROUP_NO='LIST1',
+                                      INTITULE='PRIN_M:LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX A PARTIR DE SIGM_NOEU_DEPL',
+                                      ),)
+
+IMPR_TABLE(   TABLE=PRIN_M,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'PRIN_1', 'PRIN_2', 'PRIN_3' )
+             )
+
+
+PRIN_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'LIST1',
+                                     INTITULE = 'INVARIANT',
+                                     RESULTAT = RESU,
+                                     NOM_CHAM = 'SIGM_NOEU_DEPL',
+                                     OPERATION = 'EXTRACTION',
+                                     ELEM_PRINCIPAUX = 'OUI',
+                                  ),
+             TITRE=( 'PRIN_P: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, ',
+                     'A PARTIR DE SIGM_NOEU_DEPL', )
+                         )
+
+IMPR_TABLE(   TABLE=PRIN_P,
+              NOM_PARA=( 'NOM_CHAM', 'ABSC_CURV', 'PRIN_1', 'PRIN_2', 'PRIN_3' )
+             )
+
 
 
 FIN( )

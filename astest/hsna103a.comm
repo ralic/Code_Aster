@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2007   AUTEUR WADIER Y.WADIER 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE PREDICTION D'AMORCAGE PAR LE CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -442,7 +442,10 @@ MAT_M = DEFI_MATERIAU (
 CHMAT_M=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='SCYL',
                              MATER    = MAT_M,
-                             TEMP_REF = 289.5,),),);
+                             TEMP_REF = 289.5,),),
+                    AFFE_VARC=_F( TOUT='OUI',EVOL=THERMIK,
+                        NOM_VARC='TEMP',NOM_CHAM='TEMP',
+                        VALE_REF = 289.5),);
 
                       
 #----------------------------------------------------------------------
@@ -499,10 +502,6 @@ ZERO = DEFI_FONCTION ( NOM_PARA    = 'INST',
                        PROL_DROITE = 'CONSTANT',
                        PROL_GAUCHE = 'CONSTANT' )
 
-# CHARGEMENT THERMIQUE
-
-CH_THER = AFFE_CHAR_MECA ( MODELE        = MO_MECA,
-                           TEMP_CALCULEE = THERMIK ,);
 
 # CHARGEMENT MECANIQUE
 
@@ -538,7 +537,7 @@ CLIM = AFFE_CHAR_MECA_F ( MODELE        = MO_MECA,
 SIG = STAT_NON_LINE (
   MODELE      = MO_MECA,
   CHAM_MATER  = CHMAT_M,
-  EXCIT       =( _F ( CHARGE         = CH_THER, ),
+  EXCIT       =( 
                  _F ( CHARGE         = CH_MECA, ),
                  _F ( CHARGE         = CLIM, ), ),
                    

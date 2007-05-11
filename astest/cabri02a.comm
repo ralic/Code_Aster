@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TEST DE REFERENCE POUR LA MACRO DE CALCUL DE BRIDES CABRI
@@ -316,8 +316,24 @@ CON_BJ1=AFFE_CHAR_MECA(MODELE=MO_ME,
                                   GROUP_MA_ESCL='SCJB',),);
 # DEFORMATION THERMIQUE
 
-CHA_TH1=AFFE_CHAR_MECA(MODELE=MO_ME,
-                       TEMP_CALCULEE=TH1,);
+CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
+                    MODELE=MO_TH,
+                    AFFE=(_F(GROUP_MA='BRIDE',
+                             MATER=MA_BRI,),
+                          _F(GROUP_MA='ROND',
+                             MATER=MA_RON,),
+                          _F(GROUP_MA='ECROU',
+                             MATER=MA_ECR,),
+                          _F(GROUP_MA='GOUJON',
+                             MATER=MA_GOU,),
+                          _F(GROUP_MA='JOINT',
+                             MATER=MA_LIM,),),
+                     AFFE_VARC=_F(NOM_VARC='TEMP',
+                             TOUT='OUI',
+                             EVOL=TH1,
+                             NOM_CHAM='TEMP',
+                             VALE_REF=TEMP_INI),);
+
 # SERRAGE ECROU/GOUJON
 
 CHA_ME3=AFFE_CHAR_MECA_F(MODELE=MO_ME,
@@ -342,14 +358,13 @@ CHA_ME4=AFFE_CHAR_MECA(MODELE=MO_ME,
 
 ME1TH=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                     MODELE=MO_ME,
-                    CHAM_MATER=CHMAT,
+                    CHAM_MATER=CHMTM,
                     EXCIT=(_F(CHARGE=CL_ME1,),
                            _F(CHARGE=CL_ME2,),
                            _F(CHARGE=CL_ME3,),
                            _F(CHARGE=CL_ME4,),
                            _F(CHARGE=CL_ME5,),
                            _F(CHARGE=CON_BJ1,),
-                           _F(CHARGE=CHA_TH1,),
                            _F(CHARGE=CHA_ME1,),
                            _F(CHARGE=CHA_ME2,),
                            _F(CHARGE=CHA_ME3,),

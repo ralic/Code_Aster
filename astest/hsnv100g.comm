@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,13 +119,21 @@ CHMECA=AFFE_CHAR_MECA(
            _F( NOEUD = 'N3',     DX = 0., DZ=0.),
            _F( NOEUD = 'N4',    DZ=0.),
            _F( GROUP_NO = 'GRNO1',  DY = 0.),
-           _F( GROUP_NO = 'GRNO2',  DY = 0.)),
-          TEMP_CALCULEE=TEMPE
-                                                                )
+           _F( GROUP_NO = 'GRNO2',  DY = 0.)),)
+
+CTM=AFFE_MATERIAU( 
+            MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT,),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TEMPE,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=0.),)
+
 
 U=STAT_NON_LINE( 
                             MODELE=MOMECA,
-                        CHAM_MATER=CM,
+                        CHAM_MATER=CTM,
                              EXCIT=_F( 
                 CHARGE = CHMECA),
                          COMP_INCR=_F( 

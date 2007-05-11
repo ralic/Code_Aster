@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,7 +104,7 @@ UTOT=STAT_NON_LINE(MODELE=MODELEK,
 #                              RENUM='RCMK',
 #                              STOP_SINGULIER='OUI',),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=2,);
+                   INFO=1,);
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOEUD=('N1','N2','N3','N4','N5','N6','N7','N8',),

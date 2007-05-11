@@ -3,7 +3,7 @@
       CHARACTER*(*)       LITAB , BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,10 @@ C       .LTNS : K24 : NOMS DES TABLE
 C
 C IN  : LITAB  : NOM DE LA SD L_TABLE A CREER.
 C IN  : BASE   : BASE SUR LAQUELLE ON CREE LA SD L_TABLE
+
+C     REMARQUE :
+C        LA L_TABLE EST ALLOUEE A LA LONGUEUR 7, PUIS ELLE S'AGRANDIT
+C        DE 6 EN 6
 C     ------------------------------------------------------------------
       CHARACTER*1  BASELT
       CHARACTER*19 LISTAB

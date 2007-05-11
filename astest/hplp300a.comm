@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE AVEC MODULE D'YOUNG FONCTION DE LA TEMPERATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -345,12 +345,21 @@ CHARGT=AFFE_CHAR_MECA(    MODELE=MODEL_ME,DDL_IMPO=(
                                        DX = 0.)),
                             PRES_REP=_F(  GROUP_MA = 'CONTOUR',
                                        PRES = 1.),
-                           TEMP_CALCULEE=TEMP
                         )
+
+# ATTRIBUTION DU MATERIAU
+CHMTM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    MATER = ACIER),
+                             AFFE_VARC=_F( TOUT='OUI',
+                                    EVOL=TEMP,
+                                    NOM_VARC='TEMP',
+                                    NOM_CHAM='TEMP',),
+  )
 
 # RESOLUTION
 DEF=MECA_STATIQUE(    MODELE=MODEL_ME,
-                        CHAM_MATER=CHMAT,
+                        CHAM_MATER=CHMTM,
                         EXCIT=_F(  CHARGE = CHARGT)  )
 
 #

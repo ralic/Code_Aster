@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,13 +124,19 @@ TEMPE=THER_LINEAIRE(  MODELE=MOTHER,   CHAM_MATER=CM,
 CHMECA=AFFE_CHAR_MECA( 
             MODELE=MOMECA,DDL_IMPO=(
            _F( GROUP_NO = 'GRNM1',  DY = 0.),
-           _F( GROUP_NO = 'GRNM3',  DY = 0.)),
-          TEMP_CALCULEE=TEMPE
-                                                                )
+           _F( GROUP_NO = 'GRNM3',  DY = 0.)),)
+
+CTM=AFFE_MATERIAU( 
+            MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT,),
+          AFFE_VARC=_F( TOUT='OUI',EVOL=TEMPE,
+                        NOM_VARC='TEMP',NOM_CHAM='TEMP',
+                        VALE_REF = 0.0),)
+
 
 U=STAT_NON_LINE( 
                             MODELE=MOMECA,
-                        CHAM_MATER=CM,
+                        CHAM_MATER=CTM,
                              EXCIT=_F( 
                 CHARGE = CHMECA),
                          COMP_INCR=_F( 

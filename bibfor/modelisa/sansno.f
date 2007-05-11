@@ -2,7 +2,7 @@
      &                  MOTGRZ,MOTZ   ,SANSNZ,PSANZ ,NUMSUR)      
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,6 +54,7 @@ C OUT PSANS  : POINTEUR PAR ZONE DES NOEUDS LUS DANS LES MOT-CLEFS
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
+      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -74,11 +75,12 @@ C
       CHARACTER*24 SANS ,PSANS,PSURNO,CONTNO,PZONE
       INTEGER      JSANS,JPSANS,JSUNO,JNOCO,JZONE
       INTEGER      JDECNO,STOCNO 
-      INTEGER      I,IZONE,INO,NBSURF,ISURF
+      INTEGER      I,IJ,IZONE,INO,NBSURF,ISURF,ITT
       INTEGER      NUMNO,NUELIM,IELIM
-      INTEGER      NBNO,NBELIM,JELIM,JTRAV,LTRAV
+      INTEGER      NBNO,NBELIM,JELIM,JTRAV,LTRAV,JTRAV2
       CHARACTER*16 MOTGR,MOT
       LOGICAL      LEXCL
+      CHARACTER*8  MMAI1,MMAI2
 C
 C ----------------------------------------------------------------------
 C
@@ -116,52 +118,65 @@ C
 C
 C --- LECTURE DES NOEUDS DONNES SOUS SANS_NOEUD OU SANS_GROUP_NO
 C 
+        CALL JEDETR('&&SANSNO.SANSNO' )
         CALL PALINO(NOMA,MOTFAC,MOTGR,MOT,IZONE,
      &              '&&SANSNO.SANSNO')
-        CALL JEVEUO('&&SANSNO.SANSNO','E',JELIM)
+        CALL JEVEUO('&&SANSNO.SANSNO','E',JELIM)   
 C
 C --- NOMBRE DE NOEUDS A ELIMINER POUR LA ZONE
 C        
         NBELIM = ZI(JELIM)
+        IF (NBELIM.NE.0) THEN
+          CALL JEDETR('&&SANSNO.TRAV2' )
+          CALL WKVECT('&&SANSNO.TRAV2','V V L',NBELIM,JTRAV2)
+        ENDIF  
 C
 C --- ACCES A LA SURFACE DE CONTACT
 C        
         NBSURF = ZI(JZONE+IZONE) - ZI(JZONE+IZONE-1)
         IF (NUMSUR.GT.NBSURF) THEN
           CALL ASSERT(.FALSE.)      
-        ENDIF         
+        ENDIF   
+        IF (NUMSUR.NE.0) THEN
+          CALL ASSERT(.FALSE.)      
+        ENDIF                      
         ISURF  = NBSURF*(IZONE-1)+NUMSUR
 C
 C --- VERIF SI NOEUD APPARTIENT A SURFACE DE CONTACT
 C
-        IF (NUMSUR.NE.0) THEN
-          NBNO   = ZI(JSUNO+ISURF) - ZI(JSUNO+ISURF-1)
-          JDECNO = ZI(JSUNO+ISURF-1)         
-          DO 50 IELIM = 1, NBELIM
-            LEXCL  = .TRUE.
-            NUELIM = ZI(JELIM+IELIM)
+        
+        DO 50 IELIM = 1, NBELIM
+          NUELIM = ZI(JELIM+IELIM)     
+          CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUELIM),MMAI1)
+          DO 11 IJ = 1,NBSURF
+            ISURF  = NBSURF*(IZONE-1)+IJ
+            NBNO   = ZI(JSUNO+ISURF) - ZI(JSUNO+ISURF-1)
+            JDECNO = ZI(JSUNO+ISURF-1)
             DO 40 INO = 1,NBNO          
               NUMNO  = ZI(JNOCO+JDECNO+INO-1)
+              CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUMNO),MMAI2)
               IF (NUMNO .EQ.NUELIM) THEN
-                LEXCL = .FALSE.
-                GOTO 45
+                ZL(JTRAV2+IELIM) = .TRUE. 
               ENDIF         
    40       CONTINUE  
-   45       CONTINUE
-            IF (LEXCL) THEN
-              IF (ZI(JELIM+IELIM).NE.0) THEN
-                ZI(JELIM+IELIM) = 0
-                NBELIM = NBELIM - 1
-              ENDIF             
-            ENDIF         
-   50     CONTINUE 
-        ENDIF        
+   11     CONTINUE                     
+   50   CONTINUE 
+C
+        DO 51 IELIM = 1, NBELIM
+          NUELIM = ZI(JELIM+IELIM)
+          LEXCL  = ZL(JTRAV2+IELIM)
+          CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUELIM),MMAI1)
+          IF (.NOT.LEXCL) THEN
+            NBELIM = NBELIM - 1
+          ENDIF
+          
+  51    CONTINUE               
 C
 C --- NOMBRE FINAL DE NOEUDS A ELIMINER
-C
+C    
         IF (NBELIM.LT.0) THEN
           NBELIM = 0
-        ENDIF                
+        ENDIF               
 C
 C --- MISE A JOUR POINTEUR
 C
@@ -169,10 +184,13 @@ C
 C
 C --- MISE A JOUR SD
 C
-        DO 100 IELIM = 1,NBELIM
+        ITT    = 1
+        DO 100 IELIM = 1,ZI(JELIM)
           NUELIM = ZI(JELIM+IELIM)
-          IF (NUELIM.NE.0) THEN
-            ZI(JTRAV+STOCNO+IELIM-1) = NUELIM 
+          LEXCL  = ZL(JTRAV2+IELIM)
+          IF (LEXCL) THEN          
+            ZI(JTRAV+STOCNO+ITT-1) = NUELIM 
+            ITT = ITT + 1
           ENDIF                  
   100   CONTINUE 
 C
@@ -201,6 +219,7 @@ C --- DESTRUCTION DES VECTEURS DE TRAVAIL TEMPORAIRES
 C
       CALL JEDETR('&&SANSNO.SANSNO')
       CALL JEDETR('&&SANSNO.TRAV'  )
+      CALL JEDETR('&&SANSNO.TRAV2' )      
 C
       CALL JEDEMA()  
       END

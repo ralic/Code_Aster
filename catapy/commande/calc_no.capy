@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,10 +24,7 @@ def calc_no_prod(RESULTAT,**args):
 CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='o',
             fr="Enrichir une SD Résultat par des champs aux noeuds calculés à partir de champs aux éléments évalués aux noeuds",
             UIinfo={"groupes":("Post traitements",)},
-         RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
-                                               mode_acou,mode_stat,mode_stat_depl,mode_stat_acce,
-                                              mode_stat_forc,evol_ther,evol_noli,base_modale,
-                                               mult_elas,fourier_elas,fourier_ther,mode_flamb ) ),
+         RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
          SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité.",
                                ang="List of sensitivity parameters"),

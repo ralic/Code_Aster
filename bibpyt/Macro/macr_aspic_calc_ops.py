@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,14 +133,13 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                            PHENOMENE   ='THERMIQUE',
                                            MODELISATION='3D' )       )
 #
-#     --- commande AFFE_MATERIAU ---
+#     --- commande AFFE_MATERIAU (thermique)---
 #
-  if CHAM_MATER!=None : self.DeclareOut('affmat',CHAM_MATER)
   mcfact=[]
   for mater in mc_AFFE_MATERIAU :
      if mater['TOUT']!=None : mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
      else                   : mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
-  affmat = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
+  __affmat = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
                           MODELE   = modele ,
                           AFFE     = mcfact    )
 #
@@ -178,14 +177,33 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
      if INCREMENT['NUME_INST_FIN' ]!=None : mcsimp['NUME_FIN' ]=INCREMENT['NUME_INST_FIN' ]
      mcfact=_F(LIST_INST=INCREMENT['LIST_INST'],**mcsimp)
      resuth = THER_LINEAIRE( MODELE     = __modthe ,
-                             CHAM_MATER = affmat ,
+                             CHAM_MATER = __affmat ,
                              TEMP_INIT  = _F(STATIONNAIRE='OUI',),
                              EXCIT      = _F(CHARGE=__chther,),
                              INCREMENT  = mcfact, )
 #
-     if CHARGE!=None : self.DeclareOut('chmeth',CHARGE)
-     chmeth = AFFE_CHAR_MECA( MODELE        = modele ,
-                              TEMP_CALCULEE = resuth )
+#     --- commande AFFE_MATERIAU (mécanique)---
+#
+  if CHAM_MATER!=None : self.DeclareOut('affmth',CHAM_MATER)
+  indther=0
+  if ECHANGE!=None and RESU_THER!=None : indther=1
+  mcfact=[]
+  mcfac2=[]
+  for mater in mc_AFFE_MATERIAU :
+     if mater['TOUT']!=None : 
+       mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],))
+       if indther==1:
+         mcfac2.append(_F(NOM_VARC='TEMP',TOUT='OUI',
+                        EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF']),)
+     else: 
+       mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],))
+       if indther==1:
+         mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA=mater['GROUP_MA'],
+                        EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF']),)
+  affmth = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
+                          MODELE   = modele ,
+                          AFFE     = mcfact,
+                          AFFE_VARC= mcfac2,)
 #
 #     --- commande AFFE_CHAR_MECA ---
 #         condition aux limites
@@ -279,8 +297,6 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
   mcfex=[]  # mot clé facteur EXCIT
   mcfex.append(_F(CHARGE=_conlim,))
-  if ECHANGE!=None :
-     mcfex.append(_F(CHARGE=chmeth,))
   if PRES_REP['FONC_MULT']!=None :
      mcfex.append(_F(CHARGE=_chpres,FONC_MULT=PRES_REP['FONC_MULT']))
   else :
@@ -341,7 +357,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   motscles  ['INCREMENT'    ] =dIncrem
   self.DeclareOut('nomres',self.sd)
   nomres = STAT_NON_LINE( MODELE     = modele ,
-                          CHAM_MATER = affmat ,
+                          CHAM_MATER = affmth ,
                           CARA_ELEM  = carael ,
                           INFO       = INFO   , **motscles)
 #

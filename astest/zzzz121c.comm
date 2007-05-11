@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,13 +91,8 @@ RETHZERO=THER_LINEAIRE( MODELE=MOTHZERO,
                       )
 #
 # 3.2. LA MECANIQUE
-# 3.2.1. MISE EN PLACE DES MATERIAUX
-#
-MAZERO_M=AFFE_MATERIAU(    MAILLAGE=MZERO_2,AFFE=(
-       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,   TEMP_REF = 20.,   ),
-       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   TEMP_REF = 20.,   ))
-                         )
-# 3.2.2. MODELE
+
+# 3.2.1. MODELE
 #
 MOMEZERO=AFFE_MODELE(    MAILLAGE=MZERO_2,
   AFFE=_F(  TOUT = 'OUI',   PHENOMENE = 'MECANIQUE',   MODELISATION = 'D_PLAN',  ))
@@ -106,7 +101,7 @@ MZERO_2=MODI_MAILLAGE( reuse=MZERO_2,   MAILLAGE=MZERO_2,
                          ORIE_PEAU_2D=_F(  GROUP_MA = ('BORD_GAU', 'BORD_SUP',),  )
                        )
 #  
-# 3.2.3. PROJECTION DE LA TEMPERATURE DU MAILLAGE EN DEGRE 1 VERS DEGRE 2
+# 3.2.2. PROJECTION DE LA TEMPERATURE DU MAILLAGE EN DEGRE 1 VERS DEGRE 2
 #
 ##IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( RESULTAT=RETHZERO,NOM_CHAM='TEMP') ) ;
 TZERO_2=PROJ_CHAMP(METHODE='ELEM',
@@ -115,14 +110,24 @@ TZERO_2=PROJ_CHAMP(METHODE='ELEM',
                     MODELE_2=MOMEZERO,
                     TOUT_ORDRE='OUI')        
 ###IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( RESULTAT=TZERO_2,) ) ;
-#  
+# 
+# 3.2.3. MISE EN PLACE DES MATERIAUX
+#
+MAZERO_M=AFFE_MATERIAU(    MAILLAGE=MZERO_2,AFFE=(
+       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,    ),
+       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,    )),
+           AFFE_VARC=_F(TOUT='OUI', 
+                        EVOL=TZERO_2,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=20.),)
+ 
 # 3.2.4. CHARGEMENT
 #
 CHMEZERO=AFFE_CHAR_MECA(    MODELE=MOMEZERO,
                         DDL_IMPO=_F(  GROUP_NO = 'ORIGINE',       DY = 0.,      ),
                         PRES_REP=_F(  GROUP_MA = 'BORD_SUP',    PRES = 1000.,   ),
                         FACE_IMPO=_F(  GROUP_MA = 'BORD_GAU',    DNOR = 0.,      ),
-                        TEMP_CALCULEE=TZERO_2     
                           )
 #
 # 3.2.5. RESOLUTION
@@ -197,36 +202,42 @@ RETHUN=THER_LINEAIRE( MODELE=MOTHUN,
 ###                      TEMP_INIT=_F(  CHAM_NO = TEMPUN,   ),
 #
 # 5.2. LA MECANIQUE
-# 5.2.1. MISE EN PLACE DES MATERIAUX
-#
-MAUN_M=AFFE_MATERIAU(    MAILLAGE=MUN_2,AFFE=(
-       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,   TEMP_REF = 20.,   ),
-       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   TEMP_REF = 20.,   ))
-                         )
-# 5.2.2. MODELE
+
+# 5.2.1. MODELE
 #
 MOMEUN=AFFE_MODELE(    MAILLAGE=MUN_2,
   AFFE=_F(  TOUT = 'OUI',   PHENOMENE = 'MECANIQUE',   MODELISATION = 'D_PLAN',  ))
 #  
-# 5.2.3. PROJECTION DE LA TEMPERATURE DU MAILLAGE EN DEGRE 1 VERS DEGRE 2
+# 5.2.2. PROJECTION DE LA TEMPERATURE DU MAILLAGE EN DEGRE 1 VERS DEGRE 2
 #
 ###IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( RESULTAT=RETHUN,) ) ;
 TUN_2=PROJ_CHAMP(METHODE='ELEM',
                     RESULTAT=RETHUN,
                     MODELE_1=MOTHUN,
                     MODELE_2=MOMEUN,
-                    TOUT_ORDRE='OUI')        
+                    TOUT_ORDRE='OUI')
+        
 ###IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( RESULTAT=TUN_2,) ) ;
 #  
-# 5.2.4. CHARGEMENT
+# 5.2.3. CHARGEMENT
 #
 CHMEUN=AFFE_CHAR_MECA(    MODELE=MOMEUN,
                         DDL_IMPO=_F(  GROUP_NO = 'ORIGINE',       DY = 0.,      ),
                         PRES_REP=_F(  GROUP_MA = 'BORD_SUP',    PRES = 1000.,   ),
                         FACE_IMPO=_F(  GROUP_MA = 'BORD_GAU',    DNOR = 0.,      ),
-                        TEMP_CALCULEE=TUN_2     
                           )
+# 5.2.4. MISE EN PLACE DES MATERIAUX
 #
+MAUN_M=AFFE_MATERIAU(    MAILLAGE=MUN_2,AFFE=(
+       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,     ),
+       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,    )),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TUN_2,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=20.),)
+
+
 # 5.2.5. RESOLUTION
 #
 REMEUN=MECA_STATIQUE( MODELE=MOMEUN,
@@ -328,18 +339,13 @@ RETHDEUX=THER_LINEAIRE( MODELE=MOTHDEUX,
 ###                      TEMP_INIT=_F(  CHAM_NO = TEMPDEUX,   ),
 #
 # 8.2. LA MECANIQUE
-# 8.2.1. MISE EN PLACE DES MATERIAUX
-#
-MADEUX_M=AFFE_MATERIAU(    MAILLAGE=MDEUX_2,AFFE=(
-       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,   TEMP_REF = 20.,   ),
-       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   TEMP_REF = 20.,   ))
-                         )
-# 8.2.2. MODELE
+
+# 8.2.1. MODELE
 #
 MOMEDEUX=AFFE_MODELE(    MAILLAGE=MDEUX_2,
   AFFE=_F(  TOUT = 'OUI',   PHENOMENE = 'MECANIQUE',   MODELISATION = 'D_PLAN',  ))
 #  
-# 8.2.3. PROJECTION DE LA TEMPERATURE DU MAILLAGE EN DEGRE 1 VERS DEGRE 2
+# 8.2.2. PROJECTION DE LA TEMPERATURE DU MAILLAGE EN DEGRE 1 VERS DEGRE 2
 #
 ###IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( RESULTAT=RETHDEUX,) ) ;
 TDEUX_2=PROJ_CHAMP(METHODE='ELEM',
@@ -349,13 +355,23 @@ TDEUX_2=PROJ_CHAMP(METHODE='ELEM',
                     TOUT_ORDRE='OUI')        
 ###IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( RESULTAT=TDEUX_2,) ) ;
 #  
+# 8.2.3. MISE EN PLACE DES MATERIAUX
+#
+MADEUX_M=AFFE_MATERIAU(    MAILLAGE=MDEUX_2,AFFE=(
+       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,    ),
+       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   )),
+          AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TDEUX_2,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',
+                        VALE_REF=20.),)
+
 # 8.2.4. CHARGEMENT
 #
 CHMEDEUX=AFFE_CHAR_MECA(    MODELE=MOMEDEUX,
                         DDL_IMPO=_F(  GROUP_NO = 'ORIGINE',       DY = 0.,      ),
                         PRES_REP=_F(  GROUP_MA = 'BORD_SUP',    PRES = 1000.,   ),
                         FACE_IMPO=_F(  GROUP_MA = 'BORD_GAU',    DNOR = 0.,      ),
-                        TEMP_CALCULEE=TDEUX_2     
                           )
 #
 # 8.2.5. RESOLUTION

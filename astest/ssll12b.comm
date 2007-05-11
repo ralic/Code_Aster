@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES SOUS TROIS SOLLICITATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 #=======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'SSLL12B',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(  NOM = 'SSLL12B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAGE=LIRE_MAILLAGE(  )
 

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -737,6 +737,16 @@ C     ------------------------------------------------------------------
         DO 280 I = 1,NBCHAM
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHTHET(I)))
   280   CONTINUE
+
+C       -- AJOUT D'UN PARAMETRE BIDON : XXXX POUR QUE LE POINTEUR
+C          DE NOM .NOVA SOIT UN OBJET JEVEUX NON VIDE :
+        CALL JEECRA(NOMS2//'.NOVA','NOMMAX',1,' ')
+        CALL JECROC(JEXNOM(NOMS2//'.NOVA','XXXX'))
+
+        CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',1)
+        CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
+
+        CALL UTACCE('P',NOMSD,'XXXX' ,'XXXX','K8',NBORDR)
 
         GO TO 310
 

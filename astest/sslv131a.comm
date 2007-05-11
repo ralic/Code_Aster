@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ORTHOTROPIE DANS UN REPERE QUELCONQUE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,8 +236,6 @@ MATORTH2=DEFI_MATERIAU(
               G_TN = 13000.,     G_LN = 7000.,   G_LT = 10500.,
               ALPHA_L=1.E-3,    ALPHA_T = 1.5E-3,  ALPHA_N=2.E-3) )
 
-CHMATOR2=AFFE_MATERIAU(  MAILLAGE=MA,
-           AFFE=_F(  TOUT = 'OUI',   MATER = MATORTH2) )
 
 CHT0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                    MAILLAGE=MA,
@@ -257,20 +255,33 @@ TEMPE=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                               _F(  INST = 1.,  CHAM_GD = CHT1))
                   )
 
-CHAR3D2=AFFE_CHAR_MECA(  MODELE=MOD3D,TEMP_CALCULEE=TEMPE,DDL_IMPO=(
+CHAR3D2=AFFE_CHAR_MECA(  MODELE=MOD3D,DDL_IMPO=(
               _F( NOEUD = 'A',   DX = 0.,       DY = 0.,     DZ = 0.),
               _F( NOEUD = 'B',   DX = 9.,       DY = 14.,    DZ = 18.),
               _F( NOEUD = 'C',   DX = 13.,      DY = 21.,    DZ = 26.),
               _F( NOEUD = 'D',   DX = 5.,      DY = 8.,    DZ = 11.)))
 
-CHAR3D3=AFFE_CHAR_MECA(  MODELE=MOD3D,TEMP_CALCULEE=CHT1,DDL_IMPO=(
+CHAR3D3=AFFE_CHAR_MECA(  MODELE=MOD3D,DDL_IMPO=(
               _F( NOEUD = 'A',   DX = 0.,       DY = 0.,     DZ = 0.),
               _F( NOEUD = 'B',   DX = 9.,       DY = 14.,    DZ = 18.),
               _F( NOEUD = 'C',   DX = 13.,      DY = 21.,    DZ = 26.),
               _F( NOEUD = 'D',   DX = 5.,      DY = 8.,    DZ = 11.)))
+
+CHM3D2=AFFE_MATERIAU(  MAILLAGE=MA,
+           AFFE=_F(  TOUT = 'OUI',   MATER = MATORTH2),
+           AFFE_VARC=_F( TOUT='OUI',
+                        EVOL=TEMPE,
+                        NOM_VARC='TEMP',
+                        NOM_CHAM='TEMP',),)
+
+CHM3D3=AFFE_MATERIAU(  MAILLAGE=MA,
+           AFFE=_F(  TOUT = 'OUI',   MATER = MATORTH2),
+           AFFE_VARC=_F( TOUT='OUI',
+                        CHAMP_GD=CHT1,
+                        NOM_VARC='TEMP',),)
 
 MEST3=STAT_NON_LINE(MODELE=MOD3D,
-                    CHAM_MATER=CHMATOR2,
+                    CHAM_MATER=CHM3D2,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D2),
                     COMP_INCR=_F(RELATION='ELAS'),
@@ -315,7 +326,7 @@ TEST_RESU(RESU=(
          POINT = 1,       NOM_CMP = 'SIYZ',REFERENCE='ANALYTIQUE',    VALE = 126657.366971),),
             );
 MEST4=MECA_STATIQUE(MODELE=MOD3D,
-                    CHAM_MATER=CHMATOR2,
+                    CHAM_MATER=CHM3D3,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D3),);
 

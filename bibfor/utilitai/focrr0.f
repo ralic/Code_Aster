@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,8 +73,12 @@ C      CALL GETTCO(RESU,TYPRES)
 
       CALL RSNOPA(RESU,0,'&&FOCRR0.VAR.ACCES',NBACC,IBID)
       CALL JEEXIN('&&FOCRR0.VAR.ACCES',IRET)
-      IF (IRET.GT.0) CALL JEVEUO('&&FOCRR0.VAR.ACCES','E',LVACC)
-      NOMACC = ZK16(LVACC)
+      IF (IRET.GT.0) THEN
+         CALL JEVEUO('&&FOCRR0.VAR.ACCES','E',LVACC)
+         NOMACC = ZK16(LVACC)
+      ELSE
+         NOMACC = ' '
+      ENDIF
 
 C     --- REMPLISSAGE DU .PROL ---
       CALL WKVECT(NOMFON//'.PROL',BASE//' V K16',5,LPRO)

@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,6 +243,7 @@ C     ---------------------------------------
           RPRIM    = DSDE*E/(E-DSDE)
           RP       = RPRIM*VIM(1)+SIGY
         ELSEIF (COMPOR(1)(10:14) .EQ. '_PUIS') THEN
+          LINE=-1.D0
           NOMRES(1)='SY'
           NOMRES(2)='A_PUIS'
           NOMRES(3)='N_PUIS'
@@ -256,7 +257,7 @@ C     ---------------------------------------
           IF (VIM(1).GT.R8PREM()) THEN
              RPRIM    = UNSURN * SIGY * COCO * (COCO*VIM(1))**(UNSURN-1)
           ELSE
-             RPRIM    = SIGY * COCO
+             RPRIM    = E
           ENDIF
         ELSE
           NOMPAR(2)='SECH'
@@ -382,8 +383,7 @@ C
                 DP0 = SIELEQ - SIGY - RPRIM * PM
                 DP0 = DP0 / (RPRIM+1.5D0*DEUXMU)
               ELSEIF (COMPOR(1)(10:14) .EQ. '_PUIS') THEN
-                DP0 = SIELEQ - SIGY - RPRIM * PM
-                DP0 = DP0 / (RPRIM+1.5D0*DEUXMU)
+                DP0 = (SIELEQ - RP)/(1.5D0*DEUXMU)
               ELSE
                 CALL RCFONC('E','TRACTION',JPROLP,JVALEP,NBVALP,RBID,E,
      &                      NU,PM,RP,RPRIM,AIRERP,SIELEQ,DP0)
@@ -391,8 +391,10 @@ C
               XAP = DP0
               CALL ZEROFO(NMCRI1,VAL0,XAP,PRECR,NITER,DP,IRET)
               IF(IRET.EQ.1) GOTO 9999
-              IF (LINE.GE.0.5D0) THEN
+              IF (LINE.GT.0.5D0) THEN
                 RP = SIGY +RPRIM*(PM+DP)
+              ELSEIF (LINE.LT.-0.5D0) THEN
+                RP=SIGY+SIGY*(E*(PM+DP)/ALFAFA/SIGY)**UNSURN
               ELSE
                 CALL RCFONC('V','TRACTION',JPROLP,JVALEP,NBVALP,RBID,
      &                      RBID,RBID,PM+DP,RP,RBID2,AIRERP,RBID,RBID)
@@ -405,7 +407,7 @@ C
                 DP = DP / (RPRIM+1.5D0*DEUXMU)
                 RP = SIGY +RPRIM*(PM+DP)
               ELSEIF (COMPOR(1)(10:14) .EQ. '_PUIS') THEN
-                DP0 = ( SIELEQ - RP)/1.5D0/DEUXMU
+                DP0 = (SIELEQ - RP)/(1.5D0*DEUXMU)
 C AMELIORATION DE LA PREDICTION DE DP EN ESTIMANT RPRIM(PM+DP0)
 C PAS TRES EFFICACE : ON GAGNE UNE ITERATION DANS ZEROFO !
                 RPRIM0 = UNSURN*SIGY*COCO * (COCO*(PM+DP0))**(UNSURN-1)
@@ -417,8 +419,8 @@ C PAS TRES EFFICACE : ON GAGNE UNE ITERATION DANS ZEROFO !
                 NITER = NINT(CRIT(1))
                 CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,DP,IRET)
                 IF(IRET.EQ.1) GOTO 9999
-                COCO   = E/ALFAFA*SIGY
-                RP = SIGY * (COCO*(PM+DP))**UNSURN
+                COCO   = E/ALFAFA/SIGY
+                RP = SIGY + SIGY * (COCO*(PM+DP))**UNSURN
               ELSE
                 CALL RCFONC('E','TRACTION',JPROLP,JVALEP,NBVALP,RBID,E,
      &                      NU,VIM(1),RP,RPRIM,AIRERP,SIELEQ,DP)

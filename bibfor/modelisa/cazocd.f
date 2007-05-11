@@ -2,7 +2,7 @@
      &                  NDIM  ,METHOD,LGLIS ,IREAD ,IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -188,7 +188,9 @@ C
             END IF
           ELSEIF (NDIM .EQ. 3) THEN
             IF (METHOD(1:8) .EQ. 'PENALISA') THEN
-              IF (NOCN .NE. 0) THEN
+              IF (NOCN .EQ. 0) THEN
+                ZI(JMETH+ZMETH*(IWRITE-1)+6) = 3
+              ELSE   
                 ZI(JMETH+ZMETH*(IWRITE-1)+6) = 5
               ENDIF  
             ELSEIF (METHOD(1:8) .EQ. 'LAGRANGI') THEN

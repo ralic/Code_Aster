@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,6 +344,26 @@ RESUTHER=THER_LINEAIRE(MODELE=MOTHER,
                        TEMP_INIT=_F(STATIONNAIRE='OUI',),
                        ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
+MAT_TH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=P10CD910,
+                               TEMP_REF=20.0,),
+                       AFFE_VARC=_F( TOUT='OUI',
+                                     EVOL=RESUTHER,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',),
+                     );
+
+MAT_TH1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=P10CD911,
+                               TEMP_REF=20.0,),
+                       AFFE_VARC=_F( TOUT='OUI',
+                                     EVOL=RESUTHER,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',),
+                     );
+
 #////////////////////////////////////////////////////////////////////////////////////
 #            C A L C U L   M E C A N I Q U E (T H E R M O M E C A N I Q U E)
 #////////////////////////////////////////////////////////////////////////////////////
@@ -370,11 +390,6 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
 # ===========================================================
 # DEFINITION DES CHARGEMENTS DE TYPE MECANIQUE ET CL
 # ===========================================================
-# RECUPERATION DU CHAMP DE TEMPERATURE CALCULE <CHAMTEMP>
-# -------------------------------------------------------
-CHAMTEMP=AFFE_CHAR_MECA(MODELE=MODMECA,
-                        TEMP_CALCULEE=RESUTHER,);
-
 # BLOCAGE DU COLLECTEUR SUIVANT X,Y ET Z <BLOC_COL>
 # -------------------------------------------------
 BLOCAGES=AFFE_CHAR_MECA(MODELE=MODMECA,
@@ -410,9 +425,8 @@ PRESSION=AFFE_CHAR_MECA_F(MODELE=MODMECA,
 # <RESUPLAS> = VMIS_CIN2_CHAB
 # ====================================================
 RESUPLAS=STAT_NON_LINE(MODELE=MODMECA,
-                       CHAM_MATER=MAT_PLAS,
+                       CHAM_MATER=MAT_TH,
                        EXCIT=(_F(CHARGE=BLOCAGES,),
-                              _F(CHARGE=CHAMTEMP,),
                               _F(CHARGE=PRESSION,),),
                        COMP_INCR=_F(RELATION='VISC_CIN2_CHAB',
                                     DEFORMATION='PETIT',
@@ -431,9 +445,8 @@ RESUPLAS=STAT_NON_LINE(MODELE=MODMECA,
                        INFO=1,);
 
 RESUPLA1=STAT_NON_LINE(MODELE=MODMECA,
-                       CHAM_MATER=MAT_PLA1,
+                       CHAM_MATER=MAT_TH1,
                        EXCIT=(_F(CHARGE=BLOCAGES,),
-                              _F(CHARGE=CHAMTEMP,),
                               _F(CHARGE=PRESSION,),),
                        COMP_INCR=_F(RELATION='VISC_CIN2_CHAB',
                                     DEFORMATION='PETIT',

@@ -1,21 +1,21 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SDLD102A
 #
@@ -25,7 +25,7 @@
 #      - PAR CALCUL DIRECT (CALCUL DE REFERENCE),
 #      - PAR SOUS-STRUCTURATION DYNAMIQUE TRANSITOIRE.
 # LES TROIS SCHEMAS D'INTEGRATION DE DYNA_TRAN_MODAL ('EULER',
-# 'DEVOGE' ET 'NEWMARK'), AINSI QUE LA RESTITUTION SUR SQUELETTE 
+# 'DEVOGE' ET 'NEWMARK'), AINSI QUE LA RESTITUTION SUR SQUELETTE
 # ET SOUS-STRUCTURE SONT TESTES.
 #
 #
@@ -48,16 +48,16 @@ PRE_IDEAS(UNITE_IDEAS=19,
 MAILLA=LIRE_MAILLAGE( UNITE=21)
 
 #
-MODELE=AFFE_MODELE(  MAILLAGE=MAILLA,AFFE=( 
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLA,AFFE=(
                             _F( GROUP_MA = 'RESSORT',
-                                  PHENOMENE = 'MECANIQUE', 
+                                  PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_TR'),
                             _F( GROUP_NO = 'MASSE',
-                                  PHENOMENE = 'MECANIQUE', 
+                                  PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_T')))
 
 #
-PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=( 
+PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                             _F( GROUP_MA = 'RESSORT',
                                     CARA = 'K_TR_D_L',
                                     VALE = (1., 0., 0., 0., 0., 0., )),
@@ -68,9 +68,9 @@ PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
 #
 # ----- DEFINITION DU CHARGEMENT
 #
-CHARGE_L=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=( 
+CHARGE_L=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
          _F( TOUT = 'OUI', DY = 0.0,  DZ = 0.0, DRX = 0., DRY = 0., DRZ = 0.),
-         _F( NOEUD = 'N1', DX = 0.0), 
+         _F( NOEUD = 'N1', DX = 0.0),
          _F( NOEUD = 'N3', DX = 0.0)))
 
 #
@@ -80,19 +80,19 @@ CHARTRAN=AFFE_CHAR_MECA(        MODELE=MODELE,
 #
 # ----- MATRICES ET VECTEURS ELEMENTS FINIS
 #
-MERIME_L=CALC_MATR_ELEM(      MODELE=MODELE, 
-                                CHARGE=CHARGE_L, 
-                             CARA_ELEM=PARAM, 
+MERIME_L=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE_L,
+                             CARA_ELEM=PARAM,
                                OPTION='RIGI_MECA')
 
 #
-MEMAME_L=CALC_MATR_ELEM(      MODELE=MODELE, 
-                                CHARGE=CHARGE_L, 
-                             CARA_ELEM=PARAM, 
+MEMAME_L=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE_L,
+                             CARA_ELEM=PARAM,
                                OPTION='MASS_MECA')
 
 #
-V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
+V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA',
                             CHARGE=CHARTRAN)
 
 #
@@ -103,11 +103,11 @@ NUMDDL_L=NUME_DDL(  MATR_RIGI=MERIME_L)
 #
 # ----- ASSEMBLAGE DES MATRICES ET VECTEURS
 #
-RAID_L=ASSE_MATRICE(  MATR_ELEM=MERIME_L, 
+RAID_L=ASSE_MATRICE(  MATR_ELEM=MERIME_L,
                            NUME_DDL=NUMDDL_L)
 
 #
-MASS_L=ASSE_MATRICE(  MATR_ELEM=MEMAME_L, 
+MASS_L=ASSE_MATRICE(  MATR_ELEM=MEMAME_L,
                            NUME_DDL=NUMDDL_L)
 
 #
@@ -119,42 +119,42 @@ IMPR_MATRICE(  MATR_ASSE=_F( MATRICE = MASS_L,
                             FORMAT = 'IDEAS') )
 
 #
-V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM, 
+V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUMDDL_L)
 
 #
 # ----- CALCUL DES MODES PROPRES DES SS
 #
-MODES_L=MODE_ITER_SIMULT(     MATR_A=RAID_L, 
-                                 MATR_B=MASS_L, 
+MODES_L=MODE_ITER_SIMULT(     MATR_A=RAID_L,
+                                 MATR_B=MASS_L,
                              CALC_FREQ=_F( NMAX_FREQ = 1))
 
 #
 # ----- DEFINITION DES INTERFACES
 #
-LINT1_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_L, 
-                             INTERFACE=_F( NOM = 'DROITE', 
-                                        TYPE = 'CRAIGB', 
+LINT1_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_L,
+                             INTERFACE=_F( NOM = 'DROITE',
+                                        TYPE = 'CRAIGB',
                                         NOEUD = 'N3',
                          MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',)))
 
 #
-LINT2_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_L, 
-                             INTERFACE=_F( NOM = 'GAUCHE', 
-                                        TYPE = 'CRAIGB', 
+LINT2_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_L,
+                             INTERFACE=_F( NOM = 'GAUCHE',
+                                        TYPE = 'CRAIGB',
                                         NOEUD = 'N1',
                          MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',)))
 
 #
 # ----- CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
 #
-BAMO1_CL=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT1_CL, 
-                                        MODE_MECA = MODES_L, 
+BAMO1_CL=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT1_CL,
+                                        MODE_MECA = MODES_L,
                                         NMAX_MODE = 1))
 
 #
-BAMO2_CL=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2_CL, 
-                                        MODE_MECA = MODES_L, 
+BAMO2_CL=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2_CL,
+                                        MODE_MECA = MODES_L,
                                         NMAX_MODE = 1))
 
 #
@@ -171,9 +171,9 @@ IMPR_MACR_ELEM(  MACR_ELEM_DYNA=MACEL1,
 #
 # ----- CALCUL SUR MODELE GENERALISE DES SOUS-STRUCTURES
 #
-MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'COTE1', 
+MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'COTE1',
                                          MACR_ELEM_DYNA = MACEL1),
-                             _F( NOM = 'COTE2', 
+                             _F( NOM = 'COTE2',
                                          MACR_ELEM_DYNA = MACEL2)),
                              LIAISON=_F( SOUS_STRUC_1 = 'COTE1',
                                       SOUS_STRUC_2 = 'COTE2',
@@ -189,18 +189,18 @@ MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'COTE1',
 NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
 
 #
-# ----- ASSEMBLAGE DES MATRICES ET VECTEURS 
+# ----- ASSEMBLAGE DES MATRICES ET VECTEURS
 #
-MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
                                   OPTION='MASS_GENE')
 
 #
-RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
                                   OPTION='RIGI_GENE')
 
 #
-FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE, 
-                           CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE1', 
+FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
+                           CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE1',
                                             VECT_ASSE = V_ASSE))
 
 #TEST_RESU( GENE=( _F(  RESU_GENE = FGEN,
@@ -229,7 +229,7 @@ DEFI_FICHIER( UNITE=38,
               FICHIER='./REPE_OUT/FGEN.gene')
 
 IMPR_GENE(UNITE=38,
-          GENE=( _F( RESU_GENE = FGEN, 
+          GENE=( _F( RESU_GENE = FGEN,
                      TOUT_CMP_GENE = 'OUI'),
                  _F( RESU_GENE = FGEN,
                      INFO_CMP_GENE = 'NON',
@@ -253,36 +253,36 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 #
 # ----- CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
-RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN, 
-                                 MATR_B=MASGEN, 
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE', 
+RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
+                                 MATR_B=MASGEN,
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 3),
                          TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE' )
 
 ## IMPRESSION D'UN MODE_GENE
 #
-#TEST_RESU( GENE=( _F(  RESU_GENE = RESGEN, 
+#TEST_RESU( GENE=( _F(  RESU_GENE = RESGEN,
 #                       REFERENCE = 'NON_REGRESSION',
 #                       NUME_ORDRE = 1,
 #                       PARA = 'FREQ',
 #                       VALE = 1.21812E-01 ) ,
-#                  _F(  RESU_GENE = RESGEN, 
+#                  _F(  RESU_GENE = RESGEN,
 #                       REFERENCE = 'NON_REGRESSION',
 #                       NUME_MODE = 1,
 #                       PARA = 'MASS_GENE',
 #                       VALE = 2.00000E+00 ) ,
-#                  _F(  RESU_GENE = RESGEN, 
+#                  _F(  RESU_GENE = RESGEN,
 #                       REFERENCE = 'NON_REGRESSION',
 #                       FREQ = 1.21812E-01,
 #                       PARA = 'RIGI_GENE',
 #                       VALE = 1.17157E+00 ) ,
-#                  _F(  RESU_GENE = RESGEN, 
+#                  _F(  RESU_GENE = RESGEN,
 #                       REFERENCE = 'NON_REGRESSION',
 #                       NUME_ORDRE = 1,
 #                       NOM_CHAM = 'DEPL',
 #                       NUME_CMP_GENE = 2,
 #                       VALE = 1.00000E+00 ) ,
-#                  _F(  RESU_GENE = RESGEN, 
+#                  _F(  RESU_GENE = RESGEN,
 #                       REFERENCE = 'NON_REGRESSION',
 #                       FREQ = 1.21812E-01,
 #                       NOM_CHAM = 'DEPL',
@@ -296,16 +296,16 @@ DEFI_FICHIER( UNITE=37,
               FICHIER='./REPE_OUT/RESU.gene')
 
 IMPR_GENE(UNITE=37,
-          GENE=( _F(  RESU_GENE = RESGEN, 
+          GENE=( _F(  RESU_GENE = RESGEN,
                    TOUT_PARA = 'OUI',
                    TOUT_CHAM = 'NON',
                    INFO_CMP_GENE = 'NON'),
-                 _F(  RESU_GENE = RESGEN, 
+                 _F(  RESU_GENE = RESGEN,
                    INFO_GENE = 'OUI',
                    NUME_ORDRE = 1,
                    NOM_PARA = ( 'FREQ', 'MASS_GENE', 'RIGI_GENE', ),
                    INFO_CMP_GENE = 'NON'),
-                 _F(  RESU_GENE = RESGEN, 
+                 _F(  RESU_GENE = RESGEN,
                    NUME_CMP_GENE = ( 1,  3,  ),
                    NUME_ORDRE = 1,
                    NOM_PARA = ( 'FREQ', 'MASS_GENE', 'RIGI_GENE', ),
@@ -330,12 +330,12 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                                         TOUT = 'OUI')))
 
 #
-MODCOT=REST_BASE_PHYS(   RESU_GENE=RESGEN, 
-                           SOUS_STRUC='COTE1', 
+MODCOT=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+                           SOUS_STRUC='COTE1',
                            TOUT_ORDRE='OUI')
 
 #
-MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN, 
+MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN,
                              SQUELETTE=SQUEL,
                            TOUT_ORDRE='OUI')
 
@@ -347,7 +347,7 @@ NUMEMODE=NUME_DDL_GENE(  BASE=RESGEN,
 
 #
 # ----- MATRICES ET VECTEURS GENERALISES
-#  
+#
 MASPRO=PROJ_MATR_BASE( BASE=RESGEN,
                           NUME_DDL_GENE=NUMEMODE,
                           MATR_ASSE_GENE=MASGEN)
@@ -363,11 +363,11 @@ VECPRO=PROJ_VECT_BASE( BASE=RESGEN,
                           VECT_ASSE_GENE=FGEN)
 
 #
-# ----- CALCULS TRANSITOIRES 
+# ----- CALCULS TRANSITOIRES
 #
 TRANGEN1=DYNA_TRAN_MODAL(        METHODE='EULER',
-                                  MASS_GENE=MASPRO, 
-                                  RIGI_GENE=RIGPRO, 
+                                  MASS_GENE=MASPRO,
+                                  RIGI_GENE=RIGPRO,
                                      EXCIT=_F( VECT_GENE = VECPRO,
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
@@ -378,8 +378,8 @@ TRANGEN1=DYNA_TRAN_MODAL(        METHODE='EULER',
 
 #
 TRANGEN2=DYNA_TRAN_MODAL(        METHODE='DEVOGE',
-                                  MASS_GENE=MASPRO, 
-                                  RIGI_GENE=RIGPRO, 
+                                  MASS_GENE=MASPRO,
+                                  RIGI_GENE=RIGPRO,
                                      EXCIT=_F( VECT_GENE = VECPRO,
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
@@ -390,8 +390,8 @@ TRANGEN2=DYNA_TRAN_MODAL(        METHODE='DEVOGE',
 
 #
 TRANGEN3=DYNA_TRAN_MODAL(        METHODE='NEWMARK',
-                                  MASS_GENE=MASPRO, 
-                                  RIGI_GENE=RIGPRO, 
+                                  MASS_GENE=MASPRO,
+                                  RIGI_GENE=RIGPRO,
                                      EXCIT=_F( VECT_GENE = VECPRO,
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
@@ -414,7 +414,7 @@ TRANGEN4=DYNA_TRAN_MODAL(        METHODE='ADAPT',
                              ARCHIVAGE=_F(  PAS_ARCH = 1)
                             )
 
-# 
+#
 TRANGEN5=DYNA_TRAN_MODAL(        METHODE='ADAPT',
                                   MASS_GENE=MASGEN,
                                   RIGI_GENE=RIGGEN,
@@ -422,7 +422,7 @@ TRANGEN5=DYNA_TRAN_MODAL(        METHODE='ADAPT',
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
                                               INST_FIN = 82.,
-                                              PAS = 0.1, 
+                                              PAS = 0.1,
                                               COEF_MULT_PAS = 1.3,
                                               NB_POIN_PERIODE = 300,
                                               VITE_MIN = 'MAXI'),
@@ -433,6 +433,7 @@ TRANGEN5=DYNA_TRAN_MODAL(        METHODE='ADAPT',
 #
 # ----- VISUALISATION
 #
+DEBUG(SDVERI='NON')
 TRAN1=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
                             TOUT_CHAM='OUI',
                              NOEUD='NO3',
@@ -464,6 +465,7 @@ TRAN4=REST_BASE_PHYS(   RESU_GENE=TRANGEN4,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
 
+DEBUG(SDVERI='OUI')
 #
 TRAN5=REST_BASE_PHYS(   RESU_GENE=TRANGEN5,
                             TOUT_CHAM='OUI',
@@ -635,16 +637,16 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN5,
 MAYA=LIRE_MAILLAGE( UNITE=20)
 
 #
-MODEL=AFFE_MODELE(  MAILLAGE=MAYA,AFFE=( 
+MODEL=AFFE_MODELE(  MAILLAGE=MAYA,AFFE=(
                             _F( GROUP_MA = 'RESSORT',
-                                  PHENOMENE = 'MECANIQUE', 
+                                  PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_TR'),
                             _F( GROUP_NO = 'MASSE',
-                                  PHENOMENE = 'MECANIQUE', 
+                                  PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_T')))
 
 #
-PARAME=AFFE_CARA_ELEM(    MODELE=MODEL,DISCRET=( 
+PARAME=AFFE_CARA_ELEM(    MODELE=MODEL,DISCRET=(
                             _F( GROUP_MA = 'RESSORT',
                                     CARA = 'K_TR_D_L',
                                     VALE = (1., 0., 0., 0., 0., 0., )),
@@ -653,9 +655,9 @@ PARAME=AFFE_CARA_ELEM(    MODELE=MODEL,DISCRET=(
                                     VALE = (1., ))))
 
 #
-CONDLIM=AFFE_CHAR_MECA(  MODELE=MODEL,DDL_IMPO=( 
+CONDLIM=AFFE_CHAR_MECA(  MODELE=MODEL,DDL_IMPO=(
                _F( TOUT = 'OUI', DY = 0.0,  DZ = 0.0, DRX = 0., DRY = 0., DRZ = 0.),
-               _F( NOEUD = 'NO1',  DX = 0.0), 
+               _F( NOEUD = 'NO1',  DX = 0.0),
                _F( NOEUD = 'NO5',  DX = 0.0)))
 
 #
@@ -663,19 +665,19 @@ CHA_TRAN=AFFE_CHAR_MECA(        MODELE=MODEL,
                            FORCE_NODALE=_F( NOEUD = 'NO2',  FX = 1.))
 
 #
-K_ELEM=CALC_MATR_ELEM(      MODELE=MODEL, 
-                                CHARGE=CONDLIM, 
-                             CARA_ELEM=PARAME, 
+K_ELEM=CALC_MATR_ELEM(      MODELE=MODEL,
+                                CHARGE=CONDLIM,
+                             CARA_ELEM=PARAME,
                                OPTION='RIGI_MECA')
 
 #
-M_ELEM=CALC_MATR_ELEM(      MODELE=MODEL, 
-                                CHARGE=CONDLIM, 
-                             CARA_ELEM=PARAME, 
+M_ELEM=CALC_MATR_ELEM(      MODELE=MODEL,
+                                CHARGE=CONDLIM,
+                             CARA_ELEM=PARAME,
                                OPTION='MASS_MECA')
 
 #
-F_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
+F_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA',
                             CHARGE=CHA_TRAN)
 
 #
@@ -694,21 +696,21 @@ MODYNA=MODE_ITER_SIMULT( MATR_A=K_ASSE,   MATR_B=M_ASSE,
 
 #
 MACRO_PROJ_BASE(  BASE=MODYNA,MATR_ASSE_GENE=(
-                     _F( 
-                                   MATRICE = CO("K_PROJ"),   
+                     _F(
+                                   MATRICE = CO("K_PROJ"),
                                    MATR_ASSE = K_ASSE),
-                     _F( 
-                                   MATRICE = CO("M_PROJ"),   
+                     _F(
+                                   MATRICE = CO("M_PROJ"),
                                    MATR_ASSE = M_ASSE)),
-                     VECT_ASSE_GENE=_F( 
-                                   VECTEUR = CO("F_PROJ"),   
+                     VECT_ASSE_GENE=_F(
+                                   VECTEUR = CO("F_PROJ"),
                                    VECT_ASSE = F_ASSE)
                )
 
 #
 TRANG1=DYNA_TRAN_MODAL(        METHODE='EULER',
-                                  MASS_GENE=M_PROJ, 
-                                  RIGI_GENE=K_PROJ, 
+                                  MASS_GENE=M_PROJ,
+                                  RIGI_GENE=K_PROJ,
                                      EXCIT=_F( VECT_GENE = F_PROJ,
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
@@ -719,8 +721,8 @@ TRANG1=DYNA_TRAN_MODAL(        METHODE='EULER',
 
 #
 TRANG2=DYNA_TRAN_MODAL(        METHODE='DEVOGE',
-                                  MASS_GENE=M_PROJ, 
-                                  RIGI_GENE=K_PROJ, 
+                                  MASS_GENE=M_PROJ,
+                                  RIGI_GENE=K_PROJ,
                                      EXCIT=_F( VECT_GENE = F_PROJ,
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
@@ -731,8 +733,8 @@ TRANG2=DYNA_TRAN_MODAL(        METHODE='DEVOGE',
 
 #
 TRANG3=DYNA_TRAN_MODAL(        METHODE='NEWMARK',
-                                  MASS_GENE=M_PROJ, 
-                                  RIGI_GENE=K_PROJ, 
+                                  MASS_GENE=M_PROJ,
+                                  RIGI_GENE=K_PROJ,
                                      EXCIT=_F( VECT_GENE = F_PROJ,
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
@@ -743,8 +745,8 @@ TRANG3=DYNA_TRAN_MODAL(        METHODE='NEWMARK',
 
 #
 TRANG4=DYNA_TRAN_MODAL(        METHODE='ADAPT',
-                                  MASS_GENE=M_PROJ, 
-                                  RIGI_GENE=K_PROJ, 
+                                  MASS_GENE=M_PROJ,
+                                  RIGI_GENE=K_PROJ,
                                      EXCIT=_F( VECT_GENE = F_PROJ,
                                             COEF_MULT = 1.),
                                   INCREMENT=_F(  INST_INIT = 0.,
@@ -757,14 +759,14 @@ TRANG4=DYNA_TRAN_MODAL(        METHODE='ADAPT',
 
 #
 LISTEIMP=DEFI_LIST_REEL(       DEBUT=0.,
-                           INTERVALLE=_F( JUSQU_A = 82., 
+                           INTERVALLE=_F( JUSQU_A = 82.,
                                        NOMBRE = 800))
 
 #
 PAS1=RECU_FONCTION(       NOM_CHAM='PTEM',
                          INTERP_NUME='LIN',
                             INTERPOL='LIN',
-                           RESU_GENE=TRANG4,   
+                           RESU_GENE=TRANG4,
                            LIST_INST=LISTEIMP   )
 
 IMPR_FONCTION(  UNITE=24,

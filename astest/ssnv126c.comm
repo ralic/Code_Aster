@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,10 +176,6 @@ ACIER=DEFI_MATERIAU(      ELAS_FO=_F(    E = F_E,
                                            R_D = R_T,
                                            K_D = KD_T))
 
-MAT=AFFE_MATERIAU(            MAILLAGE=EPROU,
-                                    AFFE=_F(  MAILLE = 'MA1',
-                                           MATER = ACIER,
-                                           TEMP_REF = 1000.))
 
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                              
@@ -196,7 +192,7 @@ LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                                          )
 
 COND_LIM=AFFE_CHAR_MECA(             MODELE=EPD3,
-                                TEMP_CALCULEE=CTHER,DDL_IMPO=(
+                                DDL_IMPO=(
                                   
                      _F( NOEUD = 'N1',         DX = 0., DY = 0., DZ = 0.),
                      _F( NOEUD = 'N2',                DY = 0., DZ = 0.),
@@ -218,6 +214,16 @@ COEF_TR=DEFI_FONCTION(      NOM_PARA='INST',
                                       2450000.,   1.,
                                       3000000.,   1.,
                         ))
+
+MAT=AFFE_MATERIAU(            MAILLAGE=EPROU,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER,),
+                                    AFFE_VARC=_F( TOUT='OUI',
+                                           EVOL=CTHER,
+                                           NOM_VARC='TEMP',
+                                           NOM_CHAM='TEMP',
+                                           VALE_REF=1000.),)
+
 
 ########################################################
 # CALCUL EXPLICITE POUR ETABLIR LA SOLUTION DE REFERENCE

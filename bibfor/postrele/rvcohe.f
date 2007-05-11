@@ -4,7 +4,7 @@
       INTEGER                                     I, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
          VALK(1) = NCHSYM
          VALK(2) = NRESU
          VALK(3) = TRESU
-         CALL U2MESG('F','POSTRELE_46',3,VALK,1,I,0,0.D0)
+         CALL U2MESG('S','POSTRELE_46',3,VALK,1,I,0,0.D0)
 C
       ELSE
 C
@@ -117,7 +117,7 @@ C
                ENDIF
                GOTO 10
             ENDIF
-            IF ( .NOT. CHELOK ) CALL U2MESI('F','POSTRELE_47',1,I)
+            IF ( .NOT. CHELOK ) CALL U2MESI('S','POSTRELE_47',1,I)
          ENDIF
 C
 C        --- VERIFICATION SUR LES CMPS ---
@@ -127,7 +127,7 @@ C        --- VERIFICATION SUR LES CMPS ---
             IF ( ZI(ANUMCP + J-1) .EQ. 0 ) THEN
                CALL JEVEUO(JEXNUM(XDNCMP,I),'L',ANOMCP)
                NOMCMP = ZK8(ANOMCP + J-1)
-               CALL U2MESG('F','POSTRELE_48',1,NOMCMP,1,I,0,0.D0)
+               CALL U2MESG('S','POSTRELE_48',1,NOMCMP,1,I,0,0.D0)
             ENDIF
  110     CONTINUE
 C
@@ -148,7 +148,7 @@ C           /* LE LIEU DU POST TRAITEMENT EST UNE COURBE */
             IF ( NMAICH .NE. NMAILI ) THEN
                VALK(1) = NMAILI
                VALK(2) = NMAICH
-               CALL U2MESG('F','POSTRELE_49',2,VALK,1,I,0,0.D0)
+               CALL U2MESG('S','POSTRELE_49',2,VALK,1,I,0,0.D0)
             ENDIF
          ELSE
 C           /* LE LIEU DU POST TRAITEMENT EST UN ENSMBLE DE NOEUDS */
@@ -166,7 +166,7 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
                   NOMGRN = ZK8(AGRPND + K-1)
                   CALL JENONU(JEXNOM(NMAICH//'.GROUPENO',NOMGRN),N1)
                   IF ( N1 .EQ. 0 ) THEN
-                     CALL U2MESG('F','POSTRELE_50',1,NOMGRN,1,I,0,0.D0)
+                     CALL U2MESG('S','POSTRELE_50',1,NOMGRN,1,I,0,0.D0)
                   ENDIF
 120            CONTINUE
                CALL JEDETR('&&OP0051.NOM.GRPN')
@@ -179,7 +179,7 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
                   NOMND = ZK8(ALNEUD + K-1)
                   CALL JENONU(JEXNOM(NREPND,NOMND),N1)
                   IF ( N1 .EQ. 0 ) THEN
-                     CALL U2MESG('F','POSTRELE_51',1,NOMND,1,I,0,0.D0)
+                     CALL U2MESG('S','POSTRELE_51',1,NOMND,1,I,0,0.D0)
                   ENDIF
 130            CONTINUE
                CALL JEDETR('&&OP0051.NOM.NEUD')

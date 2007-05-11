@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,7 +157,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
                     COMP_INCR=_F(RELATION='KIT_THM',PARM_THETA=0.56999999999999995,
-                                 RELATION_KIT=('ELAS_THER','LIQU_SATU','HYDR_UTIL'),),
+                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                     ETAT_INIT=_F(DEPL=PINIT,),
                     INCREMENT=_F(LIST_INST=LI,
                                  NUME_INST_FIN=10,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,9 +57,9 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
-                   
+
                     INFO=1,);
-                    
+
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT      = FISS,
                                      METHODE        = 'XFEM',
                                      INTEGRATION    = 'GAUSS',
@@ -74,7 +74,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT      = FISS,
                                      SEUIL_INIT     = -1.E11,
                                     ),
                           MODELE=MODELEIN,
-                          ),                     
+                          ),
 
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
@@ -126,12 +126,12 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CTXFEM,),                   
+                          _F(CHARGE=CTXFEM,),
                           _F(CHARGE=CHXFEM,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=200,),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=20,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

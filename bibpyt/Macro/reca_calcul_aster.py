@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 07/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -251,6 +251,7 @@ class CALCUL_ASTER:
           except:
             UTMESS('F','MACR_RECAL',"Probleme : impossible d'importer le module de lecture des tables!")
 
+        UTMESS('I','MACR_RECAL',"Calcul de F avec les parametres:\n%s" % 'bla')
         txt = []
         for i in para:
           txt.append( "\t\t\t%s : %s" % (i, val[para.index(i)]) )
@@ -282,6 +283,17 @@ class CALCUL_ASTER:
 #                    if ligne.replace(' ', '')[0] == '#': ligne = ''
 #            fichiernew.append(ligne)
 #         fichier = '\n'.join(fichiernew)
+
+
+
+        # On supprime tous les commentaires du fichier esclave
+        fichiernew=[]
+        for ligne in fichier.split('\n'):
+           if ligne.strip() != '':
+              if ligne.replace(' ', '')[0] == '#': ligne = ''
+              fichiernew.append(ligne)
+        fichier = '\n'.join(fichiernew)
+
 
         #Fichier_Resu est une liste ou l'on va stocker le fichier modifié
         #idée générale :on délimite des 'blocs' dans fichier
@@ -865,7 +877,7 @@ Message:
      # Ecriture du nouveau fichier export
      prof.WriteExportTo(self.new_export)
 
-     os.system('cp ' + self.new_export + ' /tmp')
+     if debug: os.system('cp ' + self.new_export + ' /tmp')
 
   # --FIN CLASSE  ----------------------------------------------------------------------------
 

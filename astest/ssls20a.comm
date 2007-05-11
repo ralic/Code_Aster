@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE COQUE CYLINDRIQUE PINCEE A BORDS LIBRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@
 #=======================================================================
 #
 
-DEBUT(CODE=_F(  NOM = 'SSLS20A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(  NOM = 'SSLS20A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 10.5E+6,      NU = 0.3125) )
 

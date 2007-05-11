@@ -1,4 +1,4 @@
-# MODIF  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 07/05/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,7 +78,10 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                 DEFORMATION='SIMO_MIEHE',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   SOLVEUR=_F(METHODE='MUMPS'),);
+                   SOLVEUR=_F(METHODE='MUMPS'),
+                   CONVERGENCE=_F(RESI_REFE_RELA=1.E-3,
+                            SIGM_REFE = 60 ,
+                            EPSI_REFE = 3.E-4), );
 
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,

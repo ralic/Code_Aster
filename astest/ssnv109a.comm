@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,7 +82,11 @@ ACIER=DEFI_MATERIAU(
 
 CM=AFFE_MATERIAU( 
             MAILLAGE=M,   
-           AFFE=_F( TOUT = 'OUI',MATER = ACIER, TEMP_REF = 20.) )
+           AFFE=_F( TOUT = 'OUI',MATER = ACIER,),
+           AFFE_VARC=_F( TOUT='OUI',
+                         CHAMP_GD=TEMPE,
+                         NOM_VARC='TEMP',
+                         VALE_REF=20.),)
 
 P23=DEFI_FONCTION( 
            NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
@@ -106,7 +110,7 @@ M37P23=DEFI_FONCTION(
 
 CH1=AFFE_CHAR_MECA( 
             MODELE=MO,
-             TEMP_CALCULEE=TEMPE,DDL_IMPO=(
+             DDL_IMPO=(
            _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
                     _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
                     _F( NOEUD = 'NO2', DX = 0.),

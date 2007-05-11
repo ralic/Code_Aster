@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,22 +231,7 @@ MATGOUP=DEFI_MATERIAU(ELAS=_F(   E=2.E6,
                                    SY=200000., )
                       );
 
-#----------------------------------------------------------------------
-# AFFECTATION DES PROPRIETES MECANIQUES
-# ----------------------------------------------------------------------
-#
-
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                   AFFE=(_F(GROUP_MA='SEPRO',
-                            MATER=ACIER,
-                            TEMP_REF=TPCAL,),
-                         _F(GROUP_MA='FOND_0',
-                            MATER=ACIER,
-                            TEMP_REF=TPCAL,),
-                         _F(GROUP_MA='SGOUP',
-                            MATER=MATGOUP,),),);
-
-#----------------------------------------------------------------------
+##----------------------------------------------------------------------
 #--------- TEMPERATURE IMPOSEE
 #----------------------------------------------------------------------
 
@@ -285,6 +270,26 @@ RESU_T=CREA_RESU(TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD=TEMP_T,
                          LIST_INST=L_INST,),);
+
+#----------------------------------------------------------------------
+# AFFECTATION DES PROPRIETES MECANIQUES
+# ----------------------------------------------------------------------
+#
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=(_F(GROUP_MA='SEPRO',
+                            MATER=ACIER,),
+                         _F(GROUP_MA='FOND_0',
+                            MATER=ACIER,),
+                         _F(GROUP_MA='SGOUP',
+                            MATER=MATGOUP,),),
+                    AFFE_VARC=_F( TOUT='OUI',
+                            EVOL=RESU_T,
+                            NOM_VARC='TEMP',
+                            NOM_CHAM='TEMP',
+                            VALE_REF=TPCAL,),
+);
+
  
 #----------------------------------------------------------------------
 # CHARGEMENT ET CONDITIONS LIMITES
@@ -297,11 +302,6 @@ COND_LIM=AFFE_CHAR_MECA(MODELE=MOD,
                                   _F(GROUP_NO='PGOUP',
                                      DX=0.0,),),);
                                                                        
-CHTEMP = AFFE_CHAR_MECA (
-                        MODELE = MOD,
-                        TEMP_CALCULEE = RESU_T,
-                          );
-                          
 CHAD=AFFE_CHAR_MECA_F(MODELE=MOD,
                       DDL_IMPO=_F(GROUP_NO='PGOUP',
                                       DY=RAMPD,),);
@@ -313,8 +313,7 @@ CHAD=AFFE_CHAR_MECA_F(MODELE=MOD,
 RESU=STAT_NON_LINE(MODELE=MOD,
                 CHAM_MATER=CHMAT,
                 EXCIT=(_F(CHARGE=COND_LIM,),
-                       _F(CHARGE=CHAD,),
-                       _F(CHARGE=CHTEMP,)),
+                       _F(CHARGE=CHAD,),),
                 COMP_INCR=(_F(RELATION='VMIS_ISOT_TRAC',
                              DEFORMATION='PETIT',
                              GROUP_MA='SEPRO',),

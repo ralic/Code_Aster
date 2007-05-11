@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,21 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table
             UIinfo={"groupes":("Outils métier",)},
             fr="Extraction des valeurs d'un résultat dans une ou plusieurs tables sur des lignes de coupe définies"
              +" par deux points et un intervalle",
-         RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ),
+            regles=(UN_PARMI("RESULTAT","CHAM_GD"),),
+                   
+         RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ),
+         CHAM_GD         =SIMP(statut='f',typ=(cham_gd_sdaster)),
+
+         b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des résultats",
+                                 regles=(EXCLUS('NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',), ),           
+             NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),  
+             LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),  
+             LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),  
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
+           ),
+
 # extraction des résultats
          b_meca        =BLOC(condition = "AsType(RESULTAT) in (evol_elas,evol_noli)",fr="résultat mécanique",
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut='SIGM_NOEU_DEPL' ),  
@@ -32,33 +46,69 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table
          b_ther        =BLOC(condition = "AsType(RESULTAT) in (evol_ther,)",fr="résultat thermique",
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut='TEMP' ),  
          ),
-         UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25),
+         b_cham       =BLOC(condition = "CHAM_GD!=None",
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',),),
 
+         UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25),
          MODELE          =SIMP(statut='f',typ=modele_sdaster ),
-         GROUP_MA        =SIMP(statut='f',typ=grma),
-         MAILLE          =SIMP(statut='f',typ=ma,max='**'),
-         regles=(EXCLUS('GROUP_MA','MAILLE'),),
+
+         VIS_A_VIS       =FACT(statut='f',max='**',
+                             regles=(EXCLUS('GROUP_MA_1','MAILLE_1'),),
+           GROUP_MA_1        =SIMP(statut='f',typ=grma),
+           MAILLE_1          =SIMP(statut='f',typ=ma,max='**'),),
          
          LIGN_COUPE     =FACT(statut='o',max='**',
-           TYPE            =SIMP(statut='o',typ='TXM',max=1,into=("GROUP_NO","SEGMENT","ARC"),defaut='SEGMENT' ),
+            regles=(EXCLUS("NOM_CMP","INVARIANT","ELEM_PRINCIPAUX","RESULTANTE"),
+                    PRESENT_PRESENT("TRAC_DIR","DIRECTION"),
+                    EXCLUS("TRAC_DIR","TRAC_NOR"), 
+                    PRESENT_PRESENT("TRAC_DIR","NOM_CMP"),
+                    PRESENT_PRESENT("TRAC_NOR","NOM_CMP"),),
+
            INTITULE        =SIMP(statut='f',typ='TXM',),
+           TYPE            =SIMP(statut='o',typ='TXM',max=1,
+                                 into=("GROUP_NO","SEGMENT","ARC","GROUP_MA"),defaut="SEGMENT"),
+           REPERE          =SIMP(statut='f',typ='TXM',defaut="GLOBAL",
+                                into=("GLOBAL","LOCAL","POLAIRE","UTILISATEUR","CYLINDRIQUE"),),
+           OPERATION       =SIMP(statut='f',typ='TXM',into=("EXTRACTION","MOYENNE",),defaut="EXTRACTION",),
+
+           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
+           INVARIANT       =SIMP(statut='f',typ='TXM',into=("OUI",),),
+           ELEM_PRINCIPAUX =SIMP(statut='f',typ='TXM',into=("OUI",),),
+           RESULTANTE      =SIMP(statut='f',typ='TXM',max='**'),
+           TRAC_NOR        =SIMP(statut='f',typ='TXM',into=("OUI",)),
+           TRAC_DIR        =SIMP(statut='f',typ='TXM',into=("OUI",)),
+           DIRECTION       =SIMP(statut='f',typ='R',max='**'),  
+
+
+           b_local        =BLOC(condition = "REPERE=='LOCAL'",
+             VECT_Y          =SIMP(statut='o',typ='R',min=2,max=3),),
+
+           b_utili        =BLOC(condition = "REPERE=='UTILISATEUR'",
+             ANGL_NAUT       =SIMP(statut='o',typ='R',min=3,max=3),),
 
            b_grno          =BLOC(condition = "TYPE=='GROUP_NO'",    
-             GROUP_NO        =SIMP(statut='f',typ=grno),),
+             GROUP_NO        =SIMP(statut='o',typ=grno, max=1),),
+
+           b_grma          =BLOC(condition = "TYPE=='GROUP_MA'",    
+             GROUP_MA        =SIMP(statut='o',typ=grma, max=1),
+             MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),),
 
            b_segment       =BLOC(condition = "TYPE=='SEGMENT'",    
              NB_POINTS       =SIMP(statut='o',typ='I',max=1),
              COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
-             COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3),
-             VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),), 
+             COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3),),
 
            b_arc           =BLOC(condition = "TYPE=='ARC'",    
              NB_POINTS       =SIMP(statut='o',typ='I',max=1),
              COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
              CENTRE          =SIMP(statut='o',typ='R',min=2,max=3),
              ANGLE           =SIMP(statut='o',typ='R',max=1),
-             DNOR            =SIMP(statut='f',typ='R',min=2,max=3),
-             VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),), 
+             DNOR            =SIMP(statut='f',typ='R',min=2,max=3),),
+
+           b_cylind       =BLOC(condition = ("REPERE=='CYLINDRIQUE' and TYPE!='ARC'"),
+             ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3),  
+             AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),),
+           
          ),
 )  ;
 

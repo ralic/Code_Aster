@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,9 +60,12 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            regles=(AU_MOINS_UN('CHAM_GD','RESULTAT','MAILLAGE'),
                    EXCLUS('CHAM_GD','RESULTAT'),),
            MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster,squelette)),
-           INFO_MAILLAGE   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            CHAM_GD         =SIMP(statut='f',typ=cham_gd_sdaster),
-           RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),# CO() sd a creer !!!
+           RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
+
+           b_info_med  =BLOC(condition="FORMAT=='MED'",
+             INFO_MAILLAGE   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+           ),
 
            b_sensibilite   =BLOC(condition="RESULTAT != None",
                                  fr="Définition des paramètres de sensibilité",

@@ -1,21 +1,21 @@
-# MODIF  DATE 04/10/2000   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE COURTE SUR APPUIS SIMPLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #CAS_TEST__: SDLL01A
 # SDLL01/A                 COMMANDES                             3/03/91
@@ -27,7 +27,7 @@
 # ====================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'SDLL01A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(  NOM = 'SDLL01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 
@@ -38,11 +38,11 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 
 #----- DEFINITION DE 2 MODELES A PARTIR DU MAILLAGE MA
 
-MO1=AFFE_MODELE(  MAILLAGE=MA, 
+MO1=AFFE_MODELE(  MAILLAGE=MA,
                    AFFE=_F(  GROUP_MA = 'FIBRE',  PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'POU_D_T') )
 
-MO2=AFFE_MODELE(  MAILLAGE=MA, 
+MO2=AFFE_MODELE(  MAILLAGE=MA,
                    AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'POU_D_T') )
 
@@ -50,7 +50,7 @@ MO2=AFFE_MODELE(  MAILLAGE=MA,
 
 CARELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
 
-              POUTRE=_F(  
+              POUTRE=_F(
        GROUP_MA = 'TOUT',
    SECTION = 'GENERALE',
 CARA = ('A',     'IY',         'IZ',       'AY',     'AZ',     'JX',      ),
@@ -63,8 +63,8 @@ CARELEM2=AFFE_CARA_ELEM(   MODELE=MO2,POUTRE=(
               _F(  GROUP_MA = 'FIBRE',     SECTION = 'GENERALE',
 CARA = ('A',     'IY',         'IZ',       'AY',     'AZ',     'JX',      ),
 VALE = ( 0.02, 0.16666667E-4, 0.6666667E-4, 1.17692, 1.17692, 0.45776042E-4,)),
-               _F(  GROUP_MA = 'RIGID',     SECTION = 'RECTANGLE', 
-                        CARA = ( 'HY',      'HZ',  ), 
+               _F(  GROUP_MA = 'RIGID',     SECTION = 'RECTANGLE',
+                        CARA = ( 'HY',      'HZ',  ),
                         VALE = (  0.2,       0.2,   )))        )
 
 #--------------------------------------------------------------------
@@ -82,7 +82,7 @@ MATR=DEFI_MATERIAU( ELAS=_F(  E = 2.0E+16,  NU = 0.3,  RHO = 0.) )
 
 #----- APPUIS SUR LA FIBRE NEUTRE
 
-CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA, 
+CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  GROUP_MA = 'FIBRE',  MATER = MAT)     )
 
 CH1=AFFE_CHAR_MECA(  MODELE=MO1,DDL_IMPO=(
@@ -94,13 +94,13 @@ CH1=AFFE_CHAR_MECA(  MODELE=MO1,DDL_IMPO=(
 
 #----- APPUIS SUR LA BASE
 
-CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=( 
+CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
                         _F(  GROUP_MA = 'FIBRE',  MATER = MAT),
                              _F(  GROUP_MA = 'RIGID',  MATER = MATR))     )
 
 CH2=AFFE_CHAR_MECA(  MODELE=MO2,DDL_IMPO=(
-        _F(  TOUT = 'OUI',   DZ = 0., DRX = 0.,  DRY = 0.), 
-                 _F(  NOEUD = 'N300',  DX = 0., DY = 0.), 
+        _F(  TOUT = 'OUI',   DZ = 0., DRX = 0.,  DRY = 0.),
+                 _F(  NOEUD = 'N300',  DX = 0., DY = 0.),
                  _F(  NOEUD = 'N400',  DY = 0.))       )
 
 # ------------------------------------------------------------------
@@ -149,21 +149,21 @@ MODE1=MODE_ITER_INV(  MATR_A=MATASSR1,
                           FREQ = ( 430.,     4500.,  ))   )
 
 MODE1=CALC_ELEM( reuse=MODE1,     RESULTAT=MODE1,
-                          MODELE=MO1, 
+                          MODELE=MO1,
                        CARA_ELEM=CARELEM1,
-                      CHAM_MATER=CHMAT1,   
+                      CHAM_MATER=CHMAT1,
                           OPTION='SIGM_ELNO_DEPL'   )
 
 MODE3=CALC_ELEM(      RESULTAT=MODE1,
-                          MODELE=MO1, 
+                          MODELE=MO1,
                        CARA_ELEM=CARELEM1,
-                      CHAM_MATER=CHMAT1,   
+                      CHAM_MATER=CHMAT1,
                           OPTION='SIGM_ELNO_DEPL'   )
 
 MODE4=CALC_ELEM(      RESULTAT=MODE1,
-                          MODELE=MO1, 
+                          MODELE=MO1,
                        CARA_ELEM=CARELEM1,
-                      CHAM_MATER=CHMAT1,   
+                      CHAM_MATER=CHMAT1,
                           OPTION='ECIN_ELEM_DEPL'   )
 
 #----- CAS 2

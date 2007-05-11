@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -357,7 +357,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  EXCIT=_F(CHARGE=CALEXT,),
                  COMP_INCR=_F(RELATION='KIT_THHM',PARM_THETA=0.57,
                               ITER_INTE_MAXI=5,
-                              RELATION_KIT=('ELAS_THER','LIQU_GAZ','HYDR_UTIL'),),
+                              RELATION_KIT=('ELAS','LIQU_GAZ','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT
                  ),

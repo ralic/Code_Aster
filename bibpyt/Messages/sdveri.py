@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sdveri Messages  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,10 +89,47 @@ cata_msg={
 
 27: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
- L'objet JEVEUX '%(k1)s' a un champ DOCU incorrect.
- Le champ DOCU attendu est : '%(k2)s'
- Le champ DOCU trouvé  est : '%(k3)s'
+   Vérification d'une structure de donnée :
+   L'objet JEVEUX '%(k1)s' a un champ DOCU incorrect.
+   Le champ DOCU attendu est : '%(k2)s'
+   Le champ DOCU trouvé  est : '%(k3)s'
+"""),
+
+
+
+
+30: _("""
+ Erreur de programmation (catalogue des SD) :
+   Vérification d'une structure de donnée :
+   certains objets JEVEUX sont incorrects :
+"""),
+
+31: _("""
+      Objet : '%(k1)s'    Message : %(k2)s
+"""),
+
+32: _("""
+      Fin Message 30
+"""),
+
+
+
+40: _("""
+ Erreur de programmation (catalogue des SD) :
+   Vérification d'une structure de donnée :
+   Les objets suivants sont interdits dans les SD de type : %(k1)s
+"""),
+
+41: _("""
+   Objet '%(k1)s'   INTERDIT
+"""),
+
+42: _("""
+      Fin Message 40
+"""),
+
+45: _("""
+      Erreur dans le Python : voir traceback ci-dessous
 """),
 
 
