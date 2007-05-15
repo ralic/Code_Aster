@@ -1,4 +1,4 @@
-#@ MODIF asnom SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF asnom Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

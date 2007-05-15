@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF xfem2 Messages  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,12 +17,16 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
- 
+
+
 
 def _(x) : return x
 
 cata_msg={
 
+1: _("""
+Erreur (i1)i dvt dans la récupération de la topologie des sous-éléments pour la visu.
+"""),
 
 5: _("""
 Le vecteur TAU1 correspondant la première direction du frottement dans l'élément XFEM est nul.
@@ -47,5 +51,6 @@ Contactez les développeurs.
 51: _("""
 Il n'y a aucune maille enrichie.
 """),
+
 
 }

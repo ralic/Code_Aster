@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 DEBUT(CODE=_F(NOM='SSNV198A',NIV_PUB_WEB='INTERNET'),)
 
 #----------------------------------------------
-#             MAILLAGE : hexa_1_1_1.mgib
+#             MAILLAGE 
 #----------------------------------------------
 
 PRE_GIBI();
@@ -126,16 +126,29 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
-#------------------------------------------------------------------------
-# POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
-#------------------------------------------------------------------------
+# -------------------------------------------------------------   
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
+# -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                       MODELE        = MODELEK,
+                       INFO          = 2)
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
-                        MODELE=MODELEK,
-                        NOM_CHAM='DEPL',
-                        RESULTAT=UTOT1)
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),) 
+
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        INFO          = 2)
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE= MA_XFEM));
+#IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
 
 
 DEPL_1 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -145,7 +158,22 @@ DEPL_1 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    );
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=83,RESU=_F(RESULTAT=RES_XFEM));
-IMPR_RESU(FORMAT='GMSH',UNITE=83,RESU=_F(CHAM_GD=DEPL_1,),);
+#IMPR_RESU(FORMAT='GMSH',UNITE=83,RESU=_F(CHAM_GD=DEPL_1,),);
+
+MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
+                    MAILLAGE=MA_XFEM,
+                    CREA_GROUP_NO=(
+                                   _F(NOM='SURFBAC',
+                                      OPTION='PLAN',
+                                      POINT=(0.,0.,0.),
+                                      VECT_NORMALE=(1.,0.,0.),
+                                      PRECISION=1.E-6,),
+                                   _F(NOM='SURFFRO',
+                                      OPTION='PLAN',
+                                      POINT=(lx,0.,0.),
+                                      VECT_NORMALE=(1.,0.,0.),
+                                      PRECISION=1.E-6,),
+                                      ),);
 
 DEP_BACK= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
                                     GROUP_NO  = 'SURFBAC',
@@ -158,6 +186,33 @@ DEP_FRON= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
                                     CHAM_GD   = DEPL_1,
                                     NOM_CMP   = ( 'DX','DY','DZ'),
                                     OPERATION = 'EXTRACTION',),);
+
+# filtre sur les noms des noeuds : on vire les noeuds NM... et NP....
+# pour ne garder que les N... et NX...
+DEP_BACK = CALC_TABLE(reuse = DEP_BACK,
+                      TABLE = DEP_BACK,
+                      ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^P]',),
+                               _F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^M]',),),)
+        
+DEP_FRON = CALC_TABLE(reuse = DEP_FRON,
+                      TABLE = DEP_FRON,
+                      ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^P]',),
+                               _F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^M]',),),)
+
+IMPR_TABLE(TABLE=DEP_BACK)
+IMPR_TABLE(TABLE=DEP_FRON)
 
 # test des noeuds bloques
 TEST_TABLE(TABLE=DEP_BACK,

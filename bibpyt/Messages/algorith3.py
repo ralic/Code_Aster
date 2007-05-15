@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith3 Messages  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,12 +89,12 @@ cata_msg={
  champ " %(k1)s " deja existant
 """),
 
-
-
-
-
-
-
+16: _("""
+A l'instant %(r1)f, l'erreur vaut %(r2)f
+Cette erreur est supérieure à 1.
+Le pas de temps vaut %(r3)f
+On arrete de le réduire, car le nombre de réductions a atteint %(i1)d, qui est le maximum possible.
+"""),
 
 17: _("""
  methode adapt pas de temps minimal atteint
@@ -110,6 +110,11 @@ cata_msg={
 
 20: _("""
  le chargement de type dirichlet necessite la resolution par le schema de newmark
+"""),
+
+21: _("""
+Nombre de pas de calcul : %(i1)d
+Nombre d'itérations     : %(i2)d
 """),
 
 23: _("""
@@ -345,10 +350,6 @@ cata_msg={
 
 84: _("""
  erreur dans la recuperation du nume.prno .
-"""),
-
-85: _("""
- lameq n'a pas converge
 """),
 
 86: _("""

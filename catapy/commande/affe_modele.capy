@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "C_PLAN_NS",
                                                                       "C_PLAN_SI",
                                                                       "C_PLAN_GRAD_EPSI",
-                                                                      "C_PLAN_GRAD_VARI",
                                                                       "CABLE",
                                                                       "CABLE_POULIE",
                                                                       "COQUE_3D",

@@ -1,0 +1,215 @@
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# METHODE X-FEM (FISSURE NON MAILLEE)
+
+DEBUT(   CODE=_F( NOM = 'SSLV110F',NIV_PUB_WEB='INTERNET'),)
+
+PRE_GIBI();
+MA1=LIRE_MAILLAGE(INFO=1,);
+MA1=DEFI_GROUP(reuse =MA1,
+                    MAILLAGE=MA1,
+                    CREA_GROUP_NO=(_F(GROUP_MA='PEAUEXT',),
+                                   _F(GROUP_MA='PEAUINT',), 
+                                   _F(GROUP_MA='EXTUBE_S',),
+                                   _F(GROUP_MA='EXTUBE_I',), 
+                                   _F(GROUP_MA='BORD1',), 
+                                   _F(GROUP_MA='BORD2',), 
+                                   _F(INTERSEC=('BORD1','EXTUBE_I',),
+                                       NOM = 'GR_CLY'),
+                                ),
+                                    );
+
+MA=CREA_MAILLAGE(MAILLAGE=MA1,
+                       LINE_QUAD=_F(GROUP_MA=('TUBE',),),);
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 210000.,  NU = 0.3, RHO = 0.,
+                            ALPHA = 0.))
+                            
+MODELEIN=AFFE_MODELE(MAILLAGE=MA,
+                     INFO = 1,
+                   AFFE=(_F(GROUP_MA=('TUBE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D_XFEM',),
+                         _F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                  ),);        
+
+MA=MODI_MAILLAGE(reuse =MA,
+                       MAILLAGE=MA,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),),
+              );
+
+# PARAMETRES DE LA FISSURE
+x0 = 290.8
+y0 = 0.
+z0 = 100.1
+
+yi = y0 + 25. 
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+                    DEFI_FISS=_F(
+                                 FORM_FISS      = 'ELLIPSE',
+                                 DEMI_GRAND_AXE = 25,
+                                 DEMI_PETIT_AXE = 6,
+                                 CENTRE         = (x0, y0, z0),
+                                 VECT_X         = (0. , 1. , 0. ),
+                                 VECT_Y         = (1., 0. , 0. ),
+                                 ),
+                    GROUP_MA_ENRI='TUBE',
+                    ORIE_FOND=_F(PFON_INI  = (x0, yi, z0),
+                                 VECT_ORIE = (0. , 0. , -1. ),
+                                 PT_ORIGIN = (0., 0., 0.),),
+                    INFO=1,);
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         INFO=1,
+                         );
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                       MODELE=MODELEK,
+                       AFFE=(_F(TOUT = 'OUI',
+                                MATER=MAT,),
+                             ),);
+CHAR1=AFFE_CHAR_MECA(INFO=1,
+                      MODELE=MODELEK,
+                     DDL_IMPO=(
+                              _F(GROUP_NO='PEAUEXT',
+                                       DX=0.0,),   
+                              _F(GROUP_NO='EXTUBE_I',
+                                       DZ=0.0,),
+                              _F(GROUP_NO='GR_CLY',
+                                       DY=0.0,),
+                                        ), );   
+
+CHAR2=AFFE_CHAR_MECA(INFO=1,
+                      MODELE=MODELEK,
+                      PRES_REP=(_F(GROUP_MA='EXTUBE_S',
+                                    PRES=-1.0,), 
+                      ),   );
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+
+UTOT1=STAT_NON_LINE(INFO=1,
+                  MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,              
+                   EXCIT=(_F(CHARGE=CHAR1,),
+                           _F(CHARGE=CHAR2,),
+                          _F(CHARGE=CHXFEM,), ),              
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                GROUP_MA='TUBE',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                      SOLVEUR=_F(METHODE='MUMPS',),
+                   );
+
+
+SIFTH=CALC_G(  RESULTAT=UTOT1,
+                  SYME_CHAR='SANS',
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  OPTION='CALC_K_G',
+                  LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                           DEGRE = 5,
+                           LISSAGE_G='LEGENDRE',),
+                  THETA = _F(R_INF=0.5,
+                        R_SUP=2.,
+                        FISSURE=FISS,),
+                  INFO=1,);
+IMPR_TABLE(TABLE=SIFTH,);
+
+SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
+                        FISSURE=FISS,
+                        INFO=2,
+                        MAILLAGE=MA1,
+                        MATER=MAT,
+                        RESULTAT=UTOT1,
+                        ABSC_CURV_MAXI=1.5,
+                        VECT_K1=(0., 0., 1.,),
+                        DTAN_ORIG = (0.,1.,0.),
+                        DTAN_EXTR = (0.,-1.,0.),
+                        
+                      )
+                      
+IMPR_TABLE(TABLE = SIFK1,
+            FILTRE=_F(NOM_PARA='METHODE',VALE=3,),)
+
+#MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
+
+#DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
+#                    MODELE=MODELEK,
+#                    NOM_CHAM='DEPL',
+#                    RESULTAT=UTOT1)
+
+#IMPR_RESU(FORMAT='IDEAS',RESU=_F(MAILLAGE=MA_XFEM,RESULTAT = DEPL))
+#----------------------------------------------------------------------
+#              TEST DE K1 EN 2 POINTS
+#----------------------------------------------------------------------
+
+TEST_TABLE(      TABLE=SIFTH,
+                   FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                            VALE_I = 1),
+                 NOM_PARA='K1_LOCAL',
+                      VALE=1.9929E+00,
+                 PRECISION=5.E-2  ,
+                      REFERENCE='ANALYTIQUE'      )
+
+TEST_TABLE(      TABLE=SIFTH,
+                   FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                            VALE_I = 21),
+                 NOM_PARA='K1_LOCAL',
+                      VALE=4.068E+00,
+                 PRECISION=8.E-2  ,
+                      REFERENCE='ANALYTIQUE'      )
+
+TEST_TABLE(      TABLE=SIFTH,
+                   FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                            VALE_I = 21),
+                 NOM_PARA='K1_LOCAL',
+                      VALE=3.753745E+00,
+                 PRECISION=1.E-3  ,
+                      REFERENCE='NON_REGRESSION'      )
+                                            
+TEST_TABLE(      TABLE=SIFK1,
+                   FILTRE=(_F(  NOM_PARA = 'PT_FOND',
+                            VALE_I = 1), 
+                            _F(NOM_PARA = 'METHODE',
+                            VALE_I = 3),),
+                 NOM_PARA='K1_MAX',
+                      VALE=1.9929E+00,
+                 PRECISION=8.E-2  ,
+                      REFERENCE='ANALYTIQUE'      )
+
+TEST_TABLE(      TABLE=SIFK1,
+                   FILTRE=(_F(  NOM_PARA = 'PT_FOND',
+                            VALE_I = 21), 
+                            _F(NOM_PARA = 'METHODE',
+                            VALE_I = 3),),
+                 NOM_PARA='K1_MAX',
+                      VALE=4.068E+00,
+                 PRECISION=15.E-2  ,
+                      REFERENCE='ANALYTIQUE'      )
+
+
+FIN();   
+

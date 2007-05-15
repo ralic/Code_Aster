@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,16 +49,16 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       """
          Attributs :
 
-          - definition : objet portant les attributs de définition d'une étape 
-                         de type macro-commande. Il est initialisé par 
-                          l'argument oper.
+            - definition : objet portant les attributs de définition d'une étape 
+              de type macro-commande. Il est initialisé par 
+              l'argument oper.
 
-          - reuse : indique le concept d'entrée réutilisé. Il se trouvera donc
-                    en sortie si les conditions d'exécution de l'opérateur 
-                    l'autorise
+            - reuse : indique le concept d'entrée réutilisé. Il se trouvera donc
+              en sortie si les conditions d'exécution de l'opérateur 
+              l'autorise
 
-          - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé 
-                     avec l'argument args.
+            - valeur : arguments d'entrée de type mot-clé=valeur. Initialisé 
+              avec l'argument args.
 
       """
       self.definition=oper
@@ -108,11 +108,11 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
          Construit le concept produit de l'opérateur. Deux cas 
          peuvent se présenter :
         
-         - le parent n'est pas défini. Dans ce cas, l'étape prend en charge 
-           la création et le nommage du concept.
+           - le parent n'est pas défini. Dans ce cas, l'étape prend en charge 
+             la création et le nommage du concept.
 
-         - le parent est défini. Dans ce cas, l'étape demande au parent la 
-           création et le nommage du concept.
+           - le parent est défini. Dans ce cas, l'étape demande au parent la 
+             création et le nommage du concept.
 
       """
       self.sdnom=nom
@@ -165,15 +165,17 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       """
         Retourne le concept résultat d'une macro étape
         La difference avec une etape ou une proc-etape tient a ce que
-         le concept produit peut exister ou pas
+        le concept produit peut exister ou pas
+
         Si sd_prod == None le concept produit n existe pas on retourne None
+
         Deux cas :
-         cas 1 : sd_prod  n'est pas une fonction
+         - cas 1 : sd_prod  n'est pas une fonction
                  il s'agit d'une sous classe de ASSD
                  on construit le sd à partir de cette classe
                  et on le retourne
-         cas 2 : sd_prod est une fonction
-                  on l'évalue avec les mots-clés de l'étape (mc_liste)
+         - cas 2 : sd_prod est une fonction
+                 on l'évalue avec les mots-clés de l'étape (mc_liste)
                  on construit le sd à partir de la classe obtenue
                  et on le retourne
       """
@@ -230,12 +232,13 @@ Causes possibles :
    def get_type_produit_brut(self,force=0):
       """
            Retourne le type du concept résultat de l'étape et eventuellement type
-            les concepts produits "à droite" du signe égal (en entrée)
+           les concepts produits "à droite" du signe égal (en entrée)
+
            Deux cas :
-            cas 1 : sd_prod de oper n'est pas une fonction
+             - cas 1 : sd_prod de oper n'est pas une fonction
                     il s'agit d'une sous classe de ASSD
                     on retourne le nom de la classe
-            cas 2 : il s'agit d'une fonction
+             - cas 2 : il s'agit d'une fonction
                     on l'évalue avec les mots-clés de l'étape (mc_liste)
                     et on retourne son résultat
       """
@@ -302,11 +305,12 @@ Causes possibles :
    def type_sdprod(self,co,t):
       """
            Cette methode a pour fonction de typer le concept co avec le type t
-            dans les conditions suivantes
-            1- co est un concept produit de self
-            2- co est un concept libre : on le type et on l attribue à self
+           dans les conditions suivantes :
+            1. co est un concept produit de self
+            2. co est un concept libre : on le type et on l attribue à self
+
            Elle enregistre egalement les concepts produits (on fait l hypothese
-            que la liste sdprods a été correctement initialisee, vide probablement)
+           que la liste sdprods a été correctement initialisee, vide probablement)
       """
       if not hasattr(co,'etape'):
          # Le concept vaut None probablement. On ignore l'appel
@@ -343,6 +347,7 @@ Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pa
          co.etape=self
          # affectation du bon type du concept et
          # initialisation de sa partie "sd"
+         if CONTEXT.debug:print "changement de type:",co,t
          co.change_type(t)
          
          self.sdprods.append(co)
@@ -350,11 +355,17 @@ Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pa
       elif co.etape== self:
          # Cas 2 : le concept est produit par la macro (self)
          # On est deja passe par type_sdprod (Cas 1 ou 3).
-         # Il suffit de le mettre dans la liste des concepts produits (self.sdprods)
-         # Le type du concept doit etre coherent avec le type demande (seulement derive)
-         if not isinstance(co,t):
-            raise AsException("""Erreur interne. 
+         if co.etape==co._etape:
+           #Le concept a été créé par la macro (self)
+           #On peut changer son type
+           co.change_type(t)
+         else:
+           #Le concept a été créé par une macro parente
+           # Le type du concept doit etre coherent avec le type demande (seulement derive)
+           if not isinstance(co,t):
+             raise AsException("""Erreur interne. 
 Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co.__class__))
+
          self.sdprods.append(co)
 
       elif co.etape== self.parent:
@@ -428,17 +439,18 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
 
    def create_sdprod(self,etape,nomsd):
       """ 
-          Intention : Cette methode doit fabriquer le concept produit retourne
-                  par l'etape etape et le nommer.
-                  Elle est appelée à l'initiative de l'etape
-                  pendant le processus de construction de cette etape : methode __call__
-                  de la classe CMD (OPER ou MACRO)
-                  Ce travail est réalisé par le contexte supérieur (etape.parent)
-                  car dans certains cas, le concept ne doit pas etre fabriqué mais
-                  l'etape doit simplement utiliser un concept préexistant.
-                  Cas 1 : etape.reuse != None : le concept est réutilisé
-                  Cas 2 : l'étape appartient à une macro qui a déclaré un concept
-                          de sortie qui doit etre produit par cette etape.
+          Cette methode doit fabriquer le concept produit retourne
+          par l'etape etape et le nommer.
+
+          Elle est appelée à l'initiative de l'etape
+          pendant le processus de construction de cette etape : methode __call__
+          de la classe CMD (OPER ou MACRO)
+          Ce travail est réalisé par le contexte supérieur (etape.parent)
+          car dans certains cas, le concept ne doit pas etre fabriqué mais
+          l'etape doit simplement utiliser un concept préexistant.
+                  - Cas 1 : etape.reuse != None : le concept est réutilisé
+                  - Cas 2 : l'étape appartient à une macro qui a déclaré un concept
+                    de sortie qui doit etre produit par cette etape.
       """
       if self.Outputs.has_key(nomsd):
          # Il s'agit d'un concept de sortie de la macro. Il ne faut pas le créer

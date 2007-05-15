@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF E_JDC Execution  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ from Noyau.N_ASSD import ASSD
 from Noyau.N_ENTITE import ENTITE
 import aster
 
-from SD import basetype
+from Noyau import basetype
 
 class JDC:
    """
@@ -42,6 +42,9 @@ class JDC:
    # attributs accessibles depuis le fortran par les méthodes génériques
    # get_jdc_attr et set_jdc_attr
    l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro')
+   
+   # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
+   l_pick_attr = ('memo_sensi',)
 
    def Exec(self):
       """
@@ -195,7 +198,8 @@ class JDC:
           Cette methode construit un dictionnaire a partir du dictionnaire context
           passé en argument en supprimant tous les objets python que l'on ne veut pas
           ou ne peut pas sauvegarder pour une poursuite ultérieure
-          Le dictionnaire résultat est retourné par la méthode
+          + en ajoutant un dictionnaire pour pickler certains attributs du jdc.
+          Le dictionnaire résultat est retourné par la méthode.
        """
        d={}
        for key,value in context.items():
@@ -214,6 +218,7 @@ class JDC:
            except:
               # Si on ne peut pas pickler value on ne le met pas dans le contexte filtré
               pass
+       self.save_pickled_attrs(d)
        return d
 
    def traiter_user_exception(self,exc_val):
@@ -281,3 +286,22 @@ class JDC:
                            "valeur non entière : %s" % str(value))
       setattr(self, attr, value)
 
+
+   def save_pickled_attrs(self, context):
+      """Ajoute le dictionnaire des attributs du jdc à "pickler" dans le contexte.
+      """
+      d = {}
+      for attr in self.l_pick_attr:
+         d[attr] = getattr(self, attr)
+      context['jdc_pickled_attributes'] = d
+      #print "<DBG> context['jdc_pickled_attributes'] = ", d
+
+
+   def restore_pickled_attrs(self, context):
+      """Restaure les attributs du jdc qui ont été "picklés" via le contexte.
+      """
+      d = context.get('jdc_pickled_attributes', {})
+      for attr, value in d.items():
+         #assert attr in self.l_pick_attr
+         setattr(self, attr, value)
+         #print "<DBG> jdc.'%s' = %s" % (attr, value)

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,8 +93,8 @@ MODE_LOCAL__
                                         X19      X20      X21      X22      X23      X24
                                         X25      X26      X27       )
     E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
-    E8NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8      )
+    E9NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9   )
     E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18    )
@@ -208,4 +208,4 @@ OPTION__
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
     TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E18NEUI  PCNSETO  E6NEUTI PHEAVTO  E8NEUTI  PLONCHA  E9NEUTR PPINTTO
+                              OUT__  E18NEUI  PCNSETO  E6NEUTI PHEAVTO  E9NEUTI  PLONCHA  E9NEUTR PPINTTO

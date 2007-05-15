@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2544,6 +2544,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            NON_LOCAL       =FACT(statut='f',
              regles=(AU_MOINS_UN('LONG_CARA','C_GONF'),),
              LONG_CARA       =SIMP(statut='f',typ='R'),
+             PENA_LAGR       =SIMP(statut='f',typ='R',defaut= 1.0E3),
              C_GONF          =SIMP(statut='f',typ='R'),
              COEF_RIGI_MINI  =SIMP(statut='f',typ='R'),
            ),

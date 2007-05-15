@@ -2,7 +2,7 @@
      &                    THVRAI, CHTEMP )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C            PAR GETTCO, FONCTION SUPERVISEUR
 C
         IF ( NOPASE.NE.' ' ) THEN
           K8BID = TEMPE
-          CALL PSRENC ( K8BID, NOPASE, TEMPE, IRET )
+          CALL PSGENC ( K8BID, NOPASE, TEMPE, IRET )
           IF ( IRET.NE.0 ) THEN
             VALK(1) = TEMPE
 C                     12345678   9012345678901234

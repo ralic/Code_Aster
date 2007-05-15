@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -147,8 +147,8 @@ MODE_LOCAL__
                                         X19      X20      X21      X22      X23      X24
                                         X25      X26      X27      X28      X29      X30      )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
-    E8NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       )
+    E9NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9        )
     E36NEUTI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18
@@ -644,7 +644,7 @@ OPTION__
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  E33NEUTR PPINTTO
+                              OUT__  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  E33NEUTR PPINTTO
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R

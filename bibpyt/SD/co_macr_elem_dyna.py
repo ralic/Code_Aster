@@ -1,4 +1,4 @@
-#@ MODIF co_macr_elem_dyna SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_macr_elem_dyna SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,8 @@
 import Accas
 from SD import *
 from sd_macr_elem_dyna import sd_macr_elem_dyna
+
+import Numeric
 
 # -----------------------------------------------------------------------------
 class macr_elem_dyna(ASSD, sd_macr_elem_dyna):

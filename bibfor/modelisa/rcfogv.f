@@ -1,0 +1,103 @@
+      SUBROUTINE RCFOGV(NOMRC,NONLOC,JPROL,JVALE,NBVALE,E,NU,
+     &                  P,RP,RPRIM,SIELEQ,DP)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER          JPROL,JVALE,NBVALE
+      REAL*8           E,NU,SIGY,P,SIELEQ,RP,RPRIM,DP,NONLOC(3)
+      CHARACTER*(*)    NOMRC
+C ----------------------------------------------------------------------
+C - RESOLUTION DE L'EQUATION R(P+DP) + 3 MU DP = SIELEQ
+C   POUR LES LOIS ELASTO-PLASTIQUES EN NON LOCAL GRAD_VARI
+C
+C IN  NOMRC   : NOM DE LA RELATION DE COMPORTEMENT
+C               NOMRC = 'TRACTION' OU 'META_TRACTION'
+C IN  JPROL   : ADRESSE DE L'OBJET .PROL DE LA S.D. FONCTION R(P)
+C IN  JVALE   : ADRESSE DE L'OBJET .VALE DE LA S.D. FONCTION R(P)
+C IN  NBVALE  : NOMBRE DE VALEURS DE LA FONCTION R(P)
+C IN  E       : MODULE D'YOUNG
+C IN  NU      : COEFFICIENT DE POISSON
+C IN  P       : VARIABLE INTERNE
+C OUT RP      : VALEUR DE R(P) sans la contribution non locale
+C OUT RPRIM   : VALEUR DE LA DERIVEE DE R(P) EN P
+C IN  SIELEQ  : CONTRAINTE ELASTIQUE EQUIVALENTE
+C OUT DP      : INCREMENT DE DEFORMATION PLASTIQUE CUMULEE.
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER       JP,JR,I,I0
+      REAL*8       TROIMU,P0,RP0,PP,EQU
+      REAL*8       RAUG,PHI
+
+C - DESCRIPTIF DE LA COURBE R(P)
+      JP = JVALE
+      JR = JVALE + NBVALE
+
+C - RECUPERATION DES PARAMETRES NON LOCAUX
+      RAUG=NONLOC(2)
+      PHI=NONLOC(3)
+
+
+C - RESOLUTION DE L'EQUATION R(P+DP) + 3 MU DP = SIELEQ
+
+      TROIMU = 1.5D0*E/(1+NU)
+      DO 30 I=I0+1,NBVALE-1
+       EQU = ZR(JR+I)-PHI+RAUG*ZR(JP+I)+TROIMU*(ZR(JP+I)-P)-SIELEQ
+       IF (EQU.GT.0) THEN
+        I0 = I-1
+        GOTO 40
+       ENDIF
+30    CONTINUE
+      I0 = NBVALE-1
+40    CONTINUE
+
+C - CALCUL DES VALEURS DE DP, R(P+DP) local , R'(P+DP) local
+      RPRIM = (ZR(JR+I0+1)-ZR(JR+I0))/
+     &         (ZR(JP+I0+1)-ZR(JP+I0))
+
+      P0  = ZR(JP+I0)
+      RP0 = ZR(JR+I0)
+      DP     = (SIELEQ-RP0-RPRIM*(P-P0)-RAUG*P+PHI)/(TROIMU+RPRIM+RAUG)
+      PP     = P+DP
+      RP     = RP0 + RPRIM*(PP-P0)
+      RPRIM  = RPRIM
+
+
+9999  CONTINUE
+      END

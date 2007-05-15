@@ -1,7 +1,7 @@
       SUBROUTINE DELECT (MODELZ, EXI, SOLVDE, PARMET, PARCRI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C RESPONSABLE PBADEL P.BADEL
 
       LOGICAL        EXI
       CHARACTER*(*)  MODELZ
-      CHARACTER*8   MODELE
       CHARACTER*19  SOLVDE
       REAL*8         PARMET(23), PARCRI(11)
 C ----------------------------------------------------------------------
@@ -60,17 +59,13 @@ C ----------------------------------------------------------------------
 
 C -- INITIALISATION
 
-      MODELE     = MODELZ
       PARCRI(10) = R8VIDE()
       PARCRI(11) = R8VIDE()
 
 
-C -- LECTURE DU MODELE
-
-      CALL DISMOI (' ', 'EXI_GRAD_VARI',MODELE,'MODELE',IBID,REP,IRET)
-      EXI = REP.EQ.'OUI'
+C on deconnecte exi_grad_vari
+      EXI = .FALSE.
       IF (.NOT. EXI) GOTO 9999
-
 
 C -- PREPARATION DU SOLVEUR
 

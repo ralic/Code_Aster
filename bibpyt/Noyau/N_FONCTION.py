@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FONCTION Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,9 +28,11 @@ from __future__ import division
 from N_ASSD import ASSD
 import string
 
+from asojb import AsBase
+
 class FONCTION(ASSD):pass
 
-class formule(ASSD):
+class formule(ASSD,AsBase):
    def __init__(self,**args):
       ASSD.__init__(self,**args)
       self.nompar    =None

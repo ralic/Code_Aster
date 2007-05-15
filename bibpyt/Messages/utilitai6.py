@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai6 Messages  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -346,19 +346,19 @@ cata_msg={
 
 
 77: _("""
- le numero d''ordre n''existe pas    numero :  %(i1)d
+Concept résultat %(k1)s : le numéro d'ordre %(i1)d est inconnu.
 """),
 
 78: _("""
-  numero d archivage:  %(i1)d superieur au max:, %(i2)d
+Concept résultat %(k1)s : le numéro d'archivage %(i1)d est supérieur au max %(i2)d.
 """),
 
 79: _("""
-  numero de rangement :  %(i1)d superieur au max:, %(i2)d
+Concept résultat %(k1)s : le numéro de rangement %(i1)d est supérieur au max %(i2)d.
 """),
 
 80: _("""
- variable inconnue: variable :  %(k1)s pour le type :  %(k2)s
+Concept résultat %(k1)s : la variable %(k2)s est inconnue pour le type %(k3)s.
 """),
 
 81: _("""

@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF UTILITAI  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,8 +81,8 @@ C     -----------------------------------------------------------------
      &        (QUESTI.EQ.'EXI_THM_CT') .OR. (QUESTI.EQ.'EXI_THM_VR').OR.
      &        (QUESTI.EQ.'EXI_TUYAU')  .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
      &        (QUESTI.EQ.'EXI_COQ1D')  .OR. (QUESTI.EQ.'EXI_GRILLE').OR.
-     &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE') .OR.
-     &        (QUESTI.EQ.'EXI_GRAD_VARI') ) THEN
+     &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE') 
+     &        ) THEN
 C     -----------------------------------------------------------------
         CALL JEEXIN(NOMOB//'.LIEL',IRET)
         IF (IRET.GT.0) THEN
@@ -123,13 +123,13 @@ C     -----------------------------------------------------------------
                 GO TO 40
               END IF
 
-            ELSE IF (QUESTI.EQ.'EXI_GRAD_VARI')THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
-              I7 = INDEX(NOMODL,'GRAD_VARI')
-              IF (I7.NE.0) THEN
-                REPK = 'OUI'
-                GO TO 40
-              END IF
+C            ELSE IF (QUESTI.EQ.'EXI_GRAD_VARI')THEN
+C              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+C              I7 = INDEX(NOMODL,'GRAD_VARI')
+C              IF (I7.NE.0) THEN
+C                REPK = 'OUI'
+C                GO TO 40
+C              END IF
 
             ELSE IF ((QUESTI.EQ.'EXI_COQ3D') .OR.
      &               (QUESTI.EQ.'EXI_COQ1D')) THEN

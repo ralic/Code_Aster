@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_ETAPE Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,11 +111,11 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
          Construit le concept produit de l'opérateur. Deux cas 
          peuvent se présenter :
         
-         - le parent n'est pas défini. Dans ce cas, l'étape prend en charge la création 
-           et le nommage du concept.
+           - le parent n'est pas défini. Dans ce cas, l'étape prend en charge la création 
+             et le nommage du concept.
 
-         - le parent est défini. Dans ce cas, l'étape demande au parent la création et 
-           le nommage du concept.
+           - le parent est défini. Dans ce cas, l'étape demande au parent la création et 
+             le nommage du concept.
 
       """
       self.sdnom=nom
@@ -158,14 +158,14 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
       """
           Retourne le concept résultat de l'étape
           Deux cas :
-                   cas 1 : sd_prod de oper n'est pas une fonction
-                           il s'agit d'une sous classe de ASSD
-                           on construit le sd à partir de cette classe
-                           et on le retourne
-                   cas 2 : il s'agit d'une fonction
-                           on l'évalue avec les mots-clés de l'étape (mc_liste)
-                           on construit le sd à partir de la classe obtenue
-                           et on le retourne
+                   - cas 1 : sd_prod de oper n'est pas une fonction
+                     il s'agit d'une sous classe de ASSD
+                     on construit le sd à partir de cette classe
+                     et on le retourne
+                   - cas 2 : il s'agit d'une fonction
+                     on l'évalue avec les mots-clés de l'étape (mc_liste)
+                     on construit le sd à partir de la classe obtenue
+                     et on le retourne
       """
       if type(self.definition.sd_prod) == types.FunctionType:
         d=self.cree_dict_valeurs(self.mc_liste)
@@ -211,12 +211,12 @@ Causes possibles :
       """
           Retourne le type du concept résultat de l'étape
           Deux cas :
-           cas 1 : sd_prod de oper n'est pas une fonction
-                   il s'agit d'une sous classe de ASSD
-                   on retourne le nom de la classe
-           cas 2 : il s'agit d'une fonction
-                    on l'évalue avec les mots-clés de l'étape (mc_liste)
-                   et on retourne son résultat
+            - cas 1 : sd_prod de oper n'est pas une fonction
+              il s'agit d'une sous classe de ASSD
+              on retourne le nom de la classe
+            - cas 2 : il s'agit d'une fonction
+              on l'évalue avec les mots-clés de l'étape (mc_liste)
+              et on retourne son résultat
       """
       if type(self.definition.sd_prod) == types.FunctionType:
         d=self.cree_dict_valeurs(self.mc_liste)
@@ -267,7 +267,7 @@ Causes possibles :
    def reset_current_step(self):
       """ 
             Methode utilisee par l'etape self qui remet son etape parent comme 
-             etape courante 
+            etape courante 
       """
       #print "reset_current_step ",self.nom
       #traceback.print_stack(limit=3,file=sys.stdout)

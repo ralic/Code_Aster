@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -290,36 +290,44 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'C_PLAN_XFEM'          DIM__ 2 2   CODE__ 'CPX'
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_X
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_X
 
        MODELISATION__ 'D_PLAN_XFEM'          DIM__ 2 2   CODE__ 'DPX'
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_X
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_X
 
 %-------------------------------------------------------------------
 % modelisations 2d X-FEM non affectables par AFFE_MODELE
        MODELISATION__ 'C_PLAN_XH'         DIM__ 2 2   CODE__ 'CX1'
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XH
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XH
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_XH
 
        MODELISATION__ 'D_PLAN_XH'         DIM__ 2 2   CODE__ 'DX1'
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XH
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XH
-
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_XH
+    
        MODELISATION__ 'C_PLAN_XT'         DIM__ 2 2   CODE__ 'CX2'
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XT
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XT
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_XT
 
        MODELISATION__ 'D_PLAN_XT'         DIM__ 2 2   CODE__ 'DX2'
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XT
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XT
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_XT
 
        MODELISATION__ 'C_PLAN_XHT'        DIM__ 2 2   CODE__ 'CX3'
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHT
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XHT
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_XHT
 
        MODELISATION__ 'D_PLAN_XHT'        DIM__ 2 2   CODE__ 'DX3'
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHT
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHT
+              MAILLE__ SEG3      ELEMENT__ MEPSE3_XHT
 %-------------------------------------------------------------------
 
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
@@ -328,11 +336,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ MGCPTR3
               MAILLE__ TRIA6     ELEMENT__ MGCPTR6
               MAILLE__ QUAD8     ELEMENT__ MGCPQU8
-
-       MODELISATION__ 'C_PLAN_GRAD_VARI'   DIM__ 2 2   CODE__ 'CPV'
-              MAILLE__ SEG3      ELEMENT__ MEPLSE3
-              MAILLE__ TRIA6     ELEMENT__ MVCPTR6
-              MAILLE__ QUAD8     ELEMENT__ MVCPQS8
 
        MODELISATION__ 'D_PLAN_GRAD_VARI'   DIM__ 2 2   CODE__ 'DPV'
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
@@ -346,8 +349,9 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ MVAXQS8
 
        MODELISATION__ '3D_GRAD_VARI'     DIM__ 3 3   CODE__ '3DV'
-              MAILLE__ HEXA20    ELEMENT__ MVCA_HEXS20
+              MAILLE__ HEXA20    ELEMENT__ MVCA_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MVCA_PENTA15
+              MAILLE__ PYRAM13   ELEMENT__ MVCA_PYRAM13
               MAILLE__ TETRA10   ELEMENT__ MVCA_TETRA10
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6

@@ -1,6 +1,6 @@
       SUBROUTINE ZEROG2(X,Y,Z,I)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,17 @@ C    CONSTRUCTION D'UN NOUVEL ESTIME
       A=(Y1-Y0-Z0*(X1-X0))/(X1-X0)**2
       B=Z0-2*A*X0
       C=Y0+A*X0**2-Z0*X0
-      CALL ZEROP2(B/A, C/A, RAC, NRAC)
+
+      IF (A.NE.0.D0) THEN
+        CALL ZEROP2(B/A, C/A, RAC, NRAC)
+      ELSE
+        IF (B.NE.0.D0) THEN
+          X(3)=-C/B
+          GOTO 9999
+        ELSE
+          CALL U2MESS('F','ALGORITH9_84')
+        ENDIF
+      ENDIF
 
       IF (((X(1)-RAC(1))*(X(2)-RAC(1))).LT.0.D0) THEN
         X(3)=RAC(1)

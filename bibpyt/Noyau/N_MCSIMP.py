@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_MCSIMP Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,10 +141,12 @@ class MCSIMP(N_OBJECT.OBJECT):
    def get_sd_mcs_utilisees(self):
       """ 
           Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
-          . Si aucune sd n'est utilisée, le dictionnaire est vide.
-          . Sinon, la clé du dictionnaire est le mot-clé simple ; la valeur est
-            la liste des sd attenante.
-            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
+            - Si aucune sd n'est utilisée, le dictionnaire est vide.
+            - Sinon, la clé du dictionnaire est le mot-clé simple ; la valeur est
+              la liste des sd attenante.
+
+              Exemple ::
+                      { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
                                     <Cata.cata.para_sensi instance at 0x941a204> ] }
       """
       l=self.get_sd_utilisees()

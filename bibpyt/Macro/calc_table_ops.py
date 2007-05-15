@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,6 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    from Utilitai.Utmess       import UTMESS
    from Utilitai              import transpose
    from Utilitai.Table        import Table, merge
-   from Utilitai.Sensibilite  import NomCompose
 
    ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -55,7 +54,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    # 0. faut-il utiliser une table dérivée
    form_sens='\n... SENSIBILITE AU PARAMETRE %s (SD COMP %s)'
    if args['SENSIBILITE']:
-      ncomp = NomCompose(TABLE, args['SENSIBILITE'], msg='F')
+      ncomp = self.jdc.memo_sensi.get_nocomp(TABLE.nom, args['SENSIBILITE'].nom)
       sdtab = table_jeveux(ncomp)
       tab = sdtab.EXTR_TABLE()
    else:

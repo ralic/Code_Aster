@@ -5,7 +5,7 @@
       CHARACTER*(*) NOMSD,LPARA(*),CTYPE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +61,9 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER IBID,NBORDR,NRANG,JORDR,I,IPARA,IER,IRANG,IFR,IUNIFI
       INTEGER VALI(2)
-      CHARACTER*8 K8B,NOMOBJ,K8DEBU,K8MAXI
-      CHARACTER*24 VALK(2)
+      REAL*8 R8BID
+      CHARACTER*8 K8B
+      CHARACTER*24 VALK(3)
       CHARACTER*16 PARAM,K16B
       CHARACTER*19 NOMS2
 C ----------------------------------------------------------------------
@@ -74,8 +75,9 @@ C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
 
       IF (CEL.EQ.'L') THEN
         IF (IRANG.EQ.0) THEN
+          VALK (1) = NOMSD
           VALI (1) = IORDR
-          CALL U2MESG('F', 'UTILITAI6_77',0,' ',1,VALI,0,0.D0)
+          CALL U2MESG('F', 'UTILITAI6_77',1,VALK,1,VALI,0, R8BID)
         END IF
       ELSE
         IF (IRANG.EQ.0) THEN
@@ -83,9 +85,10 @@ C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
           CALL JELIRA(NOMS2//'.ORDR','LONUTI',NRANG,K8B)
           NRANG = NRANG + 1
           IF (NRANG.GT.NBORDR) THEN
+          VALK (1) = NOMSD
           VALI (1) = IORDR
           VALI (2) = NBORDR
-            CALL U2MESG('F', 'UTILITAI6_78',0,' ',2,VALI,0,0.D0)
+            CALL U2MESG('F', 'UTILITAI6_78',1,VALK,2,VALI,0, R8BID)
           END IF
           CALL JEECRA(NOMS2//'.ORDR','LONUTI',NRANG,' ')
           CALL JEVEUO(NOMS2//'.ORDR','E',JORDR)
@@ -96,9 +99,10 @@ C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
 
       CALL JELIRA(JEXNUM(NOMS2//'.TACH',1),'LONMAX',NBORDR,K8B)
       IF (IRANG.GT.NBORDR) THEN
+          VALK (1) = NOMSD
           VALI (1) = IRANG
           VALI (2) = NBORDR
-        CALL U2MESG('F', 'UTILITAI6_79',0,' ',2,VALI,0,0.D0)
+        CALL U2MESG('F', 'UTILITAI6_79',1,VALK,2,VALI,0, R8BID)
       END IF
 
       DO 10,I = 1,NPARA
@@ -108,9 +112,10 @@ C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
           IFR = IUNIFI('RESULTAT')
           CALL DISMOI('F','TYPE_RESU',NOMSD,'RESULTAT',IBID,K16B,IER)
           CALL JEIMPO(IFR,NOMS2//'.NOVA',' ',' ')
-          VALK (1) = PARAM
-          VALK (2) = K16B
-          CALL U2MESG('F', 'UTILITAI6_80',2,VALK,0,0,0,0.D0)
+          VALK (1) = NOMSD
+          VALK (2) = PARAM
+          VALK (3) = K16B
+          CALL U2MESG('F', 'UTILITAI6_80',3,VALK,0,0,0, R8BID)
         END IF
 
         CALL EXTRS3(NOMS2,PARAM,IRANG,CEL,ITYPE,CTYPE(I),LJEVEU(I))

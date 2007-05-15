@@ -4,7 +4,7 @@
       REAL*8     DFF(3,NBNOMX),INVJAC(NDIM,NDIM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C ----------------------------------------------------------------------
-C FONCTION REALISEE:  CALCUL DE L'INVERSE DE LA JACONIENNE EN XE
+C FONCTION REALISEE:  CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE
 C                        
 C    ENTREE:
 C        NNO    :  NOMBRE DE NOEUDS DE L'ELEMENT
@@ -57,25 +57,33 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     JACOBIENNE EN XE
       CALL MATINI(3,3,0.D0,JACOBI)
-
       DO 100 I=1,NDIM
         DO 110 J=1,NDIM
           DO 120 K=1,NNO
-       JACOBI(I,J) = JACOBI(I,J) + DFF(J,K) * ZR(IGEOM-1+NDIM*(K-1)+I)
+       JACOBI(I,J) = JACOBI(I,J) + DFF(J,K) * ZR(IGEOM-1+NDIM*(K-1)+I) 
  120      CONTINUE
+
  110    CONTINUE
  100  CONTINUE
-
-      IF (NDIM .EQ. 2) JACOBI(3,3)=1.D0
+   
+      IF (NDIM .EQ. 2) THEN
+         JACOBI(3,3)=1.D0
+      ELSEIF (NDIM .EQ. 1) THEN
+         JACOBI(3,3)=1.D0
+         JACOBI(2,2)=1.D0
+      ENDIF
+     
 
 C     INVERSE DE LA JACOBIENNE
-      CALL MATINV(3,JACOBI,TEMP)  
+      
+      CALL MATINV(3,JACOBI,TEMP) 
+
            
       DO 200 I=1,NDIM
          DO 210 J=1, NDIM
             INVJAC(I,J)=TEMP(I,J)
  210     CONTINUE
  200  CONTINUE
-           
+
       CALL JEDEMA()
       END

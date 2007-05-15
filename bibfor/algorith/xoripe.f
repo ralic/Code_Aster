@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C
 C        ORIENTER LES SOUS-ELEMENTS DE PEAU DES ELEMENTS X-FEM
 C
-C  IN         MODELE    : NOM DE L'OBJET MODELE	
+C  IN         MODELE    : NOM DE L'OBJET MODELE 
 C  IN/OUT     FISS      : NOM DE LA SD FISS_XFEM
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -38,7 +38,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /CVARJE/ ZC(1)
       LOGICAL          ZL
       COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
+      CHARACTER*8      ZK8,TYP3D
       CHARACTER*16             ZK16
       CHARACTER*24                      ZK24
       CHARACTER*32                               ZK32
@@ -47,34 +47,37 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      REAL*8        R8B,ARMIN,PREC,G2(3),G3(3),NEXT(3),NORME
-      REAL*8        CO(3,3),AB(3),AC(3),N2D(3),DDOT
+      REAL*8        R8B,ARMIN,PREC,G1(3),GBO(3),GPR(3),NEXT(3),NORME
+      REAL*8        CO(3,3),AB(3),AC(3),N2D(3),DDOT,A(3),B(3),C(3)
       COMPLEX*16    CBID
-      INTEGER       JNOMA,NGR,IGR,JGR,N1,NBELT,ITYPEL,IEL,IMA,NBMA,J
+      INTEGER       JNOMA,NGR,IGR,JGR,N1,NBELT,ITYPEL,IEL,IMA,NBMA,J,IER
       INTEGER       JMAIL,CPT,NBMAIL,IRET,NBPAR,JCOOR,JM3D,IBID,JVECNO
-      INTEGER       NUMA3D,NUMA2D,NBNOM3,NBNOM2,JCONX1,JCONX2,INO,NUNO
+      INTEGER       NUMAPR,NUMAB,NUMA1D,NBNOPR,NBNOBO,NBNOM1
+      INTEGER       JCONX1,JCONX2,INO,NUNO,NORIEG,NTRAIT
       INTEGER       ICH,JCESD(3),JCESV(3),JCESL(3),IAD,NIT,IT,NSE,ISE,IN
       INTEGER       NDIME,ICMP,NDIM,ID(3),INTEMP,NSEORI,IFM,NIV,NNCP
-      CHARACTER*8   NOMA,K8BID,NOMAIL,K8B
+      INTEGER       JDIM,S1,S2
+      CHARACTER*8   NOMA,K8BID,NOMAIL,K8B,TPMAIL
       CHARACTER*2   KDIM
       CHARACTER*16  NOTYPE
       CHARACTER*19  LIGREL,NOMT19,CHS(3)
       CHARACTER*24  MAMOD,LIEL,GRMAPE,NOMMAI,NOMOB,PARA,VECNOR
       CHARACTER*19  PINTTO,CNSETO,LONCHA
-C
 C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
-      CALL INFDBG('XFEM',IFM,NIV)        
 
-C     NOMBRE DE SOUS-TRIA RE-ORIENTES
+      CALL JEMARQ()
+      CALL INFDBG('XFEM',IFM,NIV)
+
+C     NOMBRE DE SOUS-ELEMENTS RE-ORIENTES
       NSEORI=0.D0
+
 
 C     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 C     NDIM EST LA DIMENSION DU MAILLAGE
 C     NDIME EST DIMENSION DE LA MAILLE DE PEAU
-      NDIME=2
-      NDIM=3
+
+    
+
 
       LIGREL = MODELE//'.MODELE'
       LIEL=LIGREL//'.LIEL'
@@ -88,6 +91,10 @@ C     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
       CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
+      CALL JEVEUO(NOMA//'.DIME','L',JDIM)
+      NDIM=ZI(JDIM-1+6)
+      
+      NDIME=NDIM-1
 
 
 C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
@@ -109,7 +116,7 @@ C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
       ELSE
          CALL U2MESS('F','MODELISA3_18')
       ENDIF
-
+      
 
 C     ------------------------------------------------------------------
 C     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU
@@ -121,92 +128,107 @@ C     ------------------------------------------------------------------
       CPT=0
 
       CALL JELIRA(LIEL,'NMAXOC',NGR,K8BID)
+
       DO 100 IGR=1,NGR
         CALL JEVEUO(JEXNUM(LIEL,IGR),'L',JGR)
         CALL JELIRA(JEXNUM(LIEL,IGR),'LONMAX',N1,K8BID)
         NBELT=N1-1
         ITYPEL=ZI(JGR-1+N1)
         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOTYPE)
+
         DO 110 IEL=1,NBELT
           IMA=ZI(JGR-1+IEL)
-          IF (NOTYPE(1:12).EQ.'MECA_XH_FACE') THEN
+          IF (NOTYPE(1:12).EQ.'MECA_XH_FACE'.OR.
+     &        NOTYPE(1:10).EQ.'MEPSE3_XH') THEN
             CPT=CPT+1
             ZI(JMAIL-1+CPT)=IMA
             CALL JENUNO(JEXNUM(NOMMAI,IMA),NOMAIL)
-C            WRITE(6,*)'ON STOCKE ',IMA,NOMAIL
+            WRITE(6,*)'ON STOCKE ',IMA,NOMAIL
           ENDIF
  110    CONTINUE
+
  100  CONTINUE
 
 C     NOMBRE DE MAILLES DE LA LISTE
       NBMAIL=CPT
+C      GOTO 999
+
       IF (NBMAIL.EQ.0) GOTO 999
 
 C     ------------------------------------------------------------------
 C     II°) RECHERCHE DES MAILLES SUPPORT
 C     ------------------------------------------------------------------
-
-      KDIM ='3D'
+     
+      CALL CODENT(NDIM,'D',KDIM)
+      KDIM = KDIM//'D'
+     
       NOMOB = '&&XORIPE.NU_MAILLE_3D'
       CALL UTMASU ( NOMA, KDIM, NBMAIL, ZI(JMAIL), NOMOB, PREC, R8B )
       CALL JEVEUO (NOMOB,'L',JM3D)
-
+      
 C      DO 200 IMA=1,NBMAIL
-C        WRITE(6,*)'NUMA3D ',ZI(JM3D-1+IMA)
+C        WRITE(6,*)'NUMAPR ',ZI(JM3D-1+IMA)
 C 200  CONTINUE
 
 C     ------------------------------------------------------------------
 C     III°) CREATION DU VECTEUR DES NORMALES SORTANTES
 C     ------------------------------------------------------------------
-
+       
       VECNOR='&&XORIPE.VECNOR'
-      CALL WKVECT(VECNOR,'V V R',NBMAIL*3,JVECNO)
+      CALL WKVECT(VECNOR,'V V R',NBMAIL*NDIM,JVECNO)
+
 
       DO 300 IMA=1,NBMAIL
+C       NUMEROS DES MAILLES PRINCIPALE ET DE BORD
+        NUMAB=ZI(JMAIL-1+IMA)
+        NUMAPR=ZI(JM3D-1+IMA)
 
-C       NUMEROS DES MAILLES 2D ET 3D
-        NUMA2D=ZI(JMAIL-1+IMA)
-        NUMA3D=ZI(JM3D-1+IMA)
 
-C       NOMBRES DE NOEUDS DES MAILLES 2D ET 3D
-        NBNOM2=ZI(JCONX2+NUMA2D) - ZI(JCONX2+NUMA2D-1)
-        NBNOM3=ZI(JCONX2+NUMA3D) - ZI(JCONX2+NUMA3D-1)
+C       NOMBRES DE NOEUDS DES MAILLES PRINCIPALE ET DE BORD
+        NBNOBO=ZI(JCONX2+NUMAB) - ZI(JCONX2+NUMAB-1)
+        NBNOPR=ZI(JCONX2+NUMAPR) - ZI(JCONX2+NUMAPR-1)
 
-C       G2 : CENTRE DE GRAVITÉ DE LA MAILLE 2D
-        CALL LCINVN(3,0.D0,G2)
-        DO 310 INO=1,NBNOM2
-          NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMA2D-1)+INO-1)
-          DO 311 J=1,3
-            G2(J)=G2(J)+ZR(JCOOR-1+3*(NUNO-1)+J)/NBNOM2
+C       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
+        CALL LCINVN(3,0.D0,GBO)
+        DO 310 INO=1,NBNOBO
+          NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAB-1)+INO-1)
+          DO 311 J=1,NDIM
+            GBO(J)=GBO(J)+ZR(JCOOR-1+3*(NUNO-1)+J)/NBNOBO
  311      CONTINUE
  310    CONTINUE
+      
 
-C        WRITE(6,*)'G2 ',G2
 
-C       G3 : CENTRE DE GRAVITÉ DE LA MAILLE 3D
-        CALL LCINVN(3,0.D0,G3)
-        DO 320 INO=1,NBNOM3
-          NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMA3D-1)+INO-1)
-          DO 321 J=1,3
-            G3(J)=G3(J)+ZR(JCOOR-1+3*(NUNO-1)+J)/NBNOM3
+C       GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
+        CALL LCINVN(3,0.D0,GPR)
+        DO 320 INO=1,NBNOPR
+          NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
+          DO 321 J=1,NDIM
+            GPR(J)=GPR(J)+ZR(JCOOR-1+3*(NUNO-1)+J)/NBNOPR
  321      CONTINUE
  320    CONTINUE
+       
 
-C        WRITE(6,*)'G3 ',G3
 
-C       NORMALE EXTERIEURE : Next = G2 - G3
-        CALL VDIFF(NDIM,G2,G3,NEXT)
+C       NORMALE EXTERIEURE : Next = GBO - GPR
+        CALL LCINVN(3,0.D0,NEXT)
+        CALL VDIFF(3,GBO,GPR,NEXT)
         CALL NORMEV(NEXT,NORME)
-        DO 330 J=1,NDIM
-          ZR(JVECNO-1+3*(IMA-1)+J)=NEXT(J)
- 330    CONTINUE
 
-C        WRITE(6,*)'NEXT ',NEXT
+        DO 330 J=1,NDIM
+          ZR(JVECNO-1+NDIM*(IMA-1)+J)=NEXT(J)
+ 330    CONTINUE
+ 
+        
 
  300  CONTINUE
+        
+
+     
+
 
 C     ------------------------------------------------------------------
-C     IV°) ORIENTATION DES SOUS-TRIA
+C     IV°) ORIENTATION DES SOUS-ELEMENTS
 C     ------------------------------------------------------------------
 
       CHS(1)  = '&&XORIPE.PINTTO'
@@ -221,22 +243,28 @@ C     ------------------------------------------------------------------
       CALL CELCES(CNSETO,'V',CHS(2))
       CALL CELCES(LONCHA,'V',CHS(3))
 
+      
       DO 40 ICH=1,3
         CALL JEVEUO(CHS(ICH)//'.CESD','L',JCESD(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESV','E',JCESV(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESL','L',JCESL(ICH))
  40   CONTINUE
+ 
+
+      
+      
 
       DO 400 IMA=1,NBMAIL
 
         DO 401 J=1,NDIM
-          NEXT(J)=ZR(JVECNO-1+3*(IMA-1)+J)
+          NEXT(J)=ZR(JVECNO-1+NDIM*(IMA-1)+J)
  401    CONTINUE
 
-        NUMA2D=ZI(JMAIL-1+IMA)
+        NUMAB=ZI(JMAIL-1+IMA)
 
-C       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT TRI
-        CALL CESEXI('S',JCESD(3),JCESL(3),NUMA2D,1,1,1,IAD)
+C       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT 
+C       SOUS-ELEMENTS
+        CALL CESEXI('S',JCESD(3),JCESL(3),NUMAB,1,1,1,IAD)
         NIT=ZI(JCESV(3)-1+IAD)
 
         CPT=0
@@ -244,49 +272,72 @@ C       BOUCLE SUR LES NIT TRI
         DO 410 IT=1,NIT
 
 C         RECUPERATION DU DECOUPAGE EN NSE SOUS-ELEMENTS
-          CALL CESEXI('S',JCESD(3),JCESL(3),NUMA2D,1,1,1+IT,IAD)
+          CALL CESEXI('S',JCESD(3),JCESL(3),NUMAB,1,1,1+IT,IAD)
           NSE=ZI(JCESV(3)-1+IAD)
 
 C         BOUCLE SUR LES NSE SOUS-ELEMENTS
           DO 420 ISE=1,NSE
-
+            
             CPT=CPT+1
 
-C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-TRIA
-            DO 421 IN=1,3
+C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-ELEMENT
+            DO 421 IN=1,NDIM
               ICMP=(NDIME+1)*(CPT-1)+IN
-              CALL CESEXI('S',JCESD(2),JCESL(2),NUMA2D,1,1,ICMP,ID(IN))
+              CALL CESEXI('S',JCESD(2),JCESL(2),NUMAB,1,1,ICMP,ID(IN))
+
               INO=ZI(JCESV(2)-1+ID(IN))
               IF (INO.LT.1000) THEN
-                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMA2D-1)+INO-1)
+                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAB-1)+INO-1)
+
                 DO 422 J=1,NDIM
-                  CO(J,IN)=ZR(JCOOR-1+NDIM*(NUNO-1)+J)
+                  CO(J,IN)=ZR(JCOOR-1+3*(NUNO-1)+J)
  422            CONTINUE
               ELSE
                 DO 423 J=1,NDIM
                   ICMP=NDIM*(INO-1000-1)+J
-                  CALL CESEXI('S',JCESD(1),JCESL(1),NUMA2D,1,1,ICMP,IAD)
+                  CALL CESEXI('S',JCESD(1),JCESL(1),NUMAB,1,1,ICMP,IAD)
                   CO(J,IN)=ZR(JCESV(1)-1+IAD)
  423            CONTINUE
               ENDIF
  421        CONTINUE
-
-            CALL VDIFF(NDIM,CO(1,2),CO(1,1),AB)
-            CALL VDIFF(NDIM,CO(1,3),CO(1,1),AC)
-
-C           NORMALE AU SOUS-TRIA 2D
-            CALL PROVEC(AB,AC,N2D)
+         
+            DO 430 J=1,NDIM
+               A(J) = CO(J,1)
+               B(J) = CO(J,2)
+               IF (NDIM.EQ.3) C(J) = CO(J,3)
+ 430        CONTINUE
+               IF (NDIM.EQ.2) THEN
+                  A(3) = 0.D0
+                  B(3) = 0.D0
+               ENDIF
+ 
+C           NORMALE AU SOUS-ELEMENT 2D
+            CALL LCINVN(3,0.D0,AB)
+            CALL VDIFF(3,B,A,AB)
+            CALL LCINVN(3,0.D0,N2D)
+            IF (NDIM.EQ.3) THEN
+              CALL LCINVN(3,0.D0,AC)
+              CALL VDIFF(3,C,A,AC)
+              CALL PROVEC(AB,AC,N2D)
+            ELSEIF (NDIM.EQ.2) THEN
+              N2D(1) = AB(2)
+              N2D(2) = -AB(1)
+              N2D(3) = 0
+            ENDIF
             CALL NORMEV(N2D,NORME)
 
-C            WRITE(6,*)'N2D ',N2D
 
 C           PRODUIT SCALAIRE DES NORMALES : N2D.NEXT
             IF (DDOT(NDIM,N2D,1,NEXT,1).LT.0.D0) THEN
-C             ON INVERSE LES SOMMETS 2 ET 3
+C             ON INVERSE LES SOMMETS S1 ET S2
+C             (ON INVERSE 1 ET 2 EN 2D
+             S1 = NDIM-1
+             S2 = NDIM
+C              ON INVERSE 2 ET 3 EN 3D)
               NSEORI=NSEORI+1
-              INTEMP=ZI(JCESV(2)-1+ID(2))
-              ZI(JCESV(2)-1+ID(2))=ZI(JCESV(2)-1+ID(3))
-              ZI(JCESV(2)-1+ID(3))=INTEMP
+              INTEMP=ZI(JCESV(2)-1+ID(S1))
+              ZI(JCESV(2)-1+ID(S1))=ZI(JCESV(2)-1+ID(S2))
+              ZI(JCESV(2)-1+ID(S2))=INTEMP
             ENDIF
 
  420      CONTINUE
@@ -295,10 +346,13 @@ C             ON INVERSE LES SOMMETS 2 ET 3
 
  400  CONTINUE
 
+      
+
 C     ON SAUVE LE NOUVEAU CHAM_ELEM MODIFIE A LA PLACE DE L'ANCIEN
       CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',
      &                               NNCP,'G',CNSETO)
-
+      
+     
 C     ------------------------------------------------------------------
 C     FIN
 C     ------------------------------------------------------------------
@@ -311,6 +365,7 @@ C     ------------------------------------------------------------------
       WRITE(IFM,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES =',NSEORI
 
       CALL JEDETR('&&XORIPE.GRMAPE')
+
 
       CALL JEDEMA()
       END

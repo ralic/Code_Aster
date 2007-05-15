@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,7 @@ C DANS LE CAS D'UN CALCUL DE DERIVE :
 C
         ELSE
 C
-          CALL PSRENC ( RESUIN, NOPASE, LERES0, IRET )
+          CALL PSGENC ( RESUIN, NOPASE, LERES0, IRET )
           IF ( IRET.NE.0 ) THEN
              VALK(1) = RESUIN
              VALK(2) = NOPASE

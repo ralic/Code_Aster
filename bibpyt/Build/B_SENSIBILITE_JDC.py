@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_JDC Build  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF B_SENSIBILITE_JDC Build  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -302,6 +302,8 @@ class SENSIBILITE_JDC :
         # Le timer étant initialisé dans l'ops, on le transmet au nouveau jdc
         # (sinon il faudrait passer par N_JDC.JDC.__init__)
         new_jdc.timer = self.jdc.timer
+        # idem memo_sensi
+        new_jdc.memo_sensi = self.jdc.memo_sensi
 #
         new_jdc.compile()
         if not new_jdc.cr.estvide(): 

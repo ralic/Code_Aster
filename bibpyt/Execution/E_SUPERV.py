@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,10 +176,6 @@ class SUPERV:
 
       # On compile le texte Python
       j.compile()
-
-      # On initialise les tops de mesure globale de temps d'execution du jdc
-      j.cpu_user=os.times()[0]
-      j.cpu_syst=os.times()[1]
 
       if not j.cr.estvide(): 
          self.MESSAGE("ERREUR DE COMPILATION DANS ACCAS - INTERRUPTION")

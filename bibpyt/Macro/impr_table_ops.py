@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,6 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    from Cata.cata import table_jeveux
    from Utilitai.Utmess  import UTMESS
    from Utilitai.UniteAster import UniteAster
-   from Utilitai.Sensibilite import NomCompose
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
@@ -83,7 +82,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       if not type(lps) in EnumTypes:
          lps=[lps,]
       for ps in lps:
-         ncomp = NomCompose(TABLE, ps)
+         ncomp = self.jdc.memo_sensi.get_nocomp(TABLE.nom, ps.nom)
          if ncomp != None:
             sdtab = table_jeveux(ncomp)
             tabs = sdtab.EXTR_TABLE()

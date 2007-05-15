@@ -1,9 +1,9 @@
       SUBROUTINE TE0143(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,9 +28,13 @@ C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C        'RIGI_MECA_GE' : CALCUL DE LA MATRICE DE RIGIDITE
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
-C        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
-C        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
-C        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
+C       'MECA_POU_D_E'  : POUTRE DROITE D'EULER       (SECTION VARIABLE)
+C       'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
+C       'MECA_POU_C_T'  : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
+C       'MECA_POU_D_EM' : POUTRE DROITE MULTIFIBRE D EULER (SECT. CONST)
+C       'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
+C       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
+C                         MULTI-FIBRES SECTION CONSTANTE
 C     ------------------------------------------------------------------
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -52,33 +56,47 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*16 CH16
-      REAL*8       A   ,  XIY ,  XIZ ,  ALFAY ,  ALFAZ ,  XJX ,  EZ,  EY
-      REAL*8       A2  ,  XIY2,  XIZ2,  ALFAY2,  ALFAZ2,  XJX2,  XL
-      REAL*8       RAD ,  ANG ,ANGARC,   ANGS2,     XFLY, XFLZ
-      REAL*8       PGL(3,3), PGL1(3,3), PGL2(3,3), MAT(78)
+      REAL*8       A  , XIY , XIZ , ALFAY , ALFAZ , XJX , EZ, EY
+      REAL*8       A2 , XIY2, XIZ2, ALFAY2, ALFAZ2, XJX2, XL
+      REAL*8       RAD, ANG, ANGARC, ANGS2, XFLY, XFLZ
+      REAL*8       PGL(3,3), PGL1(3,3), PGL2(3,3), MAT(105)
+      REAL*8       ITYPE, IYR2, IZR2, XFL, B(14),KSI1, D1B3(2,3)
+      REAL*8       ZERO,TRIGOM
+      INTEGER      LSECT,LSECT2,LORIEN,NNO,NC,I,LMAT,NCOMP,NBFIB
+      INTEGER      LRCOU,LDEP,KP,ADR,LX
 C     ------------------------------------------------------------------
 C
       ZERO = 0.0D0
+      ITYPE= 0
 C
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
       CALL JEVECH ('PCAGNPO', 'L',LSECT)
       LSECT = LSECT-1
-      ITYPE =  NINT(ZR(LSECT+23))
+      IF (NOMTE.EQ.'MECA_POU_D_TG' .AND.
+     &    NOMTE.EQ.'MECA_POU_D_TGM' ) THEN
+         ITYPE =  NINT(ZR(LSECT+23))
+      ENDIF
 C
 C     --- SECTION INITIALE ---
       A     =  ZR(LSECT+1)
       XIY   =  ZR(LSECT+2)
       XIZ   =  ZR(LSECT+3)
-C     EY    = -ZR(LSECT+6)
-C     EZ    = -ZR(LSECT+7)
-C
+
+      IF(NOMTE.EQ.'MECA_POU_D_TG'.OR.
+     &   NOMTE.EQ.'MECA_POU_D_TGM'  ) THEN
+         EY = -ZR(LSECT+6)
+         EZ = -ZR(LSECT+7)
+         IYR2= ZR(LSECT+10)
+         IZR2= ZR(LSECT+11)
+      ELSE
 C     --- SECTION FINALE ---
-      LSECT2 = LSECT + 11
-      A2     = ZR(LSECT2+1)
-      XIY2   = ZR(LSECT2+2)
-      XIZ2   = ZR(LSECT2+3)
-      EY     = -(ZR(LSECT+6)+ZR(LSECT2+6))/2.D0
-      EZ     = -(ZR(LSECT+7)+ZR(LSECT2+7))/2.D0
+         LSECT2 = LSECT + 11
+         A2     = ZR(LSECT2+1)
+         XIY2   = ZR(LSECT2+2)
+         XIZ2   = ZR(LSECT2+3)
+         EY     = -(ZR(LSECT+6)+ZR(LSECT2+6))/2.D0
+         EZ     = -(ZR(LSECT+7)+ZR(LSECT2+7))/2.D0
+      ENDIF
 C
 C     --- RECUPERATION DES ORIENTATIONS ---
       CALL JEVECH ('PCAORIE', 'L',LORIEN)
@@ -116,7 +134,7 @@ C        --- POUTRE COURBE DE TIMOSHENKO A 6 DDL ---
              XFLY   = ZR(LRCOU+4)
              XFLZ   = ZR(LRCOU+6)
          ENDIF
-         ANGS2  = ASIN( XL / ( 2.D0 * RAD ) )
+         ANGS2  = TRIGOM('ASIN', XL / ( 2.D0 * RAD ) )
          ANG    = ANGS2 * 2.D0
          XL     = RAD * ANG
          XIY    = XIY  / XFLY
@@ -124,14 +142,20 @@ C        --- POUTRE COURBE DE TIMOSHENKO A 6 DDL ---
          XIY2   = XIY2 / XFLY
          XIZ2   = XIZ2 / XFLZ
          CALL MATRO2 ( ZR(LORIEN) , ANGARC , ANGS2 , PGL1 , PGL2 )
+
+      ELSE IF(NOMTE.EQ.'MECA_POU_D_TG'.OR.
+     &        NOMTE.EQ.'MECA_POU_D_TGM'  ) THEN
+         NNO = 2
+         NC  = 7
+         CALL MATROT ( ZR(LORIEN) , PGL )
       ELSE
          CH16 = NOMTE
          CALL U2MESK('F','ELEMENTS2_42',1,CH16)
       ENDIF
 C
-      DO 10 I = 1, 78
+      DO 10 I = 1, 105
          MAT(I) = 0.D0
- 10   CONTINUE
+10    CONTINUE
 C
 C     --- CALCUL DES MATRICES ELEMENTAIRES ----
       IF ( OPTION .EQ. 'RIGI_MECA_GE' ) THEN
@@ -139,10 +163,59 @@ C
 C        --- CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE ---
          CALL JEVECH('PEFFORR','L',LDEP)
          CALL JEVECH('PMATUUR','E',LMAT)
-         IF ( ITYPE.NE.10 )  THEN
-            CALL PTKG00(ZR(LDEP),A,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,MAT)
-         ELSE
-            CALL U2MESS('A','ELEMENTS3_28')
+
+         IF(NOMTE.EQ.'MECA_POU_D_T' .OR.
+     &      NOMTE.EQ.'MECA_POU_D_E' .OR.
+     &      NOMTE.EQ.'MECA_POU_C_T'  ) THEN
+            IF ( ITYPE.NE.10 )  THEN
+               CALL PTKG00(ZR(LDEP),A,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,MAT)
+            ELSE
+               CALL U2MESS('A','ELEMENTS3_28')
+            ENDIF
+
+         ELSEIF( NOMTE.EQ.'MECA_POU_D_TG') THEN
+            CALL JSPGNO(XL, ZR(LDEP), B)
+            DO 20 I = 1, 7
+               B(I) = -B(I)
+20          CONTINUE
+            CALL PTKG20(B,A,XIZ,XIY,IYR2,IZR2,XL,EY,EZ,MAT)
+
+         ELSEIF( NOMTE.EQ.'MECA_POU_D_TGM') THEN
+C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES
+C     NOMBRE DE VARIABLES PAR POINT DE GAUSS EN PLUS DU NBFIB
+            NCOMP = 7
+            CALL JEVECH('PNBSP_I','L',I)
+            NBFIB = ZI(I)
+
+C     ON PROJETTE AVEC LES FCTS DE FORME
+C     SUR LES NOEUDS DEBUT ET FIN DE L'ELEMENT
+C     POUR LE POINT 1
+            KSI1 = -SQRT( 5.D0 / 3.D0 )
+            D1B3(1,1) = KSI1*(KSI1-1.D0)/2.0D0
+            D1B3(1,2) = 1.D0-KSI1*KSI1
+            D1B3(1,3) = KSI1*(KSI1+1.D0)/2.0D0
+C     POUR LE POINT 2
+            KSI1 = SQRT( 5.D0 / 3.D0 )
+            D1B3(2,1) = KSI1*(KSI1-1.D0)/2.0D0
+            D1B3(2,2) = 1.D0-KSI1*KSI1
+            D1B3(2,3) = KSI1*(KSI1+1.D0)/2.0D0
+C
+C     ON RECUPERE LES EFFORTS GENERALISE CF OPTION SIEF_ELNO_ELGA
+
+C !!! MAGOUILLE POUR STOCKER LES FORCES INTEGREES !!!
+C     ELLES SONT DEJA CALCULEES ET STOCKEES APRES LES FIBRES
+C       AU NOEUD 1 ON RECUPERE   -EFFORT STOCKE
+C       AU NOEUD 2 ON RECUPERE   +EFFORT STOCKE
+            DO 210 I = 1 , NC
+               B(I)    = ZERO
+               B(I+NC) = ZERO
+               DO 212 KP = 1 , 3
+                  ADR = LDEP+(NBFIB+NCOMP)*(KP-1)+ NBFIB + I - 1
+                  B(I)   = B(I)   -ZR(ADR)*D1B3(1,KP)
+                  B(I+NC)= B(I+NC)+ZR(ADR)*D1B3(2,KP)
+212            CONTINUE
+210         CONTINUE
+            CALL PTKG20(B,A,XIZ,XIY,IYR2,IZR2,XL,EY,EZ,MAT)
          ENDIF
 C
 C        --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---

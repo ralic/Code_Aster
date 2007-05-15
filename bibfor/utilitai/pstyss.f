@@ -6,7 +6,7 @@ C     PARAMETRE SENSIBLE - TYPE DE SENSIBILITE - SOUS-TYPE
 C     *         *          **                    *  *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,7 @@ C IN  LIVALE  : LA STRUCTURE K80 CONTENANT LES VALEURS CONCERNEES
 C IN  NOPASE  : NOM DU PARAMETRE SENSIBLE
 C IN/OUT STYPSE  : SOUS-TYPE DE SENSIBILITE
 C ----------------------------------------------------------------------
-C  PSTYSE --> PSREMC, POUR RECUPERER DANS LA STRUCTURE D'ARCHIVAGE :
+C  PSTYSE --> PSGEMC, POUR RECUPERER DANS LA STRUCTURE D'ARCHIVAGE :
 C                     1. LE NOMBRE DE MOTS-CLES SIMPLES ASSOCIES
 C                     2. LES MOTS-CLES SIMPLES
 C                     3. LES VALEURS
@@ -50,7 +50,7 @@ C  NTTYSE --!
 C  METYSE --> PSTYSE --> PSTYPR --> SEGICO
 C
 C  NTTYSE --!
-C  METYSE --> PSTYSS --> PSREMC --> SEMECO
+C  METYSE --> PSTYSS --> PSGEMC --> SEMECO
 C                    --> PSTYST
 C ----------------------------------------------------------------------
 C
@@ -83,7 +83,10 @@ C
       INTEGER ADVALE
       INTEGER NBMOS1
       CHARACTER*24 LIMOS1, LIVAL1, LIMOF1
+      CHARACTER*8 K8B
+      INTEGER ADMOS1, ADVAL1, ADMOF1
 C
+      CALL JEMARQ()
 C====
 C 1. APPEL DU PROGRAMME DE BASE
 C====
@@ -96,10 +99,17 @@ C
 C
       DO 11 , IAUX = 1 , NBMOCL
 C
-        CALL PSREMC ( ZK80(ADVALE+IAUX-1), NOPASE,
-     >                NBMOS1, LIMOS1, LIVAL1, LIMOF1, JAUX )
+        NBMOS1 = 0
+        CALL PSGEMC( ZK80(ADVALE+IAUX-1), NOPASE, NBMOS1, K8B, K8B, K8B)
 C
         IF ( NBMOS1.GT.0 ) THEN
+C
+          CALL WKVECT ( LIMOS1,'V V K80',NBMOS1, ADMOS1 )
+          CALL WKVECT ( LIVAL1,'V V K80',NBMOS1, ADVAL1 )
+          CALL WKVECT ( LIMOF1,'V V K80',NBMOS1, ADMOF1 )
+          CALL PSGEMC( ZK80(ADVALE+IAUX-1), NOPASE, NBMOS1,
+     >                 ZK80(ADMOS1), ZK80(ADVAL1), ZK80(ADMOF1))
+C
           DO 111 , JAUX = 1 , NBMOS1
             CALL PSTYST ( MBMCSR, NBMC, COREFE, MCSREF,
      >                    NBMOS1, LIMOS1, LIVAL1, LIMOF1,
@@ -108,8 +118,11 @@ C
           CALL JEDETR ( LIMOS1 )
           CALL JEDETR ( LIVAL1 )
           CALL JEDETR ( LIMOF1 )
+C
         ENDIF
 C
    11 CONTINUE
+C
+      CALL JEDEMA()
 C
       END

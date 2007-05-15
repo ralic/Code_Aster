@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_MCCOMPO Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -308,8 +308,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
           Retourne le fils de self de nom name ou None s'il n'existe pas
           Si restreint vaut oui : ne regarde que dans la mc_liste
           Si restreint vaut non : regarde aussi dans les entites possibles 
-          avec defaut    
-           (Ce dernier cas n'est utilisé que dans le catalogue)
+          avec defaut (Ce dernier cas n'est utilisé que dans le catalogue)
       """
       for v in self.mc_liste:
         if v.nom == name : return v
@@ -380,12 +379,14 @@ class MCCOMPO(N_OBJECT.OBJECT):
    def get_sd_mcs_utilisees(self):
     """ 
           Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
-          . Si aucune sd n'est utilisée, le dictionnaire est vide.
-          . Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
-            trouve des sd ; la valeur est la liste des sd attenante.
-            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
-                                    <Cata.cata.para_sensi instance at 0x941a204> ],
-                        'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
+            - Si aucune sd n'est utilisée, le dictionnaire est vide.
+            - Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
+              trouve des sd ; la valeur est la liste des sd attenante.
+              Exemple ::
+              
+                { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
+                              <Cata.cata.para_sensi instance at 0x941a204> ],
+                  'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
     """
     dico = {}
     for child in self.mc_liste:

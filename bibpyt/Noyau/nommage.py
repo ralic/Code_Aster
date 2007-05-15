@@ -1,4 +1,4 @@
-#@ MODIF nommage Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF nommage Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,6 +44,8 @@ import linecache
 import N_utils
 
 regex1='=?\s*%s\s*\('
+#commentaire standard precede d'un nombre quelconque de blancs (pas multiligne)
+pattern_comment   = re.compile(r"^\s*#.*")
 
 def GetNomConceptResultat(ope):
   """
@@ -69,15 +71,18 @@ def GetNomConceptResultat(ope):
   filename = co.co_filename
   name = co.co_name
   #print "NOMOP,FICHIER, LIGNE ",ope,filename,lineno
-  line = linecache.getline(filename, lineno)
-  if not line: line = None
+  #pattern pour identifier le debut de la commande
+  pattern_oper=re.compile(regex1 % ope)
 
   list=[]
-  list.append(line)
   while lineno > 0:
+    line = linecache.getline(filename, lineno)
+    lineno=lineno-1
+    if pattern_comment.match(line):continue
     #print "LIGNE ",line
-    if re.search(regex1 % ope,line):
-      l=re.split(regex1 % ope,line)
+    list.append(line)
+    if pattern_oper.search(line):
+      l=pattern_oper.split(line)
       list.reverse()
       #print "COMMANDE ",string.join(list)
       #print "SPLIT ",l
@@ -87,9 +92,6 @@ def GetNomConceptResultat(ope):
       #print "NOMS ",m
       if m!=[] :  return m[-1]
       else : return ''
-    lineno=lineno-1
-    line = linecache.getline(filename, lineno)
-    list.append(line)
   #print "appel inconnu"
   return ""
 
@@ -97,9 +99,9 @@ def evalnom(text,d):
   """
    Retourne un nom pour le concept resultat identifie par text
    Pour obtenir ce nom il y a plusieurs possibilites :
-    1-text est un identificateur python c est le nom du concept
-    2-text est un element d une liste on construit le nom en
-      evaluant la partie indice dans le contexte de l appelant d
+    1. text est un identificateur python c'est le nom du concept
+    2. text est un element d'une liste on construit le nom en
+      evaluant la partie indice dans le contexte de l'appelant d
   """
   l=re.split('([\[\]]+)',text)
   #print l

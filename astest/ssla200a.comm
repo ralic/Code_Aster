@@ -1,4 +1,4 @@
-# MODIF  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/05/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -327,7 +327,6 @@ TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
 
 CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
-                           TEMP_CALCULEE=THLIN,
                                PESANTEUR=(9.8,  0.3,  0.1, -0.4,),
                                 ROTATION=(0.2,  0.5, -0.2,  0.2,),
 #  ----  MAILLES 2D
@@ -376,8 +375,44 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                           FY = 0.98,
                                           ANGL_NAUT = (25.8, 7.1, 29.3,)))
 
-CHMETH=AFFE_CHAR_MECA(         MODELE=MO,
-                            TEMP_CALCULEE=THLIN)
+CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
+                          _F(  TOUT = 'OUI',
+                                 MATER = MAT1,
+                                 TEMP_REF = 4.8),
+                          _F(  GROUP_MA = 'GMA0',
+                                 MATER = MAT2,
+                                 TEMP_REF = 6.9),
+                          _F(  GROUP_MA = 'GMA9',
+                                 MATER = MAT3),
+                          _F(  GROUP_MA = 'GMA10',
+                                 MATER = MAT4,
+                                 TEMP_REF = 11.7),
+                          _F(  GROUP_MA = 'GMA11',
+                                 MATER = MAT5),
+                          _F(  GROUP_MA = 'GMA12',
+                                 MATER = MAT6)),
+                                    AFFE_VARC=(
+                          _F(  TOUT = 'OUI',
+                                 EVOL = THLIN,
+                                 NOM_VARC='TEMP',
+                                 VALE_REF = 4.8),
+                          _F(  GROUP_MA = 'GMA0',
+                                 EVOL = THLIN,
+                                 NOM_VARC='TEMP',
+                                 VALE_REF = 6.9),
+                          _F(  GROUP_MA = 'GMA9',
+                                 NOM_VARC='TEMP',
+                                 EVOL = THLIN,),
+                          _F(  GROUP_MA = 'GMA10',
+                                 EVOL = THLIN,
+                                 NOM_VARC='TEMP',
+                                 VALE_REF = 11.7),
+                          _F(  GROUP_MA = 'GMA11',
+                                 NOM_VARC='TEMP',
+                                 EVOL = THLIN,),
+                          _F(  GROUP_MA = 'GMA12',
+                                 NOM_VARC='TEMP',
+                                 EVOL = THLIN,)),);
 
 CHMECF=AFFE_CHAR_MECA_F(         MODELE=MO,
                                 VERI_NORM='NON',
@@ -429,26 +464,12 @@ CHCIF=AFFE_CHAR_CINE_F(       MODELE=MO,
                                          DX = FO7,
                                          DY = FO9) )
 
-MATELEM1=CALC_MATR_ELEM(        OPTION='RIGI_MECA',
-                                  MODELE=MO,
-                              CHAM_MATER=CHMAT,
-                               CARA_ELEM=CARA1,
-                                 CHARGE=(CHMEC, CHMECF, ),
-                                    INST=2.9 )
-
-MATELEM2=CALC_MATR_ELEM(        OPTION='MASS_MECA',
-                                  MODELE=MO,
-                              CHAM_MATER=CHMAT,
-                               CARA_ELEM=CARA1,
-                                 CHARGE=(CHMEC, CHMECF, ),
-                                    INST=1.9 )
-
 # ----------------------------------------------------------------------
 #   COMMANDES GLOBALES DE MECANIQUE : STATIQUE LINEAIRE
 # ----------------------------------------------------------------------
 
 MSLIN=MECA_STATIQUE(        MODELE=MO,
-                           CHAM_MATER=CHMAT,
+                           CHAM_MATER=CHMAT2,
                             CARA_ELEM=CARA1,
                            EXCIT=_F(  CHARGE = CHMEC,
                                    FONC_MULT = FO11),
@@ -673,15 +694,14 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
 
 
 MSLI2=MECA_STATIQUE(        MODELE=MO,
-                          CHAM_MATER=CHMAT,
+                          CHAM_MATER=CHMAT2,
                            CARA_ELEM=CARA1,EXCIT=(
                           _F(  CHARGE = CHCI,
                                   FONC_MULT = FO12),
                           _F(  CHARGE = CHMECF,
                                  FONC_MULT = FO12),
                           _F(  CHARGE = CHCIF,
-                                 FONC_MULT = FO11),
-                          _F(  CHARGE = CHMETH)),
+                                 FONC_MULT = FO11),),
                           LIST_INST=LR1)
 
 # ----------------------------------------------------------------------
@@ -975,10 +995,6 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLI2,    NUME_ORDRE = 3,
               VALE= 8.5050286222804E+01 ))
             )
 
-CHME2=AFFE_CHAR_MECA(           MODELE=MO,
-                           TEMP_CALCULEE=THLIN,
-                               PESANTEUR=(9.8,  0.3,  0.1, -0.4,))
-
 CALC_NO( reuse=MSLI2,       OPTION='REAC_NODA',
                        RESULTAT=MSLI2,
                       MAILLE=('M11','M14',),
@@ -1101,7 +1117,7 @@ TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL6,
 # --------------------------------------------------------------------
 
 TABLE1=POST_ELEM(        MODELE=MO,
-                        CHAM_MATER=CHMAT,
+                        CHAM_MATER=CHMAT2,
                          CARA_ELEM=CARA1,
                              TITRE='MASSE INERTIE ET CENTRE DE GRAVITE',MASS_INER=(
                          _F( GROUP_MA = 'GMA8'),

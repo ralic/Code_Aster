@@ -1,4 +1,4 @@
-#@ MODIF N_CR Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_CR Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,9 +70,8 @@ class CR :
 
    def estvide(self):
       """ 
-           Retourne 1 si self ne contient aucun message grave (fatal ou exception) et
-                          aucun CR qui en contienne,
-                    0 sinon
+           Retourne 1 si self ne contient aucun message grave (fatal ou exception) 
+           et aucun CR qui en contienne, 0 sinon
       """
       if self.crexception : return 0
       if self.crfatal : return 0

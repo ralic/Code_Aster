@@ -4,7 +4,7 @@
      &                   INPSCO, PARCON )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,6 +96,7 @@ C                     2 : EPSI_REFE
 C                     3 : FLUX_THER_REFE
 C                     4 : FLUX_HYD1_REFE
 C                     5 : FLUX_HYD2_REFE
+C                     6 : VARI_REFE
 C ----------------------------------------------------------------------
       LOGICAL EXI
       INTEGER IBID, IAUX, IRET

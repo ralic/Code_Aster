@@ -1,11 +1,13 @@
-      SUBROUTINE XINILS(IFM,NOMA,METH,NFONF,NFONG,CNSLT,CNSLN)
+      SUBROUTINE XINILS(IFM,NOMA,METH,NFONF,NFONG,GEOFIS,A,B,C,COTE,
+     &                                         VECTX,VECTY,CNSLT,CNSLN)
       IMPLICIT NONE
       INTEGER       IFM
-      CHARACTER*8   NOMA,METH,NFONF,NFONG
+      CHARACTER*8   NOMA,METH,NFONF,NFONG,GEOFIS,COTE
       CHARACTER*19  CNSLT,CNSLN
+      REAL*8        A,B,C(3),VECTX(3),VECTY(3)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/09/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,6 +31,15 @@ C    ENTREE :
 C              IFM    :   FICHIER D'IMPRESSION
 C              NOMA   :   OBJET MAILLAGE
 C              METH   :   MÉTHODE DE CALUL DES LEVEL-SETS
+C              NFONF  :   NOM DE LA FONCTION LEVEL SET TANGENTE
+C              NFONG  :   NOM DE LA FONCTION LEVEL SET NORMALE
+C              GEOFIS :   GEOMETRIE DE LA FISSURE
+C              A      :   DEMI-GRAND AXE       (POUR FISSURE ELLIPTIQUE)
+C              B      :   DEMI-PETIT AXE       (POUR FISSURE ELLIPTIQUE)
+C              C      :   CENTRE               (POUR FISSURE ELLIPTIQUE)
+C              COTE   :   COTE DE LA FISSURE ('IN' OU 'OUT')
+C              VECTX  :   VECTEUR DU GRAND AXE (POUR FISSURE ELLIPTIQUE)
+C              VECTY  :   VECTEUR DU PETIT AXE (POUR FISSURE ELLIPTIQUE)
 C
 C    SORTIE : 
 C              CNSLN  :   LEVEL-SET NORMALE  (PLAN DE LA FISSURE)
@@ -60,7 +71,7 @@ C
       INTEGER       IBID,IRET,ME1,ME2,CLSM
       INTEGER       NBNO,INO,JCOOR,NBMAF,I
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
-      REAL*8        VALPU(3)
+      REAL*8        VALPU(3),P3D(3),PLOC(3),VECTZ(3),H
       REAL*8        NORME,LSNA,LSNB,D,LSTA,LSTB
       CHARACTER*8   K8BID,NOMPU(3),TYPMA,NOMNO
       CHARACTER*16  K16BID
@@ -134,7 +145,54 @@ C-----------------------------------------------------------------------
      &   NBMAF,JDLIMA,NBSEF,JDLISE,JCONX1,JCONX2)
         ENDIF
 
-      ENDIF   
+      ELSEIF (METH.EQ.'GEOMETRI') THEN
+
+C-----------------------------------------------------------------------
+C       DANS LE CAS OU ON DONNE LA GEOMETRIE DE LA FISSURE
+C-----------------------------------------------------------------------
+
+        WRITE(IFM,*)'CALCUL DES LEVEL-SETS AVEC LA METHODE 3'  
+
+        IF (GEOFIS.EQ.'ELLIPSE') THEN
+
+          DO 20 INO=1,NBNO
+
+C           COORDONNEES 3D DU POINT DANS LE REPERE GLOBAL
+            DO 21 DIMNO=1, DIMENS
+              P3D(DIMNO)=ZR(JCOOR-1+3*(INO-1)+DIMNO)
+ 21         CONTINUE
+
+C           BASE LOCALE : (VECTX,VECTY,VECTZ)
+            CALL NORMEV(VECTX,NORME)
+            CALL NORMEV(VECTY,NORME)
+            CALL PROVEC(VECTX,VECTY,VECTZ)
+
+C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
+            DO 22 I=1,3
+              PLOC(I)=(P3D(1)-C(1))*VECTX(I)+(P3D(2)-C(2))*VECTY(I)
+     &                                      +(P3D(3)-C(3))*VECTZ(I)
+ 22         CONTINUE
+
+C           LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
+            ZR(JLNSV-1+(INO-1)+1)=PLOC(3)
+            ZL(JLNSL-1+(INO-1)+1)=.TRUE.
+
+C           LEVEL SET TANGENTE CORRESPOND A LA DISTANCE DU POINT
+C           A L'ELLIPSE DANS LE PLAN (VECTX,VECTY)
+            CALL DISELL(PLOC,A,B,H)
+
+C           SI LA FISSURE EST A L'EXTERIEUR DE L'ELLIPSE, ON PREND 
+C           L'OPPOSEE DE H (PAR DEFAUT, LA FISSURE EST A L'INTERIEUR)
+            IF (COTE.EQ.'OUT') H = -1.D0 * H
+
+            ZR(JLTSV-1+(INO-1)+1)=H
+            ZL(JLTSL-1+(INO-1)+1)=.TRUE.
+
+ 20       CONTINUE          
+          
+        ENDIF
+
+      ENDIF     
       
 C-----------------------------------------------------------------------
 C     REAJUSTEMENT DE LSN (BOOK III 06/02/04) ET LST

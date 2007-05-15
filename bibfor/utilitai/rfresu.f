@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
           IF (NOPASE.EQ.' ') THEN
              RESU = RESUT
            ELSE
-             CALL PSRENC ( RESUT, NOPASE, RESU, IRET )
+             CALL PSGENC ( RESUT, NOPASE, RESU, IRET )
              IF ( IRET.NE.0 ) THEN
                VALK(1) = RESUT
                VALK(2) = NOPASE

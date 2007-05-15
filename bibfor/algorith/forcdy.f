@@ -1,10 +1,10 @@
       SUBROUTINE FORCDY( MASSE , AMORT , LAMORT ,
-     +                    NEQ,
-     +                    C0 , C1 , C2 , C3 , C4 , C5 ,
-     +                    D0 , V0 , A0 , F1 , F2 , F )
+     >                   NEQ,
+     >                   C0 , C1 , C2 , C3 , C4 , C5 ,
+     >                   D0 , V0 , A0 , F1 , F2 , F )
 C**********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,9 +25,7 @@ C   BUT :      CALCUL DU VECTEUR FORCE DYNAMIQUE
 C
 C              F  = F  + M*(C0.D0+C1.V0+C2.A0)
 C                      + C*(C3.D0+C4.V0+C5.A0)
-C  ======
-C
-C
+C ----------------------------------------------------------------------
 C   INPUT:
 C   ---> MASSE   : POINTEUR DE LA MATRICE MASSE
 C   ---> AMORT   : POINTEUR DE LA MATRICE AMORTISS
@@ -45,37 +43,51 @@ C
 C   VAR   :
 C   <--> F     : VECTEUR FORCE EXTERIEURE ENTREE (NEQ)
 C                VECTEUR FORCE DYNAMIQUE SORTIE (NEQ)
-C
 C ----------------------------------------------------------------------
-      IMPLICIT REAL *8 (A-H,O-Z)
-      REAL *8      D0(*) , V0(*) , A0(*) , F1(*), F2(*), F(*)
-      REAL *8      C0 , C1 , C2 , C3 , C4 , C5
-      LOGICAL      LAMORT
-      INTEGER      MASSE,AMORT
-C ---------------------------------------------------------------------
-C     INPUT:
 C
-C     MASSE        :    NOM MATRICE MASSE
-C     AMORT        :    NOM MATRICE AMORTISSEMENT
-C     LAMORT       :    =.TRUE. SI AMORTISSEMENT
-C ---------------------------------------------------------------------
+      IMPLICIT NONE
 C
-      REAL *8    ZERO ,UN
+C DECLARATION PARAMETRES D'APPELS
+C
+      INTEGER MASSE, AMORT
+      INTEGER NEQ
+C
+      REAL *8 D0(*), V0(*), A0(*), F1(*), F2(*), F(*)
+      REAL *8 C0, C1, C2, C3, C4, C5
+C
+      LOGICAL LAMORT
+C
+C DECLARATION VARIABLES LOCALES
+C
+      REAL *8    ZERO,UN
 C
       ZERO  = 0.D0
       UN    = 1.D0
+C
+C 1. TERME M*(C0.D0+C1.V0+C2.A0)
+C
       CALL R8INIR ( NEQ , ZERO , F1 , 1 )
       CALL DAXPY ( NEQ , C0 , D0 , 1 , F1 , 1 )
       CALL DAXPY ( NEQ , C1 , V0 , 1 , F1 , 1 )
       CALL DAXPY ( NEQ , C2 , A0 , 1 , F1 , 1 )
+C
       CALL MRMULT('ZERO', MASSE , F1 ,'R',  F2 , 1 )
+C
       CALL DAXPY ( NEQ , UN , F2 , 1 , F , 1 )
-      IF (LAMORT) THEN
+C
+C 2. CUMUL EVENTUEL DE C*(C3.D0+C4.V0+C5.A0)
+C
+      IF ( LAMORT ) THEN
+C
          CALL R8INIR ( NEQ , ZERO , F1 , 1  )
          CALL DAXPY ( NEQ , C3 , D0 , 1 , F1 , 1 )
          CALL DAXPY ( NEQ , C4 , V0 , 1 , F1 , 1 )
          CALL DAXPY ( NEQ , C5 , A0 , 1 , F1 , 1 )
+C
          CALL MRMULT('ZERO', AMORT , F1 , 'R', F2 , 1 )
+C
          CALL DAXPY ( NEQ , UN , F2 ,  1 , F , 1 )
+C
       ENDIF
+C
       END

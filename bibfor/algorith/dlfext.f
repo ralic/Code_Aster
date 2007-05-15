@@ -9,7 +9,7 @@
       CHARACTER*24 MODELE,CARELE,CHARGE,MATE,NUMEDD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,6 +95,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C DEB ------------------------------------------------------------------
 
+C====
+C 1. PREALABLES
+C====
+C
+CCC      PRINT *,'NRPASE = ',NRPASE
+CCC      PRINT *,'NVECA = ', NVECA,', NCHAR = ', NCHAR
       CALL JEMARQ()
 
       LIGRMO = MODELE(1:8)//'.MODELE'
@@ -109,35 +115,28 @@ C               12   345678   90123456789
       PARTPS(1) = TEMPS
       PARTPS(2) = R8VIDE()
       PARTPS(3) = R8VIDE()
-
-C -- NOM DU PARAMETRE
-      CALL PSNSLE(INPSCO,NRPASE,1,NOPASE)
-
-C -- REPERAGE DU TYPE DE DERIVATION (TYPESE)
-C             0 : CALCUL STANDARD
-C            -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
-C             1 : DERIVEE SANS INFLUENCE
-C             2 : DERIVEE DE LA CL DE DIRICHLET
-C             3 : PARAMETRE MATERIAU
-C             4 : CARACTERISTIQUE ELEMENTAIRE (COQUES, ...)
-C             5 : FORCE
-C             N : AUTRES DERIVEES
-
-
-      IF (NRPASE.EQ.0) THEN
-C -- CAS STANDARD
+C
+C====
+C 2. CAS STANDARD
+C====
+C
+      IF ( NRPASE.EQ.0 ) THEN
+C
         TYPESE = 0
         TYPCAL = 'MECA'
+        NOPASE = '        '
 
-C --- CAS D'UN CHARGEMENT DEFINI PAR VECT_ASSE ---
+C 2.1. ==> --- CAS D'UN CHARGEMENT DEFINI PAR VECT_ASSE ---
 
         IF (NVECA.NE.0) THEN
 
           CALL FEXT(TEMPS,NEQ,NVECA,LIAD,LIFO,F)
 
-C --- CAS D'UN CHARGEMENT DEFINI PAR CHARGE ---
+C 2.2. ==> --- CAS D'UN CHARGEMENT DEFINI PAR CHARGE ---
 
         ELSE IF (NCHAR.NE.0) THEN
+
+C 2.2.1 ==>
 
           CALL JEVEUO(INFOCH,'L',JINF)
           NCHAR = ZI(JINF)
@@ -161,13 +160,13 @@ C --- CAS D'UN CHARGEMENT DEFINI PAR CHARGE ---
           IF (NUMCHT.GT.0) THEN
             CALL JEVEUO(VACEL1,'L',JTT)
             CALL JEVEUO(ZK24(JTT) (1:19)//'.VALE','L',JCN1)
-            DO 10 JJ = 1,LONCH
+            DO 221 , JJ = 1,LONCH
               F(JJ) = F(JJ) + ZR(JCN1+JJ-1)
-   10       CONTINUE
+  221       CONTINUE
             CALL DETRSD('CHAMP_GD',ZK24(JTT) (1:19))
           END IF
 
-C -- LES DIRICHLETS
+C 2.2.2. ==> -- LES DIRICHLETS
 
           CALL VEDIME(MODELE,CHARGE,INFOCH,TEMPS,TYPMAT,TYPESE,NOPASE,
      &                VECHMP)
@@ -178,23 +177,40 @@ C -- LES DIRICHLETS
 
 C -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)
           IRET = 0
-          DO 20 JJ = 1,LONCH
+          DO 2221 , JJ = 1,LONCH
             IF (ABS(ZR(IF2+JJ-1)).GT.R8PREM()) IRET = 1
-   20     CONTINUE
+ 2221     CONTINUE
           INEW = 0
           CALL GETFAC('NEWMARK',INEW)
           IF ((IRET.EQ.1) .AND. (INEW.EQ.0)) THEN
             CALL U2MESS('F','ALGORITH3_20')
           END IF
 
-          DO 30 JJ = 1,LONCH
+          DO 2222 , JJ = 1,LONCH
             F(JJ) = F(JJ) + ZR(IF2+JJ-1)
-   30     CONTINUE
+ 2222     CONTINUE
 
         END IF
-
+C
+C====
+C 3. CAS AVEC SENSIBILITE
+C====
+C
       ELSE
-C -- CAS AVEC SENSIBILITE
+
+C -- NOM DU PARAMETRE SENSIBLE
+        CALL PSNSLE(INPSCO,NRPASE,1,NOPASE)
+
+C -- REPERAGE DU TYPE DE DERIVATION (TYPESE)
+C             0 : CALCUL STANDARD
+C            -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
+C             1 : DERIVEE SANS INFLUENCE
+C             2 : DERIVEE DE LA CL DE DIRICHLET
+C             3 : PARAMETRE MATERIAU
+C             4 : CARACTERISTIQUE ELEMENTAIRE (COQUES, ...)
+C             5 : FORCE
+C             N : AUTRES DERIVEES
+
 
         CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
 

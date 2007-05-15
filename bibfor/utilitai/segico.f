@@ -6,7 +6,7 @@ C     SENSIBILITE - GESTION DES INFORMATIONS POUR UNE COMMANDE
 C     **            *           *                     **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C
           SAUX08(1:LGNORE) = RESULT(1:LGNORE)
           JAUX = LGNORE
         ELSE
-          CALL PSRENC ( RESULT(1:LGNORE), NOPASE(1:LGNOMP),
+          CALL PSGENC ( RESULT(1:LGNORE), NOPASE(1:LGNOMP),
      &                  SAUX08, IRET )
           IF ( IRET.NE.0 ) THEN
             SAUX24 = BLAN24

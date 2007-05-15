@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,26 +270,28 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
 
-#----------------------------------------------
-#         EDITION DE FICHIERS GMSH
-#----------------------------------------------
+# -------------------------------------------------------------   
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
+# -------------------------------------------------------------   
 
-DEFI_FICHIER(UNITE=30,);
-IMPR_RESU(FORMAT='GMSH',
-          UNITE=30,
-          RESU=_F(MAILLAGE=MAILLAG2,),);
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                       MODELE        = MODELEK,
+                       INFO          = 2)
 
-MAXFEM=POST_MAIL_XFEM(MODELE=MODELEK,);
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),) 
 
-DEPL=POST_CHAM_XFEM(MAILLAGE=MAXFEM,
-                       MODELE=MODELEK,
-                       RESULTAT=UTOT1,
-                       NOM_CHAM='DEPL',);
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        INFO          = 2)
 
-DEFI_FICHIER(UNITE=31,);
-IMPR_RESU(FORMAT='GMSH',
-          UNITE=31,
-          RESU=_F(RESULTAT=DEPL,),);
+#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 
 

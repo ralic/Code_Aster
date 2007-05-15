@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+%& MODIF COMPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -213,6 +213,7 @@ GRANDEUR_SIMPLE__
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
                     EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z
+                    VARI     LAG_GV
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -224,6 +225,7 @@ GRANDEUR_SIMPLE__
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
                     EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z
+                    VARI     LAG_GV
 <<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
        DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
        DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
@@ -247,6 +249,7 @@ GRANDEUR_SIMPLE__
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
                     EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
                     D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z
+                    VARI     LAG_GV
 <<  DOMMAG   : DOMMAGE
        DOMA     :
        TRIAX    : TAUX DE TRIAXIALITE
@@ -491,7 +494,7 @@ GRANDEUR_SIMPLE__
     PILO_K   = K16  TYPE
     PILO_R   = R    A0       A1       A2       A3       ETA
     POSI     = I    POS
-    PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM
+    PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM   VARI
 <<  PRES_C/_F/_R : PRESSION
     PRES : PRESSION (NORMALE A LA SURFACE).
          SI C EST UN CHARGEMENT: P>0 EST APPLIQUEE SELON L OPPOSE DE LA NORMALE.

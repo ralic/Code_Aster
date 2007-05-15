@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT GLISSIERE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -197,18 +197,26 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
+# -------------------------------------------------------------   
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
+# -------------------------------------------------------------   
 
-DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
-                    MODELE=MODELEK,
-                    NOM_CHAM='DEPL',
-                    RESULTAT=UTOT1)
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAGE,
+                       MODELE        = MODELEK,
+                       INFO          = 2)
 
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),) 
 
-DEFI_FICHIER(UNITE=31)
-IMPR_RESU(FORMAT='GMSH',UNITE=31,RESU=_F(MAILLAGE=MA_XFEM))
-DEFI_FICHIER(UNITE=32)
-IMPR_RESU(FORMAT='GMSH',UNITE=32,RESU=_F(RESULTAT=DEPL))
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        INFO          = 2)
 
 DEP_H1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 NOEUD=('N33','N34','N38','N37',

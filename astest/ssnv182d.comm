@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -178,41 +178,45 @@ TEST_TABLE(TABLE=LAG,
            REFERENCE='ANALYTIQUE',);
 
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+# -------------------------------------------------------------   
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
+# -------------------------------------------------------------   
 
-DEFI_FICHIER(UNITE=81);
-IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM));
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                       MODELE        = MODELEK,
+                       INFO          = 2)
 
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN',),) 
 
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'),
+                        INFO          = 2)
+ 
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
 
-
-DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
-                    MODELE=MODELEK,
-                    NOM_CHAM='DEPL',
-                    RESULTAT=UTOT1)
-
-
-DEFI_FICHIER(UNITE=82);
-IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=DEPL));
-
-TEST_RESU(RESU=(_F(  RESULTAT=DEPL,NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
                      VALE = 0.0,
-                     PRECISION=1.E-6,
+                     PRECISION=1.E-8,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '8.2.13'),
-#  Test suivant mis en commentaire en attente de la refonte 
-#  des operateurs post-traitement X-FEM
-#                 _F(  RESULTAT=DEPL,NUME_ORDRE=1,
-#                      NOM_CHAM='DEPL',NOM_CMP='DY',
-#                      TYPE_TEST='SOMM_ABS',
-#                      CRITERE = 'ABSOLU',
-#                      VALE = 2.31E-04,
-#                      PRECISION=1.E-6,
-#                      REFERENCE = 'NON_REGRESSION',
-#                      VERSION = '8.2.13'),
+                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+                     NOM_CHAM='DEPL',NOM_CMP='DY',
+                     TYPE_TEST='SOMM_ABS',
+                     CRITERE = 'RELATIF',
+                     VALE = 4.10E-04,
+                     PRECISION=1.E-6,
+                     REFERENCE = 'NON_REGRESSION',
+                     VERSION = '9.0.21'),
                 ),
          );
 

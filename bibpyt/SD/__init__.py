@@ -1,4 +1,4 @@
-#@ MODIF __init__ SD  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF __init__ SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,15 +18,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from Noyau.N_ASSD import ASSD
+from Accas import ASSD
 
-import Numeric
+# pour utilisation du catalogue hors aster
 try:
    import aster
 except:
    pass
 
-from asnom      import SDNom
-from ascheckers import Parmi
-from asojb      import AsBase, AsVK8, AsVK16, AsVK24, AsVK32, AsVK80, \
-                       AsVI, AsVR, AsVC, AsVL, AsColl, AsObject, Facultatif, OJBVect
+from Noyau.asnom      import SDNom
+from Noyau.ascheckers import Parmi
+from Noyau.asojb      import AsBase, AsVK8, AsVK16, AsVK24, AsVK32, AsVK80, \
+                             AsVI, AsVR, AsVC, AsColl, AsObject, Facultatif, OJBVect
+

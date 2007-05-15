@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,8 +75,8 @@ MODE_LOCAL__
     E1NEUTR = NEUT_R    ELEM__         (X1       )
     E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
     E6NEUTR = NEUT_R    ELEM__         (X1       X2       X3       X4       X5       X6       )
-    E8NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8      )
+    E9NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
+                                        X7       X8       X9  )
     E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18    )
@@ -100,26 +100,26 @@ MATRICE__
 
 OPTION__
     CHAR_MECA_FF2D3D    36    IN__   CFORCEF  PFF2D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
-                                     E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
+                                     E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN   
                                      N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR2D3D    36    IN__   EFORCNO  PFR2D3D  NGEOMER  PGEOMER  NFORCER  PNFORCER E9NEUTR  PPINTTO
-                                     E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
+                                     E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN   
                                      N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F    36    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
-                                     E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
+                                     E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN   
                                      N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    36    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E9NEUTR  PPINTTO  E18NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
     DEPL_POST_XFEM      515   IN__   E18NEUI PCNSETO  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  E6NEUTI PHEAVTO
-                                     E8NEUTI  PLONCHA  E9NEUTR PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     E9NEUTI  PLONCHA  E9NEUTR PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST
                               OUT__  E30NEUTR PDEXFEM
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E9NEUTR PPINTTO  E18NEUI  PCNSETO   E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
+                              OUT__  E9NEUTR PPINTTO  E18NEUI  PCNSETO   E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER

@@ -4,7 +4,7 @@
      &                  ENER, VIP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,35 +87,36 @@ C ----------------------------------------------------------------------
 
 C    RESOLUTION DU PROBLEME LOCAL
 
-      IF (COMPOR .EQ. 'ENDO_FRAGILE') THEN
-
-        CALL LCFRGV (NDIM  , TYPMOD, OPTION, IMATE , EPSM  ,
-     &               DEPS  , VIM   , RLAG  , CHAMP , LAGR  ,
-     &               PONDER, DVIDA , ENER  , RBID  , VIP   ,
-     &               RBID)
-
-      ELSE IF (COMPOR .EQ. 'RUPT_FRAG') THEN
-
-        CALL RUFRAG (NDIM, TYPMOD, IMATE, EPSM, DEPS, VIM, RLAG,
-     &               CHAMP, LAGR, PONDER, DVIDA, ENER, VIP)
-
-      ELSE IF (COMPOR .EQ. 'VMIS_ISOT_LINE'
-     &    .OR. COMPOR .EQ. 'VMIS_ISOT_TRAC') THEN
-        IF (TYPMOD(1).EQ.'C_PLAN') CALL U2MESS('F','ALGORITH3_51')
-
-        CALL LCPLGR (FAMI,KPG,KSP,COMPOR, NDIM, OPTION, IMATE, CARCRI,
-     &         EPSM, DEPS, SIGM, VIM, RLAG, CHAMP, LAGR, VIP,
-     &               ENER, DVIDA, PONDER, RBID)
-
-      ELSE IF (COMPOR(1:10).EQ.'ROUSSELIER') THEN
-
-        IF (TYPMOD(1).EQ.'C_PLAN') CALL U2MESS('F','ALGORITH3_52')
-        CALL EDRONL (NDIM,IMATE,CARCRI,TP,
-     &              DEPS,VIM,RLAG,CHAMP,LAGR,
-     &              PONDER,VIP,DVIDA,ENER)
-      ELSE
-        CALL U2MESS('F','ALGORITH3_53')
-
-      END IF
+C      IF (COMPOR .EQ. 'ENDO_FRAGILE') THEN
+C
+C        CALL LCFRGV (NDIM  , TYPMOD, OPTION, IMATE , EPSM  ,
+C     &               DEPS  , VIM   , RLAG  , CHAMP , LAGR  ,
+C     &               PONDER, DVIDA , ENER  , RBID  , VIP   ,
+C     &               RBID)
+C
+C      ELSE IF (COMPOR .EQ. 'RUPT_FRAG') THEN
+C
+C        CALL RUFRAG (NDIM, TYPMOD, IMATE, EPSM, DEPS, VIM, RLAG,
+C     &               CHAMP, LAGR, PONDER, DVIDA, ENER, VIP)
+C
+C      ELSE IF (COMPOR .EQ. 'VMIS_ISOT_LINE'
+C     &    .OR. COMPOR .EQ. 'VMIS_ISOT_TRAC') THEN
+C        IF (TYPMOD(1).EQ.'C_PLAN') CALL U2MESS('F','ALGORITH3_51')
+C
+C        CALL LCPLGR (FAMI,KPG,KSP,COMPOR, NDIM, OPTION, IMATE, CARCRI,
+C     &         EPSM, DEPS, SIGM, VIM, RLAG, CHAMP, LAGR, VIP,
+C     &               ENER, DVIDA, PONDER, RBID)
+C
+C      ELSE IF (COMPOR(1:10).EQ.'ROUSSELIER') THEN
+C
+C        IF (TYPMOD(1).EQ.'C_PLAN') CALL U2MESS('F','ALGORITH3_52')
+C        CALL EDRONL (NDIM,IMATE,CARCRI,TP,
+C     &              DEPS,VIM,RLAG,CHAMP,LAGR,
+C     &              PONDER,VIP,DVIDA,ENER)
+C      ELSE
+C        CALL U2MESS('F','ALGORITH3_53')
+C
+C      END IF
+      CALL U2MESS('F','ALGORITH3_53')
 
       END

@@ -2,7 +2,7 @@
      &                  VRCPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -282,7 +282,7 @@ C     -------------------------------------
           LIGRCH = NOMCH0//'.CHME.LIGRE'
 
           IF (TYPESE.NE.0) THEN
-            CALL PSRENC(NOMCH0,NOPASE,NOMCHS,EXICHA)
+            CALL PSGENC(NOMCH0,NOPASE,NOMCHS,EXICHA)
           ELSE
             EXICHA = 0
             NOMCHA = NOMCH0

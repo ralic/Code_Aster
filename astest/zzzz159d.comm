@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE (VALIDATION SENSIBILITE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,9 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-DEBUT(CODE=_F(NOM='ZZZZ159D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+# RESPONSABLE ASSIRE A.ASSIRE
 
+DEBUT(CODE=_F(NOM='ZZZZ159D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
 parametres =[['YOUN__',100000.,50000.,500000.],['DSDE__',1000.,500.,10000.],['SIGY__',30.,5.,500.]]
 
@@ -88,8 +89,7 @@ RESU=MACR_RECAL(
          POIDS            = weight,
          LIST_DERIV       = list_deriv,
          GRAPHIQUE = _F(UNITE=90,
-                        FORMAT='XMGRACE',
-                        INTERACTIF='NON',),
+                        FORMAT='XMGRACE',),
          SUIVI_ESCLAVE    = 'OUI',
          INFO=2,
          );

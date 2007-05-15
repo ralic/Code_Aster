@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_JDC Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -260,20 +260,24 @@ NONE = None
 
    def create_sdprod(self,etape,nomsd):
       """ 
-          Intention : Cette methode doit fabriquer le concept produit retourne
-                  par l'etape etape et le nommer.
-                  Elle est appelée à l'initiative de l'etape
-                  pendant le processus de construction de cette etape : 
-                    methode __call__ de la classe CMD (OPER ou MACRO)
-                  Ce travail est réalisé par le contexte supérieur 
-                  (etape.parent) car dans certains cas, le concept ne doit 
-                  pas etre fabriqué mais l'etape doit simplement utiliser 
-                  un concept préexistant.
-                  Cas 1 : etape.reuse != None : le concept est réutilisé
-                  Cas 2 : l'étape appartient à une macro qui a déclaré un 
+          Cette methode doit fabriquer le concept produit retourne
+          par l'etape etape et le nommer.
+
+          Elle est appelée à l'initiative de l'etape
+          pendant le processus de construction de cette etape : 
+          methode __call__ de la classe CMD (OPER ou MACRO)
+
+          Ce travail est réalisé par le contexte supérieur 
+          (etape.parent) car dans certains cas, le concept ne doit 
+          pas etre fabriqué mais l'etape doit simplement utiliser 
+          un concept préexistant.
+
+          Deux cas possibles :
+                  - Cas 1 : etape.reuse != None : le concept est réutilisé
+                  - Cas 2 : l'étape appartient à une macro qui a déclaré un 
                           concept de sortie qui doit etre produit par cette 
                           etape.
-                  Dans le cas du JDC, le deuxième cas ne peut pas se produire.
+          Dans le cas du JDC, le deuxième cas ne peut pas se produire.
       """
       sd= etape.get_sd_prod()
       if sd != None and (etape.definition.reentrant == 'n' or etape.reuse is None) :

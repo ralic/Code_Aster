@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 07/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -251,7 +251,6 @@ class CALCUL_ASTER:
           except:
             UTMESS('F','MACR_RECAL',"Probleme : impossible d'importer le module de lecture des tables!")
 
-        UTMESS('I','MACR_RECAL',"Calcul de F avec les parametres:\n%s" % 'bla')
         txt = []
         for i in para:
           txt.append( "\t\t\t%s : %s" % (i, val[para.index(i)]) )
@@ -869,7 +868,8 @@ Message:
            elif lab == 'data':
               if dico['type'] not in ('exec', 'ele'):
                  if dico['ul']   != '0':   # Traite le cas des sources python sourchargees
-                    dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
+                    if self.METHODE !='EXTERNE': 
+                       dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
 
            # sinon on garde la ligne telle quelle
        setattr(prof, lab, l_fr)

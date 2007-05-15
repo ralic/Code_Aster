@@ -17,7 +17,7 @@
      &                  DEFICU,RESOCU,DEPOLD)
 C     
 C
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ C
       LOGICAL      REAROT,FONACT(ZFON),LOBSER
       INTEGER      NBPASE
       INTEGER      NBOBSE, NUINS0,NUOBSE,NBOBAR
-      REAL*8       PARCON(5),PARCRI,INSTAM
+      REAL*8       PARCON(6),PARCRI,INSTAM
       CHARACTER*8  MODEDE,RESULT,MAILL2
       CHARACTER*19 NOMTAB,LISOBS
       CHARACTER*13 INPSCO
@@ -154,6 +154,7 @@ C                            1 : SIGM_REFE
 C                            2 : FLUX_THER_REFE
 C                            3 : FLUX_HYD1_REFE
 C                            4 : FLUX_HYD2_REFE
+C                            6:  VARI_REFE
 C       IN PARCRI  R8  PARCRI(6) = RESI_CONT_RELA : R8VIDE SI NON ACTIF
 C       IN NBPASE  I   NOMBRE DE PARAMETRES SENSIBLES
 C       IN INPSCO K13  SD CONTENANT LISTE DES NOMS POUR SENSIBILITE
@@ -263,11 +264,11 @@ C      POUGD  : INFOS POUTRES EN GRANDES ROTATIONS
 
 
 
-C-----------------------------------------------------------------------
+C----------------------------------------------------------------------
 C
 C     NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
 C
-C-----------------------------------------------------------------------
+C----------------------------------------------------------------------
 
 C -- INCONNUES DE TYPE DEPLACEMENT
       NUMEDD = '12345678.NUMED'

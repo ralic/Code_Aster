@@ -4,7 +4,7 @@
      &                 CHVITE,CHACCE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,7 +245,7 @@ C
      &    OPTION(1:13).EQ.'CALC_DGG_FORC') THEN
         DO 70 ICHA = 1,NCHAR
           NOMCH0 = LCHAR(ICHA)(1:8)
-          CALL PSRENC(NOMCH0,NOPASE,NOMCHS,EXICHA)
+          CALL PSGENC(NOMCH0,NOPASE,NOMCHS,EXICHA)
           IF(EXICHA.EQ.0) THEN
             LCHARS(ICHA)(1:8) = NOMCHS
           ELSE IF(EXICHA.EQ.1) THEN

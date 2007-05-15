@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 15/05/2007   AUTEUR GRANET S.GRANET 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # ======================================================================
@@ -316,6 +316,7 @@ DPVP=CALC_NO(reuse=DPVP,
 
 SATLIQ=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELNO_VARI',NOM_VARI='SATLIQ')
 SATLIQ=CALC_NO(reuse=SATLIQ,RESULTAT=SATLIQ,OPTION='EXTR_NOEU_VARI',)
+SATEAU=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELGA_VARI',NOM_VARI='SATLIQ')
 
 #################################################
 #IMPR_RESU(RESU=_F(RESULTAT=U0,
@@ -342,6 +343,16 @@ TEST_RESU(RESU=(
                    NOM_CHAM='EXTR_NOEU_VARI',
                    NOM_CMP='X1',
                    NOEUD='N2',
+                   VALE=4.99158E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=SATEAU,
+                   INST=1.00000E+04,
+                   NOM_CHAM='EXTR_ELGA_VARI',
+                   NOM_CMP='X1',
+                   POINT=1,
+                   MAILLE='M1',
                    VALE=4.99158E-01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',

@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF xfem Messages  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,13 +31,13 @@ Pour l'utilisateur : les fissures X-FEM sont surement trop proches.
 """),
 
 2: _("""
- Le nombre de fissures autorisées avec X-FEM est limité à %(i1)d
+ Le nombre de fissures autorisées avec X-FEM est limité à (i1)i
 """),
 
 3: _("""
- Le nombre de fissures X-FEM est négatif ou nul. Contactez les développeurs.
+ Le modele %(k1)s est incompatible avec la methode X-FEM.
+ Vérifier qu'il a bien été créé par l'opérateur MODI_MODELE_XFEM. 
 """),
-
 
 4: _("""
  Il est interdit de melanger dans un modèle les fissures X-FEM avec et sans
@@ -53,6 +53,40 @@ a été changé à
 
 6: _("""
 DDL_IMPO sur un noeud X-FEM : %(k1)s =  %(r1)f au noeud %(k2)s
+"""),
+
+7: _("""
+Il y a %(i1)s mailles %(k1)s 
+"""),
+
+8: _("""
+Le nombre de %(k1)s X-FEM est limité à 10E6. Veuillez reduire la taille du maillage.
+"""),
+
+9: _("""
+erreur de dvt dans %(k2)s : on a trouvé trop de nouveaux %(k1)s à ajouter.
+"""),
+
+10: _("""
+On ne peut pas post-traiter de champs aux points de Gauss avec X-FEM sur des éléments
+dont le nombre de points de Gauss est différent de 1.
+"""),
+
+11: _("""
+On a trouvé plus de 2 points de fond de fissure, ce qui est impossible en 2d.
+Veuillez revoir la définition des level sets.
+"""),
+
+12: _("""
+La prise en compte du contact sur les lèvres des fissures X-FEM n'est possible qu'avec une
+approximation du champ de déplacement linéaire.
+Deux solutions : 
+- soit passer en approximation linéaire (mot-clé DEGRE_DEPL de MODI_MODELE_XFEM)
+- soit ne pas prendre en compte le contact (enlever le mot-clé CONTACT de MODI_MODELE_XFEM)
+"""),
+
+13: _("""
+pb fissure elliptique
 """),
 
 18: _("""
@@ -106,5 +140,6 @@ Ne pas utiliser le mot-clef RAYON_ENRI lorsque le fond de fissure est en dehors 
 60: _("""
 Le point initial de fissure n'est pas un point de bord de fissure, bien que la fissure soit débouchante. assurez-vous de la bonne définition de PFON_INI.
 """),
+
 
 }

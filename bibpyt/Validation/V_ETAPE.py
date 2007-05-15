@@ -1,4 +1,4 @@
-#@ MODIF V_ETAPE Validation  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF V_ETAPE Validation  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,11 +150,11 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
       """ 
            Cette méthode met à jour le concept produit en fonction des conditions initiales :
 
-            1- Il n'y a pas de concept retourné (self.definition.sd_prod == None)
+            1. Il n'y a pas de concept retourné (self.definition.sd_prod == None)
 
-            2- Le concept retourné n existait pas (self.sd == None)
+            2. Le concept retourné n existait pas (self.sd == None)
 
-            3- Le concept retourné existait. On change alors son type ou on le supprime
+            3. Le concept retourné existait. On change alors son type ou on le supprime
 
            En cas d'erreur (exception) on retourne un indicateur de validité de 0 sinon de 1
       """
@@ -193,7 +193,9 @@ class ETAPE(V_MCCOMPO.MCCOMPO):
         else:
           if self.sd: 
              # Un sd existe deja, on change son type
-             self.sd.__class__=sd_prod
+             if CONTEXT.debug:print "changement de type:",self.sd,sd_prod
+             if self.sd.__class__ != sd_prod:
+               self.sd.change_type(sd_prod)
           else: 
              # Le sd n existait pas , on ne le crée pas
              if cr == 'oui' : self.cr.fatal("Concept retourné non défini")

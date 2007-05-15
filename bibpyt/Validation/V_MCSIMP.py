@@ -1,4 +1,4 @@
-#@ MODIF V_MCSIMP Validation  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCSIMP Validation  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,21 +40,21 @@ from Noyau.N_VALIDATOR import listProto
 
 class MCSIMP:
    """
-      COMMENTAIRE CCAR
-        Cette classe est quasiment identique à la classe originale d'EFICAS
-        a part quelques changements cosmétiques et des chagements pour la
-        faire fonctionner de facon plus autonome par rapport à l'environnement
-        EFICAS
+      COMMENTAIRE CCAR:
+      Cette classe est quasiment identique à la classe originale d'EFICAS
+      a part quelques changements cosmétiques et des chagements pour la
+      faire fonctionner de facon plus autonome par rapport à l'environnement
+      EFICAS
  
-        A mon avis, il faudrait aller plus loin et réduire les dépendances
-        amont au strict nécessaire.
+      A mon avis, il faudrait aller plus loin et réduire les dépendances
+      amont au strict nécessaire.
 
-        - Est il indispensable de faire l'évaluation de la valeur dans le contexte
-          du jdc dans cette classe.
+          - Est il indispensable de faire l'évaluation de la valeur dans le contexte
+            du jdc dans cette classe.
 
-        - Ne pourrait on pas doter les objets en présence des méthodes suffisantes
-          pour éviter les tests un peu particuliers sur GEOM, PARAMETRE et autres. J'ai
-          d'ailleurs modifié la classe pour éviter l'import de GEOM
+          - Ne pourrait on pas doter les objets en présence des méthodes suffisantes
+            pour éviter les tests un peu particuliers sur GEOM, PARAMETRE et autres. J'ai
+            d'ailleurs modifié la classe pour éviter l'import de GEOM
    """
 
    CR=N_CR.CR

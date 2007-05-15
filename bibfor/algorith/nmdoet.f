@@ -2,7 +2,7 @@
      &                  DEPMOI,SIGMOI,VARMOI,VARDEM,LAGDEM,NBPASE,
      &                  INPSCO,DEPOLD,NUMEDD,NEQ,PILOTE)
 
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -175,7 +175,7 @@ C      ACCES PAR NUMERO D'ORDRE
             IAUX = NRPASE
             JAUX = 1
             CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
-            CALL PSRENC ( EVOL, NOPASE, RESUID, IRET )
+            CALL PSGENC ( EVOL, NOPASE, RESUID, IRET )
             IF ( IRET.NE.0 ) THEN
               VALK(1) = EVOL
               VALK(2) = NOPASE//'                '

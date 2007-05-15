@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_fonction SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@ import Accas
 from SD import *
 from sd_fonction import sd_fonction
 
+import Numeric
 from math import pi
 
 # -----------------------------------------------------------------------------

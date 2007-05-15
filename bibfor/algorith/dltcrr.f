@@ -1,0 +1,162 @@
+      SUBROUTINE DLTCRR ( NRORES, INPSCO,
+     &                    NEQ, NBORDR, IARCHI, TEXTE, IFM,
+     &                    T0, LCREA, TYPRES,
+     &                    MASSE, RIGID, AMORT,
+     &                    DEP0, VIT0, ACC0,
+     &                    NUMEDD, NUME, NBTYAR, TYPEAR )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ----------------------------------------------------------------------
+C
+C       DYNAMIQUE LINEAIRE TRANSITOIRE - CREATION DES RESULTATS
+C       -         -        -             --           -
+C
+C ----------------------------------------------------------------------
+C  IN  : NRORES    : NUMERO DE LA RESOLUTION
+C                  0 : CALCUL STANDARD
+C                 >0 : CALCUL DE LA DERIVEE NUMERO NRORES
+C  IN  : INPSCO    : STRUCTURE CONTENANT LA LISTE DES NOMS
+C  IN  : NEQ       : NOMBRE D'EQUATIONS
+C  IN  : IARCHI    : PILOTAGE DE L'ARCHIVAGE DES RESULTATS
+C  IN  : TEXTE     : COMMENTAIRE A IMPRIMER
+C  IN  : T0        : INSTANT DE CALCUL INITIAL
+C  IN  : LCREA     : LOGIQUE INDIQUANT SI IL Y A REPRISE
+C  IN  : TYPRES    : TYPE DE RESULTAT
+C  IN  : MASSE     : MATRICE DE MASSE
+C  IN  : RIGID     : MATRICE DE RIGIDITE
+C  IN  : AMORT     : MATRICE D'AMORTISSEMENT
+C  VAR : DEP0      : TABLEAU DES DEPLACEMENTS A L'INSTANT N
+C  VAR : VIT0      : TABLEAU DES VITESSES A L'INSTANT N
+C  VAR : ACC0      : TABLEAU DES ACCELERATIONS A L'INSTANT N
+C  IN  : NUMEDD    : NUME_DDL DE LA MATR_ASSE RIGID
+C  IN  : NUME      : NUMERO D'ORDRE DE REPRISE
+C
+C
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+C DECLARATION PARAMETRES D'APPELS
+C
+      INTEGER NRORES
+      INTEGER NEQ, NBORDR, IARCHI, IFM
+      INTEGER NUME, NBTYAR
+
+      REAL*8 DEP0(NEQ), VIT0(NEQ), ACC0(NEQ), T0
+
+      CHARACTER*8  MASSE, RIGID, AMORT
+      CHARACTER*13 INPSCO
+      CHARACTER*16 TYPRES
+      CHARACTER*16 TYPEAR(NBTYAR)
+      CHARACTER*24 NUMEDD
+      CHARACTER*(*) TEXTE
+
+      LOGICAL      LCREA
+
+C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER           ZI
+      COMMON / IVARJE / ZI(1)
+      REAL*8            ZR
+      COMMON / RVARJE / ZR(1)
+      COMPLEX*16        ZC
+      COMMON / CVARJE / ZC(1)
+      LOGICAL           ZL
+      COMMON / LVARJE / ZL(1)
+      CHARACTER*8       ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                       ZK24
+      CHARACTER*32                                ZK32
+      CHARACTER*80                                         ZK80
+      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32      JEXNUM, JEXNOM
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
+C
+      CHARACTER*8 RESULT
+      CHARACTER*19 KREFE
+
+      INTEGER IAUX, JAUX
+      INTEGER ISTOC
+      INTEGER LREFE
+C
+C====
+C 1. PREALABLES
+C====
+C 1.1. ==> NOM DES STRUCTURES ASSOCIEES AUX DERIVATIONS
+C                3. LE NOM DU RESULTAT
+
+      IAUX = NRORES
+      JAUX = 3
+      CALL PSNSLE ( INPSCO, IAUX, JAUX, RESULT )
+CC      PRINT *,'NRORES = ',NRORES,' ==> RESULT = ', RESULT
+C
+C====
+C 2. CREATION DE LA STRUCTURE DE DONNEE RESULTAT
+C====
+C
+      IF ( LCREA ) THEN
+C
+C 2.1. ==> CREATION DE LA STRUCTURE DE DONNEE RESULTAT
+C
+        CALL RSCRSD(RESULT,TYPRES,NBORDR)
+        KREFE(1:19) = RESULT
+        CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
+        ZK24(LREFE  ) = RIGID
+        ZK24(LREFE+1) = MASSE
+        ZK24(LREFE+2) = AMORT
+        ZK24(LREFE+3) = NUMEDD
+        ZK24(LREFE+4) = ' '
+        ZK24(LREFE+5) = ' '
+        CALL JELIBE(KREFE//'.REFD')
+C
+C 2.2. ==> ARCHIVAGE INITIAL
+C
+        IF ( NRORES.EQ.0 ) THEN
+          IARCHI = -1
+        ELSE
+          IARCHI = 0
+        ENDIF
+        ISTOC = 0
+        JAUX = 1
+C
+        CALL DLARCH ( NRORES, INPSCO,
+     &                NEQ, ISTOC, IARCHI, TEXTE,
+     &                JAUX, IFM, T0,
+     &                NBTYAR, TYPEAR, MASSE,
+     &                DEP0, VIT0, ACC0 )
+C
+        IARCHI = 0
+C
+C====
+C 3. RECUPERATION
+C====
+      ELSE
+C
+        IF ( NRORES.EQ.0 ) THEN
+          NBORDR = NBORDR + NUME
+        ENDIF
+        CALL RSAGSD( RESULT, NBORDR )
+C
+      ENDIF
+C
+C====
+C 4. TITRE
+C====
+C
+      CALL TITRE
+
+      END

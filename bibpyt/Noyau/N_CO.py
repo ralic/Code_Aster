@@ -1,4 +1,4 @@
-#@ MODIF N_CO Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_CO Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,8 @@ from N_ASSD import ASSD
 from N_Exception import AsException
 from N_VALIDATOR import ValError
 import N_utils
-from SD.asojb import AsBase
+
+from asojb import AsBase
 
 class CO(ASSD, AsBase):
    def __init__(self,nom):

@@ -3,7 +3,7 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -223,7 +223,7 @@ C     ==============
           IF (NOPASE.EQ.' ') THEN
             NFCT0 = NFCT
           ELSE
-            CALL PSRENC ( NFCT, NOPASE, NFCT0, IRET )
+            CALL PSGENC ( NFCT, NOPASE, NFCT0, IRET )
             IF ( IRET.NE.0 ) THEN
                VALK(1) = NFCT
                VALK(2) = NOPASE

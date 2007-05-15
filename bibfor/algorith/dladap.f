@@ -4,18 +4,9 @@
      &                  NCHAR,NVECA,LIAD,LIFO,
      &                  MODELE,MATE,CARELE,
      &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
-      IMPLICIT  REAL*8  (A-H,O-Z)
-      CHARACTER*8  MASSE, RIGID, AMORT
-      CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT, MATE, NUMEDD
-      CHARACTER*24 INFOCH, LIFO(*)
-      REAL*8       DEP0(*),VIT0(*),ACC0(*),TINIT
-      INTEGER      NEQ,IMAT(*),LIAD(*),NCHAR,NVECA,NUME
-      LOGICAL      LAMORT, LCREA
-      CHARACTER*(*) INPSCO
-      INTEGER      NBPASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +63,23 @@ C  VAR : DEP0      : TABLEAU DES DEPLACEMENTS A L'INSTANT N
 C  VAR : VIT0      : TABLEAU DES VITESSES A L'INSTANT N
 C  VAR : ACC0      : TABLEAU DES ACCELERATIONS A L'INSTANT N
 C
+C
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER      NBPASE
+      INTEGER      NEQ,IMAT(*),LIAD(*),NCHAR,NVECA,NUME
+
+      CHARACTER*8  MASSE, RIGID, AMORT
+      CHARACTER*13 INPSCO
+      CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT, MATE, NUMEDD
+      CHARACTER*24 INFOCH, LIFO(*)
+C
+      REAL*8       DEP0(*),VIT0(*),ACC0(*),TINIT
+C
+      LOGICAL      LAMORT, LCREA
+
 C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
       COMMON / IVARJE / ZI(1)
@@ -90,37 +98,57 @@ C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
 
+      INTEGER NBTYAR
+      PARAMETER ( NBTYAR = 3 )
+      INTEGER NRORES
+      INTEGER IFM, NIV
+      INTEGER IAUX, JAUX
+      INTEGER IV, IV1, IV2
+      INTEGER JDEPL, JDEP2
+      INTEGER JVITE, JVIT2
+      INTEGER JACCE, JACC2
+      INTEGER JIND1, JIND2
+      INTEGER JVIP1, JVIP2
+      INTEGER JVMIN, JVMIN1, JVMIN2
+      INTEGER ISTOC
+      INTEGER NDDL
+      INTEGER IWK0
+      INTEGER VALI(3)
       CHARACTER*4   TYP1(3)
-      CHARACTER*8   K8B, NOMRES, RESULT
-      CHARACTER*8   VVAR, BASENO
-      CHARACTER*16  TYPRES, NOMCMD,TYPE(3)
-      CHARACTER*19  KREFE
-      CHARACTER*24  CHAMNO
+      CHARACTER*8   K8B, NOMRES
+      CHARACTER*8   VVAR
+      CHARACTER*16  TYPRES, NOMCMD,TYPEAR(NBTYAR)
       CHARACTER*24  SOP
       CHARACTER*24  NDEEQ
-      REAL*8        TPS1(4),TFIN,DTM
+      REAL*8        TPS1(4),TFIN
       REAL*8        CMP,CDP,CPMIN,ERR,DTI,DT1,DT2,DTMIN,PAS1
       REAL*8        TEMPS,TEMP2
       REAL*8        DTARCH,TARCH,TARCHI
-      REAL*8        EPSI,R8VAL,FREQ,TMP
-      REAL*8        DMIN,DMAX,VMIN,DD,RAPP
+      REAL*8        EPSI,R8VAL,FREQ
       REAL*8        TJOB
+      REAL*8 PAS2
+      REAL*8 VALR(3)
+      REAL*8 R8PREM
       INTEGER       IWK1,IWK2,IFORC1
       INTEGER       NPER,NRMAX,NR,NPAS,IPAS,IPARCH,IARCHI
-      INTEGER       NNC,NBEXCL,NBIPAS,IVERI,NBSAUV,NBITER
+      INTEGER       NNC,NBEXCL,NBIPAS,IVERI,NBORDR,NBITER
       INTEGER       NBPASC
       INTEGER       ADEEQ
-      INTEGER       NRPASE,IBID,IRET,JAUX,NBSV
+      INTEGER       NRPASE, IBID
 C
 C     -----------------------------------------------------------------
       CALL JEMARQ()
 C
-C-----RECUPERATION DU NIVEAU D'IMPRESSION
-C
+C====
+C 1. LES DONNEES DU CALCUL
+C====
+C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
+
       CALL INFNIV(IFM,NIV)
 C
+C 1.2. ==> NOM DES STRUCTURES
 C     --- RECUPERATION NOM DE LA COMMANDE ---
-C
+
       CALL GETRES ( NOMRES, TYPRES, NOMCMD )
 C
       NDEEQ = NUMEDD(1:8)//'      .NUME.DEEQ'
@@ -150,69 +178,91 @@ C
       NPAS = 0
       IARCHI = NUME
 C
-C     --- PARAMETRES D'INTEGRATION ---
+C 1.4. ==> PARAMETRES D'INTEGRATION
 C
-      CALL GETVR8('INCREMENT','INST_FIN',1,1,1,TFIN,N1)
-      CALL GETVR8('INCREMENT','PAS',1,1,1,DTI,N1)
-      IF (N1.EQ.0)
+      CALL GETVR8('INCREMENT','INST_FIN',1,1,1,TFIN,IBID)
+      CALL GETVR8('INCREMENT','PAS',1,1,1,DTI,IBID)
+      IF (IBID.EQ.0)
      &   CALL U2MESS('F','ALGORITH3_11')
       IF (DTI.EQ.0.D0)
      &   CALL U2MESS('F','ALGORITH3_12')
       CALL RECPAR(NEQ,ZR(JVMIN),VVAR,CMP,CDP,CPMIN,NPER,NRMAX)
       DTMIN = DTI * CPMIN
-      NBSAUV = INT((TFIN-TINIT)/DTI)+2
+      NBORDR = INT((TFIN-TINIT)/DTI)+2
       NBIPAS = INT((TFIN-TINIT)/DTI)+1
 C
-C     --- EXTRACTION DIAGONALE M ---
-C     --- ET ALLOCATION DES TABLX DES INDICES DE DDLS EQUIVALENTS
-C     --- POUR LE CALCUL DE VMIN ---
-      CALL DISMOI ('I','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IE)
+C 1.5. ==> EXTRACTION DIAGONALE M ET CALCUL VITESSE INITIALE
+C
+      CALL DISMOI ('I','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IBID)
       IF (SOP.EQ.'MASS_MECA_DIAG') THEN
         CALL EXTDIA (MASSE, NUMEDD, 2, ZR(IWK1))
       ELSE
         CALL U2MESS('F','ALGORITH3_13')
       ENDIF
-      DO 10 I=1, NEQ
-        IF (ZR(IWK1+I-1).NE.0.D0) THEN
-           ZR(IWK1+I-1)=1.0D0/ZR(IWK1+I-1)
-           NDDL = ZI(ADEEQ + 2*I-1)
-           DO 12 IV1 = 1,NEQ
-             IV2=I+IV1
-             IF (IV2.LE.NEQ) THEN
-               IF (ZI(ADEEQ+2*IV2-1).EQ.NDDL) THEN
-                 ZI(JIND2+I-1) = IV2
-                 GOTO 13
-               ENDIF
-             ELSE
-               GOTO 13
-             ENDIF
- 12        CONTINUE
- 13        CONTINUE
-           DO 14 IV1 = 1,NEQ
-             IV2=I-IV1
-             IF (IV2.GT.0) THEN
-               IF (ZI(ADEEQ+2*IV2-1).EQ.NDDL) THEN
-                 ZI(JIND1+I-1) = IV2
-                 GOTO 15
-               ENDIF
-             ELSE
-               GOTO 15
-             ENDIF
- 14        CONTINUE
- 15        CONTINUE
-        ENDIF
- 10   CONTINUE
 C
-C     --- ARCHIVAGE ---
+      DO 15 , IAUX=1, NEQ
+C
+        IF (ZR(IWK1+IAUX-1).NE.0.D0) THEN
+C
+          ZR(IWK1+IAUX-1)=1.0D0/ZR(IWK1+IAUX-1)
+          NDDL = ZI(ADEEQ + 2*IAUX-1)
+          DO 151 IV1 = 1,NEQ
+            IV2=IAUX+IV1
+            IF (IV2.LE.NEQ) THEN
+              IF (ZI(ADEEQ+2*IV2-1).EQ.NDDL) THEN
+                ZI(JIND2+IAUX-1) = IV2
+                GOTO 152
+              ENDIF
+            ELSE
+              GOTO 152
+            ENDIF
+  151     CONTINUE
+C
+  152     CONTINUE
+C
+          DO 153 IV1 = 1,NEQ
+            IV2=IAUX-IV1
+            IF (IV2.GT.0) THEN
+              IF (ZI(ADEEQ+2*IV2-1).EQ.NDDL) THEN
+                ZI(JIND1+IAUX-1) = IV2
+                GOTO 154
+              ENDIF
+            ELSE
+              GOTO 154
+            ENDIF
+  153     CONTINUE
+C
+  154     CONTINUE
+C
+        ENDIF
+C
+   15 CONTINUE
+C
+C 1.6. ==> AFFECTATION DES VECTEURS INITIAUX
+C
+      DO 16 , IAUX=1,NEQ
+        DO 161 , NRORES = 0 , NBPASE
+C
+          NRPASE = NRORES
+          ZR(JDEPL+IAUX-1) = DEP0(IAUX+NEQ*NRPASE)
+          ZR(JVITE+IAUX-1) = VIT0(IAUX+NEQ*NRPASE)-
+     &                       0.5D0*DTI*ACC0(IAUX+NEQ*NRPASE)
+          ZR(JVIP1+IAUX-1) = VIT0(IAUX+NEQ*NRPASE)
+          ZR(JACCE+IAUX-1) = ACC0(IAUX+NEQ*NRPASE)
+  161   CONTINUE
+        ZR(JVMIN1+IAUX-1) = 1.D-15
+        ZR(JVMIN2+IAUX-1) = 1.D-15
+   16 CONTINUE
+C
+C 1.7. ==> --- ARCHIVAGE ---
 C
       TARCHI = TINIT
-      NBSORT = 3
       NBEXCL = 0
-      TYPE(1) = 'DEPL'
-      TYPE(2) = 'VITE'
-      TYPE(3) = 'ACCE'
-      CALL GETVIS('ARCHIVAGE','PAS_ARCH',1,1,1,IPARCH,N1)
-      IF(N1 .EQ. 0) IPARCH=1
+      TYPEAR(1) = 'DEPL'
+      TYPEAR(2) = 'VITE'
+      TYPEAR(3) = 'ACCE'
+      CALL GETVIS('ARCHIVAGE','PAS_ARCH',1,1,1,IPARCH,IBID)
+      IF(IBID .EQ. 0) IPARCH=1
       DTARCH = DTI * IPARCH
       CALL GETVTX('ARCHIVAGE','CHAM_EXCLU' ,1,1,0,K8B,NNC)
       IF (NNC.NE.0) THEN
@@ -220,116 +270,62 @@ C
           CALL GETVTX('ARCHIVAGE','CHAM_EXCLU' ,1,1,NBEXCL,TYP1,NNC)
       ENDIF
 C
-      IF ( NBEXCL .EQ. NBSORT )
-     &   CALL U2MESS('F','ALGORITH3_14')
-      DO 50 I = 1,NBEXCL
-         IF (TYP1(I).EQ.'DEPL') THEN
-            TYPE(1) = '    '
-         ELSEIF (TYP1(I).EQ.'VITE') THEN
-            TYPE(2) = '    '
-         ELSEIF (TYP1(I).EQ.'ACCE') THEN
-            TYPE(3) = '    '
-         ENDIF
- 50   CONTINUE
+      IF ( NBEXCL.EQ.NBTYAR ) THEN
+        CALL U2MESS('F','ALGORITH3_14')
+      ENDIF
+      DO 17 , IAUX = 1,NBEXCL
+        IF (TYP1(IAUX).EQ.'DEPL') THEN
+          TYPEAR(1) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'VITE') THEN
+          TYPEAR(2) = '    '
+        ELSEIF (TYP1(IAUX).EQ.'ACCE') THEN
+          TYPEAR(3) = '    '
+        ENDIF
+   17 CONTINUE
 C
-C     --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
+C 1.8. ==> --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
 C
-      WRITE(IFM,*)
-     &'-------------------------------------------------'
-      WRITE(IFM,*)
-     &'--- CALCUL PAR INTEGRATION TEMPORELLE DIRECTE ---'
-      WRITE(IFM,*)
-     &'! LA MATRICE DE MASSE EST         : ',MASSE
-      WRITE(IFM,*)
-     &'! LA MATRICE DE RIGIDITE EST      : ',RIGID
+      WRITE(IFM,*) '-------------------------------------------------'
+      WRITE(IFM,*) '--- CALCUL PAR INTEGRATION TEMPORELLE DIRECTE ---'
+      WRITE(IFM,*) '! LA MATRICE DE MASSE EST         : ',MASSE
+      WRITE(IFM,*) '! LA MATRICE DE RIGIDITE EST      : ',RIGID
       IF ( LAMORT ) WRITE(IFM,*)
      &'! LA MATRICE D''AMORTISSEMENT EST : ',AMORT
-      WRITE(IFM,*)
-     &'! LE NB D''EQUATIONS EST          : ',NEQ
+      WRITE(IFM,*) '! LE NB D''EQUATIONS EST          : ',NEQ
       IF ( NUME.NE.0 ) WRITE(IFM,*)
      &'! REPRISE A PARTIR DU NUME_ORDRE  : ',NUME
       WRITE(IFM,*)'! L''INSTANT INITIAL EST        : ',TINIT
       WRITE(IFM,*)'! L''INSTANT FINAL EST          : ',TFIN
       WRITE(IFM,*)'! LE PAS DE TEMPS MAX DU CALCUL EST : ',DTI
       WRITE(IFM,*)'! LE NB MIN DE PAS DE CALCUL EST    : ',NBIPAS
-      WRITE(IFM,*)
-     &'----------------------------------------------',' '
+      WRITE(IFM,*) '----------------------------------------------',' '
 C
-C     --- BOUCLE SUR LES CHARGEMENTS (STANDARD + SENSIBILITE)
+C====
+C 2. BOUCLE SUR CREATION DES CONCEPTS RESULTAT
+C====
 C
-C       LES REPONSES SUR LES DIFFERENTS CHARGEMENTS SONT CALCULEES
-C       DE FACON INDEPENDANTE : LES INSTANTS DE CALCUL (PAS ADAPTATIF)
-C       DEPEND DE LA FREQUENCE APPARENTE QUI DEPEND DU CHARGEMENT
+      DO 21 , NRORES = 0 , NBPASE
 C
-      DO 521 , NRPASE = 0 , NBPASE
-C
-C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
-          JAUX = 3
-          CALL PSNSLE ( INPSCO, NRPASE, JAUX, RESULT )
+        NRPASE = NRORES
+        IAUX = 1 + NEQ*NRPASE
+        JAUX = NBTYAR
 
-C     --- AFFECTATION DES VECTEURS INITIAUX ------
-      DO 201 I=1,NEQ
-        ZR(JDEPL+I-1) = DEP0(I+NEQ*NRPASE)
-        ZR(JVITE+I-1) = VIT0(I+NEQ*NRPASE)-0.5D0*DTI*ACC0(I+NEQ*NRPASE)
-        ZR(JVIP1+I-1) = VIT0(I+NEQ*NRPASE)
-        ZR(JACCE+I-1) = ACC0(I+NEQ*NRPASE)
-        ZR(JVMIN1+I-1) = 1.D-15
-        ZR(JVMIN2+I-1) = 1.D-15
- 201  CONTINUE
-C
-C     --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT ---
-C
-      IF ( LCREA ) THEN
-         IARCHI = 0
-         CALL RSCRSD(RESULT,TYPRES,NBSAUV)
-         KREFE(1:19) = RESULT
-         CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
-         ZK24(LREFE  ) = RIGID
-         ZK24(LREFE+1) = MASSE
-         ZK24(LREFE+2) = AMORT
-         ZK24(LREFE+3) = NUMEDD
-         ZK24(LREFE+4) = ' '
-         ZK24(LREFE+5) = ' '
-         CALL JELIBE(KREFE//'.REFD')
-C
-         DO 30 ITYPE = 1, NBSORT
-            IF ( TYPE(ITYPE) .EQ. '    ' ) GOTO 30
-            CALL RSEXCH(RESULT,TYPE(ITYPE),IARCHI,CHAMNO,IER)
-            IF ( IER .EQ. 0 ) THEN
-          CALL U2MESK('A','ALGORITH3_15',1,CHAMNO)
-            ELSE IF ( IER .EQ. 100 ) THEN
-               CALL VTCREM(CHAMNO,MASSE,'G','R')
-            ELSE
-               CALL U2MESS('F','ALGORITH13_36')
-            ENDIF
-            CHAMNO(20:24)  = '.VALE'
-            CALL JEVEUO(CHAMNO,'E',LVALE)
-            IF (ITYPE.EQ.1) THEN
-                DO 32 IEQ = 1, NEQ
-                   ZR(LVALE+IEQ-1) = DEP0(IEQ+NEQ*NRPASE)
- 32             CONTINUE
-            ELSE IF (ITYPE.EQ.2) THEN
-                DO 33 IEQ = 1, NEQ
-                   ZR(LVALE+IEQ-1) = VIT0(IEQ+NEQ*NRPASE)
- 33             CONTINUE
-            ELSE
-                DO 34 IEQ = 1, NEQ
-                   ZR(LVALE+IEQ-1) = ACC0(IEQ+NEQ*NRPASE)
- 34             CONTINUE
-            ENDIF
-            CALL JELIBE(CHAMNO)
-            CALL RSNOCH(RESULT,TYPE(ITYPE),IARCHI,' ')
- 30      CONTINUE
-         CALL RSADPA(RESULT,'E',1,'INST',IARCHI,0,LINST,K8B)
-         ZR(LINST) = TINIT
-         WRITE(IFM,1000) (TYPE(ITY),ITY=1,3), IARCHI, TINIT
-      ELSE
-         NBSV = NBSAUV + NUME
-         CALL RSAGSD( RESULT, NBSV )
-      ENDIF
+        CALL DLTCRR ( NRPASE, INPSCO,
+     &                NEQ, NBORDR, IARCHI, 'PREMIER(S)', IFM,
+     &                TINIT, LCREA, TYPRES,
+     &                MASSE, RIGID, AMORT,
+     &                DEP0(IAUX), VIT0(IAUX), ACC0(IAUX),
+     &                NUMEDD, NUME, JAUX, TYPEAR )
+
+   21 CONTINUE
+
       CALL TITRE
 C
-C ------- BOUCLE SUR LES PAS DE TEMPS
+C====
+C 3. CALCUL : BOUCLE SUR LES PAS DE TEMPS
+C====
+C
+          NRORES = 0
       IPAS = 0
       NBITER = 0
       IVERI = 0
@@ -340,8 +336,10 @@ C ------- BOUCLE SUR LES PAS DE TEMPS
       DT1 = 0.D0
       DT2 = DTI
       CALL UTTCPU(1, 'INIT', 4, TPS1)
+      NRPASE = 0
 C
- 100  CONTINUE
+   30 CONTINUE
+C
       IF (TEMPS.LT.TFIN) THEN
         ISTOC = 0
         ERR = 100.D0
@@ -361,11 +359,11 @@ C        --- DERNIER PAS DE TEMPS ? ---
           NBITER = NBITER + 1
           PAS1 = (DT1+DT2)*0.5D0
           PAS2 = DT2*0.5D0
-          DO 102 I = 0,NEQ-1
+          DO 102 IAUX = 0,NEQ-1
 C            --- VITESSES AUX INSTANTS INTERMEDIAIRES ------
-             ZR(JVIT2+I) = ZR(JVITE+I) + PAS1 * ZR(JACCE+I)
+             ZR(JVIT2+IAUX) = ZR(JVITE+IAUX) + PAS1 * ZR(JACCE+IAUX)
 C            --- DEPLACEMENTS AUX INSTANTS 'TEMPS+DT2' ---------
-             ZR(JDEP2+I) = ZR(JDEPL+I) + (DT2 * ZR(JVIT2+I))
+             ZR(JDEP2+IAUX) = ZR(JDEPL+IAUX) + (DT2 * ZR(JVIT2+IAUX))
  102      CONTINUE
 C ------------- CALCUL DU SECOND MEMBRE F*
           R8VAL = TEMPS+DT2
@@ -380,10 +378,10 @@ C ------------- FORCE DYNAMIQUE F* = F* - K DEP - C VIT
 C
 C ------------- RESOLUTION DE M . A = F ET CALCUL DE VITESSE STOCKEE
 C           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
-          DO 20 IEQ=1, NEQ
-                ZR(JACC2+IEQ-1)=ZR(IWK1+IEQ-1)*ZR(IFORC1+IEQ-1)
+          DO 20 IAUX=1, NEQ
+                ZR(JACC2+IAUX-1)=ZR(IWK1+IAUX-1)*ZR(IFORC1+IAUX-1)
 C           --- VITESSE AUX INSTANTS 'TEMPS+DT2' ---
-                ZR(JVIP2+IEQ-1)=ZR(JVIT2+IEQ-1)+PAS2*ZR(JACC2+IEQ-1)
+                ZR(JVIP2+IAUX-1)=ZR(JVIT2+IAUX-1)+PAS2*ZR(JACC2+IAUX-1)
  20       CONTINUE
 C
 C        --- CALCUL DE VMIN ---
@@ -417,12 +415,10 @@ C       --- REDUCTION DU PAS DE TEMPS ---
 C       LES DEUX LIGNES SUIVANTES SIMULENT LE WHILE - CONTINUE
           GOTO 101
         ELSE IF (ERR .GT. 1.D0 .AND. NR .GE. NRMAX) THEN
-          CALL UTDEBM('A','DLADAP','ERREUR SUPERIEURE A 1. : ')
-          CALL UTIMPR('L','ERREUR = ',1,ERR)
-          CALL UTIMPR('L','A L''INSTANT : ',1,TEMPS+DT2)
-      CALL UTIMPR('L','ON ARRETE DE REDUIRE DT QUI VAUT :  ',1,DT2)
-          CALL UTIMPI('L','CAR NB REDUCTIONS MAX ATTEINT : ',1,NRMAX)
-          CALL UTFINM()
+          VALR(1) = TEMPS+DT2
+          VALR(2) = ERR
+          VALR(3) = DT2
+          CALL U2MESG('A', 'ALGORITH3_16',0,' ',1,NRMAX,3,VALR)
         ENDIF
 C
         DT1 = DT2
@@ -444,16 +440,22 @@ C
 C       --- ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION ---
         IF((TEMPS.LE.TARCH .AND. TEMP2.GE.TARCH) .OR.
      &     (TEMP2.EQ.TFIN)) THEN
-          IARCHI = IARCHI + 1
-          ISTOC = 1
+          ISTOC = 0
+          JAUX = 1
           IF((TEMP2-TARCH).LE.(TARCH-TEMPS)) THEN
             TARCHI = TEMP2
-            CALL DLARCH (IARCHI,TYPE,RESULT,NOMCMD,MASSE,
-     &                  NEQ,ZR(JDEP2),ZR(JVIP2),ZR(JACC2),TEMP2)
+            CALL DLARCH ( NRORES, INPSCO,
+     &                    NEQ, ISTOC, IARCHI, ' ',
+     &                    JAUX, IFM, TEMP2,
+     &                    NBTYAR, TYPEAR, MASSE,
+     &                    ZR(JDEP2), ZR(JVIP2), ZR(JACC2) )
           ELSE
             TARCHI = TEMPS
-            CALL DLARCH (IARCHI,TYPE,RESULT,NOMCMD,MASSE,
-     &                  NEQ,ZR(JDEPL),ZR(JVIP1),ZR(JACCE),TEMPS)
+            CALL DLARCH ( NRORES, INPSCO,
+     &                    NEQ, ISTOC, IARCHI, ' ',
+     &                    JAUX, IFM, TEMPS,
+     &                    NBTYAR, TYPEAR, MASSE,
+     &                    ZR(JDEPL), ZR(JVIP1), ZR(JACCE) )
           ENDIF
           TARCH = TARCH + DTARCH
         ENDIF
@@ -483,110 +485,61 @@ C ------------- VERIFICATION DU TEMPS DE CALCUL RESTANT
         ENDIF
         IVERI = IVERI + 1
 C
-        GOTO 100
+        GOTO 30
       ENDIF
 C
  9999 CONTINUE
 C
-C --- ARCHIVAGE COMPLET POUR LE DERNIER INSTANT ---
+C====
+C 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
+C    ETE EXCLUS DE L'ARCHIVAGE AU FIL DES PAS DE TEMPS
+C====
 C
-      IF (ISTOC.EQ.0 ) THEN
-         IARCHI = IARCHI + 1
-         CALL RSADPA(RESULT,'E',1,'INST',IARCHI,0,LINST,K8B)
-         ZR(LINST) = TEMPS
-      ELSE
-         CALL RSADPA(RESULT,'L',1,'INST',IARCHI,0,LINST,K8B)
-         TEMPS = ZR(LINST)
+      IF ( NBEXCL.NE.0 ) THEN
+C
+        DO 41 , IAUX = 1,NBEXCL
+          TYPEAR(IAUX) = TYP1(IAUX)
+   41   CONTINUE
+C
+        JAUX = 0
+        DO 42 , NRORES = 0 , NBPASE
+
+          NRPASE = NRORES
+          IAUX = NEQ*NRPASE
+C
+          CALL DLARCH ( NRORES, INPSCO,
+     &                  NEQ, ISTOC, IARCHI, 'DERNIER(S)',
+     &                  JAUX, IFM, TEMPS,
+     &                  NBTYAR, TYPEAR, MASSE,
+     &                  ZR(JDEPL+IAUX), ZR(JVIP1+IAUX),
+     &                  ZR(JACCE+IAUX) )
+C
+   42   CONTINUE
+C
       ENDIF
-      CALL RSEXCH(RESULT,'DEPL',IARCHI,CHAMNO,IER)
-      WRITE(IFM,1001) 'DEPL',' ',' ', IARCHI, TEMPS
-      IF ( IER .EQ. 100 ) THEN
-         CALL VTCREM(CHAMNO,MASSE,'G','R')
-      ELSEIF ( IER .EQ. 0 ) THEN
-         GOTO 70
-      ELSE
-         CALL U2MESS('F','ALGORITH13_36')
-      ENDIF
-      CHAMNO(20:24)  = '.VALE'
-      CALL JEVEUO(CHAMNO,'E',LVALE)
-      DO 72 IEQ = 1,NEQ
-         ZR(LVALE+IEQ-1) = ZR(JDEPL+IEQ-1)
- 72   CONTINUE
-      CALL JELIBE(CHAMNO)
-      CALL RSNOCH(RESULT,'DEPL',IARCHI,' ')
- 70   CONTINUE
-      CALL RSEXCH(RESULT,'VITE',IARCHI,CHAMNO,IER)
-      IF ( IER .EQ. 100 ) THEN
-         CALL VTCREM(CHAMNO,MASSE,'G','R')
-      ELSEIF ( IER .EQ. 0 ) THEN
-         GOTO 74
-      ELSE
-         CALL U2MESS('F','ALGORITH13_36')
-      ENDIF
-      WRITE(IFM,1001) ' ','VITE',' ', IARCHI, TEMPS
-      CHAMNO(20:24)  = '.VALE'
-      CALL JEVEUO(CHAMNO,'E',LVALE)
-      DO 76 IEQ = 1,NEQ
-         ZR(LVALE+IEQ-1) = ZR(JVIP1+IEQ-1)
- 76   CONTINUE
-      CALL JELIBE(CHAMNO)
-      CALL RSNOCH(RESULT,'VITE',IARCHI,' ')
- 74   CONTINUE
-      CALL RSEXCH(RESULT,'ACCE',IARCHI,CHAMNO,IER)
-      IF ( IER .EQ. 100 ) THEN
-         CALL VTCREM(CHAMNO,MASSE,'G','R')
-      ELSEIF ( IER .EQ. 0 ) THEN
-         GOTO 78
-      ELSE
-         CALL U2MESS('F','ALGORITH13_36')
-      ENDIF
-      WRITE(IFM,1001) ' ',' ','ACCE', IARCHI, TEMPS
-      CHAMNO(20:24)  = '.VALE'
-      CALL JEVEUO(CHAMNO,'E',LVALE)
-      DO 80 IEQ = 1,NEQ
-         ZR(LVALE+IEQ-1) = ZR(JACCE+IEQ-1)
- 80   CONTINUE
-      CALL JELIBE(CHAMNO)
-      CALL RSNOCH(RESULT,'ACCE',IARCHI,' ')
- 78   CONTINUE
+C
+C====
+C 5. LA FIN
+C====
 C
       IF (TPS1(1).LE.MAX(TJOB/100.D0,15.D0)) THEN
-         CALL UTDEXC(28,'DLADAP',
-     &               'ARRET PAR MANQUE DE TEMPS CPU')
-         CALL UTIMPI('L',' NOMBRE DE PAS CALCULES : ',
-     &                1,IPAS)
-         CALL UTIMPR('L',' DERNIER INSTANT ARCHIVE : ',
-     &                1,TARCHI)
-         CALL UTIMPI('L',' NUMERO D''ORDRE CORRESPONDANT : ',
-     &                1,IARCHI)
-      CALL UTIMPI('L',' LE TEMPS MOYEN POUR UN NOMBRE DE PAS DE ',
-     &                 1,NBPASC)
-         CALL UTIMPR('L',' VAUT : ',1,NBPASC*TPS1(4))
-         CALL UTIMPR('L',' TEMPS CPU RESTANT : ',1,TPS1(1))
-         CALL UTFINM()
+        VALI(1) = IPAS
+        VALI(2) = IARCHI
+        VALI(3) = NBPASC
+        VALR(1) = TARCHI
+        VALR(2) = NBPASC*TPS1(4)
+        VALR(3) = TPS1(1)
+        CALL UTEXCM(28, 'DYNAMIQUE_11', 0, ' ', 3, VALI, 3, VALR)
       ENDIF
 C
-C -- FIN BOUCLE SUR LES CHARGEMENTS (SECOND MEMBRE) : NRPASE
-521   CONTINUE
-
-      CALL UTDEBM('I',
-     &'----------------------------------------------',' ')
-      CALL UTIMPI('L','! NOMBRE DE PAS DE CALCUL       : ',1,IPAS)
-      CALL UTIMPI('L','! NOMBRE D''ITERATIONS          : ',1,NBITER)
-      CALL UTIMPK('L',
-     &'----------------------------------------------',0,' ')
-      CALL UTFINM()
+      VALI(1) = IPAS
+      VALI(2) = NBITER
+      CALL U2MESG('I', 'ALGORITH3_21',0,' ',2,VALI,8,VALR)
 C
 C     --- DESTRUCTION DES OBJETS DE TRAVAIL ---
 C
-      CALL JEDETC('V','&&',1)
       CALL JEDETC('V','.CODI',20)
       CALL JEDETC('V','.MATE_CODE',9)
-C
- 1000 FORMAT(1P,3X,'PREMIER(S) CHAMP(S) STOCKE(S):',3(1X,A4),
-     &             ' NUME_ORDRE:',I8,' INSTANT:',D12.5)
- 1001 FORMAT(1P,3X,'DERNIER(S) CHAMP(S) STOCKE(S):',3(1X,A4),
-     &             ' NUME_ORDRE:',I8,' INSTANT:',D12.5)
 C
       CALL JEDEMA()
       END

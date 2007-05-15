@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,8 @@ import Accas
 from Accas import ASSD
 from Utilitai.Utmess   import UTMESS
 from Utilitai.as_timer import ASTER_TIMER
-from SD.ascheckers     import CheckLog
+from Utilitai.Sensibilite import MEMORISATION_SENSIBILITE
+from Noyau.ascheckers     import CheckLog
 
 try:
    import aster
@@ -54,6 +55,9 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
    if CODE != None:
       jdc.fico = CODE['NOM']
    jdc.timer = ASTER_TIMER(format='aster')
+   # en POURSUITE, ne pas écraser la mémorisation existante.
+   if not hasattr(jdc, 'memo_sensi'):
+      jdc.memo_sensi = MEMORISATION_SENSIBILITE()
 
 
 def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
@@ -143,6 +147,7 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
      # On supprime du pickle_context les concepts valant None, ca peut 
      # etre le cas des concepts non executés, placés après FIN.
      pickle_context=get_pickled_context()
+     self.jdc.restore_pickled_attrs(pickle_context)
      if pickle_context==None :
         UTMESS('F','Poursuite',"Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré")
         return

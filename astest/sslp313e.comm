@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,6 +125,12 @@ MODELEI2=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          INFO=1,
                          )
+
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG3,
+                       MODELE        = MODELEI2,
+                       INFO          = 2)
+
+IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(MAILLAGE=MA_XFEM))
 
 
 #----------------------------------------------

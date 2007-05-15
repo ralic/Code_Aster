@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 07/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,7 +119,7 @@ def macr_recal_externe( RESU_EXP, LIST_PARA, RESU_CALC, UNITE_ESCL=3, POIDS=None
 
    # Mot-cle GRAPHIQUE
    if GRAPHIQUE:
-      GRAPHIQUE0 = {'INTERACTIF': 'NON', 'AFFICHAGE': 'TOUTE_ITERATION', 'UNITE': 90, 'FORMAT': 'XMGRACE'}
+      GRAPHIQUE0 = {'PILOTE': '', 'AFFICHAGE': 'TOUTE_ITERATION', 'UNITE': 90, 'FORMAT': 'XMGRACE'}
       for k in GRAPHIQUE0.keys():
          if not GRAPHIQUE.has_key(k): GRAPHIQUE[k] = GRAPHIQUE0[k]
 
@@ -497,11 +497,12 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
        L_J_init, erreur = Simul.multi_interpole(L_init, RESU_CALC)
        J_init = Simul.norme_J(copy.copy(L_J_init),copy.copy(L_J_init),UNITE_RESU)
        J = J_init
-    
+
        A = Simul.sensibilite(CALCUL_ASTER, L_init, L_deriv_sensible, val, PARA_DIFF_FINI)
        A = Dim.adim_sensi(A)
-    
+
        l = reca_algo.lambda_init(Numeric.matrixmultiply(Numeric.transpose(A),A))
+
        gradient_init =reca_algo.calcul_gradient(A,erreur)  #utile pour le test de convergence, on prend les valeurs dimensionnées
        residu = reca_algo.test_convergence(gradient_init,erreur,A,Numeric.zeros(len(gradient_init),Numeric.Float))
     
@@ -602,8 +603,8 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
                 if (GRAPHIQUE):
                    if GRAPHIQUE['AFFICHAGE']=='TOUTE_ITERATION':
                       GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
-                      interactif=(GRAPHIQUE['INTERACTIF']=='OUI')
-                      reca_utilitaires.graphique(GRAPHIQUE['FORMAT'],L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,interactif)
+                      pilote=GRAPHIQUE['PILOTE']
+                      reca_utilitaires.graphique(GRAPHIQUE['FORMAT'],L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,pilote)
 
                 # On teste un manque de temps CPU
                 restant,temps_iter,err=reca_utilitaires.temps_CPU(restant,temps_iter)
@@ -638,17 +639,17 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
          trace = True
       if (METHODE=='EXTERNE' and GRAPHIQUE['AFFICHAGE']=='TOUTE_ITERATION'): 
          trace = True
-         fichier = args['prefix_graph']
+         if not args.has_key('prefix_graph'): fichier='graph'
+         else:                                fichier = args['prefix_graph']
       if trace:
          if INFO>=1: UTMESS('I','MACR_RECAL',"Trace des graphiques")
          GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
-         interactif=(GRAPHIQUE['INTERACTIF']=='OUI')
-         reca_utilitaires.graphique(GRAPHIQUE['FORMAT'],L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,interactif,fichier)
+         pilote=GRAPHIQUE['PILOTE']
+         reca_utilitaires.graphique(GRAPHIQUE['FORMAT'],L_F,RESU_EXP,RESU_CALC,iter,GRAPHE_UL_OUT,pilote,fichier)
 
    if( METHODE == 'EXTERNE'):
-      if mode_python: return fonctionnelle, gradient
-
-#   print residu, RESI_GLOB_RELA
+#      if mode_python: return fonctionnelle, gradient
+      return fonctionnelle, gradient
 
    # Si pas de convergence alors diagnostic NOOK_TEST_RESU
    if residu > RESI_GLOB_RELA:
@@ -697,7 +698,7 @@ if __name__ == '__main__':
     p.add_option('-i', '--input',        action='store',   dest='input',         type='string',   default='input.txt',   help='fichier contenant les parametres')
     p.add_option('-o', '--output',       action='store',   dest='output',        type='string',   default='output.txt',  help='fichier contenant la fonctionnelle')
     p.add_option('-g', '--output_grad',  action='store',   dest='output_grad',   type='string',   default='grad.txt',    help='fichier contenant le gradient')
-    p.add_option('-p', '--prefix_graph', action='store',   dest='prefix_graph',  type='string',                          help='prefixe des fichiers contenant les courbes')
+    p.add_option('-p', '--prefix_graph', action='store',   dest='prefix_graph',  type='string',   default='graph',       help='prefixe des fichiers contenant les courbes')
     p.add_option('-v', '--info',         action='store',   dest='INFO',          type='int',                             help='niveau de message (-1, 0, 1, 2)')
     p.add_option('-f', '--follow',       action='store',   dest='follow_output', type='string',                          help="affiche ou non l'output du fichier Aster (True/False)")
     p.add_option('-F', '--objective',    action='store',   dest='objective',     type='string',                          help="type de la fonctionnelle (float/vector)")

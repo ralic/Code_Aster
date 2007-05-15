@@ -1,4 +1,4 @@
-#@ MODIF N_SENSIBILITE Noyau  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_SENSIBILITE Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,9 +36,11 @@ class CONCEPT_SENSIBLE(REGLE):
    """
    def __init__(self, mode, mocle='SENSIBILITE'):
       """Constructeur.
+
          mode : manière dont la commande rempli le concept
-            'ENSEMBLE' : concept nominal ET dérivées en une seule passe
-            'SEPARE'   : concept nominal OU dérivée (une ou plusieurs)
+            - 'ENSEMBLE' : concept nominal ET dérivées en une seule passe
+            - 'SEPARE'   : concept nominal OU dérivée (une ou plusieurs)
+            
          mocle : mot-clé contenant les paramètres sensibles.
       """
       REGLE.__init__(self)
@@ -161,7 +163,7 @@ class DERIVABLE(REGLE):
          concept = [concept,]
       l_ps = obj["SENSIBILITE"]
       for co in concept:
-         if concept is None:
+         if co is None:
             text = "Concept non défini (None) sous le mot-clé %s" % self.mocle
             return text, 0
          if not l_ps:

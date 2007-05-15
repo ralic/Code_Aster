@@ -1,4 +1,4 @@
-# MODIF  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,14 +157,24 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 # POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
 #------------------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                       MODELE        = MODELEK)
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
-                        MODELE=MODELEK,
-                        NOM_CHAM='DEPL',
-                        RESULTAT=UTOT1)
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=(_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN',),),
+                              );  
 
-IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM,
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+                        MAILLAGE_FISS = MA_XFEM,
+                        MODELE        = MODELEK,
+                        MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,
+                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+
+
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM,
                                          NOM_CHAM='DEPL',
                                          NUME_ORDRE=npas,
              ));

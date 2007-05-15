@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_VALIDATOR Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,9 +124,9 @@ class TypeProtocol(PProtocol):
                 if type(obj)==types.StringType:return obj
             elif type_permis == 'shell':
                 if type(obj)==types.StringType:return obj
-            elif issubclass(type_permis, ASSD):
+            elif type(type_permis) == types.ClassType or isinstance(type_permis,type):
                 if self.is_object_from(obj,type_permis):return obj
-            elif isinstance(type_permis, ASSD):
+            elif type(type_permis) == types.InstanceType or isinstance(type_permis,object):
                 try:
                     if type_permis.__convert__(obj) : return obj
                 except:
@@ -1026,7 +1026,7 @@ class PairVal(ListVal):
           return valeur
 
       def verif_item(self,valeur):
-          if isinstance(valeur, ASSD):
+          if type(valeur) not in (int,long):
              return 0
           return valeur % 2 == 0
 
@@ -1147,10 +1147,12 @@ class TypeVal(ListVal):
           Cette classe est un validateur qui controle qu'une valeur
           est bien du type Python attendu.
           Pour une liste on verifie que tous les elements sont du bon type.
+          Semblable a InstanceVal mais ici on fait le test par tentative de conversion
+          alors qu'avec InstanceVal on ne teste que si isinstance est vrai.
       """
       def __init__(self, aType):
-          #MC 01/02/2007 : TypeVal n'est pas encore utilisé
-          #                Je pense qu'il faut remplacer par : issubclass(aType, ASSD)
+          #Si aType n'est pas un type, on le retrouve a l'aide de la fonction type
+          #type(1) == int;type(0.2)==float;etc.
           if type(aType) != types.TypeType:
              aType=type(aType)
           self.aType=aType
@@ -1185,8 +1187,23 @@ class InstanceVal(ListVal):
           Pour une liste on verifie chaque element de la liste
       """
       def __init__(self,aClass):
-          if isinstance(aClass, ASSD):
-             aClass = type(aClass)
+          #Si aClass est une classe on la memorise dans self.aClass
+          #sinon c'est une instance dont on memorise la classe
+          if type(aClass) == types.InstanceType:
+             #instance ancienne mode
+             aClass=aClass.__class__
+          elif type(aClass) == types.ClassType:
+             #classe ancienne mode
+             aClass=aClass
+          elif type(aClass) == type:
+             #classe nouvelle mode
+             aClass=aClass
+          elif isinstance(aClass,object):
+             #instance nouvelle mode
+             aClass=type(aClass)
+          else:
+             raise ValError("type non supporte")
+
           self.aClass=aClass
 
       def info(self):

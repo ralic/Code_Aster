@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -165,8 +165,37 @@ void TraiteErreur( _IN int code )
 
 #endif                /* #ifdef _UTILISATION_SETJMP_ */
 
+/* Fin emulation exceptions en C */
+
+
+
+/* --- liste des variables globales au fonctions  de ce fichier --- */
+
+/* jeveux_status vaut :
+      0 avant aster_init,
+      1 pendant l'exécution,
+      0 après xfini
+   Cela permet de verrouiller l'appel à des fonctions jeveux hors de l'exécution
+*/
+static int jeveux_status = 0;
+
+/* commande (la commande courante) est definie par les fonctions aster_debut et aster_oper */
+static PyObject *commande       = (PyObject*)0 ;
+static PyObject *pile_commandes = (PyObject*)0 ;
+static PyObject *static_module  = (PyObject*)0 ;
+
+/* NomCas est initialise dans aster_debut() */
+/* NomCas est initialise a blanc pour permettre la recuperation de la
+   trace des commandes lors de l'appel a debut ou poursuite. On ne connait
+   pas encore NomCas qui sera initialise lors de l'appel a RecupNomCas */
+static char *NomCas          = "        ";
+
+/* ------------------------------------------------------------------ */
 void STDCALL(XFINI,xfini)(_IN INTEGER *code)
 {
+   /* jeveux est fermé */
+   jeveux_status = 0;
+   
    switch( *code ){
         case CodeFinAster :
                 strcpy(exception_reason,"exit ASTER");
@@ -181,23 +210,6 @@ void STDCALL(XFINI,xfini)(_IN INTEGER *code)
         }
    TraiteErreur(*code);
 }
-
-/* Fin emulation exceptions en C */
-
-
-
-/* --- liste des variables globales au fonctions  de ce fichier --- */
-
-/* commande (la commande courante) est definie par les fonctions aster_debut et aster_oper */
-static PyObject *commande       = (PyObject*)0 ;
-static PyObject *pile_commandes = (PyObject*)0 ;
-static PyObject *static_module  = (PyObject*)0 ;
-
-/* NomCas est initialise dans aster_debut() */
-/* NomCas est initialise a blanc pour permettre la recuperation de la
-   trace des commandes lors de l'appel a debut ou poursuite. On ne connait
-   pas encore NomCas qui sera initialise lors de l'appel a RecupNomCas */
-static char *NomCas          = "        ";
 
 /* ------------------------------------------------------------------ */
 /*
@@ -2783,12 +2795,12 @@ PyObject *args;
 
       if (!PyArg_ParseTuple(args, "|s#:onFatalError",&comport ,&len)) return NULL;
       if (len == -1) {
-            CALL_ONERRF(" ", &tmp, &lng);
+            CALL_ONERRF(" ", tmp, &lng);
             res = PyString_FromStringAndSize(tmp, (int)lng);
             return res;
 
       } else if (strcmp(comport,"ABORT")==0 || strcmp(comport, "EXCEPTION")==0) {
-            CALL_ONERRF(comport, &tmp, &lng);
+            CALL_ONERRF(comport, tmp, &lng);
             Py_INCREF( Py_None ) ;
             return Py_None;
 
@@ -2879,6 +2891,28 @@ PyObject *args;
         CALL_REPDEX (&maj,&lnom,nom);
         temp= PyString_FromStringAndSize(nom,FindLength(nom,lnom));
         return temp;
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSS(GCNCON,gcncon,char *,int,char *,int);
+#define CALL_GCNCON(a,b) CALLSS(GCNCON,gcncon,a,b)
+
+
+static PyObject * aster_gcncon(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+   PyObject *res;
+   char *type, result[9];
+
+   if (!PyArg_ParseTuple(args, "s", &type)) return NULL;
+   BLANK(result, 8);
+   result[8] = '\0';
+   if (jeveux_status == 1) {
+      CALL_GCNCON (type, result);
+   }
+   res= PyString_FromStringAndSize(result,FindLength(result,8));
+   return res;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -3281,6 +3315,9 @@ PyObject *args;
 
    CALL_IBMAIN (&lot,&ier,&dbg);
 
+   /* jeveux est parti ! */
+   jeveux_status = 1;
+
 return PyInt_FromLong(ier);
 }
 
@@ -3289,8 +3326,6 @@ return PyInt_FromLong(ier);
 #define CALL_JELST3(a,b,c,d)  CALLSSPP(JELST3,jelst3,a,b,c,d)
 DEFSSPP(JELST3,jelst3, char* base, int base_len, char*dest, int dest_len,
 	INTEGER* nmax, INTEGER* total );
-
-
 
 
 static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
@@ -3381,6 +3416,196 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
 	}
 }
 
+/* ------------------------------------------------------------------ */
+/*             Routines d'interface pour la sensibilité               */
+
+void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
+                            _IN  char *nopase, int lnopase,
+                            _OUT char *nocomp, int lnocomp,
+                            _OUT INTEGER *iret)
+{
+/*       Récupère le nom composé bati sur un couple :
+           ( structure de base , paramètre de sensibilité )
+ 
+      IN  nosimp  : nom de la sd de base
+      IN  nopase  : nom du parametre de sensibilite
+      OUT nocomp  : nom de la sd derivee
+      OUT iret    : code retour :
+                     0 -> tout s'est bien passe
+                     1 -> le couple (nosimp,nopase) n'est pas renseigne
+*/
+   PyObject *jdc, *memo_sensi, *val;
+   char *sret = (char*)0;
+   int ier, longueur;
+   *iret = 0;
+   
+   jdc = PyObject_GetAttrString(commande, "jdc");
+   if (jdc == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+
+   memo_sensi = PyObject_GetAttrString(jdc, "memo_sensi");
+   if (memo_sensi == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
+
+   val = PyObject_CallMethod(memo_sensi, "get_nocomp", "s#s#", nosimp, lnosimp, nopase, lnopase);
+   if (val == NULL){
+      MYABORT("erreur lors de l'appel à memo_sensi.get_nocomp !");
+   }
+   
+   sret = PyString_AsString(val);
+   longueur = strlen(sret);
+   STRING_FCPY(nocomp, lnocomp, sret, longueur);
+   if ( strncmp(nocomp, "????????", 8) == 0 ) {
+      *iret = 1;
+   }
+   
+   Py_XDECREF(jdc);
+   Py_XDECREF(memo_sensi);
+   Py_XDECREF(val);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, int lnosimp,
+                              _IN  char *nopase, int lnopase,
+                              _OUT INTEGER *nbmocl,
+                              _OUT char *limocl, int l1,
+                              _OUT char *livale, int l2,
+                              _OUT char *limofa, int l3)
+{
+/*       Récupère les mots-clés associés à un couple :
+           ( structure de base , paramètre de sensibilité )
+
+      IN  nosimp  : nom de la sd de base
+      IN  nopase  : nom du parametre de sensibilite
+      OUT nbmocl  : nombre de mots-cles associes a (nosimp,nopase)
+      OUT limocl  : la structure k80 contenant les mots-cles concernes
+      OUT livale  : la structure k80 contenant les valeurs concernees
+      OUT limofa  : la structure k80 contenant les mots-cles facteurs
+
+   Remarque 1 : Deux temps pour permettre à l'appelant de dimensionner les vecteurs de chaines.
+                  1er appel avec nbmocl = 0
+                     --> retourne nbmocl
+                  2ème appel avec nbmocl à la bonne valeur (on le vérifie)
+                     --> remplit limocl, livale, limofa
+   
+   Remarque 2 : AVANT limocl, livale et limofa étaient des noms de vecteurs dans ZK80.
+                MAINTENANT ce sont des CHARACTER*80(nbmocl)
+*/
+   PyObject *jdc, *memo_sensi;
+   PyObject *tup3, *tmocl, *tvale, *tmofa;
+   int ichk;
+   
+   jdc = PyObject_GetAttrString(commande, "jdc");
+   if (jdc == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+
+   memo_sensi = PyObject_GetAttrString(jdc, "memo_sensi");
+   if (memo_sensi == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
+
+   tup3 = PyObject_CallMethod(memo_sensi, "get_mcle", "s#s#", nosimp, lnosimp, nopase, lnopase);
+   if (tup3 == NULL) {
+      MYABORT("erreur lors de l'appel à memo_sensi.get_mcle !");
+   }
+   tmocl = PyTuple_GetItem(tup3, 0);
+   tvale = PyTuple_GetItem(tup3, 1);
+   tmofa = PyTuple_GetItem(tup3, 2);
+   
+   if (*nbmocl == 0) {
+      /* Seul nbmocl est modifié (1er appel) */
+      *nbmocl = PyTuple_Size(tmocl);
+   } else {
+      /* On remplit les vecteurs limocl, livale, limofa (2ème appel) */
+      if (*nbmocl != PyTuple_Size(tmocl)) {
+         MYABORT("erreur dans psgemc : nbmocl n'a pas la bonne valeur !");
+      }
+      convertxt(*nbmocl, tmocl, limocl, l1);
+      convertxt(*nbmocl, tvale, livale, l2);
+      convertxt(*nbmocl, tmofa, limofa, l3);
+   }
+   
+   Py_XDECREF(jdc);
+   Py_XDECREF(memo_sensi);
+   Py_XDECREF(tup3);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, int lnomsd,
+                            _OUT INTEGER *nbstse,
+                            _OUT char *nostnc, int lnostnc,
+                            _OUT INTEGER *iderive)
+{
+/*    a. Si nomsd est un nom de concept donné, on récupère :
+            . le nombre de structures sensibles associées
+            . un tableau contenant les couples :
+               (nom composé, nom du paramètre sensible)
+            . iderive = 0
+      
+      b. si nomsd est une structure dérivée, on récupère :
+            . nbstse = 1
+            . un tableau contenant le couple :
+                  (nom du concept, nom du paramètre sensible)
+            . iderive = 1
+
+      IN  nomsd   : nom de la sd de base
+      IN/OUT nbstse : nombre de structures sensibles associees a nomsd
+                     . -1 si nomsd est une structure derivee
+                     . le nombre de structures sensibles associees, si nomsd
+                     est derivee
+                     . 0 sinon
+      OUT nostnc  : structure qui contient les nbstse couples
+                     (nom compose, nom du parametre sensible)
+                     elle est allouee ici
+
+   Remarque 1 : Deux temps pour permettre à l'appelant de dimensionner le vecteur de chaines.
+                  1er appel avec nbstse = 0
+                     --> retourne nbstse et iderive
+                  2ème appel avec nbstse à la bonne valeur (on le vérifie)
+                     --> remplit nostnc
+   
+   Remarque 2 : AVANT nostnc étaient le nom d'un vecteur dans ZK80.
+                MAINTENANT c'est un CHARACTER*80(nbstse)
+  
+   Remarque 3 : si cette structure de mémorisation est inconnue, on en
+                conclut qu'aucun calcul de sensibilité n'a été demandé.
+*/
+   PyObject *jdc, *memo_sensi, *tup2;
+   PyObject *indic, *result;
+   int size_result;
+   
+   jdc = PyObject_GetAttrString(commande, "jdc");
+   if (jdc == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+
+   memo_sensi = PyObject_GetAttrString(jdc, "memo_sensi");
+   if (memo_sensi == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'memo_sensi' du jdc !");
+
+   tup2 = PyObject_CallMethod(memo_sensi, "psinfo", "s#", nomsd, lnomsd);
+   indic = PyTuple_GetItem(tup2, 0);
+   result = PyTuple_GetItem(tup2, 1);
+   size_result = PyTuple_Size(result);
+   
+   *iderive = PyInt_AsLong(indic);
+   if (*nbstse == 0) {
+      /* Seul nbstse est modifié (1er appel) */
+      *nbstse = size_result / 2;
+   } else {
+      /* On remplit le vecteur nostnc (2ème appel) */
+      if (*nbstse != size_result / 2) {
+         MYABORT("erreur dans psinfo : nbstse n'a pas la bonne valeur !");
+      }
+      convertxt(size_result, result, nostnc, lnostnc);
+   }
+   
+   Py_XDECREF(jdc);
+   Py_XDECREF(memo_sensi);
+   Py_XDECREF(tup2);
+}
+
+/* ----------------------   FIN Sensibilité   ----------------------- */
+/* ------------------------------------------------------------------ */
+
 
 /* ------------------------------------------------------------------ */
 static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
@@ -3462,6 +3687,7 @@ static PyMethodDef aster_methods[] = {
                 {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
                 {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
                 {"jeveux_exists", jeveux_exists,     METH_VARARGS},
+                {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
                 {NULL,                NULL}/* sentinel */
 };
 

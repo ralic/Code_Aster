@@ -1,4 +1,4 @@
-#@ MODIF N_MCLIST Noyau  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_MCLIST Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,12 +127,15 @@ class MCList(UserList.UserList):
    def get_sd_mcs_utilisees(self):
       """ 
           Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
-          . Si aucune sd n'est utilisée, le dictionnaire est vide.
-          . Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
-            trouve des sd ; la valeur est la liste des sd attenante.
-            Exemple : { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
-                                    <Cata.cata.para_sensi instance at 0x941a204> ],
-                        'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
+            - Si aucune sd n'est utilisée, le dictionnaire est vide.
+            - Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
+              trouve des sd ; la valeur est la liste des sd attenante.
+
+              Exemple ::
+              
+                { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
+                              <Cata.cata.para_sensi instance at 0x941a204> ],
+                  'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
      """
       dico = {}
       for child in self.data:

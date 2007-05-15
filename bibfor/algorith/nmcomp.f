@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 02/04/2007   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,39 +145,33 @@ C ----------------------------------------------------------------------
 C -- ENDOMMAGEMENT FRAGILE (COURBE DE TRACTION BI-LINEAIRE)
 
         IF (COMPOR(1) .EQ. 'ENDO_FRAGILE') THEN
-          CALL LCFRGV (NDIM  , TYPMOD, OPTION, IMATE , EPSM  ,
-     &                 DEPS  , VIM   , R8BID  , R8BID , R8BID  ,
-     &                 R8BID, R8BID , R8BID  , SIGP   , VIP   ,
+          CALL LCFRGV (NDIM  , TYPMOD, OPTION, IMATE , EPSM  , 
+     &                 DEPS  , VIM   , TAMPON, SIGP  , VIP   ,
      &                 DSIDEP)
             GOTO 9000
         END IF
 
-C -- RUPTURE FRAGILE : LOI DE GRIFFITH
+C -- ENDOMMAGEMENT FRAGILE ISOTROPE UNILATERAL: ENDO_ISOT_BETON
 
-        IF (COMPOR(1) .EQ. 'RUPT_FRAG') THEN
-          CALL LCRUPT(FAMI,KPG,KSP,NDIM, TYPMOD, IMATE,EPSM, DEPS,
-     &                 VIM, OPTION, SIGP, VIP, DSIDEP)
+        IF ( COMPOR(1) .EQ. 'ENDO_ISOT_BETON') THEN
+          CALL LCEIGV (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,
+     &                 EPSM,DEPS,VIM,TAMPON,
+     &                 OPTION,SIGP,VIP,DSIDEP)
           GOTO 9000
         END IF
+
 
 C -- PLASTICITE ISOTROPE A GRADIENT
 
         IF ( COMPOR(1) .EQ. 'VMIS_ISOT_LINE'
      & .OR. COMPOR(1) .EQ. 'VMIS_ISOT_TRAC') THEN
-          CALL LCPLGR (FAMI,KPG,KSP,COMPOR, NDIM, OPTION, IMATE,
-     &                 CRIT,EPSM, DEPS,SIGM, VIM, 1.D0, R8BID,
-     &                 R8BID,VIP, R8BID, R8BID, R8BID, SIGP)
+          CALL LCVMGV (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                 INSTAM,INSTAP,DEPS,SIGM,VIM,TAMPON,
+     &                 OPTION,SIGP,VIP,DSIDEP,R8BID,R8BID,CODRET)
           GOTO 9000
         END IF
 
-C -- RUPTURE DUCTILE : LOI DE ROUSSELIER
 
-        IF (COMPOR(1) .EQ. 'ROUSSELIER') THEN
-          IF (COMPOR(3).NE.'SIMO_MIEHE') CALL U2MESS('F','ALGORITH6_83')
-          CALL LCRONL(FAMI,KPG,KSP,NDIM,IMATE,OPTION,EPSM,DEPS,
-     &                 VIM,VIP,SIGP,DSIDEP)
-          GOTO 9000
-        END IF
 
       END IF
 

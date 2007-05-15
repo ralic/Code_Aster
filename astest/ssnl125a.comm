@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,17 +142,13 @@ EVOL = STAT_NON_LINE(
   NEWTON = _F(
     MATRICE = 'TANGENTE',
     REAC_INCR = 1,
-    REAC_ITER = 0
+    REAC_ITER = 1
     ),
   CONVERGENCE = _F(
-    ITER_GLOB_MAXI = 10,
-    ),
-  LAGR_NON_LOCAL = _F(
-    ITER_DUAL_MAXI = 25,
-    ITER_PRIM_MAXI = 25,
-    RESI_DUAL_ABSO = 1.E-4,
-    RESI_PRIM_ABSO = 1.E-6,
-    R              = 1.E3,
+    ITER_GLOB_MAXI = 20,
+    RESI_REFE_RELA=1.e-6,
+    SIGM_REFE=1.,
+    VARI_REFE=1.,
     ),
   )
 

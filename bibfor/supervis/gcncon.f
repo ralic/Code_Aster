@@ -11,7 +11,7 @@ C                   '_' : LE CONCEPT EST CONSERVE POUR UNE POURSUITE
 C OUT RESULT : K8 : NOM UNIQUE = TYPE//NUMERO_UNIQUE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       NUMUNI='&&_NUM_CONCEPT_UNIQUE'
 C     ------------------------------------------------------------------
-      IF ((TYPE .EQ. '.') .OR. (TYPE .EQ. '_')) THEN
+      IF ((TYPE.EQ.'.') .OR. (TYPE.EQ.'_') .OR. (TYPE.EQ.'S')) THEN
          CALL JEEXIN ( NUMUNI, IER )
          IF (IER .EQ.0) THEN
 C           INITIALISATION D'UN NUM POUR CREER UN NOM DE CONCEPT UNIQUE

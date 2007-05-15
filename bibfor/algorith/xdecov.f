@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,8 @@ C     NDIME = 2 ALORS QUE NDIM = 3
         NSEMAX=6
       ELSEIF (NDIME.EQ.2) THEN
         NSEMAX=3
+      ELSEIF (NDIME.EQ.1) THEN
+        NSEMAX=2
       ENDIF
 
       CALL JEVEUO(PINTER,'L',JPTINT)
@@ -102,6 +104,8 @@ C     NDIME = 2 ALORS QUE NDIM = 3
         TYPMA='TRIA3'
       ELSEIF  (NDIME.EQ.3) THEN
         TYPMA='TETRA4'
+      ELSEIF  (NDIME.EQ.1) THEN
+        TYPMA='SEG2'
       ENDIF
       CALL CONARE(TYPMA,AR,NBAR)
 
@@ -168,7 +172,42 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
         ELSE
           CALL U2MESS('F','ALGORITH11_46')
         ENDIF
-C
+        
+      ELSEIF (NDIME .EQ. 1) THEN
+
+        IF (NINTER .LT. 1) THEN
+          IF (NPTS.NE.NINTER) CALL U2MESS('F','ALGORITH11_45')
+C         1 SEUL ELEMENT
+          NSE=1
+          DO 95 IN=1,2
+            CNSE(1,IN)=CONNEC(IT,IN)
+ 95       CONTINUE
+        ELSEIF (NINTER .EQ. 1) THEN
+          A1=NINT(ZR(JAINT-1+4*(1-1)+1))
+          IF (NPTS .EQ. 1) THEN
+C           1 SEUL ELEMENT
+            NSE=1
+            DO 96 IN=1,2
+              CNSE(1,IN)=CONNEC(IT,IN)
+ 96         CONTINUE
+          ELSEIF (NPTS .EQ. 0) THEN
+C           2 ELEMENTS
+            NSE=2
+            CALL ASSERT(A1.NE.0)
+                  A=AR(A1,1)
+                  B=AR(A1,2)
+
+C           101 et 102 les 2 points d'intersection
+C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
+            CNSE(1,1)=101
+            CNSE(1,2)=CONNEC(IT,A)
+            CNSE(2,1)=101
+            CNSE(2,2)=CONNEC(IT,B)
+          ENDIF
+        ELSE
+          CALL U2MESS('F','ALGORITH11_46')
+        ENDIF   
+
 
 
       ELSEIF (NDIME.EQ.3) THEN

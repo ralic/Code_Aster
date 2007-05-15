@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,11 +16,17 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-POST_CHAM_XFEM=OPER(nom="POST_CHAM_XFEM",op= 196,sd_prod=resultat_sdaster,
+POST_CHAM_XFEM=OPER(nom="POST_CHAM_XFEM",op= 196,sd_prod=evol_noli,
                     reentrant='n',UIinfo={"groupes":("Post traitements",)},
             fr="Calcul des champs DEPL et SIEF_ELGA sur le maillage fissuré",
-    MAILLAGE = SIMP(statut='o',typ=maillage_sdaster),
-    MODELE   = SIMP(statut='o',typ=modele_sdaster,),
-    RESULTAT = SIMP(statut='o',typ=resultat_sdaster),
-    NOM_CHAM = SIMP(statut='o',typ='TXM',into=("DEPL",),)
+    MAILLAGE_SAIN = SIMP(statut='o',typ=maillage_sdaster),
+    MAILLAGE_FISS = SIMP(statut='o',typ=maillage_sdaster),
+    NOM_CHAM      = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=("DEPL","SIEF_ELGA"),),
+    MODELE        = SIMP(statut='o',typ=modele_sdaster,),
+    RESULTAT      = SIMP(statut='o',typ=resultat_sdaster),
+      b_elga      = BLOC(condition = "NOM_CHAM == 'SIEF_ELGA' or \
+                                      (type(NOM_CHAM)==type(()) and 'SIEF_ELGA' in NOM_CHAM)",
+      MODELE_VISU = SIMP(statut='o',typ=modele_sdaster,),
+                         ),
+    INFO           =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),
 );                     

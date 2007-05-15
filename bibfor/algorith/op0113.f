@@ -1,7 +1,7 @@
       SUBROUTINE OP0113(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,7 @@ C
       INTEGER         ITCPT3(3),ITDPQ4(3),ITDPT3(3),ITF4(3),ITF3(3)
       INTEGER         NFISS,JNFIS,NFISMX
       INTEGER         JDIME,JCONX1,JCONX2
-      INTEGER         NDIM,NCTC
+      INTEGER         NDIM,NCTC,ITDS3(3)
       CHARACTER*16    MOTFAC,K16BID,NOTYPE
       CHARACTER*19    LIGR1,LIGR2
       CHARACTER*24    LIEL1,LIEL2
@@ -250,6 +250,11 @@ C
         CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XT_FACE3'),ITF3(2))
         CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XHT_FACE3'),ITF3(3))
 
+        CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEPSE3_XH'),ITDS3(1))
+        CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEPSE3_XT'),ITDS3(2))
+        CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEPSE3_XHT'),ITDS3(3))
+        
+        
         CALL JELIRA(LIEL1,'NMAXOC',NGR1,K8BID)
         DO 200 IGR1=1,NGR1
           CALL JEVEUO(JEXNUM(LIEL1,IGR1),'L',J1)
@@ -259,8 +264,11 @@ C
           CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOTYPE)
 
           DO 210 IEL=1,NBELT
+            
             IMA=ZI(J1-1+IEL)
             JJ=JTAB-1+5*(IMA-1)
+ 
+
             
             IF (NOTYPE.EQ.'MECA_X_HEXA20') THEN
               IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITYXH8(1)
@@ -306,6 +314,11 @@ C
               IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITF3(1)
               IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITF3(2)
               IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITF3(3)
+              IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
+            ELSEIF (NOTYPE.EQ.'MEPSE3_X') THEN
+              IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITDS3(1)           
+              IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITDS3(2)
+              IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITDS3(3)
               IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
             ELSE
               ZI(JJ+5)=ITYPEL
@@ -415,9 +428,7 @@ C
 C      
 C --- ORIENTATION DES FACETTES DE PEAU X-FEM (COMME ORIE_PEAU)
 C
-        IF (NDIM .EQ.3) THEN
-          CALL XORIPE(MOD2,FISS(IFISS))
-        ENDIF  
+         CALL XORIPE(MOD2,FISS(IFISS)) 
 C      
 C --- CALCUL DE LA TOPOLOGIE DES FACETTES DE CONTACT
 C
@@ -464,7 +475,7 @@ C     pour le moment, on zappe la concaténation des champs de contact
 C     si on est en 2D et sans mailles HEAV (seules portant le contact)
 C     bientot, toutes les mailles X-FEM 2D auront du contact, donc on 
 C     pourra virer ce IF
-      IF (LHEAV.OR.NDIM .EQ.3) THEN
+      IF (LHEAV) THEN
         CALL XCONEL(MOD2,'.TOPOFAC.PI','G','RIGI_CONT','PPINTER',PINTER)
         CALL XCONEL(MOD2,'.TOPOFAC.AI','G','RIGI_CONT','PAINTER',AINTER)
         CALL XCONEL(MOD2,'.TOPOFAC.CF','G','RIGI_CONT','PCFACE' ,CFACE)

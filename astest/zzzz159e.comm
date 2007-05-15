@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE ASSIRE A.ASSIRE
 
 DEBUT(CODE=_F(NOM='ZZZZ159E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 

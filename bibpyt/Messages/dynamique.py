@@ -1,4 +1,4 @@
-#@ MODIF dynamique Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dynamique Messages  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,6 +78,16 @@ cata_msg={
 """),
 
 11: _("""
+   Arret par manque de temps CPU après le calcul de %(i1)d pas.
+      - Dernier instant archivé : %(r1)f
+      - Numéro d'ordre correspondant : %(i2)d
+      - Temps moyen pour les %(i3)d pas de temps : %(r2)f
+      - Temps cpu restant            : %(r3)f
+   
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
+"""),
+
+12: _("""
  Le pas de temps est trop grand : %(r1)f
  le pas de temps maximal est    : %(r2)f
  

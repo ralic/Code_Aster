@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,13 +23,21 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 
     MODELE                =SIMP(statut='o',typ=modele_sdaster),
     DEFI_FISS             =FACT(statut='o',max=01,
-      regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT'),
+      regles              =(UN_PARMI('GROUP_MA_FISS','FONC_LT','FORM_FISS'),
                             ENSEMBLE('FONC_LT','FONC_LN'),
                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
       FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       GROUP_MA_FISS       =SIMP(statut='f',typ=grma,max=01),
       GROUP_MA_FOND       =SIMP(statut='f',typ=grma),
+      FORM_FISS           =SIMP(statut='f',typ='TXM',into=("ELLIPSE",) ),
+      b_ellipse           =BLOC(condition = "FORM_FISS == 'ELLIPSE' ",fr="Paramères de la fissure elliptique",           
+           DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.E+0),
+           DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.E+0),
+           CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
+           VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
+           VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),
+           COTE_FISS      =SIMP(statut='f',typ='TXM',defaut="IN",into=("IN","OUT",) ),    ),
     ),
     GROUP_MA_ENRI         =SIMP(statut='o',typ=grma,max=01),
     RAYON_ENRI            =SIMP(statut='f',typ='R',defaut=0.E+0),

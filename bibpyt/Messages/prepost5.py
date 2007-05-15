@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost5 Messages  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -357,9 +357,7 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
   est tronquee au seuil :  %(r2)f 
 """),
 
-65: _("""
- le modele  %(k1)s  est incompatible avec la methode xfem %(k2)s 
-"""),
+
 
 
 

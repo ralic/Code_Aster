@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,14 +17,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
-MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,
+from Utilitai.Sensibilite import memo_nom_sensi_ops
+
+MEMO_NOM_SENSI=MACRO(nom="MEMO_NOM_SENSI",op=memo_nom_sensi_ops,
             UIinfo={"groupes":("Fonction",)},
                     fr="Mémorisation des noms des concepts dérivés.",
                     ang="Memorisation of the names of the sensitive concepts.",
 
-         regles=(AU_MOINS_UN('NOM','NOM_ZERO','NOM_UN'),),
-
-         NOM=FACT(statut='f',max='**',
+         NOM=FACT(statut='o',max='**',
              regles=(PRESENT_PRESENT('MOT_CLE','VALEUR','MOT_FACT' ),),
 
              NOM_SD=SIMP(statut='o',typ='TXM',
@@ -51,14 +51,5 @@ MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,
                          fr="Liste des objets concernés par la dérivation",
                          ang="Object list involved in derivation"),
 
-                 ),
-
-         NOM_ZERO=SIMP(statut='f',typ=fonction_sdaster,
-                       fr="Nom de la fonction nulle",
-                       ang="Name of the zero fonction"),
-
-         NOM_UN  =SIMP(statut='f',typ=fonction_sdaster,
-                       fr="Nom de la fonction unité",
-                       ang="Name of the one fonction"),
-
-)  ;
+         ),
+)

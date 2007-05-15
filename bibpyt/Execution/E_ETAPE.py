@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF E_ETAPE Execution  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ from Noyau.N_Exception import AsException
 from Noyau.N_MACRO_ETAPE import MACRO_ETAPE
 import genpy
 import aster
-from SD import checksd
+import checksd
 
 class ETAPE:
    """

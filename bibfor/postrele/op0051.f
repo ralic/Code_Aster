@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,7 +210,7 @@ C
             IF (NOPASE.EQ.' ') THEN
               LERES0 = RESUCO
             ELSE
-              CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
+              CALL PSGENC ( RESUCO, NOPASE, LERES0, IRET )
               IF ( IRET.NE.0 ) THEN
                 VALK(1) = RESUCO
                 VALK(2) = NOPASE

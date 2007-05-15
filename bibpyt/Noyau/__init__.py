@@ -1,4 +1,4 @@
-#@ MODIF __init__ Noyau  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF __init__ Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,3 +41,7 @@ __builtin__.CONTEXT=context
 # Classes de base
 from N_SIMP import SIMP
 from N_FACT import FACT
+
+# structures de données
+import asojb
+from asojb import AsBase

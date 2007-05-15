@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai7 Messages  DATE 14/05/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,6 +56,15 @@ cata_msg={
 7: _("""
  Le paramètre %(k1)s ne fait pas partie des choix possibles.
 """),
+
+8: _("""
+ L'utilisation de la macro pour un concept de type dyna_harmo n'est pas encore prevue
+ """),
+
+9: _("""
+ Si on utilise l'option normale pour les changements de repere, il faut donner
+ une equation supplementaire avec le mot-cle VECT_X ou VECT_Y
+ """),
 
 99: _("""
  Arret dans le programme %(k1)s.

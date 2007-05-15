@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,8 +19,9 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-DEBUT(CODE=_F(NOM='ZZZZ159C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+# RESPONSABLE ASSIRE A.ASSIRE
 
+DEBUT(CODE=_F(NOM='ZZZZ159C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
 parametres =[['YOUN__',100000.,50000.,500000.],['DSDE__',1000.,500.,10000.],['SIGY__',30.,5.,500.]]
 
@@ -81,7 +82,7 @@ RESU=MACR_RECAL(
          RESI_GLOB_RELA   = 1.E-5,
          RESU_CALC        = calcul,
          POIDS            = weight,
-         GRAPHIQUE        = (_F(INTERACTIF='NON',
+         GRAPHIQUE        = (_F(PILOTE='PNG',
                                 UNITE=90,
                                 AFFICHAGE='ITERATION_FINALE',
                              )),

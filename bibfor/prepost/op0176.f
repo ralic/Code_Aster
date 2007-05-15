@@ -1,7 +1,7 @@
       SUBROUTINE OP0176 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,7 +156,7 @@ C
         ELSE
 C
           NOSIMP = RESUOU(1:8)
-          CALL PSRENC ( RESUIN, NOPASE, LERES0, IRET )
+          CALL PSGENC ( RESUIN, NOPASE, LERES0, IRET )
           IF ( IRET.NE.0 ) THEN
              VALK(1) = RESUIN
              VALK(2) = NOPASE

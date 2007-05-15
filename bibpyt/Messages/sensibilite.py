@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sensibilite Messages  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,42 +157,31 @@ cata_msg={
  Le calcul de derivée n'a pas été étendu à la plasticité.
 """),
 
+56: _("""
+ Pas de calcul de sensibilité accessible.
+"""),
 
+57: _("""
+ Valeur incorrecte pour le nom du concept ou du paramètre sensible.
+ Ils doivent etre de type chaines de caractères de moins de 8 caractères.
+                 Nom du concept : '%(k1)s'
+      Nom du paramètre sensible : '%(k2)s'
+"""),
 
+58: _("""
+                 Nom du concept : '%(k1)s'
+      Nom du paramètre sensible : '%(k2)s'
+                    
+           Nom composé (dérivé) : '%(k3)s'
 
+"""),
 
+59: _("""
+            Liste des mots-clés : %(k1)s
+              Liste des valeurs : %(k2)s
+   Liste des mots-clés facteurs : %(k3)s
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""),
 
 
 
@@ -281,10 +270,11 @@ cata_msg={
  C'est incohérent.
 """),
 
-
-
-
-
+97: _("""
+Mémorisation des données de la sensibilité :
+   
+   Les listes des mots-clés, des valeurs et mots-clés facteurs doivent etre de meme longueur.
+"""),
 
 98: _("""
  Dans le programme %(k1)s, le paramètre de sensibilité %(k2)s est introuvable.   

@@ -5,7 +5,7 @@
       CHARACTER*8   ELREFP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C       ELREFP  : TYPE D'ÉLÉMENT DE RÉFÉRENCE PARENT
 C
 C     SORTIE
 C       CONNEC  : CONNECTIVITÉ DES NOEUDS DE L'ÉLÉMENT ENFANT
-C       NIT     : NOMBRE DE SOUS-TÉTRAS
+C       NIT     : NOMBRE DE SOUS-ELEMENTS
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -126,6 +126,11 @@ C       CONNECTIVITÉ DES NOEUDS
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
+        NIT=1
+      ELSEIF (ELREFP.EQ.'SE2') THEN
+C       CONNECTIVITÉ DES NOEUDS
+        CONNEC(1,1)=1
+        CONNEC(1,2)=2
         NIT=1
       ELSE
         CALL U2MESS('F','ALGORITH5_15')

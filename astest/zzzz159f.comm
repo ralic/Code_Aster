@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DU MODE EXTERNE DE LA MACRO-COMMANDE DE RECALAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='ZZZZ159F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
+# RESPONSABLE ASSIRE A.ASSIRE
 
 import os, sys, glob, math
 
