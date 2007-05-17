@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 14/05/2007   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ except:
 ScalarMap       = 'ScalarMap'          
 DeformedShape   = 'DeformedShape' 
 IsoSurfaces     = 'IsoSurfaces'
-CutPlanes       =  'CutPlanes'
+CutPlanes       = 'CutPlanes'
 Plot2D          = 'Plot2D'
 
 
@@ -66,7 +66,6 @@ class VISU:
         
         """
         self.param         = param              # parametres Stanley
-##        self.selection     = selection
         self.salomeParam   = ''                 # parametre SALOME pour composant de pylotage
         self.studyName     = None               # nom de l'etude SALOME dans laquelle on fait la visualisation
         
@@ -88,7 +87,6 @@ class VISU:
                 self.studyName = studyList[0]
             else:                               # plusieurs études -> l'utilisateur doit en sélectionner une
                 self.studyName = SAISIE_MODE( studyList, _("Choix de l'etude SALOME pour visualisation") )
-##                print ' studyName = SAISIE_MODE ->' , self.studyName
 
         if self.studyName:
             self.salomeParam['studyName']  = self.studyName
@@ -123,10 +121,6 @@ class VISU:
                 if not param[var].strip():
                     UTMESS('A','STANLEY', _("Pour visualisation dans Salome, la variable '") + var + _("' est obligatoire. On abandonne.") )
                     return {}
-
-#            key = 'machine_salome'
-#            amachineName = param[ key ]
-#            result[ 'machineName']  = amachineName
 
             if '-ORBInitRef' not in sys.argv:
                 key = 'machine_salome_port'
@@ -216,8 +210,6 @@ class ISOVALEURS( VISU ):
         
         # selection d'un type de visualisation ( parmi celles possibles )
         self.visuType = self.__visuType( self.selection )        
-##            visuType = SAISIE_MODE( visuTypeList, 'Choisir le type de visualisation' )
-##            print ' visuType = SAISIE_MODE ->' , visuType        
         
         # sur quel entité ( VISU.NODE, VISU.EDGE, VISU.FACE,  VISU.CELL )
         self.entityType = self.__entityType( self.selection )
@@ -335,29 +327,19 @@ class ISOVALEURS( VISU ):
           raise _("Erreur lors de la visualisation.")
 
 
-##        a3DView = salomeVisu.create3DView( 'Stanley.post')
-##        if not a3DView:
-##            raise "Erreur creation vue 3D Salome"
-##        ok = salomeVisu.setCurrent3DView( a3DView )
-##        if not a3DView:
-##            raise "Erreur creation vue 3D Salome"            
         ok = salomeVisu.readMED( medFilePath, medInfo.name, entity )
         if not ok:
             raise _("Erreur lecture fichier MED :") + medFilePath
 
         if visuType == ScalarMap: # CS_pbruno :attention par defaut on trace le module du champs 
             ok = salomeVisu.ScalarMap( medInfo.fieldName, medInfo.iteration, "ScalarMapTitle")
-            #ok = salomeVisu.ScalarMap( medInfo.fieldName, medInfo.iteration, "ScalarMapTitle", theDelay)
         elif visuType== DeformedShape:
             ok = salomeVisu.DeformedShape( medInfo.fieldName, medInfo.iteration, "DeformedShapeTitle")
-            #ok = salomeVisu.DeformedShape( medInfo.fieldName, medInfo.iteration, "DeformedShapeTitle",  theDelay)
         elif visuType== IsoSurfaces:
             ok = salomeVisu.IsoSurfaces( medInfo.fieldName, medInfo.iteration, "IsoSurfacesTitle")
-            #ok = salomeVisu.IsoSurfaces( medInfo.fieldName, medInfo.iteration, "IsoSurfacesTitle", theDelay)
         elif visuType== CutPlanes:            
             planePositions =[-14.97,-10, -5.6, -4.8, -4,-3.2,-2.4,-1.6,-0.8, 0.0]
             ok = salomeVisu.DisplayCutPlanes( medInfo.fieldName, medInfo.iteration,  "CutPlanesTitle", Visu.XY, 0.,0., planePositions )
-            #ok = salomeVisu.DisplayCutPlanes( medInfo.fieldName, medInfo.iteration,  "CutPlanesTitle", Visu.XY, 0.,0., planePositions )
         else:
             raise _("Erreur type de visualisation non supporté")
 
@@ -377,9 +359,9 @@ class COURBES( VISU ):
         # Si on n'a pas trouvé de session Salome ouverte on sort
         if not self.studyName: return
 
-        self.tables         = {}
-        self.l_courbes    = l_courbes
-        self.selection     = selection
+        self.tables     = {}
+        self.l_courbes  = l_courbes
+        self.selection  = selection
 
         # selon mode recopie sur le poste utilisateur de fichiers si nécessaire
         if   self.param['mode'] == 'LOCAL' :
@@ -397,33 +379,15 @@ class COURBES( VISU ):
         """
         Stanley fonctionne sur le poste local de l'utilisateur
         """        
-        self.tables  = self.__writeSalomeTables( self.l_courbes, self.selection )
+        pass
+
 
     def __init_distant( self ):
         """
         Stanley fonctionne sur une machine distante de l'utilisateur.
         Il faut rapatrier le fichier sur la machine contenant salome.
-        """        
-        self.tables    = self.__writeSalomeTables( self.l_courbes,  self.selection )
-        fichierslocal = '' 
-
-        # Recopie de toutes les tables vers le poste utilisateur
-        for name, path  in self.tables.items(): 
-            fichierslocal+= ' ' + path
-            self.tables[ name ] = os.path.join( self.param['tmp'], os.path.basename( path ) )
-
-        fmdis = self.param['machine_salome_login'] + '@' + self.param['machine_salome'] + ":" + self.param['tmp']
-
-        # Protocole de recopie et d'execution distante
-        copie     = self.param['protocole'].split('/')[0]                                 # rcp ou scp
-
-        # Copie du fichier
-        cmd = "rcp " + fichierslocal + " " + fmdis
-        UTMESS('I','STANLEY',_("Execution de : ") + cmd)
-        code, output = commands.getstatusoutput( cmd )
-
-        if code!=0:
-            raise _("Erreur exécution commande : ") + cmd
+        """
+        pass
 
 
     def __init_windows( self ):
@@ -488,8 +452,8 @@ class COURBES( VISU ):
             raise _("Erreur construction table de valeur pour visualisation 2D SALOME") + msg
 
 
-        return result 
-
+        return result
+        
 
     def __Show( self, tables, salomeParam ) :
         """
@@ -500,13 +464,20 @@ class COURBES( VISU ):
         
         @type     salomeParam:  dictionary.
         @param  salomeParam:  parametre Salome pour initialistion composant VISU de pylotage
-        """       
+        """        
         salomeVisu = Visu.Visu(  **salomeParam )
-
-        for theTableName, theTablePath  in self.tables.items():
-            ok = salomeVisu.XYPlot(  theTableName, theTablePath  )
-            if not ok:
-                raise 'erreur visualisation PLOT2D dans SALOME (  theTableName %s, theTablePath  %s )'%(  theTableName, theTablePath  )
+        
+        if self.selection.geom[0] == 'POINT' :
+            tableTitle ='_%s_%s_sur_%s'%( self.selection.nom_cham, self.selection.nom_cmp, self.selection.nom_va )
+        elif self.selection.geom[0] == 'CHEMIN' :                    
+            tableTitle ='_%s_%s_sur_%s'%( self.selection.nom_cham, self.selection.nom_cmp, 'ABSC_CURV ' + self.selection.geom[1][0])
+        tableTitle += ' '+self.selection.nom_va+' : ' + str( self.selection.vale_va )
+                            
+        ok = salomeVisu.XYPlot2( self.l_courbes, tableTitle )
+        if not ok:
+            raise 'erreur visualisation PLOT2D dans SALOME'                
+                
+                
 
     def Show( self ) :
         """
@@ -525,7 +496,7 @@ class MEDInfo:
         Recupère les informations( nom maillage, champ ) du fichier MED resultat en sortie de Stanley
         """
         self.name           = selection.contexte.maillage.nom
-        self.fieldName      = selection.contexte.resultat .nom
+        self.fieldName      = selection.contexte.resultat.nom
         tailSize            = 8 - len( self.fieldName)
         if tailSize > 0:
             self.fieldName += tailSize * '_'
@@ -535,71 +506,3 @@ class MEDInfo:
         if tailSize > 0:
             self.fieldName += tailSize * '_'
         
-        
-##        self.fieldName    = selection.contexte.resultat .nom+ selection.nom_cham
-##        tailSize               = 32 - len( self.fieldName )
-##        self.fieldName    += tailSize * '_'
-        
-        
-        
-
-##from ctypes import *
-
-# =========================================================================
-        
-##class MEDInfo:
-##    """
-##    Parsing d'un fichier MED pour besoin spécifique Stanley/SALOME
-##    """
-##    def __init__( self,  medFilePath,  libraryPath =  None ) :
-##        """        
-##        medFilePath: chemin absolu du fichier MED
-##        libraryPath   : chemin de la library MED ( si LD_LIBRARY_PATH est positionné, le nom suffit )
-##        """
-##        self.name           = None
-##        self.fieldName    = None
-##        
-##        libmedC = None    # library MED 
-##        
-##        nmaa      = None   # nombre de maillage
-##                        
-##        if not libraryPath:
-##            libraryPath = "libmedC.so"            
-##        libmedC = cdll.LoadLibrary( libraryPath )
-##        
-##        fid         = libmedC.MEDouvrir( medFilePath, 0 )
-##        
-##        if fid>0: # lecture fichier MED OK
-##            nmaa = libmedC.MEDnMaa( fid )
-##            if nmaa>0:  # au moins un maillage OK
-##                nom_maillage               = create_string_buffer('\000' * 32)
-##                mdim                           = c_int()
-##                type_maillage               = c_int()
-##                maillage_description    = create_string_buffer('\000' * 256)
-##                
-##                pnom_maillage             = pointer(nom_maillage)
-##                pmaillage_description   = pointer( maillage_description )
-##                ptype_maillage              = pointer( type_maillage )
-##                pmdim                          = pointer( mdim )
-##                
-##                ok = libmedC.MEDmaaInfo( fid, 1, pnom_maillage, pmdim, ptype_maillage, pmaillage_description ) # Stanley : on lit le 1er maillage
-##                if ok == 0:
-##                    self.name = nom_maillage.value
-##                                
-##                ncomp = libmedC.MEDnChamp( fid, 1 )    # nombre de composantes
-##                
-##                if ncomp>0:
-##                    nom_champ  = create_string_buffer('\000' * 32)
-##                    type               = c_int()                
-##                    comp             = create_string_buffer('\000' * 96 )
-##                    unit                = create_string_buffer('\000' * 96 )
-##                
-##                    pnom_champ   = pointer( nom_champ )
-##                    ptype               = pointer( type )
-##                    pcomp             = pointer( comp )
-##                    punit                = pointer( unit )
-##                    
-##                    ok = libmedC.MEDchampInfo(  fid, 1 , pnom_champ, ptype, pcomp, punit, ncomp) # Stanley : on lit le 1er champ
-##                    if ok == 0:
-##                        self.fieldName = nom_champ.value
-                        

@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 14/05/2007   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2695,10 +2695,9 @@ class DRIVER_SALOME_COURBES(DRIVER_COURBES) :
     def Tracer(self, selection, options={}) :
 
        if self.terminal : self.terminal.Fermer()
-
        # Extraction des resultats pour la selection requise
        l_courbes = self.Extract( selection )
-
+       if not l_courbes: return
        self.terminal = salomeVisu.COURBES( l_courbes, self.stan.parametres, selection )
 
 
