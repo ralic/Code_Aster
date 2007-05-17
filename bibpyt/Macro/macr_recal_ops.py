@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,12 +32,15 @@ fichier_export = None
 mode_python = False
 type_fonctionnelle = 'float'
 
-# --------------------------------------------------------------------------------------------------
-def UTMESS(code,sprg,texte):
-   fmt='\n <%s> <%s> %s\n\n'
-   if INFO>0 or code=='F': print fmt % (code,sprg,texte)
-   if code=='F':
-      sys.exit()
+
+try:
+   import Utilitai.Utmess
+   from Utilitai.Utmess import UTMESS
+except ImportError:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
+      if code=='F': sys.exit()
 
 
 # --------------------------------------------------------------------------------------------------

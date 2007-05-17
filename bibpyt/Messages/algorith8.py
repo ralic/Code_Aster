@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith8 Messages  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,17 +30,17 @@ cata_msg={
  caracteristique fluage                             incomplet
 """),
 
-3: _("""
- aucun noeud n'est present dans la zone consideree 2
-"""),
 
-4: _("""
- aucun noeud n'est present dans la zone consideree 1
-"""),
 
-5: _("""
- aucun noeud n'est present dans la zone consideree 3
-"""),
+
+
+
+
+
+
+
+
+
 
 6: _("""
  message d'erreur inconnu (dvlp)

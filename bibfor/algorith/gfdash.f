@@ -6,7 +6,7 @@
      &         DT, X(5), YY(2), Z0, L2, L3, FPTG2, FFTG2, FRTG2
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +45,7 @@ C
       REAL*8  HRUGC, HRUGTG
       REAL*8  R8PREM, R8PI, ZERO, DEMI, UN
       REAL*8  FVEC(2), WA(LWA), F(N2), Y(6), COEF1(5)
-      REAL*8  VALR(7)
+      REAL*8  VALR(8)
 C     ------------------------------------------------------------------
 C
       ROC = FLUID(1)
@@ -164,7 +164,7 @@ C
       IF ( IRET .NE. 1 ) THEN
          VALI (1) = IRET
          VALI (2) = IT
-         CALL U2MESG('A', 'ALGORITH13_22',0,' ',2,VALI,0,0.D0)
+         CALL U2MESG('A', 'GRAPPEFLUIDE_4',0,' ',2,VALI,1,Z)
       ENDIF
 C
       Y(1) = YY(1)
@@ -226,7 +226,8 @@ C
          VALR (5) = F(4)
          VALR (6) = F(5)
          VALR (7) = F(6)
-         CALL U2MESG('A', 'ALGORITH13_23',0,' ',0,0,7,VALR)
+         VALR (8) = Z
+         CALL U2MESG('A', 'GRAPPEFLUIDE_5',0,' ',0,0,8,VALR)
       ENDIF
 C
 C

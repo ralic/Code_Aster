@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,19 +22,15 @@
 # mode_include = False
 # __follow_output = False
 # table_sensibilite = False
-debug = False
-
 __commandes_aster__ = False
 
+debug = False
 
 import copy, Numeric, types, os, sys, pprint, math
 from glob import glob
 
 try:
-  import aster
-except: pass
-
-try:
+   import Utilitai.Utmess
    from Utilitai.Utmess import UTMESS
 except ImportError:
    def UTMESS(code,sprg,texte):

@@ -6,7 +6,7 @@
      &         RUGOSI(8), Z, DZ, X(5), Z0
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C-----------------------------------------------------------------------
      &        KCF1, KCF2, CF1, CF2, DCRAY, DTG, LAM, HRUGC, HRUGTG,
      &        GFCORR, XX(3), WA(LWA), FVEC(3), F(5),
      &        PI, R8PI, R8PREM, ZERO, DEMI, UN
-      REAL*8  VALR(6)
+      REAL*8  VALR(7)
 C     ------------------------------------------------------------------
 C
       ROC = FLUID(1)
@@ -142,7 +142,7 @@ C
       ELSE
          LAMEQ = LAMEQ1
          IF ( IND .GE. NMAX ) THEN
-            CALL U2MESS('A','ALGORITH3_85')
+            CALL U2MESG('A','GRAPPEFLUIDE_7',0,' ',0,0,1,Z)
          ENDIF
       ENDIF
 C
@@ -188,7 +188,7 @@ C
       IF ( IRET .NE. 1) THEN
          VALI (1) = IRET
          VALI (2) = IT
-         CALL U2MESG('A', 'ALGORITH13_22',0,' ',2,VALI,0,0.D0)
+         CALL U2MESG('A', 'GRAPPEFLUIDE_4',0,' ',2,VALI,1,Z)
       ENDIF
 C
       X(1) = XX(1)
@@ -225,7 +225,8 @@ C
          VALR (4) = F(3)
          VALR (5) = F(4)
          VALR (6) = F(5)
-         CALL U2MESG('A', 'ALGORITH13_25',0,' ',0,0,6,VALR)
+         VALR (6) = Z
+         CALL U2MESG('A', 'GRAPPEFLUIDE_6',0,' ',0,0,7,VALR)
       ENDIF
 C
 C----------------------------------------------------------------------

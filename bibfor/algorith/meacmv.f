@@ -5,7 +5,7 @@
      &                    TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
      &                    BASE, TPS1, TPS2, TPS3, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,16 +204,16 @@ C          SIMPLIFIER LA PROGRAMMATION.
      &                  CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
      &                  TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
      &                  CHAMEL, LIGRMO, BASE, CHVARC, CHVREF,
-     &                  K24BID,K24BID,
-     &                  K24BID, K24BID, K8BID, JAUX, IRET )
+     &                  K24BID, K24BID,
+     &                  K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
 
           CALL MECALC ( NOSY, NOMODE, VAPRIN, CHGEOM, MATE, CHCARA,
      &                  K24BID, K24BID,CHTIME, BLAN24, CHHARM,
      &                  CHSIG, CHEPS, CHFREQ, CHMASS, K24BID, CHAREP,
      &                  TYPCOE, ALPHA, CALPHA, K24BID, K24BID,
      &                  CHAMEL, LIGRMO, BASE, CHVARC, CHVREF,
-     &                  K24BID,K24BID,
-     &                  K24BID, K24BID, K8BID, JAUX, IRET )
+     &                  K24BID, K24BID,
+     &                  K24BID, K24BID, K8BID, JAUX, K24BID, IRET )
 
   13    CONTINUE
 

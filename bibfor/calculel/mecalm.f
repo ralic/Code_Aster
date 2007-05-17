@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR
       CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN
       CHARACTER*24 CHAMGD,CHSIG,CHSIGN,CHEPSP
-      CHARACTER*24 CHEPS,CHDEPL
+      CHARACTER*24 CHEPS,CHDEPL,CHACSE
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTIME,CHMETA
       CHARACTER*24 CHNUMC,CHHARM,CHFREQ,CHMASS,CHELEM,SOP
       CHARACTER*24 LIGREL,CHEPSA,K24B
@@ -337,6 +337,9 @@ C EN OUTPUT --> INFCHA ET INPSCO
             ELSE IF (TYSD.EQ.'EVOL_NOLI') THEN
               CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO,
      &                    RESUCO,1)
+            ELSE IF (TYSD.EQ.'DYNA_HARMO') THEN
+              CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO,
+     &                    RESUCO,1)
             ELSE
               CALL U2MESK('A','SENSIBILITE_5',1,TYSD)
               GO TO 490
@@ -362,6 +365,8 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
           ELSE IF (TYSD.EQ.'DYNA_TRANS') THEN
             CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE IF (TYSD.EQ.'EVOL_NOLI') THEN
+            CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
+          ELSE IF (TYSD.EQ.'DYNA_HARMO') THEN
             CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE
             CALL U2MESK('A','SENSIBILITE_5',1,TYSD)
@@ -424,7 +429,9 @@ C ---- VERIF SENSIBILITE
             IF (OPTION.EQ.'EPSI_ELNO_DEPL' .OR.
      &          OPTION.EQ.'EPSI_ELGA_DEPL' .OR.
      &          OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'SIEF_ELGA_DEPL') THEN
+     &          OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
+     &          OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
+     &          OPTION.EQ.'SIPO_ELNO_DEPL' ) THEN
                IF (TYPESE.EQ.4) THEN
                   CODSEN = 1
                ENDIF
@@ -508,6 +515,11 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
                 IF (IRET.GT.0) GO TO 72
                 CALL RSEXC2(1,1,LERES0,'DEPL',IORDR,CHAMGD,OPTION,IRET)
                 IF (IRET.GT.0) GO TO 72
+                IF (TYSD.EQ.'DYNA_HARMO'.OR.TYSD.EQ.'DYNA_TRANS') THEN
+                     CALL RSEXC2(1,1,LERES0,'ACCE',IORDR,CHACSE,
+     &                           OPTION,IRET)
+                IF (IRET.GT.0) GO TO 72
+                ENDIF
               ELSE
                 CALL RSEXC2(1,1,LERES0,'DEPL',IORDR,CHAMGD,OPTION,IRET)
                 IF (IRET.GT.0) GO TO 72
@@ -676,7 +688,7 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,CHAREP,TYPCOE,
      &                    ALPHA,CALPHA,CHDYNR,SOP,CHELEM,LIGREL,BASE,
      &                    CHVARC,CHVREF,K24B,COMPOR,CHTESE,
-     &                    CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 72
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
    72         CONTINUE
@@ -731,7 +743,7 @@ C      A PARTIR DE SIEF_ELGA_DEPL
      &                    K24B,K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,
      &                    K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,
      &                    CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 92
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
    92         CONTINUE
@@ -809,7 +821,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),K24B,
      &                    ZERO,CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,
      &                    CHVARC,CHVREF,K24B,COMPOR,CHTESE,CHDESE,
-     &                    NOPASE,TYPESE,IRET)
+     &                    NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 112
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
               CALL DETRSD('CHAMP_GD',CHFREQ)
@@ -921,7 +933,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHEPSA,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),K24B,
      &                    ZERO,CZERO,CHDYNR,SOP,CHEPSP,LIGREL,BASE,
      &                    CHVARC,CHVREF,CHVARI,COMPOR,CHTESE,
-     &                    CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 152
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   152         CONTINUE
@@ -1052,7 +1064,7 @@ C          CHAMP D'ENTREE POUR COQUES
      &                    K24B,K24B,CHNUMC,K24B,CHSIG,CHEPS,CHSIC,K24B,
      &                    K24B,ZK8(JCHA),K24B,ZERO,CZERO,K24B,K24B,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 162
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   162         CONTINUE
@@ -1129,7 +1141,8 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,CHCMP,K24B,CHSIG,CHEPS,CHSIC,K24B,
      &                    K24B,ZK8(JCHA),K24B,ZERO,CZERO,K24B,K24B,
      &                    CHELEM,LIGREL,BASE,CHSEQ,CHEEQ,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,
+     &                    IRET)
 
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   172         CONTINUE
@@ -1170,7 +1183,7 @@ C              CALL JEVEUO(KCHA,'L',JCHA)
      &                   K24B,K24B,K24B,K24B,CHSIGF,CHMASS,K24B,K24B,
      &                   K24B,K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,
      &                   LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,
-     &                   CHDESE,NOPASE,TYPESE,IRET)
+     &                   CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
               CALL DETRSD('CHAM_ELEM',CHSIGF)
   187         CONTINUE
@@ -1411,7 +1424,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,K24B,K24B,
      &                    K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,LIGREL,
      &                    BASE,K24B,K24B,K24B,COMPOR,CHTESE,CHDESE,
-     &                    NOPASE,TYPESE,IRET)
+     &                    NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 242
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   242         CONTINUE
@@ -1464,7 +1477,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,
      &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,CHVARC,
      &                    CHVREF,K24B,COMPOR,CHTESE,CHDESE,NOPASE,
-     &                    TYPESE,IRET)
+     &                    TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 252
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   252         CONTINUE
@@ -1874,7 +1887,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,CHNUMC,K24B,CHSIG,CHDEPL,K24B,
      &                    K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,
      &                    CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 362
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   362         CONTINUE
@@ -1922,7 +1935,8 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,CHNUMC,K24B,CHSIG,K24B,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
      &                    SOP,CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
+     &                    CHACSE,IRET)
               IF (IRET.GT.0) GO TO 372
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   372         CONTINUE
@@ -1961,7 +1975,8 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,CHEPS,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
      &                    SOP,CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
+     &                    CHACSE,IRET)
               IF (IRET.GT.0) GO TO 382
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   382         CONTINUE
@@ -2000,7 +2015,8 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
      &                    SOP,CHELEM,LIGREL,BASE,CHVARC,CHEEQ,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
+     &                    CHACSE,IRET)
               IF (IRET.GT.0) GO TO 392
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   392         CONTINUE
@@ -2040,7 +2056,8 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
      &                    SOP,CHELEM,LIGREL,BASE,CHSEQ,K24B,K24B,
-     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
+     &                    CHACSE,IRET)
               IF (IRET.GT.0) GO TO 402
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   402         CONTINUE
@@ -2073,7 +2090,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,K24B,CHSIG2,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
      &                    LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 1410
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
  1410      CONTINUE
@@ -2107,7 +2124,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 412
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   412         CONTINUE
@@ -2143,7 +2160,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 422
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   422         CONTINUE
@@ -2199,7 +2216,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,
      &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,CHVARC,
      &                    CHVREF,K24B,COMPOR,CHTESE,CHDESE,NOPASE,
-     &                    TYPESE,IRET)
+     &                    TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 432
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   432         CONTINUE
@@ -2235,7 +2252,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,K24B,K24B,K24B,CHTETA,K24B,
      &                    K24B,K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 452
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   452         CONTINUE
@@ -2269,7 +2286,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,K24B,K24B,CHSIGM,CHTETA,K24B,
      &                    K24B,K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 462
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   462         CONTINUE
@@ -2305,7 +2322,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 472
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   472         CONTINUE
@@ -2341,7 +2358,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
-     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,CHACSE,IRET)
               IF (IRET.GT.0) GO TO 482
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   482         CONTINUE

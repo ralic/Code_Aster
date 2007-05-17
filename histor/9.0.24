@@ -1,0 +1,215 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR andriam      ANDRIAMBOLOLONA Hari   DATE 16/05/2007 - 16:46:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009438 DU 2006-02-08 12:41:34
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Sensibilites et elements de poutre : CALC_ELEM
+FONCTIONNALITE
+   L'objectif de cette fiche est de disposer de la dérivée des 
+   contraintes et des efforts (EFGE_ELNO_DEPL, SIPO_ELNO_DEPL) 
+   pour les éléments de poutre de type POU_D_E dans le cadre 
+   de structure de données de type DYNA_TRANS et DYNA_HARMO 
+   produites respectivement par les opérateurs DYNA_LINE_TRAN 
+   et DYNA_LINE_HARM.
+   
+   Catalogues:
+    - Nouveaux : efge_elno_sens, sipo_elno_sens
+    - modifiés : gener_mepde1
+   Fortran modifés :
+    - meacmv, mecalc, mecalm, meceuc, ntoptc
+    - op0038, op0046, peecin, peepot, te0142, thaclm
+    
+   Validation: 
+    - sensd09c : nouveau cas-test permettant de tester les 
+   résultats issus de DYNA_LINE_TRAN (comparaison avec une 
+   approche différences finies). 
+    - sensd09d : nouveau cas-test permettant de tester les 
+   résultats issus de DYNA_LINE_HARM (comparaison avec une 
+   apporche différences finies).
+   
+   Remarque : les cas-tests sensd11* sont en NOOK avec la 
+   version 9.0.23
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R4.03.07, V1.01.207
+VALIDATION
+   les cas tests sensd* (sauf sensd11)
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010778 DU 2007-04-15 15:06:37
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.17, les cas tests sensd02a et sensd03a s'arretent en erreur fatale (BCR)
+FONCTIONNALITE
+   Constat :
+   Un argument de la routine vechde a été changé lors de la restitution de 9.0.17.
+   L'argument en question, qui était un K24 a été remplacé par une variable en K19.
+   Cette modification fait planter le programme, uniquement, en mode nodebug.
+   Cause :
+   Cette variable n'a pas été initialisée dans le programme appelant (dy2mbr).
+   Correction :
+   Initialiser la variable par une chaîne de caractère vide.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas tests sensd*
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 16/05/2007 - 16:16:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010855 DU 2007-05-14 07:16:10
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Macr_recal : petites evolutions
+FONCTIONNALITE
+   Toutes ces modifs concernent MACR_RECAL :
+   
+   - On change le mot-clé GRAPHIQUE / INTERACTIF en GRAPHIQUE / PILOTE, pour etre conforme a
+   IMPR_FONCTION. Ainsi, on beneficie de toutes les possibilité offerte par IMPR_FONCTION :
+   impression interactive a l'ecran, dans un fichier jpg, png, etc...
+   
+   - Depuis peu, Utmess n'est plus appelable en Python en dehors d'Aster. Or, on l'utilisait
+   de facon optionnelle dans le mode EXTERNE. Vu le nombre limité d'appels a Utmess.py, on
+   decide de les remplacer par des print pourle mode EXTERNE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.73.02
+VALIDATION
+   zzzz159a, b, c, d, e, f, ssna110a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 16/05/2007 - 15:22:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010579 DU 2007-02-26 08:32:21
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Grappe_Fluide : Calcul des forces fluides dans les mxc3xa9canismes
+FONCTIONNALITE
+   Des différences dans les initialisations entre le module GRAPPE_FLUIDE de Code_Aster et le
+   code dont le module est issu, PEGASE, ont été décelées par Elisabeth Longatte et corrigées.
+   Une fois ces corrections apportées, on observe une meilleure cohérences des résultats
+   entre les deux codes.
+   J'en profite pour créer un catalogue d'erreur spécifique au calcul des forces fluides de
+   grappes de commande : grappefluide.py.
+   
+   eb
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V8.02.100
+VALIDATION
+   fdnl100a
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 16/05/2007 - 13:18:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010716 DU 2007-03-30 07:51:55
+TYPE anomalie concernant agla (VERSION *)
+TITRE
+   l'agla empeche la modification de la routine assert.f
+FONCTIONNALITE
+   Le choix de la bibliothèque from_c n'est pas judicieux car cette librairie n'est pas
+   traitéee lors de la construction des versions locales, elle contient des sources faisant
+   appel à des fonctions MPI.
+   On déplace donc la routine ASSERT dans la nouvelle bibliothèque hors_crp.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   a venir
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sensd09c                      andriam H.ANDRIAMBOLOLONA    381    381      0
+ CASTEST AJOUT sensd09d                      andriam H.ANDRIAMBOLOLONA    228    228      0
+ CASTEST MODIF fdnl100a                       boyere E.BOYERE           468     33     21
+CATALOGU AJOUT options/efge_elno_sens        andriam H.ANDRIAMBOLOLONA     99     99      0
+CATALOGU AJOUT options/sipo_elno_sens        andriam H.ANDRIAMBOLOLONA     90     90      0
+CATALOGU MODIF typelem/gener_mepde1          andriam H.ANDRIAMBOLOLONA    288     17      1
+ FORTRAN DEPLA from_c/assert               hors_crp/ lefebvre        M.ADMINISTRATEUR     32      0      0
+ FORTRAN MODIF algorith/dy2mbr               andriam H.ANDRIAMBOLOLONA    344      2      1
+ FORTRAN MODIF algorith/gfcomm                boyere E.BOYERE           447     30     21
+ FORTRAN MODIF algorith/gfdash                boyere E.BOYERE           271      5      4
+ FORTRAN MODIF algorith/gfguid                boyere E.BOYERE           246      6      5
+ FORTRAN MODIF algorith/meacmv               andriam H.ANDRIAMBOLOLONA    463      5      5
+ FORTRAN MODIF algorith/nmgrfl                boyere E.BOYERE           697     10     10
+ FORTRAN MODIF algorith/ntoptc               andriam H.ANDRIAMBOLOLONA    140      2      2
+ FORTRAN MODIF algorith/op0046               andriam H.ANDRIAMBOLOLONA    277      2      2
+ FORTRAN MODIF calculel/mecalc               andriam H.ANDRIAMBOLOLONA    526      4      3
+ FORTRAN MODIF calculel/mecalm               andriam H.ANDRIAMBOLOLONA   2435     42     25
+ FORTRAN MODIF calculel/meceuc               andriam H.ANDRIAMBOLOLONA    289     39      2
+ FORTRAN MODIF calculel/op0038               andriam H.ANDRIAMBOLOLONA    161      3      3
+ FORTRAN MODIF calculel/thaclm               andriam H.ANDRIAMBOLOLONA    867      4      4
+ FORTRAN MODIF elements/te0142               andriam H.ANDRIAMBOLOLONA    230     87      3
+ FORTRAN MODIF modelisa/cagrf1                boyere E.BOYERE           251      5      5
+ FORTRAN MODIF utilitai/peecin               andriam H.ANDRIAMBOLOLONA    378      2      2
+ FORTRAN MODIF utilitai/peepot               andriam H.ANDRIAMBOLOLONA    329      2      2
+  PYTHON AJOUT Messages/grappefluide          boyere E.BOYERE            84     84      0
+  PYTHON MODIF Macro/macr_recal_ops           assire A.ASSIRE          1035      9      6
+  PYTHON MODIF Macro/reca_algo                assire A.ASSIRE           306      2      1
+  PYTHON MODIF Macro/reca_calcul_aster        assire A.ASSIRE           881      3      7
+  PYTHON MODIF Macro/reca_controles           assire A.ASSIRE           254      2      1
+  PYTHON MODIF Macro/reca_graphique           assire A.ASSIRE             0      0      0
+  PYTHON MODIF Macro/reca_graphique           assire A.ASSIRE            92      0      0
+  PYTHON MODIF Macro/reca_interp              assire A.ASSIRE           326      2      1
+  PYTHON MODIF Macro/reca_message             assire A.ASSIRE           174      2      1
+  PYTHON MODIF Macro/reca_utilitaires         assire A.ASSIRE           237      4      5
+  PYTHON MODIF Messages/algorith13            boyere E.BOYERE           475      1     34
+  PYTHON MODIF Messages/algorith8             boyere E.BOYERE           394     10     10
+  PYTHON SUPPR Macro/reca_graphique           assire A.ASSIRE             0      0      0
+  PYTHON SUPPR Macro/reca_graphique           assire A.ASSIRE            92      0     92
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    5         882       882              +882
+ MODIF :   30       13281       335     187      +148
+ SUPPR :    2          92                92       -92
+ DEPLA :    1          32 
+         ----      ------     ------  ------   ------
+ TOTAL :   38       14287      1217     279      +938 

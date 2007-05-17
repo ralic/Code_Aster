@@ -8,7 +8,7 @@
      &          FPMEC, FFMEC, Z, DZ, D2Z, DT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,6 +32,7 @@ C
 C-----------------------------------------------------------------------
       INTEGER  IND, NMAX, I, IMANCH
       INTEGER VALI
+      REAL*8 VALR(2)
       REAL*8   P2,CDM,CDA,CDML,CDI,CDG
       REAL*8   G,DHM,DHA,ROM,P3,P4,S
       REAL*8   LI,LML,DEML,DIML,DCSP,ROML,NUML,AML,AI,DHML,DHI
@@ -46,7 +47,6 @@ C-----------------------------------------------------------------------
       REAL*8   HRUGC,HRUGTC,HRUGM,HRUGA,HRUGML,HRUGG,HRUGSP
       REAL*8   ROI,NUI,ROA,UN,ZERO, R8PI, DUM, DUI
       REAL*8   F(9)
-      REAL*8 VALR
 C     ------------------------------------------------------------------
 C
       LI   = CARTER(1)
@@ -209,18 +209,13 @@ C
          C1 = KA+KM*(AA/AM)**2
          C2 = -(ROA*LA*ACMT+ROM*LM*AMT*AA/AM)/DT-2*KM*AT*AA/AM**2*DZ
          C3 = FR+(ROA*LA*ACMT+ROM*LM*AMT*AA/AM)*UAM1/DT
-         IF ((DZ.NE.ZERO).AND.(C1.NE.ZERO)) THEN
+          IF (C1.EQ.ZERO) THEN
+           CALL U2MESG('S','GRAPPEFLUIDE_13',0,' ',0,0,1,Z)
+          ENDIF
            UA = (-C2-SQRT(C2**2-4.D0*C1*C3))/2.D0/C1
-         ELSE
-           UA = ZERO
-         ENDIF
          UM = AT/AM*DZ-AA/AM*UA
       ENDIF
-      IF (UA.EQ.ZERO) THEN
-        DUM = ZERO
-      ELSE
-        DUM = AT/AM*D2Z - AA/AM*(UA-UAM1)/DT
-      ENDIF
+        DUM = (UM-UMM1)/DT
 C
       CALL GFCFRV( (UM+DZ)*DHM/NUM, HRUGC/DHM, CF1 )
       CALL GFCFRV(      UM*DHM/NUM, HRUGM/DHM, CF2 )
@@ -251,15 +246,18 @@ C
          LAMA   = LAMA1
          GOTO 10
       ELSE
+
+         LAMEQM = LMEQM1
+         LAMA   = LAMA1
+
          IF (IND.GE.NMAX) THEN
-          VALI = IT
-            CALL U2MESG('A', 'ALGORITH13_19',0,' ',1,VALI,0,0.D0)
+            CALL U2MESG('A','GRAPPEFLUIDE_2',0,' ',1,IT,1,Z)
          ENDIF
       ENDIF 
 C
       PM = P3-ROM/2*UM**2*(LAMEQM*LM/DHM+CDM)-ROM*LM*DUM
       PA = P4-ROA/2*UA**2*(LAMA*LA/DHA+CDA)-ROA*LA*(UA-UAM1)/DT
-C
+
 C----------------------------------------------------------------------
 C                    ZONE CARTER/MECANISME DE LEVEE
 C----------------------------------------------------------------------
@@ -339,8 +337,7 @@ C
          GOTO 15
       ELSE
         IF (IND.GE.NMAX) THEN
-          VALI = IT
-            CALL U2MESG('A', 'ALGORITH13_20',0,' ',1,VALI,0,0.D0)
+            CALL U2MESG('A','GRAPPEFLUIDE_1',0,' ',1,IT,1,Z)
          ENDIF
       ENDIF
 C
@@ -363,7 +360,6 @@ C
       PS = PML-ROG/2*DZ**2*(UN+(AT/AG)**2*(LAMEQG*(LG-Z)/DHG+CDG-1))
      &      -ROG*(LG-Z)*AT/AG*D2Z
 
-C
       MECA1(1) = UM
       MECA1(2) = UA
       MECA1(3) = UML
@@ -415,12 +411,25 @@ C
       F(9) = PS - PML + ROG/2*UG**2*(LAMEQG*(LG-Z)/DHG+CDG-1)
      +                + ROG/2*DZ**2 + ROG*(LG-Z)*AT/AG*D2Z
 C
-      DO 20 I = 1 , 9
-        IF ( ABS(F(I)) .GT. 1.0D-3 )  THEN
-          VALR = F(I)
-          CALL U2MESG('A', 'ALGORITH13_21',0,' ',0,0,1,VALR)
+      DO 20 I = 1 , 3
+        IF ( ABS(F(I)) .GT. 1.0D-5 )  THEN
+          VALR(1)=F(I)
+          VALR(2)=Z
+          CALL U2MESG('A','GRAPPEFLUIDE_3',1,'1.E-3',0,0,2,VALR)
         ENDIF
  20   CONTINUE
+        IF ( ABS(F(4)) .GT. 1.0D-5 )  THEN
+          VALR(1)=ABS(F(4))
+          VALR(2)=Z
+          CALL U2MESG('I','GRAPPEFLUIDE_12',0,' ',0,0,2,VALR)
+        ENDIF
+      DO 21 I = 5 , 9
+        IF ( ABS(F(I)) .GT. 1.0D-5 )  THEN
+          VALR(1)=F(I)
+          VALR(2)=Z
+          CALL U2MESG('A','GRAPPEFLUIDE_3',1,'1.E-5',0,0,2,VALR)
+        ENDIF
+ 21   CONTINUE
 C
 C----------------------------------------------------------------------
 C                 CALCUL DE LA FORCE FLUIDE RESULTANTE

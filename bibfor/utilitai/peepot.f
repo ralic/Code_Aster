@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -218,7 +218,7 @@ C        --- ON RECUPERE LES INSTANTS ---
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,K24B,K24B,ALPHA,CALPHA,K24B,K24B,CHELEM,
      &              LIGREL,BASE,CHVARC,CHVREF,K24B,K24B,
-     &                  K24B, K24B, K8B, IBID, IRET)
+     &                  K24B, K24B, K8B, IBID, K24B,IRET)
    30   CONTINUE
 
 C        --- IMPRESSION DU CHAMELEM ---

@@ -6,7 +6,7 @@
       CHARACTER*8         CHAR, NOMA, FFGR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,7 +56,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        XM1, XM2, YM1, YM2, ZM1, ZM2, XM, YM, ZM, COTE
       REAL*8 VALR(4)
       REAL*8        S, X1, Y1, Z1, X2, Y2, Z2, X12, Y12, Z12, V1(3)
-      REAL*8        PI, R8PI, MGRAPP, MTIGE, MARAIG, MCRAYO, DTIGE, 
+      REAL*8        PI, R8PI, MGRAPP, MTIGE, MARAIG, MCRAYO, DTMOY, 
      +              LTIGE, ROTIGE, VARAI, RORAI, DCRAY, LCRAY, ROCRAY,
      +              MGRAP2, ERR, LGR, LGR2
       CHARACTER*8   K8B, GRMA, PREFIX
@@ -203,13 +203,13 @@ C
       J = INDIK8 ( FFGR, 'M', 1, NGR )
       MGRAPP = VGRAP(J)
 C
-      J = INDIK8 ( FFGR, 'DTIGE', 1, NGR )
-      DTIGE  = VGRAP(J)
+      J = INDIK8 ( FFGR, 'DTMOY', 1, NGR )
+      DTMOY  = VGRAP(J)
       J = INDIK8 ( FFGR, 'LTIGE', 1, NGR )
       LTIGE  = VGRAP(J)
       J = INDIK8 ( FFGR, 'ROTIGE', 1, NGR )
       ROTIGE = VGRAP(J)
-      MTIGE  = ROTIGE * ( LTIGE * PI * DTIGE**2 / 4 )
+      MTIGE  = ROTIGE * ( LTIGE * PI * DTMOY**2 / 4 )
 C
       J = INDIK8 ( FFGR, 'VARAI', 1, NGR )
       VARAI  = VGRAP(J)

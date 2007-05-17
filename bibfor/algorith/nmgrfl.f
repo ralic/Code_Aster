@@ -6,7 +6,7 @@
       CHARACTER*24   CNFEDO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,7 +139,7 @@ C
         K = I
   10  CONTINUE
       IF (K.EQ.0) THEN
-        CALL U2MESS('F','ALGORITH3_84')
+        CALL U2MESG('F','GRAPPEFLUIDE_8',0,' ',0,0,1,Z)
       ENDIF
       CALL JEVEUO(JEXNUM(NUMEDD(1:14)//'.NUME.PRNO',K),'L',IAPRNO)
 C
@@ -199,7 +199,7 @@ C     ----------------------------------
          VALR (2) = Z
          VALR (3) = ( IT - 1 ) * DT
          VALR (4) = IT * DT
-         CALL U2MESG('A', 'ALGORITH13_66',0,' ',2,VALI,4,VALR)
+         CALL U2MESG('S', 'GRAPPEFLUIDE_11',0,' ',2,VALI,4,VALR)
          GOTO 9999
       ENDIF
 C
@@ -358,7 +358,7 @@ C     FORCE REPARTIE DANS LE GUIDAGE CONTINU
 C     --------------------------------------
       ELSEIF ( IPLAQ .EQ. 3 ) THEN
          IF ( K2 .EQ. 0) THEN
-            CALL U2MESS('F','ALGORITH8_3')
+            CALL U2MESG('F','GRAPPEFLUIDE_8',0,' ',0,0,1,Z)
          ENDIF
          IZONE = 0
          DO 220 INO = 1, NBNO
@@ -394,7 +394,7 @@ C     FORCE APPLIQUEE AU MILIEU DU GUIDAGE CONTINU
 C     --------------------------------------------
       ELSEIF ( IPLAQ .EQ. 4 ) THEN
          IF ( K2 .EQ. 0) THEN
-            CALL U2MESS('F','ALGORITH8_3')
+            CALL U2MESG('F','GRAPPEFLUIDE_8',0,' ',0,0,1,Z)
          ENDIF
          IZONE = 0
          DO 230 INO = 1, NBNO
@@ -428,7 +428,7 @@ C     FORCE DISTRIBUEE AU NIVEAU DU GUIDAGE CONTINU
 C     ---------------------------------------------
       ELSEIF ( IPLAQ .EQ. 5 ) THEN
          IF ( K2 .EQ. 0) THEN
-            CALL U2MESS('F','ALGORITH8_3')
+            CALL U2MESG('F','GRAPPEFLUIDE_8',0,' ',0,0,1,Z)
          ENDIF
          IZONE = 0
          DO 240 INO = 1, NBNO
@@ -491,7 +491,7 @@ C     FORCE REPARTIE SUR LA ZONE DU MECANISME DE LEVEE
 C     ------------------------------------------------
       ELSEIF ( IFMEC .EQ. 3 ) THEN
          IF ( K1 .EQ. 0) THEN
-            CALL U2MESS('F','ALGORITH8_4')
+            CALL U2MESG('F','GRAPPEFLUIDE_9',0,' ',0,0,1,Z)
          ENDIF
          IZONE = 0
          DO 320 INO = 1, NBNO
@@ -530,7 +530,7 @@ C     ------------------------------------------------
  330     CONTINUE
 C
          IF ( K1 .EQ. 0) THEN
-            CALL U2MESS('F','ALGORITH8_4')
+            CALL U2MESG('F','GRAPPEFLUIDE_9',0,' ',0,0,1,Z)
          ENDIF
          IZONE = 0
          DO 332 INO = 1, NBNO
@@ -599,7 +599,7 @@ C     FORCE REPARTIE SUR LA ZONE AVANT ET APRES LE RETREINT
 C     -----------------------------------------------------
       ELSEIF ( IFTG .EQ. 3 ) THEN
          IF ( K3 .EQ. 0) THEN
-            CALL U2MESS('F','ALGORITH8_5')
+            CALL U2MESG('F','GRAPPEFLUIDE_10',0,' ',0,0,1,Z)
          ENDIF
          IZONE = 0
          DO 420 INO = 1, NBNO
@@ -639,7 +639,7 @@ C
  430     CONTINUE
 C
          IF ( K3 .EQ. 0) THEN
-            CALL U2MESS('F','ALGORITH8_5')
+            CALL U2MESG('F','GRAPPEFLUIDE_10',0,' ',0,0,1,Z)
          ENDIF
          IZONE = 0
          DO 432 INO = 1, NBNO

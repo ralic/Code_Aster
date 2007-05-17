@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF TYPELEM  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -152,6 +152,14 @@ OPTION__
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EEFGENO  PEFFORR
                                      EEFGENC  PEFFORC
+    EFGE_ELNO_SENS      142   IN__   CABSCUR  PABSCUR  CCAGEPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
+                                     DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  DDL_MECA PDEPLAR
+                                     CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  CMATERC  PMATSEN  DDL_MECA PDEPSEN
+                                     DDL_MECA PACCSEN
+                              OUT__  EEFGENO  PEFFORR
+                                     EEFGENC  PEFFORC
     EPOT_ELEM_DEPL      151   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR
@@ -259,6 +267,14 @@ OPTION__
                                      CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                              OUT__  ECONTPO  PCONTPO
+                                     ECONTPC  PCONTPC
+    SIPO_ELNO_SENS      142   IN__   CABSCUR  PABSCUR  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
+                                     DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  DDL_MECA PDEPLAR
+                                     CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  CMATERC  PMATSEN  DDL_MECA PDEPSEN
+                                     DDL_MECA PACCSEN
                               OUT__  ECONTPO  PCONTPO
                                      ECONTPC  PCONTPC
     SIPO_ELNO_SIEF      149   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR

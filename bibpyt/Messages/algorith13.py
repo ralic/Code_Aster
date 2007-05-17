@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith13 Messages  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,44 +102,11 @@ cata_msg={
   gamdev(alpha) < 0    gamdev(alpha) =  %(r1)f 
 """),
 
-19: _("""
- lameqm ou lama n'ont pas converge pour l'iteration  %(i1)d 
-"""),
-
-20: _("""
- lameqi ou lamml n'ont pas converge pour l'iteration  %(i1)d 
-"""),
-
-21: _("""
- 
- calcul de l'erreur residuelle  dans la resolution du modele dans le mecanisme de commande
-  abs(f) > 1.0d-3 , f =  %(r1)f 
-"""),
-
-22: _("""
- resolution mal terminee code retour  %(i1)d    pour l'iteration  %(i2)d 
-"""),
-
-23: _("""
- 
- calcul de l'erreur residuelle  dans la resolution du modele dans le dashpot
-  somme(f) > 1.0d-3 , somme(f) =  %(r1)f 
-  f =  %(r2)f %(r3)f %(r4)f %(r5)f %(r6)f %(r7)f
-"""),
 
 
 
 
 
-
-
-
-25: _("""
- 
- calcul de l'erreur residuel le dans la resolution du modele dans le tube guide
-  somme(f) > 1.0d-3 , somme(f) =  %(r1)f 
-  f =  %(r2)f %(r3)f %(r4)f %(r5)f %(r6)f
-"""),
 
 26: _("""
  conflit de nom de groupe de  maille dans le squelette le nom de groupe :  %(k1)s 

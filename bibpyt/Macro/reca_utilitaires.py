@@ -1,4 +1,4 @@
-#@ MODIF reca_utilitaires Macro  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_utilitaires Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,15 +22,14 @@
 import Numeric, LinearAlgebra, copy, os, string, types, sys, glob
 from Numeric import take
 
-try:
-   from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, IMPR_FONCTION, DETRUIRE
-   from Accas import _F
-except: pass
 
 try:    import Gnuplot
 except: pass
 
 try:
+   from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, IMPR_FONCTION, DETRUIRE
+   from Accas import _F
+   import Utilitai.Utmess
    from Utilitai.Utmess import UTMESS
 except ImportError:
    def UTMESS(code,sprg,texte):

@@ -1,4 +1,4 @@
-#@ MODIF reca_message Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_message Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,6 +22,7 @@
 import os, Numeric
 
 try:
+   import Utilitai.Utmess
    from Utilitai.Utmess import UTMESS
 except:
    def UTMESS(code,sprg,texte):

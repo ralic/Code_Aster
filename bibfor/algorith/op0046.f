@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -237,7 +237,7 @@ C
      &               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
      &               K24B,K24B,CHAMEL,LIGREL,BASE,
      &               CHVARC,CHVREF,K24B,COMPOR,
-     &               K24B, K24B, K8B, IBID, IRET )
+     &               K24B, K24B, K8B, IBID, K24B, IRET )
 
 
 C

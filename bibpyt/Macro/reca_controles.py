@@ -1,4 +1,4 @@
-#@ MODIF reca_controles Macro  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_controles Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,6 +22,7 @@
 import string, copy, Numeric, types, os, sys, pprint
 
 try:
+   import Utilitai.Utmess
    from Utilitai.Utmess import UTMESS
 except ImportError:
    def UTMESS(code,sprg,texte):
