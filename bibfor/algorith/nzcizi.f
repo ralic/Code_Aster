@@ -2,28 +2,28 @@
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/05/2007   AUTEUR CANO V.CANO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C (AT YOUR OPTION) ANY LATER VERSION.
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
       IMPLICIT NONE
       INTEGER            NDIM,IMAT,IRET,KPG,KSP
-      CHARACTER*16       COMPOR(*),OPTION
+      CHARACTER*16      COMPOR(*),OPTION
       CHARACTER*(*)      FAMI
       REAL*8             CRIT(3),INSTAM,INSTAP
       REAL*8             EPSM(6),DEPS(6)
@@ -31,12 +31,13 @@ C TOLE CRP_21
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE VON MISES CINEMATIQUE POUR LES
 C     ELEMENTS METALLURGIQUES EN PETITES DEFORMATIONS
+C     POUR LE ZIRCALOY
 C
 C     AVEC OU SANS PLASTICITE DE TRANSFORMATION
 C     AVEC OU SANS RESTAURATION ECROUISSAGE METALLURGIQUE
 C     RELATION DE COMPORTEMENT ELASTO-PLASTIQUE OU
 C                               ELASTO-VISCOPLASTIQUE
-C     ECROUISSAGE ISOTROPE LINEAIRE OU NON LINEAIRE
+C     ECROUISSAGE CINEMATIQUE LINEAIRE
 C
 C
 C IN  NDIM    : DIMENSION DE L'ESPACE
@@ -45,6 +46,8 @@ C IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
 C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
 C IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 C IN  INSTAP  : INSTANT DU CALCUL
+C IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
+C IN  TP      : TEMPERATURE A L'INSTANT DU CALCUL
 C IN  EPSM    : DEFORMATIONS A L'INSTANT DU CALCUL PRECEDENT
 C IN  DEPS    : INCREMENT DE DEFORMATION
 C IN  SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
@@ -60,649 +63,653 @@ C                              IRET=1 => ECHEC
 C
 C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C               L'ORDRE :  XX YY ZZ XY XZ YZ
-C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
-      REAL*8             DEUXMU,E,NU,TROISK,KRON(6)
-      REAL*8             EM,NUM,TROIKM,DEUMUM,FMEL
-      REAL*8             VALRES(20),PHASM(4),PHASP(4)
-      REAL*8             DEPSTH(6),DEPSDV(6),SIGDV(6),SIGEL(6)
-      REAL*8             EPSMO,SIGMO,TM,TP,TREF
-      REAL*8             SEUIL,DP,PLASTI,B,RPRIM,RP,R(5),RM
-      REAL*8             ZALPHM,ZALPHP,ZBETAM,ZBETAP
-      REAL*8             TTRGM,COEF1M,COEF2M,EPSTHM
-      REAL*8             TTRGP,COEF1P,COEF2P,EPSTHP
-      REAL*8             DZ(4),DZ1(4),DZ2(4),DVIN(37),A,THETA(8)
-      REAL*8             SIGMP(6),SIG0(6),SIMOEQ,SIELEQ,SIGEPS
-      REAL*8             SIGEL2(6),DEPSP(6),VIMT(37)
-      REAL*8             DT,N(5),N0(5),C(5),M(5),UNSURN(5),CR,ETA(5)
-      REAL*8             KPT(3),TRANS,ZVARIM,ZVARIP,DELTAZ
-      REAL*8             RBID,HALPHA,SYALPH,CM,MM
-      REAL*8             HPLUS(5),H(5),RPLUS(5),SY(5),SYK,ECRO(5)
-      REAL*8             DH(5)
-      REAL*8             XK(6),X(35), ALM(6),ALMEQ, AR, DS(6)
-      REAL*8             COEF1,COEF2,COEF3,DV,ECROAL,RAC2
-      INTEGER            NDIMSI,MODE,JPROL,JVALE,NBVALE(5),NBMAX,NZ
-      INTEGER            I,J,K,L,IRE2
-      CHARACTER*2        BL2, FB2, CODRET(20), TEST
-      CHARACTER*8        NOMRES(20),ZIRC(2)
-      CHARACTER*8        NOMCLE(5)
-      DATA               KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA ZIRC /'ALPHPUR','ALPHBETA'/
+C.......................................................................
 
-C 1 INITIALISATIONS
+      INTEGER  NZ
+      INTEGER  NDIMSI,I,J,K,L,MODE,IRE2
 
-      FB2 = 'F '
+      REAL*8   PHASE(3),PHASM(3),ZALPHA
+      REAL*8   TM,TP,TREF
+      REAL*8   TEMP,DT
+            
+      REAL*8   TTRG,EPSTH,E,NU,DEUXMU,DEUMUM,TROISK
+      REAL*8   FMEL,SY(3),SYMOY,H(3),HMOY,RPRIM
+      REAL*8   THETA(4)
+      REAL*8   ETA(3),N(3),UNSURN(3),C(3),M(3),CMOY,MMOY,CR
+      REAL*8   DZ(2),DZ1(2),DZ2(2),VI(18),DVIN,VIMT(18)
+      REAL*8   XMOY(6),DS(6),XMOYEQ
+      REAL*8   TRANS,KPT(2),ZVARIM,ZVARIP,DELTAZ          
+      
+      REAL*8   TREPSM,TRDEPS,TRSIGM,TRSIGP
+      REAL*8   DVDEPS(6),DVSIGM(6),DVSIGP(6)
+      REAL*8   SIGEL(6),SIGEL2(6),SIG0(6),SIELEQ,SIGEPS
+      
+      REAL*8   PLASTI,DP,SEUIL
+                  
+      REAL*8   COEF1,COEF2,COEF3,DV,N0(3),B
+      
+      REAL*8   RBID,PRECR,R8PREM,RAC2
+      REAL*8   KRON(6)
+      REAL*8   VALRES(12)
+      
+      CHARACTER*1 C1
+      CHARACTER*2   CODRET(12)
+      CHARACTER*8   NOMRES(12),ZIRC(2)
+      
+      LOGICAL     RESI,RIGI
+      
+      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
-      DO 100 K=1,6
-      DO 100 L=1,6
-        DSIDEP(K,L) = 0.D0
- 100  CONTINUE
+      DATA        ZIRC /'ALPHPUR','ALPHBETA'/
+
+C *******************
+C 1 - INITIALISATION
+C *******************
+ 
+      RESI   = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
+      RIGI   = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
+
       IF(NDIM.EQ.2) THEN
         NDIMSI=4
       ELSE
         NDIMSI=6
       ENDIF
 
-C   NOMBRE DE PHASE
+      DT = INSTAP-INSTAM
+      
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRE2)
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRE2)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRE2)
+            
+C 1.1 - NOMBRE DE PHASES
+
       NZ=3
+      
+C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
 
-C MISE AU FORMAT DES CONTRAINTES DE RAPPEL
-      RAC2 = SQRT(2.D0)
+      IF (RESI) THEN
+        
+        TEMP=TP
+        C1='+'
+        DO 5 K=1,NZ-1
+          CALL RCVARC(' ',ZIRC(K),'+',FAMI,KPG,KSP,PHASE(K),IRE2)
+          IF (IRE2.EQ.1) PHASE(K)=0.D0
+          CALL RCVARC(' ',ZIRC(K),'-',FAMI,KPG,KSP,PHASM(K),IRE2)
+          IF (IRE2.EQ.1) PHASM(K)=0.D0
+ 5      CONTINUE
+      
+      ELSE
+        
+        TEMP=TM
+        C1='-'
+        DO 10 K=1,NZ-1
+          CALL RCVARC(' ',ZIRC(K),'-',FAMI,KPG,KSP,PHASE(K),IRE2)
+          IF (IRE2.EQ.1) PHASE(K)=0.D0
+ 10     CONTINUE
+      
+      ENDIF        
+      
+      ZALPHA=PHASE(1)+PHASE(2)
+      PHASE(NZ)=1.D0-ZALPHA
+      
+C 1.3 - TEST SUR LES PHASES
 
-      DO 17 J=4,NDIMSI
-         DO 177 K = 1,NZ
-             L=J+(K-1)*6
-             VIM(L)=VIM(L)*RAC2
- 177     CONTINUE
-  17  CONTINUE
+      PRECR=R8PREM()
+      DO 15 K=1,NZ
+        IF (PHASE(K).LE.PRECR) PHASE(K)=0.D0
+        IF (PHASE(K).GE.1.D0)  PHASE(K)=1.D0
+ 15    CONTINUE       
+      IF (ZALPHA.LE.PRECR) ZALPHA=0.D0
+      IF (ZALPHA.GE.1.D0)  ZALPHA=1.D0    
+             
+C 1.4 - MISE AU FORMAT DES CONTRAINTES DE RAPPEL
 
-      PLASTI = VIM(25)
-
-C 2 RECUPERATION DES CARACTERISTIQUES (ELAS ET DILATATION)
-
-      IF (COMPOR(1)(1:4) .EQ. 'ELAS'.OR.
-     &    COMPOR(1)(1:4) .EQ. 'META' ) THEN
-       NOMRES(1)='E'
-       NOMRES(2)='NU'
-       NOMRES(3)='F_ALPHA'
-       NOMRES(4)='C_ALPHA'
-       NOMRES(5)='PHASE_REFE'
-       NOMRES(6)='EPSF_EPSC_TREF'
-       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS_META',0,' ',0.D0,
-     &             6,NOMRES,VALRES,CODRET, FB2 )
-
-C      RECUPERATION DES PHASES METALLURGIQUES
-       DO 1 I=1,2
-         CALL RCVARC(' ',ZIRC(I),'-',FAMI,KPG,KSP,
-     &        PHASM(I),IRE2)
-         IF (IRE2.EQ.1) PHASM(I)=0.D0
-         CALL RCVARC(' ',ZIRC(I),'+',FAMI,KPG,KSP,
-     &        PHASP(I),IRE2)
-         IF (IRE2.EQ.1) PHASP(I)=0.D0
- 1     CONTINUE
-
-       CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
-       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
-       CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
-
-       ZALPHM  = PHASM(1) + PHASM(2)
-       ZBETAM = 1.D0 - ZALPHM
-       PHASM(3)=ZBETAM
-       TTRGM  = TM-TREF
-       COEF1M = ZBETAM*(VALRES(4)*TTRGM-(1.D0-VALRES(5))*VALRES(6))
-       COEF2M = ZALPHM*(VALRES(3)*TTRGM + VALRES(5)*VALRES(6))
-       EPSTHM = COEF1M + COEF2M
-       EM     = VALRES(1)
-       NUM    = VALRES(2)
-       DEUMUM = EM/(1.D0+NUM)
-       TROIKM = EM/(1.D0-2.D0*NUM)
-       CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS_META',0,' ',0.D0,
-     &             6,NOMRES,VALRES,CODRET, FB2 )
-       ZALPHP  = PHASP(1) + PHASP(2)
-       ZBETAP = 1.D0 - ZALPHP
-       PHASP(3)=ZBETAP
-       TTRGP  = TP -TREF
-       COEF1P = ZBETAP*(VALRES(4)*TTRGP-(1.D0-VALRES(5))*VALRES(6))
-       COEF2P = ZALPHP*(VALRES(3)*TTRGP + VALRES(5)*VALRES(6))
-       EPSTHP = COEF1P + COEF2P
-       E      = VALRES(1)
-       NU     = VALRES(2)
-       DEUXMU = E/(1.D0+NU)
-       TROISK = E/(1.D0-2.D0*NU)
-       DT = INSTAP-INSTAM
-
-C 3 CALCUL DE DEPSDV
-       EPSMO = 0.D0
-       DO 110 K=1,3
-        DEPSTH(K)   = DEPS(K) -(EPSTHP-EPSTHM)
-        DEPSTH(K+3) = DEPS(K+3)
-        EPSMO = EPSMO + DEPSTH(K)
- 110   CONTINUE
-
-       EPSMO = EPSMO/3.D0
-       DO 115 K=1,NDIMSI
-        DEPSDV(K)   = DEPSTH(K) - EPSMO * KRON(K)
- 115   CONTINUE
+      IF (COMPOR(1)(1:4) .EQ. 'META') THEN
+        
+        RAC2 = SQRT(2.D0)      
+        DO 20 I=4,NDIMSI
+          DO 25 K = 1,NZ
+            L=I+(K-1)*6
+            VIM(L)=VIM(L)*RAC2
+ 25       CONTINUE  
+ 20     CONTINUE    
+      
       ENDIF
 
-C 4 RECUPERATION CARACTERISTIQUES (PLASTIQUE)
+C ****************************************
+C 2 - RECUPERATION DES CARACTERISTIQUES
+C ****************************************
+
+C 2.1 - ELASTIQUE ET THERMIQUE
+
+      NOMRES(1)='E'
+      NOMRES(2)='NU'
+      NOMRES(3)='F_ALPHA'
+      NOMRES(4)='C_ALPHA'
+      NOMRES(5)='PHASE_REFE'
+      NOMRES(6)='EPSF_EPSC_TREF'
+
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS_META',0,' ',0.D0,
+     &            6,NOMRES,VALRES,CODRET,'F ')
+      DEUMUM = VALRES(1)/(1.D0+VALRES(2))
+      
+      CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
+     &            6,NOMRES,VALRES,CODRET,'F ')
+      TTRG  = TEMP -TREF
+      EPSTH = PHASE(NZ)*(VALRES(4)*TTRG-(1.D0-VALRES(5))*VALRES(6))
+     &     + ZALPHA*(VALRES(3)*TTRG + VALRES(5)*VALRES(6))
+      E      = VALRES(1)
+      DEUXMU = E/(1.D0+VALRES(2))
+      TROISK = E/(1.D0-2.D0*VALRES(2))      
 
       IF (COMPOR(1)(1:4) .EQ. 'META' ) THEN
-       PLASTI=VIM(25)
-       IF(COMPOR(1)(1:6).EQ.'META_P') THEN
-        NOMRES(1) ='F1_SY'
-        NOMRES(2) ='F2_SY'
-        NOMRES(3) ='C_SY'
-        NOMRES(4) ='SY_MELAN'
-       ENDIF
-       IF(COMPOR(1)(1:6).EQ.'META_V') THEN
-        NOMRES(1) ='F1_S_VP'
-        NOMRES(2) ='F2_S_VP'
-        NOMRES(3) ='C_S_VP'
-        NOMRES(4) ='S_VP_MEL'
-       ENDIF
-       CALL RCVALA(IMAT,' ','ELAS_META',1,'META',ZALPHP,1,
-     &             NOMRES(4),FMEL,CODRET,'  ')
-       IF (CODRET(4).NE.'OK') FMEL = ZALPHP
-       CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS_META',0,' ',0.D0,3,
-     &             NOMRES,VALRES,CODRET,'F ')
-       SY(1)=VALRES(1)
-       SY(2)=VALRES(2)
-       SY(3)=VALRES(3)
 
-       IF(COMPOR(1)(1:9).EQ.'META_P_CL' .OR.
-     &    COMPOR(1)(1:9).EQ.'META_V_CL' )THEN
-        NOMRES(5) ='F1_D_SIGM_EPSI'
-        NOMRES(6) ='F2_D_SIGM_EPSI'
-        NOMRES(7) ='C_D_SIGM_EPSI'
+        PLASTI=VIM(25)
 
-        CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','META_ECRO_LINE',
-     &              0,' ',0.D0,3,NOMRES(5),VALRES(5),CODRET(5),'F ')
+C 2.2 - LOI DES MELANGES
 
-        H(1)=(2.D0/3.D0)*VALRES(5)*E/(E-VALRES(5))
-        H(2)=(2.D0/3.D0)*VALRES(6)*E/(E-VALRES(6))
-        H(3)=(2.D0/3.D0)*VALRES(7)*E/(E-VALRES(7))
-
-       ENDIF
-      ENDIF
-C 5 RECUPERATION CARACTERISTIQUES (RESTAURATION ECROU DE METALLO)
-
-       DO 200 K=1,2
-        DZ(K)   = PHASP(K)-PHASM(K)
-        IF (DZ(K).GE.0.D0) THEN
-         DZ1(K)=DZ(K)
-         DZ2(K)=0.D0
-        ELSE
-         DZ1(K)=0.D0
-         DZ2(K)=-DZ(K)
+        IF(COMPOR(1)(1:6).EQ.'META_P') THEN
+          NOMRES(1) ='F1_SY'
+          NOMRES(2) ='F2_SY'
+          NOMRES(3) ='C_SY'
+          NOMRES(4) ='SY_MELAN'
         ENDIF
- 200   CONTINUE
-       IF (COMPOR(1)(1:12) .EQ. 'META_P_IL_RE'  .OR.
-     &     COMPOR(1)(1:15) .EQ. 'META_P_IL_PT_RE' .OR.
-     &     COMPOR(1)(1:13) .EQ. 'META_P_INL_RE'  .OR.
-     &     COMPOR(1)(1:16) .EQ. 'META_P_INL_PT_RE' .OR.
-     &     COMPOR(1)(1:12) .EQ. 'META_V_IL_RE'  .OR.
-     &     COMPOR(1)(1:15) .EQ. 'META_V_IL_PT_RE' .OR.
-     &     COMPOR(1)(1:13) .EQ. 'META_V_INL_RE'  .OR.
-     &     COMPOR(1)(1:16) .EQ. 'META_V_INL_PT_RE' .OR.
-     &     COMPOR(1)(1:16) .EQ. 'META_P_CL_PT_RE' .OR.
-     &     COMPOR(1)(1:12) .EQ. 'META_P_CL_RE' .OR.
-     &     COMPOR(1)(1:12) .EQ. 'META_V_CL_RE' .OR.
-     &     COMPOR(1)(1:15) .EQ. 'META_V_CL_PT_RE'
-     &        ) THEN
+        
+        IF(COMPOR(1)(1:6).EQ.'META_V') THEN
+          NOMRES(1) ='F1_S_VP'
+          NOMRES(2) ='F2_S_VP'
+          NOMRES(3) ='C_S_VP'
+          NOMRES(4) ='S_VP_MEL'
+        ENDIF
+        
+        CALL RCVALA(IMAT,' ','ELAS_META',1,'META',ZALPHA,1,
+     &              NOMRES(4),FMEL,CODRET(4),'  ')
+        IF (CODRET(4).NE.'OK') FMEL = ZALPHA
 
-        NOMRES(1) ='C_F1_THETA'
-        NOMRES(2) ='C_F2_THETA'
-        NOMRES(3) ='F1_C_THETA'
-        NOMRES(4) ='F2_C_THETA'
+C 2.3 - LIMITE D ELASTICITE
+              
+        CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
+     &              3,NOMRES,SY,CODRET,'F ')
 
-        CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','META_RE',0,' ',0.D0,4,
-     &              NOMRES,VALRES,CODRET, FB2)
-        DO 23 I=1,4
-         THETA(I) = VALRES(I)
- 23     CONTINUE
-       ELSE
-        DO 19 I=1,4
-         THETA(I) = 1.D0
- 19     CONTINUE
-       ENDIF
+C 2.4 - PENTE D ECROUISSAGE
+            
+        NOMRES(1) ='F1_D_SIGM_EPSI'
+        NOMRES(2) ='F2_D_SIGM_EPSI'
+        NOMRES(3) ='C_D_SIGM_EPSI'
 
-C 6 CARACTERISTIQUES MATERIAUX (VISCO)
+        CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_ECRO_LINE',0,
+     &               ' ',0.D0,3,NOMRES,H,CODRET,'F ')
 
-       IF (COMPOR(1)(1:6) .EQ. 'META_V') THEN
-        NOMRES(1) = 'F1_ETA'
-        NOMRES(2) = 'F2_ETA'
-        NOMRES(3) = 'C_ETA'
-        NOMRES(4) = 'F1_N'
-        NOMRES(5) = 'F2_N'
-        NOMRES(6) = 'C_N'
-        NOMRES(7) ='F1_C'
-        NOMRES(8) ='F2_C'
-        NOMRES(9) ='C_C'
-        NOMRES(10) = 'F1_M'
-        NOMRES(11) = 'F2_M'
-        NOMRES(12) = 'C_M'
-        CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','META_VISC',0,' ',0.D0,
-     &              12,NOMRES,VALRES,CODRET,FB2)
+        H(1)=(2.D0/3.D0)*H(1)*E/(E-H(1))
+        H(2)=(2.D0/3.D0)*H(2)*E/(E-H(2))
+        H(3)=(2.D0/3.D0)*H(3)*E/(E-H(3))
+          
+        HMOY=0.D0
+        DO 30 K=1,NZ
+          HMOY=HMOY+PHASE(K)*H(K)
+ 30     CONTINUE
+                 
+        IF (RESI) THEN
+        
+C 2.5 - RESTAURATION D ECROUISSAGE
 
-        DO  29 I=1,3
-           ETA(I) = VALRES(I)
-           N(I) = VALRES(3+I)
-           UNSURN(I)=1/N(I)
-           IF (CODRET(6+I) .NE. 'OK') VALRES(6+I)=0.D0
-           C(I) =VALRES(6+I)
-           IF (CODRET(9+I) .NE. 'OK') VALRES(9+I)=20.D0
-           M(I) = VALRES(9+I)
- 29     CONTINUE
-       ELSE
-        DO 39 I=1,3
-           ETA(I) = 0.D0
-           N(I)= 20.D0
-           UNSURN(I)= 1.D0
-           C(I) = 0.D0
-           M(I) = 20.D0
- 39     CONTINUE
-       ENDIF
-C 7 CALCUL DE A (TERME ECROUISSAGE POUR DP=0),SYK
+          IF (COMPOR(1)(1:15) .EQ. 'META_P_CL_PT_RE' .OR.
+     &       COMPOR(1)(1:12) .EQ. 'META_P_CL_RE'    .OR.
+     &       COMPOR(1)(1:12) .EQ. 'META_V_CL_RE'    .OR.
+     &       COMPOR(1)(1:15) .EQ. 'META_V_CL_PT_RE' ) THEN
 
-       DO 420  K= 1, NZ-1
-          DO  4200 J= 1, NDIMSI
-              L=J+(K-1)*6
-              IF (PHASP(K).GT.0.D0)THEN
-                  VIMT(L)=VIM(L)
-                  DVIN(L) = DZ1(K)*THETA(K)*VIM(24+J)/PHASP(K)
-     &                   - DZ1(K)*VIM(L)/PHASP(K)
-                  VIM(L)  = VIM(L)+DVIN(L)
-                 IF((VIM(L)*VIMT(L)) .LT. 0.D0) VIM(L)=0.D0
-              ELSE
-                  DVIN(L) = 0.D0
-                  VIM(L)  = 0.D0
-              ENDIF
- 4200     CONTINUE
- 420    CONTINUE
-        IF (ZBETAP .GT. 0.D0)THEN
-           DO 432 J=1, NDIMSI
-              DO 431 K= 1, NZ-1
-                  VIMT(24+J)=VIM(24+J)
-                  DVIN(24+J) = DZ2(K)*THETA(4+K)*VIM(J*K)/ZBETAP
-     &                      - DZ2(K)*VIM(24+J)/ZBETAP
-431           CONTINUE
-               VIM(24+J)  = VIM(24+J)+DVIN(24+J)
-               IF((VIM(24+J)* VIMT(24+J)) .LT. 0.D0) VIM(24+J)=0.D0
-432        CONTINUE
-         ELSE
-            DVIN(24+J)  = 0.D0
-            VIM(24+J)   = 0.D0
-         ENDIF
-
-
-C   CALCUL DE VARIABLE ECROUISSAGE ALPHA MOYEN
-          DO 441 J=1,NDIMSI
-             ALM(J) = 0.D0
-             DO 440 K=1,NZ
-                L=J+(K-1)*6
-                ALM(J) = ALM(J)+PHASP(K)*VIM(L)
- 440         CONTINUE
- 441       CONTINUE
-
-C      RESTAURATION ECROUISSAGE VISQUEUSE
-       CM=ZBETAP*C(3)
-       DO 49 I=1,2
-          CM=CM+PHASP(I)*C(I)
- 49    CONTINUE
-
-       MM=ZBETAP*M(3)
-       DO 59 I=1,2
-          MM=MM+PHASP(I)*M(I)
- 59    CONTINUE
-       ALMEQ = 0.D0
-       DO 590 J=1,NDIMSI
-           ALMEQ=ALMEQ+ALM(J)**2.D0
- 590   CONTINUE
-       ALMEQ = SQRT(1.5D0*ALMEQ)
-       AR=ALMEQ*CM
-       DO 591 J=1,NDIMSI
-          IF (AR .LE. 0.D0) THEN
-             DS(J)=0.D0
+            NOMRES(1) ='C_F1_THETA'
+            NOMRES(2) ='C_F2_THETA'
+            NOMRES(3) ='F1_C_THETA'
+            NOMRES(4) ='F2_C_THETA'
+            
+            CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_RE',0,'  ',
+     &                 0.D0,4,NOMRES,THETA,CODRET,'F ')
+          
           ELSE
-             DS(J)= DT*((AR)**MM)*ALM(J)/ALMEQ
+            
+            DO 35 I=1,4
+              THETA(I)=1.D0
+ 35         CONTINUE
+          
           ENDIF
- 591   CONTINUE
-       DO 421 K=1,3
-         DO 4210 J=1,NDIMSI
-           L=J+(K-1)*6
-           IF (PHASP(K).GT.0.D0)THEN
 
-              DVIN(L) = -(DS(J))
-              VIMT(L)=VIM(L)
-              VIM(L)  = VIM(L)+DVIN(L)
-              VIM(L)  = VIM(L)+DVIN(L)
-             IF((VIM(L)*VIMT(L)) .LT. 0.D0) VIM(L)=0.D0
+C 2.6 - VISCOSITE
 
-           ELSE
-              DVIN(L) = 0.D0
-              VIM(L)  = 0.D0
-           ENDIF
- 4210  CONTINUE
- 421   CONTINUE
+          IF (COMPOR(1)(1:6) .EQ. 'META_V') THEN
+            
+            NOMRES(1) = 'F1_ETA'
+            NOMRES(2) = 'F2_ETA'
+            NOMRES(3) = 'C_ETA'
 
-C  CALCUL DES XK (TERME ECROUISSAGE MOYEN), SYK (MOYEN)
+            NOMRES(4) = 'F1_N'
+            NOMRES(5) = 'F2_N'
+            NOMRES(6) = 'C_N'
 
+            NOMRES(7) ='F1_C'
+            NOMRES(8) ='F2_C'
+            NOMRES(9) ='C_C'
 
+            NOMRES(10) = 'F1_M'
+            NOMRES(11) = 'F2_M'
+            NOMRES(12) = 'C_M'
 
-       IF ( ZALPHP .GT. 0.D0) THEN
-        SYALPH = PHASP(1)*SY(1)+PHASP(2)*SY(2)+PHASP(3)*SY(3)
-        SYALPH = SYALPH/ZALPHP
-       ELSE
-        SYALPH = 0.D0
-       ENDIF
-       SYK  =(1.D0-FMEL)*SY(5)+FMEL*SYALPH
-       DO 88 K=1,NZ
-          DO 881 J=1,NDIMSI
-             L=J+(K-1)*6
-             X(L)=H(K)*VIM(L)
-881       CONTINUE
-88     CONTINUE
-       DO 882 J=1,NDIMSI
-          XK(J)=0.D0
-          DO 883 K=1,NZ
-             L=J+(K-1)*6
-             XK(J)= XK(J)+PHASP(K)*X(L)
-883       CONTINUE
-882    CONTINUE
-       RPRIM =0.D0
-       DO 884 K=1,NZ
-          RPRIM = RPRIM+PHASP(K)*H(K)
-884    CONTINUE
-       RPRIM = 3.D0/2.D0*RPRIM
+            CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,
+     &                 ' ',0.D0,6,NOMRES,VALRES,CODRET,'F ')
+            
+            CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,' ',
+     &                 0.D0,6,NOMRES(7),VALRES(7),CODRET(7),'  ')
 
-C 8 RECUPERATION CARACTERISTIQUES (PLAS DE TRANSFORMATION)
+            DO  40 K=1,NZ
+              ETA(K) = VALRES(K)
+              N(K) = VALRES(NZ+K)
+              UNSURN(K)=1/N(K)
+              IF (CODRET(2*NZ+K) .NE. 'OK') VALRES(2*NZ+K)=0.D0
+              C(K) =VALRES(2*NZ+K)
+              IF (CODRET(3*NZ+K) .NE. 'OK') VALRES(3*NZ+K)=20.D0
+              M(K) = VALRES(3*NZ+K)
+ 40         CONTINUE
+          
+          ELSE
+            
+            DO 45 K=1,NZ
+              ETA(K) = 0.D0
+              N(K)= 20.D0
+              UNSURN(K)= 1.D0
+              C(K) = 0.D0
+              M(K) = 20.D0
+ 45         CONTINUE
+          
+          ENDIF
 
-      TRANS = 0.D0
-      IF (COMPOR(1)(1:12) .EQ. 'META_P_IL_PT'    .OR.
-     &    COMPOR(1)(1:13) .EQ. 'META_P_INL_PT'   .OR.
-     &    COMPOR(1)(1:15) .EQ. 'META_P_IL_PT_RE' .OR.
-     &    COMPOR(1)(1:16) .EQ. 'META_P_INL_PT_RE'.OR.
-     &    COMPOR(1)(1:12) .EQ. 'META_V_IL_PT'    .OR.
-     &    COMPOR(1)(1:13) .EQ. 'META_V_INL_PT'   .OR.
-     &    COMPOR(1)(1:15) .EQ. 'META_V_IL_PT_RE' .OR.
-     &    COMPOR(1)(1:16) .EQ. 'META_V_INL_PT_RE' .OR.
-     &     COMPOR(1)(1:15) .EQ. 'META_P_CL_PT_RE' .OR.
-     &     COMPOR(1)(1:12) .EQ. 'META_P_CL_PT' .OR.
-     &     COMPOR(1)(1:12) .EQ. 'META_V_CL_PT' .OR.
-     &     COMPOR(1)(1:15) .EQ. 'META_V_CL_PT_RE'   ) THEN
+C 2.7 - CALCUL DE VIM+DG
 
-        NOMRES(1)  = 'F1_K'
-       NOMRES(2) = 'F2_K'
+          DO 50 K=1,NZ-1
+            DZ(K)= PHASE(K)-PHASM(K)
+            IF (DZ(K).GE.0.D0) THEN
+              DZ1(K)=DZ(K)
+              DZ2(K)=0.D0
+            ELSE
+              DZ1(K)=0.D0
+              DZ2(K)=-DZ(K)
+            ENDIF
+ 50       CONTINUE
 
-       NOMRES(3) = 'F1_D_F_META'
-       NOMRES(4) = 'F2_D_F_META'
+          IF (PHASE(NZ).GT.0.D0)THEN
+            DO 55 I=1,NDIMSI
+              DVIN=0.D0
+              DO 60 K=1,NZ-1
+                L=I+(K-1)*6
+                DVIN = DVIN
+     &         + DZ2(K)*(THETA(2+K)*VIM(L)-VIM(12+I))/PHASE(NZ)
+ 60           CONTINUE
+              VI(12+I)  = VIM(12+I)+DVIN
+              IF((VI(12+I)*VIM(12+I)).LT.0.D0) VI(12+I)=0.D0
+ 55         CONTINUE
+          ELSE
+            DO 65 I=1,NDIMSI
+              VI(12+I)=0.D0
+ 65         CONTINUE
+          ENDIF
+       
+          DO 70  K=1,NZ-1
+            DO  75 I=1,NDIMSI
+              L=I+(K-1)*6
+              IF (PHASE(K).GT.0.D0)THEN
+                DVIN = DZ1(K)*(THETA(K)*VIM(12+I)-VIM(L))/PHASE(K)
+                VI(L)  = VIM(L)+DVIN
+                IF((VI(L)*VIM(L)) .LT. 0.D0) VI(L)=0.D0
+              ELSE
+                VI(L)  = 0.D0
+              ENDIF
+ 75         CONTINUE
+ 70       CONTINUE
 
-       CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','META_PT',0,' ',0.D0,2,
-     &             NOMRES,VALRES,CODRET(9), FB2 )
-       DO 20 I=1,2
-        KPT (I) = VALRES(I)
+C 2.8 - RESTAURATION D ORIGINE VISQUEUSE
 
-        ZVARIM  = PHASM(I)
-        ZVARIP  = PHASP(I)
-        DELTAZ = (ZVARIP - ZVARIM)
-        IF (DELTAZ.GT.0) THEN
-        J=I+2
-          CALL RCVALA(IMAT,' ','META_PT',1,'META',ZALPHP,1,
-     &               NOMRES(J),VALRES(J),CODRET(J), FB2 )
-          TRANS  = TRANS + KPT(I)*VALRES(J)*(ZVARIP-ZVARIM)
+          DO 80 I=1,NDIMSI
+            XMOY(I)=0.D0
+            DO 85 K=1,NZ
+              L=I+(K-1)*6
+              XMOY(I)=XMOY(I)+PHASE(K)*H(K)*VI(L)
+ 85         CONTINUE
+ 80       CONTINUE
+
+          XMOYEQ = 0.D0
+          DO 90 I=1,NDIMSI
+            XMOYEQ=XMOYEQ+XMOY(I)**2.D0
+ 90       CONTINUE
+          XMOYEQ= SQRT(1.5D0*XMOYEQ)
+          
+          CMOY=0.D0
+          MMOY=0.D0
+          DO 100 K=1,NZ
+            CMOY=CMOY+PHASE(K)*C(K)
+            MMOY=MMOY+PHASE(K)*M(K)
+ 100      CONTINUE
+                    
+          CR=CMOY*XMOYEQ
+          IF (XMOYEQ.GT.0.D0) THEN
+            DO 105 I=1,NDIMSI
+              DS(I)= 3.D0*DT*(CR**MMOY)*XMOY(I)/(2.D0*XMOYEQ)
+ 105        CONTINUE
+          ELSE
+            DO 110 I=1,NDIMSI
+              DS(I)= 0.D0
+ 110        CONTINUE
+          ENDIF
+                     
+          DO 115 K=1,NZ
+            DO 120 I=1,NDIMSI
+              L=I+(K-1)*6
+              IF (PHASE(K).GT.0.D0)THEN
+                VIMT(L)=VI(L)
+                VI(L)=VI(L)-DS(I)
+                IF((VI(L)*VIMT(L)).LT.0.D0) VI(L)=0.D0              
+              ENDIF
+ 120        CONTINUE
+ 115      CONTINUE
+
+C 2.9 - PLASTICITE DE TRANSFORMATION
+
+          TRANS = 0.D0      
+          IF (COMPOR(1)(1:12) .EQ. 'META_P_CL_PT'    .OR.
+     &       COMPOR(1)(1:15) .EQ. 'META_P_CL_PT_RE' .OR.
+     &       COMPOR(1)(1:12) .EQ. 'META_V_CL_PT'    .OR.
+     &       COMPOR(1)(1:15) .EQ. 'META_V_CL_PT_RE' ) THEN
+
+            NOMRES(1) = 'F1_K'
+            NOMRES(2) = 'F2_K'
+            NOMRES(3) = 'F1_D_F_META'
+            NOMRES(4) = 'F2_D_F_META'
+            
+            CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_PT',0,' ',
+     &                 0.D0,2,NOMRES,VALRES,CODRET ,'F ')
+
+            DO 125 K=1,NZ-1
+              KPT (K) = VALRES(K)
+              ZVARIM  = PHASM(K)
+              ZVARIP  = PHASE(K)
+              DELTAZ = (ZVARIP - ZVARIM)
+              IF (DELTAZ.GT.0.D0) THEN
+                J = 2+K
+                CALL RCVALA(IMAT,' ','META_PT',1,'META',ZALPHA,1,
+     &                      NOMRES(J),VALRES(J),CODRET(J), 'F ')
+                TRANS = TRANS + KPT(K)*VALRES(J)*(ZVARIP-ZVARIM)
+              ENDIF
+ 125        CONTINUE
+          
+          ENDIF
+              
+        ELSE
+
+          DO 130 K=1,NZ            
+            DO 135 I=1,NDIMSI
+              L=I+(K-1)*6
+              VI(L)=VIM(L)
+ 135        CONTINUE
+ 130      CONTINUE
+
+          DO 140 I=1,NDIMSI
+            XMOY(I)=0.D0
+            DO 145 K=1,NZ
+              L=I+(K-1)*6
+              XMOY(I)=XMOY(I)+PHASE(K)*H(K)*VI(L)
+ 145        CONTINUE
+ 140      CONTINUE
+          
+        ENDIF          
+
+C 2.10 - CALCUL DE SYMOY
+
+        IF (ZALPHA.GT.0.D0) THEN
+          SYMOY = PHASE(1)*SY(1)+PHASE(2)*SY(2)
+          SYMOY = SYMOY/ZALPHA
+        ELSE
+          SYMOY = 0.D0
         ENDIF
-  20   CONTINUE
+        SYMOY =(1.D0-FMEL)*SY(NZ)+FMEL*SYMOY
 
+      ELSE
+      
+        TRANS=0.D0
+        DO 150 I=1,NDIMSI
+          XMOY(I)=0.D0
+ 150    CONTINUE
+        
       ENDIF
 
-C 9 CALCUL SIGDV,SEUIL
+C ********************************
+C 3 - DEBUT DE L ALGORITHME
+C ********************************
 
-        SIGMO = 0.D0
-        DO 113 K =1,3
-          SIGMO = SIGMO + SIGM(K)
- 113    CONTINUE
-        SIGMO = SIGMO /3.D0
-        DO 114 K=1,NDIMSI
-          SIGMP(K)=DEUXMU/DEUMUM*(SIGM(K)-SIGMO*KRON(K)) +
-     &             TROISK/TROIKM*SIGMO*KRON(K)
- 114    CONTINUE
-        SIGMO = 0.D0
-        DO 119 K =1,3
-          SIGMO = SIGMO + SIGMP(K)
- 119    CONTINUE
-        SIGMO = SIGMO /3.D0
-        SIELEQ = 0.D0
-        DO 117 K = 1,NDIMSI
-          SIGDV(K) = SIGMP(K)- SIGMO * KRON(K)
-          SIGEL(K) = SIGDV(K) + DEUXMU * DEPSDV(K)
-          SIGEL2(K)= SIGEL(K)-(1.5D0*DEUXMU*TRANS + 1.D0)*XK(K)
+      TRDEPS = (DEPS(1)+DEPS(2)+DEPS(3))/3.D0
+      TREPSM = (EPSM(1)+EPSM(2)+EPSM(3))/3.D0
+      TRSIGM = (SIGM(1)+SIGM(2)+SIGM(3))/3.D0
+      TRSIGP = TROISK*(TREPSM+TRDEPS)-TROISK*EPSTH
+      
+      DO 155 I=1,NDIMSI
+        DVDEPS(I)   = DEPS(I) - TRDEPS * KRON(I)
+        DVSIGM(I)   = SIGM(I) - TRSIGM * KRON(I)
+ 155  CONTINUE
 
-          SIELEQ     = SIELEQ + SIGEL2(K)**2
- 117    CONTINUE
-        SIELEQ     = SQRT(1.5D0*SIELEQ)
-        IF (SIELEQ .GT. 0.D0) THEN
-         DO 118 K = 1,NDIMSI
-           SIG0(K) = SIGEL2(K)/SIELEQ
+      SIELEQ = 0.D0
+      DO 160 I = 1,NDIMSI
+        SIGEL(I) = DEUXMU*DVSIGM(I)/DEUMUM + DEUXMU*DVDEPS(I)
+        SIGEL2(I)= SIGEL(I)-(1.5D0*DEUXMU*TRANS+1.D0)*XMOY(I)
+        SIELEQ   = SIELEQ + SIGEL2(I)**2
+ 160  CONTINUE
+      SIELEQ     = SQRT(1.5D0*SIELEQ)
+      
+      IF (SIELEQ .GT. 0.D0) THEN
+        DO 165 I = 1,NDIMSI
+          SIG0(I) = SIGEL2(I)/SIELEQ
+ 165    CONTINUE       
+      ELSE
+        DO 170 I = 1,NDIMSI
+          SIG0(I) = 0.D0
+ 170    CONTINUE
+      ENDIF
+        
+C ************************
+C 4 - RESOLUTION
+C ************************
 
- 118     CONTINUE
+      IF (RESI) THEN
 
-        ELSE
-        DO 129 K = 1,NDIMSI
-           SIG0(K) = 0.D0
- 129     CONTINUE
-        ENDIF
-        DP = 0.D0
-        SEUIL      = SIELEQ - (1.5D0*DEUXMU*TRANS + 1.D0) * SYK
+C 4.1 - COMPORTEMENT ELASTIQUE - CALCUL DE SIGMA
 
-C
-C  10-- CALCUL DE DP,SIGDV(+),VIP
-C       --------------------------
-
-
-       IF (OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
-     &     OPTION(1:9) .EQ. 'FULL_MECA' ) THEN
         IF (COMPOR(1)(1:4) .EQ. 'ELAS') THEN
-         DO 145 K = 1,NDIMSI
-          SIGP(K) = SIGMP(K)+DEUXMU*DEPSDV(K)+TROISK*EPSMO*KRON(K)
- 145     CONTINUE
-        ELSE IF (COMPOR(1)(1:4) .EQ. 'META') THEN
+
+          DO 175 I = 1,NDIMSI
+            SIGP(I) = SIGEL(I)+TRSIGP*KRON(I)
+ 175      CONTINUE
+        
+C 4.2 - COMPORTEMENT PLASTIQUE
+C 4.2.1 - CALCUL DE DP
+        
+        ELSE IF (COMPOR(1)(1:4) .EQ. 'META') THEN                  
+        
+          SEUIL= SIELEQ-(1.5D0*DEUXMU*TRANS+1.D0)*SYMOY
+       
           IF (SEUIL.LT.0.D0) THEN
             VIP(25) = 0.D0
             DP = 0.D0
           ELSE
             VIP(25) = 1.D0
-            CALL NZCALC(CRIT,PHASP,NZ,FMEL,SEUIL,DT,TRANS,
-     &                RPRIM,DEUXMU,ETA,UNSURN,DP,IRET)
-            IF(IRET.EQ.1) GOTO 9999
-          ENDIF
-          PLASTI=VIP(25)
-
-          DO 160 K = 1,NDIMSI
-              DEPSP(K)=1.5D0*DP*SIG0(K)
-              SIGDV(K) = SIGEL(K) - DEUXMU*DEPSP(K)
-              SIGDV(K) = SIGDV(K)/(1.5D0*DEUXMU*TRANS + 1.D0)
-              SIGP(K) = SIGDV(K) + (SIGMO + TROISK*EPSMO)*KRON(K)
-  160     CONTINUE
-C
-          DO 220 K=1,NZ
-              DO 2200 J=1,NDIMSI
-              L=J+(K-1)*6
-              IF (PHASP(K).GT.0.D0)THEN
-
-                  DVIN(L) = DEPSP(J)
-                  VIP(L)  = VIM(L)+DVIN(L)
-             ELSE
-                  DVIN(L) = 0.D0
-                  VIP(L)  = 0.D0
-              ENDIF
- 2200         CONTINUE
- 220       CONTINUE
-
-            DO 242 K=1,NZ
-               DO 243 J=1,NDIMSI
-                 L=J+(K-1)*6
-                 X(L)=H(K)*VIP(L)
-243            CONTINUE
-242         CONTINUE
-
-            DO 240 J=1,NDIMSI
-                XK(J)=0.D0
-                DO 241 K=1,NZ
-                   L=J+(K-1)*6
-                   XK(J)= XK(J)+PHASP(K)*X(L)
-241             CONTINUE
-               VIP(18+J)=XK(J)
-
-240        CONTINUE
-
-        ENDIF
-      ENDIF
-
-
-C       --7 CALCUL OPERATEUR  TANGENT
-C       ----------------------------------------
-C
-
-        IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' .OR.
-     &       OPTION(1:9)  .EQ. 'FULL_MECA' ) THEN
-
-           MODE=2
-           DO 121 I=1,NZ
-             IF (ETA(I) .GT. 0.D0) MODE=1
- 121       CONTINUE
-
-C       --MATRICE ELASTIQUE
-
-           DO 120 K=1,6
-              DSIDEP(K,K) =1.D0
- 120       CONTINUE
-           DO 130 K=1,3
-            DO 131 L=1,3
-              DSIDEP(K,L) = DSIDEP(K,L) -1.D0/3.D0
- 131        CONTINUE
- 130      CONTINUE
-          IF ( OPTION(1:9) .EQ. 'FULL_MECA')
-     &      COEF1=(1.5D0*DEUXMU*TRANS+1.D0)
-          IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG')
-     &      COEF1=1.D0
-          DO 190 K=1,NDIMSI
-           DO 191 L=1,NDIMSI
-            DSIDEP(K,L) =DSIDEP(K,L)*DEUXMU/COEF1
- 191       CONTINUE
- 190      CONTINUE
-          B=1.D0
-          COEF2 =0.D0
-          COEF3=0.D0
-          IF (COMPOR(1)(1:4) .EQ. 'META') THEN
-            IF (PLASTI .GE. 0.5D0) THEN
-
-              IF (OPTION(1:9)  .EQ. 'FULL_MECA' ) THEN
-               SIGEPS = 0.D0
-               DO 170 K = 1,NDIMSI
-                SIGDV(K)=SIGDV(K)-XK(K)
-                SIGEPS = SIGEPS + SIGDV(K)*DEPSDV(K)
- 170           CONTINUE
-               IF ((MODE .EQ.1) .OR. ((MODE .EQ. 2) .AND.
-     &             (SIGEPS.GE.0.D0))) THEN
-                 B = (1.5D0*DEUXMU*DP/SIELEQ)
-                 B=1-B
-                 IF (MODE .EQ.1) THEN
-                    IF (DP .EQ. 0.D0) THEN
-                      DV=0.D0
-                    ELSE
-                     DO 178 I=1,3
-                       N0(I) = (1-N(I))/N(I)
- 178                 CONTINUE
-                 DV=(1-FMEL)*ZBETAP*(ETA(3)/N(3)/DT)*((DP/DT)**N0(3))
-                     DO 179 I=1,2
-                     IF (PHASP(I) .GT. 0.D0)
-     &                DV= DV+FMEL*(PHASP(I)/ZALPHP)*(ETA(I)/N(I)/DT)*
-     &                    ((DP/DT)**N0(I))
- 179                 CONTINUE
-                   ENDIF
-                 ELSE
-                    DV=0.D0
-                 ENDIF
-                 COEF2 = RPRIM +DV
-                 COEF2 = (1.5D0*DEUXMU*TRANS+1.D0)*COEF2
-                 COEF2 = (1.5D0*DEUXMU)+COEF2
-                 COEF2 = 1/COEF2 - DP/SIELEQ
-                 COEF2 =((1.5D0*DEUXMU)**2)*COEF2
-               ENDIF
-              ENDIF
-              IF (OPTION(1:14) .EQ. 'RIGI_MECA_TANG') THEN
-                SIGEPS = 0.D0
-               DO 1722 K = 1,NDIMSI
-                SIGDV(K)=SIGDV(K)-XK(K)
-                SIGEPS = SIGEPS + SIGDV(K)*DEPSDV(K)
- 1722           CONTINUE
-               IF ((MODE .EQ. 2) .AND.(SIGEPS.GE.0.D0))  THEN
-               COEF2 =  ( 1.5D0 * DEUXMU)**2
-               COEF2 = COEF2/(1.5D0*DEUXMU+RPRIM)
-               ENDIF
-              ENDIF
-              COEF3 = COEF2/COEF1
-             ENDIF
+            RPRIM=3.D0*HMOY/2.D0
+            IF (COMPOR(1)(1:6) .EQ. 'META_P') THEN
+              DP=SEUIL/(1.5D0*DEUXMU+(1.5D0*DEUXMU*TRANS+1.D0)*RPRIM)
+            ELSE
+              CALL NZCALC(CRIT,PHASE,NZ,FMEL,SEUIL,DT,TRANS,
+     &                    RPRIM,DEUXMU,ETA,UNSURN,DP,IRET)
+              IF(IRET.EQ.1) GOTO 9999
             ENDIF
-             DO 172 K=1,NDIMSI
-                  DO 173 L=1,NDIMSI
-                    DSIDEP(K,L) = DSIDEP(K,L)*B
- 173              CONTINUE
- 172            CONTINUE
+          ENDIF
 
-          DO 192 K = 1,3
-           DO 193 L =1,3
-            DSIDEP(K,L) = DSIDEP(K,L)+TROISK/3.D0
- 193       CONTINUE
- 192      CONTINUE
-           DO 180 K=1,NDIMSI
-                DO 181 L=1,NDIMSI
-                  DSIDEP(K,L) = DSIDEP(K,L)- COEF3 *SIG0(K)*SIG0(L)
- 181            CONTINUE
- 180           CONTINUE
+C 4.2.2 - CALCUL DE SIGMA
 
+          PLASTI=VIP(25)
+  
+          DO 180 I = 1,NDIMSI
+            DVSIGP(I) = SIGEL(I) - 1.5D0*DEUXMU*DP*SIG0(I)
+            DVSIGP(I) = DVSIGP(I)/(1.5D0*DEUXMU*TRANS + 1.D0)
+            SIGP(I) = DVSIGP(I) + TRSIGP*KRON(I)            
+  180     CONTINUE
+
+C 4.2.3 - CALCUL DE VIP ET XMOY
+
+          DO 185 K=1,NZ
+            DO 190 I=1,NDIMSI
+              L=I+(K-1)*6
+              IF (PHASE(K).GT.0.D0)THEN
+                VIP(L)  = VI(L)+3.D0*DP*SIG0(I)/2.D0
+              ELSE
+                VIP(L)  = 0.D0
+              ENDIF
+ 190        CONTINUE
+ 185      CONTINUE
+
+          DO 195 I=1,NDIMSI
+            VIP(18+I)= XMOY(I)+3.D0*HMOY*DP*SIG0(I)/2.D0
+ 195      CONTINUE
+        
+        ENDIF
+      
       ENDIF
 
-C    MISE AU FORMAT CONTRAINTE DE RAPPEL
-           RAC2 = SQRT(2.D0)
-           DO 245 J=4,NDIMSI
-               DO 246 K = 1,NZ
-               L=J+(K-1)*6
-               VIM(L)=VIM(L)/RAC2
- 246           CONTINUE
- 245       CONTINUE
-           IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
-     &    OPTION(1:9).EQ.'FULL_MECA')     THEN
-              DO 2451 J=4,NDIMSI
-               DO  2461 K = 1,NZ
-               L=J+(K-1)*6
-               VIP(L)=VIP(L)/RAC2
- 2461         CONTINUE
- 2451          CONTINUE
-           ENDIF
+C *******************************
+C 5 - MATRICE TANGENTE DSIGDF
+C *******************************
 
+      IF (RIGI) THEN
+
+        MODE=2
+        IF (COMPOR(1)(1:6).EQ.'META_V') MODE=1
+
+C 5.1 - MATRICE ELASTIQUE
+
+        DO 200 I=1,NDIMSI
+          DO 205 J=1,NDIMSI
+            DSIDEP(I,J) = 0.D0
+ 205      CONTINUE
+ 200    CONTINUE
+
+        DO 210 I=1,NDIMSI
+          DSIDEP(I,I) = 1.D0
+ 210    CONTINUE
+           
+        DO 215 I=1,3
+          DO 220 J=1,3
+            DSIDEP(I,J) = DSIDEP(I,J)-1.D0/3.D0
+ 220      CONTINUE
+ 215    CONTINUE
+        
+        IF (OPTION(1:9) .EQ. 'FULL_MECA') THEN
+          COEF1 = (1.5D0*DEUXMU*TRANS+1.D0)
+        ELSE
+          COEF1 = 1.D0
+        ENDIF
+         
+        DO 225 I=1,NDIMSI
+          DO 230 J=1,NDIMSI
+            DSIDEP(I,J) = DSIDEP(I,J)*DEUXMU/COEF1
+ 230      CONTINUE
+ 225    CONTINUE
+
+C 5.2 - PARTIE PLASTIQUE
+        
+        B=1.D0
+        COEF2 =0.D0
+        COEF3=0.D0
+        IF (COMPOR(1)(1:4) .EQ. 'META') THEN
+          
+          IF (PLASTI .GE. 0.5D0) THEN            
+              
+            IF (OPTION(1:9)  .EQ. 'FULL_MECA' ) THEN
+               
+              SIGEPS = 0.D0
+              DO 235 I = 1,NDIMSI
+                DVSIGP(I)=DVSIGP(I)-XMOY(I)
+                SIGEPS = SIGEPS + DVSIGP(I)*DVDEPS(I)
+ 235          CONTINUE
+              
+              IF ((MODE .EQ.1) .OR. ((MODE .EQ. 2) .AND.
+     &            (SIGEPS.GE.0.D0))) THEN
+                
+                B = 1.D0-(1.5D0*DEUXMU*DP/SIELEQ)
+                DV = 0.D0
+                IF (MODE .EQ.1) THEN    
+                  DO 240 K=1,NZ
+                    N0(K) = (1-N(K))/N(K)
+ 240              CONTINUE
+                  DV = (1-FMEL)*PHASE(NZ)*(ETA(NZ)/N(NZ)/DT)
+     &              * ((DP/DT)**N0(NZ))
+                  IF (ZALPHA.GT.0.D0) THEN
+                    DO 245 K=1,NZ-1
+                      IF (PHASE(K).GT. 0.D0)
+     &               DV = DV+FMEL*(PHASE(K)/ZALPHA)
+     &                  * (ETA(K)/N(K)/DT)*((DP/DT)**N0(K))
+ 245                CONTINUE
+                  ENDIF
+                ENDIF
+                    
+                COEF2 = 3.D0*HMOY/2.D0 + DV
+                COEF2 = (1.5D0*DEUXMU*TRANS+1.D0)*COEF2
+                COEF2 = (1.5D0*DEUXMU)+COEF2
+                COEF2 = 1/COEF2 - DP/SIELEQ
+                COEF2 =((1.5D0*DEUXMU)**2)*COEF2
+              
+              ENDIF
+            
+            ENDIF   
+              
+            IF (OPTION(1:14) .EQ. 'RIGI_MECA_TANG') THEN            
+              IF (MODE .EQ. 2)
+     &           COEF2 = ((1.5D0*DEUXMU)**2)/(1.5D0*DEUXMU+1.5D0*HMOY)
+            ENDIF
+            
+            COEF3 = COEF2/COEF1
+          
+          ENDIF
+        
+        ENDIF
+             
+        DO 250 I=1,NDIMSI
+          DO 255 J=1,NDIMSI
+            DSIDEP(I,J) = DSIDEP(I,J)*B
+ 255      CONTINUE
+ 250    CONTINUE
+
+        DO 260 I = 1,3
+          DO 265 J =1,3
+            DSIDEP(I,J) = DSIDEP(I,J)+TROISK/3.D0
+ 265      CONTINUE
+ 260    CONTINUE
+
+        DO 270 I=1,NDIMSI
+          DO 275 J=1,NDIMSI
+            DSIDEP(I,J) = DSIDEP(I,J)- COEF3*SIG0(I)*SIG0(J)
+ 275      CONTINUE
+ 270    CONTINUE
+ 
+      ENDIF             
+      
+C 6 - MISE AU FORMAT CONTRAINTE DE RAPPEL
+
+      IF (COMPOR(1)(1:4) .EQ. 'META') THEN                
+        
+        DO 280 I=4,NDIMSI
+          DO 285 K = 1,NZ
+            L=I+(K-1)*6
+            VIM(L)=VIM(L)/RAC2
+            IF (RESI) VIP(L)=VIP(L)/RAC2
+ 285      CONTINUE
+          IF (RESI) VIP(18+I)= VIP(18+I)/RAC2    
+ 280    CONTINUE
+
+      ENDIF   
 
  9999 CONTINUE
 
-C FIN ------------------------------------------------------------------
       END

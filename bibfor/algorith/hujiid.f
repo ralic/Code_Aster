@@ -1,7 +1,7 @@
         SUBROUTINE HUJIID (MOD, MATER, INDI, DEPS, YD, DY)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,15 +45,14 @@ C ====================================================================
         REAL*8      MATER(20,2), N, BETA, B, D, M, PCO, PC, PREF
         REAL*8      PHI, ANGDIL, MDIL, ACYC, AMON, CMON
         REAL*8      RC(4), TRACE, EPSVP, AD(4), KSI(4)
-        REAL*8      E, NU, AL, LA, MU, I1D, I1DE
+        REAL*8      E, NU, AL, DEMU, I1D, I1DE
         REAL*8      DFDL(4,4), DR(4), DEPSVP
-        REAL*8      DEGR, ZERO, UN, D12, D13, DEUX
+        REAL*8      DEGR, ZERO, UN, D13, DEUX
         REAL*8      DET, TOLE, COEF
         REAL*8      PSI(24), DFDS(6), DPSIDS(6,6)
         CHARACTER*8 MOD
         LOGICAL     DEBUG
 C ====================================================================
-        PARAMETER   ( D12  = .5D0 )
         PARAMETER   ( D13  = .3333333333334D0 )
         PARAMETER   ( UN   = 1.D0 )
         PARAMETER   ( ZERO = 0.D0 )
@@ -109,8 +108,7 @@ C ====================================================================
         E    = MATER(1,1) * (I1D/PREF)**N
         NU   = MATER(2,1)
         AL   = E *(UN-NU) /(UN+NU) /(UN-DEUX*NU)
-        LA   = NU*E       /(UN+NU) /(UN-DEUX*NU)
-        MU   = D12*E      /(UN+NU)
+        DEMU = E          /(UN+NU)
 
 
 C ====================================================================
@@ -122,11 +120,11 @@ C ====================================================================
           DO 20 I = 1, NDI
           DO 20 J = 1, NDI
             IF (I.EQ.J) HOOKNL(I,J) = AL
-            IF (I.NE.J) HOOKNL(I,J) = LA
+            IF (I.NE.J) HOOKNL(I,J) = DEMU
  20         CONTINUE
 
           DO 25 I = NDI+1, NDT
-            HOOKNL(I,I) = DEUX* MU
+            HOOKNL(I,I) = DEMU
  25         CONTINUE
 
 
@@ -173,7 +171,8 @@ C       SIG=SIGE ,  R4 = R4- , EPSVP = EPSVP- , DLAMBDA = 0.
             CALL HUJPRJ (INDI(K), YE, SIGD, PE(K), QE(K))
             IF ((P(K)/PREF) .LE. TOLE .OR.
      &         (PE(K)/PREF) .LE. TOLE) GOTO 999
-            CALL HUJKSI ('KSI   ', MATER, RC(K), KSI(K))
+            CALL HUJKSI ('KSI   ', MATER, RC(K), KSI(K), IRET)
+            IF (IRET .EQ. 1) GOTO 999
             AD(K) = ACYC+KSI(K)*(AMON-ACYC)
           ENDIF
             YE(NDT+1+K) = YD(NDT+1+K)
@@ -226,55 +225,55 @@ C ---> I.1. CALCUL DE DFDSE(K)*HOOKNL*PSI-(L)
 C ---- FIN I.1.
 C ---> I.2. CALCUL DE DFDEVPE(K)*DEVPDDLAMB-(L)     
 C ----  I.2.1. MECANISME DEVIATOIRE
-        DO 11 K = 1, NBMECA
-        
-          KK = INDI(K)
-          IF (KK .LT. 4) THEN
-          
-            F2(K) = -QE(K) - M*PE(K)*RC(K) * ( UN - B*LOG(PE(K)/PC) )
+       DO 11 K = 1, NBMECA
+       
+         KK = INDI(K)
+         IF (KK .LT. 4) THEN
+         
+           F2(K) = -QE(K) - M*PE(K)*RC(K) * ( UN - B*LOG(PE(K)/PC) )
 
-            DO 12 L = 1, NBMECA
-            
-              LL = INDI(L)
-              IF (LL .LT. 4) THEN
-                DFDL(K,L) = DFDL(K,L) + B*M*PE(K)*RC(K)*BETA
-     &                      * KSI(L)*COEF*(MDIL+Q(L)/P(L))
-              ELSEIF (LL .EQ. 4) THEN
-                DFDL(K,L) = DFDL(K,L) + B*M*PE(K)*RC(K)*BETA
-              ENDIF
+           DO 12 L = 1, NBMECA
+           
+             LL = INDI(L)
+             IF (LL .LT. 4) THEN
+               DFDL(K,L) = DFDL(K,L) + B*M*PE(K)*RC(K)*BETA
+     &                     * KSI(L)*COEF*(MDIL+Q(L)/P(L))
+             ELSEIF (LL .EQ. 4) THEN
+               DFDL(K,L) = DFDL(K,L) + B*M*PE(K)*RC(K)*BETA
+             ENDIF
 
- 12        CONTINUE
+ 12       CONTINUE
 
 
 C ---- I.2.2. MECANISME ISOTROPE
-          ELSEIF (KK .EQ. 4) THEN
+         ELSEIF (KK .EQ. 4) THEN
 
-            IF (K .NE. NBMECA) CALL U2MESS ('F', 'COMPOR1_5')
+           IF (K .NE. NBMECA) CALL U2MESS ('F', 'COMPOR1_5')
 
-            I1DE  = D13*TRACE(NDI,YE)
-            F2(K) = -ABS(I1DE) - RC(K)*D*PC
-            DFDL(K,K) = DFDL(K,K) + RC(K)*D*PC*BETA
-            DO 13 L = 1, NBMECA-1, 1
-              LL = INDI(L)
-              DFDL(K,L) = DFDL(K,L) + RC(K)*D*PC*BETA
-     &                    * KSI(L)*COEF*(MDIL+Q(L)/P(L))
- 13           CONTINUE
+           I1DE  = D13*TRACE(NDI,YE)
+           F2(K) = -ABS(I1DE) - RC(K)*D*PC
+           DFDL(K,K) = DFDL(K,K) + RC(K)*D*PC*BETA
+           DO 13 L = 1, NBMECA-1, 1
+             LL = INDI(L)
+             DFDL(K,L) = DFDL(K,L) + RC(K)*D*PC*BETA
+     &                   * KSI(L)*COEF*(MDIL+Q(L)/P(L))
+ 13          CONTINUE
 
-          ENDIF
- 11       CONTINUE
+         ENDIF
+ 11      CONTINUE
 
 
 C ---- FIN I.2.
 C ---> I.3. CALCUL DE DFDRE(K)*DRDLAMB-(K)     
-          DO 14 K = 1, NBMECA, 1
-            KK = INDI(K)
-            IF (KK .LT. 4) THEN
-              DFDL(K,K) = DFDL(K,K) + M*PE(K)*(UN-B*LOG(PE(K)/PC))
-     &                    * (UN-RC(K))**DEUX /AD(K)
-            ELSEIF (KK .EQ. 4) THEN
-              DFDL(K,K) = DFDL(K,K) + D*PC * (UN-RC(K))**DEUX /CMON
-            ENDIF
- 14         CONTINUE
+       DO 14 K = 1, NBMECA, 1
+         KK = INDI(K)
+         IF (KK .LT. 4) THEN
+           DFDL(K,K) = DFDL(K,K) + M*PE(K)*(UN-B*LOG(PE(K)/PC))
+     &                 * (UN-RC(K))**DEUX /AD(K)
+         ELSEIF (KK .EQ. 4) THEN
+           DFDL(K,K) = DFDL(K,K) + D*PC * (UN-RC(K))**DEUX /CMON
+         ENDIF
+ 14      CONTINUE
 
 
 C ---- RESOLUTION PAR PIVOT DE GAUSS      
@@ -282,10 +281,11 @@ C ---- RESOLUTION PAR PIVOT DE GAUSS
        IF (IRET.EQ.1)
      & CALL U2MESS ('F', 'COMPOR1_6')
 
+
 C --- MULTIPLICATEUR PLASTIQUE NEGATIF NON AUTORISE
-C          DO 15 K=1,NBMECA
-C            IF (F2(K) .LT. ZERO) F2(K)=ZERO
-C 15       CONTINUE
+       DO 15 K=1,NBMECA
+         IF (F2(K) .LT. ZERO) F2(K)=ZERO
+ 15      CONTINUE
 
 
 C ====================================================================
@@ -358,7 +358,7 @@ C ====================================================================
  999    CONTINUE
 
         IF (DEBUG) THEN
-          WRITE (IFM,'(A)') 'HUJJID :: LOG(PK/PC) NON DEFINI'
+          WRITE (IFM,'(A)') 'HUJIID :: LOG(PK/PC) NON DEFINI'
           WRITE (IFM,'(A)') '- ON NE FAIT PAS LA PREDICTION -'
         ENDIF
 

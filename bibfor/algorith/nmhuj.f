@@ -3,7 +3,7 @@
      &   DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -118,13 +118,14 @@ C       ----------------------------------------------------------------
 C       ----------------------------------------------------------------
 
         PARAMETER (TOLE = 1.D-6)
-        DATA       D13  / 1.33333333334D0 /
+        DATA       D13  / 0.33333333334D0 /
         DATA       DSQR / 1.41421356237D0 /
         DATA       ZERO / 0.0D0 /
 
 
 C --- DEBUG = .TRUE. : MODE AFFICHAGE ENRICHI
         DEBUG = .FALSE.
+C        DEBUG = .TRUE.
 
 
 C        UMESS = IUNIFI('MESSAGE')
@@ -180,28 +181,28 @@ C       --------------------------
 
 C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
        IF (VIND(1) .EQ. ZERO) THEN
-          IF (MATERF(11, 2) .EQ. ZERO) THEN
+          IF (MATERF(16, 2) .EQ. ZERO) THEN
             VIND(1) = 1.D-3
           ELSE
             VIND(1) = MATERF(13,2)
           ENDIF
        ENDIF
        IF (VIND(2) .EQ. ZERO) THEN
-          IF (MATERF(11, 2) .EQ. ZERO) THEN
+          IF (MATERF(16, 2) .EQ. ZERO) THEN
             VIND(2) = 1.D-3
           ELSE
             VIND(2) = MATERF(13,2)
           ENDIF
        ENDIF
        IF (VIND(3) .EQ. ZERO) THEN
-          IF (MATERF(11, 2) .EQ. ZERO) THEN
+          IF (MATERF(16, 2) .EQ. ZERO) THEN
             VIND(3) = 1.D-3
           ELSE
             VIND(3) = MATERF(13,2)
           ENDIF
        ENDIF
        IF (VIND(4) .EQ. ZERO) THEN
-          IF (MATERF(12, 2) .EQ. ZERO) THEN
+          IF (MATERF(17, 2) .EQ. ZERO) THEN
             VIND(4) = 1.D-3
           ELSE
             VIND(4) = MATERF(14,2)
@@ -222,13 +223,13 @@ C ---> ETAT ELASTIQUE OU PLASTIQUE A T
         ELSE
           ETATD = 'PLASTIC'
         ENDIF
-        
+
 
 C       -------------------------------------------------------------
 C       OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
 C       -------------------------------------------------------------
         IF (OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA') THEN
-
+        
 
 C ---> INTEGRATION ELASTIQUE SUR DT
         CALL HUJELA (MOD, CRIT, MATERF, DEPSTH, SIGD, SIGF, IRET)
@@ -255,7 +256,7 @@ C ---> PREDICTION INCORRECTE ==> INTEGRATION ELASTO-PLASTIQUE SUR DT
              CALL  HUJPLA (MOD, CRIT, MATERF, SEUILI, SEUILD, NVI,
      &             EPSDTH, DEPSTH, SIGD, VIND, SIGF, VINF, MECANF,
      &             NITER, NDEC, EPSCON, IRET)
-       
+
              IF (IRET .EQ. 1) GOTO 9999
 
         ELSE
@@ -268,18 +269,18 @@ C ---> PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
         ENDIF
 
 
-C       ----------------------------------------------------------------
-C       OPTIONS 'FULL_MECA' ET 'RIGI_MECA_TANG' = CALCUL DE DSDE
-C       ----------------------------------------------------------------
-C       CALCUL ELASTIQUE ET EVALUATION DE DSDE A (T)
-C       POUR 'RIGI_MECA_TANG' ET POUR 'FULL_MECA'
-C       ----------------------------------------------------------------
+C   --------------------------------------------------------
+C   OPTIONS 'FULL_MECA' ET 'RIGI_MECA_TANG' = CALCUL DE DSDE
+C   --------------------------------------------------------
+C   CALCUL ELASTIQUE ET EVALUATION DE DSDE A (T)
+C   POUR 'RIGI_MECA_TANG' ET POUR 'FULL_MECA'
+C   --------------------------------------------------------
         IF (OPT .EQ. 'RIGI_MECA_TANG') THEN
 
           CALL LCINMA (ZERO, DSDE)
 
 C REMARQUE: CALCUL DE DSDE A T AVEC MATERF CAR PARAMETRES HUJEUX
-C           INDEPENDANTS DE LA TEMPERATURE
+C --------  INDEPENDANTS DE LA TEMPERATURE
 
 
 C ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
@@ -325,4 +326,5 @@ C         ENDIF
  50       CONTINUE
 
 9999    CONTINUE
+
         END

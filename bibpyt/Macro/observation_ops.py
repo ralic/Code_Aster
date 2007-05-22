@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 14/05/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF observation_ops Macro  DATE 22/05/2007   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 
 
 
+
 def observation_ops(self,
                     PROJECTION   = None,
                     MODELE_1     = None,
@@ -35,16 +36,6 @@ def observation_ops(self,
     """
      Ecriture de la macro MACRO_OBSERVATION
     """
-    import aster
-    from Accas import _F
-    from Utilitai.UniteAster import UniteAster
-    from Utilitai.Utmess     import UTMESS
-    import Numeric
-    from Numeric import array, sqrt, cross_product, transpose
-    from Numeric import pi, cos, sin, tan, arcsin, arccos, arctan
-    from LinearAlgebra import solve_linear_equations
-    from Cata.cata import mode_meca, dyna_harmo, evol_elas, base_modale
-    from Cata.cata import DEFI_GROUP, CREA_CHAMP, CREA_RESU
     ier=0
 
 
@@ -55,12 +46,19 @@ def observation_ops(self,
     # du meme nom
     MODIF_REPERE = MODI_REPERE
 
-    # importation de la commande MODI_REPERE
+    # importation de commandes
+    import aster
+    import Numeric
+    from Accas import _F
+    from Utilitai.UniteAster import UniteAster
+    from Utilitai.Utmess     import UTMESS
+    from Cata.cata import mode_meca, dyna_harmo, evol_elas, base_modale
     MODI_REPERE = self.get_cmd('MODI_REPERE')
     PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
+    CREA_CHAMP  = self.get_cmd('CREA_CHAMP')
+    CREA_RESU   = self.get_cmd('CREA_RESU')
     DEFI_BASE_MODALE = self.get_cmd('DEFI_BASE_MODALE')
     DETRUIRE = self.get_cmd('DETRUIRE')
-    MODI_REPERE = self.get_cmd('MODI_REPERE')
 
     # dans **args, on range les options de PROJ_CHAMP facultatives, et dont on
     # ne sert pas par la suite
@@ -308,9 +306,14 @@ def crea_normale(self, modele_1, modele_2, cham_mater, cara_el, nume_ddl):
     """Cree un champ de vecteurs normaux sur le maillage experimental, par
        projection du champ de normales cree sur le maillage numerique
     """
-
-    PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
     
+    import Numeric
+    PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
+    CREA_CHAMP  = self.get_cmd('CREA_CHAMP')
+    CREA_RESU   = self.get_cmd('CREA_RESU')
+    DEFI_GROUP  = self.get_cmd('DEFI_GROUP')
+    import aster
+    from Accas import _F    
     # recherche du maillage associe au modele numerique
     nom_modele_num = modele_1.nom
     _maillag = aster.getvectjev( nom_modele_num.ljust(8) + '.MODELE    .NOMA        ' )
@@ -384,6 +387,8 @@ def crea_repere(chnorm, ind_no, vect):
        de trois parametres et du vecteur de base concerne.
     """
 
+    import Numeric
+
     nom_para = vect.keys()[0] # nom_para = 'VECT_X' ou 'VECT_Y'
     condition = list(vect[nom_para])
 
@@ -404,15 +409,15 @@ def crea_repere(chnorm, ind_no, vect):
     # (option VECT_X Ou VECT_Y). Dans ce cas la, le 3e est le produit
     # vectoriel des deux premiers.
     if nom_para == 'VECT_X' :
-        vect1 = array(list(vect[nom_para])) # vect x du reploc
-        vect2 = cross_product(normale,vect1)
-        reploc = array([vect1.tolist(), vect2.tolist(), normale])
+        vect1 = Numeric.array(list(vect[nom_para])) # vect x du reploc
+        vect2 = Numeric.cross_product(normale,vect1)
+        reploc = Numeric.array([vect1.tolist(), vect2.tolist(), normale])
         reploc = Numeric.transpose(reploc)
 
     elif nom_para == 'VECT_Y' :
-        vect2 = array(list(vect[nom_para])) # vect y du reploc
-        vect1 = cross_product(vect2, normale)
-        reploc = array([vect1.tolist(), vect2.tolist(), normale])
+        vect2 = Numeric.array(list(vect[nom_para])) # vect y du reploc
+        vect1 = Numeric.cross_product(vect2, normale)
+        reploc = Numeric.array([vect1.tolist(), vect2.tolist(), normale])
         reploc = Numeric.transpose(reploc)
 
     # 2.2) TODO : plutot que de donner explicitement un vecteur du repere
@@ -444,6 +449,8 @@ def find_no(maya,mcsimp):
         etc...
     """
 
+    import Numeric
+
     list_no = []
     list_ma = []
     if mcsimp.has_key('GROUP_NO') and type(mcsimp['GROUP_NO']) != tuple :
@@ -455,7 +462,7 @@ def find_no(maya,mcsimp):
         list_no = list(mcsimp['NOEUD'])
     elif mcsimp.has_key('GROUP_NO') :
         for group in mcsimp['GROUP_NO'] :
-            list_ind_no = list(array(maya.GROUPENO.get()[group.ljust(8)])-1)
+            list_ind_no = list(Numeric.array(maya.GROUPENO.get()[group.ljust(8)])-1)
             for ind_no in list_ind_no :
                 nomnoe = maya.NOMNOE.get()[ind_no]
                 if nomnoe not in list_no :
@@ -488,6 +495,7 @@ def find_no(maya,mcsimp):
 
 def provec(x,y):
     """ Calcul d'un produit vectoriel"""
+    import Numeric
     z=Numeric.zeros(3,Numeric.Float)
     z[0]=x[1]*y[2]-x[2]*y[1]
     z[1]=x[2]*y[0]-x[0]*y[2]
@@ -496,6 +504,7 @@ def provec(x,y):
 
 def norm(x):
     """Calcul de la norme euclidienne d'un vecteur"""
+    import Numeric
     tmp = Numeric.sqrt(Numeric.dot(x,x))
     return tmp
 
@@ -507,17 +516,19 @@ def anglnaut(P):
        de X et Y) sont utiles pour le calcul des angles
     """
 
+    import copy
+    import Numeric
     # expression des coordonnees globales des 3 vecteurs de base locale
-    x = array([1.,0.,0.])
-    y = array([0.,1.,0.])
-    z = array([0.,0.,1.])
+    x = Numeric.array([1.,0.,0.])
+    y = Numeric.array([0.,1.,0.])
+    z = Numeric.array([0.,0.,1.])
 
     xg = P[:,0]
     yg = P[:,1]
     zg = P[:,2]
 
     # calcul des angles nautiques
-    x1=xg[:]
+    x1=copy.copy(xg)
     # x1 projection de xg sur la plan xy, non norme
     x1[2]=0.
     # produit scalaire X xg
@@ -542,22 +553,9 @@ def anglnaut(P):
     # calcul de gamma
     COSG=Numeric.dot(y1n,yg)
     SING=Numeric.dot(xg,provec(y1n,yg))
-    gamma=Numeric.arctan2(SING,COSG)*180/pi
+    gamma=Numeric.arctan2(SING,COSG)*180/Numeric.pi
 
-##    PGL=Numeric.zeros((3,3),typecode='d')
-##    PGL[0,0] = COSB*COSA
-##    PGL[1,0] = SING*SINB*COSA - COSG*SINA
-##    PGL[2,0] = SING*SINA + COSG*SINB*COSA
-##    PGL[0,1] = COSB*SINA
-##    PGL[1,1] = COSG*COSA + SING*SINB*SINA
-##    PGL[2,1] = COSG*SINB*SINA - COSA*SING
-##    PGL[0,2] = -SINB
-##    PGL[1,2] = SING*COSB
-##    PGL[2,2] = COSG*COSB
-##    pgl=Numeric.transpose(PGL)
-##    xgl=Numeric.dot(pgl,x)
-##    ygl=Numeric.dot(pgl,y)
-##    zgl=Numeric.dot(pgl,z)
+
 
     return alpha,beta,gamma
 

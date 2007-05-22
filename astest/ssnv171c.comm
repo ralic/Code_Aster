@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/05/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
@@ -330,7 +330,7 @@ TEST_RESU(RESU=(_F(RESULTAT=POLYEXPL,
                    NOM_CMP='V7',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=4.813675E-04,
+                   VALE=4.9032E-04,
                    PRECISION=(0.001,1e-06,),
                    REFERENCE='AUTRE_ASTER',),
                    ),);
@@ -350,7 +350,7 @@ TEST_TABLE(TABLE=AE2P2,
                       VALE_K = 'CUBE')), 
                       REFERENCE='AUTRE_ASTER',
                       NOM_PARA='SIGMA_WEIBULL',
-                      VALE=2.786113E+02,
+                      VALE=2.786101E+02,
                       CRITERE='ABSOLU',  )
 
 

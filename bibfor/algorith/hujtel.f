@@ -1,7 +1,7 @@
        SUBROUTINE HUJTEL (MOD, MATER, SIG, HOOK)
-        IMPLICIT NONE
+       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,14 +28,13 @@ C  ---------------------------------------------------------------
         INTEGER  NDT, NDI, I, J
 
         REAL*8   SIG(6), HOOK(6,6), MATER(20,2), I1, COEF
-        REAL*8   E, NU, AL, LA, MU
-        REAL*8   UN, D12, D13, ZERO, DEUX
+        REAL*8   E, NU, AL, DEMU
+        REAL*8   UN, D13, ZERO, DEUX
 
         CHARACTER*8 MOD
 
         COMMON /TDIM/ NDT, NDI
 
-        DATA   D12   / .5D0 /
         DATA   D13   / .333333333334D0 /
         DATA   UN    / 1.D0 /
         DATA   ZERO  / 0.D0 /
@@ -48,7 +47,7 @@ C --->   CALCUL PREMIER INVARIANT DES CONTRAINTES
         DO 10 I = 1, NDI
           I1 = I1 + D13*SIG(I)
   10    CONTINUE
-
+  
 
 C --->   CALCUL DES COEF. UTILES
         IF (I1 .EQ. ZERO) THEN
@@ -56,11 +55,11 @@ C --->   CALCUL DES COEF. UTILES
         ELSE
            COEF = (I1/MATER(8,2)) **MATER(1,2)
         ENDIF
-        E  = MATER(1,1)*COEF
-        NU = MATER(2,1)
-        AL = E  * (UN-NU) / (UN+NU) / (UN-DEUX*NU)
-        LA = NU * E       / (UN+NU) / (UN-DEUX*NU)
-        MU = E  * D12     / (UN+NU)
+        
+        E    = MATER(1,1)*COEF
+        NU   = MATER(2,1)
+        AL   = E  * (UN-NU) / (UN+NU) / (UN-DEUX*NU)
+        DEMU = E  / (UN+NU)
         
 
 C --->   OPERATEUR DE RIGIDITE
@@ -71,10 +70,10 @@ C ----   3D/DP/AX
           DO 20 I = 1, NDI
             DO 20 J = 1, NDI
               IF (I .EQ. J) HOOK(I,J) = AL
-              IF (I .NE. J) HOOK(I,J) = LA
+              IF (I .NE. J) HOOK(I,J) = DEMU
  20           CONTINUE
           DO 30 I = NDI+1, NDT
-            HOOK(I,I) = DEUX* MU
+            HOOK(I,I) = DEMU
  30         CONTINUE
  
  

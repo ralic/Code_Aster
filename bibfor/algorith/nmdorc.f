@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -342,8 +342,8 @@ C  POUR COMPORTEMENT KIT_
                 ENDIF
   120         CONTINUE
 
-              IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
-     &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
+              IF ((COMP(1:5).EQ.'KIT_H').OR.
+     +            (COMP(1:6).EQ.'KIT_TH')) THEN
                 DO 122 INV = 1, DIMANV
                    NBNVI(INV) = 0
  122            CONTINUE
@@ -475,8 +475,7 @@ C  POUR COMPORTEMENT KIT_
                 ZK16(JVALV-1+ICOMEL+7) = '        '
               END IF
   140       CONTINUE
-            IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
-     &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
+            IF ((COMP(1:5).EQ.'KIT_H').OR.(COMP(1:6).EQ.'KIT_TH')) THEN
                DO 180 INV = 1, DIMANV
                   WRITE (ZK16(JVALV-1+7+DIMAKI+INV),'(I16)') NBNVI(INV)
  180           CONTINUE

@@ -1,7 +1,7 @@
         SUBROUTINE HUJCI1 (CRIT, MATER, DEPS, SIGD, I1F, TRACT, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,8 +94,8 @@ C     &                       ' NON PREVU')
         
 
 C--->  TRAITEMENT DE L'EQUATION EN FONCTION DE TRACE DE DEPS
-C       CAS N.1: TRACE NULLE
-C       ++++++++++++++++++++
+C   CAS N.1: TRACE NULLE
+C   ++++++++++++++++++++
         IF (TRDEPS .EQ. ZERO)  THEN
           I1F = I1D
 

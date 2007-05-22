@@ -9,7 +9,7 @@
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,8 +58,8 @@ C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
       REAL*8 TEMPF,TABS,PR,DELTAV,DELTAG,GAMMAP,R8MIEM,PTIT
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,R,KDCS,SOM,DALPHA
-      REAL*8 AUX,CISA2,RACR
-      INTEGER IFL,IEI,TNS,NS,IS,IU,NBSYS
+      REAL*8 AUX,CISA2,RACR,RS
+      INTEGER IFL,IEI,TNS,NS,IS,IU,NBSYS,IRET2
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
@@ -67,7 +67,7 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
       IFL=NBCOMM(IFA,1)
       IRET=0
       PTIT=R8MIEM()
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)
 C-------------------------------------------------------------
 C     POUR UN NOUVEAU TYPE D'ECOULEMENT, CREER UN BLOC IF
 C------------------------------------------------------------
@@ -152,10 +152,14 @@ C------------------------------------------------------------
           KDCS      =COEFT(IFL-1+8)
           P         =COEFT(IFL-1+9)
           Q         =COEFT(IFL-1+10)
-          NUMHSR=COEFT(IFL-1+11)
-
-          CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
-
+C         NUMHSR=COEFT(IFL-1+11)
+C         NUMHSR=1
+          
+          IF (MATERF(NMAT).EQ.0) THEN
+             CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
+          ELSE
+             CISA2 = (MATERF(36)/2.D0)**2
+          ENDIF
           TAUV=ABS(TAUS)-TAU0
           CRIT=TAUV
           
@@ -165,22 +169,22 @@ C------------------------------------------------------------
              SGNS=TAUS/ABS(TAUS)
           ENDIF
 
-           IF (TAUV.GT.0.D0) THEN
+          IF (TAUV.GT.0.D0) THEN
 
-           TABS=TEMPF+273.5D0
-           SOM=0.D0
-           TAUMU=0.D0
+             TABS=TEMPF+273.5D0
+             SOM=0.D0
+             TAUMU=0.D0
+           
+             RS=VIND(3*(IS-1)+1)+DAL(IS)
 
              DO 1 IU = 1, NBSYS
-             R=VIND(3*(IU-1)+1)+DAL(IU)
-             TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*R
-               IF (IU.NE.IS) THEN
-                   RACR=SQRT(R)
-               ELSE
-                   RACR=0.D0
-               ENDIF
-             SOM = SOM+RACR
+                R=VIND(3*(IU-1)+1)+DAL(IU)
+                TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
+                SOM = SOM+R
   1          CONTINUE
+             SOM=SOM-RS
+             SOM=SQRT(SOM)
+
 
              TAUMU = CISA2 * TAUMU/TAUV
 
@@ -198,12 +202,14 @@ C------------------------------------------------------------
                ENDIF
 
                DGAMMA=GAMMA0*EXP(-DELTAG/K/TABS*
-     &        (1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)*SGNS*DT
+     &         AUX**Q)*SGNS*DT
 
                DP=ABS(DGAMMA)
 
-               DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
-     &               (BSD+SOM/KDCS-GCB*VIND(3*(IS-1)+1))
+C               DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
+C     &               (BSD+SOM/KDCS-GCB*VIND(3*(IS-1)+1))
+
+               DALPHA=ABS(DGAMMA)*(BSD+SOM/KDCS-GCB*RS)        
                DAL(IS)=DALPHA
 
              ELSE

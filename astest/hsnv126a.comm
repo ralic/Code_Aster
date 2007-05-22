@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/05/2007   AUTEUR CANO V.CANO 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -243,6 +243,7 @@ CHP_MATL=AFFE_MATERIAU(
                              NOM_CHAM='META_ELNO_TEMP'),
                           _F(TOUT='OUI',
                              EVOL=TEMPE,
+                             VALE_REF=20,
                              NOM_VARC='TEMP',
                              NOM_CHAM='TEMP'),),);
 
@@ -372,9 +373,9 @@ TEST_RESU(CHAM_NO=(
        _F( CHAM_GD = CHVAR11, CRITERE = 'ABSOLU', PRECISION = 1.E-12,
          NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 0.),
          _F( CHAM_GD = CHVAR14, PRECISION = 1.E-6,
-         NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 41.1),
+         NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 42.),
          _F( CHAM_GD = CHVAR20, PRECISION = 1.E-6,
-         NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 117.58))
+         NOEUD = 'NO3', NOM_CMP = 'V7',    VALE = 118.))
 )
 
 FIN()

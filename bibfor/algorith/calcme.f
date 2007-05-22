@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C ======================================================================
 C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
-      INTEGER       I,J,NELAS,NRESMA,IRET
+      INTEGER       I,J,NELAS,NRESMA
       REAL*8        DEPS(6),DEPSV,T,DT,TINI,P1,P2
       REAL*8        PHI,YOUNG,NU,ALPHA0,PHI0,CRIT(*),INSTAM,INSTAP,TREF
       PARAMETER (NELAS = 4  )
@@ -192,7 +192,7 @@ C ======================================================================
      &                      DEFGEM(ADDEME+NDIM),DEPS,
      &                      CONGEM(ADCOME), VINTM, OPTION,
      &                      CONGEP(ADCOME), VINTP,
-     &                      DSDEME,IRET)
+     &                      DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'HUJEUX') THEN
         MECTRU = .TRUE.
@@ -203,7 +203,7 @@ C ======================================================================
      &                      DEFGEM(ADDEME+NDIM),DEPS,
      &                      CONGEM(ADCOME), VINTM, OPTION,
      &                      CONGEP(ADCOME), VINTP,
-     &                      DSDEME,IRET)
+     &                      DSDEME,RETCOM)
       ENDIF
       IF (MECA.EQ.'LAIGLE') THEN
         COMPLG(1) = 'LAIGLE'

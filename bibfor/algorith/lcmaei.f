@@ -2,7 +2,7 @@
      &            NBVAL,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,22 +45,25 @@ C     ----------------------------------------------------------------
       CHARACTER*16    NMATER, NECRIS, NOMFAM,NECOUL
 C     ----------------------------------------------------------------
 C
-      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
-          NBVAL=3
-          NOMRES(1)='R_0'
-          NOMRES(2)='Q'
-          NOMRES(3)='B'
-          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
-     &                 3,NOMRES, VALRES,CODRET,'FM')
-      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
-          NBVAL=5
-          NOMRES(1)='R_0'
-          NOMRES(2)='Q1'
-          NOMRES(3)='B1'
-          NOMRES(4)='Q2'
-          NOMRES(5)='B2'
-          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
-     &                 NBVAL,NOMRES, VALRES,CODRET,'FM')
+      NBVAL=0
+      IF(NECOUL.NE.'KOCKS_RAUCH') THEN
+        IF (NECRIS.EQ.'ECRO_ISOT1') THEN
+            NBVAL=3
+            NOMRES(1)='R_0'
+            NOMRES(2)='Q'
+            NOMRES(3)='B'
+            CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',
+     &                  0.D0, 3,NOMRES, VALRES,CODRET,'FM')
+        ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
+            NBVAL=5
+            NOMRES(1)='R_0'
+            NOMRES(2)='Q1'
+            NOMRES(3)='B1'
+            NOMRES(4)='Q2'
+            NOMRES(5)='B2'
+            CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',
+     &                   0.D0,NBVAL,NOMRES, VALRES,CODRET,'FM')
+        ENDIF
       ENDIF
 C     DEFINITION DE LA MATRICE D'INTERACTION
       NOMRES(1)='H'

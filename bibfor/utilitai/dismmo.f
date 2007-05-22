@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,6 +181,8 @@ C
               IF ( NOMOD2(IBID:IBID).EQ.'H' ) THEN
                 IF ( NOMOD2(IBID:IBID+4).EQ.'HH2MD' .OR.
      &               NOMOD2(IBID:IBID+4).EQ.'HH2MS' .OR.
+     &               NOMOD2(IBID:IBID+2).EQ.'HH2'   .OR.
+     &               NOMOD2(IBID:IBID+1).EQ.'HH'    .OR.
      &               NOMOD2(IBID:IBID+2).EQ.'HHM'   .OR.
      &               NOMOD2(IBID:IBID+3).EQ.'HHMD'  .OR.
      &               NOMOD2(IBID:IBID+3).EQ.'HHMS'  .OR.

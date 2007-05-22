@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements3 Messages  DATE 22/05/2007   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -271,7 +271,8 @@ cata_msg={
 """),
 
 68: _("""
- calc_k_g est incompatible avec              les comportements incrementaux ainsi que la deformation                  green
+ L'option CALC_K_G est incompatible avec les comportements incrémentaux, avec les comportement non
+ linéaires et avec la deformation GREEN.
 """),
 
 69: _("""

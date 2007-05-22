@@ -8,7 +8,7 @@
       CHARACTER*16 NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -168,6 +168,28 @@ C =====================================================================
          PRESS1(1) = 1
          PRESS2(1) = 1
          TEMPE(1)  = 1
+         PRESS1(2) = 2
+         PRESS2(2) = 2
+      END IF
+C =====================================================================
+C --- SI MODELISATION = HH -------------------------------------------
+C =====================================================================
+      IF (NOMTE(1:3).EQ.'HH_') THEN
+         MECANI(1) = 0
+         PRESS1(1) = 1
+         PRESS2(1) = 1
+         TEMPE(1)  = 0
+         PRESS1(2) = 2
+         PRESS2(2) = 1
+      END IF
+C =====================================================================
+C --- SI MODELISATION = HH2 -------------------------------------------
+C =====================================================================
+      IF (NOMTE(1:4).EQ.'HH2_') THEN
+         MECANI(1) = 0
+         PRESS1(1) = 1
+         PRESS2(1) = 1
+         TEMPE(1)  = 0
          PRESS1(2) = 2
          PRESS2(2) = 2
       END IF

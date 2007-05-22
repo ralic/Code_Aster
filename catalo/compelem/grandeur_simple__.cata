@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -212,8 +212,10 @@ GRANDEUR_SIMPLE__
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
                     EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
-                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z
-                    VARI     LAG_GV
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
+                    LAG_GV   V11      V12      V13      V21      V22      V23      V31
+                    V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
+                    PRES31   PRES32   PRES33
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
@@ -224,8 +226,10 @@ GRANDEUR_SIMPLE__
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
                     EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
-                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z
-                    VARI     LAG_GV
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
+                    LAG_GV   V11      V12      V13      V21      V22      V23      V31
+                    V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
+                    PRES31   PRES32   PRES33
 <<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
        DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
        DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
@@ -237,7 +241,26 @@ GRANDEUR_SIMPLE__
        E1X,E1Y,E1Z : DDLS ENRICHIS (CRACKTIP1) X-FEM
        E2X,E2Y,E2Z : DDLS ENRICHIS (CRACKTIP2) X-FEM
        E3X,E3Y,E3Z : DDLS ENRICHIS (CRACKTIP3) X-FEM
-       E4X,E4Y,E4Z : DDLS ENRICHIS (CRACKTIP4) X-FEM  >>
+       E4X,E4Y,E4Z : DDLS ENRICHIS (CRACKTIP4) X-FEM
+       V11     : COMPOSANTE DU1/DX1 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V12     : COMPOSANTE DU1/DX2 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V13     : COMPOSANTE DU1/DX3 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V21     : COMPOSANTE DU2/DX1 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V22     : COMPOSANTE DU2/DX2 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V23     : COMPOSANTE DU2/DX3 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V31     : COMPOSANTE DU3/DX1 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V32     : COMPOSANTE DU3/DX2 DE LA MODELISATION MIXTE SECOND GRADIENT
+       V33     : COMPOSANTE DU3/DX3 DE LA MODELISATION MIXTE SECOND GRADIENT
+       PRES11  : MULTIPLICATEUR ASSURANT DU1/DX1=V11 DE LA MODELISATION 2ND GRAD
+       PRES12  : MULTIPLICATEUR ASSURANT DU1/DX2=V12 DE LA MODELISATION 2ND GRAD
+       PRES13  : MULTIPLICATEUR ASSURANT DU1/DX3=V13 DE LA MODELISATION 2ND GRAD
+       PRES21  : MULTIPLICATEUR ASSURANT DU2/DX1=V21 DE LA MODELISATION 2ND GRAD
+       PRES22  : MULTIPLICATEUR ASSURANT DU2/DX2=V22 DE LA MODELISATION 2ND GRAD
+       PRES23  : MULTIPLICATEUR ASSURANT DU2/DX3=V23 DE LA MODELISATION 2ND GRAD
+       PRES31  : MULTIPLICATEUR ASSURANT DU3/DX1=V31 DE LA MODELISATION 2ND GRAD
+       PRES32  : MULTIPLICATEUR ASSURANT DU3/DX2=V32 DE LA MODELISATION 2ND GRAD
+       PRES33  : MULTIPLICATEUR ASSURANT DU3/DX3=V33 DE LA MODELISATION 2ND GRAD
+       >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
                     H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X 
@@ -248,8 +271,10 @@ GRANDEUR_SIMPLE__
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
                     EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
-                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z
-                    VARI     LAG_GV
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
+                    LAG_GV   V11      V12      V13      V21      V22      V23      V31
+                    V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
+                    PRES31   PRES32   PRES33
 <<  DOMMAG   : DOMMAGE
        DOMA     :
        TRIAX    : TAUX DE TRIAXIALITE
@@ -269,14 +294,26 @@ GRANDEUR_SIMPLE__
                     INVA_2SG PRE1     P1DX     P1DY     P1DZ     PRE2     P2DX     P2DY
                     P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
                     VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y
-                    VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR
+                    VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   DEPV     DGONFX1
+                    DGONFX2  DGONFX3  DEPV11   DEPV12   DEPV13   DEPV21   DEPV22   DEPV23
+                    DEPV31   DEPV32   DEPV33   DV11X1   DV11X2   DV11X3   DV12X1   DV12X2
+                    DV12X3   DV13X1   DV13X2   DV13X3   DV21X1   DV21X2   DV21X3   DV22X1
+                    DV22X2   DV22X3   DV23X1   DV23X2   DV23X3   DV31X1   DV31X2   DV31X3
+                    DV32X1   DV32X2   DV32X3   DV33X1   DV33X2   DV33X3   PRES     PRES11
+                    PRES12   PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33
     EPSI_C   = C    EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     EXX      EYY
                     EXY      KXX      KYY      KXY      EPX      GAXY     GAXZ     GAT
                     KY       KZ       GAX      GAY      INVA_2   PRIN_1   PRIN_2   PRIN_3
                     INVA_2SG PRE1     P1DX     P1DY     P1DZ     PRE2     P2DX     P2DY
                     P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
                     VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y
-                    VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR
+                    VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   DEPV     DGONFX1
+                    DGONFX2  DGONFX3  DEPV11   DEPV12   DEPV13   DEPV21   DEPV22   DEPV23
+                    DEPV31   DEPV32   DEPV33   DV11X1   DV11X2   DV11X3   DV12X1   DV12X2
+                    DV12X3   DV13X1   DV13X2   DV13X3   DV21X1   DV21X2   DV21X3   DV22X1
+                    DV22X2   DV22X3   DV23X1   DV23X2   DV23X3   DV31X1   DV31X2   DV31X3
+                    DV32X1   DV32X2   DV32X3   DV33X1   DV33X2   DV33X3   PRES     PRES11
+                    PRES12   PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33
 <<  ERREUR  : GRANDEUR LIEE A L'ESTIMATEUR D'ERREUR EN RESIDU
      Pour chaque élément :
        ERREST : erreur absolue
@@ -557,7 +594,13 @@ GRANDEUR_SIMPLE__
                     FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
                     QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
                     VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
-                    SI_ARC   SI_CONS  SI_NORM
+                    SI_ARC   SI_CONS  SI_NORM  PRES     PRES11   PRES12   PRES13   PRES21
+                    PRES22   PRES23   PRES31   PRES32   PRES33   SIG1     SIG2     SIG3
+                    SIG111   SIG112   SIG113   SIG121   SIG122   SIG123   SIG131   SIG132
+                    SIG133   SIG211   SIG212   SIG213   SIG221   SIG222   SIG223   SIG231
+                    SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
+                    SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
+                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33
 <<  QXX QXY QYX QYY QZX QZY : CONTRAINTES GENERALISEES
                                POUR ASSUMED STRAIN QUAS4 >>
     SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
@@ -573,7 +616,13 @@ GRANDEUR_SIMPLE__
                     FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
                     QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
                     VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
-                    SI_ARC   SI_CONS  SI_NORM
+                    SI_ARC   SI_CONS  SI_NORM  PRES     PRES11   PRES12   PRES13   PRES21
+                    PRES22   PRES23   PRES31   PRES32   PRES33   SIG1     SIG2     SIG3
+                    SIG111   SIG112   SIG113   SIG121   SIG122   SIG123   SIG131   SIG132
+                    SIG133   SIG211   SIG212   SIG213   SIG221   SIG222   SIG223   SIG231
+                    SIG232   SIG233   SIG311   SIG312   SIG313   SIG321   SIG322   SIG323
+                    SIG331   SIG332   SIG333   DEPV     DEPV11   DEPV12   DEPV13   DEPV21
+                    DEPV22   DEPV23   DEPV31   DEPV32   DEPV33
     SING_R   = R    DEGRE    TAILLE
     SIZZ_R   = R    SIZZ
     SOUR_F   = K8   SOUR     VNOR

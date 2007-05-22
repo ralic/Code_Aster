@@ -11,7 +11,7 @@ C
       LOGICAL        LRESU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,13 +69,13 @@ C     ------------------------------------------------------------------
       CHARACTER*8   NOMVAR(30)
       CHARACTER*8   BLANC,NOMCO
       INTEGER       NBCMP,IPCMP(30),IUTIL
-      LOGICAL       LTABL(150)
+      LOGICAL       LTABL(180)
 C
 C  --- INITIALISATIONS ----
 C
       CALL JEMARQ()
 
-      IF (NCMPMX.GT.150) CALL U2MESS('F','PREPOST2_18')
+      IF (NCMPMX.GT.180) CALL U2MESS('F','PREPOST2_18')
 C
       IF (.NOT.LRESU) THEN
          CALL JEVEUO ( '&&OP0039.LAST', 'E', JLAST )

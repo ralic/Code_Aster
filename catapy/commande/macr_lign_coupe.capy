@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/05/2007   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +80,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table
            DIRECTION       =SIMP(statut='f',typ='R',max='**'),  
 
 
-           b_local        =BLOC(condition = "REPERE=='LOCAL'",
+           b_local        =BLOC(condition = "REPERE=='LOCAL' ",
              VECT_Y          =SIMP(statut='o',typ='R',min=2,max=3),),
 
            b_utili        =BLOC(condition = "REPERE=='UTILISATEUR'",

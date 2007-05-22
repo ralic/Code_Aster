@@ -1,6 +1,6 @@
       SUBROUTINE UTTGEL ( NOMTE, NDIM, TYPGEO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,10 +57,12 @@ C
         ELSEIF ( NOMTE(1:9).EQ.'THH_AXIS_' .OR.
      >           NOMTE(1:9).EQ.'HHM_AXIS_' .OR.
      >           NOMTE(1:9).EQ.'THM_AXIS_' .OR.
-     >           NOMTE(1:9).EQ.'THV_AXIS_' ) THEN
+     >           NOMTE(1:9).EQ.'THV_AXIS_' .OR.
+     >           NOMTE(1:9).EQ.'HH2_AXIS_' ) THEN
           IAUX = 10
         ELSEIF ( NOMTE(1:8).EQ.'THH2M_DP' .OR.
-     >           NOMTE(1:8).EQ.'HM_AXIS_' ) THEN
+     >           NOMTE(1:8).EQ.'HM_AXIS_' .OR.
+     >           NOMTE(1:8).EQ.'HH_AXIS_' ) THEN
           IAUX = 9
         ELSEIF ( NOMTE(1:7).EQ.'THHM_DP' .OR.
      >           NOMTE(1:7).EQ.'HH2M_DP' .OR.
@@ -69,9 +71,11 @@ C
         ELSEIF ( NOMTE(1:6).EQ.'THM_DP' .OR.
      >           NOMTE(1:6).EQ.'THH_DP' .OR.
      >           NOMTE(1:6).EQ.'HHM_DP' .OR.
-     >           NOMTE(1:6).EQ.'THV_DP' ) THEN
+     >           NOMTE(1:6).EQ.'THV_DP' .OR.
+     >           NOMTE(1:6).EQ.'HH2_DP' ) THEN
           IAUX = 7
-        ELSEIF ( NOMTE(1:5).EQ.'HM_DP' ) THEN
+        ELSEIF ( NOMTE(1:5).EQ.'HM_DP' .OR.
+     >           NOMTE(1:5).EQ.'HH_DP' ) THEN
           IAUX = 6
 C
 C 1.2. ==> CAS GENERAL
@@ -97,9 +101,11 @@ C
         ELSEIF ( NOMTE(1:4).EQ.'THM_' .OR.
      >           NOMTE(1:4).EQ.'THH_' .OR.
      >           NOMTE(1:4).EQ.'HHM_' .OR.
-     >           NOMTE(1:4).EQ.'THV_' ) THEN
+     >           NOMTE(1:4).EQ.'THV_' .OR.
+     >           NOMTE(1:4).EQ.'HH2_' ) THEN
           IAUX = 5
-        ELSEIF ( NOMTE(1:3).EQ.'HM_' ) THEN
+        ELSEIF ( NOMTE(1:3).EQ.'HM_'  .OR.
+     >           NOMTE(1:3).EQ.'HH_' ) THEN
           IAUX = 4
 C
 C 2.2. ==> CAS GENERAL

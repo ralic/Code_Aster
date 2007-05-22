@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
+#& MODIF COMMUN  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -118,6 +118,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "BAZANT_FD",
                                         "BETON_UMLV_FP",
                                         "BETON_DOUBLE_DP",
+                                        "KIT_HH",
                                         "KIT_HM",
                                         "KIT_HHM",
                                         "KIT_THH",
@@ -236,6 +237,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           GRANGER_FP_V    =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
           BAZANT_FD       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           BETON_DOUBLE_DP =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
+          KIT_HH          =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
           KIT_HM          =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
           KIT_HHM         =SIMP(statut='c',typ='I',defaut=0,into=(0,)),
           KIT_THH         =SIMP(statut='c',typ='I',defaut=0,into=(0,)),

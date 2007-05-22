@@ -1,10 +1,10 @@
       SUBROUTINE DIMTHM(NOMTE,NDLNO,NDLNM,NDIM)
-      IMPLICIT      NONE
+      IMPLICIT NONE
       INTEGER       NDLNO,NDLNM,NDIM
       CHARACTER*16  NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,18 @@ C ======================================================================
 C --- SI MODELISATION = THH2 -------------------------------------------
 C ======================================================================
         NDLNO = 3
+        NDLNM = 0
+      ELSE IF (NOMTE(1:3).EQ.'HH_') THEN
+C ======================================================================
+C --- SI MODELISATION = HH_ -------------------------------------------
+C ======================================================================
+        NDLNO = 2
+        NDLNM = 0
+      ELSE IF (NOMTE(1:4).EQ.'HH2_') THEN
+C ======================================================================
+C --- SI MODELISATION = HH2 -------------------------------------------
+C ======================================================================
+        NDLNO = 2
         NDLNM = 0
       ELSE IF (NOMTE(1:4).EQ.'THV_') THEN
 C ======================================================================

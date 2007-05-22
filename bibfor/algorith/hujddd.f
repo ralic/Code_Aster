@@ -1,10 +1,10 @@
-         SUBROUTINE HUJDDD (CARAC, K, MATER, IND, YF,
-     &                      VEC, MAT, IRET)
-         IMPLICIT NONE
+      SUBROUTINE HUJDDD (CARAC, K, MATER, IND, YF,
+     &                   VEC, MAT, IRET)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2007  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,7 +28,7 @@ C   CARAC  :  = 'DFDS'   DERIVE PREMIERE DU SEUIL F PAR RAPPORT A SIGMA
 C   	      = 'PSI'
 C   	      = 'DPSIDS' DERIVE DE LA LOI D'ECOULEMENT (K=1,2,3)
 C                        PAR RAPPORT A SIGMA
-C   K	   :  NUMERO DU MECANISME
+C   K	     :  NUMERO DU MECANISME
 C   MATER  :  PARAMETRES MATERIAU
 C   IND    :  TABLEAU DE CORRESPONDANCE
 C             NUMERO D'ORDRE / NUMERO DE MECANISME
@@ -40,130 +40,138 @@ C   IRET   :  CODE RETOUR
 C   		   = 0   OK
 C   		   = 1   NOOK
 C =====================================================================
-        INTEGER       NDT, NDI, I, J, K, MOD, IK
-        INTEGER       IND(4), NBMECA, IRET
-        INTEGER       IFM, NIV
-        REAL*8        MATER(20,2), COEF
-        PARAMETER     (MOD = 15)
-        REAL*8        BETA, M, PCO, PC, PREF
-        REAL*8        EPSVPD, TRACE, B, PHI,ANGDIL
-        REAL*8        DD, P, Q, SI, SI1, SIGKIJ
-        REAL*8        YF(MOD), R, SIGF(6), SIGD(6)
-        REAL*8        VEC(6), MAT(6,6), KSI
-        REAL*8        D12, D13, UN, ZERO, DEUX, TROIS
-        REAL*8        PSI(3), TOLE, DEGR, AEXP, EXPTOL, R8MAEM
-        CHARACTER*6   CARAC
-        LOGICAL       CONSOL, TRACT, DEBUG
+C   CHARACTER*8        ZK8
+C   CHARACTER*16                ZK16
+C   CHARACTER*24                          ZK24
+C   CHARACTER*32                                    ZK32
+C   CHARACTER*80                                              ZK80
+C   COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      
+      INTEGER       NDT, NDI, I, J, K, MOD, IK
+      INTEGER       IND(4), NBMECA, IRET, IADZI, IAZK24
+      INTEGER       IFM, NIV
+      REAL*8        MATER(20,2), COEF
+      PARAMETER     (MOD = 15)
+      REAL*8        BETA, M, PCO, PC, PREF
+      REAL*8        EPSVPD, TRACE, B, PHI,ANGDIL
+      REAL*8        DD, P, Q, SI, SI1, SIGKIJ
+      REAL*8        YF(MOD), R, SIGF(6), SIGD(6)
+      REAL*8        VEC(6), MAT(6,6), KSI
+      REAL*8        D12, D13, UN, ZERO, DEUX, TROIS
+      REAL*8        PSI(3), TOLE, DEGR, AEXP, EXPTOL, R8MAEM
+      CHARACTER*6   CARAC
+      CHARACTER*8   NOMAIL
+      LOGICAL       CONSOL, TRACT, DEBUG
 C =====================================================================
-C        PARAMETER     ( DSQR  = 1.41421356237D0  )
-        PARAMETER     ( D12   = 0.5D0  )
-        PARAMETER     ( D13   = 0.3333333333334D0 )
-        PARAMETER     ( UN    = 1.D0   )
-        PARAMETER     ( ZERO  = 0.D0   )
-        PARAMETER     ( DEUX  = 2.D0   )
-        PARAMETER     ( TROIS = 3.D0   )
-        PARAMETER     ( TOLE  = 1.D-6  )
-        PARAMETER     ( DEGR  = 0.0174532925199D0 )
+C      PARAMETER     ( DSQR  = 1.41421356237D0  )
+      PARAMETER     ( D12   = 0.5D0  )
+      PARAMETER     ( D13   = 0.3333333333334D0 )
+      PARAMETER     ( UN    = 1.D0   )
+      PARAMETER     ( ZERO  = 0.D0   )
+      PARAMETER     ( DEUX  = 2.D0   )
+      PARAMETER     ( TROIS = 3.D0   )
+      PARAMETER     ( TOLE  = 1.D-6  )
+      PARAMETER     ( DEGR  = 0.0174532925199D0 )
 C =====================================================================
-        COMMON /TDIM/   NDT, NDI
-        COMMON /MESHUJ/ DEBUG
+      COMMON /TDIM/   NDT, NDI
+      COMMON /MESHUJ/ DEBUG
 
-        CALL INFNIV (IFM, NIV)
+      CALL INFNIV (IFM, NIV)
 
 
 C =====================================================================
 C --- PROPRIETES HUJEUX MATERIAU --------------------------------------
 C =====================================================================
-        BETA    = MATER(2,2)
-        B       = MATER(4,2)
-        PHI     = MATER(5,2)
-        ANGDIL  = MATER(6,2)
-        PCO     = MATER(7,2)
-        PREF    = MATER(8,2)
-        M       = SIN(DEGR*PHI)
+      BETA    = MATER(2,2)
+      B       = MATER(4,2)
+      PHI     = MATER(5,2)
+      ANGDIL  = MATER(6,2)
+      PCO     = MATER(7,2)
+      PREF    = MATER(8,2)
+      M       = SIN(DEGR*PHI)
  
 
 C =====================================================================
 C --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES --------------------
 C =====================================================================
-        NBMECA = 0
-        DO 4 I = 1, 4
-          IF ( IND(I) .GT. 0 ) NBMECA = NBMECA+1
- 4        CONTINUE
+      NBMECA = 0
+      DO 4 I = 1, 4
+        IF ( IND(I) .GT. 0 ) NBMECA = NBMECA+1
+ 4      CONTINUE
  
-        DO 5 I = 1, NBMECA
-          IF (IND(I) .EQ. K) R = YF(NDT+1+I)
- 5        CONTINUE
+      DO 5 I = 1, NBMECA
+        IF (IND(I) .EQ. K) R = YF(NDT+1+I)
+ 5      CONTINUE
  
-        EPSVPD = YF(NDT+1)
-        
-        EXPTOL = LOG(R8MAEM())
-        EXPTOL = MIN(EXPTOL, 40.D0)
-        AEXP   = -BETA*EPSVPD
-        
-        IF (AEXP .GE. EXPTOL) THEN
-          IRET = 1
-          GOTO 999
-        ENDIF
-        
-        PC = PCO*EXP(-BETA*EPSVPD)
+      EPSVPD = YF(NDT+1)
+      
+      EXPTOL = LOG(R8MAEM())
+      EXPTOL = MIN(EXPTOL, 40.D0)
+      AEXP   = -BETA*EPSVPD
+      
+      IF (AEXP .GE. EXPTOL) THEN
+        IRET = 1
+        GOTO 999
+      ENDIF
+      
+      PC = PCO*EXP(-BETA*EPSVPD)
 
-        DO 25 I = 1, NDI
-          SIGF(I) = YF(I)
- 25       CONTINUE
-        DO 26 I = NDI+1, NDT
-C          SIGF(I) = YF(I)/DSQR
-          SIGF(I) = YF(I)
- 26       CONTINUE
+      DO 25 I = 1, NDI
+        SIGF(I) = YF(I)
+ 25     CONTINUE
+      DO 26 I = NDI+1, NDT
+C        SIGF(I) = YF(I)/DSQR
+        SIGF(I) = YF(I)
+ 26     CONTINUE
 
 
 C ---> PROJECTION DES CONTRAINTES DANS LE PLAN DEVIATEUR K
-C        CALCUL DU DEVIATIEUR SIGDK (6X1), PK ET QK
-C        CALL HUJPROJ ( K, SIGF, SIGK, SIGDK, PK, QK )
-        IF (K .EQ. 4) GOTO 100
-        
-        DO 28 I = 1, 3
-          PSI(I) = ZERO
- 28       CONTINUE
+C      CALCUL DU DEVIATIEUR SIGDK (6X1), PK ET QK
+C      CALL HUJPROJ ( K, SIGF, SIGK, SIGDK, PK, QK )
+      IF (K .EQ. 4) GOTO 100
+      
+      DO 28 I = 1, 3
+        PSI(I) = ZERO
+ 28     CONTINUE
  
-        DO 27 I = 1, 6
-          SIGD(I) = ZERO
- 27       CONTINUE
+      DO 27 I = 1, 6
+        SIGD(I) = ZERO
+ 27     CONTINUE
   
-        DD = ZERO
-        P  = ZERO
-        SI = UN
-        DO 10 I = 1, NDI
-          IF (I .NE. K) THEN
-            PSI(I) = SI
-            P  = P + SIGF(I)
-            DD = DD + SIGF(I)*SI
-            SI = -SI
-          ENDIF
-  10      CONTINUE
-        DD = D12*DD
-        P  = D12*P
-        
-        SI = UN
-        DO 11 I = 1, NDI
-          IF (I .NE. K) THEN
-            SIGD(I) = DD*SI
-            SI      = -SI
-          ENDIF
-  11      CONTINUE
-        SIGKIJ          = SIGF( NDT+1-K )
-        SIGD( NDT+1-K ) = SIGKIJ
-         
-        Q = DD**DEUX + SIGKIJ**DEUX
-        Q = SQRT(Q)
+      DD = ZERO
+      P  = ZERO
+      SI = UN
+      DO 10 I = 1, NDI
+        IF (I .NE. K) THEN
+          PSI(I) = SI
+          P  = P + SIGF(I)
+          DD = DD + SIGF(I)*SI
+          SI = -SI
+        ENDIF
+  10    CONTINUE
+      DD = D12*DD
+      P  = D12*P
+      
+      SI = UN
+      DO 11 I = 1, NDI
+        IF (I .NE. K) THEN
+          SIGD(I) = DD*SI
+          SI      = -SI
+        ENDIF
+  11    CONTINUE
+      SIGKIJ          = SIGF( NDT+1-K )
+      SIGD( NDT+1-K ) = SIGKIJ
+       
+      Q = DD**DEUX + SIGKIJ**DEUX
+      Q = SQRT(Q)
 
-        COEF = D12
-C        COEF=UN
+      COEF = D12
+C      COEF=UN
 
-        CONSOL = (-Q/PREF) .LE. TOLE
-        TRACT  = (P/PREF) .LE. TOLE
+      CONSOL = (-Q/PREF) .LE. TOLE
+      TRACT  = (P/PREF) .LE. TOLE
 
- 100    CONTINUE
+ 100  CONTINUE
 
 
 C =====================================================================
@@ -177,8 +185,9 @@ C ON NE CALCULE PAS POUR LE CAS ISOTROPE (K=4) CAR DPSIDS = [ 0 ]
         CALL LCINMA(ZERO,MAT)
         IF (CONSOL) GOTO 600
         
-        CALL HUJKSI('KSI   ', MATER, R, KSI)
-  
+        CALL HUJKSI('KSI   ', MATER, R, KSI, IRET)
+        IF (IRET .EQ. 1) GOTO 999
+
         DO 50 I = 1, NDI
  
           DO 51 J = 1, NDI
@@ -227,8 +236,13 @@ C =====================================================================
         IF (K .LT. 4) THEN
        
           IF (TRACT) THEN
-            IF (DEBUG) WRITE (IFM,'(A)')
-     &                 'HUJDDD :: LOG(PK/PC) NON DEFINI'
+            IF (DEBUG) THEN
+C              CALL TECAEL(IADZI,IAZK24)
+C              NOMAIL = ZK24(IAZK24-1+3) (1:8)
+              NOMAIL='#A FAIRE#'
+              WRITE (IFM,'(A)')
+     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ',NOMAIL
+            ENDIF
             IRET = 1
             GOTO 999
           ENDIF
@@ -268,13 +282,19 @@ C =====================================================================
         IF (K .LT. 4) THEN
        
           IF (TRACT) THEN
-            IF (DEBUG) WRITE (IFM,'(A)')
-     &                 'HUJDDD :: LOG(PK/PC) NON DEFINI'
+            IF (DEBUG) THEN
+C              CALL TECAEL(IADZI,IAZK24)
+C              NOMAIL = ZK24(IAZK24-1+3) (1:8)
+              NOMAIL='#A FAIRE#'
+              WRITE (IFM,'(10(A))')
+     &        'HUJDDD :: LOG(PK/PC) NON DEFINI DANS LA MAILLE ',NOMAIL
+            ENDIF
             IRET = 1
             GOTO 999
           ENDIF
           
-          CALL HUJKSI ('KSI   ', MATER, R, KSI)
+          CALL HUJKSI ('KSI   ', MATER, R, KSI, IRET)
+          IF (IRET .EQ. 1) GOTO 999
           
           DO 81 I = 1, NDI
             IF(I.NE.K) THEN

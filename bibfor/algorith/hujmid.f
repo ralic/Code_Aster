@@ -3,7 +3,7 @@
      &  NEGMUL, NITER, EPSCON, IRET )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,10 +43,12 @@ C   -------------------------------------------------------------------
         INTEGER   NDT, NDI, NVI, NR, NMOD, NITER, IRET
         INTEGER   I, J, K, KK, ITER, INDI(4)
         INTEGER   NITIMP, NBMECA
-        INTEGER   UMESS, IUNIFI
+        INTEGER   UMESS, IUNIFI, IFM, NIV
         INTEGER   ESSAI, ESSMAX
+        LOGICAL   DEBUG, NOCONV, AREDEC, STOPNC, NEGMUL(4)
 
-        COMMON    /TDIM/ NDT, NDI
+        COMMON    /TDIM/   NDT, NDI
+        COMMON    /MESHUJ/ DEBUG
 
         PARAMETER (NMOD   = 15)
         PARAMETER (NITIMP = 200)
@@ -62,15 +64,11 @@ C   -------------------------------------------------------------------
         REAL*8    DET, ZERO, UN
 C    SI ABS(COS_NORMALES) < TOLROT RELAX = RELAX*DECREL
 C        REAL*8    TOLROT, DECREL
-        REAL*8    RELAX(ESSMAX+1), ROTAGD(ESSMAX+1),
-     &            NOR1(7), NOR2(7)
+        REAL*8    RELAX(ESSMAX+1), ROTAGD(ESSMAX+1), NOR1(7), NOR2(7)
         REAL*8    ERIMP(NITIMP,4)
 
 C         PARAMETER (TOLROT = 0.8D0)
 C         PARAMETER (DECREL = 0.5D0)
-
-        LOGICAL   NOCONV, AREDEC, STOPNC, NEGMUL(4)
-        LOGICAL DEVNU1, DEVNU2, TRA1, TRA2
 
         CHARACTER*8 MOD
 
@@ -80,6 +78,8 @@ C         PARAMETER (DECREL = 0.5D0)
 C ---> DIMENSION DU PROBLEME:
 C      NR = NDT(SIG)+ 1(EVP)+ NBMECA(R)+ NBMEC(DLAMB)
         UMESS  = IUNIFI('MESSAGE')
+        CALL INFNIV (IFM,NIV)
+
         NOCONV = .FALSE.
 
         NBMECA = 0
@@ -117,11 +117,20 @@ C ---> INITIALISATION DE YD = (SIGD, VIND, ZERO)
 
 C ---> INITIALISATION : DY : CALCUL DE LA SOLUTION D ESSAI INITIALE 
 C      (SOLUTION EXPLICITE)
-         CALL HUJIID (MOD, MATER, INDI, DEPS, YD, DY)
+      CALL HUJIID (MOD, MATER, INDI, DEPS, YD, DY)
 
 
 C ---> INCREMENTATION DE YF = YD + DY
-        CALL LCSOVN (NR, YD, DY, YF)
+      CALL LCSOVN (NR, YD, DY, YF)
+      
+      IF (DEBUG) THEN
+
+        WRITE (IFM,'(A)') '--------------------------------------------'
+        WRITE (IFM,'(A)') '- SIXX - SIYY - SIZZ - SIXY - SIXZ - SIYZ -
+     &  EPSVP - R1 - R2 - R3 - R4 - DLA1 - DLA2 - DLA3 - DLA4 -'
+        WRITE (IFM,1000) '  > ESSAI :: YF=',(YF(I),I=1,NR)
+      
+      ENDIF
 
 
 C----------------------------------------------------------
@@ -151,25 +160,24 @@ C      ET CALCUL DU JACOBIEN DU SYSTEME A T+DT : DRDY(DY)
 C ---> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
         CALL LCEQVN (NR, R, DDY)
         CALL MGAUSS ('NFVP', DRDY, DDY, NMOD, NR, 1, DET, IRET)
-        IF (IRET.EQ.1) GOTO 9999
+        IF (IRET.GT.0) GOTO 9999
         RELAX(1) = UN
         ESSAI    = 1
 
         DO 42 I = 1, NR
           DY(I) = DY(I) + DDY(I)
           YF(I) = YD(I) + DY(I)
-   42     CONTINUE
+ 42       CONTINUE
+   
+        IF (DEBUG) THEN
 
+          WRITE(IFM,*)
+          WRITE(IFM,1001) '  $$ ITER=',ITER
+          WRITE(IFM,1000) '     DDY=',(DDY(I),I=1,NR)
+          WRITE(IFM,1000) '     DY =',(DY(I),I=1,NR)
+          WRITE(IFM,1000) '     YF =',(YF(I),I=1,NR)
 
-C ---> VERIFICATION DE LA CONVERGENCE:
-C        1) ERREUR = !!DDY!!/!!DY!! < TOLER
-C         CALL LCNRVN(NR,DDY,ERR1)
-C         CALL LCNRVN(NR,DY,ERR2)
-C         IF(ERR2.EQ.0.D0) THEN
-C             ERR = ERR1
-C           ELSE
-C             ERR = ERR1 /ERR2
-C           ENDIF
+        ENDIF
 
 
 C ---> 2) ERREUR = RESIDU
@@ -201,7 +209,8 @@ C ----  NON CONVERVENCE: ITERATION MAXI ATTEINTE  ----
              CALL HUJNCV ('HUJMID', NITIMP, ITER, NDT, NVI, UMESS,
      &                   ERIMP, EPSD, DEPS, SIGD, VIND)
            ELSE
-             NOCONV = .TRUE.
+             IRET = 1
+             GOTO 9999
            ENDIF
           
         ENDIF
@@ -212,7 +221,7 @@ C ---- VERIFICATION DES MULTIPLICATEURS PLASTIQUES
         DO 210 K = 1, NBMECA
           IF (YF(NDT+1+NBMECA+K) .LT. ZERO) 
      &    NEGMUL(INDI(K)) = .TRUE.
-210       CONTINUE
+ 210      CONTINUE
         
         NITER  = ITER
         EPSCON = ERR
@@ -226,5 +235,14 @@ C ---> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES
           VINF(KK) = YF(NDT+1+K)
  250      CONTINUE
 
+        GOTO 2000
+
  9999   CONTINUE
+        NOCONV = .TRUE.
+ 
+ 1000   FORMAT(A,15(1X,E10.3))
+ 1001   FORMAT(A,2(I3))
+
+ 2000   CONTINUE
+
         END

@@ -1,9 +1,9 @@
-        SUBROUTINE HUJPLA (MOD, CRIT, MATER, SEUILI, SEUILD,
-     &             NVI, EPSD, DEPS, SIGD, VIND, SIGF, VINF, MECANI,
-     &             NITER, NDEC, EPSCON, IRET)
-        IMPLICIT NONE
+      SUBROUTINE HUJPLA (MOD, CRIT, MATER, SEUILI, SEUILD,
+     &           NVI, EPSD, DEPS, SIGD, VIND, SIGF, VINF, MECANI,
+     &           NITER, NDEC, EPSCON, IRET)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,25 +43,25 @@ C   	IRET   :  CODE RETOUR DE  L'INTEGRATION DE LA LOI DE HUJEUX
 C   		     IRET=0 => PAS DE PROBLEME
 C   		     IRET=1 => ECHEC 
 C   ------------------------------------------------------------------
-        INTEGER       NDT, NDI, NVI, NITER, NDEC, IRET
-        INTEGER       I, K, IFM, NIV
-        INTEGER       NVIMAX
-        PARAMETER     (NVIMAX=16)
-        REAL*8        EPSD(6), DEPS(6)
-        REAL*8        SIGD(6), SIGF(6), PREDIC(6)
-        REAL*8        SIGD0(6), DEPS0(6), PREDI0(6)
-        REAL*8        VIND(*), VINF(*), VIND0(NVIMAX), EPSCON
-        REAL*8        MATER(20,2), CRIT(*), CRITR(4)
-        REAL*8        SEUILI, SEUILD(3) , PA, PREF, I1F
-        REAL*8        ZERO, UN, TOLE
-        LOGICAL       CHGMEC, NOCONV, AREDEC, STOPNC, NEGMUL(4)
-        CHARACTER*6   MECANI
-        CHARACTER*8   MOD
-        PARAMETER     (TOLE  = 1.D-6)
-        PARAMETER     (ZERO  = 0.D0)
-        PARAMETER     (UN    = 1.D0)
-        INTEGER       IDEC, NITER0
-        LOGICAL       DEBUG
+        INTEGER     NDT, NDI, NVI, NITER, NDEC, IRET
+        INTEGER     I, K, IFM, NIV
+        INTEGER     NVIMAX
+        PARAMETER   (NVIMAX=16)
+        REAL*8      EPSD(6), DEPS(6)
+        REAL*8      SIGD(6), SIGF(6), PREDIC(6)
+        REAL*8      SIGD0(6), DEPS0(6), PREDI0(6)
+        REAL*8      VIND(*), VINF(*), VIND0(NVIMAX), EPSCON
+        REAL*8      MATER(20,2), CRIT(*), CRITR(4)
+        REAL*8      SEUILI, SEUILD(3) , PA, PREF, I1F
+        REAL*8      ZERO, UN, TOLE
+        LOGICAL     CHGMEC, NOCONV, AREDEC, STOPNC, NEGMUL(4)
+        CHARACTER*6 MECANI
+        CHARACTER*8 MOD
+        PARAMETER   (TOLE  = 1.D-6)
+        PARAMETER   (ZERO  = 0.D0)
+        PARAMETER   (UN    = 1.D0)
+        INTEGER     IDEC, NITER0
+        LOGICAL     DEBUG
 
         COMMON /TDIM/   NDT, NDI
         COMMON /MESHUJ/ DEBUG
@@ -121,6 +121,7 @@ C  APRES UNE NON CONVERGENCE, POUR  INT(CRIT(5)) < -1
   500   CONTINUE
         IF (NOCONV) THEN
            NDEC   = -INT(CRIT(5))
+           IRET   = 0
            AREDEC = .TRUE.
         ENDIF
 
@@ -131,14 +132,30 @@ C   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
         CALL LCEQVN (NVI, VIND0, VIND)
 
         DO  10 I = 1, NDT
-         DEPS(I) = DEPS0(I)/NDEC
+         DEPS(I) = DEPS0(I) /NDEC
          SIGF(I) = SIGD0(I) + (PREDI0(I)-SIGD(I)) /NDEC
  10      CONTINUE
+
+        IF (DEBUG) THEN
+
+          WRITE(IFM,*)
+          WRITE(IFM,'(A)') '==========================================='
+          WRITE(IFM,*)
+          WRITE(IFM,1001) 'NDEC=',NDEC
+
+        ENDIF
 
 
 C  BOUCLE SUR LES DECOUPAGES
 C  -------------------------
         DO 400 IDEC = 1, NDEC
+
+          IF (DEBUG) THEN
+
+            WRITE(IFM,*)
+            WRITE(IFM,1001) '%% IDEC=',IDEC
+
+          ENDIF
 
 
 C SAUVEGARDE PREDIC ELASTIQUE POUR EVENTUEL CHANGEMENT
@@ -166,21 +183,22 @@ C DE MECANISME
 
  100     CONTINUE
 
+
 C--->   RESOLUTION EN FONCTION DES MECANISMES ACTIVES
 C       MECANISMES ISOTROPE ET DEVIATOIRE
 C-----------------------------------------------------
          CALL HUJMID (MOD, CRIT, MATER, NVI, EPSD, DEPS,
-     &     SIGD, SIGF, VIND, VINF, NOCONV, AREDEC, STOPNC,
-     &     NEGMUL, NITER0, EPSCON, IRET)
+     &   SIGD, SIGF, VIND, VINF, NOCONV, AREDEC, STOPNC,
+     &   NEGMUL, NITER0, EPSCON, IRET)
          NITER = NITER + NITER0
 
          IF (NOCONV .AND. (.NOT. AREDEC)) GOTO 500
-         IF (NOCONV) IRET = 1
-         IF (IRET.EQ.1) GOTO 9999
+         IF (NOCONV) GOTO 9999
 
          DO 24 K = 1, 4
            CRITR(K) = ZERO
  24        CONTINUE
+
 
 C --- VERIF FIN INTEGRATION PLASTIQUE
          CALL HUJCRI (MATER, SIGF, VINF, SEUILI)
@@ -193,22 +211,24 @@ C --- VERIF FIN INTEGRATION PLASTIQUE
   23       CONTINUE
 
 
+C---> VERIFICATION DES MECANISMES ACTIFS
+         DO 30 K = 1, 4
+           IF (VIND(5+K) .EQ. ZERO .AND.
+     &         CRITR(K) .GT. ZERO) THEN
+     
+             IF (DEBUG)
+     &       WRITE (IFM,1001)
+     &        'HUJPLA :: INACTIF->ACTIF POUR LE MECANISME NO',K
+             VIND(5+K) = UN
+             CHGMEC    = .TRUE.
+             
+           ENDIF
+  30       CONTINUE
+
+
 C ---> TEST SOLUTIONS FINALES (POSITIVITE DES MULTIPLICATEURS)
           DO 40 K = 1, 4
-            IF (NEGMUL(K) .AND. (.NOT.AREDEC)) THEN
-
-              IF (DEBUG) THEN
-                WRITE (IFM,1001)
-     &          'HUJPLA :: LAMBDA NEGATIF POUR LE MECANISME NO',K
-                WRITE (IFM,'(A)')
-     &          '          - REDECOUPAGE LOCAL DU PAS DE TEMPS -'
-              ENDIF
-              NDEC      = -INT(CRIT(5))
-              NEGMUL(K) = .FALSE.
-              AREDEC    = .TRUE.
-              GOTO 500
-
-            ELSEIF (NEGMUL(K) .AND. AREDEC) THEN
+            IF (NEGMUL(K)) THEN
 
               IF (DEBUG)
      &        WRITE (IFM,1001)
@@ -222,18 +242,9 @@ C      FULL-MECA
             ENDIF
   40        CONTINUE
 
-C---> VERIFICATION DES MECANISMES ACTIFS
-         DO 30 K = 1, 4
-           IF (VIND(5+K) .EQ. ZERO .AND.
-     &         CRITR(K) .GT. ZERO) THEN
-             VIND(5+K) = UN
-             CHGMEC    = .TRUE.
-           ENDIF
-  30       CONTINUE
 
-
-C - SI ON ACTIVE UN MECANISME SUPPLEMENTAIRE : RETOUR
-C   ET SI ON AVAIT CONVERGE
+C - S'IL Y A UN CHANGEMENT DE MECANISME
+C   ET SI L'ON AVAIT CONVERGE : RETOUR AU POINT 100
         IF (CHGMEC .AND. (.NOT. NOCONV)) THEN
 
           IF (DEBUG) WRITE (IFM,'(A)')
@@ -241,12 +252,14 @@ C   ET SI ON AVAIT CONVERGE
           CHGMEC = .FALSE.
 
 
-C --- reinitialisation de sigf à la prediction élastique predic
+C --- REINITIALISATION DE SIGF A LA PREDICTION ELASTIQUE PREDIC
           CALL LCEQVE (PREDIC, SIGF)
           CALL LCEQVN (NVI, VIND, VINF)
           GOTO 100
 
-        ELSE
+
+C --- S'IL N'Y A PAS DE CHANGEMENT DE MECANISME, ON POURSUIT
+        ELSEIF (.NOT. CHGMEC) THEN
 
           IF (IDEC .LT. NDEC) THEN
             CALL LCEQVE (SIGF, SIGD)
@@ -257,11 +270,18 @@ C --- reinitialisation de sigf à la prediction élastique predic
               SIGF(I) = SIGD(I) + (PREDI0(I)-SIGD(I)) /NDEC
  33           CONTINUE
           ENDIF
+  
+        ELSE
+
+          IF (DEBUG) WRITE (IFM,'(A)') 'HUJPLA :: CAS NON PREVU'
+          IRET = 1
+          GOTO 9999
 
         ENDIF
 
  400    CONTINUE
 
 9999    CONTINUE
-1001    FORMAT(A,I2)
+
+1001    FORMAT(A,I3)
         END

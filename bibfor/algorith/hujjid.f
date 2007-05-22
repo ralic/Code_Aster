@@ -2,7 +2,7 @@
      &                     YD, YF, R, SIGNE, DRDY, IRET )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,41 +48,41 @@ C  	         = 0 OK
 C  	         = 1 NOOK : SI LA SUBDIVISION DU PAS DE TEMPS EST ACTIV
 C  		 	    DANS STAT_NON_LINE, IL Y A SUBDIVISION
 C =====================================================================
-        INTEGER       NDT, NDI, NMOD, I, II, J, K, KK, L
-        INTEGER       INDI(4), NBMECA, IRET
-        INTEGER       IFM, NIV
-        PARAMETER     (NMOD = 15)
-        REAL*8        DEPSP(6), DEPSPK(3), DEPSE(6)
-        REAL*8        SIGD(3),SIGF(6),P(3),Q(3),SIGNE(4)
-        REAL*8        YD(NMOD), YF(NMOD), DRDY(NMOD,NMOD)
-        REAL*8        MATER(20,2), N, BETA, D, M, PCO, PREF, PC
-        REAL*8        DEGR, PHI, ANGDIL, MDIL, B, DKSIDR(3)
-        REAL*8        RC(4), DLAMBD(4), DEPSDS(6,6)
-        REAL*8        HOOKNL(6,6), HOOK(6,6), DHOKDS(6,6)
-        REAL*8        I1F, E, NU, AL, LA, MU, COEF0, DCOEF0
-        REAL*8        LE(6), LEVP, LR(4), LF(4), R(NMOD), DELTA(6)
-        REAL*8        DLEDS(6,6), DLEDEV(6), DLEDR(6,4), DLEDLA(6,4)
-        REAL*8        DLEVDS(6), DLEVDE, DLEVDR(4), DLEVDL(4)
-        REAL*8        DLRDS(4,6), DLRDLE(4), DLRDR(4,4), DLRDLA(4,4)
-        REAL*8        DLFDS(4,6), DLFDLE(4), DLFDR(4,4), DLFDLA(4,4)
-        REAL*8        CDE(6), CTILD(6), CD2FDS(6,6)
-        REAL*8        DLADR(6), DLEDR1(6), PSI(24), AD(3), KSI(4)
-        REAL*8        DPSIDS(6,6), DFDS(6), DLEK(6)
-        REAL*8        TRACE, EPSVP, DEPS(6)
-        REAL*8        LEPV, ACYC, AMON, CMON
-        REAL*8        ZERO, UN, D12, D13, DEUX, TRUC
-        REAL*8        TOLE, COEF, MUL, CCOND
-        CHARACTER*8   MOD
-        LOGICAL       DEBUG
+        INTEGER     NDT, NDI, NMOD, I, II, J, K, KK, L
+        INTEGER     INDI(4), NBMECA, IRET
+        INTEGER     IFM, NIV
+        PARAMETER   (NMOD = 15)
+        REAL*8      DEPSP(6), DEPSPK(3), DEPSE(6)
+        REAL*8      SIGD(3),SIGF(6),P(3),Q(3),SIGNE(4)
+        REAL*8      YD(NMOD), YF(NMOD), DRDY(NMOD,NMOD)
+        REAL*8      MATER(20,2), N, BETA, D, M, PCO, PREF, PC
+        REAL*8      DEGR, PHI, ANGDIL, MDIL, B, DKSIDR(3)
+        REAL*8      RC(4), DLAMBD(4), DEPSDS(6,6)
+        REAL*8      HOOKNL(6,6), HOOK(6,6), DHOKDS(6,6)
+        REAL*8      I1F, E, NU, AL, DEMU, COEF0, DCOEF0
+        REAL*8      LE(6), LEVP, LR(4), LF(4), R(NMOD), DELTA(6)
+        REAL*8      DLEDS(6,6), DLEDEV(6), DLEDR(6,4), DLEDLA(6,4)
+        REAL*8      DLEVDS(6), DLEVDE, DLEVDR(4), DLEVDL(4)
+        REAL*8      DLRDS(4,6), DLRDLE(4), DLRDR(4,4), DLRDLA(4,4)
+        REAL*8      DLFDS(4,6), DLFDLE(4), DLFDR(4,4), DLFDLA(4,4)
+        REAL*8      CDE(6), CTILD(6), CD2FDS(6,6)
+        REAL*8      DLADR(6), DLEDR1(6), PSI(24), AD(3), KSI(4)
+        REAL*8      DPSIDS(6,6), DFDS(6), DLEK(6)
+        REAL*8      TRACE, EPSVP, DEPS(6)
+        REAL*8      LEPV, ACYC, AMON, CMON
+        REAL*8      ZERO, UN, D12, D13, DEUX, TRUC
+        REAL*8      TOLE, COEF, MUL, CCOND
+        CHARACTER*8 MOD
+        LOGICAL     DEBUG
 C =====================================================================
-C        PARAMETER     ( DSQR   = 1.41421356237D0  )
-        PARAMETER     ( D12    = 0.5D0  )
-        PARAMETER     ( D13    = 0.333333333334D0  )
-        PARAMETER     ( UN     = 1.D0   )
-        PARAMETER     ( ZERO   = 0.D0   )
-        PARAMETER     ( DEUX   = 2.D0   )
-        PARAMETER     ( TOLE   = 1.D-6 )
-        PARAMETER     ( DEGR = 0.0174532925199D0 )
+C        PARAMETER   ( DSQR   = 1.41421356237D0  )
+        PARAMETER   ( D12    = 0.5D0  )
+        PARAMETER   ( D13    = 0.333333333334D0  )
+        PARAMETER   ( UN     = 1.D0   )
+        PARAMETER   ( ZERO   = 0.D0   )
+        PARAMETER   ( DEUX   = 2.D0   )
+        PARAMETER   ( TOLE   = 1.D-6 )
+        PARAMETER   ( DEGR = 0.0174532925199D0 )
 C =====================================================================
         COMMON /TDIM/   NDT, NDI
         COMMON /MESHUJ/ DEBUG
@@ -133,8 +133,9 @@ C =====================================================================
           IF (INDI(K) .LT. 4) THEN
             CALL HUJPRJ (INDI(K), SIGF, SIGD, P(K), Q(K))
             IF ((P(K)/PREF) .LE. TOLE) GOTO 999
-            CALL HUJKSI('DKSIDR', MATER, RC(K), DKSIDR(K))
-            CALL HUJKSI('KSI   ', MATER, RC(K), KSI(K))
+            CALL HUJKSI('DKSIDR', MATER, RC(K), DKSIDR(K), IRET)
+            CALL HUJKSI('KSI   ', MATER, RC(K), KSI(K), IRET)
+            IF (IRET .EQ. 1) GOTO 1000
             AD(K)  = ACYC+KSI(K)*(AMON-ACYC)
           ELSEIF (INDI(K) .EQ. 4) THEN
             KSI(K) = UN
@@ -165,8 +166,7 @@ C =====================================================================
         E  = MATER(1,1)
         NU = MATER(2,1)
         AL = E*(UN-NU) /(UN+NU) /(UN-DEUX*NU)
-        LA = NU*E      /(UN+NU) /(UN-DEUX*NU)
-        MU = D12*E     /(UN+NU)
+        DEMU = E       /(UN+NU)
                 
         
 C =====================================================================
@@ -182,11 +182,11 @@ C =====================================================================
                   HOOK(I,J) = AL
                ENDIF
                IF (I.NE.J) THEN
-                  HOOK(I,J) = LA
+                  HOOK(I,J) = DEMU
                ENDIF
  30            CONTINUE
            DO 35 I = NDI+1, NDT
-             HOOK(I,I) = DEUX*MU
+             HOOK(I,I) = DEMU
  35          CONTINUE
  
  
@@ -491,8 +491,8 @@ C =====================================================================
           DLFDR(K,K) = D*PC /CCOND
         ENDIF
 181     CONTINUE
-        
-        
+
+
 C =====================================================================
 C --- XV. CALCUL DE DLFDEVP (NBMECX1) ---------------------------------
 C =====================================================================
@@ -505,7 +505,7 @@ C =====================================================================
          ENDIF
  190     CONTINUE
 
- 
+
 C =====================================================================
 C --- XVI. CALCUL DE DLFDLA (NBMECXNBMEC) -----------------------------
 C =====================================================================
@@ -513,8 +513,8 @@ C =====================================================================
          DO 200 L = 1, NBMECA
            DLFDLA(K,L) = ZERO
  200       CONTINUE
- 
- 
+
+
 C =====================================================================
 C --- XVII. CALCUL DE LE (6x6) ---------------------------------------
 C =====================================================================
@@ -527,7 +527,7 @@ C REMARQUE: ON A DEJA DEPSE CALCULE AU I.1.
          LE(I) = YF(I) - YD(I) - CDE(I)
  210     CONTINUE
 
- 
+
 C =====================================================================
 C --- XVIII. CALCUL DE LEPV (1X1) -------------------------------------
 C =====================================================================
@@ -540,8 +540,8 @@ C =====================================================================
             LEVP = LEVP + DLAMBD(K)
           ENDIF
  220      CONTINUE
- 
- 
+
+
 C =====================================================================
 C --- XIX. CALCUL DE LR (NBMECX1) -------------------------------------
 C =====================================================================
@@ -555,8 +555,8 @@ C =====================================================================
      &              DLAMBD(K)/CMON*(UN-RC(K))**DEUX
           ENDIF
  230      CONTINUE
-  
- 
+
+
 C =====================================================================
 C --- XX. CALCUL DE LF (NBMECX1) --------------------------------------
 C =====================================================================
@@ -569,7 +569,7 @@ C =====================================================================
           ENDIF
  240      CONTINUE
 
- 
+
 C =====================================================================
 C --- ASSEMBLAGE DE R : -----------------------------------------------
 C =====================================================================

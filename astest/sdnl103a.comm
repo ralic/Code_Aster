@@ -1,4 +1,4 @@
-# MODIF  DATE 11/12/2001   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 22/05/2007   AUTEUR REZETTE C.REZETTE 
 #
 # TITRE DYNAMIQUE D'UN PORTIQUE FORME DE 16 ELEMENTS POU_D_T_GD.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,7 +113,7 @@ RESU1=DYNA_NON_LINE(  MODELE=MO1,
                            _F(  CHARGE = CHA2)),
                       INCREMENT=_F( INST_INIT = 0., LIST_INST = L_INST),
 ###CDURAND###                      ARCHIVAGE=_F( LIST_ARCH = L_ARCHI),
-                      NEWMARK=_F(),
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                       COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
                                     DEFORMATION = 'GREEN_GR'),
                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4,
@@ -129,7 +129,7 @@ RESU2=DYNA_NON_LINE(  MODELE=MO2,
                            _F(  CHARGE = CHA4)),
                       INCREMENT=_F( INST_INIT = 0., LIST_INST = L_INST),
 ###CDURAND##                      ARCHIVAGE=_F( LIST_ARCH = L_ARCHI),
-                      NEWMARK=_F(),
+                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                       COMP_INCR=_F(  RELATION = 'ELAS'),
                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4, ITER_GLOB_MAXI = 20),
                       NEWTON=_F( REAC_ITER = 1)

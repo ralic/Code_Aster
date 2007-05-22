@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 22/05/2007   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,9 +134,7 @@ def crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,resin,mail,nomgrma):
     
     
   if m['TYPE']=='ARC':
-    if m['REPERE'] == 'UTILISATEUR' or m['REPERE'] == 'LOCAL' :
-         UTMESS("F","MACR_LIGN_COUPE","LE TYPE "+m['TYPE']+"N'EST PAS COHERENT AVEC LE CHOIX DU REPERE ( REPERE "+m['REPERE']+" ).")
-    else:
+    if m['REPERE'] == 'CYLINDRIQUE' :
       motscles={}
       motscles['MODI_CHAM']=[]
       motscles['DEFI_REPERE']=[]
@@ -154,6 +152,8 @@ def crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,resin,mail,nomgrma):
       elif dime ==2:
         motscles['DEFI_REPERE'].append(_F(REPERE='CYLINDRIQUE',ORIGINE=ORIGINE,),)
       __remodr=MODI_REPERE(RESULTAT=resin,**motscles)
+    else :
+         UTMESS("F","MACR_LIGN_COUPE","LE TYPE "+m['TYPE']+" N'EST PAS COHERENT AVEC LE CHOIX DU REPERE ( REPERE "+m['REPERE']+" ).")
 
 
 

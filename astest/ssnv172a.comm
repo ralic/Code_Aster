@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 22/05/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -407,7 +407,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
                    NOM_CMP='SIXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-463.307,
+                   VALE=-460.113,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=IMPLKR,
                    INST=TFIN3,
@@ -423,7 +423,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-8.3165E-03,
+                   VALE=-8.32807E-03,
                    REFERENCE='NON_REGRESSION',),
                    ),)
                    
@@ -465,7 +465,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
                    NOM_CMP='SIXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-463.3,PRECISION=0.04,
+                   VALE=-449.998,PRECISION=0.04,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=EXPLKR,
                    INST=TFIN3,
@@ -481,7 +481,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-8.3165E-03,PRECISION=0.01,
+                   VALE=-8.3648E-03,PRECISION=0.01,
                    REFERENCE='AUTRE_ASTER',),
                    ),);
 
@@ -518,7 +518,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
                    NOM_CMP='SIXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-463.3,PRECISION=0.04,
+                   VALE=-334.339,PRECISION=0.04,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=EXPLKRP,
                    INST=TFIN3,
@@ -534,7 +534,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-8.3165E-03,PRECISION=0.01,
+                   VALE=-8.7851E-03,PRECISION=0.01,
                    REFERENCE='AUTRE_ASTER',),
                    ),);
 

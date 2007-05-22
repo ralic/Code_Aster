@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+C MODIF MODELISA  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -121,6 +121,12 @@ C
 
       ELSEIF ( TYPELE(1:3).EQ.'HM_' ) THEN
          CALL HM0018 ( TYPELE, TYPEMO )
+
+      ELSEIF ( TYPELE(1:3).EQ.'HH_' ) THEN
+         CALL HH0018 ( TYPELE, TYPEMO )
+
+      ELSEIF ( TYPELE(1:4).EQ.'HH2_' ) THEN
+         CALL HH2018 ( TYPELE, TYPEMO )
 
       ELSEIF ( TYPELE(1:5).EQ.'THH2_' ) THEN
          CALL THH218 ( TYPELE, TYPEMO )

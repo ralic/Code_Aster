@@ -1,7 +1,7 @@
-      SUBROUTINE HUJKSI (CARAC, MATER, R, KSI)
+      SUBROUTINE HUJKSI (CARAC, MATER, R, KSI, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,10 +31,18 @@ C    R  	:  ECROUISSAGE COURANT (MECANISME DEVIATOIRE)
 C   OUT
 C    KSI (R)	:  VALEUR DE KSI OU DKSIDR
 C     --------------------------------------------------------
-      INTEGER     IFM, NIV
+C  CHARACTER*8        ZK8
+C  CHARACTER*16                ZK16
+C  CHARACTER*24                          ZK24
+C  CHARACTER*32                                    ZK32
+C  CHARACTER*80                                              ZK80
+C  COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      
+      INTEGER     IFM, NIV, IRET, IADZI, IAZK24
       REAL*8      MATER(20,2), R, KSI, RHYS, RMOB, XM, XM1
       REAL*8      ZERO, UN
       CHARACTER*6 CARAC
+      CHARACTER*8 NOMAIL
       LOGICAL     DEBUG
       PARAMETER   (ZERO = 0.D0)
       PARAMETER   (UN = 1.D0)
@@ -56,8 +64,15 @@ C     --------------------------------------------------------
         ELSEIF (R.GT.RMOB) THEN
           KSI = UN
         ELSE
-          IF (DEBUG)
-     &    WRITE(IFM,'(A)')'HUJKSI :: ECROUISSAGE NEGATIF'
+C          IRET = 1
+          KSI=ZERO
+          IF (DEBUG) THEN
+C            CALL TECAEL(IADZI,IAZK24)
+C            NOMAIL = ZK24(IAZK24-1+3) (1:8)
+            NOMAIL='#A FAIRE#'
+            WRITE(IFM,'(A)')
+     &      'HUJKSI :: ECROUISSAGE NEGATIF DANS LA MAILLE ',NOMAIL
+          ENDIF
         ENDIF
       
       ELSEIF (CARAC(1:6).EQ.'DKSIDR') THEN
@@ -70,8 +85,15 @@ C     --------------------------------------------------------
         ELSEIF (R.GT.RMOB) THEN
           KSI = ZERO
         ELSE
-          IF (DEBUG)
-     &    WRITE(IFM,'(A)')'HUJKSI :: ECROUISSAGE NEGATIF'
+C          IRET = 1
+          KSI=ZERO
+          IF (DEBUG) THEN
+C            CALL TECAEL(IADZI,IAZK24)
+C            NOMAIL = ZK24(IAZK24-1+3) (1:8)
+            NOMAIL='#A FAIRE#'
+            WRITE(IFM,'(A)')
+     &      'HUJKSI :: ECROUISSAGE NEGATIF DANS LA MAILLE ',NOMAIL
+          ENDIF
         ENDIF
         
       ELSE

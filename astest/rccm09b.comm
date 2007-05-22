@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2007   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 22/05/2007   AUTEUR GALENNE E.GALENNE 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,7 @@ TAB_SIG1 = MACR_LIGN_COUPE( RESULTAT=RESU1,
                                           COOR_ORIG= (Xr, 0.),
                                           CENTRE= (Xo, 0.),
                                           ANGLE=360.,
-                                          VECT_Y=(0.,0.,1.),),);
+                                          REPERE='CYLINDRIQUE',),);
 IMPR_TABLE(TABLE = TAB_SIG1)
 
 FISS=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
@@ -168,7 +168,7 @@ TAB_SIG2 = MACR_LIGN_COUPE( RESULTAT=RESU2,
                                           COOR_ORIG= (Xr, 0.),
                                           CENTRE= (Xo, 0.),
                                           ANGLE=360.,
-                                          VECT_Y=(0.,1.),),)
+                                          REPERE='CYLINDRIQUE',),)
 IMPR_TABLE(TABLE = TAB_SIG2)
 
 #

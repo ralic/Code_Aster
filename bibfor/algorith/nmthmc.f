@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -166,10 +166,13 @@ C =====================================================================
 
                   IF ((MODELI(1:6).NE.'3D_THH').AND.
      &                (MODELI(1:6).NE.'3D_HHM').AND.
+     &                (MODELI(1:5).NE.'3D_HH').AND.
      &                (MODELI(1:8).NE.'AXIS_THH').AND.
      &                (MODELI(1:8).NE.'AXIS_HHM').AND.
+     &                (MODELI(1:7).NE.'AXIS_HH').AND.
      &                (MODELI(1:10).NE.'D_PLAN_THH').AND.
      &                (MODELI(1:10).NE.'D_PLAN_HHM').AND.
+     &                (MODELI(1:9) .NE.'D_PLAN_HH').AND.
      &                (MODELI.NE.' ')) THEN
 
                       VALK(1) = COMEL(JJ)
@@ -194,11 +197,14 @@ C =====================================================================
 
                   IF ((MODELI(1:9).NE.'AXIS_HH2M').AND.
      &                (MODELI(1:9).NE.'AXIS_THH2').AND.
+     &                (MODELI(1:8).NE.'AXIS_HH2').AND.
      &                (MODELI(1:11).NE.'D_PLAN_HH2M').AND.
      &                (MODELI(1:11).NE.'D_PLAN_THH2').AND.
      &                (MODELI(1:11).NE.'D_PLAN_THH2').AND.
+     &                (MODELI(1:10).NE.'D_PLAN_HH2').AND.
      &                (MODELI(1:7).NE.'3D_HH2M').AND.
      &                (MODELI(1:7).NE.'3D_THH2').AND.
+     &                (MODELI(1:6).NE.'3D_HH2').AND.
      &                (MODELI.NE.' ')) THEN
 
 

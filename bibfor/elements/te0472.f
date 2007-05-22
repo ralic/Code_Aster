@@ -4,7 +4,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
-C          CORRESPONDANT A UN FLUX THM (THH, THHM, THH, THH2,HHM,HM)
+C          CORRESPONDANT A UN FLUX THM (THH, THHM, THH, THH2,HHM,HM,HH)
 C          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 2D
 
 C          OPTION : 'CHAR_MECA_FLUX_R'
@@ -220,6 +220,39 @@ C ======================================================================
      +                                POIDS*DELTAT*FLUTH*ZR(IVF2+KK+I-1)
  40              CONTINUE
               END IF
+           END IF  
+           IF (NOMTE(1:3).EQ.'HH_' .OR. 
+     +         NOMTE(1:4).EQ.'HH2_' ) THEN
+              NAPRE1 = 0
+              NAPRE2 = 1
+              IF (IOPT.EQ.1) THEN
+                 FLU1 = ZR(IFLUX+(KP-1)*2+NAPRE1)
+                 FLU2 = ZR(IFLUX+(KP-1)*2+NAPRE2)
+              ELSE IF (IOPT.EQ.2) THEN
+                 R = 0.D0
+                 Z = 0.D0
+                 DO 201 I = 1,NNO2
+                    L = (KP-1)*NNO2 + I
+                    R = R + ZR(IGEOM+2*I-2)*ZR(IVF2+L-1)
+                    Z = Z + ZR(IGEOM+2*I-1)*ZR(IVF2+L-1)
+ 201             CONTINUE
+                 VALPAR(1) = R
+                 VALPAR(2) = Z
+                 CALL FOINTE('FM',ZK8(IFLUXF+NAPRE1),2,NOMPAR,VALPAR,
+     +                                                        FLU1,IRET)
+                 CALL FOINTE('FM',ZK8(IFLUXF+NAPRE2),2,NOMPAR,VALPAR,
+     +                                                        FLU2,IRET)
+              END IF
+C ======================================================================
+C --- SI MODELISATION = THHM, THH OU THH2 ------------------------------
+C ======================================================================
+                 DO 401 I = 1,NNO2
+                    L = 2* (I-1) - 1
+                    ZR(IRES+L+1) = ZR(IRES+L+1) -
+     +                                 POIDS*DELTAT*FLU1*ZR(IVF2+KK+I-1)
+                    ZR(IRES+L+2) = ZR(IRES+L+2) -
+     +                                 POIDS*DELTAT*FLU2*ZR(IVF2+KK+I-1)
+ 401             CONTINUE
            END IF  
 C ======================================================================
 C --- SI MODELISATION = THV --------------------------------------------

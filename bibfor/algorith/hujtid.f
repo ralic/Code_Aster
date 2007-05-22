@@ -1,7 +1,7 @@
         SUBROUTINE HUJTID (MOD, MATER, SIG, VIN, DSDE)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,8 +33,8 @@ C ======================================================================
         REAL*8      PHI, ANGDIL, MDIL, DEGR, BHUJ
         REAL*8      RC(4), YD(15), DPSIDS(6,6), P(3), Q(3) 
         REAL*8      MATER(20,2), VIN(*), SIG(6), DSDE(6,6)
-        REAL*8      HOOK(6,6), I1, E, NU, AL, LA, MU
-        REAL*8      COEF, ZERO, D12, D13, UN, DEUX
+        REAL*8      HOOK(6,6), I1, E, NU, AL, DEMU
+        REAL*8      COEF, ZERO, D13, UN, DEUX
         REAL*8      EPSV, TRACE, DFDEVP, EVL
         REAL*8      PSI(24), DFDS(24), B1(4,4), B2(4,4), B(4,4)
         REAL*8      D(4,6), TE(6,6), SIGD(3), B3(4)
@@ -42,11 +42,10 @@ C ======================================================================
         REAL*8      TOLE, DET,BID(6)
         CHARACTER*8 MOD
 C ======================================================================
-        COMMON /TDIM/ NDT, NDI
+        COMMON      /TDIM/ NDT, NDI
 C ======================================================================
         PARAMETER   ( TOLE = 1.D-6 )
         PARAMETER   ( ZERO = 0.D0 )
-        PARAMETER   ( D12 = 0.5D0 )
         PARAMETER   ( D13 = 0.333333333334D0 )
         PARAMETER   ( UN = 1.D0 )
         PARAMETER   ( DEUX = 2.D0 )
@@ -92,7 +91,8 @@ C ---> INITIALISATION DE NBMECA, IND ET YD PAR VIN
             IF (K .LT. 4) THEN
               CALL HUJPRJ (K, SIG, SIGD, P(NBMECA), Q(NBMECA))
               IF ((P(NBMECA)/PREF) .LE. TOLE) GOTO 999
-              CALL HUJKSI('KSI   ', MATER, RC(NBMECA), KSI(NBMECA))
+              CALL HUJKSI('KSI   ',MATER,RC(NBMECA),KSI(NBMECA),IRET)
+              IF (IRET .EQ. 1) GOTO 999
               AD(NBMECA) = ACYC+KSI(NBMECA)*(AMON-ACYC)
             ENDIF
             IND(NBMECA) = K
@@ -124,8 +124,7 @@ C =====================================================================
         E  = MATER(1,1)*(I1/PREF)**N
         NU = MATER(2,1)
         AL = E *(UN-NU) /(UN+NU) /(UN-DEUX*NU)
-        LA = NU*E       /(UN+NU) /(UN-DEUX*NU)
-        MU = D12*E      /(UN+NU)
+        DEMU = E        /(UN+NU)
         CALL LCINMA (ZERO, HOOK)
         
         
@@ -138,11 +137,11 @@ C =====================================================================
           DO 20 I = 1, NDI
             DO 20 J = 1, NDI
               IF(I.EQ.J) HOOK(I,J) = AL
-              IF(I.NE.J) HOOK(I,J) = LA
+              IF(I.NE.J) HOOK(I,J) = DEMU
  20           CONTINUE
 
           DO 30 I = NDI+1, NDT
-            HOOK(I,I) = DEUX* MU
+            HOOK(I,I) = DEMU
  30         CONTINUE
  
  

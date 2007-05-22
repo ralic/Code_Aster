@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,9 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
                                'WI5','UO4','UO5','VO4','VO5','WO4','WO5','UI6','UO6','VI6',
                                'VO6','WI6','WO6','WO','WI1','WO1','GONF','DCX','DCY','DCZ',
                                'H1X','H1Y','H1Z','E1X','E1Y','E1Z','E2X','E2Y','E2Z',
-                               'E3X','E3Y','E3Z','E4X','E4Y','E4Z'),),
+                               'E3X','E3Y','E3Z','E4X','E4Y','E4Z','V11','V12','V13','V21','V22',
+                               'V23','V31','V32','V33','PRES11','PRES12','PRES13','PRES21',
+                               'PRES22','PRES23','PRES31','PRES32','PRES33'),),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -109,7 +111,25 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
              E3Z             =SIMP(statut='f',typ='R' ),      
              E4X             =SIMP(statut='f',typ='R' ),
              E4Y             =SIMP(statut='f',typ='R' ),
-             E4Z             =SIMP(statut='f',typ='R' ),      
+             E4Z             =SIMP(statut='f',typ='R' ),   
+             V11             =SIMP(statut='f',typ='R' ),
+             V12             =SIMP(statut='f',typ='R' ),
+             V13             =SIMP(statut='f',typ='R' ),
+             V21             =SIMP(statut='f',typ='R' ),
+             V22             =SIMP(statut='f',typ='R' ),
+             V23             =SIMP(statut='f',typ='R' ),
+             V31             =SIMP(statut='f',typ='R' ),
+             V32             =SIMP(statut='f',typ='R' ),
+             V33             =SIMP(statut='f',typ='R' ),
+             PRES11          =SIMP(statut='f',typ='R' ),
+             PRES12          =SIMP(statut='f',typ='R' ),
+             PRES13          =SIMP(statut='f',typ='R' ),
+             PRES21          =SIMP(statut='f',typ='R' ),
+             PRES22          =SIMP(statut='f',typ='R' ),
+             PRES23          =SIMP(statut='f',typ='R' ),
+             PRES31          =SIMP(statut='f',typ='R' ),
+             PRES32          =SIMP(statut='f',typ='R' ),
+             PRES33          =SIMP(statut='f',typ='R' ),   
          ),
          THER_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),

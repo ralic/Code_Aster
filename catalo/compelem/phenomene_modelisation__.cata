@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -654,6 +654,26 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ THV_DPTR6S
               MAILLE__ SEG3      ELEMENT__ THV_D_PLAN_SE3
 
+       MODELISATION__ 'D_PLAN_HHS'       DIM__ 2 2   CODE__ 'DZ1'
+             MAILLE__ QUAD8     ELEMENT__ HH_DPQ8S
+             MAILLE__ TRIA6     ELEMENT__ HH_DPTR6S
+             MAILLE__ SEG3      ELEMENT__ HH_D_PLAN_SE3
+
+       MODELISATION__ 'D_PLAN_HHD'       DIM__ 2 2   CODE__ 'DZ2'
+             MAILLE__ QUAD8     ELEMENT__ HH_DPQ8D
+             MAILLE__ TRIA6     ELEMENT__ HH_DPTR6D
+             MAILLE__ SEG3      ELEMENT__ HH_D_PLAN_SE3
+
+       MODELISATION__ 'D_PLAN_HH2S'      DIM__ 2 2   CODE__ 'DZ3'
+             MAILLE__ QUAD8     ELEMENT__ HH2_DPQ8S
+             MAILLE__ TRIA6     ELEMENT__ HH2_DPTR6S
+             MAILLE__ SEG3      ELEMENT__ HH2_D_PLAN_SE3
+
+       MODELISATION__ 'D_PLAN_HH2D'      DIM__ 2 2   CODE__ 'DZ4'
+             MAILLE__ QUAD8     ELEMENT__ HH2_DPQ8D
+             MAILLE__ TRIA6     ELEMENT__ HH2_DPTR6D
+             MAILLE__ SEG3      ELEMENT__ HH2_D_PLAN_SE3
+
        MODELISATION__ 'AXIS_THHM'        DIM__ 2 2   CODE__ 'AH4'
               ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THHM_AXIS_QU8
@@ -791,6 +811,30 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ THV_AXIS_QU8S
               MAILLE__ TRIA6     ELEMENT__ THV_AXIS_TR6S
               MAILLE__ SEG3      ELEMENT__ THV_AXIS_SE3
+
+       MODELISATION__ 'AXIS_HHS'         DIM__ 2 2   CODE__ 'AZ1'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ QUAD8     ELEMENT__ HH_AXIS_QU8S
+              MAILLE__ TRIA6     ELEMENT__ HH_AXIS_TR6S
+              MAILLE__ SEG3      ELEMENT__ HH_AXIS_SE3
+
+       MODELISATION__ 'AXIS_HHD'         DIM__ 2 2   CODE__ 'AZ2'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ QUAD8     ELEMENT__ HH_AXIS_QU8D
+              MAILLE__ TRIA6     ELEMENT__ HH_AXIS_TR6D
+              MAILLE__ SEG3      ELEMENT__ HH_AXIS_SE3
+
+       MODELISATION__ 'AXIS_HH2S'        DIM__ 2 2   CODE__ 'AZ3'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ QUAD8     ELEMENT__ HH2_AXIS_QU8S
+              MAILLE__ TRIA6     ELEMENT__ HH2_AXIS_TR6S
+              MAILLE__ SEG3      ELEMENT__ HH2_AXIS_SE3
+
+       MODELISATION__ 'AXIS_HH2D'        DIM__ 2 2   CODE__ 'AZ4'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ QUAD8     ELEMENT__ HH2_AXIS_QU8D
+              MAILLE__ TRIA6     ELEMENT__ HH2_AXIS_TR6D
+              MAILLE__ SEG3      ELEMENT__ HH2_AXIS_SE3
 
        MODELISATION__ '3D_THHM'          DIM__ 3 3   CODE__ '3H4'
               MAILLE__ HEXA20    ELEMENT__ THHM_HEXA20
@@ -952,6 +996,44 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ HH2M_HEXA20S
               MAILLE__ QUAD8     ELEMENT__ HH2M_FACE8
               MAILLE__ TRIA6     ELEMENT__ HH2M_FACE6
+
+       MODELISATION__ '3D_HHS'           DIM__ 3 3   CODE__ '3Z1'
+              MAILLE__ TETRA10   ELEMENT__ HH_TETRA10S
+              MAILLE__ PENTA15   ELEMENT__ HH_PENTA15S
+              MAILLE__ HEXA20    ELEMENT__ HH_HEXA20S
+              MAILLE__ QUAD8     ELEMENT__ HH_FACE8
+              MAILLE__ TRIA6     ELEMENT__ HH_FACE6
+
+       MODELISATION__ '3D_HHD'         DIM__ 3 3   CODE__ '3Z2'
+              MAILLE__ TETRA10   ELEMENT__ HH_TETRA10D
+              MAILLE__ PENTA15   ELEMENT__ HH_PENTA15D
+              MAILLE__ HEXA20    ELEMENT__ HH_HEXA20D
+              MAILLE__ QUAD8     ELEMENT__ HH_FACE8
+              MAILLE__ TRIA6     ELEMENT__ HH_FACE6
+
+       MODELISATION__ '3D_HH2S'        DIM__ 3 3   CODE__ '3Z3'
+              MAILLE__ TETRA10   ELEMENT__ HH2_TETRA10S
+              MAILLE__ PENTA15   ELEMENT__ HH2_PENTA15S
+              MAILLE__ HEXA20    ELEMENT__ HH2_HEXA20S
+              MAILLE__ QUAD8     ELEMENT__ HH2_FACE8
+              MAILLE__ TRIA6     ELEMENT__ HH2_FACE6
+
+       MODELISATION__ '3D_HH2D'        DIM__ 3 3   CODE__ '3Z4'
+              MAILLE__ TETRA10   ELEMENT__ HH2_TETRA10D
+              MAILLE__ PENTA15   ELEMENT__ HH2_PENTA15D
+              MAILLE__ HEXA20    ELEMENT__ HH2_HEXA20D
+              MAILLE__ QUAD8     ELEMENT__ HH2_FACE8
+              MAILLE__ TRIA6     ELEMENT__ HH2_FACE6
+
+       MODELISATION__ 'D_PLAN_2DG'        DIM__ 2 2   CODE__ 'D2G'
+              MAILLE__ TRIA7     ELEMENT__ TR7_DP_2G
+              MAILLE__ QUAD9     ELEMENT__ QU9_DP_2G
+
+       MODELISATION__ 'D_PLAN_DIL'        DIM__ 2 2   CODE__ 'D2D'
+              MAILLE__ TRIA7     ELEMENT__ TR7_DP_2D
+              MAILLE__ TRIA6     ELEMENT__ TR6_DP_2D
+              MAILLE__ QUAD9     ELEMENT__ QU9_DP_2D
+              MAILLE__ QUAD8     ELEMENT__ QU8_DP_2D
 
    PHENOMENE__  THERMIQUE       CODE__  'TH'
 

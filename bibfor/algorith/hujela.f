@@ -1,7 +1,7 @@
         SUBROUTINE HUJELA (MOD, CRIT, MATERF, DEPS, SIGD, SIGF, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,17 +31,16 @@ C                         IRET=0 => PAS DE PROBLEME
 C                         IRET=1 => ECHEC 
 C       ---------------------------------------------------------------
         INTEGER       NDT, NDI, IRET, I, J
-        REAL*8        COEF, E, NU, AL, LA, MU, I1, N, PREF
+        REAL*8        COEF, E, NU, AL, DEMU, I1, N, PREF
         REAL*8        DEPS(6), DSIG(6), SIGD(6), SIGF(6)
         REAL*8        HOOK(6,6), MATERF(20,2), CRIT(*)
-        REAL*8        ZERO, UN, D12, DEUX
+        REAL*8        ZERO, UN, DEUX
         CHARACTER*8   MOD
         LOGICAL       TRACT
 
         COMMON /TDIM/ NDT, NDI
 
         DATA          ZERO  / 0.D0 /
-        DATA          D12   / .5D0 /
         DATA          UN    / 1.D0 /
         DATA          DEUX  / 2.D0 /
 
@@ -78,8 +77,7 @@ C---> CALCUL DU COEF  (-----------)**N ET MODULE_YOUNG A T+DT
         E    = MATERF(1,1)*COEF
         NU   = MATERF(2,1)
         AL   = E*(UN-NU) /(UN+NU) /(UN-DEUX*NU)
-        LA   = NU*E      /(UN+NU) /(UN-DEUX*NU)
-        MU   = D12*E     / (UN+NU)
+        DEMU = E         / (UN+NU)
 
 
 C--->   OPERATEUR DE RIGIDITE
@@ -92,10 +90,10 @@ C - 3D/DP/AX
            DO 40 I = 1, NDI
              DO 40 J = 1, NDI
                IF(I.EQ.J) HOOK(I,J) = AL
-               IF(I.NE.J) HOOK(I,J) = LA
+               IF(I.NE.J) HOOK(I,J) = DEMU
  40          CONTINUE
            DO 45 I = NDI+1, NDT
-             HOOK(I,I) = DEUX* MU
+             HOOK(I,I) = DEMU
  45          CONTINUE
 
 C - CP/1D

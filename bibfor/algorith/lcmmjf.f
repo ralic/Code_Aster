@@ -9,7 +9,7 @@
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/05/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C     ----------------------------------------------------------------
       REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,TAUMU,TAUV,GM,PM,CC
       REAL*8 SGNR,PR,DRDPR,DELTAV,DELTAG,SGNS,R8MIEM
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS,R,INT1,INT2,INT3,DFDTMU
-      REAL*8 DTMUDR,SOM,DRDGAM,CISA2,RACR
+      REAL*8 DTMUDR,SOM,DRDGAM,CISA2, RR
 
       INTEGER IFL,NS, IS, NBSYS,IU,IR,IRET
 C     ----------------------------------------------------------------
@@ -135,8 +135,8 @@ C         DFDR
           IF (CRIT.LT.0.D0) THEN
              DFDTAU=0.D0
           ELSE
+             
              TABS=TPERD+273.5D0
-
              DFDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTAG/K/TABS)
      &              *EXP(DELTAV/K/TABS*CRIT-1.D0)*(DELTAV/K/TABS*CRIT)
           ENDIF
@@ -160,7 +160,13 @@ C         DFDR
           P         =COEFT(IFL-1+9)
           Q         =COEFT(IFL-1+10)
 
-          CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
+
+          IF (MATERF(NMAT).EQ.0) THEN
+             CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
+          ELSE
+             CISA2 = (MATERF(36)/2.D0)**2
+          ENDIF
+
 
           TAUV=ABS(TAUS)-TAU0
 
@@ -173,6 +179,7 @@ C         DFDR
           IF (TAUV.GT.0.D0) THEN
 
           TABS=TPERD+273.5D0
+
           SOM    = 0.D0
           TAUMU  = 0.D0
           DTMUDR = 0.D0
@@ -198,17 +205,14 @@ C         DFDR
      &      *INT1*INT2*INT3
 
              IF(IR.NE.0) THEN
-
+             RR  = VIND(3*(IR-1)+1)
               DO 2 IU = 1, NBSYS
-
-               IF (IU.NE.IR) THEN
-               RACR  = SQRT(VIND(3*(IU-1)+1))
-               ELSE
-               RACR  = 0.D0
-               ENDIF
-               SOM    = SOM  + RACR
-
+               R  = VIND(3*(IU-1)+1)
+               SOM    = SOM  + R
   2          CONTINUE
+               SOM    = SOM  - RR
+  
+               SOM = SQRT(SOM)
 C
              DTMUDR = CISA2 * HSR(IFA,IS,IR)/TAUV
 

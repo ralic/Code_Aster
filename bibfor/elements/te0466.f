@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ C
 C     BUT: CALCUL DES VECTEURS ELEMENTA EN MECANIQUE
 C          CORRESPONDANT A UN CHARGEMENT EN FLUX NORMAUX HYDRAULIQUES
 C          ET THERMIQUES SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES
-C          3D_THHM, 3D_THM,3D_THH,3D_HHM,3D_HM
+C          3D_THHM, 3D_THM,3D_THH,3D_HHM,3D_HM, 3D_HH
 C          ACTUELLEMENT TRAITES : FACE8 ET FACE6
 C          OPTIONS : 'CHAR_MECA_FLUX_R' ET 'CHAR_MECA_FLUX_F'
 C
@@ -69,7 +69,7 @@ C
       INTEGER NNOS,NPI2
 C     ------------------------------------------------------------------
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM,
-C                           THH2M, HH2M,       THH2
+C                           THH2M, HH2M,  THH2, HH, HH2
 C     ------------------------------------------------------------------
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
@@ -248,7 +248,62 @@ C
  127           CONTINUE
              ENDIF
 C
+           ENDIF
+CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+           IF (NOMTE(1:3).EQ.'HH2'.OR.NOMTE(1:3).EQ.'HH_')THEN
+C
+C --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
+C --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
+C     PRE1, PRE2, TEMP DANS LES CATALOGUES D'ELEMENTS
+C
+             NAPRE1=0
+             NAPRE2=1
+C
+             IF (IOPT.EQ.1) THEN
+C
+C ---   FLU1 REPRESENTE LE FLUX ASSOCIE A PRE1
+C ---   FLU2 REPRESENTE LE FLUX ASSOCIE A PRE2
+C
+               FLU1  = ZR((IFLUX)+(IPG-1)*2+NAPRE1 )
+               FLU2  = ZR((IFLUX)+(IPG-1)*2+NAPRE2 )
+C
+             ELSE IF (IOPT.EQ.2) THEN
+               X = 0.D0
+               Y = 0.D0
+               Z = 0.D0
+               DO 116 I=1,NNO2
+                 X = X + ZR(IGEOM+3*I-3) * ZR(IVF2+LDEC+I-1)
+                 Y = Y + ZR(IGEOM+3*I-2) * ZR(IVF2+LDEC+I-1)
+                 Z = Z + ZR(IGEOM+3*I-1) * ZR(IVF2+LDEC+I-1)
+ 116           CONTINUE
+               VALPAR(1) = X
+               VALPAR(2) = Y
+               VALPAR(3) = Z
+C
+               CALL FOINTE('FM',ZK8(IFLUXF+NAPRE1),4,NOMPAR,VALPAR,
+     &                     FLU1,IRET)
+               CALL FOINTE('FM',ZK8(IFLUXF+NAPRE2),4,NOMPAR,VALPAR,
+     &                     FLU2,IRET)
+C
+             ENDIF
+C
+               DO 128 I=1,NNO2
+                 L = 2 * (I-1) -1
+C
+                 ZR(IRES+L+1) = ZR(IRES+L+1) - ZR(IPOIDS+IPG-1) *
+     &                DELTAT * FLU1 * ZR(IVF2+LDEC2+I-1) * JAC
+                 ZR(IRES+L+2) = ZR(IRES+L+2) - ZR(IPOIDS+IPG-1) *
+     &                DELTAT * FLU2 * ZR(IVF2+LDEC2+I-1) * JAC
+ 128           CONTINUE
+C
          ENDIF
+
+
+CFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+
+
 C
 C ======================================================================
 C --- SI MODELISATION = THV
