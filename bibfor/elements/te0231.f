@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       REAL*8 DFDX(3),EFFOPG(24)
       REAL*8 JAC,R,COSA,SINA,COUR
       INTEGER I,K,KP,IGEOM,IMATE,ICACO,IDEPL
-      INTEGER NNO,NPG,IDFDK,IVF,IRET,NCMP
+      INTEGER NNO,NPG,IDFDK,IVF,IRET,NCMP,IRET2,IRET1,IRET3,IRET4
       INTEGER JCOOPG,IP,CORREC,ITAB(8),JDFD2
 
       CALL ELREF1(ELREFE)
@@ -75,6 +75,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
         CALL JEVECH('PCONTRR','E',IEFFOR)
       END IF
       CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+      IF (IRET.EQ.1) TREF=0.D0
 
       BL2 = '  '
       H = ZR(ICACO)
@@ -115,17 +116,24 @@ CJMP  CORREC = ZR(ICACO+2)
           K22 = 0.D0
         END IF
 
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TGINF,IRET)
-        CALL RCVARC('F','TEMP','+','RIGI',KP,2,TGMOY,IRET)
-        CALL RCVARC('F','TEMP','+','RIGI',KP,3,TGSUP,IRET)
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TGINF,IRET1)
+        CALL RCVARC('F','TEMP','+','RIGI',KP,2,TGMOY,IRET2)
+        CALL RCVARC('F','TEMP','+','RIGI',KP,3,TGSUP,IRET3)
+        IRET4=IRET1+IRET2+IRET3
+        CALL ASSERT(IRET4.EQ.0 .OR. IRET4.EQ.3)
+
 
 C---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR
 C---- COMME POUR LA LONGUEUR
 
         DO 50 IP = 1,NPG
           X3 = ZR(JCOOPG-1+IP)
-          TPG = TGMOY* (1.D0- (X3)**2) + TGSUP*X3* (1.D0+X3)/2.D0 -
+          IF (IRET4.EQ.0) THEN
+             TPG = TGMOY* (1.D0- (X3)**2) + TGSUP*X3* (1.D0+X3)/2.D0 -
      &          TGINF*X3* (1.D0-X3)/2.D0
+          ELSE
+             TPG=R8NNEM()
+          ENDIF
           X3 = X3*H/2.D0
           EP11 = (E11+X3*K11)/ (1.D0+ (CORREC*X3*COUR))
           NOMRES(1) = 'E'
@@ -139,8 +147,13 @@ C---- COMME POUR LA LONGUEUR
           NU = VALRES(2)
           IF (CODRET(3).NE.'OK') THEN
             DILAT = 0.D0
+            TPG=0.D0
           ELSE
-            TPG = TPG - TREF
+            IF (IRET4.EQ.0) THEN
+               TPG = TPG - TREF
+            ELSE
+               TPG = 0.D0
+            ENDIF
             DILAT = VALRES(3)*E/ (1.D0-NU)
           END IF
 
@@ -199,5 +212,4 @@ C---- COMME POUR LA LONGUEUR
           ZR(IEFFOR-1+6* (I-1)+5) = EFFOPG(6* (I-1)+5)
    70   CONTINUE
       END IF
-
       END

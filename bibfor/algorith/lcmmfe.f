@@ -8,8 +8,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,6 +67,8 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
       IRET=0
       PTIT=R8MIEM()
       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)
+      IF (IRET2.EQ.1) TEMPF=0.D0
+
 C-------------------------------------------------------------
 C     POUR UN NOUVEAU TYPE D'ECOULEMENT, CREER UN BLOC IF
 C------------------------------------------------------------
@@ -154,7 +155,7 @@ C------------------------------------------------------------
           Q         =COEFT(IFL-1+10)
 C         NUMHSR=COEFT(IFL-1+11)
 C         NUMHSR=1
-          
+
           IF (MATERF(NMAT).EQ.0) THEN
              CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
           ELSE
@@ -162,7 +163,7 @@ C         NUMHSR=1
           ENDIF
           TAUV=ABS(TAUS)-TAU0
           CRIT=TAUV
-          
+
           IF (ABS(TAUS).LT.PTIT) THEN
              SGNS=1.D0
           ELSE
@@ -174,7 +175,7 @@ C         NUMHSR=1
              TABS=TEMPF+273.5D0
              SOM=0.D0
              TAUMU=0.D0
-           
+
              RS=VIND(3*(IS-1)+1)+DAL(IS)
 
              DO 1 IU = 1, NBSYS
@@ -209,7 +210,7 @@ C         NUMHSR=1
 C               DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
 C     &               (BSD+SOM/KDCS-GCB*VIND(3*(IS-1)+1))
 
-               DALPHA=ABS(DGAMMA)*(BSD+SOM/KDCS-GCB*RS)        
+               DALPHA=ABS(DGAMMA)*(BSD+SOM/KDCS-GCB*RS)
                DAL(IS)=DALPHA
 
              ELSE

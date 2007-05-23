@@ -1,4 +1,4 @@
-#@ MODIF sd_util SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_util SD  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,6 +82,19 @@ def sdu_tous_differents(ojb,checker,sequence=None,comment=''):
         seq=ojb.get()
 
     sdu_compare(ojb, checker, len(seq), '==', len(Set(seq)), comment='Tous différents: '+comment)
+
+
+def sdu_tous_non_blancs(ojb,checker,sequence=None,comment=''):
+    # Vérifie que les éléments (chaines) de la séquence sont tous "non blancs".
+    # Si l'argument sequence est None, on prend l'ensemble de l'ojb.
+
+    if sequence :
+        seq=sequence
+    else :
+        seq=ojb.get()
+
+    for elem in seq :
+        assert len(elem.strip()) > 0 , (seq,self, 'tous "non blancs" '+comment)
 
 
 def sdu_tous_compris(ojb,checker,sequence=None,vmin=None,vmax=None,comment=''):

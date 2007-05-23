@@ -1,7 +1,7 @@
       SUBROUTINE DBGOBJ(OJBZ,PERM,IUNIT,MESS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C DEB-------------------------------------------------------------------
 
  1003 FORMAT (A,' | ',A24,' | LONMAX=',I12,' | LONUTI=',I12,
      &        ' | TYPE=',A4,' | IRET=',I7,' | IGNORE=',I7,
-     &        ' | SOMMR=',E17.8)
+     &        ' | SOMMR=',E20.11)
 
  1004 FORMAT (A,' | ',A24, ' | TYPE=',A4,' | IRET=',I7)
 

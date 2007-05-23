@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -251,12 +251,11 @@ cata_msg={
  erreurs donnees composante inconnue  %(k1)s  pour la grandeur  %(k2)s
 """),
 
-
-
-
-
-
-
+50: _("""
+ Préparation des variables de commande :
+ Dans le CHAM_MATER %(k1)s et pour la variable de commande %(k2)s,
+ on ignore la composante %(k3)s
+"""),
 
 51: _("""
  erreurs donnees composante inconnue  %(k1)s
@@ -302,12 +301,12 @@ cata_msg={
 
 56: _("""
  Erreur d'utilisation (rcmaco/alfint) :
- Le CHAM_MATER %(k1)s contient des variables de commandes (AFFE_VARC).
- Une des charges contient un chargement thermique (TEMP_CALCULEE).
+ Le CHAM_MATER %(k1)s contient des variables de commandes (AFFE_MATERIAU/AFFE_VARC).
+ Un des matériaux du CHAM_MATER contient un coefficient de dilation ALPHA=f(TEMP).
+ Mais la température n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC
 
  Conseil :
- Déplacer le chargement thermique de AFFE_CHAR_MECA/TEMP_CALCULEE vers
- AFFE_MATERIAU/AFFE_VARC
+ Renseignez le chargement thermique à l'aide de AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP'
 """),
 
 57: _("""
@@ -338,11 +337,9 @@ cata_msg={
 59: _("""
  Erreur d'utilisation (préparation des variables de commande) :
  Dans le CHAM_MATER %(k1)s et pour la variable de commande %(k2)s,
- on ne sait pas quoi faire de la composante %(k3)s
-
- Conseils :
- Si le problème concerne la composante 'TEMP_INF', c'est peut-etre parce
- que vous avez oublié d'utiliser CREA_RESU / OPERATION='PREP_VRC2'
+ on a trouvé la composante 'TEMP_INF'.
+ Cela veut sans doute dire que vous avez oublié de "préparer"
+ la variable de commande 'TEMP' avec   CREA_RESU / OPERATION='PREP_VRC2'
 """),
 
 60: _("""
@@ -387,6 +384,16 @@ cata_msg={
    Charge   (SD_resultat) : %(k3)s
    Fonction (SD_resultat) : %(k4)s
 
+"""),
+
+67: _("""
+ Erreur utilisateur :
+   Un calcul élémentaire nécessite une ou plusieurs variables de commande (CVRC).
+   Sur la maille : %(k1)s, on ne trouve pas le bon nombre de "CVRC" :
+   On attend : %(i2)d "CVRC",  mais on n'en trouve que : %(i1)d
+
+ Conseil :
+   Vérifier les occurences de AFFE_MATERIAU/AFFE_VARC pour la maille concernée.
 """),
 
 

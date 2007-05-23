@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIGDF,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,41 +61,41 @@ C.......................................................................
       INTEGER  JPROL,JVALE,NBVAL(5),MAXVAL,NZ
       INTEGER  I,J,K,L,MODE,IRE2
       INTEGER  IND(3,3),NBR
-      
+
       REAL*8   PHASE(5),PHASM(5),ZALPHA
       REAL*8   TM,TP,TREF
-      REAL*8   TEMP,DT      
+      REAL*8   TEMP,DT
 
       REAL*8   TTRG,EPSTH,E,NU,MU,MUM,TROISK
       REAL*8   FMEL,SY(5),H(5),HMOY,HPLUS(5),R(5),RMOY
       REAL*8   THETA(8)
-      REAL*8   ETA(5),N(5),UNSURN(5),C(5),M(5),CMOY,MMOY,CR      
-      REAL*8   DZ(4),DZ1(4),DZ2(4),VI(5),DVIN,VIMOY,DS      
+      REAL*8   ETA(5),N(5),UNSURN(5),C(5),M(5),CMOY,MMOY,CR
+      REAL*8   DZ(4),DZ1(4),DZ2(4),VI(5),DVIN,VIMOY,DS
       REAL*8   TRANS,KPT(4),ZVARIM,ZVARIP,DELTAZ
-      
+
       REAL*8   JM,JP,DJ,DFB(3,3)
       REAL*8   TAUM(6),DVTAUM(6),TRTAUM,EQTAUM
       REAL*8   TAUP(6),DVTAUP(6),TRTAUP
       REAL*8   TAU(6),DVTAU(6),TRTAU,EQTAU
       REAL*8   BEM(6),BEL(6),DVBEL(6),TRBEL
       REAL*8   DVTEL(6),EQTEL
-      
+
       REAL*8   PLASTI,DP,SEUIL,MUTILD
-      
+
       REAL*8   JE2,JE3,XM,XP,SOL(3)
-      
+
       REAL*8   COEFF1,COEFF2,COEFF3,COEFF4,COEFF5,COEFF6,COEFF7
       REAL*8   COEFF8,COEFF9,DV,RB,N0(5)
       REAL*8   MAT0(3,3),MAT1(3,3),MAT2(6,3,3),MAT3(3,3)
-      
+
       REAL*8   RBID,PRECR,R8PREM
       REAL*8   KR(6),PDTSCA(6)
       REAL*8   VALRES(20)
-      
+
       CHARACTER*1 C1
       CHARACTER*2 CODRET(20),TEST
       CHARACTER*8 NOMRES(20),NOMCLE(5),ACIER(4)
-      
+
       LOGICAL     RESI,RIGI
 
       DATA        KR/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -124,20 +124,20 @@ C *******************
       RESI   = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
       RIGI   = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
 
-      DT=INSTAP-INSTAM 
-      
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
-      
+      DT=INSTAP-INSTAM
+
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRE2)
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRE2)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRE2)
+
 C 1.1 - NOMBRE DE PHASES
 
       NZ=5
 
 C 1.2 - RECUPERATION DES PHASES
-       
+
       IF (RESI) THEN
-        
+
         TEMP=TP
         C1='+'
         DO 5 K=1,NZ-1
@@ -146,30 +146,30 @@ C 1.2 - RECUPERATION DES PHASES
           CALL RCVARC(' ',ACIER(K),'-',FAMI,KPG,KSP,PHASM(K),IRE2)
           IF (IRE2.EQ.1) PHASM(K)=0.D0
  5      CONTINUE
-      
+
       ELSE
-        
+
         TEMP=TM
         C1='-'
         DO 10 K=1,NZ-1
           CALL RCVARC(' ',ACIER(K),'-',FAMI,KPG,KSP,PHASE(K),IRE2)
           IF (IRE2.EQ.1) PHASE(K)=0.D0
  10     CONTINUE
- 
-      ENDIF        
-      
+
+      ENDIF
+
       ZALPHA=PHASE(1)+PHASE(2)+PHASE(3)+PHASE(4)
       PHASE(NZ)=1.D0-ZALPHA
-      
+
 C 1.3 - TEST SUR LES PHASES
 
       PRECR=R8PREM()
       DO 15 K=1,NZ
         IF (PHASE(K).LE.PRECR) PHASE(K)=0.D0
         IF (PHASE(K).GE.1.D0)  PHASE(K)=1.D0
- 15    CONTINUE       
+ 15    CONTINUE
       IF (ZALPHA.LE.PRECR) ZALPHA=0.D0
-      IF (ZALPHA.GE.1.D0)  ZALPHA=1.D0     
+      IF (ZALPHA.GE.1.D0)  ZALPHA=1.D0
 
 C ****************************************
 C 2 - RECUPERATION DES CARACTERISTIQUES
@@ -197,7 +197,7 @@ C 2.1 - ELASTIQUE ET THERMIQUE
       NU=VALRES(2)
       MU=E/(2.D0*(1.D0+NU))
       TROISK = E/(1.D0-2.D0*NU)
-      
+
       IF(COMPOR(1)(1:4).EQ.'META') THEN
 
         PLASTI=VIM(6)
@@ -212,7 +212,7 @@ C 2.2 - LOI DES MELANGES
           NOMRES(5) ='C_SY'
           NOMRES(6) ='SY_MELANGE'
         ENDIF
-        
+
         IF(COMPOR(1)(1:6).EQ.'META_V') THEN
           NOMRES(1) ='F1_S_VP'
           NOMRES(2) ='F2_S_VP'
@@ -221,18 +221,18 @@ C 2.2 - LOI DES MELANGES
           NOMRES(5) ='C_S_VP'
           NOMRES(6) ='S_VP_MEL'
         ENDIF
-        
+
         CALL RCVALA(IMAT,' ','ELAS_META',1,'META',ZALPHA,1,
-     &              NOMRES(6),FMEL,CODRET(6),'  ')        
+     &              NOMRES(6),FMEL,CODRET(6),'  ')
         IF (CODRET(6).NE.'OK') FMEL = ZALPHA
 
 C 2.3 - LIMITE D ELASTICITE
 
         CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
      &              5,NOMRES,SY,CODRET,'F ')
-         
+
         IF (RESI) THEN
-        
+
 C 2.4 - RESTAURATION D ECROUISSAGE
 
           IF(COMPOR(1)(1:12).EQ.'META_P_IL_RE'  .OR.
@@ -243,7 +243,7 @@ C 2.4 - RESTAURATION D ECROUISSAGE
      &      COMPOR(1)(1:16).EQ.'META_P_INL_PT_RE'.OR.
      &      COMPOR(1)(1:13).EQ.'META_V_INL_RE'   .OR.
      &      COMPOR(1)(1:16).EQ.'META_V_INL_PT_RE') THEN
-            
+
             NOMRES(1) ='C_F1_THETA'
             NOMRES(2) ='C_F2_THETA'
             NOMRES(3) ='C_F3_THETA'
@@ -252,21 +252,21 @@ C 2.4 - RESTAURATION D ECROUISSAGE
             NOMRES(6) ='F2_C_THETA'
             NOMRES(7) ='F3_C_THETA'
             NOMRES(8) ='F4_C_THETA'
-            
+
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_RE',0,'  ',
      &                 0.D0,8,NOMRES,THETA,CODRET,'F ')
           ELSE
-            
+
             DO 20 I=1,8
               THETA(I)=1.D0
  20         CONTINUE
-          
+
           ENDIF
 
 C 2.5 - VISCOSITE
 
           IF (COMPOR(1)(1:6) .EQ. 'META_V') THEN
-            
+
             NOMRES(1) = 'F1_ETA'
             NOMRES(2) = 'F2_ETA'
             NOMRES(3) = 'F3_ETA'
@@ -293,10 +293,10 @@ C 2.5 - VISCOSITE
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,
      &                 ' ',0.D0,10,NOMRES,VALRES,CODRET,'F ')
-            
+
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,' ',
      &                 0.D0,10,NOMRES(11),VALRES(11),CODRET(11),'  ')
-     
+
             DO  25 K=1,NZ
               ETA(K) = VALRES(K)
               N(K) = VALRES(NZ+K)
@@ -306,9 +306,9 @@ C 2.5 - VISCOSITE
               IF (CODRET(3*NZ+K) .NE. 'OK') VALRES(3*NZ+K)=20.D0
               M(K) = VALRES(3*NZ+K)
  25         CONTINUE
-          
+
           ELSE
-            
+
             DO 30 K=1,NZ
               ETA(K) = 0.D0
               N(K)= 20.D0
@@ -316,7 +316,7 @@ C 2.5 - VISCOSITE
               C(K) = 0.D0
               M(K) = 20.D0
  30         CONTINUE
-          
+
           ENDIF
 
 C 2.6 - CALCUL DE VIM+DG-DS
@@ -362,7 +362,7 @@ C 2.7 - RESTAURATION D ORIGINE VISQUEUSE
             CMOY=CMOY+PHASE(K)*C(K)
             MMOY=MMOY+PHASE(K)*M(K)
  50       CONTINUE
-        
+
           CR=CMOY*VIMOY
           IF (CR .LE. 0.D0) THEN
             DS=0.D0
@@ -379,7 +379,7 @@ C 2.7 - RESTAURATION D ORIGINE VISQUEUSE
 
 C 2.8 - PLASTICITE DE TRANSFORMATION
 
-          TRANS = 0.D0      
+          TRANS = 0.D0
           IF (COMPOR(1)(1:12) .EQ. 'META_P_IL_PT'    .OR.
      &      COMPOR(1)(1:13) .EQ. 'META_P_INL_PT'   .OR.
      &      COMPOR(1)(1:15) .EQ. 'META_P_IL_PT_RE' .OR.
@@ -413,23 +413,23 @@ C 2.8 - PLASTICITE DE TRANSFORMATION
                 TRANS = TRANS + KPT(K)*VALRES(J)*(ZVARIP-ZVARIM)
               ENDIF
  60         CONTINUE
-          
+
           ENDIF
-        
+
         ELSE
-          
+
           TRANS=0.D0
           DO 65 K=1,NZ
             VI(K)=VIM(K)
  65       CONTINUE
-          
-        ENDIF        
-        
+
+        ENDIF
+
 C 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
 
         IF(COMPOR(1)(1:9).EQ.'META_P_IL' .OR.
      &    COMPOR(1)(1:9).EQ.'META_V_IL' )THEN
-          
+
           NOMRES(1) ='F1_D_SIGM_EPSI'
           NOMRES(2) ='F2_D_SIGM_EPSI'
           NOMRES(3) ='F3_D_SIGM_EPSI'
@@ -444,22 +444,22 @@ C 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
           H(3)=H(3)*E/(E-H(3))
           H(4)=H(4)*E/(E-H(4))
           H(5)=H(5)*E/(E-H(5))
-                      
+
           DO 70 K=1,NZ
             R(K) = H(K)*VI(K)+SY(K)
- 70       CONTINUE                   
+ 70       CONTINUE
 
         ENDIF
-        
+
         IF (COMPOR(1)(1:10) .EQ. 'META_P_INL' .OR.
      &     COMPOR(1)(1:10) .EQ. 'META_V_INL') THEN
-          
+
           NOMCLE(1)='SIGM_F1'
           NOMCLE(2)='SIGM_F2'
           NOMCLE(3)='SIGM_F3'
           NOMCLE(4)='SIGM_F4'
           NOMCLE(5)='SIGM_C'
-        
+
           DO 75 K=1,NZ
             CALL RCTRAC(IMAT,'META_TRACTION',NOMCLE(K),TEMP,
      &                 JPROL,JVALE,NBVAL(K),RBID)
@@ -467,14 +467,14 @@ C 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
      &               RBID,RBID,RBID,VI(K),R(K),H(K),RBID,RBID,RBID)
             R(K) = R(K) + SY(K)
  75      CONTINUE
-         
+
          MAXVAL = MAX(NBVAL(1),NBVAL(2),NBVAL(3),NBVAL(4),NBVAL(5))
-        
+
         ENDIF
-          
+
         IF (ZALPHA.GT. 0.D0) THEN
           RMOY=PHASE(1)*R(1)+PHASE(2)*R(2)+PHASE(3)*R(3)+PHASE(4)*R(4)
-          RMOY = RMOY/ZALPHA          
+          RMOY = RMOY/ZALPHA
           HMOY=PHASE(1)*H(1)+PHASE(2)*H(2)+PHASE(3)*H(3)+PHASE(4)*H(4)
           HMOY = HMOY/ZALPHA
         ELSE
@@ -483,12 +483,12 @@ C 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
         ENDIF
         RMOY =(1.D0-FMEL)*R(NZ)+FMEL*RMOY
         HMOY = (1.D0-FMEL)*H(NZ)+FMEL*HMOY
-      
+
       ELSE
-        
+
         TRANS=0.D0
         PLASTI=0.D0
-      
+
       ENDIF
 
 C ********************************
@@ -581,7 +581,7 @@ C 3.7 - CONTRAINTE EQUIVALENTE ELASTIQUE ET SEUIL
         EQTEL=EQTEL+PDTSCA(I)*DVTEL(I)*DVTEL(I)
  210  CONTINUE
       EQTEL=SQRT(1.5D0*EQTEL)
-            
+
 C 3.8 - TRACE DU TENSEUR DE KIRSHHOFF (CONNUE CAR NE DEPEND QUE DE J)
 
       TRTAUP=(TROISK*((JP*JP)-1.D0)/6.D0)
@@ -603,15 +603,15 @@ C 4.1 - COMPORTEMENT ELASTIQUE - CALCUL DE SIGMA
             TAUP(I)=DVTEL(I)+KR(I)*TRTAUP
  220      CONTINUE
 
-          DO 230 I=1,2*NDIM          
+          DO 230 I=1,2*NDIM
             SIGP(I)=TAUP(I)/JP
  230      CONTINUE
-          
+
 C 4.2 - COMPORTEMENT PLASTIQUE
 C 4.2.1 - CALCUL DE DP
 
         ELSE IF (COMPOR(1)(1:4).EQ.'META') THEN
-        
+
           SEUIL=EQTEL-(1.D0+MU*TRANS*TRBEL)*RMOY
 
           IF (SEUIL.LT.0.D0) THEN
@@ -629,7 +629,7 @@ C VERIFICATION QU ON EST DANS LE BON INTERVALLE
 
             IF(COMPOR(1)(1:10).EQ.'META_P_INL' .OR.
      &        COMPOR(1)(1:10).EQ.'META_V_INL' )THEN
-              
+
               DO 240 J=1,MAXVAL
                 TEST='OK'
                 DO 241 K=1,NZ
@@ -645,8 +645,8 @@ C VERIFICATION QU ON EST DANS LE BON INTERVALLE
                     IF(ABS(H(K)-HPLUS(K)).GT.PRECR) TEST='NO'
                   ENDIF
  241            CONTINUE
-                IF (TEST.EQ.'OK') GO TO 600                
-                
+                IF (TEST.EQ.'OK') GO TO 600
+
                 HMOY=0.D0
                 RMOY=0.D0
                 IF(ZALPHA.GT.0.D0) THEN
@@ -678,7 +678,7 @@ C VERIFICATION QU ON EST DANS LE BON INTERVALLE
 C 4.2.2 - CALCUL DE SIGMA
 
           PLASTI=VIP(6)
-          
+
           DO 250 I=1,6
             IF(EQTEL.GT.0.D0)THEN
               DVTAUP(I)=DVTEL(I)-MU*DP*TRBEL*DVTEL(I)/EQTEL
@@ -688,11 +688,11 @@ C 4.2.2 - CALCUL DE SIGMA
             ENDIF
             TAUP(I)=DVTAUP(I)+KR(I)*TRTAUP
  250      CONTINUE
-          
+
           DO 260 I=1,2*NDIM
             SIGP(I)=TAUP(I)/JP
  260      CONTINUE
-          
+
 C 4.2.3 - CALCUL DE VIP ET RMOY
 
           DO 270 K=1,NZ
@@ -702,35 +702,35 @@ C 4.2.3 - CALCUL DE VIP ET RMOY
               VIP(K)=0.D0
             ENDIF
  270      CONTINUE
-          
+
           VIP(7)=0.D0
           IF(PHASE(NZ).GT.0.D0)THEN
-            
+
             IF(COMPOR(1)(1:9).EQ.'META_P_IL'.OR.
      &        COMPOR(1)(1:9).EQ.'META_V_IL')THEN
               VIP(7)=VIP(7)+(1-FMEL)*H(NZ)*VIP(NZ)
             ENDIF
-            
+
             IF(COMPOR(1)(1:10).EQ.'META_P_INL'.OR.
      &        COMPOR(1)(1:10).EQ.'META_V_INL')THEN
               VIP(7)=VIP(7)+(1-FMEL)*(R(NZ)-SY(NZ))
             ENDIF
-            
+
           ENDIF
-          
+
           IF (ZALPHA.GT.0.D0) THEN
             DO 280 K=1,NZ-1
-              
+
               IF(COMPOR(1)(1:9).EQ.'META_P_IL'.OR.
      &          COMPOR(1)(1:9).EQ.'META_V_IL')THEN
                 VIP(7)=VIP(7)+FMEL*PHASE(K)*H(K)*VIP(K)/ZALPHA
               ENDIF
-              
+
               IF(COMPOR(1)(1:10).EQ.'META_P_INL'.OR.
      &          COMPOR(1)(1:10).EQ.'META_V_INL')THEN
                 VIP(7)=VIP(7)+FMEL*PHASE(K)*(R(K)-SY(K))/ZALPHA
               ENDIF
-              
+
  280        CONTINUE
           ENDIF
         ENDIF
@@ -745,7 +745,7 @@ C *******************************
         IF(OPTION(1:14).EQ.'RIGI_MECA_TANG') THEN
           DO 300 I=1,6
             TAU(I)=TAUM(I)
- 300      CONTINUE 
+ 300      CONTINUE
         ELSE
           DO 310 I=1,6
             TAU(I)=TAUP(I)
@@ -852,7 +852,7 @@ C *******************************
           ELSE
             RB=HMOY
           ENDIF
-       
+
           IF((OPTION(1:9).EQ.'FULL_MECA').OR.
      &     ((OPTION(1:14).EQ.'RIGI_MECA_TANG').AND.
      &      (MODE.EQ.2))) THEN

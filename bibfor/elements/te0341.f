@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,19 +72,10 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
    10 CONTINUE
 C
       NPG = 3
-      DO 5 KP=1,NPG
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
-        VALPAR = VALPAR + TPG
-    5 CONTINUE
-      VALPAR = VALPAR/NPG
-      IF (IRET.NE.0) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         VALPAR=ZERO
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-      ENDIF
+      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR)
+      
+      NBPAR  = 1
+      NOMPAR = 'TEMP'
 C
       CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,NBRES,NOMRES,
      &              VALRES, CODRES, 'FM' )

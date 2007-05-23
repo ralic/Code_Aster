@@ -1,7 +1,7 @@
       SUBROUTINE ALFINT (CHMATZ, IMATE, NOMMAZ, TDEF, NOPARZ, NUMMAT,
      &                    PREC, CH19,EOUN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,9 @@ C         TREF EST SUR LE 1ER ENTIER CODE :
           IF (ZK8(JVALE+NCMP*(IMATE-1)+K-2).NE.'TREF=>')
      &        CALL U2MESK('F','CALCULEL6_56',1,CHMAT)
           KTREF = ZK8(JVALE+NCMP*(IMATE-1)+K-1)
-          READ (KTREF,'(F8.1)') TREF
+          IF (KTREF.EQ.'NAN') GOTO 9999
+
+          READ (KTREF,'(F8.2)') TREF
         ENDIF
 
 
@@ -254,6 +256,6 @@ C --- ON REMPLACE LA FONCTION EN ENTREE CH19 PAR LA FONCTION
 C --- DE TRAVAIL CONTENANT LES VALEURS DE ALPHA INTERPOLEES CHWORK :
 C     ------------------------------------------------------------
       CH19 = CHWORK
-C
-C.============================ FIN DE LA ROUTINE ======================
+
+9999  CONTINUE
       END

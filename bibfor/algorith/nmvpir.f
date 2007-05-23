@@ -6,7 +6,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,9 +142,9 @@ C
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
 C
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
 
       THETA = CRIT(4)
       T1 = ABS(THETA-0.5D0)

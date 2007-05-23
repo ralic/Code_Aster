@@ -1,21 +1,21 @@
-#@ MODIF calculel4 Messages  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF calculel4 Messages  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -55,7 +55,7 @@ cata_msg={
 """),
 
 9: _("""
- creation de la table  %(k1)s 
+ creation de la table  %(k1)s
 """),
 
 
@@ -101,15 +101,15 @@ cata_msg={
 
 
 19: _("""
- le mot cle 'fissure' est obligatoire avec l'option  %(k1)s 
+ le mot cle 'fissure' est obligatoire avec l'option  %(k1)s
 """),
 
 20: _("""
- le mot cle 'fond_fiss' est obligatoire avec l'option  %(k1)s 
+ le mot cle 'fond_fiss' est obligatoire avec l'option  %(k1)s
 """),
 
 21: _("""
- mot cle fond_fiss obligatoire pour l option  %(k1)s 
+ mot cle fond_fiss obligatoire pour l option  %(k1)s
 """),
 
 22: _("""
@@ -121,7 +121,7 @@ cata_msg={
 """),
 
 24: _("""
- il faut donner 3 composantes de la direction %(k1)s 
+ il faut donner 3 composantes de la direction %(k1)s
 """),
 
 25: _("""
@@ -201,7 +201,7 @@ cata_msg={
 """),
 
 47: _("""
- type_resu inconnu:  %(k1)s 
+ type_resu inconnu:  %(k1)s
 """),
 
 48: _("""
@@ -258,15 +258,15 @@ cata_msg={
 """),
 
 61: _("""
- probleme dans l'examen de  %(k1)s 
+ probleme dans l'examen de  %(k1)s
 """),
 
 62: _("""
- aucun numero d'ordre dans  %(k1)s 
+ aucun numero d'ordre dans  %(k1)s
 """),
 
 63: _("""
- on ne sait pas encore projeter les champs  %(k1)s 
+ on ne sait pas encore projeter les champs  %(k1)s
 """),
 
 64: _("""
@@ -274,7 +274,7 @@ cata_msg={
 """),
 
 65: _("""
-  maillages non identiques :  %(k1)s  et  %(k2)s 
+  maillages non identiques :  %(k1)s  et  %(k2)s
 """),
 
 66: _("""
@@ -286,12 +286,16 @@ cata_msg={
 """),
 
 68: _("""
- erreur dans etanca pour le probleme dual
+ erreur dans etenca pour le probleme dual
 """),
 
 69: _("""
- pas de variable:  %(k1)s  pour la maille:  %(k2)s 
+ On ne trouve pas la variable de commande :  %(k1)s  pour la maille:  %(k2)s
 """),
+
+
+
+
 
 73: _("""
  ! ligrel incompatible avec modele !
@@ -321,19 +325,20 @@ cata_msg={
 """),
 
 79: _("""
- la grandeur :  %(k1)s  n'existe pas au catalogue.
+ La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.
 """),
 
 80: _("""
- le champ de grandeur  %(k1)s  ne respecte pas le format xxxx_c
+ le nom de la grandeur  %(k1)s  ne respecte pas le format xxxx_c
 """),
 
 81: _("""
- probleme dans le catalogue des grandeurs simples, la grandeur %(k1)s  ne possede pas le meme nombre de champ que son homologue reel %(k2)s 
+ probleme dans le catalogue des grandeurs simples, la grandeur complexe %(k1)s  ne possede pas le
+ meme nombre de composantes que son homologue réelle %(k2)s
 """),
 
 82: _("""
- probleme dans le catalogue des grandeurs simples, la grandeur %(k1)s  ne possede pas les memes champs que son homologue reelle %(k2)s 
+ probleme dans le catalogue des grandeurs simples, la grandeur %(k1)s  ne possede pas les memes champs que son homologue reelle %(k2)s
 """),
 
 83: _("""
@@ -370,7 +375,7 @@ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les 
 """),
 
 91: _("""
- on ne trouve pas de routine te0npq npq doit etre compris entre 1 et 600 ici : npq = %(k1)s 
+ on ne trouve pas de routine te0npq npq doit etre compris entre 1 et 600 ici : npq = %(k1)s
 """),
 
 92: _("""
@@ -382,7 +387,7 @@ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les 
 """),
 
 94: _("""
- l'attribut:  %(k1)s  n'existe pas pour le type:  %(k2)s 
+ l'attribut:  %(k1)s  n'existe pas pour le type:  %(k2)s
 """),
 
 95: _("""
@@ -398,10 +403,10 @@ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les 
 """),
 
 98: _("""
- attention : on n'a pas pu recuperer le parametre theta dans le resultat  %(k1)s , valeur prise pour theta: 0.57 
+ attention : on n'a pas pu recuperer le parametre theta dans le resultat  %(k1)s , valeur prise pour theta: 0.57
 """),
 
 99: _("""
- attention : recuperation d'une valeur de theta illicite dans le resultat  %(k1)s valeur prise pour theta: 1. 
+ attention : recuperation d'une valeur de theta illicite dans le resultat  %(k1)s valeur prise pour theta: 1.
 """),
 }

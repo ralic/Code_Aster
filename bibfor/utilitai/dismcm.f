@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,11 +59,12 @@ C
       CHARACTER*8   KBID, MATER, CODRET, NOMF
       CHARACTER*10  NOMRC
       CHARACTER*24  QUEST2,NOMOBJ(100)
-      LOGICAL       TROUVE,SAUTE1
+      LOGICAL       TROUVE
+      INTEGER       NBMAX,IZONE,I
+      PARAMETER (NBMAX=30)
 C
       CALL JEMARQ()
       NOMOB  = NOMOBZ
-      SAUTE1=.FALSE.
 
 
       IF (QUESTI.EQ.'EXI_AMOR_ALPHA'.OR.QUESTI.EQ.'EXI_AMOR_NOR'.OR.
@@ -72,36 +73,33 @@ C
 C     ---------------------------------------------------------------
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
+         CALL JEVEUO(NOMOB//'.CHAMP_MAT .DESC','L',JDESC)
          TROUVE=.FALSE.
          QUEST2=QUESTI
-         DO 1, I=1,NMAT
-           MATER= ZK8(IAVALE-1+I)
-           IF (MATER.EQ.' ') GOTO 1
+         NBZONE=ZI(JDESC+2)
+C
+         DO 1 IZONE=1,NBZONE
+           DO 5 IMAX=1,NBMAX
+             I=(IZONE-1)*NBMAX+IMAX
+             MATER= ZK8(IAVALE-1+I)
+             IF (MATER.EQ.' ') GOTO 1
+             IF (MATER.EQ.'TREF=>') GOTO 1
 
-           IF (MATER.EQ.'TREF=>') THEN
-C             -- IL FAUT SAUTER 2 VALEURS :
-              SAUTE1=.TRUE.
-              GOTO 1
-           ENDIF
-           IF (SAUTE1) THEN
-              SAUTE1=.FALSE.
-              GOTO 1
-           ENDIF
-
-           CALL JELSTC ( 'G' , MATER , 1 , 100 , NOMOBJ , N )
-           IF (N.LT.0) CALL U2MESS('F','UTILITAI_54')
-           DO 3, II=1,N
-             IF (NOMOBJ(II)(20:24).EQ.'.VALK') THEN
-               CALL JEVEUO(NOMOBJ(II),'L',IAOBJ)
-               CALL JELIRA(NOMOBJ(II),'LONMAX',LONOBJ,KBID)
-               DO 4 ,III=1,LONOBJ
-                 IF (ZK8(IAOBJ-1+III).EQ.QUEST2(5:12)) THEN
-                   TROUVE=.TRUE.
-                   GO TO 2
-                 END IF
- 4             CONTINUE
-             END IF
- 3         CONTINUE
+             CALL JELSTC ( 'G' , MATER , 1 , 100 , NOMOBJ , N )
+             IF (N.LT.0) CALL U2MESS('F','UTILITAI_54')
+             DO 3, II=1,N
+               IF (NOMOBJ(II)(20:24).EQ.'.VALK') THEN
+                 CALL JEVEUO(NOMOBJ(II),'L',IAOBJ)
+                 CALL JELIRA(NOMOBJ(II),'LONMAX',LONOBJ,KBID)
+                 DO 4 ,III=1,LONOBJ
+                   IF (ZK8(IAOBJ-1+III).EQ.QUEST2(5:12)) THEN
+                     TROUVE=.TRUE.
+                     GO TO 2
+                   END IF
+ 4               CONTINUE
+               END IF
+ 3           CONTINUE
+ 5         CONTINUE
  1       CONTINUE
  2       CONTINUE
          REPK='NON'
@@ -113,46 +111,43 @@ C     -----------------------------------
          REPK='NON'
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
-         DO 50, I=1,NMAT
-           MATER= ZK8(IAVALE-1+I)
-           IF (MATER.EQ.' ') GOTO 50
+         CALL JEVEUO(NOMOB//'.CHAMP_MAT .DESC','L',JDESC)
+         NBZONE=ZI(JDESC+2)
+C
+         DO 10 IZONE=1,NBZONE
+           DO 15 IMAX=1,NBMAX
+             I=(IZONE-1)*NBMAX+IMAX
+             MATER= ZK8(IAVALE-1+I)
+             IF (MATER.EQ.' ') GOTO 10
+             IF (MATER.EQ.'TREF=>') GOTO 10
 
-           IF (MATER.EQ.'TREF=>') THEN
-C             -- IL FAUT SAUTER 2 VALEURS :
-              SAUTE1=.TRUE.
-              GOTO 50
-           ENDIF
-           IF (SAUTE1) THEN
-              SAUTE1=.FALSE.
-              GOTO 50
-           ENDIF
-
-           CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
-           CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
-           DO 52, IRC=1,NBRC
-             NOMRC=ZK16(IANORC-1+IRC)(1:10)
-             IF (NOMRC.EQ.'ELAS_COQUE') THEN
-                REPK='OUI'
-                GO TO 54
-             ELSEIF (NOMRC.EQ.'THER_COQUE') THEN
-                REPK='OUI'
-                GO TO 54
-             ELSEIF (NOMRC.EQ.'ELAS_ORTH') THEN
-                REPK='OUI'
-                GO TO 54
-             ELSEIF (NOMRC.EQ.'THER_ORTH') THEN
-                REPK='OUI'
-                GO TO 54
-             ELSEIF (NOMRC.EQ.'ELAS_COQMU') THEN
-                REPK='OUI'
-                GO TO 54
-             ELSEIF (NOMRC.EQ.'THER_COQMU') THEN
-                REPK='OUI'
-                GO TO 54
-             END IF
- 52        CONTINUE
- 50      CONTINUE
- 54      CONTINUE
+             CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
+             CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
+             DO 12, IRC=1,NBRC
+               NOMRC=ZK16(IANORC-1+IRC)(1:10)
+               IF (NOMRC.EQ.'ELAS_COQUE') THEN
+                  REPK='OUI'
+                  GO TO 14
+               ELSEIF (NOMRC.EQ.'THER_COQUE') THEN
+                  REPK='OUI'
+                  GO TO 14
+               ELSEIF (NOMRC.EQ.'ELAS_ORTH') THEN
+                  REPK='OUI'
+                  GO TO 14
+               ELSEIF (NOMRC.EQ.'THER_ORTH') THEN
+                  REPK='OUI'
+                  GO TO 14
+               ELSEIF (NOMRC.EQ.'ELAS_COQMU') THEN
+                  REPK='OUI'
+                  GO TO 14
+               ELSEIF (NOMRC.EQ.'THER_COQMU') THEN
+                  REPK='OUI'
+                  GO TO 14
+               END IF
+ 12          CONTINUE
+ 15        CONTINUE
+ 10      CONTINUE
+ 14      CONTINUE
 
 
       ELSE IF (QUESTI.EQ.'ELAS_F_TEMP') THEN
@@ -160,51 +155,46 @@ C     --------------------------------------
          REPK='NON'
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
+         CALL JEVEUO(NOMOB//'.CHAMP_MAT .DESC','L',JDESC)
+         NBZONE=ZI(JDESC+2)
 C
-         DO 10, I=1,NMAT
-           MATER= ZK8(IAVALE-1+I)
-           IF (MATER.EQ.' ') GOTO 10
+         DO 20 IZONE=1,NBZONE
+           DO 25 IMAX=1,NBMAX
+             I=(IZONE-1)*NBMAX+IMAX
+             MATER= ZK8(IAVALE-1+I)
+             IF (MATER.EQ.' ') GOTO 20
+             IF (MATER.EQ.'TREF=>') GOTO 20
 
-           IF (MATER.EQ.'TREF=>') THEN
-C             -- IL FAUT SAUTER 2 VALEURS :
-              SAUTE1=.TRUE.
-              GOTO 10
-           ENDIF
-           IF (SAUTE1) THEN
-              SAUTE1=.FALSE.
-              GOTO 10
-           ENDIF
-
-           CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
-           CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
-           DO 11, IRC=1,NBRC
-             NOMRC=ZK16(IANORC-1+IRC)(1:10)
+             CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
+             CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
+             DO 21, IRC=1,NBRC
+               NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 13
+               IF (NOMRC(5:10).EQ.'_COQMU') GO TO 23
 C
-             IF (NOMRC(1:4).NE.'ELAS') GO TO 11
-             CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
-             NF=(N1-NR-NC)/2
-             DO 12,IF=1,NF
-               NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
-               CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-               IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+               IF (NOMRC(1:4).NE.'ELAS') GO TO 21
+               CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
+               NF=(N1-NR-NC)/2
+               DO 22,IF=1,NF
+                 NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
+                 CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
+                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                 IF (ZK16(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
-                 IF (ZK16(IAPROL-1+6).EQ.'TEMP') REPK='OUI'
-               ELSE
+                   IF (ZK16(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
+                   IF (ZK16(IAPROL-1+6).EQ.'TEMP') REPK='OUI'
+                 ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                 IF (ZK16(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
-               END IF
- 12          CONTINUE
- 11        CONTINUE
- 13        CONTINUE
- 10      CONTINUE
- 17      CONTINUE
+                   IF (ZK16(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
+                 END IF
+ 22            CONTINUE
+ 21          CONTINUE
+ 23          CONTINUE
+ 25        CONTINUE
+ 20      CONTINUE
 
 
       ELSE IF (QUESTI.EQ.'THER_F_INST') THEN
@@ -212,50 +202,46 @@ C     --------------------------------------
          REPK='NON'
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
+         CALL JEVEUO(NOMOB//'.CHAMP_MAT .DESC','L',JDESC)
+         NBZONE=ZI(JDESC+2)
 C
-         DO 20, I=1,NMAT
-           MATER= ZK8(IAVALE-1+I)
-           IF (MATER.EQ.' ') GOTO 20
+         DO 30 IZONE=1,NBZONE
+           DO 35 IMAX=1,NBMAX
+             I=(IZONE-1)*NBMAX+IMAX
+             MATER= ZK8(IAVALE-1+I)
+             IF (MATER.EQ.' ') GOTO 30
+             IF (MATER.EQ.'TREF=>') GOTO 30
 
-           IF (MATER.EQ.'TREF=>') THEN
-C             -- IL FAUT SAUTER 2 VALEURS :
-              SAUTE1=.TRUE.
-              GOTO 20
-           ENDIF
-           IF (SAUTE1) THEN
-              SAUTE1=.FALSE.
-              GOTO 20
-           ENDIF
-
-           CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
-           CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
-           DO 21, IRC=1,NBRC
-             NOMRC=ZK16(IANORC-1+IRC)(1:10)
+             CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
+             CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
+             DO 31, IRC=1,NBRC
+               NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 23
+               IF (NOMRC(5:10).EQ.'_COQMU') GO TO 33
 C
-             IF (NOMRC(1:4).NE.'THER') GO TO 21
-             CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
-             NF=(N1-NR-NC)/2
-             DO 22,IF=1,NF
-               NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
-               CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-               IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+               IF (NOMRC(1:4).NE.'THER') GO TO 31
+               CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
+               NF=(N1-NR-NC)/2
+               DO 32,IF=1,NF
+                 NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
+                 CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
+                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                 IF (ZK16(IAPROL-1+3).EQ.'INST') REPK='OUI'
-                 IF (ZK16(IAPROL-1+6).EQ.'INST') REPK='OUI'
-               ELSE
+                   IF (ZK16(IAPROL-1+3).EQ.'INST') REPK='OUI'
+                   IF (ZK16(IAPROL-1+6).EQ.'INST') REPK='OUI'
+                 ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                 IF (ZK16(IAPROL-1+3).EQ.'INST') REPK='OUI'
-               END IF
- 22          CONTINUE
- 21        CONTINUE
- 23        CONTINUE
- 20      CONTINUE
+                   IF (ZK16(IAPROL-1+3).EQ.'INST') REPK='OUI'
+                 END IF
+ 32            CONTINUE
+ 31          CONTINUE
+ 33          CONTINUE
+ 35        CONTINUE
+ 30      CONTINUE
 
 
       ELSE IF (QUESTI.EQ.'ELAS_F_HYDR') THEN
@@ -263,50 +249,46 @@ C     --------------------------------------
          REPK='NON'
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
+         CALL JEVEUO(NOMOB//'.CHAMP_MAT .DESC','L',JDESC)
+         NBZONE=ZI(JDESC+2)
 C
-         DO 30, I=1,NMAT
-           MATER= ZK8(IAVALE-1+I)
-           IF (MATER.EQ.' ') GOTO 30
+         DO 40 IZONE=1,NBZONE
+           DO 45 IMAX=1,NBMAX
+             I=(IZONE-1)*NBMAX+IMAX
+             MATER= ZK8(IAVALE-1+I)
+             IF (MATER.EQ.' ') GOTO 40
+             IF (MATER.EQ.'TREF=>') GOTO 40
 
-           IF (MATER.EQ.'TREF=>') THEN
-C             -- IL FAUT SAUTER 2 VALEURS :
-              SAUTE1=.TRUE.
-              GOTO 30
-           ENDIF
-           IF (SAUTE1) THEN
-              SAUTE1=.FALSE.
-              GOTO 30
-           ENDIF
-
-           CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
-           CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
-           DO 31, IRC=1,NBRC
-             NOMRC=ZK16(IANORC-1+IRC)(1:10)
+             CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
+             CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
+             DO 41, IRC=1,NBRC
+               NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 33
+               IF (NOMRC(5:10).EQ.'_COQMU') GO TO 43
 C
-             IF (NOMRC(1:4).NE.'ELAS') GO TO 31
-             CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
-             NF=(N1-NR-NC)/2
-             DO 32,IF=1,NF
-               NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
-               CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-               IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+               IF (NOMRC(1:4).NE.'ELAS') GO TO 41
+               CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
+               NF=(N1-NR-NC)/2
+               DO 42,IF=1,NF
+                 NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
+                 CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
+                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                 IF (ZK16(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
-                 IF (ZK16(IAPROL-1+6).EQ.'HYDR') REPK='OUI'
-               ELSE
+                   IF (ZK16(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
+                   IF (ZK16(IAPROL-1+6).EQ.'HYDR') REPK='OUI'
+                 ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                 IF (ZK16(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
-               END IF
- 32          CONTINUE
- 31        CONTINUE
- 33        CONTINUE
- 30      CONTINUE
+                   IF (ZK16(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
+                 END IF
+ 42            CONTINUE
+ 41          CONTINUE
+ 43          CONTINUE
+ 45      CONTINUE
+ 40      CONTINUE
 
 
       ELSE IF (QUESTI.EQ.'ELAS_F_SECH') THEN
@@ -314,50 +296,46 @@ C     --------------------------------------
          REPK='NON'
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
+         CALL JEVEUO(NOMOB//'.CHAMP_MAT .DESC','L',JDESC)
+         NBZONE=ZI(JDESC+2)
 C
-         DO 40, I=1,NMAT
-           MATER= ZK8(IAVALE-1+I)
-           IF (MATER.EQ.' ') GOTO 40
+         DO 50 IZONE=1,NBZONE
+           DO 55 IMAX=1,NBMAX
+             I=(IZONE-1)*NBMAX+IMAX
+             MATER= ZK8(IAVALE-1+I)
+             IF (MATER.EQ.' ') GOTO 50
+             IF (MATER.EQ.'TREF=>') GOTO 50
 
-           IF (MATER.EQ.'TREF=>') THEN
-C             -- IL FAUT SAUTER 2 VALEURS :
-              SAUTE1=.TRUE.
-              GOTO 40
-           ENDIF
-           IF (SAUTE1) THEN
-              SAUTE1=.FALSE.
-              GOTO 40
-           ENDIF
-
-           CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
-           CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
-           DO 41, IRC=1,NBRC
-             NOMRC=ZK16(IANORC-1+IRC)(1:10)
+             CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
+             CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
+             DO 51, IRC=1,NBRC
+               NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 43
+               IF (NOMRC(5:10).EQ.'_COQMU') GO TO 53
 C
-             IF (NOMRC(1:4).NE.'ELAS') GO TO 41
-             CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
-             CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
-             NF=(N1-NR-NC)/2
-             DO 42,IF=1,NF
-               NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
-               CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-               IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+               IF (NOMRC(1:4).NE.'ELAS') GO TO 51
+               CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALK','LONUTI',N1,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALR','LONUTI',NR,KBID)
+               CALL JELIRA(MATER//'.'//NOMRC//'.VALC','LONUTI',NC,KBID)
+               NF=(N1-NR-NC)/2
+               DO 52,IF=1,NF
+                 NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
+                 CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
+                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                 IF (ZK16(IAPROL-1+3).EQ.'SECH') REPK='OUI'
-                 IF (ZK16(IAPROL-1+6).EQ.'SECH') REPK='OUI'
-               ELSE
+                   IF (ZK16(IAPROL-1+3).EQ.'SECH') REPK='OUI'
+                   IF (ZK16(IAPROL-1+6).EQ.'SECH') REPK='OUI'
+                 ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                 IF (ZK16(IAPROL-1+3).EQ.'SECH') REPK='OUI'
-               END IF
- 42          CONTINUE
- 41        CONTINUE
- 43        CONTINUE
- 40      CONTINUE
+                   IF (ZK16(IAPROL-1+3).EQ.'SECH') REPK='OUI'
+                 END IF
+ 52            CONTINUE
+ 51          CONTINUE
+ 53          CONTINUE
+ 55      CONTINUE
+ 50      CONTINUE
 
 
       ELSE

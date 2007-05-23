@@ -5,7 +5,7 @@
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,8 +108,8 @@ C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
           UL(I) = ZERO
    10   CONTINUE
 C         - CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
-        CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
-        CALL MOYTEM('RIGI',1,1,'+',TEMP)
+        CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IRET)
+        CALL RCVARC('F','TEMP','+','NOEU',1,1,TEMP,IRET)
 
         TEMP = TEMP - TREF
 
@@ -130,6 +130,7 @@ C              --- CALCUL DES FORCES INDUITES ---
             DO 20 J = 1,6
               EFFO(I) = EFFO(I) - KLC(I,J)*UL(J)
               EFFO(I+6) = EFFO(I+6) - KLC(I+6,J+6)*UL(J+6)
+
    20       CONTINUE
    30     CONTINUE
       END IF

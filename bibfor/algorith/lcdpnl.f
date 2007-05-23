@@ -2,7 +2,7 @@
      &                  EPSM,DEPS,VIM,VIP,SIG,DSIDEP,PROJ,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
       IMPLICIT      NONE
-      INTEGER       NDIM, IMATE,IRET,KSP,KPG
+      INTEGER       NDIM, IMATE,IRET,KSP,KPG,IRET2
       REAL*8        SIGM(6),DEPS(6,2),VIM(*),VIP(*),SIG(6),PROJ(6,6)
       REAL*8        DSIDEP(6,6,2),EPSM(6,2)
       CHARACTER*(*) FAMI
@@ -80,9 +80,9 @@ C =====================================================================
 
 C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 C RAISON: CETTE ROUTINE EST APPELEE POUR LE CALCUL THERMIQUE (CALCME)
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
       CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
      &                        DEPS(1,2),VIM,VIP,SIG,DSDP2,IRET)
 C =====================================================================

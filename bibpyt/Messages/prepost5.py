@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF prepost5 Messages  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,12 +58,10 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  taille necessaire :  %(i2)d 
 """),
 
-
-
-
-
-
-
+9: _("""
+ 
+ La commande POST_ZAC ne tolère comme variable de commande que la température.
+ """),
 
 10: _("""
  le noeud traite  n'est associe a aucune maille volumique.
@@ -71,12 +69,10 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  nombre de mailles attachees au noeud =  %(i2)d 
 """),
 
-
-
-
-
-
-
+11: _("""
+ Vous utilisez le mot clé TEMP_CALCULEE de la commande AFFE_CHAR_MECA
+ avec POST_ZAC. Utilisez AFFE_VARC dans la commande AFFE_MATERIAU à la place.
+"""),
 
 12: _("""
  le noeud milieu : %(k1)s 

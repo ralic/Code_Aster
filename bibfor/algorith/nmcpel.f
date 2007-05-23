@@ -2,7 +2,7 @@
      &             COMPOR,CRIT,OPTION,EPS,SIG,VI,DSIDEP,CODRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C - ORTHOTROPIE OU ISOTROPIE TRANSVERSE LINEAIRE
             EPSM(I)=0.D0
             SIGM(I)=0.D0
  30     CONTINUE
-          CALL NMORTH (FAMI, KPG, KSP, 0, NDIM, PHENOM, TYPMOD, IMATE,
+          CALL NMORTH (FAMI, KPG, KSP, NDIM, PHENOM, TYPMOD, IMATE,
      &                 EPSM,EPS,SIGM,
      &                 OPTION,ANGMAS, SIG,R8BID, DSIDEP)
         ELSE
@@ -103,6 +103,7 @@ C - ORTHOTROPIE OU ISOTROPIE TRANSVERSE LINEAIRE
 C   ELASTICITE NON LINEAIRE ISOTROPE
       ELSE IF (COMPOR(1)(1:5)  .EQ. 'ELAS '          .OR.
      &         COMPOR(1)(1:14) .EQ. 'ELAS_VMIS_LINE' .OR.
+     &         COMPOR(1)(1:14) .EQ. 'ELAS_VMIS_PUIS' .OR.
      &         COMPOR(1)(1:14) .EQ. 'ELAS_VMIS_TRAC' ) THEN
            CALL NMELNL ( FAMI,KPG,KSP,POUM,NDIM, TYPMOD, IMATE,
      &                   COMPOR, CRIT,

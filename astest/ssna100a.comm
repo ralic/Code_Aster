@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,11 +42,6 @@ MAT=DEFI_MATERIAU(
                      ECRO_LINE=_F(  D_SIGM_EPSI = 18181.,
                                           SY = 200.)
                      )
-
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
-            AFFE=_F(  TOUT = 'OUI',  MATER = MAT,
-                   TEMP_REF = 0.)
-                        )
 
 TP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                             AFFE=_F(  TOUT = 'OUI',
@@ -93,16 +88,19 @@ CHPRES=AFFE_CHAR_MECA(    MODELE=MO,
                         )
 
 CHCL=AFFE_CHAR_MECA(    MODELE=MO,
-                 TEMP_CALCULEE=TEMPE,
                  DDL_IMPO=_F(  NOEUD = ( 'N26', 'N3',),  DY = 0.)
                         )
 
 CHME=AFFE_CHAR_MECA(    MODELE=MO,
-                 TEMP_CALCULEE=TEMPE,
                  PRES_REP=_F(  GROUP_MA = 'L4',
                              PRES = 2.),
                  DDL_IMPO=_F(  NOEUD = ( 'N26', 'N3',),  DY = 0.)
                         )
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+            AFFE=_F(  TOUT = 'OUI',  MATER = MAT,),
+            AFFE_VARC=_F(  TOUT = 'OUI',  EVOL=TEMPE,NOM_VARC='TEMP',
+                   VALE_REF = 0.),)
 
 SOLPL=STAT_NON_LINE(
                             MODELE=MO,
@@ -177,18 +175,21 @@ TP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
                                 NOM_CMP = 'TEMP',
                                  VALE_F = FONC2)   )
 
-TEMPE2=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',AFFE=(
+TEMPE2=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',NOM_CHAM='TEMP',AFFE=(
                       _F(  CHAM_GD = TP0,   INST = 0.),
                       _F(  CHAM_GD = TP0,   INST = 1.),
                       _F(  CHAM_GD = TP2,   INST = 3.))  )
 
+CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,
+            AFFE=_F(  TOUT = 'OUI',  MATER = MAT,),
+            AFFE_VARC=_F(  TOUT = 'OUI',  EVOL=TEMPE2,NOM_VARC='TEMP',
+                   VALE_REF = 0.),);
+
 CHCL2=AFFE_CHAR_MECA(    MODELE=MO,
-                 TEMP_CALCULEE=TEMPE2,
                  DDL_IMPO=_F(  NOEUD = ( 'N26', 'N3',),  DY = 0.)
                         )
 
 CHME2=AFFE_CHAR_MECA(    MODELE=MO,
-                 TEMP_CALCULEE=TEMPE2,
                  PRES_REP=_F(  GROUP_MA = 'L4',
                              PRES = 2.),
                  DDL_IMPO=_F(  NOEUD = ( 'N26', 'N3',),  DY = 0.)
@@ -196,7 +197,7 @@ CHME2=AFFE_CHAR_MECA(    MODELE=MO,
 
 SOLPL2=STAT_NON_LINE(
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
+                        CHAM_MATER=CHMAT2,EXCIT=(
                              _F(
                 CHARGE = CHPRES,
                 FONC_MULT = VARPRESS),
@@ -224,7 +225,7 @@ CALC_ELEM( reuse=SOLPL2,
 SOLSTA2=MECA_STATIQUE(
               MODELE=MO,
               LIST_INST=LISTEL,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMAT2,
               EXCIT=_F(  CHARGE = CHME2),
              )
 
@@ -237,7 +238,7 @@ CALC_ELEM( reuse= SOLSTA2 ,RESULTAT= SOLSTA2 ,
 
 CHZAC3=POST_ZAC(
                      MODELE=MO,
-                     CHAM_MATER=CHMAT,
+                     CHAM_MATER=CHMAT2,
                      EXCIT=_F(  CHARGE = CHME2),
                      EVOL_ELAS=SOLSTA2,
                      LIST_INST=LISTEL
@@ -245,7 +246,7 @@ CHZAC3=POST_ZAC(
 
 CHZAC4=POST_ZAC(
                      MODELE=MO,
-                     CHAM_MATER=CHMAT,
+                     CHAM_MATER=CHMAT2,
                      EXCIT=_F(  CHARGE = CHME2),
                      EVOL_NOLI=SOLPL2,
                      INST_MAX=3.,

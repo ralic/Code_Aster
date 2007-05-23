@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -338,7 +338,7 @@ G4=CALC_G(         RESULTAT = OUTMES1,
 
 TEST_TABLE(       TABLE=G1,
                 NOM_PARA='G',
-                     VALE=-1.7485816491625E+02,
+                     VALE=-1.7485815142480E+02,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )
@@ -347,7 +347,7 @@ TEST_TABLE(       TABLE=G1,
 TEST_TABLE(       TABLE=G1,
              SENSIBILITE=(THETAS,),
                 NOM_PARA='G',
-                     VALE=-4.4228284023143E-01,
+                     VALE=-4.4228284090894E-01,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )
@@ -356,7 +356,7 @@ TEST_TABLE(       TABLE=G1,
 
 TEST_TABLE(       TABLE=G2,
                 NOM_PARA='G',
-                     VALE= 3.6726929469888E-01,
+                     VALE= 3.6726927195656E-01,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )
@@ -364,7 +364,7 @@ TEST_TABLE(       TABLE=G2,
 TEST_TABLE(       TABLE=G2,
              SENSIBILITE=(THETAS,),
                 NOM_PARA='G',
-                     VALE= 1.1025532359262E-02,
+                     VALE= 1.1025531678666E-02,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )
@@ -373,7 +373,7 @@ TEST_TABLE(       TABLE=G2,
 
 TEST_TABLE(       TABLE=G3,
                 NOM_PARA='G',
-                     VALE=-1.7485860046472E+02,
+                     VALE=-1.7485859372839E+02,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )
@@ -382,7 +382,7 @@ TEST_TABLE(       TABLE=G3,
 
 TEST_TABLE(       TABLE=G4,
                 NOM_PARA='G',
-                     VALE= 3.6728031672481E-01,
+                     VALE= 3.6728029829795E-01,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
                  )

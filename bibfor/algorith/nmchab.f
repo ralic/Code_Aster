@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C                                        LORS DE L'INTEGRATION DE LA
 C                                        LOI VISC_CINX_CHAB
 C
 C -----  ARGUMENTS
-          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET
+          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET,IRET2
            REAL*8             CRIT(6),INSTAM,INSTAP
            REAL*8             DEPS(6),DEUXMU,DILATM,DILATP
            REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
@@ -214,9 +214,9 @@ C      --------------------------------------
 C
 C ---  CARACTERISTIQUES A L'INSTANT ACTUEL :
 C      -----------------------------------
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
      &              NOMRES(1),VALRES(1),CODRET(1), FB2 )

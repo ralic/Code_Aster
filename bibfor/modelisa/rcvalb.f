@@ -7,7 +7,7 @@
       CHARACTER*(*)      NOMAT,PHENOM,ARRET,NOMPAR(NBPAR),NOMRES(NBRES)
       CHARACTER*(*)      POUM,FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,9 +52,11 @@ C ----------------------------------------------------------------------
       PARAMETER (NBPAMX=10)
       REAL*8             VALPA2(NBPAMX),VALVRC
       CHARACTER*(8)      NOMPA2(NBPAMX),NOVRC
+      LOGICAL TEMPDF
 C DEB ------------------------------------------------------------------
 
-      IF (NBCVRC.EQ.0) THEN
+      TEMPDF=.FALSE.
+      IF (TEMPDF) THEN
 C         -- ON AJOUTE TEMP=0.D0
 C         -- ATTENTION : CETTE VALEUR PAR DEFAUT EST EGALEMENT
 C                        EN DUR DANS RCVARC
@@ -80,8 +82,6 @@ C
 
       NBPART=NBPAR+NBPAR2
       CALL ASSERT(NBPART.LE.NBPAMX)
-C       write(6,*) 'RCVALB',(NOMPA2(IPAR),IPAR=1,NBPART )
-
       CALL RCVALA( JMAT, NOMAT, PHENOM, NBPART, NOMPA2, VALPA2,
      &                 NBRES, NOMRES, VALRES, CODRET, ARRET )
 

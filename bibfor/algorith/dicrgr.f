@@ -12,7 +12,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
 
 
 C TYPE D'ELEMENT: SEG2
-      NPG = 1
+      NPG = 2
 C
 C---procedure pour la liaison grille crayon
 C
@@ -162,10 +162,9 @@ C recuperation des donnees materiau pour le discret
         KPHI=VALRE4(3)/2.D0-KTHETA
         KTHET2=VALRE4(5)/2.D0
       ELSE
-        CALL MOYTEM(FAMI,NPG,1,'+',TEMP)
-        CALL MOYTEM(FAMI,NPG,1,'-',TEMM)
-        TEMP = (TEMP + TEMM)/2.D0
-
+        CALL MOYTEM(FAMI,NPG,1,'+',TEMPP)
+        CALL MOYTEM(FAMI,NPG,1,'-',TEMPM)
+        TEMP = (TEMPP + TEMPM)/2.D0
         NBPAR=2
         NOMPAR(2)='IRRA'
         NOMPAR(1)='TEMP'

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -325,7 +325,7 @@ C PETITES DEFORMATIONS
      &                      OPTION,SIGP,VIP,DSIDEP,R8BID,R8BID,CODRET)
             ELSE IF (PHENOM(1:8).EQ.'ELAS_ORT'.OR.
      &              PHENOM(1:8).EQ.'ELAS_IST') THEN
-              CALL NMORTH(FAMI,KPG,KSP,1,NDIM,PHENOM,TYPMOD,IMATE,
+              CALL NMORTH(FAMI,KPG,KSP,NDIM,PHENOM,TYPMOD,IMATE,
      &                    EPSM,DEPS,SIGM,OPTION,ANGMAS,SIGP,VIP,
      &                    DSIDEP)
             ELSE

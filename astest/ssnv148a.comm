@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,9 +64,6 @@ ACIER=DEFI_MATERIAU(ECRO_LINE_FO=_F(D_SIGM_EPSI=ET,
                                SIGM_CNV=2600.0,
                                SIGM_REFE=SIGREF,),);
 
-CM=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
-                         TOUT='OUI',),
-                 MAILLAGE=M,);
 
 ZERO=DEFI_CONSTANTE(VALE=0.0,);
 
@@ -97,7 +94,12 @@ RESU_T=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
                        _F(CHAM_GD=TEMP_T, INST=41,),),
                  );
 
-CH_T=AFFE_CHAR_MECA(MODELE=MO, TEMP_CALCULEE=RESU_T,);
+CM=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
+                         TOUT='OUI',),
+                 AFFE_VARC=_F(EVOL=RESU_T,NOM_VARC='TEMP',VALE_REF=0.,
+                         TOUT='OUI',),
+                 MAILLAGE=M,);
+
 
 CHARG=AFFE_CHAR_MECA_F(MODELE=MO,
                        DDL_IMPO=(_F(DY=TRAC50,
@@ -117,14 +119,13 @@ U=STAT_NON_LINE(CHAM_MATER=CM,
                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                              ITER_INTE_MAXI=100,
                              RESI_INTE_RELA=9.9999999999999995E-07,),
-                EXCIT=(_F(CHARGE=CHARG,),
-                       _F(CHARGE=CH_T,),),
+                EXCIT=_F(CHARGE=CHARG,),
                 INCREMENT=_F(NUME_INST_FIN=4,
                              LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE ='TANGENTE',
                           REAC_ITER=3,),);
 
-WEIB=POST_ELEM(CHARGE=(CHARG,CH_T),
+WEIB=POST_ELEM(CHARGE=CHARG,
                WEIBULL=_F(CORR_PLAST='NON',
                           TOUT='OUI',
                           COEF_MULT=2.0,

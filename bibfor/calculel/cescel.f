@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,NNCP,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,6 +109,9 @@ C     ------------------------------------------------------------------
       NOMPAR = NOMPAZ
       LIGREL = LIGREZ
 
+
+C     PROL : AUTORISATION DE PROLONGER (MEME UNE CMP ISOLEE)
+C     PROL2: AUTORISATION DE PROLONGER UNE MAILLE ENTIEREMENT VIERGE
       IF (PROL0.EQ.'OUI') THEN
         PROL = .TRUE.
         PROL2= .TRUE.
@@ -285,12 +288,19 @@ C     ===================================================
       CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
 
 
+C     3.0 ON INITIALISE CELV AVEC "NAN" SI NECESSAIRE :
+C     -------------------------------------------------
+      IF (PROL0.EQ.'NAN') THEN
+         CALL ASSERT(TSCA.EQ.'R')
+         DO 77, IEQ=1,NEQ
+            ZR(JCELV-1+IEQ) = R8NNEM()
+ 77      CONTINUE
+      ENDIF
+
+
 C     3.1 CAS NOMGD /= 'VARI_R' :
 C     ---------------------------------------------------
       IF (NOMGD.NE.'VARI_R') THEN
-C       -- A PROGRAMMER SI NECESSAIRE :
-        CALL ASSERT(PROL0.NE.'NAN')
-
 
 C       3.1.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
         NPTMX = ZI(JCESD-1+3)
@@ -420,7 +430,7 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
   150   CONTINUE
 
 
-C     3.2 CAS NOMGD = 'VARI_R' :
+C     3.2 CAS NOMGD == 'VARI_R' :
 C     ---------------------------------------------------
       ELSE
         DO 200,IGR = 1,NBGR
@@ -446,30 +456,8 @@ C     ---------------------------------------------------
 
 C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
             IF (NUMA.LT.0) THEN
-              IF (PROL2) THEN
-                IF (PROL0.EQ.'OUI') THEN
-                   GO TO 190
-                ELSEIF (PROL0.EQ.'NAN') THEN
-                   DO 181,IPT = 1,NBPT
-                     DO 171,ISPT = 1,NBSPT
-                       DO 161,ICMP = 1,NCDYN
-                         IEQ = ADIEL - 1 + ((IPT-1)*NBSPT+
-     &                         ISPT-1)*NCDYN + ICMP
-                         IF (TSCA.EQ.'R') THEN
-                           ZR(JCELV-1+IEQ) = R8NNEM()
-                         ELSE
-                           CALL ASSERT(.FALSE.)
-                         ENDIF
-  161                  CONTINUE
-  171                CONTINUE
-  181              CONTINUE
-                   GO TO 190
-                ELSE
-                  CALL ASSERT(.FALSE.)
-                ENDIF
-              ELSE
-                CALL U2MESS('F','CALCULEL_56')
-              END IF
+              IF (PROL2)  GO TO 190
+              CALL U2MESS('F','CALCULEL_56')
             END IF
 
             NBPT2 = ZI(JCESD-1+5+4* (NUMA-1)+1)

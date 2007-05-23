@@ -1,21 +1,21 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -23,7 +23,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                               FOND_FISS,CHARGE,RESU_THER,AFFE_MATERIAU,
                               PRES_REP,ECHANGE,TORS_P1,COMP_INCR,COMP_ELAS,
                               SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
-                              INCREMENT,THETA_3D,IMPR_TABLE,IMPRESSION,INFO,TITRE ,**args):          
+                              INCREMENT,THETA_3D,IMPR_TABLE,IMPRESSION,INFO,TITRE ,**args):
   """
      Ecriture de la macro MACR_ASCOUF_CALC
   """
@@ -60,7 +60,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 # DATA
   GRMAIL = ('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV','FACE1','FACE2')
 #------------------------------------------------------------------
-#  
+#
   if CL_BOL_P2_GV!=None :
     if TYPE_MAILLAGE=='SOUS_EPAIS_COUDE' :
        message=        ' la condition aux limites sur bol a section conique \n'
@@ -76,7 +76,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
        return ier
     if (mc_IMPR_TABLE['NOM_PARA']!=None) :
        impr_table_nom_para= mc_IMPR_TABLE['NOM_PARA']
-       for impt in impr_table_nom_para : 
+       for impt in impr_table_nom_para :
          if impt in ('SI_LONG','SI_CIRC','SI_RADI') :
            FLAG = 1
            if (((impt['ANGLE']==None) and (impt['POSI_ANGUL']==None) and (impt['R_CINTR'        ]==None)) or
@@ -117,15 +117,16 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
        mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
        rccmat = mater['MATER']
      else                   :
-       mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
+       mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER']))
        if    mater['GROUP_MA'][:5]=='COUDE' :
          if TORS_P1!=None :
-           mcfact.append(_F(GROUP_MA='P1',MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
-           mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
+           mcfact.append(_F(GROUP_MA='P1',MATER=mater['MATER']))
+           mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER']))
          elif (len(mc_AFFE_MATERIAU)==1) and (CL_BOL_P2_GV==None) :
-           mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
+           mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER']))
        elif (mater['BOL'     ][:3]=='BOL'  ) and (CL_BOL_P2_GV==None) :
-         mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
+         mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER']))
+
   __affmat = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
                           MODELE   = modele ,
                           AFFE     = mcfact    )
@@ -177,45 +178,48 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #     --- commande AFFE_MATERIAU (mécanique)---
 #
   if CHAM_MATER!=None : self.DeclareOut('affmth',CHAM_MATER)
-  indther=0
-  if ECHANGE!=None and RESU_THER!=None : indther=1
+  indther= ECHANGE
   mcfact=[]
   mcfac2=[]
   for mater in mc_AFFE_MATERIAU :
      if mater['TOUT']!=None :
        mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],))
-       if indther==1:
+       if indther:
          mcfac2.append(_F(NOM_VARC='TEMP',TOUT='OUI',
                         EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
        rccmat = mater['MATER']
      else                   :
        mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],))
-       if indther==1:
+       if indther:
          mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA=mater['GROUP_MA'],
                         EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
        if    mater['GROUP_MA'][:5]=='COUDE' :
          if TORS_P1!=None :
            mcfact.append(_F(GROUP_MA='P1',MATER=mater['MATER'],))
            mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
-           if indther==1:
+           if indther:
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P1',
                             EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
                             EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
          elif (len(mc_AFFE_MATERIAU)==1) and (CL_BOL_P2_GV==None) :
            mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
-           if indther==1:
+           if indther:
              mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
                             EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
        elif (mater['BOL'     ][:3]=='BOL'  ) and (CL_BOL_P2_GV==None) :
          mcfact.append(_F(GROUP_MA='P2',MATER=mater['MATER'],))
-         if indther==1:
+         if indther:
            mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA='P2',
                           EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF'],),)
+
+
   affmth = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
                           MODELE   = modele ,
                           AFFE     = mcfact,
                           AFFE_VARC= mcfac2,)
+
+
 
 
 #------------------------------------------------------------------
@@ -269,7 +273,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   _conlim = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
 #
 #     --- commande AFFE_CHAR_MECA ---
-#         chargement mecanique :  pres_rep, effet de fond 
+#         chargement mecanique :  pres_rep, effet de fond
 #
   if PRES_REP!=None :
     motscles={}
@@ -287,7 +291,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     _chpres = AFFE_CHAR_MECA( MODELE   = modele ,**motscles)
 #
 #     --- commande AFFE_CHAR_MECA ---
-#         chargement mecanique : torseur d efforts 
+#         chargement mecanique : torseur d efforts
 #
   if TORS_P1!=None :
     _chtor = [None]*6
@@ -383,7 +387,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
 #     --- post traitement sous-epaisseurs:  ligaments  ---
 #
-     if mc_IMPR_TABLE!=None:       
+     if mc_IMPR_TABLE!=None:
 #
       SECT=('MI','TU','GV')
       LIG=('FDRO','EXDR','EXTR','EXGA','FGAU','INGA','INTR','INDR')
@@ -403,14 +407,14 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #     de la sous-epaisseur
 #
       lgrno=[]
-      for tgrno in l_grno : 
+      for tgrno in l_grno :
         if tgrno[0][:3] in ('CIR','LON')    : lgrno.append(tgrno[0])
         elif tgrno[0][:5]=='PCENT'          : lgrno.append(tgrno[0])
         elif (tgrno[0][:4] in LIG) and (tgrno[0][4:6] not in ('GV','TU','MI')): lgrno.append(tgrno[0])
 #
       motscles={}
       motscles['ACTION']=[]
-      for grno in lgrno : 
+      for grno in lgrno :
          motscles['ACTION'].append(_F(RESULTAT=nomres,
                                       NOM_CHAM='SIEF_ELNO_ELGA',
                                       TOUT_CMP='OUI',
@@ -426,7 +430,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
       motscles={}
       motscles['ACTION']=[]
-      for tgrno in lgrno : 
+      for tgrno in lgrno :
          motscles['ACTION'].append(_F(RESULTAT=nomres,
                                       NOM_CHAM='SIEF_ELNO_ELGA',
                                       INTITULE=tgrno,
@@ -434,7 +438,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                       INVARIANT='OUI',
                                       OPERATION='EXTRACTION',))
       motscles['TITRE']='TABLE DE POST-TRAITEMENT SECTION SOUS-EPAISSEUR'
-      
+
       tablig[2]=POST_RELEVE_T(**motscles)
 #
       motscles={}
@@ -444,7 +448,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
       collgrno=aster.getcolljev(nommail.ljust(8)+'.GROUPENO')
 
       motscles['ACTION']=[]
-      for tgrno in lgrno : 
+      for tgrno in lgrno :
          if tgrno[:3]!='LON' :
           if mc_IMPR_TABLE['TRANSFORMEE']=='TUBE': vecty=(0.,0.,1.)
           else                                   : vecty=(sin(ASEP*pi/180.),0.,cos(ASEP*pi/180.))

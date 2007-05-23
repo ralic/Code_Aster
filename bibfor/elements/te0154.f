@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -63,7 +63,7 @@ C
       LOGICAL      LTEIMP
       REAL*8       A,ALPHAT,E,R8BID,RHO,TEMP,XFL1,XFL4,XL,XMAS,XRIG,TREF
       INTEGER      I,IF,ITYPE,J,JDEPL,JEFFO,JENDE,JFREQ,JDEFO,KANL
-      INTEGER      LMATER,LORIEN,LSECT,LTEMP,IRET1,IRET2,LX,NC,NNO
+      INTEGER      LMATER,LORIEN,LSECT,LTEMP,IRET,LX,NC,NNO
 C     ------------------------------------------------------------------
       LTEIMP = .FALSE.
       NNO = 2
@@ -77,10 +77,11 @@ C
       ENDIF
 C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
-      TEMP=0.D0
-      CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET1)
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET2)
-      IF ((IRET1.NE.1).AND.(IRET2.NE.1)) TEMP=TEMP-TREF
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
+      IF (IRET.EQ.1) TREF=0.D0
+      CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET)
+      IF (IRET.EQ.1) TEMP=TREF
+      TEMP=TEMP-TREF
 
       BL2 = '  '
       CALL JEVECH ('PMATERC', 'L', LMATER)

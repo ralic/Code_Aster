@@ -1,21 +1,21 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (ROUSSELIER_FO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #-----------------------------------------------------------------------
 # TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
@@ -36,7 +36,7 @@ TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
 ECRISO=DEFI_FONCTION(          NOM_PARA='EPSI',
                                 PROL_DROITE='LINEAIRE',
                                PROL_GAUCHE='LINEAIRE',
-                                     VALE=(                           
+                                     VALE=(
  0.002519,   520.000,
  0.003076,   521.293,
  0.003632,   522.584,
@@ -349,15 +349,17 @@ ACIER=DEFI_MATERIAU(               ELAS=_F(   E = 206400.,
                                                SIGM_1 = S1_T,
                                                PORO_INIT = F0_T))
 
-MAT=AFFE_MATERIAU(            MAILLAGE=CUBE,
-                                    AFFE=_F(  MAILLE = 'MA1',
-                                           MATER = ACIER,
-                                           TEMP_REF = 20.))
+CHT0=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=CUBE,
+           AFFE=_F(  TOUT='OUI',   NOM_CMP = 'TEMP',   VALE = 0.E0,  ) )
+MAT=AFFE_MATERIAU(  MAILLAGE=CUBE,
+                    AFFE=_F(  MAILLE = 'MA1', MATER = ACIER, TEMP_REF = 20.),
+                    AFFE_VARC= _F( TOUT = 'OUI', NOM_VARC = 'TEMP', CHAMP_GD=CHT0,),
+                                           )
 
 LINST=DEFI_LIST_REEL(              DEBUT=.4,
                               INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 8))
 
-TR_CS=AFFE_CHAR_MECA( 
+TR_CS=AFFE_CHAR_MECA(
             MODELE=TROISD,DDL_IMPO=(
            _F( NOEUD = 'NO4', DX = 0.,DY = 0.),
                     _F( NOEUD = 'NO8', DX = 0.,DY = 0.,DZ = 0.),
@@ -374,23 +376,23 @@ COEF=DEFI_FONCTION(      NOM_PARA='INST',
                           VALE=( 0.0,  0.0,
                                  1.0,  4.09707,                  ))
 
-SOLNL=STAT_NON_LINE( 
+SOLNL=STAT_NON_LINE(
                TITRE='TEST TRACTION_CISAILLEMENT ROUSSELIER',
                             MODELE=TROISD,
                         CHAM_MATER=MAT,
-                             EXCIT=_F( 
+                             EXCIT=_F(
                 CHARGE = TR_CS,
                 FONC_MULT = COEF),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'ROUSS_PR',
                 RESI_INTE_RELA = 1.E-6,
                 ITER_INTE_MAXI = 10,),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = LINST),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 10,
                 RESI_GLOB_RELA = 1.E-6)
               )
@@ -401,26 +403,26 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
                           RESULTAT=SOLNL,
               )
 
-# 
+#
 
-TEST_RESU(RESU=(  
+TEST_RESU(RESU=(
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
              PARA = 'INST',             VALE = 1.00000E+00),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
-             CRITERE = 'ABSOLU',         PRECISION = 6., 
+             CRITERE = 'ABSOLU',         PRECISION = 6.,
              PARA = 'ITER_GLOB',        VALE_I = 0),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-03, 
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-03,
              PARA = 'RESI_GLOB_RELA',   VALE = 0.),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-01, 
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-01,
              PARA = 'RESI_GLOB',        VALE = 0.),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
              CRITERE = 'ABSOLU',         PRECISION = 2.,
              PARA = 'ITER_LINE',        VALE_I = 0))
            )
 
-SOLNL=CALC_ELEM(  reuse=SOLNL,             
+SOLNL=CALC_ELEM(  reuse=SOLNL,
                                  RESULTAT=SOLNL,
                                    OPTION='EPSI_ELNO_DEPL'  )
 

@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,12 +79,20 @@ C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C
       CALL JEVECH ( 'PMATERC', 'L', LMATER )
-C      IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
+C
+C --- RECUPERATION DE LA TEMPERATURE :
+C     -----------------------------------------------
+      IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
         NPG = 2
-C      ELSE
-C        NPG = 3
-C      ENDIF
-      CALL MOYTEM('RIGI',NPG,1,'+',TEMP)
+      ELSE
+        NPG = 3
+      ENDIF
+      TEMP = 0.D0
+      DO 5 KP=1,NPG
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+        VALPAR = VALPAR + TPG
+    5 CONTINUE
+      TEMP = VALPAR/NPG
 
       CALL RCVALA(ZI(LMATER),' ','ELAS',1,'TEMP',TEMP,
      &                                2,NOMRES,VALRES,CODRES,'FM')

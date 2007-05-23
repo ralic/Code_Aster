@@ -1,6 +1,6 @@
       SUBROUTINE VRCINS(MODELE,CHMATZ,CARELZ,NCHAR,LCHAR,INST,CHVARC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,13 +61,13 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER IRET,ICHS,NBCHS,JLISSD,JLISCH ,JCESD,JCESV,JCESL
-      INTEGER JCVCMP,JCVNOM,NBCVR2,JCESC,NBCMP,KCMP,KCVRC,IRET2
+      INTEGER JCVCMP,JCVNOM,JCESC,NBCMP,KCMP,KCVRC,IRET2
       INTEGER NBMA,IMA,NBPT,NBSP,IPT,ISP,IAD,IAD1
       INTEGER JCVVAR,JCE1D,JCE1L,JCE1V,JCESVI,NNCP
       REAL*8 VALEUR
       CHARACTER*19 CHVARS ,LIGRMO,CHS,CHTEMP
       CHARACTER*8 KBID ,VALK(4)
-      LOGICAL AVRC, TCALC
+      LOGICAL AVRC, TCALC,DBG
       INTEGER NBCVRC,JVCNOM
       COMMON /CAII14/NBCVRC,JVCNOM
 C ----------------------------------------------------------------------
@@ -98,7 +98,7 @@ C     TCALC : .TRUE. SI AFFE_CHAR_MECA/TEMP_CALCULEE EST UTILISE
 C        -- COMMON CAII14 :
          NBCVRC=1
          CALL JEDETR('&&VRCINS.CVRCNOM')
-         CALL WKVECT('&&VRCINS.CVRCNOM','V V K8',NBCVRC,JCVNOM)
+         CALL WKVECT('&&VRCINS.CVRCNOM','V V K8',1,JCVNOM)
          CALL JEVEUT('&&VRCINS.CVRCNOM','E',JCVNOM)
          ZK8(JVCNOM)='TEMP'
          GOTO 9999
@@ -113,7 +113,10 @@ C     ------------------------------------
 9997  CONTINUE
 
 
-C     1. CALCUL DE  CHMAT.LISTE_CH(:) ET CHMAT.LISTE_SD(:)
+C     1. INTERPOLATION EN TEMPS :
+C        FABRICATION D'UNE LISTE DE CHAM_ELEM_S / ELGA
+C        CONTENANT LES VRC A L'INSTANT INST
+C        CALCUL DE  CHMAT.LISTE_CH(:) ET CHMAT.LISTE_SD(:)
 C     -----------------------------------------------------
       CALL VRCIN1(MODELE,CHMAT,CARELE,INST)
 
@@ -127,7 +130,7 @@ C     -------------------------------------------------------------
       IF (IRET.EQ.0) CALL VRCIN2(MODELE,CHMAT,CARELE,CHVARS)
 
 
-C     3. RECOPIE DES VALEURS DANS CHVARS :
+C     3. CONCATENATION DES CHAMPS DE .LISTE_CH  DANS CHVARS :
 C     -----------------------------------------------------
       CALL JEVEUO(CHMAT//'.LISTE_CH','L',JLISCH)
       CALL JELIRA(CHMAT//'.LISTE_CH','LONMAX',NBCHS,KBID)
@@ -135,7 +138,7 @@ C     -----------------------------------------------------
       CALL JEVEUO(CHMAT//'.CVRCVARC','L',JCVVAR)
       CALL JEVEUO(CHMAT//'.CVRCCMP','L',JCVCMP)
       CALL JEVEUO(CHMAT//'.CVRCNOM','L',JCVNOM)
-      CALL JELIRA(CHMAT//'.CVRCCMP','LONMAX',NBCVR2,KBID)
+      CALL JELIRA(CHMAT//'.CVRCCMP','LONMAX',NBCVRC,KBID)
 
       CALL JEVEUO(CHVARS//'.CESD','L',JCE1D)
       CALL JEVEUO(CHVARS//'.CESL','E',JCE1L)
@@ -155,20 +158,31 @@ C     -----------------------------------------------------
           NOCMP1=ZK8(JCESC-1+KCMP)
 
 C         -- CALCUL DE KCVRC :
-          DO 3,KCVRC=1,NBCVR2
+          DO 3,KCVRC=1,NBCVRC
             VARC2=ZK8(JCVVAR-1+KCVRC)
             NOCMP2=ZK8(JCVCMP-1+KCVRC)
             IF ((VARC1.EQ.VARC2).AND.(NOCMP1.EQ.NOCMP2)) GO TO 4
 3         CONTINUE
+
+C         -- ON IGNORE LES COMPOSANTES DU CHAMP QUI NE SONT PAS DES CVRC
+C            MAIS ON FAIT UNE EXCEPTION POUR LES DISTRAITS QUI ONT
+C            OUBLIE DE FAIRE PREP_VRC1/2 :
+          VALK(1) = CHMAT
+          VALK(2) = VARC1
+          VALK(3) = NOCMP1
+          CALL U2MESK('I','CALCULEL6_50', 3 ,VALK)
+
           IF (NOCMP1.EQ.'TEMP_INF') THEN
-             VALK(1) = CHMAT
-             VALK(2) = VARC1
-             VALK(3) = NOCMP1
-             CALL U2MESK('F','CALCULEL6_59', 3 ,VALK)
+             CALL ASSERT(VARC1.EQ.'TEMP')
+             CALL U2MESK('A','CALCULEL6_59', 2 ,VALK)
+          ELSE
+             GOTO 2
           ENDIF
 
 4         CONTINUE
+          CALL ASSERT(KCVRC.GE.1 .AND. KCVRC.LE.NBCVRC)
 
+C         -- BOUCLE SUR LES MAILLES :
           NBMA = ZI(JCESD-1+1)
           CALL ASSERT(NBMA.EQ.ZI(JCE1D-1+1))
 
@@ -183,13 +197,25 @@ C         -- CALCUL DE KCVRC :
               CALL U2MESK('F','CALCULEL6_57', 3 ,VALK)
             ENDIF
 
+C           -- SI LA MAILLE N'EST PAS CONCERNEE PAR KCVRC:
+            CALL CESEXI('C',JCE1D,JCE1L,IMA,1,1,KCVRC,IAD1)
+            IF (IAD1.EQ.0) GOTO 70
+
+C           -- SI LA MAILLE PORTE UN ELEMENT FINI QUI SAURAIT UTILISER
+C              LA VARIABLE DE COMMANDE MAIS QU'ELLE N'EST PAS AFFECTEE.
+C              ON ESPERE QUE LES ROUTINES TE00IJ ARRETERONT EN <F>
+C              SI NECESSAIRE.
+            IF (IAD1.LT.0) THEN
+C              -- EMETTRE UNE ERREUR  ? UNE ALARME ?
+               GOTO 70
+            ENDIF
+
             DO 60,IPT = 1,NBPT
               DO 50,ISP = 1,NBSP
                   CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,KCMP,IAD)
                   IF (IAD.GT.0) THEN
                     CALL CESEXI('C',JCE1D,JCE1L,IMA,IPT,ISP,
      &                            KCVRC,IAD1)
-                    IF (IAD1.EQ.0) GOTO 50
                     CALL ASSERT(IAD1.GT.0)
                     IF (ZI(JCESVI-1+IAD1).EQ.ICHS) THEN
                       VALEUR=ZR(JCESV-1+IAD)
@@ -208,10 +234,13 @@ C         -- CALCUL DE KCVRC :
 C     4. RECOPIE DU CHAMP SIMPLE DANS LE CHAMP CHVARC
 C     -----------------------------------------------------
       LIGRMO=MODELE//'.MODELE'
-      CALL CESCEL(CHVARS,LIGRMO,'INIT_VARC','PVARCPR','NON',NNCP,
+      CALL CESCEL(CHVARS,LIGRMO,'INIT_VARC','PVARCPR','NAN',NNCP,
      &            'V',CHVARC)
+
+      DBG=.TRUE.
+      DBG=.FALSE.
+      IF (DBG) CALL IMPRSD('CHAMP',CHVARC,6,'VRCINS/CHVARC')
 
 9999  CONTINUE
       CALL JEDEMA()
-      CALL EXISD('CHAMP_GD',CHVARC,IRET)
       END

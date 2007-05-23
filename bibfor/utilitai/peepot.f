@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF UTILITAI  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,6 +82,8 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       INST = 0.D0
       ALPHA = 1.D0
       CALPHA = (1.D0,1.D0)
+      CHTEMP= ' '
+
       CALL GETVID(' ','CHAM_GD',1,1,1,DEPLA,ND)
       IF(ND.NE.0)THEN
           CALL CHPVE2('F',DEPLA,3,TABTYP,IER)

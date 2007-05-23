@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,11 +55,6 @@ MAT=DEFI_MATERIAU(
                                           SY = 200.)
                      )
 
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
-            AFFE=_F(  TOUT = 'OUI',  MATER = MAT,
-                   TEMP_REF = 0.)
-                        )
-
 TP0=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MA,
                             AFFE=_F(  GROUP_NO = 'VTOT',
@@ -97,6 +92,12 @@ TEMPE=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',
                       _F(  CHAM_GD = TP0,   INST = 1.),
                       _F(  CHAM_GD = TP1,   INST = 3.))  )
 
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+            AFFE=_F(  TOUT = 'OUI',  MATER = MAT,),
+            AFFE_VARC=_F(  TOUT = 'OUI',EVOL=TEMPE,NOM_VARC='TEMP',
+                   VALE_REF = 0.),)
+
+
 VARPRESS=DEFI_FONCTION(    NOM_PARA='INST',
                            PROL_GAUCHE='LINEAIRE',
                             PROL_DROITE='CONSTANT',
@@ -116,16 +117,11 @@ CHCL=AFFE_CHAR_MECA(    MODELE=MO,DDL_IMPO=(
              #  LIAISON_UNIF : (GROUP_MA : FACESUP  DDL : 'DZ')
                         )
 
-CHME=AFFE_CHAR_MECA(    MODELE=MO,
-                 TEMP_CALCULEE=TEMPE
-                        )
-
 SOLPL=STAT_NON_LINE(
              MODELE=MO,
              CHAM_MATER=CHMAT,EXCIT=(
              _F(    CHARGE = CHPRES, FONC_MULT = VARPRESS),
-             _F(    CHARGE = CHCL),
-             _F(    CHARGE = CHME)),
+             _F(    CHARGE = CHCL)),
          COMP_INCR=_F(  RELATION = 'VMIS_CINE_LINE'),
          INCREMENT=_F(  LIST_INST = LISTPL),
             NEWTON=_F(  REAC_ITER = 1)
@@ -174,8 +170,7 @@ SOLSTA=MECA_STATIQUE(
               LIST_INST=LISTEL,
               CHAM_MATER=CHMAT,EXCIT=(
               _F(    CHARGE = CHPRES),
-              _F(    CHARGE = CHCL),
-              _F(    CHARGE = CHME)),
+              _F(    CHARGE = CHCL)),
              )
 
 CALC_ELEM( reuse= SOLSTA ,RESULTAT= SOLSTA ,
@@ -189,8 +184,7 @@ CHZAC1=POST_ZAC(
                      MODELE=MO,
                      CHAM_MATER=CHMAT,EXCIT=(
              _F(    CHARGE = CHPRES),
-             _F(    CHARGE = CHCL),
-             _F(    CHARGE = CHME)),
+             _F(    CHARGE = CHCL)),
                      EVOL_ELAS=SOLSTA,
                      LIST_INST=LISTEL
                    )
@@ -199,8 +193,7 @@ CHZAC2=POST_ZAC(
                      MODELE=MO,
                      CHAM_MATER=CHMAT,EXCIT=(
              _F(    CHARGE = CHPRES),
-             _F(    CHARGE = CHCL),
-             _F(    CHARGE = CHME)),
+             _F(    CHARGE = CHCL)),
                      EVOL_NOLI=SOLPL,
                      INST_MAX=3.,
                      EVOL_ELAS=SOLSTA,
@@ -238,15 +231,15 @@ TEMPE2=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP'
                       _F(  CHAM_GD = TP0,   INST = 1.),
                       _F(  CHAM_GD = TP2,   INST = 3.))  )
 
-CHME2=AFFE_CHAR_MECA(    MODELE=MO,
-                 TEMP_CALCULEE=TEMPE2
-                         )
+CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,
+            AFFE=_F(  TOUT = 'OUI',  MATER = MAT,),
+            AFFE_VARC=_F(  TOUT = 'OUI',EVOL=TEMPE2,NOM_VARC='TEMP',
+                   VALE_REF = 0.),)
 
 SOLPL2=STAT_NON_LINE(
              MODELE=MO,
-             CHAM_MATER=CHMAT,EXCIT=(
+             CHAM_MATER=CHMAT2,EXCIT=(
              _F(    CHARGE = CHPRES, FONC_MULT = VARPRESS),
-             _F(    CHARGE = CHME2),
              _F(    CHARGE = CHCL)),
          COMP_INCR=_F(  RELATION = 'VMIS_CINE_LINE'),
          INCREMENT=_F(  LIST_INST = LISTPL),
@@ -257,9 +250,8 @@ SOLPL2=STAT_NON_LINE(
 SOLSTA2=MECA_STATIQUE(
               MODELE=MO,
               LIST_INST=LISTEL,
-              CHAM_MATER=CHMAT,EXCIT=(
+              CHAM_MATER=CHMAT2,EXCIT=(
               _F(    CHARGE = CHPRES),
-              _F(    CHARGE = CHME2),
               _F(    CHARGE = CHCL)),
             )
 
@@ -272,9 +264,8 @@ CALC_ELEM( reuse= SOLSTA2 ,RESULTAT= SOLSTA2 ,
 
 CHZAC3=POST_ZAC(
                      MODELE=MO,
-                     CHAM_MATER=CHMAT,EXCIT=(
+                     CHAM_MATER=CHMAT2,EXCIT=(
              _F(    CHARGE = CHPRES),
-             _F(    CHARGE = CHME2),
              _F(    CHARGE = CHCL)),
                      EVOL_ELAS=SOLSTA2,
                      LIST_INST=LISTEL
@@ -282,9 +273,8 @@ CHZAC3=POST_ZAC(
 
 CHZAC4=POST_ZAC(
                      MODELE=MO,
-                     CHAM_MATER=CHMAT,EXCIT=(
+                     CHAM_MATER=CHMAT2,EXCIT=(
              _F(    CHARGE = CHPRES),
-             _F(    CHARGE = CHME2),
              _F(    CHARGE = CHCL)),
                      EVOL_NOLI=SOLPL2,
                      INST_MAX=3.,

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ C     --------------------------------------------------
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
-      CALL MOYTEM('RIGI',2,1,'+',VALPAR)
+      CALL MOYTEM('NOEU',2,1,'+',VALPAR)
       NOMPAR = 'TEMP'
       NBPAR = 1
 
@@ -209,7 +209,7 @@ C
           DO 100 I = 1,NDDL
             EFGE(I) = 0.D0
             DO 110 J = 1,NDDL
-              EFGE(I) = EFGE(I) 
+              EFGE(I) = EFGE(I)
      &                        + KLC(I,J) * ZR(IDEPL-1+J)
      &                        + KLCS(I,J)* ZR(IDEPSE-1+J)
      &                        + MLC(I,J) * ZR(IACCSE-1+J)
