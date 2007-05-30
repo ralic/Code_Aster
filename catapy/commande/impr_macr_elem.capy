@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/03/2007   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 29/05/2007   AUTEUR VOLDOIRE F.VOLDOIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ IMPR_MACR_ELEM=PROC(nom="IMPR_MACR_ELEM",op= 160,
            GROUP_MA_FLU_SOL=SIMP(statut='f',typ=grma,max='**'),
            GROUP_MA_SOL_SOL=SIMP(statut='f',typ=grma,max='**'),
            GROUP_MA_CONTROL=SIMP(statut='f',typ=grma,max='**'),
+           FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE12.5",into=("1PE12.5","1PE16.9") ),
            IMPR_MODE_MECA  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            IMPR_MODE_STAT  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),

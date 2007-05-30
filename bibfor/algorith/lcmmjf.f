@@ -1,6 +1,6 @@
         SUBROUTINE LCMMJF( FAMI,KPG,KSP,TAUS,COEFT,MATERF,IFA,NMAT,
      &    NBCOMM,DT,NECOUL,IS,IR,NBSYS,VIND,DY,HSR,RP,ALPHAP,DALPHA,
-     &    GAMMAP,DGAMMA,SGNR,DFDTAU,DFDAL,DFDR)
+     &    GAMMAP,DGAMMA,SGNR,DFDTAU,DFDAL,DFDR,IRET)
         IMPLICIT NONE
         INTEGER KPG,KSP,IFA,NMAT,NBCOMM(NMAT,3)
         REAL*8 TAUS,COEFT(NMAT),RP,DT,ALPHAP,DALPHA,GAMMAP,DGAMMA
@@ -9,7 +9,7 @@
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C           DFDR    :  dF/dR
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
       REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,TAUMU,TAUV,GM,PM,CC
-      REAL*8 SGNR,PR,DRDPR,DELTAV,DELTAG,SGNS,R8MIEM
+      REAL*8 SGNR,PR,DRDPR,DELTAV,DELTAG,SGNS,R8MIEM,AUX
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS,R,INT1,INT2,INT3,DFDTMU
       REAL*8 DTMUDR,SOM,DRDGAM,CISA2, RR
 
@@ -61,6 +61,8 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TPERD,IRET)
+      IF (IRET.EQ.1) TPERD=0.D0
+      IRET=0
 
       IF (NECOUL.EQ.'ECOU_VISC1') THEN
           N=COEFT(IFL-1+1)
@@ -136,7 +138,7 @@ C         DFDR
              DFDTAU=0.D0
           ELSE
              
-             TABS=TPERD+273.5D0
+             TABS=TPERD+273.15D0
              DFDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTAG/K/TABS)
      &              *EXP(DELTAV/K/TABS*CRIT-1.D0)*(DELTAV/K/TABS*CRIT)
           ENDIF
@@ -178,7 +180,7 @@ C         DFDR
 
           IF (TAUV.GT.0.D0) THEN
 
-          TABS=TPERD+273.5D0
+          TABS=TPERD+273.15D0
 
           SOM    = 0.D0
           TAUMU  = 0.D0
@@ -195,6 +197,12 @@ C         DFDR
            TAUEF = TAUV-TAUMU
 
            IF (TAUEF.GT.0.D0) THEN
+
+               AUX= (1.D0-((TAUV-TAUMU)/TAUR)**P)
+                  IF (AUX.LE.0.D0)  THEN
+                  IRET=1
+                  GOTO 9999
+               ENDIF
 
             INT1 = (1.D0-((TAUV-TAUMU)/TAUR)**P)**(Q-1)
             INT2 = ((TAUV-TAUMU)/TAUR)**(P-1)
@@ -238,5 +246,5 @@ C         DFDR
           DFDR=0.D0
 
       ENDIF
-
+9999  CONTINUE
       END

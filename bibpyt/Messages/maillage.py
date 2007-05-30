@@ -1,4 +1,4 @@
-#@ MODIF maillage Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF maillage Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ cata_msg={
 1: _("""
    Le nom de groupe numéro %(i1)d de la famille %(k1)s
    est trop long. Il sera tronqué à 8 caractères.
-   Le groupe %(k2)s est renommé en %(k3)s.
+   Le groupe "%(k2)s" est renommé en "%(k3)s".
 """),
 
 2: _("""
@@ -61,12 +61,18 @@ La famille %(k1)s n'a ni groupe, ni attribut.
 """),
 
 8: _("""
-Vous ne pouvez pas renommer le groupe %(k1)s en %(k2)s
-car %(k2)s existe déjà dans le fichier MED.
+Vous ne pouvez pas renommer le groupe "%(k1)s" en "%(k2)s"
+car "%(k2)s" existe déjà dans le fichier MED.
 """),
 
 9: _("""
 Arret en raison des conflits sur les noms de groupe.
+"""),
+
+10: _("""
+   Le nom de groupe numéro %(i1)d de la famille %(k1)s
+   est contient des caractères interdits.
+   Le groupe "%(k2)s" est renommé en "%(k3)s".
 """),
 
 }

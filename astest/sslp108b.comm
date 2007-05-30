@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PLAQUE FISSURE 2D EN MODE 1 AVEC METHODE ARLEQUIN - MODELE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,7 +146,7 @@ TEST_TABLE(TABLE=DEPL_H,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=2.30000E-03),
            NOM_PARA='DY',
            VALE = -8.1928971860135E-07,
-           PRECISION=1E-10,
+           PRECISION=1E-9,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',); 
 
@@ -157,7 +157,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
            NOM_PARA='SIYY',
            VALE = 2.3147057527191E+09,
-           PRECISION=1E-10,
+           PRECISION=1E-9,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);                         
  
@@ -165,7 +165,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=4.00000E-04),
            NOM_PARA='SIYY',
            VALE = 1.6799139069449E+08,
-           PRECISION=1E-10,
+           PRECISION=1E-9,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);            
            
@@ -173,7 +173,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=8.00000E-04),
            NOM_PARA='SIYY',
            VALE = 1.2776802343333E+08,
-           PRECISION=1E-10,
+           PRECISION=1E-8,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);  
            

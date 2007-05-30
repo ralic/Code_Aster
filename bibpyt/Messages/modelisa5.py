@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa5 Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,7 +75,15 @@ cata_msg={
 """),
 
 14: _("""
- med:erreur efnema numero  %(k1)s 
+ MED : Erreur lors de l'appel à EFNEMA, code retour = %(k1)s
+
+  -> Risque & Conseil :
+    Vérifier l'intégrité du fichier MED avec medconforme/mdump.
+    Si le maillage a été produit par un code externe, vérifier que les
+    noms de maillage, de groupes, de familles ne contiennent pas de
+    blancs à la fin.
+    Dans Salomé, on peut renommer ces entités et supprimer les espaces
+    invalides.
 """),
 
 15: _("""

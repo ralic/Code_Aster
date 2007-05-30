@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,7 +134,7 @@ class JDC:
        aster.fclose(8)
 
        tempsMax = self.args.get("tempsMax")
-       if tempsMax != None :
+       if tempsMax != None:
           cpu_restant = tempsMax - cpu_total_syst - cpu_total_user
        else:
           cpu_restant = 0.
@@ -150,6 +150,10 @@ class JDC:
 
        aster.affiche('MESSAGE', texte_final)
        aster.fclose(6)
+       # fichier d'info
+       txt = "%10.2f %10.2f %10.2f %10.2f\n" \
+         % (cpu_total_user+cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
+       open('info_cpu', 'w').write(txt)
 
    def traiter_fin_exec(self,mode,etape=None):
        """ Cette methode realise un traitement final lorsque la derniere commande

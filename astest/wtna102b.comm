@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/05/2007   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#      (CALCUL AXIS_THH2D) 
+#      (CALCUL AXIS_HH2S) 
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='WTNA102B',NIV_PUB_WEB='INTERNET'),);
@@ -45,7 +45,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_THH2S',),);
+                           MODELISATION='AXIS_HH2S',),);
 #
 #
 MAIL=DEFI_GROUP( reuse=MAIL,
@@ -215,8 +215,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
 
 
 TIMP=AFFE_CHAR_MECA(MODELE=MODELE,
-                      DDL_IMPO=(_F(GROUP_NO='ROCHES',
-                             TEMP=0.0,),
+                      DDL_IMPO=(
                      _F(GROUP_NO='GAUCHES',
                              PRE2=15000.,),
                      _F(GROUP_NO='GAUCHES',
@@ -230,16 +229,15 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                    TYPE_CHAM='CART_SIEF_R',
                    AFFE=(_F(GROUP_MA='BO',
                             NOM_CMP=
-                            ('M11','FH11X','FH11Y','ENT11',
-                             'M12','FH12X','FH12Y','ENT12',
-                             'QPRIM','FHTX','FHTY','M21',
-                             'FH21X','FH21Y','ENT21',
-                             'M22','FH22X', 'FH22Y','ENT22',),
+                            ('M11','FH11X','FH11Y',
+                             'M12','FH12X','FH12Y',
+                             'M21','FH21X','FH21Y',
+                             'M22','FH22X','FH22Y',),
                             VALE=
-                            (0.0,0.0,0.0,0.0,
-                             0.0,0.0,0.0, 2500000.0,
-                             0.0,0.0,0.0,0.0,0.0,0.0,0.0,
-                             0.,0.,0.,0.),),
+                            (0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0,
+                             0.0, 0.0 ,0.0,),),
                              ),  );
                                    
 
@@ -247,7 +245,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
                  _F(CHARGE=TIMP,), ),
-                 COMP_INCR=_F(RELATION='KIT_THH',PARM_THETA=0.6,
+                 COMP_INCR=_F(RELATION='KIT_HH',PARM_THETA=0.6,
                               RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),

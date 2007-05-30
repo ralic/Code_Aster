@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost2 Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,11 +23,11 @@ def _(x) : return x
 cata_msg={
 
 2: _("""
- modele inconnu, pas d'impression du champ  %(k1)s 
+Modele inconnu, pas d'impression du champ  %(k1)s 
 """),
 
 3: _("""
- on ne sait pas ecrire des  champs par element aux points de gauss au format castem
+On ne sait pas ecrire des champs par element aux points de gauss au format CASTEM
 """),
 
 4: _("""
@@ -35,7 +35,16 @@ cata_msg={
 """),
 
 5: _("""
- on ne sait pas faire avec existc = 1
+Ce champ existe déjà dans le fichier MED. On ne peut pas le créer de nouveau.
+
+Nom MED du champ : "%(k1)s"
+
+  -> Risque & Conseil :
+      Si vous essayez d'imprimer les différentes composantes d'un champ,
+      ne faites qu'un seul IMPR_RESU avec la liste des composantes à
+      retenir derrière le mot-clé NOM_CMP.
+      Pour la visualisation dans Salomé (Scalar Map par exemple),
+      sélectionner la composante dans Scalar Range/Scalar Mode.
 """),
 
 6: _("""

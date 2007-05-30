@@ -2,7 +2,7 @@
      &                    NPOINI, NTERM1, NSOMM1, CSOMM1,
      &                    TYMA, NBNO2, CONNX,
      &                    MXNBN2, MXNBPG, MXNBPI, MXNBTE )
-      IMPLICIT   NONE
+      IMPLICIT   NONE        
       INTEGER      MXNBN2,MXNBPG,MXNBPI,MXNBTE
       INTEGER      NPG,CONNX(MXNBN2,MXNBPG),NSOMM1(MXNBPI,MXNBTE)
       INTEGER      NTERM1(MXNBPI),NBNO2(MXNBPG),NPOINI,TYMA(MXNBPG)
@@ -11,7 +11,7 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/05/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,14 +34,17 @@ C BUT : DECOMPOSER LES TYPE_ELEM 3D EN AUTANT DE SOUS-ELEMENTS QUE
 C       DE POINTS DE GAUSS.
 C
 C     DECOUPAGE DU HE8, H20, H27 :
+C       FPG1  :  8 NOEUDS,  1 HEXA8
 C       FPG8  : 27 NOEUDS,  8 HEXA8
 C       FPG27 : 64 NOEUDS, 27 HEXA8
 C
 C     DECOUPAGE DU TE4, T10 :
+C       FPG1  :  4 NOEUDS,  1 TETRA4
 C       FPG4  : 15 NOEUDS,  4 HEXA8
 C       FPG15 : 32 NOEUDS, 10 HEXA8 ET 4 PENTA6 ET 1 TETRA4
 C
 C     DECOUPAGE DU PE6, P15 :
+C       FPG1  :  6 NOEUDS,  1 PENTA6
 C       FPG6  : 12 NOEUDS,  6 PENTA6
 C       FPG21 : 48 NOEUDS, 18 HEXA8 ET 3 PENTA6
 C
@@ -71,7 +74,42 @@ C     -----------------------------------------------------------------
      +     ELREFA .EQ. 'H20' .OR.
      +     ELREFA .EQ. 'H27' ) THEN
 C
-       IF ( FAPG .EQ. 'FPG8' ) THEN
+       IF ( FAPG .EQ. 'FPG1' ) THEN
+C           -----------------
+         NPOINI   = 8
+         TYMA(1)  = IHEXA8
+         NBNO2(1) = 8
+
+C        -- DEFINITION DES POINT_I :
+         NTERM1(1)=1
+         CALL ECLAN1(1,MXNBPI,NSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         CALL ECLAC1(1,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(2)=1
+         CALL ECLAN1(2,MXNBPI,NSOMM1,NTERM1,2,0,0,0,0,0,0,0)
+         CALL ECLAC1(2,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(3)=1
+         CALL ECLAN1(3,MXNBPI,NSOMM1,NTERM1,3,0,0,0,0,0,0,0)
+         CALL ECLAC1(3,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(4)=1
+         CALL ECLAN1(4,MXNBPI,NSOMM1,NTERM1,4,0,0,0,0,0,0,0)
+         CALL ECLAC1(4,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(5)=1
+         CALL ECLAN1(5,MXNBPI,NSOMM1,NTERM1,5,0,0,0,0,0,0,0)
+         CALL ECLAC1(5,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(6)=1
+         CALL ECLAN1(6,MXNBPI,NSOMM1,NTERM1,6,0,0,0,0,0,0,0)
+         CALL ECLAC1(6,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(7)=1
+         CALL ECLAN1(7,MXNBPI,NSOMM1,NTERM1,7,0,0,0,0,0,0,0)
+         CALL ECLAC1(7,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(8)=1
+         CALL ECLAN1(8,MXNBPI,NSOMM1,NTERM1,8,0,0,0,0,0,0,0)
+         CALL ECLAC1(8,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         
+C        -- CONNECTIVITE DES SOUS-ELEMENTS :
+         CALL ECLACO(1,MXNBN2,CONNX,NBNO2,  1,2,3,4,5,6,7,8)
+
+       ELSEIF ( FAPG .EQ. 'FPG8' ) THEN
 C           -----------------
          NPOINI = 27
          DO 10, K = 1, NPG
@@ -435,7 +473,31 @@ C     -----------------------------------------------------------------
       ELSEIF ( ELREFA .EQ. 'TE4' .OR.
      +         ELREFA .EQ. 'T10' ) THEN
 C
-       IF ( FAPG .EQ. 'FPG4' ) THEN
+       IF ( FAPG .EQ. 'FPG1' ) THEN
+C           -----------------
+         NPOINI   = 4
+         TYMA(1)  = ITETR4
+         NBNO2(1) = 4
+         
+C        -- DEFINITION DES POINT_I :
+         NTERM1(1)=1
+         CALL ECLAN1(1,MXNBPI,NSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         CALL ECLAC1(1,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(2)=1
+         CALL ECLAN1(2,MXNBPI,NSOMM1,NTERM1,2,0,0,0,0,0,0,0)
+         CALL ECLAC1(2,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(3)=1
+         CALL ECLAN1(3,MXNBPI,NSOMM1,NTERM1,3,0,0,0,0,0,0,0)
+         CALL ECLAC1(3,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(4)=1
+         CALL ECLAN1(4,MXNBPI,NSOMM1,NTERM1,4,0,0,0,0,0,0,0)
+         CALL ECLAC1(4,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         
+C        -- CONNECTIVITE DES SOUS-ELEMENTS :
+         CALL ECLACO(1,MXNBN2,CONNX,NBNO2,  1,2,3,4,0,0,0,0)
+
+
+       ELSEIF ( FAPG .EQ. 'FPG4' ) THEN
 C           -----------------
          NPOINI = 15
          DO 30, K = 1, NPG
@@ -655,7 +717,36 @@ C     -----------------------------------------------------------------
       ELSEIF ( ELREFA .EQ. 'PE6' .OR.
      +         ELREFA .EQ. 'P15' ) THEN
 C
-       IF ( FAPG .EQ. 'FPG6' ) THEN
+       IF ( FAPG .EQ. 'FPG1' ) THEN
+C           -----------------
+         NPOINI   = 6
+         TYMA(1)  = IPENT6
+         NBNO2(1) = 6
+         
+C        -- DEFINITION DES POINT_I :
+         NTERM1(1)=1
+         CALL ECLAN1(1,MXNBPI,NSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         CALL ECLAC1(1,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(2)=1
+         CALL ECLAN1(2,MXNBPI,NSOMM1,NTERM1,2,0,0,0,0,0,0,0)
+         CALL ECLAC1(2,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(3)=1
+         CALL ECLAN1(3,MXNBPI,NSOMM1,NTERM1,3,0,0,0,0,0,0,0)
+         CALL ECLAC1(3,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(4)=1
+         CALL ECLAN1(4,MXNBPI,NSOMM1,NTERM1,4,0,0,0,0,0,0,0)
+         CALL ECLAC1(4,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(5)=1
+         CALL ECLAN1(5,MXNBPI,NSOMM1,NTERM1,5,0,0,0,0,0,0,0)
+         CALL ECLAC1(5,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         NTERM1(6)=1
+         CALL ECLAN1(6,MXNBPI,NSOMM1,NTERM1,6,0,0,0,0,0,0,0)
+         CALL ECLAC1(6,MXNBPI,CSOMM1,NTERM1,1,0,0,0,0,0,0,0)
+         
+C        -- CONNECTIVITE DES SOUS-ELEMENTS :
+         CALL ECLACO(1,MXNBN2,CONNX,NBNO2,  1,2,3,4,5,6,0,0)
+C
+       ELSEIF ( FAPG .EQ. 'FPG6' ) THEN
 C           -----------------
          NPOINI = 12
          DO 50, K = 1, NPG

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 29/05/2007   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ 
 #       TEST31 ALLIANCES
@@ -59,7 +59,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI', 
                       PHENOMENE = 'MECANIQUE',
-                      MODELISATION = 'D_PLAN_THHD')
+                      MODELISATION = 'D_PLAN_HHD')
                      )
 
 ####################################
@@ -211,22 +211,17 @@ CALDRO=AFFE_CHAR_MECA(MODELE=MODELE,
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    PRE2=0.,),); 
-CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                   TEMP=0.,),);                                  
-
 
 RESU0=STAT_NON_LINE( 
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT0,
                 EXCIT=(_F(CHARGE=CALDRO,),
                         _F(CHARGE=CALGAU,),
-                        _F(CHARGE=CALTEMP,),
                         _F(CHARGE=CALGAZ,),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               ),
                 COMP_INCR=_F( 
-                RELATION = 'KIT_THH',
+                RELATION = 'KIT_HH',
                 RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 INCREMENT=_F(  LIST_INST = LI),
                 NEWTON=_F(MATRICE='TANGENTE',

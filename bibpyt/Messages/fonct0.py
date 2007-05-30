@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +169,8 @@ La fonction '%(k1)s' est une fonction de %(i1)d paramètres.
 
 25: _("""
 Le type de la fonction '%(k1)s' est inconnu.
-Seules les fonctions, nappes, fonctions constantes et formules sont traitées par FOINTR.
+Seules les fonctions, nappes, fonctions constantes et formules sont
+traitées par FOINTR.
 
   -> Debug :
       le type est '%(k2)s'
@@ -180,6 +181,53 @@ Seules les fonctions, nappes, fonctions constantes et formules sont traitées par
    intervalle trouvé : [%(r2)f, %(r3)f]
 """),
 
+27: _("""
+Un problème d'interpolation a été rencontré. 
+%(k1)s
 
+  -> Risque & Conseil :
+      Vérifier les valeurs fournies derrière le mot-clé 'INTERPOL' lors
+      de la création de cette(ces) fonction(s).
+   
+  -> Debug :
+      %(k2)s
+"""),
+
+28: _("""
+Un problème concernant le nom des abscisses ou ordonnées a été rencontré.
+%(k1)s
+   
+  -> Risque & Conseil :
+      Vérifier la valeur fournie derrière les mots-clés 'NOM_PARA'/'NOM_RESU' lors
+      de la création de cette(ces) fonction(s).
+   
+  -> Debug :
+      %(k2)s
+"""),
+
+29: _("""
+Un problème concernant le prolongement de la (des) fonction(s) a été rencontré.
+%(k1)s
+   
+  -> Risque & Conseil :
+      Vérifier la valeur fournie derrière les mots-clés 'PROL_GAUCHE'/'PROL_DROITE'
+      lors de la création de cette(ces) fonction(s).
+   
+  -> Debug :
+      %(k2)s
+"""),
+
+30: _("""
+Une erreur s'est produite lors de l'opération.
+%(k1)s
+   
+  -> Debug :
+      %(k2)s
+
+Remontée d'erreur (pour aider à l'analyse) :
+
+%(k3)s
+
+"""),
 
 }

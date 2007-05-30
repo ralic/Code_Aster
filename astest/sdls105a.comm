@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 30/05/2007   AUTEUR ADOBES A.ADOBES 
 # TITRE PLAQUE SOUMISE A UNE TURBULENCE HOMOGENE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,23 +17,15 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
 #
-
 #      CALCUL DES MODES PROPRES ET DE LA MASSE AJOUTEE
-
 #        POUR UN DEPLACEMENT MODAL DE LA STRUCTURE
-
 #     LA TURBULENCE EST HOMOGENE SUR TOUTE LA SURFACE IMMERGEE
-
 #   ACCEPTANCE CALCULEE AVEC UNE FONCTION DE CORRELATION CORCOS
-
 #
-
 #
-
 #
-DEBUT(CODE=_F( NOM = 'SDLS105A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT( CODE=_F( NOM = 'SDLS105A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_IDEAS( )
 
@@ -200,15 +192,14 @@ SPECTRE=DEFI_SPEC_TURB(
 # EAU DE LA PLANCHE ET CALCUL DE LA FONCTION ACCEPTANCE
 
 
-SPPROJ=PROJ_SPEC_BASE(
-                       SPEC_TURB=SPECTRE,
-                 MODE_MECA=MODEAU,
-               MODELE_INTERFACE=INTERF,
-               VECT_X=(0., 1., 0.,),
-               VECT_Y=(0., 0., 1.,),
-                FREQ_INIT=1.59155E-3,
-                 FREQ_FIN=1.59155E-1,
-                 NB_POIN=2
+SPPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE,
+                       MODE_MECA=MODEAU,
+                       MODELE_INTERFACE=INTERF,
+                       VECT_X=(0., 1., 0.,),
+                       VECT_Y=(0., 0., 1.,),
+                       FREQ_INIT=1.59155E-3,
+                       FREQ_FIN=1.59155E-1,
+                       NB_POIN=2
                            )
 
 #EXTRACTION DE L AUTOSPECTRE D EFFORT MODAL TURBULENT
@@ -229,14 +220,13 @@ AUTOSPEC=RECU_FONCTION(    TABLE=SPPROJ,
 # DE COQUES DKT SUR QUAD4
 
 
-SPPROJ1=PROJ_SPEC_BASE(
-                  SPEC_TURB=SPECTRE,
-                 MODE_MECA=MODEAU,
-                    VECT_X=(0., 1., 0.,),
-                    VECT_Y=(0., 0., 1.,),
-                 FREQ_INIT=1.59155E-3,
-                   FREQ_FIN=1.59155E-1,
-                   NB_POIN=2
+SPPROJ1=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE,
+                        MODE_MECA=MODEAU,
+                        VECT_X=(0., 1., 0.,),
+                        VECT_Y=(0., 0., 1.,),
+                        FREQ_INIT=1.59155E-3,
+                        FREQ_FIN=1.59155E-1,
+                        NB_POIN=2
                              )
 
 # DEFINITION D'UN SPECTRE DE TURBULENCE DE COUCHE LIMITE
@@ -253,15 +243,14 @@ SPECTREP=DEFI_SPEC_TURB(
                        METHODE = 'CORCOS')
                             )
 
-SPPROJP=PROJ_SPEC_BASE(
-                       SPEC_TURB=SPECTREP,
-                 MODE_MECA=MODEAU,
-               MODELE_INTERFACE=INTERF,
-               VECT_X=(0., 1., 0.,),
-               VECT_Y=(0., 0., 1.,),
-                FREQ_INIT=1.59155E-3,
-                 FREQ_FIN=1.59155E-2,
-                 NB_POIN=2
+SPPROJP=PROJ_SPEC_BASE( SPEC_TURB=SPECTREP,
+                        MODE_MECA=MODEAU,
+                        MODELE_INTERFACE=INTERF,
+                        VECT_X=(0., 1., 0.,),
+                        VECT_Y=(0., 0., 1.,),
+                        FREQ_INIT=1.59155E-3,
+                        FREQ_FIN=1.59155E-2,
+                        NB_POIN=2
                            )
 
 #

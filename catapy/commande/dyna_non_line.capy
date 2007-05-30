@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 30/05/2007   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -283,11 +283,16 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                          ),
          CONVERGENCE     =FACT(statut='d',
            regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA'),),
-           SIGM_REFE       =SIMP(statut='f',typ='R'),
-           EPSI_REFE       =SIMP(statut='f',typ='R'),
-           FLUX_THER_REFE  =SIMP(statut='f',typ='R'),
-           FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
-           FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
+           b_refe_rela    =BLOC(condition = "RESI_REFE_RELA != None",
+             regles=(AU_MOINS_UN('SIGM_REFE','EPSI_REFE','FLUX_THER_REFE',
+                                  'FLUX_HYD1_REFE','FLUX_HYD2_REFE','VARI_REFE'),),
+             SIGM_REFE       =SIMP(statut='f',typ='R'),
+             EPSI_REFE       =SIMP(statut='f',typ='R'),
+             FLUX_THER_REFE  =SIMP(statut='f',typ='R'),
+             FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
+             FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
+             VARI_REFE       =SIMP(statut='f',typ='R'),                     
+           ),
            RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
            RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
            RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),

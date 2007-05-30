@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 30/05/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,6 +90,7 @@ CHA3=AFFE_CHAR_MECA(MODELE=MO,
                                NORMALE        = 'MAIT',
                                REAC_GEOM      = 'AUTOMATIQUE',
                                METHODE        = 'PENALISATION',
+                               LISSAGE        = 'OUI',
                                E_T            = 1.0E11,
                                FROTTEMENT     = 'COULOMB',
                                COULOMB        = 1.0,

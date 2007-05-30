@@ -3,7 +3,7 @@
      &                    NCMPVE, NTNCMP, NTUCMP,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C
       CALL INFNIV ( IFM, NIVINF )
 C
       IF ( EXISTC.EQ.1 ) THEN
-        CALL U2MESS('F','PREPOST2_5')
+        CALL U2MESK('S', 'PREPOST2_5', 1, NOCHMD)
       ENDIF
 C
 C====

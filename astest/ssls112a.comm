@@ -1,5 +1,4 @@
-
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKQ - B/A = 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,21 +187,76 @@ CHME1=AFFE_CHAR_MECA(MODELE=MO1,
 # ______________________________________________________________________
 #
 #
-
+#  2 BICOUCHES
+#
 DEP=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMU2,
                    CARA_ELEM=EP,
                    EXCIT=_F(CHARGE=CHME,),
                   );
 
+DEP1INF=CALC_ELEM(
+                RESULTAT=DEP,
+                OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+             REPE_COQUE =_F( NUME_COUCHE=1,
+                             NIVE_COUCHE='INF',),  )
+
+
+DEP2SUP=CALC_ELEM(
+                RESULTAT=DEP,
+                OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+             REPE_COQUE =_F( NUME_COUCHE=2,
+                             NIVE_COUCHE='SUP',),  )
+
+
+IMPR_RESU(RESU=_F(RESULTAT=DEP2SUP,NOM_CHAM='SIGM_ELNO_DEPL',
+                   NUME_ORDRE=1,MAILLE=('M10',)))
+
+ 
+
+IMPR_RESU(RESU=_F(RESULTAT=DEP1INF,NOM_CHAM='SIGM_ELNO_DEPL',
+                   NUME_ORDRE=1,MAILLE=('MAILM10',)))
+
+
+ 
 # ______________________________________________________________________
 #
 #
-DEP1=MECA_STATIQUE(MODELE=MO1,
+#
+#  QUADRICOUCHE
+#
+DEPQ=MECA_STATIQUE(MODELE=MO1,
                    CHAM_MATER=CHMUL,
                    CARA_ELEM=EP1,
                    EXCIT=_F(CHARGE=CHME1,),
                   );
+#
+# COUCHE 1
+#
+
+DEPQ1INF=CALC_ELEM(
+                RESULTAT=DEPQ,
+                OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+             REPE_COQUE =_F( NUME_COUCHE=1,
+                             NIVE_COUCHE='INF',),  )
+
+IMPR_RESU(RESU=_F(RESULTAT=DEPQ1INF,NOM_CHAM='SIGM_ELNO_DEPL',
+                   NUME_ORDRE=1,MAILLE=('M10',)))
+
+#
+# COUCHE 4
+#
+
+DEPQ4SUP=CALC_ELEM(
+                RESULTAT=DEPQ,
+                OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+             REPE_COQUE =_F( NUME_COUCHE=4,
+                             NIVE_COUCHE='SUP',),  )
+
+
+IMPR_RESU(RESU=_F(RESULTAT=DEPQ4SUP,NOM_CHAM='SIGM_ELNO_DEPL',
+                   NUME_ORDRE=1,MAILLE=('M10',)))
+
 
 # ______________________________________________________________________
 #
@@ -279,7 +333,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       NOM_CMP='DRY',
                       VALE=4.5506399999999998E-4,
                       REFERENCE='AUTRE_ASTER',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N1',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -287,7 +341,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-3.6804200000000001E-06,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N1',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -295,7 +349,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-4.9394200000000004E-07,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N1',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -303,7 +357,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-5.6977599999999996E-3,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N1',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -311,7 +365,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-4.36167E-4,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N1',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -319,7 +373,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=5.0866699999999997E-4,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N10',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -327,7 +381,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-2.1723599999999999E-06,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N10',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -335,7 +389,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-7.8390499999999995E-07,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N10',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -343,7 +397,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-3.94626E-3,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N10',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -351,7 +405,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       VALE=-4.1212099999999999E-4,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),
-                   _F(RESULTAT=DEP1,
+                   _F(RESULTAT=DEPQ,
                       NOEUD='N10',
                       NUME_ORDRE=1,
                       NOM_CHAM='DEPL',
@@ -360,8 +414,38 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
                       REFERENCE='NON_REGRESSION',
                       VERSION='6.2.13',),),);
 #
+# TEST DES CONTRAINTES PAR ELEMENTS AUX NOEUDS
 #
-
+#
+TEST_RESU(RESU=(
+                   _F(RESULTAT=DEP1INF,
+                      NOEUD='N12',MAILLE='MAILM10',
+                      NUME_ORDRE=1,
+                      NOM_CHAM='SIGM_ELNO_DEPL',
+                      NOM_CMP='SIXX',
+                      VALE=-5.51926E+03,
+                      REFERENCE='AUTRE_ASTER',),
+                   _F(RESULTAT=DEP2SUP,
+                      NOEUD='N12',MAILLE='M10',
+                      NUME_ORDRE=1,
+                      NOM_CHAM='SIGM_ELNO_DEPL',
+                      NOM_CMP='SIXX',
+                      VALE=2.87629E+04,
+                      REFERENCE='AUTRE_ASTER',),
+                   _F(RESULTAT=DEPQ1INF,
+                      NOEUD='N12',MAILLE='M10',
+                      NUME_ORDRE=1,
+                      NOM_CHAM='SIGM_ELNO_DEPL',
+                      NOM_CMP='SIXX',
+                      VALE=-5.51926E+03,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(RESULTAT=DEPQ4SUP,
+                      NOEUD='N12',MAILLE='M10',
+                      NUME_ORDRE=1,
+                      NOM_CHAM='SIGM_ELNO_DEPL',
+                      NOM_CMP='SIXX',
+                      VALE=2.87629E+04,
+                      REFERENCE='AUTRE_ASTER',),),)
 
 FIN();
 #

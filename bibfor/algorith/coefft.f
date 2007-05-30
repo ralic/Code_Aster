@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,10 @@ C
            E=COTHE(1)+HSDT*DCOTHE(1)
            NU=COTHE(2)+HSDT*DCOTHE(2)
            ALPHA=COTHE(3)+HSDT*DCOTHE(3)           
+           DO 12 I=1,2
+              COEL(I)=COTHE(I)+HSDT*DCOTHE(I)
+   12      CONTINUE
+           COEL(NMAT)=0.D0
         ELSEIF (COTHE(NMAT).EQ.1) THEN 
            DO 11 I=1,NMAT
               COEL(I)=COTHE(I)+HSDT*DCOTHE(I)

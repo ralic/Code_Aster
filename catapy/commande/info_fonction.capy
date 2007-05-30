@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,8 +46,11 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
              OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",validators=NoRepeat(),max='**',
                                    into=("INTE_ARIAS","POUV_DEST","INTE_SPEC","VITE_ABSO_CUMU",
                                          "DUREE_PHAS_FORT","MAXI","ACCE_SUR_VITE","TOUT",), ),
-             b_amor          =BLOC(condition="""OPTION=="TOUT" or OPTION=="INTE_SPEC" """,
-               AMOR_REDUIT     =SIMP(statut='o',typ='R'), ),),
+             b_amor_red          =BLOC(condition="""OPTION in ("TOUT", "INTE_SPEC") """,
+                AMOR_REDUIT     =SIMP(statut='o',typ='R'),),
+             b_pesanteur         =BLOC(condition="""OPTION in ("TOUT", "INTE_ARIAS", "POUV_DEST", "DUREE_PHAS_FORT") """,
+                PESANTEUR       =SIMP(statut='o',typ='R'),),
+           ),
            b_option_n      =BLOC(condition="""SPEC_OSCI !=None""",
              OPTION          =SIMP(statut='f',typ='TXM',defaut="INTE_SPEC",into=("INTE_SPEC",), ),
              NATURE          =SIMP(statut='o',typ='TXM',into=("DEPL","VITE","ACCE") ),
@@ -55,7 +58,6 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
            INST_INIT       =SIMP(statut='f',typ='R'),
            INST_FIN        =SIMP(statut='f',typ='R'),
            COEF            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-           PESANTEUR       =SIMP(statut='f',typ='R',defaut= 9.81E+0 ),
            FREQ_INIT       =SIMP(statut='f',typ='R',defaut= 4.E-1 ),
            FREQ_FIN        =SIMP(statut='f',typ='R',defaut= 10.E+0 ),
            LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster ),

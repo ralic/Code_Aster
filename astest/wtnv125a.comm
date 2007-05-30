@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/05/2007   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # ======================================================================
-# (CALCUL 3D_THH) 
+# (CALCUL 3D_HHD) 
 
 DEBUT(CODE=_F(NOM='WTNV125A',NIV_PUB_WEB='INTERNET'),);
 
@@ -55,7 +55,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='3D_THH',),);
+                           MODELISATION='3D_HHD',),);
 MAIL=DEFI_GROUP( reuse=MAIL,
                MAILLAGE=MAIL,
                CREA_GROUP_MA=(_F(NOM='ROCHE',
@@ -288,10 +288,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE', 
                     TYPE_CHAM='NOEU_DEPL_R',
-                    AFFE=(_F(TOUT='OUI',
-                             NOM_CMP='TEMP',
-                             VALE=0.0,),
-                          _F(GROUP_NO='BLOCBO',
+                    AFFE=(_F(GROUP_NO='BLOCBO',
                              NOM_CMP='PRE1',
                              VALE=7.E7,),
                           _F(GROUP_NO='BLOCBG',
@@ -309,8 +306,6 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
 
 CALEXT=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=(_F(GROUP_NO='ROCHES',
-                                   TEMP=0.0,),
-                                _F(GROUP_NO='ROCHES',
                                    PRE2=0.0,),),);
 
 
@@ -319,23 +314,27 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                    TYPE_CHAM='CART_SIEF_R',
                    AFFE=(_F(GROUP_MA='BLOCBO',
                             NOM_CMP=
-                            ('M11','FH11X','FH11Y','FH11Z','ENT11','M12','FH12X','FH12Y','FH12Z','ENT12','M21','FH21X','FH21Y','FH21Z','ENT21','QPRIM',
-                                      'FHTX','FHTY','FHTZ'),
+                            ('M11','FH11X','FH11Y','FH11Z',
+                             'M12','FH12X','FH12Y','FH12Z',
+                             'M21','FH21X','FH21Y','FH21Z'),
                             VALE=
-                            (0.0,0.0,0.0,0.0,-70000.0,0.0,0.0,0.0,0.0,
-                                   2450000.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                            (0.0, 0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0, 0.0),),
                          _F(GROUP_MA='BLOCBG',
                             NOM_CMP=
-                            ('M11','FH11X','FH11Y','FH11Z','ENT11','M12','FH12X','FH12Y','FH12Z','ENT12','M21','FH21X','FH21Y','FH21Z','ENT21','QPRIM',
-                                      'FHTX','FHTY','FHTZ'),
+                            ('M11','FH11X','FH11Y','FH11Z',
+                             'M12','FH12X','FH12Y','FH12Z',
+                             'M21','FH21X','FH21Y','FH21Z'),
                             VALE=
-                            (0.0,0.0,0.0,0.0,-29900.0,0.0,0.0,0.0,0.0,
-                                   2450000.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),),);
+                            (0.0, 0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0, 0.0),),))
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=_F(CHARGE=CALEXT,),
-                 COMP_INCR=_F(RELATION='KIT_THH',PARM_THETA=0.57,
+                 COMP_INCR=_F(RELATION='KIT_HH',PARM_THETA=0.57,
                               RELATION_KIT=('LIQU_GAZ','HYDR_UTIL'),
                               ITER_INTE_MAXI=5),
                  ETAT_INIT=_F(DEPL=CHAMNO,
@@ -407,7 +406,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N203',
-                  VALE=3.8549E+07,
+                  VALE=3.75731E+07,
                   CRITERE='RELATIF',
                   PRECISION=1E-3,
                   VERSION = '7.2.26',
@@ -437,7 +436,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N166',
-                  VALE=5.3494E+07,
+                  VALE=5.35751E+07,
                   CRITERE='RELATIF',
                   PRECISION=1E-3,
                   VERSION = '7.2.26',
@@ -457,7 +456,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N166',
-                  VALE=4.7573E+07,
+                  VALE=4.75377E+07,
                   CRITERE='RELATIF',
                   PRECISION=1E-4,
                   VERSION = '7.2.26',

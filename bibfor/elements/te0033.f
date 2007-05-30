@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &              JDEPG, JEFFG, JGEOM, JMATE, JNUMCO, JSIGM,
      &              NP, MULTIC, JTAB(8), IPG,ICONTP,
      &              JNBSPI, NBCOU, NBSP,ISP, IEFF, ICOU
-      REAL*8        ZERO, X3I,EPI,EPTOT
+      REAL*8        ZERO, X3I,EPI,EPTOT,EXCEN
       REAL*8        PGL(3,3), XYZL(3,4), VALPU(2),R8BID
       REAL*8        DEPL(24), DEPLR(24), DEPLI(24), SIGMR(32),SIGMI(32)
       REAL*8        DEPGR(24), DEPGI(24), SIGMRL(32), SIGMIL(32)
@@ -211,6 +211,11 @@ C
 C       EXCEPTION POUR LES MULTICOUCHES COMPÖSITES : ON STOCKE DANS UNE
 C       SEULE COUCHE LES CONTRAINTES HOMOGENEISEES
 C
+            IF ((.NOT.GRILLE)) THEN
+               EXCEN = ZR(JCARA+5-1)
+            ELSE
+               EXCEN = ZR(JCARA+4-1)
+            ENDIF
             CALL JEVECH('PNBSP_I','L',JNBSPI)
             NBCOU = ZI(JNBSPI)
             IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
@@ -243,11 +248,11 @@ C CAR DANS HPLA100G,H ET SSLS113A, ON DECLARE EPAIS=0
   219          CONTINUE
                DO 217 ISP=1,NBSP
                   IF (ISP.EQ.1) THEN
-                     X3I = - EPTOT/2.D0
+                     X3I = EXCEN - EPTOT/2.D0
                   ELSE IF (ISP.EQ.2) THEN
-                     X3I = 0.D0
+                     X3I = EXCEN
                   ELSE IF (ISP.EQ.3) THEN
-                     X3I = EPTOT/2.D0
+                     X3I = EXCEN + EPTOT/2.D0
                   END IF
 C                 SIGXX=NXX/E + Z*MXX*12:E**3
 C                 SIGYY=NYY/E + Z*MYY*12:E**3

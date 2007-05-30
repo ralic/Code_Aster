@@ -1,4 +1,4 @@
-# MODIF  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 29/05/2007   AUTEUR FERNANDES R.FERNANDES 
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# (CALCUL AXIS_THHM) 
+# (CALCUL AXIS_HHD) 
 
 DEBUT(CODE=_F(NOM='WTNA100A',NIV_PUB_WEB='INTERNET'),);
 
@@ -51,7 +51,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='AXIS_THHM',),);
+                           MODELISATION='AXIS_HHD',),);
 #
 #
 MAIL=DEFI_GROUP( reuse=MAIL,
@@ -302,10 +302,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE', 
                     TYPE_CHAM='NOEU_DEPL_R',
-                    AFFE=(_F(TOUT='OUI',
-                             NOM_CMP='TEMP',
-                             VALE=0.0,),
-                          _F(GROUP_NO='SURFBO',
+                    AFFE=(_F(GROUP_NO='SURFBO',
                              NOM_CMP='PRE1',
                              VALE=7.E7,),
                           _F(GROUP_NO='SURFBG',
@@ -323,13 +320,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
 
 CALEXT=AFFE_CHAR_MECA(MODELE=MODELE,
                       DDL_IMPO=(_F(GROUP_NO='ROCHES',
-                                   TEMP=0.0,),
-                                _F(GROUP_NO='ROCHES',
-                                   PRE2=0.0,),
-                                _F(TOUT='OUI',
-                                   DX=0.0,),
-                                _F(TOUT='OUI',
-                                   DY=0.0,),),);
+                                   PRE2=0.0,),),);
 
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
@@ -337,27 +328,29 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                    TYPE_CHAM='CART_SIEF_R',
                    AFFE=(_F(GROUP_MA='SURFBO',
                             NOM_CMP=
-                            ('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','M11','FH11X',
-                                      'FH11Y','ENT11','M12','FH12X','FH12Y','ENT12','M21','FH21X','FH21Y','ENT21','QPRIM',
-                                      'FHTX','FHTY'),
+                            ('M11','FH11X','FH11Y',
+                             'M12','FH12X','FH12Y',
+                             'M21','FH21X','FH21Y'),
                             VALE=
-                            (0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-70000.0,0.0,0.0,0.0,
-                                   2450000.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),
+                            (0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0,),),
                          _F(GROUP_MA='SURFBG',
                             NOM_CMP=
-                            ('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','M11','FH11X',
-                                      'FH11Y','ENT11','M12','FH12X','FH12Y','ENT12','M21','FH21X','FH21Y','ENT21','QPRIM',
-                                      'FHTX','FHTY'),
+                            ('M11','FH11X','FH11Y',
+                             'M12','FH12X','FH12Y',
+                             'M21','FH21X','FH21Y',),
                             VALE=
-                            (0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-29900.0,0.0,0.0,0.0,
-                                   2450000.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),),);
+                            (0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0,
+                             0.0, 0.0, 0.0,),),),);
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=_F(CHARGE=CALEXT,),
-                 COMP_INCR=_F(RELATION='KIT_THHM',PARM_THETA=0.57,
+                 COMP_INCR=_F(RELATION='KIT_HH',PARM_THETA=0.57,
                               ITER_INTE_MAXI=5,
-                              RELATION_KIT=('ELAS','LIQU_GAZ','HYDR_UTIL'),),
+                              RELATION_KIT=('LIQU_GAZ','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT
                  ),
@@ -470,7 +463,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NO294',
-                  VALE=3.7601E+07,
+                  VALE=3.67374E+07,
                   CRITERE='RELATIF',
                   PRECISION=1E-4,
                   REFERENCE='NON_REGRESSION',),);
@@ -479,7 +472,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NO309',
-                  VALE=6.7011E+07,
+                  VALE=6.69685E+07,
                   CRITERE='RELATIF',
                   PRECISION=1E-4,
                   REFERENCE='NON_REGRESSION',),);
@@ -497,7 +490,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NO309',
-                  VALE=4.9755E+07,
+                  VALE=4.98592E+07,
                   CRITERE='RELATIF',
                   PRECISION=1E-4,
                   REFERENCE='NON_REGRESSION',),);
@@ -515,7 +508,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NO309',
-                  VALE=3.6129E+07,
+                  VALE=3.60920E+07,
                   CRITERE='RELATIF',
                   PRECISION=1E-4,
                   REFERENCE='NON_REGRESSION',),);

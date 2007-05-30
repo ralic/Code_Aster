@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,6 +194,7 @@ NONE = None
       except self.UserError,exc_val:
         self.traiter_user_exception(exc_val)
         CONTEXT.unset_current_step()
+        self.affiche_fin_exec()
         self.traiter_fin_exec('commande')
     
       except :

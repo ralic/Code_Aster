@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith6 Messages  DATE 30/05/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -393,22 +393,7 @@ cata_msg={
  green deformation required for elas_hyper material
 """),
 
-97: _("""
-  -> Les variables de commandes initiales induisent des contraintes
-     incompatibles.
-  -> Risque & Conseil : Ce message apparait si l'état initial
-    (avant le premier instant de calcul) est tel que les variables de commande
-    (température, hydratation, séchage...) conduisent à des contraintes
-     non équilibrées. Dans le cas de la température, vérifiez que la valeur
-     TEMP_REF correspond à la température de l'état initial.
 
-"""),
 
-98: _("""
- convergence atteinte avec resi_glob_maxi pour cause de chargement presque nul
-"""),
 
-99: _("""
- reac. geom. du contact supérieure a 5%%
-"""),
 }

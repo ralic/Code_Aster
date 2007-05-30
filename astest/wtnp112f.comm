@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 29/05/2007   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THHD, 2D ,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,7 +62,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI', 
                       PHENOMENE = 'MECANIQUE',
-                      MODELISATION = 'D_PLAN_THHS')
+                      MODELISATION = 'D_PLAN_HHS')
                      )
 
 ####################################
@@ -218,11 +218,7 @@ CALDRO=AFFE_CHAR_MECA(MODELE=MODELE,
                                    PRE1=1.15,),);
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                   PRE2=0.,),); 
-CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='ROCHES',
-                                   TEMP=0.,),);                                  
-                           
+                                   PRE2=0.,),);                            
 
 
 RESU0=STAT_NON_LINE( 
@@ -230,12 +226,11 @@ RESU0=STAT_NON_LINE(
                 CHAM_MATER=CHMAT0,
                 EXCIT=(_F(CHARGE=CALDRO,),
                         _F(CHARGE=CALGAU,),
-                        _F(CHARGE=CALTEMP,),
                         _F(CHARGE=CALGAZ,),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               ),
                 COMP_INCR=_F( 
-                RELATION = 'KIT_THH',
+                RELATION = 'KIT_HH',
                 RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 INCREMENT=_F(  LIST_INST = LI,
                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,

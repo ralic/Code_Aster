@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/05/2007   AUTEUR VIVAN L.VIVAN 
 # TITRE ORTHOTROPIE DANS UN REPERE QUELCONQUE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ DEBUT(CODE=_F( NOM = 'SSLV131A',NIV_PUB_WEB='INTERNET') )
 MA=LIRE_MAILLAGE( )
 
 DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+            CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 #================================
 
@@ -62,6 +62,7 @@ LISTE=DEFI_LIST_REEL(DEBUT=0.0,
 
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,1.,1.),);
+
 MEST1=STAT_NON_LINE(MODELE=MOD3D,
                     CHAM_MATER=CHMATIST,
                     CARA_ELEM=CAREL3D,
@@ -70,24 +71,25 @@ MEST1=STAT_NON_LINE(MODELE=MOD3D,
                     COMP_INCR=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE),);
 
-MEST1=CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,            
-                  
+MACR_ECLA_PG( RESULTAT = CO('MEST_PG'),
+              MAILLAGE = CO('MA2'),
+              RESU_INIT = MEST1,
+              MODELE_INIT = MOD3D,
+              NOM_CHAM = 'SIEF_ELGA',
+             );
 
-           OPTION=('EPSI_ELGA_DEPL','SIEF_ELNO_ELGA'),)
+IMPR_RESU ( RESU = _F( RESULTAT = MEST1, NUME_ORDRE=1, NOM_CHAM = 'SIEF_ELGA',) , ) ;
+IMPR_RESU ( RESU = _F( RESULTAT = MEST_PG, NUME_ORDRE=1 ) , ) ;
+TEST_RESU(RESU=_F(  RESULTAT = MEST_PG, NUME_ORDRE = 1,
+                    REFERENCE='NON_REGRESSION',
+                    NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
+                    VALE = 2.6674507050037E+05 ), ) ;
+         
+CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,            
+           OPTION=('EPSI_ELGA_DEPL','SIEF_ELNO_ELGA','ENEL_ELGA','ENEL_ELNO_ELGA',),)
 
-CALC_ELEM(reuse=MEST1,      
-                       RESULTAT=MEST1,
-                         OPTION='ENEL_ELGA',
-                  )
-
-CALC_ELEM(reuse=MEST1,      
-                       RESULTAT=MEST1,
-                         OPTION='ENEL_ELNO_ELGA',
-                  )
-
-CALC_NO(  reuse=MEST1,
-                       RESULTAT=MEST1,
-                         OPTION='ENEL_NOEU_ELGA',
+CALC_NO( reuse=MEST1, RESULTAT=MEST1,
+         OPTION='ENEL_NOEU_ELGA',
                   )
 
 TEST_RESU(RESU=(
@@ -138,10 +140,6 @@ TEST_RESU(RESU=(
          NOEUD = 'A',       NOM_CMP = 'TOTALE',REFERENCE='ANALYTIQUE',    VALE = 1.19122941897E6))
             )
 
-#---------------------------------------------
-
-
-
 #=======================
 
 # MATERIAU ORTHOTROPE  =
@@ -168,20 +166,8 @@ MEST2=STAT_NON_LINE(MODELE=MOD3D,
                     COMP_INCR=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE2),);
 
-MEST2=CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,            
-                
-
-           OPTION=('EPSI_ELGA_DEPL',)  )
-
-CALC_ELEM(reuse=MEST2,      
-                       RESULTAT=MEST2,
-                         OPTION='ENEL_ELGA',
-                  )
-
-CALC_ELEM(reuse=MEST2,      
-                       RESULTAT=MEST2,
-                         OPTION='ENEL_ELNO_ELGA',
-                  )
+CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,            
+           OPTION=('EPSI_ELGA_DEPL','ENEL_ELGA','ENEL_ELNO_ELGA',)  )
 
 TEST_RESU(RESU=(
      # DEPLACEMENTS
@@ -331,7 +317,7 @@ MEST4=MECA_STATIQUE(MODELE=MOD3D,
                     EXCIT=_F( CHARGE = CHAR3D3),);
 
 MEST4=CALC_ELEM( reuse= MEST4 ,RESULTAT= MEST4 ,            
-           OPTION=('EPSI_ELGA_DEPL',)  )
+                 OPTION=('EPSI_ELGA_DEPL',)  )
 
 TEST_RESU(RESU=(
      # DEPLACEMENTS

@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 31/10/2006   AUTEUR ACBHHCD G.DEVESA 
+#@ MODIF macro_miss_3d_ops Macro  DATE 29/05/2007   AUTEUR VOLDOIRE F.VOLDOIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,9 +58,9 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
      
   miss3d=loc_fic+'miss3d'
   
-  if VERSION=='V1_2':
-     if PARAMETRE != None and PARAMETRE['TYPE']=='BINAIRE':
-        raise AsException("MACRO_MISS_3D/PARAMETRE : type incompatible avec version")
+  # if VERSION=='V1_2':
+  #    if PARAMETRE != None and PARAMETRE['TYPE']=='BINAIRE':
+  #       raise AsException("MACRO_MISS_3D/PARAMETRE : type incompatible avec version")
         
   if OPTION['TOUT']!=None:
       MODUL2='COMPLET'

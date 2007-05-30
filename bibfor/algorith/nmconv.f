@@ -8,7 +8,7 @@
      &                   ZFON, FONACT, MAXREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/05/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,8 +148,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       LOGICAL      ERROR
       LOGICAL      CREFE,CINIT
-      INTEGER      LONCH,NOCC
-      INTEGER      JCRR
+      INTEGER      NOCC
+      INTEGER      JCRR,LONCH
       INTEGER      IBID
       INTEGER      TYPALC
       REAL*8       R8VIDE,R8BID
@@ -269,7 +269,6 @@ C
      &            LONCH,CREFE,CINIT,MATASS,
      &            VRELA,VMAXI,VCHAR,VRESI,VREFE,VINIT,
      &            IRELA,IMAXI,ICHAR,IRESI,IREFE,IINIT)
-
 C
 C --- ECRITURE DES INFOS SUR LES RESIDUS POUR AFFICHAGE
 C
@@ -306,7 +305,7 @@ C
            VINIT = VINIT/VCHAR
          ENDIF
          IF (VINIT.GT.PARCRI(2)) THEN
-            CALL U2MESS('A','ALGORITH6_97')
+            CALL U2MESS('A','MECANONLINE2_97')
          ENDIF
       ENDIF
 C
@@ -357,7 +356,7 @@ C
       ENDIF
       CALL IMPSDR(IMPRCO(1:14),
      &            'RELI_ITER',K16BID,R8BID,INT(CONV(10)))
-
+C
       IF (NINT(CONV(10)).EQ.0) THEN
         CALL IMPSDR(IMPRCO(1:14),
      &              'RELI_COEF',K16BID,1.D0,IBID)
@@ -370,19 +369,17 @@ C --- CRITERES PILOTAGE
 C
       CALL IMPSDR(IMPRCO(1:14),
      &            'PILO_PARA',K16BID,ETA,IBID)
-
 C
 C --- NUMERO ITERATION FETI
 C
 C     NOM DE LA SD CRITER EN DUR CONFORMEMENT A NMRESO
-      CRITER='&FETI.CRITER.CRTI'
+      CRITER = '&FETI.CRITER.CRTI'
       CALL JEEXIN(CRITER,IRET)
       IF (IRET.GT.0) THEN
         CALL JEVEUO(CRITER,'L',JCRI)
         CALL IMPSDR(IMPRCO(1:14),'ITER_FETI',K16BID,R8BID,ZI(JCRI))
         CALL JEDETR(CRITER)
       ENDIF
-
 C
 C ======================================================================
 C
@@ -470,18 +467,22 @@ C --- SI CRITERE RESI_GLOB_RELA ET CHARGEMENT = 0,
 C --- ON UTILISE RESI_GLOB_MAXI
 C
       MAXREL = .FALSE.
-      IF (ZL(JIMPCA-1+1) .AND. (NUMINS .GT. 1)) THEN
+      IF (ZL(JIMPCA-1+1)) THEN
          CALL JEVEUO(CRITNL //'.CRTR','L',JCRR)
          IF (VCHAR .LT. (1.D-6 * ZR(JCRR+5))) THEN
-           CALL IMPSDM(IMPRCO(1:14),'RESI_RELA',' ')
-           CALL IMPSDM(IMPRCO(1:14),'RESI_MAXI','X')
-           IF (VRESI .LT. ZR(JCRR+6)) THEN
+           IF (NUMINS.GT.1) THEN
+             CALL IMPSDM(IMPRCO(1:14),'RESI_RELA',' ')
+             CALL IMPSDM(IMPRCO(1:14),'RESI_MAXI','X')
+             IF (VRESI .LT. ZR(JCRR+6)) THEN 
                CALL IMPSDM(IMPRCO(1:14),'RESI_RELA',' ')
                CALL IMPSDM(IMPRCO(1:14),'RESI_MAXI',' ')
                CONVER = .TRUE.
                MAXREL = .TRUE.
-               CALL U2MESS('I','ALGORITH6_98')
-           ENDIF
+               CALL U2MESS('I','MECANONLINE2_98')
+             ENDIF
+           ELSE
+             CALL U2MESS('F','MECANONLINE2_99')
+           ENDIF 
          ENDIF
       ENDIF
 C
@@ -548,7 +549,7 @@ C
 
              ENDIF
              IF (GEOERR) THEN
-               CALL U2MESS('A','ALGORITH6_99')
+               CALL U2MESS('A','MECANONLINE2_96')
 
                CALL IMPSDR(IMPRCO(1:14),
      &                     'CTCD_NOEU',GEONOE,R8BID,IBID)

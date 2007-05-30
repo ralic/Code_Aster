@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 30/05/2007   AUTEUR ADOBES A.ADOBES 
 # TITRE CYLINDRE SOUMIS A UNE TUBULENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,27 +17,15 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-
 #
-
 #      LE CYLINDRE SE BALANCE AUTOUR D'UN AXE
-
 #          DANS UN ECOULEMENT ANNULAIRE TURBULENT.
-
-#
-
 #      CALCUL DES MODES PROPRES ET DE LA MASSE AJOUTEE
-
 #        POUR UN DEPLACEMENT MODAL DE LA STRUCTURE
-
 #   ACCEPTANCE CALCULEE AVEC UNE FONCTION DE CORRELATION AU-YANG
-
 #
 
-#
-
-#
-DEBUT(CODE=_F( NOM = 'SDLS107A',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F( NOM = 'SDLS107A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAYA=LIRE_MAILLAGE( )
 
@@ -363,15 +351,14 @@ SPECTRE=DEFI_SPEC_TURB(
 # EAU DU CYLINDRE ET CALCUL DE LA FONCTION ACCEPTANCE
 
 
-SSPROJ=PROJ_SPEC_BASE( 
-                       SPEC_TURB=SPECTRE,
-                   CHAM_NO=CHAMNO,
-               MODELE_INTERFACE=INTERF,
-               VECT_X=(0., 0., 1.,),
-               ORIG_AXE=(0., 0., 0.,),
-                FREQ_INIT=1.59155E-3,
-                 FREQ_FIN=1.59155E-2,
-                 NB_POIN=2
+SSPROJ=PROJ_SPEC_BASE( SPEC_TURB=SPECTRE,
+                       CHAM_NO=CHAMNO,
+                       MODELE_INTERFACE=INTERF,
+                       VECT_X=(0., 0., 1.,),
+                       ORIG_AXE=(0., 0., 0.,),
+                       FREQ_INIT=1.59155E-3,
+                       FREQ_FIN=1.59155E-2,
+                       NB_POIN=2
                            )
 
 #EXTRACTION DE L AUTOSPECTRE D EFFORT MODAL TURBULENT

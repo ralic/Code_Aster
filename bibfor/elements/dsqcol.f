@@ -6,7 +6,7 @@
       CHARACTER*16  OPTION
       CHARACTER*4   FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        BCB(2,12),BCA(2,4),BCN(2,12),BC(2,12),BCM(2,8)
       REAL*8        BM(3,8),TA(6,4),TB(6,12)
       REAL*8        BLB(4,12),BLA(4,4),BLN(4,12)
-      REAL*8        SF(3),SM(3),VT(2),LAMBDA(4)
+      REAL*8        SF(3),SM(3),VT(2),LAMBDA(4),EXCEN
       REAL*8        EPS(3),SIG(3),DCIS(2),CIST(2),C(4),S(4)
       REAL*8        JACOB(5),CARAQ4(25),T2EV(4),T2VE(4),T1VE(9)
       CHARACTER*2   VAL, CODRET
@@ -96,10 +96,11 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         CALL JEVECH('PCACOQU','L',JCACO)
         EPAIS = ZR(JCACO)
         X3I = 0.D0
+        EXCEN = ZR(JCACO+5-1)
         IF (INIV.LT.0) THEN
-          X3I = X3I - EPAIS/DEUX
+          X3I = X3I - EPAIS/DEUX + EXCEN
         ELSE IF (INIV.GT.0) THEN
-          X3I = X3I + EPAIS/DEUX
+          X3I = X3I + EPAIS/DEUX + EXCEN
         END IF
         DO 10 K = 1,9
           H(K,1) = DM(K,1)/EPAIS

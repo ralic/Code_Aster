@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 29/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -380,7 +380,7 @@ C        TEMPERATURE EFFECTIVE
 C ----    RECUPERATION DU CHAMP D HYDRATATION SUR L'ELEMENT
             HYDR=0.D0
             DO 60 IGAU=1,NPG
-               CALL RCVARC(' ','SECH','+','RIGI',IGAU,1,
+               CALL RCVARC(' ','HYDR','+','RIGI',IGAU,1,
      &                     HYDRG(IGAU),IRET)
                IF (IRET.EQ.1) HYDRG(IGAU)=0.D0
                HYDR=HYDR+HYDRG(IGAU)/NPG
@@ -431,7 +431,7 @@ C        --- CALCUL DES FORCES INDUITES ---
             FFE(I+NC) = 0.D0
             DO 80 J=1,NC
                FFE(I)    = FFE(I)    + BSM(I,J)      * DE(J)
-               FFE(I+NC) = FFE(I+NC) + BSM(I+NC,J+6) * DE(J+NC)
+               FFE(I+NC) = FFE(I+NC) + BSM(I+NC,J+NC) * DE(J+NC)
    80       CONTINUE
    70    CONTINUE
       ENDIF

@@ -8,7 +8,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,13 +127,13 @@ C------------------------------------------------------------
           DELTAG =COEFT(IFL-1+5)
 
           TAUV=ABS(TAUS)-TAUMU
-          IF (ABS(TAUS).LT.PTIT) THEN
+          IF (ABS(TAUS).LE.PTIT) THEN
              SGNS=1.D0
           ELSE
              SGNS=TAUS/ABS(TAUS)
           ENDIF
           IF (TAUV.GT.0.D0) THEN
-             TABS=TEMPF+273.5D0
+             TABS=TEMPF+273.15D0
              DP=GAMMA0*EXP(-DELTAG/K/TABS)*EXP(DELTAV/K/TABS*TAUV)
              DGAMMA=DP*TAUS/ABS(TAUS)
           ELSE
@@ -153,8 +153,6 @@ C------------------------------------------------------------
           KDCS      =COEFT(IFL-1+8)
           P         =COEFT(IFL-1+9)
           Q         =COEFT(IFL-1+10)
-C         NUMHSR=COEFT(IFL-1+11)
-C         NUMHSR=1
 
           IF (MATERF(NMAT).EQ.0) THEN
              CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
@@ -164,7 +162,7 @@ C         NUMHSR=1
           TAUV=ABS(TAUS)-TAU0
           CRIT=TAUV
 
-          IF (ABS(TAUS).LT.PTIT) THEN
+          IF (ABS(TAUS).LE.PTIT) THEN
              SGNS=1.D0
           ELSE
              SGNS=TAUS/ABS(TAUS)
@@ -172,7 +170,7 @@ C         NUMHSR=1
 
           IF (TAUV.GT.0.D0) THEN
 
-             TABS=TEMPF+273.5D0
+             TABS=TEMPF+273.15D0
              SOM=0.D0
              TAUMU=0.D0
 
@@ -181,11 +179,10 @@ C         NUMHSR=1
              DO 1 IU = 1, NBSYS
                 R=VIND(3*(IU-1)+1)+DAL(IU)
                 TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
-                SOM = SOM+R
+               SOM = SOM+R
   1          CONTINUE
              SOM=SOM-RS
              SOM=SQRT(SOM)
-
 
              TAUMU = CISA2 * TAUMU/TAUV
 

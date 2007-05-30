@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 29/05/2007   AUTEUR BOITEAU O.BOITEAU 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT SCOTCH ET CALCUL FETI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,27 +83,16 @@ RESU=MECA_STATIQUE(MODELE=MODM,
                    SOLVEUR=_F(
                              METHODE='FETI',
                              PARTITION=SDFETI,
-                             RESI_RELA=1.E-7,
-                             NMAX_ITER=200,
-                             VERIF_SDFETI='OUI',
-                             TEST_CONTINU=1.E-8,
-                             NB_REORTHO_DD=30,
-                             TYPE_REORTHO_DD='GSM',
-                             PRE_COND='LUMPE',
-                             SCALING='MULT',
-                             INFO_FETI='FFFFFFFFF',
-                                  NPREC=5,
-                             RENUM='METIS',
-                            STOCKAGE_GI='CAL',
+                             RESI_RELA=1.E-8,
+                             NMAX_ITER=100,
+                             NB_REORTHO_DD=100,
+                             NPREC=5,
+                             INFO_FETI='FFFFFFFFFFT',
                          ),
                    EXCIT=(_F(CHARGE=CH1),
                           _F(CHARGE=CH2),),
-                   INFO=2,
+                   INFO=1,
                         )
-
-IMPR_RESU(RESU=_F(MAILLAGE=MAIL1,),);
-
-IMPR_CO(CHAINE='SD',);
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   NUME_ORDRE = 1,

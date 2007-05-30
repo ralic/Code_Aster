@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 30/05/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (SANS SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,10 +48,12 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
 MO=AFFE_MODELE(  MAILLAGE=MA,     AFFE=_F( TOUT = 'OUI',
                 MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'))
 
-CHCI=AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=_F( NOEUD = 'N35', DX = 2.0E-2),)
-
+CHCI=AFFE_CHAR_CINE(MODELE=MO, MECA_IMPO=(
+_F( NOEUD = 'N35', DX = 2.0E-2),
+ _F( NOEUD = ('N8','N17','N25',), DX = 0.0, DY = 0.0),
+ ),
+)
 CHBL=AFFE_CHAR_MECA(MODELE=MO,
-   DDL_IMPO=  _F( NOEUD = ('N8','N17','N25',), DX = 0.0, DY = 0.0),
   LIAISON_DDL=(
 #           GH :
   _F( NOEUD = ('N22','N22',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0),
@@ -97,9 +99,10 @@ U=STAT_NON_LINE(
             NEWTON=_F(  MATRICE = 'TANGENTE',
                         REAC_ITER=1
                         ),
-            CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
+            CONVERGENCE=_F(
+            RESI_GLOB_MAXI = 1E-8,
                          ITER_GLOB_MAXI = 10,
-                         ARRET = 'NON'),
+                         ),
                SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON',)
                    )
 

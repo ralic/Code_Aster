@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/05/2007   AUTEUR ADOBES A.ADOBES 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,9 +17,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE KXBADNG A.ADOBES
+# RESPONSABLE ADOBES A.ADOBES
 
-DEBUT( CODE=_F(  NOM = 'SDLL136A',NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI') )
+DEBUT( CODE=_F(  NOM = 'SDLL136A',NIV_PUB_WEB='INTRANET'),DEBUG=_F(SDVERI='OUI'))
 
 TUBE = LIRE_MAILLAGE (
                    ABSC_CURV=_F( TOUT='OUI',)
@@ -488,20 +488,24 @@ TSPC1 = DEFI_SPEC_TURB (
                                 PROF_VITE_FLUI=PROFVIT1 ),
 );
 
-TPSB = PROJ_SPEC_BASE (
-             SPEC_TURB=(TSPC1 ,),
+Fmin = 2.24500E+00 - ( 2.24500E+00 * 0.5 )
+Fmax = 1.46439E+01 + ( 2.24500E+00 * 0.5 )
+#nbpoin = 16384
+#nbpoin = 8192
+nbpoin = 32768
 
-             BASE_ELAS_FLUI=MELFLUI,
+TPSB = PROJ_SPEC_BASE ( SPEC_TURB=TSPC1,
+                        FREQ_INIT= Fmin ,
+                        FREQ_FIN= Fmax ,
+                        NB_POIN=nbpoin,
+                        BASE_ELAS_FLUI=MELFLUI,
 );
 
 
-
-
-VECTINT = GENE_FONC_ALEA (
-             INTE_SPEC=TPSB, 
-             NUME_VITE_FLUI=1,
-             NB_POIN=1024,
-             INIT_ALEA=54335
+VECTINT = GENE_FONC_ALEA ( INTE_SPEC=TPSB, 
+                           NUME_VITE_FLUI=1,
+                           NB_POIN=nbpoin,
+                           INIT_ALEA=54335
 );
 
 EFPROJ1 = RECU_FONCTION (
@@ -556,8 +560,7 @@ EFPROJ5 = RECU_FONCTION (
 
 
 # obst1 ---> Def_choc 
-OBST1 = DEFI_OBSTACLE (
-             TYPE='PLAN_Y',
+OBST1 = DEFI_OBSTACLE ( TYPE='PLAN_Y',
 );
 
 TRANGENE = DYNA_TRAN_MODAL (
@@ -636,10 +639,10 @@ USURE = POST_USURE (
 );
 
 TEST_TABLE(        TABLE=USURE,
-                   PRECISION=2E-3,
+                   PRECISION=5E-3,
                    NOM_PARA='PUIS_USUR_GLOBAL',
                    REFERENCE='NON_REGRESSION',
-                   VALE=6.7720580581516E-02    )
+                   VALE=6.7384733953441E-02    )
 
 
 FIN( );

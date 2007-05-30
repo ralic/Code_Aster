@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 09/02/2007   AUTEUR GREFFET N.GREFFET 
+#@ MODIF t_fonction Utilitai  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,9 +22,14 @@ import copy
 import types
 from sets import Set
 
-class FonctionError(Exception):
-   pass
+# -----------------------------------------------------------------------------
+class FonctionError(Exception): pass
 
+class ParametreError(FonctionError):      pass  # probleme de NOM_PARA
+class InterpolationError(FonctionError):  pass
+class ProlongementError(FonctionError):   pass
+
+# -----------------------------------------------------------------------------
 def interp(typ_i,val,x1,x2,y1,y2) :
   """Interpolation linéaire/logarithmique entre un couple de valeurs
   """
@@ -33,22 +38,27 @@ def interp(typ_i,val,x1,x2,y1,y2) :
   if typ_i==['LOG','LOG']: return exp(log(y1)+(log(val)-log(x1))*(log(y2)-log(y1))/(log(x2)-log(x1)))
   if typ_i==['LOG','LIN']: return y1+(log(val)-log(x1))*(y2-y1)/(log(x2)-log(x1))
   if typ_i[0]=='NON'     : 
-                           if   val==x1 : return y1
-                           elif val==x2 : return y2
-                           else         : raise FonctionError, 'fonction : interpolation NON'
+      if   val==x1 : return y1
+      elif val==x2 : return y2
+      else         :
+         raise InterpolationError, "abscisse = %g, intervalle = [%g, %g]" % (val, x1, x2)
+
 def is_ordo(liste) :
   listb=list(Set(liste))
   listb.sort()
   return liste==listb
+            
 
+# -----------------------------------------------------------------------------
 class t_fonction :
   """Classe pour fonctions réelles, équivalent au type aster = fonction_sdaster
   """
-  def __init__(self,vale_x,vale_y,para) :
+  def __init__(self,vale_x,vale_y,para,nom='') :
     """Création d'un objet fonction
     - vale_x et vale_y sont des listes de réels de meme longueur
     - para est un dictionnaire contenant les entrées PROL_DROITE, PROL_GAUCHE et INTERPOL (cf sd ASTER)
     """
+    self.nom=nom
     pk=para.keys()
     pk.sort()
     if pk!=['INTERPOL','NOM_PARA','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
@@ -111,7 +121,7 @@ class t_fonction :
     """
     para=copy.copy(self.para)
     if other.para['NOM_RESU']!=self.para['NOM_PARA'] :
-       raise FonctionError,'''composition de fonctions : NOM_RESU1 et NOM_PARA2 incohérents '''
+       raise ParametreError,'''composition de fonctions : NOM_RESU1 et NOM_PARA2 incohérents '''
     para['NOM_PARA']==other.para['NOM_PARA']
     return t_fonction(other.vale_x,map(self,other.vale_y),para)
 
@@ -126,7 +136,7 @@ class t_fonction :
       if self.para['PROL_GAUCHE']=='EXCLU'    :
          eps_g=(val-self.vale_x[0] )/(self.vale_x[1] -self.vale_x[0])
          if abs(eps_g)<=tol  : return self.vale_y[0]
-         else                : raise FonctionError, 'fonction évaluée hors du domaine de définition'
+         else                : raise ProlongementError, 'fonction évaluée hors du domaine de définition'
       else  : 
          if self.para['PROL_GAUCHE']=='CONSTANT' : return self.vale_y[0]
          if self.para['PROL_GAUCHE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[0],
@@ -137,7 +147,7 @@ class t_fonction :
       if self.para['PROL_DROITE']=='EXCLU'    :
          eps_d=(val-self.vale_x[-1])/(self.vale_x[-1]-self.vale_x[-2])
          if abs(eps_d)<=tol  : return self.vale_y[-1]
-         else                : raise FonctionError, 'fonction évaluée hors du domaine de définition'
+         else                : raise ProlongementError, 'fonction évaluée hors du domaine de définition'
       else  : 
          if self.para['PROL_DROITE']=='CONSTANT' : return self.vale_y[-1]
          if self.para['PROL_DROITE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[-1],
@@ -175,8 +185,8 @@ class t_fonction :
     prol_droite=f_d.para['PROL_DROITE']
     vale_x=concatenate((self.vale_x,other.vale_x))
     vale_x=clip(vale_x,val_min,val_max)
-    vale_x=sort(dict([(i,0) for i in vale_x]).keys())
-    return vale_x,prol_gauche,prol_droite
+    vale_x=sort(list(Set(vale_x)))
+    return vale_x, prol_gauche, prol_droite
 
   def cut(self,rinf,rsup,prec,crit='RELATIF') :
     """Renvoie la fonction self dont on a 'coupé' les extrémités en x=rinf et x=rsup
@@ -340,37 +350,34 @@ class t_fonction :
     """
     return self.__class__(liste_val,map(self,liste_val),self.para)
 
-  def sup(self,other) :
-    """renvoie l'enveloppe supérieure de self et other
+  def func_union(self, func, other) :
+    """Retourne la fonction x : func(y1=self(x), y2=other(x))
+    sur la liste d'abscisses union de celles de self et de other.
     """
-    para=copy.copy(self.para)
-    # commentaire : pour les prolongements et l'interpolation, c'est self
-    # qui prime sur other
-    vale_x=self.vale_x.tolist()+other.vale_x.tolist()
+    para = copy.copy(self.para)
+    # Pour les prolongements et l'interpolation, c'est self qui prime sur other
+    vale_x = self.vale_x.tolist() + other.vale_x.tolist()
     # on ote les abscisses doublons
-    vale_x=dict([(i,0) for i in vale_x]).keys()
+    vale_x = list(Set(vale_x))
     vale_x.sort()
-    vale_x=array(vale_x)
-    vale_y1=map(self, vale_x)
-    vale_y2=map(other,vale_x)
-    vale_y=map(max,vale_y1,vale_y2)
-    return t_fonction(vale_x,vale_y,para)
+    vale_x = array(vale_x)
+    # interpolation des deux fonctions sur l'union des abscisses
+    vale_y1 = map(self,  vale_x)
+    vale_y2 = map(other, vale_x)
+    # applique la fonction sur chaque couple (y1=f1(x), y2=f2(x))
+    vale_y = map(func, vale_y1, vale_y2)
+    return t_fonction(vale_x, vale_y, para)
 
-  def inf(self,other) :
-    """renvoie l'enveloppe inférieure de self et other
-    """
-    para=copy.copy(self.para)
-    # commentaire : pour les prolongements et l'interpolation, c'est self
-    # qui prime sur other
-    vale_x=self.vale_x.tolist()+other.vale_x.tolist()
-    # on ote les abscisses doublons
-    vale_x=dict([(i,0) for i in vale_x]).keys()
-    vale_x.sort()
-    vale_x=array(vale_x)
-    vale_y1=map(self, vale_x)
-    vale_y2=map(other,vale_x)
-    vale_y=map(min,vale_y1,vale_y2)
-    return t_fonction(vale_x,vale_y,para)
+  def enveloppe(self, other, crit):
+     """renvoie l'enveloppe supérieure ou inférieure de self et other.
+     """
+     if crit.upper() == 'SUP':
+        env = self.func_union(max, other)
+     elif crit.upper() == 'INF':
+        env = self.func_union(min, other)
+     else:
+        raise FonctionError, 'enveloppe : le critère doit etre SUP ou INF !'
+     return env
 
   def suppr_tend(self) :
     """pour les corrections d'accélérogrammes
@@ -400,7 +407,7 @@ class t_fonction :
     para=copy.copy(self.para)
     para['NOM_PARA']='FREQ'
     if self.para['NOM_PARA']!='INST' :
-       raise FonctionError, 'fonction réelle : FFT : NOM_PARA=INST pour une transformée directe'
+       raise ParametreError, 'fonction réelle : FFT : NOM_PARA=INST pour une transformée directe'
     pas = self.vale_x[1]-self.vale_x[0]
     for i in range(1,len(self.vale_x)) :
         ecart = abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
@@ -421,6 +428,8 @@ class t_fonction :
     vale_y  =vect*pas
     return t_fonction_c(vale_x,vale_y,para)
 
+
+# -----------------------------------------------------------------------------
 class t_fonction_c(t_fonction) :
   """Classe pour fonctions complexes, équivalent au type aster = fonction_c
   """
@@ -445,7 +454,7 @@ class t_fonction_c(t_fonction) :
     para=copy.copy(self.para)
     para['NOM_PARA']='INST'
     if self.para['NOM_PARA']!='FREQ' :
-       raise FonctionError, 'fonction complexe : FFT : NOM_PARA=FREQ pour une transformée directe'
+       raise ParametreError, 'fonction complexe : FFT : NOM_PARA=FREQ pour une transformée directe'
     pas = self.vale_x[1]-self.vale_x[0]
     for i in range(1,len(self.vale_x)) :
         ecart = abs(((self.vale_x[i]-self.vale_x[i-1])-pas)/pas)
@@ -507,15 +516,17 @@ class t_fonction_c(t_fonction) :
     return t_fonction(vale_x,vale_y,para)
 
 
+# -----------------------------------------------------------------------------
 class t_nappe :
   """Classe pour nappes, équivalent au type aster = nappe_sdaster
   """
-  def __init__(self,vale_para,l_fonc,para) :
+  def __init__(self,vale_para,l_fonc,para,nom='') :
     """Création d'un objet nappe
     - vale_para est la liste de valeur des parametres (mot clé PARA dans DEFI_NAPPE)
     - para est un dictionnaire contenant les entrées PROL_DROITE, PROL_GAUCHE et INTERPOL (cf sd ASTER)
     - l_fonc est la liste des fonctions, de cardinal égal à celui de vale_para
     """
+    self.nom = nom
     pk=para.keys()
     pk.sort()
     if pk!=['INTERPOL','NOM_PARA','NOM_PARA_FONC','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
@@ -546,7 +557,7 @@ class t_nappe :
     if i==0 :
       if val1==self.vale_para[0]  : return self.l_fonc[0](val2)
       if val1 <self.vale_para[0]  : 
-         if self.para['PROL_GAUCHE']=='EXCLU'    : raise FonctionError, 'nappe évaluée hors du domaine de définition'
+         if self.para['PROL_GAUCHE']=='EXCLU'    : raise ParametreError, 'nappe évaluée hors du domaine de définition'
          if self.para['PROL_GAUCHE']=='CONSTANT' : return self.l_fonc[0](val2)
          if self.para['PROL_GAUCHE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val1,
                                                                  self.vale_para[0],
@@ -556,7 +567,7 @@ class t_nappe :
     elif i==n :
       if val1==self.vale_para[-1] : return self.l_fonc[-1](val2)
       if val1 >self.vale_para[-1]  : 
-         if self.para['PROL_DROITE']=='EXCLU'    : raise FonctionError, 'nappe évaluée hors du domaine de définition'
+         if self.para['PROL_DROITE']=='EXCLU'    : raise ParametreError, 'nappe évaluée hors du domaine de définition'
          if self.para['PROL_DROITE']=='CONSTANT' : return self.l_fonc[-1](val2)
          if self.para['PROL_DROITE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val1,
                                                                  self.vale_para[-1],
@@ -584,7 +595,7 @@ class t_nappe :
     """
     l_fonc=[]
     if   isinstance(other,t_nappe):
-      if self.vale_para!=other.vale_para : raise FonctionError, 'nappes à valeurs de paramètres différentes'
+      if self.vale_para!=other.vale_para : raise ParametreError, 'nappes à valeurs de paramètres différentes'
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]+other.l_fonc[i])
     elif type(other) in [types.FloatType,types.IntType] :
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]+other)
@@ -596,7 +607,7 @@ class t_nappe :
     """
     l_fonc=[]
     if   isinstance(other,t_nappe):
-      if self.vale_para!=other.vale_para : raise FonctionError, 'nappes à valeurs de paramètres différentes'
+      if self.vale_para!=other.vale_para : raise ParametreError, 'nappes à valeurs de paramètres différentes'
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]*other.l_fonc[i])
     elif type(other) in [types.FloatType,types.IntType] :
       for i in range(len(self.l_fonc)) : l_fonc.append(self.l_fonc[i]*other)
@@ -616,25 +627,29 @@ class t_nappe :
     """Renvoie la nappe self avec un support union de celui de self et de other
     le support est la discrétisation vale_para et les discrétisations des fonctions
     """
-    if self==other : return self
-    if self.para!=other.para : raise FonctionError, 'combinaison de nappes à caractéristiques interpolation et prolongement différentes'
+    if self==other:
+       return self
+    if self.para!=other.para:
+       raise FonctionError, 'combinaison de nappes à caractéristiques interpolation et prolongement différentes'
     vale_para=self.vale_para.tolist()+other.vale_para.tolist()
-    vale_para=dict([(i,0) for i in vale_para]).keys()
+    vale_para=list(Set(vale_para))
     vale_para.sort()
     vale_para=array(vale_para)
     l_fonc=[]
     for val in vale_para :
-        if   val in self.vale_para  : l_fonc.append(self.l_fonc[searchsorted(self.vale_para,val)])
-        elif val in other.vale_para :
-                                      other_fonc=other.l_fonc[searchsorted(other.vale_para,val)]
-                                      new_vale_x=other_fonc.vale_x
-                                      new_para  =other_fonc.para
-                                      new_vale_y=[self(x) for x in new_vale_x]
-                                      if isinstance(other_fonc,t_fonction)   :
-                                               l_fonc.append(t_fonction(new_vale_x,new_vale_y,new_para))
-                                      if isinstance(other_fonc,t_fonction_c) :
-                                               l_fonc.append(t_fonction_c(new_vale_x,new_vale_y,new_para))
-        else : raise FonctionError, 'combinaison de nappes : incohérence'
+      if   val in self.vale_para:
+         l_fonc.append(self.l_fonc[searchsorted(self.vale_para, val)])
+      elif val in other.vale_para:
+         other_fonc=other.l_fonc[searchsorted(other.vale_para, val)]
+         new_vale_x=other_fonc.vale_x
+         new_para  =other_fonc.para
+         new_vale_y=[self(x) for x in new_vale_x]
+         if isinstance(other_fonc, t_fonction):
+            l_fonc.append(t_fonction(new_vale_x, new_vale_y, new_para))
+         if isinstance(other_fonc, t_fonction_c):
+            l_fonc.append(t_fonction_c(new_vale_x, new_vale_y, new_para))
+      else:
+         raise FonctionError, 'combinaison de nappes : incohérence'
     return t_nappe(vale_para,l_fonc,self.para)
 
   def extreme(self) :
@@ -653,3 +668,21 @@ class t_nappe :
     for item in vm['min'] : item.reverse()
     for item in vm['max'] : item.reverse()
     return vm
+
+
+# -----------------------------------------------------------------------------
+def homo_support_nappe(l_f):
+   """Homogénéisation du support d'une liste de nappes.
+   Retourne une liste de nappes.
+   """
+   if type(l_f) not in (list, tuple):
+      l_f = [l_f,]
+   l_fres=[]
+   for f in l_f:
+      assert isinstance(f, t_nappe), 'Erreur : homo_support_nappe est réservé aux nappes !'
+      __ff=f
+      for g in l_f:
+         __ff=__ff.homo_support(g)
+      l_fres.append(__ff)
+   return l_fres
+

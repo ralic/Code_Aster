@@ -2,42 +2,6 @@ POURSUITE(CODE=_F(NOM='SSNV172A'))
 
 nbt=NPAS+1
 
-# trace interactif a l'aide de xmgrace si interactif=1
-
-interactif=0
-
-F_SIXX=RECU_FONCTION(RESULTAT  = EXPL3A,
-                    NOM_CHAM  = 'SIEF_ELGA',
-                    NOM_CMP   = 'SIXX',
-                    MAILLE    = 'MA1',
-                    POINT     =  1);
-
-F_EPXX=RECU_FONCTION(RESULTAT  = EXPL3A,
-                    NOM_CHAM  = 'EPSP_ELGA',
-                    NOM_CMP   = 'EPXX',
-                    MAILLE    = 'MA1',
-                    POINT     =  1);
-
-
-if interactif==1:
-  IMPR_FONCTION(
-      FORMAT    = 'XMGRACE',
-      PILOTE    = 'INTERACTIF',
-      LEGENDE_X = 'EPXX',
-      LEGENDE_Y = 'SIXX',
-      BORNE_X   = (-0.01,0.),
-      BORNE_Y   = (-95., -75.),
-      GRILLE_X  = 0.002,
-      GRILLE_Y  = 5.,
-      COURBE=(_F(LEGENDE   = ' MAILLE MA1 , P.G. 1, SIXX=f(EPXX)',
-                 FONC_X=F_EPXX,FONC_Y=F_SIXX)))
-else:
-  # On imprime la courbe Contrainte-Deformation Plastique
-  IMPR_FONCTION(
-      FORMAT    = 'TABLEAU',
-      UNITE     = 8,
-      COURBE=(_F(FONC_X=F_EPXX,FONC_Y=F_SIXX)))
-
 # Calcul des moyennes a l'instant final
 CONTR0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',

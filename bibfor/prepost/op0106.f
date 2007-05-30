@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION        
+C MODIF PREPOST  DATE 29/05/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -281,6 +281,14 @@ C ------- MAILLES QUI PARTICIPENT A LA MOYENNE
    50       CONTINUE
             OPTIO2 = OPTION(1:5)//'ELNO'//OPTION(10:16)
             CALL RSEXCH(LERES0,OPTIO2,ZI(JORDR),CHELEM,IRET)
+            IF (IRET.NE.0) THEN
+               CALL CODENT(ZI(JORDR),'G',KIORD)
+               VALK(1)=OPTIO2
+               VALK(2)=KIORD
+               VALK(3)=OPTION
+               CALL U2MESK('A','PREPOST5_4',3,VALK)
+               GO TO 60
+            END IF
             CALL DISMOI('F','NOM_MAILLA',CHELEM,'CHAM_ELEM',IBD,NOMA,IE)
             MESMAI = '&&OP0106.MES_MAILLES'
             MOTCLE(1) = 'GROUP_MA'
@@ -308,6 +316,14 @@ C ------- RESULTAT SUR LES NOEUDS
    52       CONTINUE
             OPTIO2 = OPTION(1:5)//'ELNO'//OPTION(10:16)
             CALL RSEXCH(LERES0,OPTIO2,ZI(JORDR),CHELEM,IRET)
+            IF (IRET.NE.0) THEN
+               CALL CODENT(ZI(JORDR),'G',KIORD)
+               VALK(1)=OPTIO2
+               VALK(2)=KIORD
+               VALK(3)=OPTION
+               CALL U2MESK('A','PREPOST5_4',3,VALK)
+               GO TO 62
+            END IF
             CALL DISMOI('F','NOM_MAILLA',CHELEM,'CHAM_ELEM',IBD,NOMA,IE)
             MESNOE = '&&OP0106.MES_NOEUDS'
             MOTCLE(1) = 'GROUP_MA_RESU'

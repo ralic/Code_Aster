@@ -1,4 +1,5 @@
-# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+# RESPONSABLE ZENTNER I.ZENTNER
 # TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,12 +20,14 @@ INCLUDE(   UNITE=20 )
 #
 INLBNS=INFO_FONCTION(  NOCI_SEISME=_F( 
                              FONCTION = LBNS,
+                             PESANTEUR = 9.81,
                              AMOR_REDUIT = 0.05E0)
                        )
 
 #
 INLBNS11=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
+                             PESANTEUR = 9.81,
                              OPTION = 'INTE_ARIAS')
                        )
 
@@ -48,12 +51,14 @@ INLBNS14=INFO_FONCTION(    NOCI_SEISME=_F(
 #
 INLBNS15=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
+                             PESANTEUR = 9.81,
                              OPTION = 'POUV_DEST')
                        )
 
 #
 INLBNS16=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
+                             PESANTEUR = 9.81,
                              OPTION = 'DUREE_PHAS_FORT')
                        )
 
@@ -71,7 +76,7 @@ INLBNS18=INFO_FONCTION(    NOCI_SEISME=_F(
                                 CRITERE = 'ABSOLU',
                                 PRECISION = 2.E-5,
                                 COEF = 0.42,
-                                PESANTEUR = 9.8,
+                                PESANTEUR = 9.81,
                                 FREQ_INIT = 0.23,
                                 FREQ_FIN = 13.21,
                                 AMOR_REDUIT = 0.03,
@@ -277,14 +282,14 @@ TEST_TABLE(
 TEST_TABLE(
                    TABLE=INLBNS18,
                 NOM_PARA='INTE_ARIAS',
-                     VALE=1.06266E-02
+                     VALE=1.06158E-02
             )
 
 #
 TEST_TABLE(
                    TABLE=INLBNS18,
                 NOM_PARA='POUV_DEST',
-                    VALE=3.2867E-01
+                    VALE=3.28339E-01
             )
 
 #            

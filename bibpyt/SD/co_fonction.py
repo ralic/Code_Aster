@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,11 +88,13 @@ class fonction_sdaster(fonction_class, sd_fonction):
       if arg=='real' :
         return t_fonction(self.Absc(),
                           self.Ordo(),
-                          self.Parametres())
+                          self.Parametres(),
+                          nom=self.nom)
       elif arg=='complex' :
         return t_fonction_c(self.Absc(),
                             self.Ordo(),
-                            self.Parametres())
+                            self.Parametres(),
+                            nom=self.nom)
    def Valeurs(self) :
       """
       Retourne deux listes de valeurs : abscisses et ordonnees
@@ -151,26 +153,31 @@ class fonction_c(fonction_class, sd_fonction):
       if arg=='real' :
         return t_fonction(self.Absc(),
                           self.Ordo(),
-                          self.Parametres())
+                          self.Parametres(),
+                          nom=self.nom)
       elif arg=='imag' :
         return t_fonction(self.Absc(),
                           self.OrdoImg(),
-                          self.Parametres())
+                          self.Parametres(),
+                          nom=self.nom)
       elif arg=='modul' :
         modul=Numeric.sqrt(Numeric.array(self.Ordo())**2+Numeric.array(self.OrdoImg())**2)
         return t_fonction(self.Absc(),
                           modul,
-                          self.Parametres())
+                          self.Parametres(),
+                          nom=self.nom)
       elif arg=='phase' :
         phase=Numeric.arctan2(Numeric.array(self.OrdoImg()),Numeric.array(self.Ordo()))
         phase=phase*180./pi
         return t_fonction(self.Absc(),
                           phase,
-                          self.Parametres())
+                          self.Parametres(),
+                          nom=self.nom)
       elif arg=='complex' :
         return t_fonction_c(self.Absc(),
                             map(complex,self.Ordo(),self.OrdoImg()),
-                            self.Parametres())
+                            self.Parametres(),
+                          nom=self.nom)
    def Valeurs(self) :
       """
       Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
@@ -249,7 +256,8 @@ class nappe_sdaster(fonction_class, sd_fonction):
           i+=1
       return t_nappe(vale[0],
                      l_fonc,
-                     para[0])
+                     para[0],
+                     nom=self.nom)
    def Valeurs(self):
       """
       Retourne la liste des valeurs du parametre,

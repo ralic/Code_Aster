@@ -1,7 +1,7 @@
       SUBROUTINE ORDLRL (LIGRCZ, LISREZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 29/05/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -215,8 +215,8 @@ C
                CMP = ZK8(IDDL+INO-1)
                ICMP = INDIK8(NOMCMP,CMP,1,NBCMP)
                IF (.NOT.EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMP)) THEN
-                 VALK (1) = 'EST INTERDIT POUR LE NOEUD'
-                 VALK (2) = ' '
+                 VALK (1) = CMP
+                 VALK (2) = NOMNOE
                  CALL U2MESG('F', 'MODELISA8_30',2,VALK,0,0,0,0.D0)
                ENDIF
  50      CONTINUE

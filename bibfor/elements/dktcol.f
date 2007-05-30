@@ -7,7 +7,7 @@
       CHARACTER*16  OPTION
       CHARACTER*4   FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER       NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
-      REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,DISTN
+      REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,DISTN,EXCEN
       REAL*8        DEPF(9),DEPM(6),VT(2),LAMBDA(4)
       REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
       REAL*8        H(3,3),D1I(2,2),D2I(2,4),BF(3,9),BM(3,6)
@@ -95,11 +95,16 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         EPAIS = ZR(JCACO)
         X3I = 0.D0
         IF (GRILLE) X3I = ZR(JCACO+3)
+        IF ((.NOT.GRILLE)) THEN
+           EXCEN = ZR(JCACO+5-1)
+        ELSE
+           EXCEN = ZR(JCACO+4-1)
+        ENDIF
 
         IF (INIV.LT.0) THEN
-          X3I = X3I - EPAIS/DEUX
+          X3I = X3I - EPAIS/DEUX + EXCEN
         ELSE IF (INIV.GT.0) THEN
-          X3I = X3I + EPAIS/DEUX
+          X3I = X3I + EPAIS/DEUX + EXCEN
         END IF
         DO 10 K = 1,9
           H(K,1) = DM(K,1)/EPAIS

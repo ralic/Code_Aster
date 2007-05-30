@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,8 @@ C              CALCUL de dF/dR, dF/dalpha, dF/dtau
                CALL LCMMJF( FAMI,KPG,KSP,TAUS,MATERF(NMAT+1),MATERF(1),
      &               IFA,NMAT,NBCOMM,DT,NECOUL,IS,0,NBSYS,VIND(NSFV+1),
      &               DY(NSFA+1),HSR,RP,ALPHAP,DALPHA,GAMMAP,
-     &               DGAMMA,SGNR,DFDTAU,DFDAL,DFDR)
+     &               DGAMMA,SGNR,DFDTAU,DFDAL,DFDR,IRET)
+               IF (IRET.GT.0)  GOTO 9999
 
 C              dR1/dS
                CALL LCPRTE(MS,MS,MSMS)
@@ -204,7 +205,8 @@ C                 CALCUL de dF/dRr, dF/dalphar, dF/dtau
                   CALL LCMMJF( FAMI,KPG,KSP,TAUR,MATERF(NMAT+1),
      &               MATERF(1),IFA,NMAT,NBCOMM,DT,NECOUL,IS,IR,NBSYS,
      &               VIND(NSFV+1),DY(NSFA+1),HSR,RR,ALPHAR,DALPHR,
-     &               GAMMAR,DGAMM2,SGNR,DFDTAR,DFDALR,DFDRR)
+     &               GAMMAR,DGAMM2,SGNR,DFDTAR,DFDALR,DFDRR,IRET)
+                  IF (IRET.GT.0)  GOTO 9999
 
 C                 CALCUL DE dRr/dps
                   PS=PM+ABSDGA
@@ -252,5 +254,5 @@ C                 terme dR2r/dGammas
 
       CALL LCSOMA(MSDGDT, FHOOK, MSDGDT)
       CALL LCICMA (MSDGDT, 6,6,NDT,NDT,1,1,DRDY,NR,NR,1,1)
-
+9999  CONTINUE
       END

@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -253,8 +253,6 @@ Le message %s n'a pas pu etre formaté correctement.
 # -----------------------------------------------------------------------------
    def update_counter(self):
       """Mise à jour des compteurs et réaction si besoin.
-      Retourne un flag permettant de savoir si on doit afficher le nouveau
-      message (skip_next=False) demandé ou bien l'ignorer (skip_next=True).
       """
       nmax_alarm = 5
       code = self.get_current_code()
@@ -284,6 +282,7 @@ Le message %s n'a pas pu etre formaté correctement.
       """
       iret = 0
       if self.erreur_E:
+         self.erreur_E = False
          self.print_message('F', 'SUPERVIS_6')
       return iret
 

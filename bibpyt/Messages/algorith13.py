@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
+#@ MODIF algorith13 Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,22 +162,9 @@ cata_msg={
 
 
 
-
-
-
-
-
-
-
-
-
-
 39: _("""
  choc mal definila maille definissant le choc  %(k1)s  doit etre de type  %(k2)s 
 """),
-
-
-
 
 
 
@@ -192,20 +179,9 @@ cata_msg={
 
 
 
-
-
-
-
-
-
-
-
-
 44: _("""
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!incompatibilite avec multi appui : %(k1)s 
 """),
-
-
 
 
 
@@ -239,21 +215,9 @@ cata_msg={
 
 
 
-
-
-
 53: _("""
   champ inexistant  mesure  %(k1)s  nom_cham  %(k2)s 
 """),
-
-
-
-
-
-
-
-
-
 
 
 
@@ -353,10 +317,6 @@ cata_msg={
 
 
 
-
-
-
-
 78: _("""
  les intervalles doivent etre croissants.   valeur de la borne precedente :  %(i1)d 
     valeur de la borne :  %(i2)d 
@@ -379,11 +339,9 @@ cata_msg={
 
 82: _("""
  la distance entre les  deux derniers reels ne sera pas egal
-  au pas courant :  %(r1)f 
- , pour l'intervalle  %(i1)d 
+ au pas courant :  %(r1)f,
+ pour l'intervalle  %(i1)d 
 """),
-
-
 
 
 
@@ -405,29 +363,6 @@ cata_msg={
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 91: _("""
  &probleme de dimension matrice a mutiplier
 """),
@@ -435,33 +370,6 @@ cata_msg={
 92: _("""
  &probleme de dimension matrice resultat
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

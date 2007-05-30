@@ -1,6 +1,6 @@
       SUBROUTINE DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,8 +61,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 DX1I(2,2),DX2I(2,4),D2I1(2,2),D2I2(2,2)
       REAL*8 DA1I(2,2),DA2I(2,4)
       REAL*8 EPI,ORDI,AI(3,3)
-      REAL*8 XAB1(3,3),XAB2(2,2)
-
+      REAL*8 XAB1(3,3),XAB2(2,2),EXCEN
+C
+      CALL JEVECH('PCACOQU','L',JCACO)
+      EXCEN = ZR(JCACO+5-1)
+C
       CALL JEVECH('PMATERC','L',JMATE)
 C     ----- RAPPEL DES CARACTERISTIQUES DU MONOCOUCHE ------------------
       CALL CODENT(ICOU,'G',NUM)
@@ -84,7 +87,7 @@ C     ----- RAPPEL DES CARACTERISTIQUES DU MONOCOUCHE ------------------
       H(3,1) = H(1,3)
       H(3,2) = H(2,3)
 C     ----- CALCUL DE Z ------------------------------------------------
-      X3I = ORDI
+      X3I = ORDI + EXCEN
       IF (INIV.LT.0) THEN
         X3I = X3I - EPI/2.D0
       ELSE IF (INIV.GT.0) THEN
