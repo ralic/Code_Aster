@@ -1,13 +1,12 @@
+
       SUBROUTINE EFCHRL(FID,MAA,CHA,VAL,
-     1                  INTLAC,NUMCO,LOCNAME,PROFIL,PFLMOD,
-     1                  TYPENT,TYPGEO,
-     1                  NUMDT, NUMO,CRET)
+     &                  INTLAC,NUMCO,LOCNAME,PROFIL,PFLMOD,
+     &                  TYPENT,TYPGEO,
+     &                  NUMDT, NUMO,CRET)
       IMPLICIT NONE
       CHARACTER *(*) CHA,MAA,LOCNAME,PROFIL
       INTEGER FID,TYPENT,TYPGEO,CRET
       INTEGER INTLAC,NUMCO,NUMDT,NUMO,PFLMOD
       REAL*8 VAL(*)
-      CALL UTMESS('F','EFCHRL','LA BIBLIOTHEQUE "MED" EST INDISPONIBLE'
-     &            //' SUR CETTE MACHINE.')
+      CALL U2MESS('F','FERMETUR_2')
       END
-   

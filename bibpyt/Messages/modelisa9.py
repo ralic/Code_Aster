@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa9 Messages  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,16 +68,21 @@ cata_msg={
 """),
 
 
+9: _("""
+Erreur utilisateur :
+   Pour le materiau : %(k1), on cherche à redéfinir un mot clé déjà défini : %(k2)
+"""),
 
 
+10: _("""
+Erreur utilisateur :
+   Comportement 'HUJEUX'
+   Non convergence pour le calcul de la loi de comportement (NB_ITER_MAX atteint).
 
+Conseil :
+   Augmenter NB_ITER_MAX (ou diminuer la taille des incréments de charge)
 
-
-
-
-
-
-
+"""),
 
 11: _("""
  mocle facteur non traite :mclf %(k1)s

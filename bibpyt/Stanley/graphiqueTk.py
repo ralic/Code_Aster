@@ -1,4 +1,4 @@
-#@ MODIF graphiqueTk Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF graphiqueTk Stanley  DATE 04/06/2007   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,14 +347,14 @@ class DIALOGUE :
 
 # ==============================================================================
 
-def SAISIE_MODE(l_infos, titre = "", fonte=__fontes__, type_selec=Tk.SINGLE) :
+def SAISIE_MODE(l_infos, titre = "", fonte=__fontes__, type_selec=Tk.SINGLE, vbar = 1) :
 
   """
     procede a la saisie d'un certain nombre de chaines
     voir classe C_SAISIE
   """
 
-  saisie = C_SAISIE_MODE(l_infos,titre,fonte,type_selec)
+  saisie = C_SAISIE_MODE(l_infos, titre, fonte, type_selec, vbar)
   return saisie.reponse
 
 
@@ -366,7 +366,7 @@ class C_SAISIE_MODE :
   """
 
 
-  def __init__(self,l_infos, titre, fonte=__fontes__, type_selec=Tk.SINGLE) :
+  def __init__(self,l_infos, titre, fonte=__fontes__, type_selec=Tk.SINGLE, vbar = 1) :
 
     self.root = Tk.Tk()
     self.root.title(titre)
@@ -374,15 +374,31 @@ class C_SAISIE_MODE :
     self.type_selec = type_selec
 
     frame = Tk.Frame(self.root)
-    frame.grid(padx = 10, pady = 3)
+    frame.grid(padx = 20, pady = 3)
 
     bouton = Tk.Button(self.root, bg='blue',text='OK', command=self.Lire_Mode)
     bouton.grid(row= 1, column=0, pady = 3)  
 
-    self.listbox = Tk.Listbox( frame, 
-                               height=3,
-                               exportselection = 0,
-                               selectmode      = type_selec,
+    # Barre d'ascenceur
+    if vbar:
+      scrollbar = Tk.Scrollbar(frame)
+      scrollbar.pack(side=Tk.RIGHT, fill=Tk.Y) 
+ 
+    # Creation de la fenetre de selection 
+    if vbar:
+      self.listbox = Tk.Listbox( frame, 
+                                 height=3,
+                                 exportselection = 0,
+                                 selectmode      = type_selec,
+                                 yscrollcommand  = scrollbar.set,
+                                 font = fonte,
+                                    )
+    else :
+      self.listbox = Tk.Listbox( frame, 
+                                 height=3,
+                                 exportselection = 0,
+                                 selectmode      = type_selec,
+                                 font = fonte,
                               )
 
 
@@ -392,7 +408,8 @@ class C_SAISIE_MODE :
     self.listbox.selection_set(0)
 
     # Affichage
-    self.listbox.pack(side=Tk.LEFT, expand = 0, fill=Tk.BOTH)
+    self.listbox.pack(side=Tk.LEFT, expand = Tk.YES, fill=Tk.BOTH)
+    if vbar: scrollbar.config(command=self.listbox.yview)
 
     self.root.mainloop()
     self.root.destroy()

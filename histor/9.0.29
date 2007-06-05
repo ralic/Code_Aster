@@ -1,0 +1,1147 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 04/06/2007 - 16:56:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010929 DU 2007-05-31 14:40:40
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.28, les tests ssnv503d et g s'arretent en ERREUR
+FONCTIONNALITE
+   Le message d'arrêt fatal introduit en 9.0.28 est trop rude.
+   Ces cas-tests sont en mouvement de corps rigide pur (déplacement imposé) + contact:
+   - soit le contact est de type pénalisation et tout se régularise après la prédiction
+   - soit le contact est de type continu et la convergence est "forcée" par ailleurs
+   Dans les deux cas, la convergence est "correcte" et le message d'arrêt fatal est en 
+   trop.
+   Dans le cadre de la stabilisation, je propose de supprimer le message d'arrêt fatal 
+   et d'émettre une fiche pour bien prendre en compte le cas des chargements 
+   cinématiques (problème initial de la fiche 10368)
+   Donc: suppression du message MECANONLINE2_99 dans nmconv.f en 9 ET 8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-tests cassés
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 05/06/2007 - 15:52:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010938 DU 2007-06-04 09:18:36
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test sdlv125a sous linux Calibre 4
+FONCTIONNALITE
+   La fonction cross_product n'existe pas en Numeric 23 (version présente sur Calibre).
+   On l'émule dans observation_ops.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdlv125a sous Calibre
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 04/06/2007 - 19:04:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010927 DU 2007-05-31 13:29:21
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Modif asojb pour eficas
+FONCTIONNALITE
+   Eficas n'embarcant pas Utilitai, on déplace l'import Utilitai.Utmess sous le try "si aster
+   absent".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les tests en sd_veri=oui
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010892 DU 2007-05-23 15:27:39
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.26, les tests ssls118m, yyyy104j et zzzz216a posent pb
+FONCTIONNALITE
+   On augmente la mémoire allouée à ces tests (l'augmentation du nombre d'EF semble être la
+   cause).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssls118m, yyyy104j et zzzz216a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010327 DU 2006-11-29 17:23:01
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   erreurs de programmation JEVEUO/'L'/'E' risque de rxc3xa9sultats faux
+FONCTIONNALITE
+   Jacques avait détecté des accès en écriture à des objets jeveux déclarés en lecture.
+   
+   Variables concernées :
+   
+   calfig.f variable: IDTHE
+   nmdoet.f variable: JDEPOL
+   mxmajd.f variable: JACCGM
+   mxmajd.f variable: JDEPGM
+   mxmajd.f variable: JVITGM
+   mxmajd.f variable: JVITGP
+                                                                                            
+                           
+   mechc1.f variable: ICESL
+   mechc1.f variable: ICESV
+   mtmchc.f variable: JCCJJ   
+   
+   
+   Pour calfig : on supprime les lignes inutiles en 2ème partie de fichier.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010941 DU 2007-06-04 11:45:21
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Tests rccm02a, rccm02b, rccm03a, ssll102a, ssll102b, zzzz186a
+FONCTIONNALITE
+   Sous Linux, ces tests étaient cassés : problème lors de l'interpolation des fonctions
+   définissant les paramètres matériau fonction de la température.
+   
+   Lors de la récupération et de la moyenne de la température, il y avait une variable non
+   initialisée (d'où l'explication du plantage uniquement sous Linux).
+   
+   modif du te0144.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rccm02a, rccm02b, rccm03a, ssll102a, ssll102b, zzzz186a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010942 DU 2007-06-04 11:51:04
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Tests en manque de temps CPU
+FONCTIONNALITE
+   On augmente un peu le temps alloué aux tests suivants :
+   
+   sdll135d, ssna113a, ssnv504j, sdns01a, ssnv190a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests aux-memes
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010919 DU 2007-05-31 10:31:14
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test sdll508b en version NEW9.0.28
+FONCTIONNALITE
+   Le test a été pas mal modifié par André.
+   On ajuste le temps du .para à 240 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll508b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010944 DU 2007-06-04 14:23:34
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   zmat002b en erreur SD_VERI
+FONCTIONNALITE
+   zmat002b émet une erreur <E> lors de la vérif des SD.
+   
+   Problème : FIN affiche quand même "ARRET NORMAL DANS FIN" après avoir émit le message
+   SUPERVIS_6 ("Fin à la suite de message(s) <E>").
+   Cela conduisait à un diagnostic faux du cas-test (sauf as_run).
+   
+   On prend soin maintenant de s'arreter tout de suite !
+   
+   
+   On supprime SD_VERI='OUI' autour du DEFI_MATERIAU du cas-test : tracé dans la fiche 10943.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zmat002b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR cano         CANO Valérie           DATE 04/06/2007 - 19:05:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010889 DU 2007-05-23 15:15:00
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.0.26, le test htna100a ne converge plus
+FONCTIONNALITE
+   Suite à ma restitution sur les ldc mécaniques avec effet 
+   de la métallurgie, j'ai cassé le cas test HTNA100a (tube 
+   avec chanfrein,simulation des deux premières passes).
+   
+   Premier point: ce cas test ne convergait plus car il 
+   manquait la valeur de référence pour la température 
+   (VALE_REF) suite aux restit de Jacques (température 
+   passée en variable de commande).
+   
+   Deuxième point: après convergence, on a un non ok sur des 
+   valeurs de déplacements testées (déplacements suivant z 
+   des deux bords extrêmes du chanfrein en fin de passe n° 
+   2). Le reste des valeurs testées (déplacements des deux 
+   bords extrêmes du chanfrein en fin de passe 1 et des 
+   valeurs de contraintes de Von Mises sont OK).
+   Suite à la remarque ci-dessous et après discussion avec 
+   Mathieu, on décide de changer les valeurs de déplacements 
+   en fin de passe 2.
+   
+   Remarque: dans la note de Xavier Desroches (HI-
+   75/00/016/A, p 15), il donne à la fin de chaque passe, 
+   les déplacements cumulés des deux noeuds extrêmes du 
+   chanfrein (on additionne en valeur absolue le 
+   déplacememnt suivant z des deux noeuds des bords gauche 
+   et droit). Cette valeur est comparée à des données 
+   expérimentales. Pour la première passe, les valeurs 
+   données dans le cas test HTNA100 sont identiques à celles 
+   de la note (on trouve 0.946mm avant mes modifications et 
+   0.935mm après ma restit, la fourchette expérimentale se 
+   situe entre 0.43 et 0.98mm).
+   Par contre, en fin de passe 2, le cas test donne 0.635mm 
+   avant modif et 0.688mm après restit (ce qui fait 12% 
+   d'erreur mais n'est à mon avis pas très grave) alors que 
+   la note donne en 1.59mm pour le calcul Aster et 1.24 à 
+   1.5mm pour l'expérience.
+   Petite Question: apparemment entre la note et le cas 
+   test, il ne sa'agit pas de la même modélisation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.42.100
+VALIDATION
+   htna100a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 04/06/2007 - 19:05:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010787 DU 2007-04-16 14:34:38
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.18, le cas test ssls200a termine NOOK (C)
+FONCTIONNALITE
+   Commençons par oublier mon précédent message : j'avais sans doute un peu bu !
+   
+   Problème :
+   ----------
+   Le test ssls200a est légèrement NOOK en NEW9
+   
+   Solution :
+   -----------
+   Le problème vient en fait d'une petite erreur de déclaration introduite en 9.0.15 dans la
+   routine btldth.f :  
+      REAL P1XI3,P2XI3,P3XI3  (au lieu de REAL*8 ...)
+   
+   Le calcul de la température était fait en simple précision et comme les TEST_RESU sont
+   faits avec PRECISION=1.E-10, ils étaient NOOK sur clpaster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssls200a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 04/06/2007 - 15:40:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010807 DU 2007-04-23 14:39:25
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Inversion dans le calcul des termes globaux de l'erreur en rxc3xa9sidu
+FONCTIONNALITE
+   Il y a une inversion dans le calcul global des termes normaux et de saut.
+   L'erreur est faite dans zzglob.f lorsqu'on somme les termes élémentaires.
+   
+   Cette erreur a peu d'impact car ces termes globaux servent principalement à être imprimés
+   dans le fichier .resu. Ils sont aussi stockés dans des paramètres de la structure de
+   donnée et sont testés dans deux cas-tests.
+   
+   La correction est faite en :
+   - remplaçant :
+     TERMSA = TERMSA + ZR(IAD+6-1)**2
+     TERMNO = TERMNO + ZR(IAD+8-1)**2
+    par :
+     TERMNO = TERMNO + ZR(IAD+6-1)**2
+     TERMSA = TERMSA + ZR(IAD+8-1)**2
+   
+   - inversant deux valeurs dans deux TEST_RESU de deux cas-tests.
+   
+   Modifications dans :
+   zzglob.f
+   sslv113c.comm
+   sslv113d.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.1.22
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Cas-tests perso + cas-tests de la base
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 04/06/2007 - 13:00:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010680 DU 2007-03-26 08:34:39
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   transmission de chaine dans message
+FONCTIONNALITE
+   un grep de 'zk' dans bibpyt/Messages montre deux c/c malheureux depuis l'ancien message
+   fortran :
+   
+   
+   elements4.py: attention : l element de plaque  quad4 defini sur la maille : zk24(iazk24+2)
+   n est pas plan et peut conduire a des resultats faux.
+   utilitai6.py: &on veut y mettre  zk24(adraux+2)  qui en contient  %(i2)d
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB Joumana      DATE 05/06/2007 - 14:33:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010939 DU 2007-06-04 09:21:33
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test ssnv194b sous linux Calibre 4
+FONCTIONNALITE
+   Dans la version 9.0.26, le fait de commenter NUMHSR dans 
+   lcmmfi et de revenir à l'utilisation de IFA fait que le 
+   tableau HSR était mal rempli. 
+   On remet NUMHSR dans ce fortran, ce qui permet de passer 
+   le test ssnv194b sous Calibre et de revenir aux valeurs 
+   originales du test ssnv171c.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.26
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zmat007a zmat004a ssnv194a ssnv194b ssnv172a ssnv172b ssnv171b ssnv171c ssnlv120a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 05/06/2007 - 09:13:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010875 DU 2007-05-21 10:31:37
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   Test sslv110f en version NEW9.0.25 sous linux Rocks
+FONCTIONNALITE
+   Problème :
+   
+   Avec la version NEW9.0.25 compilée sur clpaster (linux Rocks) le test sslv110f s'arrete
+   dans le solveur Mumps par manque de mémoire pour pivoter
+   
+   
+   Solution : 
+   
+   Puisque ce test n'utilise pas le contact sur les lèvres de la fissure, il n'est pas
+   nécessaire de choisir MUMPS comme solveur.
+   On peut tres bien prendre le solveur par défaut.
+   Je supprime l'appel à MUMPS dasn ce test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv110f
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 04/06/2007 - 15:17:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010936 DU 2007-06-01 09:37:12
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Cas-tests miss06a et miss06b qui plantent sous Calibre
+FONCTIONNALITE
+   miss06a : la limite temps CPU dans le .para passe de 5000 à 6000 secondes
+   
+   miss06b : je corrige la syntaxe dans les deux appels à DYNA_NON_LINE : on met le 
+   mot-clé facteur SCHEMA_TEMPS à la place de l'ancien (qui était ici HHT).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   miss06a, miss06b
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 04/06/2007 - 13:00:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010701 DU 2007-03-27 15:30:20
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Temperature et COQUE_3D
+FONCTIONNALITE
+   Problème :
+   ==========
+   Les éléments de coque "3D" mettent la température à 0. (indument) sur certains points de
+   Gauss.
+                                                                                            
+                           
+   Le problème a été relevé par Lionel Salmona lors du passage de la température en variable
+   de commande "new look" (9.0.15).
+   Il a observé (en faisant des write) dans vdesga.f que la température récupérée sur
+   certains points de gauss était prise =0. sans aucune raison.
+                                                                                            
+                           
+   Ce problème a été résolu en NEW9 (9.0.15) par une reprogrammation assez complète de la
+   façon de récupérer la température, mais un doute subsistait concernant la version 8.
+                                                                                            
+                           
+                                                                                            
+                           
+   Solution :
+   ==========
+                                                                                            
+                           
+   Il y a en réalité 2 problèmes distincts révélés par cette fiche :
+   1) PB1 : Le problème initial de température = 0. (en version NEW8 seulement)
+   2) PB2 : Un problème plus général de mauvais rangement des contraintes dans les champ
+   SIEF_ELGA[_DEPL]. (en NEW8 et NEW9)
+      Les points et les sous-points ne sont pas rangés correctement :
+         - tous éléments      : P1/SP1 P1/SP2 ... P1/SPn   P2/SP1 P2/SP2 ....
+         - éléments coque 3D  : P1/SP1 P2/SP1 ... Pn/SP1   P1/SP2 P2/SP2 ....
+                                                                                            
+                           
+   Ces 2 problèmes sont corrigés.
+                                                                                            
+                           
+                                                                                            
+                           
+   Détails :
+   =========
+                                                                                            
+                           
+   PB1 :
+   -----
+   Le problème observé par Lionel est bien réel. La raison en est l'appel à btldth.f dans
+   vdxsig.f : il y a une confusion du à un double sens de la variable INDIC :
+     - parfois elle veut dire : "il faut calculer le  second membre de dilatation"
+     - parfois elle veut dire : "il faut utiliser un schéma d'intégration réduit"
+                                                                                            
+                           
+   Du coup, dans vdxsig.f, on croyait utiliser le schéma d'intégration complet, mais en fait
+   on utilisait les fonctions de forme du schéma réduit. Pour un QUAD9, la température ainsi
+   calculée pour les points de Gauss 5 à 9 était nulle.
+                                                                                            
+                           
+   Pour corriger ce problème, j'ai du dissocier l'argument INDIC de btldth.f en 2 arguments
+   distincts : REDUIT et EFFORT.
+   En conséquence, j'ai du modifier les 2 appelants de cette routine.
+                                                                                            
+                           
+                                                                                            
+                           
+   PB2 :
+   -----
+   Après la correction de PB1, je me suis dit que le chargement de dilatation ne devait pas
+   etre beaucoup testé dans les coques 3D (puisqu'on n'avait jamais vu ce bug datant de
+   1998). J'ai donc réalisé un petit test simple :
+                                                                                            
+                           
+   Une plaque carrée soumise à un gradient de température et encastrée sur son bord.
+   La solution analytique est évidente.
+                                                                                            
+                           
+   Je me suis alors aperçu qu'il y avait un autre problème : pour le champ SIEF_ELGA_DEPL,
+   les points de Gauss et les "sous-points" dans l'épaisseur n'étaient pas rangés correctement.
+   Le bug vient de la routine vdxsig.f :
+   161c161
+   <           K1=6*(KPGS-1)
+   ---
+   >           K1=6*((INTSN-1)*NPGE+INTE - 1)
+                                                                                            
+                           
+   Suite à cette correction, le test m'a semblé OK mais j'ai préféré émettre une fiche d'EL
+   (10925) pour demander un complément de validation pour ces éléments.
+                                                                                            
+                           
+   Le problème relevé dans vdxsig.f existe aussi dans vdxnlr.f, fornpd.f, te0415.f et te0402.f.
+   Il concerne toutes les contraintes aux points de gauss en linéaire et en non linéaire.
+   Mais comme le (mauvais) rangement était cohérent dans toutes les routines des éléments de
+   coque, cela n'entraine pas de résultats faux dans les calculs "chainés" : STAT_NON_LINE
+   (sigma- -> sigma+), flambement d'Euler, ...
+                                                                                            
+                           
+                                                                                            
+                           
+   Validation:
+   ===========
+   PB1 :
+   Un petit test perso de plaque encastrée soumise à un gradient de température (en NEW8)
+                                                                                            
+                           
+   PB2 :
+   La liste des 91 tests de coque 3D sur bull en NEW9  (sauf hpla100c cassé en ce moment et
+   ssnv505a trop long (900s)).
+   Seuls 2 tests doivent etre modifiés car ils testaient la valeur des sous-points : hsns100a,b.
+   Je modifie 1 valeur de référence (non-regression) dans ces 2 tests.
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Résultats faux :
+   ================
+                                                                                            
+                           
+   PB2 :
+   -----
+   Pour les éléments de coque 3D, les contraintes de SIEF_ELGA_DEPL (ou SIEF_ELGA) étaient
+   mal rangées depuis la version 5.0.5.
+   Mais ce n'est pas forcément grave car le rangement était cohérent entre les différentes
+   options qui s'enchainent.
+   Le seul problème concerne donc l'affichage de ces contraintes dans le fichier résultat et
+   son éventuelle utilisation dans des post-traitements (par exemple le suivi des contraintes
+   sur une couche précise NUME_COUCHE / NIVE_COUCHE).
+                                                                                            
+                           
+   PB1 :
+   -----
+   Le procblème est plus restreint (mais plus grave).
+                                                                                            
+                           
+   Conditions pour avoir des résultats faux :
+      - modele coque 3D
+      - calcul linéaire avec MECA_STATIQUE
+      - chargement de température
+   Nature des résultats faux :
+      - contraintes SIEF_ELGA_DEPL
+      - charges de flambement d'Euler
+                                                                                            
+                           
+                                                                                            
+                           
+   Report en version NEW8 (pour CS) :
+   ===================================
+                                                                                            
+                           
+   pour PB1 :
+   ----------
+   J'ai joint un fichier NEW8.tar.gz contenant les 3 routines à modifier.
+                                                                                            
+                           
+                                                                                            
+                           
+   Pour PB2 :
+   ----------
+   Je donne ci-dessous les corrections (minimes) apportées en version 9
+   fornpd.f:167c167
+   fornpd.f:<           K1=6*(KPGS-1)
+   fornpd.f:---
+   fornpd.f:>           K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
+                                                                                            
+                           
+   te0402.f:109c109
+   te0402.f:<       INTEGER     NPGE , NPGSN
+   te0402.f:---
+   te0402.f:>       INTEGER     NPGE , NPGSN, K1
+   te0402.f:239a240
+   te0402.f:>             K1=6*((INTSN-1)*NPGE+INTE - 1)
+   te0402.f:243,244c244,245
+   te0402.f:<             SIGMTD ( 1 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 1 )
+   te0402.f:<             SIGMTD ( 2 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 2 )
+   te0402.f:---
+   te0402.f:>             SIGMTD ( 1 )=ZR ( ICONTR - 1 + K1 + 1 )
+   te0402.f:>             SIGMTD ( 2 )=ZR ( ICONTR - 1 + K1 + 2 )
+   te0402.f:246c247
+   te0402.f:<             SIGMTD ( 3 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 4 )
+   te0402.f:---
+   te0402.f:>             SIGMTD ( 3 )=ZR ( ICONTR - 1 + K1 + 4 )
+   te0402.f:248,249c249,250
+   te0402.f:<             SIGMTD ( 4 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 5 )
+   te0402.f:<             SIGMTD ( 5 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 6 )
+   te0402.f:---
+   te0402.f:>             SIGMTD ( 4 )=ZR ( ICONTR - 1 + K1 + 5 )
+   te0402.f:>             SIGMTD ( 5 )=ZR ( ICONTR - 1 + K1 + 6 )
+                                                                                            
+                           
+   te0415.f:116c116
+   te0415.f:<               K1 = 6* (KPGS-1)
+   te0415.f:---
+   te0415.f:>               K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
+                                                                                            
+                           
+   vdxnlr.f:229c229
+   vdxnlr.f:<             K1 = 6* (KPGS-1)
+   vdxnlr.f:---
+   vdxnlr.f:>             K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
+                                                                                            
+                           
+   vdxsig.f:161c161
+   vdxsig.f:<           K1=6*(KPGS-1)
+   vdxsig.f:---
+   vdxsig.f:>           K1=6*((INTSN-1)*NPGE+INTE - 1)
+                                                                                            
+                           
+   hsns100a.comm:222c222
+   hsns100a.comm:<                    VALE=-166.65,
+   hsns100a.comm:---
+   hsns100a.comm:>                    VALE=2.2899500136923E+02,
+                                                                                            
+                           
+   hsns100b.comm:219,221c217,218
+   hsns100b.comm:<         MAILLE = 'M5', POINT = 1, SOUS_POINT=14, NOM_CMP = 'SIYY', VALE =
+   -1.6592E+02),
+   hsns100b.comm:---
+   hsns100b.comm:>         MAILLE = 'M5', POINT = 1, SOUS_POINT=14, NOM_CMP = 'SIYY', VALE =
+   2.2834158979305E+02),
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 5.0.5
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 5.0.5
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso + tous les tests coque 3D
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010887 DU 2007-05-23 09:23:25
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   AFFE_CHAR_CINE
+FONCTIONNALITE
+   Problème:
+   ----------
+                                                                                            
+                           
+   Contrairement à ce qui est dit (par moi !) au §4.2.3 de la doc U d'AFFE_CHAR_CINE, on ne
+   peut pas cumuler le blocage d'un ddl par AFFE_CHAR_CINE et AFFE_CHAR_MECA.
+                                                                                            
+                           
+   Si on tente de le faire, on obtient le message suivant très explicite (et juste!) :
+                                                                                            
+                           
+      !----------------------------------------------------------------!
+      ! <F> <FACTOR_41>                                                !
+      !                                                                !
+      !                                                                !
+      ! Matrice non factorisable :                                     !
+      !   pivot vraiment nul à la ligne : 4                            !
+      !   Il s'agit sans doute d'une relation de blocage surabondante. !
+      !   blocage concerné : NOEUD: N1       CMP: DY                   !
+      !                                                                !
+      !                                                                !
+      !                                                                !
+      ! Cette erreur est fatale. Le code s'arrete.                     !
+      !----------------------------------------------------------------!
+                                                                                            
+                           
+                                                                                            
+                           
+   Pourquoi ce comportement ?
+                                                                                            
+                           
+   Soit le problème d'un ddl U bloqué par dualisation U=U0
+   La matrice avec "double lagrange" entourant U est :
+                                                                                            
+                           
+    -1    1    1
+     1    k    1
+     1    1   -1
+                                                                                            
+                           
+   elle est bien de rang 3.
+                                                                                            
+                           
+   L'élimination de U (AFFE_CHAR_CINE), conduit à modifier la matrice :
+   On met 1 sur la diagonale du ddl éliminé et 0 ailleurs sur sa ligne / colone.
+   On obtient alors la matrice :
+                                                                                            
+                           
+    -1    0    1
+     0    1    0
+     1    0   -1
+                                                                                            
+                           
+   et cette matrice n'est pas inversible (rang 2) d'où le message d'erreur.
+                                                                                            
+                           
+                                                                                            
+                           
+   Solution :
+   ----------
+   Corriger la doc U4.44.03
+                                                                                            
+                           
+   Détails:
+   --------
+   je modifie la routine tldlg3.f :
+    * un petit bug :
+        297c299
+        <           IF ((CODMES.EQ.'F').AND.(LLIAI.GT.0)) THEN
+        ---
+        >           IF (LLIAI.GT.0) THEN
+    
+    * des lignes d'UTDEBM y étaient restées par erreur
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.03
+VALIDATION
+   xc3xa9tude associxc3xa9e
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010903 DU 2007-05-25 13:32:05
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.27, le test cente01a s'arrete en ERREUR
+FONCTIONNALITE
+   Problème:
+    ----------
+    Le test cente01a se plante brutalement dans POST_ELEM / WEYBULL.
+                                                                                            
+                           
+                                                                                            
+                           
+    Solution:
+    _________
+    J'ai effectivement ajouter un ASSERT incorrect dans la routine chmrck.f :
+    j'ai confondu le nombre de zones et le nombre max de zones.
+    Je corrige mon erreur.
+                                                                                            
+                           
+    Détails:
+    --------
+    J'en profite pour retirer 1 argument inutile de chmrck.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cente01a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010912 DU 2007-05-29 12:42:34
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   poursuite de calcul de thermo-hydratation
+FONCTIONNALITE
+   On ajoute le test zzzz221a :
+                                                                                            
+                           
+   # TITRE CALCUL THERMO HYDRATATION ET SECHAGE BETON EN 2 LEVEES (2D AXIS)
+   #=========================================================================
+                                                                                            
+                           
+   Ce test montre comment réaliser avec Code_Aster un calcul de thermo-hydratation
+   en simulant la dépose de 2 levées de béton.
+   Le problème est de fabriquer l'état initial de la pousuite du calcul en assemblant
+   2 champs : un état déjà calculé sur la 1ère levée et un état "vierge" sur la 2eme levée.
+                                                                                            
+                           
+   Ce test dure 10 secondes sur clpaster.
+   
+   On peut également ajouter ce test en version 8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz221a
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010915 DU 2007-05-30 11:27:36
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   un bug dans rsvmat.f (NEW9)
+FONCTIONNALITE
+   Problème :
+   -----------
+    Lors de l'évolution en 9.0.15 (TEMP -> variable de commande), on a oublié de changer
+   certains RCVALA en RCVALB.
+    
+    Du coup, le RCVALA de la ligne 100 se plante si les paramètres de VISC_SINH dépendent de
+   la température.
+                                                                                            
+                                                           
+   Solution:
+   -----------
+    Correction de la routine rsvmat.f
+                                                                                            
+                                                           
+   Validation:
+   -----------
+    J'ai pris le test ssnl129f (utilisant VISC_SINH).
+    Je l'ai modifié pour passer en VISC_SINH_FO avec des fonctions de 'TEMP'.
+    J'ai ajouté un "faux" chargement thermique : T=25.
+                                                                                            
+                                                           
+    J'ai alors obtenu le meme plantage que celui obtenu par A. Parrot (CALCULEL6_62).
+                                                                                            
+                                                           
+    Après correction du fortran, le test est devenu OK.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnl129f
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010931 DU 2007-06-01 07:32:53
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   rxc3xa9sorption de la routine UTMESS
+FONCTIONNALITE
+   On veut résorber la vielle routine UTMESS.
+    On modifie ses 3 derniers appelants :
+       - assert
+       - op0005
+       - hujcnv
+                                                                                            
+                           
+   Mais il faut aussi modifier les 1000 routines de fermetur/*.f qui utilisent encore UTMESS.
+   Cette modification sera faite par JPL "à la main".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010904 DU 2007-05-25 13:33:17
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW9.0.27, le test hpla100c termine NOOK
+FONCTIONNALITE
+   Dans ce test, on utilise des coques 3D et il n'y a pas de température.
+   
+   Dans les routines vdxsig.f et btldth.f, on calcule une température en faisant une moyenne
+   sur la surface de l'élément. Le problème vient du fait que la moyenne de plusieurs valeurs
+   -9.99D299 n'est pas rigoureusement égalte à -9.99D299. Par voie de conséquence, alpha * (T
+   - TREF) n'est pas nul. 
+   
+   Correction :
+   
+   On teste le code retour de RCVARC dans les routines vdxsig.f et btldth.f :
+               P1XI3= 1-XI3*XI3
+               P2XI3=-XI3*(1-XI3)/2.D0
+               P3XI3= XI3*(1+XI3)/2.D0
+               CALL RCVARC('F','TEMP','+','MASS',INTSN,1,TINF,IRET)
+               IF ( IRET .EQ. 1 ) THEN
+                  TEMPGA(KWGT) = TINF-TREF
+                  GOTO 999
+               ENDIF
+               CALL RCVARC('F','TEMP','+','MASS',INTSN,IMOY,TMOY,IRET)
+               IF ( IRET .EQ. 1 ) THEN
+                  TEMPGA(KWGT) = TMOY-TREF
+                  GOTO 999
+               ENDIF
+               CALL RCVARC('F','TEMP','+','MASS',INTSN,3*NBCOU,TSUP,IRET)
+               IF ( IRET .EQ. 1 ) THEN
+                  TEMPGA(KWGT) = TSUP-TREF
+                  GOTO 999
+               ENDIF
+               TEMPGA(KWGT)=TMOY*P1XI3+TINF*P2XI3+TSUP*P3XI3
+               TEMPGA(KWGT)=TEMPGA(KWGT)-TREF
+    999        CONTINUE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hpla100c
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010905 DU 2007-05-25 13:40:29
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW9.0.27, les tests sdnl130a, yyyy103a et c s'arretent en ERREUR
+FONCTIONNALITE
+   Problème :
+   ----------
+   Ces tests sont devenus NOOK car la modification de la température par défaut : 0. ->
+   -9.99D299 a révélé un bug dans le te0160.f :
+   
+   La dilatation thermique vaut alpha*T
+   au lieu de alpha*(T-TREF)
+   
+   Solution :
+   ----------
+   On corrige le te0160 pour tenir compte de TREF.
+   
+   
+   Resultats faux :
+   -----------------
+   
+   Conditions :
+      - modelisation 'CABLE'
+      - température affectée sur les éléments de cable
+      - utilisation de STAT_NON_LINE / DYNA_NON_LINE
+   
+   nature des résultats faux :
+       - champs de déplacement, de contraintes, ...  
+   
+   A corriger également en version 8
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 3.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdnl130a, yyyy103a et c
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010906 DU 2007-05-25 13:43:06
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW9.0.27, les tests ssnv147d et ssnv200a s'arretent en ERREUR
+FONCTIONNALITE
+   Problème :
+   -----------
+   Dans ces tests cassés, on utilise des fonctions de la température mais on ne définit pas
+   de température.
+   Le code s'arrête maintenant lorsque l'on cherche à évaluer les fonctions : "IL MANQUE 'TEMP'".
+   
+   Solution :
+   ----------
+   Comme les fonctions définies sont de fausses fonctions, on les remplace par des fonctions
+   "constantes" (sans paramètre).
+   
+   Par exemple :
+   D_T=DEFI_FONCTION(  NOM_PARA='TEMP',
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       VALE=( 0.,     2.,
+                              1000.,  2.,        ))
+   devient
+   D_T=DEFI_CONSTANTE(VALE = 2.0 )
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv147d et ssnv200a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 04/06/2007 - 11:44:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010937 DU 2007-06-01 12:45:40
+TYPE express concernant Code_Aster (VERSION 8.4)
+TITRE
+   Stanley + Salomé : pb quand on visualise un champ avec plusieurs études ouvertes
+FONCTIONNALITE
+   Quand depuis Stanley, on visualise un champ dans Salomé et que plusieurs études sont
+   ouvertes, on propose à l'utilisateur dans une petite fenêtre de sélectionner l'étude où
+   faire la visualisation. Pb : cette fenêtre était dimensionnée à 3 lignes en dure... 
+   On modifie donc la fenêtre pour lui ajouter une barre d'ascenseur.
+   
+   Sources modifiées:
+   graphiqueTk.py  salomeVisu.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Test IHM
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT zzzz221a                       pellet J.PELLET           263    263      0
+ CASTEST MODIF hsns100a                       pellet J.PELLET           284      2      2
+ CASTEST MODIF hsns100b                       pellet J.PELLET           274     10     13
+ CASTEST MODIF htna100a                     courtois M.COURTOIS        1194      6     11
+ CASTEST MODIF miss06a                       greffet N.GREFFET          641      1      1
+ CASTEST MODIF miss06b                       greffet N.GREFFET          757      5      3
+ CASTEST MODIF rccm02a                      courtois M.COURTOIS         353      1      1
+ CASTEST MODIF rccm02b                      courtois M.COURTOIS         354      1      1
+ CASTEST MODIF rccm03a                      courtois M.COURTOIS        4279      1      1
+ CASTEST MODIF sdll135d                     courtois M.COURTOIS         430      1      1
+ CASTEST MODIF sdll508b                     courtois M.COURTOIS         347      1      1
+ CASTEST MODIF sdns01a                      courtois M.COURTOIS         691      1      1
+ CASTEST MODIF sensm12a                     courtois M.COURTOIS         340      1      1
+ CASTEST MODIF ssll102a                     courtois M.COURTOIS        1133      1      1
+ CASTEST MODIF ssll102b                     courtois M.COURTOIS         945      1      1
+ CASTEST MODIF ssls118m                     courtois M.COURTOIS         497      1      1
+ CASTEST MODIF sslv110f                      geniaut S.GENIAUT          214      1      2
+ CASTEST MODIF sslv113c                       delmas J.DELMAS           203      6      6
+ CASTEST MODIF sslv113d                       delmas J.DELMAS           203      6      6
+ CASTEST MODIF ssna113a                     courtois M.COURTOIS         331      1      1
+ CASTEST MODIF ssnp135e                       durand C.DURAND           496      3     11
+ CASTEST MODIF ssnv104h                        abbas M.ABBAS            296      1      1
+ CASTEST MODIF ssnv127d                        abbas M.ABBAS            432      1      1
+ CASTEST MODIF ssnv128b                        abbas M.ABBAS            435      1      1
+ CASTEST MODIF ssnv128c                        abbas M.ABBAS            436      1      1
+ CASTEST MODIF ssnv128e                        abbas M.ABBAS            404      1      1
+ CASTEST MODIF ssnv147d                       pellet J.PELLET           455     12     30
+ CASTEST MODIF ssnv171c                     elgharib J.EL-GHARIB        358      2      2
+ CASTEST MODIF ssnv190a                     courtois M.COURTOIS         295      1      1
+ CASTEST MODIF ssnv200a                       pellet J.PELLET           212     16     48
+ CASTEST MODIF ssnv503d                        abbas M.ABBAS            427      1      1
+ CASTEST MODIF ssnv503g                        abbas M.ABBAS            564      1      1
+ CASTEST MODIF ssnv504j                     courtois M.COURTOIS         260      1      1
+ CASTEST MODIF yyyy104j                     courtois M.COURTOIS         189      1      1
+ CASTEST MODIF zmat002b                     courtois M.COURTOIS         217      3      1
+ CASTEST MODIF zzzz186a                     courtois M.COURTOIS          40      1      1
+ CASTEST MODIF zzzz216a                     courtois M.COURTOIS         281      1      1
+ FORTRAN MODIF algeline/tldlg3                pellet J.PELLET           354      7     40
+ FORTRAN MODIF algorith/hujncv                pellet J.PELLET            46      2      2
+ FORTRAN MODIF algorith/lcmmfi              elgharib J.EL-GHARIB        100      5      4
+ FORTRAN MODIF algorith/mxmajd              courtois M.COURTOIS         136      5      5
+ FORTRAN MODIF algorith/nmconv                 abbas M.ABBAS            700      1      3
+ FORTRAN MODIF algorith/nmdoet              courtois M.COURTOIS         416      2      2
+ FORTRAN MODIF algorith/rsvmat                pellet J.PELLET           165      8      6
+ FORTRAN MODIF assembla/mtmchc              courtois M.COURTOIS         232      2      2
+ FORTRAN MODIF calculel/mechc1              courtois M.COURTOIS         241      3      3
+ FORTRAN MODIF calculel/zzglob                delmas J.DELMAS           291      3      3
+ FORTRAN MODIF elements/btldth                pellet J.PELLET            95     18      8
+ FORTRAN MODIF elements/dxqpgl                durand C.DURAND           153      2      2
+ FORTRAN MODIF elements/fornpd                pellet J.PELLET           244      2      2
+ FORTRAN MODIF elements/te0144              courtois M.COURTOIS         194      2      7
+ FORTRAN MODIF elements/te0160                pellet J.PELLET           174      4      2
+ FORTRAN MODIF elements/te0402                pellet J.PELLET           446      8      7
+ FORTRAN MODIF elements/te0415                pellet J.PELLET           527      2      2
+ FORTRAN MODIF elements/vdxnlr                pellet J.PELLET           388      2      2
+ FORTRAN MODIF elements/vdxsig                pellet J.PELLET           290     34     14
+ FORTRAN MODIF hors_crp/assert                pellet J.PELLET            31      2      3
+ FORTRAN MODIF modelisa/moytem                pellet J.PELLET            40     17     17
+ FORTRAN MODIF modelisa/op0005                pellet J.PELLET           184      5      2
+ FORTRAN MODIF prepost/calfig               courtois M.COURTOIS         353      1      7
+ FORTRAN MODIF utilitai/chmrck                pellet J.PELLET           101     18     16
+ FORTRAN MODIF utilitai/op0197                pellet J.PELLET           618      3      3
+ FORTRAN MODIF utilitai/peweib                pellet J.PELLET           441      2      2
+ FORTRAN SUPPR utilifor/utmess                pellet J.PELLET            27      0     27
+  PYTHON MODIF Macro/observation_ops           bodel C.BODEL            596     25     14
+  PYTHON MODIF Messages/elements4             durand C.DURAND           385     47     79
+  PYTHON MODIF Messages/modelisa9             pellet J.PELLET            96     12      7
+  PYTHON MODIF Noyau/asojb                  courtois M.COURTOIS         303      2      2
+  PYTHON MODIF Stanley/graphiqueTk           tardieu N.TARDIEU          581     23      6
+  PYTHON MODIF Stanley/salomeVisu            tardieu N.TARDIEU          508      2      2
+  PYTHON MODIF Utilitai/Utmess              courtois M.COURTOIS         562     20     11
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1         263       263              +263
+ MODIF :   69       29258       387     446       -59
+ SUPPR :    1          27                27       -27
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   71       29548       650     473      +177 

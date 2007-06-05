@@ -1,6 +1,6 @@
        SUBROUTINE VDXSIG(NOMTE,OPTION,XI,NB1,NPGSR,SIGTOT,SIGMPG,EFFGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,21 +144,31 @@ C
             P1XI3= 1-XI3*XI3
             P2XI3=-XI3*(1-XI3)/2.D0
             P3XI3= XI3*(1+XI3)/2.D0
-            CALL RCVARC('F','TEMP','+','MASS',INTSN,1,TINF,
-     &                  IRET)
-            CALL RCVARC('F','TEMP','+','MASS',INTSN,IMOY,TMOY,
-     &                  IRET)
-            CALL RCVARC('F','TEMP','+','MASS',INTSN,3*NBCOU,TSUP,
-     &                  IRET)
+            CALL RCVARC('F','TEMP','+','MASS',INTSN,1,TINF,IRET)
+            IF ( IRET .EQ. 1 ) THEN
+               TEMPGA(KWGT) = TINF-TREF
+               GOTO 999
+            ENDIF
+            CALL RCVARC('F','TEMP','+','MASS',INTSN,IMOY,TMOY,IRET)
+            IF ( IRET .EQ. 1 ) THEN
+               TEMPGA(KWGT) = TMOY-TREF
+               GOTO 999
+            ENDIF
+            CALL RCVARC('F','TEMP','+','MASS',INTSN,3*NBCOU,TSUP,IRET)
+            IF ( IRET .EQ. 1 ) THEN
+               TEMPGA(KWGT) = TSUP-TREF
+               GOTO 999
+            ENDIF
             TEMPGA(KWGT)=TMOY*P1XI3+TINF*P2XI3+TSUP*P3XI3
             TEMPGA(KWGT)=TEMPGA(KWGT)-TREF
+ 999        CONTINUE
           ENDIF
 C
           CALL VDESGA(NOMTE,KWGT,INTE,INTSN,NB1,NB2,XI,DEPL,BTILD,
      &                           INDITH,ALPHA,TEMPGA,EPSILN,SIGMA,VECTT)
 C
           KPGS = KPGS+1
-          K1=6*(KPGS-1)
+          K1=6*((INTSN-1)*NPGE+INTE - 1)
           DO 35 I=1,6
             SIGMPG(K1+I) = SIGMA(I,KPGS)
  35       CONTINUE
@@ -221,14 +231,24 @@ C
             P1XI3= 1-XI3*XI3
             P2XI3=-XI3*(1-XI3)/2.D0
             P3XI3= XI3*(1+XI3)/2.D0
-            CALL RCVARC('F','TEMP','+','RIGI',INTSR,1,TINF,
-     &                  IRET)
-            CALL RCVARC('F','TEMP','+','RIGI',INTSR,IMOY,TMOY,
-     &                  IRET)
-            CALL RCVARC('F','TEMP','+','RIGI',INTSR,3*NBCOU,TSUP,
-     &                  IRET)
+            CALL RCVARC('F','TEMP','+','RIGI',INTSR,1,TINF,IRET)
+            IF ( IRET .EQ. 1 ) THEN
+               TEMPGA(KWGT) = TINF-TREF
+               GOTO 998
+            ENDIF
+            CALL RCVARC('F','TEMP','+','RIGI',INTSR,IMOY,TMOY,IRET)
+            IF ( IRET .EQ. 1 ) THEN
+               TEMPGA(KWGT) = TMOY-TREF
+               GOTO 998
+            ENDIF
+            CALL RCVARC('F','TEMP','+','RIGI',INTSR,3*NBCOU,TSUP,IRET)
+            IF ( IRET .EQ. 1 ) THEN
+               TEMPGA(KWGT) = TSUP-TREF
+               GOTO 998
+            ENDIF
             TEMPGA(KWGT)=TMOY*P1XI3+TINF*P2XI3+TSUP*P3XI3
             TEMPGA(KWGT)=TEMPGA(KWGT)-TREF
+ 998        CONTINUE
         ENDIF
 C
         CALL VDESGA(NOMTE,KWGT,INTE,INTSR,NB1,NB2,XI,DEPL,BTILD,

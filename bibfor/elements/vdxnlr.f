@@ -1,6 +1,6 @@
       SUBROUTINE VDXNLR ( OPTION, NOMTE, XI, RIG, NB1, CODRET )
       IMPLICIT REAL*8 (A-H,O-Z)
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -226,7 +226,7 @@ C     EPSXX, EPSYY, EPSXY, EPSXZ, EPSYZ (CE SONT LES COMPOSANTES TILDE)
             GXZ = EPSI(4) + DEPSI(4)
             GYZ = EPSI(5) + DEPSI(5)
 
-            K1 = 6* (KPGS-1)
+            K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
             K2 = LGPG* (INTSN-1) + (NPGE* (ICOU-1)+INTE-1)*NBVARI
             DO 80 I = 1,3
               SIGN(I) = ZR(ICONTM-1+K1+I)

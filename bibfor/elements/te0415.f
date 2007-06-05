@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,7 @@ C
 
             DO 30 INTSN = 1,NPGSN
               KPGS = KPGS + 1
-              K1 = 6* (KPGS-1)
+              K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
               DO 20 I = 1,6
                 SIGM(I,KPGS) = ZR(ICHG-1+K1+I)
    20         CONTINUE

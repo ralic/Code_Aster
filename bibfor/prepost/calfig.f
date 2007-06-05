@@ -6,7 +6,7 @@
       CHARACTER*19        RESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -328,22 +328,16 @@ C
       CALL WKVECT ( NOMFON//'.VALE', 'G V R8', 2*NV, LVAL )
 C
       I = 1
-      ZR(IDTHE) = 0.D0
-      ZR(IDRAY) = GAME
       ZR(LVAL+I-1)    = 0.D0
       ZR(LVAL+NV+I-1) = GAME
       DO 306 Q = 1 , N
          IF ( ZR(IJPRM+2*Q-2) .NE. 0.D0 ) THEN
             I = I + 1
-            ZR(IDTHE+I-1) = ZR(IJPRM+2*Q-2) * RAD
-            ZR(IDRAY+I-1) = ZR(IJPRM+2*Q-1)
             ZR(LVAL+I-1)    = ZR(IJPRM+2*Q-2)
             ZR(LVAL+NV+I-1) = ZR(IJPRM+2*Q-1)
          ENDIF
  306  CONTINUE
       I = I + 1
-      ZR(IDTHE+I-1) = 360.D0 * RAD
-      ZR(IDRAY+I-1) = GAME
       ZR(LVAL+I-1)    = 360.D0
       ZR(LVAL+NV+I-1) = GAME
 C

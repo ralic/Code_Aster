@@ -1,4 +1,5 @@
-#@ MODIF elements4 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements4 Messages  DATE 04/06/2007   AUTEUR DURAND C.DURAND 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,23 +59,23 @@ cata_msg={
 """),
 
 11: _("""
- option non traitee  %(k1)s 
-"""),
+ option non traitée  %(k1)s
+ """),
 
 12: _("""
- nombre total de sous-elements limite a 32.
+ nombre total de sous-éléments limité a 32.
 """),
 
 13: _("""
- nombre total de points d'intersection limite a 11.
+ nombre total de points d'intersection limité a 11.
 """),
 
 14: _("""
- type de maille non valide pour le post-traitement des elements xfem
+ type de maille non valide pour le post-traitement des éléments xfem
 """),
 
 15: _("""
-  deformation :  %(k1)s non implantee sur les elements "pou_d_tgm" : utiliser petit ou reac_geom
+  deformation :  %(k1)s non implantée sur les éléments "pou_d_tgm" : utiliser PETIT ou REAC_GEOM
 """),
 
 16: _("""
@@ -94,15 +95,15 @@ cata_msg={
 """),
 
 20: _("""
- pour l'element de poutre " %(k1)s " l'option " %(k2)s " est invalide
+ pour l'élément de poutre " %(k1)s " l'option " %(k2)s " est invalide
 """),
 
 21: _("""
- pour un element de poutre noeuds confondus :  %(k1)s 
+ pour un élément de poutre noeuds confondus :  %(k1)s 
 """),
 
 22: _("""
- les poutres a section variable ne sont pas traitees.
+ les poutres à section variable ne sont pas traitées.
 """),
 
 23: _("""
@@ -114,15 +115,15 @@ cata_msg={
 """),
 
 31: _("""
- dfdi mal dimensionnee
+ dfdi mal dimensionnée
 """),
 
 32: _("""
- vous utilisez le mot cle liaison_elem avec l'option coq_pou: l'epaisseur des elements de bord de coque n'a pas ete affectee.
+ vous utilisez le mot clé liaison_elem avec l'option coq_pou: l'épaisseur des éléments de bord de coque n'a pas été affectée.
 """),
 
 33: _("""
- l'epaisseur des elements de bord de coque est negative ou nulle.
+ l'epaisseur des éléments de bord de coque est negative ou nulle.
 """),
 
 34: _("""
@@ -130,7 +131,7 @@ cata_msg={
 """),
 
 35: _("""
- matns() sous-dimensionne
+ matns() sous-dimensionné
 """),
 
 36: _("""
@@ -142,11 +143,11 @@ cata_msg={
 """),
 
 38: _("""
- option  %(k1)s  non active pour un element de type  %(k2)s 
+ option  %(k1)s  non active pour un élément de type  %(k2)s 
 """),
 
 39: _("""
- option  %(k1)s  : incompatibilite des deux champs d entree
+ option  %(k1)s  : incompatibilité des deux champs d entrée
 """),
 
 40: _("""
@@ -158,7 +159,7 @@ cata_msg={
 """),
 
 42: _("""
- nom de type element inattendu
+ nom de type élément inattendu
 """),
 
 43: _("""
@@ -170,23 +171,23 @@ cata_msg={
 """),
 
 45: _("""
- l'option " %(k1)s " en repere local est interdite pour les tuyaux utiliser le repere global
+ l'option " %(k1)s " en repère local est interdite pour les tuyaux : utiliser le repère global
 """),
 
 46: _("""
- le nombre de couches et de secteurs doivent etre superieurs a 0
+ le nombre de couches et de secteurs doivent etre supérieurs a 0
 """),
 
 47: _("""
- cmp  %(k1)s  non traitee, on abandonne
+ composante  %(k1)s  non traitée, on abandonne
 """),
 
 48: _("""
- champ  %(k1)s  non traite, on abandonne
+ champ  %(k1)s  non traité, on abandonne
 """),
 
 49: _("""
- l'option " %(k1)s " est non prevue
+ l'option " %(k1)s " est non prévue
 """),
 
 50: _("""
@@ -202,11 +203,11 @@ cata_msg={
 """),
 
 53: _("""
- ep/r > 0.2 modi_metrique pas adapte
+ ep/r > 0.2 modi_metrique pas adapté
 """),
 
 54: _("""
- ep/r > 0.2 modi_metrique=non pas adapte.
+ ep/r > 0.2 modi_metrique=non pas adapté
 """),
 
 55: _("""
@@ -218,27 +219,27 @@ cata_msg={
 """),
 
 57: _("""
- indn = 1 (integration normale) ou                                 indn = 0 (integration reduite) obligatoirement.
+ indn = 1 (intégration normale) ou indn = 0 (integration réduite) obligatoirement.
 """),
 
 58: _("""
-  le code " %(k1)s "                         est non prevue. code doit etre = "gl" ou "lg"
+  le code " %(k1)s " est non prévu. code doit etre = "gl" ou "lg"
 """),
 
 59: _("""
- nom d'element fini incompatible
+ nom d'élément fini incompatible
 """),
 
 60: _("""
- pb calcul des derivees des fonctions singulieres sur le fond de fissure
+ pb calcul des derivées des fonctions singulières sur le fond de fissure
 """),
 
 61: _("""
- preconditions non remplies
+ préconditions non remplies
 """),
 
 62: _("""
-  erreur: element non 2d
+  erreur: élément non 2d
 """),
 
 63: _("""
@@ -259,15 +260,13 @@ cata_msg={
   La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
 """),
 
-
 68: _("""
  Nombre d'itérations internes insuffisant.
 """),
 
 69: _("""
- ! pb recuperation donnee materiau dans thm_liqu %(k1)s !
+ ! pb récuperation donnée matériau dans thm_liqu %(k1)s !
 """),
-
 
 72: _("""
    rcvala ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8  
@@ -278,94 +277,63 @@ cata_msg={
 """),
 
 74: _("""
-   attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélipipèdes.
-  Sur les elements quelconques on peut obtenir des resultats faux.   
+  Attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélépipèdes.
+  Sur les elements quelconques on peut obtenir des résultats faux.   
 """),
 
 75: _("""
- la maille de numero:  %(i1)d appartient a plusieurs sous-domaines! %(i2)d 
+ la maille de numero:  %(i1)d appartient à plusieurs sous-domaines! %(i2)d 
 """),
 
 76: _("""
- la maille du modele de numero:  %(i1)d appartient a aucun sous-domaine ! %(i2)d 
+ la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine ! %(i2)d 
 """),
 
 77: _("""
  numero de couche  %(i1)d 
-  trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
+  trop grand par rapport au nombre de couches autorisé pour la maille  %(k1)s 
 """),
 
 78: _("""
- ! pb recuperation donnee materiau dans thm_diffu %(k1)s !
+ ! pb recuperation donnée matériau dans thm_diffu %(k1)s !
 """),
 
 79: _("""
- la loi de comportement n'existe pas pour la  modelisation dktg :  %(k1)s 
+ la loi de comportement n'existe pas pour la modélisation dktg :  %(k1)s 
 """),
 
 80: _("""
  
- attention : l element de plaque  quad4 defini sur la maille : zk24(iazk24+2) n est pas plan et peut conduire a des resultats faux. 
+ attention : l élément de plaque quad4 défini sur la maille : %(k1)s n est pas plan et peut conduire a des résultats faux. 
   distance au plan :  %(r1)f 
 """),
 
 81: _("""
- manque le parametre  %(k1)s pour la maille  %(k2)s 
+ manque le paramètre  %(k1)s pour la maille  %(k2)s 
 """),
 
-
-
-
-
-
-
-
 83: _("""
- utiliser "stat_non_line"  temperature inf:  %(r1)f   temperature moy:  %(r2)f 
-   temperature sup:  %(r3)f 
+ utiliser "stat_non_line"  température inf:  %(r1)f   température moy:  %(r2)f 
+ température sup:  %(r3)f 
 """),
 
 84: _("""
- famille non disponible    element de reference  %(k1)s 
-                 famille  %(k2)s 
+ famille non disponible élément de référence  %(k1)s 
+ famille  %(k2)s 
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 88: _("""
- elrefe non disponible    element de reference  %(k1)s 
+ elrefe non disponible élément de référence  %(k1)s 
 """),
-
-
-
-
-
-
-
 
 90: _("""
  elrefe mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d 
-  nb noeuds pour le gano  %(i2)d 
+ nb noeuds pour le gano  %(i2)d 
 """),
 
 91: _("""
- ! le calcul de cet estimateur !! ne tient pas compte d'eventuelles ! %(i1)d 
- ! conditions limites non lineaires   ! %(i2)d 
+ ! le calcul de cet estimateur !! ne tient pas compte d'éventuelles ! %(i1)d 
+ ! conditions limites non linéaires   ! %(i2)d 
 """),
 
 92: _("""

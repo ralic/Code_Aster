@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,13 +73,15 @@ class MESSAGE_LOGGER:
       self.print_message(*args, **kwargs)
 
 # -----------------------------------------------------------------------------
-   def print_message(self, code, idmess, valk=(), vali=(), valr=()):
+   def print_message(self, code, idmess, valk=(), vali=(), valr=(),
+                     exception=False):
       """Appelé par la routine fortran U2MESG ou à la fonction python UTMESS
       pour afficher un message.
       L'impression de ce message est différée si le `code` est suivi d'un "+".
          code  : 'A', 'E', 'S', 'F', 'I'
          idmess : identificateur du message
          valk, vali, valr : liste des chaines, entiers ou réels.
+      Si exception==True, on lève une exception en cas d'erreur.
       """
       # récupération du texte du message
       dictmess = self.get_message(code, idmess, valk, vali, valr)
@@ -95,6 +97,13 @@ class MESSAGE_LOGGER:
          # on imprime le message en attente
          self.print_buffer_content()
 
+         if exception:
+            reason = ' <EXCEPTION LEVEE> %s' % idmess
+            if code[0] == 'S':
+               raise aster.error, reason
+            elif code[0] == 'F':
+               raise aster.FatalError, reason
+      
       return None
 
 # -----------------------------------------------------------------------------
@@ -256,8 +265,10 @@ Le message %s n'a pas pu etre formaté correctement.
       """
       nmax_alarm = 5
       code = self.get_current_code()
-      if code == 'E':
+      if   code == 'E':
          self.erreur_E = True
+      elif code == 'F':
+         self.erreur_E = False
       elif code == 'A':
          idmess = self.get_current_id()
          # nombre d'occurence de cette alarme
@@ -274,16 +285,19 @@ Le message %s n'a pas pu etre formaté correctement.
             self.init_buffer()
 
 # -----------------------------------------------------------------------------
-   def check_counter(self):
+   def check_counter(self, silent=False):
       """Méthode "jusqu'ici tout va bien" !
       Si des erreurs <E> se sont produites, on arrete le code en <F>.
       Appelée par FIN ou directement au cours de l'exécution d'une commande.
-      Retourne un entier : 0 si tout est ok (toujours pour le moment)
+      Retourne un entier : 0 si tout est ok.
+      Si silent==True, on n'émet pas de message, on ne s'arrete pas.
       """
       iret = 0
       if self.erreur_E:
+         iret = 4
          self.erreur_E = False
-         self.print_message('F', 'SUPERVIS_6')
+         if not silent:
+            self.print_message('F', 'SUPERVIS_6', exception=True)
       return iret
 
 # -----------------------------------------------------------------------------
@@ -511,13 +525,8 @@ def U2MESS(code, idmess, valk=(), vali=(), valr=()):
          + appel à MessageLog
          + puis exception ou abort en fonction du niveau d'erreur.
    """
-   MessageLog(code, idmess, valk, vali, valr)
-   
-   reason = ' <EXCEPTION LEVEE> %s' % idmess
-   if code == 'S':
-      raise aster.error, reason
-   elif code == 'F':
-      raise aster.FatalError, reason
+   MessageLog(code, idmess, valk, vali, valr, exception=True)
+
 
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------

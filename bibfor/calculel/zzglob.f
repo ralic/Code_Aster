@@ -7,7 +7,7 @@
       CHARACTER*(*) CHAMP,OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 04/06/2007   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,8 +148,8 @@ C
                ERR0   = ERR0   + ZR(IAD+1-1)**2
                NORS   = NORS   + ZR(IAD+3-1)**2
                TERMVO = TERMVO + ZR(IAD+4-1)**2
-               TERMSA = TERMSA + ZR(IAD+6-1)**2
-               TERMNO = TERMNO + ZR(IAD+8-1)**2
+               TERMNO = TERMNO + ZR(IAD+6-1)**2
+               TERMSA = TERMSA + ZR(IAD+8-1)**2
                NBEL = NBEL + 1
  3          CONTINUE
 2        CONTINUE

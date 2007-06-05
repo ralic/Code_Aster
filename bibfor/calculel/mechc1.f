@@ -5,7 +5,7 @@
       CHARACTER*(*)       MODELE, MATE, CHCARA(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF CALCULEL  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -148,8 +148,8 @@ C
       CALL JEVEUO ( CHELMS//'.CESK', 'L', ICESK )
       CALL JEVEUO ( CHELMS//'.CESC', 'L', ICESC )
       CALL JEVEUO ( CHELMS//'.CESD', 'L', ICESD )
-      CALL JEVEUO ( CHELMS//'.CESL', 'L', ICESL )
-      CALL JEVEUO ( CHELMS//'.CESV', 'L', ICESV )
+      CALL JEVEUO ( CHELMS//'.CESL', 'E', ICESL )
+      CALL JEVEUO ( CHELMS//'.CESV', 'E', ICESV )
 C
       NOMA   = ZK8(ICESK)
       NBMAIL =  ZI(ICESD)

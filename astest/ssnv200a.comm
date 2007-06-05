@@ -1,4 +1,4 @@
-# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,58 +56,26 @@ DEBUT(     CODE=_F(  NOM = 'SSNV200A',NIV_PUB_WEB='INTERNET'))
 
 CUBE=LIRE_MAILLAGE(  )
 
-TROISD=AFFE_MODELE(          MAILLAGE=CUBE,
-                                  AFFE=_F(   PHENOMENE = 'MECANIQUE',
-                                          MODELISATION = '3D',
-                                          TOUT = 'OUI'))
+TROISD=AFFE_MODELE( MAILLAGE=CUBE,
+                    AFFE=_F( PHENOMENE = 'MECANIQUE',
+                             MODELISATION = '3D',
+                             TOUT = 'OUI'))
 
-R_0_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     72.,
-                                 1000.,  72.,      ))
+R_0_T=DEFI_CONSTANTE(VALE = 72.0 )
 
-ALPHA_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     .3,
-                                 1000.,  .3,       ))
+ALPHA_T=DEFI_CONSTANTE(VALE = 0.3 )
 
-M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     .1,
-                                 1000.,  .1,       ))
+M_T=DEFI_CONSTANTE(VALE = 0.1 )
 
-A_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     312.,
-                                 1000.,  312.,       ))
+A_T=DEFI_CONSTANTE(VALE = 312.0 )
 
-B_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     30.,
-                                 1000.,  30.,       ))
+B_T=DEFI_CONSTANTE(VALE = 30.0 )
 
-C1_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     -.012,
-                                 1000.,  -.012,      ))
+C1_T=DEFI_CONSTANTE(VALE = -0.012 )
 
-C_INF_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     .065,
-                                 1000.,  .065,       ))
+C_INF_T=DEFI_CONSTANTE(VALE = 0.065 )
 
-S_T=DEFI_FONCTION(      NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     450.,
-                                 1000.,  450.,      ))
+S_T=DEFI_CONSTANTE(VALE = 450.0 )
 
 ACIER1=DEFI_MATERIAU(
                                     ELAS=_F(   E = 200000.,

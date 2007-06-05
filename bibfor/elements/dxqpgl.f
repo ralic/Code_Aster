@@ -3,7 +3,7 @@
       REAL*8              XYZG(3,*), PGL(3,3)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 04/06/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,7 +147,7 @@ C
       IF ( ABS(PSCAL).GT.1.D-4 ) THEN
         CALL TECAEL(IADZI,IAZK24)
         VALR = ABS(DIST)
-        CALL U2MESG('A', 'ELEMENTS4_80',0,' ',0,0,1,VALR)
+        CALL U2MESG('A', 'ELEMENTS4_80',1,ZK24(IAZK24+2),0,0,1,VALR)
       ENDIF
 
       END

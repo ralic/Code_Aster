@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS,ACTION
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C        TRAITEMENT CI-DESSOUS
       CALL JEVEUO(MAT//'.CCVA','L',JCCVA)
       CALL JEVEUO(MAT//'.CCLL','L',JCCLL)
       CALL JEVEUO(MAT//'.CCID','L',JCCID)
-      CALL JEVEUO(MAT//'.CCJJ','L',JCCJJ)
+      CALL JEVEUO(MAT//'.CCJJ','E',JCCJJ)
 
 
 

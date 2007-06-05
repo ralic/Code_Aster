@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF asojb Noyau  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,11 +25,11 @@ from basetype import Type, MetaType
 from asnom import SDNom
 from ascheckers import CheckLog
 import traceback,sys
-from Utilitai.Utmess import U2MESS as UTMESS
 
 # pour utilisation dans eficas
 try:
    import aster
+   from Utilitai.Utmess import U2MESS as UTMESS
 except:
    pass
 

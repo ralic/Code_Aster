@@ -2,7 +2,7 @@
      &                  NDECI,ISINGU,NPVNEG,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14 NU
       CHARACTER*(*) METREZ,RENUM
       CHARACTER*8 NOMNO,NOMCMP,TARDIF,METRES,METRE2
-      CHARACTER*40 INFOBL,MESSAG,VALK(4)
+      CHARACTER*40 INFOBL,VALK(4)
       INTEGER ISTOP,LMAT,ILDEB,ILFIN,NDIGIT,NDIGI2,IRET,NPVNEG
       INTEGER IFM,NIV,JREFA,NOM,NEQ,ISCBL,ISCDI,LLIAI,IER
       INTEGER TYPVAR,TYPSYM,NBBLOC,ILFIN1,IBID
@@ -238,7 +238,6 @@ C     -------------------------------------------------------
 
         NDECI=NDECI1
         ISINGU = IEQ3
-        MESSAG='PROBLEME: LE PIVOT DEVIENT TRES PETIT'
 
         IF (NDECI.GE.NDIGI2) THEN
           IRET = 1
@@ -246,6 +245,8 @@ C     -------------------------------------------------------
           IRET = 0
         END IF
       END IF
+
+
 
 C     -- EMISSION EVENTUELLE D'UN MESSAGE D'ERREUR :
 C     ----------------------------------------------
@@ -294,7 +295,7 @@ C     ----------------------------------------------
 C         -- SI C'EST UN NOEUD DE LAGRANGE D'UNE LIAISON_DDL
 C            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
           LLIAI= INDEX(INFOBL,'LIAISON_DDL')
-          IF ((CODMES.EQ.'F').AND.(LLIAI.GT.0)) THEN
+          IF (LLIAI.GT.0) THEN
              CALL IMPPIV(NU,ISINGU)
              IF (IRET.EQ.1) THEN
                CALL U2MESG(CODMES,'FACTOR_30',4,VALK,2,VALI,0,0.D0)
@@ -311,43 +312,9 @@ C            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
         END IF
       END IF
 
-      CALL UTDEBM(CODMES,'TLLLGG','MATRICE NON FACTORISABLE.')
 
-      IF (IRET.EQ.1) THEN
-        CALL UTIMPI('L',MESSAG//' A LA LIGNE',1,ISINGU)
-        CALL UTIMPI('L','NOMBRE DE DECIMALES PERDUES :',1,NDECI)
-      ELSE IF (IRET.EQ.2) THEN
-        CALL UTIMPI('L','PIVOT VRAIMENT NUL A LA LIGNE',1,ISINGU)
-      END IF
-
-      IF (NU.NE.' ') THEN
-        CALL RGNDAS('NUME_DDL',NU,ISINGU,NOMNO,NOMCMP,TARDIF,LIGREL,
-     &              INFOBL)
-        CALL UTIMPK('L','NOEUD',1,NOMNO)
-        CALL UTIMPK('S','CMP',1,NOMCMP)
-        IF (TARDIF(1:4).NE.'    ') THEN
-          CALL UTIMPK('S',TARDIF,1,LIGREL)
-          CALL UTIMPK('L','IL S''AGIT SANS DOUTE D''UNE RELATION',0,' ')
-          CALL UTIMPK('L','DE BLOCAGE SURABONDANTE',0,' ')
-          CALL UTIMPK('L','BLOCAGE',1,INFOBL)
-
-C         -- SI C'EST UN NOEUD DE LAGRANGE D'UNE LIAISON_DDL
-C            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
-          LLIAI= INDEX(INFOBL,'LIAISON_DDL')
-          IF ((CODMES.EQ.'F').AND.(LLIAI.GT.0)) THEN
-             CALL IMPPIV(NU,ISINGU)
-          CALL UTIMPK('L','VOIR LA LISTE DES NOEUDS CI-DESSUS',0,' ')
-          CALL UTIMPK('S','(DANS LE FICHIER "MESSAGE")',0,' ')
-          END IF
-
-        END IF
-      END IF
-      CALL UTFINM()
-
-
-
-
-
+C     -- IMPRESSIONS INFO=2 :
+C     ------------------------
    20 CONTINUE
 
       IF (NIV.EQ.2) THEN

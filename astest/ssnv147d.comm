@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION D'UN BARREAU AVEC LOI DE COMPORTEMENT ROUSSELIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -331,53 +331,35 @@ ECRISO=DEFI_FONCTION(          NOM_PARA='EPSI',
  0.159649,   825.486,
  0.160204,   826.376,  ))
 
-D_T=DEFI_FONCTION(        NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     2.,
-                                 1000.,  2.,        ))
+D_T=DEFI_CONSTANTE(VALE =    2.0)
 
-S1_T=DEFI_FONCTION(        NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     490.,
-                                 1000.,  490.,       ))
+S1_T=DEFI_CONSTANTE(VALE = 490.0)
 
-S2_T=DEFI_FONCTION(        NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     400.,
-                                 1000.,  400.,       ))
+S2_T=DEFI_CONSTANTE(VALE = 400.0)
 
-F0_T=DEFI_FONCTION(        NOM_PARA='TEMP',
-                            PROL_DROITE='CONSTANT',
-                           PROL_GAUCHE='CONSTANT',
-                          VALE=( 0.,     5.E-4,
-                                 1000.,  5.E-4,       ))
+F0_T=DEFI_CONSTANTE(VALE = 5.E-4)
 
-ACIER=DEFI_MATERIAU(               ELAS=_F(   E = 206400.,
-                                               NU = .3,
-                                               ALPHA = 0.),
-                                   TRACTION=_F(   SIGM = ECRISO),
-                              ROUSSELIER_FO=_F(   D = D_T,
-                                               SIGM_1 = S1_T,
-                                               PORO_INIT = F0_T))
+ACIER=DEFI_MATERIAU(  ELAS=_F(      E = 206400.,
+                                   NU = .3,
+                                ALPHA = 0.),
+                   TRACTION=_F( SIGM = ECRISO),
+              ROUSSELIER_FO=_F(         D = D_T,
+                                   SIGM_1 = S1_T,
+                                PORO_INIT = F0_T))
 
-ACIER2=DEFI_MATERIAU(          ELAS=_F(   E = 250000.,
-                                               NU = .3,
-                                               ALPHA = 0.),
-                                   TRACTION=_F(   SIGM = ECRISO),
-                              ROUSSELIER_FO=_F(   D = D_T,
-                                               SIGM_1 = S2_T,
-                                               PORO_INIT = F0_T))
+ACIER2=DEFI_MATERIAU(  ELAS=_F(     E = 250000.,
+                                   NU = .3,
+                                ALPHA = 0.),
+                   TRACTION=_F( SIGM = ECRISO),
+              ROUSSELIER_FO=_F(         D = D_T,
+                                   SIGM_1 = S2_T,
+                                PORO_INIT = F0_T))
 
-CHMAT=AFFE_MATERIAU(
-                MAILLAGE=MA,AFFE=(
-                    _F(
-                GROUP_MA = 'BLOC',
-                MATER = ACIER), _F(
-                MAILLE = 'M1',
-                MATER = ACIER2))
+CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
+                     AFFE=(_F( GROUP_MA = 'BLOC',
+                               MATER = ACIER ),
+                           _F( MAILLE = 'M1',
+                               MATER = ACIER2))
               )
 
 L_INST=DEFI_LIST_REEL(

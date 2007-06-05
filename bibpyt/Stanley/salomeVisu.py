@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 14/05/2007   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF salomeVisu Stanley  DATE 04/06/2007   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ class VISU:
             if len( studyList ) == 1:   # une seule etude -> on publie ds celle-ci
                 self.studyName = studyList[0]
             else:                               # plusieurs études -> l'utilisateur doit en sélectionner une
-                self.studyName = SAISIE_MODE( studyList, _("Choix de l'etude SALOME pour visualisation") )
+                self.studyName = SAISIE_MODE( studyList, _("Choix de l'etude SALOME pour visualisation"), vbar=1 )
 
         if self.studyName:
             self.salomeParam['studyName']  = self.studyName

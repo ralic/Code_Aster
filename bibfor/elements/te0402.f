@@ -1,21 +1,21 @@
       SUBROUTINE TE0402 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/06/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
@@ -28,7 +28,7 @@ C                 POUR LE FLAMBEMENT LINEAIRE
 C
 C                 COQUE_3D
 C
-C                 OPTION :  RIGI_MECA_GEOM 
+C                 OPTION :  RIGI_MECA_GEOM
 C
 C    ARGUMENTS :
 C    DONNEES   :       OPTION       -->  OPTION DE CALCUL
@@ -63,12 +63,12 @@ C
 C
 C---- DECLARATIONS LOCALES
 C
-      INTEGER I    , J  
-      INTEGER IN 
-      INTEGER II   , JJ 
+      INTEGER I    , J
+      INTEGER IN
+      INTEGER II   , JJ
       INTEGER IRIG
       INTEGER             KOMPT
-      INTEGER             KPGS 
+      INTEGER             KPGS
 C
 C
       REAL * 8 SIGMTD  ( 5 )
@@ -77,15 +77,15 @@ C
 C
       REAL * 8 SIGMA    ( 3 ,  3 )
 C
-      REAL * 8 BARSIG   ( 9 , 9 ) 
+      REAL * 8 BARSIG   ( 9 , 9 )
 C
       REAL * 8 VECNI ( 3 )  , ANTNI ( 3 , 3 )
 C
-      REAL * 8 VECZN ( 27 ) 
-      REAL * 8 ANTZI ( 3 , 3 ) 
+      REAL * 8 VECZN ( 27 )
+      REAL * 8 ANTZI ( 3 , 3 )
 C
       REAL * 8 RIGNC ( 3  , 3  )
-      REAL * 8 VRI ( 2601 ) 
+      REAL * 8 VRI ( 2601 )
 C
 C
 C
@@ -95,27 +95,27 @@ C
 C
       INTEGER LZI , LZR , JCARA
 C
-      INTEGER NB1 , NB2 
+      INTEGER NB1 , NB2
 C
 C
 C
 C
 C---- DECLARATIONS PROPRES COQUE_3D
 C
-      INTEGER     INTE , INTSN 
+      INTEGER     INTE , INTSN
 C
       REAL * 8 EPAIS
 C
-      INTEGER     NPGE , NPGSN 
+      INTEGER     NPGE , NPGSN, K1
 C
-      REAL * 8 VECTA ( 9 , 2 , 3 )   
+      REAL * 8 VECTA ( 9 , 2 , 3 )
       REAL * 8 VECTN ( 9 , 3 ) , VECTPT ( 9 , 2 , 3 )
 C
       REAL * 8 VECTG ( 2 , 3 ) , VECTT ( 3 , 3 )
 C
-      REAL * 8 JM1 ( 3 , 3 ) , DETJ 
+      REAL * 8 JM1 ( 3 , 3 ) , DETJ
 C
-      REAL * 8 HSTOUT ( 5 , 9 ) 
+      REAL * 8 HSTOUT ( 5 , 9 )
 C
       REAL * 8 J1DN2 ( 9 , 51 )
       REAL * 8 J1DN3 ( 9 , 27 )
@@ -134,7 +134,7 @@ C---- LES NOMBRES
 C
 
 C       POIDS DES POINTS DE GAUSS DANS LA TRANCHE
-     
+
       POIDS ( 1 ) = 0.33333333333333D0
       POIDS ( 2 ) = 1.33333333333333D0
       POIDS ( 3 ) = 0.33333333333333D0
@@ -168,7 +168,7 @@ C------- NOMBRE DE NOEUDS ( NB1 : SERENDIP , NB2 : LAGRANGE )
 C
          NB1   = ZI ( LZI - 1 + 1 )
          NB2   = ZI ( LZI - 1 + 2 )
-C      
+C
 C------- NBRE POINTS INTEGRATIONS ( NPGSR : REDUITE , NPGSN : NORMALE )
 C
          NPGSN = ZI ( LZI - 1 + 4 )
@@ -178,7 +178,7 @@ C
          CALL JEVETE ( '&INEL.'//NOMTE(1:8)//'.DESR' , ' ' , LZR )
 C
 C
-C------ CARACTERISTIQUES DE COQUE 
+C------ CARACTERISTIQUES DE COQUE
 C
         CALL JEVECH ( 'PCACOQU' , 'L' , JCARA )
 C
@@ -190,7 +190,7 @@ C       COORDONNEES DES POINTS DE GAUSS DANS LA TRANCHE
         EPSVAL ( 3 ) = ZR(LZR-1+1253)
 
 C       POIDS DES POINTS DE GAUSS DANS LA TRANCHE
-     
+
         POIDS ( 1 ) = 0.33333333333333D0
         POIDS ( 2 ) = 1.33333333333333D0
         POIDS ( 3 ) = 0.33333333333333D0
@@ -204,9 +204,9 @@ C
 C
 C
 C
-C        CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE 
+C        CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE
 C
-C            RIG ( 6 * NB1 + 3 , 6 * NB1 + 3 ) 
+C            RIG ( 6 * NB1 + 3 , 6 * NB1 + 3 )
 C
 C        DANS
 C
@@ -237,16 +237,17 @@ C
          DO 610 INTSN = 1 , NPGSN
 C
             KPGS = KPGS + 1
+            K1=6*((INTSN-1)*NPGE+INTE - 1)
 C
 C---------- VECTEUR 5 * 1 DES CONTRAINTES LOCALES
 C
-            SIGMTD ( 1 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 1 )
-            SIGMTD ( 2 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 2 ) 
+            SIGMTD ( 1 )=ZR ( ICONTR - 1 + K1 + 1 )
+            SIGMTD ( 2 )=ZR ( ICONTR - 1 + K1 + 2 )
 C
-            SIGMTD ( 3 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 4 )
+            SIGMTD ( 3 )=ZR ( ICONTR - 1 + K1 + 4 )
 C
-            SIGMTD ( 4 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 5 )
-            SIGMTD ( 5 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 6 )
+            SIGMTD ( 4 )=ZR ( ICONTR - 1 + K1 + 5 )
+            SIGMTD ( 5 )=ZR ( ICONTR - 1 + K1 + 6 )
 C
 C---------- TENSEUR 3 * 3 CONTRAINTES LOCALES TRIANGULAIRE SUPERIEURE
 C
@@ -258,10 +259,10 @@ C                              ( T_1 )
 C           VECTT ( 3 , 3 ) =  ( T_2 )  = ( LAMDA0 ) T
 C                              ( N   )
 C
-            CALL VECTGT ( 1 , NB1 , ZR ( IGEOM ) , KSI3S2 , INTSN , 
+            CALL VECTGT ( 1 , NB1 , ZR ( IGEOM ) , KSI3S2 , INTSN ,
      &                    ZR ( LZR ) , EPAIS , VECTN , VECTG , VECTT )
 C
-C---------- ROTATION DU TENSEUR DES CONTRAINTES : LOCALES --> GLOBALES 
+C---------- ROTATION DU TENSEUR DES CONTRAINTES : LOCALES --> GLOBALES
 C
 C           SIGMA =  ( VECTT ) T * SIGMT * VECTT
 C
@@ -291,15 +292,15 @@ C---------- CALCUL DE
 C           BTILD3 ( 5 , 27 ) = HSTOUT ( 5 , 9 ) * J1DN3 ( 9 , 3 * NB2 )
 C
             CALL PROMAT ( HSTOUT  , 5 , 5 , 9       ,
-     &                    J1DN3   , 9 , 9 , 3 * NB2 , 
+     &                    J1DN3   , 9 , 9 , 3 * NB2 ,
      &                    BTILD3  )
 C
-C---------- VECZN ( 27 )  =     INTEGRALE  DE  
+C---------- VECZN ( 27 )  =     INTEGRALE  DE
 C           ( BTILD3 ( 5 , 27 ) ) T * SIGMTD ( 5 ) *
-C           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR 
+C           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 C           VOIR ROUTINE INI080 , HSJ1F
 C
-            CALL BTSIG ( 3 * NB2 , 5 , 
+            CALL BTSIG ( 3 * NB2 , 5 ,
      &           ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * POIDS(INTE),
      &           BTILD3 , SIGMTD , VECZN )
 C
@@ -315,10 +316,10 @@ C
             CALL SIGBAR ( SIGMA , BARSIG )
 C
 C---------- CALCUL DE
-C           J1DN2 ( 9 , 6 * NB1 + 3 ) = 
+C           J1DN2 ( 9 , 6 * NB1 + 3 ) =
 C           JTILDM1 ( 9 , 9 ) * DNDQSI2 ( 9 , 6 * NB1 + 3 )
 C
-C           INDN = 1 INTEGRATION NORMALE        
+C           INDN = 1 INTEGRATION NORMALE
 C           INDC = 1 COMPLET
 C
       CALL JM1DN2
@@ -326,12 +327,12 @@ C
      &                                             VECTN , JM1 , J1DN2 )
 C
 C---------- RIG  ( 6 * NB1 + 3 , 6 * NB1 + 3 )  = INTERALE
-C           ( J1DN2 ( 9 , 6 * NB1 + 3 ) ) T * BARSIG ( 9 , 9 ) 
+C           ( J1DN2 ( 9 , 6 * NB1 + 3 ) ) T * BARSIG ( 9 , 9 )
 C           *                               J1DN2 ( 9 , 6 * NB1 + 3 ) *
 C           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 C           VOIR ROUTINE INI080 , HSJ1F
 C
-            CALL  BTDBMA ( J1DN2 , BARSIG , 
+            CALL  BTDBMA ( J1DN2 , BARSIG ,
      &            ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * POIDS(INTE),
      &            9 , 6 * NB1 + 3 , VRI )
 C
@@ -342,7 +343,7 @@ C---- PAS DE RIGIDITE DE ROTATION AUTOUR NORMALE
 C
 C
 C
-C---- RIGIDITE NON CLASSIQUE 
+C---- RIGIDITE NON CLASSIQUE
 C
 C---- BOULE SUR TOUS LES NOEUDS
 C
@@ -362,26 +363,26 @@ C
 C
 C------- RIGIDITE ROTATION NON CLASSIQUE RIGN ( 3 , 3 ) NON SYMETRIQUE
 C
-         CALL PROMAT ( ANTZI , 3 , 3 , 3 , 
-     &                 ANTNI , 3 , 3 , 3 , 
+         CALL PROMAT ( ANTZI , 3 , 3 , 3 ,
+     &                 ANTNI , 3 , 3 , 3 ,
      &                 RIGNC )
 C
-C------- RAJOUT DE LA PARTIE SYMETRIQUE DE RIGN ( 3 , 3 ) 
+C------- RAJOUT DE LA PARTIE SYMETRIQUE DE RIGN ( 3 , 3 )
 C
-         IF ( IN . LE . NB1 ) THEN 
+         IF ( IN . LE . NB1 ) THEN
 C
 C---------- NOEUDS DE SERENDIP
             DO 530 JJ = 1 , 3
                DO 540 II = 1 , 3
-                  J = 6 * ( IN - 1 ) + JJ + 3 
-                  I = 6 * ( IN - 1 ) + II + 3 
+                  J = 6 * ( IN - 1 ) + JJ + 3
+                  I = 6 * ( IN - 1 ) + II + 3
                   IRIG = ( 6 * NB1 + 3 ) * ( J - 1 ) + I
                   VRI ( IRIG ) = VRI ( IRIG ) +
      &            ( RIGNC ( II , JJ ) + RIGNC ( JJ , II ) ) * 0.5D0
  540           CONTINUE
  530        CONTINUE
 C
-         ELSE 
+         ELSE
 C
 C---------- SUPERNOEUD
             DO 531 JJ = 1 , 3
@@ -409,32 +410,32 @@ C                       ZR ( IMATUU )
 C
 C______________________________________________________________________
 C     JEU D INDICES I J POUR LA PARTIE TRIANGULAIRE SUPERIEURE
-C     
+C
 C     ZR ( IMATUU ---> IMATUU + TAILLE  - 1 ) : TRIANGULAIRE SUP DE RIG
 C
 C     TAILLE = NDDLET * ( 1 + (NDDLET - 1)/2 ) : NDDLET = 6 * NB1 + 3
 C
-C     VOIR ROUTINE TRANLG 
+C     VOIR ROUTINE TRANLG
 C
 C
 C
 C
 C---- COMPTEUR DE POSITION
 C
-            KOMPT = 0 
+            KOMPT = 0
 C
       DO 100   J = 1 , 6 * NB1 + 3
 C
-         DO 110  I = 1 , J 
+         DO 110  I = 1 , J
 C
-            KOMPT = KOMPT + 1 
+            KOMPT = KOMPT + 1
 C
-            ZR ( IMATUU - 1 + KOMPT ) = 
+            ZR ( IMATUU - 1 + KOMPT ) =
      &         + VRI ( ( 6 * NB1 + 3 ) * ( J - 1 ) + I )
 C
  110     CONTINUE
 C
- 100  CONTINUE   
+ 100  CONTINUE
 C
 C
 C

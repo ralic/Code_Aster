@@ -8,7 +8,7 @@
      &                   ZFON, FONACT, MAXREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/05/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/06/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -480,8 +480,6 @@ C
                MAXREL = .TRUE.
                CALL U2MESS('I','MECANONLINE2_98')
              ENDIF
-           ELSE
-             CALL U2MESS('F','MECANONLINE2_99')
            ENDIF 
          ENDIF
       ENDIF

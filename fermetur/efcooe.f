@@ -1,5 +1,6 @@
+
       SUBROUTINE EFCOOE(FID, MAA, MDIM, COO, MODCOO,
-     &                  N,TYPREP, 
+     &                  N,TYPREP,
      &                  NOM,UNIT,CRET)
       IMPLICIT NONE
       CHARACTER *(*) MAA
@@ -7,7 +8,5 @@
       INTEGER FID,TYPREP,MDIM
       INTEGER N,CRET,MODCOO
       CHARACTER *(*) NOM, UNIT
-      CALL UTMESS('F','EFCOOE','LA BIBLIOTHEQUE "MED" EST INDISPONIBLE'
-     &            //' SUR CETTE MACHINE.')
+      CALL U2MESS('F','FERMETUR_2')
       END
-   

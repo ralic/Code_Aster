@@ -4,7 +4,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF HORS_CRP DATE 10/10/2006 AUTEUR VABHHTS J.PELLET
+C MODIF HORS_CRP  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,5 @@ C
 C ======================================================================
 
 
-      IF (.NOT.COND) CALL UTMESS('F','ASSERT',
-     &  'ERREUR DE PROGRAMMATION : CONDITION NON RESPECTEE.')
+      IF (.NOT.COND) CALL U2MESS('F','DVP_1')
       END

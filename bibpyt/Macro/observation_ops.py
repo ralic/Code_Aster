@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 22/05/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF observation_ops Macro  DATE 05/06/2007   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -410,13 +410,13 @@ def crea_repere(chnorm, ind_no, vect):
     # vectoriel des deux premiers.
     if nom_para == 'VECT_X' :
         vect1 = Numeric.array(list(vect[nom_para])) # vect x du reploc
-        vect2 = Numeric.cross_product(normale,vect1)
+        vect2 = cross_product(normale,vect1)
         reploc = Numeric.array([vect1.tolist(), vect2.tolist(), normale])
         reploc = Numeric.transpose(reploc)
 
     elif nom_para == 'VECT_Y' :
         vect2 = Numeric.array(list(vect[nom_para])) # vect y du reploc
-        vect1 = Numeric.cross_product(vect2, normale)
+        vect1 = cross_product(vect2, normale)
         reploc = Numeric.array([vect1.tolist(), vect2.tolist(), normale])
         reploc = Numeric.transpose(reploc)
 
@@ -493,14 +493,27 @@ def find_no(maya,mcsimp):
 #************************************************************************************
 
 
-def provec(x,y):
-    """ Calcul d'un produit vectoriel"""
-    import Numeric
-    z=Numeric.zeros(3,Numeric.Float)
-    z[0]=x[1]*y[2]-x[2]*y[1]
-    z[1]=x[2]*y[0]-x[0]*y[2]
-    z[2]=x[0]*y[1]-x[1]*y[0]
-    return z
+def cross_product(a, b):
+    """Return the cross product of two vectors.
+    For a dimension of 2,
+    the z-component of the equivalent three-dimensional cross product is
+    returned.
+    
+    For backward compatibility with Numeric <= 23
+    """
+    from Numeric import asarray, array
+    a = asarray(a)
+    b = asarray(b)
+    dim =  a.shape[0]
+    assert 2<= dim <=3 and dim == b.shape[0], "incompatible dimensions for cross product"
+    if dim == 2:
+        result = a[0]*b[1] - a[1]*b[0]
+    elif dim == 3:
+        x = a[1]*b[2] - a[2]*b[1]
+        y = a[2]*b[0] - a[0]*b[2]
+        z = a[0]*b[1] - a[1]*b[0]
+        result = array([x,y,z])
+    return result
 
 def norm(x):
     """Calcul de la norme euclidienne d'un vecteur"""
@@ -552,10 +565,8 @@ def anglnaut(P):
 
     # calcul de gamma
     COSG=Numeric.dot(y1n,yg)
-    SING=Numeric.dot(xg,provec(y1n,yg))
+    SING=Numeric.dot(xg,cross_product(y1n,yg))
     gamma=Numeric.arctan2(SING,COSG)*180/Numeric.pi
-
-
 
     return alpha,beta,gamma
 

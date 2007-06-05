@@ -2,7 +2,7 @@
      &                  DEPMOI,SIGMOI,VARMOI,VARDEM,LAGDEM,NBPASE,
      &                  INPSCO,DEPOLD,NUMEDD,NEQ,PILOTE)
 
-C MODIF ALGORITH  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -206,7 +206,7 @@ C -- LECTURE DES DEPLACEMENTS (OU DERIVE)
             CALL VTCOPY(CHAMP2,DEP2,IRET)   
             CALL JEVEUO(DEP1(1:19)//'.VALE','L',JDEP1)
             CALL JEVEUO(DEP2(1:19)//'.VALE','L',JDEP2)
-            CALL JEVEUO(DEPOLD(1:19)//'.VALE','L',JDEPOL)       
+            CALL JEVEUO(DEPOLD(1:19)//'.VALE','E',JDEPOL)       
             DO 156 I = 1,NEQ
               ZR(JDEPOL-1+I) = ZR(JDEP1-1+I) - ZR(JDEP2-1+I)
  156        CONTINUE 
