@@ -1,6 +1,6 @@
       SUBROUTINE OP0137(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 07/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,13 +32,8 @@ C     ----------------
       REPONS=' '
       CALL GETVTX(' ','SDVERI',1,1,1,REPONS,L)
       IF ( REPONS .EQ. 'OUI') THEN
-         IF (SDVERI().EQ.1) THEN
-           CALL JDCSET('sdveri', 1)
-           CALL U2MESS('I','SUPERVIS_24')
-         ELSE
-           CALL JDCSET('sdveri', 0)
-           CALL U2MESS('A','SUPERVIS_42')
-         ENDIF
+         CALL JDCSET('sdveri', 1)
+         CALL U2MESS('I','SUPERVIS_24')
       ELSE IF ( REPONS .EQ. 'NON') THEN
          CALL JDCSET('sdveri', 0)
          CALL U2MESS('I','SUPERVIS_43')

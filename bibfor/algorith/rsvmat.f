@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,7 @@ C
      &                NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
           CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','VISC_SINH',
      &                0, ' ', 0.D0, 3,
-     &                NOMC(14),  MATERD(9,2),  CERR(14), FB2 )
+     &                NOMC(14),  MATERF(9,2),  CERR(14), FB2 )
 C
 C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)

@@ -1,0 +1,78 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 07/06/2007 - 10:50:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010950 DU 2007-06-07 08:05:49
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   3 probl?s ?orriger avant la stabilisation
+FONCTIONNALITE
+   Problèmes :
+   ----------
+   * PB1) Il manque le fichier Messages/fermetur.py
+   * PB2) En 9.0.29 les tests cente01a et ssnp117a s'arretent en "erreur numérique" dans la
+   routine rslphi.f.
+   * PB3) Sur les machines calibre (compilo g77), on refusait de prendre en compte SDVERI='OUI'
+                                                                                            
+                           
+   Solutions :
+   -----------
+   * PB1) J'ajoute le fichier Messages/fermetur.py  oublié
+                                                                                            
+                           
+                                                                                            
+                           
+   * PB2)
+     Je corrige une faute de frappe introduite en 9.0.29 dans la routine rsvmat.f
+     124c124
+      <      &                NOMC(14),  MATERD(9,2),  CERR(14), FB2 )
+      ---
+      >      &                NOMC(14),  MATERF(9,2),  CERR(14), FB2 )
+                                                                                            
+                           
+                                                                                            
+                           
+   * PB3)  (fait par Mathieu) :
+     - destruction de la fonction C sdveri (inutile maintenant)
+     - correction du fortran de la commande DEBUG/SDVERI (op0137.f)
+                                                                                            
+                           
+   Validation :
+   ------------
+   PB1 : Les 2 tests sont OK sur bull
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   2 tests cass?
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ FORTRAN MODIF algorith/rsvmat                pellet J.PELLET           165      2      2
+ FORTRAN MODIF supervis/op0137                pellet J.PELLET            85      1      6
+  PYTHON AJOUT Messages/fermetur              pellet J.PELLET            74     74      0
+  PYTHON MODIF Messages/supervis              pellet J.PELLET           265      2     10
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1          74        74               +74
+ MODIF :    3         515         5      18       -13
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    4         589        79      18       +61 

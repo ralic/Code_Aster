@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 07/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,10 +189,7 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
-42: _("""
- DEBUG/SDVERI demandé par l'utilisateur mais indisponible sur cette machine
- car le compilateur fortran77 n'accepte pas les fonctions récursives.
-"""),
+
 
 43: _("""
  Debug SDVERI suspendu
@@ -205,11 +202,6 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 45: _("""
  Debug JEVEUX suspendu
 """),
-
-
-
-
-
 
 
 
