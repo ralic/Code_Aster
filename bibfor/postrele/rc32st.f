@@ -5,7 +5,7 @@
       CHARACTER*4         TYPE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C OUT : SN     : AMPLITUDE DE VARIATION DES CONTRAINTES DE TRESCA
 C     ------------------------------------------------------------------
 C
       INTEGER  I, I1, IT, IT1
-      REAL*8   SIJMT(6), EQUI(6)
+      REAL*8   SIJMT(6), TRESCA
       REAL*8   E1(2)
 C DEB ------------------------------------------------------------------
 C
@@ -45,8 +45,8 @@ C
 C --- CALCUL MECANIQUE :
 C     ----------------
       IF ( NBINST .EQ. 0 ) THEN
-         CALL FGEQUI ( SIJM, 'SIGM', 3, EQUI )
-         SN = EQUI(2)
+         CALL RCTRES ( SIJM, TRESCA )
+         SN = TRESCA
 C
 C --- CALCUL THERMOMECANIQUE (DEPENDANT DU TEMPS)
 C     -------------------------------------------
@@ -59,8 +59,8 @@ C     -------------------------------------------
               DO 14 I = 1,6
                  SIJMT(I) = SIJM(I)*E1(IT1) + STH((IT-1)*6+I)
  14           CONTINUE
-              CALL FGEQUI ( SIJMT, 'SIGM', 3, EQUI )
-              SN = MAX( SN , EQUI(2) )
+              CALL RCTRES ( SIJMT, TRESCA )
+              SN = MAX( SN , TRESCA )
  12         CONTINUE
  10       CONTINUE
         ELSE
@@ -68,8 +68,8 @@ C     -------------------------------------------
             DO 22 I = 1,6
               SIJMT(I) = SIJM(I) + STH((IT-1)*6+I)
  22         CONTINUE
-            CALL FGEQUI ( SIJMT, 'SIGM', 3, EQUI )
-            SN = MAX( SN , EQUI(2) )
+            CALL RCTRES ( SIJMT, TRESCA )
+            SN = MAX( SN , TRESCA )
  20       CONTINUE
         END IF
       END IF

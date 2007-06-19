@@ -4,7 +4,7 @@
      &                    LFONCT , 
      &                    RETA   , RETAP  , RETA2P )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,9 @@ C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER NBMESU, NBMODE, NBABS
+      INTEGER VALI
       REAL*8  PHI(NBMESU, NBMODE)
+      REAL*8 VALR
       REAL*8 RMESU(NBMESU, NBABS),RETA(NBMODE, NBABS)
       REAL*8 RETAP(NBMODE, NBABS), RETA2P(NBMODE, NBABS) 
       REAL*8  XABS(NBABS)
@@ -71,12 +73,9 @@ C ----------------------------------------------------------------------
       REAL*8        ALPHA, R8PREM,EPS
       LOGICAL       NUL
       CHARACTER*3   METHOD
-      CHARACTER*6   NOMROU
       CHARACTER*8   REGUL
       CHARACTER*16  NOMCHA
       CHARACTER*16  SCDMBR,WKS,PHIPHT,PHITPH,MATSYS,WORK,ETA,VALS,U,V
-C
-      DATA NOMROU/'MPINV2'/
 C
 C ----------------------------------------------------------------------
 C
@@ -176,10 +175,8 @@ C             -> ALPHA INDEPENDANT DES ABSCISSES
 C
 C         -> ON VERIFIE QUE ALPHA > 0, SINON ARRET
           IF (ALPHA .LT. 0.D0) THEN
-              CALL UTDEBM ('F',NOMROU,'AU MOINS UN TERME DE ALPHA '//
-     &             'EST NEGATIF ')
-              CALL UTIMPI ('S','A L''ABSCISSE : ',1,IABS)
-              CALL UTFINM
+              VALI = IABS
+              CALL U2MESG('F','ALGORITH15_24',0,' ',1,VALI,0,0.D0)
             ELSE IF (ALPHA .GT. R8PREM()) THEN
               NUL=.FALSE.
           ENDIF
@@ -223,15 +220,11 @@ C **************************************
 
 C       -> ALARME SI ALPHA NUL ET NBMESU<NBMODE : MOINDRE NORME
         IF ((NBMESU .LT. NBMODE) .AND. (NUL)) THEN
-          CALL UTDEBM ('A',NOMROU,'ALPHA EST NUL ET '//
-     &         'LE NOMBRE DE MESURES EST STRICTEMENT INFERIEUR '//
-     &         'AU NOMBRE DE MODES : RISQUE DE MATRICE SINGULIERE')
-          CALL UTFINM
+          CALL U2MESG('A','ALGORITH15_25',0,' ',0,0,0,0.D0)
 
           IF (REGUL .EQ. 'NON') THEN
 C CALCUL MOINDRE NORME
-            CALL UTDEBM ('A',NOMROU,'CALCUL MOINDRE NORME ')
-            CALL UTFINM
+            CALL U2MESG('A','ALGORITH15_26',0,' ',0,0,0,0.D0)
             DO 82 IMES = 1,NBMESU
               ZR(LSCDMB-1 +IMES) = RMESU(IMES,IABS)
               DO 81 JMES = 1,NBMESU
@@ -251,10 +244,9 @@ C
               CALL RSLSVD (NBMODE, NBMESU, NBMESU,ZR(LMATSY),ZR(LVALS), 
      &                   ZR(LU),ZR(LV),1,ZR(LETA),EPS,IERR,ZR(LWORK) )
               IF ( IERR . NE. 0 ) THEN
-              CALL UTDEBM('F','MPINV2',' PB CALCUL VALEURS SINGULIERES')
-                CALL UTIMPI('S', ' PAS =  ',1, IABS )
-                CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )
-                CALL UTFINM
+              VALI = IABS
+              VALR = XABS ( IABS )
+              CALL U2MESG('F','ALGORITH15_27',0,' ',1,VALI,1,VALR)
               END IF
 C
             ELSE
@@ -262,11 +254,9 @@ C METHODE DE CROUT
               CALL MTCROG (ZR(LMATSY),ZR(LSCDMB),NBMODE,NBMESU,1,
      &                           ZR(LETA), ZR(LWKS), IERR)
               IF ( IERR . NE. 0 ) THEN
-              CALL UTDEBM('F','MPINV2',' MATRICE (PHI)T*PHI + ALPHA '//
-     &             'N EST PAS INVERSIBLE ' )
-                CALL UTIMPI('S', ' PAS =  ',1, IABS )
-                CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )
-                CALL UTFINM
+              VALI = IABS
+              VALR = XABS ( IABS )
+              CALL U2MESG('F','ALGORITH15_28',0,' ',1,VALI,1,VALR)
               END IF
             END IF
 C
@@ -294,10 +284,9 @@ C
           CALL RSLSVD (NBMODE, NBMODE, NBMODE, ZR(LMATSY), ZR(LVALS), 
      &                   ZR(LU),ZR(LV),1,ZR(LETA),EPS,IERR,ZR(LWORK) )
           IF ( IERR . NE. 0 ) THEN
-          CALL UTDEBM('F', 'MPINV2' , ' PB CALCUL VALEURS SINGULIERES')
-            CALL UTIMPI('S', ' PAS =  ',1, IABS )
-            CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )
-            CALL UTFINM
+          VALI = IABS
+          VALR = XABS ( IABS )
+          CALL U2MESG('F','ALGORITH15_29',0,' ',1,VALI,1,VALR)
           END IF
 C
         ELSE
@@ -306,11 +295,9 @@ C
           CALL MTCROG (ZR(LMATSY),ZR(LSCDMB),NBMODE,NBMODE,1,
      &                           ZR(LETA), ZR(LWKS), IERR)
           IF ( IERR . NE. 0 ) THEN
-          CALL UTDEBM('F', 'MPINV2' , ' MATRICE (PHI)T*PHI + ALPHA ' //
-     &         'N EST PAS INVERSIBLE ' )
-            CALL UTIMPI('S', ' PAS =  ',1, IABS )
-            CALL UTIMPR('S', ' ABSCISSE =   ',1, XABS ( IABS ) )
-            CALL UTFINM
+          VALI = IABS
+          VALR = XABS ( IABS )
+          CALL U2MESG('F','ALGORITH15_30',0,' ',1,VALI,1,VALR)
           END IF
         END IF
 C

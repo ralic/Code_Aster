@@ -5,7 +5,7 @@
       INTEGER           LMATK,       LMATM,LMATSH,       EXPO,PIVOT,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGELINE  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER          NPREC
       REAL*8           EPS,  FREQOM
+      REAL*8 VALR
       CHARACTER*16     RBID, NOMCMD
 
 C     ------------------------------------------------------------------
@@ -78,10 +79,8 @@ C
       ENDIF
       IF (IRET.GT.1) THEN
           CALL GETRES(RBID,RBID,NOMCMD)
-          CALL UTDEBM('A','VPSTUR'//'.SHIFT','LA VALEUR DU ')
-          CALL UTIMPR('S','SHIFT',1,FREQOM(VALSHI))
-          CALL UTIMPI('S',' EST UNE FREQUENCE PROPRE',0,1)
-          CALL UTFINM()
+          VALR = FREQOM(VALSHI)
+          CALL U2MESG('A','ALGELINE5_27',0,' ',0,0,1,VALR)
       ENDIF
       PIVOT = - NPVNEG
 C

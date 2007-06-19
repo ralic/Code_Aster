@@ -1,5 +1,5 @@
       SUBROUTINE FORNGR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 14/11/2006   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C
 C
 C---- DECLARATIONS LOCALES
 C
-      INTEGER I  ,  J  , IN , II , NVAL,  KPGS
+      INTEGER I  ,  J  , IN , II , NVAL,  K1
 C
 C---- DECLARATIONS RIGIDITE GEOMETRIQUE
 C
@@ -281,9 +281,6 @@ C POUR RESI_REFE_RELA
 
       ENDIF
 C
-C---- COMPTEUR DES POINTS D INTEGRATIONS ( EPAISSEUR * SURFACE )
-C
-      KPGS  = 0
 C
 C==== BOUCLE SUR LES COUCHES
 C
@@ -383,7 +380,6 @@ C========== BOUCLE SUR POINTS INTEGRATION NORMALE SURFACE MOYENNE
 C
             DO 630 INTSN = 1 , NPGSN
 C
-               KPGS = KPGS + 1
 C
                CALL VECTGT ( 1 , NB1 , ZR ( IGEOM ) , KSI3S2 , INTSN ,
      &                    ZR ( LZR ) , EPAIS , VECTN , VECTG , VECTT )
@@ -450,11 +446,12 @@ C
 C
 C------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 C
-                   STILD(1) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 1 )
-                   STILD(2) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 2 )
-                   STILD(3) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 4 )
-                   STILD(4) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 5 )
-                   STILD(5) = ZR ( ICONTM - 1 + ( KPGS - 1 ) * 6 + 6 )
+                   K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
+                   STILD(1) = ZR ( ICONTM - 1 + K1 + 1 )
+                   STILD(2) = ZR ( ICONTM - 1 + K1 + 2 )
+                   STILD(3) = ZR ( ICONTM - 1 + K1 + 4 )
+                   STILD(4) = ZR ( ICONTM - 1 + K1 + 5 )
+                   STILD(5) = ZR ( ICONTM - 1 + K1 + 6 )
 C
 C
 C------------- FINT ( 6 * NB1 + 3 )  =     INTEGRALE  DE

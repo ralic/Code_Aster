@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF assembla Messages  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -328,5 +328,17 @@ cata_msg={
  incoherence dans  le denombrement des ddlsnbre de ddl a priori    : %(i1)d 
  nbre de ddl a posteriori: %(i2)d 
 """),
-
+66: _("""
+ Problème dans NULILI.F: on a au moins deux maillages différents:
+  - maillage 1: %(k1)s
+  - maillage 2: %(k2)s
+"""),
+67: _("""
+ Problème dans NUMERO.F avec FETI: L'objet PROF_CHNO.NUEQ est différent de
+ l'identité pour i= %(i1)d on a NUEQ(i)= %(i2)d
+"""),
+68: _("""
+ Problème dans NUMERO.F avec FETI: Incohérence entre la SD_FETI et le paramètrage
+ de l'opérateur. Nombre d'incohérences= %(i1)d
+"""),
 }

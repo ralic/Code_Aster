@@ -1,7 +1,7 @@
       SUBROUTINE VDGNLR ( OPTION , NOMTE )
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,6 @@ C
       INTEGER IN
       INTEGER      JD
       INTEGER II , JJ
-      INTEGER             KPGS
 C
 C---- DECLARATIONS RIGIDITE GEOMETRIQUE
 C
@@ -122,7 +121,7 @@ C
 C
 C---- DECLARATIONS COUCHES
 C
-      INTEGER ICOMPO, NBCOU,ICOU
+      INTEGER ICOMPO, NBCOU,ICOU,K1
       REAL * 8 ZIC  , ZMIN , EPAIS , COEF
       REAL * 8 T , TINF , TSUP
 C
@@ -427,7 +426,6 @@ C
 C
 C---- COMPTEUR DES POINTS D INTEGRATIONS ( EPAISSEUR * SURFACE )
 C
-      KPGS  = 0
 C
 C==== BOUCLE SUR LES COUCHES
 C
@@ -533,7 +531,6 @@ C========== BOUCLE SUR POINTS INTEGRATION NORMALE SURFACE MOYENNE
 C
             DO 630 INTSN = 1 , NPGSN
 C
-               KPGS = KPGS + 1
 C
                CALL VECTGT ( 1 , NB1 , ZR ( IGEOM ) , KSI3S2 , INTSN ,
      &                    ZR ( LZR ) , EPAIS , VECTN , VECTG , VECTT )
@@ -634,15 +631,16 @@ C
 C
 C------- CONTRAINTES DE CAUCHY = PK2 AUX POINTS DE GAUSS
 C
-         ZR ( ICONTP - 1 + ( KPGS - 1 ) * 6 + 1 ) = STILD ( 1 )
-         ZR ( ICONTP - 1 + ( KPGS - 1 ) * 6 + 2 ) = STILD ( 2 )
+         K1=6*((INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE +INTE - 1)
+         ZR ( ICONTP - 1 + K1 + 1 ) = STILD ( 1 )
+         ZR ( ICONTP - 1 + K1 + 2 ) = STILD ( 2 )
 C
-         ZR ( ICONTP - 1 + ( KPGS - 1 ) * 6 + 3 ) = 0.D0
+         ZR ( ICONTP - 1 + K1 + 3 ) = 0.D0
 C
-         ZR ( ICONTP - 1 + ( KPGS - 1 ) * 6 + 4 ) = STILD ( 3 )
+         ZR ( ICONTP - 1 + K1 + 4 ) = STILD ( 3 )
 C
-         ZR ( ICONTP - 1 + ( KPGS - 1 ) * 6 + 5 ) = STILD ( 4 )
-         ZR ( ICONTP - 1 + ( KPGS - 1 ) * 6 + 6 ) = STILD ( 5 )
+         ZR ( ICONTP - 1 + K1 + 5 ) = STILD ( 4 )
+         ZR ( ICONTP - 1 + K1 + 6 ) = STILD ( 5 )
 C
 C------------- FINT ( 6 * NB1 + 3 )  =     INTEGRALE  DE
 C              ( B2SU ( 5 , 6 * NB1 + 3 ) ) T * STILD ( 5 ) *

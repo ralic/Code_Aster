@@ -11,7 +11,7 @@ C
      &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,6 +77,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*1  K1BID, TYPE
       INTEGER      GD, DATE(9), NBACC, JPARA, NUTI, JCELV
+      INTEGER VALI(2)
       REAL*8       PARA
       CHARACTER*8  NOMMA, NOMGD, NOMEL, NOMNO, CBID
       CHARACTER*16 TSD,NOMSY2
@@ -155,10 +156,9 @@ C     RECHERCHE DU NOMBRE D'ELEMENTS : NBEL
       CALL JELIRA(NOLILI(1:19)//'.LIEL','NUTIOC',NBGREL,K1BID)
       CALL JEVEUO(JEXATR(NOLILI(1:19)//'.LIEL','LONCUM'),'L',JLONGR)
       IF (NGR.NE.NBGREL) THEN
-         CALL UTDEBM('F','IRCHML','NGR DIFFERENT DE NBGREL')
-         CALL UTIMPI('L',' NGR   =',1,NGR)
-         CALL UTIMPI('S',' NBGREL=',1,NBGREL)
-         CALL UTFINM()
+         VALI (1) = NGR
+         VALI (2) = NBGREL
+         CALL U2MESG('F','PREPOST5_79',0,' ',2,VALI,0,0.D0)
       END IF
 C ---------------------------------------------------------------------
 C                    F O R M A T   R E S U L T A T

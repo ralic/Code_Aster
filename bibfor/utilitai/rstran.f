@@ -4,7 +4,7 @@
       CHARACTER*19 RESU,KINST,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,10 @@ C                             SINON  : NOOK
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
+      INTEGER VALI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
+      REAL*8 VALR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -108,9 +110,8 @@ C     --- RECHERCHE A PARTIR D'UN NUMERO D'ORDRE ---
             IF (ZI(JBID+I).EQ.ZI(JORDR+IORD)) GO TO 30
    20     CONTINUE
           IER = IER + 110
-          CALL UTDEBM('A','RSTRAN','PAS NUME_ORDRE TROUVE POUR ')
-          CALL UTIMPI('S','LE NUMERO ',1,ZI(JBID+I))
-          CALL UTFINM()
+          VALI = ZI(JBID+I)
+          CALL U2MESG('A','UTILITAI8_17',0,' ',1,VALI,0,0.D0)
           GO TO 40
    30     CONTINUE
           ZI(JRANG+I) = IORD + 1
@@ -148,18 +149,14 @@ C     --- RECHERCHE A PARTIR D'UN INSTANT ---
      &              NBORDR,NBTROU,NUTROU,1)
         IF (NBTROU.EQ.0) THEN
           IER = IER + 110
-          CALL UTDEBM('A','RSTRAN','PAS DE CHAMPS TROUVE POUR ')
-          CALL UTIMPR('S','L''INSTANT ',1,TUSR)
-          CALL UTFINM()
+          VALR = TUSR
+          CALL U2MESG('A','UTILITAI8_18',0,' ',0,0,1,VALR)
           GO TO 70
         ELSE IF (NBTROU.NE.1) THEN
           IER = IER + 100
-          CALL UTDEBM('F','RSTRAN','  PLUSIEURS PAS DE TEMPS TROUVES ')
-          CALL UTIMPI('L',' DANS L''INTERVALLE DE PRECISION',0,I)
-          CALL UTIMPR('S',' AUTOUR DE L''INSTANT ',1,TUSR)
-          CALL UTIMPI('L','NOMBRE DE PAS DE TEMPS TROUVES ',1,-NBTROU)
-          CALL UTIMPI('L','MODIFIER LE PARAMETRE PRECISION',0,I)
-          CALL UTFINM()
+          VALR = TUSR
+          VALI = -NBTROU
+          CALL U2MESG('F','UTILITAI8_19',0,' ',1,VALI,1,VALR)
           GO TO 70
         END IF
         DO 50 IORD = 0,NBORDR - 1

@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF __init__ Accas  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,7 @@ from A_A_CLASSER import A_CLASSER
 from Noyau.N_ASSD import ASSD,assd
 from Noyau.N_GEOM import GEOM,geom
 from Noyau.N_FONCTION import FONCTION
-from Noyau.N_FONCTION import formule
+from Noyau.N_FONCTION import formule,formule_c
 from Noyau.N_CO import CO
 from Noyau.N__F import _F
 

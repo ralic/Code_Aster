@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/96   AUTEUR BIBERON G.ROUSSEAU 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       INTEGER       N1,N2,N3,N4,N5,N6,N7,N8,N9,N10,N11,N12,N13
       REAL*8        TPS(6),EPS,R8BID,MIJ,CIJ,KIJ,KIJ1,CIJ1,CIJ2
       REAL*8        BID,EBID
+      REAL*8 VALR(2)
       CHARACTER*1   DIR
       CHARACTER*2   MODEL
       CHARACTER*3   INCR
@@ -86,13 +87,9 @@ C -----------------------------------------------------------------
              CALL CALAMR(PHIB24,ZK24(IPHI1+J-1)(1:19),ZK24(IMADE+I-1)
      &                ,NUM,J,CIJ2)
              CIJ=CIJ1+CIJ2
-             CALL UTDEBM('I',' ','AFFICHAGE DES COEFF D''AMORTISSEMENT:'
-     &                  )
-             CALL UTIMPR('S','PREMIER COEFFICIENT D''AMORTISSEMENT'
-     &                   ,1,CIJ1)
-             CALL UTIMPR('S','SECOND COEFFICIENT D''AMORTISSEMENT'
-     &                   ,1,CIJ2)
-             CALL UTFINM
+             VALR (1) = CIJ1
+             VALR (2) = CIJ2
+             CALL U2MESG('I','ALGORITH14_80',0,' ',0,0,2,VALR)
            ENDIF
 
            IF(OPTION.EQ.'RIGI_AJOU') THEN

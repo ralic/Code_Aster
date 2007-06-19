@@ -4,7 +4,7 @@
      &   TYPRES, STURM, NBLAGR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,8 +33,7 @@ C            0 TOUT C'EST BIEN PASSE
 C            > 0 NOMBRE D'ERREURS TROUVEES
 C     ------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C        INFNIV, UTDEBM, UTIMPK, UTIMPI, UTIMPR, UTFINM, OMEGA2,
-C        VPSTUR,
+C        INFNIV, OMEGA2,VPSTUR,
 C     FONCTIONS INTRINSEQUES:
 C        ABS, SIGN
 C     ------------------------------------------------------------------
@@ -66,6 +65,7 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8      ZK8
       CHARACTER*16            ZK16
       CHARACTER*24                    ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -73,7 +73,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
       REAL*8 ZMIN, ZMAX, MANTIS, FREQOM, OMEGA2, OMEGA, XFMAX, XFMIN
+      REAL*8 VALR(3)
       INTEGER EXPO, IFM, NIV, IFREQ, NBMAX, NBMIN, NFREQT, IR
+      INTEGER VALI(2)
 C     ------------------------------------------------------------------
       IER    = 0
 
@@ -96,17 +98,19 @@ C
 C
             IF ( ERR(IFREQ) .GT. SEUIL ) THEN
                IER = IER + 1
-               CALL UTDEBM(CTY,'VERIFICATION DES MODES',' ')
-               CALL UTIMPK('S',' POUR LE CONCEPT ',1,MODE)
-               CALL UTIMPI('L',' LE MODE NUMERO ',1,IPOS(IFREQ))
+               VALK = MODE
+               VALI (1) = IPOS(IFREQ)
+      CALL U2MESG(CTY//'+','ALGELINE5_15',1,VALK,1,VALI,0,0.D0)
                IF (TYPRES .EQ. 'DYNAMIQUE' ) THEN
-                 CALL UTIMPR('S',' DE FREQUENCE ',1,FREQ(IFREQ))
+                 VALR (1) = FREQ(IFREQ)
+                 CALL U2MESG(CTY//'+','ALGELINE5_16',0,' ',0,0,1,VALR)
                ELSE
-                 CALL UTIMPR('S',' DE CHARGE CRITIQUE ',1,CHARGE(IFREQ))
+                 VALR (1) = CHARGE(IFREQ)
+                 CALL U2MESG(CTY//'+','ALGELINE5_17',0,' ',0,0,1,VALR)
                ENDIF
-              CALL UTIMPR('S',' A UNE NORME D''ERREUR DE ',1,ERR(IFREQ))
-              CALL UTIMPR('S',' SUPERIEURE AU SEUIL ADMIS ',1,SEUIL)
-              CALL UTFINM()
+              VALR (1) = ERR(IFREQ)
+              VALR (2) = SEUIL
+              CALL U2MESG(CTY,'ALGELINE5_18',0,' ',0,0,2,VALR)
             ENDIF
  100     CONTINUE
       ENDIF
@@ -126,21 +130,21 @@ C     ------------------------------------------------------------------
             ENDIF
             IF ( OMEGA .LT.ZMIN .OR. OMEGA .GT. ZMAX ) THEN
                IER = IER + 1
-               CALL UTDEBM(CTY,'VERIFICATION DES MODES',' ')
-               CALL UTIMPK('S',' POUR LE CONCEPT ',1,MODE)
-               CALL UTIMPI('L',' LE MODE NUMERO ',1,IPOS(IFREQ))
+               VALK = MODE
+               VALI (1) = IPOS(IFREQ)
+      CALL U2MESG(CTY//'+','ALGELINE5_19',1,VALK,1,VALI,0,0.D0)
                IF (TYPRES .EQ. 'DYNAMIQUE' ) THEN
-                 CALL UTIMPR('S',' DE FREQUENCE ',1,FREQ(IFREQ))
-                 CALL UTIMPR('S',' EST EN DEHORS DE L''INTERVALLE DE '//
-     +                     'RECHERCHE :',1,FREQOM(OMEMIN))
-                 CALL UTIMPR('S',' , ',1,FREQOM(OMEMAX) )
+                 VALR (1) = FREQ(IFREQ)
+                 VALR (2) = FREQOM(OMEMIN)
+                 VALR (3) = FREQOM(OMEMAX)
+                 CALL U2MESG(CTY//'+','ALGELINE5_20',0,' ',0,0,3,VALR)
                ELSE
-                 CALL UTIMPR('S',' DE CHARGE CRITIQUE ',1,CHARGE(IFREQ))
-                 CALL UTIMPR('S',' EST EN DEHORS DE L''INTERVALLE DE '//
-     +                     'RECHERCHE :',1,OMEMIN)
-                 CALL UTIMPR('S',' , ',1,OMEMAX )
+                 VALR (1) = CHARGE(IFREQ)
+                 VALR (2) = OMEMIN
+                 VALR (3) = OMEMAX
+                 CALL U2MESG(CTY//'+','ALGELINE5_21',0,' ',0,0,3,VALR)
                ENDIF
-               CALL UTFINM()
+               CALL U2MESG(CTY,'ALGELINE5_22',0,' ',0,0,0,0.D0)
             ENDIF
  210     CONTINUE
       ENDIF
@@ -169,22 +173,22 @@ C REGLES DE STURM ETENDUE
          ENDIF
          IF ( NFREQT .NE. NFREQ ) THEN
            IER = IER + 1
-           CALL UTDEBM(CTY,'VERIFICATION DES MODES',' ')
-           CALL UTIMPK('S',' POUR LE CONCEPT ',1,MODE)
+           VALK = MODE
+           CALL U2MESG(CTY//'+','ALGELINE5_23',1,VALK,0,0,0,0.D0)
            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
-             CALL UTIMPR('L',' DANS L''INTERVALLE  (',1,FREQOM(VPINF))
-             CALL UTIMPR('S',' , ',1,FREQOM(VPMAX) )
-             CALL UTIMPI('S',')   IL Y A THEORIQUEMENT ',1,NFREQT)
-             CALL UTIMPI('S',' FREQUENCE(S) '//
-     +                       'ET L''ON EN A CALCULE ',1,NFREQ)
+             VALR (1) = FREQOM(VPINF)
+             VALR (2) = FREQOM(VPMAX)
+             VALI (1) = NFREQT
+             VALI (2) = NFREQ
+             CALL U2MESG(CTY//'+','ALGELINE5_24',0,' ',2,VALI,2,VALR)
            ELSE
-             CALL UTIMPR('L',' DANS L''INTERVALLE  (',1,VPINF)
-             CALL UTIMPR('S',' , ',1,VPMAX )
-             CALL UTIMPI('S',')   IL Y A THEORIQUEMENT ',1,NFREQT)
-             CALL UTIMPI('S',' CHARGE(S) CRITIQUE(S) '//
-     +                       'ET L''ON EN A CALCULE ',1,NFREQ)
+             VALR (1) = VPINF
+             VALR (2) = VPMAX
+             VALI (1) = NFREQT
+             VALI (2) = NFREQ
+             CALL U2MESG(CTY//'+','ALGELINE5_25',0,' ',2,VALI,2,VALR)
            ENDIF
-           CALL UTFINM()
+           CALL U2MESG(CTY,'ALGELINE5_26',0,' ',0,0,0,0.D0)
          ELSE
            IF (NIV.GE.1) THEN
              IF (TYPRES .EQ. 'DYNAMIQUE') THEN

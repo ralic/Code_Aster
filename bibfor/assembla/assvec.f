@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -634,11 +634,12 @@ C MONITORING
      &                  WRITE(IFM,*)'.LOGI',ZI(ILIGRP+ABS(NUMA))
                       IF (LLICH) THEN
                         IF (LLICHD) THEN
-                          WRITE(IFM,*)'LIGREL DE CHARGE TARDIF '//
-     &                      'DUPLIQUE DE FILS ',NOMLID
+                          WRITE(IFM,*)'LIGREL DE CHARGE PROJETE '//
+     &                      'DE FILS ',NOMLID
                         ELSE
-                          WRITE(IFM,*)'LIGREL DE CHARGE TARDIF INITIAL'
+                          WRITE(IFM,*)'LIGREL DE CHARGE INITIAL'
                         ENDIF
+                        WRITE(IFM,*)'MAILLE ET/OU NOEUD TARDIF'
                       ENDIF
                     ENDIF
 

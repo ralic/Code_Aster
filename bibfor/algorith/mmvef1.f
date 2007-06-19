@@ -1,11 +1,15 @@
-      SUBROUTINE MMVEF1(NDIM,NNE,NNM,
-     &                  INDM,INI1,INI2,INI3,
-     &                  HPG,FFPC,FFPR,JACOBI,
-     &                  RESE,DEPLE,LAMBDA,
-     &                  TYALGF,COEFFA,COEFFS,COEFFP,
-     &                  COEFFF,TAU1,TAU2,NORM,VTMP)
+      SUBROUTINE MMVEF1 (NBDM,NBCPS,NDIM,NNE,NNM,INDM,INI1,INI2,INI3,
+     &                   HPG,FFPC,FFPR,JACOBI,RESE,DEPLE,LAMBDA,
+     &                   TYALGF,COEFFA,COEFFS,COEFFP,
+     &                   COEFFF,TAU1,TAU2,NORM, VTMP)
+      IMPLICIT NONE
+      INTEGER  NDIM,NNE,NNM,NBDM,NBCPS,INDM,INI1,INI2,INI3,TYALGF
+      REAL*8   HPG,FFPC(9),FFPR(9),JACOBI  
+      REAL*8   LAMBDA,COEFFF,COEFFA,COEFFS,COEFFP 
+      REAL*8   RESE(3),DEPLE(6),TAU1(3),TAU2(3),NORM(3),VTMP(81)  
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,22 +28,14 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C
-      IMPLICIT NONE
-      INTEGER  NDIM,NNE,NNM
-      REAL*8   HPG,FFPC(9),FFPR(9),JACOBI  
-      INTEGER  INDM,INI1,INI2,INI3,TYALGF
-      REAL*8   LAMBDA,COEFFF,COEFFA,COEFFS,COEFFP 
-      REAL*8   RESE(3),DEPLE(6)
-      REAL*8   TAU1(3),TAU2(3),NORM(3)     
-      REAL*8   VTMP(81)  
-C
-C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0365
 C ----------------------------------------------------------------------
 C
 C CALCUL DU SECOND MEMBRE POUR LE FROTTEMENT
 C CAS AVEC CONTACT
 C
+C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
+C IN  NBCPS  : NB DE DDL DE LAGRANGE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
@@ -63,32 +59,10 @@ C IN  TAU1   : PREMIERE TANGENTE
 C IN  TAU2   : SECONDE TANGENTE
 C IN  NORM   : VALEUR DE LA NORMALE AU POINT DE CONTACT
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
-C
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
-C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C
-      INTEGER I,J,K,II
-      REAL*8  C(3,3),VECTT(3),INTER(2)
-C
 C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
+      INTEGER   I, J, K, II
+      REAL*8    C(3,3), VECTT(3), INTER(2)
+C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
@@ -124,7 +98,7 @@ C --- DDL DE DEPLACEMENT DE LA SURFACE CINEMATIQUE
 C
       DO 190 I = 1,NNE
         DO 180 J = 1,NDIM
-          II = (I-1)*(2*NDIM)+J
+          II = (I-1)*NBDM+J
           VTMP(II) = -JACOBI*HPG*COEFFF*LAMBDA*VECTT(J)*FFPC(I)
   180   CONTINUE
   190 CONTINUE
@@ -133,7 +107,7 @@ C --- DDL DES DEPLACEMENTS DE LA SURFACE GEOMETRIQUE
 C
       DO 210 I = 1,NNM
         DO 200 J = 1,NDIM
-          II = NNE*(2*NDIM)+(I-1)*NDIM+J
+          II = NNE*NBDM+(I-1)*NDIM+J           
           VTMP(II) = JACOBI*HPG*COEFFF*LAMBDA*VECTT(J)*FFPR(I)
   200   CONTINUE
   210 CONTINUE
@@ -153,13 +127,11 @@ C
   233   CONTINUE
       END IF
           
-      IF (TYALGF .NE. 1) THEN
-        COEFFA = COEFFS
-      END IF    
+      IF (TYALGF .NE. 1)  COEFFA = COEFFS
           
       DO 3211 I = 1,NNE
-        DO 3201 J = 1,NDIM-1
-          II = (I-1)*2*NDIM+NDIM+1+J
+        DO 3201 J = 1,NBCPS-1
+          II = (I-1)*NBDM+NDIM+1+J
           IF ((INDM.EQ.3.D0).AND.(J.EQ.1)) THEN
             IF ((I.EQ.INI1).OR.(I.EQ.INI2).OR.(I.EQ.INI3)) THEN
               VTMP(II) = 0.D0
@@ -187,7 +159,5 @@ C
           END IF
  3201   CONTINUE
  3211 CONTINUE
-
 C
-      CALL JEDEMA()      
       END

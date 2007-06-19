@@ -1,10 +1,17 @@
-      SUBROUTINE MMMAB1(NDIM,NNE,NNM,
-     &                  INDM,INI1,INI2,INI3,CMP,
-     &                  HPG,FFPC,FFPR,JACOBI,
-     &                  LAMBDA,TYALGF,COEFFA,COEFFS,COEFFP,
-     &                  COEFFF,TAU1,TAU2,MPROJ,MMAT)
+      SUBROUTINE MMMAB1 (NBDM,NBCPS,NDIM,NNE,NNM,
+     &                   INDM,INI1,INI2,INI3,CMP,
+     &                   HPG,FFPC,FFPR,JACOBI,
+     &                   LAMBDA,TYALGF,COEFFA,COEFFS,COEFFP,
+     &                   COEFFF,TAU1,TAU2,MPROJ, MMAT )
+      IMPLICIT NONE
+      INTEGER  NDIM,NNE,NNM,NBDM,NBCPS
+      INTEGER  INDM,INI1,INI2,INI3,CMP,TYALGF 
+      REAL*8   HPG,FFPC(9),FFPR(9),JACOBI  
+      REAL*8   LAMBDA,COEFFF,COEFFA,COEFFS,COEFFP
+      REAL*8   TAU1(3),TAU2(3),MMAT(81,81),MPROJ(3,3)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,22 +30,14 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C
-      IMPLICIT NONE
-      INTEGER  NDIM,NNE,NNM
-      REAL*8   HPG,FFPC(9),FFPR(9),JACOBI  
-      INTEGER  INDM,INI1,INI2,INI3,CMP,TYALGF 
-      REAL*8   LAMBDA,COEFFF,COEFFA,COEFFS,COEFFP
-      REAL*8   TAU1(3),TAU2(3)     
-      REAL*8   MMAT(81,81)  
-      REAL*8   MPROJ(3,3)
-C
-C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0364
 C ----------------------------------------------------------------------
 C
 C CALCUL DE B ET DE BT POUR LE CONTACT METHODE CONTINUE
 C AVEC ADHERENCE
 C
+C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
+C IN  NBCPS  : NB DE DDL DE LAGRANGE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
@@ -61,32 +60,10 @@ C IN  TAU1   : PREMIERE TANGENTE
 C IN  TAU2   : SECONDE TANGENTE
 C IN  MPROJ  : MATRICE DE L'OPERATEUR DE PROJECTION
 C I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
-C
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
-C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C
-      INTEGER I,J,K,L,II,JJ
-      REAL*8  E(3,3),A(3,3)
-C
 C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
+      INTEGER   I, J, K, L, II, JJ
+      REAL*8    E(3,3), A(3,3)
+C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
@@ -124,10 +101,10 @@ C --- CALCUL DE B ET DE BT
 C
       DO 361 I = 1,NNE
         DO 362 J = 1,NNE
-          DO 363 L = 1,NDIM-1
+          DO 363 L = 1,NBCPS-1
             DO 364 K = 1,NDIM
-              II = (2*NDIM)*(I-1)+NDIM+1+L
-              JJ = (J-1)*(2*NDIM)+K  
+              II = NBDM*(I-1)+NDIM+1+L
+              JJ = NBDM*(J-1)+K  
               IF ((INDM.EQ.3).AND.(L.EQ.1).AND.(K.EQ.CMP))THEN
                 IF (((I.EQ.INI1).OR.(I.EQ.INI2).OR.(I.EQ.INI3)).AND.
      &             (I.EQ.J))THEN
@@ -170,10 +147,10 @@ C --- CALCUL DE B (SECOND BLOC) ESCLAVE - MAITRE ET SA TRANSPOSEE
 C 
       DO 365 I = 1,NNE
         DO 366 J = 1,NNM
-          DO 367 L = 1,NDIM-1
+          DO 367 L = 1,NBCPS-1
             DO 368 K = 1,NDIM
-              II = (2*NDIM)*(I-1)+NDIM+1+L
-              JJ = 2*NDIM*NNE+(J-1)*NDIM+K             
+              II = NBDM*(I-1)+NDIM+1+L
+              JJ = NBDM*NNE+(J-1)*NDIM+K             
               MMAT(II,JJ)=
      &          LAMBDA*COEFFF*HPG*FFPC(I)*FFPR(J)*JACOBI*A(L,K)
               MMAT(JJ,II) = MMAT(II,JJ)
@@ -188,8 +165,8 @@ C
         DO 390 J = 1,NNE
           DO 380 L = 1,NDIM
             DO 370 K = 1,NDIM
-              II = (2*NDIM)*(I-1)+L
-              JJ = (J-1)*(2*NDIM)+K           
+              II = NBDM*(I-1)+L
+              JJ = NBDM*(J-1)+K           
               IF (TYALGF .EQ. 1) THEN 
                 MMAT(II,JJ) =
      &          -COEFFA*COEFFF*HPG*LAMBDA*FFPC(I)*FFPC(J)*JACOBI*E(L,K)
@@ -210,8 +187,8 @@ C
         DO 430 J = 1,NNM
           DO 420 L = 1,NDIM
             DO 410 K = 1,NDIM
-              II = (2*NDIM)*(I-1)+L
-              JJ = (2*NDIM)*NNE+(J-1)*NDIM+K             
+              II = NBDM*(I-1)+L
+              JJ = NBDM*NNE+(J-1)*NDIM+K             
               IF (TYALGF .EQ. 1) THEN
                 MMAT(II,JJ) =
      &          COEFFA * COEFFF * LAMBDA * HPG * FFPC(I) * FFPR(J) *
@@ -234,8 +211,8 @@ C
         DO 470 J = 1,NNE
           DO 460 L = 1,NDIM
             DO 450 K = 1,NDIM
-              II = (2*NDIM)*NNE+NDIM*(I-1)+L
-              JJ = (2*NDIM)*(J-1)+K              
+              II = NBDM*NNE+NDIM*(I-1)+L
+              JJ = NBDM*(J-1)+K              
               IF (TYALGF .EQ. 1) THEN
                 MMAT(II,JJ) =
      &          COEFFA * COEFFF * LAMBDA * HPG * FFPR(I) * FFPC(J) *
@@ -259,8 +236,8 @@ C
         DO 510 J = 1,NNM
           DO 500 L = 1,NDIM
             DO 490 K = 1,NDIM
-              II = NNE*(2*NDIM)+NDIM*(I-1)+L
-              JJ = NNE*(2*NDIM)+NDIM*(J-1)+K
+              II = NNE*NBDM+NDIM*(I-1)+L
+              JJ = NNE*NBDM+NDIM*(J-1)+K
               IF (TYALGF .EQ. 1) THEN
                 MMAT(II,JJ) =
      &          -COEFFA*COEFFF*LAMBDA*HPG*FFPR(I)*FFPR(J)*JACOBI*E(L,K)
@@ -280,10 +257,10 @@ C
       IF (INDM.EQ.2) THEN
         DO 931 I = 1,NNE
           DO 932 J = 1,NNE
-            DO 933 L = 1,NDIM-1
-              DO 934 K = 1,NDIM-1
-                II = 2*NDIM*(I-1)+NDIM+1+L
-                JJ = 2*NDIM*(J-1)+NDIM+1+K
+            DO 933 L = 1,NBCPS-1
+              DO 934 K = 1,NBCPS-1
+                II = NBDM*(I-1)+NDIM+1+L
+                JJ = NBDM*(J-1)+NDIM+1+K
                 IF ((K.EQ.L).AND.(I.EQ.J).AND.(K.EQ.1)) THEN
                   IF ((I.EQ.INI1).OR.(I.EQ.INI2)) THEN
                     MMAT(II,JJ) = 1.D0
@@ -296,10 +273,10 @@ C
       ELSEIF (INDM.EQ.3) THEN
         DO 941 I = 1,NNE
           DO 942 J = 1,NNE
-            DO 943 L = 1,NDIM-1
-              DO 944 K = 1,NDIM-1
-                II = 2*NDIM*(I-1)+NDIM+1+L
-                JJ = 2*NDIM*(J-1)+NDIM+1+K
+            DO 943 L = 1,NBCPS-1
+              DO 944 K = 1,NBCPS-1
+                II = NBDM*(I-1)+NDIM+1+L
+                JJ = NBDM*(J-1)+NDIM+1+K
                 IF((K.EQ.L).AND.(I.EQ.J).AND.(K.EQ.1))THEN
                   IF((I.EQ.INI1).OR.(I.EQ.INI2).OR.(I.EQ.INI3))THEN
                     MMAT(II,JJ) = 1.D0
@@ -312,10 +289,10 @@ C
       ELSEIF (INDM.EQ.1) THEN
         DO 935 I = 1,NNE
           DO 936 J = 1,NNE
-            DO 937 L = 1,NDIM-1
-              DO 938 K = 1,NDIM-1
-                II = 2*NDIM*(I-1)+NDIM+1+L
-                JJ = 2*NDIM*(J-1)+NDIM+1+K
+            DO 937 L = 1,NBCPS-1
+              DO 938 K = 1,NBCPS-1
+                II = NBDM*(I-1)+NDIM+1+L
+                JJ = NBDM*(J-1)+NDIM+1+K
                 IF((K.EQ.L).AND.(I.EQ.J).AND.(K.EQ.1)) THEN
                   IF(I.EQ.INI1) THEN
                     MMAT(II,JJ) = 1.D0
@@ -327,5 +304,4 @@ C
  935    CONTINUE  
       END IF
 C
-      CALL JEDEMA()      
       END

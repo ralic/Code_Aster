@@ -1,14 +1,14 @@
       SUBROUTINE TBEXTB ( TABIN, BASOUT, TABOUT, NPACRI, LIPACR, LCRPA,
-     &                    VI, VR, VC, VK, LPREC, LCRIT )
+     &                    VI, VR, VC, VK, LPREC, LCRIT, IRET )
       IMPLICIT   NONE
-      INTEGER             NPACRI, VI(*)
+      INTEGER             NPACRI, VI(*), IRET
       REAL*8              VR(*), LPREC(*)
       COMPLEX*16          VC(*)
       CHARACTER*(*)       TABIN,BASOUT,TABOUT,LIPACR(*),LCRPA(*),VK(*),
      &                    LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,9 @@ C IN  : VC     : LISTE DES CRITERES POUR LES PARAMETRES "C"
 C IN  : VK     : LISTE DES CRITERES POUR LES PARAMETRES "K"
 C IN  : LPREC  : PRECISION POUR LES PARAMETRES "R"
 C IN  : LCRIT  : CRITERE POUR LES PARAMETRES "R"
+C OUT : IRET   : =  0 , OK
+C                = 10 , LE PARAMETRE N'EXISTE PAS
+C                = 20 , PAS DE LIGNES POUR LE PARAMETRE DONNE
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -57,7 +60,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
-      INTEGER      IRET, NBPARA, NBLIGN, JTBNP, NBPU, JNUMI
+      INTEGER      IRT, NBPARA, NBLIGN, JTBNP, NBPU, JNUMI
       INTEGER      JTBLP, I, J, K, N, JVALE, ITROUV, JTYPE, ITROU2
       INTEGER      KI, KR, KC, KK, JVALL, JPARR, NBP, ISMAEM
       INTEGER      JVALI, JVALR, JVALC, JVALK, IMAX, IMIN
@@ -75,6 +78,7 @@ C
 C
       NOMTAB = TABIN
       BASE   = BASOUT(1:1)
+      IRET   = 0
 C
 C     --- VERIFICATION DE LA BASE ---
 C
@@ -84,8 +88,8 @@ C
 C
 C     --- VERIFICATION DE LA TABLE ---
 C
-      CALL JEEXIN ( NOMTAB//'.TBBA', IRET )
-      IF ( IRET .EQ. 0 ) THEN
+      CALL JEEXIN ( NOMTAB//'.TBBA', IRT )
+      IF ( IRT .EQ. 0 ) THEN
          CALL U2MESS('F','UTILITAI4_64')
       ENDIF
 C
@@ -108,9 +112,8 @@ C
             JNPAR = ZK24(JTBLP+4*(J-1))
             IF ( INPAR .EQ. JNPAR ) GOTO 10
  12      CONTINUE
-         CALL UTDEBM('F','TBEXTB','ERREUR DANS LES DONNEES')
-         CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-         CALL UTFINM( )
+         IRET = 10
+         GOTO 9999
  10   CONTINUE
 C
       NBPU = NBLIGN
@@ -505,10 +508,8 @@ C
  22      CONTINUE
  24      CONTINUE
          IF ( ITROUV .EQ. 0 ) THEN
-            CALL UTDEBM('F','TBEXTB','PAS DE LIGNES TROUVEES')
-            CALL UTIMPK('L','TABLE: ',1,NOMTAB)
-            CALL UTIMPK('L','PARAMETRES: ',NPACRI,LIPACR)
-            CALL UTFINM()
+            IRET = 20
+            GOTO 9999
          ENDIF
          NBPU = ITROUV
  20   CONTINUE

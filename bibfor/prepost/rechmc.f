@@ -8,7 +8,7 @@ C
       CHARACTER*19 SIGMRV, SIGMDB
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,13 +58,14 @@ C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----- FIN COMMUNS NORMALISES  JEVEUX  -------------------------------
 C ======================================================================
-      INTEGER       JSIGMR, JSIGMB, IBID, II, JCOORX, JCOORY
+      INTEGER       JSIGMR, JSIGMB, IBID, II, JCOORX, JCOORY, IRET
       INTEGER       JREVXX, JREVYY, JREVXY, JMDBXX, JMDBYY, JMDBXY
       REAL*8        LPREC, RT, COST, SINT, SICOT
       COMPLEX*16    CBID
       CHARACTER*8   LCRIT, K8B
       CHARACTER*19  TMPREV, TMPMDB, COORXX, COORYY
       CHARACTER*19  REVXX, REVYY, REVXY, MDBXX, MDBYY, MDBXY
+      CHARACTER*24  VALK(2)
 C ======================================================================
       CALL JEMARQ()
 C ======================================================================
@@ -86,9 +87,27 @@ C ======================================================================
 C --- RECUPERATION DES SOUS-TABLES ASSOCIEES A L'INSTANT COURANT -------
 C ======================================================================
       CALL TBEXTB (TABREV, 'V', TMPREV, 1, 'INST', 'EQ',
-     +             IBID, TEMPS, CBID, K8B, LPREC, LCRIT )
+     +             IBID, TEMPS, CBID, K8B, LPREC, LCRIT, IRET )
+      IF ( IRET .EQ. 10 ) THEN
+         VALK(1) = 'INST'
+         VALK(2) = TABREV
+         CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+      ELSEIF ( IRET .EQ. 20 ) THEN
+         VALK(1) = TABREV
+         VALK(2) = 'INST'
+         CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+      ENDIF
       CALL TBEXTB (TABMDB, 'V', TMPMDB, 1, 'INST', 'EQ',
-     +             IBID, TEMPS, CBID, K8B, LPREC, LCRIT )
+     +             IBID, TEMPS, CBID, K8B, LPREC, LCRIT, IRET )
+      IF ( IRET .EQ. 10 ) THEN
+         VALK(1) = 'INST'
+         VALK(2) = TABMDB
+         CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+      ELSEIF ( IRET .EQ. 20 ) THEN
+         VALK(1) = TABMDB
+         VALK(2) = 'INST'
+         CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+      ENDIF
 C ======================================================================
 C --- PROBLEME EN DIMENSION 2 ------------------------------------------
 C ======================================================================

@@ -3,7 +3,7 @@
       CHARACTER*(*)       TABRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, IR, N2,N3,N4, NPARFI, IRET,NBVAL, LPRO,LVAL
-      INTEGER       IFM,NIV
+      INTEGER       IFM, NIV
       REAL*8        R8B, R, THETA, R8DGRD
       COMPLEX*16    C16B
       CHARACTER*8   K8B, INTERP, PROLGD
@@ -73,7 +73,8 @@ C     ------------------------------------------------------------------
       CALL GETFAC ( 'FILTRE' , NPARFI )
       IF ( NPARFI .NE. 0 ) THEN
          NEWTA1 = '&&OP0177.FILTRE '
-         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1 )
+         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1, IRET )
+         IF ( IRET .NE. 0 ) CALL U2MESS('F', 'UTILITAI7_11')
          NEWTAB = NEWTA1
       ENDIF
 C     ------------------------------------------------------------------

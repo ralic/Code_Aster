@@ -5,7 +5,7 @@
       CHARACTER*4         TYPE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C OUT : SNP    : AMPLITUDE DE VARIATION DES CONTRAINTES DE TRESCA
 C     ------------------------------------------------------------------
 C
       INTEGER  I1, I2, I3, I4, I5, I6, I, IT, IT1, ICMPS, ICMP
-      REAL*8   MTT(6), MTC(6), SIJ(6), SIJT(6), SNP1, STH1, EQUI(6)
+      REAL*8   MTT(6), MTC(6), SIJ(6), SIJT(6), SNP1, STH1, TRESCA
       REAL*8   SIGT, SIGC, SIGP
       REAL*8   E1(2), E2(2), E3(2), E4(2), E5(2), E6(2)
 C DEB ------------------------------------------------------------------
@@ -92,8 +92,8 @@ C
                       SIJ(ICMPS) = SIJ(ICMPS) + PR*SIGP
  10                 CONTINUE
 C
-                    CALL FGEQUI ( SIJ, 'SIGM', 3, EQUI )
-                    SNP1 = EQUI(2)
+                    CALL RCTRES ( SIJ, TRESCA )
+                    SNP1 = TRESCA
                     SNP = MAX( SNP , SNP1 )
 C
  20               CONTINUE
@@ -143,8 +143,8 @@ C
                             STH1 = STH((IT-1)*6+ICMP)
                             SIJT(ICMP) = SIJ(ICMP)*E1(I) + STH1
  204                      CONTINUE
-                          CALL FGEQUI ( SIJT, 'SIGM', 3, EQUI )
-                          SNP1 = EQUI(2)
+                          CALL RCTRES ( SIJT, TRESCA )
+                          SNP1 = TRESCA
                           SNP = MAX( SNP , SNP1 )
  202                    CONTINUE
  200                  CONTINUE
@@ -154,8 +154,8 @@ C
                           STH1 = STH((IT-1)*6+ICMP)
                           SIJT(ICMP) = SIJ(ICMP) + STH1
  212                    CONTINUE
-                        CALL FGEQUI ( SIJT, 'SIGM', 3, EQUI )
-                        SNP1 = EQUI(2)
+                        CALL RCTRES ( SIJT, TRESCA )
+                        SNP1 = TRESCA
                         SNP = MAX( SNP , SNP1 )
  210                  CONTINUE
                     ENDIF

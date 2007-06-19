@@ -1,9 +1,9 @@
       SUBROUTINE OP0173 ( IER )
-      IMPLICIT   NONE
+      IMPLICIT   NONE        
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +48,9 @@ C
       CALL GETFAC ( 'FILTRE' , NPARFI )
       IF ( NPARFI .NE. 0 ) THEN
          NEWTA1 = '&&OP0173.FILTRE '
-         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1 )
-         NEWTAB = NEWTA1
+         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1, IRET )
+         IF ( IRET .NE. 0 ) CALL U2MESS('F', 'UTILITAI7_11')
+        NEWTAB = NEWTA1
       ENDIF
 C
       CALL TBLIVA ( NEWTAB, 0, K8B, IBID, R8B, CBID, K8B, K8B, R8B,

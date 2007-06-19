@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1919,6 +1919,47 @@ TEST_FONCTION( VALEUR = _F( FONCTION  = FXXX,
                             VALE_REFE = -1.57436635E-02,
                             REFERENCE='ANALYTIQUE'), )
 
+
+#
+
+#=======================================================================
+# VALIDATION DES FORMULES COMPLEXES
+#
+
+frmcpx = FORMULE(NOM_PARA='X',VALE_C='complex(X,2.*X)')
+
+labs=DEFI_LIST_REEL( VALE=( 0., 1., 2., 3. ) )
+
+fctcpx=CALC_FONC_INTERP( FONCTION=frmcpx,
+                      LIST_PARA=labs,
+                      NOM_PARA = 'X', )
+
+TEST_FONCTION( VALEUR =( _F( FONCTION  = fctcpx,
+                             VALE_PARA = 1., 
+                             VALE_REFE_C = ('RI',1.,2.),
+                             REFERENCE='ANALYTIQUE'), 
+                         _F( FONCTION  = fctcpx,
+                             VALE_PARA = 3., 
+                             VALE_REFE_C = ('RI',3.,6.),
+                             REFERENCE='ANALYTIQUE'), ) )
+
+frmxm1=FORMULE(NOM_PARA='X',VALE_C='1./fctcpx(X)')
+
+labs1=DEFI_LIST_REEL( VALE=( 1.5, 2.5,  ) )
+
+fcpxm1=CALC_FONC_INTERP( FONCTION=frmxm1,
+                      LIST_PARA=labs1,
+                      NOM_PARA = 'X', )
+
+
+TEST_FONCTION( VALEUR =( _F( FONCTION  = fcpxm1,
+                             VALE_PARA = 1.5, 
+                             VALE_REFE_C = ('RI',2./15.,-4./15.),
+                             REFERENCE='ANALYTIQUE'), 
+                         _F( FONCTION  = fcpxm1,
+                             VALE_PARA = 2.5, 
+                             VALE_REFE_C = ('RI',0.08,-0.16),
+                             REFERENCE='ANALYTIQUE'), ) )
 
 #
 FIN( )

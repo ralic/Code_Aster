@@ -7,7 +7,7 @@
       CHARACTER*14  NUMDDL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       CHARACTER*14  NUME
       CHARACTER*16  TYPNUM
       CHARACTER*24  MDGENE, MDSSNO, NUMERO
+      CHARACTER*24 VALK
 C
 C     ------------------------------------------------------------------
 C
@@ -109,13 +110,14 @@ C ----- CALCUL PAR SOUS-STRUCTURATION
         ENDIF
 C
         IF (NUDDL.EQ.0) THEN
-          CALL UTDEBM('E','MDREVI','ON N''AS PAS TROUVE LE DDL')
-          CALL UTIMPK('L','   POUR LE NOEUD : ',1,NOEU)
+          VALK = NOEU
+          CALL U2MESG('E+','ALGORITH15_21',1,VALK,0,0,0,0.D0)
           IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
-            CALL UTIMPK('L','   DE LA SOUS-STRUCTURE : ',1,SST)
+            VALK = SST
+            CALL U2MESG('E+','ALGORITH15_22',1,VALK,0,0,0,0.D0)
           ENDIF
-          CALL UTIMPK('L','   ET SA COMPOSANTE : ',1,COMP)
-          CALL UTFINM( )
+          VALK = COMP
+          CALL U2MESG('E','ALGORITH15_23',1,VALK,0,0,0,0.D0)
           IER = IER + 1
           GOTO 10
         ENDIF

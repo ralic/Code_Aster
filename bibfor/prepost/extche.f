@@ -1,4 +1,4 @@
-      SUBROUTINE EXTCHE ( NCHME2, NCHMEN, SENSOP, NMAILE, NUMMAI, NCMP, 
+      SUBROUTINE EXTCHE ( NCHME2, NCHMEN, SENSOP, NMAILE, NUMMAI, NCMP,
      &                    NBM, NBC, INDIC, NSSCHE,
      &                    MCF,IOCC, NBNAC, NNOEUD )
       IMPLICIT   NONE
@@ -9,7 +9,7 @@
       CHARACTER*19  NCHMEL, NCHMEN, NSSCHE, NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -325,8 +325,7 @@ C   ------------------------------
 
       NMAILA = ZK8(ANOMA)
 
-      CALL JECREO(NSSCHE//'.NOMA','V E K8')
-      CALL JEVEUO(NSSCHE//'.NOMA','E',ANOMA)
+      CALL WKVECT(NSSCHE//'.NOMA','V V K8',1,ANOMA)
 
       ZK8(ANOMA) = NMAILA
 
@@ -339,8 +338,7 @@ C   -------------------------------------------------
 C   CONSERVATION DU NUMERO DE LA GRANDEUR
 C   -------------------------------------
 
-      CALL JECREO(NNUGD,'V E I')
-      CALL JEVEUO(NNUGD,'E',ANUGD)
+      CALL WKVECT(NNUGD,'V V I',1,ANUGD)
 
       GD = ZI(JCELD+1-1)
 

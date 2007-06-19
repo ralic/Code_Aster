@@ -11,7 +11,7 @@ C
       LOGICAL        LRESU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,14 +68,15 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*8   NOMVAR(30)
       CHARACTER*8   BLANC,NOMCO
-      INTEGER       NBCMP,IPCMP(30),IUTIL
-      LOGICAL       LTABL(180)
+      INTEGER       NBCMP,IPCMP(30),IUTIL,ILTABL
+C      LOGICAL       LTABL(180)
 C
 C  --- INITIALISATIONS ----
 C
       CALL JEMARQ()
 
-      IF (NCMPMX.GT.180) CALL U2MESS('F','PREPOST2_18')
+C      IF (NCMPMX.GT.180) CALL U2MESS('F','PREPOST2_18')
+      CALL WKVECT('&&IRDECA.LTABL','V V L',NCMPMX,ILTABL)
 C
       IF (.NOT.LRESU) THEN
          CALL JEVEUO ( '&&OP0039.LAST', 'E', JLAST )
@@ -84,7 +85,7 @@ C
          INUM = 0
       ENDIF
       DO 1 I=1,NCMPMX
-         LTABL(I)=.FALSE.
+         ZL(ILTABL+I-1)=.FALSE.
    1  CONTINUE
       IAD   = 1
       NBCMP = 0
@@ -109,7 +110,7 @@ C
           DO 30 ICM = 1,NBCPUT
             DO 32 ICMP = 1,NCMPMX
                IF ( NCMPUT(ICM) .EQ. NCMPGD(ICMP) ) THEN
-                  LTABL(ICMP)= .TRUE.
+                  ZL(ILTABL+ICMP-1)= .TRUE.
                   GO TO 30
                ENDIF
   32        CONTINUE
@@ -119,13 +120,13 @@ C
  30       CONTINUE
         ELSE
           DO 4 ICMP = 1,NCMPMX
-             IF (EXISDG(DG,ICMP)) LTABL(ICMP)= .TRUE.
+             IF (EXISDG(DG,ICMP)) ZL(ILTABL+ICMP-1)= .TRUE.
  4        CONTINUE
         ENDIF
  2    CONTINUE
 C
       DO 5 I=1,NCMPMX
-        IF (LTABL(I)) THEN
+        IF (ZL(ILTABL+I-1)) THEN
           IF(NCMPGD(I).EQ.'DX') THEN
            NBCMP = NBCMP+1
            NOMVAR(IAD)='UX'
@@ -260,5 +261,6 @@ C
       CALL JEDETR('&&IRDECA.VALE')
       CALL JEDETR('&&IRDECA.BID')
       CALL JEDETR('&&IRDECA.NOM')
+      CALL JEDETR('&&IRDECA.LTABL')
       CALL JEDEMA()
       END

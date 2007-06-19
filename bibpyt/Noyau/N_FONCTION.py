@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_FONCTION Noyau  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,3 +88,4 @@ class formule(ASSD,AsBase):
       del d['code']
       return d
 
+class formule_c(formule): pass

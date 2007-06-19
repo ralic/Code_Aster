@@ -1,11 +1,11 @@
         SUBROUTINE LIRLIG ( IFL, CNL, LIG, ILEC )
-        IMPLICIT   NONE
+        IMPLICIT   NONE        
         INTEGER             IFL,           ILEC
         CHARACTER*14                  CNL
         CHARACTER*80                       LIG
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,8 +63,11 @@ C
         GOTO 9999
 C
  100    CONTINUE
-        CALL U2MESK('E','MODELISA4_93',1,CNL)
-        CALL U2MESS('F','MODELISA4_94')
+        IF ( NL1 .EQ. 0 ) THEN
+           CALL U2MESS('F','MODELISA4_94')
+        ELSE
+           CALL U2MESI('F','MODELISA4_93',1,NL1)
+        ENDIF
 C
  1      FORMAT(A80)
  2      FORMAT(' <',I6,' >   ',A80)

@@ -3,7 +3,7 @@
       CHARACTER*(*)       RIGID , MASSE , MASINV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 RIGI2,MASS2,MATRE2,MASIN2
       COMPLEX*16   CZERO, CUN, CMMAX, CKMAX, CCOEF
       CHARACTER*24 NMAT(4),NMATI
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -90,18 +91,14 @@ C
       NU2DDL = ZK24(JREFA2-1+2)(1:14)
 C
       IF ( TYPMA2 .NE. TYPMAT ) THEN
-        CALL UTDEBM('F','AJLAGR','LES TYPES DES DEUX MATRICES SONT '//
-     &                           'DIFFERENTS')
-        CALL UTIMPK('L','TYPE DE LA MATRICE DE RAIDEUR : ',1,TYPMAT)
-        CALL UTIMPK('L','TYPE DE LA MATRICE DE MASSE   : ',1,TYPMA2)
-        CALL UTFINM( )
+        VALK (1) = TYPMAT
+        VALK (2) = TYPMA2
+        CALL U2MESG('F','ALGORITH14_77',2,VALK,0,0,0,0.D0)
       ENDIF
       IF ( NU2DDL .NE. NUMDDL ) THEN
-        CALL UTDEBM('F','AJLAGR','LES NUMEROTATIONS DES DEUX MATRICES '
-     &                         //'SONT DIFFERENTES')
-        CALL UTIMPK('L','NUMEROTATION MATRICE DE RAIDEUR : ',1,NUMDDL)
-        CALL UTIMPK('L','NUMEROTATION MATRICE DE MASSE   : ',1,NU2DDL)
-        CALL UTFINM( )
+        VALK (1) = NUMDDL
+        VALK (2) = NU2DDL
+        CALL U2MESG('F','ALGORITH14_78',2,VALK,0,0,0,0.D0)
       ENDIF
 C
 C

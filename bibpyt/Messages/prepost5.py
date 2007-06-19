@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost5 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -427,21 +427,109 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
   ne se trouve pas dans la banque. %(k3)s 
 """),
 
+78: _("""
+ le calcul du rayon n'est pas assez precis.cupn0 =  %(r1)f 
+  cvpn0 =  %(r2)f 
+ cupn1 =  %(r3)f 
+  cvpn1 =  %(r4)f 
+ cupn2 =  %(r5)f 
+  cvpn2 =  %(r6)f 
+ flag =  %(i1)d 
+ cuon1 =  %(r7)f 
+  cuon2 =  %(r8)f 
+ cuon3 =  %(r9)f 
+ cvon1 =  %(r10)f 
+  cvon2 =  %(r11)f 
+ cvon3 =  %(r12)f 
+ rayon =  %(r13)f 
+  raymin =  %(r14)f 
+ (rayon - raymin) =  %(r15)f 
+ ((rayon-raymin)/raymin) =  %(r16)f 
+"""),
 
+79: _("""
+ ngr different de nbgrel ngr   = %(i1)d  nbgrel= %(i2)d 
+"""),
 
+80: _("""
+ fichier med :  %(k1)s identifiant numero  %(i1)d erreur efnpro numero  %(i2)d 
+ nbprof  %(i3)d 
+"""),
 
+81: _("""
+ fichier med :  %(k1)s profil numero  %(i1)d erreur efproi numero  %(i2)d 
+"""),
 
+82: _("""
+ profil med :  %(k1)s erreur efpfll numero  %(i1)d 
+"""),
 
+83: _("""
+ fichier mederreur efncha numero  %(i1)d 
+"""),
 
+84: _("""
+ fichier medchamp numero  %(i1)d erreur efncha numero  %(i2)d 
+"""),
 
+85: _("""
+ fichier medchamp numero  %(i1)d , de nom :  %(k1)s 
+"""),
 
+86: _("""
+ erreur efchai numero  %(i1)d 
+"""),
 
+87: _("""
+ type incorrect  %(i1)d 
+"""),
 
+88: _("""
+ 
+"""),
 
+89: _("""
+ fichier med :  %(k1)s erreur efncha numero  %(i1)d 
+"""),
 
+90: _("""
+ fichier med :  %(k1)s champ numero  %(i1)d erreur efncha numero  %(i2)d 
+"""),
 
+91: _("""
+ fichier med :  %(k1)s champ numero  %(i1)d , de nom :  %(k2)s 
+"""),
 
+92: _("""
+ erreur efchai numero  %(i1)d 
+"""),
 
+93: _("""
+ type incorrect  %(i1)d 
+"""),
 
+94: _("""
+ 
+"""),
+
+95: _("""
+ fichier med :  %(k1)s erreur efferm numero  %(i1)d 
+"""),
+
+96: _("""
+ fichier med :  %(k1)s erreur efnmaa numero  %(i1)d 
+"""),
+
+97: _("""
+ fichier med :  %(k1)s maillage numero  %(i1)d erreur efmaai numero  %(i2)d 
+"""),
+
+98: _("""
+ fichier med :  %(k1)s nombre de maillages presents  %(i1)d 
+"""),
+
+99: _("""
+ . maillage present :  %(k1)s 
+"""),
 
 }

@@ -2,7 +2,7 @@
      &                  LGLIS ,IREAD ,IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -520,9 +520,17 @@ C
      &            LISMA,NBMA1)
 C
       IF (NDIM .EQ. 2) THEN
-        MODELI = 'CONT_DVP_2D'
+        IF ( LFROT ) THEN
+          MODELI = 'COFR_DVP_2D'
+        ELSE
+          MODELI = 'CONT_DVP_2D'
+        END IF
       ELSEIF (NDIM .EQ. 3) THEN
-        MODELI = 'CONT_DVP_3D'
+        IF ( LFROT ) THEN
+          MODELI = 'COFR_DVP_3D'
+        ELSE
+          MODELI = 'CONT_DVP_3D'
+        END IF
       ELSE 
         CALL ASSERT(.FALSE.) 
       END IF

@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa4 Messages  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -415,11 +415,20 @@ cata_msg={
 """),
 
 93: _("""
-  %(k1)s  il manque le mot fin !??!
+  Probleme lors de la lecture du fichier maillage
+  numéro de la derniere ligne traitée : %(i1)d 
+  
+  -> Risque & Conseil :
+  Verifiez si le mot clé FIN est présent à la fin du fichier.
 """),
 
 94: _("""
- lecture 1 : erreur de syntaxe detectee
+  Probleme lors de la lecture du fichier maillage
+  Le fichier à lire est vide.
+  
+  -> Risque & Conseil :
+  Vérifiez la valeur mise derrière le mot clé UNITE et 
+  que cette valeur par défaut correspond au type "mail" dans ASTK
 """),
 
 95: _("""

@@ -11,7 +11,7 @@
      +             CFAO, CFAE, CSPO, CSPE, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ C
      +             SNO, SNE, I1SNO, I2SNO, I1SNE, I2SNE,
      +             SPO, SPE, KEO, KEE, SAO, SAE, NAO, NAE,
      +             DOO, DOE, DCO, DCE, STLIN, STPAR,
-     +             EQUI(NCMP), VALO(36), VALE(36)
+     +             TRESCA, VALO(36), VALE(36)
       COMPLEX*16   C16B
       CHARACTER*8  K8B, NOMRES, TYPARA(36), RPM, RPB, RPMPBO, RPMPBE, 
      +             R1SNO, R1SNE, R2SNO, R2SNE
@@ -185,8 +185,8 @@ C RECHERCHE DU MAXIMUM DE LA CONTRAINTE DE MEMBRANE DUE A LA PRESSION
                L3 = 4*NCMP*NBINST + NCMP*(I-1) + ICMP
                TPM(ICMP) = ZR(JSIGM-1+L3)
  402        CONTINUE
-            CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
-            IF ( EQUI(2) .GT. PM ) PM = EQUI(2)
+            CALL RCTRES ( TPM, TRESCA )
+            IF ( TRESCA .GT. PM ) PM = TRESCA
  400     CONTINUE
          CALL RCMCRT ( SYMAX, PM, STLIN, STPAR )
 C
@@ -254,27 +254,27 @@ C
                TPMPBE(ICMP) = ZR(JSIGM-1+L1) + ZR(JSIGM-1+L2)
      +                         - ( ZR(JSIGM-1+L3) + ZR(JSIGM-1+L4) )
  102        CONTINUE
-            CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
-            IF ( EQUI(2) .GT. PM ) THEN
-                PM = EQUI(2)
+            CALL RCTRES ( TPM, TRESCA )
+            IF ( TRESCA .GT. PM ) THEN
+                PM = TRESCA
                IPM = ZR(JINST+I-1)
                RPM = ZK8(JRESU+I-1)
             ENDIF
-            CALL FGEQUI ( TPB, 'SIGM', 3, EQUI )
-            IF ( EQUI(2) .GT. PB ) THEN
-                PB = EQUI(2)
+            CALL RCTRES ( TPB, TRESCA )
+            IF ( TRESCA .GT. PB ) THEN
+                PB = TRESCA
                IPB = ZR(JINST+I-1)
                RPB = ZK8(JRESU+I-1)
             ENDIF
-            CALL FGEQUI ( TPMPBO, 'SIGM', 3, EQUI )
-            IF ( EQUI(2) .GT. PMPBO ) THEN
-                PMPBO = EQUI(2)
+            CALL RCTRES ( TPMPBO, TRESCA )
+            IF ( TRESCA .GT. PMPBO ) THEN
+                PMPBO = TRESCA
                IPMPBO = ZR(JINST+I-1)
                RPMPBO = ZK8(JRESU+I-1)
             ENDIF
-            CALL FGEQUI ( TPMPBE, 'SIGM', 3, EQUI )
-            IF ( EQUI(2) .GT. PMPBE ) THEN
-                PMPBE = EQUI(2)
+            CALL RCTRES ( TPMPBE, TRESCA )
+            IF ( TRESCA .GT. PMPBE ) THEN
+                PMPBE = TRESCA
                IPMPBE = ZR(JINST+I-1)
                RPMPBE = ZK8(JRESU+I-1)
             ENDIF

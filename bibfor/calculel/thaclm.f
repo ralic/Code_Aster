@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF CALCULEL  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -839,8 +839,7 @@ C    ------------------------------------------------------------------
               IF (OPTION.EQ.'INTE_ELNO_ACTI' .OR.
      &            OPTION.EQ.'INTE_ELNO_REAC') THEN
                 CALL RSADPA(RESUCO,'L',1,'FREQ',IAUX,0,LINST,K8B)
-                CALL JECREO('FREQ.VALE','V E R')
-                CALL JEVEUO('FREQ.VALE','E',IFREQ)
+                CALL WKVECT('FREQ.VALE','V V R',1,IFREQ)
                 ZR(IFREQ) = ZR(LINST)
                 CALL MECOAC(OPTION,MODELE,LIGREL,MATE,CHPRES,CHELEM)
                 CALL JEDETR('FREQ.VALE')

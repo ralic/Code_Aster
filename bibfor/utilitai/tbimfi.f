@@ -1,10 +1,10 @@
-      SUBROUTINE TBIMFI ( NPARFI, TABLE, NEWTAB )
+      SUBROUTINE TBIMFI ( NPARFI, TABLE, NEWTAB, IRET )
       IMPLICIT   NONE
-      INTEGER             NPARFI
+      INTEGER             NPARFI, IRET
       CHARACTER*19        TABLE, NEWTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IBID, LTITR, JTITR, ITITR, II, IR, IC, IK, IOC,
      +             LONMAX, LONMA1, JPAFI, JCCFI, JVIFI, JVRFI, JVCFI,
-     +             JVKFI, JPRFI, JCRFI, L , L1, L2, L3, L4, IRET
+     +             JVKFI, JPRFI, JCRFI, L , L1, L2, L3, L4, IRT
       REAL*8       R8B
       COMPLEX*16   CBID
       CHARACTER*8  K8B
@@ -50,8 +50,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
-      CALL JEEXIN ( TABLE//'.TITR', IRET )
-      IF ( IRET .NE. 0 ) THEN
+      CALL JEEXIN ( TABLE//'.TITR', IRT )
+      IF ( IRT .NE. 0 ) THEN
          CALL JEVEUO ( TABLE//'.TITR', 'L', LTITR )
          CALL JELIRA ( TABLE//'.TITR', 'LONMAX', LONMA1, K8B )
          LONMAX = LONMA1 + NPARFI
@@ -116,9 +116,9 @@ C
          ZK80(JTITR+LONMA1+IOC-1) = MONTIT
  20   CONTINUE
 C
-       CALL TBEXTB ( TABLE, 'V', NEWTAB, NPARFI, ZK24(JPAFI),
-     +               ZK8(JCCFI), ZI(JVIFI), ZR(JVRFI), ZC(JVCFI),
-     +               ZK80(JVKFI), ZR(JPRFI), ZK8(JCRFI) )
+      CALL TBEXTB ( TABLE, 'V', NEWTAB, NPARFI, ZK24(JPAFI),
+     +              ZK8(JCCFI), ZI(JVIFI), ZR(JVRFI), ZC(JVCFI),
+     +              ZK80(JVKFI), ZR(JPRFI), ZK8(JCRFI), IRET )
 C
       CALL JEDETR ('&&TBIMFI.NOMS_PARA' )
       CALL JEDETR ('&&TBIMFI.CRIT_PARA' )

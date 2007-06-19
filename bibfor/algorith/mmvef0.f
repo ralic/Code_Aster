@@ -1,9 +1,12 @@
-      SUBROUTINE MMVEF0(NDIM,NNE,
-     &                  HPG,FFPC,JACOBI,DEPLE,
-     &                  TAU1,TAU2,
-     &                  VTMP)     
+      SUBROUTINE MMVEF0(NBDM,NBCPS,NDIM,NNE, HPG,FFPC,JACOBI,DEPLE,
+     &                  TAU1,TAU2, VTMP)     
+      IMPLICIT NONE
+      INTEGER  NDIM,NNE,NBDM,NBCPS
+      REAL*8   HPG,FFPC(9),JACOBI  
+      REAL*8   DEPLE(6),TAU1(3),TAU2(3),VTMP(81)  
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,20 +23,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-      IMPLICIT NONE
-      INTEGER  NDIM,NNE
-      REAL*8   HPG,FFPC(9),JACOBI  
-      REAL*8   DEPLE(6)      
-      REAL*8   TAU1(3),TAU2(3)     
-      REAL*8   VTMP(81)  
-C
-C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0365
 C ----------------------------------------------------------------------
 C
 C CALCUL DU SECOND MEMBRE POUR LE FROTTEMENT
 C CAS SANS CONTACT
 C
+C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
+C IN  NBCPS  : NB DE DDL DE LAGRANGE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
@@ -43,32 +40,12 @@ C IN  DEPLE  : DEPLACEMENTS DE LA SURFACE ESCLAVE
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : DEUXIEME VECTEUR TANGENT
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
-C
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
-C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C
-      INTEGER I,K,L,II
-      REAL*8  TT(3)
-C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
+      INTEGER   I, K, L, II
+      REAL*8    TT(3)
+C
+C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
@@ -82,24 +59,25 @@ C
         DO 301 K = 1,NDIM
           TT(1) = TAU1(K)*TAU1(K) +TT(1)
  301    CONTINUE
-        TT(1) = DEPLE(NDIM+1+1)*TT(1)
+        TT(1) = DEPLE(NDIM+2)*TT(1)
         TT(2) = 0.D0
+C
       ELSE IF (NDIM.EQ.3) THEN
         DO 31 K = 1,NDIM
-          TT(1) = (DEPLE(NDIM+1+1)*TAU1(K)+DEPLE(NDIM+1+2)
+          TT(1) = (DEPLE(NDIM+2)*TAU1(K)+DEPLE(NDIM+3)
      +             *TAU2(K))*TAU1(K)+TT(1)
  31     CONTINUE
         DO 32 K = 1,NDIM
-          TT(2) = (DEPLE(NDIM+1+1)*TAU1(K)+DEPLE(NDIM+1+2)
+          TT(2) = (DEPLE(NDIM+2)*TAU1(K)+DEPLE(NDIM+3)
      +             *TAU2(K))*TAU2(K)+TT(2)
  32     CONTINUE
       END IF
+C
       DO 101 I=1,NNE
-        DO 102 L=1,NDIM-1
-         II = (I-1)*(2*NDIM)+NDIM+1+L
+        DO 102 L=1,NBCPS-1
+         II = (I-1)*NBDM+NDIM+1+L
          VTMP(II)=-JACOBI*HPG*FFPC(I)*TT(L)
   102   CONTINUE
   101 CONTINUE
 C
-      CALL JEDEMA()      
       END

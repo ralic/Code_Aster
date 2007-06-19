@@ -1,0 +1,160 @@
+# MODIF  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
+# TITRE VALIDATION ARCHITECTURE D'UN CALCUL FETI + CONTACT CONTINUE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# (CAS 2)
+# ======================================================================
+# PLAQUE 2D MODELISEE VIA 24 TRIA3 ET DECOUPEE EN 2 SOUS-DOMAINES
+# EN PAPILLON AVEC UN NOEUD CENTRAL DE MULTIPLICITE 2.
+# TEST INFORMATIQUE DU SOLVEUR FETI-1 AVEC LA METHODE DE CONTACT CONTINU
+# LE PARTITIONNEMENT EN SOUS-DOMAINES EST MANUEL.
+# LE SOUS-DOMAINE 1 EST RESPONSABLE DES 2 ZONES DE CONTACT.
+# LE SOUS-DOMAINE 2 N'EST PAS CONCERNE PAR LE CONTACT.
+# LES SOUS-DOMAINES SONT EN 2 PARTIES QUASI-NON CONNEXES 
+# (ELLES NE SE TOUCHENT QU'AU POINT N3, D'OU LE PAPILLON !)
+# LES ZONES DE CONTACT NE TOUCHENT PAS L'INTERFACE.
+# MEME CAS QUE FETI008A MAIS AVEC UN DECOUPAGE DIFFERENT.
+# ======================================================================
+DEBUT(CODE=_F(NOM ='FETI008B',NIV_PUB_WEB='INTERNET'))
+
+MATER=DEFI_MATERIAU( 
+           ELAS=_F(E = 180000., NU = 0.30, ALPHA = 15.E-6, RHO = 7700.,))                  
+MAIL=LIRE_MAILLAGE()
+MODM=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=(_F(GROUP_MA = 'STRU',PHENOMENE = 'MECANIQUE',  
+                          MODELISATION = 'D_PLAN',   ),))
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(TOUT='OUI',MATER=MATER,TEMP_REF=20.,),))
+CH1=AFFE_CHAR_MECA(MODELE=MODM,
+                   PRES_REP=(_F(GROUP_MA='PRES',PRES = 2.E3,),),)
+CH2=AFFE_CHAR_MECA(MODELE=MODM,
+                   DDL_IMPO=(_F(GROUP_NO=('DIRI'),DX=0.0,DY=0.0,),),),
+CH3=AFFE_CHAR_MECA(MODELE=MODM,
+                       CONTACT=(
+                                 _F(GROUP_MA_MAIT='CONTACT1',
+                                    GROUP_MA_ESCL='CONTACT2',                               
+                                   METHODE = 'CONTINUE',
+                                   ),
+                                 _F(GROUP_MA_MAIT='CONTACT3',
+                                    GROUP_MA_ESCL='CONTACT4',
+                                   METHODE = 'CONTINUE',
+                                   ),
+                                   ),);       
+SDFETI=DEFI_PART_OPS(NOM='SD',
+                     MODELE=MODM,
+                     INFO=1,
+                     EXCIT=(
+                            _F(CHARGE=CH1),                            
+                            _F(CHARGE=CH2),
+                            _F(CHARGE=CH3),
+                         ),
+                     DEFI=(
+                           _F(GROUP_MA = 'FETI1', GROUP_MA_BORD = 'B1',),
+                           _F(GROUP_MA = 'FETI2', GROUP_MA_BORD = 'B2',),
+                           ),)
+#IMPR_CO(UNITE=6,CONCEPT=_F(NOM='SDFETI'))
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,
+                          10.0,5.),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='LINEAIRE',)
+INSTNL=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=0.1,
+                                     NOMBRE=3,),),);
+                        
+RESU=STAT_NON_LINE(MODELE=MODM,
+                   CHAM_MATER=CHMAT,
+                   SOLVEUR=_F(METHODE='FETI',
+                              PARTITION=SDFETI,
+                              RESI_RELA=1.E-10,
+                              NMAX_ITER=20,
+                              NB_REORTHO_DD=20,
+                              ),
+                 EXCIT=(_F(CHARGE=CH1,FONC_MULT=RAMPE),
+                        _F(CHARGE=CH2,FONC_MULT=RAMPE),
+                        _F(CHARGE=CH3,),),
+                 NEWTON=(_F(REAC_INCR=1,
+                            PREDICTION='TANGENTE',
+                            MATRICE='TANGENTE',
+                            PAS_MINI_ELAS=0.0,
+                            REAC_ITER=1,
+                            REAC_ITER_ELAS=0)),
+                 CONVERGENCE=(_F(RESI_GLOB_RELA=1.E-6,
+                                 ARRET='OUI',
+                                 ITER_GLOB_ELAS=20,
+                                 ITER_GLOB_MAXI=20)),
+                 INCREMENT=_F( LIST_INST = INSTNL),
+                 COMP_INCR=(_F(RELATION='ELAS',GROUP_MA = 'STRU'))
+                    )
+
+
+#IMPR_RESU(UNITE=6,RESU=_F(RESULTAT=RESU,),);
+# TEST DEPLACEMENTS
+# 2 NOEUDS DIRICHLET, 1 NOEUD AU MILIEU DE LA STRUCTURE
+# LES 4 NOEUDS DES ZONES DE CONTACT
+TEST_RESU(RESU=(
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N1',
+          CRITERE = 'ABSOLU', PRECISION = 1.E-6,
+          NOM_CMP = 'DX',    VALE = 0., REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N1',
+          CRITERE = 'ABSOLU', PRECISION = 1.E-6,
+          NOM_CMP = 'DY',    VALE = 0., REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N3',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'DX',    VALE = -6.6982574393290E-07, REFERENCE = 'NON_REGRESSION' ),                                   
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N3',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'DY',    VALE = -1.0337311383402E-06, REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N5',
+          CRITERE = 'ABSOLU', PRECISION = 1.E-6,
+          NOM_CMP = 'DX',    VALE = 0., REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N5',
+          CRITERE = 'ABSOLU', PRECISION = 1.E-6,
+          NOM_CMP = 'DY',    VALE = 0., REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N20',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'DX',    VALE = -1.4121491847372E-03, REFERENCE = 'NON_REGRESSION' ),                                   
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N20',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'DY',    VALE = -3.8374914822751E-04, REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N20',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'LAGS_C', VALE = -6.8947248052441E+01, REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N22',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'DX',    VALE = -2.3723358289233E-04, REFERENCE = 'NON_REGRESSION' ),                                   
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N22',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'DY',    VALE = -7.3385248872203E-04, REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
+          NOM_CHAM = 'DEPL',   NOEUD = 'N22',
+          CRITERE = 'RELATIF', PRECISION = 1.E-6,
+          NOM_CMP = 'LAGS_C',VALE = -6.5472333226585E+01, REFERENCE = 'NON_REGRESSION' ),
+          ),);
+FIN( )

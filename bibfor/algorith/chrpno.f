@@ -1,6 +1,6 @@
       SUBROUTINE CHRPNO( CHAMP1, REPERE, NBCMP, ICHAM, TYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
       INTEGER      IPT   , INOT  , NDIM  , LICMPU(6), JCNSL
       INTEGER      NBN, IDNOEU, NBNOEU, INOE
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
+      REAL*8 VALR
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3)
       REAL*8       EPSI     , PROSCA  , XNORMR  , VALET(6)
       REAL*8       R8DGRD, PGL2(3,3)
@@ -62,6 +63,7 @@ C
       CHARACTER*16 MOTCLE(4)
       CHARACTER*19 CHAMS1,CHAMS0
       CHARACTER*24 MESNOE
+      CHARACTER*24 VALK
 
       CALL JEMARQ()
       EPSI = 1.0D-6
@@ -162,10 +164,8 @@ C
          ELSE
             CALL GETVR8('DEFI_REPERE','ANGL_NAUT',1,1,1,ANGNOT(1),IBID)
             IF (IBID.NE.1) THEN
-               CALL UTDEBM('A','CHRPNO','ETUDE 2D')
-               CALL UTIMPR('L','ANGLE NAUTIQUE UNIQUE : ',1,
-     &                                  ANGNOT(1))
-               CALL UTFINM()
+               VALR = ANGNOT(1)
+               CALL U2MESG('A','ALGORITH14_90',0,' ',0,0,1,VALR)
             ENDIF
          ENDIF
          ANGNOT(1) = ANGNOT(1)*R8DGRD()
@@ -336,9 +336,8 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   CALL NORMEV(AXER,XNORMR)
                   IF (XNORMR .LT. EPSI) THEN
                      CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
-                     CALL UTDEBM('F','CHRPNO','NOEUD SUR L''AXE_Z')
-                     CALL UTIMPK('L',' NOEUD : ',1,K8B)
-                     CALL UTFINM()
+                     VALK = K8B
+                     CALL U2MESG('F','ALGORITH14_91',1,VALK,0,0,0,0.D0)
                   ENDIF
                ENDIF
                CALL PROVEC(AXEZ,AXER,AXET)
@@ -454,9 +453,8 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   CALL NORMEV(AXER,XNORMR)
                   IF (XNORMR .LT. EPSI) THEN
                      CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
-                     CALL UTDEBM('F','CHRPNO','NOEUD SUR L''AXE_Z')
-                     CALL UTIMPK('L',' NOEUD : ',1,K8B)
-                     CALL UTFINM()
+                     VALK = K8B
+                     CALL U2MESG('F','ALGORITH14_92',1,VALK,0,0,0,0.D0)
                   ENDIF
                ENDIF
                CALL PROVEC(AXEZ,AXER,AXET)

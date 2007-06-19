@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF soustruc Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -377,6 +377,18 @@ cata_msg={
 
 87: _("""
  trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
+"""),
+
+88: _("""
+  verifier votre maillage 
+"""),
+
+89: _("""
+  coordonnee x < 0 pour le noeud  %(k1)s  maille  %(k2)s 
+"""),
+
+90: _("""
+ 
 """),
 
 }

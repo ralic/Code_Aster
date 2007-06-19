@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C -------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(4)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -67,6 +68,7 @@ C ARGUMENTS
 C ---------
       CHARACTER*8   TYPFLU, BASE, NOMA
       INTEGER       NBM, LNOE, NUOR(*), IIMPR, INDIC, VECI1(*)
+      INTEGER VALI(2)
       REAL*8        VECR1(*), VECR2(*), VECR3(*), VECR4(*), VECR5(*)
 
 C
@@ -84,6 +86,7 @@ C
 C FONCTIONS EXTERNES
 C ------------------
       REAL*8        R8PI, R8PREM
+      REAL*8 VALR(3)
 C     EXTERNAL      R8PI, R8PREM
       CHARACTER*32  JEXNOM
 C     EXTERNAL      JEXNOM
@@ -267,25 +270,18 @@ C ---   2.6.IMPRESSION  ---
 C
         IF(IIMPR.EQ.1) THEN
       IPAS = ZI(IFSVI)
-      CALL UTDEBM('I',
-     &'----------------------------------------------',' ')
-      CALL UTIMPI('L','! LE NB DE NOEUDS DE LA STRUCTURE: ',1,LNOE)
-      CALL UTIMPK('L','! LA BASE UTILISEE EST           : ',1,BASE)
-      CALL UTIMPK('L','! LES CARACTERISTIQUES ELEMTAIRES: ',1,
-     &            CAELEM(1:8))
-      CALL UTIMPR('L','! DIAMETRE DE LA STRUCTURE       : ',1,PHIE)
-      CALL UTIMPI('L','! TYPE DE PAS                    : ',1,IPAS)
-      CALL UTIMPK('L',
-     &'----------------------------------------------',0,' ')
+      VALI (1) = LNOE
+      VALI (2) = IPAS
+      VALK (1) = BASE
+      VALK (2) = CAELEM(1:8)
+      VALR (1) = PHIE
+      CALL U2MESG('I+','ALGELINE5_10',2,VALK,2,VALI,1,VALR)
       DO 170 NUZO = 1,NZEX
-      CALL UTIMPK('L','! LE PROFIL DE VITESSE DE LA ZONE: ',1,
-     &            ZK8(IFSVK+NUZO+3))
-      CALL UTIMPI('L','!   TYPE DE RESEAU DE LA ZONE    : ',1,
-     &            ZI(IFSVI+NUZO+1))
-      CALL UTIMPK('L',
-     &'----------------------------------------------',0,' ')
+      VALK (1) = ZK8(IFSVK+NUZO+3)
+      VALI (1) = ZI(IFSVI+NUZO+1)
+      CALL U2MESG('I+','ALGELINE5_11',1,VALK,1,VALI,0,0.D0)
  170  CONTINUE
-      CALL UTFINM()
+      CALL U2MESG('I','ALGELINE5_12',0,' ',0,0,0,0.D0)
         ENDIF
 C
 C --- 3.CONFIGURATION DE TYPE "GRAPPE DE COMMANDE"  ---
@@ -442,20 +438,14 @@ C
 C ---   2.6.IMPRESSION  ---
 C
         IF(IIMPR.EQ.1) THEN
-      CALL UTDEBM('I',
-     &'----------------------------------------------',' ')
-      CALL UTIMPK('L','! LE NOEUD D APPLICATION         : ',1,NOMNO0)
-      CALL UTIMPK('L','! LA BASE UTILISEE EST           : ',1,BASE)
-      CALL UTIMPK('L','! LES CARACTERISTIQUES ELEMTAIRES: ',1,
-     &            CAELEM(1:8))
-      CALL UTIMPR('L','! DIAMETRE DE LA STRUCTURE       : ',1,PHIE)
-      CALL UTIMPK('L','! TYPE DE CONFIGURATION          : ',1,
-     &            CONFIG(INDIC))
-      CALL UTIMPR('L','! LE COEFFICIENT DE MASSE AJOUTEE: ',1,CM1)
-      CALL UTIMPR('L','! LE PROFIL DE MASSE VOLUMIQUE   : ',1,RHOF)
-      CALL UTIMPK('L',
-     &'----------------------------------------------',0,' ')
-      CALL UTFINM()
+      VALK (1) = NOMNO0
+      VALK (2) = BASE
+      VALK (3) = CAELEM(1:8)
+      VALK (4) = CONFIG(INDIC)
+      VALR (1) = PHIE
+      VALR (2) = CM1
+      VALR (3) = RHOF
+      CALL U2MESG('I','ALGELINE5_13',4,VALK,0,0,3,VALR)
         ENDIF
 C
          CALL JEDETC('V','&&MDCONF',1)
@@ -464,13 +454,7 @@ C
 C ---  PAS DE COUPLAGE
 C
         IF(IIMPR.EQ.1) THEN
-      CALL UTDEBM('I',
-     &'----------------------------------------------',' ')
-      CALL UTIMPK('L',
-     &'  PAS DE COUPLAGE PRIS EN COMPTE              ',0,' ')
-      CALL UTIMPK('L',
-     &'----------------------------------------------',0,' ')
-      CALL UTFINM()
+      CALL U2MESG('I','ALGELINE5_14',0,' ',0,0,0,0.D0)
         ENDIF
 C
        ENDIF

@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,11 +40,13 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----------- FIN COMMUNS NORMALISES JEVEUX ------------------------
       CHARACTER*4  INTERP(2)
+      CHARACTER*24 VALK
       CHARACTER*8  K8B, NOMPF
       CHARACTER*16 NOMCMD,TYPFON,VERIF
       CHARACTER*19 NOMFON
       LOGICAL      DEFONC
       INTEGER      IRET,IRET2
+      INTEGER VALI(2)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -64,11 +66,9 @@ C
       ENDIF
 C
       IF (NBPARA.NE.NBFONC) THEN
-         CALL UTDEBM('F','OP0004'//'(ERREUR.01)',' ')
-         CALL UTIMPI('L','LE NOMBRE DE PARAMETRES ',1,NBPARA)
-         CALL UTIMPI('S',' EST DIFFERENT DU NOMBRE DE FONCTIONS ',
-     &                                                     1,NBFONC)
-         CALL UTFINM()
+         VALI (1) = NBPARA
+         VALI (2) = NBFONC
+         CALL U2MESG('F','UTILITAI8_3',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C     --- VERIFICATION DE LA CROISSANCE DES PARAMETRES ---
@@ -89,10 +89,8 @@ C
             CALL GETVR8('DEFI_FONCTION','VALE',IOCC,1,0,RBID,NV)
             NV = -NV
             IF (MOD(NV,2) .NE. 0 ) THEN
-               CALL UTDEBM('F','OP0004'//'(ERREUR.04)',
-     &                  'IL N''Y A PAS UN NOMBRE PAIR DE VALEURS')
-               CALL UTIMPI('S',', "DEFI_FONCTION" OCCURENCE ',1,IOCC)
-               CALL UTFINM()
+               VALI (1) = IOCC
+               CALL U2MESG('F','UTILITAI8_4',0,' ',1,VALI,0,0.D0)
             ENDIF
             IF ( VERIF .EQ. 'CROISSANT' ) THEN
                NBCOUP = NV / 2
@@ -169,18 +167,12 @@ C           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
                IF(IRET2.EQ.0)THEN
                   TYPFON='FONCTION'
                   CALL UTTRIF(ZR(LVAL),NBCOUP,TYPFON)
-                  CALL UTDEBM('A','OP0004',
-     &                            'LES ABSCISSES DE LA FONCTION')
-                  CALL UTIMPK('S',' ',1,NOMFON)
-                  CALL UTIMPK('L','ONT ETE REORDONNEES.',0,K8B)
-                  CALL UTFINM()
+                  VALK = NOMFON
+                  CALL U2MESG('A','UTILITAI8_5',1,VALK,0,0,0,0.D0)
                ELSEIF(IRET2.LT.0)THEN
                   CALL ORDON1(ZR(LVAL),NBCOUP)
-                  CALL UTDEBM('A','OP0004',
-     &                        'L ORDRE DES ABSCISSES DE LA FONCTION')
-                  CALL UTIMPI('S',' NUMERO ',1,IFONC)
-                  CALL UTIMPK('L','A ETE INVERSE .',0,K8B)
-                  CALL UTFINM()
+                  VALI (1) = IFONC
+                  CALL U2MESG('A','UTILITAI8_6',0,' ',1,VALI,0,0.D0)
                ENDIF
             ENDIF
 C

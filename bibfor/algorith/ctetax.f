@@ -1,6 +1,6 @@
       SUBROUTINE CTETAX(BASMOD,NUMA,NBSEC,TETA,NBTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,17 +65,17 @@ C      NTA EST LE NOMBRE DE CMP TRAITEE EN CYCLIQUE
       PARAMETER   (NBCPMX=300)
       PARAMETER   (NTA=10)
       CHARACTER*1 K1BID
-      CHARACTER*6 PGC
+      CHARACTER*24 VALK(2)
       CHARACTER*8 BASMOD,MAILLA,TYPDDL(6),NOMNOE,TYD,INTF,KBID
       REAL*8      XA(10),XTA(10),TET0(10,10),
      &            TETA(NBTET,NBTET)
       LOGICAL     NOOK
       INTEGER     IDECA(NBCPMX)
+      INTEGER VALI(2)
 C
 C-----------------------------------------------------------------------
 C
       DATA TYPDDL /'DX','DY','DZ','DRX','DRY','DRZ'/
-      DATA PGC /'CTETAX'/
       DATA NOOK /.FALSE./
 C
 C-----------------------------------------------------------------------
@@ -121,11 +121,9 @@ C
       CALL BMNODI(BASMOD,KBID,'         ',NUMA,0,IBID,NBDAX)
 C
       IF(NBDAX.NE.NBTET) THEN
-        CALL UTDEBM('F',PGC,
-     &'ARRET SUR DIMENSION MATRICE TETA INCORRECTE ')
-        CALL UTIMPI('L','DIMENSION EFFECTIVE: ',1,NBDAX)
-        CALL UTIMPI('L','DIMENSION EN ARGUMENT: ',1,NBTET)
-        CALL UTFINM
+        VALI (1) = NBDAX
+        VALI (2) = NBTET
+        CALL U2MESG('F','ALGORITH14_93',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C
@@ -167,14 +165,10 @@ C
             NOER=ZI(LLDESC+INOA-1)
             CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',NOER),NOMNOE)
             TYD=TYPDDL(J)
-            CALL UTDEBM('E',PGC,
-     &' ERREUR  DE REPETITIVITE CYCLIQUE')
-            CALL UTFINM
-            CALL UTDEBM('E',PGC,
-     &' IL MANQUE UN DDL SUR UN NOEUD  AXE')
-            CALL UTIMPK('L',' TYPE DU DDL --> ',1,TYD)
-            CALL UTIMPK('S',' NOM DU NOEUD --> ',1,NOMNOE)
-            CALL UTFINM
+            CALL U2MESG('E','ALGORITH14_94',0,' ',0,0,0,0.D0)
+            VALK (1) = TYD
+            VALK (2) = NOMNOE
+            CALL U2MESG('E','ALGORITH14_95',2,VALK,0,0,0,0.D0)
             NOOK=.TRUE.
           ENDIF
 C
@@ -182,23 +176,17 @@ C
             NOER=ZI(LLDESC+INOA-1)
             CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',NOER),NOMNOE)
             TYD=TYPDDL(J)
-            CALL UTDEBM('E',PGC,
-     &' ERREUR  DE REPETITIVITE CYCLIQUE')
-            CALL UTFINM
-            CALL UTDEBM('E',PGC,
-     &' IL MANQUE UN DDL SUR UN NOEUD  AXE')
-            CALL UTIMPK('L',' TYPE DU DDL --> ',1,TYD)
-            CALL UTIMPK('S',' NOM DU NOEUD --> ',1,NOMNOE)
-            CALL UTFINM
+            CALL U2MESG('E','ALGORITH14_96',0,' ',0,0,0,0.D0)
+            VALK (1) = TYD
+            VALK (2) = NOMNOE
+            CALL U2MESG('E','ALGORITH14_97',2,VALK,0,0,0,0.D0)
             NOOK=.TRUE.
           ENDIF
 C
  50     CONTINUE
 C
         IF(NOOK) THEN
-          CALL UTDEBM('F',PGC,
-     &'ARRET SUR PROBLEME DE REPETITIVITE CYCLIQUE')
-          CALL UTFINM
+          CALL U2MESG('F','ALGORITH14_98',0,' ',0,0,0,0.D0)
         ENDIF
 C
         NBDCOU=0

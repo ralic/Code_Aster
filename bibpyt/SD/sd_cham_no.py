@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_no SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_no SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ from SD.sd_nume_equa import sd_nume_equa
 class sd_cham_no(sd_titre):
 #------------------------------------
     nomj = SDNom(fin=19)
-    VALE = AsObject(genr='V', ltyp=Parmi(4,8,16,24), type=Parmi('C', 'I', 'K', 'R'), xous='S', docu=Parmi('', '2', '3'), )
+    VALE = AsVect(ltyp=Parmi(4,8,16,24), type=Parmi('C', 'I', 'K', 'R'), docu=Parmi('', '2', '3'), )
     REFE = AsVK24()
     DESC = AsVI(docu='CHNO', )
 

@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 14/05/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF utilitai7 Messages  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,52 +22,61 @@ def _(x) : return x
 
 cata_msg={
 
-
-
-
-
-
-
-2: _("""
- erreur dans les donneespas de tri sur les complexes,  parametre:  %(k1)s 
+1: _("""
+ Erreur dans les données, le paramètre %(k1)s n'existe pas dans la table %(k2)s 
 """),
 
+2: _("""
+  Erreur dans les données, pas de tri sur les complexes, paramètre:  %(k1)s 
+"""),
 
-
-
-
-
-
+3: _("""
+  Erreur dans les données, on n'a pas trouvé de ligne dans la table %(k1)s pour le paramètre %(k2)s
+"""),
 
 4: _("""
-  numero d''occurrence invalide   %(i1)d pour le mot cle facteur %(k1)s 
+  Le numéro d'occurrence est invalide %(i1)d pour le mot clé facteur %(k1)s 
 """),
 
 5: _("""
- le numero  de la composante (pour vari_r) est trop grand.maille: %(k1)s 
- num. cmp maxi: %(i1)d 
- num. cmp demandee: %(i2)d 
+  Le numéro de la composante (pour VARI_R) est trop grand.
+    MAILLE : %(k1)s 
+    NUME_MAXI : %(i1)d 
+    NUME_CMP demandé : %(i2)d 
 """),
 
 6: _("""
- Le schéma d'intégration temporelle %(k1)s et le paramètre %(k2)s sont incompatibles.
+  Le schéma d'intégration temporelle %(k1)s et le paramètre %(k2)s sont incompatibles.
 """),
 
 7: _("""
- Le paramètre %(k1)s ne fait pas partie des choix possibles.
+  Le paramètre %(k1)s ne fait pas parti des choix possibles.
 """),
 
 8: _("""
- L'utilisation de la macro pour un concept de type dyna_harmo n'est pas encore prevue
+ L'utilisation de la macro pour un concept de type DYNA_HARMO n'est pas encore prévue
  """),
 
 9: _("""
- Si on utilise l'option normale pour les changements de repere, il faut donner
- une equation supplementaire avec le mot-cle VECT_X ou VECT_Y
+ Si on utilise l'option normale pour les changements de repère, il faut donner
+ une équation supplémentaire avec le mot-clé VECT_X ou VECT_Y
  """),
 
+10: _("""
+ Seuls les champs de type ELGA (champs par élément aux points de Gauss)
+ sont autorisés pour NOM_CHAM de POST_ELEM/INTEGRALE.
+"""),
+
+11: _("""
+  Erreur dans les données, problème lors du traitement du mot clé facteur FILTRE
+  
+  -> Risque & Conseil :
+   soit le paramètre n'existe pas
+   soit aucune ligne ne correspond au paramètre donné
+"""),
+
 99: _("""
- Arret dans le programme %(k1)s.
+  Arret dans le programme %(k1)s.
 """),
 
 }

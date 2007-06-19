@@ -3,7 +3,7 @@
       CHARACTER*24 CSIGM, CINST, CSNO, CSNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C
      +             IND, I1, I2, ICMP, L1, L2
       PARAMETER  ( NCMP = 6 )
       REAL*8       SN1O(NCMP), SN1E(NCMP), SN2O(NCMP), SN2E(NCMP),
-     +             SN12O(NCMP), SN12E(NCMP), EQUI(NCMP)
+     +             SN12O(NCMP), SN12E(NCMP), TRESCA
       CHARACTER*8  K8B
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -75,15 +75,15 @@ C --- CALCUL DES VALEURS PROPRES DU TENSEUR DE CONTRAINTES LINEARISEES
 C     SN1O A L'ORIGINE DU CHEMIN :
 C --- CALCUL DE LA DIFFERENCE SUP SNO DES VALEURS PROPRES (LE TRESCA) :
 C ======================================================================
-         CALL FGEQUI ( SN1O, 'SIGM', 3, EQUI )
-         ZR(JSNO+IND-1) = EQUI(2)
+         CALL RCTRES ( SN1O, TRESCA )
+         ZR(JSNO+IND-1) = TRESCA
 C ======================================================================
 C --- CALCUL DES VALEURS PROPRES DU TENSEUR DE CONTRAINTES LINEARISEES
 C     SN1E A L'AUTRE EXTREMITE DU CHEMIN :
 C --- CALCUL DE LA DIFFERENCE SUP SNE DES VALEURS PROPRES (LE TRESCA) :
 C ======================================================================
-         CALL FGEQUI ( SN1E, 'SIGM', 3, EQUI )
-         ZR(JSNE+IND-1) = EQUI(2)
+         CALL RCTRES ( SN1E, TRESCA )
+         ZR(JSNE+IND-1) = TRESCA
 C
          DO 110 I2 = I1+1, NBINST
 C
@@ -107,16 +107,16 @@ C ---       DE CONTRAINTES LINEARISEES
 C ---       SN12O = SNO(TEMP1)-SNO(TEMP2) A L'ORIGINE DU CHEMIN :
 C ---  CALCUL DE LA DIFFERENCE SUP SNO DES VALEURS PROPRES ( LE TRESCA)
 C ======================================================================
-            CALL FGEQUI ( SN12O, 'SIGM', 3, EQUI )
-            ZR(JSNO+IND-1) = EQUI(2)
+            CALL RCTRES ( SN12O, TRESCA )
+            ZR(JSNO+IND-1) = TRESCA
 C ======================================================================
 C ---      CALCUL DES VALEURS PROPRES DE LA DIFFERENCE DES TENSEURS 
 C ---      DE CONTRAINTES LINEARISEES 
 C ---      SN12E = SNE(TEMP1)-SNE(TEMP2) A L'AUTRE EXTREMITE DU CHEMIN :
 C ---   CALCUL DE LA DIFFERENCE SUP SNE DES VALEURS PROPRES (LE TRESCA)
 C ======================================================================
-            CALL FGEQUI ( SN12E, 'SIGM', 3, EQUI )
-            ZR(JSNE+IND-1) = EQUI(2)
+            CALL RCTRES ( SN12E, TRESCA )
+            ZR(JSNE+IND-1) = TRESCA
 C
  110     CONTINUE
 C

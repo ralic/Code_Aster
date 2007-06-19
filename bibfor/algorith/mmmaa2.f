@@ -1,10 +1,14 @@
-      SUBROUTINE MMMAA2(NDIM,NNE,NNM,
-     &                  HPG,FFPC,FFPR,JACOBI,
-     &                  COMPLI,COEASP,ASPERI,JEU,NORM,
-     &                  CN,ALPHA,GAMMA,DELTAT,
-     &                  MMAT)
+      SUBROUTINE MMMAA2 (NBDM,NDIM,NNE,NNM,HPG,FFPC,FFPR,JACOBI,
+     &                   COMPLI,COEASP,ASPERI,JEU,NORM,
+     &                   CN,ALPHA,GAMMA,DELTAT, MMAT)
+      IMPLICIT NONE
+      INTEGER  NBDM,NDIM,NNE,NNM,COMPLI
+      REAL*8   MMAT(81,81), FFPC(9),FFPR(9),JACOBI,HPG 
+      REAL*8   COEASP,JEU,ASPERI,NORM(3)
+      REAL*8   CN,ALPHA,GAMMA,DELTAT
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,21 +25,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-      IMPLICIT NONE
-      INTEGER  NDIM,NNE,NNM
-      REAL*8   FFPC(9),FFPR(9),JACOBI,HPG 
-      REAL*8   COEASP,JEU,ASPERI,NORM(3)
-      INTEGER  COMPLI 
-      REAL*8   CN,ALPHA,GAMMA,DELTAT
-      REAL*8   MMAT(81,81)      
-C
-C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0364
 C ----------------------------------------------------------------------
 C
 C CONTRIBUTION DE LA COMPLIANCE AUX MATRICES ELEMENTAIRES A ET AT
 C POUR LE CONTACT METHODE CONTINUE 
 C
+C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
@@ -53,31 +49,9 @@ C IN  ALPHA  : PARAMETRE ALPHA DE NEWMARK
 C IN  GAMMA  : PARAMETRE "DELTA" DE NEWMARK
 C IN  DELTAT : INCREMENT DE TEMPS
 C I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
-C
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
-C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C
-      INTEGER I,J,K,L,II,JJ
-C
 C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
+      INTEGER   I, J, K, L, II, JJ
+C ----------------------------------------------------------------------
 C      
 C --- PREMIER BLOC DE LA MATRICE [AU]: PARTIE ESCLAVE ESCLAVE
 C
@@ -85,8 +59,8 @@ C
         DO 1510 J = 1,NNE
           DO 1410 K = 1,NDIM
             DO 1310 L = 1,NDIM
-              II = (2*NDIM)*(I-1)+L
-              JJ = (2*NDIM)*(J-1)+K
+              II = NBDM*(I-1)+L
+              JJ = NBDM*(J-1)+K
               MMAT(II,JJ) = (COEASP*2*(JEU-ASPERI)+
      &                       CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
      &                       HPG*FFPC(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
@@ -101,8 +75,8 @@ C
         DO 1910 J = 1,NNM
           DO 1810 K = 1,NDIM
             DO 1710 L = 1,NDIM
-              II = (2*NDIM)*(I-1)+L
-              JJ = (2*NDIM)*NNE+NDIM*(J-1)+K
+              II = NBDM*(I-1)+L
+              JJ = NBDM*NNE+NDIM*(J-1)+K
               MMAT(II,JJ) = -(COEASP*2*(JEU-ASPERI)+
      &                        CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
      &                        HPG*FFPC(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
@@ -117,8 +91,8 @@ C
         DO 2310 J = 1,NNE
           DO 2210 K = 1,NDIM
             DO 2110 L = 1,NDIM
-              II = (2*NDIM)*NNE+NDIM*(I-1)+L
-              JJ = (2*NDIM)*(J-1)+K
+              II = NBDM*NNE+NDIM*(I-1)+L
+              JJ = NBDM*(J-1)+K
               MMAT(II,JJ) = -(COEASP*2*(JEU-ASPERI)+
      &                        CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
      &                        HPG*FFPR(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
@@ -133,8 +107,8 @@ C
         DO 2710 J = 1,NNM
           DO 2610 K = 1,NDIM
             DO 2510 L = 1,NDIM
-              II = (2*NDIM)*NNE+NDIM*(I-1)+L
-              JJ = (2*NDIM)*NNE+NDIM*(J-1)+K
+              II = NBDM*NNE+NDIM*(I-1)+L
+              JJ = NBDM*NNE+NDIM*(J-1)+K
               MMAT(II,JJ) = (COEASP*2*(JEU-ASPERI)+
      &                       CN*GAMMA/(ALPHA*DELTAT))*COMPLI*
      &                       HPG*FFPR(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
@@ -143,5 +117,4 @@ C
 2710    CONTINUE
 2810  CONTINUE
 C
-      CALL JEDEMA()      
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,12 +150,11 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
          ),
 
          OBJET           =FACT(statut='f',max='**',
-           regles=(UN_PARMI('S_I','S_R','RESUME',),
-                   UN_PARMI('VALE','VALE_I','VALE_C','RESUME','S_R','S_I'),),
+           regles=(UN_PARMI('S_I','S_R',),
+                   UN_PARMI('VALE','VALE_I','VALE_C','S_R','S_I'),),
            NOM             =SIMP(statut='o',typ='TXM'),
            S_R             =SIMP(statut='f',typ='R'),
            S_I             =SIMP(statut='f',typ='I'),
-           RESUME          =SIMP(statut='f',typ='I'),
            VALE            =SIMP(statut='f',typ='R'),
            VALE_I          =SIMP(statut='f',typ='I'),
            VALE_C          =SIMP(statut='f',typ='C'),

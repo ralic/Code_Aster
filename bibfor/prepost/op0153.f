@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       CHARACTER*16 CONCEP, NOMCMD, VALEK(2)
       CHARACTER*19 RESU, LINST, KFORN, KVGLI
       CHARACTER*19 TABPUS,NOMTA,NEWTAB
-      CHARACTER*24 TYPE
+      CHARACTER*24 TYPE, VALK(2)
       COMPLEX*16   C16B
       DATA NOPAR  / 'PUIS_USUR_GLOBAL' ,
      &              'INST' , 'DUREE' , 'ORIG_INST' ,
@@ -350,10 +350,28 @@ C   ON REPREND UNE TABLE EXISTANTE
          ELSE
             NEWTAB = '&&OP0153.NEWTAB'
             CALL TBEXTB(NOMTA,'V',NEWTAB,1,'INST','LE',IBID,DINST,C16B,
-     &                  K8B,1.D-03,'RELA')
+     &                  K8B,1.D-03,'RELA',IRET)
+            IF ( IRET .EQ. 10 ) THEN
+               VALK(1) = 'INST'
+               VALK(2) = NOMTA
+               CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+            ELSEIF ( IRET .EQ. 20 ) THEN
+               VALK(1) = NOMTA
+               VALK(2) = 'INST'
+               CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+           ENDIF
             CALL JEDETC(' ',NOMTA(1:8),1)
             CALL TBEXTB(NEWTAB,'G',NOMTA,1,'INST','LE',IBID,DINST,C16B,
-     &                  K8B,1.D-03,'RELA')
+     &                  K8B,1.D-03,'RELA',IRET)
+            IF ( IRET .EQ. 10 ) THEN
+               VALK(1) = 'INST'
+               VALK(2) = NEWTAB
+               CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+            ELSEIF ( IRET .EQ. 20 ) THEN
+               VALK(1) = NEWTAB
+               VALK(2) = 'INST'
+               CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+           ENDIF
             CALL TBEXVE(NOMTA,'INST','&&OP0153.INS5','V',NBVPU,TYPE)
             CALL JEVEUO('&&OP0153.INS5','L',JINST5)
             DINST = ZR(JINST5+NBVPU-1)

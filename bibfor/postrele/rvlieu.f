@@ -4,7 +4,7 @@
       CHARACTER*8         TYPCO, COURBE, MAILLA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,10 +128,8 @@ C
          NDESC = SDCOUR//'.DESC'
          NNUME = SDCOUR//'.NUME'
          NCOOR = SDCOUR//'.COOR'
-         CALL JECREO(NREFE,'V E K8')
-         CALL JEVEUO(NREFE,'E',AREFE)
-         CALL JECREO(NNUME,'V E I')
-         CALL JEVEUO(NNUME,'E',ANUME)
+         CALL WKVECT(NREFE,'V V K8',1,AREFE)
+         CALL WKVECT(NNUME,'V V I',1,ANUME)
          ZI(ANUME) = ISD
          IF ( OKCRB .AND. SGTARC ) THEN
             CALL JELIRA(JEXNUM(COURBE//'.CNXOR',ISD),'LONMAX',

@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith14 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -452,5 +452,115 @@ cata_msg={
 76: _("""
   Objet &FETI.MONITORING.MPI inexistant !
  """),
+
+77: _("""
+ les types des deux matrices sont differents
+ type de la matrice de raideur :  %(k1)s 
+ type de la matrice de masse   :  %(k2)s 
+"""),
+
+78: _("""
+ les numerotations des deux matrices sont differentes
+ numerotation matrice de raideur :  %(k1)s 
+ numerotation matrice de masse   :  %(k2)s 
+"""),
+
+79: _("""
+ coefficient de conditionnement des lagranges:  %(r1)f 
+"""),
+
+80: _("""
+ affichage des coeff d'amortissement:
+ premier coefficient d'amortissement %(r1)f 
+ second coefficient d'amortissement %(r2)f 
+"""),
+
+81: _("""
+  calcul cyclique:aucun nombre de diametre nodaux demande
+"""),
+
+82: _("""
+ calcul du nombre de diametres modaux demande impossible
+ nombre de diametre demande --> %(i1)d 
+"""),
+
+83: _("""
+ calcul des modes propres limite a nombre de diametres maximum --> %(i1)d 
+"""),
+
+84: _("""
+ cyclique: aucun nombre de diametres nodaux licite
+"""),
+
+85: _("""
+ liste de frequences incompatible avec optionnombre de frequences --> %(i1)d 
+ option --> %(k1)s 
+"""),
+
+86: _("""
+ liste de frequences incompatible avec optionnombre de frequences --> %(i1)d 
+ option --> %(k1)s 
+"""),
+
+87: _("""
+  resolution du probleme generalise complexe
+      nombre de modes dynamiques:  %(i1)d 
+      nombre de ddl droite:  %(i2)d 
+"""),
+
+88: _("""
+      nombre de ddl axe:  %(i1)d
+             dont cycliques:  %(i2)d 
+             dont non cycliques:  %(i3)d 
+"""),
+
+89: _("""
+      dimensiom max du probleme:  %(i1)d 
+"""),
+
+90: _("""
+ etude 2dangle nautique unique :  %(r1)f 
+"""),
+
+91: _("""
+ noeud sur l'axe_z noeud :  %(k1)s 
+"""),
+
+92: _("""
+ noeud sur l'axe_z noeud :  %(k1)s 
+"""),
+
+93: _("""
+ arret sur dimension matrice teta incorrecte dimension effective:  %(i1)d 
+ dimension en argument:  %(i2)d 
+"""),
+
+94: _("""
+  erreur  de repetitivite cyclique
+"""),
+
+95: _("""
+  il manque un ddl sur un noeud  axe type du ddl -->  %(k1)s 
+  nom du noeud -->  %(k2)s 
+"""),
+
+96: _("""
+  erreur  de repetitivite cyclique
+"""),
+
+97: _("""
+  il manque un ddl sur un noeud  axe type du ddl -->  %(k1)s 
+  nom du noeud -->  %(k2)s 
+"""),
+
+98: _("""
+ arret sur probleme de repetitivite cyclique
+"""),
+
+99: _("""
+ arret sur nombres de noeuds interface non identiques 
+ nombre de noeuds interface droite:  %(i1)d 
+ nombre de noeuds interface gauche:  %(i2)d 
+"""),
 
 }

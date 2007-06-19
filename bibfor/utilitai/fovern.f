@@ -4,7 +4,7 @@
       CHARACTER*(*)     VECNOM(NBFONC),    VECPRO(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,9 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
       INTEGER      I,JPROF,NBPF
+      INTEGER VALI
       CHARACTER*24 CHNOM
+      CHARACTER*24 VALK(3)
       CHARACTER*16 PROLGD,INTERP,TYPFON,NOMPF(10)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -67,9 +69,8 @@ C     ------------------------------------------------------------------
             GO TO 2
          END IF
     1 CONTINUE
-      CALL UTDEBM('E','FOVERN','RIEN QUE DES CONSTANTES POUR UNE NAPPE')
-      CALL UTIMPI('L','NOMBRE DE FONCTIONS CONSTANTES',1,NBFONC)
-      CALL UTFINM()
+      VALI = NBFONC
+      CALL U2MESG('E','UTILITAI8_1',0,' ',1,VALI,0,0.D0)
       IER=IER+1
     2 CONTINUE
       DO 3 I=1,NBFONC
@@ -79,11 +80,10 @@ C     ------------------------------------------------------------------
          CALL FONBPA(CHNOM(1:19),ZK16(JPROF),TYPFON,10,NBPF,NOMPF)
          CALL JELIBE(CHNOM)
          IF (NOMPF(1).NE.VECPRO(6).AND.NOMPF(1).NE.'TOUTPARA') THEN
-            CALL UTDEBM('E','FOVERN','PARAMETRES DIFFERENTS')
-            CALL UTIMPK('L','FONCTION',1,VECNOM(I) )
-            CALL UTIMPK('S','DE PARAMETRE',1,NOMPF(1))
-            CALL UTIMPK('S','AU LIEU DE',1,VECPRO(6))
-            CALL UTFINM()
+            VALK (1) = VECNOM(I)
+            VALK (2) = NOMPF(1)
+            VALK (3) = VECPRO(6)
+            CALL U2MESG('E','UTILITAI8_2',3,VALK,0,0,0,0.D0)
             IER=IER+1
          END IF
          VECPRO(6+2*I-1) = INTERP

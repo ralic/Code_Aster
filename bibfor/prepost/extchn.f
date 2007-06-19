@@ -9,7 +9,7 @@
       CHARACTER*(*)       MCF
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -250,13 +250,11 @@ C
       NOMAUX = ZK24(AREFCH+1-1)
       NMAILA = NOMAUX(1:8)
 C
-      CALL JECREO(NNOMA,'V E K8')
-      CALL JEVEUO(NNOMA,'E',ANOMA)
+      CALL WKVECT(NNOMA,'V V K8',1,ANOMA)
 C
       ZK8(ANOMA) = NMAILA
 C
-      CALL JECREO(NNUGD,'V E I')
-      CALL JEVEUO(NNUGD,'E',ANUGD)
+      CALL WKVECT(NNUGD,'V V I',1,ANUGD)
 C
       ZI(ANUGD) = GD
 C

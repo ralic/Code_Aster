@@ -1,7 +1,7 @@
       SUBROUTINE REC110(NOMRES,NOMSQU,MODGEN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,13 +52,13 @@ C
 C   PARAMETER : REPRESENTE LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 C   SOUS-JACENTE TRAITEE
 C
-      CHARACTER*6  PGC
+      CHARACTER*24 VALK(4)
       CHARACTER*8  NOMRES,NOMSQU,MODGEN,TT,NOMSST,LINTF,LJNTF
       CHARACTER*8  K8BID,NOMNOE,CRIT
       LOGICAL      FUSION
 C
 C-----------------------------------------------------------------------
-      DATA PGC,TT      /'REC110','&&REC110'/
+      DATA TT      /'&&REC110'/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -121,22 +121,20 @@ C         DE RECO_GLOBAL
          DO 10 IN = 1,NBNI
             NUMERO = ZI(LINTD-1+IN)
             IF (ZI(LSK-1+NUMERO+INCR).NE.ISTAC) THEN
-               CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+               CALL U2MESG('E+','ALGORITH15_55',0,' ',0,0,0,0.D0)
                CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
-               CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
-               CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LINTF)
-               CALL UTIMPK('L',' N APPARTIENT PAS LA SOUS-STRUCTURE: ',
-     &                     1,NOMSST)
-               CALL UTFINM
+               VALK (1) = K8BID
+               VALK (2) = LINTF
+               VALK (3) = NOMSST
+               CALL U2MESG('E','ALGORITH15_56',3,VALK,0,0,0,0.D0)
             ENDIF
             IF (ZI(LSK2-1+NUMERO+INCR).NE.NUMERO) THEN
-               CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+               CALL U2MESG('E+','ALGORITH15_57',0,' ',0,0,0,0.D0)
                CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
-               CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
-               CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LINTF)
-               CALL UTIMPK('L',' N EST PAS CORRECTEMENT REFERENCE '//
-     &                     'DANS LE SQUELETTE : ',1,NOMSQU)
-               CALL UTFINM
+               VALK (1) = K8BID
+               VALK (2) = LINTF
+               VALK (3) = NOMSQU
+               CALL U2MESG('E','ALGORITH15_58',3,VALK,0,0,0,0.D0)
 
             ENDIF
             ZI(LTABI-1+IN) = NUMERO + INCR
@@ -160,22 +158,20 @@ C        ---
             DO 30 JN = 1,NBNJ
                NUMERO = ZI(LJNTD-1+JN)
                IF (ZI(LSK-1+NUMERO+JNCR).NE.JSTAC) THEN
-                CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+                CALL U2MESG('E+','ALGORITH15_59',0,' ',0,0,0,0.D0)
                 CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
-                CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
-                CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LJNTF)
-                CALL UTIMPK('L',' N APPARTIENT PAS LA SOUS-STRUCTURE: '
-     &                      ,1,NOMSST)
-                CALL UTFINM
+                VALK (1) = K8BID
+                VALK (2) = LJNTF
+                VALK (3) = NOMSST
+                CALL U2MESG('E','ALGORITH15_60',3,VALK,0,0,0,0.D0)
                ENDIF
                IF (ZI(LSK2-1+NUMERO+JNCR).NE.NUMERO) THEN
-                CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+                CALL U2MESG('E+','ALGORITH15_61',0,' ',0,0,0,0.D0)
                 CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
-                CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
-                CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LJNTF)
-                CALL UTIMPK('L',' N EST PAS CORRECTEMENT REFERENCE '//
-     &                      'DANS LE SQUELETTE : ',1,NOMSQU)
-                CALL UTFINM
+                VALK (1) = K8BID
+                VALK (2) = LJNTF
+                VALK (3) = NOMSQU
+                CALL U2MESG('E','ALGORITH15_62',3,VALK,0,0,0,0.D0)
                ENDIF
                ZI(LTABJ-1+JN) = NUMERO + JNCR
  30         CONTINUE
@@ -228,8 +224,7 @@ C
       DO 170 IRECO = 1,NBRECO
          CALL GETVID('RECO_GLOBAL','GROUP_NO_1',IRECO,1,0,K8BID,NR)
          IF (NR .EQ. 0) THEN
-            CALL UTDEBM('F',PGC,' CONFLIT MOT CLES TOUT ET GROUP_NO'//
-     &                          ' DANS RECO_GLOBAL ')
+            CALL U2MESG('F+','ALGORITH15_63',0,' ',0,0,0,0.D0)
          ENDIF
 C        --- LECTURE DE LA PRECISION
          CALL GETVR8('RECO_GLOBAL','PRECISION',IRECO,1,1,PREC,IBID)
@@ -249,21 +244,18 @@ C        --- RECHERCHE DE LA SOUS-STRUCTURE ---
              IF (ZK8(LSTAC-1+ISTAC).NE.NOMSST) GOTO 90
          ENDIF
          IF (ISTAC.GT.NBSTAC) THEN
-            CALL UTDEBM('F',PGC,' ERREUR DE NOM ')
-            CALL UTIMPK('L',' LA SOUS-STRUCTURE : ',1,NOMSST)
-            CALL UTIMPK('L',' N A PAS ETE TROUVEE ',0,K8BID)
-            CALL UTFINM
+            VALK (1) = NOMSST
+            CALL U2MESG('F','ALGORITH15_64',1,VALK,0,0,0,0.D0)
          ENDIF
          CALL MGUTDM(MODGEN,NOMSST,IBID,'NOM_LIST_INTERF',IBID,LINTF)
          CALL JENUNO(JEXNUM(LINTF//'.IDC_NOMS',2),K8BID)
          CALL GETVID('RECO_GLOBAL','GROUP_NO_1',IRECO,1,1,NOMNOE,IBID)
          IF (NOMNOE .NE. K8BID) THEN
-            CALL UTDEBM('E',PGC,' INCOHERENCE DE NOM ')
-            CALL UTIMPK('L',' L INTERFACE DYNAMIQUE : ',1,LINTF)
-            CALL UTIMPK('L',' DE LA SOUS-STRUCTURE : ',1,NOMSST)
-            CALL UTIMPK('L',' A POUR GROUPE DE NOEUD : ',1,K8BID)
-            CALL UTIMPK('L',' OR GROUP_NO_1 = ',1,NOMNOE)
-            CALL UTFINM
+            VALK (1) = LINTF
+            VALK (2) = NOMSST
+            VALK (3) = K8BID
+            VALK (4) = NOMNOE
+            CALL U2MESG('E','ALGORITH15_65',4,VALK,0,0,0,0.D0)
          ENDIF
          CALL JELIRA(LINTF//'.IDC_DEFO','LONUTI',NNODES,K8BID)
          CALL DISMOI('F','NB_EC',LINTF,'INTERF_DYNA',NBEC,K8BID,IRET)
@@ -289,21 +281,18 @@ C        --- RECHERCHE DE LA SOUS-STRUCTURE ---
              IF (ZK8(LSTAC-1+JSTAC).NE.NOMSST) GOTO 120
          ENDIF
          IF (JSTAC.GT.NBSTAC) THEN
-            CALL UTDEBM('F',PGC,' ERREUR DE NOM ')
-            CALL UTIMPK('L',' LA SOUS-STRUCTURE : ',1,NOMSST)
-            CALL UTIMPK('L',' N A PAS ETE TROUVEE ',0,K8BID)
-            CALL UTFINM
+            VALK (1) = NOMSST
+            CALL U2MESG('F','ALGORITH15_66',1,VALK,0,0,0,0.D0)
          ENDIF
          CALL MGUTDM(MODGEN,NOMSST,IBID,'NOM_LIST_INTERF',IBID,LJNTF)
          CALL JENUNO(JEXNUM(LJNTF//'.IDC_NOMS',1),K8BID)
          CALL GETVID('RECO_GLOBAL','GROUP_NO_2',IRECO,1,1,NOMNOE,IBID)
          IF (NOMNOE .NE. K8BID) THEN
-            CALL UTDEBM('E',PGC,' INCOHERENCE DE NOM ')
-            CALL UTIMPK('L',' L INTERFACE DYNAMIQUE : ',1,LJNTF)
-            CALL UTIMPK('L',' DE LA SOUS-STRUCTURE : ',1,NOMSST)
-            CALL UTIMPK('L',' A POUR GROUPE DE NOEUD : ',1,K8BID)
-            CALL UTIMPK('L',' OR GROUP_NO_2 = ',1,NOMNOE)
-            CALL UTFINM
+            VALK (1) = LJNTF
+            VALK (2) = NOMSST
+            VALK (3) = K8BID
+            VALK (4) = NOMNOE
+            CALL U2MESG('E','ALGORITH15_67',4,VALK,0,0,0,0.D0)
          ENDIF
          CALL JELIRA(LJNTF//'.IDC_DEFO','LONUTI',NNODES,K8BID)
          CALL DISMOI('F','NB_EC',LJNTF,'INTERF_DYNA',NBEC,K8BID,IRET)

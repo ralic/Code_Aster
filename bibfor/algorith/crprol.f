@@ -1,8 +1,8 @@
-      SUBROUTINE CRPROL ( )
+      SUBROUTINE CRPROL ( )       
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER       IBID  , NDIMF , NBNOI , NBNOF , NBINST, IAD
-      INTEGER VALI
+      INTEGER       VALI , IRET
       INTEGER       JINST , IORD  , JCNSVL, JCNSLE, NBVAL
       INTEGER       JCNSVE, AXYZMF, JTBCOR, JTBRES
       INTEGER       IMIN  , IMAX  , INOI  , INOF  , INDICE, JTBPDG
@@ -59,7 +59,7 @@ C
       CHARACTER*19  TABCOR, TABVAL, TABPDG, TABRES, TABNOE
       CHARACTER*19  CNOINR, CNSINR
       CHARACTER*24  KNUM  , TABL2
-      CHARACTER*24 VALK
+      CHARACTER*24  VALK(2)
 C
       CALL JEMARQ()
 C
@@ -85,7 +85,7 @@ C
       NDIMF = 3
       IF ( K8B.EQ.'OUI' ) NDIMF = 2
       IF ( NDIMF.NE.3 ) THEN
-            VALK = NOMMAF
+         VALK(1) = NOMMAF
          CALL U2MESG('F', 'ALGORITH12_68',1,VALK,0,0,0,0.D0)
       ENDIF
       CALL JEVEUO ( NOMMAF//'.COORDO    .VALE', 'L', AXYZMF )
@@ -121,7 +121,16 @@ C ------ ON EXTRAIT LA SOUS-TABLE POUR L'INSTANT COURANT
 C
          DINST = ZR(JINST+IORD-1)
          CALL TBEXTB ( TABLE, 'V', TABL2, 1, 'INST', 'EQ',
-     &                    IBID, DINST, CBID, K8B, PREC, CRIT )
+     &                 IBID, DINST, CBID, K8B, PREC, CRIT, IRET )
+         IF ( IRET .EQ. 10 ) THEN
+            VALK(1) = 'INST'
+            VALK(2) = TABLE
+            CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+         ELSEIF ( IRET .EQ. 20 ) THEN
+            VALK(1) = TABLE
+            VALK(2) = 'INST'
+            CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+         ENDIF
 C
 C ------ ON RECUPERE LES COORCONNEES DES NOEUDS POUR L'INSTANT COURANT
 C
@@ -212,7 +221,7 @@ C
             IF (RVAL.LT.0.0D0) THEN
                IF (PGAUCH.EQ.'EXCLU') THEN
                   CALL JENUNO(JEXNUM(NOMMAF//'.NOMNOE',INO),NOM1)
-            VALK = NOM1
+                  VALK(1) = NOM1
                   CALL U2MESG('F', 'ALGORITH12_71',1,VALK,0,0,0,0.D0)
                ELSE IF (PGAUCH.EQ.'CONSTANT') THEN
                   INOMIN = ZI(JTBRES)
@@ -231,7 +240,7 @@ C
             ELSE
                IF (PDROIT.EQ.'EXCLU') THEN
                   CALL JENUNO(JEXNUM(NOMMAF//'.NOMNOE',INO),NOM1)
-            VALK = NOM1
+                  VALK(1) = NOM1
                   CALL U2MESG('F', 'ALGORITH12_72',1,VALK,0,0,0,0.D0)
                ELSE IF (PDROIT.EQ.'CONSTANT') THEN
                   INOMAX = ZI(JTBRES-1+NBNOI)
@@ -252,7 +261,7 @@ C
 C
          CALL RSEXCH (RESU, 'TEMP', IORD, CNOINR, IBID)
          IF (IBID.NE.100) THEN
-            VALK = RESU
+            VALK(1) = RESU
             VALI = IORD
             CALL U2MESG('F', 'ALGORITH12_73',1,VALK,1,VALI,0,0.D0)
          ENDIF

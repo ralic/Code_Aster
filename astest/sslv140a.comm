@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/06/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE MODULES EFFECTIFS EN PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,7 +117,8 @@ MESTX=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARGX,),);
 
 MESTX=CALC_ELEM(reuse =MESTX,
-               RESULTAT=MESTX,);
+               RESULTAT=MESTX,OPTION='EQUI_ELGA_SIGM');
+
 
 CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',
@@ -128,9 +129,12 @@ CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 INT_SIXX=POST_ELEM(MODELE=MO,
                    NUME_ORDRE=1,
                    RESULTAT=MESTX,
-                   INTEGRALE=_F(NOM_CHAM='SIEF_ELGA_DEPL',
+                   INTEGRALE=(_F(NOM_CHAM='SIEF_ELGA_DEPL',
                                 NOM_CMP=('SIXX'),
-                                TOUT='OUI'),)
+                                TOUT='OUI'),
+                              _F(NOM_CHAM='EQUI_ELGA_SIGM',
+                                NOM_CMP=('VMIS'),
+                                TOUT='OUI'),),)
 
 IMPR_TABLE(TABLE=INT_SIXX)
 
@@ -158,6 +162,22 @@ TEST_TABLE(TABLE=INT_SIXX,
            REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
            VALE=133333);
+
+TEST_TABLE(TABLE=INT_SIXX,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1),
+           NOM_PARA='INTE_VMIS',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=0.02,
+           VALE=269681.0);
+
+TEST_TABLE(TABLE=INT_SIXX,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1),
+           NOM_PARA='MOYE_VMIS',
+           REFERENCE='NON_REGRESSION',
+           PRECISION=0.02,
+           VALE=134840.0);
 
 TEST_TABLE(TABLE=INT_SIX1,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',

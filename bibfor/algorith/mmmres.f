@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(DEFICO,DEPDEL,NUMEDD,NOMA,CNSINR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,22 +75,25 @@ C ======================================================================
       CHARACTER*19 FCONT,FFROT,FCONTS,FFROTS,DEPDES,DEPCN
       CHARACTER*19 FCTCN,FFROCN
       CHARACTER*24 JEU,GLIE,GLIM,CONTAC,PREMIE
+      LOGICAL   LFROT
+      INTEGER   IFROT
 
       PARAMETER (EPS=1.D-6)
 
       CALL JEMARQ()
-      FCONT = '&&MMMRES.CONT'
+
+      FCONT  = '&&MMMRES.CONT'
       FCONTS = '&&MMMRES.CONT_S'
-      FCTCN = '&&MMMRES.FCTCN'
-      FFROT = '&&MMMRES.FROT'
+      FCTCN  = '&&MMMRES.FCTCN'
+      FFROT  = '&&MMMRES.FROT'
       FFROTS = '&&MMMRES.FROT_S'
       FFROCN = '&&MMMRES.FROTCN'
       DEPDES = '&&MMMRES.DEPDES'
-      DEPCN = '&&MMMRES.DEPCN'
+      DEPCN  = '&&MMMRES.DEPCN'
       CNSINR = '&&MMMRES.CNSRINR'
-      JEU = '&&MMMRES.JEU'
-      GLIE = '&&MMMRES.GLIE'
-      GLIM = '&&MMMRES.GLIM'
+      JEU    = '&&MMMRES.JEU'
+      GLIE   = '&&MMMRES.GLIE'
+      GLIM   = '&&MMMRES.GLIM'
       CONTAC = '&&MMMRES.CONTAC'
       PREMIE = '&&MMMRES.PREMIE'
 
@@ -117,12 +120,15 @@ C---------RECHERCHE DE LA METHODE D INTEGRATION
 
         ZTABF = CFMMVD('ZTABF')
 
+        LFROT = .FALSE.
         NBZONE = INT(ZR(JCMCF))
         DO 10 I = 1,NBZONE
           IF (ZR(JCMCF+22* (I-1)+1).EQ.2.D0) THEN
             CALL U2MESS('A','ALGORITH6_12')
             GO TO 190
           END IF
+          IFROT = INT(ZR(JCMCF+22*(I-1)+5))
+          IF ( IFROT .EQ. 3 ) LFROT = .TRUE.
    10   CONTINUE
 
         LICMPR(1) = 'CONT'
@@ -165,9 +171,17 @@ C ------ UNE LECTURE FACILE
         LICMP4(4) = 'LAGS_F1'
 
         IF (DIM.EQ.3) THEN
-          CALL CNSRED(DEPDES,0,0,6,LICMP6,'V',DEPCN)
+           IF ( LFROT ) THEN
+              CALL CNSRED(DEPDES,0,0,6,LICMP6,'V',DEPCN)
+           ELSE
+              CALL CNSRED(DEPDES,0,0,4,LICMP6,'V',DEPCN)
+           END IF
         ELSE IF (DIM.EQ.2) THEN
-          CALL CNSRED(DEPDES,0,0,4,LICMP4,'V',DEPCN)
+           IF ( LFROT ) THEN
+              CALL CNSRED(DEPDES,0,0,4,LICMP4,'V',DEPCN)
+           ELSE
+              CALL CNSRED(DEPDES,0,0,3,LICMP4,'V',DEPCN)
+           END IF
         END IF
 
         CALL JEVEUO(DEPCN//'.CNSV','L',JDEPDE)
@@ -262,7 +276,9 @@ C------DES MAILLES.
           DO 60 IMA = 1,NTMAE
             NBNOC = ZI(JMAESC+3* (IMA-1)+3)
             IZONE = ZI(JMAESC+3* (IMA-1)+2)
-            INTEGR = INT(ZR(JCMCF)+22* (IZONE-1)+1)
+CCCCCCCCC   ??????
+            INTEGR = INT(ZR(JCMCF+22*(IZONE-1)+1))
+            IFROT  = INT(ZR(JCMCF+22*(IZONE-1)+5))
 
 C ---- INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
             IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
@@ -337,13 +353,21 @@ C----POUR LE CALCUL DU GLISSEMENT
               DO 30 I = 1,NNOM
                 NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
 
-                CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+1))
-                CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+2))
-                CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+3))
-
-                DEPLPE(1) = DEPLPE(1) + ZR(JDEPDE-1+6* (NUNO-1)+1)*FF(I)
-                DEPLPE(2) = DEPLPE(2) + ZR(JDEPDE-1+6* (NUNO-1)+2)*FF(I)
-                DEPLPE(3) = DEPLPE(3) + ZR(JDEPDE-1+6* (NUNO-1)+3)*FF(I)
+                IF ( IFROT .EQ. 3 ) THEN
+                CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+2))
+                CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+3))
+                DEPLPE(1) = DEPLPE(1) + ZR(JDEPDE-1+6*(NUNO-1)+1)*FF(I)
+                DEPLPE(2) = DEPLPE(2) + ZR(JDEPDE-1+6*(NUNO-1)+2)*FF(I)
+                DEPLPE(3) = DEPLPE(3) + ZR(JDEPDE-1+6*(NUNO-1)+3)*FF(I)
+                ELSE
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+3))
+                DEPLPE(1) = DEPLPE(1) + ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
+                DEPLPE(2) = DEPLPE(2) + ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
+                DEPLPE(3) = DEPLPE(3) + ZR(JDEPDE-1+4*(NUNO-1)+3)*FF(I)
+                ENDIF
 
    30         CONTINUE
 
@@ -400,13 +424,21 @@ C----DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
               DO 40 I = 1,NNOM
                 NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
 
+                IF ( IFROT .EQ. 3 ) THEN
                 CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+1))
                 CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+2))
                 CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+3))
-
                 DEPLPM(1) = DEPLPM(1) + ZR(JDEPDE-1+6* (NUNO-1)+1)*FF(I)
                 DEPLPM(2) = DEPLPM(2) + ZR(JDEPDE-1+6* (NUNO-1)+2)*FF(I)
                 DEPLPM(3) = DEPLPM(3) + ZR(JDEPDE-1+6* (NUNO-1)+3)*FF(I)
+                ELSE
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+3))
+                DEPLPM(1) = DEPLPM(1) + ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
+                DEPLPM(2) = DEPLPM(2) + ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
+                DEPLPM(3) = DEPLPM(3) + ZR(JDEPDE-1+4*(NUNO-1)+3)*FF(I)
+                ENDIF
 
    40         CONTINUE
 
@@ -473,7 +505,8 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DE CONTACT
               DO 90 IMA = 1,NTMAE
                 NBNOC = ZI(JMAESC+3* (IMA-1)+3)
                 IZONE = ZI(JMAESC+3* (IMA-1)+2)
-                INTEGR = INT(ZR(JCMCF)+22* (IZONE-1)+1)
+                INTEGR = INT(ZR(JCMCF+22*(IZONE-1)+1))
+                IFROT  = INT(ZR(JCMCF+22*(IZONE-1)+5))
 
                 IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
@@ -536,9 +569,15 @@ C----POUR LE CALCUL DU GLISSEMENT
                   DO 70 I = 1,NNOM
                     NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
 
-                    CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+1))
-                    CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+2))
-                    CALL ASSERT(ZL(JDEPDL-1+6* (NUNO-1)+3))
+                    IF ( IFROT .EQ. 3 ) THEN
+                      CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+1))
+                      CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+2))
+                      CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+3))
+                    ELSE
+                      CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
+                      CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
+                      CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+3))
+                    ENDIF
 
                     COORE(1) = COORE(1) + ZR(JCOOR-1+3* (NUNO-1)+1)*
      &                         FF(I)
@@ -575,9 +614,15 @@ C ____ RECUPERATION DES DONNES AUX NOEUDS
 
                     IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
 
-                      CALL ASSERT(ZL(JDEPDL-1+6* (NUNOE-1)+1))
-                      CALL ASSERT(ZL(JDEPDL-1+6* (NUNOE-1)+2))
-                      CALL ASSERT(ZL(JDEPDL-1+6* (NUNOE-1)+3))
+                      IF ( IFROT .EQ. 3 ) THEN
+                        CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+1))
+                        CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+2))
+                        CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+3))
+                      ELSE
+                        CALL ASSERT(ZL(JDEPDL-1+4*(NUNOE-1)+1))
+                        CALL ASSERT(ZL(JDEPDL-1+4*(NUNOE-1)+2))
+                        CALL ASSERT(ZL(JDEPDL-1+4*(NUNOE-1)+3))
+                      ENDIF
 
                       ZL(JPREMI-1+NUNOE) = .TRUE.
                       ZL(JCNSLR-1+20* (NUNOE-1)+1) = .TRUE.
@@ -640,8 +685,12 @@ C ------ RECUPERATION DES FORCES NODALES DE CONTACT
 
 C ----- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
 
-                      LAGSF = SQRT((ZR(JDEPDE-1+6* (NUNOE-1)+5))**2+
-     &                        (ZR(JDEPDE-1+6* (NUNOE-1)+6))**2)
+                      IF ( IFROT .EQ. 3 ) THEN
+                      LAGSF = SQRT((ZR(JDEPDE-1+6*(NUNOE-1)+5))**2+
+     &                        (ZR(JDEPDE-1+6*(NUNOE-1)+6))**2)
+                      ELSE
+                        LAGSF = 0.D0
+                      ENDIF
 
 C ----- Y-A-T-IL DU FROTTEMENT ?
 
@@ -734,7 +783,8 @@ C------UNE DES MAILLES.
           NTMAE = ZI(JMAESC)
           DO 140 IMA = 1,NTMAE
             IZONE = ZI(JMAESC+3* (IMA-1)+2)
-            INTEGR = INT(ZR(JCMCF)+22* (IZONE-1)+1)
+            INTEGR = INT(ZR(JCMCF+22*(IZONE-1)+1))
+            IFROT  = INT(ZR(JCMCF+22*(IZONE-1)+5))
 
 C----NBNOC= NOMBRE DE POINTS D'INTEGRATION DE CONTACT DE LA MAILLE IMA
             NBNOC = ZI(JMAESC+3* (IMA-1)+3)
@@ -779,10 +829,17 @@ C ---- DEPLACEMENT TANGENTIEL DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 
               DO 110 I = 1,NNOE
                 NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
-                CALL ASSERT(ZL(JDEPDL-1+4* (NUNO-1)+1))
-                CALL ASSERT(ZL(JDEPDL-1+4* (NUNO-1)+2))
-                DEPLPE(1) = DEPLPE(1) + ZR(JDEPDE-1+4* (NUNO-1)+1)*FF(I)
-                DEPLPE(2) = DEPLPE(2) + ZR(JDEPDE-1+4* (NUNO-1)+2)*FF(I)
+                IF ( IFROT .EQ. 3 ) THEN
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
+                DEPLPE(1) = DEPLPE(1) + ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
+                DEPLPE(2) = DEPLPE(2) + ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
+                ELSE
+                CALL ASSERT(ZL(JDEPDL-1+3*(NUNO-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+3*(NUNO-1)+2))
+                DEPLPE(1) = DEPLPE(1) + ZR(JDEPDE-1+3*(NUNO-1)+1)*FF(I)
+                DEPLPE(2) = DEPLPE(2) + ZR(JDEPDE-1+3*(NUNO-1)+2)*FF(I)
+                ENDIF
   110         CONTINUE
 
 
@@ -809,10 +866,17 @@ C      PROJETE DU NOEUD ESJCNSLRCLAVE SUR LA MAILLE MAITRE
 
               DO 120 I = 1,NNOM
                 NUNO = ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
-                CALL ASSERT(ZL(JDEPDL-1+4* (NUNO-1)+1))
-                CALL ASSERT(ZL(JDEPDL-1+4* (NUNO-1)+2))
-                DEPLPM(1) = DEPLPM(1) + ZR(JDEPDE-1+4* (NUNO-1)+1)*FF(I)
-                DEPLPM(2) = DEPLPM(2) + ZR(JDEPDE-1+4* (NUNO-1)+2)*FF(I)
+                IF ( IFROT .EQ. 3 ) THEN
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
+                DEPLPM(1) = DEPLPM(1) + ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
+                DEPLPM(2) = DEPLPM(2) + ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
+                ELSE
+                CALL ASSERT(ZL(JDEPDL-1+3*(NUNO-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+3*(NUNO-1)+2))
+                DEPLPM(1) = DEPLPM(1) + ZR(JDEPDE-1+3*(NUNO-1)+1)*FF(I)
+                DEPLPM(2) = DEPLPM(2) + ZR(JDEPDE-1+3*(NUNO-1)+2)*FF(I)
+                ENDIF
   120         CONTINUE
 
 C----ECRITURE SUR LES VECTEURS DE TRAVAIL DES JEUX, DU GLISSEMENT ET DE
@@ -871,7 +935,8 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DU MAILLAGE
               ZL(JPREMI-1+NUNOE) = .FALSE.
               DO 170 IMA = 1,NTMAE
                 IZONE = ZI(JMAESC+3* (IMA-1)+2)
-                INTEGR = INT(ZR(JCMCF)+22* (IZONE-1)+1)
+                INTEGR = INT(ZR(JCMCF+22*(IZONE-1)+1))
+                IFROT  = INT(ZR(JCMCF+22*(IZONE-1)+5))
                 NBNOC = ZI(JMAESC+3* (IMA-1)+3)
 
                 IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
@@ -969,7 +1034,11 @@ C ------ RECUPERATION DES FORCES NODALES DE CONTACT
                       RN = SQRT(RNX**2+RNY**2)
 
 C ----- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
-                      LAGSF = ABS(ZR(JDEPDE-1+4* (NUNOE-1)+4))
+                      IF ( IFROT .EQ. 3 ) THEN
+                        LAGSF = ABS(ZR(JDEPDE-1+4* (NUNOE-1)+4))
+                      ELSE
+                        LAGSF = 0.D0
+                      ENDIF
 C ----- Y-A-T-IL DU FROTTEMENT ?
 
                       IZONE = ZI(JZOCO-1+INO)

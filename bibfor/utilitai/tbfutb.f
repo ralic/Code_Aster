@@ -7,7 +7,7 @@
       CHARACTER*(*)       TABOUT, BASOUT, LTABIN(*), PARA, TYPPAR, VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C ----------------------------------------------------------------------
       CHARACTER*4  TYPE, KTYPE
       CHARACTER*19 NOMTAB
       CHARACTER*24 NOMJV, NOMJVL, INPAR, JNPAR, KNPAR
+      CHARACTER*24 VALK(3)
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -101,10 +102,9 @@ C
          DO 12 J = 1 , NBPARA
             JNPAR = ZK24(JTBLP+4*(J-1))
             IF ( INPAR .EQ. JNPAR ) THEN
-               CALL UTDEBM('F','TBFUTB','ERREUR DANS LES DONNEES')
-               CALL UTIMPK('L','PARAMETRE EXISTE DEJA: ',1,JNPAR)
-               CALL UTIMPK('S',' DANS LA TABLE: ',1,NOMTAB)
-               CALL UTFINM( )
+               VALK (1) = JNPAR
+               VALK (2) = NOMTAB
+               CALL U2MESG('F','UTILITAI8_20',2,VALK,0,0,0,0.D0)
             ENDIF
  12      CONTINUE
 C
@@ -136,11 +136,10 @@ C
                KTYPE = ZK8(JTYPE+K-1)
                IF ( KNPAR .EQ. JNPAR ) THEN
                  IF (TYPE .NE. KTYPE ) THEN
-                   CALL UTDEBM('F','TBFUTB','ERREUR DANS LES DONNEES')
-                   CALL UTIMPK('L','TYPE DE PARAMETRE: ',1,JNPAR)
-               CALL UTIMPK('S',' DIFFERENT POUR LE PARAMETRE: ',1,JNPAR)
-                   CALL UTIMPK('S',' ET LE PARAMETRE: ',1,KNPAR)
-                   CALL UTFINM( )
+                   VALK (1) = JNPAR
+                   VALK (2) = JNPAR
+                   VALK (3) = KNPAR
+                   CALL U2MESG('F','UTILITAI8_21',3,VALK,0,0,0,0.D0)
                  ENDIF
                  GOTO 22
                ENDIF

@@ -7,7 +7,7 @@ C
       CHARACTER*19 TBINTH
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/03/2002   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,11 +51,12 @@ C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------------
 C ======================================================================
-      INTEGER       JINSTH, IBID, ITH, JTETH1, JTETH2, NOTOT
+      INTEGER       JINSTH, IBID, ITH, JTETH1, JTETH2, NOTOT, IRET
       REAL*8        LPREC, TEMPH1, TEMPH2
       COMPLEX*16    CBID
       CHARACTER*8   LCRIT, K8B
       CHARACTER*19  TMPTH1, TMPTH2, DEFTH1, DEFTH2
+      CHARACTER*24  VALK(2)
 C ======================================================================
       CALL JEMARQ()
 C ======================================================================
@@ -84,9 +85,27 @@ C ======================================================================
 C --- RECUPERATION DES SOUS-TABLES ASSOCIEES A L'INSTANT COURANT -------
 C ======================================================================
       CALL TBEXTB (TABTHR, 'V', TMPTH1, 1, 'INST', 'EQ',
-     +             IBID, TEMPH1, CBID, K8B, LPREC, LCRIT )
+     +             IBID, TEMPH1, CBID, K8B, LPREC, LCRIT, IRET )
+      IF ( IRET .EQ. 10 ) THEN
+         VALK(1) = 'INST'
+         VALK(2) = TABTHR
+         CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+      ELSEIF ( IRET .EQ. 20 ) THEN
+         VALK(1) = TABTHR
+         VALK(2) = 'INST'
+         CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+      ENDIF
       CALL TBEXTB (TABTHR, 'V', TMPTH2, 1, 'INST', 'EQ',
-     +             IBID, TEMPH2, CBID, K8B, LPREC, LCRIT )
+     +             IBID, TEMPH2, CBID, K8B, LPREC, LCRIT, IRET )
+      IF ( IRET .EQ. 10 ) THEN
+         VALK(1) = 'INST'
+         VALK(2) = TABTHR
+         CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+      ELSEIF ( IRET .EQ. 20 ) THEN
+         VALK(1) = TABTHR
+         VALK(2) = 'INST'
+         CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+      ENDIF
 C ======================================================================
 C --- RECUPERATION DE LA LISTE DE TEMPERATURE TEMPH1 -------------------
 C ======================================================================

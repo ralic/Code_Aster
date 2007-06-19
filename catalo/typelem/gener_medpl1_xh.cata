@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 15/06/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,8 +97,5 @@ OPTION__
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
-    XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  I1NEUT_I PINDCOI
-                                     N1NEUT_R PLST     E4NEUTR  PPINTER  E8NEUTR  PAINTER  E2NEUTI  PCFACE
-                                     E2NEUTI  PLONCHA  CONTX_R  PDONCO   I1NEUT_I PGLISS   I1NEUT_I PMEMCON
-                              OUT__  I1NEUT_I PINCOCA  I1NEUT_I PINDCOO  I1NEUT_I PINDMEM
+
 

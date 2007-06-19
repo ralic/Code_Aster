@@ -1,7 +1,7 @@
       SUBROUTINE OP0177 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,7 +167,12 @@ C     ------------------------------------------------------------------
       NEWTAB = LATABL
       IF ( NPARFI .NE. 0 ) THEN
          NEWTA1 = '&&'//NOMPRO//'.FILTRE '
-         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1 )
+         CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1, IRET )
+         IF ( IRET .NE. 0 ) THEN
+      WRITE (IFIC,*) '---- TABLE: ', LATABL, ' NOM_PARA: ', PARA,TITRES
+            WRITE (IFIC,*) TESTOK,' FILTRE NON VALIDE '
+            GOTO 9999
+         ENDIF
          NEWTAB = NEWTA1
       ENDIF 
 C     ------------------------------------------------------------------

@@ -5,7 +5,7 @@
      &                    ANGMAX, PROFON, VOLUME, EPAIS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,9 @@ C-----------------------------------------------------------------------
       REAL*8   THETA1, THETA2, THETA3, FONC1, FONC2, FONC3
       REAL*8   A1, A2, A3, A, D,EPSI,XPROF,YPROF,XANGM,YANGM
       REAL*8   RAD, R8DGRD, DEG, R8RDDG
+      REAL*8 VALR(2)
       INTEGER  I, K, IFM, NIV
+      INTEGER VALI
 C-----------------------------------------------------------------------
       CALL INFNIV ( IFM, NIV )
 C
@@ -118,12 +120,10 @@ C --- DICHOTOMIE ET ON REPART
       I=I+1
 C
       IF (I.EQ.1000) THEN
-         CALL UTDEBM('A','MODI_OBSTACLE','LE VOLUME DIFFERE '//
-     +                  'DU VOLUME USE MAIS LE NOMBRE D''ITERATION')
-         CALL UTIMPI('S',' EST SUPERIEUR A ',1,I)
-         CALL UTIMPR('L','     VOLUME USE: ',1,SURFAC*EPAIS)
-         CALL UTIMPR('L',' VOLUME CALCULE: ',1,SURF*EPAIS)
-         CALL UTFINM()
+         VALI = I
+         VALR (1) = SURFAC*EPAIS
+         VALR (2) = SURF*EPAIS
+         CALL U2MESG('A','PREPOST6_3',0,' ',1,VALI,2,VALR)
          GOTO 70
       ENDIF
       GOTO 50

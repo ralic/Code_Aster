@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements5 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,5 +159,59 @@ cata_msg={
 """),
 29: _("""
   le modele comporte %(i1)d mailles de moins que l'ensemble des sous-domaines 
+"""),
+
+30: _("""
+ jacobien negatif ou nul : jacobien =  %(r1)f 
+"""),
+
+31: _("""
+ jacobien negatif ou nul : jacobien =  %(r1)f 
+"""),
+
+32: _("""
+  Toute méthode de contact autre que la méthode continue est proscrite avec
+  FETI! En effet cette dernière méthode est basée sur un vision maille/calcul
+  élémentaire et non pas sur une approche globale discrète dont le flot de
+  données est plus difficilement dissociable par sous-domaine.
+  Merci, d'activer donc toutes les zones de contact avec ladite méthode. 
+"""),
+
+33: _("""
+  Avec FETI, on ne peut mélanger dans une seul AFFE_CHAR_MECA, du contact
+  avec des chargements à LIGREL tardif (Dirichlet, Force Nodale...).
+  Merci, de dissocier les types de chargement par AFFE_CHAR_MECA.
+"""),
+34: _("""
+  Contact méthode continue avec FETI: la maille %(i1)d de la zone %(i2)d
+  du chargement %(i3)d , semble etre à cheval entre les sous-domaines
+  %(i4)d et %(i5)d !
+  Solution paliative: il faut forcer le partitionnement à ne pas couper
+  cette zone de contact ou essayer de la dédoubler en deux zones.
+"""),
+
+35: _("""
+  Contact méthode continue avec FETI: la surface %(i1)d de la zone %(i2)d
+  du chargement %(i3)d n'est portée par aucun sous-domaine !
+"""),
+
+36: _("""
+  Contact méthode continue avec FETI: le noeud %(i1)d est présent plusieurs
+  fois dans la zone de contact %(i2)d . Cela ne devrait pas etre un problème
+  pour l'algorithme, mais ce n'est pas une modélisation du contact très
+  orthodoxe !
+"""),
+
+37: _("""
+  Contact méthode continue avec FETI: le noeud %(i1)d est a l'intersection de
+  plusieurs zones de contact. Cela va probablement générer un problème dans
+  l'algorithme de contact (pivot nul) !
+"""),
+
+38: _("""
+  Contact méthode continue avec FETI: le noeud %(i1)d de la zone de contact
+  %(i2)d est aussi sur l'interface FETI ! Pour l'instant ce cas de figure
+  est proscrit. Essayer de l'enlevez de la zone de contact ou de reconfigurer
+  vos sous-domaines.
 """),
 }

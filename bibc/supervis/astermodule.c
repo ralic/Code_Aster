@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 19/06/2007   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1164,9 +1164,11 @@ void DEFSPSPP(FIINTF,fiintf,_IN char *nomfon,_IN int lfon,_IN INTEGER *nbpu,_IN 
         res=PyObject_CallMethod(commande,"fiintf","s#OO",nomfon,lfon,tup_par,tup_val);
 
         if (res == NULL)MYABORT("erreur dans la partie Python");
-                                                       ASSERT(PyFloat_Check(res)) ;
-        *resu=PyFloat_AsDouble(res);
-
+        if (PyFloat_Check(res)) {
+            *resu=PyFloat_AsDouble(res); }
+        else {
+            *resu    =PyComplex_RealAsDouble(res);
+            *(resu+1)=PyComplex_ImagAsDouble(res); }
         Py_DECREF(tup_par);
         Py_DECREF(tup_val);
         Py_DECREF(res);           /*  decrement sur le refcount du retour */

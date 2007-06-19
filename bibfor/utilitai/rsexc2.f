@@ -8,14 +8,16 @@
       INTEGER IORDR
       CHARACTER*(*) NOMSD,NOMSY
       CHARACTER*24 CHEXTR
+      CHARACTER*24 VALK
       CHARACTER*16 NOMCMD,OPTION
       CHARACTER*8  CONCEP
       CHARACTER*16 TYPCON
       CHARACTER*7  STATUT
       INTEGER   INUMEX
+      INTEGER VALI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,16 +66,13 @@ C ----------------------------------------------------------------------
          IRETG=10000
       ENDIF
       IF (IPREC.NE.0.AND.NB.NE.I2) THEN
-         CALL UTDEBM('F','RSEXC2','ERREUR DE PROGRAMMATION')
-         CALL UTFINM
+         CALL U2MESG('F','UTILITAI8_11',0,' ',0,0,0,0.D0)
       ENDIF
       IF (IPREC+1.NE.I1) THEN
-         CALL UTDEBM('F','RSEXC2','ERREUR DE PROGRAMMATION')
-         CALL UTFINM
+         CALL U2MESG('F','UTILITAI8_12',0,' ',0,0,0,0.D0)
       ENDIF
       IF (I2.GT.NMAX) THEN
-         CALL UTDEBM('F','RSEXC2','TROP GRANDE VALEUR POUR I2')
-         CALL UTFINM
+         CALL U2MESG('F','UTILITAI8_13',0,' ',0,0,0,0.D0)
       ENDIF
       IPREC=I1
       IF (IRETG.LE.0) GOTO 20
@@ -84,14 +83,15 @@ C ----------------------------------------------------------------------
       ALARME=ALARME.AND.ICODE.GT.0
       IF ( ALARME.AND.I1.EQ.I2) THEN
          CALL GETRES(CONCEP,TYPCON,NOMCMD)
-         CALL UTDEBM('A','RSEXC2','CHAMP ')
-         CALL UTIMPK('S',' INEXISTANT ',1,NOMS(1))
+         VALK = NOMS(1)
+         CALL U2MESG('A+','UTILITAI8_14',1,VALK,0,0,0,0.D0)
          DO 10 J=2,I2
-            CALL UTIMPK('S',' OU ',1,NOMS(J))
+            VALK = NOMS(J)
+            CALL U2MESG('A+','UTILITAI8_15',1,VALK,0,0,0,0.D0)
    10    CONTINUE
-         CALL UTIMPI('S',' NUME_ORDRE ',1,IORDR)
-         CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,OPTION)
-         CALL UTFINM
+         VALI = IORDR
+         VALK = OPTION
+         CALL U2MESG('A','UTILITAI8_16',1,VALK,1,VALI,0,0.D0)
       ENDIF
       IRETG=MIN(ICODE,IRETG)
    20 CONTINUE

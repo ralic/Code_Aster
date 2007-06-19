@@ -1,10 +1,12 @@
-      SUBROUTINE MMVEC0(NDIM,NNE,
-     &                  DEPLE,
-     &                  HPG,FFPC,JACOBI,
-     &                  TYALGC,COEFCA,COEFCS,COEFCP,
-     &                  VTMP)
+      SUBROUTINE MMVEC0 ( NBDM, NDIM, NNE, DEPLE, HPG, FFPC, JACOBI,
+     &                    TYALGC, COEFCA, COEFCS, COEFCP, VTMP)
+      IMPLICIT NONE
+      INTEGER  NDIM, NNE, NBDM, TYALGC
+      REAL*8   VTMP(81), DEPLE(6), FFPC(9),JACOBI
+      REAL*8   HPG, COEFCA, COEFCS, COEFCP      
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,19 +23,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-      IMPLICIT NONE
-      INTEGER  NDIM,NNE,TYALGC
-      REAL*8   DEPLE(6)
-      REAL*8   HPG,FFPC(9),JACOBI
-      REAL*8   COEFCA,COEFCS,COEFCP      
-      REAL*8   VTMP(81)       
-C
-C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0365
 C ----------------------------------------------------------------------
 C
 C VECTEUR SECOND MEMBRE SI PAS DE CONTACT 
 C
+C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  DEPLE  : VECTEUR DES DEPLACEMENTS DU POINT DE CONTACT
@@ -45,41 +40,17 @@ C IN  COEFFS : COEF_STAB_CONT
 C IN  COEFFP : COEF_PENA_CONT
 C IN  TYALGC : TYPE D'ALGORITHME DE CONTACT
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
-C
-C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
-C
-      INTEGER ZI
-      COMMON /IVARJE/ ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
-C
-      INTEGER I,II
-C
+C ----------------------------------------------------------------------
+      INTEGER  I, II
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
       DO 40 I = 1,NNE
-        II = (I-1)*(2*NDIM)+NDIM+1
+        II = (I-1)*NBDM+NDIM+1
         IF (TYALGC .EQ. 1) THEN
           VTMP(II) = -HPG*JACOBI*DEPLE(NDIM+1)*FFPC(I)/COEFCA
         ELSE
           VTMP(II) = -HPG*JACOBI*DEPLE(NDIM+1)*FFPC(I)/COEFCS
         END IF
    40 CONTINUE  
-C
-      CALL JEDEMA()
 C
       END

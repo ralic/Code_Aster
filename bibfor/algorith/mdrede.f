@@ -8,7 +8,7 @@
       CHARACTER*14  NUMDDL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
+      REAL*8 VALR
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -67,6 +68,7 @@ C
       CHARACTER*14  NUME
       CHARACTER*16  TYPNUM
       CHARACTER*24  MDGENE, MDSSNO, NUMERO
+      CHARACTER*24 VALK
 C
 C     ------------------------------------------------------------------
 C
@@ -120,13 +122,14 @@ C ----- CALCUL PAR SOUS-STRUCTURATION
         ENDIF
 C
         IF (NUDDL.EQ.0) THEN
-          CALL UTDEBM('E','MDREDE','ON N''AS PAS TROUVE LE DDL')
-          CALL UTIMPK('L','   POUR LE NOEUD : ',1,NOEU)
+          VALK = NOEU
+          CALL U2MESG('E+','ALGORITH15_16',1,VALK,0,0,0,0.D0)
           IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
-            CALL UTIMPK('L','   DE LA SOUS-STRUCTURE : ',1,SST)
+            VALK = SST
+            CALL U2MESG('E+','ALGORITH15_17',1,VALK,0,0,0,0.D0)
           ENDIF
-          CALL UTIMPK('L','   ET SA COMPOSANTE : ',1,COMP)
-          CALL UTFINM( )
+          VALK = COMP
+          CALL U2MESG('E','ALGORITH15_18',1,VALK,0,0,0,0.D0)
           IER = IER + 1
           GOTO 10
         ENDIF
@@ -136,9 +139,8 @@ C
          CALL JEEXIN(FONC//'           .VALE',IRET)
          IF (IRET .EQ. 0 ) THEN
            IF (FONRED(I,4) .EQ. 'TRANSIS ') THEN
-             CALL UTDEBM('E','MDREDE',' IL MANQUE LE SEUIL ')
-             CALL UTIMPK('S',' POUR LA FONCTION INTERPRETEE ',1,FONC)
-             CALL UTFINM( )
+             VALK = FONC
+             CALL U2MESG('E','ALGORITH15_19',1,VALK,0,0,0,0.D0)
              IER = IER + 1
              GOTO 10
            ENDIF
@@ -149,10 +151,9 @@ C
              CALL JELIRA(FONC//'           .VALE','LONUTI',NBPT,K1BID)
              LFON = LVAL + ( NBPT / 2 )
              IF (ABS(ZR(LVAL)).LT.1.D-08) THEN
-              CALL UTDEBM('E','MDREDE','L''ABSCISSE LINEAIRE EST NULLE')
-              CALL UTIMPK('L','   POUR LA COURBE : ',1,FONC)
-              CALL UTIMPR('L','         ABSCISSE : ',1,ZR(LVAL))
-              CALL UTFINM( )
+              VALK = FONC
+              VALR = ZR(LVAL)
+              CALL U2MESG('E','ALGORITH15_20',1,VALK,0,0,1,VALR)
               IER = IER + 1
               GOTO 10
              ENDIF

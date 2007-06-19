@@ -1,6 +1,6 @@
       SUBROUTINE CMQLQL ( MAIN, MAOUT, NBMA, LIMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,6 @@ C     =========================================================
 C
       CALL JEEXIN(MAIN//'.GROUPEMA',IRET)
       IF(IRET.NE.0)THEN
-        CALL JEDUPO(MAIN//'.NOMGMA'  ,'G',MAOUT//'.NOMGMA'  ,.FALSE.)
         CALL JEDUPO(MAIN//'.GROUPEMA','G',MAOUT//'.GROUPEMA',.FALSE.)
       ENDIF
 C
@@ -140,7 +139,7 @@ C     ACTUALISATION DE '.DIME'
       ZI(JDIM)=ZI(JDIM)-NBNM
 C
 C     ==================================================================
-C     MISE A JOUR DES NOEUDS ('.COORDO','.NOMNOE','.GROUPENO','.NOMGNO')
+C     MISE A JOUR DES NOEUDS ('.COORDO','.NOMNOE','.GROUPENO')
 C     ==================================================================
 
       CALL CMQLNO(MAIN,MAOUT,NBNM,ZI(JNM))

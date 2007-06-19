@@ -6,7 +6,7 @@
       CHARACTER*(*)       MCFAC, MOCLE(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,12 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     ------------------------------------------------------------------
       INTEGER      N1, N2, N3, NUMNO, I, IER, JCOOR
+      INTEGER VALI(2)
       REAL*8       R8B
       CHARACTER*8  K8B, NOEUD
       CHARACTER*16 CONCEP, CMD
       CHARACTER*24 COORD, NOMNOE
+      CHARACTER*24 VALK(3)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IRET = 0
@@ -57,18 +59,18 @@ C
          CALL GETVR8 ( MCFAC, MOCLE(1), IOCC,1,NDIM, COOR, N1 )
          IF ( N1 .LT. NDIM ) THEN
             CALL GETRES ( K8B, CONCEP, CMD )
-            CALL UTDEBM('F',CMD,'ERREUR DANS LES DONNEES')
-            CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
-            CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
+            VALK (1) = MCFAC
+            VALI (1) = IOCC
+            CALL U2MESG('F+','MODELISA9_23',1,VALK,1,VALI,0,0.D0)
             IF ( NDIM .EQ. 2 ) THEN
-              CALL UTIMPI('L','LE MAILLAGE EST "PLAN" OU "Z_CST"',0,N1)
+              CALL U2MESG('F+','MODELISA9_24',0,' ',0,0,0,0.D0)
             ELSE
-              CALL UTIMPI('L','LE MAILLAGE EST "3D"',0,N1)
+              CALL U2MESG('F+','MODELISA9_25',0,' ',0,0,0,0.D0)
             ENDIF
-            CALL UTIMPI('L','IL Y A ',1,ABS(N1))
-            CALL UTIMPK('S',' VALEURS POUR LE MOT CLE ',1,MOCLE(1))
-            CALL UTIMPI('L','IL EN FAUT ',1,NDIM)
-            CALL UTFINM()
+            VALI (1) = ABS(N1)
+            VALI (2) = NDIM
+            VALK (1) = MOCLE(1)
+            CALL U2MESG('F','MODELISA9_26',1,VALK,2,VALI,0,0.D0)
          ENDIF
          IRET = 1
          GOTO 9999
@@ -84,12 +86,11 @@ C
           CALL JENONU ( JEXNOM(NOMNOE,NOEUD), NUMNO )
           IF ( NUMNO .EQ. 0 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )
-             CALL UTDEBM('F',CMD,'ERREUR DANS LES DONNEES')
-             CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
-             CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
-             CALL UTIMPK('L','POUR LE MOT CLE ',1,MOCLE(2))
-             CALL UTIMPK('S',' LE NOEUD N''EXISTE PAS ',1,NOEUD)
-             CALL UTFINM()
+             VALK (1) = MCFAC
+             VALK (2) = MOCLE(2)
+             VALK (3) = NOEUD
+             VALI (1) = IOCC
+             CALL U2MESG('F','MODELISA9_27',3,VALK,1,VALI,0,0.D0)
           ENDIF
           DO 10 I = 1 , NDIM
              COOR(I) = ZR(JCOOR+3*(NUMNO-1)+I-1)
@@ -104,19 +105,17 @@ C
           CALL UTNONO ( ' ', NOMAIL, 'NOEUD', NOEUD, K8B, IER )
           IF ( IER .EQ. 10 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )
-             CALL UTDEBM('F',CMD,'ERREUR DANS LES DONNEES')
-             CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
-             CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
-             CALL UTIMPK('L','POUR LE MOT CLE ',1,MOCLE(3))
-             CALL UTIMPK('S',' LE GROUP_NO N''EXISTE PAS ',1,NOEUD)
-             CALL UTFINM()
+             VALK (1) = MCFAC
+             VALK (2) = MOCLE(3)
+             VALK (3) = NOEUD
+             VALI (1) = IOCC
+             CALL U2MESG('F','MODELISA9_28',3,VALK,1,VALI,0,0.D0)
           ELSEIF ( IER .EQ. 1 ) THEN
              CALL GETRES ( K8B, CONCEP, CMD )
-             CALL UTDEBM('A',CMD,'TROP DE NOEUDS DANS LE GROUP_NO')
-             CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MCFAC)
-             CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
-             CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
-             CALL UTFINM( )
+             VALK (1) = MCFAC
+             VALK (2) = K8B
+             VALI (1) = IOCC
+             CALL U2MESG('A','MODELISA9_29',2,VALK,1,VALI,0,0.D0)
           ENDIF
           CALL JENONU ( JEXNOM(NOMNOE,K8B), NUMNO )
           DO 20 I = 1 , NDIM

@@ -4,7 +4,7 @@
       CHARACTER*4         LIEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +45,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       JSIGU, ICMP
-      REAL*8        PIJ, SIGMP(6), EQUI(6)
+      REAL*8        PIJ, SIGMP(6)
 C DEB ------------------------------------------------------------------
 C
       CALL JEVEUO ( '&&RC3200.MECA_UNIT .'//LIEU, 'L', JSIGU )
@@ -60,8 +60,6 @@ C
          SIGMP(ICMP) = PIJ * ZR(JSIGU-1+156+72+ICMP)
  10   CONTINUE
 C
-      CALL FGEQUI ( SIGMP, 'SIGM', 3, EQUI )
-C
-      SIMPIJ = EQUI(2)
+      CALL RCTRES ( SIGMP, SIMPIJ )
 C
       END

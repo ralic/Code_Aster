@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline4 Messages  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,17 +28,26 @@ cata_msg={
 
 
 3: _("""
- non convergence  nombre d'iterations:  %(i1)d
-   norme du residu abs:  %(r1)f
-   norme du residu rel:  %(r2)f
+ Erreur lors de la résolution d'un système linéaire (GCPC) :
+ Non convergence  avec le nombre d'iterations autorisé :  %(i1)d
+   norme du residu (absolu)  :  %(r1)f
+   norme du residu (relatif) :  %(r2)f
+
+ Conseils :
+  * Vous pouvez augmenter le nombre d'itérations autorisées (SOLVEUR/NMAX_ITER).
+  * Vous pouvez aussi augmenter le niveau de remplissage pour la factorisation
+    incomplète (SOLVEUR/NIVE_REMPLISSAGE).
+  * Dans une commande non-linéaire (STAT_NON_LINE par exemple) vous pouvez aussi essayer de
+    diminuer la précision demandée pour la convergence (SOLVEUR/RESI_RELA), mais c'est plus
+    risqué car cela peut empecher la convergence de l'algorithme non-linéaire.
 """),
 
 4: _("""
-  manque de memoire memoire disponible %(i1)d et memoire necessaire %(i2)d
+  Manque de memoire memoire disponible %(i1)d et memoire necessaire %(i2)d
 """),
 
 5: _("""
- erreur donnees noeud deja existant :  %(k1)s
+ Erreur données : noeud deja existant :  %(k1)s
 """),
 
 
@@ -47,7 +56,7 @@ cata_msg={
 
 
 7: _("""
- erreur donnees maille deja existante :  %(k1)s
+ Erreur données : maille deja existante :  %(k1)s
 """),
 
 

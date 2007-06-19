@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C
       REAL*8        KSTE, UFLUI, DHYD, RHO, RBID, JC, FCOUPU, FMODEL
       REAL*8        R8B, DIR(3,3), FCOUP
       REAL*8        DEUXPI,PULS,UC,UT,LONG1,LONG2
+      REAL*8 VALR
       COMPLEX*16    C16B
       CHARACTER*1   COLI,K1BID
       CHARACTER*7   IMODE, JMODE
@@ -111,19 +112,15 @@ C
       IF ( NFINIT .LT. 0 ) THEN
          IF (NCHAM.NE.0)
      &     CALL U2MESS('F','MODELISA6_98')
-         CALL UTDEBM('I','SFIFJ','PAS DE FREQ INITIALE DEFINIE : '//
-     &                   'ON PREND LA FREQ MINI DES MODES CALCULES ')
-         CALL UTIMPR('S',' ',1, FMIN)
-         CALL UTFINM
+         VALR = FMIN
+         CALL U2MESG('I','MODELISA9_15',0,' ',0,0,1,VALR)
          FINIT=FMIN
       ENDIF
       IF ( NFIN .LT. 0 ) THEN
          IF (NCHAM.NE.0)
      &     CALL U2MESS('F','MODELISA6_99')
-         CALL UTDEBM('I','SFIFJ','PAS DE FREQ FINALE DEFINIE : '//
-     &                   'ON PREND LA FREQ MAX DES MODES CALCULES ')
-         CALL UTIMPR('S',' ',1, FMAX)
-         CALL UTFINM
+         VALR = FMAX
+         CALL U2MESG('I','MODELISA9_16',0,' ',0,0,1,VALR)
          FFIN=FMAX
       ENDIF
 C
@@ -165,26 +162,18 @@ C L UTILISATEUR
 C
         FMODEL = 10.D0 * UFLUI / DHYD
         IF ( FCOUPU .LE. FMODEL ) THEN
-           CALL UTDEBM('I','SFIFJ','VOTRE FREQ DE COUPURE ')
-           CALL UTIMPR('S',' ',1, FCOUPU)
-           CALL UTFINM
-           CALL UTDEBM('I',' ','EST INFERIEURE A CELLE '//
-     &                     ' DU MODELE DE TURBULENCE ADOPTE :')
-           CALL UTIMPR('S',' ',1, FMODEL)
-           CALL UTFINM
-           CALL UTDEBM('I',' ','ON PREND LA VOTRE. ')
-           CALL UTFINM
+           VALR = FCOUPU
+           CALL U2MESG('I','MODELISA9_17',0,' ',0,0,1,VALR)
+           VALR = FMODEL
+           CALL U2MESG('I','MODELISA9_18',0,' ',0,0,1,VALR)
+           CALL U2MESG('I','MODELISA9_19',0,' ',0,0,0,0.D0)
            FCOUP = FCOUPU * DHYD / UFLUI
         ELSE
-           CALL UTDEBM('I','SFIFJ','VOTRE FREQ DE COUPURE : ')
-           CALL UTIMPR('S',' ',1, FCOUPU)
-           CALL UTFINM
-           CALL UTDEBM('I',' ','EST SUPERIEURE A CELLE '//
-     &                     ' DU MODELE DE TURBULENCE ADOPTE : ')
-           CALL UTIMPR('S',' ',1, FMODEL)
-           CALL UTFINM
-           CALL UTDEBM('I',' ','ON PREND CELLE DU MODELE. ')
-           CALL UTFINM
+           VALR = FCOUPU
+           CALL U2MESG('I','MODELISA9_20',0,' ',0,0,1,VALR)
+           VALR = FMODEL
+           CALL U2MESG('I','MODELISA9_21',0,' ',0,0,1,VALR)
+           CALL U2MESG('I','MODELISA9_22',0,' ',0,0,0,0.D0)
            FCOUP = 10.D0
         ENDIF
 C

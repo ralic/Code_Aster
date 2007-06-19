@@ -1,7 +1,9 @@
-      SUBROUTINE TE0365(OPTION,NOMTE)
-C
+      SUBROUTINE TE0365 ( OPTION, NOMTE )
+      IMPLICIT   NONE
+      CHARACTER*16        OPTION, NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,11 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
-      IMPLICIT   NONE
-      CHARACTER*16 OPTION,NOMTE
-C
-C ----------------------------------------------------------------------
 C  CALCUL DES SECONDS MEMBRES DE CONTACT ET DE FROTTEMENT DE COULOMB STD
 C        AVEC LA METHODE CONTINUE DE L'ECP
 C  OPTION : 'CHAR_MECA_CONT' (CALCUL DU SECOND MEMBRE DE CONTACT)
@@ -31,7 +28,7 @@ C                              FROTTEMENT STANDARD )
 C
 C  ENTREES  ---> OPTION : OPTION DE CALCUL
 C           ---> NOMTE  : NOM DU TYPE ELEMENT
-C
+C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
       INTEGER ZI
@@ -51,7 +48,7 @@ C
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER I,II,J,IRET
+      INTEGER I,II,J,IRET,NBCPS,NBDM
       INTEGER NNE,NNM,NDIM,NDDL,INDPIV
       INTEGER INDCO,INADH,INDASP,INDM
       INTEGER IGEOM,IDEPL,IVECT,JPCF,IDEPM,IACCM,IVITM
@@ -79,44 +76,41 @@ C
 C
 C --- INFOS SUR LA MAILLE DE CONTACT
 C
-      CALL MMELEM(NOMTE,
-     &            NDIM,NDDL,ESC,NNE,MAIT,NNM)
-      IF (NDDL.GT.81) THEN
-        CALL U2MESS('F','ELEMENTS3_82')
-      ENDIF
+      CALL MMELEM (NOMTE,NDIM,NDDL,ESC,NNE,MAIT,NNM)
+      IF (NDDL.GT.81)  CALL U2MESS('F','ELEMENTS3_82')
       IF ((NDIM.NE.2).AND.(NDIM.NE.3)) THEN
-        CALL U2MESS('F','ELEMENTS3_83')
+         CALL U2MESS('F','ELEMENTS3_83')
       ENDIF
 C
 C --- INITIALISATION DU VECTEUR DE TRAVAIL
 C
       DO 3  J = 1,NDDL
-        VTMP(J) = 0.D0
+         VTMP(J) = 0.D0
 3     CONTINUE
 C
 C --- RECUPERATION DES DONNEES DE LA CARTE DU CONTACT (VOIR MMCART)
 C
-      CALL JEVECH('PCONFR','L',JPCF)
-      XPC      = ZR(JPCF-1+1)
-      YPC      = ZR(JPCF-1+10)
-      XPR      = ZR(JPCF-1+2)
-      YPR      = ZR(JPCF-1+3)
-      TAU1(1)  = ZR(JPCF-1+4)
-      TAU1(2)  = ZR(JPCF-1+5)
-      TAU1(3)  = ZR(JPCF-1+6)
-      TAU2(1)  = ZR(JPCF-1+7)
-      TAU2(2)  = ZR(JPCF-1+8)
-      TAU2(3)  = ZR(JPCF-1+9)
+      CALL JEVECH ( 'PCONFR', 'L', JPCF )
+      XPC      =      ZR(JPCF-1+1)
+      YPC      =      ZR(JPCF-1+10)
+      XPR      =      ZR(JPCF-1+2)
+      YPR      =      ZR(JPCF-1+3)
+      TAU1(1)  =      ZR(JPCF-1+4)
+      TAU1(2)  =      ZR(JPCF-1+5)
+      TAU1(3)  =      ZR(JPCF-1+6)
+      TAU2(1)  =      ZR(JPCF-1+7)
+      TAU2(2)  =      ZR(JPCF-1+8)
+      TAU2(3)  =      ZR(JPCF-1+9)
       INDCO    = NINT(ZR(JPCF-1+11))
-      LAMBDA   = ZR(JPCF-1+12)
-      COEFCA   = ZR(JPCF-1+13)
-      COEFFA   = ZR(JPCF-1+14)
-      COEFFF   = ZR(JPCF-1+15)
+      LAMBDA   =      ZR(JPCF-1+12)
+      COEFCA   =      ZR(JPCF-1+13)
+      COEFFA   =      ZR(JPCF-1+14)
+      COEFFF   =      ZR(JPCF-1+15)
       IFROTT   = NINT(ZR(JPCF-1+16))
       INDNOR   = NINT(ZR(JPCF-1+17))
       IAXIS    = NINT(ZR(JPCF-1+18))
-      HPG      = ZR(JPCF-1+19)
-      DELTAT   = ZR(JPCF-1+20)
+      HPG      =      ZR(JPCF-1+19)
+      DELTAT   =      ZR(JPCF-1+20)
       IFORM    = NINT(ZR(JPCF-1+21))
       INDM     = NINT(ZR(JPCF-1+22))
       INI1     = NINT(ZR(JPCF-1+23))
@@ -124,12 +118,12 @@ C
       INI3     = NINT(ZR(JPCF-1+25))
       INDASP   = NINT(ZR(JPCF-1+26))
       ICOMPL   = NINT(ZR(JPCF-1+27))
-      ASPERI   = ZR(JPCF-1+28)
-      COEASP   = ZR(JPCF-1+29)
-      CN       = ZR(JPCF-1+30)
-      ALPHA    = ZR(JPCF-1+31)
-      DELTA    = ZR(JPCF-1+32)
-      JEUSUP   = ZR(JPCF-1+33)
+      ASPERI   =      ZR(JPCF-1+28)
+      COEASP   =      ZR(JPCF-1+29)
+      CN       =      ZR(JPCF-1+30)
+      ALPHA    =      ZR(JPCF-1+31)
+      DELTA    =      ZR(JPCF-1+32)
+      JEUSUP   =      ZR(JPCF-1+33)
       IMA      = NINT(ZR(JPCF-1+34))
       IMABAR   = NINT(ZR(JPCF-1+35))
       INDNOB   = NINT(ZR(JPCF-1+36))
@@ -137,74 +131,76 @@ C
       TYPBAR   = NINT(ZR(JPCF-1+38))
       INDRAC   = NINT(ZR(JPCF-1+39))
       IUSURE   = NINT(ZR(JPCF-1+40))
-C      KW       = ZR(JPCF-1+41)
-C      HW       = ZR(JPCF-1+42)
+C      KW       =      ZR(JPCF-1+41)
+C      HW       =      ZR(JPCF-1+42)
       INDPIV   = NINT(ZR(JPCF-1+43))
       TYALGC   = NINT(ZR(JPCF-1+44))
-      COEFCS   = ZR(JPCF-1+45)
-      COEFCP   = ZR(JPCF-1+46)
+      COEFCS   =      ZR(JPCF-1+45)
+      COEFCP   =      ZR(JPCF-1+46)
       TYALGF   = NINT(ZR(JPCF-1+47))
-      COEFFS   = ZR(JPCF-1+48)
-      COEFFP   = ZR(JPCF-1+49)
+      COEFFS   =      ZR(JPCF-1+48)
+      COEFFP   =      ZR(JPCF-1+49)
 C
 C --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 C
-      CALL JEVECH('PGEOMER','E',IGEOM)
-      CALL JEVECH('PDEPL_P','E',IDEPL)
-      CALL JEVECH('PDEPL_M','L',IDEPM)
-      IF (IUSURE .EQ. 1) THEN
-        CALL JEVECH('PUSULAR','L',IUSUP)
-      END IF
+      CALL JEVECH ( 'PGEOMER', 'E',IGEOM )
+      CALL JEVECH ( 'PDEPL_P', 'E',IDEPL )
+      CALL JEVECH ( 'PDEPL_M', 'L',IDEPM )
+      IF (IUSURE.EQ.1)  CALL JEVECH ( 'PUSULAR', 'L', IUSUP )
       IF (ICOMPL .EQ. 1) THEN
-        CALL JEVECH('PDEPLAR','L',IVITM)
-        CALL JEVECH('PCHDYNR','L',IACCM)
+         CALL JEVECH ( 'PDEPLAR', 'L', IVITM )
+         CALL JEVECH ( 'PCHDYNR', 'L', IACCM )
       END IF
+C
+      IF ( IFROTT .EQ. 3 ) THEN
+C ------ COMPOSANTES 3D : LAGS_C   LAGS_F1  LAGS_F2
+C ------ COMPOSANTES 2D : LAGS_C   LAGS_F1
+         NBCPS = NDIM
+         NBDM  = NDIM + NBCPS
+      ELSE
+C ------ COMPOSANTE : LAGS_C
+         NBCPS = 1
+         NBDM  = NDIM + NBCPS
+      ENDIF
 C
 C --- REACTUALISATION DE LA GEOMETRIE
 C
-      CALL MMREAC(NDIM,NNE,NNM,
-     &            IGEOM,IDEPM)
+      CALL MMREAC (NBDM,NDIM,NNE,NNM,IGEOM,IDEPM)
 C
 C --- FONCTIONS DE FORMES ET DERIVEES POUR LE
 C --- POINT DE CONTACT
 C
-      IF (IMA .NE. IMABAR) THEN
-        TYPBAR = -1
-      ENDIF
-      CALL MMMFFD(ESC,XPC,YPC,TYPBAR,
-     &            FFPC,DFFPC,DDFFPC,IRET)
+      IF (IMA .NE. IMABAR)  TYPBAR = -1
+C
+      CALL MMMFFD (ESC,XPC,YPC,TYPBAR,FFPC,DFFPC,DDFFPC,IRET)
 C
 C --- JACOBIEN POUR LE POINT DE CONTACT
 C
-      CALL MMMJAC(ESC,IGEOM,FFPC,DFFPC,IAXIS,NDIM,
-     &            JACOBI,IRET)
+      CALL MMMJAC (ESC,IGEOM,FFPC,DFFPC,IAXIS,NDIM,JACOBI,IRET)
 C
 C --- FONCTIONS DE FORMES ET DERIVEES POUR LA
 C --- PROJECTION DU POINT DE CONTACT
 C
-      CALL MMMFFD(MAIT,XPR,YPR,TYPBAR,
-     &            FFPR,DFFPR,DDFFPR,IRET)
+      CALL MMMFFD (MAIT,XPR,YPR,TYPBAR,FFPR,DFFPR,DDFFPR,IRET)
 C
 C --- CALCUL DE LA NORMALE
 C
-      CALL MMNORM(NDIM,TAU1,TAU2,NORM)
+      CALL MMNORM (NDIM,TAU1,TAU2,NORM)
 C
 C --- GEOMETRIE ET DEPLACEMENTS DU POINT DE CONTACT ET
 C --- DE SON PROJETE
 C
-      CALL MMGEOM(NDIM,NNE,NNM,ICOMPL,
-     &            IGEOM,IDEPL,IDEPM,IVITM,IACCM,
-     &            FFPC,FFPR,
-     &            GEOME,GEOMM,
-     &            DEPLE,DEPLM,DEPLME,DEPLMM,
-     &            VITME,ACCME,VITMM,ACCMM)
+      CALL MMGEOM (NBDM,NDIM,NNE,NNM,ICOMPL,
+     &             IGEOM,IDEPL,IDEPM,IVITM,IACCM,
+     &             FFPC,FFPR,GEOME,GEOMM,
+     &             DEPLE,DEPLM,DEPLME,DEPLMM,
+     &             VITME,ACCME,VITMM,ACCMM)
 C
 C --- MODIFICATIONS DES DEPLACEMENTS (RACCORD/FISSURE)
 C
-      CALL MMGEO2(NDIM,
-     &            IMA,IMABAR,INDNOB,INDRAC,INDNOQ,
-     &            IDEPL,
-     &            DEPLE)
+      CALL MMGEO2 (NBDM,NDIM,
+     &             IMA,IMABAR,INDNOB,INDRAC,INDNOQ,
+     &             IDEPL, DEPLE)
 C
 C --- COEFFICIENT ACCELERATION POUR FORMULATION EN VITESSE
 C
@@ -215,21 +211,15 @@ C
 C
 C --- TRAITEMENT EN FOND DE FISSURE
 C
-      IF (INDNOB .GT. 0) THEN
-        INDCO = 1
-      END IF
+      IF (INDNOB .GT. 0)  INDCO = 1
 C
 C --- TRAITEMENT DU RACCORD SURFACIQUE
 C
-      IF (INDRAC .GT. 0) THEN 
-        INDCO = 1
-      END IF
+      IF (INDRAC .GT. 0)  INDCO = 1
 C
 C --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE
 C
-      IF (INDNOR .EQ. 1) THEN
-        INDCO = 0
-      ENDIF
+      IF (INDNOR .EQ. 1)  INDCO = 0
 C
 C --- RECUPERATION DES VECTEURS 'OUT' (A REMPLIR => MODE ECRITURE)
 C
@@ -237,24 +227,21 @@ C
 C
 C --- CALCUL DES SECOND MEMBRES DE CONTACT/FROTTEMENT
 C
-
       IF (IUSURE .EQ. 1) THEN
-        PRFUSU = ZR(IUSUP-1+1)
+         PRFUSU = ZR(IUSUP-1+1)
       ELSE
-        PRFUSU = 0.D0
+         PRFUSU = 0.D0
       END IF
-      
+C
       IF (OPTION.EQ.'CHAR_MECA_CONT') THEN
-      IF (INDPIV.EQ.1)    INDCO = 0
+C         --------------------------
+        IF (INDPIV.EQ.1)  INDCO = 0
         IF (INDASP.EQ.0) THEN
 C
 C --- CALCUL DU VECTEUR - CAS SANS CONTACT (HORS ASPERITES)
 C
-          CALL MMVEC0(NDIM,NNE,
-     &                DEPLE,
-     &                HPG,FFPC,JACOBI,
-     &                TYALGC,COEFCA,COEFCS,COEFCP,
-     &                VTMP)
+          CALL MMVEC0(NBDM,NDIM,NNE,DEPLE,HPG,FFPC,JACOBI,
+     &                TYALGC,COEFCA,COEFCS,COEFCP, VTMP)
 
           GO TO 220
 
@@ -271,21 +258,18 @@ C
 C
 C --- VECTEUR SECOND MEMBRE SI CONTACT AVEC COMPLIANCE
 C
-            CALL MMVEC1(NDIM,NNE,NNM,
-     &                  IMA,IMABAR,INDNOB,INDRAC,
-     &                  HPG,FFPC,FFPR,JACOBI,
-     &                  JDEPM,JDEPP,DEPLE,
+            CALL MMVEC1(NBDM,NDIM,NNE,NNM,IMA,IMABAR,INDNOB,INDRAC,
+     &                  HPG,FFPC,FFPR,JACOBI,JDEPM,JDEPP,DEPLE,
      &                  TYALGC,COEFCA,COEFCS,COEFCP,ICOMPL,IFORM,
-     &                  COEASP,ASPERI,JEU,NORM,VTMP)
+     &                  COEASP,ASPERI,JEU,NORM, VTMP)
+C
           ELSE IF (INDCO.EQ.0) THEN
 C
 C --- CALCUL DU VECTEUR - CAS SANS CONTACT (DANS ASPERITES)
 C
-            CALL MMVEC0(NDIM,NNE,
-     &                  DEPLE,
-     &                  HPG,FFPC,JACOBI,
-     &                  TYALGC,COEFCA,COEFCS,COEFCP,
-     &                  VTMP)
+            CALL MMVEC0(NBDM,NDIM,NNE,DEPLE,HPG,FFPC,JACOBI,
+     &                  TYALGC,COEFCA,COEFCS,COEFCP, VTMP)
+C
             IF (ICOMPL .EQ. 1) THEN
 C
 C --- EVALUATION DES JEUX
@@ -300,7 +284,7 @@ C --- DDL DES DEPLACEMENTS DE LA SURFACE CINEMATIQUE
 C
               DO 72 I = 1,NNE
                 DO 62 J = 1,NDIM
-                  II = (I-1)*(2*NDIM)+J
+                  II = (I-1)*NBDM+J
                   VTMP(II) = -HPG*JACOBI*
      &                       (-COEASP*((JEU-ASPERI)**2)-CN*JEVITP)*
      &                       FFPC(I)*NORM(J)
@@ -311,7 +295,7 @@ C --- DDL DES DEPLACEMENTS DE LA SURFACE GEOMETRIQUE
 C
               DO 92 I = 1,NNM
                 DO 82 J = 1,NDIM
-                  II = NNE*(2*NDIM)+(I-1)*(NDIM)+J
+                  II = NNE*NBDM+(I-1)*NDIM+J
                   VTMP(II) = HPG*JACOBI*
      &                       (-COEASP*((JEU-ASPERI)**2)-CN*JEVITP)*
      &                       FFPR(I)*NORM(J)
@@ -324,24 +308,20 @@ C
         ELSE
           CALL U2MESS('F','ELEMENTS3_80')
         ENDIF
-
+C
       ELSE IF (OPTION.EQ.'CHAR_MECA_FROT') THEN
-
-
+C              --------------------------
         IF (COEFFF.EQ.0.D0) INDCO = 0
         IF (IFROTT.NE.3)    INDCO = 0
         IF (LAMBDA.EQ.0.D0) INDCO = 0
         IF (INDPIV.EQ.1)    INDCO = 0
 
-
         IF (INDCO.EQ.0) THEN
 C
 C --- CALCUL DU VECTEUR - CAS SANS CONTACT (HORS ASPERITES)
 C
-          CALL MMVEF0(NDIM,NNE,
-     &                HPG,FFPC,JACOBI,DEPLE,
-     &                TAU1,TAU2,
-     &                VTMP)
+          CALL MMVEF0 (NBDM,NBCPS,NDIM,NNE,HPG,FFPC,JACOBI,DEPLE,
+     &                 TAU1,TAU2, VTMP)
 
           GO TO 220
 
@@ -349,24 +329,20 @@ C
 C
 C ---  ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C
-          CALL TTPRSM(NDIM,DEPLE,DEPLM,
-     &                TYALGF,COEFFA,COEFFS,COEFFP,NORM,
-     &                TAU1,TAU2,INADH,R8BI33,RESE,R8BID)
+          CALL TTPRSM (NDIM,DEPLE,DEPLM,
+     &                 TYALGF,COEFFA,COEFFS,COEFFP,NORM,
+     &                 TAU1,TAU2,INADH,R8BI33,RESE,R8BID)
 C
 C --- SI GLISSANT, NORMALISATION RESE
 C
-          IF (INADH.EQ.0) THEN
-            CALL NORMEV(RESE,MERESE)
-          ENDIF
+          IF (INADH.EQ.0)  CALL NORMEV(RESE,MERESE)
 C
 C --- VECTEUR FROTTEMENT
 C
-          CALL MMVEF1(NDIM,NNE,NNM,
-     &                INDM,INI1,INI2,INI3,
-     &                HPG,FFPC,FFPR,JACOBI,
-     &                RESE,DEPLE,LAMBDA,
-     &                TYALGF,COEFFA,COEFFS,COEFFP,
-     &                COEFFF,TAU1,TAU2,NORM,VTMP)
+          CALL MMVEF1 (NBDM,NBCPS,NDIM,NNE,NNM,INDM,INI1,INI2,INI3,
+     &                 HPG,FFPC,FFPR,JACOBI,RESE,DEPLE,LAMBDA,
+     &                 TYALGF,COEFFA,COEFFS,COEFFP,
+     &                 COEFFF,TAU1,TAU2,NORM, VTMP)
         ELSE
           CALL U2MESS('F','ELEMENTS3_80')
         END IF
@@ -374,13 +350,11 @@ C
         CALL U2MESS('F','ELEMENTS3_81')
       END IF
   220 CONTINUE
-
 C
 C --- RECOPIE VALEURS FINALES
 C
-      DO 6 I=1,NDDL
-        ZR(IVECT-1+I)=VTMP(I)
-C        write(38,*) 'VAL:',I,VTMP(I)
+      DO 6 I = 1,NDDL
+        ZR(IVECT-1+I) = VTMP(I)
 6     CONTINUE
 C
       CALL JEDEMA()

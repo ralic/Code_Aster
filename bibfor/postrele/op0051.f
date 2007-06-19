@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -246,8 +246,7 @@ C
 C
 C           /* CAS D' UN CHAMP DE GRANDEUR */
 C
-            CALL JECREO ( NCHEFF//'.TYPACCE', 'V E K8' )
-            CALL JEVEUO ( NCHEFF//'.TYPACCE', 'E',JACC )
+            CALL WKVECT ( NCHEFF//'.TYPACCE', 'V V K8',1,JACC )
 C
             ZK8(JACC) = 'DIRECT  '
 C

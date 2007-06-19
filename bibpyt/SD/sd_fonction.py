@@ -1,4 +1,4 @@
-#@ MODIF sd_fonction SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_fonction SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,23 @@ from SD.sd_titre import sd_titre
 from SD.sd_util import *
 
 
-class sd_fonction(sd_titre):
+#----------------------------------------------------------------
+# définition de 3 classes :
+#  sd_formule        (objets python + jeveux)
+#  sd_fonction_aster (objets jeveux)
+#  sd_fonction       (chapeau des 2 classes précédentes)
+#----------------------------------------------------------------
+
+
+
+class sd_formule(AsBase):
+#--------------------------------------
+    nomj = SDNom(fin=19)
+    PROL = AsVK16(lonmax=6, )
+    NOVA = AsVK8()
+
+
+class sd_fonction_aster(sd_titre):
 #--------------------------------------
     nomj = SDNom(fin=19)
     PROL = AsVK16()
@@ -131,3 +147,20 @@ class sd_fonction(sd_titre):
             assert sdu_monotone(para) in (1,),(para,self)
         vale=self.VALE.get()
         assert  len(para)==len(vale.keys()),self
+
+
+class sd_fonction(sd_titre):
+#---------------------------
+    nomj = SDNom(fin=19)
+    PROL = AsVK16()
+    NOVA = Facultatif(AsVK8())
+    VALE = Facultatif(AsObject())
+    PARA = Facultatif(AsVR())
+
+    def check_1(self,checker) :
+        nom=self.nomj()[:19]
+        if self.NOVA.exists :
+            sd2=sd_formule(nom) ; sd2.check()
+        else :
+            sd2=sd_fonction_aster(nom) ; sd2.check()
+

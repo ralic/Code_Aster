@@ -2,11 +2,14 @@
 C
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8      VMIN(*),CMP,CPMIN
+      REAL*8 VALR(3)
       CHARACTER*8 VVAR
+      CHARACTER*24 VALK
       INTEGER     NEQ,NPER,NRMAX,METH
+      INTEGER VALI(2)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/01/98   AUTEUR A2BHHWS A.C.LEGER 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,17 +69,11 @@ C
       CALL GETVIS('INCREMENT','NMAX_ITER_PAS',1,1,1,NRMAX,N1)
 C
 C
-      CALL UTDEBM('I','PARAMETRES D''ADAPTATION DU PAS:',' ')
-      CALL UTIMPK('L','--------------------------------',0,' ')
-      CALL UTIMPI('L','NOMBRE DE POINTS PAS PERIODE: ',1,NPER)
-      CALL UTIMPR('L','COEFFICIENT DE REMONTEE DU PAS DE TEMPS: '
-     +            ,1,CMP)
-      CALL UTIMPR('L','COEFFICIENT DE DIVISION DU PAS DE TEMPS: '
-     +            ,1,CDP)
-      CALL UTIMPR('L','COEFF DETERMINANT DT MIN (=DT INIT*COEFF): '
-     +            ,1,CPMIN)
-      CALL UTIMPI('L','NOMBRE MAXIMAL DE REDUCTIONS DU PAS: '
-     +            ,1,NRMAX)
-        CALL UTIMPK('L','VITESSE MINIMALE VARIABLE: ',1,VVAR)
-      CALL UTFINM()
+      VALI (1) = NPER
+      VALI (2) = NRMAX
+      VALR (1) = CMP
+      VALR (2) = CDP
+      VALR (3) = CPMIN
+      VALK = VVAR
+      CALL U2MESG('I','ALGORITH15_68',1,VALK,2,VALI,3,VALR)
       END

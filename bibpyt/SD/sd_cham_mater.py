@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_mater SD  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_mater SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,8 +24,19 @@ from SD.sd_carte import sd_carte
 from SD.sd_util import *
 
 
+# Remarque :
+#------------
+# la sd_cham_mater est produite par la seule commande AFFE_MATERIAU.
+# C'est pourquoi, on fera appel parfois pour la décrire au vocabulaire de cette
+# commande.
+
+
+
 class sd_cham_mater_varc(AsBase):
 #----------------------------------
+# la sd_cham_mater_varc est la partie de la sd_cham_mater correspondant aux variables de commande
+# (mot clé AFFE_VARC)
+
     nomj = SDNom(fin=8)
     CVRCNOM  = AsVK8()
     CVRCGD   = AsVK8()
@@ -73,10 +84,14 @@ class sd_cham_mater_varc(AsBase):
         sdu_tous_differents(self.CVRCNOM,checker)
 
 
+
 class sd_cham_mater(AsBase):
 #----------------------------------
     nomj = SDNom(fin=8)
-    champ_mat = sd_carte(SDNom(nomj='.CHAMP_MAT', fin=19))
+
+    # CHAMP_MAT est une carte contenant la liste des noms de matériaux
+    # affectées sur les mailles du maillage.
+    CHAMP_MAT = sd_carte()
 
     # La carte TEMPE_REF n'existe pas si AFFE_VARC/NOM_VARC='TEMP' :
     # (voir routine cmtref.f)
@@ -84,6 +99,11 @@ class sd_cham_mater(AsBase):
 
     # si AFFE_VARC :
     varc = Facultatif(sd_cham_mater_varc(SDNom(nomj='')))
+
+    # si AFFE_COMPOR :
+    # COMPOR est une carte définissant les sd_compor affectés
+    # sur les mailles du maillage
+    COMPOR = Facultatif(sd_carte())
 
 
 

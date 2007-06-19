@@ -1,7 +1,9 @@
-      SUBROUTINE MMREAC(NDIM,NNE,NNM,
-     &                  IGEOM,IDEPM)
+      SUBROUTINE MMREAC ( NBDM, NDIM, NNE, NNM, IGEOM, IDEPM )
+      IMPLICIT NONE
+      INTEGER      NBDM,NDIM,NNE,NNM,IGEOM,IDEPM    
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,14 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-      IMPLICIT NONE
-      INTEGER      NDIM
-      INTEGER      NNE
-      INTEGER      NNM 
-      INTEGER      IGEOM
-      INTEGER      IDEPM    
-C
-C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0364/TE0365
 C ----------------------------------------------------------------------
 C
@@ -33,14 +27,14 @@ C CALCULE LES NOUVEAUX CHAMPS DE DEPLACEMENT POUR LES MAILLES MAITRES
 C ET ESCLAVES
 C  DEPL = DEPL_M + DEPL
 C
+C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
 C IN  NDIM   : DIMENSION DE LA MAILLE DE CONTACT
 C IN  NNE    : NOMBRE DE NOEUDS ESCLAVES
 C IN  NNM    : NOMBRE DE NOEUDS MAITRES
 C IN  IGEOM  : POINTEUR JEVEUX SUR GEOMETRIE INITIALE
 C IN  IDEPM  : POINTEUR JEVEUX SUR CHAMP DE DEPLACEMENT A L'INSTANT
 C              PRECEDENT
-C
-C
+C ----------------------------------------------------------------------
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
       INTEGER            ZI
@@ -60,27 +54,26 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER I,J     
-C
+      INTEGER   I, J
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
+C --- NOEUDS ESCLAVES
 C
-      DO 20 I = 1,NNE
-        DO 10 J = 1,NDIM
-          ZR(IGEOM+(I-1)*NDIM+J-1) = ZR(IGEOM+(I-1)*NDIM+J-1) +
-     &                               ZR(IDEPM+(I-1)*(2*NDIM)+J-1)
-   10   CONTINUE
-   20 CONTINUE
-
-      DO 21 I = 1,NNM
-        DO 11 J = 1,NDIM
-           ZR(IGEOM+NNE*NDIM+(I-1)*NDIM+J-1)=
-     &     ZR(IGEOM+NNE*NDIM+(I-1)*NDIM+J-1)+
-     &           ZR(IDEPM+NNE*(2*NDIM)+(I-1)*NDIM+J-1)
-   11   CONTINUE
-   21 CONTINUE
+      DO 100 I = 1,NNE
+         DO 110 J = 1,NDIM
+            ZR(IGEOM+(I-1)*NDIM+J-1) = ZR(IGEOM+(I-1)*NDIM+J-1) +
+     &                                 ZR(IDEPM+(I-1)*NBDM+J-1)
+ 110     CONTINUE
+ 100  CONTINUE
 C
-      CALL JEDEMA()
+C --- NOEUDS MAITRES
+C
+      DO 120 I = 1,NNM
+         DO 122 J = 1,NDIM
+            ZR(IGEOM+NNE*NDIM+(I-1)*NDIM+J-1) =
+     &      ZR(IGEOM+NNE*NDIM+(I-1)*NDIM+J-1)+
+     &                              ZR(IDEPM+NNE*NBDM+(I-1)*NDIM+J-1)
+ 122     CONTINUE
+ 120  CONTINUE
 C   
       END

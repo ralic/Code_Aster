@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C        ------ ALLOCATION DES OBJETS SI NECESSAIRE :
 
       CALL JEEXIN(MAT19//'.&IN2',IER)
       IF (IER.EQ.0) THEN
-        CALL JECREO(MAT19//'.&IN2',' V E K24')
+        CALL WKVECT(MAT19//'.&IN2',' V V K24',1,LNOM)
       END IF
 
       CALL JEVEUT(MAT19//'.&IN2','E',LNOM)

@@ -4,7 +4,7 @@
      &                    DSDENG, DSDEKG, DSDNKG, DSDXXF, DSDYYF,
      &                    DSDZZF, DSDXYF, DSDYZF, DSDXZF, JAC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ C ======================================================================
 C TOLE CRP_21
       IMPLICIT NONE
 C      REAL*8 (A-H,O-Z)
+      REAL*8 VALR
       INTEGER           NNO, NNF
       REAL*8            POIDS,DPDEG(1),DPDNG(1),DPDKG(1),DSDEEG(1),
      &                  DSDNNG(1),DSDKKG(1),DSDENG(1),DSDNKG(1),
@@ -100,9 +101,8 @@ C     --- DETERMINANT DE LA MATRICE JACOBIENNE
 C
       JAC = G(1,1) * J11 + G(1,2) * J21 + G(1,3) * J31
       IF(JAC.LE.0.0D0) THEN
-         CALL UTDEBM('A','ERREUR DSFCH3','JACOBIEN NEGATIF OU NUL :')
-         CALL UTIMPR('S',' JACOBIEN = ',1,JAC)
-         CALL UTFINM
+         VALR = JAC
+         CALL U2MESG('A','ELEMENTS5_31',0,' ',0,0,1,VALR)
       ENDIF
 C
 C     --- CALCUL DA LA MATRICE T1

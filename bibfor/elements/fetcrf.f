@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,9 +82,13 @@ C DECLARATION VARIABLES LOCALES
      &             ISDLCH,ISDCHA,ISDMAT,INBMCH,IFLIM,IDFLIN,IFLII,DEC,
      &             ICH,ISD,IMAT,ILSCHA,IDFLII,IDFLIM,IDFLM,IDFLN,IFNT,
      &             NB1,NB2,NB3,BIFLII,BIFLIM,BIFLN,JADRH,NBNOTA,NBMATR,
-     &             NOINCH,NBNOEU,ILIAIS,INBNO,ICOMPT,LL,NBDDLI,
-     &             VALI(2),IAFETA,NBMABO,IAL,IALS,JAL,ITMA,NBER,
-     &             LIL,LILS,IAO,IAOS,ADDR,K1,ITMPJ,JTMPJ,KTMP,KTMPJ
+     &             NOINCH,NBNOEU,ILIAIS,INBNO,ICOMPT,LL,NBDDLI,JMETH,
+     &             VALI(5),IAFETA,NBMABO,IAL,IALS,JAL,ITMA,NBER,
+     &             LIL,LILS,IAO,IAOS,ADDR,K1,ITMPJ,JTMPJ,KTMP,KTMPJ,
+     &             CFMMVD,ZMETH,NZOCO,IZONE,IFCFL,JSUMA,JSUNO
+      INTEGER      ISURF,JDECMA,JDECNO,JMACO,IDD,CFSD,IFCFM,NUMMA,
+     &             IFCFN,IFCFB,NZOCOM,KADR,LADR,IMA,JZONE,ISUCO,JNOCO,
+     &             IFETB,LFETB,DDLM,MADR,IIAUX1,JDIM,IFCNM,NBSURF,INDDZ
       INTEGER*4    INT4
       CHARACTER*1  K1BID
       CHARACTER*4  K4TMP
@@ -94,9 +98,11 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*19 SDFETI,LIGRMO,LIGRCH
       CHARACTER*24 NOMSDA,NOMSDB,NOMSDI,NOMSDG,NOMSDM,NOMSDH,NOMSDJ,
      &             NOMSLN,NOMSLI,NOMSLM,NOMNOE,GRPNOE,COOVAL,LISNO,
-     &             LISNOM,NOMREF,GRPMA,GRPNO,VALK(3)
+     &             LISNOM,NOMREF,GRPMA,GRPNO,VALK(3),METHCO,PZONE,
+     &             PSURMA,PSURNO,CONTMA,NOMFCL,NOMFCM,NOMFCN,CONTNO,
+     &             K24BID,NOMFCI,NDIMCO
       CHARACTER*32 JEXNOM,JEXNUM
-      LOGICAL      EXISDG,LBORD
+      LOGICAL      EXISDG,LBORD,LCFC1,LPAIRE
 
 
 C CORPS DU PROGRAMME
@@ -119,7 +125,10 @@ C**********************************************************************
       NOMSLN=SDFETI//'.FLIN'
       NOMSLI=SDFETI//'.FLII'
       NOMSLM=SDFETI//'.FLIM'
-
+      NOMFCL=SDFETI//'.FCFL'
+      NOMFCI=SDFETI//'.FCFI'
+      NOMFCM=SDFETI//'.FCFM'
+      NOMFCN=SDFETI//'.FCFN'
 C     RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
       CALL GETVID(' ','MODELE',1,1,1,NOMO,NBVM)
 
@@ -810,6 +819,22 @@ C***********************************************************************
             WRITE(IFM,*) 'LIGRCH:', LIGRCH
           ENDIF
 
+C***** 9.0 LIGREL DE CONTACT OU PAS (DEDUIT DE SURFCL.F)
+          LCFC1=.FALSE.
+          METHCO = ZK8(NOMCHA-1+ICH)//'.CONTACT.METHCO'
+          CALL JEEXIN(METHCO,IRET)
+          IF (IRET.NE.0) THEN
+            CALL JEVEUO(METHCO,'L',JMETH) 
+            ZMETH  = CFMMVD('ZMETH')
+            NZOCO  = ZI(JMETH)
+            DO 805 IZONE=1,NZOCO
+              IF (ZI(JMETH+ZMETH*(IZONE-1)+6).EQ.6) THEN
+                LCFC1=.TRUE.
+              ELSE
+                CALL U2MESS('F','ELEMENTS5_32')
+              ENDIF
+  805       CONTINUE          
+          ENDIF
 C **** 9.1 SI ON TROUVE DES NOEUDS TARDIFS DANS LA CHARGE
           INBNO=0
           CALL JEEXIN(LIGRCH//'.NBNO',N1)
@@ -819,6 +844,7 @@ C         OBJET TEMP POUR STOCKER LES NOEUDS TARDIFS DEJA TRAITES ET
 C         AINSI EVITER LES NOEUDS COMPTES 2 FOIS AVEC LIAISON_DDL....
             INBNO=ZI(IADR)
             IF (INBNO.NE.0) THEN
+              IF (LCFC1) CALL U2MESS('F','ELEMENTS5_33')
 C             VECTEUR DES NOEUDS TARDIFS DEJA COMPTES
               CALL WKVECT('&&FETCRF.LIAISON','V V I',INBNO,ILIAIS)
               IAUX1=3*INBNO
@@ -833,6 +859,7 @@ C             ILIDDL(3,J)= COMPTEUR (SI > 1 LIAISON_***)
 C **** 9.2 SI ON TROUVE DES MAILLES TARDIVES DANS LA CHARGE
           CALL JEEXIN(LIGRCH//'.NEMA',N2)
           IF (N2.NE.0) THEN
+            IF (LCFC1) CALL U2MESS('F','ELEMENTS5_33')
 C           NB MAILLES TARDIVES
             CALL JELIRA(LIGRCH//'.NEMA','NUTIOC',NBOBJ1,K8BID)
 C           LONGUEUR TOTALE DE LA COLLECTION
@@ -1233,7 +1260,330 @@ C     FIN DE CREATION DE FLII, FLIM ET FLIN, IF (NBNOTA.GT.0)
       ENDIF
 
 C***********************************************************************
-C ETAPE 14 DESTRUCTION OBJETS TEMPORAIRES
+C MAXI BOUCLE 14 SUR LES CHARGES POUR LE CONTACT CONTINUE (CF. SURFCL.F)
+C***********************************************************************
+C     ON NE RETESTE PAS L'HOMOGENIEITE DES ZONES DE CONTACT EN CONTACT
+C     CONTINUE ET LEUR NON JUXTAPOSITION AVEC UNE ZONE DE DIRICHLET OU
+C     DE FORCE NODALE DANS UN MEME AFFE_CHAR_MECA. CELA A ETE DEJA FAIT
+C     PRECEDEMMENT.
+
+C VECTEURS DE NBRE DE MAILLES/NOEUDS ESCLAVES PAR SD      
+      CALL WKVECT('&&FETCRF.FCFM     ','V V I',NBSD,IFCFM)
+      CALL JERAZO('&&FETCRF.FCFM     ',NBSD,1)
+      CALL WKVECT('&&FETCRF.FCFN     ','V V I',NBSD,IFCFN)
+      CALL JERAZO('&&FETCRF.FCFN     ',NBSD,1)
+C VECTEURS AUXILIAIRES DE POINTEURS DE CONTACT
+      IF (NBCHAR.NE.0)
+     &  CALL WKVECT('&&FETCRF.FCFB     ','V V I',9*NBCHAR,IFCFB)
+
+C **** 14.1 BOUCLE POUR DETERMINER LE NOMBRE DE ZONES MAXI DE CONTACT
+C  ET LES POINTEURS DE CONTACT ADHOC
+      NZOCOM=0
+      DO 940 ICH = 1,NBCHAR
+        K8BID=ZK8(NOMCHA-1+ICH)
+        METHCO = K8BID//'.CONTACT.METHCO'
+        PZONE  = K8BID//'.CONTACT.PZONECO'
+        PSURMA = K8BID//'.CONTACT.PSUMACO'
+        PSURNO = K8BID//'.CONTACT.PSUNOCO'
+        CONTMA = K8BID//'.CONTACT.MAILCO'
+        CONTNO = K8BID//'.CONTACT.NOEUCO'
+        NDIMCO = K8BID//'.CONTACT.NDIMCO'
+        CALL JEEXIN(METHCO,IRET)
+        ZI(IFCFB+9*(ICH-1))=0
+        IF (IRET.NE.0) THEN
+          ZI(IFCFB+9*(ICH-1))=1
+          CALL JEVEUO(METHCO,'L',JMETH)
+          ZI(IFCFB+9*(ICH-1)+1)=JMETH
+          CALL JEVEUO(PZONE ,'L',JZONE)
+          ZI(IFCFB+9*(ICH-1)+2)=JZONE
+          CALL JEVEUO(PSURMA,'L',JSUMA)
+          ZI(IFCFB+9*(ICH-1)+3)=JSUMA
+          CALL JEVEUO(PSURNO,'L',JSUNO)
+          ZI(IFCFB+9*(ICH-1)+4)=JSUNO
+          CALL JEVEUO(CONTMA,'L',JMACO)
+          ZI(IFCFB+9*(ICH-1)+5)=JMACO 
+          ZMETH  = CFMMVD('ZMETH')
+          NZOCO  = ZI(JMETH)
+          ZI(IFCFB+9*(ICH-1)+6)=NZOCO
+          IF (NZOCO.GT.NZOCOM) NZOCOM=NZOCO
+          CALL JEVEUO(CONTNO,'L',JNOCO)
+          ZI(IFCFB+9*(ICH-1)+7)=JNOCO
+          CALL JEVEUO(NDIMCO,'L',JDIM)
+          ZI(IFCFB+9*(ICH-1)+8)=JDIM
+        ENDIF
+  940 CONTINUE
+C VECTEUR INDIQUANT LE NUMERO DE SD CONCERNE PAR LA JIEME ZONE
+C DU IEME CHARGEMENT
+C     CHAR     1        2        3...
+C     ZONE     1 2 0 0  0 1 0 0
+      IAUX0=NZOCOM*NBCHAR
+      IF (IAUX0.NE.0)
+     &  CALL WKVECT('&&FETCRF.FCFL     ','V V I',IAUX0,IFCFL)
+C NOMBRE TOTAL DE MAILLES DE CONTACT ESCLAVES PAR CHARGEMENT
+      CALL WKVECT('&&FETCRF.FCNM     ','V V I',NBCHAR,IFCNM)
+           
+C **** 14.2 BOUCLE SUR LES CHARGEMENTS POUR DETERMINER LES COUPLES
+C (SD,CHAR), LES NOMBRES DE MAILLES ET NOEUDS MAITRES PAR SD
+      DO 950 ICH = 1,NBCHAR
+        IF (ZI(IFCFB+9*(ICH-1)).EQ.1) THEN
+          JMETH=ZI(IFCFB+9*(ICH-1)+1)
+          JZONE=ZI(IFCFB+9*(ICH-1)+2)
+          JSUMA=ZI(IFCFB+9*(ICH-1)+3)
+          JSUNO=ZI(IFCFB+9*(ICH-1)+4)
+          JMACO=ZI(IFCFB+9*(ICH-1)+5) 
+          NZOCO=ZI(IFCFB+9*(ICH-1)+6)
+          ISUCO  = 0
+C BOUCLE SUR LES ZONES DE CONTACT
+          DO 951 IZONE=1,NZOCO
+            NBSURF = ZI(JZONE+IZONE) - ZI(JZONE+IZONE-1)
+            DO 949 ISURF = 1,NBSURF
+C CETTE INITIALISATION PERMET DE TESTER SI TOUTES LES MAILLES D'UNE ZONE
+C APPARTIENNENT A UN SEUL SOUS-DOMAINE
+              CFSD=-1
+C ISUCO PILOTE LE CHANGEMENT DE SURFACE: 1=ESCLAVE, 2=MAITRE
+              ISUCO  = ISUCO + 1
+              NBMA   = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
+              NBNO   = ZI(JSUNO+ISUCO) - ZI(JSUNO+ISUCO-1)
+              JDECMA = ZI(JSUMA+ISUCO-1)
+              JDECNO = ZI(JSUNO+ISUCO-1)
+
+              ZI(IFCNM+ICH-1)=ZI(IFCNM+ICH-1)+NBMA
+C BOUCLE SUR SES MAILLES
+              DO 953 IMA=1,NBMA
+                NUMMA = ZI(JMACO+JDECMA+IMA-1)
+C BOUCLE SUR LES SOUS-DOMAINES
+                DO 954 IDD=1,NBSD
+C ILS ONT DES MAILLES DE BORD OU PAS ?
+                  IF (ZI(NBRD-1+IDD).EQ.1) THEN
+                    NOMGMA=ZK8(LSTBRD-1+IDD)
+                    CALL JELIRA(JEXNOM(GRPMA,NOMGMA),'LONMAX',NBMABO,
+     &                          K8B)
+                    CALL JEVEUO(JEXNOM(GRPMA,NOMGMA),'L',IALIBD)
+                    NBMABO=NBMABO-1
+C BOUCLE SUR LES MAILLES DE BORD
+                    DO 955 J=0,NBMABO
+                      IF (ZI(IALIBD+J).EQ.NUMMA) THEN
+                        IF ((CFSD.GT.0).AND.(CFSD.NE.IDD)) THEN
+                          VALI(1)=NUMMA
+                          VALI(2)=IZONE
+                          VALI(3)=ICH
+                          VALI(4)=IDD
+                          VALI(5)=CFSD
+                          CALL U2MESI('F','ELEMENTS5_34',5,VALI)
+                        ENDIF
+                        CFSD=IDD
+                        GOTO 952
+                      ENDIF
+C FIN BOUCLE SUR LES MAILLES DE BORD DU SD
+  955               CONTINUE
+                  ENDIF
+C SORTIE DU IF; ON A TROUVE QUE LA MAILLE DE CONTACT NUMMA EST CONCERNEE
+C PAR LE SD IDD. ON VA VERIFIER QU'ELLE NE L'EST PAS AUCUN AUTRE SD
+  952             CONTINUE
+C FIN BOUCLE SUR LES SD
+  954           CONTINUE
+C FIN BOUCLE SUR LES MAILLES DE CONTACT
+  953         CONTINUE
+C SI UNE SURFACE DE CONTACT N'A TROUVE AUCUN SD, UTMESS_F
+              IF (CFSD.GT.0) THEN               
+                ZI(IFCFL+(ICH-1)*NZOCOM+IZONE)=CFSD
+                ZI(IFCFM+CFSD-1)=ZI(IFCFM+CFSD-1)+NBMA
+                ZI(IFCFN+CFSD-1)=ZI(IFCFN+CFSD-1)+NBNO
+              ELSE
+                VALI(1)=ISURF
+                VALI(2)=IZONE
+                VALI(3)=ICH
+                CALL U2MESI('F','ELEMENTS5_35',3,VALI)
+              ENDIF
+C FIN BOUCLE SUR LES SURFACES
+  949       CONTINUE
+C FIN BOUCLE SUR LES ZONES DE CONTACT
+  951     CONTINUE        
+        ENDIF 
+C FIN BOUCLE SUR LES CHARGES       
+  950 CONTINUE
+C CREATION OBJETS .FCFL, .FCFI, .FCFM ET .FCFN POUR FETI+CONTACT
+      CALL JECREC(NOMFCL,'G V K24','NO','DISPERSE','VARIABLE',NBSD)
+      CALL JECREC(NOMFCI,'G V I','NO','DISPERSE','VARIABLE',NBSD)
+      CALL JECREC(NOMFCM,'G V I','NO','DISPERSE','VARIABLE',NBSD)
+      CALL JECREC(NOMFCN,'G V I','NO','DISPERSE','VARIABLE',NBSD)
+
+C **** 14.3 ON REPARCOURT LES CHARGES PAR SD CETTE FOIS POUR REMPLIR
+C LES OBJETS PRECEDENTS
+      DO 960 IDD=1,NBSD
+C ON CHERCHE A DIMENSIONNER L'OBJET IDD DE NOMFCL
+C IAUX: NOMBRE DE CHARGEMENT DE CONTACT CONCERNANT IDD
+        IAUX=0
+        DO 965 ICH=1,NBCHAR
+          DO 967 IZONE=1,NZOCOM
+            IF (ZI(IFCFL+(ICH-1)*NZOCOM+IZONE).EQ.IDD) THEN
+              IAUX=IAUX+1
+              GOTO 966
+            ENDIF
+  967     CONTINUE
+  966     CONTINUE        
+  965   CONTINUE
+        K8BUFF=ZK8(NOMSD-1+IDD)
+        IF (IAUX.NE.0) THEN
+C TRAVAIL PREPARATOIRE 1 POUR CALCULER DDLS DE CONTACT SUPPLEMENTAIRES
+          CALL JELIRA(JEXNOM(NOMSDB,K8BUFF),'LONMAX',LFETB,K8B)
+          LFETB=LFETB/2
+          CALL JEVEUO(JEXNOM(NOMSDB,K8BUFF),'L',IFETB)
+C CREATION NOMFCL
+          CALL JECROC(JEXNOM(NOMFCL,K8BUFF))
+          CALL JEECRA(JEXNOM(NOMFCL,K8BUFF),'LONMAX',IAUX,K8B)
+          CALL JEVEUO(JEXNOM(NOMFCL,K8BUFF),'E',JADR)
+          IIAUX1=0
+          IAUX1=0
+C CREATION NOMFCI
+          CALL JECROC(JEXNOM(NOMFCI,K8BUFF))
+          CALL JEECRA(JEXNOM(NOMFCI,K8BUFF),'LONMAX',2*IAUX,K8B)
+          CALL JEVEUO(JEXNOM(NOMFCI,K8BUFF),'E',MADR)
+C CREATION NOMFCM
+          CALL JECROC(JEXNOM(NOMFCM,K8BUFF))
+          CALL JEECRA(JEXNOM(NOMFCM,K8BUFF),'LONMAX',ZI(IFCFM+IDD-1),
+     &                K8B)
+          CALL JEVEUO(JEXNOM(NOMFCM,K8BUFF),'E',KADR)
+          IAUX2=0
+C CREATION NOMFCN
+          CALL JECROC(JEXNOM(NOMFCN,K8BUFF))
+          CALL JEECRA(JEXNOM(NOMFCN,K8BUFF),'LONMAX',ZI(IFCFN+IDD-1),
+     &                K8B)
+          CALL JEVEUO(JEXNOM(NOMFCN,K8BUFF),'E',LADR)
+          IAUX3=0
+          DO 961 ICH = 1,NBCHAR
+            IF (ZI(IFCFB+9*(ICH-1)).EQ.1) THEN
+ 
+              NZOCO=ZI(IFCFB+9*(ICH-1)+6)
+              JZONE=ZI(IFCFB+9*(ICH-1)+2)
+C BOUCLE SUR LES ZONES DE CONTACT
+C INDDZ: PERMET DE DECIDER SI UN NOEUD COMPTE PLUSIEURS FOIS EST AU SEIN
+C D'UNE MEME ZONE OU NON
+              INDDZ=0
+              ISUCO= 0
+              LPAIRE=.TRUE.
+              DO 962 IZONE=1,NZOCO
+                NBSURF = ZI(JZONE+IZONE) - ZI(JZONE+IZONE-1)
+                DO 959 ISURF = 1,NBSURF
+C ISUCO PILOTE LE CHANGEMENT DE SURFACE: IMPAIRE=ESCLAVE, PAIRE=MAITRE
+                  ISUCO  = ISUCO + 1
+                  LPAIRE=.NOT.LPAIRE                  
+                  IF (ZI(IFCFL+(ICH-1)*NZOCOM+IZONE).EQ.IDD) THEN
+C ON STOCKE LE NOM DE LA CHARGE
+                    K8BID=ZK8(NOMCHA-1+ICH)
+                    DO 963 I=1,IAUX1
+                      IF (ZK24(JADR+I-1)(1:8).EQ.K8BID) THEN
+                        IIAUX1=I
+                        GOTO 964
+                      ENDIF
+  963               CONTINUE
+                    ZK24(JADR+IAUX1)=K8BID//'.CHME.LIGRE'
+                    IIAUX1=IAUX1+1
+                    IAUX1=IAUX1+1
+C LABEL POUR NE PAS ENREGISTRER PLUSIEURS FOIS LE NOM DE LA CHARGE
+  964               CONTINUE
+C TRAVAIL PREPARATOIRE 2 POUR CALCULER DDLS DE CONTACT SUPPLEMENTAIRES
+                    K24BID=K8BID//'.CHME.LIGRE.PRNM'
+                    CALL JEVEUO(K24BID,'L',JPRNM)
+
+                    JMETH=ZI(IFCFB+9*(ICH-1)+1)
+                    JSUMA=ZI(IFCFB+9*(ICH-1)+3)
+                    JSUNO=ZI(IFCFB+9*(ICH-1)+4)
+                    JMACO=ZI(IFCFB+9*(ICH-1)+5)
+                    JNOCO=ZI(IFCFB+9*(ICH-1)+7)
+                    JDIM =ZI(IFCFB+9*(ICH-1)+8)
+                    NBMA   = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
+                    NBNO   = ZI(JSUNO+ISUCO) - ZI(JSUNO+ISUCO-1)
+                    JDECMA = ZI(JSUMA+ISUCO-1)
+                    JDECNO = ZI(JSUNO+ISUCO-1)
+C ON REMPLI .FCFM POUR IDD
+                    DO 968 IMA=1,NBMA
+                      ZI(KADR+IAUX2+IMA-1)=ZI(JMACO+JDECMA+IMA-1)
+  968               CONTINUE
+                    IAUX2=IAUX2+NBMA
+C ON REMPLI .FCFI POUR IDD
+                    ZI(MADR+2*(IIAUX1-1))=ZI(IFCNM+ICH-1)
+                    ZI(MADR+2*(IIAUX1-1)+1)=ZI(MADR+2*(IIAUX1-1)+1)+NBMA
+C ON REMPLI .FCFN POUR IDD (EN EVITANT LES DOUBLONS POUR LES DDLS)
+C ON NE COMPTE QU'UNE FOIS UN NOEUD COMMUN AUX DEUX PARTIES D'UNE
+C MEME ZONE OU A PLUSIEURS ZONES
+                    DO 969 INO=1,NBNO
+                      J2=IAUX3+INO-2
+                      JJ=ZI(JNOCO+JDECNO+INO-1)
+                      ZI(LADR+J2+1)=JJ
+                      DO 369 J=1,NBFETE
+                        IF (ZI(JADRI+4*(J-1)).EQ.JJ) THEN
+                          VALI(1)=JJ
+                          VALI(2)=IZONE
+                          CALL U2MESI('F','ELEMENTS5_38',2,VALI)
+                        ENDIF
+  369                 CONTINUE
+                      DO 469 J=0,J2
+                        IF (ZI(LADR+J).EQ.JJ) THEN
+C NOEUD COMPTE DEUX FOIS
+                          VALI(1)=I
+                          VALI(2)=IZONE
+                          IF (J.GE.INDDZ) THEN
+C DANS LA MEME ZONE, ON NE VA PAS LE COMPTER
+                            CALL U2MESI('A','ELEMENTS5_36',2,VALI)
+                            GOTO 869
+                          ELSE
+C ENTRE ZONES, ON LE COMPTE MAIS CELA VA SANS DOUTE POSER PB A L'ALGO
+C DE CONTACT
+                            CALL U2MESI('A','ELEMENTS5_37',1,VALI)
+                          ENDIF
+                        ENDIF
+  469                 CONTINUE
+C POUR LES NOEUDS ESCLAVES (ISUCO IMPAIR)
+C ON DETERMINE LE NOMBRE DE DDL DUS AU CONTACT SANS LES DDLS
+C PHYSIQUES DEJA COMPTES 
+                      DDLM=0
+                      K=0
+                      IF (.NOT.LPAIRE) THEN
+                        DO 569 L=1,LFETB
+                          IF (ABS(ZI(IFETB+2*(L-1))).EQ.JJ) THEN
+                            IF (L.EQ.1) THEN
+                              DDLM=ZI(IFETB+1)
+                            ELSE
+                              DDLM=ZI(IFETB+2*(L-1)+1)-
+     &                             ZI(IFETB+2*(L-2)+1)
+                            ENDIF
+                            GOTO 669
+                          ENDIF
+  569                   CONTINUE
+  669                   CONTINUE
+                        K=-DDLM
+                        DO 769 L=1,NEC30
+                          IF (EXISDG(ZI(JPRNM-1+NEC*(JJ-1)+1),L)) K=K+1
+  769                   CONTINUE
+C MAJ DE .FETH EN NE TENANT COMPTE QUE DES DDLS DE CONTACT
+                        ZI(JADRH-1+IDD)=ZI(JADRH-1+IDD)+K
+                      ENDIF
+
+C MONITORING  
+C                    WRITE(IFM,*)'NOEUD/DDL CONTACT',JJ,DDLM,K
+  869                 CONTINUE
+C FIN BOUCLE SUR LES NOEUDS
+  969               CONTINUE
+                    IAUX3=IAUX3+NBNO
+C FIN SI ZONE CONCERNANT LE SD
+                  ENDIF
+C FIN BOUCLE SUR LES SURFACES
+  959           CONTINUE
+C FIN BOUCLE SUR LES ZONES
+                INDDZ=INDDZ+IAUX3             
+  962         CONTINUE
+C FIN SI CHARGEMENT DE CONTACT
+            ENDIF
+C FIN BOUCLE SUR LES CHARGES
+  961     CONTINUE
+C SI SD CONCERNE PAR CONTACT
+        ENDIF
+C FIN BOUCLE SUR LES SD
+  960 CONTINUE
+ 
+C***********************************************************************
+C ETAPE 15 DESTRUCTION OBJETS TEMPORAIRES
 C***********************************************************************
       CALL JEDETC('V','&&FETCRF',1)
       CALL JEDEMA()

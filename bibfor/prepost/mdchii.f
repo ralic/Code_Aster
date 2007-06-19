@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,9 +74,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
+      CHARACTER*24 VALK
       PARAMETER ( NOMPRO = 'MDCHII' )
 C
       INTEGER EDNOPT
+      INTEGER VALI(2)
       PARAMETER (EDNOPT=-1)
       INTEGER EDNONO
       PARAMETER (EDNONO=-1)
@@ -107,9 +109,8 @@ C 1.1. ==> NBCHAM : NOMBRE DE CHAMPS DANS LE FICHIER
 C
       CALL EFNCHA ( IDFIMD, 0, NBCHAM, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER MED' )
-        CALL UTIMPI ( 'L', 'ERREUR EFNCHA NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALI (1) = CODRET
+        CALL U2MESG('A','PREPOST5_83',0,' ',1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST3_42')
       ENDIF
 C
@@ -125,10 +126,9 @@ C                     LE CHAMP NUMERO IAUX
 C
       CALL EFNCHA ( IDFIMD, IAUX, NBCMFI, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER MED' )
-        CALL UTIMPI ( 'L', 'CHAMP NUMERO ', 1, IAUX )
-        CALL UTIMPI ( 'L', 'ERREUR EFNCHA NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALI (1) = IAUX
+        VALI (2) = CODRET
+        CALL U2MESG('A','PREPOST5_84',0,' ',2,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST3_43')
       ENDIF
 C
@@ -147,16 +147,18 @@ C               12345678901234567890123456789012
       CALL EFCHAI ( IDFIMD, IAUX, SAUX32, JAUX,
      &              ZK16(ADNCMP), ZK16(ADUCMP), NBCMFI, CODRET )
       IF ( CODRET.NE.0 .OR. JAUX.NE.MFLOAT ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER MED' )
-        CALL UTIMPI ( 'L', 'CHAMP NUMERO ', 1, IAUX )
-        CALL UTIMPK ( 'S', ', DE NOM : ', 1, SAUX32 )
+        VALI (1) = IAUX
+        VALK = SAUX32
+        CALL U2MESG('A+','PREPOST5_85',1,VALK,1,VALI,0,0.D0)
         IF (CODRET.NE.0) THEN
-          CALL UTIMPI ( 'L', 'ERREUR EFCHAI NUMERO ', 1, CODRET )
+          VALI (1) = CODRET
+          CALL U2MESG('A+','PREPOST5_86',0,' ',1,VALI,0,0.D0)
         ENDIF
         IF (JAUX.NE.MFLOAT) THEN
-          CALL UTIMPI ( 'L', 'TYPE INCORRECT ', 1, JAUX )
+          VALI (1) = JAUX
+          CALL U2MESG('A+','PREPOST5_87',0,' ',1,VALI,0,0.D0)
         ENDIF
-        CALL UTFINM ()
+        CALL U2MESG('A','PREPOST5_88',0,' ',0,0,0,0.D0)
         CALL U2MESS('F','PREPOST3_44')
       ENDIF
 C

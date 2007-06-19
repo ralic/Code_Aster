@@ -8,7 +8,7 @@
       CHARACTER*19        NOMT19
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C        PARUSU(I,4) = PROFONDEUR MAX
 C
 C ----------------------------------------------------------------------
       INTEGER      I, L, IFM, NIV
+      INTEGER VALI
       REAL*8       THETA, DELTAN, AI1, BI1, R, Y
       REAL*8       RAD, R8PREM, R8DGRD, TABR(4), ARET1F, ARET2F
       REAL*8       ALPHAD, ALPHAM, ALPHAF, PROF, AD, AM, AF
@@ -103,16 +104,14 @@ C
          PROF   = PARUSU(I,4)
 C
          IF ( ABS(ALPHAM-ALPHAF) .LE. R8PREM() )  THEN
-            CALL UTDEBM('A','USOBEN','VERIFIER LES PARAMETRES ')
-            CALL UTIMPI('S','D''USURE POUR LE SECTEUR ',1,I)
-            CALL UTFINM()
+            VALI = I
+            CALL U2MESG('A','PREPOST6_4',0,' ',1,VALI,0,0.D0)
             GOTO 100
          ENDIF
 C
          IF ( ABS(ALPHAM-ALPHAD) .LE. R8PREM() )  THEN
-            CALL UTDEBM('A','USOBEN','VERIFIER LES PARAMETRES ')
-            CALL UTIMPI('S','D''USURE POUR LE SECTEUR ',1,I)
-            CALL UTFINM()
+            VALI = I
+            CALL U2MESG('A','PREPOST6_5',0,' ',1,VALI,0,0.D0)
             GOTO 100
          ENDIF
 C

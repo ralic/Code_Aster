@@ -1,7 +1,7 @@
       SUBROUTINE NMMESS (CODE,DP0,DP1,DP,FONC,NIT,NITMAX,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/99   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,13 +50,16 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8,NOMAIL
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
       INTEGER IADZI,IAZK24,NBP,I
+      INTEGER VALI(2)
       EXTERNAL FONC
       REAL*8 FONC,DPI,F0,F1,FP,FI
+      REAL*8 VALR(2)
 
       IF (IRET.EQ.0) GOTO 9999
 
@@ -65,40 +68,41 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
 
       IF (IRET.EQ.1) THEN
-         CALL UTDEBM(CODE,' ',' ON NE TROUVE PAS DPMAX ')
+         CALL U2MESG(CODE//'+','ALGORITH15_45',0,' ',0,0,0,0.D0)
       ELSEIF (IRET.EQ.2) THEN
-         CALL UTDEBM(CODE,' ',' NOMBRE D ITERATIONS INSUFFISANT ')
+         CALL U2MESG(CODE//'+','ALGORITH15_46',0,' ',0,0,0,0.D0)
       ELSEIF (IRET.EQ.3) THEN
-         CALL UTDEBM(CODE,' ',' F(XMIN) > 0 ')
+         CALL U2MESG(CODE//'+','ALGORITH15_47',0,' ',0,0,0,0.D0)
       ENDIF
 
-      CALL UTIMPK('L',' MAILLE : ',1,NOMAIL)
-
-      CALL UTIMPI('L',' NOMBRE D ITERATIONS = ',1,NIT )
-      CALL UTIMPI('S',' ITER_INTE_MAXI = ',1,NITMAX )
-
+      VALK = NOMAIL
+      VALI (1) = NIT
+      VALI (2) = NITMAX
+      CALL U2MESG(CODE//'+','ALGORITH15_48',1,VALK,2,VALI,0,0.D0)
       FP = FONC(DP)
-      CALL UTIMPR('L',' DP   ACTUEL = ',1,DP)
-      CALL UTIMPR('S',' F(DP) ACTUEL = ',1,FP)
-
+      VALR (1) = DP
+      VALR (2) = FP
+      CALL U2MESG(CODE//'+','ALGORITH15_49',0,' ',0,0,2,VALR)
       F0 = FONC(DP0)
-      CALL UTIMPR('L',' DP  INITIAL = ',1,DP0)
-      CALL UTIMPR('S',' F(DP) INIT   = ',1,F0)
-
+      VALR (1) = DP0
+      VALR (2) = F0
+      CALL U2MESG(CODE//'+','ALGORITH15_50',0,' ',0,0,2,VALR)
       F1 = FONC(DP1)
-      CALL UTIMPR('L',' DP  MAXIMUM = ',1,DP1)
-      CALL UTIMPR('S', 'F(DP) MAXI   = ',1,F1)
-
+      VALR (1) = DP1
+      VALR (2) = F1
+      CALL U2MESG(CODE//'+','ALGORITH15_51',0,' ',0,0,2,VALR)
       NBP=100
 
-      CALL UTIMPI('L',' ALLURE DE LA FONCTION. NB POINTS : ',1,NBP)
+      VALI (1) = NBP
+      CALL U2MESG(CODE//'+','ALGORITH15_52',0,' ',1,VALI,0,0.D0)
       DO 10 I=1,NBP
          DPI=DP0+I*(DP1-DP0)/NBP
          FI = FONC(DPI)
-         CALL UTIMPR('L',' DP  = ',1,DPI)
-         CALL UTIMPR('S', 'F(DP)  = ',1,FI)
+         VALR (1) = DPI
+         VALR (2) = FI
+         CALL U2MESG(CODE//'+','ALGORITH15_53',0,' ',0,0,2,VALR)
 10    CONTINUE
 
-      CALL UTFINM()
+      CALL U2MESG(CODE,'ALGORITH15_54',0,' ',0,0,0,0.D0)
 9999  CONTINUE
       END

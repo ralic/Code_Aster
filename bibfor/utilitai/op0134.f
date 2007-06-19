@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C --- NAPPE OU FONCTION
 C
       COMPL = .FALSE.
       IF (TYPCO(1:7).EQ.'FORMULE') THEN
+         IF (TYPCO(1:9).EQ.'FORMULE_C')  COMPL = .TRUE.
          CALL JELIRA ( NOMFIN//'.NOVA', 'LONUTI', NBNOVA, K8B )
          CALL JEVEUO ( NOMFIN//'.NOVA', 'L', LNOVA )
          IF ( NBNOVA .EQ. 1 ) THEN

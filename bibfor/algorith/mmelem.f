@@ -1,7 +1,10 @@
-      SUBROUTINE MMELEM(NOMTE,
-     &                  NDIM,NDDL,ESC,NNE,MAIT,NNM)
+      SUBROUTINE MMELEM ( NOMTE, NDIM, NDDL, ESC, NNE, MAIT, NNM )
+      IMPLICIT NONE
+      INTEGER      NDIM, NDDL, NNE, NNM, I2D, I3D
+      CHARACTER*8  ESC, MAIT
+      CHARACTER*16 NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,15 +21,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT NONE
-      CHARACTER*16 NOMTE
-      INTEGER      NDIM
-      INTEGER      NDDL
-      CHARACTER*8  ESC
-      INTEGER      NNE
-      CHARACTER*8  MAIT
-      INTEGER      NNM
-C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0364/TE0365
 C ----------------------------------------------------------------------
@@ -43,148 +37,166 @@ C OUT MAIT   : NOM DE LA MAILLE MAITRE
 C OUT NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 C
 C ----------------------------------------------------------------------
+      IF (NOMTE(1:2).EQ.'CF') THEN
+C ----- COMPOSANTES 2D : LAGS_C   LAGS_F1
+C ----- COMPOSANTES 3D : LAGS_C   LAGS_F1  LAGS_F2
+        I2D = 2
+        I3D = 3
+      ELSEIF (NOMTE(1:2).EQ.'CO') THEN
+C ----- COMPOSANTE : LAGS_C
+        I2D = 1
+        I3D = 1
+      ELSE
+        CALL U2MESS('F','ALGORITH5_90')
+      ENDIF
 C
-      IF (NOMTE.EQ.'CFS2S2') THEN
+C --- 2D
+C
+      IF (NOMTE.EQ.'CFS2S2' .OR. NOMTE.EQ.'COS2S2') THEN
+        NDIM = 2
         ESC  = 'SG2'
-        NNM  = 2
         NNE  = 2
-        NDDL = 12
-        NDIM = 2
         MAIT = 'SG2'
-      ELSE IF (NOMTE.EQ.'CFS2S3') THEN
+        NNM  = 2
+        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
+      ELSE IF (NOMTE.EQ.'CFS2S3' .OR. NOMTE.EQ.'COS2S3') THEN
+        NDIM = 2
         ESC  = 'SG2'
-        NNM  = 3
         NNE  = 2
-        NDDL = 14
-        NDIM = 2
         MAIT = 'SG3'
-      ELSE IF (NOMTE.EQ.'CFS3S2') THEN
-        ESC  = 'SG3'
-        NNM  = 2
-        NNE  = 3
-        NDDL = 16
+        NNM  = 3
+        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
+      ELSE IF (NOMTE.EQ.'CFS3S2' .OR. NOMTE.EQ.'COS3S2') THEN
         NDIM = 2
+        ESC  = 'SG3'
+        NNE  = 3
         MAIT = 'SG2'
-      ELSE IF (NOMTE.EQ.'CFS3S3') THEN
-        ESC  = 'SG3'
-        NNM  = 3
-        NNE  = 3
-        NDDL = 18
+        NNM  = 2
+        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
+      ELSE IF (NOMTE.EQ.'CFS3S3' .OR. NOMTE.EQ.'COS3S3') THEN
         NDIM = 2
+        ESC  = 'SG3'
+        NNE  = 3
         MAIT = 'SG3'
-      ELSE IF (NOMTE.EQ.'CFT3T3') THEN
-        ESC  = 'TR3'
         NNM  = 3
-        NNE  = 3
-        NDDL = 27
+        NDDL = NNM*NDIM + NNE*(NDIM+I2D)
+C
+C --- 3D
+C
+      ELSE IF (NOMTE.EQ.'CFT3T3' .OR. NOMTE.EQ.'COT3T3') THEN
         NDIM = 3
-        MAIT = 'TR3'
-      ELSE IF (NOMTE.EQ.'CFT3T6') THEN
         ESC  = 'TR3'
-        NNM  = 6
         NNE  = 3
-        NDDL = 36
-        NDIM = 3
-        MAIT = 'TR6'
-      ELSE IF (NOMTE.EQ.'CFT6T3') THEN
-        ESC  = 'TR6'
+        MAIT = 'TR3'
         NNM  = 3
-        NNE  = 6
-        NDDL = 45
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT3T6' .OR. NOMTE.EQ.'COT3T6') THEN
         NDIM = 3
+        ESC  = 'TR3'
+        NNE  = 3
+        MAIT = 'TR6'
+        NNM  = 6
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT6T3' .OR. NOMTE.EQ.'COT6T3') THEN
+        NDIM = 3
+        ESC  = 'TR6'
+        NNE  = 6
         MAIT = 'TR3'
-      ELSE IF (NOMTE.EQ.'CFT6T6') THEN
-        ESC  = 'TR6'
-        NNM  = 6
-        NNE  = 6
-        NDDL = 54
-        NDIM = 3
-        MAIT = 'TR6'
-      ELSE IF (NOMTE.EQ.'CFQ4Q4') THEN
-        ESC  = 'QU4'
-        NNM  = 4
-        NNE  = 4
-        NDDL = 36
-        NDIM = 3
-        MAIT = 'QU4'
-      ELSE IF (NOMTE.EQ.'CFQ4Q8') THEN
-        ESC  = 'QU4'
-        NNM  = 8
-        NNE  = 4
-        NDDL = 48
-        NDIM = 3
-        MAIT = 'QU8'
-      ELSE IF (NOMTE.EQ.'CFQ8Q4') THEN
-        ESC  = 'QU8'
-        NNM  = 4
-        NNE  = 8
-        NDDL = 60
-        NDIM = 3
-        MAIT = 'QU4'
-      ELSE IF (NOMTE.EQ.'CFQ8Q8') THEN
-        ESC  = 'QU8'
-        NNM  = 8
-        NNE  = 8
-        NDDL = 72
-        NDIM = 3
-        MAIT = 'QU8'
-      ELSE IF (NOMTE.EQ.'CFQ8T6') THEN
-        ESC  = 'QU8'
-        NNM  = 6
-        NNE  = 8
-        NDDL = 66
-        NDIM = 3
-        MAIT = 'TR6'
-      ELSE IF (NOMTE.EQ.'CFT6Q8') THEN
-        ESC  = 'TR6'
-        NNM  = 8
-        NNE  = 6
-        NDDL = 60
-        NDIM = 3
-        MAIT = 'QU8'
-      ELSE IF (NOMTE.EQ.'CFQ4T3') THEN
-        ESC  = 'QU4'
         NNM  = 3
-        NNE  = 4
-        NDDL = 33
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT6T6' .OR. NOMTE.EQ.'COT6T6') THEN
         NDIM = 3
-        MAIT = 'TR3'
-      ELSE IF (NOMTE.EQ.'CFQ4T6') THEN
-        ESC  = 'QU4'
-        NNM  = 6
-        NNE  = 4
-        NDDL = 42
-        NDIM = 3
+        ESC  = 'TR6'
+        NNE  = 6
         MAIT = 'TR6'
-      ELSE IF (NOMTE.EQ.'CFT3Q4') THEN
-        ESC  = 'TR3'
-        NNM  = 4
-        NNE  = 3
-        NDDL = 30
+        NNM  = 6
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ4Q4' .OR. NOMTE.EQ.'COQ4Q4') THEN
         NDIM = 3
+        ESC  = 'QU4'
+        NNE  = 4
         MAIT = 'QU4'
-      ELSE IF (NOMTE.EQ.'CFT3Q8') THEN
-        ESC  = 'TR3'
-        NNM  = 8
-        NNE  = 3
-        NDDL = 42
+        NNM  = 4
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ4Q8' .OR. NOMTE.EQ.'COQ4Q8') THEN
         NDIM = 3
+        ESC  = 'QU4'
+        NNE  = 4
         MAIT = 'QU8'
-      ELSE IF (NOMTE.EQ.'CFQ9Q9') THEN
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ8Q4' .OR. NOMTE.EQ.'COQ8Q4') THEN
+        NDIM = 3
+        ESC  = 'QU8'
+        NNE  = 8
+        MAIT = 'QU4'
+        NNM  = 4
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ8Q8' .OR. NOMTE.EQ.'COQ8Q8') THEN
+        NDIM = 3
+        ESC  = 'QU8'
+        NNE  = 8
+        MAIT = 'QU8'
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ8T6' .OR. NOMTE.EQ.'COQ8T6') THEN
+        NDIM = 3
+        ESC  = 'QU8'
+        NNE  = 8
+        MAIT = 'TR6'
+        NNM  = 6
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT6Q8' .OR. NOMTE.EQ.'COT6Q8') THEN
+        NDIM = 3
+        ESC  = 'TR6'
+        NNE  = 6
+        MAIT = 'QU8'
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ4T3' .OR. NOMTE.EQ.'COQ4T3') THEN
+        NDIM = 3
+        ESC  = 'QU4'
+        NNE  = 4
+        MAIT = 'TR3'
+        NNM  = 3
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ4T6' .OR. NOMTE.EQ.'COQ4T6') THEN
+        NDIM = 3
+        ESC  = 'QU4'
+        NNE  = 4
+        MAIT = 'TR6'
+        NNM  = 6
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT3Q4' .OR. NOMTE.EQ.'COT3Q4') THEN
+        NDIM = 3
+        ESC  = 'TR3'
+        NNE  = 3
+        MAIT = 'QU4'
+        NNM  = 4
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFT3Q8' .OR. NOMTE.EQ.'COT3Q8') THEN
+        NDIM = 3
+        ESC  = 'TR3'
+        NNE  = 3
+        MAIT = 'QU8'
+        NNM  = 8
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSE IF (NOMTE.EQ.'CFQ9Q9' .OR. NOMTE.EQ.'COQ9Q9') THEN
+        NDIM = 3
         ESC  = 'QU9'
-        NNM  = 9
         NNE  = 9
-        NDDL = 81
-        NDIM = 3
         MAIT = 'QU9'
-      ELSEIF (NOMTE .EQ. 'CFP2P2') THEN
-        ESC  = 'SG2'
-        NNM  = 2
-        NNE  = 2
-        NDDL = 18
+        NNM  = 9
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
+      ELSEIF (NOMTE.EQ.'CFP2P2' .OR. NOMTE.EQ.'COP2P2') THEN
         NDIM = 3
+        ESC  = 'SG2'
+        NNE  = 2
         MAIT = 'SG2'
+        NNM  = 2
+        NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE
         CALL U2MESS('F','ALGORITH5_90')
       END IF
+C
       END

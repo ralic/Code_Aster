@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai2 Messages  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,10 +72,6 @@ cata_msg={
 
 14: _("""
  " %(k1)s " type de fonction inconnu
-"""),
-
-15: _("""
- pour l'instant, on ne traite pas les formules complexes
 """),
 
 16: _("""

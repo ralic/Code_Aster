@@ -1,4 +1,4 @@
-#@ MODIF sd_compor1 SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost6 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,24 +18,30 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from SD import *
-from SD.sd_fonction import sd_fonction
+def _(x) : return x
 
+cata_msg={
+1: _("""
+ 
+"""),
 
-class sd_compor1(AsBase):
-#-----------------------
-    nomj = SDNom(fin=19)
-    VALC = AsVC(SDNom(debut=19), )
-    VALK = AsVK8(SDNom(debut=19), )
-    VALR = AsVR(SDNom(debut=19), )
+2: _("""
+ fichier med :  %(k1)s erreur efferm numero  %(i1)d 
+"""),
 
+3: _("""
+ le volume differe du volume use mais le nombre d'iteration
+  est superieur a  %(i1)d 
+      volume use:  %(r1)f 
+  volume calcule:  %(r2)f 
+"""),
 
-    # parfois, THER_NL crée une sd_fonction pour BETA
-    def check_compor1_i_VALK(self, checker):
-        nom= self.nomj().strip()
-        valk=list(self.VALK.get())
-        if not valk : return
-        if nom[8:16]=='.THER_NL' :
-           k=valk.index('BETA    ')
-           nomfon=valk[2*k+1]
-           sd2=sd_fonction(nomfon) ; sd2.check(checker)
+4: _("""
+ verifier les parametres d'usure pour le secteur  %(i1)d 
+"""),
+
+5: _("""
+ verifier les parametres d'usure pour le secteur  %(i1)d 
+"""),
+
+}

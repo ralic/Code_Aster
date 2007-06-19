@@ -1,4 +1,4 @@
-#@ MODIF sd_mater SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_mater SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,8 @@
 from SD import *
 
 from SD.sd_fonction import sd_fonction
-from SD.sd_compor1 import sd_compor1
+
+
 
 class sd_mater_RDEP(AsBase):
 #---------------------------
@@ -29,6 +30,25 @@ class sd_mater_RDEP(AsBase):
     nomj = SDNom(fin=8)
     PROL = AsVK16()
     VALE = AsVR()
+
+
+class sd_compor1(AsBase):
+#-----------------------
+    nomj = SDNom(fin=19)
+    VALC = AsVC(SDNom(debut=19), )
+    VALK = AsVK8(SDNom(debut=19), )
+    VALR = AsVR(SDNom(debut=19), )
+
+
+    # parfois, THER_NL crée une sd_fonction pour BETA
+    def check_compor1_i_VALK(self, checker):
+        nom= self.nomj().strip()
+        valk=list(self.VALK.get())
+        if not valk : return
+        if nom[8:16]=='.THER_NL' :
+           k=valk.index('BETA    ')
+           nomfon=valk[2*k+1]
+           sd2=sd_fonction(nomfon) ; sd2.check(checker)
 
 
 class sd_mater(AsBase):
@@ -41,7 +61,7 @@ class sd_mater(AsBase):
     def exists(self):
         return self.NOMRC.exists
 
-    # indirection vers les COMPOR1 de NOMRC :
+    # indirection vers les sd_compor1 de NOMRC :
     def check_mater_i_NOMRC(self, checker):
         lnom = self.NOMRC.get()
         if not lnom: return

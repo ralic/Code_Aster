@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 15/06/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,12 +62,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER     INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
       INTEGER     INTEG,NFE,SINGU
       CHARACTER*8 ELREF,TYPMA,FPG,ELC
-      REAL*8      HE,SIGN,VTMP(204),REAC,REAC12(3),FFI,LAMBDA,JAC
-      REAL*8      ND(3),DN,SAUT(3),FFP(27),NND(3),PTPB(3),PADIST,MULT
-      REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60)
+      REAL*8      HE,SIGN,VTMP(204),REAC,REAC12(3),FFI,LAMBDA,JAC,JACN
+      REAL*8      ND(3),DN,SAUT(3),FFP(27),PTPB(3),PADIST,MULT
+      REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60),FFN(27)
       REAL*8      NDN(3,6),TAU1(3,6),TAU2(3,6),PB(3),RPB(3)
       REAL*8      RBID1(3,3),RBID2(3,3),RBID3(3,3),NBARY(3),DDOT
-      REAL*8      LST,R,RR,E,G(3)
+      REAL*8      LST,R,RR,E,G(3),TT(2),TN(2)
 C.......................................................................
 
       CALL JEMARQ()
@@ -164,6 +164,7 @@ C
 C-----------------------------------------------------------------------
 C
 C     BOUCLE SUR LES FACETTES
+
       DO 100 IFA=1,NFACE
 C
 C       PETIT TRUC EN PLUS POUR LES FACES EN DOUBLE
@@ -204,7 +205,8 @@ C       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
         ENDIF
  104    CONTINUE
 C
-        CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
+        CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,
+     &      IPOIDF,IVFF,IDFDEF,IBID)
 
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         DO 110 IPGF=1,NPGF
@@ -305,6 +307,7 @@ C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
               DO 143 J = 1,NDIM
                 DN = DN + SAUT(J)*ND(J)
  143          CONTINUE
+
 C
 C             TERME LN1
               DO 150 I = 1,NNO
@@ -346,27 +349,45 @@ C         ..............................
 
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
             IF (INDCO(ISSPG).EQ.0) THEN
+              CALL LCINVN(NDIM,0.D0,SAUT)
+              DO 161 I = 1,NNO
+                DO 162 J = 1,DDLH
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
+     &                             (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
+     &                               + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
+ 162            CONTINUE
+                DO 163 J = 1,SINGU*NDIM
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
+     &                          (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+DDLH+J)
+     &                            + ZR(IDEPL-1+DDLS*(I-1)+NDIM+DDLH+J) )
+ 163            CONTINUE
+ 161          CONTINUE
+              DN = 0.D0
+              DO 164 J = 1,NDIM
+                DN = DN + SAUT(J)*ND(J)
+ 164          CONTINUE            
+            
+          CALL LCINVN(NDIM,0.D0,TT)
+          DO 165 I = 1,NNOF
+            FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+            NLI=CFACE(IFA,I)
+            NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
 
-              DO 170 I = 1,NNOF
-                FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-                NLI=CFACE(IFA,I)
-                NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
 
-                METR(1)=DDOT(NDIM,TAU1(1,NLI),1,REAC12,1)
-                IF (NDIM.EQ.3)
-     &            METR(2)=DDOT(NDIM,TAU2(1,NLI),1,REAC12,1)
-
-                DO 171 K = 1,NDIM-1
-                  VTMP(PLI+K) = VTMP(PLI+K)+FFI*METR(K)*JAC*MULT
-
- 171            CONTINUE
- 170          CONTINUE
-
+            METR(1)=DDOT(NDIM,TAU1(1,NLI),1,SAUT,1)
+            IF (NDIM.EQ.3) METR(2)=DDOT(NDIM,TAU2(1,NLI),1,SAUT,1)
+            TT(1)=DDOT(NDIM,TAU1(1,NLI),1,REAC12,1)
+            IF (NDIM .EQ.3) TT(2)=DDOT(NDIM,TAU2(1,NLI),1,REAC12,1) 
+            CALL LCINVN(NDIM,0.D0,TN)             
+        
+           DO 167 K=1,NDIM-1
+               VTMP(PLI+K) = VTMP(PLI+K) - (TT(K)-TN(K))*FFI*JAC*MULT
+ 167       CONTINUE
+ 165      CONTINUE
 
 C           SI CONTACT POUR CE PG : ON REMPLIT LN1 ET LN3
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
-
 
 C             P : OPÉRATEUR DE PROJECTION
               CALL XMAFR1(ND,P)
@@ -409,9 +430,9 @@ C             TERME LN1
      &            2.D0*RR*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC*MULT
  187            CONTINUE
  185          CONTINUE
-
+              
 C             TERME LN3
-              DO 190 I = 1,NNOF
+              DO 194 I = 1,NNOF
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
@@ -420,13 +441,12 @@ C             TERME LN3
                 METR(1)=DDOT(NDIM,TAU1(1,NLI),1,RPB,1)
                 IF(NDIM.EQ.3)
      &            METR(2)=DDOT(NDIM,TAU2(1,NLI),1,RPB,1)
-
-                DO 191 K=1,NDIM-1
+                DO 195 K=1,NDIM-1
                   VTMP(PLI+K) = VTMP(PLI+K)
      &                  - MU*SEUIL(ISSPG)/RHOTK * METR(K)*FFI*JAC*MULT
 
- 191            CONTINUE
- 190          CONTINUE
+ 195            CONTINUE
+ 194          CONTINUE
 
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
@@ -447,7 +467,7 @@ C       FIN DE BOUCLE SUR LES FACETTES
 
 C
 C-----------------------------------------------------------------------
-C     COPIE DES CHAMPS DE SORITES ET FIN
+C     COPIE DES CHAMPS DE SORTIES ET FIN
 C-----------------------------------------------------------------------
 C
       DO 900 I=1,NDDL

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C            1 ERREUR DANS LA LECTURE DE LA COMMANDE
 C     ------------------------------------------------------------------
 C
       INTEGER L1,L2,L3,LCPU,NTPMAX,IBORNE,ITPMAX
+      INTEGER VALI
       REAL*8  PCCPU,TPMAX
       CHARACTER*16 CBID,NOMCMD
 C
@@ -60,15 +61,10 @@ C
 C     IMPRESSION D'UN MESSAGE D'INFORMATION
 C
       IF ( L1 .GT. 0 .OR. L2 .GT. 0 ) THEN
-        CALL UTDEBM ('I',' ','VALEUR INITIALE DU TEMPS CPU MAXIMUM = ')
-        CALL UTIMPI ('S',' ',1,ITPMAX)
-        CALL UTIMPK ('S','SECONDES ',0,' ')
-        CALL UTFINM ()
-        CALL UTDEBM ('I',' ','VALEUR DU TEMPS CPU MAXIMUM PASSEE AUX'
-     &             //' COMMANDES = ')
-        CALL UTIMPI ('S',' ',1,NTPMAX)
-        CALL UTIMPK ('S','SECONDES ',0,' ')
-        CALL UTFINM ()
+        VALI = ITPMAX
+        CALL U2MESG('I','SUPERVIS_58',0,' ',1,VALI,0,0.D0)
+        VALI = NTPMAX
+        CALL U2MESG('I','SUPERVIS_59',0,' ',1,VALI,0,0.D0)
       ENDIF
 C
       END

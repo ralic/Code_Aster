@@ -1,11 +1,16 @@
-      SUBROUTINE MMGEOM(NDIM,NNE,NNM,ICOMPL,
+      SUBROUTINE MMGEOM(NBDM,NDIM,NNE,NNM,ICOMPL,
      &                  IGEOM,IDEPL,IDEPM,IVITM,IACCM,
-     &                  FFPC,FFPR,
-     &                  GEOME,GEOMM,
+     &                  FFPC,FFPR,GEOME,GEOMM,
      &                  DEPLE,DEPLM,DEPLME,DEPLMM,
      &                  VITME,ACCME,VITMM,ACCMM)
+      IMPLICIT NONE
+      INTEGER NBDM,NDIM,NNE,NNM,ICOMPL
+      INTEGER IGEOM,IDEPL,IDEPM,IVITM,IACCM
+      REAL*8  FFPC(9),FFPR(9),GEOMM(3),GEOME(3),DEPLE(6),DEPLME(6)
+      REAL*8  DEPLM(3),DEPLMM(3),ACCME(6),VITME(6),ACCMM(6),VITMM(6)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,18 +28,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_21
-      IMPLICIT NONE
-      INTEGER NDIM,NNE,NNM
-      INTEGER ICOMPL
-      INTEGER IGEOM,IDEPL,IDEPM,IVITM,IACCM
-      REAL*8  FFPC(9),FFPR(9)
-      REAL*8  GEOMM(3),GEOME(3)
-      REAL*8  DEPLE(6),DEPLME(6)
-      REAL*8  DEPLM(3),DEPLMM(3)
-      REAL*8  ACCME(6),VITME(6)      
-      REAL*8  ACCMM(6),VITMM(6)         
-C
-C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0364/TE0365
 C ----------------------------------------------------------------------
 C
@@ -43,6 +36,7 @@ C  * DE LA GEOMETRIE POINT DE CONTACT/SON PROJETE
 C  * DES DEPLACEMENTS POINT DE CONTACT/SON PROJETE
 C  * DES VITESSES/ACC. POINT DE CONTACT/SON PROJETE SI COMPLIANCE
 C
+C IN  NBDM   : NB DE DDL DE LA MAILLE ESCLAVE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
@@ -92,11 +86,9 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER I,J
+      INTEGER   I, J
 C
 C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()
 C
       DO 9 I = 1,NDIM
         GEOME(I)  = 0.D0
@@ -125,35 +117,39 @@ C
      &               FFPR(J)*ZR(IGEOM+NNE*NDIM+(J-1)*NDIM+I-1)
 22      CONTINUE
 21    CONTINUE
-      DO 31 I = 1,2*NDIM
+C
+C --- POUR LES NEOUDS ESCLAVES
+C
+      DO 31 I = 1,NBDM
         DO 32 J = 1,NNE
           DEPLE(I)  = DEPLE(I)  +
-     &                FFPC(J)*ZR(IDEPL+(J-1)*(2*NDIM)+I-1)
+     &                FFPC(J)*ZR(IDEPL+(J-1)*NBDM+I-1)
           DEPLME(I) = DEPLME(I) +
-     &                FFPC(J)*ZR(IDEPM+(J-1)*(2*NDIM)+I-1)
+     &                FFPC(J)*ZR(IDEPM+(J-1)*NBDM+I-1)
           IF (ICOMPL.EQ.1) THEN 
             VITME(I)  = VITME(I) +
-     &                  FFPC(J)*ZR(IVITM+(J-1)*(2*NDIM)+I-1)
+     &                  FFPC(J)*ZR(IVITM+(J-1)*NBDM+I-1)
             ACCME(I)  = ACCME(I) +
-     &                  FFPC(J)*ZR(IACCM+(J-1)*(2*NDIM)+I-1) 
+     &                  FFPC(J)*ZR(IACCM+(J-1)*NBDM+I-1) 
           ENDIF       
 32      CONTINUE
 31    CONTINUE
+C
+C --- POUR LES NEOUDS MAITRES
+C
       DO 41 I = 1,NDIM
         DO 42 J = 1,NNM
           DEPLM(I)  = DEPLM(I)  + 
-     &                FFPR(J)*ZR(IDEPL+NNE*(2*NDIM)+(J-1)*NDIM+I-1)
+     &                FFPR(J)*ZR(IDEPL+NNE*NBDM+(J-1)*NDIM+I-1)
           DEPLMM(I) = DEPLMM(I) +
-     &                FFPR(J)*ZR(IDEPM+NNE*(2*NDIM)+(J-1)*NDIM+I-1)
+     &                FFPR(J)*ZR(IDEPM+NNE*NBDM+(J-1)*NDIM+I-1)
           IF (ICOMPL.EQ.1) THEN      
             VITMM(I)  = VITMM(I) +
-     &                  FFPR(J)*ZR(IVITM+NNE*(2*NDIM)+(J-1)*NDIM+I-1)
+     &                  FFPR(J)*ZR(IVITM+NNE*NBDM+(J-1)*NDIM+I-1)
             ACCMM(I)  = ACCMM(I) +
-     &                  FFPR(J)*ZR(IACCM+NNE*(2*NDIM)+(J-1)*NDIM+I-1)
+     &                  FFPR(J)*ZR(IACCM+NNE*NBDM+(J-1)*NDIM+I-1)
           ENDIF       
 42      CONTINUE
 41    CONTINUE
-C
-      CALL JEDEMA()
 C
       END

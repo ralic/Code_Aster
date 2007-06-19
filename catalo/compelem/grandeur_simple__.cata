@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+%& MODIF COMPELEM  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -576,7 +576,7 @@ GRANDEUR_SIMPLE__
 <<  RCCM_K : GRANDEURS POUR LE RCCM B3600
     TB_TEMP : TABLE DE RELEVE DE TEMPERATURE
     TB_MOYE : TABLE DE RELEVE DE MOYENNE  >>
-    RCCM_K   = K8   TB_TEMP  TB_MOYE
+    RCCM_K   = K24   TB_TEMP  TB_MOYE
     RICE_TRA = R    TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ
     ROTA_R   = R    OME      AR       BR       CR       X        Y        Z
     SECTION  = R    AIRE     XG       YG       ALPHA    IX       IY       XC       YC
@@ -649,7 +649,16 @@ GRANDEUR_SIMPLE__
     VAR2_R   = R    V1       V2       V3       V4       V5       V6       V7       V8
                     V9       V10      V11      V12      V13      V14      V15      V16
                     V17      V18      V19      V20      V21      V22      V23      V24
-                    V25      V26      V27      V28      V29      V30
+                    V25      V26      V27      V28      V29      V30      V31      V32
+                    V33      V34      V35      V36      V37      V38      V39      V40
+                    V41      V42      V43      V44      V45      V46      V47      V48
+                    V49      V50      V51      V52      V53      V54      V55      V56
+                    V57      V58      V59      V60      V61      V62      V63      V64
+                    V65      V66      V67      V68      V69      V70      V71      V72
+                    V73      V74      V75      V76      V77      V78      V79      V80
+                    V81      V82      V83      V84      V85      V86      V87      V88
+                    V89      V90      V91      V92      V93      V94      V95      V96
+                    V97      V98      V99      V100    
     VARI_R   = R    VARI
     VENTCX_F = K8   FCXP
     VNOR_C   = C    VNOR

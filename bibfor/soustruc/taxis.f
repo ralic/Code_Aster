@@ -1,6 +1,6 @@
       SUBROUTINE TAXIS(NOMA,INDIC,NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*8  K8BID,NOMMA,NOMNO,K8B,K8A
+      CHARACTER*24 VALK(2)
 C
       CALL JEMARQ()
 C
@@ -68,17 +69,18 @@ C
                CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNO+1),K8B)
                CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA    ),K8A)
                IF ( IER .EQ. 0 ) THEN
-                  CALL UTDEBM('A','OP0018',' VERIFIER VOTRE MAILLAGE ')
+                  CALL U2MESG('A+','SOUSTRUC_88',0,' ',0,0,0,0.D0)
                ENDIF
-               CALL UTIMPK('L',' COORDONNEE X < 0 POUR LE NOEUD ',1,K8B)
-               CALL UTIMPK('S',' MAILLE ',1,K8A)
+               VALK (1) = K8B
+               VALK (2) = K8A
+               CALL U2MESG('A+','SOUSTRUC_89',2,VALK,0,0,0,0.D0)
                IER  = IER + 1
             ENDIF
  3       CONTINUE
       ENDIF
  2    CONTINUE
       IF ( IER .NE. 0 ) THEN
-         CALL UTFINM( )
+         CALL U2MESG('A','SOUSTRUC_90',0,' ',0,0,0,0.D0)
          CALL U2MESS('F','SOUSTRUC_78')
       ENDIF
 C

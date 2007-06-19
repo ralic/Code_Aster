@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF B_ETAPE Build  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,7 @@ from Noyau.N_Exception import AsException
 import B_utils
 from B_CODE import CODE
 import B_OBJECT
+import types
 
 class ETAPE(B_OBJECT.OBJECT,CODE):
    """

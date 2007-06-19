@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C     ------------------------------------------------------------------
       INTEGER      LPROL, NUPAR, MXPARA, NBPF, I, I1, I2, LVALE,
      &             LFONC, NBVALE
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
-      REAL*8       EPSI, TOLE, R8PREM, R8VIDE, VALR
+      REAL*8       EPSI, TOLE, R8PREM, R8VIDE, VALR, RESU(2)
       CHARACTER*1  COLI, K1BID, BL
       CHARACTER*16 INTERP, PROLGD
       CHARACTER*19 NOMFON
@@ -100,7 +100,9 @@ C
 C --- CALCUL DE LA FONCTION INTERPRETEE ---
 C
       IF ( ZK16(LPROL) .EQ. 'INTERPRE' ) THEN
-         CALL U2MESS('F','UTILITAI2_15')
+         CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
+         RESURE=RESU(1)
+         RESUIM=RESU(2)
          GOTO 9999
 C
       ENDIF

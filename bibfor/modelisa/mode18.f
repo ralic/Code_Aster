@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF MODELISA  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -315,6 +315,11 @@ C
       ELSEIF ( TYPELE.EQ.'CFT3E3D' .OR. TYPELE.EQ.'CFQ4E3D' .OR.
      +         TYPELE.EQ.'CFQ8E3D' .OR. TYPELE.EQ.'CFT6E3D' .OR.
      +         TYPELE.EQ.'CFQ9E3D' .OR. TYPELE.EQ.'CFP2E3D') THEN
+         TYPEMO = 'COFR_DVP_3D'
+
+      ELSEIF ( TYPELE.EQ.'COT3E3D' .OR. TYPELE.EQ.'COQ4E3D' .OR.
+     +         TYPELE.EQ.'COQ8E3D' .OR. TYPELE.EQ.'COT6E3D' .OR.
+     +         TYPELE.EQ.'COQ9E3D' .OR. TYPELE.EQ.'COP2E3D') THEN
          TYPEMO = 'CONT_DVP_3D'
 C
 C --- THERMIQUE -------------------------------------------------------

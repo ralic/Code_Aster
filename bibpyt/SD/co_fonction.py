@@ -1,26 +1,26 @@
-#@ MODIF co_fonction SD  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import Accas
 from SD import *
-from sd_fonction import sd_fonction
+from sd_fonction import sd_fonction_aster
 
 import Numeric
 from math import pi
@@ -78,7 +78,7 @@ class fonction_class(ASSD):
       gr.Trace(FORMAT=FORMAT,**kargs)
 
 # -----------------------------------------------------------------------------
-class fonction_sdaster(fonction_class, sd_fonction):
+class fonction_sdaster(fonction_class, sd_fonction_aster):
    def convert(self,arg='real'):
       """
       Retourne un objet de la classe t_fonction
@@ -143,7 +143,7 @@ class para_sensi(fonction_sdaster):
    pass
 
 # -----------------------------------------------------------------------------
-class fonction_c(fonction_class, sd_fonction):
+class fonction_c(fonction_class, sd_fonction_aster):
    def convert(self,arg='real'):
       """
       Retourne un objet de la classe t_fonction ou t_fonction_c,
@@ -231,11 +231,11 @@ class fonction_c(fonction_class, sd_fonction):
       if isinstance(val, ASSD):
          val=val.valeur
       ###
-      __ff=self.convert()
+      __ff=self.convert(arg='complex')
       return __ff(val)
 
 # -----------------------------------------------------------------------------
-class nappe_sdaster(fonction_class, sd_fonction):
+class nappe_sdaster(fonction_class, sd_fonction_aster):
    def convert(self):
       """
       Retourne un objet de la classe t_nappe, représentation python de la nappe

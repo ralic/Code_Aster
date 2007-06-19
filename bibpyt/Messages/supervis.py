@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 07/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF supervis Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,7 +190,6 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 
-
 43: _("""
  Debug SDVERI suspendu
 """),
@@ -202,6 +201,11 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 45: _("""
  Debug JEVEUX suspendu
 """),
+
+
+
+
+
 
 
 
@@ -243,15 +247,15 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 
 
 
-55 : _("""
+55: _("""
  Appels récursifs de messages d'erreur ou d'alarme.
 """),
 
-56 : _("""
+56: _("""
  Incohérence entre le catalogue et le corps de la macro.
 """),
 
-57 : _("""
+57: _("""
    Impossible d'importer '%(k1)s' dans Messages.
    Le fichier %(k1)s.py n'existe pas dans le répertoire 'Messages'
    ou bien la syntaxe du fichier est incorrecte.
@@ -260,6 +264,29 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
    
    Traceback :
    %(k2)s
+"""),
+
+58: _("""
+ valeur initiale du temps cpu maximum =   %(i1)d secondes 
+"""),
+
+59: _("""
+ valeur du temps cpu maximum passee aux commandes =   %(i1)d secondes 
+"""),
+
+60: _("""
+ la procedure a un numero non appelable dans cette version.
+ le numero errone est  %(i1)d 
+"""),
+
+61: _("""
+  Exécution des commandes (erreur 03)
+  La commande a un numéro non appelable dans cette version
+  Le numéro erroné est : %(i1)d 
+"""),
+
+62: _("""
+  Les messages d'erreurs précédent concerne la commande :
 """),
 
 }

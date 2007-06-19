@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,8 +103,7 @@ C
       CALL JEVEUO(JEXATR(NOMAIL//'.CONNEX','LONCUM'),'L',ADRVLC)
       NOMMAI = NOMAIL//'.NOMMAI         '
 C
-      CALL JECREO(SURFAC//'.NOMA','G E K8')
-      CALL JEVEUO(SURFAC//'.NOMA','E',N)
+      CALL WKVECT(SURFAC//'.NOMA','G V K8',1,N)
       ZK8(N) = NOMAIL
 C
       CALL WKVECT ('&&OP0096.MAILLE.CHP.SUCC','V V I',NBTMA,  ASUCC)

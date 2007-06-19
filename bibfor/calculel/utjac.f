@@ -1,7 +1,7 @@
       SUBROUTINE UTJAC ( L2D, IGEOM, IPG, IDFDE, NIV, IFM, NNO, JACOB )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,6 @@ C IN IFM    : UNITE LOGIQUE D'IMPRESSION
 C IN NNO    : NOMBRE DE NOEUDS
 C OUT JACOB : SIGNE DU JACOBIEN
 C   -------------------------------------------------------------------
-C     SUBROUTINES APPELLEES:
-C       MSG:UTDEBM,UTIMPI,UTFINM.
 C     FONCTIONS INTRINSEQUES:
 C       SIGN.
 C   -------------------------------------------------------------------
@@ -51,6 +49,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
+      REAL*8 VALR
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -66,6 +65,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER I,I1,IJ,J, KP, IDFDK, IDFDN
+      INTEGER VALI
       REAL*8  DXDE,DXDK,DYDE,DYDK,XP,YP,DFRDE,DFRDK,DFRDN,G(3,3),J11,
      &        J21,J31,UN
 
@@ -125,13 +125,11 @@ C CAS 3D
 
 C NON PRISE EN COMPTE DE CE CAS EN 3D
       IF (.NOT.L2D.AND.(JACOB.LT.0.D0)) THEN
-        CALL UTDEBM('A','UTJAC','! JACOBIEN NEGATIF EN 3D !')
+        CALL U2MESG('A+','CALCULEL6_73',0,' ',0,0,0,0.D0)
         CALL TECAEL(IA1,IA2)
-        CALL UTIMPI('S','ELEMENT : ',1,ZI(IA1))
-        CALL UTIMPR('S','JACOBIEN : ',1,JACOB)
-        CALL UTIMPI('L','ATTENTION LE CALCUL D ERREUR EST FAUX SI',0,I)
-        CALL UTIMPI('L','LA MAILLE N EST PAS CORRECTEMENT ORIENTEE',0,I)
-        CALL UTFINM()
+        VALI = ZI(IA1)
+        VALR = JACOB
+        CALL U2MESG('A','CALCULEL6_74',0,' ',1,VALI,1,VALR)
       ENDIF
         
 C CALCUL DU SIGNE DU JACOBIEN + AFFICHAGE SI NECESSAIRE

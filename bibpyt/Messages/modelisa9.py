@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa9 Messages  DATE 19/06/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,8 +89,86 @@ Conseil :
 """),
 
 
+12: _("""
+ manque le parametre  %(k1)s 
+"""),
 
+13: _("""
+ pour la maille  %(k1)s 
+"""),
 
+14: _("""
+ 
+"""),
 
+15: _("""
+ pas de freq initiale definie : on prend la freq mini des modes calcules 
+   %(r1)f 
+"""),
+
+16: _("""
+ pas de freq finale definie : on prend la freq max des modes calcules   %(r1)f 
+"""),
+
+17: _("""
+ votre freq de coupure   %(r1)f 
+"""),
+
+18: _("""
+ est inferieure a celle  du modele de turbulence adopte :  %(r1)f 
+"""),
+
+19: _("""
+ on prend la votre. 
+"""),
+
+20: _("""
+ votre freq de coupure :   %(r1)f 
+"""),
+
+21: _("""
+ est superieure a celle  du modele de turbulence adopte :   %(r1)f 
+"""),
+
+22: _("""
+ on prend celle du modele. 
+"""),
+
+23: _("""
+ erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
+"""),
+
+24: _("""
+ le maillage est "plan" ou "z_cst"
+"""),
+
+25: _("""
+ le maillage est "3d"
+"""),
+
+26: _("""
+ il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d 
+"""),
+
+27: _("""
+ erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
+ pour le mot cle  %(k2)s 
+  le noeud n'existe pas  %(k3)s 
+"""),
+
+28: _("""
+ erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
+ pour le mot cle  %(k2)s 
+  le group_no n'existe pas  %(k3)s 
+"""),
+
+29: _("""
+ trop de noeuds dans le group_no mot cle facteur  %(k1)s  occurence  %(i1)d 
+   noeud utilise:  %(k2)s 
+"""),
+
+30: _("""
+ Le MODELE doit etre de type mécanique.
+"""),
 
 }

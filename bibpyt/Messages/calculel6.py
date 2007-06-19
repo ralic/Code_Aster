@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -396,5 +396,47 @@ cata_msg={
    Vérifier les occurences de AFFE_MATERIAU/AFFE_VARC pour la maille concernée.
 """),
 
+68: _("""
+ la liste des composantes fournies a nocart est incorrecte.
+ composantes dans catalogue: 
+"""),
+
+69: _("""
+   %(k1)s 
+"""),
+
+70: _("""
+ composantes dans editgd: 
+"""),
+
+71: _("""
+   %(k1)s 
+"""),
+
+72: _("""
+ 
+"""),
+
+73: _("""
+ ! jacobien negatif en 3d !
+"""),
+
+74: _("""
+ element :  %(i1)d jacobien :  %(r1)f 
+ attention le calcul d erreur est faux si
+ la maille n est pas correctement orientee
+"""),
+
+75: _("""
+ Probleme de parallelisation des calculs élémentaires avec FETI. Imcompatiblité
+ entre LIGRELs dans la routine CALCUL.
+ CONSEIL: Essayer de passer en séquentiel ou de changer de solveur linéaire.
+"""),
+
+76: _("""
+ Probleme de parallelisation des calculs élémentaires avec FETI. Imcompatiblité
+ LIGREL/numéro de maille dans la routine CALCUL.
+ CONSEIL: Essayer de passer en séquentiel ou de changer de solveur linéaire.
+"""),
 
 }

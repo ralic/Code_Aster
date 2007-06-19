@@ -1,6 +1,6 @@
       SUBROUTINE CTETGD(BASMOD,NUMD,NUMG,NBSEC,TETA,NBTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,18 +59,18 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       PARAMETER   (NBCPMX=300)
       CHARACTER*1 K1BID
-      CHARACTER*6 PGC
+      CHARACTER*24 VALK(2)
       CHARACTER*8 BASMOD,MAILLA,TYPDDL(10),NOMNOE,TYD,INTF,KBID
       REAL*8      XD(10),XG(10),XTD(10),XTG(10),TET0(10,10)
       REAL*8      TETA(NBTET,NBTET)
       LOGICAL     NOOK
       INTEGER     IDECD(NBCPMX),IDECG(NBCPMX)
+      INTEGER VALI(2)
 C
 C-----------------------------------------------------------------------
 C
       DATA TYPDDL /'DX','DY','DZ','DRX','DRY','DRZ',
      &              '?','?','PRES','PHI'/
-      DATA PGC /'CTETGD'/
       DATA NOOK /.FALSE./
 C
 C-----------------------------------------------------------------------
@@ -119,11 +119,9 @@ C
      &NBNOG,K1BID)
 C
       IF(NBNOD.NE.NBNOG) THEN
-        CALL UTDEBM('F',PGC,
-     &'ARRET SUR NOMBRES DE NOEUDS INTERFACE NON IDENTIQUES ')
-        CALL UTIMPI('L','NOMBRE DE NOEUDS INTERFACE DROITE: ',1,NBNOD)
-        CALL UTIMPI('L','NOMBRE DE NOEUDS INTERFACE GAUCHE: ',1,NBNOG)
-        CALL UTFINM
+        VALI (1) = NBNOD
+        VALI (2) = NBNOG
+        CALL U2MESG('F','ALGORITH14_99',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C
@@ -134,20 +132,16 @@ C
       KBID=' '
       CALL BMNODI(BASMOD,KBID,'          ',NUMG,0,IBID,NBDGA)
       IF(NBDGA.NE.NBDDR) THEN
-        CALL UTDEBM('F',PGC,
-     &'ARRET SUR NOMBRES DE DDL INTERFACE NON IDENTIQUES ')
-        CALL UTIMPI('L','NOMBRE DE DDL INTERFACE DROITE: ',1,NBDDR)
-        CALL UTIMPI('L','NOMBRE DE DDL INTERFACE GAUCHE: ',1,NBDGA)
-        CALL UTFINM
+        VALI (1) = NBDDR
+        VALI (2) = NBDGA
+        CALL U2MESG('F','ALGORITH15_1',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C
       IF(NBDDR.NE.NBTET) THEN
-        CALL UTDEBM('F',PGC,
-     &'ARRET SUR DIMENSION MATRICE TETA INCORRECTE ')
-        CALL UTIMPI('L','DIMENSION EFFECTIVE: ',1,NBDDR)
-        CALL UTIMPI('L','DIMENSION EN ARGUMENT: ',1,NBTET)
-        CALL UTFINM
+        VALI (1) = NBDDR
+        VALI (2) = NBTET
+        CALL U2MESG('F','ALGORITH15_2',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C----------------------CALCUL DU TETA ELEMENTAIRE-----------------------
@@ -198,37 +192,27 @@ C
             NOER=ZI(LLDESC+INOG-1)
             CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',NOER),NOMNOE)
             TYD=TYPDDL(J)
-            CALL UTDEBM('E',PGC,
-     &' ERREUR  DE REPETITIVITE CYCLIQUE')
-            CALL UTFINM
-            CALL UTDEBM('E',PGC,
-     &' IL MANQUE UN DDL SUR UN NOEUD  GAUCHE')
-            CALL UTIMPK('L',' TYPE DU DDL --> ',1,TYD)
-            CALL UTIMPK('L',' NOM DU NOEUD --> ',1,NOMNOE)
-            CALL UTFINM
+            CALL U2MESG('E','ALGORITH15_3',0,' ',0,0,0,0.D0)
+            VALK (1) = TYD
+            VALK (2) = NOMNOE
+            CALL U2MESG('E','ALGORITH15_4',2,VALK,0,0,0,0.D0)
             NOOK=.TRUE.
           ENDIF
           IF(XTG(J).GT.0.D0.AND.XD(J).EQ.0.D0) THEN
             NOER=ZI(LLDESC+INOD-1)
             CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',NOER),NOMNOE)
             TYD=TYPDDL(J)
-            CALL UTDEBM('E',PGC,
-     &' ERREUR  DE REPETITIVITE CYCLIQUE')
-            CALL UTFINM
-            CALL UTDEBM('E',PGC,
-     &' IL MANQUE UN DDL SUR UN NOEUD DROITE')
-            CALL UTIMPK('L',' TYPE DU DDL --> ',1,TYD)
-            CALL UTIMPK('S',' NOM DU NOEUD --> ',1,NOMNOE)
-            CALL UTFINM
+            CALL U2MESG('E','ALGORITH15_5',0,' ',0,0,0,0.D0)
+            VALK (1) = TYD
+            VALK (2) = NOMNOE
+            CALL U2MESG('E','ALGORITH15_6',2,VALK,0,0,0,0.D0)
             NOOK=.TRUE.
           ENDIF
 C
  50     CONTINUE
 C
         IF(NOOK) THEN
-          CALL UTDEBM('F',PGC,
-     &'ARRET SUR PROBLEME DE REPETITIVITE CYCLIQUE')
-          CALL UTFINM
+          CALL U2MESG('F','ALGORITH15_7',0,' ',0,0,0,0.D0)
         ENDIF
 C
         ILOCI=0

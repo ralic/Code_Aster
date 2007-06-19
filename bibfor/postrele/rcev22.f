@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -120,11 +120,42 @@ C
                TABFLE = '&&RCEV22.SIGM_THER'
                TABPRE = '&&RCEV22.RESU_PRES'
                CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
-     +                       IBID, R8B, CBID, KINTI, R8B, K8B )
-               IF ( FLEXIO ) CALL TBEXTB ( TABFL0, 'V', TABFLE, 1,
-     +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
-               IF ( LROCHT ) CALL TBEXTB ( TABPR0, 'V', TABPRE, 1,
-     +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
+     +                       IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
+               IF ( IRET .EQ. 10 ) THEN
+                  VALK(1) = 'INTITULE'
+                  VALK(2) = TABL0
+                  CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+               ELSEIF ( IRET .EQ. 20 ) THEN
+                  VALK(1) = TABL0
+                  VALK(2) = 'INTITULE'
+                  CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+               ENDIF
+               IF ( FLEXIO ) THEN
+                  CALL TBEXTB ( TABFL0, 'V', TABFLE, 1, 'INTITULE', 
+     +                 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
+                  IF ( IRET .EQ. 10 ) THEN
+                     VALK(1) = 'INTITULE'
+                     VALK(2) = TABFL0
+                     CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+                  ELSEIF ( IRET .EQ. 20 ) THEN
+                     VALK(1) = TABFL0
+                     VALK(2) = 'INTITULE'
+                     CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+                  ENDIF
+               ENDIF
+               IF ( LROCHT ) THEN
+                  CALL TBEXTB ( TABPR0, 'V', TABPRE, 1, 'INTITULE', 
+     +                 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
+                  IF ( IRET .EQ. 10 ) THEN
+                     VALK(1) = 'INTITULE'
+                     VALK(2) = TABPR0
+                     CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+                  ELSEIF ( IRET .EQ. 20 ) THEN
+                     VALK(1) = TABPR0
+                     VALK(2) = 'INTITULE'
+                     CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+                  ENDIF
+               ENDIF
             ENDIF
             CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
@@ -153,11 +184,42 @@ C
             TABFLE = '&&RCEV22.SIGM_THER'
             TABPRE = '&&RCEV22.RESU_PRES'
             CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
-     +                    IBID, R8B, CBID, KINTI, R8B, K8B )
-            IF ( FLEXIO ) CALL TBEXTB ( TABFL0, 'V', TABFLE, 1,
-     +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
-            IF ( LROCHT ) CALL TBEXTB ( TABPR0, 'V', TABPRE, 1,
-     +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
+     +                    IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
+            IF ( IRET .EQ. 10 ) THEN
+               VALK(1) = 'INTITULE'
+               VALK(2) = TABL0
+               CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+            ELSEIF ( IRET .EQ. 20 ) THEN
+               VALK(1) = TABL0
+               VALK(2) = 'INTITULE'
+               CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+            ENDIF
+            IF ( FLEXIO ) THEN
+               CALL TBEXTB ( TABFL0, 'V', TABFLE, 1, 'INTITULE', 
+     +             'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
+               IF ( IRET .EQ. 10 ) THEN
+                  VALK(1) = 'INTITULE'
+                  VALK(2) = TABFL0
+                  CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+               ELSEIF ( IRET .EQ. 20 ) THEN
+                  VALK(1) = TABFL0
+                  VALK(2) = 'INTITULE'
+                  CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+               ENDIF
+            ENDIF
+            IF ( LROCHT ) THEN
+               CALL TBEXTB ( TABPR0, 'V', TABPRE, 1, 'INTITULE', 
+     +             'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
+               IF ( IRET .EQ. 10 ) THEN
+                  VALK(1) = 'INTITULE'
+                  VALK(2) = TABPR0
+                  CALL U2MESK('F', 'UTILITAI7_1',2,VALK)
+               ELSEIF ( IRET .EQ. 20 ) THEN
+                  VALK(1) = TABPR0
+                  VALK(2) = 'INTITULE'
+                  CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
+               ENDIF
+            ENDIF
          ENDIF
       ENDIF
 C

@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C-----------------------------------------------------------------------
       CHARACTER*8 MATEL,K8BID,NOGDCO,NOGDSI,MA,EXIELE,MA2,MO,MO2,NOMACR
       CHARACTER*11 K11B
       CHARACTER*14 NUDEV,K14B,NUM2
-      CHARACTER*19 MATDEV,K19B
+      CHARACTER*19 MATDEV,K19B,K19VID
       CHARACTER*24 K24PRN,KNULIL,KMALIL,KREFA,RESU,NOMLI,KSMHC,KSMDI,
      &             KVALM,KSMDE,KTMP1,KTMP2,KCONL,METHOD,SDFETI,K24B,
      &             NOMLOG,NOMLID,INFOFE,KMAREF
@@ -117,6 +117,7 @@ C----------------------------------------------------------------------
       BASE1 = BASE
       MATDEV = MATAS
       NUDEV = NU
+      K19VID='                   '
 C     CALL CHEKSD(NU,'sd_nume_ddl',IRET)
       INFOFE = 'FFFFFFFFFFFFFFFFFFFFFFFF'
 
@@ -663,9 +664,9 @@ C==========================
                 IF (IER.EQ.0) GO TO 320
 
                 CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
+      
 C NOM DU LIGREL GLOBAL
                 NOMLI = ZK24(IAD)
-
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C PAR DEFAUT LIGREL DE MODELE
                 LLIMO = .TRUE.
@@ -677,14 +678,14 @@ C RECHERCHE D'OBJET TEMPORAIRE SI FETI
                   NOMLOG = NOMLI(1:19)//'.FEL1'
                   CALL JEEXIN(NOMLOG,IRET1)
                   IF (IRET1.NE.0) THEN
-C LIGREL DE CHARGE A MAILLES TARDIVES
+C LIGREL DE CHARGE A MAILLES TARDIVES OU CONTACT CONTINUE 1ERE PASSE
                     CALL JEVEUO(NOMLOG,'L',IFEL1)
                     LLICH = .TRUE.
                     LLIMO = .FALSE.
-                    IF (ZK24(IFEL1-1+IDD).EQ.' ') THEN
+                    NOMLID = ZK24(IFEL1-1+IDD)
+                    IF (NOMLID(1:19).EQ.K19VID) THEN
 C LIGREL NE CONCERNANT PAS LE SOUS-DOMAINE IDD
-                      GO TO 320
-
+                      GOTO 320
                     ELSE
                       CALL JEEXIN(NOMLI(1:19)//'.FEL2',IRET2)
                       IF (IRET2.NE.0) THEN
@@ -692,14 +693,12 @@ C LIGREL DE CHARGE A MAILLES TARDIVES DUPLIQUEES DE FILS NOMLID
 C DDL_IMPO, FORCE_NODALE...
                         LLICHD = .TRUE.
 C VRAI NOM DU LIGREL DUPLIQUE CONTENU DANS PROF_CHNO.LILI LOCAL
-                        NOMLID = ZK24(IFEL1-1+IDD)
                         CALL JEVEUO(NOMLI(1:19)//'.FEL2','L',IFEL2)
                         CALL JEEXIN(NOMLI(1:19)//'.FEL3',IRET3)
                         IF (IRET3.NE.0) THEN
                           CALL JEVEUO(NOMLI(1:19)//'.FEL3','L',IFEL3)
 C LIGREL DE CHARGE A NOEUDS TARDIFS DUPLIQUES (DDL_IMPO...)
                           LLICHP = .TRUE.
-
                         ELSE
 C PAS DE NOEUD TARDIF DUPLIQUE (FORCE_NODALE)
                           LLICHP = .FALSE.
@@ -715,9 +714,9 @@ C PAS DE NOEUD TARDIF DUPLIQUE (FORCE_NODALE)
                       ELSE
 C LIGREL DE CHARGE NON DUPLIQUE
                         LLICHD = .FALSE.
-                      END IF
+                      ENDIF
 
-                    END IF
+                    ENDIF
 
                   ELSE
 C LIGREL DE MODELE
@@ -737,19 +736,26 @@ C ILINU: INDICE DANS PROF_CHNO.LILI (GLOBAL OU LOCAL) DU NOMLI
                   CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
                 END IF
 
+
 C MONITORING
-                IF ((INFOFE(5:5).EQ.'T') .AND. (LFETI)) WRITE (IFM,
-     &              *) '<FETI/ASSMAM> IMO',IMO,'ILIMO',ILIMO,'ILIMA',
-     &              ILIMA
+                IF ((INFOFE(5:5).EQ.'T') .AND. (LFETI)) THEN
+                  WRITE(IFM,*)'**************** IDD ',IDD
+                  WRITE(IFM,*)'<FETI/ASSMAM> IMO',IMO,'ILIMO',ILIMO,
+     &              'ILIMA',ILIMA
+                  WRITE(IFM,*)'<FETI/ASSMAM> NOMLI/NOMLID ',NOMLI,NOMLID
+                ENDIF
                 IF ((IMO.EQ.1) .AND. (ILIMA.NE.ILIMO)) GO TO 320
                 IF ((IMO.EQ.0) .AND. (ILIMA.EQ.ILIMO)) GO TO 320
                 CALL DISMOI('F','TYPE_SCA',RESU,'RESUELEM',IBID,TYPSCA,
      &                      IERD)
 
+
 C==========================
 C BOUCLE SUR LES GRELS DU LIGREL GLOBAL NOMLI/ILIMA
 C==========================
                 DO 310 IGR = 1,ZZNGEL(ILIMA)
+                
+                
                   CALL JEVEUO(RESU(1:19)//'.DESC','L',IADESC)
                   MODE = ZI(IADESC+IGR+1)
                   IF (MODE.GT.0) THEN
@@ -765,6 +771,7 @@ C NOMBRE D'ELEMENTS DU GREL IGR DU LIGREL NOMLI/ILIMA
                       IF (IRET2.GT.0) CALL JEDETR(KTMP2)
                       CALL WKVECT(KTMP2,' V V I',2*ILONG,IATMP2)
                     END IF
+
 
 C==========================
 C BOUCLE SUR LES ELEMENTS DU GREL IGR
@@ -785,14 +792,13 @@ C MONITORING
      &                      ZI(ILIGRP+ABS(NUMA))
                         IF (LLICH) THEN
                           IF (LLICHD) THEN
-                            WRITE (IFM,*) 'LIGREL DE CHARGE TARDIF '//
-     &                        'DUPLIQUE DE FILS ',NOMLID
-
+                            WRITE (IFM,*) 'LIGREL DE CHARGE '//
+     &                        'PROJETE DE FILS ',NOMLID
                           ELSE
                             WRITE (IFM,*)
-     &                        'LIGREL DE CHARGE TARDIF INITIAL'
+     &                        'LIGREL DE CHARGE INITIAL'
                           END IF
-
+                          WRITE(IFM,*)'MAILLE ET/OU NOEUD TARDIF'
                         END IF
 
                       END IF
@@ -800,7 +806,8 @@ C SI ON EST DANS UN CALCUL FETI SUR UN SOUS-DOMAINE, ON SE POSE LA
 C QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA AU SOUS-DOMAINE IDD
                       IF (LFETI) THEN
                         IF (NUMA.GT.0) THEN
-                          IF (LLICH) CALL U2MESS('F','ASSEMBLA_6')
+                          IF (LLICH)
+     &                      CALL U2MESS('F','ASSEMBLA_6')
 C ELLE APPARTIENT AU GREL IGR DU LIGREL PHYSIQUE ILIMA
                           IF (ZI(ILIGRP+NUMA).NE.IDD) GO TO 300
 
@@ -891,7 +898,7 @@ C C'EST UNE MAILLE TARDIVE NON SITUEE SUR UNE INTERFACE
                           IF (IAUX1.GT.0) THEN
 C ELLE CONCERNE LE SD, ON L'ASSEMBLE
                             IF (IAUX1.EQ.IDD) LFEL2 = .TRUE.
-C C'EST UNE MAILLE TRADIVE SITUEE SUR UNE INTERFACE, DONC PARTAGEE
+C C'EST UNE MAILLE TARDIVE SITUEE SUR UNE INTERFACE, DONC PARTAGEE
 C ENTRE PLUSIEURS SOUS-DOMAINES
                           ELSE IF (IAUX1.LT.0) THEN
                             COMPT = 0
@@ -1064,8 +1071,9 @@ C---- SI ON VIENT DE TRAITER LE MODELE
               IF (TYPE.EQ.1) R = ABS(ZR(IDV-1+IDI))
               IF (TYPE.EQ.2) R = ABS(ZC(IDV-1+IDI))
               IF ((R.NE.0.D0) .AND. (R.LT.RINF)) RINF = R
-              IF ((R.NE.0.D0) .AND. (R.GT.RSUP)) RSUP = R
+              IF ((R.NE.0.D0) .AND. (R.GT.RSUP)) RSUP = R             
   340       CONTINUE
+
             CALL JELIBE(JEXNUM(KVALM,1))
             COEF = (RSUP+RINF)/2.D0
             IF (RINF.GE.R8MAEM()) COEF = RSUP/2.D0
@@ -1099,6 +1107,7 @@ C     -- MISE A JOUR DE REFA(4)
 
 C MONITORING
   360     CONTINUE
+          
           IF (LFETI .AND. (INFOFE(1:1).EQ.'T')) THEN
             IF (IDD.EQ.0) THEN
               WRITE (IFM,*) '<FETI/ASSMAM> DOMAINE GLOBAL',KREFA(1:19)
@@ -1109,7 +1118,7 @@ C MONITORING
 
             WRITE (IFM,9000) COEF
           END IF
-
+               
           IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.NE.0)) CALL UTIMSD(IFM,2,
      &        .FALSE.,.TRUE.,MATDEV,1,' ')
           IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.EQ.NBSD)) CALL UTIMSD(IFM,

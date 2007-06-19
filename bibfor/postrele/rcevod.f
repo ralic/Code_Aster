@@ -11,7 +11,7 @@
      +             CFAO, CFAE, CSPO, CSPE, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C
      +             JRESP
       PARAMETER  ( NCMP = 6 )
       REAL*8       TPM(NCMP), TPB(NCMP), TPMPBO(NCMP), TPMPBE(NCMP),
-     +             DCO, DCE, EQUI(NCMP), VALO(36), VALE(36), STLIN,STPAR
+     +             DCO, DCE, TRESCA, VALO(36), VALE(36), STLIN,STPAR
       COMPLEX*16   C16B
       CHARACTER*8  K8B, NOMRES, RESU, RESUTH, TYPARA(36)
       CHARACTER*16 NOMCMD, CONCEP, NOPARA(36), VAKO(5), VAKE(5)
@@ -206,12 +206,12 @@ C
                L3 = 4*NCMP*NBINST + NCMP*(I-1) + ICMP
                TPM(ICMP) = ZR(JSIGM-1+L3)
  402        CONTINUE
-            CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
-            CALL RCMCRT ( SYMAX, EQUI(2), STLIN, STPAR )
+            CALL RCTRES ( TPM, TRESCA )
+            CALL RCMCRT ( SYMAX, TRESCA, STLIN, STPAR )
 C
             IR = IR + 1
-            VALO(IR) = EQUI(2)
-            VALE(IR) = EQUI(2)
+            VALO(IR) = TRESCA
+            VALE(IR) = TRESCA
             IR = IR + 1
             VALO(IR) = STLIN
             VALE(IR) = STLIN
@@ -253,15 +253,15 @@ C
                TPMPBO(ICMP) = ZR(JSIGM-1+L1) - ZR(JSIGM-1+L2)
      +                        - (ZR(JSIGM-1+L3) - ZR(JSIGM-1+L4))
  112        CONTINUE
-            CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
+            CALL RCTRES ( TPM, TRESCA )
             IR = IR + 1
-            VALO(IR) = EQUI(2)
-            CALL FGEQUI ( TPB, 'SIGM', 3, EQUI )
+            VALO(IR) = TRESCA
+            CALL RCTRES ( TPB, TRESCA )
             IR = IR + 1
-            VALO(IR) = EQUI(2)
-            CALL FGEQUI ( TPMPBO, 'SIGM', 3, EQUI )
+            VALO(IR) = TRESCA
+            CALL RCTRES ( TPMPBO, TRESCA )
             IR = IR + 1
-            VALO(IR) = EQUI(2)
+            VALO(IR) = TRESCA
             CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIO, VALO, C16B, VAKO,0)
  110     CONTINUE
          DO 120 I = 1, NBINST
@@ -278,15 +278,15 @@ C
                TPMPBE(ICMP) = ZR(JSIGM-1+L1) + ZR(JSIGM-1+L2)
      +                        - (ZR(JSIGM-1+L3) + ZR(JSIGM-1+L4))
  122        CONTINUE
-            CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
+            CALL RCTRES ( TPM, TRESCA )
             IR = IR + 1
-            VALE(IR) = EQUI(2)
-            CALL FGEQUI ( TPB, 'SIGM', 3, EQUI )
+            VALE(IR) = TRESCA
+            CALL RCTRES ( TPB, TRESCA )
             IR = IR + 1
-            VALE(IR) = EQUI(2)
-            CALL FGEQUI ( TPMPBE, 'SIGM', 3, EQUI )
+            VALE(IR) = TRESCA
+            CALL RCTRES ( TPMPBE, TRESCA )
             IR = IR + 1
-            VALE(IR) = EQUI(2)
+            VALE(IR) = TRESCA
             CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIE, VALE, C16B, VAKE,0)
  120     CONTINUE
       ENDIF

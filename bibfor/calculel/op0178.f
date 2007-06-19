@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+C MODIF CALCULEL  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,10 +127,6 @@ C    -----------------------------------------
           CALL TSTOBJ(OBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,
      &                IRET,NI)
           IF (IRET.EQ.0) THEN
-C             -- TEST_RESU/RESUME:
-            IF (TYPTES.EQ.'RESUME') THEN
-              WRITE (IFIC,1001) OBJ,RESUME
-            ELSE IF (TYPTES.EQ.'SOMME') THEN
 C             -- TEST_RESU/S_I(OU S_R) :
               IF ((TYPE.EQ.'R') .OR. (TYPE.EQ.'C')) THEN
                 FORM1 = '(''_F(NOM='''''',A24,'''''',S_R='','//FORMR//
@@ -139,7 +135,6 @@ C             -- TEST_RESU/S_I(OU S_R) :
               ELSE IF (TYPE.EQ.'I') THEN
                 WRITE (IFIC,1003) OBJ,SOMMI
               END IF
-            END IF
           END IF
    10   CONTINUE
       END IF
@@ -164,10 +159,6 @@ C    -----------------------------------------
             CALL TSTOBJ(OBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYPE,
      &                  IRET,NI)
             IF (IRET.EQ.0) THEN
-C               -- TEST_RESU/RESUME:
-              IF (TYPTES.EQ.'RESUME') THEN
-                WRITE (IFIC,1001) OBJ,RESUME
-              ELSE IF (TYPTES.EQ.'SOMME') THEN
 C               -- TEST_RESU/S_I(OU S_R) :
                 IF ((TYPE.EQ.'R') .OR. (TYPE.EQ.'C')) THEN
                   FORM1 = '(''_F(NOM='''''',A24,'''''',S_R='','//FORMR//
@@ -176,7 +167,6 @@ C               -- TEST_RESU/S_I(OU S_R) :
                 ELSE IF (TYPE.EQ.'I') THEN
                   WRITE (IFIC,1003) OBJ,SOMMI
                 END IF
-              END IF
             END IF
    20     CONTINUE
           CALL JEDETR('&&OP0178.LISTE')
@@ -188,7 +178,6 @@ C
 C
       CALL JEDEMA()
 C
- 1001 FORMAT ('_F(NOM=''',A24,''',RESUME =',I15,',PRECISION=0.,),')
  1003 FORMAT ('_F(NOM=''',A24,''',S_I=',I15,',PRECISION=0.,),')
 C
       END

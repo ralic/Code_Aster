@@ -1,7 +1,7 @@
       SUBROUTINE CER3PT ( CUPN0, CVPN0, CUPN1, CVPN1, CUPN2, CVPN2,
      &                    CUON, CVON, RAYON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/09/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,6 +56,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER    FLAG
+      INTEGER VALI
 C
       REAL*8     CUI, CVI, DIST, DU01, DV01, DU02, DV02, DU12, DV12
       REAL*8     CUON01, CVON01, CUON02, CVON02, CUON12, CVON12
@@ -63,6 +64,7 @@ C
       REAL*8     CUO12P, CVO12P, A12, B12
       REAL*8     CUON1, CVON1, CUON2, CVON2, CUON3, CVON3
       REAL*8     RAY0, RAY1, RAY2, RAYMIN, EPS1, EPS2
+      REAL*8 VALR(16)
 C     ------------------------------------------------------------------
 C234567                                                              012
 
@@ -216,28 +218,24 @@ C ON CALCULE LE RAYON ET ON VERIFIE LA PRECISION DE SON CALCUL.
 C
       IF ( (((RAYON - RAYMIN)/RAYMIN) .GT. EPS2) .AND.
      &     ((RAYON - RAYMIN) .GT. EPS2) ) THEN
-        CALL UTDEBM('F','CER3PT.1','LE CALCUL DU RAYON N''EST PAS '//
-     &            'ASSEZ PRECIS.')
-        CALL UTIMPR('L','CUPN0 = ',1,CUPN0)
-        CALL UTIMPR('S',' CVPN0 = ',1,CVPN0)
-        CALL UTIMPR('L','CUPN1 = ',1,CUPN1)
-        CALL UTIMPR('S',' CVPN1 = ',1,CVPN1)
-        CALL UTIMPR('L','CUPN2 = ',1,CUPN2)
-        CALL UTIMPR('S',' CVPN2 = ',1,CVPN2)
-        CALL UTIMPI('L','FLAG = ',1,FLAG)
-        CALL UTIMPR('L','CUON1 = ',1,CUON1)
-        CALL UTIMPR('S',' CUON2 = ',1,CUON2)
-        CALL UTIMPR('L','CUON3 = ',1,CUON3)
-        CALL UTIMPR('L','CVON1 = ',1,CVON1)
-        CALL UTIMPR('S',' CVON2 = ',1,CVON2)
-        CALL UTIMPR('L','CVON3 = ',1,CVON3)
-        CALL UTIMPR('L','RAYON = ',1,RAYON)
-        CALL UTIMPR('S',' RAYMIN = ',1,RAYMIN)
-        CALL UTIMPR('L','(RAYON - RAYMIN) = ',1,(RAYON - RAYMIN))
-        CALL UTIMPR('L','((RAYON-RAYMIN)/RAYMIN) = ',1,
-     &                   ((RAYON-RAYMIN)/RAYMIN) )
-C
-        CALL UTFINM( )
+        VALR (1) = CUPN0
+        VALR (2) = CVPN0
+        VALR (3) = CUPN1
+        VALR (4) = CVPN1
+        VALR (5) = CUPN2
+        VALR (6) = CVPN2
+        VALR (7) = CUON1
+        VALR (8) = CUON2
+        VALR (9) = CUON3
+        VALR (10) = CVON1
+        VALR (11) = CVON2
+        VALR (12) = CVON3
+        VALR (13) = RAYON
+        VALR (14) = RAYMIN
+        VALR (15) = (RAYON - RAYMIN)
+        VALR (16) = ((RAYON-RAYMIN)/RAYMIN)
+        VALI = FLAG
+        CALL U2MESG('F','PREPOST5_78',0,' ',1,VALI,16,VALR)
       ELSE
         CUON = CUON1
         CVON = CVON1

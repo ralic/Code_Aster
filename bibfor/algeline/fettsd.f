@@ -2,7 +2,7 @@
      &                  IFETI,IFM,LPARA,ITPS,NIVMPI,RANG,CHSOL,OPTION,
      &                  LTEST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,22 +20,23 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C-----------------------------------------------------------------------
-C    - FONCTION REALISEE:  TEST VALIDITE DE SD_FETI
+C    - FONCTION REALISEE:  TEST VALIDITE DE SD_FETI OU SORTIES FICHIER
 C                          POUR SOULAGER ALFETI.F
 C     ------------------------------------------------------------------
 C     IN  INFOFE : CH19 : CHAINE DE CHARACTERES POUR MONITORING FETI
 C     IN  NBI    : IN   : NBRE DE DDLS D'INTERFACE (SI OPTION=1)
-C                         NUMERO DE SD, IDD (SI OPTION=3/4/6/7/8)
+C                         NUMERO DE SD, IDD (SI OPTION=3/4/6/7/8/10)
 C     IN  NBSD   : IN   : NBRE DE SOUS-DOMAINES (SI OPTION=1)
-C                         NOMBRE DE DDLS, NEQUA (SI OPTION=3/4/5/7/8/9)
+C                         NOMBRE DE DDLS, NEQUA (OPTION=3/4/5/7/8/9/10)
 C     IN VDDL    : VIN  : VECTEUR DES NBRES DE DDLS DES SOUS-DOMAINES
 C     IN SDFETI  : CH19 : SD DECRIVANT LE PARTIONNEMENT FETI
 C     IN COLAUX  : K24  : COLLECTION TEMPORAIRE DE REEL (SI OPTION=1)
-C                         NOM DU NUM_DDL GLOBAL, NUDEV (SI OPT=3/4/9)
+C                         NOM DU NUM_DDL GLOBAL, NUDEV (OPT=3/4/9/10)
 C     IN IREX    : IN   : ADRESSES VECTEURS AUX POUR JEVEUX (SI OPT=1)
 C                         ADRESSE .FETN (SI OPT=3/4/6/7) OU .DEEQ (8)
+C                         NBRE DE MODE RIGIDE NBMR (SI OPT=10)
 C     IN NBI2    : IN   : NBRE DE LAGRANGES D'INTERFACE (SI OPT=1)
-C                         ADRESSE .VALE, IADVAL (SI OPT=3/4/5/6/7/8/9)
+C                         ADRESSE .VALE, IADVAL (OPT=3/4/5/6/7/8/9/10)
 C     IN IFETI   : IN   : ADRESSE JEVEUX OBJET SDFETI.FETI
 C     IN IFM     : IN   : UNITE D'IMPRESSION
 C     IN LPARA   : LOG  : .TRUE. SI PARALLELE, .FALSE. SINON
@@ -48,9 +49,16 @@ C                   1   --> TEST SD_FETI 1 ET SD_FETI 2 DANS ALFETI
 C                   2   --> PREPARATION DES DONNEES POUR OPTION 3/4
 C                   3   --> TEST SD_FETI 3 DANS ASSMAM
 C                   4   --> TEST SD_FETI 4 DANS ASSVEC
+C                   5   --> VERIFICATION SOLUTION PRECEDENTE
+C                   6   --> ECRITURE NUME_DDL/MATR_ASSE DANS 18
+C                   7   --> ECRITURE NUME_DDL/CHAM_NO RHS DANS 18
+C                   8   --> ECRITURE NUME_DDL/CHAM_NO SOL LOCALE DS 18
+C                   9   --> IDEM SOLUTION GLOBALE
+C                  10   --> ECRITURE NUME_DDL/MODES RIGIDES LOC DS 18
 C     IN LTEST   :  LOG  : .TRUE. SI TEST ACTIVE
 C----------------------------------------------------------------------
 C TOLE CRP_4
+C TOLE CRP_20
 C RESPONSABLE ABBAS M.ABBAS
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -82,8 +90,8 @@ C DECLARATION VARIABLES LOCALES
      &             NBDDL1,DDLBI,ILIMPI,DDLNEG,IFETC,DDLNEL,IREFE,NUML,
      &             J,COMPT,IRET5,IRET,IRET6,IFETJ,NBII,ITEST,IFETI1,
      &             INO,IFETN,IDEEQ,NEQUA,IADVAL,JSMDI,NSMDI,NBER,
-     &             JSMHC,NZ,JCOL,NBMRMA,NBMR,KTERM,ILIG,NBCHAR,
-     &             IFM18,ICMP,NBERM
+     &             JSMHC,NZ,JCOL,NBMRMA,KTERM,ILIG,NBCHAR,
+     &             IFM18,ICMP,NBERM,NBMR,K,NEQ,L
       INTEGER*4    NBI4
       REAL*8       RAUX,RBID,DII,DII2,DII3,TOL,ECARMI,ECARMA,ECARMO
       CHARACTER*8  NOMSD,K8BID
@@ -102,6 +110,7 @@ C CORPS DU PROGRAMME
       NUDEV=COLAUX
       IFETN=IREX
       IDEEQ=IREX
+      NBMR=IREX
       IADVAL=NBI2
       IF ((INFOFE(12:12).EQ.'T').AND.((OPTION.EQ.3).OR.(OPTION.EQ.4)))
      &  THEN
@@ -436,8 +445,8 @@ C ON NE S'INTERESSE QU'AUX COMPOSANTES PHYSIQUES
 C-----------------------------      
 C ON ECRIT DANS IFM18 LA MATRICE LOCALE
 C-----------------------------
-      ELSE IF ((INFOFE(14:14).EQ.'T').AND.(OPTION.EQ.6).AND.
-     &     (IDD.NE.0)) THEN
+      ELSE IF (((INFOFE(14:14).EQ.'T').OR.(INFOFE(15:15).EQ.'T'))
+     &     .AND.(OPTION.EQ.6).AND.(IDD.NE.0)) THEN
         K14B=ZK24(IFETN+IDD-1)(1:14)
         CALL JEVEUO(K14B//'.SMOS.SMDI','L',JSMDI)
         CALL JELIRA(K14B//'.SMOS.SMDI','LONMAX',NSMDI,K8BID)
@@ -445,7 +454,7 @@ C-----------------------------
         NZ=ZI(JSMDI-1+NSMDI)
         JCOL=1
         WRITE(IFM18,*)'MATRICE DU SOUS-DOMAINE ',IDD,'I/J/KIJ'
-        WRITE(IFM18,*)'NOMBRE DE TERMES ',NZ
+        WRITE(IFM18,*)'TAILLE DU PB/NOMBRE DE TERMES ',NSMDI,NZ
         DO 80 KTERM = 1, NZ
           IF (ZI(JSMDI-1+JCOL).LT.KTERM) JCOL=JCOL+1      
           ILIG=ZI(JSMHC-1+KTERM)
@@ -491,6 +500,33 @@ C-----------------------------
           ICMP=ZI(IDEEQ+2*(I-1)+1)
           WRITE(IFM18,*)I,INO,ICMP,ZR(IADVAL-1+I)
    92   CONTINUE
+C-----------------------------      
+C ON ECRIT DANS IFM18 UN MODE RIGIDE
+C-----------------------------
+      ELSE IF ((INFOFE(15:15).EQ.'T').AND.(OPTION.EQ.10)) THEN
+        K14B=NUDEV(1:14)
+        CALL JEVEUO(K14B//'.NUME.DEEQ','L',IDEEQ)
+        WRITE(IFM18,*)'SOUS-DOMAINE/NBRE MODE RIGIDE ',IDD,NBMR,
+     &    ' I/J/NUM_NOEUD (<0 SI LAGR)/NUM_COMPOSANTE (<0 SI LAGR)/UIJ'
+        IF (NBMR.GT.0) THEN
+          WRITE(IFM18,*)'NOMBRE TOTAL DE TERMES ',NEQUA
+          NEQ=NEQUA/NBMR
+          K=1
+          L=1
+          DO 94 I=1,NEQUA
+            INO=ZI(IDEEQ+2*(K-1))
+            ICMP=ZI(IDEEQ+2*(K-1)+1)
+            WRITE(IFM18,*)L,K,INO,ICMP,ZR(IADVAL-1+I)
+            IF (K.LT.NEQ) THEN
+              K=K+1
+            ELSE
+              K=1
+              L=L+1
+            ENDIF
+   94     CONTINUE
+        ELSE
+          WRITE(IFM18,*)'NOMBRE TOTAL DE TERMES ',0
+        ENDIF
       ENDIF
 
       CALL JEDEMA()

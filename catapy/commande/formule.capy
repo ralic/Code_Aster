@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,19 +16,30 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+def formule_prod(self,VALE,VALE_C,**args):
+   if   VALE   != None:
+      return formule
+   elif VALE_C != None:
+      return formule_c
+
 def form_pyth_ops(self,d):
   import types,string
   NOM_PARA=self.etape['NOM_PARA']
   VALE    =self.etape['VALE']
+  VALE_C  =self.etape['VALE_C']
   if type(NOM_PARA) not in (types.ListType,types.TupleType) : NOM_PARA=[NOM_PARA,]
   if self.sd==None : return
-  texte=string.join(VALE.splitlines())
-
+  if VALE     != None :
+     texte=string.join(VALE.splitlines())
+  elif VALE_C != None :
+     texte=string.join(VALE_C.splitlines())
   self.sd.setFormule(NOM_PARA,string.strip(texte))
 
 FORMULE=FORM(nom="FORMULE",op_init=form_pyth_ops,op=-5,
-             sd_prod=formule,UIinfo={"groupes":("Fonction",)},
-             fr="Définit une formule réelle à partir de son expression mathématique",
+             sd_prod=formule_prod,UIinfo={"groupes":("Fonction",)},
+             fr="Définit une flyingdformule réelle ou complexe à partir de son expression mathématique",
+         regles=(UN_PARMI('VALE','VALE_C',),),
          VALE     =SIMP(statut='f',typ='TXM'),
+         VALE_C   =SIMP(statut='f',typ='TXM'),
          NOM_PARA =SIMP(statut='o',typ='TXM',max='**'),
 );
