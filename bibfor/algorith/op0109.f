@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
+      INTEGER VALI(2)
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -56,6 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 KVEC, KVAL, KSPECT, KASYSP, KNOEU, KNUME
       CHARACTER*19 NOMJV, LIAR,TYPCOM
       CHARACTER*24 DESC, REFD, NOPARA(NBPARA)
+      CHARACTER*24 VALK(3)
       LOGICAL      TRONC,MONOAP,COMDIR,CORFRE,CALMAS
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
@@ -126,10 +128,9 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
             CALL GETVR8(' ','AMOR_REDUIT',1,1,NBAMOR,ZR(JAMOR),NA)
          ENDIF
          IF (NBAMOR.GT.NBMODE) THEN
-            CALL UTDEBM('F','OP0109','TROP D''AMORTISSEMENTS MODAUX')
-            CALL UTIMPI('L','   NOMBRE D''AMORTISSEMENT : ',1,NBAMOR)
-            CALL UTIMPI('L','   NOMBRE DE MODE : ',1,NBMODE)
-            CALL UTFINM( )
+            VALI (1) = NBAMOR
+            VALI (2) = NBMODE
+            CALL U2MESG('F','ALGORITH16_28',0,' ',2,VALI,0,0.D0)
          ENDIF
          IF (NBAMOR.LT.NBMODE) THEN
             CALL WKVECT('&&OP0109.AMORTISSEMEN2','V V R',NBMODE,JAMO2)
@@ -147,10 +148,9 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
          IF (NLA.NE.0) THEN
             CALL JELIRA(LIAR//'.VALE','LONUTI',NBAMOR,K8B)
             IF (NBAMOR.GT.NBMODE) THEN
-             CALL UTDEBM('F','OP0109','TROP D''AMORTISSEMENTS MODAUX')
-               CALL UTIMPI('L','   NOMBRE D''AMORTISSEMENT : ',1,NBAMOR)
-               CALL UTIMPI('L','   NOMBRE DE MODE : ',1,NBMODE)
-               CALL UTFINM( )
+             VALI (1) = NBAMOR
+             VALI (2) = NBMODE
+             CALL U2MESG('F','ALGORITH16_29',0,' ',2,VALI,0,0.D0)
             ENDIF
             CALL JEVEUO(LIAR//'.VALE','L',JARM)
             CALL WKVECT('&&OP0109.AMORTISSEMENT','V V R',NBMODE,JAMOR)
@@ -174,9 +174,8 @@ C           A MODIFIER
             CALL JEVEUO(DESC,'L',JDESC)
             NBAMOR = ZI(JDESC)
             IF ( ZI(JDESC+3).NE.1) THEN
-               CALL UTDEBM('F','OP0109','AMORTISSEMENT NON DIAGONAL')
-               CALL UTIMPI('L',' ON NE SAIT PAS TRAITER ',1,NBAMOR)
-               CALL UTFINM( )
+               VALI (1) = NBAMOR
+               CALL U2MESG('F','ALGORITH16_30',0,' ',1,VALI,0,0.D0)
             ELSE
             CALL WKVECT('&&OP0109.AMORTI','V V R8',NBAMOR*NBAMOR,JAMOG)
             CALL COPMAT(AMOGEN,NUMGEC,ZR(JAMOG))
@@ -185,10 +184,9 @@ C           A MODIFIER
          ENDIF
       ENDIF
       IF (NBAMOR.NE.NBMODE) THEN
-       CALL UTDEBM('F','OP0109','IL MANQUE DES AMORTISSEMENTS MODAUX')
-         CALL UTIMPI('L','   NOMBRE D''AMORTISSEMENT : ',1,NBAMOR)
-         CALL UTIMPI('L','   NOMBRE DE MODE : ',1,NBMODE)
-         CALL UTFINM( )
+       VALI (1) = NBAMOR
+       VALI (2) = NBMODE
+       CALL U2MESG('F','ALGORITH16_31',0,' ',2,VALI,0,0.D0)
       ENDIF
 C     ----- DIVERS RECOMBINAISON -----
       CALL GETVTX('COMB_MODE','TYPE' ,1,1,1,TYPCMO,NCM)
@@ -203,9 +201,7 @@ C
       CALL GETFAC('COMB_MULT_APPUI',NMULT)
       CALL GETFAC('COMB_DEPL_APPUI',NDEPL)
       IF (NDEPL.NE.0.AND.NMULT.EQ.0) THEN
-       CALL UTDEBM('F','OP0109','ON NE PEUT PAS DEMANDER DE REPONSE')
-       CALL UTIMPK('L','SECONDAIRE SANS LA REPONSE PRIMAIRE',0,' ')
-       CALL UTFINM( )
+       CALL U2MESG('F','ALGORITH16_32',0,' ',0,0,0,0.D0)
       ENDIF
 C
       CALL INFMAJ
@@ -216,29 +212,27 @@ C
       IF (CORF.EQ.'OUI') CORFRE = .TRUE.
 C
       IF (INFO.EQ.1 .OR. INFO.EQ.2) THEN
-         CALL UTDEBM('I','<----------------------->',' ')
-         CALL UTIMPK('L','*** ANALYSE SPECTRALE ***',0,' ')
-         CALL UTIMPK('L','-------------------------',0,' ')
-         CALL UTIMPK('L','! LA BASE MODALE UTILISEE EST : ',1,MECA)
-         CALL UTIMPI('L','! LE NOMBRE DE VECTEURS DE BASE EST : ',1,
-     &                   NBMODE)
-         CALL UTIMPK('L','! REGLE DE COMBINAISON MODALE : ',1,TYPCMO)
-         CALL UTIMPK('L','! LES OPTIONS DE CALCUL DEMANDEES SONT : ',1,
-     &                   ZK16(JOPT))
+         VALK (1) = MECA
+         VALK (2) = TYPCMO
+         VALK (3) = ZK16(JOPT)
+         VALI (1) = NBMODE
+         CALL U2MESG('I+','ALGORITH16_33',3,VALK,1,VALI,0,0.D0)
          DO 15 J = 2,NBOPT
-            CALL UTIMPK('L','                                         ',
-     &                      1,ZK16(JOPT+J-1))
+            VALK (1) = ZK16(JOPT+J-1)
+            CALL U2MESG('I+','ALGORITH16_34',1,VALK,0,0,0,0.D0)
    15    CONTINUE
-         IF (NNA.NE.0)
-     &      CALL UTIMPK('L','! NATURE DE L''EXCITATION : ',1,NATURE)
-         IF (NCD.NE.0) CALL UTIMPK('L',
-     &         '! REGLE DE COMBINAISON DES REPONSES DIRECTIONNELLES: ',
-     &         1,TYPCDI)
-         IF (NTY2.NE.0) THEN
-            CALL UTIMPK('L','! REGLE DE COMBINAISON DES CONTRIBUTIONS ',
-     &                                                           0,' ')
-            CALL UTIMPK(' ',' DE CHAQUE MOUVEMENT D''APPUI : ',1,TYPCMA)
+         IF (NNA.NE.0) THEN
+            VALK(1) = NATURE
+            CALL U2MESG('I+','ALGORITH16_85',1,VALK,0,0,0,0.D0)
          ENDIF
+         IF (NCD.NE.0) THEN
+            VALK(1) = TYPCDI
+            CALL U2MESG('I+','ALGORITH16_86',1,VALK,0,0,0,0.D0)
+         ENDIF
+         IF (NTY2.NE.0) THEN
+            VALK (1) = TYPCMA
+            CALL U2MESG('I+','ALGORITH16_35',1,VALK,0,0,0,0.D0)
+         ENDIF 
       ENDIF
 C     ----- RECUPERATION DES EXCITATIONS -----
       WRITE(IFM,1060)
@@ -260,10 +254,8 @@ C        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
          CALL TBLIVA ( TMAS, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
          IF ( IRET .EQ. 2 ) THEN
-            CALL UTDEBM('F','OP0109', 'ERREUR DANS LES DONNEES' )
-            CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS '//
-     +               'LA TABLE ',1,TMAS)
-            CALL UTFINM()
+            VALK (1) = TMAS
+            CALL U2MESG('F','ALGORITH16_36',1,VALK,0,0,0,0.D0)
          ELSEIF ( IRET .EQ. 3 ) THEN
             CALL TBEXP2(TMAS,'ENTITE')
             PARAKI(1) = 'LIEU'
@@ -273,10 +265,8 @@ C        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
             CALL TBLIVA ( TMAS, 2, PARAKI, IBID, R8B, C16B, VALEKI, K8B,
      +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) THEN
-               CALL UTDEBM('F','OP0109', 'ERREUR DANS LES DONNEES' )
-               CALL UTIMPK('L','LA MASSE N EXISTE PAS '//
-     +              'DANS LA TABLE ',1,TMAS)
-               CALL UTFINM()
+               VALK (1) = TMAS
+               CALL U2MESG('F','ALGORITH16_37',1,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
          CALMAS = .TRUE.

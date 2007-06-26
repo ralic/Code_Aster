@@ -1,6 +1,6 @@
       SUBROUTINE VECOMO (MODGEN,SST1,SST2,INTF1,INTF2,NLIAIS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,11 +69,11 @@ C
      &             JNODE,IP,INU,NUNO,LDAC2
       PARAMETER   (NBCMPM=10)
       CHARACTER*4  NLIAI
-      CHARACTER*6  PGC
       CHARACTER*8  MODGEN,LINT1,LINT2,CRITER,TEMP
       CHARACTER*8  SST1,SST2,INTF 1,INTF2,MAIL1,MAIL2,
      &             K8BID,NOMNOI,NOMNOJ,NOMNOP
       CHARACTER*24 REPNOM,INT1,INT2,FAMLI,ORDOL,ORDOD
+      CHARACTER*24 VALK(5)
       REAL*8       X1(3),X2(3),XR1(3),XR2(3),ROT1(3),ROT2(3),DXR,
      &             MAT1(NBCMPM,NBCMPM),MAT2(NBCMPM,NBCMPM),TRA1(3),
      &             MAT3(NBCMPM,NBCMPM),ZERO,DXRM,LCARAM,TRA2(3),
@@ -82,7 +82,6 @@ C
      &             DXRIJ
 C
 C-----------------------------------------------------------------------
-      DATA PGC  /'VECOMO'/
       DATA ZERO /0.0D+00/
 C-----------------------------------------------------------------------
 C
@@ -158,13 +157,11 @@ C
       CALL JELIRA(JEXNUM(INT2(1:17),IBID),'LONMAX',NBNO2,K8BID)
 C
       IF (NBNO1.NE.NBNO2) THEN
-        CALL UTDEBM('F',PGC,
-     &   'LES INTERFACES DE LA LIAISON N''ONT PAS LA MEME LONGUEUR')
-        CALL UTIMPK('L',' SOUS-STRUCTURE 1 --> ',1,SST1)
-        CALL UTIMPK('L',' INTERFACE 1      --> ',1,INTF1)
-        CALL UTIMPK('L',' SOUS-STRUCTURE 2 --> ',1,SST2)
-        CALL UTIMPK('L',' INTERFACE 2      --> ',1,INTF2)
-        CALL UTFINM
+        VALK (1) = SST1
+        VALK (2) = INTF1
+        VALK (3) = SST2
+        VALK (4) = INTF2
+        CALL U2MESG('F','ALGORITH16_44',4,VALK,0,0,0,0.D0)
         GO TO 9999
       ENDIF
       NBNO=NBNO1
@@ -288,12 +285,10 @@ C        --- CAS OU JNODE EST DEJA UN VIS-A-VIS ---
             INU    = ZI(LLINT1-1+IP)
             NUNO   = ZI(LDESC1-1+INU)
             CALL JENUNO(JEXNUM(MAIL1//'.NOMNOE',NUNO),NOMNOP)
-            CALL UTDEBM('F','VECOMO','CONFLIT DANS LES VIS_A_VIS '//
-     +                  'DES NOEUDS')
-            CALL UTIMPK('L','LE NOEUD ',1,NOMNOJ)
-            CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,NOMNOP)
-            CALL UTIMPK('S','ET ',1,NOMNOI)
-            CALL UTFINM()
+            VALK (1) = NOMNOJ
+            VALK (2) = NOMNOP
+            VALK (3) = NOMNOI
+            CALL U2MESG('F','ALGORITH16_45',3,VALK,0,0,0,0.D0)
             GO TO 9999
          ENDIF
          ZI(LLISTB-1+JNODE) = I
@@ -309,25 +304,21 @@ C-----VERIFICATION FINALE
 C
         IF (ICRIT.EQ.1) THEN
           IF (LCARAM.EQ.0.D0) THEN
-            CALL UTDEBM('F',PGC,'LE CRITERE DE VERIFICATION NE PEUT'
-     &  //' ETRE RELATIF DANS VOTRE CAS, LA LONGUEUR CARACTERISTIQUE'
-     &  //' DE L''INTERFACE DE LA SOUS-STRUCTURE ETANT NULLE.')
-            CALL UTIMPK('L',' SOUS-STRUCTURE 1 --> ',1,SST1)
-            CALL UTIMPK('L',' INTERFACE 1      --> ',1,INTF1)
-            CALL UTIMPK('L',' SOUS-STRUCTURE 2 --> ',1,SST2)
-            CALL UTIMPK('L',' INTERFACE 2      --> ',1,INTF2)
-            CALL UTFINM
+            VALK (1) = SST1
+            VALK (2) = INTF1
+            VALK (3) = SST2
+            VALK (4) = INTF2
+            CALL U2MESG('F','ALGORITH16_46',4,VALK,0,0,0,0.D0)
             GO TO 9999
           ENDIF
           DXRM=DXRM/LCARAM
         ENDIF
         IF (DXRM.GT.DIFMAX) THEN
-          CALL UTDEBM('F',PGC,'LES INTERFACES NE SONT PAS COMPATIBLES')
-          CALL UTIMPK('L',' SOUS-STRUCTURE 1 --> ',1,SST1)
-          CALL UTIMPK('L',' INTERFACE 1      --> ',1,INTF1)
-          CALL UTIMPK('L',' SOUS-STRUCTURE 2 --> ',1,SST2)
-          CALL UTIMPK('L',' INTERFACE 2      --> ',1,INTF2)
-          CALL UTFINM
+          VALK (1) = SST1
+          VALK (2) = INTF1
+          VALK (3) = SST2
+          VALK (4) = INTF2
+          CALL U2MESG('F','ALGORITH16_47',4,VALK,0,0,0,0.D0)
           GO TO 9999
         ENDIF
 
@@ -336,26 +327,22 @@ C       --- LES NOEUDS NE SONT PAS EN VIS-A-VIS ---
 C           ON REGARDE D'ABORD SI LE TRI EST PLAUSIBLE
          DO 130 I = 1,NBNO
             IF (ZI(LLISTB-1+ZI(LLISTA-1+I)).NE.I) THEN
-               CALL UTDEBM('F',PGC,'LES INTERFACES NE SONT PAS '//
-     &                              'COMPATIBLES')
-               CALL UTIMPK('L',' SOUS-STRUCTURE 1 --> ',1,SST1)
-               CALL UTIMPK('L',' INTERFACE 1      --> ',1,INTF1)
-               CALL UTIMPK('L',' SOUS-STRUCTURE 2 --> ',1,SST2)
-               CALL UTIMPK('L',' INTERFACE 2      --> ',1,INTF2)
-               CALL UTFINM
+               VALK (1) = SST1
+               VALK (2) = INTF1
+               VALK (3) = SST2
+               VALK (4) = INTF2
+               CALL U2MESG('F','ALGORITH16_48',4,VALK,0,0,0,0.D0)
                GO TO 9999
             ENDIF
  130     CONTINUE
 
 C
-           CALL UTDEBM('A',PGC,'LES NOEUDS DES INTERFACES NE SONT PAS'//
-     &                 ' ALIGNES EN VIS-A-VIS')
-           CALL UTIMPK('L',' SOUS-STRUCTURE 1 --> ',1,SST1)
-           CALL UTIMPK('L',' INTERFACE 1      --> ',1,INTF1)
-           CALL UTIMPK('L',' SOUS-STRUCTURE 2 --> ',1,SST2)
-           CALL UTIMPK('L',' INTERFACE 2      --> ',1,INTF2)
-           CALL UTIMPK('L','LES NOEUDS ONT ETE REORDONNES',1,' ')
-           CALL UTFINM
+           VALK (1) = SST1
+           VALK (2) = INTF1
+           VALK (3) = SST2
+           VALK (4) = INTF2
+           VALK (5) = ' '
+           CALL U2MESG('A','ALGORITH16_49',5,VALK,0,0,0,0.D0)
 
 C        ON RECUPERE LE DESCRIPTEUR DE LA LIAISON COURANTE
            FAMLI=MODGEN//'      .MODG.LIDF'

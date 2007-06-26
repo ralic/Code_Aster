@@ -3,7 +3,7 @@
       CHARACTER*8       MASSE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C                     DES DEPLACEMENTS DES SUPPORTS
 C   DANS CETTE ROUTINE ON CREE UN SERIE DE COLLECTIONS
 C   - LISTE_CAS :
 C
-C	
+C
 C     ------------------------------------------------------------------
 C IN  : MASSE  : MATRICE DE MASSE DE LA STRUCTURE
 C     ------------------------------------------------------------------
@@ -92,7 +92,6 @@ C
           CALL GETFAC('DEPL_MULT_APPUI',NCAS)
           IF (NCAS.LT.2) THEN
            CALL U2MESS('F','ALGORITH_24')
-           CALL UTFINM()
           ENDIF
           CALL JECROC(JEXNUM('&&ASENAP.LISTCAS',IOCC))
           CALL JEECRA(JEXNUM('&&ASENAP.LISTCAS',IOCC),'LONMAX',

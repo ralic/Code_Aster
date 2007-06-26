@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,10 +75,10 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),),
 
-#           b_partie        =BLOC(condition="""((AsType(RESULTAT)==dyna_harmo) or  
-#                           (AsType(CHAM_GD)!=carte_sdaster))  and ((FORMAT=='CASTEM') or (FORMAT=='GMSH'))""",
+           b_partie        =BLOC(condition="""(AsType(RESULTAT) in (dyna_harmo, acou_harmo) or  
+                          AsType(CHAM_GD) != carte_sdaster) and FORMAT in ('CASTEM', 'GMSH', 'MED')""",
              PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
-#           ),
+           ),
            b_extrac        =BLOC(condition="RESULTAT != None",
                                  fr="extraction d un champ de grandeur",
              regles=(EXCLUS('TOUT_CHAM','NOM_CHAM'),

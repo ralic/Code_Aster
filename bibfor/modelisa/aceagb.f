@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,7 +200,7 @@ C
  48          CONTINUE
              XNORM =  SQRT( XNORM )
              IF ( XNORM .LT. EPSI ) THEN
-               CALL UTDEBM('F','ACEAGB','NOEUD SUR L''AXE_Z')
+               CALL U2MESS('F','MODELISA9_80')
              ENDIF
              CALL ANGVX ( AXET, ANG(1), ANG(2) )
 C

@@ -1,7 +1,7 @@
       SUBROUTINE CLAS99 (NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER          ZI
+      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -44,9 +45,9 @@ C
 C-----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------------
 C
       CHARACTER*6  PGC
+      CHARACTER*24 VALK
       CHARACTER*8  NOMRES,INTF,KBID
       CHARACTER*19 NUMDDL,RAID,MASS,RAIDLT
-      CHARACTER*80 CHAINE
       COMPLEX*16   CBID
 C
 C-----------------------------------------------------------------------
@@ -85,13 +86,11 @@ C
      &             'ABSOLU',NBMODO,1,NBID)
 C
         IF (NBMODO.LT.NBMOUT) THEN
-          CHAINE='NOMBRE DE MODES PROPRES CALCULES INSUFFISANT'
-          CALL UTDEBM('I',PGC,CHAINE)
-          CHAINE='MODE_MECA : '
-          CALL UTIMPK('L',CHAINE,1,ZK8(LTMOME-1+I))
-          CHAINE='NOMBRE DE MODES PROPRES CALCULES LIMITE A : '
-          CALL UTIMPI('L',CHAINE,1,NBMODO)
-          CALL UTFINM
+          CALL U2MESS('I+','ALGORITH15_92')
+          VALK = ZK8(LTMOME-1+I)
+          CALL U2MESG('I+','ALGORITH15_93',1,VALK,0,0,0,0.D0)
+          VALI = NBMODO
+          CALL U2MESG('I','ALGORITH15_94',0,' ',1,VALI,0,0.D0)
         ELSE
           NBMODO=NBMOUT
         ENDIF

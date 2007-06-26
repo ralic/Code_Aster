@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,9 +69,9 @@ C ---------
       REAL*8        EPST,PARCHO(NBNL,*)
       INTEGER       ICOUPL
       CHARACTER*8   TPFL,NOECHO(NBNL,*)
-      INTEGER       VECI1(*)
+      INTEGER       VECI1(*),VALI
       LOGICAL       LOCFL0(*)
-      REAL*8        DT0, TFEXM, TS, DTTR, VECDT(*)
+      REAL*8        DT0, TFEXM, TS, DTTR, VECDT(*), VALR(3)
       INTEGER       IARCH,NBCHOC
       REAL*8        VITG0(*),  DEPG0(*),
      &              MASGI(*), AMORI(*), PULSI(*), PHII(NP2,NBM,*),
@@ -145,8 +145,8 @@ C -----------------
 C     EXTERNAL      ACCELE, ADIMVE, ALITMI, CALTOL, CALVOL, DEFMCF,
 C    &              DEFTTR, ECRBAS, ECRCHO, ECRGEN, INIALG, INIPAR,
 C    &              INIPCT, MDALLO, MDCHOF, MDITM3, PROJMP,
-C    &              PROJVD, SOMMVE, TRANSI, UTDEBM, UTFINM, UTIMPI,
-C    &              UTIMPR, UTTCPU, VARDEP,
+C    &              PROJVD, SOMMVE, TRANSI
+C    &              UTTCPU, VARDEP,
 C    &              GETRES, JEDEMA, JELIRA, JEMARQ, JEVEUO
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -495,12 +495,11 @@ C     --- IMPRESSION DES RESULTATS DE CHOC
 C 7.6 IMPRESSIONS SUPPLEMENTAIRES SI ARRET PAR MANQUE DE TEMPS CPU
 C     ------------------------------------------------------------
       IF ( IERCPU.EQ.1 ) THEN
-         CALL UTDEXC(28,'MDITM2','ARRET PAR MANQUE DE TEMPS CPU.')
-         CALL UTIMPR('L',' INSTANT COURANT :              ' ,1,TC)
-         CALL UTIMPI('L',' NOMBRE D''APPELS A ALITMI :     ',1,IT0)
-         CALL UTIMPR('L',' TEMPS MOYEN PAR PAS DE TEMPS : ' ,1,TPS1(4))
-         CALL UTIMPR('L',' TEMPS CPU RESTANT:             ' ,1,TPS1(1))
-         CALL UTFINM()
+         VALI     = IT0
+         VALR (1) = TC
+         VALR (2) = TPS1(4)
+         VALR (3) = TPS1(1)
+         CALL UTEXCM(28,'ALGORITH16_87',0,' ',1,VALI,3,VALR)
       ENDIF
 C
       CALL JEDEMA()

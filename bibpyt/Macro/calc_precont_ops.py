@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_precont_ops Macro  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,8 +24,8 @@
 def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                 CABLE_BP,CABLE_BP_INACTIF,
                                 COMP_INCR,ETAT_INIT,NEWTON,RECH_LINEAIRE,
-                                CONVERGENCE,INCREMENT,SOLVEUR,SOLV_NON_LOCAL,
-                                LAGR_NON_LOCAL,INFO,TITRE,**args):
+                                CONVERGENCE,INCREMENT,SOLVEUR,
+                                INFO,TITRE,**args):
 
 
   """
@@ -159,22 +159,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
     for i in dRech_lin.keys():
         if dRech_lin[i]==None : del dRech_lin[i]
   else :
-    dRech_lin=None
-    
-  if SOLV_NON_LOCAL:
-    dSolv_nonloc=SOLV_NON_LOCAL[0].cree_dict_valeurs(SOLV_NON_LOCAL[0].mc_liste)
-    for i in dSolv_nonloc.keys():
-        if dSolv_nonloc[i]==None : del dSolv_nonloc[i]
-  else :
-    dSolv_nonloc=None
-        
-  if LAGR_NON_LOCAL:
-    dLagr_nonloc=LAGR_NON_LOCAL[0].cree_dict_valeurs(LAGR_NON_LOCAL[0].mc_liste)
-    for i in dLagr_nonloc.keys():
-        if dLagr_nonloc[i]==None : del dLagr_nonloc[i]
-  else :
-    dLagr_nonloc=None   
-    
+    dRech_lin=None    
 
 
   # 1.3 Creation des mots-cles pour les 3 AFFE_CHAR_MECA
@@ -426,8 +411,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      CONVERGENCE=dConvergence,
                      RECH_LINEAIRE = dRech_lin,
                      SOLVEUR = dSolveur,
-                     SOLV_NON_LOCAL = dSolv_nonloc,
-                     LAGR_NON_LOCAL = dLagr_nonloc,
                      ARCHIVAGE = _F(INST = __TINT),
                      INFO     =INFO,
                      TITRE = TITRE,
@@ -460,8 +443,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      RECH_LINEAIRE = dRech_lin,
                      CONVERGENCE=dConvergence,
                      SOLVEUR = dSolveur,
-                     SOLV_NON_LOCAL = dSolv_nonloc,
-                     LAGR_NON_LOCAL = dLagr_nonloc,
                      ARCHIVAGE = _F(NUME_INIT = __no,
                                     DETR_NUME_SUIV = 'OUI' ),
                      INFO  =INFO,

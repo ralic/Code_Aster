@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost3 Messages  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,7 +163,7 @@ cata_msg={
 """),
 
 36: _("""
- on n'pas trouve dans le fichier unv la nature du champ (reel ou complexe)
+ on n'a pas trouvé dans le fichier unv la nature du champ (réel ou complexe)
 """),
 
 37: _("""
@@ -295,7 +295,8 @@ cata_msg={
 """),
 
 69: _("""
- le mot cle  'partie' est obligatoire.
+ L'impression d'un champ complexe nécessite l'utilisation du mot-clé PARTIE.
+ Ce mot-clé permet de choisir la partie du champ à imprimer (réelle ou imaginaire).
 """),
 
 70: _("""

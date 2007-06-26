@@ -13,7 +13,7 @@
       LOGICAL            LAMOR, LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,12 +150,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IMODE, IAMOR, IM, I, J, JDPL, JDDL, LREFE
+      INTEGER VALI
       REAL*8        DPILOC(6), DPIGLO(6), DDPILO(3), ORIGOB(3), UN
+      REAL*8 VALR(10)
       REAL*8        SINA, COSA, SINB, COSB, SING, COSG, XJEU, XMAS,
      &              CTANG
       CHARACTER*8   NOEUD(3)
       CHARACTER*16  TYPNUM
       CHARACTER*24  MDGENE, NUMERO
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -235,34 +238,40 @@ C
         COSG = PARCHO(I,21)
 C
         IF (INFO.EQ.2) THEN
-          CALL UTDEBM('I','MDCHOC',' INFOS NOEUDS DE CHOC')
-          CALL UTIMPI('L','LIEU DE CHOC  : ',1,I)
-          CALL UTIMPK('L','NOEUD DE CHOC  : ',1,NOECHO(I,1))
+          VALI = I
+          VALK = NOECHO(I,1)
+          CALL U2MESG('I+','ALGORITH16_2',1,VALK,1,VALI,0,0.D0)
           IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
-            CALL UTIMPK('L','SOUS-STRUCTURE : ',1,NOECHO(I,2))
+            VALK = NOECHO(I,2)
+            CALL U2MESG('I+','ALGORITH16_3',1,VALK,0,0,0,0.D0)
           ENDIF
-          CALL UTIMPR('L','COORDONNEES    : X : ',1,PARCHO(I,7))
-          CALL UTIMPR('L','                 Y : ',1,PARCHO(I,8))
-          CALL UTIMPR('L','                 Z : ',1,PARCHO(I,9))
+          VALR (1) = PARCHO(I,7)
+          VALR (2) = PARCHO(I,8)
+          VALR (3) = PARCHO(I,9)
+          CALL U2MESG('I+','ALGORITH16_4',0,' ',0,0,3,VALR)
           IF ( NOECHO(I,9)(1:2).EQ.'BI') THEN
-            CALL UTIMPK('L','NOEUD DE CHOC  : ',1,NOECHO(I,5))
+            VALK = NOECHO(I,5)
+            CALL U2MESG('I+','ALGORITH16_5',1,VALK,0,0,0,0.D0)
             IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
-              CALL UTIMPK('L','SOUS-STRUCTURE : ',1,NOECHO(I,6))
+              VALK = NOECHO(I,6)
+              CALL U2MESG('I+','ALGORITH16_6',1,VALK,0,0,0,0.D0)
             ENDIF
-            CALL UTIMPR('L','COORDONNEES    : X : ',1,PARCHO(I,10))
-            CALL UTIMPR('L','                 Y : ',1,PARCHO(I,11))
-            CALL UTIMPR('L','                 Z : ',1,PARCHO(I,12))
+            VALR (1) = PARCHO(I,10)
+            VALR (2) = PARCHO(I,11)
+            VALR (3) = PARCHO(I,12)
+            CALL U2MESG('I+','ALGORITH16_7',0,' ',0,0,3,VALR)
           ENDIF
-          CALL UTIMPR('L','AMORTISSEMENT TANGENT UTILISE : ',1,CTANG)
-          CALL UTIMPR('L','ORIGINE CHOC X : ',1,PARCHO(I,13))
-          CALL UTIMPR('L','             Y : ',1,PARCHO(I,14))
-          CALL UTIMPR('L','             Z : ',1,PARCHO(I,15))
-          CALL UTIMPR('L','NORM_OBST SIN(ALPHA) : ',1,PARCHO(I,16))
-          CALL UTIMPR('L','          COS(ALPHA) : ',1,PARCHO(I,17))
-          CALL UTIMPR('L','          SIN(BETA)  : ',1,PARCHO(I,18))
-          CALL UTIMPR('L','          COS(BETA)  : ',1,PARCHO(I,19))
-          CALL UTIMPR('L','ANGL_VRILLE : SIN(GAMMA) : ',1,PARCHO(I,20))
-          CALL UTIMPR('L','              COS(GAMMA) : ',1,PARCHO(I,21))
+          VALR (1) = CTANG
+          VALR (2) = PARCHO(I,13)
+          VALR (3) = PARCHO(I,14)
+          VALR (4) = PARCHO(I,15)
+          VALR (5) = PARCHO(I,16)
+          VALR (6) = PARCHO(I,17)
+          VALR (7) = PARCHO(I,18)
+          VALR (8) = PARCHO(I,19)
+          VALR (9) = PARCHO(I,20)
+          VALR (10)= PARCHO(I,21)
+          CALL U2MESG('I+','ALGORITH16_8',0,' ',0,0,10,VALR)
           IF ( NOECHO(I,9)(1:2).EQ.'BI') THEN
              XJEU = (PARCHO(I,10)-PARCHO(I,7))**2 +
      &              (PARCHO(I,11)-PARCHO(I,8))**2 +
@@ -272,9 +281,10 @@ C
              ELSE
                 XJEU = SQRT(XJEU)
              ENDIF
-             CALL UTIMPR('L','JEU INITIAL : ',1,XJEU)
+             VALR (1) = XJEU
+             CALL U2MESG('I+','ALGORITH16_9',0,' ',0,0,1,VALR)
           ENDIF
-          CALL UTFINM( )
+          CALL U2MESG('I','ALGORITH16_10',0,' ',0,0,0,0.D0)
         ENDIF
 C
 C       POSITION INITIALE DU NOEUD 1 DANS LE REPERE GLOBAL

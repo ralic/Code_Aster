@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C ---------
      &              ITRANS
       REAL*8        EPS, TS
       INTEGER       NTS, NBMP
+      INTEGER VALI(3)
 C
 C VARIABLES LOCALES
 C -----------------
@@ -75,7 +76,7 @@ C -----------------
       CHARACTER*14  NUMDDL
       CHARACTER*19  BASEFL
       CHARACTER*24  FSIC, CHREFE
-      CHARACTER*24 VALK(3)
+      CHARACTER*24  VALK(3)
 C
 C FONCTIONS INTRINSEQUES
 C ----------------------
@@ -90,7 +91,7 @@ C ROUTINES EXTERNES
 C -----------------
 C     EXTERNAL      COPMOD, DISMOI, GETVID, GETVIS, GETVR8, GETVTX,
 C    &              JEDEMA, JELIRA, JEMARQ, JEVEUO, MDCONF, RSADPA,
-C    &              RSORAC, UTDEBM, UTFINM, UTIMPI, UTIMPK,
+C    &              RSORAC,
 C    &              WKVECT
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -208,13 +209,11 @@ C
             CALL JELIRA(LISTAM//'           .VALE','LONMAX',NBAMOR,K8B)
          ENDIF
          IF ( NBAMOR.GT.NBMODE ) THEN
-            CALL UTDEBM('A','MDITMI',
-     &         'LE NOMBRE D''AMORTISSEMENTS REDUITS EST TROP GRAND')
-            CALL UTIMPI('L','LE NOMBRE DE MODES RETENUS VAUT ',1,NBMODE)
-            CALL UTIMPI('L','ET LE NOMBRE DE COEFFICIENTS : ',1,NBAMOR)
-            CALL UTIMPI('L','ON NE GARDE DONC QUE LES ',1,NBMODE)
-            CALL UTIMPK('S',' ',1,'PREMIERS COEFFICIENTS')
-            CALL UTFINM()
+            VALI (1) = NBMODE
+            VALI (2) = NBAMOR
+            VALI (3) = NBMODE
+            VALK (1) = 'PREMIERS COEFFICIENTS'
+            CALL U2MESG('A','ALGORITH16_12',1,VALK,3,VALI,0,0.D0)
          ENDIF
          IF ( NBAMOR.GE.NBMODE ) THEN
             IF ( N1.NE.0 ) THEN
@@ -227,14 +226,12 @@ C
             ENDIF
          ELSE
             IDIFF = NBMODE - NBAMOR
-            CALL UTDEBM('I','MDITMI',
-     &         'LE NOMBRE D''AMORTISSEMENTS REDUITS EST INSUFFISANT')
-            CALL UTIMPI('L','IL EN MANQUE : ',1,IDIFF)
-            CALL UTIMPI('L','CAR LE NOMBRE DE MODES VAUT : ',1,NBMODE)
-            CALL UTIMPI('L','ON RAJOUTE ',1,IDIFF)
-            CALL UTIMPK('S',' ',1,'AMORTISSEMENTS REDUITS AVEC LA')
-            CALL UTIMPK('S',' ',1,'VALEUR DU DERNIER MODE PROPRE')
-            CALL UTFINM()
+            VALI (1) = IDIFF
+            VALI (2) = NBMODE
+            VALI (3) = IDIFF
+            VALK (1) = 'AMORTISSEMENTS REDUITS AVEC LA'
+            VALK (2) = 'VALEUR DU DERNIER MODE PROPRE'
+            CALL U2MESG('I','ALGORITH16_13',2,VALK,3,VALI,0,0.D0)
             IF ( N1.NE.0 ) THEN
                CALL GETVR8(' ','AMOR_REDUIT',0,1,NBAMOR,ZR(JAMOG),IB)
             ELSE

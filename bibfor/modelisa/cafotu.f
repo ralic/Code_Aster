@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   K8B, MAILLE, TYPE, TYPMCL(2)
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
-      CHARACTER*24  MESMAI
+      CHARACTER*24  MESMAI, VALK(4)
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -119,12 +119,9 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
                IF ((TYPE(1:4).NE.'SEG3').AND.(TYPE(1:4).NE.'SEG4')) THEN
                   CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),MAILLE)
-                  CALL UTDEBM('A','CAFOTU','LA MAILLE ')
-                  CALL UTIMPK('S','DE NOM : ',1,MAILLE)
-                  CALL UTIMPK('S','N''EST PAS DE TYPE ',1,'SEG3' )
-                  CALL UTIMPK('S',' OU ',1,'SEG4' )
-                  CALL UTIMPK('L','ELLE NE SERA PAS AFFECTEE PAR ',
-     &                                                       1,MOTCLF)
+                  VALK(1) = MAILLE
+                  VALK(2) = MOTCLF
+                  CALL U2MESG('A','MODELISA9_81',2,VALK,0,0,0,0.D0)
                ENDIF
  12         CONTINUE
             CALL NOCART ( CARTE, 1,' ','NOM',0,' ', 0,LIGRMO, NCMP )
@@ -139,12 +136,9 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
                IF ((TYPE(1:4).NE.'SEG3').AND.(TYPE(1:4).NE.'SEG4')) THEN
                   CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),MAILLE)
-                  CALL UTDEBM('A','CAFOTU','LA MAILLE ')
-                  CALL UTIMPK('S','DE NOM : ',1,MAILLE)
-                  CALL UTIMPK('S','N''EST PAS DE TYPE ',1,'SEG3' )
-                  CALL UTIMPK('S',' OU ',1,'SEG4' )
-                  CALL UTIMPK('L','ELLE NE SERA PAS AFFECTEE PAR ',
-     &                                                 1,MOTCLF)
+                  VALK(1) = MAILLE
+                  VALK(2) = MOTCLF
+                  CALL U2MESG('A','MODELISA9_81',2,VALK,0,0,0,0.D0)
                ENDIF
  14         CONTINUE
             CALL NOCART( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)

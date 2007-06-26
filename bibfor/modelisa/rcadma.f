@@ -5,7 +5,7 @@
       INTEGER             JMAT, VALRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
      +                   NBK, IVALK, IK, NBR, NBC, LFCT, IMATE, NBMAT
       PARAMETER        ( LMAT = 7 , LFCT = 9)
       CHARACTER*2        STOP2
+      CHARACTER*24 VALK
       CHARACTER*8        NOMAIL
       CHARACTER*10       NOMPHE
 C DEB ------------------------------------------------------------------
@@ -78,14 +79,15 @@ C
 C
 C     -- SELON LA VALEUR DE STOP2 ON ARRETE OU NON :
       IF ( STOP2(1:1) .EQ. 'F' ) THEN
-         CALL UTDEBM ('F','RCADMA_01',
-     &                'COMPORTEMENT :'//NOMPHE//' NON TROUVE')
+         VALK = NOMPHE
+         CALL U2MESG('F+','MODELISA9_55',1,VALK,0,0,0,0.D0)
          IF ( STOP2(2:2) .EQ. 'M' ) THEN
             CALL TECAEL ( IADZI, IAZK24 )
             NOMAIL = ZK24(IAZK24-1+3)(1:8)
-            CALL UTIMPK ( 'S', 'POUR LA MAILLE ', 1, NOMAIL )
+            VALK = NOMAIL
+            CALL U2MESG('F+','MODELISA9_56',1,VALK,0,0,0,0.D0)
          ENDIF
-         CALL UTFINM ()
+         CALL U2MESG('F','MODELISA9_57',0,' ',0,0,0,0.D0)
       END IF
       GOTO 9999
 C

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER DESCR,DESCM,DESCA
+      INTEGER VALI(3)
       REAL*8 XLAMBD,ACRIT,AGENE
+      REAL*8 VALR(2)
       CHARACTER*1 K1BID
       CHARACTER*8 K8B,KBID,NOMRES,METHOD,MASGEN,RIGGEN,AMOGEN,MONMOT
       CHARACTER*8 BASEMO,MODGEN,MASTEM,AMOTEM,VECGEN
@@ -53,6 +55,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMCMD,TYPBAS
       CHARACTER*19 RAID,MASS,AMOR,LISARC
       CHARACTER*24 NUMG24,LISINS
+      CHARACTER*24 VALK(2)
       LOGICAL LAMOR,LFLU,LPSTO
 
 C-----------------------------------------------------------------------
@@ -175,12 +178,11 @@ C     --- RECOPIE DES GRANDEURS GENERALISEES ---
             ACRIT = DEUX*SQRT(ZR(JMASG+I-1)*ZR(JRAIG+I-1))
             AGENE = ZR(JAMOG+I-1)
             IF (AGENE.GT.ACRIT) THEN
-              CALL UTDEBM('A','SSDT74','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-              CALL UTIMPI('L','MODE DYNAMIQUE           : ',1,I)
-              CALL UTIMPR('L','AMORTISSEMENT TROP GRAND : ',1,AGENE)
-              CALL UTIMPR('L','AMORTISSEMENT CRITIQUE   : ',1,ACRIT)
-              CALL UTIMPK('L','PROBLEME DE CONVERGENCE POSSIBLE',1,' ')
-              CALL UTFINM()
+              VALI (1) = I
+              VALR (1) = AGENE
+              VALR (2) = ACRIT
+              VALK (1) = ' '
+              CALL U2MESG('A','ALGORITH16_38',1,VALK,1,VALI,2,VALR)
             END IF
           END IF
    40   CONTINUE
@@ -274,36 +276,35 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &            JADCHO,JREDC,JREDD,LPSTO,METHOD)
 
       IF (INFO.EQ.1 .OR. INFO.EQ.2) THEN
-        CALL UTDEBM('I','----------------------------------------------'
-     &              ,' ')
-        CALL UTIMPK('L','        SOUS-STRUCTURATION DYNAMIQUE',0,' ')
-        CALL UTIMPK('L','       CALCUL PAR SUPERPOSITION MODALE',0,' ')
-        CALL UTIMPK('L','----------------------------------------------'
-     &              ,0,' ')
-        CALL UTIMPK('L','! LA NUMEROTATION UTILISEE EST   : ',1,NUMGEN)
-        CALL UTIMPI('L','! LE NB D''EQUATIONS EST          : ',1,NEQGEN)
-        CALL UTIMPK('L','! LA METHODE UTILISEE EST        : ',1,METHOD)
-        CALL UTIMPI('L','!    - NB DE VECTEURS DYNAMIQUES : ',1,NBMODY)
-        CALL UTIMPI('L','!    - NB DE DEFORMEES STATIQUES : ',1,NBMOST)
+        VALK (1) = NUMGEN
+        VALK (2) = METHOD
+        VALI (1) = NEQGEN
+        VALI (2) = NBMODY
+        VALI (3) = NBMOST
+        CALL U2MESG('I+','ALGORITH16_39',2,VALK,3,VALI,0,0.D0)
         IF (METHOD.EQ.'ADAPT') THEN
-          CALL UTIMPR('L','! LE PAS DE TEMPS INITIAL EST  :',1,DT)
+          VALR (1) = DT
+          CALL U2MESG('I+','ALGORITH16_40',0,' ',0,0,1,VALR)
         ELSE
-          CALL UTIMPR('L','! LE PAS DE TEMPS DU CALCUL EST  :',1,DT)
-          CALL UTIMPI('L','! LE NB DE PAS DE CALCUL EST     : ',1,NBPAS)
+          VALR (1) = DT
+          VALI (1) = NBPAS
+          CALL U2MESG('I+','ALGORITH16_41',0,' ',1,VALI,1,VALR)
         END IF
-        CALL UTIMPI('L','! LE NB DE PAS D''ARCHIVE EST     : ',1,NBSAUV)
-        IF (NBCHOC.NE.0) CALL UTIMPI('L',
-     &                            '! LE NOMBRE DE LIEU(X) DE CHOC EST: '
-     &                               ,1,NBCHOC)
-        IF (NBREDE.NE.0) CALL UTIMPI('L',
-     &                             '! LE NOMBRE DE RELA_EFFO_DEPL EST: '
-     &                               ,1,NBREDE)
-        IF (NBREVI.NE.0) CALL UTIMPI('L',
-     &                             '! LE NOMBRE DE RELA_EFFO_VITE EST: '
-     &                               ,1,NBREVI)
-        CALL UTIMPK('L','----------------------------------------------'
-     &              ,0,' ')
-        CALL UTFINM()
+        VALI (1) = NBSAUV
+        CALL U2MESG('I+','ALGORITH16_42',0,' ',1,VALI,0,0.D0)
+        IF (NBCHOC.NE.0) THEN
+          VALI(1) = NBCHOC
+          CALL U2MESG('I+','ALGORITH16_80',0,' ',1,VALI,0,0.D0)
+        ENDIF
+        IF (NBREDE.NE.0) THEN
+          VALI(1) = NBREDE
+          CALL U2MESG('I+','ALGORITH16_83',0,' ',1,VALI,0,0.D0)
+        ENDIF
+        IF (NBREVI.NE.0) THEN
+          VALI(1) = NBREVI
+          CALL U2MESG('I+','ALGORITH16_84',0,' ',1,VALI,0,0.D0)
+        ENDIF
+        CALL U2MESG('I','ALGORITH16_43',0,' ',0,0,0,0.D0)
       END IF
 
       IF (METHOD.EQ.'EULER') THEN

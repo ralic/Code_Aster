@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMUN  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -187,7 +187,6 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "VARI_ELNO_TUYO",
                         "VARI_NOEU",
                         "VARI_NOEU_ELGA",
-                        "VARI_NON_LOCAL",
                         "VITE",
                         "VITE_ABSOLU",
                         "VITE_VENT",

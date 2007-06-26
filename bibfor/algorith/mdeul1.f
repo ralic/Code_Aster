@@ -32,7 +32,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,6 +117,8 @@ C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       REAL*8      TPS1(4)
+      REAL*8 VALR(3)
+      INTEGER VALI(2)
       CHARACTER*8 TRAN
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -351,13 +353,9 @@ C           TEST DE CONVERGENCE
 C
 C        NON CONVERGENCE
 C
-         CALL UTDEBM('F',
-     &       '----------------------------------------------',' ')
-         CALL UTIMPI('L','! LE NB MAX D''ITERATIONS ',1,ITEMAX)
-         CALL UTIMPK('L','! EST ATTEINT SANS CONVERGER ',0,' ')
-         CALL UTIMPR('L','! LE RESIDU RELATIF FINAL EST  :',1,
-     &                         XNORM/XREF)
-         CALL UTFINM()
+         VALI (1) = ITEMAX
+         VALR (1) = XNORM/XREF
+         CALL U2MESG('F','ALGORITH16_11',0,' ',1,VALI,1,VALR)
 C
  25      CONTINUE
          ELSE
@@ -408,14 +406,12 @@ C          --- CAS D'UNE POURSUITE ---
               CALL GETVID('ETAT_INIT','RESU_GENE',1,1,1,TRAN,NDT)
               IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
            ENDIF
-           CALL UTDEXC (28, 'MDEUL1','ARRET PAR MANQUE DE TEMPS CPU')
-           CALL UTIMPI ('S',' AU NUMERO D''ORDRE : ',1,I)
-           CALL UTIMPR ('L',' DERNIER INSTANT ARCHIVE : ',1,TARCHI)
-           CALL UTIMPI ('L',' NUMERO D''ORDRE CORRESPONDANT : ',1,ISTO1)
-           CALL UTIMPR ('L',' TEMPS MOYEN PAR PAS DE TEMPS : ',1,
-     &                  TPS1(4))
-           CALL UTIMPR ('L',' TEMPS CPU RESTANT : ',1,TPS1(1))
-           CALL UTFINM ()
+              VALI (1) = I
+              VALI (2) = ISTO1
+              VALR (1) = TARCHI
+              VALR (2) = TPS1(4)
+              VALR (3) = TPS1(1)
+              CALL UTEXCM(28,'ALGORITH16_77',0,' ',2,VALI,3,VALR)
            GOTO 9999
           ENDIF
          ENDIF

@@ -4,7 +4,7 @@ C TOLE CRS_505 CRS_507
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,12 +53,12 @@ C       ----------------------------------------------------------------
         PARAMETER       ( DPLIM = 1.D-10 )
         PARAMETER       ( TOLIM = 1.D-3  )
 C
-        INTEGER         NDT ,     NDI
+        INTEGER         NDT ,     NDI,   VALI
         INTEGER         ITSUP,    NDP,   ICOMP
         REAL*8          TER(100), ERR
-        REAL*8          DER(10),  DP
+        REAL*8          DER(10),  DP,    VALR
         CHARACTER*10    CDP,      CTOL,  CITER, CINTG
-        CHARACTER*24 VALK(2)
+        CHARACTER*24    VALK(2)
         SAVE            ITSUP,TER
         COMMON /TDIM/   NDT , NDI
 C       ----------------------------------------------------------------
@@ -134,15 +134,9 @@ C
                    IRTETI = 3
                    GOTO 9999
                 ELSE
-                  CALL UTDEXC(23,'NADAI_B','ERREUR D''INTEGRATION ')
-      CALL UTIMPI('L','- ESSAI D INTEGRATION  NUMERO ', 1, INTG)
-      CALL UTIMPI('L','- CONVERGENCE VERS UNE SOLUTION NON CONFORME',
-     &      0, 0)
-      CALL UTIMPR('L','- INCREMENT DE DEFORMATION CUMULEE NEGATIVE =',
-     &      1, DP)
-      CALL UTIMPI('L','- CHANGER LA TAILLE D INCREMENT', 0, 0)
-                  CALL UTFINM
-
+                VALI = INTG
+                VALR = DP
+            CALL UTEXCM(23,'ALGORITH16_64',0,' ',1,VALI,1,VALR)
                 ENDIF
                 ENDIF
 C
@@ -231,13 +225,9 @@ C
                            IRTETI = 3
                            GOTO 9999
                         ELSE
-                  CALL UTDEXC(23,'NADAI_B','ERREUR ')
-      CALL UTIMPI('L','- NON CONVERGENCE A ITERATION MAXI ', 1, ITER)
-      CALL UTIMPI('L','- CONVERGENCE REGULIERE MAIS TROP LENTE', 0, 0)
-      CALL UTIMPR('L','- ERREUR > ', 1, TOLER)
-      CALL UTIMPI('L','- DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                  CALL UTFINM
-
+                        VALI = ITER
+                        VALR = TOLER
+            CALL UTEXCM(23,'ALGORITH16_65',0,' ',1,VALI,1,VALR)
                         ENDIF
                         ENDIF
 C
@@ -253,12 +243,9 @@ C
                        IRTETI = 3
                        GOTO 9999
                     ELSE
-                  CALL UTDEXC(23,'NADAI_B','ERREUR ')
-      CALL UTIMPI('L','- NON CONVERGENCE A ITERATION MAXI ', 1, ITER)
-      CALL UTIMPR('L','- CONVERGENCE IRREGULIERE & ERREUR > ', 1, TOLER)
-      CALL UTIMPI('L','- DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                  CALL UTFINM
-
+                    VALI = ITER
+                    VALR = TOLER
+            CALL UTEXCM(23,'ALGORITH16_66',0,' ',1,VALI,1,VALR)
                     ENDIF
                     ENDIF
 C
@@ -274,11 +261,9 @@ C
                   IRTETI = 3
                   GOTO 9999
                   ELSE
-                  CALL UTDEXC(23,'NADAI_B','ERREUR ')
-      CALL UTIMPI('L','- NON CONVERGENCE A ITERATION MAXI ', 1, ITER)
-      CALL UTIMPR('L','- ERREUR > ', 1, TOLER)
-      CALL UTIMPI('L','- DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                  CALL UTFINM
+                  VALI = ITER
+                  VALR = TOLER
+            CALL UTEXCM(23,'ALGORITH16_67',0,' ',1,VALI,1,VALR)
 
                   ENDIF
                   ENDIF

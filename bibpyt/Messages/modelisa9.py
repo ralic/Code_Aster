@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 19/06/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF modelisa9 Messages  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -169,6 +169,273 @@ Conseil :
 
 30: _("""
  Le MODELE doit etre de type mécanique.
+"""),
+
+31: _("""
+ poutre : occurence %(i2)d : 
+ "cara" nombre de valeurs entrees:  %(i2)d 
+ "vale" nombre de valeurs entrees:  %(i3)d 
+ verifier vos donnees
+ 
+"""),
+
+32: _("""
+ erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
+"""),
+
+33: _("""
+ le maillage est "plan" ou "z_cst"
+"""),
+
+34: _("""
+ le maillage est "3d"
+"""),
+
+35: _("""
+ il y a  %(i1)d  valeurs pour le mot cle  ANGL_NAUT il en faut  %(i2)d 
+"""),
+
+36: _("""
+ erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
+"""),
+
+37: _("""
+ le maillage est "plan" ou "z_cst"
+"""),
+
+38: _("""
+ le maillage est "3d"
+"""),
+
+39: _("""
+ il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d 
+"""),
+
+40: _("""
+ erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
+"""),
+
+41: _("""
+ le maillage est "plan" ou "z_cst"
+"""),
+
+42: _("""
+ le maillage est "3d"
+"""),
+
+43: _("""
+ il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d 
+"""),
+
+44: _("""
+ fichier med :  %(k1)s maillage :  %(k2)s erreur effoco numero  %(i1)d 
+"""),
+
+45: _("""
+ le fichier n''a pas ete construit avec la meme version de med.
+ la lecture du fichier peut echouer!
+ erreur efveco numero  %(i1)d 
+"""),
+
+46: _("""
+ version de la bibliotheque med utilisee par code_aster :  %(i1)d %(i2)d %(i3)d
+"""),
+
+47: _("""
+ version de la bibliotheque med qui a cree le fichier   : < 2.1.5
+"""),
+
+48: _("""
+ version de la bibliotheque med pour creer le fichier   :  %(i1)d %(i2)d %(i3)d 
+"""),
+
+49: _("""
+ un utilitaire vous permet peut-etre de convertir votre fichier (medimport)
+"""),
+
+50: _("""
+ 
+"""),
+
+51: _("""
+ fichier med :  %(k1)s maillage :  %(k2)s erreur efouvr numero  %(i1)d 
+"""),
+
+52: _("""
+ fichier med :  %(k1)s maillage :  %(k2)s erreur efferm numero  %(i1)d 
+"""),
+
+53: _("""
+ 
+ l''identifiant d''une maille depasse les 8 caracteres autorises:
+   %(k1)s 
+ maille      : %(k2)s 
+ pref_maille : %(k3)s 
+"""),
+
+54: _("""
+ l''utilisation de ''pref_nume'' est recommandee.
+"""),
+
+55: _("""
+ comportement : %(k1)s non trouve
+"""),
+
+56: _("""
+ pour la maille  %(k1)s 
+"""),
+
+57: _("""
+ 
+"""),
+
+58: _("""
+ ch19(1:8) depend de  %(k1)s il ne peut dependre que de %(k2)s 
+"""),
+
+59: _("""
+ erreur lors de la definition de la courbe de traction :nomcle(ii)
+ le premier point de la courbe de traction nomfct a pour abscisse:  %(r1)f 
+ 
+"""),
+
+60: _("""
+ erreur lors de la definition de la courbe de traction :nomcle(ii)
+ le premier point de la courbe de traction nomfct a pour ordonnee:  %(r1)f 
+ 
+"""),
+
+61: _("""
+ erreur lors de la definition de la courbe de traction :nomcle(ii)
+ pente initiale :  %(r1)f 
+ pente courante:  %(r2)f 
+  pour l''abscisse:  %(r3)f 
+ 
+"""),
+
+62: _("""
+ en particulier en c_planpente initiale :  %(r1)f pente courante:  %(r2)f 
+ precision relative:  %(r3)f 
+  pour l''abscisse:  %(r4)f 
+ 
+"""),
+
+63: _("""
+ erreur lors de la definition de la courbe de traction nomcle(ii)
+ le premier point de la fonction indicee par :  %(i1)d 
+  de la nappe  %(k1)s 
+  a pour abscisse:  %(r1)f 
+ 
+"""),
+
+64: _("""
+ erreur lors de la definition de la courbe de traction nomcle(ii)
+ le premier point de la fonction indicee par :  %(i1)d 
+  de la nappe  %(k1)s 
+  a pour ordonnee:  %(r1)f 
+ 
+"""),
+
+65: _("""
+ erreur lors de la definition de la courbe de traction nomcle(ii)
+ pente initiale :  %(r1)f 
+ pente courante:  %(r2)f 
+  pour l''abscisse:  %(r3)f 
+ 
+"""),
+
+66: _("""
+ erreur lors de la definition de la courbe rela_mz
+ le premier point de la courbe rela_mz nomfct a pour abscisse:  %(r1)f 
+ 
+"""),
+
+67: _("""
+ erreur lors de la definition de la courbe rela_mz
+ le premier point de la courbe rela_mz nomfct a pour ordonnee:  %(r1)f 
+ 
+"""),
+
+68: _("""
+ erreur lors de la definition de la courbe rela_mzpente initiale :  %(r1)f 
+ pente courante:  %(r2)f 
+  pour l''abscisse:  %(r3)f 
+ 
+"""),
+
+69: _("""
+ en particulier en c_planpente initiale :  %(r1)f pente courante:  %(r2)f 
+ precision relative:  %(r3)f 
+  pour l''abscisse:  %(r4)f 
+ 
+"""),
+
+70: _("""
+ erreur lors de la definition de la courbe de traction
+ le premier point de la fonction indicee par :  %(i1)d 
+  de la nappe  %(k1)s 
+  a pour abscisse:  %(r1)f 
+ 
+"""),
+
+71: _("""
+ erreur lors de la definition de la courbe de traction
+ le premier point de la fonction indicee par :  %(i1)d 
+  de la nappe  %(k1)s 
+  a pour ordonnee:  %(r1)f 
+ 
+"""),
+
+72: _("""
+ erreur lors de la definition de la courbe de tractionpente initiale :  %(r1)f 
+ pente courante:  %(r2)f 
+  pour l''abscisse:  %(r3)f 
+ 
+"""),
+
+73: _("""
+ erreur de programmationtype de fonction non valide %(k1)s 
+"""),
+
+74: _("""
+ comportement :%(k1)s non trouve
+"""),
+
+75: _("""
+ pour la maille  %(k1)s 
+"""),
+
+76: _("""
+ 
+"""),
+
+77: _("""
+ manque le parametre  %(k1)s 
+"""),
+
+78: _("""
+ pour la maille  %(k1)s 
+"""),
+
+79: _("""
+ 
+"""),
+
+80: _("""
+  Noeud sur l'axe Z 
+"""),
+
+81: _("""
+  La maille de nom %(k1)s n'est pas de type SEG3 ou SEG4,
+  elle ne sera pas affectée par %(k2)s  
+"""),
+
+82: _("""
+  GROUP_MA : %(k1)s 
+"""),
+
+83: _("""
+  Erreur a l'interpolation, paramètres non trouvé.
 """),
 
 }

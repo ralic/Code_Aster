@@ -1,10 +1,10 @@
       SUBROUTINE IRCMVA ( NUMCMP, NCMPVE, NCMPRF,
      &                    NVALEC, NBPG, NBSP, NOLOPG,
-     &                    ADSV, ADSD, ADSL,
+     &                    ADSV, ADSD, ADSL, ADSK, PARTIE,
      &                    TYMAST, MODNUM, NUANOM,
      &                    VAL, PROFAS, IDEB, IFIN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,9 @@ C       NVALEC : NOMBRE DE VALEURS A ECRIRE
 C       NBPG   : NOMBRE DE POINTS DE GAUSS (1 POUR DES CHAMNO)
 C       NBSP   : NOMBRE DE SOUS-POINTS (1 POUR DES CHAMNO)
 C       NOLOPG : NOM MED LOCALISATION DES PTS DE GAUSS ASSOCIEE AU CHAMP
-C       ADSV,D,L : ADRESSES DES TABLEAUX DES CHAMPS SIMPLIFIES
+C       ADSV,D,L,K : ADRESSES DES TABLEAUX DES CHAMPS SIMPLIFIES
+C       PARTIE: IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
+C               UN CHAMP COMPLEXE 
 C       TYMAST : TYPE ASTER DE MAILLE QUE L'ON VEUT (0 POUR LES NOEUDS)
 C       MODNUM : INDICATEUR SI LA SPECIFICATION DE NUMEROTATION DES
 C                NOEUDS DES MAILLES EST DIFFERENTES ENTRE ASTER ET MED:
@@ -60,7 +62,7 @@ C 0.1. ==> ARGUMENTS
 C
       INTEGER NCMPVE, NCMPRF, NVALEC, NBPG, NBSP
       INTEGER NUMCMP(NCMPRF)
-      INTEGER ADSV, ADSD, ADSL
+      INTEGER ADSV, ADSD, ADSL, ADSK
       INTEGER TYMAST
       INTEGER MODNUM(NTYMAX), NUANOM(NTYMAX,*)
       INTEGER PROFAS(*)
@@ -69,23 +71,35 @@ C
       REAL*8 VAL(NCMPVE,NBSP,NBPG,NVALEC)
 C
       CHARACTER*32 NOLOPG
+      CHARACTER*(*) PARTIE
 C
 C 0.2. ==> COMMUNS
 C
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      REAL*8       ZR
-      LOGICAL      ZL
-      COMMON /RVARJE/ZR(1)
-      COMMON /LVARJE/ZL(1)
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
 C
+      CHARACTER*8  PART,GD, VALK(2)
       CHARACTER*32 EDELGA
       PARAMETER ( EDELGA='________ELNO____________________' )
 C                         12345678901234567890123456789012
-      INTEGER IAUX, JAUX, KAUX
+      INTEGER IAUX, JAUX, KAUX, ITYPE
       INTEGER ADSVXX
       INTEGER INO, IMA, NRCMP, NRCMPR, NRPG, NRSP
       INTEGER IFM, NIVINF
@@ -95,7 +109,22 @@ C
 C====
 C 1. PREALABLES
 C====
-C
+      PART=PARTIE
+      GD=ZK8(ADSK-1+2)
+      IF (GD(6:6).EQ.'R')THEN 
+           ITYPE=1
+      ELSE IF(GD(6:6).EQ.'C')THEN
+         IF (PART(1:4).EQ.'REEL')THEN
+           ITYPE=2
+         ELSEIF (PART(1:4).EQ.'IMAG')THEN
+           ITYPE=3
+         ENDIF
+      ELSE
+         VALK(1) = GD
+         VALK(2) = 'IRCMVA'
+         CALL U2MESK('F', 'DVP_3', 2, VALK)
+      ENDIF
+
 C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 C
       CALL INFNIV ( IFM, NIVINF )
@@ -142,7 +171,13 @@ C
             INO = PROFAS(IAUX)
             JAUX = JAUX + 1
             KAUX = INO*NCMPRF
-            VAL(NRCMP,1,1,JAUX) = ZR(ADSVXX+KAUX)
+            IF(ITYPE.EQ.1)THEN
+               VAL(NRCMP,1,1,JAUX) = ZR(ADSVXX+KAUX)
+            ELSEIF(ITYPE.EQ.2)THEN
+               VAL(NRCMP,1,1,JAUX) = DBLE(ZC(ADSVXX+KAUX))
+            ELSEIF(ITYPE.EQ.3)THEN
+               VAL(NRCMP,1,1,JAUX) = DIMAG(ZC(ADSVXX+KAUX))
+            ENDIF
   211     CONTINUE
 C
    21   CONTINUE
@@ -205,7 +240,16 @@ C
               JAUX = JAUX + 1
               DO 2211 , NRPG = 1 , NBPG
                 CALL CESEXI ('C',ADSD,ADSL,IMA,NRPG,NRSP,NRCMPR,KAUX)
-                VAL(NRCMP,NRSP,NUANOM(TYMAST,NRPG),JAUX)=ZR(ADSV-1+KAUX)
+                IF(ITYPE.EQ.1)THEN
+                    VAL(NRCMP,NRSP,NUANOM(TYMAST,NRPG),JAUX)=
+     &                    ZR(ADSV-1+KAUX)
+                ELSEIF(ITYPE.EQ.2)THEN
+                    VAL(NRCMP,NRSP,NUANOM(TYMAST,NRPG),JAUX)=
+     &                    DBLE(ZC(ADSV-1+KAUX))
+                ELSEIF(ITYPE.EQ.3)THEN
+                    VAL(NRCMP,NRSP,NUANOM(TYMAST,NRPG),JAUX)=
+     &                    DIMAG(ZC(ADSV-1+KAUX))
+                ENDIF
  2211         CONTINUE
 C
   221       CONTINUE
@@ -218,7 +262,13 @@ C
               DO 2221 , NRPG = 1 , NBPG
                 DO 2222 , NRSP = 1 , NBSP
                   CALL CESEXI ('C',ADSD,ADSL,IMA,NRPG,NRSP,NRCMPR,KAUX)
-                  VAL(NRCMP,NRSP,NRPG,JAUX) = ZR(ADSV-1+KAUX)
+                  IF(ITYPE.EQ.1)THEN
+                    VAL(NRCMP,NRSP,NRPG,JAUX) = ZR(ADSV-1+KAUX)
+                  ELSEIF(ITYPE.EQ.2)THEN
+                    VAL(NRCMP,NRSP,NRPG,JAUX) = DBLE(ZC(ADSV-1+KAUX))
+                  ELSEIF(ITYPE.EQ.3)THEN
+                    VAL(NRCMP,NRSP,NRPG,JAUX) = DIMAG(ZC(ADSV-1+KAUX))
+                  ENDIF
  2222           CONTINUE
  2221         CONTINUE
 C

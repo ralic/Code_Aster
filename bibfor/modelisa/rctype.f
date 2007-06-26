@@ -1,7 +1,7 @@
       SUBROUTINE RCTYPE(JMAT,NBPU,NOMPU,VALPU,RESU,TYPE)
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C
       INTEGER       ICOMP, IPI, IDF, NBF, IVALK, IK, IPIF, IPIFC, JPRO
       INTEGER       JVALF1, NBVF1, K, NPAR(2), NBMAT
       CHARACTER*16  NOMPF(2)
+      CHARACTER*24 VALK
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
       PARAMETER        ( LMAT = 7 , LFCT = 9 )
@@ -100,9 +101,8 @@ C
            TYPE = NOMPU(1)
            GOTO 9999
         ELSE
-           CALL UTDEBM('F','RCTYPE','ERREUR DE PROGRAMMATION')
-           CALL UTIMPK('L','TYPE DE FONCTION NON VALIDE',1,ZK16(JPRO))
-           CALL UTFINM()
+           VALK = ZK16(JPRO)
+           CALL U2MESG('F','MODELISA9_73',1,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
 C
@@ -118,8 +118,7 @@ C
         ENDIF
   30  CONTINUE
 C
-      CALL UTDEBM('F','RCTYPE','ERREUR A L''INTERPOLATION' //
-     &                ' PARAMETRES NON TROUVE')
+      CALL U2MESS('F','MODELISA9_83')
 C
  9999 CONTINUE
 C

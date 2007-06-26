@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -274,11 +274,14 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
          CALL GETVTX('RESU','PARTIE',IOCC,1,1,PARTIE,NP)
          IF(NR.NE.0)THEN
             CALL GETTCO(RESU,TYRES)
-            IF(TYRES(1:10).EQ.'DYNA_HARMO')THEN
-              IF(FORM(1:4).EQ.'GMSH' .OR. FORM(1:6).EQ.'CASTEM')THEN
-                   IF(NP.EQ.0)
+            IF(TYRES(1:10).EQ.'DYNA_HARMO' .OR. 
+     &         TYRES(1:10).EQ.'ACOU_HARMO')THEN
+               IF(FORM(1:4).EQ.'GMSH'  .OR. 
+     &            FORM(1:6).EQ.'CASTEM'.OR. 
+     &            FORM(1:3).EQ.'MED'   )THEN
+                    IF(NP.EQ.0)
      &                  CALL U2MESS('F','PREPOST3_69')
-                ENDIF
+               ENDIF
             ENDIF
          ENDIF
 

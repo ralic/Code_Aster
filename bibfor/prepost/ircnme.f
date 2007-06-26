@@ -1,11 +1,11 @@
       SUBROUTINE IRCNME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     &                    NBCMP, NOMCMP,
+     &                    NBCMP, NOMCMP, PARTIE,
      &                    NUMPT, INSTAN, UNIINS, NUMORD,
      &                    NBNOEC, LINOEC,
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,8 @@ C        AU FORMAT MED
 C     ENTREES:
 C       IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C       NOCHMD : NOM MED DU CHAM A ECRIRE
+C       PARTIE: IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
+C               UN CHAMP COMPLEXE 
 C       CHANOM : NOM ASTER DU CHAM A ECRIRE
 C       TYPECH : TYPE DU CHAMP
 C       MODELE : MODELE ASSOCIE AU CHAMP
@@ -50,7 +52,7 @@ C
       CHARACTER*8 UNIINS, TYPECH, MODELE
       CHARACTER*19 CHANOM
       CHARACTER*32 NOCHMD
-      CHARACTER*(*)  NOMCMP(*)
+      CHARACTER*(*)  NOMCMP(*),PARTIE
 C
       INTEGER NBCMP, NUMPT, IFI, NUMORD
       INTEGER NBNOEC
@@ -97,7 +99,7 @@ C 2. ECRITURE DES CHAMPS AU FORMAT MED
 C====
 C
       CALL IRCAME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     &              NBCMP, NOMCMP,
+     &              NBCMP, NOMCMP, PARTIE,
      &              NUMPT, INSTAN, UNIINS, NUMORD,
      &              JCNSK, JCNSD, JCNSC, JCNSV, JCNSL,
      &              NBNOEC, LINOEC,

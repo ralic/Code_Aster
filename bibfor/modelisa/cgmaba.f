@@ -1,6 +1,6 @@
       SUBROUTINE CGMABA (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,12 @@ C -----  ARGUMENTS
       CHARACTER*(*) MOFAZ, NOMAZ, LISMAZ
 C
 C --------- VARIABLES LOCALES ---------------------------
+      INTEGER VALI(2)
       CHARACTER*1    K1BID
       CHARACTER*8    NOMA, K8BID, NOMAIL, NOMPOI, NOMNOE
       CHARACTER*16   MOTFAC, MOCLE(3)
       CHARACTER*24   LISMAI
+      CHARACTER*24   VALK
 C
       REAL*8         X0(3), X(3), XX0(3), VECNOR(3), ANGLE(2)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -158,18 +160,17 @@ C     -----------
           NANGLE =  MIN (NANGLE,NDIM1)
           CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,NANGLE,ANGLE,NV)
          IF ( ABS(NV) .NE. NDIM1 ) THEN
-           CALL UTDEBM('F','CGMABA','ERREUR DANS LES DONNEES')
-           CALL UTIMPK('S',' MOT CLE FACTEUR ',1,MOTFAC)
-           CALL UTIMPI('S',' OCCURENCE ',1,IOCC)
+           VALK = MOTFAC
+           VALI (1) = IOCC
+           CALL U2MESG('F+','MODELISA9_32',1,VALK,1,VALI,0,0.D0)
            IF ( NDIM .EQ. 2 ) THEN
-             CALL UTIMPI('L','LE MAILLAGE EST "PLAN" OU "Z_CST"',0,IBID)
+             CALL U2MESS('F+','MODELISA9_33')
            ELSE
-             CALL UTIMPI('L','LE MAILLAGE EST "3D"',0,IBID)
+             CALL U2MESS('F+','MODELISA9_34')
            ENDIF
-           CALL UTIMPI('L','IL Y A ',1,ABS(NV))
-           CALL UTIMPK('S',' VALEURS POUR LE MOT CLE ',1,'ANGL_NAUT')
-           CALL UTIMPI('L','IL EN FAUT ',1,NDIM1)
-           CALL UTFINM()
+           VALI (1) = ABS(NV)
+           VALI (2) = NDIM1
+           CALL U2MESG('F','MODELISA9_35',0,' ',2,VALI,0,0.D0)
          ENDIF
 C
           IF (NDIM.EQ.2) THEN

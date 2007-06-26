@@ -1,0 +1,409 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 25/06/2007 - 13:28:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011006 DU 2007-06-21 14:22:58
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   restitution partielle de la fiche 10682 (partie 2)
+FONCTIONNALITE
+   on résorbe UTDEBM dans 36 routines
+   
+   argu80 ,asenap ,calamo ,clas99 ,cvmcvg ,dylema
+   inscvg ,lcctrl ,lect58 ,lectvl ,lmacvg ,mdadap
+   mdchoc ,mddevo ,mdeul1 ,mditm2 ,mditmi ,mdnewm
+   mdtr74 ,mestat ,op0025 ,op0109 ,ssdt74 ,vecomo
+   verecy ,aceagb ,acevpo ,cafotu ,cgmaba ,cgmafn
+   lrmhdf ,palim3 ,rcadma ,rctype ,rcvals
+   
+   et on modifie les fichiers messages suivants:
+    algorith15.py, algorith16.py ,modelisa9.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 26/06/2007 - 12:10:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010849 DU 2007-05-11 12:05:18
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   IMPR_RESU au format MED des dyna_harmo
+FONCTIONNALITE
+   Objectif
+   --------
+   L'IMPR_RESU au format MED pose probleme avec des champs issus de sd
+   resultat de type complexe (ex:dyna_harmo,acou_harmo)
+   
+   Actuellement, il n'est pas possible de selectionner la partie a imprimer (reelle ou
+   imaginaire). Pour etre conforme avec les autres formats, notamment avec le format GMSH,
+   nous avons active le mot-cle PARTIE.
+   Ainsi, l'utilisateur a la possibilite de choisir ce qu'il desire imprimer.
+   
+   D'autre part, on emet un message d'erreur lorsque le mot-cle PARTIE est absent pour
+   l'impression d'un champ complexe au format MED.
+   Le message PREPOST3_69 a ete revu pour etre plus explicite.
+   
+   
+   Developpement
+   -------------
+   
+   a) catapy
+   Modification du catalogue impr_resu:
+   On a ajoute le type MED et le concept acou_harmo pour le bloc PARTIE 
+   
+   b) bibfor
+   - op0039.f: on a ajoute a la ligne L278 le format MED et le type ACOU_HARMO pour
+   declencher l'emission du message PREPOST3_69 lorsque le mot-cle PARTIE est absent.
+   - irch19.f,irchme.f,ircnme.f,irceme.f,ircame.f,ircam1.f:
+   Ajout de l'argument PARTIE et dans certaine de l'argument ADSK
+   - ircmva.f
+   Ajout et exploitation des arguments PARTIE et ADSK :
+   A partir de ADSK, on a determine le type du champ (reel ou complexe)
+   A partir de PARTIE, on a releve la partie a considerer (reelle ou imaginaire)
+   
+   Nous avons mis en place l'algorithme suivant:
+      si le champ est reel:
+         VALE(..)=ZR(ADSV+..)
+      si le champ est complexe:
+         si PARTIE = 'REEL':
+             VALE(..)=DBLE(ZC(ADSV+..))
+         si PARTIE = 'IMAG' :
+             VALE(..)=IMAG(ZC(ADSV+..))
+   
+   c) bibpyt
+   Nouveau message PREPOST3_69 :
+     "L'impression d'un champ complexe nécessite l'utilisation du mot-clé PARTIE. Ce mot-clé
+   permet de choisir la partie du champ à imprimer (réelle ou imaginaire)"
+   
+   Validation
+   ==========
+   a) on a passé l'étude fournie en omettant le mot-cle PARTIE dans l'IMPR_RESU pour
+   déclencher le message d'erreur ci-dessus.
+   b) on a passe l'etude fournie avec PARTIE='REEL' pour generer un fichier au format MED que
+   l'on a exploite sous salome.
+   c) on a passe une liste exhaustive de cas-tests contenant IMPR_RESU/MED:
+      forma01a,forma01b,forma01c,forma01d,forma03b,sslv111a,tpll01j,
+      zzzz115a,zzzz132a,zzzz161a,zzzz162a,zzzz162b,zzzz185a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests IMPR_RESU au format MED
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 26/06/2007 - 12:10:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010375 DU 2006-12-11 13:26:39
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   quel comportement si plusieurs charges cinxc3xa9matiques  ?
+FONCTIONNALITE
+   Creation d'un cas-test informatique (zzzz222a) pour valider le comportement de surchargede
+   l'operateur affe_char_cine.
+   La surcharge est effectuee :
+   - au sein d'une seule et meme commande AFFE_CHAR_CINE
+   (surcharge produite par la presence de plusieurs occurences de MECA_IMPO (ou THER_IMPO..)),
+   - par plusieurs commandes AFFE_CHAR_CINE.
+   
+   Ce cas-test a ete concu a partir de 3 cas-tests (zzzz191a,tpla01a,ssll102d),afin de mettre
+   en evidence l'exploitation des chargements cinematique par 3
+   operateurs de resolution differents (MECA_STATIQUE,STAT_NON_LINE et THER_LINAIRE).
+   
+   Nous avons verifie que le comportement de surcharge decrit dans la documentation U4.44.03
+   (Operateur AFFE_CHAR_CINE) etait reellement applique par Aster.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz222a : nouveau test
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR godard       GODARD Vincent         DATE 26/06/2007 - 12:10:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010914 DU 2007-05-29 16:54:32
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   nettoyage des routines inutiles suite xc3xa0 restitution de grad_vari en 9.0.23
+FONCTIONNALITE
+   Objectif
+   --------
+   Nettoyage dans le source Aster suite a la restitution de la fiche 10480 (modification de
+   l'algorithme de resolution
+   des modeles a gradient de variables).
+   
+   Inventaire
+   ----------
+   1)catapy
+   - commande : 
+   calc_precont : suppression de 'VARI_NON_LOCAL', 'LAGR_NON_LOCAL','SOLV_NON_LOCAL'
+   dyna_non_line: suppression de 'VARI_NON_LOCAL', 'LAGR_NON_LOCAL','SOLV_NON_LOCAL'
+   stat_non_line: suppression de 'VARI_NON_LOCAL', 'LAGR_NON_LOCAL','SOLV_NON_LOCAL'
+   lire_resu: suppression de 'VARI_NON_LOCAL'.
+   simu_point_mat:suppression de 'VARI_NON_LOCAL'.
+   
+   - commun :
+   c_nom_cham_into:suppression de 'VARI_NON_LOCAL', 'LAGR_NON_LOCAL','SOLV_NON_LOCAL'
+   
+   2)catalo :
+   - option : suppression de l'option deco_loca
+   - typelem: modification de gener_meaxs2 
+   Nous avons supprime les lignes relatives a l'option deco_loca
+   
+   3)bibfor :
+   Nous avons supprime les parametres MODEDE,NUMEDE,SOLVDE et les lignes de code s'y referant
+   dans les routines suivantes:
+   op0070, nmlectn nminit, nddoet, nmdoet, nmfonc, nmpred, nmprta, nmfint, nmdepl, nmpich,
+   nmceta, nmrepl, nmreli, op0046.
+   
+   D'autre part, certaines routines sont supprimees car plus appelees:
+   te0120,deloca,efdf21,edcomp,efdf3d,efdf2d,rufrag,lcrupt,rufrma,lcplgr,
+   edronl,edroma,edropc,cletdr,edrofg,edroy1,edroy2,edrotg,delect,
+   delagr,delapr,delalo,delagl,deprcv,edroyi,delanr,albfgs,albfg2,alwolf,edrofs.
+   
+   4)bibpyt
+   calc_precont_ops.py : la macro calc_precont contient la commande STAT_NON_LINE qui faisait
+   appel aux mots-cles LAGR_NON_LOCAL et SOLV_NON_LOCAL.
+   Nous avons supprime ces mots-cles.
+   
+   5)astest : mumps04a, ssnv131b
+   Ces 2 cas-tests utilisent les mots-cles LAGR_NON_LOCAL et SOLV_NON_LOCAL dans STAT_NON_LINE.
+   Nous avons supprime ces mots-cles.
+   
+   
+   Validation
+   ----------
+   liste restreinte
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte + mumps04a, ssnv131b
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 26/06/2007 - 12:10:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010964 DU 2007-06-11 13:36:09
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Contact avec la mxc3xa9thode GCP et MUMPS
+FONCTIONNALITE
+   On permet l'utilisation du solveur MUMPS pour l'algorithme de résolution du contact
+   METHODE='GCP'. 
+   Cela est possible car cet algorithme comme son préconditionneur n'utilisent que des
+   résolutions du système linéaire global (plus précisément des opérations de descente-remonte).
+   Cette évolution ouvre la voie vers des résolutions parallèles de problèmes avec contact.
+   
+   Pour ce faire, on a modifié :
+   Fortran :
+   ---------
+   algocg.f  et pregcp.f => utilisation de la routine de haut-niveau resoud.f
+   cfdisc.f  => requête quant à l'algorithme de contact utilisé
+   cfcrsd.f  => idem
+   nmfonc.f  => autorisation de MUMPS avec METHODE='GCP'
+   
+   Tests :
+   -------
+   ssnl107d  => ajout d'une résolution avec MUMPS
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage de test
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 26/06/2007 - 09:02:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010968 DU 2007-06-12 07:30:47
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   Problxc3xa8me d'impression des rxc3xa9sultats de contact
+FONCTIONNALITE
+   En testant la méthode de contact continu et en visualisant ses résultats via un IMPR_RESU, 
+                 IMPR_RESU(UNITE=6,RESU=_F(RESULTAT=RESU,),);
+   Olivier a trouvé des NaN, sur certains noeuds de contact.
+   
+   Ceci est du à une faute de frappe dans la routine mmmres.f :
+               INTEGR = INT(ZR(JCMCF)+22*(IZONE-1)+1)
+   au lieu de 
+               INTEGR = INT(ZR(JCMCF+22*(IZONE-1)+1))
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du feti009a
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT zzzz222a                      rezette C.REZETTE          319    319      0
+ CASTEST MODIF mumps04a                      rezette C.REZETTE          177      1     11
+ CASTEST MODIF ssnl107d                      rezette C.REZETTE          224     79     27
+ CASTEST MODIF ssnv131b                      rezette C.REZETTE          181      2     13
+ CASTEST MODIF zzzz221a                        vivan L.VIVAN            263      1      1
+CATALOGU MODIF typelem/gener_meaxs2          rezette C.REZETTE          534      1      7
+CATALOGU SUPPR options/deco_loca             rezette C.REZETTE           43      0     43
+CATALOPY MODIF commande/calc_precont         rezette C.REZETTE          151      2     32
+CATALOPY MODIF commande/dyna_non_line        rezette C.REZETTE          398      4     45
+CATALOPY MODIF commande/impr_resu            rezette C.REZETTE          154      4      4
+CATALOPY MODIF commande/lire_resu            rezette C.REZETTE          205      2      2
+CATALOPY MODIF commande/simu_point_mat       rezette C.REZETTE          211      2      2
+CATALOPY MODIF commande/stat_non_line        rezette C.REZETTE          353      5     45
+CATALOPY MODIF commun/c_nom_cham_into        rezette C.REZETTE          193      1      2
+ FORTRAN MODIF algorith/algocg               rezette C.REZETTE          657     33     20
+ FORTRAN MODIF algorith/argu80             lebouvier F.LEBOUVIER        181     14     25
+ FORTRAN MODIF algorith/asenap             lebouvier F.LEBOUVIER        249      1      2
+ FORTRAN MODIF algorith/calamo             lebouvier F.LEBOUVIER        146     11     18
+ FORTRAN MODIF algorith/cfcrsd               rezette C.REZETTE          463      4     11
+ FORTRAN MODIF algorith/cfdisc               rezette C.REZETTE          227      3      2
+ FORTRAN MODIF algorith/clas99             lebouvier F.LEBOUVIER        158      8      9
+ FORTRAN MODIF algorith/cvmcvg             lebouvier F.LEBOUVIER        299     15     31
+ FORTRAN MODIF algorith/dylema             lebouvier F.LEBOUVIER        286     13     22
+ FORTRAN MODIF algorith/inscvg             lebouvier F.LEBOUVIER        282     15     30
+ FORTRAN MODIF algorith/lcctrl             lebouvier F.LEBOUVIER        155     16     19
+ FORTRAN MODIF algorith/lect58             lebouvier F.LEBOUVIER        467      5      9
+ FORTRAN MODIF algorith/lectvl             lebouvier F.LEBOUVIER        310      1      2
+ FORTRAN MODIF algorith/lmacvg             lebouvier F.LEBOUVIER        300     15     32
+ FORTRAN MODIF algorith/mdadap             lebouvier F.LEBOUVIER        609     16     24
+ FORTRAN MODIF algorith/mdchoc             lebouvier F.LEBOUVIER        423     36     26
+ FORTRAN MODIF algorith/mddevo             lebouvier F.LEBOUVIER        363      9     10
+ FORTRAN MODIF algorith/mdeul1             lebouvier F.LEBOUVIER        444     12     16
+ FORTRAN MODIF algorith/mditm2             lebouvier F.LEBOUVIER        508     10     11
+ FORTRAN MODIF algorith/mditmi             lebouvier F.LEBOUVIER        373     14     17
+ FORTRAN MODIF algorith/mdnewm             lebouvier F.LEBOUVIER        336      9     11
+ FORTRAN MODIF algorith/mdtr74             lebouvier F.LEBOUVIER        724     75     81
+ FORTRAN MODIF algorith/mestat             lebouvier F.LEBOUVIER        277      8      9
+ FORTRAN MODIF algorith/mmmres                 vivan L.VIVAN           1056     80    146
+ FORTRAN MODIF algorith/nddoet               rezette C.REZETTE          452      3     40
+ FORTRAN MODIF algorith/nmceta               rezette C.REZETTE          416      6     10
+ FORTRAN MODIF algorith/nmdepl               rezette C.REZETTE          327      9     13
+ FORTRAN MODIF algorith/nmdoet               rezette C.REZETTE          371      3     48
+ FORTRAN MODIF algorith/nmfint               rezette C.REZETTE          209      4     14
+ FORTRAN MODIF algorith/nmfonc               rezette C.REZETTE          264      5      7
+ FORTRAN MODIF algorith/nminit               rezette C.REZETTE          417      9     25
+ FORTRAN MODIF algorith/nmlect               rezette C.REZETTE          152      7     16
+ FORTRAN MODIF algorith/nmpich               rezette C.REZETTE          134      5      9
+ FORTRAN MODIF algorith/nmpred               rezette C.REZETTE          131      7      8
+ FORTRAN MODIF algorith/nmprta               rezette C.REZETTE          311      6      7
+ FORTRAN MODIF algorith/nmreli               rezette C.REZETTE          273      5     10
+ FORTRAN MODIF algorith/nmrepl               rezette C.REZETTE          348      6     11
+ FORTRAN MODIF algorith/op0025             lebouvier F.LEBOUVIER        332      7     13
+ FORTRAN MODIF algorith/op0046               rezette C.REZETTE          275      3      5
+ FORTRAN MODIF algorith/op0070               rezette C.REZETTE          892     11     16
+ FORTRAN MODIF algorith/op0109             lebouvier F.LEBOUVIER        416     36     46
+ FORTRAN MODIF algorith/pregcp               rezette C.REZETTE          264     45     14
+ FORTRAN MODIF algorith/ssdt74             lebouvier F.LEBOUVIER        361     36     35
+ FORTRAN MODIF algorith/vecomo             lebouvier F.LEBOUVIER        403     32     45
+ FORTRAN MODIF algorith/verecy             lebouvier F.LEBOUVIER        306     30     47
+ FORTRAN MODIF modelisa/aceagb             lebouvier F.LEBOUVIER        223      2      2
+ FORTRAN MODIF modelisa/acevpo             lebouvier F.LEBOUVIER        107      6      6
+ FORTRAN MODIF modelisa/cafotu             lebouvier F.LEBOUVIER        154      8     14
+ FORTRAN MODIF modelisa/cgmaba             lebouvier F.LEBOUVIER        272     11     10
+ FORTRAN MODIF modelisa/cgmafn             lebouvier F.LEBOUVIER        352     21     19
+ FORTRAN MODIF modelisa/lrmhdf             lebouvier F.LEBOUVIER        307     27     29
+ FORTRAN MODIF modelisa/palim3             lebouvier F.LEBOUVIER        147     11     11
+ FORTRAN MODIF modelisa/rcadma             lebouvier F.LEBOUVIER        113      7      5
+ FORTRAN MODIF modelisa/rctype             lebouvier F.LEBOUVIER        125      5      6
+ FORTRAN MODIF modelisa/rcvals             lebouvier F.LEBOUVIER         76      7      5
+ FORTRAN MODIF prepost/ircam1                rezette C.REZETTE          327      7      5
+ FORTRAN MODIF prepost/ircame                rezette C.REZETTE          324      6      4
+ FORTRAN MODIF prepost/irceme                rezette C.REZETTE          129      6      4
+ FORTRAN MODIF prepost/irch19                rezette C.REZETTE          175      3      4
+ FORTRAN MODIF prepost/irchme                rezette C.REZETTE          269      7      5
+ FORTRAN MODIF prepost/ircmva                rezette C.REZETTE          283     59      9
+ FORTRAN MODIF prepost/ircnme                rezette C.REZETTE          128      6      4
+ FORTRAN MODIF prepost/op0039                rezette C.REZETTE          895      6      3
+ FORTRAN SUPPR algorith/albfg2               rezette C.REZETTE          148      0    148
+ FORTRAN SUPPR algorith/albfgs               rezette C.REZETTE           87      0     87
+ FORTRAN SUPPR algorith/alwolf               rezette C.REZETTE          187      0    187
+ FORTRAN SUPPR algorith/cletdr               rezette C.REZETTE           98      0     98
+ FORTRAN SUPPR algorith/delagl               rezette C.REZETTE           57      0     57
+ FORTRAN SUPPR algorith/delagr               rezette C.REZETTE          318      0    318
+ FORTRAN SUPPR algorith/delalo               rezette C.REZETTE          214      0    214
+ FORTRAN SUPPR algorith/delanr               rezette C.REZETTE          121      0    121
+ FORTRAN SUPPR algorith/delapr               rezette C.REZETTE          287      0    287
+ FORTRAN SUPPR algorith/delect               rezette C.REZETTE           94      0     94
+ FORTRAN SUPPR algorith/deloca               rezette C.REZETTE          322      0    322
+ FORTRAN SUPPR algorith/deprcv               rezette C.REZETTE           88      0     88
+ FORTRAN SUPPR algorith/edcomp               rezette C.REZETTE          122      0    122
+ FORTRAN SUPPR algorith/edrofg               rezette C.REZETTE           66      0     66
+ FORTRAN SUPPR algorith/edrofs               rezette C.REZETTE           58      0     58
+ FORTRAN SUPPR algorith/edroma               rezette C.REZETTE           93      0     93
+ FORTRAN SUPPR algorith/edronl               rezette C.REZETTE          256      0    256
+ FORTRAN SUPPR algorith/edropc               rezette C.REZETTE           61      0     61
+ FORTRAN SUPPR algorith/edrotg               rezette C.REZETTE           85      0     85
+ FORTRAN SUPPR algorith/edroy1               rezette C.REZETTE          110      0    110
+ FORTRAN SUPPR algorith/edroy2               rezette C.REZETTE           80      0     80
+ FORTRAN SUPPR algorith/edroyi               rezette C.REZETTE          101      0    101
+ FORTRAN SUPPR algorith/lcplgr               rezette C.REZETTE          356      0    356
+ FORTRAN SUPPR algorith/lcrupt               rezette C.REZETTE          123      0    123
+ FORTRAN SUPPR algorith/rufrag               rezette C.REZETTE          138      0    138
+ FORTRAN SUPPR algorith/rufrma               rezette C.REZETTE           93      0     93
+ FORTRAN SUPPR elements/efdf21               rezette C.REZETTE           91      0     91
+ FORTRAN SUPPR elements/efdf2d               rezette C.REZETTE           91      0     91
+ FORTRAN SUPPR elements/efdf3d               rezette C.REZETTE          105      0    105
+ FORTRAN SUPPR elements/te0120               rezette C.REZETTE          133      0    133
+  PYTHON AJOUT Messages/algorith16         lebouvier F.LEBOUVIER        592    592      0
+  PYTHON MODIF Macro/calc_precont_ops        rezette C.REZETTE          454      3     22
+  PYTHON MODIF Messages/algorith15         lebouvier F.LEBOUVIER        498     81      1
+  PYTHON MODIF Messages/dvp                  rezette C.REZETTE           49      6      1
+  PYTHON MODIF Messages/modelisa9          lebouvier F.LEBOUVIER        441    268      1
+  PYTHON MODIF Messages/prepost3             rezette C.REZETTE          427      4      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    2         911       911              +911
+ MODIF :   80       25666      1369    1386       -17
+ SUPPR :   31        4226              4226     -4226
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  113       30803      2280    5612     -3332 

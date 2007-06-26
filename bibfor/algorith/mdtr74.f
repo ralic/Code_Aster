@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,10 +57,13 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16 NOMCMD,TYPBAS,TYPBA2
       CHARACTER*19 LISARC,NOMSTM,NOMSTK,MASSE
       CHARACTER*24 NUMK24,NUMM24,NUMC24,LISINS,NOMNOE
+      CHARACTER*24 VALK(3)
       CHARACTER*24 MARIG
       LOGICAL      LAMOR,LFLU,LPSTO
       INTEGER      KREF,ITYPFL,KINST
+      INTEGER VALI(3)
       REAL*8       R8B,XLAMBD,ACRIT,AGENE,TOTO
+      REAL*8 VALR(3)
 
 C-----------------------------------------------------------------------
       DATA K14B/'              '/
@@ -231,14 +234,11 @@ C     ... RECUPERATION D'UNE LISTE D'AMORTISSEMENTS REDUITS ...
           END IF
           IF (NBAMOR.GT.NBMODE) THEN
 
-            CALL UTDEBM('A','MDTR74',
-     &              'LE NOMBRE D''AMORTISSEMENTS REDUITS EST TROP GRAND'
-     &                  )
-            CALL UTIMPI('L','LE NOMBRE DE MODES PROPRES VAUT ',1,NBMODE)
-            CALL UTIMPI('L','ET LE NOMBRE DE COEFFICIENTS : ',1,NBAMOR)
-            CALL UTIMPI('L','ON NE GARDE DONC QUE LES ',1,NBMODE)
-            CALL UTIMPK('S',' ',1,'PREMIERS COEFFICIENTS')
-            CALL UTFINM()
+            VALI (1) = NBMODE
+            VALI (2) = NBAMOR
+            VALI (3) = NBMODE
+            VALK (1) = 'PREMIERS COEFFICIENTS'
+            CALL U2MESG('A','ALGORITH16_18',1,VALK,3,VALI,0,0.D0)
             CALL WKVECT('&&MDTR74.AMORTI','V V R8',NBMODE,JAMOG)
             IF (N1.NE.0) THEN
               CALL GETVR8(' ','AMOR_REDUIT',0,1,NBMODE,ZR(JAMOG),N)
@@ -260,15 +260,12 @@ C     ... RECUPERATION D'UNE LISTE D'AMORTISSEMENTS REDUITS ...
    40         CONTINUE
             END IF
             IDIFF = NBMODE - NBAMOR
-            CALL UTDEBM('I','MDTR74',
-     &             'LE NOMBRE D''AMORTISSEMENTS REDUITS EST INSUFFISANT'
-     &                  )
-            CALL UTIMPI('L','IL EN MANQUE : ',1,IDIFF)
-            CALL UTIMPI('L','CAR LE NOMBRE DE MODES VAUT : ',1,NBMODE)
-            CALL UTIMPI('L','ON RAJOUTE ',1,IDIFF)
-            CALL UTIMPK('S',' ',1,'AMORTISSEMENTS REDUITS AVEC LA')
-            CALL UTIMPK('S',' ',1,'VALEUR DU DERNIER MODE PROPRE')
-            CALL UTFINM()
+            VALI (1) = IDIFF
+            VALI (2) = NBMODE
+            VALI (3) = IDIFF
+            VALK (1) = 'AMORTISSEMENTS REDUITS AVEC LA'
+            VALK (2) = 'VALEUR DU DERNIER MODE PROPRE'
+            CALL U2MESG('I','ALGORITH16_19',2,VALK,3,VALI,0,0.D0)
             CALL WKVECT('&&MDTR74.AMORTI2','V V R8',NBMODE,JAMO2)
             DO 50 IAM = 1,NBAMOR
               ZR(JAMO2+IAM-1) = ZR(JAMOG+IAM-1)
@@ -318,12 +315,11 @@ C        RECUP NUMEROTATION GENE DE MATRICE AMORTISSEMENT
           ACRIT = DEUX*SQRT(ABS(ZR(JMASG+I-1)*ZR(JRAIG+I-1)))
           AGENE = ZR(JAMO1+I-1)
           IF (AGENE.GT.ACRIT) THEN
-            CALL UTDEBM('A','MDTR74','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            CALL UTIMPI('L','MODE DYNAMIQUE           : ',1,I)
-            CALL UTIMPR('L','AMORTISSEMENT TROP GRAND : ',1,AGENE)
-            CALL UTIMPR('L','AMORTISSEMENT CRITIQUE   : ',1,ACRIT)
-            CALL UTIMPK('L','PROBLEMES DE CONVERGENCE POSSIBLES',1,' ')
-            CALL UTFINM()
+            VALI (1) = I
+            VALR (1) = AGENE
+            VALR (2) = ACRIT
+            VALK (1) = ' '
+            CALL U2MESG('A','ALGORITH16_20',1,VALK,1,VALI,2,VALR)
           END IF
    90   CONTINUE
 C        PROBLEME POSSIBLE DU JEVEUO SUR UNE COLLECTION
@@ -487,9 +483,8 @@ C
             NIV = 'A'
             CALL GETVTX('VERI_CHOC','STOP_CRITERE',1,1,1,K8B,N1)
             IF (K8B.EQ.'OUI') NIV = 'F'
-            CALL UTDEBM('I','MDTR74','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            CALL UTIMPR('L',' TAUX DE SOUPLESSE NEGLIGEE :',1,SEUIL)
-            CALL UTFINM()
+            VALR (1) = SEUIL
+            CALL U2MESG('I','ALGORITH16_21',0,' ',0,0,1,VALR)
             CALL U2MESS(NIV,'ALGORITH5_66')
           END IF
         END IF
@@ -582,62 +577,61 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
      &            JICHO,JREDC,JREDD,LPSTO,METHOD)
 
       IF (INFO.EQ.1 .OR. INFO.EQ.2) THEN
-        CALL UTDEBM('I','----------------------------------------------'
-     &              ,' ')
-        CALL UTIMPK('L','       CALCUL PAR SUPERPOSITION MODALE',0,' ')
-        CALL UTIMPK('L','----------------------------------------------'
-     &              ,0,' ')
-        CALL UTIMPK('L','! LA BASE DE PROJECTION EST UN',1,TYPBAS(1:9))
-        CALL UTIMPI('L','! LE NB D''EQUATIONS EST          :',1,NEQ)
-        CALL UTIMPK('L','! LA METHODE UTILISEE EST        :',1,METHOD)
-        CALL UTIMPK('L','! LA BASE UTILISEE EST           :',1,BASEMO)
-        CALL UTIMPI('L','! LE NB DE VECTEURS DE BASE EST  : ',1,NBMODE)
+        VALK (1) = TYPBAS(1:9)
+        VALK (2) = METHOD
+        VALK (3) = BASEMO
+        VALI (1) = NEQ
+        VALI (2) = NBMODE
+        CALL U2MESG('I+','ALGORITH16_22',3,VALK,2,VALI,0,0.D0)
         IF (METHOD.EQ.'ADAPT') THEN
-          CALL UTIMPR('L','! LE PAS DE TEMPS INITIAL EST  :',1,DT)
-          CALL UTIMPI('L','! LE NB DE PAS D''ARCHIVE EST     : ',1,
-     &                NBSAUV)
+          VALR (1) = DT
+          VALI (1) = NBSAUV
+          CALL U2MESG('I+','ALGORITH16_23',0,' ',1,VALI,1,VALR)
         ELSE IF (METHOD.EQ.'ITMI') THEN
-          CALL UTIMPI('L','! NUME_VITE_FLUI                 : ',1,
-     &                NUMVIF)
-          CALL UTIMPR('L','! VITESSE GAP                    : ',1,VGAP)
-          CALL UTIMPI('L','! LE NB DE MODES DE BASE_FLUI    : ',1,
-     &                NBMODE)
-          CALL UTIMPI('L','! LE NB TOTAL DE MODES DE LA BASE: ',1,NBM0)
-          CALL UTIMPR('L','! LE PAS DE TEMPS INITIAL EST    : ',1,DT)
-          CALL UTIMPR('L','! DUREE DE L''EXCITATION          : ',1,
-     &                TFEXM)
-          IF (ITRANS.NE.0) CALL UTIMPR('L',
-     &                             '! PRECISION DU TRANSITOIRE       : '
-     &                                 ,1,EPS)
-          IF (ICOUPL.NE.0) CALL UTIMPI('L',
-     &                             '! COUPLAGE TEMPOREL AVEC NB MODES: '
-     &                                 ,1,NBMP)
-          CALL UTIMPI('L','! LE NB DE PAS D''ARCHIVE EST     : ',1,
-     &                IPARCH)
+          VALI (1) = NUMVIF
+          VALI (2) = NBMODE
+          VALI (3) = NBM0
+          VALR (1) = VGAP
+          VALR (2) = DT
+          VALR (3) = TFEXM
+          CALL U2MESG('I+','ALGORITH16_24',0,' ',3,VALI,3,VALR)
+          IF (ITRANS.NE.0) THEN
+            VALR(1) = EPS 
+            CALL U2MESG('I+','ALGORITH16_78',0,' ',0,0,1,VALR)
+          ENDIF
+          IF (ICOUPL.NE.0) THEN
+            VALI (1) = NBMP
+            CALL U2MESG('I+','ALGORITH16_79',0,' ',1,VALI,0,0.D0)
+          ENDIF             
+          VALI (1) = IPARCH
+          CALL U2MESG('I+','ALGORITH16_25',0,' ',1,VALI,0,0.D0)
         ELSE
-          CALL UTIMPR('L','! LE PAS DE TEMPS DU CALCUL EST  :',1,DT)
-          CALL UTIMPI('L','! LE NB DE PAS DE CALCUL EST     : ',1,NBPAS)
-          CALL UTIMPI('L','! LE NB DE PAS D''ARCHIVE EST     : ',1,
-     &                NBSAUV)
+          VALR (1) = DT
+          VALI (1) = NBPAS
+          VALI (2) = NBSAUV
+          CALL U2MESG('I+','ALGORITH16_26',0,' ',2,VALI,1,VALR)
         END IF
-        IF (NBCHOC.NE.0) CALL UTIMPI('L',
-     &                            '! LE NOMBRE DE LIEU(X) DE CHOC EST: '
-     &                               ,1,NBCHOC)
-        IF (NBSISM.NE.0) CALL UTIMPI('L',
-     &                           '! LE NBRE DE DISPO ANTI SISMIQUE EST:'
-     &                               ,1,NBSISM)
-        IF (NBFLAM.NE.0) CALL UTIMPI('L',
-     &               '! LE NBRE DE LIEU(X) DE CHOC AVEC FLAMBEMENT EST:'
-     &                               ,1,NBFLAM)
-        IF (NBREDE.NE.0) CALL UTIMPI('L',
-     &                             '! LE NOMBRE DE RELA_EFFO_DEPL EST: '
-     &                               ,1,NBREDE)
-        IF (NBREVI.NE.0) CALL UTIMPI('L',
-     &                             '! LE NOMBRE DE RELA_EFFO_VITE EST: '
-     &                               ,1,NBREVI)
-        CALL UTIMPK('L','----------------------------------------------'
-     &              ,0,' ')
-        CALL UTFINM()
+        IF (NBCHOC.NE.0) THEN
+          VALI (1) = NBCHOC
+          CALL U2MESG('I+','ALGORITH16_80',0,' ',1,VALI,0,0.D0)
+        ENDIF
+        IF (NBSISM.NE.0) THEN
+          VALI (1) = NBSISM
+          CALL U2MESG('I+','ALGORITH16_81',0,' ',1,VALI,0,0.D0)
+        ENDIF
+        IF (NBFLAM.NE.0) THEN
+          VALI (1) = NBFLAM
+          CALL U2MESG('I+','ALGORITH16_82',0,' ',1,VALI,0,0.D0)
+        ENDIF
+       IF (NBREDE.NE.0) THEN
+          VALI (1) = NBREDE
+          CALL U2MESG('I+','ALGORITH16_83',0,' ',1,VALI,0,0.D0)
+        ENDIF
+        IF (NBREVI.NE.0) THEN
+          VALI (1) = NBREVI
+          CALL U2MESG('I+','ALGORITH16_84',0,' ',1,VALI,0,0.D0)
+        ENDIF
+        CALL U2MESG('I','ALGORITH16_27',0,' ',0,0,0,0.D0)
       END IF
 
       IF (METHOD.EQ.'EULER') THEN

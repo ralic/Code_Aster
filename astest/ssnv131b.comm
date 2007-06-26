@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TRACTION HOMOGENE LOI ELASTIQUE FRAGILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,11 +134,6 @@ EVOL=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.E-4,
                 ITER_GLOB_MAXI = 15,
                 ARRET = 'OUI'),
-                    LAGR_NON_LOCAL=_F(
-                ITER_PRIM_MAXI = 10,
-                ITER_DUAL_MAXI = 1,
-                RESI_PRIM_ABSO = 1.E-7,
-                RESI_DUAL_ABSO = 1.E-3)
               )
 
 EVOL=STAT_NON_LINE( reuse=EVOL,
@@ -164,13 +159,7 @@ EVOL=STAT_NON_LINE( reuse=EVOL,
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-4,
                 ITER_GLOB_MAXI = 15,
-                ARRET = 'OUI'),
-                    LAGR_NON_LOCAL=_F(
-                ITER_PRIM_MAXI = 10,
-                ITER_DUAL_MAXI = 1,
-                RESI_PRIM_ABSO = 1.E-7,
-                RESI_DUAL_ABSO = 1.E-3)
-              )
+                ARRET = 'OUI'),)
 
 TEST_RESU(RESU=(
               _F(

@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL       BON
       CHARACTER*8   K8B, NOMU, CARA(100), KIOC
       CHARACTER*16  K16B, SEC, VSEC, TOU, CONCEP, CMD
+      INTEGER       VALI(3)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -69,11 +70,10 @@ C
          NVAL = -NV
 C
          IF ( NVAL .NE. NCAR ) THEN
-            CALL UTDEBM('E',CMD,'POUTRE : OCCURENCE '//KIOC//' : ')
-            CALL UTIMPI('L','"CARA" NOMBRE DE VALEURS ENTREES: ',1,KIC)
-            CALL UTIMPI('L','"VALE" NOMBRE DE VALEURS ENTREES: ',1,KIV)
-            CALL UTIMPI('L','VERIFIER VOS DONNEES',0,KIV)
-            CALL UTFINM()
+            VALI (1) = IOC
+            VALI (2) = NCAR
+            VALI (3) = NVAL
+            CALL U2MESG('E','MODELISA9_31',0,' ',3,VALI,0,0.D0)
             IER = IER + 1
          ENDIF
 C

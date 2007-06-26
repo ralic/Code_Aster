@@ -1,4 +1,4 @@
-      SUBROUTINE IRCHME ( IFI, CHANOM, NOMO,
+      SUBROUTINE IRCHME ( IFI, CHANOM, NOMO, PARTIE,
      &                    LRESU, NORESU, NOSIMP, NOPASE, NOMSYM,
      &                    TYPECH, NUMORD,
      &                    NBCMP,  NOMCMP,
@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,6 +30,8 @@ C     ENTREES:
 C        IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C        CHANOM : NOM ASTER DU CHAM A ECRIRE
 C        NOMO   : NOM DU MODELE
+C        PARTIE : IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
+C                  UN CHAMP COMPLEXE AU FORMAT CASTEM OU GMSH OU MED
 C        LRESU  : .TRUE.  : INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
 C                 .FALSE. : IMPRESSION D'UN CHAMP GRANDEUR
 C        NORESU : NOM DU RESULTAT D'OU PROVIENT LE CHAMP A IMPRIMER.
@@ -67,7 +69,7 @@ C
       CHARACTER*8 NORESU, NOSIMP, NOPASE, TYPECH
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM
-      CHARACTER*(*)  NOMCMP(*),NOMO
+      CHARACTER*(*)  NOMCMP(*),NOMO,PARTIE
 C
       LOGICAL LRESU
 C
@@ -231,13 +233,13 @@ C
 C
       IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
         CALL IRCNME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     &                NBCMP, NOMCMP,
+     &                NBCMP, NOMCMP, PARTIE,
      &                NUMPT, INSTAN, UNIINS, NUMORD,
      &                NBNOEC, LINOEC,
      &                CODRET )
       ELSE IF ( TYPECH(1:2).EQ.'EL' ) THEN
         CALL IRCEME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     &                NBCMP, NOMCMP,
+     &                NBCMP, NOMCMP, PARTIE,
      &                NUMPT, INSTAN, UNIINS, NUMORD,
      &                NBMAEC, LIMAEC,
      &                CODRET )

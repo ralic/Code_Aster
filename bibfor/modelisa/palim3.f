@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMA, PRFM, NOMMAI, KNUME, GRPMA, K8B
       CHARACTER*16  TYMOCL(NBMC), MOTCLE(NBMC)
       CHARACTER*24  NOMAMA, NOMJV
-      CHARACTER*24 VALK(2)
+      CHARACTER*24  VALK(3)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -111,15 +111,15 @@ C
             ELSE
                LGM = LXLGUT(NOMMAI)
                IF ( LGM+LGP .GT. 8 ) THEN
-                   CALL UTDEBM('F','PALIM3','L''IDENTIFIANT D''UNE '//
-     &             'MAILLE DEPASSE LES 8 CARACTERES AUTORISES:')
-                   CALL UTIMPK('S',' ',1,PRFM(1:LGP)//NOMMAI)
-                   CALL UTIMPK('L','MAILLE      :',1,NOMMAI)
-                   CALL UTIMPK('L','PREF_MAILLE :',1,PRFM)
-                   IF(LGRPMA) CALL UTIMPK('L','GROUP_MA    :',1,GRPMA)
-                   CALL UTIMPK('L','L''UTILISATION DE ''PREF_NUME'' '//
-     &             'EST RECOMMANDEE.',0,K1B)
-                   CALL UTFINM()
+                   VALK (1) = PRFM(1:LGP)//NOMMAI
+                   VALK (2) = NOMMAI
+                   VALK (3) = PRFM
+                   CALL U2MESG('F+','MODELISA9_53',3,VALK,0,0,0,0.D0)
+                   IF(LGRPMA) THEN
+                     VALK(1) = GRPMA
+                     CALL U2MESG('F+','MODELISA9_82',1,VALK,0,0,0,0.D0)
+                   ENDIF
+                   CALL U2MESG('F','MODELISA9_54',0,' ',0,0,0,0.D0)
               ENDIF
               NOMMAI = PRFM(1:LGP)//NOMMAI
             ENDIF

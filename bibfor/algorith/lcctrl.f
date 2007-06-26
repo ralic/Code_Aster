@@ -4,7 +4,7 @@ C TOLE CRS_505 CRS_507
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,10 +42,11 @@ C       ----------------------------------------------------------------
         REAL*8          TOLER,  DDY(*), DY(*)
         CHARACTER*16    LOI
 C       ----------------------------------------------------------------
-        INTEGER         NDT ,     NDI
+        INTEGER         NDT ,     NDI, VALI
         INTEGER         ITSUP,    NDP
+        CHARACTER*24    VALK
         REAL*8          TER(100), ERR
-        REAL*8          DER(10),  DP
+        REAL*8          DER(10),  DP, VALR
         CHARACTER*10    CDP,      CTOL,  CITER
         SAVE            ITSUP,TER
         COMMON /TDIM/   NDT , NDI
@@ -114,34 +115,30 @@ C
 C -                     SINON STOP
 C
                         ELSE
-                           CALL UTDEXC(23,LOI,' ERREUR')
-      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
-      CALL UTIMPI('L',' - CONVERGENCE REGULIERE MAIS TROP LENTE', 0, 0)
-      CALL UTIMPR('L',' - ERREUR > ', 1, TOLER)
-      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                           CALL UTFINM
+                           VALK = LOI
+                           VALI = ITER
+                           VALR = TOLER
+                CALL UTEXCM(23,'ALGORITH16_69',1,VALK,1,VALI,1,VALR)
 
                         ENDIF
 C
 C -                 SINON CONVERGENCE IRREGULIERE STOP
 C
                     ELSE
-                     CALL UTDEXC(23,LOI,' ERREUR')
-      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
-      CALL UTIMPR('L',' - CONVERGENCE IRREGULIERE ET ERREUR > ',1,TOLER)
-      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                     CALL UTFINM
+                      VALK = LOI
+                      VALI = ITER
+                      VALR = TOLER
+                CALL UTEXCM(23,'ALGORITH16_70',1,VALK,1,VALI,1,VALR)
 
                     ENDIF
 C
 C -               ITER < 5 STOP
 C
                   ELSE
-                     CALL UTDEXC(23,LOI,' ERREUR')
-      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
-      CALL UTIMPR('L',' - ERREUR > ', 1, TOLER)
-      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                     CALL UTFINM
+                    VALK = LOI
+                    VALI = ITER
+                    VALR = TOLER
+                CALL UTEXCM(23,'ALGORITH16_71',1,VALK,1,VALI,1,VALR)
 
                   ENDIF
 C

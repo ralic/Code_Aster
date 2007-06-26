@@ -4,7 +4,7 @@
       CHARACTER*(*)      STOP, CODRET(*),     NOMRES(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*2        ARRET, CODE
+      CHARACTER*24 VALK
       CHARACTER*8        NOMAIL, PARA
 C ----------------------------------------------------------------------
 C
@@ -56,14 +57,15 @@ C
            IF ( CODE .EQ. 'NO' ) THEN
               IER = IER + 1
               PARA = NOMRES(IRES)
-              CALL UTDEBM ( 'E', 'RCVALS', 'MANQUE ' )
-              CALL UTIMPK ( 'S', 'LE PARAMETRE ', 1, PARA )
+              VALK = PARA
+              CALL U2MESG('E+','MODELISA9_77',1,VALK,0,0,0,0.D0)
               IF ( ARRET(1:2) .EQ. 'FM' ) THEN
                  CALL TECAEL(IADZI,IAZK24)
                  NOMAIL = ZK24(IAZK24-1+3)(1:8)
-                 CALL UTIMPK ( 'S', 'POUR LA MAILLE ', 1, NOMAIL )
+                 VALK = NOMAIL
+                 CALL U2MESG('E+','MODELISA9_78',1,VALK,0,0,0,0.D0)
               ENDIF
-              CALL UTFINM
+              CALL U2MESG('E','MODELISA9_79',0,' ',0,0,0,0.D0)
            ENDIF
  200     CONTINUE
          IF ( IER .NE. 0 ) THEN

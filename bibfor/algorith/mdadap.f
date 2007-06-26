@@ -32,7 +32,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,6 +116,8 @@ C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       REAL*8      TPS1(4)
+      REAL*8 VALR(3)
+      INTEGER VALI(2)
       CHARACTER*8 TRAN
 C
       CALL JEMARQ()
@@ -396,15 +398,10 @@ C             TEST DE CONVERGENCE
 C
 C           NON CONVERGENCE
 C
-            CALL UTDEBM('F',
-     &          '----------------------------------------------',' ')
-            CALL UTIMPI('L','! LE NB MAX D''ITERATIONS ',1,ITEMAX)
-            CALL UTIMPK('L','! EST ATTEINT SANS CONVERGER ',0,' ')
-            CALL UTIMPR('L','! LE RESIDU RELATIF FINAL EST  :',1,
-     &                            XNORM/XREF)
-            CALL UTIMPR('L','! L INSTANT DE CALCUL VAUT :',1,
-     &                            TEMPS)
-            CALL UTFINM()
+            VALI (1) = ITEMAX
+            VALR (1) = XNORM/XREF
+            VALR (2) = TEMPS
+            CALL U2MESG('F','ALGORITH15_99',0,' ',1,VALI,2,VALR)
 C
  25         CONTINUE
             CALL DCOPY(NEQGEN,ZR(JACGI2),1,ZR(JACC2),1)
@@ -561,13 +558,9 @@ C
       GOTO 31
       ENDIF
 C
-      CALL UTDEBM('I',
-     &'----------------------------------------------',' ')
-      CALL UTIMPI('L','! NOMBRE DE PAS DE CALCUL       : ',1,IPAS)
-      CALL UTIMPI('L','! NOMBRE D''ITERATIONS          : ',1,NBACC)
-      CALL UTIMPK('L',
-     &'----------------------------------------------',0,' ')
-      CALL UTFINM()
+      VALI (1) = IPAS
+      VALI (2) = NBACC
+      CALL U2MESG('I','ALGORITH16_1',0,' ',2,VALI,0,0.D0)
       IF (TPS1(1).LE.MAX(TJOB/100.D0,15.D0)) THEN
         IF (NOMRES.EQ.'&&OP0074') THEN
 C       --- CAS D'UNE POURSUITE ---
@@ -575,13 +568,12 @@ C       --- CAS D'UNE POURSUITE ---
            IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
         ENDIF
         CALL MDSIZE (NOMRES,ISTO1,NEQGEN,LPSTO,NBCHOC,NBREDE)
-        CALL UTDEXC (28, 'MDADAP','ARRET PAR MANQUE DE TEMPS CPU')
-        CALL UTIMPI ('S',' AU NUMERO D''ORDRE : ',1,IPAS)
-        CALL UTIMPR ('L',' DERNIER INSTANT ARCHIVE : ',1,TARCHI)
-        CALL UTIMPI ('L',' NUMERO D''ORDRE CORRESPONDANT : ',1,ISTO1)
-        CALL UTIMPR ('L',' TEMPS MOYEN PAR PAS DE TEMPS : ',1,TPS1(4))
-        CALL UTIMPR ('L',' TEMPS CPU RESTANT : ',1,TPS1(1))
-        CALL UTFINM ()
+                VALI (1) = IPAS
+                VALI (2) = ISTO1
+                VALR (1) = TARCHI
+                VALR (2) = TPS1(4)
+                VALR (3) = TPS1(1)
+                CALL UTEXCM(28,'ALGORITH16_77',0,' ',2,VALI,3,VALR)
       ENDIF
 C
  9999 CONTINUE

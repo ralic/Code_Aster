@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF dvp Messages  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,6 +39,11 @@ cata_msg={
 
 2 : _("""
    Erreur numérique (floating point exception).
+"""),
+
+3 : _("""
+   Erreur de programmation : Nom de grandeur inattendu : %(k1)s
+   Routine : %(k2)s
 """),
 
 }

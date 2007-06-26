@@ -1,4 +1,4 @@
-#@ MODIF algorith15 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF algorith15 Messages  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -414,5 +414,85 @@ cata_msg={
      Arret sur problème répétitivité cyclique
      Tentative de diagnostique %(k1)s
  """),
+
+85: _("""
+  l''interface de droite  n existe pasinterface de nom %(k1)s 
+"""),
+
+86: _("""
+  l''interface de gauche  n existe pasinterface de nom %(k1)s 
+"""),
+
+87: _("""
+  l''interface axe  n existe pasinterface de nom %(k1)s 
+"""),
+
+88: _("""
+ arret sur probleme interfaces de type differents
+"""),
+
+89: _("""
+ arret sur probleme de type interface non supportetype interface -->  %(k1)s 
+"""),
+
+90: _("""
+ le nombre d'amortissements reduits est trop grand
+ le nombre de modes propres vaut  %(i1)d 
+ et le nombre de coefficients  :  %(i2)d 
+ on ne garde donc que les  %(i3)d premiers coefficients
+"""),
+
+91: _("""
+ le nombre d'amortissements reduits est insuffisant il en manque :  %(i1)d 
+ car le nombre de modes vaut :  %(i2)d 
+ on rajoute %(i3)d coefficients avec la valeur du dernier coefficient.
+"""),
+
+92: _("""
+ Nombre de modes propres calculés insuffisant.
+"""),
+
+93: _("""
+ MODE_MECA : %(k1)s 
+"""),
+
+94: _("""
+ Nombre de modes propres limités à : %(i1)d 
+"""),
+
+95: _("""
+ l'entree d'amortissements reduits est incompatible 
+ avec des matrices de type  %(k1)s 
+ Il faut des matrices de type MATR_ASSE_GENE_*
+ 
+"""),
+
+96: _("""
+ le nombre d''amortissements reduits est trop grand
+ le nombre de modes propres vaut  %(i1)d 
+ et le nombre de coefficients :  %(i2)d 
+ on ne garde donc que les  %(i3)d premiers coefficients 
+ 
+"""),
+
+97: _("""
+ le nombre d'amortissements reduits est insuffisant il en manque :  %(i1)d 
+ car le nombre de modes vaut :  %(i2)d  on rajoute  %(i3)d 
+ amortissement reduits avec la valeur du dernier mode propre.
+"""),
+
+98: _("""
+ 
+ incoherance dans le dataset 58 : le nombre de valeurs fournies ne correspond pas au nombre de valeurs attendues
+ mesure concernee :  %(i1)d 
+ 
+"""),
+
+99: _("""
+  ! le nb max d''iterations  %(i1)d ! est atteint sans converger 
+ ! le residu relatif final est  : %(r1)f 
+ ! l instant de calcul vaut : %(r2)f 
+ 
+"""),
 
 }

@@ -1,6 +1,6 @@
       SUBROUTINE DYLEMA (BASENO, NBMAT, NOMAT, RAIDE, MASSE, AMOR, IMPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,7 @@ C
       INTEGER IAM, IBLOC, I
 
       INTEGER       LMAT(4)
+      INTEGER VALI(3)
 
       REAL*8 ACRIT
 
@@ -91,6 +92,7 @@ C
       CHARACTER*16  TYPOBJ
       CHARACTER*19  MATIR,MATIM,MATIA,AMORT
       CHARACTER*24  VALER,VALEM,VALEA
+      CHARACTER*24 VALK(2)
       LOGICAL       CPX
 
 C ----------------------------------------------------------------------
@@ -155,12 +157,8 @@ C
       IF (N1.NE.0.OR.N2.NE.0) THEN
          CALL GETTCO(RAIDE,TYPOBJ)
          IF (TYPOBJ(1:14).NE.'MATR_ASSE_GENE') THEN
-            CALL UTDEBM('F','DYLEMA',
-     &         'L''ENTREE D''AMORTISSEMENTS REDUITS EST INCOMPATIBLE ')
-            CALL UTIMPK('L','AVEC DES MATRICES DE TYPE ',1,TYPOBJ)
-            CALL UTIMPK('S',' ',1,
-     &          'IL FAUT DES MATRICES DE TYPE MATR_ASSE_GENE_*')
-            CALL UTFINM()
+            VALK (1) = TYPOBJ
+            CALL U2MESG('F','ALGORITH15_95',1,VALK,0,0,0,0.D0)
          ENDIF
          NBMODE = NEQ
          NBMOD2 = NEQ*(NEQ+1)/2
@@ -185,13 +183,10 @@ C
          ENDIF
          IF (NBAMOR.GT.NBMODE) THEN
 C
-            CALL UTDEBM('A','DYLEMA',
-     &          'LE NOMBRE D''AMORTISSEMENTS REDUITS EST TROP GRAND')
-            CALL UTIMPI('L','LE NOMBRE DE MODES PROPRES VAUT ',1,NBMODE)
-            CALL UTIMPI('L','ET LE NOMBRE DE COEFFICIENTS : ',1,NBAMOR)
-            CALL UTIMPI('L','ON NE GARDE DONC QUE LES ',1,NBMODE)
-            CALL UTIMPK('S',' ',1,'PREMIERS COEFFICIENTS')
-            CALL UTFINM()
+            VALI (1) = NBMODE
+            VALI (2) = NBAMOR
+            VALI (3) = NBMODE
+            CALL U2MESG('A','ALGORITH15_96',0,' ',3,VALI,0,0.D0)
             CALL WKVECT(BASENO//'.AMORTI','V V R8',NBMODE,JAMOG)
             IF (N1.NE.0) THEN
              CALL GETVR8(' ','AMOR_REDUIT',0,1,NBMODE,ZR(JAMOG),N)
@@ -213,14 +208,10 @@ C
  210           CONTINUE
             ENDIF
             IDIFF = NBMODE - NBAMOR
-            CALL UTDEBM('I','DYLEMA',
-     &            'LE NOMBRE D''AMORTISSEMENTS REDUITS EST INSUFFISANT')
-            CALL UTIMPI('L','IL EN MANQUE : ',1,IDIFF)
-            CALL UTIMPI('L','CAR LE NOMBRE DE MODES VAUT : ',1,NBMODE)
-            CALL UTIMPI('L','ON RAJOUTE ',1,IDIFF)
-            CALL UTIMPK('S',' ',1,'AMORTISSEMENTS REDUITS AVEC LA')
-            CALL UTIMPK('S',' ',1,'VALEUR DU DERNIER MODE PROPRE')
-            CALL UTFINM()
+            VALI (1) = IDIFF
+            VALI (2) = NBMODE
+            VALI (3) = IDIFF
+            CALL U2MESG('I','ALGORITH15_97',0,' ',3,VALI,0,0.D0)
             CALL WKVECT(BASENO//'.AMORTI2','V V R8',NBMODE,JAMO2)
             DO 20 IAM = 1,NBAMOR
                ZR(JAMO2+IAM-1) = ZR(JAMOG+IAM-1)

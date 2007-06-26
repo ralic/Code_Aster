@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ def l_nom_cham_pas_elga(): return (
      "SIGM_NOZ2_ELGA", "SIPO_ELNO_DEPL", "SIPO_ELNO_SIEF", "SIPO_NOEU_DEPL",
      "SIPO_NOEU_SIEF", "SIRE_ELNO_DEPL", "SIRE_NOEU_DEPL", "TEMP", "THETA",
      "VALE_CONT", "VALE_NCOU_MAXI", "VARI_ELNO", "VARI_ELNO_COQU",
-     "VARI_ELNO_ELGA", "VARI_ELNO_TUYO", "VARI_NOEU", "VARI_NOEU_ELGA", "VARI_NON_LOCAL",
+     "VARI_ELNO_ELGA", "VARI_ELNO_TUYO", "VARI_NOEU", "VARI_NOEU_ELGA",
      "VITE", "VITE_ABSOLU", "VITE_VENT",
                            )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE MUMPS EN NON-SYMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,11 +131,6 @@ EVOL=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',),
                 RESI_GLOB_RELA = 1.E-4,
                 ITER_GLOB_MAXI = 1,
                 ARRET = 'OUI'),
-                    LAGR_NON_LOCAL=_F(
-                ITER_PRIM_MAXI = 10,
-                ITER_DUAL_MAXI = 1,
-                RESI_PRIM_ABSO = 1.E-7,
-                RESI_DUAL_ABSO = 1.E-3)
               )
 
 EVOL=STAT_NON_LINE( reuse=EVOL, SOLVEUR=_F(METHODE='MUMPS',),
@@ -162,11 +157,6 @@ EVOL=STAT_NON_LINE( reuse=EVOL, SOLVEUR=_F(METHODE='MUMPS',),
                 RESI_GLOB_RELA = 1.E-4,
                 ITER_GLOB_MAXI = 1,
                 ARRET = 'OUI'),
-                    LAGR_NON_LOCAL=_F(
-                ITER_PRIM_MAXI = 10,
-                ITER_DUAL_MAXI = 1,
-                RESI_PRIM_ABSO = 1.E-7,
-                RESI_DUAL_ABSO = 1.E-3)
               )
 
 TEST_RESU(RESU=(
