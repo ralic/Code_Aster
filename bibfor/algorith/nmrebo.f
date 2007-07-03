@@ -3,7 +3,7 @@
      &                  ACT   ,OPTI  ,STITE)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/07/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,6 +46,7 @@ C
 C      
 C-----------------------------------------------------------------------
 C
+      STITE = .FALSE.
       CALL ZBITER(SENS*RHO,SENS*F,MEM,OPTI,RHONEW)     
       RHO    = RHONEW * SENS
 

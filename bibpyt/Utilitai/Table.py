@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -685,38 +685,51 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def __le__(self, VALE):
-      return self._extract(lambda v: v<>None and v<=VALE)
+      if type(VALE) in EnumTypes :
+        crit = max(VALE)
+      else:
+        crit = VALE
+      return self._extract(lambda v: v<>None and v<=crit)
 
 # ------------------------------------------------------------------------------
    def __lt__(self, VALE):
-      return self._extract(lambda v: v<>None and v<VALE)
+      if type(VALE) in EnumTypes :
+        crit = max(VALE)
+      else:
+        crit = VALE
+      return self._extract(lambda v: v<>None and v<crit)
 
 # ------------------------------------------------------------------------------
    def __ge__(self, VALE):
-      return self._extract(lambda v: v<>None and v>=VALE)
+      if type(VALE) in EnumTypes :
+        crit = min(VALE)
+      else:
+        crit = VALE
+      return self._extract(lambda v: v<>None and v>=crit)
 
 # ------------------------------------------------------------------------------
    def __gt__(self, VALE):
-      return self._extract(lambda v: v<>None and v>VALE)
+      if type(VALE) in EnumTypes :
+        crit = min(VALE)
+      else:
+        crit = VALE
+      return self._extract(lambda v: v<>None and v>crit)
 
 # ------------------------------------------------------------------------------
    def __eq__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
-      if type(VALE) in EnumTypes :
-         return self._extract(lambda v: v in VALE)
-      if PRECISION==0. or not type(VALE) in NumberTypes:
-         if type(VALE) in StringTypes:
-            return self._extract(lambda v: v<>None and str(v).strip()==VALE.strip())
+      if not type(VALE) in EnumTypes :
+         VALE = [VALE]
+      if type(VALE[0]) in StringTypes:
+         stripVALE = [value.strip() for value in VALE]
+         return self._extract(lambda v: str(v).strip() in stripVALE)
+      else:           
+         if PRECISION==0. :
+            return self._extract(lambda v : v in VALE)
+         elif CRITERE=='ABSOLU':
+            return self._extract(lambda v : _func_test_abs(v, VALE, PRECISION))
          else:
-            return self._extract(lambda v: v==VALE)
-      else:
-         if CRITERE=='ABSOLU':
-            vmin=VALE-PRECISION
-            vmax=VALE+PRECISION
-         else:
-            vmin=(1.-PRECISION)*VALE
-            vmax=(1.+PRECISION)*VALE
-         return self._extract(lambda v: v<>None and vmin<v<vmax)
-
+            return self._extract(lambda v : _func_test_rela(v, VALE, PRECISION))
+      
 # ------------------------------------------------------------------------------
    def REGEXP(self, regexp):
       """Retient les lignes dont le paramètre satisfait l'expression
@@ -728,21 +741,18 @@ class Colonne(TableBase):
 
 # ------------------------------------------------------------------------------
    def __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
-      if type(VALE) in EnumTypes :
-         return self._extract(lambda v: v not in VALE)
-      if PRECISION==0. or not type(VALE) in NumberTypes:
-         if type(VALE) in StringTypes:
-            return self._extract(lambda v: v<>None and str(v).strip()<>VALE.strip())
+      if not type(VALE) in EnumTypes :
+         VALE = [VALE]
+      if type(VALE[0]) in StringTypes:
+         stripVALE = [value.strip() for value in VALE]
+         return self._extract(lambda v: str(v).strip() not in stripVALE)
+      else:           
+         if PRECISION==0. :
+            return self._extract(lambda v : v not in VALE)
+         elif CRITERE=='ABSOLU':
+            return self._extract(lambda v : not (_func_test_abs(v, VALE, PRECISION)))
          else:
-            return self._extract(lambda v: v<>VALE)
-      else:
-         if CRITERE=='ABSOLU':
-            vmin=VALE-PRECISION
-            vmax=VALE+PRECISION
-         else:
-            vmin=(1.-PRECISION)*VALE
-            vmax=(1.+PRECISION)*VALE
-         return self._extract(lambda v: v<>None and (v<vmin or vmax<v))
+            return self._extract(lambda v : not (_func_test_rela(v, VALE, PRECISION)))
 
 # ------------------------------------------------------------------------------
    def MAXI(self):
@@ -964,3 +974,21 @@ def _typaster(obj, prev=None, strict=False):
    else:
       raise TypeError, 'Une table ne peut contenir que des entiers, réels ' \
                        'ou chaines de caractères.'
+                  
+# ------------------------------------------------------------------------------
+# fonctions utilitaires
+def _func_test_abs(v, VALE, PRECISION):
+   """Retourne True si v est parmi VALE à PRECISION près en absolu
+   """
+   for x in VALE:
+      if v != None and (x-PRECISION < v < x+PRECISION):
+         return True
+   return False
+
+def _func_test_rela(v, VALE, PRECISION):
+   """Retourne True si v est parmi VALE à PRECISION près en relatif
+   """
+   for x in VALE: 
+      if v != None and (x*(1.-PRECISION) < v < x*(1.+PRECISION)):
+         return True
+   return False

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 02/07/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -394,6 +394,10 @@ cata_msg={
 
 86: _("""
     Erreur dans la gestion des erreurs. Contactez les développeurs.
+"""),
+
+87: _("""
+    Recherche linéaire non favorable. Rho forcé à 1.
 """),
 
 }

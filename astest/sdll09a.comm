@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (ENCASTREE-LIBRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -446,8 +446,52 @@ CELCAS2=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
 MASSX1=POST_ELEM(    MODELE=MO,
                        CHAM_MATER=CHMAT,
                        CARA_ELEM=CELCAS1,
-                       MASS_INER=_F(  GROUP_MA = 'POU')
+                       MASS_INER=_F(  GROUP_MA = 'POU',
+                                      MAILLE = ('E101', 'E102', 'E103'),)
                    )
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2 ) 
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=(_F( NOM_PARA = 'LIEU',
+                         VALE_K = ('E101'), ),
+                   ),
+           )
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=_F( NOM_PARA = 'LIEU',
+                         VALE_K = ('E101', 'E102') ),
+           )
+
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=_F( NOM_PARA = 'LIEU', CRIT_COMP='NE',
+                         VALE_K = ('E101', 'E102') ),
+           )
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=_F( NOM_PARA = 'IX_G',PRECISION=1E-5,
+                         VALE = 8.86596E-04 ),
+           )
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=_F( NOM_PARA = 'IX_G',PRECISION=1E-2,CRITERE='RELATIF',
+                         VALE = (8.86596E-04,8.56381E-05 ) ),
+           )
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=_F( NOM_PARA = 'IX_G',
+                       CRIT_COMP='LT',VALE = (8.86596E-04,8.86596E-04,20.,150. ) ),
+           )
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=_F( NOM_PARA = 'IX_G',
+                       CRIT_COMP='LT',VALE = 8.86596E-04 ),
+           )
+
+IMPR_TABLE( TABLE = MASSX1, INFO = 2,
+            FILTRE=_F( NOM_PARA = 'IX_G',
+                       CRIT_COMP='NE',VALE = 8.86596E-04 ),
+           )
 
 MASSX2=POST_ELEM(    MODELE=MO,
                        CHAM_MATER=CHMAT,

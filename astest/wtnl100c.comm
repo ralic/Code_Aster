@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,7 +177,7 @@ IMPR_RESU(FORMAT = 'IDEAS', UNITE = 30,
 #############################################
 
 RESU1=CALC_ELEM( reuse      = RESU1,
-              OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+              OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELNO_SIGM'),
               RESULTAT   = RESU1,
               MODELE     = MODELE,
               CHAM_MATER = CHMAT0,
@@ -536,11 +536,69 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    REFERENCE='ANALYTIQUE',),),);
 
 
+TEST_RESU(RESU=(
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='VMIS',
+                   MAILLE='MA16',
+                   NOEUD='NO50',
+                   VALE=4.91509E-01,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
 
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE='MA16',
+                   NOEUD='NO50',
+                   VALE=-4.91509E-01,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
 
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='PRIN_1',
+                   MAILLE='MA16',
+                   NOEUD='NO50',
+                   VALE=-4.91509E-01,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
 
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='PRIN_2',
+                   MAILLE='MA16',
+                   NOEUD='NO50',
+                   VALE=0.,
+                   CRITERE= 'ABSOLU',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
 
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='PRIN_3',
+                   MAILLE='MA16',
+                   NOEUD='NO50',
+                   VALE=0.,
+                   CRITERE= 'ABSOLU',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
 
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='TRESCA',
+                   MAILLE='MA16',
+                   NOEUD='NO50',
+                   VALE=4.91509E-01,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
 
+                   ),);
 
 FIN();

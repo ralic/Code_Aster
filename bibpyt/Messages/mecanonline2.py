@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 30/05/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline2 Messages  DATE 02/07/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,14 +40,11 @@ cata_msg={
 """),
 
 97: _("""
-  -> Les variables de commandes initiales induisent des contraintes
-     incompatibles.
-  -> Risque & Conseil : Ce message apparait si l'état initial
-    (avant le premier instant de calcul) est tel que les variables de commande
-    (température, hydratation, séchage...) conduisent à des contraintes
-     non équilibrées. Dans le cas de la température, vérifiez que la valeur
-     TEMP_REF correspond à la température de l'état initial.
-
+  -> Les variables de commandes initiales induisent des contraintes 
+     incompatibles : 
+     l'état initial (avant le premier instant de calcul) est tel que 
+     les variables de commande (température, hydratation, séchage...)
+     conduisent à des contraintes non équilibrées. 
 """),
 
 98: _("""
@@ -70,5 +67,31 @@ cata_msg={
      Il vous faut changer votre critère de convergence: RESI_GLOB_MAXI ou RESI_REFE_RELA
 """),
 
+94: _("""
+  -> Indications supplémentaires : pour la variable de commande :  %(k1)s
+     et la composante :  %(k2)s
+     Valeur maximum : %(r1)f sur la maille : %(k3)s
+     Valeur minimum : %(r2)f sur la maille : %(k4)s
+"""),
+95: _("""
+  -> Indications supplémentaires : pour la variable de commande :  %(k1)s 
+     et la composante :  %(k2)s
+     Valeur maximum de abs( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
+     Valeur minimum de abs( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
+"""),
+
+93: _("""
+  -> Risque & Conseil :  dans le cas d'une résolution incrémentale, 
+     on ne considère que la variation des variables de commande entre
+     l'instant précédent et l'instant actuel.
+     On  ne prend donc pas en compte d'éventuelles contraintes incompatibles
+     dues à ces variables de commande initiales. 
+     Pour tenir compte de ces contraintes vous pouvez :
+     - partir d'un instant fictif antérieur où toutes les variables de 
+       commande sont nulles ou égales aux valeurs de référence
+     - choisir des valeurs de référence adaptées
+     Pour plus d'informations, voir la documentation de STAT_NON_LINE 
+     (U4.51.03) mot-clé EXCIT, et le test FORMA09 (V7.20.101).
+"""),
 
 }

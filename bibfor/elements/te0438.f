@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,23 +25,16 @@ C ----------------------------------------------------------------------
 C     BUT:       POUR LES ELEMENTS QUASI-INCOMPRESSIBLES 3D , CALCUL DES
 C                GRANDEURS EQUIVALENTES SUIVANTES
 C                AUX NOEUDS :
-C                    POUR LES CONTRAINTES  A PARTIR DE SIGM_ELNO_DEPL
 C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO_DEPL
-
+C
 C                DANS CET ORDRE :
-
-C                . CONTRAINTES EQUIVALENTES  :
-C                        . VON MISES                    (= 1 VALEUR)
-C                        . TRESCA                       (= 1 VALEUR)
-C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
-C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
+C
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
 C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
 
-C     OPTIONS :  'EQUI_ELNO_SIGM'
-C                'EQUI_ELNO_EPSI'
+C     OPTIONS :  'EQUI_ELNO_EPSI'
 
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -66,11 +59,7 @@ C     ------------------------------------------------------------------
       REAL*8 EQNO(NEQMAX*NNOMAX),EQPG(NEQMAX*NPGMAX)
 C     ------------------------------------------------------------------
 
-      IF (OPTION(11:14).EQ.'EPSI') THEN
-        NCEQ = 5
-      ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
-        NCEQ = 6
-      END IF
+      NCEQ = 5
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
@@ -90,24 +79,6 @@ C     ------------------------------------
           IDCP = (INO-1)*NCEQ
           CALL FGEQUI(ZR(IDEFO+ (INO-1)*6),'EPSI',3,EQNO(IDCP+1))
    20   CONTINUE
-
-C --- CONTRAINTES EQUIVALENTES AUX NOEUDS :
-C     -----------------------------------
-
-      ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
-
-        CALL JEVECH('PCONTRR','L',ICONT)
-        CALL JEVECH('PCONTEQ','E',IEQUIF)
-
-        DO 30 KP = 1,NPG
-          IDCP = (KP-1)*NCEQ
-          CALL FGEQUI(ZR(ICONT+ (KP-1)*7),'SIGM',3,EQPG(IDCP+1))
-   30   CONTINUE
-
-C -      EXTRAPOLATION AUX NOEUDS
-
-        CALL PPGAN2(JGANO,NCEQ,EQPG,ZR(IEQUIF))
-
       ELSE
         CALL U2MESK('F','CALCULEL6_10',1,OPTION)
 
@@ -116,12 +87,10 @@ C -      EXTRAPOLATION AUX NOEUDS
 
 C -   STOCKAGE :
 C     --------
-      IF (OPTION(11:14).NE.'SIGM') THEN
-        DO 50 INO = 1,NNO
-          DO 40 J = 1,NCEQ
-            ZR(IEQUIF-1+ (INO-1)*NCEQ+J) = EQNO((INO-1)*NCEQ+J)
-   40     CONTINUE
-   50   CONTINUE
-      END IF
+      DO 50 INO = 1,NNO
+        DO 40 J = 1,NCEQ
+          ZR(IEQUIF-1+ (INO-1)*NCEQ+J) = EQNO((INO-1)*NCEQ+J)
+   40   CONTINUE
+   50 CONTINUE
 
       END

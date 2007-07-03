@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,13 +55,13 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
                                 'VIDE','NON_VIDE','MAXI','ABS_MAXI','MINI','ABS_MINI'),),
          b_vale = BLOC(condition = "(CRIT_COMP in ('EQ','NE','GT','LT','GE','LE'))",
             regles=(UN_PARMI('VALE','VALE_I','VALE_K','VALE_C',),),
-            VALE   = SIMP(statut='f',typ='R'),
-            VALE_I = SIMP(statut='f',typ='I'),
-            VALE_C = SIMP(statut='f',typ='C'),
-            VALE_K = SIMP(statut='f',typ='TXM'),
+            VALE   = SIMP(statut='f',typ='R',max='**'),
+            VALE_I = SIMP(statut='f',typ='I',max='**'),
+            VALE_C = SIMP(statut='f',typ='C',max='**'),
+            VALE_K = SIMP(statut='f',typ='TXM',max='**'),
          ),
          b_regexp = BLOC(condition = "CRIT_COMP == 'REGEXP'",
-            VALE_K = SIMP(statut='f',typ='TXM'),
+            VALE_K = SIMP(statut='f',typ='TXM',max='**'),
          ),
          b_crit = BLOC(condition = "CRIT_COMP in ('EQ','NE')",
             CRITERE   = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),

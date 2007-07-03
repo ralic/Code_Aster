@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -103,6 +103,7 @@ MODE_LOCAL__
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    ENT11    QPRIM
                                         FHTX     FHTY     )
+    ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    ENT11    QPRIM
                                         FHTX     FHTY     )
@@ -131,6 +132,8 @@ OPTION__
     EPSI_ELNO_DEPL      600   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
+    EQUI_ELNO_SIGM      330   IN__   ECONTPG  PCONTRR
+                              OUT__  ECOEQNO  PCONTEQ
     EXTR_ELGA_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
                               OUT__  E1GNEUT  PVARIGS
     EXTR_ELNO_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR

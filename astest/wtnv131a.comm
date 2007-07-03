@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,6 +231,17 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                             STOP_SINGULIER='NON',),
                  );
                                           
+U0=CALC_ELEM( reuse=U0,
+              OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM'),
+              RESULTAT=U0,
+            )
+
+U0=CALC_NO(  reuse=U0,     
+             RESULTAT=U0,
+             OPTION=( 'SIEF_NOEU_ELGA','EQUI_NOEU_SIGM')
+          )
+
+IMPR_RESU(RESU=_F(RESULTAT=U0,NOM_CHAM='EQUI_ELNO_SIGM'))
 
 # X = 0.2
 TEST_RESU(RESU=_F(RESULTAT=U0,
@@ -282,4 +293,53 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
                   REFERENCE='NON_REGRESSION',),);   
+
+
+TEST_RESU(RESU=_F(RESULTAT=U0,
+                  NUME_ORDRE=58,
+                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CMP='VMIS',
+                  MAILLE = 'M1',
+                  NOEUD='N88',
+                  VALE=1.80324E+02,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-3,
+                  VERSION = '9.0.30',
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U0,
+                  NUME_ORDRE=58,
+                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CMP='TRESCA',
+                  MAILLE = 'M1',
+                  NOEUD='N88',
+                  VALE=1.88004E+02,
+                  CRITERE='RELATIF',
+                  VERSION = '9.0.30',
+                  PRECISION=1.E-3,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U0,
+                  NUME_ORDRE=58,
+                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CMP='VMIS',
+                  NOEUD='N88',
+                  VALE=1.31915E+02,
+                  CRITERE='RELATIF',
+                  VERSION = '9.0.30',
+                  PRECISION=1.E-3,
+                  REFERENCE='NON_REGRESSION',),);
+
+TEST_RESU(RESU=_F(RESULTAT=U0,
+                  NUME_ORDRE=58,
+                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CMP='TRESCA',
+                  NOEUD='N88',
+                  VALE=1.41003E+02,
+                  CRITERE='RELATIF',
+                  VERSION = '9.0.30',
+                  PRECISION=1.E-3,
+                  REFERENCE='NON_REGRESSION',),);
+
+
 FIN();

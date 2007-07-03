@@ -4,7 +4,7 @@
      &                  SDSUIV,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/07/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,13 +31,13 @@ C
       CHARACTER*8   RESULT,MAILL2
       CHARACTER*19  PARTPS,NOMTAB,LISOBS,LISINS,SDDYNA
       CHARACTER*24  CARELE,SDSUIV,MATE
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (STRUCTURES DE DONNES)
 C
 C CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -83,7 +83,7 @@ C
       REAL*8    ZERO,UN
       PARAMETER (ZERO=0.D0,UN= 1.0D+00)
       INTEGER      JINST,JTEMPS,JLIARC,JARCH,JMETH,JERRE
-      INTEGER      JEXCL,JINFO,JNIVTP,JINSAR,JORDAR      
+      INTEGER      JEXCL,JINFO,JNIVTP,JINSAR,JORDAR
       INTEGER      NUMFIN,SENS,POS
       INTEGER      IRET,I,IBID,IRE1,IRE2
       INTEGER      NLIARC,NUMARC,FREARC
@@ -100,11 +100,11 @@ C
       CHARACTER*8  K8BID,MECA
       CHARACTER*16 CHRONO,K16BID,METHOD
       CHARACTER*19 LISARC
-C                         
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C 
+C
 C --- INITIALISATIONS
 C
       CHRONO = ' '
@@ -112,9 +112,9 @@ C
       LINSTI = .FALSE.
       NBOBSE = 0
       LOBSER = .FALSE.
-C 
+C
 C --- CONSTRUCTION DE LA LISTE D'INSTANTS
-C 
+C
       CALL GETVTX('INCREMENT','EVOLUTION',1,1,1,CHRONO,N1)
       CALL GETVID('INCREMENT','LIST_INST'  ,1,1,1,LISINS,N1)
 
@@ -535,30 +535,34 @@ C        ON VERIFIE QUE C'EST COHERENT EN FONCTION DE LA METHODE
          NBITER = NINT(MAX(ITER1,ITER2)*(UN + NBPLUS/100.0D0)+0.6D0)
 C        NATURE DU STOCKAGE
 C          JEREUR + 0 : MAX( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
-C          JEREUR + 1 : NBITER (DIMENSION DU VECTEUR)
-C          JEREUR + 2 : RESI_GLOB_RELA
-C          JEREUR + 3 : RESI_GLOB_MAXI
+C          JEREUR + 1 : MIN( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
+C          JEREUR + 2 : NBITER (DIMENSION DU VECTEUR)
+C          JEREUR + 3 : RESI_GLOB_RELA
+C          JEREUR + 4 : RESI_GLOB_MAXI
 C          + 2 VALEURS PAR ITERATIONS PRECEDENTES
 C          + 2 VALEURS POUR L'ITERATION EN COURS
 C          + 2 VALEURS POUR L'ITERATION A VENIR
-         CALL WKVECT(PARTPS // '.ERRE','V V R8',4+NBITER*2+2+2,JERRE)
+C        !!!! LE NUMERO DES ITERATIONS COMMENCE A ZERO
+         CALL WKVECT(PARTPS // '.ERRE','V V R8',5+NBITER*2+2+2,JERRE)
          ZR(JERRE)   = MAX(ITER1,ITER2)
-         ZR(JERRE+1) = NBITER
+         ZR(JERRE+1) = MIN(ITER1,ITER2)
+         ZR(JERRE+2) = NBITER
 C        PAREIL QUE DANS NMDOCN
          CALL GETVR8('CONVERGENCE','RESI_GLOB_RELA',1,1,1,
-     &                              ZR(JERRE+2),IRE1)
-         IF (IRE1.LE.0) ZR(JERRE+2) = R8VIDE()
+     &                              ZR(JERRE+3),IRE1)
+         IF (IRE1.LE.0) ZR(JERRE+3) = R8VIDE()
          CALL GETVR8('CONVERGENCE','RESI_GLOB_MAXI',1,1,1,
-     &                              ZR(JERRE+3),IRE2)
-         IF (IRE2.LE.0) ZR(JERRE+3) = R8VIDE()
+     &                              ZR(JERRE+4),IRE2)
+         IF (IRE2.LE.0) ZR(JERRE+4) = R8VIDE()
          IF (IRE1.LE.0 .AND. IRE2.LE.0 ) THEN
-            ZR(JERRE+2) = 1.0D-06
             ZR(JERRE+3) = 1.0D-06
+            ZR(JERRE+4) = 1.0D-06
          ENDIF
       ELSE
-        CALL WKVECT(PARTPS // '.ERRE','V V R8',2,JERRE)
-        ZR(JERRE)   = ZERO
-        ZR(JERRE+1) = ZERO
+         CALL WKVECT(PARTPS // '.ERRE','V V R8',3,JERRE)
+         ZR(JERRE)   = ZERO
+         ZR(JERRE+1) = ZERO
+         ZR(JERRE+2) = ZERO
       ENDIF
 
 C ======================================================================

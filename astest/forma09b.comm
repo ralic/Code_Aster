@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 02/07/2007   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -246,12 +246,48 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=2.E5,
                           RHO=7.9999999999999996E-06,
                           ALPHA=1.0000000000000001E-05,),);
 
+# CHAMPS FICTIFS POUR TESTER LE MESSAGE D'ALARME
+
+SECH=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MA,
+                AFFE=(_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=-10.),
+                     _F(NOEUD='N8',
+                        NOM_CMP='TEMP',
+                        VALE=30.),
+                        ),
+                        );
+
+HYDR=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                OPERATION='AFFE',
+                MAILLAGE=MA,
+                AFFE=(_F(TOUT='OUI',
+                        NOM_CMP='HYDR',
+                        VALE=-20.),
+                     _F(NOEUD='N12',
+                        NOM_CMP='HYDR',
+                        VALE=40.),
+                        ),
+                        );
+
+
 CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),
-                    AFFE_VARC=_F( TOUT='OUI',EVOL=TEMPE2,
+                    AFFE_VARC=(
+                    _F( TOUT='OUI',EVOL=TEMPE2,
                                   NOM_VARC='TEMP',
-                                  NOM_CHAM='TEMP',VALE_REF=0.0),)
+                                  NOM_CHAM='TEMP',VALE_REF=0.0),
+                            _F(TOUT='OUI',
+                               CHAMP_GD=SECH,
+                               NOM_VARC='SECH',
+                               VALE_REF=-20.),
+                            _F(TOUT='OUI',
+                               CHAMP_GD=HYDR,
+                               NOM_VARC='HYDR'),
+                               ))
 
 CHDIL=AFFE_CHAR_MECA(MODELE=MO,
                      DDL_IMPO=_F(GROUP_MA='BAS',
@@ -304,7 +340,7 @@ IMPR_RESU(RESU=_F(RESULTAT=DEPLBRID,
 # AU PREMIER INSTANT CALCULE, T=11, ON NE CALCULE QUE LES CONTRAINTES
 # DUES A L'INCREMENT DE DILATATION ENTRE T=0 ET T=11
 #
-#
+# ON OBTIENT DONC UNE ALARME
 
 
 SNLBRID=STAT_NON_LINE(MODELE=MO,

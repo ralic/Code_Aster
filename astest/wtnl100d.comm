@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
 # ======================================================================
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,10 +125,11 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     SOLVEUR=_F(METHODE='LDLT',),);
 
 RESU1=CALC_ELEM(reuse =RESU1,
-                OPTION='SIEF_ELNO_ELGA',
+                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM'),
                 RESULTAT=RESU1,);
                 
-                
+IMPR_RESU(RESU=_F(RESULTAT=RESU1,NOM_CHAM='EQUI_ELNO_SIGM'))   
+             
 TEST_RESU(RESU=(
 
                 _F(RESULTAT=RESU1,
@@ -270,4 +271,62 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                    ),);
 
+TEST_RESU(RESU=(
+
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='VMIS',
+                   MAILLE = 'MA16',
+                   NOEUD='NO83',
+                   VALE=3.75002E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='TRESCA',
+                   MAILLE = 'MA16',
+                   NOEUD='NO83',
+                   VALE=3.75002E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='PRIN_1',
+                   MAILLE = 'MA16',
+                   NOEUD='NO83',
+                   VALE=-3.75002E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='PRIN_2',
+                   MAILLE = 'MA16',
+                   NOEUD='NO83',
+                   VALE=0.,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='PRIN_3',
+                   MAILLE = 'MA16',
+                   NOEUD='NO83',
+                   VALE=0.,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CMP='VMIS_SG',
+                   MAILLE = 'MA16',
+                   NOEUD='NO83',
+                   VALE=-3.75002E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='ANALYTIQUE',),),)
 FIN();

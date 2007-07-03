@@ -1,21 +1,21 @@
-#@ MODIF utilitai Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilitai Messages  DATE 02/07/2007   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -75,7 +75,7 @@ cata_msg={
 """),
 
 14: _("""
- type scalaire non traite :  %(k1)s 
+ type scalaire non traite :  %(k1)s
 """),
 
 15: _("""
@@ -131,11 +131,11 @@ cata_msg={
 """),
 
 28: _("""
- champ non-assemblable en cham_no:  %(k1)s 
+ champ non-assemblable en cham_no:  %(k1)s
 """),
 
 29: _("""
- champ non-assemblable en cham_elem (elga):  %(k1)s 
+ champ non-assemblable en cham_elem (elga):  %(k1)s
 """),
 
 30: _("""
@@ -147,7 +147,7 @@ cata_msg={
 """),
 
 32: _("""
- grandeur incorrecte pour: %(k1)s 
+ grandeur incorrecte pour: %(k1)s
 """),
 
 33: _("""
@@ -179,19 +179,19 @@ cata_msg={
 """),
 
 40: _("""
- structure de donnees inexistante : %(k1)s 
+ structure de donnees inexistante : %(k1)s
 """),
 
 41: _("""
- duplcation "maillage" du .ltnt, objet inconnu:  %(k1)s 
+ duplcation "maillage" du .ltnt, objet inconnu:  %(k1)s
 """),
 
 42: _("""
- type de sd. inconnu :  %(k1)s 
+ type de sd. inconnu :  %(k1)s
 """),
 
 43: _("""
- numerotation absente  probleme dans la matrice  %(k1)s 
+ numerotation absente  probleme dans la matrice  %(k1)s
 """),
 
 44: _("""
@@ -210,16 +210,16 @@ cata_msg={
   le mot cle : %(k1)s n est pas autorise.
 """),
 
-48: _("""
- erreur dans la dimension du vecteur .erre. cf diinit
-"""),
+
+
+
 
 49: _("""
  la question : " %(k1)s " est inconnue
 """),
 
 50: _("""
- cham_elem inexistant:  %(k1)s 
+ cham_elem inexistant:  %(k1)s
 """),
 
 51: _("""
@@ -231,7 +231,7 @@ cata_msg={
 """),
 
 53: _("""
- suffixe inconu:  %(k1)s 
+ suffixe inconu:  %(k1)s
 """),
 
 54: _("""
@@ -239,7 +239,7 @@ cata_msg={
 """),
 
 55: _("""
- champ inexistant: %(k1)s 
+ champ inexistant: %(k1)s
 """),
 
 56: _("""
@@ -267,11 +267,11 @@ cata_msg={
 """),
 
 62: _("""
- on ne sait pas associer de phenomene a ce ligrel :  %(k1)s 
+ on ne sait pas associer de phenomene a ce ligrel :  %(k1)s
 """),
 
 63: _("""
- phenomene inconnu :  %(k1)s 
+ phenomene inconnu :  %(k1)s
 """),
 
 64: _("""
@@ -291,7 +291,7 @@ cata_msg={
 """),
 
 68: _("""
- type de resultat inconnu:  %(k1)s  pour l'objet :  %(k2)s 
+ type de resultat inconnu:  %(k1)s  pour l'objet :  %(k2)s
 """),
 
 69: _("""
@@ -319,7 +319,7 @@ cata_msg={
 """),
 
 75: _("""
- probleme avec la reponse  %(k1)s 
+ probleme avec la reponse  %(k1)s
 """),
 
 76: _("""
@@ -327,7 +327,7 @@ cata_msg={
 """),
 
 77: _("""
- unite logique  %(k1)s , probleme lors du close 
+ unite logique  %(k1)s , probleme lors du close
 """),
 
 78: _("""
@@ -395,7 +395,7 @@ cata_msg={
 """),
 
 94: _("""
- type de champ inconnu  %(k1)s 
+ type de champ inconnu  %(k1)s
 """),
 
 95: _("""

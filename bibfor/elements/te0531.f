@@ -1,7 +1,7 @@
       SUBROUTINE TE0531(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,15 +22,12 @@ C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C      ROUTINE PROCHE DE TE0335 (3D) MAIS PARTICULIERE POUR LES
-C      SHB8 CAR LEs CMP DE CONTRAINTES CONTIENNENT AUSSI DES
+C      SHB8 CAR LES CMP DE CONTRAINTES CONTIENNENT AUSSI DES
 C     TERMES DE STABILISATION
 C
 C     BUT:       POUR LES ELEMENTS SHB8 , CALCUL DES
 C                GRANDEURS EQUIVALENTES SUIVANTES
 C                AUX POINTS DE GAUSS :
-C                    POUR LES CONTRAINTES  A PARTIR DE SIEF_ELGA
-C                                                   OU SIEF_ELGA_DEPL
-C                AUX NOEUDS :
 C                    POUR LES CONTRAINTES  A PARTIR DE SIEF_ELGA
 C                                                   OU SIEF_ELGA_DEPL
 C                DANS CET ORDRE :
@@ -41,8 +38,7 @@ C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
 C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
 C                                                      (=3*3 VALEURS)
-C     OPTIONS :  'EQUI_ELNO_SIGM'
-C                'EQUI_ELGA_SIGM'
+C     OPTION :  'EQUI_ELGA_SIGM'
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
@@ -76,8 +72,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-        NCEQ = 15
-        NCMP = 6
+      NCEQ = 15
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       CALL JEVECH('PCONTRR','L',ICONT)
@@ -112,26 +107,6 @@ C -       STOCKAGE
             ZR(IEQUIF-1+ (KP-1)*NCEQ+J) = EQPG((KP-1)*NCEQ+J)
    60     CONTINUE
    70   CONTINUE
-
-C -   CONTRAINTES EQUIVALENTES AUX NOEUDS
-
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-
-C -       CONTRAINTES
-
-        IF (OPTION(11:14).EQ.'SIGM') THEN
-          DO 100 KP = 1,NPG
-            IDCP = (KP-1)*NCMP
-            CALL FGEQUI(SIGMA((KP-1)*6+1),'SIGM',3,EQPG(IDCP+1))
-  100     CONTINUE
-
-C -       EXTRAPOLATION AUX NOEUDS
-
-          CALL PPGAN2(JGANO,NCMP,EQPG,ZR(IEQUIF))
-
-        END IF
-
-C -       STOCKAGE
 
       END IF
 

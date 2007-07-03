@@ -1,7 +1,7 @@
       SUBROUTINE TE0336 ( OPTION , NOMTE )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,6 @@ C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELGA_DEPL
 C                                                   OU EPME_ELGA_DEPL
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 C                AUX NOEUDS :
-C                    POUR LES CONTRAINTES  A PARTIR DE SIEF_ELGA
-C                                                   OU SIEF_ELGA_DEPL
 C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO_DEPL
 C                                                   OU EPME_ELNO_DEPL
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
@@ -50,8 +48,7 @@ C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
 C                        . DIRECTIONS DES DEFORMATIONS EQUIVALENTES
 C                                                       (= 3*3 VALEURS)
 C
-C     OPTIONS :  'EQUI_ELNO_SIGM'
-C                'EQUI_ELGA_SIGM'
+C     OPTIONS :  'EQUI_ELGA_SIGM'
 C                'EQUI_ELNO_EPSI'
 C                'EQUI_ELGA_EPSI'
 C                'EQUI_ELNO_EPME'
@@ -207,24 +204,6 @@ C
                   DEFORM(6) = 0.D0
                   CALL FGEQUI(DEFORM,'EPSI',2,EQNO(IDCP+1))
 202           CONTINUE
-C
-C -       CONTRAINTES
-C
-          ELSE IF ( OPTION(11:14) .EQ. 'SIGM' )  THEN
-              DO 303 KP = 1,NPG
-                  IDCP = (KP-1) * NCMP
-                  DO 209 I = 1,4
-                      SIGMA(I) = ZR(ICONT+(KP-1)*4+I-1)
- 209              CONTINUE
-                  SIGMA(5) = 0.D0
-                  SIGMA(6) = 0.D0
-                  CALL FGEQUI(SIGMA,'SIGM',2,EQPG(IDCP+1))
-303           CONTINUE
-C
-C -       EXTRAPOLATION AUX NOEUDS
-C
-              CALL PPGAN2 ( JGANO, NCMP, EQPG, ZR(IEQUIF) )
-C
           ENDIF
 C
 C -       STOCKAGE

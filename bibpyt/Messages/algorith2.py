@@ -1,21 +1,21 @@
-#@ MODIF algorith2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith2 Messages  DATE 02/07/2007   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -77,7 +77,7 @@ cata_msg={
 """),
 
 14: _("""
- charge non traitee:  %(k1)s 
+ charge non traitee:  %(k1)s
 """),
 
 15: _("""
@@ -109,7 +109,7 @@ cata_msg={
 """),
 
 22: _("""
- vecteur  de norme nulle  
+ vecteur  de norme nulle
 """),
 
 23: _("""
@@ -201,19 +201,19 @@ cata_msg={
 """),
 
 45: _("""
- seuls les champs de fonctions aux noeuds sont evaluables:  %(k1)s 
+ seuls les champs de fonctions aux noeuds sont evaluables:  %(k1)s
 """),
 
 46: _("""
- nous traitons les champs de reels et de fonctions: . %(k1)s 
+ nous traitons les champs de reels et de fonctions: . %(k1)s
 """),
 
 47: _("""
- le nom symbolique du champ chercher n est pas licite. %(k1)s 
+ le nom symbolique du champ chercher n est pas licite. %(k1)s
 """),
 
 48: _("""
- plusieurs instants correspondent a celui specifie sous affe 
+ plusieurs instants correspondent a celui specifie sous affe
 """),
 
 49: _("""
@@ -225,7 +225,7 @@ cata_msg={
 """),
 
 51: _("""
- il y a plusieurs charges contenant des liaisons unilaterales 
+ il y a plusieurs charges contenant des liaisons unilaterales
 """),
 
 52: _("""
@@ -237,7 +237,7 @@ cata_msg={
 """),
 
 54: _("""
-  increment de deformation cumulee (dp) = - %(k1)s 
+  increment de deformation cumulee (dp) = - %(k1)s
 """),
 
 55: _("""
@@ -348,23 +348,6 @@ cata_msg={
 
 
 
-
-
-82: _("""
- nombre maximal de niveau de subdivision atteint
-"""),
-
-83: _("""
- detection divergence, force la subdivision.
-"""),
-
-84: _("""
- force la subdivision
-"""),
-
-85: _("""
- pas minimal de la subdivision atteint.
-"""),
 
 86: _("""
  il n'y a aucun instant de calcul ('list_inst')

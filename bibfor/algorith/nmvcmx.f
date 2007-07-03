@@ -1,0 +1,166 @@
+      SUBROUTINE NMVCMX(MATE,MAILLA,COMREF,COMPLU,VCMAX)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 02/07/2007   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+      IMPLICIT NONE
+      CHARACTER*19  LISCHA
+      CHARACTER*24  MATE, COMREF, COMPLU
+      CHARACTER*8 MAILLA
+      REAL*8        VCMAX
+      INTEGER       NOMAX
+
+C ----------------------------------------------------------------------
+C    RECHERCHE DES MAXIMUM/ MIMINUM DES VARIABLES DE COMMANDES
+C ----------------------------------------------------------------------
+C
+C IN       LISCHA K19 INFORMATION SUR LES CHARGEMENTS
+C IN       MATE   K24 CHAMP MATERIAU
+C IN       COMREF K24 VARI_COM DE REFERENCE
+C IN       COMPLU K24 VARI_COM EN T+ (TEMPERATURE POUR LES POUTRES)
+C OUT      VCMAX  R   TABLEAU CONTENANT LA VALEUR MAXI DE CHAQUE V.C.
+C OUT      NOMAX  R   TABLEAU CONTENANT LE NOEUD CORRESPONDANT  
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      LOGICAL      EXITEM, EXIHYD, EXISEC, EXIEPA, EXIPHA,LBID
+      INTEGER  NBCMP,JMAX,JMIN,I,IBID,INOM,NBCMP2,JMIN2,JMAX2
+      CHARACTER*1 K1BID
+      CHARACTER*8 VALK(4)
+      CHARACTER*19 NOMCMP,CHSREF,CHSCOM,K19BID
+      CHARACTER*24 VRCPLU, SECPLU, PHAPLU, INSPLU,VRCREF
+      INTEGER JCESD,JCESL,JCESV,JCESC,NBMA,NBPT,NBSP,ICMP,NBMA2
+      INTEGER JCRSD,JCRSL,JCRSV,JCRSC,VALI,IMA,IPT,ISP,IAD,IAD2
+      INTEGER IMAMAX,IMAMIN,ICMP2,JNOM,JVARC,IREF,NBCMP0,IRET
+      REAL*8 VALMIN,VALMAX,VALR(4),R8MAEM
+      REAL*8 VALRMA,VALRMI,VALEUR,VALREF
+C ---------------------------------------------------------------------
+      CALL JEMARQ()
+      
+C -- EXTRACTION DES VARIABLES DE COMMANDE
+
+      CALL NMVCEX('TOUT',COMREF,VRCREF)
+      CALL NMVCEX('TOUT',COMPLU,VRCPLU)
+
+      CHSCOM='&&NMVCMX.COMPLU_SIM'
+      CHSREF='&&NMVCMX.COMREF_SIM'
+      CALL CELCES(VRCPLU,'V',CHSCOM)
+      CALL CELCES(VRCREF,'V',CHSREF)
+      
+C      CALL IMPRSD('CHAMP',CHSCOM,6,'CHCOM')
+C      CALL IMPRSD('CHAMP',CHSREF,6,'CHREF')
+      
+      CALL U2MESS('A+','MECANONLINE2_97')
+      
+C     CALCUL DU MIN / MAX
+
+C     DESCRIPTEUR
+      CALL JEVEUO(CHSCOM//'.CESD','L',JCESD)
+      CALL JEVEUO(CHSREF//'.CESD','L',JCRSD)
+C     PRESENCE DES CMP (R)
+      CALL JEVEUO(CHSCOM//'.CESL','L',JCESL)
+      CALL JEVEUO(CHSREF//'.CESL','L',JCRSL)
+C     VALEUR DES CMP (R)
+      CALL JEVEUO(CHSCOM//'.CESV','L',JCESV)
+      CALL JEVEUO(CHSREF//'.CESV','L',JCRSV)
+
+C     RECUPERATION DES NOMS DES VARC      
+      CALL JELIRA(MATE(1:8)//'.CVRCNOM','LONMAX',NBCMP2,K1BID)
+      CALL JEVEUO(MATE(1:8)//'.CVRCNOM','L',JNOM)
+      CALL JEVEUO(MATE(1:8)//'.CVRCVARC','L',JVARC)
+
+      NBMA = ZI(JCESD-1+1)
+      
+      DO 10,ICMP = 1,NBCMP2
+         VALMAX=-R8MAEM()
+         VALMIN=R8MAEM()
+         IMAMIN=0
+         IREF=0
+         IF (ZK8(JVARC-1+ICMP).EQ.'TEMP'
+     &   .OR.ZK8(JVARC-1+ICMP).EQ.'SECH') THEN
+            IREF=1
+         ENDIF
+         DO 40,IMA = 1,NBMA
+C           VALEURS DE REFERENCE
+            IF (IREF.EQ.1) THEN
+               CALL CESEXI('C',JCRSD,JCRSL,IMA,1,1,ICMP,IAD2)
+               VALREF = ZR(JCRSV-1+IAD2)
+            ENDIF
+            NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
+            NBSP = ZI(JCESD-1+5+4* (IMA-1)+2)
+            NBCMP = ZI(JCESD-1+5+4* (IMA-1)+3)
+            IF (NBCMP.EQ.0) GOTO 40
+            DO 30,IPT = 1,NBPT
+               DO 20,ISP = 1,NBSP
+                  CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)  
+                  IF (IAD.GT.0) THEN
+                      VALEUR = ZR(JCESV-1+IAD)
+
+                      IF (IREF.EQ.1) THEN
+                         VALEUR=ABS(VALEUR-VALREF)
+                      ENDIF
+                      IF (VALEUR.GT.VALMAX) THEN
+                         IMAMAX=IMA
+                         VALMAX=VALEUR
+                      ENDIF
+                      IF (VALEUR.LT.VALMIN) THEN
+                         IMAMIN=IMA
+                         VALMIN=VALEUR
+                      ENDIF
+                  ENDIF
+ 20            CONTINUE
+ 30         CONTINUE
+ 40      CONTINUE
+         VALK(2)=ZK8(JNOM-1+ICMP)
+         VALK(1)=ZK8(JVARC-1+ICMP)
+         VALR(1)=VALMAX
+         VALR(2)=VALMIN
+         CALL JENUNO(JEXNUM(MAILLA//'.NOMMAI',IMAMAX),VALK(3))
+         CALL JENUNO(JEXNUM(MAILLA//'.NOMMAI',IMAMIN),VALK(4))
+         IF (IREF.EQ.1) THEN
+            VALK(5)=VALK(1)
+            CALL U2MESG('A+','MECANONLINE2_95',5,VALK,0,VALI,2,VALR)
+         ELSE
+            CALL U2MESG('A+','MECANONLINE2_94',4,VALK,0,VALI,2,VALR)
+         ENDIF
+ 10   CONTINUE        
+      CALL U2MESS('A','MECANONLINE2_93')
+
+      CALL JEDETR(CHSCOM)
+      CALL JEDETR(CHSREF)
+      CALL JEDEMA()
+      END
