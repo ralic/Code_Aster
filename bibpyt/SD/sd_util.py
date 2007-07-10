@@ -1,4 +1,4 @@
-#@ MODIF sd_util SD  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_util SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,5 +163,12 @@ def sdu_monotone(seqini) :
 
 def sdu_nom_gd(numgd) :
     # retourne le nom de la grandeur de numéro (numgd)
+    assert numgd > 0 and numgd <1000 , numgd
     ptn=aster.getvectjev('&CATA.GD.NOMGD')
     return ptn[numgd-1].strip()
+
+def sdu_licmp_gd(numgd) :
+    # retourne la liste des cmps de la grandeur de numéro (numgd)
+    nomgd=sdu_nom_gd(numgd)
+    nocmp=aster.getcolljev('&CATA.GD.NOMCMP')
+    return nocmp[nomgd.ljust(8)]

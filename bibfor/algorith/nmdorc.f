@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -127,7 +127,7 @@ C                           1234567890123
         MESMAI = '&&NMDORC.MES_MAILLES'
 
         LIGRMO = MODELE(1:8)//'.MODELE'
-        CALL JEVEUO(LIGRMO(1:19)//'.NOMA','L',JNOMA)
+        CALL JEVEUO(LIGRMO(1:19)//'.LGRF','L',JNOMA)
         NOMA = ZK8(JNOMA)
 
 C    -----------------------------------------------------------
@@ -349,7 +349,11 @@ C  POUR COMPORTEMENT KIT_
  122            CONTINUE
                 CALL NMTHMC(COMP,MODELE,MOCLEF(I),K,COMEL(1),NCOMEL,
      &          NBNVI(1))
+     
+              ELSEIF((COMP(1:7).EQ.'KIT_DDI') .AND. NCOMEL .GE. 2) THEN
+                IF(COMEL(1)(1:4) .EQ. 'GLRC') NBVARI = NBVARI + 10 
               END IF
+              
             ELSE IF (COMP(1:4).EQ.'META') THEN
               EXIST = GETEXM(MOCLEF(I),COMP)
               IF (EXIST) THEN

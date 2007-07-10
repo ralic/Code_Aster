@@ -2,7 +2,7 @@
      &                     YD, YF, R, SIGNE, DRDY, IRET )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,7 +59,7 @@ C =====================================================================
         REAL*8      DEGR, PHI, ANGDIL, MDIL, B, DKSIDR(3)
         REAL*8      RC(4), DLAMBD(4), DEPSDS(6,6)
         REAL*8      HOOKNL(6,6), HOOK(6,6), DHOKDS(6,6)
-        REAL*8      I1F, E, NU, AL, DEMU, COEF0, DCOEF0
+        REAL*8      I1F, E, NU, AL, BL, DEMU, COEF0, DCOEF0
         REAL*8      LE(6), LEVP, LR(4), LF(4), R(NMOD), DELTA(6)
         REAL*8      DLEDS(6,6), DLEDEV(6), DLEDR(6,4), DLEDLA(6,4)
         REAL*8      DLEVDS(6), DLEVDE, DLEVDR(4), DLEVDL(4)
@@ -166,6 +166,7 @@ C =====================================================================
         E  = MATER(1,1)
         NU = MATER(2,1)
         AL = E*(UN-NU) /(UN+NU) /(UN-DEUX*NU)
+        BL = E*NU      /(UN+NU) /(UN-DEUX*NU)
         DEMU = E       /(UN+NU)
                 
         
@@ -178,12 +179,8 @@ C =====================================================================
      
            DO 30 I = 1, NDI
              DO 30 J = 1, NDI
-               IF (I.EQ.J) THEN
-                  HOOK(I,J) = AL
-               ENDIF
-               IF (I.NE.J) THEN
-                  HOOK(I,J) = DEMU
-               ENDIF
+               IF (I.EQ.J) HOOK(I,J) = AL
+               IF (I.NE.J) HOOK(I,J) = BL
  30            CONTINUE
            DO 35 I = NDI+1, NDT
              HOOK(I,I) = DEMU
@@ -417,11 +414,11 @@ C =====================================================================
         CALL HUJPRJ (KK, SIGF, SIGD, COEF0, MUL)
         IF ((-Q(K)/PREF) .LE. TOLE) GOTO 131
         DLEVDS(NDT+1-KK) = DLEVDS(NDT+1-KK) +
-     &  DLAMBD(K) * KSI(K)*COEF*SIGD(NDT+1-KK) /P(K)/Q(K)
+     &  DLAMBD(K) * KSI(K)*COEF*SIGF(NDT+1-KK) /P(K)/Q(K)
         DO 132 I = 1, NDI
           IF (I .NE. KK) THEN
             DLEVDS(I) = DLEVDS(I) +
-     &      DLAMBD(K)*KSI(K)*COEF*(SIGD(I) /P(K)/Q(K) - 
+     &      DLAMBD(K)*KSI(K)*COEF*(SIGF(I) /P(K)/Q(K) - 
      &      D12*Q(K) /P(K)**DEUX)
           ENDIF
  132      CONTINUE

@@ -1,5 +1,5 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
-# TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
+# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SOUS CHARGEMENT THERMIQUE. GRILLE_PINTO_MEN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ ACIER=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,
 LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
                         AFFE=_F(  GROUP_MA = ('GEOB','GEOBB',),
                                PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'GRILLE',
+                               MODELISATION = 'GRILLE_EXCENTRE',
                              )
                       )
 
@@ -102,16 +102,8 @@ MAILLAGE=MAILTOT,
                                )
                       )
 
-T1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
-                          AFFE=_F(
-                           TOUT = 'OUI',
-                           NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                           VALE = (-50., -50., -50.,),
-                               )
-                      )
 
-T2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+T1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
@@ -120,7 +112,7 @@ MAILLAGE=MAILTOT,
                                )
                       )
 
-T3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+T2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
@@ -129,7 +121,7 @@ MAILLAGE=MAILTOT,
                                )
                       )
 
-T4=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+T3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
@@ -138,7 +130,7 @@ MAILLAGE=MAILTOT,
                                )
                       )
 
-T5=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+T4=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
@@ -147,7 +139,7 @@ MAILLAGE=MAILTOT,
                                )
                       )
 
-T6=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+T5=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
@@ -156,7 +148,7 @@ MAILLAGE=MAILTOT,
                                )
                       )
 
-T7=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+T6=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
@@ -175,8 +167,8 @@ LATEMP=CREA_RESU(
            _F( CHAM_GD = T4,  INST = 4.,),
            _F( CHAM_GD = T5,  INST = 5.,),
            _F( CHAM_GD = T6,  INST = 6.,),
-           _F( CHAM_GD = T7,  INST = 7.,))
-                 )
+           )
+        )
 TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
     PREP_VRC2= _F(  MODELE=LEMOD, CARA_ELEM=LACAR, EVOL_THER = LATEMP, ),)
 
@@ -234,7 +226,7 @@ LEDEP=STAT_NON_LINE(
                 ),
                          INCREMENT=_F(
                 LIST_INST = ZLIST,
-                NUME_INST_FIN = 7,
+                NUME_INST_FIN = 6,
                 ),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -262,43 +254,25 @@ LEDEP=CALC_ELEM( reuse=LEDEP,
 #
 
 
-
-LEDEP=CALC_ELEM(reuse=LEDEP,     RESULTAT=LEDEP,        
-                             OPTION='SIGM_ELNO_COQU' )
+# SIGM_ELNO_COQU DEVIENT INUTILE POUR LES GRILLES
+#LEDEP=CALC_ELEM(reuse=LEDEP,     RESULTAT=LEDEP,        
+#                             OPTION='SIGM_ELNO_COQU' )
 
 #
 TEST_RESU(RESU=(
 
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
-             VALE = 2.00000E+08,
+             VALE = 2.09416E+08,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIXX',
-             MAILLE = 'BMA1',
-             NOEUD = 'NO1',
-             VALE = 2.00000E+08,
-             PRECISION = 0.001,
-            ),
-            _F( RESULTAT = LEDEP,
-             INST = 2.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIXX',
-             MAILLE = 'MA1',
-             NOEUD = 'NO1',
-             VALE = 2.09416E+08,
-             PRECISION = 0.001,
-            ),
-            _F( RESULTAT = LEDEP,
-             INST = 2.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -306,8 +280,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 3.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -315,8 +289,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 3.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -324,8 +298,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 4.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 3.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -333,8 +307,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 4.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 3.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -342,8 +316,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 5.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 4.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -351,8 +325,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 5.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 4.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -360,8 +334,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 6.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 5.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -369,8 +343,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 6.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 5.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -378,8 +352,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 7.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 6.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -387,8 +361,8 @@ TEST_RESU(RESU=(
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
-             INST = 7.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             INST = 6.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',

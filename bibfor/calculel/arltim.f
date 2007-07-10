@@ -3,22 +3,22 @@
      &                  TYPEM2,H1    ,H2    ,NG    ,NT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
@@ -31,7 +31,7 @@ C
       INTEGER  NG,NT
       CHARACTER*8  TYPEM1,TYPEM2
       REAL*8       H1,H2
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE ARLEQUIN
@@ -41,7 +41,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  UNIT   : UNITE D'IMPRESSION 
+C IN  UNIT   : UNITE D'IMPRESSION
 C IN  NNM    : NOMBRE DE NOEUDS PAR MAILLE (27 DANS ASTER)
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  INTTYP : .TRUE.  INTEGRATION STANDARD
@@ -77,44 +77,44 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C      
+C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      J
       CHARACTER*8  NOMO,NOMA,NOMMA1,NOMMA2
       INTEGER      IOCC,JNOMA
       REAL*8       VAL1,VAL2
-C      
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- RECUPERATION MAILLAGE 
+C --- RECUPERATION MAILLAGE
 C
       CALL GETVID(' ','MODELE',0,1,1,NOMO,IOCC)
       IF (IOCC.EQ.0) THEN
         WRITE(UNIT,*) '<ARLTE   > AFFICHAGE IMPOSSIBLE (VOIR ARLTIM) '
-        GOTO 999  
+        GOTO 999
       ENDIF
-      CALL JEVEUO(NOMO(1:8)//'.MODELE    .NOMA','L',JNOMA)
-      NOMA = ZK8(JNOMA)                                
+      CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',JNOMA)
+      NOMA = ZK8(JNOMA)
 C
 C --- CALCUL EQUIVALENT MATRICE L1
 C
-      VAL1 = 0.D0  
-      DO 10 J = 1, 10*NNM*NNM   
+      VAL1 = 0.D0
+      DO 10 J = 1, 10*NNM*NNM
         VAL1 = VAL1 + J*L1(J)
-  10  CONTINUE          
+  10  CONTINUE
 C
 C --- CALCUL EQUIVALENT MATRICE L2
 C
       VAL2 = 0.D0
-      DO 20 J = 1, 10*NNM*NNM   
+      DO 20 J = 1, 10*NNM*NNM
         VAL2 = VAL2 + J*L2(J)
-  20  CONTINUE   
+  20  CONTINUE
 C
       CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUM1),NOMMA1)
-      CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUM2),NOMMA2)  
+      CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMMAI',NUM2),NOMMA2)
 C
       WRITE(UNIT,*) '<ARLTE   > ... COUPLE...'
 C
@@ -124,8 +124,8 @@ C
      &                  NOMMA1,'( NB GAUSS: ',NG,' )'
         ELSE
           WRITE(UNIT,*) '<ARLTE   > ...... INTEGRATION STANDARD SUR ',
-     &                  NOMMA2,'( NB GAUSS: ',NG,' )'        
-        ENDIF  
+     &                  NOMMA2,'( NB GAUSS: ',NG,' )'
+        ENDIF
       ELSE
         IF (DIME.EQ.2) THEN
           WRITE(UNIT,*) '<ARLTE   > ...... INTEGRATION PAR '//
@@ -134,18 +134,18 @@ C
         ELSE
           WRITE(UNIT,*) '<ARLTE   > ...... INTEGRATION PAR '//
      &                  'SOUS-MAILLES ( NB GAUSS: ',NG,' - '//
-     &                  'NB TETRAEDRES: ',NT,' )'        
-        
+     &                  'NB TETRAEDRES: ',NT,' )'
+
         ENDIF
       ENDIF
 C
       WRITE(UNIT,*) '<ARLTE   > ...... ',NOMMA1,'( ',
      &               TYPEM1,') - TAILLE: ',H1,' - VALE : ',VAL1
       WRITE(UNIT,*) '<ARLTE   > ...... ',NOMMA2,'( ',
-     &               TYPEM2,') - TAILLE: ',H2,' - VALE : ',VAL2  
-         
+     &               TYPEM2,') - TAILLE: ',H2,' - VALE : ',VAL2
+
 C
-  999 CONTINUE      
+  999 CONTINUE
 C
       CALL JEDEMA()
       END

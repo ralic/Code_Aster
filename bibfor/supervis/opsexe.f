@@ -1,10 +1,11 @@
       SUBROUTINE OPSEXE( ICMD, ICOND, NUOPER, NOMCMD , IER )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            ICMD, ICOND, NUOPER,          IER
+      INTEGER VALI
       CHARACTER*(*)                           NOMCMD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,11 +36,8 @@ C     ------------------------------------------------------------------
      +       81, 82, 83, 84, 85, 86, 87, 88, 89 , 90,
      +       91, 92, 93, 94, 95, 96, 97, 98, 99      ) NUOPER
          IER = 1
-         CALL UTDEBM('E','EXECUTION DES PROCEDURES SUPERVISEUR '//
-     +                                                   '(ERREUR 01)',
-     +    'LA PROCEDURE A UN NUMERO NON APPELABLE DANS CETTE VERSION.')
-         CALL UTIMPI('L','LE NUMERO ERRONE EST ',1,-NUOPER)
-         CALL UTFINM( )
+         VALI = -NUOPER
+         CALL U2MESG('E','SUPERVIS_60',0,' ',1,VALI,0,0.D0)
       GOTO 99999
 C
    1  CONTINUE

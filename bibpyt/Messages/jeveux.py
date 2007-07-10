@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF jeveux Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,23 +66,25 @@ cata_msg={
 
 
 10: _("""
- le nom demande existe deja  dans la base  %(k1)s
+Erreur de programmation :
+
+ Le nom demandé %(k1)s existe deja dans la base  %(k2)s
 """),
 
 11: _("""
- erreur lors de la fermeture de la base  %(k1)s
+ Erreur lors de la fermeture de la base  %(k1)s
 """),
 
 12: _("""
-  fichier associe a la base  %(k1)s  inexistant
+  Fichier associe a la base  %(k1)s  inexistant
 """),
 
 13: _("""
-  erreur de lecture du 1er bloc de  %(k1)s
+  Erreur de lecture du 1er bloc de  %(k1)s
 """),
 
 14: _("""
-  erreur lors de la fermeture de  %(k1)s
+  Erreur lors de la fermeture de  %(k1)s
 """),
 
 15: _("""
@@ -180,7 +182,7 @@ cata_msg={
 33: _("""
      Modification de l'environnement JEVEUX.
      Allocation dynamique des segments de valeurs de taille superieure
-     a %(i1)d (entiers) 
+     a %(i1)d (entiers)
 """),
 
 34: _("""
@@ -192,67 +194,67 @@ cata_msg={
      Le nombre de bases gerables est limite a %(i1)d
 """),
 
-36: _("""  
+36: _("""
      Le nombre d'enregistrements maximum de la base %(k1)s sera modifie,
      de %(i1)d a %(i2)d
 """),
 
 37: _("""
-     La valeur du rapport entre partitions ne convient pas, 
-     la longueur de la partition 1 doit etre au minimum de %(i1)d mots 
+     La valeur du rapport entre partitions ne convient pas,
+     la longueur de la partition 1 doit etre au minimum de %(i1)d mots
      soit environ %(i2)d %%
 """),
 
 
 38: _("""
-     Numero d'objet invalide %(i1)d 
+     Numero d'objet invalide %(i1)d
 """),
 
 
 39: _("""
      Taille de repertoire demandee trop grande.
      Le maximun est de %(i1)d
-     La valeur reclamee est de %(i2)d 
-      
+     La valeur reclamee est de %(i2)d
+
 """),
 
 
 40: _("""
      Erreur ecriture de l'enregistrement %(i1)s sur la base : %(k1)s %(i2)d
-     code retour WRITDR : %(i3)d 
+     code retour WRITDR : %(i3)d
      Erreur probablement provoquee par une taille trop faible du repertoire de travail.
-      
+
 """),
 
 
 41: _("""
      Erreur lecture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
-     code retour READDR : %(i3)d 
-      
+     code retour READDR : %(i3)d
+
 """),
 
 
 42: _("""
-     Fichier sature, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s 
-     est atteint, il faut relancer le calcul en modifiant le parametre NMAX_ENRE dans DEBUT 
-     ou en passant une taille maximum de base sur la ligne de commande 
+     Fichier sature, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s
+     est atteint, il faut relancer le calcul en modifiant le parametre NMAX_ENRE dans DEBUT
+     ou en passant une taille maximum de base sur la ligne de commande
      argument "-max_base" suivi de la valeur en Mo.
 
 """),
 
 
 43: _("""
-     Erreur d'ouverture du fichier %(k1)s , code retour OPENDR = %(i1)d 
+     Erreur d'ouverture du fichier %(k1)s , code retour OPENDR = %(i1)d
 
-      
+
 """),
 
 44: _("""
- Taille des segments de valeurs %(i1)d 
+ Taille des segments de valeurs %(i1)d
 """),
 
 45: _("""
- Taille de la partition principale %(r1)g 
+ Taille de la partition principale %(r1)g
 """),
 
 }

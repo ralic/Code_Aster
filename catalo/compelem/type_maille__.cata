@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,6 +115,7 @@ MAILLE__ TRIA6      6       DIM__  2   CODE__  'TR6'
          FAMILLE__ FPG6        6
          FAMILLE__ FPG13       13
          FAMILLE__ FPG16       16
+         FAMILLE__ XFEM72      72
 
 MAILLE__ TRIA66     12      DIM__  2   CODE__  'T66'
    ELREFE__ V_TRIA66
@@ -156,6 +157,7 @@ MAILLE__ QUAD8      8       DIM__  2   CODE__  'QU8'
          FAMILLE__ FPG4        4
          FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG9        9
+         FAMILLE__ XFEM144     144
 
 MAILLE__ QUAD88     16      DIM__  2   CODE__  'Q88'
    ELREFE__ V_QUAD88
@@ -184,7 +186,6 @@ MAILLE__ TETRA4     4       DIM__  3   CODE__  'TE4'
          FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG5        5
          FAMILLE__ FPG15       15
-         FAMILLE__ XFEM24      24
          FAMILLE__ XFEM90      90
 
 MAILLE__ TETRA10    10      DIM__  3   CODE__  'T10'
@@ -196,6 +197,7 @@ MAILLE__ TETRA10    10      DIM__  3   CODE__  'T10'
          FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG5        5
          FAMILLE__ FPG15       15
+         FAMILLE__ XFEM90      90
 
 MAILLE__ PENTA6     6       DIM__  3   CODE__  'PE6'
    ELREFE__ PE6
@@ -218,6 +220,7 @@ MAILLE__ PENTA15    15      DIM__  3   CODE__  'P15'
          FAMILLE__ FPG6NOS     12
          FAMILLE__ FPG8        8
          FAMILLE__ FPG21       21
+         FAMILLE__ XFEM270     270
 
 MAILLE__ PYRAM5     5       DIM__  3   CODE__  'PY5'
    ELREFE__ PY5
@@ -256,6 +259,7 @@ MAILLE__ HEXA20     20      DIM__  3   CODE__  'H20'
          FAMILLE__ FPG8        8
          FAMILLE__ FPG8NOS     16
          FAMILLE__ FPG27       27
+         FAMILLE__ XFEM540     540
 
 MAILLE__ HEXA27     27      DIM__  3   CODE__  'H27'
    ELREFE__ H27

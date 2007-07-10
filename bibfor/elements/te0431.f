@@ -1,6 +1,6 @@
       SUBROUTINE TE0431(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
-C                          EN 2D (CPLAN ET DPLAN) ET AXI
+C                          POUR LES GRILLES MEMBRANES EXCENTREES OU NON
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -33,15 +33,18 @@ C ......................................................................
       INTEGER NNO,NPG,I,IMATUU,LGPG,LGPG1,NDIM,NNOS,JGANO
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE,ICAMAS
       INTEGER ICONTM,IVARIM
-      INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
+      INTEGER IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,IVARIX,IRET
       INTEGER ICACOQ,KPG,N,J,KKD,M,J1,COD(9)
-      INTEGER KK,JTAB(7),JCRET,KP
-      REAL*8 DFF(2,8)
-      REAL*8 ALPHA,BETA,DIR11(3),B(3,8),JAC,VALRES(2),SIG
-      REAL*8 TEMPP,DEPS,TMP,RIG,DENSIT,SIGM,EPSM
-      REAL*8 R8VIDE,ANGMAS(3),R8DGRD,R8NNEM,TREF
-      LOGICAL MATSYM,VECTEU,MATRIC
+      INTEGER IMASS
+      INTEGER KK,JTAB(7),JCRET,NDDL,IDEPL,IDEFO,IPESA,IEPSIN,INR
+      REAL*8 DFF(2,8),TEMP,R8BID,P(3,6)
+      REAL*8 ALPHA,BETA,DIR11(3),VFF(8),B(6,8),JAC,VALRES(2),SIG,RHO
+      REAL*8 TEMPM,TEMPP,DEPS,TMP,RIG,DENSIT,SIGM,EPSM,VECN(3),SIGG(9)
+      REAL*8 R8VIDE,ANGMAS(3),R8DGRD,R8NNEM,DISTN,PGL(3,3),EPSG(9),TREF
+      REAL*8 X(8),Y(8),Z(8),VOLUME,CDG(3),PPG,XXI,YYI,ZZI,MATINE(6),VRO
+      REAL*8 EPOT
+      LOGICAL MATSYM,VECTEU,MATRIC,LEXC
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -61,26 +64,41 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       VECTEU = ((OPTION(1:9).EQ.'FULL_MECA').OR.(OPTION.EQ.'RAPH_MECA')
-     &   .OR.(OPTION.EQ.'FORC_NODA').OR.(OPTION.EQ.'CHAR_MECA_TEMP_R'))
+     &    .OR.(OPTION.EQ.'FORC_NODA').OR.(OPTION.EQ.'CHAR_MECA_TEMP_R')
+     &    .OR.(OPTION.EQ.'CHAR_MECA_EPSI_R'))
       MATRIC = ((OPTION(1:9).EQ.'FULL_MECA').OR.
      &          (OPTION(1:9).EQ.'RIGI_MECA'))
+      LEXC = (NOMTE(1:4).EQ.'MEGC')
 
 
 C - FONCTIONS DE FORMES ET POINTS DE GAUSS
       FAMI = 'RIGI'
-      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C - PARAMETRES EN ENTREE
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCACOQU','L',ICACOQ)
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 
       IF (OPTION.EQ.'FORC_NODA') THEN
         CALL JEVECH('PCONTMR','L',ICONTM)
-      ELSE IF (OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
+      ELSE IF (OPTION.EQ.'CHAR_MECA_EPSI_R') THEN
         CALL JEVECH('PMATERC','L',IMATE)
-       CALL JEVECH('PTEMPSR','L',IINSTM)
+        CALL JEVECH('PEPSINR','L',IEPSIN)  
+        CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+      ELSE IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL JEVECH('PPESANR','L',IPESA)       
+      ELSE IF (OPTION.EQ.'CHAR_MECA_TEMP_R'.OR.
+     &         OPTION.EQ.'SIEF_ELGA_DEPL'.OR.
+     &         OPTION.EQ.'SIGM_ELNO_DEPL'.OR.
+     &         OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+        IF (OPTION.EQ.'SIEF_ELGA_DEPL'.OR.
+     &      OPTION.EQ.'SIGM_ELNO_DEPL'.OR.
+     &      OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+          CALL JEVECH('PDEPLAR','L',IDEPL)
+        ENDIF 
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
       ELSEIF (OPTION.EQ.'RIGI_MECA') THEN
         CALL JEVECH('PMATERC','L',IMATE)
       ELSE IF (OPTION(1:9).EQ.'FULL_MECA'.OR.
@@ -91,18 +109,31 @@ C - PARAMETRES EN ENTREE
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         CALL JEVECH('PDEPLPR','L',IDEPLP)
         CALL JEVECH('PDEPLMR','L',IDEPLM)
-        CALL JEVECH('PINSTMR','L',IINSTM)
-        CALL JEVECH('PINSTPR','L',IINSTP)
         CALL JEVECH('PMATERC','L',IMATE)
         CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
         LGPG1 = MAX(JTAB(6),1)*JTAB(7)
         LGPG = LGPG1
         CALL JEVECH('PVARIMR','E',IVARIM)
         CALL JEVECH('PVARIMP','L',IVARIX)
+        CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 
 C --- ORIENTATION DU MASSIF
+        CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
         CALL R8INIR(3, R8NNEM(), ANGMAS ,1)
+        IF (ICAMAS.GT.0) THEN
+          IF (ZR(ICAMAS).GT.0.D0) THEN
+           ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
+           ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
+           ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+          ENDIF
+        ENDIF
+      ELSE IF ((OPTION.EQ.'EPSI_ELGA_DEPL').OR.
+     &         (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
 
+        CALL JEVECH('PDEPLAR','L',IDEPL)
+        CALL R8INIR(9,0.D0,EPSG,1)
+      ELSE IF (OPTION.EQ.'MASS_INER') THEN
+        CALL JEVECH('PMATERC','L',IMATE)
       ENDIF
 
 C PARAMETRES EN SORTIE
@@ -118,7 +149,9 @@ C      ESTIMATION VARIABLES INTERNES A L'ITERATION PRECEDENTE
         CALL DCOPY(NPG*LGPG,ZR(IVARIX),1,ZR(IVARIP),1)
 
       ELSE IF (OPTION.EQ.'FORC_NODA'.OR.
-     &         OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
+     &         OPTION.EQ.'CHAR_MECA_TEMP_R'.OR.
+     &         OPTION.EQ.'CHAR_MECA_EPSI_R'.OR. 
+     &         OPTION.EQ.'CHAR_MECA_PESA_R') THEN
         CALL JEVECH('PVECTUR','E',IVECTU)
 
       ENDIF
@@ -128,6 +161,30 @@ C      ESTIMATION VARIABLES INTERNES A L'ITERATION PRECEDENTE
       ENDIF
 
 
+      IF ((OPTION.EQ.'EPSI_ELGA_DEPL').OR.
+     &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+
+        CALL JEVECH('PDEFORR','E',IDEFO)
+
+      ENDIF
+      
+      IF (OPTION.EQ.'SIEF_ELGA_DEPL'.OR.
+     &    OPTION.EQ.'SIGM_ELNO_DEPL') THEN
+        CALL JEVECH('PCONTRR','E',ICONTP)
+        CALL R8INIR(9,0.D0,SIGG,1)
+      ENDIF
+      
+      IF (OPTION.EQ.'MASS_INER') THEN
+        CALL JEVECH('PMASSINE','E',IMASS)
+        CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
+     &                 'RHO',RHO,CODRES, 'FM')
+      ENDIF
+
+      IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+        CALL JEVECH('PENERDR','E',INR)
+        EPOT = 0.D0
+      ENDIF
+      
 C - INITIALISATION CODES RETOURS
       DO 1955 KPG=1,NPG
          COD(KPG)=0
@@ -143,6 +200,47 @@ C -- LE VECTEUR NORME QUI INDIQUE LA DIRECTION D'ARMATURE
       DIR11(3) = SIN(BETA)
 
 
+C --- SI EXCENTREE : RECUPERATION DE LA NORMALE ET DE L'EXCENTREMENT
+
+      IF (LEXC) THEN
+
+        IF (NOMTE.EQ.'MEGCTR3') THEN
+          CALL DXTPGL(ZR(IGEOM),PGL)
+        ELSEIF (NOMTE.EQ.'MEGCQU4') THEN
+          CALL DXQPGL(ZR(IGEOM),PGL)
+        ENDIF
+        
+        DISTN = ZR(ICACOQ+3)
+        
+        DO 8 I=1,3
+          VECN(I)=DISTN*PGL(3,I)
+8       CONTINUE
+
+        NDDL=6
+
+      ELSE
+        
+        DISTN = R8VIDE()
+        NDDL  = 3
+        
+      ENDIF
+      
+      IF (OPTION.EQ.'MASS_INER') THEN
+        DO 40 I = 1,NNO
+          X(I) = ZR(IGEOM+3* (I-1))
+          Y(I) = ZR(IGEOM+3*I-2)
+          Z(I) = ZR(IGEOM+3*I-1)
+40      CONTINUE
+        IF (LEXC) THEN
+          X(I) = X(I) + VECN(1)
+          Y(I) = Y(I) + VECN(2)
+          Z(I) = Z(I) + VECN(3)
+        ENDIF
+        CALL R8INIR(3,0.D0,CDG,1)
+        CALL R8INIR(6,0.D0,MATINE,1)
+      ENDIF
+        
+      VOLUME = 0.D0
 C
 C - CALCUL POUR CHAQUE POINT DE GAUSS : ON CALCULE D'ABORD LA
 C      CONTRAINTE ET/OU LA RIGIDITE SI NECESSAIRE PUIS
@@ -154,13 +252,14 @@ C - MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
 C   ET DES DERIVEES DE FONCTION DE FORME
 
         DO 11 N=1,NNO
+          VFF(N)  =ZR(IVF+(KPG-1)*NNO+N-1)
           DFF(1,N)=ZR(IDFDE+(KPG-1)*NNO*2+(N-1)*2)
           DFF(2,N)=ZR(IDFDE+(KPG-1)*NNO*2+(N-1)*2+1)
 11      CONTINUE
 
 C - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
 
-        CALL NMGRIB(NNO,ZR(IGEOM),DFF,DIR11,B,JAC)
+        CALL NMGRIB(NNO,ZR(IGEOM),DFF,DIR11,LEXC,VECN,B,JAC,P)
 
 
 C - RIGI_MECA : ON DONNE LA RIGIDITE ELASTIQUE
@@ -182,17 +281,41 @@ C - FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
 
 C - CHAR_MECA_TEMP_R : SIG = SIGMA THERMIQUE
 
+        IF (OPTION.EQ.'CHAR_MECA_EPSI_R') THEN
+
+          NOMRES(1) = 'E'
+          CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
+     &                 NOMRES,VALRES,CODRES, 'FM')
+
+          SIG=VALRES(1)*ZR(IEPSIN)
+
+        ENDIF
+
+C - CHAR_MECA_TEMP_R : SIG = SIGMA THERMIQUE
+
         IF (OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
 
-          CALL RCVARC('F','TEMP','+','RIGI',KP,1,TEMPP,IRET)
+          CALL RCVARC('F','TEMP','+','RIGI',KPG,1,TEMPP,IRET)
 
           NOMRES(1) = 'ALPHA'
           NOMRES(2) = 'E'
-          CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',
-     &                0,' ',0.D0,2,
-     &                NOMRES,VALRES,CODRES, 'FM')
+          CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,2,
+     &                 NOMRES,VALRES,CODRES, 'FM')
 
           SIG=VALRES(1)*VALRES(2)*(TEMPP-TREF)
+
+        ENDIF
+
+C - CHAR_MECA_PESA_R : 
+        IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
+          CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
+     &                 'RHO',RHO,CODRES, 'FM')
+          DO 130 N=1,NNO
+            DO 130 I=1,3
+              ZR(IVECTU+(N-1)*NDDL+I-1)=ZR(IVECTU+(N-1)*NDDL+I-1)+
+     &               RHO*ZR(IPOIDS+KPG-1)*ZR(IPESA)*ZR(IPESA+I)*
+     &                VFF(N)*DENSIT*JAC
+130       CONTINUE
 
         ENDIF
 
@@ -210,9 +333,9 @@ C - CALCUL DE LA DEFORMATION DEPS11
           DEPS=0.D0
 
           DO 20 I=1,NNO
-            DO 20 J=1,3
-              EPSM=EPSM+B(J,I)*ZR(IDEPLM+(I-1)*3+J-1)
-              DEPS=DEPS+B(J,I)*ZR(IDEPLP+(I-1)*3+J-1)
+            DO 20 J=1,NDDL
+              EPSM=EPSM+B(J,I)*ZR(IDEPLM+(I-1)*NDDL+J-1)
+              DEPS=DEPS+B(J,I)*ZR(IDEPLP+(I-1)*NDDL+J-1)
 20        CONTINUE
 
           CALL NMCO1D(FAMI,KPG,1,ZI(IMATE),ZK16(ICOMPO),OPTION,
@@ -227,36 +350,144 @@ C - CALCUL DE LA DEFORMATION DEPS11
 
         ENDIF
 
+C - SIEF_ELGA_DEPL
+
+        IF (OPTION.EQ.'SIEF_ELGA_DEPL'.OR.
+     &      OPTION.EQ.'SIGM_ELNO_DEPL'.OR.
+     &      OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+
+          EPSM=0.D0
+
+          DO 210 I=1,NNO
+            DO 210 J=1,NDDL
+              EPSM=EPSM+B(J,I)*ZR(IDEPL+(I-1)*NDDL+J-1)
+210       CONTINUE
+
+          NOMRES(1) = 'E'
+          NOMRES(2) = 'ALPHA'
+          CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,2,
+     &                 NOMRES,VALRES,CODRES, '  ')
+          IF (CODRES(2).EQ.'OK') THEN
+            CALL RCVARC('F','TEMP','+','RIGI',KPG,1,TEMPP,IRET)
+            EPSM=EPSM-VALRES(2)*(TEMPP-TREF)
+          ENDIF
+          SIG=VALRES(1)*EPSM
+          
+          IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+            EPOT = EPOT+(SIG*EPSM*ZR(IPOIDS+KPG-1)*JAC*DENSIT)/2
+          ELSE
+            SIGG(KPG) = SIG            
+          ENDIF
+
+        ENDIF
+
+C - EPSI_ELGA_DEPL, EPSI_ELNO_DEPL
+C --------------------------------
+        IF ((OPTION.EQ.'EPSI_ELGA_DEPL').OR.
+     &      (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+          
+          DO 30 I=1,NNO
+            DO 30 J=1,NDDL
+              EPSG(KPG)=EPSG(KPG)+B(J,I)*ZR(IDEPL+(I-1)*NDDL+J-1)
+30        CONTINUE
+
+        ENDIF
+        
+C - EPSI_ELGA_DEPL, EPSI_ELNO_DEPL
+C --------------------------------
+        IF (OPTION.EQ.'MASS_INER') THEN
+          VOLUME = VOLUME + ZR(IPOIDS+KPG-1)*DENSIT*JAC
+          PPG = ZR(IPOIDS+KPG-1)*JAC*DENSIT
+          DO 300 I=1,NNO
+            CDG(1) = CDG(1) + PPG*VFF(I)*X(I)
+            CDG(2) = CDG(2) + PPG*VFF(I)*Y(I)
+            CDG(3) = CDG(3) + PPG*VFF(I)*Z(I)
+            XXI = 0.D0
+            YYI = 0.D0
+            ZZI = 0.D0
+            DO 310 J=1,NNO
+              XXI = XXI + X(I)*VFF(I)*VFF(J)*X(J)
+              YYI = YYI + Y(I)*VFF(I)*VFF(J)*Y(J)
+              ZZI = ZZI + Z(I)*VFF(I)*VFF(J)*Z(J)
+              MATINE(2) = MATINE(2) + X(I)*VFF(I)*VFF(J)*Y(J)*PPG
+              MATINE(4) = MATINE(4) + X(I)*VFF(I)*VFF(J)*Z(J)*PPG
+              MATINE(5) = MATINE(5) + Y(I)*VFF(I)*VFF(J)*Z(J)*PPG
+310         CONTINUE
+            MATINE(1) = MATINE(1) + PPG*(YYI+ZZI)
+            MATINE(3) = MATINE(3) + PPG*(XXI+ZZI)
+            MATINE(6) = MATINE(6) + PPG*(XXI+YYI)
+300       CONTINUE
+        ENDIF            
+          
+C - RANGEMENT DES RESULTATS
+C -------------------------
         IF (VECTEU) THEN
           DO 100 N=1,NNO
-            DO 100 I=1,3
-              ZR(IVECTU+(N-1)*3+I-1)=ZR(IVECTU+(N-1)*3+I-1)+B(I,N)*SIG*
-     &                                ZR(IPOIDS+KPG-1)*JAC*DENSIT
+            DO 100 I=1,NDDL
+              ZR(IVECTU+(N-1)*NDDL+I-1)=ZR(IVECTU+(N-1)*NDDL+I-1)
+     &                          +B(I,N)*SIG*ZR(IPOIDS+KPG-1)*JAC*DENSIT
 100       CONTINUE
         ENDIF
 
         IF (MATRIC) THEN
           DO 200 N=1,NNO
-            DO 200 I=1,3
-              KKD = (3*(N-1)+I-1) * (3*(N-1)+I) /2
-              DO 200 J=1,3
+            DO 200 I=1,NDDL
+              KKD = (NDDL*(N-1)+I-1) * (NDDL*(N-1)+I) /2
+              DO 200 J=1,NDDL
                 DO 200 M=1,N
                   IF (M.EQ.N) THEN
                     J1 = I
                   ELSE
-                    J1 = 3
+                    J1 = NDDL
                   ENDIF
 C
 C                 RIGIDITE ELASTIQUE
                   TMP=B(I,N)*RIG*B(J,M)*ZR(IPOIDS+KPG-1)*JAC*DENSIT
 C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                   IF (J.LE.J1) THEN
-                     KK = KKD + 3*(M-1)+J
+                     KK = KKD + NDDL*(M-1)+J
                      ZR(IMATUU+KK-1) = ZR(IMATUU+KK-1) + TMP
                   END IF
 200       CONTINUE
         ENDIF
 800   CONTINUE
+
+      IF (OPTION.EQ.'MASS_INER') THEN
+        VRO = RHO / VOLUME
+        ZR(IMASS)   = RHO * VOLUME
+        ZR(IMASS+1) = CDG(1)/VOLUME
+        ZR(IMASS+2) = CDG(2)/VOLUME
+        ZR(IMASS+3) = CDG(3)/VOLUME
+        ZR(IMASS+4) = MATINE(1)*RHO - VRO*(CDG(2)*CDG(2)+CDG(3)*CDG(3))
+        ZR(IMASS+5) = MATINE(3)*RHO - VRO*(CDG(1)*CDG(1)+CDG(3)*CDG(3))
+        ZR(IMASS+6) = MATINE(6)*RHO - VRO*(CDG(1)*CDG(1)+CDG(2)*CDG(2))
+        ZR(IMASS+7) = MATINE(2)*RHO - VRO*(CDG(1)*CDG(2))
+        ZR(IMASS+8) = MATINE(4)*RHO - VRO*(CDG(1)*CDG(3))
+        ZR(IMASS+9) = MATINE(5)*RHO - VRO*(CDG(2)*CDG(3))
+      ENDIF        
+        
+      IF (OPTION.EQ.'SIEF_ELGA_DEPL') THEN
+          DO 510 KPG=1,NPG
+            ZR(ICONTP+KPG-1)=SIGG(KPG)
+510       CONTINUE
+      ELSEIF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
+          CALL PPGAN2( JGANO, 1, SIGG, ZR(ICONTP) )
+      ENDIF
+
+      IF ((OPTION.EQ.'EPSI_ELGA_DEPL').OR.
+     &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+        IF ( OPTION(6:9) .EQ. 'ELNO' ) THEN
+          CALL PPGAN2( JGANO, 1, EPSG, ZR(IDEFO) )
+        ELSE
+          DO 500 KPG=1,NPG
+            ZR(IDEFO+KPG-1)=EPSG(KPG)
+500       CONTINUE
+        ENDIF
+      ENDIF
+      
+      IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+        ZR(INR) = EPOT
+      ENDIF
 
       IF (OPTION(1:9).EQ.'FULL_MECA' .OR.
      &    OPTION(1:9).EQ.'RAPH_MECA') THEN

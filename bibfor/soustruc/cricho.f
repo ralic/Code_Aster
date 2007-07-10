@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,14 +52,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER            NBCHOC, INFO, NBMODE,IRIGI,INDIC(NBMODE)
+      INTEGER VALI
       INTEGER            NEQ,NBNLI,NDECI,ISINGU,NPVNEG,IRET, ISTOP,IFAC
       REAL*8             RIGGEN(*),SEUIL,
      &                   PARCHO(NBNLI,*)
       CHARACTER*8        NOECHO(NBNLI,*)
       REAL*8             TRLOC(NBMODE),SOUPL(NBMODE),TRLOCJ
+      REAL*8 VALR(3)
       REAL*8             FIMPO(NEQ),RFIMPO(NEQ)
       REAL*8             BMODAL(NEQ,NBMODE),SOUP,CEF,TX
       CHARACTER*24       MARIG
+      CHARACTER*24 VALK
       COMPLEX*16         CBID
       INTEGER I,J,JJ,K,IA,IC,JM,IDDLX,IDDLY,IDDLZ,NUNOE
       REAL*8 CC,CS,CT,SCF,RSCF,USR,NORMX
@@ -105,11 +108,13 @@ C
             CT=0.D0
             CEF=0.D0
             IC=4*JJ-3
-            CALL UTDEBM('I','CRICHO','  ')
-            IF (INFO.GE.2)
-     &      CALL UTIMPK('L','--- AU NOEUD DE CHOC :',1,NOECHO(I,IC))
+            CALL U2MESG('I+','SOUSTRUC_91',0,' ',0,0,0,0.D0)
+            IF (INFO.GE.2) THEN
+               VALK = NOECHO(I,IC)
+               CALL U2MESG('I+','SOUSTRUC_85',1,VALK,0,0,0,0.D0)
+            ENDIF
 C     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
-            CALL UTFINM()
+            CALL U2MESG('I','SOUSTRUC_92',0,' ',0,0,0,0.D0)
             DO 11 K=1,NEQ
               FIMPO(K)=0.D0
    11       CONTINUE
@@ -199,43 +204,30 @@ C
 C      ON ORDONNE SELON LES SOUPLESSES DECROISSANTES
                CALL MDTRIB (INDIC,SOUPL,NBMODE)
                DO 32 J = 1,NBMODE
-                  CALL UTDEBM('I','CRICHO','  ')
-                  CALL UTIMPI('L',' POUR LE MODE NO :',1,INDIC(J))
-                  CALL UTIMPR('L','TAUX DE FLEXIBILITE LOCALE   : ',
-     &                             1,TRLOC(INDIC(J)))
-                  CALL UTIMPR('L','SOUPLESSE LOCALE             : ',
-     &                             1,SOUPL(INDIC(J)))
-                  CALL UTIMPR('L','TAUX EFFORT TRANCHANT LOCAL  : ',
-     &                             1,ZR(JEFLOC-1+INDIC(J)))
-                  CALL UTFINM()
+                  VALI = INDIC(J)
+                  VALR (1) = TRLOC(INDIC(J))
+                  VALR (2) = SOUPL(INDIC(J))
+                  VALR (3) = ZR(JEFLOC-1+INDIC(J))
+                  CALL U2MESG('I','SOUSTRUC_93',0,' ',1,VALI,3,VALR)
  32            CONTINUE
             ENDIF
-            CALL UTDEBM('I','CRICHO','  ')
-            CALL UTIMPK('L','-- BILAN NOEUD DE CHOC :',1,NOECHO(I,IC))
-            CALL UTIMPR('L',' TAUX DE RESTIT FLEXIBILITE      : ',
-     &                             1,CT)
-            CALL UTIMPR('L',' TAUX DE RESTIT EFFORT TRANCHANT : ',
-     &                             1,CEF)
-
+            VALK = NOECHO(I,IC)
+            VALR (1) = CT
+            VALR (2) = CEF
+            CALL U2MESG('I+','SOUSTRUC_94',1,VALK,0,0,2,VALR)
             TX = SOUP*PARCHO(I,2)*(1.D0-CT)
-            CALL UTIMPR('L',' ( SOUPLESSE STATIQUE - SOUPLESSE LOCALE )
-     &/ SOUPLESSE CHOC : ', 1,TX)
+            VALR (1) = TX
+            CALL U2MESG('I+','SOUSTRUC_95',0,' ',0,0,1,VALR)
             SEUIL=MAX(SEUIL,TX)
             TX = SOUP*CT*PARCHO(I,2)
-            CALL UTIMPR('L',' SOUPLESSE LOCALE / SOUPLESSE CHOC : ',
-     &                             1,TX)
-            CALL UTFINM()
+            VALR (1) = TX
+            CALL U2MESG('I','SOUSTRUC_96',0,' ',0,0,1,VALR)
  21       CONTINUE
 C
  20     CONTINUE
 
         IF (INFO.GE.2) THEN
-          CALL UTDEBM('I','CRICHO','  ')
-C
-C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-C 1   DECOMPOSITION AUX VALEURS SINGULIERES DE LA MATRICE A
-C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-C
+          CALL U2MESG('I+','SOUSTRUC_97',0,' ',0,0,0,0.D0)
           MATUV = .FALSE.
           NM = NBLIG
           M = NEQ
@@ -265,18 +257,15 @@ C
 83        CONTINUE
 C CONDITIONNEMENT
           IF ( MMIN .LE. EPS ) THEN
-            CALL UTIMPR('L','!! ATTENTION
-     &             PLUS PETITE VAL SING DEF STAT : ',1,MMIN)
-            CALL UTIMPR('L','!! NOUS LA FORCONS A : ',
-     &                             1,EPS)
+            VALR (1) = MMIN
+            VALR (2) = EPS
+            CALL U2MESG('I+','SOUSTRUC_98',0,' ',0,0,2,VALR)
             MMIN = EPS
           ENDIF
           SCOND = MMAX/MMIN
 C
-          CALL UTIMPR('L','---- CONDITIONNEMENT DEF STAT : ',
-     &                             1,SCOND)
-C
-C     NORMY : TYN*YN
+          VALR (1) = SCOND
+          CALL U2MESG('I+','SOUSTRUC_99',0,' ',0,0,1,VALR)
           DO 51 JJ = 1,NBMODE
             ZR(JNORMY-1+JJ)=DDOT(NEQ,BMODAL(1,JJ),1,BMODAL(1,JJ),1)
 51        CONTINUE
@@ -309,11 +298,10 @@ C
 53          CONTINUE
 C CONDITIONNEMENT
             IF ( MMIN .LE. EPS ) THEN
-              CALL UTIMPI('L',' !!! MODE NO :',1,J)
-              CALL UTIMPR('L','   LINEAIREMENT DEPENDANT A DEF. STATIQUE
-     &  VAL SING MIN : ',1,MMIN)
-              CALL UTIMPR('L','   !! NOUS LA FORCONS A : ',
-     &                             1,EPS)
+              VALI = J
+              VALR (1) = MMIN
+              VALR (2) = EPS
+              CALL U2MESG('I+','SOUSTRUC2_1',0,' ',1,VALI,2,VALR)
               MMIN = EPS
             ENDIF
             ZR(JEFLOC-1+J) = MMAX/MMIN
@@ -327,12 +315,12 @@ C
 C      ON ORDONNE SELON LA PARTICIPATION DECROISSANTE
           CALL MDTRIB (INDIC,ZR(JEFLOC),NBMODE)
           DO 72 J = 1,NBMODE
-            CALL UTIMPI('L',' POUR LE MODE NO :',1,INDIC(J))
-            CALL UTIMPR('L','PARTICIPATION : ',
-     &                             1,ZR(JEFLOC-1+INDIC(J)))
+            VALI = INDIC(J)
+            VALR (1) = ZR(JEFLOC-1+INDIC(J))
+            CALL U2MESG('I+','SOUSTRUC2_2',0,' ',1,VALI,1,VALR)
  72       CONTINUE
 C
-          CALL UTFINM()
+          CALL U2MESG('I','SOUSTRUC2_3',0,' ',0,0,0,0.D0)
         ENDIF
 
 C

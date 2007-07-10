@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C     ----------------
 C
 C --- RECUPERATION DU NOM DU MAILLAGE :
 C     -------------------------------
-      CALL JEVEUO(LIGRMO//'.NOMA','L',IDNOMA)
+      CALL JEVEUO(LIGRMO//'.LGRF','L',IDNOMA)
       NOMA = ZK8(IDNOMA)
 C
 C --- RECUPERATION DES COORDONNEES DES NOEUDS DU MAILLAGE :

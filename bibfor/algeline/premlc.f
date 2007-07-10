@@ -4,7 +4,7 @@
      +                  LBD2,RL,RL1,RL2,NRL,INVP,PERM,
      +                  LGIND,DDLMOY,NBSND)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ C     VARIABLES LOCALES
       INTEGER I1,I2,IDDL,IDDL1,IDDL2,NUM,ISN
       INTEGER NOUVSN(0:N1),ANCSN(*),P(*),Q(*)
       INTEGER NRL,MAXRL,MINRL,NBSND,J1,J2,IANC,IP,IPP,IRET
+      INTEGER VALI(3)
       LOGICAL LFETI
 C--------------------------------------------------------------
 C      5) POUR LES REL.LIN.,ON FAIT RL1(I)=LAMBD1,I ETANT LE
@@ -82,11 +83,8 @@ C------------------------------- RELATIONS LINEAIRES
         MAXRL = 0
         IDDL1 = COL(DIAG(IDDL2-1)+1)
         IF((DIAG(IDDL2)-DIAG(IDDL2-1)).LE.2) THEN
-        CALL UTDEBM('F','PREMLC','ERREUR PROGRAMMEUR')
-        CALL UTIMPI('L','LE LAMBDA2 ',1,IDDL2)
-        CALL UTIMPK('L','A MOINS DE 2 VOISINS',1,' ')
-        CALL UTIMPK('L','IL FAUT  LE LAMBDA1 ET AU MOINS UN DDL',1,' ')
-        CALL UTFINM()
+        VALI (1) = IDDL2
+        CALL U2MESG('F','ALGELINE5_35',0,' ',1,VALI,0,0.D0)
         END IF
         RL(1,I) = IDDL1
         J1 = DIAG(IDDL2-1) + 2
@@ -208,12 +206,9 @@ C        PRINT *, ' ON CREE UN NV SN DDL ORDINAIRE : '
       NBSND = NBSND-1
       NUM = NUM -1
       IF (NUM.NE.N1) THEN
-        CALL UTDEBM('F','PREMLC','PROBLEME DANS LE'//
-     +' CALCUL DES DDL: ')
-        CALL UTIMPK('L','NUM DEVRAIT ETRE EGAL A N1',1,' ')
-        CALL UTIMPI('L','NUM',1,NUM)
-        CALL UTIMPI('S','N1',1,N1)
-        CALL UTIMPK('L','IMPRESSION DES LAGRANGES ',1,' ')
+        VALI (1) = NUM
+        VALI (2) = N1
+        CALL U2MESG('F+','ALGELINE5_36',0,' ',2,VALI,0,0.D0)
         DO 350 I = 1,N1
             IF(LBD1(I).NE.0) THEN
             WRITE(IFM,*)'LE DDL BLOQUE: ',I,' A POUR LAMBDA1: ',LBD1(I)
@@ -223,18 +218,19 @@ C        PRINT *, ' ON CREE UN NV SN DDL ORDINAIRE : '
                IER =1
             ENDIF
          IF(IER.EQ.1) THEN
-            CALL UTIMPK('L','NUME_DDL INCOHERENCE DES LAGRANGES',1,' ')
-            CALL UTIMPI('L','DDL',1,I)
-            CALL UTIMPI('L','LAMBDA1',1,LBD1(I))
-            CALL UTIMPI('L','LAMBDA1',1,LBD2(I))
+            VALI (1) = I
+            VALI (2) = LBD1(I)
+            VALI (3) = LBD2(I)
+            CALL U2MESG('F+','ALGELINE5_37',0,' ',3,VALI,0,0.D0)
          ENDIF
  350  CONTINUE
-      CALL UTIMPI('L','NBRE DE RELATIONS LINEAIRES',1,NRL)
+      VALI (1) = NRL
+      CALL U2MESG('F+','ALGELINE5_38',0,' ',1,VALI,0,0.D0)
       DO 360 I=1,NRL
-            CALL UTIMPI('L','LAMBDA1 DE R LINEAIRE',1,RL(1,I))
-            CALL UTIMPI('L','LAMBDA2 DE R LINEAIRE',1,RL(2,I))
+            VALI (1) = RL(1,I)
+            VALI (2) = RL(2,I)
+            CALL U2MESG('F+','ALGELINE5_39',0,' ',2,VALI,0,0.D0)
  360     CONTINUE
-        CALL UTFINM()
       END IF
 C----------------------    CALCUL DU NOUVEAU PARENT
       DO 270 ISN = 1,NBSND

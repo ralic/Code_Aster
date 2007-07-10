@@ -7,7 +7,7 @@
       CHARACTER*(*)           BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       INTEGER ZI
       REAL*8 ZR,R1,R2,RBASE
+      REAL*8 VALR
       COMPLEX*16 ZC,CBID
       LOGICAL ZL,COMPO
       INTEGER L1,L2
@@ -78,6 +79,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*24 TITI
+      CHARACTER*24 VALK(3)
 C
 C
       CALL JEMARQ()
@@ -229,29 +231,26 @@ C     -------------------
 
 
       IF (IER.EQ.11) THEN
-         CALL UTDEBM(STP,'RSINCH','L''EXTRAPOLATION NE PEUT ETRE FAITE'
-     &               //' A GAUCHE (INTERDIT).')
+         CALL U2MESS(STP//'+','UTILITAI8_32')
       ELSE IF (IER.EQ.12) THEN
-         CALL UTDEBM(STP,'RSINCH','L''EXTRAPOLATION NE PEUT ETRE FAITE'
-     &               //' A DROITE (INTERDIT).')
+         CALL U2MESS(STP//'+','UTILITAI8_33')
       ELSE IF (IER.EQ.10) THEN
-         CALL UTDEBM(STP,'RSINCH','L''INTERPOLATION NE PEUT ETRE FAITE'
-     &               //' CAR AUCUN CHAMP DE : '//NOMC2//
-     &               ' N''EST CALCULE.')
+         VALK (1)= NOMC2
+         CALL U2MESG(STP//'+','UTILITAI8_34',1,VALK,0,0,0,0.D0)
       ELSE IF (IER.EQ.20) THEN
-         CALL UTDEBM(STP,'RSINCH','LA VARIABLE D''ACCES '//ACCE2//
-     &               ' EST INVALIDE POUR UNE INTERPOLATION.')
+         VALK (1)= ACCE2
+         CALL U2MESG(STP//'+','UTILITAI8_35',1,VALK,0,0,0,0.D0)
       ELSE IF (IER.EQ.21) THEN
-         CALL UTDEBM(STP,'RSINCH','CE NOM DE CHAMP EST INTERDIT : '//
-     &               NOMC2//' POUR UNE INTERPOLATION.')
+         VALK (1)= NOMC2
+         CALL U2MESG(STP//'+','UTILITAI8_36',1,VALK,0,0,0,0.D0)
       END IF
 C
       IF (IER.GE.10) THEN
-         CALL UTIMPK('L','RESULTAT:',1,NOMSD)
-         CALL UTIMPK('S','NOM_CHAM:',1,NOMCH)
-         CALL UTIMPK('S',' VARIABLE D''ACCES:',1,ACCES)
-         CALL UTIMPR('L',' VALEUR:',1,RVAL)
-         CALL UTFINM()
+         VALK (1) = NOMSD
+         VALK (2) = NOMCH
+         VALK (3) = ACCES
+         VALR = RVAL
+         CALL U2MESG(STP,'UTILITAI8_37',3,VALK,0,0,1,VALR)
       END IF
 C
 C

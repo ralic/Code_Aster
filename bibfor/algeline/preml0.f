@@ -1,7 +1,7 @@
       SUBROUTINE PREML0(N1,N2,DIAG,COL,DELG,PRNO,DEEQ,NEC,P,Q,LBD1,LBD2,
      &                  RL,RL1,RL2,NRL,LT,LMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,9 @@ C ======================================================================
       INTEGER P(*),Q(*)
 C     VARIABLES LOCALES
       INTEGER NRL,L1,LT,N2,INO,NUM,NOBL,I,J,LMAT,I2,IDDL,IER,IFM,NIV
-      INTEGER NCOUNT,IDIAI,IDIAI1,II,LI,ICONNE,NFOIS
+      INTEGER NCOUNT,IDIAI,IDIAI1,II,LI,ICONNE,NFOIS,VALI(3)
+      LOGICAL NIVDBG
+      NIVDBG=.FALSE.
       NFOIS = 0
       ICONNE = 0
       CALL INFNIV(IFM,NIV)
@@ -56,11 +58,10 @@ C---------------------------------------------CALCUL DE ADJNC1
 C     IDDL EST UN LAGRANGE DE BLOCAGE
             NUM = -DEEQ(2*IDDL)
             IF (NUM.EQ.0) THEN
-              CALL UTDEBM('F','PREML0',' INCOHERENCE DANS DEEQ ')
-              CALL UTIMPI('L','I = ',1,IDDL)
-              CALL UTIMPI('L','DEEQ(2*I-1) = ',1,INO)
-              CALL UTIMPI('L','DEEQ(2*I) = ',1,NUM)
-              CALL UTFINM()
+              VALI (1) = IDDL
+              VALI (2) = INO
+              VALI (3) = NUM
+              CALL U2MESG('F','ALGELINE5_31',0,' ',3,VALI,0,0.D0)
             END IF
             NOBL = PRNO((NEC+2)* (INO-1)+1)
 C     RECHERCHE DE NOBL : NUMERO DU DDL BLOQUE
@@ -79,16 +80,12 @@ C     FIN DO WHILE
               IF (LBD2(NOBL).NE.0) NFOIS = NFOIS + 1
               LBD2(NOBL) = IDDL
             ELSE
-              CALL UTDEBM('F','PREML0',' ERREUR DE TYPE ')
-              CALL UTIMPI('L','DELG(IDDL) DIFF DE -1 OU -2 ',1,
-     &                    DELG(IDDL))
-              CALL UTFINM()
+              VALI (1) = DELG(IDDL)
+              CALL U2MESG('F','ALGELINE5_32',0,' ',1,VALI,0,0.D0)
             END IF
             IF (NFOIS.GT.0) THEN
-              CALL UTDEBM('F','PREML0','UN DDL BLOQUE A AU MOINS ')
-              CALL UTIMPK('L','2 LAMBDA1 OU 2 LAMBDA2',1,' ')
-              CALL UTIMPI('L','LE DDL BLOQUE EST ',1,NOBL)
-              CALL UTFINM()
+              VALI (1) = NOBL
+              CALL U2MESG('F','ALGELINE5_33',0,' ',1,VALI,0,0.D0)
             END IF
           ELSE
 C     IDDL EST UN LAGRANGE DE RELATION LINEAIRE
@@ -117,50 +114,49 @@ C     ON MAJORE LT POUR LES PETITS CAS-TESTS
       END IF
 
 C     VERIFICATION DES CONNEXIONS DES LAGRANGES
+      IF(NIVDBG) THEN
+       DO 80 I = 1,N1
+         LI = LBD1(I)
+         IF (LI.NE.0) THEN
+           IDIAI1 = DIAG(LI-1) + 1
+           IDIAI = DIAG(LI)
+           IF (IDIAI1.LT.IDIAI) THEN
 
-      DO 80 I = 1,N1
-        LI = LBD1(I)
-        IF (LI.NE.0) THEN
-          IDIAI1 = DIAG(LI-1) + 1
-          IDIAI = DIAG(LI)
-          IF (IDIAI1.LT.IDIAI) THEN
-
-C WRITE(IFM,*)'LE DDL BLOQUE: ',I,' A POUR LAMBDA1: ',LBD1(I)
-C WRITE(IFM,*)'LE DDL BLOQUE: ',I,' A POUR LAMBDA2: ',LBD2(I)
-C WRITE(IFM,*)'LE LAMBDA1 ',LBD1(I),
-C  &               ' A POUR VOISIN INATTENDUS '
-            DO 50 J = IDIAI1,IDIAI - 1
-C     WRITE(IFM,*) 'LE DDL ', COL(J)
-              ICONNE = ICONNE + 1
+      WRITE(IFM,*)'LE DDL BLOQUE: ',I,' A POUR LAMBDA1: ',LBD1(I)
+      WRITE(IFM,*)'LE DDL BLOQUE: ',I,' A POUR LAMBDA2: ',LBD2(I)
+      WRITE(IFM,*)'LE LAMBDA1 ',LBD1(I),
+     &               ' A POUR VOISIN INATTENDUS '
+             DO 50 J = IDIAI1,IDIAI - 1
+      WRITE(IFM,*) 'LE DDL ', COL(J)
+               ICONNE = ICONNE + 1
    50       CONTINUE
-          END IF
-          DO 70 II = LI + 1,N1
-            IDIAI1 = DIAG(II-1) + 1
-            IDIAI = DIAG(II)
-            DO 60 J = IDIAI1,IDIAI
-              IF (COL(J).EQ.LI) THEN
-                IF (II.NE.I .AND. II.NE.LBD2(I)) THEN
-C     WRITE(IFM,*)'LE DDL BLOQUE: ',I,
-C     &                        ' A POUR LAMBDA1: ',LBD1(I)
-C     WRITE(IFM,*)'LE DDL BLOQUE: ',I,
-C     &                        ' A POUR LAMBDA2: ',LBD2(I)
-C     WRITE(IFM,*)'LE LAMBDA1 ',LBD1(I),
-C     &                        ' A POUR VOISIN INATTENDU',II
-                  ICONNE = ICONNE + 1
-                END IF
-              END IF
+           END IF
+           DO 70 II = LI + 1,N1
+             IDIAI1 = DIAG(II-1) + 1
+             IDIAI = DIAG(II)
+             DO 60 J = IDIAI1,IDIAI
+               IF (COL(J).EQ.LI) THEN
+                 IF (II.NE.I .AND. II.NE.LBD2(I)) THEN
+      WRITE(IFM,*)'LE DDL BLOQUE: ',I,
+     &                        ' A POUR LAMBDA1: ',LBD1(I)
+      WRITE(IFM,*)'LE DDL BLOQUE: ',I,
+     &                        ' A POUR LAMBDA2: ',LBD2(I)
+      WRITE(IFM,*)'LE LAMBDA1 ',LBD1(I),
+     &                        ' A POUR VOISIN INATTENDU',II
+                   ICONNE = ICONNE + 1
+                 END IF
+               END IF
    60       CONTINUE
 
    70     CONTINUE
-        END IF
+         END IF
    80 CONTINUE
-C     IF(ICONNE.GT.0) THEN
-C     CALL UTDEBM('A','NUME_DDL.PREML0',
-C     +         'SUR-CONNEXION  DES LAGRANGES LAMBDA1')
-C     CALL UTFINM()
-C     WRITE(IFM,*) 2*ICONNE ,' TERMES SUPPLEMENTAIRES DANS
-C     +    LA MATRICE INITIALE'
-C     ENDIF
+      IF(ICONNE.GT.0) THEN
+        CALL U2MESS('A','ALGELINE5_53')
+        WRITE(IFM,*) 2*ICONNE ,' TERMES SUPPLEMENTAIRES DANS
+     +    LA MATRICE INITIALE'
+      ENDIF
+      ENDIF
 
       IF (NIV.EQ.2) THEN
         IER = 0
@@ -175,13 +171,10 @@ C     ENDIF
             IER = 1
           END IF
           IF (IER.EQ.1) THEN
-            CALL UTDEBM('F','NUME_DDL.PREML0',
-     &                  'INCOHERENCE DES LAGRANGES')
-            CALL UTIMPI('L','DDL',1,I)
-            CALL UTIMPI('L','LAMBDA1',1,LBD1(I))
-            CALL UTIMPI('L','LAMBDA1',1,LBD1(I))
-
-            CALL UTFINM()
+            VALI (1) = I
+            VALI (2) = LBD1(I)
+            VALI (3) = LBD1(I)
+            CALL U2MESG('F','ALGELINE5_34',0,' ',3,VALI,0,0.D0)
           END IF
 
    90   CONTINUE

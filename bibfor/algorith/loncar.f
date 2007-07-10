@@ -1,11 +1,11 @@
-      SUBROUTINE LONCAR(ELREF,COORD,L)
+      SUBROUTINE LONCAR(TYPMA,COORD,L)
       IMPLICIT NONE
 
       REAL*8        COORD(*),L
-      CHARACTER*8   ELREF
+      CHARACTER*8   TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,10 +23,10 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-C                      LONGUEUR CARACTÉRISTIQUE D'UN ÉLÉMENT
-C
+C                      LONGUEUR CARACTÉRISTIQUE D'UNE MAILLE
+
 C     ENTREE
-C       ELREF   : TYPE D'ÉLÉMENT DE RÉFÉRENCE
+C       TYPMA   : TYPE DE MAILLE
 C       COORD   : COORDONNÉES DES NOEUDS
 C
 C     SORTIE
@@ -54,13 +54,14 @@ C
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-      IF (ELREF.EQ.'HE8'.OR.ELREF.EQ.'X20') THEN
+
+      IF (TYPMA(1:4).EQ.'HEXA') THEN
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST LA GRANDE DIAGONALE N1-N7
         L=SQRT( (COORD(1)-COORD(19))**2 + (COORD(2)-COORD(20))**2
      &                                  + (COORD(3)-COORD(21))**2 )
 
-      ELSEIF (ELREF.EQ.'PE6'.OR.ELREF.EQ.'X15') THEN
+      ELSEIF (TYPMA(1:5).EQ.'PENTA') THEN
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST ((N3-N1)*(N3-N2)*(N3-N6))^(1/3)
         AR(1)=SQRT((COORD(7)-COORD(1))**2  + (COORD(8)-COORD(2))**2
@@ -71,7 +72,7 @@ C       LA LONGUEUR CARACTÉRISTIQUE EST ((N3-N1)*(N3-N2)*(N3-N6))^(1/3)
      &                                     + (COORD(9)-COORD(18))**2 )
         L=(AR(1)*AR(2)*AR(3))**(1.D0/3.D0)
 
-      ELSEIF (ELREF.EQ.'TE4'.OR.ELREF.EQ.'X10') THEN
+      ELSEIF (TYPMA(1:5).EQ.'TETRA') THEN
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
         DO 10 I=1,3
@@ -80,7 +81,7 @@ C       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
  10     CONTINUE
         L=(AR(1)*AR(2)*AR(3))**(1.D0/3.D0)
 
-      ELSEIF (ELREF.EQ.'QU4'.OR.ELREF.EQ.'X8') THEN
+      ELSEIF (TYPMA(1:4).EQ.'QUAD') THEN
 
 C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         DO 20 I=1,2
@@ -89,7 +90,7 @@ C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
  20     CONTINUE
         L=(AR(1)*AR(2))**(1.D0/2.D0)
 
-      ELSEIF (ELREF.EQ.'TR3'.OR.ELREF.EQ.'X6') THEN
+      ELSEIF (TYPMA(1:4).EQ.'TRIA') THEN
 
 C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         DO 30 I=1,2
@@ -97,18 +98,16 @@ C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
      &        (COORD(2)-COORD(2*I+2))**2 )
  30     CONTINUE
         L=(AR(1)*AR(2))**(1.D0/2.D0)
-        
-      ELSEIF (ELREF.EQ.'SE2') THEN
 
-C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N3)*(N2-N4))^(1/2)
-          L=SQRT((COORD(1)-COORD(3))**2 +
-     &        (COORD(2)-COORD(4))**2 )
-C 30  
-        
+      ELSEIF (TYPMA(1:2).EQ.'SE') THEN
+
+C       LA LONGUEUR CARACTÉRISTIQUE EST (N1-N2)^(1/2)
+        L=SQRT((COORD(1)-COORD(3))**2+(COORD(2)-COORD(4))**2)
 
       ELSE
 
         CALL U2MESS('F','ALGORITH5_15')
+
       ENDIF
 
       CALL JEDEMA()

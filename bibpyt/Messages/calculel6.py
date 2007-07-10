@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF calculel6 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -262,10 +262,12 @@ cata_msg={
 """),
 
 52: _("""
+ Erreur Utilisateur :
 
- variables internes initiales   non coherentes (nb sous-points) avec le comportement  pour la maille  nomail
+ Variables internes initiales non coherentes (nb sous-points) avec le comportement choisi.
+ Pour la maille : %(k1)s
   nb sous-points "k-1" :  %(i1)d
-  nb sous-points "k" :  %(i2)d
+  nb sous-points "k"   :  %(i2)d
 """),
 
 53: _("""
@@ -398,23 +400,23 @@ cata_msg={
 
 68: _("""
  la liste des composantes fournies a nocart est incorrecte.
- composantes dans catalogue: 
+ composantes dans catalogue:
 """),
 
 69: _("""
-   %(k1)s 
+   %(k1)s
 """),
 
 70: _("""
- composantes dans editgd: 
+ composantes dans editgd:
 """),
 
 71: _("""
-   %(k1)s 
+   %(k1)s
 """),
 
 72: _("""
- 
+
 """),
 
 73: _("""
@@ -422,7 +424,7 @@ cata_msg={
 """),
 
 74: _("""
- element :  %(i1)d jacobien :  %(r1)f 
+ element :  %(i1)d jacobien :  %(r1)f
  attention le calcul d erreur est faux si
  la maille n est pas correctement orientee
 """),
@@ -437,6 +439,14 @@ cata_msg={
  Probleme de parallelisation des calculs élémentaires avec FETI. Imcompatiblité
  LIGREL/numéro de maille dans la routine CALCUL.
  CONSEIL: Essayer de passer en séquentiel ou de changer de solveur linéaire.
+"""),
+
+77: _("""
+ pb lors de l'affectation du champ: %(k1)s
+ des valeurs n'ont pas ete recopiees dans le cham_elem final (perte d'information ?)
+ ce probleme peut etre du a l'utilisation du mot cle TOUT='OUI'.
+ on peut verifier le champ produit avec info=2
+
 """),
 
 }

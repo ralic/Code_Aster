@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,6 +30,16 @@ ENTETE__ ELEMENT__ MECA_XT_FACE4     MAILLE__ QUAD8
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4  
+ENTETE__ ELEMENT__ MECA_XT_FACE6     MAILLE__ TRIA6
+   ELREFE__  TR6       GAUSS__  RIGI=FPG6
+   ELREFE__  TR3       GAUSS__  RIGI=FPG6
+   ATTRIBUT__  BORD=OUI
+   ENS_NOEUD__  EN1     =     1  2  3   4  5  6
+ENTETE__ ELEMENT__ MECA_XT_FACE8     MAILLE__ QUAD8
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9
+   ELREFE__  TR3       GAUSS__  RIGI=FPG6
+   ATTRIBUT__  BORD=OUI
+   ENS_NOEUD__  EN1     =      1  2  3  4  5  6  7  8
 
 
 MODE_LOCAL__

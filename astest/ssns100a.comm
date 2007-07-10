@@ -1,10 +1,21 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
-# TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
+# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SOUS CHARGEMENT THERMIQUE. GRILLE_ISOT_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
-#              REDISTRIBUTION OF THIS FILE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
 DEBUT(    CODE=_F(  NOM = 'SSNS100A',NIV_PUB_WEB='INTERNET') )
@@ -44,7 +55,7 @@ ACIER=DEFI_MATERIAU(
 LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
                         AFFE=_F(  GROUP_MA = ('GEOB','GEOBB'),
                                PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'GRILLE',
+                               MODELISATION = 'GRILLE_EXCENTRE',
                              )
                       )
 
@@ -307,16 +318,17 @@ LEDEP=CALC_ELEM( reuse = LEDEP,
 # -------------------------------------------------
 #
 
-LEDEP=CALC_ELEM(reuse    = LEDEP,
-              RESULTAT   = LEDEP,
-              OPTION     = 'SIGM_ELNO_COQU'
-               )
-
-U1=CALC_ELEM( TOUT_ORDRE  = 'OUI',
-              OPTION      = ('VARI_ELNO_COQU',),
-              REPE_COQUE  =_F(NIVE_COUCHE = 'MOY',),
-              RESULTAT    = LEDEP
-            )
+# SIGM_ELNO_COQU DEVIENT INUTILE POUR LES GRILLES
+#LEDEP=CALC_ELEM(reuse    = LEDEP,
+#              RESULTAT   = LEDEP,
+#              OPTION     = 'SIGM_ELNO_COQU'
+#               )
+# VARI_ELNO_COQU DEVIENT INUTILE POUR LES GRILLES
+#U1=CALC_ELEM( TOUT_ORDRE  = 'OUI',
+#              OPTION      = ('VARI_ELNO_COQU',),
+#              REPE_COQUE  =_F(NIVE_COUCHE = 'MOY',),
+#              RESULTAT    = LEDEP
+#            )
 
 
 
@@ -324,7 +336,7 @@ TEST_RESU(RESU=(
 
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -333,7 +345,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              NOEUD = 'NO1',
@@ -342,7 +354,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 2.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -351,7 +363,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 2.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
 #             NOM_CMP = 'SIYY',            
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
@@ -361,7 +373,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 3.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -370,7 +382,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 3.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',              
              NOEUD = 'NO1',
@@ -379,7 +391,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 4.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -388,7 +400,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 4.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',                      
              NOEUD = 'NO1',
@@ -397,7 +409,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 5.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -406,7 +418,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 5.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',             
              NOEUD = 'NO1',
@@ -415,7 +427,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 6.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -424,7 +436,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 6.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',            
              NOEUD = 'NO1',
@@ -433,7 +445,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 7.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -442,7 +454,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 7.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',            
              NOEUD = 'NO1',
@@ -451,7 +463,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 8.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -460,14 +472,14 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 8.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',          
              NOEUD = 'NO1',
              VALE = 4.096E8,                  ),
             _F( RESULTAT = LEDEP,
              INST = 9.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -476,7 +488,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 9.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',           
              NOEUD = 'NO1',
@@ -485,7 +497,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 10.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -494,7 +506,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 10.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',          
              NOEUD = 'NO1',
@@ -503,7 +515,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 11.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD = 'NO1',
@@ -512,7 +524,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 11.,
-             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',           
              NOEUD = 'NO1',
@@ -523,125 +535,125 @@ TEST_RESU(RESU=(
 
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 0.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 0.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 0.00000E+00),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 1.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 0.00000E+00),
              ),)
 
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 2.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 2.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 2.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 2.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
              ),)
 
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 3.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 3.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 3.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-             ),)
-
-TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 3.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
              ),)
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 4.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 4.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 4.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 4.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
              ),)
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 5.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 5.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 5.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 5.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
+             ),)
+
+TEST_RESU(RESU=( 
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 6.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 6.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 6.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 6.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
              ),)
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 7.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 7.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 7.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 7.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
              ),)
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 8.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 8.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 8.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
-             ),)
-
-TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 8.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
              ),)
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 9.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 9.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 9.,   TYPE_TEST='MIN',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 9.,   TYPE_TEST='MAX',
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
+             ),)
+
+TEST_RESU(RESU=( 
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 10.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 10.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 10.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 10.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
              ),)
 
 TEST_RESU(RESU=( 
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 11.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 11.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MIN',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 11.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
-            _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
+            _F(  RESULTAT = LEDEP,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 11.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
              ),)
 

@@ -1,11 +1,11 @@
-      SUBROUTINE XDIVTE(ELREFP,CONNEC,NIT)
+      SUBROUTINE XDIVTE(TYPMA,CONNEC,NIT)
       IMPLICIT NONE
 
       INTEGER       CONNEC(6,4),NIT
-      CHARACTER*8   ELREFP
+      CHARACTER*8   TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,11 +29,11 @@ C                               D'UN ÉLÉMENT PARENT X-FEM
 C                          (VOIR BOOK III 19/04/04)
 C
 C     ENTREE
-C       ELREFP  : TYPE D'ÉLÉMENT DE RÉFÉRENCE PARENT
+C       TYPMA  : TYPE DE MAILLE
 C
 C     SORTIE
-C       CONNEC  : CONNECTIVITÉ DES NOEUDS DE L'ÉLÉMENT ENFANT
-C       NIT     : NOMBRE DE SOUS-ELEMENTS
+C       CONNEC  : CONNECTIVITÉ DES NOEUDS DE LA MAILLE
+C       NIT     : NOMBRE DE SOUS-TÉTRAS
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -63,8 +63,7 @@ C ----------------------------------------------------------------------
  110    CONTINUE
  100  CONTINUE
 
-      IF (ELREFP.EQ.'HE8'.OR.ELREFP.EQ.'X20') THEN
-C       CONNECTIVITÉ DES NOEUDS
+      IF (TYPMA(1:4).EQ.'HEXA') THEN
         CONNEC(1,1)=6
         CONNEC(1,2)=3
         CONNEC(1,3)=2
@@ -90,8 +89,7 @@ C       CONNECTIVITÉ DES NOEUDS
         CONNEC(6,3)=4
         CONNEC(6,4)=6
         NIT=6
-      ELSEIF (ELREFP.EQ.'PE6'.OR.ELREFP.EQ.'X15') THEN
-C       CONNECTIVITÉ DES NOEUDS
+      ELSEIF (TYPMA(1:5).EQ.'PENTA') THEN
         CONNEC(1,1)=5
         CONNEC(1,2)=4
         CONNEC(1,3)=6
@@ -105,15 +103,13 @@ C       CONNECTIVITÉ DES NOEUDS
         CONNEC(3,3)=5
         CONNEC(3,4)=1
         NIT=3
-      ELSEIF (ELREFP.EQ.'TE4') THEN
-C       CONNECTIVITÉ DES NOEUDS
+      ELSEIF (TYPMA(1:5).EQ.'TETRA') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
         CONNEC(1,4)=4
         NIT=1
-      ELSEIF (ELREFP.EQ.'QU4'.OR.ELREFP.EQ.'X8') THEN
-C       CONNECTIVITÉ DES NOEUDS
+      ELSEIF (TYPMA(1:4).EQ.'QUAD') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=4
@@ -121,17 +117,15 @@ C       CONNECTIVITÉ DES NOEUDS
         CONNEC(2,2)=3
         CONNEC(2,3)=4
         NIT=2
-      ELSEIF (ELREFP.EQ.'TR3'.OR.ELREFP.EQ.'X6') THEN
-C       CONNECTIVITÉ DES NOEUDS
+      ELSEIF (TYPMA(1:4).EQ.'TRIA') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
         NIT=1
-      ELSEIF (ELREFP.EQ.'SE2') THEN
-C       CONNECTIVITÉ DES NOEUDS
+      ELSEIF (TYPMA(1:2).EQ.'SE') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
-        NIT=1
+        NIT=1  
       ELSE
         CALL U2MESS('F','ALGORITH5_15')
       ENDIF

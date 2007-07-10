@@ -3,7 +3,7 @@
         INTEGER         IER
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C       ---------------------------------------------------------------
         CHARACTER*16    TYPEQ,TYPOI,TYPDG,OPTION
         CHARACTER*19    NOMSD,CHELEM,CHELRS,LIGREL
         CHARACTER*24    NOMLOC
-        CHARACTER*24 VALK(3)
+        CHARACTER*24    VALK(6)
 C
         CHARACTER*72    KVAL
         COMPLEX*16      CVAL
@@ -88,6 +88,7 @@ C
         INTEGER         NBPT,NBORD,NBCMP,NUMCMP(6),NTCMP
         INTEGER         IVDMG,NUMSYM
         INTEGER         NUMLOC,NUMGD,NBGREL,DEBUG1,IMOLO1
+        INTEGER VALI(2)
 C
 C       ---------------------------------------------------------------
       CALL JEMARQ()
@@ -306,9 +307,9 @@ C  -      IL Y A NTCMP COMPOSANTES DANS L OPTION XXXX_EQUI_YYYY
 C
       IF(IMPR.GE.2) THEN
         CALL UTSAUT()
-        CALL UTDEBM('I','OP0151','PARAMETRES DE CALCUL DU DOMMAGE')
-        CALL UTIMPI('L','NOMBRE DE NUMEROS D''ORDRE  = ',1,NBORD)
-        CALL UTIMPI('L','NOMBRE DE POINTS DE CALCUL = ',1,NBPT)
+        VALI (1) = NBORD
+        VALI (2) = NBPT
+        CALL U2MESG('I+','PREPOST6_27',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C ----- CALCUL DU VECTEUR DOMMAGE EN CHAQUE NOEUD/PG
@@ -327,13 +328,13 @@ C
         IF(NOMOPT(11:14).EQ.'EPME') TYPDG = 'DEFORMATION'
         IF(NOMOPT(6:9).EQ.'ELNO')   TYPOI = 'NOEUDS'
         IF(NOMOPT(6:9).EQ.'ELGA')   TYPOI = 'POINTS DE GAUSS'
-        CALL UTIMPK('L','CALCUL     DU      DOMMAGE      EN',1,TYPDG)
-        CALL UTIMPK('L','POINTS  DE   CALCUL  DU    DOMMAGE',1,TYPOI)
-        CALL UTIMPK('L','COMPOSANTE(S) GRANDEUR EQUIVALENTE',1,TYPEQ)
-        CALL UTIMPK('L','METHODE  D EXTRACTION  DES    PICS',1,MEXPIC)
-        CALL UTIMPK('L','METHODE  DE  COMPTAGE  DES  CYCLES',1,MCOMPT)
-        CALL UTIMPK('L','METHODE  DE  CALCUL    DU  DOMMAGE',1,MDOMAG)
-        CALL UTFINM()
+        VALK (1) = TYPDG
+        VALK (2) = TYPOI
+        VALK (3) = TYPEQ
+        VALK (4) = MEXPIC
+        VALK (5) = MCOMPT
+        VALK (6) = MDOMAG
+        CALL U2MESG('I','PREPOST6_28',6,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL FGVDMG(NOMSYM,NOMSD,NOMMAT,NOMNAP,NOMFON,MEXPIC,MCOMPT,

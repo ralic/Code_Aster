@@ -11,7 +11,7 @@
       INTEGER           NTCMP,IMPR
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,13 +86,15 @@ C       ---------------------------------------------------------------
       CHARACTER*19    CHEQUI
       CHARACTER*24    NOMDMG,NOMPIC
       CHARACTER*24    NOMITV,NOMRTV
-      CHARACTER*24 VALK(3)
+      CHARACTER*24    VALK(3)
 C
       REAL*8          DOMMAG
+      REAL*8 VALR(2)
 C
       INTEGER         IPT,IORD,ICMP
       INTEGER         IVCH,IVORD,IVPIC,IVITV,IVRTV,IVCYC,IVPT
       INTEGER         NUMSYM
+      INTEGER VALI
 C
 C ---   VECTEURS DE TRAVAIL
 C
@@ -127,8 +129,9 @@ C ---     BOUCLE SUR LES POINTS
 C
         DO 10 IPT = 1 , NBPT
           IF(IMPR.GE.2) THEN
-            CALL UTDEBM('I','FGVDMG','COMPOSANTE '//KCMP)
-            CALL UTIMPI('S',' / POINT ',1,IPT)
+            VALK (1) = KCMP
+            VALI = IPT
+            CALL U2MESG('I+','PREPOST6_6',1,VALK,1,VALI,0,0.D0)
           ENDIF
 C
 C ---       CALCUL DU VECTEUR HISTOIRE DE LA EQUI_GD EN CE POINT
@@ -167,17 +170,23 @@ C
            CALL FGCOTA(NBORD,ZR(IVPT),NCYC,ZR(IVMIN),ZR(IVMAX))
           ENDIF
           IF(IMPR.GE.2) THEN
-            CALL UTIMPI('L','  NOMBRE DE  VALEURS        = ',1,NBORD)
-            CALL UTIMPR('L','  ',NBORD,ZR(IVPT))
+            VALI = NBORD
+            VALR (1) = ZR(IVPT)
+            VALR (2) = ZR(IVPT+1)
+            CALL U2MESG('I+','PREPOST6_7',0,' ',1,VALI,2,VALR)
             IF(MCOMPT.EQ.'RAINFLOW') THEN
-              CALL UTIMPI('L','  NOMBRE DE PICS EXTRAITS   = ',1,NPIC)
-              CALL UTIMPR('L','  ',NPIC,ZR(IVPIC))
+              VALI = NPIC
+              VALR (1) = ZR(IVPIC)
+              VALR (2) = ZR(IVPIC+1)
+              CALL U2MESG('I+','PREPOST6_8',0,' ',1,VALI,2,VALR)
             ENDIF
-            CALL UTIMPI('L','  NOMBRE DE CYCLES DETECTES = ',1,NCYC)
+            VALI = NCYC
+            CALL U2MESG('I+','PREPOST6_9',0,' ',1,VALI,0,0.D0)
             DO 223 J = 1 , NCYC
-              CALL UTIMPI('L',' ',1,J)
-              CALL UTIMPR('S',' / ',1,ZR(IVMAX+J-1))
-              CALL UTIMPR('S',' ',1,ZR(IVMIN+J-1))
+              VALI = J
+              VALR (1) = ZR(IVMAX+J-1)
+              VALR (2) = ZR(IVMIN+J-1)
+              CALL U2MESG('I+','PREPOST6_10',0,' ',1,VALI,2,VALR)
   223       CONTINUE
           ENDIF
 C
@@ -188,8 +197,8 @@ C
 C
           VDOMAG(IPT) = DOMMAG
           IF(IMPR.GE.2) THEN
-            CALL UTIMPR('L','  DOMMAGE EN CE POINT/CMP  = ',1,DOMMAG)
-            CALL UTFINM()
+            VALR (1) = DOMMAG
+            CALL U2MESG('I','PREPOST6_11',0,' ',0,0,1,VALR)
           ENDIF
 C
  10     CONTINUE

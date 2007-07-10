@@ -1,6 +1,6 @@
       SUBROUTINE EXPRLI(BASMDZ,LINTFZ,NMINTZ,NUMINT,FAMPRZ,II,ORDO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C
           IF (ORDO.EQ.0) THEN
             ZI(LDMAP+(1+NBEC)*(I-1)+IEC)=ZI(LLACT+(I-1)*NBEC+IEC-1)
           ELSE
-            TEMP='REORDRE_'
+            TEMP='&&OP0126'
             CALL CODENT(II,'D',NLIAI)
             ORDOD=TEMP//'      .LDAC.'//NLIAI
             CALL JEVEUO(ORDOD,'L',LLINT4)
@@ -146,7 +146,7 @@ C
         IF (ORDO.EQ.0) THEN
           CALL ISDECO(ZI(LLACT+(I-1)*NBEC+1-1),IDEC,NBCMPM)
         ELSE
-            TEMP='REORDRE_'
+            TEMP='&&OP0126'
             CALL CODENT(II,'D',NLIAI)
             ORDOD=TEMP//'      .LDAC.'//NLIAI
             CALL JEVEUO(ORDOD,'L',LLINT4)

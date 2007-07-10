@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,8 @@ C     ------------------------------------------------------------------
       IF (NIV.GT.1) WRITE(IFM,*)'3. XPODIM'
       LISTNO = '&&OP0187.LISTNO'
       CALL XPODIM(MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,LISTNO,
-     &            K19B,K19B,K19B,K19B,K19B,IBID,K8B,NBNOC,NBMAC,MAXFEM)
+     &            K19B,K19B,K19B,K19B,K19B,K19B,K19B,K19B,
+     &            IBID,K8B,NBNOC,NBMAC,MAXFEM)
 
 C     ------------------------------------------------------------------
 C     4. TRAITEMENT DES MAILLES DE MAILC
@@ -97,7 +98,7 @@ C     ------------------------------------------------------------------
 
       IF (NIV.GT.1) WRITE(IFM,*)'4. XPOMAC'
       CALL XPOMAC(MALINI,MAILC,LISTNO,NBNOC,NBMAC,MAXFEM,
-     &                                    K19B,K19B,K19B,K19B)
+     &                              K19B,K19B,K19B,K19B,K19B,K19B)
 
 C     ------------------------------------------------------------------
 C     5. TRAITEMENT DES MAILLES DE MAILX
@@ -105,7 +106,7 @@ C     ------------------------------------------------------------------
 
       IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
       CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,MAXFEM,
-     &                                    K19B,K19B,K19B,K19B)
+     &                              K19B,K19B,K19B,K19B,K19B,K19B)
 
       CALL JEEXIN(MAILN,IRET)
       IF (IRET.NE.0) CALL JEDETR(MAILN)

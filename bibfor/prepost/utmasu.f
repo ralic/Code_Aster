@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,18 +137,16 @@ C
          IF ( NBM .EQ. 0 .AND. NIV.GT.1 ) THEN
             CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),NOMAIL)
             IF ( FIRST ) THEN
-               CALL UTIMPK('L','   MAILLE: ', 1, NOMAIL )
+               VALK(1)=NOMAIL
+               CALL U2MESK('L','PREPOST6_29',1,VALK)
             ELSE
-               CALL UTDEBM('A','UTMASU','DES MAILLES DE PEAU '//
-     &                     'NE S''APPUIENT SUR AUCUNE MAILLE SUPPORT')
-               CALL UTIMPK('L','   MAILLE: ', 1, NOMAIL )
+               VALK (1)= NOMAIL
+               CALL U2MESG('A+','PREPOST6_30',1,VALK,0,0,0,0.D0)
             ENDIF
             FIRST = .TRUE.
          ENDIF
 C
  100  CONTINUE
-C
-      IF ( FIRST ) CALL UTFINM()
 C
       CALL JEDETR ( NOMAVO )
 C

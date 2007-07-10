@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_mater SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_mater SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,8 @@
 from SD import *
 
 from SD.sd_carte import sd_carte
+from SD.sd_mater import sd_mater
+from SD.sd_compor import sd_compor
 from SD.sd_util import *
 
 
@@ -45,7 +47,7 @@ class sd_cham_mater_varc(AsBase):
     CVRCCMP  = AsVK8()
 
     def exists(self):
-        return self.CVRCVARC.get()
+        return self.CVRCVARC.exists
 
     # indirection via CVRCVARC:
     def check_cham_mater_i_CVRCVARC(self, checker):
@@ -80,13 +82,13 @@ class sd_cham_mater_varc(AsBase):
         sdu_tous_non_blancs(self.CVRCGD,checker)
         sdu_tous_non_blancs(self.CVRCVARC,checker)
 
-        # les noms des CRVC doievent etre differents:
+        # les noms des CRVC doivent etre differents:
         sdu_tous_differents(self.CVRCNOM,checker)
 
 
 
 class sd_cham_mater(AsBase):
-#----------------------------------
+#=============================
     nomj = SDNom(fin=8)
 
     # CHAMP_MAT est une carte contenant la liste des noms de matériaux
@@ -104,6 +106,65 @@ class sd_cham_mater(AsBase):
     # COMPOR est une carte définissant les sd_compor affectés
     # sur les mailles du maillage
     COMPOR = Facultatif(sd_carte())
+
+
+    def check_CHAMP_MAT(self,checker) :
+    #----------------------------------
+        # on vérifie que la carte .CHAMP_MAT contient bien des noms de matériau.
+        vale=self.CHAMP_MAT.VALE.get_stripped()
+        desc=self.CHAMP_MAT.DESC.get()
+        numgd    =desc[0]
+        n_gd_edit=desc[2]
+        assert sdu_nom_gd(numgd) == 'NEUT_F', (desc,sdu_nom_gd(numgd))
+        ncmp_max=len(sdu_licmp_gd(numgd))
+        assert ncmp_max==30 , ncmp_max
+
+        for kedit in range(n_gd_edit):
+            v1=vale[kedit*ncmp_max:(kedit+1)*ncmp_max]
+            ktref=None
+            for k1 in range(len(v1)) :
+                x1=v1[k1]
+                if x1 == '' : continue
+
+                # cas particulier : 'TREF=>', '25.0'
+                if x1=='TREF=>' :
+                    ktref=k1
+                    continue
+                if ktref :
+                    assert k1 == ktref+1 , (k1, ktref)
+                    # on doit retrouver la valeur de TREF :
+                    try :
+                        tref=float(x1)
+                    except :
+                        assert 0 , ' On doit trouver la valeur de TREF: '+x1
+                    continue
+
+                # cas général : x1 est un nom de sd_mater
+                sd2=sd_mater(x1) ; sd2.check(checker)
+
+
+    def check_COMPOR(self,checker) :
+    #----------------------------------
+        # on vérifie (un peu)  la carte .COMPOR (si elle existe)
+        desc=self.COMPOR.DESC.get()
+        if not desc : return
+        vale=self.COMPOR.VALE.get_stripped()
+        numgd    =desc[0]
+        n_gd_edit=desc[2]
+        assert sdu_nom_gd(numgd) == 'COMPOR', (desc,sdu_nom_gd(numgd))
+        ncmp_max=len(sdu_licmp_gd(numgd))
+
+        for kedit in range(n_gd_edit):
+            v1=vale[kedit*ncmp_max:(kedit+1)*ncmp_max]
+            assert v1[3]=='COMP_INCR'   , v1
+            sd2=sd_compor(v1[5].split('.')[0].strip()) ; sd2.check(checker)
+
+            for x1 in v1[7:] :
+                assert x1=='' , v1
+
+
+
+
 
 
 

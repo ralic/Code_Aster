@@ -1,5 +1,5 @@
       SUBROUTINE PMFD00()
-C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,7 +121,7 @@ C Nombre total de fibres sur tous les groupes
   10    CONTINUE
       ENDIF
 
-      MODNOM = NOMO//'.MODELE    .NOMA'
+      MODNOM = NOMO//'.MODELE    .LGRF'
       CALL JEVEUO(MODNOM,'L',JDNM)
       NOMA = ZK8(JDNM)
       MLGNMA = NOMA//'.NOMMAI'

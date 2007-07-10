@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF soustruc Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -364,12 +364,9 @@ cata_msg={
   champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
 """),
 
-
-
-
-
-
-
+85: _("""
+  au noeud de choc:  %(k1)s 
+"""),
 
 86: _("""
  noeud   %(k1)s   en dehors du segment %(k2)s   abscisse curviligne %(r1)f 
@@ -389,6 +386,46 @@ cata_msg={
 
 90: _("""
  
+"""),
+
+91: _("""
+   
+"""),
+
+92: _("""
+ 
+"""),
+
+93: _("""
+    pour le mode no : %(i1)d taux de flexibilite locale   :  %(r1)f 
+ souplesse locale             :  %(r2)f 
+ taux effort tranchant local  :  %(r3)f 
+ 
+"""),
+
+94: _("""
+   -- bilan noeud de choc : %(k1)s  taux de restit flexibilite      :  %(r1)f 
+  taux de restit effort tranchant :  %(r2)f 
+"""),
+
+95: _("""
+  ( souplesse statique - souplesse locale )/ souplesse choc :  %(r1)f 
+"""),
+
+96: _("""
+  souplesse locale / souplesse choc :  %(r1)f 
+"""),
+
+97: _("""
+   
+"""),
+
+98: _("""
+ !! attentionplus petite val sing def stat :  %(r1)f !! nous la forcons a :  %(r2)f 
+"""),
+
+99: _("""
+ ---- conditionnement def stat :  %(r1)f 
 """),
 
 }

@@ -1,7 +1,7 @@
       SUBROUTINE CRGDM (IMATE,COMPOR,T,LAMBDA,DEUXMU,
      &                  LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,EP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*16       COMPOR(*)
+      CHARACTER*16       COMPOR
       INTEGER            IMATE,T(2,2)
       REAL*8             LAMBDA, DEUXMU,DEUMUF, LAMF
       REAL*8             GT,GC,GF,SEUIL,ALPHA
@@ -55,8 +55,8 @@ C ----------------------------------------------------------------------
       T(2,1)=3
       T(2,2)=2
 
-      IF ((.NOT.( COMPOR(1)(1:15) .EQ. 'GLRC_DM'))) THEN
-            CALL U2MESK('F','ELEMENTS4_65',1,COMPOR(1))
+      IF ((.NOT.( COMPOR(1:7) .EQ. 'GLRC_DM'))) THEN
+            CALL U2MESK('F','ELEMENTS4_65',1,COMPOR)
       ENDIF
 
 C    LECTURE DES CARACTERISTIQUES DU MATERIAU

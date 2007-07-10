@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_no SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_no SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,6 @@ class sd_cham_no(sd_titre):
         # faut-il vérifier le sd_maillage de chaque sd_cham_no ?   AJACOT_PB
         #  - cela risque de couter cher
         #  - cela pose un problème "import circulaire" avec sd_maillage -> sd_cham_no => import ici
-        #  - cela pose un problème de boucle infinie : sd_maillage -> sd_cham_no -> sd_maillage -> ...
         #from SD.sd_maillage import sd_maillage
         #sd2 = sd_maillage(lnom[0]) ; sd2.check(checker)
 

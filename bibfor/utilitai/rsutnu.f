@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER IBID,N1,N2,NBACC,IRET,JPARA,IACC,IAD,IUT,LXLGUT,NBVAL
+      INTEGER VALI(4)
       INTEGER JVAL,NBVA2,JNCH,II,IVAL,NBTROU,LG,LACCR
       INTEGER IORD,JORDR,JORD1,JORD2,NBORDT,NBINST,NBFREQ
       INTEGER NBTROP,INDI,JORDR3 ,LONG1,JORDR1,JORDR2,ITROU,I,INDIIS
       REAL*8 R8B
+      REAL*8 VALR
       CHARACTER*4 CTYP
+      CHARACTER*24 VALK(2)
       CHARACTER*8 K8B
       CHARACTER*16 CONCEP,NOMCMD,NOMACC
       CHARACTER*19 KNACC,KVACC,KNMOD,LISTR,RESUIN,KNUM2
@@ -185,78 +188,78 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
               IF (NBTROU.EQ.1) THEN
                 CALL I2TRGI(ZI(JORD1),ZI(JORD2),NBTROU,NBORDR)
               ELSE IF (NBTROU.GT.1) THEN
-                CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
-     &                      'CORRESPONDANT A L''ACCES DEMANDE.')
-                CALL UTIMPK('L','RESULTAT ',1,RESU)
+                VALK (1) = RESU
+                CALL U2MESG('A+','UTILITAI8_38',1,VALK,0,0,0,0.D0)
                 LG = MAX(1,LXLGUT(ZK16(JPARA-1+IACC)))
                 IF (CTYP(1:1).EQ.'I') THEN
-                  CALL UTIMPI('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZI(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALI (1) = ZI(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_39',1,VALK,1,VALI,0,0.D0)
                 ELSE IF (CTYP(1:1).EQ.'R') THEN
-                  CALL UTIMPR('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZR(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALR = ZR(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_40',1,VALK,0,0,1,VALR)
                 ELSE IF (CTYP(1:2).EQ.'K8') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK8(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK8(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',2,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:3).EQ.'K16') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK16(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK16(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',2,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:3).EQ.'K24') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK24(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK24(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',2,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:3).EQ.'K32') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK32(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK32(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',2,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:3).EQ.'K80') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK80(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK80(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',2,VALK,0,0,0,0.D0)
                 END IF
-                CALL UTIMPI('S',', NOMBRE :',1,NBTROU)
-             CALL UTIMPI('L','NUME_ORDRE RETENUS :',NBTROU,ZI(JORD2))
-                CALL UTFINM()
+                VALI (1) = NBTROU
+                VALI (2) = ZI(JORD2)
+                VALI (3) = ZI(JORD2+1)
+                VALI (4) = ZI(JORD2+2)
+                CALL U2MESG('A','UTILITAI8_46',0,' ',4,VALI,0,0.D0)
                 CALL I2TRGI(ZI(JORD1),ZI(JORD2),NBTROU,NBORDR)
               ELSE IF (NBTROU.EQ.0) THEN
-                CALL UTDEBM('A','RSUTNU','PAS DE CHAMP '//
-     &                      'CORRESPONDANT A UN ACCES DEMANDE.')
-                CALL UTIMPK('L','RESULTAT ',1,RESU)
+                VALK (1) = RESU
+                CALL U2MESG('A+','UTILITAI8_47',1,VALK,0,0,0,0.D0)
                 LG = MAX(1,LXLGUT(ZK16(JPARA-1+IACC)))
                 IF (CTYP(1:1).EQ.'I') THEN
-                  CALL UTIMPI('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZI(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALI (1) = ZI(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_39',0,' ',1,VALI,0,0.D0)
                 ELSE IF (CTYP(1:1).EQ.'R') THEN
-                  CALL UTIMPR('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZR(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALR = ZR(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_40',0,' ',0,0,1,VALR)
                 ELSE IF (CTYP(1:2).EQ.'K8') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK8(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK8(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',1,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:3).EQ.'K16') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK16(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK16(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',1,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:3).EQ.'K24') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK24(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK24(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',1,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:3).EQ.'K32') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK32(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK32(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',1,VALK,0,0,0,0.D0)
                 ELSE IF (CTYP(1:1).EQ.'K80') THEN
-                  CALL UTIMPK('S',', ACCES "'//
-     &                        ZK16(JPARA-1+IACC) (1:LG)//'" :',1,
-     &                        ZK80(JVAL-1+IVAL))
+                  VALK (1) = ZK16(JPARA-1+IACC) (1:LG)
+                  VALK (2) = ZK80(JVAL-1+IVAL)
+                  CALL U2MESG('A+','UTILITAI8_41',1,VALK,0,0,0,0.D0)
                 END IF
-                CALL UTFINM()
+                CALL U2MESG('A','UTILITAI8_55',0,' ',0,0,0,0.D0)
                 IER = IER + 10
               ELSE IF (NBTROU.LT.0) THEN
                 CALL U2MESS('F','DVP_1')
@@ -293,20 +296,17 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
      &                  CRIT,ZI(JORD2),NBORDT,NBTROU)
             IF (NBTROU.EQ.0) THEN
               IER = IER + 1
-              CALL UTDEBM('A','RSUTNU','PAS DE CHAMPS ')
-              CALL UTIMPK('S','POUR L''ACCES ',1,NOMACC)
-              CALL UTIMPR('S','DE VALEUR ',1,ZR(LACCR+IORD))
-              CALL UTFINM()
+              VALK (1)= NOMACC
+              VALR = ZR(LACCR+IORD)
+              CALL U2MESG('A','UTILITAI8_56',1,VALK,0,0,1,VALR)
             ELSE IF (NBTROU.LT.0) THEN
               CALL U2MESS('F','DVP_1')
             ELSE
               IF (NBTROU.GT.1) THEN
-                CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
-     &                      'CORRESPONDANT A L''ACCES DEMANDE.')
-                CALL UTIMPK('L','RESULTAT ',1,RESU)
-                CALL UTIMPR('S',', ACCES "INST" :',1,ZR(LACCR+IORD))
-                CALL UTIMPI('S',', NOMBRE :',1,NBTROU)
-                CALL UTFINM()
+                VALK (1) = RESU
+                VALR = ZR(LACCR+IORD)
+                VALI (1) = NBTROU
+                CALL U2MESG('A','UTILITAI8_57',1,VALK,1,VALI,1,VALR)
               END IF
               CALL I2TRGI(ZI(JORD1),ZI(JORD2),NBTROU,NBORDR)
             END IF
@@ -341,20 +341,17 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
      &                  CRIT,ZI(JORD2),NBORDT,NBTROU)
             IF (NBTROU.EQ.0) THEN
               IER = IER + 1
-              CALL UTDEBM('A','RSUTNU','PAS DE CHAMPS ')
-              CALL UTIMPK('S','POUR L''ACCES ',1,NOMACC)
-              CALL UTIMPR('S','DE VALEUR ',1,ZR(LACCR+IORD))
-              CALL UTFINM()
+              VALK (1) = NOMACC
+              VALR = ZR(LACCR+IORD)
+              CALL U2MESG('A','UTILITAI8_58',1,VALK,0,0,1,VALR)
             ELSE IF (NBTROU.LT.0) THEN
               CALL U2MESS('F','DVP_1')
             ELSE
               IF (NBTROU.GT.1) THEN
-                CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
-     &                      'CORRESPONDANT A L''ACCES DEMANDE.')
-                CALL UTIMPK('L','RESULTAT ',1,RESU)
-                CALL UTIMPR('S',', ACCES "FREQ" :',1,ZR(LACCR+IORD))
-                CALL UTIMPI('S',', NOMBRE :',1,NBTROU)
-                CALL UTFINM()
+                VALK (1) = RESU
+                VALR = ZR(LACCR+IORD)
+                VALI (1) = NBTROU
+                CALL U2MESG('A','UTILITAI8_59',1,VALK,1,VALI,1,VALR)
               END IF
               CALL I2TRGI(ZI(JORD1),ZI(JORD2),NBTROU,NBORDR)
             END IF

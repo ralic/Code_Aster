@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHAMPZ, TYPEMZ, LITROZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C
       CHARACTER*8   K8B, NOMGD
       CHARACTER*19  CHAMP, CHTRA1, CHTRA2
       CHARACTER*24  LITROU, NOMOBJ
+      CHARACTER*24  VALK(4)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -161,15 +162,18 @@ C
       ENDIF
 C
       IF ( NBENT .EQ. 0 ) THEN
-         CALL UTDEBM('F','UTMACH','ERREUR DANS LES DONNEES' )
-         CALL UTIMPK('L','POUR LE CHAMP ',1, CHAMP )
+         VALK (1) = CHAMP
+         CALL U2MESG('F+','UTILITAI8_60',1,VALK,0,0,0,0.D0)
          IF ( DOCU .EQ. 'NOEU' ) THEN
-            CALL UTIMPK('L','AUCUNS NOEUDS NE SUPPORTENT',0,K8B )
+            CALL U2MESG('F+','UTILITAI8_61',0,' ',0,0,0,0.D0)
          ELSE
-            CALL UTIMPK('L','AUCUNES MAILLES NE SUPPORTENT',0,K8B )
+            CALL U2MESG('F+','UTILITAI8_62',0,' ',0,0,0,0.D0)
          ENDIF
-         CALL UTIMPK('S',' LES COMPOSANTES ',NCMP, NOCMP )
-         CALL UTFINM( )
+         VALK (1) = NOCMP(1)
+         VALK (2) = NOCMP(2)
+         VALK (3) = NOCMP(3)
+         VALK (4) = NOCMP(4)
+         CALL U2MESG('F','UTILITAI8_63',4,VALK,0,0,0,0.D0)
       ENDIF
 C
       NBTROU = 0

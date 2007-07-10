@@ -1,21 +1,21 @@
-#@ MODIF algeline2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline2 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -39,35 +39,44 @@ cata_msg={
 """),
 
 6: _("""
- type de matrice " %(k1)s " inconnu.
+ Type de matrice " %(k1)s " inconnu.
 """),
 
 7: _("""
- on ne traite pas cette option.
+ On ne traite pas cette option.
 """),
 
 8: _("""
- on ne peut pas combiner une matrice non symetrique dans une matrice symetrique.
+ On ne peut pas combiner une matrice non symetrique dans une matrice symetrique.
 """),
 
 9: _("""
- les matrices a combiner ne sont pas construites sur le meme maillage
+ Les matrices à combiner ne sont pas construites sur le meme maillage.
 """),
 
 10: _("""
- charges cinematiques differentes.
+ Erreur de programmation :
+ On cherche à combiner 2 matrices qui n'ont pas les memes charges cinématiques.
+ Noms des 2 matrices :
+    %(k1)s
+    %(k2)s
+
+ Solution :
+    1) émettre une fiche d'anomalie / évolution
+    2) En attendant : ne pas utiliser de charges cinématiques :
+       remplacer AFFE_CHAR_CINE par AFFE_CHAR_MECA
 """),
 
 11: _("""
- les "matass" " %(k1)s "  et  " %(k2)s "  n'ont le meme domaine de definition.
+ Les matrices "%(k1)s"  et  "%(k2)s"  n'ont pas la meme structure.
 """),
 
 12: _("""
- attention: une dimesion nulle  ou nmax.lt.dmax(1,n) 
+ Attention: une dimesion nulle  ou nmax.lt.dmax(1,n)
 """),
 
 13: _("""
- attention: une dimension negative ou nulle 
+ attention: une dimension negative ou nulle
 """),
 
 14: _("""
@@ -91,7 +100,7 @@ cata_msg={
 """),
 
 19: _("""
- problemes a l'allocation des descripteurs de la matrice " %(k1)s " 
+ problemes a l'allocation des descripteurs de la matrice " %(k1)s "
 """),
 
 20: _("""
@@ -147,7 +156,7 @@ cata_msg={
 """),
 
 33: _("""
- type de mode inconnu:  %(k1)s 
+ type de mode inconnu:  %(k1)s
 """),
 
 34: _("""
@@ -215,7 +224,7 @@ cata_msg={
 """),
 
 50: _("""
- prec_ ajuste ou separe est irrealiste 
+ prec_ ajuste ou separe est irrealiste
 """),
 
 51: _("""
@@ -231,11 +240,11 @@ cata_msg={
 """),
 
 54: _("""
- la suite des valeurs donnees n'est pas croissante 
+ la suite des valeurs donnees n'est pas croissante
 """),
 
 55: _("""
- mot cle amor_reduit impossible pour cas generalise 
+ mot cle amor_reduit impossible pour cas generalise
 """),
 
 56: _("""
@@ -271,7 +280,7 @@ cata_msg={
 """),
 
 64: _("""
- le nombre param_ortho_soren n'est pas valide. 
+ le nombre param_ortho_soren n'est pas valide.
 """),
 
 65: _("""
@@ -311,7 +320,7 @@ cata_msg={
 """),
 
 74: _("""
-  erreur de verification 
+  erreur de verification
 """),
 
 75: _("""
@@ -359,7 +368,7 @@ cata_msg={
 """),
 
 86: _("""
- type de matrice inconnu 
+ type de matrice inconnu
 """),
 
 87: _("""
@@ -367,18 +376,27 @@ cata_msg={
 """),
 
 
+88: _("""
+  Problème de programmation :
+    La matrice globale %(k1)s n'existe pas.
+    Elle est nécessaire pour déterminer les ddls bloqués par AFFE_CHAR_CINE.
 
+  Solution (pour l'utilisateur) :
+    1) Ne pas utiliser de charges cinématiques (AFFE_CHAR_CINE)
+    2) Emettre une fiche d'anomalie.
 
-
-
+  Solution (pour le programmeur) :
+    La matrice globale a été détruite abusivement.
+    Instrumenter la routine jedetr.f pour déterminer la routine coupable.
+"""),
 
 
 89: _("""
- le mot-cle maillage est obligatoire avec le mot-cle crea_fiss. 
+ le mot-cle maillage est obligatoire avec le mot-cle crea_fiss.
 """),
 
 90: _("""
- le mot-cle maillage est obligatoire avec le mot-cle line_quad. 
+ le mot-cle maillage est obligatoire avec le mot-cle line_quad.
 """),
 
 91: _("""
@@ -390,7 +408,7 @@ cata_msg={
 """),
 
 93: _("""
- le mot-cle maillage est obligatoire avec le mot-cle quad_line. 
+ le mot-cle maillage est obligatoire avec le mot-cle quad_line.
 """),
 
 94: _("""
@@ -402,7 +420,7 @@ cata_msg={
 """),
 
 96: _("""
- le mot-cle maillage est obligatoire avec le mot-cle modi_maille. 
+ le mot-cle maillage est obligatoire avec le mot-cle modi_maille.
 """),
 
 97: _("""
@@ -410,7 +428,7 @@ cata_msg={
 """),
 
 98: _("""
- le mot-cle maillage est obligatoire avec le mot-cle coqu_volu. 
+ le mot-cle maillage est obligatoire avec le mot-cle coqu_volu.
 """),
 
 99: _("""

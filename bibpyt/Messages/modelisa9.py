@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF modelisa9 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -232,7 +232,7 @@ Conseil :
 """),
 
 45: _("""
- le fichier n''a pas ete construit avec la meme version de med.
+ le fichier n'a pas ete construit avec la meme version de med.
  la lecture du fichier peut echouer!
  erreur efveco numero  %(i1)d 
 """),
@@ -267,14 +267,14 @@ Conseil :
 
 53: _("""
  
- l''identifiant d''une maille depasse les 8 caracteres autorises:
+ l'identifiant d'une maille depasse les 8 caracteres autorises:
    %(k1)s 
  maille      : %(k2)s 
  pref_maille : %(k3)s 
 """),
 
 54: _("""
- l''utilisation de ''pref_nume'' est recommandee.
+ l'utilisation de 'pref_nume' est recommandee.
 """),
 
 55: _("""
@@ -290,83 +290,85 @@ Conseil :
 """),
 
 58: _("""
- ch19(1:8) depend de  %(k1)s il ne peut dependre que de %(k2)s 
+ Le matériau ne dépend pas des bons paramètres %(k1)s
+  depend de  %(k1)s il ne peut dependre que de %(k2)s 
 """),
 
 59: _("""
- erreur lors de la definition de la courbe de traction :nomcle(ii)
- le premier point de la courbe de traction nomfct a pour abscisse:  %(r1)f 
+ erreur lors de la definition de la courbe de traction : %(k1)s
+ le premier point de la courbe de traction %(k2)s a pour abscisse:  %(r1)f 
  
 """),
 
 60: _("""
- erreur lors de la definition de la courbe de traction :nomcle(ii)
- le premier point de la courbe de traction nomfct a pour ordonnee:  %(r1)f 
+ erreur lors de la definition de la courbe de traction :%(k1)s
+ le premier point de la courbe de traction %(k2)s a pour ordonnee:  %(r1)f 
  
 """),
 
 61: _("""
- erreur lors de la definition de la courbe de traction :nomcle(ii)
- pente initiale :  %(r1)f 
- pente courante:  %(r2)f 
-  pour l''abscisse:  %(r3)f 
+ erreur lors de la definition de la courbe de traction : %(k1)s
+ pente initiale :   %(r1)f 
+ pente courante :   %(r2)f 
+ pour l'abscisse:   %(r3)f 
  
 """),
 
 62: _("""
- en particulier en c_planpente initiale :  %(r1)f pente courante:  %(r2)f 
- precision relative:  %(r3)f 
-  pour l''abscisse:  %(r4)f 
+ Courbe de traction : %(k1)s points presques alignés. Risque de PB dans STAT_NON_LINE
+ en particulier en C_PLAN
+  pente initiale :     %(r1)f
+  pente courante:      %(r2)f 
+  precision relative:  %(r3)f 
+  pour l'abscisse:     %(r4)f 
  
 """),
 
 63: _("""
- erreur lors de la definition de la courbe de traction nomcle(ii)
- le premier point de la fonction indicee par :  %(i1)d 
-  de la nappe  %(k1)s 
-  a pour abscisse:  %(r1)f 
+ erreur lors de la definition de la courbe de traction %(k1)s
+ le premier point de la fonction indicee par :  %(i1)d de la nappe  %(k2)s 
+ a pour abscisse:  %(r1)f 
  
 """),
 
 64: _("""
- erreur lors de la definition de la courbe de traction nomcle(ii)
- le premier point de la fonction indicee par :  %(i1)d 
-  de la nappe  %(k1)s 
-  a pour ordonnee:  %(r1)f 
+ erreur lors de la definition de la courbe de traction %(k1)s
+ le premier point de la fonction indicee par :  %(i1)d de la nappe  %(k2)s 
+ a pour ordonnee:  %(r1)f 
  
 """),
 
 65: _("""
- erreur lors de la definition de la courbe de traction nomcle(ii)
- pente initiale :  %(r1)f 
- pente courante:  %(r2)f 
-  pour l''abscisse:  %(r3)f 
+ erreur lors de la definition de la courbe de traction %(k1)s
+ pente initiale :   %(r1)f 
+ pente courante:    %(r2)f 
+ pour l'abscisse:  %(r3)f 
  
 """),
 
 66: _("""
- erreur lors de la definition de la courbe rela_mz
- le premier point de la courbe rela_mz nomfct a pour abscisse:  %(r1)f 
+ erreur lors de la definition de la courbe RELA_MZ
+ le premier point de la courbe RELA_MZ %(k1)s a pour abscisse:  %(r1)f 
  
 """),
 
 67: _("""
- erreur lors de la definition de la courbe rela_mz
- le premier point de la courbe rela_mz nomfct a pour ordonnee:  %(r1)f 
+ erreur lors de la definition de la courbe RELA_MZ
+ le premier point de la courbe RELA_MZ %(k1)s a pour ordonnee:  %(r1)f 
  
 """),
 
 68: _("""
- erreur lors de la definition de la courbe rela_mzpente initiale :  %(r1)f 
+ erreur lors de la definition de la courbe RELA_MZ pente initiale :  %(r1)f 
  pente courante:  %(r2)f 
-  pour l''abscisse:  %(r3)f 
+ pour l'abscisse:  %(r3)f 
  
 """),
 
 69: _("""
- en particulier en c_planpente initiale :  %(r1)f pente courante:  %(r2)f 
- precision relative:  %(r3)f 
-  pour l''abscisse:  %(r4)f 
+ Courbe RELA_MZ points presque alignés. Risque de PB dans STAT_NON_LINE, en particulier 
+ en C_PLAN pente initiale :  %(r1)f pente courante:  %(r2)f 
+ precision relative:  %(r3)f pour l'abscisse:  %(r4)f 
  
 """),
 
@@ -387,14 +389,14 @@ Conseil :
 """),
 
 72: _("""
- erreur lors de la definition de la courbe de tractionpente initiale :  %(r1)f 
+ erreur lors de la definition de la courbe de traction pente initiale :  %(r1)f 
  pente courante:  %(r2)f 
-  pour l''abscisse:  %(r3)f 
+  pour l'abscisse:  %(r3)f 
  
 """),
 
 73: _("""
- erreur de programmationtype de fonction non valide %(k1)s 
+ erreur de programmation type de fonction non valide %(k1)s 
 """),
 
 74: _("""
@@ -436,6 +438,87 @@ Conseil :
 
 83: _("""
   Erreur a l'interpolation, paramètres non trouvé.
+"""),
+
+84: _("""
+    Mots clés: CARA_HYDR, VALE_HYDR, il manque des données:
+      - Nombre de données recues :    %(i1)d
+      - Nombre de données attendues : %(i2)d
+      - Données recues : %(k1)s %(k2)s %(k3)s, ...
+
+ Risques & Conseils
+   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
+"""),
+
+85: _("""
+    Mots clés: CARA_GRAPPE, VALE_GRAPPE, il manque des données:
+      - Nombre de données recues :    %(i1)d
+      - Nombre de données attendues : %(i2)d
+      - Données recues : %(k1)s %(k2)s %(k3)s, ...
+
+ Risques & Conseils
+   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
+"""),
+
+86: _("""
+    Mots clés: CARA_COMMANDE, VALE_COMMANDE, il manque des données:
+      - Nombre de données recues :    %(i1)d
+      - Nombre de données attendues : %(i2)d
+      - Données recues : %(k1)s %(k2)s %(k3)s, ...
+
+ Risques & Conseils
+   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
+"""),
+
+87: _("""
+    Mots clés: CARA_MANCHETTE, VALE_MANCHETTE, il manque des données:
+      - Nombre de données recues :    %(i1)d
+      - Nombre de données attendues : %(i2)d
+      - Données recues : %(k1)s %(k2)s %(k3)s, ...
+
+ Risques & Conseils
+   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
+"""),
+
+88: _("""
+    Mots clés: CARA_GUIDE, VALE_GUIDE, il manque des données:
+      - Nombre de données recues :    %(i1)d
+      - Nombre de données attendues : %(i2)d
+      - Données recues : %(k1)s %(k2)s %(k3)s, ...
+
+ Risques & Conseils
+   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
+"""),
+
+89: _("""
+    Mots clés: CARA_ASSEMBLAGE, VALE_ASSEMBLAGE, il manque des données:
+      - Nombre de données recues :    %(i1)d
+      - Nombre de données attendues : %(i2)d
+      - Données recues : %(k1)s %(k2)s %(k3)s, ...
+
+ Risques & Conseils
+   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
+"""),
+90: _("""
+    Mots clés: CARA_PDC, VALE_PDC, il manque des données:
+      - Nombre de données recues :    %(i1)d
+      - Nombre de données attendues : %(i2)d
+      - Données recues : %(k1)s %(k2)s %(k3)s, ...
+
+ Risques & Conseils
+   Voir la documentation d'AFFE_CHAR_MECA / GRAPPE_FLUIDE
+"""),
+
+91: _("""
+ depend de  %(k1)s  
+"""),
+
+92: _("""
+ il ne peut dependre que de %(k1)s 
+"""),
+
+93: _("""
+ ... 
 """),
 
 }

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C-----------------------------------------------------------------------
         CALL JEVEUO(MATAS//'.LIME','L',ILIME)
         CALL JEVEUO(ZK8(ILIME)//'.ME001     .NOLI','L',INOLI)
         MODELE = ZK24(INOLI) (1:8)
-        CALL JEVEUO(ZK24(INOLI) (1:19)//'.NOMA','L',INOMA)
+        CALL JEVEUO(ZK24(INOLI) (1:19)//'.LGRF','L',INOMA)
         MAILLA = ZK8(INOMA)
 
         CALL GETVEM(MAILLA,'GROUP_MA',' ','GROUP_MA',0,1,1,GRMA,NMA)
@@ -128,7 +128,7 @@ C CREATION D UN .LIEL BASE SUR LE GROUP-MA UTILISATEUR
    40     CONTINUE
           ZI(INWMOD+NBELMA+1-1) = ZI(ILIEL+NBELMA+1-1)
           IF (TEMOIN.EQ.0) CALL U2MESS('F','MODELISA_5')
-          CALL WKVECT(GRMA//'.MODELE    .NOMA','V V K8',1,JNOMA)
+          CALL WKVECT(GRMA//'.MODELE    .LGRF','V V K8',1,JNOMA)
           ZK8(JNOMA) = MAILLA
           CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .NBNO','L',IVRAI)
           CALL WKVECT(GRMA//'.MODELE    .NBNO','V V I',1,JNBNO)

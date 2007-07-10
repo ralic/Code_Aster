@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,10 @@ C
 C     --- VALEURS PAR DEFAUTS DES CAS ----------------------------------
       PARAMETER   ( MXCAS  = 3 )
       CHARACTER*16 CASCA (MXCAS)
+      CHARACTER*24 VALK(3)
       INTEGER      NBBLCA(MXBASE,MXCAS), LGBLCA(MXBASE,MXCAS)
       INTEGER      LGRECA(MXBASE,MXCAS)
+      INTEGER      VALI(2)
 C
       DATA      NOMBA  /'GLOBALE '   , 'VOLATILE'   /
       DATA      PRESBA /    0        ,     0        /
@@ -108,9 +110,11 @@ C        --- MOT CLE "FICHIER" ANCIENNEMENT "NOM" ---------------------
          IF ( INDBAS .EQ. 0 ) THEN
             INDBAS = 1
             IER    = IER + 1
-          CALL UTDEBM('E','IBBASE','"'//NOM//'" NOM SYMBOLIQUE INCONNU')
-            CALL UTIMPK('L','VALEURS ATTENDUES',MXBASE,NOMBA)
-            CALL UTFINM()
+            VALI (1)   = MXBASE
+            VALK (1) = NOM
+            VALK (2) = NOMBA(1)
+            VALK (3) = NOMBA(2)
+          CALL U2MESG('E','SUPERVIS_81',3,VALK,1,VALI,0,0.D0)
          ELSE
             IF ( PRESBA(INDBAS) .NE. 0 ) THEN
                IER = IER + 1
@@ -128,11 +132,11 @@ C
             IF ( INDCAS .EQ. 0 ) THEN
                INDCAS = 1
                IER = IER + 1
-               CALL UTDEBM('E','IBBASE','L''ARGUMENT DU MOT CLE '//
-     &                            '"CAS"  EST ERRONE ')
-               CALL UTIMPK('L','VALEUR LUE',1,CAS)
-               CALL UTIMPK('L','VALEURS ATTENDUES',MXCAS,CASCA)
-               CALL UTFINM()
+               VALI (1)= MXCAS
+               VALK (1) = CAS
+               VALK (2) = CASCA(1)
+               VALK (3) = CASCA(2)
+               CALL U2MESG('E','SUPERVIS_82',3,VALK,1,VALI,0,0.D0)
             ENDIF
          ENDIF
 C
@@ -147,13 +151,9 @@ C
          LTT = BANBBL(INDBAS)*BALGBL(INDBAS)*LOISEM()
          IF ( LTT .GT. MOFIEM() ) THEN
             IER = IER + 1
-            CALL UTDEBM('E','IBBASE','LE NOMBRE D''ENREGISTREMENTS '
-     &        //'(NMAX_ENRE) ET LEURS LONGUEURS (LONG_ENRE) CONDUISENT'
-     &        //' A UN FICHIER DONT LA TAILLE MAXIMALE EN OCTETS EST')
-            CALL UTIMPI('S',' : ',1,LTT)
-            CALL UTIMPI('S','SUPERIEURE A LIMITE AUTORISEE : ',
-     &                   1,MOFIEM())
-            CALL UTFINM()
+            VALI (1) = LTT
+            VALI (2) = MOFIEM()
+            CALL U2MESG('E','SUPERVIS_83',0,' ',2,VALI,0,0.D0)
          ENDIF
 
 C        --- MOT CLE "LONG_REPE" ---------------------------------------

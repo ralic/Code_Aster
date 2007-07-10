@@ -9,7 +9,7 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,11 @@ C --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
 C --- : IRTET  : CONTROLE DU REDECOUPAGE DU PAS DE TEMPS ---------------
 C ======================================================================
       LOGICAL       PRJSOM, LGLCOV
-      INTEGER       II, NDT, NDI, ITER, IRTETI
+      INTEGER       II, NDT, NDI, ITER, IRTETI, VALI
       REAL*8        SIGE(6), LGLEPS, GAMP, SE(6), SIIE, INVARE, YD(10)
       REAL*8        GAMPS, INVARS, B, S(6), DELTA, TRACE, DY(10), YF(10)
       REAL*8        FITER, DKOOH(6,6), EPSF(6), I1, TRACEG, TROIS
-      REAL*8        EVP, EVPS
+      REAL*8        EVP, EVPS, VALR
       CHARACTER*10  CTOL, CITER
       CHARACTER*24 VALK(2)
 C ======================================================================
@@ -153,12 +153,9 @@ C ======================================================================
                IRTETI = 3
                GOTO 100
             ELSE
-               CALL UTDEXC(23,'LAIGLE',' ERREUR')
-      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
-      CALL UTIMPR('L',' - CONVERGENCE IRREGULIERE & ERREUR > ',1,TOLER)
-      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-               CALL UTFINM
-
+               VALI = ITER
+               VALR = TOLER
+               CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
             ENDIF
          ENDIF
 C ======================================================================
@@ -234,12 +231,9 @@ C ======================================================================
                      IRTETI = 3
                      GOTO 100
                   ELSE
-                     CALL UTDEXC(23,'LAIGLE',' ERREUR')
-      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
-      CALL UTIMPR('L',' - CONVERGENCE IRREGULIERE & ERREUR > ',1,TOLER)
-      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                     CALL UTFINM
-
+                     VALI = ITER
+                     VALR = TOLER
+                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
                   ENDIF
 C ======================================================================
 C --- ON PROJETE AU SOMMET DU DOMAINE ----------------------------------
@@ -278,12 +272,9 @@ C ======================================================================
                      IRTETI = 3
                      GOTO 100
                   ELSE
-                     CALL UTDEXC(23,'LAIGLE',' ERREUR')
-      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
-      CALL UTIMPR('L',' - CONVERGENCE IRREGULIERE & ERREUR > ',1,TOLER)
-      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
-                     CALL UTFINM
-
+                     VALI = ITER
+                     VALR = TOLER
+                     CALL UTEXCM(23,'ALGELINE5_52',0,' ',1,VALI,1,VALR)
                   ENDIF
                ENDIF
             ENDIF

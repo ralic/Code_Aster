@@ -6,7 +6,7 @@
       LOGICAL       CALS
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/06/2001   AUTEUR T2BAXJM R.MASSON 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C
 C     ----------------------------------------------------------------
 C
       REAL*8  SWM,SLW,SLWM,SL2WM,SL2BWM,SNT,R8MAEM,MAXR,MAXM
+      REAL*8 VALR
       INTEGER I,ITP,IR
      
 C     ----------------------------------------------------------------
@@ -61,18 +62,12 @@ C
          MAXR =  R8MAEM()
          MAXM = LOG (MAXR) / LOG ( NRUPT*SIGW(NRUPT) )
          IF (M.GE.MAXM) THEN
-           CALL UTDEBM('S','FCWEIB','VALEUR DE M MAXIMALE ATTEINTE '
-     +              //'POUR RESOUDRE F(M)=0, VERIFIEZ VOS LISTES '
-     +              //'D''INSTANTS DE RUPTURE')
-           CALL UTIMPR('L','M MAXIMAL ADMISSIBLE = ',1,MAXM)
-           CALL UTFINM()
+           VALR = MAXM
+           CALL U2MESG('S','UTILITAI8_22',0,' ',0,0,1,VALR)
          END IF           
          IF (M.LE.0.D0) THEN
-           CALL UTDEBM('S','FCWEIB','VALEUR DE M MINIMALE ATTEINTE '
-     +              //'POUR RESOUDRE F(M)=0, VERIFIEZ VOS LISTES '
-     +              //'D''INSTANTS DE RUPTURE')
-           CALL UTIMPR('L','VALEUR DE M = ',1,M)
-           CALL UTFINM()
+           VALR = M
+           CALL U2MESG('S','UTILITAI8_23',0,' ',0,0,1,VALR)
          END IF
 C
          DO 10 I=1,NRUPT

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+#& MODIF COMMUN  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -289,16 +289,19 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "LIQU_GAZ",
 # HYDR
                                        "HYDR_UTIL",
+                                       "HYDR_VGM",
                                        "HYDR",
                                        "HYDR_ENDO",
 # MECA_META
                                        "ACIER",
                                        "ZIRC",
 # MECA KIT_DDI
+                                       "VMIS_CINE_LINE",
                                        "VMIS_ISOT_TRAC",
                                        "VMIS_ISOT_LINE",
                                        "VMIS_ISOT_CINE",
                                        "VMIS_ISOT_PUIS",
+                                       "GLRC_DM",
                                        "GRANGER_FP",
                                        "GRANGER_FP_INDT",
                                        "GRANGER_FP_V",
@@ -317,6 +320,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            LIQU_VAPE       =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
            LIQU_GAZ        =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
            HYDR_UTIL       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
+           HYDR_VGM        =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            HYDR            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            HYDR_ENDO       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            ACIER           =SIMP(statut='c',typ='I',defaut=5,into=(5,)),

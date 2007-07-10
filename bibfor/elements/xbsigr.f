@@ -11,7 +11,7 @@ C
 C
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -82,9 +82,9 @@ C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       IF (NDIM.EQ.3) THEN
         NSEMAX=6
-        NPG=15
-      ELSE
-        NPG=3
+        CALL ELREF5('TE4','XINT',I,I,I,NPG,I,I,I,I,I,I)
+      ELSEIF (NDIM.EQ.2) THEN
+        CALL ELREF5('TR3','RIGI',I,I,I,NPG,I,I,I,I,I,I)
         NSEMAX=3
       ENDIF
 

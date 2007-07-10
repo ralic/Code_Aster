@@ -1,4 +1,4 @@
-# MODIF  DATE 14/05/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1338,6 +1338,132 @@ TEST_TABLE(      TABLE=TABLE4,       NOM_PARA='TR_DIR_3',
                   CRITERE='ABSOLU',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-10,
                    VALE=0.0000000000000E+00      )
+
+# ---------------------------------------------------------
+# VALIDATION: MACR_LIGN_COUPE/OPERATION='MOYENNE'
+# AVEC UNE LIGNE DE COUPE DE TYPE SEGMENT DEPASSANT
+# DE LA STRUCTURE
+
+# -> TRAC_DIR
+
+T_E1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
+                LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
+                            NOM_CMP = ('EPXX', 'EPXY',),
+                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'EXTRACTION',),),)
+
+T_M1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
+                LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
+                            NOM_CMP = ('EPXX', 'EPXY',),
+                            TRAC_DIR = 'OUI',DIRECTION = (0.5, 0.6, 0.3,),OPERATION = 'MOYENNE',),),)
+
+TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE=-3.96574E+00        )
+
+TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= -3.00014E+00       )
+
+TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE=-5.59043E+00        )
+
+TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= -3.81432E+00      )
+
+
+#IMPR_TABLE(TABLE=T_E1);
+
+#IMPR_TABLE(TABLE=T_M1);
+
+# -> TRAC_NOR
+
+T_E2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
+                LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
+                            NOM_CMP = ('EPXX', 'EPXY',),
+                            TRAC_NOR = 'OUI',OPERATION = 'EXTRACTION',),),)
+
+T_M2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE = 2,
+                LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
+                            NOM_CMP = ('EPXX', 'EPXY',),
+                            TRAC_NOR = 'OUI',OPERATION = 'MOYENNE',),),)
+
+TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= 3.12463E+00     )
+
+TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= 4.06679E+00       )
+
+TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE=  -8.14087E+00     )
+
+TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= -5.60024E+00     )
+
+#IMPR_TABLE(TABLE=T_E2);
+
+#IMPR_TABLE(TABLE=T_M2);
+
+
+
+# -> TOUT_CMP
+
+T_E3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
+                LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
+                            OPERATION = 'EXTRACTION',),),)
+
+T_M3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
+                LIGN_COUPE=(_F(TYPE='SEGMENT',COOR_ORIG=(0.5,-4.),COOR_EXTR=(2.4,-2.9),NB_POINTS=3,
+                            OPERATION = 'MOYENNE',),),)
+
+TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= -2.59157E+01    )
+
+TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE=  -2.08967E+01   )
+
+TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE=  3.40084E+01      )
+
+TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= 6.06629E+01     )
+
+#IMPR_TABLE(TABLE=T_E3);
+
+#IMPR_TABLE(TABLE=T_M3);
 
 FIN( )
 #

@@ -4,7 +4,7 @@
       CHARACTER*(*)      MODELZ, BASEZ, LIGREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,11 +86,11 @@ C     ----------
 
 C --- OBJET NOMA
 C     ----------
-      CALL WKVECT(LIGREL//'.NOMA',BASE//' V K8',1,JDNM)
+      CALL WKVECT(LIGREL//'.LGRF',BASE//' V K8',1,JDNM)
       ZK8(JDNM) = NOMA
 C
-      CALL JELIRA(MODELE(1:8)//'.MODELE    .NOMA','DOCU',IB,PHENO)
-      CALL JEECRA(LIGREL//'.NOMA','DOCU',IB,PHENO)
+      CALL JELIRA(MODELE(1:8)//'.MODELE    .LGRF','DOCU',IB,PHENO)
+      CALL JEECRA(LIGREL//'.LGRF','DOCU',IB,PHENO)
 
 C --- TYPE D'ELEMENT ET NOMBRE DE MAILLES PAR TYPE
 C     --------------------------------------------
@@ -159,10 +159,8 @@ C     ---------------------------------------
 C     ---  ADAPTATION DE LA TAILLE DES GRELS
 C          ---------------------------------
       CALL ADALIG(LIGREL)
-
-C     --- CREATION DE LA CORRESPONDANCE MAILLE --> (IGREL,IM)
-C         ---------------------------------------------------
       CALL CORMGI(BASE, LIGREL)
+      CALL INITEL(LIGREL)
 
       CALL JEDEMA()
       END

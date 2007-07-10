@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C ----------------------------------------------------------------------
 
       CALL DISMOI('F','NOM_MODELE',CHARGE(1:8),'CHARGE',IBID,MO,IER)
       LIGRMO = MO//'.MODELE'
-      CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
+      CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 
       NDIM = 3

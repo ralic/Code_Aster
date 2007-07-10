@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C =====================================================================
       INTEGER       DMTHMC, DMHYDR, DMMECA, N1, JMAIL, ITYPEL
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM
       PARAMETER   ( DMTHMC = 7  )
-      PARAMETER   ( DMHYDR = 3  )
+      PARAMETER   ( DMHYDR = 4  )
       PARAMETER   ( DMMECA = 11 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
@@ -87,6 +87,7 @@ C --- PARTIE HYDR -----------------------------------------------------
 C =====================================================================
       DATA POHYDR / 'HYDR'      ,
      &              'HYDR_UTIL' ,
+     &              'HYDR_VGM' ,
      &              'HYDR_ENDO' /
 C =====================================================================
 C --- PARTIE MECA -----------------------------------------------------
@@ -106,7 +107,7 @@ C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************
       CALL JEVEUO(MODELE(1:8)//'.MAILLE','L',JMAIL)
-      CALL JEVEUO(MODELE(1:8)//'.MODELE    .NOMA','L',JNOMA)
+      CALL JEVEUO(MODELE(1:8)//'.MODELE    .LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 C =====================================================================
 C --- LE COMPORTEMENT DEFINIT EST-IL COHERENT ? -----------------------

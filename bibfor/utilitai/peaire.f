@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
 C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
 C
-      CALL JEVEUO(MODELE(1:8)//'.MODELE    .NOMA','L',JNOMA)
+      CALL JEVEUO(MODELE(1:8)//'.MODELE    .LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
       GRPMA = NOMA//'.GROUPEMA'
 C

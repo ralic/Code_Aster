@@ -1,5 +1,5 @@
 
-# MODIF  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 09/07/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -507,60 +507,6 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
                    ),)
                    
 
-
-# # LOI DE COMPORTEMENT KOCKS_RAUCH en Explicite Polycristal
-# 
-EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT2,
-                     CARA_ELEM=ORIENKR,
-                     EXCIT=(_F(CHARGE=TRAC3,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='POLYCRISTAL',
-                                   COMPOR=COMPORP,
-                                   RESO_INTE='RUNGE_KUTTA_2',
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST3C,
-                                   SUBD_METHODE='EXTRAPOLE', 
-                                   SUBD_PAS=4,
-                                   SUBD_NIVEAU=5,),),
-                     NEWTON=(_F(PREDICTION='EXTRAPOL',
-                               MATRICE='ELASTIQUE'),),
-                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
-                                     ITER_GLOB_MAXI=10,),),
-                     ARCHIVAGE=_F(LIST_INST=LINST3,),
-                                     )
-
-EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
-                 RESULTAT=EXPLKRP,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
-
-TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
-                   INST=TFIN3,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-3.2437264702129E+02,PRECISION=(0.04,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=EXPLKRP,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.002,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=EXPLKRP,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-8.1822270710961E-04,PRECISION=(0.05,0.0001),
-                   REFERENCE='SOURCE_EXTERNE',),
-                   ),)
-                   
 
                    
                    

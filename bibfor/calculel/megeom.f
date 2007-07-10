@@ -1,6 +1,6 @@
       SUBROUTINE MEGEOM(MODELZ,CHARGZ,EXIGEO,CHGEOZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,12 +93,12 @@ C           CHGEOM = ZK8(ICHAR-1+1)//'.COORDO'
                  END IF
                END IF
             END IF
-            CALL JEVEUO(NOMO//'.MODELE    .NOMA','L',JNOMA)
+            CALL JEVEUO(NOMO//'.MODELE    .LGRF','L',JNOMA)
             CHGEOM = ZK8(JNOMA)//'.COORDO'
             EXIGEO = .TRUE.
          END IF
       ELSE
-         CALL JEVEUO(MODELE//'.MODELE    .NOMA','L',ICHAR)
+         CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',ICHAR)
          CHGEOM = ZK8(ICHAR-1+1)//'.COORDO'
          EXIGEO = .TRUE.
       END IF

@@ -1,7 +1,7 @@
         SUBROUTINE HUJTID (MOD, MATER, SIG, VIN, DSDE)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C ======================================================================
         REAL*8      PHI, ANGDIL, MDIL, DEGR, BHUJ
         REAL*8      RC(4), YD(15), DPSIDS(6,6), P(3), Q(3) 
         REAL*8      MATER(20,2), VIN(*), SIG(6), DSDE(6,6)
-        REAL*8      HOOK(6,6), I1, E, NU, AL, DEMU
+        REAL*8      HOOK(6,6), I1, E, NU, AL, BL, DEMU
         REAL*8      COEF, ZERO, D13, UN, DEUX
         REAL*8      EPSV, TRACE, DFDEVP, EVL
         REAL*8      PSI(24), DFDS(24), B1(4,4), B2(4,4), B(4,4)
@@ -124,6 +124,7 @@ C =====================================================================
         E  = MATER(1,1)*(I1/PREF)**N
         NU = MATER(2,1)
         AL = E *(UN-NU) /(UN+NU) /(UN-DEUX*NU)
+        BL = E * NU     /(UN+NU) /(UN-DEUX*NU)
         DEMU = E        /(UN+NU)
         CALL LCINMA (ZERO, HOOK)
         
@@ -137,7 +138,7 @@ C =====================================================================
           DO 20 I = 1, NDI
             DO 20 J = 1, NDI
               IF(I.EQ.J) HOOK(I,J) = AL
-              IF(I.NE.J) HOOK(I,J) = DEMU
+              IF(I.NE.J) HOOK(I,J) = BL
  20           CONTINUE
 
           DO 30 I = NDI+1, NDT

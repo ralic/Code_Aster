@@ -9,7 +9,7 @@ C IN  MXCMDU : IS : NOMBRE DE COMMANDES UTILISATEURS MAXIMUM
 C IN  BASE   : CH : TYPE DE LA BASE 'L' 'G' 'V' ....
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,11 @@ C     --- VARIABLES LOCALES --------------------------------------------
       INTEGER        ISTAT
       CHARACTER*1    DDBASE
       CHARACTER*8    NOMUSR,NOMOBJ
-      CHARACTER*11   PG
       CHARACTER*16   NOMCMD, TYPCON
-      CHARACTER*24   SPVR,OBJ1,OBJ2
+      CHARACTER*24   SPVR,OBJ1,OBJ2,VALK(2)
       CHARACTER*80   INIT
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      PG     = 'SUPERVISEUR'
       KINFO  = '&USR0000INFORMATION    '
       KRESU  = '&&SYS   RESULT.USER    '
       KSTAT  = '&&SYS   RESULT.STAT    '
@@ -113,40 +111,32 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
          TYPCON = ZK80(LGRESU+JCMD-1)(9:24)
          NOMCMD = ZK80(LGRESU+JCMD-1)(25:40)
          CALL CODENT( JCMD,'D0',CBID)
-         CALL UTDEBM('I',PG,'RAPPEL SUR LES EXECUTIONS PRECEDENTES')
-         CALL UTIMPK('L','  - IL A ETE EXECUTE '//CBID//
-     &                      ' PROCEDURES ET OPERATEURS.',0,' ')
+         VALK (1)= CBID
+         CALL U2MESG('I+','SUPERVIS_71',1,VALK,0,0,0,0.D0)
          IF (IER .EQ. 0 ) THEN
-             CALL UTIMPK('L','  - L''EXECUTION PRECEDENTE S''EST '
-     &                                //'TERMINEE CORRECTEMENT.',0,' ')
+             CALL U2MESG('I+','SUPERVIS_72',0,' ',0,0,0,0.D0)
          ELSEIF (IER .EQ. 1 ) THEN
              LG = LXLGUT(NOMCMD)
-             CALL UTIMPK('L',
-     &               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE EN '
-     &                //'ERREUR DANS LA PROCEDURE "'//NOMCMD(1:LG)
-     &                //'".',0,' ')
+             VALK (1)= NOMCMD(1:LG)
+             CALL U2MESG('I+','SUPERVIS_73',1,VALK,0,0,0,0.D0)
          ELSEIF (IER .EQ. 2 ) THEN
              LG = LXLGUT(NOMCMD)
-             CALL UTIMPK('L',
-     &               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE EN '
-     &                 //'ERREUR DANS L''OPERATEUR "'//NOMCMD(1:LG)
-     &                 //'".',0,' ')
+             VALK (1) = NOMCMD(1:LG)
+             CALL U2MESG('I+','SUPERVIS_74',1,VALK,0,0,0,0.D0)
              LG1 = LXLGUT(NOMUSR)
              LG2 = LXLGUT(TYPCON)
-             CALL UTIMPK('L',
-     &               '    LE CONCEPT "'//NOMUSR(1:LG1)//'" DE TYPE "'
-     &             //TYPCON(1:LG2)//'"  EST PEUT-ETRE ERRONE.',0,' ')
+             VALK(1) = NOMUSR(1:LG1)
+             VALK(2) = TYPCON(1:LG2)
+             CALL U2MESG('I+','SUPERVIS_75',2,VALK,0,0,0,0.D0)
          ELSEIF (IER .EQ. 3 ) THEN
              LG = LXLGUT(NOMCMD)
-             CALL UTIMPK('L',
-     &               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE PREMA'
-     &                 //'TUREMENT DANS L''OPERATEUR "'//NOMCMD(1:LG)
-     &                 //'".',0,' ')
+             VALK(1) = NOMCMD(1:LG)
+             CALL U2MESG('I+','SUPERVIS_76',1,VALK,0,0,0,0.D0)
              LG1 = LXLGUT(NOMUSR)
              LG2 = LXLGUT(TYPCON)
-             CALL UTIMPK('L','    LE CONCEPT "'//NOMUSR(1:LG1)
-     &                      //'" DE TYPE "'//TYPCON(1:LG2)//
-     &               '"  A ETE NEANMOIMS VALIDE PAR L''OPERATEUR',0,' ')
+             VALK(1) = NOMUSR(1:LG1)
+             VALK(2) = TYPCON(1:LG2)
+             CALL U2MESG('I+','SUPERVIS_77',2,VALK,0,0,0,0.D0)
              CALL UTSAUT()
             SPVR = NOMUSR
             SPVR(20:24) = '.SPVR'
@@ -154,16 +144,15 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
             IF ( IRET. NE. 0 )  THEN
                CALL JEVEUO(SPVR,'L',LSPVR)
                CALL JELIRA(SPVR,'LONMAX',LONMAX,CBID)
-               CALL UTIMPK('L','    MESSAGE ATTACHE AU CONCEPT ',
-     &                                               LONMAX,ZK80(LSPVR))
+               VALK (1) = ZK80(LSPVR)
+               CALL U2MESG('I+','SUPERVIS_78',1,VALK,0,0,0,0.D0)
             ELSE
-               CALL UTIMPK('L',
-     &                  '    PAS DE MESSAGE ATTACHE AU CONCEPT ',0,' ')
+               CALL U2MESG('I+','SUPERVIS_79',0,' ',0,0,0,0.D0)
             ENDIF
             NOMUSR = '   '
             CALL UTSAUT()
          ENDIF
-        CALL UTFINM()
+        CALL U2MESG('I','SUPERVIS_80',0,' ',0,0,0,0.D0)
 C
 C     --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
       CALL JEDETC('G','.',1)

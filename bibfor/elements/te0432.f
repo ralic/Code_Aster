@@ -1,0 +1,285 @@
+      SUBROUTINE TE0432(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ......................................................................
+C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
+C                          POUR LES GRILLES MEMBRANES EXCENTREES OU NON
+C                          EN DYNAMIQUE
+C    - ARGUMENTS:
+C        DONNEES:      OPTION       -->  OPTION DE CALCUL
+C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C ......................................................................
+
+      CHARACTER*2 CODRES(2)
+      CHARACTER*4 FAMI
+      CHARACTER*8 NOMRES(2)
+      INTEGER NNO,NPG,I,IMATUU,LGPG,LGPG1,NDIM,NNOS,JGANO
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE,ICAMAS
+      INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP
+      INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
+      INTEGER IVECTU,ICONTP,IVARIP,IVARIX,IRET
+      INTEGER ICACOQ,KPG,N,J,KKD,M,J1,COD(9),K
+      INTEGER KK,JTAB(7),JCRET,NDDL,IDEPL,IDEFO,IPESA,IEPSIN
+      INTEGER IACCE, IVECT, L, NVEC,IVITE,IFREQ,IECIN
+      REAL*8 DFF(2,8),TNODM(8),TNODP(8),TEMP,R8BID,P(3,6),TREF
+      REAL*8 ALPHA,BETA,DIR11(3),VFF(8),B(6,8),JAC,VALRES(2),SIG,RHO
+      REAL*8 TEMPM,TEMPP,DEPS,TMP,RIG,DENSIT,SIGM,EPSM,VECN(3),SIGG(9)
+      REAL*8 R8VIDE,ANGMAS(3),R8DGRD,R8NNEM,DISTN,PGL(3,3),EPSG(9)
+      REAL*8 AEXC(3,3,8,8), A(6,6,8,8),COEF,MATV(1176),MATP(48,48)
+      REAL*8 DIAG(3,8),WGT,TRACE,ALFAM(3),SOMME(3),MASVIT(48),DDOT,ECIN
+      REAL*8 VIT(8,6)
+      LOGICAL MATSYM,VECTEU,MATRIC,LEXC,LDIAG
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      LEXC = (NOMTE(1:4).EQ.'MEGC')
+      LDIAG = (OPTION(1:10).EQ.'MASS_MECA_')
+
+
+C - FONCTIONS DE FORMES ET POINTS DE GAUSS
+      FAMI = 'MASS'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
+      CALL R8INIR(8*8*6*6,0.D0,A,1)
+      CALL R8INIR(8*8*3*3,0.D0,AEXC,1)
+
+C - PARAMETRES EN ENTREE
+
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PCACOQU','L',ICACOQ)
+      CALL JEVECH('PMATERC','L',IMATE)
+
+      IF (OPTION.EQ.'MASS_MECA') THEN
+      
+      ELSEIF (OPTION.EQ.'M_GAMMA') THEN
+        CALL JEVECH('PDEPLAR','L',IACCE)
+      ELSEIF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+        CALL JEVECH('PDEPLAR','L',IVITE)
+        CALL JEVECH('PFREQR','E',IFREQ)
+      ENDIF
+
+C PARAMETRES EN SORTIE
+
+      IF (OPTION(1:9).EQ.'MASS_MECA') THEN
+        CALL JEVECH('PMATUUR','E',IMATUU)
+      ELSEIF (OPTION.EQ.'M_GAMMA') THEN
+        CALL JEVECH('PVECTUR','E',IVECT)
+      ELSEIF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+        CALL JEVECH('PENERCR','E',IECIN)
+      ENDIF
+
+      
+C - INITIALISATION CODES RETOURS
+C       DO 1955 KPG=1,NPG
+C          COD(KPG)=0
+C 1955  CONTINUE
+
+
+C -- LE VECTEUR NORME QUI INDIQUE LA DIRECTION D'ARMATURE
+      DENSIT = ZR(ICACOQ)
+      ALPHA = ZR(ICACOQ+1) * R8DGRD()
+      BETA  = ZR(ICACOQ+2) * R8DGRD()
+      DIR11(1) = COS(BETA)*COS(ALPHA)
+      DIR11(2) = COS(BETA)*SIN(ALPHA)
+      DIR11(3) = SIN(BETA)
+
+
+C --- SI EXCENTREE : RECUPERATION DE LA NORMALE ET DE L'EXCENTREMENT
+
+      IF (LEXC) THEN
+
+        IF (NOMTE.EQ.'MEGCTR3') THEN
+          CALL DXTPGL(ZR(IGEOM),PGL)
+        ELSEIF (NOMTE.EQ.'MEGCQU4') THEN
+          CALL DXQPGL(ZR(IGEOM),PGL)
+        ENDIF
+        
+        DISTN = ZR(ICACOQ+3)
+        
+        DO 8 I=1,3
+          VECN(I)=DISTN*PGL(3,I)
+8       CONTINUE
+
+        NDDL=6
+
+      ELSE
+        
+        DISTN = R8VIDE()
+        NDDL  = 3
+        
+      ENDIF
+C
+C - CALCUL POUR CHAQUE POINT DE GAUSS : ON CALCULE D'ABORD LA
+C      CONTRAINTE ET/OU LA RIGIDITE SI NECESSAIRE PUIS
+C      ON JOUE AVEC B
+C
+      WGT = 0.D0
+      DO 800 KPG=1,NPG
+
+C - MISE SOUS FORME DE TABLEAU DES VALEURS DES FONCTIONS DE FORME
+C   ET DES DERIVEES DE FONCTION DE FORME
+
+        DO 11 N=1,NNO
+          VFF(N)  =ZR(IVF+(KPG-1)*NNO+N-1)
+          DFF(1,N)=ZR(IDFDE+(KPG-1)*NNO*2+(N-1)*2)
+          DFF(2,N)=ZR(IDFDE+(KPG-1)*NNO*2+(N-1)*2+1)
+11      CONTINUE
+
+C - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
+
+        CALL NMGRIB(NNO,ZR(IGEOM),DFF,DIR11,LEXC,VECN,B,JAC,P)
+        WGT = WGT + RHO*ZR(IPOIDS+KPG-1)*JAC*DENSIT
+
+
+C - MASS_MECA
+
+
+        CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
+     &                 'RHO',RHO,CODRES, 'FM')
+        DO 130 N=1,NNO
+          DO 130 I=1,N
+            COEF = RHO*ZR(IPOIDS+KPG-1)*JAC*DENSIT*VFF(N)*VFF(I)
+            A(1,1,N,I) = A(1,1,N,I) + COEF
+            A(2,2,N,I) = A(2,2,N,I) + COEF
+            A(3,3,N,I) = A(3,3,N,I) + COEF
+130     CONTINUE
+        
+        IF (LEXC) THEN
+          DO 135 I=1,3
+            DO 135 J=1,3
+              DO 135 N=1,NNO
+                DO 135 M=1,N
+                  AEXC(I,J,N,M) = A(I,J,N,M)
+135       CONTINUE
+          CALL R8INIR(8*8*6*6,0.D0,A,1)
+          DO 140 I=1,6
+            DO 140 J=1,6
+              DO 140 N=1,NNO
+                DO 140 M=1,N
+                  DO 140 K=1,3
+                    A(I,J,N,M) = A(I,J,N,M)+P(K,I)*P(K,J)
+     &                                *AEXC(K,K,N,M)
+140       CONTINUE
+        ENDIF
+
+800   CONTINUE
+
+C - RANGEMENT DES RESULTATS
+C -------------------------
+      IF (LDIAG) THEN
+
+C-- CALCUL DE LA TRACE EN TRANSLATION SUIVANT X
+
+        CALL R8INIR(3*8,0.D0,DIAG,1)
+        CALL R8INIR(3,0.D0,SOMME,1)
+        DO 180 I=1,3
+          DO 181 J = 1,NNO
+            SOMME(I) = SOMME(I) + A(I,I,J,J)
+181       CONTINUE
+          ALFAM(I) = WGT/SOMME(I)
+180     CONTINUE
+
+C-- CALCUL DU FACTEUR DE DIAGONALISATION
+
+C        ALFA = WGT/TRACE
+
+C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
+
+        DO 190 J = 1,NNO
+          DO 190 I = 1,3
+            DIAG(I,J) = A(I,I,J,J)*ALFAM(I)
+190     CONTINUE
+
+        DO 195 K = 1,NDDL
+          DO 195 L = 1,NDDL
+            DO 195 I = 1,NNO
+              DO 195 J = 1,NNO
+                A(K,L,I,J) = 0.D0
+195     CONTINUE
+        DO 196 K=1,3
+          DO 196 I=1,NNO
+            A(K,K,I,I) = DIAG(K,I)
+196     CONTINUE
+        IF (NDDL.EQ.6) THEN
+          DO 197 I=1,NNO
+            A(4,4,I,I) = A(4,4,I,I) * ALFAM(1)
+            A(5,5,I,I) = A(4,4,I,I) * ALFAM(2)
+            A(6,6,I,I) = A(4,4,I,I) * ALFAM(3)
+197       CONTINUE
+        ENDIF            
+      ENDIF
+      
+
+      IF (OPTION(1:9).EQ.'MASS_MECA') THEN
+        DO 200 K = 1,NDDL
+          DO 200 L = 1,NDDL
+            DO 200 I = 1,NNO
+              KKD = ((NDDL*(I-1)+K-1)* (NDDL*(I-1)+K))/2
+              DO 200 J = 1,I
+                KK = KKD + NDDL * (J-1) + L
+                ZR(IMATUU+KK-1) = A(K,L,I,J)
+200     CONTINUE
+
+      ELSE IF (OPTION.EQ.'M_GAMMA'.OR.
+     &         OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+        NVEC = NDDL*NNO*(NDDL*NNO+1)/2
+        DO 210 K = 1,NVEC
+          MATV(K) = 0.0D0
+210     CONTINUE
+        DO 220 K = 1,NDDL
+          DO 220 L = 1,NDDL
+            DO 220 I = 1,NNO
+              KKD = ((NDDL*(I-1)+K-1)* (NDDL*(I-1)+K))/2
+              DO 220 J = 1,I
+                KK = KKD + NDDL* (J-1) + L
+                MATV(KK) = A(K,L,I,J)
+220     CONTINUE
+        CALL VECMA(MATV,NVEC,MATP,NDDL*NNO)
+        IF (OPTION.EQ.'M_GAMMA') THEN
+          CALL PMAVEC('ZERO',NDDL*NNO,MATP,ZR(IACCE),ZR(IVECT))
+        ELSEIF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+C           DO 666 I=1,NNO
+C             DO 666 J=1,NDDL
+C               VIT(I,J) = ZR(IVITE+I*(NDDL-1)+J-1)
+C 666       CONTINUE
+          CALL PMAVEC('ZERO',NDDL*NNO,MATP,ZR(IVITE),MASVIT)
+          ECIN = .5D0*DDOT(NDDL*NNO,ZR(IVITE),1,MASVIT,1)*ZR(IFREQ)
+          ZR(IECIN) = ECIN
+        ENDIF 
+
+      ENDIF  
+
+      END

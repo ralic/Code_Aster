@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*(*)  MOTFAZ,PREFIZ,NOMAZ,LISI1Z,LISI2Z,MODZ
       INTEGER        IOCC
 C ---------------------------------------------------------------------
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C
 C     BUT : CREER LA STRUCTURE INTERMEDIAIRE PRFEIXEE PAR PREFIX
 C           DESCRIVANT LES COUPLES DE NOEUDS EN REGARD AVEC
@@ -81,9 +81,12 @@ C
       INTEGER        I, IDCONI, IDLOU1, IDLOU2, IER, INO1, INO2,
      &               LONLI1, LONLI2, LONLIS, NBMA1, NBNO1, N1,
      &               NDIM, NG1, NGM1, NLINO, NO, NR, NT
+      INTEGER        N2,N3,N4,N5,N6,N7,N8,VALI(2)
       REAL*8         CENTRE(3), THETA(3), T(3)
       LOGICAL        DNOR
       CHARACTER*8    K8BID, DDL1, DDL2, NOMA, MOD
+      CHARACTER*8    NOM1,NOM2
+      CHARACTER*24   VALK(2)
       CHARACTER*16   MOTFAC
       CHARACTER*19   PREF19
       CHARACTER*24   CONI, CONR, NOEUMA
@@ -162,8 +165,39 @@ C
 C
 C ---    LES 2 LISTES DOIVENT AVOIR LA MEME LONGUEUR
 C
-      IF (LONLI1.NE.LONLI2) THEN
-           CALL U2MESS('F','MODELISA3_12')
+      IF (LONLI1.NE.LONLI2) THEN      
+         NOM1 = '        '
+         NOM2 = '        '
+         N1 = 0
+         N2 = 0
+         N3 = 0
+         N4 = 0
+         N5 = 0
+         N6 = 0
+         N7 = 0
+         N8 = 0
+         CALL GETVTX (MOTFAC,'GROUP_NO_1',IOCC,1,1,NOM1,N1)
+         IF(N1.GT.0) VALK(1)='GROUP_NO_1'
+         CALL GETVTX (MOTFAC,'NOEUD_1',   IOCC,1,1,NOM1,N2)
+         IF(N2.GT.0) VALK(1)='NOEUD_1   '
+         CALL GETVTX (MOTFAC,'GROUP_MA_1',IOCC,1,1,NOM1,N3)
+         IF(N3.GT.0) VALK(1)='GROUP_MA_1'
+         CALL GETVTX (MOTFAC,'MAILLE_1',  IOCC,1,1,NOM1,N4)
+         IF(N4.GT.0) VALK(1)='MAILLE_1  '
+
+         CALL GETVTX (MOTFAC,'GROUP_NO_2',IOCC,1,1,NOM2,N5)
+         IF(N5.GT.0) VALK(2)='GROUP_NO_2'
+         CALL GETVTX (MOTFAC,'NOEUD_2',   IOCC,1,1,NOM2,N6)
+         IF(N6.GT.0) VALK(2)='NOEUD_2   '
+         CALL GETVTX (MOTFAC,'GROUP_MA_2',IOCC,1,1,NOM2,N7)
+         IF(N7.GT.0) VALK(2)='GROUP_MA_2'
+         CALL GETVTX (MOTFAC,'MAILLE_2',  IOCC,1,1,NOM2,N8)
+         IF(N8.GT.0) VALK(2)='MAILLE_2  '
+
+         VALI(1)= LONLI1
+         VALI(2)= LONLI2
+         CALL U2MESG('F','MODELISA3_12',2,VALK,2,VALI,0,0.D0)
+
       ENDIF
 C
 C ---    MISE EN VIS-A-VIS DES NOEUDS DES LISTES LISIN1 ET LISIN2

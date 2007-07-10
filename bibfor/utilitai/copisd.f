@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -262,10 +262,12 @@ C     -----------------------------------
         CALL JEDUP1(K191//'.LGNS',BAS2,K192//'.LGNS')
         CALL JEDUP1(K191//'.LIEL',BAS2,K192//'.LIEL')
         CALL JEDUP1(K191//'.NEMA',BAS2,K192//'.NEMA')
-        CALL JEDUP1(K191//'.NOMA',BAS2,K192//'.NOMA')
+        CALL JEDUP1(K191//'.LGRF',BAS2,K192//'.LGRF')
         CALL JEDUP1(K191//'.NBNO',BAS2,K192//'.NBNO')
         CALL JEDUP1(K191//'.PRNM',BAS2,K192//'.PRNM')
         CALL JEDUP1(K191//'.PRNS',BAS2,K192//'.PRNS')
+        CALL JEDUP1(K191//'.REPA',BAS2,K192//'.REPE')
+        CALL JEDUP1(K191//'.SSSA',BAS2,K192//'.SSSA')
 
 C ----------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'MAILLAGE') THEN

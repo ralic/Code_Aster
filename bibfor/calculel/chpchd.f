@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C -----------------------------------------------------------------
       CHARACTER*8 MA,MA2,TYCHI,NOMGD,NOPAR2,PARAM
       CHARACTER*16 CAS,OPTION,NOMCMD,KBID
       CHARACTER*19 CESMOD,CES1,CNS1,MNOGA,MGANO,LIGREL,CES2
+      CHARACTER*24 VALK
 
 C---- COMMUNS NORMALISES  JEVEUX
       INTEGER ZI
@@ -193,17 +194,8 @@ C     ----------------------------------------------------------------
         IF (NNCP.NE.0) THEN
           CALL GETRES(KBID,KBID,NOMCMD)
           IF (NOMCMD.EQ.'CREA_CHAMP') THEN
-
-          CALL UTDEBM('A','CHPCHD','PB LORS DE L''AFFECTATION'
-     &       //' DU CHAMP: '//CHOU(1:8))
-          CALL UTIMPI ('L','DES VALEURS N''ONT PAS ETE RECOPIEES'
-     &     //' DANS LE CHAM_ELEM FINAL (PERTE D''INFORMATION ?)',
-     &     0,NNCP)
-          CALL UTIMPI ('L','CE PROBLEME PEUT ETRE DU A L''UTILISATION'
-     &     //' DU MOT CLE TOUT=''OUI''.',0,NNCP)
-          CALL UTIMPI ('L','ON PEUT VERIFIER'
-     &     //' LE CHAMP PRODUIT AVEC INFO=2',0,NNCP)
-          CALL UTFINM()
+          VALK=CHOU(1:8)       
+          CALL U2MESG('A','CALCULEL6_77',1,VALK,0,0,0,0.D0)
         END IF
         END IF
       ELSE

@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF supervis Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -287,6 +287,14 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 
 62: _("""
   Les messages d'erreurs précédent concerne la commande :
+"""),
+
+63: _("""
+     TEMPS CONSOMME DE LA RESERVE CPU        :  %(r1).2f s\n
+"""),
+
+64: _("""
+  Réserve CPU prévue = %(i1)d secondes
 """),
 
 }

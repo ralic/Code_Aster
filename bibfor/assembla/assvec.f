@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -420,7 +420,7 @@ C PREPARATION DE DONNEES AUXILIAIRES POUR TEST
         CALL FETTSD(INFOFE,IDD,NEQUA,IBID,SDFETI(1:19),K24B,IFETN,
      &              IADVAL,IBID,IFM,LBID,IBID,IBID,IBID,K19B,4,LGOTO)
         IF (LGOTO) GOTO 9999
-        
+
 C --- REMPLISSAGE DE .VALE
 C ------------------------
 C==========================
@@ -441,7 +441,7 @@ C       ----------------------------------------------------------
             NOMCAS = ' '
             CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
             CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IERD)
-            CALL JEVEUO(MO//'.SSSA','L',IASSSA)
+            CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
             CALL SSVALV('DEBUT',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
             CALL JELIRA(VECEL//'.LISTE_CHAR','NUTIOC',NBCHAR,KBID)
 
@@ -943,7 +943,7 @@ C EVENTUELLE ECRITURE DANS FICHIER SI FETI ET INFO_FETI(14:14)='T'
         CALL FETTSD(INFOFE,IDD,NEQUA,IBID,SDFETI(1:19),K24B,IFETN,
      &              IADVAL,IBID,IFM,LBID,IBID,IBID,IBID,K19B,7,LBID)
         IF (LFETI) CALL JEDEMA()
-        
+
 C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================

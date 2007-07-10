@@ -1,4 +1,4 @@
-#@ MODIF sd_mater SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_mater SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ from SD.sd_fonction import sd_fonction
 class sd_mater_RDEP(AsBase):
 #---------------------------
     # on dirait une fonction, mais c'est plutot la concaténation de plusieurs fonctions
-    nomj = SDNom(fin=8)
+    nomj = SDNom(fin=19)
     PROL = AsVK16()
     VALE = AsVR()
 
@@ -35,9 +35,9 @@ class sd_mater_RDEP(AsBase):
 class sd_compor1(AsBase):
 #-----------------------
     nomj = SDNom(fin=19)
-    VALC = AsVC(SDNom(debut=19), )
-    VALK = AsVK8(SDNom(debut=19), )
-    VALR = AsVR(SDNom(debut=19), )
+    VALC = AsVC(SDNom(), )
+    VALK = AsVK8(SDNom(), )
+    VALR = AsVR(SDNom(), )
 
 
     # parfois, THER_NL crée une sd_fonction pour BETA

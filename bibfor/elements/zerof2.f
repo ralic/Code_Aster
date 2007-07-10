@@ -1,6 +1,6 @@
       SUBROUTINE ZEROF2(F,F0,XAP,EPSI,NITMAX,SOLU,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,9 @@ C                   IRET=0 => PAS DE PROBLEME
 C                   IRET=1 => ECHEC
 C ----------------------------------------------------------------------
       REAL*8 FY,FZ,X,Y,Z,A,B,FA,FB,FDBG(20),XDBG(20),ECRESD,FX
+      REAL*8 VALR(44)
       INTEGER N,K,ND
+      INTEGER VALI
 C DEB-------------------------------------------------------------------
 C
 C     INITIALISATIONS
@@ -143,31 +145,33 @@ C
         XDBG(K) = XAP/(21-K)
         FDBG(K) = F((XAP)/(21-K))
    21 CONTINUE
-      CALL UTDEBM ('F','ZEROF2','ECHEC DE LA RECHERCHE DE ZERO')
-      CALL UTIMPI ('S',' A L''ITERATION : ',1,N)
-      CALL UTIMPR ('L',' FONCTION DECROISSANTE - POUR X=A: ',1,X)
-      CALL UTIMPR ('S',' / FONCTION(A): ',1,FX)
-      CALL UTIMPR ('L','                         ET   X=B: ',1,Y)
-      CALL UTIMPR ('S',' / FONCTION(B): ',1,FY)
-      CALL UTIMPR ('L',' FONCTION X=: ',20,XDBG)
-      CALL UTIMPR ('L',' FONCTION F=: ',20,FDBG)
-      CALL UTFINM ()
+      VALI = N
+      VALR (1) = X
+      VALR (2) = FX
+      VALR (3) = Y
+      VALR (4) = FY
+      DO 30 K=1,20
+         VALR (4+K)  = XDBG(K)
+         VALR (24+K) = FDBG(K)
+   30 CONTINUE
+
+      CALL U2MESG('F','ELEMENTS5_39',0,' ',1,VALI,44,VALR)
 
   100 CONTINUE
       DO 22 K=1,20
         XDBG(K) = XAP/(21-K)
         FDBG(K) = F((XAP)/(21-K))
    22 CONTINUE
-      CALL UTDEBM ('F','ZEROF2','ECHEC DE LA RECHERCHE DE ZERO')
-      CALL UTIMPI ('S',' A L''ITERATION : ',1,N)
-      CALL UTIMPR ('L',' FONCTION CONSTANTE    - POUR X=A: ',1,X)
-      CALL UTIMPR ('S',' / FONCTION(A): ',1,FX)
-      CALL UTIMPR ('L','                         ET   X=B: ',1,Y)
-      CALL UTIMPR ('S',' / FONCTION(B): ',1,FY)
-      CALL UTIMPR ('L',' FONCTION X=: ',20,XDBG)
-      CALL UTIMPR ('L',' FONCTION F=: ',20,FDBG)
-
-      CALL UTFINM ()
+      VALI = N
+      VALR (1) = X
+      VALR (2) = FX
+      VALR (3) = Y
+      VALR (4) = FY
+      DO 31 K=1,20
+         VALR (4+K)  = XDBG(K)
+         VALR (24+K) = FDBG(K)
+   31 CONTINUE
+      CALL U2MESG('F','ELEMENTS5_40',0,' ',1,VALI,44,VALR)
 C
  9999 CONTINUE
       END

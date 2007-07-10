@@ -4,7 +4,7 @@
       CHARACTER*(*)       CODMES, QUESTI, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C --------------------------------------------------------------------
 C
 C --- LE MODELE
 C
-      CALL JEVEUO(NOLIG//'.NOMA','L',IANOMA)
+      CALL JEVEUO(NOLIG//'.LGRF','L',IANOMA)
       CALL JELIRA(NOLIG//'.LIEL','NUTIOC',NUTIOC,K1BID)
       NEMA = NOLIG//'.NEMA'
       CALL JEEXIN(NEMA,IER)

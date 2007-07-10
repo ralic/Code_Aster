@@ -1,7 +1,7 @@
         SUBROUTINE HUJIID (MOD, MATER, INDI, DEPS, YD, DY)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +45,7 @@ C ====================================================================
         REAL*8      MATER(20,2), N, BETA, B, D, M, PCO, PC, PREF
         REAL*8      PHI, ANGDIL, MDIL, ACYC, AMON, CMON
         REAL*8      RC(4), TRACE, EPSVP, AD(4), KSI(4)
-        REAL*8      E, NU, AL, DEMU, I1D, I1DE
+        REAL*8      E, NU, AL, BL, DEMU, I1D, I1DE
         REAL*8      DFDL(4,4), DR(4), DEPSVP
         REAL*8      DEGR, ZERO, UN, D13, DEUX
         REAL*8      DET, TOLE, COEF
@@ -107,8 +107,9 @@ C ====================================================================
 
         E    = MATER(1,1) * (I1D/PREF)**N
         NU   = MATER(2,1)
-        AL   = E *(UN-NU) /(UN+NU) /(UN-DEUX*NU)
-        DEMU = E          /(UN+NU)
+        AL   = E * (UN-NU) /(UN+NU) /(UN-DEUX*NU)
+        BL   = E * NU      /(UN+NU) /(UN-DEUX*NU)
+        DEMU = E           /(UN+NU)
 
 
 C ====================================================================
@@ -120,7 +121,7 @@ C ====================================================================
           DO 20 I = 1, NDI
           DO 20 J = 1, NDI
             IF (I.EQ.J) HOOKNL(I,J) = AL
-            IF (I.NE.J) HOOKNL(I,J) = DEMU
+            IF (I.NE.J) HOOKNL(I,J) = BL
  20         CONTINUE
 
           DO 25 I = NDI+1, NDT

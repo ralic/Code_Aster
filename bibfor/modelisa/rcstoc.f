@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,14 +62,17 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8             VALR8,E1,EI,PRECMA
+      REAL*8             VALRR(4)
       CHARACTER*4        VALTX
       CHARACTER*8        VALCH,TYPFON,NOMPF(10),K8BID,CPROL,NOMCLE(5)
       CHARACTER*8        MCLE8,TABLE
       CHARACTER*19       RDEP,NOMFCT,CH19,MZP,NOMINT
       CHARACTER*24       PROL1,PROL2
+      CHARACTER*24       VALKK(2)
       CHARACTER*16       TYPECO
       COMPLEX*16         VALC8
       INTEGER            NBPAR,JTYPO,JNOMO,JPARA,IBK,NBMAX
+      INTEGER            VALI
       INTEGER            I,J,K,II,JFCT,JPRO,JRPV,JVALE,NBCOUP,N,NF
       INTEGER            IRET,NBFCT,NBPTS,JPROL,NBPTM
       INTEGER            IEXIST,LPRO1,LPRO2
@@ -237,12 +240,17 @@ C
                     DO 140 K = 1 , NBPAR
                      IF ( NOMPF(J) .EQ. ZK8(JPARA+K-1) ) GOTO 130
  140                CONTINUE
-                    CALL UTDEBM('F','DEFI_MATERIAU','LE MATERIAU NE '//
-     &                 'DEPEND PAS DES BONS PARAMETRES, '//CH19(1:8))
-                    CALL UTIMPK('S',' DEPEND DE ',NF,NOMPF)
-                    CALL UTIMPK('L','IL NE PEUT DEPENDRE QUE DE',
-     &                     NBPAR,ZK8(JPARA))
-                    CALL UTFINM()
+                    VALKK (1) = CH19(1:8)
+                    CALL U2MESG('F+','MODELISA9_58',1,VALKK,0,0,0,0.D0)
+                    DO 141 II = 1 , NF
+                      VALKK(1) = NOMPF(II)
+                  CALL U2MESG('F+','MODELISA9_91',1,VALKK,0,0,0,0.D0)
+ 141                CONTINUE
+                   DO 142 II = 1 , NBPAR
+                      VALKK(1) = ZK8(JPARA-1+II)
+                   CALL U2MESG('F+','MODELISA9_92',1,VALKK,0,0,0,0.D0)
+ 142                CONTINUE
+                    CALL U2MESS('F','MODELISA9_93')
  130              CONTINUE
                ENDIF
             ENDIF
@@ -297,18 +305,16 @@ C
 
          CALL JEVEUO(NOMFCT//'.VALE','L',JRPV)
          IF ( ZR(JRPV) .LE . 0.D0 ) THEN
-          CALL UTDEBM ('F','RCSTOC_03','ERREUR LORS DE LA DEFINITION'
-     &                 //' DE LA COURBE DE TRACTION :'//NOMCLE(II))
-          CALL UTIMPR ('L','LE PREMIER POINT DE LA COURBE DE TRACTION'
-     &         //' '//NOMFCT//' A POUR ABSCISSE: ',1,ZR(JRPV))
-          CALL UTFINM ()
+           VALKK (1) = NOMCLE(II)
+           VALKK (2) = NOMFCT
+           VALRR (1) = ZR(JRPV)
+          CALL U2MESG('F','MODELISA9_59',2,VALKK,0,0,1,VALRR)
          ENDIF
          IF ( ZR(JRPV+NBPTM/2) .LE. 0.D0 ) THEN
-          CALL UTDEBM ('F','RCSTOC_04','ERREUR LORS DE LA DEFINITION'
-     &                 //' DE LA COURBE DE TRACTION :'//NOMCLE(II))
-          CALL UTIMPR ('L','LE PREMIER POINT DE LA COURBE DE TRACTION'
-     &         //' '//NOMFCT//' A POUR ORDONNEE: ',1,ZR(JRPV+NBPTM/2))
-          CALL UTFINM ()
+          VALKK (1) = NOMCLE(II)
+          VALKK (2) = NOMFCT
+          VALRR (1) = ZR(JRPV+NBPTM/2)
+          CALL U2MESG('F','MODELISA9_60',2,VALKK,0,0,1,VALRR)
          ENDIF
 C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
          IRET=2
@@ -322,21 +328,18 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
      &         ( ZR(JRPV+I)        - ZR(JRPV+I-1)        )
           IF ( EI .GT. E1 ) THEN
            IRET = IRET + 1
-           CALL UTDEBM('E','RCSTOC_I','ERREUR LORS DE LA DEFINITION'
-     &                  //' DE LA COURBE DE TRACTION :'//NOMCLE(II))
-           CALL UTIMPR ('L','PENTE INITIALE : ',1,E1)
-           CALL UTIMPR ('L','PENTE COURANTE: ',1,EI)
-           CALL UTIMPR ('S',' POUR L''ABSCISSE: ',1,ZR(JRPV+I))
-           CALL UTFINM ()
+           VALKK (1) = NOMCLE(II)
+           VALRR (1) = E1
+           VALRR (2) = EI
+           VALRR (3) = ZR(JRPV+I)
+           CALL U2MESG('E','MODELISA9_61',1,VALKK,0,0,3,VALRR)
           ELSEIF ( (E1-EI)/E1 .LE. PRECMA ) THEN
-           CALL UTDEBM('A','RCSTOC_II','COURBE DE TRACTION : '
-     &     //NOMCLE(II)//' POINTS PRESQUE ALIGNES. RISQUE DE PB DANS '
-     &     //' STAT_NON_LINE, EN PARTICULIER EN C_PLAN')
-           CALL UTIMPR ('L','PENTE INITIALE : ',1,E1)
-           CALL UTIMPR ('L','PENTE COURANTE: ',1,EI)
-           CALL UTIMPR ('L','PRECISION RELATIVE: ',1,PRECMA)
-           CALL UTIMPR ('S',' POUR L''ABSCISSE: ',1,ZR(JRPV+I))
-           CALL UTFINM ()
+           VALKK (1) = NOMCLE(II)
+           VALRR (1) = E1
+           VALRR (2) = EI
+           VALRR (3) = PRECMA
+           VALRR (4) = ZR(JRPV+I)
+           CALL U2MESG('A','MODELISA9_62',1,VALKK,0,0,4,VALRR)
           ENDIF
  200     CONTINUE
          IF ( IRET .NE. 0 ) THEN
@@ -362,22 +365,18 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
          ENDIF
          CALL JEVEUO(JEXNUM(NOMFCT//'.VALE',K),'L',JRPV)
           IF ( ZR(JRPV) .LE . 0.D0 ) THEN
-           CALL UTDEBM('F','RCSTOC_11','ERREUR LORS DE LA DEFINITION'
-     &                 //' DE LA COURBE DE TRACTION '//NOMCLE(II))
-           CALL UTIMPI ('L','LE PREMIER POINT DE LA FONCTION INDICEE'
-     &                 //' PAR : ',1,K)
-           CALL UTIMPK ('S',' DE LA NAPPE ',1,NOMFCT)
-           CALL UTIMPR ('S',' A POUR ABSCISSE: ',1,ZR(JRPV))
-           CALL UTFINM ()
+           VALI = K
+           VALKK (1) = NOMCLE(II)
+           VALKK (2) = NOMFCT
+           VALRR (1) = ZR(JRPV)
+           CALL U2MESG('F','MODELISA9_63',2,VALKK,1,VALI,1,VALRR)
           ENDIF
           IF ( ZR(JRPV+NBPTS/2) .LE . 0.D0 ) THEN
-           CALL UTDEBM('F','RCSTOC_12','ERREUR LORS DE LA DEFINITION'
-     &                 //' DE LA COURBE DE TRACTION '//NOMCLE(II))
-           CALL UTIMPI ('L','LE PREMIER POINT DE LA FONCTION INDICEE'
-     &                 //' PAR : ',1,K)
-           CALL UTIMPK ('S',' DE LA NAPPE ',1,NOMFCT)
-           CALL UTIMPR ('S',' A POUR ORDONNEE: ',1,ZR(JRPV+NBPTS/2))
-           CALL UTFINM ()
+           VALI = K
+           VALKK (1) = NOMCLE(II)
+           VALKK (2) = NOMFCT
+           VALRR (1) = ZR(JRPV+NBPTS/2)
+           CALL U2MESG('F','MODELISA9_64',2,VALKK,1,VALI,1,VALRR)
           ENDIF
 C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
           IRET=2
@@ -389,12 +388,11 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
      &          ( ZR(JRPV+I)        - ZR(JRPV+I-1)        )
            IF ( EI .GT. E1 ) THEN
             IRET = IRET + 1
-            CALL UTDEBM('E','RCSTOC_I','ERREUR LORS DE LA DEFINITI'
-     &                  //'ON DE LA COURBE DE TRACTION '//NOMCLE(II))
-            CALL UTIMPR ('L','PENTE INITIALE : ',1,E1)
-            CALL UTIMPR ('L','PENTE COURANTE: ',1,EI)
-            CALL UTIMPR ('S',' POUR L''ABSCISSE: ',1,ZR(JRPV+I))
-            CALL UTFINM ()
+            VALKK (1) = NOMCLE(II)
+            VALRR (1) = E1
+            VALRR (2) = EI
+            VALRR (3) = ZR(JRPV+I)
+            CALL U2MESG('E','MODELISA9_65',1, VALKK,0,0,3,VALRR)
            ENDIF
  210      CONTINUE
           IF ( IRET .NE. 0 ) THEN
@@ -442,18 +440,14 @@ C
           NBCOUP = NBPTM / 2
           CALL JEVEUO(NOMFCT//'.VALE','L',JRPV)
           IF ( ZR(JRPV) .LE . 0.D0 ) THEN
-            CALL UTDEBM ('F','RCSTOC_10','ERREUR LORS DE LA DEFINITION'
-     &                 //' DE LA COURBE RELA_MZ')
-            CALL UTIMPR ('L','LE PREMIER POINT DE LA COURBE RELA_MZ'
-     &         //' '//NOMFCT//' A POUR ABSCISSE: ',1,ZR(JRPV))
-            CALL UTFINM ()
+            VALKK (1) = NOMFCT
+            VALRR (1) = ZR(JRPV)
+            CALL U2MESG('F','MODELISA9_66',1,VALKK,0,0,1,VALRR)
           ENDIF
           IF ( ZR(JRPV+NBPTM/2) .LE. 0.D0 ) THEN
-            CALL UTDEBM ('F','RCSTOC_11','ERREUR LORS DE LA DEFINITION'
-     &                 //' DE LA COURBE RELA_MZ')
-            CALL UTIMPR ('L','LE PREMIER POINT DE LA COURBE RELA_MZ'
-     &         //' '//NOMFCT//' A POUR ORDONNEE: ',1,ZR(JRPV+NBPTM/2))
-            CALL UTFINM ()
+            VALKK (1) = NOMFCT
+            VALRR (1) = ZR(JRPV+NBPTM/2)
+            CALL U2MESG('F','MODELISA9_67',1,VALKK,0,0,1,VALRR)
           ENDIF
 C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
           IRET=2
@@ -466,21 +460,16 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
      &            ( ZR(JRPV+I)        - ZR(JRPV+I-1)        )
              IF ( EI .GT. E1 ) THEN
                IRET = IRET + 1
-               CALL UTDEBM('E','RCSTOC_IZ','ERREUR LORS DE LA DEFINITI'
-     &                                //'ON DE LA COURBE RELA_MZ')
-               CALL UTIMPR ('L','PENTE INITIALE : ',1,E1)
-               CALL UTIMPR ('L','PENTE COURANTE: ',1,EI)
-               CALL UTIMPR ('S',' POUR L''ABSCISSE: ',1,ZR(JRPV+I))
-               CALL UTFINM ()
+               VALRR (1) = E1
+               VALRR (2) = EI
+               VALRR (3) = ZR(JRPV+I)
+               CALL U2MESG('E','MODELISA9_68',0,' ',0,0,3,VALRR)
              ELSEIF ( (E1-EI)/E1 .LE. PRECMA ) THEN
-               CALL UTDEBM('A','RCSTOC_IIZ','COURBE RELA_MZ : '
-     &         //' POINTS PRESQUE ALIGNES. RISQUE DE PB DANS '
-     &         //' STAT_NON_LINE, EN PARTICULIER EN C_PLAN')
-               CALL UTIMPR ('L','PENTE INITIALE : ',1,E1)
-               CALL UTIMPR ('L','PENTE COURANTE: ',1,EI)
-               CALL UTIMPR ('L','PRECISION RELATIVE: ',1,PRECMA)
-               CALL UTIMPR ('S',' POUR L''ABSCISSE: ',1,ZR(JRPV+I))
-               CALL UTFINM ()
+               VALRR (1) = E1
+               VALRR (2) = EI
+               VALRR (3) = PRECMA
+               VALR (4) = ZR(JRPV+I)
+               CALL U2MESG('A','MODELISA9_69',0,' ',0,0,4,VALRR)
              ENDIF
  460      CONTINUE
           IF ( IRET .NE. 0 ) THEN
@@ -498,22 +487,16 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
             ENDIF
             CALL JEVEUO(JEXNUM(NOMFCT//'.VALE',K),'L',JRPV)
             IF ( ZR(JRPV) .LE . 0.D0 ) THEN
-              CALL UTDEBM('F','RCSTOC_11','ERREUR LORS DE LA DEFINITION'
-     &                   //' DE LA COURBE DE TRACTION')
-              CALL UTIMPI ('L','LE PREMIER POINT DE LA FONCTION INDICEE'
-     &                   //' PAR : ',1,K)
-              CALL UTIMPK ('S',' DE LA NAPPE ',1,NOMFCT)
-              CALL UTIMPR ('S',' A POUR ABSCISSE: ',1,ZR(JRPV))
-              CALL UTFINM ()
+              VALI = K
+              VALKK (1) = NOMFCT
+              VALRR (1) = ZR(JRPV)
+              CALL U2MESG('F','MODELISA9_70',1,VALKK,1,VALI,1,VALRR)
             ENDIF
             IF ( ZR(JRPV+NBPTS/2) .LE . 0.D0 ) THEN
-              CALL UTDEBM('F','RCSTOC_12','ERREUR LORS DE LA DEFINITION'
-     &                   //' DE LA COURBE DE TRACTION')
-              CALL UTIMPI ('L','LE PREMIER POINT DE LA FONCTION INDICEE'
-     &                   //' PAR : ',1,K)
-              CALL UTIMPK ('S',' DE LA NAPPE ',1,NOMFCT)
-              CALL UTIMPR ('S',' A POUR ORDONNEE: ',1,ZR(JRPV+NBPTS/2))
-              CALL UTFINM ()
+              VALI = K
+              VALKK (1) = NOMFCT
+              VALRR (1) = ZR(JRPV+NBPTS/2)
+              CALL U2MESG('F','MODELISA9_71',1,VALKK,1,VALI,1,VALRR)
             ENDIF
 C           VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
             IRET=2
@@ -528,12 +511,10 @@ C           VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
      &             ( ZR(JRPV+I)        - ZR(JRPV+I-1)        )
               IF ( EI .GT. E1 ) THEN
                 IRET = IRET + 1
-                CALL UTDEBM('E','RCSTOC_I','ERREUR LORS DE LA DEFINITI'
-     &                                //'ON DE LA COURBE DE TRACTION')
-                CALL UTIMPR ('L','PENTE INITIALE : ',1,E1)
-                CALL UTIMPR ('L','PENTE COURANTE: ',1,EI)
-                CALL UTIMPR ('S',' POUR L''ABSCISSE: ',1,ZR(JRPV+I))
-                CALL UTFINM ()
+                VALRR (1) = E1
+                VALRR (2) = EI
+                VALRR (3) = ZR(JRPV+I)
+                CALL U2MESG('E','MODELISA9_72',0,' ',0,0,3,VALRR)
               ENDIF
  480        CONTINUE
             IF ( IRET .NE. 0 ) THEN

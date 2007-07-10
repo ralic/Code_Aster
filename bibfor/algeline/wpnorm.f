@@ -7,7 +7,7 @@
       REAL*8              RESUFR(NBMODE,*), COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C        --- DU PROBLEME GENERALISE ASSOCIE AU PROBLEME QUADRATIQUE ---
                CONSTR(3) = DBLE(CMPL)
                CONSTR(4) = DIMAG(CMPL)
             ENDIF
-            CALL MTCMBL(2,TYPCST,CONSTR,NMATR,NDYNAM,' ',' ')
+            CALL MTCMBL(2,TYPCST,CONSTR,NMATR,NDYNAM,' ',' ','ELIM=')
             CALL MCMULT('ZERO',LDYNAM,VECPRO(1,IM),'C',ZC(LACC1),1)
             XNORM = CZERO
             DO 31 IEQ = 1, NEQ

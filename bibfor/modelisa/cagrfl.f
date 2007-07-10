@@ -3,7 +3,7 @@
       CHARACTER*8       CHAR, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,10 +110,10 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8        R8B, VALR(NGR), Z0, CDG(3), Z2, VDIR(3), NORM,
      &              R8VIDE
       COMPLEX*16    C16B
-      CHARACTER*8   K8B, VALK(NGR),KCRIT
+      CHARACTER*8   K8B, VALK(NGR),KCRIT, VALKK(3)
       CHARACTER*8   K8ARC, K8PLA, K8MEC, K8TG, K8TIN
       CHARACTER*16  MOTCLF, VALEK(2),CRIT(2)
-      INTEGER       IBID
+      INTEGER       IBID, VALI(2)
       INTEGER       CDGXI, CDGYI, CDGZI
       REAL*8        CDGXR, CDGYR, CDGZR
       COMPLEX*16    CDGXC, CDGYC, CDGZC
@@ -285,9 +285,12 @@ C
          CALL U2MESS('F','MODELISA2_71')
       ENDIF
       IF ( N1 .NE. NDH ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
-         CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
-         CALL UTIMPK('L','   DONNEES ATTENDUES ',  NDH, FFDH )
+         VALKK(1) = VALK(1)
+         VALKK(2) = VALK(2)
+         VALKK(3) = VALK(3) 
+         VALI(1) =  ABS(N1)
+         VALI(2) =  NDH
+         CALL U2MESG('F','MODELISA9_84',3,VALKK,2,VALI,0,0.D0)
       ENDIF
       DO 101 I = 1, NDH
          J = INDIK8 ( FFDH, VALK(I), 1, NDH )
@@ -302,9 +305,12 @@ C
          CALL U2MESS('F','MODELISA2_72')
       ENDIF
       IF ( N1 .NE. NGR-1 ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
-         CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
-         CALL UTIMPK('L','   DONNEES ATTENDUES ', NGR-1, FFGR )
+         VALKK(1) = VALK(1)
+         VALKK(2) = VALK(2)
+         VALKK(3) = VALK(3) 
+         VALI(1) =  ABS(N1)
+         VALI(2) =  NGR-1
+         CALL U2MESG('F','MODELISA9_85',3,VALKK,2,VALI,0,0.D0)
       ENDIF
       DO 102 I = 1, NGR-1
          J = INDIK8 ( FFGR, VALK(I), 1, NGR )
@@ -319,9 +325,12 @@ C
         CALL U2MESS('F','MODELISA2_73')
       ENDIF
       IF ( N1 .NE. NMC ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
-         CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
-         CALL UTIMPK('L','   DONNEES ATTENDUES ',  NMC, FFMC )
+         VALKK(1) = VALK(1)
+         VALKK(2) = VALK(2)
+         VALKK(3) = VALK(3) 
+         VALI(1) =  ABS(N1)
+         VALI(2) =  NMC
+         CALL U2MESG('F','MODELISA9_86',3,VALKK,2,VALI,0,0.D0)
       ENDIF
       DO 103 I = 1, NMC
          J = INDIK8 ( FFMC, VALK(I), 1, NMC )
@@ -336,9 +345,12 @@ C
          CALL U2MESS('F','MODELISA2_74')
       ENDIF
       IF ( N1 .NE. NMA ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL JCINMANQUE DES DONNEES')
-         CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
-         CALL UTIMPK('L','   DONNEES ATTENDUES ',  NMA, FFMA )
+         VALKK(1) = VALK(1)
+         VALKK(2) = VALK(2)
+         VALKK(3) = VALK(3) 
+         VALI(1) =  ABS(N1)
+         VALI(2) =  NMA
+         CALL U2MESG('F','MODELISA9_87',3,VALKK,2,VALI,0,0.D0)
       ENDIF
       DO 104 I = 1, NMA
          J = INDIK8 ( FFMA, VALK(I), 1, NMA )
@@ -353,9 +365,12 @@ C
          CALL U2MESS('F','MODELISA2_75')
       ENDIF
       IF ( N1 .NE. NTG ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
-         CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
-         CALL UTIMPK('L','   DONNEES ATTENDUES ',  NTG, FFTG )
+         VALKK(1) = VALK(1)
+         VALKK(2) = VALK(2)
+         VALKK(3) = VALK(3) 
+         VALI(1) =  ABS(N1)
+         VALI(2) =  NTG
+         CALL U2MESG('F','MODELISA9_88',3,VALKK,2,VALI,0,0.D0)
       ENDIF
       DO 105 I = 1, NTG
          J = INDIK8 ( FFTG, VALK(I), 1, NTG )
@@ -370,10 +385,13 @@ C
          CALL U2MESS('F','MODELISA2_76')
       ENDIF
       IF ( N1 .NE. NAS ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
-         CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
-         CALL UTIMPK('L','   DONNEES ATTENDUES ',  NAS, FFAS )
-      ENDIF
+         VALKK(1) = VALK(1)
+         VALKK(2) = VALK(2)
+         VALKK(3) = VALK(3) 
+         VALI(1) =  ABS(N1)
+         VALI(2) =  NAS
+         CALL U2MESG('F','MODELISA9_89',3,VALKK,2,VALI,0,0.D0)
+       ENDIF
       DO 106 I = 1, NAS
          J = INDIK8 ( FFAS, VALK(I), 1, NAS )
          ZR(JVAS-1+J) = VALR(I)
@@ -387,9 +405,12 @@ C
          CALL U2MESS('F','MODELISA2_77')
       ENDIF
       IF ( N1 .NE. NPC ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
-         CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
-         CALL UTIMPK('L','   DONNEES ATTENDUES ',  NPC, FFPC )
+         VALKK(1) = VALK(1)
+         VALKK(2) = VALK(2)
+         VALKK(3) = VALK(3) 
+         VALI(1) =  ABS(N1)
+         VALI(2) =  NPC
+         CALL U2MESG('F','MODELISA9_90',3,VALKK,2,VALI,0,0.D0)
       ENDIF
       DO 107 I = 1, NPC
          J = INDIK8 ( FFPC, VALK(I), 1, NPC )

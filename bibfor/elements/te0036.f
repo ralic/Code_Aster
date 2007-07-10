@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,18 +23,19 @@ C.......................................................................
 C
 C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
 C          CORRESPONDANT A UN CHARGEMENT EN PRESSION REPARTIE
-C          SUR DES FACES D'ELEMENTS X-FEM 3D
+C          SUR DES FACES D'ELEMENTS X-FEM
 C          (LA PRESSION PEUT ETRE DONNEE SOUS FORME D'UNE FONCTION)
 C
 C          OPTIONS : 'CHAR_MECA_PRES_R'
 C                    'CHAR_MECA_PRES_F'
 C                    'CHAR_MECA_FR2D3D'
+C                    'CHAR_MECA_FR1D2D'
 C                    'CHAR_MECA_FF2D3D'
+C                    'CHAR_MECA_FF1D2D'
 C
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
-C
 C
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -54,21 +55,21 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      CHARACTER*8   NOMPAR(4),NOMPA2(3),NOMA,ELREFP
+      CHARACTER*8   NOMPAR(4),NOMPA2(3),NOMA,ELREFP,ELRESE(2)
       CHARACTER*16  NOMTE,OPTION
-      CHARACTER*24  COOR1D,COOR2D,GEOM1D,GEOM2D,COORSE
-      INTEGER       JPINTT,JCNSET,JHEAVT,JLONCH,JCOORS,JLSN,JLST
+      CHARACTER*24  COORLO,GEOMLO,COORSE
+      INTEGER       JPINTT,JCNSET,JHEAVT,JLONCH,JCOORS,JLSN,JLST,K
       INTEGER       IBID,IER,NDIM,NNO,NNOP,NPG,NNOS,JGANO,KPG,KDEC,J
       INTEGER       IPOIDS,IVF,IDFDE,JDFD2,IGEOM,IPRES,ITEMPS,IRES,I
       INTEGER       DDLH,NFE,DDLC,NNOM,DDL,NIT,CPT,IT,NSE,ISE
-      INTEGER       IN,INO,JCOR1D,JCOR2D,IGEO1D,IGEO2D,IADZI,IAZK24
-      INTEGER       NSEMAX,IFORC,IRET,IG,POS,NDIME,NDDL,JDIM
+      INTEGER       IN,INO,JCORLO,IGEOLO,IADZI,IAZK24
+      INTEGER       NSEMAX(3),IFORC,IRET,IG,POS,NDIME,NDDL,JDIM
       REAL*8        Y(3),XG(4),RBID,FE(4),XE(2),LSNG,LSTG,RG,TG
       REAL*8        PRES,MATR(6561),FF(27),A(3),B(3),C(3),AB(3),AC(3)
       REAL*8        ND(3),NORME,NAB,RB1(3),RB2(3),GLOC(2),N(3),CISA
-      REAL*8        AN(3),G(3),HE,POIDS,DDOT,PADIST,FORREP(3)
-      DATA          NOMPAR  /'X','Y','Z','INST'/
-      DATA          NOMPA2 /'X','Y','INST'/
+      REAL*8        AN(3),G(3),HE,POIDS,DDOT,PADIST,FORREP(3),VF
+      DATA          ELRESE /'SE2','TR3'/
+      DATA          NSEMAX /2,3,6/
 C
       CALL JEMARQ()
 
@@ -78,23 +79,12 @@ C-----------------------------------------------------------------------
 
 C     ELEMENT DE REFERENCE PARENT
       CALL ELREF1(ELREFP)
-      NDIME=1
-      IF (ELREFP.NE.'SE2') THEN
-        CALL ELREF4(' ','RIGI',NDIME,NNOP,IBID,IBID,IBID,
-     &           IBID,IBID,IBID)
-        CALL ASSERT(NDIME.EQ.2)
-      ENDIF
+      CALL ELREF4(' ','RIGI',NDIME,NNOP,IBID,IBID,IBID,IBID,IBID,IBID)
+      CALL ASSERT(NDIME.EQ.1.OR.NDIME.EQ.2)
 
-C     SOUS-ELEMENT DE REFERENCE SCHEMA IDENTIQUE PARENT
-      IF (NDIME.EQ.2) THEN
-        CALL ELREF4('TR3','FPG3',NDIME,NNO,NNOS,NPG,IPOIDS,IVF,
-     &             IDFDE,IBID)
-      ELSEIF (NDIME.EQ.1) THEN
-        CALL ELREF4(' ','RIGI',NDIME,NNOP,NNOS,NPG,IPOIDS,IVF,
-     &              IDFDE,IBID)
-         NNO=NNOP
-      ENDIF
-
+C     SOUS-ELEMENT DE REFERENCE
+      CALL ELREF4(ELRESE(NDIME),'RIGI',IBID,NNO,NNOS,NPG,
+     &                                          IPOIDS,IVF,IDFDE,IBID)
 
 C     DIMENSION DE L'ESPACE
       CALL TECAEL(IADZI,IAZK24)
@@ -105,31 +95,28 @@ C     DIMENSION DE L'ESPACE
 C     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 C     NDIM EST LA DIMENSION DU MAILLAGE
 C     NDIME EST DIMENSION DE L'ELEMENT FINI
-
+C     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
+C     IL NE FAUT PAS APPELER XTEINI CAR IL NE GERE PAS LES ELEMENTS 
+C     DE BORD   
+C      CALL XTEINI(NOMTE,DDLH,NFE,IBID,IBID,IBID,IBID,IBID)
       IF (NOMTE(1:12).EQ.'MECA_XH_FACE'.OR.
-     &    NOMTE(1:12).EQ.'MEPSE3_XH') THEN
+     &    NOMTE.EQ.'MEPLSE2_XH'.OR.
+     &    NOMTE.EQ.'MEPLSE3_XH') THEN
         DDLH=NDIM
         NFE=0
       ELSEIF (NOMTE(1:12).EQ.'MECA_XT_FACE'.OR.
-     &       NOMTE(1:12).EQ.'MEPSE3_XT') THEN
-        DDLH=0
+     &        NOMTE.EQ.'MEPLSE2_XT'.OR.
+     &        NOMTE.EQ.'MEPLSE3_XT') THEN
         NFE=4
       ELSEIF (NOMTE(1:13).EQ.'MECA_XHT_FACE'.OR.
-     &        NOMTE(1:13).EQ.'MEPSE3_XHT') THEN
+     &        NOMTE.EQ.'MEPLSE2_XHT'.OR.
+     &        NOMTE.EQ.'MEPLSE3_XHT') THEN
         DDLH=NDIM
         NFE=4
       ELSE
-        CALL U2MESS('F','ELEMENTS2_78')
-      ENDIF
-
-      IF (NDIME.EQ. 3) THEN
-         NSEMAX=6
-      ELSEIF (NDIME.EQ. 2) THEN
-         NSEMAX=3
-      ELSEIF (NDIME.EQ. 1) THEN
-         NSEMAX=2
+        CALL U2MESS('F','ELEMENTS4_59')
       ENDIF
 
 C-----------------------------------------------------------------------
@@ -197,25 +184,18 @@ C         COORD DU SOUS-ELT EN QUESTION
           COORSE='&&TE0036.COORSE'
           CALL WKVECT(COORSE,'V V R',NDIM*(NDIM+1),JCOORS)
 
-C         BOUCLE SUR LES 3 SOMMETS DU SOUS-TRIA
-C         OU SUR LES 2 SOMMETS DU SOUS-SEG
-          DO 112 IN=1,NNO
+C         BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
+          DO 111 IN=1,NNO
             INO=ZI(JCNSET-1+(NDIME+1)*(CPT-1)+IN)
-            IF (INO.LT.1000) THEN
-              ZR(JCOORS-1+NDIM*(IN-1)+1)=ZR(IGEOM-1+NDIM*(INO-1)+1)
-              ZR(JCOORS-1+NDIM*(IN-1)+2)=ZR(IGEOM-1+NDIM*(INO-1)+2)
-              IF (NDIM.EQ.3) THEN
-                 ZR(JCOORS-1+NDIM*(IN-1)+3)=ZR(IGEOM-1+NDIM*(INO-1)+3)
+            DO 112 J=1,NDIM 
+              IF (INO.LT.1000) THEN
+                ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
+              ELSE
+                ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                               ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
               ENDIF
-            ELSE
-             ZR(JCOORS-1+NDIM*(IN-1)+1)=ZR(JPINTT-1+NDIM*(INO-1000-1)+1)
-             ZR(JCOORS-1+NDIM*(IN-1)+2)=ZR(JPINTT-1+NDIM*(INO-1000-1)+2)
-             IF (NDIM.EQ.3) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+3)=ZR(JPINTT-1+NDIM*(INO-1000-1)
-     &           +3)
-             ENDIF
-            ENDIF
- 112      CONTINUE
+ 112        CONTINUE
+ 111      CONTINUE
 
 C         ON RENOMME LES SOMMETS DU SOUS-ELEMENT
           CALL LCINVN(3,0.D0,A)
@@ -225,71 +205,54 @@ C         ON RENOMME LES SOMMETS DU SOUS-ELEMENT
             A(J)=ZR(JCOORS-1+NDIM*(1-1)+J)
             B(J)=ZR(JCOORS-1+NDIM*(2-1)+J)
             AB(J)=B(J)-A(J)
-            IF (NDIM.EQ.3) THEN
-               C(J)=ZR(JCOORS-1+NDIM*(3-1)+J)
-               AC(J)=C(J)-A(J)
-            ENDIF
+            IF (NDIM.EQ.3) C(J)=ZR(JCOORS-1+NDIM*(3-1)+J)
+            IF (NDIM.EQ.3) AC(J)=C(J)-A(J)
  113      CONTINUE 
 
-          IF (NDIM.EQ.3) THEN
-C         CREATION DU REPERE LOCAL 2D : (AB,Y)
+          IF (NDIME.EQ.2) THEN
+C           CREATION DU REPERE LOCAL 2D : (AB,Y)
             CALL PROVEC(AB,AC,ND)
             CALL NORMEV(ND,NORME)
             CALL NORMEV(AB,NAB)
             CALL PROVEC(ND,AB,Y)
-          ELSEIF (NDIM.EQ.2) THEN
-C         CREATION DU REPERE LOCAL 1D : AB/NAB
+          ELSEIF (NDIME.EQ.1) THEN
+C           CREATION DU REPERE LOCAL 1D : AB/NAB
             CALL NORMEV(AB,NAB)
             CALL LCINVN(3,0.D0,ND) 
-              ND(1) = AB(2)
-              ND(2) = -AB(1)
+            ND(1) = AB(2)
+            ND(2) = -AB(1)
           ENDIF
 
-
-          IF (NDIM.EQ.3) THEN
-C         COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL 2D
-            COOR2D='&&TE0036.COOR2D'
-            CALL WKVECT(COOR2D,'V V R',NNO*NDIME,JCOR2D)
-            ZR(JCOR2D-1+1)=0.D0
-            ZR(JCOR2D-1+2)=0.D0
-            ZR(JCOR2D-1+3)=NAB
-            ZR(JCOR2D-1+4)=0.D0
-            ZR(JCOR2D-1+5)=DDOT(3,AC,1,AB,1)
-            ZR(JCOR2D-1+6)=DDOT(3,AC,1,Y ,1)
-          ELSEIF (NDIM.EQ.2) THEN
-            COOR1D='&&TE0036.COOR1D'
-            CALL WKVECT(COOR1D,'V V R',NNO*NDIME,JCOR1D)
-            ZR(JCOR1D-1+1)=0.D0
-            ZR(JCOR1D-1+2)=NAB
+C         COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
+          COORLO='&&TE0036.COORLO'
+          CALL WKVECT(COORLO,'V V R',NNO*NDIME,JCORLO)
+          IF (NDIME.EQ.2) THEN
+            ZR(JCORLO-1+1)=0.D0
+            ZR(JCORLO-1+2)=0.D0
+            ZR(JCORLO-1+3)=NAB
+            ZR(JCORLO-1+4)=0.D0
+            ZR(JCORLO-1+5)=DDOT(3,AC,1,AB,1)
+            ZR(JCORLO-1+6)=DDOT(3,AC,1,Y ,1)
+          ELSEIF (NDIME.EQ.1) THEN
+            ZR(JCORLO-1+1)=0.D0
+            ZR(JCORLO-1+2)=NAB
           ENDIF
 
-          IF (NDIM.EQ.3) THEN
-C         COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL 2D
-            GEOM2D='&&TE0036.GEOM2D'
-            CALL WKVECT(GEOM2D,'V V R',NNOP*NDIME,IGEO2D)
-            DO 114 INO=1,NNOP
-              DO 115 J=1,NDIM
-                N(J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
-                AN(J)=N(J)-A(J)
- 115          CONTINUE
-              ZR(IGEO2D-1+2*(INO-1)+1)=DDOT(NDIM,AN,1,AB,1)
-              ZR(IGEO2D-1+2*(INO-1)+2)=DDOT(NDIM,AN,1,Y ,1)
- 114        CONTINUE
-          ELSEIF (NDIM.EQ.2) THEN
-C         COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL 1D
-            GEOM1D='&&TE0036.GEOM1D'
-            CALL WKVECT(GEOM1D,'V V R',NNOP*NDIME,IGEO1D)
-            DO 116 INO=1,NNOP
-              DO 117 J=1,NDIM
-                N(J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
-                AN(J)=N(J)-A(J)
- 117          CONTINUE
-              ZR(IGEO1D-1+INO)=DDOT(NDIM,AN,1,AB,1)
- 116        CONTINUE
-          ENDIF
+C         COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL 
+          GEOMLO='&&TE0036.GEOMLO'
+          CALL WKVECT(GEOMLO,'V V R',NNOP*NDIME,IGEOLO)
+          DO 114 INO=1,NNOP
+            DO 115 J=1,NDIM
+              N(J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
+              AN(J)=N(J)-A(J)
+ 115        CONTINUE
+            ZR(IGEOLO-1+NDIME*(INO-1)+1)=DDOT(NDIM,AN,1,AB,1)
+            IF (NDIME.EQ.2) 
+     &        ZR(IGEOLO-1+NDIME*(INO-1)+2)=DDOT(NDIM,AN,1,Y ,1)
+ 114      CONTINUE
 
 C         FONCTION HEAVYSIDE CSTE SUR LE SS-ELT
-          HE=ZI(JHEAVT-1+NSEMAX*(IT-1)+ISE)
+          HE=ZI(JHEAVT-1+NSEMAX(NDIME)*(IT-1)+ISE)
 
 C-----------------------------------------------------------------------
 C         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
@@ -297,36 +260,25 @@ C-----------------------------------------------------------------------
 
           DO 200 KPG=1,NPG
 
-            IF (NDIM.EQ.3) THEN
-C           CALCUL DU POIDS EN 2D : POIDS = POIDS DE GAUSS * DET(J)
-              CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCOR2D),RB1,RB2,POIDS)
-
-C           COORDONNÉES RÉELLES LOCALES 2D DU POINT DE GAUSS
-            CALL LCINVN(2,0.D0,GLOC)
-            DO 210 J=1,NNO
-              GLOC(1)=GLOC(1)+ZR(IVF-1+NNO*(KPG-1)+J)*ZR(JCOR2D-1+2*J-1)
-              GLOC(2)=GLOC(2)+ZR(IVF-1+NNO*(KPG-1)+J)*ZR(JCOR2D-1+2*J)
- 210        CONTINUE
-            
-            ELSEIF (NDIM.EQ.2) THEN
-C           CALCUL DU POIDS EN 2D : POIDS = POIDS DE GAUSS * DET(J)
+C           CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
+            IF     (NDIME.EQ.2) THEN
+              CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCORLO),RB1,RB2,POIDS)
+            ELSEIF (NDIME.EQ.1) THEN
                POIDS = ZR(IPOIDS-1+KPG) * NAB/2.D0
+            ENDIF
 
-C         COORDONNEES LOCALES 1D DU POINT DE GAUSS IPG
-               CALL LCINVN(2,0.D0,GLOC)
-               DO 205 J=1,NNO
-                 GLOC(1)=GLOC(1)+ZR(IVF-1+NNO*(KPG-1)+J)*ZR(JCOR1D-1+J)
- 205           CONTINUE
-              ENDIF
+C           COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
+            CALL LCINVN(NDIME,0.D0,GLOC)
+            DO 210 J=1,NNO
+              VF=ZR(IVF-1+NNO*(KPG-1)+J)
+              DO 211 K=1,NDIME
+                GLOC(K)=GLOC(K)+VF*ZR(JCORLO-1+NDIME*(J-1)+K)
+ 211          CONTINUE
+ 210        CONTINUE
                          
 C           JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
-            IF (NDIM.EQ.3)  CALL REEREF(ELREFP,NNOP,IGEO2D,GLOC,RBID,
-     &         .FALSE.,NDIME,RBID,IBID,IBID,IBID,RBID,RBID,'NON',XE,
-     &        FF,RBID,RBID,RBID,RBID)
-            IF (NDIM.EQ.2)  CALL REEREF(ELREFP,NNOP,IGEO1D,GLOC,RBID,
-     &          .FALSE.,NDIME,RBID,IBID,IBID,IBID,RBID,RBID,'NON',XE,
-     &       FF,RBID,RBID,RBID,RBID)
-
+            CALL REEREF(ELREFP,NNOP,IGEOLO,GLOC,RBID,.FALSE.,NDIME,RBID,
+     &         IBID,IBID,IBID,RBID,RBID,'NON',XE,FF,RBID,RBID,RBID,RBID)
 
 C           COORDONNES REELLES DU POINT DE GAUSS              
             CALL LCINVN(4,0.D0,XG)
@@ -339,14 +291,10 @@ C           COORDONNES REELLES DU POINT DE GAUSS
 
 C           2EME METHODE POUR CALCULER LES COORDONNÉES RÉELLES 
 C           DU POINT DE GAUSS
-C            IF (NDIM.EQ.3) THEN
 C            G(1)=A(1)+AB(1)*GLOC(1)+Y(1)*GLOC(2)
 C            G(2)=A(2)+AB(2)*GLOC(1)+Y(2)*GLOC(2)
 C            G(3)=A(3)+AB(3)*GLOC(1)+Y(3)*GLOC(2)
-C              IF (PADIST(3,G,XG).GT.1.D-12) THEN
-C                CALL U2MESS('A','ELEMENTS2_79')
-C              ENDIF
-            
+
 
 C           CALCUL DES FONCTIONS D'ENRICHISSEMENT
 C           -------------------------------------
@@ -355,10 +303,10 @@ C           -------------------------------------
 C             LEVEL SETS AU POINT DE GAUSS
               LSNG = 0.D0
               LSTG = 0.D0
-              DO 222 INO=1,NNOP
+              DO 230 INO=1,NNOP
                 LSNG = LSNG + ZR(JLSN-1+INO) * FF(INO)
                 LSTG = LSTG + ZR(JLST-1+INO) * FF(INO)
- 222          CONTINUE
+ 230          CONTINUE
 
 C             COORDONNÉES POLAIRES DU POINT
               RG=SQRT(LSNG**2+LSTG**2)
@@ -375,108 +323,99 @@ C           CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
 C           -----------------------------------------------
 
             CALL LCINVN(3,0.D0,FORREP)
+            NOMPAR(1)='X'
+            NOMPAR(2)='Y'
+            IF (NDIM.EQ.3) NOMPAR(3)='Z'
+            IF (NDIM.EQ.3) NOMPAR(4)='INST'
+            IF (NDIM.EQ.2) NOMPAR(3)='INST'
 
             IF (OPTION.EQ.'CHAR_MECA_PRES_R') THEN
 
 C             CALCUL DE LA PRESSION AUX POINTS DE GAUSS
               PRES = 0.D0
               CISA = 0.D0
-              DO 212 INO = 1,NNOP
-                PRES = PRES +  ZR(IPRES+2*INO-2) * FF(INO)
+              DO 240 INO = 1,NNOP
+                IF (NDIM.EQ.3) PRES = PRES +  ZR(IPRES-1+INO) * FF(INO)
                 IF (NDIM.EQ.2) THEN
-                   CISA = CISA +  ZR(IPRES+2*INO-1) * FF(INO)
+                  PRES = PRES + ZR(IPRES-1+2*(INO-1)+1) * FF(INO)
+                  CISA = CISA + ZR(IPRES-1+2*(INO-1)+2) * FF(INO)
                 ENDIF
- 212          CONTINUE
+ 240          CONTINUE
 C             ATTENTION AU SIGNE : POUR LES PRESSIONS, IL FAUT UN - DVT
 C             CAR LE SECOND MEMBRE SERA ECRIT AVEC UN + (VOIR PLUS BAS)
-              FORREP(1) = -PRES * ND(1)
-              FORREP(2) = -PRES * ND(2)
+              DO 250 J=1,NDIM
+                FORREP(J) = -PRES * ND(J)
+ 250          CONTINUE
               IF (NDIM.EQ.2) THEN
                  FORREP(1) = FORREP(1)- CISA * ND(2)
                  FORREP(2) = FORREP(2)+ CISA * ND(1)
               ENDIF
-              IF (NDIM.EQ.3)  FORREP(3) = -PRES * ND(3)
 
             ELSEIF (OPTION.EQ.'CHAR_MECA_PRES_F') THEN
 
 C             VALEUR DE LA PRESSION
-              IF(NDIM.EQ.2) THEN
-                XG(3) = ZR(ITEMPS)
-                CALL FOINTE('FM',ZK8(IPRES),3,NOMPA2,XG,PRES,IER)
-                CALL FOINTE('FM',ZK8(IPRES+1),3,NOMPA2,XG,CISA,IER)
-              ELSEIF (NDIM.EQ.3) THEN
-                XG(4) = ZR(ITEMPS)
-                CALL FOINTE('FM',ZK8(IPRES),4,NOMPAR,XG,PRES,IER)
-                FORREP(3) = -PRES * ND(3)
-              ENDIF  
-              FORREP(1) = -PRES * ND(1)
-              FORREP(2) = -PRES * ND(2)
+              XG(NDIM+1) = ZR(ITEMPS)
+              CALL FOINTE('FM',ZK8(IPRES),NDIM+1,NOMPAR,XG,PRES,IER)
+              IF(NDIM.EQ.2) 
+     &          CALL FOINTE('FM',ZK8(IPRES+1),NDIM+1,NOMPAR,XG,CISA,IER)
+              DO 260 J=1,NDIM
+                FORREP(J) = -PRES * ND(J)
+ 260          CONTINUE
               IF (NDIM.EQ.2) THEN
-                 FORREP(1) = FORREP(1)- CISA * ND(2)
+                 FORREP(1) = FORREP(1)-CISA * ND(2)
                  FORREP(2) = FORREP(2)+CISA * ND(1)
               ENDIF
 
-            ELSEIF (OPTION.EQ.'CHAR_MECA_FR2D3D') THEN
+            ELSEIF (OPTION.EQ.'CHAR_MECA_FR2D3D'.OR.
+     &              OPTION.EQ.'CHAR_MECA_FR1D2D') THEN
 
               CALL LCINVN(NDIM,0.D0,FORREP)
-              DO 213 INO = 1,NNOP
-                FORREP(1) = FORREP(1) + ZR(IFORC-1+3*(INO-1)+1)* FF(INO)
-                FORREP(2) = FORREP(2) + ZR(IFORC-1+3*(INO-1)+2)* FF(INO)
-                FORREP(3) = FORREP(3) + ZR(IFORC-1+3*(INO-1)+3)* FF(INO)
- 213          CONTINUE
+              DO 270 INO = 1,NNOP
+                DO 271 J=1,NDIM
+                  FORREP(J)=FORREP(J)+ZR(IFORC-1+NDIM*(INO-1)+J)*FF(INO)
+ 271            CONTINUE
+ 270          CONTINUE
 
-            ELSEIF (OPTION.EQ.'CHAR_MECA_FF2D3D') THEN
+            ELSEIF (OPTION.EQ.'CHAR_MECA_FF2D3D'.OR.
+     &              OPTION.EQ.'CHAR_MECA_FF1D2D') THEN
 
-              XG(4) = ZR(ITEMPS)
-              CALL FOINTE('FM',ZK8(IFORC)  ,4,NOMPAR,XG,FORREP(1),IER)
-              CALL FOINTE('FM',ZK8(IFORC+1),4,NOMPAR,XG,FORREP(2),IER)
-              CALL FOINTE('FM',ZK8(IFORC+2),4,NOMPAR,XG,FORREP(3),IER)
-              
-            ELSEIF (OPTION.EQ.'CHAR_MECA_FR1D2D') THEN
-            
-              CALL LCINVN(NDIM,0.D0,FORREP)
-              DO 214 INO = 1,NNOP
-               FORREP(1) = FORREP(1) + ZR(IFORC-1+2*(INO-1)+1)* FF(INO)
-               FORREP(2) = FORREP(2) + ZR(IFORC-1+2*(INO-1)+2)* FF(INO)
- 214          CONTINUE
-            ELSEIF (OPTION.EQ.'CHAR_MECA_FF1D2D') THEN
-            
-              XG(3) = ZR(ITEMPS)
-              CALL FOINTE('FM',ZK8(IFORC)  ,3,NOMPA2,XG,FORREP(1),IER)
-              CALL FOINTE('FM',ZK8(IFORC+1),3,NOMPA2,XG,FORREP(2),IER)
+              XG(NDIM+1) = ZR(ITEMPS)
+              DO 280 J=1,NDIM
+                CALL FOINTE('FM',ZK8(IFORC-1+J),NDIM+1,NOMPAR,XG,
+     &                                                    FORREP(J),IER)
+  280         CONTINUE
 
             ENDIF
 
 C           CALCUL EFFECTIF DU SECOND MEMBRE
 C           --------------------------------
             POS=0
-            DO 230 INO = 1,NNOP
+            DO 290 INO = 1,NNOP
 
 C             TERME CLASSIQUE
-              DO 231 J=1,NDIM
+              DO 291 J=1,NDIM
                 POS=POS+1
-
                 ZR(IRES-1+POS) = ZR(IRES-1+POS)
      &                           + FORREP(J) * POIDS * FF(INO)
- 231          CONTINUE
+ 291          CONTINUE
 
 C             TERME HEAVISIDE
-              DO 232 J=1,DDLH
+              DO 292 J=1,DDLH
                 POS=POS+1
-
                 ZR(IRES-1+POS) = ZR(IRES-1+POS)
      &                           + HE * FORREP(J) * POIDS * FF(INO)  
- 232          CONTINUE
+ 292          CONTINUE
+
 
 C             TERME SINGULIER   
-              DO 233 IG=1,NFE
-                DO 234 J=1,NDIM
+              DO 293 IG=1,NFE
+                DO 294 J=1,NDIM
                   POS=POS+1
                   ZR(IRES-1+POS) = ZR(IRES-1+POS) +
      &                             FE(IG) * FORREP(J) * POIDS * FF(INO)
- 234            CONTINUE
- 233          CONTINUE 
- 230        CONTINUE 
+ 294            CONTINUE
+ 293          CONTINUE 
+ 290        CONTINUE 
  200      CONTINUE
 
 C-----------------------------------------------------------------------
@@ -484,10 +423,9 @@ C         FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 C-----------------------------------------------------------------------
 
           CALL JEDETR(COORSE)
-          CALL JEDETR(GEOM2D)
-          CALL JEDETR(COOR2D)
-          CALL JEDETR(GEOM1D)
-          CALL JEDETR(COOR1D)
+          CALL JEDETR(GEOMLO)
+          CALL JEDETR(COORLO)
+
  110    CONTINUE
  100  CONTINUE
 

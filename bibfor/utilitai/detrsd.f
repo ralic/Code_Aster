@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,11 +165,12 @@ C     ----------------------------------
         CALL JEDETR(LIGREL//'.LGNS')
         CALL JEDETR(LIGREL//'.LIEL')
         CALL JEDETR(LIGREL//'.NEMA')
-        CALL JEDETR(LIGREL//'.NOMA')
+        CALL JEDETR(LIGREL//'.LGRF')
         CALL JEDETR(LIGREL//'.NBNO')
         CALL JEDETR(LIGREL//'.PRNM')
         CALL JEDETR(LIGREL//'.PRNS')
         CALL JEDETR(LIGREL//'.REPE')
+        CALL JEDETR(LIGREL//'.SSSA')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'LIGRET') THEN
@@ -183,7 +184,7 @@ C     ----------------------------------
         CALL JEDETR(LIGRET//'.MATA')
         CALL JEDETR(LIGRET//'.MODE')
         CALL JEDETR(LIGRET//'.NBMA')
-        CALL JEDETR(LIGRET//'.NOMA')
+        CALL JEDETR(LIGRET//'.LGRF')
         CALL JEDETR(LIGRET//'.PHEN')
         CALL JEDETR(LIGRET//'.POMA')
         CALL JEDETR(LIGRET//'.PONO')

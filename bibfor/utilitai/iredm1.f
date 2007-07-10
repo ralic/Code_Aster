@@ -8,7 +8,7 @@
      &                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/05/2007   AUTEUR VOLDOIRE F.VOLDOIRE 
+C MODIF UTILITAI  DATE 09/07/2007   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -472,6 +472,13 @@ C
        IF ( LAMOR ) WRITE(IFMIS,1300) 'COUPL AMOR' ,
      &               ((CAMOR(K+(L-1)*NBMODS),K=1,NBMODS),L=1,NBMODE)
       ENDIF
+C
+      IF (FORMIM.EQ.'1PE16.9') THEN
+         WRITE(IFMIS,'(A)') 'FORMAT_REAL_LONG'
+      ELSE
+         WRITE(IFMIS,'(A)') 'FORMAT_REAL_COURT'
+      ENDIF
+      
 CCC
 C     ----- FIN DES IMPRESSIONS DE MISS3D -----
 CCC

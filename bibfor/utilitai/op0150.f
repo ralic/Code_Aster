@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='OP0150')
       INTEGER NTYMAX
+      INTEGER VALI(2)
       PARAMETER (NTYMAX=48)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
@@ -184,7 +185,7 @@ C     --- MODELE ---
       CALL GETVID(' ','MODELE',0,1,1,NOMO,NBV)
       IF (NBV.NE.0) THEN
         LIGREL = NOMO//'.MODELE'
-        CALL JEVEUO(LIGREL//'.NOMA','L',LNOMA)
+        CALL JEVEUO(LIGREL//'.LGRF','L',LNOMA)
         NOMA = ZK8(LNOMA)
       END IF
 
@@ -283,11 +284,9 @@ C- ON VERIFIE SI LE CHAMP DEMANDE EST COMPATIBLE AVEC LE TYPE DE RESUTAT
       DO 30 ICH = 1,NBNOCH
         CALL RSUTCH(RESU,LINOCH(ICH),1,NOMCH,IRET)
         IF (IRET.NE.0) THEN
-          CALL UTDEBM('F',NOMCMD,'LE CHAMP DEMANDE EST INCOMPATIBLE'//
-     &                ' AVEC LE TYPE DE RESULTAT')
-          CALL UTIMPK('L',' TYPE DE RESULTAT :',1,TYPRES)
-          CALL UTIMPK('L','     NOM DU CHAMP :',1,LINOCH(ICH))
-          CALL UTFINM
+          VALK (1) = TYPRES
+          VALK (2) = LINOCH(ICH)
+          CALL U2MESG('F','UTILITAI8_24',2,VALK,0,0,0,0.D0)
         END IF
    30 CONTINUE
 
@@ -344,7 +343,7 @@ C     --- LECTURE
       ELSE IF (FORM.EQ.'ENSIGHT') THEN
 C     ================================
 
-        CALL JEEXIN(LIGREL//'.NOMA',IRET)
+        CALL JEEXIN(LIGREL//'.LGRF',IRET)
         IF (IRET.EQ.0) THEN
           CALL U2MESS('F','UTILITAI2_88')
         ELSE
@@ -422,12 +421,8 @@ C  LECTURE DU FICHIER GEOM (NUMEROS DE NOEUDS)
    80   CONTINUE
         LL = NCARLU
         IF (NSTAR.GE.8) THEN
-          CALL UTDEBM('F',NOMCMD,
-     &                'LE NOMBRE D''ASTERISQUES POUR LES NOMS'//
-     &                ' DE FICHIERS ENSIGHT DE PRESSION EST TROP GRAND'
-     &                //' IL EST LIMITE A 7')
-          CALL UTIMPI('L',' NOMBRE D''ASTERISQUES :',1,NSTAR)
-          CALL UTFINM
+          VALI (1) = NSTAR
+          CALL U2MESG('F','UTILITAI8_25',0,' ',1,VALI,0,0.D0)
         END IF
 
         CHGEOM = NOMA//'.COORDO'
@@ -579,12 +574,11 @@ C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
             CALL RSAGSD(RESU,0)
             CALL RSEXCH(RESU,LINOCH(1),ITPS,NOMCH,IRET)
           ELSE
-            CALL UTDEBM('F',NOMCMD,'APPEL ERRONE')
-            CALL UTIMPK('L','  RESULTAT : ',1,RESU)
-            CALL UTIMPI('L','  ARCHIVAGE NUMERO : ',1,ITPS)
-            CALL UTIMPI('L','  CODE RETOUR DE RSEXCH : ',1,IRET)
-            CALL UTIMPK('L','  PROBLEME CHAMP : ',1,NOMCH)
-            CALL UTFINM()
+            VALK (1) = RESU
+            VALK (2) = NOMCH
+            VALI (1) = ITPS
+            VALI (2) = IRET
+            CALL U2MESG('F','UTILITAI8_26',2,VALK,2,VALI,0,0.D0)
           END IF
           CALL COPISD('CHAMP_GD','G',CHPRES,NOMCH)
           CALL RSNOCH(RESU,LINOCH(1),ITPS,' ')
@@ -807,12 +801,11 @@ C           DU CHAMP CREE AVEC LE PROF_CHNO PRECEDENT :
               CALL RSAGSD(RESU,0)
               CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
             ELSE
-              CALL UTDEBM('F',NOMCMD,'APPEL ERRONE')
-              CALL UTIMPK('L','  RESULTAT : ',1,RESU)
-              CALL UTIMPI('L','  ARCHIVAGE NUMERO : ',1,ITPS)
-              CALL UTIMPI('L','  CODE RETOUR DE RSEXCH : ',1,IRET)
-              CALL UTIMPK('L','  PROBLEME CHAMP : ',1,CHANOM)
-              CALL UTFINM()
+              VALK (1) = RESU
+              VALK (2) = CHANOM
+              VALI (1) = ITPS
+              VALI (2) = IRET
+              CALL U2MESG('F','UTILITAI8_27',2,VALK,2,VALI,0,0.D0)
             END IF
             CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
             CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
@@ -958,15 +951,12 @@ C     --------------------------------------------
 C     -- MESSAGE D'ERREUR DE LECTURE :
 C     --------------------------------------------
       IF (IO.LT.0) THEN
-        CALL UTDEBM('F',NOMCMD,
-     &             'FIN DE FICHIER DANS LA LECTURE DES FICHIERS ENSIGHT'
-     &              )
+        CALL U2MESG('F+','UTILITAI8_28',0,' ',0,0,0,0.D0)
       ELSE IF (IO.GT.0) THEN
-        CALL UTDEBM('F',NOMCMD,
-     &              'ERREUR DANS LA LECTURE DU FICHIER ENSIGHT')
+        CALL U2MESG('F+','UTILITAI8_29',0,' ',0,0,0,0.D0)
       END IF
-      CALL UTIMPK('L',' PROBLEME POUR LE FICHIER: ',1,FIC80B)
-      CALL UTFINM
+      VALK (1) = FIC80B
+      CALL U2MESG('F','UTILITAI8_30',1,VALK,0,0,0,0.D0)
 
   300 CONTINUE
       CALL JEDEMA()

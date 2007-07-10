@@ -1,4 +1,4 @@
-#@ MODIF sd_fiss_xfem SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_fiss_xfem SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,10 +75,10 @@ class sd_fiss_xfem(AsBase):
     nomj = SDNom(fin=8)
 
     CARAFOND        = AsVR()
-    FONDFISS        = AsVR()
     GROUP_MA_ENRI   = AsVI()
     GROUP_NO_ENRI   = AsVI()
 
+    FONDFISS        = Facultatif(AsVR())
     FONDMULT        = Facultatif(AsVI())
 
     CONTACT   = Facultatif(sd_contact_xfem())

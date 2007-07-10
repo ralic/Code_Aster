@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
       REPK  = REPKZ
       NOLIG = NOMOB//'.MODELE'
 C
-      CALL JEVEUO(NOLIG//'.NOMA','L',IANOMA)
+      CALL JEVEUO(NOLIG//'.LGRF','L',IANOMA)
       MA = ZK8(IANOMA-1+1)
 C
 C     --------------------------------
@@ -80,9 +80,14 @@ C     -----------------------------------
        CALL DISMZC(CODMES, QUESTI, NOLIG,REPI, REPK, IERD)
 
 C     -----------------------------------
-      ELSE IF (QUESTI.EQ.'DIM_GEOM') THEN
+      ELSE IF ((QUESTI.EQ.'DIM_GEOM')      .OR.
+     &        (QUESTI.EQ.'NB_SM_MAILLA')   .OR.
+     &        (QUESTI.EQ.'NB_SS_ACTI'  )   .OR.
+     &        (QUESTI.EQ.'NB_NL_MAILLA')   .OR.
+     &        (QUESTI.EQ.'PHENOMENE'   ) ) THEN
 C     -----------------------------------
          CALL DISMLG(CODMES,QUESTI,NOLIG,REPI,REPK,IERD)
+
 C     -----------------------------------------
       ELSE IF (QUESTI.EQ.'ELEM_VOLU_QUAD') THEN
 C     -----------------------------------------
@@ -100,46 +105,10 @@ C     ------------------------------------------
 C     ------------------------------------------
          CALL DISMMA(CODMES,QUESTI,MA,REPI,REPK,IERD)
 C
-C     ------------------------------------------
-      ELSE IF( (QUESTI.EQ.'NB_SM_MAILLA') .OR.
-     &         (QUESTI.EQ.'NB_SS_ACTI'  ) .OR.
-     &         (QUESTI.EQ.'NB_NL_MAILLA') ) THEN
-C     ------------------------------------------
-         CALL JEEXIN(NOMOB//'.SSSA',IRET)
-         IF (IRET.EQ.0) THEN
-           REPI=0
-         ELSE
-           CALL JEVEUO(NOMOB//'.SSSA','L',IASSSA)
-           CALL JELIRA(NOMOB//'.SSSA','LONMAX',N1,KBID)
-           IF (QUESTI.EQ.'NB_SM_MAILLA') THEN
-             REPI= ZI(IASSSA-1+N1-2)
-           ELSE IF (QUESTI.EQ.'NB_SS_ACTI') THEN
-             REPI= ZI(IASSSA-1+N1-1)
-           ELSE IF (QUESTI.EQ.'NB_NL_MAILLA') THEN
-             REPI= ZI(IASSSA-1+N1)
-           END IF
-         END IF
-C
 C     -------------------------------------------
-      ELSE IF ( (QUESTI.EQ.'PHENOMENE'   ) .OR.
-     &          (QUESTI.EQ.'MODELISATION') .OR.
+      ELSE IF (  (QUESTI.EQ.'MODELISATION') .OR.
      &          (QUESTI.EQ.'MODELISATION_THM') ) THEN
 C     -------------------------------------------
-        CALL JELIRA(NOLIG//'.NOMA','DOCU',IBID,PHEN4)
-        IF (PHEN4.EQ.'MECA') THEN
-          NOPHEN='MECANIQUE'
-        ELSE IF (PHEN4.EQ.'THER') THEN
-          NOPHEN='THERMIQUE'
-        ELSE IF (PHEN4.EQ.'ACOU') THEN
-          NOPHEN='ACOUSTIQUE'
-        ELSE
-          CALL U2MESK(CODMES,'UTILITAI_63',1,PHEN4)
-        END IF
-        REPK= NOPHEN
-C
-        IF  ( (QUESTI.EQ.'MODELISATION')       .OR.
-     &        (QUESTI.EQ.'MODELISATION_THM') ) THEN
-C            ------------------------
 C
           IF  ( QUESTI.EQ.'MODELISATION' ) THEN
             K32BID = ' '
@@ -223,7 +192,6 @@ C
             ENDIF
           ENDIF
  41       CONTINUE
-        END IF
 C
 C     ------------------------------------
       ELSE IF  (QUESTI.EQ.'EXI_ELEM') THEN

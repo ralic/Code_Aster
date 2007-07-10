@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -550,7 +550,7 @@ C         -----------------------------------
      &                  IERD)
 
             IF (NBSSA.GT.0) THEN
-              CALL JEVEUO(MO//'.SSSA','L',IASSSA)
+              CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
 
               CALL SSVALM('DEBUT',OPTIO,MO,MA,IMA,IDRESL,NCMPEL)
 
@@ -664,7 +664,7 @@ C==========================
                 IF (IER.EQ.0) GO TO 320
 
                 CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
-      
+
 C NOM DU LIGREL GLOBAL
                 NOMLI = ZK24(IAD)
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
@@ -754,8 +754,8 @@ C==========================
 C BOUCLE SUR LES GRELS DU LIGREL GLOBAL NOMLI/ILIMA
 C==========================
                 DO 310 IGR = 1,ZZNGEL(ILIMA)
-                
-                
+
+
                   CALL JEVEUO(RESU(1:19)//'.DESC','L',IADESC)
                   MODE = ZI(IADESC+IGR+1)
                   IF (MODE.GT.0) THEN
@@ -1071,7 +1071,7 @@ C---- SI ON VIENT DE TRAITER LE MODELE
               IF (TYPE.EQ.1) R = ABS(ZR(IDV-1+IDI))
               IF (TYPE.EQ.2) R = ABS(ZC(IDV-1+IDI))
               IF ((R.NE.0.D0) .AND. (R.LT.RINF)) RINF = R
-              IF ((R.NE.0.D0) .AND. (R.GT.RSUP)) RSUP = R             
+              IF ((R.NE.0.D0) .AND. (R.GT.RSUP)) RSUP = R
   340       CONTINUE
 
             CALL JELIBE(JEXNUM(KVALM,1))
@@ -1107,7 +1107,7 @@ C     -- MISE A JOUR DE REFA(4)
 
 C MONITORING
   360     CONTINUE
-          
+
           IF (LFETI .AND. (INFOFE(1:1).EQ.'T')) THEN
             IF (IDD.EQ.0) THEN
               WRITE (IFM,*) '<FETI/ASSMAM> DOMAINE GLOBAL',KREFA(1:19)
@@ -1118,7 +1118,7 @@ C MONITORING
 
             WRITE (IFM,9000) COEF
           END IF
-               
+
           IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.NE.0)) CALL UTIMSD(IFM,2,
      &        .FALSE.,.TRUE.,MATDEV,1,' ')
           IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.EQ.NBSD)) CALL UTIMSD(IFM,
@@ -1140,7 +1140,7 @@ C EVENTUELLE ECRITURE DANS FICHIER SI FETI ET INFO_FETI(14:14)='T'
      &                JVAL1,IBID,IFM,LBID,IBID,IBID,IBID,K19B,6,LBID)
 
           IF (LFETI) CALL JEDEMA()
-     
+
 C========================================
 C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================

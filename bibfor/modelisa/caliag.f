@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
@@ -90,7 +90,7 @@ C ---  LIGREL DU MODELE ---
 
 C --- MAILLAGE ASSOCIE AU MODELE ---
 
-      CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
+      CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 
       MCGREX = 'SANS_GROUP_NO'

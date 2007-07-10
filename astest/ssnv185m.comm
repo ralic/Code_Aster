@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,7 +228,7 @@ K1REF=0.
 K2REF=0.
 K3REF=1.
 
-prec_k3 = 0.05
+prec_k3 = 0.03
  
 for i in range(0,nbc) :
 
@@ -237,7 +237,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -245,7 +245,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -253,7 +253,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE=K2REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -261,7 +261,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE=K2REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],

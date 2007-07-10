@@ -3,7 +3,7 @@
       CHARACTER*(*)       RIGID , MASSE , MASINV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,7 +161,7 @@ C
       LCOEF(2) = 1.D0
       TYPCST(1) = TYPMAT
       TYPCST(2) = TYPMAT
-      CALL MTCMBL(NBMAT,TYPCST,LCOEF,NMAT,NMATI,NOMDDL,' ')
+      CALL MTCMBL(NBMAT,TYPCST,LCOEF,NMAT,NMATI,NOMDDL,' ','ELIM=')
 C
       NOMDDL = 'LAGR    '
       MXDDL  = 1

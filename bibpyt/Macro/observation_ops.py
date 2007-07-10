@@ -1,21 +1,21 @@
-#@ MODIF observation_ops Macro  DATE 05/06/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF observation_ops Macro  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -68,12 +68,12 @@ def observation_ops(self,
     if isinstance(RESULTAT, dyna_harmo):
         UTMESS('E',UTILITAI7_8)
 
-  
-#***********************************************  
-#  PHASE DE PROJECTION
-#*********************************************** 
 
-    if PROJECTION == 'OUI' :   
+#***********************************************
+#  PHASE DE PROJECTION
+#***********************************************
+
+    if PROJECTION == 'OUI' :
         __proj=PROJ_CHAMP(RESULTAT = RESULTAT,
                           MODELE_1 = MODELE_1,
                           MODELE_2 = MODELE_2,
@@ -86,9 +86,9 @@ def observation_ops(self,
         __proj = RESULTAT
 
 
-                             
-    
-#***********************************************  
+
+
+#***********************************************
 #  PHASE DE CHANGEMENT DE REPERE
 #***********************************************
 # Le changement de repere se fait dans les routines exterieures crea_normale et crea_repere
@@ -111,23 +111,23 @@ def observation_ops(self,
     # cham_mater et cara_elem pour le resultat a projeter
     jdc = CONTEXT.get_current_step().jdc
     nom_cara_elem = aster.getvectjev( RESULTAT.nom.ljust(19) + '.CARA        ' )
-    nom_cara_elem = nom_cara_elem[0].strip() 
+    nom_cara_elem = nom_cara_elem[0].strip()
     cara_elem = jdc.sds_dict[nom_cara_elem]
     nom_cham_mater = aster.getvectjev( RESULTAT.nom.ljust(19) + '.MATE        ' )
     nom_cham_mater = nom_cham_mater[0].strip()
     cham_mater = jdc.sds_dict[nom_cham_mater]
 
     # recuperation du maillage associe au modele experimental
-    _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .NOMA        ' )
+    _maillag = aster.getvectjev( MODELE_2.nom.ljust(8) + '.MODELE    .LGRF        ' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
     mayaexp = jdc.sds_dict[maillage]
-    
-    _maillag = aster.getvectjev( MODELE_1.nom.ljust(8) + '.MODELE    .NOMA        ' )
+
+    _maillag = aster.getvectjev( MODELE_1.nom.ljust(8) + '.MODELE    .LGRF        ' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
     mayanum = jdc.sds_dict[maillage]
-   
+
     if MODIF_REPERE != None :
         for modi_rep in MODIF_REPERE :
             type_cham = modi_rep['TYPE_CHAM']
@@ -135,10 +135,10 @@ def observation_ops(self,
             mcfact1 = { 'NOM_CMP'   : nom_cmp,
                         'TYPE_CHAM' : type_cham,
                         'NOM_CHAM'  : NOM_CHAM }
-            
+
             mcfact2 = { }
             modi_rep = modi_rep.val
-            
+
             if modi_rep['REPERE'] == 'NORMALE' :
                 # Cas ou l'utilisateur choisit de creer les reperes locaux
                 # selon la normale. On fait un changement de repere local
@@ -147,10 +147,10 @@ def observation_ops(self,
                     if modi_rep.has_key(option):
                         vect = { option : modi_rep[option] }
                 if len(vect) != 1 :
-                    U2MESS('E',UTILITAI7_9)  
+                    U2MESS('E',UTILITAI7_9)
                 chnorm    = crea_normale(self, MODELE_1, MODELE_2,
                                          cham_mater, cara_elem, NUME_DDL)
-                           
+
 
                 chnormx = chnorm.EXTR_COMP('DX',[],1)
                 ind_noeuds = chnormx.noeud
@@ -161,7 +161,7 @@ def observation_ops(self,
                 for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA','TOUT']:
                     if modi_rep.has_key(typ) :
                         list_no_exp = find_no(mayaexp, {typ : modi_rep[typ]})
-                
+
                 # boucle sur les noeuds pour modifier les reperes.
                 __bid = [None]*(len(list_no_exp) + 1)
                 __bid[0] = __proj
@@ -180,21 +180,21 @@ def observation_ops(self,
                                               CRITERE     = 'RELATIF',
                                               **args)
                     k = k + 1
-                    
+
                 __proj = __bid[-1:][0]
 
-                
+
             else:
                 for typ in ['NOEUD','GROUP_NO','MAILLE','GROUP_MA','TOUT']:
                     if modi_rep.has_key(typ) :
-                        mcfact1.update({typ : modi_rep[typ]})        
+                        mcfact1.update({typ : modi_rep[typ]})
                 if modi_rep['REPERE'] == 'CYLINDRIQUE' :
                     origine = modi_rep['ORIGINE']
                     axe_z   = modi_rep['AXE_Z']
                     mcfact2.update({ 'REPERE'  : 'CYLINDRIQUE',
                                      'ORIGINE' : origine,
                                      'AXE_Z'   : axe_z })
-                    
+
                 elif modi_rep['REPERE'] == 'UTILISATEUR' :
                     angl_naut = modi_rep['ANGL_NAUT']
                     mcfact2.update({ 'REPERE'    : 'UTILISATEUR',
@@ -205,11 +205,11 @@ def observation_ops(self,
                                      CRITERE     = 'RELATIF',
                                      **args)
                 __proj = __bid
-                    
+
 
     else: # pas de modif de repere demandee
         pass
-            
+
 
 #*************************************************
 # Phase de selection des DDL de mesure
@@ -266,7 +266,7 @@ def observation_ops(self,
                               NOM_CHAM  = 'DEPL',
                               AFFE      = liste,
                              );
-            
+
         if isinstance( RESULTAT, mode_meca):
             # Fabrication de la base modale resultat. On doit tricher un peu (encore!!), en
             # faisant un defi_base_modale dans lequel on met zero modes du concept RESULTAT
@@ -306,17 +306,17 @@ def crea_normale(self, modele_1, modele_2, cham_mater, cara_el, nume_ddl):
     """Cree un champ de vecteurs normaux sur le maillage experimental, par
        projection du champ de normales cree sur le maillage numerique
     """
-    
+
     import Numeric
     PROJ_CHAMP  = self.get_cmd('PROJ_CHAMP')
     CREA_CHAMP  = self.get_cmd('CREA_CHAMP')
     CREA_RESU   = self.get_cmd('CREA_RESU')
     DEFI_GROUP  = self.get_cmd('DEFI_GROUP')
     import aster
-    from Accas import _F    
+    from Accas import _F
     # recherche du maillage associe au modele numerique
     nom_modele_num = modele_1.nom
-    _maillag = aster.getvectjev( nom_modele_num.ljust(8) + '.MODELE    .NOMA        ' )
+    _maillag = aster.getvectjev( nom_modele_num.ljust(8) + '.MODELE    .LGRF        ' )
     maillage = _maillag[0].strip()
     jdc = CONTEXT.get_current_step().jdc
     mayanum = jdc.sds_dict[maillage]
@@ -327,13 +327,13 @@ def crea_normale(self, modele_1, modele_2, cham_mater, cara_el, nume_ddl):
                 CREA_GROUP_MA = _F( NOM  = '&&TOUMAIL',
                                     TOUT = 'OUI' )
                );
-    
+
     __norm1 = CREA_CHAMP( MODELE    = modele_1,
                           OPERATION = 'NORMALE',
                           TYPE_CHAM = 'NOEU_GEOM_R',
                           GROUP_MA  = '&&TOUMAIL',
                          );
-    
+
     __norm2 = CREA_CHAMP( OPERATION = 'ASSE',
                           TYPE_CHAM = 'NOEU_DEPL_R',
                           MODELE    = modele_1,
@@ -372,7 +372,7 @@ def crea_normale(self, modele_1, modele_2, cham_mater, cara_el, nume_ddl):
                           TYPE_CHAM  = 'NOEU_DEPL_R',
                           );
 
-        
+
     return __norm5
 
 
@@ -429,12 +429,12 @@ def crea_repere(chnorm, ind_no, vect):
         pass
     elif nom_para == 'CONDITION_Y':
         pass
- 
+
     # 3) Calcul de l'angle nautique associe au repere local
     angl_naut = anglnaut(reploc)
 
     return angl_naut
-        
+
 #*****************************************************************************
 # Aller chercher une liste de noeuds pour un mot cle 'NOEUD', 'GROUP_NO'
 # 'MAILLE' ou 'GROUP_MA'
@@ -457,7 +457,7 @@ def find_no(maya,mcsimp):
         mcsimp['GROUP_NO'] = [mcsimp['GROUP_NO']]
     if mcsimp.has_key('GROUP_MA') and type(mcsimp['GROUP_MA']) != tuple :
         mcsimp['GROUP_MA'] = [mcsimp['GROUP_MA']]
-    
+
     if mcsimp.has_key('NOEUD') :
         list_no = list(mcsimp['NOEUD'])
     elif mcsimp.has_key('GROUP_NO') :
@@ -498,7 +498,7 @@ def cross_product(a, b):
     For a dimension of 2,
     the z-component of the equivalent three-dimensional cross product is
     returned.
-    
+
     For backward compatibility with Numeric <= 23
     """
     from Numeric import asarray, array
@@ -591,6 +591,6 @@ def anglnaut(P):
 ##                                 -sin(B) = reploc[2][0]
 ##                            cos(B)sin(G) = reploc[2][1]
 ##                            cos(B)cos(G) = reploc[2][2]
-             
-        
-                        
+
+
+

@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF utilitai8 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,5 +115,162 @@ cata_msg={
   different pour le parametre:  %(k2)s 
   et le parametre:  %(k3)s 
 """),
+
+22: _("""
+  Valeur de M maximale atteinte pour résoudre F(M)=0,
+  verifiez vos listes d'instants de rupture, M maximal admissible =  %(r1)f  
+"""),
+
+23: _("""
+  Valeur de M minimale atteinte pour résoudre F(M)=0,
+  verifiez vos listes d'instants de rupture, valeur de M =  %(r1)f  
+"""),
+
+24: _("""
+ le champ demande est incompatible avec le type de resultat
+  type de resultat : %(k1)s 
+      nom du champ : %(k2)s 
+ 
+"""),
+
+25: _("""
+ 
+ le nombre d'asterisques pour les noms de fichiers ensight de pression est trop grand il est limite a 7
+  nombre d'asterisques : %(i1)d 
+ 
+"""),
+
+26: _("""
+ appel errone  resultat :  %(k1)s   archivage numero :  %(i1)d 
+   code retour de rsexch :  %(i2)d 
+   probleme champ :  %(k2)s 
+ 
+"""),
+
+27: _("""
+ appel errone  resultat :  %(k1)s   archivage numero :  %(i1)d 
+   code retour de rsexch :  %(i2)d 
+   probleme champ :  %(k2)s 
+ 
+"""),
+
+28: _("""
+ fin de fichier dans la lecture des fichiers ensight
+"""),
+
+29: _("""
+ erreur dans la lecture du fichier ensight
+"""),
+
+30: _("""
+  probleme pour le fichier:  %(k1)s 
+"""),
+
+31: _("""
+  option deja calculee:  option  %(k1)s  nume_ordre  %(i1)d 
+  on la recalcule car les donnees peuvent etre differentes 
+ 
+"""),
+
+32: _("""
+ l'extrapolation ne peut etre faite a gauche (interdit).
+"""),
+
+33: _("""
+ l'extrapolation ne peut etre faite a droite (interdit).
+"""),
+
+34: _("""
+ l'interpolation ne peut etre faite car aucun champ de : %(k1)s n'est calcule.
+"""),
+
+35: _("""
+ la variable d'acces %(k1)s est invalide pour une interpolation.
+"""),
+
+36: _("""
+ ce nom de champ est interdit : %(k1)s pour une interpolation.
+"""),
+
+37: _("""
+ resultat: %(k1)s nom_cham: %(k2)s  variable d'acces: %(k3)s valeur: %(r1)f 
+ 
+"""),
+
+
+
+
+38: _("""
+ Plusieurs champs correspondant a l'acces demande.resultat  %(k1)s 
+"""),
+
+39: _("""
+ acces %(k1)s : %(i1)d 
+"""),
+
+40: _("""
+ acces %(k1)s : %(r1)f 
+"""),
+
+41: _("""
+ acces %(k1)s  : %(k1)s 
+"""),
+
+
+
+
+46: _("""
+  nombre : %(i1)d nume_ordre retenus : %(i2)d, %(i3)d, %(i4)d
+"""),
+
+47: _("""
+ pas de champ correspondant a un acces demande.resultat  %(k1)s 
+"""),
+
+
+
+
+55: _("""
+ 
+"""),
+
+56: _("""
+ pas de champs pour l'acces  %(k1)s de valeur  %(r1)f 
+"""),
+
+57: _("""
+ plusieurs champs correspondant a l'acces demande.resultat  %(k1)s 
+ - acces "inst" : %(r1)f 
+ - nombre : %(i1)d 
+ 
+"""),
+
+58: _("""
+ pas de champs pour l'acces  %(k1)s de valeur  %(r1)f 
+"""),
+
+59: _("""
+ plusieurs champs correspondant a l'acces demande.resultat  %(k1)s 
+ - acces "freq" : %(r1)f 
+ - nombre : %(i1)d 
+ 
+"""),
+
+60: _("""
+ erreur dans les donnees pour le champ  %(k1)s 
+"""),
+
+61: _("""
+ aucuns noeuds ne supportent
+"""),
+
+62: _("""
+ aucunes mailles ne supportent
+"""),
+
+63: _("""
+  les composantes  %(k1)s, %(k2)s, %(k3)s, %(k4)s, ...  
+"""),
+
 
 }

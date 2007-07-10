@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,18 +19,25 @@
 GENER_MEDPL2_XT
 TYPE_GENE__
 
-ENTETE__ ELEMENT__ MEDPTR6_XT      MAILLE__ TRIA6
-   ELREFE__  TR3       GAUSS__  RIGI=FPG1  MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36   FPG_LISTE__  MATER = (RIGI)
-   ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
+ENTETE__ ELEMENT__ MEDPTR3_XT      MAILLE__ TRIA6
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3 GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  SE2       GAUSS__  RIGI=FPG2 MASS=FPG3
    ENS_NOEUD__  EN2     =     4   5   6
    ENS_NOEUD__  EN1     =     1   2   3
-ENTETE__ ELEMENT__ MEDPQU8_XT      MAILLE__ QUAD8
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG_LISTE__  MATER = (RIGI)
-   ELREFE__  TR3       GAUSS__  RIGI=FPG1  MASS=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36
+ENTETE__ ELEMENT__ MEDPQU4_XT      MAILLE__ QUAD8
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
    ENS_NOEUD__  EN2     =     5   6   7   8
    ENS_NOEUD__  EN1     =     1   2   3   4
-
+ENTETE__ ELEMENT__ MEDPTR6_XT      MAILLE__ TRIA6
+   ELREFE__  TR6       GAUSS__  RIGI=FPG3  GANO=FPG6  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG6
+   ENS_NOEUD__  EN3     =     1   2   3   4   5   6
+ENTETE__ ELEMENT__ MEDPQU8_XT      MAILLE__ QUAD8
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM144  FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG6
+   ENS_NOEUD__  EN3     =     1   2   3   4   5   6   7   8
 
 MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
@@ -45,13 +52,15 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1    (DCX     DCY      E1X     E1Y     E2X     E2Y
-                                         E3X     E3Y      E4X     E4Y     LAGS_C  LAGS_F1  )
-                                 EN2    (LAGS_C  LAGS_F1  )
+                                         E3X     E3Y      E4X     E4Y     )
+                                 EN2    (    )
+                                 EN3    (DCX     DCY      E1X     E1Y     E2X     E2Y
+                                         E3X     E3Y      E4X     E4Y       )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2      )
     E9NEUTI  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9 )
+                                        X7       X8       X9   )
     E4NEUTR  = NEUT_R   ELEM__         (X1       X2       X3       X4       )
     E8NEUTR  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8      )

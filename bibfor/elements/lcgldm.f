@@ -1,7 +1,7 @@
       SUBROUTINE LCGLDM (EPSM,DEPS,VIM,OPTION,SIG,VIP,DSIDEP,
      &             T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,SEUIL,ALF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/03/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*16       OPTION
       REAL*8             EPSM(6), DEPS(6), VIM(*),GF,GF1,GF2
-      REAL*8             TM, TP, TREF,SECHM,SECHP,SREF,D2D(6,6)
+      REAL*8             TM, TP, TREF,SECHM,SECHP,SREF
       REAL*8             SIG(6), VIP(*), DSIDEP(6,6),LAMF,DEUMUF
 C ----------------------------------------------------------------------
 C
@@ -48,7 +48,6 @@ C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI,ELAS,MTG, COUP,ELAS1,ELAS2
       INTEGER     NDTOT, K, L, I, J, M, N, P, T(2,2),IRET,KDMAX
       REAL*8      EPS(6),TREPS,SIGEL(3)
-      REAL*8      RAC2
       REAL*8      FD1, FD2,DA1,DA2, ENER, TROISK, G
       REAL*8      TR(6), RTEMP2
       REAL*8      EMP(2),VMP(2,2),VFP(2,2),DSPDEP(6,6),VECP2(3,3)
@@ -73,7 +72,7 @@ C -- OPTION ET MODELISATION
       RESI  = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
       COUP  = (OPTION(6:9).EQ.'COUP')
       IF (COUP) RIGI=.TRUE.
-      RAC2=SQRT(2.D0)
+
 C -- INITIALISATION
       MU  = DEUXMU*0.5D0
       MUF = DEUMUF*0.5D0
@@ -290,8 +289,7 @@ C -- CALCUL DES CONTRAINTES
           SIG(5)=SIG(5)+VFP(2,I)*VFP(2,I)*RTEMP
           SIG(6)=SIG(6)+VFP(1,I)*VFP(2,I)*RTEMP          
 1010    CONTINUE
-        SIG(3) = RAC2*SIG(3)
-        SIG(6) = RAC2*SIG(6)
+
       ENDIF
       
 C -- CALCUL DE LA MATRICE TANGENTE

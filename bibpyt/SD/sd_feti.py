@@ -1,4 +1,4 @@
-#@ MODIF sd_feti SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_feti SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,10 @@ class sd_feti1(AsBase):
     FETJ = AsVI()
     FETI = AsVI()
     FETH = AsVI(lonmax=4, )
+    FCFI = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FCFL = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='K', ltyp=24, )
+    FCFM = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FCFN = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
 
 
 class sd_feti(AsBase):

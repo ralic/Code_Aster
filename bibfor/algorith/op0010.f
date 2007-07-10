@@ -1,7 +1,7 @@
       SUBROUTINE OP0010(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
 C
 C --- NOM DU MAILLAGE ATTACHE AU MODELE
 C
-      CALL JEVEUO(NOMO(1:8)//'.MODELE    .NOMA','L',IADRMA)
+      CALL JEVEUO(NOMO(1:8)//'.MODELE    .LGRF','L',IADRMA)
       NOMA  = ZK8(IADRMA)
 C
 C --- DIMENSION DU PROBLEME
@@ -120,8 +120,8 @@ C
 C
 C --- PRISE EN COMPTE DU CONTACT
 C      
-      CALL JEVEUO(NOMO(1:8)//'.CONT'  ,'L',JXC)
-      CALL JEVEUO(NOMO(1:8)//'.SDCONT','L',JXSDC)
+      CALL JEVEUO(NOMO(1:8)//'.XFEM_CONT'  ,'L',JXC)
+      CALL JEVEUO(NOMO(1:8)//'.XFEM_SDCONT','L',JXSDC)
       SDCONT = ZK24(JXSDC)
       IF (SDCONT(1:1).NE.' ') THEN            
         CALL XCONTA(NOMA  ,NOMO  ,NDIM  ,NFISS,FISS  ,
@@ -291,13 +291,7 @@ C-----------------------------------------------------------------------
 
       CNSEN='&&OP0010.CNSEN'
       CNSENR='&&OP0010.CNSENR'
-      IF (NDIM .EQ. 3) THEN
-        CALL XNRCH3(NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
-     &              FISS,LISMAE,LISNOE)
-      ELSEIF (NDIM .EQ. 2) THEN
-        CALL XNRCH2(NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
-     &              FISS,LISMAE,LISNOE)
-      ENDIF
+      CALL XENRCH(NOMA,CNSLT,CNSLN,CNSEN,CNSENR,NDIM,FISS,LISMAE,LISNOE)
 
       CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR')
       CALL CNSCNO(CNSEN,' ','NON','G',FISS//'.STNO')
@@ -306,16 +300,7 @@ C-----------------------------------------------------------------------
 C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE
 C-----------------------------------------------------------------------
 
-      CNSBAS='&&OP0010.CNSBAS'
-      IF (NDIM .EQ. 3) THEN
-        CALL XBASLO(NOMO,NOMA,FISS ,GRLT,GRLN,CNSBAS)
-      ELSEIF (NDIM .EQ. 2) THEN
-        CALL XBASL2(NOMO,NOMA,FISS ,GRLT,GRLN,CNSBAS)
-      ENDIF
-
-      CALL CNSCNO(CNSBAS,' ','NON','G',FISS//'.BASLOC')
-      CALL DETRSD('CHAM_NO_S',CNSBAS)
-
+      CALL XBASLO(NOMO  ,NOMA  ,FISS  ,GRLT  ,GRLN  , NDIM)
 
 C-----------------------------------------------------------------------
 C     FIN

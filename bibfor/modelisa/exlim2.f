@@ -2,7 +2,7 @@
      &                  INFOFE,NBPROC,LIGRCF)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C IN  : NUMSD  : NUMERO DE SOUS-DOMAINE
 C OUT : NBCHAT : NOMBRE DE LIGRELS ASSOCIEES A NOMSD
 C IN  :  NBSD  : NOMBRE DE SOUS-DOMAINES
 C IN  : NBPROC : NOMBRE DE PROCESSEURS
-C IN  : LIGRCF : NOM DU LIGREL DE CHARGE DE CONTACT CONTINUE 
+C IN  : LIGRCF : NOM DU LIGREL DE CHARGE DE CONTACT CONTINUE
 C-----------------------------------------------------------------------
 C TOLE CRP_20
 C RESPONSABLE BOITEAU O.BOITEAU
@@ -133,7 +133,7 @@ C ON LAISSE BIEN SUR INTACT LE LIGREL GLOBAL DE CHARGE DE LA BASE 'G'
             CALL JEVEUO(K24B(1:19)//'.FEL1','L',IFEL1)
             DO 8 IDD=1,NBSD
               K24B1=ZK24(IFEL1+IDD-1)
-              IF ((K24B1.NE.' ').AND.(K24B1(1:19).NE.K24B(1:19))) 
+              IF ((K24B1.NE.' ').AND.(K24B1(1:19).NE.K24B(1:19)))
      &          CALL DETRSD('LIGREL',K24B1)
     8       CONTINUE
             CALL JEDETR(K24B(1:19)//'.FEL1')
@@ -148,7 +148,7 @@ C AU NBRE DE MAILLES TARDIVES DU LIGREL. LEUR NBRE TOTAL EST NBMAT1
           CALL JELIRA(K24CHN,'NUTIOC',NBMATA,K8BID)
           NBCC2=0
           CALL WKVECT('&&EXLIM2.NEMA','V V I',NBMATA,INEM2)
-          CALL JERAZO('&&EXLIM2.NEMA',NBMATA,1)   
+          CALL JERAZO('&&EXLIM2.NEMA',NBMATA,1)
           DO 40 L=1,NBMATA
            CALL JELIRA(JEXNUM(K24CHN,L),'LONMAX',NBNEMA,K8BID)
             NBNEMA=NBNEMA-1
@@ -289,7 +289,7 @@ C POINTEURS
           NBMATA=ZI(IFLII+2*K1)
           NBMAT1=ZI(IFLII+2*K1+1)
         ENDIF
-        
+
         IF ((NBMATA.NE.NBMAT1).AND.(NBMAT1.GT.0)) THEN
 C **** ON PROJETE LA CHARGE
 
@@ -407,7 +407,7 @@ C-----------------------------------------------------------------------
           DO 30 I=1,NBGREL
             CALL JELIRA(JEXNUM(K24CHL,I),'LONMAX',NMGREL,K8BID)
             CALL JEVEUO(JEXNUM(K24CHL,I),'L',IGREL)
-            
+
 C-----------------------------------------------------------------------
 C --- BOUCLE SUR LES MAILLES DES GRELS
 C-----------------------------------------------------------------------
@@ -461,7 +461,7 @@ C ON RECOPIE LE NUMERO NEGATIF DE MAILLE ET SON TYPE
                       ZI(LADR)=-NBMAT2
                     ENDIF
                     ZI(LADR+1)=ZI(IGREL+NMGRE1+1)
-                    
+
 C---------------
 C TRAITEMENTS LIES AUX .FEL2/.FEL4 POUR MAILLE TARDIVE D'INTERFACE
                     IF (.NOT.LCC) THEN
@@ -598,7 +598,7 @@ C DANS UN SEUL GREL)
 C ON DUPLIQUE LES AUTRES OBJETS DU LIGREL DE CHARGE
           CALL JEDUPO(LIGRCH//'.PRNS','V',K24DUL(1:19)//'.PRNS',.FALSE.)
           CALL JEDUPO(LIGRCH//'.LGNS','V',K24DUL(1:19)//'.LGNS',.FALSE.)
-          CALL JEDUPO(LIGRCH//'.NOMA','V',K24DUL(1:19)//'.NOMA',.FALSE.)
+          CALL JEDUPO(LIGRCH//'.LGRF','V',K24DUL(1:19)//'.LGRF',.FALSE.)
           CALL JEDUPO(LIGRCH//'.PRNM','V',K24DUL(1:19)//'.PRNM',.FALSE.)
 
 C CREATION DE LA CORRESPONDANCE MAILLE --> (IGREL,IM) POUR LE .REPE
@@ -634,7 +634,7 @@ C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24CF5(1:19),1,'V')
 C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24DUL(1:19),1,'V')
 
         ELSE IF (NBMAT1.GT.0) THEN
-        
+
 C **** ON CONSERVE LA CHARGE
 
 C ON VA STOCKER LE NOM DU NOUVEAU LIGREL DANS LE .FEL1 SI IL EXISTE
@@ -735,7 +735,7 @@ C CONSTITUTION OBJET STOCKAGE.FEL1
 C CONSTITUTION OBJET STOCKAGE.FEL1
                 CALL WKVECT(K24CF1,'V V K24',NBSD,IFEL1)
                 CALL JERAZO(K24CF1,NBSD,1)
-              ENDIF           
+              ENDIF
             ENDIF
           ENDIF
   150   CONTINUE

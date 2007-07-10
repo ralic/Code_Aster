@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C     -------------------------------------------------------
         CALL U2MESK('F','CALCULEL3_98',1,RESU)
       ENDIF
 C
-      OBJ1 = MODELE//'.MODELE    .NOMA'
+      OBJ1 = MODELE//'.MODELE    .LGRF'
       CALL JEVEUO ( OBJ1, 'L', IADRMA )
       NOMA = ZK8(IADRMA)
       NOMNO = NOMA//'.NOMNOE'

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/03/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,19 +118,19 @@ MO=AFFE_MODELE(INFO=1,
                           MODELISATION='DKT'),
                         _F(PHENOMENE='MECANIQUE',
                           GROUP_MA='ACIER1L',
-                          MODELISATION='GRILLE'
+                          MODELISATION='GRILLE_EXCENTRE',
                           ),
                        _F(PHENOMENE='MECANIQUE',
                           GROUP_MA='ACIER1T',
-                          MODELISATION='GRILLE'
+                          MODELISATION='GRILLE_EXCENTRE',
                           ),
                        _F(PHENOMENE='MECANIQUE',
                           GROUP_MA='ACIER2L',
-                          MODELISATION='GRILLE'
+                          MODELISATION='GRILLE_EXCENTRE',
                           ),
                        _F(PHENOMENE='MECANIQUE',
                           GROUP_MA='ACIER2T',
-                          MODELISATION='GRILLE'
+                          MODELISATION='GRILLE_EXCENTRE',
                           ),
                  )
                  );

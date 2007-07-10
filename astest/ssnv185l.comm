@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,7 +168,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
-                   SOLVEUR=_F(PCENT_PIVOT = 200,METHODE='MUMPS',),
+#                   SOLVEUR=_F(PCENT_PIVOT = 200,METHODE='MUMPS',),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
@@ -194,7 +194,7 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
  
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
@@ -227,7 +227,7 @@ K1REF=0.
 K2REF=0.
 K3REF=1.
 
-prec_k3 = 0.11
+prec_k3 = 0.08
  
 for i in range(0,nbc) :
 
@@ -236,7 +236,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -244,7 +244,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -252,7 +252,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE=K2REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -260,7 +260,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE=K2REF,
               CRITERE='ABSOLU',
-              PRECISION=0.01,
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],

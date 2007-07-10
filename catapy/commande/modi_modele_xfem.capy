@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,4 +26,5 @@ MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu
     CRITERE         =SIMP(statut='f',typ='R',defaut=1.67E-8),
     INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,)),
     CONTACT         =SIMP(statut='f',typ=char_meca,min=1,max=1,),
+    DEGRE_DEPL      =SIMP(statut='f',typ='TXM',defaut="LINEAIRE",into=("LINEAIRE","QUADRATIQUE"),min=1,max=1, ),
 )  ;

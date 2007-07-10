@@ -9,7 +9,7 @@
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,16 +130,17 @@ C     ------------------
       REAL*8   DEUX, CTOR, LC
       REAL*8   T2EV(4),T2VE(4),T1VE(9),CARAT3(21),JACOB(5),CARAQ4(25)
 
-      REAL*8     MATR(50)
-      INTEGER    MATI(50)
-      INTEGER    TSHEAR, ICARA
-      REAL*8     EPST(6), EP, SURFGP, SIG(6),DSIG(8),ECR(21),ECRP(21)
-      REAL*8     EPSM(6),MVAL(50),QSI,ETA
-      INTEGER    MENT(50),ICPG,ICPV,NVINT,T(2,2)
-      REAL*8     LAMBDA,DEUXMU,DEUMUF,LAMF,GT,GC,GF,SEUIL,RAC2,ALPHA
+      REAL*8   MATR(50),SIGM(6)
+      INTEGER  MATI(50)
+      INTEGER  TSHEAR, ICARA
+      REAL*8   EPST(6), EP, SURFGP, SIG(6),DSIG(8),ECR(21),ECRP(21)
+      REAL*8   EPSM(6),MVAL(50),QSI,ETA
+      INTEGER  MENT(50),ICPG,ICPV,NVINT,T(2,2),IBID
+      REAL*8   LAMBDA,DEUXMU,DEUMUF,LAMF,GT,GC,GF,SEUIL,ALPHA
+      CHARACTER*8 K8BID
+      REAL*8      R8BID
 C     ------------------------------------------------------------------
 
-      RAC2 = SQRT(2.0D0)
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
 
@@ -275,7 +276,8 @@ C ---   EPAISSEUR TOTALE :
  73     CONTINUE
 
         DO 77, I = 1,6
-          SIG(I) = ZR(ICONTM-1 + ICPG + I)
+          SIG(I)  = ZR(ICONTM-1 + ICPG + I)
+          SIGM(I) = SIG(I)
  77     CONTINUE
 
         IF (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') THEN
@@ -286,9 +288,7 @@ C ---   EPAISSEUR TOTALE :
             ECR(I)     = ZR(IVARIM-1 + ICPV + I)
  75       CONTINUE
 
-
           CALL MAGLRC (NNO,COMPOR,PGL,MATR,MATI,DELAS,ECR)
-
 
 C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
           SURFGP = POIDS
@@ -301,44 +301,56 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
  78       CONTINUE
 
           DO 80, I = 1,NVINT
-           ZR(IVARIP-1 + ICPV + I) = ECR(I)
+            ECRP(I) = ECR(I)
  80       CONTINUE
 
           DO 85, I = 1,6
-           ZR(ICONTP-1 + ICPG + I) = SIG(I) + DSIG(I)
+            SIG(I) = SIG(I) + DSIG(I)
  85       CONTINUE
 
-        ELSEIF (COMPOR(1)(1:9).EQ. 'GLRC_DM') THEN
-        
+        ELSEIF (COMPOR(1)(1:7).EQ. 'GLRC_DM') THEN
+
           NVINT = 4 
 
           DO 8510, I = 1,NVINT
             ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
  8510     CONTINUE
 
-          CALL CRGDM(ZI(IMATE),COMPOR,T,LAMBDA,DEUXMU,LAMF,DEUMUF,
-     &               GT,GC,GF,SEUIL,ALPHA,EP)
+          CALL CRGDM(ZI(IMATE),'GLRC_DM         ',T,LAMBDA,DEUXMU,
+     &               LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA,EP)
      
-          CALL R8INIR(36,0.D0,DSIDEP,1)
-          CALL LCGLDM(EPSM,DEPS,ECR,OPT,SIG,ECRP,DSIDEP,T,
+C         ENDOMMAGEMENT SEULEMENT      
+     
+            CALL R8INIR(36,0.D0,DSIDEP,1)
+            CALL LCGLDM(EPSM,DEPS,ECR,OPT,SIG,ECRP,DSIDEP,T,
      &                LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA)
 
-          DO 8520, I = 1,NVINT
-            ZR(IVARIP-1 + ICPV + I) = ECRP(I)        
- 8520     CONTINUE
- 
-          DO 8530, I = 1,6
-           ZR(ICONTP-1 + ICPG + I) = SIG(I)        
- 8530       CONTINUE
- 
-          ZR(ICONTP-1 + ICPG + 3) = ZR(ICONTP-1 + ICPG + 3)/RAC2        
-          ZR(ICONTP-1 + ICPG + 6) = ZR(ICONTP-1 + ICPG + 6)/RAC2        
+        ELSEIF (COMPOR(1)(1:7).EQ. 'KIT_DDI') THEN
+C         ENDOMMAGEMENT PLUS PLASTICITE
 
-        
+          NVINT = 21 
+
+          DO 8515, I = 1,NVINT
+            ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
+ 8515     CONTINUE
+
+            CALL NMCOUP('RIGI',IPG,1,3,K8BID,ZI(IMATE),COMPOR,LBID,
+     &                   R8BID,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
+     &                   SIG,ECRP,DSIDEP,IBID)
+
         ELSE
            VALK = COMPOR(1)
            CALL U2MESG('F', 'ELEMENTS4_79',1,VALK,0,0,0,0.D0)
         ENDIF
+
+        DO 8520, I = 1,NVINT
+          ZR(IVARIP-1 + ICPV + I) = ECRP(I)        
+ 8520   CONTINUE
+ 
+        DO 8530, I = 1,6
+          ZR(ICONTP-1 + ICPG + I) = SIG(I)        
+ 8530   CONTINUE
+
 C
 C         EFFORTS RESULTANTS (N ET M)
 C         --------------------------

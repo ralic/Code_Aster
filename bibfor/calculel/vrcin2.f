@@ -1,6 +1,6 @@
       SUBROUTINE VRCIN2(MODELE,CHMAT,CARELE,CHVARS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,9 +114,14 @@ C        NBCVRC COMPOSANTES.
 
 C     2. REMPLISSAGE DE CHMAT.CESVI :
 C     ------------------------------------------
+
+C     -- ON CHERCHE A BOUCLER SUR LES VARC.
+C        POUR CELA ON BOUCLE SUR LES CVRC ET ON "SAUTE"
+C        LES CVRC SUIVANTES (DE LA MEME VARC)
       VARC=' '
       DO 1, K=1,NBCVRC
         IF (ZK8(JCVVAR-1+K).EQ.VARC) GO TO 1
+
         VARC=ZK8(JCVVAR-1+K)
         CART2 = CHMAT//'.'//VARC//'.2'
         CES2='&&VRCIN2.CES2'
@@ -130,7 +135,7 @@ C     ------------------------------------------
         NBMA = ZI(JCESD-1+1)
         CALL ASSERT(NBMA.EQ.ZI(JCESD2-1+1))
 
-C       -- CALCUL DE NCMP
+C       -- CALCUL DE NCMP (NOMBRE DE CVRC DANS VARC)
         NCMP=0
         DO 69, K2=K,NBCVRC
           IF (ZK8(JCVVAR-1+K2).EQ.VARC) NCMP=NCMP+1
@@ -164,6 +169,9 @@ C         -- CALCUL DE ICHS :
             DO 50,ISP = 1,NBSP
               DO 51,ICMP = 1,NCMP
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,K-1+ICMP,IAD)
+C               LA FORMULE K-1+ICMP PEUT PARAITRE CURIEUSE MAIS
+C               EN REALITE, K S'INCREMENTE PAR PAQUETS DE NCMP
+C               (VOIR COMMENTAIRE EN DEBUT DE BOUCLE 1)
                 IF(IAD.EQ.0) GOTO 51
                 CALL ASSERT(IAD.LT.0)
                 IAD=-IAD

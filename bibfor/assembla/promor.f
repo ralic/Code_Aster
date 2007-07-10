@@ -4,7 +4,7 @@
       CHARACTER*1 BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ASSEMBLA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,10 +201,13 @@ C     -- ALLOCATION DU VECTEUR &&PROMOR.ANCIEN.LM
 C        MXDDLT= NOMBRE MAXIMUM DE DDLS PORTES PAR UNE MAILLE OU UNE
 C                SOUS-STRUCTURE STATIQUE
 C     ----------------------------------------------------------------
-      MXDDLT = 240
+C     A L'HEURE ACTUELLE, L'ELEMENT PORTANT LE PLUS DE DDLS EST LE
+C     MECA_XHT_HEXA20 (360 DDLS), AUXQUELS IL FAUT RAJOUTER LES 
+C     DDLS DES MAILLES CONNECTÉES -> ON ABOUTIT A 420 DDLS AU PIRE
+      MXDDLT = 420
       IF (NBSS.GT.0) THEN
         CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
-        CALL JEVEUO(MO//'.SSSA','L',IASSSA)
+        CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
         DO 10,IMA = 1,NBSMA
           IF (ZI(IASSSA-1+IMA).EQ.0) GO TO 10
           CALL JELIRA(JEXNUM(MA//'.SUPMAIL',IMA),'LONMAX',NNOE,KBID)
@@ -316,7 +319,7 @@ C         ---------------------------------------------
   145    CONTINUE
         IF (NBSS.GT.0) THEN
           CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
-          CALL JEVEUO(MO//'.SSSA','L',IASSSA)
+          CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
           DO 120,IMA = 1,NBSMA
             IF (ZI(IASSSA-1+IMA).EQ.0) GO TO 120
             NDDLT = 0

@@ -7,7 +7,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,6 +84,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
+      REAL*8 VALR
       COMMON  / RVARJE / ZR(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
@@ -99,6 +100,7 @@ C
       PARAMETER ( NOMPRO = 'LRCAME' )
 C
       INTEGER EDLECT
+      INTEGER VALI(4)
       PARAMETER (EDLECT=0)
       CHARACTER*32 EDNOPF
       PARAMETER ( EDNOPF='                                ' )
@@ -192,11 +194,10 @@ C 1.4.1. ==> VERIFICATION DE LA VERSION HDF
 C
       CALL EFFOCO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFFOCO NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOCHMD
+        VALI (1) = CODRET
+        CALL U2MESG('A','PREPOST6_12',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST3_10')
       ENDIF
 C
@@ -204,34 +205,35 @@ C 1.4.2. ==> VERIFICATION DE LA VERSION MED
 C
       CALL EFVECO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'F', NOMPRO, 'LE FICHIER N''A PAS ETE CONSTRUIT'//
-     &             ' AVEC LA MEME VERSION DE MED.' )
-        CALL UTIMPI ( 'L', 'ERREUR EFVECO NUMERO ', 1, CODRET )
+        VALI (1) = CODRET
+        CALL U2MESG('F+','PREPOST6_13',0,' ',1,VALI,0,0.D0)
         CALL EFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
         IF( IRET.EQ.0) THEN
-          CALL UTIMPI ( 'L', 'VERSION DE LA BIBLIOTHEQUE MED '//
-     &                       'UTILISEE PAR CODE_ASTER : ', 3, VLIB )
+          VALI (1) = VLIB(1)
+          VALI (2) = VLIB(2)
+          VALI (3) = VLIB(3)
+          CALL U2MESG('F+','PREPOST6_14',0,' ',3,VALI,0,0.D0)
         ENDIF
         CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET )
         CALL EFVELI ( IDFIMD, VFIC(1),VFIC(2),VFIC(3), IRET )
         IF( IRET.EQ.0) THEN
           IF ( VFIC(2).EQ.-1 .OR. VFIC(3).EQ.-1) THEN
-            CALL UTIMPI ( 'L', 'VERSION DE LA BIBLIOTHEQUE MED '//
-     &                    'QUI A CREE LE FICHIER   : < 2.1.5', 0, IAUX )
+            CALL U2MESG('F+','PREPOST6_15',0,' ',0,0,0,0.D0)
           ELSE
-            CALL UTIMPI ( 'L', 'VERSION DE LA BIBLIOTHEQUE MED '//
-     &                       'POUR CREER LE FICHIER   : ', 3, VFIC )
+          VALI (1) = VFIC(1)
+          VALI (2) = VFIC(2)
+          VALI (3) = VFIC(3)
+            CALL U2MESG('F+','PREPOST6_16',0,' ',3,VALI,0,0.D0)
           ENDIF
           IF (     VFIC(1).LT.VLIB(1)
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).LT.VLIB(2) )
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).EQ.VLIB(2) .AND.
      &             VFIC(3).EQ.VLIB(3) ) ) THEN
-            CALL UTIMPI ( 'L', 'UN UTILITAIRE VOUS PERMET PEUT-ETRE '
-     &         //'DE CONVERTIR VOTRE FICHIER (medimport)', 0, IAUX )
+            CALL U2MESG('F+','PREPOST6_17',0,' ',0,0,0,0.D0)
           ENDIF
         ENDIF
         CALL EFFERM ( IDFIMD, CODRET )
-        CALL UTFINM ()
+        CALL U2MESG('F','PREPOST6_18',0,' ',0,0,0,0.D0)
       ENDIF
 C
 C 1.5. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE CONCERNE
@@ -289,11 +291,10 @@ C====
 C
       CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET)
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFOUVR NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOCHMD
+        VALI (1) = CODRET
+        CALL U2MESG('A','PREPOST6_19',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_69')
       ENDIF
 C
@@ -385,27 +386,24 @@ C
                 GOTO 2221
               ENDIF
   222       CONTINUE
-            CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-            CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-            CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
-            CALL UTIMPR ( 'L', 'INSTANT VOULU : ', 1, INST )
-            CALL UTIMPI ( 'L', 'TYPENT : ', 1, TYPENT )
-            CALL UTIMPI ( 'L', 'TYPGEO : ', 1, TYPGEO )
-            CALL UTFINM ()
+            VALK (1) = NOFIMD
+            VALK (2) = NOCHMD
+            VALR = INST
+            VALI (1) = TYPENT
+            VALI (2) = TYPGEO(1)
+            CALL U2MESG('A','PREPOST6_20',2,VALK,2,VALI,1,VALR)
             CALL U2MESS('A','PREPOST3_13')
             GOTO 22
  2221       CONTINUE
 C
             IF ( NIVINF.GT.1 ) THEN
-              CALL UTDEBM ( 'I', NOMPRO, 'CHAMP ' )
-              CALL UTIMPK ( 'S', 'A LIRE : ', 1, NOCHMD )
-              CALL UTIMPI ( 'L', 'TYPENT : ', 1, TYPENT )
-              CALL UTIMPI ( 'L', 'TYPGEO : ', 1, TYPGEO )
-              CALL UTIMPR ( 'L', 'INSTANT VOULU : ', 1, INST )
-              CALL UTIMPI ( 'L', '--> NUMERO D ORDRE : ', 1, NUMORD )
-              CALL UTIMPI ( 'L',
-     &                   '--> NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
-              CALL UTFINM ()
+              VALK (1) = NOCHMD
+              VALI (1) = TYPENT
+              VALI (2) = TYPGEO(1)
+              VALI (3) = NUMORD
+              VALI (4) = NUMPT
+              VALR = INST
+              CALL U2MESG('I','PREPOST6_21',1,VALK,4,VALI,1,VALR)
             ENDIF
             CALL JEDETC ( 'V', PREFIX, 1 )
           ENDIF
@@ -448,16 +446,18 @@ C
 C 2.3. ==> IL MANQUE DES CHOSES !
 C
       IF ( .NOT.EXISTT ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
+        VALK (1) = NOFIMD
+        VALK (2) = NOCHMD
+        CALL U2MESG('A+','PREPOST6_22',2,VALK,0,0,0,0.D0)
         IF ( IINST.NE.0 ) THEN
-          CALL UTIMPR ( 'L', 'INSTANT VOULU : ', 1, INST )
+          VALR = INST
+          CALL U2MESG('A+','PREPOST6_23',0,' ',0,0,1,VALR)
         ELSE
-          CALL UTIMPI ( 'L', 'NUMERO D ORDRE : ', 1, NUMORD )
-          CALL UTIMPI ( 'L', 'NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
+          VALI (1) = NUMORD
+          VALI (2) = NUMPT
+          CALL U2MESG('A+','PREPOST6_24',0,' ',2,VALI,0,0.D0)
         ENDIF
-        CALL UTFINM ()
+        CALL U2MESG('A','PREPOST6_25',0,' ',0,0,0,0.D0)
         IF ( EXISTC.EQ.0 ) THEN
          CALL U2MESS('A','PREPOST3_14')
         ELSEIF ( EXISTC.EQ.1 ) THEN
@@ -615,11 +615,10 @@ C 5.1. ==> FERMETURE FICHIER
 C
       CALL EFFERM ( IDFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFFERM NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOCHMD
+        VALI (1) = CODRET
+        CALL U2MESG('A','PREPOST6_26',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_70')
       ENDIF
 C

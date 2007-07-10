@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF asojb Noyau  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,6 +73,7 @@ class AsBase(Type):
                         UTMESS("E", 'SDVERI_45')
                         print 40*'-'
                         traceback.print_exc(file=sys.stdout)
+                        print self
 
         checker.optional = optional
         return checker
@@ -152,14 +153,22 @@ class JeveuxIntAttr(JeveuxAttr):
     def __get__(self, obj, klass):
         if obj is None:
             return self
-        return aster.jeveux_getattr( obj.nomj(), self.name )[0]
+        nomj = obj.nomj()
+        if aster.jeveux_exists( nomj ):
+            return aster.jeveux_getattr( nomj, self.name )[0]
+        else :
+            return None
 
 # -----------------------------------------------------------------------------
 class JeveuxStrAttr(JeveuxAttr):
     def __get__(self, obj, klass):
         if obj is None:
             return self
-        return aster.jeveux_getattr( obj.nomj(), self.name )[1].strip()
+        nomj = obj.nomj()
+        if aster.jeveux_exists( nomj ):
+            return aster.jeveux_getattr( nomj, self.name )[1].strip()
+        else :
+            return None
 
 # -----------------------------------------------------------------------------
 class OJB(AsBase):

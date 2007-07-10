@@ -8,7 +8,7 @@
       CHARACTER*8        NOECHO(NBCHOC,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C OUT : IER    : CODE RETOUR
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
+      INTEGER VALI
       COMMON / IVARJE / ZI(1)
       REAL*8            ZR
       COMMON / RVARJE / ZR(1)
@@ -61,8 +62,10 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IC,IA,I,J,IVERI,JINST, N1,N2,N3,N4,N5,NBINST,
      &              NR,NT
       REAL*8        KNORM, KTANG, KLOCX, KLOCY, KLOCZ, UNSGA
+      REAL*8        VALR(3)
       REAL*8        ZERO, DEUXPI, DTS, DTU, DTI, R8DEPI, R8GAEM
       CHARACTER*8   METHOD, VERIPA,NOMRES,TRAN
+      CHARACTER*24  VALK(2)
       CHARACTER*16  TYPRES,NOMCMD
       CHARACTER*1   K1BID
 C     ------------------------------------------------------------------
@@ -106,7 +109,7 @@ C
  10   CONTINUE
 C
       IF ( NBCHOC.GT.0 ) THEN
-         IF (INFO.EQ.2) CALL UTDEBM('I','MDPTEM','  ')
+
          DO 20 I = 1,NBCHOC
             KNORM = PARCHO(I,2)
             KTANG = PARCHO(I,4)
@@ -114,7 +117,7 @@ C
             IA = 0
  24         CONTINUE
             IF (INFO.EQ.2)
-     &      CALL UTIMPK('L','--- AU NOEUD DE CHOC :',1,NOECHO(I,IC))
+     &      CALL U2MESG('I','ALGORITH16_92',1,NOECHO(I,IC),0,0,0,0.D0)
             DO 22 J = 1,NBMODE
                IF (PULSAT(J).EQ.ZERO) GOTO 22
                KLOCX = ZERO
@@ -129,10 +132,11 @@ C
                IF (KLOCX.LE.KNORM .OR. KLOCY.LE.KNORM
      &                                      .OR. KLOCZ.LE.KNORM) THEN
                   IF (INFO.EQ.2) THEN
-                     CALL UTIMPI('L',' POUR LE MODE NO : ',1,J)
-                     CALL UTIMPR('L','RAIDEUR LOCALE DEPX : ',1,KLOCX)
-                     CALL UTIMPR('L','RAIDEUR LOCALE DEPY : ',1,KLOCY)
-                     CALL UTIMPR('L','RAIDEUR LOCALE DEPZ : ',1,KLOCZ)
+                  VALI = J
+                  VALR(1) = KLOCX
+                  VALR(2) = KLOCY
+                  VALR(3) = KLOCZ
+          CALL U2MESG('I','ALGORITH16_93',1,NOECHO(I,IC),0,0,3,VALR)
                   ENDIF
                ENDIF
                IF (KNORM.NE.ZERO) THEN
@@ -165,7 +169,6 @@ C
                GOTO 24
             ENDIF
  20      CONTINUE
-         IF (INFO.EQ.2) CALL UTFINM()
       ENDIF
 C
       IF     ( METHOD .EQ. 'DEVOGE'  ) THEN
@@ -184,30 +187,22 @@ C      CASE METHOD .EQ. 'EULER' OR OTHER
 C
       IF ( DT .NE. DTU ) THEN
          IF (METHOD .EQ. 'NEWMARK') THEN
-         CALL UTDEBM('A','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',' ')
-         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND :',1,DTU)
-         CALL UTIMPR('L','PAS DE TEMPS NECESSAIRE POUR LE CALCUL:',1,DT)
-         CALL UTIMPK('L','RISQUES DE PROBLEMES DE PRECISION',1,' ')
-         CALL UTFINM()
+         VALR (1) = DTU
+         VALR (2) = DT
+         CALL U2MESG('A','ALGORITH16_14',0,' ',0,0,2,VALR)
          ELSEIF (IVERI.EQ.1 .AND. METHOD .NE. 'ADAPT') THEN
          IER = IER + 1
-         CALL UTDEBM('E','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',' ')
-         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND :',1,DTU)
-         CALL UTIMPR('L','PAS DE TEMPS NECESSAIRE POUR LE CALCUL:',1,DT)
-         CALL UTIMPK('L','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',1,' ')
-         CALL UTIMPK('L','PARAMETRES DE CALCUL DANS CE CAS :   ',1,' ')
-         CALL UTIMPI('L','NB DE PAS DE CALCUL : ',1,NBPAS)
-         CALL UTFINM()
+         VALR (1) = DTU
+         VALR (2) = DT
+         VALI = NBPAS
+         CALL U2MESG('E','ALGORITH16_15',0,' ',1,VALI,2,VALR)
          ELSE
-         CALL UTDEBM('A','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',' ')
-         CALL UTIMPR('L','PAS DE TEMPS UTILISATEUR TROP GRAND :',1,DTU)
-         CALL UTIMPR('L','PAS DE TEMPS NECESSAIRE POUR LE CALCUL:',1,DT)
-         IF (IVERI.NE.1)
-     &    CALL UTIMPK('L','ON PASSE OUTRE CAR VERI_PAS = NON   ',1,' ')
-         CALL UTIMPK('L','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',1,' ')
-         CALL UTIMPK('L','PARAMETRES DE CALCUL DANS CE CAS :   ',1,' ')
-         CALL UTIMPI('L','NB DE PAS DE CALCUL : ',1,NBPAS)
-         CALL UTFINM()
+         VALR (1) = DTU
+         VALR (2) = DT
+         CALL U2MESG('A+','ALGORITH16_16',0,' ',0,0,2,VALR)
+         IF (IVERI.NE.1) CALL U2MESS('A+','ALGORITH16_89')
+         VALI = NBPAS
+         CALL U2MESG('A','ALGORITH16_17',0,' ',1,VALI,0,0.D0)
          DT = DTU
          NBPAS = NINT( ( TFIN - TINIT ) / DT )
          ENDIF

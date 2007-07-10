@@ -1,21 +1,21 @@
-#@ MODIF meidee_cata Meidee  DATE 06/03/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_cata Meidee  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -30,7 +30,7 @@
 ##   d'effort sont faits sur des matrices python. Les concepts Aster sont créés par défaut.
 ##   TODO : la création des objets Aster étant assez longue, ne les créer que lorsque
 ##   demande explicitement de les saver
-        
+
 
 from Utilitai.Utmess import UTMESS
 ##try:
@@ -44,10 +44,10 @@ from Numeric import zeros
 from Accas import _F
 
 
-    
+
 ##except ImportError:
 ##    UTMESS('F',  'MACRO_VISU_MEIDEE',
-##           "ERREUR PENDANT L'IMPORTATION DES MODULES MEIDEE")    
+##           "ERREUR PENDANT L'IMPORTATION DES MODULES MEIDEE")
 
 aster.onFatalError("EXCEPTION")
 
@@ -55,7 +55,7 @@ aster.onFatalError("EXCEPTION")
 
 class Resultat:
     """!Gestion des sd_resultat d'aster
-    
+
     Permet de conserver une référence sur un objet aster sd_resultat
     et permet aussi de récupérer facilement les concepts aster associés
     tels le modèle, le maillage, la numérotation, matrices de masse et raideur
@@ -102,7 +102,7 @@ class Resultat:
             self.owned.unregister_result( self )
         else:
             self.mess.disp_mess( ( "Destruction de " + self.nom ) )
-            self.mess.disp_mess( ( " " ) ) 
+            self.mess.disp_mess( ( " " ) )
             DETRUIRE(CONCEPT=_F(NOM=(self.obj,) ) )
 
 
@@ -140,10 +140,10 @@ class Resultat:
     def show(self):
         """!Affichage du concept résultats et des concepts liés"""
         self.mess.disp_mess( ( self.nom + " : " ) )
-        self.mess.disp_mess( (".modele" + self.modele_name ) ) 
+        self.mess.disp_mess( (".modele" + self.modele_name ) )
         self.mess.disp_mess( ( ".maillage" +  self.maya_name ) )
         self.mess.disp_mess( ( ".nume" + self.nume_name ) )
-        self.mess.disp_mess( ( ".mass" + self.mass_name ) ) 
+        self.mess.disp_mess( ( ".mass" + self.mass_name ) )
         self.mess.disp_mess( ( ".kass" + self.kass_name ) )
         self.mess.disp_mess( ( " " ) )
 
@@ -155,19 +155,19 @@ class Resultat:
 
         __axsi  = RECU_TABLE(CO=self.obj,
                              NOM_PARA='AMOR_REDUIT',);
-        
+
         __amge  = RECU_TABLE(CO=self.obj,
                              NOM_PARA='AMOR_GENE',);
-                         
+
         __mass  = RECU_TABLE(CO=self.obj,
-                             NOM_PARA='MASS_GENE',);        
-        
+                             NOM_PARA='MASS_GENE',);
+
         __modes = RECU_TABLE(CO=self.obj,
                              NOM_PARA='NUME_MODE',);
 
         __raid  = RECU_TABLE(CO=self.obj,
                              NOM_PARA='RIGI_GENE',);
-        
+
         afreq  = __freq.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
         axsi  = 1.0*zeros(afreq.shape)
         amor  = 1.0*zeros(afreq.shape)
@@ -183,7 +183,7 @@ class Resultat:
                 resu[ind] = table.EXTR_TABLE().Array('NUME_ORDRE',noms[ind])
             except TypeError :
                 self.mess.disp_mess("!! il manque le paramètre modal " +noms[ind]+ "     !!")
-                self.mess.disp_mess("!! pour le resultat " +self.nom+ "              !!") 
+                self.mess.disp_mess("!! pour le resultat " +self.nom+ "              !!")
                 self.mess.disp_mess("!! les calculs risquent d'etre faux  ou incomplets      !!")
                 self.mess.disp_mess("  ")
         return resu
@@ -209,7 +209,7 @@ class Resultat:
         self.mess.disp_mess("NUME_ORDRE  FREQUENCE  MASS_GENE  AMOR_REDUIT  NUME_MODE")
         for ind in range(Numeric.size(cara_mod,0)):
             self.mess.disp_mess("%3i        %7.5g    %7.5g        %7.5g      %3i" %tuple(cara_mod[ind,:])  )
-        
+
 
 #--------------------------------------------------------------------------------------------------------------
 
@@ -230,13 +230,13 @@ class CaraElem:
         "CARORIEN",
         "CARPOUFL",
         ]
-    
+
     def __init__(self, nom, obj, mess, owned=False):
         self.nom = nom
         self.obj = obj
         self.mess = mess
         self.owned = owned
-        
+
     def maillages(self):
         maillages = []
         for carte in CaraElem.CARTES:
@@ -267,10 +267,10 @@ class ChampMateriau:
         return ""
 
 #--------------------------------------------------------------------------------------
-        
+
 class InterSpectre:
     """!Gestion des concepts de type table interspectrale
-    
+
     Regroupe les concepts aster de type table interspectrale :
     - Différencie les tabl_instp des autres tables tabl_sdaster,
     - Extrait les tabl_intsp sous forme d'une matrice python interspectrale
@@ -310,18 +310,18 @@ class InterSpectre:
                              "Efforts et moments discrets"]
         self.mess = mess
 
-           
+
         try:
             if len(self.f) == 0:
                 self.extr_freq()
             if self.matr_inte_spec == None:
                 self.extr_inte_spec()
             self.intsp = 1
-            
+
         except KeyError:
             # Cas où la table_sdaster n'est pas une tabl_intsp
             pass
-            
+
 
     def make_inte_spec(self, titre, paras_out):
         """
@@ -383,7 +383,7 @@ class InterSpectre:
                              paras_out,
                              self.mess,
                             )
-                   
+
 
     def def_inte_spec(self, intsp):
         """ Associe une table intsp aster à l'instance de InterSpectre"""
@@ -400,13 +400,13 @@ class InterSpectre:
             self.opt = 1
         else:
             self.opt = 0
-        
+
 
 
 
     def link_model(self, resu):
         """!Lie une matrice interspectrale à un sd_resultat
-        
+
         Lorsqu'on valide le choix des données d'entrée dans l'onglet turbulent,
         on appelle cette méthode qui lie les lignes et colonnes de la matrice
         inter-spectrale à une sd résultat
@@ -435,16 +435,16 @@ class InterSpectre:
 
         # On compte le nombre de composantes du champ cree
         nbcmp = compt_cmp(__CHANO)
-        
+
         if nbcmp == 6:
             chano_x  = __CHANO.EXTR_COMP('DX',[],1)
             chano_rz = __CHANO.EXTR_COMP('DRZ',[],1)
-            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,) 
+            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,)
             for no in chano_x.noeud:
                 self.nume.append('N'+str(no)+'_DX')
                 self.nume.append('N'+str(no)+'_DRZ')
             return self.nume
-    
+
         if nbcmp == 3:
             chano_x  = __CHANO.EXTR_COMP('DX',[],1)
             DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,)
@@ -452,7 +452,7 @@ class InterSpectre:
                 self.nume.append('N'+str(no)+'_DX')
             return self.nume
 
-        
+
 
 ##    def nume_ddl_phy(self, resu):
 ##        """
@@ -477,13 +477,13 @@ class InterSpectre:
 ##            for no in chano_y.noeud:
 ##                self.nume.append('N'+str(no)+'_DX')
 ##            return self.nume
-##    
+##
 ##        if self.opt == 1:
 ##            chano_y  = __CHANO.EXTR_COMP('DX',[],1)
 ##            chano_rz = __CHANO.EXTR_COMP('DRZ',[],1)
 ##            print "chano_y = ", chano_y.valeurs
-##            print "chano_rz =", chano_rz.valeurs 
-##            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,) 
+##            print "chano_rz =", chano_rz.valeurs
+##            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,)
 ##            for no in chano_y.noeud:
 ##                self.nume.append('N'+str(no)+'_DX')
 ##                self.nume.append('N'+str(no)+'_DRZ')
@@ -529,7 +529,7 @@ class InterSpectre:
                 fonc_py.append(__FONC.convert('complex'))
                 DETRUIRE(CONCEPT=_F(NOM=__FONC),INFO=1)
                 ind_fonc = ind_fonc + 1
-                    
+
 ##        for ind_freq in range(nb_freq):
 ##            start_c = 0
 ##            ind_fonc = 0
@@ -566,7 +566,7 @@ class InterSpectre:
         DETRUIRE(CONCEPT=_F(NOM=__FONC),INFO=1)
         self.f = freq
         self.intsp = 1
-        
+
 
 #---------------------------------------------------------------------------------------------
 
@@ -595,7 +595,7 @@ class MeideeObjects:
 
     def recup_objects( self ):
         jdc = CONTEXT.get_current_step().jdc
-        
+
         for i, v in jdc.sds_dict.items():
             if isinstance( v, modele_sdaster ):
                 self.modeles[i] = v
@@ -622,7 +622,7 @@ class MeideeObjects:
              change d'onglet. Utilse uniquempent pour les concepts
              Resultat et InterSpectre"""
         jdc = CONTEXT.get_current_step().jdc
-        
+
         for i, v in jdc.sds_dict.items():
             if isinstance( v, mode_meca ):
                 if not self.resultats.has_key(i):
@@ -638,7 +638,7 @@ class MeideeObjects:
         self.mess.disp_mess( ("Maillages" + self.maillages ) )
         self.mess.disp_mess( ("Masses" + self.masses ) )
         self.mess.disp_mess( ("Resultats" ) )
-        self.mess.disp_mess( ( " " ) ) 
+        self.mess.disp_mess( ( " " ) )
         for v in self.resultats.values():
             v.show()
 
@@ -648,7 +648,7 @@ class MeideeObjects:
         # recuperation des maillages associes aux modeles
         # et association des resultats a un modele
         for m, _mod in self.modeles.items():
-            _maillag = aster.getvectjev( m.ljust(8) + '.MODELE    .NOMA        ' )
+            _maillag = aster.getvectjev( m.ljust(8) + '.MODELE    .LGRF        ' )
             maillage = _maillag[0].strip()
             # Cherche le(s) resultat(s) qui a ce maillage
             for n, res in self.resultats.items():
@@ -681,7 +681,7 @@ class MeideeObjects:
     def get_model_name(self):
         """!Renvoie les noms de modeles dispos"""
         return self.modeles.keys()
-    
+
     def get_model(self, name):
         """!Renvoie un modele"""
         return self.modeles[name]
@@ -692,7 +692,7 @@ class MeideeObjects:
             if self.inter_spec[i].intsp == 1:
                 inter_spec.append(i)
         return inter_spec
-    
+
     def get_inter_spec(self, name):
         return self.inter_spec[name]
 
@@ -764,4 +764,4 @@ def compt_cmp(champ):
 
 
 
-            
+

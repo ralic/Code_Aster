@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C     OPERATEUR POST_RCCM: CALCUL DU KE, SALT, NADM
 C
 C     ------------------------------------------------------------------
       REAL*8       UN, XM, XN, SNS3, TROISM,R8MAEM
+      REAL*8 VALR(2)
       CHARACTER*2  CODRET
       LOGICAL       ENDUR
 C     ------------------------------------------------------------------
@@ -73,11 +74,9 @@ C     --------------------------------------------
          CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALT, 1,
      +                      'WOHLER  ', NADM, CODRET, 'F ' )
          IF ( NADM .LT. 0 ) THEN
-            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
-            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALT)
-            CALL UTIMPR ('L','   NADM = ',1,NADM)
-            CALL UTFINM ()
+            VALR (1) = SALT
+            VALR (2) = NADM
+            CALL U2MESG('A','POSTRELE_61',0,' ',0,0,2,VALR)
          ENDIF
       ENDIF
 C

@@ -1,6 +1,6 @@
-      SUBROUTINE NMGRIB(NNO,GEOM,DFF,DIR11,B,JAC)
+      SUBROUTINE NMGRIB(NNO,GEOM,DFF,DIR11,LEXC,VECN,B,JAC,P)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/03/2004   AUTEUR PBADEL P.BADEL 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,9 +20,10 @@ C ======================================================================
 
 
       IMPLICIT NONE
+      LOGICAL LEXC
       INTEGER NNO
       REAL*8  GEOM(3,NNO),DFF(2,NNO),DIR11(3)
-      REAL*8  B(3,NNO)
+      REAL*8  B(6,NNO),VECN(3),P(3,6)
       
 C ----------------------------------------------------------------------
 C CALCUL DE LA MATRICE B ET JACOBIEN POUR LES GRILLES SECONDE GENERATION
@@ -30,6 +31,7 @@ C ----------------------------------------------------------------------
 
       INTEGER I,J,N,ALPHA,BETA,GAMMA
       REAL*8 COVA(3,3),METR(2,2),JAC,CNVA(3,2),A(2,2),R1(3),PROJN
+      REAL*8 MTEMP(3,NNO)
       
 
       CALL SUBACO(NNO,DFF,GEOM,COVA)
@@ -37,7 +39,7 @@ C ----------------------------------------------------------------------
       CALL SUBACV(COVA,METR,JAC,CNVA,A)
       
       CALL R8INIR(3,0.D0,R1,1)
-      CALL R8INIR(3*NNO,0.D0,B,1)
+      CALL R8INIR(6*NNO,0.D0,B,1)
       
       PROJN = 0.D0
       
@@ -48,7 +50,7 @@ C ----------------------------------------------------------------------
         PROJN = PROJN + COVA(J,3) * DIR11(J)
 5     CONTINUE
 
-            
+      
 
       DO 10 I=1,3
         DO 10 N=1,NNO
@@ -56,7 +58,37 @@ C ----------------------------------------------------------------------
             DO 10 BETA=1,2
               DO 10 GAMMA=1,2
                 B(I,N)=B(I,N)+R1(ALPHA)*R1(GAMMA)*A(BETA,GAMMA)*
-     &             DFF(BETA,N)*CNVA(I,ALPHA)/(1-PROJN**2)
+     &             DFF(BETA,N)*CNVA(I,ALPHA)/(1.D0-PROJN**2)
 10    CONTINUE
 
+      IF (LEXC) THEN
+  
+        DO 20 N=1,NNO
+          DO 20 I=1,3
+            MTEMP(I,N)=B(I,N)
+20      CONTINUE
+
+        CALL R8INIR(18,0.D0,P,1)
+        CALL R8INIR(6*NNO,0.D0,B,1)
+
+
+
+        DO 40 I=1,3
+          P(I,I)=1.D0
+40      CONTINUE
+        P(1,5)=VECN(3)
+        P(1,6)=-VECN(2)
+        P(2,4)=-VECN(3)
+        P(2,6)=VECN(1)
+        P(3,4)=VECN(2)
+        P(3,5)=-VECN(1)
+        
+        DO 50 N=1,NNO
+          DO 50 I=1,6
+            DO 50 J=1,3
+              B(I,N)=B(I,N)+MTEMP(J,N)*P(J,I)
+50      CONTINUE
+
+      ENDIF
+        
       END

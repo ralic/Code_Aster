@@ -4,7 +4,7 @@
       INTEGER                    IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
 C     ECRITURE DES CONCEPTS UTILISATEURS EXISTANT DANS L'ETUDE
 C     ------------------------------------------------------------------
 C IN  IMPR   : IS  : NUMERO LOGIQUE D'IMPRESSION SI IMPR>0 SINON VOIR
-C IN  CODE   : CH1 : CODE POUR UTDEBM SI IMPR=0, INUTILISE SI IMPR >0
+C IN  CODE   : CH1 : CODE POUR U2MESS SI IMPR=0, INUTILISE SI IMPR >0
 C IN  NOMOBJ : CH8 : NOM DU CONCEPT A EDITER, (SI '  ', ALORS TOUS)
 C     ------------------------------------------------------------------
       CHARACTER*24    KINFO , KRESU, KSTAT
@@ -33,6 +33,7 @@ C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -49,7 +50,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
+      CHARACTER*2 CODE2
       CHARACTER*8 CBID
+      CHARACTER*24 VALK(5)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -64,6 +67,7 @@ C
       CALL JELIRA ( KRESU , 'LONMAX', LONMAX, CBID )
       CALL JELIRA ( KRESU , 'LONUTI', LONUTI, CBID )
       IERR = 0
+      CODE2=CODE//'+'
 C
 C     --- DETERMINATION DES EXISTANTS ---
       IF ( NOMOBJ .NE. '   ') THEN
@@ -86,14 +90,13 @@ C
       IF (IMPR .GT. 0 ) WRITE(IMPR,'(1X,72(''-''))')
 C     --- ECRITURE DES EXISTANTS ---
       IF ( IFIN .GT. IDEB ) THEN
-         IIFIN = 0
+C         IIFIN = 0
          IF (IMPR .GT. 0 ) THEN
             WRITE(IMPR,*) '<',APPELA,'> ',
      &           '<INFORMATION SUR LES CONCEPTS EXISTANTS.>'
          ELSE
-            CALL UTDEBM(CODE,APPELA,
-     &           'INFORMATION SUR LES CONCEPTS EXISTANTS.')
-            IIFIN = 1
+            CALL U2MESG(CODE2,'SUPERVIS_64',0,' ',0,0,0,0.D0)
+C            IIFIN = 1
          ENDIF
          IPASS = 1
          IF (IMPR .GT.0 ) THEN
@@ -103,10 +106,11 @@ C     --- ECRITURE DES EXISTANTS ---
             WRITE(IMPR,*)
          ELSE
             CALL UTSAUT()
-            CALL UTIMPK('L',' ',1,'NO  CMDE')
-            CALL UTIMPK('S',' ',1,'CONCEPT.')
-            CALL UTIMPK('S',' ',1,'TYPE DU CONCEPT.')
-            CALL UTIMPK('S',' ',1,' A ETE CREE PAR ')
+            VALK (1) = 'NO  CMDE'
+            VALK (2) = 'CONCEPT.'
+            VALK (3) = 'TYPE DU CONCEPT.'
+            VALK (4) = ' A ETE CREE PAR '
+            CALL U2MESG(CODE2,'SUPERVIS_65',4,VALK,0,0,0,0.D0)
             CALL UTSAUT()
          ENDIF
          DO 100 JCMD = IDEB, IFIN
@@ -119,11 +123,12 @@ C     --- ECRITURE DES EXISTANTS ---
      &                 '<',ZK80(LGRESU+JCMD)(25:40),'> ',
      &                 '<',ZK80(LGRESU+JCMD)(41:48),'>'
                ELSE
-                  CALL UTIMPK('L',' ',1,CBID)
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)( 1: 8) )
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)( 9:24) )
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)(25:40) )
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)(41:48) )
+                  VALK (1) = CBID
+                  VALK (2) = ZK80(LGRESU+JCMD)( 1: 8)
+                  VALK (3) = ZK80(LGRESU+JCMD)( 9:24)
+                  VALK (4) = ZK80(LGRESU+JCMD)(25:40)
+                  VALK (5) = ZK80(LGRESU+JCMD)(41:48)
+      CALL U2MESG(CODE2,'SUPERVIS_66',5,VALK,0,0,0,0.D0)
                ENDIF
 CCCCC       ELSEIF(ZK80(LGRESU+JCMD)(25:40) .EQ. 'FIN' ) THEN
 C              IF ( JCMD .NE. IFIN ) THEN
@@ -144,12 +149,12 @@ CCCCCCCCCCCC   ENDIF
                      WRITE(IMPR,*) 'PASSAGE NUMERO <',IPASS,'>'
                   ELSE
                      CALL UTSAUT()
-                     CALL UTIMPI('L','PASSAGE NUMERO',1,IPASS)
+                     VALI = IPASS
+      CALL U2MESG(CODE2,'SUPERVIS_67',0,' ',1,VALI,0,0.D0)
                   ENDIF
                ENDIF
             ENDIF
  100     CONTINUE
-         IF (IMPR.EQ.0 .AND. IIFIN.EQ.1) CALL UTFINM()
       ENDIF
 C
 C     --- DETERMINATION DES POTENTIELS ---
@@ -171,7 +176,7 @@ C     --- DETERMINATION DES POTENTIELS ---
       ENDIF
 C
 C     --- ECRITURE DES POTENTIELS ---
-      IIFIN = 0
+C      IIFIN = 0
       IF ( IFIN .GT. IDEB ) THEN
          IENTE = 0
          DO 200 JCMD = IDEB, IFIN
@@ -191,15 +196,14 @@ C             ENTETE LA PREMIERE FOIS
      &                    //'<SERA  CREE  PAR >'
                      WRITE(IMPR,*)
                   ELSE
-                     IIFIN = 1
-                     CALL UTDEBM(CODE,APPELA,
-     &                    'INFORMATION SUR LES CONCEPTS DEVANT ETRE '//
-     &                    'CREES.')
+C                     IIFIN = 1
+      CALL U2MESG(CODE2,'SUPERVIS_68',0,' ',0,0,0,0.D0)
                      CALL UTSAUT()
-                     CALL UTIMPK('L',' ',1,' NO CMD ')
-                     CALL UTIMPK('S',' ',1,'CONCEPT.')
-                     CALL UTIMPK('S',' ',1,'TYPE DU CONCEPT.')
-                     CALL UTIMPK('S',' ',1,'SERA  CREE  PAR ')
+                     VALK (1) = ' NO CMD '
+                     VALK (2) = 'CONCEPT.'
+                     VALK (3) = 'TYPE DU CONCEPT.'
+                     VALK (4) = 'SERA  CREE  PAR '
+      CALL U2MESG(CODE2,'SUPERVIS_69',4,VALK,0,0,0,0.D0)
                      CALL UTSAUT()
                   ENDIF
                ENDIF
@@ -212,11 +216,12 @@ C
      &                 '<',ZK80(LGRESU+JCMD)(25:40),'> ',
      &                 '<',ZK80(LGRESU+JCMD)(41:48),'>'
                ELSE
-                  CALL UTIMPK('L',' ',1,CBID)
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)( 1: 8) )
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)( 9:24) )
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)(25:40) )
-                  CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)(41:48) )
+                  VALK (1) = CBID
+                  VALK (2) = ZK80(LGRESU+JCMD)( 1: 8)
+                  VALK (3) = ZK80(LGRESU+JCMD)( 9:24)
+                  VALK (4) = ZK80(LGRESU+JCMD)(25:40)
+                  VALK (5) = ZK80(LGRESU+JCMD)(41:48)
+      CALL U2MESG(CODE2,'SUPERVIS_70',5,VALK,0,0,0,0.D0)
                ENDIF
             ELSEIF(ZK80(LGRESU+JCMD)(25:40) .EQ. 'FIN' ) THEN
                GOTO 201
@@ -225,7 +230,6 @@ C
             ENDIF
  200     CONTINUE
  201     CONTINUE
-         IF (IMPR.EQ.0 .AND. IIFIN.EQ.1) CALL UTFINM()
       ENDIF
 C
       IF ( NOMOBJ .NE. '   ' ) THEN

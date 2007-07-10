@@ -6,7 +6,7 @@
      >           VIP,SIGP,DSDE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,16 +87,20 @@ C
 C
 C---------- INITIALISATION DES VARIABLES DE SORTIE
 C
-      VIP(1) = 0.D0
-      VIP(2) = 0.D0
-      VIP(3) = 0.D0
-      VIP(4) = 0.D0
-      VIP(5) = 0.D0
-      VIP(6) = 0.D0
-      VIP(7) = 0.D0
-      VIP(8) = 0.D0
-      SIGP   = 0.D0
-      DSDE   = 0.D0
+      IF ((OPTION.EQ.'FULL_MECA').OR.(OPTION.EQ.'RAPH_MECA')) THEN
+        VIP(1) = 0.D0
+        VIP(2) = 0.D0
+        VIP(3) = 0.D0
+        VIP(4) = 0.D0
+        VIP(5) = 0.D0
+        VIP(6) = 0.D0
+        VIP(7) = 0.D0
+        VIP(8) = 0.D0
+        SIGP   = 0.D0
+      ENDIF
+      IF ((OPTION.EQ.'FULL_MECA').OR.(OPTION(1:9).EQ.'RIGI_MECA')) THEN
+        DSDE   = 0.D0
+      ENDIF
 C
 C----------RECUPERATION DES CARACTERISTIQUES
 C

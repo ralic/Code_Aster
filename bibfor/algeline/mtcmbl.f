@@ -1,14 +1,15 @@
       SUBROUTINE MTCMBL(NBCOMB,TYPCST,CONST,LIMAT,
-     &                  MATREZ,DDLEXC,NUMEDD)
+     &                  MATREZ,DDLEXC,NUMEDD,ELIM)
       IMPLICIT NONE
       INTEGER NBCOMB
       CHARACTER*(*) TYPCST(NBCOMB),DDLEXC
       CHARACTER*(*) MATREZ,NUMEDD
       CHARACTER*(*) LIMAT(NBCOMB)
+      CHARACTER*5 ELIM
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +62,10 @@ C CREER UN NOUVEAU NUME_DDL POUR CE STOCKAGE :
 C IN/JXOUT  K14 NUMEDD = NOM DU NUME_DDL SUR LEQUEL S'APPUIERA MATREZ
 C        SI NUMEDD ==' ', LE NOM DU NUME_DDL SERA OBTENU PAR GCNCON
 C        SI NUMEDD /=' ', ON PRENDRA NUMEDD COMME NOM DE NUME_DDL
+C IN    K5  : / 'ELIM=' : SI LES MATRICES A COMBINER N'ONT PAS LES MEMES
+C                         DDLS ELIMINES (CHAR_CINE) => ERREUR <F>
+C             / 'ELIM1' : LA MATRICE RESULTAT AURA LES MEMES DDLS
+C                         ELIMINES QUE LA 1ERE MATRICE DE LA LISTE LIMAT
 C---------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -83,12 +88,16 @@ C     -----------------------------------------------------------------
       CHARACTER*1 BASE,BAS2,TYPRES
       CHARACTER*8 KBID,TYPMAT
       CHARACTER*19 MATEMP,MAT1,MATRES,MATI
+      CHARACTER*24 VALK(2)
 C     -----------------------------------------------------------------
       INTEGER JREFAR,JREFA1,JREFAI,IER,IBID,IDLIMA,IER1
       INTEGER I,LRES,NBLOC,JREFA
       LOGICAL REUTIL,SYMR,SYMI,IDENOB
 C     -----------------------------------------------------------------
       CALL JEMARQ()
+
+      CALL ASSERT(ELIM.EQ.'ELIM=' .OR. ELIM.EQ.'ELIM1')
+
       MATRES = MATREZ
       MAT1=LIMAT(1)
       CALL ASSERT(NBCOMB.GT.0)
@@ -148,8 +157,13 @@ C     ------------------------------------------------------------------
         IF (ZK24(JREFA1-1+1).NE.ZK24(JREFAI-1+1)) THEN
           CALL U2MESS('F','ALGELINE2_9')
         END IF
-        IF (.NOT.IDENOB(MAT1//'.CCID',MATI//'.CCID'))
-     &     CALL U2MESS('F','ALGELINE2_10')
+        IF (ELIM.EQ.'ELIM=') THEN
+           IF (.NOT.IDENOB(MAT1//'.CCID',MATI//'.CCID')) THEN
+              VALK(1)=MAT1
+              VALK(2)=MATI
+              CALL U2MESK('F','ALGELINE2_10',2,VALK)
+           ENDIF
+        ENDIF
    20 CONTINUE
 
 

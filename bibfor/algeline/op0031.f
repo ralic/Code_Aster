@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,8 +180,8 @@ C     --------------------------------
 C     -- COMBINAISON DES MATRICES :
 C     ------------------------------------------------------------------
       CALL MTDEFS(MATR19,ZK8(LNOM),BASE,TYPRES)
-      CALL MTCMBL(NBOCC,ZK8(LTYPEC),ZR(LCOEF),ZK8(LNOM),MATR19,NOMDDL,'
-     &')
+      CALL MTCMBL(NBOCC,ZK8(LTYPEC),ZR(LCOEF),ZK8(LNOM),MATR19,NOMDDL,
+     &            ' ','ELIM=')
 
 
 

@@ -3,7 +3,7 @@
      &                  JGRLNV,JGRLTV,JCNSV ,JCNSL )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
 C
       INTEGER    J
       REAL*8     ND(3),GRLT(NDIM),NORME,PS,NORM2,DDOT
-      REAL*8     TAU1(3),TAU2(3)
+      REAL*8     TAU1(3),TAU2(3), VALR(3)
       INTEGER    XXMMVD,ZXBAS
 C
 C ----------------------------------------------------------------------
@@ -120,7 +120,14 @@ C
 C
       IF (NORME.LT.1.D-12) THEN
         CALL U2MESS('A','XFEM2_5')
-        CALL UTIMPR('L',' POINT ',NDIM,C )
+        VALR(1)= C(1)
+        VALR(2)= C(2)
+        IF(NDIM.EQ.2) THEN
+           CALL U2MESG('A','ALGORITH16_90',0,' ',0,0,2,VALR)
+        ELSE
+           VALR(3)= C(3)
+           CALL U2MESG('A','ALGORITH16_91',0,' ',0,0,3,VALR)
+        ENDIF
 C
 C --- ESSAI AVEC LE PROJETE DE OX
 C

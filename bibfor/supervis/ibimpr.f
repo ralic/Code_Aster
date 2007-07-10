@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,8 @@ C     --- VARIABLES LOCALES --------------------------------------------
 C     ------------------------------------------------------------------
       CHARACTER*16  NOMPR (MXIMPR)
       CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
+      CHARACTER*24  VALK(2)
+      INTEGER VALI
       INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
       DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
      &                      'ERREUR'  ,  'MED'      /
@@ -83,11 +85,10 @@ C
             CALL UTREMT( PRNOM(INOM), NOMPR , MXIMPR, PLACE )
             IF (PLACE.EQ.0) THEN
                IER = IER + 1
-               CALL UTDEBM('E','IBIMPR','NOM SYMBOLIQUE ERRONE '//
-     &                         'POUR UN FICHIER DE SORTIE.')
-               CALL UTIMPK('L','VALEUR LUE',1,PRNOM(INOM))
-               CALL UTIMPK('L','VALEURS ATTENDUES',MXIMPR,NOMPR)
-               CALL UTFINM()
+               VALI =     MXIMPR
+               VALK (1) = PRNOM(1)
+               VALK (2) = PRNOM(2)
+               CALL U2MESG('E','SUPERVIS_84',2,VALK,1,VALI,0,0.D0)
             ELSEIF ( PRESPR(PLACE) .NE. 0 ) THEN
                IER = IER + 1
                CALL U2MESK('E','SUPERVIS_30',1,PRNOM(INOM))

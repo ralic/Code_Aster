@@ -3,7 +3,7 @@
       CHARACTER*(*) MATIN,MATOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
         UN = 1.D0
 C
 C --- RECOPIE DU .VALE ET DE .CCID, .CCLL, .CCVA
-        CALL MTCMBL(1,'R',UN,NMATIN,NMATOU,NOMDDL,' ')
+        CALL MTCMBL(1,'R',UN,NMATIN,NMATOU,NOMDDL,' ','ELIM=')
       END IF
 C
       CALL JEDEMA()

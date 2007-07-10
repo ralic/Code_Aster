@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C - AFFE
 C       -- ON TRAITE CE QUI EST COMMUN AUX MODELES AVEC ELEMENTS
 C                           ET AUX MODELES AVEC SOUS-STRUCTURES
 C       ---------------------------------------------------------------
-      CPTNOM = NOMU//'.MODELE    .NOMA'
+      CPTNOM = NOMU//'.MODELE    .LGRF'
       CPTNBN = NOMU//'.MODELE    .NBNO'
       CALL WKVECT(CPTNOM,'G V K8',1,JDNM)
       CALL WKVECT(CPTNBN,'G V I',1,JDNB)
@@ -518,7 +518,7 @@ C ---   IMPRESSIONS DE VERIFICATION
          CALL DISMOI('F','PHEN_MODE',TYPELE,'TYPE_ELEM',IBID,
      &                PHEMOD,IBID)
          IF ( TYPELE.EQ.'MECA_HEXS8' ) THEN
-           CALL U2MESS('A','ELEMENTS4_74')  
+           CALL U2MESS('A','ELEMENTS4_74')
          END IF
          CALL MODE18 ( TYPELE, TYPEMO )
          IF ( TYPEM1 .NE. ' ' ) THEN
@@ -571,6 +571,14 @@ C       ---   ADAPTATION DE LA TAILLE DES GRELS
 C       ----------------------------------------
       CALL ADALIG(LIGREL)
 
+C     --- CREATION DE LA CORRESPONDANCE MAILLE --> (IGREL,IM)
+C     -------------------------------------------------------
+      CALL CORMGI('G',LIGREL)
+
+C     ---   INITIALISATION DES ELEMENTS POUR CE LIGREL
+C     -------------------------------------------------
+      CALL INITEL(LIGREL)
+
 
 C     --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE
 C     ----------------------------------------------------------
@@ -596,34 +604,6 @@ C     ---------------------------------------------------
       IF (IDIM2.EQ.2 .AND. I3D.EQ.1 .AND. I2D.EQ.1) THEN
         CALL U2MESS('F','MODELISA5_54')
       END IF
-
-
-C     --- CREATION DE LA CORRESPONDANCE MAILLE --> (IGREL,IM)
-C     -------------------------------------------------------
-      CALL CORMGI('G',LIGREL)
-
-
-C     --- CREATION DE L'OBJET .NOEUD_UTIL :
-C     -------------------------------------------------------
-      CALL DISMOI('F','NB_NO_MAILLA',NOMU,'MODELE',NBNOEU,K8B,IBID)
-      CALL WKVECT(NOMU//'.NOEUD_UTIL','G V I',NBNOEU,JNOUT)
-      CALL DISMOI('F','NB_MA_MAILLA',NOMU,'MODELE',NBMAIL,K8B,IBID)
-      IF (NBMAIL.EQ.0) GO TO 290
-      CALL JEVEUO(NOMA//'.CONNEX','L',ICONX1)
-      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ICONX2)
-      DO 280 IMA = 1,NBMAIL
-        IF (ZI(JDMA+IMA-1).EQ.0) GO TO 280
-        NBNO = ZZNBNE(IMA)
-        DO 270 J = 1,NBNO
-          ZI(JNOUT-1+ZZCONX(IMA,J)) = 1
-  270   CONTINUE
-  280 CONTINUE
-  290 CONTINUE
-
-
-C     ---   INITIALISATION DES ELEMENTS POUR CE LIGREL
-C     -------------------------------------------------
-      CALL INITEL(LIGREL)
 
 
 C     ---   VERIFICATION DES X > 0 POUR L'AXIS

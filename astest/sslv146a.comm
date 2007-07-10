@@ -1,0 +1,521 @@
+# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# TITRE CUBE PLEIN RENFORCE PAR DES ARMATURES SOUS CHARGEMENT TRIAXIAL QUAD4 GRILLE_MEMBRANE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(    CODE=_F(  NOM = 'SSLV146A',NIV_PUB_WEB='INTERNET') )
+
+#-----------------------------------------------------------------------
+# VALIDATION DES GRILLES LINEAIRE QUADRANGLE
+#-----------------------------------------------------------------------
+
+MAILTOT=LIRE_MAILLAGE(   )
+
+
+#
+# -----------------------------------------------------
+# DEFINITION DES MATERIAUX
+# -----------------------------------------------------
+#
+
+ACIER=DEFI_MATERIAU(
+            ELAS=_F(  E = 2.E11,   NU = 0.0,),
+                          )
+BETON=DEFI_MATERIAU(
+            ELAS=_F(  E = 2.,   NU = 0.0,),
+                          )
+
+#
+# -------------------------------------------------
+# AFFECTATION DES MATERIAUX
+# -------------------------------------------------
+#
+MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
+                          AFFE=(
+                          _F(  GROUP_MA = ('GEOX','GEOY','GEOZ'),
+                                 MATER = ACIER,
+                               ),
+                          _F(  GROUP_MA = ('GEOB'),
+                                 MATER = BETON,
+                               )
+                               )
+                      )
+
+#
+# -------------------------------------------------
+# AFFECTATION DES MODELES
+# -------------------------------------------------
+#
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
+                        AFFE=(
+                              _F(  GROUP_MA = ('GEOX','GEOY','GEOZ'),
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'GRILLE_MEMBRANE',
+                             ),
+                              _F(  GROUP_MA = ('GEOB',),
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = '3D',
+                             )
+                          )
+                      )
+
+# -------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES
+# -------------------------------------------------
+#
+LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
+                       GRILLE=(
+                               _F( GROUP_MA = 'GEOX',
+                                SECTION = .01,
+                                ANGL_REP=(30,0),),
+                               _F( GROUP_MA = 'GEOY',
+                                SECTION = .02,
+                                ANGL_REP=(0,40),),
+                               _F( GROUP_MA = 'GEOZ',
+                                SECTION = .03,
+                                ANGL_REP=(15,70),),
+                              )
+                        )
+
+# ----------------------------------------------
+# CHARGEMENT
+# ----------------------------------------------
+#
+ZCHM=AFFE_CHAR_MECA(
+             MODELE=LEMOD,
+            DDL_IMPO=(
+                   _F( GROUP_MA  = 'B0X',
+                       DX = 0.,  ),
+                   _F( GROUP_MA  = 'B1X',
+                       DX = 1.,  ),
+                   _F( GROUP_MA  = 'B0Y',
+                       DY = 0.,  ),
+                   _F( GROUP_MA  = 'B1Y',
+                       DY = 2.,  ),
+                   _F( GROUP_MA  = 'B0Z',
+                       DZ = 0.,  ),
+                   _F( GROUP_MA  = 'B1Z',
+                       DZ = 3.,  ),
+                       
+                )
+            )
+
+#
+# ----------------------------------------------
+# CALCUL
+# ----------------------------------------------
+#
+RESU0=MECA_STATIQUE(    MODELE=LEMOD,       CHAM_MATER=MATAF,
+                               CARA_ELEM=LACAR,
+                               EXCIT=_F(  CHARGE =ZCHM,    )       )
+RESU0=CALC_ELEM( reuse = RESU0,
+                 OPTION     = ('EPSI_ELGA_DEPL','EPSI_ELNO_DEPL','SIGM_ELNO_DEPL',),
+                 RESULTAT   = RESU0,
+               )
+
+
+ZLIST=DEFI_LIST_REEL(   DEBUT=0.,
+             INTERVALLE=_F( JUSQU_A = 1.0,  NOMBRE = 1, )
+           )
+
+LEDEP=STAT_NON_LINE(
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR,
+                             EXCIT=_F(
+                CHARGE = ZCHM,
+                ),
+                         COMP_INCR=_F(
+                RELATION = 'ELAS',
+                ALGO_1D = 'DEBORST'
+                ),
+                         INCREMENT=_F(
+                LIST_INST = ZLIST,
+                NUME_INST_FIN = 1,
+                ),
+              )
+
+
+LEDEP=CALC_ELEM( reuse = LEDEP,
+                 OPTION     = ('EPSI_ELGA_DEPL','EPSI_ELNO_DEPL','SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
+                 RESULTAT   = LEDEP,
+               )
+
+LEDEP=CALC_NO(reuse = LEDEP,
+              RESULTAT = LEDEP,
+              OPTION   = ('FORC_NODA',),
+              )
+
+EPOT = POST_ELEM(
+           RESULTAT = LEDEP,
+           ENER_POT = _F(TOUT='OUI'))
+           
+#IMPR_TABLE(TABLE=EPOT)
+#
+# -------------------------------------------------
+# POST TRAITEMENT DES RESULTATS
+# -------------------------------------------------
+#
+
+#IMPR_RESU(RESU=_F(RESULTAT=LEDEP))
+TEST_RESU(RESU=(
+
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             VALE = 1.067,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA2',
+             POINT = 1,
+             VALE = 1.067,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             VALE = 1.8263,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA4',
+             POINT = 1,
+             VALE = 1.8263,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA5',
+             POINT = 1,
+             VALE = 2.,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA6',
+             POINT = 1,
+             VALE = 2.,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+#
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA1',
+             NOEUD  = 'NO1',
+             VALE = 1.067,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA3',
+             NOEUD  = 'NO1',
+             VALE = 1.8263,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA5',
+             NOEUD  = 'NO1',
+             VALE = 2.,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+#
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             VALE = 2.13397E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA2',
+             POINT = 1,
+             VALE = 2.13397E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             VALE = 3.6527E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA4',
+             POINT = 1,
+             VALE = 3.6527E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA5',
+             POINT = 1,
+             VALE = 4.E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA6',
+             POINT = 1,
+             VALE = 4.E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+#
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD  = 'NO1',
+             VALE =2.13397E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             NOEUD  = 'NO1',
+             VALE =3.6527E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA5',
+             NOEUD  = 'NO1',
+             VALE =4.E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+#
+#
+#
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             VALE = 1.067,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA2',
+             POINT = 1,
+             VALE = 1.067,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             VALE = 1.82635,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA4',
+             POINT = 1,
+             VALE = 1.82635,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA5',
+             POINT = 1,
+             VALE = 2.,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA6',
+             POINT = 1,
+             VALE = 2.,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+#
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA1',
+             NOEUD  = 'NO1',
+             VALE = 1.067,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA3',
+             NOEUD  = 'NO1',
+             VALE = 1.82635,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CMP = 'EPXX',
+             MAILLE = 'MA5',
+             NOEUD  = 'NO1',
+             VALE = 2.,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+#
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             VALE = 2.13397E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA2',
+             POINT = 1,
+             VALE = 2.13397E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             VALE = 3.6527E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA4',
+             POINT = 1,
+             VALE = 3.6527E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA5',
+             POINT = 1,
+             VALE = 4.E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA6',
+             POINT = 1,
+             VALE = 4.E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+#
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIGM_ELNO_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD  = 'NO1',
+             VALE =2.13397E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIGM_ELNO_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             NOEUD  = 'NO1',
+             VALE =3.6527E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+            _F( RESULTAT = RESU0,
+             INST = 0.,
+             NOM_CHAM = 'SIGM_ELNO_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA5',
+             NOEUD  = 'NO1',
+             VALE =4.E11,
+             REFERENCE='ANALYTIQUE', PRECISION=0.001,
+            ),
+        )
+    )
+
+TEST_TABLE(
+     TABLE = EPOT,
+     NOM_PARA = 'TOTALE',
+     VALE = 2.8173e10,
+     REFERENCE = 'ANALYTIQUE'
+  )
+FIN()
+#

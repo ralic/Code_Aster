@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,8 +23,8 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C     =================================================================
 C                      OPERATEUR POST_CHAM_XFEM
 C                      ------------------------
-C     BUT : DETERMNATION DES CHAMPS DE DEPLACEMENTS ET DE CONTRAINTES
-C           SUR LE MAILLAGE FISSURE X-FEM
+C     BUT : DETERMNATION DES CHAMPS DE DEPLACEMENTS, DE CONTRAINTES
+C           ET DE VARIABLES INTERNES SUR LE MAILLAGE FISSURE X-FEM
 C     =================================================================
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -50,7 +50,7 @@ C     ------------------------------------------------------------------
       CHARACTER*1  KBID
       CHARACTER*8  MAXFEM,MO,MALINI,RESUCO,RESUX,MODVIS,K8B
       CHARACTER*16 TYSD,NOMCHA
-      CHARACTER*19 CNS1,CNS2,CES1,CES2,CEL2,CH
+      CHARACTER*19 CNS1,CNS2,CES1,CES2,CEL2,CH,CESVI1,CESVI2,CELVI2
       CHARACTER*24 MAILX,MAILC,MAILN,ORDR,LICHAM,LISTNO
 
 C
@@ -100,12 +100,16 @@ C       ----------------------------------------------------------------
         IF (NIV.GT.1) WRITE(IFM,*)'3. XPODIM'
         CNS1   = '&&OP0196.CNS1'
         CES1   = '&&OP0196.CES1'
+        CESVI1   = '&&OP0196.CESVI1'
         CNS2   = '&&OP0196.CNS2'
         CES2   = '&&OP0196.CES2'
+        CESVI2   = '&&OP0196.CESVI2'
         CEL2   = '&&OP0196.CEL2'
+        CELVI2   = '&&OP0196.CELVI2'
         LISTNO = '&&OP0196.LISTNO'
         CALL XPODIM(MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,LISTNO,CNS1,
-     &              CNS2,CES1,CES2,CEL2,IOR,RESUCO,NBNOC,NBMAC,MAXFEM)
+     &              CNS2,CES1,CES2,CEL2,CESVI1,CESVI2,CELVI2,
+     &              IOR,RESUCO,NBNOC,NBMAC,MAXFEM)
 
 C       ----------------------------------------------------------------
 C       4. TRAITEMENT DES MAILLES DE MAILC
@@ -113,7 +117,7 @@ C       ----------------------------------------------------------------
 
         IF (NIV.GT.1) WRITE(IFM,*)'4. XPOMAC'
         CALL XPOMAC(MALINI,MAILC,LISTNO,NBNOC,NBMAC,MAXFEM,
-     &                                              CNS1,CNS2,CES1,CES2)
+     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2)
 
 C       ----------------------------------------------------------------
 C       5. TRAITEMENT DES MAILLES DE MAILX
@@ -121,7 +125,7 @@ C       ----------------------------------------------------------------
 
         IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
         CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,MAXFEM,
-     &                                              CNS1,CNS2,CES1,CES2)
+     &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2)
 
 C       ----------------------------------------------------------------
 C       6. ENREGISTREMENT DES CHAMPS DE SORTIES
@@ -138,6 +142,9 @@ C       ----------------------------------------------------------------
           ELSEIF (NOMCHA.EQ.'SIEF_ELGA') THEN
             CALL CESCEL(CES2,MODVIS//'.MODELE','FULL_MECA','PCONTMR',
      &                  'NON',IBID,'G',CH)
+          ELSEIF (NOMCHA.EQ.'VARI_ELGA') THEN
+            CALL CESCEL(CESVI2,MODVIS//'.MODELE','FULL_MECA','PVARIMR',
+     &                  'NON',IBID,'G',CH)
           ENDIF
           CALL RSNOCH(RESUX,NOMCHA,IORD,' ')
  20     CONTINUE
@@ -150,6 +157,9 @@ C       ----------------------------------------------------------------
         CALL DETRSD('CHAM_ELEM_S',CES1)
         CALL DETRSD('CHAM_ELEM_S',CES2)
         CALL DETRSD('CHAM_ELEM',CEL2)
+        CALL DETRSD('CHAM_ELEM_S',CESVI1)
+        CALL DETRSD('CHAM_ELEM_S',CESVI2)
+        CALL DETRSD('CHAM_ELEM',CELVI2)
 
  10   CONTINUE
 

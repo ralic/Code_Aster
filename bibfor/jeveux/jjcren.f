@@ -1,6 +1,6 @@
       SUBROUTINE JJCREN ( NOMLU , ICRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -50,7 +50,7 @@ C     ------------------------------------------------------------------
       CHARACTER *32    NOMUTI , NOMOS ,         NOMOC , BL32
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
 C     ------------------------------------------------------------------
-      CHARACTER*32     CLEL , CLE , D32
+      CHARACTER*32     CLEL , CLE , D32, VALK(3)
       LOGICAL          LINSER , RINSER
       INTEGER          ICLAIN , IDATIN , IIN
       DATA             D32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
@@ -100,7 +100,9 @@ C DEB ------------------------------------------------------------------
           CLE  = RNOM(JRNOM(ICLA)+ABS(J))
           IF ( CLE .EQ. CLEL ) THEN
             IF ( ICRE .EQ. 1 .OR. ICRE .EQ. 2 ) THEN
-              CALL U2MESK('F','JEVEUX_10',1,NOMFIC(ICLA))
+              VALK(1)=CLEL
+              VALK(2)=NOMFIC(ICLA)
+              CALL U2MESK('F','JEVEUX_10',2,VALK)
             ELSE
               IF ( ICRE .EQ. -1 .OR. ICRE .EQ. -2 ) THEN
                 HCOD(JHCOD(ICLA) + I ) = -J

@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,6 +80,21 @@ Arret suite à l'échec de l'intégration de la loi de comportement.
  hujnvi :: modélisation inconnue
 """),
 
+12: _("""
+ hujci1 :: l'incrément de déformation est nul:
+           on ne peut pas trouver le zéro de la fonction.
+"""),
+
+13: _("""
+ hujci1 :: le critère d'existence du zéro de la fonction est violé:
+           on recommande soit de changer les données matériaux,
+           soit de raffiner le pas de temps.
+           
+           Ce critère est :
+           
+           2 x P- < P0 * (P0 /K0 /TRACE(DEPS_ELA) /N)**(1-N)
+"""),
+
 14: _("""
  hujtid :: erreur dans le calcul de la matrice tangente
 """),
@@ -93,6 +108,15 @@ VMIS_ISOT_LINE avec un SY grand
 Arret suite à l'échec de l'intégration de la loi de comportement.
 
 Erreur numérique (overflow) : la plasticité cumulée devient très grande.
+"""),
+
+17 : _("""
+  hujci1 :: Soit le zéro n'existe pas, soit il se trouve hors des
+            bornes admissibles.
+"""),
+
+18 : _("""
+  hujci1 :: Cas de traction à l'instant moins.
 """),
 
 }

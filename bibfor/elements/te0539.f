@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,10 +30,10 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
       CHARACTER*8 TYPMOD(2),ELREFP
-      CHARACTER*4 FAMI
+C      CHARACTER*4 FAMI
       INTEGER JGANO,NNO,NPG,I,KP,K,L,IMATUU,LGPG,NDIM,LGPG1,IRET,IJ
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER ITREF,ICONTM,IVARIM
+      INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,LI,JCRET,CODRET
       INTEGER IVARIX
@@ -66,7 +66,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C - FONCTIONS DE FORMES ET POINTS DE GAUSS
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      FAMI='RIGI'
+C      FAMI='RIGI'
       IF (NNO.GT.27) CALL U2MESS('F','ELEMENTS3_24')
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
@@ -192,13 +192,11 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
 
         END IF
 
-      ELSEIF (NDIM .EQ. 3) THEN
+C      ELSEIF (NDIM .EQ. 3) THEN
+      ELSE 
 
 C - LOIS DE COMPORTEMENT ECRITE EN CONFIGURATION ACTUELLE
 C                          COMP_INCR
-
-C
-       CALL U2MESS('F','ELEMENTS4_23')
 
 C      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
         IF (ZK16(ICOMPO+2) (1:5).EQ.'PETIT') THEN
@@ -208,100 +206,99 @@ C      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
      &                        ZR(IDEPLP+I-1)
    20       CONTINUE
           END IF
-          CALL NMPL3D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
-     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),
-     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
-     &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(IDEPLM),ZR(IDEPLP),
-     &                ANGMAS,
-     &                ZR(ICONTM),ZR(IVARIM),
-     &                MATSYM,DFDI,DEF,ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
+          CALL XINC3D('+',NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,
+     &                ZR(IINSTM),ZR(IINSTP),ZR(IDEPLP),ZR(ICONTM),     
+     &                ZR(IVARIP),TYPMOD,OPTION,NOMTE,ZI(IMATE),
+     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),ZR(JPINTT),
+     &                ZI(JCNSET),ZI(JHEAVT),ZI(JLONCH),ZR(JBASLO),
+     &                ZR(IDEPLM),ZR(JLSN),ZR(JLST),ZR(ICONTP),
+     &                ZR(IVARIM),ZR(IMATUU),ZR(IVECTU),CODRET)
 
 C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
-        ELSE IF (ZK16(ICOMPO+2) (1:5).EQ.'GREEN') THEN
-
-          DO 50 LI = 1,3*NNO
-            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
-   50     CONTINUE
-
-          CALL NMGR3D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
-     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),
-     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
-     &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(IDEPLM),ZR(IDEPLP),
-     &                ANGMAS,
-     &                ZR(ICONTM),ZR(IVARIM),MATSYM,
-     &                DFDI,PFF,DEF,ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+C         ELSE IF (ZK16(ICOMPO+2) (1:5).EQ.'GREEN') THEN
+C 
+C           DO 50 LI = 1,3*NNO
+C             ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
+C    50     CONTINUE
+C 
+C           CALL NMGR3D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
+C      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),
+C      &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
+C      &                ZR(IINSTM),ZR(IINSTP),
+C      &                ZR(IDEPLM),ZR(IDEPLP),
+C      &                ANGMAS,
+C      &                ZR(ICONTM),ZR(IVARIM),MATSYM,
+C      &                DFDI,PFF,DEF,ZR(ICONTP),ZR(IVARIP),
+C      &                ZR(IMATUU),ZR(IVECTU),CODRET)
         ELSE
           CALL U2MESK('F','ELEMENTS3_16',1,ZK16(ICOMPO+2))
         END IF
 
-      ELSE
-       CALL U2MESS('F','ELEMENTS4_23')
+C       ELSE
+C        write(6,*) 'te0539 l 256, ZK16(ICOMPO+2) = ', ZK16(ICOMPO+2)
+C        CALL U2MESS('F','ELEMENTS4_23')
 
 
 C PARTIE 2D
 C - HYPO-ELASTICITE
 
-        IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
-CCDIR$ IVDEP
-          DO 25 I = 1,2*NNO
-            ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1) +
-     &                      ZR(IDEPLP+I-1)
-  25     CONTINUE
-        END IF
-
-        IF (ZK16(ICOMPO+2) (1:5).EQ.'PETIT') THEN
-
-C -       ELEMENT A DISCONTINUITE INTERNE
-          IF (TYPMOD(2).EQ.'ELEMDISC') THEN
-
-            CALL NMED2D(NNO,NPG,IPOIDS,IVF,IDFDE,
-     &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                  LGPG,ZR(ICARCR),
-     &                  ZR(IDEPLM),ZR(IDEPLP),
-     &                  ZR(ICONTM),ZR(IVARIM),VECT1,
-     &                  VECT3,ZR(ICONTP),ZR(IVARIP),
-     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
-
-          ELSE
-
-            CALL NMPL2D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
-     &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                  LGPG,ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),
-     &                  ZR(IDEPLM),ZR(IDEPLP),ANGMAS,
-     &                  ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
-     &                  VECT3,ZR(ICONTP),ZR(IVARIP),
-     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
-
-          ENDIF
-
-
-C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
-        ELSE IF (ZK16(ICOMPO+2) .EQ.'GREEN') THEN
-
-          DO 45 LI = 1,2*NNO
-            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
-   45     CONTINUE
-
-          CALL NMGR2D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
-     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),
-     &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(IDEPLM),ZR(IDEPLP),ANGMAS,
-     &                ZR(ICONTM),ZR(IVARIM),MATSYM,
-     &                VECT1,VECT2,VECT3,
-     &                ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
-        ELSE
-          CALL U2MESK('F','ELEMENTS3_16',1,ZK16(ICOMPO+2))
-        END IF
-
-      END IF
+C         IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
+C CCDIR$ IVDEP
+C           DO 25 I = 1,2*NNO
+C             ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1) +
+C      &                      ZR(IDEPLP+I-1)
+C   25     CONTINUE
+C         END IF
+C 
+C         IF (ZK16(ICOMPO+2) (1:5).EQ.'PETIT') THEN
+C 
+C C -       ELEMENT A DISCONTINUITE INTERNE
+C           IF (TYPMOD(2).EQ.'ELEMDISC') THEN
+C 
+C             CALL NMED2D(NNO,NPG,IPOIDS,IVF,IDFDE,
+C      &              ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+C      &              LGPG,ZR(ICARCR),
+C      &              ZR(IDEPLM),ZR(IDEPLP),
+C      &              ZR(ICONTM),ZR(IVARIM),VECT1,
+C      &              VECT3,ZR(ICONTP),ZR(IVARIP),
+C      &              ZR(IMATUU),ZR(IVECTU),CODRET)
+C 
+C           ELSE
+C 
+C             CALL NMPL2D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
+C      &              ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+C      &              LGPG,ZR(ICARCR),
+C      &              ZR(IINSTM),ZR(IINSTP),
+C      &              ZR(IDEPLM),ZR(IDEPLP),ANGMAS,
+C      &              ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
+C      &              VECT3,ZR(ICONTP),ZR(IVARIP),
+C      &              ZR(IMATUU),ZR(IVECTU),CODRET)
+C 
+C           ENDIF
+C 
+C 
+C C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
+C         ELSE IF (ZK16(ICOMPO+2) .EQ.'GREEN') THEN
+C 
+C           DO 45 LI = 1,2*NNO
+C             ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
+C    45     CONTINUE
+C 
+C           CALL NMGR2D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
+C      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+C      &                LGPG,ZR(ICARCR),
+C      &                ZR(IINSTM),ZR(IINSTP),
+C      &                ZR(IDEPLM),ZR(IDEPLP),ANGMAS,
+C      &                ZR(ICONTM),ZR(IVARIM),MATSYM,
+C      &                VECT1,VECT2,VECT3,
+C      &                ZR(ICONTP),ZR(IVARIP),
+C      &                ZR(IMATUU),ZR(IVECTU),CODRET)
+C         ELSE
+C           CALL U2MESK('F','ELEMENTS3_16',1,ZK16(ICOMPO+2))
+C         END IF
+C 
+       END IF
 
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA') THEN

@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF elements5 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,4 +214,35 @@ cata_msg={
   est proscrit. Essayer de l'enlevez de la zone de contact ou de reconfigurer
   vos sous-domaines.
 """),
+
+39: _("""
+ echec de la recherche de zero a l'iteration :  %(i1)d 
+  fonction decroissante - pour x=a:  %(r1)f 
+  / fonction(a):  %(r2)f 
+                          et   x=b:  %(r3)f 
+  / fonction(b):  %(r4)f 
+
+  fonction x=:  %(r5)f  %(r6)f  %(r7)f  %(r8)f  %(r9)f  %(r10)f %(r11)f %(r12)f %(r13)f %(r14)f
+                %(r15)f %(r16)f %(r17)f %(r18)f %(r19)f %(r20)f %(r21)f %(r22)f %(r23)f %(r24)f
+
+  fonction f=:  %(r25)f  %(r26)f  %(r27)f  %(r28)f  %(r29)f  %(r30)f %(r31)f %(r32)f %(r33)f %(r34)f
+                %(r35)f  %(r36)f  %(r37)f  %(r38)f  %(r39)f  %(r40)f %(r41)f %(r42)f %(r43)f %(r44)f
+ 
+"""),
+
+40: _("""
+ echec de la recherche de zero a l'iteration :  %(i1)d 
+  fonction constante    - pour x=a:  %(r1)f 
+  / fonction(a):  %(r2)f 
+                          et   x=b:  %(r3)f 
+  / fonction(b):  %(r4)f 
+
+  fonction x=:  %(r5)f  %(r6)f  %(r7)f  %(r8)f  %(r9)f  %(r10)f %(r11)f %(r12)f %(r13)f %(r14)f
+                %(r15)f %(r16)f %(r17)f %(r18)f %(r19)f %(r20)f %(r21)f %(r22)f %(r23)f %(r24)f
+
+  fonction f=:  %(r25)f  %(r26)f  %(r27)f  %(r28)f  %(r29)f  %(r30)f %(r31)f %(r32)f %(r33)f %(r34)f
+                %(r35)f  %(r36)f  %(r37)f  %(r38)f  %(r39)f  %(r40)f %(r41)f %(r42)f %(r43)f %(r44)f
+ 
+"""),
+
 }

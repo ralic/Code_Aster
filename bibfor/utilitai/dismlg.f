@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ C DEB ------------------------------------------------------------------
 C     --------------------------------
       IF (QUESTI.EQ.'NOM_MAILLA') THEN
 C     --------------------------------
-        CALL JEVEUO(NOMOB//'.NOMA','L',IANOMA)
+        CALL JEVEUO(NOMOB//'.LGRF','L',IANOMA)
         REPK = ZK8(IANOMA)
 
 C     -----------------------------------
@@ -81,7 +81,7 @@ C     -----------------------------------------------------------------
      &        (QUESTI.EQ.'EXI_THM_CT') .OR. (QUESTI.EQ.'EXI_THM_VR').OR.
      &        (QUESTI.EQ.'EXI_TUYAU')  .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
      &        (QUESTI.EQ.'EXI_COQ1D')  .OR. (QUESTI.EQ.'EXI_GRILLE').OR.
-     &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE') 
+     &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE')
      &        ) THEN
 C     -----------------------------------------------------------------
         CALL JEEXIN(NOMOB//'.LIEL',IRET)
@@ -100,8 +100,8 @@ C     -----------------------------------------------------------------
      &            (NOMODL(1:3).EQ.'Q4G').OR.(NOMODL(1:5).EQ.'CABLE').OR.
      &            (NOMODL(1:4).EQ.'POU_').OR.(NOMODL(1:5).EQ.'BARRE')
      &            .OR. (NOMODL(1:4).EQ.'DIS_')
-     &            .OR. (NOMODL(1:5).EQ.'TUYAU') 
-     &            .OR. (NOMODL(3:7).EQ.'_DIS_') 
+     &            .OR. (NOMODL(1:5).EQ.'TUYAU')
+     &            .OR. (NOMODL(3:7).EQ.'_DIS_')
      &            .OR. (NOMODL(1:6).EQ.'GRILLE')
      &            .OR. (NOMODL(1:5).EQ.'COQUE')) THEN
                 REPK = 'OUI'
@@ -197,28 +197,36 @@ C              END IF
           REPK = 'NON'
         END IF
 
-C     -------------------------------------
-      ELSE IF (QUESTI.EQ.'NB_SS_ACTI') THEN
-C     -------------------------------------
-        CALL JEEXIN(NOMOB(1:8)//'.SSSA',IRET)
-        IF (IRET.EQ.0) THEN
-          REPI = 0
-        ELSE
-          CALL JEVEUO(NOMOB(1:8)//'.SSSA','L',IASSSA)
-          CALL JELIRA(NOMOB(1:8)//'.SSSA','LONMAX',N1,KBID)
-          REPI = ZI(IASSSA-1+N1-1)
-        END IF
+C     ------------------------------------------
+      ELSE IF( (QUESTI.EQ.'NB_SM_MAILLA') .OR.
+     &         (QUESTI.EQ.'NB_SS_ACTI'  ) .OR.
+     &         (QUESTI.EQ.'NB_NL_MAILLA') ) THEN
+C     ------------------------------------------
+         CALL JEEXIN(NOMOB//'.SSSA',IRET)
+         IF (IRET.EQ.0) THEN
+           REPI=0
+         ELSE
+           CALL JEVEUO(NOMOB//'.SSSA','L',IASSSA)
+           CALL JELIRA(NOMOB//'.SSSA','LONMAX',N1,KBID)
+           IF (QUESTI.EQ.'NB_SM_MAILLA') THEN
+             REPI= ZI(IASSSA-1+N1-2)
+           ELSE IF (QUESTI.EQ.'NB_SS_ACTI') THEN
+             REPI= ZI(IASSSA-1+N1-1)
+           ELSE IF (QUESTI.EQ.'NB_NL_MAILLA') THEN
+             REPI= ZI(IASSSA-1+N1)
+           END IF
+         END IF
 
 C     ---------------------------------------
       ELSE IF (QUESTI.EQ.'NB_NO_MAILLA') THEN
 C     ---------------------------------------
-        CALL JEVEUO(NOMOB//'.NOMA','L',IANOMA)
+        CALL JEVEUO(NOMOB//'.LGRF','L',IANOMA)
         CALL DISMMA(CODMES,QUESTI,ZK8(IANOMA),REPI,REPK,IERD)
 
 C     ---------------------------------------
       ELSE IF (QUESTI.EQ.'NB_MA_MAILLA') THEN
 C     ---------------------------------------
-        CALL JEVEUO(NOMOB//'.NOMA','L',IANOMA)
+        CALL JEVEUO(NOMOB//'.LGRF','L',IANOMA)
         CALL DISMMA(CODMES,QUESTI,ZK8(IANOMA),REPI,REPK,IERD)
 
 C     -----------------------------------
@@ -254,7 +262,7 @@ C     -----------------------------------
           REPI = IGE2
         END IF
 C        -- SI IL EXISTE DES MACRO-ELEMENTS : ON AJOUTE 1000
-        CALL JEEXIN(NOMOB(1:8)//'.SSSA',IRET2)
+        CALL JEEXIN(NOMOB//'.SSSA',IRET2)
         IF (IRET2.GT.0) REPI = 1000 + REPI
 
 C     ----------------------------------
@@ -305,40 +313,13 @@ C           -- CE N'EST NI UN LIGREL DE CHARGE, NI UN LIGREL DE MODELE
 C     ------------------------------------
       ELSE IF (QUESTI.EQ.'PHENOMENE') THEN
 C     ------------------------------------
-
-        IF (NOMOB(9:15).EQ.'.MODELE') GO TO 30
-        IF (NOMOB(9:13).EQ.'.LIGR') GO TO 30
-
-C        SI C'EST UN LIGREL DE CHARGE, ON TROUVE LE PHENOMENE PAR
-C        UNE CONVENTION DE NOM SUR LE LIGREL: 'TH' OU 'ME':
-
-        IF (NOMOB(12:13).EQ.'TH') THEN
-          REPK = 'THERMIQUE'
-          GO TO 40
-        ELSE IF (NOMOB(12:13).EQ.'ME') THEN
-          REPK = 'MECANIQUE'
-          GO TO 40
-        ELSE IF (NOMOB(12:13).EQ.'AC') THEN
-          REPK = 'ACOUSTIQUE'
-          GO TO 40
-        ELSE
-          CALL U2MESK(CODMES,'UTILITAI_62',1,NOMOB)
-          IERD = 1
-          GO TO 40
-        END IF
-
-   30   CONTINUE
-
-C        SI C'EST UN LIGREL DE MODELE, ON REGARDE LE DOCU DU .NOMA :
-        CALL JELIRA(NOMOB//'.NOMA','DOCU',IBID,PHENOM)
+        CALL JELIRA(NOMOB//'.LGRF','DOCU',IBID,PHENOM)
         IF (PHENOM(1:4).EQ.'MECA') THEN
           REPK = 'MECANIQUE'
         ELSE IF (PHENOM(1:4).EQ.'THER') THEN
           REPK = 'THERMIQUE'
         ELSE IF (PHENOM(1:4).EQ.'ACOU') THEN
           REPK = 'ACOUSTIQUE'
-        ELSE IF (PHENOM(1:4).EQ.'NON_') THEN
-          REPK = 'NON_LOCAL'
         ELSE
           CALL U2MESK(CODMES,'UTILITAI_63',1,PHENOM)
         END IF

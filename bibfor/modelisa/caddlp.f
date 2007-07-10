@@ -4,7 +4,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C
 C
 C --- MAILLAGE ASSOCIE AU MODELE ---
 C
-      CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
+      CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 
       NOMNOE = NOMA//'.NOMNOE'

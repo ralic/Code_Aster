@@ -9,7 +9,7 @@
       CHARACTER*19  NCHMEL, NCHMEN, NSSCHE, NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -318,7 +318,7 @@ C   ------------------------------
       NLIGRL = NOMAUX(1:19)
 
       NREPE = NLIGRL//'.REPE'
-      NNOMA = NLIGRL//'.NOMA'
+      NNOMA = NLIGRL//'.LGRF'
 
       CALL JEVEUO(NNOMA,'L',ANOMA)
       CALL JEVEUO(NREPE,'L',AREPE)

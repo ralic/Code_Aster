@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C DEB-------------------------------------------------------------------
       ELSE
 C       -- UN LIGREL QUI N'A PAS D'ELEMENTS VIENT FORCEMENT
 C          D'UN MODELE QUI DOIT AVOIR DES SOUS-STRUCTURES STATIQUES
-        CALL JELIRA(LIGREL(1:8)//'.SSSA','CLAS',IBID,BASE)
+        CALL JELIRA(LIGREL//'.SSSA','CLAS',IBID,BASE)
         GO TO 20
       END IF
 
@@ -98,7 +98,7 @@ C     ------------------------------------------------------------
       IF ((EXIELE(1:3).NE.'OUI') .OR.
      &    (NOMCMD.NE.'AFFE_MODELE')) GO TO 90
 
-      CALL JEVEUO(LIGREL//'.NOMA','L',JNOMA)
+      CALL JEVEUO(LIGREL//'.LGRF','L',JNOMA)
       CALL JEVEUO(LIGREL//'.LIEL','L',JLIEL)
       CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',JLLIEL)
       MA = ZK8(JNOMA)

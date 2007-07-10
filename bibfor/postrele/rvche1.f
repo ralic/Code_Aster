@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              PGL(3,3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ C
       CALL JEVEUO ( NOLIGR//'.LIEL', 'L', JLIGR )
       CALL JEVEUO ( JEXATR(NOLIGR//'.LIEL','LONCUM'), 'L', JLONGR )
       CALL JELIRA ( NOLIGR//'.LIEL', 'NUTIOC', NBGREL, K8B )
-      CALL JEVEUO ( NOLIGR//'.NOMA', 'L', IANOMA )
+      CALL JEVEUO ( NOLIGR//'.LGRF', 'L', IANOMA )
       NOMMA = ZK8(IANOMA)
       CALL JEVEUO ( JEXATR(NOMMA//'.CONNEX','LONCUM'), 'L', JPNT )
 C

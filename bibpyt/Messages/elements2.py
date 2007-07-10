@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements2 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -341,9 +341,8 @@ cata_msg={
  option :  %(k1)s  interdite
 """),
 
-78: _("""
- element de bord pas encore programme
-"""),
+
+
 
 79: _("""
  probleme eventuel dans le calcul des pressions sur les faces x-fem

@@ -1,7 +1,7 @@
-        SUBROUTINE HUJCI1 (CRIT, MATER, DEPS, SIGD, I1F, TRACT, IRET)
-        IMPLICIT NONE
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+      SUBROUTINE HUJCI1 (CRIT, MATER, DEPS, SIGD, I1F, TRACT, IRET)
+      IMPLICIT NONE
+C          CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_20
-C -------------------------------------------------------------------
+C -----------------------------------------------------------------
 C       HUJEUX : CALCUL DE I1F  --> I1 A T+DT
 C       RESOLUTION DE L'EQUATION SCALAIRE F(I1) = 0 DU COMPORTEMENT
 C       ELASTIQUE NON LINEAIRE AVEC
@@ -28,7 +28,7 @@ C       F(I1) = I1F - I1D - [ KOE * TRACE(DEPS) ] * (----------)**N
 C       OU   I1  = TRACE(SIGMA) /3
 C       ET   KOE = K = E /3/(1 - 2*NU)
 C
-C -------------------------------------------------------------------
+C -----------------------------------------------------------------
 C IN  CRIT  : CRITERES DE CONVERGENCE
 C IN  MATER : COEFFICIENTS MATERIAU A T+DT
 C IN  DEPS  : INCREMENT DE DEFORMATION
@@ -39,157 +39,162 @@ C OUT IRET  : CODE RETOUR DE LORS DE LA RESOLUTION DE L'EQUATION
 C             SCALAIRE
 C                 IRET=0 => PAS DE PROBLEME
 C                 IRET=1 => ECHEC 
-C -------------------------------------------------------------------
-        INTEGER NDT, NDI, IMAX, IRET
-        PARAMETER (IMAX = 60)
-        REAL*8  MATER(20,2), CRIT(*), DEPS(6), SIGD(6), I1D, I1F
-        REAL*8  TRDEPS, COEF, MULTI
-        REAL*8  X0, X1, X2, OLDX2, Y0, Y1, Y2
-        REAL*8  YOUNG, POISSO, N, PA
-        REAL*8  ZERO, UN, DEUX, D13
-        LOGICAL TRACT
-        INTEGER I
+C -----------------------------------------------------------------
+      INTEGER NDT, NDI, IRET, IFM, NIV
+      REAL*8  MATER(20,2), CRIT(*), DEPS(6), SIGD(6), I1D, I1F
+      REAL*8  TRDEPS, COEF, EXIST, PREC, ALPHA, THETA
+      REAL*8  X(4), Y(4)
+      REAL*8  YOUNG, POISSO, N, PA
+      REAL*8  ZERO, UN, DEUX, D13
+      LOGICAL TRACT, DEBUG
+      INTEGER I, NITER
 
-        COMMON /TDIM/ NDT, NDI
+      COMMON /TDIM/   NDT, NDI
+      COMMON /MESHUJ/ DEBUG
 
-        DATA ZERO /0.D0/
-        DATA UN   /1.D0/
-        DATA DEUX /2.D0/
-        DATA D13  /0.33333333333334D0/
+      DATA ZERO /0.D0/
+      DATA UN   /1.D0/
+      DATA DEUX /2.D0/
+      DATA D13  /0.33333333333334D0/
+      
+      CALL INFNIV (IFM,NIV)
+      
 
-C--------------------------------------------------------------------
+C
 C       METHODE DE LA SECANTE
-C--------------------------------------------------------------------
-        YOUNG   = MATER(1,1)
-        POISSO  = MATER(2,1)
-        PA      = MATER(8,2)
-        N       = MATER(1,2)
+C       =====================
+
+      YOUNG   = MATER(1,1)
+      POISSO  = MATER(2,1)
+      PA      = MATER(8,2)
+      N       = MATER(1,2)
+      IRET    = 0
+      THETA   = UN
 
 
-C--->   DETERMINATION DE TERME COEF = K0 x DEPS_VOLU
-        TRDEPS = ZERO
-        DO 5 I = 1, NDI
-          TRDEPS = TRDEPS + DEPS(I)
-  5       CONTINUE
+C---> DETERMINATION DU TERME COEF = K0 x DEPS_VOLUMIQUE
+      TRDEPS = ZERO
+      DO 5 I = 1, NDI
+        TRDEPS = TRDEPS + DEPS(I)
+  5     CONTINUE
 
-        COEF = YOUNG*D13 /(UN-DEUX*POISSO) * TRDEPS
+      COEF = YOUNG*D13 /(UN-DEUX*POISSO) * TRDEPS
 
-        I1D = ZERO
-        DO 10 I = 1, NDI
-          I1D = I1D + D13*SIGD(I)
-  10      CONTINUE
+      I1D = ZERO
+      DO 10 I = 1, NDI
+        I1D = I1D + D13*SIGD(I)
+  10    CONTINUE
   
-        IF (I1D .GE. ZERO) THEN
-          I1D = 1.D-12 * PA
-C           CALL U2MESS('F','HUJEUX :: HUJCI1','CAS DE TRACTION'//
-C     &                       ' NON PREVU')
+      IF (I1D .GE. ZERO) THEN
+        I1D = 1.D-12 * PA
+        CALL U2MESS('A', 'COMPOR1_18')
+      ENDIF
+      
+      
+C ---> COEF < 0 => ON VERIFIE UN CRITERE APPROXIMATIF
+C                  D'EXISTENCE DE LA SOLUTION AVEC P+ < P- < 0
+      IF (COEF .GE. ZERO) GOTO 35
+      
+      EXIST = DEUX*I1D - PA * (PA /COEF /N)**(UN-N)
+      
+      IF (EXIST .LE. ZERO) THEN
+        IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_13')
+C         IRET = 1
+C         GOTO 9999
+        X(4)  = ZERO
+        THETA = ZERO
+        GOTO 50
+      ENDIF
+
+  35  CONTINUE
+
+      TRACT = .FALSE.
+      IF (N .EQ. ZERO) THEN
+        I1F = I1D + COEF
+        IF (I1F .GE. ZERO) TRACT = .TRUE.
+        GOTO 9999
+      ENDIF
+
+
+C
+C --- DETERMINATION DES BORNES DE RECHERCHE DE LA SOLUTION
+C     ====================================================
+
+      ALPHA = 100.D0
+
+      IF (COEF .LT. ZERO) THEN
+      
+        X(1) = I1D
+        Y(1) = COEF*(X(1)/PA)**N
+  45    CONTINUE
+        X(2) = ALPHA*I1D
+        Y(2) = COEF*(X(2)/PA)**N - X(2) + I1D
+      
+        IF (Y(2) .LE. ZERO .AND. ALPHA .EQ. 100.D0) THEN
+          ALPHA = 100.D0*ALPHA
+          GOTO 45
+        ELSEIF (Y(2) .LE. ZERO) THEN
+          IF (DEBUG) CALL U2MESS ('A', 'COMPOR1_17')
+C           IRET = 1
+C           GOTO 9999
+          X(4)  = ZERO
+          THETA = ZERO
+          GOTO 50
         ENDIF
 
-        TRACT = .FALSE.
-        IF (N .EQ. ZERO) THEN
-           I1F = I1D + COEF
-           IF (I1F .GE. ZERO) TRACT = .TRUE.
-           GOTO 9999
-        ENDIF
-        
 
-C--->  TRAITEMENT DE L'EQUATION EN FONCTION DE TRACE DE DEPS
-C   CAS N.1: TRACE NULLE
-C   ++++++++++++++++++++
-        IF (TRDEPS .EQ. ZERO)  THEN
-          I1F = I1D
+C ---> COEF > 0 => LA SOLUTION EXISTE NECESSAIREMENT ET P- < P+ < 0
+      ELSEIF (COEF .GT. ZERO) THEN
+      
+        X(2) = I1D
+        Y(2) = COEF*(X(2)/PA)**N
+        X(1) = ZERO
+        Y(1) = I1D
 
 
-C - CAS N.2: TRACE NEGATIVE (CHARGEMENT)
-C   ++++++++++++++++++++++++++++++++++++
-        ELSEIF (TRDEPS .LT. ZERO) THEN
+C ---> COEF = 0 => LA SOLUTION N'EXISTE PAS :: ERREUR FATALE!
+      ELSE
+        CALL U2MESS ('F', 'COMPOR1_12')
+      ENDIF
 
 
-C DERTEMINATION DES BORNES DE L'INTERVALLE DE RECHERCHE
-C       AVEC Y0>0 ET Y1<0
-           X0    = I1D
-           Y0    = X0 - I1D - COEF*(X0/PA)**N
-           MULTI = DEUX
-           X1    = X0
-           DO 20 I = 1, IMAX
-             X1 = MULTI*X1
-             Y1 = X1 - I1D - COEF*(X1/PA)**N
-             IF (Y1 .LT. ZERO) GOTO 25
-  20         CONTINUE
-           IRET = 1
-           GOTO 9999
-  25       CONTINUE
+C
+C --- CALCUL DE X(4), SOLUTION DE L'EQUATION F = 0 :
+C     ===========================================
 
+      X(3) = X(1)
+      Y(3) = Y(1)
+      X(4) = X(2)
+      Y(4) = Y(2)
+      NITER = INT(CRIT(1))
+      PREC  = CRIT(3)
 
-C ---- RECHERCHE DU ZERO DE LA FONCTION ENTRE (X0,Y0) ET (X1,Y1)
-           OLDX2 = ZERO
+      DO 40 I = 1, NITER
 
-           DO 30 I = 1, INT(ABS(CRIT(1)))
-             X2 = (X0*Y1-X1*Y0) /(Y1-Y0)
-             Y2 = X2 - I1D - COEF*(X2/PA)**N
-           
-             IF (ABS((X2-OLDX2)/X2) .LT. CRIT(3) .OR.
-     &           Y2 .EQ. ZERO) GOTO 40
+        IF (ABS(Y(4)/PA).LT.PREC) GOTO 50
+        CALL ZEROCO(X,Y)
+        Y(4) = COEF*(X(4)/PA)**N - X(4) + I1D
 
-             OLDX2 = X2
-             IF (Y2 .GT. ZERO) THEN
-                X0 = X2
-                Y0 = Y2
-             ELSE
-                X1 = X2
-                Y1 = Y2
-             ENDIF
+  40    CONTINUE
 
-  30        CONTINUE
-  
-           IRET = 1
-           GOTO 9999
-  40     CONTINUE
+      WRITE (IFM,*) 'MODELE DE HUJEUX : ATTENTION DANS HUJCI1'
+      WRITE (IFM,*) 'PAS DE CONVERGENCE  A LA PRECISION DEMANDEE', PREC
+      WRITE (IFM,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE', NITER
+      WRITE (IFM,*) 'VALEUR DE F ACTUELLE', Y(4)
+      WRITE (IFM,*) 'AUGMENTER ITER_INTE_MAXI'
 
-         I1F = X2
+C      IRET = 1
+C      GOTO 9999
+      X(4)  = ZERO
+      THETA = ZERO
 
+  50  CONTINUE
 
-C - CAS N.3: TRACE POSITIVE (DECHARGEMENT)
-C   ++++++++++++++++++++++++++++++++++++++
-        ELSEIF (TRDEPS .GT. ZERO) THEN
+C      I1F = X(4)
+C      IF (I1F .GE. ZERO) TRACT = .TRUE.
+      
+      I1F = (UN-THETA)*(COEF*(I1D/PA)**N + I1D) + THETA*X(4)
+      IF (I1F .GE. ZERO) TRACT = .TRUE.
 
-
-C ---- DERTEMINATION DES BORNES DE L'INTERVALLE DE
-C      RECHERCHE AVEC Y0<0 ET Y1>0
-           X0 = I1D
-           Y0 = X0 - I1D - COEF*(X0/PA)**N
-           X1 = ZERO
-           Y1 = X1 - I1D
-
-
-C ---- RECHERCHE DU ZERO DE LA FONCTION ENTRE (X0,Y0) ET (X1,Y1)
-           OLDX2 = ZERO
-
-           DO 60 I = 1, INT(ABS(CRIT(1)))
-             X2 = (X0*Y1-X1*Y0) /(Y1-Y0)
-             Y2 = X2 - I1D - COEF*(X2/PA)**N
-
-             IF (ABS((X2-OLDX2)/X2) .LT. CRIT(3) .OR.
-     &           Y2 .EQ. ZERO) GOTO 70
-
-             OLDX2 = X2
-             IF(Y2 .GT. ZERO) THEN
-               X1 = X2
-               Y1 = Y2
-             ELSE
-               X0 = X2
-               Y0 = Y2
-             ENDIF
-
-  60         CONTINUE
-  
-           IRET = 1
-           GOTO 9999
-  70       CONTINUE
-
-         I1F = X2
-
-        ENDIF
-
- 9999   CONTINUE
-        END
+ 9999 CONTINUE
+      END

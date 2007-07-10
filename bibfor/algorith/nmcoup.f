@@ -3,7 +3,7 @@
      &                      SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,6 +161,22 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
      &                      EPSDT,DEPST,SIGD, VIND, OPTION,SIGF,
      &                      VINF,DSDE)
           ENDIF
+        ELSE
+          CALL U2MESS('F','ALGORITH7_3')
+        ENDIF
+
+      ELSE IF (CMP1(1:4).EQ.'GLRC') THEN
+
+
+        IF (CMP2 .EQ. 'VMIS_ISOT_TRAC' .OR.
+     &      CMP2 .EQ. 'VMIS_ISOT_LINE'. OR.
+     &      CMP2 .EQ. 'VMIS_CINE_LINE') THEN
+
+            OPTION(2)(1:16) = CMP2(1:16)
+            
+            CALL LGDMVM(IMAT,CMP2,EPSDT,DEPST,VIND,OPT,SIGD,
+     &                  SIGF,VINF,DSDE)
+
         ELSE
           CALL U2MESS('F','ALGORITH7_3')
         ENDIF

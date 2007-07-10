@@ -4,7 +4,7 @@
       INTEGER           LMATK,       LMATM,LMATSH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,5 +66,5 @@ C     --- DECALAGE SPECTRAL  K - W * M    (W ETANT LE SHIFT) ---
       NMAT (2) = ZK24(ZI(LMATM+1))
       NMATSH=ZK24(ZI(LMATSH+1))
       NBCMB   = 2
-      CALL MTCMBL(NBCMB,TYPCST,COEF,NMAT,NMATSH,NOMDDL,' ')
+      CALL MTCMBL(NBCMB,TYPCST,COEF,NMAT,NMATSH,NOMDDL,' ','ELIM=')
       END

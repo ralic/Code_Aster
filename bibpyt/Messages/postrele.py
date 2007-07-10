@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF postrele Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -372,6 +372,13 @@ cata_msg={
 60: _("""
  arret sur erreurs
  Contactez l'assistance téléphonique.
+"""),
+
+61: _("""
+ Nombre de cycles admissibles négatif, 
+ verifier la courbe de WOLHER
+ contrainte calculee =  %(r1)f    nadm =  %(r2)f 
+ 
 """),
 
 }

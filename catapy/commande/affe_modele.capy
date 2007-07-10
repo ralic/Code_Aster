@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+#& MODIF COMMANDE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,7 +101,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "DKTG",
                                                                       "DST",
                                                                       "FLUI_STRU",
-                                                                      "GRILLE",
+                                                                      "GRILLE_EXCENTRE",
                                                                       "GRILLE_MEMBRANE",
                                                                       "POU_C_T",
                                                                       "POU_D_E",

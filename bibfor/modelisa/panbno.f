@@ -3,7 +3,7 @@
       INTEGER           ITYP,NBNOTT(3)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,16 @@ C --- DEBUT
         NBNOTT(1) = 4
         IF (NBNTOT.GE.8) NBNOTT(2) = 4
         IF (NBNTOT.EQ.9) NBNOTT(3) = 1
+      ELSE IF (NOMTM(1:5).EQ.'TETRA') THEN
+        NBNOTT(1) = 4
+        IF (NBNTOT.EQ.10) NBNOTT(2) = 6
+      ELSE IF (NOMTM(1:5).EQ.'PENTA') THEN
+        NBNOTT(1) = 6
+        IF (NBNTOT.EQ.15) NBNOTT(2) = 9
+      ELSE IF (NOMTM(1:4).EQ.'HEXA') THEN
+        NBNOTT(1) = 8
+        IF (NBNTOT.GE.20) NBNOTT(2) = 12
+        IF (NBNTOT.EQ.27) NBNOTT(3) = 7
       ELSE
         CALL U2MESK('F','MODELISA6_20',1,NOMTM)
       ENDIF

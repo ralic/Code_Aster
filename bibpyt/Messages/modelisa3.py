@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa3 Messages  DATE 10/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,12 @@ cata_msg={
 """),
 
 12: _("""
-  les listes de noeuds a mettre de vis-a-vis n'ont pas le meme nombre de noeuds
+  Mot clé LIAISON_GROUP : les mots clés %(k1)s et %(k2)s à mettre 
+  en vis-à-vis n'ont pas le meme nombre de noeuds.
+  
+   - Nombre de noeuds présent sous le mot clé %(k1)s: %(i1)d
+   - Nombre de noeuds présent sous le mot clé %(k2)s: %(i2)d
+
 """),
 
 13: _("""

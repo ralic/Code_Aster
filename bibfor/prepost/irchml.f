@@ -11,7 +11,7 @@ C
      &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,7 +138,7 @@ C     ----------------------------------------------------------
       ENDIF
       CALL JEVEUO(CHAME//'.CELK','L',IACELK)
       NOLILI = ZK24(IACELK)
-      CALL JEVEUO(NOLILI(1:19)//'.NOMA','L',IANOMA)
+      CALL JEVEUO(NOLILI(1:19)//'.LGRF','L',IANOMA)
       NOMMA = ZK8(IANOMA)
 C     RECHERCHE DU NOMBRE D'ELEMENTS : NBEL
       CALL JELIRA(NOMMA//'.NOMMAI','NOMMAX',NBEL,K1BID)

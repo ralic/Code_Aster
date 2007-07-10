@@ -1,5 +1,5 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,9 +53,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
       PARAMETER (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
-      PARAMETER (NBEBA=2,NBEMA=46,NBEGB=5)
+      PARAMETER (NBEBA=2,NBEMA=46,NBEGB=6)
       PARAMETER (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGB)
-      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=51)
+      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=52)
 
       INTEGER NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3)
       INTEGER NTYELE(NBTEL)
@@ -115,8 +115,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &     'THPLTR3         ','THPLQU4         ','THPLTR6         ',
      &     'THPLQU8         ','THPLQU9         ','MET3SEG3        ',
      &     'MET6SEG3        ','MET3SEG4        ',
-     &     'MEGRDKT         ','MEGMTR3         ','MEGMQU4         ',
-     &     'MEGMTR6         ','MEGMQU8         '/
+     &     'MEGCQU4         ','MEGMTR3         ','MEGMQU4         ',
+     &     'MEGMTR6         ','MEGMQU8         ','MEGCTR3         '/
       DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,0,4/
 C     ------------------------------------------------------------------
 
@@ -242,7 +242,7 @@ C     -----------------------------------
 
 C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
       CALL GETVID(' ','MODELE',1,1,1,NOMO,NBVM)
-      MODNOM = NOMO//'.MODELE    .NOMA'
+      MODNOM = NOMO//'.MODELE    .LGRF'
       MODNEM = NOMO//'.MODELE    .NEMA'
 
 C --- RECUPERATION DU NOM DU MAILLAGE ASSOCIE
