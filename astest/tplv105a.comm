@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PB 2D STATIONNAIRE DE CONVECTION-DIFFUSION - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #             TEST PERMETTANT LA POURSUITE D'UN CALCUL
 
-DEBUT(CODE=_F( NOM = 'TPLV105A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='TPLV105A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 MAIL=LIRE_MAILLAGE( )
 

@@ -1,4 +1,4 @@
-#@ MODIF sd_mater SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_mater SD  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ from SD.sd_fonction import sd_fonction
 
 
 
-class sd_mater_RDEP(AsBase):
+class sd_mater_XDEP(AsBase):
 #---------------------------
     # on dirait une fonction, mais c'est plutot la concaténation de plusieurs fonctions
     nomj = SDNom(fin=19)
@@ -55,7 +55,8 @@ class sd_mater(AsBase):
 #----------------------
     nomj = SDNom(fin=8)
     NOMRC = AsVK16(SDNom(nomj='.MATERIAU.NOMRC'), )
-    rdep = Facultatif(sd_mater_RDEP(SDNom(nomj='.&&RDEP')))
+    rdep = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&RDEP')))  # à documenter
+    mzp  = Facultatif(sd_mater_XDEP(SDNom(nomj='.&&MZP' )))  # à documenter
 
     # existence possible de la SD :
     def exists(self):

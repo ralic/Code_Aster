@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    import aster
    from Accas import _F
    from Cata.cata import table_jeveux
-   from Utilitai.Utmess  import UTMESS
+   from Utilitai.Utmess  import U2MESS as UTMESS
    from Utilitai.UniteAster import UniteAster
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -60,8 +60,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       nomfich=UL.Nom(args['UNITE'])
    if nomfich and os.path.exists(nomfich) and os.stat(nomfich).st_size<>0:
       if FORMAT=='XMGRACE':
-         UTMESS('A',macro,'Le fichier '+nomfich+' existe déjà, on écrit ' \
-                'à la suite.')
+         UTMESS('A','TABLE0_6',valk=nomfich)
 
    # 0.2. Création des dictionnaires des FILTRES
    Filtre=[]
@@ -142,7 +141,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       # vérification des paramètres
       for p in nom_para:
          if not p in tab.para:
-            UTMESS('A', 'IMPR_TABLE', 'Paramètre absent de la table : %s' % p)
+           UTMESS('A','TABLE0_7',valk=p)
       
       # sélection des paramètres et suppression des colonnes vides
       timp = tab[nom_para]
@@ -184,8 +183,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          kargs['PAGINATION'] = [p for p in l_ppag if p in nom_para]
          l_para_err          = [p for p in l_ppag if not p in nom_para]
          if len(l_para_err)>0:
-            UTMESS('A', 'IMPR_TABLE', 'Paramètres absents de la table (ou de '\
-                   'NOM_PARA) : %s' % ', '.join(l_para_err))
+             UTMESS('A','TABLE0_8',valk=l_para_err)
 
       timp.Impr(**kargs)
 

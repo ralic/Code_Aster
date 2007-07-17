@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 10/07/2007   AUTEUR PELLET J.PELLET */
+/* MODIF astermodule supervis  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -85,6 +85,7 @@ PyObject * MakeListFloat(long nbval,double* kval);
 #define CodeTraitementContactAster        26
 #define CodeMatriceContactSinguliereAster 27
 #define CodeArretCPUAster                 28
+#define CodeEchecPilotageAster            29
 
 int exception_status=-1;
 #define REASONMAX 800
@@ -136,25 +137,9 @@ void TraiteErreur( _IN int code )
                 break ;
 
         /* exceptions particularisées */
-        case CodeNonConvergenceAster :
-                abort();
-                break ;
-        case CodeEchecComportementAster :
-                abort();
-                break ;
-        case CodeBandeFrequenceVideAster :
-                abort();
-                break ;
-        case CodeMatriceSinguliereAster :
-                abort();
-                break ;
-        case CodeTraitementContactAster :
-                abort();
-                break ;
-        case CodeMatriceContactSinguliereAster :
-                abort();
-                break ;
-        case CodeArretCPUAster :
+        case CodeNonConvergenceAster || CodeEchecComportementAster || CodeBandeFrequenceVideAster \
+          || CodeMatriceSinguliereAster || CodeTraitementContactAster || CodeMatriceContactSinguliereAster \
+          || CodeArretCPUAster || CodeEchecPilotageAster :
                 abort();
                 break ;
         default :
@@ -229,6 +214,7 @@ static PyObject *MatriceSinguliereError = (PyObject*)0 ;        /* Exception mat
 static PyObject *TraitementContactError = (PyObject*)0 ;        /* Exception échec de traitement du contact */
 static PyObject *MatriceContactSinguliereError = (PyObject*)0 ; /* Exception matrice de contact non inversible */
 static PyObject *ArretCPUError = (PyObject*)0 ;                 /* Exception manque de temps CPU */
+static PyObject *PilotageError = (PyObject*)0 ;                 /* Exception échec du pilotage */
 
 void initExceptions(PyObject *dict)
 {
@@ -260,6 +246,9 @@ void initExceptions(PyObject *dict)
 
         ArretCPUError = PyErr_NewException("aster.ArretCPUError", AsterError, NULL);
         if(ArretCPUError != NULL) PyDict_SetItemString(dict, "ArretCPUError", ArretCPUError);
+
+        PilotageError = PyErr_NewException("aster.PilotageError", AsterError, NULL);
+        if(PilotageError != NULL) PyDict_SetItemString(dict, "PilotageError", PilotageError);
 }
 
 /* ------------------------------------------------------------------ */
@@ -3104,6 +3093,9 @@ void TraitementFinAster( _IN int val )
                 break ;
         case CodeArretCPUAster :
                 PyErr_SetString(ArretCPUError, exception_reason);
+                break ;
+        case CodeEchecPilotageAster :
+                PyErr_SetString(PilotageError, exception_reason);
                 break ;
 
         default :

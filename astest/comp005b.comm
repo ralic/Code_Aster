@@ -1,25 +1,25 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
-DEBUT( CODE=_F(NOM='COMP005B',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NOM='COMP005B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 MA_L  =  LIRE_MAILLAGE();
@@ -38,7 +38,7 @@ L_INST = DEFI_LIST_REEL (
 
 
 
-COU_T20=DEFI_FONCTION( 
+COU_T20=DEFI_FONCTION(
                NOM_PARA='EPSI',
                PROL_DROITE='LINEAIRE',
                VALE=(
@@ -48,7 +48,7 @@ COU_T20=DEFI_FONCTION(
                )
              )
 
-COU_T220=DEFI_FONCTION( 
+COU_T220=DEFI_FONCTION(
                NOM_PARA='EPSI',
                PROL_DROITE='LINEAIRE',
                VALE=(
@@ -59,7 +59,7 @@ COU_T220=DEFI_FONCTION(
              )
 
 COU_TRAC=DEFI_NAPPE(
-             
+
               NOM_PARA='TEMP',
                   PARA=(20.,220.,),
               FONCTION=(COU_T20,COU_T220,),
@@ -69,10 +69,10 @@ COU_TRAC=DEFI_NAPPE(
 
 
 METAL = DEFI_MATERIAU(
-  ELAS       = _F(E = 1.E5,  
+  ELAS       = _F(E = 1.E5,
                   NU = 0.3,
                   ALPHA=1.E-5
-                  ), 
+                  ),
   ECRO_LINE  = _F(SY= 100., D_SIGM_EPSI = -1.E4),
   BETON_ECRO_LINE  = _F(SYT= 100., D_SIGM_EPSI = -1.E4),
   TRACTION   = _F(SIGM = COU_TRAC),
@@ -82,13 +82,13 @@ METAL = DEFI_MATERIAU(
 
 
 
-F_TEMP=DEFI_FONCTION( 
+F_TEMP=DEFI_FONCTION(
                 NOM_PARA='INST',
                 NOM_RESU='TEMP',
               PROL_DROITE='CONSTANT',
                     VALE=(
-               0.,    20., 
-               1.,   120., 
+               0.,    20.,
+               1.,   120.,
                2.,   220.,
                )
              )
@@ -121,26 +121,26 @@ for i in range(0,len(modelisation)):
 
   CHP_T[i]=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
                MAILLAGE=MA[i],
-                   AFFE=_F( 
+                   AFFE=_F(
                TOUT = 'OUI',
                NOM_CMP = 'TEMP',
                VALE_F = F_TEMP)
              )
 
 
-  TEMP[i]=CREA_RESU( 
+  TEMP[i]=CREA_RESU(
                OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
-                 AFFE=_F( 
+                 AFFE=_F(
                LIST_INST = L_INST,
                CHAM_GD = CHP_T[i])
              )
 
 
   CHP_M[i]=AFFE_MATERIAU(MAILLAGE=MA[i],
-                    AFFE_VARC = (_F(TOUT='OUI', 
-                                  EVOL =TEMP[i],  
-                                  NOM_VARC='TEMP', 
+                    AFFE_VARC = (_F(TOUT='OUI',
+                                  EVOL =TEMP[i],
+                                  NOM_VARC='TEMP',
                                   VALE_REF=20.0),),
                      AFFE=_F(TOUT='OUI',
                              MATER=METAL,
@@ -190,7 +190,7 @@ for j in range(0,len(comportement)):
                            RESI_INTE_RELA=1.E-10,
                            ITER_INTE_MAXI=20,),
               INCREMENT=_F(LIST_INST=L_INST,
-                           INST_FIN=2., 
+                           INST_FIN=2.,
                            ),
               NEWTON=_F(MATRICE='TANGENTE',
                         REAC_ITER=1,

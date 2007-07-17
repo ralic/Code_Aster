@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ISOT. BARRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #
 
-DEBUT(  CODE=_F(  NOM = 'SSNL112G',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNL112G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -152,7 +152,7 @@ UELAS=MECA_STATIQUE(
 
 CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
-                 
+
                   LIST_INST=LINST,
                  OPTION='SIGM_ELNO_DEPL'
 
@@ -180,7 +180,7 @@ CALC_ELEM( reuse=U,
                           RESULTAT=U,
               )
 
-CALC_NO(reuse=U,  OPTION='FORC_NODA',  
+CALC_NO(reuse=U,  OPTION='FORC_NODA',
                         RESULTAT=U)
 
 MASS = POST_ELEM(MODELE=MOD,

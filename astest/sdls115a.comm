@@ -1,30 +1,30 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ON S'ARRANGE QUE LA SOLUTION SOIT SINUSOIDALLE DE FORME U = Q0*SIN(K*X)*SIN(FREQ*T)
-# F0 - EFFORT APPLIQUE, VIT0, VIT1, VIT2, VITF - VITESSE INITIALES 
+# F0 - EFFORT APPLIQUE, VIT0, VIT1, VIT2, VITF - VITESSE INITIALES
 
-DEBUT(     CODE=_F(  NOM = 'SDLS115A',NIV_PUB_WEB='INTERNET'))
-RHO  = 2500.E0  
+DEBUT(CODE=_F(NOM='SDLS115A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+RHO  = 2500.E0
 EP   = 0.1
 
-EY  = 4.3880E10 
+EY  = 4.3880E10
 NU  = 0.
 
 LONG = 1.0
@@ -35,7 +35,7 @@ K    = 3.1416/8.0 * LONG
 FREQ = K*C0
 Q0   = 1.0E-4
 
-F0   = EY*Q0*K * EP * cos(K*LONG) 
+F0   = EY*Q0*K * EP * cos(K*LONG)
 
 XN = LONG/3.0
 VIT0 = FREQ*Q0* sin(K* 0.0)
@@ -68,19 +68,19 @@ MOD1=AFFE_MODELE(MAILLAGE=MAIL,
 
 
 
-MAT=DEFI_MATERIAU(                           
+MAT=DEFI_MATERIAU(
                   ELAS = _F(
-                             E    =  EY,   
-                             NU   =  NU,              
+                             E    =  EY,
+                             NU   =  NU,
                              RHO  = RHO,
                            ),
                  );
 
-                             
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',MATER=MAT,),),
                     );
-                             
+
 CELE1=AFFE_CARA_ELEM(MODELE=MOD1,
                         COQUE=_F(GROUP_MA='MESH',
                                  EPAIS=EP,
@@ -117,7 +117,7 @@ COND_L1=AFFE_CHAR_MECA(MODELE=MOD1,
                      FORCE_ARETE = _F(
                                       GROUP_MA = 'A2A4',
                                       FX       = 1.0
-                                      )         
+                                      )
                        );
 
 
@@ -128,7 +128,7 @@ ffonc = FORMULE (
 
 INST1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                           _F(JUSQU_A = TMAX,PAS = DT),
-                      ),);              
+                      ),);
 
 chf1  = CALC_FONC_INTERP (
                           FONCTION   = ffonc,
@@ -141,11 +141,11 @@ IMPR_CO(
                      NOM = 'chf1'
                     )
         )
-        
+
 NN1  = int(TMAX/DT)
 
 VIT_INI = CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                           _F(GROUP_NO = 'M1',
@@ -158,10 +158,10 @@ VIT_INI = CREA_CHAMP(MAILLAGE=MAIL,
                              NOM_CMP  = 'DX',
                              VALE     = VITF,),
                           )
-                     )        
-                             
+                     )
 
-RESU1 = DYNA_NON_LINE( 
+
+RESU1 = DYNA_NON_LINE(
                        MODELE=MOD1,
                        CHAM_MATER= CHMAT,
                        CARA_ELEM = CELE1,
@@ -170,33 +170,33 @@ RESU1 = DYNA_NON_LINE(
                                     RELATION ='ELAS',                                   ),
                        INCREMENT=_F( LIST_INST = INST1,
                                      PRECISION =1.E-1),
-                       EXCIT=(   _F( CHARGE = COND_L1, 
+                       EXCIT=(   _F( CHARGE = COND_L1,
                                      FONC_MULT = chf1,),
                              ),
                        SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                        FORMULATION='ACCELERATION',),
                        ETAT_INIT = _F(
                                        VITE = VIT_INI,
-                                      ),              
+                                      ),
                      );
 
-        
-                 
+
+
 
 IMPR_RESU(MODELE = MOD1,
           FORMAT = 'RESULTAT',
           RESU = (_F(
                      MAILLAGE = MAIL,
                      RESULTAT = RESU1,
-                     NOEUD    = 'N2', 
+                     NOEUD    = 'N2',
                      NOM_CHAM = (
                                  'DEPL',
                                  'VITE',
                                  'ACCE',
                                 ) ,
-           ),),);  
-            
-           
+           ),),);
+
+
 UXRES = Q0*sin(K*LONG)*sin(FREQ*TMAX)
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NOEUD='N2',

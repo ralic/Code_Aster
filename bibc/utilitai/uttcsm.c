@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTCSM UTILITAI  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,25 +24,26 @@
 
 #ifdef _POSIX
 #include <sys/times.h>
+#include <unistd.h>
 #endif
 
 #include <time.h>
 
+
 /*
-   Avec les versions de GCC >= 4, CLK_TCK n'est plus défini.
-   Il faut dans ce cas utiliser CLOCKS_PER_SEC.
-   ATTENTION car, inversement, CLOCKS_PER_SEC ne donne pas les
-   bons temps avec les versions GCC < 4.
+   On trouve parfois ceci :
+   "CLK_TCK is described as an obsolete name for CLOCKS_PER_SEC"
    
    Quand les deux sont définis, il y a un facteur 10000 entre
-   les deux (CLOCKS_PER_SEC = 1e6, CLK_TCK = 100). A priori,
-   cela semble lier à l'utilisation de times() ou getrusage()
+   les deux (CLOCKS_PER_SEC = 1e6, CLK_TCK = 100).
 */
-#ifndef CLK_TCK
-   #define CLOCKS_PER_SEC_VALUE CLOCKS_PER_SEC
+
+#ifdef CLK_TCK
+#define CLOCKS_PER_SEC_VALUE CLK_TCK
 #else
-   #define CLOCKS_PER_SEC_VALUE CLK_TCK
+#define CLOCKS_PER_SEC_VALUE sysconf(_SC_CLK_TCK)
 #endif
+
 
 void DEFP(UTTCSM, uttcsm, double *t_csm)
 {

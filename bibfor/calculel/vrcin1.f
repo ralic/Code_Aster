@@ -1,6 +1,6 @@
       SUBROUTINE VRCIN1(MODELE,CHMAT,CARELE,INST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,27 +36,29 @@ C   OUT :
 C       - CREATION DE CHMAT//'.LISTE_CH' V V K24  LONG=NBCHS
 C          .LISTE_CH(I) : IEME CHAM_ELEM_S / ELGA PARTICIPANT A
 C                         LA CREATION DU CHAMP DE CVRC
-C       - CREATION DE CHMAT//'.LISTE_SD' V V K16  LONG=6*NBCHS
-C          .LISTE_SD(6*(I-1)+1) : /'EVOL' /'CHAMP' :
+C       - CREATION DE CHMAT//'.LISTE_SD' V V K16  LONG=7*NBCHS
+C          .LISTE_SD(7*(I-1)+1) : /'EVOL' /'CHAMP' :
 C               TYPE DE LA SD DONT EST ISSU .LISTE_CHS(I)
-C          .LISTE_SD(6*(I-1)+2) : NOMSD
+C          .LISTE_SD(7*(I-1)+2) : NOMSD
 C               NOM DE L'EVOL (OU DU CHAMP) DONT EST ISSU .LISTE_CHS(I)
-C          .LISTE_SD(6*(I-1)+3) : NOMSYM / ' '
+C          .LISTE_SD(7*(I-1)+3) : NOMSYM / ' '
 C               SI 'EVOL' : NOM SYMBOLIQUE DU CHAMP DONT EST
 C               ISSU .LISTE_CHS(I). SINON : ' '
-C          .LISTE_SD(6*(I-1)+4) : VARC
+C          .LISTE_SD(7*(I-1)+4) : VARC
 C               VARC ASSOCIE A .LISTE_CHS(I).
-C          .LISTE_SD(6*(I-1)+5) : PROLGA
+C          .LISTE_SD(7*(I-1)+5) : PROLGA
 C               (SI EVOL : TYPE DE PROLONGEMENT A GAUCHE)
-C          .LISTE_SD(6*(I-1)+6) : PROLDR
+C          .LISTE_SD(7*(I-1)+6) : PROLDR
 C               (SI EVOL : TYPE DE PROLONGEMENT A DROITE)
+C          .LISTE_SD(7*(I-1)+7) : FINST (OU ' ')
+C               (SI EVOL : FONCTION DE TRANSFORMATION DU TEMPS)
 C
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8 ZR,INSTEV
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -73,7 +75,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER N1,IBID,NBMA,JCESD1,JCESL1,JCESV1,IAD,LONK80,JCVVAR
       INTEGER ITROU,INDK80,NBK80,K,IMA,JLK80,IRET,NBCHS,JLISSD,ICHS
       INTEGER NBCVRC,JCVGD,JLISCH,INDIK8
-      CHARACTER*8 VARC,MAILLA,KBID,TYSD,PROLDR,PROLGA,NOMEVO,NOMCH
+      CHARACTER*8 VARC,MAILLA,KBID,TYSD,PROLDR,PROLGA,NOMEVO,NOMCH,FINST
       CHARACTER*8 NOMGD,NOMGD2,TYCH,NOMSD
       CHARACTER*16 NOMSYM
       CHARACTER*19 CART2,CHS,CESMOD,CELMOD,LIGRMO,MNOGA,DCELI
@@ -121,6 +123,7 @@ C     -------------------------------
           NOMSYM=ZK16(JCESV1-1+IAD+4)
           PROLGA=ZK16(JCESV1-1+IAD+5)
           PROLDR=ZK16(JCESV1-1+IAD+6)
+          FINST =ZK16(JCESV1-1+IAD+7)
           CALL ASSERT((TYSD.EQ.'EVOL').OR.(TYSD.EQ.'CHAMP'))
           K80=' '
           K80(1:8)  =TYSD
@@ -129,6 +132,7 @@ C     -------------------------------
           K80(33:40)=VARC
           K80(41:48)=PROLGA
           K80(49:56)=PROLDR
+          K80(57:64)=FINST
           IF (K80.EQ.K80PRE) GO TO 2
           K80PRE=K80
           ITROU=INDK80(ZK80(JLK80),K80,1,NBK80)
@@ -145,15 +149,16 @@ C     -------------------------------
 1     CONTINUE
 
       NBCHS=NBK80
-      CALL WKVECT(CHMAT//'.LISTE_SD','V V K16',6*NBCHS,JLISSD)
+      CALL WKVECT(CHMAT//'.LISTE_SD','V V K16',7*NBCHS,JLISSD)
       DO 3,ICHS=1,NBCHS
           K80=ZK80(JLK80-1+ICHS)
-          ZK16(JLISSD-1+6*(ICHS-1)+1)=K80(1:8)
-          ZK16(JLISSD-1+6*(ICHS-1)+2)=K80(9:16)
-          ZK16(JLISSD-1+6*(ICHS-1)+3)=K80(17:32)
-          ZK16(JLISSD-1+6*(ICHS-1)+4)=K80(33:40)
-          ZK16(JLISSD-1+6*(ICHS-1)+5)=K80(41:48)
-          ZK16(JLISSD-1+6*(ICHS-1)+6)=K80(49:56)
+          ZK16(JLISSD-1+7*(ICHS-1)+1)=K80(1:8)
+          ZK16(JLISSD-1+7*(ICHS-1)+2)=K80(9:16)
+          ZK16(JLISSD-1+7*(ICHS-1)+3)=K80(17:32)
+          ZK16(JLISSD-1+7*(ICHS-1)+4)=K80(33:40)
+          ZK16(JLISSD-1+7*(ICHS-1)+5)=K80(41:48)
+          ZK16(JLISSD-1+7*(ICHS-1)+6)=K80(49:56)
+          ZK16(JLISSD-1+7*(ICHS-1)+7)=K80(57:64)
 3     CONTINUE
       CALL JEDETR('&&VRCIN1.LK80')
       END IF
@@ -163,8 +168,8 @@ C     2. CREATION DE CHMAT.LISTE_CH :
 C     -------------------------------
       CALL JEVEUO(CHMAT//'.LISTE_SD','L',JLISSD)
       CALL JELIRA(CHMAT//'.LISTE_SD','LONMAX',N1,KBID)
-      NBCHS=N1/6
-      CALL ASSERT(N1.EQ.6*NBCHS)
+      NBCHS=N1/7
+      CALL ASSERT(N1.EQ.7*NBCHS)
       CALL JEDETR(CHMAT//'.LISTE_CH')
       CALL WKVECT(CHMAT//'.LISTE_CH','V V K24',NBCHS,JLISCH)
       CHS=CHMAT//'.CHS000'
@@ -195,25 +200,34 @@ C     ---------------------------
       DO 5,ICHS=1,NBCHS
           CALL CODENT(ICHS,'D0',CHS(13:15))
           ZK24(JLISCH-1+ICHS)=CHS
-          TYSD=ZK16(JLISSD-1+6*(ICHS-1)+1)(1:8)
-          VARC=ZK16(JLISSD-1+6*(ICHS-1)+4)(1:8)
+          TYSD=ZK16(JLISSD-1+7*(ICHS-1)+1)(1:8)
+          VARC=ZK16(JLISSD-1+7*(ICHS-1)+4)(1:8)
 
 C         2.1 INTERPOLATION EN TEMPS => NOMCH
 C         ------------------------------------
           IF (TYSD.EQ.'EVOL') THEN
 C           -- SI TYSD='EVOL', ON INTERPOLE AU TEMPS INST
-            NOMEVO=ZK16(JLISSD-1+6*(ICHS-1)+2)(1:8)
-            NOMSYM=ZK16(JLISSD-1+6*(ICHS-1)+3)
-            PROLGA=ZK16(JLISSD-1+6*(ICHS-1)+5)
-            PROLDR=ZK16(JLISSD-1+6*(ICHS-1)+6)
+            NOMEVO=ZK16(JLISSD-1+7*(ICHS-1)+2)(1:8)
+            NOMSYM=ZK16(JLISSD-1+7*(ICHS-1)+3)
+            PROLGA=ZK16(JLISSD-1+7*(ICHS-1)+5)
+            PROLDR=ZK16(JLISSD-1+7*(ICHS-1)+6)
+            FINST =ZK16(JLISSD-1+7*(ICHS-1)+7)
             NOMCH='&&VRCIN1.NOMCH'
-            CALL RSINCH(NOMEVO,NOMSYM,'INST',INST,NOMCH,PROLDR,PROLGA,
+
+C           -- PRISE EN COMPTE DE L'EVENTUELLE TRANSFORMATION DU TEMPS
+C              (AFFE_VARC/FONC_INST):
+            IF (FINST .NE. ' ') THEN
+               CALL FOINTE('F',FINST,1,'INST',INST,INSTEV,IBID)
+            ELSE
+               INSTEV=INST
+            ENDIF
+            CALL RSINCH(NOMEVO,NOMSYM,'INST',INSTEV,NOMCH,PROLDR,PROLGA,
      &                  2,'V',IRET)
             CALL ASSERT(IRET.LE.2)
           ELSE
             CALL ASSERT(TYSD.EQ.'CHAMP')
 C           -- SI TYSD='CHAMP', C'EST UN CHAMP INDEPENDANT DU TEMPS :
-            NOMCH=ZK16(JLISSD-1+6*(ICHS-1)+2)
+            NOMCH=ZK16(JLISSD-1+7*(ICHS-1)+2)
           END IF
 
 C         2.2 PASSAGE AUX POINTS DE GAUSS => CHS

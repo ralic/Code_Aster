@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,6 +228,62 @@ Remontée d'erreur (pour aider à l'analyse) :
 
 %(k3)s
 
+"""),
+
+31: _("""
+   Génération par défaut de 3 amortissements :[%(r1)f,%(r2)f,%(r3)f]
+"""),
+
+32: _("""
+   Génération par défaut de 150 fréquences :
+   %(k1)s
+"""),
+
+33: _("""
+   SPEC_OSCI, la norme ne peut etre nulle.
+"""),
+
+34: _("""
+   SPEC_OSCI, le type de la fonction doit etre ACCE.
+"""),
+
+35: _("""
+   SPEC_OSCI, seule la méthode NIGAM est codée.
+"""),
+
+36: _("""
+   SPEC_OSCI, la méthode choisie suppose des amortissements sous-critiques,
+   amor<1.
+"""),
+
+37: _("""
+ calcul du MAX, la liste de fonctions n'est pas 
+ homogène en type (fonctions et nappes)
+"""),
+
+38: _("""
+ Calcul du MAX, la liste de fonctions n'est pas homogène
+ en label NOM_PARA :%(k1)s
+"""),
+
+39: _("""
+ Calcul du MAX, la liste de fonctions n'est pas homogène
+ en label NOM_RESU :%(k1)s 
+"""),
+
+40: _("""
+ Intensite spectrale, avant de calculer l'intensite spectrale, 
+ il est prudent de verifier la norme de la nappe sur laquelle 
+ porte le calcul, ceci peut etre une source d erreurs.
+"""),
+
+41: _("""
+ Le fichier %(k1)s est introuvable.
+"""),
+
+42: _("""
+Erreur lors de la lecture des blocs de valeurs :
+   %(k1)s
 """),
 
 }

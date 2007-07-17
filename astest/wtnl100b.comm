@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+# MODIF  DATE 16/07/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -309,8 +309,9 @@ TEST_RESU(RESU=(
                    NOM_CMP='PRIN_2',
                    MAILLE = 'MA16',
                    NOEUD='NO83',
-                   VALE=1.15904E-16,
-                   PRECISION=1.E-3,
+                   VALE=0.,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-10,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=1,

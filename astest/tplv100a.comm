@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A DES COND. AUX LIMI. NON AXISYMETRIQUES TRIA6
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@
 #                     ECHANGE   : GRMA7
 # ----------------------------------------------------------------------
 #
-DEBUT( CODE=_F(  NOM = 'TPLV100A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='TPLV100A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE( )
 

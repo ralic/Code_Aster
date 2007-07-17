@@ -1,25 +1,25 @@
-# MODIF  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTE DE GRAPPE
 # RESPONSABLE LONGATTE E.LONGATTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 # (AT YOUR OPTION) ANY LATER VERSION.
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT( CODE=_F(  NOM = 'FDNL100A',NIV_PUB_WEB='INTRANET'), )
+DEBUT( CODE=_F(  NOM = 'FDNL100A',NIV_PUB_WEB='INTRANET'), DEBUG=_F(SDVERI='OUI') )
 
 MAILLA=LIRE_MAILLAGE();
 
@@ -140,34 +140,34 @@ MASSESTR=POST_ELEM(  MODELE=MODELE,
                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CHAMPCAR,
                         MASS_INER=_F(  GROUP_MA = ('GRAPPE','TIGE','ARAIGN','CRAYON' ) ) )
 
-IMPR_TABLE( TABLE=MASSESTR, 
+IMPR_TABLE( TABLE=MASSESTR,
             FORMAT_R='E20.13' )
 
-# 
+#
 # --- GRANDEURS CALCULEES PAR POST_ELEM
-# 
-# masse GRAPPE 
+#
+# masse GRAPPE
 M_GRAPP = 126.41755870000
-# masse TIGE 
+# masse TIGE
 M_TIGE  =  59.07367720000
 # masse ARAIGNEE
 M_ARAIG =   3.02860800000
 # masse CRAYON
 M_CRAYO =  64.31527350000
-# 
+#
 # --- TIGE: CALCUL DE ROTIGE
-# 
+#
 DTMOY  = 0.04168
 LTIGE  = 7.500
 ROTIGE = M_TIGE / ( LTIGE * pi * DTMOY**2 / 4 )
-# 
+#
 # --- ARAIGNEE: CALCUL DE RORAI
-# 
+#
 VARAI = 4.900E-4
 RORAI = M_ARAIG / VARAI
-# 
+#
 # --- CRAYON: CALCUL DE ROCRAY
-# 
+#
 DCRAY  = 0.009675
 LCRAY  = 3.860
 ROCRAY = M_CRAYO / ( 24 * LCRAY * pi * DCRAY**2 / 4 )
@@ -194,33 +194,33 @@ TEST_TABLE( TABLE = MASSESTR,
             REFERENCE='NON_REGRESSION', )
 
 # ======================================================================
-# 
+#
 # --- deplacement suivant Y
-# 
+#
 CHARG0 = AFFE_CHAR_MECA( MODELE=MODELE,
                          DDL_IMPO = _F( GROUP_NO='GRAPPE',
-                                         DX=0.0,           DZ=0.0, 
+                                         DX=0.0,           DZ=0.0,
                                         DRX=0.0, DRY=0.0, DRZ=0.0,),  ) ;
 
-# 
-# --- charge due au frottement 
-# 
+#
+# --- charge due au frottement
+#
 FM = 100. / ( LTIGE + LCRAY )
 
 CHARG1 = AFFE_CHAR_MECA( MODELE=MODELE,
                          FORCE_POUTRE = _F( GROUP_MA='GRAPPE',
                                             FY= FM  ), ) ;
-# 
-# --- poids propre 
-# 
+#
+# --- poids propre
+#
 
 CHARG2 = AFFE_CHAR_MECA( MODELE=MODELE,
                          PESANTEUR = ( 9.81,  0., -1., 0.  ), ) ;
 
 # ======================================================================
-# 
+#
 # --- LECTURE DES DONNESS GRAPPE_900 ---
-# 
+#
 INCLUDE(   UNITE= 33,   INFO=1  )
 
 F_FLUIDE=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -311,7 +311,7 @@ RESU=DYNA_NON_LINE( reuse=RESU, MODELE=MODELE,
             );
 
 #######################################################################
-#                      reference PEGASE 
+#                      reference PEGASE
 #######################################################################
 #
 #  Les valeurs sont issus du code PEGASE
@@ -350,9 +350,9 @@ ACCE_3 =  .2996498
 
 TEST_RESU(RESU=(
           # DEPLACEMENT DU NOEUD SUPERIEUR DE LA TIGE
-        
+
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,   NOM_CHAM = 'DEPL',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0010, 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0010,
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'DEPL',
         REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.0010,
@@ -362,7 +362,7 @@ TEST_RESU(RESU=(
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = DEPL_3 ),
 
           # VITESSE DU NOEUD SUPERIEUR DE LA TIGE
-        
+
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'VITE',
         REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ),
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_1 ),
@@ -374,22 +374,22 @@ TEST_RESU(RESU=(
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = VITE_3 ),
 
           # ACCELERATION DU NOEUD SUPERIEUR DE LA TIGE
-        
+
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.300, 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.300,
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.010, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.010, 0.001 ),
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 1.500, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 1.500, 0.001 ),
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
 
         )       )
 
 TEST_RESU(RESU=(
           # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
-        
+
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,   NOM_CHAM = 'DEPL',
         REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ),
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = DEPL_1 ),
@@ -401,27 +401,27 @@ TEST_RESU(RESU=(
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = DEPL_3 ),
 
           # VITESSE DU NOEUD INFERIEUR DU CRAYON
-        
+
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ),
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0160, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0160, 0.001 ),
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_2 ),
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'VITE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.0050, 0.001 ),
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = VITE_3 ),
 
           # ACCELERATION DU NOEUD INFERIEUR DU CRAYON
-        
+
    _F(  RESULTAT = RESU,     INST = 7.00000E-01,    NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.410, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.410, 0.001 ),
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',   PRECISION = ( 0.030, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',   PRECISION = ( 0.030, 0.001 ),
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 1.700, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 1.700, 0.001 ),
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_3 ),
 
         )       )
@@ -435,7 +435,7 @@ TEST_RESU(RESU=(
 #
 TEST_RESU(RESU=(
           # DEPLACEMENT DU NOEUD INFERIEUR DU CRAYON
-        
+
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'DEPL',
         REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-8,
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -3.6074404433789),
@@ -447,7 +447,7 @@ TEST_RESU(RESU=(
 #
 TEST_RESU(RESU=(
           # VITESSE DU NOEUD INFERIEUR DU CRAYON
-        
+
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'VITE',
         REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-8,
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -7.2766740761940E-01  ),
@@ -459,7 +459,7 @@ TEST_RESU(RESU=(
 #
 TEST_RESU(RESU=(
           # ACCELERATION DU NOEUD INFERIEUR DU CRAYON
-        
+
    _F(  RESULTAT = RESU,     INST = 1.78500E+00,    NOM_CHAM = 'ACCE',
         REFERENCE = 'NON_REGRESSION',  PRECISION = 1.E-5,
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',  VALE = -1.6303548333148E-01 ),

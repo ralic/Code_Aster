@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_no SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_no SD  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,6 +49,7 @@ class sd_cham_no(sd_titre):
 
         # j'aurai préféré : sd_prof_chno que sd_nume_equa (mais sslv111b !) AJACOT_PB :
         if lnom[1].strip() :
+            if checker.names.has_key(lnom[1][:14]+'.NUME.DEEQ'):  return
             sd2 = sd_nume_equa(lnom[1]) ; sd2.check(checker)
 
 

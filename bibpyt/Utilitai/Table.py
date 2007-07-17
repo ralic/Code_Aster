@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF Table Utilitai  DATE 16/07/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -981,7 +981,7 @@ def _func_test_abs(v, VALE, PRECISION):
    """Retourne True si v est parmi VALE à PRECISION près en absolu
    """
    for x in VALE:
-      if v != None and (x-PRECISION < v < x+PRECISION):
+      if v != None and (x-PRECISION <= v <= x+PRECISION):
          return True
    return False
 
@@ -989,6 +989,6 @@ def _func_test_rela(v, VALE, PRECISION):
    """Retourne True si v est parmi VALE à PRECISION près en relatif
    """
    for x in VALE: 
-      if v != None and (x*(1.-PRECISION) < v < x*(1.+PRECISION)):
+      if v != None and (x*(1.-PRECISION) <= v <= x*(1.+PRECISION)):
          return True
    return False

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/07/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,6 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DATA          NSEMAX /2,3,6/
 C
       CALL JEMARQ()
-
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
@@ -109,6 +108,7 @@ C      CALL XTEINI(NOMTE,DDLH,NFE,IBID,IBID,IBID,IBID,IBID)
       ELSEIF (NOMTE(1:12).EQ.'MECA_XT_FACE'.OR.
      &        NOMTE.EQ.'MEPLSE2_XT'.OR.
      &        NOMTE.EQ.'MEPLSE3_XT') THEN
+        DDLH=0
         NFE=4
       ELSEIF (NOMTE(1:13).EQ.'MECA_XHT_FACE'.OR.
      &        NOMTE.EQ.'MEPLSE2_XHT'.OR.
@@ -432,5 +432,6 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
+
       CALL JEDEMA()
       END

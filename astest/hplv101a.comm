@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - CONT. PLANES - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@
 #          !---------!
 #======================================================================
 
-DEBUT( CODE=_F(  NOM = 'HPLV101A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='HPLV101A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -114,7 +114,7 @@ DEPLDM=MECA_STATIQUE(
                       )
 
 CALC_ELEM( reuse= DEPLDM ,RESULTAT= DEPLDM ,
-                  
+
                   OPTION='SIGM_ELNO_DEPL'
                       )
 #
@@ -168,13 +168,13 @@ T_DZETA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 TT=POST_ELEM(   MODELE=MODTH,   CHAM_MATER=CHMAT,
                  CHAM_GD=T_DZETA,    INST=0.,  ENER_POT=_F(  TOUT = 'OUI') )
 
-ENER_ELA=POST_ELEM(     
+ENER_ELA=POST_ELEM(
                           RESULTAT=DEPLD2,
                           NUME_ORDRE=10,
                            ENER_ELAS=_F( TOUT = 'OUI')
                        )
 
-ENER_TOT=POST_ELEM(     
+ENER_TOT=POST_ELEM(
                           RESULTAT=DEPLD2,
                           NUME_ORDRE=10,
                            ENER_TOTALE=_F( TOUT = 'OUI')

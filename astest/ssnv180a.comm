@@ -1,24 +1,24 @@
-# MODIF  DATE 07/05/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV180A',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSNV180A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
@@ -33,8 +33,8 @@ M=DEFI_GROUP( reuse=M,
                              _F( GROUP_MA = 'S_AVT'),
                              _F( GROUP_MA = 'S_ARR'),),
            )
-           
-           
+
+
 MO=AFFE_MODELE( MAILLAGE=M,
                 AFFE=_F( TOUT = 'OUI',
                          PHENOMENE = 'MECANIQUE',
@@ -129,14 +129,14 @@ HYDR1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=HYDRF,
                    INST=2419200.0,  ),),);
 
-TEMPI=CREA_CHAMP( OPERATION='AFFE', 
+TEMPI=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_TEMP_R',
                   MAILLAGE=M,
                   AFFE=_F( TOUT = 'OUI',
                            NOM_CMP = 'TEMP',
                            VALE = 20.),);
 
-TEMPF=CREA_CHAMP( OPERATION='AFFE', 
+TEMPF=CREA_CHAMP( OPERATION='AFFE',
                   TYPE_CHAM='NOEU_TEMP_R',
                   MAILLAGE=M,
                   AFFE=_F( TOUT = 'OUI',
@@ -152,7 +152,7 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=TEMPF,
                    INST=64800000.0,  ),),);
 
-CM=AFFE_MATERIAU(MAILLAGE=M,   
+CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F( TOUT = 'OUI',
                           MATER = BETON,),
                  AFFE_VARC=(_F(TOUT='OUI',
@@ -188,12 +188,12 @@ CH11=AFFE_CHAR_MECA( MODELE=MO,
                                   DX       = 0.
                                 )
                    )
-                   
+
 CH12=AFFE_CHAR_MECA( MODELE=MO,
                      DDL_IMPO=_F( GROUP_NO = 'S_AVT',
                                  DY       = 0.
                                ),
-                  ) 
+                  )
 
 CH22=AFFE_CHAR_MECA_F( MODELE=MO,
                       FORCE_NODALE=_F( GROUP_NO = 'S_SUP',
@@ -209,7 +209,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                      _F( JUSQU_A = 64800000.0, NOMBRE = 20))
            )
 
-#DELTAT=432000=5J 
+#DELTAT=432000=5J
 
 
 U=STAT_NON_LINE( MODELE=MO,
@@ -228,12 +228,12 @@ U=STAT_NON_LINE( MODELE=MO,
                                 ITER_GLOB_MAXI = 25)
               )
 
-U=CALC_ELEM(reuse=U,  
+U=CALC_ELEM(reuse=U,
             RESULTAT=U,
             OPTION=('EPSI_ELNO_DEPL','EPVC_ELGA','EPVC_ELNO','EPFP_ELGA','EPFD_ELGA',
                     'EPFP_ELNO','EPFD_ELNO',),)
 
-RELEVE_=POST_RELEVE_T(ACTION=( 
+RELEVE_=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = U,
                             INTITULE = 'DEPL',
                             NOM_CHAM = 'DEPL',
@@ -241,7 +241,7 @@ RELEVE_=POST_RELEVE_T(ACTION=(
                             LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'PC',
-                            OPERATION = 'EXTRACTION', ), 
+                            OPERATION = 'EXTRACTION', ),
                             ), )
 # TESTS SUR LES DEFORMATIONS TOTALES
 TEST_RESU(RESU=(
@@ -282,7 +282,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
            )),
-# TESTS SUR LES DEFORMATIONS DUES A LA THERMIQUE, L'HYDRATATION 
+# TESTS SUR LES DEFORMATIONS DUES A LA THERMIQUE, L'HYDRATATION
 #  ET LE SECHAGE
 
 TEST_RESU(RESU=(
@@ -330,7 +330,7 @@ TEST_RESU(RESU=(
           NOM_CMP = 'EPHYDR',
           VALE = -6E-05,
           PRECISION = 0.005,
-          REFERENCE = 'ANALYTIQUE'),                    
+          REFERENCE = 'ANALYTIQUE'),
           ),)
 # TESTS SUR LES DEFORMATIONS DE FLUAGE
 TEST_RESU(RESU=(

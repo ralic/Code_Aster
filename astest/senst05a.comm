@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE Sensibilite par rapport a la chaleur volumique et emissivite
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,23 +6,23 @@
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-DEBUT( CODE=_F(  NOM ='SENST05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') )
+DEBUT(CODE=_F(NOM='SENST05A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='NON'))
 #
 #
-#          J    BORD_SU1       BORD_SU2    
+#          J    BORD_SU1       BORD_SU2
 #           *-------------------------------*
 #           !               !               !
 #           !               !               !
@@ -35,14 +35,14 @@ DEBUT( CODE=_F(  NOM ='SENST05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') )
 #       ORIGINE   BORD_IN1     BORD_IN2     I
 #       TEMP_IMPO: 100*(1+0.1*INST)
 #
-#    TRANSITOIRE T DE 0 A 10 PAR PAS DE 5       
+#    TRANSITOIRE T DE 0 A 10 PAR PAS DE 5
 #              1   < X < 11
 #             -1.5 < Y <  1.5
 #        55 NOEUDS, 28 SEG2 ET 80 TRIA3
 #
 # On calcule les sensibilites par rapport a la chaleur volumique (PS1)
 # et par rapport a la caracteristique d'emissivite de la CL de rayonnement
-# (PS2) sur BORD_DRO, et ce, de deux manieres differentes: par differences 
+# (PS2) sur BORD_DRO, et ce, de deux manieres differentes: par differences
 # finies (via PYTHON) et de maniere numerique (via l'option
 # idoine de THER_NON_LINE). La deuxieme strategie est evidemment celle qui
 # est preconisee (plus rapide, plus commode a utiliser, plus robuste...)
@@ -116,14 +116,14 @@ CH_1=AFFE_CHAR_THER_F(MODELE=MODEPLAN,RAYONNEMENT=_F(GROUP_MA='BORD_DRO',
 CH_1P=AFFE_CHAR_THER_F(MODELE=MODEPLAN,RAYONNEMENT=_F(GROUP_MA='BORD_DRO',
                      SIGMA=A3,EPSILON=PS2P,TEMP_EXT=A4));
 CH_1M=AFFE_CHAR_THER_F(MODELE=MODEPLAN,RAYONNEMENT=_F(GROUP_MA='BORD_DRO',
-                     SIGMA=A3,EPSILON=PS2M,TEMP_EXT=A4));                     
+                     SIGMA=A3,EPSILON=PS2M,TEMP_EXT=A4));
 #
 # 4.1. Calcul standard + 2 calculs de sensibilite
 #
 LR8=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A = 10.,NOMBRE=2));
 RETH=THER_NON_LINE(MODELE=MODEPLAN,
                    CHAM_MATER=CMAT,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_MAXI=1.E-12),
@@ -138,7 +138,7 @@ RETH=THER_NON_LINE(MODELE=MODEPLAN,
 #
 RETH1M=THER_NON_LINE(MODELE=MODEPLAN,
                    CHAM_MATER=CMATM,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_MAXI=1.E-12),
@@ -148,7 +148,7 @@ RETH1M=THER_NON_LINE(MODELE=MODEPLAN,
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1)));
 RETH1P=THER_NON_LINE(MODELE=MODEPLAN,
                    CHAM_MATER=CMATP,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_MAXI=1.E-12),
@@ -158,7 +158,7 @@ RETH1P=THER_NON_LINE(MODELE=MODEPLAN,
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1)));
 RETH2M=THER_NON_LINE(MODELE=MODEPLAN,
                    CHAM_MATER=CMAT,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_MAXI=1.E-12),
@@ -168,7 +168,7 @@ RETH2M=THER_NON_LINE(MODELE=MODEPLAN,
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1M)));
 RETH2P=THER_NON_LINE(MODELE=MODEPLAN,
                    CHAM_MATER=CMAT,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_MAXI=1.E-12),

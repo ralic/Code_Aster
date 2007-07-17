@@ -1,4 +1,4 @@
-#@ MODIF lire_table_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF lire_table_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,6 +35,7 @@ def lecture_table(texte, nume, separ):
    """
    from Utilitai.transpose import transpose
    from Utilitai.Table     import Table
+   from Utilitai.Utmess    import U2MESS as UTMESS
    
    tab_lue = {}
    nume_lign = []
@@ -49,9 +50,7 @@ def lecture_table(texte, nume, separ):
    l_txt = exp.findall(texte)
    nbbloc = len(l_txt)
    if nume > nbbloc:
-      message = """NUME_TABLE=%d incorrect : il n'y a que %d blocs de tables""" \
-                """ dans le fichier""" % (nume, nbbloc)
-      return 1, message, None
+      UTMESS('F', 'TABLE0_10', vali=(nume, nbbloc))
    txttab = l_txt[nume - 1]
   
    # expression régulière pour extraire le titre
@@ -82,11 +81,10 @@ def lecture_table(texte, nume, separ):
    for i, line in enumerate(txttab):
       mat = re.search(lfmt, line)
       if mat is None or nb_para != len(mat.groups()):
-         message = """Nombre de champs incorrect ligne %d.
-Il y a %d paramètres""" % (i + 1, nb_para)
-         if hasattr(mat, 'groups'):
-            message += """, on a lu %d champs.""" % len(mat.groups())
-         return 1, message, None
+         UTMESS('F+', 'TABLE0_11', vali=i + 1)
+         if mat is not None:
+            UTMESS('F+', 'TABLE0_12', vali=len(mat.groups()))
+         UTMESS('F', 'TABLE0_13', vali=nb_para)
       dico = {}
       for para, typ, ch in zip(list_para, list_type, mat.groups()):
          ch = ch.strip()
@@ -101,14 +99,14 @@ Il y a %d paramètres""" % (i + 1, nb_para)
       l_rows.append(dico)
    
    tab = Table(l_rows, list_para, list_type, titre_tab)
-   return 0, '', tab
+   return tab
 
 
 # ------------------------------------------------------------------------------
 def lire_table_ops(self, **args):
    """Méthode corps de la macro LIRE_TABLE
    """
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS as UTMESS
    from Utilitai.UniteAster import UniteAster
    
    ier = 0
@@ -138,9 +136,7 @@ def lire_table_ops(self, **args):
    ### mise en forme de la liste de valeurs suivant le format choisi :
    # pour le moment uniquement ASTER
    if FORMAT=='ASTER':
-      ier, message, tab_lue = lecture_table(texte, NUME_TABLE, SEPARATEUR)
-      if ier != 0 :
-         UTMESS('F', nompro, message)
+      tab_lue = lecture_table(texte, NUME_TABLE, SEPARATEUR)
    else:
       pass
    

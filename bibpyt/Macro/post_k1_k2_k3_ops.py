@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,19 +19,17 @@
 # ======================================================================
 
 def veri_tab(tab,nom,ndim) :
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS as UTMESS
    macro = 'POST_K1_K2_K3'
    for label in ('DX','DY','COOR_X','COOR_Y','ABSC_CURV') :
        if label not in tab.para :
-          message='le label '+label+' doit etre present dans la table : '+nom
-          UTMESS('F', macro, message)
+          UTMESS('F','RUPTURE0_2',valk=[label,nom])
    if ndim==3 :
       if 'DZ'     not in tab.para :
-          message='le label DZ doit etre present dans la table : '+nom
-          UTMESS('F', macro, message)
+          label='DZ'
+          UTMESS('F','RUPTURE0_2',valk=[label,nom])
       if 'COOR_Z' not in tab.para :
-          message='le label COOR_Z doit etre present dans la table : '+nom
-          UTMESS('F', macro, message)
+          UTMESS('F','RUPTURE0_4',valk=[nom])
 
 def cross_product(a,b):
     cross = [0]*3
@@ -76,7 +74,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    macro = 'POST_K1_K2_K3'
    from Accas               import _F
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS as UTMESS
 
    ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -106,7 +104,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        if cmpt[:4]=='ELAS' :
           phenom=cmpt
           break
-   if phenom==None : UTMESS('F', macro, 'IL FAUT DEFINIR ELAS DANS DEFI_MATERIAU')
+   if phenom==None : UTMESS('F','RUPTURE0_5')
 #   --- RECHERCHE SI LE MATERIAU DEPEND DE LA TEMPERATURE:
    valk = aster.getvectjev( string.ljust(MATER.nom,8)+'.'+phenom[:10]+'.VALK')
    valk = [x.strip() for x in valk]
@@ -124,10 +122,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             Tempe3D = True
             break
    elif dicmat.has_key('TEMP_DEF') and not Tempe3D :
-      message = 'LES PROPRIETES MATERIAUX, NECESSAIRES AUX CALCULS \n'
-      message = message +'DES COEFFICIENTS D INTENSITE DES CONTRAINTES, ONT ETE OBTENUES A LA\n'
-      message = message +'TEMPERATURE DE REFERENCE DU MATERIAU ET NON A LA TEMPERATURE CALCULEE.'
-      UTMESS('A', macro, message)
+      UTMESS('A','RUPTURE0_6')
       nompar = ('TEMP',)
       valpar = (dicmat['TEMP_DEF'],)
       nomres=['E','NU']
@@ -147,7 +142,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       unmnu2 = 1. - nu**2
       unpnu  = 1. + nu
       if MODELISATION=='3D' :
-         UTMESS('I', macro, 'l operateur CALC_G -option CALC_K_G- calcule plus precisement les K1 K2 K3')
+         coefk='K1 K2 K3'
+         UTMESS('I','RUPTURE0_7',valk=coefk)
          ndim   = 3
          coefd  = coefd      / ( 8.0 * unmnu2 )
          coefd3 = e*sqrt(2*pi) / ( 8.0 * unpnu )
@@ -159,19 +155,21 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          coefg  = unmnu2 / e
          coefg3 = unpnu  / e
       elif MODELISATION=='D_PLAN' :
-         UTMESS('I', macro, 'l operateur CALC_G -option CALC_K_G- calcule plus precisement les K1 K2')
+         coefk='K1 K2'
+         UTMESS('I','RUPTURE0_7',valk=coefk)
          ndim   = 2
          coefd  = coefd / ( 8. * unmnu2 )
          coefg  = unmnu2 / e
          coefg3 = unpnu  / e
       elif MODELISATION=='C_PLAN' :
-         UTMESS('I', macro, 'l operateur CALC_G -option CALC_K_G- calcule plus precisement les K1 K2')
+         coefk='K1 K2'
+         UTMESS('I','RUPTURE0_7',valk=coefk)
          ndim   = 2
          coefd  = coefd / 8.
          coefg  = 1. / e
          coefg3 = unpnu / e
       else :
-         UTMESS('F', macro, 'modélisation non implantée')
+         UTMESS('F','RUPTURE0_10')
 
 
 #   ------------------------------------------------------------------
@@ -193,7 +191,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       if LNOFO==None :
          RECOL = True
          LNOFO = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.FOND_INF  .NOEU        ')
-         if LNOFO==None : UTMESS('F', macro, 'PROBLEME A LA RECUPERATION DES NOEUDS DU FOND DE FISSURE \n')
+         if LNOFO==None : UTMESS('F','RUPTURE0_11')
       LNOFO = map(string.rstrip,LNOFO)
       Nbfond = len(LNOFO)
 
@@ -205,7 +203,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         elif (Typ[0]=='SEG3    ') : 
            pas = 2
         else :
-           UTMESS('F', macro, 'TYPE DE MAILLES DU FOND DE FISSURE NON DEFINI')
+           UTMESS('F','RUPTURE0_12')
 ####
         NO_SANS = []
         NO_AVEC = []
@@ -216,7 +214,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           for m in range(len(GROUP_NO)) :
             ngrno=GROUP_NO[m].ljust(8).upper()
             if ngrno not in collgrno.keys() :
-              UTMESS('F', macro, "LE GROUP_NO "+ngrno+" N EST PAS DANS LE MAILLAGE")
+              UTMESS('F','RUPTURE0_13',valk=ngrno)
             for i in range(len(collgrno[ngrno])) : NO_AVEC.append(cnom[collgrno[ngrno][i]-1])
           NO_AVEC= map(string.rstrip,NO_AVEC)
         if NOEUD!=None : 
@@ -229,7 +227,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           for m in range(len(SANS_GROUP_NO)) :
             ngrno=SANS_GROUP_NO[m].ljust(8).upper()
             if ngrno not in collgrno.keys() :
-              UTMESS('F', macro, "LE GROUP_NO "+ngrno+" N EST PAS DANS LE MAILLAGE")
+              UTMESS('F','RUPTURE0_14',valk=ngrno)
             for i in range(len(collgrno[ngrno])) : NO_SANS.append(cnom[collgrno[ngrno][i]-1])
           NO_SANS= map(string.rstrip,NO_SANS)
         if SANS_NOEUD!=None : 
@@ -244,7 +242,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
               Lnf1.append(NO_AVEC[i])
               Nbf1 = Nbf1 +1
             else : 
-              UTMESS('F', macro, 'LE NOEUD %s N APPARTIENT PAS AU FOND DE FISSURE'%NO_AVEC[i])
+              UTMESS('F','RUPTURE0_15',valk=NO_AVEC[i])
         else :
            for i in range(0,Nbfond,pas) :
               if not (LNOFO[i] in NO_SANS) :
@@ -257,7 +255,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 ##### Cas maillage libre###########
 # creation des directions normales et macr_lign_coup
       if TYPE_MAILLAGE =='LIBRE':
-        if not RESULTAT : UTMESS('F', macro, 'MOT CLE RESULTAT OBLIGATOIRE POUR TYPE_MAILLAGE = LIBRE')
+        if not RESULTAT : UTMESS('F','RUPTURE0_16')
         Lnofon = Lnf1
         Nbnofo = Nbf1
         ListmaS = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.LEVRESUP  .MAIL        ')
@@ -355,11 +353,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         TlibS = [None]*Nbf1
         TlibI = [None]*Nbf1
         if NB_NOEUD_COUPE < 3 : 
-          message = 'LE NOMBRE DE NOEUDS NB_NOEUD_COUPE DOIT ETRE SUPERIEUR A 3 : ON PREND LA VALEUR PAR DEFAUT'
-          UTMESS('A', macro, message)
+          UTMESS('A','RUPTURE0_17')
           NB_NOEUD_COUPE = 5
         MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
-        if MOD==None : UTMESS('F', macro, 'PROBLEME A LA RECUPERATION DU MODELE DANS LA SD RESULTAT FOURNIE')
+        if MOD==None : UTMESS('F','RUPTURE0_18')
         MOD = map(string.rstrip,MOD)
         MODEL = self.jdc.sds_dict[MOD[0]]
         for i in range(Nbf1):
@@ -383,9 +380,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #   ---------- Dictionnaires des levres  -------------  
         NnormS = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.SUPNORM   .NOEU        ')
         if NnormS==None : 
-          message= 'PROBLEME A LA RECUPERATION DES NOEUDS DE LA LEVRE SUP : VERIFIER '
-          message=message+'QUE LE MOT CLE LEVRE_SUP EST BIEN RENSEIGNE DANS DEFI_FOND_FISS\n'
-          UTMESS('F', macro, message)
+          UTMESS('F','RUPTURE0_19')
         NnormS = map(string.rstrip,NnormS)
         if LNOFO[0]==LNOFO[-1] and MODELISATION=='3D' : Nbfond=Nbfond-1  # Cas fond de fissure ferme
         NnormS = [[LNOFO[i],NnormS[i*20:(i+1)*20]] for i in range(0,Nbfond)]
@@ -394,9 +389,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         if SYME_CHAR=='SANS':
            NnormI = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.INFNORM   .NOEU        ')
            if NnormI==None : 
-             message= 'PROBLEME A LA RECUPERATION DES NOEUDS DE LA LEVRE INF : VERIFIER '
-             message=message+'QUE LE MOT CLE LEVRE_INF EST BIEN RENSEIGNE DANS DEFI_FOND_FISS\n'
-             UTMESS('F', macro, message)
+             UTMESS('F','RUPTURE0_20')
            NnormI = map(string.rstrip,NnormI)
            NnormI = [[LNOFO[i],NnormI[i*20:(i+1)*20]] for i in range(0,Nbfond)]
            NnormI = [(i[0],i[1][0:]) for i in NnormI]
@@ -489,36 +482,29 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                     if abss<rmprec :
                       dist = sqrt(dot(transpose(Psup-Pinf),Psup-Pinf))
                       if dist>precn : 
-                        message= 'LES NOEUDS NE SONT PAS EN VIS-A-VIS \n'
-                        message=message+'DANS LE PLAN PERPENDICULAIRE AU NOEUD %s \n'%Lnf1[i]
-                        UTMESS('A', macro, message)
+                        UTMESS('A','RUPTURE0_21',valk=Lnf1[i])
                       else :
                         NBTRLI = NBTRLI +1
                         Tmpinf.append(dicoI[Lnf1[i]][k])
 # On verifie qu il y a assez de noeuds
            if NBTRLS < 3 : 
-              message= 'IL MANQUE DES POINTS DANS LE PLAN DEFINI PAR LA LEVRE \n'
-              message=message+'SUPERIEURE ET PERPENDICULAIRE AU FOND %s :\n'%Lnf1[i]
-              if itots<3 : message=message+' Augmenter PREC_NORM dans DEFI_FOND_FISS \n'
-              else : message=message+' Augmenter ABSC_CURV_MAXI'
-              if Lnf1[i]==LNOFO[0] or Lnf1[i]==LNOFO[-1]: message=message+' OU VERIFIER LES TANGENTES EXTREMITES'
-              UTMESS('A',macro, message)
+              UTMESS('A+','RUPTURE0_22',valk=Lnf1[i])
+              if Lnf1[i]==LNOFO[0] or Lnf1[i]==LNOFO[-1]: UTMESS('A+','RUPTURE0_23')
+              if itots<3 : UTMESS('A','RUPTURE0_24')
+              else : UTMESS('A','RUPTURE0_25')
            elif (SYME_CHAR=='SANS') and (NBTRLI < 3) :
-              message= 'IL MANQUE DES POINTS DANS LE PLAN DEFINI PAR LA LEVRE \n'
-              message=message+'INFERIEURE ET PERPENDICULAIRE AU FOND %s :\n'%Lnf1[i]
-              if itoti<3 : message=message+' Augmenter PREC_NORM dans DEFI_FOND_FISS \n'
-              else : message=message+' Augmenter ABSC_CURV_MAXI'
-              if Lnf1[i]==LNOFO[0] or Lnf1[i]==LNOFO[-1]: message=message+' OU VERIFIER LES TANGENTES EXTREMITES'
-              UTMESS('A',macro, message)
+              UTMESS('A+','RUPTURE0_26',valk=Lnf1[i])
+              if Lnf1[i]==LNOFO[0] or Lnf1[i]==LNOFO[-1]: UTMESS('A+','RUPTURE0_23')
+              if itoti<3 : UTMESS('A','RUPTURE0_24')
+              else :UTMESS('A','RUPTURE0_25')
+#              UTMESS('A','RUPTURE0_23')
            else :
               Lnosup[Nbnofo] = Tmpsup
               if SYME_CHAR=='SANS' : Lnoinf[Nbnofo] = Tmpinf
               Lnofon.append(Lnf1[i])
               Nbnofo = Nbnofo+1
         if Nbnofo == 0 :
-          message= 'CALCUL POSSIBLE POUR AUCUN NOEUD DU FOND :'
-          message=message+' VERIFIER LES DONNEES'
-          UTMESS('F',macro, message)
+          UTMESS('F','RUPTURE0_30')
 
 #------------- Cas X-FEM ---------------------------------
    elif FISSURE :
@@ -527,7 +513,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      DTAN_EXTR = args['DTAN_EXTR']
 #Projection du resultat sur le maillage lineaire initial     
      MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
-     if MOD==None : UTMESS('F', macro, 'PROBLEME A LA RECUPERATION DU MODELE DANS LA SD RESULTAT FOURNIE')
+     if MOD==None : UTMESS('F','RUPTURE0_31')
      MOD = map(string.rstrip,MOD)
      MODEL = self.jdc.sds_dict[MOD[0]]
      __MODLINE=AFFE_MODELE(MAILLAGE=MAILLAGE,
@@ -549,9 +535,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      verif = dot(transpose(v1),v1x) 
      if verif < 0 : v1 = -v1
      if abs(verif) < 0.9 :
-      message= 'DIFFERENCE ENTRE LE VECTEUR VECT_K1 ET LA NORMALE AU PLAN DE LA FISSURE %s.\n'%FISSURE.nom
-      message=message+'ON CONTINUE AVEC LA NORMALE AU PLAN : (%f,%f,%f).'%(v1x[0],v1x[1],v1x[2])
-      UTMESS('A',macro, message)
+      UTMESS('A','RUPTURE0_32',valk=FISSURE.nom,valr=[v1x[0],v1x[1],v1x[2]])
       v1 = v1x
      VN = [None]*Nbfond
      absfon = [0,]
@@ -599,10 +583,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      tmp=__Tabg.EXTR_TABLE()
      test = getattr(tmp,'H1X').values()
      if test==[None]*3 : 
-        message = 'PROBLEME DANS LA RECUPERATION DU SAUT DE DEPLACEMENT SUR LES LEVRES :\n '
-        message=message+'VERIFIER QUE LE RESULTAT CORRESPOND BIEN A UN CALCUL SUR DES ELEMENT X-FEM ET QUE\n '
-        message=message+'LE MAILLAGE FOURNI EST BIEN LE MAILLAGE LINEAIRE INITIAL'
-        UTMESS('F',macro, message)
+        UTMESS('F','RUPTURE0_33')
      if test[0]!=None :
        sens = 1
      else :
@@ -612,8 +593,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      TSaut = [None]*Nbfond    
      NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
      if NB_NOEUD_COUPE < 3 : 
-       message = 'LE NOMBRE DE NOEUDS NB_NOEUD_COUPE DOIT ETRE SUPERIEUR A 3 : ON PREND LA VALEUR PAR DEFAUT'
-       UTMESS('A', macro, message)
+       UTMESS('A','RUPTURE0_34')
        NB_NOEUD_COUPE = 5
      for i in range(Nbfond):
         Porig = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
@@ -703,12 +683,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                DETRUIRE(CONCEPT=_F(NOM=__TINF),INFO=1)                 
             else :
                tabinf=TABL_DEPL_INF.EXTR_TABLE()
-               if TABL_DEPL_INF==None : UTMESS('F', macro, 'TABL_DEPL_SUP et TABL_DEPL_INF sont obligatoires si SYME_CHAR=SANS')
+               if TABL_DEPL_INF==None : UTMESS('F','RUPTURE0_35')
                veri_tab(tabinf,TABL_DEPL_INF.nom,ndim)
                Li = [string.ljust(Lnoinf[ino][i],8) for i in range(len(Lnoinf[ino]))]
                tabinf=tabinf.NOEUD==Li
          else :
-            if TABL_DEPL_INF==None : UTMESS('F', macro, 'TABL_DEPL_SUP et TABL_DEPL_INF sont obligatoires si SYME_CHAR=SANS')
+            if TABL_DEPL_INF==None : UTMESS('F','RUPTURE0_36')
             tabinf=TABL_DEPL_INF.EXTR_TABLE()
             veri_tab(tabinf,TABL_DEPL_INF.nom,ndim)
 
@@ -737,8 +717,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            for ord in l_ord :
              if ord in l_ord_tab : l_inst.append(d_ord_tab[ord])
              else :  
-               message ='LE NUMERO D ORDRE %i N A PAS ETE ETE TROUVE DANS LA TABLE\n'%ord 
-               UTMESS('F', macro, message)
+               UTMESS('F','RUPTURE0_37',vali=ord)
            PRECISION = 1.E-6
            CRITERE='ABSOLU'
          elif INST !=None or LIST_INST !=None :
@@ -752,11 +731,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                if CRITERE=='RELATIF' and inst!=0.: match=[x for x in l_inst_tab if abs((inst-x)/inst)<PRECISION]
                else                              : match=[x for x in l_inst_tab if abs(inst-x)<PRECISION]
                if len(match)==0 : 
-                 message = 'PAS D INSTANT TROUVE DANS LA TABLE POUR L INSTANT %f\n'%inst
-                 UTMESS('F', macro, message)
+                 UTMESS('F','RUPTURE0_38',valr=inst)
                if len(match)>=2 :
-                 message = 'PLUSIEURS INSTANTS TROUVES DANS LA TABLE POUR L INSTANT %f\n'%inst 
-                 UTMESS('F', macro, message)
+                 UTMESS('F','RUPTURE0_39',valr=inst)
          else :
             l_inst=l_inst_tab
             PRECISION = 1.E-6
@@ -792,7 +769,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           if not FOND_FISS :
             refs=copy.copy(abscs)
             refs.sort()
-            if refs!=abscs : UTMESS('F', macro, 'ABSC_CURV NON CROISSANTS POUR TABL_DEPL_INF')
+            if refs!=abscs : UTMESS('F','RUPTURE0_40')
             if ABSC_CURV_MAXI!=None : rmax = ABSC_CURV_MAXI
             else                    : rmax = abscs[-1]
             precv = PREC_VIS_A_VIS
@@ -834,17 +811,17 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           if not FOND_FISS :
             refi=copy.copy(absci)
             refi.sort()
-            if refi!=absci : UTMESS('F', macro, 'ABSC_CURV NON CROISSANTS POUR TABL_DEPL_SUP')
+            if refi!=absci : UTMESS('F','RUPTURE0_41')
             refic=[x for x in refi if x<rmprec]
             nbvali=len(refic)
           else :
             nbvali=len(absci)
           if nbvali!=nbval :
-             message= 'DIFFERENCE DE POINTS ENTRE LA LEVRE SUPERIEURE ET LA LEVRE INFERIEURE'
-             if FOND_FISS : message=message+' POUR TRAITER LE NOEUD %.s \n'%Lnofon[i]
-             message=message+' Nombre de points - levre superieure : %i\n'%len(refsc)
-             message=message+' Nombre de points - levre inferieure : %i\n'%len(refic)
-             UTMESS('A',macro, message)
+             if FOND_FISS : 
+                UTMESS('A+','RUPTURE0_42')
+                UTMESS('A','RUPTURE0_43',valk=Lnofon[i],vali=[len(refsc),len(refic)])
+             else:
+                UTMESS('A','RUPTURE0_42')
           nbval=min(nbval,nbvali)
           absci=array(absci[:nbval])
           coxi=array(tabinfi['COOR_X'].values()['COOR_X'][:nbval],Float)
@@ -857,7 +834,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             dist=(coxs-coxi)**2+(coys-coyi)**2+(cozs-cozi)**2
             dist=sqrt(dist)
             for d in dist :
-               if d>precn : UTMESS('F', macro, 'LES NOEUDS NE SONT PAS EN VIS_A_VIS')
+               if d>precn : UTMESS('F','RUPTURE0_44')
           
           if FOND_FISS and not RESULTAT :#tri des noeuds avec abscisse
             Pfon = array([d_coor[Lnofon[ino]][0],d_coor[Lnofon[ino]][1],d_coor[Lnofon[ino]][2]])
@@ -886,10 +863,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            nbval = NB_NOEUD_COUPE
            H1 = getattr(tabsupi,'H1X').values()
            if H1[-1]==None : 
-             message = 'PROBLEME DANS LA RECUPERATION DU SAUT DE DEPLACEMENT SUR LES LEVRES :\n '
-             message=message+'VERIFIER QUE LE RESULTAT CORRESPOND BIEN A UN CALCUL SUR DES ELEMENT X-FEM ET QUE\n '
-             message=message+'LE MAILLAGE FOURNI EST BIEN LE MAILLAGE LINEAIRE INITIAL'
-             UTMESS('F',macro, message)
+             UTMESS('F','RUPTURE0_45')
            H1 = complete(H1)
            E1 = getattr(tabsupi,'E1X').values()
            E1 = complete(E1)
@@ -908,10 +882,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #     --- TESTS NOMBRE DE NOEUDS---
         if nbval<3 :
-           message= 'IL FAUT AU MOINS TROIS NOEUDS DANS LE PLAN DEFINI PAR LES LEVRES ET PERPENDICULAIRE AU FOND DE FISSURE'
-           if FOND_FISS : message=message+'Noeud %.s \n'%Lnofon[ino]
-           message=message+' : augmenter ABSC_CURV_MAXI\n'
-           UTMESS('F',macro, message)
+           UTMESS('F+','RUPTURE0_46')
+           if FOND_FISS :
+               UTMESS('F+','RUPTURE0_47',valk=Lnofon[ino])
+           UTMESS('F','RUPTURE0_25')
            
 #   ---------- CALCUL PROP. MATERIAU AVEC TEMPERATURE -----------  
         if Tempe3D :
@@ -959,10 +933,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         dpls = asarray([dxs,dys,dzs])
         dpls = matrixmultiply(pgl,dpls)
         if SYME_CHAR!='SANS' and abs(dpls[0][0]) > 1.e-10 :
-          message= 'DEPLACEMENT NORMAL DU NOEUD %s NON NUL'%Lnofon[ino]
-          message=message+' ET SYME_CHAR = %s :\n'%SYME_CHAR
-          message=message+' VERIFIER LES CONDITIONS AUX LIMITES ET VECT_K1.'
-          UTMESS('A',macro, message)
+          UTMESS('A','RUPTURE0_49',valk=[Lnofon[ino],SYME_CHAR])
         if FISSURE :
            saut=dpls
         elif SYME_CHAR=='SANS' :

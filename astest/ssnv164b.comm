@@ -1,25 +1,25 @@
-# MODIF  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #---------------------------------------------------------------------
 
-DEBUT( CODE=_F(  NOM = 'SSNV164B',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NOM='SSNV164B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 
@@ -80,7 +80,7 @@ CLIM =AFFE_CHAR_MECA(MODELE=MO,
                                DY=0.0,),
                             _F(GROUP_NO='PY',
                                DX=0.0,),
-                            _F(GROUP_NO='SU3', 
+                            _F(GROUP_NO='SU3',
                                DZ=0.0,), ),
                    PESANTEUR=(9.8100000000000005,0.0,0.0,-1.0,),
                    )
@@ -99,7 +99,7 @@ CAB_BP1=DEFI_CABLE_BP(MODELE=MO,
                       RECUL_ANCRAGE=0.001,
                       INFO=2,
                       );
- 
+
 CAB_BP2=DEFI_CABLE_BP(MODELE=MO,
                        CHAM_MATER=CMAT,
                        CARA_ELEM=CE,
@@ -109,7 +109,7 @@ CAB_BP2=DEFI_CABLE_BP(MODELE=MO,
                        TYPE_ANCRAGE=('ACTIF','PASSIF',),
                        TENSION_INIT=3.750000E6,
                        RECUL_ANCRAGE=0.001,);
- 
+
 CAB_BP3=DEFI_CABLE_BP(MODELE=MO,
                        CHAM_MATER=CMAT,
                        CARA_ELEM=CE,
@@ -120,7 +120,7 @@ CAB_BP3=DEFI_CABLE_BP(MODELE=MO,
                        TENSION_INIT=3.750000E6,
                        RECUL_ANCRAGE=0.001,);
 
- 
+
 CAB_BP4=DEFI_CABLE_BP(MODELE=MO,
                       CHAM_MATER=CMAT,
                       CARA_ELEM=CE,
@@ -183,8 +183,8 @@ RES1 = STAT_NON_LINE(MODELE=MO,
                      INCREMENT=_F(LIST_INST = LINST,
                                   INST_FIN = 150.),)
 
-# chargement 2 : cables 1 et 2 
-#--------------------------------------------------------          
+# chargement 2 : cables 1 et 2
+#--------------------------------------------------------
 RES1 =  CALC_PRECONT( reuse=RES1,
                             ETAT_INIT=_F(EVOL_NOLI=RES1),
                             MODELE=MO,
@@ -201,10 +201,10 @@ RES1 =  CALC_PRECONT( reuse=RES1,
                                            INST_FIN  = 300.,
                                            SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                                            SUBD_PAS_MINI = 0.01,
-                                           ),) 
+                                           ),)
 
-# chargement 3 : cables 3 et 4 
-#--------------------------------------------------------          
+# chargement 3 : cables 3 et 4
+#--------------------------------------------------------
 RES1 =  CALC_PRECONT( reuse=RES1,
                             ETAT_INIT=_F(EVOL_NOLI=RES1),
                             MODELE=MO,
@@ -226,7 +226,7 @@ RES1 =  CALC_PRECONT( reuse=RES1,
                                           ),)
 
 # chargement 4 : cable 5
-#----------------------------------------------------------- 
+#-----------------------------------------------------------
 RES1 =  CALC_PRECONT(  reuse=RES1,
                              ETAT_INIT=_F(EVOL_NOLI=RES1),
                              MODELE=MO,
@@ -245,10 +245,10 @@ RES1 =  CALC_PRECONT(  reuse=RES1,
                              INCREMENT=_F(LIST_INST = LINST,
                                           INST_FIN = 600.,
                                           SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                                          SUBD_PAS_MINI = 0.01,),) 
+                                          SUBD_PAS_MINI = 0.01,),)
 
 
-#  posttraitement 
+#  posttraitement
 #--------------------------------------
 
 RES1=CALC_ELEM(reuse =RES1,
@@ -284,7 +284,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-3,
-                      VALE = 3.693E+6, 
+                      VALE = 3.693E+6,
                       REFERENCE='SOURCE_EXTERNE'),
                      _F(  RESULTAT = RES1,
                       INST = 300. ,
@@ -336,7 +336,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-2,
-                      VALE = 3.628E+6, 
+                      VALE = 3.628E+6,
                       REFERENCE='SOURCE_EXTERNE'),
                      _F(  RESULTAT = RES1,
                       INST = 450. ,
@@ -358,7 +358,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       PRECISION = 1.0E-2,
                       VALE = 3.629E+6,
                       REFERENCE='SOURCE_EXTERNE'),
-                         ),)                      
+                         ),)
 #  cable 1 - inst 600s
 TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       INST = 600. ,
@@ -388,7 +388,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-2,
-                      VALE = 3.597E+6, 
+                      VALE = 3.597E+6,
                       REFERENCE='SOURCE_EXTERNE'),
                      _F(  RESULTAT = RES1,
                       INST = 600. ,
@@ -440,7 +440,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-3,
-                      VALE = 3.695E+6, 
+                      VALE = 3.695E+6,
                       REFERENCE='SOURCE_EXTERNE'),
                      _F(  RESULTAT = RES1,
                       INST = 450. ,
@@ -492,7 +492,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-2,
-                      VALE = 3.662E+6, 
+                      VALE = 3.662E+6,
                       REFERENCE='SOURCE_EXTERNE'),
                      _F(  RESULTAT = RES1,
                       INST = 600. ,
@@ -514,7 +514,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       PRECISION = 1.0E-2,
                       VALE = 3.625E+6,
                       REFERENCE='SOURCE_EXTERNE'),
-                         ),)                      
+                         ),)
 #  cable 5 - inst 600s
 TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       INST = 600. ,
@@ -544,7 +544,7 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       NOM_CMP = 'N',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-3,
-                      VALE = 3.695E+6, 
+                      VALE = 3.695E+6,
                       REFERENCE='SOURCE_EXTERNE'),
                      _F(  RESULTAT = RES1,
                       INST = 600. ,
@@ -566,8 +566,8 @@ TEST_RESU(  RESU=(_F(  RESULTAT = RES1,
                       PRECISION = 1.0E-3,
                       VALE = 3.647E+6,
                       REFERENCE='SOURCE_EXTERNE'),
-                         ),)        
-                      
+                         ),)
+
 
 FIN();
 

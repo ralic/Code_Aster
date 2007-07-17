@@ -1,30 +1,30 @@
-# MODIF  DATE 29/05/2007   AUTEUR FERNANDES R.FERNANDES 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#      (CALCUL AXIS_HH2S) 
+#      (CALCUL AXIS_HH2S)
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNA102B',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='WTNA102B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
-                                   
+
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                        _F(JUSQU_A=20000000000.,NOMBRE=100,),
@@ -60,7 +60,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,
                                  GROUP_MA='GAUCHE'),
                               _F(NOM='DROITS',
                                  CRIT_NOEUD='SOMMET',
-                                 GROUP_MA='DROIT'),                                 
+                                 GROUP_MA='DROIT'),
                                  ),)
 
 UN=DEFI_CONSTANTE(VALE=1.0,);
@@ -75,12 +75,12 @@ VISCOGAZ=DEFI_CONSTANTE(VALE=1.E-03,);
 DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
 
 DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
-                      
+
 LI2=DEFI_LIST_REEL(DEBUT=-1.E9,
                       INTERVALLE=(
                                   _F(JUSQU_A=1.E9,
                                      NOMBRE=500,),),);
-                      
+
 LI1=DEFI_LIST_REEL(DEBUT=0.1,
                    INTERVALLE=_F(JUSQU_A=1.,
                                  PAS=1.E-2,),);
@@ -116,11 +116,11 @@ FICK=DEFI_CONSTANTE(VALE=6.E-10,);
 # COEF. DE FICK
 #
 # Fick variant enPAD - n a pour but que de tester cette fonction puisque c est egal a un
-#************************************                                                                      
+#************************************
 LIPA=DEFI_LIST_REEL(DEBUT=0.1,
                    INTERVALLE=_F(JUSQU_A=1.000001E5,
                                  PAS=1.E3,),);
-FA_PA = FORMULE(NOM_PARA='PAD',VALE='1.+PAD-PAD');  
+FA_PA = FORMULE(NOM_PARA='PAD',VALE='1.+PAD-PAD');
 
 FAPA  = CALC_FONC_INTERP ( FONCTION    =  FA_PA     ,
                             LIST_PARA   =  LIPA    ,
@@ -199,7 +199,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(_F(TOUT='OUI',
                              NOM_CMP='TEMP',
@@ -211,7 +211,7 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              NOM_CMP='PRE1',
                              VALE=1.E6,),
                              ),);
-                             
+
 
 
 TIMP=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -222,10 +222,10 @@ TIMP=AFFE_CHAR_MECA(MODELE=MODELE,
                              PRE1=1.E6,),
                              ),
                              );
-               
-                                   
+
+
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
-                   OPERATION='AFFE', 
+                   OPERATION='AFFE',
                    TYPE_CHAM='CART_SIEF_R',
                    AFFE=(_F(GROUP_MA='BO',
                             NOM_CMP=
@@ -239,7 +239,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                              0.0, 0.0, 0.0,
                              0.0, 0.0 ,0.0,),),
                              ),  );
-                                   
+
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
@@ -266,8 +266,8 @@ U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=U0,);
-             
-         
+
+
 BG=POST_RELEVE_T(ACTION=_F(INTITULE='BAS',
                             GROUP_NO=('BAS'),
                             RESULTAT=U0,
@@ -275,14 +275,14 @@ BG=POST_RELEVE_T(ACTION=_F(INTITULE='BAS',
                             NUME_ORDRE = (1,60,100),
                             NOM_CMP=('PRE1','PRE2',),
                             OPERATION='EXTRACTION',),);
-         
+
 IMPR_TABLE ( FORMAT = 'AGRAF',
              TABLE = BG,
              TRI=_F(NOM_PARA=('COOR_X'),
              ORDRE='CROISSANT',),
              PAGINATION=('INST'),
              NOM_PARA = ('INST','COOR_X','PRE1','PRE2',));
-                                          
+
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=60,
@@ -292,7 +292,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=7900.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-1,
-                  REFERENCE='AUTRE_ASTER',),);   
+                  REFERENCE='AUTRE_ASTER',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=100,
@@ -302,7 +302,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=9500.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-1,
-                  REFERENCE='AUTRE_ASTER',),);   
+                  REFERENCE='AUTRE_ASTER',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=60,
@@ -312,7 +312,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=8102.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-4,
-                  REFERENCE='NON_REGRESSION',),);   
+                  REFERENCE='NON_REGRESSION',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=100,
@@ -322,5 +322,5 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=9758.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-4,
-                  REFERENCE='NON_REGRESSION',),);   
+                  REFERENCE='NON_REGRESSION',),);
 FIN();

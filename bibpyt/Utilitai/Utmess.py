@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,10 +25,10 @@ import traceback
 import imp
 import re
 
-from Messages.context_info import message_context_concept
-
+# protection pour eficas
 try:
    import aster
+   from Messages.context_info import message_context_concept
 except:
    pass
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE validation des commandes DEFI_PARA_SENSI et MEMO_NOM_SENSI en thermique
 #       Controle de EXTR_RESU et CREA_CHAMP en sensibilite
@@ -10,7 +10,7 @@
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
 #======================================================================
-DEBUT( CODE=_F(  NOM = 'SENST01A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SENST01A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 #
 #          J                               OPPOSE
 #           *-------------------------------*

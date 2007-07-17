@@ -1,4 +1,4 @@
-#@ MODIF defi_part_feti_ops Macro  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF defi_part_feti_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,6 +43,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
 
   from Accas import _F
   from Noyau.N_utils import AsType
+  from Utilitai.Utmess import U2MESS as UTMESS
 
   from Utilitai import partition
 
@@ -77,8 +78,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
   # Test sur le nombre de caractères de NOM_GROUP_MA
   if ( len(NOM_GROUP_MA)+len(str(NB_PART)) > 7 ):
     ln=7-len(str(NB_PART))
-    UTMESS('F', nompro, 'Afin de pouvoir générer les GROUP_MA, réduisez le nombre '\
-                        'de caractères de NOM_GROUP_MA à un maximum de : %i' %ln)
+    UTMESS('F','FETI0_1',vali=ln)
 
   # Verification que des GROUP_MA ne portent pas deja les memes noms
   _lst = []
@@ -87,12 +87,12 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
   for i in range(NB_PART):
     if ( NOM_GROUP_MA+str(i) in _lst ):
       ngrma=NOM_GROUP_MA+str(i)
-      UTMESS('F', nompro, "Il existe déjà un GROUP_MA nommé : %s" %ngrma)
+      UTMESS('F','FETI0_2',valk=ngrma)
     if args.has_key('NOM_GROUP_MA_BORD') :
       if args['NOM_GROUP_MA_BORD'] != None :
         if ( args['NOM_GROUP_MA_BORD']+str(i) in _lst ):
           ngrma=args['NOM_GROUP_MA_BORD']+str(i)
-          UTMESS('F', nompro, "Il existe déjà un GROUP_MA nommé : %s" %ngrma)
+          UTMESS('F','FETI0_2',valk=ngrma)
 
   # Le concept sortant dans le contexte de la macro
   self.DeclareOut('_SDFETI',self.sd)

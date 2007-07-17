@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 # ENDO_ISOT_BETON
 # -----------------------------------------------------
-DEBUT(        CODE=_F(  NOM = 'wtnv121a',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='wtnv121a', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 ####################################
 #######################
@@ -57,12 +57,12 @@ MA=DEFI_GROUP( reuse=MA,
                CREA_GROUP_MA=(_F(NOM='ROCHE',
                                      TOUT='OUI'),),
                CREA_GROUP_NO=(_F(TOUT_GROUP_MA = 'OUI'),),)
-                
-                
-                
-                
+
+
+
+
 MA=DEFI_GROUP( reuse=MA,
-               MAILLAGE=MA,                
+               MAILLAGE=MA,
                 CREA_GROUP_NO=(_F(NOM='FIXE1S',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='FIXE1',),
@@ -99,7 +99,7 @@ LI2=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=5.E8,
                                  PAS=1.E5,),);
 
-SL = FORMULE(NOM_PARA='PCAP',VALE='(1.+(PCAP*2.1433E-8)**1.825)**(-0.57609)')  
+SL = FORMULE(NOM_PARA='PCAP',VALE='(1.+(PCAP*2.1433E-8)**1.825)**(-0.57609)')
 
 SATU=CALC_FONC_INTERP(FONCTION=SL,
                       LIST_PARA=LI2,
@@ -108,8 +108,8 @@ SATU=CALC_FONC_INTERP(FONCTION=SL,
                       PROL_GAUCHE='CONSTANT',
                       INFO=2,);
 
-DSL = FORMULE(NOM_PARA='PCAP',VALE='''-2.2565573E-8*(PCAP*2.1433E-8)**0.825  
-          *(1+(PCAP*2.143365E-8)**1.825)**-1.57609''') 
+DSL = FORMULE(NOM_PARA='PCAP',VALE='''-2.2565573E-8*(PCAP*2.1433E-8)**0.825
+          *(1+(PCAP*2.143365E-8)**1.825)**-1.57609''')
 
 DSATU=CALC_FONC_INTERP(FONCTION=DSL,
                        LIST_PARA=LI2,
@@ -124,7 +124,7 @@ LI1=DEFI_LIST_REEL(DEBUT=1.E-3,
                                  PAS=0.001,),);
 
 
-PERM = FORMULE(NOM_PARA='SAT',VALE=''' SAT**0.5*(1-(1-SAT  
+PERM = FORMULE(NOM_PARA='SAT',VALE=''' SAT**0.5*(1-(1-SAT
                       **(1. / 0.57609))**0.57609)**2''')
 
 PERML=CALC_FONC_INTERP(FONCTION=PERM,
@@ -135,10 +135,10 @@ PERML=CALC_FONC_INTERP(FONCTION=PERM,
                        INFO=2,);
 
 DPERM = FORMULE(NOM_PARA='SAT',VALE=''' 0.5*SAT**(-0.5)
-                    *(1.-(1.-SAT**(1. / 0.57609))**0.57609)**2  
-                    +2.*SAT**0.5*(SAT**((1.-0.57609) / 0.57609)  
-                    *(1.-SAT**(1. / 0.57609))**(0.57609-1.))*(1.-(1.-SAT  
-                    **(1. / 0.57609))**0.57609)''')  
+                    *(1.-(1.-SAT**(1. / 0.57609))**0.57609)**2
+                    +2.*SAT**0.5*(SAT**((1.-0.57609) / 0.57609)
+                    *(1.-SAT**(1. / 0.57609))**(0.57609-1.))*(1.-(1.-SAT
+                    **(1. / 0.57609))**0.57609)''')
 
 DPERML=CALC_FONC_INTERP(FONCTION=DPERM,
                         LIST_PARA=LI1,
@@ -149,7 +149,7 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPERM,
 
 #####PERMEABILITE RELATIVE AU GAZ ET SA DERIVEE
 
-PG = FORMULE(NOM_PARA='SAT',VALE='''  (1.-SAT)**0.5  
+PG = FORMULE(NOM_PARA='SAT',VALE='''  (1.-SAT)**0.5
                      *(1.-SAT**(1. / 0.57609))**(2.*0.57609)''')
 
 PERMG=CALC_FONC_INTERP(FONCTION=PG,
@@ -159,10 +159,10 @@ PERMG=CALC_FONC_INTERP(FONCTION=PG,
                        PROL_GAUCHE='CONSTANT',
                        INFO=2,);
 
-DPG = FORMULE(NOM_PARA='SAT',VALE=''' -0.5*(1.-SAT)**(-0.5)  
-                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609)  
-                     -2.*(1.-SAT)**0.5*SAT**((1. / 0.57609)-1.)  
-                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609-1.)''')  
+DPG = FORMULE(NOM_PARA='SAT',VALE=''' -0.5*(1.-SAT)**(-0.5)
+                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609)
+                     -2.*(1.-SAT)**0.5*SAT**((1. / 0.57609)-1.)
+                     *(1.-SAT**(1. / 0.57609))**(2.*0.57609-1.)''')
 
 DPERMG=CALC_FONC_INTERP(FONCTION=DPG,
                         LIST_PARA=LI1,
@@ -315,22 +315,22 @@ ENDO=CALC_NO(reuse=ENDO,
 
 TEST_RESU(RESU=(
 # ENDOMMAGEMENT
-                 _F(  RESULTAT = ENDO,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'EXTR_NOEU_VARI',    
-                       NOM_CMP = 'X1',     
-                       INST = 0.5,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
+                 _F(  RESULTAT = ENDO,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CMP = 'X1',
+                       INST = 0.5,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
                        VALE = 7.78955E-04,
                      ),
-                 _F(  RESULTAT = ENDO,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'EXTR_NOEU_VARI',    
-                       NOM_CMP = 'X1',     
-                       INST = 1.0,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
+                 _F(  RESULTAT = ENDO,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CMP = 'X1',
+                       INST = 1.0,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
                        VALE = 7.78955E-04,
                      ),
                  )
@@ -338,84 +338,84 @@ TEST_RESU(RESU=(
 
 TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
-                _F(  RESULTAT = REPONSE,    
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
-                       NOM_CMP = 'SIZZ',     
-                       INST = 0.5, 
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
-                       VALE = 5.77301E+06,        
+                _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIZZ',
+                       INST = 0.5,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
+                       VALE = 5.77301E+06,
                      ),
-                _F(  RESULTAT = REPONSE,    
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
-                       NOM_CMP = 'SIZZ',     
-                       INST = 1., 
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
-                       VALE = 5.59655E+06,        
+                _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIZZ',
+                       INST = 1.,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
+                       VALE = 5.59655E+06,
                      ),
 
 # CAPILLARITE : PRE1
-                 _F(  RESULTAT = REPONSE,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'DEPL',    
-                       NOM_CMP = 'PRE1',     
-                       INST = 0.5,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
-                       VALE = 3.714495E+07,        
+                 _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'DEPL',
+                       NOM_CMP = 'PRE1',
+                       INST = 0.5,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
+                       VALE = 3.714495E+07,
                      ),
-                 _F(  RESULTAT = REPONSE,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'DEPL',    
-                       NOM_CMP = 'PRE1',     
-                       INST = 1.,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
-                       VALE = 3.714495E+07,        
+                 _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'DEPL',
+                       NOM_CMP = 'PRE1',
+                       INST = 1.,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
+                       VALE = 3.714495E+07,
                      ),
 
 # GAZ : PRE2
-                 _F(  RESULTAT = REPONSE,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'DEPL',    
-                       NOM_CMP = 'PRE2',     
-                       INST = 0.5,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
-                       VALE = 5.94425E+04,        
+                 _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'DEPL',
+                       NOM_CMP = 'PRE2',
+                       INST = 0.5,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
+                       VALE = 5.94425E+04,
                      ),
-                 _F(  RESULTAT = REPONSE,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'DEPL',    
-                       NOM_CMP = 'PRE2',     
-                       INST = 1.,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
-                       VALE = 6.27490E+04,        
+                 _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'DEPL',
+                       NOM_CMP = 'PRE2',
+                       INST = 1.,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
+                       VALE = 6.27490E+04,
                      ),
 
 # ENDOMMAGEMENT
-                 _F(  RESULTAT = REPONSE,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V1',     
-                       INST = 0.5,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
+                 _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CMP = 'V1',
+                       INST = 0.5,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
                        VALE = 7.78955E-04,
                      ),
-                 _F(  RESULTAT = REPONSE,   
-                       GROUP_NO = 'E',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V1',     
-                       INST = 1.0,  
-                       REFERENCE='NON_REGRESSION', 
-                       PRECISION = 1.E-5,   
+                 _F(  RESULTAT = REPONSE,
+                       GROUP_NO = 'E',
+                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CMP = 'V1',
+                       INST = 1.0,
+                       REFERENCE='NON_REGRESSION',
+                       PRECISION = 1.E-5,
                        VALE = 7.78955E-04,
                      ),
                     )
                     )
-FIN () ;  
+FIN () ;

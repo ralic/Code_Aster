@@ -1,4 +1,4 @@
-# MODIF  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 #======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'SSLL102A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL102A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(                                                )
 
@@ -136,11 +136,11 @@ TEST_RESU(RESU=(
           PRECISION = 1.E-13,   CRITERE = 'ABSOLU'))
             )
 
-CALC_ELEM( reuse=MEST1,        
+CALC_ELEM( reuse=MEST1,
                       RESULTAT=MEST1, EXCIT=_F(  CHARGE = CHARG1),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
-CALC_ELEM( reuse=MEST1,        
+CALC_ELEM( reuse=MEST1,
                      RESULTAT=MEST1, EXCIT=_F(  CHARGE = CHARG1),
                        OPTION='EFGE_ELNO_CART'    )
 
@@ -296,7 +296,7 @@ TEST_RESU(RESU=(
           PRECISION = 1.E-6,   CRITERE = 'RELATIF'))
           )
 
-CALC_ELEM( reuse=MEST2,        
+CALC_ELEM( reuse=MEST2,
                       RESULTAT=MEST2, EXCIT=_F(  CHARGE = CHARG2),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
@@ -405,7 +405,7 @@ NOEUD = 'C3', NOM_CMP = 'DRY', VALE = -9.0031619E-08,
 NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,     PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
-CALC_ELEM( reuse=MEST3,        
+CALC_ELEM( reuse=MEST3,
                       RESULTAT=MEST3, EXCIT=_F( CHARGE = CHARG3),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
@@ -509,7 +509,7 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 9.5563593E-08,
                                      PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
-CALC_ELEM( reuse=MEST4,        
+CALC_ELEM( reuse=MEST4,
                       RESULTAT=MEST4, EXCIT=_F( CHARGE = CHARG4),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
@@ -616,7 +616,7 @@ NOEUD = 'C3', NOM_CMP = 'DRY', VALE = 9.0031619E-08,
 NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,     PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
-CALC_ELEM( reuse=MEST5,        
+CALC_ELEM( reuse=MEST5,
                       RESULTAT=MEST5, EXCIT=_F( CHARGE = CHARG5),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
@@ -712,7 +712,7 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 1.0395957E-07,
                                      PRECISION = 1.E-6, CRITERE = 'RELATIF'))
             )
 
-CALC_ELEM( reuse=MEST6,        
+CALC_ELEM( reuse=MEST6,
                       RESULTAT=MEST6, EXCIT=_F( CHARGE = CHARG6),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
@@ -753,7 +753,7 @@ CHARG7=AFFE_CHAR_MECA(  MODELE=MO,
 MEST7=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG7)   )
 
-CALC_ELEM( reuse=MEST7,        
+CALC_ELEM( reuse=MEST7,
                       RESULTAT=MEST7, EXCIT=_F( CHARGE = CHARG7),
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
@@ -799,7 +799,7 @@ CHARG8=AFFE_CHAR_MECA(  MODELE=MO,
 MEST8=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG8)   )
 
-CALC_ELEM( reuse=MEST8,        
+CALC_ELEM( reuse=MEST8,
                       RESULTAT=MEST8, EXCIT=_F( CHARGE = CHARG8),
                       OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL','SIPO_ELNO_DEPL'))
 
@@ -850,7 +850,7 @@ TEST_RESU(RESU=(
 
 # TEST DE SIPO_ELNO_DEPL
 
-CALC_ELEM( reuse=MEST7,        
+CALC_ELEM( reuse=MEST7,
                       RESULTAT=MEST7, EXCIT=_F( CHARGE = CHARG7),
                       OPTION='SIPO_ELNO_DEPL' )
 
@@ -952,8 +952,8 @@ MEST9=MECA_STATIQUE(       MODELE=MO,    CHAM_MATER=CHMAT,
                                 EXCIT=_F( CHARGE = CHARG9),
                                    )
 
-CALC_ELEM( reuse= MEST9 ,RESULTAT= MEST9 ,            
-                                
+CALC_ELEM( reuse= MEST9 ,RESULTAT= MEST9 ,
+
                                OPTION='SIPO_ELNO_DEPL'    )
 
 #
@@ -1037,7 +1037,7 @@ U2=MECA_STATIQUE(      MODELE=MO,
                              EXCIT=_F(   CHARGE = CHG1)        )
 
 #---------------------------------------------------------------------
-T_POT=POST_ELEM(      
+T_POT=POST_ELEM(
                     RESULTAT=U2,
                       CHARGE=CHG1,
                     ENER_POT=_F( TOUT = 'OUI',)  )

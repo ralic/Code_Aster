@@ -1,0 +1,145 @@
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# RESPONSABLE PELLET J.PELLET
+# TITRE Validation de CREA_RESU/ASSE et AFFE_MATERIAU/AFFE_VARC/FONC_INST
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'ZZZZ223A',NIV_PUB_WEB='INTERNET'))
+
+#----------------------------------------------------------------------------------------------------------------
+# Ce test montre comment on peut faire un calcul thermo-mecanique dont le chargement
+# thermique est complexe : plusieurs transitoires repetes plusieurs fois.
+#
+#  On fabrique 2 evolutions thermiques homogenes en espace :
+#    ch1 : 1 montee   en temperature de 10 degre a 17 degres [0., 0.7 s]
+#    ch2 : 1 descente en temperature de 17 degre a 14 degres [0., 0.3 s]
+#
+#  Le cycle [ch1+ch2] est decale pour former l'intervalle [1.5, 2.5].
+#  Puis on repete periodiquement le cycle [ch1+ch2] et on fait le calcul mecanique sur l'intervalle [0.5, 4.5]
+#
+#  Le probleme mecanique est tres simple : il s'agit d'une dilatation libre (alpha=1) d'un petit carre (1x1).
+#  Le deplacement du coin du carre est alors identique a la temperature imposee.
+#  On peut alors verifier que la courbe de deplacement est bien une suite de cycles de montee-descente
+#  entre les temperatures 10 et 17.
+#
+#  On teste :
+#    U(t=1.0) = U(t=2.0) = U(t=4.0) = 15.
+#    U(t=1.3) = U(t=2.3) = U(t=4.3) = 16.
+#----------------------------------------------------------------------------------------------------------------
+
+t1=0.7
+t2=0.3
+t3=1.5
+
+
+MATERI=DEFI_MATERIAU( THER=_F(  LAMBDA = 1., RHO_CP = 1.0),
+                      ELAS=_F( E=1.,NU=0,ALPHA=1.),)
+
+MAIL=LIRE_MAILLAGE( )
+
+
+# 2 calculs thermiques :
+#-----------------------
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,  AFFE=_F(  TOUT = 'OUI', MATER = MATERI) )
+
+MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
+                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN', PHENOMENE = 'THERMIQUE'))
+
+# 1er transitoire thermique : intervalle [0, t1]
+#------------------------------------------------
+LR81=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A = t1, NOMBRE = 3) )
+T_IMP1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., 10., t1, 17.))
+CHTH1=AFFE_CHAR_THER_F(  MODELE=MOTH,  TEMP_IMPO=_F( GROUP_MA = 'ABCD', TEMP = T_IMP1) )
+
+ch1=THER_LINEAIRE( MODELE=MOTH, TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+                     INCREMENT=_F( LIST_INST = LR81),
+                     CHAM_MATER=CHMAT,  EXCIT=_F( CHARGE = CHTH1), )
+
+# 2eme transitoire thermique : intervalle [0, t2]
+#------------------------------------------------
+LR82=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A = t2, NOMBRE = 2) )
+T_IMP2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., 17., t2, 14.))
+CHTH2=AFFE_CHAR_THER_F(  MODELE=MOTH,  TEMP_IMPO=_F( GROUP_MA = 'ABCD', TEMP = T_IMP2) )
+
+ch2=THER_LINEAIRE( MODELE=MOTH, TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+                     INCREMENT=_F( LIST_INST = LR82),
+                     CHAM_MATER=CHMAT,  EXCIT=_F( CHARGE = CHTH2), )
+
+# Concatenation de ch1 et ch2  => intervalle [t3, t4]
+#---------------------------------------------------------
+t4=t3+t1+t2
+TEMPE=CREA_RESU(OPERATION='ASSE', TYPE_RESU='EVOL_THER',
+      ASSE=(
+        _F(RESULTAT=ch1, TRANSLATION=t3),
+        _F(RESULTAT=ch2, TRANSLATION=(t3+t1)),
+      ))
+#IMPR_RESU(RESU=_F(RESULTAT=TEMPE))
+
+
+
+# calcul mecanique :
+#-------------------
+MOME=AFFE_MODELE(  MAILLAGE=MAIL,
+                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'))
+
+
+epsi=1.e-13
+LR8M=DEFI_LIST_REEL( DEBUT=0.5+epsi, INTERVALLE=_F(    JUSQU_A = 4.5+epsi,   PAS = 0.10) )
+
+
+# fonction periodique ramenant la droite reelle dans l'intervalle [t3, t4]
+def periodique(inst_calc) :
+    dt = t4 - t3
+    inst_ev = t3 + (inst_calc - t3) % dt
+    return inst_ev
+
+finst = FORMULE(NOM_PARA='INST',VALE='periodique(INST)')
+
+CHMATM=AFFE_MATERIAU(  MAILLAGE=MAIL,  AFFE=_F(  TOUT = 'OUI', MATER = MATERI),
+                       AFFE_VARC=_F(  TOUT = 'OUI', NOM_VARC='TEMP', EVOL=TEMPE,
+                                      FONC_INST=finst,
+                       ),)
+CHME=AFFE_CHAR_MECA(  MODELE=MOME,  DDL_IMPO=(_F( GROUP_NO = 'A',   DX=0., DY=0.),
+                                              _F( GROUP_NO = 'B',   DY=0.)))
+
+U=MECA_STATIQUE( MODELE=MOME,  LIST_INST = LR8M,  OPTION='SANS',
+                 CHAM_MATER=CHMATM,  EXCIT=_F( CHARGE = CHME), )
+
+
+TEST_RESU(RESU=(
+  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=1.0, VALE=15, REFERENCE='ANALYTIQUE',),
+  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=1.3, VALE=16, REFERENCE='ANALYTIQUE',),
+  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=2.0, VALE=15, REFERENCE='ANALYTIQUE',),
+  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=2.3, VALE=16, REFERENCE='ANALYTIQUE',),
+  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=4.0, VALE=15, REFERENCE='ANALYTIQUE',),
+  _F(RESULTAT=U, NOEUD='N2', NOM_CHAM='DEPL', NOM_CMP='DY', INST=4.3, VALE=16, REFERENCE='ANALYTIQUE',),
+))
+
+
+# visualisation du resultat :
+#----------------------------
+if 0 :
+    UN2=POST_RELEVE_T( ACTION=_F( RESULTAT = U, INTITULE = 'DEPLACEMENT_N2',
+                       NOEUD = 'N2', NOM_CHAM = 'DEPL', NOM_CMP = ('DY',),
+                       OPERATION = 'EXTRACTION') )
+
+    IMPR_TABLE( TABLE=UN2, UNITE=38,  NOM_PARA=('INST', 'DY',), FORMAT='XMGRACE',
+                TRI=_F( NOM_PARA = ('INST',), ORDRE = 'CROISSANT',) )
+
+FIN()
+#

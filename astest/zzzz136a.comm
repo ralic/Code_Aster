@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION POST_RELEVE_T 3D EN DIFFERENTS REPERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 #                  INDICE _U     REPERE: 'UTILISATEUR'  AVEC  ANGL_NAUT
 #                  INDICE _C     REPERE: 'CYLINDRIQUE'
 #
-#       VALIDATION POST_RELEVE_T ET MACR_LIGN_COUPE EN 3D, 
+#       VALIDATION POST_RELEVE_T ET MACR_LIGN_COUPE EN 3D,
 #                                    OPERANDE TRAC_DIR
 #                                    OPERANDE INVARIANT
 #                                    OPERANDE ELEM_PRINCIPAUX
@@ -33,7 +33,7 @@
 #       POST-TRAITEMENT D'UN TENSEUR
 #                       D'UN VECTEUR
 #
-DEBUT( CODE=_F(  NOM = 'ZZZZ136A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='ZZZZ136A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 
@@ -119,8 +119,8 @@ RESU=MECA_STATIQUE(        MODELE=MO,
 
                            )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,         
-                                 
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+
                                 OPTION='SIGM_ELNO_DEPL'
                            )
 
@@ -129,7 +129,7 @@ CALC_NO( reuse= RESU ,RESULTAT= RESU , OPTION='SIGM_NOEU_DEPL' )
 
 #######################################################################
 #            I -  VALIDATION POST_RELEVE_T  EN 3D                     #
-#######################################################################   
+#######################################################################
 
 
 #======================================================================
@@ -1073,7 +1073,7 @@ IMPR_TABLE(   TABLE=PRIN_NO,
 
 #######################################################################
 #            II -  VALIDATION MACR_LIGN_COUPE  EN 3D                  #
-####################################################################### 
+#######################################################################
 
 
 #======================================================================
@@ -1583,11 +1583,11 @@ IMPR_TABLE(   TABLE=Z3_L,
 
 N3_U=MACR_LIGN_COUPE( RESULTAT= RESU,NOM_CHAM = 'DEPL',
                       VIS_A_VIS  = _F(MAILLE_1=('M40'),),
-                      LIGN_COUPE = _F(TYPE='GROUP_NO', 
+                      LIGN_COUPE = _F(TYPE='GROUP_NO',
                                       REPERE = 'UTILISATEUR',
                                       ANGL_NAUT = ( 90., 0., 0., ),
                                       OPERATION='EXTRACTION',
-                                      GROUP_NO='LIST3', 
+                                      GROUP_NO='LIST3',
                                       INTITULE='N3_U:  CHEMIN P11 P12,  REPERE UTILISATEUR, ANGL_NAUT = ( 90., 0., 0., ),',
                                       ),)
 IMPR_TABLE(   TABLE=N3_U,

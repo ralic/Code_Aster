@@ -1,28 +1,28 @@
-# MODIF  DATE 25/02/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB8 MAILLAGE REGULIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ELEMENT SHB8PS - A.COMBESCURE - S.BAGUET -INSA LYON 2003
 #
 
 
-DEBUT(CODE=_F(NOM='SSLS124A',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSLS124A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 YG=2.E11
 L=100
@@ -34,7 +34,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=YG,
 
 
 
-# CAS 1 : 
+# CAS 1 :
 
 h=10
 
@@ -49,15 +49,15 @@ ORIE_SHB8=_F(GROUP_MA='GEOTOT'),)
 MAIL31=DEFI_GROUP(reuse =MAIL31, MAILLAGE=MAIL31,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
                                _F(GROUP_MA='SUDEPIM',),),);
-                               
+
 CHMAT31=AFFE_MATERIAU(MAILLAGE=MAIL31,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
-                  
+
 MODMEC31=AFFE_MODELE(MAILLAGE=MAIL31,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='SHB8',),);
-                            
+
 
 CHARG31=AFFE_CHAR_MECA(MODELE=MODMEC31,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
@@ -82,12 +82,12 @@ RESU31=MECA_STATIQUE(MODELE=MODMEC31,
                     );
 
 RESU31=CALC_ELEM(reuse=RESU31, RESULTAT=RESU31,
-                    
+
                     OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM'),
                     );
-                    
-                    
-                    
+
+
+
 Iy=b*h*h*h/12
 Uz=F*L*L*L/3/YG/Iy
 # point de gauss maille m1 situe a x=5
@@ -137,7 +137,7 @@ TEST_RESU(RESU=(
             REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'SIYY', VALE = Sig5 ),
             ),)
 
-# 
+#
 
 TEST_RESU(RESU=(
             _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELGA_SIGM', PRECISION = 2.E-2, POINT=1,
@@ -152,7 +152,7 @@ TEST_RESU(RESU=(
             REFERENCE='ANALYTIQUE', NUME_ORDRE=1, MAILLE='M1', NOM_CMP = 'VMIS_SG', VALE = Sig5 ),
             ),)
 
-# 
+#
 
 TEST_RESU(RESU=(
             _F(  RESULTAT = RESU31, NOM_CHAM='EQUI_ELNO_SIGM', PRECISION = 1.E-2, NOEUD='N43',
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(
             ),)
 
 
-# CAS 2 : 
+# CAS 2 :
 
 h=1.0
 
@@ -177,15 +177,15 @@ ORIE_SHB8=_F(GROUP_MA='GEOTOT'),)
 MAIL32=DEFI_GROUP(reuse =MAIL32, MAILLAGE=MAIL32,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
                                _F(GROUP_MA='SUDEPIM',),),);
-                               
+
 CHMAT32=AFFE_MATERIAU(MAILLAGE=MAIL32,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
-                  
+
 MODMEC32=AFFE_MODELE(MAILLAGE=MAIL32,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='SHB8',),);
-                            
+
 
 CHARG32=AFFE_CHAR_MECA(MODELE=MODMEC32,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(
 
 
 
-# CAS 3 : 
+# CAS 3 :
 
 h=0.1
 
@@ -238,15 +238,15 @@ ORIE_SHB8=_F(GROUP_MA='GEOTOT'),)
 MAIL33=DEFI_GROUP(reuse =MAIL33, MAILLAGE=MAIL33,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
                                _F(GROUP_MA='SUDEPIM',),),);
-                               
+
 CHMAT33=AFFE_MATERIAU(MAILLAGE=MAIL33,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
-                  
+
 MODMEC33=AFFE_MODELE(MAILLAGE=MAIL33,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='SHB8',),);
-                            
+
 
 CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
@@ -285,7 +285,7 @@ TEST_RESU(RESU=(
 
 
 
-# CAS 4 : 
+# CAS 4 :
 
 h=0.05
 
@@ -300,15 +300,15 @@ ORIE_SHB8=_F(GROUP_MA='GEOTOT'),)
 MAIL34=DEFI_GROUP(reuse =MAIL34, MAILLAGE=MAIL34,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
                                _F(GROUP_MA='SUDEPIM',),),);
-                               
+
 CHMAT34=AFFE_MATERIAU(MAILLAGE=MAIL34,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
-                  
+
 MODMEC34=AFFE_MODELE(MAILLAGE=MAIL34,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='SHB8',),);
-                            
+
 
 CHARG34=AFFE_CHAR_MECA(MODELE=MODMEC34,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),
@@ -347,7 +347,7 @@ TEST_RESU(RESU=(
 
 
 
-# CAS 5 : 
+# CAS 5 :
 
 h=0.02
 
@@ -362,15 +362,15 @@ ORIE_SHB8=_F(GROUP_MA='GEOTOT'),)
 MAIL35=DEFI_GROUP(reuse =MAIL35, MAILLAGE=MAIL35,
                 CREA_GROUP_NO=(_F(GROUP_MA='SUENCAS',),
                                _F(GROUP_MA='SUDEPIM',),),);
-                               
+
 CHMAT35=AFFE_MATERIAU(MAILLAGE=MAIL35,
                   AFFE=_F(TOUT='OUI',MATER=MAT,),);
-                  
+
 MODMEC35=AFFE_MODELE(MAILLAGE=MAIL35,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='SHB8',),);
-                            
+
 
 CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
                       DDL_IMPO=(_F(GROUP_MA=('SUENCAS'),

@@ -1,4 +1,4 @@
-#@ MODIF defi_inte_spec_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF defi_inte_spec_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
    from types import ListType, TupleType
    EnumTypes = (ListType, TupleType)
    from Accas               import _F
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS as UTMESS
    import Numeric
    
    commande='DEFI_INTE_SPEC'
@@ -59,8 +59,7 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
    nfntot = len(PAR_FONCTION)+len(KANAI_TAJIMI)+len(CONSTANT)
    dimh   = (DIMENSION*(DIMENSION+1))/2
    if dimh!=nfntot :
-      txt  = "nombre de fonctions erroné pour une matrice hermitienne"
-      UTMESS('F',commande, txt)
+      UTMESS('F','SPECTRAL0_1')
 
    l_f=[]
    for occ in PAR_FONCTION : l_f.append(('PAR_FONCTION',occ))
@@ -68,8 +67,7 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
    for occ in CONSTANT     : l_f.append(('CONSTANT'    ,occ))
    for occ in l_f :
       if occ[0]!='PAR_FONCTION' and occ[1]['FREQ_MAX']<occ[1]['FREQ_MIN'] :
-         txt  = occ[0]+" : FREQ_MAX < FREQ_MIN"
-         UTMESS('F',commande, txt)
+          UTMESS('F','SPECTRAL0_2',valk=occ[0])
    l_is=[occ[1]['NUME_ORDRE_I'] for occ in l_f]
    l_js=[occ[1]['NUME_ORDRE_J'] for occ in l_f]
    iis=sum(l_is)
@@ -81,8 +79,7 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
    ih=sum(l_ih)
    jh=sum(l_jh)
    if ((iis!=ih) or (ijs!=jh)) :
-      txt  = "erreur sur les indices"
-      UTMESS('F',commande, txt)
+      UTMESS('F','SPECTRAL0_3')
 
 #--- Construction de la liste de fonctions complexes
    l_fc=[]

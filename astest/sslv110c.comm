@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(NOM='SSLV110C',NIV_PUB_WEB='INTERNET',))
+DEBUT(CODE=_F(NOM='SSLV110C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 #
 # --------------------------------------------------------------------

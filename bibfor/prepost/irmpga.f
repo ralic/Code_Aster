@@ -4,7 +4,7 @@
      &                    MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,6 +113,10 @@ C
 C
       CHARACTER*16 NOMTEF, NOMFPG
       CHARACTER*32 NOLOPG
+C
+C     DIRE A MED QUE C'EST UN CHAMP ELNO (CF. DOC R. MED DE EFCHAE)
+      CHARACTER*32 MDELNO
+      PARAMETER ( MDELNO='MED_GAUSS_ELNO                  ' )
 C
 C====
 C 1. PREALABLES
@@ -275,13 +279,25 @@ C 2.2. ==> ON ECRIT LA LOCALISATION
 C
           IF ( CODRET.EQ.0 ) THEN
 C
-          CALL IRMPG1 ( NOFIMD,
-     &                  NOMFPG, NBNOTO, NBREPG, NBSP, NDIM, TYGEOM,
-     &                  REFCOO, GSCOO, WG,
-     &                  RAUX1, RAUX2, RAUX3,
-     &                  NOLOPG, CODRET )
+            IF ( TYPECH(1:4) .NE. 'ELNO' ) THEN
 C
-          CAIMPK(1,NRIMPR) = NOLOPG
+               CALL IRMPG1 ( NOFIMD,
+     &                       NOMFPG, NBNOTO, NBREPG, NBSP, NDIM, TYGEOM,
+     &                       REFCOO, GSCOO, WG,
+     &                       RAUX1, RAUX2, RAUX3,
+     &                       NOLOPG, CODRET )
+C
+               CAIMPK(1,NRIMPR) = NOLOPG
+            ELSE
+C
+C              POUR ELNO, ON ECRIT LA NON-LOCALISATION MED_GAUSS_ELNO
+               CAIMPK(1,NRIMPR) = MDELNO
+               IF ( NIVINF.GT.1 ) THEN
+                  WRITE (IFM,2200) CAIMPK(1,NRIMPR)
+               ENDIF
+ 2200 FORMAT(2X,'. PAS DE LOCALISATION POUR LE CHAMP ELNO : ',A)
+C
+           ENDIF
 C
           ENDIF
 C

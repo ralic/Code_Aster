@@ -1,21 +1,21 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (ROTATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ----------------------------------------------------------------------
 # SYSTEME 3 MASSES, 4 RESSORTS ENCASTRES-ENCASTRES SOUMIS A DES
@@ -26,9 +26,7 @@
 # REF: PAS DE REF BIBLIO MAIS CALCUL ANALYTIQUE
 # ----------------------------------------------------------------------
 
-DEBUT(   CODE=_F(  NOM = 'SDLD103B',NIV_PUB_WEB='INTERNET'),
-          BASE=_F( FICHIER = 'GLOBALE', LONG_REPE = 20000)
-        )
+DEBUT(CODE=_F(NOM='SDLD103B', NIV_PUB_WEB='INTERNET'), BASE=_F(FICHIER='GLOBALE', LONG_REPE=20000), DEBUG=_F(SDVERI='OUI'))
 
 MAILLAGE=LIRE_MAILLAGE( )
 
@@ -44,7 +42,7 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                 _F(  CARA = 'K_TR_D_L',  REPERE = 'GLOBAL',
                           GROUP_MA = 'RESSORT',
                           VALE = ( 0., 0., 0., 10000., 0., 10000., )),
-                        _F(  GROUP_NO = 'MASSES',  
+                        _F(  GROUP_NO = 'MASSES',
                           CARA = 'M_TR_N',
                           VALE = ( 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0., 10.,
                                  0.,  0.,  0.,  0., 10.,  0.,  0.,  0.,  0.,  0.,
@@ -56,7 +54,7 @@ CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 # ------------ LES DEPL_IMPO SONT DEFINIS DANS LE REPERE GLOBAL
                _F(  GROUP_NO = 'ENCASTRE', DRX = 0.,  DRY = 0.,  DRZ = 0.,
                                              DX = 0.,  DY = 0.,  DZ = 0.),
-               _F(  GROUP_NO = 'MASSES',   DRY = 0.,  DRZ = 0., 
+               _F(  GROUP_NO = 'MASSES',   DRY = 0.,  DRZ = 0.,
                                              DX = 0.,  DY = 0.,  DZ = 0.))
                         )
 
@@ -148,17 +146,17 @@ DEPLACE2=CALC_FONC_INTERP( FONCTION=DEPL2, LIST_PARA=L_INST,
 #    ACCE_IMPO = ACCELER2 (0) EN Z=4 (NO5)
 #----------------------------------------------------------
 #
-MULT_X1=CALC_CHAR_SEISME(  MATR_MASS=MASSE,  
+MULT_X1=CALC_CHAR_SEISME(  MATR_MASS=MASSE,
                             DIRECTION=( 0., 0., 0., 1., 0., 0.,),
                             MODE_STAT=MODE_STA,   NOEUD='NO1' )
 
-MULT_X2=CALC_CHAR_SEISME(  MATR_MASS=MASSE,  
+MULT_X2=CALC_CHAR_SEISME(  MATR_MASS=MASSE,
                             DIRECTION=( 0., 0., 0., 1., 0., 0.,),
                             MODE_STAT=MODE_STA,   NOEUD='NO5' )
 
 #
 # PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
-#--------------------------------------------------- 
+#---------------------------------------------------
 MACRO_PROJ_BASE(BASE=MODE_MEC,MATR_ASSE_GENE=(
            _F( MATRICE = CO("MASS_GEN"), MATR_ASSE = MASSE),
            _F( MATRICE = CO("RIGI_GEN"), MATR_ASSE = RIGIDITE)),VECT_ASSE_GENE=(
@@ -177,7 +175,7 @@ TRAN_GEE=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
                         MULT_APPUI = 'OUI',
                         DIRECTION = ( 0., 0., 0., 1., 0., 0.,),
                         NOEUD = 'NO1',
-                        VITE = VITESSE1, 
+                        VITE = VITESSE1,
                         DEPL = DEPLACE1),
                 _F(  VECT_GENE = VECT_X2,
                         ACCE = ACCELER2,
@@ -218,7 +216,7 @@ XRNO2a = FORMULE(NOM_PARA='INST',VALE='''
 
 XR2='XRNO2'
 
-XRNO2=CALC_FONC_INTERP(     FONCTION=XRNO2a, 
+XRNO2=CALC_FONC_INTERP(     FONCTION=XRNO2a,
                             NOM_RESU=XR2,    LIST_PARA=L_RECU,
                             NOM_PARA = 'INST', )
 
@@ -232,7 +230,7 @@ XRNO3a = FORMULE(NOM_PARA='INST',VALE='''
 
 XR3='XRNO3'
 
-XRNO3=CALC_FONC_INTERP(     FONCTION=XRNO3a, 
+XRNO3=CALC_FONC_INTERP(     FONCTION=XRNO3a,
                             NOM_RESU=XR3,    LIST_PARA=L_RECU,
                             NOM_PARA = 'INST', )
 
@@ -246,7 +244,7 @@ XRNO4a = FORMULE(NOM_PARA='INST',VALE='''
 
 XR4='XRNO4'
 
-XRNO4=CALC_FONC_INTERP(     FONCTION=XRNO4a, 
+XRNO4=CALC_FONC_INTERP(     FONCTION=XRNO4a,
                             NOM_RESU=XR4,    LIST_PARA=L_RECU,
                             NOM_PARA = 'INST', )
 
@@ -256,7 +254,7 @@ XRNO4=CALC_FONC_INTERP(     FONCTION=XRNO4a,
 XRNOE2a = FORMULE(NOM_PARA='INST',VALE='(300000.*INST**4)/24.')
 XRE2='XRNOE2'
 
-XRNOE2=CALC_FONC_INTERP(     FONCTION=XRNOE2a, 
+XRNOE2=CALC_FONC_INTERP(     FONCTION=XRNOE2a,
                              NOM_RESU=XRE2,    LIST_PARA=L_RECU,
                              NOM_PARA = 'INST', )
 
@@ -266,7 +264,7 @@ XRNOE2=CALC_FONC_INTERP(     FONCTION=XRNOE2a,
 XRNOE3a = FORMULE(NOM_PARA='INST',VALE='(100000.*INST**4)/12.')
 XRE3='XRNOE3'
 
-XRNOE3=CALC_FONC_INTERP(     FONCTION=XRNOE3a, 
+XRNOE3=CALC_FONC_INTERP(     FONCTION=XRNOE3a,
                              NOM_RESU=XRE3,    LIST_PARA=L_RECU,
                              NOM_PARA = 'INST', )
 
@@ -276,7 +274,7 @@ XRNOE3=CALC_FONC_INTERP(     FONCTION=XRNOE3a,
 XRNOE4a = FORMULE(NOM_PARA='INST',VALE='(100000.*INST**4)/24.')
 XRE4='XRNOE4'
 
-XRNOE4=CALC_FONC_INTERP(     FONCTION=XRNOE4a, 
+XRNOE4=CALC_FONC_INTERP(     FONCTION=XRNOE4a,
                              NOM_RESU=XRE4,    LIST_PARA=L_RECU,
                              NOM_PARA = 'INST', )
 
@@ -290,17 +288,17 @@ XRNOE4=CALC_FONC_INTERP(     FONCTION=XRNOE4a,
 # RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
 # -----------------------------------------------
 NO2DXR_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
-                             RESU_GENE=TRAN_GEE,  
+                             RESU_GENE=TRAN_GEE,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
 NO3DXR_E=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
-                             RESU_GENE=TRAN_GEE,  
+                             RESU_GENE=TRAN_GEE,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
 NO4DXR_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
-                             RESU_GENE=TRAN_GEE,  
+                             RESU_GENE=TRAN_GEE,
                            INTERP_NUME='LIN',      INTERPOL='LIN',
                              LIST_INST=L_RECU    )
 
@@ -308,24 +306,24 @@ NO4DXR_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
 # RECUPERATION DES DEPLACEMENTS ABSOLUS CALCULES
 # ----------------------------------------------
 NO2DXA_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
-                            RESU_GENE=TRAN_GEE,   
+                            RESU_GENE=TRAN_GEE,
                           MULT_APPUI='OUI',         INTERP_NUME='LIN',
                              LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
 NO3DXA_E=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
-                            RESU_GENE=TRAN_GEE,   
+                            RESU_GENE=TRAN_GEE,
                           MULT_APPUI='OUI',         INTERP_NUME='LIN',
                              LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
 NO4DXA_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DRX',  NOM_CHAM='DEPL',
-                            RESU_GENE=TRAN_GEE,   
+                            RESU_GENE=TRAN_GEE,
                           MULT_APPUI='OUI',         INTERP_NUME='LIN',
                              LIST_INST=L_RECU,     INTERPOL='LIN'
                         )
 
-# 
+#
 # COMPARAISON DES RESULTATS NUMERIQUES/ RESULTATS ANALYTIQUES
 # -----------------------------------------------------------
 

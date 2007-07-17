@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(  NOM = 'SSLL106C',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NOM='SSLL106C', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 
 #PRE_GIBI () ;
 
@@ -691,7 +691,7 @@ CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
                            AFFE=_F( TOUT = 'OUI', MATER = MAT),
                       AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,
                       NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
-                     
+
 
 
 
@@ -702,14 +702,14 @@ REST=MECA_STATIQUE(             MODELE=MO,
 
                         )
 
-CALC_ELEM( reuse= REST ,RESULTAT= REST ,              
-                                  
+CALC_ELEM( reuse= REST ,RESULTAT= REST ,
+
                   OPTION=('EPSI_ELGA_DEPL',
                           'EFGE_ELNO_DEPL', )
                         )
 
-CALC_NO(reuse=REST,   
-                  
+CALC_NO(reuse=REST,
+
               OPTION='FORC_NODA',
                  RESULTAT=REST
          )

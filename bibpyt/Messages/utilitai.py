@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 02/07/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF utilitai Messages  DATE 17/07/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,7 +139,7 @@ cata_msg={
 """),
 
 30: _("""
- a faire ??
+ Pour l'operation "ASSE", la commande ne permet pas de créer de champs CHAM_ELEM/ELEM
 """),
 
 31: _("""

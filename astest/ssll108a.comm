@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE 2D_DISCRET EN NON-LINEAIRE -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 #       LE PROBLEME EST TRAITE AVEC MECA_STATIQUE ET STAT_NON_LINE
 ###################################################################
 
-DEBUT(   CODE=_F( NOM = 'SSLL108A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL108A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 MA=LIRE_MAILLAGE( )
@@ -63,7 +63,7 @@ DEP=MECA_STATIQUE(MODELE=MOD, CARA_ELEM=CELEM,
                                CHAM_MATER=CHMAT,
                    EXCIT=_F( CHARGE = CH), )
 
-CALC_ELEM( reuse= DEP ,RESULTAT= DEP ,  
+CALC_ELEM( reuse= DEP ,RESULTAT= DEP ,
                      OPTION=(
                                                 'EFGE_ELNO_DEPL',))
 

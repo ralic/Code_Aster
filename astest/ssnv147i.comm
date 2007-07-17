@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION D'UN BARREAU AVEC LOI DE COMPORTEMENT ROUSSELIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # MODELISATION 3D   (10 MAILLES HEXA20)
 #======================================================================
 
-DEBUT(        CODE=_F(  NOM = 'SSNV147I',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNV147I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 

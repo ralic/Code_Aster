@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 12/06/2006   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macro_matr_asse_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
      Ecriture de la macro MACRO_MATR_ASSE
   """
   ier=0
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
 
   # On met le mot cle NUME_DDL dans une variable locale pour le proteger
   numeddl=NUME_DDL
@@ -46,28 +46,28 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
       else:
          renum='RCMK'
       if renum not in ('SANS','RCMK'):
-        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode LDLT, RENUM doit etre SANS ou RCMK")
+        UTMESS('F','MATRICE0_5')
     elif methode=='MULT_FRONT':
       if SOLVEUR['RENUM']:
          renum=SOLVEUR['RENUM']
       else:
          renum='MDA'
       if renum not in ('MDA','MD','METIS'):
-        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode MULT_FRONT, RENUM doit etre MDA, MD ou RCMK")
+        UTMESS('F','MATRICE0_6')
     elif methode=='MUMPS':
       if SOLVEUR['RENUM']:
          renum=SOLVEUR['RENUM']
       else:
          renum='SANS'
       if renum not in ('SANS',):
-        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode MUMPS, RENUM doit etre SANS")
+        UTMESS('F','MATRICE0_7')
     elif methode=='GCPC':
       if SOLVEUR['RENUM']:
          renum=SOLVEUR['RENUM']
       else:
          renum='SANS'
       if renum not in ('SANS','RCMK'):
-        UTMESS('F', "MACRO_MATR_ASSE", "Avec methode GCPC, RENUM doit etre SANS ou RCMK")
+        UTMESS('F','MATRICE0_8')
   else:
     methode='MULT_FRONT'
     renum  ='MDA'
@@ -100,17 +100,17 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
     option=m['OPTION']
     if iocc == 1 and lnume == 1 and option not in ('RIGI_MECA','RIGI_MECA_LAGR',
                                                    'RIGI_THER','RIGI_ACOU')      :
-      UTMESS('F', "MACRO_MATR_ASSE", "UNE DES OPTIONS DOIT ETRE RIGI_MECA OU RIGI_THER OU RIGI_ACOU OU RIGI_MECA_LAGR")
+      UTMESS('F','MATRICE0_9')
 
 
     motscles={'OPTION':option}
     if option == 'RIGI_MECA_HYST':
        if (not lrigel):
-          UTMESS('F', "MACRO_MATR_ASSE", "POUR CALCULER RIGI_MECA_HYST, IL FAUT AVOIR CALCULE RIGI_MECA AUPARAVANT (DANS LE MEME APPEL)")
+          UTMESS('F','MATRICE0_10')
        motscles['RIGI_MECA']   =rigel
     if option == 'AMOR_MECA':
        if (not lrigel or not lmasel):
-          UTMESS('F', "MACRO_MATR_ASSE", "POUR CALCULER AMOR_MECA, IL FAUT AVOIR CALCULE RIGI_MECA ET MASS_MECA AUPARAVANT (DANS LE MEME APPEL)")
+          UTMESS('F','MATRICE0_11')
        if CHAM_MATER != None:
           motscles['RIGI_MECA']   =rigel
           motscles['MASS_MECA']   =masel

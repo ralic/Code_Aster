@@ -1,26 +1,25 @@
-# MODIF  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RAYON INITIAL 34.5 RAYON FINAL 42.5 EXTENSION 1.22 METHODE LAGRANGE
 
-DEBUT(CODE=_F(NOM='SSLV112A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSLV112A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE();
 
@@ -43,103 +42,103 @@ FF=DEFI_FOND_FISS(MAILLAGE=M,
 THET=CALC_THETA(
            MODELE=MO,
            FOND_FISS=FF,THETA_3D=(
-          _F(  NOEUD = 'NO1099', 
+          _F(  NOEUD = 'NO1099',
                      MODULE = 8.05,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1100', 
+                   _F(  NOEUD = 'NO1100',
                      MODULE = 8.089, R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1109', 
+                   _F(  NOEUD = 'NO1109',
                      MODULE = 8.04,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1110', 
+                   _F(  NOEUD = 'NO1110',
                      MODULE = 8.068,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1119', 
+                   _F(  NOEUD = 'NO1119',
                      MODULE = 8.009,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1120', 
+                   _F(  NOEUD = 'NO1120',
                      MODULE = 8.028,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1129', 
+                   _F(  NOEUD = 'NO1129',
                      MODULE = 7.96,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1130', 
+                   _F(  NOEUD = 'NO1130',
                      MODULE = 7.797,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1139', 
+                   _F(  NOEUD = 'NO1139',
                      MODULE = 7.894,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1140', 
+                   _F(  NOEUD = 'NO1140',
                      MODULE = 7.897,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1149', 
+                   _F(  NOEUD = 'NO1149',
                      MODULE = 7.814,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1150', 
+                   _F(  NOEUD = 'NO1150',
                      MODULE = 7.811,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1159', 
+                   _F(  NOEUD = 'NO1159',
                      MODULE = 7.723,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1160', 
+                   _F(  NOEUD = 'NO1160',
                      MODULE = 7.715,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1169', 
+                   _F(  NOEUD = 'NO1169',
                      MODULE = 7.623,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1170', 
+                   _F(  NOEUD = 'NO1170',
                      MODULE = 7.614,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1179', 
+                   _F(  NOEUD = 'NO1179',
                      MODULE = 7.521,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1180', 
+                   _F(  NOEUD = 'NO1180',
                      MODULE = 7.511,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1189', 
+                   _F(  NOEUD = 'NO1189',
                      MODULE = 7.419,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1190', 
+                   _F(  NOEUD = 'NO1190',
                      MODULE = 7.411,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1199', 
+                   _F(  NOEUD = 'NO1199',
                      MODULE = 7.321,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1200', 
+                   _F(  NOEUD = 'NO1200',
                      MODULE = 7.316,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1209', 
+                   _F(  NOEUD = 'NO1209',
                      MODULE = 7.231,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1210', 
+                   _F(  NOEUD = 'NO1210',
                      MODULE = 7.232,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1219', 
+                   _F(  NOEUD = 'NO1219',
                      MODULE = 7.152,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1220', 
+                   _F(  NOEUD = 'NO1220',
                      MODULE = 7.159,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1229', 
+                   _F(  NOEUD = 'NO1229',
                      MODULE = 7.087,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1230', 
+                   _F(  NOEUD = 'NO1230',
                      MODULE = 7.103,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1239', 
+                   _F(  NOEUD = 'NO1239',
                      MODULE = 7.04,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1240', 
+                   _F(  NOEUD = 'NO1240',
                      MODULE = 7.065, R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1249', 
+                   _F(  NOEUD = 'NO1249',
                      MODULE = 7.01,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1250', 
+                   _F(  NOEUD = 'NO1250',
                      MODULE = 7.045,  R_INF = 0.5, R_SUP = 33.5,),
 
-                   _F(  NOEUD = 'NO1259', 
+                   _F(  NOEUD = 'NO1259',
                      MODULE = 7.,  R_INF = 0.5, R_SUP = 33.5,))
                   )
 

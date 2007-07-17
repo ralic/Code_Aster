@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,6 +95,7 @@ class JDC:
 
       except self.codex.error,exc_val:
          self.traiter_user_exception(exc_val)
+         self.affiche_fin_exec()
          self.traiter_fin_exec("par_lot",e)
 
       except EOFError:

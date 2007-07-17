@@ -7,7 +7,7 @@
       REAL*8        A,B,C(3),VECTX(3),VECTY(3)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 17/07/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,10 +66,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     
       INTEGER       IA,IMA,ITYPMA,JCONX1,JCONX2,JDLIMA,JDLISE,JMA
       INTEGER       NA,NB,NBAR,NBMA,NBSEF,NMAABS,NUNOA,NUNOB
-      REAL*8        XLN,XLT
+      REAL*8        XLN,XLT,MAT(3,3)
       INTEGER       DIMENS, ADDIM, DIMNO
       INTEGER       IBID,IRET,ME1,ME2,CLSM
-      INTEGER       NBNO,INO,JCOOR,NBMAF,I
+      INTEGER       NBNO,INO,JCOOR,NBMAF,I,J
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
       REAL*8        VALPU(3),P3D(3),PLOC(3),VECTZ(3),H
       REAL*8        NORME,LSNA,LSNB,D,LSTA,LSTB
@@ -167,11 +167,20 @@ C           BASE LOCALE : (VECTX,VECTY,VECTZ)
             CALL NORMEV(VECTY,NORME)
             CALL PROVEC(VECTX,VECTY,VECTZ)
 
-C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
+C           MATRICE DE PASSAGE LOC-GLOB
             DO 22 I=1,3
-              PLOC(I)=(P3D(1)-C(1))*VECTX(I)+(P3D(2)-C(2))*VECTY(I)
-     &                                      +(P3D(3)-C(3))*VECTZ(I)
+              MAT(1,I)=VECTX(I)
+              MAT(2,I)=VECTY(I)
+              MAT(3,I)=VECTZ(I)
  22         CONTINUE
+
+C           PROJECTION DU POINT 3D DANS LE REPERE LOCAL LIE A L'ELLIPSE
+            DO 23 I=1,3
+              PLOC(I)=0.D0
+              DO 24 J=1,3
+                PLOC(I) = PLOC(I) + MAT(I,J) * (P3D(J)-C(J))
+ 24           CONTINUE
+ 23         CONTINUE
 
 C           LEVEL SET NORMALE CORRESPOND A LA 3EME COORDONNEE LOCALE
             ZR(JLNSV-1+(INO-1)+1)=PLOC(3)

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:POU_D_E)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # RESPONSABLE JMBHH01 J.M.PROIX
 
-DEBUT(CODE=_F( NOM = 'HSNV100F',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='HSNV100F', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 # CAS TEST THERMOPLASTICITE ELEMENTAIRE

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMOPLASTICITE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 #       ELEMENTS DE TYPE MECA_2D_BARRE
 #
 
-DEBUT(  CODE=_F(  NOM = 'SSNL112I',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNL112I', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -163,7 +163,7 @@ UELAS=MECA_STATIQUE(
 
 CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
-                 
+
                   LIST_INST=LINST,
                  OPTION='SIGM_ELNO_DEPL'
 
@@ -199,7 +199,7 @@ CALC_ELEM( reuse=U,
 
 #
 
-CALC_NO(reuse=U,  OPTION='FORC_NODA',  
+CALC_NO(reuse=U,  OPTION='FORC_NODA',
                         RESULTAT=U)
 
 SIGY_T=RECU_FONCTION(

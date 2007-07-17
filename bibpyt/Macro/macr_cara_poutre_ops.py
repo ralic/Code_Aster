@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 27/02/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   """
   import types
   from Accas import _F
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
   ier=0
   # On importe les definitions des commandes a utiliser dans la macro
   # Le nom de la variable doit etre obligatoirement le nom de la commande
@@ -61,7 +61,6 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
 #  if GROUP_MA_BORD and GROUP_MA:
 #     if not LIAISON:
-#        UTMESS('F', "MACR_CARA_POUTRE", "Avec GROUP_MA, il faut obligatoirement preciser LIAISON, LONGUEUR ET MATERIAU")
 #
   __nomlma=LIRE_MAILLAGE(UNITE=UNITE_MAILLAGE,)
 
@@ -580,9 +579,9 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
           l_noeud= args['NOEUD']
 
      if len(l_group_ma)!=len(l_group_ma_bord):
-        UTMESS('F', "MACR_CARA_POUTRE", "GROUP_MA et GROUP_MA_BORD incoherents")
+        UTMESS('F','POUTRE0_1')
      if args.has_key('NOEUD') and (len(l_group_ma)!=len(l_noeud)):
-        UTMESS('F', "MACR_CARA_POUTRE", "GROUP_MA et NOEUD incoherents")
+        UTMESS('F','POUTRE0_2')
 
      __catp2=__cageo
      for i in range(0,len(l_group_ma_bord)):

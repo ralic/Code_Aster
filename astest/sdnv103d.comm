@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-DEBUT(CODE=_F( NOM = 'SDNV103D',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDNV103D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 

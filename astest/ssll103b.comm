@@ -1,21 +1,21 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE 'FLAMBEMENT' D'UNE CORNIERE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CORNIERE 120 X 120 X 8 D'UNE LONGUEUR DE 1200
 # MODELISATION B : POU_D_T
@@ -28,7 +28,7 @@
 #***********************************************************************
 
 
-DEBUT( CODE=_F(  NOM = 'SSLL103B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL103B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE()
 
@@ -36,39 +36,39 @@ MAT=DEFI_MATERIAU(ELAS=_F( E = 2.1E5,NU = 0.3,))
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F( TOUT = 'OUI',MATER = MAT,))
 
-MO=AFFE_MODELE( MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI',  
+MO=AFFE_MODELE( MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI',
        PHENOMENE = 'MECANIQUE',     MODELISATION = 'POU_D_T',))
 
 CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
          _F( MAILLE = ( 'S1', 'S2', 'S3', 'S4', ),  SECTION = 'GENERALE',
-        CARA = ('A',         'IY',           'IZ',            
-                'AY',        'AZ',           'EY',            
-                'EZ',        'JX',           'JG',            
+        CARA = ('A',         'IY',           'IZ',
+                'AY',        'AZ',           'EY',
+                'EZ',        'JX',           'JG',
                 'IYR2',      'IZR2',                          ),
-        VALE = (1856.,       4167339.,       1045547.,          
-                 0.,       0.,             41.012,            
+        VALE = (1856.,       4167339.,       1045547.,
+                 0.,       0.,             41.012,
                # 0.      , 39595.        , 44398819.         ,
-                 0.,       39595.,         0.,         
+                 0.,       39595.,         0.,
               84948392.,   0.,                                ), ),
-         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),  
+         _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),
              SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
-        CARA = ('A1',        'IY1',          'IZ1',           
-                'AY1',       'AZ1',          'EY1',           
-                'EZ1',       'JX1',          'JG1',           
-                'IYR21',     'IZR21',     
-                'A2',        'IY2',          'IZ2',           
-                'AY2',       'AZ2',          'EY2',           
-                'EZ2',       'JX2',          'JG2',           
+        CARA = ('A1',        'IY1',          'IZ1',
+                'AY1',       'AZ1',          'EY1',
+                'EZ1',       'JX1',          'JG1',
+                'IYR21',     'IZR21',
+                'A2',        'IY2',          'IZ2',
+                'AY2',       'AZ2',          'EY2',
+                'EZ2',       'JX2',          'JG2',
                 'IYR22',     'IZR22',                         ),
-        VALE = (1856.,       4167339.,       1045547.,          
-                 0.,       0.,             41.012,            
+        VALE = (1856.,       4167339.,       1045547.,
+                 0.,       0.,             41.012,
                # 0.      , 39595.        , 44398819.         ,
-                 0.,       39595.,         0.,         
-              84948392.,   0.,            
-              1856.,       4167339.,       1045547.,          
-                 0.,       0.,             41.012,            
+                 0.,       39595.,         0.,
+              84948392.,   0.,
+              1856.,       4167339.,       1045547.,
+                 0.,       0.,             41.012,
                # 0.      , 39595.        , 44398819.         ,
-                 0.,       39595.,         0.,         
+                 0.,       39595.,         0.,
               84948392.,   0.,                                ), ))
       )
 
@@ -94,7 +94,7 @@ STAT1=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=CARAC,
                    EXCIT=(_F(CHARGE=BLOQ,),
                           _F(CHARGE=CHFORC_1,),),);
-                          
+
 SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT1, NUME_ORDRE=1,
                     NOM_CHAM='SIEF_ELGA_DEPL' );
@@ -139,7 +139,7 @@ STAT2=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=CARAC,
                    EXCIT=(_F(CHARGE=BLOQ,),
                           _F(CHARGE=CHFORC_2,),),);
-                          
+
 SIGMA_2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT2, NUME_ORDRE=1,
                     NOM_CHAM='SIEF_ELGA_DEPL' );
@@ -157,8 +157,8 @@ RIGASG_2=ASSE_MATRICE(MATR_ELEM=RIGELG_2,NUME_DDL=NU)
 IMPR_STURM(   MATR_A=RIGAS,
                 MATR_B=RIGASG_2,
                     TYPE_RESU='MODE_FLAMB',
-                CHAR_CRIT_MIN=-9.97E+6, 
-                 CHAR_CRIT_MAX=-1.E6 
+                CHAR_CRIT_MIN=-9.97E+6,
+                 CHAR_CRIT_MAX=-1.E6
                             )
 
 MOD_2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
@@ -189,7 +189,7 @@ STAT3=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=CARAC,
                    EXCIT=(_F(CHARGE=BLOQ,),
                           _F(CHARGE=CHFORC_3,),),);
-                          
+
 SIGMA_3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT3, NUME_ORDRE=1,
                     NOM_CHAM='SIEF_ELGA_DEPL' );
@@ -234,7 +234,7 @@ STAT4=MECA_STATIQUE(MODELE=MO,
                    CARA_ELEM=CARAC,
                    EXCIT=(_F(CHARGE=BLOQ,),
                           _F(CHARGE=CHFORC_4,),),);
-                          
+
 SIGMA_4=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STAT4, NUME_ORDRE=1,
                     NOM_CHAM='SIEF_ELGA_DEPL' )

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/07/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF PREPOST  DATE 17/07/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,9 @@ C     ------------------------------------------------------------------
 
       INTEGER      JLICHA,NBSY,NBORDR,IOR,JORD,IORD,JINST1,JINST2,NBCHAM
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV,IC
+      INTEGER      JMOD
       CHARACTER*1  KBID
+      CHARACTER*2  K2B(4)
       CHARACTER*8  MAXFEM,MO,MALINI,RESUCO,RESUX,MODVIS,K8B
       CHARACTER*16 TYSD,NOMCHA
       CHARACTER*19 CNS1,CNS2,CES1,CES2,CEL2,CH,CESVI1,CESVI2,CELVI2
@@ -64,7 +66,7 @@ C     ------------------------------------------------------------------
 C
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
       LICHAM = '&&OP0196.LICHAM'
-      CALL XPOINI(MAXFEM,MO,MALINI,LICHAM,NBSY,RESUCO,RESUX)
+      CALL XPOINI(MAXFEM,MO,MALINI,LICHAM,NBSY,RESUCO,RESUX,K2B)
       CALL GETVID(' ','MODELE_VISU',0,1,1,MODVIS,IRET)
 C
 C     ------------------------------------------------------------------
@@ -124,7 +126,7 @@ C       5. TRAITEMENT DES MAILLES DE MAILX
 C       ----------------------------------------------------------------
 
         IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
-        CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,MAXFEM,
+        CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,K2B,MAXFEM,
      &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2)
 
 C       ----------------------------------------------------------------
@@ -151,6 +153,8 @@ C       ----------------------------------------------------------------
         CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST1,KBID)
         CALL RSADPA(RESUX ,'E',1,'INST',IORD,0,JINST2,KBID)
         ZR(JINST2) = ZR(JINST1)
+        CALL RSADPA(RESUX ,'E',1,'MODELE',IORD,0,JMOD,KBID)
+        ZK8(JMOD)=MODVIS
 
         CALL DETRSD('CHAM_NO_S',CNS1)
         CALL DETRSD('CHAM_NO_S',CNS2)

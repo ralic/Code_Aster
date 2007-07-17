@@ -1,68 +1,68 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DES MOMENTS CRITIQUES D'UNE ARCHE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ELEMENTS  : MEPOUDE
 
 
-DEBUT(CODE=_F( NOM = 'SSLL404A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLL404A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
-ACIER=DEFI_MATERIAU(         
-                         ELAS=_F(  NU = 0.3,          
+ACIER=DEFI_MATERIAU(
+                         ELAS=_F(  NU = 0.3,
                            E = 7.E10,            ))
 
 MAYA=LIRE_MAILLAGE( )
 
 MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,
-                                 AFFE=_F(  TOUT = 'OUI',  
+                                 AFFE=_F(  TOUT = 'OUI',
                                         MATER = ACIER,   ))
 
 STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
-                               AFFE=_F(  TOUT = 'OUI',          
-                                      MODELISATION = 'POU_D_E',  
+                               AFFE=_F(  TOUT = 'OUI',
+                                      MODELISATION = 'POU_D_E',
                                       PHENOMENE = 'MECANIQUE',     ))
 
 CARA=AFFE_CARA_ELEM(     MODELE=STRUCTUR,
-                               POUTRE=_F( 
-                            GROUP_MA = 'TOUT',     
-                            SECTION = 'RECTANGLE',  
-                            CARA = ( 'HY',  'HZ', ),     
+                               POUTRE=_F(
+                            GROUP_MA = 'TOUT',
+                            SECTION = 'RECTANGLE',
+                            CARA = ( 'HY',  'HZ', ),
                             VALE = ( 0.015,  0.002, ),     )
                           )
 
 # CONDITIONS AUX LIMITES
 
 FIXA=AFFE_CHAR_MECA(      MODELE=STRUCTUR,DDL_IMPO=(
-                              _F(  GROUP_NO = 'POINT_A',  
-                                               DX = 0.,  
-                                               DY = 0.,  
-                                               DZ = 0.,  
+                              _F(  GROUP_NO = 'POINT_A',
+                                               DX = 0.,
+                                               DY = 0.,
+                                               DZ = 0.,
                                                DRY = 0.,  ),
-                                       _F(  GROUP_NO = 'POINT_B',  
-                                               DY = 0.,  
-                                               DZ = 0.,  
+                                       _F(  GROUP_NO = 'POINT_B',
+                                               DY = 0.,
+                                               DZ = 0.,
                                                DRX = 0.,  ))
                           )
 
 CHARGE=AFFE_CHAR_MECA(      MODELE=STRUCTUR,FORCE_NODALE=(
-                          _F(  GROUP_NO = 'POINT_A',  
+                          _F(  GROUP_NO = 'POINT_A',
                                                MZ = 1.,    ),
-                                       _F(  GROUP_NO = 'POINT_B',  
+                                       _F(  GROUP_NO = 'POINT_B',
                                                MZ = -1.,   ))
                           )
 
@@ -83,8 +83,8 @@ NOM_CHAM='DEPL', RESULTAT=STATIQ,
                                )
 
 # CALCUL DES CONTRAINTES ELEMENTAIRES A PARTIR DES DEPLACEMENTS
-                              
-                              
+
+
 SIGMA=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=STATIQ, NUME_ORDRE=1,
                     NOM_CHAM='SIEF_ELGA_DEPL' ),
@@ -117,48 +117,48 @@ KS_ASSE=ASSE_MATRICE(    MATR_ELEM=KS_ELEM,
 MODE1=MODE_ITER_SIMULT(       MATR_A=K_ASSE,
                                    MATR_B=KS_ASSE,
                                 TYPE_RESU='MODE_FLAMB',
-                               CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',     
+                               CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                            NMAX_FREQ = 5,   ))
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE1,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.5E-2,   
-           NUME_MODE = 1,   
-           VALE = -14.4147,        
+   _F(   RESULTAT = MODE1,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.5E-2,
+           NUME_MODE = 1,
+           VALE = -14.4147,
            REFERENCE = 'ANALYTIQUE',    ),
 
-   _F(   RESULTAT = MODE1,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.8E-2,   
-           NUME_MODE = 2,   
-           VALE = -8.63207,        
+   _F(   RESULTAT = MODE1,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.8E-2,
+           NUME_MODE = 2,
+           VALE = -8.63207,
            REFERENCE = 'ANALYTIQUE',      ),
 
-   _F(   RESULTAT = MODE1,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.9E-2,   
-           NUME_MODE = 3,   
-           VALE = -2.86074,        
+   _F(   RESULTAT = MODE1,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.9E-2,
+           NUME_MODE = 3,
+           VALE = -2.86074,
            REFERENCE = 'ANALYTIQUE',      ),
 
-   _F(   RESULTAT = MODE1,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 4.5E-2,   
-           NUME_MODE = 4,   
-           VALE = 8.78382,        
+   _F(   RESULTAT = MODE1,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 4.5E-2,
+           NUME_MODE = 4,
+           VALE = 8.78382,
            REFERENCE = 'ANALYTIQUE',      ),
 
-   _F(   RESULTAT = MODE1,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.8E-2,   
-           NUME_MODE = 5,   
-           VALE = 14.5551,        
+   _F(   RESULTAT = MODE1,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.8E-2,
+           NUME_MODE = 5,
+           VALE = 14.5551,
            REFERENCE = 'ANALYTIQUE',    ))
 
          )
@@ -166,52 +166,52 @@ TEST_RESU(RESU=(
 MODE2=MODE_ITER_INV(       MATR_A=K_ASSE,
                                 MATR_B=KS_ASSE,
                              TYPE_RESU='MODE_FLAMB',
-                            CALC_FREQ=_F(  OPTION = 'PROCHE',     
+                            CALC_FREQ=_F(  OPTION = 'PROCHE',
                                         CHAR_CRIT = ( -13.7, -8.35,
-                                            -2.88, 8.35, 13.7,),    
+                                            -2.88, 8.35, 13.7,),
                                        ),
                             CALC_MODE=_F(  OPTION = 'RAYLEIGH',     )
                          )
 
 TEST_RESU(RESU=(
-   _F(   RESULTAT = MODE2,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.4E-2,   
-           NUME_ORDRE = 1,  
-           VALE = -14.4147,        
+   _F(   RESULTAT = MODE2,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.4E-2,
+           NUME_ORDRE = 1,
+           VALE = -14.4147,
            REFERENCE = 'ANALYTIQUE',      ),
 
-   _F(   RESULTAT = MODE2,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.8E-2,   
-           NUME_ORDRE = 2,  
-           VALE = -8.63207,        
+   _F(   RESULTAT = MODE2,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.8E-2,
+           NUME_ORDRE = 2,
+           VALE = -8.63207,
            REFERENCE = 'ANALYTIQUE',       ),
 
-   _F(   RESULTAT = MODE2,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.9E-2,   
-           NUME_ORDRE = 3,  
-           VALE = -2.86074,        
+   _F(   RESULTAT = MODE2,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.9E-2,
+           NUME_ORDRE = 3,
+           VALE = -2.86074,
            REFERENCE = 'ANALYTIQUE',    ),
 
-   _F(   RESULTAT = MODE2,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 4.5E-2,   
-           NUME_ORDRE = 4,  
-           VALE = 8.78382,        
+   _F(   RESULTAT = MODE2,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 4.5E-2,
+           NUME_ORDRE = 4,
+           VALE = 8.78382,
            REFERENCE = 'ANALYTIQUE',     ),
 
-   _F(   RESULTAT = MODE2,    
-           PARA = 'CHAR_CRIT',        
-           CRITERE = 'RELATIF',     
-           PRECISION = 3.8E-2,   
-           NUME_ORDRE = 5,  
-           VALE = 14.5551,        
+   _F(   RESULTAT = MODE2,
+           PARA = 'CHAR_CRIT',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.8E-2,
+           NUME_ORDRE = 5,
+           VALE = 14.5551,
            REFERENCE = 'ANALYTIQUE',       ))
 
          )

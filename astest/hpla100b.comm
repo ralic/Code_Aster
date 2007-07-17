@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'HPLA100B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='HPLA100B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 #

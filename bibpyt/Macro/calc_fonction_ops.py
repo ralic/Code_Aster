@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_fonction_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 
 import copy
 import traceback
+import os
 from math import pi
 
 
@@ -45,7 +46,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
    from Utilitai import liss_enveloppe
    from Accas import _F
    from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
-   from Utilitai.Utmess import UTMESS, U2MESS
+   from Utilitai.Utmess import U2MESS as UTMESS
    from Numeric import alltrue,less,array,reshape,cos,sin,exp,sqrt
    from Numeric import choose,zeros,Float
    import aster_fonctions
@@ -230,7 +231,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
       if (SPEC_OSCI   != None):
          if SPEC_OSCI['AMOR_REDUIT']==None:
             l_amor=[0.02, 0.05, 0.1]
-            UTMESS('I','CALC_FONCTION',' : génération par défaut de 3 amortissements :'+str(l_amor))
+            UTMESS('I','FONCT0_31',valr=l_amor)
          else:
             if type(SPEC_OSCI['AMOR_REDUIT']) not in EnumTypes :
                l_amor=[SPEC_OSCI['AMOR_REDUIT'],]
@@ -257,7 +258,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             texte=[]
             for i in range(len(l_freq)/5) :
                texte.append(' %f %f %f %f %f' %tuple(l_freq[i*5:i*5+5]))
-            UTMESS('I','CALC_FONCTION',' : génération par défaut de 150 fréquences :\n'+'\n'.join(texte))
+            UTMESS('I','FONCT0_32',valk=os.linesep.join(texte))
          elif SPEC_OSCI['LIST_FREQ']!=None:
             l_freq=SPEC_OSCI['LIST_FREQ'].Valeurs()
          elif SPEC_OSCI['FREQ']!=None:
@@ -266,17 +267,15 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             else:
                l_freq= SPEC_OSCI['FREQ']
          if abs(SPEC_OSCI['NORME'])<1.E-10 :
-            UTMESS('S','CALC_FONCTION',' : SPEC_OSCI, la norme ne peut etre nulle')
+            UTMESS('S','FONCT0_33')
          if SPEC_OSCI['NATURE_FONC']!='ACCE' :
-            UTMESS('S','CALC_FONCTION',' : SPEC_OSCI, le type de la fonction doit etre ACCE')
+            UTMESS('S','FONCT0_34')
          if SPEC_OSCI['METHODE']!='NIGAM' :
-            UTMESS('S','CALC_FONCTION',' : SPEC_OSCI, seule la méthode NIGAM est codée')
+            UTMESS('S','FONCT0_35')
          eps=1.e-6
          for amor in l_amor :
             if amor>(1-eps) :
-               UTMESS('S','CALC_FONCTION',' : SPEC_OSCI, la méthode choisie '\
-                        'suppose des amortissements sous-critiques, amor<1.')
-      
+              UTMESS('S','FONCT0_36')
          __ff=SPEC_OSCI['FONCTION'].convert()
          ctxt.f = __ff.nom
          
@@ -318,13 +317,13 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
          __ex=t_nappe(vale_para=sp_lisse.listAmor,l_fonc=l_fonc,para=__ff.para)
 
    except InterpolationError, msg:
-      U2MESS('F', 'FONCT0_27', valk=(ctxt.f, str(msg)))
+      UTMESS('F', 'FONCT0_27', valk=(ctxt.f, str(msg)))
    except ParametreError, msg:
-      U2MESS('F', 'FONCT0_28', valk=(ctxt.f, str(msg)))
+      UTMESS('F', 'FONCT0_28', valk=(ctxt.f, str(msg)))
    except ProlongementError, msg:
-      U2MESS('F', 'FONCT0_29', valk=(ctxt.f, str(msg)))
+      UTMESS('F', 'FONCT0_29', valk=(ctxt.f, str(msg)))
    except FonctionError, msg:
-      U2MESS('F', 'FONCT0_30', valk=(ctxt.f, str(msg), traceback.format_exc()))
+      UTMESS('F', 'FONCT0_30', valk=(ctxt.f, str(msg), traceback.format_exc()))
   
    ### creation de la fonction produite par appel à DEFI_FONCTION
    ### on récupère les paramètres issus du calcul de __ex

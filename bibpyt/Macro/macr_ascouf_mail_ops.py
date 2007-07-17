@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,8 @@ import os.path
 from math import sqrt,cos,sin,pi,tan,log,fabs,ceil,fmod,floor
 import aster
 import string
-from Utilitai.Utmess     import UTMESS
+from Utilitai.Utmess     import U2MESS as UTMESS
+
 
 # ------------------------------------------------------------------------------
 def ASCFON(RC,RM,EP,ORIEN,AZIM,AXEC,POS,Y):
@@ -311,11 +312,7 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
          if ssep.ICIRP>(2.*pi*RM) :
             texte_final=string.join(echo_mess)
             aster.affiche("MESSAGE",texte_final)
-            message=        ' ASCSEP valeur hors domaine \n'
-            message=message+' sous-epaisseur numero : %d \n'%i
-            message=message+' taille axe circonferentiel : %.2f \n'%ssep.ICIRP
-            message=message+' bord plaque : %.2f \n'%2*pi*RM
-            UTMESS('F', "MACR_ASCOUF_MAIL", message)
+            UTMESS('F','ASCOUF0_6',vali=[i],valr=[ssep.ICIRP,2*pi*RM])
          echo_mess.append( 'TAILLE CIRCONFERENTIELLE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ICIRP)
          echo_mess.append( '<=> TAILLE EQUIVALENTE SUR LA CIRCONFERENCE (DEGRES) : %.2f \n'%(ssep.ICIRP*360./(2.*pi*RM)))  
 
@@ -335,9 +332,7 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
          if (SYME in ('QUART','DEMI')) and (ssep.ISLP!=ALPHA*CG*RC/2.) :
             texte_final=string.join(echo_mess)
             aster.affiche("MESSAGE",texte_final)
-            message=         ' ASCSEP cas de symetrie :\n'
-            message=message+ ' la sous-epaisseur doit etre dans la section mediane du coude !\n'
-            UTMESS('F', "MACR_ASCOUF_MAIL", message)
+            UTMESS('F','ASCOUF0_7')
       else :
          if GEOM=='COUDE':
             echo_mess.append( 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR COUDE : %.2f \n'%((ssep.BETA)*CG*(RC+(RM+EP/2.)*cos(AZIMC))))
@@ -348,9 +343,7 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
          if (SYME in ('QUART','DEMI')) and (ssep.BETA!=ALPHA/2.) :
             texte_final=string.join(echo_mess)
             aster.affiche("MESSAGE",texte_final)
-            message=          ' ASCSEP cas de symetrie :\n'
-            message=message+  ' la sous-epaisseur doit etre dans la section mediane du coude !\n'
-            UTMESS('F', "MACR_ASCOUF_MAIL", message)
+            UTMESS('F','ASCOUF0_7')
       echo_mess.append( 'ABSC. CURV. AXIALE CENTRE SOUS-EPAISSEUR SUR PLAQUE : %.2f \n'%ssep.ISLP)
 #
 # -- CALCUL DE LA TAILLE LONGITUDINALE 
@@ -446,11 +439,7 @@ def ASCTCI(MCL_SOUS_EPAIS,RM):
       if (ssep.ISCP>2.*pi*RM) or (ssep.ISCP<0.) : 
          texte_final=string.join(echo_mess)
          aster.affiche("MESSAGE",texte_final)
-         message=         ' valeur hors domaine \n'
-         message=message+ ' SOUS-EPAISSEUR NUMERO :%d'%MCL_SOUS_EPAIS.index(ssep)
-         message=message+ ' ABSC. CURV. CIRCONF.  :%.2f \n'%ssep.ISCP
-         message=message+ ' BORD PLAQUE :%.2f \n'%(2.*pi*RM)
-         UTMESS('F', "MACR_ASCOUF_MAIL", message)
+         UTMESS('F','ASCOUF0_9',vali=[MCL_SOUS_EPAIS.index(ssep)],valr=[ssep.ISCP,2.*pi*RM])
       TAMPON.append((ssep.ISCP,i))
   TAMPON.sort()
   IABSC1=[]
@@ -533,11 +522,7 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
       if (ssep.ISLP>ALPHAR*RC) or (ssep.ISLP<0.) : 
          texte_final=string.join(echo_mess)
          aster.affiche("MESSAGE",texte_final)
-         message=         ' valeur hors domaine \n'
-         message=message+ ' SOUS-EPAISSEUR NUMERO :%d \n'%MCL_SOUS_EPAIS.index(ssep)
-         message=message+ ' ABSC. CURV. LONGIT.  :%.2f \n'%ssep.ISLP
-         message=message+ ' BORDS PLAQUE :%.2f \n'%(ALPHAR*RC)
-         UTMESS('F', "MACR_ASCOUF_MAIL", message)
+         UTMESS('F','ASCOUF0_10',vali=[MCL_SOUS_EPAIS.index(ssep)],valr=[ssep.ISLP,ALPHAR*RC])
       TAMPON.append((ssep.ISLP,i))
   TAMPON.sort()
   IORDO1=[]
@@ -569,19 +554,11 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
       if YI<(-LTCHAR):
          texte_final=string.join(echo_mess)
          aster.affiche("MESSAGE",texte_final)
-         message=         ' valeur hors domaine \n'
-         message=message+ ' SOUS-EPAISSEUR NUMERO :%d \n'%bid[1]
-         message=message+ ' BORD INFERIEUR  :%.2f \n'%YI
-         message=message+ ' BORDS PLAQUE :%.2f \n'%(-1*LTCHAR)
-         UTMESS('F', "MACR_ASCOUF_MAIL", message)
+         UTMESS('F','ASCOUF0_11',vali=[bid[1]],valr=[YI,-1*LTCHAR])
       if YS>(ALPHAR*RC+LTCLIM):
          texte_final=string.join(echo_mess)
          aster.affiche("MESSAGE",texte_final)
-         message=         ' valeur hors domaine \n'
-         message=message+ ' SOUS-EPAISSEUR NUMERO :%d \n'%bid[1]
-         message=message+ ' BORD INFERIEUR  :%.2f \n'%YI
-         message=message+ ' BORDS PLAQUE :%.2f \n'%(ALPHAR*RC+LTCLIM)
-         UTMESS('F', "MACR_ASCOUF_MAIL", message)
+         UTMESS('F','ASCOUF0_11',vali=[bid[1]],valr=[YI,ALPHAR*RC+LTCLIM])
       COORYI.append(YI) 
       COORYS.append(YS)
 #
@@ -879,7 +856,6 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
 #
 #     NZONEX = NOMBRE DE ZONES CIRCONFERENTIELLES
 #     NZONEY = NOMBRE DE ZONES LONGITUDINALES       
-#
 # ------------------------------------------------------------------------------
 def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
   ier=0
@@ -2091,11 +2067,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   else:
      NBTRAN = 1
      if COUDE['SYME']!='ENTIER':
-        message=        ' les quart et demi structure \n'
-        message=message+' ne peuvent etre realisees   \n'
-        message=message+' sur un modele comportant une transition \n'
-        message=message+' d epaisseur \n'
-        UTMESS('F', "MACR_ASCOUF_MAIL", message)
+        UTMESS('F','ASCOUF0_13')
 #
      DEXT  = COUDE['DEXT_T1']
      EP1   = COUDE['EPAIS_T1']
@@ -2120,29 +2092,19 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   E   = EP1
 #
   if COUDE['SYME']!='ENTIER' and (LTCHAR!=LTCLIM) :
-     message=        ' les deux embouts doivent etre \n'
-     message=message+' de meme longueur pour les cas de symetrie \n'
-     UTMESS('F', "MACR_ASCOUF_MAIL", message)
+     UTMESS('F','ASCOUF0_14')
 #
   LAMOR = 3.0/2.0 * sqrt( RM*RM*RM / EP1)
   if LTCHAR<LAMOR :
-     message=        ' longueur d embout P1 inferieure \n'
-     message=message+' a la longueur d amortissement = %.2f \n'%LAMOR
-     UTMESS('A', "MACR_ASCOUF_MAIL", message)
+     UTMESS('A','ASCOUF0_15',valr=LAMOR)
 #
   LAMOR = 3.0/2.0 * sqrt( RM2*RM2*RM2 / EP2)
   if LTCLIM<LAMOR :
-     message=        ' longueur d embout P2 inferieure \n'
-     message=message+' a la longueur d amortissement = %.2f \n'%LAMOR
-     UTMESS('A', "MACR_ASCOUF_MAIL", message)
+     UTMESS('A','ASCOUF0_16',valr=LAMOR)
 #
   if TYPBOL!=None:
    if TYPBOL[:1]=='GV' :
-     message=        ' la condition aux limites raccord \n'
-     message=message+' 3d-poutre appliquee avec la macro de calcul \n '
-     message=message+' ascouf n est pas licite avec un embout \n'
-     message=message+' de type conique \n'
-     UTMESS('A', "MACR_ASCOUF_MAIL", message)
+     UTMESS('A','ASCOUF0_17')
 #
 ################################################################################
 #     --- caracteristiques de la fissure ---
@@ -2150,21 +2112,13 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 #
   if FISS_COUDE!=None:
      if NBEP!=3:
-        message=        ' le nombre d elements dans l epaisseur \n'
-        message=message+' du coude n est pas parametrable pour \n'
-        message=message+' un coude avec fissure \n'
-        message=message+' mot-cle NB_ELEM_EPAIS ignore \n'
-        UTMESS('A', "MACR_ASCOUF_MAIL", message)
+        UTMESS('A','ASCOUF0_18')
      FPROF = FISS_COUDE['PROFONDEUR']
      FAXI  = FISS_COUDE['AXIS']
      if FAXI=='NON' and FISS_COUDE['LONGUEUR']==None :
-        message=        ' pour les fissures non axisymetriques \n'
-        message=message+' la longueur doit etre specifiee  \n'
-        UTMESS('F', "MACR_ASCOUF_MAIL", message)
+        UTMESS('F','ASCOUF0_19')
      if FAXI=='OUI' and FISS_COUDE['LONGUEUR']!=None :
-        message=        ' la fissure est axisymetrique : on ne \n'
-        message=message+' tient pas compte de la longueur specifiee \n'
-        UTMESS('A', "MACR_ASCOUF_MAIL", message)
+        UTMESS('A','ASCOUF0_20')
      if FISS_COUDE['LONGUEUR']!=None : FLONG = FISS_COUDE['LONGUEUR']
      if FAXI=='OUI' :
 ####    on prend une marge de securite a cause des modifs dans ascfis
@@ -2196,22 +2150,13 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
      DGAXEC = FLONG/2.0
      DC     = DGAXEC
      if ORIEN!=90.0 and NBTRAN!=0 :
-        message=        ' avec une transition d epaisseur \n'
-        message=message+' la fissure doit obligatoirement etre transverse  \n'
-        UTMESS('F', "MACR_ASCOUF_MAIL", message)
+        UTMESS('F','ASCOUF0_21')
      if ORIEN!=90.0 and NBTRAN!=0 :
-        message=        ' avec une transition d epaisseur \n'
-        message=message+' la fissure doit obligatoirement etre transverse  \n'
-        UTMESS('F', "MACR_ASCOUF_MAIL", message)
+        UTMESS('F','ASCOUF0_21')
      if ORIEN!=90.0 and COUDE['SYME']!='ENTIER' :
-        message=        ' l orientation de la fissure doit \n'
-        message=message+' etre transverse (orien : 90.) pour modeliser  \n'
-        message=message+' un quart ou une demi structure  \n'
-        UTMESS('F', "MACR_ASCOUF_MAIL", message)
+        UTMESS('F','ASCOUF0_23')
      if ORIEN!=90.0 and FAXI=='OUI' :
-        message=        ' la fissure est axisymetrique : son \n'
-        message=message+' orientation doit etre transverse (ORIEN : 90.) \n'
-        UTMESS('F', "MACR_ASCOUF_MAIL", message)
+        UTMESS('F','ASCOUF0_24')
 #
 ################################################################################
 #     --- caracteristiques des sous epaisseurs ---
@@ -2222,72 +2167,40 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   if SOUS_EPAIS_MULTI!=None : MCL_SOUS_EPAIS = SOUS_EPAIS_MULTI
   if SOUS_EPAIS_COUDE!=None : MCL_SOUS_EPAIS = SOUS_EPAIS_COUDE
   if SOUS_EPAIS_MULTI!=None and NBTRAN!=0 :
-     message=        ' il ne peut pas y avoir plusieurs \n'
-     message=message+' sous-epaisseurs en meme temps qu une \n'
-     message=message+' transition d epaisseur : si une seule \n'
-     message=message+' sous-epaisseur utiliser sous_epais_coude \n'
-     UTMESS('F', "MACR_ASCOUF_MAIL", message)
+     UTMESS('F','ASCOUF0_25')
   if SOUS_EPAIS_COUDE!=None and FISS_COUDE!=None and NBTRAN!=0 :
-     message=        ' avec une transition d epaisseur'
-     message=message+' il doit obligatoirement y avoir un defaut \n'
-     message=message+' soit une fissure  soit une sous-epaisseur \n'
-     UTMESS('F', "MACR_ASCOUF_MAIL", message)
+     UTMESS('F','ASCOUF0_26')
   if MCL_SOUS_EPAIS!=None :
      AZIM = 90.0
      if MCL_SOUS_EPAIS.__class__.__name__  !='MCList' : MCL_SOUS_EPAIS=[MCL_SOUS_EPAIS,]
      if len(MCL_SOUS_EPAIS)!=1 and COUDE['SYME']!='ENTIER' :
-        message=        ' ne modeliser qu une seule \n'
-        message=message+' sous-epaisseur pour un quart ou demi-coude\n '
-        UTMESS('F', "MACR_ASCOUF_MAIL", message)
+        UTMESS('F','ASCOUF0_27')
      for ssep in MCL_SOUS_EPAIS :
         isep=isep+1
         if ssep['AXE_CIRC']!=None and ssep['TYPE']=='AXIS' :
-           message=        ' vous ne pouvez declarer la sous- \n'
-           message=message+' epaisseur comme axisymetrique et donner \n'
-           message=message+' une taille d axe circonferentiel \n'
-           UTMESS('F', "MACR_ASCOUF_MAIL", message)
+           UTMESS('F','ASCOUF0_28')
         if ssep['AXE_CIRC']==None and ssep['TYPE']=='ELLI' :
-           message=        ' vous devez donner une taille d axe \n'
-           message=message+' circonferentiel pour une sous-epaisseur de \n'
-           message=message+' type elliptique \n'
-           UTMESS('F', "MACR_ASCOUF_MAIL", message)
+           UTMESS('F','ASCOUF0_29')
         if ssep['POSI_CURV_LONGI']!=None:
            if ssep['POSI_CURV_LONGI']>(ALPHA*RC*pi/180.0) :
-              message=        ' valeur hors domaine de validite \n'
-              message=message+' sous-epaisseur numero : %d \n'%isep
-              message=message+' abscisse curv. longit. : %.2f \n'%ssep['POSI_CURV_LONGI']
-              message=message+' valeur maximale autorisee : %.2f \n'%(ALPHA*RC*pi/180.0)
-              UTMESS('F', "MACR_ASCOUF_MAIL", message)
+              UTMESS('F','ASCOUF0_30',vali=[isep],valr=[ssep['POSI_CURV_LONGI'],ALPHA*RC*pi/180.0])
            LDEFAU = ssep['POSI_CURV_LONGI'] + ssep['AXE_LONGI']/2.0
            BETA = 0.0
         else:
            BETA=ssep['POSI_ANGUL']
            if (BETA<0.) or (BETA>ALPHA) :
-              message=        ' valeur hors domaine de validite \n'
-              message=message+' sous-epaisseur numero : %d \n'%isep
-              message=message+' position angulaire centre sous-ep : %.2f \n'%BETA
-              message=message+' valeur limite autorisee : %.2f \n'%ALPHA
-              UTMESS('F', "MACR_ASCOUF_MAIL", message)
+              UTMESS('F','ASCOUF0_31',vali=[isep],valr=[BETA,ALPHA])
            LDEFAU = (BETA*RC*pi/180.0) + ssep['AXE_LONGI']/2.0
 #
         if ssep['POSI_CURV_CIRC']!=None:
            if ssep['POSI_CURV_CIRC']>(2*pi*RM) :
-              message=        ' valeur hors domaine de validite \n'
-              message=message+' sous-epaisseur numero : %d \n'%isep
-              message=message+' abscisse curv. circonf. : %.2f \n'%ssep['POSI_CURV_CIRC']
-              message=message+' valeur limite autorisee : %.2f \n'%(2*pi*RM)
-              UTMESS('F', "MACR_ASCOUF_MAIL", message)
+              UTMESS('F','ASCOUF0_32',vali=[isep],valr=[ssep['POSI_CURV_CIRC'],2*pi*RM])
            if ssep['POSI_CURV_CIRC']!=(pi*RM) and ssep['TYPE']=='AXIS':
-              message=        ' le centre d une sous-epaisseur \n'
-              message=message+' axisymetrique est impose en intrados (pi*RM) \n'
-              UTMESS('F', "MACR_ASCOUF_MAIL", message)
+              UTMESS('F','ASCOUF0_33')
         else:
            ssep.IPHIC=ssep['AZIMUT']
            if ssep['AZIMUT']!=180. and ssep['TYPE']=='AXIS':
-              message=        ' le centre d une sous-epaisseur \n'
-              message=message+' axisymetrique est impose en intrados \n'
-              message=message+' l azimut est fixe a 180 degres \n'
-              UTMESS('F', "MACR_ASCOUF_MAIL", message)
+              UTMESS('F','ASCOUF0_34')
 #        l_ITYPE.append(ssep['TYPE'           ])
 #        l_ICIRC.append(ssep['AXE_CIRC'       ])
 #        l_ILONC.append(ssep['AXE_LONGI'      ])
@@ -2303,11 +2216,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 #        l_IEVID.append(ssep['EMPREINTE'      ])
 
      if SOUS_EPAIS_COUDE!=None and COUDE['NB_ELEM_EPAIS']!=3 :
-        message=        ' le nombre d elements dans l \n'
-        message=message+' epaisseur du coude n est pas parametrable pour \n'
-        message=message+' la version 2 de la procedure de plaque avec sous \n'
-        message=message+' -epaisseur : mot-cle NB_ELEM_EPAIS ignore \n'
-        UTMESS('A', "MACR_ASCOUF_MAIL", message)
+        UTMESS('A','ASCOUF0_35')
 #
 ################################################################################
 #     --- verifications de coherences ---
@@ -2316,38 +2225,23 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 # donnees globales
   if COUDE['TRANSFORMEE']=='COUDE' or COUDE['TRAN_EPAIS']=='NON' :
     if SUREP<0. or SUREP>(RM-EP1/2.0):
-       message=        ' valeur hors domaine de validite \n'
-       message=message+' surepaisseur : \n',SUREP
-       message=message+' valeur limite autorisee (RM-EP1/2) : %.2f \n'%(RM-EP1/2.0)
-       UTMESS('F', "MACR_ASCOUF_MAIL", message)
+
+       UTMESS('F','ASCOUF0_36',vali=SUREP,valr=RM-EP1/2.0)
   if RC<=(RM+EP1/2.0):
-     message=        ' valeur hors domaine de validite \n'
-     message=message+' le rayon de cintrage : %.2f \n',RC
-     message=message+' doit etre superieur a (RM+EP1/2) : %.2f \n'%(RM+EP1/2.0)
-     UTMESS('F', "MACR_ASCOUF_MAIL", message)
+     UTMESS('F','ASCOUF0_37',valr=[RC,RM+EP1/2.0])
 #
 # coude fissure
 #
   if FISS_COUDE!=None:
     if (RM/EP1)<5. or (RM/EP1)>50.:
-       message=        ' valeur hors domaine de validite (5,50) \n'
-       message=message+' rapport RM/EP1 : %.2f \n'%(RM/EP1)
-       UTMESS('F', "MACR_ASCOUF_MAIL", message)
+       UTMESS('F','ASCOUF0_38',valr=RM/EP1)
     if FISS_COUDE['ABSC_CURV']!=None:
      if SF<0. or SF>(ALPHA*RC*pi/180.0) :
-       message=        ' valeur hors domaine de validite \n'
-       message=message+' abscisse curviligne centre fissure : %.2f \n'%SF
-       message=message+' valeur limite autorisee : %.2f \n'%(ALPHA*RC*pi/180.0)
-       UTMESS('F', "MACR_ASCOUF_MAIL", message)
+       UTMESS('F','ASCOUF0_39',valr=[SF,ALPHA*RC*pi/180.0])
     if (NT-2*(NT/2))!=0:
-       message=        ' valeur hors domaine de validite \n'
-       message=message+' nombre de tranches : %d \n'%NT
-       UTMESS('F', "MACR_ASCOUF_MAIL", message)
+       UTMESS('F','ASCOUF0_40',vali=NT)
     if FISS_COUDE['ABSC_CURV'] and ((BETA<0.) or (BETA>ALPHA)):
-       message=        ' valeur hors domaine de validite \n'
-       message=message+' position angulaire  centre fissure : %.2f \n'%BETA
-       message=message+' posi_angul doit etre >= 0 et <=  %.2f \n'%ALPHA
-       UTMESS('F', "MACR_ASCOUF_MAIL", message)
+       UTMESS('F','ASCOUF0_41',valr=[BETA,ALPHA])
 #
 # transition d epaisseur
 #
@@ -2355,101 +2249,46 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
     LCOUDE = ALPHA * RC * pi / 180.0
     DEXT = 2.0*RM + EP1
     if (LTRAN<LDEFAU) and (LTRAN>LCOUDE) :
-       message=        ' valeur hors domaine de validite \n'
-       message=message+' debut transition d epaisseur : %.2f \n'%LTRAN
-       message=message+' valeur minimale autorisee : %.2f \n'%LDEFAU
-       message=message+' valeur maximale autorisee : %.2f \n'%LCOUDE
-       UTMESS('F', "MACR_ASCOUF_MAIL", message)
+       UTMESS('F','ASCOUF0_42',valr=[LTRAN,LDEFAU,LCOUDE])
     if (TETA1<0.) or (TETA1>30.) :
-       message=        ' valeur hors domaine de validite \n'
-       message=message+' angle de transition TETA1 : %.2f \n'%TETA1
-       message=message+' valeur minimale autorisee : %.2f \n'%0.
-       message=message+' valeur maximale autorisee : %.2f \n'%30.
-       UTMESS('F', "MACR_ASCOUF_MAIL", message)
+       UTMESS('F','ASCOUF0_43',valr=[TETA1])  
 #
 # transition d epaisseur a une pente
 #
     if NBTRAN==1:
        if (EP1<12.) or (EP1>80.) :
-          message=        ' valeur hors domaine de validite \n'
-          message=message+' epaisseur avant la transition : %.2f \n'%EP1
-          message=message+' valeur minimale autorisee : %.2f \n'%12.
-          message=message+' valeur maximale autorisee : %.2f \n'%80.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_44',valr=[EP1])
        if (EP2<20.) or (EP2>110.) :
-          message=        ' valeur hors domaine de validite \n'
-          message=message+' epaisseur apres la transition : %.2f \n'%EP2
-          message=message+' valeur minimale autorisee : %.2f \n'%20.
-          message=message+' valeur maximale autorisee : %.2f \n'%110.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_45',valr=[EP2])
        if (EP1>EP2) :
-          message=        ' l epaisseur avant la transition \n'
-          message=message+' doit etre inferieure  \n'
-          message=message+' a celle apres la transition \n'
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_46')
        LTRANF = LTRAN + ((EP2-EP1)/(tan(TETA1)))
        if (LTRANF>LCOUDE) :
-          message=        ' valeur hors domaine de validite \n'
-          message=message+' fin transition d epaisseur : %.2f \n'%LTRANF
-          message=message+' valeur limite autorisee : %.2f \n'%LCOUDE
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_47',valr=[LTRANF,LCOUDE])
        if DEXT<112. or DEXT>880. :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' diam ext du tube avant transition: %.2f \n'%DEXT
-          message=message+' valeur minimum autorisee : %.2f \n'%112.
-          message=message+' valeur maximum autorisee : %.2f \n'%880.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_48',valr=[DEXT])
 #
 # transition d epaisseur a une pente
 #
     else:
        if (TETA2<0.) or (TETA2>45.) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' angle de transition TETA2: %.2f \n'%TETA2
-          message=message+' valeur minimum autorisee : %.2f \n'%0.
-          message=message+' valeur maximum autorisee : %.2f \n'%45.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_49',valr=[TETA2])
        if (EP1<7.) or (EP1>35.) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' epaisseur avant 1ere transition: %.2f \n'%EP1
-          message=message+' valeur minimum autorisee : %.2f \n'%7.
-          message=message+' valeur maximum autorisee : %.2f \n'%35.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_50',valr=[EP1])
        if (EP2<15.) or (EP2>40.) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' epaisseur avant 2eme transition: %.2f \n'%EP2
-          message=message+' valeur minimum autorisee : %.2f \n'%15.
-          message=message+' valeur maximum autorisee : %.2f \n'%40.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_51',valr=[EP2])
        if (EPI<15.) or (EPI>40.) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' epaisseur intermediaire: %.2f \n'%EPI
-          message=message+' valeur minimum autorisee : %.2f \n'%15.
-          message=message+' valeur maximum autorisee : %.2f \n'%40.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_52',valr=[EPI])
        if (EP1>EPI) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' l epaisseur avant la transition \n'
-          message=message+' doit etre inferieure a l epaisseur intermediaire \n'
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_53')
        if (EP2<EPI) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' l epaisseur apres la transition \n'
-          message=message+' doit etre inferieure a l epaisseur intermediaire \n'
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_54')
        LTRANF = LTRAN  + (EPI-EP1)/(tan(TETA1))
        LTRANF = LTRANF + (EP2-EPI)/(tan(TETA2))
        if (LTRANF>LCOUDE) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' fin transition d epaisseur: %.2f \n'%LTRANF
-          message=message+' valeur limite autorisee : %.2f \n'%LCOUDE
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_55',valr=[LTRANF,LCOUDE])
        if (DEXT<77.) or (DEXT>355.) :
-          message=        ' valeur hors domaine de validite\n'
-          message=message+' diam ext du tube avant transition: %.2f \n'%LTRANF
-          message=message+' valeur minimum autorisee : %.2f \n'%77.
-          message=message+' valeur maximum autorisee : %.2f \n'%355.
-          UTMESS('F', "MACR_ASCOUF_MAIL", message)
+          UTMESS('F','ASCOUF0_56',valr=[LTRANF])
 #
 ################################################################################
 #     --- calcul taille initiale des defauts sur la plaque ---
@@ -2483,7 +2322,7 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
   elif logiel=='GIBI2000': logiel = loc_gibi+'gibi2000'
   
   else                   :
-       UTMESS('F', "MACR_ASCOUF_MAIL", "seuls gibi98 et gibi2000 sont appelables")
+       UTMESS('F','ASCOUF0_57')
 #
 #     --- ecriture sur le fichier .datg  de la procedure ---
 #

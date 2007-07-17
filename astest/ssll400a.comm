@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DE SECTION CIRCULAIRE VARIABLE,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@
 #                         A EFFORT DE PESANTEUR SUIVANT X
 #======================================================================
 #
-DEBUT(  CODE=_F(  NOM = 'SSLL400A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL400A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 MA=LIRE_MAILLAGE(  )
@@ -299,7 +299,7 @@ MCVF100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = FOR100Y),
                                    )
 
-CALC_ELEM( reuse= MCVF100Y ,RESULTAT= MCVF100Y , 
+CALC_ELEM( reuse= MCVF100Y ,RESULTAT= MCVF100Y ,
                                    OPTION=('EFGE_ELNO_DEPL',
                                            'SIGM_ELNO_DEPL',
                                           )
@@ -447,7 +447,7 @@ MCVM100X=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100X),
                                 )
 
-CALC_ELEM( reuse= MCVM100X ,RESULTAT= MCVM100X ,         
+CALC_ELEM( reuse= MCVM100X ,RESULTAT= MCVM100X ,
                                    OPTION=('EFGE_ELNO_DEPL',
                                            'SIGM_ELNO_DEPL',
                                           )
@@ -559,7 +559,7 @@ MCVM100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100Y),
                                    )
 
-CALC_ELEM( reuse= MCVM100Y ,RESULTAT= MCVM100Y ,         
+CALC_ELEM( reuse= MCVM100Y ,RESULTAT= MCVM100Y ,
                                    OPTION=('EFGE_ELNO_DEPL',
                                            'SIGM_ELNO_DEPL',
                                           )
@@ -679,7 +679,7 @@ MCVD100X=MECA_STATIQUE(        MODELE=MO,
                                    EXCIT=_F( CHARGE = DENS100X),
                                   )
 
-CALC_ELEM( reuse= MCVD100X ,RESULTAT= MCVD100X ,        
+CALC_ELEM( reuse= MCVD100X ,RESULTAT= MCVD100X ,
                                   OPTION=('EFGE_ELNO_DEPL',
                                           'SIGM_ELNO_DEPL',
                                          )
@@ -760,7 +760,7 @@ MCVDENY=MECA_STATIQUE(         MODELE=MO,
                                   EXCIT=_F( CHARGE = DENS100Y),
                                 )
 
-CALC_ELEM( reuse= MCVDENY ,RESULTAT= MCVDENY ,          
+CALC_ELEM( reuse= MCVDENY ,RESULTAT= MCVDENY ,
                                   OPTION=('EFGE_ELNO_DEPL',
                                           'SIGM_ELNO_DEPL',
                                          )
@@ -927,7 +927,7 @@ MRVF100X=MECA_STATIQUE(        MODELE=MO,
                                    EXCIT=_F( CHARGE = FORC100X),
                                  )
 
-CALC_ELEM( reuse= MRVF100X ,RESULTAT= MRVF100X ,         
+CALC_ELEM( reuse= MRVF100X ,RESULTAT= MRVF100X ,
                                   OPTION=('EFGE_ELNO_DEPL',
                                           'SIGM_ELNO_DEPL',
                                          )
@@ -1010,7 +1010,7 @@ MRVF100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = FOR100Y),
                                   )
 
-CALC_ELEM( reuse= MRVF100Y ,RESULTAT= MRVF100Y ,          
+CALC_ELEM( reuse= MRVF100Y ,RESULTAT= MRVF100Y ,
                                    OPTION=('EFGE_ELNO_DEPL',
                                            'SIGM_ELNO_DEPL',
                                           )
@@ -1158,7 +1158,7 @@ MRVM100X=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100X),
                                    )
 
-CALC_ELEM( reuse= MRVM100X ,RESULTAT= MRVM100X ,         
+CALC_ELEM( reuse= MRVM100X ,RESULTAT= MRVM100X ,
 
                                    OPTION=('EFGE_ELNO_DEPL',
                                            'SIGM_ELNO_DEPL',
@@ -1275,7 +1275,7 @@ MRVM100Y=MECA_STATIQUE(         MODELE=MO,
                                     EXCIT=_F( CHARGE = MOM100Y),
                                    )
 
-CALC_ELEM( reuse= MRVM100Y ,RESULTAT= MRVM100Y ,          
+CALC_ELEM( reuse= MRVM100Y ,RESULTAT= MRVM100Y ,
                                    OPTION=('EFGE_ELNO_DEPL',
                                            'SIGM_ELNO_DEPL',
                                           )
@@ -1395,7 +1395,7 @@ MRVD100X=MECA_STATIQUE(        MODELE=MO,
                                    EXCIT=_F( CHARGE = DENS100X),
                                   )
 
-CALC_ELEM( reuse= MRVD100X ,RESULTAT= MRVD100X ,         
+CALC_ELEM( reuse= MRVD100X ,RESULTAT= MRVD100X ,
                                   OPTION=('EFGE_ELNO_DEPL',
                                           'SIGM_ELNO_DEPL',
                                          )
@@ -1490,7 +1490,7 @@ MRVDENY=MECA_STATIQUE(         MODELE=MO,
                                   EXCIT=_F( CHARGE = DENS100Y),
                                  )
 
-CALC_ELEM( reuse= MRVDENY ,RESULTAT= MRVDENY ,          
+CALC_ELEM( reuse= MRVDENY ,RESULTAT= MRVDENY ,
                                   OPTION=('EFGE_ELNO_DEPL',
                                           'SIGM_ELNO_DEPL',
                                          )
@@ -1776,7 +1776,7 @@ MCGPESX=MECA_STATIQUE(         MODELE=MO,
                                   EXCIT=_F( CHARGE = PENSENGX),
                                  )
 
-CALC_ELEM( reuse= MCGPESX ,RESULTAT= MCGPESX ,          
+CALC_ELEM( reuse= MCGPESX ,RESULTAT= MCGPESX ,
                                   OPTION=('EFGE_ELNO_DEPL',
                                           'SIGM_ELNO_DEPL',
                                          )

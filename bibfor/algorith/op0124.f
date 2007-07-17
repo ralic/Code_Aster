@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,16 @@ C
       CALL GETFAC ( 'AFFE', NBFAC )
       IF ( NBFAC .GT. 0 ) THEN
          CALL CRTYPE()
+         GO TO 9999
+      END IF
+C
+C ----------------------------------------------------------------------
+C               TRAITEMENT DU MOT CLE "ASSE"
+C ----------------------------------------------------------------------
+C
+      CALL GETFAC ( 'ASSE', NBFAC )
+      IF ( NBFAC .GT. 0 ) THEN
+         CALL CRASSE()
          GO TO 9999
       END IF
 C

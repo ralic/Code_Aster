@@ -1,21 +1,21 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE HOEK_BROWN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #      CAS PARTICULIER D UNE DEFORMATION VOLUMIQUE PLASTIQUE CONSTANTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,8 +23,7 @@
 #   HOEK-BROWN MODIFIE POUR UN OCNFINEMENT DE 5 MPA
 # ======================================================================
 CONFINEMENT=5.0;
-DEBUT(   CODE=_F(NOM = 'SSNA116A',NIV_PUB_WEB='INTERNET',
-          VISU_EFICAS='OUI')   )
+DEBUT(CODE=_F(NOM='SSNA116A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
 
 #***********************************************************************
 #    MAILLAGE + MODELE
@@ -47,7 +46,7 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
                          )
 
 #***********************************************************************
-#    CARACTERISTIQUES DU MATERIAU 
+#    CARACTERISTIQUES DU MATERIAU
 #***********************************************************************
 
 SOL=DEFI_MATERIAU(    ELAS=_F(  E  = 4500.0,
@@ -102,25 +101,25 @@ COEF1=DEFI_FONCTION(      NOM_PARA='INST',
 #    CALCUL DE LA SOLUTION DEFINISSANT L ETAT INITIAL
 #***********************************************************************
 
-U1=STAT_NON_LINE( 
+U1=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U1,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
+                FONC_MULT = COEF1), _F(
                 CHARGE = DEPL_1)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'HOEK_BROWN',
                 RESI_INTE_RELA = 1.E-6,
                 ITER_INTE_MAXI = 100),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE'),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50,),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = TEMPS1)
               )
 
@@ -135,7 +134,7 @@ U1=CALC_ELEM( reuse=U1,
 #***********************************************************************
 
 TEMPS2=DEFI_LIST_REEL(   DEBUT=2.,
-                            INTERVALLE=(_F(  JUSQU_A = 15.0,   NOMBRE = 520 )                                                                                                                                                                         
+                            INTERVALLE=(_F(  JUSQU_A = 15.0,   NOMBRE = 520 )
                     ))
 
 #***********************************************************************
@@ -174,25 +173,25 @@ VAR_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
 #***********************************************************************
 #    CALCUL DE LA SOLUTION : SIMULATION DE L ESSAI TRIAXIAL
 #***********************************************************************
-U2=STAT_NON_LINE( 
+U2=STAT_NON_LINE(
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHAR_U2,
-                FONC_MULT = COEF1), _F( 
-                CHARGE = DEPL_1), _F( 
+                FONC_MULT = COEF1), _F(
+                CHARGE = DEPL_1), _F(
                 CHARGE = DEPL_2,
                 FONC_MULT = COEF2)
                 ),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RESI_INTE_RELA = 1.E-8,
                 ITER_INTE_MAXI = 100,
                 ITER_INTE_PAS  = -10,
                 RELATION = 'HOEK_BROWN'),
-                         ETAT_INIT=_F( 
+                         ETAT_INIT=_F(
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = TEMPS2,
                 SUBD_METHODE='UNIFORME', SUBD_PAS  = 2,
                 SUBD_PAS_MINI = 1.E-8,
@@ -201,12 +200,12 @@ U2=STAT_NON_LINE(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1,
                 ),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-8,
                 ITER_GLOB_MAXI = 100),
               )
 
-             
+
 
 U2=CALC_ELEM( reuse      = U2,
               OPTION     = ('SIEF_ELNO_ELGA',),
@@ -218,7 +217,7 @@ U2=CALC_NO(  reuse      = U2,
              TOUT_ORDRE = 'OUI',
              OPTION     = ('SIEF_NOEU_ELGA',),
                )
-               
+
 #---------------------------------------
 #    TEST_RESU AU POINT D (NOEUD N4)
 #---------------------------------------
@@ -338,7 +337,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 70,
                       PRECISION  = 1.E-3,
-                      VALE       = -2.0721512E+01),                                            
+                      VALE       = -2.0721512E+01),
            ))
 
 TEST_RESU(RESU=(
@@ -406,7 +405,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       NUME_ORDRE = 52,
                       PRECISION  = 1.E-3,
-                      VALE       = 8.27551E-03),                                                                                                                                    
+                      VALE       = 8.27551E-03),
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',
@@ -435,7 +434,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DY',
                       NUME_ORDRE = 70,
                       PRECISION  = 1.E-3,
-                      VALE       = -17.5E-03),                                                                                        
+                      VALE       = -17.5E-03),
 )
 )
 

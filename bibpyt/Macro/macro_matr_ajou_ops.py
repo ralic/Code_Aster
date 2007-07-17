@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_ajou_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_ajou_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
   from Accas import _F
   import types
   import aster
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
   ier=0
   
   # On importe les definitions des commandes a utiliser dans la macro
@@ -56,7 +56,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
   else :
      for flu in FLUIDE :
          if flu['GROUP_MA']==None :
-            UTMESS('F', "MACRO_MATR_AJOU", "cas fluides multiples : precisez le GROUP_MA dans lequel vous affectez  la masse volumique RHO")
+            UTMESS('F','MATRICE0_1')
 
   IOCFLU=len(FLUIDE)
 
@@ -111,7 +111,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
         if DDL['GROUP_NO']!=None : mfact=_F(GROUP_NO=DDL['GROUP_NO'],TEMP=DDL['PRES_FLUIDE'])
         affimp.append(mfact)
   if nflui==0:
-     UTMESS('F', "MACRO_MATR_AJOU", "PRES_FLUIDE obligatoire une fois")
+     UTMESS('F','MATRICE0_2')
 
   __CHARGE=AFFE_CHAR_THER( MODELE    = __NOMFLU,
                            TEMP_IMPO = affimp )
@@ -190,7 +190,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
      if   MODE_MECA    !=None : mostcles['MODE_MECA']     =MODE_MECA
      elif DEPL_IMPO    !=None : mostcles['CHAM_NO']       =DEPL_IMPO
      else :
-       UTMESS('F', "MACRO_MATR_AJOU", "amortissement ajoute sur modele generalise non encore implante")
+       UTMESS('F','MATRICE0_3')
 
      AMORAJ = CALC_MATR_AJOU(MODELE_FLUIDE    = __NOMFLU,
                              MODELE_INTERFACE = __NOMINT,
@@ -212,7 +212,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
      if   MODE_MECA    !=None : mostcles['MODE_MECA']     =MODE_MECA
      elif DEPL_IMPO    !=None : mostcles['CHAM_NO']       =DEPL_IMPO
      else :
-       UTMESS('F', "MACRO_MATR_AJOU", "rigidite ajoute sur modele generalise non encore implante")
+       UTMESS('F','MATRICE0_4')
 
      RIGIAJ = CALC_MATR_AJOU(MODELE_FLUIDE    = __NOMFLU,
                              MODELE_INTERFACE = __NOMINT,

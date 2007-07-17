@@ -1,28 +1,28 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       UNITAIRES SUR SON AUTRE EXTREMITE.
 # MODELISATION POU_D_TG   GAUCHISSEMENT GENE   IW/=0
 #======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'SSLL102D',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL102D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(                                                )
 
@@ -67,53 +67,53 @@ MEST1=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 5.E-10,         
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 5.E-10,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,           
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,           
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 5.387931E-9,   
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 5.387931E-9,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,            
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,            
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,           
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
 #
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,          
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
@@ -136,47 +136,47 @@ TEST_RESU(RESU=(
                    NOEUD = 'N3', NOM_CMP = 'DY', VALE = 2.01560000E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 1.5E-7,      
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 1.5E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,           
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
                    NOEUD = 'M3', NOM_CMP = 'DY', VALE = 1.66655179E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,          
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,        
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,      
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 9.5643715E-8, 
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
 #
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,       
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,       
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
@@ -193,28 +193,28 @@ MEST3=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,         
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 8.0156000E-7, 
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 8.0156000E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = -6.E-7,      
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = -6.E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,       
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,        
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,        
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
                    NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 1.14577963E-6,
@@ -226,17 +226,17 @@ TEST_RESU(RESU=(
                    NOEUD = 'M3', NOM_CMP = 'DRY', VALE = -2.3996127E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,      
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
 #
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,   
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,    
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,   
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
                    NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 1.3465235E-5,
@@ -256,28 +256,28 @@ MEST4=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,     
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,     
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,      
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
                    NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 5.520304E-7,
                    PRECISION = 6.E-5, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,         
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,         
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
                    NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 2.62034178E-5,
@@ -286,23 +286,23 @@ TEST_RESU(RESU=(
                    NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 6.3892075E-4,
                    PRECISION = 6.E-5, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,         
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,     
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
 #
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,    
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,     
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
                    NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 2.8399161E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 3.2832428E-4, 
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 3.2832428E-4,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'))
             )
 
@@ -319,53 +319,53 @@ MEST5=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,         
-                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'), 
-   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,     
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = -6.E-7,   
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = -6.E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,       
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 6.E-7,      
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 6.E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,         
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,         
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = -2.3996127E-8, 
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = -2.3996127E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,         
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 2.3996127E-8, 
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 2.3996127E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,          
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
 #
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,       
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,       
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
@@ -382,75 +382,75 @@ MEST6=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,           
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 1.5E-7,        
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 1.5E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,           
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 1.5E-7,       
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 1.5E-7,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,           
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,  
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,           
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 9.5643715E-8,  
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
 #
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
    _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
 #
 # -- CALCUL DES EFFORTS :
 #
-MEST1=CALC_ELEM( reuse=MEST1, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST1, 
+MEST1=CALC_ELEM( reuse=MEST1, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST1,
                 TOUT_ORDRE='OUI')
 
-MEST2=CALC_ELEM( reuse=MEST2, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST2, 
+MEST2=CALC_ELEM( reuse=MEST2, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST2,
                 TOUT_ORDRE='OUI')
 
-MEST3=CALC_ELEM( reuse=MEST3, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST3, 
+MEST3=CALC_ELEM( reuse=MEST3, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST3,
                 TOUT_ORDRE='OUI')
 
-MEST4=CALC_ELEM( reuse=MEST4, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST4, 
+MEST4=CALC_ELEM( reuse=MEST4, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST4,
                 TOUT_ORDRE='OUI')
 
-MEST5=CALC_ELEM( reuse=MEST5, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST5, 
+MEST5=CALC_ELEM( reuse=MEST5, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST5,
                 TOUT_ORDRE='OUI')
 
-MEST6=CALC_ELEM( reuse=MEST6, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST6, 
+MEST6=CALC_ELEM( reuse=MEST6, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST6,
                 TOUT_ORDRE='OUI')
 
 #
@@ -472,10 +472,10 @@ MEST7=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8, 
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,         
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
@@ -495,10 +495,10 @@ MEST8=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,  
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 
@@ -532,10 +532,10 @@ MEST9=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST9, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,  
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF'),
    _F( RESULTAT = MEST9, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
             )
 

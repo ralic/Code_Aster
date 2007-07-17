@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai3 Messages  DATE 17/07/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,12 +190,9 @@ cata_msg={
  le contour n est pas ferme
 """),
 
-
-
-
-
-
-
+43: _("""
+ le mot-clé "reuse" n'existe que pour l'opération "ASSE"
+"""),
 
 44: _("""
  nbma different de nbe

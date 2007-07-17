@@ -1,57 +1,57 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(  CODE=_F( NOM = 'SDLS01G',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDLS01G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # PLAQUE CARREE MINCE  LIBRE OU ENCASTREE SUR UN BORD
 # DIMENSION: 1M*1M*0.01M
 #
 # CAS 1: ENCASTREE    CAS 2: LIBRE                 REF: SFM.VPCS SDLS01
 #
-# MODELISATION MEC3QU9H:  96 NOEUDS --  25 MAILLES QUAD9 
+# MODELISATION MEC3QU9H:  96 NOEUDS --  25 MAILLES QUAD9
 
 MA=LIRE_MAILLAGE( )
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
+MO=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  TOUT = 'OUI',       PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'COQUE_3D') )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-                            COQUE=_F(  
+                            COQUE=_F(
        GROUP_MA = 'TOUT',
-  EPAIS = 0.01,  
+  EPAIS = 0.01,
                                     A_CIS = 0.83333333333333) )
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
 
 #--------------------------------------------------------------------
 
 # ---- CAS1: PLAQUE ENCASTREE SUR UN COTE
 
-CHCAS1=AFFE_CHAR_MECA(  MODELE=MO, 
+CHCAS1=AFFE_CHAR_MECA(  MODELE=MO,
            DDL_IMPO=_F(  GROUP_NO = 'AB',       DX = 0.,  DY = 0., DZ = 0.,
                                         DRX = 0., DRY = 0., DRZ = 0.) )
 
@@ -143,14 +143,14 @@ TEST_RESU(RESU=(
 #====================================================================
 #                ENERGIE CINETIQUE ET POTENTIELLE
 #
-# 
+#
 #   ON COMPARE AVEC LA SOLUTION DE REFERENCE
 #
-#             ECIN GLOBALE = EPOT GLOBALE = 1 / 2 * OMEGA2 
+#             ECIN GLOBALE = EPOT GLOBALE = 1 / 2 * OMEGA2
 #
 #   CAR LA NORMALISATION DES MODES ASSURE QUE
 #
-#              ( PHI ) T ( M ) ( PHI ) = 
+#              ( PHI ) T ( M ) ( PHI ) =
 #
 #--------- CAS1
 
@@ -177,7 +177,7 @@ TEST_TABLE(      TABLE=EPOT1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 1)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=1.5032E+03,
              PRECISION=1.2E-02
                           )
@@ -187,7 +187,7 @@ TEST_TABLE(      TABLE=EPOT1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 2)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=8.9590E+03,
              PRECISION=0.7E-02
                           )
@@ -197,7 +197,7 @@ TEST_TABLE(      TABLE=EPOT1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 3)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.1E-02,
                      VALE=5.6613E+04
                           )
@@ -207,7 +207,7 @@ TEST_TABLE(      TABLE=EPOT1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 4)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.E-02,
                      VALE=9.2077E+04
               )
@@ -217,7 +217,7 @@ TEST_TABLE(      TABLE=EPOT1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 5)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.E-02,
                      VALE=1.1931E+05
              )
@@ -227,7 +227,7 @@ TEST_TABLE(      TABLE=EPOT1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 6)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                                                  PRECISION=0.4E-02,
                      VALE=3.6535E+05
              )
@@ -240,7 +240,7 @@ TEST_TABLE(      TABLE=ECIN1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 1)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=1.5032E+03,
              PRECISION=1.2E-02
                           )
@@ -250,7 +250,7 @@ TEST_TABLE(      TABLE=ECIN1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 2)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=8.9590E+03,
              PRECISION=0.7E-02
                           )
@@ -260,7 +260,7 @@ TEST_TABLE(      TABLE=ECIN1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 3)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.1E-02,
                      VALE=5.6613E+04
                           )
@@ -270,7 +270,7 @@ TEST_TABLE(      TABLE=ECIN1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 4)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.E-02,
                      VALE=9.2077E+04
               )
@@ -280,7 +280,7 @@ TEST_TABLE(      TABLE=ECIN1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 5)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.E-02,
                      VALE=1.1931E+05
              )
@@ -290,7 +290,7 @@ TEST_TABLE(      TABLE=ECIN1,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 6)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                                                  PRECISION=0.4E-02,
                      VALE=3.6535E+05
              )
@@ -321,9 +321,9 @@ TEST_TABLE(      TABLE=EPOT2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 7)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=0.6E-02,
-                     VALE=2.2433457E+4   
+                     VALE=2.2433457E+4
               )
 
 TEST_TABLE(      TABLE=EPOT2,FILTRE=(
@@ -331,9 +331,9 @@ TEST_TABLE(      TABLE=EPOT2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 8)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.8E-02,
-                     VALE=4.827966E+4    
+                     VALE=4.827966E+4
               )
 
 TEST_TABLE(      TABLE=EPOT2,FILTRE=(
@@ -341,9 +341,9 @@ TEST_TABLE(      TABLE=EPOT2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 9)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.1E-02,
-                     VALE=7.3573188E+4   
+                     VALE=7.3573188E+4
               )
 
 TEST_TABLE(      TABLE=EPOT2,FILTRE=(
@@ -351,9 +351,9 @@ TEST_TABLE(      TABLE=EPOT2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 10)),
-                 NOM_PARA='TOTALE', 
-             PRECISION=1.3E-02,  
-                     VALE=1.4974629E+05  
+                 NOM_PARA='TOTALE',
+             PRECISION=1.3E-02,
+                     VALE=1.4974629E+05
               )
 
 TEST_TABLE(      TABLE=EPOT2,FILTRE=(
@@ -361,9 +361,9 @@ TEST_TABLE(      TABLE=EPOT2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 11)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=1.3E-02,
-                     VALE=1.4974629E+05  
+                     VALE=1.4974629E+05
               )
 
 TEST_TABLE(      TABLE=ECIN2,FILTRE=(
@@ -371,7 +371,7 @@ TEST_TABLE(      TABLE=ECIN2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 7)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
              PRECISION=0.6E-02,
                      VALE=2.2433E+04
               )
@@ -381,7 +381,7 @@ TEST_TABLE(      TABLE=ECIN2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 8)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=4.8280E+04,
              PRECISION=1.8E-02
               )
@@ -391,7 +391,7 @@ TEST_TABLE(      TABLE=ECIN2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 9)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=7.3573E+04,
              PRECISION=1.1E-02
              )
@@ -401,7 +401,7 @@ TEST_TABLE(      TABLE=ECIN2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 10)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=1.5118E+05,
                                                  PRECISION=2.3E-02
               )
@@ -411,7 +411,7 @@ TEST_TABLE(      TABLE=ECIN2,FILTRE=(
                             VALE_K = 'MA'),
                           _F(  NOM_PARA = 'NUME_ORDRE',
                             VALE_I = 11)),
-                 NOM_PARA='TOTALE', 
+                 NOM_PARA='TOTALE',
                      VALE=1.5118E+05,
                                                  PRECISION=2.3E-02
               )

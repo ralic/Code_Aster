@@ -1,21 +1,21 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # EN GRANDES DEFORMATIONS
 # AVEC PLASTICITE DE TRANSFORMATION
@@ -26,12 +26,12 @@
 #======================================================================
 
 
-DEBUT(CODE=_F( NOM = 'HSNV122A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='HSNV122A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE( )
 
 TRCMNDA=DEFI_TRC(HIST_EXP=(
-  
+
  _F( VALE = (
 -1.106E+03,  1.100E+01,  8.563E+00, -2.760E-02,
  1.220E-04, -2.955E-07,  3.402E-10, -1.517E-13,
@@ -46,7 +46,7 @@ TRCMNDA=DEFI_TRC(HIST_EXP=(
  0.000E+00,  0.000E+00,  0.000E+00,  6.001E+02,
  0.000E+00,  0.000E+00,  1.000E+00,  3.400E+02,
       ))),
-   TEMP_MS=_F( 
+   TEMP_MS=_F(
     SEUIL = 4.500E-01,
     AKM = -3.125E+01,
     BKM = 1.406E+01,
@@ -201,7 +201,7 @@ YOUNG=DEFI_CONSTANTE( VALE=200000.E+6)
 
 NU=DEFI_CONSTANTE( VALE=0.3)
 
-ACIER2=DEFI_MATERIAU( 
+ACIER2=DEFI_MATERIAU(
              ELAS_META_FO=_F( E = YOUNG,
                       NU = NU,
                       F_ALPHA = ALP1,
@@ -215,7 +215,7 @@ ACIER2=DEFI_MATERIAU(
                C_SY = AUS2,
                SY_MELANGE = FMEL,
                TEMP_DEF_ALPHA=900.,),
-            META_ECRO_LINE=_F( 
+            META_ECRO_LINE=_F(
                         F1_D_SIGM_EPSI = FBM1,
                         F2_D_SIGM_EPSI = FBM1,
                         F3_D_SIGM_EPSI = FBM1,
@@ -229,7 +229,7 @@ ACIER2=DEFI_MATERIAU(
 
            )
 
-CM2=AFFE_MATERIAU( MAILLAGE=MAIL,   
+CM2=AFFE_MATERIAU( MAILLAGE=MAIL,
                    AFFE=_F( TOUT = 'OUI',MATER = ACIER2,
                           ),
                    AFFE_VARC=(_F(TOUT='OUI',
@@ -284,108 +284,108 @@ U=STAT_NON_LINE( MODELE=MO,
               )
 
 TEST_RESU(RESU=(
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'DEPL',  INST = 47.,
                NOEUD = 'N13',   NOM_CMP = 'DY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = -8.4347E-04),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 47.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V5',
                PRECISION = 0., CRITERE = 'ABSOLU',
                VALE = 0.),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 47.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'SIYY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 282.E+06),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'DEPL',  INST = 48.,
                NOEUD = 'N13',   NOM_CMP = 'DY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = -5.9639E-04),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 48.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V5',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 1.326E-03),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 48.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'SIYY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 288.E+06),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'DEPL',  INST = 60.,
                NOEUD = 'N13',   NOM_CMP = 'DY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 6.476E-03),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 60.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V5',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 3.7295E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 60.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'SIYY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 360.E+06),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'DEPL',  INST = 83.,
                NOEUD = 'N13',   NOM_CMP = 'DY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 1.15441E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 83.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V5',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 3.7295E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 83.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'SIYY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 360.E+06),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'DEPL',  INST = 84.,
                NOEUD = 'N13',   NOM_CMP = 'DY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 1.17051E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 84.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V5',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 3.7296E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 84.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'SIYY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 360.E+06),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'DEPL',  INST = 85.,
                NOEUD = 'N13',   NOM_CMP = 'DY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 1.18644E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 85.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V5',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 3.73044E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 85.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'SIYY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 360.E+06),
 
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'DEPL',  INST = 176.,
                NOEUD = 'N13',   NOM_CMP = 'DY',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 1.77426E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 176.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V3',
                PRECISION = ( 1.E-02, 1.E-03, ),
                VALE = 5.943E-02),
-              _F( 
+              _F(
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 176.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'SIYY',
                PRECISION = ( 1.E-02, 1.E-03, ),

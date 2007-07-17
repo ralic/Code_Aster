@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,7 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNL127A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNL127A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE();
 

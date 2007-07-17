@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,8 +26,7 @@
 # POINTS:   A:N59  B:N53  E:N56  C:N12  D:N18
 #======================================================================
 
-DEBUT(CODE=_F(NOM='SSLV07A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSLV07A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI(UNITE_GIBI=19,UNITE_MAILLAGE=20)
 
@@ -829,7 +828,7 @@ TEST_TABLE(    TABLE=TAB6,
           )
 
 #
-# validation de MACR_LIGN_COUPE en repere local avec plusieurs 
+# validation de MACR_LIGN_COUPE en repere local avec plusieurs
 # occurences de LIGN_COUPE
 # ------------------------------------------------------------
 

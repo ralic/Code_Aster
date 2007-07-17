@@ -1,25 +1,25 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PORTIQUE A LIAISON LATERALE  (EULER) FORCE PONCTUELLE + REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F( NOM = 'SSLL10A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL10A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -42,7 +42,7 @@ CAREL1=AFFE_CARA_ELEM( MODELE=MO1,
                              CARA = 'H',        VALE = 0.04   ),
                          _F( MAILLE = ('AC','AG','GD',),  SECTION = 'RECTANGLE',
                              CARA = 'H',        VALE = 0.01  ),
-                         _F( MAILLE = 'AE',     SECTION = 'RECTANGLE',  
+                         _F( MAILLE = 'AE',     SECTION = 'RECTANGLE',
                              VARI_SECT = 'HOMOTHETIQUE',
                              CARA = ( 'H1', 'H2',), VALE = ( 0.02, 0.02, ),),),  )
 
@@ -76,16 +76,16 @@ CH122=AFFE_CHAR_MECA( MODELE=MO2,
 MEST11=MECA_STATIQUE(        MODELE=MO1,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL1,EXCIT=( _F( CHARGE = CH111),_F( CHARGE = CH121)))
 
-MEST11=CALC_ELEM( reuse=MEST11, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST11, 
+MEST11=CALC_ELEM( reuse=MEST11, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST11,
                     )
 
 MEST12=MECA_STATIQUE(        MODELE=MO2,     CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL2,EXCIT=( _F( CHARGE = CH112),_F( CHARGE = CH122)))
 
-MEST12=CALC_ELEM( reuse=MEST12, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST12, 
+MEST12=CALC_ELEM( reuse=MEST12, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST12,
                     )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
    _F( RESULTAT = MEST11, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
               NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,      PRECISION = 2.E-3),
    _F( RESULTAT = MEST11, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 1,
@@ -98,7 +98,7 @@ TEST_RESU(RESU=(
     MAILLE = 'AE', NOEUD = 'A',  NOM_CMP = 'MFZ', VALE = -1211.2994,   PRECISION = 2.E-3))
            )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
    _F( RESULTAT = MEST12, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
               NOEUD = 'A',  NOM_CMP = 'DRZ', VALE = 0.227118,      PRECISION = 2.E-3),
    _F( RESULTAT = MEST12, NOM_CHAM = 'EFGE_ELNO_DEPL', NUME_ORDRE = 1,
@@ -207,9 +207,9 @@ CARE21=AFFE_CARA_ELEM( MODELE=MO1,
                     ORIENTATION=_F(  MAILLE = 'AB', CARA = 'ANGL_VRIL', VALE = -90.),
                     POUTRE=( _F( SECTION = 'RECTANGLE',CARA = 'H',
                                  MAILLE = 'AB',          VALE = 0.04),
-                             _F( MAILLE = ('AC','AG','GD',),  
+                             _F( MAILLE = ('AC','AG','GD',),
                                  SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.01),
-                             _F( MAILLE = 'AE',          
+                             _F( MAILLE = 'AE',
                                  SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.02)) )
 
 CH521=AFFE_CHAR_MECA_F(   MODELE=MO1,
@@ -227,9 +227,9 @@ CARE22=AFFE_CARA_ELEM( MODELE=MO2,
                     ORIENTATION=_F(  MAILLE = 'AB', CARA = 'ANGL_VRIL', VALE = -90.),
                     POUTRE=(_F( SECTION = 'RECTANGLE',CARA = 'H',
                                 MAILLE = 'AB',          VALE = 0.04),
-                            _F( MAILLE = ('AC','AG','GD',),  
+                            _F( MAILLE = ('AC','AG','GD',),
                                 SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.01),
-                            _F( MAILLE = 'AE',          
+                            _F( MAILLE = 'AE',
                                 SECTION = 'RECTANGLE',CARA = 'H', VALE = 0.02)) )
 
 CH522=AFFE_CHAR_MECA_F(   MODELE=MO2,

@@ -1,26 +1,26 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) -ancien SSLP09b
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # RESPONSABLE  g8bhhxd X.DESROCHES
 
-DEBUT( CODE=_F(  NOM = 'SSLS09B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLS09B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE()
 
@@ -86,7 +86,7 @@ NOM_CHAM='DEPL', RESULTAT=DEF,
 
 #
 # CALCUL DES CONTRAINTES AUX NOEUDS
-                         
+
 DEF=CALC_ELEM(reuse =DEF,
               MODELE=MODELE,
               CHAM_MATER=CHMAT,
@@ -170,7 +170,7 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
                           CRITERE = 'ABSOLU'))
           )
 #--------------------------------------------------------------
-# 
+#
 CH_PESA=AFFE_CHAR_MECA  (  MODELE=MODELE,
                            PESANTEUR=(  9.8125, 0., -1., 0.,),
                           )
@@ -207,7 +207,7 @@ DEF_PESA=CALC_ELEM(reuse =DEF_PESA,
                );
 
 IMPR_RESU(RESU=_F(RESULTAT=DEF_PESA,
-                   NUME_ORDRE=1,                   
+                   NUME_ORDRE=1,
                    NOM_CHAM='ERRE_ELEM_SIGM',),
           ) ;
 #
@@ -256,7 +256,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
 #    TEST EN CONTRAINTES
 
 TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
-                   NUME_ORDRE=1,                   
+                   NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELNO_ELGA',
                           MAILLE = 'M4',
                           NOEUD = 'N51',
@@ -265,7 +265,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                           VALE = -3.14E5,
                           PRECISION = 0.0001),
                 _F(RESULTAT=DEF_PESA,
-                   NUME_ORDRE=1,                   
+                   NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELNO_ELGA',
                           MAILLE = 'M4',
                           NOEUD = 'N1',
@@ -275,7 +275,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                           PRECISION = 21.0,
                           CRITERE = 'ABSOLU'),
                _F(RESULTAT=DEF_PESA,
-                   NUME_ORDRE=1,                   
+                   NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELNO_ELGA',
                           MAILLE = 'M4',
                           NOEUD = 'N51',
@@ -284,13 +284,13 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                           VALE = 0.,
                           PRECISION = 30.0,
                           CRITERE = 'ABSOLU'),
-          ) 
+          )
         )
 #---------------------------------------------------------------------
 #    ESTIMATEUR D'ERREUR EN RESIDU
 
 TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
-                   NUME_ORDRE=1,                   
+                   NUME_ORDRE=1,
                    NOM_CHAM='ERRE_ELEM_SIGM',
                    NOM_CMP='NUEST',
                    MAILLE='M4',

@@ -1,4 +1,4 @@
-#@ MODIF fiabilite_mefisto Macro  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
+#@ MODIF fiabilite_mefisto Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
   import os
   import string
   import Numeric
-  from Utilitai.Utmess import UTMESS
+  from Utilitai.Utmess import U2MESS as UTMESS
 #
 #____________________________________________________________________
 #
@@ -237,9 +237,9 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
 #    if args.has_key('MATRICE'):
     if args["MATRICE"] != None:
       if len(args["MATRICE"]) != nb_occu_variable**2:
-        UTMESS('F','FIABILITE_MEPHISTO',' LE NOMBRE D ELEMENTS' 
-        +' DU MOT CLE MATRICE DOIT ETRE EGAL A : '
-        +str(nb_occu_variable**2))
+#        +' DU MOT CLE MATRICE DOIT ETRE EGAL A : '
+#        +str(nb_occu_variable**2))
+        UTMESS('F','FIABILITE0_1',vali=nb_occu_variable**2)
       for m in range(nb_occu_variable) :
         aux = [ ]
         for n in range(nb_occu_variable) :

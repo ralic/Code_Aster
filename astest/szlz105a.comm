@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE FATIGUE-COMPTAGE DE CYCLES RAINFLOW-DOMMAGE-EQUIVALENTS-C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@
 #
 #----------------------------------------------------------------------
 #
-DEBUT(     CODE=_F(  NOM = 'SZLZ105A',NIV_PUB_WEB='INTERNET')   )
+DEBUT(CODE=_F(NOM='SZLZ105A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 CARRE=LIRE_MAILLAGE(    )
 

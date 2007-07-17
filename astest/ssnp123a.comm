@@ -1,26 +1,25 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNP123A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNP123A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # DEFINITION DU PROBLEME
 #=======================
@@ -80,7 +79,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #=================
 
 RESU=CALC_ELEM(reuse =RESU,
-               
+
                RESULTAT=RESU,
                OPTION=('SIEF_ELNO_ELGA',
                        'ERRE_ELEM_SIGM',
@@ -162,30 +161,30 @@ TEST_TABLE(TABLE=S_T,
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELEM_SIGM',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'ERRE_ELEM_SIGM',
+               CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                POINT = 1,
-               MAILLE='M20',    
-               NOM_CMP = 'NUEST',      
-               VALE = 9.0997286393828E-01, 
+               MAILLE='M20',
+               NOM_CMP = 'NUEST',
+               VALE = 9.0997286393828E-01,
                REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
              ),
             );
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELEM',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'ERRE_ELNO_ELEM',
+               CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',
-               MAILLE='M20',    
-               NOM_CMP = 'ERREST',      
-               VALE = 2.2534342602869E-01, 
+               MAILLE='M20',
+               NOM_CMP = 'ERREST',
+               VALE = 2.2534342602869E-01,
                REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
              ),
             );
@@ -193,30 +192,30 @@ TEST_RESU(RESU=(
 #
 #  TEST SUR LES CONTRAINTES AU POINT B
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'SIEF_ELNO_ELGA',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'SIEF_ELNO_ELGA',
+               CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',
-               MAILLE='M20',    
-               NOM_CMP = 'SIYY',      
-               VALE = 4.3683702957631E+02, 
+               MAILLE='M20',
+               NOM_CMP = 'SIYY',
+               VALE = 4.3683702957631E+02,
                REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
              ),
             );
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
-               INST = 1.,  
-               NOM_CHAM = 'SIEF_ELNO_ELGA',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'SIEF_ELNO_ELGA',
+               CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',
-               MAILLE='M20',    
-               NOM_CMP = 'SIXX',      
-               VALE = 7.7519646079352E+00, 
+               MAILLE='M20',
+               NOM_CMP = 'SIXX',
+               VALE = 7.7519646079352E+00,
                REFERENCE = 'NON_REGRESSION',VERSION = '7.2.25'),
              ),
             );

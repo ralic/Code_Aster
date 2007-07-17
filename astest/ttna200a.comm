@@ -1,4 +1,4 @@
-# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'TTNA200A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='TTNA200A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 # ================================================
 #
@@ -377,7 +377,7 @@ THL10=THER_LINEAIRE(        MODELE=MO,
                            INCREMENT=_F(  LIST_INST = LR1),
                            TEMP_INIT=_F( VALE = 0.) )
 
-THL10=CALC_ELEM(reuse=THL10,     
+THL10=CALC_ELEM(reuse=THL10,
                           OPTION=( 'FLUX_ELNO_TEMP',
                                    'FLUX_ELGA_TEMP',  ),
                     RESULTAT=THL10               )

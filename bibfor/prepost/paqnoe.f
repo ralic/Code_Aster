@@ -1,7 +1,7 @@
       SUBROUTINE PAQNOE(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,
      &                  TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 16/07/2007   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -292,6 +292,8 @@ C BOUCLE SUR LES CONTRAINTES SEULES (6 COMPOSANTES)
                      ZR( JRWORK + (ICMP-1) + KWORK*SOMNOW*6 +
      &                            (IORDR-1)*TSPAQ ) =
      &               ZR( JSIGV + (ICMP-1) + (NUNOE-1)*6 )
+                   ELSEIF (ICMP .EQ. 5) THEN
+                      CALL U2MESI('F', 'FATIGUE1_2', 1, ICMP)
                    ELSE
                      CALL U2MESS('F','PREPOST4_30')
                    ENDIF
@@ -358,6 +360,8 @@ C BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                      ZR( JRWORK + (ICMP-1) + KWORK*SOMNOW*12 +
      &                            (IORDR-1)*TSPAQ ) =
      &               ZR( JSIGV + (ICMP-1) + (NUNOE-1)*6 )
+                   ELSEIF (ICMP .EQ. 5) THEN
+                      CALL U2MESI('F', 'FATIGUE1_2', 1, ICMP)
                    ELSE
                      CALL U2MESS('F','PREPOST4_30')
                    ENDIF
@@ -369,6 +373,8 @@ C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
                      ZR( JRWORK + (ICMP+6-1) + KWORK*SOMNOW*12 +
      &                            (IORDR-1)*TSPAQ ) =
      &               ZR( JEPSV + (ICMP-1) + (NUNOE-1)*6 )
+                   ELSEIF (ICMP .EQ. 5) THEN
+                      CALL U2MESI('F', 'FATIGUE1_3', 1, ICMP)
                    ELSE
                      CALL U2MESS('F','PREPOST4_35')
                    ENDIF

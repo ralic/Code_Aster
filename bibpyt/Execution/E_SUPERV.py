@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,10 +127,27 @@ class SUPERV:
          print self.usage
          return 1
 
-   def imports(self):
-      sys.path[:0] = [ "." ]
-      sys.path[:0] = [ self.CHEMIN ]
+   def set_path(self):
+      """Ajout des chemins pour les imports
+      """
+      sys.path.insert(0, '.')
+      sys.path.insert(0, self.CHEMIN)
       sys.path.append(os.path.join(self.CHEMIN,'Cata'))
+
+   def init_timer(self):
+      """Initialise le timer au plus tot
+      """
+      try:
+         from Utilitai.as_timer import ASTER_TIMER
+         self.timer = ASTER_TIMER(format='aster')
+         self.timer.Start('JDC init')
+         ier = 0
+      except:
+         print traceback.print_exc()
+         ier = 1
+      return ier
+
+   def imports(self):
       try :
          import Cata
          from Cata import cata
@@ -174,6 +191,9 @@ class SUPERV:
              **args      
            )
 
+      # on transmet le timer au jdc
+      j.timer = self.timer
+      
       # On compile le texte Python
       j.compile()
 
@@ -319,6 +339,11 @@ class SUPERV:
            divers traitements
       """
       ier=self.getargs()
+      if ier:return ier
+
+      self.set_path()
+      
+      ier = self.init_timer()
       if ier:return ier
 
       ier=self.imports()

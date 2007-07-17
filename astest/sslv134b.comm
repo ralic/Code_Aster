@@ -1,32 +1,32 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # QUART DE FISSURE. TEST DE POST_K1_K2_K3. MAILLAGE BARSOUM
 
-DEBUT(   CODE=_F(  NOM = 'SSLV134B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLV134B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),)
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
-                     CREA_GROUP_NO=_F( 
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+                     CREA_GROUP_NO=_F(
               GROUP_MA = ('SLA2_I', 'SLA2_S', 'SAV_I', 'SAV_S',))
                  )
 
@@ -69,11 +69,11 @@ CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                               _F(CHARGE=SYMETR1,),
                               _F(CHARGE=SYMETR2,),),);
 
-CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,      
+CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,
                            OPTION='SIGM_ELNO_DEPL',
                          RESULTAT=CHAMDEPL )
 
-CHAMDEPL=CALC_NO( reuse=CHAMDEPL,      
+CHAMDEPL=CALC_NO( reuse=CHAMDEPL,
                            OPTION='SIGM_NOEU_DEPL',
                          RESULTAT=CHAMDEPL )
 
@@ -692,7 +692,7 @@ TEST_TABLE(       TABLE=TABL_KTO,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MAX',
                            VALE=K1,
-                      PRECISION=0.03           )         
+                      PRECISION=0.03           )
 
 # TEST INFORMATIQUE : VALIDATION DE DEFI_FOND_FISS
 FISSM=DEFI_FOND_FISS(    MAILLAGE=MA,
@@ -701,7 +701,7 @@ FISSM=DEFI_FOND_FISS(    MAILLAGE=MA,
                           LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
                           DTAN_ORIG=(  1.,  0.,  0., ),
                           DTAN_EXTR=(  0.,  1., 0., )
-                       )      
+                       )
 
 TABL_KTM=POST_K1_K2_K3(  MODELISATION='3D',
               MAILLAGE=MA,
@@ -731,7 +731,7 @@ MA = DEFI_GROUP (reuse = MA,
                     CREA_GROUP_NO =_F( NOM = 'NLFF1',
                                        OPTION = 'NOEUD_ORDO',
                                        GROUP_MA = 'LFF1')
-                   )   
+                   )
 
 FISSN=DEFI_FOND_FISS(    MAILLAGE=MA,
                           FOND_FISS=_F(  GROUP_NO = 'NLFF1',),
@@ -739,7 +739,7 @@ FISSN=DEFI_FOND_FISS(    MAILLAGE=MA,
                           LEVRE_INF=_F(  GROUP_MA = 'LEVINF1'),
                           DTAN_ORIG=(  1.,  0.,  0., ),
                           DTAN_EXTR=(  0.,  1., 0., )
-                       )      
+                       )
 
 TABL_KTN=POST_K1_K2_K3(  MODELISATION='3D',
               MAILLAGE=MA,
@@ -763,14 +763,14 @@ TEST_TABLE(       TABLE=TABL_KTN,
                        NOM_PARA='K1_MAX',
                            VALE=1.606247861E+06,
                       PRECISION=0.0001           )
-                                             
-# POST_K1_K2_K3 : VALIDATION GROUP_NO 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
+
+# POST_K1_K2_K3 : VALIDATION GROUP_NO
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
                CREA_GROUP_NO=(_F( NOEUD = ('N49','N56',),
                                   NOM = 'NOFF1'),
                               _F( NOEUD = ('N1388','N1346'),
                                  NOM = 'NOFF2'),),);
-                                 
+
 TABL_K4=POST_K1_K2_K3(  MODELISATION='3D',
               MAILLAGE=MA,
               MATER=MAT,
@@ -792,7 +792,7 @@ TEST_TABLE(       TABLE=TABL_K4,
                        NOM_PARA='K1_MAX',
                            VALE=1.606247861E+06,
                       PRECISION=0.0001           )
-                      
+
 # POST_K1_K2_K3 : VALIDATION TYPE_MA = LIBRE
 TABL_K5=POST_K1_K2_K3(  MODELISATION='3D',
               MAILLAGE=MA,

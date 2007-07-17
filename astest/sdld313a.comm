@@ -1,28 +1,28 @@
-# MODIF  DATE 12/06/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #CAS_TEST__:SDLD313A
-# CREATION GBE/IRCN, LE 18/6/96 
+# CREATION GBE/IRCN, LE 18/6/96
 #       DYNAMIQUE LINEAIRE HARMONIQUE
 #
 
-DEBUT( CODE=_F(  NOM = 'SDLD313A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDLD313A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -32,7 +32,7 @@ MASRES=LIRE_MAILLAGE( )
 
 MODELE=AFFE_MODELE(  MAILLAGE=MASRES,
                      AFFE=( _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                                 MODELISATION = 'DIS_T'),  
+                                 MODELISATION = 'DIS_T'),
                             _F(  NOEUD = ('B','C',),  PHENOMENE = 'MECANIQUE',
                                  MODELISATION = 'DIS_T'))       )
 
@@ -41,7 +41,7 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,
                         DISCRET=( _F(  GROUP_MA = 'AMORT',
                                        CARA = 'K_T_D_L',
                                        VALE = (28000., .001, .001,),
-                                       AMOR_HYST = 0.1), 
+                                       AMOR_HYST = 0.1),
                                   _F(  MAILLE = 'K2',
                                        CARA = 'K_T_D_L',
                                        VALE = (28000., .001, .001,)),
@@ -56,7 +56,7 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,
 #
 CONDLIM=AFFE_CHAR_MECA(  MODELE=MODELE,
                          DDL_IMPO=( _F(  TOUT = 'OUI', DY = 0., DZ = 0.),
-                                    _F(  NOEUD = 'A',  DX = 0.)) 
+                                    _F(  NOEUD = 'A',  DX = 0.))
                         )
 
 FORCENO=AFFE_CHAR_MECA(  MODELE=MODELE,
@@ -90,36 +90,36 @@ LISFREQ=DEFI_LIST_REEL(  VALE=L_REEL )
 REPHARM=DYNA_LINE_HARM(     MATR_MASS=MATRMASS,
                             MATR_RIGI=MATRRIGI,
                             LIST_FREQ=LISFREQ,
-                                EXCIT=_F( VECT_ASSE = VECTASS,  
-                                          COEF_MULT = 1., 
+                                EXCIT=_F( VECT_ASSE = VECTASS,
+                                          COEF_MULT = 1.,
                                           PHAS_DEG = 0.)
                       )
 
-F1=RECU_FONCTION(  RESULTAT=REPHARM,    NOM_CHAM='DEPL',  
+F1=RECU_FONCTION(  RESULTAT=REPHARM,    NOM_CHAM='DEPL',
                    LIST_FREQ=LISFREQ,   NOEUD='C',  NOM_CMP='DX'  )
 
-TEST_FONCTION(VALEUR=( _F(  FONCTION = F1,   VALE_PARA = 0.,   
+TEST_FONCTION(VALEUR=( _F(  FONCTION = F1,   VALE_PARA = 0.,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = 0.0071075-0.0003536j),
-                        _F(  FONCTION = F1,   VALE_PARA = 3.3687, 
+                        _F(  FONCTION = F1,   VALE_PARA = 3.3687,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = 0.009388216-0.000731196j),
-                        _F(  FONCTION = F1,   VALE_PARA = 6.4848, 
+                        _F(  FONCTION = F1,   VALE_PARA = 6.4848,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = -0.0050269-0.0707103j),
-                        _F(  FONCTION = F1,   VALE_PARA = 8.0006,  
+                        _F(  FONCTION = F1,   VALE_PARA = 8.0006,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = -0.00954931-0.0022154j),
-                        _F(  FONCTION = F1,   VALE_PARA = 11.8746, 
+                        _F(  FONCTION = F1,   VALE_PARA = 11.8746,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = -4.23259E-5-0.000357193j),
-                        _F(  FONCTION = F1,   VALE_PARA = 13.4747, 
+                        _F(  FONCTION = F1,   VALE_PARA = 13.4747,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = 0.00235524-0.000501765j),
-                        _F(  FONCTION = F1,   VALE_PARA = 15.5802, 
+                        _F(  FONCTION = F1,   VALE_PARA = 15.5802,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = -0.016395374-0.06871471j),
-                        _F(  FONCTION = F1,   VALE_PARA = 21.0543, 
+                        _F(  FONCTION = F1,   VALE_PARA = 21.0543,
                           PRECISION = 5.E-03,
                           VALE_REFE_C = -0.00188977-5.53314E-6j))
                )

@@ -1,25 +1,24 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV191C',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNV191C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # CETTE MODELISATION TESTE L'APPLICATION D'UNE PRESSION (CONSTANTE ET FONCTION)
 # ET D UNE FORCE (CONSTANTE ET FONCTION)
 #----------------------------------------------
@@ -118,7 +117,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                DX=0.0,
                                DY=0.0,),),
                   INFO=1,);
-                  
+
 # pour tester option CHAR_MECA_PRES_R
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    PRES_REP=(_F(GROUP_MA='LPRESG',
@@ -137,7 +136,7 @@ def pr(y) :
 FCTPRES = FORMULE(VALE='pr(Y)',
                   NOM_PARA=('X','Y',),);
 
-# pour tester option CHAR_MECA_PRES_F 
+# pour tester option CHAR_MECA_PRES_F
 FCTCIS = FORMULE(VALE='0.',
                   NOM_PARA=('X','Y',),);
 
@@ -481,7 +480,7 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
@@ -497,10 +496,10 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
 
 
-     
+
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
@@ -508,7 +507,7 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
@@ -524,20 +523,20 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);     
-     
-     
+           REFERENCE='ANALYTIQUE',);
 
 
-     
- 
+
+
+
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
@@ -553,8 +552,8 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
-     
+
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
@@ -570,7 +569,7 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 
 
 
@@ -590,7 +589,7 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -605,8 +604,8 @@ TEST_TABLE(TABLE=DEP2,
            VALE=1.E-6,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);     
-     
+           REFERENCE='ANALYTIQUE',);
+
 
 
 
@@ -617,7 +616,7 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -633,7 +632,7 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -642,8 +641,8 @@ TEST_TABLE(TABLE=DEP2,
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
 
-     
- 
+
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
@@ -659,8 +658,8 @@ TEST_TABLE(TABLE=DEP2,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-     
-     
+
+
 TEST_TABLE(TABLE=DEP2,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
@@ -706,7 +705,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
@@ -721,8 +720,8 @@ TEST_TABLE(TABLE=DEP3,
            VALE=-1.E-6,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);       
-           
+           REFERENCE='ANALYTIQUE',);
+
 
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DCX',
@@ -731,7 +730,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
@@ -739,7 +738,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
@@ -747,7 +746,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
@@ -755,10 +754,10 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
-           
-           
- 
+
+
+
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
@@ -774,8 +773,8 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
-           
+
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
@@ -791,7 +790,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-                   
+
 
 
 
@@ -811,7 +810,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -826,7 +825,7 @@ TEST_TABLE(TABLE=DEP3,
            VALE=1.E-6,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);       
+           REFERENCE='ANALYTIQUE',);
 
 
 TEST_TABLE(TABLE=DEP3,
@@ -836,7 +835,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -844,7 +843,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N13',),
@@ -852,7 +851,7 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -861,8 +860,8 @@ TEST_TABLE(TABLE=DEP3,
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
 
-           
- 
+
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
@@ -878,8 +877,8 @@ TEST_TABLE(TABLE=DEP3,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
-           
+
+
 TEST_TABLE(TABLE=DEP3,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
@@ -894,7 +893,7 @@ TEST_TABLE(TABLE=DEP3,
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);       
+           REFERENCE='ANALYTIQUE',);
 
 #QUATRIEME CHARGEMENT
 
@@ -925,7 +924,7 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
@@ -941,10 +940,10 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
 
 
-           
+
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N2',),
@@ -952,7 +951,7 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
@@ -968,20 +967,20 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N5',),
            VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);       
-           
-           
+           REFERENCE='ANALYTIQUE',);
 
 
-           
- 
+
+
+
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N3',),
@@ -997,8 +996,8 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
-           
+
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N4',),
@@ -1014,7 +1013,7 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-                   
+
 
 
 
@@ -1034,7 +1033,7 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -1049,8 +1048,8 @@ TEST_TABLE(TABLE=DEP4,
            VALE=1.E-6,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);       
-           
+           REFERENCE='ANALYTIQUE',);
+
 
 
 
@@ -1061,7 +1060,7 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -1077,7 +1076,7 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='ABSOLU',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='H1X',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N16',),
@@ -1086,8 +1085,8 @@ TEST_TABLE(TABLE=DEP4,
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
 
-           
- 
+
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N14',),
@@ -1103,8 +1102,8 @@ TEST_TABLE(TABLE=DEP4,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='ANALYTIQUE',);
-           
-           
+
+
 TEST_TABLE(TABLE=DEP4,
            NOM_PARA='DCX',
            FILTRE=_F(NOM_PARA='NOEUD',VALE_K='N15',),
@@ -1119,7 +1118,7 @@ TEST_TABLE(TABLE=DEP4,
            VALE=1.e-6,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
-           REFERENCE='ANALYTIQUE',);  
+           REFERENCE='ANALYTIQUE',);
 #----------------------------------------------
 #             IMPRESSION
 #----------------------------------------------

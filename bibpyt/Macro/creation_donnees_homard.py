@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF creation_donnees_homard Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,13 +30,13 @@ from types import ListType, TupleType
 EnumTypes = (ListType, TupleType)
 
 try:
-  from Utilitai.Utmess import UTMESS
+  from Utilitai.Utmess import  U2MESS as UTMESS
 except ImportError:
-  def UTMESS(code, sprg, texte) :
+  def UTMESS(code, idmess, valk=(), vali=(), valr=()):
     """Clone de utmess si on ne reussit pas à le charger
     """
-    fmt = '\n <%s> <%s> %s\n\n'
-    print fmt % (code, sprg, texte)
+    fmt = '\n <%s> <%s> %s %s %s\n\n'
+    print fmt % (code, idmess, valk, vali, valr)
 
 # ------------------------------------------------------------------------------
 class creation_donnees_homard:
@@ -75,7 +75,7 @@ class creation_donnees_homard:
       self.ModeHOMA = d_aux[nom_macro][1]
       self.mode_homard_texte = d_aux[nom_macro][2]
     else :
-      UTMESS("F", nom_macro, "Cette macro commande est inconnue.")
+      UTMESS("F",'HOMARD0_1')
 #
 # 2. Données générales de cette initialisation
 #
@@ -285,7 +285,7 @@ class creation_donnees_homard:
       break
 #
     if message_erreur is not None :
-      UTMESS("F", self.nom_macro, message_erreur)
+      UTMESS("F",'HOMARD0_2',valk=message_erreur)
 #
     return self.fic_homard_niter, self.fic_homard_niterp1
 # ------------------------------------------------------------------------------
@@ -302,13 +302,12 @@ class creation_donnees_homard:
         os.remove (nomfic)
       except os.error, codret_partiel :
         print "Probleme au remove, erreur numéro ", codret_partiel[0], ":", codret_partiel[1]
-        UTMESS("F", self.nom_macro, "Impossible de tuer le fichier "+nomfic)
+        UTMESS("F",'HOMARD0_3',valk=nomfic)
 #
     fichier = open (nomfic,"w")
     self.fichier = fichier
 #
     return fichier, nomfic
-# ------------------------------------------------------------------------------
   def ecrire_ligne_configuration_0 (self, commentaire) :
     """Ecrit une ligne de commentaires du fichier de configuration
    Arguments :
@@ -508,7 +507,7 @@ class creation_donnees_homard:
 #
     if message_erreur is not None :
       message_erreur = "Ecriture de "+nomfic_global+". "+message_erreur
-      UTMESS("F", self.nom_macro, message_erreur)
+      UTMESS("F",'HOMARD0_2',valk=message_erreur)
 #
     return
 # ------------------------------------------------------------------------------
@@ -536,6 +535,6 @@ class creation_donnees_homard:
       break
 #
     if message_erreur is not None :
-      UTMESS("F", self.nom_macro, message_erreur)
+      UTMESS("F",'HOMARD0_2',valk=message_erreur)
 #
     return nomfic_global

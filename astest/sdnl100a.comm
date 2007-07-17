@@ -1,27 +1,27 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PENDULE SIMPLE EN GRANDE OSCILLATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 #  PENDULE CONSTITUE D'UN ELEMENT DE CABLE.
 #
 
-DEBUT(CODE=_F(  NOM = 'SDNL100A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDNL100A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -30,7 +30,7 @@ MA=LIRE_MAILLAGE( )
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-MO=AFFE_MODELE(   MAILLAGE=MA, 
+MO=AFFE_MODELE(   MAILLAGE=MA,
                         AFFE=_F( GROUP_MA = 'CABLE', PHENOMENE = 'MECANIQUE',
                               MODELISATION = 'CABLE') )
 
@@ -38,18 +38,18 @@ MAT=DEFI_MATERIAU(   ELAS=_F(  E = 1.E8, NU=0., RHO = 1.),
                      CABLE=_F(EC_SUR_E = 1.E0),
                  )
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MA, 
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
                           AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
 
-CHA1=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=( 
+CHA1=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
                           _F( NOEUD = 'N1',  DX = 0., DY = 0., DZ = 0.),
                                    _F( NOEUD = 'N2',          DY = 0.)) )
 
-CHA2=AFFE_CHAR_MECA(   MODELE=MO, 
+CHA2=AFFE_CHAR_MECA(   MODELE=MO,
                           PESANTEUR=(9.81,0.,0.,-1.,) )
 
-CARA=AFFE_CARA_ELEM(   MODELE=MO, 
-                            CABLE=_F(  
+CARA=AFFE_CARA_ELEM(   MODELE=MO,
+                            CABLE=_F(
        GROUP_MA = 'TOUT',
   SECTION = 1.) )
 
@@ -85,21 +85,21 @@ RESU=DYNA_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
 
 TEST_RESU(RESU=(
           # DEPLACEMENTS
-        
+
             _F(  RESULTAT = RESU,       INST = 0.4186,        NOM_CHAM = 'DEPL',
               CRITERE = 'RELATIF',  PRECISION = 2.5E-2,
               NOEUD = 'N2',         NOM_CMP = 'DX',        VALE = -1.),
             _F(  RESULTAT = RESU,       INST = 0.4186,        NOM_CHAM = 'DEPL',
               CRITERE = 'RELATIF',  PRECISION = 0.05E-2,
               NOEUD = 'N2',         NOM_CMP = 'DZ',        VALE = -1.),
-# 
+#
             _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
               PARA = 'INST',             VALE = 0.4186),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
-              PARA = 'ITER_GLOB',        VALE_I = 0,  
+              PARA = 'ITER_GLOB',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 9.E+00),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 10,  
-              PARA = 'ITER_LINE',        VALE_I = 0, 
+            _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
+              PARA = 'ITER_LINE',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 2.E+00),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
               CRITERE = 'ABSOLU',        PRECISION = 1.E-02,
@@ -114,24 +114,24 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = RESU,       INST = 0.8372,        NOM_CHAM = 'DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 7.E-4,
               NOEUD = 'N2',         NOM_CMP = 'DZ',        VALE = 0.),
-# 
+#
             _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
               PARA = 'INST',             VALE = 0.8372),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
-              PARA = 'ITER_GLOB',        VALE_I = 0,         
+              PARA = 'ITER_GLOB',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 6.E0),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
-              PARA = 'ITER_LINE',        VALE_I = 0,        
+              PARA = 'ITER_LINE',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 2.E0),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
-              CRITERE = 'ABSOLU',        
+              CRITERE = 'ABSOLU',
               PARA = 'RESI_GLOB_RELA',   VALE = 0.),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
               CRITERE = 'ABSOLU',        PRECISION = 1.E-02,
               PARA = 'RESI_GLOB',        VALE = 0.),
 #
-            _F(  RESULTAT = RESU,       
-             INST = 1.2558,        
+            _F(  RESULTAT = RESU,
+             INST = 1.2558,
              NOM_CHAM = 'DEPL',
               CRITERE = 'RELATIF',  PRECISION = 7.5E-2,
               NOEUD = 'N2',         NOM_CMP = 'DX',        VALE = -1.),
@@ -145,14 +145,14 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = RESU,       INST = 1.6744,        NOM_CHAM = 'DEPL',
               CRITERE = 'ABSOLU',   PRECISION = 1.5E-3,
               NOEUD = 'N2',         NOM_CMP = 'DZ',        VALE = 0.),
-# 
+#
             _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
               PARA = 'INST',             VALE = 1.6744),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
-              PARA = 'ITER_GLOB',        VALE_I = 0,        
+              PARA = 'ITER_GLOB',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 8.E+00),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
-              PARA = 'ITER_LINE',        VALE_I = 0,         
+              PARA = 'ITER_LINE',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 2.E+00),
             _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
               CRITERE = 'ABSOLU',        PRECISION = 1.E-05,

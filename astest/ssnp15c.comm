@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. DKT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -7,8 +7,7 @@
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP15C',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNP15C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL DKT EN MEMBRANE
 # ELASTOPLASTICITE ISOTROPE VON MISES   (2 TRIA3 ET 1 QUAD4)

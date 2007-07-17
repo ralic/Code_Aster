@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,6 +92,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
               B_NOM_NEUT2   =BLOC(condition="NOM_VARC=='NEUT2'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'NEUT',),),
               PROL_DROITE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
               PROL_GAUCHE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
+              FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
           ),
           VALE_REF          =SIMP(statut='f',typ='R'),  # defaut=0. pour TEMP (fait dans le fortran : op0006.f)
          ),

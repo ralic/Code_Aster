@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    macro = 'CALC_TABLE'
    from Accas                 import _F
    from Cata.cata             import table_sdaster, table_fonction, table_jeveux
-   from Utilitai.Utmess       import UTMESS
+   from Utilitai.Utmess       import U2MESS as UTMESS
    from Utilitai              import transpose
    from Utilitai.Table        import Table, merge
 
@@ -94,7 +94,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             lpar = [lpar]
          for p in lpar:
             if not p in tab.para:
-               UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, TABLE.nom))
+              UTMESS('F','TABLE0_2',valk=[p,TABLE.nom])
          tab = tab[occ['NOM_PARA']]
 
       #----------------------------------------------
@@ -103,7 +103,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
          try:
             tab.Renomme(*occ['NOM_PARA'])
          except KeyError, msg:
-            UTMESS('F', macro, msg)
+            UTMESS('F','TABLE0_3',valk=msg)
 
       #----------------------------------------------
       # 4. Traitement du TRI
@@ -121,9 +121,9 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                lpar = [lpar]
             for p in lpar:
                if not p in tab.para:
-                  UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, TABLE.nom))
+                  UTMESS('F','TABLE0_4',valk=[p, TABLE.nom])
                if not p in tab2.para:
-                  UTMESS('F', macro, 'Paramètre %s inexistant dans la table %s' % (p, occ['TABLE'].nom))
+                  UTMESS('F','TABLE0_5',valk=[p,occ['TABLE'].nom] )
             opts.append(lpar)
          tab = merge(*opts)
    

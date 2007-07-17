@@ -1,28 +1,26 @@
-# MODIF  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE SENSIBILITE EFGE_ELNO_DEPL / SIPO_ELNO_DEPL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       D'UNE POUTRE 'POU_D_E' PAR RAPPORT AUX PARAMETRES MATERIAU
 #       DANS LE CADRE D'UNE ANALYSE DYNAMIQUE LINEAIRE TRANSITOIRE
 
-DEBUT( CODE=_F(  NOM = 'SENSD09C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON' ),
-       PAR_LOT='OUI', )
-
+DEBUT(CODE=_F(NOM='SENSD09C', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='OUI', DEBUG=_F(SDVERI='NON'))
 # ----------------------------------------------------------------------
 # Poutre a section circulaire (L=0.4m, r=0.02m, ep=0.02m)
 # Sensibilite des efforts gene et contrainte par rapport a E et NU
@@ -36,7 +34,7 @@ ep = 0.02
 l = 0.4
 rho = 7800.
 
-#           E     NU 
+#           E     NU
 sensible=[2.1E11, 0.3, ]
 
 n=len(sensible)
@@ -56,7 +54,7 @@ MAT=DEFI_MATERIAU(ELAS_FO=_F(E=PS[0],
                              RHO=rho,
                              NU=PS[1],
                              ),);
-     
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=(_F(GROUP_MA=('POUTRE',),MATER=MAT,),),)
 
@@ -72,7 +70,7 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
                               _F(GROUP_NO='TOUT',DY=0.,DRZ=0.,),),);
 
 MATELER=CALC_MATR_ELEM(MODELE=MO,OPTION='RIGI_MECA',
-                       CHAM_MATER=CHMAT,    
+                       CHAM_MATER=CHMAT,
                        CARA_ELEM=CARELE,
                        CHARGE=CLIM);
 
@@ -80,7 +78,7 @@ MATELEM=CALC_MATR_ELEM(MODELE=MO,
                        OPTION='MASS_MECA',
                        CHAM_MATER=CHMAT,
                        CARA_ELEM=CARELE,
-                       CHARGE=CLIM);                                  
+                       CHARGE=CLIM);
 
 NUM=NUME_DDL(MATR_RIGI=MATELER);
 
@@ -90,7 +88,7 @@ MATASSM=ASSE_MATRICE(MATR_ELEM=MATELEM,NUME_DDL=NUM);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                        INTERVALLE=_F(JUSQU_A=0.002,NOMBRE=20))
-       
+
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=(_F(NOEUD='NO6',FZ =-1.E5),),);
 
@@ -181,7 +179,7 @@ for i in range(n):
                        AFFE=_F(TOUT='OUI',MATER=MATD[i],),);
 
   MATELR[i]=CALC_MATR_ELEM(MODELE=MO,OPTION='RIGI_MECA',
-                          CHAM_MATER=CHMATD[i],CARA_ELEM=CARELE,    
+                          CHAM_MATER=CHMATD[i],CARA_ELEM=CARELE,
                           CHARGE=CLIM)
 
   MATASR[i]=ASSE_MATRICE(MATR_ELEM=MATELR[i],NUME_DDL=NUM)
@@ -306,73 +304,73 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='RELATIF',PRECISION=1.E-5,
-                   NOM_CMP='VZ',   
+                   NOM_CMP='VZ',
                    VALE=(-5.E+04),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='VZ',SENSIBILITE=PS_0,        
+                   NOM_CMP='VZ',SENSIBILITE=PS_0,
                    VALE=(9.48437E-21),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='VZ',SENSIBILITE=PS_1,        
+                   NOM_CMP='VZ',SENSIBILITE=PS_1,
                    VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='RELATIF',PRECISION=1.E-5,
-                   NOM_CMP='MFY',        
+                   NOM_CMP='MFY',
                    VALE=(-1.49805E+03),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='MFY',SENSIBILITE=PS_0,        
+                   NOM_CMP='MFY',SENSIBILITE=PS_0,
                    VALE=(1.00054E-08),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='MFY',SENSIBILITE=PS_1,        
+                   NOM_CMP='MFY',SENSIBILITE=PS_1,
                    VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='RELATIF',PRECISION=1.E-5,
-                   NOM_CMP='SVZ',   
+                   NOM_CMP='SVZ',
                    VALE=(-3.97887E+07),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='SVZ',SENSIBILITE=PS_0,        
+                   NOM_CMP='SVZ',SENSIBILITE=PS_0,
                    VALE=(7.54742E-20),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='SVZ',SENSIBILITE=PS_1,        
+                   NOM_CMP='SVZ',SENSIBILITE=PS_1,
                    VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='RELATIF',PRECISION=1.E-5,
-                   NOM_CMP='SMFY',        
+                   NOM_CMP='SMFY',
                    VALE=(-2.38422E+08),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='RELATIF',PRECISION=1.E-5,
-                   NOM_CMP='SMFY',SENSIBILITE=PS_0,        
+                   NOM_CMP='SMFY',SENSIBILITE=PS_0,
                    VALE=(1.59241E-03),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='SMFY',SENSIBILITE=PS_1,        
+                   NOM_CMP='SMFY',SENSIBILITE=PS_1,
                    VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
                 ),)
 

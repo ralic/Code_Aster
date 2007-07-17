@@ -1,24 +1,24 @@
-# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE AVEC ARMATURES SOUS PRESSION.  GRILLE_MEMBRANE TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSNS107A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNS107A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 
 E = 2e10
@@ -33,7 +33,7 @@ sec = 1.
 #m = 1/2.*E/(1.+nu)
 #a= 10.
 #b= 20.
-# sans membrane 
+# sans membrane
 #def f_srr(r) :
 #  y = P*a**2/(b**2-a**2)*(1.-b**2/r**2)
 #  return y
@@ -100,8 +100,8 @@ CHAR=AFFE_CHAR_MECA(MODELE=MO,
                                 PRES=P,),
                     DDL_IMPO=_F(GROUP_MA = ('GM100006'),
                                 DZ = 0.),
-      )   
-                             
+      )
+
 
 FM=DEFI_FONCTION(NOM_PARA='INST',
                  VALE=(0.0,0.0,1.0,1.0,),);
@@ -120,7 +120,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    COMP_INCR=(_F(RELATION='ELAS',
                                 GROUP_MA='GM100005',),
                              _F(RELATION='GRILLE_ISOT_LINE',
-                                GROUP_MA='GM100007',),), 
+                                GROUP_MA='GM100007',),),
                    INCREMENT=_F(LIST_INST=LINST,),);
 
 #CHAMELG=CALC_CHAM_ELEM(MODELE=MO,
@@ -156,7 +156,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 #
 #bx=ax
 #by=array(map( f_stt,bx))
-#bz=take(stt,argsort(r)) 
+#bz=take(stt,argsort(r))
 #
 #fichier=open('./REPE_OUT/resu_grille_lin_1.dat','w')
 #for i in xrange(len(r)) :

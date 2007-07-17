@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF UTILITAI  DATE 17/07/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C     COMMANDE CREA_CHAMP
 C     -----------------------------------------------------------------
-      INTEGER N1,IB,IFM,NIV,IRET,I11,I12
+      INTEGER N1,IB,IFM,NIV,IRET,I11,I12,TEST
       CHARACTER*3 PROL0
       CHARACTER*4 TYCHR
       CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,CHIN,NOMGD2,NOMPAR,MA2,NOPAR2,TA
@@ -81,6 +81,10 @@ C     ------------------------------------------------------------------
       END IF
 
       CALL GETRES(CHOU,TYPCO,KBID)
+      CALL EXISD('CHAMP',CHOU,TEST)
+      IF ((TEST.EQ.1).AND.(OPERA.NE.'ASSE')) THEN
+         CALL U2MESS('F','UTILITAI3_43')
+      ENDIF
       CALL GETVTX(' ','TYPE_CHAM',0,1,1,TYCHR1,IB)
       TYCHR = TYCHR1(1:4)
       NOMGD = TYCHR1(6:13)

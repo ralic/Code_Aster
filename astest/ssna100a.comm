@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@
 # METHODE ZAC - TUBE DE BREE AVEC DELTA-T =  30 (CAS D'ADAPTATION)
 # ==================================================================
 
-DEBUT(   CODE=_F(  NOM = 'SSNA100A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNA100A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE()
 

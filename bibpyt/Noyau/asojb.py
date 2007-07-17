@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF asojb Noyau  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -230,7 +230,7 @@ class OJB(AsBase):
         if checker is None:
             checker = CheckLog()
         # l'objet a déjà été vérifié, on ne fait rien
-        if self.nomj() in checker.names.keys():
+        if checker.names.has_key(self.nomj()):
             return checker
         checker.visit( self )
         if self.exists:

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DES DERIVEES DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # CONTRAINTES PLANES
 #
-DEBUT(CODE=_F(NOM='SSLP101F',NIV_PUB_WEB='INTERNET',))
+DEBUT(CODE=_F(NOM='SSLP101F', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 MA=LIRE_MAILLAGE(  )
 

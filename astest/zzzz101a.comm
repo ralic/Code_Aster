@@ -1,25 +1,25 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE AFFE_CARA_ELEM ET POST_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'ZZZZ101A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='ZZZZ101A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 
@@ -131,28 +131,28 @@ MP_D_T1=POST_ELEM(  MODELE=MO_D_T1,      MASS_INER=_F(  MAILLE = 'P1'),
 
 TEST_TABLE(      TABLE=MP_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='MASSE',
-                              VALE=M_D, 
+                              VALE=M_D,
                            REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=MP_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_X',
                               VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_Y',
                               VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_Z',
                               VALE=7.,
                            REFERENCE='ANALYTIQUE')
@@ -170,30 +170,30 @@ MP_D_T2=POST_ELEM(  MODELE=MO_D_T1,      MASS_INER=_F(  MAILLE = 'P1'),
 
 TEST_TABLE(      TABLE=MP_D_T2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='MASSE',
                               VALE=M_D,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_T2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_X',
                               VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_T2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_Y',
-                              VALE=1., 
+                              VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_T2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
                                      VALE_K = 'P1'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE' )
 
 # --- ELEMENT 'M_TR_D_N'
@@ -209,78 +209,78 @@ MP_D_TR1=POST_ELEM(  MODELE=MO_D_TR1,     MASS_INER=_F(  MAILLE = 'P1'),
 
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='MASSE',
-                              VALE=M_D,  
+                              VALE=M_D,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_X',
-                              VALE=1., 
+                              VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_Y',
-                              VALE=1., 
+                              VALE=1.,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 val1=IX_D + M_D*(EZ_D*EZ_D + EY_D*EY_D)
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IX_G',
-                     VALE=val1, 
+                     VALE=val1,
                        REFERENCE='ANALYTIQUE')
 
 val2=IY_D + M_D*(EZ_D*EZ_D + EX_D*EX_D)
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IY_G',
-                     VALE=val2, 
+                     VALE=val2,
                        REFERENCE='ANALYTIQUE')
 
 val3=IZ_D + M_D*(EY_D*EY_D + EX_D*EX_D)
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IZ_G',
-                     VALE=val3, 
+                     VALE=val3,
                        REFERENCE='ANALYTIQUE')
 
-val4=-M_D * EX_D * EY_D 
+val4=-M_D * EX_D * EY_D
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IXY_G',
-                       VALE=val4,          
+                       VALE=val4,
                          REFERENCE='ANALYTIQUE')
 
 val5=-M_D * EX_D * EZ_D
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IXZ_G',
-                       VALE=val5,          
+                       VALE=val5,
                          REFERENCE='ANALYTIQUE')
 
-val6=-M_D * EY_D * EZ_D 
+val6=-M_D * EY_D * EZ_D
 TEST_TABLE(      TABLE=MP_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IYZ_G',
-                       VALE=val6,          
+                       VALE=val6,
                          REFERENCE='ANALYTIQUE')
 
 # --- ELEMENT 'M_TR_N'
@@ -299,52 +299,52 @@ MP_D_TR2=POST_ELEM(  MODELE=MO_D_TR1,     MASS_INER=_F(  MAILLE = 'P1'),
 
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='MASSE',
-                              VALE=M_D,  
+                              VALE=M_D,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_X',
-                              VALE=1., 
+                              VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_Y',
-                              VALE=1., 
+                              VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 val7=IX_D + M_D*(EZ_D*EZ_D + EY_D*EY_D)
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IX_G',
-                     VALE=val7, 
+                     VALE=val7,
                        REFERENCE='ANALYTIQUE')
 
 val8=IY_D + M_D*(EZ_D*EZ_D + EX_D*EX_D)
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IY_G',
-                     VALE=val8, 
+                     VALE=val8,
                        REFERENCE='ANALYTIQUE')
 
 val9=IZ_D + M_D*(EY_D*EY_D + EX_D*EX_D)
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IZ_G',
                      VALE=val9,
                        REFERENCE='ANALYTIQUE' )
@@ -352,25 +352,25 @@ TEST_TABLE(      TABLE=MP_D_TR2,
 val10=-M_D * EX_D * EY_D
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IXY_G',
-                       VALE=val10, 
+                       VALE=val10,
                          REFERENCE='ANALYTIQUE' )
 
 val11=-M_D * EX_D * EZ_D
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IXZ_G',
-                       VALE=val11,  
+                       VALE=val11,
                          REFERENCE='ANALYTIQUE')
 
-val12=-M_D * EY_D * EZ_D 
+val12=-M_D * EY_D * EZ_D
 TEST_TABLE(      TABLE=MP_D_TR2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'P1'), 
+                                     VALE_K = 'P1'),
                           NOM_PARA='IYZ_G',
-                       VALE=val12, 
+                       VALE=val12,
                          REFERENCE='ANALYTIQUE')
 
 # --- ELEMENT 'M_T_L'
@@ -387,30 +387,30 @@ MS_D_T1=POST_ELEM(  MODELE=MO_D_T2,      MASS_INER=_F(  MAILLE = 'MA1'),
 
 TEST_TABLE(      TABLE=MS_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='MASSE',
-                              VALE=2., 
+                              VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MS_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='CDG_X',
-                              VALE=1.5,  
+                              VALE=1.5,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MS_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='CDG_Y',
-                              VALE=1., 
+                              VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MS_D_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 # --- ELEMENT 'M_TR_L'
@@ -442,30 +442,30 @@ MS_D_TR1=POST_ELEM(  MODELE=MO_D_TR2,     MASS_INER=_F(  MAILLE = 'MA1'),
 
 TEST_TABLE(      TABLE=MS_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='MASSE',
-                              VALE=M_D, 
+                              VALE=M_D,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MS_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='CDG_X',
-                              VALE=1.5, 
+                              VALE=1.5,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MS_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='CDG_Y',
-                              VALE=1., 
+                              VALE=1.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MS_D_TR1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA1'), 
+                                     VALE_K = 'MA1'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 #
@@ -479,7 +479,7 @@ MO_BARRE=AFFE_MODELE(  MAILLAGE=MA,
 #
 # ----------------------- SECTION GENERALE -----------------------------
 
-CA_BA0=AFFE_CARA_ELEM(  MODELE=MO_BARRE,      
+CA_BA0=AFFE_CARA_ELEM(  MODELE=MO_BARRE,
                       BARRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'GENERALE',
                               CARA = 'A',          VALE = A)  )
 
@@ -490,36 +490,36 @@ MA_BA0=POST_ELEM(  MODELE=MO_BARRE,
 val13=A * LONG * RHO
 TEST_TABLE(      TABLE=MA_BA0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                              VALE=val13, 
+                              VALE=val13,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_BA0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_X',
-                              VALE=3.,  
+                              VALE=3.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_BA0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_Y',
-                              VALE=2., 
+                              VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_BA0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 #
 # ----------------------- SECTION RECTANGLE ----------------------------
 
-CA_BA1=AFFE_CARA_ELEM(  MODELE=MO_BARRE,      
+CA_BA1=AFFE_CARA_ELEM(  MODELE=MO_BARRE,
                       BARRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                               CARA = 'H',           VALE = HY)  )
 
@@ -530,12 +530,12 @@ MA_BA1=POST_ELEM(  MODELE=MO_BARRE,
 val14=HY * HY * LONG * RHO
 TEST_TABLE(      TABLE=MA_BA1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                              VALE=val14, 
+                              VALE=val14,
                            REFERENCE='ANALYTIQUE')
 
-CA_BA2=AFFE_CARA_ELEM(  MODELE=MO_BARRE,      
+CA_BA2=AFFE_CARA_ELEM(  MODELE=MO_BARRE,
                       BARRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                              CARA = ( 'H', 'EP', ),    VALE = ( HY, EPY, ))  )
 
@@ -546,12 +546,12 @@ MA_BA2=POST_ELEM(  MODELE=MO_BARRE,
 val15=( HY * HY - E_HY * E_HY )*LONG*RHO
 TEST_TABLE(      TABLE=MA_BA2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                       VALE=val15, 
+                       VALE=val15,
                          REFERENCE='ANALYTIQUE')
 
-CA_BA3=AFFE_CARA_ELEM(  MODELE=MO_BARRE,      
+CA_BA3=AFFE_CARA_ELEM(  MODELE=MO_BARRE,
                       BARRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                               CARA = ( 'HY', 'EPY', 'HZ', 'EPZ', ),
                               VALE = (  HY,   EPY,   HZ,   EPZ,  ))    )
@@ -563,15 +563,15 @@ MA_BA3=POST_ELEM(  MODELE=MO_BARRE,
 val16=( HY * HZ - E_HY * E_HZ )*LONG*RHO
 TEST_TABLE(      TABLE=MA_BA3,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                       VALE=val16, 
+                       VALE=val16,
                          REFERENCE='ANALYTIQUE')
 
 #
 # ------------------------- SECTION CERCLE -----------------------------
 
-CA_BA4=AFFE_CARA_ELEM(  MODELE=MO_BARRE,      
+CA_BA4=AFFE_CARA_ELEM(  MODELE=MO_BARRE,
                       BARRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'CERCLE',
                               CARA = 'R',           VALE = R_E)   )
 
@@ -582,12 +582,12 @@ MA_BA4=POST_ELEM(  MODELE=MO_BARRE,
 val17=pi * R_E * R_E * LONG * RHO
 TEST_TABLE(      TABLE=MA_BA4,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                           VALE=val17, 
+                           VALE=val17,
                            REFERENCE='ANALYTIQUE' )
 
-CA_BA5=AFFE_CARA_ELEM(  MODELE=MO_BARRE,      
+CA_BA5=AFFE_CARA_ELEM(  MODELE=MO_BARRE,
                       BARRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'CERCLE',
                               CARA = ( 'R', 'EP', ),   VALE = ( R_E,  EP, )) )
 
@@ -598,7 +598,7 @@ MA_BA5=POST_ELEM(  MODELE=MO_BARRE,
 val18=pi * S_C * LONG * RHO
 TEST_TABLE(      TABLE=MA_BA5,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                               VALE=val18,
                            REFERENCE='ANALYTIQUE')
@@ -618,7 +618,7 @@ MO_POU_T=AFFE_MODELE(  MAILLAGE=MA,
 #
 # ----------------------- SECTION GENERALE -----------------------------
 
-CA_PO_E0=AFFE_CARA_ELEM(  MODELE=MO_POU_E,       
+CA_PO_E0=AFFE_CARA_ELEM(  MODELE=MO_POU_E,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'GENERALE',
                                  CARA = ( 'A',  'IY',  'IZ',  'JX', ),
                                  VALE = (  A,    1.,    1.,    1.,  ))  )
@@ -630,33 +630,33 @@ MA_PO_E0=POST_ELEM(  MODELE=MO_POU_E,
 val19=A * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_E0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                              VALE=val19, 
+                              VALE=val19,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_PO_E0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
-                          NOM_PARA='CDG_X', 
-                              VALE=3.,  
+                                     VALE_K = 'MA_SEG2'),
+                          NOM_PARA='CDG_X',
+                              VALE=3.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_PO_E0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_Y',
-                              VALE=2.,  
+                              VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_PO_E0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_Z',
-                              VALE=7.,  
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
-CA_PO_T0=AFFE_CARA_ELEM(  MODELE=MO_POU_T,       
+CA_PO_T0=AFFE_CARA_ELEM(  MODELE=MO_POU_T,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'GENERALE',
                                CARA = ( 'A', 'IY', 'IZ', 'JX', 'AY', 'AZ',),
                                VALE = (  A,   1.,  1.,  1.,  1.,  1., )) )
@@ -668,36 +668,36 @@ MA_PO_T0=POST_ELEM(  MODELE=MO_POU_T,
 val20=A * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_T0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                              VALE=val20, 
+                              VALE=val20,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_PO_T0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_X',
-                              VALE=3., 
+                              VALE=3.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_PO_T0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_Y',
-                              VALE=2., 
+                              VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_PO_T0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 #
 # ----------------------- SECTION RECTANGLE ----------------------------
 
-CA_PO_E1=AFFE_CARA_ELEM(  MODELE=MO_POU_E,       
+CA_PO_E1=AFFE_CARA_ELEM(  MODELE=MO_POU_E,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                                  CARA = 'H',          VALE = HY)  )
 
@@ -705,15 +705,15 @@ MA_PO_E1=POST_ELEM(  MODELE=MO_POU_E,
                          MASS_INER=_F(  GROUP_MA = 'MA_SEG2'),
                           CHAM_MATER=CHMAT,    CARA_ELEM=CA_PO_E1     )
 
-val21=HY * HY * LONG * RHO 
+val21=HY * HY * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_E1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                               VALE=val21,
                            REFERENCE='ANALYTIQUE'  )
 
-CA_PO_E2=AFFE_CARA_ELEM(  MODELE=MO_POU_E,       
+CA_PO_E2=AFFE_CARA_ELEM(  MODELE=MO_POU_E,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                                  CARA = ( 'H',  'EP',  ),
                                  VALE = (  HY,   EPY,  ))            )
@@ -725,12 +725,12 @@ MA_PO_E2=POST_ELEM(  MODELE=MO_POU_E,
 val22=(HY * HY - E_HY * E_HY )*LONG*RHO
 TEST_TABLE(      TABLE=MA_PO_E2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                        VALE=val22,
                          REFERENCE='ANALYTIQUE' )
 
-CA_PO_E3=AFFE_CARA_ELEM(  MODELE=MO_POU_E,       
+CA_PO_E3=AFFE_CARA_ELEM(  MODELE=MO_POU_E,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                                  CARA = ( 'HY', 'EPY', 'HZ', 'EPZ', ),
                                  VALE = (  HY,   EPY,   HZ,   EPZ,  ))  )
@@ -742,12 +742,12 @@ MA_PO_E3=POST_ELEM(  MODELE=MO_POU_E,
 val23=( HY * HZ - E_HY * E_HZ )*LONG*RHO
 TEST_TABLE(      TABLE=MA_PO_E3,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                        VALE=val23,
                          REFERENCE='ANALYTIQUE' )
 
-CA_PO_T1=AFFE_CARA_ELEM(  MODELE=MO_POU_T,       
+CA_PO_T1=AFFE_CARA_ELEM(  MODELE=MO_POU_T,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                                  CARA = 'H',          VALE = HY)  )
 
@@ -755,15 +755,15 @@ MA_PO_T1=POST_ELEM(  MODELE=MO_POU_T,
                          MASS_INER=_F(  GROUP_MA = 'MA_SEG2'),
                           CHAM_MATER=CHMAT,    CARA_ELEM=CA_PO_T1     )
 
-val24=HY * HY * LONG * RHO 
+val24=HY * HY * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_T1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                               VALE=val24,
                            REFERENCE='ANALYTIQUE'  )
 
-CA_PO_T2=AFFE_CARA_ELEM(  MODELE=MO_POU_T,       
+CA_PO_T2=AFFE_CARA_ELEM(  MODELE=MO_POU_T,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                                  CARA = ( 'H',  'EP',  ),
                                  VALE = (  HY,   EPY,  ))            )
@@ -775,12 +775,12 @@ MA_PO_T2=POST_ELEM(  MODELE=MO_POU_T,
 val25=( HY * HY - E_HY * E_HY )*LONG*RHO
 TEST_TABLE(      TABLE=MA_PO_T2,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                        VALE=val25,
                          REFERENCE='ANALYTIQUE' )
 
-CA_PO_T3=AFFE_CARA_ELEM(  MODELE=MO_POU_T,       
+CA_PO_T3=AFFE_CARA_ELEM(  MODELE=MO_POU_T,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'RECTANGLE',
                                  CARA = ( 'HY', 'EPY', 'HZ', 'EPZ', ),
                                  VALE = (  HY,   EPY,   HZ,   EPZ,  ))  )
@@ -792,7 +792,7 @@ MA_PO_T3=POST_ELEM(  MODELE=MO_POU_T,
 val26=( HY * HZ - E_HY * E_HZ )*LONG*RHO
 TEST_TABLE(      TABLE=MA_PO_T3,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                        VALE=val26,
                          REFERENCE='ANALYTIQUE' )
@@ -800,7 +800,7 @@ TEST_TABLE(      TABLE=MA_PO_T3,
 #
 # ------------------------- SECTION CERCLE -----------------------------
 
-CA_PO_E4=AFFE_CARA_ELEM(  MODELE=MO_POU_E,       
+CA_PO_E4=AFFE_CARA_ELEM(  MODELE=MO_POU_E,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'CERCLE',
                                  CARA = 'R',           VALE = R_E) )
 
@@ -811,12 +811,12 @@ MA_PO_E4=POST_ELEM(  MODELE=MO_POU_E,
 val27=pi * R_E * R_E * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_E4,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                           VALE=val27, 
+                           VALE=val27,
                            REFERENCE='ANALYTIQUE' )
 
-CA_PO_E5=AFFE_CARA_ELEM(  MODELE=MO_POU_E,       
+CA_PO_E5=AFFE_CARA_ELEM(  MODELE=MO_POU_E,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'CERCLE',
                                  CARA = ( 'R', 'EP', ), VALE = ( R_E,  EP, )))
 
@@ -824,15 +824,15 @@ MA_PO_E5=POST_ELEM(  MODELE=MO_POU_E,
                          MASS_INER=_F(  GROUP_MA = 'MA_SEG2'),
                           CHAM_MATER=CHMAT,    CARA_ELEM=CA_PO_E5     )
 
-val28=pi * S_C * LONG * RHO 
+val28=pi * S_C * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_E5,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                               VALE=val28,
                            REFERENCE='ANALYTIQUE'     )
 
-CA_PO_T4=AFFE_CARA_ELEM(  MODELE=MO_POU_T,       
+CA_PO_T4=AFFE_CARA_ELEM(  MODELE=MO_POU_T,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'CERCLE',
                                  CARA = 'R',           VALE = R_E) )
 
@@ -843,12 +843,12 @@ MA_PO_T4=POST_ELEM(  MODELE=MO_POU_T,
 val29=pi * R_E * R_E * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_T4,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
-                           VALE=val29, 
+                           VALE=val29,
                            REFERENCE='ANALYTIQUE' )
 
-CA_PO_T5=AFFE_CARA_ELEM(  MODELE=MO_POU_T,       
+CA_PO_T5=AFFE_CARA_ELEM(  MODELE=MO_POU_T,
                         POUTRE=_F(  GROUP_MA = 'MA_SEG2',   SECTION = 'CERCLE',
                                  CARA = ( 'R', 'EP', ), VALE = ( R_E,  EP, )))
 
@@ -856,10 +856,10 @@ MA_PO_T5=POST_ELEM(  MODELE=MO_POU_T,
                          MASS_INER=_F(  GROUP_MA = 'MA_SEG2'),
                           CHAM_MATER=CHMAT,    CARA_ELEM=CA_PO_T5     )
 
-val30=pi * S_C * LONG * RHO 
+val30=pi * S_C * LONG * RHO
 TEST_TABLE(      TABLE=MA_PO_T5,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_SEG2'), 
+                                     VALE_K = 'MA_SEG2'),
                           NOM_PARA='MASSE',
                               VALE=val30,
                            REFERENCE='ANALYTIQUE'     )
@@ -876,7 +876,7 @@ MO_DKQ=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  GROUP_MA = 'MA_QUA4',   PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'DKT')  )
 
-CA_DKT1=AFFE_CARA_ELEM(  MODELE=MO_DKT,       
+CA_DKT1=AFFE_CARA_ELEM(  MODELE=MO_DKT,
                        COQUE=_F(  GROUP_MA = 'MA_TRI3',  EPAIS = EP)    )
 
 MA_DKT1=POST_ELEM(  MODELE=MO_DKT,
@@ -886,54 +886,54 @@ MA_DKT1=POST_ELEM(  MODELE=MO_DKT,
 val31=EP * 4. * RHO
 TEST_TABLE(      TABLE=MA_DKT1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='MASSE',
                               VALE=val31,
                            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(      TABLE=MA_DKT1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='CDG_X',
-                              VALE=3., 
+                              VALE=3.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKT1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='CDG_Y',
-                              VALE=2.,  
+                              VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKT1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
-TEST_TABLE(      TABLE=MA_DKT1, 
+TEST_TABLE(      TABLE=MA_DKT1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='IX_G',
-                              VALE=IXX_TRI3, 
+                              VALE=IXX_TRI3,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKT1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='IY_G',
-                              VALE=IYY_TRI3, 
+                              VALE=IYY_TRI3,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKT1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='IZ_G',
-                              VALE=IZZ_TRI3, 
+                              VALE=IZZ_TRI3,
                            REFERENCE='ANALYTIQUE')
 
-CA_DKQ1=AFFE_CARA_ELEM(  MODELE=MO_DKQ,       
+CA_DKQ1=AFFE_CARA_ELEM(  MODELE=MO_DKQ,
                        COQUE=_F(  GROUP_MA = 'MA_QUA4',  EPAIS = EP)    )
 
 MA_DKQ1=POST_ELEM(  MODELE=MO_DKQ,
@@ -943,51 +943,51 @@ MA_DKQ1=POST_ELEM(  MODELE=MO_DKQ,
 val32=EP * 6. * RHO
 TEST_TABLE(      TABLE=MA_DKQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='MASSE',
                               VALE=val32,
                            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(      TABLE=MA_DKQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_X',
-                              VALE=2.5, 
+                              VALE=2.5,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_Y',
                               VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IX_G',
-                              VALE=IXX_QUA4, 
+                              VALE=IXX_QUA4,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IY_G',
-                              VALE=IYY_QUA4, 
+                              VALE=IYY_QUA4,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DKQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IZ_G',
-                              VALE=IZZ_QUA4, 
+                              VALE=IZZ_QUA4,
                            REFERENCE='ANALYTIQUE')
 
 #
@@ -1002,7 +1002,7 @@ MO_DSQ=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  GROUP_MA = 'MA_QUA4',   PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'DST')  )
 
-CA_DST1=AFFE_CARA_ELEM(  MODELE=MO_DST,       
+CA_DST1=AFFE_CARA_ELEM(  MODELE=MO_DST,
                        COQUE=_F(  GROUP_MA = 'MA_TRI3',  EPAIS = EP)    )
 
 MA_DST1=POST_ELEM(  MODELE=MO_DST,
@@ -1012,54 +1012,54 @@ MA_DST1=POST_ELEM(  MODELE=MO_DST,
 val33=EP * 4. * RHO
 TEST_TABLE(      TABLE=MA_DST1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='MASSE',
                               VALE=val33,
                            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(      TABLE=MA_DST1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='CDG_X',
-                              VALE=3.,  
+                              VALE=3.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DST1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='CDG_Y',
-                              VALE=2., 
+                              VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DST1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='CDG_Z',
                               VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DST1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='IX_G',
-                              VALE=IXX_TRI3, 
+                              VALE=IXX_TRI3,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DST1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='IY_G',
-                              VALE=IYY_TRI3, 
+                              VALE=IYY_TRI3,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DST1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TRI3'), 
+                                     VALE_K = 'MA_TRI3'),
                           NOM_PARA='IZ_G',
-                              VALE=IZZ_TRI3,  
+                              VALE=IZZ_TRI3,
                            REFERENCE='ANALYTIQUE')
 
-CA_DSQ1=AFFE_CARA_ELEM(  MODELE=MO_DSQ,       
+CA_DSQ1=AFFE_CARA_ELEM(  MODELE=MO_DSQ,
                        COQUE=_F(  GROUP_MA = 'MA_QUA4',  EPAIS = EP)    )
 
 MA_DSQ1=POST_ELEM(  MODELE=MO_DSQ,
@@ -1070,72 +1070,72 @@ MA_DSQ1=POST_ELEM(  MODELE=MO_DSQ,
 val34=EP * 6. * RHO
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='MASSE',
                               VALE=val34,
                            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_X',
-                              VALE=2.5,  
+                              VALE=2.5,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_Y',
-                              VALE=2.,  
+                              VALE=2.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IX_G',
-                              VALE=IXX_QUA4, 
-                           REFERENCE='ANALYTIQUE')
-
-TEST_TABLE(      TABLE=MA_DSQ1, 
-                            FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
-                          NOM_PARA='IY_G', 
-                              VALE=IYY_QUA4,  
+                              VALE=IXX_QUA4,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
+                          NOM_PARA='IY_G',
+                              VALE=IYY_QUA4,
+                           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(      TABLE=MA_DSQ1,
+                            FILTRE=_F(  NOM_PARA = 'LIEU',
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IZ_G',
-                              VALE=IZZ_QUA4, 
+                              VALE=IZZ_QUA4,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IX_P',
-                              VALE=IXX_Q4P, 
-                           REFERENCE='ANALYTIQUE')
-
-TEST_TABLE(      TABLE=MA_DSQ1, 
-                            FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
-                          NOM_PARA='IY_P', 
-                              VALE=IYY_Q4P, 
+                              VALE=IXX_Q4P,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_DSQ1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
+                          NOM_PARA='IY_P',
+                              VALE=IYY_Q4P,
+                           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(      TABLE=MA_DSQ1,
+                            FILTRE=_F(  NOM_PARA = 'LIEU',
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IZ_P',
-                              VALE=IZZ_Q4P, 
+                              VALE=IZZ_Q4P,
                            REFERENCE='ANALYTIQUE')
 
 #
@@ -1146,7 +1146,7 @@ MO_Q4G=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  GROUP_MA = 'MA_QUA4',   PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'Q4G')  )
 
-CA_Q4G1=AFFE_CARA_ELEM(  MODELE=MO_Q4G,       
+CA_Q4G1=AFFE_CARA_ELEM(  MODELE=MO_Q4G,
                        COQUE=_F(  GROUP_MA = 'MA_QUA4',  EPAIS = EP)    )
 
 MA_Q4G1=POST_ELEM(  MODELE=MO_Q4G,
@@ -1156,48 +1156,48 @@ MA_Q4G1=POST_ELEM(  MODELE=MO_Q4G,
 val35=EP * 6. * RHO
 TEST_TABLE(      TABLE=MA_Q4G1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='MASSE',
                               VALE=val35,
                            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(      TABLE=MA_Q4G1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_X',
-                              VALE=2.5, 
+                              VALE=2.5,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MA_Q4G1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_Y',
                               VALE=2.                      )
 
 TEST_TABLE(      TABLE=MA_Q4G1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='CDG_Z',
-                              VALE=7., 
+                              VALE=7.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_Q4G1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IX_G',
                               VALE=IXX_QUA4,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MA_Q4G1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IY_G',
-                              VALE=IYY_QUA4, 
+                              VALE=IYY_QUA4,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MA_Q4G1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_QUA4'), 
+                                     VALE_K = 'MA_QUA4'),
                           NOM_PARA='IZ_G',
                               VALE=IZZ_QUA4,
                            REFERENCE='ANALYTIQUE' )
@@ -1214,7 +1214,7 @@ MO_TUYAU=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'POU_C_T'))    )
 
-CA_TUY0=AFFE_CARA_ELEM(  MODELE=MO_TUYAU,      
+CA_TUY0=AFFE_CARA_ELEM(  MODELE=MO_TUYAU,
                        POUTRE=_F(  GROUP_MA = 'MA_TUYA',  SECTION = 'GENERALE',
                                 CARA = ( 'A', 'IY', 'IZ', 'JX', 'AY', 'AZ',),
                                 VALE = (  A,   1.,  1.,  1.,  1.,  1., )),DEFI_ARC=(
@@ -1233,12 +1233,12 @@ MA_TUY0=POST_ELEM(  MODELE=MO_TUYAU,
 val36=2. * pi * RHO * A * 1.5 / 4.
 TEST_TABLE(      TABLE=MA_TUY0,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MT4'), 
+                                     VALE_K = 'MT4'),
                           NOM_PARA='MASSE',
                           VALE=val36,
                            REFERENCE='ANALYTIQUE'  )
 
-CA_TUY1=AFFE_CARA_ELEM(  MODELE=MO_TUYAU,      
+CA_TUY1=AFFE_CARA_ELEM(  MODELE=MO_TUYAU,
                        POUTRE=_F(  GROUP_MA = 'MA_TUYA',  SECTION = 'GENERALE',
                                 CARA = ( 'A', 'IY', 'IZ', 'JX', 'AY', 'AZ',),
                                 VALE = (  A,   1.,  1.,  1.,  1.,  1., )),DEFI_ARC=(
@@ -1257,7 +1257,7 @@ MA_TUY1=POST_ELEM(  MODELE=MO_TUYAU,
 val37=(2.*pi*RHO*A*1.5/4.) + (2.*pi*RHO*A*1./4.) + (2.*pi*RHO*A*2./4.)  + ( 8.5 * RHO * A )
 TEST_TABLE(      TABLE=MA_TUY1,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'MA_TUYA'), 
+                                     VALE_K = 'MA_TUYA'),
                           NOM_PARA='MASSE',
                VALE=val37,
                              REFERENCE='ANALYTIQUE' )
@@ -1268,13 +1268,13 @@ TEST_TABLE(      TABLE=MA_TUY1,
 
 MAT_1=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
 
-CHMAT_1=AFFE_MATERIAU(  MAILLAGE=MA, 
+CHMAT_1=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',      MATER = MAT_1) )
 
 # ============================= COQUE DKT ============================
 # ====================================================================
 
-MOS_DKT=AFFE_MODELE(   MAILLAGE=MA, 
+MOS_DKT=AFFE_MODELE(   MAILLAGE=MA,
                         AFFE=_F(  GROUP_MA = 'PLAQ',  PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DKT') )
 
@@ -1287,71 +1287,71 @@ MASS_DKT=POST_ELEM(  MODELE=MOS_DKT,
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
+                                     VALE_K = 'PLAQ'),
                           NOM_PARA='MASSE',
                               VALE=390.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
+                                     VALE_K = 'PLAQ'),
                           NOM_PARA='CDG_X',
-                              VALE=0.85, 
+                              VALE=0.85,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='CDG_Y', 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='CDG_Y',
                               VALE=1.4722432,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='CDG_Z', 
-                              VALE=1.9, 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='CDG_Z',
+                              VALE=1.9,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
+                                     VALE_K = 'PLAQ'),
                           NOM_PARA='IX_PRIN_G',
-                              VALE=32.5, 
+                              VALE=32.5,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='IY_PRIN_G', 
-                              VALE=812.5, 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='IY_PRIN_G',
+                              VALE=812.5,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='IZ_PRIN_G', 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='IZ_PRIN_G',
                               VALE=845.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
+                                     VALE_K = 'PLAQ'),
                           NOM_PARA='ALPHA',
                               VALE=60.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DKT,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='GAMMA', 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='GAMMA',
                               VALE=90.,
                            REFERENCE='ANALYTIQUE')
 
 # ============================= COQUE DST ============================
 # ====================================================================
 
-MOS_DST=AFFE_MODELE(   MAILLAGE=MA, 
+MOS_DST=AFFE_MODELE(   MAILLAGE=MA,
                         AFFE=_F(  GROUP_MA = 'PLAQ',  PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DST') )
 
@@ -1364,71 +1364,71 @@ MASS_DST=POST_ELEM(  MODELE=MOS_DST,
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
+                                     VALE_K = 'PLAQ'),
                           NOM_PARA='MASSE',
-                              VALE=390., 
+                              VALE=390.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='CDG_X', 
-                              VALE=0.85, 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='CDG_X',
+                              VALE=0.85,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='CDG_Y', 
-                              VALE=1.4722432, 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='CDG_Y',
+                              VALE=1.4722432,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='CDG_Z', 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='CDG_Z',
                               VALE=1.9,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='IX_PRIN_G', 
-                              VALE=32.5, 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='IX_PRIN_G',
+                              VALE=32.5,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='IY_PRIN_G', 
-                              VALE=812.5, 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='IY_PRIN_G',
+                              VALE=812.5,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='IZ_PRIN_G', 
-                              VALE=845., 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='IZ_PRIN_G',
+                              VALE=845.,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='ALPHA', 
-                              VALE=60., 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='ALPHA',
+                              VALE=60.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_DST,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'PLAQ'), 
-                          NOM_PARA='GAMMA', 
-                              VALE=90., 
+                                     VALE_K = 'PLAQ'),
+                          NOM_PARA='GAMMA',
+                              VALE=90.,
                            REFERENCE='ANALYTIQUE')
 
 # ============================= COQUE Q4G ============================
 # ====================================================================
 
-MOS_Q4G=AFFE_MODELE(   MAILLAGE=MA, 
+MOS_Q4G=AFFE_MODELE(   MAILLAGE=MA,
                         AFFE=_F(  GROUP_MA = 'DKT3',  PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'Q4G') )
 
@@ -1441,71 +1441,71 @@ MASS_Q4G=POST_ELEM(  MODELE=MOS_Q4G,
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
+                                     VALE_K = 'DKT3'),
                           NOM_PARA='MASSE',
-                              VALE=390., 
+                              VALE=390.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='CDG_X', 
-                              VALE=0.85,  
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='CDG_X',
+                              VALE=0.85,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='CDG_Y', 
-                              VALE=1.4722432, 
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='CDG_Y',
+                              VALE=1.4722432,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='CDG_Z', 
-                              VALE=1.9,  
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='CDG_Z',
+                              VALE=1.9,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='IX_PRIN_G', 
-                              VALE=32.5, 
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='IX_PRIN_G',
+                              VALE=32.5,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='IY_PRIN_G', 
-                              VALE=812.5, 
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='IY_PRIN_G',
+                              VALE=812.5,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='IZ_PRIN_G', 
-                              VALE=845., 
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='IZ_PRIN_G',
+                              VALE=845.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='ALPHA', 
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='ALPHA',
                               VALE=60.,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_Q4G,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'DKT3'), 
-                          NOM_PARA='GAMMA', 
+                                     VALE_K = 'DKT3'),
+                          NOM_PARA='GAMMA',
                               VALE=90.,
                            REFERENCE='ANALYTIQUE' )
 
 # ============================= 3D ============================
 # =============================================================
 
-MOS_3D=AFFE_MODELE(   MAILLAGE=MA, 
+MOS_3D=AFFE_MODELE(   MAILLAGE=MA,
                        AFFE=_F(  GROUP_MA = 'HEX',  PHENOMENE = 'MECANIQUE',
                               MODELISATION = '3D') )
 
@@ -1515,58 +1515,58 @@ MASS_3D=POST_ELEM(  MODELE=MOS_3D,
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
+                                     VALE_K = 'HEX'),
                           NOM_PARA='MASSE',
-                              VALE=78000., 
+                              VALE=78000.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
-                          NOM_PARA='CDG_X', 
-                              VALE=2.48828, 
+                                     VALE_K = 'HEX'),
+                          NOM_PARA='CDG_X',
+                              VALE=2.48828,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
-                          NOM_PARA='CDG_Y', 
-                              VALE=2.48828, 
+                                     VALE_K = 'HEX'),
+                          NOM_PARA='CDG_Y',
+                              VALE=2.48828,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
-                          NOM_PARA='CDG_Z', 
-                              VALE=2.200779, 
+                                     VALE_K = 'HEX'),
+                          NOM_PARA='CDG_Z',
+                              VALE=2.200779,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
-                          NOM_PARA='IX_PRIN_G', 
-                              VALE=19500., 
+                                     VALE_K = 'HEX'),
+                          NOM_PARA='IX_PRIN_G',
+                              VALE=19500.,
                            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
-                          NOM_PARA='IY_PRIN_G', 
-                              VALE=331500., 
+                                     VALE_K = 'HEX'),
+                          NOM_PARA='IY_PRIN_G',
+                              VALE=331500.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
-                          NOM_PARA='IZ_PRIN_G', 
-                              VALE=338000., 
+                                     VALE_K = 'HEX'),
+                          NOM_PARA='IZ_PRIN_G',
+                              VALE=338000.,
                            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(      TABLE=MASS_3D,
                             FILTRE=_F(  NOM_PARA = 'LIEU',
-                                     VALE_K = 'HEX'), 
-                          NOM_PARA='ALPHA', 
-                              VALE=45., 
+                                     VALE_K = 'HEX'),
+                          NOM_PARA='ALPHA',
+                              VALE=45.,
                            REFERENCE='ANALYTIQUE' )
 
 #
@@ -1574,7 +1574,7 @@ TEST_TABLE(      TABLE=MASS_3D,
 # SUR CLASTER,  GAMMA =   0.0
 #           TEST_TABLE ( TABLE    : MASS_3D
 #                        FILTRE   : ( NOM_PARA : 'LIEU'
-#                                     VALE_K  : HEX    ) 
+#                                     VALE_K  : HEX    )
 #                        NOM_PARA : 'GAMMA'
 #                        VALE     : 180.0               ) ;
 

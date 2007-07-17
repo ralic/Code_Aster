@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - 3D - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@
 #     Z /      1.0 M
 #          !---------!
 #======================================================================
-DEBUT( CODE=_F(  NOM = 'HPLV101B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='HPLV101B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 # MATERIAU ISOTROPE
@@ -154,7 +154,7 @@ DEPLDM=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDM ,RESULTAT= DEPLDM ,
-                  
+
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 
@@ -165,7 +165,7 @@ DEPLDF=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDF ,RESULTAT= DEPLDF ,
-                  
+
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 #
@@ -182,7 +182,7 @@ DEPLDMO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDMO ,RESULTAT= DEPLDMO ,
-                  
+
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 
@@ -193,7 +193,7 @@ DEPLDFO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDFO ,RESULTAT= DEPLDFO ,
-                  
+
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 #
@@ -211,7 +211,7 @@ DEPLDMOO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDMOO ,RESULTAT= DEPLDMOO ,
-                  
+
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 
@@ -222,7 +222,7 @@ DEPLDFOO=MECA_STATIQUE(
                    )
 
 CALC_ELEM( reuse= DEPLDFOO ,RESULTAT= DEPLDFOO ,
-                  
+
                  OPTION=('SIGM_ELNO_DEPL',)  )
 
 #

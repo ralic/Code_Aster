@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,19 +27,20 @@ import pickle
 # Modules Eficas
 import Accas
 from Accas import ASSD
-from Utilitai.Utmess   import UTMESS
-from Utilitai.as_timer import ASTER_TIMER
-from Utilitai.Sensibilite import MEMORISATION_SENSIBILITE
 from Noyau.ascheckers     import CheckLog
 
 try:
    import aster
+   aster_exists = True
    # Si le module aster est présent, on le connecte
    # au JDC
    import Build.B_CODE
    Build.B_CODE.CODE.codex=aster
+   
+   from Utilitai.Utmess   import UTMESS
+   from Macro.Sensibilite import MEMORISATION_SENSIBILITE
 except:
-   pass
+   aster_exists = False
 
 
 def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
@@ -54,10 +55,12 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
    jdc.sd_checker = CheckLog()
    if CODE != None:
       jdc.fico = CODE['NOM']
-   jdc.timer = ASTER_TIMER(format='aster')
-   # en POURSUITE, ne pas écraser la mémorisation existante.
-   if not hasattr(jdc, 'memo_sensi'):
-      jdc.memo_sensi = MEMORISATION_SENSIBILITE()
+   if aster_exists:
+      # on commence l'execution proprement dite, fin des initialisations
+      jdc.timer.Stop('JDC init')
+      # en POURSUITE, ne pas écraser la mémorisation existante.
+      if not hasattr(jdc, 'memo_sensi'):
+         jdc.memo_sensi = MEMORISATION_SENSIBILITE()
 
 
 def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
@@ -273,6 +276,8 @@ def detruire(self,d):
    """
        Cette fonction est la fonction op_init de la PROC DETRUIRE
    """
+   if hasattr(self,"executed") and self.executed == 1:
+      return
    if self["CONCEPT"]!=None:
      sd=[]
      for mc in self["CONCEPT"]:

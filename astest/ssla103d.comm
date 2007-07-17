@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,7 @@
 #        ET D'HYDRATATION - LOI MAZARS NON LOCALE
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSLA103D',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSLA103D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE();
 

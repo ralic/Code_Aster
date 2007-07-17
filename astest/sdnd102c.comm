@@ -1,31 +1,31 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # ----------------------------------------------------------------------
-# REPONSE D UN SYSTEME A UN DDL BUTANT CONTRE UNE PAROI FIXE 
+# REPONSE D UN SYSTEME A UN DDL BUTANT CONTRE UNE PAROI FIXE
 #
 # CALCUL TRANSITOIRE SUR BASE MODALE AVEC DYNA_TRAN_EXPLI
-# 
+#
 # ----------------------------------------------------------------------
-# 
-DEBUT(CODE=_F( NOM = 'SDND102C',NIV_PUB_WEB='INTERNET'))
+#
+DEBUT(CODE=_F(NOM='SDND102C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 MAILLAGE=LIRE_MAILLAGE()
 
@@ -34,7 +34,7 @@ MAILLAGE=LIRE_MAILLAGE()
 #---------------------------------------------
 L_INST=DEFI_LIST_REEL(  DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = 0.5,  PAS = 0.001))
-                         
+
 L_INST2=DEFI_LIST_REEL(  DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = 0.5,  PAS = 0.001))
 
@@ -56,12 +56,12 @@ ACCELER1=CALC_FONC_INTERP( FONCTION=ACCE1,  LIST_PARA=L_INST,
 
 # MATERIAU
 #
-MAT_CHO=DEFI_MATERIAU( 
+MAT_CHO=DEFI_MATERIAU(
               DIS_CONTACT=_F(  RIGI_NOR = 5.76E7,
                             DIST_1 = 0.4495,  JEU = 0.45) #J=5D-4
                         )
 
-MATBID=DEFI_MATERIAU( 
+MATBID=DEFI_MATERIAU(
               ELAS=_F(  E = 1.E10,  NU = 0.3,  RHO = 0.)
                         )
 
@@ -75,7 +75,7 @@ CH_MAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,AFFE=(
 #
 #=======================================================================
 # 1/ ON ETUDIE LE SYSTEME A 1 DDL
-#       ACCE_IMPO = ACCELER1 (SIN(OMEGAA*T)) EN X=0 
+#       ACCE_IMPO = ACCELER1 (SIN(OMEGAA*T)) EN X=0
 #----------------------------------------------------------------------
 #
 # MODELISATION
@@ -96,13 +96,13 @@ CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
                           DISCRET=(_F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORT1',
                                         VALE = (98696.,  0.,  0., )),
-                                   _F(  CARA = 'M_T_D_N',  GROUP_MA = 'MASSES1', 
+                                   _F(  CARA = 'M_T_D_N',  GROUP_MA = 'MASSES1',
                                         VALE = 25.))
                          )
 
 MACRO_MATR_ASSE(  MODELE=MODELE,   CHARGE=CON_LIM,   CARA_ELEM=CARA_ELE,
                    NUME_DDL=CO("NUM"),
-                 SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),MATR_ASSE=( 
+                 SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),MATR_ASSE=(
                  _F(  MATRICE = CO("RIGIDITE"),  OPTION = 'RIGI_MECA'),
                            _F(  MATRICE = CO("MASSE"),     OPTION = 'MASS_MECA'))
                )
@@ -130,22 +130,22 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'NON',
                             AMOR_REDUIT = 0.0),
                PROJ_MODAL=_F(MODE_MECA = MODE),
-               EXCIT=(_F(  CHARGE = CON_LIM),            
+               EXCIT=(_F(  CHARGE = CON_LIM),
                       _F(  CHARGE = CHAM_NO,
                             FONC_MULT= ACCELER1 )),
                COMP_INCR=(
-               _F(  RELATION = 'ELAS', 
+               _F(  RELATION = 'ELAS',
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
                SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                FORMULATION='ACCELERATION',
                                STOP_CFL='NON',),
-               SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
+               SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
                       )
-                     
+
 NOA_DXDR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      NOM_CHAM='DEPL',
                      LIST_INST=LISTIMP,
@@ -164,31 +164,31 @@ NOA_DXAR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      PROL_DROITE=  'LINEAIRE',
                      PROL_GAUCHE= 'LINEAIRE',
                      RESULTAT=  TRAN_DY  );
-                     
+
 
 TRAN_DY2=DYNA_NON_LINE(  MODELE=MODELE,
                 CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
                AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'NON',
                             AMOR_REDUIT = 0.0),
-               EXCIT=(_F(  CHARGE = CON_LIM),            
+               EXCIT=(_F(  CHARGE = CON_LIM),
                       _F(  CHARGE = CHAM_NO,
                             FONC_MULT= ACCELER1 )),
                COMP_INCR=(
                _F(  RELATION = 'ELAS',
                            GROUP_MA = 'RESSORT1'),
-               _F(  RELATION = 'DIS_CHOC', 
+               _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
-               SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
+               SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                FORMULATION='DEPLACEMENT',),
                CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-8,
-                             ITER_GLOB_MAXI = 20),   
+                             ITER_GLOB_MAXI = 20),
                NEWTON=_F(  REAC_ITER = 1)
                       )
 
-                     
+
 NOB_DXDR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      NOM_CHAM='DEPL',
                      LIST_INST=LISTIMP,
@@ -207,7 +207,7 @@ NOB_DXAR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      PROL_DROITE=  'LINEAIRE',
                      PROL_GAUCHE= 'LINEAIRE',
                      RESULTAT=  TRAN_DY2  );
-                     
+
 IMPR_FONCTION(UNITE=25,
               FORMAT='AGRAF',
               COURBE=(

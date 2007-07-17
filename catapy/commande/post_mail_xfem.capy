@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 17/07/2007   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,10 @@ POST_MAIL_XFEM=OPER(nom="POST_MAIL_XFEM",op= 187,sd_prod=maillage_sdaster,
             fr="Crée un maillage se conformant à la fissure pour le post-traitement des éléments XFEM",
     MODELE        = SIMP(statut='o',typ=modele_sdaster),
     MAILLAGE_SAIN = SIMP(statut='o',typ=maillage_sdaster),
+    PREF_NOEUD_X   =SIMP(statut='f',typ='TXM',defaut="NX",validators=LongStr(1,2),),
+    PREF_NOEUD_M   =SIMP(statut='f',typ='TXM',defaut="NM",validators=LongStr(1,2),),
+    PREF_NOEUD_P   =SIMP(statut='f',typ='TXM',defaut="NP",validators=LongStr(1,2),),
+    PREF_MAILLE_X  =SIMP(statut='f',typ='TXM',defaut="MX",validators=LongStr(1,2),),
     TITRE         = SIMP(statut='f',typ='TXM',max='**'),
     INFO           =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),
 

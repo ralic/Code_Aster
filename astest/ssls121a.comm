@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,7 +28,7 @@
 #   TEST ISSU DE DHATT-BATOZ VOL 2 PAGE 249
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SSLS121A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLS121A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 PRE_GIBI();
@@ -248,7 +248,7 @@ RESU2=MECA_STATIQUE( MODELE=MO,
                       EXCIT=_F( CHARGE = CHA2),
                        )
 
-CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 , 
+CALC_ELEM( reuse= RESU2 ,RESULTAT= RESU2 ,
                       OPTION=( 'EFGE_ELNO_DEPL'),
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES
@@ -400,7 +400,7 @@ RESU4=MECA_STATIQUE(       MODELE=MO,
                               EXCIT=_F( CHARGE = CHA4),
                          )
 
-CALC_ELEM( reuse= RESU4 ,RESULTAT= RESU4 ,  
+CALC_ELEM( reuse= RESU4 ,RESULTAT= RESU4 ,
                          OPTION=('EFGE_ELNO_DEPL',)
                        )
 # ON TESTE QUE LES EFFORTS SONT UNIFORMES

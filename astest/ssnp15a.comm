@@ -1,24 +1,24 @@
-# MODIF  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNP15A',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSNP15A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
@@ -28,45 +28,45 @@ DEBUT(CODE=_F( NOM = 'SSNP15A',NIV_PUB_WEB='INTERNET'),);
 MA=LIRE_MAILLAGE( )
 
 MO=AFFE_MODELE(
-              
+
                MAILLAGE=MA,
                  VERIF='MAILLE',
-                  
-                AFFE=_F( 
+
+                AFFE=_F(
                 TOUT = 'OUI',
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = '3D')
               )
 
 ACIER=DEFI_MATERIAU(
-              
-                   
-                ELAS=_F( 
+
+
+                ELAS=_F(
                 E = 195000.,
                 NU = 0.3),
-              
-                ECRO_LINE=_F( 
+
+                ECRO_LINE=_F(
                 D_SIGM_EPSI = 1930.,
                 SY = 181.),
-           
+
                 PRAGER=_F(C=0.)
               )
 
 CM=AFFE_MATERIAU(
-              
+
                MAILLAGE=MA,
-                  
-                AFFE=_F( 
+
+                AFFE=_F(
                 TOUT = 'OUI',
                 MATER = ACIER)
               )
 
 SIGMA_F=DEFI_FONCTION(
-              
+
                  NOM_PARA='INST',
                PROL_DROITE='EXCLU',
               PROL_GAUCHE='EXCLU',
-                     
+
                 VALE=(
                 0.0,    0.0,
                 1.0,  151.2,
@@ -76,11 +76,11 @@ SIGMA_F=DEFI_FONCTION(
               )
 
 TAU_F=DEFI_FONCTION(
-              
+
                  NOM_PARA='INST',
                PROL_DROITE='EXCLU',
               PROL_GAUCHE='EXCLU',
-                     
+
                 VALE=(
                 0.0,    0.0,
                 1.0,   93.1,
@@ -90,18 +90,18 @@ TAU_F=DEFI_FONCTION(
               )
 
 TRACTION=AFFE_CHAR_MECA(
-              
+
                       MODELE=MO,
-                 
-                FORCE_FACE=_F( 
+
+                FORCE_FACE=_F(
                 MAILLE = 'GAUCHE',
                 FX = -1.)
               )
 
 CISAIL=AFFE_CHAR_MECA(
-              
+
                       MODELE=MO,FORCE_FACE=(
-                 
+
                 _F( MAILLE = 'GAUCHE',          FY = -1.),
                 _F( MAILLE = 'DROITE',          FY = 1.),
                 _F( MAILLE = 'HAUT',    FX = 1.),
@@ -109,9 +109,9 @@ CISAIL=AFFE_CHAR_MECA(
               )
 
 LIAISON=AFFE_CHAR_MECA(
-              
+
                MODELE=MO,DDL_IMPO=(
-              
+
                 _F( NOEUD = 'NO4',     DX = 0.,  DY = 0.),
                 _F( NOEUD = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
                 _F( NOEUD = 'NO2',     DX = 0.),
@@ -119,7 +119,7 @@ LIAISON=AFFE_CHAR_MECA(
               )
 
 L_INST=DEFI_LIST_REEL(
-              
+
                DEBUT=0.0,INTERVALLE=(
                 _F( JUSQU_A = 0.1,     NOMBRE = 1),
                 _F( JUSQU_A = 0.9,     NOMBRE = 10),
@@ -128,50 +128,50 @@ L_INST=DEFI_LIST_REEL(
                 _F( JUSQU_A = 3.0,     NOMBRE = 1))
               )
 
-U=STAT_NON_LINE( 
+U=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,EXCIT=(
-                             _F( 
-                CHARGE = LIAISON), _F( 
+                             _F(
+                CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F( 
+                FONC_MULT = SIGMA_F), _F(
                 CHARGE = CISAIL,
                 FONC_MULT = TAU_F)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_LINE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE',
                 REAC_ITER = 3),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_GLOB_MAXI = 10),
                      RECH_LINEAIRE=_F(
-                     RHO_MAX=150, 
+                     RHO_MAX=150,
                 ITER_LINE_MAXI = 5)
               )
-U2=STAT_NON_LINE( 
+U2=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM,EXCIT=(
-                             _F( 
-                CHARGE = LIAISON), _F( 
+                             _F(
+                CHARGE = LIAISON), _F(
                 CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F( 
+                FONC_MULT = SIGMA_F), _F(
                 CHARGE = CISAIL,
                 FONC_MULT = TAU_F)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'VMIS_ECMI_LINE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE',
                 REAC_ITER = 3),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-3,
                 ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F( 
-                     RHO_MAX=150, 
+                     RECH_LINEAIRE=_F(
+                     RHO_MAX=150,
                 ITER_LINE_MAXI = 5)
               )
 
@@ -205,8 +205,8 @@ NOM_CHAM='VARI_ELNO_ELGA',
               )
 
 TEST_RESU(RESU=(
-              
-                _F( 
+
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'SIEF_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -214,7 +214,7 @@ TEST_RESU(RESU=(
                 INST = 1.,
                 NOM_CMP = 'SIXX',
                 VALE = 151.2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'SIEF_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -222,7 +222,7 @@ TEST_RESU(RESU=(
                 INST = 1.,
                 NOM_CMP = 'SIXY',
                 VALE = 93.1),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',
                 MAILLE = 'CUBE',
@@ -230,7 +230,7 @@ TEST_RESU(RESU=(
                 INST = 1.,
                 NOM_CMP = 'EPXX',
                 VALE = 1.48297E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',
                 MAILLE = 'CUBE',
@@ -238,7 +238,7 @@ TEST_RESU(RESU=(
                 INST = 1.,
                 NOM_CMP = 'EPXY',
                 VALE = 1.36014E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSP_ELGA',
                 MAILLE = 'CUBE',
@@ -246,7 +246,7 @@ TEST_RESU(RESU=(
                 INST = 1.,
                 NOM_CMP = 'EPXX',
                 VALE = 1.4054E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSP_ELGA',
                 MAILLE = 'CUBE',
@@ -254,7 +254,7 @@ TEST_RESU(RESU=(
                 INST = 1.,
                 NOM_CMP = 'EPXY',
                 VALE = 1.2981E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'VARI_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -262,7 +262,7 @@ TEST_RESU(RESU=(
                 INST = 1.,
                 NOM_CMP = 'V1',
                 VALE = 2.05473E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'VARI_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -271,7 +271,7 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'V2',
                 VALE = 1.),
 #
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',
                 MAILLE = 'CUBE',
@@ -280,7 +280,7 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'EPXX',
                 VALE = 3.5265E-2,
                 PRECISION = 1.E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',
                 MAILLE = 'CUBE',
@@ -289,7 +289,7 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'EPXY',
                 VALE = 2.0471E-2,
                 PRECISION = 1.E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSP_ELGA',
                 MAILLE = 'CUBE',
@@ -298,7 +298,7 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'EPXX',
                 VALE = 3.3946E-2,
                 PRECISION = 1.E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'EPSP_ELGA',
                 MAILLE = 'CUBE',
@@ -307,7 +307,7 @@ TEST_RESU(RESU=(
                 NOM_CMP = 'EPXY',
                 VALE = 2.0250E-2,
                 PRECISION = 1.E-2),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'VARI_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -317,8 +317,8 @@ TEST_RESU(RESU=(
                 VALE = 4.2329E-2,
                 PRECISION = 1.E-2)),
 #
-              
-                CHAM_ELEM=_F( 
+
+                CHAM_ELEM=_F(
                 CHAM_GD = VARI,
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
@@ -329,48 +329,48 @@ TEST_RESU(RESU=(
 # TEST DES INDICATEURS DE CHARGE - DECHARGE
 
 
-U=CALC_ELEM( reuse=U,      
+U=CALC_ELEM( reuse=U,
                          RESULTAT=U,
                            OPTION='RADI_ELNO_SIGM',
                             NORME='VMIS'
                      )
 
-U=CALC_ELEM( reuse=U,      
+U=CALC_ELEM( reuse=U,
                          RESULTAT=U,
                            OPTION='RADI_ELGA_SIGM',
                             NORME='VMIS'
                      )
 
-U=CALC_ELEM( reuse=U,      
+U=CALC_ELEM( reuse=U,
                          RESULTAT=U,
                            OPTION='DCHA_ELGA_SIGM'
                      )
 
-U=CALC_ELEM( reuse=U,      
+U=CALC_ELEM( reuse=U,
                          RESULTAT=U,
                            OPTION='DCHA_ELNO_SIGM'
                      )
 
-U=CALC_ELEM( reuse=U,      
+U=CALC_ELEM( reuse=U,
                          RESULTAT=U,
                            OPTION='ETOT_ELGA'
                      )
 
-U=CALC_ELEM( reuse=U,      
+U=CALC_ELEM( reuse=U,
                          RESULTAT=U,
                            OPTION='ETOT_ELNO_ELGA'
                      )
 
-U2=CALC_ELEM( reuse=U2,      
+U2=CALC_ELEM( reuse=U2,
                          RESULTAT=U2,
                            OPTION='ETOT_ELGA'
                      )
 
-U2=CALC_ELEM( reuse=U2,      
+U2=CALC_ELEM( reuse=U2,
                          RESULTAT=U2,
                            OPTION='ETOT_ELNO_ELGA'
                      )
-U2=CALC_ELEM( reuse=U2,      
+U2=CALC_ELEM( reuse=U2,
                          RESULTAT=U2,
                            OPTION='ETOT_ELEM'
                      )
@@ -433,8 +433,8 @@ IND_SEUI=POST_ELEM(    RESULTAT=U,
                         INDIC_SEUIL=_F(  TOUT = 'OUI')
                       )
 TEST_RESU(RESU=(
-              
-                _F( 
+
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELGA',
                 MAILLE = 'CUBE',
@@ -444,7 +444,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 1.16403E-03),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELGA',
                 MAILLE = 'CUBE',
@@ -454,7 +454,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 1.84340 ),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELGA',
                 MAILLE = 'CUBE',
@@ -464,7 +464,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 9.58487 ),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELGA',
                 MAILLE = 'CUBE',
@@ -474,7 +474,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE =  9.40794),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -484,7 +484,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 1.16403E-03),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -494,7 +494,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 1.84340 ),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -504,7 +504,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 9.58487 ),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELNO_ELGA',
                 MAILLE = 'CUBE',
@@ -514,7 +514,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE =  9.40794),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELEM',
                 MAILLE = 'CUBE',
@@ -523,7 +523,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 1.16403E-03),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELEM',
                 MAILLE = 'CUBE',
@@ -532,7 +532,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 1.84340 ),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELEM',
                 MAILLE = 'CUBE',
@@ -541,7 +541,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE = 9.58487 ),
-                _F( 
+                _F(
                 RESULTAT = U2,
                 NOM_CHAM = 'ETOT_ELEM',
                 MAILLE = 'CUBE',
@@ -550,7 +550,7 @@ TEST_RESU(RESU=(
                 CRITERE = 'RELATIF',
                 NOM_CMP = 'TOTALE',
                 VALE =  9.40794),
-                _F( 
+                _F(
                 RESULTAT = U,
                 NOM_CHAM = 'RADI_ELNO_SIGM',
                 MAILLE = 'CUBE',

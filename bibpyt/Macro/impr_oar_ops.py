@@ -1,4 +1,4 @@
-#@ MODIF impr_oar_ops Macro  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF impr_oar_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 import aster
-from Utilitai.Utmess import UTMESS
+from Utilitai.Utmess import U2MESS as UTMESS
 from Utilitai.Table import Table
 from Utilitai.partition import MAIL_PY
 
@@ -281,12 +281,12 @@ class composant(OAR_element) :
             self.mergeDictTher() # merge les tableaux resultats du revetement et de la structure
             
          if  not(self.compareListAbscTher()) :
-            UTMESS('F', 'IMPR_OAR', 'LES COUPES MECANIQUES ET THERMIQUE DOIVENT PARTAGER LES MEMES ABSCISSES')
+            UTMESS('F','OAR0_1')
             
          try :
             self.interpoleInstants() # Interpolation des instants de la table des température sur celle de la table mécanique
          except interpolationError, err:
-            UTMESS('F', 'IMPR_OAR', err.getMess())
+            UTMESS('F','OAR0_2',valk=err.getMess())
 
          # 3. Calcul de l'épaisseur de la coupe.
          self.epaisseur = abs(self.tabAbscisses[len(self.tabAbscisses)-1] - self.tabAbscisses[0])
@@ -349,7 +349,7 @@ class composant(OAR_element) :
       # Merge des listes d'abscisses
       # Le revetement est interieur la derniere abscisse du revetement doit etre egal a la premiere de la structure
       if self.tabAbscisses_S[len(self.tabAbscisses_S)-1] != self.tabAbscisses[0] :
-         UTMESS('F', 'IMPR_OAR', 'LES COUPES DU REVETEMENT ET DE LA STRUCTURE DOIVENT PARTAGER UNE ABSCISSE COMMUNE')
+         UTMESS('F','OAR0_3')
          
       # On construit une table des abscisses tempopraire
       tableAbscTemp = self.tabAbscisses_S
@@ -489,7 +489,7 @@ class composant(OAR_element) :
       # Merge des listes d'abscisses
       # Le revetement est interieur la derniere abscisse du revetement doit etre egal a la premiere de la structure
       if self.tabAbscisses_S[len(self.tabAbscisses_S)-1] != self.tabAbscisses[0] :
-         UTMESS('F', 'IMPR_OAR', 'LES COUPES DU REVETEMENT ET DE LA STRUCTURE DOIVENT PARTAGER UNE ABSCISSE COMMUNE')
+         UTMESS('F','OAR0_3')
          
       # On construit une table des abscisses tempopraire
       tableAbscTemp = self.tabAbscisses_S
@@ -664,7 +664,7 @@ class tuyauterie(OAR_element) :
          self.buildTableTorseur()
       
       except :
-         UTMESS('F', 'IMPR_OAR', "ERREUR D'ACCES AUX DONNEES")
+         UTMESS('F','OAR0_4')
 
       # Construction de l arborescence
       self.buildTree() 
@@ -738,11 +738,11 @@ def impr_oar_ops(self, TYPE_CALC, **args) :
    if TYPE_CALC=='COMPOSANT' :
       obj = composant(**args)
    elif TYPE_CALC=='MEF' : 
-      UTMESS('F', 'IMPR_OAR', 'FONCTION NON IMPLANTEE') 
+      UTMESS('F','OAR0_5')
    elif TYPE_CALC=='TUYAUTERIE' :
       obj = tuyauterie(**args) 
    else :
-      UTMESS('F', 'IMPR_OAR', 'Mot clé facteur inconnu')
+      UTMESS('F','OAR0_6')
 
    # Ecriture dans le fichier
    # Récupération de la LU du fichier de sortie
@@ -763,7 +763,7 @@ def impr_oar_ops(self, TYPE_CALC, **args) :
       else :            # extension du fichier existant
          fileObj = open(name, 'a+t')
    except IOError :
-      UTMESS('F', 'IMPR_OAR', "Erreur à l'ouverture du fichier") 
+      UTMESS('F','OAR0_7')
    else :
       obj.getNode().save(fileObj)
       fileObj.close()

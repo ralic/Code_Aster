@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -7,7 +7,7 @@
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNP15D',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNP15D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL COQUE_3D EN MEMBRANE
@@ -417,7 +417,7 @@ TEST_RESU(RESU=(_F(
             )
 
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
@@ -428,7 +428,7 @@ TEST_RESU(RESU=(
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
              ),)
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
             _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
             _F(  RESULTAT = U2,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',
@@ -439,7 +439,7 @@ TEST_RESU(RESU=(
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V2',         VALE = 1.00000E+00),
              ),)
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
             _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MIN',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-6,     NOM_CMP = 'V1',         VALE = 2.05473E-02),
             _F(  RESULTAT = U3,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 1.,   TYPE_TEST='MAX',

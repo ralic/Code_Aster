@@ -1,24 +1,24 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE  VALIDATION DES LOIS DE SECHAGE SUR UNE EPROUVETTE CYLINDRIQUE EN BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# MODELISATION A  : LOI DE GRANGER 
-DEBUT(CODE=_F(NOM = 'HSNA102B',NIV_PUB_WEB='INTERNET'))
+# MODELISATION A  : LOI DE GRANGER
+DEBUT(CODE=_F(NOM='HSNA102B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
@@ -27,10 +27,10 @@ MAIL=LIRE_MAILLAGE( )
 #  DEFINTION DES PROPRIETES HYDRIQUES DU BETON
 
 BETON=DEFI_MATERIAU( SECH_GRANGER = _F( A        = 0.73E-13,
-                                        B        = 0.05,   
+                                        B        = 0.05,
                                         QSR_K    = 4700.,
                                         TEMP_0_C = 20.0, ),)
-                    
+
 CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL,
                      AFFE=_F( GROUP_MA  ='SURF' ,
                               MATER = BETON, ),
@@ -39,7 +39,7 @@ CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL,
 MOTH=AFFE_MODELE( MAILLAGE=MAIL,
                   AFFE=_F( GROUP_MA    = ('SURF','FE','FI','DSUP','DINF'),
                            MODELISATION ='AXIS',
-                           PHENOMENE    ='THERMIQUE', )  
+                           PHENOMENE    ='THERMIQUE', )
                  ),
 
 #  LA TEMPERATURE EST CONSTANTE ET EGALE A 20 DEG. PDT TT L'ESSAI
@@ -63,7 +63,7 @@ CEQ = DEFI_CONSTANTE ( VALE = 58.8, )
 CHARSE = AFFE_CHAR_THER_F( MODELE=MOTH,
                            TEMP_IMPO= _F( GROUP_MA = 'FE',
                                            TEMP   = CEQ, ),  )
-                                           
+
 #      LES INSTANTS DE CALCULS CORRESPONDENT AUX PROFILS DE TENEUR EN EAU
 #      PROPOSES FIG. 15.1., P.199 DE [GRANGER, 1995]
 #      1 HEURE  -->      3600s
@@ -77,8 +77,8 @@ LISTSECH = DEFI_LIST_REEL( DEBUT = 0.,
                                           _F( JUSQU_A =    259200,       NOMBRE = 10,  ),
                                           _F( JUSQU_A =   2419200,       NOMBRE = 10,  ),
                                           _F( JUSQU_A =  39420000,       NOMBRE = 10,  ),
-                                          _F( JUSQU_A =  94608000,       NOMBRE = 10,  ), 
-                                          _F( JUSQU_A = 157680000,       NOMBRE = 10,  ), 
+                                          _F( JUSQU_A =  94608000,       NOMBRE = 10,  ),
+                                          _F( JUSQU_A = 157680000,       NOMBRE = 10,  ),
                                          ),
                           ),
 LISTDEP= DEFI_LIST_REEL(VALE=(3600, 259200,2419200,    39420000,  94608000,  157680000,   ), ),
@@ -157,71 +157,71 @@ REF6 =[96.772 ,96.766 ,96.757 ,96.742 ,96.722 ,96.696 ,96.665 ,96.628 ,96.585 ,9
 82.986 ,82.331 ,81.645 ,80.925 ,80.169 ,79.375 ,78.538 ,77.655 ,76.722 ,75.735 ,
 74.688 ,73.575 ,72.389 ,71.120 ,69.760 ,68.296 ,66.714 ,64.998 ,63.125 ,61.070 ,
 58.800 ]
-            
+
 # TEST EN X=0.0
-TEST_RESU(RESU=( 
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 3600, 
-            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF1[1],  PRECISION = 1.E-2, 
+TEST_RESU(RESU=(
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 3600,
+            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF1[1],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 259200, 
-            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF2[1],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 259200,
+            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF2[1],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 2419200, 
-            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF3[1],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 2419200,
+            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF3[1],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 39420000, 
-            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF4[1],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 39420000,
+            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF4[1],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 94608000, 
-            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF5[1],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 94608000,
+            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF5[1],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 157680000, 
-            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF6[1],  PRECISION = 1.E-2, 
-            REFERENCE = 'SOURCE_EXTERNE',),            
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 157680000,
+            GROUP_NO = 'P0',  NOM_CMP = 'TEMP', VALE = REF6[1],  PRECISION = 1.E-2,
+            REFERENCE = 'SOURCE_EXTERNE',),
            ),)
 # TEST EN X=0.04
-TEST_RESU(RESU=( 
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 3600, 
-            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF1[41],  PRECISION = 1.E-2, 
+TEST_RESU(RESU=(
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 3600,
+            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF1[41],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 259200, 
-            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF2[41],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 259200,
+            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF2[41],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 2419200, 
-            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF3[41],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 2419200,
+            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF3[41],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 39420000, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 39420000,
             GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF4[41],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 94608000, 
-            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF5[41],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 94608000,
+            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF5[41],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 157680000, 
-            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF6[41],  PRECISION = 1.E-2, 
-            REFERENCE = 'SOURCE_EXTERNE',),            
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 157680000,
+            GROUP_NO = 'P4',  NOM_CMP = 'TEMP', VALE = REF6[41],  PRECISION = 1.E-2,
+            REFERENCE = 'SOURCE_EXTERNE',),
            ),)
 # TEST EN X=0.06
-TEST_RESU(RESU=( 
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 3600, 
-            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF1[61],  PRECISION = 1.E-2, 
+TEST_RESU(RESU=(
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 3600,
+            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF1[61],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 259200, 
-            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF2[61],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 259200,
+            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF2[61],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 2419200, 
-            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF3[61],  PRECISION = 1.E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 2419200,
+            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF3[61],  PRECISION = 1.E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 39420000, 
-            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF4[61],  PRECISION = 1.2E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 39420000,
+            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF4[61],  PRECISION = 1.2E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 94608000, 
-            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF5[61],  PRECISION = 1.2E-2, 
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 94608000,
+            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF5[61],  PRECISION = 1.2E-2,
             REFERENCE = 'SOURCE_EXTERNE',),
-          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 157680000, 
-            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF6[61],  PRECISION = 1.2E-2, 
-            REFERENCE = 'SOURCE_EXTERNE',),            
+          _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   INST = 157680000,
+            GROUP_NO = 'P6',  NOM_CMP = 'TEMP', VALE = REF6[61],  PRECISION = 1.2E-2,
+            REFERENCE = 'SOURCE_EXTERNE',),
            ),)
-           
 
-            
+
+
 FIN () ;

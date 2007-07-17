@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,9 +31,12 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
                fr="Créer ou enrichir une structure de donnees resultat à partir de champs aux noeuds",
 
-         OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2",),
+         OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2",),
                          fr="choix de la fonction a activer",),
 
+
+         # Création par affectation de champs :
+         #-------------------------------------
          b_affe       =BLOC(condition = "OPERATION == 'AFFE'",
 
            TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=("MULT_ELAS","EVOL_ELAS","EVOL_NOLI","FOURIER_ELAS",
@@ -66,6 +69,18 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            ),
          ),
 
+
+         # Création par assemblage d'evol_ther :
+         #-----------------------------------------
+         b_asse       =BLOC(condition = "OPERATION == 'ASSE'",
+           TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=("EVOL_THER",) ),
+           ASSE         =FACT(statut='o',max='**',
+             RESULTAT       =SIMP(statut='o',typ=evol_ther),
+             TRANSLATION    =SIMP(statut='f',typ='R',defaut= 0. ),
+           ),
+         ),
+
+
          b_ecla_pg    =BLOC(condition = "OPERATION == 'ECLA_PG'",
 
            TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_ELAS","EVOL_NOLI","EVOL_THER"), ),
@@ -88,6 +103,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
            ),
          ),
+
 
          b_perm_cham =BLOC(condition = "OPERATION == 'PERM_CHAM'",
 

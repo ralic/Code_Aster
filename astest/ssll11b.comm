@@ -1,4 +1,4 @@
-# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 #=======================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'SSLL11B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL11B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MATER=DEFI_MATERIAU( ELAS=_F(  RHO = 1.E04,  E = 1.962E11, NU = 0.3,
                                  AMOR_ALPHA = 0.1,  AMOR_BETA = 0.1)  )

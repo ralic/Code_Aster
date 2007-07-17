@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k_trans_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
   import aster
   import string
   from Accas import _F
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
   from types import ListType, TupleType
   from Utilitai.Table      import Table, merge
   EnumTypes = (ListType, TupleType)
@@ -117,9 +117,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
       
   if nmodtr != n_mode : 
       n_mode = min(nmodtr,n_mode)
-      message = 'NOMBRE DE MODES DIFFERENT ENTRE LA BASE MODALE'
-      message = message +'ET %s : ON PREND LE MINIMUM DES DEUX (%i)\n'%(nomresu,n_mode)
-      UTMESS('A', macro, message)
+      UTMESS('A','RUPTURE0_50',valk=nomresu,vali=n_mode)
 
 #  
 # Traitement des mots clés ORDRE/INST/LIST_INST et LIST_ORDRE
@@ -151,8 +149,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
          l_ord.append(ord)
          l_inst.append(d_ins[ord][0])
       else :
-         message = 'LE NUMERO D ORDRE %i N APPARTIENT PAS AU RESULTAT %s'%(ord,nomresu) 
-         UTMESS('A', macro, message) 
+         UTMESS('A','RUPTURE0_51',vali=ord,valk=nomresu)
   elif LIST_INST or INST :
     CRITERE = args['CRITERE']
     PRECISION = args['PRECISION']
@@ -165,11 +162,9 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
       if CRITERE=='RELATIF' and ins!=0.: match=[x for x in l0_inst if abs((ins-x)/ins)<PRECISION]
       else                             : match=[x for x in l0_inst if abs(ins-x)<PRECISION]
       if len(match)==0 : 
-         message = 'PAS D INSTANT TROUVE DANS LA TABLE POUR L INSTANT %f\n'%ins
-         UTMESS('A', macro, message)
+         UTMESS('A','RUPTURE0_52',valr=ins)
       elif len(match)>=2 :
-         message = 'PLUSIEURS INSTANTS TROUVES DANS LA TABLE POUR L INSTANT %f\n'%ins
-         UTMESS('A', macro, message)
+         UTMESS('A','RUPTURE0_53',valr=ins)
       else :
          l_inst.append(match[0])
          l_ord.append(d_ord[match[0]][0])
@@ -177,7 +172,7 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
       l_ord = l0_ord
       l_inst = l0_inst
   nbarch = len(l_ord)
-  if nbarch ==0 : UTMESS('F', macro, 'AUCUN INSTANT OU NUMERO D ORDRE TROUVE') 
+  if nbarch ==0 : UTMESS('F','RUPTURE0_54')
   
 
 #  

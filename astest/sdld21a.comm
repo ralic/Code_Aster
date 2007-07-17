@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 #                                                 REF: SFM.VPCS SDLD21
 # ----------------------------------------------------------------------
 
-DEBUT( CODE=_F(  NOM = 'SDLD21A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDLD21A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 

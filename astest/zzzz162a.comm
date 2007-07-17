@@ -1,4 +1,4 @@
-# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'ZZZZ162A',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NOM='ZZZZ162A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #......................................................................
 # CECI EST UN TEST DE L ECRITURE ET LA RELECTURE DES CHAMPS
 # AU FORMAT MED - C EST LA RECOPIE DE HSNV100A
@@ -179,7 +179,7 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 TOUT_ORDRE='OUI',);
 
 # ----------------------------------------------------------------------------
-# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR 
+# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
 # IMPR_RESU LORSQU'UN NOEUD EST PRESENT DANS PLUSIEURS FILTRES
 
 DEFI_FICHIER(UNITE=88)
@@ -210,7 +210,7 @@ TEST_FICHIER(FICHIER='./fort.88',
 
 
 # ----------------------------------------------------------------------------
-# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR 
+# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
 # IMPR_RESU AU FORMAT 'MED' (1/2)
 
 DEFI_FICHIER(UNITE=81)
@@ -258,7 +258,7 @@ TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 NUME_ORDRE=(1,4,2),);
 
 
-TEST_RESU ( RESU=(  
+TEST_RESU ( RESU=(
                      _F(  RESULTAT   = TEMP0,
                          NOM_CHAM   = 'TEMP',
                          NUME_ORDRE = 1,
@@ -272,14 +272,14 @@ TEST_RESU ( RESU=(
                          REFERENCE  = 'AUTRE_ASTER',
                          NOEUD     = 'N1',
                          NOM_CMP    = 'TEMP',
-                         VALE       = 8.50000E+01       ), 
+                         VALE       = 8.50000E+01       ),
                     _F(  RESULTAT   = TEMP0,
                          NOM_CHAM   = 'TEMP',
                          NUME_ORDRE = 2,
                          REFERENCE  = 'AUTRE_ASTER',
                          NOEUD     = 'N1',
                          NOM_CMP    = 'TEMP',
-                         VALE       = 7.33330E+01       ), 
+                         VALE       = 7.33330E+01       ),
                     ),)
 
 
@@ -294,21 +294,21 @@ TEMP0=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 INST=(85.,73.33,),);
 
 
-TEST_RESU ( RESU=(  
+TEST_RESU ( RESU=(
                     _F(  RESULTAT   = TEMP0,
                          NOM_CHAM   = 'TEMP',
                          INST       = 8.50000E+01,
                          REFERENCE  = 'AUTRE_ASTER',
                          NOEUD     = 'N1',
                          NOM_CMP    = 'TEMP',
-                         VALE       = 8.50000E+01       ), 
+                         VALE       = 8.50000E+01       ),
                    _F(  RESULTAT   = TEMP0,
                          NOM_CHAM   = 'TEMP',
                          INST       = 7.33330E+01,
                          REFERENCE  = 'AUTRE_ASTER',
                          NOEUD     = 'N1',
                          NOM_CMP    = 'TEMP',
-                         VALE       = 7.33330E+01       ), 
+                         VALE       = 7.33330E+01       ),
                     ),)
 
 
@@ -355,7 +355,7 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               TOUT_ORDRE='OUI',);
 
 # ----------------------------------------------------------------------------
-# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR 
+# VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
 # IMPR_RESU AU FORMAT 'MED' (2/2)
 
 DEFI_FICHIER(UNITE=83)
@@ -421,7 +421,7 @@ UUU0=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               NUME_ORDRE=4,);
 
 
-TEST_RESU ( RESU=(  
+TEST_RESU ( RESU=(
                     _F(  RESULTAT   = UUU0,
                          NOM_CHAM   = 'VARI_ELNO',
                          INST       = 8.50000E+01,
@@ -429,7 +429,7 @@ TEST_RESU ( RESU=(
                          REFERENCE  = 'AUTRE_ASTER',
                          NOEUD     =  'N1',
                          NOM_CMP    = 'V1',
-                         VALE       = 4.12500E-04       ), 
+                         VALE       = 4.12500E-04       ),
                     ),)
 
 

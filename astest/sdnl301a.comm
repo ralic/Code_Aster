@@ -1,24 +1,24 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__:SDNL301A
-DEBUT(CODE=_F(  NOM = 'SDNL301A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDNL301A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 #----- GRANDEURS PHYSIQUE: UNITE MKS ---
 KN=1.75E+6
@@ -54,8 +54,8 @@ POUTRE=DEFI_GROUP( reuse=POUTRE,   MAILLAGE=POUTRE,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 MO=AFFE_MODELE(  MAILLAGE=POUTRE,
-             AFFE=_F(  TOUT = 'OUI', 
-                    PHENOMENE = 'MECANIQUE', 
+             AFFE=_F(  TOUT = 'OUI',
+                    PHENOMENE = 'MECANIQUE',
                     MODELISATION = 'POU_D_T') )
 
 #
@@ -66,11 +66,11 @@ LINST=DEFI_LIST_REEL(   DEBUT=0.,
 SINOT=CALC_FONC_INTERP(   FONCTION=SINO,   LIST_PARA=LINST,
 NOM_PARA='INST'  )
 
-CARELEM=AFFE_CARA_ELEM(   MODELE=MO, 
-                            POUTRE=_F(  
+CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
+                            POUTRE=_F(
        GROUP_MA = 'TOUT',
 
-                           SECTION = 'CERCLE', 
+                           SECTION = 'CERCLE',
                            CARA = ( 'R','EP', ),
                            VALE = ( RAYON,  EPAIS,)) )
 
@@ -126,7 +126,7 @@ VECT=ASSE_VECTEUR(  VECT_ELEM=VELEM,  NUME_DDL=NDDL )
 
 # CALCUL MODAL :30 MODES
 
-MODE=MODE_ITER_SIMULT(   MATR_A=MATR,   MATR_B=MATM, 
+MODE=MODE_ITER_SIMULT(   MATR_A=MATR,   MATR_B=MATM,
                           CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                           NMAX_FREQ = 30) )
 
@@ -152,24 +152,24 @@ TRANGENE=DYNA_TRAN_MODAL(   METHODE='EULER',
                              INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = TFIN,
                                          PAS = DELT),
                              ARCHIVAGE=_F(  PAS_ARCH=10),
-                              EXCIT=_F(  VECT_GENE = VECTPROJ, 
+                              EXCIT=_F(  VECT_GENE = VECTPROJ,
                                       FONC_MULT = SINOT),CHOC=(
-                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (.609, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
                                     RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (1.218, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
                                     RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (1.827, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
                                     RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (2.436, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
@@ -179,21 +179,21 @@ TRANGENE=DYNA_TRAN_MODAL(   METHODE='EULER',
                                            INST_FIN = 0.01)
                              )
 
-POST=POST_DYNA_MODA_T(  RESU_GENE=TRANGENE,  
+POST=POST_DYNA_MODA_T(  RESU_GENE=TRANGENE,
                  CHOC=_F( INST_INIT = TDEB,  INST_FIN = TFIN) )
 
-TEST_TABLE(      TABLE=POST,FILTRE=( 
+TEST_TABLE(      TABLE=POST,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'FORCE_NORMALE'),
                    _F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N25')),
                  NOM_PARA='RMS_T_TOTAL',
-                     VALE=23.4,  
-                PRECISION=0.1 
+                     VALE=23.4,
+                PRECISION=0.1
              )
 MODE_STA = MODE_STATIQUE( MATR_RIGI= MATR,
                           MATR_MASS= MATM,
-                      FORCE_NODALE=_F(NOEUD= ('N6','N13','N19','N25',), 
+                      FORCE_NODALE=_F(NOEUD= ('N6','N13','N19','N25',),
                                    AVEC_CMP= ('DX','DY',),
                                    ),
                           INFO=1 );
@@ -201,16 +201,16 @@ MODE_STA = MODE_STATIQUE( MATR_RIGI= MATR,
 BASEMODA = DEFI_BASE_MODALE (RITZ =(_F(MODE_MECA=MODE,NMAX_MODE=30),
                                     _F(MODE_STAT=MODE_STA,),),
                          NUME_REF=NDDL,)
-                         
+
 IMPR_CO( CHAINE='BASEMODA           .REFE' )
-IMPR_CO( CHAINE='MODE_STA           .REFE' )                         
+IMPR_CO( CHAINE='MODE_STA           .REFE' )
 IMPR_CO( CHAINE='MODE               .REFE' )
 
 NDDLGEN2 = NUME_DDL_GENE( BASE= BASEMODA,
                           STOCKAGE= 'PLEIN',)
 #
 # MATRICES GENERALISEES
-# ---------------------                          
+# ---------------------
 #
 MACRO_PROJ_BASE(BASE=BASEMODA,
                 MATR_ASSE_GENE=(_F(MATRICE=CO('RIGIPRO2'),
@@ -230,24 +230,24 @@ TRANGEN2=DYNA_TRAN_MODAL(   METHODE='EULER',
                              INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = TFIN,
                                          PAS = DELT),
                              ARCHIVAGE=_F(  PAS_ARCH=10),
-                              EXCIT=_F(  VECT_GENE = VECTPRO2, 
+                              EXCIT=_F(  VECT_GENE = VECTPRO2,
                                       FONC_MULT = SINOT),CHOC=(
-                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (.609, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
                                     RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (1.218, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
                                     RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (1.827, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
                                     RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,  
+                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,
                                     OBSTACLE = BUTE,
                                     ORIG_OBST = (2.436, 0.0, 0.0, ),
                                     NORM_OBST = ( 1.,  0., 0., ),
@@ -256,38 +256,38 @@ TRANGEN2=DYNA_TRAN_MODAL(   METHODE='EULER',
                               IMPRESSION=_F(  NIVEAU = 'DEPL_LOC',
                                            INST_FIN = 0.01)
                              )
-                             
-POST2=POST_DYNA_MODA_T(  RESU_GENE=TRANGEN2,  
+
+POST2=POST_DYNA_MODA_T(  RESU_GENE=TRANGEN2,
                  CHOC=_F( INST_INIT = TDEB,  INST_FIN = TFIN) )
 
-TEST_TABLE(      TABLE=POST2,FILTRE=( 
+TEST_TABLE(      TABLE=POST2,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'FORCE_NORMALE'),
                    _F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N25')),
                  NOM_PARA='RMS_T_TOTAL',
-                     VALE=23.4,  
-                PRECISION=0.1 
+                     VALE=23.4,
+                PRECISION=0.1
              )
-             
+
 RESPHY = REST_BASE_PHYS(RESU_GENE=TRANGEN2,
                         TOUT_ORDRE='OUI',
                         NOM_CHAM='DEPL',)
-                        
+
 dN25_Ya = RECU_FONCTION ( RESULTAT = RESPHY,
                           NOM_CHAM = 'DEPL',
                           NOEUD  = 'N25',
                           INTERPOL= 'LIN',
                           NOM_CMP = 'DY',
                          )
-            
-dN25_Yb = RECU_FONCTION ( 
+
+dN25_Yb = RECU_FONCTION (
                           RESU_GENE = TRANGEN2,
                           NOM_CHAM = 'DEPL',
                           NOEUD  = 'N25',
                           INTERPOL= 'LIN',
                           NOM_CMP = 'DY',
                          )
-            
+
 FIN( )
 #

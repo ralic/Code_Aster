@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # TITRE CYLINDRE CREUX THERMOELASTIQUE.
 # DERIVES PAR RAPPORT A UNE VARIATION DE DOMAINE.
-DEBUT(CODE=_F( NOM = 'HPLA101A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='HPLA101A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 #......................................................................
 #
 # MODELISATION 2D_AXIS:   121 NOEUDS -- 32 MAILLES QUA8
@@ -83,7 +83,7 @@ TEMPLIN=THER_LINEAIRE(
                   EXCIT=_F( CHARGE = CHTHE)
                          )
 #
-TEMPLIN=CALC_ELEM( 
+TEMPLIN=CALC_ELEM(
                    SENSIBILITE=(THETA),
                    reuse=TEMPLIN,
                    RESULTAT=TEMPLIN,
@@ -111,14 +111,14 @@ DEPLDIL=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
                       SENSIBILITE=(THETA),
-                      
+
                       OPTION=('SIGM_ELNO_DEPL',)
                          )
 #
 CALC_ELEM( reuse=DEPLDIL,
                    RESULTAT=DEPLDIL,
                    SENSIBILITE=(THETA),
-                   
+
                    OPTION=('SIEF_ELGA_DEPL',
                             'DEDE_ELNO_DLDE',
                             'DESI_ELNO_DLSI')

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(  NOM = 'HSNS100B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='HSNS100B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE( )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,7 +49,7 @@
 #
 #----------------------------------------------------------------------
 #
-DEBUT(     CODE=_F(  NOM = 'SSNV102C',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNV102C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 CUBE=LIRE_MAILLAGE(    )
 

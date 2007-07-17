@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ def test_fichier_ops(self, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
    import aster
    from Accas import _F
    from Macro.test_fichier_ops import md5file
-   from Utilitai.Utmess import UTMESS
+   from Utilitai.Utmess import U2MESS as UTMESS
 
    # vérifie la syntaxe des expressions régulières fournies
    l_regexp = []
@@ -59,8 +59,8 @@ def test_fichier_ops(self, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
          try:
             obj = re.compile(exp)
          except re.error, s:
-            UTMESS('F', 'TEST_FICHIER',
-                   '<INVALID_REGEXP> %s pour %s' % (str(s), repr(exp)))
+#                   '<INVALID_REGEXP> %s pour %s' % (str(s), repr(exp)))
+            UTMESS('F','TEST0_1',valk=[str(s), repr(exp)])
          else:
             l_regexp.append(exp)
 
@@ -70,8 +70,8 @@ def test_fichier_ops(self, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
    tinfo__ = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=FICHIER)
    
    if tinfo__['ETAT_UNITE', 1].find('OUVERT')>-1:
-      UTMESS('A',  'TEST_FICHIER',
-             "LE FICHIER N'A PAS ETE FERME :\n%s" % FICHIER)
+#             "LE FICHIER N'A PAS ETE FERME :\n%s" % FICHIER)
+      UTMESS('A','TEST0_2',valk=FICHIER)
 
    # fichier correctement fermé
    else:

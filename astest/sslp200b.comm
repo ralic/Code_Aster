@@ -1,4 +1,4 @@
-# MODIF  DATE 14/05/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'SSLP200B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLP200B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 # ======================================================
 #
@@ -469,8 +469,8 @@ MSLIN=MECA_STATIQUE(        MODELE=MO,
                            LIST_INST=LR1,
                          )
 
-CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         
-                           
+CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
+
                            LIST_INST=LR1,
                            OPTION=(
                              'SIGM_ELNO_DEPL',
@@ -678,7 +678,7 @@ MSLI2=MECA_STATIQUE(        MODELE=MO,
 # ----------------------------------------------------------------------
 #   POST_TRAITEMENT DU CALCUL
 # ----------------------------------------------------------------------
-CALC_ELEM( reuse=MSLI2,       
+CALC_ELEM( reuse=MSLI2,
                            OPTION=( 'SIGM_ELNO_DEPL',
                                     'EPME_ELGA_DEPL',
                                     'EPME_ELNO_DEPL', 'EPOT_ELEM_DEPL',
@@ -688,13 +688,13 @@ CALC_ELEM( reuse=MSLI2,
                                     'EQUI_ELNO_EPSI', 'EQUI_ELGA_EPSI',
                                      ),
                           RESULTAT=MSLI2,
-                            
+
                        NUME_ORDRE=(1, 2, 3,) )
 
 CALC_NO( reuse=MSLI2,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
                                   'EQUI_NOEU_EPSI', 'SIGM_NOEU_DEPL', ),
                        RESULTAT=MSLI2,
-                      
+
                       PRECISION=1.000000000E-03,
                         CRITERE='ABSOLU',
                            INST=11.5   )
@@ -1059,7 +1059,7 @@ TABLE1=POST_ELEM(        MODELE=MO,
                          _F( TOUT = 'OUI'),
                          _F( MAILLE = 'M54')) )
 
-TABLE2=POST_ELEM(        
+TABLE2=POST_ELEM(
                           RESULTAT=MSLI2,
                               INST=5.5,
                           ENER_POT=_F( TOUT = 'OUI',

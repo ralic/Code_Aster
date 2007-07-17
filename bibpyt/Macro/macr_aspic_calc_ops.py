@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   """
   from Accas import _F
   import types
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
   ier=0
 #------------------------------------------------------------------
   # On recopie le mot cle affe_materiau pour le proteger
@@ -77,40 +77,40 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         i=i+1
         MRCCM=mate['MATER']
   if i>1 :
-     UTMESS('E', "MACR_ASPIC_CALC", "vous affectez plus d un materiau contenant l option rccm")
+     UTMESS('E','ASPIC0_1')
 #
   if (TYPE_MAILLAGE[:4]=='SAIN') and (TUBULURE==None) :
-     UTMESS('E', "MACR_ASPIC_CALC", "pour les piquages sains, TUBULURE doit etre renseigne")
+     UTMESS('E','ASPIC0_2')
 #
   if EQUILIBRE['NOEUD'] not in ('P1_CORP','P2_CORP') :
-     UTMESS('E', "MACR_ASPIC_CALC", "EQUILIBRE[NOEUD] : on attend P1_CORP ou P2_CORP")
+     UTMESS('E','ASPIC0_3')
 #
   if PRES_REP['EFFE_FOND']=='OUI' :
      if PRES_REP['NOEUD']==None :
-       UTMESS('E', "MACR_ASPIC_CALC", "il faut preciser un noeud pour EFFE_FOND")
+       UTMESS('E','ASPIC0_4')
      if PRES_REP['NOEUD'] not in ('P1_CORP','P2_CORP') :
-       UTMESS('E', "MACR_ASPIC_CALC", "PRES_REP[NOEUD] : on attend P1_CORP ou P2_CORP")
+       UTMESS('E','ASPIC0_5')
      if PRES_REP['NOEUD']==EQUILIBRE['NOEUD'] :
-       UTMESS('E', "MACR_ASPIC_CALC", "on ne peut appliquer un EFFE_FOND sur PRES_REP[NOEUD] car ce noeud est bloque")
+       UTMESS('E','ASPIC0_6')
 #
   if TORS_CORP!=None :
      for tors in TORS_CORP :
          if tors['NOEUD'] not in ('P1_CORP','P2_CORP') :
-            UTMESS('E', "MACR_ASPIC_CALC", "TORS_CORP[NOEUD] : on attend P1_CORP ou P2_CORP")
+            UTMESS('E','ASPIC0_7')
          if tors['NOEUD']==EQUILIBRE['NOEUD'] :
-            UTMESS('E', "MACR_ASPIC_CALC", "on ne peut appliquer un torseur sur TORS_CORP[NOEUD] car ce noeud est bloque")
+            UTMESS('E','ASPIC0_8')
 #
   if (TYPE_MAILLAGE[:4]=='SAIN') and (THETA_3D!=None) :
-     UTMESS('E', "MACR_ASPIC_CALC", "si TYPE_MAILLAGE SAIN : mecanique de la rupture impossible")
+     UTMESS('E','ASPIC0_9')
 #
   if OPTION in ('CALC_G_MAX','CALC_G_MAX_LOCAL') :
     if BORNES==None :
-       UTMESS('E', "MACR_ASPIC_CALC", "mot-clef <BORNES> obligatoire avec cette option")
+       UTMESS('E','ASPIC0_10')
 #
   if IMPRESSION!=None :
     if IMPRESSION['FORMAT'] in ('IDEAS','CASTEM') :
       if IMPRESSION['NOM_CHAM']==None :
-       UTMESS('E', "MACR_ASPIC_CALC", "impression de resultats demandée sans preciser le nom des champs cf. la documentation utilisateur : U4.PC.20.")
+       UTMESS('E','ASPIC0_11')
 #
 #------------------------------------------------------------------
 #

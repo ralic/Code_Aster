@@ -1,23 +1,23 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE FLAMBEMENT D'UNE POUTRE DROITE MULTI-FIBRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 # - Un effort de compression en extremite de poutre.
 # - Le chargement se fait en 2 pas, avec un stat_non_line
@@ -25,7 +25,7 @@
 #     precontrainte necessaires au 2 calculs de flambement.
 #
 
-DEBUT( CODE=_F( NOM = 'SSNL123A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
+DEBUT(CODE=_F(NOM='SSNL123A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 
 # Lecture du maillage
 MA = LIRE_MAILLAGE()
@@ -45,7 +45,7 @@ FIBRE = (
 #  Sections: /RE40X20, modele: POU_D_TGM, Epa: 4, lar: 8
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
       GROUP_FIBRE = ('SECF2',),
-      VALE = ( 
+      VALE = (
 # Nombre de fibre : 32
         -1.75000e-02,  -7.50000e-03,   2.50000e-05,
         -1.75000e-02,  -2.50000e-03,   2.50000e-05,
@@ -114,7 +114,7 @@ FIBRE = (
 #  Sections: /RE40X20, modele: POU_D_TGM, Epa: 4, lar: 8
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
       GROUP_FIBRE = ('SECF1',),
-      VALE = ( 
+      VALE = (
 # Nombre de fibre : 32
         -1.75000e-02,  -7.50000e-03,   2.50000e-05,
         -1.75000e-02,  -2.50000e-03,   2.50000e-05,
@@ -174,7 +174,7 @@ COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT0001,
 
 # -------------------------------------------------------
 # Affectation des materiaux
-CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO, 
+CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO,
    AFFE=(
 # Pour les poutres ou les barres ou les cables
 # Elements avec le materiau : E360.
@@ -267,7 +267,7 @@ STNL = STAT_NON_LINE(
    INCREMENT= _F(LIST_INST = TEMPS),
    NEWTON= _F(MATRICE = 'TANGENTE', REAC_ITER= 1),
    COMP_INCR=(
-   _F(RELATION= 'MULTIFIBRE', 
+   _F(RELATION= 'MULTIFIBRE',
       DEFORMATION= 'PETIT',
       GROUP_MA=('S002','S001',)),
    ),

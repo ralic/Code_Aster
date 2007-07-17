@@ -1,26 +1,26 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#      1) DYNAMIQUE TRANSITOIRE BASE MODALE 
+#      1) DYNAMIQUE TRANSITOIRE BASE MODALE
 #      2) DYNAMIQUE TRANSITOIRE DIRECT
 
-DEBUT( CODE=_F(  NOM = 'SDLD22B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDLD22B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 #
 
@@ -93,7 +93,7 @@ CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
 
 #
 CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
-                         _F(  TOUT = 'OUI', 
+                         _F(  TOUT = 'OUI',
                                     DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
                                   _F(  NOEUD = ('N1','N10',),  DX = 0.))  )
 
@@ -153,11 +153,11 @@ FONCTIO1=DEFI_FONCTION(  NOM_PARA='INST',  NOM_RESU='ALPHA',
                           VALE=( 0., 1.,  1., 1.,  1.0000001, 0., ),
                           PROL_DROITE='CONSTANT'               )
 
-#           
+#
 #-----------------------------------------------------------------
 #                      TRANSITOIRE MODAL
 #-----------------------------------------------------------------
-#                         
+#
 MODES=MODE_ITER_INV(  MATR_A=MATRRIGI,  MATR_B=MATRMASS,
                        CALC_FREQ=_F(  OPTION = 'AJUSTE',
                        FREQ = ( 5.,10.,15.,20.,24.,27.,30.,32.,)) )
@@ -165,16 +165,16 @@ MODES=MODE_ITER_INV(  MATR_A=MATRRIGI,  MATR_B=MATRMASS,
 MACRO_PROJ_BASE(  BASE=MODES,
                   PROFIL = 'PLEIN',
                   MATR_ASSE_GENE=(
-                   _F( 
+                   _F(
                                    MATRICE = CO("MASSEGEN"),
-                                   MATR_ASSE = MATRMASS), 
-                   _F( 
+                                   MATR_ASSE = MATRMASS),
+                   _F(
                                    MATRICE = CO("RIGIDGEN"),
                                    MATR_ASSE = MATRRIGI),
-                   _F( 
-                                   MATRICE = CO("AMORTGEN"), 
+                   _F(
+                                   MATRICE = CO("AMORTGEN"),
                                    MATR_ASSE = MATRAMOR,),),
-                   VECT_ASSE_GENE=_F( 
+                   VECT_ASSE_GENE=_F(
                                    VECTEUR = CO("EFFOGENE"),
                                    VECT_ASSE = VECTASS) )
 
@@ -183,14 +183,14 @@ DYNAMODA=DYNA_TRAN_MODAL(  MASS_GENE=MASSEGEN,
                              AMOR_GENE=AMORTGEN,
                             EXCIT=_F(  VECT_GENE = EFFOGENE,
                                     FONC_MULT = FONCTIO1),
-                             INCREMENT=_F(  INST_INIT = 0., 
+                             INCREMENT=_F(  INST_INIT = 0.,
                                          INST_FIN = 1.5,  PAS = 0.001)
                           )
 
 DEPLTRAN=REST_BASE_PHYS(  RESU_GENE=DYNAMODA,  NOM_CHAM='DEPL',
                             LIST_INST=LISTR8,    INTERPOL='LIN'  )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
            _F(  RESULTAT = DEPLTRAN, NUME_ORDRE = 1, NOM_CHAM = 'DEPL',
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = 4.02E-5),
 
@@ -240,7 +240,7 @@ TEST_RESU(RESU=(
              NOEUD = 'N5', NOM_CMP = 'DX', PRECISION = 0.005, VALE = -2.65E-5))
            )
 
-#           
+#
 #-----------------------------------------------------------------------
 #               TRANSITOIRE DIRECT PAS DE TEMPS ADAPTATIF
 #-----------------------------------------------------------------------
@@ -260,7 +260,7 @@ DEPLADAP=RECU_FONCTION(   NOEUD='N5',   NOM_CMP='DX',   NOM_CHAM='DEPL',
 
 TEST_FONCTION(VALEUR=(
            _F(  FONCTION = DEPLADAP, VALE_PARA = (0.090,),
-             PRECISION = 0.005, VALE_REFE = 4.02E-5), 
+             PRECISION = 0.005, VALE_REFE = 4.02E-5),
 
            _F(  FONCTION = DEPLADAP, VALE_PARA = (0.184,),
              PRECISION = 0.060, VALE_REFE = 4.22E-6),

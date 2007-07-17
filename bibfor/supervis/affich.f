@@ -1,6 +1,6 @@
       SUBROUTINE AFFICH (NOMFIC,TEXTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +21,24 @@ C
       IMPLICIT NONE
       CHARACTER*(*) TEXTE
       CHARACTER*(*) NOMFIC
-      INTEGER       IFM, IUNIFI, GTNPRO
+      INTEGER       IFM, IUNIFI, GTNPRO, IER
+      LOGICAL       OUVERT
 C     ----------------------------------------------------------------
+      OUVERT = .TRUE.
 C --- ON IMPRIME QUE POUR LE PROCESSEUR MAITRE
       IF ( GTNPRO() .EQ. 0 ) THEN
-        IFM = IUNIFI (NOMFIC)
-        WRITE(IFM,'(A)') TEXTE
+         IFM = IUNIFI (NOMFIC)
+C        LE FICHIER EST-IL OUVERT ?
+         INQUIRE ( UNIT=IFM, OPENED=OUVERT, IOSTAT=IER)
+         IF (IER.EQ.0 .AND. .NOT.OUVERT) THEN
+            CALL ULDEFI(IFM,' ',' ','A','A','O')
+         ENDIF
+C
+         WRITE(IFM,'(A)') TEXTE
+C
+         IF (.NOT. OUVERT) THEN
+            CALL ULDEFI(-IFM, ' ', ' ', 'A', 'A', 'O')
+         ENDIF
+C
       ENDIF
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@
 #          !-------------------!
 #======================================================================
 
-DEBUT( CODE=_F(  NOM = 'SSLS100J',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLS100J', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -66,13 +66,13 @@ RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
                                CARA_ELEM=CARELEM,
                                EXCIT=_F(  CHARGE = CHARGE)       )
 
-RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     
+RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
                REPE_COQUE=_F(NIVE_COUCHE='SUP',
                              ANGL_REP = (180., 0.,),),
                OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
                );
-               
-RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     
+
+RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
                         OPTION=('EFGE_ELNO_DEPL','DEGE_ELNO_DEPL',),
                );
 

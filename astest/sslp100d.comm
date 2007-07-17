@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@
 #======================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'SSLP100D',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NOM='SSLP100D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE()
 

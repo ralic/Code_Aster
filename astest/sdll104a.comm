@@ -1,26 +1,26 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME DE DEUX POUTRES SOUMIS A UNE EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #*********************************************************************#
 #***CAS TEST: CALCUL MULTI SPECTRAL AVEC DEUX METHODES****************#
 #*********************************************************************#
-DEBUT(CODE=_F( NOM = 'SDLL104A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDLL104A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #*********************************************************************#
 # *****LECTURE DU MAILLAGE********************************************#
@@ -56,32 +56,32 @@ CHARGE1=AFFE_CHAR_MECA(
                      DX = 0.0,
                      DY = 0.0,
                      DRZ = 0.0)),LIAISON_DDL=(
-            _F( 
+            _F(
                      NOEUD = ('PA11', 'PB11',),
                      DDL = ('DY', 'DY',),
                      COEF_MULT = (1., -1.,),
                      COEF_IMPO = 0.),
-            _F( 
+            _F(
                      NOEUD = ('PA11', 'PB11',),
                      DDL = ('DX', 'DX',),
                      COEF_MULT = (1., -1.,),
                      COEF_IMPO = 0.),
-            _F( 
+            _F(
                      NOEUD = ('PA21', 'PB21',),
                      DDL = ('DY', 'DY',),
                      COEF_MULT = (1., -1.,),
                      COEF_IMPO = 0.),
-            _F( 
+            _F(
                      NOEUD = ('PA21', 'PB21',),
                      DDL = ('DX', 'DX',),
                      COEF_MULT = (1., -1.,),
                      COEF_IMPO = 0.),
-            _F( 
+            _F(
                      NOEUD = ('PA31', 'PB31',),
                      DDL = ('DY', 'DY',),
                      COEF_MULT = (1., -1.,),
                      COEF_IMPO = 0.),
-            _F( 
+            _F(
                      NOEUD = ('PA31', 'PB31',),
                      DDL = ('DX', 'DX',),
                      COEF_MULT = (1., -1.,),
@@ -103,10 +103,10 @@ MAT_LAMB=DEFI_MATERIAU(   ELAS=_F(  E = 2.1E11,
 
 CHMATR1=AFFE_MATERIAU(
            MAILLAGE=MA1,AFFE=(
-              _F( 
+              _F(
                      GROUP_MA = 'GRMAPRIM',
                      MATER = MAT_LAMA),
-              _F( 
+              _F(
                      GROUP_MA = 'GRMASEC',
                      MATER = MAT_LAMB))
          )
@@ -177,20 +177,20 @@ INTKTJ1=DEFI_INTE_SPEC(    DIMENSION=1,
 # *****  INTERRE1= CALCUL COMPLET ***********************************#
 #*********************************************************************#
 
-DYNALEA1=DYNA_ALEA_MODAL(  
-          BASE_MODALE=_F( 
+DYNALEA1=DYNA_ALEA_MODAL(
+          BASE_MODALE=_F(
              MODE_MECA = FREQ1,
              BANDE = (0., 35.,),
              AMOR_UNIF = 0.05),
         MODE_STAT=MODESTA1,
-           EXCIT=_F( 
+           EXCIT=_F(
              DERIVATION = 2,
              INTE_SPEC = INTKTJ1,
              NUME_ORDRE_I = 1,
              NUME_ORDRE_J = 1,
              NOEUD = 'PA1',
              NOM_CMP = 'DY'),
-               REPONSE=_F( 
+               REPONSE=_F(
              DERIVATION = 2,
              FREQ_MIN = 0.,
              FREQ_MAX = 30.,
@@ -271,20 +271,20 @@ MODESTA2=MODE_STATIQUE( MATR_RIGI=MATASSR2,
                                   AVEC_CMP = 'DY')
                       )
 
-DYNALEA2=DYNA_ALEA_MODAL(  
-          BASE_MODALE=_F( 
+DYNALEA2=DYNA_ALEA_MODAL(
+          BASE_MODALE=_F(
              MODE_MECA = FREQ2,
              BANDE = (0., 35.,),
              AMOR_UNIF = 0.05),
        MODE_STAT=MODESTA2,
-           EXCIT=_F( 
+           EXCIT=_F(
              DERIVATION = 2,
              INTE_SPEC = INTKTJ1,
              NUME_ORDRE_I = 1,
              NUME_ORDRE_J = 1,
              NOEUD = 'PA1',
              NOM_CMP = 'DY'),
-              REPONSE=_F( 
+              REPONSE=_F(
              DERIVATION = 2,
              FREQ_MIN = 0.,
              FREQ_MAX = 30.,
@@ -359,18 +359,18 @@ FREQ3=MODE_ITER_INV(   MATR_A=MATASSR3,      MATR_B=MATASSM3,
 
 MODESTA3=MODE_STATIQUE( MATR_RIGI=MATASSR3,
                         MATR_MASS=MATASSM3,
-                        MODE_STAT=_F( 
+                        MODE_STAT=_F(
                   NOEUD = ('PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31',),
                   AVEC_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX', ))
                   )
 
-DYNALEA3=DYNA_ALEA_MODAL(  
-          BASE_MODALE=_F( 
+DYNALEA3=DYNA_ALEA_MODAL(
+          BASE_MODALE=_F(
              MODE_MECA = FREQ3,
              BANDE = (0., 35.,),
              AMOR_UNIF = 0.05),
        MODE_STAT=MODESTA3,
-           EXCIT=_F( 
+           EXCIT=_F(
              DERIVATION = 2,
              INTE_SPEC = INTERRE2,
              NOEUD_I = ( 'PA11', 'PA21', 'PA31', 'PA11', 'PA21', 'PA31', ),
@@ -379,7 +379,7 @@ DYNALEA3=DYNA_ALEA_MODAL(
              NOM_CMP_J = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  ),
              NOEUD = ( 'PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31', ),
              NOM_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  )),
-              REPONSE=_F( 
+              REPONSE=_F(
              DERIVATION = 2,
              FREQ_MIN = 0.,
              FREQ_MAX = 30.,
@@ -390,7 +390,7 @@ INTERRE3=REST_SPEC_PHYS(         MODE_MECA=FREQ3,
                                          BANDE=( 0., 35., ),
                               INTE_SPEC_GENE=DYNALEA3,
                                    MODE_STAT=MODESTA3,
-                               EXCIT=_F(   
+                               EXCIT=_F(
                   NOEUD = ('PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31',),
                   NOM_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX', )),
                                    MOUVEMENT='ABSOLU',

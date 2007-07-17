@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 16/07/2007   AUTEUR ANGLES J.ANGLES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,8 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
            OPTION        =SIMP(statut='o',typ='TXM',into=("DOMA_ELGA","DOMA_NOEUD") ),
            RESULTAT      =SIMP(statut='o',typ=(evol_elas, evol_noli) ),
            CHAM_MATER    =SIMP(statut='o',typ=(cham_mater) ),
+           MAILLAGE      =SIMP(statut='o',typ=maillage_sdaster ),
+           regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
            GROUP_MA      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**' ),
            MAILLE        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**' ),
            GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**' ),
@@ -76,9 +78,6 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                    PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
                    DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),  
                ),
-           ),
-           b_fati_grmano  =BLOC(condition = "(GROUP_MA != None or MAILLE != None or GROUP_NO != None or NOEUD != None)",
-               MAILLAGE      =SIMP(statut='o',typ=maillage_sdaster ),
            ),
          ),
 

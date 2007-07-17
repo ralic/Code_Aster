@@ -1,24 +1,24 @@
-# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSNS105A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNS105A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
 # VALIDATION DE LA MODELISATION GRILLE_MEMBRANE
@@ -71,7 +71,7 @@ LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
                                MODELISATION = 'GRILLE_MEMBRANE'),
                               _F(  GROUP_MA = ('GEO',),
                                PHENOMENE = 'MECANIQUE',
-                               MODELISATION = '3D'), 
+                               MODELISATION = '3D'),
                              )
                       )
 
@@ -100,7 +100,7 @@ ZCHM=AFFE_CHAR_MECA(
                        ),
 #                       _F(  NOEUD = ('NO2','NO3','NO5','NO8'),
 #                          DZ = 0.,
-#                       DRX = 0.,   DRY = 0.,   DRZ = 0.,  
+#                       DRX = 0.,   DRY = 0.,   DRZ = 0.,
 #                       ),
                        _F(  NOEUD = ('NO1','NO2','NO5','NO6'),
                           DY = 0.,
@@ -199,11 +199,11 @@ LEDEP=CALC_ELEM( reuse = LEDEP,
                  OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                  RESULTAT   = LEDEP,
                )
-               
-               
-               
 
-# 
+
+
+
+#
 # -------------------------------------------------
 # POST TRAITEMENT DES RESULTATS
 # -------------------------------------------------

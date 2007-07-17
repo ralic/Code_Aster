@@ -1,4 +1,4 @@
-#@ MODIF sd_char_contact SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_char_contact SD  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,6 +26,7 @@ class sd_char_contact(AsBase):
     BAMACO    = Facultatif(AsVI())
     BANOCO    = Facultatif(AsVI())
     CARACF    = Facultatif(AsVR())
+    CARFRO    = Facultatif(AsVR())
     COMAFO    = Facultatif(AsVR())
     CONVCO    = Facultatif(AsVI())
     DIRCO     = Facultatif(AsVR())
@@ -35,6 +36,7 @@ class sd_char_contact(AsBase):
     JEUCON    = Facultatif(AsVR())
     JEUCOQ    = Facultatif(AsVR())
     JEUPOU    = Facultatif(AsVR())
+    JEUSUR    = Facultatif(AsVR())
     JFO1CO    = Facultatif(AsVK8())
     JFO2CO    = Facultatif(AsVK8())
     JFO3CO    = Facultatif(AsVK8())

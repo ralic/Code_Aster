@@ -1,30 +1,30 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (LMARC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #----------------------------------------------------------------------
-#             TEST MODELE LMARC 3D A CONTRAINTE IMPOSEE 
-#              ESSAI EN TRACTION(ZZ) CISAILLEMENT(YZ)  
+#             TEST MODELE LMARC 3D A CONTRAINTE IMPOSEE
+#              ESSAI EN TRACTION(ZZ) CISAILLEMENT(YZ)
 #
-#      MODELE DEVELOPPE POUR DECRIRE LE COMPORTEMENT VISCOPLASTIQUE 
+#      MODELE DEVELOPPE POUR DECRIRE LE COMPORTEMENT VISCOPLASTIQUE
 #           ANISOTROPE DES TUBES DE GAINE EN ZIRCALOY
 #----------------------------------------------------------------------
-#                ELEMENT 3D CUBE A 8 NOEUDS 
+#                ELEMENT 3D CUBE A 8 NOEUDS
 #              ETAT HOMOGENE CONTRAINTE DEFORMATION
 #       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
 #
@@ -33,26 +33,26 @@
 #               L<------------->                      2
 #                                             S = 1 MM
 #                / N5            N8
-#              >O--------------O 
+#              >O--------------O
 #              /L             /L
 #         N6  / L         N7 / L
-#           >O--+-----------O  L   
+#           >O--+-----------O  L
 #            L  L           L  L
 #            L  L     S     L  L
 #            L  L           L  L
 #            L  L/ N1       L  L N4
 #            L >O-----------L--O-> Y
-#            L /V           L /    
-#         N2 L/          N3 L/ 
-#           >O--------------O    
-#            
+#            L /V           L /
+#         N2 L/          N3 L/
+#           >O--------------O
+#
 #          /
-#         X     
+#         X
 #
 #
 #----------------------------------------------------------------------
 #
-DEBUT(     CODE=_F( NOM = 'SSNV117A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNV117A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 CUBE=LIRE_MAILLAGE(    )
 
@@ -62,7 +62,7 @@ TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
                                             MAILLE = 'MA1'))
 
 ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 73000.,
-                                            NU = .42,      
+                                            NU = .42,
                                             ALPHA = 0.),
                                    LMARC=_F(   DE_0 = 1.5E-6,
                                             R_0 = 10.,
@@ -78,20 +78,20 @@ ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 73000.,
                                             P1 = 400.,
                                             P2 = 10.,
                                             M11 = 1.1,
-                                            M22 = 1.2, 
-                                            M33 = 0.6666666E0, 
-                                            M66 = 1.7, 
+                                            M22 = 1.2,
+                                            M33 = 0.6666666E0,
+                                            M66 = 1.7,
                                             N11 = 0.699,
-                                            N22 = 0.5624, 
-                                            N33 = 0.6666666E0, 
-                                            N66 = 0.66, 
+                                            N22 = 0.5624,
+                                            N33 = 0.6666666E0,
+                                            N66 = 0.66,
                                             Q11 = 0.6666666E0,
-                                            Q22 = 0.6666666E0, 
-                                            Q33 = 0.6666666E0, 
-                                            Q66 = 1., 
+                                            Q22 = 0.6666666E0,
+                                            Q33 = 0.6666666E0,
+                                            Q66 = 1.,
                                             R11 = 0.880,
-                                            R22 = 0.880, 
-                                            R33 = 0.6666666E0, 
+                                            R22 = 0.880,
+                                            R33 = 0.6666666E0,
                                             R66 = 1.375)
                              )
 
@@ -100,62 +100,62 @@ MAT=AFFE_MATERIAU(            MAILLAGE=CUBE,
                                            MATER = ACIER))
 
 LINST=DEFI_LIST_REEL(              DEBUT=1.,INTERVALLE=(
-                              
+
                            _F(  JUSQU_A = 25.,     NOMBRE = 5),
                            _F(  JUSQU_A = 30.,     NOMBRE = 5))    )
 
-COND_LIM=AFFE_CHAR_MECA(    
+COND_LIM=AFFE_CHAR_MECA(
                      MODELE=TROISD,DDL_IMPO=(
                    _F(  NOEUD = 'N1',         DX = 0.,  DY = 0.),
                             _F(  NOEUD = 'N4',         DX = 0.),
                             _F(  GROUP_NO = 'FACEXY',  DZ = 0.)))
 
-TRAC=AFFE_CHAR_MECA(    
+TRAC=AFFE_CHAR_MECA(
                      MODELE=TROISD,
                FORCE_NODALE=_F(  GROUP_NO = 'FACE1XY',  FZ = .25)  )
 
-CIS=AFFE_CHAR_MECA(    
+CIS=AFFE_CHAR_MECA(
                      MODELE=TROISD,FORCE_NODALE=(
                _F(  GROUP_NO = 'FACEXZ',  FZ = -.25),
                _F(  GROUP_NO = 'FACEXY',  FY = -.25),
                _F(  GROUP_NO = 'FACE1XZ', FZ = .25),
                _F(  GROUP_NO = 'FACE1XY', FY = .25))  )
 
-COEF_TR=DEFI_FONCTION(  
-                              NOM_PARA='INST', 
+COEF_TR=DEFI_FONCTION(
+                              NOM_PARA='INST',
                                   VALE=(   0.,   0.,
                                           30.,   300.,   )  )
 
-COEF_CS=DEFI_FONCTION(  
-                              NOM_PARA='INST', 
+COEF_CS=DEFI_FONCTION(
+                              NOM_PARA='INST',
                                   VALE=(   0.,   0.,
                                           30.,   50.,   )  )
 
-SOLNL=STAT_NON_LINE( 
+SOLNL=STAT_NON_LINE(
                              TITRE='TEST MODELE LMARC',
                             MODELE=TROISD,
                         CHAM_MATER=MAT,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = COND_LIM),
-                             _F( 
+                             _F(
                 CHARGE = TRAC,
                 FONC_MULT = COEF_TR),
-                             _F( 
+                             _F(
                 CHARGE = CIS,
                 FONC_MULT = COEF_CS)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'LMARC',
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 40,
                 ITER_INTE_PAS = 10,
                 TOUT = 'OUI'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = LINST),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_INCR = 1,
                 REAC_ITER = 5),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 40,
                 RESI_GLOB_RELA = 1.E-4)
               )
@@ -166,26 +166,26 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
                           RESULTAT=SOLNL,
               )
 
-# 
+#
 
-TEST_RESU(RESU=(  
+TEST_RESU(RESU=(
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 10,
              PARA = 'INST',             VALE = 3.00000E+01),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 10,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',         PRECISION = 11.),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 10,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-04,  
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-04,
              PARA = 'RESI_GLOB_RELA',   VALE = 0.),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 10,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-02,  
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-02,
              PARA = 'RESI_GLOB',        VALE = 0.),
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 10,
              CRITERE = 'ABSOLU',         PRECISION = 2.,
              PARA = 'ITER_LINE',        VALE_I = 0))
            )
 
-SOLNL=CALC_ELEM(     reuse=SOLNL,           
+SOLNL=CALC_ELEM(     reuse=SOLNL,
                                       INST=30.,
                                     OPTION='EPSI_ELNO_DEPL',
                                  RESULTAT=SOLNL )
@@ -211,7 +211,7 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
               MAILLE = 'MA1',  NOEUD = 'N1',
               NOM_CMP = 'V3',             VALE = 0.166557E+03),
- 
+
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
               MAILLE = 'MA1',  NOEUD = 'N1',
               NOM_CMP = 'V2',             VALE = -0.827068E+02),
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
               MAILLE = 'MA1',  NOEUD = 'N1',
               NOM_CMP = 'V6',             VALE = 0.601284E+02),
- 
+
  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 10,
               MAILLE = 'MA1',  NOEUD = 'N1',
               NOM_CMP = 'V19',             VALE = 0.188479E-02,

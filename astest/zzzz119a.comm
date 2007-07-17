@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE VALIDATION D'ASTER :
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #      PROJ_CHAMP METHODE:'ELEM' POUR DES SURFACES EN 3D
 #      PROJ_CHAMP METHODE:'ELEM' AVEC MOT-CLE VIS_A_VIS
-DEBUT(CODE=_F( NOM = 'ZZZZ119A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='ZZZZ119A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # ======================================================
 #
@@ -58,7 +58,7 @@ MO2=AFFE_MODELE(     MAILLAGE=MA,
        MODELISATION = '3D', PHENOMENE = 'MECANIQUE'))
 
 MATER=DEFI_MATERIAU(  ELAS=_F(  E = 1.E6,      NU = 0.3) )
-       
+
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
 

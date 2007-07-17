@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT  170 N - 296 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSLS100B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLS100B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
 # POINTS:   O    MAILLES  M1    M2
@@ -140,7 +140,7 @@ REFERENCE='ANALYTIQUE', NOEUD = 'F',          NOM_CMP = 'DZ',        VALE = -78.
 
 #--------------------------------------------------------------------
 
-DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP, 
+DEP=CALC_ELEM( reuse= DEP ,RESULTAT= DEP,
                NUME_ORDRE=1,OPTION=('EFGE_ELNO_DEPL',),
                 )
 

@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_gp_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ def post_gp_ops(self, **args):
    macro = 'POST_GP'
    ier=0
    from Accas import _F
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS as UTMESS
    from Utilitai.Table      import Table, merge
    from Utilitai.t_fonction import t_fonction
    import aster
@@ -259,8 +259,8 @@ def post_gp_ops(self, **args):
          finv = t_fonction(valkmoy, tabres.INST.values(), d_para)
          
          if not (min(valkmoy) <= KJ_CRIT <= max(valkmoy)):
-            UTMESS('A', macro, 'Interpolation hors du domaine (prolongement ' \
-                               'constant utilisé).')
+#                               'constant utilisé).')
+            UTMESS('A','RUPTURE0_1')
          # valeurs à mettre dans la table
          ti   = finv(KJ_CRIT)
          Gpi  = fGp(ti)

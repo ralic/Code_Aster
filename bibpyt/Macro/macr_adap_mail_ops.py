@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,7 +82,7 @@ def macr_adap_mail_ops ( self,
 #
   from Accas import _F
   from Macro import creation_donnees_homard 
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS  as UTMESS
   import aster 
   import string
   import os
@@ -429,7 +429,7 @@ def macr_adap_mail_ops ( self,
       os.mkdir(Rep_Calc_HOMARD_global)
     except os.error,codret_partiel :
       self.cr.warn("Code d'erreur de mkdir : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
-      UTMESS("F", self.nom, "Impossible de créer le répertoire de travail pour HOMARD : "+Rep_Calc_HOMARD_global)
+      UTMESS("F",'HOMARD0_4',valk=Rep_Calc_HOMARD_global)
 #
 #====================================================================
 # 4. Ecriture des commandes de creation des donnees MED
@@ -830,7 +830,7 @@ def macr_adap_mail_ops ( self,
           os.remove(fic)
         except os.error,codret_partiel :
           self.cr.warn("Code d'erreur de remove : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
-          UTMESS("F", self.nom, "Impossible de détruire le fichier : "+fic)
+          UTMESS("F",'HOMARD0_5',valk=fic)
 #gn  print "Répertoire ",Rep_Calc_HOMARD_global
 #gn  os.system("ls -la "+Rep_Calc_HOMARD_global)
 #gn  print "Répertoire ",Rep_Calc_ASTER

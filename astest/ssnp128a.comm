@@ -1,24 +1,24 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DES ELEMENTS A DISCONTINUITE SUR UNE FISSURE AVEC SAUT NON CONSTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNP128A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'))
+DEBUT(CODE=_F(NOM='SSNP128A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='OUI'), DEBUG=_F(SDVERI='OUI'))
 
 tfin = 1.
 nbinst=10
@@ -44,27 +44,27 @@ MA_0 = DEFI_GROUP(reuse = MA_0,
                         _F(NOM = 'NO_HD' , GROUP_MA = 'GM13'),
                         _F(NOM = 'NO_JHG', GROUP_MA = 'GM14'),
                         _F(NOM = 'NO_JBD', GROUP_MA = 'GM15'),
-                        _F(NOM = 'NO_JHD', GROUP_MA = 'GM16'), 
+                        _F(NOM = 'NO_JHD', GROUP_MA = 'GM16'),
                         _F(
-                           NOM = 'HAUT_ALL' , 
+                           NOM = 'HAUT_ALL' ,
                            GROUP_MA = 'GM1',
                            OPTION = 'NOEUD_ORDO',
                            GROUP_NO_ORIG = 'NO_JHG',
                            GROUP_NO_EXTR = 'NO_HD',),
                         _F(
-                           NOM = 'BAS_ALL'  , 
+                           NOM = 'BAS_ALL'  ,
                            GROUP_MA = 'GM2',
                            OPTION = 'NOEUD_ORDO',
                            GROUP_NO_ORIG = 'NO_JBG',
                            GROUP_NO_EXTR = 'NO_BD',),
                         _F(
-                           NOM = 'DROITE'   , 
+                           NOM = 'DROITE'   ,
                            GROUP_MA = 'GM3',
                            OPTION = 'NOEUD_ORDO',
                            GROUP_NO_ORIG = 'NO_HD',
                            GROUP_NO_EXTR = 'NO_BD',),
                        _F(
-                           NOM = 'GN_J_D',   
+                           NOM = 'GN_J_D',
                            GROUP_MA = 'GM5',
                            OPTION = 'NOEUD_ORDO',
                            GROUP_NO_ORIG = 'NO_JHD',
@@ -74,19 +74,19 @@ MA_0 = DEFI_GROUP(reuse = MA_0,
                            GROUP_MA = 'GM4',
                            OPTION = 'NOEUD_ORDO',
                            GROUP_NO_ORIG = 'NO_JHG',
-                           GROUP_NO_EXTR = 'NO_JBG',), 
+                           GROUP_NO_EXTR = 'NO_JBG',),
                         _F(
-                           NOM = 'HAUT'   , 
+                           NOM = 'HAUT'   ,
                            DIFFE = ('HAUT_ALL','GAUCHE'),),
                         _F(
-                           NOM      = 'BAS' , 
-                           DIFFE    = ('BAS_ALL','GAUCHE'),),                         
-                         
-                       )  
-                            
+                           NOM      = 'BAS' ,
+                           DIFFE    = ('BAS_ALL','GAUCHE'),),
+
+                       )
+
                      )
-       
-       
+
+
 MA = CREA_MAILLAGE(
   MAILLAGE = MA_0,
   CREA_FISS = _F(
@@ -96,12 +96,12 @@ MA = CREA_MAILLAGE(
     PREF_MAILLE = 'MJ',
     )
   )
-  
-         
+
+
 BETON = DEFI_MATERIAU(
   ELAS      = _F (
                   E  = 10.,
-                  NU = 0. 
+                  NU = 0.
                   ),
   RUPT_FRAG = _F(
                  SIGM_C = 1.1,
@@ -129,15 +129,15 @@ MO = AFFE_MODELE(
            GROUP_MA     = 'FISS',
            PHENOMENE    = 'MECANIQUE',
            MODELISATION = 'PLAN_ELDI'
-           ),          
+           ),
         )
        )
-  
 
 
-UG=DEFI_FONCTION(  NOM_PARA='Y',                                        
+
+UG=DEFI_FONCTION(  NOM_PARA='Y',
                     VALE=(
-                    
+
 
   -3.14159265358979, -1.21222189711981,
   -3.07876080051800, -1.19601974751385,
@@ -240,14 +240,14 @@ UG=DEFI_FONCTION(  NOM_PARA='Y',
    3.01592894744620, -0.32433976848129,
    3.07876080051800, -0.31883010578747,
    3.14159265358979, -0.31335729730045,
-                      
+
                            ),
                         )
-                        
 
 
-VG=DEFI_FONCTION(   NOM_PARA='Y',                                      
-                    VALE=(  
+
+VG=DEFI_FONCTION(   NOM_PARA='Y',
+                    VALE=(
 
   -3.14159265358979,   0  ,
   -3.07876080051800,   0  ,
@@ -352,13 +352,13 @@ VG=DEFI_FONCTION(   NOM_PARA='Y',
    3.14159265358979,   0  ,
 
                            ),
-                        )   
+                        )
 
 
-                          
-UD=DEFI_FONCTION(   NOM_PARA='Y',                                         
-                    VALE=(  
-                    
+
+UD=DEFI_FONCTION(   NOM_PARA='Y',
+                    VALE=(
+
 
   -3.14159265358979, 0.02500000000000  ,
   -3.07876080051800, 0.02550000000000  ,
@@ -465,10 +465,10 @@ UD=DEFI_FONCTION(   NOM_PARA='Y',
 
 
                            ),
-                        )                           
-  
-VD=DEFI_FONCTION(   NOM_PARA='Y',                                        
-                    VALE=(  
+                        )
+
+VD=DEFI_FONCTION(   NOM_PARA='Y',
+                    VALE=(
 
   -3.14159265358979, -0.00397887357730   ,
   -3.07876080051800, -0.00397887357730   ,
@@ -574,11 +574,11 @@ VD=DEFI_FONCTION(   NOM_PARA='Y',
 
 
                            ),
-                        )                          
-                          
- 
-UH=DEFI_FONCTION(   NOM_PARA='X',                                                                          
-                    VALE=(  
+                        )
+
+
+UH=DEFI_FONCTION(   NOM_PARA='X',
+                    VALE=(
 
 
                   0,                0,
@@ -627,13 +627,13 @@ UH=DEFI_FONCTION(   NOM_PARA='X',
 
 
                            ),
-                        )                           
-                          
-                          
-                          
- 
+                        )
+
+
+
+
 VH=DEFI_FONCTION(   NOM_PARA='X',
-                    VALE=(  
+                    VALE=(
 
                   0 ,                 0,
    0.02500000000000 , -0.00000248679599,
@@ -680,12 +680,12 @@ VH=DEFI_FONCTION(   NOM_PARA='X',
 
 
                            ),
-                        )                          
-                          
+                        )
+
 
 UB=DEFI_FONCTION(   NOM_PARA='X',
-                    VALE=( 
-                     
+                    VALE=(
+
                   0,                 0,
    0.02500000000000,  0.00062500000000,
    0.05000000000000,  0.00125000000000,
@@ -730,11 +730,11 @@ UB=DEFI_FONCTION(   NOM_PARA='X',
 
 
                            ),
-                        ) 
+                        )
 
 
-VB=DEFI_FONCTION(   NOM_PARA='X',                                                                                    
-                    VALE=(  
+VB=DEFI_FONCTION(   NOM_PARA='X',
+                    VALE=(
 
                   0,                 0,
    0.02500000000000, -0.00000248679599,
@@ -780,27 +780,27 @@ VB=DEFI_FONCTION(   NOM_PARA='X',
 
 
                            ),
-                        ) 
+                        )
 
-                                                       
+
 FIXE=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
     _F(GROUP_MA='GAUCHE', DX=0.,DY=0. ),
     )
   )
-  
-  
-DEPL_I=AFFE_CHAR_MECA_F(MODELE=MO,                                                                                 
-         
+
+
+DEPL_I=AFFE_CHAR_MECA_F(MODELE=MO,
+
          DDL_IMPO=(
                   _F(GROUP_NO='HAUT'   ,DX = UH    ,DY = VH   ),
                   _F(GROUP_NO='BAS'    ,DX = UB    ,DY = VB   ),
                   _F(GROUP_NO='GAUCHE' ,DX = UG    ,DY = VG   ),
                   _F(GROUP_NO='DROITE' ,DX = UD    ,DY = VD   ),
-                  
+
                  )
-                     ) 
+                     )
 
 INSTANTS = DEFI_LIST_REEL(
   DEBUT = -1.,
@@ -809,11 +809,11 @@ INSTANTS = DEFI_LIST_REEL(
     _F(JUSQU_A =  tfin, NOMBRE = nbinst),
     )
   )
-  
+
 FCT = DEFI_FONCTION(
   NOM_PARA = 'INST',
   VALE     = (-1,0,   0,0.0001,   1,1)
-  )  
+  )
 
 INS_ARCH = DEFI_LIST_REEL(
   DEBUT = -1.,
@@ -851,9 +851,9 @@ EVOL = STAT_NON_LINE(
   ARCHIVAGE = _F(
    LIST_INST = INS_ARCH
     )
-  ) 
-  
-  
+  )
+
+
 TEST_RESU(RESU=(
                 _F(    RESULTAT = EVOL,
                        REFERENCE = 'ANALYTIQUE',
@@ -890,7 +890,7 @@ TEST_RESU(RESU=(
 IMPR_RESU(
   FORMAT  = 'RESULTAT',
   RESU=_F(MAILLAGE=MA)
-         )    
+         )
 
-    
+
 FIN()

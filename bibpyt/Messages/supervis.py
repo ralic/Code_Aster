@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF supervis Messages  DATE 17/07/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,7 +290,10 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 63: _("""
-     TEMPS CONSOMME DE LA RESERVE CPU        :  %(r1).2f s\n
+     ARRET PAR MANQUE DE TEMPS CPU
+     Les commandes suivantes sont ignorees, on passe directement dans FIN
+     La base globale est sauvegardee
+     Temps consomme de la reserve CPU        :  %(r1).2f s\n
 """),
 
 64: _("""

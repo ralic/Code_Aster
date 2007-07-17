@@ -1,7 +1,7 @@
       SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,
      &                  TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 16/07/2007   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,6 +105,9 @@ C DTAUM,....
       CESR = '&&PAQMAI.FACY'
       CELBID = '&&PAQMAI.BID'
       CALL ALCHML(LIGRE,'TOU_INI_ELGA','PFACY_R','V',CELBID,IERD,' ')
+      IF (IERD .NE. 0) THEN
+         CALL U2MESS('A','FATIGUE1_1')
+      ENDIF
       CALL CELCES( CELBID, 'V', CESR )
 
 C RECUPERATION DU NOMBRE DE NUMEROS D'ORDRE ET DE LA LISTE
@@ -390,7 +393,11 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                            CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,
      &                                 JAD)
                            IF (JAD .LE. 0) THEN
-                             CALL U2MESS('F','PREPOST4_30')
+                             IF ( ICMP .EQ. 5 ) THEN
+                                CALL U2MESI('F', 'FATIGUE1_2',1,ICMP)
+                             ELSE
+                                CALL U2MESS('F','PREPOST4_30')
+                             ENDIF
                            ELSE
                              ZR( JRWORK + (ICMP-1) + (IPG-1)*6 +
      &                             KWORK*SOMPGW*6 + (IORDR-1)*TSPAQ ) =
@@ -497,7 +504,11 @@ C BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                            CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,
      &                                 JAD)
                            IF (JAD .LE. 0) THEN
-                             CALL U2MESS('F','PREPOST4_30')
+                             IF ( ICMP .EQ. 5 ) THEN
+                                CALL U2MESI('F', 'FATIGUE1_2',1,ICMP)
+                             ELSE
+                                CALL U2MESS('F','PREPOST4_30')
+                             ENDIF
                            ELSE
                              ZR( JRWORK + (ICMP-1) + (IPG-1)*12 +
      &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =
@@ -511,7 +522,11 @@ C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
                            CALL CESEXI('C',JEPSD,JEPSL,IMAP,IPG,1,ICMP,
      &                                 JAD)
                            IF (JAD .LE. 0) THEN
-                             CALL U2MESS('F','PREPOST4_35')
+                             IF ( ICMP .EQ. 5 ) THEN
+                                CALL U2MESI('F', 'FATIGUE1_3',1,ICMP)
+                             ELSE
+                                CALL U2MESS('F','PREPOST4_35')
+                             ENDIF
                            ELSE
                              ZR( JRWORK + (ICMP+6-1) + (IPG-1)*12 +
      &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =

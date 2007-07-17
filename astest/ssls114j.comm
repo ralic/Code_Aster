@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 # COQUE_C_PLAN
 
 
-DEBUT(CODE=_F(  NOM = 'SSLS114J',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLS114J', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(    INFO=2)
 
@@ -167,8 +167,8 @@ RESP=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,              
-                              
+CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,
+
                              OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -229,7 +229,7 @@ CALC_NO( reuse=RESF,   RESULTAT=RESF,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
-RESFINF=CALC_ELEM(       
+RESFINF=CALC_ELEM(
                           RESULTAT=RESF,
                            OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE=_F(NIVE_COUCHE='INF',),
@@ -239,7 +239,7 @@ CALC_NO(   reuse=RESFINF,   RESULTAT=RESFINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
-RESFSUP=CALC_ELEM(       
+RESFSUP=CALC_ELEM(
                           RESULTAT=RESF,
                            OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE=_F(NIVE_COUCHE='SUP',),
@@ -318,8 +318,8 @@ RESG=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESG ,RESULTAT= RESG ,             
-                                            
+CALC_ELEM( reuse= RESG ,RESULTAT= RESG ,
+
                              OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -327,7 +327,7 @@ CALC_NO( reuse=RESG,   RESULTAT=RESG,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
-RESGINF=CALC_ELEM(       
+RESGINF=CALC_ELEM(
                           RESULTAT=RESG,
                            OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE=_F(NIVE_COUCHE='INF',),
@@ -337,7 +337,7 @@ CALC_NO(   reuse=RESGINF,   RESULTAT=RESGINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
-RESGSUP=CALC_ELEM(       
+RESGSUP=CALC_ELEM(
                           RESULTAT=RESG,
                            OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE=_F(NIVE_COUCHE='SUP',),
@@ -416,8 +416,8 @@ RESM=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,
 
                         )
 
-CALC_ELEM( reuse= RESM ,RESULTAT= RESM ,             
-                                            
+CALC_ELEM( reuse= RESM ,RESULTAT= RESM ,
+
                              OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -425,7 +425,7 @@ CALC_NO( reuse=RESM,   RESULTAT=RESM,
                       OPTION='SIGM_NOEU_DEPL'
                   )
 
-RESMINF=CALC_ELEM(       
+RESMINF=CALC_ELEM(
                           RESULTAT=RESM,
                            OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE=_F(NIVE_COUCHE='INF',),
@@ -435,7 +435,7 @@ CALC_NO(   reuse=RESMINF,   RESULTAT=RESMINF,
                            OPTION='SIGM_NOEU_DEPL'
                       )
 
-RESMSUP=CALC_ELEM(       
+RESMSUP=CALC_ELEM(
                           RESULTAT=RESM,
                            OPTION='SIGM_ELNO_DEPL',
                           REPE_COQUE=_F(NIVE_COUCHE='SUP',),

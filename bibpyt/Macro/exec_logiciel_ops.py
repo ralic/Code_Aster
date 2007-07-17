@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF exec_logiciel_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
    """
    macro='EXEC_LOGICIEL'
    import aster
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS as UTMESS
    from Utilitai.System     import ExecCommand
    from Utilitai.UniteAster import UniteAster
    
@@ -89,13 +89,14 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
       elif dMCF['FORMAT'] == 'SALOME':
          mode_lancement = EXECFILE
          if len(l_args) < 1:
-            UTMESS('F', macro, "FORMAT SALOME, L'ARGUMENT 1 DOIT ETRE " \
-                               "LE NOM DU FICHIER MED PRODUIT PAR LE SCRIPT PYTHON.")
+#                               "LE NOM DU FICHIER MED PRODUIT PAR LE SCRIPT PYTHON.")
+            UTMESS('F','EXECLOGICIEL0_1')
          else:
             d_para['fichMED'] = l_args[0]
       
       else:
-         UTMESS('F', macro, "ON NE SAIT PAS TRAITER LE FORMAT '%s'" % dMCF['FORMAT'])
+         UTMESS('F','EXECLOGICIEL0_2',valk=dMCF['FORMAT'])
+
    
    #----------------------------------------------
    # 2. lecture des mots-clés
@@ -119,34 +120,34 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
          aster.affiche('MESSAGE', output)
       
       if CODE_RETOUR_MAXI >= 0 and iret > CODE_RETOUR_MAXI:
-         UTMESS('F', macro, 'CODE RETOUR INCORRECT (MAXI %d) : %d' \
-                % (CODE_RETOUR_MAXI, iret))
+#                % (CODE_RETOUR_MAXI, iret))
+         UTMESS('F','EXECLOGICIEL0_3',vali=[CODE_RETOUR_MAXI,iret])
    
    #----------------------------------------------
    # 3b. Exécution d'un fichier Python
    elif mode_lancement == EXECFILE:
       if d_para['prog'] != '':
-         UTMESS('A', macro, "LE MOT-CLE LOGICIEL N'EST PAS UTILISE AVEC CE FORMAT")
+         UTMESS('A','EXECLOGICIEL0_4')
       context={}
       try:
          execfile(d_para['fichIN'], context)
       except:
          traceback.print_exc()
          txt = open(d_para['fichIN'], 'r').read()
-         UTMESS('F', macro, """ERREURS LORS DE L'EXECUTION DU FICHIER CI-DESSOUS :
-<<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
-%s
-<<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
-""" % txt)
+#<<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
+#%s
+#<<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
+#""" % txt)
+         UTMESS('F','EXECLOGICIEL0_5',valk=txt)
       
       if not os.path.exists(d_para['fichMED']):
-         UTMESS('F', macro, "LE FICHIER %s N'EXISTE PAS" % d_para['fichMED'])
+         UTMESS('F','EXECLOGICIEL0_6',valk=d_para['fichMED'])
       else:
          # copie fichMED vers fichOUT pour pouvoir le récupérer
          shutil.copyfile(d_para['fichMED'], d_para['fichOUT'])
    
    else:
-      UTMESS('F', macro, "Mode de lancement inconnu : %s" % mode_lancement)
+      UTMESS('F','EXECLOGICIEL0_7',valk=mode_lancement)
    
    #----------------------------------------------
    # 4. Conversion du maillage

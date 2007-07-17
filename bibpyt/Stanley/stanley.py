@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF stanley Stanley  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2814,6 +2814,15 @@ class DRIVER_SUP_GMSH(DRIVER) :
 
 
 # ==============================================================================
+def concept_exists_and_intypes(co, jdc, types, append_to):
+   """Ajoute le concept dans la liste 'append_to' si 'co' existe
+   (c'est à dire si son étape a été exécutée) et si son type est parmi 'types'.
+   """
+   if jdc.sds_dict.get(co) != None:
+      concept = jdc.sds_dict[co]
+      if concept.__class__.__name__ in types and getattr(concept.etape, 'executed', 0) == 1:
+         append_to.append(co)
+
 
 class PRE_STANLEY :
 
@@ -2863,36 +2872,25 @@ class PRE_STANLEY :
     for i in self.jdc_recupere.sds_dict.keys( ):
 
       # On supprime de la liste les concept issus de la sensibilite
-      if i[0:len(ignore_prefixe)] == ignore_prefixe :
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ in lst:
+      if i.startswith(ignore_prefixe) and self.jdc_recupere.sds_dict[i].__class__.__name__ in lst:
           txt = _('Concept ignore : ') + i
           UTMESS('I','STANLEY',txt)
 
       else:
 
-#         print i,self.jdc_recupere.sds_dict[i].__class__.__name__,self.jdc_recupere.sds_dict[i]
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'maillage_sdaster':
-          t_maillage.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'modele_sdaster':
-          t_modele.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'evol_elas':
-          t_evol.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'evol_noli':
-          t_evol.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'evol_ther':
-          t_evol.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'mode_meca':
-          t_evol.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'dyna_harmo':
-          t_evol.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'dyna_trans':
-          t_evol.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cham_mater':
-          t_cham_mater.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cara_elem_sdaster':
-          t_cara_elem.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'para_sensi':
-          t_para_sensi.append( i )
+         concept_exists_and_intypes(i, jdc=self.jdc_recupere, 
+                                    types='maillage_sdaster', append_to=t_maillage)
+         concept_exists_and_intypes(i, jdc=self.jdc_recupere,
+                                    types='modele_sdaster', append_to=t_modele)
+         concept_exists_and_intypes(i, jdc=self.jdc_recupere,
+            types=('evol_elas', 'evol_noli', 'evol_ther', 'mode_meca', 'dyna_harmo', 'dyna_trans'),
+                                    append_to=t_evol)
+         concept_exists_and_intypes(i, jdc=self.jdc_recupere,
+                                    types='cham_mater', append_to=t_cham_mater)
+         concept_exists_and_intypes(i, jdc=self.jdc_recupere,
+                                    types='cara_elem', append_to=t_cara_elem)
+         concept_exists_and_intypes(i, jdc=self.jdc_recupere,
+                                    types='para_sensi', append_to=t_para_sensi)
 
     self.t_maillage=t_maillage
     self.t_modele=t_modele

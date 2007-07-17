@@ -1,21 +1,21 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SSLV130B
 #
@@ -32,26 +32,26 @@
 # GRMA: FACEEF     FACEAE     FACESUP   FACEINF
 # ----------------------------------------------------------------------
 #
-DEBUT(CODE=_F(  NOM = 'SSLV130B',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NOM='SSLV130B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE(   )
 
 MO=AFFE_MODELE( MAILLAGE=M,
                 VERIF='MAILLE',
-                AFFE=_F(  TOUT = 'OUI',         
-                          PHENOMENE = 'MECANIQUE',    
+                AFFE=_F(  TOUT = 'OUI',
+                          PHENOMENE = 'MECANIQUE',
                           MODELISATION = '3D_INCO' ))
 
 M=MODI_MAILLAGE( reuse=M,
                  MAILLAGE=M,
                  ORIE_PEAU_3D=_F(  GROUP_MA = ( 'FACEEF', 'FACEAE', ),  ),)
 
-MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,       
-                            NU = 0.4999,      
+MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,
+                            NU = 0.4999,
                             ALPHA = 0.,    ))
 
 CM=AFFE_MATERIAU(  MAILLAGE=M,
-                   AFFE=_F(  TOUT = 'OUI',         
+                   AFFE=_F(  TOUT = 'OUI',
                               MATER = MA ))
 
 CH=AFFE_CHAR_MECA( MODELE=MO,
@@ -89,7 +89,7 @@ EVOL   = STAT_NON_LINE (
              NEWTON= _F(
                REAC_ITER= 1,
                ),
-            ) ;             
+            ) ;
 EVOL = CALC_ELEM (reuse=EVOL,
               RESULTAT= EVOL,
               OPTION= (
@@ -111,7 +111,7 @@ EVOL = CALC_NO (reuse=EVOL,
 #       TEST DE SOLIDE INCOMPRESSIBLE NU = 0.5
 #---------------------------------------------------------------
 TEST_RESU(RESU=(
-#     DEPLACEMENTS        
+#     DEPLACEMENTS
          _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
          GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0., REFERENCE = 'ANALYTIQUE'),
          _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 5.E-3,
@@ -123,7 +123,7 @@ TEST_RESU(RESU=(
          GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE =  2.1213203E-5, REFERENCE = 'ANALYTIQUE'),
 ),)
 TEST_RESU(RESU=(
-    # DEFORMATIONS             
+    # DEFORMATIONS
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
 GROUP_NO = 'A',    NOM_CMP = 'EPXX',      VALE = -6.0E-4, REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
@@ -139,7 +139,7 @@ GROUP_NO = 'A',    NOM_CMP = 'EPXX',      VALE = -6.0E-4, REFERENCE = 'ANALYTIQU
  GROUP_NO = 'F',   NOM_CMP = 'EPXY',      VALE = -1.5E-4, REFERENCE = 'ANALYTIQUE'))
            )
 TEST_RESU(RESU=(
-    # CONTRAINTES             
+    # CONTRAINTES
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',   NOM_CMP = 'SIYY',      VALE = 100., REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
@@ -158,7 +158,7 @@ TEST_RESU(RESU=(
  GROUP_NO = 'F',   NOM_CMP = 'SIZZ',      VALE = 20., REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'F',   NOM_CMP = 'SIXY',      VALE = -20., REFERENCE = 'ANALYTIQUE'))
-          ) 
+          )
 TEST_RESU(RESU=(
     # DEFORMATIONS EQUIVALENTES
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
@@ -195,7 +195,7 @@ M = DEFI_GROUP(reuse = M,
                CREA_GROUP_NO =_F(NOM = 'MSOMMET',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA = 'VOLUME'))
-CH2=AFFE_CHAR_MECA( MODELE=MO,DDL_IMPO=(                   
+CH2=AFFE_CHAR_MECA( MODELE=MO,DDL_IMPO=(
                          _F(  GROUP_NO = 'BORDAB',   DY = 0.,     ),
                          _F(  GROUP_NO = 'FACSUP',   DZ = 0.,     ),
                          _F(  GROUP_NO = 'FACINF',   DZ = 0.,     ),
@@ -219,10 +219,10 @@ EVOL2   = STAT_NON_LINE (
              NEWTON= _F(
                REAC_ITER= 1,
                ),
-            ) ;             
+            ) ;
 EVOL2 = CALC_ELEM (reuse=EVOL2,
               RESULTAT= EVOL2,
-             
+
               OPTION= (
                'EPSI_ELNO_DEPL',
                'SIEF_ELNO_ELGA',
@@ -242,7 +242,7 @@ EVOL2 = CALC_NO (reuse=EVOL2,
                 ),) ;
 
 TEST_RESU(RESU=(
-#     DEPLACEMENTS        
+#     DEPLACEMENTS
          _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
          GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0., REFERENCE = 'ANALYTIQUE'),
          _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 5.E-3,
@@ -254,7 +254,7 @@ TEST_RESU(RESU=(
          GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE =  2.1213203E-5, REFERENCE = 'ANALYTIQUE'),
 ),)
 TEST_RESU(RESU=(
-    # DEFORMATIONS             
+    # DEFORMATIONS
            _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
 GROUP_NO = 'A',    NOM_CMP = 'EPXX',      VALE = -6.0E-4, REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
@@ -270,7 +270,7 @@ GROUP_NO = 'A',    NOM_CMP = 'EPXX',      VALE = -6.0E-4, REFERENCE = 'ANALYTIQU
  GROUP_NO = 'F',    NOM_CMP = 'EPXY',      VALE = -1.5E-4, REFERENCE = 'ANALYTIQUE'))
            )
 TEST_RESU(RESU=(
-    # CONTRAINTES             
+    # CONTRAINTES
            _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',    NOM_CMP = 'SIYY',      VALE = 100., REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
@@ -288,7 +288,7 @@ TEST_RESU(RESU=(
  GROUP_NO = 'F',    NOM_CMP = 'SIZZ',      VALE = 20., REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'F',    NOM_CMP = 'SIXY',      VALE = -20., REFERENCE = 'ANALYTIQUE'))
-          ) 
+          )
 TEST_RESU(RESU=(
     # DEFORMATIONS EQUIVALENTES
            _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
@@ -317,7 +317,7 @@ TEST_RESU(RESU=(
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'VMIS_SG',      VALE = 138.5641, REFERENCE='ANALYTIQUE'),
 ),)
 #----------------------------------------------------------------------
-#  TEST DU CALCUL AUX NOEUDS MILIEUX 
+#  TEST DU CALCUL AUX NOEUDS MILIEUX
 #  TEST SUR UN NOEUD SITUE EN MILIEU DE MAILLE POUR TESTER LE PASSAGE AUX NOEUDS MILIEUX
 #  NOEUMI = A + (0 0 1/2 pas )
 
@@ -337,34 +337,34 @@ TEST_RESU(RESU=(
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = EVOL2,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELEM_SIGM',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'ERRE_ELEM_SIGM',
+               CRITERE = 'RELATIF',
                PRECISION = 0.001,
                POINT = 1,
-               MAILLE='MA4',    
-               NOM_CMP = 'NUEST',      
-               VALE = 1.2089635297301, 
+               MAILLE='MA4',
+               NOM_CMP = 'NUEST',
+               VALE = 1.2089635297301,
                REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = EVOL2,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELEM',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'ERRE_ELNO_ELEM',
+               CRITERE = 'RELATIF',
                PRECISION = 0.001,
                GROUP_NO= 'A',
-               MAILLE='MA4',    
-               NOM_CMP = 'ERREST',      
-               VALE = 6.8545701343028E-04, 
+               MAILLE='MA4',
+               NOM_CMP = 'ERREST',
+               VALE = 6.8545701343028E-04,
                REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
 
 FIN( )
 #
- 
+

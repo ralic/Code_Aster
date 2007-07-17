@@ -1,26 +1,26 @@
-# MODIF  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # PRESSION DE CONSOLITDATION P0 = 50KPA
 
 
-DEBUT(CODE=_F(NOM='SSNV197A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='SSNV197A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 PRE_GIBI();
 
 # modules mecaniques [kPa]
@@ -58,7 +58,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
 TEMPS0=DEFI_LIST_REEL(DEBUT=-2.,
                       INTERVALLE=(_F(JUSQU_A = -1., NOMBRE = 1),
                                   _F(JUSQU_A =  0., NOMBRE = 50)));
-                         
+
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A =  1., NOMBRE = 10),
                                   _F(JUSQU_A =  7., NOMBRE = 60),
@@ -89,7 +89,7 @@ SOL0=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                             RHYS     = 0.2,
                             RMOB     = 0.5,
                             XM       = 2.));
-                            
+
 SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                   HUJEUX=_F(N        = 0.89,
                             BETA     = 10.,
@@ -111,11 +111,11 @@ SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                      AFFE=_F(TOUT='OUI', MATER=SOL0));
-                    
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI', MATER=SOL));
-              
-              
+
+
 #***********************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #***********************************************************************
@@ -129,7 +129,7 @@ CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
 
 CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
                        FACE_IMPO=_F(GROUP_MA='APPUI',DZ = -1.));
-                                             
+
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                 FACE_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
                            _F(GROUP_MA='GAUCHE',DX = 0.),
@@ -139,7 +139,7 @@ COEF0=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-2.0, 0.0,
                           -1. , 10. ));
-                                                       
+
 COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
@@ -203,15 +203,15 @@ SIG1=CREA_CHAMP(INFO=2,
                 RESULTAT=U0,
                 NOM_CHAM='SIEF_ELGA',
                 INST=0.0,);
-                
+
 VAR1=CREA_CHAMP(INFO=2,
                 TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U0,
                 NOM_CHAM='VARI_ELGA',
                 INST=0.0,);
-                
-                
+
+
 #***********************************************************************
 #    ESSAI TRIAXIAL
 #***********************************************************************
@@ -238,12 +238,12 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                               SUBD_PAS_MINI=0.001,
                               INST_INIT=0.0,
                               INST_FIN =10.));
-               
+
 
 #-------------------------
 #    TEST_RESU AU POINT C
 #-------------------------
-U1=CALC_ELEM(reuse=U1, 
+U1=CALC_ELEM(reuse=U1,
              MODELE=MODELE,
              CHAM_MATER=CHMAT,
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
@@ -253,7 +253,7 @@ U1=CALC_NO(reuse=U1,
            CHAM_MATER=CHMAT,
            OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
            RESULTAT=U1);
-              
+
 TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
@@ -267,14 +267,14 @@ TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU_ELGA',
                                 NOM_CHAM='VARI_NOEU_ELGA',
                                 NOM_CMP=('V1','V2','V3','V4','V5','V6','V7','V8','V9'),
                                 OPERATION='EXTRACTION'));
-                                
+
 TAB_EPSZ=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
                                 NOM_CHAM='EPSI_NOEU_DEPL',
                                 NOM_CMP='EPZZ',
                                 OPERATION='EXTRACTION'));
-                                
+
 TAB_EPSV=POST_RELEVE_T(ACTION=_F(INTITULE='EPSI_VOLU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,

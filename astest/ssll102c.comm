@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 #======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'SSLL102C',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL102C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(                                                )
 

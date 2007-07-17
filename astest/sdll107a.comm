@@ -1,21 +1,21 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL TEMPOREL POUTRE SOUS EXCITATION ALEATOIRE AVEC DSP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # TEST DE LA GENERATION DES FONCTIONS ALEATOIRE D INTERSPECTRE
 # CONNU, TEST DU CALCUL D UNE MATRICE INTERSPECTRALE
@@ -26,7 +26,7 @@
 #----------------------------------------------------------------
 #
 
-DEBUT(CODE=_F( NOM = 'SDLL107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NOM='SDLL107A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='NON'))
 
 #
 POUTRE=LIRE_MAILLAGE( )
@@ -50,7 +50,7 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=POUTRE,
 
 #
 CHCAR=AFFE_CARA_ELEM(  MODELE=MODEL,
-         POUTRE=_F(  
+         POUTRE=_F(
        GROUP_MA = 'TOUT',
 
         SECTION = 'CERCLE', CARA = ('R','EP',),
@@ -1624,7 +1624,7 @@ SPECT2=DEFI_FONCTION(    NOM_PARA='FREQ',  VALE_C=(
 
 #
 
-AUTOSPC1=LIRE_INTE_SPEC( 
+AUTOSPC1=LIRE_INTE_SPEC(
                        UNITE=19,
                       FORMAT='MODULE_PHASE',
                   PROL_DROITE='EXCLU',
@@ -1652,7 +1652,7 @@ VECT1=GENE_FONC_ALEA(
                          INTE_SPEC=INT1,
                                FREQ_INIT=0.,
                                FREQ_FIN=500.,
-                               NB_TIRAGE=10, 
+                               NB_TIRAGE=10,
                                 NB_POIN=512,
                                   INFO=2,
                           )
@@ -1664,7 +1664,7 @@ FONCT1=RECU_FONCTION(    TABLE=VECT1,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',
-                                   INTERPOL='LIN',  
+                                   INTERPOL='LIN',
                                  PROL_DROITE='CONSTANT',
                                 PROL_GAUCHE='EXCLU'
                            )
@@ -1675,16 +1675,16 @@ FONCT2=RECU_FONCTION(    TABLE=VECT1,
                               FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = 2),
                               NOM_PARA_TABL='FONCTION',
-                                   INTERPOL='LIN',  
+                                   INTERPOL='LIN',
                                  PROL_DROITE='CONSTANT',
                                 PROL_GAUCHE='EXCLU'
                            )
 
 #
 
-INTERS=CALC_INTE_SPEC(          INST_INIT=0., 
-                                     INST_FIN=10.22, 
-                                 DUREE_ANALYSE=1.022, 
+INTERS=CALC_INTE_SPEC(          INST_INIT=0.,
+                                     INST_FIN=10.22,
+                                 DUREE_ANALYSE=1.022,
                                 DUREE_DECALAGE=1.022,
                                       NB_POIN=2*512,
                                FONCTION=( FONCT1,  FONCT2, )
@@ -1692,7 +1692,7 @@ INTERS=CALC_INTE_SPEC(          INST_INIT=0.,
 
 #
 
-TEST_FONCTION(TABL_INTSP=( 
+TEST_FONCTION(TABL_INTSP=(
         _F(  INTE_SPEC = INTERS,
                     NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
                     VALE_PARA = 2.,       VALE_REFE_C = ('RI',0.1,0.,),
@@ -1705,18 +1705,18 @@ TEST_FONCTION(TABL_INTSP=(
 
 ##
 MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
-                   _F( 
+                   _F(
                                    MATRICE = CO("MASSEPRO"),
-                                   MATR_ASSE = B), 
-                   _F( 
+                                   MATR_ASSE = B),
+                   _F(
                                    MATRICE = CO("RIGIPROJ"),
                                    MATR_ASSE = A)),VECT_ASSE_GENE=(
-                   _F( 
+                   _F(
                                    VECTEUR = CO("EFPROJ1"),
-                                   VECT_ASSE = VECTAS1), 
-                   _F( 
+                                   VECT_ASSE = VECTAS1),
+                   _F(
                                    VECTEUR = CO("EFPROJ2"),
-                                   VECT_ASSE = VECTAS2)) 
+                                   VECT_ASSE = VECTAS2))
 )
 
 #
@@ -1745,11 +1745,11 @@ OBST=DEFI_OBSTACLE(   TYPE='DISCRET',
                                 360., 1.,) )
 
 #
-DYNAMODE=DYNA_TRAN_MODAL( 
+DYNAMODE=DYNA_TRAN_MODAL(
                        MASS_GENE=MASSEPRO,
                        RIGI_GENE=RIGIPROJ,
-                       AMOR_REDUIT=( 0.01,  0.01,  0.01, 0.01, 
-                                      0.01, 0.01,  0.01, 0.01, 
+                       AMOR_REDUIT=( 0.01,  0.01,  0.01, 0.01,
+                                      0.01, 0.01,  0.01, 0.01,
                                       0.01, 0.01,),EXCIT=(
                  _F(  VECT_GENE = EFPROJ1,  FONC_MULT = FONCT1),
                  _F(  VECT_GENE = EFPROJ2,  FONC_MULT = FONCT2)),
@@ -1783,63 +1783,63 @@ TT=POST_DYNA_MODA_T(      RESU_GENE=DYNAMODE,
                                   DUREE_REPOS = 0.)
                         )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'DEPL_X'),
              NOM_PARA=( 'NOEUD', 'MOYEN', 'ECART_TYPE',
                         'RMS',  'MAXI', 'MINI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'DEPL_Y'),
              NOM_PARA=( 'NOEUD', 'MOYEN', 'ECART_TYPE',
                         'RMS',  'MAXI', 'MINI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'DEPL_Z'),
              NOM_PARA=( 'NOEUD', 'MOYEN', 'ECART_TYPE',
                         'RMS',  'MAXI', 'MINI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'DEPL_RADIAL'),
              NOM_PARA=( 'NOEUD', 'MOYEN', 'ECART_TYPE',
                         'RMS',  'MAXI', 'MINI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'DEPL_ANGULAIRE'),
              NOM_PARA=( 'NOEUD', 'MOYEN', 'ECART_TYPE',
                         'RMS',  'MAXI', 'MINI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'FORCE_NORMALE'),
              NOM_PARA=( 'NOEUD', 'MOYEN_T_TOTAL', 'MOYEN_T_CHOC',
                         'RMS_T_TOTAL', 'RMS_T_CHOC', 'MAXI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'FORCE_TANG_1'),
              NOM_PARA=( 'NOEUD', 'MOYEN', 'ECART_TYPE',
                         'RMS',  'MAXI', 'MINI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'FORCE_TANG_2'),
              NOM_PARA=( 'NOEUD', 'MOYEN', 'ECART_TYPE',
                         'RMS',  'MAXI', 'MINI', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'STAT_CHOC'),
              NOM_PARA=( 'NOEUD', 'NB_CHOC_S', 'NB_REBON_CHOC',
@@ -1847,13 +1847,13 @@ IMPR_TABLE(  TABLE=TT,
                         'T_REBON_MOYEN', '%_T_CHOC', )
           )
 
-IMPR_TABLE(  TABLE=TT, 
+IMPR_TABLE(  TABLE=TT,
               FILTRE=_F(  NOM_PARA = 'CALCUL',
                        VALE_K = 'PUIS_USURE'),
              NOM_PARA=( 'NOEUD', 'PUIS_USURE', )
           )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_X'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1871,7 +1871,7 @@ TEST_TABLE(      TABLE=TT,FILTRE=(
 import sys
 version=sys.version_info[:2]
 if version<(2,3) :
-  TEST_TABLE(      TABLE=TT,FILTRE=( 
+  TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_Y'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1880,7 +1880,7 @@ if version<(2,3) :
                      VALE=2.57E-05
              )
 
-  TEST_TABLE(      TABLE=TT,FILTRE=( 
+  TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_RADIAL'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1888,7 +1888,7 @@ if version<(2,3) :
                  NOM_PARA='RMS',
                      VALE=2.573E-05
              )
-  TEST_TABLE(      TABLE=TT,FILTRE=( 
+  TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'FORCE_NORMALE'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1897,7 +1897,7 @@ if version<(2,3) :
                      VALE=2.573E+01
              )
 else:
-  TEST_TABLE(      TABLE=TT,FILTRE=( 
+  TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_Y'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1906,7 +1906,7 @@ else:
                      VALE=2.456E-05
              )
 
-  TEST_TABLE(      TABLE=TT,FILTRE=( 
+  TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_RADIAL'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1914,7 +1914,7 @@ else:
                  NOM_PARA='RMS',
                      VALE=2.456E-05
              )
-  TEST_TABLE(      TABLE=TT,FILTRE=( 
+  TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'FORCE_NORMALE'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1923,7 +1923,7 @@ else:
                      VALE=2.456E+01
              )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'DEPL_ANGULAIRE'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1933,7 +1933,7 @@ TEST_TABLE(      TABLE=TT,FILTRE=(
              )
 
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'FORCE_TANG_1'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1943,7 +1943,7 @@ TEST_TABLE(      TABLE=TT,FILTRE=(
                   CRITERE='ABSOLU'
              )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'FORCE_TANG_2'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1953,7 +1953,7 @@ TEST_TABLE(      TABLE=TT,FILTRE=(
                   CRITERE='ABSOLU'
              )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'STAT_CHOC'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1963,7 +1963,7 @@ TEST_TABLE(      TABLE=TT,FILTRE=(
                   CRITERE='ABSOLU'
              )
 
-TEST_TABLE(      TABLE=TT,FILTRE=( 
+TEST_TABLE(      TABLE=TT,FILTRE=(
                    _F(  NOM_PARA = 'CALCUL',
                             VALE_K = 'PUIS_USURE'),
                    _F(  NOM_PARA = 'NOEUD',
@@ -1981,10 +1981,10 @@ DEPLY=RECU_FONCTION(   RESU_GENE=DYNAMODE,     NOM_CHAM='DEPL',
 
 #
 
-INT2=CALC_INTE_SPEC(   INST_INIT=0., 
-                             INST_FIN=1.999, 
+INT2=CALC_INTE_SPEC(   INST_INIT=0.,
+                             INST_FIN=1.999,
                               DUREE_ANALYSE=1.,
-                             DUREE_DECALAGE=1., 
+                             DUREE_DECALAGE=1.,
                               NB_POIN=2*512,
                              FONCTION=DEPLY
                          )
@@ -1997,14 +1997,14 @@ INT2=CALC_INTE_SPEC(   INST_INIT=0.,
 
 version=sys.version_info[:2]
 if version<(2,3) :
-  TEST_FONCTION( 
+  TEST_FONCTION(
        TABL_INTSP=_F(  INTE_SPEC = INT2,
                    NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
                    VALE_PARA = 4.2,      VALE_REFE_C = ('MP',6.1E-8,0.,),
                    PRECISION = 1.E-2)
                )
 else :
-  TEST_FONCTION( 
+  TEST_FONCTION(
        TABL_INTSP=_F(  INTE_SPEC = INT2,
                    NUME_ORDRE_I = 1,    NUME_ORDRE_J = 1,
                    VALE_PARA = 4.2,      VALE_REFE_C = ('MP',7.4E-8,0.,),

@@ -1,4 +1,4 @@
-#@ MODIF macro_expans_ops Macro  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF macro_expans_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ def macro_expans_ops( self,
     """!macro MACRO_EXPANS """
     from Accas import _F
     from Cata.cata import CO, mode_meca, dyna_harmo
-    from Utilitai.Utmess import UTMESS
+    from Utilitai.Utmess import U2MESS as UTMESS
     from types import ListType, TupleType
     ier = 0
 
@@ -84,7 +84,6 @@ def macro_expans_ops( self,
     
     # Projection des modes experimentaux - on passe le mot-clef
     # RESOLUTION directement à PROJ_MESU_MODAL
-    # ---------------------------------------------------------
 
     # Mot-clé facteur de résolution
     mfact = []
@@ -108,8 +107,8 @@ def macro_expans_ops( self,
         paras = ('FREQ')
     else:
         paras = None
-        UTMESS('A',  'MACRO_OBSERV',
-             "LE MODELE MEDURE DOIT ETRE UN CONCEPT DE TYPE DYNA_HARMO OU MODE_MECA")
+#             "LE MODELE MEDURE DOIT ETRE UN CONCEPT DE TYPE DYNA_HARMO OU MODE_MECA")
+        UTMESS('A','MEIDEE0_1')
             
     
     try:
@@ -128,7 +127,6 @@ def macro_expans_ops( self,
     
     # Phase de reconstruction des donnees mesurees sur le maillage
     # numerique
-    # ------------------------------------------------------------
     self.DeclareOut( "RESU_ET", RESU_ET )
     RESU_ET = REST_BASE_PHYS( RESU_GENE  = __PROJ,
                               MODE_MECA   = RESU_NX,
@@ -139,7 +137,6 @@ def macro_expans_ops( self,
 
     
     # Restriction des modes mesures etendus sur le maillage capteur
-    # -------------------------------------------------------------
     self.DeclareOut( "RESU_RD", RESU_RD )
     RESU_RD = PROJ_CHAMP( METHODE    = 'ELEM',
                           RESULTAT   = RESU_ET,

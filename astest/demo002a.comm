@@ -1,23 +1,23 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ILLUSTRATION  DE DYNA_NON_LINE ET DE POST_TRAITEMENT NUMERIQUE
 # TRACE DE COURBE AVEC XMGRACE
@@ -40,14 +40,14 @@
 # Ce fichier de commande genere quatre types de resultats:
 # 1/ Le fichier resu standard d'ASTER (ailette.resu)
 # 2/ Un fichier post-processing au format 'universel' I-DEAS (ailette.unv)
-# 3/ Un fichier post-processing au format GMSH (le nom doit etre precise dans la variable 
+# 3/ Un fichier post-processing au format GMSH (le nom doit etre precise dans la variable
 #     <fichier_GMSH>)
 # 4/ Trois courbes au format XMGRACE
 #    Il faut noter que la troisieme courbe XMGRACE permet de generer un fichier postscript
 #
 ### GMSH
 #
-# On peut choisir de lancer GMSH en mode interactif (a preciser par la variable 
+# On peut choisir de lancer GMSH en mode interactif (a preciser par la variable
 # <launch_GMSH>). Dans ce cas, ne pas oublier de renseigner la variable <executable_GMSH> sur
 # l'emplacement de l'executable GMSH.
 #
@@ -108,7 +108,7 @@ from FFT import *
 # Preparation du calcul
 #=============================================================================================
 
-DEBUT(CODE=_F(  NOM = 'DEMO002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+DEBUT(CODE=_F(NOM='DEMO002A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 
 # Lecture du maillage
 MA=LIRE_MAILLAGE( );
@@ -136,7 +136,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=8.E3,
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,),);
-                            
+
 #=============================================================================================
 # Conditions limites
 #=============================================================================================
@@ -146,7 +146,7 @@ CHCAS1=AFFE_CHAR_MECA(MODELE=MO,
                                   DX=0.5,
                                   DY=0.0,
                                   ),);
-                                  
+
 # Definition du contact au niveau de la fissure
 CHCONT=AFFE_CHAR_MECA(MODELE=MO,
                      CONTACT=_F(GROUP_MA_MAIT='L3',
@@ -163,7 +163,7 @@ fin = 500.
 n = 50
 
 
-# Chargement: definition de la fonction sinusoidale                                
+# Chargement: definition de la fonction sinusoidale
 
 FREQ = 0.01;
 
@@ -220,7 +220,7 @@ IMPR_RESU(FORMAT='IDEAS',VERSION=5,UNITE=30,
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESU,),);
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=30 )  
+DEFI_FICHIER(ACTION='LIBERER',UNITE=30 )
 
 
 # Sans contact
@@ -280,7 +280,7 @@ TEST_RESU(RESU=(
                    INST=500,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.2.2',),
-  
+
                  _F(RESULTAT=RESU,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
@@ -296,7 +296,7 @@ TEST_RESU(RESU=(
                    VALE=5.65116E-03,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),                   
+                   VERSION='7.1.07',),
                    ),);
 
 #=============================================================================================
@@ -320,7 +320,7 @@ TEST_RESU(RESU=(
                    INST=500,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.3.23',),
-  
+
                  _F(RESULTAT=RESU2,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
@@ -336,19 +336,19 @@ TEST_RESU(RESU=(
                    VALE=8.02242E-03,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),                   
+                   VERSION='7.1.07',),
                    ),);
 
 IMPR_RESU(RESU=_F(RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   GROUP_NO='A4',
-                  INST=500,),);                  
+                  INST=500,),);
 
 
 IMPR_RESU(RESU=_F(RESULTAT=RESU2,
                   NOM_CHAM='VITE',
                   GROUP_NO='A4',
-                  INST=500,),); 
+                  INST=500,),);
 
 ##############################################################################################
 #
@@ -360,7 +360,7 @@ IMPR_RESU(RESU=_F(RESULTAT=RESU2,
 # GMSH
 #=============================================================================================
 
-# Creation d'un fichier de sortie au format GMSH  
+# Creation d'un fichier de sortie au format GMSH
 
 # Ecriture du resultat
 IMPR_RESU(MODELE=MO,FORMAT='GMSH',UNITE=unite_GMSH,
@@ -374,8 +374,8 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=unite_GMSH )
 # Lancement de GMSH
 if launch_GMSH == 1:
    # Penser a avoir le fichier_GMSH dans le bon repertoire pour lancer GMSH !
-   # Copie du fichier fort.55 vers fichier_GMSH. C'est ce fichier qui pourra etre 
-   # ouvert avec GMSH 
+   # Copie du fichier fort.55 vers fichier_GMSH. C'est ce fichier qui pourra etre
+   # ouvert avec GMSH
    os.system('cp fort.'+str(unite_GMSH)+' '+fichier_GMSH)
 
    # On peut aussi utiliser
@@ -423,10 +423,10 @@ absc = (arange(n/2)/fin).tolist()
 
 #=============================================================================================
 # XMGRACE
-#=============================================================================================                            
+#=============================================================================================
 
 # Trace 1 (deplacements)
-                  
+
 F_TAB  = RECU_FONCTION(TABLE=TAB ,PARA_X='INST',PARA_Y='DY',)
 F_TAB2 = RECU_FONCTION(TABLE=TAB2,PARA_X='INST',PARA_Y='DY')
 
@@ -439,13 +439,13 @@ if launch_XMGRACE == 1:
         GRILLE_X=50,
         GRILLE_Y=0.05,
         COURBE=( _F( FONCTION   = F_TAB,
-                     MARQUEUR = 1, 
+                     MARQUEUR = 1,
                      COULEUR  = 2,
                      STYLE  = 1,
                      FREQ_MARQUEUR = 2,
                      LEGENDE  = 'Deplacement avec contact'),
-                 _F( FONCTION   = F_TAB2, 
-                     MARQUEUR = 2, 
+                 _F( FONCTION   = F_TAB2,
+                     MARQUEUR = 2,
                      COULEUR  = 3,
                      STYLE  = 1,
                      FREQ_MARQUEUR = 2,
@@ -484,7 +484,7 @@ if launch_XMGRACE == 1:
                 ),
           ),
          )
-                    
+
 # Trace 3 : Sortie des courbes en Postscript
 
 IMPR_FONCTION(

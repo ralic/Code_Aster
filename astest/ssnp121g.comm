@@ -1,21 +1,21 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX BLOCS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # ECRASEMENT DE DEUX BLOCS
@@ -23,10 +23,10 @@
 # CONTACT_INIT='OUI'
 # FORCE IMPOSEE
 
-DEBUT(CODE=_F( NOM = 'SSNP121G',NIV_PUB_WEB='INTERNET'));
-PRE_GIBI(); 
+DEBUT(CODE=_F(NOM='SSNP121G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+PRE_GIBI();
 MA=LIRE_MAILLAGE();
-MA=DEFI_GROUP( reuse=MA,MAILLAGE=MA,CREA_GROUP_NO=( 
+MA=DEFI_GROUP( reuse=MA,MAILLAGE=MA,CREA_GROUP_NO=(
                        _F(  GROUP_MA = 'AB',),
                        _F(  GROUP_MA = 'CD',),
                        _F(  GROUP_MA = 'EF',),
@@ -42,30 +42,30 @@ MO=AFFE_MODELE(
                      PHENOMENE='MECANIQUE',
                      MODELISATION='D_PLAN',),),
                                 );
-                                
+
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
                    ORIE_PEAU_2D=_F(GROUP_MA='CD',),
                    );
 #--------------------------------------------------
-MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05, 
+MAT2=DEFI_MATERIAU(ELAS=_F(E = 20.0E+05,
                            NU = 0.,)
                           );
 #
-MAT1=DEFI_MATERIAU(ELAS=_F( E = 20.0E+05, 
+MAT1=DEFI_MATERIAU(ELAS=_F( E = 20.0E+05,
                             NU = 0.,),
                           );
-                          
+
 CHMAT=AFFE_MATERIAU(
                             MAILLAGE=MA,
                             AFFE=(
-                           _F( 
+                           _F(
                                  GROUP_MA = ('PLAQUE1'),
-                                 MATER = MAT2, 
+                                 MATER = MAT2,
                                 ),
-                           _F( 
-                                 GROUP_MA = ('PLAQUE2'), 
-                                 MATER = MAT1, 
+                           _F(
+                                 GROUP_MA = ('PLAQUE2'),
+                                 MATER = MAT1,
                                 ),),
                            )
 #--------------------------------------------------------
@@ -78,16 +78,16 @@ CHA1=AFFE_CHAR_MECA(
 FLAT=AFFE_CHAR_MECA(MODELE=MO,
                     PRES_REP=_F(GROUP_MA='CD',
                                 PRES=100000.0,),);
-                                
+
 CHA2=AFFE_CHAR_MECA(
             MODELE=MO,
-            CONTACT=(_F( 
-                     GROUP_MA_ESCL = 'AB',      
+            CONTACT=(_F(
+                     GROUP_MA_ESCL = 'AB',
                      GROUP_MA_MAIT = 'EF',
-                     INTEGRATION = 'SIMPSON2',    
-                     COEF_REGU_CONT = 1000., 
-                     ITER_CONT_MAXI = 30,        
-                     ITER_GEOM_MAXI = 1, 
+                     INTEGRATION = 'SIMPSON2',
+                     COEF_REGU_CONT = 1000.,
+                     ITER_CONT_MAXI = 30,
+                     ITER_GEOM_MAXI = 1,
                      CONTACT_INIT = 'OUI',
                      METHODE = 'CONTINUE',),
                      ),
@@ -112,7 +112,7 @@ RESU=STAT_NON_LINE (
                    EXCIT      =(
                                _F(CHARGE=CHA1,
                                 FONC_MULT=FONC,),
-                               _F(CHARGE=FLAT,), 
+                               _F(CHARGE=FLAT,),
                                _F(CHARGE=CHA2,),),
                    COMP_ELAS  =_F(
                                 RELATION='ELAS'),
@@ -126,8 +126,8 @@ RESU=STAT_NON_LINE (
                                  ),
                    SOLVEUR     =_F(
                                METHODE='LDLT',
-                               RENUM='SANS',),              
-                   );              
+                               RENUM='SANS',),
+                   );
 
 
 RESU=CALC_ELEM( reuse=RESU,
@@ -138,14 +138,14 @@ RESU=CALC_NO( reuse=RESU,
                 RESULTAT=RESU,
                 OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM')
               );
-              
-SIELNO=CREA_CHAMP(  OPERATION='EXTR', 
+
+SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                     TYPE_CHAM='ELNO_SIEF_R',
                     NOM_CHAM='SIEF_ELNO_ELGA',
                     RESULTAT=RESU,
                     NUME_ORDRE=1
                        );
-              
+
 TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                      NUME_ORDRE = 1,
                       NOEUD = 'N14',

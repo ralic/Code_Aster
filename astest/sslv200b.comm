@@ -1,4 +1,4 @@
-# MODIF  DATE 14/05/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'SSLV200B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLV200B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 # ================================================
 #
@@ -54,7 +54,7 @@ MO=AFFE_MODELE(    MAILLAGE=MA,
                                 MODELISATION = '3D') ,
                                _F(  GROUP_MA = 'VCUB20',
                                 PHENOMENE = 'MECANIQUE',
-                                MODELISATION = '3D_SI'), 
+                                MODELISATION = '3D_SI'),
                                 ) )
 
 MOTH=AFFE_MODELE(    MAILLAGE=MA,
@@ -571,7 +571,7 @@ MSLIN=MECA_STATIQUE(        MODELE=MO,
                            LIST_INST=LR1,
                            )
 
-CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         
+CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,
                           LIST_INST=LR1,
                           OPTION=( 'EPSG_ELGA_DEPL', 'EPSG_ELNO_DEPL',
                                    'SIGM_ELNO_DEPL',

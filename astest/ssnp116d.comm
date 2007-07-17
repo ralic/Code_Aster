@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN BARRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,8 +33,7 @@
 #   SORTE QUE LES 2 EFFETS S'ANNULENT
 #-----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='SSNP116D',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNP116D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 

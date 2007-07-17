@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 25/09/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -421,7 +421,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   from Accas import _F
   import types
   import aster 
-  from Utilitai.Utmess import UTMESS
+  from Utilitai.Utmess import U2MESS as UTMESS
   ier=0
   
 # On importe les definitions des commandes a utiliser dans la macro
@@ -459,7 +459,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   TYPSOU= TUBULURE['TYPE'     ]
   DPENE = TUBULURE['L_PENETR' ]
   if TYPSOU=='TYPE_2' and DPENE>0.0 : 
-    UTMESS('F', "MACR_ASPIC_MAIL", "les piquages penetrants sont autorises uniquement avec les soudures de type 1")
+    UTMESS('F','ASPIC0_12')
   if TYPSOU=='TYPE_2' :
      ITYPSO = 2
   else :
@@ -487,10 +487,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   ZMAXC = LZMAX + ( DEC/2.0 ) + D1 + D2
   LOK = ( abs(ZMAX-ZMAXC) <= EPSI * abs(ZMAXC) )
   if not LOK :
-    message=         ' erreur donnees \n'
-    message=message+ ' Z_MAX FOURNIE   :  %.2f \n'%ZMAX
-    message=message+ ' Z_MAX CALCULEE  :  %.2f \n'%ZMAXC
-    UTMESS('F', "MACR_ASPIC_MAIL", message)
+    UTMESS('F','ASPIC0_13',valr=[ZMAX,ZMAXC])
   RMC   = ( DEC - EPC ) / 2.0
   VAL1  = 1.5 * sqrt( RMC**3 / EPC )
   VAL2  = 3.0 * sqrt( RMC    * EPC )
@@ -498,10 +495,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   XMAXC = LXMAX + ( DET1 / 2.0 )
   LOK = ( abs(XMAX-XMAXC) <= EPSI * abs(XMAXC) )
   if not LOK :
-    message=         ' erreur donnees \n'
-    message=message+ ' Z_MAX FOURNIE   :  %.2f \n'%ZMAX
-    message=message+ ' Z_MAX CALCULEE  :  %.2f \n'%ZMAXC
-    UTMESS('F', "MACR_ASPIC_MAIL", message)
+    UTMESS('F','ASPIC0_13',valr=[ZMAX,ZMAXC])
   message=         ' MACR_ASPIC_MAIL / X_MAX CALCULEE : %.2f \n'%XMAX
   message=message+ ' MACR_ASPIC_MAIL / Z_MAX CALCULEE : %.2f \n'%XMAXC
   aster.affiche('MESSAGE',message)
@@ -529,18 +523,11 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
         N1 = 1
      else : N1 = 0
      if (TFISS=='DEB_INT') and (POSI=='INCLINE') and (DPENE>0.0) and (JEU>0.0) : 
-       message=         ' erreur donnees \n'
-       message=message+ ' dans le cas de fissures \n'
-       message=message+ ' inclinees debouchant en peau interne avec \n'
-       message=message+ ' piquage penetrant le jeu doit etre nul \n'
-       UTMESS('F', "MACR_ASPIC_MAIL", message)
+       UTMESS('F','ASPIC0_14')
      ZETA = 0.5
      if TFISS not in ('DEB_INT','DEB_EXT') :
         if FISS_SOUDURE['LIGA_INT']==None : 
-           message=         ' erreur donnees \n'
-           message=message+ ' dans le cas de fissures internes\n'
-           message=message+ ' (NON_DEB) le ligament inferieur est obligatoire \n'
-           UTMESS('F', "MACR_ASPIC_MAIL", message)
+           UTMESS('F','ASPIC0_15')
         LIGA  = FISS_SOUDURE['LIGA_INT']
         if POSI=='DROIT' :
            if ITYPSO==1 : ZETA = (A+LIGA)/(EPC+H)
@@ -549,21 +536,21 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
            if ITYPSO==1 : ZETA = (A+LIGA)*cos(ALPHA*pi/180.0)/EPC
            else         : ZETA = (A+LIGA)*cos(ALPHA*pi/180.0)/EPT1
         if ZETA < 0.1   :
-           UTMESS('F', "MACR_ASPIC_MAIL", "dans le cas de fissures internes (NON_DEB) le ligament est trop petit ")
+           UTMESS('F','ASPIC0_16')
         if ZETA > 0.9   :
-           UTMESS('F', "MACR_ASPIC_MAIL", "dans le cas de fissures internes (NON_DEB) le ligament est trop grand ")
+           UTMESS('F','ASPIC0_17')
         if LIGA < 0.1*EPC :
-           UTMESS('F', "MACR_ASPIC_MAIL", "dans le cas de fissures internes (NON_DEB) le ligament est trop petit ")
+           UTMESS('F','ASPIC0_16')
         if (LIGA + 2.0*A) > 0.9*EPC :
-           UTMESS('F', "MACR_ASPIC_MAIL", "dans le cas de fissures internes (NON_DEB) le ligament est trop grand ")
+           UTMESS('F','ASPIC0_17')
      if N1==0 :
         if FISCOU      :
-           UTMESS('F', "MACR_ASPIC_MAIL", "dans le cas de fissures courte il faut preciser la longueur")
+           UTMESS('F','ASPIC0_18')
         if AXIS=='NON' :
-           UTMESS('F', "MACR_ASPIC_MAIL", "dans le cas de la fissure longue il faut preciser la longueur ou axis=oui ")
+           UTMESS('F','ASPIC0_19')
         C = 0.0
      else :
-        if AXIS=='OUI' : UTMESS('A', "MACR_ASPIC_MAIL", "fissure axisymetrique : le mot clef <LONGUEUR> ne doit pas etre renseigne")
+        if AXIS=='OUI' : UTMESS('A','ASPIC0_20')
      C = 0.5 * C
      LEQU=2.*(pi*(DEC-EPC)-DET1+2.*EPT1)
 #
@@ -656,7 +643,7 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
   if   logiel=='GIBI98'  : logiel = loc_gibi+'gibi98'
   elif logiel=='GIBI2000': logiel = loc_gibi+'gibi2000'
   else                   :
-       UTMESS('F', "MACR_ASPIC_MAIL", "seuls gibi98 et gibi2000 sont appelables ")
+       UTMESS('F','ASPIC0_21')
 #
 #     --- ecriture sur le fichier .datg  de la procedure ---
 #

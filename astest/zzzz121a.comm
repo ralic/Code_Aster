@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,9 +30,7 @@
 # option PAR_LOT='NON' indispensable pour affecter des valeurs de
 # tables dans des variables PYTHON (paragraphe 4.9)
 #
-DEBUT(CODE=_F( NOM = 'ZZZZ121A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-               PAR_LOT='NON',)
-#
+DEBUT(CODE=_F(NOM='ZZZZ121A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 # 1. Definition des materiaux
 #
 MATER1=DEFI_MATERIAU(
@@ -148,7 +146,7 @@ for k in range(1,10):
 #
 ###   nomfic="MED_%d" %k
 ###   DEFI_FICHIER (UNITE=40+k,FICHIER='nomfic');
-###   IMPR_RESU ( UNITE=40+k, FORMAT='MED', RESU=_F( 
+###   IMPR_RESU ( UNITE=40+k, FORMAT='MED', RESU=_F(
 ###               RESULTAT=RESU[k], NOM_CHAM='ERZ1_ELEM_SIGM', NOM_CMP='ERREST'  ) ) ;
 #
 # 4.9. Extraction du deplacement au noeud "OPPOSE" dans une table

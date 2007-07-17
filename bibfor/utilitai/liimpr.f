@@ -4,7 +4,7 @@
       INTEGER                IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C
      &              1,ZR(JBOR),ZR(JBOR),ZR(JPAS),ZI(JNBP)
             IF (IMPR.GT.1) THEN
                WRITE(IUL,'(3X,A)')'IMPRESSION DE LA LISTE DE REELS'
-               WRITE(IUL,'((I7,'' - '',1PE12.5))')1,ZR(JVAL)
+               WRITE(IUL, 1000)1,ZR(JVAL)
             ENDIF
          ELSE
             DO 20 I = 1,NBINT
@@ -106,10 +106,10 @@ C
  20         CONTINUE
             IF (IMPR.GT.1) THEN
                WRITE(IUL,'(3X,A)')'IMPRESSION DE LA LISTE DE REELS'
-               WRITE(IUL,'((I7,'' - '',5(1PE12.5,1X)))')
+               WRITE(IUL,1000)
      &               (5*(L-1)+1,(ZR( JVAL + 5*(L-1)+K-1),K=1,5),L=1,NL)
                IF (ND.NE.0) THEN
-                  WRITE(IUL,'(I7,'' - '',5(1PE12.5,1X))')
+                  WRITE(IUL,1000)
      &                      5*NL+1,(ZR( JVAL +5*NL+K-1),K=1,ND)
                ENDIF
             ENDIF
@@ -141,4 +141,6 @@ C
 C
  9999 CONTINUE
       CALL JEDEMA()
+C
+ 1000 FORMAT(I7,' - ',5(1PE16.9,1X))
       END

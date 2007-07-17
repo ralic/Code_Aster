@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calc_precont_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   import types
   from Accas import _F
   from Noyau.N_utils import AsType
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
   ier=0
 
   # On importe les definitions des commandes a utiliser dans la macro
@@ -110,7 +110,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   # Teste si INST_INIT est bien plus petit que INST_FIN
   if __TMAX <= __TMIN:
-    UTMESS('F','CALC_PRECONT','INST_FIN PLUS PETIT QUE INST_INIT')
+    UTMESS('F','CABLE0_1')
 
   # Cree la liste d'instant __L2 allant de __TMIN a __TMAX et contenant
   # un instant supplementaire __TINT

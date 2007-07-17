@@ -1,4 +1,4 @@
-#@ MODIF sd_champ SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_champ SD  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,6 @@
 # ======================================================================
 
 from SD import *
-import aster
 
 from SD.sd_cham_no import sd_cham_no
 from SD.sd_cham_elem import sd_cham_elem

@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macro_elas_mult_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   ier=0
   import types
   from Accas import _F
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
 
   # On met le mot cle NUME_DDL dans une variable locale pour le proteger
   numeddl=NUME_DDL
@@ -62,7 +62,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
         ifour=1                 # mot clé MODE_FOURIER présent sous CAS_CHARGE
         tyresu = 'FOURIER_ELAS'
   if ielas==1 and ifour==1:
-     UTMESS('F', "MACRO_ELAS_MULT", "On ne peut avoir a la fois NOM_CAS et MODE_FOURIER")
+     UTMESS('F','ELASMULT0_1')
 
   if (numeddl in self.sdprods) or (numeddl==None):
     # Si le concept numeddl est dans self.sdprods ou n est pas nommé

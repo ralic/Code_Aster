@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@
 #   L'ON A ENCASTRE
 ###################################################################
 
-DEBUT(   CODE=_F( NOM = 'SSLX200A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLX200A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MATER1=DEFI_MATERIAU(  ELAS=_F(  E = 200000.,   NU = 0.3,
                                   RHO = 10000.) )

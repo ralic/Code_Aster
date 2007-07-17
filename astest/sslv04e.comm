@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TRIA3 QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,13 +31,13 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT( CODE=_F( NOM = 'SSLV04E',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLV04E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
 M0=LIRE_MAILLAGE()
 
-M=CREA_MAILLAGE( MAILLAGE=M0, 
+M=CREA_MAILLAGE( MAILLAGE=M0,
                  MODI_MAILLE=_F( OPTION = 'QUAD_TRIA3',
                                  GROUP_MA = 'S2', ),
                )
@@ -81,7 +81,7 @@ TEST_RESU(CHAM_NO=(
            _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
                GROUP_NO = 'F',    VALE =  0.707 ,   NOM_CMP = 'Y'),
                 ), ) ;
-         
+
 nor_PRES = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
@@ -99,13 +99,13 @@ TEST_RESU(CHAM_NO=(
            _F( CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',   PRECISION = 1.5E-2,
                GROUP_NO = 'E',    VALE = -0.707 ,   NOM_CMP = 'Y'),
                 ), ) ;
-         
+
 RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
                           EXCIT=_F(  CHARGE = CH),
                       )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,              
-                          
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+
                       OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 CALC_NO( reuse=RESU,                      RESULTAT=RESU,

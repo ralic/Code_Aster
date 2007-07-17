@@ -1,32 +1,32 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # SSLP20C
 # PLAQUE FISSUREE EN TRACTION (MAILLAGE ALIBABA )
 # CALCUL DE L'INTEGRALE G ET DES COEFFICIENTS D'INTENSITE DE CONTRAINTES
 # K1 ET K2 AVEC PRESSION SUR LA LEVRE FISSURE
 #
-DEBUT(CODE=_F( NOM = 'SSLP101C',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLP101C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(  )
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
+MO=AFFE_MODELE(  MAILLAGE=MA,
                              AFFE=_F( TOUT = 'OUI',
                                    PHENOMENE = 'MECANIQUE',
                                    MODELISATION = 'C_PLAN'))
@@ -35,7 +35,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(  E = 200000., NU = 0.3, RHO = 0., ALPHA = 0.))
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
 
-CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=( 
+CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                             _F(  GROUP_NO = 'GRNM5', DY = 0.),
                                      _F(  NOEUD = 'N451',  DX = 0.)),
                             PRES_REP=_F(  GROUP_MA = 'GRMA4', PRES = 1.) )
@@ -44,16 +44,16 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
                INTERVALLE=_F( JUSQU_A = 2.0, NOMBRE = 2)
               )
 
-RESU=STAT_NON_LINE( 
+RESU=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
-                             EXCIT=_F( 
+                             EXCIT=_F(
                 CHARGE = CH),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6)
               )
 
@@ -114,7 +114,7 @@ GK1=CALC_G(                  RESULTAT=RESU,
                                  MODULE = 1.,
                                  R_INF = 22.04078,
                                  R_SUP = 30.,
-                                 DIRECTION=( 1., 0., 0.,), 
+                                 DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
                             SYME_CHAR='SYME',
                             OPTION='CALC_K_G')

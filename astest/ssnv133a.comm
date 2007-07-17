@@ -1,25 +1,25 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION-COMPRESSION UNIAXIALE ECROUISSAGE MIXTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
-DEBUT(CODE=_F( NOM = 'SSNV133A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNV133A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE( )
 
@@ -28,7 +28,7 @@ CTRAC=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
                        VALE=(0.200E-2,      400.,
                              0.450E-2,      500.,) )
 
-MAT=DEFI_MATERIAU( 
+MAT=DEFI_MATERIAU(
           ELAS=_F( E = 200.E+3, NU = .3),
             PRAGER=_F(  C = 20.E+3),
             TRACTION=_F( SIGM = CTRAC)
@@ -40,7 +40,7 @@ CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
 MOMECA=AFFE_MODELE(  MAILLAGE=MAIL,
           AFFE=_F( TOUT = 'OUI', MODELISATION = 'AXIS', PHENOMENE = 'MECANIQUE'))
 
-CHMECA=AFFE_CHAR_MECA( 
+CHMECA=AFFE_CHAR_MECA(
             MODELE=MOMECA,FACE_IMPO=(
            _F( MAILLE = 'BAS',    DY = 0.),
            _F( MAILLE = 'HAUT',   DY = 1.),
@@ -51,7 +51,7 @@ FDEPL=DEFI_FONCTION(
                  NOM_PARA='INST',
                PROL_DROITE='EXCLU',
               PROL_GAUCHE='EXCLU',
-                     
+
                 VALE=(
                 0.,     0.0,
                 1.,     2.E-3,
@@ -68,17 +68,17 @@ L_INST=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
                       _F( JUSQU_A = 4.,    NOMBRE = 2))
          )
 
-U=STAT_NON_LINE( 
+U=STAT_NON_LINE(
                             MODELE=MOMECA,
                         CHAM_MATER=CM,
-                             EXCIT=_F( 
+                             EXCIT=_F(
                 CHARGE = CHMECA,
                 FONC_MULT = FDEPL),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'VMIS_ECMI_TRAC'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6)
               )
 
@@ -104,7 +104,7 @@ FIN()
 #
 #
 ## COURBE FORCE_DEPLACEMENT
-#           
+#
 #&U = CALC_NO  (  CHAM_MATER : CM
 #                    OPTION     : ( 'FORC_NODA')
 #                    RESULTAT : U
@@ -136,4 +136,4 @@ FIN()
 #                          FONC_Y : FHY
 #                 LEGENDE   : 'COURBE F=F(U)')
 #            );
-#                      
+#

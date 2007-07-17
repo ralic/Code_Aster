@@ -1,4 +1,4 @@
-#@ MODIF gene_vari_alea_ops Macro  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF gene_vari_alea_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ def gene_vari_alea_ops(self,**args):
   return 0
 
 def gene_vari_alea_init(self,d):
-  from Utilitai.Utmess import UTMESS
+  from Utilitai.Utmess import U2MESS as UTMESS
   a     =self.etape['BORNE_INF']
   moyen =self.etape['VALE_MOY' ]
   TYPE  =self.etape['TYPE']
@@ -35,22 +35,12 @@ def gene_vari_alea_init(self,d):
   if   TYPE=='EXP_TRONQUEE' :
      b     =self.etape['BORNE_SUP']
      if (a>=b) :
-         message=' : il faut BORNE_INF < BORNE_SUP \n'
-         message=message+'  BORNE_INF = '+str(a)+'\n'
-         message=message+'  BORNE_SUP = '+str(b)+'\n'
-         UTMESS('F','GENE_VARI_ALEA',message)
+         UTMESS('F','PROBA0_1',valr=[a,b])
      elif (moyen<=a)or(moyen>=b) :
-         message=' : VALE_MOY trop grand ou trop petit\n'
-         message=message+'  BORNE_INF = '+str(a)+'\n'
-         message=message+'  VALE_MOY  = '+str(moyen)+'\n'
-         message=message+'  BORNE_SUP = '+str(b)+'\n'
-         UTMESS('F','GENE_VARI_ALEA',message)
+         UTMESS('F','PROBA0_2',valr=[a,moyen,b])
      k=1./(moyen-a)
      if (exp(-b*k)<1.E-12) :
-         message=' : BORNE SUP très grande \n'
-         message=message+'pb précision possible, vérifiez'+'\n'
-         message=message+'la distribution des valeurs générées \n'
-         UTMESS('F','GENE_VARI_ALEA',message)
+         UTMESS('F','PROBA0_3')
      # résolution par point fixe
      eps   =1.E-4
      nitmax=100000
@@ -63,10 +53,7 @@ def gene_vari_alea_init(self,d):
      self.sd.valeur=-( log(exp(-a*k)-alpha*self.getran()[0] ) ) /k
   elif TYPE=='EXPONENTIELLE' :
      if (moyen<=a) :
-        message=' : on doit avoir : VALE_MOY > BORNE_INF \n'
-        message=message+'  VALE_MOY  = '+str(moyen)+'\n'
-        message=message+'  BORNE_INF = '+str(a)+'\n'
-        UTMESS('F','GENE_VARI_ALEA',message)
+        UTMESS('F','PROBA0_4',valr=[moyen,a])
      v = moyen-a
      u=self.getran()[0]
      x = -log(1-u)
@@ -74,15 +61,11 @@ def gene_vari_alea_init(self,d):
   elif TYPE=='GAMMA'         :
      delta =self.etape['COEF_VAR' ]
      if (moyen<=a) :
-        message=' : on doit avoir : VALE_MOY > BORNE_INF \n'
-        message=message+'  VALE_MOY  = '+str(moyen)+'\n'
-        message=message+'  BORNE_INF = '+str(a)+'\n'
-        UTMESS('F','GENE_VARI_ALEA',message)
+        UTMESS('F','PROBA0_4',valr=[moyen,a])
      v = moyen-a
      alpha = 1./(delta**2)
      if (alpha<=1.) :
-        message=' : erreur : ALPHA < 1\n'
-        UTMESS('F','GENE_VARI_ALEA',message)
+        UTMESS('F','PROBA0_5')
      gamma2 = alpha-1.
      gamm1  = 1./gamma2
      beta   = sqrt(2.*alpha-1.)
@@ -98,12 +81,10 @@ def gene_vari_alea_init(self,d):
         gamdev = beta*tan(pi*(u*c1+c2))+gamma2
         unif=self.getran()[0]
         if unif<0. :
-           message=' : erreur : unif < 0\n'
-           UTMESS('F','GENE_VARI_ALEA',message)
+           UTMESS('F','PROBA0_6')
         vv= -log(unif)
         vref = log(1+beta2*((gamdev-gamma2)**2))+gamma2*log(gamdev*gamm1)-gamdev+gamma2
 #
      if vv<=0. :
-        message=' : erreur : GAMDEV(ALPHA) < 0\n'
-        UTMESS('F','GENE_VARI_ALEA',message)
+        UTMESS('F','PROBA0_7')
      self.sd.valeur = a + v*(delta**2)*gamdev

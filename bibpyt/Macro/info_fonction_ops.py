@@ -1,4 +1,4 @@
-#@ MODIF info_fonction_ops Macro  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF info_fonction_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   from Utilitai.t_fonction import t_fonction,t_fonction_c,t_nappe
   import math
   from Accas import _F
-  from Utilitai.Utmess import UTMESS
+  from Utilitai.Utmess import U2MESS as UTMESS
   import types
   from types import ListType, TupleType
   EnumTypes = (ListType, TupleType)
@@ -83,14 +83,14 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
      lpara=dict([(i,0) for i in lpara]).keys()
      lresu=dict([(i,0) for i in lresu]).keys()
      if len(ltyfo)>1 : 
-        UTMESS('F','INFO_FONCTION',''' calcul du MAX, la liste de fonctions\
- n'est pas homogène en type (fonctions et nappes) ''')
+# n'est pas homogène en type (fonctions et nappes) ''')
+        UTMESS('F','FONCT0_37')
      if len(lpara)>1 : 
-        UTMESS('F','INFO_FONCTION',''' calcul du MAX, la liste de fonctions\
- n'est pas homogène en label NOM_PARA :'''+' '.join(lpara))
+# n'est pas homogène en label NOM_PARA :'''+' '.join(lpara))
+        UTMESS('F','FONCT0_38',valk=' '.join(lpara))
      if len(lresu)>1 : 
-        UTMESS('F','INFO_FONCTION',''' calcul du MAX, la liste de fonctions\
- n'est pas homogène en label NOM_RESU : '''+' '.join(lresu))
+# n'est pas homogène en label NOM_RESU : '''+' '.join(lresu))
+        UTMESS('F','FONCT0_39',valk=' '.join(lresu))
      __tab=CALC_TABLE(TABLE  = __tmfonc[0],
                       ACTION = mfact        )
      __min=CALC_TABLE(TABLE  = __tab,
@@ -183,9 +183,9 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
      if NOCI_SEISME['SPEC_OSCI'] !=None :
         ### cas intensité spectrale d'une nappe de SRO
         ### la seule option licite est INTE_SPEC
-        UTMESS('I','INFO_FONCTION',''' : intensite spectrale, avant de calculer l'\
-intensite spectrale, il est prudent de verifier la norme de la nappe sur laquelle \
-porte le calcul, ceci peut etre une source d erreurs.''')
+#intensite spectrale, il est prudent de verifier la norme de la nappe sur laquelle \
+#porte le calcul, ceci peut etre une source d erreurs.''')
+        UTMESS('I','FONCT0_40')
         amor=NOCI_SEISME['AMOR_REDUIT']
         fini=NOCI_SEISME['FREQ_INIT'  ]
         ffin=NOCI_SEISME['FREQ_FIN'   ]

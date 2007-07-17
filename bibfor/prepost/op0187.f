@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/07/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF PREPOST  DATE 17/07/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV
+      CHARACTER*2  PREFNO(4)
       CHARACTER*8  MAXFEM,MO,MALINI,K8B,NOMRES
       CHARACTER*16 K16B
       CHARACTER*19 K19B
@@ -60,7 +61,7 @@ C     1. RECUPERATION DES CONCEPTS UTILISATEURS
 C     ------------------------------------------------------------------
 C
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
-      CALL XPOINI(MAXFEM,MO,MALINI,K24B,IBID,K8B,K8B)
+      CALL XPOINI(MAXFEM,MO,MALINI,K24B,IBID,K8B,K8B,PREFNO)
 C
 C     ------------------------------------------------------------------
 C     2. SEPARATION DES MAILLES DE MALINI EN 3 GROUPES
@@ -105,7 +106,7 @@ C     5. TRAITEMENT DES MAILLES DE MAILX
 C     ------------------------------------------------------------------
 
       IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
-      CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,MAXFEM,
+      CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,PREFNO,MAXFEM,
      &                              K19B,K19B,K19B,K19B,K19B,K19B)
 
       CALL JEEXIN(MAILN,IRET)

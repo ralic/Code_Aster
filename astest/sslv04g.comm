@@ -1,21 +1,21 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (QUAD9)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # ----------------------------------------------------------------------
@@ -30,7 +30,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT( CODE=_F(  NOM = 'SSLV04G',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLV04G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI( )
 
@@ -67,28 +67,28 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=_F(CHARGE=CH,),
                    );
-                   
+
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('EPSI_ELNO_DEPL',),
                 )
 
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('SIGM_ELNO_DEPL',),
                 )
 
 RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('ENDO_ELNO_SIGA',),
                 )
-                
+
 RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('ENDO_ELNO_SINO',),
                 )
 
@@ -96,8 +96,8 @@ RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
 
 TEST_RESU(RESU=(
    # DEPLACEMENTS
-        
-         _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+
+         _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
          CRITERE = 'RELATIF',   PRECISION = 1.E-3,
          GROUP_NO = 'A',     NOM_CMP = 'DX',            VALE = 59.E-6),
          _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',
@@ -123,7 +123,7 @@ TEST_RESU(RESU=(
          GROUP_NO = 'F',     NOM_CMP = 'DY',            VALE = 28.2843E-6),
 
     # DEFORMATIONS
-             
+
 
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EPSI_ELNO_DEPL',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
@@ -181,7 +181,7 @@ TEST_RESU(RESU=(
 #-----------------------------------------------------------------
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'SIXX',       VALE = -60.),
@@ -197,7 +197,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
@@ -219,7 +219,7 @@ TEST_RESU(RESU=(
 #-----------------------------------------------------------------
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
            CRITERE = 'ABSOLU',     PRECISION = 0.1,
  GROUP_NO = 'B',    MAILLE = 'M10',     NOM_CMP = 'SIXX',       VALE = 0.),
@@ -235,7 +235,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'B',    MAILLE = 'M10',     NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
@@ -245,7 +245,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'B',    MAILLE = 'M10',     NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
@@ -257,7 +257,7 @@ TEST_RESU(RESU=(
 #-----------------------------------------------------------------
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
            CRITERE = 'RELATIF',    PRECISION = 0.05,
  GROUP_NO = 'E',    MAILLE = 'M91',     NOM_CMP = 'SIXX',       VALE = 20.),
@@ -273,7 +273,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'E',    MAILLE = 'M91',     NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
@@ -283,7 +283,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'E',    MAILLE = 'M91',     NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
@@ -295,7 +295,7 @@ TEST_RESU(RESU=(
 #-----------------------------------------------------------------
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'F',    MAILLE = 'M100',    NOM_CMP = 'SIXX',       VALE = 20.),
@@ -311,7 +311,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'F',    MAILLE = 'M100',    NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-             
+
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
            CRITERE = 'RELATIF',    PRECISION = 0.01,
  GROUP_NO = 'F',    MAILLE = 'M100',    NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),

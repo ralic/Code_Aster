@@ -1,21 +1,21 @@
-# MODIF  DATE 07/05/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SSNV112B
 #
@@ -28,11 +28,11 @@
 # MAILLAGE     : GMSH
 # ----------------------------------------------------------------------
 # GROUPES DE NOEUDS ET MAILLES :
-# GRNO: A B  F  
+# GRNO: A B  F
 # GRMA: FACEEF     FACEAE   FACEAB   FACESUP   FACEINF
 
 
-DEBUT(CODE=_F(  NOM = 'SSNV112B',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NOM='SSNV112B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 PRE_GMSH()
 M1=LIRE_MAILLAGE( )
 
@@ -50,11 +50,11 @@ M = DEFI_GROUP( reuse         = M,
                  CREA_GROUP_NO = (_F (GROUP_MA = ('FACEAB','FACSUP','FACINF'),),
                                   _F (NOM= 'A', GROUP_MA = 'GM1',),
                                   _F (NOM='F', GROUP_MA = 'GM2',),),)
-                                  
+
 MO=AFFE_MODELE( MAILLAGE=M,
                 VERIF='MAILLE',
-                AFFE=_F(  GROUP_MA = ('VOLUME','FACEEF','FACEAE'),      
-                          PHENOMENE = 'MECANIQUE',    
+                AFFE=_F(  GROUP_MA = ('VOLUME','FACEEF','FACEAE'),
+                          PHENOMENE = 'MECANIQUE',
                           MODELISATION = '3D_INCO_GD' ))
 
 M=MODI_MAILLAGE( reuse=M,
@@ -62,18 +62,18 @@ M=MODI_MAILLAGE( reuse=M,
                  ORIE_PEAU_3D=_F(  GROUP_MA = ( 'FACEEF', 'FACEAE','FACEAB' ),  )
                       )
 
-MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,       
-                            NU = 0.49999,      
+MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,
+                            NU = 0.49999,
                             ALPHA = 0.,    ),
                   ECRO_LINE=_F(D_SIGM_EPSI = 0.,
                                SY = 1.E10),          )
 
 CM=AFFE_MATERIAU( MAILLAGE=M,
-                  AFFE=_F(  TOUT = 'OUI',         
+                  AFFE=_F(  TOUT = 'OUI',
                   MATER = MA,            ))
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=(                             
+                  DDL_IMPO=(
                          _F(  GROUP_NO = 'FACEAB',   DY = 0.,     ),
                          _F(  GROUP_NO = 'FACSUP',   DZ = 0.,     ),
                          _F(  GROUP_NO = 'FACINF',   DZ = 0.,     )),
@@ -86,15 +86,15 @@ CH=AFFE_CHAR_MECA(MODELE=MO,
 # DYF = DEFI_FONCTION (NOM_PARA = 'Y',
 #                      VALE = (0.1, 0., 0.2, 6.E-4 ),)
 # DX0 = DEFI_FONCTION (NOM_PARA = 'X',
-#                      VALE = (0.0, 0., 0.2, 0. ),)                                       
+#                      VALE = (0.0, 0., 0.2, 0. ),)
 # DY0 = DEFI_FONCTION (NOM_PARA = 'Y',
-#                      VALE = (0.0, 0., 0.1, 0. ),)                                       
+#                      VALE = (0.0, 0., 0.1, 0. ),)
 # CH2=AFFE_CHAR_MECA_F(MODELE=MO,
 #                      FACE_IMPO=(_F(GROUP_MA='FACEAE', DX = DXF , DY= DYF ),
 #                                 _F( GROUP_MA = 'FACEEF',DNOR = DX0,),
 #                                 _F( GROUP_MA = 'FACEAB', DNOR = DX0, ),),)
 
- 
+
 INSTANTS = DEFI_LIST_REEL (
              DEBUT= 0.,
              INTERVALLE= _F(JUSQU_A= 1.,
@@ -129,10 +129,10 @@ EVOL   = STAT_NON_LINE (
                ),
              CONVERGENCE=_F(RESI_REFE_RELA=1.E-3,
                             SIGM_REFE = 60 ,
-                            EPSI_REFE = 3.E-4),            ) ;             
+                            EPSI_REFE = 3.E-4),            ) ;
 EVOL = CALC_ELEM (reuse=EVOL,
               RESULTAT= EVOL,
-              
+
               OPTION= (
                'SIEF_ELNO_ELGA',
                'EQUI_ELNO_SIGM',
@@ -152,7 +152,7 @@ EVOL = CALC_NO (reuse=EVOL,
 #        POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5
 #---------------------------------------------------------------
 TEST_RESU(RESU=(
-#     DEPLACEMENTS        
+#     DEPLACEMENTS
          _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
          GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0., REFERENCE = 'ANALYTIQUE'),
          _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 2.E-3,
@@ -162,9 +162,9 @@ TEST_RESU(RESU=(
          GROUP_NO = 'F',     NOM_CMP = 'DY',            VALE =  2.1217941E-5, REFERENCE = 'ANALYTIQUE'),
         _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
          GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE =  2.1217941E-5, REFERENCE = 'ANALYTIQUE'),
-),)        
+),)
 TEST_RESU(RESU=(
-    # CONTRAINTES             
+    # CONTRAINTES
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
  GROUP_NO = 'A',   NOM_CMP = 'SIYY',      VALE = 99.9566, REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.5E-2,
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(
  GROUP_NO = 'F', NOM_CMP = 'SIZZ',      VALE = 20.003, REFERENCE = 'ANALYTIQUE'),
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'F', NOM_CMP = 'SIXY',      VALE = -20.003, REFERENCE = 'ANALYTIQUE'))
-          ) 
+          )
 TEST_RESU(RESU=(
     # CONTRAINTES EQUIVALENTES
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
@@ -202,31 +202,31 @@ TEST_RESU(RESU=(
 #--------------------------------------------------------------------------------
 #
 # #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-# 
-# TEST_RESU(RESU=(             
+#
+# TEST_RESU(RESU=(
 #            _F( RESULTAT = EVOL,
-#                INST = 1.,  
-#                NOM_CHAM = 'ERRE_ELEM_SIGM',   
-#                CRITERE = 'RELATIF',    
+#                INST = 1.,
+#                NOM_CHAM = 'ERRE_ELEM_SIGM',
+#                CRITERE = 'RELATIF',
 #                PRECISION = 0.0001,
 #                POINT = 1,
-#                MAILLE='M531',    
-#                NOM_CMP = 'NUEST',      
-#                VALE = 1.5172144847269E+00, 
+#                MAILLE='M531',
+#                NOM_CMP = 'NUEST',
+#                VALE = 1.5172144847269E+00,
 #                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
 #              ),
 #             );
-# 
-# TEST_RESU(RESU=(             
+#
+# TEST_RESU(RESU=(
 #            _F( RESULTAT = EVOL,
-#                INST = 1.,  
-#                NOM_CHAM = 'ERRE_ELNO_ELEM',   
-#                CRITERE = 'RELATIF',    
+#                INST = 1.,
+#                NOM_CHAM = 'ERRE_ELNO_ELEM',
+#                CRITERE = 'RELATIF',
 #                PRECISION = 0.0001,
 #                GROUP_NO= 'A',
-#                MAILLE='M531',    
-#                NOM_CMP = 'ERREST',      
-#                VALE = 4.6036685268355E-04, 
+#                MAILLE='M531',
+#                NOM_CMP = 'ERREST',
+#                VALE = 4.6036685268355E-04,
 #                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
 #              ),
 #             );

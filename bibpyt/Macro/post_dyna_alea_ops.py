@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF post_dyna_alea_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
    from types import ListType, TupleType
    EnumTypes = (ListType, TupleType)
    from Accas               import _F
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS as UTMESS
    from Utilitai.t_fonction import t_fonction
    from Utilitai.Table      import Table
    import Numeric
@@ -75,8 +75,7 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
      if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
      if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
      if len(l_ind_i)!=len(l_ind_j) :
-        txt  = "il faut autant d indices en I et J"
-        UTMESS('F',commande, txt)
+        UTMESS('F','PROBA0_8')
      listpara=['NUME_ORDRE_I','NUME_ORDRE_J']
      listtype=['I','I']
      dicotabl={'NUME_ORDRE_I'  : l_ind_i  ,\
@@ -91,14 +90,11 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
      if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
      if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
      if len(l_ind_i)!=len(l_ind_j) :
-        txt  = "il faut autant d indices en I et J"
-        UTMESS('F',commande, txt)
+        UTMESS('F','PROBA0_8')
      if len(l_cmp_i)!=len(l_cmp_j) :
-        txt  = "il faut autant de composantes en I et J"
-        UTMESS('F',commande, txt)
+        UTMESS('F','PROBA0_9')
      if len(l_ind_i)!=len(l_cmp_i) :
-        txt  = "il faut autant de composantes que de noeuds"
-        UTMESS('F',commande, txt)
+        UTMESS('F','PROBA0_10')
      listpara=['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J']
      listtype=['K8','K8','K8','K8',]
      dicotabl={'NOEUD_I'  : l_ind_i,\
@@ -124,13 +120,11 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
          l_ind_i=intespec['NOEUD_I'].values()['NOEUD_I']
          l_ind_j=intespec['NOEUD_J'].values()['NOEUD_J']
          if len(l_ind_i)!=len(l_ind_j) :
-            txt  = "il faut autant d indices en I et J"
-            UTMESS('F',commande, txt)
+            UTMESS('F','PROBA0_8')
          l_cmp_i=intespec['NOM_CMP_I'].values()['NOM_CMP_I']
          l_cmp_j=intespec['NOM_CMP_J'].values()['NOM_CMP_J']
          if (len(l_ind_i)!=len(l_cmp_i) or len(l_ind_j)!=len(l_cmp_j)) :
-            txt  = "il faut autant de composantes que de noeuds"
-            UTMESS('F',commande, txt)
+            UTMESS('F','PROBA0_10')
          l_l=zip(zip(l_ind_i,l_cmp_i),zip(l_ind_j,l_cmp_j))
          l_ind_i=[]
          l_ind_j=[]

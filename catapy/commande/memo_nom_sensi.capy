@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
-from Utilitai.Sensibilite import memo_nom_sensi_ops
+from Macro.Sensibilite import memo_nom_sensi_ops
 
 MEMO_NOM_SENSI=MACRO(nom="MEMO_NOM_SENSI",op=memo_nom_sensi_ops,
             UIinfo={"groupes":("Fonction",)},

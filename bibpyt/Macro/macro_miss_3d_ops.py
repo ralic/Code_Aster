@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 29/05/2007   AUTEUR VOLDOIRE F.VOLDOIRE 
+#@ MODIF macro_miss_3d_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   """
   import types
   from Accas import _F
-  from Utilitai.Utmess import UTMESS
+  from Utilitai.Utmess import U2MESS as UTMESS
   from types import TupleType, ListType
 
   ier=0
@@ -86,10 +86,10 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
             'LFREQ_LISTE']
   if PARAMETRE != None and PARAMETRE['LFREQ_NB'] != None:
     if len(PARAMETRE['LFREQ_LISTE']) != PARAMETRE['LFREQ_NB']:
-      UTMESS('F', 'MACRO_MISS3D', 'Longueur de LFREQ_LISTE incorrecte')
+      UTMESS('F','MISS0_1')
   if PARAMETRE != None and PARAMETRE['CONTR_NB'] != None:
     if len(PARAMETRE['CONTR_LISTE']) != 3*PARAMETRE['CONTR_NB']:
-      UTMESS('F', 'MACRO_MISS3D', 'Longueur de CONTR_LISTE incorrecte')
+      UTMESS('F','MISS0_2')
   
   dpara = {}
   for cle in l_para:

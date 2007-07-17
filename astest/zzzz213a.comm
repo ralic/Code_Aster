@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DES COMMANDES COMB_MATR_ASSE ET CALC_CHAR_CINE (REEL/SYMETRIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,9 +27,7 @@
 #              DY(E)=1.5       (SOLUTION)
 #--------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZZZZ213A',NIV_PUB_WEB='INTERNET'),
-      ERREUR=_F(ERREUR_F='EXCEPTION',), PAR_LOT='NON',)
-
+DEBUT(CODE=_F(NOM='ZZZZ213A', NIV_PUB_WEB='INTERNET'), ERREUR=_F(ERREUR_F='EXCEPTION'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 import re
 fmt_raison='-'*80+"""
 

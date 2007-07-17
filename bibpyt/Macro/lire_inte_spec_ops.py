@@ -1,4 +1,4 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF lire_inte_spec_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
   from Accas import _F
   import os
   from math import cos,sin
-  from Utilitai.Utmess     import UTMESS
+  from Utilitai.Utmess     import U2MESS as UTMESS
   from Utilitai.UniteAster import UniteAster
   # On importe les definitions des commandes a utiliser dans la macro
   DEFI_FONCTION  =self.get_cmd('DEFI_FONCTION')
@@ -39,7 +39,7 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
   UL = UniteAster()
   nomfich=UL.Nom(UNITE)
   if not os.path.isfile(nomfich):
-     UTMESS('F', nompro, "le fichier '%s' est introuvable" % nomfich)
+     UTMESS('F','SPECTRAL0_4',valk=nomfich)
   file=open(nomfich,'r')
   texte=file.read()
   file.close()
@@ -50,10 +50,10 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
     entete=entete[entete.index('DIM'):]
     dim=int(entete[entete.index('=')+1:entete.index('\n')])
   except ValueError : 
-    UTMESS('F', nompro, "la dimension DIM n est pas précisée dans le fichier lu")
+    UTMESS('F','SPECTRAL0_5')
 
   if len(list_fonc)!=(dim*(dim+1)/2):
-    UTMESS('F', nompro, "nombre de fonctions incorrect")
+    UTMESS('F','SPECTRAL0_6')
 
   nume_i=[]
   nume_j=[]
@@ -70,7 +70,7 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
       vale_fonc=vale_fonc.replace('\n',' ')
       vale_fonc=map(float,vale_fonc.split())
     except ValueError : 
-      UTMESS('F', nompro, "erreur dans les données de fonctions")
+      UTMESS('F','SPECTRAL0_7')
 
     liste=[]
     if   FORMAT=='REEL_IMAG':
@@ -99,7 +99,7 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
       nume_ib.append(i+1)
       nume_jb.append(j+1)
   if nume_i!=nume_ib or nume_j!=nume_jb : 
-      UTMESS('F', nompro, "erreur dans les indices")
+      UTMESS('F','SPECTRAL0_3')
   mcfact=[]
   mcfact.append(_F(PARA='NOM_CHAM'    ,LISTE_K=(NOM_RESU),NUME_LIGN=(1,)))
   mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))

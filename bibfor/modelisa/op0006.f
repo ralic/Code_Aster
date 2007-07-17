@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER JCVNOM,JCVVAR,JCVCMP,JCVGD,JCVDEF,ITROU,NBM1,NBGM1
 
       CHARACTER*8 K8B,CHMAT,NOMAIL,NOMODE,TYPMCL(2),NOMGD
-      CHARACTER*8 NOMGD2,CHAMGD,EVOL,NOCMP1,NOCMP2
+      CHARACTER*8 NOMGD2,CHAMGD,EVOL,NOCMP1,NOCMP2,FINST
       CHARACTER*16 MOTCLE(2),TYPE,NOMCMD,NOMCHA,PROLGA,PROLDR
       LOGICAL GETEXM,EXIST
       CHARACTER*24 MESMAI,CVNOM,CVVAR,CVGD,CVCMP,CVDEF,VALK(3)
@@ -164,7 +164,7 @@ C     --------------------------------------------
           ZK8(JNCMP1-1+K) = NOCMP1
    30   CONTINUE
         NOCMP2 = 'Z'
-        DO 40,K = 1,6
+        DO 40,K = 1,7
           CALL CODENT(K,'G',NOCMP2(2:8))
           ZK8(JNCMP2-1+K) = NOCMP2
    40   CONTINUE
@@ -237,6 +237,8 @@ C         ------------------------------------------------------------
             CALL GETVTX('AFFE_VARC','NOM_CHAM',IOCC,1,1,NOMCHA,N1)
             CALL GETVTX('AFFE_VARC','PROL_GAUCHE',IOCC,1,1,PROLGA,N1)
             CALL GETVTX('AFFE_VARC','PROL_DROITE',IOCC,1,1,PROLDR,N1)
+            CALL GETVID('AFFE_VARC','FONC_INST',IOCC,1,1,FINST,N1)
+            IF (N1.EQ.0) FINST=' '
 C           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
           END IF
           IF (ERRGD) THEN
@@ -255,12 +257,14 @@ C         ------------------------------------------------------------
             ZK16(JVALV2-1+4) = ' '
             ZK16(JVALV2-1+5) = ' '
             ZK16(JVALV2-1+6) = ' '
+            ZK16(JVALV2-1+7) = ' '
           ELSE
             ZK16(JVALV2-1+2) = 'EVOL'
             ZK16(JVALV2-1+3) = EVOL
             ZK16(JVALV2-1+4) = NOMCHA
             ZK16(JVALV2-1+5) = PROLGA
             ZK16(JVALV2-1+6) = PROLDR
+            ZK16(JVALV2-1+7) = FINST
           END IF
           DO 70,K = 1,NCMP
             ZR(JVALV1-1+K) = VRCREF(K)
@@ -274,13 +278,13 @@ C         TOUT='OUI' PAR DEFAUT :
 
           IF (NBTOU.NE.0) THEN
             CALL NOCART(CART1,1,' ','NOM',0,' ',0,' ',NCMP)
-            CALL NOCART(CART2,1,' ','NOM',0,' ',0,' ',6)
+            CALL NOCART(CART2,1,' ','NOM',0,' ',0,' ',7)
           ELSE
             CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE_VARC',IOCC,
      &                  2,MOTCLE,TYPMCL,MESMAI,NBMA)
             CALL JEVEUO(MESMAI,'L',JMA)
             CALL NOCART(CART1,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',NCMP)
-            CALL NOCART(CART2,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',4)
+            CALL NOCART(CART2,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',7)
             CALL JEDETR(MESMAI)
           END IF
 

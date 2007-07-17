@@ -1,35 +1,35 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX BLOCS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 # CAS_TEST__:SSNP121M
 # ON TESTE LE CONTACT CONTINUE AVEC RACCORD SURFACIQUE P2-P1
 # MODELISATION LINEAIRE QUADRATIQUE
 
-DEBUT(CODE=_F( NOM = 'SSNP121M',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NOM='SSNP121M', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 PRE_GIBI();
 MA=LIRE_MAILLAGE();
 MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,CREA_GROUP_NO=(
 _F(NOM='RACCORD1',
-   NOEUD=('N48','N45','N44'),), 
+   NOEUD=('N48','N45','N44'),),
 _F(NOM='RACCORD2',
-   NOEUD=('N12','N9','N8'),),  
+   NOEUD=('N12','N9','N8'),),
 _F(  GROUP_MA = 'SURESC',),
 _F(  GROUP_MA = 'SURMAI',),
 _F(  GROUP_MA = 'SURCHA',),
@@ -59,7 +59,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURMAI',),
                  );
-                 
+
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURMAI1',),
@@ -68,8 +68,8 @@ MA=MODI_MAILLAGE(reuse =MA,
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURMAI2',),
-                 ); 
-                                 
+                 );
+
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_PEAU_3D=_F(GROUP_MA='SURCHA',),
@@ -99,7 +99,7 @@ RACCOR=AFFE_CHAR_MECA(MODELE=MO,
                   LIAISON_MAIL=(_F(GROUP_MA_MAIT='V11',
                                    GROUP_NO_ESCL='RACCORD1',),
                                 _F(GROUP_MA_MAIT='V21',
-                                   GROUP_NO_ESCL='RACCORD2',),),  
+                                   GROUP_NO_ESCL='RACCORD2',),),
                   INFO=2,);
 
 
@@ -163,11 +163,11 @@ SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                      RESULTAT=RESU,
                    NUME_ORDRE=1);
 
-IMPR_RESU(FORMAT='CASTEM', 
+IMPR_RESU(FORMAT='CASTEM',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESU,
                   NOM_CHAM=('DEPL','VALE_CONT',),),);
-# 
+#
 IMPR_RESU(MODELE=MO,FORMAT='RESULTAT',
             RESU=(_F( MAILLAGE=MA,
                       GROUP_NO=('SURESC','SURMAI'),
@@ -207,7 +207,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                       NOM_CMP = 'LAGS_C',
                       VALE = -1.E+5),
             );
-            
+
 TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                      NUME_ORDRE = 1,
                       NOEUD = 'N41',
@@ -218,7 +218,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                       NOM_CMP = 'LAGS_C',
                       VALE = -1.E+5),
             );
-            
+
 TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                      NUME_ORDRE = 1,
                       NOEUD = 'N43',

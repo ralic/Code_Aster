@@ -1,21 +1,21 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE COMPRESSION/TRACTION EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #----------------------------------------------------------------------
 #   TEST MODELE BETON_DOUBLE_DP 3D (DOUBLE CRITERE DE DRUCKER PRAGER)
@@ -51,7 +51,7 @@
 #
 #----------------------------------------------------------------------
 #
-DEBUT(     CODE=_F( NOM = 'SSNV151A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNV151A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 CUBE=LIRE_MAILLAGE(    )
 
@@ -126,14 +126,14 @@ BETON=DEFI_MATERIAU(           ELAS_FO=_F( E = E,
                                            LONG_CARA = 1.4142136)
                              )
 
-CHTEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+CHTEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                      MAILLAGE=CUBE,
                          AFFE=_F( NOM_CMP = 'TEMP',
                                TOUT = 'OUI',
                                VALE = 20.0)
                               )
 
-CHTEMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+CHTEMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                      MAILLAGE=CUBE,
                          AFFE=_F( NOM_CMP = 'TEMP',
                                TOUT = 'OUI',
@@ -167,7 +167,7 @@ MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
                          )
 
 
-COND_LIM=AFFE_CHAR_MECA(   
+COND_LIM=AFFE_CHAR_MECA(
                       MODELE=TROISD,
                DDL_IMPO=(
                     _F(  GROUP_NO = 'FACEXY',  DZ = 0.),
@@ -175,19 +175,19 @@ COND_LIM=AFFE_CHAR_MECA(
                     _F(  GROUP_NO = 'FACEXZ',  DY = 0.))
                              )
 
-TRAC=AFFE_CHAR_MECA(   
+TRAC=AFFE_CHAR_MECA(
                       MODELE=TROISD,
                     DDL_IMPO=_F(  GROUP_NO = 'FACE1XZ',  DY = -0.2)
                             )
 
-TRAC2=AFFE_CHAR_MECA(   
+TRAC2=AFFE_CHAR_MECA(
                       MODELE=TROISD,DDL_IMPO=(
                     _F(  GROUP_NO = 'FACE1XY',  DZ = 0.2),
                     _F(  GROUP_NO = 'FACE1YZ',  DX = 0.2))
                             )
 
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
-                             
+
                            _F(  JUSQU_A = 0.01,  NOMBRE = 1),
                            _F(  JUSQU_A = 0.1,   NOMBRE = 1),
                            _F(  JUSQU_A = 1.,    NOMBRE = 2),
@@ -197,7 +197,7 @@ LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                            _F(  JUSQU_A = 2.,    NOMBRE = 2))
                          )
 
-COEF_TR=DEFI_FONCTION( 
+COEF_TR=DEFI_FONCTION(
                               NOM_PARA='INST',
                                   VALE=(   0.000,   0.000,
                                            1.715,   1.715,
@@ -205,7 +205,7 @@ COEF_TR=DEFI_FONCTION(
                                            2.000,   2.000,  )
                         )
 
-COEF_TR2=DEFI_FONCTION( 
+COEF_TR2=DEFI_FONCTION(
                               NOM_PARA='INST',
                                   VALE=(   0.000,   0.000,
                                            1.715,   0.000,
@@ -213,30 +213,30 @@ COEF_TR2=DEFI_FONCTION(
                                            2.000,   0.500,  )
                         )
 
-SOLNL=STAT_NON_LINE( 
+SOLNL=STAT_NON_LINE(
                              TITRE='TEST LOI BETON_DOUBLE_DP',
                             MODELE=TROISD,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = COND_LIM),
-                             _F( 
+                             _F(
                 CHARGE = TRAC,
                 FONC_MULT = COEF_TR)),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = LINST,
                 INST_FIN = 1.715),
                         CHAM_MATER=MATBET,
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'BETON_DOUBLE_DP',
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 10,
                 ITER_INTE_PAS = 0,
                 RESI_INTE_RELA = 1.E-8,
                 TOUT = 'OUI'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_INCR = 1,
                 REAC_ITER = 5),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20,
                 RESI_GLOB_RELA = 1.E-6,)
               )
@@ -244,39 +244,39 @@ SOLNL=STAT_NON_LINE(
 SOLNL=STAT_NON_LINE( reuse=SOLNL,
                              TITRE='TEST LOI BETON_DOUBLE_DP',
                             MODELE=TROISD,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = COND_LIM),
-                             _F( 
+                             _F(
                 CHARGE = TRAC,
                 FONC_MULT = COEF_TR),
-                             _F( 
+                             _F(
                 CHARGE = TRAC2,
                 FONC_MULT = COEF_TR2,
                 TYPE_CHARGE = 'DIDI')),
-                         ETAT_INIT=_F( 
+                         ETAT_INIT=_F(
                 EVOL_NOLI = SOLNL,
-                INST = 1.715),  
-                         INCREMENT=_F( 
+                INST = 1.715),
+                         INCREMENT=_F(
                 LIST_INST = LINST,
                 INST_INIT = 1.715),
                         CHAM_MATER=MATBET,
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'BETON_DOUBLE_DP',
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 10,
                 ITER_INTE_PAS = 0,
                 RESI_INTE_RELA = 1.E-8,
                 TOUT = 'OUI'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_INCR = 1,
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20,
                 RESI_GLOB_RELA = 1.E-6,)
               )
 
-SOLNL=CALC_ELEM(     reuse=SOLNL,          
+SOLNL=CALC_ELEM(     reuse=SOLNL,
                                    OPTION=('VARI_ELNO_ELGA',
                                            'SIEF_ELNO_ELGA', ),
                                  RESULTAT=SOLNL )
@@ -284,17 +284,17 @@ SOLNL=CALC_ELEM(     reuse=SOLNL,
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', INST = 1.000,
          NOM_CMP = 'SIYY',  MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = -1.7445970379324E+01),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.000,
          NOM_CMP = 'V1',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 1.9952848728705E-01),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.000,
          NOM_CMP = 'V4',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 1.))
          )
@@ -302,27 +302,27 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', INST = 1.725,
          NOM_CMP = 'SIYY',  MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 2.5737848954806E+00),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', INST = 1.725,
          NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 2.5737848954806E+00),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.725,
          NOM_CMP = 'V1',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 3.4296989598719E-01),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.725,
          NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 1.2314499095035E-03),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.725,
          NOM_CMP = 'V4',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 22.))
          )
@@ -330,27 +330,27 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', INST = 1.800,
          NOM_CMP = 'SIYY',  MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 6.7674458325588E-01),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', INST = 1.800,
          NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 6.7674458325588E-01),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.800,
          NOM_CMP = 'V1',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 3.4496565007972E-01),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.800,
          NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 2.6382888033288E-02),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 1.800,
          NOM_CMP = 'V4',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-8,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 22.))
          )
@@ -358,27 +358,27 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', INST = 2.000,
          NOM_CMP = 'SIYY',  MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = -3.6229884000837E-05),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', INST = 2.000,
          NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 2.6666667196947E-06),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 2.000,
          NOM_CMP = 'V1',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 3.8495394322234E-01),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 2.000,
          NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 8.3738683176989E-02),
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', INST = 2.000,
          NOM_CMP = 'V4',    MAILLE = 'MA1',              NOEUD = 'N1',
-         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',  
+         PRECISION = 1.E-5,  REFERENCE = 'NON_REGRESSION',
          VERSION = '7.2.25',CRITERE='ABSOLU',
          VALE = 3.))
          )

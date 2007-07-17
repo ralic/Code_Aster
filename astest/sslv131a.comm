@@ -1,4 +1,4 @@
-# MODIF  DATE 29/05/2007   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
 # TITRE ORTHOTROPIE DANS UN REPERE QUELCONQUE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #
 
-DEBUT(CODE=_F( NOM = 'SSLV131A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLV131A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 
@@ -84,8 +84,8 @@ TEST_RESU(RESU=_F(  RESULTAT = MEST_PG, NUME_ORDRE = 1,
                     REFERENCE='NON_REGRESSION',
                     NOM_CHAM = 'SIEF_ELGA', TYPE_TEST = 'SOMM_ABS',
                     VALE = 2.6674507050037E+05 ), ) ;
-         
-CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,            
+
+CALC_ELEM( reuse= MEST1 ,RESULTAT= MEST1 ,
            OPTION=('EPSI_ELGA_DEPL','SIEF_ELNO_ELGA','ENEL_ELGA','ENEL_ELNO_ELGA',),)
 
 CALC_NO( reuse=MEST1, RESULTAT=MEST1,
@@ -166,7 +166,7 @@ MEST2=STAT_NON_LINE(MODELE=MOD3D,
                     COMP_INCR=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE2),);
 
-CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,            
+CALC_ELEM( reuse= MEST2 ,RESULTAT= MEST2 ,
            OPTION=('EPSI_ELGA_DEPL','ENEL_ELGA','ENEL_ELNO_ELGA',)  )
 
 TEST_RESU(RESU=(
@@ -229,7 +229,7 @@ CHT0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                             NOM_CMP='TEMP',
                             VALE=  0.0 , ), )
 
-CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                   MAILLAGE=MA,
                       AFFE=_F(  TOUT = 'OUI',
                              NOM_CMP = 'TEMP',
@@ -273,7 +273,7 @@ MEST3=STAT_NON_LINE(MODELE=MOD3D,
                     COMP_INCR=_F(RELATION='ELAS'),
                     INCREMENT=_F(LIST_INST=LISTE2),);
 
-MEST3=CALC_ELEM( reuse= MEST3 ,RESULTAT= MEST3 ,            
+MEST3=CALC_ELEM( reuse= MEST3 ,RESULTAT= MEST3 ,
            OPTION=('EPSI_ELGA_DEPL',)  )
 
 TEST_RESU(RESU=(
@@ -316,7 +316,7 @@ MEST4=MECA_STATIQUE(MODELE=MOD3D,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D3),);
 
-MEST4=CALC_ELEM( reuse= MEST4 ,RESULTAT= MEST4 ,            
+MEST4=CALC_ELEM( reuse= MEST4 ,RESULTAT= MEST4 ,
                  OPTION=('EPSI_ELGA_DEPL',)  )
 
 TEST_RESU(RESU=(
