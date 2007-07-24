@@ -1,4 +1,4 @@
-# MODIF  DATE 16/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,6 +55,8 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-17.5');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-100. ');                      
 
+
+
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(
                                  FONC_LT=LT,
@@ -66,6 +68,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
                     INFO=1,);
 
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='OUI',
+                         INFO=1,);
+
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                       METHODE = 'XFEM',
                                      INTEGRATION='FPG4',
@@ -76,13 +83,10 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                COEF_ECHELLE=1.E11,
                                FROTTEMENT='SANS',
                                     ),
-                          MODELE=MODELEIN,
+                          MODELE=MODELEK,
                           ), 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         CONTACT=CTXFEM,
-                         INFO=1,);
+
 
 E=1.0E11
 nu=0.
@@ -105,7 +109,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM='OUI',);
+                      CONTACT_XFEM=CTXFEM,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,

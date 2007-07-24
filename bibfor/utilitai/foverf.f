@@ -1,13 +1,13 @@
       SUBROUTINE FOVERF(V,NC,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER         NC,IER,I,ISENS,ILARGE
+      INTEGER         NC,IER,I,ISENS,ILARGE,NIV,IFM
       REAL*8          V(NC)
       CHARACTER*16 NOMCMD, TYPFON
       CHARACTER*19 NOMFON
       CHARACTER*40 MESS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,8 @@ C
 C     ISENS (TRAVAIL) : 1 SI CROIS, -1 SI DECROIS,
 C                      99 SI ON NE SAIT PAS, 0 NON MONOTONE
 C     ILARGE : 0 SI AU SENS LARGE, 1 SI STRICT
+      CALL INFNIV(IFM,NIV)
+C
       IF(NC.GT.1)THEN
         ISENS=99
         ILARGE=1
@@ -56,20 +58,30 @@ C     ILARGE : 0 SI AU SENS LARGE, 1 SI STRICT
         ELSE
           ISENS=-1
         ENDIF
+C
         DO 10 I=3,NC
           IF(V(I).EQ.V(I-1))THEN
             ILARGE=0
+            IF (NIV.GE.2) THEN
+               WRITE(IFM,1000) I,V(I)
+            ENDIF
           ELSEIF(V(I).GT.V(I-1))THEN
             IF(ISENS.EQ.99.OR.ISENS.EQ.1)THEN
               ISENS=1
             ELSE
               ISENS=0
+              IF (NIV.GE.2) THEN
+                 WRITE(IFM,1001) I,V(I-1),V(I)
+              ENDIF
             ENDIF
           ELSE
             IF(ISENS.EQ.99.OR.ISENS.EQ.-1)THEN
               ISENS=-1
             ELSE
               ISENS=0
+              IF (NIV.GE.2) THEN
+                 WRITE(IFM,1002) I,V(I-1),V(I)
+              ENDIF
             ENDIF
           ENDIF
 C         POUR SORTIE ANTICIPEE DE LA BOUCLE
@@ -108,4 +120,11 @@ C        ON RETOURNE CE QU'ON A DEMANDE
          ENDIF
       ENDIF
       IER=ISENS
+C
+ 1000 FORMAT('EGALITE       I=',I6,'   VALEUR(I)   :',1PE16.9)
+ 1001 FORMAT('CROISSANT     I=',I6,'   VALEUR(I-1) :',1PE16.9,
+     +       '   VALEUR(I)   :',1PE16.9)
+ 1002 FORMAT('DECROISSANT   I=',I6,'   VALEUR(I-1) :',1PE16.9,
+     +       '   VALEUR(I)   :',1PE16.9)
+C
       END

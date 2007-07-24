@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,8 +38,34 @@ Multifissuration interdite avec l'opérateur PROPA_XFEM.
 """),
 
 7: _("""
-La structure de données du contact liée à MODI_MODELE_XFEM n'est pas
-celle transmise en argument de MECA_NON_LINE.
+Le contact a été activé dans XFEM (CONTACT_XFEM='OUI' dans MODI_MODELE_XFEM)
+Mais vous ne l'avez pas activé par AFFE_CHAR_MECA/CONTACT_XFEM.
+
+"""),
+
+8: _("""
+Le modele %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modele
+XFEM. Ce n'est pas un concept résultant de MODI_MODELE_XFEM.
+"""),
+
+9: _("""
+Le modele %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT n'est pas un modele
+XFEM avec contact. Il faut CONTACT='OUI' dans MODI_MODELE_XFEM.
+"""),
+
+10: _("""
+Le modele %(k1)s transmis dans MECA_NON_LINE n'est pas un modele
+XFEM. Ce n'est pas un concept résultant de MODI_MODELE_XFEM.
+"""),
+
+11: _("""
+Le modele %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est le modele
+XFEM utilise dans le AFFE_CHAR_MECA/CONTACT nommé %(k2)s.
+"""),
+
+12: _("""
+Le modele %(k1)s transmis dans AFFE_CHAR_MECA/CONTACT_XFEM n'est pas un modele
+XFEM. Ce n'est pas un concept résultant de MODI_MODELE_XFEM.
 """),
 
 44: _("""

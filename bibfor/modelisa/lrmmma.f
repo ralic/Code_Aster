@@ -5,7 +5,7 @@
      &                    PREFIX,
      &                    INFMED, MODNUM, NUMNOA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 23/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -219,11 +219,24 @@ C
             IF ( INFMED.GE.2 ) THEN
               CALL U2MESK('I','MODELISA5_27',1,NOMTYP(ITYP))
             ENDIF
-            DO 221 , IAUX = 1, NMATYP(ITYP)
-              CODE = ZI(JNUMTY(ITYP)+IAUX-1)
-              CALL CODLET(CODE,'G',SAUX15)
-              ZK16(JNOMTY(ITYP)+IAUX-1) = 'M'//SAUX15
-  221       CONTINUE
+            IF (NBMAIL .GE. 10000000) THEN
+C           + DE 10 MILLIONS DE MAILLES (AU TOTAL), ON PASSE EN BASE 36
+               DO 221 , IAUX = 1, NMATYP(ITYP)
+                 CODE = ZI(JNUMTY(ITYP)+IAUX-1)
+                 CALL CODLET(CODE,'G',SAUX15)
+                 ZK16(JNOMTY(ITYP)+IAUX-1) = 'M'//SAUX15
+  221          CONTINUE
+            ELSE
+C           MOINS DE 10 MILLIONS DE MAILLES, ON RESTE EN BASE 10
+               DO 222 , IAUX = 1, NMATYP(ITYP)
+                 CODE = ZI(JNUMTY(ITYP)+IAUX-1)
+                 CALL CODENT(CODE,'G',SAUX15)
+                 ZK16(JNOMTY(ITYP)+IAUX-1) = 'M'//SAUX15
+  222          CONTINUE
+         ENDIF
+
+
+
             CODRET = 0
           ENDIF
 C

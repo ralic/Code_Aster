@@ -1,7 +1,7 @@
       SUBROUTINE XCORDO(MODELE,DEFICO,LCONTX)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,8 +56,8 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IFISS,NFISS,IRET
-      INTEGER      JXC,JXSDC,JNFIS,JMOFIS
+      INTEGER      IRET,JXC
+      CHARACTER*16 VALK(2)        
 C
 C ----------------------------------------------------------------------
 C
@@ -68,35 +68,15 @@ C
       CALL JEEXIN(MODELE(1:8)//'.FISS',IRET)
 C      
       IF (IRET.EQ.0) THEN
-        CALL ASSERT(.FALSE.)
+        VALK(1) = MODELE
+        CALL U2MESK('F','XFEM2_10',1,VALK) 
       ELSE
-        CALL JEVEUO(MODELE(1:8)//'.FISS'  ,'L',JMOFIS)        
-        CALL JEVEUO(MODELE(1:8)//'.NFIS'  ,'L',JNFIS)
-        CALL JEVEUO(MODELE(1:8)//'.XFEM_SDCONT','L',JXSDC)
         CALL JEVEUO(MODELE(1:8)//'.XFEM_CONT'  ,'L',JXC)
       ENDIF
-C 
-      NFISS  = ZI(JNFIS)
-      LCONTX = ZI(JXC-1+1) .NE. 0
-C
-      DO 100 IFISS = 2,NFISS    
-        IF (LCONTX) THEN
-          IF (ZI(JXC-1+IFISS) .NE. 0) THEN
-            LCONTX = .TRUE.
-          ELSE
-            CALL U2MESS('F','XFEM_4')
-          ENDIF
-        ELSE
-          IF (ZI(JXC-1+IFISS) .EQ. 0) THEN
-            LCONTX = .FALSE.
-          ELSE
-            CALL U2MESS('F','XFEM_4')
-          ENDIF 
-        ENDIF
- 100  CONTINUE   
 C
 C --- CREATION SD CONTACT BIDON
 C
+      LCONTX = ZI(JXC) .EQ. 1
       IF (.NOT.LCONTX) THEN
         CALL XCOBID(MODELE,DEFICO)
         LCONTX = .TRUE. 

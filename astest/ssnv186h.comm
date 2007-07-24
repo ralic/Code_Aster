@@ -1,5 +1,5 @@
 
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,6 +52,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     GROUP_MA_ENRI='SURF',
  
                     INFO=1,);
+ 
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='OUI',
+                         INFO=1,); 
                     
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( METHODE = 'XFEM',
                                      COEF_REGU_CONT=100.,
@@ -66,14 +71,11 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( METHODE = 'XFEM',
                                COEF_REGU_FROT=1000.,
 #                              SEUIL_INIT=-5,
                                     ),
-                                MODELE=MODELEIN,    
+                                MODELE=MODELEK,    
                           ),                
                     
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         CONTACT=CTXFEM,
-                         INFO=1,);
+
 
 E=1.0E11
 nu=0.
@@ -104,7 +106,7 @@ CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM='OUI',
+                      CONTACT_XFEM=CTXFEM,
                                 INFO=1,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,

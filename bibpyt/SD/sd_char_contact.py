@@ -1,4 +1,4 @@
-#@ MODIF sd_char_contact SD  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_char_contact SD  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,24 +19,41 @@
 # ======================================================================
 
 from SD import *
+from SD.sd_champ import sd_champ
+from SD.sd_modele import sd_modele_XFEM
 
 class sd_char_contact(AsBase):
     nomj      =SDNom(fin=16)
 
+    FORMCO    = Facultatif(AsVI())
+
+    def exists(self):
+        # retourne True si la SD semble exister.
+        return self.FORMCO.exists
+    
+
+    def formulation_xfem(self):
+        if not self.exists() : return
+        iform = self.FORMCO.get()[0]
+        return iform == 3       
+
+    def contact_xfem_actif(self):
+        if not self.formulation_xfem() : return
+        return self.XNBASC.exists  
+        
     BAMACO    = Facultatif(AsVI())
     BANOCO    = Facultatif(AsVI())
     CARACF    = Facultatif(AsVR())
-    CARFRO    = Facultatif(AsVR())
     COMAFO    = Facultatif(AsVR())
+    JEUSUR    = Facultatif(AsVR())
     CONVCO    = Facultatif(AsVI())
     DIRCO     = Facultatif(AsVR())
     ECPDON    = Facultatif(AsVI())
-    FORMCO    = Facultatif(AsVI())
+    CARFRO    = Facultatif(AsVR())
     FROTE     = Facultatif(AsVR())
     JEUCON    = Facultatif(AsVR())
     JEUCOQ    = Facultatif(AsVR())
     JEUPOU    = Facultatif(AsVR())
-    JEUSUR    = Facultatif(AsVR())
     JFO1CO    = Facultatif(AsVK8())
     JFO2CO    = Facultatif(AsVK8())
     JFO3CO    = Facultatif(AsVK8())
@@ -75,3 +92,39 @@ class sd_char_contact(AsBase):
     TOLECO    = Facultatif(AsVR())
     XFEM      = Facultatif(AsVI())
     XFIMAI    = Facultatif(AsVK8())
+    XNBASC    = Facultatif(AsVK24())
+    XNRELL    = Facultatif(AsVK24())
+    MODELX    = Facultatif(AsVK8(lonmax=1,))
+
+        
+    # indirection vers les champs de .XNBASC :
+    def check_char_contact_xfem_XNBASC(self, checker):
+        if not self.contact_xfem_actif() : return
+        lnom  = self.XNBASC.get()
+        nbnom = self.XNBASC.lonuti
+        for k in range(nbnom) :
+            nom = lnom[k]
+            if not nom.strip(): continue
+            sd2 = sd_champ(nom)
+            sd2.check(checker)
+          
+
+    # indirection vers les champs de .XNRELL :
+    # On ne vérifie rien pour l'instant
+    def check_char_contact_xfem_XNRELL(self, checker):
+        if not self.contact_xfem_actif() : return
+        lnom  = self.XNRELL.get()        
+        nbnom = self.XNRELL.lonuti
+        for k in range(nbnom) :
+            nom = lnom[k]
+            oo  = AsObject(SDNom(nomj=nom,debut=0),genr='V', xous='S', type=Parmi('I','R'))          
+            oo.check(checker) 
+            
+    # Verification MODELE XFEM
+    def check_char_contact_xfem_MODELX(self, checker):
+        if not self.contact_xfem_actif() : return
+        nom = self.MODELX.get()[0] 
+        sd2 = sd_modele_XFEM(nom)
+        sd2.check(checker)
+               
+        

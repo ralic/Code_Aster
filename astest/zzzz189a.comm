@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 23/07/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON       
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@
 #      LIST_CARA_CIRCONF=(
 #              GROUP_MA   =SIMP(statut='o',typ=grma,max='**'),
 #              AXE         =SIMP(statut='o',typ='R',max=3,min=3),
-#              MODELE         =SIMP(statut='o',typ=modele_sdaster ),
+#              MAILLAGE         =SIMP(statut='o',typ=maillage_sdaster ),
 #              GRILLE         =FACT(statut='f',max=1,
 #                SECTION         =SIMP(statut='o',typ='R'),
 #                EXCENTREMENT    =SIMP(statut='f',typ='R'),
@@ -55,7 +55,7 @@ def norm(x):
    return tmp
 
 
-def LIST_CARA_CIRCONF(GROUP_MA,AXE,MODELE,**args):
+def LIST_CARA_CIRCONF(GROUP_MA,AXE,MAILLAGE,**args):
 
 
   """
@@ -63,25 +63,20 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MODELE,**args):
   """
 
   import copy,Numeric
-  
-  # Commandes de la macro
-  MAIL=aster.getvectjev(MODELE.nom.ljust(8)+".MODELE    .NOMA")[0]
-  
 
-  # On recupere les coordonnees des noeuds du maillage
-  coordo=Numeric.array(aster.getvectjev(MAIL.ljust(8)+".COORDO    .VALE"))
-  # On le met en forme : matrice 3 colonnes
+  # On recupere la connectivite, les noms des mailles,
+  # les coordonnees et le groupes de mailles GROUP_MA
+  coordo=MAILLAGE.COORDO.VALE.get()
+  connex=MAILLAGE.CONNEX.get()
+  nommai=MAILLAGE.NOMMAI.get()
+  groupma=MAILLAGE.GROUPEMA.get()[GROUP_MA.ljust(8)]
+
+  # On met en forme les coordonnees : matrice 3 colonnes
   coordo=Numeric.reshape(coordo,[len(coordo)/3,3])
   # On recupere chacune des coordonnees
   X=coordo[:,0]
   Y=coordo[:,1]
   Z=coordo[:,2]
-  # On recupere la connectivite, les noms des mailles,
-  # les noms des noeuds et des groupes de mailles
-  connex =aster.getcolljev(MAIL.ljust(8)+".CONNEX")
-  nommai =aster.getvectjev(MAIL.ljust(8)+".NOMMAI")
-  nomnoe =aster.getvectjev(MAIL.ljust(8)+".NOMNOE")
-  groupma=aster.getcolljev(MAIL.ljust(8)+".GROUPEMA")
 
   n1n2=Numeric.ones(3,Numeric.Float)
   n1n3=Numeric.ones(3,Numeric.Float)
@@ -94,8 +89,8 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MODELE,**args):
 
   LISTE_CARA=[]
   # On boucle sur les mailles du groupe de mailles GROUP_MA
-  # (on le reduit a 8 caracteres s'il est trop long)
-  for ima in groupma[GROUP_MA.ljust(8)]:
+
+  for ima in groupma:
      lnoeu=connex[ima]
      # On ne traite les elements que s'ils sont des triangles!
      if (len(lnoeu)==3) :
@@ -183,12 +178,12 @@ MODEL=AFFE_MODELE(MAILLAGE=MAILL,
 # On cree les caracteristiques
 LIST_GRI=LIST_CARA_CIRCONF(GROUP_MA='GRILLE',
                            AXE=(0.,0.,1.),
-                         MODELE=MODEL,
+                     #    MODELE=MODEL,
+                         MAILLAGE=MAILL,
                            GRILLE=_F(SECTION=20.,EXCENTREMENT=0.,));
 
 
 CARA_COQ=AFFE_CARA_ELEM(MODELE=MODEL,
-                        INFO=1,
                      COQUE=_F(GROUP_MA='PLAQUE',
                               EPAIS=40.,
                               COEF_RIGI_DRZ=0.,),

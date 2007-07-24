@@ -1,7 +1,7 @@
       SUBROUTINE CARACX(CHAR  ,NZOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,26 +56,54 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      CFMMVD,ZCMCF,ZECPD
-      CHARACTER*24 ECPDON,CARACF
-      INTEGER      JECPD,JCMCF
+      CHARACTER*24 ECPDON,CARACF,MODCON
+      INTEGER      JECPD,JCMCF,JMOCO
+      CHARACTER*16 VALK(2)
+      CHARACTER*8  MODELX
+      INTEGER      IBID,IRET,JXC      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- ACCES MODELE
+C
+      CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MODELX,IRET) 
+C
+C --- TEST MODELE CORRECT
+C
+      CALL JEEXIN(MODELX(1:8)//'.FISS',IRET)
+C      
+      IF (IRET.EQ.0) THEN
+        VALK(1) = MODELX
+        CALL U2MESK('F','XFEM2_8',1,VALK) 
+      ELSE
+        CALL JEVEUO(MODELX(1:8)//'.XFEM_CONT','L',JXC)
+        IF (ZI(JXC).EQ.0) THEN
+          VALK(1) = MODELX
+          CALL U2MESK('F','XFEM2_9',1,VALK)         
+        ENDIF
+      ENDIF
 C   
 C --- COMMUNS AVEC FORM. XFEM
-C  
+C       
       ECPDON = CHAR(1:8)//'.CONTACT.ECPDON'
       CARACF = CHAR(1:8)//'.CONTACT.CARACF'
+      MODCON = CHAR(1:8)//'.CONTACT.MODELX'      
 C     
       ZCMCF = CFMMVD('ZCMCF')      
       ZECPD = CFMMVD('ZECPD')   
 C
-      CALL WKVECT(CARACF,'G V R',ZCMCF*NZOCO+1,JCMCF)
-      CALL WKVECT(ECPDON,'G V I',ZECPD*NZOCO+1,JECPD)
+      CALL WKVECT(CARACF,'G V R' ,ZCMCF*NZOCO+1,JCMCF)
+      CALL WKVECT(ECPDON,'G V I' ,ZECPD*NZOCO+1,JECPD)
+      CALL WKVECT(MODCON,'G V K8',            1,JMOCO)      
 C
-      ZR(JCMCF) = NZOCO  
-      ZI(JECPD) = 1        
+      ZR(JCMCF)  = NZOCO  
+      ZI(JECPD)  = 1 
+C
+C --- STOCKAGE DU NOM DU MODELE
+C      
+      ZK8(JMOCO) = MODELX       
 C
       CALL JEDEMA()
 C

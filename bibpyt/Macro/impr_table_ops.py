@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF impr_table_ops Macro  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@
 
 import os.path
 import re
+from sets import Set
 
 from types import ListType, TupleType, StringTypes
 EnumTypes=(ListType, TupleType)
@@ -191,23 +192,29 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       if args['IMPR_FONCTION'] and args['IMPR_FONCTION']=='OUI':
          # cherche parmi les cellules celles qui contiennent un nom de fonction
          dfon={}
-         for row in timp['FONCTION', 'FONCTION_C']:
-            for par,cell in row.items():
-               if type(cell) in StringTypes:
-                if aster.getvectjev(cell.strip().ljust(19)+'.PROL')<>None:
-                  dfon[cell.strip().ljust(19)]=par
-         # impression des fonctions trouvées
-         for f,par in dfon.items():
-            __fonc=RECU_FONCTION(
-               TABLE=sdtab,
-               FILTRE=_F(
-                  NOM_PARA=par,
-                  VALE_K=f,
-               ),
-               NOM_PARA_TABL=par,
-            )
-            __fonc.Trace(**kfonc)
-            DETRUIRE(CONCEPT=_F(NOM=('__fonc',),), ALARME='NON', INFO=1,)
+         p_extr = Set(['FONCTION', 'FONCTION_C'])
+         p_extr.intersection_update(timp.para)
+         if len(p_extr) > 0:
+            # on réduit timp aux colonnes FONCTION et FONCTION_C
+            textr = timp.__getitem__(list(p_extr))
+            for row in textr:
+               for par,cell in row.items():
+                  if type(cell) in StringTypes:
+                     cell = cell.strip()
+                     if aster.getvectjev('%-19s.PROL' % cell) != None:
+                        dfon['%-19s' % cell] = par
+            # impression des fonctions trouvées
+            for f,par in dfon.items():
+               __fonc=RECU_FONCTION(
+                  TABLE=sdtab,
+                  FILTRE=_F(
+                     NOM_PARA=par,
+                     VALE_K=f,
+                  ),
+                  NOM_PARA_TABL=par,
+               )
+               __fonc.Trace(**kfonc)
+               DETRUIRE(CONCEPT=_F(NOM=('__fonc',),), ALARME='NON', INFO=1,)
 
    # 99. Traiter le cas des UL réservées
    UL.EtatInit()

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,6 +100,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                SANS_GROUP_NO=('DR1','DR2','DR3','DR4',
                                               'DR21','DR22','DR23','DR24',),
                                PRE_COND='DIRICHLET',
+                               ITER_PRE_MAXI=100,
                                       ),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
@@ -190,7 +191,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='B1',
                    VALE=3.2916909693770E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1e-07,
+                   PRECISION=1.2e-07,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.3.19',),
                 _F(RESULTAT=RESU,
@@ -200,7 +201,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='B3',
                    VALE=3.2916909693770E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1e-07,
+                   PRECISION=1.2e-07,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.3.19',),),);
 

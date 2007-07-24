@@ -1,7 +1,7 @@
-      SUBROUTINE XCOBID(MODELE,DEFICO)
+      SUBROUTINE XCOBID(MODELX,DEFICO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C 
       IMPLICIT NONE
-      CHARACTER*8  MODELE
+      CHARACTER*8  MODELX
       CHARACTER*24 DEFICO
 C      
 C ----------------------------------------------------------------------
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  DEFICO : SD DE CONTACT
-C IN  MODELE : NOM DU MODELE
+C IN  MODELX : NOM DU MODELE MODIFIE PAR XFEM
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -56,13 +56,14 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      IFISS,NFISS,IRET,NZOCO,IZONE
-      INTEGER      JXC,JXSDC,JNFIS,JMOFIS
+      INTEGER      JNFIS,JMOFIS
       CHARACTER*8  NOMFIS
       CHARACTER*24 CARACF,METHCO,ECPDON,FORMCO
       INTEGER      JCMCF,JMETH,JECPD,JFORM
       INTEGER      CFMMVD,ZECPD,ZCMCF,ZMETH 
-      CHARACTER*24 XCONTA,XFIMAI
-      INTEGER      JCONTX,JFIMAI      
+      CHARACTER*24 XFIMAI
+      INTEGER      JFIMAI
+      CHARACTER*16 VALK(2)            
 C
 C ----------------------------------------------------------------------
 C
@@ -70,15 +71,14 @@ C
 C
 C --- ACCES A LA SD FISS_XFEM
 C
-      CALL JEEXIN(MODELE(1:8)//'.FISS',IRET)
+      CALL JEEXIN(MODELX(1:8)//'.FISS',IRET)
 C      
       IF (IRET.EQ.0) THEN
-        CALL ASSERT(.FALSE.)
+        VALK(1) = MODELX
+        CALL U2MESK('F','XFEM2_10',1,VALK) 
       ELSE
-        CALL JEVEUO(MODELE(1:8)//'.FISS'  ,'L',JMOFIS)        
-        CALL JEVEUO(MODELE(1:8)//'.NFIS'  ,'L',JNFIS)
-        CALL JEVEUO(MODELE(1:8)//'.XFEM_SDCONT','L',JXSDC)
-        CALL JEVEUO(MODELE(1:8)//'.XFEM_CONT'  ,'L',JXC)
+        CALL JEVEUO(MODELX(1:8)//'.FISS'  ,'L',JMOFIS)        
+        CALL JEVEUO(MODELX(1:8)//'.NFIS'  ,'L',JNFIS)
       ENDIF
 C 
 C --- INITIALISATIONS
@@ -92,8 +92,7 @@ C
       ECPDON = DEFICO(1:16)//'.ECPDON'
       CARACF = DEFICO(1:16)//'.CARACF'  
       METHCO = DEFICO(1:16)//'.METHCO'
-      XFIMAI = DEFICO(1:16)//'.XFIMAI' 
-      XCONTA = DEFICO(1:16)//'.XFEM'      
+      XFIMAI = DEFICO(1:16)//'.XFIMAI'     
 C
       ZMETH  = CFMMVD('ZMETH')
       ZECPD  = CFMMVD('ZECPD')
@@ -107,11 +106,9 @@ C
         CALL WKVECT(ECPDON,'G V I' ,ZECPD*NZOCO+1,JECPD)
         CALL WKVECT(FORMCO,'G V I' ,NZOCO,JFORM)
         CALL WKVECT(METHCO,'G V I' ,ZMETH*NZOCO+1,JMETH)  
-        CALL WKVECT(XFIMAI,'G V K8',NZOCO,JFIMAI) 
-        CALL WKVECT(XCONTA,'G V I' ,2    ,JCONTX)      
+        CALL WKVECT(XFIMAI,'G V K8',NZOCO,JFIMAI)       
       ELSE
         CALL JEVEUO(XFIMAI,'E',JFIMAI) 
-        CALL JEVEUO(XCONTA,'E',JCONTX)
         GOTO 899
       ENDIF       
 C
@@ -119,8 +116,6 @@ C --- REMPLISSAGE DES STRUCTURES DE DONNEES DE CONTACT
 C 
       ZR(JCMCF)      = NZOCO  
       ZI(JECPD)      = 1  
-      ZI(JCONTX-1+1) = NZOCO
-      ZI(JCONTX-1+2) = 0
       ZI(JMETH)      = NZOCO       
 C      
       DO 10 IZONE = 1,NZOCO     
@@ -147,8 +142,7 @@ C
       DO 20 IZONE = 1,NZOCO     
         IFISS  = IZONE
         NOMFIS = ZK8(JMOFIS-1 + IFISS)
-        ZK8(JFIMAI-1+IZONE) = NOMFIS 
-        ZI(JXC-1+IFISS)     = IZONE        
+        ZK8(JFIMAI-1+IZONE) = NOMFIS       
   20  CONTINUE  
 C
   999 CONTINUE                          

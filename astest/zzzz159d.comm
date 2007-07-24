@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 23/07/2007   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE (VALIDATION SENSIBILITE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ list_deriv = { 'YOUN__': [['DR1_YOUN','INST','SIYY'],['DR2_YOUN','INST','V1']],
 
 weight= Numeric.array([50. , 1.,])
 
-experience=[    Numeric.array([[0.00000E+00  , 0.00000E+00 ],
+experience=[   Numeric.array([[0.00000E+00  , 0.00000E+00 ],
                               [5.00000E-02  , 5.00000E+01 ],
                               [1.00000E-01  , 1.00000E+02 ],
                               [1.50000E-01  , 1.50000E+02 ],

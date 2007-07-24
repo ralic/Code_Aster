@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE CHAINAGE 3D CODE_SATURNE CODE_ASTER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,7 +122,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=1.,
                    NOM_CHAM='DEPL',
                    REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N3Q',NOM_CMP='DX',
+                   MAILLE='M81',NOEUD='N134',NOM_CMP='DX',
                    VALE=1.1452507566622E+04,
                    PRECISION=0.49E-2,
                    VERSION='8.02.12',),
@@ -130,7 +130,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=1.,
                    NOM_CHAM='DEPL',
                    REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N3Q',NOM_CMP='DY',
+                   MAILLE='M81',NOEUD='N134',NOM_CMP='DY',
                    VALE=-9.2224667357161E+03,
                    PRECISION=0.371E-2,
                    VERSION='8.02.12',),
@@ -138,7 +138,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=1.,
                    NOM_CHAM='DEPL',
                    REFERENCE='NON_REGRESSION',
-                   MAILLE='M81',NOEUD='N3Q',NOM_CMP='DZ',
+                   MAILLE='M81',NOEUD='N134',NOM_CMP='DZ',
                    VALE=4.2325358330346E+03,
                    PRECISION=2.78E-2,
                    VERSION='8.02.12',)

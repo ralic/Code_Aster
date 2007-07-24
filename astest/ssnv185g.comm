@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,6 +76,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     );
                     
 
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='OUI',
+                         INFO=1,);
+
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                       METHODE = 'XFEM',
                                      ALGO_LAGR='NON',
@@ -83,17 +88,14 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                INTEGRATION='GAUSS',
                                CONTACT_INIT='OUI',
                                     ),
-                          MODELE=MODELEIN,
+                          MODELE=MODELEK,
                           ),                     
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         CONTACT=CTXFEM,
-                         INFO=1,);
+
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM='OUI',);
+                      CONTACT_XFEM=CTXFEM,);
 
 #----------------------------------------------
 #                   MATERIAU

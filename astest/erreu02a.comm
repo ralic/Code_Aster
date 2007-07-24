@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
 # ---------------------------------------------------------------------
 # TITRE VERIFICATION GARDES-FOUS S'IL MANQUE DES VARIABLES DE COMMANDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,7 +145,7 @@ DETRUIRE(CONCEPT=_F(NOM=('TAB1'),),)
 
 
 
-# CM1B : CHAMP DE MATERIAU =F(TEMP) + TEMP OUBLIE SUR QUELQUES MAILLES => CALCULEL6_67 :
+# CM1B : CHAMP DE MATERIAU =F(TEMP) + TEMP OUBLIE SUR QUELQUES MAILLES => CALCULEL6_62 :
 #---------------------------------------------------------------------------------------------------------
 CM1B=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON1, ),
@@ -158,7 +158,7 @@ try :
 except aster.FatalError,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("CALCULEL6_67", str(err))<>None :
+   if re.search("CALCULEL6_62", str(err))<>None :
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -216,7 +216,7 @@ DETRUIRE(CONCEPT=_F(NOM=('TAB1'),),)
 
 
 
-# CM2C : CHAMP DE MATERIAU F(TEMP,SECH)  + SECH OUBLIE SUR QUELQUES MAILLES => CALCULEL6_67 :
+# CM2C : CHAMP DE MATERIAU F(TEMP,SECH)  + SECH OUBLIE SUR QUELQUES MAILLES => CALCULEL6_62 :
 #--------------------------------------------------------------------------------------------
 CM2C=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON2, ),
@@ -230,7 +230,7 @@ try :
 except  aster.FatalError,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("CALCULEL6_67", str(err))<>None :
+   if re.search("CALCULEL6_62", str(err))<>None :
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -240,7 +240,7 @@ DETRUIRE(CONCEPT=_F(NOM=('TAB1'),),)
 
 
 
-# CM2D : CHAMP DE MATERIAU F(TEMP,SECH)  + TEMP OUBLIE SUR QUELQUES MAILLES => CALCULEL4_69 :
+# CM2D : CHAMP DE MATERIAU F(TEMP,SECH)  + TEMP OUBLIE SUR QUELQUES MAILLES => CALCULEL6_62 :
 #--------------------------------------------------------------------------------------------
 CM2D=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON2, ),
@@ -254,7 +254,7 @@ try :
 except  aster.FatalError,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("CALCULEL6_63", str(err))<>None :
+   if re.search("CALCULEL6_62", str(err))<>None :
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)

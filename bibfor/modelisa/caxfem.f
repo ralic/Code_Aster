@@ -1,7 +1,7 @@
       SUBROUTINE CAXFEM(FONREE,CHAR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,13 +55,25 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      JFISS,IBID,IER,JSTANO,NREL,JNFIS
-      INTEGER      NFISS,I,NFISMX
+      INTEGER      NFISMX
+      PARAMETER    (NFISMX=100)
+      CHARACTER*8  FISS(NFISMX)
+C  
+      INTEGER      IBID,IER,I
+      INTEGER      NFISS,NREL
+      INTEGER      JFISS,JSTANO,JNFIS,JXC
       CHARACTER*24 GRMA,GRNO
       CHARACTER*19 CHS,LISREL
-      PARAMETER    (NFISMX=100)
-      CHARACTER*8  REP,FISS(NFISMX)
-      CHARACTER*8  NOMA,NOMO
+      CHARACTER*8  REP
+      CHARACTER*8  NOMA,NOMO,SDCONT
+      LOGICAL      LCONTX
+      CHARACTER*24 MODCON
+      INTEGER      JMOCO
+      CHARACTER*16 VALK(2)
+      CHARACTER*8  MODELX  
+      CHARACTER*24 XNRELL,XNBASC
+      INTEGER      JXNREL,JXNBAS      
+      CHARACTER*19 NLISEQ,NLISRL,NLISCO,NBASCO           
 C
 C ----------------------------------------------------------------------
 C
@@ -80,14 +92,44 @@ C
 C --- ACCES A LA SD FISSURE
 C
       CALL JEEXIN(NOMO(1:8)//'.FISS',IER)
-      CALL ASSERT(IER.NE.0)
+C      
+      IF (IER.EQ.0) THEN
+        VALK(1) = NOMO
+        CALL U2MESK('F','XFEM2_12',1,VALK) 
+      ENDIF
+C      
       CALL JEVEUO(NOMO(1:8)//'.FISS','L',JFISS)
       CALL JEVEUO(NOMO(1:8)//'.NFIS','L',JNFIS)
       NFISS = ZI(JNFIS)
 C      
       IF (NFISS .GT. NFISMX) THEN
         CALL U2MESI ('F', 'XFEM_2', 1, NFISMX)
-      ENDIF  
+      ENDIF
+C      
+C --- ACCES SD_CONTACT SI LIAISON CONTACT
+C
+      CALL JEVEUO(NOMO(1:8)//'.XFEM_CONT'  ,'L',JXC)
+      LCONTX = ZI(JXC) .EQ. 1
+      IF (LCONTX) THEN
+        CALL GETVID(' ','CONTACT_XFEM',1,1,1,SDCONT,IER)
+        IF (IER.EQ.0) THEN
+          CALL U2MESS('F','XFEM2_7')
+        ELSE
+          MODCON = SDCONT(1:8)//'.CONTACT.MODELX'
+          CALL JEVEUO(MODCON,'L',JMOCO)    
+          MODELX        = ZK8(JMOCO)
+          IF (MODELX.NE.NOMO) THEN
+            VALK(1) = MODELX
+            VALK(2) = SDCONT(1:8)
+            CALL U2MESK('F','XFEM2_11',2,VALK)           
+          ELSE 
+            XNRELL = SDCONT(1:8)//'.CONTACT.XNRELL'
+            XNBASC = SDCONT(1:8)//'.CONTACT.XNBASC'      
+            CALL JEVEUO(XNRELL,'L',JXNREL)               
+            CALL JEVEUO(XNBASC,'L',JXNBAS) 
+          ENDIF           
+        ENDIF
+      ENDIF        
 C
 C --- INITIALISATIONS
 C
@@ -127,7 +169,15 @@ C
 C
 C --- RELATIONS ENTRE LES INCONNUES DE CONTACT (POUR LA LBB)
 C
-        CALL XRELCO(FISS(I),NOMA  ,LISREL,NREL)      
+        IF (LCONTX) THEN
+          NBASCO = ZK24(JXNBAS+I-1)(1:19)
+          NLISEQ = ZK24(JXNREL+3*(I-1)  )(1:19)
+          NLISRL = ZK24(JXNREL+3*(I-1)+1)(1:19)
+          NLISCO = ZK24(JXNREL+3*(I-1)+2)(1:19)
+          CALL XRELCO(NOMA  ,NLISEQ,NLISRL,NLISCO,
+     &                NBASCO,LISREL,NREL)        
+        ENDIF
+      
       
  10   CONTINUE  
 C

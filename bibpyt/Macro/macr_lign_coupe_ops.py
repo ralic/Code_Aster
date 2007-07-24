@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,13 +21,14 @@
 ########################################################################
 # script PYTHON de creation du résultat local
 
-def crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,resin,mail,nomgrma):
+def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
 
   from Utilitai.Utmess     import U2MESS as UTMESS
   from math import pi,sqrt,atan2,asin
   import os,string,types
   import aster
   from Accas import _F
+  MODI_REPERE = self.get_cmd('MODI_REPERE')
 
   epsi=0.00000001
 
@@ -364,14 +365,15 @@ def dist_min_deux_points(mail):
 
 ########################################################################
 # verification que les points de la ligne de coupe sont dans la matiere
-def crea_grp_matiere(groupe,newgrp,m,__remodr,NOM_CHAM,
-                     POST_RELEVE_T,__macou,DEFI_GROUP):
+def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
 
   import aster
   from Accas import _F
   from Utilitai.Utmess import U2MESS as UTMESS
   import os
   from sets import Set
+  POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
+  DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
 
   motscles={}
   if m['NOM_CMP']!=None:
@@ -396,13 +398,17 @@ def crea_grp_matiere(groupe,newgrp,m,__remodr,NOM_CHAM,
   # dictc=table (extraite de dictb) contenant uniquement des noeuds dans la matière
   if m['NOM_CMP']!=None:
      dictc=getattr(dictb,m['NOM_CMP'][0]).NON_VIDE()
+     lno_c2 = Set(dictc.NOEUD.values())
   else:# TOUT_CMP='OUI'
-     dictc = None
-     for ctest in ('DX', 'DCX','SIXX', 'EPXX', 'TEMP', 'FLUX', 'V1'):
-        if ctest in dictb.para:
-           dictc = getattr(dictb, ctest).NON_VIDE()
-     if dictc is None:
-        UTMESS('F','DVP_1')
+     # on garde uniquement les composantes pour conserver les noeuds où il y a des valeurs
+     a_suppr = Set(['INTITULE', 'RESU', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'ABSC_CURV', 'COOR_X', 'COOR_Y', 'COOR_Z'])
+     new_para = Set(dictb.para)
+     new_para.difference_update(a_suppr)
+ 
+     lno_c2 = Set()
+     for comp in new_para.difference(['NOEUD']):
+        dictc = getattr(dictb, comp).NON_VIDE()
+        lno_c2.update(dictc.NOEUD.values())
 
   # listenoe_c=liste non ordonnee des noeuds de la ligne de coupe (sans doublons)
   listenoe_c = dictc.NOEUD.values()
@@ -612,7 +618,6 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   PROJ_CHAMP     =self.get_cmd('PROJ_CHAMP')
   POST_RELEVE_T  =self.get_cmd('POST_RELEVE_T')
   CREA_TABLE     =self.get_cmd('CREA_TABLE')
-  MODI_REPERE    =self.get_cmd('MODI_REPERE')
   CREA_RESU      =self.get_cmd('CREA_RESU')
   CREA_MAILLAGE  =self.get_cmd('CREA_MAILLAGE')
 
@@ -831,7 +836,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
          groupe='LICOU'+str(ioc2)
          nomgrma=' '
          newgrp='LICOF'+str(ioc2)
-         crea_grp_matiere(groupe,newgrp,m,__remodr,NOM_CHAM,POST_RELEVE_T,__macou,DEFI_GROUP)
+         crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou)
          groupe=newgrp
 
      # on definit l'intitulé
@@ -852,7 +857,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
                             GROUP_NO  = groupe,
                             NOM_CHAM  = NOM_CHAM,**motscles ),)
           else:
-            __remodr=crea_resu_local(dime,MODI_REPERE,NOM_CHAM,m,__recou,__macou,nomgrma)
+            __remodr=crea_resu_local(self,dime,NOM_CHAM,m,__recou,__macou,nomgrma)
             mcACTION.append( _F(INTITULE  = intitl,
                             RESULTAT  = __remodr,
                             GROUP_NO  = groupe,
@@ -900,7 +905,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
           ioc2=ioc2+1
           groupe='LICOU'+str(ioc2)
           newgrp='LICOF'+str(ioc2)
-          crea_grp_matiere(groupe,newgrp,m,__remodr,NOM_CHAM,POST_RELEVE_T,__macou,DEFI_GROUP)
+          crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou)
           groupe=newgrp
           if m['INTITULE'] !=None : intitl=m['INTITULE']
           else                    : intitl='l.coupe'+str(ioc2)

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,6 +52,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  FONC_LN=LN,
                                  ),
                     GROUP_MA_ENRI='SURF',);
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='OUI',                         
+                         INFO=1,);
                     
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                      METHODE = 'XFEM',
@@ -67,13 +72,10 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                COEF_REGU_FROT=1000.,
                                SEUIL_INIT=-5,
                                     ),
-                          MODELE=MODELEIN,
+                          MODELE=MODELEK,
                           ),                    
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         CONTACT=CTXFEM,                         
-                         INFO=1,);
+
 
 E=1.0E6
 nu=0.
@@ -98,7 +100,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                     
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM='OUI',);
+                      CONTACT_XFEM=CTXFEM,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,

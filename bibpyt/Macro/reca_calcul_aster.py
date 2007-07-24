@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 23/07/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -525,12 +525,14 @@ Message:
                    UTMESS('F', nompro, message)
 
                 try:
-                   ier, message, table_lue = lecture_table(texte, 1, ' ')
+                   table_lue = lecture_table(texte, 1, ' ')
                    list_para = table_lue.para
                    tab_lue   = table_lue.values()
                 except Exception, err:
                    ier=1
                    message = "Impossible de recuperer les resultats de calcul esclave (lecture des tables)!\nMessage:\n" + str(err)
+                else:
+                   ier=0
 
                 if ier!=0 :
                    UTMESS('F', nompro, message)
@@ -606,13 +608,14 @@ Message:
                              UTMESS('F', nompro, message)
 
                           try:
-                             ier, message, table_lue = lecture_table(texte, 1, ' ')
+                             table_lue = lecture_table(texte, 1, ' ')
                              list_para = table_lue.para
                              tab_lue   = table_lue.values()
                           except Exception, err:
                              ier=1
                              message = "Impossible de recuperer les resultats de calcul esclave (lecture des tables)!\nMessage:\n" + str(err)
-
+                          else:
+                             ier=0
 
                           if ier!=0 :
                              UTMESS('F', nompro, message)

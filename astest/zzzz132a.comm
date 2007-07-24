@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,7 +38,6 @@ MA=LIRE_MAILLAGE(
                    FORMAT   = 'MED',
                    INFO_MED = 2
                  )
-
 #
 THERDEP=LIRE_RESU(
                    MAILLAGE  = MA,
@@ -143,29 +142,24 @@ CALC_ELEM( reuse= MECATER ,RESULTAT= MECATER ,
                                          'EPSI_ELNO_DEPL', )
                          )
 
-#  PASSAGE D'UN CODAGE DES NOMS ET DES MAILLES DE BASE 10 EN BASE 36
-#          NOEUD  = 'N96'   ==> N2O
-#          MAILLE = 'M16',  ==> MG
-#          NOEUD  = 'N1',   ==> N1
-
 TEST_RESU(RESU=(
     _F( RESULTAT = MECATER,
           NUME_ORDRE = 1,
           NOM_CHAM = 'DEPL',
-          NOEUD   = 'N2O',
+          NOEUD   = 'N96',
           NOM_CMP = 'DX',
           VALE    = -1.24897E-04),
     _F( RESULTAT = MECATER,
           NUME_ORDRE = 1,
           NOM_CHAM = 'DEPL',
-          NOEUD    = 'N2O',
+          NOEUD    = 'N96',
           NOM_CMP  = 'DY',
           VALE     = 4.26518E-05),
     _F( RESULTAT = MECATER,
           NUME_ORDRE = 21,
           NOM_CHAM = 'SIGM_ELNO_DEPL',
-          MAILLE = 'MG',
-          NOEUD = 'NAH',
+          MAILLE = 'M16',
+          NOEUD = 'N377',
           NOM_CMP = 'SIYY',
           VALE = 2.56719E+05))
    )
@@ -191,22 +185,17 @@ THER_1=LIRE_CHAMP( MAILLAGE=MA,
                    )
 
 
-#  PASSAGE D'UN CODAGE DES NOMS ET DES MAILLES DE BASE 10 EN BASE 36
-#          NOEUD = 'N1240',  ==> NYG
-#          NOEUD = 'N685',   ==> NJ1
-#          NOEUD = 'N16',    ==> NG
-
 TEST_RESU(CHAM_NO=(
     _F( CHAM_GD = THER_1,
-          NOEUD = 'NYG',
+          NOEUD = 'N1240',
           NOM_CMP = 'TEMP',
           VALE = 1.00000E+00),
     _F( CHAM_GD = THER_1,
-          NOEUD = 'NJ1',
+          NOEUD = 'N685',
           NOM_CMP = 'TEMP',
           VALE = 1.00000E+00),
     _F( CHAM_GD = THER_1,
-          NOEUD = 'NG',
+          NOEUD = 'N16',
           NOM_CMP = 'TEMP',
           VALE = 1.00000E+00))
    )

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE DISTRIBUTION DE TEMPERATURE DANS UNE BARRE DE SECTION CARREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 #
-# MAILLES : HEXA27, (ET QUAD9)
+# MAILLES : HEXA20, (ET QUAD8)
 #
 
 DEBUT(  CODE=_F( NOM = 'TPLV304A',NIV_PUB_WEB='INTERNET') )
@@ -27,8 +27,20 @@ DEBUT(  CODE=_F( NOM = 'TPLV304A',NIV_PUB_WEB='INTERNET') )
 # LECTURE DU MAILLAGE --------------------------------------------------
 #
 
+MA2=LIRE_MAILLAGE();
 
-MAIL=LIRE_MAILLAGE( )
+MAIL=CREA_MAILLAGE(MAILLAGE=MA2,
+                   HEXA20_27=_F(TOUT='OUI',),);
+
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(OPTION='PLAN',
+                                 NOM='TPR_IMP',
+                                 NOEUD_CENTRE='N1',
+                                 VECT_NORMALE=(1.,0.,0.,),
+                                 PRECISION=1E-4,),);
+
 
 #
 # DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
@@ -88,39 +100,39 @@ TEST_RESU(CHAM_NO=(
 
 _F( CHAM_GD = TPR, NOEUD = 'N1',    NOM_CMP = 'TEMP',  VALE = 37.78,  PRECISION = 1.E-10,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N149',  NOM_CMP = 'TEMP',  VALE = 37.78,  PRECISION = 1.E-10,
+_F( CHAM_GD = TPR, NOEUD = 'NS33',  NOM_CMP = 'TEMP',  VALE = 37.78,  PRECISION = 1.E-10,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N4',    NOM_CMP = 'TEMP',  VALE = 37.78,  PRECISION = 1.E-10,
+_F( CHAM_GD = TPR, NOEUD = 'N8',    NOM_CMP = 'TEMP',  VALE = 37.78,  PRECISION = 1.E-10,
                                                   CRITERE = 'ABSOLU'),
 _F( CHAM_GD = TPR, NOEUD = 'N6',    NOM_CMP = 'TEMP',  VALE = 37.78,  PRECISION = 1.E-10,
                                                   CRITERE = 'ABSOLU'),
 
-_F( CHAM_GD = TPR, NOEUD = 'N97',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N97',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N10',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N10',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N99',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N99',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N11',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N11',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N98',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N98',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N12',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N12',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N101',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N101',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N13',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N13',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N103',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N103',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N14',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N14',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N104',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N104',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N15',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N15',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N102',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N102',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N16',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N16',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N100',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N100',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'N17',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N17',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'),
-_F( CHAM_GD = TPR, NOEUD = 'N108',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
-_F( CHAM_GD = TPR, NOEUD = 'N108',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
+_F( CHAM_GD = TPR, NOEUD = 'NS41',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'NS41',  NOM_CMP = 'TEMP',  VALE = 20.329,  PRECISION = 5.E-1,
                                                   CRITERE = 'ABSOLU'))
 
           )

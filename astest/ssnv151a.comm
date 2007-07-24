@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE COMPRESSION/TRACTION EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,17 +167,18 @@ MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
                          )
 
 
-COND_LIM=AFFE_CHAR_MECA(
+
+COND_LIM=AFFE_CHAR_CINE(
                       MODELE=TROISD,
-               DDL_IMPO=(
+               MECA_IMPO=(
                     _F(  GROUP_NO = 'FACEXY',  DZ = 0.),
                     _F(  GROUP_NO = 'FACEYZ',  DX = 0.),
                     _F(  GROUP_NO = 'FACEXZ',  DY = 0.))
                              )
 
-TRAC=AFFE_CHAR_MECA(
+TRAC=AFFE_CHAR_CINE(
                       MODELE=TROISD,
-                    DDL_IMPO=_F(  GROUP_NO = 'FACE1XZ',  DY = -0.2)
+                    MECA_IMPO=_F(  GROUP_NO = 'FACE1XZ',  DY = -0.2)
                             )
 
 TRAC2=AFFE_CHAR_MECA(
@@ -238,7 +239,7 @@ SOLNL=STAT_NON_LINE(
                 REAC_ITER = 5),
                        CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 20,
-                RESI_GLOB_RELA = 1.E-6,)
+                RESI_GLOB_MAXI = 1.E-12,)
               )
 
 SOLNL=STAT_NON_LINE( reuse=SOLNL,

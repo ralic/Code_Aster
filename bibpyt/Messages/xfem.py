@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

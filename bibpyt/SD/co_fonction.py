@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_fonction SD  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,9 +221,10 @@ class fonction_c(fonction_class, sd_fonction_aster):
       if self.par_lot() :
          raise Accas.AsException("Erreur dans fonction_c.Trace en PAR_LOT='OUI'")
       from Utilitai.Graph import Graph
+      para = self.Parametres()
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
-       Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU'],'IMAG'])
+       Lab=[para['NOM_PARA'], '%s_R' % para['NOM_RESU'], '%s_I' % para['NOM_RESU']])
       gr.Trace(FORMAT=FORMAT,**kargs)
    def __call__(self,val):
       ### Pour EFICAS : substitution de l'instance de classe

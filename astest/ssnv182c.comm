@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 
 DEBUT(CODE=_F(NOM='SSNV182C',
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
 
 PRE_GIBI();
 
@@ -58,6 +58,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
                     );
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='OUI',                         
+                         INFO=1,);
                                
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                       METHODE = 'XFEM',
@@ -72,7 +77,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                COEF_REGU_FROT=1000.,
                                SEUIL_INIT=-1.E11,
                                     ),
-                          MODELE=MODELEIN,
+                          MODELE=MODELEK,
                           ),                                 
 
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
@@ -86,10 +91,7 @@ IMPR_RESU(FORMAT='IDEAS',
                   CHAM_GD=CHLN,),);
 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         CONTACT=CTXFEM,                         
-                         INFO=1,);
+
 
 E=100.0E6
 nu=0.
@@ -108,7 +110,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
           
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM='OUI',);
+                      CONTACT_XFEM=CTXFEM,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,

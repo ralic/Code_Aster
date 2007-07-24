@@ -1,4 +1,4 @@
-# MODIF  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 23/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE VALIDATION DE LA MODELISATION 3D_GRAD_VARI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,6 @@ MA_Q = CREA_MAILLAGE(
   MAILLAGE = MA_L,
   LINE_QUAD = _F(TOUT = 'OUI')
   )
-
 
 L_INST = DEFI_LIST_REEL (
               DEBUT=0.0,
@@ -223,7 +222,7 @@ for j in range(0,len(comportement)):
 
 
     SIG[i]=RECU_FONCTION(RESULTAT=U[i],
-                                   MAILLE='MJ',
+                                   MAILLE='M19',
                                    NOM_CHAM='SIEF_ELGA',
                                    NOM_CMP='SIXX',
                                 POINT=1,

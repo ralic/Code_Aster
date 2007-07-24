@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,NNCP,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -251,16 +251,20 @@ C       -- NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
           NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
           NBSP = ZI(JCESD-1+5+4* (IMA-1)+2)
           NBCMP = ZI(JCESD-1+5+4* (IMA-1)+3)
-          ICMPMX = 0
-          DO 30,ICMP1 = 1,NBCMP
-            ICMP=ZI(JNUCM1-1+ICMP1)
-            DO 50,IPT = 1,NBPT
-              DO 40,ISP = 1,NBSP
-                CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP1,IAD2)
-                IF (IAD2.GT.0) ICMPMX = ICMP
-   40         CONTINUE
-   50       CONTINUE
-   30     CONTINUE
+          IF (PROL0.EQ.'NAN') THEN
+            ICMPMX=NBCMP
+          ELSE
+            ICMPMX = 0
+            DO 30,ICMP1 = 1,NBCMP
+              ICMP=ZI(JNUCM1-1+ICMP1)
+              DO 50,IPT = 1,NBPT
+                DO 40,ISP = 1,NBSP
+                  CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP1,IAD2)
+                  IF (IAD2.GT.0) ICMPMX = ICMP
+   40           CONTINUE
+   50         CONTINUE
+   30       CONTINUE
+          ENDIF 
           ZI(JDCELV-1-IAD) = ICMPMX
         ELSE
           ZI(JDCELV-1-IAD) = 0

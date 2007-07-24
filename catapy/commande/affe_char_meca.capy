@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/07/2007   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -370,7 +370,10 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 
          LIAISON_XFEM      =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
          
-         CONTACT_XFEM      =SIMP(statut='f',typ='TXM',defaut="NON" ),
+         CONTACT_XFEM      =SIMP(statut='f',typ=char_meca,min=1,max=1,),
+         
+         
+#         SIMP(statut='f',typ='TXM',defaut="NON" ),
 
          VECT_ASSE       =SIMP(statut='f',typ=cham_no_sdaster ),
 #
@@ -646,6 +649,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                 RESI_ABSO       =SIMP(statut='o',typ='R',
                                       fr="Critère de convergence (niveau d'interpénétration autorisé)"),
                 REAC_ITER       =SIMP(statut='f',typ='I',defaut=3, fr="Fréquence de réinitialisation de la conjugaison"),
+                ITER_GCP_MAXI   =SIMP(statut='f',typ='I',defaut=0, fr="Nombre d'itérations maximal pour le GCP"),
                 TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
                 TOLE_PROJ_INT   =SIMP(statut='f',typ='R'  ,defaut=0.001),
                 TOLE_REAC_GEOM  =SIMP(statut='f',typ='R'  ,defaut=0.05),
@@ -671,7 +675,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                                  ), 
                 PRE_COND         =SIMP(statut='f',typ='TXM',defaut="SANS",
                       into=("DIRICHLET","SANS"),fr="Choix d'un préconditionneur (accélère la convergence)"),
-                COEF_RESI       =SIMP(statut='f',typ='R',defaut = 1.,val_min=1.,
+                ITER_PRE_MAXI   =SIMP(statut='f',typ='I',defaut=0, fr="Nombre d'itérations maximal pour le préconditionneur"),
+                COEF_RESI       =SIMP(statut='f',typ='R',defaut = 1.,
                                         fr="Critère_Convergence_Préconditionneur = COEF_RESI*Critère_Convergence_GCP",),
                 RECH_LINEAIRE=SIMP(statut='f',typ='TXM',defaut="ADMISSIBLE",into=("ADMISSIBLE","NON_ADMISSIBLE"),
                                         fr="Autorise-t-on de sortir du domaine admissible lors de la recherche linéaire",),

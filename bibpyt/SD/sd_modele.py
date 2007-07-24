@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_modele SD  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,13 +33,12 @@ class sd_modele_XFEM(AsBase):
     #   - Est-il normal de modifier les sd_fiss_xfem dans MODI_MODELE_XFEM ?
 
     XFEM_CONT   = AsVI()
-    XFEM_SDCONT = AsVK24()
     FISS   = AsVK8()
     NFIS   = AsVI(lonmax=2,)  # nombre de fissures , degré de l'approximation
     com1   = sd_xfem_com1(SDNom(nomj=''))
 
-    glute_XFEM = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00000'))) # fiche 10833
-    glute_XFEM2= Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00001'))) # fiche 10833
+#    glute_XFEM = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00000'))) # fiche 10833
+#    glute_XFEM2= Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00001'))) # fiche 10833
 
 
     if 0 :

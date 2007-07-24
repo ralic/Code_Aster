@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,9 @@ C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*1  K1BID
 C     ------------------------------------------------------------------
 C
+C --- RECUPERATION DU NIVEAU D'IMPRESSION
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
 C
       CALL GETRES(NOMFON,TYPFON,NOMCMD)
@@ -112,10 +115,6 @@ C        VERIF QUE LES PARAMETRES SONT STRICT CROISSANTS
          ENDIF
       ENDIF
 
-C
-C --- RECUPERATION DU NIVEAU D'IMPRESSION
-      CALL INFMAJ
-      CALL INFNIV(IFM,NIV)
 C
       CALL GETVTX(' ','NOM_PARA'   ,0,1,1,NOMPAR,N1)
       CALL GETVTX(' ','NOM_RESU'   ,0,1,1,NOMRES,N2)
