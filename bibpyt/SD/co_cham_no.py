@@ -1,4 +1,4 @@
-#@ MODIF co_cham_no SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_cham_no SD  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,6 +63,38 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
       aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
 
       return post_comp_cham_no(valeurs,noeud)
+      
+   def __add__(self, other):
+      from SD.sd_nume_equa import sd_nume_equa
+      from SD.sd_maillage import sd_maillage
+      from SD.co_maillage import maillage_sdaster
+      from Cata.cata import CREA_CHAMP,_F
+      from Noyau.nommage import GetNomConceptResultat
+      # on recupere le type
+      __nume_ddl=sd_nume_equa(self.REFE.get()[1])
+      __gd=__nume_ddl.REFN.get()[1].strip()
+      __type='NOEU_'+__gd
+      # on recupere le nom du maillage
+      __nomMaillage=self.REFE.get()[0].strip()
+      # on recupere l'objet du maillage
+      __maillage=CONTEXT.get_current_step().sds_dict[__nomMaillage]
+      # on recupere le nom a gauche du signe "="
+      toto=GetNomConceptResultat(self)
+      print 50*'#','\n',toto,50*'#','\n'
+      __CHAM = CREA_CHAMP(OPERATION='ASSE',
+                          MAILLAGE=__maillage,
+                          TYPE_CHAM=__type,
+                          INFO=1,
+                          ASSE=(_F(CHAM_GD=self,
+                                   TOUT='OUI',
+                                   CUMUL='OUI',
+                                   COEF_R=1.),
+                                _F(CHAM_GD=other,
+                                   TOUT='OUI',
+                                   CUMUL='OUI',
+                                   COEF_R=1.),  
+                               ))
+      return __CHAM
 
 
 

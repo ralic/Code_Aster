@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,13 +17,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 def extr_table_prod(TYPE_RESU,**args):
-  if TYPE_RESU == "MATR_ASSE_GENE_R" : return matr_asse_gene_r
+  from Cata import cata
+  typ = TYPE_RESU.lower()
+  if hasattr(cata, typ):
+     return getattr(cata, typ)
   raise AsException("type de concept resultat non prevu")
 
 EXTR_TABLE=OPER(nom="EXTR_TABLE",op=173,sd_prod=extr_table_prod,reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
-         fr="Extraire d'une table la matrice de masse généralisée assemblée",
-         TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("MATR_ASSE_GENE_R",) ),
+         fr="Extraire d'une table des concepts Code_Aster",
+         TYPE_RESU       =SIMP(statut='o',typ='TXM',),
 
          TABLE           =SIMP(statut='o',typ=table_sdaster),
 

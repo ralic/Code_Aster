@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF CALCULEL  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,22 @@ C
       IF ( TYPESD .EQ. 'MATR_ASSE_GENE_R' ) THEN
 C          ------------------------------
          CALL COPISD ( 'MATR_ASSE_GENE', 'G', VALK, NOMRES )
+C
+      ELSEIF ( TYPESD .EQ. 'MATR_ELEM_DEPL_R' ) THEN
+C          ------------------------------
+         CALL COPISD ( ' ', 'G', VALK(1:8), NOMRES )
+C
+      ELSEIF ( TYPESD .EQ. 'VECT_ELEM_DEPL_R' ) THEN
+C          ------------------------------
+         CALL COPISD ( ' ', 'G', VALK(1:8), NOMRES )
+C
+      ELSEIF ( TYPESD .EQ. 'CHAM_GD_SDASTER' ) THEN
+C          ------------------------------
+         CALL COPISD ( 'CHAMP_GD', 'G', VALK, NOMRES )
+C
+      ELSEIF ( TYPESD .EQ. 'ENTIER' ) THEN
+C          ------------------------------
+         CALL PUTVIR(VALI)
 C
       ELSE
          CALL U2MESK('F','CALCULEL4_47',1,TYPESD)

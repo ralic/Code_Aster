@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/08/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -371,18 +371,20 @@ C
 C
       CALL WKVECT('&&OP0172.AMOMOD','V V R',NBMODE,IAMOMO)
 C
-      VALEK(1) = 'FREQ'
+      VALEK(1) = 'NUME_ORDRE'
       DO 60 IMOD = 1,NBMODE
 C
+         IM = ZI(JNUME+IMOD-1)
          F = ZR(JFREQ+IMOD-1)
          ENESOL = ZERO
 C
          DO 61 I = 1 , NBGA
 C
             VALEK(2) = 'LIEU'
-            CALL TBLIVA (ENERPO, 2, VALEK, IBID, F, C16B, ZK8(IDGA+I-1),
+            CALL TBLIVA (ENERPO, 2, VALEK, IM, R8B, C16B, ZK8(IDGA+I-1),
      &                   'RELA', 1.D-03, 'POUR_CENT',
      &                           K8B, IBID, POUCEN , C16B, K8B, IRET )
+            IF (IRET.GE.2) CALL U2MESK('A','STBTRIAS_6',1,ZK8(IDGA+I-1))
 C
             ZR(IAMOMO+IMOD-1) = ZR(IAMOMO+IMOD-1) +
      &                          1.0D-2*POUCEN*ZR(IDAM+I-1)

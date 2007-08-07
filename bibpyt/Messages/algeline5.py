@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline5 Messages  DATE 06/08/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -334,6 +334,14 @@ cata_msg={
 53: _("""
  Erreur de programmation MULT_FRONT (NUME_DDL / PREML0) :
    * Sur-connexion des Lagranges Lambda1
+"""),
+
+54: _("""
+     ==== Type de maille Aster / Type de maille GMSH ====
+"""),
+
+55: _("""
+    %(i1)d  éléments %(k1)s découpés en %(i2)d  éléments %(k2)s a %(i3)d noeuds
 """),
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/08/2007   AUTEUR SALMONA L.SALMONA 
 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,7 +171,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='A1',
                    VALE=-3.2916909693770E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1e-07,
+                   PRECISION=2.e-07,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.3.19',),
                 _F(RESULTAT=RESU,
@@ -181,7 +181,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='A3',
                    VALE=-3.2916909693770E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1e-07,
+                   PRECISION=2.e-07,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.3.19',),
                 _F(RESULTAT=RESU,

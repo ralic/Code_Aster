@@ -6,7 +6,7 @@
       CHARACTER*(*) BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 06/08/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &             COOVAL, COODSC, COOREF, TITRE, NUMOLD
       CHARACTER*24 TYPMAV, CONNEV, NODIMV, NOMNOV,
      &             COOVAV, COODSV, COOREV
+      CHARACTER*24 VALK(2)
       INTEGER      IND, NUMEL, NBCR, NBP
       INTEGER      NBMMAX
       PARAMETER   (NBMMAX = 9999999)
@@ -66,8 +67,9 @@ C     --- TABLEAU DE DECOUPAGE
       PARAMETER (MAXNO  =  8)
       INTEGER             TDEC(NTYELE,MAXEL,MAXNO)
       INTEGER                   TYPD(NTYELE,3)
+      INTEGER    VALI(3)
 C     NBRE, POINTEURS, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
-      INTEGER      NBEL(NTYELE),JEL(NTYELE)
+      INTEGER      NBEL(NTYELE),JEL(NTYELE),IMPR
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C
@@ -145,18 +147,29 @@ C ---    NUMEL = EN QUOI ON DECOUPE, NBCR = COMBIEN ON EN CREER
  10   CONTINUE
 C
       NBMAIL = 0
+      IMPR   = 0
       DO 102 I=1,NTYELE
          NBMAIL = NBMAIL + NBEL(I)
 C
          IF(NOBJ(I).NE.' ') THEN
             CALL WKVECT ( NOBJ(I), 'V V I', MAX(1,NBEL(I)), JEL(I) )
-            IF(NIV.GE.2)THEN
+            IF(NIV.GE.1)THEN
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',I),        TYPM)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',TYPD(I,1)),TYPM2)
                NBCR=TYPD(I,2)
                NBP =TYPD(I,3)
-               WRITE(IFM,*) NBEL(I),' ELEMENTS ',TYPM,' DECOUPES EN ',
-     &                      NBCR,' ELTS ',TYPM2,' A ',NBP,' NOEUDS'
+               IF(NBEL(I).GT.0) THEN
+                 IF(IMPR.EQ.0) THEN
+                    CALL U2MESS('I','ALGELINE5_54')
+                    IMPR=1
+                 ENDIF
+                 VALK(1) = TYPM
+                 VALK(2) = TYPM2
+                 VALI(1) = NBEL(I)
+                 VALI(2) = NBCR
+                 VALI(3) = NBP
+                 CALL U2MESG('I','ALGELINE5_55',2,VALK,3,VALI,0,0.D0)
+               ENDIF
             ENDIF
          ENDIF
  102  CONTINUE
@@ -232,6 +245,10 @@ C
  100  CONTINUE
 C
       CALL JEDETR ( '&&IRGMMA.NUME_MAILLE' )
+C
+ 1001 FORMAT (1X,I8,' ELEMENTS ',1X,A8,' DECOUPES EN ',I8,
+     &        ' ELTS ',A8, 'A ',I8,' NOEUDS')
+
       CALL JEDEMA()
 C
       END

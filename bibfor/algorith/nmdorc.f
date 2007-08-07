@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -113,9 +113,10 @@ C                           1234567890123
           MOCLEF(1) = 'COMP_INCR'
         ELSE
           NBMO1 = 2
-          IF ((NOMCMD(1:13).EQ.'STAT_NON_LINE').OR.
-     &        (NOMCMD(1:13).EQ.'DYNA_NON_LINE').OR.
-     &        (NOMCMD(1:15).EQ.'DYNA_TRAN_EXPLI')) CRILOC=.TRUE.
+          IF ((NOMCMD(1:13).EQ.'STAT_NON_LINE')  .OR.
+     &        (NOMCMD(1:13).EQ.'DYNA_NON_LINE')  .OR.
+     &        (NOMCMD(1:15).EQ.'DYNA_TRAN_EXPLI').OR.
+     &        (NOMCMD(1:6) .EQ.'CALCUL')) CRILOC=.TRUE.
           MOCLEF(1) = 'COMP_INCR'
           MOCLEF(2) = 'COMP_ELAS'
         END IF

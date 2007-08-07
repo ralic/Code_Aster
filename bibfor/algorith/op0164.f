@@ -6,7 +6,7 @@ C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 06/08/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,11 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32   JEXNUM, JEXNOM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER, NBMODE,
+      INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER, 
      +             IADRIF, LLREFE, NEQ, LLNEQU, JSCDE, ULISOP
       REAL*8       RBID, PARTR, PARTI
       COMPLEX*16   CBID
-      CHARACTER*1  TYPMAT
+C      CHARACTER*1  TYPMAT
       CHARACTER*8  K8B, NOMRES, BASEMO, MATRAS, NUMGEN, INTERF
       CHARACTER*16 TYPRES, NOMCOM, TYPBAS, MATRI2, K16NOM, TYPBIN
       CHARACTER*19 RESU , STOLCI
@@ -75,8 +75,8 @@ C
       CALL GETVTX ( ' ', 'TYPE' , 1,1,1, TYPBIN, N2 )
 C
       CALL GETTCO ( BASEMO, TYPBAS )
-      TYPMAT= TYPRES(16:16)
-      WRITE(6,*) 'TYPMAT = ',TYPMAT
+C      TYPMAT= TYPRES(16:16)
+C      WRITE(6,*) 'TYPMAT = ',TYPMAT
 C
       NUGENE = NUMGEN
       STOLCI = NUMGEN//'      .SLCS'
@@ -99,7 +99,7 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
          NBMODS = ZI(JVAL+3)
       ENDIF
 
-      NBMODE = NBMODD + NBMODS
+C      NBMODE = NBMODD + NBMODS
       TABRIG = '&&OP0164.RIGM'
       TABFRQ = '&&OP0164.FREQ'
       CALL WKVECT(TABRIG,'V V R',2*NBMODS*NBMODS,JRIG)
@@ -165,15 +165,16 @@ C
 
       CALL JEVEUO ( STOLCI//'.SCDE', 'L', JSCDE )
       NUEQ   = ZI(JSCDE-1+1)
-      NTBLOC = ZI(JSCDE-1+2)
+C      NTBLOC = ZI(JSCDE-1+2)
 C      NBLOC  = ZI(JSCDE-1+3)
-      WRITE(6,*) 'NUEQ = ',NUEQ,' NBMODE = ',NBMODE
+C      WRITE(6,*) 'NUEQ = ',NUEQ,' NBMODE = ',NBMODE
+      NTERM = NUEQ*(NUEQ+1)/2
 C
       RESU = ' '
       RESU(1:8) = NOMRES
       CALL JECREC ( RESU//'.VALM', 'G V C', 'NU', 'DISPERSE',
      &                                            'CONSTANT', 2 )
-      CALL JEECRA ( RESU//'.VALM', 'LONMAX', NTBLOC, K8B )
+      CALL JEECRA ( RESU//'.VALM', 'LONMAX', NTERM, K8B )
 C
       CALL WKVECT ( RESU//'.LIME', 'G V K8', 1, IALIME )
       ZK8(IALIME) = '        '

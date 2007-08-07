@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost6 Messages  DATE 06/08/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,5 +161,19 @@ cata_msg={
     maille:  %(k1)s 
 """),
 
+31: _("""
+
+     ===== GROUP_MA ASTER / PHYSICAL GMSH =====
+
+"""),
+
+32: _("""
+
+  Le GROUP_MA GMSH GM10000 contient %(i1)d éléments :
+"""),
+
+33: _("""
+       %(i1)d éléments de type %(k1)s
+"""),
 
 }

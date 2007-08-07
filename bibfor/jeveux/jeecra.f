@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/08/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -252,7 +252,8 @@ C
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ELSE
             IF ( LCONTI ) THEN
-              IF ( LONOI .NE. 0 .AND. LONTI + LONOJ .GT. LONOI ) THEN
+              LONT=LONO( JLONO(IC) + ID ) 
+              IF ( LONT .NE. 0 .AND. LONTI -1 + LONOJ .GT. LONT ) THEN
                 CMESS = 'ATTRIBUT '//CATRLU//' INCOMPATIBLE AVEC VALEUR'
      &                  //' INITIALE DE LONT'
                 CALL U2MESK('F','JEVEUX_01',1,CMESS)
@@ -263,9 +264,7 @@ C
               ISZON(JISZON+IBLONO-1+IDATOC) = LONOJ
             ENDIF
             ISZON(JISZON+IBLONG-1+IDATOC) = LONGJ
-C           IF ( LONOJ .NE. 0 ) THEN
-              LUTI ( JLUTI(IC)+IXLONO ) = 1 + LUTI( JLUTI(IC)+IXLONO )
-C           ENDIF
+            LUTI ( JLUTI(IC)+IXLONO ) = 1 + LUTI( JLUTI(IC)+IXLONO )
           ENDIF
         ELSE IF ( LLUTI ) THEN
           IBLUTI = IADM ( JIADM(IC) + 2*IXLUTI-1 )

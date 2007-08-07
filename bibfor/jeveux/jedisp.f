@@ -1,6 +1,6 @@
       SUBROUTINE JEDISP ( N , TAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 06/08/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,10 @@ C
 C IN  N      : TAILLE DU TABLEAU TAB
 C IN  TAB    : TAILLE DE SEGMENT DE VALEURS DISPONIBLE
 C
+C SI L'ALLOCATION DYNAMIQUE EST UTILISEE LA ROUTINE RENVOIE L'ENTIER 
+C MAXIMUM DANS LES N VALEURS DU TABLEAU TAB
+C
+C
 C ----------------------------------------------------------------------
       CHARACTER*1      K1ZON
       COMMON /KZONJE/  K1ZON(8)
@@ -38,9 +42,17 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
+      INTEGER          LDYN , LGDYN
+      COMMON /IDYNJE/  LDYN , LGDYN
 C ----------------------------------------------------------------------
       LOGICAL          LAMOV
 C DEB ------------------------------------------------------------------
+      IF ( LDYN .EQ. 1 ) THEN 
+        DO 11 K = 1,N
+         TAB(K) = ISMAEM()
+  11    CONTINUE
+        GOTO 200
+      ENDIF     
       DO 1 K = 1,N
          TAB(K) = 0
  1    CONTINUE
@@ -80,5 +92,6 @@ C DEB ------------------------------------------------------------------
       ENDIF
       ID  = IS
       IF ( IS .NE. 0 ) GOTO 140
+ 200  CONTINUE     
 C FIN-------------------------------------------------------------------
       END
