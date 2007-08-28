@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -378,6 +378,7 @@ C
 C --      PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
 C
           ETATF = 'ELASTIC'
+               VINF(NVI)=SEUIL
           ENDIF
 C
 C --    TEST DE FISSURATION POUR NADAI_B , SI LE BETON EST FISSURE

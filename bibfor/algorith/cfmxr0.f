@@ -1,7 +1,7 @@
       SUBROUTINE CFMXR0(RESOCO,MODELE,CNSINR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/08/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,7 +61,7 @@ C
       INTEGER      ILIAI,IBID
       INTEGER      NBLIAI,NESCL
       INTEGER      ICMP,ICONTA
-      CHARACTER*8  LICMPR(20),NOMCMP(20), NOMA
+      CHARACTER*8  LICMPR(24),NOMCMP(24), NOMA
       CHARACTER*24 APPARI
       INTEGER      JAPPAR
       INTEGER      IRET
@@ -74,7 +74,8 @@ C ----------------------------------------------------------------------
      &     'RTAX','RTAY','RTAZ',
      &     'RTGX','RTGY','RTGZ',
      &     'RX'  ,'RY'  ,'RZ'  ,
-     &     'R'   ,'HN'/
+     &     'R'   ,'HN'  ,'I'   ,
+     &     'IX'  ,'IY'  ,'IZ'  /
 C
 C ----------------------------------------------------------------------
 C
@@ -100,7 +101,7 @@ C ======================================================================
       ZRESU  = CFMMVD('ZRESU')
       
 C --- CHANGEZ LA TAILLE DE LICMPR,NOMCMP   
-      IF (ZRESU.GT.20) CALL ASSERT(.FALSE.)
+C      IF (ZRESU.GT.20) CALL ASSERT(.FALSE.)
       
 C -- MAILLAGE SOUS-TENDU PAR LE MODELE
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IRET)

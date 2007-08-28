@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/07/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,6 +184,37 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   GM=0.0,
                                   PM=0.0,
                                   C=0.0,),);
+
+ACIERT=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                            NU=0.0,),
+                    ECOU_VISC1=_F(N=10.0,
+                                  K=40.0,
+                                  C=10.0,),
+                    ECOU_VISC2=_F(N=10.0,
+                                  K=40.0,
+                                  C=10.0,
+                                  D=0.0,
+                                  A=0.0,),
+                    ECOU_VISC3=_F(K=KeV,
+                                  TAUMU=75.5,
+                                  GAMMA0=1e-10,
+                                  DELTAV=1e-06,
+                                  DELTAG0=0,),
+                    ECRO_ISOT1=_F(R_0=75.5,
+                                  Q=9.77,
+                                  B=19.34,
+                                  H=0.0,),
+                    ECRO_ISOT2=_F(R_0=75.5,
+                                  Q1=9.77,
+                                  B1=19.34,
+                                  H=0.0,
+                                  Q2=0.0,
+                                  B2=0.0,),
+                    ECRO_CINE1=_F(D=36.68,),
+                    ECRO_CINE2=_F(D=36.68,
+                                  GM=10.0,
+                                  PM=0.10,
+                                  C=10.0,),);
                                   
 # MATERIAU DEFINI POUR LE COMPORTEMENT  KOCKS_RAUCH
 
@@ -259,6 +290,14 @@ MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                                      VALE_REF=0),),
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIER,),);
+                          
+MATT=AFFE_MATERIAU(MAILLAGE=CUBE,
+                        AFFE_VARC=(_F(TOUT='OUI',
+                                     CHAMP_GD=TEMPE,
+                                     NOM_VARC='TEMP',
+                                     VALE_REF=0),),
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIERT,),);
                           
 MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
                         AFFE_VARC=(_F(TOUT='OUI',
@@ -353,23 +392,23 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_REP=(30.0,0.0,0.0,),),);
 
-COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
+COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERT,
                                     ECOULEMENT='ECOU_VISC1',
                                     ECRO_ISOT='ECRO_ISOT1',
                                     ECRO_CINE='ECRO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BASAL',),
-                                 _F(MATER=ACIER,
+                                 _F(MATER=ACIERT,
                                     ECOULEMENT='ECOU_VISC2',
                                     ECRO_ISOT='ECRO_ISOT2',
                                     ECRO_CINE='ECRO_CINE2',
                                     FAMI_SYST_GLIS='PRISMATIQUE',),
-                                 _F(MATER=ACIER,
+                                 _F(MATER=ACIERT,
                                     ECOULEMENT='ECOU_VISC3',
                                     ECRO_ISOT='ECRO_ISOT1',
                                     ECRO_CINE='ECRO_CINE2',
                                     FAMI_SYST_GLIS='CUBIQUE1',),
-                                 _F(MATER=ACIER,
+                                 _F(MATER=ACIERT,
                                     ECOULEMENT='ECOU_VISC3',
                                     ECRO_ISOT='ECRO_ISOT2',
                                     ECRO_CINE='ECRO_CINE1',
@@ -507,6 +546,60 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
                    ),)
                    
 
+# LOI DE COMPORTEMENT KOCKS_RAUCH en Explicite POLYCRISTAL
+
+EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT2,
+                     CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC3,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='POLYCRISTAL',
+                                   COMPOR=COMPORP,
+                                   RESO_INTE='RUNGE_KUTTA_2',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST3C,
+                                   SUBD_METHODE='EXTRAPOLE', 
+                                   SUBD_PAS=4,
+                                   SUBD_NIVEAU=5,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                               MATRICE='ELASTIQUE'),),
+                     CONVERGENCE=(_F(#RESI_GLOB_RELA=1e-08,
+                                     ITER_GLOB_MAXI=10,),),
+                     ARCHIVAGE=_F(LIST_INST=LINST3,),
+                                     )
+
+EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
+                 RESULTAT=EXPLKRP,
+                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-3.2437264702129E+02,PRECISION=(0.04,0.0001),
+                   REFERENCE='SOURCE_EXTERNE',),
+                _F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.002,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=EXPLKRP,
+                   INST=TFIN3,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-8.1822270710961E-04,PRECISION=0.02,
+                   REFERENCE='SOURCE_EXTERNE',),
+                   ),)
+                   
 
                    
                    
@@ -831,7 +924,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLORTH,
 
 
 EXPLTOUT=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT,
+                     CHAM_MATER=MATT,
                      CARA_ELEM=ORIEN,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
@@ -982,7 +1075,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLORTH,
 
 
 IMPLTOUT=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT,
+                     CHAM_MATER=MATT,
                      CARA_ELEM=ORIEN,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,

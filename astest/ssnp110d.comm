@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,6 +85,11 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     GROUP_MA_ENRI='SURFTOT',
                     );
 
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         CONTACT='OUI',
+                         FISSURE=FISS,
+                         INFO=1,);
+
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                       METHODE = 'XFEM',
                                       INTEGRATION='GAUSS',
@@ -93,16 +98,15 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                CONTACT_INIT='OUI',
                                COEF_ECHELLE=1.,
                                     ),
-                          MODELE=MODELEIN,
+                          MODELE=MODELEK,
                           ),  
 
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=FISS,
-                         CONTACT=CTXFEM,
-                         INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      CONTACT_XFEM=CTXFEM,
+                      LIAISON_XFEM='OUI',INFO=1,);
 
 #----------------------------------------------
 #                   MATERIAU

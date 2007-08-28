@@ -2,7 +2,7 @@
      &                   VALRES,NMAT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 C     ----------------------------------------------------------------
       INTEGER         KPG,KSP,NMAT,NVINI,NBVAL,IMAT,I
       REAL*8          MATER(NMAT,2)
-      REAL*8          VALRES(NMAT)
+      REAL*8          VALRES(NMAT), VALLUE(NMAT)
       CHARACTER*8     NOMRES(NMAT)
       CHARACTER*(*)   FAMI, POUM
       CHARACTER*2     CODRET(NMAT)
@@ -45,7 +45,12 @@ C
           NBVAL=1
           NOMRES(1)='D'
           CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-     &               NBVAL, NOMRES, VALRES,CODRET,'FM')
+     &               NBVAL, NOMRES, VALLUE,CODRET,'FM')
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION ECRO_CINE1 A LE NUMERO 1
+          VALRES(1)=1
+          
       ENDIF
       IF (NECOUL.EQ.'ECRO_CINE2') THEN
           NBVAL=4
@@ -54,6 +59,11 @@ C
           NOMRES(3)='PM'
           NOMRES(4)='C'
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER,NECOUL,0,' ',0.D0,
-     &                 NBVAL,NOMRES, VALRES,CODRET,'FM')
+     &                 NBVAL,NOMRES, VALLUE,CODRET,'FM')
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION ECRO_CINE2 A LE NUMERO 2
+          VALRES(1)=2
+          
       ENDIF
       END

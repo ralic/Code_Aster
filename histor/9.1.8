@@ -1,0 +1,860 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 27/08/2007 - 18:24:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011151 DU 2007-07-31 15:51:41
+TYPE anomalie concernant Code_Aster (VERSION 8.6)
+TITRE
+   Problxc3xa8me STAT NON LIN, AFFE CHAR MECA F, FORCE ARETE
+FONCTIONNALITE
+   Il y avait effectivement un bug dans FORCE_ARETE fonction
+   mais uniquement sur les éléments 3D. Ce bug faisait que le 
+   chargement n'était pas pris en compte, donc donnait des 
+   résultats faux si le chargement était non nul (cas de la 
+   fiche).
+   
+   Or le seul test dans Aster qui utilise FORCE_ARETE fonction
+   sur les éléments 3D est un test de non régression (SSLV200A 
+   et B) qui ne vérifie pas si le chargement est bien pris en 
+   compte ou non.
+   Le chargement étant maintenant pris en compte, on modifie 
+   les TEST_RESU de ce test en conséquence.
+   
+   Les autres chargements FORCE_ARETE étaient corrects.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.6.10
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SSLV200A  SSLV200B
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 23/08/2007 - 11:13:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011159 DU 2007-08-03 08:42:45
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW8.5.2, le cas test zzzz141a s'arrete en ARRET_ANORMAL (R)
+FONCTIONNALITE
+   Problème identifié par Jean-Pierre Lefebvre :
+   Suite à une panne de courant, les noeuds d'exécution ont été réinstallés ... mais sans le
+   lien GMSH. C'est maintenant corrigé et le test tourne.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test concern?
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011158 DU 2007-08-03 08:38:38
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW8.5.2, le cas test hsna120a s'arrete en ARRET_ANORMAL (R)
+FONCTIONNALITE
+   Problème identifié par Jean-Pierre Lefebvre :
+   Suite à une panne de courant, les noeuds d'exécution ont été réinstallés ... mais sans le
+   lien GMSH. C'est maintenant corrigé et le test tourne.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test concern?
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011146 DU 2007-07-30 09:42:07
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Calcul de fractile (nappes et fonctions)
+FONCTIONNALITE
+   Ajout du mot clé facteur FRACTILE dans CALC_FONCTION afin de pouvoir calculer le fractile
+   de nappes et de fonctions (besoin exprimé par SEPTEN pour études séisme). Validation par
+   nouveau test zzzz100f.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.32.04
+VALIDATION
+   ajout test zzzz100f
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 21/08/2007 - 09:32:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011120 DU 2007-07-19 07:02:03
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Imposer une pression sur les l?es d'une fissure avec X-FEM
+FONCTIONNALITE
+   Problème : 
+   ----------
+   
+   On souhaite pouvoir appliquer une pression sur les lèvres d'une fissure dans le cadre d'X-FEM.
+   Cette pression doit pouvoir être donnée sous la forme d'une fonction (de l'espace et du temps)
+   Projet : Fuite GV
+   
+   
+   Solution :
+   ---------
+   
+   1) Vocabulaire :
+   forcément nouveau, puisqu'aucun groupe de maille ne correspond aux lèvres.
+   On rajoute le mot clé FISSURE dans AFFE_CHAR_MECA / AFFE_CHAR_MECA_F
+   
+            PRES_REP        =FACT(statut='f',max='**',
+                fr="Applique une pression à un domaine de milieu continu 2D ou 3D, ou à un
+   domaine de coques et tuyaux",
+                regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','FISSURE'),
+                        PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE','FISSURE'),
+                        AU_MOINS_UN('PRES','CISA_2D' ),),
+                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                FISSURE         =SIMP(statut='f',typ=fiss_xfem,min=1,max=100,),
+                PRES            =SIMP(statut='f',typ='R' ),
+                CISA_2D         =SIMP(statut='f',typ='R' ),
+              ),
+   On renseigne alors le (ou les) noms des structures de données fiss_xfem sur lesquelles
+   on souhaite appliquer la pression.
+   
+   
+   2) programmation :
+   La routine capres est modifiée de telle sorte que dans le cas X-FEM, on ne récupère pas
+   les mailles de bord sous GROUP_MA/NO... mais on appele la nouvelle routine xtmafi qui
+   permet de lister les mailles X-FEM contenant les lèvres.
+   Ainsi, pour chaque occurence de PRES_REP, la carte des pressions est alors enrichie comme
+   dans le cas classique. On peut donc avoir des pressions différentes sur différentes
+   fissures (contrairement à ce qui est dit dans les messages précédents), il suffit de
+   plusieurs occurences de PRES_REP.
+   
+   On modifie aussi la routine vechme qui lance le calcul des seconds membres de pression. 
+   Le te0037 se sert des données topologique concernant les facettes de contact (cad les
+   levres) pour faire l'intégration des seconds membres de pression sur les lèvres de la fissure.
+   Seules les options CHAR_MECA_PRES_R et CHAR_MECA_PRES_F sont programmées, pour les
+   éléments 2D (CP/DP) et 3D.
+   
+   remarque : comme il est impossible pour l'instant de faire du contact en 2D sur des
+   elements contenant le fond de fissure, on ne calcule pas de second memebre de pression sur
+   ces eléments
+   
+   Atetntion : rien n'a été fait pour la prise en compte de cette pression dans le calcul de
+   G et des K (opérateur CALC_G). La fiche 11162 a été émise sur ce sujet.
+   
+   3) validation
+   Un nouveau cas test est introduit : ssnv203
+   "APPLICATION D'UNE PRESSION SUR LES LÈVRES D'UNE FISSURE AVEC X-FEM"
+   
+   Deux modélisations : une en 2d, une en 3d
+   C'est une plaque coupée en deux horizontalement, dont les bords sup et inf sont encastrés.
+   on applique une pression constante, puis affine sur les lèvres.
+   
+   
+   4) impact
+   - capres.f, xtmafi.f, vechme.f, te0037.f, xjacf2.f, te0533.f, te0532.f, te0534.f
+   - affe_char_meca.capy, affe_char_meca_f.capy
+   - char_meca_pres_r.cata, char_meca_pres_f.cata
+     gener_me_xh.cata, gener_me_xht.cata, gener_me_xt.cata
+     gener_medpl2_xh.cata
+     gener_medcl2_xh.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.203, U4.44.01
+VALIDATION
+   ssnv203a, ssnv203b
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011076 DU 2007-07-12 08:53:05
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Variables de commande et mod?sation XFEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Le chantier "nouvelles variables de commande" est actuellement incompatible avec les
+   elements XFEM.
+   
+   Les éléments XFEM sont en effet re-découpés en sous-éléments (en fonction de la position
+   de la fissure qui les traverse). Le comportement est calculé sur les points de Gauss des
+   sous-éléments.
+   
+   Malheureusement, les variables de commande ne sont pas préparées sur les points de Gauss
+   des sous-éléments.
+   
+   Actuellement, les éléments XFEM déclarent une famille spéciale de PG (appelée "XFEM").
+   Cette famille sert uniquement à dimensionner (dans les catalogues d'éléments finis) les
+   champs de contrainte et variables internes. Ce n'est pas une vraie famille de PG car la
+   position de ces PG ne peut pas être définie dans l'élément de référence : elle dépend du
+   découpage lié à la fissure.
+   
+   Pour préparer les variables de commande sur cette famille "XFEM", il faut être capable de
+   calculer une matrice de passage NOEUDS -> "XFEM". Cette matrice ne peut pas se déduire du
+   seul ELREFE (comme aujourd'hui pour les éléments ordinaires). Il faut donc modifier la
+   routine manopg.f pour qu'elle fasse un "mix" : ELREFE pour les éléments ordinaires +
+   calcul élémentaire (te00ij) pour les éléments XFEM.
+   
+   Cette évolution permettra également d'utiliser CREA_CHAMP/OPERATION='DISC' pour
+   transformer les champs aux noeuds (contraintes ou variables internes) en champs "ELGA".
+   Ceci est nécessaire si l'on doit utiliser PROJ_CHAMP (qui ne sait projeter que des champs
+   aux noeuds).
+   
+   Cette fiche sera réalisée conjointement par Samuel et Jacques.
+   
+   
+   Solution :
+   ----------
+   
+   On modifie le calcul de la matrice NOEUDS -> ELGA "XFEM". Lorsque l'on traite cette
+   famille, on calcule tout d'abord les coordonnées dans le repère de référence des points de
+   Gauss (concaténation des points de Gauss des sous-elements de l'élément parent. Ce calcul
+   est réalisé par la routine élémentaire te0046 (nouvelle).
+   L'appel aux variables de commandes se fait par exemple comme ceci :
+           CALL RCVARC('F','TEMP','+','XFEM',IPG,1,TEMPG,IRET)
+   avec IPG le numéro du point de Gauss dans la famille 'XFEM'. Il s'obtient en fonction du
+   point de Gauss courant et de numéro du sous-élément sur lequel on se trouve.
+   
+   impact fortran :
+   manopg.f, manopx.f (ajout) et te0046 (ajout)
+   
+   impact catalogues :
+   gener_me_xh.cata, gener_me_xt.cata, gener_me_xht.cata
+   gener_medpl2_xh.cata, gener_medpl2_xt.cata, gener_medpl2_xht.cata
+   gener_mecpl2_xh.cata, gener_mecpl2_xt.cata, gener_mecpl2_xht.cata
+   xfem_xpg.cata (ajout)
+   
+   Le cas test est celui restitué pour la fiche 10503 (prise en compte de la température pour
+   X-FEM).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test x-fem
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010503 DU 2007-02-05 15:33:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   XFEM : extension aux probl?s thermom?niques
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Pour le moment les éléments X-FEM n'ont été développés qu'en mécanique pure.
+   Dans beaucoup d'applications industrielles (coudes et piquages pour UTO, projet
+   FATIGUE...), il est cependant indispensable de prendre en compte les chargements thermiques.
+   
+   Cette fiche, à réaliser dans le cadre de l'Affaire UTO, vise à développer la méthode X-FEM
+   en thermique.
+   
+   
+   Solution :
+   ----------
+   
+   Le point bloquant a été le passage du champ de température NOEU -> ELGA, qui a fait
+   l'objet d'une fiche (11076).
+   
+   Lors du calcul des contraintes (nmcpel) il faut donner en arguement la famille 'XFEM' et
+   le numéro du point de Gauss courrant dans cette famille. Ce numéro dépend du sous-élément
+   et du poitn de gauss du sous-element dans lequel on se trouve.
+   
+   Dans les catalogues, il faut aussi définir la famille XFEM en tant que famille de type MATER :
+   FPG_LISTE__  MATER = (RIGI XFEM)
+   
+   impact fortran :
+   te0539
+   xmel3d renommé en xnmel
+   xkel2d renommé en xnmel2
+   xkel3d renommé en xnmel3
+   cnsces
+   chauxi
+   xsif3d
+   te0297
+   
+   validation : 
+   nouveau cas test : hsnv132 : FISSURE X-FEM EN THERMO-ELASTICITE
+   C'est une plaque carrée avec une fissure débouchante, encastrée sur le
+   bord inférieure, et soumise à un gradient de température horizontal.
+   ce chargement a pour effet d'ouvrir la fissure.
+   On compare le déplacement pour le noeud extrémité en haut à droit, pour FEM et X-FEM.
+   Ce test comporte un appel à THER_LINEAIRE, puis STAT_NON_LINE.
+   hsnv132a : FEM 2D (pris comme référence)
+   hsnv132b : X-FEM 2D, fissure au milieu des éléments
+   hsnv132c : X-FEM 3D (où tous les ddls suivant z sont mis à zéro), fissure au milieu des
+   éléments
+   hsnv132d : X-FEM 3D, modélisation en vrai 3d, sans mettre DZ=0, pour valider le calcul de
+   G en 3d
+   On trouve un écart inférieur à pour le déplacement 1%, et un écart de 3.5% sur K1 et 1.4 %
+   sur K2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.22.132
+VALIDATION
+   hsnv132a, hsnv132b, hsnv132c, hsnv132d
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011168 DU 2007-08-17 13:20:27
+TYPE express concernant Code_Aster (VERSION 9.2)
+TITRE
+   bug X-FEM orientation des sous-elements de bord
+FONCTIONNALITE
+   Depuis la restit en 9.1.14, petit bug dans la routine xoripe.
+   La variable NDIME (dimension de l'élément courrant) était utilisée en début de routine.
+   Puis utilisée dans une boucle sur les éléments sans avoir été recalculée.
+   possibilité de résultats faux, bien que dans le cas qui a permis d'identifier le bug, ca
+   plantait salement dans utmasu.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.1.14
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests x-fem
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011163 DU 2007-08-09 11:04:58
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   NEW9.1.7, le cas test ssnp110d s'arrete en ARRET_NORMAL (BCR)
+FONCTIONNALITE
+   le cas test ssnp110d plante sur toutes les machines.
+   
+   on corrige l'erreur de syntaxe dans MODI_MODELE_XFEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp110d
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 21/08/2007 - 09:32:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010986 DU 2007-06-18 09:32:26
+TYPE anomalie concernant Code_Aster (VERSION 9.4)
+TITRE
+   Contact-frottement avec X-FEM
+FONCTIONNALITE
+   On propose les corrections suivantes pour faire passer
+   le test ssnv182f en deux pas de temps:
+   1) Mise en conformité du frottement et de la doc R:
+   dans le te0533, l'appel au semi-multiplicateur de 
+   frottement est fait de la manière suivante:
+    
+                 DO 158 I=1,NNOF
+                   FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                   NLI=CFACE(IFA,I)
+                   NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
+                   CALL XPLMAT
+   (NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+                   DO 159 J=1,NDIM
+                     LAMB1(J)=LAMB1(J)+FFI * (ZR(IDEPL-
+   1+PLI+1)
+        &                                    )*TAU1(J,NLI)
+                   write
+   (6,*)'JDIM',J,'I',FFI,'POS',PLI+1,'VAL',
+        &              ZR(IDEPL-1+PLI+1),'TAN',TAU1(J,NLI)
+                     IF (NDIM.EQ.3)
+        &              LAMB1(J)=LAMB1(J)+FFI*(ZR(IDEPL-
+   1+PLI+2)
+        &                                    )*TAU2(J,NLI)
+    159            CONTINUE
+    158          CONTINUE
+   
+   
+   Il faut en fait écrire:
+                 DO 158 I=1,NNOF
+                   FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+                   NLI=CFACE(IFA,I)
+                   NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
+                   CALL XPLMAT
+   (NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
+                   DO 159 J=1,NDIM
+                     LAMB1(J)=LAMB1(J)+FFI * (ZR(IDEPL-
+   1+PLI+1)
+        &                                  +ZR(IDEPM-1+PLI+1)
+        &                                    )*TAU1(J,NLI)
+                   write
+   (6,*)'JDIM',J,'I',FFI,'POS',PLI+1,'VAL',
+        &              ZR(IDEPL-1+PLI+1),'TAN',TAU1(J,NLI)
+                     IF (NDIM.EQ.3)
+        &              LAMB1(J)=LAMB1(J)+FFI*(ZR(IDEPL-
+   1+PLI+2)
+        &                                  +ZR(IDEPM-1+PLI+2)
+        &                                    )*TAU2(J,NLI)
+    159            CONTINUE
+    158          CONTINUE
+   
+   2) Erreurs dans l'écriture de la doc R au niveau du 
+   principe des travaux
+   viturels. L'erreur, page 46 de la doc R porte sur 
+   l'expression de la loi
+   de frottement. Telle qu'ecrite actuellement, avec une 
+   erreur de signe sur
+   le premier terme de la loi de frottement, on perd la 
+   symétrie de la 
+   matrice tangente. Cela amène à changer les signes du 
+   terme Fr de la 
+   matrice de rigidité de frottement te0533. Il faut aussi 
+   pour la même
+   raison changer le signe du terme du second membre 
+   corresppondant
+   L3 frot en présence de contact.
+   
+   3)Suite à la dernière restitution pour le second membre 
+   de frottement,
+   une erreur de signe avait été introduite sur le terme de 
+   L3 frot en 
+   l'absence de contact.
+   4) Corrections de la doc R (bugs) sans conséquence sur le 
+   fortran (correct):
+   page 56 le multiplicateur de contact vaut lambda-rhon*dn 
+   et non pas lambda+
+   rhon*dn (corrections à faire dans la case équations 
+   d'équilibre). 
+   page 56 le second membre pour les termes de contact
+   et de frottement n'a pas le bon signe (- au lieu de +)
+   page 59, le signe du terme de la matrice Br est un + au 
+   lieu d'un -, ce qui 
+   devient conforme avec le fortran programmé.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.0.6
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0.6
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+   ssnv182f
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 28/08/2007 - 11:29:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011127 DU 2007-07-19 15:13:23
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   NEW9.1.5, le cas test wtna105a s'arrete en NOOK (R)
+FONCTIONNALITE
+   On augmente légèrement le critère de tolérance
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V7.33.105
+VALIDATION
+   passage du cas test wtna105a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM Marc              DATE 27/08/2007 - 14:33:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011103 DU 2007-07-13 20:34:19
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.4, le cas-test ssnv197c s'arrete en <S>_ERROR , (C)
+FONCTIONNALITE
+   Le cas-test est apparemment cassé depuis ma dernière restit 
+   en version 9.01.04 (fiche 10758), où quelques corrections 
+   ont été apportées (notamment, ajout de bornes à la 
+   recherche de la solution élastique).
+   
+   en raffinant légèrement le découpage en temps initial 
+   autour de l'instant d'erreur (60 pas de temps au lieu de 
+   40), on résoud le problème.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv197c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009409 DU 2006-01-27 15:54:48
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CONTACT - Calcul des percussions
+FONCTIONNALITE
+   *** DEVELOPPEMENT ***
+   
+   On crée un cham_no_s
+   CNSPER = '&&MMMRES.CNSPERC' (méthode continue)
+   CNSPER = '&&RESUCO.CNSPERC' (méthode lagrangienne)
+   soit dans mmmres, soit dans cfresu (respectivement)
+   pour le calcul des percussions (I, IX, IY, IZ).
+   
+   Les percussions sont calculées comme suit:
+   
+   I(0) = 0.0
+   A l'instant t,
+    | si R(t) != 0.0 alors I(t) = I(t-1) + R(t)*delta_t
+    | si R(t)  = 0.0 alors I(t) = 0.0 (remise à zéro)
+   
+    où R(t) est la réaction de contact à l'instant t.
+   
+   le champ CNSPER doit être conservé d'un pas de temps à 
+   l'autre, et n'est détruit qu'à la fin d'op0070.
+   
+   Normalement, ça marche pour toutes les méthodes de contact
+   (j'ai vérifié avec les méthodes continue et lagrangienne)
+   
+   impact fortran:
+   cfmmvd.f, cfmxr0.f, cfresu.f, mmmres.f, op0070.f
+   
+   + grandeur_simple__.cata
+   
+   *** VALIDATION ***
+   
+   sdnv105c
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   sdnv105c
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 28/08/2007 - 10:39:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011060 DU 2007-07-09 09:36:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Revoir la programmation POLYCRISTAL + Kocks-Rauch
+FONCTIONNALITE
+   POLYCRISTAL et MONOCRISTAL :
+   
+   Nettoyage du fortran, revisite de la programmation, optimisation perf.
+   
+   Problèmes résolus :
+   
+   1. SSNV172A pas tout à fait le meme resultat en POLY + KR sur Bull et sur calibre !!,
+   2. Dégradation des perf entre STA8 et STA9,
+   3. SSNV171B NOOK sur Calibre,  (cf fiche 11126)
+   4. Programmation : enlever les tests sur chaines de caractères.
+   
+   On restitue les tests :
+   - SSNV172A en enlevant Kocks-Rauch,
+   - SSNV171B, maintenant OK sur BRC : monocristal explicite =polycristal  
+   Amélioration du message d'erreur "compor1_16 !!!"
+   
+   blindage DEFI_COMPOR si on met un ECOU* ou ECRO* qui n'existe pas !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv171b
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011126 DU 2007-07-19 15:11:23
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.5, le cas test ssnv171b s'arrete en NOOK (C)
+FONCTIONNALITE
+   (cf fiche 11060)
+   
+   POLYCRISTAL et MONOCRISTAL :
+   
+   Nettoyage du fortran, revisite de la programmation, optimisation perf.
+   
+   Problèmes résolus :
+   
+   1. SSNV172A pas tout à fait le meme resultat en POLY + KR sur Bull et sur calibre !!,
+   2. Dégradation des perf entre STA8 et STA9,
+   3. SSNV171B NOOK sur Calibre,  (cf fiche 11126)
+   4. Programmation : enlever les tests sur chaines de caractères.
+   
+   On restitue les tests :
+   - SSNV172A en enlevant Kocks-Rauch,
+   - SSNV171B, maintenant OK sur BRC : monocristal explicite =polycristal  
+   Amélioration du message d'erreur "compor1_16 !!!"
+   
+   blindage DEFI_COMPOR si on met un ECOU* ou ECRO* qui n'existe pas !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv171b
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011140 DU 2007-07-25 15:03:01
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Perfe03a et la mise ?our 9.1.6 de LIRE_MAILLAGE FORMAT MED
+FONCTIONNALITE
+   Les restitutions des fiches 011116 (LIRE_MAILLAGE FORMAT MED en base 10) et 11088
+   (restitution des tests PERFECT) se sont croisées !
+   
+   du coup PERFE03A ne fonctionnait plus depuis la 9.1.6 : l'affectation des groupes de
+   mailles (fichier 32)
+   composant les grains s'appuyait sur la numérotation base 36.
+   
+   La correction est simple : il suffit de regénérer une répartition aléatoire de grains (via
+   les instruction python dé-commentarisées), puis de récuperer le DEFI_GROUP produit, pour
+   le mettre dans le fichier 32.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perfe03a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 27/08/2007 - 19:05:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011130 DU 2007-07-20 11:55:36
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   PRE_GIBI erreur <JEVEUX_26> pour l'objet >&&GILIRE.NOMOBJ<
+FONCTIONNALITE
+   Le fichier de maillage au format gibi ne contenait aucun objet de maillage. La création
+   de l'objet &&GILIRE.NOMOBJ était alors sauté.
+   Pour avoir un message plus clair, on teste l'existence de cet objet avant de récupérer son
+   adresse. En cas d'absence on émet une ERREUR_F avec le message suivant :
+   
+   46: _("""
+    erreur dans la création du fichier de maillage au format GIBI.
+    Celui-ci ne contient pas d'objet de type maillage.
+    
+    Risque & Conseil:
+    Assurez vous que votre procédure gibi sauvegarde bien les objets du maillage (pile 32
+   dans le formalisme GIBI)
+   """),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 27/08/2007 - 19:05:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011020 DU 2007-06-27 09:32:27
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   te0248 ( xc3xa9lxc3xa9ments barres)
+FONCTIONNALITE
+   Contexte :
+   ==========
+   
+   
+   Dans le te0248 qui s'occupe des options FULL_MECA,RAPH_MECA et RIGI_MECA_TANG pour les
+   éléments barres, certains calculs utilisant les déplacements à l'instant T+ sont
+   systématiquement fait. Or cela n'a pas de sens pour l'option RIGI_MECA_TANG.
+   
+   Solution :
+   ==========
+   
+   Les calculs utilisent effectivement les valeurs du champ PDEPLPR et ceux quelque soit
+   l'option.
+   
+   Fort heureusement, ce champ est initialisé à 0 en phase de prédicition (RIGI_MECA_TANG
+   donc) dans la routine nmmatr.
+   
+   Afin de ne pas se faire de future frayeur, on ajoute un commentaire dans le fortran en
+   indiquant que l'utilisation du champ PDEPLPR en phase de prédiction est controlé par son
+   initialisation à 0.
+   Ces commentaires apparaissent dans les "te" concernant les
+   barres, mais aussi dans les "te" des poutres.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT hsnv132a                      geniaut S.GENIAUT          173    173      0
+ CASTEST AJOUT hsnv132b                      geniaut S.GENIAUT          195    195      0
+ CASTEST AJOUT hsnv132c                      geniaut S.GENIAUT          201    201      0
+ CASTEST AJOUT hsnv132d                      geniaut S.GENIAUT          214    214      0
+ CASTEST AJOUT ssnv203a                      geniaut S.GENIAUT          371    371      0
+ CASTEST AJOUT ssnv203b                      geniaut S.GENIAUT          326    326      0
+ CASTEST AJOUT zzzz100f                       durand C.DURAND           186    186      0
+ CASTEST MODIF perfe03a                        proix J-M.PROIX          364      1      1
+ CASTEST MODIF sdnv105c                         kham M.KHAM             982    218    206
+ CASTEST MODIF sslv200a                    desroches X.DESROCHES       1151    322    470
+ CASTEST MODIF sslv200b                    desroches X.DESROCHES       1050    223    471
+ CASTEST MODIF ssnp110d                      geniaut S.GENIAUT          313     11      7
+ CASTEST MODIF ssnv171b                        proix J-M.PROIX          310     40     60
+ CASTEST MODIF ssnv172a                        proix J-M.PROIX         1123    100      7
+ CASTEST MODIF ssnv182f                      geniaut S.GENIAUT          215      3      3
+ CASTEST MODIF ssnv197c                         kham M.KHAM             530      2      2
+ CASTEST MODIF wtna105a                       granet S.GRANET           761      5      5
+CATALOGU AJOUT options/xfem_xpg              geniaut S.GENIAUT           30     30      0
+CATALOGU MODIF compelem/grandeur_simple__       kham M.KHAM             697      7      3
+CATALOGU MODIF options/calc_k_g_f            geniaut S.GENIAUT           53      5      1
+CATALOGU MODIF options/calc_k_g              geniaut S.GENIAUT           53      6      1
+CATALOGU MODIF options/char_meca_pres_f      geniaut S.GENIAUT           43      5      1
+CATALOGU MODIF options/char_meca_pres_r      geniaut S.GENIAUT           42      5      1
+CATALOGU MODIF options/rigi_meca_tang        salmona L.SALMONA           79      2      2
+CATALOGU MODIF typelem/gener_mecpl2_xh       geniaut S.GENIAUT          202     20      5
+CATALOGU MODIF typelem/gener_mecpl2_xht      geniaut S.GENIAUT          199     12      5
+CATALOGU MODIF typelem/gener_mecpl2_xt       geniaut S.GENIAUT          171     12      5
+CATALOGU MODIF typelem/gener_medpl2_xh       geniaut S.GENIAUT          204     20      5
+CATALOGU MODIF typelem/gener_medpl2_xht      geniaut S.GENIAUT          199     12      5
+CATALOGU MODIF typelem/gener_medpl2_xt       geniaut S.GENIAUT          171     12      5
+CATALOGU MODIF typelem/gener_me_xh           geniaut S.GENIAUT          312     28      9
+CATALOGU MODIF typelem/gener_me_xht          geniaut S.GENIAUT          314     27      9
+CATALOGU MODIF typelem/gener_me_xt           geniaut S.GENIAUT          317     27     11
+CATALOPY MODIF commande/affe_char_meca_f     geniaut S.GENIAUT          672      4      3
+CATALOPY MODIF commande/affe_char_meca       geniaut S.GENIAUT         1100      4      3
+CATALOPY MODIF commande/calc_fonction         durand C.DURAND           159      8      3
+ FORTRAN AJOUT algorith/xnmel2               geniaut S.GENIAUT          347    347      0
+ FORTRAN AJOUT algorith/xnmel3               geniaut S.GENIAUT          358    358      0
+ FORTRAN AJOUT algorith/xnmel                geniaut S.GENIAUT          183    183      0
+ FORTRAN AJOUT algorith/xtmafi               geniaut S.GENIAUT          122    122      0
+ FORTRAN AJOUT calculel/manopx               geniaut S.GENIAUT          177    177      0
+ FORTRAN AJOUT elements/te0037               geniaut S.GENIAUT          334    334      0
+ FORTRAN AJOUT elements/te0046               geniaut S.GENIAUT          181    181      0
+ FORTRAN AJOUT elements/xsifle               geniaut S.GENIAUT          373    373      0
+ FORTRAN MODIF algorith/cakg3d               geniaut S.GENIAUT          413     13      2
+ FORTRAN MODIF algorith/cfmxr0                  kham M.KHAM             136      5      4
+ FORTRAN MODIF algorith/cfresu                  kham M.KHAM             533     95      8
+ FORTRAN MODIF algorith/lcmaec                 proix J-M.PROIX           69     14      4
+ FORTRAN MODIF algorith/lcmaei                 proix J-M.PROIX          150     60     23
+ FORTRAN MODIF algorith/lcmafl                 proix J-M.PROIX          164     80     13
+ FORTRAN MODIF algorith/lcmhsr                 proix J-M.PROIX          206      7      7
+ FORTRAN MODIF algorith/lcmmap                 proix J-M.PROIX          499      7     12
+ FORTRAN MODIF algorith/lcmmat                 proix J-M.PROIX          374      7     10
+ FORTRAN MODIF algorith/lcmmfc                 proix J-M.PROIX          143     22     14
+ FORTRAN MODIF algorith/lcmmfe                 proix J-M.PROIX          238     49     36
+ FORTRAN MODIF algorith/lcmmfi                 proix J-M.PROIX          107     22     15
+ FORTRAN MODIF algorith/lcmmin                 proix J-M.PROIX          160      3      1
+ FORTRAN MODIF algorith/lcmmja                 proix J-M.PROIX          258      1      1
+ FORTRAN MODIF algorith/lcmmjc                 proix J-M.PROIX           78      9      5
+ FORTRAN MODIF algorith/lcmmjf                 proix J-M.PROIX          255     42     37
+ FORTRAN MODIF algorith/lcmmji                 proix J-M.PROIX           74     22     15
+ FORTRAN MODIF algorith/lcmmon                 proix J-M.PROIX          171      8      4
+ FORTRAN MODIF algorith/lcmmop                 proix J-M.PROIX          338      9      3
+ FORTRAN MODIF algorith/lcmmre                 proix J-M.PROIX          203      8      4
+ FORTRAN MODIF algorith/lcmmvx                 proix J-M.PROIX          123      3      1
+ FORTRAN MODIF algorith/mmmres                  kham M.KHAM            1203    262    115
+ FORTRAN MODIF algorith/nmpl3d                 proix J-M.PROIX          289      3      3
+ FORTRAN MODIF algorith/op0010               geniaut S.GENIAUT          311      3      2
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          273      6      5
+ FORTRAN MODIF algorith/op0070                  kham M.KHAM             897      8      3
+ FORTRAN MODIF algorith/plasti                 proix J-M.PROIX          495      2      1
+ FORTRAN MODIF algorith/vechme               geniaut S.GENIAUT          462     14      2
+ FORTRAN MODIF algorith/xbaslo               geniaut S.GENIAUT          211      2      2
+ FORTRAN MODIF algorith/xenrch               geniaut S.GENIAUT          500     29     17
+ FORTRAN MODIF algorith/xjacf2               geniaut S.GENIAUT          140     13      6
+ FORTRAN MODIF algorith/xjacff               geniaut S.GENIAUT          135     11      5
+ FORTRAN MODIF algorith/xoripe               geniaut S.GENIAUT          341     32     23
+ FORTRAN MODIF calculel/cnsces               geniaut S.GENIAUT          312      2      1
+ FORTRAN MODIF calculel/manopg               geniaut S.GENIAUT          374     90     19
+ FORTRAN MODIF elements/chauxi               geniaut S.GENIAUT          177     23     15
+ FORTRAN MODIF elements/reeref               geniaut S.GENIAUT          264     10      2
+ FORTRAN MODIF elements/te0247               salmona L.SALMONA          352      7      2
+ FORTRAN MODIF elements/te0248               salmona L.SALMONA          441      6      1
+ FORTRAN MODIF elements/te0295               geniaut S.GENIAUT          561      5      4
+ FORTRAN MODIF elements/te0297               geniaut S.GENIAUT          229    117     27
+ FORTRAN MODIF elements/te0346               salmona L.SALMONA          184      6      1
+ FORTRAN MODIF elements/te0390               salmona L.SALMONA          376      6      1
+ FORTRAN MODIF elements/te0469             desroches X.DESROCHES        233      2      2
+ FORTRAN MODIF elements/te0516               salmona L.SALMONA          612      6      1
+ FORTRAN MODIF elements/te0532               geniaut S.GENIAUT          261      6      6
+ FORTRAN MODIF elements/te0533               geniaut S.GENIAUT          603     14      8
+ FORTRAN MODIF elements/te0534               geniaut S.GENIAUT          493     16      8
+ FORTRAN MODIF elements/te0535               salmona L.SALMONA          352      6      1
+ FORTRAN MODIF elements/te0539               geniaut S.GENIAUT          308      4      5
+ FORTRAN MODIF elements/xsif3d               geniaut S.GENIAUT          496    276    134
+ FORTRAN MODIF modelisa/capres               geniaut S.GENIAUT          147     22      4
+ FORTRAN MODIF modelisa/cfmmvd                  kham M.KHAM              93      2      2
+ FORTRAN MODIF prepost/gicnx2                salmona L.SALMONA          100      3      1
+ FORTRAN MODIF prepost/giecas                salmona L.SALMONA          325      3      1
+ FORTRAN MODIF prepost/gilio2                salmona L.SALMONA          290      4      2
+ FORTRAN SUPPR algorith/xkel2d               geniaut S.GENIAUT          340      0    340
+ FORTRAN SUPPR algorith/xkel3d               geniaut S.GENIAUT          361      0    361
+ FORTRAN SUPPR algorith/xmel3d               geniaut S.GENIAUT          186      0    186
+  PYTHON MODIF Macro/calc_fonction_ops        durand C.DURAND           425     29      5
+  PYTHON MODIF Messages/compor1                proix J-M.PROIX          156     35      1
+  PYTHON MODIF Messages/prepost              salmona L.SALMONA          432      8      1
+  PYTHON MODIF Messages/xfem                 geniaut S.GENIAUT          153      9      1
+  PYTHON MODIF Utilitai/t_fonction            durand C.DURAND           720     62     30
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   16        3771      3771             +3771
+ MODIF :   89       31204      2791    1998      +793
+ SUPPR :    3         887               887      -887
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  108       35862      6562    2885     +3677 

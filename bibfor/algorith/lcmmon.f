@@ -9,7 +9,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -60,7 +60,7 @@ C     ----------------------------------------------------------------
       REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP,SQ
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP,SIG33(3,3),WORK(3,3)
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS,NSFV
-      INTEGER IEXP
+      INTEGER IEXP,IFL,NUECOU
 C     ----------------------------------------------------------------
 C --  VARIABLES INTERNES
 C
@@ -84,6 +84,8 @@ C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
 
       DO 6 IFA=1,NBFSYS
+            IFL=NBCOMM(IFA,1)
+            NUECOU=COEFT(IFL)
 
          NOMFAM=CPMONO(5*(IFA-1)+1)
 C         NMATER=CPMONO(5*(IFA-1)+2)
@@ -116,7 +118,8 @@ C           TAU      : SCISSION REDUITE TAU=SIG:MS
 C
 C           ECROUISSAGE ISOTROPE
 C
-            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+C            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+            IF (NUECOU.NE.4) THEN
                IEXP=0
                IF (IS.EQ.1) IEXP=1
                CALL LCMMFI(COEFT,IFA,NMAT,NBCOMM,NECRIS,
@@ -135,7 +138,8 @@ C
      &      NECOUL,IS,NBSYS,VINI(NSFV+1),DY(1),RP,VIS(1),VIS(2),DT,
      &      DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET,DY)
      
-            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+C            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+            IF (NUECOU.NE.4) THEN
 C              ECROUISSAGE CINEMATIQUE
 C              ITMAX=100
 C              TOLER=1.D-6

@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,8 +52,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IBID, NPRES, NCMP, JVALV, JNCMP, IOCC, NP, NC, IER,
-     &              NBTOU, NBMA, JMA
-      CHARACTER*8   K8B, TYPMCL(2)
+     &              NBTOU, NBMA, JMA ,NFISS,NFISMX
+      PARAMETER    (NFISMX=100)
+      CHARACTER*8   K8B, TYPMCL(2),FISS(NFISMX)
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
@@ -110,16 +111,33 @@ C
          ENDIF
 C
          CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
-C
+         CALL GETVID ( MOTCLF, 'FISSURE',IOCC , 1, 0, K8B, NFISS )
+
          IF ( NBTOU .NE. 0 ) THEN
 C
             CALL NOCART(CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
+
+         ELSEIF ( NFISS . NE. 0 ) THEN
+
+C           PAS DE CISA_2D SUR LES LÈVRES DES FISSURES X-FEM
+            IF (NC.NE.0) CALL U2MESS('F','XFEM_14')
+
+            NFISS = -NFISS
+            CALL GETVID(MOTCLF,'FISSURE',IOCC,1,NFISS,FISS , IBID )
+C           RECUPERATION DE TOUTES LES MAILLES X-FEM FISSUREES
+            CALL XTMAFI(NOMA,FISS,NFISS,MESMAI,NBMA)
+            CALL JEVEUO ( MESMAI, 'L', JMA )
+            CALL NOCART (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)
+            CALL JEDETR ( MESMAI )
+
          ELSE
+
             CALL RELIEM(LIGRMO, NOMA, 'NO_MAILLE', MOTCLF, IOCC, 2,
      &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
             CALL NOCART (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)
+
             CALL JEDETR ( MESMAI )
          ENDIF
 C

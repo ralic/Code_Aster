@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,28 +50,26 @@ C
       REAL*8        R8B,ARMIN,PREC,G1(3),GBO(3),GPR(3),NEXT(3),NORME
       REAL*8        CO(3,3),AB(3),AC(3),N2D(3),DDOT,A(3),B(3),C(3)
       COMPLEX*16    CBID
-      INTEGER       JNOMA,NGR,IGR,JGR,N1,NBELT,IEL,IMA,NBMA,J,IER
+      INTEGER       IMA,NBMA,J,IER,KK,I
       INTEGER       JMAIL,CPT,NBMAIL,IRET,NBPAR,JCOOR,JM3D,IBID,JVECNO
       INTEGER       NUMAPR,NUMAB,NUMA1D,NBNOPR,NBNOBO,NBNOM1
       INTEGER       JCONX1,JCONX2,INO,NUNO,NORIEG,NTRAIT,JTYPMA,JTMDIM
       INTEGER       ICH,JCESD(3),JCESV(3),JCESL(3),IAD,NIT,IT,NSE,ISE,IN
       INTEGER       NDIME,ICMP,NDIM,ID(3),INTEMP,NSEORI,IFM,NIV,NNCP
-      INTEGER       JDIM,S1,S2
-      CHARACTER*8   NOMA,K8BID,K8B,TPMAIL
+      INTEGER       JDIM,S1,S2,JGRP,NMAENR,JINDIC
+      CHARACTER*8   NOMA,K8BID,K8B
       CHARACTER*2   KDIM
-      CHARACTER*19  LIGREL,NOMT19,CHS(3)
-      CHARACTER*24  MAMOD,LIEL,GRMAPE,NOMOB,PARA,VECNOR
-      CHARACTER*19  PINTTO,CNSETO,LONCHA
+      CHARACTER*19  LIGREL,NOMT19,CHS(3),PINTTO,CNSETO,LONCHA
+      CHARACTER*24  MAMOD,GRMAPE,NOMOB,PARA,VECNOR,GRP(3),XINDIC
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL INFDBG('XFEM',IFM,NIV)
 
-C     NOMBRE DE SOUS-ELEMENTS RE-ORIENTES
-      NSEORI=0.D0
+C     INITIALISATION DU NOMBRE DE SOUS-ELEMENTS RE-ORIENTES
+      NSEORI=0
 
       LIGREL = MODELE//'.MODELE'
-      LIEL=LIGREL//'.LIEL'
 
 C     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IER)
@@ -105,7 +103,7 @@ C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
       
 
 C     ------------------------------------------------------------------
-C     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU
+C     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
 C     ------------------------------------------------------------------
 
       GRMAPE='&&XORIPE.GRMAPE'
@@ -114,22 +112,35 @@ C     ------------------------------------------------------------------
 C     INITIALISATION DU NOMBRE DE MAILLES DE LA LISTE
       NBMAIL=0
 
-      CALL JELIRA(LIEL,'NMAXOC',NGR,K8BID)
-      DO 100 IGR=1,NGR
-        CALL JEVEUO(JEXNUM(LIEL,IGR),'L',JGR)
-        CALL JELIRA(JEXNUM(LIEL,IGR),'LONMAX',N1,K8BID)
-        NBELT=N1-1
-        DO 110 IEL=1,NBELT
-          IMA=ZI(JGR-1+IEL)
-C         NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-          NDIME= ZI(JTMDIM-1+ZI(JTYPMA-1+IMA))
-          IF (NDIM.EQ.NDIME+1) THEN
-            NBMAIL=NBMAIL+1
-            ZI(JMAIL-1+NBMAIL)=IMA
-          ENDIF
- 110    CONTINUE
+C     REMPLISSAGE DE LA LISTE
+     
+      GRP(1) = FISS//'.MAILFISS  .HEAV'
+      GRP(2) = FISS//'.MAILFISS  .CTIP'
+      GRP(3) = FISS//'.MAILFISS  .HECT'
+      XINDIC = FISS//'.MAILFISS .INDIC'
+      
+      CALL JEVEUO(XINDIC,'L',JINDIC)  
 
- 100  CONTINUE
+C     BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT 
+      DO 100 KK = 1,3
+
+        IF (ZI(JINDIC-1+2*(KK-1)+1).EQ.1) THEN        
+          CALL JEVEUO(GRP(KK),'L',JGRP)
+          NMAENR = ZI(JINDIC-1+2*KK)
+
+C         BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
+          DO 120 I = 1,NMAENR
+            IMA = ZI(JGRP-1+I)
+C           NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
+            NDIME= ZI(JTMDIM-1+ZI(JTYPMA-1+IMA))
+            IF (NDIM.EQ.NDIME+1) THEN
+              NBMAIL=NBMAIL+1
+              ZI(JMAIL-1+NBMAIL)=IMA
+            ENDIF
+ 120      CONTINUE
+
+        ENDIF
+ 100  CONTINUE 
 
       IF (NBMAIL.EQ.0) GOTO 999
 
@@ -215,7 +226,7 @@ C     ------------------------------------------------------------------
         CALL JEVEUO(CHS(ICH)//'.CESV','E',JCESV(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESL','L',JCESL(ICH))
  40   CONTINUE
- 
+
       DO 400 IMA=1,NBMAIL
 
         DO 401 J=1,NDIM
@@ -223,6 +234,7 @@ C     ------------------------------------------------------------------
  401    CONTINUE
 
         NUMAB=ZI(JMAIL-1+IMA)
+        NDIME= ZI(JTMDIM-1+ZI(JTYPMA-1+NUMAB))
 
 C       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT 
 C       SOUS-ELEMENTS
@@ -308,13 +320,10 @@ C              ON INVERSE 2 ET 3 EN 3D)
 
  400  CONTINUE
 
-      
-
 C     ON SAUVE LE NOUVEAU CHAM_ELEM MODIFIE A LA PLACE DE L'ANCIEN
       CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',
      &                               NNCP,'V',CNSETO)
       
-     
 C     ------------------------------------------------------------------
 C     FIN
 C     ------------------------------------------------------------------
@@ -324,7 +333,7 @@ C     ------------------------------------------------------------------
 
  999  CONTINUE
 
-      WRITE(IFM,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES =',NSEORI
+      WRITE(IFM,*)'NOMBRE DE SOUS-ELEMENTS DE PEAU RE-ORIENTES :',NSEORI
 
       CALL JEDETR('&&XORIPE.GRMAPE')
 

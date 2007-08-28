@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      INDCO(60),GLISS(60),MEMCO(60),NFACE,CFACE(5,3)
       CHARACTER*8   ELREF,TYPMA,FPG,ELC
       REAL*8        HE,SIGN,VTMP(204),SOMME,FFI,REAC,JAC,FFP(27),PREC
-      REAL*8        ND(3),DN,SAUT(3),LAMBDA,LST,R,RR,E,G(3)
+      REAL*8        ND(3),DN,SAUT(3),LAMBDA,LST,R,RR,E,G(3),RBID
       PARAMETER    (PREC=1.D-16)
       LOGICAL       IMPRIM
 C......................................................................
@@ -112,13 +112,13 @@ C     SUR LA TOPOLOGIE DES FACETTES
         MEMCO(I) = ZI(JMEMCO-1+I)
  12   CONTINUE
  
+
       NFACE=ZI(JLONCH-1+2)
       DO 15 I=1,NFACE
         DO 16 J=1,NDIM
           CFACE(I,J)=ZI(JCFACE-1+NDIM*(I-1)+J)
    16   CONTINUE
  15   CONTINUE
-C
 C
 C     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
       INTEG = NINT(ZR(JDONCO-1+4))
@@ -162,10 +162,10 @@ C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           IF (NDIM .EQ. 3) THEN
             CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
-     &                                                    JAC,FFP,ND)
+     &                                        'NON',JAC,FFP,RBID,ND)
           ELSEIF (NDIM.EQ.2) THEN
-            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
-     &                                                    JAC,FFP,ND)
+            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
+     &                                        'NON',JAC,FFP,RBID,ND)
           ENDIF
 C
 C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)

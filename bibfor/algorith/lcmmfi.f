@@ -5,7 +5,7 @@
         REAL*8 COEFT(NMAT),DY(*),VIND(*),HSR(5,24,24),SQ,EXPBP(*)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/06/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,22 +44,24 @@ C ======================================================================
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,B,RP,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D
       REAL*8 TPERD,TABS,PR,DRDP,B1P
-      INTEGER IEI,TNS,NS,IR,NBCOEF
+      INTEGER IEI,TNS,NS,IR,NBCOEF,NUEISO
       INTEGER NUMHSR
 C     ----------------------------------------------------------------
 
       IEI=NBCOMM(IFA,3)
+      NUEISO=COEFT(IEI)
 
 C--------------------------------------------------------------------
 C     POUR UN NOUVEAU TYPE D'ECROUISSAGE ISOTROPE, AJOUTER UN BLOC IF
 C--------------------------------------------------------------------
-      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
+C      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
+      IF (NUEISO.EQ.1) THEN
 
-         R0=COEFT(IEI-1+1)
-         Q=COEFT(IEI-1+2)
-         B=COEFT(IEI-1+3)
-         NUMHSR=COEFT(IEI-1+4)
-         CALL ASSERT(NUMHSR.GE.1 .AND. NUMHSR.LE.5)
+         R0    =COEFT(IEI+1)
+         Q     =COEFT(IEI+2)
+         B     =COEFT(IEI+3)
+         NUMHSR=COEFT(IEI+4)
+         
          IF (IEXP.EQ.1) THEN
            DO 10 IR = 1, NBSYS                              
             PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
@@ -76,13 +78,15 @@ C      de LA famille courante;
   11      CONTINUE                                          
             RP=R0+Q*SQ                                      
 
-      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
+C      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
+      ELSEIF (NUEISO.EQ.2) THEN
 
-         R0=COEFT(IEI-1+1)
-         Q1=COEFT(IEI-1+2)
-         B1=COEFT(IEI-1+3)
-         Q2=COEFT(IEI-1+5)
-         B2=COEFT(IEI-1+6)
+         R0=COEFT(IEI+1)
+         Q1=COEFT(IEI+2)
+         B1=COEFT(IEI+3)
+         Q2=COEFT(IEI+5)
+         B2=COEFT(IEI+6)
+         NUMHSR=COEFT(IEI+7)
 
 
 C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
@@ -91,10 +95,13 @@ C        DE LA FAMILLE COURANTE;
          SQ=0.D0                                            
          DO 12 IR = 1, NBSYS                              
             PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
-            SQ = SQ + HSR(IFA,IS,IR)*(1.D0-EXP(-B1*PR))      
+            SQ = SQ + HSR(NUMHSR,IS,IR)*(1.D0-EXP(-B1*PR))      
   12     CONTINUE       
          P=VIND(3*(IS-1)+3)+ABS(DY(IS))
          RP=R0+Q1*SQ+Q2*(1.D0-EXP(-B2*P))
+         
+      ELSE
+          CALL U2MESS('F','COMPOR1_21')          
       ENDIF
            
       END

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3),LAMB2(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60),DDOT
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
-      REAL*8       LSN,LST,R,RR,E,G(3)
+      REAL*8       LSN,LST,R,RR,E,G(3),RBID
 C......................................................................
 
       CALL JEMARQ()
@@ -223,10 +223,10 @@ C         ET DES FF DE L'ELEMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           IF (NDIM.EQ.3) THEN
             CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
-     &                                                    JAC,FFP,ND)
+     &                                         'NON',JAC,FFP,RBID,ND)
           ELSEIF (NDIM.EQ.2) THEN
-            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
-     &                                                    JAC,FFP,ND)
+            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
+     &                                         'NON',JAC,FFP,RBID,ND)
           ENDIF
 
 C         NORMALE AU CENTRE DE LA FACETTE
@@ -424,16 +424,21 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
 
  156            CONTINUE
  154          CONTINUE
-
+ 
               DO 158 I=1,NNOF
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
                 CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
                 DO 159 J=1,NDIM
-                  LAMB1(J)=LAMB1(J)+FFI * ZR(IDEPD-1+PLI+1)*TAU1(J,NLI)
+                  LAMB1(J)=LAMB1(J)+FFI * (ZR(IDEPD-1+PLI+1)
+     &                                  +ZR(IDEPM-1+PLI+1)
+     &                                    )*TAU1(J,NLI)
+
                   IF (NDIM.EQ.3)
-     &              LAMB1(J)=LAMB1(J)+FFI*ZR(IDEPD-1+PLI+2)*TAU2(J,NLI)
+     &              LAMB1(J)=LAMB1(J)+FFI*(ZR(IDEPD-1+PLI+2)
+     &                                  +ZR(IDEPM-1+PLI+2)
+     &                                    )*TAU2(J,NLI)
  159            CONTINUE
  158          CONTINUE
 
@@ -456,6 +461,7 @@ C               CALCUL DE TAU.KN.P
                     TAUKNP(1,J) = TAUKNP(1,J) + TAU1(K,NLI) * KNP(K,J)
  162              CONTINUE
  161            CONTINUE
+  
                 IF (NDIM.EQ.3) THEN
                   DO 163 J = 1,NDIM
                     TAUKNP(2,J) = 0.D0
@@ -558,7 +564,7 @@ C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
                     DO 183 L = 1,NDIM-1
 
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
-     &              - MU*SEUIL(ISSPG)/RHOTK*FFI*FFJ*TAIKTA(K,L)*JAC*MULT
+     &              + MU*SEUIL(ISSPG)/RHOTK*FFI*FFJ*TAIKTA(K,L)*JAC*MULT
 
  183                CONTINUE
  182              CONTINUE

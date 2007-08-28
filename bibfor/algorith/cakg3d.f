@@ -13,7 +13,7 @@
       LOGICAL EXTIM,THLAGR,GLAGR,THLAG2,PAIR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -267,10 +267,21 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
         LCHIN(20) = LNNO
         LPAIN(21) = 'PLST'
         LCHIN(21) = LTNO
+        IF (OPTION.EQ.'CALC_K_G'.OR.
+     &      OPTION.EQ.'CALC_K_G_F') THEN
+          LPAIN(22) = 'PPINTER'
+          LCHIN(22) = MODELE(1:8)//'.TOPOFAC.PI'
+          LPAIN(23) = 'PAINTER'
+          LCHIN(23) = MODELE(1:8)//'.TOPOFAC.AI'
+          LPAIN(24) = 'PCFACE'
+          LCHIN(24) = MODELE(1:8)//'.TOPOFAC.CF'
+          LPAIN(25) = 'PLONGCO'
+          LCHIN(25) = MODELE(1:8)//'.TOPOFAC.LO'
+        ENDIF
 
 
         LIGRMO = MODELE//'.MODELE'
-        NCHIN = 21
+        NCHIN = 25
 C
         CHTIME = '&&CAKG3D.CH_INST_R'
         IF (OPTI .EQ. 'CALC_K_G_F') THEN

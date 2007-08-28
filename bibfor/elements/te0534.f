@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60),FFN(27)
       REAL*8      NDN(3,6),TAU1(3,6),TAU2(3,6),PB(3),RPB(3)
       REAL*8      RBID1(3,3),RBID2(3,3),RBID3(3,3),NBARY(3),DDOT
-      REAL*8      LST,R,RR,E,G(3),TT(2),TN(2)
+      REAL*8      LST,R,RR,E,G(3),TT(2),TN(2),RBID
 C.......................................................................
 
       CALL JEMARQ()
@@ -251,10 +251,10 @@ C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           IF (NDIM .EQ. 3) THEN
             CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
-     &                                                    JAC,FFP,ND)
+     &                                         'NON',JAC,FFP,RBID,ND)
           ELSEIF (NDIM.EQ.2) THEN
-            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
-     &                                                    JAC,FFP,ND)
+            CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,G,
+     &                                         'NON',JAC,FFP,RBID,ND)
           ENDIF
 
 C         NORMALE AU CENTRE DE LA FACETTE
@@ -321,12 +321,12 @@ C             TERME LN1
                 DO 151 J = 1,DDLH
                   VTMP(DDLS*(I-1)+NDIM+J) =
      &            VTMP(DDLS*(I-1)+NDIM+J) +
-     &            (REAC-RHON*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT
+     &            (REAC-RHON*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT  
  151            CONTINUE
                 DO 152 J = 1,SINGU*NDIM
                   VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
      &            VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
-     &            (REAC-RHON*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT
+     &            (REAC-RHON*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT   
  152            CONTINUE
  150          CONTINUE
 C
@@ -387,9 +387,15 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
             TT(1)=DDOT(NDIM,TAU1(1,NLI),1,REAC12,1)
             IF (NDIM .EQ.3) TT(2)=DDOT(NDIM,TAU2(1,NLI),1,REAC12,1) 
             CALL LCINVN(NDIM,0.D0,TN)             
-        
+C
+            IF (DDOT(NDIM,SAUT,1,TAU1(1,NLI),1).GE.0.D0) THEN
+C                 TN(1)=1.D0
+              ELSE
+C                 TN(1)=-1.D0
+            ENDIF
+C        
            DO 167 K=1,NDIM-1
-               VTMP(PLI+K) = VTMP(PLI+K) - (TT(K)-TN(K))*FFI*JAC*MULT
+               VTMP(PLI+K) = VTMP(PLI+K) + (TT(K)-TN(K))*FFI*JAC*MULT
  167       CONTINUE
  165      CONTINUE
 
@@ -450,7 +456,7 @@ C             TERME LN3
      &            METR(2)=DDOT(NDIM,TAU2(1,NLI),1,RPB,1)
                 DO 195 K=1,NDIM-1
                   VTMP(PLI+K) = VTMP(PLI+K)
-     &                  - MU*SEUIL(ISSPG)/RHOTK * METR(K)*FFI*JAC*MULT
+     &                  + MU*SEUIL(ISSPG)/RHOTK * METR(K)*FFI*JAC*MULT
 
  195            CONTINUE
  194          CONTINUE
@@ -471,6 +477,7 @@ C         FIN DE BOUCLE SUR LES POINTS DE GAUSS
 
 C       FIN DE BOUCLE SUR LES FACETTES
  100  CONTINUE
+
 C
 C-----------------------------------------------------------------------
 C     COPIE DES CHAMPS DE SORTIES ET FIN
@@ -481,5 +488,6 @@ C
  900  CONTINUE
 
  9999 CONTINUE
+
       CALL JEDEMA()
       END

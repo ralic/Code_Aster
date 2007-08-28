@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Utilitai  DATE 23/08/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -350,35 +350,6 @@ class t_fonction :
     """
     return self.__class__(liste_val,map(self,liste_val),self.para)
 
-  def func_union(self, func, other) :
-    """Retourne la fonction x : func(y1=self(x), y2=other(x))
-    sur la liste d'abscisses union de celles de self et de other.
-    """
-    para = copy.copy(self.para)
-    # Pour les prolongements et l'interpolation, c'est self qui prime sur other
-    vale_x = self.vale_x.tolist() + other.vale_x.tolist()
-    # on ote les abscisses doublons
-    vale_x = list(Set(vale_x))
-    vale_x.sort()
-    vale_x = array(vale_x)
-    # interpolation des deux fonctions sur l'union des abscisses
-    vale_y1 = map(self,  vale_x)
-    vale_y2 = map(other, vale_x)
-    # applique la fonction sur chaque couple (y1=f1(x), y2=f2(x))
-    vale_y = map(func, vale_y1, vale_y2)
-    return t_fonction(vale_x, vale_y, para)
-
-  def enveloppe(self, other, crit):
-     """renvoie l'enveloppe supérieure ou inférieure de self et other.
-     """
-     if crit.upper() == 'SUP':
-        env = self.func_union(max, other)
-     elif crit.upper() == 'INF':
-        env = self.func_union(min, other)
-     else:
-        raise FonctionError, 'enveloppe : le critère doit etre SUP ou INF !'
-     return env
-
   def suppr_tend(self) :
     """pour les corrections d'accélérogrammes
     suppression de la tendance moyenne d'une fonction
@@ -686,3 +657,64 @@ def homo_support_nappe(l_f):
       l_fres.append(__ff)
    return l_fres
 
+# -----------------------------------------------------------------------------
+def func_union(func,l_f) :
+    """Retourne la fonction x : func(y0=l_f[0](x), y1=l_f[1](x), ...)
+    sur la liste d'abscisses union de celles de self et de other.
+    """
+    para = copy.copy(l_f[0].para)
+    # Pour les prolongements et l'interpolation, c'est la première fonction qui prime
+    vale_x=[]
+    for f in l_f :
+        vale_x = vale_x + f.vale_x.tolist()
+    # on ote les abscisses doublons
+    vale_x = list(Set(vale_x))
+    vale_x.sort()
+    vale_x = array(vale_x)
+    # interpolation des fonctions sur l'union des abscisses
+    vale_y = [map(f,vale_x) for f in l_f]
+    # applique la fonction
+    vale_y = map(func, *vale_y)
+    return t_fonction(vale_x, vale_y, para)
+
+def enveloppe(l_f, crit):
+    """renvoie l'enveloppe supérieure ou inférieure de self et other.
+    """
+    if crit.upper() == 'SUP':
+       env = func_union(max, l_f)
+    elif crit.upper() == 'INF':
+       env = func_union(min, l_f)
+    else:
+       raise FonctionError, 'enveloppe : le critère doit etre SUP ou INF !'
+    return env
+
+def fractile(l_f, fract):
+    """renvoie l'enveloppe supérieure ou inférieure de self et other.
+    """
+    para = copy.copy(l_f[0].para)
+    # Pour les prolongements et l'interpolation, c'est la première fonction qui prime
+    vale_x=[]
+    for f in l_f :
+        vale_x = vale_x + f.vale_x.tolist()
+    # on ote les abscisses doublons
+    vale_x = list(Set(vale_x))
+    vale_x.sort()
+    vale_x = array(vale_x)
+    #
+    l_vale_y=[]
+    for f in l_f :
+        vale_y = map(f,vale_x)
+        l_vale_y.append(vale_y)
+    tab_val=transpose(array(l_vale_y))
+    tab_val=tab_val.tolist()
+    for l in tab_val : l.sort()
+    vale_y=[]
+    if fract>=1. :
+       for l_val in tab_val :
+           vale_y.append(l_val[-1])
+    else :
+       indice=int((len(tab_val[0])-1)*fract)
+       reste =(len(tab_val[0])-1)*fract-indice
+       for l_val in tab_val :
+           vale_y.append(l_val[indice]*(1-reste)+l_val[indice+1]*reste)
+    return t_fonction(vale_x, vale_y, para)

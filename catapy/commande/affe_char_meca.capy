@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -764,12 +764,13 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 
          PRES_REP        =FACT(statut='f',max='**',
              fr="Applique une pression à un domaine de milieu continu 2D ou 3D, ou à un domaine de coques et tuyaux",
-             regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
-                     PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
+             regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','FISSURE'),
+                     PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE','FISSURE'),
                      AU_MOINS_UN('PRES','CISA_2D' ),),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+             FISSURE         =SIMP(statut='f',typ=fiss_xfem,min=1,max=100,),
              PRES            =SIMP(statut='f',typ='R' ),
              CISA_2D         =SIMP(statut='f',typ='R' ),
            ),

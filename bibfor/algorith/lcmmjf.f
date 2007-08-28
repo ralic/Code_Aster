@@ -2,14 +2,14 @@
      &    NBCOMM,DT,NECOUL,IS,IR,NBSYS,VIND,DY,HSR,RP,ALPHAP,DALPHA,
      &    GAMMAP,DGAMMA,SGNR,DFDTAU,DFDAL,DFDR,IRET)
         IMPLICIT NONE
-        INTEGER KPG,KSP,IFA,NMAT,NBCOMM(NMAT,3)
+        INTEGER KPG,KSP,IFA,NMAT,NBCOMM(NMAT,3),NUMHSR
         REAL*8 TAUS,COEFT(NMAT),RP,DT,ALPHAP,DALPHA,GAMMAP,DGAMMA
         REAL*8 DFDTAU,DFDAL,DFDR,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT)
         CHARACTER*(*) FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,20 +54,21 @@ C     ----------------------------------------------------------------
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS,R,INT1,INT2,INT3,DFDTMU
       REAL*8 DTMUDR,SOM,DRDGAM,CISA2, RR
 
-      INTEGER IFL,NS, IS, NBSYS,IU,IR,IRET
+      INTEGER IFL,NS, IS, NBSYS,IU,IR,IRET,NUECOU,NULHSR
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TPERD,IRET)
-      IF (IRET.EQ.1) TPERD=0.D0
+      NUECOU=COEFT(IFL)
       IRET=0
 
-      IF (NECOUL.EQ.'ECOU_VISC1') THEN
-          N=COEFT(IFL-1+1)
-          K=COEFT(IFL-1+2)
-          C=COEFT(IFL-1+3)
+C      IF (NECOUL.EQ.'ECOU_VISC1') THEN
+      IF (NUECOU.EQ.1) THEN
+
+          N=COEFT(IFL+1)
+          K=COEFT(IFL+2)
+          C=COEFT(IFL+3)
 
           FTAU=TAUS-C*ALPHAP
           CRIT=ABS(FTAU)-RP
@@ -91,12 +92,14 @@ C         DFDR
           ENDIF
           DFDR=-SGNS*DFDTAU
 
-      ELSEIF (NECOUL.EQ.'ECOU_VISC2') THEN
-          N=COEFT(IFL-1+1)
-          K=COEFT(IFL-1+2)
-          C=COEFT(IFL-1+3)
-          A=COEFT(IFL-1+4)
-          D=COEFT(IFL-1+5)
+C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+      ELSEIF (NUECOU.EQ.2) THEN
+      
+          N=COEFT(IFL+1)
+          K=COEFT(IFL+2)
+          C=COEFT(IFL+3)
+          A=COEFT(IFL+4)
+          D=COEFT(IFL+5)
 
           FTAU=TAUS-C*ALPHAP-A*GAMMAP
 
@@ -120,12 +123,15 @@ C         DFDR
           DFDR=-SGNS*DFDTAU
 
 
-      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
-          K      =COEFT(IFL-1+1)
-          TAUMU  =COEFT(IFL-1+2)
-          GAMMA0 =COEFT(IFL-1+3)
-          DELTAV =COEFT(IFL-1+4)
-          DELTAG =COEFT(IFL-1+5)
+C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
+      ELSEIF (NUECOU.EQ.3) THEN
+      
+          K      =COEFT(IFL+1)
+          TAUMU  =COEFT(IFL+2)
+          GAMMA0 =COEFT(IFL+3)
+          DELTAV =COEFT(IFL+4)
+          DELTAG =COEFT(IFL+5)
+          TPERD  =COEFT(IFL+6)
 
           CRIT=ABS(TAUS)-TAUMU
           IF (ABS(TAUS).LE.R8MIEM()) THEN
@@ -133,7 +139,7 @@ C         DFDR
           ELSE
              SGNS=(TAUS)/ABS(TAUS)
           ENDIF
-
+          
           IF (CRIT.LT.0.D0) THEN
              DFDTAU=0.D0
           ELSE
@@ -150,25 +156,26 @@ C         DFDR
           DFDR=0.D0
 
 
-      ELSEIF (NECOUL.EQ.'KOCKS_RAUCH') THEN
-          K         =COEFT(IFL-1+1)
-          TAUR      =COEFT(IFL-1+2)
-          TAU0      =COEFT(IFL-1+3)
-          GAMMA0    =COEFT(IFL-1+4)
-          DELTAG    =COEFT(IFL-1+5)
-          BSD       =COEFT(IFL-1+6)
-          GCB       =COEFT(IFL-1+7)
-          KDCS      =COEFT(IFL-1+8)
-          P         =COEFT(IFL-1+9)
-          Q         =COEFT(IFL-1+10)
-
-
+      ELSEIF (NUECOU.EQ.4) THEN
+          
+          K         =COEFT(IFL+1)
+          TAUR      =COEFT(IFL+2)
+          TAU0      =COEFT(IFL+3)
+          GAMMA0    =COEFT(IFL+4)
+          DELTAG    =COEFT(IFL+5)
+          BSD       =COEFT(IFL+6)
+          GCB       =COEFT(IFL+7)
+          KDCS      =COEFT(IFL+8)
+          P         =COEFT(IFL+9)
+          Q         =COEFT(IFL+10)
+          TPERD     =COEFT(IFL+11)
+          NUMHSR    =COEFT(IFL+12)
+          
           IF (MATERF(NMAT).EQ.0) THEN
              CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
           ELSE
              CISA2 = (MATERF(36)/2.D0)**2
           ENDIF
-
 
           TAUV=ABS(TAUS)-TAU0
 
@@ -180,71 +187,69 @@ C         DFDR
 
           IF (TAUV.GT.0.D0) THEN
 
-          TABS=TPERD+273.15D0
+             TABS=TPERD+273.15D0
 
-          SOM    = 0.D0
-          TAUMU  = 0.D0
-          DTMUDR = 0.D0
-          DFDAL  = 0.D0
+             SOM    = 0.D0
+             TAUMU  = 0.D0
+             DTMUDR = 0.D0
+             DFDAL  = 0.D0
 
-           DO 1 IU = 1, NBSYS
-           R     = VIND(3*(IU-1)+1)
-           TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
- 1         CONTINUE
+             DO 1 IU = 1, NBSYS
+               R     = VIND(3*(IU-1)+1)
+               TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*R
+ 1           CONTINUE
 
-           TAUMU = CISA2 * TAUMU/TAUV
+             TAUMU = CISA2 * TAUMU/TAUV
 
-           TAUEF = TAUV-TAUMU
+             TAUEF = TAUV-TAUMU
 
-           IF (TAUEF.GT.0.D0) THEN
+             IF (TAUEF.GT.0.D0) THEN
 
-               AUX= (1.D0-((TAUV-TAUMU)/TAUR)**P)
-                  IF (AUX.LE.0.D0)  THEN
-                  IRET=1
-                  GOTO 9999
-               ENDIF
+                AUX= (1.D0-((TAUV-TAUMU)/TAUR)**P)
+                IF (AUX.LE.0.D0)  THEN
+                   IRET=1
+                   GOTO 9999
+                ENDIF
 
-            INT1 = (1.D0-((TAUV-TAUMU)/TAUR)**P)**(Q-1)
-            INT2 = ((TAUV-TAUMU)/TAUR)**(P-1)
-            INT3 = 1.D0+TAUMU/TAUV
+               INT1 = (1.D0-((TAUV-TAUMU)/TAUR)**P)**(Q-1)
+               INT2 = ((TAUV-TAUMU)/TAUR)**(P-1)
+               INT3 = 1.D0+TAUMU/TAUV
 
-            DFDTAU = DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
-     &      EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
-     &      *INT1*INT2*INT3
+               DFDTAU = DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
+     &         EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
+     &         *INT1*INT2*INT3
 
-             IF(IR.NE.0) THEN
-             RR  = VIND(3*(IR-1)+1)
-              DO 2 IU = 1, NBSYS
-               R  = VIND(3*(IU-1)+1)
-               SOM    = SOM  + R
-  2          CONTINUE
-               SOM    = SOM  - RR
-  
-               SOM = SQRT(SOM)
+               IF(IR.NE.0) THEN
+                 RR  = VIND(3*(IR-1)+1)
+                 DO 2 IU = 1, NBSYS
+                    R  = VIND(3*(IU-1)+1)
+                    SOM    = SOM  + R
+  2              CONTINUE
+                 SOM    = SOM  - RR
+                 SOM = SQRT(SOM)
 C
-             DTMUDR = CISA2 * HSR(IFA,IS,IR)/TAUV
+                 DTMUDR = CISA2 * HSR(NUMHSR,IS,IR)/TAUV
 
-             DFDTMU = -DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
-     &     EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
-     &       *INT1*INT2*SGNS
+                 DFDTMU = -DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
+     &           EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
+     &           *INT1*INT2*SGNS
 
-             DRDGAM = SGNR/(1.D0+GCB*ABS(DGAMMA))**2*
-     &               (BSD+SOM/KDCS-GCB*VIND(3*(IR-1)+1))
+                 DRDGAM = SGNR/(1.D0+GCB*ABS(DGAMMA))**2*
+     &                  (BSD+SOM/KDCS-GCB*VIND(3*(IR-1)+1))
 
-             DFDAL = DFDTMU*DTMUDR*DRDGAM
-            ENDIF
-           ELSE
-           DFDTAU=0.D0
-           DFDAL=0.D0
-           ENDIF
+                 DFDAL = DFDTMU*DTMUDR*DRDGAM
+               ENDIF
+             ELSE
+                DFDTAU=0.D0
+                DFDAL=0.D0
+             ENDIF
           ELSE
-          DFDTAU=0.D0
-          DFDAL=0.D0
+             DFDTAU=0.D0
+             DFDAL=0.D0
           ENDIF
 
 C         DFDR
           DFDR=0.D0
-
       ENDIF
 9999  CONTINUE
       END

@@ -4,7 +4,7 @@
      &                      TIMED,TIMEF,VIND,SIGD  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,6 +82,8 @@ C         TYPESS=7
          IF(MOD(1:6).EQ.'C_PLAN')THEN
             DEPS(3) = 0.D0
          ENDIF
+C Les autres intitialisations ci-dessous ne sont pas utilisées
+C actuellement pour la loi MONOCRISTAL         
 C
 C - SOLUTION INITIALE = ELASTIQUE
 C

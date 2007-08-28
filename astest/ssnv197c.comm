@@ -1,4 +1,4 @@
-# MODIF  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 27/08/2007   AUTEUR KHAM M.KHAM 
 # TITRE ETUDE:  ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ TEMPS0=DEFI_LIST_REEL(DEBUT=-2.,
                                   _F(JUSQU_A = 0., NOMBRE = 50)));
                          
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=(_F(JUSQU_A = 1., NOMBRE = 10),
+                      INTERVALLE=(_F(JUSQU_A = 3., NOMBRE = 30),
                                   _F(JUSQU_A = 7., NOMBRE = 60),
                                   _F(JUSQU_A = 10., NOMBRE = 30)));
 

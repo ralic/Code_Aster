@@ -1,8 +1,8 @@
       SUBROUTINE XSIF3D(ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,NFE,
-     &                  BASLOC,NNOP,NPG,DEPL,LSN,LST,IGTHET)
+     &                  BASLOC,NNOP,NPG,DEPL,LSN,LST,IDECPG,IGTHET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
       IMPLICIT NONE
       CHARACTER*8   ELREFP
       CHARACTER*24  COORSE
-      INTEGER       IGEOM,NDIM,DDLH,DDLC,NFE,NNOP,NPG
+      INTEGER       IGEOM,NDIM,DDLH,DDLC,NFE,NNOP,NPG,IDECPG
       REAL*8        HE,DEPL(NDIM+DDLH+NDIM*NFE+DDLC,NNOP)
       REAL*8        BASLOC(9*NNOP),LSN(NNOP),LST(NNOP)
 
@@ -48,26 +48,11 @@ C IN  NPG     : NOMBRE DE POINTS DE GAUSS DU SOUS-ÉLÉMENT
 C IN  DEPL    : DÉPLACEMENTS
 C IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 C IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
+C IN  IDECPG  : POSITION DANS LA FAMILLE 'XFEM' DU 1ER POINT DE GAUSS
+C               DU SOUS ELEMENT COURRANT (EN FAIT 1ER POINT : IDECPG+1)
 
 C OUT IGTHET  : G, K1, K2, K3
 
-      INTEGER  ITHET,IMATE,ICOMP,ICOUR,IGTHET,JCOORS
-      INTEGER  IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO
-      INTEGER  I,J,K,KPG,N,INO,IRET
-      INTEGER  NDIMB,NNO,NNOS,NPGBIS,DDLD,DDLT
-      REAL*8   G,K1,K2,K3,COEFF,COEFF3,VALRES(3),TEMPG,R8PREM
-      REAL*8   DEVRES(3),E,NU,LAMBDA,MU,KA,C1,C2,C3,XG(NDIM),FE(4)
-      REAL*8   DGDGL(4,3),XE(NDIM),FF(NNOP),DFDI(NNOP,NDIM),F(3,3)
-      REAL*8   EPS(6),BASLOG(9),E1(3),E2(3),NORME,E3(3),P(3,3)
-      REAL*8   DET,INVP(3,3),AG(3),VGL(3),XLG,YLG,RG,TG,RBID1(4)
-      REAL*8   DGDPO(4,2),DGDLO(4,3),COURB(3,3,3),DU1DM(3,3),DU2DM(3,3)
-      REAL*8   DU3DM(3,3),GRAD(3,3),DUDM(3,3),POIDS,RBID2(4),RBID3(4)
-      REAL*8   DTDM(3,3),TZERO(3),DZERO(3,4),LSNG,LSTG
-      REAL*8   DUDME(3,4),DTDME(3,4),DU1DME(3,4),DU2DME(3,4),DU3DME(3,4)
-      CHARACTER*2  CODRET(3)
-      CHARACTER*8  NOMRES(3)
-      CHARACTER*16 COMPOR(4)
-      LOGICAL  LCOUR,GRDEPL
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -86,9 +71,36 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
+      INTEGER  ITHET,IMATE,ICOMP,ICOUR,IGTHET,JCOORS,IADZI,IAZK24
+      INTEGER  IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO
+      INTEGER  I,J,K,KPG,N,INO,IRET,CPT,IG,IPG,IN
+      INTEGER  NDIMB,NNO,NNOS,NPGBIS,DDLD,DDLT
+      REAL*8   G,K1,K2,K3,COEFF,COEFF3,VALRES(3),R8PREM,ALPHA
+      REAL*8   DEVRES(3),E,NU,LAMBDA,MU,KA,C1,C2,C3,XG(NDIM),FE(4),K3A
+      REAL*8   DGDGL(4,3),XE(NDIM),FF(NNOP),DFDI(NNOP,NDIM),F(3,3)
+      REAL*8   EPS(6),BASLOG(9),E1(3),E2(3),NORME,E3(3),P(3,3)
+      REAL*8   DET,INVP(3,3),AG(3),VGL(3),XLG,YLG,RG,TG,RBID1(4)
+      REAL*8   DGDPO(4,2),DGDLO(4,3),COURB(3,3,3),DU1DM(3,3),DU2DM(3,3)
+      REAL*8   DU3DM(3,3),GRAD(NDIM,NDIM),DUDM(3,3),POIDS,RBID2(4)
+      REAL*8   DTDM(3,3),TZERO(3),DZERO(3,4),LSNG,LSTG,TH,RBID3(4)
+      REAL*8   DUDME(3,4),DTDME(3,4),DU1DME(3,4),DU2DME(3,4),DU3DME(3,4)
+      REAL*8   U1L(3),U2L(3),U3L(3),U1(3),U2(3),U3(3)
+      REAL*8   DEPLA(3),THETA(3),TGUDM(3),TPN(27),TREF,TEMPG
+      REAL*8   TTRGU,TTRGV
+      CHARACTER*2  CODRET(3)
+      CHARACTER*8  NOMRES(3),ELRESE(3),FAMI(3)
+      CHARACTER*16 COMPOR(4),NOMTE
+      LOGICAL  LCOUR,GRDEPL
+      DATA     ELRESE /'SE2','TR3','TE4'/
+      DATA     FAMI   /'BID','RIGI','XINT'/
+      DATA     NOMRES /'E','NU','ALPHA'/
+
+
       CALL JEMARQ()
 
       GRDEPL=.FALSE.
+      CALL TECAEL(IADZI,IAZK24)
+      NOMTE = ZK24(IAZK24-1+3+ZI(IADZI-1+2)+1)
 
 C     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
 C     QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES NOEUDS MILIEU
@@ -116,39 +128,27 @@ C     VÉRIFICATION DU CADRE THÉORIQUE DU CALCUL
 C     ADRESSE DES COORD DU SOUS ELT EN QUESTION
       CALL JEVEUO(COORSE,'L',JCOORS)
 
-C     TE4-'XINT' : SCHÉMAS À 15 POINTS
-      CALL ELREF5('TE4','XINT',NDIMB,NNO,NNOS,NPGBIS,IPOIDS,JCOOPG,IVF,
-     &                  IDFDE,JDFD2,JGANO)
+C     SOUS-ELEMENT DE REFERENCE 
+      CALL ELREF5(ELRESE(NDIM),FAMI(NDIM),NDIMB,NNO,NNOS,NPGBIS,IPOIDS,
+     &            JCOOPG,IVF,IDFDE,JDFD2,JGANO)
       CALL ASSERT(NPG.EQ.NPGBIS.AND.NDIM.EQ.NDIMB)
 
-C     RECUPERATION DES DONNEES MATERIAUX
-      NOMRES(1) = 'E'
-      NOMRES(2) = 'NU'
-      TEMPG=0.D0
-      CALL RCVALA (ZI(IMATE),' ','ELAS',1,'TEMP',TEMPG,2,NOMRES,VALRES,
-     &             CODRET,' ')
-      E   = VALRES(1)
+C     TEMPERATURE DE REF
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+      IF (IRET.NE.0) TREF = 0.D0
 
-      NU  = VALRES(2)
+C     TEMPERATURE AUX NOEUDS PARENT
+      DO 30 INO = 1,NNOP
+        CALL RCVARC('F','TEMP','+','NOEU',INO,1,TPN(INO),IRET)
+        IF (IRET.NE.0) TPN(INO) = 0.D0
+ 30   CONTINUE
 
 
-
-      LAMBDA  = NU*E/((1.D0+NU)*(1.D0-2.D0*NU))
-      MU  = E/(2.D0*(1.D0+NU))
-C     EN DP
-      KA=3.D0-4.D0*NU
-      COEFF=E/(1.D0-NU*NU)
-      COEFF3=2.D0 * MU
-C     EN CP
-C     KA=(3.D0-NU)/(1.D0+NU)
-C     COEFF=E
-C     COEFF3=2.D0 * MU
-      C1 = LAMBDA + 2.D0 * MU
-      C2 = LAMBDA
-      C3 = MU
-
+C     ------------------------------------------------------------------
 C     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
-      DO 100 KPG=1,NPG
+C     ------------------------------------------------------------------
+
+      DO 10 KPG=1,NPG
 
 C       INITIALISATIONS
         CALL LCINVN(9,0.D0,DTDM)
@@ -156,22 +156,64 @@ C       INITIALISATIONS
         CALL LCINVN(9,0.D0,DU2DM)
         CALL LCINVN(9,0.D0,DU3DM)
 
+C       RECUPERATION DES DONNEES MATERIAUX
+        IPG = IDECPG + KPG
+        CALL RCVAD2 ('XFEM',IPG,1,'+',ZI(IMATE),'ELAS',
+     &               3,NOMRES,VALRES,DEVRES,CODRET)
+        IF (CODRET(3).NE.'OK') THEN
+          VALRES(3)= 0.D0
+          DEVRES(3)= 0.D0
+        ENDIF
+        E     = VALRES(1)
+        NU    = VALRES(2)
+        ALPHA = VALRES(3)
+        K3A   = ALPHA * E / (1.D0-2.D0*NU)
+
+        IF ( NDIM.EQ.3.OR.
+     &       NDIM.EQ.2.AND.NOMTE(3:4).EQ.'DP') THEN
+
+          LAMBDA = NU*E/((1.D0+NU)*(1.D0-2.D0*NU))
+          MU = E/(2.D0*(1.D0+NU))
+          KA = 3.D0-4.D0*NU
+          COEFF = E/(1.D0-NU*NU)
+          COEFF3=2.D0 * MU
+          C1 = LAMBDA + 2.D0 * MU
+          C2 = LAMBDA
+          C3 = MU
+          TH = 1.D0
+
+        ELSEIF (NDIM.EQ.2.AND.NOMTE(3:4).EQ.'CP') THEN
+
+          KA = (3.D0-NU)/(1.D0+NU)
+          MU  = E/(2.D0*(1.D0+NU))
+          COEFF = E
+          COEFF3 = MU
+          C1 = E/(1.D0-NU*NU)
+          C2 = NU*C1
+          C3 = MU    
+          TH = (1.D0-2.D0*NU)/(1.D0-NU)
+
+        ENDIF 
+
 C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         CALL LCINVN(NDIM,0.D0,XG)
-        DO 110 I=1,NDIM
-          DO 111 N=1,NNO
-            XG(I)=XG(I)+ZR(IVF-1+NNO*(KPG-1)+N)*ZR(JCOORS-1+3*(N-1)+I)
- 111      CONTINUE
- 110    CONTINUE
+        DO 101 I=1,NDIM
+          DO 102 N=1,NNO
+            XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N) 
+     &                                * ZR(JCOORS-1+NDIM*(N-1)+I)
+ 102      CONTINUE
+ 101    CONTINUE
 
 C       CALCUL DES FF
         CALL REEREF(ELREFP,NNOP,IGEOM,XG,DEPL,GRDEPL,NDIM,HE,DDLH,NFE,
      &              DDLT,FE,DGDGL,'NON',XE,FF,DFDI,F,EPS,GRAD)
 
-C       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
-C       ON ENVOIE DFDM3D AVEC LES COORD DU SS-ELT
-        CALL DFDM3D(NNO,KPG,IPOIDS,IDFDE,ZR(JCOORS),
-     &                                   RBID1,RBID2,RBID3,POIDS)
+C       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
+C       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
+        IF (NDIM.EQ.3) CALL DFDM3D(NNO,KPG,IPOIDS,IDFDE,ZR(JCOORS),
+     &                                      RBID1,RBID2,RBID3,POIDS)
+        IF (NDIM.EQ.2) CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCOORS),
+     &                                      RBID1,RBID2,POIDS)
 
 C       --------------------------------------
 C       1) COORDONNÉES POLAIRES ET BASE LOCALE
@@ -182,14 +224,14 @@ C       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
         CALL LCINVN(NDIM,0.D0,E2)
         LSNG=0.D0
         LSTG=0.D0
-        DO 113 INO=1,NNOP
+        DO 100 INO=1,NNOP
           LSNG = LSNG + LSN(INO) * FF(INO)
           LSTG = LSTG + LST(INO) * FF(INO)
-          DO 114 I=1,NDIM
-            E1(I) = E1(I) + BASLOC(9*(INO-1)+I+3) * FF(INO)
-            E2(I) = E2(I) + BASLOC(9*(INO-1)+I+6) * FF(INO)
- 114      CONTINUE
- 113    CONTINUE
+          DO 110 I=1,NDIM
+            E1(I) = E1(I) + BASLOC(3*NDIM*(INO-1)+I+NDIM)   * FF(INO)
+            E2(I) = E2(I) + BASLOC(3*NDIM*(INO-1)+I+2*NDIM) * FF(INO)
+ 110      CONTINUE
+ 100    CONTINUE
 
 C       NORMALISATION DE LA BASE
         CALL NORMEV(E1,NORME)
@@ -197,25 +239,19 @@ C       NORMALISATION DE LA BASE
         CALL PROVEC(E1,E2,E3)
 
 C       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        DO 124 I=1,NDIM
+        CALL LCINVN(9,0.D0,P)
+        DO 120 I=1,NDIM
           P(I,1)=E1(I)
           P(I,2)=E2(I)
           P(I,3)=E3(I)
- 124    CONTINUE
+ 120    CONTINUE
 
-C       VÉRIFICATION QUE LE DÉTERMINANT DE P VAUT BIEN 1
-        DET = P(1,1)*P(2,2)*P(3,3) + P(2,1)*P(3,2)*P(1,3)
-     &      + P(3,1)*P(1,2)*P(2,3) - P(3,1)*P(2,2)*P(1,3)
-     &      - P(2,1)*P(1,2)*P(3,3) - P(1,1)*P(3,2)*P(2,3)
-
-        IF (ABS(DET-1.D0).GT.1.D-3)
-     &    CALL U2MESS('A','ALGORITH11_41')
 C       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-        DO 125 I=1,3
-          DO 126 J=1,3
+        DO 130 I=1,3
+          DO 131 J=1,3
             INVP(I,J)=P(J,I)
- 126      CONTINUE
- 125    CONTINUE
+ 131      CONTINUE
+ 130    CONTINUE
 
 C       COORDONNÉES POLAIRES DU POINT
         RG=SQRT(LSNG**2+LSTG**2)
@@ -234,9 +270,33 @@ C         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
 C
         IF (IRET.EQ.0) CALL U2MESS('F','ELEMENTS3_69')
 
-C       -----------------
-C       2) CALCUL DE DUDM
-C       -----------------
+C       ---------------------------------------------
+C       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)
+C       ---------------------------------------------
+
+        CALL LCINVN(NDIM,0.D0,DEPLA)
+
+C       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
+        DO 200 IN=1,NNOP
+          CPT=0
+C         DDLS CLASSIQUES
+          DO 201 I=1,NDIM
+            CPT=CPT+1
+            DEPLA(I) = DEPLA(I) +  FF(IN) * DEPL(CPT,IN)
+ 201      CONTINUE
+C         DDLS HEAVISIDE
+          DO 202 I=1,DDLH
+            CPT=CPT+1
+            DEPLA(I) = DEPLA(I) + HE * FF(IN) * DEPL(CPT,IN)
+ 202      CONTINUE
+C         DDL ENRICHIS EN FOND DE FISSURE
+          DO 203 IG=1,NFE
+            DO 204 I=1,NDIM
+              CPT=CPT+1
+              DEPLA(I) = DEPLA(I) + FE(IG) * FF(IN) * DEPL(CPT,IN)
+ 204        CONTINUE
+ 203      CONTINUE
+ 200    CONTINUE        
 
 C       FONCTIONS D'ENRICHISSEMENT
         FE(1)=SQRT(RG)*SIN(TG/2.D0)
@@ -257,98 +317,180 @@ C       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
      &            (-SIN(TG/2.D0)*SIN(TG)/2.D0 + COS(TG/2.D0)*COS(TG))
 
 C       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
-        DO 131 I=1,4
+        DO 210 I=1,4
           DGDLO(I,1)=DGDPO(I,1)*COS(TG)-DGDPO(I,2)*SIN(TG)/RG
           DGDLO(I,2)=DGDPO(I,1)*SIN(TG)+DGDPO(I,2)*COS(TG)/RG
           DGDLO(I,3)=0.D0
- 131    CONTINUE
+ 210    CONTINUE
 
 C       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
-        DO 132 I=1,4
-          DO 133 J=1,3
+        DO 220 I=1,4
+          DO 221 J=1,3
             DGDGL(I,J)=0.D0
-            DO 134 K=1,3
+            DO 222 K=1,3
               DGDGL(I,J)=DGDGL(I,J)+DGDLO(I,K)*INVP(K,J)
- 134        CONTINUE
- 133      CONTINUE
- 132    CONTINUE
+ 222        CONTINUE
+ 221      CONTINUE
+ 220    CONTINUE
 
+C       CALCUL DU GRAD DE U AU POINT DE GAUSS
         CALL REEREF(ELREFP,NNOP,IGEOM,XG,DEPL,GRDEPL,NDIM,HE,DDLH,NFE,
-     &              DDLT,FE,DGDGL,'OUI',XE,FF,DFDI,F,EPS,DUDM)
+     &              DDLT,FE,DGDGL,'OUI',XE,FF,DFDI,F,EPS,GRAD)
 
-C       -----------------
-C       3) CALCUL DE DTDM
-C       -----------------
+C       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
+        DO 230 I=1,NDIM
+          DO 231 J=1,NDIM
+            DUDM(I,J)=GRAD(I,J)
+ 231      CONTINUE
+ 230    CONTINUE
+
+C       ------------------------------------------------
+C       3) CALCUL DU CHAMP THETA ET DE SA DERIVEE (DTDM)
+C       ------------------------------------------------
 C
-        DO 120 I=1,NDIM
-          DO 121 J=1,NDIM
-             DO 122 INO=1,NNOP
-              DTDM(I,J)=DTDM(I,J)+ZR(ITHET+NDIM*(INO-1)+I-1)*DFDI(INO,J)
-122         CONTINUE
-121       CONTINUE
-120     CONTINUE
+        DO 300 I=1,NDIM
+
+          THETA(I)=0.D0
+          DO 301 INO=1,NNOP
+            THETA(I) = THETA(I) +  FF(INO) * ZR(ITHET-1+NDIM*(INO-1)+I)
+ 301      CONTINUE 
+
+          DO 310 J=1,NDIM
+             DO 311 INO=1,NNOP
+               DTDM(I,J) = DTDM(I,J) + ZR(ITHET-1+NDIM*(INO-1)+I)
+     &                               * DFDI(INO,J)
+ 311        CONTINUE
+ 310      CONTINUE
+ 300    CONTINUE
+
+C       --------------------------------------------------
+C       4) CALCUL DU CHAMP DE TEMPERATURE ET DE SA DERIVEE
+C       --------------------------------------------------
+C
+C       TEMPERATURE AU POINT DE GAUSS
+        CALL RCVARC('F','TEMP','+','XFEM',IPG,1,TEMPG,IRET)
+        IF (IRET.NE.0) TEMPG=0.D0
+        TTRGU = TEMPG - TREF
+        TTRGV = 0.D0
+
+        DO 400 I=1,NDIM
+          TGUDM(I)=0.D0
+           DO 401 INO=1,NNOP
+             TGUDM(I) = TGUDM(I) + DFDI(INO,I) * TPN(INO)
+ 401      CONTINUE
+ 400    CONTINUE
+
+C       -----------------------------------------------------
+C       5) CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES 
+C       -----------------------------------------------------
+
+        IF (NDIM.EQ.2) THEN
+C         NON PRISE EN COMPTE DE LA COURBURE
+          LCOUR=.FALSE.
+        ELSEIF (NDIM.EQ.3) THEN
+C         PRISE EN COMPTE DE LA COURBURE
+          LCOUR=.TRUE.
+C         RECUPERATION DU TENSEUR DE COURBURE
+          DO 500 I=1,NDIM
+            DO 501 J=1,NDIM
+              COURB(I,1,J)=ZR(ICOUR-1+NDIM*(I-1)+J)
+              COURB(I,2,J)=ZR(ICOUR-1+NDIM*(I+3-1)+J)
+              COURB(I,3,J)=ZR(ICOUR-1+NDIM*(I+6-1)+J)
+ 501        CONTINUE
+ 500      CONTINUE
+        ENDIF
+
+        CALL CHAUXI(NDIM,MU,KA,RG,TG,INVP,LCOUR,COURB,
+     &              DU1DM,DU2DM,DU3DM,U1L,U2L,U3L)
+
+C       CHAMPS SINGULIERS DANS LA BASE GLOBALE	
+        CALL LCINVN(NDIM,0.D0,U1)
+        CALL LCINVN(NDIM,0.D0,U2)
+        CALL LCINVN(NDIM,0.D0,U3)
+        DO 510 I=1,NDIM
+          DO 511 J=1,NDIM
+            U1(I) = U1(I) + P(I,J) * U1L(J)
+            U2(I) = U2(I) + P(I,J) * U2L(J)   
+            IF (NDIM.EQ.3) U3(I) = U3(I) + P(I,J) * U3L(J) 
+ 511      CONTINUE
+ 510    CONTINUE
 
 C       ---------------------------------------------
-C       4) CALCUL DES DÉRIVÉES DES CHAMPS AUXILIAIRES
-C       ---------------------------------------------
-
-C       RECUPERATION DU TENSEUR DE COURBURE
-        DO 127 I=1,3
-          DO 128 J=1,3
-            COURB(I,1,J)=ZR(ICOUR-1+3*(I-1)+J)
-            COURB(I,2,J)=ZR(ICOUR-1+3*(I+3-1)+J)
-            COURB(I,3,J)=ZR(ICOUR-1+3*(I+6-1)+J)
- 128      CONTINUE
- 127    CONTINUE
-C       PRISE EN COMPTE DE LA COURBURE
-        LCOUR=.TRUE.
-
-        CALL CHAUXI(NDIM,MU,KA,RG,TG,INVP,LCOUR,COURB,DU1DM,DU2DM,DU3DM)
-
-C       ---------------------------------------------
-C       5) CALCUL DE G, K1, K2, K2 AU POINT DE GAUSS (TCLA UNIQUEMENT!)
+C       6) CALCUL DE G, K1, K2, K3 AU POINT DE GAUSS
 C       --------------------------------------------
-        DO 140 I=1,3
-          TZERO(I) = 0.D0
-          DO 141 J=1,4
-            DZERO(I,J) = 0.D0
- 141      CONTINUE
- 140    CONTINUE
 
-C       AVEC LA MODIF D'ERWAN, IL FAUT PASSER LES DUDM ET DTDM DIM (3,3)
-C       EN DUDME DE DIM (3,4)
-        DO 150 I=1,3
-          DO 151 J=1,3
+        CALL LCINVN(3,0.D0,TZERO)
+        CALL LCINVN(12,0.D0,DZERO)
+
+C       POUR L'APPEL A GIL3D/GBIL2D, ON STOCKE LES CHAMPS 
+C       EN DERNIERE COLONNE DES MATRICES DES DERIVEES DES CHAMPS
+C       ON ETEND LES MATRICES : 
+C       EX : DUDM DE DIM (3,3) -> DUDME DE DIM (3,4)
+        CALL LCINVN(12,0.D0,DUDME)
+        CALL LCINVN(12,0.D0,DTDME)
+        CALL LCINVN(12,0.D0,DU1DME)
+        CALL LCINVN(12,0.D0,DU2DME)
+        CALL LCINVN(12,0.D0,DU3DME)
+        DO 600 I=1,NDIM
+          DO 601 J=1,NDIM
             DUDME(I,J) = DUDM(I,J)
             DTDME(I,J) = DTDM(I,J)
             DU1DME(I,J) = DU1DM(I,J)
             DU2DME(I,J) = DU2DM(I,J)
             DU3DME(I,J) = DU3DM(I,J)
- 151      CONTINUE
-          DUDME(I,4) = 0.D0
-          DTDME(I,4) = 0.D0
-          DU1DME(I,4) = 0.D0
-          DU2DME(I,4) = 0.D0
-          DU3DME(I,4) = 0.D0
- 150    CONTINUE
+ 601      CONTINUE
+          DUDME(I,4) = DEPLA(I)
+          DTDME(I,4) = THETA(I)
+          DU1DME(I,4) = U1(I)
+          DU2DME(I,4) = U2(I)
+          DU3DME(I,4) = U3(I)
+ 600    CONTINUE
 
-        CALL GBIL3D(DUDME,DUDME,DTDME,DZERO,DZERO,TZERO,TZERO,
-     &              0.D0,0.D0,POIDS,C1,C2,C3,0.D0,0.D0,0.D0,G)
-        ZR(IGTHET )= ZR(IGTHET) + G
+        IF (NDIM.EQ.3) THEN
 
-        CALL GBIL3D(DUDME,DU1DME,DTDME,DZERO,DZERO,TZERO,TZERO,
-     &              0.D0,0.D0,POIDS,C1,C2,C3,0.D0,0.D0,0.D0,K1)
-        ZR(IGTHET+1 )= ZR(IGTHET+1) + K1 * COEFF
+          CALL GBIL3D(DUDME,DUDME,DTDME,DZERO,DZERO,TGUDM,TGUDM,
+     &                TTRGU,TTRGU,POIDS,C1,C2,C3,K3A,0.D0,0.D0,G)
+          ZR(IGTHET )= ZR(IGTHET) + G
 
-        CALL GBIL3D(DUDME,DU2DME,DTDME,DZERO,DZERO,TZERO,TZERO,
-     &              0.D0,0.D0,POIDS,C1,C2,C3,0.D0,0.D0,0.D0,K2)
-        ZR(IGTHET+2) = ZR(IGTHET+2) + K2 * COEFF
+          CALL GBIL3D(DUDME,DU1DME,DTDME,DZERO,DZERO,TGUDM,TZERO,
+     &                TTRGU,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,K1)
+          ZR(IGTHET+1 )= ZR(IGTHET+1) + K1 * COEFF
 
-        CALL GBIL3D(DUDME,DU3DME,DTDME,DZERO,DZERO,TZERO,TZERO,
-     &              0.D0,0.D0,POIDS,C1,C2,C3,0.D0,0.D0,0.D0,K3)
-        ZR(IGTHET+3) = ZR(IGTHET+3) + K3 * COEFF3
+          CALL GBIL3D(DUDME,DU2DME,DTDME,DZERO,DZERO,TGUDM,TZERO,
+     &                TTRGU,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,K2)
+          ZR(IGTHET+2) = ZR(IGTHET+2) + K2 * COEFF
 
-100   CONTINUE
+          CALL GBIL3D(DUDME,DU3DME,DTDME,DZERO,DZERO,TGUDM,TZERO,
+     &                TTRGU,TTRGV,POIDS,C1,C2,C3,K3A,0.D0,0.D0,K3)
+          ZR(IGTHET+3) = ZR(IGTHET+3) + K3 * COEFF3
+
+        ELSEIF(NDIM.EQ.2)THEN
+
+          CALL GBILIN(DUDME,DUDME,DTDME,DZERO,TZERO,0.D0,
+     &                POIDS,C1,C2,C3,0.D0,TH,0.D0,0.D0,0.D0,G)
+          ZR(IGTHET) = ZR(IGTHET) + G
+
+          CALL GBILIN(DUDME,DU1DME,DTDME,DZERO,TZERO,0.D0,
+     &                POIDS,C1,C2,C3,0.D0,TH,0.D0,0.D0,0.D0,K1)
+          ZR(IGTHET+3) = ZR(IGTHET+1) + K1 * COEFF
+
+          CALL GBILIN(DUDME,DU2DME,DTDME,DZERO,TZERO,0.D0,
+     &              POIDS,C1,C2,C3,0.D0,TH,0.D0,0.D0,0.D0,K2)
+          ZR(IGTHET+4) = ZR(IGTHET+2) + K2 * COEFF
+          CALL ASSERT(1.EQ.0)
+
+        ENDIF
+
+ 10   CONTINUE
+
+C     ------------------------------------------------------------------
+C     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+C     ------------------------------------------------------------------
+
+      IF (NDIM.EQ.2) THEN
+        ZR(IGTHET+1) = ZR(IGTHET+3) /SQRT(COEFF)
+        ZR(IGTHET+2) = ZR(IGTHET+4) /SQRT(COEFF)
+      ENDIF
 
       CALL JEDEMA()
       END

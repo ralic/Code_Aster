@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C RESPONSABLE JMBHH01 J.M.PROIX
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,30 +42,37 @@ C
 C     ----------------------------------------------------------------
       REAL*8 D,ALPHA,GM,PM,C,CC,ALPHAM,ABSDGA,LCINE2,X(4),Y(4)
       REAL*8 F0,X1,FMAX
-      INTEGER IEC,ITER,IFM,NIV
+      INTEGER IEC,ITER,IFM,NIV,NUECIN
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IEC=NBCOMM(IFA,2)
       ABSDGA=ABS(DGAMMA)
+      NUECIN=COEFT(IEC)
 
 C----------------------------------------------------------------------
 C   POUR UN NOUVEAU TYPE D'ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF
 C----------------------------------------------------------------------
 
       IRET=0
-      IF (NECRCI.EQ.'ECRO_CINE1') THEN
-          D=COEFT(IEC-1+1)
+C      IF (NECRCI.EQ.'ECRO_CINE1') THEN
+      IF (NUECIN.EQ.1) THEN
+C          D=COEFT(IEC-1+1)
+          D=COEFT(IEC+1)
           DALPHA=(DGAMMA-D*ALPHAM*ABSDGA)/(1.0D0+D*ABSDGA)
-      ENDIF
       
-      IF (NECRCI.EQ.'ECRO_CINE2') THEN
+C      IF (NECRCI.EQ.'ECRO_CINE2') THEN
+      ELSEIF (NUECIN.EQ.2) THEN
          IRET=0
-          D=COEFT(IEC-1+1)
-          GM=COEFT(IEC-1+2)
-          PM=COEFT(IEC-1+3)
-          C=COEFT(IEC-1+4)
+C           D=COEFT(IEC-1+1)
+C           GM=COEFT(IEC-1+2)
+C           PM=COEFT(IEC-1+3)
+C           C=COEFT(IEC-1+4)
+          D =COEFT(IEC+1)
+          GM=COEFT(IEC+2)
+          PM=COEFT(IEC+3)
+          C =COEFT(IEC+4)
           CC=C*ALPHAM
           IF(CC.EQ.0.D0) THEN
             DALPHA=(DGAMMA-D*ALPHAM*ABSDGA)/(1.0D0+D*ABSDGA)
@@ -123,13 +130,14 @@ C             CALCUL DE X(4) SOLUTION DE L'EQUATION F = 0 :
                  Y(4)=LCINE2(D,GM,PM,C,DGAMMA,ALPHAM,DALPHA)
   40          CONTINUE
   60          CONTINUE
-              CALL INFNIV(IFM,NIV)
-              WRITE (IFM,*) 'ECRO_CIN2 : NON CONVERGENCE'
-              WRITE (IFM,*) 'VALEURS DE X ET Y ',X,Y
+C               CALL INFNIV(IFM,NIV)
+C               WRITE (IFM,*) 'ECRO_CIN2 : NON CONVERGENCE'
+C               WRITE (IFM,*) 'VALEURS DE X ET Y ',X,Y
               IRET = 1
   50      CONTINUE
           ENDIF
-
+      ELSE
+          CALL U2MESS('F','COMPOR1_19')          
       ENDIF
            
       END

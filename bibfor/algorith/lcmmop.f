@@ -12,7 +12,7 @@ C       POUR GAGNER EN TEMPS CPU
         CHARACTER*(*)  FAMI
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,6 +130,7 @@ C     ----------------------------------------------------------------
       REAL*8 CRIT, SGNS, EXPBP(24),DY(24),COEFEL(2)
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS,NVLOC
       INTEGER INDPHA,INDFV,INDORI,DECAL,IPHAS,INDCP,NVIG,INDFA,IEXP
+      INTEGER IFL,NUECOU
 C     ----------------------------------------------------------------
 C --  VARIABLES INTERNES
 C
@@ -199,6 +200,9 @@ C            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
 
 C           indice de la famille IFA
             INDFA=INDPHA+IFA
+            
+            IFL=NBCOMM(INDFA,1)
+            NUECOU=COEFT(IFL)
 
             DO 7 IS=1,NBSYS
                NUMS=NUMS+1
@@ -230,7 +234,8 @@ C              DECAL est le début des systemes de glissement de la
 C              phase en cours
 C              NVIG est le nombre de variables internes dela phase G
 
-               IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+C               IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+               IF (NUECOU.NE.4) THEN
 
                   IEXP=0
                   IF (IS.EQ.1) IEXP=1
@@ -255,7 +260,8 @@ C
 C
 C                 ECROUISSAGE CINEMATIQUE
 C
-                  IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+C                  IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+                  IF (NUECOU.NE.4) THEN
                       CALL LCMMFC( COEFT,INDFA,NMAT,NBCOMM,NECRCI,
      &                         ITMAX, TOLER,VIS(1),DGAMMA,DALPHA, IRET)
                       IF (IRET.NE.0) GOTO 9999

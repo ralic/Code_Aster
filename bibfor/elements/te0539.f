@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,12 +169,12 @@ C                          COMP_ELAS
         IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
 
 C         OPTION RIGI_MECA_TANG :         ARGUMENTS EN T-
-          CALL XMEL3D('-',NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,
-     &                OPTION,NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,
-     &                ZR(ICARCR),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
-     &                ZI(JLONCH),ZR(JBASLO),
-     &                ZR(IDEPLM),ZR(JLSN),ZR(JLST),ZR(ICONTM),
-     &                ZR(IVARIM),ZR(IMATUU),ZR(IVECTU),CODRET)
+          CALL XNMEL('-',NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,
+     &               OPTION,NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,
+     &               ZR(ICARCR),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
+     &               ZI(JLONCH),ZR(JBASLO),
+     &               ZR(IDEPLM),ZR(JLSN),ZR(JLST),ZR(ICONTM),
+     &               ZR(IVARIM),ZR(IMATUU),ZR(IVECTU),CODRET)
 
         ELSE
 
@@ -183,16 +183,15 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
             ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
  200      CONTINUE
 
-          CALL XMEL3D('+',NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,
-     &                OPTION,NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,
-     &                ZR(ICARCR),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
-     &                ZI(JLONCH),ZR(JBASLO),
-     &                ZR(IDEPLP),ZR(JLSN),ZR(JLST),ZR(ICONTP),
-     &                ZR(IVARIP),ZR(IMATUU),ZR(IVECTU),CODRET)
+          CALL XNMEL('+',NNO,IPOIDS,IVF,DDLH,NFE,DDLC,IGEOM,TYPMOD,
+     &               OPTION,NOMTE,ZI(IMATE),ZK16(ICOMPO),LGPG,
+     &               ZR(ICARCR),ZR(JPINTT),ZI(JCNSET),ZI(JHEAVT),
+     &               ZI(JLONCH),ZR(JBASLO),
+     &               ZR(IDEPLP),ZR(JLSN),ZR(JLST),ZR(ICONTP),
+     &               ZR(IVARIP),ZR(IMATUU),ZR(IVECTU),CODRET)
 
         END IF
 
-C      ELSEIF (NDIM .EQ. 3) THEN
       ELSE 
 
 C - LOIS DE COMPORTEMENT ECRITE EN CONFIGURATION ACTUELLE
@@ -236,7 +235,7 @@ C      &                ZR(IMATUU),ZR(IVECTU),CODRET)
         END IF
 
 C       ELSE
-C        write(6,*) 'te0539 l 256, ZK16(ICOMPO+2) = ', ZK16(ICOMPO+2)
+
 C        CALL U2MESS('F','ELEMENTS4_23')
 
 

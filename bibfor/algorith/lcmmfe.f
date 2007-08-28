@@ -8,7 +8,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,25 +58,27 @@ C     ----------------------------------------------------------------
       REAL*8 TEMPF,TABS,PR,DELTAV,DELTAG,GAMMAP,R8MIEM,PTIT
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,R,KDCS,SOM,DALPHA
       REAL*8 AUX,CISA2,RACR,RS
-      INTEGER IFL,IEI,TNS,NS,IS,IU,NBSYS,IRET2
+      INTEGER IFL,IEI,TNS,NS,IS,IU,NBSYS,IRET2,NUECOU
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
+      NUECOU=COEFT(IFL)
       IRET=0
       PTIT=R8MIEM()
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)
-      IF (IRET2.EQ.1) TEMPF=0.D0
+C       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)
+C       IF (IRET2.EQ.1) TEMPF=0.D0
 
 C-------------------------------------------------------------
 C     POUR UN NOUVEAU TYPE D'ECOULEMENT, CREER UN BLOC IF
 C------------------------------------------------------------
 
-      IF (NECOUL.EQ.'ECOU_VISC1') THEN
-          N=COEFT(IFL-1+1)
-          K=COEFT(IFL-1+2)
-          C=COEFT(IFL-1+3)
+C      IF (NECOUL.EQ.'ECOU_VISC1') THEN
+      IF (NUECOU.EQ.1) THEN
+          N=COEFT(IFL+1) 
+          K=COEFT(IFL+2) 
+          C=COEFT(IFL+3) 
 
           FTAU=TAUS-C*ALPHAP
           IF (ABS(FTAU).LT.PTIT) THEN
@@ -93,14 +95,13 @@ C------------------------------------------------------------
              DGAMMA=0.D0
           ENDIF
 
-      ENDIF
-
-      IF (NECOUL.EQ.'ECOU_VISC2') THEN
-          N=COEFT(IFL-1+1)
-          K=COEFT(IFL-1+2)
-          C=COEFT(IFL-1+3)
-          A=COEFT(IFL-1+4)
-          D=COEFT(IFL-1+5)
+C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+      ELSEIF (NUECOU.EQ.2) THEN
+          N=COEFT(IFL+1)
+          K=COEFT(IFL+2)
+          C=COEFT(IFL+3)
+          A=COEFT(IFL+4)
+          D=COEFT(IFL+5)
 
           FTAU=TAUS-C*ALPHAP-A*GAMMAP
           IF (ABS(FTAU).LT.PTIT) THEN
@@ -117,15 +118,16 @@ C------------------------------------------------------------
              DP=0.D0
              DGAMMA=0.D0
           ENDIF
-      ENDIF
 
-      IF (NECOUL.EQ.'ECOU_VISC3') THEN
-          K      =COEFT(IFL-1+1)
-          TAUMU  =COEFT(IFL-1+2)
-          GAMMA0 =COEFT(IFL-1+3)
-          DELTAV =COEFT(IFL-1+4)
-          DELTAG =COEFT(IFL-1+5)
-
+C      IF (NECOUL.EQ.'ECOU_VISC3') THEN
+      ELSEIF (NUECOU.EQ.3) THEN
+          K      =COEFT(IFL+1)
+          TAUMU  =COEFT(IFL+2)
+          GAMMA0 =COEFT(IFL+3)
+          DELTAV =COEFT(IFL+4)
+          DELTAG =COEFT(IFL+5)
+          
+          TEMPF=COEFT(IFL+6)
           TAUV=ABS(TAUS)-TAUMU
           IF (ABS(TAUS).LE.PTIT) THEN
              SGNS=1.D0
@@ -140,20 +142,23 @@ C------------------------------------------------------------
              DP=0.D0
              DGAMMA=0.D0
           ENDIF
-       ENDIF
 
-      IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
-          K         =COEFT(IFL-1+1)
-          TAUR      =COEFT(IFL-1+2)
-          TAU0      =COEFT(IFL-1+3)
-          GAMMA0    =COEFT(IFL-1+4)
-          DELTAG    =COEFT(IFL-1+5)
-          BSD       =COEFT(IFL-1+6)
-          GCB       =COEFT(IFL-1+7)
-          KDCS      =COEFT(IFL-1+8)
-          P         =COEFT(IFL-1+9)
-          Q         =COEFT(IFL-1+10)
-
+C      IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
+      ELSEIF (NUECOU.EQ.4) THEN
+          
+          K         =COEFT(IFL+1)
+          TAUR      =COEFT(IFL+2)
+          TAU0      =COEFT(IFL+3)
+          GAMMA0    =COEFT(IFL+4)
+          DELTAG    =COEFT(IFL+5)
+          BSD       =COEFT(IFL+6)
+          GCB       =COEFT(IFL+7)
+          KDCS      =COEFT(IFL+8)
+          P         =COEFT(IFL+9)
+          Q         =COEFT(IFL+10)
+          TEMPF     =COEFT(IFL+11)
+          NUMHSR    =COEFT(IFL+12)
+          
           IF (MATERF(NMAT).EQ.0) THEN
              CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
           ELSE
@@ -161,6 +166,11 @@ C------------------------------------------------------------
           ENDIF
           TAUV=ABS(TAUS)-TAU0
           CRIT=TAUV
+C         CALCUL D'UN RP FICTIF POUR LCMMVX : 
+C         CELA PERMET D'ESTIMER LE PREMIER POINT DE 
+C         NON LINEARITE
+
+          RP=TAU0
 
           IF (ABS(TAUS).LE.PTIT) THEN
              SGNS=1.D0
@@ -178,7 +188,8 @@ C------------------------------------------------------------
 
              DO 1 IU = 1, NBSYS
                 R=VIND(3*(IU-1)+1)+DAL(IU)
-                TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
+C                TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
+                TAUMU = TAUMU +  HSR(NUMHSR,IS,IU)*R
                SOM = SOM+R
   1          CONTINUE
              SOM=SOM-RS
@@ -220,6 +231,8 @@ C     &               (BSD+SOM/KDCS-GCB*VIND(3*(IS-1)+1))
               DP=0.D0
               DALPHA=0.D0
            ENDIF
+       ELSE
+          CALL U2MESS('F','COMPOR1_20')          
        ENDIF
 9999   CONTINUE
       END

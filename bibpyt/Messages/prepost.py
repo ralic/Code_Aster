@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost Messages  DATE 27/08/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,6 +202,13 @@ cata_msg={
  une nappe doit etre introduite sous le mot cle taheri_nappe
 """),
 
+46: _("""
+ erreur dans la création du fichier de maillage au format GIBI.
+ Celui-ci ne contient pas d'objet de type maillage.
+ 
+ Risque & Conseil:
+ Assurez vous que votre procédure gibi sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
+"""),
 
 
 

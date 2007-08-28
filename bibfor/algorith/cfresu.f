@@ -1,9 +1,9 @@
-      SUBROUTINE CFRESU(NUMINS,INSTAP,MATASS,DEFICO,RESOCO,DEPDEL,
+      SUBROUTINE CFRESU(NUMINS,INST,MATASS,DEFICO,RESOCO,DEPDEL,
      &                  DDEPLA,NOMA,CNSINR)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 27/08/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,10 +23,10 @@ C ======================================================================
 C TOLE CRP_20
       IMPLICIT     NONE
       INTEGER      NUMINS
-      REAL*8       INSTAP
+      REAL*8       INSTAP,INST(5)
       CHARACTER*8  NOMA
       CHARACTER*19 MATASS
-      CHARACTER*19 CNSINR
+      CHARACTER*19 CNSINR,CNSPER
       CHARACTER*24 DEFICO
       CHARACTER*24 RESOCO
       CHARACTER*24 DEPDEL
@@ -41,7 +41,8 @@ C ECRITURE DANS LE FICHIER MESSAGE DES INFOS SUR LE CONTACT
 C A CONVERGENCE DE NEWTON (FIN DU PAS DE TEMPS)
 C
 C IN  NUMINS : NUMERO DU PAS DE CHARGE
-C IN  INSTAP : INSTANT DE CALCUL
+C IN  INST   : INST(1) = INSTANT COURANT DE CALCUL
+C              INST(2) = INCREMENT TEMPOREL
 C IN  MATASS : MATRICE DE RIGIDITE ASSEMBLE
 C IN  DEFICO : SD DE DEFINITION DU CONTACT
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
@@ -83,7 +84,7 @@ C
       REAL*8       RN,RNX,RNY,RNZ,HN
       REAL*8       RTAX,RTAY,RTAZ,RTGX,RTGY,RTGZ
       CHARACTER*2  TYPEC0,TYPLIA
-      CHARACTER*8  LICMPR(20),NOMCMP(20)
+      CHARACTER*8  LICMPR(24),NOMCMP(24),LICMP4(4)
       CHARACTER*19 COCO,LIAC,ATMU,AFMU,MU,CONVEC
       INTEGER      JCOCO,JLIAC,JATMU,JAFMU,JMU,LMAT,JVECC
       CHARACTER*24 APPARI,NDIMCO,CONTNO,APPOIN
@@ -95,6 +96,11 @@ C
       INTEGER      JCNSVR,JCNSLR,JDEPDE,JDDEPL
       INTEGER      TYPALC,TYPALF
       LOGICAL      LAG2D
+      REAL*8       DELTAT,IMP,IMPX,IMPY,IMPZ,EPS
+      INTEGER      ZQUA,NBNOT,IRET,JCNSVP,JCNSLP
+      
+      PARAMETER    (EPS=1.D-6)
+      
 C ----------------------------------------------------------------------
       DATA NOMCMP
      &   / 'CONT','JEU' ,'RN'  ,
@@ -103,7 +109,8 @@ C ----------------------------------------------------------------------
      &     'RTAX','RTAY','RTAZ',
      &     'RTGX','RTGY','RTGZ',
      &     'RX'  ,'RY'  ,'RZ'  ,
-     &     'R'   ,'HN'/
+     &     'R'   ,'HN'  ,'I'   ,
+     &     'IX'  ,'IY'  ,'IZ'  /
 C
 C ----------------------------------------------------------------------
 C
@@ -148,7 +155,7 @@ C ======================================================================
       ZRESU  = CFMMVD('ZRESU')
       
 C --- CHANGEZ LA TAILLE DE LICMPR,NOMCMP   
-      IF (ZRESU.GT.20) CALL ASSERT(.FALSE.)
+C      IF (ZRESU.GT.20) CALL ASSERT(.FALSE.)
       
 
 C ======================================================================
@@ -158,7 +165,7 @@ C
 C ======================================================================
       NESCL  = ZI(JAPPAR)
       NBLIAI = NESCL
-      CNSINR = '&&RESUCO.CNSINR'
+      CNSINR = '&&RESUCO.CNSINR'      
 
       DO 1 ICMP = 1,ZRESU
         LICMPR(ICMP) = NOMCMP(ICMP)
@@ -177,6 +184,41 @@ C ======================================================================
  11      CONTINUE
          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+2 ) = ZR(JAPJEU+II-1)
  10   CONTINUE
+
+
+C ---- CREATION D'UN CHAM_NO_S POUR L'ARCHIVAGE DES COMPOSANTES
+C      DE PERCUSSION D'UN INSTANT A L'AUTRE
+        CNSPER = '&&RESUCO.CNSPERC'
+        CALL JEEXIN(CNSPER//'.CNSV',IRET)
+        ZQUA  =4
+        INSTAP=INST(1)
+        DELTAT=INST(2)
+
+        IF (IRET .EQ. 0) THEN
+
+          LICMP4(1) = 'V1'
+          LICMP4(2) = 'V2'
+          LICMP4(3) = 'V3'
+          LICMP4(4) = 'V4'
+          CALL CNSCRE(NOMA,'VARI_R',ZQUA,LICMP4,'V',CNSPER)
+
+C --- INITIALISATION A ZERO DU CHAM_NO_S
+          CALL JEVEUO(CNSPER//'.CNSD','L',JCNSVP)
+          NBNOT = ZI(JCNSVP)
+          CALL JEVEUO(CNSPER//'.CNSV','E',JCNSVP)
+          CALL JEVEUO(CNSPER//'.CNSL','E',JCNSLP)
+          DO 3 II = 1,NBNOT     
+            DO 3 ICMP = 1,ZQUA
+              ZR(JCNSVP-1+ZQUA*(II-1)+ICMP) = 0.D0
+              ZL(JCNSLP-1+ZQUA*(II-1)+ICMP) = .FALSE.
+ 3            CONTINUE
+
+        ELSE
+
+          CALL JEVEUO(CNSPER//'.CNSV','E',JCNSVP)
+          CALL JEVEUO(CNSPER//'.CNSL','E',JCNSLP)
+
+        ENDIF
 C
 C --- CONTACT SANS CALCUL: DETERMINATION DES INTERPENETRATIONS
 C
@@ -415,6 +457,51 @@ C
          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+18) = RZ
          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+19) = R
          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+20) = HN
+C
+C ---- CALCUL DES PERCUSSIONS
+C
+         ZL(JCNSLP-1+ZQUA*(NUMNOE-1)+1) = .TRUE.
+         ZL(JCNSLP-1+ZQUA*(NUMNOE-1)+2) = .TRUE.
+         ZL(JCNSLP-1+ZQUA*(NUMNOE-1)+3) = .TRUE.
+         ZL(JCNSLP-1+ZQUA*(NUMNOE-1)+4) = .TRUE.
+         
+         IF (R .LE. EPS) THEN
+         
+           IMP  = 0.D0
+           IMPX = 0.D0
+           IMPY = 0.D0
+           IMPZ = 0.D0
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+1) = 0.D0
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+2) = 0.D0
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+3) = 0.D0
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+4) = 0.D0
+           
+         ELSE
+           
+           IMP = ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+1) + R*DELTAT
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+1) = IMP
+           
+           IMPX = ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+2) + RX*DELTAT
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+2) = IMPX
+           
+           IMPY = ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+3) + RY*DELTAT
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+3) = IMPY
+           
+           IMPZ = ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+4) + RZ*DELTAT
+           ZR(JCNSVP-1+ZQUA*(NUMNOE-1)+4) = IMPZ
+           
+         ENDIF
+         
+         ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+21)= IMP
+         ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+22)= IMPX
+         ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+23)= IMPY
+         ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+24)= IMPZ
+         
+         ZL(JCNSLR-1+(NUMNOE-1)*ZRESU+21)= .TRUE.
+         ZL(JCNSLR-1+(NUMNOE-1)*ZRESU+22)= .TRUE.
+         ZL(JCNSLR-1+(NUMNOE-1)*ZRESU+23)= .TRUE.
+         ZL(JCNSLR-1+(NUMNOE-1)*ZRESU+24)= .TRUE.
+              
 C
 C --- DONNEES DU FROTTEMENT
 C

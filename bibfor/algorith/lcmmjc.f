@@ -5,7 +5,7 @@
         REAL*8 COEFT(NMAT),DALDGR,DGAMMS,ALPHMR,SGNR,LCINE2,R8PREM
         CHARACTER*16 NECRCI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,25 +42,29 @@ C           DALDGR : dAlpha/dGamma
 C           
 C     ----------------------------------------------------------------
       REAL*8 C,P,D,ALPHA,GAMMA,DP,GM,PM,CC,DALPHA
-      INTEGER IEC
+      INTEGER IEC,NUECIN
 C     ----------------------------------------------------------------
 
       
       IEC=NBCOMM(IFA,2)
+      NUECIN=COEFT(IEC)
 
 C--------------------------------------------------------------------
 C     POUR UN NOUVEL ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF 
 C--------------------------------------------------------------------
 
-      IF (NECRCI.EQ.'ECRO_CINE1') THEN
-          D=COEFT(IEC-1+1)
+C      IF (NECRCI.EQ.'ECRO_CINE1') THEN
+      IF (NUECIN.EQ.1) THEN
+C          D=COEFT(IEC-1+1)
+          D=COEFT(IEC+1)
           DALDGR=0.D0
           IF (IS.EQ.IR) THEN
              DALDGR=(1.D0-D*ALPHMR*SGNR)/(1.D0+D*ABS(DGAMMS))**2
           ENDIF
       ENDIF
       
-      IF (NECRCI.EQ.'ECRO_CINE2') THEN
+C      IF (NECRCI.EQ.'ECRO_CINE2') THEN
+      IF (NUECIN.EQ.2) THEN
           DALDGR=0.D0
           IF (IS.EQ.IR) THEN
              IF (ABS(DGAMMS).GT.R8PREM()) THEN

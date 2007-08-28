@@ -1,10 +1,10 @@
-      SUBROUTINE MMMRES (DEFICO,DEPDEL,NUMEDD,NOMA,CNSINR)
+      SUBROUTINE MMMRES (DEFICO,DEPDEL,NUMEDD,NOMA,CNSINR,INST)
       IMPLICIT     NONE
       CHARACTER*8   NOMA
-      CHARACTER*19  CNSINR
+      CHARACTER*19  CNSINR,CNSPER
       CHARACTER*24  DEFICO, DEPDEL, NUMEDD
 C ======================================================================
-C MODIF ALGORITH  DATE 26/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 27/08/2007   AUTEUR KHAM M.KHAM 
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -63,13 +63,14 @@ C ======================================================================
       REAL*8 RTGY,RTGZ,X(2),FF(9)
       REAL*8 DEPLPM(3),DEPLPE(3),CONT,LAGSF,VECT1(3),VECT2(3)
       REAL*8 COOR(3),COORE(3),ERR(3),EPS
-      CHARACTER*8 LICMPR(20),LICMP4(4),LICMP6(6),LICNT3(3)
+      CHARACTER*8 LICMPR(24),LICMP4(4),LICMP6(6),LICNT3(3)
       CHARACTER*8 ALIAS,KBID
       CHARACTER*19 FCONT,FFROT,FCONTS,FFROTS,DEPDES,DEPCN
       CHARACTER*19 FCTCN,FFROCN
       CHARACTER*24 JEU,GLIE,GLIM,CONTAC,PREMIE
       LOGICAL   LFROT
-
+      REAL*8  DELTAT,INST(5),R,RX,RY,RZ,IMP,IMPX,IMPY,IMPZ
+      INTEGER ZQUA,ZCNS,IFM,ICMP,JCNSVP,JCNSLP
       PARAMETER (EPS=1.D-6)
 
       CALL JEMARQ()
@@ -88,6 +89,7 @@ C ======================================================================
       GLIM   = '&&MMMRES.GLIM'
       CONTAC = '&&MMMRES.CONTAC'
       PREMIE = '&&MMMRES.PREMIE'
+      CNSPER = '&&MMMRES.CNSPERC'
 
       CALL JEEXIN('&&CFMVEL.LISTE_RESU',IRET)
 
@@ -104,7 +106,7 @@ C ------ RECUPERATION DES DIVERSES DONNEES RELATIVES AU CONTACT
         CALL JEVEUO(DEFICO(1:16)//'.JEUSUR','L',JUSU)
         CALL JEVEUO(DEFICO(1:16)//'.CARACF','L',JCMCF)
         CALL JEVEUO(DEFICO(1:16)//'.MAESCL','L',JMAESC)
-        CALL JEVEUO(NOMA(1:8)//'.TYPMAIL','L',IATYMA)
+        CALL JEVEUO(NOMA(1:8)  //'.TYPMAIL','L',IATYMA)
         CALL JEVEUO(DEFICO(1:16)//'.MAILCO','L',JMACO)
         CALL JEVEUO(DEFICO(1:16)//'.NOZOCO','L',JZOCO)
 
@@ -132,17 +134,26 @@ C---------RECHERCHE DE LA METHODE D INTEGRATION
         LICMPR(7) = 'GLIX'
         LICMPR(8) = 'GLIY'
         LICMPR(9) = 'GLI'
-        LICMPR(10) = 'RTAX'
-        LICMPR(11) = 'RTAY'
-        LICMPR(12) = 'RTAZ'
-        LICMPR(13) = 'RTGX'
-        LICMPR(14) = 'RTGY'
-        LICMPR(15) = 'RTGZ'
-        LICMPR(16) = 'RX'
-        LICMPR(17) = 'RY'
-        LICMPR(18) = 'RZ'
-        LICMPR(19) = 'R'
-        LICMPR(20) = 'HN'
+        LICMPR(10)= 'RTAX'
+        LICMPR(11)= 'RTAY'
+        LICMPR(12)= 'RTAZ'
+        LICMPR(13)= 'RTGX'
+        LICMPR(14)= 'RTGY'
+        LICMPR(15)= 'RTGZ'
+        LICMPR(16)= 'RX'
+        LICMPR(17)= 'RY'
+        LICMPR(18)= 'RZ'
+        LICMPR(19)= 'R'
+        LICMPR(20)= 'HN'
+C
+C ---- COMPOSANTES DE PERCUSSION
+C      -------------------------
+        LICMPR(21)= 'I'
+        LICMPR(22)= 'IX'
+        LICMPR(23)= 'IY'
+        LICMPR(24)= 'IZ'
+        ZCNS   = CFMMVD('ZRESU')
+        DELTAT = INST(2)
 
 C ------ TRANSFORMATION DU CHAM_NO DES DDL EN UN CHAM_NO_S POUR
 C ------ UNE LECTURE FACILE
@@ -180,13 +191,61 @@ C ------ UNE LECTURE FACILE
 
         CALL JEVEUO(DEPCN//'.CNSV','L',JDEPDE)
         CALL JEVEUO(DEPCN//'.CNSL','L',JDEPDL)
-
+C
 C ------ CREATION DU CHAM_NO_S POUR L ARCHIVAGE DU CONTACT
+C
+        CALL CNSCRE(NOMA,'INFC_R',ZCNS,LICMPR,'V',CNSINR)
 
-        CALL CNSCRE(NOMA,'INFC_R',20,LICMPR,'V',CNSINR)
+        CALL JEVEUO(CNSINR//'.CNSD','L',JCNSVR)
+        NBNOT = ZI(JCNSVR)
         CALL JEVEUO(CNSINR//'.CNSV','E',JCNSVR)
         CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)
+
+C ---- INITIALISATION DU CHAM_NO_S
+
+        DO 2 INO = 1,NBNOT
+          DO 2 ICMP = 1,ZCNS
+            ZR(JCNSVR-1+ZCNS*(INO-1)+ICMP) = 0.D0
+            ZL(JCNSLR-1+ZCNS*(INO-1)+ICMP) = .FALSE.
+ 2          CONTINUE
+ 
         LICOEF = 1.D0
+
+C
+C ---- CREATION D'UN CHAM_NO_S POUR L'ARCHIVAGE DES COMPOSANTES
+C      DE PERCUSSION D'UN INSTANT A L'AUTRE
+
+        CALL JEEXIN(CNSPER//'.CNSV',IRET)
+        ZQUA =4
+        
+        IF (IRET .EQ. 0) THEN
+
+          LICMP4(1) = 'V1'
+          LICMP4(2) = 'V2'
+          LICMP4(3) = 'V3'
+          LICMP4(4) = 'V4'
+          CALL CNSCRE(NOMA,'VARI_R',ZQUA,LICMP4,'V',CNSPER)
+
+          CALL JEVEUO(CNSPER//'.CNSD','L',JCNSVP)
+          NBNOT = ZI(JCNSVP)
+          CALL JEVEUO(CNSPER//'.CNSV','E',JCNSVP)
+          CALL JEVEUO(CNSPER//'.CNSL','E',JCNSLP)
+
+C --- INITIALISATION A ZERO DU CHAM_NO_S
+
+          DO 3 INO = 1,NBNOT     
+            DO 3 ICMP = 1,ZQUA
+              ZR(JCNSVP-1+ZQUA*(INO-1)+ICMP) = 0.D0
+              ZL(JCNSLP-1+ZQUA*(INO-1)+ICMP) = .FALSE.
+ 3            CONTINUE
+            
+        ELSE
+
+          CALL JEVEUO(CNSPER//'.CNSV','E',JCNSVP)
+          CALL JEVEUO(CNSPER//'.CNSL','E',JCNSLP)
+
+        ENDIF
+
 
 C ------ ASSEMBLAGE DES SECONDS MEMBRES DU AUX CONTACTS
 C ------ POUR RECUPERER LES FORCES NODALES DE CONTACT
@@ -574,11 +633,11 @@ C ____ RECUPERATION DES DONNES AUX NOEUDS
                       CALL ASSERT(ZL(JDEPDL-1+NDD1*(NUNOE-1)+3))
 
                       ZL(JPREMI-1+NUNOE) = .TRUE.
-                      ZL(JCNSLR-1+20* (NUNOE-1)+1) = .TRUE.
+                      ZL(JCNSLR-1+ZCNS* (NUNOE-1)+1) = .TRUE.
 
-                      ZR(JCNSVR-1+20*(NUNOE-1)+2) = ZR(JJEU-1+INOE)
-                      ZR(JCNSVR-1+20*(NUNOE-1)+20)= ZR(JUSU-1+INOE)
-                      ZR(JCNSVR-1+20*(NUNOE-1)+1) = ZR(JTABF+
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+2) = ZR(JJEU-1+INOE)
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+20)= ZR(JUSU-1+INOE)
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+1) = ZR(JTABF+
      &                                              ZTABF*(INOE-1)+13)
 
 C        WRITE(6,*)'JEU1=',ZR(JCNSVR-1+20*(NUNOE-1)+2)
@@ -588,21 +647,20 @@ C        WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
      &                       ZR(JGLIM+2* (INOE-1))
                       GLI2 = ZR(JGLIE+2* (INOE-1)+1) -
      &                       ZR(JGLIM+2* (INOE-1)+1)
-                      ZR(JCNSVR-1+20*(NUNOE-1)+7) = GLI1
-                      ZR(JCNSVR-1+20*(NUNOE-1)+8) = GLI2
-                      ZR(JCNSVR-1+20*(NUNOE-1)+9) = SQRT(GLI1**2+
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+7) = GLI1
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+8) = GLI2
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+9) = SQRT(GLI1**2+
      &                  GLI2**2)
 
                     ELSE
-                      ZR(JCNSVR-1+20*(NUNOE-1)+2) = 
-     &                            MIN(ZR(JCNSVR-1+20*(NUNOE-1)+2),
-     &                                ZR(JJEU-1+INOE))
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+2) = 
+     &                MIN(ZR(JCNSVR-1+ZCNS*(NUNOE-1)+2),ZR(JJEU-1+INOE))
 
 C        WRITE(6,*)'CONT2=',ZR(JTABF+20*(INOE-1)+13)
 C        WRITE(6,*)'JEU2=',ZR(JCNSVR-1+20*(NUNOE-1)+2)
 
-                      ZR(JCNSVR-1+20*(NUNOE-1)+1) = 
-     &                            MAX(ZR(JCNSVR-1+20*(NUNOE-1)+1),
+                      ZR(JCNSVR-1+ZCNS*(NUNOE-1)+1) = 
+     &                MAX(ZR(JCNSVR-1+ZCNS*(NUNOE-1)+1),
      &                                ZR(JTABF+ZTABF*(INOE-1)+13))
 
                       GLI1 = ZR(JGLIE+2* (INOE-1)) -
@@ -610,15 +668,15 @@ C        WRITE(6,*)'JEU2=',ZR(JCNSVR-1+20*(NUNOE-1)+2)
                       GLI2 = ZR(JGLIE+2* (INOE-1)+1) -
      &                       ZR(JGLIM+2* (INOE-1)+1)
                       GLI = SQRT(GLI1**2+GLI2**2)
-                      IF (GLI.GT.ZR(JCNSVR-1+20* (NUNOE-1)+9)) THEN
-                        ZR(JCNSVR-1+20* (NUNOE-1)+9) = GLI
-                        ZR(JCNSVR-1+20* (NUNOE-1)+7) = GLI1
-                        ZR(JCNSVR-1+20* (NUNOE-1)+8) = GLI2
+                      IF (GLI.GT.ZR(JCNSVR-1+ZCNS* (NUNOE-1)+9)) THEN
+                        ZR(JCNSVR-1+ZCNS* (NUNOE-1)+9) = GLI
+                        ZR(JCNSVR-1+ZCNS* (NUNOE-1)+7) = GLI1
+                        ZR(JCNSVR-1+ZCNS* (NUNOE-1)+8) = GLI2
                       END IF
 
                     END IF
 
-                    CONT = ZR(JCNSVR-1+20* (NUNOE-1)+1)
+                    CONT = ZR(JCNSVR-1+ZCNS* (NUNOE-1)+1)
                     IF (CONT.GE.1.D0) THEN
 
 C ------ RECUPERATION DES FORCES NODALES DE CONTACT
@@ -656,7 +714,7 @@ C ------ LE NOEUD EST GLISSANT
                           RTGX = ZR(JFROT-1+3* (NUNOE-1)+1)
                           RTGY = ZR(JFROT-1+3* (NUNOE-1)+2)
                           RTGZ = ZR(JFROT-1+3* (NUNOE-1)+3)
-                          ZR(JCNSVR-1+20* (NUNOE-1)+1) = 2.D0
+                          ZR(JCNSVR-1+ZCNS* (NUNOE-1)+1) = 2.D0
                         ELSE
 
 C ------ LE NOEUD EST ADHERENT
@@ -668,50 +726,100 @@ C ------ LE NOEUD EST ADHERENT
                       END IF
                     END IF
                   END IF
-C______ FIN POST-TRAITEMENT DES RESULTATS
+C ---- FIN POST-TRAITEMENT DES RESULTATS
    80           CONTINUE
                 NTPC = NTPC + NBNOC
    90         CONTINUE
 
 
+C ---- CALCUL DES PERCUSSIONS
+              R = SQRT((RNX+RTAX+RTGX)**2.D0+(RNY+RTAY+RTGY)**2.D0+
+     &                 (RNZ+RTAZ+RTGZ)**2.D0)
+
+              ZL(JCNSLP-1+ZQUA*(NUNOE-1)+1) = .TRUE.
+              ZL(JCNSLP-1+ZQUA*(NUNOE-1)+2) = .TRUE.
+              ZL(JCNSLP-1+ZQUA*(NUNOE-1)+3) = .TRUE.
+              ZL(JCNSLP-1+ZQUA*(NUNOE-1)+4) = .TRUE.
+              
+              IF (R .LE. EPS) THEN
+              
+                IMP  = 0.D0
+                IMPX = 0.D0
+                IMPY = 0.D0
+                IMPZ = 0.D0
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+1) = 0.D0
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+2) = 0.D0
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+3) = 0.D0
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+4) = 0.D0
+                
+              ELSE
+              
+                RX = RNX + RTAX + RTGX
+                RY = RNY + RTAY + RTGY
+                RZ = RNZ + RTAZ + RTGZ
+                
+                IMP = ZR(JCNSVP-1+ZQUA*(NUNOE-1)+1) + R*DELTAT
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+1) = IMP
+                
+                IMPX = ZR(JCNSVP-1+ZQUA*(NUNOE-1)+2) + RX*DELTAT
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+2) = IMPX
+                
+                IMPY = ZR(JCNSVP-1+ZQUA*(NUNOE-1)+3) + RY*DELTAT
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+3) = IMPY
+                
+                IMPZ = ZR(JCNSVP-1+ZQUA*(NUNOE-1)+4) + RZ*DELTAT
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+4) = IMPZ
+                
+              ENDIF
+
+
 C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
 
-              ZR(JCNSVR-1+20* (NUNOE-1)+3) = RN
-              ZR(JCNSVR-1+20* (NUNOE-1)+4) = RNX
-              ZR(JCNSVR-1+20* (NUNOE-1)+5) = RNY
-              ZR(JCNSVR-1+20* (NUNOE-1)+6) = RNZ
-              ZR(JCNSVR-1+20* (NUNOE-1)+10) = RTAX
-              ZR(JCNSVR-1+20* (NUNOE-1)+11) = RTAY
-              ZR(JCNSVR-1+20* (NUNOE-1)+12) = RTAZ
-              ZR(JCNSVR-1+20* (NUNOE-1)+13) = RTGX
-              ZR(JCNSVR-1+20* (NUNOE-1)+14) = RTGY
-              ZR(JCNSVR-1+20* (NUNOE-1)+15) = RTGZ
-              ZR(JCNSVR-1+20* (NUNOE-1)+16) = RNX + RTAX + RTGX
-              ZR(JCNSVR-1+20* (NUNOE-1)+17) = RNY + RTAY + RTGY
-              ZR(JCNSVR-1+20* (NUNOE-1)+18) = RNZ + RTAZ + RTGZ
-              ZR(JCNSVR-1+20* (NUNOE-1)+19) = SQRT((RNX+RTAX+RTGX)**2+
-     &          (RNY+RTAY+RTGY)**2+ (RNZ+RTAZ+RTGZ)**2)
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+3) = RN
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+4) = RNX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+5) = RNY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+6) = RNZ
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+10)= RTAX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+11)= RTAY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+12)= RTAZ
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+13)= RTGX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+14)= RTGY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+15)= RTGZ
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+16)= RNX + RTAX + RTGX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+17)= RNY + RTAY + RTGY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+18)= RNZ + RTAZ + RTGZ
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+19)= SQRT((RNX+RTAX+RTGX)**2 +
+     &        (RNY+RTAY+RTGY)**2 + (RNZ+RTAZ+RTGZ)**2)
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+21)= IMP
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+22)= IMPX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+23)= IMPY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+24)= IMPZ
 
-              ZL(JCNSLR-1+ (NUNOE-1)*20+1) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+2) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+3) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+4) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+5) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+6) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+7) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+8) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+9) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+10) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+11) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+12) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+13) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+14) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+15) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+16) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+17) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+18) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+19) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+20) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+1) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+2) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+3) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+4) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+5) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+6) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+7) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+8) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+9) = .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+10)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+11)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+12)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+13)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+14)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+15)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+16)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+17)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+18)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+19)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+20)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+21)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+22)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+23)= .TRUE.
+              ZL(JCNSLR-1+ (NUNOE-1)*ZCNS+24)= .TRUE.
+              
             END IF
 
   100     CONTINUE
@@ -922,9 +1030,9 @@ C ____ POST-TRAITEMENT DES RESULTATS
 
                     IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
                       ZL(JPREMI-1+NUNOE) = .TRUE.
-                      ZR(JCNSVR-1+20* (NUNOE-1)+2) = ZR(JJEU-1+INOE)
-                      ZR(JCNSVR-1+20* (NUNOE-1)+20)= ZR(JUSU-1+INOE)
-                      ZR(JCNSVR-1+20* (NUNOE-1)+1) = ZR(JTABF+
+                      ZR(JCNSVR-1+ZCNS* (NUNOE-1)+2) = ZR(JJEU-1+INOE)
+                      ZR(JCNSVR-1+ZCNS* (NUNOE-1)+20)= ZR(JUSU-1+INOE)
+                      ZR(JCNSVR-1+ZCNS* (NUNOE-1)+1) = ZR(JTABF+
      &                  ZTABF* (INOE-1)+13)
 
 C               WRITE(6,*)'JEU1=',ZR(JJEU-1+INOE)
@@ -933,16 +1041,16 @@ C               WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
 
                       GLI1 = ZR(JGLIE+INOE-1) - ZR(JGLIM+INOE-1)
                       GLI = SQRT(GLI1**2)
-                      ZR(JCNSVR-1+20* (NUNOE-1)+7) = GLI1
-                      ZR(JCNSVR-1+20* (NUNOE-1)+9) = GLI
+                      ZR(JCNSVR-1+ZCNS* (NUNOE-1)+7) = GLI1
+                      ZR(JCNSVR-1+ZCNS* (NUNOE-1)+9) = GLI
 
                     ELSE
 
-                      ZR(JCNSVR-1+20* (NUNOE-1)+
-     &                  2) = MIN(ZR(JCNSVR-1+20* (NUNOE-1)+2),
+                      ZR(JCNSVR-1+ZCNS* (NUNOE-1)+
+     &                  2) = MIN(ZR(JCNSVR-1+ZCNS* (NUNOE-1)+2),
      &                  ZR(JJEU-1+INOE))
-                      ZR(JCNSVR-1+20* (NUNOE-1)+
-     &                  1) = MAX(ZR(JCNSVR-1+20* (NUNOE-1)+1),
+                      ZR(JCNSVR-1+ZCNS* (NUNOE-1)+
+     &                  1) = MAX(ZR(JCNSVR-1+ZCNS* (NUNOE-1)+1),
      &                  ZR(JTABF+ZTABF* (INOE-1)+13))
 
 C               WRITE(6,*)'JEU2=',ZR(JJEU-1+INOE)
@@ -950,16 +1058,16 @@ C               WRITE(6,*)'CONT2=',ZR(JTABF+20*(INOE-1)+13)
 
                       GLI1 = ZR(JGLIE+INOE-1) - ZR(JGLIM+INOE-1)
                       GLI = SQRT(GLI1**2)
-                      IF (GLI.GT.ZR(JCNSVR-1+20* (NUNOE-1)+9)) THEN
-                        ZR(JCNSVR-1+20* (NUNOE-1)+9) = GLI
-                        ZR(JCNSVR-1+20* (NUNOE-1)+7) = GLI1
+                      IF (GLI.GT.ZR(JCNSVR-1+ZCNS* (NUNOE-1)+9)) THEN
+                        ZR(JCNSVR-1+ZCNS* (NUNOE-1)+9) = GLI
+                        ZR(JCNSVR-1+ZCNS* (NUNOE-1)+7) = GLI1
                       END IF
 
                     END IF
 
 C ---- ETAT DU CONTACT: CONT
 
-                    CONT = ZR(JCNSVR-1+20* (NUNOE-1)+1)
+                    CONT = ZR(JCNSVR-1+ZCNS* (NUNOE-1)+1)
                     IF (CONT.GE.1.D0) THEN
 
 C ------ RECUPERATION DES FORCES NODALES DE CONTACT
@@ -982,7 +1090,7 @@ C ----- Y-A-T-IL DU FROTTEMENT ?
 C ------ LE NOEUD EST GLISSANT
                           RTGX = ZR(JFROT-1+2* (NUNOE-1)+1)
                           RTGY = ZR(JFROT-1+2* (NUNOE-1)+2)
-                          ZR(JCNSVR-1+20* (NUNOE-1)+1) = 2.D0
+                          ZR(JCNSVR-1+ZCNS*(NUNOE-1)+1) = 2.D0
                         ELSE
 C ------ LE NOEUD EST ADHERENT
                           RTAX = ZR(JFROT-1+2* (NUNOE-1)+1)
@@ -997,34 +1105,73 @@ C ------ LE NOEUD EST ADHERENT
                 NTPC = NTPC + NBNOC
   170         CONTINUE
 
-C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
-              ZR(JCNSVR-1+20* (NUNOE-1)+3) = RN
-              ZR(JCNSVR-1+20* (NUNOE-1)+4) = RNX
-              ZR(JCNSVR-1+20* (NUNOE-1)+5) = RNY
-              ZR(JCNSVR-1+20* (NUNOE-1)+10) = RTAX
-              ZR(JCNSVR-1+20* (NUNOE-1)+11) = RTAY
-              ZR(JCNSVR-1+20* (NUNOE-1)+13) = RTGX
-              ZR(JCNSVR-1+20* (NUNOE-1)+14) = RTGY
-              ZR(JCNSVR-1+20* (NUNOE-1)+16) = RNX + RTAX + RTGX
-              ZR(JCNSVR-1+20* (NUNOE-1)+17) = RNY + RTAY + RTGY
-              ZR(JCNSVR-1+20* (NUNOE-1)+19) = SQRT((RNX+RTAX+RTGX)**2+
-     &          (RNY+RTAY+RTGY)**2)
 
-              ZL(JCNSLR-1+ (NUNOE-1)*20+1) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+2) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+3) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+4) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+5) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+7) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+9) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+10) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+11) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+13) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+14) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+16) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+17) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+19) = .TRUE.
-              ZL(JCNSLR-1+ (NUNOE-1)*20+20) = .TRUE.
+C ---- CALCUL DES PERCUSSIONS
+              R = SQRT((RNX+RTAX+RTGX)**2.D0+(RNY+RTAY+RTGY)**2.D0)
+
+              ZL(JCNSLP-1+ZQUA*(NUNOE-1)+1) = .TRUE.
+              ZL(JCNSLP-1+ZQUA*(NUNOE-1)+2) = .TRUE.
+              ZL(JCNSLP-1+ZQUA*(NUNOE-1)+3) = .TRUE.
+
+              IF (R .LE. EPS) THEN
+
+                IMP = 0.D0
+                IMPX = 0.D0
+                IMPY = 0.D0
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+1) = 0.D0
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+2) = 0.D0
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+3) = 0.D0
+
+              ELSE
+
+                RX = RNX + RTAX + RTGX
+                RY = RNY + RTAY + RTGY
+
+                IMP = ZR(JCNSVP-1+ZQUA*(NUNOE-1)+1) + R*DELTAT
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+1) = IMP
+
+                IMPX = ZR(JCNSVP-1+ZQUA*(NUNOE-1)+2) + RX*DELTAT
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+2) = IMPX
+
+                IMPY = ZR(JCNSVP-1+ZQUA*(NUNOE-1)+3) + RY*DELTAT
+                ZR(JCNSVP-1+ZQUA*(NUNOE-1)+3) = IMPY
+
+              ENDIF
+
+C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
+
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+3) = RN
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+4) = RNX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+5) = RNY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+10)= RTAX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+11)= RTAY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+13)= RTGX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+14)= RTGY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+16)= RNX + RTAX + RTGX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+17)= RNY + RTAY + RTGY
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+19)= R
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+21)= IMP
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+22)= IMPX
+              ZR(JCNSVR-1+ZCNS*(NUNOE-1)+23)= IMPY
+
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+1) = .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+2) = .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+3) = .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+4) = .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+5) = .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+7) = .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+9) = .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+10)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+11)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+13)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+14)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+16)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+17)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+19)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+20)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+21)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+22)= .TRUE.
+              ZL(JCNSLR-1+(NUNOE-1)*ZCNS+23)= .TRUE.
 
             END IF
   180     CONTINUE
@@ -1036,7 +1183,7 @@ C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
         CALL U2MESS('F','ALGORITH6_14')
 
       END IF
-
+      
       CALL JEDETR(FCONT)
       CALL DETRSD('CHAMP',FCONTS)
       CALL DETRSD('CHAMP',FCTCN)

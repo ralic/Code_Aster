@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,7 +107,7 @@ CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=1,),);
+                                    NOMBRE=2,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -138,7 +138,7 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              'NS599','NS600','NS636','NS638',),
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
-                             NUME_ORDRE=1,
+                             NUME_ORDRE=2,
                              NOM_CMP=('LAGS_C','LAGS_F1',),
                              OPERATION='EXTRACTION',),);
 

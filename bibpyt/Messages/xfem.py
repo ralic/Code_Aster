@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF xfem Messages  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,6 +87,14 @@ Deux solutions :
 
 13: _("""
 pb fissure elliptique
+"""),
+
+14: _("""
+On ne peut pas appliquer un cisaillement 2d sur les lèvres d'une fissure X-FEM.'
+"""),
+
+15: _("""
+Cette option n'a pas encore été programmée.'
 """),
 
 18: _("""

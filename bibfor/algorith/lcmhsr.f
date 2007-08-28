@@ -1,7 +1,7 @@
       SUBROUTINE LCMHSR (NBSYS, NBCOEF, COEFH, HSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,10 +29,11 @@ C         COEFH  :  COEFFICIENTS H1 A H6
 C     OUT HSR    :  MATRICE D'INTERACTION
 C     ----------------------------------------------------------------
       INTEGER         NBCOEF,NBSYS,IR,IS,I,J
-      REAL*8          COEFH(6),HSR(24,24),H
+      REAL*8          COEFH(6),HSR(24,24),H, R8VIDE
       REAL*8          A1(3,3),A2(3,3),A3(3,3),A4(3,3)
 C     ----------------------------------------------------------------
 C
+
       IF (NBCOEF.EQ.1) THEN                            
           H=COEFH(1)                                    
 C  MATRICE D INTERACTION (NBSYS*NBSYS): 1 SUR LA DIAGONALE, H AILLEURS
@@ -58,9 +59,8 @@ C   507     CONTINUE
       
 C  MATRICE D INTERACTION (24*24): 4 COEFFICIENTS (BCC24)
       
-          IF (NBSYS.NE.24) CALL U2MESS('F','COMPOR1_16')
+          IF (NBSYS.NE.24) CALL U2MESS('F','COMPOR1_23')
           
-C          CALL R8INIR ( 24*24, 0.D0 , HSR, 1 )                 
 
           CALL R8INIR ( 3*3, COEFH(1) , A1, 1 )                  
           CALL R8INIR ( 3*3, COEFH(2) , A2, 1 )                  
@@ -121,7 +121,7 @@ C         DEFINITION DE LA MATRICE D INTERACTION BCC24
              
 C  MATRICE D INTERACTION (12*12): 6 COEFFICIENTS 
       
-          IF (NBSYS.NE.12) CALL U2MESS('F','COMPOR1_16')
+          IF (NBSYS.NE.12) CALL U2MESS('F','COMPOR1_24')
 
           DO 10 I=1,12
              HSR(I,I)=COEFH(1)
@@ -195,10 +195,10 @@ C  MATRICE D INTERACTION (12*12): 6 COEFFICIENTS
           
           
       ELSE
-          CALL U2MESS('F','COMPOR1_16')
+          CALL U2MESS('F','COMPOR1_25')
       ENDIF
       
-      DO 1 I=1,24
+      DO 1 I=1,NBSYS
       DO 1 J=1,I
          HSR(J,I)=HSR(I,J)
  1    CONTINUE

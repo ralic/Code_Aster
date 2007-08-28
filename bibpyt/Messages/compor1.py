@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
+#@ MODIF compor1 Messages  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,5 +118,39 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 18 : _("""
   hujci1 :: Cas de traction à l'instant moins.
 """),
+
+19 : _("""
+  MONOCRISTAL :: écrouissage cinematique non trouvé.
+"""),
+
+20 : _("""
+  MONOCRISTAL :: écoulement non trouvé.
+"""),
+
+21 : _("""
+  MONOCRISTAL :: écrouissage isotrope non trouvé.
+"""),
+
+22 : _("""
+  MONOCRISTAL :: nombre de matrice d'interaction trop grand.
+"""),
+
+23 : _("""
+  MONOCRISTAL :: la matrice d'interaction est définie avec 
+  4 coefficients. Ceci n'est applicable qu'avec 24 systèmes de
+  glissement (famille BCC24).
+"""),
+
+24 : _("""
+  MONOCRISTAL :: la matrice d'interaction est définie avec 
+  6 coefficients. Ceci n'est applicable qu'avec 12 systèmes de
+  glissement.
+"""),
+
+25 : _("""
+  MONOCRISTAL :: la matrice d'interaction est définie avec 
+  un nombre de coefficients incorrect :: il en faut 1, ou 4, ou 6.
+"""),
+
 
 }

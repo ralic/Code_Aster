@@ -3,7 +3,7 @@
      1       ITMAX, TOLER, TIMED, TIMEF,YD ,YF,DEPS, DY, R, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       CHARACTER*8     MOD
       CHARACTER*(*)   FAMI
 
-      INTEGER         NBCOMM(NMAT,3),MONO1,IEC,IEI,IFL,NSFA
+      INTEGER         NBCOMM(NMAT,3),MONO1,IEC,IEI,NSFA,IFL,NUECOU
       REAL*8          PGL(3,3),D,R0,Q,B,N,K,C,DGAMM1,ABSDGA,ALPHAM,H
       REAL*8          CRIT,ALPHAP,SGNS,GAMMAP,EXPBP(24)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
@@ -96,6 +96,8 @@ C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
 
       DO 6 IFA=1,NBFSYS
+         IFL=NBCOMM(IFA,1)           
+         NUECOU=MATERF(NMAT+IFL)
 
          NOMFAM=CPMONO(5*(IFA-1)+1)
 C         NMATER=CPMONO(5*(IFA-1)+2)
@@ -125,7 +127,8 @@ C           TAU      : SCISSION REDUITE TAU=SIG:MS
 
 C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA
 
-            IF(NECOUL.NE.'KOCKS_RAUCH') THEN
+C            IF (NECOUL.NE.'KOCKS_RAUCH') THEN
+            IF (NUECOU.NE.4) THEN
 
                 CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
      &            ITMAX, TOLER,ALPHAM,DGAMM1,DALPHA, IRET)
@@ -150,7 +153,8 @@ C
             GAMMAP=YD(NSFA+IS)+DGAMM1
 
             
-            IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN
+            IF (NUECOU.EQ.4) THEN
              ALPHAP=ALPHAM
             ENDIF
             

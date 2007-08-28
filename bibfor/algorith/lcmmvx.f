@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +110,8 @@ C
 
             IF (DP.GT.0.D0) THEN
                SEUIL=1.D0
+            ELSE
+               SEUIL = MAX(SEUIL, CRIT/RP)
             ENDIF
 
  7     CONTINUE

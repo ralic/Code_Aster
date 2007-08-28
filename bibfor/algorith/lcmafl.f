@@ -1,8 +1,8 @@
       SUBROUTINE LCMAFL (FAMI, KPG, KSP, POUM, NMATER,IMAT,NECOUL,
-     &                   NBVAL,VALRES,NMAT)
+     &                   NBVAL,VALRES,NMAT,HSR,NBHSR,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,8 +32,10 @@ C         NOMPAR :  NOM DES PARAMETRES
 C     OUT VALRES :  COEFFICIENTS MATERIAU A T
 C         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 C     ----------------------------------------------------------------
-      INTEGER         KPG,KSP,NMAT,NVINI,I,IFA,IMAT,NBVAL
-      REAL*8          VALRES(NMAT)
+      INTEGER         KPG,KSP,NMAT,NVINI,I,IFA,IMAT,NBVAL,IDIFF,NBCOEF
+      INTEGER         IRET2,N,NBHSR,NBSYS,J
+      REAL*8          VALRES(NMAT),HSRI(24,24),H,HSR(5,24,24),R8PREM
+      REAL*8          TEMPF,VALH(6),EPSI,VALLUE(NMAT)
       CHARACTER*8     NOMRES(NMAT)
       CHARACTER*2     CODRET(NMAT)
       CHARACTER*(*)   FAMI,POUM
@@ -46,7 +48,11 @@ C
           NOMRES(2)='K'
           NOMRES(3)='C'
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-     1                 NBVAL,NOMRES, VALRES,CODRET,'FM')
+     1                 NBVAL,NOMRES, VALLUE,CODRET,'FM')
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION ECOU_VISC1 A LE NUMERO 1
+          VALRES(1)=1
 
       ENDIF
       IF (NECOUL.EQ.'ECOU_VISC2') THEN
@@ -57,7 +63,11 @@ C
           NOMRES(4)='A'
           NOMRES(5)='D'
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-     1                 NBVAL,NOMRES, VALRES,CODRET,'FM')
+     1                 NBVAL,NOMRES, VALLUE,CODRET,'FM')
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION ECOU_VISC2 A LE NUMERO 2
+          VALRES(1)=2
 
       ENDIF
       IF (NECOUL.EQ.'ECOU_VISC3') THEN
@@ -68,8 +78,15 @@ C
           NOMRES(4)='DELTAV'
           NOMRES(5)='DELTAG0'
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-     1                 NBVAL,NOMRES, VALRES,CODRET,'FM')
+     1                 NBVAL,NOMRES, VALLUE,CODRET,'FM')
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION ECOU_VISC3 A LE NUMERO 3
+          VALRES(1)=3
 
+          CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMPF,IRET2)
+          NBVAL=NBVAL+1
+          VALRES(NBVAL)=TEMPF
       ENDIF
       IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
           NBVAL=10
@@ -84,14 +101,64 @@ C
           NOMRES(9)='P'
           NOMRES(10)='Q'
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-     1                 NBVAL,NOMRES, VALRES,CODRET,'FM')
+     1                 NBVAL,NOMRES, VALLUE,CODRET,'FM')
+          CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
+          NBVAL=NBVAL+1
+C         PAR CONVENTION KOCKS_RAUCH A LE NUMERO 4
+          VALRES(1)=4
 
-      ENDIF
-      IF (NECOUL.EQ.'ECOU_PLAS1') THEN
-          NBVAL=1
-          NOMRES(1)='C'
+          CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMPF,IRET2)
+          NBVAL=NBVAL+1
+          VALRES(NBVAL)=TEMPF
+          
+
+C         DEFINITION DE LA MATRICE D'INTERACTION POUR KOCKS-RAUCH
+          NOMRES(1)='H'
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
-     1                 NBVAL,NOMRES, VALRES,CODRET,'FM')
+     &                 1, NOMRES, H,CODRET,' ')
+          IF (CODRET(1).EQ.'OK') THEN
+              NBCOEF=1                          
+              VALH(1)=H                                        
+          ELSE
+              NOMRES(1)='H1'
+              NOMRES(2)='H2'
+              NOMRES(3)='H3'
+              NOMRES(4)='H4'
+              NOMRES(5)='H5'
+              NOMRES(6)='H6'
+              CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,
+     &                   0,' ',0.D0,6,NOMRES,VALH,CODRET,' ')
+              IF (CODRET(5).EQ.'OK') THEN
+                  NBCOEF=6                          
+              ELSE
+                  NBCOEF=4
+              ENDIF                          
+
+          ENDIF
+      
+          CALL LCMHSR (NBSYS, NBCOEF, VALH, HSRI)
+          EPSI=R8PREM()
+          IDIFF=0
+          DO 3 N=1,NBHSR
+          DO 1 I=1,NBSYS
+          DO 2 J=1,NBSYS
+              IF (ABS(HSR(NBHSR,I,J)-HSRI(I,J)).GT.EPSI)  IDIFF=1
+  2       CONTINUE
+  1       CONTINUE
+  3       CONTINUE
+  4       CONTINUE
+          IF (IDIFF.GT.0.OR.NBHSR.EQ.0) THEN
+             NBHSR=NBHSR+1
+             IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
+             DO 5 I=1,NBSYS
+             DO 6 J=1,NBSYS
+                 HSR(NBHSR,I,J)=HSRI(I,J)
+  6          CONTINUE
+  5          CONTINUE
+          ENDIF
+      
+          NBVAL=NBVAL+1
+          VALRES(NBVAL)=NBHSR
 
       ENDIF
       END

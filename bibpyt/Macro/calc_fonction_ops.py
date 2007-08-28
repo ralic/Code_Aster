@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_fonction_ops Macro  DATE 23/08/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ def tocomplex(arg):
 # -----------------------------------------------------------------------------
 def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
                       SPEC_OSCI,ABS,COMB,COMB_C,COMPOSE,EXTRACTION,
-                      ENVELOPPE,ASSE,CORR_ACCE,PUISSANCE,INVERSE,
+                      ENVELOPPE,FRACTILE,ASSE,CORR_ACCE,PUISSANCE,INVERSE,
                       NOM_PARA,NOM_RESU,INTERPOL,PROL_DROITE,
                       PROL_GAUCHE,NOM_PARA_FONC,INTERPOL_FONC,PROL_DROITE_FONC,
                       PROL_GAUCHE_FONC,INFO,**args):
@@ -42,7 +42,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
    """
    ier=0
    from Utilitai.t_fonction import t_fonction, t_fonction_c, t_nappe, homo_support_nappe, \
-            FonctionError, ParametreError, InterpolationError, ProlongementError
+            FonctionError, ParametreError, InterpolationError, ProlongementError, enveloppe, fractile
    from Utilitai import liss_enveloppe
    from Accas import _F
    from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
@@ -185,16 +185,40 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
                __ff=list_fonc[0].l_fonc[i]
                for nap in list_fonc[1:] :
                   ctxt.f = nap.l_fonc[i].nom
-                  __ff=__ff.enveloppe(nap.l_fonc[i], ENVELOPPE['CRITERE'])
+                  __ff=enveloppe([__ff,nap.l_fonc[i]], ENVELOPPE['CRITERE'])
                l_fonc_f.append(__ff)
             __ex=t_nappe(vale_para,l_fonc_f,para)
          elif isinstance(self.sd,fonction_sdaster):
             for f in l_env:
                list_fonc.append(f.convert())
+            ctxt.f = [f.nom for f in list_fonc]
+            __ex = enveloppe(list_fonc, ENVELOPPE['CRITERE'])
+      ###
+      if (FRACTILE   != None):
+         list_fonc=[]
+         l_frac=FRACTILE['FONCTION']
+         if type(l_frac) not in EnumTypes:
+            l_frac=(l_frac,)
+         if isinstance(self.sd,nappe_sdaster):
+            for f in l_frac:
+               list_fonc.append(f.convert())
+            ctxt.f = [f.nom for f in list_fonc]
+            list_fonc = homo_support_nappe(list_fonc)
+            vale_para=list_fonc[0].vale_para
+            para     =list_fonc[0].para
+            l_fonc_f =[]
+            for i in range(len(vale_para)):
+               ctxt.f = [nap.l_fonc[i].nom for nap in list_fonc]
+               __ff=fractile([nap.l_fonc[i] for nap in list_fonc], FRACTILE['FRACT'])
+               l_fonc_f.append(__ff)
+            __ex=t_nappe(vale_para,l_fonc_f,para)
+         elif isinstance(self.sd,fonction_sdaster):
+            for f in l_frac:
+               list_fonc.append(f.convert())
             __ex=list_fonc[0]
             for f in list_fonc[1:]:
                ctxt.f = [__ex.nom, f.nom]
-               __ex = __ex.enveloppe(f, ENVELOPPE['CRITERE'])
+               __ex = fractile(list_fonc, FRACTILE['FRACT'])
       ###
       if (CORR_ACCE   != None):
          __ex=CORR_ACCE['FONCTION'].convert()

@@ -2,7 +2,7 @@
      &                  VRCPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER JLCHIN,EXICHA,ISIGI
       INTEGER IER,JCHAR,JINF,JLVE,LONLIS
       INTEGER IBID,IRET,NCHAR,ILVE,K,ICHA,II,IEXIS
-      INTEGER NUMCHM,NUMORD,NCHIN,NBNOLI,JNOLI,IAUX
+      INTEGER NUMCHM,NUMORD,NCHIN,NBNOLI,JNOLI,IAUX,ISAM
 
       CHARACTER*5 SUFFIX
       CHARACTER*6 NOMLIG(NBCHMX),NOMPAF(NBCHMX),NOMPAR(NBCHMX)
@@ -386,6 +386,18 @@ C               POUR LES ELEMENTS DE BORD X-FEM
                   LPAIN(NCHIN + 6) = 'PLST'
                   LCHIN(NCHIN + 6) = MODELE(1:8)//'.LTNO'
                   NCHIN = NCHIN + 6
+                  IF (OPTION.EQ.'CHAR_MECA_PRES_R'.OR.
+     &                OPTION.EQ.'CHAR_MECA_PRES_F') THEN
+                    LPAIN(NCHIN + 1) = 'PPINTER'
+                    LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOFAC.PI'
+                    LPAIN(NCHIN + 2) = 'PAINTER'
+                    LCHIN(NCHIN + 2) = MODELE(1:8)//'.TOPOFAC.AI'
+                    LPAIN(NCHIN + 3) = 'PCFACE'
+                    LCHIN(NCHIN + 3) = MODELE(1:8)//'.TOPOFAC.CF'
+                    LPAIN(NCHIN + 4) = 'PLONGCO'
+                    LCHIN(NCHIN + 4) = MODELE(1:8)//'.TOPOFAC.LO'
+                    NCHIN = NCHIN + 4
+                  ENDIF
                 ENDIF
 
 C             -- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER
