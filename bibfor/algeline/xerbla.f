@@ -1,6 +1,6 @@
       SUBROUTINE XERBLA( SRNAME, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -36,7 +36,6 @@ C          OF THE CALLING ROUTINE.
 C
 C ASTER INFORMATION
 C 11/01/2000 TOILETTAGE DU FORTRAN SUIVANT LES REGLES ASTER,
-C            MSGS GERES PAR UTDEBM, UTIMPI, UTIMPK, UTFINM,
 C            AU LIEU DE WRITE(*,FMT=9999)SRNAME,INFO
 C            IMPLICIT NONE
 C----------------------------------------------------------------------

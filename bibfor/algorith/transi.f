@@ -10,7 +10,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
 C ROUTINES EXTERNES
 C -----------------
 C     EXTERNAL    ADIMVE, CALFFT, CALTRA, COMPTR, DEFTTR, ESTITR,
-C    &            INIALG, UTDEBM, UTIMPR, UTFINM
+C    &            INIALG
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C

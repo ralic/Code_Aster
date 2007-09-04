@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -33,44 +33,15 @@ cata_msg={
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+9: _("""
+  Erreur d'utilisation :
+  Vous avez utilisé le mot clé AFFE_MATERIAU/AFFE/TEMP_REF
+  alors que la température de référence doit etre fournie avec le mot clé :
+  AFFE_MATERIAU/AFFE_VARC/VALE_REF= ...     (NOM_VARC='TEMP)
+"""),
 
 10: _("""
-  option inconnue %(k1)s
+  Option inconnue %(k1)s
 """),
 
 

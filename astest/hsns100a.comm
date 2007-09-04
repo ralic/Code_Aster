@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,8 +83,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0,
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=ACIER,
-                         TEMP_REF=20.0,),
+                         MATER=ACIER ),
                       AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',VALE_REF=20.0), )
 

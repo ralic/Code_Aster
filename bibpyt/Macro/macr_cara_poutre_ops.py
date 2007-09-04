@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,8 +24,9 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   """
      Ecriture de la macro MACR_CARA_POUTRE
   """
-  import types
+  import types,string
   from Accas import _F
+  import aster
   from Utilitai.Utmess     import U2MESS as UTMESS
   ier=0
   # On importe les definitions des commandes a utiliser dans la macro
@@ -241,8 +242,17 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
 
      motscles={}
-     if args.has_key('NOEUD'):
-        motscles['TEMP_IMPO']=(_F(NOEUD=args['NOEUD'],TEMP=__fnsec0))
+     if args['NOEUD']!=None:
+        nthno = args['NOEUD']
+        if type(nthno)!=types.StringType : UTMESS('F','POUTRE0_3')
+        motscles['TEMP_IMPO']=(_F(NOEUD=nthno,TEMP=__fnsec0))
+     if args['GROUP_NO']!=None:
+        collgrno=aster.getcolljev(string.ljust(__nomapi.nom,8)+'.GROUPENO')
+        nomnoe  =aster.getvectjev(string.ljust(__nomapi.nom,8)+'.NOMNOE')
+        l_no=collgrno[string.ljust(args['GROUP_NO'],8)]
+        if len(l_no)!=1 : UTMESS('F','POUTRE0_3')
+        nthno=nomnoe[l_no[0]-1]
+        motscles['TEMP_IMPO']=(_F(NOEUD=nthno,TEMP=__fnsec0))
      __chart2=AFFE_CHAR_THER_F(MODELE=__nomoth,
                                SOURCE=_F(TOUT='OUI',
                                          SOUR=__fnsec1,),
@@ -274,8 +284,16 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 #     --------------------------------------------------
 
      motscles={}
-     if args.has_key('NOEUD'):
-        motscles['TEMP_IMPO']=_F(NOEUD=args['NOEUD'],TEMP=__fnsec0)
+     if args['NOEUD']!=None:
+        nthno = args['NOEUD']
+        motscles['TEMP_IMPO']=_F(NOEUD=nthno,TEMP=__fnsec0)
+     if args['GROUP_NO']!=None:
+        collgrno=aster.getcolljev(string.ljust(__nomapi.nom,8)+'.GROUPENO')
+        nomnoe  =aster.getvectjev(string.ljust(__nomapi.nom,8)+'.NOMNOE')
+        l_no=collgrno[string.ljust(args['GROUP_NO'],8)]
+        if len(l_no)!=1 : UTMESS('F','POUTRE0_3')
+        nthno=nomnoe[l_no[0]-1]
+        motscles['TEMP_IMPO']=_F(NOEUD=nthno,TEMP=__fnsec0)
      __chart3=AFFE_CHAR_THER_F(MODELE=__nomoth,
                                SOURCE=_F(TOUT='OUI',
                                          SOUR=__fnsec2,),
@@ -572,15 +590,29 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      else:
         l_group_ma= GROUP_MA
 
-     if args.has_key('NOEUD'):
+     l_noeud=None
+
+     if args['NOEUD']!=None:
        if type(args['NOEUD'])==types.StringType :
           l_noeud=[args['NOEUD'],]
        else:
           l_noeud= args['NOEUD']
 
+     if args['GROUP_NO']!=None:
+       collgrno=aster.getcolljev(string.ljust(__nomapi.nom,8)+'.GROUPENO')
+       nomnoe  =aster.getvectjev(string.ljust(__nomapi.nom,8)+'.NOMNOE')
+       l_nu_no =[]
+       if type(args['GROUP_NO'])==types.StringType :
+          l_gr_no=[args['GROUP_NO'],]
+       else:
+          l_gr_no= args['GROUP_NO']
+       for grno in l_gr_no:
+          l_nu_no =l_nu_no+collgrno[string.ljust(grno,8)]
+       l_noeud =[nomnoe[no_i-1] for no_i in l_nu_no]
+
      if len(l_group_ma)!=len(l_group_ma_bord):
         UTMESS('F','POUTRE0_1')
-     if args.has_key('NOEUD') and (len(l_group_ma)!=len(l_noeud)):
+     if l_noeud!=None and (len(l_group_ma)!=len(l_noeud)):
         UTMESS('F','POUTRE0_2')
 
      __catp2=__cageo

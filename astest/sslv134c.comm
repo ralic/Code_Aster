@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,9 +59,6 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
                               _F( CHARGE = SYMETRIE))
                            )
 
-DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                 NOM_CHAM='DEPL',  RESULTAT=CHAMDEPL,  NUME_ORDRE=1  )
-
 CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,
                            OPTION='SIGM_ELNO_DEPL',
                          RESULTAT=CHAMDEPL )
@@ -71,16 +68,8 @@ FISS=DEFI_FOND_FISS(    MAILLAGE=MA,
                             NORMALE=(0., 1., 0.,)
                        )
 
-RSUP=0.5
-
-RINF=0.2
-
-# VALEUR DE REFERENCE MILIEU INFINI : G=145.6
-# POUR UN RADIAN
-
-GREF=23.17296
-
-GLOC=11.58648
+RSUP=0.25
+RINF=0.05
 
 THETA01=CALC_THETA(    MODELE=MO,
                          THETA_2D=_F(  GROUP_NO = ('P0',),
@@ -92,15 +81,19 @@ THETA01=CALC_THETA(    MODELE=MO,
 
 G0=CALC_G        (       OPTION='CALC_G',
                          RESULTAT=CHAMDEPL,
-                         NUME_ORDRE = 1,
+                         NUME_ORDRE = 1,INFO=2,
                          THETA=_F(THETA=THETA01),
                          SYME_CHAR='SANS'
                      )
 
-TEST_TABLE(       TABLE=G0,
-                  NOM_PARA='G',
-                      VALE=GREF,
-                 PRECISION=0.017        )
+              
+GK0=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THETA01,),
+          RESULTAT=CHAMDEPL,
+          NUME_ORDRE=1,
+          SYME_CHAR='SANS',INFO=2,
+          OPTION='CALC_K_G',);
+          
+IMPR_TABLE(TABLE=GK0,),
 
 # POST_K1_K2_K3
 
@@ -124,20 +117,17 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
 
 DEPH1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
                                 GROUP_NO = 'L1SUP',
-                                CHAM_GD = DEP,
-#                                RESULTAT = CHAMDEPL,
-#                                NOM_CHAM = 'DEPL',
+                                RESULTAT = CHAMDEPL,
+                                NOM_CHAM = 'DEPL',
                                 NOM_CMP = ('DX', 'DY',),
                                 OPERATION = 'EXTRACTION')
                       )
 
-IMPR_TABLE( TABLE= DEPH1 )
 
 DEPB1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB1',
                                 GROUP_NO = 'L1INF',
-                                CHAM_GD = DEP,
-#                                RESULTAT = CHAMDEPL,
-#                                NOM_CHAM = 'DEPL',
+                                RESULTAT = CHAMDEPL,
+                                NOM_CHAM = 'DEPL',
                                 NOM_CMP = ('DX', 'DY',),
                                 OPERATION = 'EXTRACTION')
                       )
@@ -147,20 +137,50 @@ TABL_K1=POST_K1_K2_K3(  MODELISATION='AXIS',
                         TABL_DEPL_INF=DEPB1,
                         INFO=2,
                         MATER=MAT,
-                        ABSC_CURV_MAXI=0.539,
+                        ABSC_CURV_MAXI=RSUP,
                         VECT_K1=(0., 1., 0.,)
                      )
 
 IMPR_TABLE( TABLE=TABL_K1 )
 
-K1=1.595769E6
 
 # ---------------
+# VALEUR DE REFERENCE MILIEU INFINI : G=145.6
+GLOC=11.58648
+K1=1.595769E6
 
+# POUR UN RADIAN
+GREF=23.17296
+
+
+TEST_TABLE(       TABLE=G0,
+                  NOM_PARA='G',
+                   REFERENCE='ANALYTIQUE',
+                   VALE=GREF,
+                 PRECISION=0.018        )
+
+TEST_TABLE(       TABLE=GK0,
+                  NOM_PARA='G',
+                   REFERENCE='ANALYTIQUE',
+                   VALE=GLOC,
+                 PRECISION=0.018        )
+
+TEST_TABLE(       TABLE=GK0,
+                  NOM_PARA='K1',
+                   REFERENCE='ANALYTIQUE',
+                   VALE=K1,
+                 PRECISION=0.03        )
+
+TEST_TABLE(       TABLE=GK0,
+                  NOM_PARA='K1',
+                   REFERENCE='NON_REGRESSION',
+                   VALE=1.64307E+06,
+                 PRECISION=0.0001        )
+                 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
                                  VALE_I = 1),
-                      REFERENCE='AUTRE_ASTER',
+                      REFERENCE='ANALYTIQUE',
                        NOM_PARA='K1_MAX',
                            VALE=K1,
                       PRECISION=0.017           )
@@ -168,58 +188,41 @@ TEST_TABLE(       TABLE=TABL_K1,
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
                                  VALE_I = 1),
-                      REFERENCE='AUTRE_ASTER',
+                      REFERENCE='ANALYTIQUE',
                        NOM_PARA='K1_MIN',
                            VALE=K1,
                       PRECISION=0.007           )
 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 1),
-                      REFERENCE='AUTRE_ASTER',
+                                 VALE_I = 2),
+                      REFERENCE='ANALYTIQUE',
                        NOM_PARA='G_MAX',
                            VALE=GLOC,
-                      PRECISION=0.031           )
-
-TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 1),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='G_MIN',
-                           VALE=GLOC,
-                      PRECISION=0.004           )
+                      PRECISION=0.02           )
 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
                                  VALE_I = 2),
-                      REFERENCE='AUTRE_ASTER',
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='G_MIN',
+                           VALE=GLOC,
+                      PRECISION=0.05           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='ANALYTIQUE',
                        NOM_PARA='K1_MAX',
                            VALE=K1,
-                      PRECISION=0.006          )
+                      PRECISION=0.015           )
 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 2),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1_MIN',
-                           VALE=K1,
-                      PRECISION=0.08           )
-
-TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 2),
-                      REFERENCE='AUTRE_ASTER',
+                                 VALE_I = 3),
+                      REFERENCE='ANALYTIQUE',
                        NOM_PARA='G_MAX',
                            VALE=GLOC,
-                      PRECISION=0.012           )
-
-TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 2),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='G_MIN',
-                           VALE=GLOC,
-                      PRECISION=0.13           )
-
+                      PRECISION=0.03           )
 FIN()
 #

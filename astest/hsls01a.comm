@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,7 +61,7 @@ TEMPER=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                       AFFE=_F(  TOUT='OUI',
-                                MATER = MAT, TEMP_REF = 0.),
+                                MATER = MAT),
                       AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',VALE_REF=0.0),)
 CH1=AFFE_CHAR_MECA(  MODELE=MOD,

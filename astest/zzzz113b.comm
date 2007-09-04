@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE VALIDATION DE NON REGRESSION DU CHAINAGE 2D CYRANO3-CODE_ASTER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -453,8 +453,7 @@ EVOL=CREA_RESU(OPERATION='AFFE',
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='PASTILLE',
-                             MATER=MATERP,
-                             TEMP_REF=0.,),
+                             MATER=MATERP ),
                           _F(GROUP_MA='GAINE',
                              MATER=MATERG,
                              ),),

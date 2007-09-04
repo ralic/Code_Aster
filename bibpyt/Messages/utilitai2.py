@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai2 Messages  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -279,6 +279,10 @@ cata_msg={
 
 76: _("""
  les noms des paramètres doivent etre différents
+"""),
+
+77: _("""
+ les listes d'abscisses et d'ordonnées doivent etre de memes longueurs
 """),
 
 78: _("""

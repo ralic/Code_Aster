@@ -3,7 +3,7 @@
       CHARACTER*8         MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -272,10 +272,6 @@ C
 C A REMPLACER PAR UNE VERIFICATION EN TENANT COMPTE DES ROTATIONS !!
 C         IF ( CMP .NE. 'DX'  .AND.  CMP .NE. 'DY' ) THEN
 C            IER = IER + 1
-C            CALL UTDEBM('E','IREDCA','ERREUR DANS LES DONNEES')
-C            CALL UTIMPK('L','   MODE STATIQUE: ',1,ZK16(JNOEB+IM-1))
-C            CALL UTIMPK('S',' NON VALABLE' ,0, K8B)
-C            CALL UTFINM( )
 C         ENDIF
          CALL JENONU ( JEXNOM(NOMNOE,NONOEU), NUMENO )
          DO 112 I = 1 , NBNOEU

@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 23/08/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF t_fonction Utilitai  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -600,8 +600,6 @@ class t_nappe :
     """
     if self==other:
        return self
-    if self.para!=other.para:
-       raise FonctionError, 'combinaison de nappes à caractéristiques interpolation et prolongement différentes'
     vale_para=self.vale_para.tolist()+other.vale_para.tolist()
     vale_para=list(Set(vale_para))
     vale_para.sort()
@@ -614,7 +612,7 @@ class t_nappe :
          other_fonc=other.l_fonc[searchsorted(other.vale_para, val)]
          new_vale_x=other_fonc.vale_x
          new_para  =other_fonc.para
-         new_vale_y=[self(x) for x in new_vale_x]
+         new_vale_y=[self(val,x) for x in new_vale_x]
          if isinstance(other_fonc, t_fonction):
             l_fonc.append(t_fonction(new_vale_x, new_vale_y, new_para))
          if isinstance(other_fonc, t_fonction_c):

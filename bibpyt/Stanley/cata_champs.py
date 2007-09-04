@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 17/04/2007   AUTEUR DELMAS J.DELMAS 
+#@ MODIF cata_champs Stanley  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,21 +186,21 @@ class CATA_CHAMPS :
     # contraintes
     self('SIGM_ELNO_DEPL', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element en lineaire")
     self('SIPO_ELNO_DEPL', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element pour les elements Poutres")
-    self('SIGM_ELNO_TUYO', 'ELNO',[],                            "")
+    self('SIGM_ELNO_TUYO', 'ELNO',[],                            "Etat de contrainte dans un element de tuyau")
     # efforts
     self('EFGE_ELNO_DEPL', 'ELNO',['DEPL'],                      "Efforts generalises aux noeuds par element")
     # déformations
-    self('DEGE_ELNO_DEPL', 'ELNO',[],                            "")
+    self('DEGE_ELNO_DEPL', 'ELNO',[],                            "Deformation generalisee calculee a partir des deplacements pour les elements de structures")
 
 
 # non lineaire
     self('SIGM_ELNO_COQU', 'ELNO',['SIEF_ELGA', 'SIEF_ELGA_DEPL'], "Contraintes aux noeuds par element pour les elements Coques")
     self('VARI_ELNO_COQU', 'ELNO',['VARI_ELGA'],                   "Variables internes aux noeuds par element pour les elements Coques")
 
-    self('EPSP_ELNO',      'ELNO',['SIEF_ELGA', 'DEPL'],         "")
-    self('EPSP_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "")
-    self('ETOT_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "")
-    self('ETOT_ELNO_ELGA', 'ELNO',['SIEF_ELGA', 'DEPL'],         "")
+    self('EPSP_ELNO',      'ELNO',['SIEF_ELGA', 'DEPL'],         "Deformations plastiques aux noeuds par element")
+    self('EPSP_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "Deformations plastiques aux points de Gauss")
+    self('ETOT_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "Densité d'energie totale de deformation aux points de Gauss")
+    self('ETOT_ELNO_ELGA', 'ELNO',['SIEF_ELGA', 'DEPL'],         "Densité d'energie totale de deformation aux noeuds par element")
 
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -392,7 +392,7 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MA1,
                              MATER=ACIE_22,),
                           _F(GROUP_MA=('E_ECR','E_RON',),
                              MATER=ACIE_22,
-                             TEMP_REF=20.0,),
+                             ),
                           _F(GROUP_MA='E_CHA',
                              MATER=ACIE_11,),
                           _F(GROUP_MA='E_STE',

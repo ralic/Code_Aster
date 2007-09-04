@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,7 +283,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     else :
       motscles['PRES_REP']=_F( GROUP_MA  = 'PEAUINT',
                                PRES      = PRES_REP['PRES'] ,)
-    if PRES_REP['EFFE_FOND_P1']!=None :
+    if PRES_REP['EFFE_FOND_P1']!='NON' :
       motscles['EFFE_FOND']=_F( GROUP_MA_INT  = 'BORDTU'  ,
                                 GROUP_MA      = 'EXTUBE'  ,
                                 PRES          = PRES_REP['PRES'] ,)

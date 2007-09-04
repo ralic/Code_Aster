@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa9 Messages  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -307,11 +307,17 @@ Conseil :
 """),
 
 61: _("""
- erreur lors de la definition de la courbe de traction : %(k1)s
- pente initiale :   %(r1)f 
- pente courante :   %(r2)f 
- pour l'abscisse:   %(r3)f 
+ Erreur lors de la definition de la courbe de traction : %(k1)s
  
+ la courbe de traction doit satisfaire les conditions suivantes :
+ - les abscisses (deformations) doivent etre strictement croissantes,
+ - la pente entre 2 points successifs doit etre inferieure a la pente
+   elastique (module d'Young) entre 0 et le premier point de la courbe.
+   
+ pente initiale (module d'Young) :   %(r1)f 
+ pente courante                  :   %(r2)f 
+ pour l'abscisse                 :   %(r3)f 
+
 """),
 
 62: _("""
@@ -400,11 +406,11 @@ Conseil :
 """),
 
 74: _("""
- comportement :%(k1)s non trouve
+ comportement :%(k1)s non trouvé
 """),
 
 75: _("""
- pour la maille  %(k1)s 
+ comportement %(k1)s non trouvé pour la maille  %(k2)s 
 """),
 
 76: _("""

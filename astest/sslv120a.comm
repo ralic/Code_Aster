@@ -1,4 +1,4 @@
-# MODIF  DATE 23/04/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -750,7 +750,7 @@ TEST_RESU(RESU=(
 
 
 #################################################################
-# angles differenets de zero : test de non regressison et inter_comparaison.
+# angles differents de zero : test de non regression et inter_comparaison.
 # stat_non_line POLYCRISTAL 1 PHASE EXPLICITE, angle 1
 #################################################################
 

@@ -7,7 +7,7 @@
       CHARACTER*(*)      NOMAT,PHENOM,ARRET,NOMPAR(NBPAR),NOMRES(NBRES)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C
       CHARACTER*2   ARRET2
       CHARACTER*8   NOMAIL,K8MAT,NOMI
       CHARACTER*10  NOMPHE
+      CHARACTER*24  VALK(2)
 C DEB ------------------------------------------------------------------
 C
       ARRET2 = ARRET
@@ -115,14 +116,15 @@ C
 C
 C --- SELON LA VALEUR DE ARRET2 ON ARRETE OU NON :
       IF (ARRET2(1:1).EQ.'F') THEN
-         CALL UTDEBM ('F','RCVALA_02',
-     &                'COMPORTEMENT :'//NOMPHE//' NON TROUVE')
+         VALK(1)=NOMPHE
          IF ( ARRET2(2:2) .EQ. 'M' ) THEN
             CALL TECAEL ( IADZI, IAZK24 )
-            NOMAIL = ZK24(IAZK24-1+3)(1:8)
-            CALL UTIMPK ( 'S', 'POUR LA MAILLE ', 1, NOMAIL )
+            NOMAIL  = ZK24(IAZK24-1+3)(1:8)
+            VALK(2) = NOMAIL
+            CALL U2MESK('F','MODELISA9_75',2,VALK)
+         ELSE
+            CALL U2MESK('F','MODELISA9_74',1,VALK)
          ENDIF
-         CALL UTFINM ()
       END IF
       GOTO 999
 C

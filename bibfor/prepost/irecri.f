@@ -17,7 +17,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -349,11 +349,6 @@ C               ET RECUPERATION DANS NOCH19 DU NOM SE LE CHAM_GD EXISTE
               CALL RSEXCH(NOMCON,CHAM(ISY),ORDR(IORDR),NOCH19,IRET)
               IF(IRET.NE.0) THEN
 C               - ON PASSE AU CHAMP SUIVANT
-C-DEL           CALL UTDEBM('I','IMPRESSION','LE CHAMP ')
-C-DEL           CALL UTIMPK('S',' ',1,CHAM(ISY))
-C-DEL           CALL UTIMPK('S',CHAM(ISY),1,NOCH19)
-C-DEL           CALL UTIMPK('S',' N''EXISTE PAS',0,' ')
-C-DEL           CALL UTFINM()
                 GOTO 20
               ENDIF
               IF((FORM(1:7).EQ.'ENSIGHT').AND.

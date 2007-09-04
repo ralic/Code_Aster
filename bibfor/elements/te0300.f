@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 G,K1,K2,FX,FY,PRES,CISA,DIVTHE,CPHI,CPHI2
       REAL*8 XA,YA,XGA,YGA,XG,YG,RPOL,XNORM,YNORM,NORM,PHI
       REAL*8 CPK,DPK,CK,COEFK,DCOEFK,CCOEFK,CFORM,CR2,SPHI2
-      REAL*8 THE,DFXDE,DFYDE,PRESNO,CISANO,FXNO,FYNO,R8PREM
+      REAL*8 THE,DFXDE,DFYDE,PRESNO,CISANO,FXNO,FYNO,R8PREM,XXG
 C                                            2*NNO     2*NNO
       REAL*8 PRESG(2),FORCG(2),PRESN(6),FORCN(6)
       REAL*8 XNO1,YNO1,XNO2,YNO2,D1,D2
@@ -70,13 +70,15 @@ C                                            2*NNO     2*NNO
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(3),NOMPAR(3),ELREFE
 
-      LOGICAL FONC
+      LOGICAL FONC,AXI
 C.......................................................................
 
       CALL ELREF1(ELREFE)
       CALL JEMARQ()
       EPS = R8PREM()
       DEPI = R8DEPI()
+      AXI = .FALSE.
+      IF ( NOMTE(3:4) .EQ. 'AX')  AXI = .TRUE.
 
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDK,JGANO)
@@ -216,7 +218,7 @@ C --- BOUCLE SUR LES POINTS DE GAUSS
         DCOEFK = VALRES(1)/ (1.D0-VALRES(2)*VALRES(2))
         CCOEFK = VALRES(1)
 
-        IF (NOMTE(3:4).EQ.'DP') THEN
+        IF (NOMTE(3:4).EQ.'DP' .OR. AXI) THEN
           CK = DPK
           COEFK = DCOEFK
         ELSE
@@ -231,6 +233,7 @@ C   RPOL,PHI COORDONNEES POLAIRES DU POINT DE GAUSS
 
         XGA = XG - XA
         YGA = YG - YA
+        XXG = XG
         XG = (YNORM*XGA-XNORM*YGA)/NORM
         YG = (XNORM*XGA+YNORM*YGA)/NORM
 
@@ -296,9 +299,11 @@ C    U2 SINGULIER POUR LE CALCUL DE K2
         END IF
 
         POIDS = ZR(IPOIDS+KP-1)
+        IF ( AXI) POIDS = POIDS*XXG
         THE = (THX*DXDE+THY*DYDE)/DSDE
         DIVTHE = (DTHXDE*DXDE+DTHYDE*DYDE)/DSDE
-
+        IF ( AXI ) DIVTHE = DIVTHE+(THX*DSDE/XXG)
+        
         TCLA1 = TCLA1 + POIDS* ((DIVTHE*FX+DFXDE*THE)*U1S(1)+
      &          (DIVTHE*FY+DFYDE*THE)*U1S(2))
         TCLA2 = TCLA2 + POIDS* ((DIVTHE*FX+DFXDE*THE)*U2S(1)+

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C ......................................................................
-C      METHODE TEST POUR LE CALCUL DE G(S)
+C      METHODE LAGRANGE_REGU POUR LE CALCUL DE G(S)
 C
 C ENTREE
 C
@@ -132,7 +132,17 @@ C
         ZR(IMATR+(I-1  )*NDIMTE+I-1+1)=  1.D0*DELTA
         ZR(IMATR+(I-1+1)*NDIMTE+I-1+1)=  2.D0*DELTA
       ENDIF
-
+      
+      IF (NNOFF .EQ. 2) THEN
+        S1 = ZR(IADABS+1-1)
+        S2 = ZR(IADABS+1-1+1)
+        DELTA = (S2-S1)/6.D0  
+        ZR(IMATR + 0)=  3.5D0*DELTA
+        ZR(IMATR + 1)=  1.D0*DELTA
+        ZR(IMATR + 2)=  1.D0*DELTA
+        ZR(IMATR + 3)= 0.5D0*DELTA
+      ENDIF
+      
       IF (CONNEX) THEN
         ZR(IMATR) = 2.D0*ZR(IMATR)
         S1 = ZR(IADABS+NUMP-I1)
@@ -151,8 +161,11 @@ C  SYSTEME LINEAIRE:  MATR*GI = GTHI
 C
       CALL GSYSTE(MATR,NDIMTE,NDIMTE,GTHI,GI)
 C
-      GS(NNOFF) = GI(NDIMTE)
-      DO 200 I=1,NDIMTE-1
+      IF (NNOFF .EQ. 2) THEN
+        GS(1) = GI(1)
+        GS(NNOFF) = GI(NDIMTE)
+      ELSE
+       DO 200 I=1,NDIMTE-1
         IF (MILIEU) THEN
           NN = 4*I-3
           GS(NN) = GI(I)
@@ -162,24 +175,25 @@ C
           GS(NN+2)=GI(I)+(ZR(IADABS+NN-1+2)-S1)*(GI(I+1)-GI(I))/(S3-S1)
           GS(NN+3)=GI(I)+(ZR(IADABS+NN-1+3)-S1)*(GI(I+1)-GI(I))/(S3-S1)
         ELSE
-           NN = 2*I-1
-           GS(NN) = GI(I)
-           S1 = ZR(IADABS+NN-1)
-           S2 = ZR(IADABS+NN-1+1)
-           S3 = ZR(IADABS+NN-1+2)
-           GS(NN+1) = GI(I)+(S2-S1)*(GI(I+1)-GI(I))/(S3-S1)
+          NN = 2*I-1
+          GS(NN) = GI(I)
+          S1 = ZR(IADABS+NN-1)
+          S2 = ZR(IADABS+NN-1+1)
+          S3 = ZR(IADABS+NN-1+2)
+          GS(NN+1) = GI(I)+(S2-S1)*(GI(I+1)-GI(I))/(S3-S1)
         ENDIF
-200   CONTINUE
-      GS(NNOFF) = GI(NDIMTE)
+200    CONTINUE
+       GS(NNOFF) = GI(NDIMTE)
 
 C     SI PAIR, ON CORRIGE LA VALEUR DE G AU DERNIER NOEUD
-      IF(PAIR)THEN
+       IF(PAIR)THEN
          NN=2*(NDIMTE-2)
          S1 = ZR(IADABS+NN-1)
          S2 = ZR(IADABS+NN-1+1)
          S3 = ZR(IADABS+NN-1+2)
          GS(NNOFF) = GS(NNOFF-1)+
      &              (S3-S2)*(GS(NNOFF-2)-GS(NNOFF-1))/(S1-S2)
+       ENDIF
       ENDIF
 C
       CALL JEDETR(MATR)

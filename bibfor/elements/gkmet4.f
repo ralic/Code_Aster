@@ -8,7 +8,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +27,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C ......................................................................
-C      METHODE TEST POUR LE CALCUL DE G(S)
+C      METHODE LAGRANGE_REGU POUR LE CALCUL DE G(S)
 C      K1(S) K2(S) ET K3(S) DANS LE CADRE X-FEM
 C
 C ENTREE
@@ -46,7 +46,7 @@ C                   (VALEUR DE G(S), K1(S), K2(S), K3(S))
 C   IADGKI     --> ADRESSE DE VALEURS DE GKTHI
 C                  (G, K1, K2, K3 POUR LES CHAMPS THETAI)
 C   ABSCUR     --> VALEURS DES ABSCISSES CURVILIGNES S
-C      NUM     --> 5 (TEST)
+C      NUM     --> 5 (LAGRANGE_REGU)
 C
       INTEGER      IFON,IADABS,IVECT,IMATR
       INTEGER      I,IBID,KK,J,NDIMTE,NUMP,NN
@@ -134,7 +134,17 @@ C
         ZR(IMATR+(I-1+1)*NDIMTE+I-1+1)=  2.D0*DELTA
       ENDIF
 
+      IF (NNOFF .EQ. 2) THEN
+        S1 = ZR(IADABS+1-1)
+        S2 = ZR(IADABS+1-1+1)
+        DELTA = (S2-S1)/6.D0  
+        ZR(IMATR + 0)=  3.5D0*DELTA
+        ZR(IMATR + 1)=  1.D0*DELTA
+        ZR(IMATR + 2)=  1.D0*DELTA
+        ZR(IMATR + 3)= 0.5D0*DELTA
+      ENDIF
 
+      
 C     SYSTEME LINEAIRE:  MATR*GS = GTHI
       CALL GSYSTE(MATR,NDIMTE,NDIMTE,GTHI,GS)
       
@@ -149,34 +159,48 @@ C     SYSTEME LINEAIRE:  MATR*K3S = K3TH
 
 C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
       DO 80 I=1,NDIMTE
-        BETAS(I) = 0.0D0      
+        BETAS(I) = 0.0D0    
         IF (K2S(I).NE.0.D0) BETAS(I) = 2.0D0*ATAN2(0.25D0*(K1S(I)/K2S(I)
      &    -SIGN(1.0D0,K2S(I))*SQRT((K1S(I)/K2S(I))**2.0D0+8.0D0)),1.0D0)
  80   CONTINUE
      
-      DO 60 I=1,NDIMTE-1
-        NN = 2*I-1
-        ZR(IADGKS-1+(NN-1)*5+1)=GS(I)
-        ZR(IADGKS-1+(NN-1)*5+2)=K1S(I)
-        ZR(IADGKS-1+(NN-1)*5+3)=K2S(I)
-        ZR(IADGKS-1+(NN-1)*5+4)=K3S(I)
-        ZR(IADGKS-1+(NN-1)*5+5)=BETAS(I)
-        S1 = ZR(IADABS+NN-1)
-        S2 = ZR(IADABS+NN-1+1)
-        S3 = ZR(IADABS+NN-1+2)
+      IF (NNOFF .EQ. 2) THEN
+        ZR(IADGKS-1+1)=GS(1)
+        ZR(IADGKS-1+2)=K1S(1)
+        ZR(IADGKS-1+3)=K2S(1)
+        ZR(IADGKS-1+4)=K3S(1)
+        ZR(IADGKS-1+5)=BETAS(1)
+        ZR(IADGKS-1+(NNOFF-1)*5+1)=GS(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*5+2)=K1S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*5+3)=K2S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*5+4)=K3S(NDIMTE)
+        ZR(IADGKS-1+(NNOFF-1)*5+5)=BETAS(NDIMTE)
 
-        ZR(IADGKS-1+(NN-1+1)*5+1)=GS(I)+(S2-S1)*(GS(I+1)-GS(I))/(S3-S1)
-        ZR(IADGKS-1+(NN-1+1)*5+2)=K1S(I)+(S2-S1)*
+      ELSE
+       DO 60 I=1,NDIMTE-1
+         NN = 2*I-1
+         ZR(IADGKS-1+(NN-1)*5+1)=GS(I)
+         ZR(IADGKS-1+(NN-1)*5+2)=K1S(I)
+         ZR(IADGKS-1+(NN-1)*5+3)=K2S(I)
+         ZR(IADGKS-1+(NN-1)*5+4)=K3S(I)
+         ZR(IADGKS-1+(NN-1)*5+5)=BETAS(I)
+         S1 = ZR(IADABS+NN-1)
+         S2 = ZR(IADABS+NN-1+1)
+         S3 = ZR(IADABS+NN-1+2)
+
+         ZR(IADGKS-1+(NN-1+1)*5+1)=GS(I)+(S2-S1)*
+     &                         (GS(I+1)-GS(I))/(S3-S1)
+         ZR(IADGKS-1+(NN-1+1)*5+2)=K1S(I)+(S2-S1)*
      &                        (K1S(I+1)-K1S(I))/(S3-S1)
-        ZR(IADGKS-1+(NN-1+1)*5+3)=K2S(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*5+3)=K2S(I)+(S2-S1)*
      &                        (K2S(I+1)-K2S(I))/(S3-S1)
-        ZR(IADGKS-1+(NN-1+1)*5+4)=K3S(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*5+4)=K3S(I)+(S2-S1)*
      &                      (K3S(I+1)-K3S(I))/(S3-S1)
-        ZR(IADGKS-1+(NN-1+1)*5+5)=BETAS(I)+(S2-S1)*
+         ZR(IADGKS-1+(NN-1+1)*5+5)=BETAS(I)+(S2-S1)*
      &                      (BETAS(I+1)-BETAS(I))/(S3-S1)
-60    CONTINUE
+60     CONTINUE
 
-      IF(PAIR)THEN
+       IF(PAIR)THEN
         NN=2*(NDIMTE-2)
         S1 = ZR(IADABS+NN-1)
         S2 = ZR(IADABS+NN-1+1)
@@ -191,14 +215,15 @@ C     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
      &   (ZR(IADGKS-1+(NNOFF-3)*5+4)-ZR(IADGKS-1+(NNOFF-2)*5+4))/(S1-S2)
         ZR(IADGKS-1+(NNOFF-1)*5+5)=ZR(IADGKS-1+(NNOFF-2)*5+5)+ (S3-S2)*
      &   (ZR(IADGKS-1+(NNOFF-3)*5+5)-ZR(IADGKS-1+(NNOFF-2)*5+5))/(S1-S2)
-      ELSE
+       ELSE
         ZR(IADGKS-1+(NNOFF-1)*5+1)=GS(NDIMTE)
         ZR(IADGKS-1+(NNOFF-1)*5+2)=K1S(NDIMTE)
         ZR(IADGKS-1+(NNOFF-1)*5+3)=K2S(NDIMTE)
         ZR(IADGKS-1+(NNOFF-1)*5+4)=K3S(NDIMTE)
         ZR(IADGKS-1+(NNOFF-1)*5+5)=BETAS(NDIMTE)
+       ENDIF
       ENDIF
-
+ 
       DO 70 I=1,NNOFF*5
           ZR(IADGKI-1+I)=ZR(IADRGK-1+I)
  70   CONTINUE

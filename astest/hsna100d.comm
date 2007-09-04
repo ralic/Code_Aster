@@ -1,21 +1,21 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE SECHAGE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ELEMENTS LUMPES
 # MAILLES TETRA4
@@ -301,7 +301,7 @@ TEST_RESU(RESU=(
             GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 96.16171,   PRECISION = 5.E-2,
             REFERENCE = 'AUTRE_ASTER'  ),
           _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 72,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 78.27665,   PRECISION = 5.E-2, 
+            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 78.27665,   PRECISION = 5.E-2,
             REFERENCE = 'AUTRE_ASTER' ))
            )
 
@@ -320,7 +320,7 @@ TEST_RESU(RESU=(
             GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 82.893484,   PRECISION = 5.E-2,
             REFERENCE = 'AUTRE_ASTER'  ),
           _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 68,
-            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 79.460122,   PRECISION = 5.E-2, 
+            GROUP_NO = 'GM66',  NOM_CMP = 'TEMP', VALE = 79.460122,   PRECISION = 5.E-2,
             REFERENCE = 'AUTRE_ASTER' ))
            )
 
@@ -333,7 +333,7 @@ TEST_RESU(RESU=(
             GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 96.16171,   PRECISION = 5.E-2,
             REFERENCE = 'NON_REGRESSION'  ),
           _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 72,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 78.27665,   PRECISION = 5.E-2, 
+            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 78.27665,   PRECISION = 5.E-2,
             REFERENCE = 'NON_REGRESSION' ))
            )
 
@@ -352,7 +352,7 @@ TEST_RESU(RESU=(
             GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 82.893484,   PRECISION = 5.E-2,
             REFERENCE = 'NON_REGRESSION'  ),
           _F(  RESULTAT = RESUSECH,   NOM_CHAM = 'TEMP',   NUME_ORDRE = 68,
-            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 79.460122,   PRECISION = 5.E-2, 
+            GROUP_NO = 'GM68',  NOM_CMP = 'TEMP', VALE = 79.460122,   PRECISION = 5.E-2,
             REFERENCE = 'NON_REGRESSION' ))
            )
 
@@ -465,8 +465,7 @@ CREA_RESU(reuse =RESUTHER,
 
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
-                                  MATER = MAT,
-                                  TEMP_REF = 0.),
+                                  MATER = MAT ),
                             AFFE_VARC=(_F(TOUT='OUI',
                                          EVOL=RESUSECH,
                                          NOM_VARC="SECH",
@@ -522,14 +521,14 @@ RESUMECA=STAT_NON_LINE(
               )
 
 #
-TEST_RESU( 
-           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32, 
-             GROUP_NO = 'GM66',   NOM_CMP = 'DX',    VALE = -1.840E-01, PRECISION = 2.E-2,  
+TEST_RESU(
+           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
+             GROUP_NO = 'GM66',   NOM_CMP = 'DX',    VALE = -1.840E-01, PRECISION = 2.E-2,
              REFERENCE = 'AUTRE_ASTER'    )
             )
-TEST_RESU( 
-           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32, 
-             GROUP_NO = 'GM68',   NOM_CMP = 'DX',    VALE = -1.8284E-01, PRECISION = 2.E-2,  
+TEST_RESU(
+           RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
+             GROUP_NO = 'GM68',   NOM_CMP = 'DX',    VALE = -1.8284E-01, PRECISION = 2.E-2,
              REFERENCE = 'NON_REGRESSION', VERSION = '7.2.25'    )
             )
 #
@@ -548,12 +547,12 @@ RESUSTAT=MECA_STATIQUE(
 
 TEST_RESU(
            RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
-             GROUP_NO = 'GM66',   NOM_CMP = 'DX',    VALE = -2.745902E-01, PRECISION = 2.E-2,  
+             GROUP_NO = 'GM66',   NOM_CMP = 'DX',    VALE = -2.745902E-01, PRECISION = 2.E-2,
              REFERENCE = 'AUTRE_ASTER'   )
             )
 TEST_RESU(
            RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32,
-             GROUP_NO = 'GM68',   NOM_CMP = 'DX',    VALE = -2.702404E-01, PRECISION = 1.E-3,  
+             GROUP_NO = 'GM68',   NOM_CMP = 'DX',    VALE = -2.702404E-01, PRECISION = 1.E-3,
              REFERENCE = 'NON_REGRESSION' , VERSION = '7.3.1' )
             )
 #

@@ -1,7 +1,7 @@
       SUBROUTINE GBILIN(DUDM,DVDM,DTDM,DFDM,TGDM,TTRG,POIDS,
-     &            C1,C2,C3,CS,TH,K3A,RHO,PULS,G)
+     &            C1,C2,C3,CS,TH,K3A,RHO,PULS,AXI,G)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/10/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,8 @@ C ======================================================================
       IMPLICIT NONE
 C
       REAL*8 DUDM(3,4),DVDM(3,4),DTDM(3,4),DFDM(3,4),TGDM(2),TTRG
-      REAL*8 C1,C2,C3,CS,TH,K3A,POIDS,G
+      REAL*8 C1,C2,C3,CS,TH,K3A,POIDS,G, BIL(3,3,3,3)
+      LOGICAL AXI
 C
 C ----------------------------------------------------------------------
 C     CALCUL DU TAUX DE RESTITUTION D'ENERGIE G SOUS LA FORME
@@ -29,7 +30,7 @@ C     BILINEAIRE SYMETRIQUE G(U,V) EN ELATICITE LINEAIRE EN 2D
 C     (DEFORMATIONS OU CONTRAINTES PLANES)
 C ----------------------------------------------------------------------
 C
-      INTEGER I,J
+      INTEGER I,J,K,P,L,M
 C
       REAL*8  VECT(7),S11,S12,S13,S21,S22,S23,S1,S2,PULS,RHO
       REAL*8  TCLA,TFOR,TTHE,TDYN,DIVT,DIVV,S1TH,S2TH,PROD
@@ -53,38 +54,102 @@ C
 C DEB-------------------------------------------------------------------
 C
       DIVT = DTDM(1,1)+DTDM(2,2)
+      IF (AXI) DIVT = DIVT+DTDM(3,3)
       DIVV = TH*(DVDM(1,1)+DVDM(2,2))
+      IF (AXI) DIVV = DIVV+DVDM(3,3)
 C
 C - TERME CLASSIQUE
 C
-      VECT(1)= 0.5D0*(DVDM(1,1)*DUDM(2,2)+DUDM(1,1)*DVDM(2,2))
-      VECT(2)= 0.5D0*(DVDM(1,1)*DUDM(1,2)+DUDM(1,1)*DVDM(1,2))
-      VECT(3)= 0.5D0*(DVDM(1,1)*DUDM(2,1)+DUDM(1,1)*DVDM(2,1))
-      VECT(4)= 0.5D0*(DVDM(2,2)*DUDM(1,2)+DUDM(2,2)*DVDM(1,2))
-      VECT(5)= 0.5D0*(DVDM(2,2)*DUDM(2,1)+DUDM(2,2)*DVDM(2,1))
-      VECT(6)= 0.5D0*(DVDM(1,2)*DUDM(2,1)+DUDM(1,2)*DVDM(2,1))
+      IF (.NOT. AXI) THEN
+        VECT(1)= 0.5D0*(DVDM(1,1)*DUDM(2,2)+DUDM(1,1)*DVDM(2,2))
+        VECT(2)= 0.5D0*(DVDM(1,1)*DUDM(1,2)+DUDM(1,1)*DVDM(1,2))
+        VECT(3)= 0.5D0*(DVDM(1,1)*DUDM(2,1)+DUDM(1,1)*DVDM(2,1))
+        VECT(4)= 0.5D0*(DVDM(2,2)*DUDM(1,2)+DUDM(2,2)*DVDM(1,2))
+        VECT(5)= 0.5D0*(DVDM(2,2)*DUDM(2,1)+DUDM(2,2)*DVDM(2,1))
+        VECT(6)= 0.5D0*(DVDM(1,2)*DUDM(2,1)+DUDM(1,2)*DVDM(2,1))
 C
-      S11 =  DUDM(1,1)*DVDM(1,1) + DUDM(2,2)*DVDM(2,2)
-      S12 =  DUDM(1,1)*DVDM(2,2) + DUDM(2,2)*DVDM(1,1)
-      S13 = (DUDM(1,2)+DUDM(2,1))*(DVDM(1,2)+DVDM(2,1))
+        S11 =  DUDM(1,1)*DVDM(1,1) + DUDM(2,2)*DVDM(2,2)
+        S12 =  DUDM(1,1)*DVDM(2,2) + DUDM(2,2)*DVDM(1,1)
+        S13 = (DUDM(1,2)+DUDM(2,1))*(DVDM(1,2)+DVDM(2,1))
 C
-      S21 =  DUDM(1,1)*DVDM(1,1)*DTDM(1,1)
+        S21 =  DUDM(1,1)*DVDM(1,1)*DTDM(1,1)
      &     + DUDM(2,2)*DVDM(2,2)*DTDM(2,2)
      &     + VECT(5)*DTDM(1,2)
      &     + VECT(2)*DTDM(2,1)
 C
-      S22 = VECT(1)*(DTDM(1,1)+DTDM(2,2))
+        S22 = VECT(1)*(DTDM(1,1)+DTDM(2,2))
      &     +VECT(3)* DTDM(1,2)
      &     +VECT(4)* DTDM(2,1)
-
-      S23 = (VECT(6)+DUDM(2,1)*DVDM(2,1))*DTDM(1,1)
+  
+        S23 = (VECT(6)+DUDM(2,1)*DVDM(2,1))*DTDM(1,1)
      &     +(VECT(6)+DUDM(1,2)*DVDM(1,2))*DTDM(2,2)
      &     +(VECT(2)+VECT(3))*DTDM(1,2)
      &     +(VECT(4)+VECT(5))*DTDM(2,1)
 C
-       S1 = C1*S11 +C2*S12 +C3*S13
-       S2 = C1*S21 +C2*S22 +C3*S23
+      ELSE
+C Cas AXI
+        S11 = DUDM(1,1)*DVDM(1,1) + DUDM(2,2)*DVDM(2,2) +
+     &      DUDM(3,3)*DVDM(3,3)
+        S12 = DUDM(1,1)*DVDM(2,2) + DUDM(2,2)*DVDM(1,1) +
+     &      DUDM(1,1)*DVDM(3,3) + DUDM(3,3)*DVDM(1,1) +
+     &      DUDM(2,2)*DVDM(3,3) + DUDM(3,3)*DVDM(2,2)
+        S13 = (DUDM(1,2)+DUDM(2,1))*(DVDM(1,2)+DVDM(2,1)) +
+     &      (DUDM(2,3)+DUDM(3,2))*(DVDM(2,3)+DVDM(3,2)) +
+     &      (DUDM(3,1)+DUDM(1,3))*(DVDM(3,1)+DVDM(1,3))
+C Calcul de S2
+        DO 100 I = 1,3
+          DO 101 J = 1,3
+            DO 102 K = 1,3
+              DO 103 L = 1,3
+                BIL(I,J,K,L) =
+     &          0.5D0 * (DUDM(I,J)*DVDM(K,L)+DUDM(K,L)*DVDM(I,J))
+ 103          CONTINUE
+ 102        CONTINUE
+ 101      CONTINUE
+ 100    CONTINUE
 C
+        S21 = 0.D0
+        DO 110 K = 1,3
+          DO 120 P = 1,3
+            S21 = S21 + BIL(K,K,K,P)*DTDM(P,K)
+ 120       CONTINUE
+ 110     CONTINUE
+C
+        S22 = 0.D0
+        DO 300 K = 1,3
+          DO 301 L = 1,3
+            IF (L .NE. K) THEN
+              DO 302 P = 1,3
+                S22 = S22 + BIL(L,L,K,P)*DTDM(P,K)
+ 302          CONTINUE
+            END IF
+ 301      CONTINUE
+ 300    CONTINUE
+C
+        S23 = 0.D0
+        DO 400 K = 1,3
+          DO 401 L = 1,3
+            IF (L .NE. K) THEN
+              DO 402 M = 1,3
+                IF (M.NE.K .AND. M.NE.L) THEN
+                  DO 403 P = 1,3
+                    S23 = S23 + BIL(L,M,L,P)*DTDM(P,M)
+                    S23 = S23 + BIL(L,M,M,P)*DTDM(P,L)
+ 403              CONTINUE
+                END IF
+ 402          CONTINUE
+            END IF
+ 401      CONTINUE
+ 400    CONTINUE
+C
+
+      ENDIF
+      
+      S1 = C1*S11 + C2*S12 + C3*S13
+      S2 = C1*S21 + C2*S22 + C3*S23
+
+C--------------------------AUTRE MANIERE DE CALCUL POUR S2----------
+
 C  TERME CLASSIQUE DU A LA THERMIQUE
 C
       S1TH = K3A*TTRG*DIVV

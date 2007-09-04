@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,14 +52,12 @@ cara_pou=AFFE_CARA_ELEM(MODELE=modele,
 
 alu=DEFI_MATERIAU(ELAS=_F(E=71240,
                           NU=0.3,),);
-DEBUG(SDVERI='NON')
 compf=DEFI_COMPOR(GEOM_FIBRE=gf,MATER_SECT=alu,
                   MULTIFIBRE=(_F(GROUP_FIBRE='SECF',MATER=alu),))
 
 ch_mat=AFFE_MATERIAU(MAILLAGE=mail,
                      AFFE=_F(TOUT='OUI', MATER=alu,),
                      AFFE_COMPOR=_F(TOUT='OUI',COMPOR=compf));
-DEBUG(SDVERI='OUI')
 
 
 encast=AFFE_CHAR_MECA(MODELE=modele,

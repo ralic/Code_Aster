@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE VERIFICATION DE LA BONNE PRISE EN COMPTE DU CISAILLEMENT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,7 +97,7 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=BETON,
-                         TEMP_REF=20.0),
+                         ),
                  AFFE_VARC=(_F(TOUT='OUI',EVOL=SECH1,NOM_VARC="SECH",NOM_CHAM='TEMP',VALE_REF=100),
                             _F(TOUT='OUI',CHAMP_GD=TEMP,NOM_VARC="TEMP",VALE_REF=0.),),
                  );

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,18 +20,21 @@ GENER_MEAX_1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEAXSE2          MAILLE__ SEG2
-   ELREFE__  SE2        GAUSS__  RIGI=FPG2
+   ELREFE__  SE2        GAUSS__  RIGI=FPG2  FPG_LISTE__ MATER=(RIGI)
    OPTION__   CALC_DG                 -1
    OPTION__   CALC_DG_F               -1
 ENTETE__ ELEMENT__ MEAXSE3          MAILLE__ SEG3
-   ELREFE__  SE3        GAUSS__  RIGI=FPG4
+   ELREFE__  SE3        GAUSS__  RIGI=FPG4   FPG_LISTE__ MATER=(RIGI)
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       )
+    CMATERC  = ADRSJEVE ELEM__         (I1       )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EGTHETA  = G        ELEM__         (GTHETA   )
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
+    CFISSR   = FISS_R   ELEM__         (XA       YA       XNORM    YNORM    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA     )
@@ -56,6 +59,12 @@ OPTION__
     CALC_G_F            282   IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
+    CALC_K_G            300   IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
+                                     DDL_MECA PTHETAR  CFISSR   PFISSR   CMATERC  PMATERC
+                              OUT__  EKTHETA  PGTHETA
+    CALC_K_G_F          300   IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
+                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  CFISSR   PFISSR   CMATERC  PMATERC
+                              OUT__  EKTHETA  PGTHETA
     CHAR_DLAG_PRES_F    579   IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  DDL_MECA PVECTTH
                               OUT__  MVECTUR  PVECTUR
     CHAR_DLAG_PRES_R    578   IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  DDL_MECA PVECTTH

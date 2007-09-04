@@ -1,4 +1,4 @@
-#@ MODIF poutre0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF poutre0 Messages  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,10 @@ GROUP_MA et GROUP_MA_BORD incohérents.
 
 2: _("""
 GROUP_MA et NOEUD incohérents.
+"""),
+
+3: _("""
+Il faut donner un noeud unique.
 """),
 
 }

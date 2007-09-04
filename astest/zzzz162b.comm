@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,7 @@ MAT=DEFI_MATERIAU(
 
 CM=AFFE_MATERIAU(
             MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MAT,TEMP_REF = 0.)
+          AFFE=_F( TOUT = 'OUI',MATER = MAT)
                                                 )
 
 #

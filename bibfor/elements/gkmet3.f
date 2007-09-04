@@ -6,7 +6,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -107,27 +107,31 @@ C
           K3S(I) = K3TH(I)/ZR(IVECT+I-1 )
                 
 30      CONTINUE
-C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
-        S1 = ZR(IADABS-1+1)
-        S2 = ZR(IADABS-1+2)
-        S3 = ZR(IADABS-1+3)
-        SN2 = ZR(IADABS-1+NNOFF-2)
-        SN1 = ZR(IADABS-1+NNOFF-1)
-        SN =  ZR(IADABS-1+NNOFF)
 
-        GS(1)=GS(2)+(S1-S2)*(GS(3)-GS(2))/(S3-S2)
-        K1S(1)=K1S(2)+(S1-S2)*(K1S(3)-K1S(2))/(S3-S2)
-        K2S(1)=K2S(2)+(S1-S2)*(K2S(3)-K2S(2))/(S3-S2)
-        K3S(1)=K3S(2)+(S1-S2)*(K3S(3)-K3S(2))/(S3-S2)
-        GS(NNOFF)=GS(NNOFF-1)
+C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
+        IF (NNOFF .GT. 2) THEN
+          S1 = ZR(IADABS-1+1)
+          S2 = ZR(IADABS-1+2)
+          S3 = ZR(IADABS-1+3)
+          SN2 = ZR(IADABS-1+NNOFF-2)
+          SN1 = ZR(IADABS-1+NNOFF-1)
+          SN =  ZR(IADABS-1+NNOFF)
+
+          GS(1)=GS(2)+(S1-S2)*(GS(3)-GS(2))/(S3-S2)
+          K1S(1)=K1S(2)+(S1-S2)*(K1S(3)-K1S(2))/(S3-S2)
+          K2S(1)=K2S(2)+(S1-S2)*(K2S(3)-K2S(2))/(S3-S2)
+          K3S(1)=K3S(2)+(S1-S2)*(K3S(3)-K3S(2))/(S3-S2)
+          GS(NNOFF)=GS(NNOFF-1)
      &        +(SN-SN1)*(GS(NNOFF-2)-GS(NNOFF-1))/(SN2-SN1)
-        K1S(NNOFF)=K1S(NNOFF-1)
+          K1S(NNOFF)=K1S(NNOFF-1)
      &        +(SN-SN1)*(K1S(NNOFF-2)-K1S(NNOFF-1))/(SN2-SN1)
-        K2S(NNOFF)=K2S(NNOFF-1)
+          K2S(NNOFF)=K2S(NNOFF-1)
      &        +(SN-SN1)*(K2S(NNOFF-2)-K2S(NNOFF-1))/(SN2-SN1)
-        K3S(NNOFF)=K3S(NNOFF-1)
+          K3S(NNOFF)=K3S(NNOFF-1)
      &        +(SN-SN1)*(K3S(NNOFF-2)-K3S(NNOFF-1))/(SN2-SN1)
           
+        ENDIF
+        
       ELSEIF (LISSG .EQ. 'LAGRANGE') THEN
         MATR = '&&METHO3.MATRI'
 
@@ -147,24 +151,25 @@ C
           ZR(IMATR+(I-1+1)*NNOFF+I-1+1) = 2.D0 * DELTA
  40     CONTINUE
 
-
-        S1 = ZR(IADABS-1+1)
-        S2 = ZR(IADABS-1+2)
-        S3 = ZR(IADABS-1+3)
-        SN2 = ZR(IADABS-1+NNOFF-2)
-        SN1 = ZR(IADABS-1+NNOFF-1)
-        SN =  ZR(IADABS-1+NNOFF)
-
 C       CORRECTION DES VALEURS AUX EXTREMITES (RESULTAT + PRECIS)
-        GTHI(1)=GTHI(2)*(S2-S1)/(S3-S1)
-        K1TH(1)=K1TH(2)*(S2-S1)/(S3-S1)
-        K2TH(1)=K2TH(2)*(S2-S1)/(S3-S1)
-        K3TH(1)=K3TH(2)*(S2-S1)/(S3-S1)
-        GTHI(NNOFF)=GTHI(NNOFF-1)*(SN-SN1)/(SN-SN2)
-        K1TH(NNOFF)=K1TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
-        K2TH(NNOFF)=K2TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
-        K3TH(NNOFF)=K3TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+        IF (NNOFF .NE. 2) THEN
+          S1 = ZR(IADABS-1+1)
+          S2 = ZR(IADABS-1+2)
+          S3 = ZR(IADABS-1+3)
+          SN2 = ZR(IADABS-1+NNOFF-2)
+          SN1 = ZR(IADABS-1+NNOFF-1)
+          SN =  ZR(IADABS-1+NNOFF)
 
+          GTHI(1)=GTHI(2)*(S2-S1)/(S3-S1)
+          K1TH(1)=K1TH(2)*(S2-S1)/(S3-S1)
+          K2TH(1)=K2TH(2)*(S2-S1)/(S3-S1)
+          K3TH(1)=K3TH(2)*(S2-S1)/(S3-S1)
+          GTHI(NNOFF)=GTHI(NNOFF-1)*(SN-SN1)/(SN-SN2)
+          K1TH(NNOFF)=K1TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+          K2TH(NNOFF)=K2TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+          K3TH(NNOFF)=K3TH(NNOFF-1)*(SN-SN1)/(SN-SN2)
+        ENDIF
+        
 C       SYSTEME LINEAIRE:  MATR*GS = GTHI
         CALL GSYSTE(MATR,NNOFF,NNOFF,GTHI,GS)
 
@@ -179,6 +184,7 @@ C       SYSTEME LINEAIRE:  MATR*K3S = K3TH
 
       ENDIF
       
+ 100  CONTINUE
       DO 60 I=1,NNOFF
         ZR(IADGKS-1+(I-1)*5+1)=GS(I)
         ZR(IADGKS-1+(I-1)*5+2)=K1S(I)

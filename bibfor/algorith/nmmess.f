@@ -1,7 +1,7 @@
       SUBROUTINE NMMESS (CODE,DP0,DP1,DP,FONC,NIT,NITMAX,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C                         CONVERGENCE DANS LES ROUTINES DE RECHERCHE
 C                         DE ZERO DE F(DP)
 C
 C    - ARGUMENTS:
-C        DONNEES:     CODE    : 'A', 'E' OU 'F' PASSE A UTDEBM
+C        DONNEES:     CODE    : 'A', 'E' OU 'F' PASSE A U2MESG
 C                     DP0     : DP INITIAL (0 EN GENERAL)
 C                     DP1     : DP MAXI ESTIME
 C                     DP      : DERNIER DP CALCULE

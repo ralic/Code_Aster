@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/07/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF PREPOST  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV
+      INTEGER      NBGMA2,JNIVGR
       CHARACTER*2  PREFNO(4)
       CHARACTER*8  MAXFEM,MO,MALINI,K8B,NOMRES
       CHARACTER*16 K16B
       CHARACTER*19 K19B
-      CHARACTER*24 MAILX,MAILC,MAILN,LISTNO,K24B
+      CHARACTER*24 MAILX,MAILC,LISTNO,K24B,LOGRMA,DIRGRM,LISTGR,NIVGRM
 C
       CALL JEMARQ()
       CALL INFMAJ()
@@ -60,21 +61,25 @@ C     ------------------------------------------------------------------
 C     1. RECUPERATION DES CONCEPTS UTILISATEURS
 C     ------------------------------------------------------------------
 C
+      IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
       CALL XPOINI(MAXFEM,MO,MALINI,K24B,IBID,K8B,K8B,PREFNO)
 C
 C     ------------------------------------------------------------------
-C     2. SEPARATION DES MAILLES DE MALINI EN 3 GROUPES
-C              - MAILN : MAILLES NON AFFECTEES D'UN MODELE
-C              - MAILC : MAILLES NON SOUS-DECOUPEES (CLASSIQUE)
+C     2. SEPARATION DES MAILLES DE MALINI EN 2 GROUPES
+C              - MAILC : MAILLES NON AFFECTEES D'UN MODELE
+C                        OU NON SOUS-DECOUPEES (CLASSIQUE)
 C              - MAILX : MAILLES SOUS-DECOUPEES (X-FEM)
 C     ------------------------------------------------------------------
 C
+      IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'2. XPOSEP'
-      MAILN = '&&OP0187.MAILN'
       MAILC = '&&OP0187.MAILC'
       MAILX = '&&OP0187.MAILX'
-      CALL XPOSEP(MO,MALINI,MAILN,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT)
+      LOGRMA = '&&OP0187.LOGRMA'
+      LISTGR = '&&OP0187.LISTGR'
+      CALL XPOSEP(MO,MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,
+     &                                                 LOGRMA,LISTGR)
 
       IF (NIV.GT.1) THEN
         WRITE(IFM,*)'NOMBRE DE NOUVELLES MAILLES A CREER',NSETOT
@@ -85,11 +90,13 @@ C     ------------------------------------------------------------------
 C     3. DIMENSIONNEMENT DES OBJETS DE MAXFEM
 C     ------------------------------------------------------------------
 
+      IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'3. XPODIM'
       LISTNO = '&&OP0187.LISTNO'
+      DIRGRM = '&&OP0187.DIRGRM'
       CALL XPODIM(MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,LISTNO,
      &            K19B,K19B,K19B,K19B,K19B,K19B,K19B,K19B,
-     &            IBID,K8B,NBNOC,NBMAC,MAXFEM)
+     &            IBID,K8B,NBNOC,NBMAC,LOGRMA,DIRGRM,MAXFEM)
 
 C     ------------------------------------------------------------------
 C     4. TRAITEMENT DES MAILLES DE MAILC
@@ -97,20 +104,25 @@ C            LES MAILLES DE MAILC ET LES NOEUDS ASSOCIÉS SONT COPIES
 C            DANS MAXFEM A L'IDENTIQUE
 C     ------------------------------------------------------------------
 
+      IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'4. XPOMAC'
-      CALL XPOMAC(MALINI,MAILC,LISTNO,NBNOC,NBMAC,MAXFEM,
+
+C     CREATION DU VECTEUR DE REMPLISSAGE DES GROUP_MA
+      NIVGRM = '&&OP0187.NIVGRM'
+      CALL JELIRA(MAXFEM//'.GROUPEMA','NUTIOC',NBGMA2,K8B)
+      IF (NBGMA2.GT.0) CALL WKVECT(NIVGRM,'V V I',NBGMA2,JNIVGR)
+
+      CALL XPOMAC(MALINI,MAILC,LISTNO,NBNOC,NBMAC,MAXFEM,NIVGRM,
      &                              K19B,K19B,K19B,K19B,K19B,K19B)
 
 C     ------------------------------------------------------------------
 C     5. TRAITEMENT DES MAILLES DE MAILX
 C     ------------------------------------------------------------------
 
+      IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
       CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,PREFNO,MAXFEM,
-     &                              K19B,K19B,K19B,K19B,K19B,K19B)
-
-      CALL JEEXIN(MAILN,IRET)
-      IF (IRET.NE.0) CALL JEDETR(MAILN)
+     &            K19B,K19B,K19B,K19B,K19B,K19B,LISTGR,DIRGRM,NIVGRM)
 
       IF (NIV.GT.1) WRITE(IFM,*)'FIN DE POST_MAIL_XFEM'
 
@@ -121,6 +133,14 @@ C     -----------------------------
       CALL GETRES ( NOMRES, K16B, K16B )
       CALL CARGEO ( NOMRES )
 
-      CALL JEDEMA()
+      CALL JEEXIN(DIRGRM,IRET)
+      IF (IRET.NE.0) CALL JEDETR(DIRGRM)
 
+      CALL JEEXIN(LISTGR,IRET)
+      IF (IRET.NE.0) CALL JEDETR(LISTGR)
+
+      CALL JEEXIN(NIVGRM,IRET)
+      IF (IRET.NE.0) CALL JEDETR(NIVGRM)
+
+      CALL JEDEMA()
       END

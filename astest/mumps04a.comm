@@ -1,5 +1,5 @@
-# MODIF  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
-# TITRE VALIDATION DE MUMPS EN NON-SYMETRIQUE
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# TITRE VALIDATION DE MUMPS AVEC UNE MATRICE NON-SYMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,99 +18,44 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+# ======================================================================
+# CE TEST VALIDE LE SOLVEUR MUMPS SUR UN PROBLEME NON SYMETRIQUE :
+# ON RESOUD UN PROBLEME NON SYMETRIQUE AVEC 2 SOLVEURS DIFFERENTS (MULT_FRONT ET MUMPS).
+# ON VERIFIE QUE LES 2 SOLUTIONS SONT LES MEMES.
+
+# REMARQUE :
+#   POUR OBTENIR UN PROBLEME NON SYMETRIQUE, ON UTILISE LA MODELISATION D_PLAN_GRAD_EPSI.
+#   LE PROBLEME MECANIQUE RESOLU EST CELUI DU TEST SSNV131B
+# ======================================================================
+
+
+
 DEBUT(CODE=_F( NOM = 'MUMPS04A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
-# CE TEST EST UNE COPIE DE SSNV131B : ON FORCE L'USAGE DE MUMPS
-#---------------------------------------------------------------------
-
 
 MA=LIRE_MAILLAGE( )
 
-# DEFINITION DU COMPORTEMENT DES MATERIAUX
+ACIER=DEFI_MATERIAU( ELAS=_F( E = 200000., NU = 0.),
+                ECRO_LINE=_F( SY = 2000., D_SIGM_EPSI = -50000.),
+                NON_LOCAL=_F( LONG_CARA = 10.) )
+
+MAT=AFFE_MATERIAU(  MAILLAGE=MA, AFFE=_F( TOUT = 'OUI', MATER = ACIER) )
 
 
-ACIER=DEFI_MATERIAU(
+MO_MECA=AFFE_MODELE( MAILLAGE=MA, AFFE=_F(
+                TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'D_PLAN_GRAD_EPSI') )
+
+RAMPE=DEFI_FONCTION( NOM_PARA='INST', VALE=(0., 0., 5., 5.,), PROL_DROITE='EXCLU', PROL_GAUCHE='EXCLU', VERIF='CROISSANT')
+
+LIAISON=AFFE_CHAR_MECA( MODELE=MO_MECA, DDL_IMPO=_F( GROUP_NO = 'BAS', DX = 0., DY = 0.) )
+TRACTION=AFFE_CHAR_MECA(MODELE=MO_MECA, DDL_IMPO=_F( GROUP_NO = 'HAUT', DY = 0.01))
+
+INSTANTS=DEFI_LIST_REEL( DEBUT=0., INTERVALLE=_F(JUSQU_A = 5., NOMBRE = 5) )
 
 
-                ELAS=_F(
-                E = 200000.,
-                NU = 0.),
-
-                ECRO_LINE=_F(
-                SY = 2000.,
-                D_SIGM_EPSI = -50000.),
-
-                NON_LOCAL=_F(
-                LONG_CARA = 10.)
-              )
-
-MAT=AFFE_MATERIAU(
-
-              MAILLAGE=MA,
-
-                AFFE=_F(
-                TOUT = 'OUI',
-                MATER = ACIER)
-              )
-
-# CHOIX DU TYPE D''ELEMENTS FINIS
-
-
-MO_MECA=AFFE_MODELE(
-
-               MAILLAGE=MA,
-
-                AFFE=_F(
-                TOUT = 'OUI',
-                PHENOMENE = 'MECANIQUE',
-                MODELISATION = 'D_PLAN_GRAD_EPSI')
-              )
-
-
-# DEFINITION DU CHARGEMENT
-
-
-RAMPE=DEFI_FONCTION(
-
-                  NOM_PARA='INST',
-                      VALE=(0., 0., 5., 5.,),
-                PROL_DROITE='EXCLU',
-               PROL_GAUCHE='EXCLU',
-                     VERIF='CROISSANT'
-              )
-
-LIAISON=AFFE_CHAR_MECA(
-
-                      MODELE=MO_MECA,
-
-                DDL_IMPO=_F(
-                GROUP_NO = 'BAS',
-                DX = 0.,
-                DY = 0.)
-              )
-
-TRACTION=AFFE_CHAR_MECA(
-
-                      MODELE=MO_MECA,
-
-                DDL_IMPO=_F(
-                GROUP_NO = 'HAUT',
-                DY = 0.01)
-              )
-
-# DISCRETISATION ET CALCUL
-
-
-INSTANTS=DEFI_LIST_REEL(
-
-                   DEBUT=0.,
-
-                INTERVALLE=_F(
-                JUSQU_A = 5.,
-                NOMBRE = 5)
-              )
-
-EVOL=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',),
+#---------------------------------------------------------------------------------------------
+# CALCUL 1 : SOLVEUR MULT_FRONT
+#-------------------------------
+EVOL1=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MULT_FRONT',),
                         CHAM_MATER=MAT,
                          INCREMENT=_F(
                 LIST_INST = INSTANTS,
@@ -133,13 +78,13 @@ EVOL=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',),
                 ARRET = 'OUI'),
               )
 
-EVOL=STAT_NON_LINE( reuse=EVOL, SOLVEUR=_F(METHODE='MUMPS',),
+EVOL1=STAT_NON_LINE( reuse=EVOL1, SOLVEUR=_F(METHODE='MULT_FRONT',),
                         CHAM_MATER=MAT,
                          INCREMENT=_F(
                 LIST_INST = INSTANTS,
                 NUME_INST_FIN = 3),
                          ETAT_INIT=_F(
-                EVOL_NOLI = EVOL,
+                EVOL_NOLI = EVOL1,
                 NUME_ORDRE = 2),
                             MODELE=MO_MECA,EXCIT=(
                              _F(
@@ -160,18 +105,70 @@ EVOL=STAT_NON_LINE( reuse=EVOL, SOLVEUR=_F(METHODE='MUMPS',),
               )
 
 TEST_RESU(RESU=(
-              _F(
-               REFERENCE = 'ANALYTIQUE',
-               RESULTAT = EVOL,  NOM_CHAM = 'VARI_ELGA',  INST = 3.,
-               MAILLE = 'M1',  POINT = 1,               NOM_CMP = 'V1',
-               PRECISION = 1.E-3,
-               VALE = 0.833333),
-              _F(
-               REFERENCE = 'ANALYTIQUE',
-               RESULTAT = EVOL,   NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
-               MAILLE = 'M1',  POINT = 1,               NOM_CMP = 'SIYY',
-               PRECISION = 1.E-3,
-               VALE = 1000.))
+              _F( REFERENCE = 'NON_REGRESSION', RESULTAT = EVOL1,  NOM_CHAM = 'VARI_ELGA',  INST = 3.,
+MAILLE='M1',POINT=1,NOM_CMP='V1',PRECISION=1.E-3,   VALE= 8.3333333333334E-01 ),
+              _F( REFERENCE = 'NON_REGRESSION', RESULTAT = EVOL1,   NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
+MAILLE='M1',POINT=1,NOM_CMP='SIYY',PRECISION=1.E-3, VALE= 9.9999999999994E+02 ))
+            )
+
+
+#---------------------------------------------------------------------------------------------
+# CALCUL 2 : SOLVEUR MUMPS
+#-------------------------------
+EVOL2=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',),
+                        CHAM_MATER=MAT,
+                         INCREMENT=_F(
+                LIST_INST = INSTANTS,
+                NUME_INST_FIN = 2),
+                            MODELE=MO_MECA,EXCIT=(
+                             _F(
+                CHARGE = LIAISON), _F(
+                CHARGE = TRACTION,
+                FONC_MULT = RAMPE)),
+                         COMP_INCR=_F(
+                RELATION = 'ENDO_FRAGILE',
+                ITER_INTE_MAXI = 30),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                PREDICTION = 'TANGENTE',
+                REAC_INCR = 1),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-4,
+                ITER_GLOB_MAXI = 1,
+                ARRET = 'OUI'),
+              )
+
+EVOL2=STAT_NON_LINE( reuse=EVOL2, SOLVEUR=_F(METHODE='MUMPS',),
+                        CHAM_MATER=MAT,
+                         INCREMENT=_F(
+                LIST_INST = INSTANTS,
+                NUME_INST_FIN = 3),
+                         ETAT_INIT=_F(
+                EVOL_NOLI = EVOL2,
+                NUME_ORDRE = 2),
+                            MODELE=MO_MECA,EXCIT=(
+                             _F(
+                CHARGE = LIAISON), _F(
+                CHARGE = TRACTION,
+                FONC_MULT = RAMPE)),
+                         COMP_INCR=_F(
+                ITER_INTE_MAXI = 30,
+                RELATION = 'ENDO_FRAGILE'),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                PREDICTION = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-4,
+                ITER_GLOB_MAXI = 1,
+                ARRET = 'OUI'),
+              )
+
+TEST_RESU(RESU=(
+              _F( REFERENCE = 'AUTRE_ASTER', RESULTAT = EVOL2,  NOM_CHAM = 'VARI_ELGA',  INST = 3.,
+MAILLE='M1',POINT=1,NOM_CMP='V1',PRECISION=1.E-3,   VALE= 8.3333333333334E-01 ),
+              _F( REFERENCE = 'AUTRE_ASTER', RESULTAT = EVOL2,   NOM_CHAM = 'SIEF_ELGA',  INST = 3.,
+MAILLE='M1',POINT=1,NOM_CMP='SIYY',PRECISION=1.E-3, VALE= 9.9999999999994E+02 ))
             )
 
 FIN()

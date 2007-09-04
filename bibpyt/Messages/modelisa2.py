@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa2 Messages  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,11 @@ def _(x) : return x
 
 cata_msg={
 
+1: _("""
+ Formule interdite pour définir ALPHA(TEMP) : la fonction soit etre tabulée.
+ Utilisez CALC_FONC_INTERP
+"""),
+
 2: _("""
  resserrer le mot cle precision pour le materiau elas_fo
 """),
@@ -34,15 +39,17 @@ cata_msg={
  calcul de la tension le long du cable no %(k1)s  : la longueur sur laquelle on doit prendre en compte les pertes de tension par recul de l ancrage est egale a la longueur du cable
 """),
 
+5: _("""
+ Formule interdite pour le calcul d'intégrale : la fonction soit etre tabulée.
+ Utilisez CALC_FONC_INTERP pour tabuler la formule %(k1)s
+"""),
 
 9: _("""
   %(k1)s  n'existe pas
 """),
 
-
-
 13: _("""
- probleme pour recuperer une grandeur dans la table "cara_geom"
+ problème pour recuperer une grandeur dans la table "cara_geom"
 """),
 
 14: _("""
@@ -58,7 +65,7 @@ cata_msg={
 """),
 
 17: _("""
- les groupes de mailles group_ma_1= %(k1)s  et group_ma_2= %(k2)s  ont des cardinaux differents
+ les groupes de mailles group_ma_1= %(k1)s  et group_ma_2= %(k2)s  ont des cardinaux différents
 """),
 
 18: _("""

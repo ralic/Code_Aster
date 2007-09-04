@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2007   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -141,7 +141,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
          ),
          PUISSANCE       =FACT(statut='f',fr="Fonction élevée à une puissance",
             FONCTION      =SIMP(statut='o', typ=(fonction_sdaster,nappe_sdaster) ),
-            EXPOSANT      =SIMP(statut='f', typ='I', defaut=1 ),
+            EXPOSANT      =SIMP(statut='f', typ='R', defaut=1 ),
          ),
          INVERSE         =FACT(statut='f',fr="Inverse d'une fonction",
             FONCTION      =SIMP(statut='o', typ=fonction_sdaster),

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,8 +143,7 @@ for i in range(0,len(modelisation)):
                                   NOM_VARC='TEMP',
                                   VALE_REF=20.0),),
                      AFFE=_F(TOUT='OUI',
-                             MATER=METAL,
-                             TEMP_REF=20.),);
+                             MATER=METAL),);
 
   MO[i]=AFFE_MODELE(MAILLAGE=MA[i],
               AFFE=_F(TOUT='OUI',

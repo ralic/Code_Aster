@@ -1,8 +1,8 @@
-      SUBROUTINE IMPFIC ( VALE, CHAMEL, NOMNOE, RCMP, UNIT )
+      SUBROUTINE IMPFIC ( VALE, NOMNOE, RCMP, UNIT )
       IMPLICIT  NONE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,19 +28,17 @@ C
 C  ENTREE
 C
 C    VALE       --> ADRESSE DES VALEURS DES FIC
-C    CHAMEL     --> NOM DU CONCEPT RESULTAT
 C    NOMNOE     --> ADRESSE DU NOM DU NOEUD DE FOND DE FISSURE
 C    RCMP       --> COORDONNEES DU NOEUD DE FOND DE FISSURE
 C                     ET DE LA NORMALE A LA FISSURE
 C
 C ......................................................................
 C
-      INTEGER       I,K1PHI,K2PHI,GPHI, UNIT
+      INTEGER       I,K1PHI,K2PHI,GPHI, UNIT,IBID
       REAL*8        G,FIC1,FIC2,K1,K2,GIRWIN,RCMP(4),VALE(*)
       REAL*8        K11(10),K21(10),K12(10),K22(10),K1MAX,K1MIN
       REAL*8        K2MIN,K2SUP,GMAX,K1DEV,K2DEV,GDEV,FIC1D,FIC2D
       CHARACTER*8   NOMNOE
-      CHARACTER*24  CHAMEL, OBVALE
 C ......................................................................
 C
       G      = VALE(1)
@@ -181,10 +179,6 @@ C
      &              ' AVEC GMAX  = ',GMAX
       WRITE(UNIT,555)
       WRITE(UNIT,*)
-C
-      OBVALE = CHAMEL(1:8)//'           .VALE'
-      CALL JEIMPO(UNIT,OBVALE,' ',
-     &        'OBJET CONTENANT LA VALEUR DES FIC SUR CHAQUE ELEMENT')
 C
 555   FORMAT(60('*'))
 666   FORMAT(A,I3,A,1PD12.5)

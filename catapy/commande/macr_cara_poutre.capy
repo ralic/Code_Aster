@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,8 +43,11 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",op=macr_cara_poutre_ops,sd_prod=ta
          
                b_gma_bord = BLOC( condition = "GROUP_MA_BORD != None",
                             fr=" calcul des carac. mecaniques",
+                            regles=(UN_PARMI('NOEUD','GROUP_NO')),
 
-                    NOEUD           =SIMP(statut='f',typ=no,max='**',
+                    NOEUD           =SIMP(statut='f',typ=no,  max='**',
+                    fr="Simplement pour empecher des pivots nuls le cas echeant. Fournir un noeud quelconque"),
+                    GROUP_NO        =SIMP(statut='f',typ=grno,max='**',
                     fr="Simplement pour empecher des pivots nuls le cas echeant. Fournir un noeud quelconque"),
                     GROUP_MA_INTE   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                     fr="groupes de mailles linéiques bordant des trous dans la section"),

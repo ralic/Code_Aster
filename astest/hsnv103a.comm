@@ -1,21 +1,21 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE EN DEFORMATIONS PLANES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ( SANS PLASTICITE DE TRANSFORMATION)
 # CAS_TEST__: HSNV103A
@@ -32,7 +32,7 @@ DEBUT( CODE=_F( NOM = 'HSNV103A',NIV_PUB_WEB='INTERNET'),
 MAIL=LIRE_MAILLAGE( )
 
 TRCMNDA=DEFI_TRC(HIST_EXP=(
-  
+
  _F( VALE = (
 -1.106E+03,  1.100E+01,  0.000E+00,  0.000E+00,
  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
@@ -47,7 +47,7 @@ TRCMNDA=DEFI_TRC(HIST_EXP=(
  0.000E+00,  0.000E+00,  0.000E+00,  6.001E+02,
  0.000E+00,  0.000E+00,  1.000E+00,  3.450E+02,
       ))),
-   TEMP_MS=_F( 
+   TEMP_MS=_F(
     SEUIL = 4.500E-01,
     AKM = -3.125E+01,
     BKM = 1.406E+01,
@@ -197,7 +197,7 @@ YOUNG=DEFI_CONSTANTE( VALE=200000.E+6)
 
 NU=DEFI_CONSTANTE( VALE=0.3)
 
-ACIER2=DEFI_MATERIAU( 
+ACIER2=DEFI_MATERIAU(
             ELAS_META_FO=_F( E = YOUNG,
                       NU = NU,
                       F_ALPHA = ALP1,
@@ -212,7 +212,7 @@ ACIER2=DEFI_MATERIAU(
                 TEMP_DEF_ALPHA=900.,
 
                SY_MELANGE = FMEL),
-             META_ECRO_LINE=_F( 
+             META_ECRO_LINE=_F(
                         F1_D_SIGM_EPSI = FBM1,
                         F2_D_SIGM_EPSI = FBM1,
                         F3_D_SIGM_EPSI = FBM1,
@@ -220,10 +220,9 @@ ACIER2=DEFI_MATERIAU(
                         C_D_SIGM_EPSI = AUS1)
            )
 
-CM2=AFFE_MATERIAU( 
-                         MAILLAGE=MAIL,   
-                        AFFE=_F( TOUT = 'OUI',MATER = ACIER2,
-                              TEMP_REF = 900.),
+CM2=AFFE_MATERIAU(
+                         MAILLAGE=MAIL,
+                        AFFE=_F( TOUT = 'OUI',MATER = ACIER2 ),
                         AFFE_VARC=(_F(TOUT='OUI',
                                      EVOL=TEMPE,
                                      NOM_VARC='M_ACIER',
@@ -236,12 +235,12 @@ CM2=AFFE_MATERIAU(
 
          )
 
-MO=AFFE_MODELE( 
+MO=AFFE_MODELE(
            MAILLAGE=MAIL,    VERIF='MAILLE',
           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'D_PLAN'))
 
-CH_FO=AFFE_CHAR_MECA( 
+CH_FO=AFFE_CHAR_MECA(
             MODELE=MO,
             DDL_IMPO=(_F(  NOEUD = 'N4',  DY = 0., DX = 0.),
                  _F(  NOEUD = 'N2',  DY = 0.),
@@ -251,33 +250,33 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
              INTERVALLE=_F( JUSQU_A = 176.,      NOMBRE = 176)
            )
 
-U=STAT_NON_LINE( 
+U=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CM2,
-                             EXCIT=_F( 
+                             EXCIT=_F(
                 CHARGE = CH_FO),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F(
                 RELATION = 'META_P_IL',
                 RELATION_KIT = ('ACIER',)),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 176),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 40)
               )
 
-U=CALC_ELEM( reuse=U,       
+U=CALC_ELEM( reuse=U,
                             RESULTAT=U,
-                               
+
                               OPTION=( 'EPSI_ELNO_DEPL',
                               'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',)
                       )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
            _F(  RESULTAT = U,              NUME_ORDRE = 176,
              PARA = 'INST',             VALE = 176.),
            _F(  RESULTAT = U,              NUME_ORDRE = 176,

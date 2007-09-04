@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,14 @@ C
               COEL(I)=COTHE(I)+HSDT*DCOTHE(I)
    11      CONTINUE
            COEL(NMAT)=1.D0
+C          E et NU  sont utiles pour les règles de localisation
+C          pou calculer Mu. On prend la moyenne des Gij           
+           E=1.D0/COEL(36+22)
+           E=E+(1.D0/COEL(36+29))
+           E=E+(1.D0/COEL(72))
+           E=E/3.D0
+           E=E*2.D0
+           NU=0.D0
         ENDIF
            
         DO 10 I=1,NCOE

@@ -4,7 +4,7 @@
      &  CHGEOM,CHSOUR,OPT1,IAUX)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,6 @@ C              SI RESU EXISTE DEJA,ON LE DETRUIT.
 C
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MESSAGE:UTDEBM,UTFINM,INFNIV.
 C       JEVEUX:JEMARQ,JEDEMA,JEDETR,MEGEOM,DISMOI,EXISD,ETENCA,MECACT,
 C              JEVEUO,JELIRA,JEXNUM,WKVECT.
 C       ELEMENTS FINIS:CALCUL,RESVOI.

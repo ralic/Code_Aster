@@ -1,28 +1,28 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE PREDICTION D'AMORCAGE PAR LE CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE WADIER Y.WADIER
 
-DEBUT(CODE=_F( NOM = 'HSNA103A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);               
+DEBUT(CODE=_F( NOM = 'HSNA103A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 #
 # PREDICTION DE L'INSTANT D'AMORCAGE (D'APRES GP CRITIQUE IDENTIFIEES)
-# SUR UNE GEOMETRIE AXISYMETRIQUE DE CUVE FISSUREE 
+# SUR UNE GEOMETRIE AXISYMETRIQUE DE CUVE FISSUREE
 # SOUMIS A UN TRANSITOIRE THERMIQUE ET UNE PRESSION INTERNE + EFFET DE FOND
 #
 
@@ -45,7 +45,7 @@ MO_THER=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='THERMIQUE',
                             MODELISATION='AXIS',),);
-                            
+
 #----------------------------------------------------------------------
 #---------------- DONNEES THERMIQUE ACIER  -------------------
 #----------------------------------------------------------------------
@@ -166,14 +166,14 @@ T_INT=DEFI_FONCTION(NOM_PARA='INST',
                     ),
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='CONSTANT',);
-                       
+
 H_INT=DEFI_FONCTION(NOM_PARA='INST',
                        VALE=
                        (
                        0.0, 0.E-6,
                        0.2, 0.E-6,
                        0.4, 0.E-6,
-                       0.6, 0.E-6,      
+                       0.6, 0.E-6,
                        0.8, 500.E-6,
                        1.2, 1000.E-6,
                        3.0, 1500.E-6,
@@ -186,7 +186,7 @@ H_INT=DEFI_FONCTION(NOM_PARA='INST',
                        ),
                        PROL_DROITE='CONSTANT',
                        PROL_GAUCHE='CONSTANT',);
-                                              
+
 T_EXT=DEFI_CONSTANTE(VALE=20.0,);
 
 H_EXT=DEFI_CONSTANTE(VALE=0.0,);
@@ -200,7 +200,7 @@ CHA_THER=AFFE_CHAR_THER_F(MODELE=MO_THER,
                                       TEMP_EXT=T_INT,),),);
 
 #----------------------------------------------------------------------
-# DEFINITION D'UNE RAMPE ET D'UNE LISTE D'INSTANTS 
+# DEFINITION D'UNE RAMPE ET D'UNE LISTE D'INSTANTS
 # ----------------------------------------------------------------------
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -215,9 +215,9 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=850.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=1030.0,
-                                    NOMBRE=12,),                                    
+                                    NOMBRE=12,),
                                  _F(JUSQU_A=1200.0,
-                                   NOMBRE=17,),                             
+                                   NOMBRE=17,),
                                 ),
                      );
 
@@ -233,9 +233,9 @@ LARCH=DEFI_LIST_REEL(DEBUT=0.2,
                                  _F(JUSQU_A=850.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=1030.0,
-                                    NOMBRE=12,),                                    
+                                    NOMBRE=12,),
                                  _F(JUSQU_A=1200.0,
-                                   NOMBRE=17,),                             
+                                   NOMBRE=17,),
                                 ),
                      );
 #----------------------------------------------------------------------
@@ -268,15 +268,15 @@ MAIL = DEFI_GROUP ( reuse = MAIL,
                     CREA_GROUP_NO =(
                                    _F ( NOM      = 'NOESUP',
                                        GROUP_MA = 'LSUP', ),
-                                  
+
                                    _F ( NOM      = 'NOEINF',
                                        GROUP_MA = 'LINF', ),
                                      ),
                                     );
-                       
+
 MAIL = MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
-                   ORIE_PEAU_2D=(_F( GROUP_MA = 'LSUP',),   
+                   ORIE_PEAU_2D=(_F( GROUP_MA = 'LSUP',),
                                  _F( GROUP_MA = 'LINT',),),
                    );
 
@@ -285,18 +285,18 @@ MAIL = MODI_MAILLAGE(reuse =MAIL,
 #----------------------------------------------------------------------
 
 YOUNG = DEFI_FONCTION ( NOM_PARA    = 'TEMP',
-                        VALE        = ( 
-                                           23., 220200.0, 
-                                         100.0, 214100.0, 
-                                         180.0, 206500.0, 
+                        VALE        = (
+                                           23., 220200.0,
+                                         100.0, 214100.0,
+                                         180.0, 206500.0,
                                          300.0, 205000.0, ), );
-                                        
+
 
 NU = DEFI_CONSTANTE ( VALE = 0.3, );
 
 
 ALPHA = DEFI_FONCTION  ( NOM_PARA    = 'TEMP',
-                            VALE        = ( 
+                            VALE        = (
                                          0.000E+00, 1.140E-05,
                                          1.000E+01, 1.150E-05,
                                          2.000E+01, 1.156E-05,
@@ -328,8 +328,8 @@ ALPHA = DEFI_FONCTION  ( NOM_PARA    = 'TEMP',
                             PROL_GAUCHE = 'LINEAIRE', );
 
 
-                            
-# ECROUISSAGE ISOTROPE NON LINEAIRE 
+
+# ECROUISSAGE ISOTROPE NON LINEAIRE
 
 
 
@@ -392,7 +392,7 @@ CT_180 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             ),
                             PROL_DROITE = 'CONSTANT',
                             PROL_GAUCHE = 'LINEAIRE',);
-                            
+
 
 CT_300 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             VALE = (
@@ -418,7 +418,7 @@ SIGM = DEFI_NAPPE ( NOM_PARA    = 'TEMP',
 
                         PARA        = (  23.0,
                                         100.0,
-                                        180.0, 
+                                        180.0,
                                         300.0, ),
 
                         FONCTION    = ( CT_23,
@@ -427,8 +427,8 @@ SIGM = DEFI_NAPPE ( NOM_PARA    = 'TEMP',
                                         CT_300,),
                         PROL_DROITE = 'LINEAIRE',
                         PROL_GAUCHE = 'LINEAIRE', );
-                        
-                        
+
+
 MAT_M = DEFI_MATERIAU (
                  ELAS_FO  =_F (
                       E              = YOUNG,
@@ -438,16 +438,15 @@ MAT_M = DEFI_MATERIAU (
                               ),
                  TRACTION =_F ( SIGM = SIGM ,),
                          );
-                         
+
 CHMAT_M=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='SCYL',
-                             MATER    = MAT_M,
-                             TEMP_REF = 289.5,),),
+                             MATER    = MAT_M ),),
                     AFFE_VARC=_F( TOUT='OUI',EVOL=THERMIK,
                         NOM_VARC='TEMP',NOM_CHAM='TEMP',
                         VALE_REF = 289.5),);
 
-                      
+
 #----------------------------------------------------------------------
 # CHARGEMENT ET CONDITIONS LIMITES
 # ----------------------------------------------------------------------
@@ -476,7 +475,7 @@ COEF2 = RINT*RINT/(RINT*RINT-REXT*REXT);
 PINT = DEFI_FONCTION ( NOM_PARA    = 'INST',
                        VALE        = (   0. ,  0.,
                                          5. ,  3.5,
-                                        900.,  3.5,  
+                                        900.,  3.5,
                                         901.,  0.,
                                          ),
                        PROL_DROITE = 'CONSTANT',
@@ -514,7 +513,7 @@ CH_MECA = AFFE_CHAR_MECA_F ( MODELE        = MO_MECA,
                                          _F ( GROUP_MA = 'LSUP',
                                               PRES     = PF  )),
                           );
-                         
+
 # CONDITIONS AUX LIMITES
 
 CLIM = AFFE_CHAR_MECA_F ( MODELE        = MO_MECA,
@@ -522,34 +521,34 @@ CLIM = AFFE_CHAR_MECA_F ( MODELE        = MO_MECA,
                            DDL_IMPO      =(
                                          _F ( GROUP_NO = 'NOEINF',
                                               DY       = ZERO  )),
-                           
+
                            LIAISON_UNIF  =(
                                          _F ( GROUP_NO = 'NOESUP',
                                               DDL      = 'DY'  )),
 
                            );
-                                                      
-                           
+
+
 #----------------------------------------------------------------------
 #---------------  RESOLUTION   ------------------
 #----------------------------------------------------------------------
-                           
+
 SIG = STAT_NON_LINE (
   MODELE      = MO_MECA,
   CHAM_MATER  = CHMAT_M,
-  EXCIT       =( 
+  EXCIT       =(
                  _F ( CHARGE         = CH_MECA, ),
                  _F ( CHARGE         = CLIM, ), ),
-                   
+
   COMP_INCR   =_F (   RELATION       = 'VMIS_ISOT_TRAC',
                       DEFORMATION    = 'PETIT',
                       TOUT           = 'OUI',  ),
-  
-  INCREMENT   =_F (   LIST_INST      = LINST ), 
-                      
-  CONVERGENCE =_F (   ITER_GLOB_MAXI = 10, 
+
+  INCREMENT   =_F (   LIST_INST      = LINST ),
+
+  CONVERGENCE =_F (   ITER_GLOB_MAXI = 10,
                       RESI_GLOB_RELA = 1.E-6, ),
-    
+
   NEWTON      =_F (   MATRICE        = 'TANGENTE',
                       REAC_ITER      = 1, ),
                     );

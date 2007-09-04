@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,7 +347,7 @@ RESUTHER=THER_LINEAIRE(MODELE=MOTHER,
 MAT_TH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
                                MATER=P10CD910,
-                               TEMP_REF=20.0,),
+                               ),
                        AFFE_VARC=_F( TOUT='OUI',
                                      EVOL=RESUTHER,
                                      NOM_VARC='TEMP',
@@ -357,7 +357,7 @@ MAT_TH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 MAT_TH1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
                                MATER=P10CD911,
-                               TEMP_REF=20.0,),
+                               ),
                        AFFE_VARC=_F( TOUT='OUI',
                                      EVOL=RESUTHER,
                                      NOM_VARC='TEMP',

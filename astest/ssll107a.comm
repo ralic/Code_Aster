@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ PRE_GIBI()
 
 TCARA=MACR_CARA_POUTRE(   GROUP_MA_BORD='LSURF',
    # UNIQUEMENT POUR NE PAS AVOIR DE MATRICE SINGULIERE:
-                               NOEUD='N1',INFO=2, )
+                               GROUP_NO='P1',INFO=2, )
                                
 IMPR_TABLE(     TABLE=TCARA, )
 

@@ -3,7 +3,7 @@
      &   PRECDC, METHOD, OMECOR, STURM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C     OUT : VPINF : PLUS PETIT OMEGA2 CALCULE ET RETENU
 C     OUT : VPMAX : PLUS GRAND OMEGA2 CALCULE ET RETENU
 C    ------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       INFNIV, FREQOM, UTDEBM, UTFINM, UTIMPR
+C       INFNIV, FREQOM
 C     FONCTIONS INTRINSEQUES:
 C       ABS, SIGN.
 C    ------------------------------------------------------------------

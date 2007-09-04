@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,8 +54,7 @@ MATH=DEFI_MATERIAU(    THER=_F( RHO_CP = 3900.,
 #
 CMTH=AFFE_MATERIAU(        MAILLAGE=MA,
                                       AFFE=_F( TOUT = 'OUI',
-                                            MATER = MATH,
-                                            TEMP_REF = 0.)
+                                            MATER = MATH )
                           )
 
 #
@@ -91,7 +90,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
                    NUME_ORDRE = 60,
                    GROUP_NO = 'P8',
                    NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                    VALE = .28001E+02,
                    PRECISION = 1.E-3)
@@ -103,7 +102,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
                    NUME_ORDRE = 100,
                    GROUP_NO = 'P8',
                    NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                    VALE = .77332E+02,
                    PRECISION = 1.E-3)
@@ -115,7 +114,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
                    NUME_ORDRE = 412,
                    GROUP_NO = 'P8',
                    NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                    VALE = .99834E+02,
                    PRECISION = 1.E-3)
@@ -127,7 +126,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
 TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
                    NOM_CHAM = 'TEMP',    NUME_ORDRE = 100,
                    GROUP_NO = 'P0',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                    VALE = .62555E+01,
                    PRECISION = 1.E-3)
@@ -137,7 +136,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
 TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
                    NOM_CHAM = 'TEMP',    NUME_ORDRE = 412,
                    GROUP_NO = 'P0',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                    VALE = .99013E+02,
                    PRECISION = 1.E-3)
@@ -149,7 +148,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
 TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
                    NOM_CHAM = 'TEMP',    NUME_ORDRE = 100,
                    GROUP_NO = 'P11',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                    VALE = .17859E+00,
                    PRECISION = 1.E-3)
@@ -159,7 +158,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
 TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
                    NOM_CHAM = 'TEMP',    NUME_ORDRE = 412,
                    GROUP_NO = 'P11',       NOM_CMP = 'TEMP',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                    VALE = .98638E+02,
                    PRECISION = 1.E-3)
@@ -353,7 +352,7 @@ TEST_RESU(    CHAM_ELEM=_F(  CHAM_GD = SIGM1A,
                              MAILLE = 'M2787',
                              NOEUD = 'N4526',
                              NOM_CMP = 'SIYY',
-                             REFERENCE='NON_REGRESSION', 
+                             REFERENCE='NON_REGRESSION',
                              VERSION  ='7.2.24',
                              VALE = .45851E+07,
                              PRECISION = 1.E-3)
@@ -520,7 +519,7 @@ TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM2A,
                           MAILLE = 'M2787',
                           NOEUD = 'N4526',
                           NOM_CMP = 'SIYY',
-                          REFERENCE='NON_REGRESSION', 
+                          REFERENCE='NON_REGRESSION',
                           VERSION  ='7.2.24',
                           VALE = .63875E+08,
                           PRECISION = 1.E-3)
@@ -688,7 +687,7 @@ TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM3A,
                           MAILLE = 'M2787',
                           NOEUD = 'N4526',
                           NOM_CMP = 'SIYY',
-                          REFERENCE='NON_REGRESSION', 
+                          REFERENCE='NON_REGRESSION',
                           VERSION  ='7.2.24',
                           VALE = .82397E+06,
                           PRECISION = 1.E-3)
@@ -738,7 +737,7 @@ THETA3=CALC_THETA(    MODELE=MO,
 #
 # POUR FO = 0.001
 #
-G01B=CALC_G(        
+G01B=CALC_G(
                            RESULTAT=CHDEP1B,
                            NUME_ORDRE=1,
                            THETA=_F(THETA=THETA0),
@@ -933,7 +932,7 @@ TEST_TABLE(       TABLE=G03B3,
 
 TEST_TABLE(       TABLE=G01B,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=2.94472E+2,
                        PRECISION=1.E-3   )
@@ -942,7 +941,7 @@ TEST_TABLE(       TABLE=G01B,
 
 TEST_TABLE(       TABLE=G01B1,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=2.95548E+2,
                        PRECISION=1.E-3   )
@@ -951,7 +950,7 @@ TEST_TABLE(       TABLE=G01B1,
 
 TEST_TABLE(       TABLE=G01B2,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=2.956938E+2,
                        PRECISION=1.E-3   )
@@ -961,7 +960,7 @@ TEST_TABLE(       TABLE=G01B2,
 TEST_TABLE(       TABLE=G01B3,
                         NOM_PARA='G',
                             VALE=2.959875E+2,
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                        PRECISION=1.E-3   )
 
@@ -971,7 +970,7 @@ TEST_TABLE(       TABLE=G01B3,
 
 TEST_TABLE(       TABLE=G02B,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.24996E+04,
                        PRECISION=1.E-3   )
@@ -980,7 +979,7 @@ TEST_TABLE(       TABLE=G02B,
 
 TEST_TABLE(       TABLE=G02B1,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.254525E+04,
                        PRECISION=1.E-3   )
@@ -989,7 +988,7 @@ TEST_TABLE(       TABLE=G02B1,
 
 TEST_TABLE(       TABLE=G02B2,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.255175E+04,
                        PRECISION=1.E-3   )
@@ -998,7 +997,7 @@ TEST_TABLE(       TABLE=G02B2,
 
 TEST_TABLE(       TABLE=G02B3,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.25750E+04,
                        PRECISION=1.E-3   )
@@ -1009,7 +1008,7 @@ TEST_TABLE(       TABLE=G02B3,
 
 TEST_TABLE(       TABLE=G03B,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.231265,
                        PRECISION=1.E-3   )
@@ -1018,7 +1017,7 @@ TEST_TABLE(       TABLE=G03B,
 
 TEST_TABLE(       TABLE=G03B1,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.235783,
                        PRECISION=1.E-3   )
@@ -1027,7 +1026,7 @@ TEST_TABLE(       TABLE=G03B1,
 
 TEST_TABLE(       TABLE=G03B2,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.23562,
                        PRECISION=1.E-3   )
@@ -1036,7 +1035,7 @@ TEST_TABLE(       TABLE=G03B2,
 
 TEST_TABLE(       TABLE=G03B3,
                         NOM_PARA='G',
-                   REFERENCE='NON_REGRESSION', 
+                   REFERENCE='NON_REGRESSION',
                    VERSION  ='7.2.24',
                             VALE=1.23523,
                        PRECISION=1.E-3   )

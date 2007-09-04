@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE COUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -311,8 +311,7 @@ ACIER2=DEFI_MATERIAU(
 
 CM2=AFFE_MATERIAU(
                            MAILLAGE=MAIL,
-                          AFFE=_F( TOUT = 'OUI',MATER = ACIER2,
-                                TEMP_REF = 900.),
+                          AFFE=_F( TOUT = 'OUI',MATER = ACIER2 ),
                                 AFFE_VARC=(_F(TOUT='OUI',
                                              EVOL=TEMPE,
                                              NOM_VARC='M_ACIER',

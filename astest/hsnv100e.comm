@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,11 +122,11 @@ MAT2=DEFI_MATERIAU(
                         )
 
 CM1=AFFE_MATERIAU(    MAILLAGE=MAIL,
-           AFFE=_F( TOUT = 'OUI',MATER = MAT1,TEMP_REF = 0.)
+           AFFE=_F( TOUT = 'OUI',MATER = MAT1)
                                                 )
 
 CM2=AFFE_MATERIAU(    MAILLAGE=MAIL,
-           AFFE=_F( TOUT = 'OUI',MATER = MAT2,TEMP_REF = 0.)
+           AFFE=_F( TOUT = 'OUI',MATER = MAT2)
                                                 )
 
 #

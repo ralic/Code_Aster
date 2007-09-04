@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 # TITRE FONCTIONS, NAPPES, VALIDATION DE CALC_FONCTION / FRACTILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,6 +181,67 @@ TEST_FONCTION(VALEUR=_F(FONCTION=F6,
                         NOM_PARA='INST',
                         VALE_PARA=5.,
                         VALE_REFE=2.8,
+                        REFERENCE='ANALYTIQUE'),)
+
+#========================================================================
+#     VALIDATION DE L ENVELOPPE DE NAPPES A SUPPORTS DISJOINTS
+#========================================================================
+
+#========================================================================
+#     DEFINITION DES NAPPES ET DES FONCTIONS
+#========================================================================
+
+E1=DEFI_NAPPE(NOM_PARA='INST',
+              PARA=(111.,333.),
+              NOM_PARA_FONC='X',
+              DEFI_FONCTION=(_F(VALE=(1.0,13.0,2.0,4.0,),),
+                             _F(VALE=(1.0,3.0,2.0,4.0,),),),)
+
+E2=DEFI_NAPPE(NOM_PARA='INST',
+              PARA=(111.,222.),
+              NOM_PARA_FONC='X',
+              PROL_DROITE='LINEAIRE',
+              DEFI_FONCTION=(_F(VALE=(1.0,4.0,2.0,9.0,),),
+                             _F(VALE=(1.0,4.0,2.0,6.0,),),),)
+
+E3=DEFI_NAPPE(NOM_PARA='INST',
+              PARA=(111.,222.),
+              PROL_DROITE='LINEAIRE',
+              NOM_PARA_FONC='X',
+              DEFI_FONCTION=(_F(VALE=(1.0,8.0,2.0,7.0,),),
+                             _F(VALE=(1.0,7.0,2.0,10.0,),),),)
+
+E4=CALC_FONCTION(ENVELOPPE=_F(FONCTION=(E1,E2,E3),) )
+
+TEST_FONCTION(VALEUR=_F(FONCTION=E4,
+                        NOM_PARA=('INST','X',),
+                        VALE_PARA=(111.,1.,),
+                        VALE_REFE=13.,
+                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(FONCTION=E4,
+                        NOM_PARA=('INST','X',),
+                        VALE_PARA=(111.,2.,),
+                        VALE_REFE=9.,
+                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(FONCTION=E4,
+                        NOM_PARA=('INST','X',),
+                        VALE_PARA=(222.,1.,),
+                        VALE_REFE=8.,
+                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(FONCTION=E4,
+                        NOM_PARA=('INST','X',),
+                        VALE_PARA=(222.,2.,),
+                        VALE_REFE=10.,
+                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(FONCTION=E4,
+                        NOM_PARA=('INST','X',),
+                        VALE_PARA=(333.,1.,),
+                        VALE_REFE=6.,
+                        REFERENCE='ANALYTIQUE'),)
+TEST_FONCTION(VALEUR=_F(FONCTION=E4,
+                        NOM_PARA=('INST','X',),
+                        VALE_PARA=(333.,2.,),
+                        VALE_REFE=13.,
                         REFERENCE='ANALYTIQUE'),)
 
 FIN();

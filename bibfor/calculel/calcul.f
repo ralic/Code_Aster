@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -203,7 +203,7 @@ C     -- FIN SI MODELE
      &       (LFETTS.AND.LFETTD)) CALL U2MESS('F','CALCULEL6_75')
 C     -- FIN SI PARALLELE
         ENDIF
- 
+
 C     -- MONITORING
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)'<FETI/CALCUL> RANG ',RANG
@@ -220,7 +220,7 @@ C     -- MONITORING
         ENDIF
 C     -- FIN SI FETI
       ENDIF
- 
+
 
 C     -- SI FETI MESURE DU TEMPS POUR PROFILING
       IF ((LFETIC).OR.(NIV.GE.2)) THEN
@@ -253,7 +253,7 @@ C     -------------------------------------------------------------
         NUTE = TYPELE(LIGREL,J)
         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTE),NOMTE)
         NOMTM = ZK8(JTYPMA-1+NUTE)
-        NUMC = NUCALC(OPT,NUTE)
+        NUMC = NUCALC(OPT,NUTE,0)
 
 C        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
         IF (NUMC.LT.0) THEN
@@ -369,7 +369,7 @@ C     -------------------------------------------------
            JCTEAT=0
         END IF
         NBELGR = NBELEM(LIGREL,IGR)
-        NUMC = NUCALC(OPT,NUTE)
+        NUMC = NUCALC(OPT,NUTE,0)
         IF (NUMC.LT.-10) CALL U2MESS('F','CALCULEL_2')
         IF (NUMC.GT.9999) CALL U2MESS('F','CALCULEL_8')
 
@@ -386,7 +386,7 @@ C       -- '&CALCUL.FETI.NUMSD'
 C           - NUMERO DE MAILLE
               IMA=ZI(IAUX1+IIEL)
               IF (LFETMO) THEN
-C           - LIGREL DE MODELE, ON TAG EN SE BASANT SUR 
+C           - LIGREL DE MODELE, ON TAG EN SE BASANT SUR
 C            '&FETI.MAILLE.NUMSD'
                 IF (IMA.LE.0) CALL U2MESS('F','CALCULEL6_76')
                 IF (ZI(IFETI1+IMA).GT.0) ZL(IFETI2+IIEL)=.TRUE.
@@ -400,11 +400,11 @@ C            - MAILLE NON SITUEE A L'INTERFACE
                   IF (ZI(ILIMPI+IDD).EQ.1) ZL(IFETI2+IIEL)=.TRUE.
                 ELSE IF (IDD.EQ.0) THEN
 C            - MAILLE D'UN AUTRE PROC, ON NE FAIT RIEN
-C              ZL(IFETI2+IIEL) INITIALISE A .FALSE.       
+C              ZL(IFETI2+IIEL) INITIALISE A .FALSE.
                 ELSE IF (IDD.LT.0) THEN
 C            - MAILLE A L'INTERFACE, ON NE S'EMBETE PAS ET ON FAIT TOUT
 C              (C'EST DEJA ASSEZ COMPLIQUE COMME CELA !)
-                  ZL(IFETI2+IIEL)=.TRUE.                  
+                  ZL(IFETI2+IIEL)=.TRUE.
                 ENDIF
               ENDIF
    68       CONTINUE
@@ -413,7 +413,7 @@ C       -- MONITORING
               CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,KCAL,1,' ')
             ENDIF
           ENDIF
-          
+
           CALL INIGRL(LIGREL,IGR,NBOBJ,ZI(IAINEL),ZK24(ININEL),NVAL)
 
 
