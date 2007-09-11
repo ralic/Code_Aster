@@ -1,7 +1,7 @@
       SUBROUTINE OP0176 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -194,9 +194,9 @@ C
         IZERO = 0
         CALL IRECRI ( LERES1,NOSIMP,NOPASE,FORM,IUL,K8B,LBID,
      &                IZERO,K8B,' ',NBPARA,ZK16(JPA),
-     &               NBORDR,ZI(JORDR),TRUE,'RESU',1,K8B,CECR,FALS,IZERO,
-     &                IBID,IZERO,IBID,IZERO,K8B,FALS,R8B,FALS,R8B,FALS,
-     &                FALS,FORMAR,LMOD,NIVE,VERSIO)
+     &                NBORDR,ZI(JORDR),TRUE,'RESU',1,K8B,CECR,K8B,FALS,
+     &                IZERO,IBID,IZERO,IBID,IZERO,K8B,FALS,R8B,FALS,R8B,
+     &                FALS,FALS,FORMAR,LMOD,NIVE,VERSIO)
 C
    30 CONTINUE
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============

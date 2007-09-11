@@ -1,4 +1,4 @@
-#@ MODIF spectral0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF spectral0 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,7 @@ Erreur dans les données de fonctions.
 """),
 
 8: _("""
-Pas de calcul absolu avec tran_gene.
+Pas de calcul absolu avec TRAN_GENE.
 """),
 
 }

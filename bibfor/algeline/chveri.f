@@ -6,7 +6,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,6 @@ C
          DEPG(I) = 0.D0
   10  CONTINUE
 C
-C
 C 1. BOUCLE SUR LES NON-LINEARITES.
 C    ------------------------------
 C
@@ -106,7 +105,6 @@ C        -------------------------------
 C
          CALL GLOLOC(XGLO,XORIG,SINA,COSA,SINB,COSB,SING,COSG,XLOC)
 C
-C
          TYPOBS = TYPCH(IC)
          NBS    = NBSEG(IC)
          MAILLA = NOECHO(IC,4)
@@ -119,13 +117,11 @@ C        TEST DE LA POSITION INITIALES ET DE L'ORIGINE
          CALL DISBUT(NP3,IC,XLOC,TYPOBS,XJEU,RC,THETA,NBS,COST,SINT,
      &               DNORM)
          IF (DNORM .LT. 0.D0) THEN
-             CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-              VALK(1) = INUM
-              VALK(2) = NOMNOE
-              CALL U2MESK('A','ALGELINE_9', 2 ,VALK)
+             VALK(1) = INUM
+             VALK(2) = NOMNOE
+             CALL U2MESK('A','ALGELINE_9', 2 ,VALK)
          ENDIF
-C
 C
 C        TEST DE LA POSITION INITIALES ET DE L'ORIGINE DANS LES
 C        DIRECTIONS NORMALES AU PLAN DE CHOC
@@ -133,11 +129,10 @@ C
       IF ( TYPOBS .EQ. 0 ) THEN
 C
          IF ( ABS(XLOC(1)).GT.EPSI .OR. ABS(XLOC(3)).GT.EPSI ) THEN
-             CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-              VALK(1) = INUM
-              VALK(2) = NOMNOE
-              CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
+             VALK(1) = INUM
+             VALK(2) = NOMNOE
+             CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
          ENDIF
 C
 C     --- OBSTACLE PLAN PARALLELE A ZLOCAL ---
@@ -145,11 +140,10 @@ C
       ELSEIF ( TYPOBS .EQ. 1 ) THEN
 C
          IF ( ABS(XLOC(1)).GT.EPSI .OR. ABS(XLOC(2)).GT.EPSI ) THEN
-             CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-              VALK(1) = INUM
-              VALK(2) = NOMNOE
-              CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
+             VALK(1) = INUM
+             VALK(2) = NOMNOE
+             CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
          ENDIF
 C
 C     --- OBSTACLE CIRCULAIRE OU DISCRETISE---
@@ -157,15 +151,13 @@ C
       ELSEIF ( TYPOBS .EQ. 2 .OR. TYPOBS .EQ. 3) THEN
 C
          IF ( ABS(XLOC(1)).GT.EPSI ) THEN
-             CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-              VALK(1) = INUM
-              VALK(2) = NOMNOE
-              CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
+             VALK(1) = INUM
+             VALK(2) = NOMNOE
+             CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
          ENDIF
 C
       ENDIF
-C
 C
          CALL JEVEUO(MAILLA//'.COORDO    .VALE','L',JCOOR1)
          CALL JENONU(JEXNOM(MAILLA//'.NOMNOE',NOMNOE),INO1)
@@ -194,25 +186,18 @@ C
 C
          CALL GLOLOC(VECT,XORIV,SINA,COSA,SINB,COSB,SING,COSG,XLOC)
          IF(DBLE(ABS(XLOC(1))).LT.EPSI) THEN
-            CALL U2MESS('A','ALGELINE_8')
             WRITE(INUM,'(I3.3)') IC
             CALL U2MESK('A','ALGELINE_11',1,INUM)
 C
          ELSE IF(DBLE(ABS(XLOC(1))).LT.0.17364818D0) THEN
-            CALL U2MESS('A','ALGELINE_8')
             WRITE(INUM,'(I3.3)') IC
             CALL U2MESK('A','ALGELINE_12',1,INUM)
 C
          ELSE IF(DBLE(ABS(XLOC(1))).LT.0.70710678D0) THEN
-            CALL U2MESS('A','ALGELINE_8')
             WRITE(INUM,'(I3.3)') IC
             CALL U2MESK('A','ALGELINE_13',1,INUM)
-C
          ENDIF
 C
-C
  20   CONTINUE
-C
       CALL JEDEMA()
-C
       END

@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -195,6 +195,7 @@ class JDC:
        # le pickle (version 2.2)
        context=self.filter_context(context,mode)
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
+
        file=open('pick.1','w')
        pickle.dump(context,file)
 
@@ -310,3 +311,11 @@ class JDC:
          #assert attr in self.l_pick_attr
          setattr(self, attr, value)
          #print "<DBG> jdc.'%s' = %s" % (attr, value)
+
+   def get_concept(self, nomsd):
+      """
+          Méthode pour recuperer un concept à partir de son nom
+      """
+      return self.sds_dict.get(sdnom,None)
+
+

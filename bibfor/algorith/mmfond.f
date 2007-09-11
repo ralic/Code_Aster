@@ -1,8 +1,7 @@
-      SUBROUTINE MMFOND(NOMA,DEFICO,IZONE,NBN,POSMA,IMA,
-     &                  BARSOU,IMABAR,TYPBAR,
-     &                  INIBA1,INIBA2,INIBA3,NOQBA1,NOQBA2)
+      SUBROUTINE MMFOND(NOMA,DEFICO,IZONE,NBN,POSMA,IMA,BARSOU,IMABAR,
+     &                  TYPBAR,INIBA1,INIBA2,INIBA3,NOQBA1,NOQBA2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,21 +18,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C
       IMPLICIT NONE
       CHARACTER*24 DEFICO
       CHARACTER*8  NOMA
       LOGICAL      BARSOU
-      INTEGER      NBN      
-      INTEGER      POSMA
-      INTEGER      IMA
-      INTEGER      IZONE
-      INTEGER      IMABAR
-      INTEGER      TYPBAR
-      INTEGER      INIBA1
-      INTEGER      INIBA2
-      INTEGER      INIBA3
-      INTEGER      NOQBA1
-      INTEGER      NOQBA2 
+      INTEGER      NBN,POSMA,IMA,IZONE,IMABAR,TYPBAR
+      INTEGER      INIBA1,INIBA2,INIBA3,NOQBA1,NOQBA2 
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR MAPPAR
@@ -99,18 +90,14 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*24 NOMACO,PNOMA,CONTNO
-      INTEGER      JNOMA,JPONO,JNOCO
-      INTEGER      POSNOE,NUMNOE
-      INTEGER      IBID
+      INTEGER      JNOMA,JPONO,JNOCO,POSNOE,NUMNOE
+      INTEGER      IBID,II,KK,N1,N2,JJ
       REAL*8       R8BID
-      CHARACTER*24 K24BLA,KINFO
+      CHARACTER*24 K24BLA,KINFO,BARSNO,PBARS,BARSMA,PBARM
       CHARACTER*8  ALIAS
       LOGICAL      BARSO1,BARSO2
-      INTEGER      II,KK,N1,N2,JJ
       INTEGER      MBARS,NBARS,ILONG,NUMBAR,NUBAR
-      CHARACTER*24 BARSNO,PBARS,BARSMA,PBARM
-      INTEGER      JBARS,JPBARS,JBARM,JPBARM
-      INTEGER      ICONEX
+      INTEGER      JBARS,JPBARS,JBARM,JPBARM,ICONEX
       DATA K24BLA /' '/
 C
 C ----------------------------------------------------------------------
@@ -125,30 +112,21 @@ C
       BARSMA = DEFICO(1:16) // '.BAMACO'
       PBARM  = DEFICO(1:16) // '.PBAMACO'                       
       CALL JEVEUO(NOMACO,'L',JNOMA)
-      CALL JEVEUO(PNOMA,'L',JPONO)
+      CALL JEVEUO(PNOMA ,'L',JPONO)
       CALL JEVEUO(CONTNO,'L',JNOCO)           
       CALL JEVEUO(BARSNO,'L',JBARS)
-      CALL JEVEUO(PBARS,'L',JPBARS)
+      CALL JEVEUO(PBARS ,'L',JPBARS)
       CALL JEVEUO(BARSMA,'L',JBARM)
-      CALL JEVEUO(PBARM,'L',JPBARM)
+      CALL JEVEUO(PBARM ,'L',JPBARM)
       
       CALL JEVEUO(JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',ILONG)
-      CALL JEVEUO(NOMA(1:8)//'.CONNEX','L',ICONEX)
+      CALL JEVEUO(NOMA(1:8)       //'.CONNEX','L',ICONEX)
 C
 C --- ON TESTE SI LA MAILLE EST UNE MAILLE DE FISSURE
 C --- GROUP_MA_FOND OU MAILLE_FOND
 C
-      BARSOU = .FALSE.
       BARSO1 = .FALSE.
       BARSO2 = .FALSE.
-      IMABAR = 0
-      TYPBAR = 0
-      INIBA1 = 0
-      INIBA2 = 0
-      INIBA3 = 0
-      NOQBA1 = 0
-      NOQBA2 = 0
-C          
       MBARS  = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1)
       IF (MBARS .GE. 1) THEN
         DO 33 KK  = 1,MBARS
@@ -192,11 +170,9 @@ C ---   ON TRAITE LES QUAD 4
 C ---   (VOIR ENTETE DE ROUTINE)
 C
             IF (BARSO1 .AND. BARSO2) THEN
+            
               BARSOU = .TRUE.
-              
-
               IF (INIBA1+INIBA2 .EQ. 3) THEN
-
                 TYPBAR = 1
                 IF (INIBA1 .EQ. 1) THEN
                   NOQBA1 = 4
@@ -207,7 +183,6 @@ C
                   NOQBA2 = 4
                   INIBA3 = 5
                 END IF  
-
               ELSEIF (INIBA1+INIBA2 .EQ. 7) THEN 
                 TYPBAR = 2
                 IF (INIBA1 .EQ. 3) THEN
@@ -248,10 +223,8 @@ C
             END IF
           ELSE
             KINFO(1:8) = ALIAS
-            CALL MMERRO(DEFICO,K24BLA,NOMA,
-     &                 'MMFOND','F','BARSOUM_NEX',
-     &                  NUBAR,IBID,IBID,
-     &                  IBID,R8BID,KINFO)            
+            CALL MMERRO(DEFICO,K24BLA,NOMA,'MMFOND','F','BARSOUM_NEX',
+     &                  NUBAR,IBID,IBID,IBID,R8BID,KINFO)            
           END IF
  33     CONTINUE
  54     CONTINUE
@@ -263,7 +236,6 @@ C ---- FISSURE GROUP_NO_FOND OU NOEUD_FOND
 C
         NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1)
         IF (NBARS .EQ. 0) GOTO 56
-
         DO 52 JJ = 1,NBN
           POSNOE = ZI(JNOMA+ZI(JPONO+POSMA-1)+JJ-1)
           NUMNOE = ZI(JNOCO+POSNOE-1)
@@ -277,11 +249,11 @@ C
               NOQBA1 = 1
               NOQBA2 = 0
               IMABAR = IMA
-              GOTO 42
+              GOTO 52
             END IF
  32       CONTINUE 
- 42       CONTINUE 
  52     CONTINUE
+ 
       END IF
  56   CONTINUE
 C

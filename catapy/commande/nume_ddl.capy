@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 10/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,6 @@ NUME_DDL=OPER(nom="NUME_DDL",op=11,sd_prod=nume_ddl_sdaster,reentrant='n',
          ),
          b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
            RENUM         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
-           ELIM_LAGR2    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          ),
          b_gcpc          =BLOC(condition="METHODE=='GCPC'",fr="paramètres associés à la méthode gradient conjugué",
            RENUM           =SIMP(statut='f',typ='TXM',into=("RCMK","SANS"),defaut="RCMK"  ),

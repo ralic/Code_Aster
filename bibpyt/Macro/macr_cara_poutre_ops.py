@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -599,15 +599,15 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
           l_noeud= args['NOEUD']
 
      if args['GROUP_NO']!=None:
-       collgrno=aster.getcolljev(string.ljust(__nomapi.nom,8)+'.GROUPENO')
-       nomnoe  =aster.getvectjev(string.ljust(__nomapi.nom,8)+'.NOMNOE')
+       collgrno=aster.getcolljev(string.ljust(__nomlma.nom,8)+'.GROUPENO')
+       nomnoe  =aster.getvectjev(string.ljust(__nomlma.nom,8)+'.NOMNOE')
        l_nu_no =[]
        if type(args['GROUP_NO'])==types.StringType :
           l_gr_no=[args['GROUP_NO'],]
        else:
           l_gr_no= args['GROUP_NO']
        for grno in l_gr_no:
-          l_nu_no =l_nu_no+collgrno[string.ljust(grno,8)]
+          l_nu_no =l_nu_no+list(collgrno[string.ljust(grno,8)])
        l_noeud =[nomnoe[no_i-1] for no_i in l_nu_no]
 
      if len(l_group_ma)!=len(l_group_ma_bord):

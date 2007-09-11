@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 06/08/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,17 +35,17 @@ cata_msg={
 """),
 
 4: _("""
- Le nombre de bases a gerer est negatif ou nul
+ Le nombre de bases à gérer est négatif ou nul
 """),
 
 5: _("""
- Taille memoire demandee negative ou nulle
+ Taille mémoire demandée négative ou nulle
 """),
 
 6: _("""
 Erreur de programmation :
  
-  Appel invalide, la marque devient negative
+  Appel invalide, la marque devient négative
 """),
 
 7: _("""
@@ -53,17 +53,18 @@ Erreur de programmation :
 """),
 
 8: _("""
-  La base  %(k1)s  a ete constituee avec la version  %(k2)s  et vous utilisez la version  %(k3)s
+  La base  %(k1)s  a été constituée avec la version  %(k2)s
+  et vous utilisez la version  %(k3)s
 """),
 
 9: _("""
- Suppression de la partition memoire
+ Suppression de la partition mémoire
 """),
 
 10: _("""
 Erreur de programmation :
 
- Le nom demande existe deja  dans la base  %(k1)s
+ Le nom demande existe déjà dans la base %(k1)s
 """),
 
 11: _("""
@@ -71,7 +72,7 @@ Erreur de programmation :
 """),
 
 12: _("""
- Fichier associe a la base  %(k1)s  inexistant
+ Fichier associé à la base  %(k1)s  inexistant
 """),
 
 13: _("""
@@ -83,7 +84,7 @@ Erreur de programmation :
 """),
 
 15: _("""
- Ecrasement amont, l'objet :< %(k1)s > est peut etre ecrase
+ Ecrasement amont, l'objet :< %(k1)s > est peut etre écrasé
 """),
 
 16: _("""
@@ -91,11 +92,11 @@ Erreur de programmation :
 """),
 
 17: _("""
- Chainage casse apres l'objet :  %(k1)s
+ Chainage cassé apres l'objet :  %(k1)s
 """),
 
 18: _("""
-L'objet < %(k1)s > a recopier n'est present ni en memoire, ni sur disque 
+L'objet < %(k1)s > à recopier n'est présent ni en mémoire, ni sur disque 
 """),
 
 19: _("""
@@ -103,7 +104,7 @@ L'objet < %(k1)s > a recopier n'est present ni en memoire, ni sur disque
 """),
 
 20: _("""
-La collection < %(k1)s > a recopier ne possede aucun objet ni en memoire, ni sur disque 
+La collection < %(k1)s > à recopier ne possède aucun objet ni en mémoire, ni sur disque 
 """),
 
 21: _("""
@@ -129,57 +130,57 @@ La collection < %(k1)s > a recopier ne possede aucun objet ni en memoire, ni sur
 """),
 
 23: _("""
-     Nom de Collection ou de Repertoire de noms inexistant :  %(k1)s
+     Nom de Collection ou de Répertoire de noms inexistant :  %(k1)s
 """),
 
 24: _("""
-     JENONU : Collection ou Repertoire de noms  :  %(k1)s
+     JENONU : Collection ou Répertoire de noms  :  %(k1)s
      Il faut passer par JEXNOM,JEXNUM.
 """),
 
 25: _("""
-     Nom de collection ou de repertoire inexistant : >%(k1)s<
+     Nom de collection ou de répertoire inexistant : >%(k1)s<
 """),
 
 26: _("""
      Objet JEVEUX inexistant dans les bases ouvertes : >%(k1)s<
-     l'objet n'a pas ete cree ou il a ete detruit
+     l'objet n'a pas été créé ou il a été détruit
 """),
 
 27: _("""
-     Objet simple JEVEUX inexistant en memoire et sur disque : >%(k1)s<
+     Objet simple JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
      le segment de valeurs est introuvable
 """),
 
 28: _("""
-     Collection JEVEUX inexistant en memoire et sur disque : >%(k1)s<
+     Collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
      le segment de valeurs est introuvable
 """),
 
 29: _("""
-     Objet %(i1)d de collection JEVEUX inexistant en memoire et sur disque : >%(k1)s<
+     Objet %(i1)d de collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
 """),
 
 30: _("""
      Objet de collection JEVEUX inexistant : >%(k1)s<
-     l'objet n'a pas ete cree ou il a ete detruit
+     l'objet n'a pas été créé ou il a été détruit
 """),
 
 31: _("""
      Erreur programmeur :
-     La routine JUVECA n'a pas prevu de redimensionner l'objet :%(k1)s
+     La routine JUVECA n'a pas prévu de re-dimensionner l'objet :%(k1)s
      de type :%(k2)s
 """),
 
 32: _("""
-     Erreur allocation de segment de memoire de longueur %(i1)d (entiers).
-     Memoire allouee insuffisante. Fermeture des bases (glob.*) sur erreur
-     Il faut relancer le calcul en augmentant la limite memoire.
+     Erreur allocation de segment de mémoire de longueur %(i1)d (entiers).
+     Memoire allouée insuffisante. Fermeture des bases (glob.*) sur erreur
+     Il faut relancer le calcul en augmentant la limite mémoire.
 """),
 
 33: _("""
      Modification de l'environnement JEVEUX.
-     Allocation dynamique des segments de valeurs de taille superieure
+     Allocation dynamique des segments de valeurs de taille supérieure
      a %(i1)d (entiers) 
 """),
 
@@ -189,11 +190,11 @@ La collection < %(k1)s > a recopier ne possede aucun objet ni en memoire, ni sur
 """),
 
 35: _("""
-     Le nombre de bases gerables est limite a %(i1)d
+     Le nombre de bases gérables est limité a %(i1)d
 """),
 
 36: _("""  
-     Le nombre d'enregistrements maximum de la base %(k1)s sera modifie,
+     Le nombre d'enregistrements maximum de la base %(k1)s sera modifié,
      de %(i1)d a %(i2)d
 """),
 
@@ -203,48 +204,40 @@ La collection < %(k1)s > a recopier ne possede aucun objet ni en memoire, ni sur
      soit environ %(i2)d %%
 """),
 
-
 38: _("""
      Numero d'objet invalide %(i1)d 
 """),
 
-
 39: _("""
-     Taille de repertoire demandee trop grande.
+     Taille de repertoire demandée trop grande.
      Le maximun est de %(i1)d
-     La valeur reclamee est de %(i2)d 
+     La valeur reclamée est de %(i2)d 
       
 """),
 
-
 40: _("""
-     Erreur ecriture de l'enregistrement %(i1)s sur la base : %(k1)s %(i2)d
+     Erreur écriture de l'enregistrement %(i1)s sur la base : %(k1)s %(i2)d
      code retour WRITDR : %(i3)d 
-     Erreur probablement provoquee par une taille trop faible du repertoire de travail.
-      
+     Erreur probablement provoquée par une taille trop faible du répertoire de travail.
 """),
 
 
 41: _("""
      Erreur lecture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
      code retour READDR : %(i3)d 
-      
 """),
 
 
 42: _("""
-     Fichier sature, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s 
-     est atteint, il faut relancer le calcul en modifiant le parametre NMAX_ENRE dans DEBUT 
+     Fichier saturé, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
+     il faut relancer le calcul en modifiant le parametre NMAX_ENRE dans DEBUT 
      ou en passant une taille maximum de base sur la ligne de commande 
      argument "-max_base" suivi de la valeur en Mo.
-
 """),
 
 
 43: _("""
      Erreur d'ouverture du fichier %(k1)s , code retour OPENDR = %(i1)d 
-
-      
 """),
 
 44: _("""
@@ -256,7 +249,7 @@ La collection < %(k1)s > a recopier ne possede aucun objet ni en memoire, ni sur
 """),
 
 46: _("""
- Liberation des segments alloues dynamiquement pour une longueur cumulee de %(i1)d (entiers) 
+ Libération des segments alloues dynamiquement pour une longueur cumulée de %(i1)d (entiers) 
 """),
 
 }

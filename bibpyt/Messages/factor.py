@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF factor Messages  DATE 10/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,6 +102,17 @@ Matrice non factorisable :
 Conseil :
   Il s'agit peut-etre d'un manque de conditions aux limites,
   ou au contraire, de redondances entre de trop nombreuses conditions.
+"""),
+
+#-----------------------------------------------------------------------------------------------
+50: _("""
+Solveur MUMPS :
+  -> Vous avez demandé comme renuméroteur RENUM = '%(k1)s', or MUMPS en a
+     utilisé un autre.
+  -> Risque & Conseil :
+     Il se peut que votre version de MUMPS n'ait pas été compilée avec
+     le support de ce renuméroteur. Dans le doute, RENUM='AUTO' permet
+     de laisser MUMPS faire le meilleur choix.
 """),
 
 #-----------------------------------------------------------------------------------------------

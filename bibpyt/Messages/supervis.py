@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 17/07/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,25 +22,20 @@ def _(x) : return x
 
 cata_msg={
 
-
-
-
-
-
 2: _("""
  Arret sur erreur(s) utilisateur
 """),
 
 3: _("""
- Erreur programmeur : JEMARQ/JEDEMA non apparies.
+ Erreur programmeur : JEMARQ/JEDEMA non appariés.
 """),
 
 4: _("""
- Commande n  %(k1)s  :  "%(k2)s"  :   %(k3)s  erreur(s) detectee(s)
+ Commande n  %(k1)s  :  "%(k2)s"  :   %(k3)s  erreur(s) détectée(s)
 """),
 
 5: _("""
- Erreur(s) à l'exécution de "%(k1)s" : arret immediat du programme.
+ Erreur(s) à l'exécution de "%(k1)s" : arret immédiat du programme.
 """),
 
 6: _("""
@@ -48,11 +43,12 @@ cata_msg={
 """),
 
 7: _("""
- Le concept " %(k1)s " est inconnu. Il n'est ni parmi les créés, ni parmi ceux à créer.
+ Le concept " %(k1)s " est inconnu.
+ Il n'est ni parmi les créés, ni parmi ceux à créer.
 """),
 
 8: _("""
- Un nom de concept intermediaire doit commencer par '.' ou '_' et non :  %(k1)s
+ Un nom de concept intermédiaire doit commencer par '.' ou '_' et non :  %(k1)s
 """),
 
 9: _("""
@@ -60,15 +56,15 @@ cata_msg={
 """),
 
 10: _("""
-   - le concept  "%(k1)s" est detruit des bases de donnees.
+   - le concept  "%(k1)s" est détruit des bases de données.
 """),
 
 11: _("""
- Impossible d'allouer la mémoire jeveux demandée
+ Impossible d'allouer la mémoire JEVEUX demandée
 """),
 
 12: _("""
- Exécution de jeveux en mode debug
+ Exécution de JEVEUX en mode DEBUG
 """),
 
 13: _("""
@@ -108,7 +104,8 @@ cata_msg={
 """),
 
 22: _("""
-L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 caractères. Le nom de code est donc "%(k1)s".
+L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 caractères.
+Le nom de code est donc "%(k1)s".
 """),
 
 23: _("""
@@ -136,7 +133,7 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 """),
 
 29: _("""
- Trop de noms definis dans la liste argument de "FICHIER"
+ Trop de noms définis dans la liste argument de "FICHIER"
 """),
 
 30: _("""
@@ -152,7 +149,7 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 """),
 
 33: _("""
- Erreur fatale  **** appel a commande "superviseur".
+ Erreur fatale  **** appel à commande "superviseur".
 """),
 
 34: _("""
@@ -166,11 +163,6 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 36: _("""
  Le concept de nom '%(k1)s' n'existe pas
 """),
-
-
-
-
-
 
 38: _("""
  Il n'y a plus de temps pour continuer
@@ -189,7 +181,6 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
-
 43: _("""
  Debug SDVERI suspendu
 """),
@@ -201,13 +192,6 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 45: _("""
  Debug JEVEUX suspendu
 """),
-
-
-
-
-
-
-
 
 47: _("""
  Debug JXVERI suspendu
@@ -222,30 +206,18 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 50: _("""
- la commande a un numero non appelable dans cette version.
- le numero errone est  %(i1)d 
+ la commande a un numéro non appelable dans cette version.
+ le numero erroné est  %(i1)d 
 """),
 
-
-
-
-
-
-
-
 52: _("""
- fin de lecture (duree  %(r1)f  s.) %(k1)s 
+ fin de lecture (durée  %(r1)f  s.) %(k1)s 
 """),
 
 53: _("""
  vous ne pouvez utiliser plus de  %(i1)d 
- niveaux de profondeur pour des appels par la  procedure %(k1)s 
+ niveaux de profondeur pour des appels par la procédure %(k1)s 
 """),
-
-
-
-
-
 
 55: _("""
  Appels récursifs de messages d'erreur ou d'alarme.
@@ -267,20 +239,19 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 58: _("""
- valeur initiale du temps cpu maximum =   %(i1)d secondes 
+ valeur initiale du temps CPU maximum =   %(i1)d secondes 
 """),
 
 59: _("""
- valeur du temps cpu maximum passee aux commandes =   %(i1)d secondes 
+ valeur du temps CPU maximum passé aux commandes =   %(i1)d secondes 
 """),
 
 60: _("""
- la procedure a un numero non appelable dans cette version.
+ la procédure a un numéro non appelable dans cette version.
  le numero errone est  %(i1)d 
 """),
 
 61: _("""
-  Exécution des commandes (erreur 03)
   La commande a un numéro non appelable dans cette version
   Le numéro erroné est : %(i1)d 
 """),

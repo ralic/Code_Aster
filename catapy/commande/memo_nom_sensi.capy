@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,12 +19,23 @@
 # RESPONSABLE GNICOLAS G.NICOLAS
 from Macro.Sensibilite import memo_nom_sensi_ops
 
-MEMO_NOM_SENSI=MACRO(nom="MEMO_NOM_SENSI",op=memo_nom_sensi_ops,
+def memo_nom_sensi_prod(self, NOM, **kwargs):
+   """Typage des concepts sensibles produits par les commandes principales (de calcul)
+   """
+   TYPE_SD_DERIV = NOM[0]['TYPE_SD_DERIV']
+   NOM_COMPOSE   = NOM[0]['NOM_COMPOSE']
+   if TYPE_SD_DERIV:
+      from Cata import cata
+      typsd = getattr(cata, TYPE_SD_DERIV)
+      self.type_sdprod(NOM_COMPOSE, typsd)
+
+
+MEMO_NOM_SENSI=MACRO(nom="MEMO_NOM_SENSI",op=memo_nom_sensi_ops,sd_prod=memo_nom_sensi_prod,
             UIinfo={"groupes":("Fonction",)},
                     fr="Mémorisation des noms des concepts dérivés.",
                     ang="Memorisation of the names of the sensitive concepts.",
 
-         NOM=FACT(statut='o',max='**',
+         NOM=FACT(statut='o',
              regles=(PRESENT_PRESENT('MOT_CLE','VALEUR','MOT_FACT' ),),
 
              NOM_SD=SIMP(statut='o',typ='TXM',
@@ -35,9 +46,13 @@ MEMO_NOM_SENSI=MACRO(nom="MEMO_NOM_SENSI",op=memo_nom_sensi_ops,
                          fr="Nom du paramètre sensible",
                          ang="Name of the sensitive parameter"),
 
-             NOM_COMPOSE=SIMP(statut='f',typ='TXM',defaut=" ",
+             NOM_COMPOSE=SIMP(statut='f',typ=('TXM', CO),defaut=" ",
                          fr="Nom de la structure composée",
                          ang="Name of the built structure"),
+
+             TYPE_SD_DERIV=SIMP(statut='f',typ='TXM',
+                         fr="type de la structure composée (usage interne seulement)",
+                         ang="Type of the built structure (internal usage only)"),
 
              MOT_FACT=SIMP(statut='f',typ='TXM',max='**',
                          fr="Liste des mots clés facteurs concernés par la dérivation",

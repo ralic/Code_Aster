@@ -4,7 +4,7 @@
       REAL*8              COOR(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -335,7 +335,7 @@ C
  290     CONTINUE
 C
       ELSE
-         CALL U2MESS('F','ALGORITH_37')
+         CALL U2MESK('F','ALGORITH_36',1,'PENTA')
 C
       ENDIF
 C

@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,19 +23,19 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- le champ de temperature : temp_init(num_init) n'existe pas.
+ le champ de température : TEMP_INIT(NUM_INIT) n'existe pas.
 """),
 
 2: _("""
- cham_no invalide
+ CHAM_NO invalide
 """),
 
 3: _("""
- le mot cle "nume_init" est obligatoire dans ce cas.
+ le mot cle "NUME_INIT" est obligatoire dans ce cas.
 """),
 
 4: _("""
- valeur de theta illicite
+ valeur de THETA illicite
 """),
 
 5: _("""
@@ -43,23 +43,24 @@ cata_msg={
 """),
 
 6: _("""
- la charge cine  %(k1)s  n"a pas de .defi
+ la charge cinématique  %(k1)s  n'a pas de .DEFI
 """),
 
 7: _("""
- la charge  %(k1)s  n'est pas compatible avec fonc_mult
+ la charge  %(k1)s  n'est pas compatible avec FONC_MULT
 """),
 
 9: _("""
- composante non trouvee dans la numerotation
+ composante non trouvée dans la numérotation
 """),
 
 10: _("""
- nombre de vecteurs demande trop grand on prend tous les modes du concept mode_meca 
+ nombre de vecteurs demandé trop grand
+ on prend tous les modes du concept MODE_MECA 
 """),
 
 12: _("""
- borne inf incorrect
+ borne inférieure incorrecte
 """),
 
 13: _("""
@@ -67,11 +68,11 @@ cata_msg={
 """),
 
 14: _("""
- pente non trouvee
+ pente non trouvée
 """),
 
 15: _("""
- la norme du vecteur vect_orie est nulle
+ la norme du vecteur VECT_ORIE est nulle
 """),
 
 16: _("""
@@ -79,71 +80,68 @@ cata_msg={
 """),
 
 17: _("""
- le nombre de pas est negatif
+ le nombre de pas est négatif
 """),
 
 18: _("""
- les matrices assemblees generalisees doivent avoir un stockage plein (cf. nume_ddl_gene)
+ les matrices assemblées généralisées doivent avoir un stockage plein (cf. NUME_DDL_GENE)
 """),
 
 19: _("""
- coeff_var_amor non nul et amortissement non present
+ COEFF_VAR_AMOR non nul et amortissement non présent
 """),
 
-
-
-
-
 24: _("""
- charge de contact non traitee
+ charge de contact non traitée
 """),
 
 25: _("""
- votre chargement contient plus d'une charge repartie. le calcul n'est paspossible pour les modeles de poutre
+ votre chargement contient plus d'une charge répartie
+ le calcul n'est pas possible pour les modèles de poutre
 """),
 
 26: _("""
- le modele est obligatoire
+ le modèle est obligatoire
 """),
 
 27: _("""
- impossible de combiner les mots cles charge et vect_asse en dehors des ondes planes
+ impossible de combiner les mots cles CHARGE et VECT_ASSE en dehors des ondes planes
 """),
 
 28: _("""
- concept reentrant : "resultat" doit porter le meme nom que la sortie
+ concept réentrant : "RESULTAT" doit porter le meme nom que la sortie
 """),
 
 29: _("""
- concept reentrant : "resultat" est d'un type different
+ concept réentrant : "RESULTAT" est d'un type différent
 """),
 
 30: _("""
- argument en double pour "nom_cham"
+ argument en double pour "NOM_CHAM"
 """),
 
 31: _("""
- pour l'instant, on ne peut pas deriver sur base modale dans dyna_line_harm 
+ pour l'instant, on ne peut pas dériver sur base modale dans DYNA_LINE_HARM 
 """),
 
 34: _("""
- les matrices ne possedent pas toutes la meme numerotation 
+ les matrices ne possèdent pas toutes la meme numérotation 
 """),
 
 35: _("""
-  un vect_asse n'est ni a valeurs reelles, ni a valeurs complexes.
+  un VECT_ASSE n'est ni à valeurs réelles, ni à valeurs complexes.
 """),
 
 36: _("""
- erreur dans decoupe initiale des pas
+ erreur dans la découpe initiale des pas
 """),
 
 37: _("""
- attention, arret=non donc poursuite du calcul sans avoir eu convergence
+ attention, ARRET=NON donc poursuite du calcul sans avoir eu convergence
 """),
 
 39: _("""
- base modale et matr_asse avec numerotations differentes
+ base modale et MATR_ASSE avec numérotations différentes
 """),
 
 40: _("""
@@ -151,11 +149,11 @@ cata_msg={
 """),
 
 41: _("""
- base modale et vect_asse avec  numerotations differentes
+ base modale et VECT_ASSE avec  numérotations différentes
 """),
 
 42: _("""
- la base constituee ne forme pas une famille libre 
+ la base constituée ne forme pas une famille libre 
 """),
 
 43: _("""
@@ -163,27 +161,27 @@ cata_msg={
 """),
 
 44: _("""
- trop d'arguments pour "nom_cham"
+ trop d'arguments pour "NOM_CHAM"
 """),
 
 45: _("""
- pour calculer une acce_absolu, il faut "acce_mono_appui"
+ pour calculer une ACCE_ABSOLU, il faut "ACCE_MONO_APPUI"
 """),
 
 46: _("""
- pour restituer sur un squelette, il faut "mode_meca"
+ pour restituer sur un squelette, il faut "MODE_MECA"
 """),
 
 47: _("""
- mots-cles'sous_struc' et'squelette'interdits
+ mots-cles'SOUS_STRUC' et'SQUELETTE'interdits
 """),
 
 48: _("""
- mots-cle'mode_meca' doit etre present
+ le mot-clé 'MODE_MECA' doit etre présent
 """),
 
 49: _("""
- l'instant de recuperation est en dehors du domaine de calcul.
+ l'instant de récuperation est en dehors du domaine de calcul.
 """),
 
 50: _("""
@@ -195,92 +193,90 @@ cata_msg={
 """),
 
 55: _("""
- mauvaise definition de l'interspectre.
+ mauvaise définition de l'interspectre.
 """),
 
 56: _("""
- le "nomb_pts" doit etre une puissance de 2.
+ le "NOMB_PTS" doit etre une puissance de 2.
 """),
 
 57: _("""
- si les mots-cles <nume_ordre> et <amor_reduit> sont utilises, il faut autant d arguments pour l un et l autre
+ si les mots-cles NUME_ORDRE et AMOR_REDUIT sont utilisés,
+ il faut autant d'arguments pour l'un et l'autre
 """),
 
 58: _("""
- le concept mode_meca d entree doit etre celui correspondant a la base modale initiale pour le calcul de couplage fluide-structure
+ le concept MODE_MECA d'entrée doit etre celui correspondant à la base modale initiale
+ pour le calcul de couplage fluide-structure
 """),
 
 59: _("""
- numero de vitesse d ecoulement du fluide non valide
+ numéro de vitesse d'écoulement du fluide non valide
 """),
 
 60: _("""
- tous les modes non couples etant retenus, le nombre d arguments valide pour le mot-cle <amor_reduit> est la difference entre le nombre de modes de la base modale initiale et le nombre de modes pris en compte pour le couplage fluide-structure
+ tous les modes non couplés étant retenus, le nombre d'arguments valide
+ pour le mot-clé AMOR_REDUIT est la différence entre le nombre de modes
+ de la base modale initiale et le nombre de modes pris en compte pour
+ le couplage fluide-structure
 """),
 
 61: _("""
- les numeros d ordre fournis ne correspondent pas a des modes non perturbes
+ les numéros d'ordre fournis ne correspondent pas à des modes non perturbés
 """),
 
 62: _("""
- option symetrie : la dimension de point et axe_1 doit etre identique.
+ option symétrie : la dimension de POINT et AXE_1 doit etre identique.
 """),
 
 63: _("""
- option symetrie : axe_2 est inutile en 2d, il est ignore.
+ option symétrie : AXE_2 est inutile en 2D, il est ignoré.
 """),
 
 64: _("""
- option symetrie : la dimension de point et axe_2 doit etre identique.
+ option symétrie : la dimension de POINT et AXE_2 doit etre identique.
 """),
 
 65: _("""
- methode: elem autorisee seulement pour les resultats evol_xxx.
+ méthode: ELEM autorisée seulement pour les résultats EVOL_XXX.
 """),
 
 66: _("""
- methode: nuage_deg__* autorisee seulement pour les champs.
+ methode: NUAGE_DEG__* autorisée seulement pour les champs.
 """),
 
 69: _("""
- on ne sait pas traiter le champ de type:  %(k1)s  champ :  %(k2)s 
+ on ne sait pas traiter le champ de type:  %(k1)s
+ champ :  %(k2)s 
 """),
 
 70: _("""
- le nom du champ         de la variable de commande  pour decoupage obligatoire
+ le nom du champ de la variable de commande pour découpage obligatoire
 """),
 
 71: _("""
- le nom du cmp           de la variable de commande  pour decoupage obligatoire
+ le nom du CMP de la variable de commande pour découpage obligatoire
 """),
 
 72: _("""
- critere pour            decoupage obligatoire
+ critere pour découpage obligatoire
 """),
 
 73: _("""
- erreur : itran = 0 ou 1
+ erreur : ITRAN = 0 ou 1
 """),
 
 74: _("""
- attention, mode suramorti
+ attention, mode sur-amorti
 """),
 
 75: _("""
  attention, mode instable
 """),
 
-
-
-
-
-
-
-
-
-
 80: _("""
- pour utiliser le comportement "hydr" il faut surcharger le code en "mode developpement" avec les routines "permea" et "satura".
+ pour utiliser le comportement "HYDR", il faut surcharger le code
+ en "mode devéloppement" avec les routines "PERMEA" et "SATURA".
 """),
 
 81: _("""
@@ -292,15 +288,15 @@ cata_msg={
 """),
 
 83: _("""
- nombre max iterations atteint
+ nombre maximum d'itérations atteint
 """),
 
 84: _("""
- precision machine depassee
+ précision machine depassée
 """),
 
 85: _("""
- probleme pilo : 3 solutions ou plus
+ problème pilo : 3 solutions ou plus
 """),
 
 86: _("""
@@ -308,39 +304,45 @@ cata_msg={
 """),
 
 87: _("""
- probleme pilo
+ problème pilo
 """),
 
 88: _("""
- ldc non dispo pour pilotage
+ loi de comportement non disponible pour le pilotage
 """),
 
 89: _("""
- le pilotage pred_elas necessite eta_pilo_min et eta_pilo_max pour la loi endo_isot_beton
+ le pilotage PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX
+ pour la loi ENDO_ISOT_BETON
 """),
 
 90: _("""
- le pilotage pred_elas necessite eta_pilo_min et eta_pilo_max pour la loi endo_orth_beton
+ le pilotage PRED_ELAS nécessite ETA_PILO_MIN et ETA_PILO_MAX
+ pour la loi ENDO_ORTH_BETON
 """),
 
 91: _("""
- nb noeuds mesure doit etre inf a nb noeuds modele
+ le nombre de noeuds mesuré doit etre inférieur au nombre de noeuds du modèle
 """),
 
 92: _("""
- maille seg2 non trouvee
+ maille SEG2 non trouvée
 """),
 
 93: _("""
- integration elastoplastique de loi beton_double_dp : pas de convergence lors de la projection au sommet des cones de traction et de compression --> utiliser le redecoupage automatique du pas de temps.
+ intégration élastoplastique de loi BETON_DOUBLE_DP :
+ pas de convergence lors de la projection au sommet des cones de traction et de compression
+ --> utiliser le redécoupage automatique du pas de temps.
 """),
 
 94: _("""
- integration elastoplastique de loi beton_double_dp : pas de convergence lors de la resolution pour nseuil =  %(k1)s  --> utiliser le redecoupage automatique du pas de temps.
+ intégration élastoplastique de loi BETON_DOUBLE_DP :
+ pas de convergence lors de la resolution pour NSEUIL =  %(k1)s
+ --> utiliser le redécoupage automatique du pas de temps.
 """),
 
 95: _("""
- non convergence a la maille:  %(k1)s 
+ non convergence à la maille:  %(k1)s 
 """),
 
 96: _("""
@@ -348,11 +350,11 @@ cata_msg={
 """),
 
 97: _("""
- la pression de vapeur n est pas une variable interne pour la loi de couplage  %(k1)s 
+ la pression de vapeur n'est pas une variable interne pour la loi de couplage  %(k1)s 
 """),
 
 
 99: _("""
- la variable  %(k1)s  n existe pas dans la loi cjs en 2d
+ la variable  %(k1)s  n'existe pas dans la loi CJS en 2D
 """),
 }

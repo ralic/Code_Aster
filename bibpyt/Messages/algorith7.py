@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith7 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,23 +23,25 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- couplage fluage/fissuration : il faut definir deux lois de comportement exactement. 
+ couplage fluage/fissuration :
+ il faut définir deux lois de comportement exactement. 
 """),
 
 2: _("""
- granger et endo_isot_betonou mazars non encore developpe
+ GRANGER et ENDO_ISOT_BETON ou MAZARS non encore développé
 """),
 
 3: _("""
- loi de comportement non autorisee dans le couplage fluage/fissuration
+ loi de comportement non autorisée dans le couplage fluage/fissuration
 """),
 
 4: _("""
- umlv_fp et mazars non encore developpe
+ UMLV_FP et MAZARS non encore developpé
 """),
 
 5: _("""
- pas de c_plan pour eib utiliser c_plan_deborst
+ pas de C_PLAN pour ENDO_ISOT_BETON
+ utiliser C_PLAN_DEBORST
 """),
 
 6: _("""
@@ -47,52 +49,49 @@ cata_msg={
 """),
 
 7: _("""
- pas d'orthotropie non line
+ pas d'orthotropie non linéaire
 """),
 
 8: _("""
- loi de comportement hyper-elastique non prevue
+ loi de comportement hyper-élastique non prevue
 """),
 
 9: _("""
- c_plan methode de borstet simo_miehe incompatibles
+ C_PLAN méthode DEBORST et SIMO_MIEHE incompatibles
 """),
 
 10: _("""
- comp1det simo_miehe incompatibles
+ COMP1D et SIMO_MIEHE incompatibles
 """),
 
 11: _("""
- couplage fluage/fissuration : la premiere loi doit etre une loi de fluage de type granger_fp ou granger_fp_v.
+ couplage fluage/fissuration :
+ la première loi doit etre une loi de fluage de type GRANGER_FP ou GRANGER_FP_V.
 """),
 
 12: _("""
- couplage fluage/fissuration : nombre total de variables internes incoherent <--> erreur de programmation. 
+ couplage fluage/fissuration :
+ nombre total de variables internes incohérent <--> erreur de programmation. 
 """),
 
 13: _("""
  f(0)=  %(k1)s  > 0 
 """),
 
-
-
-
-
-
 15: _("""
-  le concept evol_char :  %(k1)s  n'en est pas un !
+  le concept EVOL_CHAR :  %(k1)s  n'en est pas un !
 """),
 
 16: _("""
-  le concept evol_char :  %(k1)s  ne contient aucun champ de type evol_char.
+  le concept EVOL_CHAR :  %(k1)s  ne contient aucun champ de type EVOL_CHAR.
 """),
 
 17: _("""
-  on ne trouve pas le resultat derive associe a  %(k1)s  et  %(k2)s 
+  on ne trouve pas le résultat derivé associé à  %(k1)s  et  %(k2)s 
 """),
 
 18: _("""
-  le concept evol_ther :  %(k1)s  ne contient aucun champ.
+  le concept EVOL_THER :  %(k1)s  ne contient aucun champ.
 """),
 
 19: _("""
@@ -100,20 +99,17 @@ cata_msg={
 """),
 
 20: _("""
- le champ de deplacement didi n'est pas trouve dans le concept  %(k1)s 
+ le champ de déplacement DIDI n'est pas trouvé dans le concept  %(k1)s 
 """),
 
 21: _("""
   -> Critère de convergence est lache !
   -> Risque & Conseil : La valeur de RESI_GLOB_RELA est supérieure a 10-4.
      Cela peut nuire à la qualité de la solution. Vous ne vérifiez pas l'équilibre de manière rigoureuse.
-
-
-
 """),
 
 22: _("""
- la charge  %(k1)s  n'est pas mecanique
+ la charge  %(k1)s  n'est pas mécanique
 """),
 
 23: _("""
@@ -121,7 +117,7 @@ cata_msg={
 """),
 
 24: _("""
- la charge  %(k1)s  ne peut etre differentielle
+ la charge  %(k1)s  ne peut etre différentielle
 """),
 
 25: _("""
@@ -129,11 +125,13 @@ cata_msg={
 """),
 
 26: _("""
- le modele contient des elements de structure il faut renseigner le mot-cle cara_elem pour les options forc_noda et reac_noda.
+ le modèle contient des éléments de structure
+ il faut renseigner le mot-cle CARA_ELEM
+ pour les options FORC_NODA et REAC_NODA.
 """),
 
 27: _("""
- la charge  %(k1)s  ne peut etre pilotee
+ la charge  %(k1)s  ne peut etre pilotée
 """),
 
 28: _("""
@@ -141,47 +139,49 @@ cata_msg={
 """),
 
 29: _("""
- la charge thermique  %(k1)s  ne peut etre pilotee
+ la charge thermique  %(k1)s  ne peut etre pilotée
 """),
 
 30: _("""
- il y a plusieurs charges sechage 
+ il y a plusieurs charges de séchage 
 """),
 
 31: _("""
- la charge de sechage  %(k1)s  ne peut etre pilotee
+ la charge de séchage  %(k1)s  ne peut etre pilotée
 """),
 
 32: _("""
- il y a plusieurs charges defo.anelastiques 
+ il y a plusieurs charges de déformations anélastiques 
 """),
 
 33: _("""
- la charge defo.anelastiques  %(k1)s  ne peut etre pilotee
+ la charge de déformations anélastiques  %(k1)s  ne peut etre pilotée
 """),
 
 34: _("""
- la charge de type evol_char  %(k1)s  ne peut etre pilotee
+ la charge de type EVOL_CHAR  %(k1)s  ne peut etre pilotée
 """),
 
 35: _("""
- une meme charge ne peut contenir a la fois le mot-cle "liaison_unil" et le mot-cle "contact"
+ une meme charge ne peut contenir à la fois
+ le mot-cle "LIAISON_UNIL" et le mot-cle "CONTACT"
 """),
 
 36: _("""
- la charge de type liaison_unilaterale  %(k1)s  ne peut etre pilotee
+ la charge de type liaison_unilatérale  %(k1)s  ne peut etre pilotée
 """),
 
 37: _("""
- la charge de type contact  %(k1)s  ne peut etre pilotee
+ la charge de type contact  %(k1)s  ne peut etre pilotée
 """),
 
 38: _("""
- la charge  %(k1)s  ne peut pas utiliser de fonction multiplicative fonc_mult car elle est pilotee
+ la charge  %(k1)s  ne peut pas utiliser de fonction multiplicative FONC_MULT
+ car elle est pilotée
 """),
 
 39: _("""
- on ne peut pas faire de pilotage en l'absence de forces de type "fixe_pilo"
+ on ne peut pas faire de pilotage en l'absence de forces de type "FIXE_PILO"
 """),
 
 40: _("""
@@ -189,11 +189,11 @@ cata_msg={
 """),
 
 41: _("""
- il y a au moins une charge non mecanique : verifier le fichier de commandes
+ il y a au moins une charge non mécanique : vérifier le fichier de commandes
 """),
 
 42: _("""
-  reac_incr negatif
+  REAC_INCR négatif
 """),
 
 43: _("""
@@ -201,47 +201,48 @@ cata_msg={
 """),
 
 44: _("""
-  reac_iter_elas negatif
+  REAC_ITER_ELAS négatif
 """),
 
 45: _("""
- il faut preciser un concept evol_noli en prediction 'depl_calcule'
+ il faut préciser un concept EVOL_NOLI en prédiction 'DEPL_CALCULE'
 """),
 
 46: _("""
   -> La définition des paramètres rho_min et rho_excl est contradictoire.
-     On choisit de prendre rho_min à rho_excl.
+     On choisit de prendre RHO_MIN à RHO_EXCL.
   -> Risque & Conseil :
      RHO_MIN ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
 
 """),
 
 47: _("""
- les valeurs des parametres rho_max et rho_excl sont contradictoires, on prend rho_max a -rho_excl
+ les valeurs des paramètres RHO_MAX et RHO_EXCL sont contradictoires,
+ on prend RHO_MAX à -RHO_EXCL
 """),
 
 48: _("""
- eta_pilo_max doit etre inferieur a eta_pilo_r_max
+ ETA_PILO_MAX doit etre inférieur a ETA_PILO_R_MAX
 """),
 
 49: _("""
- eta_pilo_min doit etre superieur a eta_pilo_r_min
+ ETA_PILO_MIN doit etre supérieur à ETA_PILO_R_MIN
 """),
 
 50: _("""
- il faut au plus 1 noeud pour le pilotage ddl_impo
+ il faut au plus 1 noeud pour le pilotage DDL_IMPO
 """),
 
 51: _("""
- il faut au plus 1 groupe de noeud pour le pilotage ddl_impo
+ il faut au plus 1 groupe de noeud pour le pilotage DDL_IMPO
 """),
 
 52: _("""
- il faut au plus un noeud dans le groupe pour le pilotage ddl_impo
+ il faut au plus un noeud dans le groupe pour le pilotage DDL_IMPO
 """),
 
 53: _("""
- il faut preciser un groupe de noeuds dans la methode long_arc
+ il faut préciser un groupe de noeuds dans la méthode LONG_ARC
 """),
 
 54: _("""
@@ -249,23 +250,24 @@ cata_msg={
 """),
 
 55: _("""
- liste de composantes vide pour la methode long_arc
+ liste de composantes vide pour la methode LONG_ARC
 """),
 
 56: _("""
- liste relation_kit vide
+ liste RELATION_KIT vide
 """),
 
 57: _("""
- liste relation_kit trop longue
+ liste RELATION_KIT trop longue
 """),
 
 58: _("""
- 1d ou c_plan ?
+ 1D ou C_PLAN ?
 """),
 
 59: _("""
- liste relation_kit trop
+ liste RELATION_KIT trop
+### trop quoi ?
 """),
 
 60: _("""
@@ -273,8 +275,6 @@ cata_msg={
      est lache (très supérieur à la valeur par défaut).
   -> Risque & Conseil :
      Cela peut nuire à la qualité de la solution et à la convergence.
-
-
 """),
 
 61: _("""
@@ -286,23 +286,24 @@ cata_msg={
 """),
 
 63: _("""
- pas existance de solution                                                     pour le saut
+ pas existence de solution pour le saut
 """),
 
 64: _("""
- existance d'un element a                                         discontinuite trop grand                                          non unicite du saut
+ existence d'un élément à discontinuité trop grand
+ non unicité du saut
 """),
 
 65: _("""
- non convergence du newton                                         pour le calcul du saut no1
+ non convergence du NEWTON pour le calcul du saut numéro 1
 """),
 
 66: _("""
- non convergence du newton                                         pour le calcul du saut no2
+ non convergence du NEWTON pour le calcul du saut numéro 2
 """),
 
 67: _("""
- non convergence du newton                                         pour le calcul du saut no3
+ non convergence du NEWTON pour le calcul du saut numéro 3
 """),
 
 68: _("""
@@ -314,50 +315,44 @@ cata_msg={
 """),
 
 70: _("""
- elements isoparametriques 2d non disponibles en grandes rotations
+ elements isoparamétriques 2D non disponibles en grandes rotations
 """),
 
 71: _("""
- elements isoparametriques 3d non disponibles en grandes rotations
+ elements isoparamétriques 3D non disponibles en grandes rotations
 """),
 
 72: _("""
- seule une loi de comportement elastique isotrope est valide pour le calcul de dg !
+ seule une loi de comportement élastique isotrope est valide pour
+ le calcul de DG
 """),
 
 73: _("""
- le tenseur epseq=0 on a donc une derivee depseq tres grande !
+ le tenseur EPSEQ=0 on a donc une derivée DEPSEQ très grande !
 """),
 
 74: _("""
-  valeur de d_sigm_epsi non trouvee
+  valeur de D_SIGM_EPSI non trouvée
 """),
 
 75: _("""
-  valeur de sy non trouvee
+  valeur de SY non trouvée
 """),
 
 76: _("""
- dvp : non implante
+ développement non implanté
 """),
 
-
-
-
-
-
-
-
 78: _("""
- feti et frottement incompatibles !
+ FETI et frottement incompatibles !
 """),
 
 79: _("""
- n doit etre > 0
+ N doit etre > 0
 """),
 
 80: _("""
- phi_zero < ou = a zero
+ PHI_ZERO < ou = à zéro
 """),
 
 81: _("""
@@ -365,23 +360,23 @@ cata_msg={
 """),
 
 82: _("""
- phi/kphi0+l=0 et beta<0
+ PHI/KPHI0+L=0 et BETA<0
 """),
 
 83: _("""
- f(0) > 0 : erreur de conception
+ F(0) > 0 : erreur de conception
 """),
 
 84: _("""
- calcul flambement non lineaire hpp
+ calcul flambement non linéaire HPP
 """),
 
 85: _("""
- flambement non lineaire green
+ flambement non linéaire GREEN
 """),
 
 86: _("""
- fonctionnalite modifiee (dvlp)
+ fonctionnalite modifiée (dvlp)
 """),
 
 87: _("""
@@ -393,43 +388,36 @@ cata_msg={
      "PIVOT NUL" avec le solveur MULT_FRONT ou LDLT.
 """),
 
-
-
-
-
-
-
-
 89: _("""
- contact et rech. lin. peuvent poser des problemes de convergence
+ contact et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
 90: _("""
- la combinaison: contact-frottement et solveur gcpc n'est pas disponible.
+ la combinaison: contact-frottement et solveur GCPC n'est pas disponible.
 """),
 
 91: _("""
- contact continue et rech. lin. sont incompatibles
+ contact méthode continue et recherche linéaire sont incompatibles
 """),
 
 92: _("""
- contact continue et pilotage sont incompatibles
+ contact méthode continue et pilotage sont incompatibles
 """),
 
 93: _("""
- la combinaison: methode continue en contact et solveur gcpc n'est pas disponible.
+ la combinaison: méthode continue en contact et solveur GCPC n'est pas disponible.
 """),
 
 94: _("""
- liaison_unilater et pilotage sont des fonctionnalites incompatibles
+ LIAISON_UNILATER et PILOTAGE sont des fonctionnalités incompatibles
 """),
 
 95: _("""
- liaison_unilater et rech. lin. peuvent poser des problemes de convergence
+ LIAISON_UNILATER et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
 96: _("""
- comportement zmat obligatoire
+ comportement ZMAT obligatoire
 """),
 
 97: _("""
@@ -437,10 +425,11 @@ cata_msg={
 """),
 
 98: _("""
- il faut declarer fonc_desorp           sous elas_fo pour le fluage de dessication intrinseque            avec sech comme parametre
+ il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessication
+ intrinseque avec SECH comme paramètre
 """),
 
 99: _("""
- mauvais dimensionnementde geomm et geomp
+ mauvais dimensionnement de GEOMM et GEOMP
 """),
 }

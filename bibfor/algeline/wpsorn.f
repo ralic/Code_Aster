@@ -7,7 +7,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -266,16 +266,10 @@ C GESTION DES MODES CONVERGES
           VALI (1) = NCONV
           VALI (2) = NFREQ
           VALI (3) = INFO
-          VALI (4) = I
-          VALI (5) = NBVECT
-          VALI (6) = MAXITR
-          VALI (7) = I
-          VALI (8) = I
-          VALI (9) = I
-          VALI (10) = I
-          VALI (11) = I
+          VALI (4) = NBVECT
+          VALI (5) = MAXITR
           VALR = TOLSOR
-        CALL U2MESG('A', 'ALGELINE4_98',0,' ',11,VALI,1,VALR)
+        CALL U2MESG('A', 'ALGELINE4_98',0,' ',5,VALI,1,VALR)
         FLAGE = .FALSE.
       ENDIF
 

@@ -1,9 +1,9 @@
       SUBROUTINE IRGMCE(CHAMSY,PARTIE,IFI,NOMCON,ORDR,NBORDR,COORD,
      &                  CONNX,POINT,NOBJ,NBEL,NBCMPI,NOMCMP,
-     &                  LRESU,PARA,NOMAOU,NOMAIN,VERSIO)
+     &                  LRESU,PARA,NOMAOU,NOMAIN,VERSIO,TYCHA)
       IMPLICIT NONE
       CHARACTER*(*) NOMCON,CHAMSY,NOMCMP(*),PARTIE
-      CHARACTER*8 NOMAOU,NOMAIN
+      CHARACTER*8 NOMAOU,NOMAIN,TYCHA
       REAL*8 COORD(*),PARA(*)
       LOGICAL LRESU
       INTEGER NBCMPI,IFI,NBORDR,VERSIO
@@ -22,7 +22,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,14 +79,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER IOR,I,J,K,INE,INOE,IMA,LISTNO(8),IX,NBNO
-      INTEGER IQ, IFM, NIV, JTYPE
+      INTEGER IQ, IFM, NIV, JTYPE,INDIK8,JZCMP,NCMPME
       INTEGER IBID,NBCMP,IPOIN,IRET,JCESC,JCESL
       INTEGER JTABC,JTABD,JTABV,JTABL,JCESK,JCESD
       INTEGER ICMP,JNCMP,IPT,ISP,NBPT,NBSP,JNUMOL
       INTEGER NBMA,NCMPU,IAD,NBCMPD,NBORD2,IADMAX,IADMM
-      LOGICAL IWRI, TENS
+      PARAMETER(NCMPME=12)
+      LOGICAL IWRI, TENS, SCAL, VECT, LCMP
       CHARACTER*1 TSCA
-      CHARACTER*8 K8B,NOMGD,TYPE,NOCMP
+      CHARACTER*8 K8B,NOMGD,TYPE,NOCMP,NOCMPU
       CHARACTER*19 NOCH19,CHAMPS
       CHARACTER*24 NUMOLD,CONNEX
 C     ------------------------------------------------------------------
@@ -181,23 +182,56 @@ C
 101   CONTINUE
 C
       TENS = .FALSE.
+      VECT = .FALSE.
+      SCAL = .FALSE.
 
 C --- BOUCLE SUR LE NOMBRE DE COMPOSANTES DU CHAM_ELEM
 C     *************************************************
       IF (NBCMPI.EQ.0) THEN
         NBCMPD = NBCMP
-        IF (CHAMSY(1:2).EQ.'SI'.OR.CHAMSY(1:2).EQ.'EP') THEN
-          TENS = .TRUE.
-        ENDIF
       ELSE
         NBCMPD = NBCMPI
       END IF
+
       IF (VERSIO.EQ.1) THEN
         TENS = .FALSE.
+        SCAL = .TRUE.
+        VECT = .FALSE.
+      ELSEIF (VERSIO.EQ.2) THEN
+        IF (TYCHA(1:4).EQ.'SCAL')THEN
+          SCAL=.TRUE.
+        ELSEIF (TYCHA(1:4).EQ.'TENS')THEN
+          TENS=.TRUE.
+        ELSEIF (TYCHA(1:4).EQ.'VECT')THEN
+          VECT=.TRUE.
+        ENDIF
+      ENDIF
+
+      IF(VERSIO.EQ.2 .AND. TENS)THEN
+        LCMP=.FALSE.
+        CALL WKVECT('&&IRGMCE.ORDRE_CMP','V V K8',NCMPME,JZCMP)
+        DO 268 K=1,NCMPME
+          ZK8(JZCMP+K-1)=' '
+ 268    CONTINUE 
+        DO 269 K = 1,NBCMPD
+            ZK8(JZCMP+K-1)=NOMCMP(K)
+            ZK8(JZCMP+NCMPME/2+K-1)=ZK8(JNCMP+K-1)
+            DO 61 IX = 1,NBCMP
+              IF (ZK8(JNCMP+IX-1).EQ.NOMCMP(K)) THEN
+                ICMP = IX
+                GO TO 62
+              END IF
+   61       CONTINUE
+            K8B = NOMCMP(K)
+            CALL U2MESK('F','PREPOST2_54',1,K8B)
+   62       CONTINUE
+            IF(K.NE.IX) LCMP=.TRUE.  
+ 269    CONTINUE
+        IF(LCMP)CALL U2MESK('A','PREPOST2_55',NCMPME,ZK8(JZCMP))
+        CALL JEDETR('&&IRGMCE.ORDRE_CMP')
       ENDIF
 
       DO 270 K = 1,NBCMPD
-
         IF (NBCMPI.NE.0) THEN
           DO 70 IX = 1,NBCMP
             IF (ZK8(JNCMP+IX-1).EQ.NOMCMP(K)) THEN
@@ -250,7 +284,7 @@ C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
         CALL IRGMPV(IFI,LRESU,NOMCON,CHAMSY,NBORD2,PARA,NOCMP,NBEL2,
-     &              .TRUE.,.FALSE.,.FALSE.,VERSIO)
+     &              SCAL,VECT,TENS,VERSIO)
 C
         IWRI = .TRUE.
 
@@ -291,14 +325,22 @@ C
 
       IF (TENS) THEN
 C
+C ----- VERIFICATION SUR LES COMPOSANTES FOURNIES PAR L'UTILISATEUR:
+        CALL ASSERT(NBCMP.EQ.NBCMPI)
+        IF(IOR.EQ.1)THEN
+          DO 145 K=1,NBCMPI
+            ICMP=INDIK8(ZK8(JNCMP),NOMCMP(K),1,NBCMP)
+            IF(ICMP.EQ.0)THEN
+              CALL U2MESK('F','PREPOST6_34',1,NOMCMP(K))
+            ENDIF
+ 145      CONTINUE
+        ENDIF          
+C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
-         IF (VERSIO.EQ.2) THEN
-            CALL U2MESS('A','PREPOST2_55')
-         ENDIF
          NOCMP = 'TENSEUR'
          CALL IRGMPV(IFI,LRESU,NOMCON,CHAMSY,NBORD2,PARA,NOCMP,NBEL2,
-     &               .FALSE.,.FALSE.,.TRUE.,VERSIO)
+     &               SCAL,VECT,TENS,VERSIO)
 C
         IWRI = .TRUE.
 

@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF arlequin Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,7 +40,8 @@ cata_msg={
 """),
 
 4: _("""
- Il y a plusieurs cinematiques (melange elements de structures/elements de milieu continu) dans le meme groupe de maille
+ Il y a plusieurs cinematiques dans le meme groupe de maille
+ (melange elements de structures/elements de milieu continu) 
 """),
 
 5: _("""
@@ -71,25 +72,26 @@ cata_msg={
  """),
 
 10: _("""
- Le groupe de mailles de collage (GROUP_MA_COLL) doit etre un sous ensemble d'un des deux
- sous domaines GROUP_MA_1 ou GROUP_MA_2
+ Le groupe de mailles de collage (GROUP_MA_COLL) doit etre un sous ensemble
+ d'un des deux sous domaines GROUP_MA_1 ou GROUP_MA_2
  """),
 
 11: _("""
- La maille <%(k1)s> est de type %(k2)s: elle ne peut etre mise en boite.
+ La maille <%(k1)s> est de type %(k2)s : elle ne peut etre mise en boite.
  Ce type de maille n'est pas pris en compte.
 """),
 
 12: _("""
- Aucune maille de la zone de collage n'est appariee
+ Aucune maille de la zone de collage n'est appariée
 """),
 
 13: _("""
- Nombre de couples apparies sous-estime - Erreur avancee: contacter le support
+ Nombre de couples appariés sous-estimé
+ - Erreur avancée: contacter le support
 """),
 
 14: _("""
- La gestion des conditions limites redondantes a ete deconnectee dans Arlequin
+ La gestion des conditions limites redondantes a été déconnectée dans Arlequin
 """),
 
 23: _("""
@@ -97,11 +99,11 @@ cata_msg={
 """),
 
 24: _("""
- Nombre de composantes connexes maximal prevu insuffisant
+ Nombre de composantes connexes maximal prévu insuffisant
 """),
 
 25: _("""
- Polyedre non etoile au centre de gravite
+ Polyèdre non etoilé au centre de gravité
 """),
 
 }

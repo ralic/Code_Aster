@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF postrele Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,28 +27,24 @@ cata_msg={
 """),
 
 2: _("""
- ***************************************** 
- *   post_traitement numéro :  %(i1)d 
- *   inexistence de champ-gd 
- *   pas de post-traitement 
- *****************************************
+ post_traitement numéro :  %(i1)d 
+ inexistence de CHAM_GD 
+ pas de post-traitement 
  """),
 
 3: _("""
- **********************************************************
- *   post_traitement numéro :  %(i1)d 
- *   aucunes mailles ne correspondent aux criteres demandés
- *   pas de post-traitement
- **********************************************************
+ post_traitement numéro :  %(i1)d 
+ aucune maille ne correspond aux critères demandés
+ pas de post-traitement
 """),
 
 4: _("""
- on ne traite pas les multicouches
+ on ne traite pas les multi-couches
 """),
 
 5: _("""
  il manque le vecteur des composantes "NOCP".
- Contactez l'assistance téléphonique.
+ Contactez le support.
 """),
 
 6: _("""
@@ -69,7 +65,7 @@ cata_msg={
 """),
 
 10: _("""
- parametre %(k1)s de type %(k2)s 
+ paramètre %(k1)s de type %(k2)s 
 """),
 
 11: _("""
@@ -81,26 +77,26 @@ cata_msg={
 """),
 
 13: _("""
- + de 3000 cmps!
- Contactez l'assistance téléphonique.
+ plus de 3000 composantes.
+ Contactez le support
 """),
 
 14: _("""
- en repere local, on ne traite pas le champ %(k1)s 
+ en repère local, on ne traite pas le champ %(k1)s 
 """),
 
 15: _("""
- icoef trop grand
- Contactez l'assistance téléphonique.
+ ICOEF trop grand
+ Contactez le support
 """),
 
 16: _("""
- probleme maillage
- Contactez l'assistance téléphonique.
+ problème maillage
+ Contactez le support
 """),
 
 17: _("""
- on ne traite que des champs de type "DEPL_R" pour un changement de repere
+ on ne traite que des champs de type "DEPL_R" pour un changement de repère
 """),
 
 18: _("""
@@ -114,7 +110,7 @@ cata_msg={
 
 20: _("""
  on ne traite pas ce cas
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 21: _("""
@@ -123,8 +119,8 @@ cata_msg={
 
 22: _("""
  avec VECT_Y, il faut préciser 
-   soit un seul groupe de noeuds
-   soit plusieurs noeuds
+   - soit un seul groupe de noeuds
+   - soit plusieurs noeuds
 """),
 
 23: _("""
@@ -140,22 +136,25 @@ cata_msg={
 """),
 
 26: _("""
- changement de repere:
- champ non traité %(k1)s option de calcul %(k2)s 
+ changement de repère:
+ champ non traité %(k1)s
+ option de calcul %(k2)s 
 """),
 
 27: _("""
  noeud sur l'AXE_Z
- maille: %(k1)s, noeud: %(k2)s, coordonnées: %(r1)f 
+ maille      : %(k1)s
+ noeud       : %(k2)s
+ coordonnées : %(r1)f 
 """),
 
 28: _("""
- les noeuds du maillage ne sont pas tous dans un meme plan z = cst
- changement de repere non traité
+ les noeuds du maillage ne sont pas tous dans un meme plan Z = CST
+ changement de repère non traité
 """),
 
 29: _("""
- on ne sait pas faire ce post-traitement pour le chemin %(k1)s en repere %(k2)s 
+ on ne sait pas faire ce post-traitement pour le chemin %(k1)s en repère %(k2)s 
 """),
 
 30: _("""
@@ -167,7 +166,7 @@ cata_msg={
 """),
 
 32: _("""
- les noeuds du maillage ne sont pas tous dans un meme plan z = cst
+ les noeuds du maillage ne sont pas tous dans un meme plan Z = CST
  option TRAC_NOR non traitée
  utiliser l'option TRAC_DIR
 """),
@@ -260,7 +259,7 @@ cata_msg={
 38: _("""
  post-traitement %(i1)d 
  composante non traitée dans un changement de repere
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 39: _("""
@@ -339,7 +338,7 @@ cata_msg={
 
 53: _("""
  NEC trop grand
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 54: _("""
@@ -361,17 +360,17 @@ cata_msg={
 
 58: _("""
  erreur de programmation
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 59: _("""
  Le contenu de la table n'est pas celui attendu !
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 60: _("""
  arret sur erreurs
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 61: _("""

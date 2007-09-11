@@ -1,5 +1,5 @@
 
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE DMT94.132 EPROUVETTE CT BIMETALLIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,13 +92,13 @@ CHAMDEPL=STAT_NON_LINE(MODELE=MO,
                        EXCIT=(_F(CHARGE=CL,),
                               _F(CHARGE=CH,
                                  FONC_MULT=RAMPE,),),
-                       COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
+                       COMP_ELAS=(_F(RELATION='ELAS_VMIS_TRAC',
                                     GROUP_MA=('AUSTENI','FERRITI',),),
-                       COMP_ELAS=_F(RELATION='ELAS',
-                                    GROUP_MA='GOUP',),
+                                 _F(RELATION='ELAS',
+                                    GROUP_MA='GOUP',),),
                        INCREMENT=_F(LIST_INST=L_INST,),
                        NEWTON=_F(MATRICE='TANGENTE',
-                                 REAC_ITER=2,),
+                                 REAC_ITER=1,),
                        CONVERGENCE=_F(RESI_GLOB_RELA=0.001,),);
 
 CHAMDEPL=CALC_ELEM(reuse =CHAMDEPL,
@@ -448,7 +448,7 @@ G220_4=CALC_G(THETA=_F(THETA=THETA4),
 TEST_TABLE(TABLE=G20_0,
            NOM_PARA='G',
            VALE=5.8244,
-           PRECISION=0.04,);
+           PRECISION=0.07,);
 
 TEST_TABLE(TABLE=G40_0,
            NOM_PARA='G',
@@ -565,7 +565,7 @@ TEST_TABLE(TABLE=G20_4,
 TEST_TABLE(TABLE=G40_4,
            NOM_PARA='G',
            VALE=22.6,
-           PRECISION=0.08,);
+           PRECISION=0.09,);
 
 TEST_TABLE(TABLE=G100_4,
            NOM_PARA='G',

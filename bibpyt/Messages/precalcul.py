@@ -1,4 +1,4 @@
-#@ MODIF precalcul Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF precalcul Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,39 +24,49 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
-Le type du parametre CARA_ELEM nomme <%(k1)s> est inconnu. Contactez les developpeurs.
+Le type du parametre CARA_ELEM nomme <%(k1)s> est inconnu
+Contactez le support
 """),
 
 2: _("""
-Le type du parametre XFEM nomme <%(k1)s> est inconnu. Contactez les developpeurs.
+Le type du parametre XFEM nomme <%(k1)s> est inconnu
+Contactez le support
 """),
 
 11: _("""
-Le type de parametre pour le champ IN de temperature est inconnu (ni scalaire, ni fonction mais <%(k1)s>). Contactez les developpeurs. 
+Le type de paramètre pour le champ IN de température est inconnu (ni scalaire, ni fonction mais <%(k1)s>)
+Contactez le support
 """),
 
 20: _("""
-Le type de calcul du chargement est invalide :  %(k1)s. Contactez les developpeurs. 
+Le type de calcul du chargement est invalide :  %(k1)s
+Contactez le support
 """),
 
 50: _("""
-Depassement de la capacite pour les tableaux de champs d'entree de CALCUL. Contactez les developpeurs.
+Dépassement de la capacité pour les tableaux de champs d'entrée de CALCUL
+Contactez le support
 """),
 
 51: _("""
-On tente d'ecraser le parametre de champ d'entree de CALCUL deja existant nomme <%(k1)s> par un autre parametre d'entree nomme <%(k2)s>. Contactez les developpeurs.
+On tente d'écraser le paramètre de champ d'entrée de CALCUL déjà existant nommé <%(k1)s>
+par un autre paramètre d'entree nommé <%(k2)s>
+Contactez le support
 """),
 
 52: _("""
-On tente d'ecraser le champ d'entree de CALCUL deja existant nomme <%(k1)s> par un autre champ d'entree nomme <%(k2)s>. Contactez les developpeurs.
+On tente d'écraser le champ d'entrée de CALCUL deja existant nomme <%(k1)s> par un autre champ d'entrée nomme <%(k2)s>
+Contactez le support
 """),
 
 60: _("""
-Appel à CALCUL. Le nom du paramètre de champ d'entree numéro %(i1)d est vide.
+Appel à CALCUL
+Le nom du paramètre de champ d'entree numéro %(i1)d est vide.
 """),
 
 61: _("""
-Appel à CALCUL. Le champ d'entree numéro %(i1)d est vide.
+Appel à CALCUL
+Le champ d'entrée numéro %(i1)d est vide.
 """),
 
 62: _("""

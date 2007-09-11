@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith16 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,14 +22,16 @@ def _(x) : return x
 
 cata_msg={
 1: _("""
-  ! nombre de pas de calcul       :  %(i1)d
- ! nombre d'iterations          :  %(i2)d
+ nombre de pas de calcul       :  %(i1)d
+ nombre d'itérations           :  %(i2)d
  ----------------------------------------------
 
 """),
 
 2: _("""
-  infos noeuds de choc, lieu de choc :  %(i1)d  noeud de choc  : %(k1)s
+  infos noeuds de choc
+  lieu de choc   :  %(i1)d
+  noeud de choc  :  %(k1)s
 """),
 
 3: _("""
@@ -77,31 +79,29 @@ cata_msg={
 """),
 
 10: _("""
-
 """),
 
 11: _("""
-  ! le nb max d'iterations  %(i1)d ! est atteint sans converger
- ! le residu relatif final est  : %(r1)f
+ le nb max d'iterations  %(i1)d  est atteint sans converger
+ le résidu relatif final est  : %(r1)f
 
 """),
 
 12: _("""
- le nombre d'amortissements reduits est trop grand
+ le nombre d'amortissements réduits est trop grand
  le nombre de modes retenus vaut  %(i1)d
  et le nombre de coefficients :  %(i2)d
  on ne garde donc que les  %(i3)d
    %(k1)s
-
 """),
 
 13: _("""
- le nombre d'amortissements reduits est insuffisantil en manque :  %(i1)d
+ le nombre d'amortissements reduits est insuffisant
+ il en manque :  %(i1)d
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d
    %(k1)s
    %(k2)s
-
 """),
 
 14: _("""
@@ -157,109 +157,112 @@ cata_msg={
 """),
 
 21: _("""
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! taux de souplesse negligee : %(r1)f
+ taux de souplesse negligée : %(r1)f
 """),
 
 22: _("""
-         calcul par superposition modale
- ----------------------------------------------
- ! la base de projection est un %(k1)s
- ! le nb d'equations est          : %(i1)d
- ! la methode utilisee est        : %(k2)s
- ! la base utilisee est           : %(k3)s
- ! le nb de vecteurs de base est  :  %(i2)d
+ calcul par superposition modale :
+ la base de projection est un %(k1)s
+ le nb d'équations est          : %(i1)d
+ la methode utilisée est        : %(k2)s
+ la base utilisée est           : %(k3)s
+ le nb de vecteurs de base est  :  %(i2)d
 """),
 
 23: _("""
- ! le pas de temps initial est  : %(r1)f
- ! le nb de pas d'archive est     :  %(i1)d
+ le pas de temps initial est  : %(r1)f
+ le nb de pas d'archive est     :  %(i1)d
 """),
 
 24: _("""
- ! nume_vite_flui                 :  %(i1)d
- ! vitesse gap                    :  %(r1)f
- ! le nb de modes de base_flui    :  %(i2)d
- ! le nb total de modes de la base:  %(i3)d
- ! le pas de temps initial est    :  %(r2)f
- ! duree de l'excitation          :  %(r3)f
+ NUME_VITE_FLUI                 :  %(i1)d
+ vitesse gap                    :  %(r1)f
+ le nb de modes de BASE_FLUI    :  %(i2)d
+ le nb total de modes de la base:  %(i3)d
+ le pas de temps initial est    :  %(r2)f
+ durée de l'excitation          :  %(r3)f
 """),
 
 25: _("""
- ! le nb de pas d'archive est     :  %(i1)d
+ le nb de pas d'archive est     :  %(i1)d
 """),
 
 26: _("""
- ! le pas de temps du calcul est  : %(r1)f
- ! le nb de pas de calcul est     :  %(i1)d
- ! le nb de pas d'archive est     :  %(i2)d
+ le pas de temps du calcul est  : %(r1)f
+ le nb de pas de calcul est     :  %(i1)d
+ le nb de pas d'archive est     :  %(i2)d
 """),
 
 27: _("""
- ----------------------------------------------
 """),
 
 28: _("""
- trop d'amortissements modaux   nombre d'amortissement :  %(i1)d
-    nombre de mode :  %(i2)d
+ trop d'amortissements modaux
+ nombre d'amortissement :  %(i1)d
+ nombre de mode         :  %(i2)d
 
 """),
 
 29: _("""
- trop d'amortissements modaux   nombre d'amortissement :  %(i1)d
-    nombre de mode :  %(i2)d
+ trop d'amortissements modaux
+ nombre d'amortissement :  %(i1)d
+ nombre de mode         :  %(i2)d
 
 """),
 
 30: _("""
- amortissement non diagonal on ne sait pas traiter  %(i1)d
+ amortissement non diagonal
+ on ne sait pas traiter  %(i1)d
 """),
 
 31: _("""
- il manque des amortissements modaux   nombre d'amortissement :  %(i1)d
-    nombre de mode :  %(i2)d
+ il manque des amortissements modaux
+ nombre d'amortissements :  %(i1)d
+ nombre de modes         :  %(i2)d
 
 """),
 
 32: _("""
- on ne peut pas demander de reponsesecondaire sans la reponse primaire
+ on ne peut pas demander de réponse secondaire sans la réponse primaire
 """),
 
 33: _("""
-  *** analyse spectrale ***-------------------------
- ! la base modale utilisee est :  %(k1)s
- ! le nombre de vecteurs de base est :  %(i1)d
- ! regle de combinaison modale :  %(k2)s
- ! les options de calcul demandees sont :  %(k3)s
+ analyse spectrale :
+ la base modale utilisee est :  %(k1)s
+ le nombre de vecteurs de base est :  %(i1)d
+ regle de combinaison modale :  %(k2)s
+ les options de calcul demandees sont :  %(k3)s
 """),
 
 34: _("""
-                                           %(k1)s
+   %(k1)s
 """),
 
 35: _("""
- ! regle de combinaison des contributions
-  de chaque mouvement d'appui :  %(k1)s
+ règle de combinaison des contributions
+ de chaque mouvement d'appui :  %(k1)s
 """),
 
 36: _("""
- erreur dans les donneesla masse n existe pas dans la table  %(k1)s
+ erreur dans les données
+ la masse n'existe pas dans la table  %(k1)s
 """),
 
 37: _("""
- erreur dans les donneesla masse n existe pas dans la table  %(k1)s
+ erreur dans les données
+ la masse n"existe pas dans la table  %(k1)s
 """),
 
 38: _("""
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!mode dynamique           :  %(i1)d
+ mode dynamique           :  %(i1)d
  amortissement trop grand :  %(r1)f
  amortissement critique   :  %(r2)f
  probleme de convergence possible %(k1)s
-
 """),
 
 39: _("""
-          sous-structuration dynamique
-        calcul par superposition modale
+ sous-structuration dynamique
+ calcul par superposition modale
  ----------------------------------------------
  ! la numerotation utilisee est   :  %(k1)s
  ! le nb d'equations est          :  %(i1)d
@@ -282,7 +285,6 @@ cata_msg={
 """),
 
 43: _("""
- ----------------------------------------------
 """),
 
 44: _("""
@@ -345,52 +347,57 @@ cata_msg={
 """),
 
 51: _("""
- conflit dans les vis_a_vis des noeudsle noeud  %(k1)s
- est le vis-a-vis des noeuds  %(k2)s
- et  %(k3)s
+ conflit dans les vis_a_vis des noeuds
+ le noeud  %(k1)s
+ est le vis-a-vis des noeuds  %(k2)s et  %(k3)s
 
 """),
 
 52: _("""
- axe de symetrie cyclique different de oznumero du couple de noeuds :  %(i1)d
+ axe de symétrie cyclique différent de Oz
+ numéro du couple de noeuds :  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
 """),
 
 53: _("""
-  probleme de rayon droite-gauche differents numero du couple de noeuds :  %(i1)d
+  probleme de rayon droite-gauche differents
+  numero du couple de noeuds :  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
 """),
 
 54: _("""
-  probleme signe angle entre droite et gauche numero du couple de noeuds:  %(i1)d
+ probleme signe angle entre droite et gauche
+ numero du couple de noeuds:  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
 """),
 
 55: _("""
-  probleme valeur angle repetitivite cyclique numero du couple de noeuds:  %(i1)d
+ probleme valeur angle répétitivité cyclique
+ numero du couple de noeuds:  %(i1)d
  noeud droite -->  %(k1)s
  noeud gauche -->  %(k2)s
 
 """),
 
 56: _("""
-  verification repetitivitee: aucune erreur detectee
+  vérification répétitivité : aucune erreur détectée
 """),
 
 57: _("""
- les noeuds des interfaces ne sont pas alignes en vis-a-vis
- les noeuds ont ete reordonnes
+ les noeuds des interfaces ne sont pas alignés en vis-a-vis
+ les noeuds ont ete réordonnés
 
 """),
 
 58: _("""
-  arret sur probleme repetitivite cyclique tentative de diagnostic:  %(k1)s
+  arret sur probleme répétitivité cyclique
+  tentative de diagnostic:  %(k1)s
 """),
 
 59: _("""
@@ -537,31 +544,31 @@ cata_msg={
   """),
 
 78: _("""
-   ! Précision du transitoire : %(r1)f
+  Précision du transitoire : %(r1)f
   """),
 
 79: _("""
-   ! Couplage temporel avec NB modes : %(i1)d
+ Couplage temporel avec NB modes : %(i1)d
   """),
 
 80: _("""
- ! Le nombre de lieu(x) de choc est : %(i1)d
+ Le nombre de lieu(x) de choc est : %(i1)d
   """),
 
 81: _("""
- ! Le nombre de dispo anti sismique est : %(i1)d
+ Le nombre de dispositifs anti-sismique est : %(i1)d
   """),
 
 82: _("""
- ! le nombre de lieu(x) de choc avec flambement est : %(i1)d
+ le nombre de lieu(x) de choc avec flambement est : %(i1)d
   """),
 
 83: _("""
- ! Le nombre de RELA_EFFO_DEPL est : %(i1)d
+ Le nombre de RELA_EFFO_DEPL est : %(i1)d
   """),
 
 84: _("""
- ! Le nombre de RELA_EFFO_VITE est : %(i1)d
+ Le nombre de RELA_EFFO_VITE est : %(i1)d
   """),
 
 85: _("""
@@ -610,10 +617,10 @@ cata_msg={
   """),
 
 94: _("""
-  IL MANQUE LES PARAMETRES DE VAN_GENUCHTEN
+  il manque les paramètres de Van_Genuchten
  """),
 95: _("""
-  VAN_GENUCHTEN NON AUTORISE POUR CE MODELE DE COUPLAGE
+  Van_Genuchten non autorisé pour ce modèle de couplage
  """),
 
 }

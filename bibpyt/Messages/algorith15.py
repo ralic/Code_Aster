@@ -1,4 +1,4 @@
-#@ MODIF algorith15 Messages  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF algorith15 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,78 +22,82 @@ def _(x) : return x
 
 cata_msg={
 1: _("""
- arret sur nombres de ddl interface non identiques 
+ arret sur nombres de DDL interface non identiques 
  nombre de ddl interface droite:  %(i1)d 
  nombre de ddl interface gauche:  %(i2)d 
 """),
 
 2: _("""
- arret sur dimension matrice teta incorrecte dimension effective:  %(i1)d 
+ arret sur dimension matrice TETA incorrecte
+ dimension effective :  %(i1)d 
  dimension en argument:  %(i2)d 
 """),
 
 3: _("""
-  erreur  de repetitivite cyclique
+  erreur de répétitivité cyclique
 """),
 
 4: _("""
-  il manque un ddl sur un noeud  gauche type du ddl -->  %(k1)s 
+  il manque un DDL sur un noeud gauche
+  type du DDL  -->  %(k1)s 
   nom du noeud -->  %(k2)s 
 """),
 
 5: _("""
-  erreur  de repetitivite cyclique
+  erreur  de répétitivité cyclique
 """),
 
 6: _("""
-  il manque un ddl sur un noeud droite type du ddl -->  %(k1)s 
+  il manque un DDL sur un noeud droite
+  type du ddl  -->  %(k1)s 
   nom du noeud -->  %(k2)s 
 """),
 
 7: _("""
- arret sur probleme de repetitivite cyclique
+ arret sur problème de répétitivité cyclique
 """),
 
 8: _("""
- cmp est une composante indefiniecmp= %(k1)s 
+ la composante : %(k1)s  est une composante indefinie
 """),
 
 9: _("""
- 
 """),
 
 10: _("""
- arret sur type de ddl non defini
+ arret sur type de DDL non défini
 """),
 
 11: _("""
- "nb_poin" est inferieur au nombre de points de l'interspectre.
- le spectre est tronquee a la frequence :  %(r1)f 
+ "NB_POIN" est inférieur au nombre de points de l'interspectre.
+ le spectre est tronqué à la fréquence :  %(r1)f 
 """),
 
 12: _("""
- le "nb_poin" donne est modifie (en une puissance de 2 compatible avec l'interspectre). 
- le "nb_poin" retenu  est :   %(i1)d 
+ le "NB_POIN" donné est modifié
+ (en une puissance de 2 compatible avec l'interspectre)
+ le "NB_POIN" retenu est :   %(i1)d 
 """),
 
 13: _("""
- la duree est trop grande ou nb_poin et trop petit par rapport a la frequence max (th. de shannon).
- on choisit nbpoin =  %(i1)d 
+ la durée est trop grande ou NB_POIN et trop petit par rapport
+ à la fréquence max (théorème de Shannon).
+ on choisit NBPOIN =  %(i1)d 
 """),
 
 14: _("""
- la duree est petite par rapport au pas de discretisation de l'interspectre.
- choisir plutot : duree >  %(r1)f 
+ la durée est petite par rapport au pas de discrétisation de l'interspectre.
+ choisir plutot : durée >  %(r1)f 
 """),
 
 15: _("""
- "nb_poin" est petit par rapport au pas de discretisation de l'interspectre.
- nb_poin =  %(i1)d 
- il faudrait un nbre superieur a :  %(r1)f 
+ "NB_POIN" est petit par rapport au pas de discrétisation de l'interspectre.
+ NB_POIN =  %(i1)d 
+ il faudrait un nombre supérieur à :  %(r1)f 
 """),
 
 16: _("""
- on n'as pas trouve le ddl   pour le noeud :  %(k1)s 
+ on n'a pas trouve le DDL pour le noeud :  %(k1)s 
 """),
 
 17: _("""
@@ -105,16 +109,16 @@ cata_msg={
 """),
 
 19: _("""
-  il manque le seuil  pour la fonction interpretee  %(k1)s 
+  il manque le seuil  pour la fonction interprétée  %(k1)s 
 """),
 
 20: _("""
- l'abscisse lineaire est nulle   pour la courbe :  %(k1)s 
-          abscisse :  %(r1)f 
+ l'abscisse lineaire est nulle pour la courbe :  %(k1)s 
+ abscisse :  %(r1)f 
 """),
 
 21: _("""
- on n'as pas trouve le ddl   pour le noeud :  %(k1)s 
+ on n'a pas trouve le DDL pour le noeud :  %(k1)s 
 """),
 
 22: _("""
@@ -126,11 +130,12 @@ cata_msg={
 """),
 
 24: _("""
- au moins un terme de alpha est negatif a l'abscisse :  %(i1)d 
+ au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
 """),
 
 25: _("""
- alpha est nul et le nombre de mesures est strictement inferieur au nombre de modes : risque de matrice singuliere
+ ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
+ risque de matrice singulière
 """),
 
 26: _("""
@@ -138,29 +143,36 @@ cata_msg={
 """),
 
 27: _("""
-  pb calcul valeurs singulieres pas =   %(i1)d  abscisse =    %(r1)f 
+  problème calcul valeurs singulieres
+  pas      =   %(i1)d
+  abscisse =    %(r1)f 
 """),
 
 28: _("""
-  matrice (phi)t*phi + alpha n est pas inversible  pas =   %(i1)d 
+  la matrice (PHI)T*PHI + ALPHA n'est pas inversible
+  pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
 29: _("""
-  pb calcul valeurs singulieres pas =   %(i1)d  abscisse =    %(r1)f 
+  problème calcul valeurs singulières
+  pas      =   %(i1)d
+  abscisse =    %(r1)f 
 """),
 
 30: _("""
-  matrice (phi)t*phi + alpha  n est pas inversible  pas =   %(i1)d 
+  matrice (PHI)T*PHI + ALPHA  n'est pas inversible
+  pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
 31: _("""
- au moins un terme de alpha est negatif a l'abscisse :  %(i1)d 
+ au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
 """),
 
 32: _("""
- alpha est nul et le nombre de mesures est strictement inferieur au nombre de modes : risque de matrice singuliere
+ ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
+ risque de matrice singulière
 """),
 
 33: _("""
@@ -168,29 +180,36 @@ cata_msg={
 """),
 
 34: _("""
- pb calcul valeurs singulieres pas =   %(i1)d  abscisse =    %(r1)f 
+ problème calcul valeurs singulières
+ pas      =   %(i1)d
+ abscisse =    %(r1)f 
 """),
 
 35: _("""
-  matrice (phi)t*phi + alpha n est pas inversible  pas =   %(i1)d 
+  matrice (PHI)T*PHI + ALPHA n est pas inversible
+  pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
 36: _("""
-  pb calcul valeurs singulieres pas =   %(i1)d  abscisse =    %(r1)f 
+ problème calcul valeurs singulières
+  pas =   %(i1)d
+  abscisse =    %(r1)f 
 """),
 
 37: _("""
-  matrice (phi)t*phi + alpha  n est pas inversible  pas =   %(i1)d 
+  matrice (PHI)T*PHI + ALPHA  n'est pas inversible
+  pas =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
 38: _("""
- au moins un terme de alpha est negatif a l'abscisse :  %(i1)d 
+ au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
 """),
 
 39: _("""
- alpha est nul et le nombre de mesures est strictement inferieur au nombre de modes : risque de matrice singuliere
+ ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
+ risque de matrice singuliere
 """),
 
 40: _("""
@@ -198,7 +217,9 @@ cata_msg={
 """),
 
 41: _("""
- pb calcul valeurs singulieres pas =   %(i1)d  abscisse =    %(r1)f 
+ problème calcul valeurs singulières
+ pas =   %(i1)d
+ abscisse =    %(r1)f 
 """),
 
 42: _("""
@@ -211,159 +232,174 @@ cata_msg={
 """),
 
 44: _("""
-  matrice (phi)t*phi + alpha  n est pas inversible  pas =   %(i1)d 
+  la matrice (PHI)T*PHI + ALPHA  n'est pas inversible
+  pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
 45: _("""
-  on ne trouve pas dpmax 
+  on ne trouve pas DPMAX 
 """),
 
 46: _("""
-  nombre d iterations insuffisant 
+  nombre d'itérations insuffisant 
 """),
 
 47: _("""
-  f(xmin) > 0 
+  F(XMIN) > 0 
 """),
 
 48: _("""
-  maille :  %(k1)s  nombre d iterations =  %(i1)d  iter_inte_maxi =  %(i2)d 
+  maille :  %(k1)s
+  nombre d iterations =  %(i1)d
+  ITER_INTE_MAXI =  %(i2)d 
 """),
 
 49: _("""
-  dp   actuel =  %(r1)f  f(dp) actuel =  %(r2)f 
+  DP    actuel =  %(r1)f
+  F(DP) actuel =  %(r2)f 
 """),
 
 50: _("""
-  dp  initial =  %(r1)f  f(dp) init   =  %(r2)f 
+  DP    initial   =  %(r1)f
+  F(DP) initial   =  %(r2)f 
 """),
 
 51: _("""
-  dp  maximum =  %(r1)f f(dp) maxi   =  %(r2)f 
+  DP    maximum   =  %(r1)f
+  F(DP) maximum   =  %(r2)f 
 """),
 
 52: _("""
-  allure de la fonction. nb points :  %(i1)d 
+  allure de la fonction
+  nb points :  %(i1)d 
 """),
 
 53: _("""
-  dp  =  %(r1)f f(dp)  =  %(r2)f 
+  DP     =  %(r1)f
+  F(DP)  =  %(r2)f 
 """),
 
 54: _("""
- 
 """),
 
 55: _("""
-  incoherence detectee 
+  incohérence détectée 
 """),
 
 56: _("""
-  le noeud :  %(k1)s  de l interface dynamique :  %(k2)s 
-  n appartient pas la sous-structure:  %(k3)s 
+  le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s 
+  n'appartient pas la sous-structure:  %(k3)s 
 """),
 
 57: _("""
-  incoherence detectee 
+  incohérence detectée 
 """),
 
 58: _("""
   le noeud :  %(k1)s  de l interface dynamique :  %(k2)s 
-  n est pas correctement reference dans le squelette :  %(k3)s 
+  n'est pas correctement référencé dans le squelette :  %(k3)s 
 """),
 
 59: _("""
-  incoherence detectee 
+  incohérence détectée 
 """),
 
 60: _("""
-  le noeud :  %(k1)s  de l interface dynamique :  %(k2)s 
-  n appartient pas la sous-structure:  %(k3)s 
+  le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s 
+  n'appartient pas la sous-structure:  %(k3)s 
 """),
 
 61: _("""
-  incoherence detectee 
+  incohérence détectée 
 """),
 
 62: _("""
-  le noeud :  %(k1)s  de l interface dynamique :  %(k2)s 
-  n est pas correctement reference dans le squelette :  %(k3)s 
+  le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s 
+  n'est pas correctement référencé dans le squelette :  %(k3)s 
 """),
 
 63: _("""
-  conflit mot cles tout et group_no dans reco_global 
+  conflit mot clés TOUT et GROUP_NO dans RECO_GLOBAL 
 """),
 
 64: _("""
-  erreur de nom  la sous-structure :  %(k1)s  n a pas ete trouvee 
+  erreur de nom
+  la sous-structure :  %(k1)s  n a pas ete trouvée 
 """),
 
 65: _("""
-  incoherence de nom  l interface dynamique :  %(k1)s 
-  de la sous-structure :  %(k2)s 
+  incohérence de nom
+  l interface dynamique  :  %(k1)s 
+  de la sous-structure   :  %(k2)s 
   a pour groupe de noeud :  %(k3)s 
   or group_no_1 =  %(k4)s 
 """),
 
 66: _("""
-  erreur de nom  la sous-structure :  %(k1)s  n a pas ete trouvee 
+  erreur de nom
+  la sous-structure :  %(k1)s  n'a pas ete trouvée 
 """),
 
 67: _("""
-  incoherence de nom  l interface dynamique :  %(k1)s 
-  de la sous-structure :  %(k2)s 
+  incohérence de nom
+  l interface dynamique  :  %(k1)s 
+  de la sous-structure   :  %(k2)s 
   a pour groupe de noeud :  %(k3)s 
   or group_no_2 =  %(k4)s 
 """),
 
 68: _("""
-  --------------------------------nombre de points pas periode:  %(i1)d 
- coefficient de remontee du pas de temps:  %(r1)f 
- coefficient de division du pas de temps:  %(r2)f 
- coeff determinant dt min (=dt init*coeff):  %(r3)f 
- nombre maximal de reductions du pas:  %(i2)d 
- vitesse minimale variable:  %(k1)s 
+ nombre de points pas période             :  %(i1)d 
+ coefficient de remontee du pas de temps  :  %(r1)f 
+ coefficient de division du pas de temps  :  %(r2)f 
+ coeff déterminant DT MIN (=DT INIT*COEFF):  %(r3)f 
+ nombre maximal de réductions du pas      :  %(i2)d 
+ vitesse minimale variable                :  %(k1)s 
 """),
 
 69: _("""
- arret : nombre incorrect de sous-structuresil vaut :  %(i1)d 
+ nombre incorrect de sous-structures
+ il vaut :  %(i1)d 
  alors que le nombre total de sous-structures vaut :  %(i2)d 
 """),
 
 70: _("""
- arret : nombre incorrect de sous-structurespour le chargement numero : %(i1)d 
+ nombre incorrect de sous-structures
+ pour le chargement numero : %(i1)d 
  il en faut exactement :  %(i2)d 
- vous en avez :  %(i3)d 
+ vous en avez          :  %(i3)d 
 """),
 
 71: _("""
- arret : nombre incorrect de vecteurs chargementspour le chargement numero : %(i1)d 
+ nombre incorrect de vecteurs chargements
+ pour le chargement numero : %(i1)d 
  il en faut exactement :  %(i2)d 
- vous en avez :  %(i3)d 
+ vous en avez          :  %(i3)d 
 """),
 
 72: _("""
- arret : un prof_chno n'est pas definiil manque pour le chargement : %(k1)s 
+ un PROF_CHNO n'est pas défini
+ il manque pour le chargement : %(k1)s 
 """),
 
 73: _("""
- on doit avoir le meme type de forces pour  un meme chargement global
- or, la grandeur vaut :  %(i1)d 
- pour la sous-structure  %(k1)s 
- et elle vaut :  %(i2)d 
- pour la sous-structure  %(k2)s 
+ on doit avoir le meme type de forces pour un meme chargement global
+ or, la grandeur vaut   :  %(i1)d 
+ pour la sous-structure    %(k1)s 
+ et elle vaut           :  %(i2)d 
+ pour la sous-structure    %(k2)s 
 """),
 
 74: _("""
  une des bases modales a un type incorrect
- elle est associee a la sous-structure  %(k1)s 
+ elle est associée à la sous-structure  %(k1)s 
 """),
 
 75: _("""
- les numerotations ne coincident paspour la sous-structure : %(k1)s 
- le prof_chno pour la base modale est :  %(k2)s 
- et celui pour le second membre :  %(k3)s 
+ les numérotations ne coincident pas pour la sous-structure : %(k1)s 
+ le PROF_CHNO pour la base modale est :  %(k2)s 
+ et celui pour le second membre       :  %(k3)s 
 """),
 
 76: _("""
@@ -374,7 +410,7 @@ cata_msg={
 
 77: _("""
      Conflit dans les VIS_A_VIS des noeuds :
-       Le noeud %(k1)s est le VIS-A-VIS des noeuds %(k2)s et %(k3)s
+     Le noeud %(k1)s est le VIS-A-VIS des noeuds %(k2)s et %(k3)s
 """),
 
 78: _("""
@@ -416,34 +452,39 @@ cata_msg={
  """),
 
 85: _("""
-  l''interface de droite  n existe pasinterface de nom %(k1)s 
+  l''interface de droite n'existe pas
+  interface de nom %(k1)s 
 """),
 
 86: _("""
-  l''interface de gauche  n existe pasinterface de nom %(k1)s 
+  l''interface de gauche n'existe pas
+  interface de nom %(k1)s 
 """),
 
 87: _("""
-  l''interface axe  n existe pasinterface de nom %(k1)s 
+  l'interface axe n'existe pas
+  interface de nom %(k1)s 
 """),
 
 88: _("""
- arret sur probleme interfaces de type differents
+ arret sur problème interfaces de type différents
 """),
 
 89: _("""
- arret sur probleme de type interface non supportetype interface -->  %(k1)s 
+ arret sur problème de type interface non supporté
+ type interface -->  %(k1)s 
 """),
 
 90: _("""
- le nombre d'amortissements reduits est trop grand
+ le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d 
  et le nombre de coefficients  :  %(i2)d 
  on ne garde donc que les  %(i3)d premiers coefficients
 """),
 
 91: _("""
- le nombre d'amortissements reduits est insuffisant il en manque :  %(i1)d 
+ le nombre d'amortissements réduits est insuffisant
+ il en manque :  %(i1)d 
  car le nombre de modes vaut :  %(i2)d 
  on rajoute %(i3)d coefficients avec la valeur du dernier coefficient.
 """),
@@ -461,14 +502,13 @@ cata_msg={
 """),
 
 95: _("""
- l'entree d'amortissements reduits est incompatible 
+ l'entrée d'amortissements réduits est incompatible 
  avec des matrices de type  %(k1)s 
  Il faut des matrices de type MATR_ASSE_GENE_*
- 
 """),
 
 96: _("""
- le nombre d''amortissements reduits est trop grand
+ le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d 
  et le nombre de coefficients :  %(i2)d 
  on ne garde donc que les  %(i3)d premiers coefficients 
@@ -476,22 +516,23 @@ cata_msg={
 """),
 
 97: _("""
- le nombre d'amortissements reduits est insuffisant il en manque :  %(i1)d 
- car le nombre de modes vaut :  %(i2)d  on rajoute  %(i3)d 
- amortissement reduits avec la valeur du dernier mode propre.
+ le nombre d'amortissements réduits est insuffisant
+ il en manque :  %(i1)d 
+ car le nombre de modes vaut :  %(i2)d
+ on rajoute  %(i3)d amortissement reduits avec la valeur du dernier mode propre.
 """),
 
 98: _("""
- 
- incoherance dans le dataset 58 : le nombre de valeurs fournies ne correspond pas au nombre de valeurs attendues
- mesure concernee :  %(i1)d 
+ incohérence dans le DATASET 58
+ le nombre de valeurs fournies ne correspond pas au nombre de valeurs attendues
+ mesure concernée :  %(i1)d 
  
 """),
 
 99: _("""
-  ! le nb max d''iterations  %(i1)d ! est atteint sans converger 
- ! le residu relatif final est  : %(r1)f 
- ! l instant de calcul vaut : %(r2)f 
+ le nombre maximum d'itérations  %(i1)d  est atteint sans converger 
+ le résidu relatif final est  : %(r1)f 
+ l instant de calcul vaut     : %(r2)f 
  
 """),
 

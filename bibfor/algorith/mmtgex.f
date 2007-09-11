@@ -1,8 +1,7 @@
-      SUBROUTINE MMTGEX(DEFICO,NOMA,NDIM,
-     &                  IZONE,POSMA,INI,NPEX,INI1,INI2,
-     &                  SUPPOK,T1MIN,T2MIN,VALRET)
+      SUBROUTINE MMTGEX(DEFICO,NOMA,NDIM,IZONE,POSMA,INI,NPEX,
+     &                  INI1,INI2,SUPPOK,T1MIN,T2MIN,VALRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,17 +21,8 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*24 DEFICO
       CHARACTER*8  NOMA
-      INTEGER      NDIM
-      INTEGER      IZONE
-      INTEGER      POSMA
-      INTEGER      SUPPOK
-      INTEGER      INI
-      INTEGER      NPEX
-      INTEGER      INI1
-      INTEGER      INI2      
-      REAL*8       T1MIN(3)
-      REAL*8       T2MIN(3)
-      INTEGER      VALRET
+      INTEGER      NDIM,IZONE,POSMA,SUPPOK,INI,NPEX,INI1,INI2,VALRET
+      REAL*8       T1MIN(3),T2MIN(3)
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : MAPPAR
@@ -78,12 +68,11 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      POSNOE,NUMNOE,NSANS,NUMSAN
-      CHARACTER*24 NOMACO,CONTNO,PNOMA,SANSNO,PSANS
       INTEGER      JNOMA,JNOCO,JPONO,JSANS,JPSANS
+      INTEGER      J,K,N1,N2,POSNO1,POSNO2,JCOOR,IBID
+      CHARACTER*24 NOMACO,CONTNO,PNOMA,FROTNO,PFROT
       REAL*8       NORM(3),COON1(3),COON2(3)
       REAL*8       NORN,NORT1,NORT2,NORME1,R8PREM
-      INTEGER      J,K,N1,N2,POSNO1,POSNO2
-      INTEGER      JCOOR,IBID
       LOGICAL      LBID
       CHARACTER*24 K24BID,K24BLA
       DATA         K24BLA /' '/       
@@ -95,19 +84,19 @@ C
       NOMACO = DEFICO(1:16) // '.NOMACO'
       CONTNO = DEFICO(1:16) // '.NOEUCO'
       PNOMA  = DEFICO(1:16) // '.PNOMACO'      
-      SANSNO = DEFICO(1:16) // '.SSNOCO'
-      PSANS  = DEFICO(1:16) // '.PSSNOCO'      
+      FROTNO = DEFICO(1:16) // '.SANOFR'
+      PFROT  = DEFICO(1:16) // '.PSANOFR'      
       CALL JEVEUO(NOMACO,'L',JNOMA)
       CALL JEVEUO(CONTNO,'L',JNOCO)     
       CALL JEVEUO(PNOMA ,'L',JPONO)  
-      CALL JEVEUO(SANSNO,'L',JSANS)
-      CALL JEVEUO(PSANS ,'L',JPSANS)       
-      CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)         
-C     
-C --- REPERAGE SI LE NOEUD INI EST UN NOEUD A EXCLURE (SUPPOK = 1)
+      CALL JEVEUO(FROTNO,'L',JSANS)
+      CALL JEVEUO(PFROT ,'L',JPSANS)       
+      CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
+C
+C --- REPERAGE SI LE NOEUD INI EST UN NOEUD A EXCLURE
+C     DU FROTTEMENT (SUPPOK = 1)
 C
       VALRET = 0
-      SUPPOK = 0
       POSNOE = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI-1)
       NUMNOE = ZI(JNOCO+POSNOE-1)
       NSANS  = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
@@ -121,16 +110,19 @@ C
  41   CONTINUE 
 
       IF (SUPPOK .EQ. 1) THEN
+      
         IF (NPEX .EQ. 1) THEN
+        
           IF (NDIM .EQ. 2) THEN        
             CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
      &                  IBID,T1MIN,K24BID,LBID)
           ELSE
-            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Z',
-     &                  IBID,T1MIN,K24BID,LBID)
             CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
+     &                  IBID,T1MIN,K24BID,LBID)
+            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Z',
      &                  IBID,T2MIN,K24BID,LBID)     
-          ENDIF  
+          ENDIF
+          
         ELSE
 
           CALL PROVEC(T2MIN,T1MIN,NORM)
@@ -152,21 +144,15 @@ C
           CALL VDIFF(3,COON1,COON2,T2MIN)
           CALL NORMEV(T2MIN,NORME1)         
           CALL PROVEC(T2MIN,NORM,T1MIN)
-          NORN  = SQRT(NORM(1)*NORM(1)+NORM(2)*NORM(2)+
-     &            NORM(3)*NORM(3))    
- 
-          IF (NORN.LT.R8PREM()) THEN   
-            VALRET = 1                          
-          ENDIF  
+          NORN = SQRT(NORM(1)*NORM(1)+NORM(2)*NORM(2)+NORM(3)*NORM(3))
+          IF (NORN .LT. R8PREM())  VALRET = 1                          
                     
-        ENDIF          
-
+        ENDIF
   
-        NORT1 = SQRT(T1MIN(1)*T1MIN(1)+T1MIN(2)*T1MIN(2)+
-     &          T1MIN(3)*T1MIN(3))
-        NORT2 = SQRT(T2MIN(1)*T2MIN(1)+T2MIN(2)*T2MIN(2)+
-     &          T2MIN(3)*T2MIN(3))
- 
+        NORT1 = SQRT( T1MIN(1)*T1MIN(1) + T1MIN(2)*T1MIN(2) +
+     &                T1MIN(3)*T1MIN(3) )
+        NORT2 = SQRT( T2MIN(1)*T2MIN(1) + T2MIN(2)*T2MIN(2) +
+     &                T2MIN(3)*T2MIN(3) )
 
         IF (NORT1.LT.R8PREM()) THEN   
           VALRET = 2
@@ -175,7 +161,7 @@ C
         ENDIF
 
       ENDIF
-      
-C
+ 42   CONTINUE
+
       CALL JEDEMA()      
       END

@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith13 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,271 +22,259 @@ def _(x) : return x
 
 cata_msg={
 1: _("""
- erreur fatale l'entite  %(k1)s  n'est pas possible  %(k2)s 
+ l'entité  %(k1)s  n'est pas possible  %(k2)s 
 """),
 
 2: _("""
- erreur dans les donnees  d'observation le noeud  %(k1)s n'existe pas dans  %(k2)s 
+ erreur dans les données  d'observation
+ le noeud  %(k1)s n'existe pas dans  %(k2)s 
 """),
 
 3: _("""
- erreur dans les donnees d'observation le group_no  %(k1)s n'existe pas dans  %(k2)s 
+ erreur dans les données d'observation
+ le GROUP_NO  %(k1)s n'existe pas dans  %(k2)s 
 """),
 
 4: _("""
- erreur dans les donnees  d'observation la maille  %(k1)s n'existe pas dans  %(k2)s 
+ erreur dans les données d'observation
+ la maille  %(k1)s n'existe pas dans  %(k2)s 
 """),
 
 5: _("""
- erreur dans les donnees d'observation le group_ma  %(k1)s n'existe pas dans  %(k2)s 
+ erreur dans les données d'observation
+ le GROUP_MA  %(k1)s n'existe pas dans  %(k2)s 
 """),
 
 6: _("""
- erreur dans les donnees  d'observation pour "nom_cham"  %(k1)s il faut renseigner  %(k2)s ou  %(k3)s 
+ erreur dans les données d'observation
+ pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s 
 """),
 
 7: _("""
- erreur dans les donnees  d'observation pour "nom_cham"  %(k1)s  il faut renseigner  %(k2)s et  %(k3)s 
+ erreur dans les données d'observation
+ pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s et  %(k3)s 
 """),
 
 8: _("""
- arret sur maillage non skelette
+ arret sur maillage non squelette
 """),
 
-
-
-
-
-
-
-
 10: _("""
- probleme de duplication de matrice matrice:  %(k1)s 
+ problème de duplication de matrice :  %(k1)s 
 """),
 
 11: _("""
-  arret probleme de factorisation: presence de modes de corps rigide
+  arret problème de factorisation
+  présence de modes de corps rigide
 """),
 
-
-
-
-
-
-
-
 13: _("""
- icmp dans le desordre pour noeud=  %(i1)d  et sous-domaine=  %(i2)d 
+ ICMP dans le désordre
+ noeud        =  %(i1)d
+ sous-domaine =  %(i2)d 
 """),
 
 14: _("""
- systeme (gi)t*gi probablement  non inversible:  %(i1)d pb lapack dgetrf:  %(i2)d 
+ système (GI)T*GI probablement non inversible:
+ %(i1)d pb LAPACK DGETRF:  %(i2)d 
 """),
 
 15: _("""
- systeme (gi)t*gi probablement  non inversible:  %(i1)d pb lapack dgetrs:  %(i2)d 
+ système (GI)T*GI probablement non inversible:
+ %(i1)d pb LAPACK DGETRS:  %(i2)d 
 """),
 
-
-
-
-
-
-
-
 17: _("""
- arret sur probleme base modale sans interf_dyna base modale -->  %(k1)s 
+ arret sur problème base modale sans INTERF_DYNA
+ base modale -->  %(k1)s 
 """),
 
 18: _("""
-  gamdev(alpha) < 0    gamdev(alpha) =  %(r1)f 
+  GAMDEV(ALPHA) < 0
+  GAMDEV(ALPHA) =  %(r1)f 
 """),
 
-
-
-
-
-
-
 26: _("""
- conflit de nom de groupe de  maille dans le squelette le nom de groupe :  %(k1)s 
+ conflit de nom de groupe de maille dans le squelette
+ le nom de groupe               :  %(k1)s 
  provenant de la sous-structure :  %(k2)s 
- et du groupe de maille :  %(k3)s 
- existe deja.  %(k4)s 
+ et du groupe de maille         :  %(k3)s 
+ existe déjà.
+ %(k4)s 
 """),
 
 27: _("""
- nom de groupe non trouvele groupe :  %(k1)s n existe pas  %(k2)s dans la sous-structure :  %(k3)s 
+ nom de groupe non trouvé
+ le groupe :  %(k1)s n'existe pas  %(k2)s dans la sous-structure :  %(k3)s 
 """),
 
 28: _("""
- &aucun axe defini
+ aucun axe défini
 """),
 
 29: _("""
- methode non supportee en  sous-structuration   methode demandee :  %(k1)s 
-    methodes supportees: %(k2)s 
+ méthode non supportée en  sous-structuration
+ méthode demandée   :  %(k1)s 
+ méthodes supportées:  %(k2)s 
 """),
 
 30: _("""
- conditions initiales non supportees  en sous-structuration transitoire
+ conditions initiales non supportées en sous-structuration transitoire
 """),
 
 31: _("""
- calcul non lineaire non supporte en  sous-structuration transitoire
+ calcul non linéaire non supporté en sous-structuration transitoire
 """),
 
 32: _("""
- rela_effo_dep non supporte en  sous-structuration transitoire
+ RELA_EFFO_DEP non supporté en sous-structuration transitoire
 """),
 
 33: _("""
- rela_effo_vite non supporte en  sous-structuration transitoire
+ RELA_EFFO_VITE non supporté en sous-structuration transitoire
 """),
 
 34: _("""
- 
- la liste des amortissements modaux est  definie au niveau de l'operateur macr_elem_dyna
+ la liste des amortissements modaux est définie au niveau de l'operateur MACR_ELEM_DYNA
 """),
 
 35: _("""
- numero de mode de votre liste inexistant dans les modes utilises:
- numero ds votre liste : %(i1)d 
+ numéro de mode de votre liste inexistant dans les modes utilisés:
+ numéro ds votre liste : %(i1)d 
 """),
 
 36: _("""
- appel errone
+ appel erroné
 """),
-
-
-
-
 
 39: _("""
- choc mal definila maille definissant le choc  %(k1)s  doit etre de type  %(k2)s 
+ choc mal defini
+ la maille définissant le choc  %(k1)s doit etre de type  %(k2)s 
 """),
-
-
-
-
 
 41: _("""
- trop de noeuds dans le group_no  %(k1)s   noeud utilise:  %(k2)s 
+ trop de noeuds dans le GROUP_NO  %(k1)s
+ noeud utilisé:  %(k2)s 
 """),
-
-
-
-
-
 
 44: _("""
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!incompatibilite avec multi appui : %(k1)s 
+ incompatibilité avec multi APPUI : %(k1)s 
 """),
-
-
-
-
-
 
 46: _("""
  il manque les modes statiques
 """),
 
 47: _("""
- il manque les modes corriges
+ il manque les modes corrigés
 """),
 
 48: _("""
  Nombre de modes propres calcules insuffisant.
- Nombre de modes propres de la base limite a : %(i1)d 
+ Nombre de modes propres de la base limite à : %(i1)d 
 """),
 
 49: _("""
- &sous-structure inexistante dans le modele-generalise modele generalise -->  %(k1)s 
- sous-structure demandee -->  %(k2)s 
+ sous-structure inexistante dans le modèle généralisé
+ modèle généralisé       -->  %(k1)s 
+ sous-structure demandée -->  %(k2)s 
 """),
 
 50: _("""
- &sous-structure inexistante dans le modele-generalise modele generalise -->  %(k1)s 
- numero sous-structure demandee -->  %(i1)d 
+ sous-structure inexistante dans le modèle-généralisé
+ modèle généralisé              -->  %(k1)s 
+ numéro sous-structure demandée -->  %(i1)d 
 """),
-
-
-
 
 
 53: _("""
-  champ inexistant  mesure  %(k1)s  nom_cham  %(k2)s 
+  champ inexistant
+  mesure    %(k1)s
+  nom_cham  %(k2)s 
 """),
 
-
-
-
 56: _("""
- pb.interpolation volumique 3d:evol_char  : %(k1)s instant    : %(r1)f 
+ problème interpolation volumique 3d:
+ evol_char  : %(k1)s
+ instant    : %(r1)f 
  code_retour: %(i1)d 
 """),
 
 57: _("""
- pb.interpolation volumique 2d:evol_char  : %(k1)s instant    : %(r1)f 
+ problème interpolation volumique 2d:
+ evol_char  : %(k1)s
+ instant    : %(r1)f 
  code_retour: %(i1)d 
 """),
 
 58: _("""
- pb.charge vol2d puis surf3d:evol_char: %(k1)s instant  : %(r1)f 
+ problème charge vol2d puis surf3d:
+ evol_char: %(k1)s
+ instant  : %(r1)f 
 """),
 
 59: _("""
- pb.interpolation surfacique 3d:evol_char  : %(k1)s instant    : %(r1)f 
+ problème interpolation surfacique 3d:
+ evol_char  : %(k1)s
+ instant    : %(r1)f 
  code_retour: %(i1)d 
 """),
 
 60: _("""
- pb.charge vol3d puis surf2d:evol_char: %(k1)s instant  : %(r1)f 
+ problème charge vol3d puis surf2d:
+ evol_char: %(k1)s
+ instant  : %(r1)f 
 """),
 
 61: _("""
- pb.interpolation surfacique 2d:evol_char  : %(k1)s instant    : %(r1)f 
+ problème interpolation surfacique 2d:
+ evol_char  : %(k1)s
+ instant    : %(r1)f 
  code_retour: %(i1)d 
 """),
 
 62: _("""
- pb. interpolation pression:evol_char  : %(k1)s instant    : %(r1)f 
+ problème interpolation pression:
+ evol_char  : %(k1)s
+ instant    : %(r1)f 
  on ne sait pas extrapoler le champ  %(k2)s 
  de pression par rapport au temps %(k3)s 
  mais seulement l'interpoler %(k4)s 
 """),
 
 63: _("""
- pb. interpolation pression:evol_char  : %(k1)s instant    : %(r1)f 
+ problème interpolation pression:
+ evol_char  : %(k1)s
+ instant    : %(r1)f 
  code_retour: %(i1)d 
- contacter les developpeurs %(k2)s 
+ contacter le support %(k2)s 
 """),
 
 64: _("""
- interpolation temperature:evol_ther: %(k1)s instant: %(r1)f icoret: %(i1)d 
+ interpolation température:
+ evol_ther: %(k1)s
+ instant  : %(r1)f
+ icoret   : %(i1)d 
 """),
-
-
-
-
-
 
 66: _("""
  Force fluide, grappe bloquee   
-  - iteration  %(i1)d , z =  %(r1)f    iteration  %(i2)d  , z =  %(r2)f 
-    temps de chute compris entre  %(r3)f et  %(r4)f 
+  iteration  %(i1)d
+  z =  %(r1)f
+  iteration  %(i2)d
+  z =  %(r2)f 
+  temps de chute compris entre  %(r3)f et  %(r4)f 
 """),
 
-
-
 68: _("""
- pb.interpolation vitesse:evol_char  : %(k1)s instant    : %(r1)f 
+ problème interpolation vitesse:
+ evol_char  : %(k1)s
+ instant    : %(r1)f 
  code_retour: %(i1)d 
 """),
 
 69: _("""
- le noeud: nomnoe ne peut pas etre  typl  et  typbnomnoe %(k1)s 
+ le noeud: %(k1)s  ne peut pas etre TYPL et TYPB
 """),
 
 70: _("""
@@ -294,38 +282,31 @@ cata_msg={
 """),
 
 71: _("""
- choix impossiblepour initpr :  %(i1)d 
+ choix impossible pour INITPR :  %(i1)d 
 """),
 
-
-
-
-
-
 74: _("""
- composante non definie  dans la numerotation :  %(k1)s 
+ composante non définie  dans la numérotation :  %(k1)s 
 """),
 
 75: _("""
- & detection d'une sous-structure non connectesous-structure de nom: %(k1)s 
+ détection d'une sous-structure non connectée
+ sous-structure de nom: %(k1)s 
 """),
 
 76: _("""
- & arret sur probleme de connexion sous-structure
+ arret sur problème de connexion sous-structure
 """),
 
-
-
-
 78: _("""
- les intervalles doivent etre croissants.   valeur de la borne precedente :  %(i1)d 
-    valeur de la borne :  %(i2)d 
+ les intervalles doivent etre croissants
+ valeur de la borne precedente :  %(i1)d 
+ valeur de la borne            :  %(i2)d 
 """),
 
 79: _("""
- l'intervalle entre les  deux derniers instants ne sera pas egal
-  au pas courant :  %(i1)d 
- , pour l'intervalle  %(i2)d 
+ l'intervalle entre les  deux derniers instants ne sera pas égal au pas courant :  %(i1)d 
+ pour l'intervalle  %(i2)d 
 """),
 
 80: _("""
@@ -333,51 +314,43 @@ cata_msg={
 """),
 
 81: _("""
- les valeurs doivent etre croissantes.  valeur precedente :  %(i1)d 
-   valeur :  %(i2)d 
+ les valeurs doivent etre croissantes
+ valeur précédente :  %(i1)d 
+ valeur            :  %(i2)d 
 """),
 
 82: _("""
- la distance entre les  deux derniers reels ne sera pas egal
+ la distance entre les deux derniers réels ne sera pas égale
  au pas courant :  %(r1)f,
  pour l'intervalle  %(i1)d 
 """),
 
-
-
-
 84: _("""
- modele amont non defini
+ modèle amont non défini
 """),
 
 85: _("""
- champ inexistant resultat  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
+ champ inexistant
+ résultat   : %(k1)s 
+ nom_cham   : %(k2)s 
+ nume_ordre : %(i1)d 
 """),
 
 86: _("""
- type de matrice inconnuetype: %(k1)s 
+ type de matrice inconnue
+ type: %(k1)s 
 """),
 
-
-
-
-
-
 91: _("""
- &probleme de dimension matrice a mutiplier
+ problème de dimension de la matrice à mutiplier
 """),
 
 92: _("""
- &probleme de dimension matrice resultat
+ problème de dimension de la matrice résultat
 """),
 
-
-
-
-
-
 99: _("""
- matrice d'amortissement non creeedans le macro-element :  %(k1)s 
+ matrice d'amortissement non créée dans le macro-élément :  %(k1)s 
 """),
 
 }

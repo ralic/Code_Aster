@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF postrccm Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,12 +84,12 @@ cata_msg={
 
 13: _("""
  Probleme lors du passage du CH_MATER en CARTE
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 14: _("""
  Probleme lors du passage du TEMPE_REF en CARTE
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 15: _("""
@@ -115,7 +115,7 @@ cata_msg={
 
 19: _("""
  si on est la, y a un bug!
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 20: _("""
@@ -155,11 +155,6 @@ cata_msg={
    occurence situation %(i2)d et %(i3)d 
 """),
 
-
-
-
-
-
 28: _("""
  erreur données, pour la situation numero %(i1)d 
  on n'a pas pu récupérer le "RESU_MECA" correspondant au numéro du cas de charge %(i2)d 
@@ -171,13 +166,13 @@ cata_msg={
 """),
 
 30: _("""
- probleme pour recuperer ioc seisme.
- Contactez l'assistance téléphonique.
+ probleme pour recuperer IOC SEISME.
+ Contactez le support
 """),
 
 31: _("""
  probleme avec TYPEKE.
- Contactez l'assistance téléphonique.
+ Contactez le support
 """),
 
 32: _("""

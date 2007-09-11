@@ -1,7 +1,7 @@
       SUBROUTINE IRGMCN ( CHAMSY, PARTIE, IFI, NOMCON, ORDR, NBORDR,
      &                    COORD, CONNX, POINT, NOBJ, NBEL,
      &                    NBCMPI, NOMCMP, LRESU, PARA,
-     &                    VERSIO )
+     &                    VERSIO, TYCHA )
       IMPLICIT NONE
       INTEGER        IFI, NBORDR, NBCMPI, VERSIO
       INTEGER        ORDR(*), CONNX(*), POINT(*)
@@ -14,9 +14,10 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       INTEGER      TORD(NELETR)
       INTEGER      NBEL(*)
       CHARACTER*24 NOBJ(*)
+      CHARACTER*8 TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +40,7 @@ C
 C        CHAMSY : NOM SYMBOLIQUE DU CHAM_NO A ECRIRE
 C        IFI    : NUMERO D'UNITE LOGIQUE DU FICHIER DE SORTIE GMSH
 C        NOMCON : NOM DU CONCEPT A IMPRIMER
-C     PARTIE : K4  : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
+C        PARTIE : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
 C        ORDR   : LISTE DES NUMEROS D'ORDRE A IMPRIMER
 C        NBORDR : NOMBRE DE NUMEROS D'ORDRE DANS LE TABLEAU ORDR
 C        COORD  : VECTEUR COORDONNEES DES NOEUDS DU MAILLAGE
@@ -51,6 +52,8 @@ C        NBCMPI : NOMBRE DE COMPOSANTES DEMANDEES A IMPRIMER
 C        NOMCMP : NOMS DES COMPOSANTES DEMANDEES A IMPRIMER
 C        LRESU  : LOGIQUE INDIQUANT SI NOMCON EST UNE SD RESULTAT
 C        PARA   : VALEURS DES VARIABLES D'ACCES (INST, FREQ)
+C        TYCHA  : TYPE DE CHAMP A IMPRIMER (VERSION >= 1.2)
+C                 = SCALAIRE/VECT_2D/VECT_3D/TENS_2D/TENS_3D
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -113,56 +116,71 @@ C
 
  100  CONTINUE
 C
-C --- 1/ ON RECHERCHE LES COMPOSANTES DX, DY, DZ
-C        ==> IMPRESSION D'UN CHAMP VECTORIEL
-C --- 2/ POUR LES AUTRES COMPOSANTES
-C        ==> IMPRESSION D'UN CHAMP SCALAIRE PAR COMPOSANTE
+C --- RECUPERATION DES COMPOSANTES POUR L'IMPRESSION
+C     D'UN CHAMP SCALAIRE PAR COMPOSANTE
 C
-      SCAL = .FALSE.
-      VECT = .FALSE.
-      TENS = .FALSE.
       NCMP = ZI(ZI(JTABD)-1+2)
       NCMPU = 0
       CALL WKVECT ( '&&IRGMCN.NOCMP', 'V V K8', NCMP, JNCMP )
       IF ( NBCMPI .EQ. 0 ) THEN
-         DO 200 K = 1 , NCMP
+         DO 180 K = 1 , NCMP
             NOCMP = ZK8(ZI(JTABC)-1+K)
-            IF ( NOCMP .EQ. 'DX' ) THEN
-               VECT = .TRUE.
-            ELSEIF ( NOCMP .EQ. 'DY' ) THEN
-               VECT = .TRUE.
-            ELSEIF ( NOCMP .EQ. 'DZ' ) THEN
-               VECT = .TRUE.
-            ELSEIF ( CHAMSY(1:2) .EQ. 'SI' ) THEN
-               IF (VERSIO.EQ.2) THEN
-                 TENS = .TRUE.
-               ENDIF
-            ELSEIF ( CHAMSY(1:2) .EQ. 'EP' ) THEN
-               IF (VERSIO.EQ.2) THEN
-                 TENS = .TRUE.
-               ENDIF
-            ELSE
-               SCAL = .TRUE.
-               NCMPU = NCMPU + 1
-               ZK8(JNCMP+NCMPU-1) = NOCMP
-            ENDIF
- 200     CONTINUE
-      ELSE
-         DO 210 K = 1 , NBCMPI
-            NOCMP = NOMCMP(K)
-            SCAL = .TRUE.
             NCMPU = NCMPU + 1
             ZK8(JNCMP+NCMPU-1) = NOCMP
- 210     CONTINUE
+ 180     CONTINUE
+      ELSE
+         DO 190 K = 1 , NBCMPI
+            NCMPU = NCMPU + 1
+            ZK8(JNCMP+NCMPU-1) = NOMCMP(K)
+ 190     CONTINUE
+      ENDIF
+
+C -- VERSION GMSH = 1.0 :
+C    LA DETERMINATION DU TYPE DE CHAMP A IMPRIMER
+C    EST FONCTION DES COMPOSANTES FOURNIES OU TROUVEES
+C     1/ ON RECHERCHE LES COMPOSANTES DX, DY, DZ
+C        ==> IMPRESSION D'UN CHAMP VECTORIEL
+C     2/ POUR LES AUTRES COMPOSANTES
+C        ==> IMPRESSION D'UN CHAMP SCALAIRE PAR COMPOSANTE
+C -- VERSION GMSH = 1.2 :
+C    ON UTILISE TYCHA POUR DETERMINER LE TYPE DE CHAMP A IMPRIMER
+C    SI NOMCMP ABSENT : => TYCHA='SCALAIRE'
+C    SI NOMCMP PRESENT: => TYCHA='SCALAIRE'/'VECT_xD'/'TENS_xD'
+
+      SCAL = .FALSE.
+      VECT = .FALSE.
+      TENS = .FALSE.
+
+      IF (VERSIO.EQ.1)THEN
+        NCMP = ZI(ZI(JTABD)-1+2)
+        IF ( NBCMPI .EQ. 0 ) THEN
+           DO 200 K = 1 , NCMP
+              NOCMP = ZK8(ZI(JTABC)-1+K)
+              IF ( NOCMP .EQ. 'DX' .OR.
+     &             NOCMP .EQ. 'DY' .OR.
+     &             NOCMP .EQ. 'DZ' ) THEN
+                 VECT = .TRUE.
+              ELSE
+                 SCAL = .TRUE.
+              ENDIF
+ 200       CONTINUE
+        ELSE
+           SCAL = .TRUE.
+        ENDIF
+      ELSEIF(VERSIO.GE.2)THEN
+        IF (TYCHA(1:4).EQ.'SCAL')THEN
+          SCAL = .TRUE.
+        ELSEIF(TYCHA(1:4).EQ.'VECT')THEN
+          VECT = .TRUE.
+        ELSEIF(TYCHA(1:4).EQ.'TENS')THEN
+          TENS = .TRUE.
+        ENDIF
       ENDIF
 C
 C ----------------------------------------------------------------------
 C          IMPRESSION D'UN CHAMP TENSORIEL
 C ----------------------------------------------------------------------
       IF ( TENS ) THEN
-         IF (VERSIO.EQ.2) THEN
-            CALL U2MESS('A','PREPOST2_55')
-         ENDIF
 C
 C        ECRITURE DE L'ENTETE DE View
 C        ****************************
@@ -201,9 +219,15 @@ C
      &                 NBEL, .FALSE., VECT, TENS, VERSIO )
 C
 C        LISTE DES COMPOSANTES
-         TBCMP(1)='DX      '
-         TBCMP(2)='DY      '
-         TBCMP(3)='DZ      '
+         IF(VERSIO.EQ.1)THEN
+            TBCMP(1)='DX      '
+            TBCMP(2)='DY      '
+            TBCMP(3)='DZ      '
+         ELSEIF(VERSIO.EQ.2)THEN
+            DO 104 I=1,NBCMPI
+              TBCMP(I)=ZK8(JNCMP+I-1)
+ 104        CONTINUE
+         ENDIF
 C
 C ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
 C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR

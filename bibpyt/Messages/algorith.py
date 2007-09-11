@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,6 @@ def _(x) : return x
 
 cata_msg={
 
-
-
-
-
-
-
 3: _("""
  type de matrice inconnu.
 """),
@@ -40,16 +34,13 @@ cata_msg={
  gradients confondus
 """),
 
-
-
-
-
 10: _("""
  impossible de diagonaliser la matrice de raideur en choc
 """),
 
 11: _("""
- puls(i) = 0. initialisation a puls0(i).
+ PULS(I) = 0.
+ initialisation à PULS0(I).
 """),
 
 12: _("""
@@ -61,11 +52,12 @@ cata_msg={
 """),
 
 13: _("""
- le vect_elem n'existe pas :  %(k1)s
+ le VECT_ELEM n'existe pas :  %(k1)s
 """),
 
 14: _("""
- champ non renseigne. il faut avoir utilise corich('e',...) sur:  %(k1)s
+ champ non renseigné.
+ il faut avoir utilisé CORICH('E',...) sur:  %(k1)s
 """),
 
 15: _("""
@@ -73,7 +65,7 @@ cata_msg={
 """),
 
 16: _("""
- les charges cinematiques sont pour l'instant proscrites avec feti
+ les charges cinématiques sont pour l'instant proscrites avec FETI
 """),
 
 19: _("""
@@ -81,7 +73,7 @@ cata_msg={
 """),
 
 20: _("""
- on n'a pas pu extraire le premier champ des modes mecaniques.
+ on n'a pas pu extraire le premier champ des modes mécaniques.
 """),
 
 21: _("""
@@ -97,11 +89,11 @@ cata_msg={
 """),
 
 24: _("""
- le nombre de cas  doit etre superieur a deux pour etre  combine
+ le nombre de cas doit etre supérieur à deux pour etre combiné
 """),
 
 25: _("""
- donnees incompatibles.
+ données incompatibles.
 """),
 
 26: _("""
@@ -109,148 +101,145 @@ cata_msg={
 """),
 
 27: _("""
- cas du mono_appui : vous avez deja donne un spectre pour cette direction.
+ cas du MONO_APPUI : vous avez déjà donné un spectre pour cette direction.
 """),
 
 28: _("""
-  erreur(s) rencontree(s) lors de la lecture des supports.
+  erreur(s) rencontrée(s) lors de la lecture des supports.
 """),
 
 29: _("""
-  vous avez deja donne un spectre pour le support  %(k1)s
+  vous avez déjà donné un spectre pour le support  %(k1)s
 """),
 
 30: _("""
- on ne peut pas traiter du mono-appui et du multi-appui simultanement.
+ on ne peut pas traiter du mono-appui et du multi-appui simultanément.
 """),
 
 31: _("""
- le noeud  %(k1)s  ne fait pas parti du maillage :  %(k2)s
+ le noeud  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
 32: _("""
-  la numerotation n'est pas coherente avec le  modele generalise  si vous avez active l'option initial dans  nume_ddl_gene faite de meme ici !  on arrete tout
+  la numérotation n'est pas cohérente avec le modèle généralisé
+  si vous avez activé l'option INITIAL dans NUME_DDL_GENE faites de meme ici !
 """),
 
 33: _("""
- dimensionement
+ calcul des options RIGI_MECA_TANG, RAPH_MECA et FULL_MECA
+ en mécanique des milieux poreux avec couplage THM
+ ---> erreur de dimensionnement
 """),
 
 34: _("""
- il y a incohrence entre la loi de couplage de defi_materiau  %(k1)s  et la loi de couplage dans stat_non_line  %(k2)s
+ il y a incohérence entre :
+    la loi de couplage de DEFI_MATERIAU : %(k1)s
+ et la loi de couplage de STAT_NON_LINE : %(k2)s
 """),
 
 35: _("""
- les champs " %(k1)s " et " %(k2)s " n'ont pas le meme domaine de definition.
+ les champs " %(k1)s " et " %(k2)s " n'ont pas le meme domaine de définition.
 """),
 
 36: _("""
- barsoum, hexa : bug !
-"""),
-
-37: _("""
- barsoum, penta : bug !
-"""),
-
-38: _("""
- barsoum, pyram : bug !
-"""),
-
-39: _("""
- barsoum, quad : bug !
-"""),
-
-40: _("""
- barsoum, tetra : bug !
-"""),
-
-41: _("""
- barsoum, tria : bug !
+ BARSOUM, erreur dans le traitement des mailles %(k1)s
 """),
 
 42: _("""
- beton_double_dp: increment de deformation plastique en traction negatif --> redecoupage auto du pas de temps
+ BETON_DOUBLE_DP: incrément de déformation plastique en traction négatif
+ --> redécoupage automatique du pas de temps
 """),
 
 43: _("""
- beton_double_dp: increment de deformation plastique en compression negatif --> redecoupage auto du pas de temps
+ BETON_DOUBLE_DP: incrément de déformation plastique en compression négatif
+ --> redécoupage automatique du pas de temps
 """),
 
 44: _("""
- integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en compression.
+ intégration élastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilité sur la taille des éléments
+ n'est pas respectée en compression.
 """),
 
 45: _("""
- integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en compression pour la maille:  %(k1)s
+ intégration élastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilité sur la taille des elements
+ n'est pas respectée en compression pour la maille:  %(k1)s
 """),
 
 46: _("""
- integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en traction.
+ intégration élastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilité sur la taille des éléments
+ n est pas respectée en traction.
 """),
 
 47: _("""
- integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en traction pour la maille:  %(k1)s
+ integration élastoplastique de la loi BETON_DOUBLE_DP :
+ la condition d'applicabilite sur la taille des éléments
+ n'est pas respectée en traction pour la maille:  %(k1)s
 """),
 
 48: _("""
-  -> Intégration élastoplastique de loi multi-critères beton_double_dp :
-     la contrainte équivalente est nulle pour la maille %(k1)s: le calcul
-     de la matrice tangente est impossible.
+  -> Intégration élastoplastique de loi multi-critères BETON_DOUBLE_DP :
+     la contrainte équivalente est nulle pour la maille %(k1)s
+     le calcul de la matrice tangente est impossible.
   -> Risque & Conseil :
-
 """),
 
 49: _("""
- pour la loi beton_double_dp le parametre coef_elas_comp doit etre compris entre 0. et 100.
+ pour la loi BETON_DOUBLE_DP :
+ le paramètre COEF_ELAS_COMP doit etre compris entre 0. et 100.
 """),
 
 50: _("""
- pour la loi beton_double_dp le parametre long_cara doit etre strictement positif
+ pour la loi BETON_DOUBLE_DP :
+ le parametre LONG_CARA doit etre strictement positif
 """),
 
 51: _("""
- beton_double_dp: le cas des contraintes planes n esp pas traite pour ce modele.
+ BETON_DOUBLE_DP:
+ le cas des contraintes planes n'est pas traité pour ce modèle.
 """),
 
 52: _("""
- resultat n'est pas en evol_noli
+ le résultat n'est pas un EVOL_NOLI
 """),
 
 53: _("""
- champ sief_elga non trouve
+ champ SIEF_ELGA non trouvé
 """),
 
 54: _("""
- champ epsp_elno non trouve
+ champ EPSP_ELNO non trouvé
 """),
 
 55: _("""
- champ vari_elno_elga non trouve
+ champ VARI_ELNO_ELGA non trouvé
 """),
 
 56: _("""
- aucun champ initial trouve
+ aucun champ initial trouvé
 """),
 
 57: _("""
- le materiau depend de la temperature! il n'y a pas de champ de temperature ! le calcul est impossible
+ le matériau dépend de la température 
+ il n'y a pas de champ de température
+ le calcul est impossible
 """),
 
-
-
-
-
-
 59: _("""
- thlag-gleg pas possible
+ THLAG-GLEG pas possible
 """),
 
 60: _("""
- certains coefficients de masse ajoutee sont negatifs. verifiez l' orientation des normales des elements d' interface.convention adoptee : structure vers fluide
+ certains coefficients de masse ajoutée sont négatifs.
+ verifiez l'orientation des normales des éléments d'interface.
+ convention adoptée : structure vers fluide
 """),
 
 61: _("""
- certains coefficients d amortissement ajoute sont negatifs. possibilited instabilitede flottement
+ certains coefficients d'amortissement ajouté sont négatifs.
+ possibilité d'instabilité de flottement
 """),
 
 62: _("""
@@ -258,15 +247,15 @@ cata_msg={
 """),
 
 63: _("""
- valeurs propres de la matrice de raideur non reelles
+ valeurs propres de la matrice de raideur non réelles
 """),
 
 64: _("""
- valeurs propres de la matrice de raideur reelles negatives
+ valeurs propres de la matrice de raideur réelles négatives
 """),
 
 65: _("""
- erreur dans la selection des valeurs propres de la matrice de raideur
+ erreur dans la sélection des valeurs propres de la matrice de raideur
 """),
 
 66: _("""
@@ -274,19 +263,21 @@ cata_msg={
 """),
 
 67: _("""
- option secante non valide
+ option SECANTE non valide
 """),
 
 68: _("""
- trop de familles de systemes de glissement. augmenter la limite actuelle (5)
+ trop de familles de systèmes de glissement.
+ augmenter la limite actuelle (5)
 """),
 
 69: _("""
- trop de familles de systemes de glissement. modifier gerpas
+ trop de familles de systèmes de glissement.
+ modifier GERPAS
 """),
 
 70: _("""
- nbsys=0
+ NBSYS=0
 """),
 
 71: _("""
@@ -294,92 +285,59 @@ cata_msg={
 """),
 
 72: _("""
- traitement non prevu pour le type d'obstacle demande
+ traitement non prévu pour le type d'obstacle demandé
 """),
 
 73: _("""
- obstacle de type discret mal defini (un angle > pi).
+ obstacle de type discret mal défini (un angle est supérieur à pi).
 """),
 
-
-
-
-
-
 77: _("""
- pb a la resolution du systeme
+ problème à la résolution du système
 """),
 
 78: _("""
- cas 2d impossible
+ cas 2D impossible
 """),
 
 79: _("""
  liaison de frottement incongrue
 """),
 
-
-
-
-
-
 81: _("""
- erreur contact - trop de reac. geom.
+ erreur contact - trop de réactualisations géométriques
 """),
 
 82: _("""
- erreur pgmeur 1
+ erreur de programmation
 """),
-
-
-
-
-
-
-
 
 89: _("""
  vecteur diagnostic absent (dvlp)
 """),
 
 90: _("""
- operation inconnue sur le vecteur diagnostic (dvlp)
+ opération inconnue sur le vecteur diagnostic (dvlp)
 """),
 
 91: _("""
- acces incorrect au vecteur diagnostic (dvlp)
+ accès incorrect au vecteur diagnostic (dvlp)
 """),
 
 92: _("""
  cas impossible
 """),
 
-
-
 94: _("""
  pas possible
 """),
 
-
-
-
-
-
 96: _("""
- ce mot cle de modi_maillage attend un vecteur de norme non nulle.
+ ce mot cle de MODI_MAILLAGE attend un vecteur de norme non nulle.
 """),
 
 97: _("""
- le mot cle repere de modi_maillage attend deux vecteurs non nuls orthogonaux.
+ le mot cle REPERE de MODI_MAILLAGE attend deux vecteurs non nuls orthogonaux.
 """),
-
-
-
-
-
-
-
-
-
 
 }

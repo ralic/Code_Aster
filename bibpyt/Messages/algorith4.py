@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF algorith4 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,11 +39,11 @@ cata_msg={
 """),
 
 5: _("""
- fichier doit etre defini dans la premiere occurrence
+ fichier doit etre défini dans la première occurrence
 """),
 
 6: _("""
- fichier sans unite
+ fichier sans unité
 """),
 
 7: _("""
@@ -55,11 +55,11 @@ cata_msg={
 """),
 
 9: _("""
- depassement de capacite affichage (dvlp)
+ dépassement de capacité d'affichage (dvlp)
 """),
 
 10: _("""
- unite logique invalide (dvlp)
+ unité logique invalide (dvlp)
 """),
 
 11: _("""
@@ -71,11 +71,11 @@ cata_msg={
 """),
 
 13: _("""
- option inconnue pour info_residu
+ option inconnue pour INFO_RESIDU
 """),
 
 14: _("""
- trop de colonnes d'affichage (limite a quinze)
+ trop de colonnes d'affichage (limité à quinze)
 """),
 
 15: _("""
@@ -83,7 +83,7 @@ cata_msg={
 """),
 
 16: _("""
- info_residu ne correspond pas a un residu
+ INFO_RESIDU ne correspond pas à un résidu
 """),
 
 17: _("""
@@ -141,26 +141,6 @@ cata_msg={
 30: _("""
  ne correspond a aucune colonne
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 35: _("""
  rang superieur a dimension vecteur
@@ -235,27 +215,28 @@ cata_msg={
 """),
 
 53: _("""
-  syc doit etre                      superieur a sqrt((1+nu-2*nu*nu)/(2.d0*nu*nu))*syt                 dans defi_materiau pour prendre en compte le                      confinement
+  syc doit etre supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT 
+  dans DEFI_MATERIAU pour prendre en compte le confinement
 """),
 
 54: _("""
- ksi non inversible
+ KSI non inversible
 """),
 
 55: _("""
- cv approche 0 impossible
+ CV approche 0 impossible
 """),
 
 56: _("""
- dvp : option  %(k1)s  non prevue
+ dvp : option  %(k1)s  non prévue
 """),
 
 57: _("""
- erreur:                                       pb de convergence (dgp neg)
+ pb de convergence (dgp neg)
 """),
 
 58: _("""
- erreur:                                      pas de solution
+ pas de solution
 """),
 
 59: _("""
@@ -263,7 +244,7 @@ cata_msg={
 """),
 
 60: _("""
- erreur:                                         pb de convergence 2 (dgp neg)
+ pb de convergence 2 (dgp neg)
 """),
 
 61: _("""
@@ -271,11 +252,11 @@ cata_msg={
 """),
 
 62: _("""
- loi beton_reglement utilisable uniquement en modelisation c_plan ou d_plan
+ loi BETON_REGLEMENT utilisable uniquement en modélisation C_PLAN ou D_PLAN
 """),
 
 63: _("""
- la methode de localisation  %(k1)s  est indisponible actuellement
+ la méthode de localisation  %(k1)s  est indisponible actuellement
 """),
 
 64: _("""
@@ -287,138 +268,168 @@ cata_msg={
 """),
 
 66: _("""
- augmenter nmat
+ augmenter NMAT
 """),
 
 67: _("""
- ecou_plas1 non disponible
+ ECOU_PLAS1 non disponible
 """),
 
 68: _("""
- pyramidal1 pas encore disponible
+ PYRAMIDAL1 pas encore disponible
 """),
 
 69: _("""
- pyramidal2 pas encore disponible
+ PYRAMIDAL2 pas encore disponible
 """),
 
 70: _("""
- joint_grain pas encore disponible
+ JOINT_GRAIN pas encore disponible
 """),
 
 71: _("""
- rl pas encore disponible
+ RL pas encore disponible
 """),
 
 72: _("""
-  erreur - jacobien du systeme non lineaire a resoudre nul lors de la projection au sommet du cone de traction - les parametres materiaux sont sans doute mal definis.
+  jacobien du systeme non lineaire à résoudre nul
+  lors de la projection au sommet du cone de traction
+  les parametres matériaux sont sans doute mal définis
 """),
 
 73: _("""
-  non convergence a iteration maxi  %(k1)s  - erreur calculee  %(k2)s  >  %(k3)s mais tres faibles increments de newton pour la loi beton_double_dp - on accepte la convergence.
+  non convergence à itération maxi  %(k1)s  
+  - erreur calculee  %(k2)s  >  %(k3)s
+  mais tres faibles incréments de newton pour la loi BETON_DOUBLE_DP
+  - on accepte la convergence.
 """),
 
 74: _("""
-  erreur - non convergence a iteration maxi  %(k1)s  - erreur calculee  %(k2)s  >  %(k3)s  - pour la loi beton_double_dp  - redecoupage du pas de temps
+  non convergence à itération maxi  %(k1)s 
+  - erreur calculée  %(k2)s  >  %(k3)s 
+  - pour la loi BETON_DOUBLE_DP 
+  - redécoupage du pas de temps
 """),
 
 75: _("""
- etat converge non conforme lors de la projection au sommet du cone de traction
+ etat converge non conforme
+ lors de la projection au sommet du cone de traction
 """),
 
 76: _("""
- etat converge non conforme en compression lors de la projection au sommet du cone de traction
+ etat converge non conforme en compression
+ lors de la projection au sommet du cone de traction
 """),
 
 77: _("""
-  erreur - jacobien du systeme non lineaire a resoudre nul lors de la projection au sommet des cones de compression et traction - les parametres materiaux sont sans doute mal definis.
+ jacobien du systeme non linéaire à résoudre nul
+ lors de la projection au sommet des cones de compression et traction
+ - les parametres matériaux sont sans doute mal définis.
 """),
 
 78: _("""
- etat converge non conforme en traction lors de la projection au sommet des deux cones
+ état convergé non conforme en traction
+ lors de la projection au sommet des deux cones
 """),
 
 79: _("""
- etat converge non conforme en compression lors de la projection au sommet des deux cones
+ état convergé non conforme en compression
+ lors de la projection au sommet des deux cones
 """),
 
 80: _("""
-  erreur - jacobien du systeme non lineaire a resoudre nul lors de la projection au sommet du cone de compression - les parametres materiaux sont sans doute mal definis.
+  jacobien du systeme non linéaire à résoudre nul
+  lors de la projection au sommet du cone de compression
+  - les parametres matériaux sont sans doute mal définis.
 """),
 
 81: _("""
- etat converge non conforme lors de la projection au sommet du cone de compression
+ état convergé non conforme
+ lors de la projection au sommet du cone de compression
 """),
 
 82: _("""
- etat converge non conforme en traction lors de la projection au sommet du cone de compression
+ état convergé non conforme en traction
+ lors de la projection au sommet du cone de compression
 """),
 
 83: _("""
-  erreur - jacobien du systeme non lineaire a resoudre nul - les parametres materiaux sont sans doute mal definis.
+  jacobien du système non linéaire a resoudre nul
+  - les parametres matériaux sont sans doute mal définis.
 """),
 
 84: _("""
- integration elastoplastique de loi multi-critere : erreur de programmation
+ intégration élastoplastique de loi multi-critere : erreur de programmation
 """),
 
 85: _("""
-  erreur de programmation : valeur de nseuil incorrecte.
+  erreur de programmation : valeur de NSEUIL incorrecte.
 """),
 
 86: _("""
-  erreur : etat converge non conforme en traction et en compression pour la loi de comportement beton_double_dp pour les deux criteres en meme temps. il faut un saut elastique plus petit, ou redecouper le pas de temps
+  état convergé non conforme en traction et en compression
+  pour la loi de comportement BETON_DOUBLE_DP
+  pour les deux critères en meme temps.
+  il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
 87: _("""
-  erreur : etat converge non conforme en compression pour la loi de comportement beton_double_dp pour les deux criteres en meme temps. il faut un saut elastique plus petit, ou redecouper le pas de temps
+  état converge non conforme en compression
+  pour la loi de comportement BETON_DOUBLE_DP
+  pour les deux critères en meme temps.
+  il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
 88: _("""
-  erreur : etat converge non conforme en traction pour la loi de comportement beton_double_dp pour les deux criteres en meme temps. il faut un saut elastique plus petit, ou redecouper le pas de temps
+  état convergé non conforme en traction
+  pour la loi de comportement BETON_DOUBLE_DP
+  pour les deux critères en meme temps.
+  il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
 89: _("""
- etat converge non conforme en traction
+ état convergé non conforme en traction
 """),
 
 90: _("""
- etat converge non conforme en compression
+ état convergé non conforme en compression
 """),
 
 91: _("""
- option  %(k1)s  non prevue (dvlp)
+ option  %(k1)s  non prévue (dvlp)
 """),
 
 92: _("""
- valeurs initiales non conformes : il y a probablement une erreur dans la programmation
+ valeurs initiales non conformes :
+ il y a probablement une erreur dans la programmation
 """),
 
 93: _("""
- cet algorithme ne traite pas encore les options rigi_meca_tang et full_meca
+ cet algorithme ne traite pas encore les options RIGI_MECA_TANG et FULL_MECA
 """),
 
 94: _("""
- il faut declarer fonc_desorp                                       sous elas_fo pour le fluage propre                                avec sech comme parametre
+ il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage propre                                avec sech comme parametre
 """),
 
 95: _("""
- division par zero dans lcumfs
+ division par zéro dans LCUMFS
 """),
 
 96: _("""
- erreur dans lcumme : pb de dimension
+ erreur dans LCUMME : pb de dimension
 """),
 
 97: _("""
- on ne traite pas actuellement plusieurs nom_cham simultanement, on ne considere que le premier argument
+ on ne traite pas actuellement plusieurs NOM_CHAM simultanément,
+ on ne considère que le premier argument
 """),
 
 98: _("""
- nombre de valeurs dans le fichier unv dataset 58 non identique
+ nombre de valeurs dans le fichier UNV DATASET 58 non identique
 """),
 
 99: _("""
- nature du champ dans le fichier unv dataset 58 non identique
+ nature du champ dans le fichier UNV DATASET 58 non identique
 """),
 }

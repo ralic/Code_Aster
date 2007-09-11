@@ -1,5 +1,5 @@
       SUBROUTINE TE0239(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 10/09/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,18 +54,18 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBRES=2)
       CHARACTER*8 NOMRES(NBRES),TYPMOD(2),NOMPAR,NOMPU(NBRES),ELREFE
       CHARACTER*2 VALRET(NBRES)
-      REAL*8 VALRES(NBRES),VALPU(NBRES),VALPAR
+      REAL*8 VALRES(NBRES),VALPU(NBRES),VALPAR,TEMPM,TEMPP,TREF
       REAL*8 DFDX(3),ZERO,UN,DEUX
       REAL*8 TEST,TEST2,EPS,NU,H,COSA,SINA,COUR,R
       REAL*8 JACP,KAPPA,CORREC
       REAL*8 EPS2D(4),DEPS2D(4),SIGTDI(5),SIGMTD(5)
       REAL*8 X3,T,TINF,TSUP
       REAL*8 DTILD(5,5),DTILDI(5,5),DSIDEP(6,6)
-      REAL*8 RTANGI(9,9),RTANGE(9,9)
+      REAL*8 RTANGI(9,9),RTANGE(9,9),SIGM2D(4),SIGP2D(4)
       REAL*8 XI,XS,XM,SIGMA,ANGMAS(3),R8NNEM
       REAL*8 LC
       INTEGER NNO,NNOS,JGANO,NDIM,KP,NPG,I,J,K,IMATUU,ICACO,
-     &        NDIMV,IVARIX
+     &        NDIMV,IVARIX,MOD
       INTEGER IPOIDS,IVF,IDFDK,IGEOM,IMATE,ITER
       INTEGER NBPAR,IER,COD,IRET,KSP,IRET1,IRET2,IRET3
       LOGICAL VECTEU,MATRIC,TESTL1,TESTL2,TEMPNO
@@ -76,6 +76,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       EPS = 1.D-3
       CODRET = 0
+      
+C     ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)      
+C     INITIALISE A R8NNEM (ON NE S'EN SERT PAS)      
+      ANGMAS(1) = R8NNEM()                           
+      ANGMAS(2) = R8NNEM()                           
+      ANGMAS(3) = R8NNEM()                           
+            
 
       VECTEU = ((OPTION.EQ.'FULL_MECA') .OR. (OPTION.EQ.'RAPH_MECA'))
       MATRIC = ((OPTION.EQ.'FULL_MECA') .OR.
@@ -84,8 +91,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL ELREF1(ELREFE)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDK,JGANO)
 
-      TYPMOD(1) = 'C_PLAN  '
-      TYPMOD(2) = '        '
+C       TYPMOD(1) = 'C_PLAN  '
+C       TYPMOD(2) = '        '
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCACOQU','L',ICACO)
@@ -170,10 +177,12 @@ C-- BOUCLE SUR LES POINTS D'INTEGRATION SUR LA SURFACE
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-        CALL MOYTPG('RIGI',KP,3,'-',VALPAR)
+        CALL MOYTPG('RIGI',KP,3,'-',TEMPM)
+        CALL MOYTPG('RIGI',KP,3,'+',TEMPP)
+        CALL RCVARC('F','TEMP','REF','RIGI',KP,1,TREF,IRET1)
         NBPAR = 1
         NOMPAR = 'TEMP'
-        CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
+        CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,TEMPM,2,NOMRES,
      &              VALRES,VALRET,'FM')
 
         NU = VALRES(2)
@@ -219,62 +228,60 @@ C-- DEBUT DE BOUCLE D'INTEGRATION DANS L'EPAISSEUR
               RHOT = 1.D0 + X3*COSA/R
             END IF
 
-C-- CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
-C-- EPSSS, EPSTT, EPSSX3
-C-- (EN FONCTION DES DEFORMATIONS GENERALISEES :ESS,KSS,ETT,KTT,GS)
-C-- DE L'INSTANT PRECEDANT ET DES DEFORMATIONS INCREMENTALES
-C-- DE L'INSTANT PRESENT
+C           CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
+C           EPSSS, EPSTT, EPSSX3 (EN FONCTION DES DEFORMATIONS
+C           GENERALISEES :ESS,KSS,ETT,KTT,GS)
+C           DE L'INSTANT PRECEDANT ET DES DEFORMATIONS INCREMENTALES
+C           DE L'INSTANT PRESENT
 
             CALL DEFGEN(TESTL1,TESTL2,NNO,R,X3,SINA,COSA,COUR,ZR(IVF+K),
      &                  DFDX,ZR(IDEPLM),EPS2D,EPSX3)
-
             CALL DEFGEN(TESTL1,TESTL2,NNO,R,X3,SINA,COSA,COUR,ZR(IVF+K),
      &                  DFDX,ZR(IDEPLP),DEPS2D,DEPSX3)
 
+C           COQUE_D_PLAN
             IF (NOMTE(3:4).EQ.'TD') THEN
               EPS2D(2) = 0.D0
               DEPS2D(2) = 0.D0
+              MOD=2
+C           COQUE_C_PLAN
             ELSE IF (NOMTE(3:4).EQ.'TC') THEN
               EPS2D(2) = 0.D0
-              DEPS2D(2) = -10000.D0* (EPS2D(1)+DEPS2D(1))
+              DEPS2D(2) = 0.D0
+              MOD=-1
+C           COQUE_AXIS
+            ELSEIF (NOMTE(3:4).EQ.'CX') THEN
+              MOD=1
             END IF
-
-C-- CONSTRUCTION DE LA DEFORMATION GSX3 ET DE LA CONTRAINTE SGMSX3
-
+            
+C           CONSTRUCTION DE LA DEFORMATION GSX3 
+C           ET DE LA CONTRAINTE SGMSX3
             GSX3 = 2.D0* (EPSX3+DEPSX3)
             SGMSX3 = CISAIL*KAPPA*GSX3/2.D0
-C-- APPEL DE NMCOMP: LOI PLASTIQUE
+
+C           CALCUL DU NUMERO DU POINT D'INTEGRATION COURANT
             KPKI = KPKI + 1
             K1 = 4* (KPKI-1)
             K2 = LGPG* (KP-1) + (NPGE* (ICOU-1)+INTE-1)*NBVARI
-            ITER = 0
-            IF (DEPS2D(2).GT.0.D0) THEN
-              XI = -0.99D0*DEPS2D(2)
-              XM = XI
-              XS = DEPS2D(2)
-            ELSE
-              XI = DEPS2D(2)
-              XM = XI
-              XS = -0.99D0*DEPS2D(2)
-            END IF
-
-   50       CONTINUE
-            ITER = ITER + 1
-            DEPS2D(2) = XM
-C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
-C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
-            ANGMAS(1) = R8NNEM()
-            ANGMAS(2) = R8NNEM()
-            ANGMAS(3) = R8NNEM()
-
             KSP=(ICOU-1)*NPGE + INTE
-            CALL NMCOMP('RIGI',KP,KSP,2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),
+            
+            DO 55 I=1,4
+                SIGM2D(I)=ZR(ICONTM+K1+I-1)
+   55       CONTINUE
+            
+C  APPEL AU COMPORTEMENT
+            CALL COMCQ1('RIGI',KP,KSP,MOD,ZI(IMATE),ZK16(ICOMPO),
      &                  ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &                  EPS2D,DEPS2D,
-     &                  ZR(ICONTM+K1),ZR(IVARIM+K2),
-     &                  OPTION,ANGMAS,LC,
-     &                  ZR(ICONTP+K1),ZR(IVARIP+K2),DSIDEP,COD)
-
+     &                  EPS2D,DEPS2D,TEMPM,TEMPP,TREF,
+     &                  SIGM2D,ZR(IVARIM+K2),OPTION,ANGMAS,
+     &                  SIGP2D,ZR(IVARIP+K2),DSIDEP,COD)
+     
+            IF (VECTEU) THEN
+               DO 56 I=1,4
+                   ZR(ICONTP+K1+I-1)=SIGP2D(I)
+   56          CONTINUE
+            ENDIF
+            
 C           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 C           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
             IF (COD.NE.0) THEN
@@ -283,40 +290,9 @@ C           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
               END IF
             END IF
 
-            IF (VECTEU) THEN
-
-              IF (NOMTE(3:4).NE.'TC') GO TO 60
-              IF (ITER.EQ.1) THEN
-                SIGMA = ZR(ICONTP-1+K1+2)
-                IF (ABS(SIGMA).LT.1.D-18) GO TO 60
-                XM = (XS+XI)/2.D0
-                GO TO 50
-              ELSE
-                IF (ABS(XS-XI).LT.1.D-30) GO TO 60
-                IF (ABS((XS-XI)/ (XS+XI)).LT.1.D-14) GO TO 60
-              END IF
-              IF (ITER.GT.1000) THEN
-                WRITE (6,*) 'PB CONVERGENCE CONTRAINTE PLANE'
-                WRITE (6,*) 'SIGXX',ZR(ICONTP-1+K1+1)
-                WRITE (6,*) 'SIGYY',ZR(ICONTP-1+K1+2)
-                WRITE (6,*) 'SIGZZ',ZR(ICONTP-1+K1+3)
-                WRITE (6,*) 'SIGXY',ZR(ICONTP-1+K1+4)
-                GO TO 60
-              END IF
-              IF (SIGMA*ZR(ICONTP-1+K1+2).GT.0.D0) THEN
-                XI = XM
-                XM = (XS+XI)/2.D0
-              ELSE
-                XS = XM
-                XM = (XS+XI)/2.D0
-              END IF
-              GO TO 50
-            END IF
-   60       CONTINUE
 
             IF (MATRIC) THEN
 C-- CALCULS DE LA MATRICE TANGENTE : BOUCLE SUR L'EPAISSEUR
-
 C-- CONSTRUCTION DE LA MATRICE DTD (DTILD)
               CALL MATDTD(NOMTE,TESTL1,TESTL2,DSIDEP,CISAIL,X3,COUR,R,
      &                    COSA,KAPPA,DTILDI)

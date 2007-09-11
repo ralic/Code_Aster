@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 #       DES REDONDANCES DIRICHLET/FROTTEMENT PAR L EXCLUSION D
 #       UN GROUPE DE NOEUDS
 
-DEBUT( CODE=_F(  NOM = 'SSNV128Q',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM = 'SSNV128Q',NIV_PUB_WEB='INTERNET'));
 
 #.......................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD4
@@ -30,7 +30,7 @@ DEBUT( CODE=_F(  NOM = 'SSNV128Q',NIV_PUB_WEB='INTERNET') )
 
 #PRE_GIBI()
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),)
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'));
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -38,48 +38,38 @@ MA=DEFI_GROUP(reuse =MA,
                                 OPTION='NOEUD_ORDO',
                                 NOM='RELEVE',
                                 GROUP_NO_ORIG='PPA',
-                                GROUP_NO_EXTR='PPS',),),);
+                                GROUP_NO_EXTR='PPS')));
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT = 'OUI',
                        PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'D_PLAN',)
-              )
+                       MODELISATION = 'D_PLAN'));
 
 MA=MODI_MAILLAGE(reuse=MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_2D=(_F(GROUP_MA = 'LPRESV',),
-                               _F(GROUP_MA = 'LPRESH',))
-                )
+                 ORIE_PEAU_2D=(_F(GROUP_MA = 'LPRESV'),
+                               _F(GROUP_MA = 'LPRESH')));
 
-MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11,
-                             NU = 0.2,)
-                    )
+MATPLA=DEFI_MATERIAU(ELAS=_F(E = 1.3E11, NU = 0.2));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT = 'OUI',
-                             MATER = MATPLA,)
-                    )
+                    AFFE=_F(TOUT  = 'OUI',
+                            MATER = MATPLA));
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
-                    DDL_IMPO=(_F(GROUP_MA = 'LBATI',  DX = 0.0, DY = 0.0,),
-                              _F(GROUP_NO = 'PPS',    DX = 0.0,),
-                              _F(GROUP_MA = 'LBLOCX', DX = 0.0,)),
-                    PRES_REP=(_F(GROUP_MA = 'LPRESV', PRES = 5.E07,),
-                              _F(GROUP_MA = 'LPRESH', PRES = 15.E07,))
-                   )
+                    DDL_IMPO=(_F(GROUP_MA = 'LBATI', DX = 0.0,DY = 0.0),
+                              _F(GROUP_NO = 'PPS',   DX = 0.0),
+                              _F(GROUP_MA = 'LBLOCX',DX = 0.0)),
+                    PRES_REP=(_F(GROUP_MA = 'LPRESV',PRES = 5.E07),
+                              _F(GROUP_MA = 'LPRESH',PRES = 15.E07)));
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(GROUP_MA_MAIT  = 'LBATI',
                                GROUP_MA_ESCL  = 'LCONTA',
-                               APPARIEMENT    = 'MAIT_ESCL',
-                               RECHERCHE      = 'NOEUD_BOUCLE',
-                               NORMALE        = 'MAIT',
                                METHODE        = 'CONTINUE',
-                               INTEGRATION    = 'NOEUD',
                                CONTACT_INIT   = 'OUI',
                                SEUIL_INIT     = 1.0E-1,
-                               SANS_GROUP_NO  = 'PPS',
+                               SANS_GROUP_NO_FR= 'PPS',
                                VECT_Y = (-1.,0.,0.),
                                COEF_REGU_FROT = 1.0,
                                COEF_REGU_CONT = 1.0,
@@ -88,64 +78,60 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                ITER_CONT_MAXI = 4,
                                FROTTEMENT  = 'COULOMB',
                                COULOMB     = 1.0,
-                               PROJECTION  = 'LINEAIRE',)
-                    )
+                               ));
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0,)
-                    )
+                    VALE=(0.0,0.0,1.0,1.0));
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5,)
-                      )
+                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5));
 
 #-----------------------------------------------------------
 
-U2M=STAT_NON_LINE(MODELE    = MO,
+U2M=STAT_NON_LINE(MODELE     = MO,
                   CHAM_MATER = CHMAT,
-                  EXCIT      =(_F(CHARGE = CHA1,
-                                  FONC_MULT = RAMPE,),
-                               _F(CHARGE = CHA2,)),
-                  COMP_ELAS  = _F(RELATION = 'ELAS',),
-                  INCREMENT  = _F(LIST_INST = L_INST,),
+                  EXCIT      =(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
+                               _F(CHARGE = CHA2)),
+                  COMP_ELAS  = _F(RELATION = 'ELAS'),
+                  INCREMENT  = _F(LIST_INST = L_INST),
                   CONVERGENCE= _F(ARRET = 'OUI',
                                  ITER_GLOB_MAXI = 200,
-                                 RESI_GLOB_RELA = 1.0E-5,),
+                                 RESI_GLOB_RELA = 1.0E-5),
 #                  INFO=2,
-               )
+               );
 
-U2M=CALC_ELEM(reuse=U2M,
-              OPTION=('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
-              RESULTAT=U2M,
-             )
+# U2M=CALC_ELEM(reuse=U2M,
+#               OPTION=('SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA'),
+#               RESULTAT=U2M);
+# 
+# DEPL2M=CREA_CHAMP(OPERATION='EXTR',
+#                   TYPE_CHAM='NOEU_DEPL_R',
+#                   NOM_CHAM='DEPL',
+#                   RESULTAT=U2M,
+#                   INST=1.0);
+# 
+# DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
+#                               GROUP_NO='RELEVE',
+#                               RESULTAT=U2M,
+#                               NOM_CHAM='DEPL',
+#                               INST=1.0,
+#                               TOUT_CMP='OUI',
+#                               OPERATION='EXTRACTION'));
+#                               
+# TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
+#                               GROUP_NO='RELEVE',
+#                               RESULTAT=U2M,
+#                               NOM_CHAM='VALE_CONT',
+#                               INST=1.0,
+#                               TOUT_CMP='OUI',
+#                               OPERATION='EXTRACTION'));
+# 
+# IMPR_TABLE(TABLE=DEPLAC);
+# IMPR_TABLE(TABLE=TCONT);
 
-DEPL2M=CREA_CHAMP(OPERATION='EXTR',
-                  TYPE_CHAM='NOEU_DEPL_R',
-                  NOM_CHAM='DEPL',
-                  RESULTAT=U2M,
-                  INST=1.0
-                )
-
-DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
-                              GROUP_NO='RELEVE',
-                              RESULTAT=U2M,
-                              NOM_CHAM='DEPL',
-                              INST=1.0,
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
-                              
-TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
-                              GROUP_NO='RELEVE',
-                              RESULTAT=U2M,
-                              NOM_CHAM='VALE_CONT',
-                              INST=1.0,
-                              TOUT_CMP='OUI',
-                              OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=DEPLAC,);
-IMPR_TABLE(TABLE=TCONT,);
+# ---- TEST ----
 
 TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    INST       = 1.0,
@@ -156,8 +142,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    CRITERE    = 'ABSOLU',
                    PRECISION  = 1.E-12,
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   ),
+                   VERSION    = '7.1.11'),
                 _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'VALE_CONT',
@@ -167,8 +152,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    PRECISION  = 1.E-5,
                    CRITERE    = 'RELATIF',
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   ),
+                   VERSION    = '7.1.11'),
                 _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'VALE_CONT',
@@ -178,8 +162,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    PRECISION  = 1.E-5,
                    CRITERE    = 'RELATIF',
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   ),
+                   VERSION    = '7.1.11'),
                 _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -188,8 +171,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    VALE       = 2.86E-5,
                    PRECISION  = 5.E-2,
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   ),
+                   VERSION    = '7.1.11'),
                 _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -198,8 +180,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    VALE       = 2.72E-5,
                    PRECISION  = 5.E-2,
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   ),
+                   VERSION    = '7.1.11'),
                 _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -208,8 +189,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    VALE       = 2.28E-5,
                    PRECISION  = 5.E-2,
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   ),
+                   VERSION    = '7.1.11'),
                 _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -218,8 +198,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    VALE       = 1.98E-5,
                    PRECISION  = 5.E-2,
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                   ),
+                   VERSION    = '7.1.11'),
                 _F(RESULTAT   = U2M,
                    INST       = 1.0,
                    NOM_CHAM   = 'DEPL',
@@ -228,9 +207,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    VALE       = 1.50E-5,
                    PRECISION  = 5.E-2,
                    REFERENCE  = 'AUTRE_ASTER',
-                   VERSION    = '7.1.11',
-                ))
-       )
+                   VERSION    = '7.1.11')));
 
-FIN()
+FIN();
 #

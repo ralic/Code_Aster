@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sdveri Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,10 +25,9 @@ cata_msg={
  Impossible d'importer le catalogue de la structure de données '%(k1)s'
 """),
 
-
 17: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  L'objet JEVEUX '%(k1)s' a un LONMAX incorrect.
  LONMAX attendu : %(i1)d
  LONMAX trouvé  : %(i2)d
@@ -36,66 +35,59 @@ cata_msg={
 
 18: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  La collection JEVEUX '%(k1)s' n'a pas le bon nombre d'objets (NUTIOC)
 """),
 
 19: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  Le  pointeur de noms JEVEUX '%(k1)s' n'a pas la bonne longueur (NOMUTI)
 """),
 
 20: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  L'objet JEVEUX '%(k1)s' devrait etre de type entier
 """),
 
 21: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  L'objet JEVEUX '%(k1)s' devrait etre de type réel
 """),
 
 22: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  L'objet JEVEUX '%(k1)s' devrait etre de type complexe
 """),
 
-
-
-
-
-
 24: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  L'objet JEVEUX '%(k1)s' devrait etre de type '%(k2)s'.
 """),
 
 25: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  La vérification '%(k1)s' n'est pas programmée.
 """),
 
 26: _("""
  Erreur de programmation :
- Vérification d'une structure de donnée :
+ Vérification d'une structure de données :
  L'objet '%(k1)s' est obligatoire dans la SD mais il n'existe pas.
 """),
 
 27: _("""
  Erreur de programmation :
-   Vérification d'une structure de donnée :
+   Vérification d'une structure de données :
    L'objet JEVEUX '%(k1)s' a un champ DOCU incorrect.
    Le champ DOCU attendu est : '%(k2)s'
    Le champ DOCU trouvé  est : '%(k3)s'
 """),
-
-
 
 
 30: _("""
@@ -112,8 +104,6 @@ cata_msg={
       Fin Message 30
 """),
 
-
-
 40: _("""
  Erreur de programmation (catalogue des SD) :
    Vérification d'une structure de donnée :
@@ -129,53 +119,7 @@ cata_msg={
 """),
 
 45: _("""
-      Erreur dans le Python : voir traceback ci-dessous
+      Erreur Python : voir traceback ci-dessous
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

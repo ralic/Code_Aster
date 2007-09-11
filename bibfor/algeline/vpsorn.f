@@ -5,7 +5,7 @@
      &   OMECOR, NCONV, FLAGE)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -313,7 +313,7 @@ C GESTION DES FLAGS D'ERREURS
           CALL U2MESS('F','ALGELINE3_78')
         ELSE IF (INFO.LT.0) THEN
           VALI (1) = INFO
-          CALL U2MESG('F','ALGELINE5_50',0,' ',1,VALI,0,0.D0)
+          CALL U2MESG('F','ALGELINE5_48',0,' ',1,VALI,0,0.D0)
         ENDIF
 C--------------------------------------------------------------------
 C TESTS ET POST-TRAITEMENTS

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3414,6 +3414,38 @@ static PyObject *jeveux_exists( PyObject* self, PyObject* args)
 }
 
 /* ------------------------------------------------------------------ */
+/*      Routines d'interface pour l'enregistrement d'un concept       */
+/*                      dans la liste jeveux                          */
+
+#define CALL_GCUGEN(a,b,c,d,e) CALLPSSSP(GCUGEN,gcugen,a,b,c,d,e)
+DEFPSSSP(GCUGEN, gcugen, INTEGER* icode, char* nomsd, int l_nomsd,
+                                         char* typsd, int l_typsd,
+                                         char* oper,  int l_oper, INTEGER* icmdt);
+
+static PyObject* aster_co_register_jev(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+/*       usage : aster.co_register_jev(nomsd, typsd, nomcmd)
+                 appele gcugen(0, ...) puis gcugen(1, ...)
+*/
+	char *nomsd, *typsd, *oper;
+	INTEGER icmdt = 0, icode;
+	
+	if (!PyArg_ParseTuple(args, "sss", &nomsd, &typsd, &oper))
+		return NULL;
+	icode = 0;
+	CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
+	icode = 1;
+	CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
+	
+	return PyInt_FromLong( icmdt );
+}
+
+/* ------------------------------------------------------------------ */
+
+
+/* ------------------------------------------------------------------ */
 /*             Routines d'interface pour la sensibilité               */
 
 void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
@@ -3681,6 +3713,7 @@ static PyMethodDef aster_methods[] = {
                 {"putcolljev",   aster_putcolljev,   METH_VARARGS, putcolljev_doc},
                 {"getcolljev",   aster_getcolljev,   METH_VARARGS, getcolljev_doc},
                 {"GetResu",      aster_GetResu,      METH_VARARGS},
+                {"co_register_jev", aster_co_register_jev, METH_VARARGS},
                 {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
                 {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
                 {"jeveux_exists", jeveux_exists,     METH_VARARGS},

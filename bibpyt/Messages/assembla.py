@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF assembla Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,39 +23,42 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
-  le type  :  %(k1)s   de la matrice est incorrect. on attend : "s"pour une resolution par methode iterative
+  le type  :  %(k1)s   de la matrice est incorrect.
+  on attend : "S" pour une résolution par methode itérative
 """),
 
 2: _("""
- matrice non symetrique pour l'instant proscrite  avec feti
+ matrice non symétrique pour l'instant proscrite avec FETI
 """),
 
 3: _("""
-  le parametre :  %(k1)s  est incorrect. on attend : "cumu" ou "zero" 
+  le parametre :  %(k1)s  est incorrect.
+  on attend : "CUMU" ou "ZERO" 
 """),
 
 4: _("""
-  on ne peut assembler que des matrices reelles ou complexes
+  on ne peut assembler que des matrices réelles ou complexes
 """),
 
 5: _("""
- modeles discordants
+ modèles discordants
 """),
 
 6: _("""
- feti: maille positive avec ligrel de charge !
+ FETI : maille positive avec LIGREL de charge !
 """),
 
 7: _("""
- feti: maille negative avec ligrel de modele !
+ FETI : maille négative avec LIGREL de modele !
 """),
 
 8: _("""
- le motcle :  %(k1)s  est incorrect. on attend : "cumu" ou "zero" 
+ le motcle :  %(k1)s  est incorrect.
+ on attend : "CUMU" ou "ZERO" 
 """),
 
 9: _("""
- on ne trouve pas le cmp "lagr" dans la grandeur
+ on ne trouve pas la composante "LAGR" dans la grandeur
 """),
 
 10: _("""
@@ -63,27 +66,28 @@ cata_msg={
 """),
 
 11: _("""
- on ne peut assembler que des vecteurs reels ou complexes
+ on ne peut assembler que des vecteurs réels ou complexes
 """),
 
 12: _("""
- le maillage  %(k1)s  contient des super-mailles pour l'instant, elles sont proscrites avec feti
+ le maillage  %(k1)s  contient des super-mailles
+ pour l'instant, elles sont proscrites avec FETI
 """),
 
 13: _("""
- ichin = 0 
+ ICHIN = 0 
 """),
 
 14: _("""
- ichin < -2 
+ ICHIN < -2 
 """),
 
 15: _("""
- s => ichin=/0 
+ S => ICHIN=/0 
 """),
 
 16: _("""
- action:e/l/s 
+ action : E/L/S 
 """),
 
 17: _("""
@@ -91,75 +95,77 @@ cata_msg={
 """),
 
 18: _("""
- incoherence des matr_elem
+ incohérence des MATR_ELEM
 """),
 
 19: _("""
- matr_elem sans sss et sans liste_resu
+ MATR_ELEM sans SSS et sans LISTE_RESU
 """),
 
 20: _("""
-  -  aucun ligrel dans les resuelem 
+  -  aucun LIGREL dans les RESUELEM 
 """),
 
 21: _("""
- modeles diff.
+ modèles différents
 """),
 
 22: _("""
- les valeurs de la matrice  %(k1)s  doivent etre reelles, on ne traite pas encore les matrices non-symetriques complexes.
+ les valeurs de la matrice  %(k1)s  doivent etre réelles
+ on ne traite pas encore les matrices non-symétriques complexes.
 """),
 
 23: _("""
- la matrice  %(k1)s  a transformer en matrice non-symetrique doit etre symetrique.
+ la matrice %(k1)s à transformer en matrice non-symétrique doit etre symétrique.
 """),
 
 24: _("""
- le nombre maxi de composante de la grandeur est nul
+ le nombre maximum de composante de la grandeur est nul
 """),
 
 25: _("""
- le nombre d"entiers codes est nul
+ le nombre d'entiers codes est nul
 """),
 
 26: _("""
- le noeud:  %(k1)s composante:  %(k2)s  est bloque plusieurs fois.
+ le noeud:  %(k1)s composante:  %(k2)s  est bloqué plusieurs fois.
 """),
 
 27: _("""
- l'entier decrivant la postion du premier lagrange ne peut etre egal qu'a  +1  ou  -1 .
+ l'entier décrivant la position du premier lagrange ne peut etre égal qu'à +1 ou -1 .
 """),
 
 28: _("""
- le nombre de noeuds effectivement numerotes ne correspond pas  au nombre de noeuds a numeroter
+ le nombre de noeuds effectivement numerotés ne correspond pas au nombre
+ de noeuds à numéroter
 """),
 
 29: _("""
-  -  aucun ligrel  
+  -  aucun LIGREL  
 """),
 
 30: _("""
-  plusieurs "phenomenes" stop 
+  plusieurs phénomènes 
 """),
 
 31: _("""
- les ddls du nume_ddl ont bouge.
+ les DDL du NUME_DDL ont bougé
 """),
 
 32: _("""
- phenomene non prevu dans le moloc de numer2 pour dd
+ phénomène non prévu dans le MOLOC de NUMER2 pour DD
 """),
 
 33: _("""
- le .prno est construit sur plus que le maillage
+ le .PRNO est construit sur plus que le maillage
 """),
 
 34: _("""
- le .prno est de dimension nulle
+ le .PRNO est de dimension nulle
 """),
 
 35: _("""
- il n y a pas de modele dans la liste  %(k1)s .nume.lili
+ il n y a pas de modèle dans la liste  %(k1)s .NUME.LILI
 """),
 
 36: _("""
@@ -167,7 +173,7 @@ cata_msg={
 """),
 
 37: _("""
- methode :  %(k1)s  inconnue.
+ méthode :  %(k1)s  inconnue.
 """),
 
 38: _("""
@@ -175,158 +181,93 @@ cata_msg={
 """),
 
 39: _("""
- le phenome  %(k1)s  n'est pas admis pour la symetrisation des matrices.seuls sont admis les phenomenes "mecanique" et "thermique" .
+ le phénomène  %(k1)s  n'est pas admis pour la symétrisation des matrices.
+ seuls sont admis les phénomènes "MECANIQUE" et "THERMIQUE"
 """),
 
 40: _("""
- erreur programmeur : certains type_element ne savent pas calculer les options syme_m?ns_r
+ erreur programmeur :
+ certains type_element ne savent pas calculer les options SYME_M?NS_R
 """),
 
 41: _("""
- 1--- le noeud  : %(i1)d  du resuel    : %(k1)s    du vect_elem  : %(k2)s 
-    n''a pas d''adresse dans  : %(k3)s 
+ le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s 
+ n'a pas d'adresse dans : %(k3)s 
 """),
 
 42: _("""
- 2--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
-   a 1 adresse  : %(i2)d 
-  > nequa : %(i3)d 
+ le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s 
+   a une adresse  : %(i2)d  > NEQUA : %(i3)d 
 """),
 
 43: _("""
- 3--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
 """),
 
 44: _("""
- 4--- vect_elem     : %(k1)s --- resu        : %(k2)s --- nomli       : %(k3)s 
- --- grel numero   : %(i1)d 
- --- maille numero : %(i2)d 
- --- nnoe par nema : %(i3)d 
- --- nnoe par node : %(i4)d 
+ --- VECT_ELEM     : %(k1)s
+ --- RESU          : %(k2)s
+ --- NOMLI         : %(k3)s 
+ --- GREL numéro   : %(i1)d 
+ --- MAILLE numéro : %(i2)d 
+ --- NNOE par NEMA : %(i3)d 
+ --- NNOE par NODE : %(i4)d 
 """),
 
 45: _("""
- 5--- le ligrel : %(k1)s  ref. par le noeud supl.  : %(i1)d 
+ --- le LIGREL    : %(k1)s  réf. par le noeud supl.  : %(i1)d 
  --- de la maille : %(i2)d 
-  du resuelem  : %(k2)s 
-  du vect_elem   : %(k3)s 
- --- n"est pas present  dans la numerotation : %(k4)s 
+ --- du RESUELEM  : %(k2)s 
+ --- du VECT_ELEM : %(k3)s 
+ --- n'est pas présent  dans la numérotation : %(k4)s 
 """),
 
 46: _("""
- 6--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+ --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
 """),
 
 47: _("""
- 7--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+ --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
 """),
 
 48: _("""
- 8--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
- --- n''a pas d''adresse  dans la numerotation : %(k3)s 
+ --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s 
+ --- n'a pas d''adresse  dans la numérotation : %(k3)s 
 """),
 
 49: _("""
- 9--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
- --- a une adresse : %(i2)d 
-  > nequa : %(i3)d 
+ --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s 
+ --- a une adresse : %(i2)d   > NEQUA : %(i3)d 
 """),
 
 50: _("""
- 11  nddl :  %(i1)d  > nddl_max : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
 """),
 
-
-
-
-
-
 52: _("""
- 12  nddl :  %(i1)d  > nddl_max : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
 """),
 
 53: _("""
- 13- nddl :  %(i1)d  > nddl_max : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 63: _("""
- erreur sur le   premier lagrange d"une liaison_ddl
+ erreur sur le premier lagrange d'une LIAISON_DDL
  on a mis 2 fois le premier  lagrange :  %(i1)d 
- derrire le noeud :  %(i2)d 
+ derrière le noeud :  %(i2)d 
 """),
 
 64: _("""
- erreur sur le   2 eme lagrange d"une liaison_ddl
- on a mis 2 fois le 2eme  lagrange :  %(i1)d 
- derrire le noeud :  %(i2)d 
+ erreur sur le  2ème lagrange d'une LIAISON_DDL
+ on a mis 2 fois le 2ème  lagrange :  %(i1)d 
+ derrière le noeud :  %(i2)d 
 """),
 
 65: _("""
- incoherence dans  le denombrement des ddlsnbre de ddl a priori    : %(i1)d 
- nbre de ddl a posteriori: %(i2)d 
+ incohérence dans le dénombrement des ddls
+ nombre de ddl a priori    : %(i1)d 
+ nombre de ddl a posteriori: %(i2)d 
 """),
 66: _("""
  Problème dans NULILI.F: on a au moins deux maillages différents:

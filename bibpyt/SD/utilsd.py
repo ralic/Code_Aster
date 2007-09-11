@@ -1,4 +1,4 @@
-#@ MODIF utilsd SD  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilsd SD  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,6 +46,7 @@ def import_sd(nomsd):
       mod = __import__('SD.%s' % nomsd, globals(), locals(), [nomsd])
       klass = getattr(mod, nomsd)
    except (ImportError, AttributeError), msg:
+      print msg
       raise ImportError, "impossible d'importer la SD '%s'" % nomsd
    return klass
 
@@ -59,7 +60,7 @@ def tree(nom, *args):
          l.append('-'*80)
       sd_class = import_sd(sd)
       tmpobj = sd_class(nomj=nom)
-      l.append(tmpobj.info())
+      l.append(tmpobj.dump())
    return os.linesep.join(l)
 
 # -----------------------------------------------------------------------------

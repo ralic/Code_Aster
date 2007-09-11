@@ -2,7 +2,7 @@
      &                  IREP  ,RREP  ,KREP  ,LREP   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,8 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24  DEFICO
-      CHARACTER*24  RESOCO
+      CHARACTER*24  DEFICO,RESOCO
       INTEGER       IZ
       CHARACTER*(*) QUESTI
       INTEGER       IREP(*)
@@ -71,14 +70,10 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IZONE
-      INTEGER      CFMMVD,ZCMCF,ZMETH,ZTOLE,ZECPD,ZDIRE
-      INTEGER      ZPOUD,ZTGDE
+      INTEGER IZONE,CFMMVD,ZCMCF,ZMETH,ZTOLE,ZECPD,ZDIRE,ZPOUD,ZTGDE
+      INTEGER JCMCF,JNORLI,JDIR,JMETH,JTGDEF,JPOUDI,JECPD,JTOLE,NOC
       CHARACTER*24 CARACF,NORLIS,DIRCO,METHCO,TANDEF,TANPOU,ECPDON
-      INTEGER      JCMCF,JNORLI,JDIR,JMETH,JTGDEF,JPOUDI,JECPD
-      CHARACTER*24 TOLECO
-      INTEGER      JTOLE
-      CHARACTER*24 VALK(2)      
+      CHARACTER*24 TOLECO,VALK(2)      
 C
 C ----------------------------------------------------------------------
 C
@@ -122,7 +117,7 @@ C
 C
 C --- QUESTIONS
 C
-      IF     (QUESTI.EQ.'FOND_FISSURE') THEN
+      IF (QUESTI.EQ.'FOND_FISSURE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         IF (ZR(JCMCF+ZCMCF*(IZONE-1)+11) .EQ. 0.D0) THEN
           LREP(1) = .FALSE.
@@ -148,7 +143,7 @@ C
           LREP(1) = .FALSE.
         ELSE
           LREP(1) = .TRUE.
-        ENDIF
+        ENDIF    
 C
       ELSEIF (QUESTI.EQ.'COMPLIANCE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
@@ -177,11 +172,16 @@ C
       ELSEIF (QUESTI.EQ.'FROTTEMENT') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         IREP(1) = NINT(ZR(JCMCF+5))
-        IF (IREP(1).EQ.1) THEN
+        NOC     = NINT(ZR(JCMCF+25))
+        IF (IREP(1).EQ.1 .OR. NOC.EQ.1) THEN
           LREP(1) = .FALSE.
         ELSE
           LREP(1) = .TRUE.
         ENDIF
+C
+      ELSEIF (QUESTI.EQ.'SANS_GROUP_NO') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        IREP(1) = NINT(ZR(JCMCF+25))
 C        
       ELSEIF (QUESTI.EQ.'USURE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)

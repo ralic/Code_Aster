@@ -1,7 +1,7 @@
-      SUBROUTINE CFDISC(DEFICO,RESOCZ,TYPALC,TYPALF,FROT3D,MATTAN)
+      SUBROUTINE CFDISC(DEFICZ,RESOCZ,TYPALC,TYPALF,FROT3D,MATTAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*24  DEFICO
+      CHARACTER*(*) DEFICZ
       CHARACTER*(*) RESOCZ
       INTEGER       TYPALC
       INTEGER       TYPALF
@@ -30,7 +30,7 @@ C
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (TOUTES METHODES)
+C ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
 C
 C PERMET DE SAVOIR S'IL Y A CONTACT/FROTTEMENT 
 C
@@ -88,7 +88,7 @@ C
       INTEGER      JCOCO
       INTEGER      IMETH,IZONE,IBID
       LOGICAL      LFROTT
-      CHARACTER*24 RESOCO
+      CHARACTER*24 DEFICO,RESOCO
 C
 C ----------------------------------------------------------------------
 C
@@ -100,6 +100,7 @@ C
       MATTAN = 0
       FROT3D = 0
       RESOCO = RESOCZ
+      DEFICO = DEFICZ
 C
 C --- Y A T-IL DU CONTACT/FROTTEMENT DANS LE CALCUL ?
 C

@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_JDC Build  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_JDC Build  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,6 +222,8 @@ class SENSIBILITE_JDC :
       l_commandes_a_deriver_ensemble = self.commandes_sensibles.get_l_commandes_a_deriver_ensemble()
 #     l_commandes_sensibles = liste des commandes qui pilotent la sensibilité
       l_commandes_sensibles = self.commandes_sensibles.get_l_commandes_sensibles()
+#     l_commandes_sensibles_princ = liste des commandes principales
+      l_commandes_sensibles_princ = self.commandes_sensibles.get_l_commandes_sensibles_princ()
 #     l_commandes_poursuite = liste des commandes qui pilotent une reprise de calcul
       l_commandes_poursuite = self.commandes_sensibles.get_l_commandes_poursuite()
 #     commande mémorisant les noms pour la sensibilité
@@ -453,12 +455,14 @@ class SENSIBILITE_JDC :
                         erreur, nom_sd_derivee = memo_nom_sensi.get_nom_compose(etape.sd,param)
                         if erreur == 2 : 
                           nom_sd_derivee = derivation.get_nouveau_nom_sd()
-                          erreur = memo_nom_sensi.add_nom_compose(etape.sd,param,nom_sd_derivee)
-                          if erreur : break
-#                          print "... code de retour de memo_nom_sensi.add_nom_compose = ",erreur
-                          if erreur == 0 : 
-                            txt = derivation.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,nom_sd_derivee,None)
-                            exec txt in new_jdc.g_context
+                          txt = derivation.get_texte_memo_nom_sensi_compose(etape.sd.nom,param.nom,nom_sd_derivee,None,new_etape=new_etape)
+                          exec txt in new_jdc.g_context
+                          # pour les commandes principales, MEMO_NOM_SENSI (via CO) ajoute le concept dérivé dans le jdc
+                          if etape.nom in l_commandes_sensibles_princ:
+                             new_sd = new_jdc.sds_dict[nom_sd_derivee]
+                             erreur = memo_nom_sensi.add_nom_compose(etape.sd,param,new_sd)
+                          else:
+                             erreur = memo_nom_sensi.add_nom_compose(etape.sd,param,nom_sd_derivee)
 
 # 3.3.4. Enregistrement final si cela n'a pas été fait
             if enregistrement_tardif :

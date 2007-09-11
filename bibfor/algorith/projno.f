@@ -3,7 +3,7 @@
      &                  NORM  ,TANG  ,JEU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,15 +56,14 @@ C OUT JEU    : VALEUR DU JEU SUIVANT LA NORMALE
 C      
 C ----------------------------------------------------------------------
 C
-      INTEGER      IBID
-      REAL*8       R8BID3(3)  
+ 
 C      
 C ----------------------------------------------------------------------
 C
 C
 C --- CALCUL DES COEFFICIENTS DE LA RELATION LINEAIRE SUR NOEUD MAITRE
 C      
-      CALL CFRELI('NODE',IBID,IBID,R8BID3,COEFNO)  
+      COEFNO(1) = - 1.D0 
 C
 C --- MOYENNAGE DES NORMALES (SI DEMANDE PAR MOYEN)
 C

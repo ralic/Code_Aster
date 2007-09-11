@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 11/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,17 +162,7 @@ C
         CALL U2MESK('A','ALGORITH5_56', 3 ,VALK)
       ENDIF
 C
-      CALL GETVIS ( ' ', 'NB_MODE_DIAG', 0,1,1, NBMD, N1 )
-      IF ( N1.EQ.0 ) THEN
-         NBMD = NBMODE
-      ELSE
-         IF (NBMD.NE.NBMODE) THEN
-         NBMD = NBMODE
-         WRITE(K4B,'(I4)') NBMODE
-         CALL U2MESS('F','ALGORITH5_57')
-         ENDIF
-      ENDIF
-C
+      NBMD = NBMODE
 C
 C 6.  RECUPERATION DES CARACTERISTIQUES MODALES
 C     -----------------------------------------

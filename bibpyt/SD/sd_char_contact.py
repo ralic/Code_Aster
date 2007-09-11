@@ -1,4 +1,4 @@
-#@ MODIF sd_char_contact SD  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_char_contact SD  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,12 +79,14 @@ class sd_char_contact(AsBase):
     PNOMACO   = Facultatif(AsVI())
     PRANOCO   = Facultatif(AsVI())
     PSSNOCO   = Facultatif(AsVI())
+    PSANOFR   = Facultatif(AsVI())
     PSUMACO   = Facultatif(AsVI())
     PSUNOCO   = Facultatif(AsVI())
     PZONECO   = Facultatif(AsVI())
     RANOCO    = Facultatif(AsVI())
     SANSNQ    = Facultatif(AsVI())
     SSNOCO    = Facultatif(AsVI())
+    SANOFR    = Facultatif(AsVI())
     SYMECO    = Facultatif(AsVI())
     TABFIN    = Facultatif(AsVR())
     TANDEF    = Facultatif(AsVR())

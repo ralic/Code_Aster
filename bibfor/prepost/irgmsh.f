@@ -1,14 +1,15 @@
       SUBROUTINE IRGMSH ( NOMCON, PARTIE, IFI, NBCHAM, CHAM, LRESU,
      &                    NBORDR, ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI,
-     &                    VERSIO, LGMSH )
+     &                    VERSIO, LGMSH, TYCHA )
       IMPLICIT NONE
       INTEGER           IFI, NBCHAM, NBORDR, NBCMP, ORDR(*), NBMAT,
      &                  NUMMAI(*),VERSIO
       LOGICAL           LRESU,LGMSH
       CHARACTER*(*)     NOMCON, CHAM(*),NOMCMP(*),PARTIE
+      CHARACTER*8       TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +44,8 @@ C     NBMAT  : I   : NOMBRE DE MAILLES A IMPRIMER
 C     NUMMAI : I   : NUMEROS DES MAILLES A IMPRIMER
 C     VERSIO : I   : =1 SI TOUTES LES MAILLES SONT DES TRIA3 OU DES TET4
 C                    =2 SINON ( LES MAILLLES SONT LINEAIRES)
+C     TYCHA  : K8  : TYPE DE CHAMP A IMPRIMER (VERSION >= 1.2)
+C                    = SCALAIRE/VECT_2D/VECT_3D/TENS_2D/TENS_3D
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -66,7 +69,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      TYPPOI, TYPSEG, TYPTRI, TYPTET, TYPQUA,
      &             TYPPYR, TYPPRI, TYPHEX
       INTEGER       JCOOR, JCONX, JPOIN, JPARA, IAD
-      CHARACTER*8   TYCH, NOMA, K8B, NOMAOU
+      CHARACTER*8   TYCH, NOMA, K8B, NOMAOU,VALK(2)
       CHARACTER*19  NOCH19
 C
 C     --- TABLEAU DE DECOUPAGE
@@ -181,21 +184,32 @@ C
          IF (TYCH(1:4).EQ.'NOEU' ) THEN
             CALL IRGMCN (CHAM(ICH),PARTIE,IFI,NOMCON,ORDR,NBORDR,
      &                   ZR(JCOOR),ZI(JCONX),ZI(JPOIN),NOBJ,NBEL,
-     &                   NBCMP,NOMCMP,LRESU,ZR(JPARA),VERSIO)
+     &                   NBCMP,NOMCMP,LRESU,ZR(JPARA),VERSIO,TYCHA)
 C
 C ------ TRAITEMENT DU CAS CHAM_ELEM AUX NOEUDS:
 C
          ELSE IF (TYCH(1:4).EQ.'ELNO' ) THEN
+            IF(TYCHA(1:4).EQ.'VECT')THEN
+              VALK(1)=TYCHA
+              VALK(2)=TYCH(1:4)
+              CALL U2MESK('A','PREPOST6_35',2,VALK)
+              TYCHA='SCALAIRE'
+            ENDIF
             CALL IRGMCE (CHAM(ICH),PARTIE,IFI,NOMCON,ORDR,NBORDR,
      &                   ZR(JCOOR),ZI(JCONX),ZI(JPOIN),NOBJ,NBEL,
      &                   NBCMP,NOMCMP,LRESU,ZR(JPARA),NOMAOU,NOMA,
-     &                   VERSIO)
+     &                   VERSIO,TYCHA)
 
 C
 C ------ TRAITEMENT DU CAS CHAM_ELEM AUX GAUSS:
 C
          ELSE IF (TYCH(1:4).EQ.'ELGA' .OR.
      &            TYCH(1:4).EQ.'ELEM' ) THEN
+            IF(TYCHA(1:4).EQ.'VECT'.OR.TYCHA(1:4).EQ.'TENS')THEN
+              VALK(1)=TYCHA
+              VALK(2)=TYCH(1:4)
+              CALL U2MESK('A','PREPOST6_35',2,VALK)
+            ENDIF
             CALL IRGMCG (CHAM(ICH),PARTIE,IFI,NOMCON,ORDR,NBORDR,
      &                   ZR(JCOOR),ZI(JCONX),ZI(JPOIN),NOBJ,NBEL,
      &                   NBCMP,NOMCMP,LRESU,ZR(JPARA),NOMAOU,VERSIO)

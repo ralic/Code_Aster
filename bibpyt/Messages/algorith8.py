@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
+#@ MODIF algorith8 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,24 +23,12 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- contraintes planes en grandes deformations non implantees
+ contraintes planes en grandes déformations non implantées
 """),
 
 2: _("""
- caracteristique fluage                             incomplet
+ caractéristique fluage incomplet
 """),
-
-
-
-
-
-
-
-
-
-
-
-
 
 6: _("""
  message d'erreur inconnu (dvlp)
@@ -54,30 +42,28 @@ cata_msg={
  format de colonne inconnu (dvlp)
 """),
 
-
-
 12: _("""
- f reste toujours negative
+ F reste toujours négative
 """),
 
 13: _("""
- f  reste toujours positive
+ F  reste toujours positive
 """),
 
 14: _("""
- signe de sigma indetermine
+ signe de SIGMA indeterminé
 """),
 
 15: _("""
- changement de signe de sigma
+ changement de signe de SIGMA
 """),
 
 16: _("""
- f=0 : pas converge
+ F=0 : pas converge
 """),
 
 17: _("""
- dvp : non coherent
+ dvp : non cohérent
 """),
 
 18: _("""
@@ -94,19 +80,19 @@ cata_msg={
 """),
 
 22: _("""
- type d element incompatible avec une loi elastique anisotrope
+ type d'élément incompatible avec une loi élastique anisotrope
 """),
 
 23: _("""
- denominateur nul dans le calcul de eta_pilotage
+ dénominateur nul dans le calcul de ETA_PILOTAGE
 """),
 
 24: _("""
- cisaillement suiveur non implante
+ cisaillement suiveur non implanté
 """),
 
 25: _("""
- pression imposee sur l'axe des coordonnees cylindriques
+ pression imposée sur l'axe des coordonnées cylindriques
 """),
 
 26: _("""
@@ -114,15 +100,15 @@ cata_msg={
 """),
 
 27: _("""
- lecture du champ depl_calcule impossible
+ lecture du champ DEPL_CALCULE impossible
 """),
 
 28: _("""
- prediction par extrapolation impossible : pas de temps nul
+ prédiction par extrapolation impossible : pas de temps nul
 """),
 
 29: _("""
- iter_line_maxi doit etre inferieur a 1000
+ ITER_LINE_MAXI doit etre inférieur à 1000
 """),
 
 30: _("""
@@ -130,23 +116,23 @@ cata_msg={
 """),
 
 31: _("""
- borne superieure pmax incorrecte
+ borne superieure PMAX incorrecte
 """),
 
 32: _("""
- viscosite n egale a zero
+ viscosité N égale à zéro
 """),
 
 33: _("""
- viscosite un_sur_k egale a zero
+ viscosité UN_SUR_K égale à zéro
 """),
 
 34: _("""
- g=0 : pas converge
+ g=0 : pas convergé
 """),
 
 35: _("""
- incompatibilite entre la loi de couplage  %(k1)s  et la modelisation choisi  %(k2)s
+ incompatibilité entre la loi de couplage  %(k1)s  et la modélisation choisie  %(k2)s
 """),
 
 36: _("""
@@ -158,7 +144,7 @@ cata_msg={
 """),
 
 38: _("""
- il y a deja une loi de mecanique
+ il y a deja une loi de mécanique
 """),
 
 39: _("""
@@ -170,99 +156,92 @@ cata_msg={
 """),
 
 41: _("""
- il n y a pas de loi de mecanique
+ il n y a pas de loi de mécanique
 """),
 
 42: _("""
- la loi de couplage est incorrecte pour une modelisation hm
+ la loi de couplage est incorrecte pour une modélisation HM
 """),
 
 43: _("""
- incompatibilite des comportements mecanique et hydraulique
+ incompatibilite des comportements mécanique et hydraulique
 """),
 
 44: _("""
- loi de mecanique incompatible avec une modelisation hm
+ loi de mécanique incompatible avec une modelisation HM
 """),
 
 45: _("""
- la loi de couplage est incorrecte pour une modelisation hhm
+ la loi de couplage est incorrecte pour une modélisation HHM
 """),
 
 46: _("""
- loi de mecanique incompatible avec une loi hhm
+ loi de mécanique incompatible avec une loi HHM
 """),
 
 47: _("""
- loi de mecanique incompatible avec une modelisation hhm
+ loi de mécanique incompatible avec une modélisation HHM
 """),
 
 48: _("""
- il y a une loi de mecanique dans la relation thh
+ il y a une loi de mécanique dans la relation THH
 """),
 
 49: _("""
- la loi de couplage est incorrecte pour une modelisation thh
+ la loi de couplage est incorrecte pour une modélisation THH
 """),
 
 50: _("""
- loi de mecanique incompatible avec une loi thh
+ loi de mécanique incompatible avec une loi THH
 """),
 
 51: _("""
- il y a une loi de mecanique dans la relation thv
+ il y a une loi de mecanique dans la relation THV
 """),
 
 52: _("""
- la loi de couplage est incorrecte pour une modelisation thv
+ la loi de couplage est incorrecte pour une modélisation THV
 """),
 
 53: _("""
- loi de mecanique incompatible avec une loi thv
+ loi de mécanique incompatible avec une loi THV
 """),
 
 54: _("""
- la loi de couplage est incorrecte pour une modelisation thm
+ la loi de couplage est incorrecte pour une modélisation THM
 """),
 
 55: _("""
- loi de mecanique incompatible avec une modelisation thm
+ loi de mécanique incompatible avec une modélisation THM
 """),
 
 56: _("""
- la loi de couplage est incorrecte pour une modelisation thhm
+ la loi de couplage est incorrecte pour une modélisation THHM
 """),
 
 57: _("""
- Loi de mecanique incompatible avec une modelisation THHM
+ Loi de mécanique incompatible avec une modélisation THHM
 """),
 
 58: _("""
- Methode non implantee
+ Méthode non implantée
 """),
 
 59: _("""
  Champ 'IN' inexistant
 """),
 
-
-
-
-
-
 61: _("""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
 """),
 
-
-
-
 65: _("""
- echec loi de comp dans zerofo
+ echec loi de comportement dans ZEROFO
 """),
 
 66: _("""
-  convergence atteinte surapproximation lineaire tangente de l'evolution plastique- risque d'imprecision
+  convergence atteinte sur approximation linéaire tangente de l'évolution plastique
+  risque d'imprecision
 """),
 
 67: _("""
@@ -270,11 +249,11 @@ cata_msg={
 """),
 
 68: _("""
-  erreur recuperation parametres materiau
+  erreur récupération paramètres matériau
 """),
 
 69: _("""
-  type de matrice demande non disponible
+  type de matrice demandé non disponible
 """),
 
 70: _("""
@@ -306,34 +285,27 @@ cata_msg={
 """),
 
 77: _("""
- le nombre de composante dans le champ de vent est incorrect. on doit avoir : dx, dy, dz
+ le nombre de composantes dans le champ de vent est incorrect. on doit avoir : DX, DY, DZ
 """),
 
 78: _("""
- f(0)=0
+ F(0)=0
 """),
 
-
-
-
-
-
-
-
 80: _("""
- sy >= su. impossible.
+ SY >= SU. impossible.
 """),
 
 81: _("""
- ep >= e. impossible.
+ EP >= E. impossible.
 """),
 
 82: _("""
- incoherence dans les donnees materiau : mey > mpy impossible.
+ incohérence dans les données matériau : MEY > MPY impossible.
 """),
 
 83: _("""
- incoherence dans les donnees materiau : mez > mpz impossible.
+ incohérence dans les données matériau : MEZ > MPZ impossible.
 """),
 
 84: _("""
@@ -341,35 +313,36 @@ cata_msg={
 """),
 
 85: _("""
- definition multiple du comportement pour un element de poutre
+ definition multiple du comportement pour un élément de poutre
 """),
 
 86: _("""
- porosite strictement nulle( cas non traite)
+ porosité strictement nulle( cas non traité)
 """),
 
 87: _("""
- l'increment de temps vaut zero, verifier votre decoupage
+ l'incrément de temps vaut zéro, vérifiez votre découpage
 """),
 
 88: _("""
- fluence decroissante (flux<0)
+ fluence décroissante (flux<0)
 """),
 
 89: _("""
- le parametre a doit etre >=0
+ le parametre A doit etre >=0
 """),
 
 90: _("""
- la loi lmarc_irran'est compatible qu'avec une modelisation poutre
+ la loi LMARC_IRRA n'est compatible qu'avec une modélisation poutre
 """),
 
 91: _("""
- stop, rigi_meca_tang non                         disponible
+ stop, RIGI_MECA_TANG non disponible
 """),
 
 92: _("""
- la maille doit etre de type tetra10,penta15,hexa20,quad8 ou tria6. or la maille est de type :  %(k1)s .
+ la maille doit etre de type TETRA10,PENTA15,HEXA20,QUAD8 ou TRIA6.
+ or la maille est de type :  %(k1)s .
 """),
 
 93: _("""
@@ -377,18 +350,18 @@ cata_msg={
 """),
 
 96: _("""
- le sechage ne peut pas etre melange a un autre comportement
+ le séchage ne peut pas etre mélangé à un autre comportement
 """),
 
 97: _("""
- evol_ther_sech est un mot-cle obligatoire pour le sechage de type sech_granger et sech_nappe
+ EVOL_THER_SECH est un mot-clé obligatoire pour le séchage de type SECH_GRANGER et SECH_NAPPE
 """),
 
 98: _("""
-  le concept :  %(k1)s  n'est pas un champ de temperature
+  le concept :  %(k1)s  n'est pas un champ de température
 """),
 
 99: _("""
-  le concept evol_ther :  %(k1)s  ne contient aucun champ de temperature
+  le concept EVOL_THER :  %(k1)s  ne contient aucun champ de température
 """),
 }

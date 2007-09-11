@@ -3,7 +3,7 @@
      >     ADRESS,LGIND,FCTNZS,FCTOPS,
      >     LLIST,NNV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,9 +115,7 @@ C     C A D ADRESS(SN+1) - ADRESS(SN)
          I= FIN
  128     CONTINUE
          IF( I.LT.DEB) THEN
-            CALL U2MESG('F+','ALGELINE5_6',0,' ',0,0,0,0.D0)
-            WRITE(IFM,*) 'TOUS LES NDS DU SN ',SNJ,' ONT NV NUL'
-            CALL U2MESG('F','ALGELINE5_7',0,' ',0,0,0,0.D0)
+            CALL U2MESG('F','ALGELINE5_6',0,' ',1,SNJ,0,0.D0)
          ENDIF
          IF(NNV(I).NE.0) GOTO 129
          I= I-1
@@ -153,9 +151,7 @@ C
          NDI= FIN
  175     CONTINUE
          IF( NDI.LT.DEB) THEN
-            CALL U2MESG('F+','ALGELINE5_8',0,' ',0,0,0,0.D0)
-            WRITE(IFM,*) 'TOUS LES NDS DU SN ',SNJ,' ONT NV NUL'
-            CALL U2MESG('F','ALGELINE5_9',0,' ',0,0,0,0.D0)
+            CALL U2MESG('F','ALGELINE5_6',0,' ',1,SNJ,0,0.D0)
          ENDIF
          IF(NNV(NDI).NE.0) GOTO 177
          NDI= NDI-1

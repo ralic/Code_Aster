@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -497,9 +497,9 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
          CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT',IUL, K8B,
      &                 LBID,IBID, K8B,' ', NBPAR,
      &                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
-     &                 IBID, K8B, 'T', .FALSE., IBID, IBID, IBID, IBID,
-     &                 IBID, K8B, .FALSE., R8B, .FALSE., R8B, .FALSE.,
-     &                 .FALSE., FORMAR,LMOD,NIVE,VERSIO)
+     &                 IBID, K8B, 'T', K8B,.FALSE., IBID, IBID, IBID,
+     &                 IBID, IBID, K8B, .FALSE., R8B, .FALSE., R8B,
+     &                 .FALSE.,.FALSE., FORMAR,LMOD,NIVE,VERSIO)
       ENDIF
 C     ------------------------------------------------------------------
       CALL JEDEMA()

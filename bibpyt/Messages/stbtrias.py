@@ -1,4 +1,4 @@
-#@ MODIF stbtrias Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF stbtrias Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,46 +23,49 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- le fichier ideas est vide, ou ne contient pas de datatset traite par l'interface
+ le fichier IDEAS est vide
+ ou ne contient pas de DATASET traite par l'interface
 """),
 
 2: _("""
- couleur inconnu
+ couleur inconnue
 """),
 
 3: _("""
-  attention le dataset 2420 apparait plusieurs fois.
+  attention le DATASET 2420 apparait plusieurs fois.
 """),
 
 4: _("""
-  attention le dataset 18 apparait plusieurs fois.
+  attention le DATASET 18 apparait plusieurs fois.
 """),
 
 5: _("""
- groupe  %(k1)s  de longueur superieure a 8 (troncature du nom)
+ groupe  %(k1)s  de longueur supérieure à 8 (troncature du nom)
 """),
 
 6: _("""
- le nom du groupe est invalide:  %(k1)s  : non traite
+ le nom du groupe est invalide:  %(k1)s  : non traité
 """),
 
 7: _("""
- le nom du groupe  %(k1)s  est tronque :  %(k2)s 
+ le nom du groupe  %(k1)s  est tronqué :  %(k2)s 
 """),
 
 8: _("""
- le nom du groupe ne peut commencer par coul_ : non traite
+ le nom du groupe ne peut commencer par COUL_ : non traité
 """),
 
 9: _("""
-  aucun systeme de coordonnes n'est defini
+  aucun système de coordonnés n'est défini
 """),
 
 10: _("""
-  attention systeme de coordonnes autre que cartesien non relu dans aster.
+  attention système de coordonnées autre que cartésien non relu dans ASTER.
 """),
 
 11: _("""
-  attention votre maillage utiliseplusieurs systemes de coordonnees.verifier qu'ils sont tous identiques car asterne gere qu'un systeme de coordonne cartesien unique.
+  attention votre maillage utilise plusieurs systèmes de coordonnées
+  vérifiez qu'ils sont tous identiques
+  ASTER ne gère qu'un système de coordonnéez cartesien unique.
 """),
 }

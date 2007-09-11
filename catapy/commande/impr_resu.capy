@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,9 +123,20 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
 ###
            b_gmsh=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and((FORMAT == 'GMSH'))""",
                                 fr="sélection des composantes et des entités toplogiques",
-             NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+             TYPE_CHAM       =SIMP(statut='f',typ='TXM',defaut="SCALAIRE",
+                                   into=("VECT_2D","VECT_3D","SCALAIRE","TENS_2D","TENS_3D"),),
+             b_scal          =BLOC(condition = "TYPE_CHAM=='SCALAIRE'",
+               NOM_CMP         =SIMP(statut='f',typ='TXM',max='**' ),),
+             b_vect_2d       =BLOC(condition = "TYPE_CHAM=='VECT_2D'",
+               NOM_CMP         =SIMP(statut='o',typ='TXM',min=2,max=2 ),),
+             b_vect_3d       =BLOC(condition = "TYPE_CHAM=='VECT_3D'",
+               NOM_CMP         =SIMP(statut='o',typ='TXM',min=3,max=3 ),),
+             b_tens_2d       =BLOC(condition = "TYPE_CHAM=='TENS_2D'",
+               NOM_CMP         =SIMP(statut='o',typ='TXM',min=4,max=4 ),),
+             b_tens_3d       =BLOC(condition = "TYPE_CHAM=='TENS_3D'",
+               NOM_CMP         =SIMP(statut='o',typ='TXM',min=6,max=6 ),),
            ),
 ###
            b_topologie=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and\

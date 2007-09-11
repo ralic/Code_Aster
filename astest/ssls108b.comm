@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,7 +148,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 TEST_FICHIER(FICHIER='./REPE_OUT/DEP10.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='d84b69df75e5ed69b339ca2c5483eda4',
+             VALE_K='7cf4e36acbdb5d053d9e69e254a1fd8a',
              REFERENCE='NON_REGRESSION',
              VERSION='7.2.23',
              INFO=1)
@@ -179,7 +179,8 @@ DEFI_FICHIER( UNITE=38,
 
 IMPR_RESU ( MODELE=MODELE_1,
             FORMAT='GMSH', VERSION=1.2, UNITE=38,
-            RESU=_F( CHAM_GD=DEFZ   )   ) ;
+            RESU=(_F( CHAM_GD=DEFZ, TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ' )   ),
+                  _F( CHAM_GD=DEFZ, NOM_CMP=('DRX','DRY','DRZ' ) ),),)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 

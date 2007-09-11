@@ -6,7 +6,7 @@
      &                    LRESU,FORMR,NIVE )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C
       CHARACTER*8   NOMSD8, NOSIM8, NOMPA8
       CHARACTER*16  NOSY16
       CHARACTER*19  CH19
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(2), TYRES
       INTEGER       LGNOGD,LGCH16,IBID,IERD,IFI,LXLGUT,
      &              NUMCMP(100)
 C
@@ -105,14 +105,21 @@ C
 C
 C     --- TYPE DU CHAMP A IMPRIMER (CHAM_NO OU CHAM_ELEM)
       CALL DISMOI('F','TYPE_CHAMP',CH19,'CHAMP',IBID,TYCH,IERD)
-C
+      CALL DISMOI('F','TYPE_RESU',NOMSD8,'RESULTAT',IBID,TYRES,IERD)
+
       IF ((TYCH(1:4).EQ.'NOEU') .OR. (TYCH(1:2).EQ.'EL')) THEN
       ELSEIF ( TYCH(1:4).EQ. 'CART' ) THEN
          GOTO 9999
       ELSE
           VALK(1) = TYCH
           VALK(2) = CH19
-          CALL U2MESK('A','PREPOST_87', 2 ,VALK)
+          IF(TYRES(1:9) .EQ. 'MODE_GENE'  .OR. 
+     &       TYRES(1:9) .EQ. 'HARM_GENE')THEN
+             CALL U2MESK('A+','PREPOST_87', 2 ,VALK)
+             CALL U2MESS('A' ,'PREPOST6_36')
+          ELSE
+             CALL U2MESK('A','PREPOST_87', 2 ,VALK)
+          ENDIF
       ENDIF
 C
 C     --- NOM DE LA GRANDEUR ASSOCIEE AU CHAMP CH19

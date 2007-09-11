@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 10/09/2007   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -244,7 +244,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       motscles['PRES_REP'  ]= _F(GROUP_MA=APPRES,   PRES=PRES_REP['PRES'])
   else :
       motscles['PRES_REP'  ]= _F(GROUP_MA=APPRES[0],PRES=PRES_REP['PRES'])
-  if  PRES_REP['EFFE_FOND' ]!=None :
+  if  PRES_REP['EFFE_FOND' ]=='OUI' :
       motscles['EFFE_FOND' ]=(_F(GROUP_MA    ='EXTUBU  ',
                                  GROUP_MA_INT='L_INT_TU',
                                  PRES        =PRES_REP['PRES']),

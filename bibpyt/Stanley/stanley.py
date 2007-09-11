@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF stanley Stanley  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -710,18 +710,19 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
 class CONTEXTE:
 
-  def __init__(self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi) :
-  
+  def __init__(self, jdc, resultat, maillage, modele, cham_mater, cara_elem, para_sensi) :
+
+    self.jdc        = jdc
     self.resultat   = resultat
     self.maillage   = maillage
     self.modele     = modele
     self.cham_mater = cham_mater
     self.cara_elem  = cara_elem 
     self.para_sensi = para_sensi
-
     self.resultat_sensible = None
+
     if self.para_sensi:
-       nom_resu_sensible = Sensibilite.NomCompose(self.resultat, self.para_sensi)
+       nom_resu_sensible = self.jdc.memo_sensi.get_nocomp(self.resultat.nom, self.para_sensi.nom)
        self.resultat_sensible = resultat_jeveux(nom_resu_sensible)
 
 
@@ -994,7 +995,7 @@ class ETAT_RESU:
 
     # Si on est en sensibilite...
     else:
-       nom_resu_sensible = Sensibilite.NomCompose(self.contexte.resultat, self.contexte.para_sensi)
+       nom_resu_sensible = self.contexte.jdc.memo_sensi.get_nocomp(self.contexte.resultat.nom, self.contexte.para_sensi.nom)
        resu_sensible = resultat_jeveux(nom_resu_sensible)
 
        self.va  = resu_sensible.LIST_PARA() 
@@ -1452,13 +1453,14 @@ class STANLEY:
     OUTIL DE POST-TRAITEMENT GRAPHIQUE
     
   """
-  
+ 
   def __init__ (self, resultat, maillage, modele, cham_mater, cara_elem, para_sensi, FICHIER_VALID=None) :
 
     # Gestion des erreurs
     self.erreur = ERREUR()
 
-    self.contexte   = CONTEXTE(resultat, maillage, modele, cham_mater, cara_elem, para_sensi)
+    self.jdc_recup  = CONTEXT.get_current_step().jdc
+    self.contexte   = CONTEXTE(self.jdc_recup, resultat, maillage, modele, cham_mater, cara_elem, para_sensi)
     self.etat_geom  = ETAT_GEOM(maillage)
     self.etat_resu  = ETAT_RESU(self.contexte)
     self.selection  = SELECTION(self.contexte,self.etat_geom,self.etat_resu)
@@ -2089,7 +2091,7 @@ class DRIVER :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [__MO_P], 2, texte)
 
-    return CONTEXTE(__RESU_P, __MA, __MO_P, None, None, contexte.para_sensi), [__MO_P, __RESU_P]
+    return CONTEXTE(contexte.jdc,__RESU_P, __MA, __MO_P, None, None, contexte.para_sensi), [__MO_P, __RESU_P]
 
 
   # ----------------------------------------------------------------------------
@@ -2542,7 +2544,7 @@ class DRIVER_COURBES(DRIVER) :
 
           # Sensibilite
           if contexte.para_sensi:
-             table_sensible_jeveux = table_jeveux( Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi) )
+             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom) )
              courbe.Lire_y(table_sensible_jeveux, comp)
              nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
           else:
@@ -2552,7 +2554,7 @@ class DRIVER_COURBES(DRIVER) :
           l_courbes.append( (courbe, nom) )
 
         DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
-        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi)),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
         if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
 
 
@@ -2586,7 +2588,7 @@ class DRIVER_COURBES(DRIVER) :
 
           # Sensibilite
           if contexte.para_sensi:
-             table_sensible_jeveux = table_jeveux( Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi) )
+             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom) )
              courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
              courbe.Lire_y(table_sensible_jeveux, comp)
              nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
@@ -2599,7 +2601,7 @@ class DRIVER_COURBES(DRIVER) :
           l_courbes.append( (courbe, nom) )
 
         DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
-        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = Sensibilite.NomCompose(STNTBLGR, contexte.para_sensi)),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
 
       if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
 
@@ -2989,9 +2991,8 @@ class PRE_STANLEY :
 
     for evol in t_evol:
        dico[evol] = []
-
        for para_sensi in t_para_sensi:
-          resu_sensible = resultat_jeveux( Sensibilite.NomCompose(evol, para_sensi) )
+          resu_sensible = resultat_jeveux( self.jdc_recupere.memo_sensi.get_nocomp(evol, para_sensi) )
           if resu_sensible.nom:
              test_existance = aster.getvectjev( resu_sensible.nom.ljust(19) + '.DESC' )
              if test_existance:
@@ -3108,7 +3109,7 @@ class PRE_STANLEY :
 
      # Lancement de Stanley
      STANLEY(self.jdc_recupere.sds_dict[evol], self.jdc_recupere.sds_dict[maillage], self.jdc_recupere.sds_dict[modele], self.jdc_recupere.sds_dict[cham_mater], c_cara_elem, c_para_sensi, self.FICHIER_VALID)
-
+#
 
   def Sortir(self):
     """

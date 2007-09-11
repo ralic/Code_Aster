@@ -1,8 +1,7 @@
-      SUBROUTINE SANSCC(CHAR  ,MOTFAC ,NOMA  ,NZOCO ,NNOCO ,
-     &                  NMACO)
+      SUBROUTINE SANSCC (CHAR, MOTFAC, NOMA, NZOCO, NNOCO, NMACO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,11 +21,9 @@ C ======================================================================
 C REPONSABLE
 C
       IMPLICIT     NONE
-      CHARACTER*8  CHAR
+      CHARACTER*8  CHAR,NOMA
       CHARACTER*16 MOTFAC
-      CHARACTER*8  NOMA
-      INTEGER      NZOCO
-      INTEGER      NNOCO,NMACO
+      INTEGER      NZOCO,NNOCO,NMACO
 C      
 C ----------------------------------------------------------------------
 C
@@ -36,7 +33,6 @@ C TRAITEMENT MOT-CLEFS GROUP_NO_FOND/GROUP_MA_FOND/GROUP_NO_RACC
 C      
 C ----------------------------------------------------------------------
 C
-C 
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
 C IN  NOMA   : NOM DU MAILLAGE
@@ -63,7 +59,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 BARSNO,PBARS,BARSMA,PBARM,RACCNO,PRACC 
+      CHARACTER*24 BARSNO,PBARS,BARSMA,PBARM,RACCNO,PRACC,FROTNO,PFROT
       INTEGER      NUMSUR
 C
 C ----------------------------------------------------------------------
@@ -76,8 +72,7 @@ C
       BARSNO = CHAR(1:8)//'.CONTACT.BANOCO'
       PBARS  = CHAR(1:8)//'.CONTACT.PBANOCO'
       CALL SANSNO(CHAR  ,MOTFAC ,NOMA  ,NZOCO ,NNOCO ,
-     &            'GROUP_NO_FOND','NOEUD_FOND',
-     &            BARSNO,PBARS,NUMSUR)
+     &            'GROUP_NO_FOND','NOEUD_FOND',BARSNO,PBARS,NUMSUR)
 C
 C --- TRAITEMENT MOT-CLEF GROUP_MA_FOND/MAILLE_FOND
 C
@@ -85,8 +80,7 @@ C
       BARSMA = CHAR(1:8)//'.CONTACT.BAMACO'
       PBARM  = CHAR(1:8)//'.CONTACT.PBAMACO'
       CALL SANSMA(CHAR  ,MOTFAC ,NOMA  ,NZOCO ,NMACO ,
-     &            'GROUP_MA_FOND','MAILLE_FOND',
-     &            BARSMA,PBARM,NUMSUR)     
+     &            'GROUP_MA_FOND','MAILLE_FOND',BARSMA,PBARM,NUMSUR)
 C
 C --- TRAITEMENT MOT-CLEF GROUP_NO_RACC/NOEUD_RACC
 C
@@ -94,9 +88,15 @@ C
       RACCNO = CHAR(1:8)//'.CONTACT.RANOCO'
       PRACC  = CHAR(1:8)//'.CONTACT.PRANOCO'
       CALL SANSNO(CHAR  ,MOTFAC ,NOMA  ,NZOCO ,NNOCO ,
-     &            'GROUP_NO_RACC','NOEUD_RACC',
-     &            RACCNO,PRACC,NUMSUR)     
-
+     &            'GROUP_NO_RACC','NOEUD_RACC',RACCNO,PRACC,NUMSUR)
 C
+C --- TRAITEMENT MOT-CLEF SANS_GROUP_NO_FROT/SANS_NOEUD_FROT
+C
+      NUMSUR = 0 
+      FROTNO = CHAR(1:8)//'.CONTACT.SANOFR'
+      PFROT  = CHAR(1:8)//'.CONTACT.PSANOFR'
+      CALL SANSNO(CHAR  ,MOTFAC ,NOMA  ,NZOCO ,NNOCO ,
+     &           'SANS_GROUP_NO_FR','SANS_NOEUD_FR',FROTNO,PFROT,NUMSUR)
+     
       CALL JEDEMA()
       END

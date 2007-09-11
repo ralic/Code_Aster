@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,23 +196,6 @@ TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
                               TOUT_CMP='OUI',
                               OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=DEPLAC,);
-IMPR_TABLE(TABLE=TCONT,);
-
-DEFI_FICHIER(ACTION='ASSOCIER',UNITE=37)
-
-IMPR_RESU(MODELE=MO,
-          FORMAT='CASTEM',UNITE=37,
-          RESU=_F(RESULTAT=U,
-                  MAILLAGE=MAILL1,
-                  NOM_CHAM=('DEPL',
-                            'VALE_CONT',
-                            'SIEF_NOEU_ELGA',
-                            ),
-                  TOUT_ORDRE='OUI',
-                  ),);
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,
@@ -248,7 +231,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CMP='DY',
                    GROUP_NO='K',
                    VALE=55.880000000000003,
-                   PRECISION=1.03E-2,
+                   PRECISION=1.05E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=6,
@@ -290,7 +273,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NOM_CMP='DY',
                    GROUP_NO='K',
                    VALE=155.096,
-                   PRECISION=5.E-2,
+                   PRECISION=3.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=11,

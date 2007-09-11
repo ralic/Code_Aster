@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 30/05/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith6 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,10 +22,8 @@ def _(x) : return x
 
 cata_msg={
 
-
-
 8: _("""
- erreur point integration (dvlp)
+ erreur point intégration (dvlp)
 """),
 
 9: _("""
@@ -37,35 +35,36 @@ cata_msg={
 """),
 
 11: _("""
- pas d'elements tardifs ! (dvlp)
+ pas d'éléments tardifs ! (dvlp)
 """),
 
 12: _("""
- la  methode d integration est gauss, le champ vale_cont n est pas cree
+ la méthode d'integration est GAUSS, le champ VALE_CONT n'est pas créé
 """),
 
 13: _("""
- dimension du probleme inconnu
+ dimension du problème inconnu
 """),
 
 14: _("""
- erreur dans la programmation, cette routine ne doit etre appele que dans le cas de la methode continue du contact
+ erreur dans la programmation
+ cette routine ne doit etre appelée que dans le cas de la méthode continue du contact
 """),
 
 15: _("""
- le vecteur dire_appa est nul !
+ le vecteur DIRE_APPA est nul !
 """),
 
 16: _("""
- le fond de fissure d'un maillage 2d ne peut etre defini par des mailles
+ le fond de fissure d'un maillage 2d ne peut etre défini par des mailles
 """),
 
 17: _("""
- les mailles a modifier doivent etre de type "seg3" ou "poi1"
+ les mailles à modifier doivent etre de type "SEG3" ou "POI1"
 """),
 
 18: _("""
- le fond de fissure d'un maillage 2d est defini par un noeud unique
+ le fond de fissure d'un maillage 2d est défini par un noeud unique
 """),
 
 19: _("""
@@ -75,31 +74,30 @@ cata_msg={
      le plus proche.
   -> Risque & Conseil :
      ???
-
 """),
 
 20: _("""
- nb noeuds mesure superieur nb noeuds calcul
+ nombre noeuds mesuré supérieur au nombre de noeuds calculé
 """),
 
 21: _("""
- noeu_calcul non trouve
+ NOEU_CALCUL non trouvé
 """),
 
 22: _("""
- noeu_mesure non trouve
+ NOEU_MESURE non trouvé
 """),
 
 23: _("""
- nombre de noeuds different
+ nombre de noeuds différent
 """),
 
 24: _("""
- traitement manuel correspondance : un couple a la fois
+ traitement manuel correspondance : un couple à la fois
 """),
 
 25: _("""
- echec projection
+ échec projection
 """),
 
 26: _("""
@@ -107,31 +105,41 @@ cata_msg={
 """),
 
 27: _("""
- le nombre des coefficients de ponderation est superieur au nombre de vecteurs de base
+ le nombre des coefficients de pondération est supérieur
+ au nombre de vecteurs de base
 """),
 
 28: _("""
- le nombre des coefficients de ponderation est inferieur au nombre de vecteurs de base , le dernier coefficient est affecte aux autres
+ le nombre des coefficients de pondération est inférieur
+ au nombre de vecteurs de base
+ le dernier coefficient est affecté aux autres
 """),
 
 29: _("""
- le nombre des fonctions de ponderation est superieur au nombre de vecteurs de base
+ le nombre des fonctions de pondération est supérieur
+ au nombre de vecteurs de base
 """),
 
 30: _("""
- le nombre des fonctions de ponderation est inferieur au nombre de vecteurs de base la derniere fonction est affectee aux autres
+ le nombre des fonctions de pondération est inférieur
+ au nombre de vecteurs de base
+ la dernière fonction est affectée aux autres
 """),
 
 31: _("""
- le nombre d abscisses d une des fonctions d interpolation n est pas identique au nombre d abscisses du premier point de mesure experimental 
+ le nombre dabscisses d'une des fonctions d'interpolation
+ n'est pas identique au nombre d'abscisses du premier point
+ de mesure expérimental 
 """),
 
 32: _("""
-  le critere d egalite de la liste d abscisses du premier  dataset 58 et de la liste d abscisses d une des fonctions  de ponderation n est pas verifie 
+  le critère d'égalite de la liste d'abscisses du premier dataset 58
+  et de la liste d'abscisses d une des fonctions de pondération
+  n'est pas verifié 
 """),
 
 33: _("""
- incompatibilite nom_para et donnees mesurees 
+ incompatibilité NOM_PARA et données mesurées 
 """),
 
 34: _("""
@@ -139,86 +147,62 @@ cata_msg={
 """),
 
 35: _("""
- surcharge d'un resultat sans definir d'etat initial : on prend un etat initial nul
+ surcharge d'un résultat sans définir d'état initial :
+ on prend un état initial nul
 """),
-
-
-
-
-
-
-
 
 37: _("""
- pas de numero d'ordre pour le concept  %(k1)s 
+ pas de numéro d'ordre pour le concept  %(k1)s 
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 41: _("""
- le champ de depl_r (ou derive) n'est pas trouve dans le concept  %(k1)s 
+ le champ de DEPL_R (ou derivé) n'est pas trouvé dans le concept  %(k1)s 
 """),
 
 42: _("""
- le champ de sief_r (ou derive) n'est pas trouve dans le concept  %(k1)s 
+ le champ de SIEF_R (ou derivé) n'est pas trouvé dans le concept  %(k1)s 
 """),
 
 43: _("""
- le champ de vite n'est pas trouve dans le concept  %(k1)s  on cree un champ de vitesses nulles
+ le champ de VITE n'est pas trouvé dans le concept  %(k1)s
+ on crée un champ de vitesses nulles
 """),
 
 44: _("""
- le champ d'acce n'est pas trouve dans le concept  %(k1)s  on calcule un champ d'accelerations, ce qui est possible puisque les vitesses sont nulles
+ le champ d'ACCE n'est pas trouvé dans le concept  %(k1)s
+ on calcule un champ d'accélérations
+ ce qui est possible puisque les vitesses sont nulles
 """),
 
 45: _("""
- le champ d'acce n'est pas trouve dans le concept  %(k1)s  on ne peut pas, pour l'instant, calculer le champ des accelerations car les vitesses ne sont pas nulles
+ le champ d'ACCE n'est pas trouvé dans le concept  %(k1)s
+ on ne peut pas, pour l'instant, calculer le champ des accélérations
+ car les vitesses ne sont pas nulles
 """),
 
 46: _("""
- le champ de vari_r (ou derive) n'est pas trouve dans le concept  %(k1)s 
+ le champ de VARI_R (ou derivé) n'est pas trouvé dans le concept  %(k1)s 
 """),
 
 47: _("""
- le champ de vari_non_local (ou derive) n'est pas trouve dansle concept %(k1)s 
+ le champ de VARI_NON_LOCAL (ou derivé) n'est pas trouve dans le concept %(k1)s 
 """),
 
 48: _("""
- le champ de lanl_elga n'est pas trouve dans le concept  %(k1)s 
+ le champ de LANL_ELGA n'est pas trouvé dans le concept  %(k1)s 
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 52: _("""
- iterations cycliques : changement de configuration ou variation trop importante du deplacement physique a l'issue de la derniere iteration
+ itérations cycliques :
+ changement de configuration ou variation trop importante
+ du deplacement physique à l'issue de la dernière itération
 """),
 
 53: _("""
- pas de convergence de l'algorithme de newton en  %(k1)s  iterations a l'instant  %(k2)s . il faut reduire la rigidite normale, ou le jeu.
+ pas de convergence de l'algorithme de NEWTON :
+ - en  %(k1)s  iterations
+ - à l'instant  %(k2)s
+ il faut réduire la rigidité normale, ou le jeu.
 """),
 
 54: _("""
@@ -226,19 +210,19 @@ cata_msg={
 """),
 
 55: _("""
- theta = 1 ou 0.5 
+ THETA = 1 ou 0.5 
 """),
 
 56: _("""
- fluence commandee et flux_phi different de 1
+ fluence commandée et FLUX_PHI différent de 1
 """),
 
 57: _("""
- fluence decroissante (phi<0)
+ fluence décroissante (PHI<0)
 """),
 
 58: _("""
- relation asse_combu 1d sans loi de fluence appropriee
+ relation ASSE_COMBU 1d sans loi de fluence appropriée
 """),
 
 59: _("""
@@ -246,67 +230,75 @@ cata_msg={
 """),
 
 60: _("""
- cam_clay : la porosite donnee dans cam_clay doit etre la meme que dans thm_init
+ CAM_CLAY :
+ la porosité donnee dans CAM_CLAY doit etre la meme que dans THM_INIT
 """),
 
 61: _("""
- barcelone : il faut que la contrainte hydrostatique soit superieure a la  pression de cohesion -kc*pc 
+ BARCELONE :
+ il faut que la contrainte hydrostatique soit supérieure
+ à la  pression de cohesion -KC*PC 
 """),
 
 62: _("""
- iter_inte_maxi insuffisant lors du calcul de la borne
+ ITER_INTE_MAXI insuffisant lors du calcul de la borne
 """),
 
 63: _("""
- cam_clay : le cas des contraintes planes n est pas traite pour ce modele.
+ CAM_CLAY :
+ le cas des contraintes planes n'est pas traité pour ce modèle.
 """),
 
 64: _("""
- cam_clay : il faut que la contrainte hydrostatique soit superieure a la  pression initiale pa 
+ CAM_CLAY :
+ il faut que la contrainte hydrostatique soit supérieure
+ a la pression initiale PA 
 """),
 
 65: _("""
- type de selection inconnue
+ type de sélection inconnue
 """),
 
 66: _("""
- pour l'instant on ne traite pas le cas des contraintes planes dans le modele de chaboche a une variable cinematique.
+ pour l'instant, on ne traite pas le cas des contraintes planes
+ dans le modele de CHABOCHE à une variable cinématique.
 """),
 
 67: _("""
- n doit etre strictementpositif.
+ N doit etre strictementpositif.
 """),
 
 68: _("""
- parametre un_sur_k egal a zero cas incompatible avec visc_cinx_chab
+ paramètre UN_SUR_K égal à zéro cas incompatible avec VISC_CINX_CHAB
 """),
 
 69: _("""
- loi visc_cinx_chab on doit obligatoirement avoir un_sur_m = zero
+ loi VISC_CINX_CHAB
+ on doit obligatoirement avoir UN_SUR_M = zéro
 """),
 
 70: _("""
- macro_element statique et feti incompatibles !
+ macro_element statique et FETI incompatibles
 """),
 
 71: _("""
- chargement onde plane et feti incompatibles !
+ chargement onde plane et FETI incompatibles
 """),
 
 72: _("""
- forces fluides sur les grappes et feti incompatibles !
+ forces fluides sur les grappes et FETI incompatibles
 """),
 
 73: _("""
- forces d'inertie et feti incompatibles !
+ forces d'inertie et FETI incompatibles
 """),
 
 74: _("""
- forces explicites et feti incompatibles !
+ forces explicites et FETI incompatibles
 """),
 
 75: _("""
- forces d'inertie derivees et feti incompatibles !
+ forces d'inertie derivées et FETI incompatibles
 """),
 
 76: _("""
@@ -314,15 +306,15 @@ cata_msg={
 """),
 
 77: _("""
- coeff vic_cin1_chab tous nuls ?
+ coefficients VIC_CIN1_CHAB tous nuls ?
 """),
 
 78: _("""
- f reste toujours negative.
+ F reste toujours négative.
 """),
 
 79: _("""
- f reste toujours positive.
+ F reste toujours positive.
 """),
 
 80: _("""
@@ -330,23 +322,24 @@ cata_msg={
 """),
 
 81: _("""
- utiliser algo_1d="deborst" sous comp_incr pour le comportement  %(k1)s 
+ utiliser ALGO_1D="DEBORST" sous COMP_INCR pour le comportement  %(k1)s 
 """),
 
 82: _("""
- integration explicite du comportement non programmee
+ integration explicite du comportement non programmée
 """),
 
 83: _("""
- rousselier à gradient sans simo miehe non programmé : utilisez la modélisation **_INCO
+ Rousselier à gradient sans SIMO_MIEHE non programmé :
+ utilisez la modélisation **_INCO
 """),
 
 84: _("""
- loi non traitee pour les elemjoin : %(k1)s 
+ loi non traitée pour les éléments de joint : %(k1)s 
 """),
 
 85: _("""
- integration explicite impossible
+ intégration explicite impossible
 """),
 
 86: _("""
@@ -358,7 +351,7 @@ cata_msg={
 """),
 
 88: _("""
- erreur dans le type de comportment
+ erreur dans le type de comportement
 """),
 
 89: _("""
@@ -366,11 +359,13 @@ cata_msg={
 """),
 
 90: _("""
- pas de c_plan pour vmis_cineutiliser c_plan_deborst
+ pas de C_PLAN pour VMIS_CINE
+ utiliser C_PLAN_DEBORST
 """),
 
 91: _("""
- pas de c_plan pour vmis_cin1utiliser c_plan_deborst
+ pas de c_plan pour VMIS_CIN1
+ utiliser C_PLAN_DEBORST
 """),
 
 92: _("""
@@ -378,22 +373,19 @@ cata_msg={
 """),
 
 93: _("""
- integration du comportement           poly_cfc uniquement explicite
+ integration du comportement POLY_CFC uniquement explicite
 """),
 
 94: _("""
- pas de c_plan pour bazant_fd  utiliser c_plan_deborst
+ pas de C_PLAN pour BAZANT_FD  utiliser C_PLAN_DEBORST
 """),
 
 95: _("""
- integration implicite du comportement non programmee
+ intégration implicite du comportement non programmée
 """),
 
 96: _("""
- green deformation required for elas_hyper material
+ GREEN deformation required for ELAS_HYPER material
 """),
-
-
-
 
 }

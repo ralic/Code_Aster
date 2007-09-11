@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 02/07/2007   AUTEUR PROIX J-M.PROIX 
+#@ MODIF mecanonline2 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,12 +23,38 @@ def _(x) : return x
 cata_msg={
 
 67: _("""
- Le code %(i1)d retourné lors de l'intégration de la loi de comportement n'est
- pas traité.  
+ Le code %(i1)d retourné lors de l'intégration de la loi de comportement n'est pas traité.  
+"""),
+
+93: _("""
+  -> Risque & Conseil :  dans le cas d'une résolution incrémentale, 
+     on ne considère que la variation des variables de commande entre
+     l'instant précédent et l'instant actuel.
+     On  ne prend donc pas en compte d'éventuelles contraintes incompatibles
+     dues à ces variables de commande initiales. 
+     Pour tenir compte de ces contraintes vous pouvez :
+     - partir d'un instant fictif antérieur où toutes les variables de 
+       commande sont nulles ou égales aux valeurs de référence
+     - choisir des valeurs de référence adaptées
+     Pour plus d'informations, voir la documentation de STAT_NON_LINE 
+     (U4.51.03) mot-clé EXCIT, et le test FORMA09 (V7.20.101).
+"""),
+
+94: _("""
+  -> Indications supplémentaires : pour la variable de commande :  %(k1)s
+     et la composante :  %(k2)s
+     Valeur maximum : %(r1)f sur la maille : %(k3)s
+     Valeur minimum : %(r2)f sur la maille : %(k4)s
+"""),
+95: _("""
+  -> Indications supplémentaires : pour la variable de commande :  %(k1)s 
+     et la composante :  %(k2)s
+     Valeur maximum de abs( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
+     Valeur minimum de abs( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
 """),
 
 96: _("""
-    -> Les surfaces en contact relatif ont bougé de plus de 5%.
+    -> Les surfaces en contact relatif ont bougé de plus de 5%%.
        Or vous n'avez pas activé la réactualisation géométrique (REAC_GEOM) automatique ou
        vous utiliser le mode "CONTROLE"
     -> Risque & Conseil : Vos résultats risquent d'etre faux, les mailles ne
@@ -65,33 +91,6 @@ cata_msg={
   -> Risque & Conseil : Vérifier bien que votre chargement doit etre nul à cet instant 
      Le chargement est "nul" dans le cas de l'utilisation d'AFFE_CHAR_CINE en particulier.
      Il vous faut changer votre critère de convergence: RESI_GLOB_MAXI ou RESI_REFE_RELA
-"""),
-
-94: _("""
-  -> Indications supplémentaires : pour la variable de commande :  %(k1)s
-     et la composante :  %(k2)s
-     Valeur maximum : %(r1)f sur la maille : %(k3)s
-     Valeur minimum : %(r2)f sur la maille : %(k4)s
-"""),
-95: _("""
-  -> Indications supplémentaires : pour la variable de commande :  %(k1)s 
-     et la composante :  %(k2)s
-     Valeur maximum de abs( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
-     Valeur minimum de abs( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
-"""),
-
-93: _("""
-  -> Risque & Conseil :  dans le cas d'une résolution incrémentale, 
-     on ne considère que la variation des variables de commande entre
-     l'instant précédent et l'instant actuel.
-     On  ne prend donc pas en compte d'éventuelles contraintes incompatibles
-     dues à ces variables de commande initiales. 
-     Pour tenir compte de ces contraintes vous pouvez :
-     - partir d'un instant fictif antérieur où toutes les variables de 
-       commande sont nulles ou égales aux valeurs de référence
-     - choisir des valeurs de référence adaptées
-     Pour plus d'informations, voir la documentation de STAT_NON_LINE 
-     (U4.51.03) mot-clé EXCIT, et le test FORMA09 (V7.20.101).
 """),
 
 }

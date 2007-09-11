@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE PRE_IDEAS POUR DATASET 82
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,9 @@ MODEXP=LIRE_RESU(TYPE_RESU='MODE_MECA_C',
                                  POSI_FREQ=(8,1,),
                                  NOM_CMP=('DX','DY','DZ',),),
                  NUME_ORDRE=(1,2,3),);
+
+IMPR_RESU(RESU=_F(RESULTAT=MODEXP,NUME_ORDRE=2),)
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODEXP,PARTIE='REEL',NUME_ORDRE=2),)
 
 # ------------------------------------
 # TEST DES FREQUENCES PROPRES LUES

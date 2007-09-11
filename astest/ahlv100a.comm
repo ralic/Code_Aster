@@ -1,4 +1,4 @@
-# MODIF  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,6 +108,10 @@ TEST_RESU(RESU=(_F( RESULTAT = MODES,  PARA = 'FREQ',
                     CRITERE = 'RELATIF',  PRECISION = 5.E-3,
                     NUME_ORDRE = 8,  VALE = 923.556))
              )
+
+IMPR_RESU(RESU=_F(RESULTAT=MODES,NUME_ORDRE=2),)
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODES,NUME_ORDRE=2),)
+
 
 #  ----------------------CALCUL DECOMPOSE-------------------------------
 #
@@ -248,6 +252,15 @@ TEST_RESU(RESU=(
              _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,
               NOEUD = 'NO763',  NOM_CMP = 'PRES', VALE_C = ('RI',6.02368,1.6387,)))
              )
+
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=_F(RESULTAT=PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,NOM_CMP = 'PRES',
+                  ),)
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=PRESHARM,  NOM_CHAM = 'PRES',  NUME_ORDRE = 1,
+                  PARTIE='REEL',NOM_CMP='PRES'),)
+
 
 PRESHARM=CALC_ELEM( reuse=PRESHARM,     MODELE=GUIDE,   CHAM_MATER=CHAMPMAT,
                             TOUT_ORDRE='OUI',

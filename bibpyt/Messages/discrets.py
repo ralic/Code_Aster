@@ -1,4 +1,4 @@
-#@ MODIF discrets Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF discrets Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,35 +24,35 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
-element discret %(k1)s . Il n'y a pas de rotation non-lineaire possible.
+élément discret %(k1)s .
+Il n'y a pas de rotation non-linéaire possible.
 """),
 
 2: _("""
-element discret %(k1)s . Il n'y a pas de comportement\n
-non-lineaire possible suivant z ou en rotation autour de x,y en 2d.
+élément discret %(k1)s .
+Il n'y a pas de comportement non-lineaire possible suivant Z
+ou en rotation autour de X,Y en 2D.
 """),
 
 3: _("""
-element discret %(k1)s . Il n'y a pas de comportement\n
-non-lineaire possible en rotation ou suivant z en 2d.
+élément discret %(k1)s .
+Il n'y a pas de comportement non-linéaire possible en rotation
+ou suivant Z en 2D.
 """),
 
 4: _("""
-element discret. Le pas de temps est devenu trop petit : %(r1)12.5E .
+élément discret.
+Le pas de temps est devenu trop petit : %(r1)12.5E .
 """),
 
 5: _("""
-element discret %(k1)s . Les caracteristiques sont obligatoirement\n
-donnees dans le repere local du discret..
+élément discret %(k1)s .
+Les caractéristiques sont obligatoirement données dans le repère local du discret.
 """),
 
 6: _("""
-pour les elements discrets il faut definir un repere dans affe_cara_elem\n
+pour les éléments discrets il faut définir un repère dans AFFE_CARA_ELEM
 maille : %(k1)s
 """),
 
 }
-
-
-
-

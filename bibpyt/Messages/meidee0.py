@@ -1,4 +1,4 @@
-#@ MODIF meidee0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF meidee0 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@ def _(x) : return x
 
 cata_msg={
 1: _("""
-Le modèle mesuré doit etre un concept de type dyna_harmo ou mode_meca.
+Le modèle mesuré doit etre un concept de type DYNA_HARMO ou MODE_MECA.
 """),
 
 }

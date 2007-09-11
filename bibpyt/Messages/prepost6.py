@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 06/08/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF prepost6 Messages  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -174,6 +174,22 @@ cata_msg={
 
 33: _("""
        %(i1)d éléments de type %(k1)s
+"""),
+
+34: _("""
+    La composante %(k1)s que vous avez renseignée ne fait pas partie
+    des composantes du champ à imprimer.
+"""),
+
+35: _("""
+    Le type de champ %(k1)s n'est pas autorisé avec les champs 
+    élémentaires %(k2)s.
+    L'impression du champ sera effectué avec le type SCALAIRE.
+"""),
+
+36: _("""
+ Veuillez utiliser IMPR_GENE pour l'impression 
+ de résultats en variables généralisées.
 """),
 
 }

@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 23/08/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_fonction_ops Macro  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,6 +290,8 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
                l_freq=[SPEC_OSCI['FREQ'],]
             else:
                l_freq= SPEC_OSCI['FREQ']
+         if min(l_freq)<1.E-10 :
+            UTMESS('S','FONCT0_43')
          if abs(SPEC_OSCI['NORME'])<1.E-10 :
             UTMESS('S','FONCT0_33')
          if SPEC_OSCI['NATURE_FONC']!='ACCE' :

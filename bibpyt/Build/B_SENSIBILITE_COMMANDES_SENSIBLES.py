@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 19/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,6 +87,7 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
          self.a_deriver_ensemble  : ['DEFI_MATERIAU',],
          # commandes à dupliquer en fonction des concepts sensibles présents en argument
          self.a_deriver           : ['AFFE_MATERIAU',
+                                     'AFFE_CHAR_MECA',
                                      'AFFE_CHAR_MECA_F',
                                      'AFFE_CHAR_THER_F',
                                      'AFFE_CARA_ELEM',
@@ -169,6 +170,12 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
        Récupère la liste des commandes sensibles
        """
        return self.d_cmd[self.sensible]
+#
+   def get_l_commandes_sensibles_princ(self) :
+       """
+       Récupère la liste des commandes sensibles principales
+       """
+       return self.d_cmd[self.sensible_princ]
 #
    def get_l_commandes_sensibles_all(self) :
        """

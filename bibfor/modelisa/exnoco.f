@@ -1,10 +1,9 @@
-      SUBROUTINE EXNOCO (CHAR,MOTFAC,NOMA,MOTCLE,IREAD,JTRAV,
-     &                   NBMA,NBNO,NBNOQU,
-     &                   IPMA,IPNO,IPNOQU,
-     &                   LISTMA,LISTNO,LISTQU)
+      SUBROUTINE EXNOCO(CHAR  ,MOTFAC,NOMA  ,MOTCLE,IREAD ,
+     &                  JTRAV ,NBMA  ,NBNO  ,NBNOQU,IPMA  ,
+     &                  IPNO  ,IPNOQU,LISTMA,LISTNO,LISTQU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
       CHARACTER*8   CHAR
@@ -29,22 +29,21 @@ C
       CHARACTER*(*) MOTCLE
       INTEGER       IREAD
       INTEGER       JTRAV
-      INTEGER       NBMA
-      INTEGER       NBNO
-      INTEGER       NBNOQU
-      INTEGER       IPMA
-      INTEGER       IPNO
-      INTEGER       IPNOQU
+      INTEGER       NBMA,NBNO,NBNOQU
+      INTEGER       IPMA,IPNO,IPNOQU
       INTEGER       LISTMA(NBMA)
       INTEGER       LISTNO(NBNO)
       INTEGER       LISTQU(3*NBNOQU)
+C     
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : LIEXCO
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
 C
 C REMPLISSAGE DE LA LISTE DES MAILLES, DES NOEUDS ET DES NOEUDS
-C    QUADRATIQUES
+C QUADRATIQUES
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
@@ -57,7 +56,7 @@ C IN  NBNO   : NOMBRE DE NOEUDS DANS LA ZONE IREAD
 C IN  NBNOQU : NOMBRE DE NOEUDS QUADRATIQUES DANS LA ZONE IREAD
 C I/O IPMA   : INDICE POUR LA LISTE DES NUMEROS DES MAILLES DE CONTACT
 C I/O IPNO   : INDICE POUR LA LISTE DES NUMEROS DES NOEUDS DE CONTACT
-C I/O IPQU   : INDICE POUR LA LISTE DES NUMEROS DES NOEUDS QUADRATIQUES
+C I/O IPNOQU : INDICE POUR LA LISTE DES NUMEROS DES NOEUDS QUADRATIQUES
 C              DE CONTACT
 C I/O LISTMA : LISTE DES NUMEROS DES MAILLES DE CONTACT
 C I/O LISTNO : LISTE DES NUMEROS DES NOEUDS DE CONTACT
@@ -83,36 +82,42 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*8    TYPENT,K8BID
-      INTEGER        NG,NGR
+      INTEGER        NB,NBENT,NMA,NGRMA
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
+C
+C --- INITIALISATIONS
+C
       IF (MOTCLE(1:6).EQ.'MAILLE') THEN
-         TYPENT = 'MAILLE'
+        TYPENT = 'MAILLE'
       ELSE IF (MOTCLE(1:8).EQ.'GROUP_MA') THEN
-         TYPENT = 'GROUP_MA'
+        TYPENT = 'GROUP_MA'
       ELSE
-         CALL U2MESS('F','MODELISA4_52')
+        CALL ASSERT(.FALSE.)
       ENDIF
-
+C
+C --- LECTURE COMMANDE
+C
       CALL GETVEM(NOMA,TYPENT,MOTFAC,MOTCLE,
-     &             IREAD,1,0,K8BID,NG)
-      IF (NG.NE.0) THEN
-         NG = - NG
-         CALL GETVEM(NOMA,TYPENT,MOTFAC,MOTCLE,
-     &               IREAD,1,NG,ZK8(JTRAV),NGR)
-         IF (TYPENT.EQ.'MAILLE') THEN
-            NBMA = NGR
-            NGR  = 0
-         ENDIF
-         CALL EXNOEL(CHAR,NOMA,TYPENT,NGR,ZK8(JTRAV),
-     &               NBMA,NBNO,NBNOQU,
-     &               LISTMA,LISTNO,LISTQU,
-     &               IPMA,IPNO,IPNOQU)
+     &            IREAD,1,0,K8BID,NBENT)
+     
+      IF (NBENT.NE.0) THEN
+        NBENT   = -NBENT
+        CALL GETVEM(NOMA,TYPENT,MOTFAC,MOTCLE,
+     &              IREAD,1,NBENT,ZK8(JTRAV),NB)
+        IF (TYPENT.EQ.'MAILLE') THEN
+          NMA   = NB
+          NGRMA = 0
+        ELSE   
+          NMA   = 0
+          NGRMA = NB
+        ENDIF       
+        CALL EXNOEL(CHAR      ,NOMA  ,TYPENT,NGRMA ,NMA   ,
+     &              ZK8(JTRAV),NBMA  ,NBNO  ,NBNOQU,LISTMA,
+     &              LISTNO    ,LISTQU,IPMA  ,IPNO  ,IPNOQU)     
       END IF
-
 C
 C ----------------------------------------------------------------------
 C

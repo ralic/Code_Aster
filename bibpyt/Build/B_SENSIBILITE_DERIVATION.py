@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,9 @@
 
 """
 
+from types import FunctionType
 from Noyau.N_ASSD import ASSD
+from B_SENSIBILITE_COMMANDES_SENSIBLES import SENSIBILITE_COMMANDES_SENSIBLES
 
 class SENSIBILITE_DERIVATION :
    """
@@ -51,6 +53,8 @@ class SENSIBILITE_DERIVATION :
        self.memo_nom_sensi = memo_nom_sensi
        self.commande_memo_nom_sensi = commande_memo_nom_sensi
        self.DEBUG = DEBUG or DEBUG_defaut
+       commandes_sensibles = SENSIBILITE_COMMANDES_SENSIBLES()
+       self.l_commandes_sensibles_princ = commandes_sensibles.get_l_commandes_sensibles_princ()
 #
        self.reel = None
        self.l_nom_sd_prod = []
@@ -271,7 +275,7 @@ class SENSIBILITE_DERIVATION :
        Retourne l'étape dérivée et la liste des mots-clés concernés
        par la dérivation de leur valeur
        """
-#       print ".... Appel de derivation avec ",etape,reel,d_nom_s_c
+#        print ".... Appel de derivation avec ",etape,reel,d_nom_s_c
        if self.DEBUG :
          print ".... Lancement de la copie pour dérivation de ",etape.nom
        etape_derivee = etape.copy()
@@ -531,7 +535,7 @@ class SENSIBILITE_DERIVATION :
 #  les noms simples et les noms composés
 #
 #
-   def get_texte_memo_nom_sensi_compose(self,nom_simple,param_sensi,nom_compose,l_mcf_mcs_val_derives) :
+   def get_texte_memo_nom_sensi_compose(self,nom_simple,param_sensi,nom_compose,l_mcf_mcs_val_derives,new_etape=None) :
        """
        Récupère le texte de la commande ASTER pour l'enregistrement du nom
        composé associé à un nom simple et à un paramètre sensible
@@ -543,11 +547,47 @@ class SENSIBILITE_DERIVATION :
 ###       print ">>>> dans get_texte_memo_nom_sensi_compose, param_sensi = ", param_sensi
 ###       print ">>>> dans get_texte_memo_nom_sensi_compose, nom_compose = ", nom_compose
 ###       print ">>>> dans get_texte_memo_nom_sensi_compose, l_mcf_mcs_val_derives = ", l_mcf_mcs_val_derives
-       texte = self.commande_memo_nom_sensi+"(NOM=_F(\nNOM_SD='%s',\nPARA_SENSI=%s,\nNOM_COMPOSE='%s'"%(nom_simple,param_sensi,nom_compose)
+
+       format = """%(commande)s(
+         NOM=_F(
+            NOM_SD        = '%(nom_simple)s',
+            PARA_SENSI    = %(param_sensi)s,
+            NOM_COMPOSE   = %(nom_compose)s,
+            %(type_sd_deriv)s
+            %(mots_cles_optionnels)s
+         ))"""
+       form_typsd = """TYPE_SD_DERIV = '%s',
+       """
+
+       form_opt = """MOT_FACT      = %(mot_fact)s,
+            MOT_CLE       = %(mot_cle)s,
+            VALEUR        = %(valeur_mc)s,
+       """
+       d_info = {
+         'commande'      : self.commande_memo_nom_sensi,
+         'nom_simple'    : nom_simple,
+         'param_sensi'   : param_sensi,
+         'nom_compose'   : "'%s'" % nom_compose,
+         'type_sd_deriv' : '',
+         'mot_fact'      : None,
+         'mot_cle'       : None,
+         'valeur_mc'     : None,
+         'mots_cles_optionnels' : '',
+       }
+
+# ajout du typage de la SD sensible (pour les commandes principales)
+       if new_etape:
+          if new_etape.nom in self.l_commandes_sensibles_princ:
+#              print new_etape.nom, ' : commande principale'
+             sd_prod = new_etape.get_type_produit()
+#            on renseigne le nom et type de la SD à déclarer dans le JDC
+             d_info['nom_compose']   = "CO('%s')" % nom_compose
+             d_info['type_sd_deriv'] = form_typsd % sd_prod.__name__
+#
        if l_mcf_mcs_val_derives :
-         texte_mc = ",\nMOT_CLE=("
-         texte_va = ",\nVALEUR=("
-         texte_mf = ",\nMOT_FACT=("
+         l_mcf = []
+         l_mc  = []
+         l_va  = []
          for mot_cle in l_mcf_mcs_val_derives :
 ###           print "...... mot_cle[0] = ", mot_cle[0], " de type ", type(mot_cle[0])
 ###           print "...... mot_cle[1] = ", mot_cle[1], " de type ", type(mot_cle[1])
@@ -561,33 +601,19 @@ class SENSIBILITE_DERIVATION :
            else :
              laux = [mot_cle[2]]
            for aaa in laux :
-             texte_mf = texte_mf + "'%s',"%(mcf_aux)
-             texte_mc = texte_mc + "'%s',"%(mot_cle[1].nom)
-             texte_va = texte_va + "'%s',"%(aaa.nom)
-         texte_mf = texte_mf + ")"
-         texte_mc = texte_mc + ")"
-         texte_va = texte_va + ")"
-         texte = texte + texte_mf + texte_mc + texte_va
-       texte = texte + ")\n);"
+             l_mcf.append("'%s'" % mcf_aux)
+             l_mc.append("'%s'" % mot_cle[1].nom)
+             l_va.append("'%s'" % aaa.nom)
+         d_info['mot_fact']  = '(%s)' % ','.join(l_mcf)
+         d_info['mot_cle']   = '(%s)' % ','.join(l_mc)
+         d_info['valeur_mc'] = '(%s)' % ','.join(l_va)
+         d_info['mots_cles_optionnels'] = form_opt % d_info
+
+       texte = format % d_info
        if self.DEBUG :
          print ".... ", texte
        return texte
 #
-   def get_texte_memo_nom_sensi_zero(self,nom_fonction) :
-       """
-       Récupère le texte de la commande ASTER pour l'enregistrement du nom
-       de la fonction nulle
-       """
-       texte = self.commande_memo_nom_sensi+"(NOM_ZERO = %s);\n" %(nom_fonction)
-       return texte
-#
-   def get_texte_memo_nom_sensi_un(self,nom_fonction) :
-       """
-       Récupère le texte de la commande ASTER pour l'enregistrement du nom
-       de la fonction unite
-       """
-       texte = self.commande_memo_nom_sensi+"(NOM_UN = %s);\n" %(nom_fonction)
-       return texte
 #
 #  ========== ========== ========== Fin ========== ========== ==========
 #
@@ -626,7 +652,4 @@ if __name__ == "__main__" :
   d_param ['PS1'] = None
   d_param ['PS2'] = ['LAMBDA']
   d_param ['PS3'] = ['E_L','E_T']
-#  for param in d_param.keys() :
-#    print "Commande ASTER pour 'CH1' + ",param," = 'gabuzome : \n",derivation.get_texte_memo_nom_sensi_compose('CH1',param,'gabuzome',d_param[param])
-  print "Commande ASTER pour ZERO : ", derivation.get_texte_memo_nom_sensi_zero('fonc_0')
-  print "Commande ASTER pour UN   : ", derivation.get_texte_memo_nom_sensi_un('fonc_1')
+

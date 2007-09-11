@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -418,6 +418,20 @@ cata_msg={
  ce probleme peut etre du a l'utilisation du mot cle TOUT='OUI'.
  on peut verifier le champ produit avec info=2
 
+"""),
+
+78: _("""
+ Lois de comportement différentes pour la maille %(k3)s :
+ - loi de comportement extraite de la SD Résultat   : %(k1)s
+ - loi de comportement fournie à l'opérateur CALC_G : %(k2)s
+
+--> Risques & conseils :
+On doit généralement utiliser la meme loi de comportement entre le calcul et le
+post-traitement. On peut utiliser deux comportements différents, mais alors 
+l'utilisateur doit etre vigilant sur l'interprétation des résultats(cf.U2.05.01).
+Si plusieurs comportements sont définis sur la structure, le comportement à 
+indiquer dans CALC_G est celui du matériau dans lequel la fissure se développe. 
+Dans ce cas, ce message d'alarme est quand meme émis mais le résultat est bien cohérent.
 """),
 
 }

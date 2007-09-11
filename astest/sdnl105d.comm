@@ -1,4 +1,4 @@
-# MODIF  DATE 28/11/2005   AUTEUR CAMBIER S.CAMBIER 
+# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,12 +196,15 @@ MACRO3M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO3,
                                 )
 #
 
-#IMPR_RESU(MODELE=BARRE,
-#          UNITE=18,
-#          RESU=(_F(MAILLAGE=MAYA,
-#                   RESULTAT=BAMO2,),)
-#                   )
+IMPR_RESU(MODELE=BARRE,
+          RESU=(_F(MAILLAGE=MAYA,
+                   RESULTAT=BAMO2,),)
+                   )
 #
+IMPR_RESU(MODELE=BARRE,FORMAT='MED',
+          RESU=(_F(MAILLAGE=MAYA,
+                   RESULTAT=BAMO2,),)
+                   )
 
 OBSTACLE=DEFI_OBSTACLE( TYPE='BI_PLAN_Y')
 

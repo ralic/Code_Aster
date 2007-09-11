@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 02/07/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF algorith2 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,33 +22,28 @@ def _(x) : return x
 
 cata_msg={
 
-
-
-
-
-
 3: _("""
- la liste des cham_no n'existe pas
+ la liste des CHAM_NO n'existe pas
 """),
 
 4: _("""
- il n'y a aucun cham_no dans la liste
+ il n'y a aucun CHAM_NO dans la liste
 """),
 
 5: _("""
- les cham_no n'ont pas tous la meme longueur
+ les CHAM_NO n'ont pas tous la meme longueur
 """),
 
 6: _("""
- il faut definir nom_cmp
+ il faut définir NOM_CMP
 """),
 
 7: _("""
- il faut definir 3 angles nautiques.
+ il faut définir 3 angles nautiques.
 """),
 
 8: _("""
- l origine doit etre definie par 3 coordonnees.
+ l'origine doit etre définie par 3 coordonnées.
 """),
 
 9: _("""
@@ -56,15 +51,16 @@ cata_msg={
 """),
 
 10: _("""
- pour le 2d on ne prend que 2 coordonnees pour l origine.
+ pour le 2d, on ne prend que 2 coordonnées pour l'origine.
 """),
 
 11: _("""
- l axe z est n a pas de sens en 2d.
+ l axe z est n'a pas de sens en 2d.
 """),
 
 12: _("""
- le noeud se trouve sur l axe du repere cylindrique. on prend le noeud moyen des centres geometriques.
+ le noeud se trouve sur l'axe du repère cylindrique.
+ on prend le noeud moyen des centres géometriques.
 """),
 
 13: _("""
@@ -77,47 +73,50 @@ cata_msg={
 """),
 
 14: _("""
- charge non traitee:  %(k1)s
+ charge non traitée:  %(k1)s
 """),
 
 15: _("""
- les modelisations autorisees sont 3d et d_plan et axis
+ les modélisations autorisées sont 3D et D_PLAN et AXIS
 """),
 
 16: _("""
- le choix des parametres ne correspond pas a l un des modeles cjs
+ le choix des paramètres ne correspond pas à l'un des modèles CJS
 """),
 
 17: _("""
- non converg.: essai normales
+ non convergence : essai normales
 """),
 
 18: _("""
- non converg.: nb iter max atteint
+ non convergence : nombre d'itérations maximum atteint
 """),
 
 19: _("""
- les modelisations autorisees sont 3d et d-plan et axis
+ les modélisations autorisées sont 3D et D_PLAN et AXIS
 """),
 
 20: _("""
- modelisation inconnue
+ modélisation inconnue
 """),
 
 21: _("""
-  nvi > nvimax
+  NVI > NVIMAX
 """),
 
 22: _("""
- vecteur  de norme nulle
+ vecteur de norme nulle
 """),
 
 23: _("""
- la maille doit etre de type tetra4, tetra10, penta6, penta15, hexa8 ou hexa20. or la maille est de type :  %(k1)s .
+ la maille doit etre de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
+ or la maille est de type :  %(k1)s .
 """),
 
 24: _("""
- la maille doit etre de type tetra4, tetra10, penta6, penta15, hexa8 ou hexa20. ou tria3-6 ou quad4-8 or la maille est de type :  %(k1)s .
+ la maille doit etre de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
+ ou TRIA3-6 ou QUAD4-8
+ or la maille est de type :  %(k1)s .
 """),
 
 25: _("""
@@ -141,43 +140,43 @@ cata_msg={
 """),
 
 30: _("""
- trois elements
+ trois éléments
 """),
 
 31: _("""
- deux elements sur la meme face
+ deux éléments sur la meme face
 """),
 
 32: _("""
- une reorientation a eu lieu pour le deuxieme appui
+ une réorientation a eu lieu pour le deuxième appui
 """),
 
 33: _("""
- pas de maille de reference trouvee
+ pas de maille de référence trouvée
 """),
 
 34: _("""
- stop_singulier=decoupe necessite la subdivision automatique du pas de temps (subd_pas)
+ STOP_SINGULIER = DECOUPE nécessite la subdivision automatique du pas de temps (SUBD_PAS)
 """),
 
 35: _("""
- la methode  %(k1)s  est inadequate pour une resolution de type "ldlt"
+ la méthode  %(k1)s  est inadéquate pour une résolution de type "LDLT"
 """),
 
 36: _("""
- la methode  %(k1)s  est inadequate pour une resolution de type "gcpc"
+ la méthode  %(k1)s  est inadéquate pour une résolution de type "GCPC"
 """),
 
 37: _("""
- la methode  %(k1)s  etant inadequate pour une resolution de type "mult_front"
+ la methode  %(k1)s  est inadéquate pour une résolution de type "MULT_FRONT"
 """),
 
 38: _("""
- la methode  %(k1)s  etant inadequate pour une resolution de type "feti"
+ la méthode  %(k1)s  est inadéquate pour une résolution de type "FETI"
 """),
 
 39: _("""
- le solveur feti requiert un concept produit de type sd_feti en entree du mot-cle partition
+ le solveur FETI requiert un concept produit de type SD_FETI en entrée du mot-clé PARTITION
 """),
 
 40: _("""
@@ -185,51 +184,51 @@ cata_msg={
 """),
 
 41: _("""
- en parallele il faut au moins un sous-domaine par processeur !
+ en parallèle, il faut au moins un sous-domaine par processeur !
 """),
 
 42: _("""
- en parallele stogi=oui obligatoire pour limiter les msgs !
+ en parallèle, STOGI = OUI obligatoire pour limiter les messages !
 """),
 
 43: _("""
- pas de calcul sur le critere de rice disponible
+ pas de calcul sur le critère de Rice disponible
 """),
 
 44: _("""
- cette commande doit necessairement avoir le type evol_ther.
+ cette commande doit nécessairement avoir le type EVOL_THER.
 """),
 
 45: _("""
- seuls les champs de fonctions aux noeuds sont evaluables:  %(k1)s
+ seuls les champs de fonctions aux noeuds sont évaluables:  %(k1)s
 """),
 
 46: _("""
- nous traitons les champs de reels et de fonctions: . %(k1)s
+ nous traitons les champs de réels et de fonctions: . %(k1)s
 """),
 
 47: _("""
- le nom symbolique du champ chercher n est pas licite. %(k1)s
+ le nom symbolique du champ à chercher n'est pas licite. %(k1)s
 """),
 
 48: _("""
- plusieurs instants correspondent a celui specifie sous affe
+ plusieurs instants correspondent à celui specifié sous AFFE
 """),
 
 49: _("""
- nume_fin inferieur a nume_init
+ NUME_FIN inférieur à NUME_INIT
 """),
 
 50: _("""
- cmp non traitee
+ CMP non traitée
 """),
 
 51: _("""
- il y a plusieurs charges contenant des liaisons unilaterales
+ il y a plusieurs charges contenant des liaisons unilatérales
 """),
 
 52: _("""
- debordement tableau (dvlp)
+ débordement tableau (dvlp)
 """),
 
 53: _("""
@@ -237,63 +236,79 @@ cata_msg={
 """),
 
 54: _("""
-  increment de deformation cumulee (dp) = - %(k1)s
+  increment de déformation cumulée (dp) = - %(k1)s
 """),
 
 55: _("""
- erreur d integration- essai d integration  numero  %(k1)s - convergence vers  une solution non conforme - increment de deformation cumulee negative = - %(k2)s - redecoupage du pas de temps
+ erreur d'intégration
+ - essai d(integration  numero  %(k1)s 
+ - convergence vers une solution non conforme
+ - incrément de déformation cumulée négative = - %(k2)s
+ - redécoupage du pas de temps
 """),
 
 56: _("""
-  erreur - non convergence a iteration maxi  %(k1)s  - convergence reguliere mais trop lente - erreur >  %(k2)s - redecoupage du pas de temps
+  erreur 
+  - non convergence à l'itération maxi  %(k1)s  
+  - convergence régulière mais trop lente 
+  - erreur >  %(k2)s 
+  - redécoupage du pas de temps
 """),
 
 57: _("""
-  erreur - non convergence a iteration maxi  %(k1)s  - convergence irreguliere & erreur >  %(k2)s  - redecoupage du pas de temps
+  erreur
+  - non convergence à l'itération maxi  %(k1)s 
+  - convergence irrégulière & erreur >  %(k2)s 
+  - redécoupage du pas de temps
 """),
 
 58: _("""
-  erreur - non convergence a iteration maxi  %(k1)s  - erreur >  %(k2)s  - redecoupage du pas de temps
+  erreur
+  - non convergence à l'itération maxi  %(k1)s 
+  - erreur >  %(k2)s 
+  - redécoupage du pas de temps
 """),
 
 59: _("""
-  la transformation geometrique est singuliere pour la maille : %(k1)s  (jacobien = 0.)
+  la transformation géométrique est singulière pour la maille : %(k1)s
+  (jacobien = 0.)
 """),
 
 60: _("""
-  derivees secondes non etendues au 3d
+  dérivées secondes non étendues au 3d
 """),
 
 61: _("""
- les listes des groupes de noeuds  a fournir doivent contenir le meme nombre de groupes de noeuds
+ les listes des groupes de noeuds à fournir doivent contenir le meme nombre de groupes de noeuds
 """),
 
 62: _("""
-  les listes des groupes de noeuds  doivent contenir le meme nombre de  noeuds
+  les listes des groupes de noeuds doivent contenir le meme nombre de noeuds
 """),
 
 63: _("""
- on imprime que des champs reels
+ on n'imprime que des champs réels
 """),
 
 64: _("""
-  %(k1)s cham_no deja existant
+  %(k1)s cham_no déjà existant
 """),
 
 65: _("""
- appel errone a rsexch
+ appel erroné a RSEXCH
 """),
 
 66: _("""
- calcul du transitoire : choc en phase transitoire - pas de solution trouvee. utiliser l'option etat_stat = non.
+ calcul du transitoire : choc en phase transitoire - pas de solution trouvée.
+ utiliser l'option ETAT_STAT = NON
 """),
 
 67: _("""
- modele non local : projecteur singulier
+ modèle non local : projecteur singulier
 """),
 
 68: _("""
- iter_dual_maxi trop eleve (<10000)
+ ITER_DUAL_MAXI trop élevé (<10000)
 """),
 
 69: _("""
@@ -301,15 +316,15 @@ cata_msg={
 """),
 
 70: _("""
- probleme recherche lineaire
+ problème recherche linéaire
 """),
 
 71: _("""
- pas de geometrie associee au modele delocalise
+ pas de géometrie associée au modèle delocalisé
 """),
 
 72: _("""
- erreur transfo cham_elem_s
+ erreur transformation CHAM_ELEM_S
 """),
 
 73: _("""
@@ -321,36 +336,27 @@ cata_msg={
 """),
 
 75: _("""
- probleme recherche lineaire primal
+ problème recherche linéaire primale
 """),
 
 76: _("""
- iterations primales insuffisantes
+ itérations primales insuffisantes
 """),
 
 77: _("""
- mauvais dimensionnement de geomi
+ mauvais dimensionnement de GEOMI
 """),
 
 78: _("""
- dvp : energie non convexe
+ dvp : énergie non convexe
 """),
 
 79: _("""
- pas de valeurs propres trouvees
+ pas de valeurs propres trouvées
 """),
 
-
-
-
-
-
-
-
-
-
 86: _("""
- il n'y a aucun instant de calcul ('list_inst')
+ il n'y a aucun instant de calcul ('LIST_INST')
 """),
 
 87: _("""
@@ -358,27 +364,27 @@ cata_msg={
 """),
 
 88: _("""
- acces par instant sans evolution ordonnee interdit (increment)
+ accès par instant sans évolution ordonnée interdit (INCREMENT)
 """),
 
 89: _("""
- instant initial introuvable dans la liste d'instants (list_inst)
+ instant initial introuvable dans la liste d'instants (LIST_INST)
 """),
 
 90: _("""
- instant final introuvable dans la liste d'instants (list_inst)
+ instant final introuvable dans la liste d'instants (LIST_INST)
 """),
 
 91: _("""
- nume_inst_init plus petit que nume_fin avec evolution: 'retrograde'
+ NUME_INST_INIT plus petit que NUME_FIN avec EVOLUTION: 'RETROGRADE'
 """),
 
 92: _("""
- nume_init plus grand que nume_fin
+ NUME_INIT plus grand que NUME_FIN
 """),
 
 93: _("""
- nume_inst_init n'appartient pas a la liste d'instants
+ NUME_INST_INIT n'appartient pas à la liste d'instants
 """),
 
 94: _("""
@@ -393,22 +399,22 @@ cata_msg={
 """),
 
 95: _("""
- acces par instant sans evolution ordonnee interdit (archivage)
+ accès par instant sans évolution ordonnée interdit (ARCHIVAGE)
 """),
 
 96: _("""
- impossible d'archiver l'etat initial : le concept est reentrant (archivage)
+ impossible d'archiver l'état initial : le concept est réentrant (ARCHIVAGE)
 """),
 
 97: _("""
- l'archivage va ecraser des instants deja calcules (archivage)
+ l'archivage va écraser des instants déjà calculés (ARCHIVAGE)
 """),
 
 98: _("""
- l'archivage va laisser des trous dans la sd evol_noli (archivage, nume_init)
+ l'archivage va laisser des trous dans la sd EVOL_NOLI (ARCHIVAGE, NUME_INIT)
 """),
 
 99: _("""
- le nombre de niveau de subdivisions doit etre plus grand que 1 (subd_niveau)
+ le nombre de niveau de subdivisions doit etre plus grand que 1 (SUBD_NIVEAU)
 """),
 }

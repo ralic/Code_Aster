@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost2 Messages  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,7 +247,10 @@ Nom MED du champ : "%(k1)s"
 """),
 
 55: _("""
- attention, il faut specifier les noms des composantes du tenseur pour pouvoir les visualiser separement avec gmsh
+ L'ordre des composantes établi lorsque que vous avez renseigné le mot-clé 
+ NOM_CMP est différent de celui du catalogue Aster:
+    - ordre des composantes fournies     : %(k1)s %(k2)s %(k3)s %(k4)s %(k5)s %(k6)s
+    - ordre des composantes du catalogue : %(k7)s %(k8)s %(k9)s %(k10)s %(k11)s %(k12)s
 """),
 
 56: _("""

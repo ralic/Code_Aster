@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 27/08/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF prepost Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,27 +23,28 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- group_no :  %(k1)s  inconnu dans le maillage
+ GROUP_NO :  %(k1)s  inconnu dans le maillage
 """),
 
 2: _("""
- pour calculer le dommage il faut definir le comportement "fatigue" dans defi_materiau
+ pour calculer le dommage, il faut définir le comportement "FATIGUE" dans DEFI_MATERIAU
 """),
 
 3: _("""
- hors bornes  definies dans cescre.
+ hors bornes définies dans CESCRE.
 """),
 
 4: _("""
- methode  %(k1)s  illicite
+ méthode  %(k1)s  illicite
 """),
 
 5: _("""
- la longueur du defaut n est pas en accord avec les tables definies cote revetement et cote metal de base
+ la longueur du défaut n'est pas en accord avec les tables définies
+ coté revetement et coté métal de base
 """),
 
 6: _("""
- incoherence catalogue - fortran
+ incohérence catalogue - FORTRAN
 """),
 
 7: _("""
@@ -51,55 +52,55 @@ cata_msg={
 """),
 
 8: _("""
- prolongement a gauche exclu
+ prolongement à gauche exclu
 """),
 
 9: _("""
- prolongement a droite exclu
+ prolongement à droite exclu
 """),
 
 10: _("""
- phenomene non valide
+ phénomène non valide
 """),
 
 11: _("""
- nous ne pouvons pas recuperer la valeur du module d'young : e.
+ nous ne pouvons pas récupérer la valeur du module d'Young : E.
 """),
 
 12: _("""
- nous ne pouvons pas recuperer la valeur du coefficient de poisson : nu.
+ nous ne pouvons pas récupérer la valeur du coefficient de Poisson : NU.
 """),
 
 13: _("""
-  le type d entite  %(k1)s  est inconnu.
+  le type d entité  %(k1)s  est inconnu.
 """),
 
 14: _("""
- ipoi1 et ipoi4 non traite
+ IPOI1 et IPOI4 non traité
 """),
 
 15: _("""
- sprim negative bizarre
+ SPRIM négative bizarre
 """),
 
 16: _("""
- airtot ou ener nul
+ AIRTOT ou ENER nul
 """),
 
 17: _("""
- do102=0 
+ DO102=0 
 """),
 
 18: _("""
- probleme intersection cylindre tetraedre
+ problème intersection cylindre tétraèdre
 """),
 
 19: _("""
- voli negative bizarre
+ VOLI négative bizarre
 """),
 
 20: _("""
- voltot ou ener nul
+ VOLTOT ou ENER nul
 """),
 
 21: _("""
@@ -107,11 +108,12 @@ cata_msg={
 """),
 
 22: _("""
- delta negatif pb lors de recherche intersection
+ DELTA négatif
+ problème lors de la recherche d'intersection
 """),
 
 23: _("""
- pb n2+n3
+ pb N2+N3
 """),
 
 24: _("""
@@ -119,43 +121,48 @@ cata_msg={
 """),
 
 25: _("""
- pb en dehors des 2 points
+ problème en dehors des 2 points
 """),
 
 26: _("""
-  probleme n2+n3
+ problème N2+N3
 """),
 
 27: _("""
- volume negatif
+ volume négatif
 """),
 
 28: _("""
- volume superieur a 1.d6
+ volume supérieur à 1.d6
 """),
 
 29: _("""
- tbelzo depassement
+ TBELZO dépassement
 """),
 
 30: _("""
- tbnozo depassement
+ TBNOZO dépassement
 """),
 
 31: _("""
- sd resultat inconnue  %(k1)s 
+ structure de données RESULTAT inconnue  %(k1)s 
 """),
 
 32: _("""
-  l'impression de la sd_resultat  %(k1)s  a deja ete effectuee avec une liste de numeros d'ordre dont le premier numero etait le meme que celui de la liste actuelle. on arrete l'impression afin d'eviter l'ecrasement des fichiers ecrits.
+  l'impression de la SD_RESULTAT  %(k1)s  a déjà été effectuée
+  avec une liste de numéros d'ordre dont le premier numéro etait
+  le meme que celui de la liste actuelle.
+  on arrete l'impression afin d'éviter l'écrasement des fichiers écrits.
 """),
 
 33: _("""
- probleme a l'ouverture du fichier resultat ensight  %(k1)s  pour l'impression du cham_gd  %(k2)s 
+ problème à l'ouverture du fichier résultat ENSIGHT  %(k1)s
+ pour l'impression du CHAM_GD  %(k2)s 
 """),
 
 34: _("""
- probleme a l'ouverture du fichier resultat ensight  %(k1)s  pour l'impression du concept  %(k2)s 
+ probleme à l'ouverture du fichier résultat ENSIGHT  %(k1)s
+ pour l'impression du CONCEPT  %(k2)s 
 """),
 
 35: _("""
@@ -163,43 +170,46 @@ cata_msg={
 """),
 
 36: _("""
- le champ de:  %(k1)s  a des elements ayant des sous-points. ces elements ne seront pas traites.
+ le champ de:  %(k1)s  a des éléments ayant des sous-points.
+ ces éléments ne seront pas traités.
 """),
 
 37: _("""
- vraiment desole
+ vraiment desolé
 """),
 
 38: _("""
- le vecteur est "axe_z" nul.
+ le vecteur est "AXE_Z" nul.
 """),
 
 39: _("""
- le coefficient de goodman n'est pas calculable
+ le coefficient de Goodman n'est pas calculable
 """),
 
 40: _("""
- le coefficient de gerber n'est pas calculable
+ le coefficient de Gerber n'est pas calculable
 """),
 
 41: _("""
- pour calculer le dommage de lemaitre-sermage il faut definir  le comportement domma_lemaitre dans defi_materiau
+ pour calculer le dommage de Lemaitre-Sermage,
+ il faut définir le comportement DOMMA_LEMAITRE dans DEFI_MATERIAU
 """),
 
 42: _("""
- pour calculer le dommage de lemaitre_sermage il faut definir  le comportement elas_fo dans defi_materiau
+ pour calculer le dommage de Lemaitre_Sermage,
+ il faut définir le comportement ELAS_FO dans DEFI_MATERIAU
 """),
 
 43: _("""
- le materiau est obligatoire pour le calcul du dommage par taheri_manson
+ le matériau est obligatoire pour le calcul du dommage par Taheri_Manson
 """),
 
 44: _("""
- une fonction doit etre introduite sous le mot cle taheri_fonc
+ une fonction doit etre introduite sous le mot clé TAHERI_FONC
 """),
 
 45: _("""
- une nappe doit etre introduite sous le mot cle taheri_nappe
+ une nappe doit etre introduite sous le mot clé TAHERI_NAPPE
 """),
 
 46: _("""
@@ -210,46 +220,42 @@ cata_msg={
  Assurez vous que votre procédure gibi sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
 """),
 
-
-
-
-
-
-
 47: _("""
- la courbe de manson_coffin est necessaire pour le calcul du dommage taheri_manson_coffin
+ la courbe de MANSON_COFFIN est nécessaire pour le calcul du dommage TAHERI_MANSON_COFFIN
 """),
 
 48: _("""
- le materiau est obligatoire pour le calcul du dommage par taheri_mixte
+ le matériau est obligatoire pour le calcul du dommage par TAHERI_MIXTE
 """),
 
 49: _("""
- la courbe de manson_coffin est necessaire pour le calcul du dommage taheri_mixte
+ la courbe de MANSON_COFFIN est nécessaire pour le calcul du dommage TAHERI_MIXTE
 """),
 
 50: _("""
- la courbe de wohler est necessaire pour le calcul du dommage taheri_mixte
+ la courbe de WOHLER est nécessaire pour le calcul du dommage TAHERI_MIXTE
 """),
 
 51: _("""
- l'option de calcul " %(k1)s " n'existe pas dans la structure de donnees %(k2)s 
+ l'option de calcul " %(k1)s " n'existe pas dans la structure de données %(k2)s 
 """),
 
 52: _("""
- le champ " %(k1)s " pour l'option de calcul " %(k2)s ", n'a pas ete notee dans la structure de donnees %(k3)s 
+ le champ " %(k1)s " pour l'option de calcul " %(k2)s ", n'a pas été notée
+ dans la structure de données %(k3)s 
 """),
 
 53: _("""
- la dimension du probleme est invalide : il faut : 1d,2d ou 3d.
+ la dimension du problème est invalide : il faut : 1d, 2d ou 3d.
 """),
 
 54: _("""
- nombre de noeuds superieur au maxi autorise : 27.
+ nombre de noeuds supérieur au maximum autorisé : 27.
 """),
 
 55: _("""
- objet &&gilire.indirect inexistant. probleme a la lecture des points 
+ objet &&GILIRE.INDIRECT inexistant
+ problème à la lecture des points 
 """),
 
 56: _("""
@@ -257,7 +263,7 @@ cata_msg={
 """),
 
 57: _("""
- nombre d objets superieur au maximum autorise : 99999.
+ nombre d'objets supérieur au maximum autorisé : 99999.
 """),
 
 58: _("""
@@ -265,7 +271,9 @@ cata_msg={
 """),
 
 59: _("""
- le maillage gibi est  peut etre errone :  il est ecrit : "niveau rreur n_err"  ou n_err est >0 .on continue quand meme,  mais si vous avez des problemes plus loin ...
+ le maillage GIBI est peut etre erroné :
+ il est écrit : "NIVEAU RREUR N_ERR"  avec N_ERR est >0 .
+ on continue quand meme, mais si vous avez des problèmes plus loin ...
 """),
 
 60: _("""
@@ -273,55 +281,64 @@ cata_msg={
 """),
 
 61: _("""
- erreur dans la recuperation du nume.prno
+ erreur dans la récupération du NUME.PRNO
 """),
 
 62: _("""
- probleme dans la recuperation du numero de bloc auquel appartient la ligne courante.
+ problème dans la récupération du numéro de bloc auquel appartient la ligne courante.
 """),
 
 63: _("""
- les seuls types de valeurs acceptes pour les resu_elem sont les reels et les complexes, le descripteur de type  %(k1)s  est inadequat.
+ les seuls types de valeurs acceptés pour les RESU_ELEM sont les réels et les complexes
+ le descripteur de type  %(k1)s  est inadéquat.
 """),
 
 64: _("""
- les seuls types de s.d. autorises sont "matr_asse" , "matr_elem" "vect_elem" et "resu_elem", le type donne  %(k1)s  n'est pas reconnu .
+ les seuls types de structures de données autorisés sont :
+ MATR_ASSE , MATR_ELEM , VECT_ELEM , RESU_ELEM
+ le type donné  %(k1)s  n'est pas reconnu .
 """),
 
 65: _("""
- la valeur du grain d'impression est  %(k1)s  alors que les seules valeurs possibles sont "noeud" ou "valeur"  ou "maille".
+ la valeur du grain d'impression est  %(k1)s  alors que
+ les seules valeurs possibles sont "NOEUD" ou "VALEUR" ou "MAILLE".
 """),
 
 66: _("""
- la valeur du grain d'impression est  %(k1)s  alors que les seules valeurs possibles sont "noeud" et "valeur" .
+ la valeur du grain d'impression est  %(k1)s  alors que
+ les seules valeurs possibles sont "NOEUD" et "VALEUR".
 """),
 
 67: _("""
- probleme dans le descripteur de la matrice: l'indicateur de symetrie ne correspond ni a une matrice  symetrique, ni a une matrice  non-symetrique . 
+ probleme dans le descripteur de la matrice :
+ l'indicateur de symétrie ne correspond ni à une matrice symétrique,
+ ni à une matrice non-symétrique . 
 """),
 
 68: _("""
- probleme dans le descripteur de la matrice: l'indicateur type de valeur de la matrice ne correspond ni a une matrice reelle, ni a une matrice  complexe . 
+ problème dans le descripteur de la matrice :
+ l'indicateur type de valeur de la matrice ne correspond ni à une matrice réelle,
+ ni à une matrice complexe . 
 """),
 
 69: _("""
- probleme a l ouverture du fichier
+ problème à l'ouverture du fichier
 """),
 
 70: _("""
- probleme a la fermeture du fichier
+ problème à la fermeture du fichier
 """),
 
 71: _("""
- maillage introuvable ?
+ maillage introuvable
 """),
 
 72: _("""
- med:erreur mdnoma numero  %(k1)s 
+ MED : erreur MDNOMA numéro  %(k1)s 
 """),
 
 73: _("""
- le champ est ecrit dans le fichier !
+ le champ est écrit dans le fichier
 """),
 
 74: _("""
@@ -339,11 +356,11 @@ cata_msg={
 """),
 
 77: _("""
- incompatibilite entre les grels
+  incompatibilité entre les GREL
 """),
 
 78: _("""
- nec trop grand
+ NEC trop grand
 """),
 
 79: _("""
@@ -351,39 +368,42 @@ cata_msg={
 """),
 
 80: _("""
- on traite les tria7 quad9 en oubliant le noeud centre
+ on traite les TRIA7 QUAD9 en oubliant le noeud centre
 """),
 
 81: _("""
-  : inoa=0
+  : INOA=0
 """),
 
 82: _("""
- ecriture impossible pour  %(k1)s  au format med
+ écriture impossible pour  %(k1)s  au format MED
 """),
 
 83: _("""
- certaines composantes selectionnees ne font pas parties du ligrel
+ certaines composantes selectionnées ne font pas partie du LIGREL
 """),
 
 84: _("""
- element pyran5 non disponible dans ideas
+ élément PYRA5 non disponible dans IDEAS
 """),
 
 85: _("""
- element pyran13 non disponible dans ideas
+ élément PYRA13 non disponible dans IDEAS
 """),
 
 86: _("""
- on traite les tria7 quad9 hexa27 en oubliant le noeud centre
+ on traite les TRIA7 QUAD9 HEXA27 en oubliant le noeud centre
 """),
 
 87: _("""
- on ne sait pas imprimer le champ de type:  %(k1)s  champ :  %(k2)s 
+ on ne sait pas imprimer le champ de type:  %(k1)s 
+ champ :  %(k2)s 
 """),
 
 88: _("""
-  on ne sait pas imprimer au format ensight le champ  %(k1)s  correspondant a la grandeur : %(k2)s . il faut imprimer des champs aux noeuds a ce format.
+  on ne sait pas imprimer au format ENSIGHT le champ  %(k1)s
+  correspondant à la grandeur : %(k2)s
+  il faut imprimer des champs aux noeuds à ce format.
 """),
 
 89: _("""
@@ -395,15 +415,15 @@ cata_msg={
 """),
 
 91: _("""
- debut de l'ecriture med de  %(k1)s 
+ debut de l'écriture MED de  %(k1)s 
 """),
 
 92: _("""
- impossible de determiner un nom de champ med.
+ impossible de déterminer un nom de champ MED.
 """),
 
 93: _("""
- pas d ecriture pour  %(k1)s 
+ pas d'écriture pour  %(k1)s 
 """),
 
 94: _("""
@@ -415,18 +435,20 @@ cata_msg={
 """),
 
 96: _("""
- fin de l'ecriture med de  %(k1)s 
+ fin de l''criture MED de  %(k1)s 
 """),
 
 97: _("""
- on ne sait pas imprimer les champs de type " %(k1)s "   on est vraiment desole.
+ on ne sait pas imprimer les champs de type " %(k1)s "
 """),
 
 98: _("""
- le champ:  %(k1)s  a des elements ayant des sous-points. il est ecrit avec un format different.
+ le champ:  %(k1)s  a des éléments ayant des sous-points.
+ il est écrit avec un format différent.
 """),
 
 99: _("""
- le champ:  %(k1)s  a des elements ayant des sous-points. ces elements ne seront pas ecrits.
+ le champ:  %(k1)s  a des éléments ayant des sous-points.
+ ces éléments ne seront pas écrits.
 """),
 }

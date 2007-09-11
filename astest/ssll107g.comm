@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NOM='SSLL107G', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 MATER=DEFI_MATERIAU(   ELAS=_F(  E = 1234567.890,  NU = 0.3) )
 
 TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LR1',
-                                NOEUD='N64' )
+                                GROUP_NO='GN_N64' )
 
 #
 # --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
@@ -177,7 +177,7 @@ TEST_TABLE(     TABLE=TCARS,
 TCAR2=MACR_CARA_POUTRE(     GROUP_MA_BORD=('LGR1', 'LGR2',),
                                       GROUP_MA=('GR1','GR2',),
                                 UNITE_MAILLAGE=38,
-                                         NOEUD=('N64', 'N64',),
+                                GROUP_NO=('GN_N64', 'GN_N64',),
                                 LONGUEUR=0.0002,
                                 MATERIAU=MATER,
                                  LIAISON='ENCASTREMENT',

@@ -5,7 +5,7 @@
      &   OMECOR, NCONV, FLAGE)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -222,7 +222,7 @@ C GESTION DES FLAGS D'ERREURS
         WRITE(IFM,*)
       ELSE IF (INFO.LT.0) THEN
         VALI (1) = INFO
-        CALL U2MESG('F','ALGELINE5_44',0,' ',1,VALI,0,0.D0)
+        CALL U2MESG('F','ALGELINE5_48',0,' ',1,VALI,0,0.D0)
       ENDIF
 C
 C GESTION DES MODES CONVERGES
@@ -233,7 +233,7 @@ C GESTION DES MODES CONVERGES
         VALI (4) = NBVECT
         VALI (5) = MAXITR
         VALR (1) = TOLSOR
-        CALL U2MESG('E','ALGELINE5_45',0,' ',5,VALI,1,VALR)
+        CALL U2MESG('E','ALGELINE5_49',0,' ',5,VALI,1,VALR)
         FLAGE = .TRUE.
       ENDIF
 
@@ -315,7 +315,7 @@ C GESTION DES FLAGS D'ERREURS
           CALL U2MESS('F','ALGELINE3_78')
         ELSE IF (INFO.LT.0) THEN
           VALI (1) = INFO
-          CALL U2MESG('F','ALGELINE5_46',0,' ',1,VALI,0,0.D0)
+          CALL U2MESG('F','ALGELINE5_48',0,' ',1,VALI,0,0.D0)
         ENDIF
 C--------------------------------------------------------------------
 C TESTS ET POST-TRAITEMENTS
@@ -337,7 +337,7 @@ C VERIFICATIONS DES VALEURS PROPRES
           VALI (1) = J
           VALR (1) = DSOR(J,1)
           VALR (2) = DSOR(J,2)
-          CALL U2MESG('A','ALGELINE5_47',0,' ',1,VALI,2,VALR)
+          CALL U2MESG('A','ALGELINE5_51',0,' ',1,VALI,2,VALR)
         ELSE IF ((VARAUX.NE.0.D0).AND.(NIV.GE.1)) THEN
           WRITE(IFM,*)'<VPSORN/DNEUPD 0> LA VALEUR PROPRE NUMERO ',J
           WRITE(IFM,*)'A UNE PARTIE IMAGINAIRE NON NULLE'

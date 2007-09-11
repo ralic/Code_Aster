@@ -1,4 +1,4 @@
-#@ MODIF algeline Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,99 +23,109 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- option invalide !
+ Résolution FETI : option invalide
 """),
 
 2: _("""
- probleme objet  %(k1)s .fetg . il est de longueur impaire !
+ Résolution FETI : probleme objet  %(k1)s .fetg . il est de longueur impaire
 """),
 
 3: _("""
- pb division par zerodans la construction du alpha !
+ Résolution FETI : division par zéro dans la construction du alpha
 """),
 
 4: _("""
- valeur inferieure a la tolerance
+ valeur inférieure a la tolérance
 """),
 
 5: _("""
- pour l'instant, on ne traiteque le cas des matrices reelles.
+ Combinaison linéaire de matrices :
+ pour l'instant, on ne traite que le cas des matrices réelles
 """),
 
 7: _("""
- Impossible de récupérer les valeurs dans la table.
-"""),
-
-8: _("""
- attention
+ tbliva : impossible de récupérer les valeurs dans la table
 """),
 
 9: _("""
- l'origine de l'obstacle est mal positionnee par rapport au noeud de choc de numero  %(k1)s , de nom  %(k2)s , par rapport au jeu.
+ l'origine de l'obstacle est mal positionnée par rapport au noeud de choc
+ de numéro  %(k1)s , de nom  %(k2)s , par rapport au jeu.
 """),
 
 10: _("""
- l'origine de l'obstacle est mal positionnee par rapport au noeud de choc de numero  %(k1)s , de nom  %(k2)s , dans le plan normal au choc.
+ l'origine de l'obstacle est mal positionnee par rapport au noeud de choc
+ de numéro  %(k1)s , de nom  %(k2)s , dans le plan normal au choc.
 """),
 
 11: _("""
- la normale a l'obstacle fait un angle nul avec le noeud de choc de numero  %(k1)s , avec l'axe du tube.
+ la normale à l'obstacle fait un angle nul avec le noeud de choc
+ de numéro  %(k1)s , avec l'axe du tube.
 """),
 
 12: _("""
- la normale a l'obstacle fait un angle inferieur a 10 degres au noeud de choc de numero  %(k1)s , avec l'axe du tube.
+ la normale à l'obstacle fait un angle inferieur à 10 degrés au noeud de choc
+ de numéro  %(k1)s , avec l'axe du tube.
 """),
 
 13: _("""
- la normale a l'obstacle fait un angle inferieur a 45 degres au noeud de choc de numero  %(k1)s , avec l'axe du tube.
+ la normale à l'obstacle fait un angle inferieur à 45 degrés au noeud de choc
+ de numéro  %(k1)s , avec l'axe du tube.
 """),
 
 14: _("""
- les mailles doivent etre de  type quad4 ou tri3 et non de type  %(k1)s 
+ les mailles doivent etre de type QUAD4 ou TRI3 et non de type  %(k1)s 
 """),
 
 15: _("""
- l'angle au noeud  %(k1)s  forme par le vecteur normal de la maille  %(k2)s  et le vecteur normal de la maille  %(k3)s  est superieur a 90 degres et vaut  %(k4)s  degres.
+ l'angle au noeud  %(k1)s  formé par :
+    - le vecteur normal de la maille  %(k2)s 
+ et - le vecteur normal de la maille  %(k3)s
+ est supérieur à 90 degrés et vaut  %(k4)s  degrés.
 """),
 
 16: _("""
- pref_noeud est trop long ou pref_nume est trop grand
+ PREF_NOEUD est trop long ou PREF_NUME est trop grand
 """),
 
 17: _("""
- pref_maille est trop long ou pref_nume est trop grand
+ PREF_MAILLE est trop long ou PREF_NUME est trop grand
 """),
 
 18: _("""
- mot-cle facteur  %(k1)s  non traite
+ mot-clé facteur  %(k1)s  non traité
 """),
 
 19: _("""
- le group_no  %(k1)s  n'existe pas
+ le GROUP_NO  %(k1)s  n'existe pas
 """),
 
 20: _("""
- le nombre de noeuds n'est pas le meme pour les deux group_no
+ le nombre de noeuds n'est pas le meme pour les deux GROUP_NO
 """),
 
 21: _("""
- les group_no ne contiennent qu'un seul noeud
+ les GROUP_NO ne contiennent qu'un seul noeud
 """),
 
 22: _("""
- creation quad4 degenere
+ creation QUAD4 dégénéré
 """),
 
 23: _("""
-  le noeud  %(k1)s  n est pas equidistant des  noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s . ameliorez le  maillage. on arrete pour eviter des resultats faux
+ le noeud  %(k1)s  n'est pas équidistant des noeuds  %(k2)s  et  %(k3)s  pour la maille : %(k4)s 
+ Améliorez le  maillage. Le code s'arrete pour éviter des résultats faux.
 """),
 
 24: _("""
- valeur negative ou nulle pour la puissance quatrieme du nombre d ondes => valeur de l ordre de coque mal determinee => il faut affiner le maillage sur les coques : reduire le pas angulaire pour definir plus de noeuds sur les contours
+ valeur négative ou nulle pour la puissance quatrième du nombre d'ondes.
+ La valeur de l'ordre de coque est mal déterminée.
+ Il faut affiner le maillage sur les coques :
+ => réduire le pas angulaire pour définir plus de noeuds sur les contours.
 """),
 
 25: _("""
- nombre de noeuds sur la generatrice inferieur a 4 donc insuffisant pour determiner les coefficients de la deformee axiale
+ Nombre de noeuds sur la génératrice inférieur à 4 :
+ c'est insuffisant pour déterminer les coefficients de la déformée axiale
 """),
 
 26: _("""
@@ -129,10 +139,6 @@ cata_msg={
      Les valeurs sont extrapolees en dehors des donnees d'essais.
      Les resultats du calcul seront a prendre avec circonspection.
 """),
-
-
-
-
 
 
 29: _("""

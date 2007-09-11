@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algeline3 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,35 +23,36 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- le mot-cle maillage est obligatoire avec le mot-cle crea_maille. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_MAILLE. 
 """),
 
 2: _("""
- le mot-cle maillage est obligatoire avec le mot-cle crea_group_ma. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_GROUP_MA. 
 """),
 
 3: _("""
- le mot-cle maillage est obligatoire avec le mot-cle crea_poi1. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle CREA_POI1. 
 """),
 
 4: _("""
- le mot-cle maillage est obligatoire avec le mot-cle repere. 
+ le mot-clé MAILLAGE est obligatoire avec le mot-cle REPERE. 
 """),
 
 5: _("""
- sous le mot-cle "nom_orig" du mot-facteur "repere", on ne peut donner que les mots "cdg" ou "torsion".
+ sous le mot-cle "NOM_ORIG" du mot-clé facteur "REPERE",
+ on ne peut donner que les mots "CDG" ou "TORSION".
 """),
 
 6: _("""
- maille non creee  %(k1)s 
+ maille non créée  %(k1)s 
 """),
 
 7: _("""
-  le group_ma :  %(k1)s  existe deja.
+  le GROUP_MA :  %(k1)s  existe déjà.
 """),
 
 8: _("""
- le mot-cle maillage est obligatoire avec le mot-cle detr_group_ma. 
+ le mot-cle MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA. 
 """),
 
 9: _("""
@@ -59,79 +60,86 @@ cata_msg={
 """),
 
 10: _("""
- masses effectives unitaires non calculees par norm_mode
+ masses effectives unitaires non calculées par NORM_MODE
 """),
 
 11: _("""
- structure resultat vide
+ structure résultat vide
 """),
 
 12: _("""
- nombre de noeuds sur le contour insuffisant pour determiner correctement les ordres de coque
+ nombre de noeuds sur le contour insuffisant pour déterminer correctement
+ les ordres de coque
 """),
 
 13: _("""
- azimut indefini pour un des noeuds de la coque
+ azimut indéfini pour un des noeuds de la coque
 """),
 
 14: _("""
- ordre de coque nul pour l un des modes pris en compte pour le couplage. le modele de resolution ne supporte pas une telle valeur.
+ ordre de coque nul pour l'un des modes pris en compte pour le couplage.
+ le modèle de résolution ne supporte pas une telle valeur.
 """),
 
 15: _("""
- determination du drmax et du dephasage pour le mode  %(k1)s  : le determinant du systeme issu du moindre carre est nul
+ détermination du DRMAX et du déphasage pour le mode  %(k1)s  :
+ le déterminant du système issu du moindre carré est nul
 """),
 
 16: _("""
- determination du dephasage pour le  mode  %(k1)s  : theta0 indefini
+ détermination du déphasage pour le mode  %(k1)s  :
+ THETA0 indéfini
 """),
 
 17: _("""
- pivot nul dans la resolution du systeme complexe
+ pivot nul dans la résolution du système complexe
 """),
 
 18: _("""
- annulation du numerateur dans l expression d un coefficient donnant la solution du probleme fluide instationnaire pour umoy = 0
+ annulation du numérateur dans l'expression d un coefficient donnant
+ la solution du problème fluide instationnaire pour UMOY = 0
 """),
 
 19: _("""
- determination des valeurs propres de l operateur differentiel : existence d une racine double
+ détermination des valeurs propres de l'opérateur différentiel :
+ existence d'une racine double
 """),
 
 20: _("""
- la  %(k1)s eme valeur propre est trop petite
+ la  %(k1)s ème valeur propre est trop petite
 """),
 
 21: _("""
- la matr_asse  %(k1)s  n"est pas stockee "morse" le gcpc est donc impossible.
+ la MATR_ASSE  %(k1)s  n'est pas stockée "morse" :
+ le GCPC est donc impossible.
 """),
 
 22: _("""
- conflit une matrice stockee morse ne peut avoir qu"un bloc
+ conflit : une matrice stockée morse ne peut avoir qu'un bloc
 """),
 
 23: _("""
-  le preconditionnement ldlt_inc d"une matrice complexe n"est pas implemente
+  le préconditionnement LDLT_INC d'une matrice complexe n'est pas implémenté
 """),
 
 24: _("""
- stop 1:erreur programation.
+ Résolution LDLT : erreur de programmation.
 """),
 
 25: _("""
-  erreur a l'appel de metis 
+  erreur a l'appel de METIS 
 """),
 
 26: _("""
- pb affichage feti dans preml1 !
+ pb d'affichage FETI dans PREML1
 """),
 
 27: _("""
- solveur interne ldlt pour l'instant proscrit  avec feti
+ solveur interne LDLT interdit pour l'instant avec FETI
 """),
 
 28: _("""
- solveur interne mumps pour l'instant proscrit  avec feti
+ solveur interne MUMPS interdit pour l'instant avec FETI
 """),
 
 29: _("""
@@ -139,7 +147,7 @@ cata_msg={
 """),
 
 30: _("""
- matrices a et b incompatibles pour l operation * 
+ matrices A et B incompatibles pour l'opération * 
 """),
 
 31: _("""
@@ -151,43 +159,46 @@ cata_msg={
 """),
 
 33: _("""
- on ne traite pas ce type de cham_elem, icoef different de 1
+ on ne traite pas ce type de CHAM_ELEM, ICOEF différent de 1
 """),
 
 34: _("""
- le cham_no :  %(k1)s  n"existe pas
+ le CHAM_NO :  %(k1)s  n'existe pas
 """),
 
 35: _("""
- la matr_asse  %(k1)s  n"est pas stockee "morse"
+ la MATR_ASSE  %(k1)s  n'est pas stockée "morse"
+### idem algeline3_21
 """),
 
 36: _("""
- conflit une matrice stockee morse ne peut avoir q'un seul bloc
+ conflit : une matrice stockée "morse" ne peut avoir qu'un seul bloc
+### idem algeline3_22
 """),
 
 37: _("""
-  gcpc n"est pas prevu pour une matrice complexe
+  GCPC n"est pas prevu pour une matrice complexe
 """),
 
 38: _("""
- pas de matrice de preconditionnement : on s'arrete
+ pas de matrice de préconditionnement : on s'arrete
 """),
 
 39: _("""
-  le cham_no : %(k1)s  n"existe pas ==> reprise impossible ==> initialisation par le vecteur nul
+  le CHAM_NO : %(k1)s  n'existe pas
+  Reprise impossible ==> initialisation par le vecteur nul
 """),
 
 40: _("""
- erreur : lmat est nul
+ erreur : LMAT est nul
 """),
 
 41: _("""
- la matrice possede des ddls imposes elimines: il faut un vcine
+ la matrice possède des ddls imposés éliminés: il faut un VCINE
 """),
 
 42: _("""
-  la matrice et le vecteur cinematique ne contiennent pas des valeurs de meme type
+  la matrice et le vecteur cinématique ne contiennent pas des valeurs de meme type
 """),
 
 43: _("""
@@ -203,19 +214,19 @@ cata_msg={
 """),
 
 46: _("""
- recherche de corps rigide pour l'instant proscrite  avec matrice non-symetrique
+ recherche de corps rigide : pour l'instant proscrite avec matrice non-symetrique
 """),
 
 47: _("""
- recherche de corps rigide pour l'instant proscrite  avec matrice complexe
+ recherche de corps rigide : pour l'instant proscrite avec matrice complexe
 """),
 
 48: _("""
- nom_nume_ddl  %(k1)s  non trouve
+ NOM_NUME_DDL  %(k1)s  non trouvé
 """),
 
 49: _("""
- attention plus de six modes de corps rigides detectes
+ attention : plus de six modes de corps rigides detectés
 """),
 
 50: _("""
@@ -223,7 +234,7 @@ cata_msg={
 """),
 
 51: _("""
- le tableau b est insuffisamment dimensionne pour l operation * 
+ le tableau B est insuffisamment dimensionné pour l'opération * 
 """),
 
 52: _("""
@@ -231,55 +242,64 @@ cata_msg={
 """),
 
 53: _("""
- toutes les frequencessont des frequences de corps rigide
+ toutes les fréquences sont des fréquences de corps rigide
 """),
 
 54: _("""
- calcul des nume_modematrice non inversible pour la frequence consideree
+ calcul des NUME_MODE : matrice non inversible pour la fréquence considérée
 """),
 
 55: _("""
- probleme a la resolution du systeme reduit.
+ problème à la résolution du système réduit.
 """),
 
 56: _("""
- valeur propre infinie trouvee
+ valeur propre infinie trouvée
 """),
 
 57: _("""
- methode qr : probleme de convergence 
+ methode QR : problème de convergence 
 """),
 
 58: _("""
- il y a des valeurs propres tres proches
+ il y a des valeurs propres très proches
 """),
 
 59: _("""
- il y a des vp tres proches
+ il y a des vp très proches
+### idem algeline3_58
 """),
 
 60: _("""
- la matrice    :  %(k1)s  a une numerotation incoherente avec le nume_ddl.
+ la matrice : %(k1)s a une numérotation incohérente avec le NUME_DDL.
 """),
 
 61: _("""
- le concept mode " %(k1)s " a ete cree avec les matrices    matr_a:  %(k2)s , matr_b:  %(k3)s , matr_c:  %(k4)s  et non avec celles  passees en arguments.
+ le concept MODE " %(k1)s " a été créé avec les matrices
+ MATR_A:  %(k2)s
+ MATR_B:  %(k3)s
+ MATR_C:  %(k4)s
+ et non avec celles passées en arguments.
 """),
 
 62: _("""
- le concept mode " %(k1)s " a ete cree avec les matrices    matr_a:  %(k2)s , matr_b:  %(k3)s  et non avec celles  passees en arguments.
+ le concept MODE " %(k1)s " a été créé avec les matrices
+ MATR_A:  %(k2)s
+ MATR_B:  %(k3)s
+ et non avec celles passées en arguments.
 """),
 
 63: _("""
- le systeme a resoudre n'a pas de ddl actif.
+ le système à résoudre n'a pas de DDL actif.
 """),
 
 64: _("""
- on trouve plus de 9999valeurs propres dans la bande demandee
+ on trouve plus de 9999 valeurs propres dans la bande demandée
 """),
 
 65: _("""
- la matrice de raideur est numeriquement singuliere (malgre la strategie de decalage) la valeur de decalage est une valeur propre ou la matrice est non inversible.
+ la matrice de raideur est numériquement singulière (malgré la stratégie de décalage) :
+ la valeur de décalage est une valeur propre ou la matrice est non inversible.
 """),
 
 66: _("""
@@ -292,11 +312,14 @@ cata_msg={
 """),
 
 67: _("""
- la matrice de raideur est numeriquement singuliere (malgre la strategie de decalage) la borne maximale de la bande est une valeur propre. on poursuit tout de meme
+ la matrice de raideur est numeriquement singulière (malgré la stratégie de decalage) :
+ la borne maximale de la bande est une valeur propre.
+ n poursuit tout de meme.
 """),
 
 68: _("""
- la matrice de raideur est singuliere malgre la strategie de decalage (ie structure avec des modes de corps solide). 
+ la matrice de raideur est singulière malgre la strategie de décalage
+ (structure avec des modes de corps solide). 
 """),
 
 69: _("""
@@ -304,23 +327,23 @@ cata_msg={
 """),
 
 70: _("""
- type des valeurs  variable d'un mode a l'autre,  recuperation impossible.
+ type des valeurs variable d'un mode à l'autre, récuperation impossible.
 """),
 
 71: _("""
- nombre d'equations variable d'un mode a l'autre,  recuperation impossible.
+ nombre d'équations variable d'un mode à l'autre, récuperation impossible.
 """),
 
 72: _("""
- probleme interne arpack
+ probleme interne ARPACK
 """),
 
 73: _("""
- probleme taille workd/l -> augmenter dim_sous_espace
+ problème taille WORKD/L -> augmenter DIM_SOUS_ESPACE
 """),
 
 74: _("""
- probleme interne lapack
+ problème interne LAPACK
 """),
 
 75: _("""
@@ -328,47 +351,50 @@ cata_msg={
 """),
 
 76: _("""
- probleme interne lapack, routine flahqr (forme de schur)
+ probleme interne LAPACK, routine FLAHQR (forme de SCHUR)
 """),
 
 77: _("""
- probleme interne lapack, routine ftrevc (vecteurs propres)
+ probleme interne LAPACK, routine FTREVC (vecteurs propres)
 """),
 
 78: _("""
- aucune valeur propre a la precision requise --> augmenter prec_soren ou nmax_iter_soren ou augmenter dim_sous_espace
+ aucune valeur propre à la précision requise
+ --> augmenter PREC_SOREN ou NMAX_ITER_SOREN ou augmenter DIM_SOUS_ESPACE
 """),
 
 79: _("""
- la position modale d'une des frequences est negative ou nulle, votre systeme matriciel est surement fortement singulier (ceci correspond generalement a un probleme dans la modelisation).
+ la position modale d'une des fréquences est négative ou nulle
+ votre système matriciel est surement fortement singulier
+ (ceci correspond généralement à un problème dans la modélisation).
 """),
 
 80: _("""
- mode a creer avant appel a vpstor
+ MODE à créer avant appel à VPSTOR
 """),
 
 81: _("""
- " %(k1)s "  argument du mot cle "option" pour le calcul des frequences est invalide.
+ " %(k1)s "  argument du mot cle "OPTION" pour le calcul des fréquences est invalide.
 """),
 
 82: _("""
- pour l'option  "bande" il faut exactement 2 frequences.
+ pour l'option "BANDE" il faut exactement 2 fréquences.
 """),
 
 83: _("""
- frequence min. plus grande ou egale a la frequence max.
+ fréquence min. supérieure ou égale à la fréquence max.
 """),
 
 84: _("""
- pour l'option  "centre" il faut exactement 1 frequence.
+ pour l'option "CENTRE" il faut exactement une fréquence.
 """),
 
 85: _("""
- pour l'option  "plus_petite" les frequences de "freq" sont ignorees.
+ pour l'option  "PLUS_PETITE" les frequences de "FREQ" sont ignorées.
 """),
 
 86: _("""
- pour l'option  "bande" il faut exactement 2 charges critiques.
+ pour l'option  "BANDE" il faut exactement 2 charges critiques.
 """),
 
 87: _("""
@@ -376,39 +402,39 @@ cata_msg={
 """),
 
 88: _("""
- pour l'option  "centre" il faut exactement 1 charge critique.
+ pour l'option  "CENTRE" il faut exactement une charge critique.
 """),
 
 89: _("""
- pour l'option  "plus_petite" les charges critiques de "char_crit" sont ignorees.
+ pour l'option  "PLUS_PETITE" les charges critiques de "CHAR_CRIT" sont ignorées.
 """),
 
 90: _("""
- objet .refe/.refa/.celk inexistant.
+ objet .REFE/.REFA/.CELK inexistant.
 """),
 
 91: _("""
- cham_no non feti !
+ CHAM_NO non FETI
 """),
 
 92: _("""
- liste de cham_no a concatener heterogene
+ liste de CHAM_NO à concaténer hétérogène
 """),
 
 93: _("""
- les cham_nos  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s 
+ les CHAM_NO  %(k1)s  et  %(k2)s  sont de type inconnu  %(k3)s 
 """),
 
 94: _("""
- le cham_no  %(k1)s  de type  %(k2)s  ne peut etre copie dans le cham_no  %(k3)s  de type  %(k4)s 
+ le CHAM_NO  %(k1)s  de type  %(k2)s  ne peut etre copié dans le CHAM_NO  %(k3)s  de type  %(k4)s 
 """),
 
 95: _("""
- champ a representation constante non traite.
+ champ à représentation constante : cas non traité.
 """),
 
 96: _("""
- chout non feti !
+ CHOUT non feti
 """),
 
 97: _("""
@@ -416,10 +442,10 @@ cata_msg={
 """),
 
 98: _("""
- probleme interne lapack, routine dlahqr (forme de schur)
+ probleme interne LAPACK, routine DLAHQR (forme de SCHUR)
 """),
 
 99: _("""
- probleme interne lapack, routine dtrevc (vecteurs propres)
+ probleme interne LAPACK, routine DTREVC (vecteurs propres)
 """),
 }

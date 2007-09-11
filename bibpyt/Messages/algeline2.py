@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline2 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,19 +23,21 @@ def _(x) : return x
 cata_msg={
 
 2: _("""
- l une des valeurs propres de la matrice du probleme modal generalise en eau au repos n est pas reelle
+ Calcul des modes en eau au repos :
+ une des valeurs propres de la matrice n'est pas réelle
 """),
 
 3: _("""
- calcul des modes en eau au repos : une des valeurs propres obtenues est nulle
+ Calcul des modes en eau au repos :
+ une des valeurs propres obtenues est nulle
 """),
 
 4: _("""
- erreur sur la recherche des lagranges.
+ Erreur sur la recherche des lagranges
 """),
 
 5: _("""
- mot cle facteur incorrect.
+ mot cle facteur incorrect
 """),
 
 6: _("""
@@ -43,11 +45,11 @@ cata_msg={
 """),
 
 7: _("""
- On ne traite pas cette option.
+ On ne traite pas cette option
 """),
 
 8: _("""
- On ne peut pas combiner une matrice non symetrique dans une matrice symetrique.
+ On ne peut pas combiner une matrice non symétrique dans une matrice symétrique
 """),
 
 9: _("""
@@ -72,87 +74,90 @@ cata_msg={
 """),
 
 12: _("""
- Attention: une dimesion nulle  ou nmax.lt.dmax(1,n)
+ Résolution système linéaire méthode de CROUT
+ Attention: une dimension nulle ou nmax.lt.dmax(1,n)
 """),
 
 13: _("""
- attention: une dimension negative ou nulle
+ Résolution système linéaire méthode de CROUT
+ Attention: une dimension negative ou nulle
 """),
 
 14: _("""
- attention: les dimensions des  tableaux ne sont pas correctes
+ Résolution système linéaire méthode de CROUT
+ Attention: les dimensions des tableaux ne sont pas correctes
 """),
 
 15: _("""
- pas de charge critique  dans l intervalle demande
+ Pas de charge critique  dans l'intervalle demandé
 """),
 
 16: _("""
-  %(k1)s charges critiques  dans l intervalle demande
+  %(k1)s charges critiques  dans l'intervalle demandé
 """),
 
 17: _("""
- au moins une frequence calculee exterieure a la bande demandee
+ Au moins une fréquence calculée extérieure à la bande demandée
 """),
 
 18: _("""
- les matrices " %(k1)s " et " %(k2)s " n'ont pas le meme domaine de definition
+ Les matrices " %(k1)s " et " %(k2)s " n'ont pas le meme domaine de définition
 """),
 
 19: _("""
- problemes a l'allocation des descripteurs de la matrice " %(k1)s "
+ Problèmes a l'allocation des descripteurs de la matrice " %(k1)s "
 """),
 
 20: _("""
- l'argument de "bloc_debut" est plus grand que le nombre de bloc de la matrice
+ L'argument de "BLOC_DEBUT" est plus grand que le nombre de blocs de la matrice
 """),
 
 21: _("""
- l'argument de "bloc_fin" doit etre strictement positif
+ L'argument de "BLOC_FIN" doit etre strictement positif
 """),
 
 22: _("""
- la numerotation des inconnues est incoherente entre la matrice et le second membre.
+ La numérotation des inconnues est incohérente entre la matrice et le second membre.
 """),
 
 23: _("""
-  %(k1)s  et  %(k2)s  n'ont pas le meme domaine de definition.
+  %(k1)s  et  %(k2)s  n'ont pas le meme domaine de définition.
 """),
 
 24: _("""
- la matrice a des ddls elimines. il faut utiliser le mot cle cham_cine.
+ La matrice a des ddls eliminés. il faut utiliser le mot clé CHAM_CINE.
 """),
 
 25: _("""
- la matrice et le second membre sont de type different.
+ La matrice et le second membre sont de type différent.
 """),
 
 26: _("""
- le second membre et le champ cinematiquesont de type different.
+ le second membre et le champ cinématique sont de type différent.
 """),
 
 27: _("""
- la matrice est d'un type inconnu de l'operateur.
+ la matrice est d'un type inconnu de l'opérateur.
 """),
 
 28: _("""
- err_31a: les "matr_asse" %(k1)s "  et  " %(k2)s "  ne sont pas combinables.
+ les "MATR_ASSE" %(k1)s "  et  " %(k2)s "  ne sont pas combinables.
 """),
 
 29: _("""
- la valeur d'entree min et superieure ou egale a la valeur d'entree sup
+ la valeur d'entrée 'min' est supérieure ou égale à la valeur d'entrée 'sup'
 """),
 
 30: _("""
- les  matrices  " %(k1)s "  et  " %(k2)s "  n'ont pas le meme domaine de definition.
+ les matrices  " %(k1)s "  et  " %(k2)s "  n'ont pas le meme domaine de définition.
 """),
 
 31: _("""
- trop de re-ajustement de la borne minimale.
+ trop de ré-ajustement de la borne minimale.
 """),
 
 32: _("""
- trop de re-ajustement de la borne maximale.
+ trop de ré-ajustement de la borne maximale.
 """),
 
 33: _("""
@@ -160,27 +165,27 @@ cata_msg={
 """),
 
 34: _("""
- il n'est pas permis de modifier un objet pere
+ il n'est pas permis de modifier un objet père
 """),
 
 35: _("""
- mode non calcule a partir de matrices assemblees
+ mode non calculé à partir de matrices assemblées
 """),
 
 36: _("""
- normalisation impossible, le point n'est pas present dans le modele.
+ normalisation impossible, le point n'est pas present dans le modèle.
 """),
 
 37: _("""
- normalisation impossible, la composante n'est pas presente dans le modele.
+ normalisation impossible, la composante n'est pas présente dans le modèle.
 """),
 
 38: _("""
- manque des parametres entiers
+ il manque des paramètres entiers
 """),
 
 39: _("""
- manque des parametres reels
+ il manque des paramètres réels
 """),
 
 40: _("""
@@ -188,19 +193,19 @@ cata_msg={
 """),
 
 41: _("""
- normalisation impossible,  aucune composante n'est presente dans le modele.
+ normalisation impossible,  aucune composante n'est présente dans le modèle.
 """),
 
 42: _("""
- normalisation impossible, le noeud n'est pas present dans le modele.
+ normalisation impossible, le noeud n'est pas présent dans le modèle.
 """),
 
 43: _("""
- on ne tient pas compte du mot cle facteur "mode_signe" pour des "mode_meca_c"
+ on ne tient pas compte du mot cle facteur "MODE_SIGNE" pour des "MODE_MECA_C"
 """),
 
 44: _("""
- " %(k1)s "  type de mode non traite
+ " %(k1)s "  type de mode non traité
 """),
 
 45: _("""

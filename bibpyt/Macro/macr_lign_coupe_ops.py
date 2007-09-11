@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -409,12 +409,6 @@ def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
      for comp in new_para.difference(['NOEUD']):
         dictc = getattr(dictb, comp).NON_VIDE()
         lno_c2.update(dictc.NOEUD.values())
-
-  # listenoe_c=liste non ordonnee des noeuds de la ligne de coupe (sans doublons)
-  listenoe_c = dictc.NOEUD.values()
-  # lno_c2=liste des noeuds appartenant à la matières sans doublons
-  # (attention, on l'ordre des noeuds n'est pas conservé)
-  lno_c2 = Set(listenoe_c)
 
   # on réordonne la liste des noeuds de lno_c2 (selon leur position dans listenoe_b) => l_matiere
   # l_horsmat=liste des noeuds hors matière

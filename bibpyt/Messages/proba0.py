@@ -1,4 +1,4 @@
-#@ MODIF proba0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF proba0 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ cata_msg={
 """),
 
 3: _("""
-  BORNE SUP très grande, pb de précision possible,
+  BORNE SUP très grande, problème de précision possible,
   vérifiez la distribution des valeurs générées.
 """),
 
@@ -50,7 +50,7 @@ cata_msg={
 """),
 
 6: _("""
-  Erreur : unif < 0
+  Erreur : UNIF < 0
 """),
 
 7: _("""
@@ -68,7 +68,5 @@ cata_msg={
 10: _("""
   Il faut autant de composantes que de noeuds.
 """),
-
-
 
 }

@@ -6,7 +6,7 @@
 C
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,7 +118,12 @@ C
 C
 C ----------------------------------------------------------------------
 C
-
+C
+C --- VERIFICATION TYPE PROJECTION
+C
+      IF (PROJ.EQ.2) THEN
+        CALL U2MESS('F','CONTACT_14')
+      END IF  
 C
 C --- INITIALISATIONS
 C

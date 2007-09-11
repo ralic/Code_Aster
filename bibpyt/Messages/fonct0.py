@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF fonct0 Messages  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -284,6 +284,10 @@ Remontée d'erreur (pour aider à l'analyse) :
 42: _("""
 Erreur lors de la lecture des blocs de valeurs :
    %(k1)s
+"""),
+
+43: _("""
+Les fréquences doivent etre strictement positives.
 """),
 
 }

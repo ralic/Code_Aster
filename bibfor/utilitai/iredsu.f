@@ -4,7 +4,7 @@
       CHARACTER*(*)       MACR, FORM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -189,7 +189,7 @@ C     >                  LMOD,NIVE,VERSIO)
           TITRE = 'MODE DYNAMIQUE'
           CALL IRECRI ( BASEMO,NOSIMP,NOPASE,FORM,IFC,TITRE,
      >                 LBID,1,'DEPL',' ',IERO,K8B, 1,IORD,
-     >                  .TRUE.,B,IERO,B,CECR,F,IERO,
+     >                  .TRUE.,B,IERO,B,CECR,K8B,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
      >                  F,ZERO,F,ZERO,F,F,FORMAR,LMOD,
      >                  NIVE,VERSIO)

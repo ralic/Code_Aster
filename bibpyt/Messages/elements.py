@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,23 +27,25 @@ cata_msg={
 """),
 
 2: _("""
- abs(rayon2-rayon1).gt.epsi
+ ABS(RAYON2-RAYON1).GT.EPSI
 """),
 
 3: _("""
- abs(theta2-theta1).gt.epsi
+ ABS(THETA2-THETA1).GT.EPSI
 """),
 
 4: _("""
- abs(omega2-omega1).gt.epsi
+ ABS(OMEGA2-OMEGA1).GT.EPSI
 """),
 
 5: _("""
- probleme de maillage tuyau :  pour une maille definie par les noeuds n1 n2 n3  le noeud n3 doit etre le noeud milieu
+ problème de maillage TUYAU
+ pour une maille definie par les noeuds N1 N2 N3  le noeud N3 doit etre le noeud milieu
 """),
 
 6: _("""
-  gene_tuyau il faut donner un vecteur non colineaire au tuyau
+  GENE_TUYAU
+  il faut donner un vecteur non colinéaire au tuyau
 """),
 
 7: _("""
@@ -55,34 +57,36 @@ cata_msg={
 """),
 
 9: _("""
- il faut renseigner le coefficient e_n  dans les cas des deformations planes et de l'axisymetrie, on ne regarde donc que le cas des contraintes planes.
+ il faut renseigner le coefficient E_N  dans les cas des déformations planes et de l'axisymétrie
+ on ne regarde donc que le cas des contraintes planes.
 """),
 
 10: _("""
- Subroutine chpver :
+ Subroutine CHPVER :
  le champ  %(k1)s n'a pas le bon type :
    type autorisé  :%(k2)s
    type du champ  :%(k3)s
 """),
 
 11: _("""
- la modelisation :  %(k1)s n'est pas traitee.
+ la modélisation :  %(k1)s n'est pas traitée.
 """),
 
 12: _("""
- nombre de couches obligatoirement superieur a 0
+ nombre de couches obligatoirement supérieur à 0
 """),
 
 13: _("""
- nombre de couches limite a 10 pour les coques 3d
+ nombre de couches limité a 10 pour les coques 3d
 """),
 
 14: _("""
- le type d'element :  %(k1)s n'est pas prevu.
+ le type d'élément :  %(k1)s n'est pas prevu.
 """),
 
 15: _("""
- la nature du materiau  %(k1)s  n'est pas traitee, seules sont considerees les natures : elas, elas_istr, elas_orth .
+ la nature du matériau  %(k1)s  n'est pas traitée
+ seules sont considérées les natures : ELAS, ELAS_ISTR, ELAS_ORTH .
 """),
 
 16: _("""
@@ -90,31 +94,31 @@ cata_msg={
 """),
 
 17: _("""
- noeuds confondus pour un element
+ noeuds confondus pour un élément
 """),
 
 18: _("""
- nno invalide
+ NNO invalide
 """),
 
 19: _("""
- pb1
+ PB1
 """),
 
 20: _("""
- aucun type d elements necorrespond au type demande
+ aucun type d'éléments ne correspond au type demandé
 """),
 
 21: _("""
- predicteur elas hors champs
+ prédicteur ELAS hors champs
 """),
 
 22: _("""
- irep (indicateur de changement de repere) doit etre egal a 0 ou 1
+ IREP (indicateur de changement de repère) doit etre égal à 0 ou 1
 """),
 
 23: _("""
- piles saturees
+ piles satur&es
 """),
 
 24: _("""
@@ -122,31 +126,33 @@ cata_msg={
 """),
 
 25: _("""
- on passe en mecanisme 2
+ on passe en mécanisme 2
 """),
 
 26: _("""
- chargement en meca 2 trop important a verifier
+ chargement en mécanisme 2 trop important
+ à vérifier
 """),
 
 27: _("""
- on poursuit en mecanisme 2
+ on poursuit en mécanisme 2
 """),
 
 28: _("""
- decharge negative sans passer par meca 1 diminuer le pas de temps
+ décharge négative sans passer par meca 1 diminuer le pas de temps
 """),
 
 29: _("""
- on revient en mecanisme 1
+ on revient en mécanisme 1
 """),
 
 30: _("""
- pas de retour dans meca 1 trop important diminuer le pas de temps
+ pas de retour dans meca 1 trop important
+ diminuer le pas de temps
 """),
 
 31: _("""
- type element  %(k1)s  incompatible avec  %(k2)s
+ type d'élément  %(k1)s  incompatible avec  %(k2)s
 """),
 
 32: _("""
@@ -154,34 +160,35 @@ cata_msg={
 """),
 
 33: _("""
- nombre d iterations > 1000 .
+ nombre d'itérations > 1000 .
 """),
 
 34: _("""
- element non traite  %(k1)s
+ élément non traité  %(k1)s
 """),
 
 35: _("""
- pas d excentrement avec stat_non_line maille  %(k1)s
+ pas d'excentrement avec STAT_NON_LINE
+ maille  : %(k1)s
 """),
 
 36: _("""
- nombre de couches  negatif ou nul :  %(k1)s
+ nombre de couches négatif ou nul :  %(k1)s
 """),
 
 37: _("""
- Subroutine chpver :
+ Subroutine CHPVER :
  le champ  %(k1)s n'a pas la bonne grandeur :
    grandeur autorisée  :%(k2)s
    grandeur du champ   :%(k3)s
 """),
 
 38: _("""
- ! pb phesen.ne.phenom !
+ problème PHESEN.NE.PHENOM
 """),
 
 39: _("""
- l'axe de reference est normal a un element de plaque anisotrope
+ l'axe de référence est normal à un élément de plaque anisotrope
 """),
 
 40: _("""
@@ -194,15 +201,18 @@ cata_msg={
 """),
 
 41: _("""
- impossibilite : vous avez un materiau de type "elas_coque" et vous n'avez pas defini la raideur de membrane, ni sous la forme "memb_l", ni sous la forme "m_llll".
+ impossibilité :
+ vous avez un materiau de type "ELAS_COQUE" et vous n'avez pas défini la raideur de membrane,
+ ni sous la forme "MEMB_L", ni sous la forme "M_LLLL".
 """),
 
 42: _("""
- comportement materiau non admis
+ comportement matériau non admis
 """),
 
 43: _("""
- impossibilite : vous avez un materiau de type "elas_coque" et le determinant de la sous-matrice de hooke relative au cisaillement est nul.
+ impossibilité :
+ vous avez un materiau de type "ELAS_COQUE" et le determinant de la sous-matrice de Hooke relative au cisaillement est nul.
 """),
 
 44: _("""
@@ -210,23 +220,26 @@ cata_msg={
 """),
 
 45: _("""
- n < 0
+ N < 0
 """),
 
 46: _("""
- nombre de couches negatif ou nul
+ nombre de couches négatif ou nul
 """),
 
 47: _("""
- pas d excentrement avec forc_noda maille  %(k1)s
+ pas d excentrement avec FORC_NODA
+ maille  : %(k1)s
 """),
 
 48: _("""
- impossibilite, la surface de l'element est nulle.
+ impossibilité, la surface de l'élément est nulle.
 """),
 
 49: _("""
- l'axe de reference est normal a un element de plaque - calcul option impossible - orienter ces mailles
+ l'axe de référence est normal à un élément de plaque
+ calcul option impossible
+ orienter ces mailles
 """),
 
 50: _("""
@@ -243,31 +256,33 @@ cata_msg={
 """),
 
 52: _("""
- lorsqu'il y a variation de temperature dans l'epaisseur, utiliser "stat_non_line"
+ lorsqu'il y a variation de température dans l'épaisseur, utiliser "STAT_NON_LINE"
 """),
 
 53: _("""
- probleme: temperature sur la maille: %(k1)s : il manque la composante "temp"
+ problème: temperature sur la maille: %(k1)s : il manque la composante "TEMP"
 """),
 
 54: _("""
- element non prevu
+ élément non prévu
 """),
 
 55: _("""
- elrefa inconnu:  %(k1)s
+ ELREFA inconnu:  %(k1)s
 """),
 
 56: _("""
-  erreur programmeur ecrasement de dff, dimf est inferieur au nb de noeuds * nb cmps
+  erreur programmeur
+  ecrasement de dff, dimf est inférieur au nombre de noeuds * nombre de composantes
 """),
 
 57: _("""
-  erreur programmeur: ecrasement de ff, dimf est inferieur au nb de noeuds
+  erreur programmeur
+  écrasement de FF, DIMF est inférieur au nombre de noeuds
 """),
 
 58: _("""
- la nature du materiau  %(k1)s  necessite la definition du coefficient  b_endoge dans defi_materiau.
+ la nature du matériau  %(k1)s  nécessite la définition du coefficient  B_ENDOGE dans DEFI_MATERIAU.
 """),
 
 59: _("""
@@ -279,51 +294,52 @@ cata_msg={
 """),
 
 61: _("""
- axi : r=0
+ AXI : R=0
 """),
 
 62: _("""
- group_ma :  %(k1)s  inconnu dans le maillage
+ GROUP_MA :  %(k1)s  inconnu dans le maillage
 """),
 
 63: _("""
- erreurs group_ma
+ erreurs GROUP_MA
 """),
 
 64: _("""
-  le liaison_*** de  %(k1)s  implique les noeuds physiques  %(k2)s  et  %(k3)s et traverse l'interface
+  le LIAISON_*** de  %(k1)s  implique les noeuds physiques  %(k2)s  et  %(k3)s et traverse l'interface
 """),
 
 65: _("""
-  le liaison_*** de  %(k1)s  implique le noeud physique  %(k2)s et touche l'interface
+  le LIAISON_*** de  %(k1)s  implique le noeud physique  %(k2)s et touche l'interface
 """),
 
 66: _("""
- si noeud_orig : donner un group_ma ou une liste de mailles. on ne reordonne pas les group_no et les listes de noeuds.
+ si NOEUD_ORIG : donner un GROUP_MA ou une liste de mailles
+ on ne réordonne pas les GROUP_NO et les listes de noeuds.
 """),
 
 67: _("""
- le group_no :  %(k1)s n'existe pas.
+ le GROUP_NO :  %(k1)s n'existe pas.
 """),
 
 68: _("""
- le noeud origine  %(k1)s ne fait pas parti du chemin
+ le noeud origine  %(k1)s ne fait pas partie du chemin
 """),
 
 69: _("""
- le noeud origine  %(k1)s  n'est pas une extremite
+ le noeud origine  %(k1)s  n'est pas une extremité
 """),
 
 70: _("""
- pas d'origine definie par noeud_orig ou group_no_orig
+ pas d'origine définie par NOEUD_ORIG ou GROUP_NO_ORIG
 """),
 
 71: _("""
- echec dans la recherche du noeud origine
+ échec dans la recherche du noeud origine
 """),
 
 72: _("""
- group_no oriente : noeud origine =  %(k1)s
+ group_no orienté : noeud origine =  %(k1)s
 """),
 
 73: _("""
@@ -331,7 +347,7 @@ cata_msg={
 """),
 
 74: _("""
- si le fond est une courbe fermee maille_orig ou group_ma_orig doit accompagner noeud_orig
+ si le fond est une courbe fermée MAILLE_ORIG ou GROUP_MA_ORIG doit accompagner NOEUD_ORIG
 """),
 
 75: _("""
@@ -343,74 +359,70 @@ cata_msg={
 """),
 
 77: _("""
- le noeud extremite  %(k1)s  n'est pas le dernier noeud
+ le noeud extremité  %(k1)s  n'est pas le dernier noeud
 """),
 
 78: _("""
- group_no oriente : noeud extremite =  %(k1)s
+ GROUP_NO orienté : noeud extremité =  %(k1)s
 """),
 
 79: _("""
- il y a a la fois des elements volumiques de degre 1 et de degre 2 dans le modele.  on a besoin de savoir si on est en lineaire ou en quadratique pour choisir la methode de lissage.
+ il y a à la fois des éléments volumiques de degré 1 et de degré 2 dans le modèle
+ on a besoin de savoir si on est en lineaire ou en quadratique pour choisir la methode de lissage.
 """),
 
 80: _("""
- le concept fond_fiss est mal cree
+ le concept FOND_FISS est mal créé
 """),
 
 81: _("""
- le .vale du cham_no dire_theta n'a pas la bonne taille
+ le .VALE du CHAM_NO DIRE_THETA n'a pas la bonne taille
 """),
 
 82: _("""
- l'option de lissage 'lagrang2' n'a pas ete developpee lorsque le nombre de noeuds d'un fond de fissure ferme est pair.
+ l'option de lissage 'LAGRANG2' n'a pas ete développée lorsque le nombre de noeuds d'un fond de fissure fermé est pair.
 """),
 
 83: _("""
- le type des mailles des                                levres doit etre quadrangle ou triangle
+ le type des mailles des lèvres doit etre quadrangle ou triangle
 """),
 
 84: _("""
-  %(k1)s cham_no inexistant
+  %(k1)s CHAM_NO inexistant
 """),
 
 85: _("""
- initial point nm out of domain
+ initial point NM out of domain
 """),
 
 86: _("""
- ndicho  .gt.  10000
+ NDICHO  .GT.  10000
 """),
 
 87: _("""
- bad definition of mp1 and mp2
+ bad definition of MP1 and MP2
 """),
 
 88: _("""
- le fond de fissure ne doit etre defini que par un noeud ( revoir le group_no )
+ le fond de fissure ne doit etre défini que par un noeud
+ ( revoir le GROUP_NO )
 """),
 
 89: _("""
- le fond de fissure ne                             doit etre defini que par un noeud
+ le fond de fissure ne doit etre défini que par un noeud
 """),
 
-
-
-
-
-
-
-
 91: _("""
- mot cle fond_fiss obligatoire
+ mot clé FOND_FISS obligatoire
 """),
 
 92: _("""
- le fond de fissure ne doit etre defini que par un noeud ( revoir fond_fiss )
+ le fond de fissure ne doit etre défini que par un noeud
+ ( revoir FOND_FISS )
 """),
 
 93: _("""
-  %(k1)s  n'est pas un group_no ou un group_ma
+  %(k1)s  n'est pas un GROUP_NO ou un GROUP_MA
 """),
 
 94: _("""
@@ -418,22 +430,25 @@ cata_msg={
 """),
 
 95: _("""
- les mailles des levres doivent etre lineiques
+ les mailles des lèvres doivent etre linéiques
 """),
 
 96: _("""
- erreur : la levre superieure possede une maille repetee 2 fois : maille  %(k1)s . revoir les donnees
+ erreur : la levre superieure possede une maille répétée 2 fois : maille  %(k1)s
+ revoir les données
 """),
 
 97: _("""
- erreur : la levre inferieure possede une maille repetee 2 fois : maille  %(k1)s . revoir les donnees
+ erreur : la lèvre inférieure possède une maille répétée 2 fois : maille  %(k1)s
+ revoir les données
 """),
 
 98: _("""
- erreur : la levre inferieure et la levre superieure ont une maille surfacique en commun. revoir les donnees
+ erreur : la lèvre inférieure et la lèvre superieure ont une maille surfacique en commun
+ revoir les données
 """),
 
 99: _("""
- probleme dans le calcul de la normale a la fissure
+ problème dans le calcul de la normale à la fissure
 """),
 }
