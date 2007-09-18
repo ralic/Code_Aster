@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C       -- POUR L'INSTANT 'NUAGE_DEG_*' N'EST PERMIS QUE POUR LES CHAMPS
         CALL GETVID(' ','CHAM_NO'       ,1,1,1, CHAM1, N1 )
         IF (N1.EQ.0) CALL U2MESS('F','ALGORITH9_66')
       ELSE
-        CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(.FALSE.)
       END IF
 C
 C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============

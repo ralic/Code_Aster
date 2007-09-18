@@ -1,4 +1,4 @@
-# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOL',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM',),
+                              MODELISATION='3D_XFEM_CONT',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),),);

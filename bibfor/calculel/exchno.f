@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,15 +100,13 @@ C     -------------------------
 
 C     1-  CAS: CHNO -> ELGA :
 C     -----------------------
-      IF (ITYPLO.EQ.3) THEN
-        CALL U2MESS('F','CALCULEL_46')
-
+C     CE CAS ITYPLO=3 N EST PREVU : DEVELOPPEMENT A FAIRE ...
+      CALL ASSERT(ITYPLO.NE.3)
 
 C     2-  CAS: CHNO -> ASSE :
 C     -----------------------
-      ELSE IF (ITYPLO.GE.4) THEN
+      IF (ITYPLO.GE.4) THEN
         CALL U2MESS('F','ALGORITH_15')
-
 
 C     3-  CAS: CHNO -> ELNO :
 C         CAS: CHNO -> ELEM (MOYENNE)
@@ -209,7 +207,7 @@ C            IF (LFETI) THEN
 C              IF (.NOT.ZL(IFETI+IEL)) GOTO 30
 C            ENDIF
             IMA = NUMAIL(IGR,IEL)
-            IF (IMA.EQ.0) CALL U2MESS('F','UTILITAI_67')
+            CALL ASSERT(IMA.NE.0)
             DO 20 INO = 1,NNO
               IF (DIFF) IDG2 = 5 + NEC* (INO-1)
               IF (IMA.GT.0) THEN
@@ -246,7 +244,7 @@ C           IF (LFETI) THEN
 C              IF (.NOT.ZL(IFETI+IEL)) GOTO 50
 C           ENDIF
             IMA = NUMAIL(IGR,IEL)
-            IF (IMA.EQ.0) CALL U2MESS('F','CALCULEL2_50')
+            CALL ASSERT(IMA.NE.0)
             DO 40 INO = 1,NNO
               IF (DIFF) IDG2 = 5 + NEC* (INO-1)
               IF (IMA.GT.0) THEN

@@ -1,7 +1,7 @@
       SUBROUTINE PMFD01(NOMA,CARELE,VNBFIB,VPOINT,VCARFI,VNBFIG,
      &                  CESDEC,NGMXEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C     --------------------------------------
       DO 10,IMA = 1,NBMA
         DO 12 ICMP=1,NBCP
           CALL CESEXI('C',JCES1D,JCES1L,IMA,1,1,ICMP,IAD)
-          IF (IAD.GE.0) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(IAD.LT.0)
           ZL(JCES1L-1-IAD) = .TRUE.
           ZI(JCES1V-1-IAD) = ZI(JNBFIB-1+(IMA-1)*NBCP+ICMP)
    12   CONTINUE
@@ -172,7 +172,7 @@ C on fait un vecteur uniquement avec les nb de fibres
             ISPT=ISPT+1
             DO 30,ICMP = 1,NCARFI
               CALL CESEXI('C',JCES1D,JCES1L,IMA,1,ISPT,ICMP,IAD)
-C              IF (IAD.GE.0) CALL U2MESS('F','CALCULEL_2')
+C              CALL ASSERT(IAD.LT.0)
               ZL(JCES1L-1-IAD) = .TRUE.
               ZR(JCES1V-1-IAD)=ZR(JCARFI-1+POINT-1+(IFIB-1)*NCARFI+ICMP)
    30       CONTINUE

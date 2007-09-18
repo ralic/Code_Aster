@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,10 +78,10 @@ Veuillez revoir la définition des level sets.
 """),
 
 12: _("""
-La prise en compte du contact sur les lèvres des fissures X-FEM n'est possible qu'avec une
-approximation du champ de déplacement linéaire.
+La prise en compte du contact sur les lèvres des fissures X-FEM n'est possible que
+sur un maillage linéaire.
 Deux solutions : 
-- soit passer en approximation linéaire (mot-clé DEGRE_DEPL de MODI_MODELE_XFEM)
+- soit passer en approximation linéaire
 - soit ne pas prendre en compte le contact (enlever le mot-clé CONTACT de MODI_MODELE_XFEM)
 """),
 
@@ -95,6 +95,14 @@ On ne peut pas appliquer un cisaillement 2d sur les lèvres d'une fissure X-FEM.'
 
 15: _("""
 Cette option n'a pas encore été programmée.'
+"""),
+
+16: _("""
+Il n'y a aucun élément enrichi.
+- Si le contact est défini sur les lèvres de la fissure,
+la modélisation doit etre 3D_XFEM_CONT ou C_PLAN_XFEM_CONT ou D_PLAN_XFEM_CONT'
+- Si le contact n'est pas défini sur les lèvres de la fissure,
+la modélisation doit etre 3D ou C_PLAN ou D_PLAN'.
 """),
 
 18: _("""
@@ -120,6 +128,10 @@ Plus d'une occurrence du mot-clef ORIE_FOND.
 
 23: _("""
 Erreur dans le choix de la methode de calcul des level-sets: renseignez FONC_LT/LN ou GROUP_MA_FISS/FOND.
+"""),
+
+24: _("""
+Erreur de développement : Attribut XFEM non renseigné pour cet élément.
 """),
 
 50: _("""

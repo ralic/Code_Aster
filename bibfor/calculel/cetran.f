@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHS1, CHS2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       NOMGD2 = ZK8(JCE2K-1+2)
       NCMP2  =  ZI(JCE2D-1+2)
 C
-      IF (NOMGD2.NE.NOMGD) CALL U2MESS('F','CALCULEL_84')
+      CALL ASSERT(NOMGD2.EQ.NOMGD)
 C
       CALL DISMOI ( 'F', 'TYPE_SCA', NOMGD, 'GRANDEUR', IBID,TSCA,IBID)
 C
@@ -92,8 +92,8 @@ C
 C
          NBPT2 = ZI(JCE2D-1+5+4*(IMA2-1)+1)
          NBSP2 = ZI(JCE2D-1+5+4*(IMA2-1)+2)
-         IF (NBPT2.NE.NBPT) CALL U2MESS('F','CALCULEL_85')
-         IF (NBSP2.NE.NBSP) CALL U2MESS('F','CALCULEL_86')
+         CALL ASSERT(NBPT2.EQ.NBPT)
+         CALL ASSERT(NBSP2.EQ.NBSP)
 C
          DO 20 ICMP2 = 1 , NCMP2
 C
@@ -110,7 +110,7 @@ C
                   IF (IAD1.LE.0) GOTO 40
                   IF ( .NOT. ZL(JCE1L-1+IAD1) ) GOTO 40
                   CALL CESEXI('C',JCE2D,JCE2L,IMA2,IPT,ISP,ICMP2,IAD2)
-                  IF (IAD2.LE.0) CALL U2MESS('F','CALCULEL_87')
+                  CALL ASSERT(IAD2.GT.0)
 C
                   ZL(JCE2L-1+IAD2) = .TRUE.
 C
@@ -125,7 +125,7 @@ C
                   ELSE IF (TSCA.EQ.'K8') THEN
                      ZK8(JCE2V-1+IAD2) = ZK8(JCE1V-1+IAD1)
                   ELSE
-                     CALL U2MESS('F','CALCULEL_39')
+                     CALL ASSERT(.FALSE.)
                   END IF
 C
  40            CONTINUE

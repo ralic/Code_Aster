@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel6 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,16 +23,6 @@ def _(x) : return x
 
 cata_msg={
 
-
-
-
-
-
-
-
-
-
-
 9: _("""
   Erreur d'utilisation :
   Vous avez utilisé le mot clé AFFE_MATERIAU/AFFE/TEMP_REF
@@ -44,39 +34,22 @@ cata_msg={
   Option inconnue %(k1)s
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 13: _("""
- interpolation deformations  anelastiques : evol_noli: %(k1)s instant: %(r1)f
- icoret: %(i1)d
+ interpolation déformations anélastiques :
+ evol_noli: %(k1)s
+ instant  : %(r1)f
+ icoret   : %(i1)d
 """),
-
-
-
-
-
-
-
 
 15: _("""
   l'element diagonal u( %(i1)d , %(i2)d ) de la factorisation est nul. %(k1)s
- la solution et les estimations d' erreurs ne peuvent etre calculees. %(k2)s
+  la solution et les estimations d' erreurs ne peuvent etre calculees. %(k2)s
 """),
 
 16: _("""
- interpolation temperature:evol_ther: %(k1)s nom symbolique: %(k2)s
+ interpolation temperature:
+ evol_ther: %(k1)s
+ nom symbolique: %(k2)s
  instant: %(r1)f
  icoret: %(i1)d
 """),
@@ -84,18 +57,6 @@ cata_msg={
 17: _("""
  recherche nbre de cmp: erreur:  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
 """),
-
-
-
-
-
-
-
-
-
-
-
-
 
 20: _("""
  recherche nbre de cmp: erreur: grandeur ligne numero  %(i1)d  de nom  %(k1)s
@@ -112,18 +73,6 @@ cata_msg={
 22: _("""
  recherche nbre d entiers codes  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
 """),
-
-
-
-
-
-
-
-
-
-
-
-
 
 25: _("""
  recherche nbre d entiers codes grandeur ligne numero  %(i1)d  de nom  %(k1)s
@@ -143,83 +92,35 @@ cata_msg={
  acces impossible au mode propre champ :  %(k1)s , nume_ordre :  %(i1)d
 """),
 
-
-
-
-
-
-
-
 34: _("""
  famille non disponible    type de maille  %(k1)s
     famille d'integration  %(i1)d
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 41: _("""
  famille non disponible    type de maille  %(k1)s
 """),
 
 42: _("""
- ! prise en compte de l'erreur !
- ! sur cl de type echange_paroi n'a ! %(i1)d
- ! pas ete encore implantee          ! %(i2)d
+ La prise en compte de l'erreur sur une condition aux limites
+ de type ECHANGE_PAROI n'a pas été encore implantée
 """),
 
 43: _("""
- ! le mot cle excit contient !! plusieurs occurences de type flux lineaire ! %(i1)d
- !   seule la derniere sera prise en compte   ! %(i2)d
-"""),
-
-44: _("""
- ! le mot cle excit contient !! plusieurs occurences de type echange    ! %(i1)d
- ! seule la derniere sera prise en compte  ! %(i2)d
-"""),
-
-45: _("""
- ! le mot cle excit contient !! plusieurs occurences de type source     ! %(i1)d
- ! seule la derniere sera prise en compte  ! %(i2)d
+ le mot cle EXCIT contient plusieurs occurences de type %(k1)s
+ seule la dernière sera prise en compte
 """),
 
 46: _("""
- ! champ temperature !! vide pour numero ordre ! %(i1)d
+ champ de température vide pour le numéro d'ordre : %(i1)d
 """),
 
 47: _("""
- ! champ flux_elno_temp !! vide pour numero ordre ! %(i1)d
+ champ FLUX_ELNO_TEMP vide pour numéro d'ordre :  %(i1)d
 """),
 
 49: _("""
- erreurs donnees composante inconnue  %(k1)s  pour la grandeur  %(k2)s
+ erreurs données composante inconnue  %(k1)s  pour la grandeur  %(k2)s
 """),
 
 50: _("""
@@ -235,10 +136,10 @@ cata_msg={
 52: _("""
  Erreur Utilisateur :
 
- Variables internes initiales non coherentes (nb sous-points) avec le comportement choisi.
+ Variables internes initiales non cohérentes (nb sous-points) avec le comportement choisi.
  Pour la maille : %(k1)s
-  nb sous-points "k-1" :  %(i1)d
-  nb sous-points "k"   :  %(i2)d
+ nb sous-points "k-1" :  %(i1)d
+ nb sous-points "k"   :  %(i2)d
 """),
 
 53: _("""
@@ -370,7 +271,7 @@ cata_msg={
 """),
 
 68: _("""
- la liste des composantes fournies a nocart est incorrecte.
+ la liste des composantes fournies à NOCART est incorrecte.
  composantes dans catalogue:
 """),
 
@@ -379,7 +280,7 @@ cata_msg={
 """),
 
 70: _("""
- composantes dans editgd:
+ composantes dans EDITGD:
 """),
 
 71: _("""
@@ -395,28 +296,30 @@ cata_msg={
 """),
 
 74: _("""
- element :  %(i1)d jacobien :  %(r1)f
- attention le calcul d erreur est faux si
- la maille n est pas correctement orientee
+ élément  :  %(i1)d
+ jacobien :  %(r1)f
+ attention le calcul d'erreur est faux si la maille n est pas correctement orientée
 """),
 
 75: _("""
- Probleme de parallelisation des calculs élémentaires avec FETI. Imcompatiblité
+ Probleme de parallélisation des calculs élémentaires avec FETI. Imcompatiblité
  entre LIGRELs dans la routine CALCUL.
- CONSEIL: Essayer de passer en séquentiel ou de changer de solveur linéaire.
+--> Risques & conseils :
+ Essayer de passer en séquentiel ou de changer de solveur linéaire.
 """),
 
 76: _("""
- Probleme de parallelisation des calculs élémentaires avec FETI. Imcompatiblité
+ Problème de parallélisation des calculs élémentaires avec FETI. Imcompatiblité
  LIGREL/numéro de maille dans la routine CALCUL.
- CONSEIL: Essayer de passer en séquentiel ou de changer de solveur linéaire.
+--> Risques & conseils :
+ Essayer de passer en séquentiel ou de changer de solveur linéaire.
 """),
 
 77: _("""
- pb lors de l'affectation du champ: %(k1)s
- des valeurs n'ont pas ete recopiees dans le cham_elem final (perte d'information ?)
- ce probleme peut etre du a l'utilisation du mot cle TOUT='OUI'.
- on peut verifier le champ produit avec info=2
+ problème lors de l'affectation du champ: %(k1)s
+ des valeurs n'ont pas ete recopiées dans le CHAM_ELEM final (perte d'information ?)
+ ce problème peut être du a l'utilisation du mot cle TOUT='OUI'.
+ on peut vérifier le champ produit avec info=2
 
 """),
 

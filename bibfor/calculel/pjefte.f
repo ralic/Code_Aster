@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTE (RESU1, RESU2 )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C       ------------------------
           CALL PJ6DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
      &                 LDMAX,DISTMA)
         ELSE
-          CALL U2MESS('F','CALCULEL_9')
+          CALL ASSERT(.FALSE.)
         END IF
 
       ELSE
@@ -207,7 +207,7 @@ C        ----------------------------------------------
             CALL PJ6DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
      &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE
-            CALL U2MESS('F','CALCULEL_10')
+            CALL ASSERT(.FALSE.)
           END IF
 
 

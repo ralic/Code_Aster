@@ -1,0 +1,1109 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 17/09/2007 - 19:08:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010909 DU 2007-05-25 14:59:26
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   mise en conformitxc3xa9 des catalogues de dyna_line_tran et impr_gene avec la doc
+FONCTIONNALITE
+   Lors de la relecture des docs, on a remarqué que dans le catapy de DYNA_LINE_TRAN, le mot
+   clef REAC_VITE apparaît alors qu'il n'est pas documenté. Ce n'est pas un manque de la doc
+   mais simplement un copié/collé maladroit du catapy de DYNA_NON_LINE. Ce mot clef n'a pas
+   de signification en linéaire. Je l'ôte donc du catapy.
+   
+   De même dans IMPR_GENE, il existe des valeurs par défauts qui sont codées dans le fortran.
+   Je les vais apparaître aussi dans le catapy pour une meilleure lisibilité de la commande.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout sur DYNA_LINE_TRAN et IMPR_GENE
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 18/09/2007 - 15:34:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011240 DU 2007-09-12 16:20:57
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   mxc3xa9nage fichiers bibpyt/Messages et bibpyt/Outils
+FONCTIONNALITE
+   Ménage dans bibpyt/Outils :
+   =========================
+   On n'y héberge désormais les macros "métiers" non utilisées dans les tests, dont la
+   responsabilité de la gestion de conf n'incombe pas à l'équipe Aster. Il n'y a donc plus
+   désormais que macr_eolienne.py. Je supprime à cet égard zzzz183a qui d'ailleurs ne tourne
+   plus depuis bien longtemps (STREAM-FM non porté sur machine Bull). Je déplace les 2 autres
+   scripts (macro_rota_globale.py et veri_matr_tang.py dans bibpyt/Utilitai)
+   
+   Ménage dans bibpyt/Messages :
+   ===========================
+   Poursuite (modeste) du chantier mise au propre des messages et rationnalisation de leur
+   rangement. Pour les messages vraiment inintelligibles, vides, fantaisistes, je les
+   transforme souvent en ASSERT.
+   
+   Attention  : impact doc pour MODE_ITER_CYCL
+   Règle sur mots-clés vérifiée par émission de message F dans le source alors que c'est
+   faisable par UN_PARMI dans le catalogue. Je modifie donc le catalogue dans ce sens.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.52.05
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 18/09/2007 - 15:34:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011108 DU 2007-07-17 07:17:56
+TYPE aide utilisation concernant Code_Aster (VERSION 2.x)
+TITRE
+   installation Aster sur machine Zebulon
+FONCTIONNALITE
+   Code_Aster STA9.1 a été installé sur la machine renut2ae dans /opt/aster/ puis dupliquée
+   sur renut2af dans le meme repertoire.
+   
+   - Le compilateur utilisé est Intel. La licence est non-commercialle et il appartient a MMC
+   d'acquerir les licences Fortran et C pour etre en regle avec le cadre d'utilisation des
+   compilateurs (placer les fichiers .lic dans /opt/intel/licences).
+   
+   - Pour pouvoir tester les performances, plusieurs versions d'Aster ont été construites
+   avec des bibliotheques mathematiques differentes :
+   
+   STA9.1 et  STA9.1_blas --> blas/lapack systeme
+   STA9.1_acml --> AMD ACML
+   STA9.1_gotoblas --> GotoBlas
+   
+   - Les librairies optionnelles OpenMP (parallelisme OpenMP dans le solveur MULT_FRONT),
+   MUMPS (solveur) et SCOTCH (partitionnement) ont été installées.
+   
+   - La librairie Zmat n'a pas été linkée à Code_Aster (nous ne disposons pas de la version
+   64 bits Linux de cette bibliotheque).
+   
+   - Lancer ASTK par /opt/aster/outils/astk et choisir une des versions.
+   
+   Les tests fournis avec le paquet aster-full (version Aster-libre) ont été soumis.
+   Ci-dessous est synthetisé le bilan (les fichiers complets sont attachés) :
+   
+   
+   --- Directory of testcases files    : /home/aster/astest_blas, /opt/aster/STA9.1_blas/astest
+   1576 tests   62 errors             18101.4    1157.23   19258.63
+      1 tests without .resu file
+   
+   
+   --- Directory of testcases files    : /home/aster/astest_gotoblas,
+   /opt/aster/STA9.1_gotoblas/astest
+   1576 tests   67 errors            16838.17    1155.45   17993.62
+      1 tests without .resu file
+   
+   
+   --- Directory of testcases files    : /home/aster/astest_acml, /opt/aster/STA9.1_acml/astest
+   1576 tests   59 errors            16457.97    1191.13    17649.1
+      2 tests without .resu file
+   
+   Comme on peut le constater, les bilans ne sont pas pleinement satisfaisant et ne
+   permettent pas d'assurer le status AQ de cette version.
+   
+   Un document résumera de facon plus detaillée l'installation effectuée sur cette machine.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astest
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 17/09/2007 - 12:31:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011241 DU 2007-09-13 11:44:15
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Suppression des scories provenant du parallxc3xa9lisme sur Cray
+FONCTIONNALITE
+   Les routines RCSTOC, RCMOME, RCMOM2 et RCTRAC sont nettoyées : on supprime le commun
+   ICOELJ devenu inutile, ainsi que le dimensionnement des objets &&RDEP et &&MZP en fonction
+   du nombre de cpus introduits lors de la parallélisation des calculs élémentaires sur Cray.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 18/09/2007 - 13:00:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011252 DU 2007-09-13 15:57:38
+TYPE express concernant Code_Aster (VERSION 9.2)
+TITRE
+   X-FEM : Bug dans le sous-dxc3xa9coupage des mailles de bord
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Lors du sous-découpage des mailles de bord X-FEM (te0514), le calcul de la longueur
+   caractéristique de la maille est incorrecte. Or on se sert de cette longueur
+   caractéristique pour savoir si deux points trouvés dans le sous-découpage sont superposés
+   ou non.
+   
+   Le bug se trouve dans la routine loncar : par exemple, on considérait toujours que les
+   coordonnées de noeuds de la maille étaient (X, Y) si la maille est de type QUAD ou TRIA.
+   
+   Pour les éléments de bords 3D, il faut tenir compte aussi de la cooronndée Z.
+   
+   
+   Solution :
+   ----------
+   
+   Rajout d'un arguement en entrée de la routine loncar.f
+   NDIM : dimension topologique du maillage.
+   Le calcul de la longueur caractéristique dépend alors de NDIM.
+   
+   impact : te0514.f, loncar.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011204 DU 2007-09-05 11:59:27
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN06 - elements finis F X-FEM sans contact
+FONCTIONNALITE
+   Problème : 
+   ----------
+   
+   A l'heure actuelle, tous les éléments X-FEM possèdent des ddsl de contact, et on passe
+   dans les boucles de la méthode continue, meme si le contact n'ést pas défini sur les
+   lèvres de la fissure.
+   
+   Le but du chantier est de pouvoir réaliser un calcul X-FEM avec des éléments finis qui
+   n'ont pas de ddls de contact.
+   
+   
+   Solution :
+   ----------
+   
+   On crée des catalogues pour les éléments X-FEM avec contact contenant seulement des
+   éléments linéaires, car le contact ne fonctionne que pour des éléments linéiares.
+   Ces catalogues sont très similiares à ceux actuellement.
+   
+   Les anciens catalogues sont consacrés aux les éléments X-FEM sans contact (le nom des
+   catalogues, ainsi que les noms des EF en changent pas).
+   Les différences se trouvent au niveau de la maille associée. 
+   N'ayant plus besoin des noeuds milieux pour gérer les ddls de contact, la maille associée
+   est donc du meme type que l'EF (par ex : MAILLE HEXA8 -> MECA_XH_HEXA8)
+   on suprrime donc les ENS de noeuds séparant les noeuds milieux et noeuds sommets.
+   de plus, les options liées au contact (CHAR_MECA_CONT, CHAR_MECA_FROT, RIGI_CONT,
+   RIGI_FROT, XCVBCA, XREACL) sont supprimées de ces catalogues. Seule est conservée l'option
+   TOPOFA qui calcule les données topologiques des facettes de contact, car ces facettes sont
+   utiles pour l'integration sur les lèvres de la fissure des termes de pression (sans
+   forcément que le contact soit défini).
+   
+   Cela a un impact sur la syntaxte :
+   les EF avec des noeuds milieux servant uniquement à stockées les ddls de contact ne sont
+   nécessaires que si le contac est défini, et alors il faut converser le LINE_QUAD, puis une
+   modélisation spécifique qui dit que ces éléments sont quasi les memes que les éléments
+   linéiares.
+   
+   ce qui nous amene à deux cas de figures :
+   syntaxe sans contact (la majorité de études) :
+   - plus de LINE_QUAD
+   - modélisation classique dans AFFE_MODELE (3D, C_PLAN...)
+   
+   syntaxe avec contact :
+   - LINE_QUAD
+   - modelisation X-FEM avec contact dans AFFE_MODELE (3D_XFEM_CONT, C_PLAN_XFEM_CONT,
+   D_PLAN_XFEM_CONT)
+   
+   Ces changements impactent tous les cas tests X-FEM existants.
+   
+   Validation :
+   ------------
+   
+   tous les cas tests X-FEM :
+   hsnv132b.comm  sslv134h.comm  ssnv166c.comm  ssnv173g.comm  ssnv182d.comm  ssnv185e.comm 
+   ssnv185l.comm  ssnv186e.comm  ssnv192a.comm  ssnv201a.comm
+   hsnv132c.comm  sslv311a.comm  ssnv173a.comm  ssnv173h.comm  ssnv182e.comm  ssnv185f.comm 
+   ssnv185m.comm  ssnv186f.comm  ssnv195a.comm  ssnv203a.comm
+   hsnv132d.comm  ssnp110c.comm  ssnv173b.comm  ssnv173i.comm  ssnv182f.comm  ssnv185g.comm 
+   ssnv185n.comm  ssnv186g.comm  ssnv195b.comm  ssnv203b.comm
+   sslp313d.comm  ssnp110d.comm  ssnv173c.comm  ssnv173j.comm  ssnv185a.comm  ssnv185h.comm 
+   ssnv186a.comm  ssnv186h.comm  ssnv195c.comm
+   sslp313e.comm  ssnv108b.comm  ssnv173d.comm  ssnv182a.comm  ssnv185b.comm  ssnv185i.comm 
+   ssnv186b.comm  ssnv191a.comm  ssnv195d.comm
+   sslv110f.comm  ssnv108c.comm  ssnv173e.comm  ssnv182b.comm  ssnv185c.comm  ssnv185j.comm 
+   ssnv186c.comm  ssnv191b.comm  ssnv198a.comm
+   sslv134f.comm  ssnv108d.comm  ssnv173f.comm  ssnv182c.comm  ssnv185d.comm  ssnv185k.comm 
+   ssnv186d.comm  ssnv191c.comm  ssnv198b.comm
+   
+   Impact :
+   --------
+   caxfem.f  nmfonc.f  op0113.f  te0024.f  xdeldl.f  xmoajo.f  xmoimp.f  xmoini.f  xmolig.f 
+   xteini.f
+   
+   affe_modele.capy  modi_modele_xfem.capy (suppression du mot clé DEGRE_DEPL)
+   
+   gener_me3d_2.cata     gener_mecpl2_xht.cata   gener_medpl1_xht.cata  gener_medpl2_xht.cata
+     gener_me_xh.cata     gener_me_xt_2.cata    gener_me3d_3.cata      
+   gener_mecpl2_xhtc.cata  gener_medpl1_xt.cata   gener_medpl2_xhtc.cata  gener_me_xhc.cata 
+      gener_me_xt.cata        gener_mecpl2.cata      gener_mecpl2_xt.cata   
+   gener_medpl2.cata      gener_medpl2_xt.cata  gener_me_xht_2.cata     gener_me_xtc.cata   
+     gener_mecpl2_xh.cata   gener_mecpl2_xtc.cata   gener_medpl2_xh.cata  
+   gener_medpl2_xtc.cata   gener_me_xht.cata    mecptr3.cata           gener_mecpl2_xhc.cata
+    gener_medpl1_xh.cata    gener_medpl2_xhc.cata  gener_me_xh_2.cata      gener_me_xhtc.cata
+     phenomene_modelisation__.cata
+   
+   Performances :
+   --------------
+   
+   Quelques exemples sur le temps passé dans STAT_NON_LINE (avant / après)
+              
+   ssnv108c : 122s /  58s
+   ssnv108d : 216s / 100s
+   sslv134h :  64s /  49s
+   ssnb185b :  30s /  15s
+   ssnv185i :  10s /   7s
+   sslv110f : 315s	/  75s
+   
+   Il y a environ un facteur 2.
+   
+   Tout dépend en fait du nombre d'élements X-FEM par rapport au nombre d'élément total.
+   Plus ce rapport est élevé, plus le gain est grand.
+   
+   Le tableau exhaustif de tous les tests (dont le temps total avant modifs est supérieur à
+   10s) est en pièce jointe.
+   
+   remarques : 
+   - il n'y a bien évidemment aucune amélioration sur les tests où le contct est défini
+   - i n'y a pas pas d'amélioration pour les tests avec éléments quadratiques car ces
+   éléments étaient déjà sans ddls de contact (par ex : ssnv185n)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.41.01
+VALIDATION
+   tous les tests X-FEM
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011219 DU 2007-09-07 08:19:34
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   En NEW9, le cas-test ssnv185c s'arrete en ERREUR_<F> (Bull)
+FONCTIONNALITE
+   Problème : 
+   ----------
+   
+   Le cas test ssnv185c plante sur la bull dans TEST_TABLE à cause d'un NaN.
+   Celui provient de CALC_G.
+   
+   
+   Solution :
+   ----------
+   
+   Dans xsif3d.f, la variable FE était utilisée sans être initialisée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv185c
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 18/09/2007 - 13:00:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010326 DU 2006-11-29 17:08:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   limiter le nombre d'alarmes dans le fichier message
+FONCTIONNALITE
+   Le problème décrit dans la fiche n'existe plus : Mathieu a déjà réalisé  l'évolution qui
+   compte chaque message et qui stoppe l'impression au bout de 5 messages de même type.
+   
+   J'ai  vérifié que la réalisation de Mathieu fonctionne bien sur un petit test perso. Merci
+   à lui.
+   
+   L'autre suggestion de la fiche : imprimer en fin de job le nombre total de messages que le
+   code aurait pu émettre, n'est pas faite mais ce n'est peut etre pas une bonne idée ...
+   
+   De toutes façons, c'est aux "vrais" utilisateurs de faire ce genre de demande.
+   
+   Je "ferme" donc la fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   essai perso
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010658 DU 2007-03-16 14:34:14
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   rxc3xa9cupxc3xa9ration du nombre de contraintes associxc3xa9es xc3xa0 un xc3xa9lxc3xa9ment
+FONCTIONNALITE
+   Problème :
+   ----------
+                                                                                            
+                                                         
+   Les routines nbsigm.f et nbdim.f utilisent des conventions dangereuses sur les noms des
+   type_element.
+   Il faut "fiabiliser" cette programmation.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   A) problème de nbdim.f :
+   -------------------------
+      Cette fonction (nbdim) était appelée par 4 routines, mais celles-ci n'en faisaient rien.
+      => on résorbe cette fonction.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   B) problème de nbsigm.f :
+   -------------------------
+                                                                                            
+                                                         
+   1) On supprime de la routine nbsigm.f l'argument MODELI (K2) :
+      Le nombre de contraintes est maintenant obtenu par un ATTRIBUT__ spécifique (NBSIGM)
+   2) On ajoute l'ATTRIBUT__ NBSIM=4/6 dans les modélisations qui se servent de NBSIGM :
+      (modification du catalogue phenomene_modelisation__.cata)
+   3) On modifie les 39 fortran qui utilisaient nbsigm.f :
+      - malheureusement, seules 6 routines (parmi les 39) peuvent maintenant se passer de
+        la variable MODELI=NOMTE(3:4).
+      - les 33 autres routines continuent à utiliser MODELI car cette variable est utilisée
+        comme argument dans 16 autres utilitaires.
+        Pour poursuivre ce ménage à son terme, j'émets une nouvelle fiche (11207)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010668 DU 2007-03-19 14:49:57
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   AR04 - tempxc3xa9rature comme variable de commande pour la sensibilitxc3xa9
+FONCTIONNALITE
+   Objectif :
+   ----------
+   Prise en compte de la température comme variable de commande pour la sensibilité.
+   et possibilité d'utiliser la nouvelle syntaxe AFFE_MATERIAU / AFFE_VARC.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Modifications des sources :
+   ----------------------------
+   * catalogues :
+     Remplacer le champ de température des 5 options :
+        calc_dg.cata
+        calc_dg_f.cata
+        dlsi_elga_depl.cata
+        dlsi_elno_dlde.cata
+        char_dlag_mecast.cata
+     par un champ de variables de commande.
+                                                                                            
+                                                         
+   * fortran des te00xx : te0096, te0558, te0577
+   * fortran des appelants de ces options (essentiellement routine nmdete.f) :
+     - gestion de la double syntaxe (permise encore quelques semaines)
+     - prise en compte du champ de matériau dérivé pour y retrouver les variables de commande
+   dérivées.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Validation:
+   -----------
+   Passage des 3 tests qui utilisent ces options :
+    - hpla101a
+    - hpla101b
+    - hplp100b
+                                                                                            
+                                                         
+   J'ai fait passer ces 3 tests avec l'ancienne syntaxe et la nouvelle mais je les restitue
+   tous les 3 avec la nouvelle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hpla101a  hpla101b hplp100b
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011223 DU 2007-09-07 11:18:49
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Mxc3xa9nage dans les messages de calculel.py
+FONCTIONNALITE
+   Finalement, je ne restitue rien dans le cadre de cette fiche, car Christophe fait la même
+   chose (en mieux) sur un plus grand périmètre de sources (fiche 11240).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009751 DU 2006-05-12 12:49:10
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Familles de points de Gauss et options
+FONCTIONNALITE
+   Problème :
+   ----------
+   Au moment où le choix de la famille de PG a été fait dans te0025, on aurait aimé prendre
+   la familles 'GANO' pour calculer les options 'xxxx_ELNO_xxxx'. Cette famille est
+   recommandée (Xavier Desroches) pour  extrapoler aux noeuds.
+   
+   On a du choisir 'RIGI' à cause de l'hydratation qui n'était connue que sur cette famille.
+   Grâce au chantier "variables de commande", on peut maintenant choisir la famille que l'on
+   veut. On pourrait donc donc modifier te0025 pour utiliser GANO.
+   
+   La question plus générale posée par Lionel Salmona est celle-ci :
+   "Y-a-t-il des endroits du code où l'on a été contraints d'utiliser une famille de points
+   d'intégration du fait des variables de commande et où cette contrainte est maintenant
+   levée ? Si oui, faut-il modifier ce choix de famille ? "
+   
+   Non-solution :
+   --------------
+   Je propose de ne rien faire dans le cadre de cette fiche car :
+      - les utilisateurs des options ELNO ne se sont plaints de rien
+      - le travail (général) à faire est difficile : comment savoir si un programmeur a du
+   changer de famille à cause d'un problème lié aux anciennes variables de commande ? Qui
+   peut faire cette enquête ? Comment juger de l'amélioration apportée par un changement de
+   famille ?
+      - si on change de famille, on va changer les résultats, il faudra modifier les
+   TEST_RESU ...
+   
+   Remarque pour Mickael :
+   -----------------------
+   Si l'on devait faire quelque chose, la meilleure organisation serait que le problème du
+   choix des familles de PG soit un item ISTA/MN piloté par un spécialiste des éléments finis.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008054 DU 2004-09-03 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.3)
+TITRE
+   AR04 - syntaxe transmission donnees variables de commande
+FONCTIONNALITE
+   La question posée dans cette fiche était :
+   
+   "Faut-il modifier la syntaxe de l'entree des donnees pour les variables de commande ?"
+   
+   par exemple : faut-il déplacer AFFE_CHAR_MECA/TEMP_CALCULEE dans
+   MECA_STATIQUE/VARI_COM ?
+   
+   Suite à la conduite du chantier "variables de comande" en 2006-2007, la réponse à cette
+   question est "oui".
+   Le mot clé AFFE_CHAR_MECA/TEMP_CALCULEE ne doit plus être utilisé. Il faut maintenant
+   utiliser AFFE_MATERIAU/AFFE_VARC.
+   
+   Les 2 syntaxes (ancienne et nouvelle) sont actuellement toutes les 2 acceptées en version 9. 
+   Il est prévu de résorber AFFE_CHAR_MECA/TEMP_CALCULEE en 9.2 (version de novembre 2007)
+   mais une difficulté subsiste à ce jour concernant la sensibilité (voir la fiche 10668).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 17/09/2007 - 14:16:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009973 DU 2006-08-29 12:08:46
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   CONTACT - Mxc3xa9thode VERIF dans ASPIC/ASCOUF
+FONCTIONNALITE
+   Anomalie
+   --------
+   La commande AFFE_CHAR_MECA/CONTACT/OPERATION='VERIF', qui permet de verifier la
+   non-interpenetration entre les noeuds maitres et esclaves du contact,
+   fournissait des resultats faux dans le cas ou les mailles de peau etaient 
+   quadratiques
+   (QUAD8,QUAD9).
+   Ce constat a ete etabli au niveau des noeuds des levres de la fissure des cas-tests
+   ascou08a et aspic07a (entre autres), apres avoir enrichi les macros macr_aspic_calc 
+   et
+   macr_ascou_calc de cette commande.
+   Par exemple pour l'ascou08a:
+    <CONTACT>   * INTERPENETRATION  DU  NOEUD <N1121   > AVEC <M6929   > * 
+   JEU:-1.58123E-05
+    <CONTACT>   * INTERPENETRATION  DU  NOEUD <N5548   > AVEC <M6885   > * 
+   JEU:-1.58123E-05
+    <CONTACT>   * IL Y A      2 NOEUDS INTERPENETRES (JEU REF.:  0.00000E+00)
+   Pourtant le post-traitement des deplacements sous Ideas est correct !
+   
+   D'autre part on s'est apercu que la methode 'VERIF' verifiait la non-interpenetration 
+   au
+   niveau des noeuds du fond de fissure. Cette action etait evidemment inutile.
+   
+   Developpement
+   -------------
+   1)Pour le premier point, il a ete convenu d'informer l'utilisateur par une alarme
+   precisant que:
+   "Le jeu entre les noeuds milieux au niveau des levres risque
+    d'etre imprecis si les mailles en contact sont quadratiques."
+   
+   liste des fichiers modifies:modelisa9.py, nbnoel.f,nbnoco.f, nbsuco.f .
+   
+   2)Pour le second point, nous avons enrichi la commande AFFE_CHAR_MECA/CONTACT 
+   d'un nouveau mot-cle simple GROUP_MA_FOND specifique à l'operation 'VERIF'.
+   Ce mot-cle permet de negliger certains groupes de mailles lors de la phase de 
+   verification
+   de non-interpenetration, notamment le groupe de mailles du fond de fissure.
+   
+   -catapy: affe_char_meca.capy
+   ajout du mot-cle GROUP_MA_FOND pour le methode VERIF du contact.
+   
+   -bibfor
+   creation d'une nouvelle routine sansnm.f voisine de sansno.f, enrichissement de 
+   sansco.f
+   et mise a jour de limaco.f.
+   
+   3) Nous avons modifie le fichier nmfonc.f afin que le message CONTACT_1 soit 
+   desactive
+   lorsque la methode de contact est VERIF.
+   
+   Validation
+   ----------
+   Passage des cas-tests ascou08a et aspic07a avec en surcharge:
+   - notre developpement
+   - les macros commandes python macr_ascouf_calc et macr_aspic_calc (fournies par 
+   E.Galenne)
+   dans lesquelles a ete introduit la commande AFFE_CHAR_MECA/CONTACT/OPERATION='VERIF'
+   
+   Nous avons verifie (par un IMPR_TABLE sur le concept issu de
+   POST_RELEVE_T/NOM_CHAMP='VALE_CONT') qu'aucune 
+   valeur n'avait ete affectee aux noeuds du fond de fissure.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aspic/Ascouf
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF comp001a                       durand C.DURAND           334      2      2
+ CASTEST MODIF comp001b                       durand C.DURAND           364      2      2
+ CASTEST MODIF comp001c                       durand C.DURAND           189      2      2
+ CASTEST MODIF comp001d                       durand C.DURAND           343      2      2
+ CASTEST MODIF comp001e                       durand C.DURAND           482      2      2
+ CASTEST MODIF comp001f                       durand C.DURAND           196      2      2
+ CASTEST MODIF comp001g                       durand C.DURAND           206      2      2
+ CASTEST MODIF comp001h                       durand C.DURAND           418      2      2
+ CASTEST MODIF comp002a                       durand C.DURAND           287      2      2
+ CASTEST MODIF comp002b                       durand C.DURAND           207      7      7
+ CASTEST MODIF comp002c                       durand C.DURAND           211      7      7
+ CASTEST MODIF comp002d                       durand C.DURAND           213      2      2
+ CASTEST MODIF comp002e                       durand C.DURAND           212      2      2
+ CASTEST MODIF comp002f                       durand C.DURAND           203      2      2
+ CASTEST MODIF comp002g                       durand C.DURAND           232      2      2
+ CASTEST MODIF hpla101a                       pellet J.PELLET           169      6      5
+ CASTEST MODIF hpla101b                       pellet J.PELLET           309     16      6
+ CASTEST MODIF hplp100b                       pellet J.PELLET           392     12     12
+ CASTEST MODIF hsnv132b                       pellet J.PELLET           188     11     18
+ CASTEST MODIF hsnv132c                       pellet J.PELLET           194     11     18
+ CASTEST MODIF hsnv132d                       pellet J.PELLET           207     11     18
+ CASTEST MODIF sdnl131a                       durand C.DURAND           983      2      2
+ CASTEST MODIF sslp313d                       pellet J.PELLET           209     36     54
+ CASTEST MODIF sslp313e                       pellet J.PELLET           233     27     31
+ CASTEST MODIF sslv110f                       pellet J.PELLET           212      6      8
+ CASTEST MODIF sslv134f                       pellet J.PELLET           322      1      1
+ CASTEST MODIF sslv134h                       pellet J.PELLET           209      6      9
+ CASTEST MODIF sslv311a                       pellet J.PELLET           422      1      1
+ CASTEST MODIF ssnl117b                       durand C.DURAND           473      2      2
+ CASTEST MODIF ssnp110c                       pellet J.PELLET           221      6     10
+ CASTEST MODIF ssnp110d                       pellet J.PELLET           313      2      2
+ CASTEST MODIF ssnv108b                       pellet J.PELLET           176      4      7
+ CASTEST MODIF ssnv108c                       pellet J.PELLET           187      4      7
+ CASTEST MODIF ssnv108d                       pellet J.PELLET           193      4     20
+ CASTEST MODIF ssnv166c                       pellet J.PELLET           300      8      2
+ CASTEST MODIF ssnv173a                       pellet J.PELLET           240      9     15
+ CASTEST MODIF ssnv173b                       pellet J.PELLET           646      9     15
+ CASTEST MODIF ssnv173c                       pellet J.PELLET           168      6     34
+ CASTEST MODIF ssnv173d                       pellet J.PELLET           245      9     15
+ CASTEST MODIF ssnv173e                       pellet J.PELLET           648      9     15
+ CASTEST MODIF ssnv173f                       pellet J.PELLET           285      4     10
+ CASTEST MODIF ssnv173g                       pellet J.PELLET           213      7     10
+ CASTEST MODIF ssnv173h                       pellet J.PELLET           272      4      9
+ CASTEST MODIF ssnv173i                       pellet J.PELLET           243      7     14
+ CASTEST MODIF ssnv173j                       pellet J.PELLET           285      8     16
+ CASTEST MODIF ssnv182a                       pellet J.PELLET           256      2      2
+ CASTEST MODIF ssnv182b                       pellet J.PELLET           287      2      2
+ CASTEST MODIF ssnv182c                       pellet J.PELLET           234      3     13
+ CASTEST MODIF ssnv182d                       pellet J.PELLET           227      2      2
+ CASTEST MODIF ssnv182e                       pellet J.PELLET           216      2      2
+ CASTEST MODIF ssnv182f                       pellet J.PELLET           215      2      2
+ CASTEST MODIF ssnv185a                       pellet J.PELLET           336      2      4
+ CASTEST MODIF ssnv185b                       pellet J.PELLET           308      9     16
+ CASTEST MODIF ssnv185c                       pellet J.PELLET           503     28     20
+ CASTEST MODIF ssnv185d                       pellet J.PELLET           303      9     16
+ CASTEST MODIF ssnv185e                       pellet J.PELLET           235     10     16
+ CASTEST MODIF ssnv185f                       pellet J.PELLET           251      8     15
+ CASTEST MODIF ssnv185g                       pellet J.PELLET           314      2      2
+ CASTEST MODIF ssnv185h                       pellet J.PELLET           296      6      9
+ CASTEST MODIF ssnv185i                       pellet J.PELLET           266      6     20
+ CASTEST MODIF ssnv185j                       pellet J.PELLET           252      7     11
+ CASTEST MODIF ssnv185k                       pellet J.PELLET           297     12     17
+ CASTEST MODIF ssnv185l                       pellet J.PELLET           459      6      9
+ CASTEST MODIF ssnv185m                       pellet J.PELLET           282      6      8
+ CASTEST MODIF ssnv185n                       pellet J.PELLET           388      2      4
+ CASTEST MODIF ssnv186a                       pellet J.PELLET           200      2      2
+ CASTEST MODIF ssnv186b                       pellet J.PELLET           231      2      2
+ CASTEST MODIF ssnv186c                       pellet J.PELLET           202      2      2
+ CASTEST MODIF ssnv186d                       pellet J.PELLET           199      2      2
+ CASTEST MODIF ssnv186e                       pellet J.PELLET           194      2      2
+ CASTEST MODIF ssnv186f                       pellet J.PELLET           203      2      2
+ CASTEST MODIF ssnv186g                       pellet J.PELLET           211      2      2
+ CASTEST MODIF ssnv186h                       pellet J.PELLET           215      2      2
+ CASTEST MODIF ssnv191a                       pellet J.PELLET           783      4     12
+ CASTEST MODIF ssnv191b                       pellet J.PELLET          1156      5     12
+ CASTEST MODIF ssnv191c                       pellet J.PELLET          1125      7      9
+ CASTEST MODIF ssnv192a                       pellet J.PELLET           412      8     31
+ CASTEST MODIF ssnv195a                       pellet J.PELLET           393      9     16
+ CASTEST MODIF ssnv195b                       pellet J.PELLET           336      2      2
+ CASTEST MODIF ssnv195c                       pellet J.PELLET           480      2      2
+ CASTEST MODIF ssnv195d                       pellet J.PELLET           339      9     12
+ CASTEST MODIF ssnv198a                       pellet J.PELLET           282      4      7
+ CASTEST MODIF ssnv198b                       pellet J.PELLET           275      4      9
+ CASTEST MODIF ssnv201a                       pellet J.PELLET           396      2      2
+ CASTEST MODIF ssnv203a                       pellet J.PELLET           368      7     10
+ CASTEST MODIF ssnv203b                       pellet J.PELLET           323      7     10
+ CASTEST SUPPR zzzz183a.comm                  durand C.DURAND           191      0    191
+CATALOGU AJOUT typelem/gener_mecpl2_xhc       pellet J.PELLET           193    193      0
+CATALOGU AJOUT typelem/gener_mecpl2_xhtc      pellet J.PELLET           195    195      0
+CATALOGU AJOUT typelem/gener_mecpl2_xtc       pellet J.PELLET           164    164      0
+CATALOGU AJOUT typelem/gener_medpl2_xhc       pellet J.PELLET           197    197      0
+CATALOGU AJOUT typelem/gener_medpl2_xhtc      pellet J.PELLET           192    192      0
+CATALOGU AJOUT typelem/gener_medpl2_xtc       pellet J.PELLET           163    163      0
+CATALOGU AJOUT typelem/gener_me_xhc           pellet J.PELLET           304    304      0
+CATALOGU AJOUT typelem/gener_me_xhtc          pellet J.PELLET           308    308      0
+CATALOGU AJOUT typelem/gener_me_xtc           pellet J.PELLET           310    310      0
+CATALOGU MODIF compelem/phenomene_modelisation__     pellet J.PELLET          1313    113     14
+CATALOGU MODIF options/calc_dg_f              pellet J.PELLET            48      4      2
+CATALOGU MODIF options/calc_dg                pellet J.PELLET            47      4      2
+CATALOGU MODIF options/char_dlag_mecast       pellet J.PELLET            35      5      2
+CATALOGU MODIF options/dlsi_elga_depl         pellet J.PELLET            34      4      2
+CATALOGU MODIF options/dlsi_elno_dlde         pellet J.PELLET            34      4      2
+CATALOGU MODIF typelem/gener_me3d_2           pellet J.PELLET           211      3      3
+CATALOGU MODIF typelem/gener_me3d_3           pellet J.PELLET           667      3      3
+CATALOGU MODIF typelem/gener_meax_2           pellet J.PELLET           599      6      6
+CATALOGU MODIF typelem/gener_meaxs2           pellet J.PELLET           534      6      6
+CATALOGU MODIF typelem/gener_mecpg2           pellet J.PELLET           342      4      5
+CATALOGU MODIF typelem/gener_mecpl2           pellet J.PELLET           605      6      6
+CATALOGU MODIF typelem/gener_mecpl2_xh        pellet J.PELLET           171     10     41
+CATALOGU MODIF typelem/gener_mecpl2_xht       pellet J.PELLET           165     10     44
+CATALOGU MODIF typelem/gener_mecpl2_xt        pellet J.PELLET           163     10     18
+CATALOGU MODIF typelem/gener_medpg2           pellet J.PELLET           344      4      5
+CATALOGU MODIF typelem/gener_medpl1_xh        pellet J.PELLET            81      6     30
+CATALOGU MODIF typelem/gener_medpl1_xht       pellet J.PELLET            82      6     30
+CATALOGU MODIF typelem/gener_medpl1_xt        pellet J.PELLET            83      6     29
+CATALOGU MODIF typelem/gener_medpl2           pellet J.PELLET           616      6      6
+CATALOGU MODIF typelem/gener_medpl2_xh        pellet J.PELLET           172     10     42
+CATALOGU MODIF typelem/gener_medpl2_xht       pellet J.PELLET           165     10     44
+CATALOGU MODIF typelem/gener_medpl2_xt        pellet J.PELLET           163     10     18
+CATALOGU MODIF typelem/gener_me_xh_2          pellet J.PELLET            91     11     55
+CATALOGU MODIF typelem/gener_me_xh            pellet J.PELLET           272     14     54
+CATALOGU MODIF typelem/gener_me_xht_2         pellet J.PELLET            92     10     55
+CATALOGU MODIF typelem/gener_me_xht           pellet J.PELLET           272     14     56
+CATALOGU MODIF typelem/gener_me_xt_2          pellet J.PELLET            93     10     55
+CATALOGU MODIF typelem/gener_me_xt            pellet J.PELLET           275     13     55
+CATALOGU MODIF typelem/mecpqs4                pellet J.PELLET           526      6      6
+CATALOGU MODIF typelem/mecptr3                pellet J.PELLET           551     10      6
+CATALOGU MODIF typelem/medpqs4                pellet J.PELLET           537      6      6
+CATALOGU MODIF typelem/medpqs8                pellet J.PELLET           539      6      6
+CATALOPY MODIF commande/affe_char_meca       rezette C.REZETTE         1114      2      1
+CATALOPY MODIF commande/affe_modele           pellet J.PELLET           227      4      4
+CATALOPY MODIF commande/dyna_line_tran        boyere E.BOYERE           157      1      2
+CATALOPY MODIF commande/mode_iter_cycl        durand C.DURAND            56      2      1
+CATALOPY MODIF commande/modi_modele_xfem      pellet J.PELLET            29      1      2
+ FORTRAN AJOUT modelisa/sansnm               rezette C.REZETTE          229    229      0
+ FORTRAN AJOUT modelisa/xmoajo                pellet J.PELLET            89     89      0
+ FORTRAN AJOUT modelisa/xmoimp                pellet J.PELLET           140    140      0
+ FORTRAN AJOUT modelisa/xmoini                pellet J.PELLET            98     98      0
+ FORTRAN MODIF algeline/cosphi                durand C.DURAND            77      2      2
+ FORTRAN MODIF algeline/diagav                durand C.DURAND           150      4      4
+ FORTRAN MODIF algeline/diaghr                durand C.DURAND            92      2      2
+ FORTRAN MODIF algeline/fetcpu                durand C.DURAND            93      2      2
+ FORTRAN MODIF algeline/fetsm                 durand C.DURAND           108      2      2
+ FORTRAN MODIF algeline/fettor                durand C.DURAND            83      2      2
+ FORTRAN MODIF algeline/flust1                durand C.DURAND           277      2      2
+ FORTRAN MODIF algeline/geocoq                durand C.DURAND           277      2      2
+ FORTRAN MODIF algeline/mefcen                durand C.DURAND           193      2      4
+ FORTRAN MODIF algeline/op0014                durand C.DURAND           206      3      3
+ FORTRAN MODIF algeline/op0015                durand C.DURAND           188      2      2
+ FORTRAN MODIF algeline/prjsom                durand C.DURAND            91      2      2
+ FORTRAN MODIF algeline/vtcop1                durand C.DURAND           217      2      3
+ FORTRAN MODIF algeline/vtgpld                durand C.DURAND           158      9      9
+ FORTRAN MODIF algorith/asasve                durand C.DURAND           191      2      2
+ FORTRAN MODIF algorith/ascova                durand C.DURAND           213      5      5
+ FORTRAN MODIF algorith/calcyc                durand C.DURAND           409      2      5
+ FORTRAN MODIF algorith/chrpel                durand C.DURAND           534      2      2
+ FORTRAN MODIF algorith/chrpno                durand C.DURAND           488      2      2
+ FORTRAN MODIF algorith/ctetax                durand C.DURAND           217      4      4
+ FORTRAN MODIF algorith/fetmon                durand C.DURAND           186      3      5
+ FORTRAN MODIF algorith/fetprc                durand C.DURAND           153      2      2
+ FORTRAN MODIF algorith/fetprj                durand C.DURAND           264      2      3
+ FORTRAN MODIF algorith/fetrin                durand C.DURAND           652      2      2
+ FORTRAN MODIF algorith/fetsca                durand C.DURAND           137      2      2
+ FORTRAN MODIF algorith/loncar                pellet J.PELLET           126     23     11
+ FORTRAN MODIF algorith/meacmv                pellet J.PELLET           462      3      4
+ FORTRAN MODIF algorith/mxmoam                durand C.DURAND           256      2      4
+ FORTRAN MODIF algorith/nmdete                pellet J.PELLET           259     98     85
+ FORTRAN MODIF algorith/nmfonc                pellet J.PELLET           277     24     11
+ FORTRAN MODIF algorith/nmmoam                durand C.DURAND           163      2      2
+ FORTRAN MODIF algorith/nmmuap                durand C.DURAND            97      2      2
+ FORTRAN MODIF algorith/nmvcle                pellet J.PELLET            98      9     27
+ FORTRAN MODIF algorith/op0113                pellet J.PELLET           327     14     27
+ FORTRAN MODIF algorith/op0166                durand C.DURAND           258      2      2
+ FORTRAN MODIF algorith/optili                pellet J.PELLET            80      4    281
+ FORTRAN MODIF algorith/rednex                durand C.DURAND           185      2      2
+ FORTRAN MODIF algorith/vechde                pellet J.PELLET           547      2      2
+ FORTRAN MODIF algorith/vechth                durand C.DURAND           708      3      3
+ FORTRAN MODIF algorith/vecyme                pellet J.PELLET           160      2      8
+ FORTRAN MODIF algorith/xconel                durand C.DURAND           241      2      2
+ FORTRAN MODIF algorith/xconno                durand C.DURAND           190      2      2
+ FORTRAN MODIF algorith/xnmel                 pellet J.PELLET           182      3      4
+ FORTRAN MODIF assembla/nudeeq                durand C.DURAND           206      3      4
+ FORTRAN MODIF assembla/nueffe                durand C.DURAND          1015      3      4
+ FORTRAN MODIF assembla/nulili                durand C.DURAND           229      3      3
+ FORTRAN MODIF calculel/ajchca                durand C.DURAND           112      3      3
+ FORTRAN MODIF calculel/alchml                durand C.DURAND           349      8      8
+ FORTRAN MODIF calculel/alrslt                durand C.DURAND           141      2      2
+ FORTRAN MODIF calculel/assach                durand C.DURAND           243      4      4
+ FORTRAN MODIF calculel/barych                durand C.DURAND           141      2      2
+ FORTRAN MODIF calculel/calcul                durand C.DURAND           494      6      5
+ FORTRAN MODIF calculel/calvci                durand C.DURAND           196      2      2
+ FORTRAN MODIF calculel/carces                durand C.DURAND           259      4      4
+ FORTRAN MODIF calculel/caundf                durand C.DURAND           215     12     12
+ FORTRAN MODIF calculel/celcel                durand C.DURAND           208      4      3
+ FORTRAN MODIF calculel/celces                durand C.DURAND           375     10     10
+ FORTRAN MODIF calculel/celver                durand C.DURAND           121      2      2
+ FORTRAN MODIF calculel/cescel                durand C.DURAND           540      8      7
+ FORTRAN MODIF calculel/cesces                durand C.DURAND           318     15     11
+ FORTRAN MODIF calculel/cescns                durand C.DURAND           183     11     13
+ FORTRAN MODIF calculel/cescre                durand C.DURAND           279      5      5
+ FORTRAN MODIF calculel/cesfus                durand C.DURAND           383     18     17
+ FORTRAN MODIF calculel/cesimp                durand C.DURAND           212      5      4
+ FORTRAN MODIF calculel/cesprj                durand C.DURAND           274      3      3
+ FORTRAN MODIF calculel/cesqua                durand C.DURAND           334     16     11
+ FORTRAN MODIF calculel/cesred                durand C.DURAND           234      7     10
+ FORTRAN MODIF calculel/cestas                durand C.DURAND           188      3      3
+ FORTRAN MODIF calculel/cetran                durand C.DURAND           140      6      6
+ FORTRAN MODIF calculel/chlici                durand C.DURAND            46      3      5
+ FORTRAN MODIF calculel/chligr                durand C.DURAND           153      5      8
+ FORTRAN MODIF calculel/chnucn                durand C.DURAND           266      5      8
+ FORTRAN MODIF calculel/chpchd                durand C.DURAND           216      7      5
+ FORTRAN MODIF calculel/chsut1                durand C.DURAND           141      6     10
+ FORTRAN MODIF calculel/cnocns                durand C.DURAND           216      3      3
+ FORTRAN MODIF calculel/cnocre                durand C.DURAND           129      2      3
+ FORTRAN MODIF calculel/cnscre                durand C.DURAND           118      3      4
+ FORTRAN MODIF calculel/cnsfus                durand C.DURAND           253     11      8
+ FORTRAN MODIF calculel/cnsimp                durand C.DURAND           158      3      8
+ FORTRAN MODIF calculel/cnsprj                durand C.DURAND           204      3      4
+ FORTRAN MODIF calculel/cnsred                durand C.DURAND           196      6     12
+ FORTRAN MODIF calculel/cntran                durand C.DURAND           121      3      3
+ FORTRAN MODIF calculel/contex                durand C.DURAND           197      2      2
+ FORTRAN MODIF calculel/creprn                durand C.DURAND           309      3      3
+ FORTRAN MODIF calculel/editgd                durand C.DURAND           119      1      1
+ FORTRAN MODIF calculel/etenca                durand C.DURAND           193      2      4
+ FORTRAN MODIF calculel/excart                durand C.DURAND           123      2      6
+ FORTRAN MODIF calculel/exchml                durand C.DURAND           252      3      3
+ FORTRAN MODIF calculel/exchno                durand C.DURAND           317      6      8
+ FORTRAN MODIF calculel/expcar                durand C.DURAND           186      4      5
+ FORTRAN MODIF calculel/exresl                durand C.DURAND           122      2      6
+ FORTRAN MODIF calculel/extrai                durand C.DURAND           152      3      4
+ FORTRAN MODIF calculel/gbil3d                durand C.DURAND           268      4     10
+ FORTRAN MODIF calculel/jacopo                durand C.DURAND           114      3      5
+ FORTRAN MODIF calculel/jeundf                durand C.DURAND           148      5      5
+ FORTRAN MODIF calculel/jevech                durand C.DURAND           163      3      4
+ FORTRAN MODIF calculel/jevete                durand C.DURAND            54      2      6
+ FORTRAN MODIF calculel/kndif2                durand C.DURAND           100      3      4
+ FORTRAN MODIF calculel/kndiff                durand C.DURAND            78      3      4
+ FORTRAN MODIF calculel/kndoub                durand C.DURAND            56      2      3
+ FORTRAN MODIF calculel/knincl                durand C.DURAND            60      2      4
+ FORTRAN MODIF calculel/knindi                durand C.DURAND            59      2      3
+ FORTRAN MODIF calculel/mecact                durand C.DURAND           162      3      3
+ FORTRAN MODIF calculel/mecalc                pellet J.PELLET           532      7      1
+ FORTRAN MODIF calculel/mecalg                pellet J.PELLET           433      5     16
+ FORTRAN MODIF calculel/mecalm                pellet J.PELLET          2434      6      7
+ FORTRAN MODIF calculel/mepsan                durand C.DURAND           119      2      5
+ FORTRAN MODIF calculel/metemp                durand C.DURAND           156      2      2
+ FORTRAN MODIF calculel/mtemp2                durand C.DURAND           178      2      2
+ FORTRAN MODIF calculel/nocart                durand C.DURAND           192      3      3
+ FORTRAN MODIF calculel/pj2dco                durand C.DURAND           393      2      2
+ FORTRAN MODIF calculel/pj2dfb                durand C.DURAND           200      3      3
+ FORTRAN MODIF calculel/pj2dgb                durand C.DURAND           104      2      2
+ FORTRAN MODIF calculel/pj3dco                durand C.DURAND           487      2      2
+ FORTRAN MODIF calculel/pj3dfb                durand C.DURAND           296      3      3
+ FORTRAN MODIF calculel/pj3dgb                durand C.DURAND           122      2      2
+ FORTRAN MODIF calculel/pj4dco                durand C.DURAND           400      2      2
+ FORTRAN MODIF calculel/pj6dco                durand C.DURAND           372      2      2
+ FORTRAN MODIF calculel/pjefte                durand C.DURAND           247      3      3
+ FORTRAN MODIF calculel/resth2                durand C.DURAND           234     10     19
+ FORTRAN MODIF calculel/ssrone                durand C.DURAND            85      2      3
+ FORTRAN MODIF calculel/te0159                durand C.DURAND           115      2      2
+ FORTRAN MODIF calculel/tecach                durand C.DURAND           327      2      3
+ FORTRAN MODIF calculel/thaclm                durand C.DURAND           866      1      1
+ FORTRAN MODIF cataelem/lctel3                durand C.DURAND            95      2      2
+ FORTRAN MODIF cataelem/lecojb                durand C.DURAND           165     16     28
+ FORTRAN MODIF cataelem/lecvec                durand C.DURAND            80      2      2
+ FORTRAN MODIF elements/dktnli                durand C.DURAND           518      2      2
+ FORTRAN MODIF elements/dmatel                durand C.DURAND           532      2      2
+ FORTRAN MODIF elements/dmathl                durand C.DURAND           354      2      2
+ FORTRAN MODIF elements/dxglrc                durand C.DURAND           433      2      2
+ FORTRAN MODIF elements/dxmate                durand C.DURAND           632      2      2
+ FORTRAN MODIF elements/dxmath                durand C.DURAND           468      2      2
+ FORTRAN MODIF elements/nbsigm                pellet J.PELLET            42     17     25
+ FORTRAN MODIF elements/te0007                pellet J.PELLET           133      2      2
+ FORTRAN MODIF elements/te0008                pellet J.PELLET           132      2      2
+ FORTRAN MODIF elements/te0011                pellet J.PELLET           193      2      2
+ FORTRAN MODIF elements/te0013                pellet J.PELLET           135      2      2
+ FORTRAN MODIF elements/te0022                pellet J.PELLET           146      2      2
+ FORTRAN MODIF elements/te0023                pellet J.PELLET           165      2      2
+ FORTRAN MODIF elements/te0024                pellet J.PELLET            99      1     33
+ FORTRAN MODIF elements/te0025                pellet J.PELLET           174      2      2
+ FORTRAN MODIF elements/te0030                pellet J.PELLET           187      4      4
+ FORTRAN MODIF elements/te0049                pellet J.PELLET           134      2      2
+ FORTRAN MODIF elements/te0068                durand C.DURAND           117      3      7
+ FORTRAN MODIF elements/te0081                pellet J.PELLET           181      2      2
+ FORTRAN MODIF elements/te0083                pellet J.PELLET           136      2      2
+ FORTRAN MODIF elements/te0086                pellet J.PELLET           184      2      2
+ FORTRAN MODIF elements/te0087                pellet J.PELLET           172      2      2
+ FORTRAN MODIF elements/te0096                pellet J.PELLET          1206     14      8
+ FORTRAN MODIF elements/te0115                pellet J.PELLET           130      2      2
+ FORTRAN MODIF elements/te0116                pellet J.PELLET           130      2      2
+ FORTRAN MODIF elements/te0117                pellet J.PELLET            92      2      2
+ FORTRAN MODIF elements/te0190                pellet J.PELLET           177      2      2
+ FORTRAN MODIF elements/te0198                pellet J.PELLET           135      2      2
+ FORTRAN MODIF elements/te0218                pellet J.PELLET           146      2      2
+ FORTRAN MODIF elements/te0284                pellet J.PELLET           161      4      4
+ FORTRAN MODIF elements/te0286                pellet J.PELLET           160      2      2
+ FORTRAN MODIF elements/te0333                pellet J.PELLET           330      2      2
+ FORTRAN MODIF elements/te0334                pellet J.PELLET           317      2      2
+ FORTRAN MODIF elements/te0411                durand C.DURAND           179      2      2
+ FORTRAN MODIF elements/te0426                pellet J.PELLET           159      2      2
+ FORTRAN MODIF elements/te0437                pellet J.PELLET           138      2      2
+ FORTRAN MODIF elements/te0489                pellet J.PELLET           391      3      6
+ FORTRAN MODIF elements/te0490                pellet J.PELLET           969      2      2
+ FORTRAN MODIF elements/te0491                pellet J.PELLET           929      2      2
+ FORTRAN MODIF elements/te0492                pellet J.PELLET           128      2      2
+ FORTRAN MODIF elements/te0493                pellet J.PELLET           130      2      2
+ FORTRAN MODIF elements/te0494                pellet J.PELLET           129      2      2
+ FORTRAN MODIF elements/te0495                pellet J.PELLET           130      2      2
+ FORTRAN MODIF elements/te0496                durand C.DURAND           152      3      3
+ FORTRAN MODIF elements/te0511                pellet J.PELLET           321      7      9
+ FORTRAN MODIF elements/te0512                pellet J.PELLET           443      6      8
+ FORTRAN MODIF elements/te0514                pellet J.PELLET           223      2      2
+ FORTRAN MODIF elements/te0517                durand C.DURAND           326      2      2
+ FORTRAN MODIF elements/te0528                pellet J.PELLET           228      3      4
+ FORTRAN MODIF elements/te0535                durand C.DURAND           352      3      3
+ FORTRAN MODIF elements/te0536                durand C.DURAND           165      2      2
+ FORTRAN MODIF elements/te0537                durand C.DURAND           208      3      3
+ FORTRAN MODIF elements/te0542                pellet J.PELLET           103      2      4
+ FORTRAN MODIF elements/te0547                durand C.DURAND            72      2      2
+ FORTRAN MODIF elements/te0558                pellet J.PELLET           280     16     12
+ FORTRAN MODIF elements/te0575                pellet J.PELLET           348      2      2
+ FORTRAN MODIF elements/te0576                pellet J.PELLET           333      2      2
+ FORTRAN MODIF elements/te0577                pellet J.PELLET           368     17     13
+ FORTRAN MODIF elements/xsif3d                pellet J.PELLET           496      7      7
+ FORTRAN MODIF elements/xteini                pellet J.PELLET           107     26     30
+ FORTRAN MODIF from_c/fetam                   durand C.DURAND           430      5      5
+ FORTRAN MODIF jeveux/jedbg2                  durand C.DURAND            48      2      2
+ FORTRAN MODIF modelisa/caddli                durand C.DURAND           350      2      2
+ FORTRAN MODIF modelisa/calirc                durand C.DURAND           535      3      3
+ FORTRAN MODIF modelisa/calyrc                durand C.DURAND           612      3      3
+ FORTRAN MODIF modelisa/caxfem                pellet J.PELLET           195      4      1
+ FORTRAN MODIF modelisa/exnocp               rezette C.REZETTE          134      3      2
+ FORTRAN MODIF modelisa/limaco               rezette C.REZETTE          198      3      2
+ FORTRAN MODIF modelisa/nbnoco               rezette C.REZETTE          147     16      6
+ FORTRAN MODIF modelisa/nbnocp               rezette C.REZETTE          105     10      2
+ FORTRAN MODIF modelisa/nbnoel               rezette C.REZETTE          146      8      4
+ FORTRAN MODIF modelisa/nbsuco               rezette C.REZETTE          123     12     10
+ FORTRAN MODIF modelisa/pmfd00                durand C.DURAND           306      2      2
+ FORTRAN MODIF modelisa/pmfd01                durand C.DURAND           190      3      3
+ FORTRAN MODIF modelisa/rcmom2              lefebvre J-P.LEFEBVRE       121      1      3
+ FORTRAN MODIF modelisa/rcmome              lefebvre J-P.LEFEBVRE       135      1      3
+ FORTRAN MODIF modelisa/rcstoc              lefebvre J-P.LEFEBVRE       596     17     39
+ FORTRAN MODIF modelisa/rctrac              lefebvre J-P.LEFEBVRE       467      2      5
+ FORTRAN MODIF modelisa/sansco               rezette C.REZETTE          120     52     12
+ FORTRAN MODIF modelisa/tabchs                durand C.DURAND           472      3      3
+ FORTRAN MODIF modelisa/xdeldl                pellet J.PELLET           240     10     10
+ FORTRAN MODIF modelisa/xmolig                pellet J.PELLET           325    140    120
+ FORTRAN MODIF prepost/avdowh                 durand C.DURAND           131      2      2
+ FORTRAN MODIF prepost/cm2027                 durand C.DURAND           230      3      4
+ FORTRAN MODIF prepost/cm27na                 durand C.DURAND           158      2      2
+ FORTRAN MODIF prepost/cmlqlq                 durand C.DURAND           223      3      4
+ FORTRAN MODIF prepost/cmlqna                 durand C.DURAND           136      2      2
+ FORTRAN MODIF prepost/cmqlql                 durand C.DURAND           157      3      4
+ FORTRAN MODIF prepost/deltau                 durand C.DURAND           669      2      2
+ FORTRAN MODIF prepost/dfort2                 durand C.DURAND           242      5      7
+ FORTRAN MODIF prepost/dfort3                 durand C.DURAND           242      6     10
+ FORTRAN MODIF prepost/dinttc                 durand C.DURAND           346      2      2
+ FORTRAN MODIF prepost/dtauno                 durand C.DURAND           675      2      2
+ FORTRAN MODIF prepost/fgcorr                 durand C.DURAND            71      3      3
+ FORTRAN MODIF prepost/fglema                 durand C.DURAND           201      3      3
+ FORTRAN MODIF prepost/fgtahe                 durand C.DURAND           113     11     11
+ FORTRAN MODIF prepost/gidoma                 durand C.DURAND           145      2      2
+ FORTRAN MODIF prepost/ircers                 durand C.DURAND           713      3      7
+ FORTRAN MODIF prepost/op0151                 durand C.DURAND           371     19     19
+ FORTRAN MODIF prepost/pdadom                 durand C.DURAND           241      7      7
+ FORTRAN MODIF prepost/pofape                 durand C.DURAND           203      5      5
+ FORTRAN MODIF prepost/pofaqu                 durand C.DURAND           168      8      8
+ FORTRAN MODIF prepost/pofaun                 durand C.DURAND           277      9      9
+ FORTRAN MODIF prepost/rnomat                 durand C.DURAND           241     23     25
+ FORTRAN MODIF prepost/usoben                 durand C.DURAND           228      2      2
+ FORTRAN MODIF prepost/usuvu2                 durand C.DURAND           214      1      1
+ FORTRAN MODIF prepost/usuvus                 durand C.DURAND           224      1      1
+ FORTRAN MODIF prepost/utmasu                 durand C.DURAND           155      2      2
+ FORTRAN MODIF soustruc/ssriu1                durand C.DURAND           346      3      3
+ FORTRAN MODIF soustruc/ssvalm                durand C.DURAND           181      2      2
+ FORTRAN MODIF soustruc/ssvaro                durand C.DURAND           413      2      3
+ FORTRAN MODIF utilifor/csevl                 durand C.DURAND            73      4      4
+ FORTRAN MODIF utilifor/inits                 durand C.DURAND            65      4      3
+ FORTRAN MODIF utilitai/calcfo                durand C.DURAND            86      2      4
+ FORTRAN MODIF utilitai/ceseva                durand C.DURAND           209      3      3
+ FORTRAN MODIF utilitai/chpass                durand C.DURAND           317      3      3
+ FORTRAN MODIF utilitai/cnseva                durand C.DURAND           184      3      3
+ FORTRAN MODIF utilitai/dismgd                durand C.DURAND           167      3      3
+ FORTRAN MODIF utilitai/dismlg                durand C.DURAND           338      3      4
+ FORTRAN MODIF utilitai/dismmo                durand C.DURAND           284      2      2
+ FORTRAN MODIF utilitai/dismre                durand C.DURAND           128      2      7
+ FORTRAN MODIF utilitai/focrr2                durand C.DURAND           393      5     11
+ FORTRAN MODIF utilitai/idenob                durand C.DURAND           338      3      3
+ FORTRAN MODIF utilitai/imppiv                durand C.DURAND           133      2      2
+ FORTRAN MODIF utilitai/imprsd                durand C.DURAND           125      2      2
+ FORTRAN MODIF utilitai/ligrma                pellet J.PELLET           114      1      3
+ FORTRAN MODIF utilitai/op0003                durand C.DURAND           283      4      4
+ FORTRAN MODIF utilitai/op0150                durand C.DURAND           963      2      2
+ FORTRAN MODIF utilitai/op0160                durand C.DURAND            75      2      2
+ FORTRAN MODIF utilitai/pecapo                durand C.DURAND           391      6      6
+ FORTRAN MODIF utilitai/posddl                durand C.DURAND           110      2      2
+ FORTRAN MODIF utilitai/pteddl                durand C.DURAND           176      2      2
+ FORTRAN MODIF utilitai/rgndas                durand C.DURAND           211      2      2
+ FORTRAN MODIF utilitai/rsinch                durand C.DURAND           256      3      7
+ FORTRAN MODIF utilitai/utch19                durand C.DURAND            99      2      2
+ FORTRAN MODIF utilitai/utchdl                durand C.DURAND           309      5      5
+ FORTRAN MODIF utilitai/utimco                durand C.DURAND            78      2      2
+ FORTRAN MODIF utilitai/utimos                durand C.DURAND            59      2      2
+ FORTRAN SUPPR elements/nbdim                 pellet J.PELLET            54      0     54
+  PYTHON AJOUT Intranet/calc_eolienne         durand C.DURAND          1722   1722      0
+  PYTHON AJOUT Intranet/__init__              durand C.DURAND            19     19      0
+  PYTHON AJOUT Utilitai/macro_rota_globale     durand C.DURAND           143    143      0
+  PYTHON AJOUT Utilitai/veri_matr_tang        durand C.DURAND           269    269      0
+  PYTHON MODIF Messages/algeline              durand C.DURAND           417     64     74
+  PYTHON MODIF Messages/algorith14            durand C.DURAND           336    116    346
+  PYTHON MODIF Messages/appelmpi              durand C.DURAND            41      6      9
+  PYTHON MODIF Messages/calculel2             durand C.DURAND           309     51    174
+  PYTHON MODIF Messages/calculel3             durand C.DURAND           403     61     77
+  PYTHON MODIF Messages/calculel4             durand C.DURAND           355     36     93
+  PYTHON MODIF Messages/calculel5             durand C.DURAND           344      4    144
+  PYTHON MODIF Messages/calculel6             durand C.DURAND           340     31    128
+  PYTHON MODIF Messages/calculel              durand C.DURAND           211     43    254
+  PYTHON MODIF Messages/cataelem              durand C.DURAND            74      1     37
+  PYTHON MODIF Messages/elements              pellet J.PELLET           461      8      1
+  PYTHON MODIF Messages/fatigue1              durand C.DURAND           273    221      1
+  PYTHON MODIF Messages/modelisa9            rezette C.REZETTE          535      6      1
+  PYTHON MODIF Messages/prepost3              durand C.DURAND           376     46     97
+  PYTHON MODIF Messages/prepost4              durand C.DURAND           280     18    176
+  PYTHON MODIF Messages/prepost               durand C.DURAND           361      4     97
+  PYTHON MODIF Messages/utilifor              durand C.DURAND            42      1     21
+  PYTHON MODIF Messages/utilitai              durand C.DURAND           390     37     67
+  PYTHON MODIF Messages/xfem                  pellet J.PELLET           165     16      4
+  PYTHON MODIF SD/sd_modele                   pellet J.PELLET            79      2      2
+  PYTHON SUPPR Outils/calc_eolienne           durand C.DURAND             0      0      0
+  PYTHON SUPPR Outils/macro_rota_globale      durand C.DURAND             0      0      0
+  PYTHON SUPPR Outils/veri_matr_tang          durand C.DURAND             0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   17        4735      4735             +4735
+ MODIF :  409      112270      3006    5054     -2048
+ SUPPR :    5         245               245      -245
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  431      117250      7741    5299     +2442 

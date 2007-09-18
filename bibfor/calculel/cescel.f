@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,NNCP,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C     PROL2: AUTORISATION DE PROLONGER UNE MAILLE ENTIEREMENT VIERGE
         PROL = .TRUE.
         PROL2= .TRUE.
       ELSE
-        CALL U2MESS('F','CALCULEL_51')
+        CALL ASSERT(.FALSE.)
       END IF
 
 
@@ -213,7 +213,7 @@ C     -------------------------------------------
         ELSE IF (TYPCES.EQ.'ELEM') THEN
           OPTION = 'TOU_INI_ELEM'
         ELSE
-          CALL U2MESS('F','CALCULEL_13')
+          CALL ASSERT(.FALSE.)
         END IF
       END IF
       CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTION),IOPT)
@@ -423,7 +423,7 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                     ELSE IF (TSCA.EQ.'K8') THEN
                       ZK8(JCELV-1+IEQ) = ZK8(JCESV-1+IAD)
                     ELSE
-                      CALL U2MESS('F','CALCULEL_2')
+                      CALL ASSERT(.FALSE.)
                     END IF
                     ZI(JCOPI-1+IAD)=1
   110             CONTINUE
@@ -443,10 +443,11 @@ C     ---------------------------------------------------
 
           CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
           DIFF = (ZI(JMOLO-1+4).GT.10000)
-          IF (DIFF) CALL U2MESS('F','CALCULEL_46')
+C         CAS (ZI(JMOLO-1+4).GT.10000) RESTE A PROGRAMMER
+          CALL ASSERT(.NOT.DIFF)
           NBPT = MOD(ZI(JMOLO-1+4),10000)
           LGCATA = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)
-          IF (NBPT.NE.LGCATA) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(NBPT.EQ.LGCATA)
           NBEL = NBELEM(LIGREL,IGR)
 
 
@@ -507,7 +508,7 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                   ELSE IF (TSCA.EQ.'K8') THEN
                     ZK8(JCELV-1+IEQ) = ZK8(JCESV-1+IAD)
                   ELSE
-                    CALL U2MESS('F','CALCULEL_8')
+                    CALL ASSERT(.FALSE.)
                   END IF
                   ZI(JCOPI-1+IAD)=1
   160           CONTINUE

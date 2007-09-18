@@ -1,7 +1,7 @@
       SUBROUTINE CESFUS(NBCHS,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,BASE,
      & CES3Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C        CALL IMPRSD('CHAMP',LICHS(2),6,'cesfus in 2')
 C     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 C        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
       CES3 = '&&CESFUS.CES3'
-      IF (NBCHS.LE.0) CALL U2MESS('F','CALCULEL_72')
+      CALL ASSERT(NBCHS.GT.0)
 
       CES1 = LICHS(1)
 
@@ -134,9 +134,6 @@ C     ---------------------------------------------------------------
 
       END IF
 
-
-
-
 C     1- QUELQUES VERIFICATIONS SUR LES CHAMPS "IN"
 C        + CALCUL DES OBJETS CONTENANT LES NOMBRES DE POINTS
 C          ET DE SOUS-POINTS PAR MAILLE
@@ -148,9 +145,12 @@ C     --------------------------------------------------------
         CALL JEVEUO(CES1//'.CESK','L',JCE1K)
         CALL JEVEUO(CES1//'.CESD','L',JCE1D)
 
-        IF (MA.NE.ZK8(JCE1K-1+1)) CALL U2MESS('F','CALCULEL_73')
-        IF (NOMGD.NE.ZK8(JCE1K-1+2)) CALL U2MESS('F','CALCULEL_74')
-        IF (TYPCES.NE.ZK8(JCE1K-1+3)) CALL U2MESS('F','CALCULEL_75')
+C       TEST SUR IDENTITE DES 2 MAILLAGES
+        CALL ASSERT(MA.EQ.ZK8(JCE1K-1+1))
+C       TEST SUR IDENTITE DES 2 GRANDEURS
+        CALL ASSERT(NOMGD.EQ.ZK8(JCE1K-1+2))
+C       TEST SUR IDENTITE DES 2 TYPES (CART/ELNO/ELGA)
+        CALL ASSERT(TYPCES.EQ.ZK8(JCE1K-1+3))
 
         IF (ICHS.EQ.1) THEN
           DO 40,IMA = 1,NBMA
@@ -165,17 +165,17 @@ C     --------------------------------------------------------
             IF (NBPT*NBSP*NCMP.EQ.0) GO TO 50
 
             IF (ZI(JNBPT-1+IMA).NE.0) THEN
-              IF (ZI(JNBPT-1+IMA).NE.NBPT)   CALL U2MESS('F','CALCULEL_7
-     &6')
+C             TEST SUR IDENTITE DU NOMBRE DE POINTS
+              CALL ASSERT(ZI(JNBPT-1+IMA).EQ.NBPT)
             ELSE
-                 IF (NBPT.EQ.0) ZI(JNBPT-1+IMA)=NBPT
+              IF (NBPT.EQ.0) ZI(JNBPT-1+IMA)=NBPT
             END IF
 
             IF (ZI(JNBSP-1+IMA).NE.0) THEN
-              IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL U2MESS('F','CALCULEL_77'
-     &)
+C             TEST SUR IDENTITE DU NOMBRE DE SOUS-POINTS
+              CALL ASSERT(ZI(JNBSP-1+IMA).EQ.NBSP)
             ELSE
-                 IF (NBSP.EQ.0) ZI(JNBSP-1+IMA)=NBSP
+              IF (NBSP.EQ.0) ZI(JNBSP-1+IMA)=NBSP
             END IF
    50     CONTINUE
         END IF
@@ -239,7 +239,7 @@ C     -----------------------------------------------------------
         DO 110,IMA = 1,NBMA
           NCMP1 = ZI(JCE1D-1+5+4* (IMA-1)+3)
           IF (NCMP1.EQ.0) GO TO 110
-          IF (NCMP1.LT.0) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(NCMP1.GE.0)
           DO 111,ICMP1 = 1,NCMP1
              ICMP3 = ZI(JCRCMP-1+ICMP1)
              ZI(JNBCMP-1+IMA) = MAX(ICMP3,ZI(JNBCMP-1+IMA))
@@ -294,7 +294,7 @@ C     ------------------------------------------
                 CALL CESEXI('C',JCE3D,JCE3L,IMA,IPT,ISP,ICMP3,IAD3)
                 IF (IAD1.LE.0) GO TO 130
 
-                IF (IAD3.EQ.0) CALL U2MESS('F','CALCULEL_2')
+                CALL ASSERT(IAD3.NE.0)
 
 
 C               -- SI AFFECTATION :
@@ -319,7 +319,7 @@ C               -- SI AFFECTATION :
                   ELSE IF (TSCA.EQ.'K16') THEN
                     ZK16(JCE3V-1+IAD3) = ZK16(JCE1V-1+IAD1)
                   ELSE
-                    CALL U2MESS('F','CALCULEL_39')
+                    CALL ASSERT(.FALSE.)
                   END IF
 
 C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -340,11 +340,12 @@ C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
      &                                 COEFR*ZC(JCE1V-1+IAD1)
                     ENDIF
                   ELSE IF ((TSCA.EQ.'L') .OR. (TSCA.EQ.'K8')) THEN
-                    CALL U2MESS('F','CALCULEL_78')
+C                   CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
+                    CALL ASSERT(.FALSE.)
 C                  ELSE IF (TSCA.EQ.'K16') THEN
 C                    ZK16(JCE3V-1+IAD3) = ZK16(JCE1V-1+IAD1)
                   ELSE
-                    CALL U2MESS('F','CALCULEL_39')
+                    CALL ASSERT(.FALSE.)
                   END IF
                 END IF
 

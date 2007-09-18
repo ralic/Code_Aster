@@ -8,7 +8,7 @@
       CHARACTER*4  FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -345,7 +345,7 @@ C        ---------------------------------------------------------------
           GO TO 90
         END IF
         ALPHAT = VALRES(INDALF)
-        IF (GRILLE) CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(.NOT.GRILLE)
 C
         IF (ELASCO.EQ.1) THEN
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------

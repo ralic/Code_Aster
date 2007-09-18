@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,11 +24,8 @@ PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                        LINE_QUAD=_F(GROUP_MA='SURF',),);
-
-MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
-                    MAILLAGE=MAILLAG2,
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=(_F(NOM='SURFQUAD',
                                      GROUP_MA='SURF',),
                 _F(NOM='PMED',
@@ -46,8 +43,8 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                   )
                  );
 
-MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
-                    MAILLAGE=MAILLAG2,
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
                 CREA_GROUP_NO =(
                              _F(
                                 NOM = 'LIGMED',
@@ -65,10 +62,10 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                 ),
                      )
                    );
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM',
+                              MODELISATION='D_PLAN',
                               ),
                            _F(GROUP_MA=('LIGINF',),
                               PHENOMENE='MECANIQUE',
@@ -102,7 +99,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=7800.0,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('SURF','LIGINF',),
                                 MATER=ACIER,
@@ -164,7 +161,7 @@ IMPR_TABLE(TABLE=DEP_D,
 #          MODELE = MODELEK,
 #          FORMAT = 'RESULTAT',
 #          RESU = (_F(
-#                     MAILLAGE = MAILLAG2,
+#                     MAILLAGE = MAILLAG1,
 #                     RESULTAT = UTOT1,
 #                     NOM_CHAM = ('DEPL',
 #                                 ) ,

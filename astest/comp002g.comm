@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_ISOT_TRAC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 #......................................................................
 
 
-from Outils.veri_matr_tang import VERI_MATR_TANG
+from Utilitai.veri_matr_tang import VERI_MATR_TANG
 
 DEBUT(CODE=_F(NOM='COMP002G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 

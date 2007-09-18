@@ -1,4 +1,4 @@
-# MODIF  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURFTOT',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM',
+                              MODELISATION='C_PLAN_XFEM_CONT',
                               ),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',

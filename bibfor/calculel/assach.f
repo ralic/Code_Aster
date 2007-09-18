@@ -5,7 +5,7 @@
       CHARACTER*1   BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
         IF (IER.NE.0) THEN
           TYPCH1='CHML'
         ELSE
-          CALL U2MESS('F','CALCULEL_17')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
 
@@ -72,7 +72,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
         IF (IER.NE.0) THEN
           TYPCH2='CHML'
         ELSE
-          CALL U2MESS('F','CALCULEL_17')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
       IF (TYPCH1.NE.TYPCH2) THEN
@@ -80,7 +80,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       ENDIF
 
       CALL VRREFE(REEL,IMAG,IER)
-      IF (IER.NE.0) CALL U2MESS('F','CALCULEL_19')
+      CALL ASSERT(IER.EQ.0)
 
       IER=0
 

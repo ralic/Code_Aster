@@ -1,6 +1,6 @@
       SUBROUTINE TE0517(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,7 +187,7 @@ C     --------------------------------------
             ELSE
                CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
             ENDIF
-            IF (JTAB(7).NE. (NBFIB+6)) CALL U2MESS('F','CALCULEL_2')
+            CALL ASSERT(JTAB(7).EQ. (NBFIB+6))
 C ---       LONGUEUR DE L'ELEMENT ---
             LX = IGEOM - 1
             XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2 +

@@ -1,6 +1,6 @@
       SUBROUTINE LECVEC(IAD,LONG,TYPE,UNITE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CATAELEM  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C ======================================================================
          READ(UNITE,'(A80)') ZK80(IAD-1+K)
  35     CONTINUE
       ELSE
-         CALL U2MESS('F','CATAELEM_12')
+         CALL ASSERT(.FALSE.)
       END IF
 
 

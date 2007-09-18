@@ -5,7 +5,7 @@
       CHARACTER*(*) MAILLZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C DEB ------------------------------------------------------------------
         NDEC = 3
         NNO = 2
       ELSE
-        CALL U2MESS('F','CATAELEM_12')
+        CALL ASSERT(.FALSE.)
       END IF
       CALL JEVEUO(MAILLE,'L',IATR3)
       NTR3 = ZI(IATR3-1+1)
@@ -127,7 +127,7 @@ C     -------------------------------------------------------
       NX = INT((XMAX-XMIN)*1.05D0/DX) + 1
       NY = INT((YMAX-YMIN)*1.05D0/DY) + 1
       NZ = INT((ZMAX-ZMIN)*1.05D0/DZ) + 1
-      IF (NX*NY*NZ.EQ.0) CALL U2MESS('F','CALCULEL_8')
+      CALL ASSERT(NX*NY*NZ.NE.0)
       DDX = (NX*DX- (XMAX-XMIN))/2.D0
       DDY = (NY*DY- (YMAX-YMIN))/2.D0
       DDZ = (NZ*DZ- (ZMAX-ZMIN))/2.D0

@@ -6,7 +6,7 @@
       INTEGER BTDI(*),BTNB(*),BTLC(*),BTCO(*),TETR4(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C               -- ON CHOISIT LE 1ER NOEUD DU 1ER TETR4 DE LA BOITE:INO1
    20     CONTINUE
    30   CONTINUE
    40 CONTINUE
-      CALL U2MESS('F','CALCULEL_2')
+      CALL ASSERT(.FALSE.)
 
 
    50 CONTINUE

@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C       ------------------------------------------------
           CALL U2MESS('F','UTILITAI_30')
 
         ELSE
-          CALL U2MESS('F','CALCULEL_13')
+          CALL ASSERT(.FALSE.)
         END IF
 
    10 CONTINUE
@@ -238,7 +238,7 @@ C       ------------------------------------------
           CALL CARCES(CHAMP,TYCHR,CESMOD,'V',CHS1,IB)
           CALL CESRED(CHS1,NBTROU,ZI(JNUTRO),NCMP,ZK8(JLICMP),'V',CHS2)
         ELSE
-          CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(.FALSE.)
         END IF
 
 

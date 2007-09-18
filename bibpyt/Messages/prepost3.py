@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost3 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,11 +83,11 @@ cata_msg={
 """),
 
 16: _("""
- aucune valeur a cet instant.
+ aucune valeur à cet instant.
 """),
 
 17: _("""
- aucune valeur a ce nro d ordre.
+ aucune valeur à ce numéro d ordre.
 """),
 
 18: _("""
@@ -115,11 +115,11 @@ cata_msg={
 """),
 
 24: _("""
- lecture impossible pour  %(k1)s  au format med
+ lecture impossible pour  %(k1)s  au format MED
 """),
 
 25: _("""
- modele obligatoire pour lire un cham_elem
+ MODELE obligatoire pour lire un CHAM_ELEM
 """),
 
 26: _("""
@@ -131,59 +131,62 @@ cata_msg={
 """),
 
 28: _("""
- impossible de trouver la composante aster associee a  %(k1)s 
+ impossible de trouver la composante ASTER associée a  %(k1)s 
 """),
 
 29: _("""
- pour lire_resu / format=ideas le maillage doit normalement avoir ete lu au format ideas.
+ pour LIRE_RESU / FORMAT=IDEAS
+ le maillage doit normalement avoir été lu au format IDEAS.
 """),
 
 30: _("""
- on a trouve plusieurs champs pour le meme dataset
+ on a trouve plusieurs champs pour le même DATASET
 """),
 
 31: _("""
- on n'a pas trouve le numero d'ordre a l'adresse indiquee
+ on n'a pas trouvé le numéro d'ordre à l'adresse indiquée
 """),
 
 32: _("""
- on n'a pas trouve l'instant a l'adresse indiquee
+ on n'a pas trouvé l'instant à l'adresse indiquée
 """),
 
 33: _("""
- on n'a pas trouve la frequence a l'adresse indiquee
+ on n'a pas trouvé la fréquence à l'adresse indiquée
 """),
 
 34: _("""
- on n'a pas trouve dans le fichier unv le type de champ
+ on n'a pas trouvé dans le fichier UNV le type de champ
 """),
 
 35: _("""
- on n'pas trouve dans le fichier unv le nombre de composantes a lire
+ on n'a pas trouvé dans le fichier UNV le nombre de composantes à lire
 """),
 
 36: _("""
- on n'a pas trouvé dans le fichier unv la nature du champ (réel ou complexe)
+ on n'a pas trouvé dans le fichier UNV la nature du champ
+ (réel ou complexe)
 """),
 
 37: _("""
- le type de champ demande est different du type de champ a lire
+ le type de champ demandé est différent du type de champ à lire
 """),
 
 38: _("""
- le champ demande n'est pas dememe nature que le champ a lire (reel/complexe)
+ le champ demande n'est pas de même nature que le champ à lire
+ (réel/complexe)
 """),
 
 39: _("""
- le mot cle modele est obligatoire pour un cham_elem
+ le mot cle MODELE est obligatoire pour un CHAM_ELEM
 """),
 
 40: _("""
- pb correspondance noeud ideas
+ pb correspondance noeud IDEAS
 """),
 
 41: _("""
- le champ de type elga n'est pas  supporte
+ le champ de type ELGA n'est pas supporté
 """),
 
 42: _("""
@@ -235,7 +238,7 @@ cata_msg={
 """),
 
 54: _("""
- attention le maillage n'est pas de type non structure
+ attention le maillage n'est pas de type non structuré
 """),
 
 55: _("""
@@ -243,7 +246,7 @@ cata_msg={
 """),
 
 56: _("""
- attention il s'agit d'un maillage structure
+ attention il s'agit d'un maillage structuré
 """),
 
 57: _("""
@@ -251,23 +254,23 @@ cata_msg={
 """),
 
 58: _("""
- mauvaise definition de noresu.
+ mauvaise definition de NORESU.
 """),
 
 59: _("""
- mauvaise definition de nomsym.
+ mauvaise definition de NOMSYM.
 """),
 
 60: _("""
- mauvaise definition de nopase.
+ mauvaise definition de NOPASE.
 """),
 
 61: _("""
- mauvais dimensionnement de nomast.
+ mauvais dimensionnement de NOMAST.
 """),
 
 62: _("""
- impossible de determiner un nom de maillage med
+ impossible de déterminer un nom de maillage MED
 """),
 
 63: _("""
@@ -283,15 +286,16 @@ cata_msg={
 """),
 
 66: _("""
- le modele et le maillage introduits ne sont pas coherents
+ le modèle et le maillage introduits ne sont pas cohérents
 """),
 
 67: _("""
- il faut donner le maillage pour une impression au format "castem".
+ il faut donner le maillage pour une impression au format "CASTEM".
 """),
 
 68: _("""
- vous voulez imprimer           sur un meme fichier le maillage et un champ ce qui est            incompatible avec le format gmsh
+ vous voulez imprimer sur un même fichier le maillage et un champ
+ ce qui est incompatible avec le format GMSH
 """),
 
 69: _("""
@@ -315,86 +319,46 @@ cata_msg={
  l'impression avec selection sur des entites topologiques n'a pas de sens au format castem  : toutes les valeurs sur tout le maillage seront donc imprimees.
 """),
 
-
-
-
-
-
 75: _("""
- fichier gibi cree par sort format non supporte dans cette version
+ fichier GIBI créé par SORT FORMAT non supporté dans cette version
 """),
 
 76: _("""
- version de gibi non supporte, la lecture peut echouer !
+ version de GIBI non supportée, la lecture peut échouer
 """),
 
 77: _("""
- fichier gibi errone
+ fichier GIBI erroné
 """),
 
 78: _("""
- le fichier maillage gibi est vide
+ le fichier maillage GIBI est vide
 """),
 
 79: _("""
- cette commande ne fait que completer un resultat_compose deja existant. il faut donc que le resultat de la commande :  %(k1)s  soit identique a l'argument "resultat" :  %(k2)s 
+ cette commande ne fait que compléter un résultat composé déjà existant.
+ il faut donc que le résultat de la commande :  %(k1)s
+ soit identique à l'argument "RESULTAT" :  %(k2)s 
 """),
 
 80: _("""
- pour un resultat de type " %(k1)s ", on ne traite que l'option ..._noeu_...
+ pour un résultat de type " %(k1)s ", on ne traite que l'option ..._NOEU_...
 """),
 
 81: _("""
  lmat =0
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
 84: _("""
- il faut autant de cmp en i et j
+ il faut autant de composantes en i et j
 """),
 
 85: _("""
- il faut autant de cmp que de noeud
-"""),
-
-
-
-
-
-
-87: _("""
- y a un bug 5
-"""),
-
-88: _("""
- y a un bug 6
-"""),
-
-89: _("""
- y a un bug 7
-"""),
-
-90: _("""
- y a un bug 8
-"""),
-
-91: _("""
- y a un bug 9
+ il faut autant de composantes que de noeuds
 """),
 
 92: _("""
- mot cle "test_nook" non valide avec le mot cle facteur "inte_spec".
+ mot clé "TEST_NOOK" non validé avec le mot clé facteur "INTE_SPEC".
 """),
 
 93: _("""
@@ -402,26 +366,11 @@ cata_msg={
 """),
 
 94: _("""
- il faut definir deux parametres pour une nappe.
+ il faut définir deux paramètres pour une nappe.
 """),
 
 95: _("""
- pour le parametre donne on n'a pas trouve la fonction.
+ pour le paramètre donné on n'a pas trouvé la fonction.
 """),
 
-96: _("""
- la methode 'wohler' ne peut pas etre utilisee avec l'option %(k1)s 
-"""),
-
-97: _("""
- une courbe de wohler doit etre definie dans defi_materiau
-"""),
-
-98: _("""
- la methode  'manson_coffin' ne peut pas etre utilisee avec l'option %(k1)s 
-"""),
-
-99: _("""
- une courbe de manson_coffin doit etre definie dans defi_materiau
-"""),
 }

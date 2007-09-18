@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C ---------------------------------------------------------------
         CALL DISMOI('F','NOM_OPTION',CELMOD,'CHAM_ELEM',IB,OPTION,IB)
         CALL DISMOI('F','NOM_PARAM',CELMOD,'CHAM_ELEM',IB,PARAM,IB)
         CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IB,MA2,IB)
-        IF (MA.NE.MA2) CALL U2MESS('F','CALCULEL_73')
+        CALL ASSERT(MA.EQ.MA2)
         CESMOD = '&&CHPCHD.CESMOD'
         CALL CELCES(CELMOD,'V',CESMOD)
       END IF
@@ -170,7 +170,8 @@ C     ----------------------------------------------------------------
         ELSE IF (CAS(1:4).EQ.'ELGA') THEN
           CALL CELCES(CHIN,'V',CES1)
           MGANO = '&&CHPCHD.MAGANO'
-          CALL U2MESS('F','CALCULEL_96')
+C         LE CAS GAUSS -> NOEUD RESTE A PROGRAMMER
+          CALL ASSERT(.FALSE.)
         ELSE IF (CAS(1:4).EQ.'CART') THEN
           CALL CARCES(CHIN,'ELNO',' ','V',CES1,IRET)
         END IF
@@ -183,7 +184,7 @@ C     ----------------------------------------------------------------
 
       ELSE IF (CAS(1:8).EQ.'CART->EL') THEN
 C     ----------------------------------------------------------------
-        IF (LIGREL.EQ.' ') CALL U2MESS('F','CALCULEL_97')
+        CALL ASSERT(LIGREL.NE.' ')
 
         CES1 = '&&CHPCHD.CES1'
         CALL CARCES(CHIN,CAS(7:10),CESMOD,'V',CES1,IB)
@@ -199,7 +200,8 @@ C     ----------------------------------------------------------------
         END IF
         END IF
       ELSE
-        CALL U2MESK('F','CALCULEL_98',1,CAS)
+C       CAS NON ENCORE PROGRAMME
+        CALL ASSERT(.FALSE.)
       END IF
 
 

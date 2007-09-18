@@ -1,6 +1,6 @@
       SUBROUTINE ASCOVA(DETR,VACHAR,FOMULZ,NPARA,VPARA,TYPRES,CNCHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,9 +90,9 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     -- ON VERIFIE QUE LE VACHAR A LES BONNES PROPRIETES:
 C     ----------------------------------------------------
       CALL JEEXIN(VACHAR,IRET)
-      IF (IRET.EQ.0) CALL U2MESS('F','CALCULEL_2')
+      CALL ASSERT(IRET.NE.0)
       CALL JELIRA(VACHAR,'LONMAX',NBVEC,K8BID)
-      IF (NBVEC.EQ.0) CALL U2MESS('F','CALCULEL_8')
+      CALL ASSERT(NBVEC.NE.0)
       CALL JEVEUO(VACHAR,'L',JVEC)
 
 
@@ -103,7 +103,7 @@ C     ----------------------------------------------------
       ELSE
         FCT = .TRUE.
         CALL JELIRA(FOMULT,'LONMAX',NCHAR,K8BID)
-        IF (NCHAR.EQ.0) CALL U2MESS('F','CALCULEL_13')
+        CALL ASSERT(NCHAR.NE.0)
         CALL JEVEUO(FOMULT,'L',JFONCT)
       END IF
 
@@ -169,7 +169,7 @@ C     ----------------------------------------------------
             VALRE = 0.D0
             VALIM = 0.D0
           ELSE
-            IF (ICHA.GT.NCHAR) CALL U2MESS('F','CALCULEL_9')
+            CALL ASSERT(ICHA.LE.NCHAR)
             VALRE = 1.D0
             VALIM = 0.D0
             IF (FCT) CALL FOINTC(ZK24(JFONCT+ICHA-1)(1:8),1,NPARA,

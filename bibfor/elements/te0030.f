@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,13 +72,13 @@ C =====================================================================
          MODELI(1:2) = NOMTE(3:4)
          IF (MODELI(1:2).EQ.'DP') THEN
             MOD(1:6) = 'D_PLAN'
-            NBSIG = NBSIGM(MODELI)
+            NBSIG = NBSIGM()
          ELSE IF (MODELI(1:2).EQ.'CP') THEN
             MOD(1:6) = 'C_PLAN'
-            NBSIG = NBSIGM(MODELI)
+            NBSIG = NBSIGM()
          ELSE IF (LTEATT(' ','AXIS','OUI')) THEN
             MOD(1:4) = 'AXIS'
-            NBSIG = NBSIGM(MODELI)
+            NBSIG = NBSIGM()
          ELSE
 C =====================================================================
 C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE THM -----------------------

@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,15 +89,15 @@ C     -----------------------------
         ELSE IF (LTYP.EQ.80) THEN
           TYPSCA='K80'
         ELSE
-          CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(.FALSE.)
         END IF
       ELSE
         TYPSCA=TYPE
       END IF
 
-
       CALL JELIRA(OBJ2,'XOUS',IBID,XOUS)
-      IF (XOUS.EQ.'X') CALL U2MESS('F','CALCULEL2_67')
+C     TEST CAS NON PROGRAMME
+      CALL ASSERT(XOUS.NE.'X')
 
       CALL JELIRA(OBJ2,'LONMAX',LONG,KBID)
       CALL JEVEUO(OBJ2,'E',IAD)
@@ -140,7 +140,7 @@ C     -----------------------------
           ZK80(IAD-1+K)=K80DF
 90      CONTINUE
       ELSE
-        CALL U2MESS('F','CALCULEL_8')
+        CALL ASSERT(.FALSE.)
       END IF
 
 

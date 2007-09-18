@@ -4,7 +4,7 @@
       CHARACTER*24 VACHAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,7 +165,7 @@ C       -- SI LE RESUELEM N'EST PAS UN RESUELEM !(CHAM_NO)
           CALL VTCOPY(RESUEL,CHAMNO,IER)
 
         ELSE
-          CALL U2MESS('F','CALCULEL_9')
+          CALL ASSERT(.FALSE.)
         END IF
 
    20 CONTINUE

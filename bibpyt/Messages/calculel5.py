@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF calculel5 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- ! attention numeros d'ordre non contigus !
+ attention numéros d'ordre non contigus
 """),
 
 2: _("""
@@ -70,11 +70,6 @@ cata_msg={
  le champ  %(k1)s  est de type inconnu.
 """),
 
-
-
-
-
-
 16: _("""
  ! nbnv: typelem inconnu !
 """),
@@ -82,20 +77,6 @@ cata_msg={
 17: _("""
  ! jac(ipg): div par zero !
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 20: _("""
  le group_no  %(k1)s  contient  %(k2)s  noeuds
@@ -157,16 +138,6 @@ cata_msg={
  ! p2 obligeatoire avec terme source non nul !
 """),
 
-
-
-
-
-
-
-
-
-
-
 37: _("""
  programme  %(k1)s
 """),
@@ -206,13 +177,6 @@ cata_msg={
 46: _("""
  ! terme normalisation global nul !
 """),
-
-
-
-
-
-
-
 
 48: _("""
  PROJ_CHAMP (ou LAISON_MAIL) :
@@ -346,52 +310,16 @@ cata_msg={
   pour le nume_ordre  %(i1)d 
 """),
 
-
-
-
-
-
-
-
 76: _("""
  on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
     elrefa  :  %(k3)s 
     famille :  %(k4)s 
 """),
 
-
-
-
-
-
 78: _("""
  on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
     elrefa :  %(k3)s 
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 83: _("""
  ecla_pg : champ vide nom_cham:  %(k1)s  nume_ordre :  %(i1)d 
@@ -408,77 +336,9 @@ cata_msg={
   numero de maille  : %(i3)d 
 """),
 
-
-
-
-
-
-
-
 87: _("""
- famille non disponible    maille de reference  %(k1)s 
+ famille non disponible
+ maille de reference  %(k1)s 
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

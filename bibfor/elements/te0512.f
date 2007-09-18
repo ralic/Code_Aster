@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER  NBSIGM,NBNOEU,NBNOSO,NBPGAU,NBDIM ,NBPAR2
+      INTEGER  NBSIGM,NBNOEU,NBNOSO,NBPGAU,NBPAR2
       INTEGER  MXCMEL,NBPGMX,NBRES, NBRES2,I,     K
       INTEGER  NNO,   NNOS,  NPG,   IRET
       INTEGER  NBSIG, IGAU,  INDIC, INO,   NDIM,  IADZI
@@ -107,7 +107,7 @@ C
       CHARACTER*4        FAMI
       CHARACTER*2        CODRES(NBRES),CODRE2(NBRES2)
       CHARACTER*24 VALK
-      CHARACTER*8        MODELI,NOMPR2,NOMRES(NBRES),NOMAIL
+      CHARACTER*8        NOMPR2,NOMRES(NBRES),NOMAIL
       CHARACTER*8        NOMRE2(NBRES2)
       CHARACTER*16       PHENO,PHENOM,PHENO2,PHENM2
 C.......................................................................
@@ -125,7 +125,6 @@ C.......................................................................
       UNTIER = 1.0D0 / 3.0D0
       DETIER = 2.0D0 / 3.0D0
       TRDEMI = 3.0D0 / 2.0D0
-      MODELI(1:2) = NOMTE(3:4)
 
 C
 C --- RECUPERATION DES CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -135,7 +134,6 @@ C     * NNOS  = NOMBRE DE NOEUDS SOMMETS
 C     * NPG   = NOMBRE DE POINTS D'INTEGRATION
 C     * NBSIG = NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C     ---------------------------------------------------
-      NDIM = NBDIM(NOMTE)
 C      ELREFA = (NDIM.EQ.3) .AND. (NOMTE(3:4).NE.'FO')
 C      IF (ELREFA) THEN
         FAMI = 'RIGI'
@@ -144,7 +142,7 @@ C      ELSE
 C        NNO = NBNOEU(' ')
 C        NNOS = NBNOSO(NOMTE)
 C      END IF
-      NBSIG = NBSIGM(MODELI)
+      NBSIG = NBSIGM()
 C
       DO 10 I = 1, MXCMEL
          SIGMA(I)   = ZERO
@@ -181,11 +179,11 @@ C ---    EVALUATION DES DONNEES MATERIAUX POUR LA TEMPERATURE ITEMP2
 C        -----------------------------------------------------------
          PHENO = 'ELAS'
          CALL RCCOMA (ZI(IMATE),PHENO,PHENOM,CODRES(1))
-         IF (CODRES(1).EQ.'NO') CALL U2MESS('F','PREPOST_42')
+         IF (CODRES(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_7')
 
          PHENO2 = 'DOMMA_LEMAITRE'
          CALL RCCOMA (ZI(IMATE),PHENO2,PHENM2,CODRES(1))
-         IF (CODRES(1).EQ.'NO') CALL U2MESS('F','PREPOST_41')
+         IF (CODRES(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_6')
 C
 C ---    ASSIGNATION DES VALEURS DES PARAMETRES DE LA LOI DE
 C        LEMAITRE-SERMAGE EVALUEES A LA TEMPERATURE ACTUELLE ITEMP2

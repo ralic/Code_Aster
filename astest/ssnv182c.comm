@@ -1,4 +1,4 @@
-# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOL',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM',),
+                              MODELISATION='3D_XFEM_CONT',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),),);        
@@ -116,13 +116,6 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
 
-#-----------------------------------------------------------------------
-# REMARQUE : LE SOLVEUR CONSCIEMMENT UTILISE ICI EST LDLT BIEN QUE MUMPS
-#            SOIT RECOMMANDE AVEC LA METHODE CONTINUE POUR LE CONTACT.
-#            CELA PROVOQUE L'EMISSION D'UNE ALARME DANS STAT_NON_LINE.
-#-----------------------------------------------------------------------
-
-
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,              
                    EXCIT=(_F(CHARGE=CH1,), 
@@ -131,10 +124,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   SOLVEUR=_F(METHODE='LDLT',
-                              RENUM='RCMK',
-                              STOP_SINGULIER='OUI',
-                                  NPREC=8,),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=20),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 

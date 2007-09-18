@@ -1,4 +1,4 @@
-#@ MODIF cataelem Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF cataelem Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,42 +63,6 @@ cata_msg={
 
 9: _("""
  erreurs de cohérence dans les catalogues d'élements finis.
-"""),
-
-10: _("""
- nb_ec > 1
-"""),
-
-11: _("""
- stop 6
-"""),
-
-12: _("""
- stop 7
-"""),
-
-13: _("""
- stop 8
-"""),
-
-14: _("""
- stop 9
-"""),
-
-15: _("""
- stop a
-"""),
-
-16: _("""
- stop b
-"""),
-
-17: _("""
- stop c
-"""),
-
-18: _("""
- stop d
 """),
 
 20: _("""

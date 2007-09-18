@@ -8,7 +8,7 @@
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -280,7 +280,7 @@ C        ---------------------------------------------------------------
           GO TO 70
         END IF
         ALPHAT = VALRES(11)
-        IF (GRILLE) CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(.NOT.GRILLE)
 
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
         DM(1,1) = VALRES(1)*ALPHAT

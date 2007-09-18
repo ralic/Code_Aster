@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 17/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,34 +61,18 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      REAL*8             VALR8,E1,EI,PRECMA
-      REAL*8             VALRR(4)
+      REAL*8             VALR8,E1,EI,PRECMA,VALRR(4)
       CHARACTER*4        VALTX
       CHARACTER*8        VALCH,TYPFON,NOMPF(10),K8BID,CPROL,NOMCLE(5)
       CHARACTER*8        MCLE8,TABLE
       CHARACTER*19       RDEP,NOMFCT,CH19,MZP,NOMINT
-      CHARACTER*24       PROL1,PROL2
-      CHARACTER*24       VALKK(2)
+      CHARACTER*24       PROL1,PROL2,VALKK(2)
       CHARACTER*16       TYPECO
       COMPLEX*16         VALC8
-      INTEGER            NBPAR,JTYPO,JNOMO,JPARA,IBK,NBMAX
-      INTEGER            VALI
+      INTEGER            NBPAR,JTYPO,JNOMO,JPARA,IBK,NBMAX,VALI
       INTEGER            I,J,K,II,JFCT,JPRO,JRPV,JVALE,NBCOUP,N,NF
-      INTEGER            IRET,NBFCT,NBPTS,JPROL,NBPTM
-      INTEGER            IEXIST,LPRO1,LPRO2
+      INTEGER            IRET,NBFCT,NBPTS,JPROL,NBPTM,IEXIST,LPRO1,LPRO2
       LOGICAL            EXIST,GETEXM
-C ----------------------------------------------------------------------
-C
-      INTEGER            GTENV,FOUND,NPES,NBPTMS,ICOUNT
-      CHARACTER*1        VNPES
-      COMMON /ICOELJ/    NBPTMS
-      FOUND = GTENV('NCPUS',VNPES)
-      IF(FOUND.EQ.1) THEN
-         READ(VNPES,'(I1)') NPES
-      ELSE
-         NPES=1
-      ENDIF
-C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -406,15 +390,12 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
  149   CONTINUE
 
        RDEP = NOMMAT//'.&&RDEP'
-       CALL WKVECT (RDEP//'.PROL','G V K16',6*NPES,JPROL)
-       DO 300 ICOUNT=1,NPES
-        ZK16(JPROL  +(ICOUNT-1)*6 ) = 'FONCTION'
-        ZK16(JPROL+1+(ICOUNT-1)*6 ) = 'LIN LIN '
-       ZK16(JPROL+2+(ICOUNT-1)*6 ) = 'EPSI    '
-        ZK16(JPROL+3+(ICOUNT-1)*6 ) = ZK16(JFCT+3)
- 300   CONTINUE
-       NBPTMS=NBPTM
-       CALL WKVECT (RDEP//'.VALE','G V R',2*NBMAX*NPES,JVALE)
+       CALL WKVECT (RDEP//'.PROL','G V K16',6,JPROL)
+       ZK16(JPROL  ) = 'FONCTION'
+       ZK16(JPROL+1) = 'LIN LIN '
+       ZK16(JPROL+2) = 'EPSI    '
+       ZK16(JPROL+3) = ZK16(JFCT+3)
+       CALL WKVECT (RDEP//'.VALE','G V R',2*NBMAX,JVALE)
       ENDIF
 C
 C --- 5- CREATION D'UNE FONCTION POUR STOCKER MZ(P)
@@ -528,15 +509,12 @@ C           VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
         ENDIF
         MZP = NOMMAT//'.&&MZP'
 C
-        CALL WKVECT (MZP//'.PROL','G V K16',6*NPES,JPROL)
-        DO 490 ICOUNT=1,NPES
-           ZK16(JPROL  +(ICOUNT-1)*6 ) = 'FONCTION'
-           ZK16(JPROL+1+(ICOUNT-1)*6 ) = CPROL
-           ZK16(JPROL+2+(ICOUNT-1)*6 ) = ZK16(JFCT+2)
-           ZK16(JPROL+3+(ICOUNT-1)*6 ) = ZK16(JFCT+3)
- 490    CONTINUE
-        NBPTMS=NBPTM
-        CALL WKVECT (MZP//'.VALE','G V R',NBPTM*NPES,JVALE)
+        CALL WKVECT (MZP//'.PROL','G V K16',6,JPROL)
+        ZK16(JPROL  ) = 'FONCTION'
+        ZK16(JPROL+1) = CPROL
+        ZK16(JPROL+2) = ZK16(JFCT+2)
+        ZK16(JPROL+3) = ZK16(JFCT+3)
+        CALL WKVECT (MZP//'.VALE','G V R',NBPTM,JVALE)
       ENDIF
       ENDIF
 C

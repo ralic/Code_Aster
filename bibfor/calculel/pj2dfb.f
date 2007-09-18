@@ -5,7 +5,7 @@
       CHARACTER*14 BOITE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       NTR3 = TRIA3(1)
       RBIG = R8MAEM()
-      IF (NTR3.EQ.0) CALL U2MESS('F','CALCULEL_2')
+      CALL ASSERT(NTR3.NE.0)
 
       CALL JEVEUO('&&PJXXCO.LINO1','L',IALIN1)
       CALL JEVEUO('&&PJXXCO.LINO2','L',IALIN2)
@@ -94,7 +94,7 @@ C     -------------------------------------------------------
       DY = DX
       NX = INT((XMAX-XMIN)*1.05D0/DX) + 1
       NY = INT((YMAX-YMIN)*1.05D0/DY) + 1
-      IF (NX*NY.EQ.0) CALL U2MESS('F','CALCULEL_8')
+      CALL ASSERT(NX*NY.NE.0)
       DDX = (NX*DX- (XMAX-XMIN))/2.D0
       DDY = (NY*DY- (YMAX-YMIN))/2.D0
       XMIN = XMIN - DDX

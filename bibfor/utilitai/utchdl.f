@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -274,11 +274,11 @@ C     6.2 CAS : NOMGD = VARI_R :
 C     ----------------------------
       ELSE
         LGCATA = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)
-        DIFF = (ZI(JMOLO-1+4).GT.10000)
-        IF (DIFF) CALL U2MESS(AOF,'CALCULEL_46')
+C LE CAS ZI(JMOLO-1+4).GT.10000
+C N EST PAS PREVU : REALISER L EVOLUTION
+        CALL ASSERT(ZI(JMOLO-1+4).LE.10000)
         NBPT = MOD(ZI(JMOLO-1+4),10000)
-        IF (NBPT.NE.LGCATA) CALL U2MESS(AOF,'CALCULEL_2')
-
+        CALL ASSERT(NBPT.EQ.LGCATA)
 
         IPT = NUPO2
 

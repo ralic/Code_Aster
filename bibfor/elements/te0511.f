@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,10 +59,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBSIGM,NBDIM,NBPAR
+      INTEGER NBSIGM,NBPAR
       INTEGER NPG1,IPOIDS,IVF,IDFDE,JGANO
       INTEGER MXCMEL,NBPGMX,NBRES,I,K,NNO,NNOS,NPG
-      INTEGER NBSIG,IGAU,INDIC,INO,NDIM,NDIM1,IADZI,JTAB(3)
+      INTEGER NBSIG,IGAU,INDIC,INO,NDIM1,IADZI,JTAB(3)
       INTEGER IMATE,IRET,IDTRIA,ICONPG,ICONNO,IAZK24
       PARAMETER (MXCMEL=162)
       PARAMETER (NBPGMX=27)
@@ -75,7 +75,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2 CODRES(NBRES)
       CHARACTER*4 FAMI
       CHARACTER*24 VALK
-      CHARACTER*8 MODELI,NOMPAR,NOMRES(NBRES),NOMAIL
+      CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMAIL
       CHARACTER*16 PHENOM
 C.......................................................................
       DATA NOMRES/'E','NU'/
@@ -88,7 +88,6 @@ C.......................................................................
       UNTIER = 1.0D0/3.0D0
       DETIER = 2.0D0/3.0D0
       TRDEMI = 3.0D0/2.0D0
-      MODELI(1:2) = NOMTE(3:4)
 
       DO 10 I = 1,MXCMEL
         SIGMA(I) = ZERO
@@ -125,11 +124,10 @@ C     --------------------------------------------
 
 
 C ----     DIMENSION DE L'ELEMENT :
-      NDIM = NBDIM(NOMTE)
       CALL ELREF4(' ',FAMI,NDIM1,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C ----     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
-      NBSIG = NBSIGM(MODELI)
+      NBSIG = NBSIGM()
 
 C --- RECUPERATION  ET DES L'ADRESSES DU TAUX DE TRIAXIALITE DES
 C --- CONTRAINTES (TRIAX) ET DE LA CONTRAINTES EQUIVALENTE
@@ -190,7 +188,7 @@ C        ---------------
      &                  SIGMA(INDIC+2)*SIGMA(INDIC+2) +
      &                  SIGMA(INDIC+3)*SIGMA(INDIC+3) +
      &                  SIGMA(INDIC+4)*SIGMA(INDIC+4)*DEUX
-          IF (NDIM.EQ.3) SIGEQ(IGAU) = SIGEQ(IGAU) +
+          IF (NBSIG.EQ.6) SIGEQ(IGAU) = SIGEQ(IGAU) +
      &                                 SIGMA(INDIC+5)*SIGMA(INDIC+5)*
      &                                 DEUX + SIGMA(INDIC+6)*
      &                                 SIGMA(INDIC+6)*DEUX
@@ -270,7 +268,7 @@ C        ---------------
      &                 SIGMA(INDIC+2)*SIGMA(INDIC+2) +
      &                 SIGMA(INDIC+3)*SIGMA(INDIC+3) +
      &                 SIGMA(INDIC+4)*SIGMA(INDIC+4)*DEUX
-          IF (NDIM.EQ.3) SIGEQ(INO) = SIGEQ(INO) +
+          IF (NBSIG.EQ.6) SIGEQ(INO) = SIGEQ(INO) +
      &                                SIGMA(INDIC+5)*SIGMA(INDIC+5)*
      &                                DEUX + SIGMA(INDIC+6)*
      &                                SIGMA(INDIC+6)*DEUX

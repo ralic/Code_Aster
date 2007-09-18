@@ -2,7 +2,7 @@
      &                  CHTNZ,VAPRIZ,VAPRMZ,NRGRPA,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -405,8 +405,8 @@ C====
                   IRETH = 0
                   CALL EXISD('CHAMP_GD',LCHIN(5),IRETH)
                   IF (((IRETH.EQ.0).AND. (IRET.NE.0)) .OR.
-     &                ((IRET.EQ.0).AND. (IRETH.NE.0))) CALL U2MESS('F','
-     &CALCULEL4_75')
+     &                ((IRET.EQ.0).AND. (IRETH.NE.0)))
+     &            CALL ASSERT(.FALSE.)
 
                   IF (TYPESE.EQ.7) THEN
 C MODIFICATION DU TERME STD: ON "BLUFF" LE CALCUL DE CHAR_THER_TEXT

@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,10 +76,9 @@ C     -- SI CNS EXISTE DEJA, ON LE DETRUIT :
 C------------------------------------------------------------------
 C     1- QUELQUES VERIFS :
 C     ------------------------
-      IF (NCMP.EQ.0) CALL U2MESS('F','CALCULEL2_14')
+      CALL ASSERT(NCMP.NE.0)
       CALL VERIGD(NOMGD,LICMP,NCMP,IRET)
-      IF (IRET.GT.0) CALL U2MESS('F','CALCULEL2_5')
-
+      CALL ASSERT(IRET.LE.0)
 
 C------------------------------------------------------------------
 C     2- CREATION DE CNS.CNSK:

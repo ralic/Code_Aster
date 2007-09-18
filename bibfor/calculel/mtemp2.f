@@ -2,7 +2,7 @@
      &                    THVRAI, CHTEMP )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,7 +162,7 @@ C           -----------------------------------
             CALL JEDETR(CHTEMP(1:19)//'.TITR')
 
          ELSE
-           CALL U2MESS('F','UTILITAI_67')
+           CALL ASSERT(.FALSE.)
          END IF
       ELSE
 

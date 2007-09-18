@@ -5,7 +5,7 @@ C
       CHARACTER*3  TYPE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C ======================================================================
          RACINE = SQRT(FACT4 + FACT1)
          COSPHI = TROIS/(FACT3*RACINE)
       ELSE
-         CALL U2MESS('F','ALGELINE_29')
+         CALL ASSERT(.FALSE.)
       ENDIF
 C ======================================================================
       END

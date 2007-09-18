@@ -1,6 +1,6 @@
       SUBROUTINE LECOJB(OB,UNITE,BASE,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CATAELEM  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,31 +56,25 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
       CALL JEMARQ()
       READ(UNITE,1001,END=9998) MOCLE1,GENR
-      IF (MOCLE1.NE.'|TYPE_JEVEUX=') CALL U2MESS('F','CALCULEL_2')
+      CALL ASSERT(MOCLE1.EQ.'|TYPE_JEVEUX=')
 
 
       IF (GENR.EQ.'SIMPLE') THEN
 C     ----------------------------
           READ (UNITE,1002) MOCLE1,OB1,MOCLE2,TYPE,MOCLE3,LONG
-         IF (MOCLE1.NE.'|NOM=')
-     &        CALL U2MESS('F','CALCULEL_8')
-         IF (MOCLE2.NE.'|TYPE=')
-     &        CALL U2MESS('F','ALGORITH_19')
-         IF (MOCLE3.NE.'|LONMAX=')
-     &        CALL U2MESS('F','CALCULEL_9')
+          CALL ASSERT(MOCLE1.EQ.'|NOM=')
+          CALL ASSERT(MOCLE2.EQ.'|TYPE=')
+          CALL ASSERT(MOCLE3.EQ.'|LONMAX=')
           CALL WKVECT(OB1,BASE//' V '//TYPE,LONG,IAD)
-          CALL  LECVEC(IAD,LONG,TYPE,UNITE)
+          CALL LECVEC(IAD,LONG,TYPE,UNITE)
 
 
       ELSEIF (GENR.EQ.'PT_NOM') THEN
 C     ----------------------------
           READ (UNITE,1002) MOCLE1,OB1,MOCLE2,TYPE,MOCLE3,LONG
-         IF (MOCLE1.NE.'|NOM=')
-     &        CALL U2MESS('F','CALCULEL_10')
-         IF (MOCLE2.NE.'|TYPE=')
-     &        CALL U2MESS('F','CATAELEM_11')
-         IF (MOCLE3.NE.'|NOMMAX=')
-     &        CALL U2MESS('F','CATAELEM_12')
+          CALL ASSERT(MOCLE1.EQ.'|NOM=')
+          CALL ASSERT(MOCLE2.EQ.'|TYPE=')
+          CALL ASSERT(MOCLE3.EQ.'|NOMMAX=')
           CALL JECREO(OB1,BASE//' N '//TYPE)
           CALL WKVECT('&&LECOJB.PTNOM',BASE//' V '//TYPE,LONG,JTMP)
           CALL  LECVEC(JTMP,LONG,TYPE,UNITE)
@@ -102,7 +96,7 @@ C     ----------------------------
                CALL JECROC(JEXNOM(OB1,ZK32(JTMP-1+K)))
  13         CONTINUE
           ELSE
-            CALL U2MESS('F','CATAELEM_12')
+            CALL ASSERT(.FALSE.)
           END IF
           CALL JEDETR('&&LECOJB.PTNOM')
 
@@ -114,12 +108,9 @@ C     ----------------------------
      &  MOCLE4,NUTIOC,MOCLE4,ACCES(1:2),MOCLE4,STOCK,
      &         MOCLE4,MODLON,MOCLE4,LONMAX,MOCLE4,LONT
 
-         IF (MOCLE1.NE.'|NOM=')
-     &        CALL U2MESS('F','CATAELEM_13')
-         IF (MOCLE2.NE.'|TYPE=')
-     &        CALL U2MESS('F','CATAELEM_14')
-         IF (MOCLE3.NE.'|NMAXOC=')
-     &        CALL U2MESS('F','CATAELEM_15')
+        CALL ASSERT(MOCLE1.EQ.'|NOM=')
+        CALL ASSERT(MOCLE2.EQ.'|TYPE=')
+        CALL ASSERT(MOCLE3.EQ.'|NMAXOC=')
         CALL JECREC(OB1,BASE//' V '//TYPE,ACCES(1:2),STOCK,MODLON,
      &          NMAXOC)
 
@@ -130,18 +121,15 @@ C     ----------------------------
 
           IF (ACCES(1:2).EQ.'NO') THEN
                READ (UNITE,1005) MOCLE1,NOMK8,MOCLE2,LONG
-         IF (MOCLE1.NE.'|NOM=')
-     &        CALL U2MESS('F','CATAELEM_16')
-         IF (MOCLE2.NE.'|LONMAX=')
-     &        CALL U2MESS('F','CATAELEM_17')
+               CALL ASSERT(MOCLE1.EQ.'|NOM=')
+               CALL ASSERT(MOCLE2.EQ.'|LONMAX=')
                CALL JECROC(JEXNOM(OB1,NOMK8))
                IF (MODLON.NE.'CONSTANT')
-     &             CALL JEECRA(JEXNOM(OB1,NOMK8),'LONMAX',LONG,KBID)
+     &            CALL JEECRA(JEXNOM(OB1,NOMK8),'LONMAX',LONG,KBID)
                IF (LONG.GT.0) CALL JEVEUO(JEXNOM(OB1,NOMK8),'E',IAD)
           ELSE
                READ (UNITE,1006) MOCLE1,LONG
-         IF (MOCLE1.NE.'|LONMAX=')
-     &        CALL U2MESS('F','CATAELEM_18')
+               CALL ASSERT(MOCLE1.EQ.'|LONMAX=')
                CALL JECROC(JEXNUM(OB1,IOBJ))
                IF (MODLON.NE.'CONSTANT')
      &              CALL JEECRA(JEXNUM(OB1,IOBJ),'LONMAX',LONG,KBID)
@@ -151,7 +139,7 @@ C     ----------------------------
  2      CONTINUE
 
       ELSE
-        CALL U2MESS('F','CATAELEM_12')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
 

@@ -1,6 +1,6 @@
       SUBROUTINE MEPSAN(EPSANE,EXITIM,TIME,THVRAI,CHEPSA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,40 +83,37 @@ C
 C
          CALL GETTCO(EPSANE(1:8),TYSD)
 C
-         IF (TYSD(1:9).EQ.'EVOL_NOLI') THEN
-C           ----------------------------
-            CALL DISMOI('F','NB_CHAMP_UTI',EPSANE(1:8),'RESULTAT',
-     &                  NBCHAM,K8BID,IERD)
-            IF (NBCHAM.GT.0) THEN
-               IF (.NOT. (EXITIM)) THEN
-                  CALL U2MESS('I','CALCULEL3_64')
-                  TIME2 = 0.0D0
-                  IF (NBCHAM.GT.1) THEN
-                     CALL U2MESS('F','CALCULEL3_65')
-                  END IF
-               ELSE
-                  TIME2 = TIME
-               END IF
-C
-C              RECUPERATION DU CHAMP DE DEFORMATIONS ANELASTIQUES
-C              DANS EPSANE:
-C              -----------
-               CALL RSINCH(EPSANE(1:8),'EPSA_ELNO','INST',TIME2,
-     &                     CHEPSA(1:19),'CONSTANT','CONSTANT',1,'V',
-     &                     ICORET)
-               IF (ICORET.GE.10) THEN
-                  VALK = EPSANE(1:8)
-                  VALR = TIME2
-                  VALI = ICORET
-                  CALL U2MESG('F', 'CALCULEL6_13',1,VALK,1,VALI,1,VALR)
+         CALL ASSERT(TYSD(1:9).EQ.'EVOL_NOLI')
+C        ----------------------------
+         CALL DISMOI('F','NB_CHAMP_UTI',EPSANE(1:8),'RESULTAT',
+     &               NBCHAM,K8BID,IERD)
+         IF (NBCHAM.GT.0) THEN
+            IF (.NOT. (EXITIM)) THEN
+               CALL U2MESS('I','CALCULEL3_64')
+               TIME2 = 0.0D0
+               IF (NBCHAM.GT.1) THEN
+                   CALL U2MESS('F','CALCULEL3_65')
                END IF
             ELSE
-               CALL U2MESK('F','CALCULEL3_66',1,EPSANE(1:8))
+               TIME2 = TIME
             END IF
 C
+C           RECUPERATION DU CHAMP DE DEFORMATIONS ANELASTIQUES
+C           DANS EPSANE:
+C           -----------
+            CALL RSINCH(EPSANE(1:8),'EPSA_ELNO','INST',TIME2,
+     &                  CHEPSA(1:19),'CONSTANT','CONSTANT',1,'V',
+     &                  ICORET)
+            IF (ICORET.GE.10) THEN
+               VALK = EPSANE(1:8)
+               VALR = TIME2
+               VALI = ICORET
+               CALL U2MESG('F', 'CALCULEL6_13',1,VALK,1,VALI,1,VALR)
+            END IF
          ELSE
-            CALL U2MESS('F','UTILITAI_67')
+            CALL U2MESK('F','CALCULEL3_66',1,EPSANE(1:8))
          END IF
+C
       END IF
  9999 CONTINUE
       END

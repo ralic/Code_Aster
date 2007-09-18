@@ -4,7 +4,7 @@
       CHARACTER*(*)       LK1(L1), LK2(L2), LK3(L3)
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,8 +54,7 @@ C----------------------------------------------------------------------
       CHARACTER*24  PN2 , KBID
       INTEGER K1,K2,NBK3
 
-      IF ((LONG.NE.8) .AND. (LONG.NE.16) .AND.
-     &    (LONG.NE.24)) CALL U2MESS('F','CALCULEL2_75')
+      CALL ASSERT((LONG.EQ.8).OR.(LONG.EQ.16).OR.(LONG.EQ.24))
 
       NBK3=L3
       L3 = 0
@@ -86,7 +85,7 @@ C     ---------------------------------------
           CALL JENONU(JEXNOM(PN2,LK1(K1)),K2)
           IF (K2.EQ.0) THEN
              L3 = L3 + 1
-             IF (L3.GT.NBK3) CALL U2MESS('F','CALCULEL2_76')
+             CALL ASSERT(L3.LE.NBK3)
              LK3(L3) = LK1(K1)
           ENDIF
   2   CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF veri_matr_tang Outils  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+#@ MODIF veri_matr_tang Utilitai  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

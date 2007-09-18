@@ -1,7 +1,7 @@
       SUBROUTINE RCTRAC(JMAT,NOMRC,NOMCL,TEMP,JPROL,JVALE,NBVALE,E)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 17/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,8 +67,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER       JVALF1, NBVF1, K, K1, K2, NAR
       INTEGER       JVALN, NBVN, I, J, JVALF2, NBVF2
       REAL*8        COEF,TOLE,R8PREM,T1,T2,E1,E2,Z1,Z2,ZP1,ZP2
-      REAL*8        RPRIM1, RP1
-      REAL*8        RPRIM2, RP2
+      REAL*8        RPRIM1, RP1, RPRIM2, RP2
       CHARACTER*8   NOMCL2
       CHARACTER*24 VALK(2)
       CHARACTER*1   PRO1, PRO2
@@ -76,8 +75,6 @@ C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
       INTEGER       LMAT,   LFCT, LSUP
       PARAMETER    (LMAT=7, LFCT=9, LSUP=2)
-      INTEGER            NBPTMS
-      COMMON/ICOELJ/      NBPTMS
 C DEB ------------------------------------------------------------------
 C      TOLE=R8PREM() TROP PETIT
       TOLE=1.D-6

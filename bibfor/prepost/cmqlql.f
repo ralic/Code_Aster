@@ -1,6 +1,6 @@
       SUBROUTINE CMQLQL ( MAIN, MAOUT, NBMA, LIMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,9 +86,8 @@ C     =========================================================
 
       DO 10 ITYP = 1, NBTYMA
          CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',ITYP),NOM)
-         IF ( NOMAST(ITYP) .NE. NOM ) THEN
-            CALL U2MESS('F','PREPOST_6')
-         ENDIF
+C VERIFICATION COHERENCE CATALOGUE FORTRAN
+         CALL ASSERT( NOMAST(ITYP) .EQ. NOM )
  10   CONTINUE
 C
 C     =========================================================

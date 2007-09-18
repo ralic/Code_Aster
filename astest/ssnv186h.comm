@@ -1,5 +1,5 @@
 
-# MODIF  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM',),
+                              MODELISATION='C_PLAN_XFEM_CONT',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),),);

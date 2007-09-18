@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,8 +28,6 @@ PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('VOL','SURFGAU','SURFDRO','SURFFRO','SURFBAC','SURFINF','SURFSUP'),),);
 
 #----------------------------------------
 # epaisseur (suivant x)
@@ -55,8 +53,8 @@ hy = ly/ny
 hz = lz/nz
 
 # creation des noeuds servant a bloquer les modes rigides
-MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
-                 MAILLAGE=MAILLAG2,
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                 MAILLAGE=MAILLAG1,
                  CREA_GROUP_NO=(
                                  _F(NOM='A1',OPTION='ENV_SPHERE',POINT=(lx, 0., (lz-hz)/2.),PRECISION=1/(8.*nz),RAYON=1/(8.*nz)),
                                  _F(NOM='A2',OPTION='ENV_SPHERE',POINT=(lx, 0., (lz+hz)/2.),PRECISION=1/(8.*nz),RAYON=1/(8.*nz)),
@@ -72,10 +70,10 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=_F(GROUP_MA=('VOL','SURFGAU','SURFDRO','SURFFRO','SURFBAC','SURFINF','SURFSUP'),
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D_XFEM',),
+                             MODELISATION='3D',),
                     );
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-lz/2.');
@@ -103,7 +101,7 @@ nu=0.
 rho=7800.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,10 +22,10 @@ DEBUT(CODE=_F(NOM='SSNV195A',NIV_PUB_WEB='INTERNET',),);
 
 PRE_GIBI();
 
-MAILLE=LIRE_MAILLAGE(INFO=1,);
+MAILLAGE=LIRE_MAILLAGE(INFO=1,);
 
-MAILLE=DEFI_GROUP(reuse = MAILLE,
-                  MAILLAGE = MAILLE,
+MAILLAGE=DEFI_GROUP(reuse = MAILLAGE,
+                  MAILLAGE = MAILLAGE,
             CREA_GROUP_NO =(
                              _F(
                                 NOM = 'H',
@@ -52,8 +52,8 @@ MAILLE=DEFI_GROUP(reuse = MAILLE,
            );
 
 
-MAILLE=DEFI_GROUP(reuse = MAILLE,
-                  MAILLAGE = MAILLE,
+MAILLAGE=DEFI_GROUP(reuse = MAILLAGE,
+                  MAILLAGE = MAILLAGE,
             CREA_GROUP_NO =(
                              _F(
                                 NOM = 'face_haut',
@@ -80,22 +80,15 @@ MAILLE=DEFI_GROUP(reuse = MAILLE,
                             )    
            );
 
-
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,
-                       );
-
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL',),   
                     );
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
-                       LINE_QUAD=_F(GROUP_MA='VOL',),);
                        
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                    AFFE=_F(GROUP_MA=('VOL',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D_XFEM',),
+                            MODELISATION='3D',),
                      );        
 
 
@@ -143,7 +136,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=7800.0,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL',),
                                 MATER=ACIER,

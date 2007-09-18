@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,41 +22,12 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- trop de parametres.
-"""),
-
-2: _("""
- stop 1
-"""),
-
 3: _("""
  la grandeur :  %(k1)s  n existe pas dans le catalogue des grandeurs.
 """),
 
 4: _("""
  incoherence des maillages : %(k1)s  et  %(k2)s
-"""),
-
-5: _("""
- stop 1a
-"""),
-
-6: _("""
- stop 1b
-"""),
-
-7: _("""
- stop 1c
-"""),
-
-
-9: _("""
- stop 4
-"""),
-
-10: _("""
- stop 5
 """),
 
 11: _("""
@@ -67,18 +38,9 @@ cata_msg={
  le mode_local:  %(k1)s  ne doit pas etre "diff__".
 """),
 
-13: _("""
- stop
-"""),
-
 14: _("""
   incompatibilite des type_champ ("elga"/"elno")  pour l option :  %(k1)s  entre les 2 type_elem :  %(k2)s  et  %(k3)s
 """),
-
-
-
-
-
 
 16: _("""
  type de maille indisponible
@@ -89,11 +51,8 @@ cata_msg={
 """),
 
 18: _("""
- la partie reelle et imaginaire du champ a assembler ne sont pas du meme type (l un est un cham_no et l autre un cham_elem
-"""),
-
-19: _("""
- champ incompatible
+ les parties réelle et imaginaire du champ à assembler ne sont pas du même type
+ l'un est un CHAM_NO et l'autre un CHAM_ELEM
 """),
 
 20: _("""
@@ -101,31 +60,29 @@ cata_msg={
 """),
 
 21: _("""
- les champs reel et imaginaire a assembler ne contiennent pas la meme grandeur
+ les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
 """),
 
 22: _("""
- probleme dans le catalogue des grandeurs simples, la grandeur %(k1)s  ne possede pas le meme nombre de champ que son homologue complexe %(k2)s
+ problème dans le catalogue des grandeurs simples
+ la grandeur %(k1)s  ne possède pas le même nombre de champs que son homologue complexe %(k2)s
 """),
 
 23: _("""
- probleme dans le catalogue des grandeurs simples, la grandeur  %(k1)s  ne possede pas les memes champs que son homologue complexe  %(k2)s
+ problème dans le catalogue des grandeurs simples
+ la grandeur  %(k1)s  ne possède pas les mêmes champs que son homologue complexe  %(k2)s
 """),
 
 24: _("""
- les champs a assembler n ont pas la meme longueur
-"""),
-
-25: _("""
- type de champ incorrect
+ les champs à assembler n'ont pas la même longueur
 """),
 
 26: _("""
- longueurs des cham_elem incompatibles
+ longueurs des CHAM_ELEM incompatibles
 """),
 
 27: _("""
- cham_elem a combiner incompatible
+ CHAM_ELEM à combiner incompatible
 """),
 
 28: _("""
@@ -143,23 +100,11 @@ cata_msg={
   -> Risque & Conseil :
      Vérifiez que l'option incomplètement calculée est bien une option de post-traitement
      et que le déficit de calcul n'entraine pas de résultats faux.
-
-"""),
-
-32: _("""
- dvp : Valeur interdite
 """),
 
 34: _("""
- le calcul de l'option :  %(k1)s  n'est possible pour aucun des types d'elements  du ligrel.
-"""),
-
-35: _("""
- erreur programmeur : trop de champs "in"
-"""),
-
-36: _("""
- On ne sait pas faire.
+ le calcul de l'option :  %(k1)s
+ n'est possible pour aucun des types d'éléments du LIGREL.
 """),
 
 37: _("""
@@ -167,68 +112,33 @@ cata_msg={
 """),
 
 38: _("""
- la carte concerne aussi des mailles tardives qui sont oubliees.
-"""),
-
-39: _("""
- type scalaire inconnu
-"""),
-
-40: _("""
- Erreur Programmeur : type_scalaire: %(k1)s  non autorisé (I/R/C),
-"""),
-
-41: _("""
- Erreur Programmeur : type_scalaire: %(k1)s  non autorisé (I/R/C/K8/K16/K24),
+ la carte concerne aussi des mailles tardives qui sont oubliées
 """),
 
 42: _("""
  Erreur Programmeur:
- Incoherence fortran/catalogue type_element:  %(k1)s  option:  %(k2)s
- La routine texxxx.f correspondant au calcul élémentaire ci-dessus est bugguée :
+ Incohérence fortran/catalogue
+ TYPE_ELEMENT :  %(k1)s
+ OPTION       :  %(k2)s
+ La routine texxxx.f correspondant au calcul élémentaire ci-dessus est bugguée
  Elle écrit en dehors de la zone allouée au paramètre (OUT) %(k3)s.
 
 """),
 
-43: _("""
- Arret du aux erreurs precedentes.
-"""),
-
-44: _("""
- Code interdit:  %(k1)s
-"""),
-
-45: _("""
- Erreur Programmeur :
- Transformation non programmée : émettre une fiche d'évolution
-"""),
-
-46: _("""
- a faire ...  : émettre une fiche d'évolution
-"""),
-
 47: _("""
-  le cham_elem:  %(k1)s  n'existe pas.
+  le CHAM_ELEM:  %(k1)s  n'existe pas.
 """),
 
 48: _("""
- le cham_elem: %(k1)s  n'a pas le meme nombre de cmps dynamiques sur tous ses elements.
+ le CHAM_ELEM: %(k1)s  n'a pas le même nombre de composantes dynamiques sur tous ses éléments.
 """),
 
 49: _("""
- le cham_elem : %(k1)s  a des sous-points.
-"""),
-
-50: _("""
- type de verif. inconnu.
-"""),
-
-51: _("""
- argument prol0 invalide.
+ le CHAM_ELEM : %(k1)s a des sous-points.
 """),
 
 52: _("""
- la cmp: %(k1)s  n'appartient pas a la grandeur: %(k2)s
+ la cmp: %(k1)s  n'appartient pas à la grandeur: %(k2)s
 """),
 
 53: _("""
@@ -236,56 +146,24 @@ cata_msg={
 """),
 
 54: _("""
- le parametre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des type_elem du ligrel:  %(k3)s
+ le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
 """),
 
 55: _("""
- il manque la cmp: %(k1)s
+ il manque la composante : %(k1)s
 """),
 
 56: _("""
- le ligrel contient des mailles tardives,
+ le LIGREL contient des mailles tardives
 """),
 
 57: _("""
- nombres de points differents pour la maille:  %(k1)s  cham_elem de:  %(k2)s
+ nombres de points différents pour la maille:  %(k1)s
+ CHAM_ELEM de :  %(k2)s
 """),
 
 58: _("""
- il manque la cmp: %(k1)s  sur la maille: %(k2)s
-"""),
-
-59: _("""
- champ 1 inexistant
-"""),
-
-60: _("""
- Matrice noeud->gauss nécessaire
-"""),
-
-61: _("""
- Erreur Programmeur :
- Argument cesmod obligatoire
-"""),
-
-62: _("""
- champ inexistant
-"""),
-
-63: _("""
- on ne traite que des champs "ELNO"
-"""),
-
-64: _("""
- le nombre de sous-points ne peut etre >1
-"""),
-
-65: _("""
- des reels ou des complexes svp !
-"""),
-
-66: _("""
- TYPCES invalide
+ il manque la composante : %(k1)s  sur la maille : %(k2)s
 """),
 
 67: _("""
@@ -293,130 +171,41 @@ cata_msg={
 """),
 
 68: _("""
- numero de maille invalide:  %(k1)s  (<1 ou >nbma)
+ numéro de maille invalide     :  %(k1)s  (<1 ou >nbma)
 """),
 
 69: _("""
- numero de point invalide:  %(k1)s  (<1 ou >nbpt) pour la maille:  %(k2)s
+ numéro de point invalide      :  %(k1)s  (<1 ou >nbpt)
+ pour la maille                :  %(k2)s
 """),
 
 70: _("""
- numero de sous_point invalide:  %(k1)s  (<1 ou >nbspt) pour la maille:  %(k2)s  et pour le point:  %(k3)s
+ numéro de sous_point invalide :  %(k1)s  (<1 ou >nbspt)
+ pour la maille                :  %(k2)s
+ pour le point                 :  %(k3)s
 """),
 
 71: _("""
- numero de cmp invalide:  %(k1)s  (<1 ou >nbcmp) pour la maille:  %(k2)s  pour le point:  %(k3)s  et pour le sous_point:  %(k4)s
-"""),
-
-72: _("""
- nbchs >0 svp
-"""),
-
-73: _("""
- maillages differents.
-"""),
-
-74: _("""
- grandeurs differentes.
-"""),
-
-75: _("""
- types differents (CART/ELNO/ELGA).
-"""),
-
-76: _("""
- nombre de points differents.
-"""),
-
-77: _("""
- nombre de sous-points differents.
-"""),
-
-78: _("""
- cumul interdit sur ce type non-numerique
-"""),
-
-79: _("""
- i/r/k8/k16 svp
-"""),
-
-80: _("""
- trop de cmps (997)
-"""),
-
-81: _("""
- maillages differents
-"""),
-
-82: _("""
- nbcmp doit etre >=0
-"""),
-
-83: _("""
- nbma doit etre >=0
-"""),
-
-84: _("""
- stop nomgd
-"""),
-
-85: _("""
- stop nbpt
-"""),
-
-86: _("""
- stop nbsp
-"""),
-
-87: _("""
- stop iad2
-"""),
-
-88: _("""
- caractere illicite.
-"""),
-
-89: _("""
- on ne sait pas encore traiter les resuelem
-"""),
-
-90: _("""
- type de champ interdit: %(k1)s
+ numéro de composante invalide :  %(k1)s  (<1 ou >nbcmp)
+ pour la maille                :  %(k2)s 
+ pour le point                 :  %(k3)s
+ pour le sous-point            :  %(k4)s
 """),
 
 91: _("""
- incoherence des familles de points de gauss pour la maille  %(k1)s  ( %(k2)s / %(k3)s )
+ incohérence des familles de points de Gauss pour la maille  %(k1)s
+ ( %(k2)s / %(k3)s )
 """),
 
 92: _("""
- type scalaire du cham_no :  %(k1)s  non reel.
+ type scalaire du CHAM_NO :  %(k1)s  non réel.
 """),
 
 93: _("""
- type scalaire du nume_ddl :  %(k1)s  non reel.
-"""),
-
-94: _("""
- si ncorr=0, les grandeurs doivent etre identiques : %(k1)s , %(k2)s
-"""),
-
-95: _("""
-  ncorr doit etre pair.
-"""),
-
-96: _("""
- gauss -> noeud a faire ...
-"""),
-
-97: _("""
- il faut modele
-"""),
-
-98: _("""
- non programme: %(k1)s
+ type scalaire du NUME_DDL :  %(k1)s  non réel.
 """),
 
 99: _("""
- melange de cham_elem_s et cham_no_s
+ melange de CHAM_ELEM_S et CHAM_NO_S
 """),
 }

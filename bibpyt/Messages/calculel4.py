@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,31 +23,38 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- option non operationnelle: seule l'option couronne est a utiliserdans le cas ou on emploie le mot cle theta_3d .
+ option non opérationnelle:
+ seule l'option COURONNE est à utiliser dans le cas où
+ on emploie le mot clé THETA_3D
 """),
 
 2: _("""
- il faut donner 3 composantes de la direction,la 3-eme nulle
+ il faut donner 3 composantes de la direction
+ la 3ème nulle
 """),
 
 3: _("""
- il faut donner la direction de propagation en 2d    la direction par defaut n'existe plus
+ il faut donner la direction de propagation en 2D
+ la direction par defaut n'existe plus
 """),
 
 4: _("""
- option non operationnelle: seule l'option couronne est a utiliserdans le cas ou on emploie le mot cle theta_2d .
+ option non opérationnelle:
+ seule l'option COURONNE est à utiliser dans le cas où
+ on emploie le mot clé THETA_2D
 """),
 
 5: _("""
- option inexistante: seule l'option bande est a utiliser dans le cas ou on emploie le mot cle theta_bande .
+ option inexistante:
+ seule l'option BANDE est à utiliser dans le cas ou on emploie le mot clé THETA_BANDE .
 """),
 
 6: _("""
- la normale n'est pas orthogonale a la tangente a l'origine
+ la normale n'est pas orthogonale à la tangente à l'origine
 """),
 
 7: _("""
- la normale n'est pas orthogonale a la tangente a l'extremite
+ la normale n'est pas orthogonale à la tangente à l'extremite
 """),
 
 8: _("""
@@ -58,66 +65,38 @@ cata_msg={
  creation de la table  %(k1)s
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 13: _("""
  probleme a la recuperation d'un champ
 """),
 
-
-
-
-
-
-
-
-
-
-
 16: _("""
- dans le cas d'une sd resultat de type dyna_trans, le mot-cle excit est obligatoire.
+ dans le cas d'une SD RESULTAT de type DYNA_TRANS,
+ le mot-cle EXCIT est obligatoire.
 """),
 
 17: _("""
- pour un resultat de type mode_meca l option de calcul doit etre k_g_moda.
+ pour un resultat de type MODE_MECA,
+ l option de calcul doit etre K_G_MODA.
 """),
 
-
-
-
-
-
 19: _("""
- le mot cle 'fissure' est obligatoire avec l'option  %(k1)s
+ le mot cle 'FISSURE' est obligatoire avec l'option  %(k1)s
 """),
 
 20: _("""
- le mot cle 'fond_fiss' est obligatoire avec l'option  %(k1)s
+ le mot cle 'FOND_FISS' est obligatoire avec l'option  %(k1)s
 """),
 
 21: _("""
- mot cle fond_fiss obligatoire pour l option  %(k1)s
+ mot cle FOND_FISS obligatoire pour l option  %(k1)s
 """),
 
 22: _("""
- champ theta calcule automatiquement
+ champ THETA calcule automatiquement
 """),
 
 23: _("""
- pour l option  %(k1)s (3d local) utiliser le mot cle theta_lagr
+ pour l option  %(k1)s (3d local) utiliser le mot cle THETA_LAGR
 """),
 
 24: _("""
@@ -125,7 +104,7 @@ cata_msg={
 """),
 
 25: _("""
- mot cle propagation utilise seulement pour le calcul de g avec propagation lagrangienne
+ mot cle PROPAGATION utilisé seulement pour le calcul de G avec propagation lagrangienne
 """),
 
 26: _("""
@@ -133,11 +112,11 @@ cata_msg={
 """),
 
 27: _("""
- le degre des polynomes de legendre doit etre inferieur ou egal au nombre de noeuds du fond de fissure avec la methode theta-lagrange
+ le degré des polynomes de legendre doit etre inferieur ou egal au nombre de noeuds du fond de fissure avec la methode theta-lagrange
 """),
 
 28: _("""
- le lissage de g doit etre de type legendre si le lissage de theta est de type legendre
+ le lissage de G doit etre de type LEGENDRE si le lissage de THETA est de type LEGENDRE
 """),
 
 29: _("""
@@ -220,11 +199,6 @@ cata_msg={
  methode zac : accommodation et chargement non radial --> methode non appliquable
 """),
 
-
-
-
-
-
 53: _("""
  longueurs des modes locaux incompatibles entre eux.
 """),
@@ -293,37 +267,6 @@ cata_msg={
  On ne trouve pas la variable de commande :  %(k1)s  pour la maille:  %(k2)s
 """),
 
-
-
-
-
-73: _("""
- ! ligrel incompatible avec modele !
-"""),
-
-
-
-
-
-
-
-
-75: _("""
- ! pb acces simultane carth/t !
-"""),
-
-76: _("""
- ! pb etenca cartf !
-"""),
-
-77: _("""
- ! pb etenca carth !
-"""),
-
-78: _("""
- ! pb etenca cartt !
-"""),
-
 79: _("""
  La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.
 """),
@@ -370,10 +313,6 @@ cata_msg={
 Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les trg aient au moins un sommet interieur.
 """),
 
-90: _("""
- erreur programmeur
-"""),
-
 91: _("""
  on ne trouve pas de routine te0npq npq doit etre compris entre 1 et 600 ici : npq = %(k1)s
 """),
@@ -391,22 +330,26 @@ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les 
 """),
 
 95: _("""
- erreur de programmation :on ne trouve pas dans les arguments de la routine calcul de champ a associer au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
+ erreur de programmation :
+ on ne trouve pas dans les arguments de la routine calcul de champ a associer au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
 """),
 
 96: _("""
- erreur de programmation :on n'a pas pu extraire toutes les cmps voulues du champ global associe au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
+ erreur de programmation :
+ on n'a pas pu extraire toutes les cmps voulues du champ global associe au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
 """),
 
 97: _("""
- ! tout = oui obligatoire avec  %(k1)s !
+ TOUT = OUI obligatoire avec  %(k1)s
 """),
 
 98: _("""
- attention : on n'a pas pu recuperer le parametre theta dans le resultat  %(k1)s , valeur prise pour theta: 0.57
+ on n'a pas pu récupérer le paramètre THETA dans le résultat  %(k1)s 
+ valeur prise pour THETA: 0.57
 """),
 
 99: _("""
- attention : recuperation d'une valeur de theta illicite dans le resultat  %(k1)s valeur prise pour theta: 1.
+ récupération d'une valeur de THETA illicite dans le résultat  %(k1)s
+ valeur prise pour THETA: 1.
 """),
 }

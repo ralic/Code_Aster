@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,10 +30,6 @@ PRE_GIBI()
 
 MAILLAG1=LIRE_MAILLAGE()
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('SURFTOT'),),);
-
-
 #----------------------------------------
 # epaisseur (suivant x)
 lx = 16.
@@ -57,8 +53,8 @@ hy = ly/ny
 hx = lx/nx
 
 # creation des noeuds servant a bloquer les modes rigides
-MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
-                 MAILLAGE=MAILLAG2,
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                 MAILLAGE=MAILLAG1,
                  CREA_GROUP_NO=(
                                  _F(NOM='A1',OPTION='ENV_SPHERE',POINT=(lx-a,      -hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
                                  _F(NOM='A2',OPTION='ENV_SPHERE',POINT=(lx-a,       hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
@@ -67,10 +63,10 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                 ),
                  );
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=(_F(GROUP_MA=('SURFTOT',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM',),
+                              MODELISATION='C_PLAN',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),),);  
@@ -95,7 +91,7 @@ CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
 MAT=DEFI_MATERIAU(ELAS=_F(E = 2.0601E5, NU = 0.3, ALPHA = 0.),
                   ECRO_LINE=_F(  D_SIGM_EPSI = 0., SY = 808.344)
                          )
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=MAT,

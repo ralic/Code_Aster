@@ -5,7 +5,7 @@
       CHARACTER*8       LNOCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
             CALL DISMOI('F','PROF_CHNO' , NUM,'CHAM_NO',IBID,PRNO ,IER)
             CALL DISMOI('F','NUM_GD'    , NUM,'CHAM_NO',GD  ,K8B  ,IER)
          ELSE
-            CALL U2MESS('F','ALGELINE_29')
+            CALL ASSERT(.FALSE.)
          ENDIF
          NEC = NBEC( GD )
          IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')

@@ -24,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -430,7 +430,7 @@ C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
      &              NOMRES,VALRES,CODRET,'FM')
         IF (ELASCO.EQ.1) THEN
           MULTIC = 0
-          IF (GRILLE) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(.NOT.GRILLE)
 
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           DM(1,1) = VALRES(1)

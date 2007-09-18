@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,10 @@ OPTION__
         PDEPLAR  DEPL_R
         PCONTRR  SIEF_R
         PVARCPR  VARI_R
-        PDLAGTE  TEMP_R
+        PVARCMR  VARI_R
+       << PVARCMR : ATTENTION IL NE S'AGIT PAS DE LA TEMPERATURE 
+                    EN TPS(-), MAIS DE LA DERIVEE LAGRANGIENNE 
+                    DE LA TEMPERATURE >>
    OUT__
 PVECTUR VDEP_R RESL__
 

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
       DO 20 I = 2 , NBF
          FVALE(I) = NOMTEN(I)//'           .VALE'
          CALL JELIRA ( FVALE(I), 'LONMAX', NBPTS, K8B )
-         IF ( NBPTS .NE. NBPTOT ) CALL U2MESS('F','PREPOST4_48')
+         IF ( NBPTS .NE. NBPTOT ) CALL U2MESS('F','FATIGUE1_21')
   20  CONTINUE
       CALL WKVECT ( '&&POFAPE.ORDO','V V R',NBPTOT/2*NBF, IORDO )
       CALL JEVEUO ( FVALE(1), 'L', IFONC1 )
@@ -94,7 +94,7 @@ C
          CALL JEVEUO ( FVALE(I), 'L', IFONC )
          DO 35 J = 1 , NBPTOT/2
             IF(ZR(IFONC+J-1).NE.ZR(IFONC1+J-1)) THEN
-               CALL U2MESS('F','PREPOST4_48')
+               CALL U2MESS('F','FATIGUE1_21')
             ENDIF
             ZR(IORDO+(J-1)*NBF+I-1) = ZR(IFONC+NBPTOT/2+J-1)
   35     CONTINUE
@@ -172,7 +172,7 @@ C         ---------------------------------------
       IF ( KDOMM .EQ. 'WOHLER' ) THEN
          PHENO = 'FATIGUE'
          CALL RCCOME ( NOMMAT, PHENO, PHENOM, CODRET(1) )
-         IF ( CODRET(1) .EQ. 'NO' ) CALL U2MESS('F','PREPOST_2')
+         IF ( CODRET(1) .EQ. 'NO' ) CALL U2MESS('F','FATIGUE1_24')
          CARA = 'WOHLER'
          CALL RCPARE ( NOMMAT, PHENO, CARA, CODWO )
          CARA = 'A_BASQUI'
@@ -194,7 +194,7 @@ C
 C
       ELSEIF ( KDOMM .EQ. ' ' ) THEN
       ELSE
-         CALL U2MESS('F','PREPOST4_49')
+         CALL U2MESS('F','FATIGUE1_20')
       ENDIF
 C
       CALL JEDETR ( '&&POFAPE.ORDO' )

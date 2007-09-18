@@ -1,7 +1,7 @@
       SUBROUTINE RNOMAT(ICESD,ICESL,ICESV, IMAP, NOMCRI, ADRMA, JTYPMA,
      &                  K, OPTIO, VALA, VALB, COEFPA, NOMMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,11 +83,10 @@ C     I       CALCUL DE LA FATIGUE AUX POINTS DE GAUSS      I
 C     I_____________________________________________________I
 
          CALL CESEXI('C',ICESD,ICESL,IMAP,1,1,1,IAD)
-         IF (IAD .LE. 0) THEN
-            CALL U2MESS('F','PREPOST4_61')
-         ELSE
-            NOMMAT = ZK8(ICESV - 1 + IAD)
-         ENDIF
+CC VERIFICATION HORS BORNES DEFINIES DANS CESMAT
+CC OU COMPOSANTE NON AFFECTEE
+         CALL ASSERT(IAD .GT. 0)
+         NOMMAT = ZK8(ICESV - 1 + IAD)
 
       ELSEIF ( OPTIO .EQ. 'DOMA_NOEUD' ) THEN
 
@@ -105,15 +104,14 @@ C     I_____________________________________________________I
          IF (DIMK .EQ. 'VOLU') THEN
             K = K + 1
             CALL CESEXI('C',ICESD,ICESL,NUMA,1,1,1,IAD)
-            IF (IAD .LE. 0) THEN
-               CALL U2MESS('F','PREPOST4_61')
+CC VERIFICATION HORS BORNES DEFINIES DANS CESMAT
+CC OU COMPOSANTE NON AFFECTEE
+            CALL ASSERT(IAD .GT. 0)
+            IF ( (K .GT. 1) .AND.
+     &           (NOMMAT .NE. ZK8(ICESV - 1 + IAD)) ) THEN
+               CALL U2MESS('F','FATIGUE1_33')
             ELSE
-               IF ( (K .GT. 1) .AND.
-     &              (NOMMAT .NE. ZK8(ICESV - 1 + IAD)) ) THEN
-                  CALL U2MESS('F','PREPOST4_62')
-               ELSE
-                  NOMMAT = ZK8(ICESV - 1 + IAD)
-               ENDIF
+               NOMMAT = ZK8(ICESV - 1 + IAD)
             ENDIF
          ENDIF
 
@@ -125,7 +123,7 @@ C (ON PASSE A LA SUIVANTE)
 
       CALL RCCOME (NOMMAT,'CISA_PLAN_CRIT',PHENOM,CODRET)
       IF(CODRET(1:2) .EQ. 'NO') THEN
-        CALL U2MESS('F','PREPOST4_63')
+        CALL U2MESS('F','FATIGUE1_63')
       ENDIF
 
 C 2.1 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE MATAKE POUR
@@ -135,18 +133,18 @@ C     LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                                 'MATAKE_A',VALA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_64')
+            CALL U2MESS('F','FATIGUE1_64')
          ENDIF
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                                 'MATAKE_B',VALB,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_65')
+            CALL U2MESS('F','FATIGUE1_65')
          ENDIF
 
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                        'COEF_FLE',COEFPA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_66')
+            CALL U2MESS('F','FATIGUE1_66')
          ENDIF
 
 C 2.2 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE DANG VAN POUR
@@ -156,19 +154,19 @@ C     LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'D_VAN_A ',VALA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_67')
+            CALL U2MESS('F','FATIGUE1_67')
          ENDIF
 
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'D_VAN_B ',VALB,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_68')
+            CALL U2MESS('F','FATIGUE1_68')
          ENDIF
 
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'COEF_CIS',COEFPA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_69')
+            CALL U2MESS('F','FATIGUE1_69')
          ENDIF
       ENDIF
 
@@ -179,18 +177,18 @@ C     POUR LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'MATAKE_A',VALA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_70')
+            CALL U2MESS('F','FATIGUE1_70')
          ENDIF
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'MATAKE_B',VALB,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_71')
+            CALL U2MESS('F','FATIGUE1_71')
          ENDIF
 
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'COEF_FLE',COEFPA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_72')
+            CALL U2MESS('F','FATIGUE1_72')
          ENDIF
       ENDIF
 
@@ -201,18 +199,18 @@ C     POUR LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'D_VAN_A ',VALA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_73')
+            CALL U2MESS('F','FATIGUE1_73')
          ENDIF
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'D_VAN_B ',VALB,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_74')
+            CALL U2MESS('F','FATIGUE1_74')
          ENDIF
 
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'COEF_CIS',COEFPA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_72')
+            CALL U2MESS('F','FATIGUE1_72')
          ENDIF
       ENDIF
 
@@ -223,7 +221,7 @@ C     POUR LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'FATSOC_A',VALA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_75')
+            CALL U2MESS('F','FATIGUE1_75')
          ENDIF
 
          VALB = 1.0D0
@@ -231,7 +229,7 @@ C     POUR LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,K8B,R8B,1,
      &                      'COEF_CIS',COEFPA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL U2MESS('F','PREPOST4_72')
+            CALL U2MESS('F','FATIGUE1_72')
          ENDIF
 
       ENDIF

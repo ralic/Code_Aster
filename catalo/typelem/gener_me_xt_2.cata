@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,88 +19,47 @@
 GENER_ME_XT_2
 TYPE_GENE__
 
-ENTETE__ ELEMENT__ MECA_XT_FACE3     MAILLE__ TRIA6
+%  CATALOGUES DES ELEMENTS 3D X-FEM CRACKTIP DE BORD SANS CONTACT (LINEAIRES ET QUADRATIQUES)
+
+ENTETE__ ELEMENT__ MECA_XT_FACE3     MAILLE__ TRIA3
    ELREFE__  TR3       GAUSS__  RIGI=COT3   FPG3=FPG3
-   ATTRIBUT__  BORD=OUI
-   ENS_NOEUD__  EN2     =     4  5  6
-   ENS_NOEUD__  EN1     =     1  2  3  
-ENTETE__ ELEMENT__ MECA_XT_FACE4     MAILLE__ QUAD8
+   ATTRIBUT__  BORD=OUI  XFEM=XT
+ENTETE__ ELEMENT__ MECA_XT_FACE4     MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4
    ELREFE__  TR3       GAUSS__  RIGI=COT3   FPG3=FPG3
-   ATTRIBUT__  BORD=OUI
-   ENS_NOEUD__  EN2     =     5  6  7  8
-   ENS_NOEUD__  EN1     =     1  2  3  4  
+   ATTRIBUT__  BORD=OUI  XFEM=XT
 ENTETE__ ELEMENT__ MECA_XT_FACE6     MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
-   ATTRIBUT__  BORD=OUI
-   ENS_NOEUD__  EN1     =     1  2  3   4  5  6
+   ATTRIBUT__  BORD=OUI  XFEM=XT
 ENTETE__ ELEMENT__ MECA_XT_FACE8     MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG9
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
-   ATTRIBUT__  BORD=OUI
-   ENS_NOEUD__  EN1     =      1  2  3  4  5  6  7  8
+   ATTRIBUT__  BORD=OUI  XFEM=XT
 
 
 MODE_LOCAL__
-    DDL_MECA = DEPL_R   ELNO__ DIFF__
-                                 EN1   (DCX     DCY      DCZ      E1X     E1Y      E1Z
+    DDL_MECA = DEPL_R   ELNO__ IDEN__  (DCX     DCY      DCZ      E1X     E1Y      E1Z
                                         E2X     E2Y      E2Z      E3X     E3Y      E3Z
                                         E4X     E4Y      E4Z      )
-                                 EN2   ()
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
-    EGTHETA  = G        ELEM__         (GTHETA   )
-    CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    ERAYONM  = NEUT_R   ELEM__         (X1       )
-    ECASECT  = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      )
-    CNUMMOD  = NUMMOD   ELEM__         (NUM      )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
-    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
-    CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
-                                        Z        )
-    CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA  )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6 ) 
-    N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
-                                        X7       X8       X9       )
-    G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
-                                        X7       X8       X9       X10      X11      X12      
-                                        X13      X14      X15      X16      X17      X18       
-                                        X19      X20      X21      X22      X23      X24      
-                                        X25      X26      X27       )
     E1NEUTR = NEUT_R    ELEM__         (X1       )
     E6NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6      )
-    E6NEUTR = NEUT_R    ELEM__         (X1       X2       X3       X4       X5       X6       )
     E9NEUTI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9  )
     E18NEUI = NEUT_I    ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18    )
-    E20NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18 
-                                        X19      X20   )
     E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       )
-    E30NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18 
-                                        X19      X20      X21      X22      X23      X24 
-                                        X25      X26      X27      X28      X29      X30 )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -124,10 +83,6 @@ OPTION__
     CHAR_MECA_PRES_R    36    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E9NEUTR  PPINTTO  E18NEUI  PCNSETO
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
-    DEPL_POST_XFEM      515   IN__   E18NEUI PCNSETO  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  E6NEUTI PHEAVTO
-                                     E9NEUTI  PLONCHA  E9NEUTR PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST
-                              OUT__  E30NEUTR PDEXFEM
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E9NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
                                      E1NEUTR  PCRITER

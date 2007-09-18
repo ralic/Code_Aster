@@ -1,6 +1,6 @@
       SUBROUTINE NUDEEQ(PRCHNO,NEQ,GDS,IDDLAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,8 +148,7 @@ C                   LIGREL I (CHANGE DE SIGNE).
                 IEQ = ZI(IANUEQ-1+IDDL)
 
                 IF (I.EQ.1) THEN
-                  IF ((NBNL.GT.0) .AND. (IEQ.NE.IDDL)) CALL U2MESS('F','
-     &CALCULEL_8')
+                  CALL ASSERT((NBNL.LE.0) .OR. (IEQ.EQ.IDDL))
                   ZI(IADEEQ-1+2* (IEQ-1)+1) = J
                   ZI(IADEEQ-1+2* (IEQ-1)+2) = K
                   ZI(IADELG-1+IEQ) = 0
@@ -198,7 +197,7 @@ C     -------------------------------------------------------
           END IF
    50   CONTINUE
    60 CONTINUE
-      IF (IER.GT.0) CALL U2MESS('F','CALCULEL_43')
+      CALL ASSERT(IER.LE.0)
       CALL JEDETR('&&NUEFFE.LNOBLOQ')
 
 

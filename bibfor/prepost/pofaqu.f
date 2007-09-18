@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
       DO 20 I = 2 , NBF
          FVALE(I) = NOMTEN(I)//'           .VALE'
          CALL JELIRA ( FVALE(I), 'LONMAX', NBPTS, K8B )
-         IF ( NBPTS .NE. NBPTOT ) CALL U2MESS('F','PREPOST4_48')
+         IF ( NBPTS .NE. NBPTOT ) CALL U2MESS('F','FATIGUE1_21')
   20  CONTINUE
       CALL WKVECT ( '&&POFAQU.ORDO','V V R',NBPTOT/2*NBF, IORDO )
       CALL JEVEUO ( FVALE(1), 'L', IFONC1 )
@@ -88,7 +88,7 @@ C
          CALL JEVEUO ( FVALE(I), 'L', IFONC )
          DO 35 J = 1 , NBPTOT/2
             IF (ZR(IFONC+J-1).NE.ZR(IFONC1+J-1)) THEN
-                CALL U2MESS('F','PREPOST4_48')
+                CALL U2MESS('F','FATIGUE1_21')
             ENDIF
             ZR(IORDO+(J-1)*NBF+I-1) = ZR(IFONC+NBPTOT/2+J-1)
   35     CONTINUE
@@ -100,21 +100,21 @@ C
 C
       FVALE(1) = NOMP//'           .VALE'
       CALL JELIRA ( FVALE(1), 'LONMAX', NBPTS, K8B )
-      IF ( NBPTS .NE. NBPTOT*2 ) CALL U2MESS('F','PREPOST4_50')
+      IF ( NBPTS .NE. NBPTOT*2 ) CALL U2MESS('F','FATIGUE1_22')
       CALL WKVECT ( '&&POFAQU.DEFPLA', 'V V R', NBPTOT, IDEFP )
       CALL JEVEUO ( FVALE(1), 'L', IFONC )
       DO 45 J = 0 , NBPTOT-1
-         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL U2MESS('F','PREPOST4_50')
+         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL U2MESS('F','FATIGUE1_22')
          ZR(IDEFP+J) = ZR(IFONC+NBPTOT+J)
   45  CONTINUE
 C
       FVALE(1) = NOMT//'           .VALE'
       CALL JELIRA ( FVALE(1), 'LONMAX', NBPTS, K8B )
-      IF ( NBPTS .NE. NBPTOT*2 ) CALL U2MESS('F','PREPOST4_51')
+      IF ( NBPTS .NE. NBPTOT*2 ) CALL U2MESS('F','FATIGUE1_23')
       CALL WKVECT ( '&&POFAQU.TEMP', 'V V R', NBPTOT, ITEMP )
       CALL JEVEUO ( FVALE(1), 'L', IFONC )
       DO 46 J = 0 , NBPTOT-1
-         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL U2MESS('F','PREPOST4_51')
+         IF (ZR(IFONC+J).NE.ZR(IFONC1+J)) CALL U2MESS('F','FATIGUE1_23')
          ZR(ITEMP+J) = ZR(IFONC+NBPTOT+J)
   46  CONTINUE
 C
@@ -138,7 +138,7 @@ C         -----------------------------------------------------
          CALL FGLEMA ( NBF, NBPTOT, ZR(IORDO), ZR(IDEFP), ZR(ITEMP),
      &                 NOMMAT, ZR(IVDOME) )
       ELSE
-         CALL U2MESS('F','PREPOST4_49')
+         CALL U2MESS('F','FATIGUE1_20')
       ENDIF
 C
       DO 50 I = 1 , NBPTOT

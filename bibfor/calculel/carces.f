@@ -1,6 +1,6 @@
       SUBROUTINE CARCES(CARTZ,TYPCES,CESMOZ,BASE,CESZ,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,8 +202,8 @@ C     ------------------------------------------
           IEQ = DEB1 - 1 + ICO
 
           CMP2 = ZI(JCRCMP-1+CMP)
-          IF (CMP2.LE.0) CALL U2MESS('F','CALCULEL_2')
-          IF (CMP2.GT.NCMP) CALL U2MESS('F','CALCULEL_8')
+          CALL ASSERT(CMP2.GT.0)
+          CALL ASSERT(CMP2.LE.NCMP)
 
           DO 100,IPT = 1,NBPT
             DO 90,ISP = 1,NBSP
@@ -233,7 +233,7 @@ C         -- RECOPIE DE LA VALEUR:
               ELSE IF (TSCA.EQ.'K80') THEN
                 ZK80(JCESV-1-IAD) = ZK80(JVALE-1+IEQ)
               ELSE
-                CALL U2MESS('F','CALCULEL_39')
+                CALL ASSERT(.FALSE.)
               END IF
    90       CONTINUE
   100     CONTINUE

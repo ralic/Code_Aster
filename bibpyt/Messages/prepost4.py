@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost4 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,36 +22,20 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- la methode 'taheri_manson' ne peut pas etre utilisee avec l'option %(k1)s
-"""),
-
-2: _("""
- le nom de la fonction  nappe dsigm(depsi,depsimax) doit etre present sous le mot cle 'taheri_nappe'
-"""),
-
-3: _("""
- le nom de la fonctiondsigm(depsi) doit etre present sous le mot cle 'taheri_fonc'
-"""),
-
-4: _("""
- la methode 'taheri_mixte' ne peut pas etre utilisee avec l'option %(k1)s
-"""),
-
 5: _("""
- l'option  %(k1)s n'a  pas ete calculee dans la sd  %(k2)s
+ l'option  %(k1)s n'a pas été calculée pour la SD  %(k2)s
 """),
 
 6: _("""
- le champ " %(k1)s " ( %(k2)s ) n'a pas ete note dans la sd  %(k3)s
+ le champ " %(k1)s " ( %(k2)s ) n'a pas été noté dans la SD  %(k3)s
 """),
 
 7: _("""
- "tube_neuf" n'a de sens que pour une table d'usure existante
+ "TUBE_NEUF" n'a de sens que pour une table d'usure existante
 """),
 
 8: _("""
- angle initial different de -180. degres.
+ angle initial différent de -180. degrés.
 """),
 
 9: _("""
@@ -59,15 +43,15 @@ cata_msg={
 """),
 
 10: _("""
- angle final different de 180. degres.
+ angle final différent de 180. degrés.
 """),
 
 11: _("""
- rayon mobile obligatoire avec             secteur.
+ rayon mobile obligatoire avec secteur.
 """),
 
 12: _("""
- rayon obstacle obligatoire avec           secteur.
+ rayon obstacle obligatoire avec secteur.
 """),
 
 13: _("""
@@ -75,7 +59,7 @@ cata_msg={
 """),
 
 14: _("""
- le nombre de secteurs en sortie est different de celui en entree
+ le nombre de secteurs en sortie est différent de celui en entree
 """),
 
 15: _("""
@@ -119,7 +103,7 @@ cata_msg={
 """),
 
 25: _("""
- option sief_elga non developpee
+ option SIEF_ELGA non developpée
 """),
 
 26: _("""
@@ -186,64 +170,8 @@ cata_msg={
  le champ de  deformations aux noeuds n'existe pas.
 """),
 
-42: _("""
- la donnee d'une courbe de wohler est obligatoire
-"""),
-
-43: _("""
- la donnee du moment spectral d'ordre 4 est obligatoire pour le comptage des pics de contraintes
-"""),
-
-44: _("""
- la valeur du moment spectral d'ordre 0 (lambda_0) est certainement nulle
-"""),
-
-45: _("""
- la valeur du moment spectral d'ordre 2 (lambda_2) est nulle
-"""),
-
-46: _("""
- la valeur du moment spectral d'ordre 4 (lambda_4) est nulle
-"""),
-
 47: _("""
  inst_init plus grand que inst_fin
-"""),
-
-48: _("""
- l'histoire de chargement doit avoir meme discretisation pour toutes les composantes
-"""),
-
-49: _("""
- loi de dommage non compatible
-"""),
-
-50: _("""
- l'histoire de la deformation plastique cumulee doit avoir meme discretisation que l'histoire des contraintes
-"""),
-
-51: _("""
- l'histoire de la temperature doit avoir meme discretisation que l'histoire des contraintes
-"""),
-
-52: _("""
- methode de comptage inconnue
-"""),
-
-53: _("""
- nombre de cycles nul
-"""),
-
-54: _("""
- l'utilisation de manson_coffin est reserve a des histoires de chargements en deformations
-"""),
-
-55: _("""
- la courbe de manson_coffin doit etre donnee dans defi_materiau
-"""),
-
-56: _("""
- les lois de taheri sont reservees pour des chargements en deformations
 """),
 
 57: _("""
@@ -251,79 +179,20 @@ cata_msg={
 """),
 
 58: _("""
- presence de point(s) que dans un secteur.
+ présence de point(s) que dans un secteur.
 """),
 
 59: _("""
- aucun cercle n'est  circonscrit aux quatre points.
+ aucun cercle n'est circonscrit aux quatre points.
 """),
 
 60: _("""
- le decalage se trouve necessairement cote revetement. le decalage doit etre negatif
-"""),
-
-61: _("""
- hors bornes definies dans cesmat ou cmp non affectee.
-"""),
-
-62: _("""
- les mailles attachees au noeud traite ne sont pas affectees du meme materiau.
-"""),
-
-63: _("""
- pour calculer le dommage max il faut renseigner cisa_plan_crit dans la commande defi_materiau
-"""),
-
-64: _("""
- nous ne pouvons  pas recuperer la valeur du parametre a du critere de matake, cf. commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-65: _("""
- nous ne pouvons  pas recuperer la valeur du parametre b du critere de matake, cf. commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-66: _("""
- nous ne pouvons pas recuperer la valeur du coefficient de passage flexion-torsion, cf. commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-67: _("""
- nous ne pouvons  pas recuperer la valeur du parametre a du critere de dang_van_modi_ac, cf. commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-68: _("""
- nous ne pouvons  pas recuperer la valeur du parametre b du critere de dang_van_modi_ac, cf. commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-69: _("""
- nous ne pouvons  pas recuperer la valeur du coefficient de passage cisaillement-traction, cf. commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-70: _("""
- nous ne pouvons  pas recuperer la valeur du parametre a du critere domm_maxi, de la commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-71: _("""
- nous ne pouvons  pas recuperer la valeur du parametre b du critere domm_maxi, de la commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-72: _("""
- nous ne pouvons pas recuperer la valeur du coefficient de passage cisaillement-traction, de la commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-73: _("""
- nous ne pouvons  pas recuperer la valeur du parametre a du critere dang_van_modi_av, de la commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-74: _("""
- nous ne pouvons  pas recuperer la valeur du parametre b du critere dang_van_modi_av, de la commande:  defi_materiau, operande: cisa_plan_crit.
-"""),
-
-75: _("""
- nous ne pouvons  pas recuperer la valeur du parametre a du critere fatemi_socie, de la commande:  defi_materiau, operande: cisa_plan_crit.
+ le décalage se trouve nécessairement coté revêtement
+ le décalage doit être négatif
 """),
 
 76: _("""
- le champ demande n'est pas prevu
+ le champ demandé n'est pas prévu
 """),
 
 77: _("""
@@ -338,17 +207,6 @@ cata_msg={
  probleme de convergence pour calculer la nouvelle carte de taille
 """),
 
-
-
-
-
-
-
-
-81: _("""
- lunule, bug !
-"""),
-
 82: _("""
  type  %(k1)s  non implante.
 """),
@@ -358,7 +216,7 @@ cata_msg={
 """),
 
 84: _("""
- pas d'informations dans le "resu_gene" sur l'option "choc".
+ pas d'informations dans le "RESU_GENE" sur l'option "choc".
 """),
 
 85: _("""
@@ -372,29 +230,24 @@ cata_msg={
 87: _("""
   ***** arret du calcul *****
 """),
-
-88: _("""
- nno > 27
-"""),
-
 89: _("""
  type non traite  %(k1)s
 """),
 
 90: _("""
- les tables tabl_meca_rev et tabl_meca_mdb n ont pas les memes dimensions
+ les tables TABL_MECA_REV et TABL_MECA_MDB n'ont pas les mêmes dimensions
 """),
 
 91: _("""
- les tables n ont pas les memes instants de calculs
+ les tables n'ont pas les mêmes instants de calculs
 """),
 
 92: _("""
- les tables n ont pas les memes dimensions
+ les tables n'ont pas les mêmes dimensions
 """),
 
 93: _("""
- volume use trop grand pour la modelisation
+ volume usé trop grand pour la modélisation
 """),
 
 94: _("""
@@ -420,19 +273,8 @@ composé de 0 sous-objet !
 
 97: _("""
  Erreur Utilisateur :
- La maille de peau : %(k1)s ne peut pas etre réorientée.
+ La maille de peau : %(k1)s ne peut pas être réorientée.
  Car elle est inserrée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
-
 """),
-
-
-
-
-
-
-
-
-
-
 
 }

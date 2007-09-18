@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ C     SI PCOMPOR N'EST PAS FOURNI : NCMP_DYN = 0
 C     ------------------------------------------------
       CALL TECACH('ONN','PCOMPOR',2,ITAB,IRET)
       IF (ITAB(1).NE.0) THEN
-        IF (ITAB(2).NE.1) CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(ITAB(2).EQ.1)
         JCOMPO=ITAB(1)
         READ (ZK16(JCOMPO-1+1),'(I16)') NBVARI
       ELSE
@@ -94,7 +94,7 @@ C     ------------------------------------------------------------
           NPGH = 3
           IF (NOMTE.EQ.'MEGRDKT') THEN
             NPGH=1
-            IF (NBCOU.NE.1)CALL U2MESS('F','CALCULEL_13')
+            CALL ASSERT(NBCOU.EQ.1)
           END IF
           ZI(JDCEL-1+1) = NPGH*NBCOU
         ELSE

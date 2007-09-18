@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -137,7 +137,7 @@ C     --- REMPLISSAGE DU .PROL ---
       LFON = LVAR + NBINST
 
       CALL JENONU(JEXNOM(RESU//'.NOVA',NOMACC),IACCES)
-      IF (IACCES.EQ.0) CALL U2MESS('F','UTILITAI_97')
+      CALL ASSERT(IACCES.NE.0)
       CALL JEVEUO(JEXNUM(RESU//'.TAVA',IACCES),'L',IATAVA)
       NOMOBJ = ZK8(IATAVA-1+1)
       CALL JEVEUO(RESU//NOMOBJ,'L',KINST)
@@ -203,14 +203,11 @@ C           -------------------------
             VALR (1) = RVAL
             VALR (2) = ZR(KINST+NBORDR-1)
             CALL U2MESG('F', 'UTILITAI6_18',0,' ',0,0,2,VALR)
-            CALL U2MESS('F','UTILITAI_67')
           END IF
 
           CALL RSUTRO(RESU,I1,IP1,IERR1)
           CALL RSUTRO(RESU,I2,IP2,IERR2)
-          IF (IERR1+IERR2.GT.0) THEN
-            CALL U2MESS('F','UTILITAI_98')
-          END IF
+          CALL ASSERT(IERR1+IERR2.LE.0)
           RBASE = ZR(KINST-1+I2) - ZR(KINST-1+I1)
 
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
@@ -325,14 +322,11 @@ C           -------------------------
             VALR (1) = RVAL
             VALR (2) = ZR(KINST+NBORDR-1)
             CALL U2MESG('F', 'UTILITAI6_18',0,' ',0,0,2,VALR)
-            CALL U2MESS('F','UTILITAI_67')
           END IF
 
           CALL RSUTRO(RESU,I1,IP1,IERR1)
           CALL RSUTRO(RESU,I2,IP2,IERR2)
-          IF (IERR1+IERR2.GT.0) THEN
-            CALL U2MESS('F','UTILITAI_98')
-          END IF
+          CALL ASSERT(IERR1+IERR2.LE.0)
           RBASE = ZR(KINST-1+I2) - ZR(KINST-1+I1)
 
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
@@ -355,7 +349,7 @@ C           -------------------------
           IF (RBASE.EQ.0.0D0) THEN
             CALL UTCH19(CH1,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,
      &                  TYPE,VALR1,VALC1,IRET)
-            IF (IRET.NE.0) CALL U2MESS('F','UTILITAI_99')
+            CALL ASSERT(IRET.EQ.0)
             ZR(LVAR+IORDR) = RVAL
             IF (TYPE.EQ.'R') THEN
               ZR(LFON+IORDR) = VALR1

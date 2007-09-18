@@ -1,6 +1,6 @@
       SUBROUTINE METEMP(MAILLA,TEMPE,EXITIM,TIME,CHTREF,THVRAI,CHTEMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C           ----------------------------------------------
             CALL COPISD('CHAMP_GD','V',CH19,CHTEMP(1:19))
             CALL JEDETR(CHTEMP(1:19)//'.TITR')
          ELSE
-            CALL U2MESS('F','UTILITAI_67')
+            CALL ASSERT(.FALSE.)
          END IF
       ELSE
          THVRAI = .FALSE.

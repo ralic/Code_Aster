@@ -1,4 +1,4 @@
-# MODIF  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,26 +22,19 @@ DEBUT(CODE=_F(NOM='HSNV132B', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
               
 PRE_GIBI();
 
-MAILLE=LIRE_MAILLAGE(INFO=1,);
+MAILLAG1=LIRE_MAILLAGE(INFO=1,);
 
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,);
-
-MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
-                    MAILLAGE=MAILLAGE,
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=(_F(GROUP_MA='LIGINF',),
                                    _F(GROUP_MA='SURF',),
-                                   ),);
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
-                       LINE_QUAD=_F(GROUP_MA=('SURF','LIG4','LIG23',),),);
-
-#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MAILLAG2,))   
+                                   ),);  
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
 #--------------------------------------------------------------------
 
-MOTH=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MOTH=AFFE_MODELE(MAILLAGE=MAILLAG1,
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='THERMIQUE',
                          MODELISATION='PLAN',),);
@@ -49,7 +42,7 @@ MOTH=AFFE_MODELE(MAILLAGE=MAILLAG2,
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
                            RHO_CP=0.0,),);
 
-CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                    AFFE=_F(TOUT='OUI',
                            MATER=MATH,),);
 
@@ -76,10 +69,10 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
 
 
 
-MODELE=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
                    AFFE=(_F(GROUP_MA='SURF',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN_XFEM',),),);
+                            MODELISATION='D_PLAN',),),);
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
 LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
@@ -100,7 +93,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             RHO=7800.0,
                             ALPHA=1.282E-05,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA='SURF',MATER=ACIER,),
                        AFFE_VARC=_F( GROUP_MA='SURF',
@@ -141,7 +134,7 @@ UTOT=STAT_NON_LINE(MODELE=MODELEK,
 
 #---------------POST--------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAGE,
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
                        MODELE        = MODELEK,
                        INFO          = 2)
 
@@ -150,7 +143,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),) 
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MAILLAGE_FISS = MA_XFEM,
                         MODELE        = MODELEK,
                         MODELE_VISU   = MOD_VISU,

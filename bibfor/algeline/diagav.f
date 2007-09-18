@@ -1,7 +1,7 @@
       SUBROUTINE DIAGAV(NOMA19,NEQ,TYPVAR,EPS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     ---------------------------------------------
             ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
    50     CONTINUE
         ELSE
-          CALL U2MESS('F','CALCULEL_8')
+          CALL ASSERT(.FALSE.)
         END IF
         GO TO 9998
       END IF
@@ -100,7 +100,7 @@ C     ---------------------------------------------
       DO 30 IBLOC = 1,NBBLOC
         CALL JEVEUO(JEXNUM(NOMA19//'.UALF',IBLOC),'L',IAVALE)
         IDERN = ZI(JSCBL-1+IBLOC+1)
-        IF (IDERN.GT.NEQ) CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(IDERN.LE.NEQ)
         IPREM = ZI(JSCBL-1+IBLOC) + 1
         IF (TYPVAR.EQ.1) THEN
           DO 10 I = IPREM,IDERN
@@ -111,7 +111,7 @@ C     ---------------------------------------------
             ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
    20     CONTINUE
         ELSE
-          CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(.FALSE.)
         END IF
         CALL JELIBE(JEXNUM(NOMA19//'.UALF',IBLOC))
    30 CONTINUE

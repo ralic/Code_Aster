@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C     ----------------------------
         ELSE IF (ZI(IALIM1-1+I).EQ.2) THEN
           ZI(IALIM1-1+I)=1
         ELSE IF (ZI(IALIM1-1+I).GT.2) THEN
-          CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(.FALSE.)
         END IF
 12    CONTINUE
 

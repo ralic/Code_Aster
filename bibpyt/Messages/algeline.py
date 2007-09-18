@@ -1,4 +1,4 @@
-#@ MODIF algeline Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algeline Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ cata_msg={
 """),
 
 4: _("""
- valeur inférieure a la tolérance
+ valeur inférieure à la tolérance
 """),
 
 5: _("""
@@ -129,7 +129,7 @@ cata_msg={
 """),
 
 26: _("""
- deplacement radial maximum nul sur la generatrice
+ déplacement radial maximum nul sur la génératrice
 """),
 
 27: _("""
@@ -140,85 +140,72 @@ cata_msg={
      Les resultats du calcul seront a prendre avec circonspection.
 """),
 
-
-29: _("""
- type inconnu
-"""),
-
 30: _("""
- somme des carres des termes diagonaux nulle => critere indefini
+ somme des carrés des termes diagonaux nulle
+ => critère indéfini
 """),
 
 31: _("""
- somme des carres des termes diagonaux negligeable => critere indefini
+ somme des carrés des termes diagonaux négligeable
+ => critere indéfini
 """),
 
 32: _("""
- cham_cine /= o. sur des ddls non elimines.
+ CHAM_CINE différent de zéro sur des DDL non éliminés.
 """),
 
 33: _("""
- la carte des caracteristiques geometriques des elements de poutre n existe pas
+ la carte des caractéristiques géometriques des éléments de poutre n'existe pas
 """),
 
 34: _("""
- caracteristiques geometriques elementaires de poutre non definies pour la maille  %(k1)s 
+ caractéristiques géométriques élémentaires de poutre non définies pour la maille  %(k1)s 
 """),
 
 35: _("""
- l une ou l autre des composantes <r1> et <r2> n existe pas dans le champ de la grandeur
+ l'une ou l'autre des composantes <R1> et <R2> n'existe pas dans le champ de la grandeur
 """),
 
 36: _("""
- la section de l element de poutre considere n est pas circulaire
+ la section de l'élément de poutre considéré n'est pas circulaire
 """),
 
 37: _("""
- rayon exterieur nul a l une ou l autre des extremites de l element considere
+ rayon extérieur nul à l'une ou l'autre des extrémités de l'élément considéré
 """),
 
 38: _("""
- le rayon exterieur n est pas constant sur l element considere
-"""),
-
-39: _("""
- arret justifie par le message ci-dessus.
-"""),
-
-40: _("""
- option de calcul non prevue !
-"""),
-
-41: _("""
- option non prevue en non compile mpi
+ le rayon extérieur n'est pas constant sur l'élément considéré
 """),
 
 42: _("""
- les vitesses reduites des fichiers .70 et .71 ne sont pas coherentes
+ les vitesses réduites des fichiers .70 et .71 ne sont pas cohérentes
 """),
 
 43: _("""
- les vitesses etudiees doivent etre strictement positives. le sens de l ecoulement est defini par le choix de la configuration experimentale grappe2 de reference
+ les vitesses etudiees doivent être strictement positives
+ le sens de l'écoulement est défini par le choix de la configuration experimentale GRAPPE2 de référence
 """),
 
 44: _("""
- seuls les cas d'enceintes circulaires et rectangulaires sont traites.
+ seuls les cas d'enceintes circulaires et rectangulaires sont traités.
 """),
 
 45: _("""
- le nombre total de tubes ne correspond pas a la somme des tubes des groupes d'equivalence 
+ le nombre total de tubes ne correspond pas à la somme des tubes des groupes d'équivalence 
 """),
 
 46: _("""
- la direction des tubes n est pas parallele a l un des axes.
+ la direction des tubes n'est pas parallèle à l'un des axes.
 """),
 
 47: _("""
- la direction des tubes n est la meme que celle de l axe directeur.
+ la direction des tubes n'est la meme que celle de l'axe directeur.
 """),
 
 48: _("""
- les vitesses etudiees doivent toutes etre du meme signe, sinon il y a ambiguite sur les positions d entree/sortie
+ les vitesses étudiées doivent toutes être du meme signe
+ sinon il y a ambiguité sur les positions d entrée/sortie
 """),
 
 49: _("""
@@ -238,39 +225,37 @@ cata_msg={
 """),
 
 53: _("""
- le domaine de recouvrement des coques interne et externe n existe pas
+ le domaine de recouvrement des coques interne et externe n'existe pas
 """),
 
 54: _("""
- la carte des caracteristiques geometriques des elements de coque n existe pas. il faut prealablement affecter ces caracteristiques aux groupes de mailles correspondant aux coques interne et externe, par l operateur <affe_cara_elem>
-"""),
-
-55: _("""
- ce programme suppose que la grandeur "cacoqu" a 2 entiers codes
+ la carte des caractéristiques géometriques des éléments de coque n'existe pas. il faut prealablement affecter ces caracteristiques aux groupes de mailles correspondant aux coques interne et externe, par l operateur <affe_cara_elem>
 """),
 
 56: _("""
- les caracteristiques des elements de coque n ont pas ete affectees distinctement a l un ou(et) l autre des groupes de mailles associes aux coques interne et externe
+ les caractéristiques des éléments de coque n'ont pas été affectées
+ distinctement à l'un ou(et) l'autre des groupes de mailles associés
+ aux coques interne et externe
 """),
 
 57: _("""
- la composante <ep> n existe pas dans le champ de la grandeur
+ la composante <EP> n'existe pas dans le champ de la grandeur
 """),
 
 58: _("""
- pas d epaisseur affectee aux elements de la coque interne
+ pas d'épaisseur affectée aux éléments de la coque interne
 """),
 
 59: _("""
- epaisseur de la coque interne nulle
+ épaisseur de la coque interne nulle
 """),
 
 60: _("""
- pas d epaisseur affectee aux elements de la coque externe
+ pas d'epaisseur affectée aux éléments de la coque externe
 """),
 
 61: _("""
- epaisseur de la coque externe nulle
+ épaisseur de la coque externe nulle
 """),
 
 62: _("""
@@ -278,7 +263,8 @@ cata_msg={
 """),
 
 63: _("""
- incoherence dans la definition de la configuration : jeu annulaire negatif ou nul
+ incohérence dans la définition de la configuration :
+ jeu annulaire négatif ou nul
 """),
 
 64: _("""
@@ -290,7 +276,7 @@ cata_msg={
 """),
 
 66: _("""
- coefficient de type non prevu
+ coefficient de type non prévu
 """),
 
 67: _("""
@@ -302,15 +288,18 @@ cata_msg={
 """),
 
 69: _("""
- la zone d excitation du fluide, de nom  %(k1)s , recoupe une autre zone.
+ la zone d'excitation du fluide, de nom  %(k1)s , recoupe une autre zone.
 """),
 
 70: _("""
- le noeud d application de l excitation doit appartenir a deux mailles, ni plus ni moins
+ le noeud d'application de l'excitation doit appartenir à deux mailles
+ ni plus ni moins
 """),
 
 71: _("""
- le noeud d application de l excitation est situe a la jonction de deux elements de diametres exterieurs differents => ambiguite pour le dimensionnement de l excitation
+ le noeud d'application de l excitation est situe à la jonction
+ de deux éléments de diamètres extérieurs différents
+ => ambiguité pour le dimensionnement de l'excitation
 """),
 
 72: _("""
@@ -321,16 +310,13 @@ cata_msg={
  le cylindre  %(k1)s  n a pas un axe rectiligne
 """),
 
-74: _("""
- erreur dans carces
-"""),
-
 75: _("""
- la composante  n'est pas dans le chamelem
+ la composante n'est pas dans le CHAM_ELEM
 """),
 
 76: _("""
- resolution impossible matrice singuliere, peut etre a cause des erreurs d arrondis
+ résolution impossible matrice singulière
+ peut être à cause des erreurs d'arrondis
 """),
 
 77: _("""
@@ -338,11 +324,12 @@ cata_msg={
 """),
 
 78: _("""
- ererur dans la recherche des valeurs propres - pas de convergence de l algorithme qr 
+ erreur dans la recherche des valeurs propres
+ pas de convergence de l algorithme QR 
 """),
 
 79: _("""
- le nombre de modes resultats:  %(k1)s  n est pas correct 
+ le nombre de modes résultats:  %(k1)s  n'est pas correct 
 """),
 
 80: _("""
@@ -350,11 +337,11 @@ cata_msg={
 """),
 
 81: _("""
- le cylindre  %(k1)s deborde de l enceinte circulaire
+ le cylindre  %(k1)s déborde de l'enceinte circulaire
 """),
 
 82: _("""
- pas de groupes  de noeuds a creer 
+ pas de groupes de noeuds à créer 
 """),
 
 83: _("""
@@ -378,47 +365,50 @@ cata_msg={
 """),
 
 88: _("""
- un cote de l enceinte est delongueur nulle
+ une cote de l'enceinte est de longueur nulle
 """),
 
 89: _("""
- les quatres sommets de l enceinte ne forment pas un rectangle
+ les quatres sommets de l'enceinte ne forment pas un rectangle
 """),
 
 90: _("""
- le cylindre  %(k1)s  deborde de l enceinte rectangulaire
+ le cylindre  %(k1)s  déborde de l'enceinte rectangulaire
 """),
 
 91: _("""
-  la renumerotation  %(k1)s  est incompatible avec le solveur multi_frontal.
+  la renumérotation  %(k1)s est incompatible avec le solveur multi_frontal.
 """),
 
 92: _("""
- absence de relation de comportement de type <elas> pour le materiau constitutif de la coque interne
+ absence de relation de comportement de type <ELAS> pour le matéiau constitutif de la coque interne
 """),
 
 93: _("""
- absence d un ou de plusieurs parametres de la relation de comportement <elas> pour le materiau constitutif de la coque interne
+ absence d'un ou de plusieurs paramètres de la relation de comportement <ELAS>
+ pour le matériau constitutif de la coque interne
 """),
 
 94: _("""
- valeur du module d young nulle pour le materiau constitutif de la coque interne
+ La valeur du module d'Young est nulle pour le matériau constitutif de la coque interne
 """),
 
 95: _("""
- absence de relation de comportement de type <elas> pour le materiau constitutif de la coque externe
+ absence de relation de comportement de type <ELAS>
+ pour le materiau constitutif de la coque externe
 """),
 
 96: _("""
- absence d un ou de plusieurs parametres de la relation de comportement <elas> pour le materiau constitutif de la coque externe
+ absence d'un ou de plusieurs parametres de la relation de comportement <ELAS>
+ pour le matériau constitutif de la coque externe
 """),
 
 97: _("""
- valeur du module d young nulle pour le materiau constitutif de la coque externe
+ La valeur du module d'Young est nulle pour le matériau constitutif de la coque externe
 """),
 
 98: _("""
- les deux coques interne et externe sont en mouvement pour le  %(k1)s ieme mode.
+ Les deux coques (interne et externe) sont en mouvement pour le  %(k1)s ième mode.
 """),
 
 99: _("""

@@ -8,7 +8,7 @@
       CHARACTER*19        NOMT19
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,7 +178,7 @@ C
             IF ( AD.LT.AM .AND. AM.LT.AF ) THEN
                CALL USVECT ( 1.D0, AD, AM, AF, PROF, DIMOBS, OBSUSE )
             ELSE
-               CALL U2MESS('F','PREPOST4_81')
+               CALL ASSERT(.FALSE.)
             ENDIF
          ENDIF
  9999 CONTINUE

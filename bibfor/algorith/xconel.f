@@ -1,7 +1,7 @@
       SUBROUTINE XCONEL(MOX,CHFIS,BASE,OPT,PARAM,CHGLO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -211,7 +211,7 @@ C
                       ELSE IF (TSCA.EQ.'K80') THEN
                         ZK80(JCESV-1-IAD2) = ZK80(JCESFV-1+IAD1)
                       ELSE
-                        CALL U2MESS('F','CALCULEL2_66')
+                        CALL ASSERT(.FALSE.)
                       END IF                  
                     
                     ENDIF                

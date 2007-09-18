@@ -1,6 +1,6 @@
       SUBROUTINE RCMOM2(FAMI,NNO,JMAT,IRRAP,VALE,E,ITRAC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 17/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,8 +59,6 @@ C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
       INTEGER       LMAT,   LFCT
       PARAMETER    (LMAT=7, LFCT=9)
-      INTEGER            NBPTMS
-      COMMON/ICOELJ/      NBPTMS
 C DEB ------------------------------------------------------------------
       CALL MOYTEM(FAMI,NNO,1,'+',TEMPP)
 

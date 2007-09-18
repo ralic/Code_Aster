@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -264,7 +264,7 @@ C        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
           ELSE IF (NUMC.EQ.-2) THEN
             CALL U2MESK('A','CALCULEL_30', 2 ,VALK)
           ELSE
-            CALL U2MESS('F','CALCULEL_32')
+            CALL ASSERT(.FALSE.)
           END IF
         END IF
 
@@ -285,7 +285,8 @@ C     2- ON REND PROPRES LES LISTES : LPAIN,LCHIN,LPAOU,LCHOU :
 C        EN NE GARDANT QUE LES PARAMETRES DU CATALOGUE DE L'OPTION
 C        QUI SERVENT A AU MOINS UN TYPE_ELEMENT
 C     ---------------------------------------------------------
-      IF (NIN.GT.80) CALL U2MESS('F','CALCULEL_35')
+C     TEST SUR ERREUR PROGRAMMEUR : TROP DE CHAMPS "IN"
+      CALL ASSERT(NIN.LE.80)
       NIN3 = ZI(IAOPDS-1+2)
       NOU3 = ZI(IAOPDS-1+3)
 
@@ -370,8 +371,8 @@ C     -------------------------------------------------
         END IF
         NBELGR = NBELEM(LIGREL,IGR)
         NUMC = NUCALC(OPT,NUTE,0)
-        IF (NUMC.LT.-10) CALL U2MESS('F','CALCULEL_2')
-        IF (NUMC.GT.9999) CALL U2MESS('F','CALCULEL_8')
+        CALL ASSERT(NUMC.GE.-10)
+        CALL ASSERT(NUMC.LE.9999)
 
         IF (NUMC.GT.0) THEN
 

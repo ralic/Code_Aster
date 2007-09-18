@@ -1,6 +1,6 @@
       SUBROUTINE CHLICI(CHAINE,LONG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,14 +35,12 @@ C ----------------------------------------------------------------------
 
       DO 10,I = 1,LONG
         K = ICHAR(CHAINE(I:I))
-        IF (.NOT. ( (K.EQ.32).OR.
-     &              (K.EQ.46).OR.
-     &              (K.EQ.38).OR.
-     &              (K.EQ.95).OR.
-     &              ((K.GE.48).AND. (K.LE.57)).OR.
-     &              ((K.GE.65).AND. (K.LE.90)).OR.
-     &              ((K.GE.97).AND. (K.LE.122))    )) THEN
-          CALL U2MESS('F','CALCULEL_88')
-        END IF
+        CALL ASSERT(( (K.EQ.32).OR.
+     &                (K.EQ.46).OR.
+     &                (K.EQ.38).OR.
+     &                (K.EQ.95).OR.
+     &               ((K.GE.48).AND. (K.LE.57)).OR.
+     &               ((K.GE.65).AND. (K.LE.90)).OR.
+     &               ((K.GE.97).AND. (K.LE.122))    ))
    10 CONTINUE
       END

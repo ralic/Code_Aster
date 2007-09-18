@@ -1,11 +1,12 @@
-      SUBROUTINE LONCAR(TYPMA,COORD,L)
+      SUBROUTINE LONCAR(NDIM,TYPMA,COORD,L)
       IMPLICIT NONE
 
+      INTEGER       NDIM
       REAL*8        COORD(*),L
       CHARACTER*8   TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +27,10 @@ C ======================================================================
 C                      LONGUEUR CARACTÉRISTIQUE D'UNE MAILLE
 
 C     ENTREE
+C       NDIM    : DIMENSION TOPOLOGIQUE DU MAILLAGE
 C       TYPMA   : TYPE DE MAILLE
-C       COORD   : COORDONNÉES DES NOEUDS
+C       COORD   : COORDONNÉES DES NOEUDS (X Y Z SI NDIM = 3
+C                                         X Y   SI NDIM = 2)
 C
 C     SORTIE
 C       L      : LONGUEUR CARACTÉRISTIQUE
@@ -55,6 +58,12 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
+C     ATTENTION, 
+C     NDIM EST LA DIMENSION DU MAILLAGE
+C     POUR LES MAILLES DE BORD, CE N'EST PAS LA DIMENSION DE LA MAILLE
+
+      CALL ASSERT(NDIM.EQ.2.OR.NDIM.EQ.3)
+         
       IF (TYPMA(1:4).EQ.'HEXA') THEN
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST LA GRANDE DIAGONALE N1-N7
@@ -85,25 +94,28 @@ C       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
 
 C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         DO 20 I=1,2
-          AR(I)=SQRT((COORD(1)-COORD(2*I+1))**2 +
-     &        (COORD(2)-COORD(2*I+2))**2 )
+          AR(I) = (COORD(1)-COORD(NDIM*I+1))**2 +
+     &            (COORD(2)-COORD(NDIM*I+2))**2 
+          IF (NDIM.EQ.3) AR(I) = AR(I) + (COORD(3)-COORD(NDIM*I+3))**2 
  20     CONTINUE
-        L=(AR(1)*AR(2))**(1.D0/2.D0)
+        L=(SQRT(AR(1)*AR(2)))**(1.D0/2.D0)
 
       ELSEIF (TYPMA(1:4).EQ.'TRIA') THEN
 
 C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         DO 30 I=1,2
-          AR(I)=SQRT((COORD(1)-COORD(2*I+1))**2 +
-     &        (COORD(2)-COORD(2*I+2))**2 )
+          AR(I) = (COORD(1)-COORD(NDIM*I+1))**2 +
+     &            (COORD(2)-COORD(NDIM*I+2))**2 
+          IF (NDIM.EQ.3) AR(I) = AR(I) + (COORD(3)-COORD(NDIM*I+3))**2 
  30     CONTINUE
-        L=(AR(1)*AR(2))**(1.D0/2.D0)
+        L=(SQRT(AR(1)*AR(2)))**(1.D0/2.D0)
 
       ELSEIF (TYPMA(1:2).EQ.'SE') THEN
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST (N1-N2)^(1/2)
-        L=SQRT((COORD(1)-COORD(3))**2+(COORD(2)-COORD(4))**2)
-
+        L = (COORD(1)-COORD(NDIM+1))**2 + (COORD(2)-COORD(NDIM+2))**2
+        IF (NDIM.EQ.3) L = L + (COORD(3)-COORD(NDIM+3))**2 
+        L = SQRT(L)
       ELSE
 
         CALL U2MESS('F','ALGORITH5_15')

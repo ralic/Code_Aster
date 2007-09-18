@@ -6,7 +6,7 @@
       CHARACTER*16        NOPARA
       CHARACTER*19        NOMFIN, NOMFON
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,9 +62,7 @@ C
          IF ( COMPL ) THEN
             CALL FOINTC( NOMFIN, 1, NOPARA, ZR(LVALE+IVAL),
      &                   ZR(LFON+2*IVAL), ZR(LFON+2*IVAL+1), IER )
-            IF (IER.NE.0) THEN
-                CALL U2MESS('F','UTILITAI_8')
-            ENDIF
+            CALL ASSERT(IER.EQ.0)
          ELSE
             CALL FOINTE ( 'F ', NOMFIN, 1, NOPARA,
      &                          ZR(LVALE+IVAL), ZR(LFON+IVAL), IER )

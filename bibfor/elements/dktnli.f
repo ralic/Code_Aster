@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -186,7 +186,7 @@ C     --------------------------------------------------------
       CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
       NBSP=JTAB(7)
       ICONTM=JTAB(1)
-      IF (NPG.NE.JTAB(3)) CALL U2MESS('F','CALCULEL_13')
+      CALL ASSERT(NPG.EQ.JTAB(3))
 
       CALL JEVECH('PVARIMR','L',IVARIM)
       CALL JEVECH('PINSTMR','L',IINSTM)

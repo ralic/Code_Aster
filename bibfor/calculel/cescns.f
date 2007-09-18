@@ -1,6 +1,6 @@
       SUBROUTINE CESCNS(CESZ,MGANOZ,BASE,CNSZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,8 @@ C     ------------------------------------------------------------------
 
       CALL JEVEUO(CES//'.CESK','L',JCESK)
       TYPCES = ZK8(JCESK-1+3)
-      IF (TYPCES.EQ.'ELGA') CALL U2MESS('F','CALCULEL_46')
+C     CAS (TYPCES.EQ.'ELGA') RESTE A DEVELOPPER ...
+      CALL ASSERT(TYPCES.NE.'ELGA')
 
 C     1- ON TRANSFORME CES EN CHAM_ELEM_S/ELNO:
 C     --------------------------------------------
@@ -97,7 +98,7 @@ C        NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 C        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 C     --------------------------------------------------------------
       CALL EXISD('CHAM_ELEM_S',CES1,IRET)
-      IF (IRET.LE.0) CALL U2MESS('F','CALCULEL_62')
+      CALL ASSERT(IRET.GT.0)
       CALL JEVEUO(CES1//'.CESK','L',JCESK)
       CALL JEVEUO(CES1//'.CESC','L',JCESC)
       CALL JEVEUO(CES1//'.CESD','L',JCESD)
@@ -105,9 +106,8 @@ C     --------------------------------------------------------------
       CALL JEVEUO(CES1//'.CESL','L',JCESL)
       MA = ZK8(JCESK-1+1)
       NOMGD = ZK8(JCESK-1+2)
-      IF (ZK8(JCESK-1+3).NE.'ELNO') THEN
-        CALL U2MESS('F','CALCULEL_63')
-      ENDIF
+C     TEST SI CHAMP ELNO
+      CALL ASSERT(ZK8(JCESK-1+3).EQ.'ELNO')
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,KBID,IBID)
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNOT,KBID,IBID)
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
@@ -115,13 +115,11 @@ C     --------------------------------------------------------------
       CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',ILCNX1)
       CALL JELIRA(CES1//'.CESC','LONMAX',NCMP,KBID)
 
-      IF (ZI(JCESD-1+4).GT.1) CALL U2MESS('F','CALCULEL_64')
+C     LE NOMBRE DE SOUS-POINTS NE PEUT ETRE >1
+      CALL ASSERT(ZI(JCESD-1+4).LE.1)
 
-      IF (TSCA.EQ.'R') THEN
-      ELSEIF (TSCA.EQ.'C') THEN
-      ELSE
-        CALL U2MESS('F','CALCULEL_65')
-      ENDIF
+C     ON ATTEND SEULEMENT DES REELS OU DES COMPLEXES
+      CALL ASSERT((TSCA.EQ.'R').OR.(TSCA.EQ.'C'))
 
 C     3- ALLOCATION DE CNS :
 C     -------------------------------------------
@@ -142,7 +140,7 @@ C     -------------------------------------------
           NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
           NBNO = ZI(ILCNX1+IMA) - ZI(ILCNX1-1+IMA)
 
-          IF (NBNO.NE.NBPT) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(NBNO.EQ.NBPT)
           DO 10,INO = 1,NBNO
             CALL CESEXI('C',JCESD,JCESL,IMA,INO,1,ICMP,IAD1)
             IF (IAD1.LE.0) GO TO 10

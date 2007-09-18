@@ -1,6 +1,6 @@
       SUBROUTINE CNSEVA(CNSF,NPARA,LPARA,CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,7 @@ C           -------------------------------------------------------
               DO 20,K2 = 1,NCMP2
                 IF (ZL(JPL-1+ (INO-1)*NCMP2+K2)) THEN
                   NBPU = NBPU + 1
-                  IF (NBPU.GT.NBPUMX) CALL U2MESS('F','UTILITAI_19')
+                  CALL ASSERT(NBPU.LE.NBPUMX)
                   NOMPU(NBPU) = ZK8(JPC-1+K2)
                   VALPU(NBPU) = ZR(JPV-1+ (INO-1)*NCMP2+K2)
                 END IF
@@ -165,7 +165,7 @@ C           -------------------------------------------------------
 C           4.2 APPEL A FOINTE :
 C           --------------------
             CALL FOINTE('F',FO,NBPU,NOMPU,VALPU,X,IER)
-            IF (IER.NE.0) CALL U2MESS('F','CALCULEL_2')
+            CALL ASSERT(IER.EQ.0)
 
 C           4.3 STOCKAGE DU RESULTAT :
 C           --------------------------

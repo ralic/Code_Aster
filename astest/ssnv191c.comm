@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE : VALIDATION DES CONDITIONS DE NEUMANN AVEC X-FEM EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,22 +45,20 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                       NOM='B',),),
                     INFO=2,);
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('MTOT','LPRESG','LPRESD',),),);
 
 IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(MAILLAGE=MAILLAG2,),);
+          RESU=_F(MAILLAGE=MAILLAG1,),);
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
-MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MO=AFFE_MODELE(MAILLAGE=MAILLAG1,
                AFFE=_F(GROUP_MA=('MTOT','LPRESG','LPRESD',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='C_PLAN_XFEM',),);
+                       MODELISATION='C_PLAN',),);
 
-MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
-                       MAILLAGE=MAILLAG2,
+MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
+                       MAILLAGE=MAILLAG1,
                        ORIE_PEAU_2D=_F(GROUP_MA=('LPRESD','LPRESG',),),);
 
 LN = FORMULE(VALE='Y-1.5',
@@ -96,7 +94,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=rho,),);
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MO,
                        AFFE=_F(GROUP_MA='MTOT',
                                MATER=ACIER,

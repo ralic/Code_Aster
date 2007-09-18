@@ -3,7 +3,7 @@
      &                  IPNO  ,IPNOQU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 17/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,6 +81,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      INO,IRET,JDES,INPROJ      
       INTEGER      NOEUMI,NOEUSO
+      LOGICAL      LVERIF,LQUADV 
 C
 C ----------------------------------------------------------------------
 C
@@ -95,7 +96,7 @@ C
 C --- NOMBRE DE NOEUDS SOMMETS ET MILIEUX
 C
       CALL NBNOCP(LIGRMO,NOMTM ,NBNO    ,NUMAIL,INDQUA,
-     &            INPROJ,NOEUMI,NOEUSO)    
+     &            INPROJ,NOEUMI,NOEUSO,LVERIF,LQUADV)    
 C
 C --- AJOUT DE LA MAILLE
 C 

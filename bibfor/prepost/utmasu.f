@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C     -----------------
          NUMA = LIMA(IMA)
          NUTYMA=ZI(ITYPMA+NUMA-1)
          NNOE = ZI(P2+NUMA)-ZI(P2-1+NUMA)
-         IF ( NNOE .GT. 27 ) CALL U2MESS('F','PREPOST4_88')
+         CALL ASSERT( NNOE .LE. 27 )
          DO 80 INO = 1,NNOE
             LISNOE(INO) = ZI(P1-1+ZI(P2+NUMA-1)+INO-1)
   80     CONTINUE

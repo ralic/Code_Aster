@@ -1,6 +1,6 @@
       SUBROUTINE CESCES(CESA,TYPCES,CESMOZ,MNOGAZ,BASE,CESB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C        NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 C        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 C     --------------------------------------------------------------
       CALL EXISD('CHAM_ELEM_S',CES1,IRET)
-      IF (IRET.LE.0) CALL U2MESS('F','CALCULEL_59')
+      CALL ASSERT(IRET.GT.0)
       CALL JEVEUO(CES1//'.CESK','L',JCES1K)
       CALL JEVEUO(CES1//'.CESC','L',JCES1C)
       CALL JEVEUO(CES1//'.CESD','L',JCES1D)
@@ -121,16 +121,18 @@ C     ------------------------------------------------
       END IF
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      IF (TSCA.NE.'R') CALL U2MESS('F','CALCULEL_46')
+C     CAS (TSCA.NE.'R') RESTE A PROGRAMMER ...
+      CALL ASSERT(TSCA.EQ.'R')
 
 C     2. QUELQUES VERIFICATIONS :
 C     ---------------------------
       IF ((TYPCE1.EQ.'ELNO') .AND. (TYPCES.EQ.'ELGA')) THEN
 C     --------------------------------------------------
         CALL EXISD('CHAM_ELEM_S',MNOGA,IRET)
-        IF (IRET.LE.0) CALL U2MESS('F','CALCULEL_60')
+C       TEST MATRICE NOEUD->GAUSS NECESSAIRE
+        CALL ASSERT(IRET.GT.0)
         CALL JEVEUO(MNOGA//'.CESK','L',JBREF)
-        IF (MA.NE.ZK8(JBREF-1+1)) CALL U2MESS('F','CALCULEL_13')
+        CALL ASSERT(MA.EQ.ZK8(JBREF-1+1))
       END IF
 
 
@@ -157,7 +159,8 @@ C     -----------------------------------------------------------------
 
       ELSE IF (TYPCES.EQ.'ELGA') THEN
         CALL EXISD('CHAM_ELEM_S',CESMOD,IRET)
-        IF (IRET.LE.0) CALL U2MESS('F','CALCULEL_61')
+C       TEST ARGUMENT CESMOD OBLIGATOIRE
+        CALL ASSERT(IRET.GT.0)
         CALL JEVEUO(CESMOD//'.CESD','L',JCEMD)
         DO 30,IMA = 1,NBMA
           ZI(JNBPT-1+IMA) = ZI(JCEMD-1+5+4* (IMA-1)+1)
@@ -192,7 +195,7 @@ C     ------------------------------------------------------
         CALL JEVEUO(MNOGA//'.CESD','L',MNOGAD)
         CALL JEVEUO(MNOGA//'.CESL','L',MNOGAL)
         CALL JEVEUO(MNOGA//'.CESV','L',MNOGAV)
-        IF (ZK8(MNOGAK).NE.MA) CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(ZK8(MNOGAK).EQ.MA)
 
         DO 90,IMA = 1,NBMA
           CALL CESEXI('C',MNOGAD,MNOGAL,IMA,1,1,1,IAD)
@@ -214,9 +217,9 @@ C     ------------------------------------------------------
 
           NBNO1 = ZI(JCES1D-1+5+4* (IMA-1)+1)
 
-          IF (NBNO.NE.NBNO1) CALL U2MESS('F','CALCULEL_2')
-          IF (NBNO.NE.NBNO2) CALL U2MESS('F','CALCULEL_2')
-          IF (NBPG.NE.NBPG2) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(NBNO.EQ.NBNO1)
+          CALL ASSERT(NBNO.EQ.NBNO2)
+          CALL ASSERT(NBPG.EQ.NBPG2)
 
           DO 80 ICMP = 1,NCMP
             DO 70,ISP = 1,NBSP
@@ -298,7 +301,8 @@ C     ------------------------------------------------------
   170   CONTINUE
 
       ELSE
-        CALL U2MESS('F','CALCULEL_46')
+C       CAS NON ENCORE PROGRAMME ...
+        CALL ASSERT(.FALSE.)
       END IF
 
 

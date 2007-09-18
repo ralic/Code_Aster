@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,32 +51,18 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                   ),
                     INFO=2,);
 
-#MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-#                       LINE_QUAD=_F(GROUP_MA=('VOL','SURFGAU','SURFDRO',),),);
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('VOL','SURFINF','SURFSUP','SURFGAU','SURFDRO',),),);
-
-#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MAILLAG2,));
-
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
-#MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
-#                     AFFE=(_F(GROUP_MA=('VOL','SURFGAU','SURFDRO',),
-#                              PHENOMENE='MECANIQUE',
-#                              MODELISATION='3D_XFEM',),
-#                           _F(GROUP_MA=('SURFINF','SURFSUP',),
-#                              PHENOMENE='MECANIQUE',
-#                              MODELISATION='3D',),),);
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=(_F(GROUP_MA=('VOL','SURFINF','SURFSUP','SURFGAU','SURFDRO',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM',),
+                              MODELISATION='3D',),
                            ),);
 
-MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
-                       MAILLAGE=MAILLAG2,
+MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
+                       MAILLAGE=MAILLAG1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
                        );
 
@@ -104,7 +90,7 @@ nu=0.
 rho=7800.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,

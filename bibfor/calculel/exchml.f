@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C     -------------------------
       ENDIF
 
       TYCH = ZK8(IACHIK-1+2* (IICHIN-1)+1)
-      IF (TYCH(1:4).NE.'CHML') CALL U2MESS('F','CALCULEL_2')
+      CALL ASSERT(TYCH(1:4).EQ.'CHML')
 
       JCELD = ZI(IACHII-1+11* (IICHIN-1)+4)
       LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
@@ -238,7 +238,7 @@ C           PAR LE PROC COURANT
 
 C         -- AUTRES CAS PAS ENCORE PROGRAMMES :
           ELSE
-            CALL U2MESS('F','CALCULEL_46')
+            CALL ASSERT(.FALSE.)
           END IF
         END IF
       END IF

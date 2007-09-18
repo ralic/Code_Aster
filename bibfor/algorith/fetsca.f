@@ -1,7 +1,7 @@
       SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,INFOFE,NBI2,IFETI,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C NOMBRE DE DDLS DU IEME NOEUD D'INTERFACE (NBDDL)
           IAUX=IAUX+4
    20   CONTINUE
       ELSE
-        CALL U2MESS('F','ALGELINE_40')
+        CALL ASSERT(.FALSE.)
       ENDIF
 C ---------------------------------------------------
 C FIN BOUCLE SUR LES NOEUDS D'INTERFACE

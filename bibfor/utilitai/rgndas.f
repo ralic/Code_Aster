@@ -4,7 +4,7 @@
       CHARACTER*(*)     TYPE,NU,NOMNO,NOMCMP,TARDIF,LIGREL,INFOBL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
             CALL DISMOI('F','PROF_CHNO' , NU,'CHAM_NO',IBID,PRNO,IER)
             CALL DISMOI('F','NUM_GD'    , NU,'CHAM_NO',GD  ,K8B ,IER)
          ELSE
-            CALL U2MESS('F','ALGELINE_29')
+            CALL ASSERT(.FALSE.)
          ENDIF
          NEC = NBEC(GD)
 C

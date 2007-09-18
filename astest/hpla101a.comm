@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,9 +54,6 @@ MAT=DEFI_MATERIAU(ELAS=_F( E = 2.0E+5, NU = 0.3, RHO = 8.E-6, ALPHA = 1.E-5))
 
 MATHER=DEFI_MATERIAU(THER=_F( LAMBDA = 1.0, RHO_CP = 0.0) )
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.))
-
 CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
 
@@ -95,10 +92,14 @@ CALC_NO( reuse=TEMPLIN,  RESULTAT=TEMPLIN,
                  OPTION='DETE_NOEU_DLTE')
 #
 CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLIN,
            DDL_IMPO=_F(  GROUP_MA = 'TOUT',   DY = 0.) )
 
 # ------------------------------------------------------------------
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MAT),
+                        AFFE_VARC=_F(NOM_VARC='TEMP',  EVOL = TEMPLIN, VALE_REF = 0.),
+                        )
 
 
 DEPLDIL=MECA_STATIQUE(

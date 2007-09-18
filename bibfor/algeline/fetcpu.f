@@ -1,7 +1,7 @@
       SUBROUTINE FETCPU(OPTION,TEMPS,INFOFE,RANG,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C DECLARATION PARAMETRES D'APPELS
           CALL UTTCPU(45,'FIN  ',6,TEMPS)
           WRITE(IFM,*)'PROC ',RANG,' FETREO CPU/SYS: ',TEMPS(5),TEMPS(6)
         ELSE
-          CALL U2MESS('F','ALGELINE_40')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
       END

@@ -4,7 +4,7 @@
       INTEGER             NUNOE, NUDDL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
          CALL DISMOI('F','NUM_GD'    , RESU, 'CHAM_NO',GD  ,K8B  ,IER)
 C
       ELSE
-         CALL U2MESS('F','ALGELINE_29')
+         CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL JENONU ( JEXNOM(NOMMA//'.NOMNOE',NOEUD) , NUNOE )

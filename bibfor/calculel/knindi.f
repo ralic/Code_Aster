@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,7 @@ C ----------------------------------------------------------------------
 C DEB-------------------------------------------------------------------
 
 
-      IF ((LONG.NE.8) .AND. (LONG.NE.16) .AND.
-     &    (LONG.NE.24)) CALL U2MESS('F','CALCULEL2_75')
+      CALL ASSERT((LONG.EQ.8).OR.(LONG.EQ.16).OR.(LONG.EQ.24))
 
       IF (LONG.EQ.8) THEN
         K8 = KN

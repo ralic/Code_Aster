@@ -1,6 +1,6 @@
       SUBROUTINE CNSRED(CNS1Z,NBNO,LINO,NBCMP,LICMP,BASE,CNS2Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,9 +107,8 @@ C     -- POUR NE PAS ECRASER LA SOURCE SI CNS2=CNS1 :
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
       CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
 
-      IF (NBCMP.LT.0) THEN
-        CALL U2MESS('F','CALCULEL_82')
-      ELSE IF (NBCMP.GT.0) THEN
+      CALL ASSERT(NBCMP.GE.0)
+      IF (NBCMP.GT.0) THEN
         NCMP2 = NBCMP
       ELSE
         NCMP2 = NCMP1
@@ -136,10 +135,8 @@ C     ------------------------------------------
         ZL(JEXNO-1+KNO) = .FALSE.
    10 CONTINUE
 
-      IF (NBNO.LT.0) THEN
-        CALL U2MESS('F','CALCULEL2_17')
-
-      ELSE IF (NBNO.EQ.0) THEN
+      CALL ASSERT(NBNO.GE.0)
+      IF (NBNO.EQ.0) THEN
         DO 20,KNO = 1,NBNOM
           ZL(JEXNO-1+KNO) = .TRUE.
    20   CONTINUE
@@ -149,9 +146,6 @@ C     ------------------------------------------
           ZL(JEXNO-1+LINO(KNO)) = .TRUE.
    30   CONTINUE
       END IF
-
-
-
 
 C     3- REMPLISSAGE DES OBJETS .CNSL ET .CNSV :
 C     ------------------------------------------
@@ -183,7 +177,7 @@ C     ------------------------------------------
                 ZK8(JCN2V-1+ (INO-1)*NCMP2+ICMP2) = ZK8(JCN1V-1+
      &            (INO-1)*NCMP1+ICMP1)
               ELSE
-                CALL U2MESS('F','CALCULEL_39')
+                CALL ASSERT(.FALSE.)
               END IF
 
             END IF

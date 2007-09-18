@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,27 +23,16 @@ def _(x) : return x
 cata_msg={
 
 2: _("""
- le champ_s:  %(k1)s  est a la fois cham_elem_s et cham_no_s.
+ le CHAMP_S:  %(k1)s  est a la fois CHAM_ELEM_S et CHAM_NO_S.
 """),
 
 3: _("""
- le champ_s:  %(k1)s n'existe pas.
-"""),
-
-4: _("""
- types scalaires(i/r/c/...) differents pour :  %(k1)s  et  %(k2)s
-"""),
-
-5: _("""
- arret suite a l'alarme precedente.
-"""),
-
-6: _("""
- on ne sait pas renommer la cmp:  %(k1)s
+ le CHAMP_S:  %(k1)s n'existe pas.
 """),
 
 7: _("""
- trop d'antecedents. verifiez si le maillage de l'interface ne contient pas de noeuds coincidents ou  diminuez dist_refe.
+ trop d'antécédents
+ vérifiez si le maillage de l'interface ne contient pas de noeuds coincidents ou diminuez DIST_REFE.
 """),
 
 8: _("""
@@ -51,57 +40,24 @@ cata_msg={
 """),
 
 9: _("""
- plus de 50 pour cent  des valeurs de chamno de deplacement n'ont pas ete recopiees  ce qui peut entrainer des erreurs graves de calcul sur la masse ajoutee des sous structures deduites par rotation et translation definies dans le modele  generalise. augmentez dist_refe!!!.
+  -> plus de 50 %% des valeurs de CHAMNO de déplacement n'ont pas été recopiées
+     ce qui peut entrainer des erreurs graves de calcul sur la masse ajoutée des
+     sous structures déduites par rotation et translation définies dans le modèle généralisé
+  -> Risque & Conseil :
+     augmentez DIST_REFE
 """),
 
 10: _("""
- trop de noeuds affectes
-"""),
-
-11: _("""
- seulement reel svp
+ trop de noeuds affectés
 """),
 
 12: _("""
- le cham_no est de longueur nulle.
+ le CHAM_NO est de longueur nulle.
 """),
 
 13: _("""
  il manque la cmp: %(k1)s  sur le noeud: %(k2)s
 """),
-
-14: _("""
- ncmp doit etre >0
-"""),
-
-
-
-
-
-
-
-
-16: _("""
- reel ou k8 svp
-"""),
-
-17: _("""
- nbno doit etre >=0
-"""),
-
-18: _("""
- arret suite a l'erreur precedente.
-"""),
-
-
-
-
-
-
-
-
-
-
 
 21: _("""
  grandeur :  %(k1)s  inexistante au catalogue
@@ -155,35 +111,29 @@ cata_msg={
  pour le modele  %(k1)s  on ne peut pas visualiser les champs ensemble  %(k2)s  ... car les familles de pg sont differentes
 """),
 
-
-
-
-
-
-
-
 35: _("""
- aucun element du modele n'est visualisable avec ecla_pg.
+ aucun élément du modèle n'est visualisable avec ECLA_PG
 """),
 
 36: _("""
- on ne trouve aucun point de gauss.
+ on ne trouve aucun point de Gauss
 """),
 
 37: _("""
- le type de resu_init est different de celui du resultat.
+ le type de RESU_INIT est différent de celui du résultat.
 """),
 
 38: _("""
- la liste de numeros d ordre est vide.
+ la liste de numéros d'ordre est vide.
 """),
 
 39: _("""
- les seuls champs autorises pour ecla_pg sont les champs reels.
+ les seuls champs autorisés pour ECLA_PG sont les champs réels.
 """),
 
 40: _("""
- le champ:  %(k1)s  a des elements ayant des sous-points. ces elements ne seront pas traites.
+ le champ:  %(k1)s  a des éléments ayant des sous-points
+ ces elements ne seront pas traités
 """),
 
 41: _("""
@@ -191,17 +141,13 @@ cata_msg={
 """),
 
 42: _("""
- le type_elem:  %(k1)s  n'a pas le nombre de points de gauss declare dans la routine eclau1. nom_cham= %(k2)s
+ le TYPE_ELEM:  %(k1)s  n'a pas le nombre de points de Gauss déclaré dans la routine ECLAU1
+ nom_cham= %(k2)s
 """),
 
 43: _("""
  nombre de noeuds > 27
 """),
-
-
-
-
-
 
 45: _("""
  famille de pg "liste" interdite: %(k1)s
@@ -223,50 +169,23 @@ cata_msg={
  carte inexistante.
 """),
 
-50: _("""
- 3
-"""),
-
 51: _("""
  cham_elem etendu a faire ...
 """),
 
 52: _("""
- probleme noeud tardif pour un champ a representation constante
-"""),
-
-53: _("""
-  inutile de comprimer 1 telle carte
-"""),
-
-54: _("""
- on devrait avoir icode=3 pour des mailles tardives.
+ probleme noeud tardif pour un champ à représentation constante
 """),
 
 55: _("""
-  erreur dans l'extraction d'un resuelem pour le grel:  %(k1)s le champ n'existe pas
+  erreur dans l'extraction d'un resuelem pour le grel :  %(k1)s
+  le champ n'existe pas
 """),
 
 56: _("""
-  erreur lors d'une extraction: le champ associe au parametre :  %(k1)s  n'est pas dans la liste des champs parametres.
+  erreur lors d'une extraction:
+  le champ associe au parametre :  %(k1)s  n'est pas dans la liste des champs parametres.
 """),
-
-57: _("""
- sa21
-"""),
-
-58: _("""
- sa22
-"""),
-
-59: _("""
- sa23
-"""),
-
-
-
-
-
 
 61: _("""
  Erreur développeur :
@@ -298,70 +217,36 @@ cata_msg={
 
 """),
 
-65: _("""
- erreur programmeur 3
-"""),
-
-66: _("""
-  type_scalaire inconnu:  %(k1)s
-"""),
-
-67: _("""
- non programme.
-"""),
-
 68: _("""
- maille partiellement affectee.
+ maille partiellement affectée.
 """),
 
 69: _("""
- le parametre: %(k1)s  n'est pas un parametre de l'option: %(k2)s
+ le parametre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s
 """),
 
 70: _("""
- le parametre: %(k1)s  n'est pas un parametre de l'option: %(k2)s  pour le type_element:  %(k3)s
+ le parametre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s  pour le type_element:  %(k3)s
 """),
 
 71: _("""
- erreur :on ne trouve pas dans les arguments de la routine calcul de champ a associer au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
-"""),
-
-72: _("""
- impossible...
+ on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au parametre: %(k1)s
+  - option: %(k2)s
+  - type_element: %(k3)s
 """),
 
 73: _("""
- erreur :on n'a pas pu extraire toutes les cmps voulues du champ associe au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
+ on n'a pas pu extraire toutes les cmps voulues du champ associé au paramètre: %(k1)s
+ - option: %(k2)s
+ - type_element: %(k3)s )
 """),
-
-74: _("""
- objet:  %(k1)s  introuvable.
-"""),
-
-75: _("""
- long=8,16 ou 24
-"""),
-
-76: _("""
- erreur pgmeur: lk3 pas assez grand.
-"""),
-
-
-
-
-
-
-
-
-
-
 
 79: _("""
- ce chargement n est pas prevu en lagrange
+ ce chargement n'est pas prévu en lagrange
 """),
 
 80: _("""
- le calcul lagrangien avec les temperatures n'est pas encore disponible
+ le calcul lagrangien avec les températures n'est pas encore disponible
 """),
 
 81: _("""
@@ -369,23 +254,23 @@ cata_msg={
 """),
 
 82: _("""
- il faut un modele.
+ il faut un MODELE
 """),
 
 83: _("""
- il n'y a pas de rigidite sur le modele.
+ il n'y a pas de rigidité sur le modèle.
 """),
 
 84: _("""
- il n'y a pas de masse sur le modele.
+ il n'y a pas de masse sur le modèle.
 """),
 
 85: _("""
- g_bili : champ initial impossible
+ G_BILI : champ initial impossible
 """),
 
 86: _("""
- compor svp!
+ il faut fournir COMPOR
 """),
 
 87: _("""
@@ -393,40 +278,32 @@ cata_msg={
 """),
 
 88: _("""
- option  %(k1)s  non disponible sur les elements du modele- pas de champ cree
+ option  %(k1)s  non disponible sur les éléments du modèle
+ pas de champ créé
 """),
 
-
-
-
-
-
 92: _("""
- votre chargement contient plus d'une charge repartie. le calcul n'est pas possible pour les modeles de poutre.
+ votre chargement contient plus d'une charge répartie
+ le calcul n'est pas possible pour les modèles de poutre.
 """),
 
 93: _("""
   -> Vous avez renseigné un des mots-clés fonc_mult_*, coef_mult_*,
-     phas_deg, puis_puls, or votre charge ne contient pas d'effort réparti
+     PHAS_DEG, PUIS_PULS, or votre charge ne contient pas d'effort réparti
      sur des poutres. Ces mots-clés seront donc ignorés.
   -> Risque & Conseil :
-
 """),
 
 94: _("""
- pour un modele comportant des elements de plaque ou de coque, il faut le "cara_elem"
+ pour un modèle comportant des éléments de plaque ou de coque
+ il faut fournir le "CARA_ELEM"
 """),
 
-
-
-
-
-
 98: _("""
- erreur: la charge doit etre une charge mecanique !
+ la charge doit être une charge mécanique
 """),
 
 99: _("""
-  option  %(k1)s non licite pour un calcul non lineaire.
+ option  %(k1)s non licite pour un calcul non linéaire.
 """),
 }

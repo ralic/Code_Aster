@@ -1,6 +1,6 @@
       SUBROUTINE CESEVA(CESF,NPARA,LPARA,CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,7 +150,7 @@ C     DE FAIRE PLUSIEURS FOINTE SUCCESSIFS AVEC LA MEME FONCTION.
               FO = ZK8(JFV-1+IADF)
 
               CALL CESEXI('C',JRD,JRL,IMA,IPT,ISP,K,IADR)
-              IF (IADR.GE.0) CALL U2MESS('F','CALCULEL_2')
+              CALL ASSERT(IADR.LT.0)
               ZL(JRL-1-IADR) = .TRUE.
 
               IF (FO.EQ.' ') GO TO 40
@@ -186,7 +186,7 @@ C                    -- ON AGRANDIT .NOMPU ET .VALPU :
 C           4.2 APPEL A FOINTE :
 C           --------------------
               CALL FOINTE('F',FO,NBPU,ZK8(JNOMPU),ZR(JVALPU),X,IER)
-              IF (IER.NE.0) CALL U2MESS('F','CALCULEL_2')
+              CALL ASSERT(IER.EQ.0)
 
 C           4.3 STOCKAGE DU RESULTAT :
 C           --------------------------

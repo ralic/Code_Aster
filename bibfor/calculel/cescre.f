@@ -1,7 +1,7 @@
       SUBROUTINE CESCRE(BASEZ,CESZ,TYPCEZ,MAZ,NOMGDZ,NCMPG,LICMP,NPG,
      &                  NSPT,NCMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C     ----------------------------------------------
       ELSE IF (TYPCES.EQ.'ELNO') THEN
         CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',JLCONX)
       ELSE
-        CALL U2MESS('F','CALCULEL_66')
+        CALL ASSERT(.FALSE.)
       END IF
 
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD),GD)
@@ -144,7 +144,7 @@ C     ----------------------------------------------
 C     -- ON CALCULE ET ON VERIFIE :  '&&CESCRE.LICMP' :
 C     --------------------------------------------------
       IF (NCMPG.EQ.0) THEN
-        IF (NOMGD(1:5).EQ.'VARI_') CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(NOMGD(1:5).NE.'VARI_')
         NCMP2 = NCMPMX
         CALL WKVECT('&&CESCRE.LICMP','V V K8',NCMP2,JLICMP)
         DO 10,K = 1,NCMP2
@@ -153,7 +153,7 @@ C     --------------------------------------------------
 
       ELSE IF (NCMPG.GT.0) THEN
         CALL VERIGD(NOMGD,LICMP,NCMPG,IRET)
-        IF (IRET.GT.0) CALL U2MESS('F','CALCULEL_13')
+        CALL ASSERT(IRET.LE.0)
 
         NCMP2 = NCMPG
         CALL WKVECT('&&CESCRE.LICMP','V V K8',NCMP2,JLICMP)
@@ -162,7 +162,7 @@ C     --------------------------------------------------
    20   CONTINUE
 
       ELSE IF (NCMPG.LT.0) THEN
-        IF (NOMGD(1:5).NE.'VARI_') CALL U2MESS('F','CALCULEL_8')
+        CALL ASSERT(NOMGD(1:5).EQ.'VARI_')
         NCMP2 = -NCMPG
         CALL WKVECT('&&CESCRE.LICMP','V V K8',NCMP2,JLICMP)
         NOMCMP(1:1) = 'V'

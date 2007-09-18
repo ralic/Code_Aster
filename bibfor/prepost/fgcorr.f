@@ -5,7 +5,7 @@
       INTEGER           NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,13 +57,13 @@ C
           IF(VALMOY.LT.SU) THEN
              RCORR(I) = 1.D0 - (VALMOY/SU)
           ELSE
-             CALL U2MESS('F','PREPOST_39')
+             CALL U2MESS('F','FATIGUE1_4')
           ENDIF
         ELSEIF(METHOD.EQ.'GERBER') THEN
           IF(VALMOY.LT.SU) THEN
              RCORR(I) = 1.D0 - (VALMOY/SU)**2
           ELSE
-             CALL U2MESS('F','PREPOST_40')
+             CALL U2MESS('F','FATIGUE1_5')
           ENDIF
         ENDIF
   10  CONTINUE

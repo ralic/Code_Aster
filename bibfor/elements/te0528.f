@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,14 +56,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPSFL(MXCMEL),EPSFLN(MXCMEL),EPSTMP(NBSGM)
       REAL*8 VALPAR,NU
       CHARACTER*2 CODRET
-      CHARACTER*8 NOMRES,NOMPAR,MODELI
+      CHARACTER*8 NOMRES,NOMPAR
       CHARACTER*16 COMPO1,COMPO2,VALK(2)
       LOGICAL LFLU
 C DEB ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
 C     ---------------
-      MODELI(1:2) = NOMTE(3:4)
 
 C --- RECUPERATION DU COMPORTEMENT  :
 C     -------------------------------
@@ -102,7 +101,7 @@ C    VERIFICATION DU COMPORTEMENT FLUAGE
 
 C --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
 C      -----------------------------------------
-      NBSIG = NBSIGM(MODELI)
+      NBSIG = NBSIGM()
 
 C --- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 C     ----------------------------------------------

@@ -6,7 +6,7 @@
       COMPLEX*16 VALC
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP,TYPRES
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,7 +72,7 @@ C     ------------------------------------------------------------------
       TYPREZ = TYPRES(1:1)
       CALL JELIRA(CHM19Z//'.CELV','TYPE',IBID,TYPE)
 
-      IF (TYPE.NE.TYPREZ) CALL U2MESS('F','CALCULEL_13')
+      CALL ASSERT(TYPE.EQ.TYPREZ)
 
       IF (TYPE.NE.'R' .AND. TYPE.NE.'C')
      &  CALL U2MESK('E','UTILITAI5_29',1,TYPE)

@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHS1, CHS2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       NOMGD2 = ZK8(JCN2K-1+2)
       NCMP2  =  ZI(JCN2D-1+2)
 C
-      IF (NOMGD2.NE.NOMGD) CALL U2MESS('F','CALCULEL_84')
+      CALL ASSERT(NOMGD2.EQ.NOMGD)
 C
       CALL DISMOI ( 'F', 'TYPE_SCA', NOMGD, 'GRANDEUR', IBID,TSCA,IBID)
 C
@@ -110,7 +110,7 @@ C
                ZK8(JCN2V-1+(INO2-1)*NCMP2+ICMP2) =
      &                                ZK8(JCN1V-1+(INO1-1)*NCMP1+ICMP1)
             ELSE
-               CALL U2MESS('F','CALCULEL_39')
+               CALL ASSERT(.FALSE.)
             END IF
 C
  20      CONTINUE

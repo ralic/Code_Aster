@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 17/09/2007   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,7 +84,6 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
            MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
            AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
            NB_MODE         =SIMP(statut='f',typ='I',defaut= 9999 ),
-           REAC_VITE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          ),
 
          SOLVEUR         =FACT(statut='d',

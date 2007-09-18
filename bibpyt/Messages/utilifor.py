@@ -1,4 +1,4 @@
-#@ MODIF utilifor Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF utilifor Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,28 +22,8 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- nombre de terme inférieur ou égal à 0
-"""),
-
-2: _("""
- nombre de termes supérieur à 1000
-"""),
-
-3: _("""
- X en dehors de l'intervalle (-1,+1)
-"""),
-
 4: _("""
  X trop grand 
-"""),
-
-5: _("""
- nombre de coefficients inférieur à 1
-"""),
-
-6: _("""
- serie de Chebyshev trop courte pour la précision
 """),
 
 7: _("""

@@ -3,7 +3,7 @@
      &                  NBTYMA, DEFARE )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C ------------ NOUVELLE ARETE
                   GOTO 31
                END IF
  30         CONTINUE
-            CALL U2MESS('F','PREPOST_7')
+            CALL ASSERT(.FALSE.)
  31         CONTINUE
 
             NOMIMA(A,M)  = NOMI

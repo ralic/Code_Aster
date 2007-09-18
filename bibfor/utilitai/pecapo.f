@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -251,10 +251,10 @@ C     ----------------------------------------------------------
         IF ( IRET .NE. 0 ) CALL U2MESS('F','ALGORITH3_77')
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &            R8B, 'CDG_X', K8B, IBID, XG, C16B, K8B, IRET )
-        IF ( IRET .NE. 0 ) CALL U2MESS('F','PREPOST3_87')
+        CALL ASSERT(IRET.EQ.0)
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &            R8B, 'CDG_Y', K8B, IBID, YG, C16B, K8B, IRET )
-        IF ( IRET .NE. 0 ) CALL U2MESS('F','PREPOST3_88')
+        CALL ASSERT(IRET.EQ.0)
 C
 C --- CALCUL DES COORDONNEES DU CENTRE DE CISAILLEMENT/TORSION EY ET EZ
 C --- ET DES COEFFICIENTS DE CISAILLEMENT
@@ -281,13 +281,13 @@ C     CF DOC MACRO_CARA_POUTRE
 C       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL,
      &       K8B, R8B, 'AIRE', K8B, IBID, SEQ, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','PREPOST3_89')
+          CALL ASSERT(IRET.EQ.0)
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL,
      &       K8B, R8B, 'IY_PRIN_G', K8B, IBID, IYEQ, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','PREPOST3_90')
+          CALL ASSERT(IRET.EQ.0)
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      &             R8B, 'IZ_PRIN_G', K8B, IBID, IZEQ, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','PREPOST3_91')
+          CALL ASSERT(IRET.EQ.0)
 
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      &             R8B, 'KY', K8B, IBID, KY, C16B, K8B, IRET )

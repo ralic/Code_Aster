@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+%& MODIF TYPELEM  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -643,8 +643,8 @@ OPTION__
                               OUT__  ESINGNO  PSINGNO
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
-    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  E33NEUTR PPINTTO
+%    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
+%                              OUT__  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  E33NEUTR PPINTTO
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
                                      EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R

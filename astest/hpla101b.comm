@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE DERIVEES PAR RAPPORT A UNE VARIATION DE DOMAINE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,7 +68,7 @@ ACIER=DEFI_MATERIAU(  THER=_F(  LAMBDA = 500.,  RHO_CP = 1.),
 
 #
 CH_MATE=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
-                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER, TEMP_REF = 20.) )
+                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER) )
 
 #
 # 5. LA THERMIQUE
@@ -167,7 +167,7 @@ TEST_RESU(RESU=(
 # 6.1.1. PRESSION PARALLELE A THETA
 #
 CH_MEC_1=AFFE_CHAR_MECA(  MODELE=MOD_MECA,
-                          TEMP_CALCULEE=RE_THE_1,
+                          #TEMP_CALCULEE=RE_THE_1,
                           PRES_REP  =_F( GROUP_MA = 'BORD_GAU',  PRES = 10000.),
                           FACE_IMPO =_F( GROUP_MA = 'BORD_DRO',  DNOR = 0.),
                           DDL_IMPO  =_F( GROUP_NO = 'ORIGINE',   DY = 0.)
@@ -177,7 +177,7 @@ CH_MEC_1=AFFE_CHAR_MECA(  MODELE=MOD_MECA,
 # 6.1.2. PRESSION PERPENDICULAIRE A THETA
 #
 CH_MEC_2=AFFE_CHAR_MECA(  MODELE=MOD_MECA,
-                          TEMP_CALCULEE=RE_THE_2,
+                          #TEMP_CALCULEE=RE_THE_2,
                           PRES_REP  =_F( GROUP_MA = 'BORD_SUP',  PRES = 10000.),
                           FACE_IMPO =_F( GROUP_MA = 'BORD_INF',  DNOR = 0.),
                           DDL_IMPO  =_F( GROUP_NO = 'ORIGINE',   DX = 0.)
@@ -187,8 +187,13 @@ CH_MEC_2=AFFE_CHAR_MECA(  MODELE=MOD_MECA,
 # 6.2. LES RESOLUTIONS
 # 6.2.1. EN TRANSITOIRE
 #
+CH_MATM1=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+                        AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI', EVOL=RE_THE_1, VALE_REF=20.),
+                        )
+
 RE_MEC_1=MECA_STATIQUE(  MODELE=MOD_MECA,
-                         CHAM_MATER=CH_MATE,
+                         CHAM_MATER=CH_MATM1,
                          EXCIT=_F(  CHARGE = CH_MEC_1),
                          LIST_INST=LIST_INS,
                          SENSIBILITE=(THETA)
@@ -214,9 +219,14 @@ RE_MEC_1=CALC_NO( reuse=RE_MEC_1,    RESULTAT=RE_MEC_1,
 #
 # 6.2.2. EN STATIONNAIRE
 #
-RE_MEC_2=MECA_STATIQUE(         MODELE=MOD_MECA,
-                              CHAM_MATER=CH_MATE,
-                                   EXCIT=_F(  CHARGE = CH_MEC_2),
+CH_MATM2=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+                        AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI', EVOL=RE_THE_2, VALE_REF=20.),
+                        )
+
+RE_MEC_2=MECA_STATIQUE(      MODELE=MOD_MECA,
+                             CHAM_MATER=CH_MATM2,
+                             EXCIT=_F(  CHARGE = CH_MEC_2),
                              SENSIBILITE=(THETA)
                          )
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "3D_SI",
                                                                       "3D_GRAD_EPSI",
                                                                       "3D_GRAD_VARI",
-                                                                      "3D_XFEM",
+                                                                      "3D_XFEM_CONT",
                                                                       "3D_JOINT",
                                                                       "AXIS",
                                                                       "AXIS_FLUI_STRU",
@@ -74,7 +74,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "BARRE",
                                                                       "2D_BARRE",
                                                                       "C_PLAN",
-                                                                      "C_PLAN_XFEM",
+                                                                      "C_PLAN_XFEM_CONT",
                                                                       "C_PLAN_NS",
                                                                       "C_PLAN_SI",
                                                                       "C_PLAN_GRAD_EPSI",
@@ -85,7 +85,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "COQUE_C_PLAN",
                                                                       "COQUE_D_PLAN",
                                                                       "D_PLAN",
-                                                                      "D_PLAN_XFEM",
+                                                                      "D_PLAN_XFEM_CONT",
                                                                       "D_PLAN_GRAD_EPSI",
                                                                       "D_PLAN_GRAD_VARI",
                                                                       "D_PLAN_NS",

@@ -5,7 +5,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,8 +131,7 @@ C     ------------------------------------------------------
 
       CALL JEVEUO ( CH1//'.REFE', 'L', JREFE1 )
       CALL JEVEUO ( CH2//'.REFE', 'L', JREFE2 )
-      IF (ZK24(JREFE1)(1:8).NE.ZK24(JREFE2)(1:8))
-     &   CALL U2MESS('F','CALCULEL_73')
+      CALL ASSERT(ZK24(JREFE1)(1:8).EQ.ZK24(JREFE2)(1:8))
       CALL JEVEUO ( ZK24(JREFE1-1+2)(1:19)//'.DEEQ', 'L', JDEEQ1 )
       CALL JEVEUO ( ZK24(JREFE2-1+2)(1:19)//'.DEEQ', 'L', JDEEQ2 )
 

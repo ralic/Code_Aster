@@ -1,5 +1,5 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
-# TITRE EPROUVETTE AVEC FISSURE CENTRALE SOUS CONTACT XFEM
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,8 +72,6 @@ E   = 1.E6;
 nu  = 0.;
 rho = 7800.0;
 
-# ACTIVATION DU CONTACT
-contact = 0 ;
 
 # COEFFICIENT DE FROTTEMENT
 COULOM = 0. ;
@@ -154,22 +152,19 @@ if blocage == 2 :
                                        ),
                       INFO=1, );
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),),);
-
 #----------------------------------------------
 #                   MODELE
 #----------------------------------------------
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                      AFFE=(_F(GROUP_MA=('VOL','SURFSUP','SURFINF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D_XFEM',),
+                              MODELISATION='3D',),
                            ),
                      );
 
-MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
-                       MAILLAGE=MAILLAG2,
+MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
+                       MAILLAGE=MAILLAG1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
                        );
 
@@ -192,32 +187,14 @@ XVECT = 0. ;
 YVECT = -sin(ALPHA) ;
 ZVECT = cos(ALPHA) ;
 
-if contact == 0 :
-   FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                       DEFI_FISS=_F(FONC_LT=LT,
-                                    FONC_LN=LN,),
-                       GROUP_MA_ENRI='VOL',
-                       ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI,),
-                                    VECT_ORIE=(XVECT, YVECT, ZVECT,),
-                                    PT_ORIGIN=(XORI, YORI, ZORI,),),
-                        INFO=1,);
-elif contact == 1 :
-   FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                       DEFI_FISS=_F(FONC_LT=LT,
-                                    FONC_LN=LN,),
-                       GROUP_MA_ENRI='VOL',
-                       ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI,),
-                                    VECT_ORIE=(XVECT, YVECT, ZVECT,),
-                                    PT_ORIGIN=(XORI, YORI, ZORI,),),
-                       CONTACT=_F(FROTTEMENT='COULOMB',
-                                  INTEGRATION='GAUSS',
-                                  CONTACT_INIT='OUI',
-                                  ITER_CONT_MAXI=5,
-                                  COULOMB=COULOM,
-                                  ITER_FROT_MAXI=1,
-                                  ALGO_LAGR=ALGOLAG,
-                                 ),
-                        INFO=1,);
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    DEFI_FISS=_F(FONC_LT=LT,
+                                 FONC_LN=LN,),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI,),
+                                 VECT_ORIE=(XVECT, YVECT, ZVECT,),
+                                 PT_ORIGIN=(XORI, YORI, ZORI,),),
+                     INFO=1,);
 
 
 #----------------------------------------------
@@ -240,7 +217,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
                             RHO=rho,),);
 
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=ACIER,

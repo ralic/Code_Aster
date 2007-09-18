@@ -3,7 +3,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C     ------------------------------------------------------------------
 C     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_NO_S "IN",
 C        ON CREE CNS3 SOUS UN NOM TEMPORAIRE :
       CNS3 = '&&CNSFUS.CNS3'
-      IF (NBCHS.LE.0) CALL U2MESS('F','CALCULEL_72')
+      CALL ASSERT(NBCHS.GT.0)
 
       CNS1 = LICHS(1)
 
@@ -117,8 +117,10 @@ C     -- ON "COCHE" LES CMPS PRESENTES DANS LES CNS DE LICHS:
         CALL JEVEUO(CNS1//'.CNSD','L',JCN1D)
         CALL JEVEUO(CNS1//'.CNSC','L',JCN1C)
 
-        IF (MA.NE.ZK8(JCN1K-1+1)) CALL U2MESS('F','CALCULEL_73')
-        IF (NOMGD.NE.ZK8(JCN1K-1+2)) CALL U2MESS('F','CALCULEL_74')
+C       TEST SUR IDENTITE DES 2 MAILLAGES
+        CALL ASSERT(MA.EQ.ZK8(JCN1K-1+1))
+C       TEST SUR IDENTITE DES 2 GRANDEURS
+        CALL ASSERT(NOMGD.EQ.ZK8(JCN1K-1+2))
 
         NCMP1 = ZI(JCN1D-1+2)
         DO 10,ICMP1 = 1,NCMP1
@@ -172,7 +174,7 @@ C     ------------------------------------------
         DO 50,ICMP1 = 1,NCMP1
           NOCMP = ZK8(JCN1C-1+ICMP1)
           ICMP3 = INDIK8(ZK8(JCN3C),NOCMP,1,NCMP3)
-          IF (ICMP3.EQ.0) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(ICMP3.NE.0)
 
           DO 40,INO = 1,NBNO
             K1 = (INO-1)*NCMP1 + ICMP1
@@ -200,7 +202,7 @@ C             -- SI AFFECTATION :
                 ELSE IF (TSCA.EQ.'K8') THEN
                   ZK8(JCN3V-1+K3) = ZK8(JCN1V-1+K1)
                 ELSE
-                  CALL U2MESS('F','CALCULEL_39')
+                  CALL ASSERT(.FALSE.)
                 END IF
 
 C             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -216,9 +218,10 @@ C             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                 ELSE IF (TSCA.EQ.'I') THEN
                   ZI(JCN3V-1+K3) = ZI(JCN3V-1+K3) + COEFI*ZI(JCN1V-1+K1)
                 ELSE IF ((TSCA.EQ.'L') .OR. (TSCA.EQ.'K8')) THEN
-                  CALL U2MESS('F','CALCULEL_78')
+C                 CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE
+                  CALL ASSERT(.FALSE.)
                 ELSE
-                  CALL U2MESS('F','CALCULEL_39')
+                  CALL ASSERT(.FALSE.)
                 END IF
               END IF
 

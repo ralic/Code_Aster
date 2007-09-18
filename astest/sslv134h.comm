@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,26 +34,23 @@ MA1=DEFI_GROUP(reuse =MA1,
                                    _F(GROUP_MA='BORD2',), 
                                 ),
                                     );
-
-MA=CREA_MAILLAGE(MAILLAGE=MA1,
-                       LINE_QUAD=_F(GROUP_MA=('TUBE',),),);
   
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 210000.,  NU = 0.3, RHO = 0.,
                             ALPHA = 0.))
                             
-MODELEIN=AFFE_MODELE(MAILLAGE=MA,
+MODELEIN=AFFE_MODELE(MAILLAGE=MA1,
                      INFO = 1,
                    AFFE=(_F(GROUP_MA=('TUBE',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='3D_XFEM',),
+                            MODELISATION='3D',),
                          _F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),
                   ),);        
 
-MA=MODI_MAILLAGE(reuse =MA,
-                       MAILLAGE=MA,
+MA1=MODI_MAILLAGE(reuse =MA1,
+                       MAILLAGE=MA1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('EXTUBE_S','EXTUBE_I',),),
                  );
 
@@ -85,7 +82,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          INFO=1,
                          );
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA1,
                        MODELE=MODELEK,
                        AFFE=(_F(TOUT = 'OUI',
                                 MATER=MAT,),

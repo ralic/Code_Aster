@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -271,7 +271,7 @@ C     ------------------
       IERD=1
       REPI=0
       REPK='ERREUR'
-      IF (CODMES.EQ.'F') CALL U2MESS('F','UTILITAI_64')
+      CALL ASSERT(CODMES.NE.'F')
 C
 C     -- SORTIE NORMALE :
 C     ------------------

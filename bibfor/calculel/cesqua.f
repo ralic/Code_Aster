@@ -5,7 +5,7 @@
       LOGICAL LCUMUL(NBCHS)
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     ------------------------------------------------------------------
 C     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 C        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
       CES3 = '&&CESQUA.CES3'
-      IF (NBCHS.LE.0) CALL U2MESS('F','CALCULEL_72')
+      CALL ASSERT(NBCHS.GT.0)
 
       CES1 = LICHS(1)
 
@@ -134,9 +134,12 @@ C     --------------------------------------------------------
         CALL JEVEUO(CES1//'.CESK','L',JCE1K)
         CALL JEVEUO(CES1//'.CESD','L',JCE1D)
 
-        IF (MA.NE.ZK8(JCE1K-1+1)) CALL U2MESS('F','CALCULEL_73')
-        IF (NOMGD.NE.ZK8(JCE1K-1+2)) CALL U2MESS('F','CALCULEL_74')
-        IF (TYPCES.NE.ZK8(JCE1K-1+3)) CALL U2MESS('F','CALCULEL_75')
+C       TEST SUR IDENTITE DES 2 MAILLAGES
+        CALL ASSERT(MA.EQ.ZK8(JCE1K-1+1))
+C       TEST SUR IDENTITE DES 2 GRANDEURS
+        CALL ASSERT(NOMGD.EQ.ZK8(JCE1K-1+2))
+C       TEST SUR IDENTITE DES 2 TYPES (CART/ELNO/ELGA)
+        CALL ASSERT(TYPCES.EQ.ZK8(JCE1K-1+3))
 
         IF (ICHS.EQ.1) THEN
           DO 40,IMA = 1,NBMA
@@ -149,8 +152,10 @@ C     --------------------------------------------------------
             NBSP = ZI(JCE1D-1+5+4* (IMA-1)+2)
             NCMP = ZI(JCE1D-1+5+4* (IMA-1)+3)
             IF (NBPT*NBSP*NCMP.EQ.0) GO TO 50
-            IF (ZI(JNBPT-1+IMA).NE.NBPT) CALL U2MESS('F','CALCULEL_76')
-            IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL U2MESS('F','CALCULEL_77')
+C           TEST SUR IDENTITE DU NOMBRE DE POINTS
+            CALL ASSERT(ZI(JNBPT-1+IMA).EQ.NBPT)
+C           TEST SUR IDENTITE DU NOMBRE DE SOUS-POINTS
+            CALL ASSERT(ZI(JNBSP-1+IMA).EQ.NBSP)
    50     CONTINUE
         END IF
         CALL JELIBE(CES1//'.CESK')
@@ -211,7 +216,7 @@ C     -----------------------------------------------------------
         DO 110,IMA = 1,NBMA
           ICMP1 = ZI(JCE1D-1+5+4* (IMA-1)+3)
           IF (ICMP1.EQ.0) GO TO 110
-          IF (ICMP1.LT.0) CALL U2MESS('F','CALCULEL_2')
+          CALL ASSERT(ICMP1.GT.0)
           ICMP3 = ZI(JCRCMP-1+ICMP1)
           ZI(JNBCMP-1+IMA) = MAX(ICMP3,ZI(JNBCMP-1+IMA))
   110   CONTINUE
@@ -254,7 +259,7 @@ C     ------------------------------------------
                 CALL CESEXI('C',JCE3D,JCE3L,IMA,IPT,ISP,ICMP3,IAD3)
                 IF (IAD1.LE.0) GO TO 130
 
-                IF (IAD3.EQ.0) CALL U2MESS('F','CALCULEL_2')
+                CALL ASSERT(IAD3.NE.0)
 
 C               -- SI AFFECTATION :
                 IF ((.NOT.CUMUL) .OR. (IAD3.LT.0)) THEN
@@ -264,7 +269,7 @@ C               -- SI AFFECTATION :
                   IF (TSCA.EQ.'R') THEN
                     ZR(JCE3V-1+IAD3) = ZR(JCE1V-1+IAD1)**2
                   ELSE
-                    CALL U2MESS('F','CALCULEL_39')
+                    CALL ASSERT(.FALSE.)
                   END IF
 
 C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -274,7 +279,7 @@ C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                     ZR(JCE3V-1+IAD3) = ZR(JCE3V-1+IAD3) +
      &                                        ZR(JCE1V-1+IAD1)**2
                   ELSE
-                    CALL U2MESS('F','CALCULEL_39')
+                    CALL ASSERT(.FALSE.)
                   END IF
                 END IF
 

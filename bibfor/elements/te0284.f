@@ -1,6 +1,6 @@
       SUBROUTINE TE0284 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C
       CHARACTER*4        FAMI
       REAL*8             SIGI(162), EPSI(162), BSIGMA(81), REPERE(7)
       REAL*8             INSTAN, NHARM, XYZ(81),BARY(3)
-      INTEGER            NBSIGM, NBDIM, DIMCOO, IDIM
+      INTEGER            NBSIGM, DIMCOO, IDIM
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -64,11 +64,11 @@ C --- INITIALISATIONS :
 C     -----------------
       ZERO    = 0.0D0
       INSTAN  = ZERO
-      NDIM    = NBDIM( NOMTE )
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
-      NBSIG  = NBSIGM(MODELI)
+      NBSIG  = NBSIGM()
+      IF (NBSIG.EQ.6) NDIM=3
 C
       DO 10 I = 1, NBSIG*NPG
          EPSI(I) = ZERO

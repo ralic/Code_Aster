@@ -2,7 +2,7 @@
      &                  LISCHA,FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,13 +79,13 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
-      INTEGER      IBID,NOCC,JINFC,NBCHAR
-      INTEGER      TYPALC,TYPALF
-      INTEGER      JSOLVE,IXFEM,ICONT,IUNIL,ICHAR
+      INTEGER      IBID,NOCC,JINFC,NBCHAR,IZO
+      INTEGER      TYPALC,TYPALF,JMETH,ZMETH,CFMMVD,NBZOCO,NVERI
+      INTEGER      JSOLVE,IXFEM,ICONT,IUNIL,ICHAR,JXC
       REAL*8       R8VIDE
       CHARACTER*8  K8BID
       CHARACTER*16 NOMCMD,K16BID
-      LOGICAL      LCONTX
+      LOGICAL      LVERIF
 C
 C ---------------------------------------------------------------------
 C
@@ -133,21 +133,20 @@ C     X-FEM
 C
 C ----------------------------------------------------------------------
 
-      CALL JEEXIN(MODELE(1:8)//'.FISS',IXFEM)    
+      CALL JEEXIN(MODELE(1:8)//'.FISS',IXFEM)
       IF (IXFEM.NE.0) THEN
         FONACT(6) = .TRUE.
       ENDIF
 
-C --- X-FEM ET CONTACT 
+C --- X-FEM ET CONTACT
       IF (FONACT(6)) THEN
-        CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
-        IF (ZK24(JSOLVE)(1:5).NE.'MUMPS') 
-     &                 CALL U2MESS('A','ALGORITH7_87')
-        CALL XCORDO(MODELE(1:8),DEFICO,LCONTX)
-        
-        IF (LCONTX) THEN
+        CALL JEVEUO(MODELE(1:8)//'.XFEM_CONT'  ,'L',JXC)
+        IF (ZI(JXC) .EQ. 1) THEN
           FONACT(5) = .TRUE.
           FONACT(9) = .TRUE.
+        CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
+        IF (ZK24(JSOLVE)(1:5).NE.'MUMPS')
+     &                 CALL U2MESS('A','ALGORITH7_87')
         ENDIF
       ENDIF
 
@@ -158,8 +157,22 @@ C     CONTACT / FROTTEMENT
 C
 C ----------------------------------------------------------------------
 
-      CALL JEEXIN(DEFICO(1:16)//'.METHCO',ICONT)        
+      CALL JEEXIN(DEFICO(1:16)//'.METHCO',ICONT)
+      LVERIF=.FALSE.
       IF (ICONT.NE.0) THEN
+
+C       METHODE DE CONTACT UTILISEE:
+        CALL JEVEUO(DEFICO(1:16)//'.METHCO','L',JMETH)
+        ZMETH=CFMMVD('ZMETH')
+        NBZOCO=ZI(JMETH)
+        NVERI=0
+        DO 20 IZO=1,NBZOCO
+          IF(ZI(JMETH+ZMETH*(IZO-1)+6).EQ.-2)THEN
+             NVERI=NVERI+1
+          ENDIF
+ 20     CONTINUE
+        IF (NVERI.EQ.NBZOCO)LVERIF=.TRUE.
+
         CALL CFDISC(DEFICO,' ',TYPALC,TYPALF,IBID,IBID)
         IF (ABS(TYPALC).EQ.3) THEN
           FONACT(5) = .TRUE.
@@ -196,7 +209,7 @@ C ----------------------------------------------------------------------
       CALL  JEVEUO (LISCHA//'.INFC','L',JINFC)
       NBCHAR=ZI(JINFC)
       DO 10 ICHAR=1,NBCHAR
-        FONACT(13)=FONACT(13).OR.(ZI(JINFC+ICHAR).EQ.4) 
+        FONACT(13)=FONACT(13).OR.(ZI(JINFC+ICHAR).EQ.4)
  10   CONTINUE
 
 C ----------------------------------------------------------------------
@@ -227,7 +240,7 @@ C         MUMPS EST UNIQUEMENT AUTORISE AVEC METHODE='GCP'
           ENDIF
         ENDIF
 C       ON FORCE SYME='OUI' AVEC LE CONTACT DISCRET
-        IF (ZK24(JSOLVE+4).EQ.'NON') THEN
+        IF (ZK24(JSOLVE+4).EQ.'NON' .AND. (.NOT. LVERIF)) THEN
           ZK24(JSOLVE+4)='OUI'
           CALL U2MESS('A','CONTACT_1')
         ENDIF

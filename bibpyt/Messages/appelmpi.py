@@ -1,4 +1,4 @@
-#@ MODIF appelmpi Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF appelmpi Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,22 +23,19 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- &feti.liste.sd.mpi existe deja !
-"""),
-
-2: _("""
- &feti.liste.sd.mpib existe deja !
+ l'option est non prévue en non compilation MPI
 """),
 
 3: _("""
- En parallèle, il faut au moins un sous-domaine par processeur !
+ En parallèle, il faut au moins un sous-domaine par processeur
 """),
 
 4: _("""
- Processeur %(i1)d : option FETAM %(i2)d non prevue en compile MPI !
+ Processeur %(i1)d :
+ l'option FETAM %(i2)d est non prévue en compilation MPI
 """),
 
 5: _("""
- Erreur MPI: %(k1)s !
+ Erreur MPI: %(k1)s
 """),
 }

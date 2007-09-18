@@ -6,7 +6,7 @@
       CHARACTER*1 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ASSEMBLA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -888,8 +888,7 @@ C     -------------------------------------------
 
 C                 -- CALCUL DU NUMERO DE LA CMP ASSO
                   IF (ICDDLB.EQ.0) THEN
-                    IF (NOMGDS.NE.NOMTE(3:8)) CALL U2MESS('F','CALCULEL_
-     &13')
+                    CALL ASSERT(NOMGDS.EQ.NOMTE(3:8))
                     NOMCMP = NOMTE(10:16)
 
 C                   "GLUTE" POUR TEMP_INF ET TEMP_SUP :
@@ -904,7 +903,7 @@ C                   "GLUTE" POUR TEMP_INF ET TEMP_SUP :
                     CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGDS),
      &                          'LONMAX',NBCMP,KBID)
                     NDDLB = INDIK8(ZK8(IDNOCM),NOMCMP,1,NBCMP)
-                    IF (NDDLB.EQ.0) CALL U2MESS('F','CALCULEL_2')
+                    CALL ASSERT(NDDLB.NE.0)
                     ICDDLB = 1
                   END IF
 

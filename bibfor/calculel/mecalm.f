@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -344,8 +344,6 @@ C EN OUTPUT --> INFCHA ET INPSCO
               CALL U2MESK('A','SENSIBILITE_5',1,TYSD)
               GO TO 490
             END IF
-            CHARGE = INFCHA//'.LCHA'
-            INFOCH = INFCHA//'.INFC'
           END IF
 
 C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
@@ -677,11 +675,12 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
                   GO TO 440
                 END IF
               END IF
-              IF (TYPESE.NE.0) THEN
+              IF (TYPESE.EQ.-1) THEN
                 CHTESE = '&&'//NOMPRO//'.TEMP_SENSI'
-                CALL NMDETE(MODEL2,MATE2,CHARGE,INFOCH,TIME,
-     &                      TYPESE, STYPSE, NOPASE,
-     &                      CHTESE,LBID)
+                CALL NMDETE(MODEL2,MATE2,CARELE,NCHAR,ZK8(JCHA),TIME,
+     &                      TYPESE,NOPASE,CHTESE,LBID)
+              ELSE
+                CHTESE = ' '
               END IF
               CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
      &                    CHTEMP,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,

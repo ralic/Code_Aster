@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,7 +175,7 @@ C
       DO 100 IM = 1,NBM
          IOR = NUOR(IM)
          CALL RSEXCH ( BASE, 'DEPL', IOR, VALE(1:19), IRET )
-         IF ( IRET .NE. 0 ) CALL U2MESS('F','CALCULEL_62')
+         CALL ASSERT( IRET .EQ. 0 )
          CALL JEVEUO ( VALE, 'L', LVALE )
          RVAL1 = 0.0D0
          DO 90 IEQ = 0, NEQ-1

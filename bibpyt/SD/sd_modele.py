@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sd_modele SD  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ class sd_modele_XFEM(AsBase):
 
     XFEM_CONT   = AsVI()
     FISS   = AsVK8()
-    NFIS   = AsVI(lonmax=2,)  # nombre de fissures , degré de l'approximation
+    NFIS   = AsVI(lonmax=1,)  # nombre de fissures
     com1   = sd_xfem_com1(SDNom(nomj=''))
 
 #    glute_XFEM = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00000'))) # fiche 10833

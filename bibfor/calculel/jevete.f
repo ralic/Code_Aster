@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,11 +48,7 @@ C DEB-------------------------------------------------------------------
 
       NOMOB2 = NOMOBJ
       II = INDK24(ZK24(ININEL),NOMOB2,1,NBOBJ)
-      IF (II.EQ.0) THEN
-        CALL U2MESK('F','CALCULEL2_74',1,NOMOB2)
-      ELSE
-        IAD = ZI(IAINEL-1+II)
-      END IF
-   10 CONTINUE
+      CALL ASSERT(II.NE.0)
+      IAD = ZI(IAINEL-1+II)
 C FIN ------------------------------------------------------------------
       END

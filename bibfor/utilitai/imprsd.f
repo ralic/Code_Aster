@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD,TITRE
       INTEGER IFIC
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ C -DEB------------------------------------------------------------------
       TYP2SD = TYPESD
 
       IFR = IFIC
-      IF ((IFR.EQ.0) .OR. (IFR.GT.100)) CALL U2MESS('F','CALCULEL_2')
+      CALL ASSERT((IFR.NE.0) .AND. (IFR.LE.100))
       IBID = 0
 
 C     1. ECRITURE DU TITRE :

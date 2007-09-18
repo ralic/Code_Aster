@@ -1,7 +1,7 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,8 +74,7 @@ C DEB-------------------------------------------------------------------
       RNNEM = R8NNEM()
       KNNEM='????????'
 
-
-
+      CALL ASSERT((CODE.EQ.'ECRIT').OR.(CODE.EQ.'VERIF'))
       IF (CODE.EQ.'ECRIT') THEN
 C     ------------------------------------------------
 
@@ -108,7 +107,9 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'I') THEN
             ZI(IACHLO-1+LGGREL+1) = INNEM
           ELSE
-            CALL U2MESK('F','CALCULEL_40',1,TYPSCA)
+C         TEST ERREUR PROGRAMMEUR :
+C         TYPE_SCALAIRE NON AUTORISÉ (I/R/C),
+            CALL ASSERT(.FALSE.)
           END IF
    10   CONTINUE
 
@@ -146,7 +147,9 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'K24') THEN
             ZK24(IACHLO-1+LGGREL+1) = KNNEM
           ELSE
-            CALL U2MESK('F','CALCULEL_41',1,TYPSCA)
+C         TEST ERREUR PROGRAMMEUR :
+C         TYPE_SCALAIRE NON AUTORISÉ ((I/R/C/K8/K16/K24)
+            CALL ASSERT(.FALSE.)
           END IF
    20   CONTINUE
 
@@ -186,7 +189,9 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'I') THEN
             IF (ZI(IACHLO-1+LGGREL+1).NE.INNEM) ECRAS=.TRUE.
           ELSE
-            CALL U2MESK('F','CALCULEL_40',1,TYPSCA)
+C         TEST ERREUR PROGRAMMEUR :
+C         TYPE_SCALAIRE NON AUTORISÉ (I/R/C),
+            CALL ASSERT(.FALSE.)
           END IF
 
           IF (ECRAS) THEN
@@ -197,17 +202,12 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
              VALK(2) = NOMOPT
              VALK(3) = NOMPAR
              CALL U2MESK('E','CALCULEL_42', 3 ,VALK)
-
           END IF
-
-
 
    30   CONTINUE
 
-        IF (ARRET) CALL U2MESS('F','CALCULEL_43')
+        CALL ASSERT(.NOT.ARRET)
 
-      ELSE
-        CALL U2MESK('F','CALCULEL_44',1,CODE)
       END IF
 
 

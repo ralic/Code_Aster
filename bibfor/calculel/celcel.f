@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TRANSF,CEL1,BASE,CEL2
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +105,7 @@ C     -------------------------------------------
 
         NCMPG = ZI(JCESD1-1+2)
         NBVAMX = ZI(JCESD1-1+5)
-        IF (NCMPG.NE.NBVAMX) CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(NCMPG.EQ.NBVAMX)
 
 C     2.1 : CALCUL DE 2 VECTEURS CONTENANT LE NOMBRE DE
 C           POINTS DE SOUS-POINTS DES MAILLES
@@ -199,7 +199,8 @@ C     SOUS-POINTS :
 
 
       ELSE
-        CALL U2MESS('F','CALCULEL_45')
+C       CAS RESTANT A PROGRAMMER ...
+        CALL ASSERT(.FALSE.)
       END IF
 
    60 CONTINUE

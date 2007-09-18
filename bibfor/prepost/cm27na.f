@@ -3,7 +3,7 @@
      &                  NBTYMA, DEFFAC )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -143,7 +143,7 @@ C ------------ NOUVELLE FACE
                   GOTO 31
                END IF
  30         CONTINUE
-            CALL U2MESS('F','PREPOST_7')
+            CALL ASSERT(.FALSE.)
  31         CONTINUE
             NOMIMA(FACE,M)  = NOMI
             NOMIPE(1,NOMI) = NO1

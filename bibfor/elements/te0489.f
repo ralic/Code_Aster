@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBSIGM,NBDIM,JTAB(3)
+      INTEGER NBSIGM,JTAB(3)
       INTEGER IRET,NPG1,IPOIDS,IVF,IDFDE,JGANO
       INTEGER MXCMEL,NBPGMX,NNO,NBSIG,IDNORM,NNOS,IDSIG1,IDSIG2,IDVAR1,
      &        IDVAR2,NBSIG2,NPG,I,K,NDIM,IGAU,INO,IDINLO
@@ -88,7 +88,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 X1(MXCMEL),X2(MXCMEL)
       REAL*8 NORM1,NORM2,DNORM,R8PREM,TRSIG1,TRSIG2
       REAL*8 NORSIG,ZERO,UN,DEUX,UNTIER,ZERNOR
-      CHARACTER*8 MODELI
       CHARACTER*24 NORME
 C DEB ------------------------------------------------------------------
 
@@ -99,7 +98,6 @@ C      ---------------
       DEUX = 2.0D0
       UNTIER = 1.0D0/3.0D0
       ZERNOR = 10.0D0*R8PREM()
-      MODELI(1:2) = NOMTE(3:4)
 
       DO 10 I = 1,MXCMEL
         SIGMA1(I) = ZERO
@@ -116,9 +114,8 @@ C      ---------------
 
 
 C ----     DIMENSION DE L'ELEMENT :
-      NDIM = NBDIM(NOMTE)
 C ----     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
-      NBSIG = NBSIGM(MODELI)
+      NBSIG = NBSIGM()
 
 C ---- RECUPERATION DE LA CARTE DEFINISSANT LA NORME ADOPTEE :
 C      -----------------------------------------------------

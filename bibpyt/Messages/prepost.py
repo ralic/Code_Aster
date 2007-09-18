@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF prepost Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,10 +26,6 @@ cata_msg={
  GROUP_NO :  %(k1)s  inconnu dans le maillage
 """),
 
-2: _("""
- pour calculer le dommage, il faut définir le comportement "FATIGUE" dans DEFI_MATERIAU
-"""),
-
 3: _("""
  hors bornes définies dans CESCRE.
 """),
@@ -41,14 +37,6 @@ cata_msg={
 5: _("""
  la longueur du défaut n'est pas en accord avec les tables définies
  coté revetement et coté métal de base
-"""),
-
-6: _("""
- incohérence catalogue - FORTRAN
-"""),
-
-7: _("""
- erreur_dvp
 """),
 
 8: _("""
@@ -75,36 +63,9 @@ cata_msg={
   le type d entité  %(k1)s  est inconnu.
 """),
 
-14: _("""
- IPOI1 et IPOI4 non traité
-"""),
-
-15: _("""
- SPRIM négative bizarre
-"""),
-
-16: _("""
- AIRTOT ou ENER nul
-"""),
-
-17: _("""
- DO102=0 
-"""),
-
-18: _("""
- problème intersection cylindre tétraèdre
-"""),
-
-19: _("""
- VOLI négative bizarre
-"""),
-
-20: _("""
- VOLTOT ou ENER nul
-"""),
-
 21: _("""
- pas inters
+ Intersection Droite / Cercle
+ pas d'intersection trouvée
 """),
 
 22: _("""
@@ -114,10 +75,6 @@ cata_msg={
 
 23: _("""
  pb N2+N3
-"""),
-
-24: _("""
- cas idiot
 """),
 
 25: _("""
@@ -182,58 +139,12 @@ cata_msg={
  le vecteur est "AXE_Z" nul.
 """),
 
-39: _("""
- le coefficient de Goodman n'est pas calculable
-"""),
-
-40: _("""
- le coefficient de Gerber n'est pas calculable
-"""),
-
-41: _("""
- pour calculer le dommage de Lemaitre-Sermage,
- il faut définir le comportement DOMMA_LEMAITRE dans DEFI_MATERIAU
-"""),
-
-42: _("""
- pour calculer le dommage de Lemaitre_Sermage,
- il faut définir le comportement ELAS_FO dans DEFI_MATERIAU
-"""),
-
-43: _("""
- le matériau est obligatoire pour le calcul du dommage par Taheri_Manson
-"""),
-
-44: _("""
- une fonction doit etre introduite sous le mot clé TAHERI_FONC
-"""),
-
-45: _("""
- une nappe doit etre introduite sous le mot clé TAHERI_NAPPE
-"""),
-
 46: _("""
  erreur dans la création du fichier de maillage au format GIBI.
  Celui-ci ne contient pas d'objet de type maillage.
  
  Risque & Conseil:
  Assurez vous que votre procédure gibi sauvegarde bien les objets du maillage (pile 32 dans le formalisme GIBI)
-"""),
-
-47: _("""
- la courbe de MANSON_COFFIN est nécessaire pour le calcul du dommage TAHERI_MANSON_COFFIN
-"""),
-
-48: _("""
- le matériau est obligatoire pour le calcul du dommage par TAHERI_MIXTE
-"""),
-
-49: _("""
- la courbe de MANSON_COFFIN est nécessaire pour le calcul du dommage TAHERI_MIXTE
-"""),
-
-50: _("""
- la courbe de WOHLER est nécessaire pour le calcul du dommage TAHERI_MIXTE
 """),
 
 51: _("""
@@ -371,10 +282,6 @@ cata_msg={
  on traite les TRIA7 QUAD9 en oubliant le noeud centre
 """),
 
-81: _("""
-  : INOA=0
-"""),
-
 82: _("""
  écriture impossible pour  %(k1)s  au format MED
 """),
@@ -435,7 +342,7 @@ cata_msg={
 """),
 
 96: _("""
- fin de l''criture MED de  %(k1)s 
+ fin de l'écriture MED de  %(k1)s 
 """),
 
 97: _("""

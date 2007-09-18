@@ -3,7 +3,7 @@
      &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,8 +119,7 @@ C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT
 C EN PARALLELE SEUL LE PROCESSUS MAITRE CONSTRUIT CET OBJET VD0
       IF (RANG.EQ.0) THEN
 
-        IF ((OPTION.NE.1).AND.(OPTION.NE.2))
-     &    CALL U2MESS('F','ALGELINE_40')
+        CALL ASSERT((OPTION.EQ.1).OR.(OPTION.EQ.2))
         SDFETG=SDFETI//'.FETG'
 C---------------------------------------------------------------------
 C --------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,27 +23,30 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- manque les accelerations
+ manque les accélérations
 """),
 
 2: _("""
- pour une sd resultat de type  dyna_trans, seuls les mots_cles fonc_mult et coef_mult sont autorises
+ pour une SD RESULTAT de type DYNA_TRANS,
+ seuls les mots-clés FONC_MULT et COEF_MULT sont autorisés
 """),
 
 3: _("""
- pour un sd resultat de type  evol_elas,seul le mot-cle fonc_mult est  autorise
+ pour une SD RESULTAT de type  EVOL_ELAS,
+ seul le mot-clé fonc_mult est autorisé
 """),
 
 4: _("""
- l'utilisation d mot-cle fonc_mult n'est licite que pour les sd resultats:  evol_elas, dyna_trans, dyna_harmo
+ l'utilisation du mot-clé FONC_MULT n'est licite que pour
+ les SD RESULTATS :  EVOL_ELAS, DYNA_TRANS, DYNA_HARMO
 """),
 
 5: _("""
-  pour calculer  %(k1)s  il faut sief_elno_elga ou efge_elno_depl
+  pour calculer  %(k1)s  il faut SIEF_ELNO_ELGA ou EFGE_ELNO_DEPL
 """),
 
 6: _("""
-  option  %(k1)s  non traitee pour un resultat de type  %(k2)s 
+  option  %(k1)s  non traitée pour un résultat de type  %(k2)s 
 """),
 
 7: _("""
@@ -51,27 +54,30 @@ cata_msg={
 """),
 
 8: _("""
- attention : les champs sief_elga_depl, sief_elga, sigm_elno_coqu etsigm_elno_depl sont absents : on ne peut pas calculer l'option %(k1)s  avec la sd de type  %(k2)s 
+ les champs SIEF_ELGA_DEPL, SIEF_ELGA, SIGM_ELNO_COQU et SIGM_ELNO_DEPL sont absents :
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s 
 """),
 
 9: _("""
- attention : le champ  sigm_elno_depl est absent :  on ne peut pas calculer l'option %(k1)s  avec la sd de type  %(k2)s 
+ le champ  SIGM_ELNO_DEPL est absent :
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s 
 """),
 
 10: _("""
- attention : le champ  sigm_elno_coqu est absent :  on ne peut pas calculer l'option %(k1)s  avec la sd de type  %(k2)s 
+ le champ  SIGM_ELNO_COQU est absent :
+ on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s 
 """),
 
 11: _("""
- le resultat  %(k1)s  doit comporter un champ de deplacement au numero d'ordre  %(k2)s  .
+ le résultat  %(k1)s  doit comporter un champ de déplacement au numéro d'ordre  %(k2)s  .
 """),
 
 12: _("""
- le mot cle prec_err est obligatoire avec l'option sing_elem
+ le mot cle PREC_ERR est obligatoire avec l'option SING_ELEM
 """),
 
 13: _("""
- le mot cle prec_err doit etre strictement superieur a zero et inferieur ou egal a 1
+ le mot cle PREC_ERR doit etre strictement superieur à zéro et inférieur ou egal à 1
 """),
 
 14: _("""
@@ -79,15 +85,15 @@ cata_msg={
 """),
 
 15: _("""
- par defaut on utilise erre_elem_sigm
+ par défaut on utilise ERRE_ELEM_SIGM
 """),
 
 16: _("""
- par defaut on utilise erz2_elem_sigm
+ par défaut on utilise ERZ2_ELEM_SIGM
 """),
 
 17: _("""
- le resultat  %(k1)s  doit comporter un champ de contraintes au numero d'ordre  %(k2)s  .
+ le résultat  %(k1)s  doit comporter un champ de contraintes au numéro d'ordre  %(k2)s  .
 """),
 
 18: _("""
@@ -95,15 +101,15 @@ cata_msg={
 """),
 
 19: _("""
- probleme a l'appel de alchml pour  %(k1)s 
+ probleme à l'appel de ALCHML pour  %(k1)s 
 """),
 
 20: _("""
- pas de champ endommagement pour calculer  %(k1)s 
+ pas de champ d'endommagement pour calculer  %(k1)s 
 """),
 
 21: _("""
- le calcul avec l'option endo_elno_elga necessite au prealable un calcul avec l'option endo_elga
+ le calcul avec l'option ENDO_ELNO_ELGA nécessite au préalable un calcul avec l'option ENDO_ELGA
 """),
 
 22: _("""
@@ -123,7 +129,7 @@ cata_msg={
 """),
 
 28: _("""
- type de champ inconnue
+ type de champ inconnu
 """),
 
 29: _("""
@@ -131,11 +137,11 @@ cata_msg={
 """),
 
 30: _("""
- il faut un modele ou des charges.
+ il faut un modèle ou des charges.
 """),
 
 31: _("""
- la masse du macr_elem : %(k1)s  n'a pas encore ete calculee.
+ la masse du MACR_ELEM : %(k1)s  n'a pas encore ete calculée.
 """),
 
 32: _("""
@@ -143,33 +149,24 @@ cata_msg={
 """),
 
 33: _("""
- la rigidite du macr_elem : %(k1)s  n'a pas encore ete calculee.
+ la rigidité du MACR_ELEM : %(k1)s  n'a pas encore été calculée.
 """),
 
 34: _("""
- il manque des rigidites.
+ il manque des rigidités.
 """),
 
 35: _("""
- le modele doit contenir des elements finis ou des sous-structures.
+ le modèle doit contenir des éléments finis ou des sous-structures.
 """),
-
-
-
-
-
-
-
-
-
-
 
 38: _("""
  on ne traite pas le type_scalaire: %(k1)s 
 """),
 
 39: _("""
- le modele contient des elements de structure. il faut probablement utiliser le mot-cle cara_elem.
+ le modèle contient des éléments de structure
+ il faut probablement utiliser le mot-clé CARA_ELEM.
 """),
 
 40: _("""
@@ -178,31 +175,31 @@ cata_msg={
   -> Risque & Conseil :
      Ce message peut aider à comprendre un éventuel problème ultérieur lors de calculs élémentaires
      nécessitant des caractéristiques matérielles.
-     Vérifier si votre modélisation nécessite un CHAM_MATER.
+     Vérifiez si votre modélisation nécessite un CHAM_MATER.
 """),
 
 41: _("""
- les charges ne s'appuient pas toutes sur le meme modele.
+ les charges ne s'appuient pas toutes sur le meme modèle.
 """),
 
 42: _("""
- les charges ne s'apuient pas sur le modele donne en argument.
+ les charges ne s'appuient pas sur le modèle donné en argument.
 """),
 
 43: _("""
- les charges sont de type different.
+ les charges sont de type différent.
 """),
 
 44: _("""
- les charges ne s'appuient pas toutes sur le meme modele
+ les charges ne s'appuient pas toutes sur le meme modèle
 """),
 
 45: _("""
- donnees incorrectes.
+ données incorrectes.
 """),
 
 46: _("""
- calc_k_g : champ initial impossible
+ CALC_K_G : champ initial impossible
 """),
 
 47: _("""
@@ -210,7 +207,7 @@ cata_msg={
 """),
 
 48: _("""
- il faut definir la normale au fond de fissure
+ il faut définir la normale au fond de fissure
 """),
 
 49: _("""
@@ -218,19 +215,19 @@ cata_msg={
 """),
 
 50: _("""
-  il faut un modele
+  il faut un modèle
 """),
 
 51: _("""
- il manque le modele
+ il manque le modèle
 """),
 
 52: _("""
- le champ doit etre un cham_elem.
+ le champ doit être un CHAM_ELEM.
 """),
 
 53: _("""
- ne traite qu'un cham_elem reel
+ ne traite qu'un CHAM_ELEM réel
 """),
 
 54: _("""
@@ -289,21 +286,9 @@ cata_msg={
  pour calculer l'option  %(k1)s  les parametres suivants sont obligatoires: "pgeomer" et "pcontrr".
 """),
 
-
-
-
-
-
-
-
 69: _("""
  il n y a ni elements ni sous-struc
 """),
-
-
-
-
-
 
 71: _("""
  il faut 1 chargement de rotation et un seul. 
@@ -338,7 +323,7 @@ cata_msg={
 """),
 
 79: _("""
- la matrice a est singuliere
+ la matrice A est singulière
 """),
 
 81: _("""
@@ -347,10 +332,6 @@ cata_msg={
 
 82: _("""
  le mode local est de type matrice non_carree
-"""),
-
-83: _("""
- 4
 """),
 
 84: _("""
@@ -362,27 +343,27 @@ cata_msg={
 """),
 
 86: _("""
-  %(k1)s  non prevu
+  %(k1)s  non prévu
 """),
 
 87: _("""
- elrefe inconnu  %(k1)s 
+ ELREFE inconnu  %(k1)s 
 """),
 
 88: _("""
- les charges sont incoherentes avec le modele.
+ les charges sont incohérentes avec le modèle.
 """),
 
 89: _("""
- erreur: les charges ne s appuient pas toutes sur le meme modele.
+ les charges ne s'appuient pas toutes sur le même modèle.
 """),
 
 90: _("""
- le champ de theta est inexistant dans la structure de donnees  %(k1)s  de type theta_geom .
+ le champ de THETA est inexistant dans la structure de données  %(k1)s  de type THETA_GEOM .
 """),
 
 91: _("""
- erreur: une des charges n'est pas mecanique
+ une des charges n'est pas mécanique
 """),
 
 92: _("""
@@ -390,27 +371,30 @@ cata_msg={
 """),
 
 93: _("""
- erreur: une des charges n'est pas acoustique
+ une des charges n'est pas acoustique
 """),
 
 94: _("""
- erreur: le champ doit etre un cham_elem aux points de gauss
+ le champ doit être un CHAM_ELEM aux points de gauss
 """),
 
 95: _("""
- avec un cham_elem calcule sur une liste de maille, il faut utiliser le mot cle "modele:"
+ avec un CHAM_ELEM calcule sur une liste de maille,
+ il faut utiliser le mot cle "MODELE"
 """),
 
 96: _("""
- pour prendre en compte les termes d'inertie il est preferable d'utiliser la commande "calc_elem". le mot cle "acce" n'est pas traite et les resultats risquent d'etre faux.
+  pour prendre en compte les termes d'inertie,
+  il est préférable d'utiliser la commande "CALC_ELEM".
+  le mot cle "ACCE" n'est pas traité et les résultats risquent d'être faux.
 """),
 
 97: _("""
- le champ de nom symbolique theta existe deja dans la s.d. resultat  %(k1)s 
+ le champ de nom symbolique THETA existe deja dans la SD RESULTAT  %(k1)s 
 """),
 
 98: _("""
- le champ de nom symbolique grad_noeu_theta existe deja dans la s.d. resultat  %(k1)s 
+ le champ de nom symbolique GRAD_NOEU_THETA existe deja dans la SD RESULTAT  %(k1)s 
 """),
 
 99: _("""

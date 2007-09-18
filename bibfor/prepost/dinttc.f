@@ -2,7 +2,7 @@
      &                   R,NORM,NINT,NHOP,NPIR,COORD,NBI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,7 +243,7 @@ C IL FAUT CHERCHER DE QUEL COTE DU CYLINDRE EST LE POINT A
               ELSE IF ( DAO1.EQ.0.0D0 .OR. DAO2.EQ.0.0D0 ) THEN
                 LAMBDA = 0.0D0
               ELSE
-                CALL U2MESS('F','PREPOST_24')
+                CALL ASSERT(.FALSE.)
               ENDIF
               IF ( ABS(1.D0-LAMBDA).LE.1.0D-10 ) THEN
                 LAMBDA = 1.0D0

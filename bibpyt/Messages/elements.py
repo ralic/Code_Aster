@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF elements Messages  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -410,6 +410,13 @@ cata_msg={
 
 89: _("""
  le fond de fissure ne doit etre défini que par un noeud
+"""),
+
+90: _("""
+Erreur de programmation :
+   L'attribut NBSIGM n'est pas défini pour cette modélisation.
+Solution :
+   Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
 """),
 
 91: _("""

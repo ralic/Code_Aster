@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -190,7 +190,7 @@ C              END IF
               END IF
 
             ELSE
-              CALL U2MESS('F','CALCULEL_2')
+              CALL ASSERT(.FALSE.)
             END IF
    10     CONTINUE
         ELSE
@@ -247,8 +247,7 @@ C     -----------------------------------
             ITE = ZI(IAGREL-1+N1)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITE),NOMTE)
             CALL DISMTE(CODMES,QUESTI,NOMTE,IGE1,REPK,IERD)
-            IF ((IGE1.LT.0) .OR. (IGE1.GT.3)) CALL U2MESS('F','CALCULEL_
-     &2')
+            CALL ASSERT((IGE1.GE.0) .AND. (IGE1.LE.3))
             IF ((IGE2.EQ.0) .AND. (IGE1.NE.0)) IGE2 = IGE1
             IF ((IGE1*IGE2.GT.0) .AND. (IGE1.NE.IGE2)) MELANG = .TRUE.
             IF (IGE1.GT.0) DIMGE(IGE1) = 1

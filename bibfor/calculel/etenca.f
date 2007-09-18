@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,9 +180,7 @@ C        ------- LISTE TARDIVE DE MAILLES ASSOCIEE A LA CARTE:
             IF (BONLIG) THEN
               DO 50 I = 1,NB
                 II = ZI(LIMA-1+I)
-                IF (II.GE.0) THEN
-                  CALL U2MESS('F','CALCULEL2_50')
-                END IF
+                CALL ASSERT(II.LT.0)
                 ZI(PTMS-1-II) = IGD
    50         CONTINUE
             END IF

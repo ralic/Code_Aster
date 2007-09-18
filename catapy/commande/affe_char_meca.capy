@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+#& MODIF COMMANDE  DATE 17/09/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -470,6 +470,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                 DIST_ESCL       =SIMP(statut='f',typ='R'),
                 VECT_NORM_ESCL  =SIMP(statut='f',typ='R',max=3),
                 VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
+                GROUP_MA_FOND   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            ),
 
            b_active        =BLOC(condition = "METHODE == 'CONTRAINTE' ",

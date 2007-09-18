@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,11 +73,6 @@ CMTH=AFFE_MATERIAU(       MAILLAGE=MA,
                                 AFFE=_F(  TOUT = 'OUI',
                                        MATER = MATH))
 
-CM=AFFE_MATERIAU(        MAILLAGE=MA,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MAT,
-                                         TEMP_REF = 0.))
-
 CHTH=AFFE_CHAR_THER(       MODELE=MOTH,TEMP_IMPO=(
                          _F( GROUP_NO = 'GRNM1',TEMP = -100.),
                          _F( GROUP_NO = 'GRNM3',TEMP = 100.)))
@@ -100,11 +95,16 @@ OUTTHL=THER_LINEAIRE(
 
 # CHARGEMENT ET CALCUL MECANIQUE POUR OBTENIR U ET DL(U)
 
-CH=AFFE_CHAR_MECA(       MODELE=MO,
-                         TEMP_CALCULEE=OUTTHL,DDL_IMPO=(
-                           _F(  GROUP_NO = 'GRNM2',      DY = 0.),
-                           _F(  GROUP_NO = 'GRNM4',      DY = 0.),
-                           _F(  NOEUD = 'N695',       DX = 0.)))
+CH=AFFE_CHAR_MECA(  MODELE=MO,
+                    #TEMP_CALCULEE=OUTTHL,
+                    DDL_IMPO=(
+                    _F(  GROUP_NO = 'GRNM2',      DY = 0.),
+                    _F(  GROUP_NO = 'GRNM4',      DY = 0.),
+                    _F(  NOEUD = 'N695',       DX = 0.)))
+
+CM=AFFE_MATERIAU( MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI', MATER = MAT),
+                  AFFE_VARC=_F(NOM_VARC='TEMP',TOUT = 'OUI', EVOL = OUTTHL, VALE_REF = 0.),)
 
 
 OUTMES=MECA_STATIQUE(SENSIBILITE=(THETAS,),
@@ -241,10 +241,6 @@ CMTH1=AFFE_MATERIAU(       MAILLAGE=MA,
                                 AFFE=_F(  TOUT = 'OUI',
                                        MATER = MATH))
 
-CM1=AFFE_MATERIAU(        MAILLAGE=MA,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MAT,
-                                         TEMP_REF = 0.))
 
 CHTH1=AFFE_CHAR_THER(       MODELE=MOTH1,TEMP_IMPO=(
                          _F( GROUP_NO = 'GRNM1',TEMP = -100.),
@@ -259,12 +255,16 @@ OUTTHL1=THER_LINEAIRE(
 
 # CHARGEMENT ET CALCUL MECANIQUE POUR OBTENIR U*
 
-CH1=AFFE_CHAR_MECA(        MODELE=MO1,
-                         TEMP_CALCULEE=OUTTHL1,DDL_IMPO=(
-                           _F(  GROUP_NO = 'GRNM2',      DY = 0.),
-                           _F(  GROUP_NO = 'GRNM4',      DY = 0.),
-                           _F(  NOEUD = 'N695',       DX = 0.)))
+CH1=AFFE_CHAR_MECA(  MODELE=MO1,
+                     #TEMP_CALCULEE=OUTTHL1,
+                     DDL_IMPO=(
+                     _F(  GROUP_NO = 'GRNM2',      DY = 0.),
+                     _F(  GROUP_NO = 'GRNM4',      DY = 0.),
+                     _F(  NOEUD = 'N695',       DX = 0.)))
 
+CM1=AFFE_MATERIAU( MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI', MATER = MAT),
+                  AFFE_VARC=_F(NOM_VARC='TEMP',TOUT = 'OUI', EVOL = OUTTHL1, VALE_REF = 0.),)
 
 OUTMES1=MECA_STATIQUE(MODELE=MO1,
                       CHAM_MATER=CM1,

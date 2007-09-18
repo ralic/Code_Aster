@@ -13,7 +13,7 @@ C
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -465,12 +465,10 @@ C
                            INOA=IAST
                            GO TO 529
                         END IF
- 528                  CONTINUE
+ 528                 CONTINUE
 
- 529                  CONTINUE
-                     IF (INOA.EQ.0) THEN
-                        CALL U2MESS('F','PREPOST_81')
-                     END IF
+ 529                 CONTINUE
+                     CALL ASSERT(INOA.NE.0)
 
                      DO 561 ICOU=1,NBCOU
                         JJ=IACHML-1+ZI(INBCTG+IGREL-1)*(INOA-1)+
@@ -541,9 +539,7 @@ C
                      END IF
    28             CONTINUE
    29             CONTINUE
-                  IF (INOA.EQ.0) THEN
-                     CALL U2MESS('F','PREPOST_81')
-                  END IF
+                  CALL ASSERT(INOA.NE.0)
                   DO 161 ICOU=1,NBCOU
                    J=IACHML-1+NCMPP*ICOEF*(INOA-1)+
      &                        (ICOU-1)*NCMPP*ICOEF*NNOE+NCMPP*(ICO-1)

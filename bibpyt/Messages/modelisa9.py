@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF modelisa9 Messages  DATE 17/09/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -525,6 +525,11 @@ Conseil :
 
 93: _("""
  ... 
+"""),
+
+94: _("""
+ Le jeu entre les noeuds milieux au niveau des lèvres risque
+ d'etre imprécis si les mailles en contact sont quadratiques.
 """),
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 # TITRE : APPLICATION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,17 +37,14 @@ ly = 1.0;
 
 PRE_GIBI();
 
-MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+MAILLAG2=LIRE_MAILLAGE(INFO=1,);
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=(_F(GROUP_MA='VOL'),
                                    _F(GROUP_MA='SURFSUP'),
                                    _F(GROUP_MA='SURFINF'),),
                     INFO=1,);
-
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='VOL'),);
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -56,7 +53,7 @@ MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
 MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
                AFFE=_F(GROUP_MA=('VOL',),
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='3D_XFEM',),);
+                       MODELISATION='3D',),);
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-0.5');
 #LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-0.5');
@@ -153,7 +150,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
 
 
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
+MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG2,
                        MODELE        = MODELEK)
 
 #IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE = MA_XFEM,))
@@ -167,7 +164,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                               MODELISATION='3D',),),
                               );  
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG2,
                         MAILLAGE_FISS = MA_XFEM,
                         MODELE        = MODELEK,
                         MODELE_VISU   = MOD_VISU,

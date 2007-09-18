@@ -1,6 +1,6 @@
       SUBROUTINE CNSIMP(CNSZ,UNITE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,13 +88,8 @@ C     ------------------------------------------------------------
         LICMPU(NCMPU) = K
    30 CONTINUE
 
-
-
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      IF ((TSCA.NE.'R') .AND. (TSCA.NE.'K8') .AND. (TSCA.NE.'I'))
-     & CALL U2MESS('F','CALCULEL2_16')
-
-
+      CALL ASSERT((TSCA.EQ.'R').OR.(TSCA.EQ.'K8').OR.(TSCA.EQ.'I'))
 
 C     1- ALLOCATION D'UN TABLEAU DE K16 QUI CONTIENDRA LES VALEURS
 C         D'UNE LIGNE A ECRIRE
@@ -105,7 +100,7 @@ C     ------------------------------------------------------------
 C     2- FORMAT DES LIGNES :
 C     ----------------------
       FMT = '(A12,XXX(''|'',A12))'
-      IF (NCMPU.GT.997) CALL U2MESS('F','CALCULEL_80')
+      CALL ASSERT(NCMPU.LE.997)
       CALL CODENT(NCMPU,'D',FMT(6:8))
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # TITRE TEST FLUAGE EN 3D LEMAITRE, UTILISANT SIMU_PONT_MAT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 
 DEBUT(CODE=_F(NOM='COMP002A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
-from Outils.veri_matr_tang import VERI_MATR_TANG
+from Utilitai.veri_matr_tang import VERI_MATR_TANG
 
 #parametres vitesse de sollicitation
 vitesse = 1.e-5

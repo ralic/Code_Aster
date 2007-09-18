@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 17/07/2007   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF utilitai Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,10 +50,6 @@ cata_msg={
  pb norme de axe
 """),
 
-8: _("""
- erreur dans fointc
-"""),
-
 9: _("""
  dimension  %(k1)s  inconnue.
 """),
@@ -63,47 +59,44 @@ cata_msg={
 """),
 
 11: _("""
- on ne peut pas creer un champ de vari_r avec le mot cle facteur affe (voir u2.01.09)
+ on ne peut pas créer un champ de VARI_R avec le mot cle facteur AFFE
+ (voir u2.01.09)
 """),
 
 12: _("""
- mot cle affe/noeud interdit ici.
+ mot clé AFFE/NOEUD interdit ici.
 """),
 
 13: _("""
- mot cle affe/group_no interdit ici.
+ mot clé AFFE/GROUP_NO interdit ici.
 """),
 
 14: _("""
- type scalaire non traite :  %(k1)s
+ type scalaire non traité :  %(k1)s
 """),
 
 15: _("""
- incoherence entre nombre de composantes et nombre de valeurs
+ incohérence entre nombre de composantes et nombre de valeurs
 """),
 
 16: _("""
- il faut champ de fonctions svp
+ il faut donner un champ de fonctions
 """),
 
 17: _("""
- les parametres doivent etre reels
+ les parametres doivent être réels
 """),
 
 18: _("""
- maillages diff.
-"""),
-
-19: _("""
- erreur pgmeur: augmenter nbpumx.
+ maillages différents
 """),
 
 20: _("""
- le champ  %(k1)s n'est pas de type reel
+ le champ  %(k1)s n'est pas de type réel
 """),
 
 21: _("""
- on ne traite que des "cham_no" ou des "cham_elem".
+ on ne traite que des "CHAM_NO" ou des "CHAM_ELEM".
 """),
 
 22: _("""
@@ -115,15 +108,15 @@ cata_msg={
 """),
 
 24: _("""
- le nom symbolique:  %(k1)s  est illicite pour ce resultat
+ le nom symbolique:  %(k1)s  est illicite pour ce résultat
 """),
 
 25: _("""
- le champ cherche n'a pas encore ete calcule.
+ le champ cherché n'a pas encore été calculé.
 """),
 
 26: _("""
- pas la meme numerotation sur les cham_nos.
+ pas la meme numerotation sur les CHAM_NO.
 """),
 
 27: _("""
@@ -131,11 +124,11 @@ cata_msg={
 """),
 
 28: _("""
- champ non-assemblable en cham_no:  %(k1)s
+ champ non-assemblable en CHAM_NO:  %(k1)s
 """),
 
 29: _("""
- champ non-assemblable en cham_elem (elga):  %(k1)s
+ champ non-assemblable en CHAM_ELEM (ELGA):  %(k1)s
 """),
 
 30: _("""
@@ -210,20 +203,17 @@ cata_msg={
   le mot cle : %(k1)s n est pas autorise.
 """),
 
-
-
-
-
 49: _("""
- la question : " %(k1)s " est inconnue
+  DISMOI :
+  la question : " %(k1)s " est inconnue
 """),
 
 50: _("""
- cham_elem inexistant:  %(k1)s
+ CHAM_ELEM inexistant:  %(k1)s
 """),
 
 51: _("""
- il n y a pas de nume_ddl pour ce cham_no
+ il n y a pas de NUME_DDL pour ce CHAM_NO
 """),
 
 52: _("""
@@ -247,23 +237,18 @@ cata_msg={
 """),
 
 57: _("""
-  la question n'a pas de reponse sur une grandeur de type matrice gd_1 x gd_2
-"""),
-
-58: _("""
- situation imprevue.
+  DISMOI :
+  la question n'a pas de réponse sur une grandeur de type matrice gd_1 x gd_2
 """),
 
 59: _("""
+  DISMOI :
   la question n'a pas de sens sur une grandeur de type matrice gd_1 x gd_2
 """),
 
 60: _("""
-  la question n'a pas de sens sur une grandeur de type composee
-"""),
-
-61: _("""
- imprevu
+  DISMOI :
+  la question n'a pas de sens sur une grandeur de type composée
 """),
 
 62: _("""
@@ -274,20 +259,12 @@ cata_msg={
  phenomene inconnu :  %(k1)s
 """),
 
-64: _("""
- probleme dismoi.
-"""),
-
 65: _("""
  le type de concept : " %(k1)s " est inconnu
 """),
 
 66: _("""
- le phenomene :  %(k1)s  est inconnu.
-"""),
-
-67: _("""
- 2
+ le phénomène :  %(k1)s  est inconnu.
 """),
 
 68: _("""
@@ -295,15 +272,15 @@ cata_msg={
 """),
 
 69: _("""
- le resulat compose ne contient aucun champ
+ le resultat composé ne contient aucun champ
 """),
 
 70: _("""
- type_maille inconnu.
+ TYPE_MAILLE inconnu.
 """),
 
 71: _("""
- mauvaise recuperation de nema
+ mauvaise recuperation de NEMA
 """),
 
 72: _("""
@@ -331,19 +308,20 @@ cata_msg={
 """),
 
 78: _("""
-  erreur dans la  recuperation  du maillage!
+  erreur dans la  recuperation  du maillage
 """),
 
 79: _("""
-  erreur dans la  recuperation  du nombre de mailles !
+  erreur dans la récuperation du nombre de mailles
 """),
 
 80: _("""
-  gruopage :                                                            groupe_ma non present !
+  groupe_ma non présent
 """),
 
 81: _("""
-  erreur a l'appel de metis plus aucune unite logique libre !
+  erreur à l'appel de METIS
+  plus aucune unité logique libre
 """),
 
 82: _("""
@@ -399,22 +377,14 @@ cata_msg={
 """),
 
 95: _("""
- "interp_nume" et ("inst" ou "list_inst") non compatibles
+ "INTERP_NUME" et ("INST" ou "LIST_INST") non compatibles
 """),
 
 96: _("""
- "interp_nume" et ("freq" ou "list_freq") non compatibles
-"""),
-
-97: _("""
- erreur 0
-"""),
-
-98: _("""
- 1bis
+ "INTERP_NUME" et ("FREQ" ou "LIST_FREQ") non compatibles
 """),
 
 99: _("""
- erreur 1
+ objet %(k1)s inexistant
 """),
 }

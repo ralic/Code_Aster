@@ -1,7 +1,7 @@
       SUBROUTINE OP0113(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,8 +63,8 @@ C
       INTEGER         NMAENR,NB1
       INTEGER         NFISS,JNFIS,NFISMX
       INTEGER         JDIME,JCONX1,JCONX2
-      INTEGER         NDIM,NDEGRE
-      CHARACTER*16    MOTFAC,K16BID,DEGRE
+      INTEGER         NDIM
+      CHARACTER*16    MOTFAC,K16BID
       CHARACTER*19    LIGR1,LIGR2
       CHARACTER*24    LIEL1,LIEL2
       CHARACTER*24    XINDIC,GRP(3),MAIL2
@@ -73,7 +73,7 @@ C
       INTEGER         JTAB
       INTEGER         JXC     
       PARAMETER       (NFISMX=100)
-      CHARACTER*8     MODELX,MOD1,FISS(NFISMX),K8BID,NOMA,K8REP
+      CHARACTER*8     MODELX,MOD1,FISS(NFISMX),K8BID,NOMA,K8CONT
       LOGICAL         LHEAV
       CHARACTER*19    PINTTO,CNSETO,HEAVTO,LONCHA
       CHARACTER*19    BASLOC,LTNO,LNNO,STNO 
@@ -115,15 +115,6 @@ C
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
       CALL JEVEUO(NOMA(1:8)//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',JCONX2)
-C
-C --- DEGRE D'APPROXIMATION DU DEPLACEMENT
-C
-      CALL GETVID(MOTFAC,'DEGRE_DEPL'  ,1,1,1,DEGRE,IBID)
-      IF (DEGRE.EQ.'LINEAIRE') THEN
-        NDEGRE = 1
-      ELSEIF (DEGRE.EQ.'QUADRATIQUE') THEN
-        NDEGRE = 2
-      ENDIF
 C      
 C --- RECUPERER LE NOMBRE DE FISSURES
 C      
@@ -140,22 +131,18 @@ C
 C      
 C --- CREATION DES OBJETS POUR MULTIFISSURATION DANS MODELE MODIFIE
 C
-      CALL WKVECT(MODELX(1:8)//'.NFIS'  ,'G V I'  ,2    ,JNFIS)
+      CALL WKVECT(MODELX(1:8)//'.NFIS'  ,'G V I'  ,1    ,JNFIS)
       CALL WKVECT(MODELX(1:8)//'.FISS'  ,'G V K8' ,NFISS,JMOFIS) 
       ZI(JNFIS)   = NFISS
-      ZI(JNFIS+1) = NDEGRE
       DO 10 IFISS = 1,NFISS
         ZK8(JMOFIS+IFISS-1) = FISS(IFISS)
  10   CONTINUE  
 C
 C --- CONTACT ?
 C
-      CALL GETVTX(MOTFAC,'CONTACT',1,1,1,K8REP,IBID)
+      CALL GETVTX(MOTFAC,'CONTACT',1,1,1,K8CONT,IBID)
       CALL WKVECT(MODELX(1:8)//'.XFEM_CONT'  ,'G V I'  ,1,JXC)
-      IF (K8REP.EQ.'OUI') THEN
-        IF (NDEGRE.EQ.2) THEN
-          CALL U2MESS('F','XFEM_12')
-        ENDIF
+      IF (K8CONT.EQ.'OUI') THEN
         ZI(JXC) = 1
       ELSE   
         ZI(JXC) = 0 
@@ -212,7 +199,7 @@ C ---------------------------------------------------------------------
 C       2)  MODIFICATION DE TAB EN FONCTION DE L'ENRICHISSEMENT
 C ---------------------------------------------------------------------
 C
-      CALL XMOLIG(LIEL1,NDEGRE,TRAV)
+      CALL XMOLIG(LIEL1,K8CONT,TRAV)
 C      
 C --- ON COMPTE LE NB DE MAILLES DU LIGREL1 (= NB DE GREL DE LIEL2)
 C
@@ -223,7 +210,7 @@ C
         ENDIF
  230  CONTINUE
       IF (NELT.EQ.0) THEN
-        CALL U2MESS('A','XFEM2_51')
+        CALL U2MESS('F','XFEM2_51')
       ENDIF  
 
 C-----------------------------------------------------------------------
@@ -320,15 +307,15 @@ C     si on est en 2D et sans mailles HEAV (seules portant le contact)
 C     bientot, toutes les mailles X-FEM 2D auront du contact, donc on 
 C     pourra virer ce IF
       IF (LHEAV.OR.NDIM .EQ.3) THEN
-        CALL XCONEL(MODELX,'.TOPOFAC.PI','G','RIGI_CONT',
+        CALL XCONEL(MODELX,'.TOPOFAC.PI','G','TOPOFA',
      &              'PPINTER',PINTER)
-        CALL XCONEL(MODELX,'.TOPOFAC.AI','G','RIGI_CONT',
+        CALL XCONEL(MODELX,'.TOPOFAC.AI','G','TOPOFA',
      &              'PAINTER',AINTER)
-        CALL XCONEL(MODELX,'.TOPOFAC.CF','G','RIGI_CONT',
+        CALL XCONEL(MODELX,'.TOPOFAC.CF','G','TOPOFA',
      &              'PCFACE' ,CFACE)
-        CALL XCONEL(MODELX,'.TOPOFAC.LO','G','RIGI_CONT',
+        CALL XCONEL(MODELX,'.TOPOFAC.LO','G','TOPOFA',
      &              'PLONCHA',FACLON)
-        CALL XCONEL(MODELX,'.TOPOFAC.BA','G','RIGI_CONT',
+        CALL XCONEL(MODELX,'.TOPOFAC.BA','G','TOPOFA',
      &              'PBASECO',BASECO)
       ENDIF
 C

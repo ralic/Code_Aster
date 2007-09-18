@@ -1,7 +1,7 @@
       SUBROUTINE TE0558 ( OPTION , NOMTE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,13 +47,13 @@ C
       REAL*8 EPSI, R8PREM
       REAL*8 DLAGTG, GRADU(3,3), UR, GRADDU(3,3), DUR
       REAL*8 LAMBDA(3), LAGUGT(4), KDLTID
-      REAL*8 INSTAN
+      REAL*8 INSTAN,DERTEM(27)
       REAL*8 R8AUX
 C
       INTEGER IGEOM, IMATE, IPOIDS, IVF, IDFDE
       INTEGER NNO, NPG, NDIM, NNOS, JGANO
       INTEGER KP, I, K, IDEB, IFIN
-      INTEGER ITEMPS, IDEPL, IDLAGT, IDLAGD
+      INTEGER ITEMPS, IDEPL, IDLAGD,IRET
       INTEGER IDLAGS
       INTEGER ITHETA
 
@@ -103,16 +103,20 @@ C
         ENDIF
   102 CONTINUE
 C
-      CALL JEVECH('PDLAGTE','L',IDLAGT)
-C
-      IDEB = IDLAGT
-      IFIN = IDLAGT + NNO - 1
+      DO 15, I = 1, NNO
+         DERTEM(I) = 0.D0
+15    CONTINUE
+
+      DO 16, I = 1, NNO
+         CALL RCVARC(' ','TEMP','-','NOEU',I,1,DERTEM(I),IRET)
+16    CONTINUE
+
       DLTNUL = .TRUE.
-      DO 103 , I = IDEB , IFIN
-        IF ( ABS(ZR(I)).GT.EPSI ) THEN
+      DO 103 , I = 1 , NNO
+        IF ( ABS(DERTEM(I)).GT.EPSI ) THEN
           DLTNUL = .FALSE.
         ENDIF
- 103  CONTINUE
+103   CONTINUE
 C
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PTEMPSR','L',ITEMPS)
@@ -166,7 +170,7 @@ C
         IF ( THTNUL ) THEN
 C
           DO 2211 , I = 1 , NNO
-            DLAGTG      = DLAGTG      + ZR(IDLAGT+I-1)*ZR(IVF+K+I-1)
+            DLAGTG      = DLAGTG      + DERTEM(I)*ZR(IVF+K+I-1)
             GRADDU(1,1) = GRADDU(1,1) + ZR(IDLAGD+2*I-2)*DFDX(I)
             GRADDU(1,2) = GRADDU(1,2) + ZR(IDLAGD+2*I-2)*DFDY(I)
             GRADDU(2,1) = GRADDU(2,1) + ZR(IDLAGD+2*I-1)*DFDX(I)
@@ -184,7 +188,7 @@ C
           GRADTH(2,1) = 0.D0
           GRADTH(2,2) = 0.D0
           DO 2212 , I = 1 , NNO
-            DLAGTG      = DLAGTG      + ZR(IDLAGT+I-1)*ZR(IVF+K+I-1)
+            DLAGTG      = DLAGTG      + DERTEM(I)*ZR(IVF+K+I-1)
             GRADDU(1,1) = GRADDU(1,1) + ZR(IDLAGD+2*I-2)*DFDX(I)
             GRADDU(1,2) = GRADDU(1,2) + ZR(IDLAGD+2*I-2)*DFDY(I)
             GRADDU(2,1) = GRADDU(2,1) + ZR(IDLAGD+2*I-1)*DFDX(I)

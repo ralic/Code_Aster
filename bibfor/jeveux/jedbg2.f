@@ -3,7 +3,7 @@
       INTEGER DBGAV,DBGAP
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,6 @@ C-----------------------------------------------------------------------
       ELSE IF (DBGAP.EQ.1) THEN
         IDEBUG=1
       ELSE
-        CALL U2MESS('F','CALCULEL_2')
+        CALL ASSERT(.FALSE.)
       END IF
       END
