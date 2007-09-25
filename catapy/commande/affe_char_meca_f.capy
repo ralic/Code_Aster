@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 24/09/2007   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
 AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
@@ -26,7 +26,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                             'PRES_REP','FORCE_POUTRE','VITE_FACE','IMPE_FACE','ONDE_PLANE',
                             'LIAISON_OBLIQUE','EPSI_INIT','LIAISON_GROUP','LIAISON_UNIF',
                             'LIAISON_SOLIDE','FORCE_COQUE','LIAISON_COQUE','FORCE_TUYAU',
-                           
+
 'CONTACT','EFFE_FOND','FLUX_THM_REP','LIAISON_UNILATER'),),
          VERI_DDL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
@@ -45,7 +45,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-           LIAISON         =SIMP(statut='f',typ='TXM',into=('ENCASTRE',)), 
+           LIAISON         =SIMP(statut='f',typ='TXM',into=('ENCASTRE',)),
            DX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            DY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            DZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
@@ -63,20 +63,20 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            DCZ             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            H1X             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            H1Y             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           H1Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),                  
+           H1Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E1X             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E1Y             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           E1Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),      
+           E1Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E2X             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E2Y             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           E2Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),      
+           E2Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E3X             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E3Y             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           E3Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),      
+           E3Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E4X             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            E4Y             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-           E4Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),      
-           LAGS_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),     
+           E4Z             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
+           LAGS_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
          FACE_IMPO       =FACT(statut='f',max='**',
@@ -101,6 +101,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            SANS_GROUP_MA   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            SANS_MAILLE     =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            DX              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            DY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            DZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
@@ -116,7 +118,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            DNOR            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            DTAN            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
-         
+
          LIAISON_DDL     =FACT(statut='f',max='**',
            fr="Définit une relation linéaire entre des DDLs de deux ou plusieurs noeuds, les valeurs sont fournies par"
                +" l'intermediaire d'un concept de type fonction",
@@ -143,8 +145,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            DRX             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            DRY             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            DRZ             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
-         ),         
-         
+         ),
+
          LIAISON_GROUP   =FACT(statut='f',max='**',
            fr="Définit la meme relation linéaire entre certains DDLs de couples de noeuds, les valeurs sont fournies par"
                +" l'intermédiaire de concept fonction",
@@ -181,30 +183,30 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
          ),
 #
 # LIAISON UNILATERALE
-# 
+#
          LIAISON_UNILATER=FACT(statut='f',max='**',
            fr="Définit les zones soumises à des conditions de liaison unilaterale (inegalite sur un DDL)",
            regles=(UN_PARMI('GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
-                                         
+
            GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-           NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),   
+           NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
 
            SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                 
+
            NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
 
-           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),           
-           
+           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
+
            COEF_IMPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-           COEF_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),         
+           COEF_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
 
            METHODE         =SIMP(statut='f',typ='TXM',defaut="CONTRAINTE",
                                  into=("CONTRAINTE","GCPC",) ),
-           
-                 
+
+
         ),
          CONTACT         =FACT(statut='f',
            fr="Définit les zones soumises à des conditions de contact unilatéral avec ou \sans frottement, certaines valeurs"
@@ -213,12 +215,12 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
                                  into=("NODAL","MAIT_ESCL","MAIT_ESCL_SYME")),
            RECHERCHE       =SIMP(statut='f',typ='TXM',defaut="NOEUD_BOUCLE",into=("NOEUD_BOUCLE","NOEUD_VOISIN")),
-           LISSAGE         =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),                 
+           LISSAGE         =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
            DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
            DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
            NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",into=("MAIT","MAIT_ESCL")),
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="CONTRAINTE",    
-                                 into=("CONTRAINTE","VERIF","LAGRANGIEN","PENALISATION","CONTINUE","GCP") ),           
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="CONTRAINTE",
+                                 into=("CONTRAINTE","VERIF","LAGRANGIEN","PENALISATION","CONTINUE","GCP") ),
            PROJECTION      =SIMP(statut='f',typ='TXM',defaut="LINEAIRE",into=("LINEAIRE","QUADRATIQUE") ),
            GROUP_MA_MAIT   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE_MAIT     =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -227,7 +229,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            b_cara         =BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
                CARA_ELEM       =SIMP(statut='o',typ=(cara_elem) ),
            ),
-                    
+
            b_verif         =BLOC(condition = "METHODE == 'VERIF' ",
                                  fr="Paramètres de la méthode sans calcul de contact",
                 STOP_INTERP     =SIMP(statut='f',typ='TXM',defaut="NON",
@@ -243,7 +245,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                                  fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
                 GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",
                                       into=("OUI","NON")),
-                b_glissiere     =BLOC(condition = "GLISSIERE == 'OUI' ",                    
+                b_glissiere     =BLOC(condition = "GLISSIERE == 'OUI' ",
                       ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),
                                  ),
                 TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
@@ -257,7 +259,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                 b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
                                  fr="Parametre de la reactualisation geometrique",
                       NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
-                      
+
                                  ),
 
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -293,14 +295,14 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                 DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                 regles=(EXCLUS('VECT_Y','VECT_ORIE_POU')),
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
-                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),                
+                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
                 b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
                      COULOMB         =SIMP(statut='o',typ='R',),
-                     COEF_MATR_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),  
+                     COEF_MATR_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
                      ),),
            b_penalisation       =BLOC(condition = "METHODE == 'PENALISATION' ",
                                       fr="Paramètres de la méthode pénalisée (contact avec ou sans frottement)",
-                E_N             =SIMP(statut='f',typ='R'), 
+                E_N             =SIMP(statut='f',typ='R'),
                 FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ),
                 TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
                 TOLE_PROJ_INT   =SIMP(statut='f',typ='R'  ,defaut=0.001),
@@ -308,7 +310,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                                       into=("OUI","NON")),
                 NB_RESOL        =SIMP(statut='f',typ='I', defaut=10 ),
                 ITER_MULT_MAXI  =SIMP(statut='f',typ='I',defaut=4),
-                
+
                 REAC_GEOM       =SIMP(statut='f',typ='TXM',defaut="AUTOMATIQUE",
                                       into=("AUTOMATIQUE","CONTROLE","SANS")),
 
@@ -323,22 +325,22 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                 DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                 regles=(EXCLUS('VECT_Y','VECT_ORIE_POU')),
                 VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3),
-                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),                
+                VECT_ORIE_POU   =SIMP(statut='f',typ='R',min=3,max=3),
                 b_frottement    =BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement de Coulomb",
                      COULOMB         =SIMP(statut='o',typ='R',),
                      E_T             =SIMP(statut='f',typ='R',
                                            fr="Active la pénalisation sur le frottement et définit le coefficient de pénalisation"),
-                     COEF_MATR_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),  
+                     COEF_MATR_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
                      ),),
            b_continue      =BLOC(condition = "METHODE == 'CONTINUE' ",
                                  fr="Paramètres de la méthode continue (contact avec ou sans frottement)",
 #                regles=(UN_PARMI('GLISSIERE','FROTTEMENT'),),
                 GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",
                                       into=("OUI","NON")),
-                b_glissiere     =BLOC(condition = "GLISSIERE == 'OUI' ",                    
+                b_glissiere     =BLOC(condition = "GLISSIERE == 'OUI' ",
                       ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),
                                  ),
-                FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ), 
+                FROTTEMENT      =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ),
                 COMPLIANCE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
                 INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",into=("GAUSS","NOEUD","SIMPSON","SIMPSON1","SIMPSON2",
                                                                                                 "NCOTES","NCOTES1","NCOTES2")),
@@ -378,21 +380,21 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                         into=("AUTOMATIQUE","CONTROLE","SANS")),
                 b_reac_sans     =BLOC(condition = "REAC_GEOM == 'SANS' ",
                                  fr="Paramètre de la réactualisation géométrique",
-                      
+
                       STOP_REAC_GEOM =SIMP(statut='f',typ='TXM',defaut="NON",
                                            into=("OUI","NON")),
                                  ),
                 b_reac_geom     =BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
                                  fr="Paramètre de la réactualisation géométrique",
                       NB_REAC_GEOM   =SIMP(statut='o',typ='I'),
-                      
+
                       STOP_REAC_GEOM =SIMP(statut='f',typ='TXM',defaut="ALARME",
                                            into=("OUI","NON")),
                                  ),
                 b_reac_auto     =BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
                       fr="Paramètre de la réactualisation géométrique auto",
                       NB_REAC_MAXI   =SIMP(statut='o',typ='I',defaut = 10),
-                                 ), 
+                                 ),
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
@@ -401,8 +403,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                 DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                 DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            ),
-         ),        
-         
+         ),
+
           LIAISON_UNIF    =FACT(statut='f',max='**',
            fr="Impose une meme valeur (inconnue) à des DDLs d'un ensemble de noeuds",
            regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
@@ -494,7 +496,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            FY              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            FZ              =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
-         
+
          PRES_REP        =FACT(statut='f',max='**',
            fr="Applique une pression à un domaine de milieu continu 2D ou 3D ou à un domaine de coques et tuyaux, dont les"
                +" valeurs imposées (pression et/ou cisaillement) sont fournies par l'intermédiaire d'un concept fonction",
@@ -535,7 +537,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            EPXZ            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            EPYZ            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
-         
+
          FORCE_POUTRE    =FACT(statut='f',max='**',
            fr="Applique des forces linéiques sur des éléments de type poutre dont les valeurs sont fournies par"
                +" l'intermédiaire d'un concept fonction",
@@ -570,7 +572,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            PRES            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
-         
+
          FORCE_COQUE     =FACT(statut='f',max='**',
            fr="Applique des forces surfaciques sur des éléments de types coques dont les valeurs sont fournies par"
                +" l'intermédiaires d'un concept fonction",
@@ -620,8 +622,8 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES",) ),
-         ),         
-         
+         ),
+
 
          VITE_FACE       =FACT(statut='f',max='**',
            fr="Impose des vitesses normales à une face (phénomène ACOUSTIQUE) dont les valeurs sont fournies par"

@@ -1,6 +1,7 @@
       SUBROUTINE MMELTY(NOMA,NUMA,ALIAS,NNO,NDIM)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,19 +18,24 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*8 NOMA
       INTEGER     NUMA
       CHARACTER*8 ALIAS
       INTEGER     NNO
       INTEGER     NDIM
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
 C RETOURNE UN ALIAS POUR UN TYPE D'ELEMENT, LE NOMBRE DE NOEUDS
 C DE CET ELEMENT ET SA DIMENSION
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NUMA   : NUMERO ABSOLU DE LA MAILLE
@@ -108,10 +114,10 @@ C
         NNO = 9
         NDIM = 3
       ELSE
-        CALL U2MESS('F','ALGORITH5_92')
+        CALL ASSERT(.FALSE.)
       END IF
       IF ((NDIM.NE.2).AND.(NDIM.NE.3)) THEN
-        CALL U2MESS('F','ALGORITH5_93')
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
       CALL JEDEMA()

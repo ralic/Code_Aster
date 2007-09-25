@@ -1,10 +1,8 @@
-      SUBROUTINE REDCEX(DEFICO,NOMA,INI,POSMA,IZONE,NORMA,VECNTD,
-     &                  NEQ,VECNTX,VECNTY,VECNTZ,EXNOE,IFM,
-     &                  PREMIE)
-C ======================================================================
+      SUBROUTINE REDCEX(NEQ   ,NOMA  ,DEFICO,RESOCO,NORM  ,
+     &                  NUMNO ,POSMA ,EXNOE)
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,44 +19,38 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER INI,POSMA,NEQ,IZONE,IFM
-      REAL*8 NORMA(3)
+      INTEGER      NUMNO,POSMA,NEQ
+      REAL*8       NORM(3)
+      CHARACTER*24 DEFICO,RESOCO
+      LOGICAL      EXNOE
       CHARACTER*8  NOMA
-      CHARACTER*24 DEFICO
-      LOGICAL EXNOE,PREMIE
+C      
+C ----------------------------------------------------------------------
 C
-C ---------------------------------------------------------------------
-C ROUTINE APPELEE PAR : MMMBCA
-C ---------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT - UTILITAIRE)
+C
 C DETECTION DE RELATIONS DE CONTACT REDONDANTES AVEC
 C LES CONDITIONS AUX LIMITES DDL_IMPO ET LIAISON_DDL
-C
-C VAR DEFICO      : SD POUR LA DEFINITION DE CONTACT
-C IN  INI                : NUMERO D'ORDRE DU NOEUD
-C IN  POSMA        : POSITION DE LA MAILLE DANS TABLEAU
-C IN  IZONE          : ZONE DE CONTACT  
-C IN  NORMA        : VECTEUR NORMAL AU NOEUD MAITRE APPARIE
-C IN  NEQ             :
-C IN  VECNOD      : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                            DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C IN VECNOX     : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                            DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C                            PORTANT SUR LE DDL 'DX'
-C IN VECNOY     : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                            DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C                            PORTANT SUR LE DDL 'DY'
-C IN VECNOZ     : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                            DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C                            PORTANT SUR LE DDL 'DZ'
-C OUT EXNOE       : VAUT .TRUE. SI LE NOEUD DOIT ETRE EXCLU DE 
-C                            LA SURFACE DE CONTACT (PIVOT NUL)
+C      
+C ----------------------------------------------------------------------
 C
 C
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NEQ    : NOMBRE D'EQUATIONS DU SYSTEME
+C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT 
+C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+C IN  NUMNO  : NUMERO D'ORDRE DU NOEUD
+C IN  POSMA  : POSITION DE LA MAILLE DANS TABLEAU  
+C IN  NORM   : VECTEUR NORMAL AU NOEUD MAITRE APPARIE
+C OUT EXNOE  : VAUT .TRUE. SI LE NOEUD DOIT ETRE EXCLU DE 
+C              LA SURFACE DE CONTACT (PIVOT NUL)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
+      CHARACTER*32  JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
@@ -67,160 +59,172 @@ C
       COMMON /CVARJE/ ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ ZL(1)
-      CHARACTER*8 ZK8,ALIAS
+      CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER JNOCO,JDIM,JNOMA,JPONO,NDIM,JMETH
-      INTEGER POSNOE,NUMNOE
-      INTEGER VECNTD(1,*),VECNTX(1,*),VECNTY(1,*),VECNTZ(1,*)
-      INTEGER I,J,K,NUMAES,JMACO,JDEC
-      REAL*8 VECT(3),PROV(3),NPROV
-      CHARACTER*8  NOMAES,NONOES
+      INTEGER      IFM,NIV
+      INTEGER      JNOCO,JDIM,JNOMA,JPONO,NDIM,JMETH
+      INTEGER      POSNOE,NUMNOE
+      INTEGER      I,K,NUMAES,JMACO,JDEC
+      REAL*8       PROV(3),NPROV,VECTX(3),VECTY(3),VECTZ(3)
       CHARACTER*24 CONTNO,PNOMA,NOMACO,NDIMCO,METHCO,COTAMA
-      LOGICAL EXNOX,EXNOY,EXNOZ
+      LOGICAL      EXNOX,EXNOY,EXNOZ
+      CHARACTER*8  VALK(2)
+      CHARACTER*24 VECNOD,VECNOX,VECNOY,VECNOZ  
+      INTEGER      JVECNO,JVECNX,JVECNY,JVECNZ 
+C
+      DATA VECTX    /1.D0,0.D0,0.D0/  
+      DATA VECTY    /0.D0,1.D0,0.D0/   
+      DATA VECTZ    /0.D0,0.D0,1.D0/                      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      
-      CONTNO = DEFICO(1:16) // '.NOEUCO'
-      NDIMCO = DEFICO(1:16) // '.NDIMCO'
-      NOMACO = DEFICO(1:16) // '.NOMACO'
-      PNOMA  = DEFICO(1:16) // '.PNOMACO'
-      METHCO = DEFICO(1:16) // '.METHCO'
-      COTAMA = DEFICO(1:16) //'.MAILCO'
-      
-      CALL JEVEUO(CONTNO, 'L', JNOCO)
-      CALL JEVEUO(NDIMCO,  'E', JDIM)
-      CALL JEVEUO(NOMACO,'L', JNOMA)
-      CALL JEVEUO(PNOMA,   'L', JPONO)
-      CALL JEVEUO(METHCO, 'L', JMETH)
-      CALL JEVEUO(COTAMA, 'L', JMACO)
-      
+      CALL INFDBG('CONTACT',IFM,NIV)
+C
+C --- AFFICHAGE
+C      
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<CONTACT> DETECTION AUTO. DES REDONDANCES '//
+     &                ' CONTACT/DIRICHLET' 
+      ENDIF             
+C
+C --- ACCES OBJETS
+C      
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      NDIMCO = DEFICO(1:16)//'.NDIMCO'
+      NOMACO = DEFICO(1:16)//'.NOMACO'
+      PNOMA  = DEFICO(1:16)//'.PNOMACO'
+      METHCO = DEFICO(1:16)//'.METHCO'
+      COTAMA = DEFICO(1:16)//'.MAILCO'
+C      
+      CALL JEVEUO(CONTNO,'L',JNOCO)
+      CALL JEVEUO(NDIMCO,'L',JDIM)
+      CALL JEVEUO(NOMACO,'L',JNOMA)
+      CALL JEVEUO(PNOMA ,'L',JPONO)
+      CALL JEVEUO(METHCO,'L',JMETH)
+      CALL JEVEUO(COTAMA,'L',JMACO)
+C
+C --- INITIALISATIONS 
+C
       NDIM   = ZI(JDIM)
       NUMAES = ZI(JMACO+POSMA-1)
       JDEC   = ZI(JPONO+POSMA-1)
-      POSNOE = ZI(JNOMA+JDEC+INI-1)
+      POSNOE = ZI(JNOMA+JDEC+NUMNO-1)
       NUMNOE = ZI(JNOCO+POSNOE-1)
-      EXNOX= .FALSE. 
-      EXNOY= .FALSE.
-      EXNOZ= .FALSE.
-      
+      EXNOX  = .FALSE. 
+      EXNOY  = .FALSE.
+      EXNOZ  = .FALSE.
+      EXNOE  = .FALSE.
+C
+C --- ACCES AUX STRUCTURES DE DONNEES POUR LA
+C --- GESTION AUTOMATIQUE DES RELATIONS REDONDANTES
+C 
+      VECNOD = RESOCO(1:14)//'.VECNOD'
+      VECNOX = RESOCO(1:14)//'.VECNOX'
+      VECNOY = RESOCO(1:14)//'.VECNOY'
+      VECNOZ = RESOCO(1:14)//'.VECNOZ'
+      CALL JEVEUO(VECNOD,'E',JVECNO)
+      CALL JEVEUO(VECNOX,'E',JVECNX)
+      CALL JEVEUO(VECNOY,'E',JVECNY)
+      CALL JEVEUO(VECNOZ,'E',JVECNZ)
+C
+C 
+C            
       DO 11, I=(1+NEQ),(2*NEQ)
-        IF(NUMNOE .EQ. VECNTD(1,I)) THEN
+        IF (NUMNOE .EQ. ZI(JVECNO+I-1)) THEN
           EXNOE =.TRUE.
         ENDIF
 11    CONTINUE      
       
       DO 12, K=1,NEQ
-        IF (NUMNOE .EQ. VECNTD(1,K)) THEN
-          IF(VECNTX(1,K) .EQ. 1) THEN
+        IF (NUMNOE .EQ. ZI(JVECNO+K-1)) THEN
+          IF (ZI(JVECNX+K-1) .EQ. 1) THEN
             EXNOX =.TRUE.
           ENDIF
-          IF(VECNTY(1,K) .EQ. 1) THEN
+          IF (ZI(JVECNY+K-1) .EQ. 1) THEN
             EXNOY =.TRUE.
           ENDIF           
-          IF(VECNTZ(1,K) .EQ. 1) THEN
+          IF (ZI(JVECNZ+K-1) .EQ. 1) THEN
             EXNOZ =.TRUE.
           ENDIF
         ENDIF  
 12    CONTINUE
       
-      IF (NDIM.EQ.2) THEN
-        
-        IF (EXNOX .AND. EXNOY) EXNOE=.TRUE.
-             IF (EXNOX .AND.(.NOT. EXNOY)) THEN 
-           VECT(1)= 1.D0
-           VECT(2)= 0.D0
-           VECT(3)= 0.D0                 
-           CALL PROVEC(NORMA,VECT,PROV)
-           NPROV=0.D0
-           DO 13, J=1,3
-             NPROV=PROV(J)*PROV(J)+NPROV 
-13         CONTINUE                  
-           IF(NPROV .EQ. 0.D0) EXNOE = .TRUE.              
+      IF (NDIM.EQ.2) THEN     
+        IF (EXNOX .AND. EXNOY) THEN
+          EXNOE=.TRUE.
+        ENDIF  
+        IF (EXNOX .AND.(.NOT. EXNOY)) THEN             
+          CALL PROVEC(NORM,VECTX,PROV)
+          CALL NORMEV(PROV,NPROV)              
+          IF (NPROV .EQ. 0.D0) THEN
+            EXNOE = .TRUE.              
+          ENDIF  
         ENDIF
-             IF ((.NOT. EXNOX) .AND. EXNOY) THEN 
-           VECT(1)= 0.D0
-           VECT(2)= 1.D0
-           VECT(3)= 0.D0                 
-           CALL PROVEC(NORMA,VECT,PROV)
-           NPROV=0.D0
-           DO 14, J=1,3
-             NPROV=PROV(J)*PROV(J)+NPROV 
-14         CONTINUE                  
-           IF(NPROV .EQ. 0.D0) EXNOE = .TRUE.              
+        IF ((.NOT. EXNOX) .AND. EXNOY) THEN               
+          CALL PROVEC(NORM,VECTY,PROV)
+          CALL NORMEV(PROV,NPROV)              
+          IF (NPROV .EQ. 0.D0) THEN
+            EXNOE = .TRUE.              
+          ENDIF            
         ENDIF
-      
       ELSE IF (NDIM.EQ.3) THEN
-        
-        IF (EXNOX .AND. EXNOY .AND.  EXNOZ) EXNOE=.TRUE.
-             IF (EXNOX .AND. EXNOY .AND.(.NOT. EXNOZ)) THEN 
-          IF(NORMA(3) .EQ. 0.D0) EXNOE = .TRUE.            
+        IF (EXNOX .AND. EXNOY .AND.  EXNOZ) THEN
+          EXNOE=.TRUE.
+        ENDIF  
+        IF (EXNOX .AND. EXNOY .AND.(.NOT. EXNOZ)) THEN 
+          IF (NORM(3) .EQ. 0.D0) EXNOE = .TRUE.            
         ENDIF
         IF (EXNOX .AND. EXNOZ .AND.(.NOT. EXNOY)) THEN 
-          IF(NORMA(2) .EQ. 0.D0) EXNOE = .TRUE.            
+          IF(NORM(2) .EQ. 0.D0) EXNOE = .TRUE.            
         ENDIF
         IF (EXNOY .AND. EXNOZ .AND.(.NOT. EXNOX)) THEN 
-          IF(NORMA(1) .EQ. 0.D0) EXNOE = .TRUE.            
+          IF(NORM(1) .EQ. 0.D0) EXNOE = .TRUE.            
         ENDIF
-             IF (EXNOX .AND.(.NOT. EXNOY).AND.(.NOT. EXNOZ)) THEN 
-           VECT(1)= 1.D0
-           VECT(2)= 0.D0
-           VECT(3)= 0.D0                 
-           CALL PROVEC(NORMA,VECT,PROV)
-           NPROV=0.D0
-           DO 15, J=1,3
-             NPROV=PROV(J)*PROV(J)+NPROV 
-15         CONTINUE                  
-           IF(NPROV .EQ. 0.D0) EXNOE = .TRUE.              
+        IF (EXNOX .AND.(.NOT. EXNOY).AND.(.NOT. EXNOZ)) THEN            
+          CALL PROVEC(NORM,VECTX,PROV)
+          CALL NORMEV(PROV,NPROV)              
+          IF (NPROV .EQ. 0.D0) THEN
+            EXNOE = .TRUE.              
+          ENDIF             
         ENDIF
-        IF ((.NOT. EXNOX) .AND. EXNOY .AND.(.NOT. EXNOZ)) THEN 
-           VECT(1)= 0.D0
-           VECT(2)= 1.D0
-           VECT(3)= 0.D0   
-           CALL PROVEC(NORMA,VECT,PROV)
-           NPROV=0.D0
-           DO 16, J=1,3
-              NPROV=PROV(J)*PROV(J)+NPROV 
-16      CONTINUE                     
-           IF(NPROV .EQ. 0.D0) EXNOE = .TRUE.     
+        IF ((.NOT. EXNOX) .AND. EXNOY .AND.(.NOT. EXNOZ)) THEN   
+          CALL PROVEC(NORM,VECTY,PROV)
+          CALL NORMEV(PROV,NPROV)              
+          IF (NPROV .EQ. 0.D0) THEN
+            EXNOE = .TRUE.              
+          ENDIF     
         ENDIF
         IF ((.NOT. EXNOX) .AND. (.NOT. EXNOY).AND. EXNOZ) THEN 
-           VECT(1)= 0.D0
-           VECT(2)= 0.D0
-           VECT(3)= 1.D0
-           CALL PROVEC(NORMA,VECT,PROV)
-           NPROV=0.D0
-           DO 17, J=1,3
-              NPROV=PROV(J)*PROV(J)+NPROV 
-17      CONTINUE                     
-           IF(NPROV .EQ. 0.D0) EXNOE = .TRUE.     
+          CALL PROVEC(NORM,VECTZ,PROV)
+          CALL NORMEV(PROV,NPROV)              
+          IF (NPROV .EQ. 0.D0) THEN
+            EXNOE = .TRUE.              
+          ENDIF     
         ENDIF       
-      
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
-      
-      IF (EXNOE .AND. PREMIE) THEN
-        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAES),NOMAES)
-        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NONOES)
-        WRITE(IFM,1000) 
-        WRITE(IFM,2000)  
-        WRITE(IFM,3000) NONOES 
-        WRITE(IFM,4000) NOMAES
-                      
- 1000   FORMAT (' <CONTACT>     * ATTENTION EXCLUSION AUTOMATIQUE')
- 2000   FORMAT (' <CONTACT>     ** PAR LA DETECTION DES PIVOTS NULS')
- 3000   FORMAT (' <CONTACT>     ** DU NOEUD ESCLAVE ',A8) 
- 4000   FORMAT (' <CONTACT>     ** DE LA MAILLE ESCLAVE ',A8) 
- 
-      END IF
-            
+C
+C --- AFFICHAGE
+C      
+      IF (NIV.GE.2) THEN
+        IF (.NOT.EXNOE) THEN
+          WRITE (IFM,*) '<CONTACT> PAS DE REDONDANCES DETECTEES'
+        ELSE
+          WRITE (IFM,*) '<CONTACT> REDONDANCES DETECTEES'        
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAES),VALK(1))
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),VALK(2))
+          CALL U2MESG('I','CONTACTDEBG_24',2,VALK,0,0,0,0.D0)
+        ENDIF
+      ENDIF      
+C        
       CALL JEDEMA()
       END

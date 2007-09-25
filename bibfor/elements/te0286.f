@@ -1,6 +1,6 @@
       SUBROUTINE TE0286(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,11 +31,11 @@ C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
-      CHARACTER*8        MODELI
       CHARACTER*4        FAMI
       REAL*8             SIGMA(162), BSIGMA(81), REPERE(7)
       REAL*8             INSTAN, NHARM, BARY(3)
       INTEGER            NBSIGM,IDIM
+      LOGICAL            LTEATT
 C
 C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
@@ -54,8 +54,6 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      MODELI(1:2) = NOMTE(3:4)
-C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
@@ -70,7 +68,7 @@ C     -----------------
       INSTAN      = ZERO
       NHARM       = ZERO
       NDIM2       = 2
-      IF (MODELI(1:2).EQ.'FO') THEN
+      IF (LTEATT(' ','FOURIER','OUI')) THEN
         NDIM = 3
       ENDIF
 C
@@ -123,18 +121,18 @@ C
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E.  1/2*SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIMTEP(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+      CALL SIMTEP(FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +            ZR(IGEOM),ZR(IDEPL),INSTAN,
      +            REPERE,ZI(IMATE),NHARM,SIGMA)
 C
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 C      -----------------------------------------------
-      CALL BSIGMC ( MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS, IVF, IDFDE,
+      CALL BSIGMC (  NNO, NDIM, NBSIG, NPG, IPOIDS, IVF, IDFDE,
      +              ZR(IGEOM), NHARM, SIGMA, BSIGMA )
 C
 C ---- CALCUL DU TERME EPSTH_T*D*EPSTH
 C      -------------------------------
-      CALL ETHDST(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+      CALL ETHDST(FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +            ZR(IGEOM),ZR(IDEPL),INSTAN,
      +            REPERE,ZI(IMATE),OPTION,ENTHTH)
 C

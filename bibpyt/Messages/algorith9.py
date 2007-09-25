@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith9 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,13 +132,6 @@ cata_msg={
   un VECT_ASSE n'est ni à valeurs réelles, ni à valeurs complexes.
 """),
 
-36: _("""
- erreur dans la découpe initiale des pas
-"""),
-
-37: _("""
- attention, ARRET=NON donc poursuite du calcul sans avoir eu convergence
-"""),
 
 39: _("""
  base modale et MATR_ASSE avec numérotations différentes

@@ -1,7 +1,7 @@
-      SUBROUTINE SIGTMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,NI,XYZ,
+      SUBROUTINE SIGTMC (FAMI,NNO,NDIM,NBSIG,NPG,NI,XYZ,
      +                   INSTAN,MATER,REPERE,OPTION,SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C                  SECHAGE AUX POINTS D'INTEGRATION
 C                  POUR LES ELEMENTS ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    MODELI         IN     K8       MODELISATION (AXI, FOURIER,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
@@ -45,7 +44,6 @@ C                                   AUX POINTS D'INTEGRATION
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           CHARACTER*8  MODELI
            CHARACTER*16 OPTION
            REAL*8       NI(1), XYZ(1), REPERE(7), SIGMA(1)
            REAL*8       INSTAN
@@ -53,13 +51,16 @@ C -----  ARGUMENTS
 C -----  VARIABLES LOCALES
            REAL*8       D(36), XYZGAU(3), EPSTH(6)
            INTEGER      IRET
+           CHARACTER*2  K2BID
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     -----------------
+      K2BID  = '  '
       ZERO   = 0.0D0
       NDIM2  = NDIM
-      IF (MODELI(1:2).EQ.'FO') THEN
+      IF (LTEATT(' ','FOURIER','OUI')) THEN
         NDIM2 = 2
       ENDIF
 C
@@ -93,7 +94,7 @@ C
 C  --      CALCUL DES DEFORMATIONS THERMIQUES/HYDRIQUE/DE SECHAGE
 C  --      AU POINT D'INTEGRATION COURANT
 C          ------------------------------
-          CALL EPSTMC(FAMI,MODELI, NDIM,INSTAN,'+',IGAU,1,
+          CALL EPSTMC(FAMI, NDIM,INSTAN,'+',IGAU,1,
      &                XYZGAU,REPERE,MATER, OPTION, EPSTH)
 
 
@@ -107,7 +108,7 @@ C           UN DEUX SUR LES DEFORMATIONS DE CISAILLEMENT )
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
-          CALL DMATMC(FAMI, MODELI, MATER, INSTAN,'+',IGAU,1,
+          CALL DMATMC(FAMI,K2BID, MATER, INSTAN,'+',IGAU,1,
      +                REPERE, XYZGAU, NBSIG, D, .FALSE.)
 C
 C  --      CONTRAINTES THERMIQUES/HYDRIQUE/DE SECHAGE AU POINT

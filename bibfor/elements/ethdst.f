@@ -1,9 +1,9 @@
-      SUBROUTINE ETHDST (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+      SUBROUTINE ETHDST (FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
      +                   IDFDE,XYZ,DEPL,INSTAN,REPERE,
      +                   MATER,OPTION,ENTHTH)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C                  POUR LES ELEMENTS ISOPARAMETRIQUES
 C
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    MODELI         IN     K8       MODELISATION (AXI, FOURIER,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
@@ -67,7 +66,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
            INTEGER      IPOIDS,IVF,IDFDE
-           CHARACTER*8  MODELI
            CHARACTER*16 OPTION
            CHARACTER*(*) FAMI
            REAL*8       XYZ(*), DEPL(*), REPERE(7)
@@ -79,6 +77,7 @@ C -----  VARIABLES LOCALES
            REAL*8       RAYON
            REAL*8       EPSITH(162),ENTHPG,DFDX(27),DFDY(27),DFDZ(27)
            REAL*8       POIDI
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -89,12 +88,12 @@ C     -----------------
 C
 C --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
-      CALL EPTHMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,REPERE,
+      CALL EPTHMC(FAMI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,REPERE,
      +          INSTAN,MATER,OPTION,EPSITH)
 C
 C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
-      CALL SIGTMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,
+      CALL SIGTMC(FAMI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,
      +            INSTAN,MATER,REPERE,K16BID,SIGTH)
 C
 C --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
@@ -102,14 +101,15 @@ C      ---------------------------------------------------------
       DO 20 IGAU = 1, NPG
          ENTHPG=0.D0
 C ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 3D
-         IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'TA') THEN
+
+         IF (LTEATT(' ','DIM_TOPO_MAILLE','3')) THEN
             CALL DFDM3D ( NNO, IGAU, IPOIDS, IDFDE,
      &                    XYZ, DFDX, DFDY, DFDZ, POIDI )
 C ----  CALCUL DU JACOBIEN*POIDS - CAS MASSIF 2D
          ELSE
             K=(IGAU-1)*NNO
             CALL DFDM2D( NNO,IGAU, IPOIDS,IDFDE,XYZ,DFDX,DFDY,POIDI)
-            IF (MODELI(1:2).EQ.'AX') THEN
+            IF (LTEATT(' ','AXIS','OUI')) THEN
                RAYON = 0.D0
                DO 41 I = 1, NNO
                   RAYON = RAYON + ZR(IVF+K-1+I)*XYZ(2*(I-1)+1)

@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF modelisa4 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -378,17 +378,6 @@ cata_msg={
  le ligret  %(k1)s  n"existe pas.
 """),
 
-84: _("""
- erreur sur ipma
-"""),
-
-85: _("""
- erreur sur ipno
-"""),
-
-86: _("""
- erreur sur ipnoqu
-"""),
 
 87: _("""
  mauvaise sortie de palima

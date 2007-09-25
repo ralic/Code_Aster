@@ -2,7 +2,7 @@
      &                  PROJ  ,LISSA ,MNORM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -151,7 +151,7 @@ C
           COEFTR(3) = - DEMI*KSI1*KSI2*(KSI1+KSI2)
           COEFTR(4) = - DEMI*(UN-KSI1)*KSI2*(UN-KSI1+KSI2)
         ELSE
-          CALL U2MESS('F','CONTACT_30')
+          CALL ASSERT(.FALSE.)
         ENDIF    
         MNORM(1) = COEFTR(1)*VLISSA(1) + COEFTR(2)*VLISSA(4) +
      &             COEFTR(3)*VLISSA(7)

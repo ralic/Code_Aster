@@ -1,10 +1,8 @@
-      SUBROUTINE MMELEM ( NOMTE, NDIM, NDDL, ESC, NNE, MAIT, NNM )
-      IMPLICIT NONE
-      INTEGER      NDIM, NDDL, NNE, NNM, I2D, I3D
-      CHARACTER*8  ESC, MAIT
-      CHARACTER*16 NOMTE
+      SUBROUTINE MMELEM(NOMTE ,NDIM  ,NDDL  ,ESC   ,NNE   ,
+     &                  MAIT  ,NNM )
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,12 +19,22 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : TE0364/TE0365
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      INTEGER      NDIM, NDDL, NNE, NNM
+      CHARACTER*8  ESC, MAIT
+      CHARACTER*16 NOMTE
+C      
 C ----------------------------------------------------------------------
 C
-C RETOURNE QUELQUES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+C
+C RETOURNE DES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
 C DEUX ELEMENTS DE SURFACE
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  NOMTE  : NOM DU TE DE L'ELEMENT DE CONTACT EN JEU
 C OUT NDIM   : DIMENSION DE LA MAILLE DE CONTACT
@@ -37,6 +45,11 @@ C OUT MAIT   : NOM DE LA MAILLE MAITRE
 C OUT NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 C
 C ----------------------------------------------------------------------
+C
+      INTEGER I2D,I3D
+C
+C ----------------------------------------------------------------------
+C
       IF (NOMTE(1:2).EQ.'CF') THEN
 C ----- COMPOSANTES 2D : LAGS_C   LAGS_F1
 C ----- COMPOSANTES 3D : LAGS_C   LAGS_F1  LAGS_F2
@@ -47,7 +60,7 @@ C ----- COMPOSANTE : LAGS_C
         I2D = 1
         I3D = 1
       ELSE
-        CALL U2MESS('F','ALGORITH5_90')
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C --- 2D
@@ -196,7 +209,7 @@ C
         NNM  = 2
         NDDL = NNM*NDIM + NNE*(NDIM+I3D)
       ELSE
-        CALL U2MESS('F','ALGORITH5_90')
+        CALL ASSERT(.FALSE.)
       END IF
 C
       END

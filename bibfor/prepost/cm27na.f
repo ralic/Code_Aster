@@ -1,9 +1,9 @@
-      SUBROUTINE CM27NA(NBMA  , NBNO  , LIMA  , CONNEZ, TYPEMA  ,
+      SUBROUTINE CM27NA(MAIN, NBMA  , NBNO  , LIMA  , TYPEMA  ,
      &                  MILIEU, NOMIMA, NOMIPE, MXNOFA, NBHE20,
      &                  NBTYMA, DEFFAC )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 24/09/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,19 +22,21 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
+      INTEGER      NFMAX
+      PARAMETER  ( NFMAX = 24 )
       INTEGER      NBMA,NBNO,LIMA(*),MXNOFA,TYPEMA(*),NBTRI
-      INTEGER      MILIEU(4,12,NBNO),NOMIMA(6,NBMA),NOMIPE(4,*),
+      INTEGER      MILIEU(4,NFMAX,NBNO),NOMIMA(6,NBMA),NOMIPE(4,*),
      &             NBTYMA, DEFFAC(4,0:6,NBTYMA),NOEUD(4),NBHE20,
      &             FACE,INO,NBFA
-      CHARACTER*(*) CONNEZ
+      CHARACTER*8 MAIN
       CHARACTER*24 CONNEX
 C ----------------------------------------------------------------------
 C                   DETERMINATION DES NOEUDS DES FACES
 C ----------------------------------------------------------------------
+C IN  MAIN    MAILLAGE EN ENTREE (POUR CONNECTIVITE ET )
 C IN  NBMA    NOMBRE DE MAILLES A TRAITER
 C IN  NBNO    NOMBRE TOTAL DE NOEUDS DU MAILLAGE
 C IN  LIMA    LISTE DES MAILLES A TRAITER
-C IN  CONNEZ  CONNECTION DES MAILLES (COLLECTION JEVEUX)
 C IN  TYPEMA  LISTE DES TYPES DES MAILLES
 C OUT MILIEU  REFERENCE DES FACES ET NOEUD MILIEU CORRESPONDANT
 C OUT NOMIMA  LISTE DES NOEUDS MILIEUX PAR MAILLE
@@ -65,10 +67,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER M, A, NO, MA, NBAR, NO1, NO2, NO3,NO4,I, NOMI, JTYP, TYMA
       INTEGER     JNOMA
-      CHARACTER*8 KBID
+      CHARACTER*8 KBID, NOMNOE
+      REAL*8      RBID
 C ----------------------------------------------------------------------
       CALL JEMARQ()
-      CONNEX = CONNEZ
+      CONNEX = MAIN//'.CONNEX'
 
 C --- INITIALISATION
 
@@ -80,7 +83,7 @@ C --- INITIALISATION
  2    CONTINUE
 
       DO 5 NO = 1, NBNO
-         DO 6 FACE = 1, 12
+         DO 6 FACE = 1, NFMAX
            DO 7 INO = 1 , 4
             MILIEU(INO,FACE,NO) = 0
  7         CONTINUE
@@ -114,9 +117,7 @@ C --------- NOEUDS SOMMETS DE LA FACE
             NBTRI=4
             CALL UTTRII(NOEUD,NBTRI)
 
-            IF (NBTRI.NE.4) THEN
-              CALL ASSERT(.FALSE.)
-            ENDIF
+            CALL ASSERT(NBTRI.EQ.4)
             NO1=NOEUD(1)
             NO2=NOEUD(2)
             NO3=NOEUD(3)
@@ -124,7 +125,7 @@ C --------- NOEUDS SOMMETS DE LA FACE
 
 C --------- EST-CE QUE LA FACE EST DEJA REFERENCEE
 
-            DO 30 I = 1,12
+            DO 30 I = 1, NFMAX
 C ------------ FACE DEJA REFERENCEE
                IF ((MILIEU(1,I,NO1) .EQ. NO2).AND.
      &             (MILIEU(2,I,NO1) .EQ. NO3).AND.
@@ -143,7 +144,9 @@ C ------------ NOUVELLE FACE
                   GOTO 31
                END IF
  30         CONTINUE
-            CALL ASSERT(.FALSE.)
+C           PLUS DE NFMAX FACES TOUCHENT NO1 ?
+            CALL JENUNO(JEXNUM(MAIN//'.NOMNOE',NO1), NOMNOE)
+            CALL U2MESG('F', 'MAILLAGE_11', 1, NOMNOE, 1, NFMAX, 0,RBID)
  31         CONTINUE
             NOMIMA(FACE,M)  = NOMI
             NOMIPE(1,NOMI) = NO1

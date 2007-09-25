@@ -1,6 +1,6 @@
       SUBROUTINE SSRIU2(NOMU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF SOUSTRUC  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,8 +108,9 @@ C     -------------------------------------------------------
      &            NBLPH)
       CALL JEECRA(NOMU//'.PHI_IE','LONMAX',LGBLPH,KBID)
 
-      CALL WKVECT(NOMU//'.KP_EE','G V R', (NDDLE* (NDDLE+1)/2),IAKPEE)
-
+C      CALL WKVECT(NOMU//'.KP_EE','G V R', (NDDLE* (NDDLE+1)/2),IAKPEE)
+      CALL WKVECT(NOMU//'.MAEL_RAID_VALE','G V R',(NDDLE*(NDDLE+1)/2),
+     &            IAKPEE)
 
       IBLOLD = 0
       J = 0

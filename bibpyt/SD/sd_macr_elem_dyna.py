@@ -1,4 +1,4 @@
-#@ MODIF sd_macr_elem_dyna SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_macr_elem_dyna SD  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,9 +51,6 @@ class sd_macr_elem_dyna(AsBase):
 
     # rigidité, masse, amortissement condensés :
     nume     = sd_nume_ddl_gd(SDNom(nomj=''))
-    KP_EE    = Facultatif(AsVR())
-    MP_EE    = Facultatif(AsVR())
-    AP_EE    = Facultatif(AsVR())
 
     MAEL_RAID = sd_macr_elem_dyna_m()
     MAEL_MASS = sd_macr_elem_dyna_m()

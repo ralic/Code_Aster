@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact2 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,8 @@ cata_msg={
 """),
 
 12 : _("""
-Contact méthode CONTINUE. Une zone de contact contient à la fois des éléments axisymétriques et non axisymétriques ! 
+Contact méthode continue. Une zone de contact contient à la fois des éléments axisymétriques et non axisymétriques.
+Vérifier votre AFFE_MODELE et le type de vos mailles dans la définition des surfaces de contact. 
 """),
 
 }

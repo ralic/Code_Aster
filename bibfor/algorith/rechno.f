@@ -1,10 +1,8 @@
       SUBROUTINE RECHNO(NOMA  ,IZONE ,NEWGEO,DEFICO,RESOCO,
      &                  IESCL0,NFESCL)
 C
-C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
-C TOLE CRP_20
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
+C TOLE CRP_20
 C
       IMPLICIT     NONE
       INTEGER      IZONE
@@ -339,7 +338,7 @@ C
 
   110   CONTINUE
       ELSE 
-        CALL U2MESS('F','CONTACT_22')
+        CALL ASSERT(.FALSE.)
       END IF
 C
 C --- NOMBRE DE NOEUDS ESCLAVES SUR LA ZONE

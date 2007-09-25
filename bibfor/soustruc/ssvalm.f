@@ -1,6 +1,6 @@
       SUBROUTINE SSVALM(STATUT,OPTION,MO,MA,ISMA,IDRESL,LONG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF SOUSTRUC  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,11 +128,14 @@ C     -----------------------------------------------
         NDDLE = ZI(IADESM-1+4)
 C
         IF (OPTIO2(1:4).EQ.'RIGI') THEN
-          NOMOB=NOMACR//'.KP_EE'
+C          NOMOB=NOMACR//'.KP_EE'
+          NOMOB=NOMACR//'.MAEL_RAID_VALE'
         ELSE IF (OPTIO2(1:4).EQ.'MASS') THEN
-          NOMOB=NOMACR//'.MP_EE'
+C          NOMOB=NOMACR//'.MP_EE'
+          NOMOB=NOMACR//'.MAEL_MASS_VALE'
         ELSE IF (OPTIO2(1:4).EQ.'AMOR') THEN
-          NOMOB=NOMACR//'.AP_EE'
+C          NOMOB=NOMACR//'.AP_EE'
+          NOMOB=NOMACR//'.MAEL_AMOR_VALE'          
         ELSE
           CALL U2MESS('F','ASSEMBLA_17')
         END IF
@@ -168,7 +171,7 @@ C         ROTATION:
  710      CONTINUE
           CALL SSVARO(LAMBDA,'LG',.TRUE.,'EXTE',NOMACR,IAVMAT,IDRESL)
         ELSE
-          CALL ASSERT(.FALSE.)
+           CALL ASSERT(.FALSE.)
         END IF
 C
         CALL JELIBE(NOMOB)

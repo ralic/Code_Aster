@@ -1,7 +1,7 @@
       SUBROUTINE TE0392(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,7 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       PARAMETER (NBRES=9)
-      CHARACTER*8 MODELI
-      CHARACTER*2 CODRET(NBRES)
+      CHARACTER*2 CODRET(NBRES),K2BID
       CHARACTER*16 NOMTE,OPTION,PHENOM
       REAL*8 JACGAU
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM
@@ -72,7 +71,6 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &        1.D0,-1.D0,  1.D0,-1.D0, 1.D0,-1.D0, 1.D0,-1.D0,
      &       -1.D0, 1.D0, -1.D0, 1.D0, 1.D0,-1.D0, 1.D0,-1.D0/
 
-      MODELI(1:2) = NOMTE(3:4)
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
@@ -80,6 +78,7 @@ C      ------------------------
 
 C --- INITIALISATIONS :
 C     -----------------
+      K2BID  = '  '
       INSTAN = 0.D0
 
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
@@ -210,7 +209,7 @@ C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
         LSENS = .FALSE.
-        CALL DMATMC('RIGI',MODELI,ZI(IMATE),INSTAN,'+',IGAU,1,
+        CALL DMATMC('RIGI',K2BID,ZI(IMATE),INSTAN,'+',IGAU,1,
      &              REPERE,XYZGAU,NBSIG,D,LSENS)
 
 C     CALCUL DE KC (MATRICE DE RIGIDITE AU CENTRE)

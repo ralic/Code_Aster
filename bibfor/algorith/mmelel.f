@@ -1,6 +1,8 @@
-      SUBROUTINE MMELEL(IIN,NTYMA1,NTYMA2,IORDR,NNDEL)
+      SUBROUTINE MMELEL(NDIM  ,IIN   ,NTYMA1,NTYMA2,IORDR,
+     &                  NNDEL ,NUMTYP)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,35 +19,62 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      INTEGER      IIN
+      INTEGER      IIN,NDIM
       CHARACTER*8  NTYMA1
       CHARACTER*8  NTYMA2
       INTEGER      NNDEL
       INTEGER      IORDR
+      INTEGER      NUMTYP
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : MMLIGR
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
 C
 C RETOURNE DES INFOS SUR LES ELEMENTS DE CONTACT FORMES ENTRE
 C DEUX ELEMENTS DE SURFACE
+C      
+C ----------------------------------------------------------------------
 C
+C
+C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  IIN    : NUMERO D'ORDRE EN ENTREE
 C               SI ZERO: ON UTILISE NTYMA1/NTYMA2
 C IN  NTYMA1 : PREMIERE MAILLE
 C IN  NTYMA2 : SECONDE  MAILLE
 C OUT IORDR  : ORDRE DANS LA LISTE DES ELEMENTS
 C OUT NNDEL  : NOMBRE DE NOEUDS DE L'ELEMENT DE CONTACT
+C OUT NUMTYP : NUMERO DU TYPE ELEMENT DANS &CATA.TM
 C
 C
-C ----------------------------------------------------------------------
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNOM
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      NBTYP
       PARAMETER    (NBTYP=30)
       CHARACTER*8  CPL(NBTYP,2)
-      INTEGER      NPL(NBTYP)
       INTEGER      K
+      CHARACTER*16 MMELTM,NOMTM 
+      INTEGER      MMELTN
 C
       DATA (CPL(K,1),K=1,NBTYP) /
      &      'SEG2','SEG3','SEG2','SEG3','TRIA3',
@@ -61,16 +90,12 @@ C
      &      'TRIA6','QUAD8','TRIA6','QUAD9','TRIA6',
      &      'TRIA3','QUAD8','QUAD9','QUAD8','QUAD4',
      &      'QUAD9','TRIA3','QUAD9','QUAD9','SEG2'/
-      DATA (NPL(K),K=1,NBTYP) /
-     &      4 ,6 ,5 ,5 ,6 ,
-     &      9 ,9 ,12,8 ,12,
-     &      12,16,7 ,7 ,10,
-     &      10,14,14,15,15,
-     &      11,11,17,17,13,
-     &      13,12,12,18,4/
+
 C
 C ----------------------------------------------------------------------
 C
+      CALL JEMARQ()
+C      
       IORDR = 0
       NNDEL = 0
 C
@@ -78,20 +103,35 @@ C
         DO 10 K=1,NBTYP
           IF (NTYMA1.EQ.CPL(K,1)) THEN
             IF (NTYMA2.EQ.CPL(K,2)) THEN
-              NNDEL = NPL(K)
+              NNDEL = MMELTN(K)
               IORDR = K
             ENDIF
           ENDIF
   10    CONTINUE
       ELSEIF ((IIN.GT.0).AND.(IIN.LE.NBTYP)) THEN
         IORDR = IIN
-        NNDEL = NPL(IIN)
+        NNDEL = MMELTN(IIN)
       ELSE
         IORDR = 0
       ENDIF
-
+C
       IF (IORDR.EQ.0) THEN
-        CALL U2MESS('F','ALGORITH5_89')
+        CALL ASSERT(.FALSE.)
+      ELSE
+        NOMTM  = MMELTM(IORDR)
+        CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOMTM),NUMTYP)  
       ENDIF
-
+C
+C --- DISTINCTION POUTRE/POUTRE ET 2D/2D
+C
+      IF (NOMTM.EQ.'SEG22') THEN
+        IF (NDIM.EQ.2) THEN
+          IORDR = 1
+        ELSE
+          IORDR = 30
+        ENDIF
+      ENDIF   
+C
+      CALL JEDEMA()
+C
       END

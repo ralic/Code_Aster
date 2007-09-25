@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,59 +58,38 @@ Contact liaison glissiere. Des noeuds se decollent plus que la valeur d'ALARME_J
 """),
 
 10: _("""
-Contact methodes discretes. Une maille maitre de type SEG a une longueur nulle. Verifiez votre maillage.
+Contact méthodes discrètes. Une maille maitre de type SEG a une longueur nulle. Verifiez votre maillage.
 """),
 
 11: _("""
-Contact methodes discretes. Le vecteur tangent defini par VECT_Y est colineaire au vecteur normal.
+Contact méthodes discrètes. Le vecteur tangent défini par VECT_Y est colinéaire au vecteur normal.
 """),
 
 12: _("""
-Contact methodes discretes. Le vecteur normal est colineaire au plan de projection.
+Contact méthodes discrètes. Le vecteur normal est colinéaire au plan de projection.
 """),
 
-13: _("""
-Contact methodes discretes. Il faut reactualiser la projection : contacter les developpeurs
-"""),
 
 14: _("""
-Contact methodes discretes. La projection quadratique pour les triangles n'est pas disponible
+Contact méthodes discrètes. La projection quadratique pour les triangles n'est pas disponible
 """),
 
 15: _("""
-Contact methodes discretes. Une maille maitre de type TRI a une surface nulle. Verifiez votre maillage.
+Contact méthodes discrètes. Une maille maitre de type TRI a une surface nulle. Verifiez votre maillage.
 """),
 
-22: _("""
-Contact methodes discretes. Cette methode d'appariement n'existe pas : contacter les developpeurs.
-"""),
-
-23: _("""
-Contact methodes discretes. Erreur d'appel par l'option d'appariement n'existe pas : contacter les developpeurs.
-"""),
-
-24: _("""
-Contact methodes discretes. Erreur de dimensionnement nombre maximal de noeuds esclaves depasse : contacter les developpeurs
-"""),
-
-25: _("""
-Contact methodes discretes. Erreur de dimensionnement des tableaux apcoef et apddl : contacter les developpeurs
-"""),
 
 27: _("""
-Contact methodes discretes. On n'a pas trouve de noeud maitre proche du noeud esclave : contacter les developpeurs
+Contact méthodes discrètes. On n'a pas trouve de noeud maitre proche du noeud esclave : contacter les developpeurs
 """),
 
 30: _("""
-Contact methodes discretes. On ne sait pas traiter ce type de maille
+Contact méthodes discrètes. On ne sait pas traiter ce type de maille
 """),
 
-31: _("""
-Contact methodes discretes. Le noeud esclave n'a pas pu s'apparier avec la maille quadrangle : contacter les developpeurs
-"""),
 
 32: _("""
-Contact methodes discretes. Pas de lissage des normales possible avec l'appariement nodal : contacter les developpeurs
+Contact méthodes discrètes. Pas de lissage des normales possible avec l'appariement nodal : contacter les developpeurs
 """),
 
 38: _("""
@@ -118,28 +97,24 @@ Contact. Erreur dans la definition symetrique : contacter les developpeurs
 """),
 
 54: _("""
-Contact. On ne peut pas utiliser une direction d'appariement fixe VECT_NORM_ESCL si l'appariement n'est pas nodal.
+Contact méthodes discrètes. On ne peut pas utiliser une direction d'appariement fixe VECT_NORM_ESCL si l'appariement n'est pas NODAL.
 """),
 
 55: _("""
-Contact. La commande VECT_Y n'intervient pas en 2D.
+Contact méthodes discrètes. La commande VECT_Y n'est utilisable qu'en 3D.
 """),
 
 56: _("""
-Contact. La commande VECT_ORIE_POU n'intervient pas en 2D.
+Contact méthodes discrètes. La commande VECT_ORIE_POU n'est utilisable qu'en 3D.
 """),
 
 
 60: _("""
-Contact methodes discretes. Vous utilisez des mailles de type SEG2/SEG3 en 3D sans definir un repere pour l'appariement. Voir les mots-clefs VECT_Y et VECT_ORIE_POU.
-"""),
-
-74: _("""
-Contact. Erreur de dimensionnement car le nombre de noeuds est superieur a 9 : contacter les developpeurs
+Contact méthodes discrètes. Vous utilisez des mailles de type SEG2/SEG3 en 3D sans definir un repere pour l'appariement. Voir les mots-clefs VECT_Y et VECT_ORIE_POU.
 """),
 
 75: _("""
-Contact. Un POI1 ne peut pas etre une maille maitre.
+Contact méthodes discrètes. Un POI1 ne peut pas etre une maille maitre.
 """),
 
 76: _("""
@@ -178,12 +153,12 @@ Contact methode VERIF.
     votre problème.
 """),
 
-94: _("""
-Operation d'appariement inconnue : contacter les developpeurs
+96: _("""
+Contact méthode continue. Pour l'option SANS_GROUP_NO_FR, il faut que le frottement soit activé.
 """),
 
 97: _("""
-Contact methode CONTINUE. Pour l'option SANS_GROUP_NO, l'intégration aux noeuds est obligatoire.
+Contact méthode continue. Pour l'option SANS_GROUP_NO et SANS_GROUP_NO_FR, l'intégration aux noeuds est obligatoire.
 """),
 
 

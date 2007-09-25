@@ -5,7 +5,7 @@
 C
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C
         CALL PROJSQ(NDIM  ,COORDA,COORDB,COORDC,COORDP,
      &              COORDM,LAMBDA,DEBORD)
       ELSE
-        CALL U2MESS('F','CONTACT_30')
+        CALL ASSERT(.FALSE.)
       END IF
 
       END

@@ -1,8 +1,8 @@
-      SUBROUTINE SIGMMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+      SUBROUTINE SIGMMC (FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
      +                   IDFDE,XYZ,DEPL,INSTAN,REPERE,MATER,
      +                   NHARM,SIGMA,LSENS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C      SIGMMC   -- CALCUL DES  CONTRAINTES AUX POINTS D'INTEGRATION
 C                  POUR LES ELEMENTS ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    MODELI         IN     K8       MODELISATION (AXI,FOURIER,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
@@ -66,7 +65,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
-           CHARACTER*8  MODELI
            REAL*8       XYZ(1), DEPL(1), REPERE(7), SIGMA(1)
            REAL*8       INSTAN, NHARM
            LOGICAL      LSENS
@@ -75,14 +73,17 @@ C -----  VARIABLES LOCALES
            INTEGER      IGAU,I,NNO
            REAL*8       B(486), D(36), JACGAU, XYZGAU(3)
            REAL*8       TEMPG,SECHG,HYDRG
+           CHARACTER*2  K2BID
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     -----------------
+      K2BID  = '  '
       ZERO   = 0.0D0
       NBINCO = NDIM*NNO
       NDIM2  = NDIM
-      IF (MODELI(1:2).EQ.'FO') THEN
+      IF (LTEATT(' ','FOURIER','OUI')) THEN
         NDIM2 = 2
       ENDIF
 C
@@ -115,13 +116,13 @@ C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 C  --      COURANT : (EPS_1) = (B)*(UN)
 C          ----------------------------
-          CALL BMATMC(IGAU, NBSIG, MODELI, XYZ, IPOIDS,IVF,IDFDE,
+          CALL BMATMC(IGAU, NBSIG,  XYZ, IPOIDS,IVF,IDFDE,
      +                NNO, NHARM, JACGAU, B)
 C
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
-          CALL DMATMC(FAMI,MODELI, MATER, INSTAN, '+', IGAU, 1,
+          CALL DMATMC(FAMI,K2BID,MATER, INSTAN, '+', IGAU, 1,
      +                REPERE, XYZGAU, NBSIG, D, LSENS)
 C
 C  --      CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT

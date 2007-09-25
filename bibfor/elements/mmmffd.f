@@ -1,7 +1,8 @@
-      SUBROUTINE MMMFFD(ALIAS,XI,YI,TYPBAR,
-     &                  FF,DFF,DDFF,IRET)
+      SUBROUTINE MMMFFD(ALIAS ,XI    ,YI     ,TYPBAR,
+     &                  FF    ,DFF   ,DDFF   ,IRET)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +19,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*8 ALIAS 
       REAL*8      XI
@@ -27,13 +30,16 @@ C ======================================================================
       REAL*8      DFF(2,9)
       REAL*8      DDFF(3,9)
       INTEGER     IRET                  
-C
-C ----------------------------------------------------------------------
-C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
+C      
 C ----------------------------------------------------------------------
 C
-C CALCUL DES FONCTIONS DE FORMES ET DE LEURS DERIVEES
-C AU POINT DE COORDONNEES XI,YI (COORDONNES PARAMETRIQUES)
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT - UTILITAIRE)
+C
+C CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
+C DE L'ELEMENT DE REFERENCE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
 C IN  XI     : POINT DE CONTACT SUIVANT KSI1 DES

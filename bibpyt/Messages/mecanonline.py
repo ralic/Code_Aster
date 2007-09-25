@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF mecanonline Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

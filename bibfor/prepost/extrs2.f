@@ -8,7 +8,7 @@
       CHARACTER*16 TYPCON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/09/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,6 +122,10 @@ C
             ZK32(IADOU) = ZK32(IADIN)
           ELSEIF (TYPE(1:3).EQ.'K24') THEN
             ZK24(IADOU) = ZK24(IADIN)
+            IF(NOPARA(1:5).EQ.'EXCIT'.AND.ZK24(IADIN)(1:2).NE.'  ')THEN
+              ZK24(IADOU) = RESUOU(1:8)//ZK24(IADIN)(9:)
+              CALL COPISD(' ','G',ZK24(IADIN)(1:19),ZK24(IADOU)(1:19))
+            ENDIF
           ELSEIF (TYPE(1:3).EQ.'K16') THEN
             ZK16(IADOU) = ZK16(IADIN)
           ELSEIF (TYPE(1:2).EQ.'K8') THEN

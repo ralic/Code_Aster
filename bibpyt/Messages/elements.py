@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ cata_msg={
 """),
 
 11: _("""
- la modélisation :  %(k1)s n'est pas traitée.
+ La modélisation utilisée n'est pas traitée.
 """),
 
 12: _("""

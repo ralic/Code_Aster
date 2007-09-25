@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_modele SD  DATE 24/09/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,7 @@ from SD import *
 from SD.sd_ligrel import sd_ligrel
 from SD.sd_fiss_xfem import sd_fiss_xfem, sd_xfem_com1
 from SD.sd_prof_chno import sd_prof_chno
+from SD.sd_carte import sd_carte
 
 
 class sd_modele_XFEM(AsBase):
@@ -35,6 +36,7 @@ class sd_modele_XFEM(AsBase):
     XFEM_CONT   = AsVI()
     FISS   = AsVK8()
     NFIS   = AsVI(lonmax=1,)  # nombre de fissures
+    XMAFIS = sd_carte()
     com1   = sd_xfem_com1(SDNom(nomj=''))
 
 #    glute_XFEM = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00000'))) # fiche 10833

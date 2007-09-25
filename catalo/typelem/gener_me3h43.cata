@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+%& MODIF TYPELEM  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -81,7 +81,8 @@ ENTETE__ ELEMENT__ THHM_TETRA10S    MAILLE__ TETRA10
 MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB  
+                                        TOLDEBO  ITEDEBO)
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5

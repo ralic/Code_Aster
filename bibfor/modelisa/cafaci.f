@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/09/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 24/09/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER IBID,JNOMA,IER,NDIM,NBMA2,JCOMPT
       INTEGER IRET,N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
       INTEGER NCMP,NBTYP,IE,NBMA,NBCMP,INOM,JLINU3
-      INTEGER JLIST2,JLIST3,JLIST1,NBMA3,NBNO1
+      INTEGER JLIST2,JLIST3,JLIST1,NBMA3,NBNO1,NBNO3
       INTEGER DDLIMP(NMOCL),NBNO2,JLINO2,JLINO1,JLINO,JLINU
       REAL*8 VALIMR(NMOCL),COEF(3),DIRECT(3)
       COMPLEX*16 VALIMC(NMOCL),COEFC(3)
@@ -70,8 +70,8 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*8 K8B,NOMA,MOD,LITYP(10),NOMG
       CHARACTER*8 VALIMF(NMOCL),NOMNOE,DDL(3)
       CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD,TYPMCL(2),MOCLM(2)
-      CHARACTER*16 MOCLM2(2)
-      CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1
+      CHARACTER*16 MOCLM2(2),MOCLM3(2),TYPMC3(2)
+      CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
 
@@ -84,15 +84,22 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
       MESMAI = '&&CAFACI.MES_MAILLES'
       MESMA2 = '&&CAFACI.MAILLES_2'
+      MESNO3 = '&&CAFACI.NOEUDS_2'
       MOTFAC = 'FACE_IMPO     '
+
       MOCLM(1) = 'MAILLE'
       MOCLM(2) = 'GROUP_MA'
       MOCLM2(1) = 'SANS_MAILLE'
       MOCLM2(2) = 'SANS_GROUP_MA'
       TYPMCL(1) = 'MAILLE'
       TYPMCL(2) = 'GROUP_MA'
-      TYPLAG = '12'
 
+      MOCLM3(1) = 'SANS_NOEUD'
+      MOCLM3(2) = 'SANS_GROUP_NO'
+      TYPMC3(1) = 'NOEUD'
+      TYPMC3(2) = 'GROUP_NO'
+
+      TYPLAG = '12'
       DDL(1) = 'DX      '
       DDL(2) = 'DY      '
       DDL(3) = 'DZ      '
@@ -125,7 +132,6 @@ C ---  LIGREL DU MODELE ---
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
 
 C --- MAILLAGE ASSOCIE AU MODELE ---
-
       CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
 
@@ -180,17 +186,20 @@ C      ***************************************
         ICMP = 0
         INOR = 0
         NBMA2= 0
+        NBNO3= 0
 C
 C ----- RECUPERATION DES MAILLES
-C
         CALL RELIEM ( ' ', NOMA, 'NU_MAILLE', MOTFAC, I, 2,
-     &                                    MOCLM, TYPMCL, MESMAI, NBMA )
+     &                     MOCLM, TYPMCL, MESMAI, NBMA )
         CALL JEVEUO ( MESMAI, 'L', JLISTI )
 
 C ----- RECUPERATION DES MAILLES (A EXCLURE)
-C
         CALL RELIEM ( ' ', NOMA, 'NU_MAILLE', MOTFAC, I, 2,
-     &                                   MOCLM2, TYPMCL, MESMA2, NBMA2 )
+     &                     MOCLM2, TYPMCL, MESMA2, NBMA2 )
+
+C ----- RECUPERATION DES NOEUDS (A EXCLURE)
+        CALL RELIEM ( ' ', NOMA, 'NO_NOEUD', MOTFAC, I, 2,
+     &                     MOCLM3, TYPMC3, MESNO3, NBNO3 )
 
 C ---------------------------------------------------
 C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
@@ -205,17 +214,21 @@ C ---------------------------------------------------
           CALL U2MESG('F', 'MODELISA8_31',0,' ',2,VALI,0,0.D0)
         END IF
         CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
-        NDDLA = 1
+        NDDLA = 0
         DO 50 J = 1,NMCL
-          IF (MOTCLE(J).NE.'MAILLE' .AND. MOTCLE(J).NE.'GROUP_MA' .AND.
-     &        MOTCLE(J).NE.'SANS_MAILLE' .AND.
-     &        MOTCLE(J).NE.'SANS_GROUP_MA' .AND.
-     &        MOTCLE(J).NE.'DNOR' .AND. MOTCLE(J).NE.'DTAN') THEN
-            MOTCLE(NDDLA) = MOTCLE(J)
+C         MEME TEST DANS DDLFAC, ET A COPIER PLUS BAS
+          IF ( MOTCLE(J).NE.'MAILLE' .AND.
+     &         MOTCLE(J).NE.'GROUP_MA' .AND.
+     &         MOTCLE(J).NE.'SANS_MAILLE' .AND.
+     &         MOTCLE(J).NE.'SANS_GROUP_MA' .AND.
+     &         MOTCLE(J).NE.'SANS_NOEUD' .AND.
+     &         MOTCLE(J).NE.'SANS_GROUP_NO' .AND.
+     &         MOTCLE(J).NE.'DNOR' .AND.
+     &         MOTCLE(J).NE.'DTAN') THEN
             NDDLA = NDDLA + 1
+            MOTCLE(NDDLA) = MOTCLE(J)
           END IF
    50   CONTINUE
-        NDDLA = NDDLA - 1
         MOTCLE(NDDLA+1) = 'DNOR'
         MOTCLE(NDDLA+2) = 'DTAN'
         IF (FONREE.EQ.'REEL') THEN
@@ -249,22 +262,51 @@ C    RECUPERATION DES NOEUDS (A CONSERVER)
 C    -------------------------------------
         IF (INOR.NE.0 .AND. ICMP.EQ.0) THEN
 
-          IF(NBMA2.NE.0)THEN
+          IF ((NBMA2.NE.0) .OR. (NBNO3.NE.0)) THEN
 
 C           LISTE DES NOMS DES NOEUDS
             LNOEU1='&&CAFACI.NOEU_MAIL.TOTAL'
             CALL JEDETR(LNOEU1)
             CALL MAINOE(NOMA,NBMA,ZI(JLISTI),'NO',NBNO1,LNOEU1)
             CALL JEVEUO(LNOEU1,'L',JLINO1)
-
-C           LISTE DES NUM DES MAILLES EXCLUES
-            CALL JEVEUO ( MESMA2, 'L', JLIST2 )
-C
 C           LISTE DES NOMS DES NOEUDS DES MAILLES EXCLUES
             LNOEU2='&&CAFACI.NOEU_MAIL.EXCL'
             CALL JEDETR(LNOEU2)
-            CALL MAINOE(NOMA,NBMA2,ZI(JLIST2),'NO',NBNO2,LNOEU2)
+            IF (NBMA2.NE.0) THEN
+C              LISTE DES NUM DES MAILLES EXCLUES
+               CALL JEVEUO ( MESMA2, 'L', JLIST2 )
+C              LISTE DES NOMS DES NOEUDS DES MAILLES EXCLUES
+               CALL MAINOE(NOMA,NBMA2,ZI(JLIST2),'NO',NBNO2,LNOEU2)
+            ENDIF
+            IF (NBNO3.NE.0) THEN
+C              LISTE DES NOMS DES NOEUDS EXCLUS : SANS_(NOEUD,GROUP_NO)
+               CALL JEVEUO ( MESNO3, 'L', JLIST3 )
+C              Si NBMA2<>0
+C                 AGRANDIR LNOEU2 de NBNO3 et ajouter MESNO3
+C              Sinon
+C                 CREER LNOEU2 et copier MESNO3
+               IF ( NBMA2.NE.0 ) THEN
+                  CALL JUVECA(LNOEU2,NBNO2+NBNO3)
+                  CALL JEVEUO(LNOEU2,'E',JLINO2)
+C                 COMPLETER AVEC LES NOEUDS
+                  DO 300 J = 0 , NBNO3-1
+                     ZK8(JLINO2+NBNO2+J) = ZK8(JLIST3+J)
+300               CONTINUE
+                  NBNO2=NBNO2+NBNO3
+               ELSE
+                  CALL WKVECT(LNOEU2,'V V K8',NBNO3,JLINO2)
+                  DO 310 J=0,NBNO3-1
+                     ZK8(JLINO2+J) = ZK8(JLIST3+J)
+310               CONTINUE
+                  NBNO2=NBNO3
+               ENDIF
+            ENDIF
             CALL JEVEUO(LNOEU2,'L',JLINO2)
+
+C             WRITE(*,*) 'NOM DES NOEUDS DE LA LISTE 1'
+C             WRITE(*,*) (' '//ZK8(JLINO1+J),J=0,NBNO1-1)
+C             WRITE(*,*) 'NOM DES NOEUDS DE LA LISTE 2'
+C             WRITE(*,*) (' '//ZK8(JLINO2+J),J=0,NBNO2-1)
 
 C           LISTE DES NOMS DES NOEUDS A CONSERVER
             CALL JEDETR('&&CAFACI.NOEU_NOM')
@@ -272,6 +314,9 @@ C           LISTE DES NOMS DES NOEUDS A CONSERVER
             NBNO = NBNO1
             CALL KNDIFF(8,ZK8(JLINO1),NBNO1,ZK8(JLINO2),NBNO2,
      &                    ZK8(JLINO),NBNO)
+
+C             WRITE(*,*) 'NOM DES NOEUDS DE LA LISTE 1 - 2'
+C             WRITE(*,*) (' '//ZK8(JLINO+J),J=0,NBNO)
 
 C           LISTE DES NUMEROS DES NOEUDS A CONSERVER
             CALL JEDETR('&&CAFACI.NOEU_NUM')
@@ -282,13 +327,11 @@ C           LISTE DES NUMEROS DES NOEUDS A CONSERVER
  71         CONTINUE
 
           ELSE
-
 C           LISTE DES NUMEROS DES NOEUDS
             LNOEU1='&&CAFACI.NOEU_MAIL.TOTAL'
             CALL JEDETR(LNOEU1)
             CALL MAINOE(NOMA,NBMA,ZI(JLISTI),'NU',NBNO,LNOEU1)
             CALL JEVEUO(LNOEU1,'L',JLINU)
-
           ENDIF
 
 C   -------------------------------------------
@@ -356,16 +399,21 @@ C ---------------------------------------------------
           CALL U2MESG('F', 'MODELISA8_31',0,' ',2,VALI,0,0.D0)
         END IF
         CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
-        NDDLA = 1
+        NDDLA = 0
         DO 130 J = 1,NMCL
-          IF (MOTCLE(J).NE.'MAILLE' .AND. MOTCLE(J).NE.'GROUP_MA' .AND.
-     &     MOTCLE(J).NE.'SANS_MAILLE' .AND. MOTCLE(J).NE.'SANS_GROUP_MA'
-     &     .AND. MOTCLE(J).NE.'DNOR' .AND. MOTCLE(J).NE.'DTAN') THEN
-            MOTCLE(NDDLA) = MOTCLE(J)
+C         MEME TEST DANS DDLFAC, ET A COPIER PLUS HAUT
+          IF ( MOTCLE(J).NE.'MAILLE' .AND.
+     &         MOTCLE(J).NE.'GROUP_MA' .AND.
+     &         MOTCLE(J).NE.'SANS_MAILLE' .AND.
+     &         MOTCLE(J).NE.'SANS_GROUP_MA' .AND.
+     &         MOTCLE(J).NE.'SANS_NOEUD' .AND.
+     &         MOTCLE(J).NE.'SANS_GROUP_NO' .AND.
+     &         MOTCLE(J).NE.'DNOR' .AND.
+     &         MOTCLE(J).NE.'DTAN') THEN
             NDDLA = NDDLA + 1
+            MOTCLE(NDDLA) = MOTCLE(J)
           END IF
   130   CONTINUE
-        NDDLA = NDDLA - 1
 
         CALL JELIRA(NOMA//'.NOMNOE','NOMMAX',NBNOEU,K1BID)
 

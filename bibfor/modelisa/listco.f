@@ -2,7 +2,7 @@
      &                  ORDSTC,NMACO ,NNOCO ,NNOQUA)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,10 +78,7 @@ C
       CHARACTER*24 CONTMA,CONTNO,CONOQU
       INTEGER      JMACO,JNOCO,JNOQU
       INTEGER      JTRAV
-      INTEGER      NZOCP,NSYME
-      INTEGER      IOC,IREAD,IWRITE,ISY
-      CHARACTER*24 SYMECO
-      INTEGER      JSYME      
+      INTEGER      IZONE     
 C
 C ----------------------------------------------------------------------
 C
@@ -89,7 +86,6 @@ C
 C 
 C --- ACCES AUX STRUCTURES DE DONNEES DE CONTACT
 C 
-      SYMECO = CHAR(1:8)//'.CONTACT.SYMECO'
       PZONE  = CHAR(1:8)//'.CONTACT.PZONECO'
       PSURMA = CHAR(1:8)//'.CONTACT.PSUMACO'
       PSURNO = CHAR(1:8)//'.CONTACT.PSUNOCO'
@@ -98,17 +94,10 @@ C
       CONTNO = CHAR(1:8)//'.CONTACT.NOEUCO'
       CONOQU = CHAR(1:8)//'.CONTACT.NOEUQU'  
 C            
-      CALL JEVEUO(PZONE,'L',JZONE)
+      CALL JEVEUO(PZONE ,'L',JZONE)
       CALL JEVEUO(PSURMA,'L',JSUMA)
       CALL JEVEUO(PSURNO,'L',JSUNO)
       CALL JEVEUO(PNOQUA,'L',JNOQUA)
-      CALL JEVEUO(SYMECO,'L',JSYME)
-C
-C --- INITIALISATIONS
-C  
-      NSYME  = ZI(JSYME)      
-      NZOCP  = NZOCO - NSYME
-      IWRITE = 0      
 C
 C --- CREATION DES SD
 C        
@@ -119,35 +108,14 @@ C
       END IF
       CALL WKVECT('&&LISTCO.TRAV','V V K8',NTRAV,JTRAV)
 C                             
-C --- ON NE BOUCLE QUE SUR LES ZONES PRINCIPALES: 
-C
-       
-      DO 11 IOC = 1,NZOCP
-        IREAD  = IOC
-        IWRITE = IOC
-        CALL LIEXCO(CHAR  ,MOTFAC,NOMA  ,IREAD ,IWRITE,
-     &              JTRAV ,ORDSTC,JZONE ,JSUMA ,JSUNO ,
-     &              JNOQUA,JMACO ,JNOCO ,JNOQU)
+C --- ON BOUCLE SUR LES ZONES DE CONTACT 
+C     
+      DO 11 IZONE = 1,NZOCO
+        CALL LIEXCO(CHAR  ,MOTFAC,NOMA  ,IZONE ,JTRAV ,
+     &              ORDSTC,JZONE ,JSUMA ,JSUNO ,JNOQUA,
+     &              JMACO ,JNOCO ,JNOQU)
    11 CONTINUE  
 C
-C --- ON BOUCLE SUR LES ZONES PRINCIPALES MAIS ON AGIT SUR LES 
-C --- ZONES SYMETRIQUES
-C
-      IF (NSYME.GT.0) THEN  
-         DO 6 IOC = 1,NZOCP
-            IREAD = IOC
-            DO 7 ISY = 1,NSYME       
-               IF (ZI(JSYME+ISY) .EQ.IOC) THEN
-                IWRITE = IWRITE+1
-                CALL LIEXCO(CHAR  ,MOTFAC,NOMA  ,IREAD ,IWRITE,
-     &                      JTRAV ,ORDSTC,JZONE ,JSUMA ,JSUNO ,
-     &                      JNOQUA,JMACO ,JNOCO ,JNOQU)
-               ENDIF
-  7         CONTINUE             
-  6      CONTINUE      
-      ENDIF
-C
-      CALL JEDETR ('&&LISTCO.TRAV')
-C      
+      CALL JEDETR ('&&LISTCO.TRAV')      
       CALL JEDEMA()
       END

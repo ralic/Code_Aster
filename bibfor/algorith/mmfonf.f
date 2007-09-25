@@ -1,0 +1,79 @@
+        SUBROUTINE  MMFONF(FFORME,ALIAS ,KSI1   ,KSI2  ,
+     &                     FF    ,DFF   ,DDFF   ,IRET) 
+C     
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*8 FFORME
+      CHARACTER*8 ALIAS 
+      REAL*8      KSI1,KSI2   
+      REAL*8      FF(9)
+      REAL*8      DFF(2,9)
+      REAL*8      DDFF(3,9)
+      INTEGER     IRET   
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
+C
+C CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
+C DE L'ELEMENT DE REFERENCE
+C      
+C ----------------------------------------------------------------------
+C
+C
+C ROUTINE "GLUTE" NECESSAIRE DU FAIT QUE LES FCT. FORME DE LA METHODE
+C CONTINUE NE SONT PAS CELLES STANDARDS D'ASTER.
+C
+C
+C IN  FFORME : TYPE DES FONCTIONS DE FORME
+C               'CONTINUE' POUR ELTS DE CONTACT
+C               'STANDARD' POUR ELTS STANDARDS
+C IN  ALIAS  : NOM D'ALIAS DE L'ELEMENT
+C IN  XI     : POINT DE CONTACT SUIVANT KSI1 DES
+C               FONCTIONS DE FORME ET LEURS DERIVEES
+C IN  YI     : POINT DE CONTACT SUIVANT KSI2 DES
+C               FONCTIONS DE FORME ET LEURS DERIVEES
+C OUT FF     : FONCTIONS DE FORMES EN XI,YI
+C OUT DFF    : DERIVEES PREMIERES DES FONCTIONS DE FORME EN XI YI
+C OUT DDFF   : DERIVEES SECONDES DES FONCTIONS DE FORME EN XI YI
+C OUT IRET   : RETOURNE UN CODE ERREUR
+C                0  TOUT VA BIEN
+C                1  ELEMENT INCONNU
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER TYPBAR
+C
+C ----------------------------------------------------------------------
+C
+      TYPBAR = -1
+      IF (FFORME.EQ.'CONTINUE') THEN
+        CALL MMMFFD(ALIAS ,KSI1  ,KSI2   ,TYPBAR,
+     &              FF    ,DFF   ,DDFF   ,IRET)
+      ELSEIF (FFORME.EQ.'STANDARD') THEN
+        CALL ASSERT(.FALSE.)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+      
+      END

@@ -1,7 +1,7 @@
       SUBROUTINE CACOEQ(FONREZ,CHARGZ,NOMAZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,9 +153,9 @@ C --- ON NE FAIT PAS LA LIAISON SI SANS_NOEUD_QUAD='OUI'
 C
         DO 20 IZONE = 1,NZOCO
           IF (ZI(JSANSN+IZONE-1).EQ.1) THEN
-            CALL CFMMEX(DEFICO,IZONE ,NO(1),SUPPO1)
-            CALL CFMMEX(DEFICO,IZONE ,NO(2),SUPPO2)
-            CALL CFMMEX(DEFICO,IZONE ,NO(3),SUPPO3)
+            CALL CFMMEX(DEFICO,'CONT',IZONE ,NO(1),SUPPO1)
+            CALL CFMMEX(DEFICO,'CONT',IZONE ,NO(2),SUPPO2)
+            CALL CFMMEX(DEFICO,'CONT',IZONE ,NO(3),SUPPO3)
             IF ((SUPPO1.EQ.1).OR.(SUPPO2.EQ.1).OR.(SUPPO2.EQ.1)) THEN
               GOTO 30
             ENDIF 
@@ -187,7 +187,7 @@ C
                 IF ((TYPE2(1:5).EQ.'TRIA6').OR.
      &              (TYPE2(1:5).EQ.'TRIA7').OR.
      &              (TYPE2(1:5).EQ.'QUAD9')) THEN
-                  CALL U2MESS('A','MODELISA2_42')
+                  CALL U2MESS('A','CONTACT3_42')
                   ZI(JNOES-1+IEXCL) = NO(1)
                   IEXCL = IEXCL + 1
                   GOTO 25

@@ -1,6 +1,6 @@
       SUBROUTINE TE0022(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*8 MODELI
       CHARACTER*16 NOMTE,OPTION
       REAL*8 SIGMA(162),REPERE(7),INSTAN,NHARM
       REAL*8 SIGM2(162),BARY(3)
@@ -53,8 +52,6 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-
-      MODELI(1:2) = NOMTE(3:4)
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -114,7 +111,7 @@ C      ---------------------------------------------------------
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES - SIGMA_RETRAIT)
 C      ------------------------------------
-      CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
+      CALL SIGVMC('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
      &            IDFDE,ZR(IGEOM),ZR(IDEPL),
      &            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,
      &            .FALSE.)
@@ -125,7 +122,7 @@ C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C ATTENTION!! POUR L'INSTANT(30/9/02) ON DOIT AVOIR SIGMA_THERMIQUE=0
 C      ------------------------------------
       IF (LSENS) THEN
-        CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
+        CALL SIGVMC('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
      &              IDFDE,ZR(IGEOM),ZR(IDEPS),
      &              INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,
      &              .TRUE.)

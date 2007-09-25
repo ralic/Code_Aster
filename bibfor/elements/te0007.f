@@ -1,6 +1,6 @@
       SUBROUTINE TE0007 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,13 +42,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8        MODELI
       REAL*8             NHARM, BSIGM(18),GEO(18)
       INTEGER            NBSIGM
       LOGICAL            LTEATT
 C DEB ------------------------------------------------------------------
-      MODELI(1:2) = NOMTE(3:4)
-C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
@@ -105,7 +102,7 @@ C
 
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA) :
 C      --------------------------------------------------
-      CALL BSIGMC ( MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS, IVF, IDFDE,
+      CALL BSIGMC (  NNO, NDIM, NBSIG, NPG, IPOIDS, IVF, IDFDE,
      +              ZR(IGEOM), NHARM, ZR(ICONTM), BSIGM )
 C
 C ---- AFFECTATION DU VECTEUR EN SORTIE :

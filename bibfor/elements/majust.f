@@ -1,6 +1,7 @@
-      SUBROUTINE MAJUST(ALIAS,XI,YI,TOLEOU,LDIST)
+      SUBROUTINE MAJUST(ALIAS,KSI1,KSI2,TOLEOU,LDIST)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,25 +18,29 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*8 ALIAS
-      REAL*8      XI,YI,TOLEOU
+      REAL*8      KSI1,KSI2,TOLEOU
       LOGICAL     LDIST
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : MPROJD/MPROJP
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT)
 C
 C AJUSTE LES COORDONNES PARAMETRIQUES POUR RESTER DANS LA MAILLE
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  ALIAS  : TYPE DE L'ELEMENT
 C               'SG2','SG3'  
 C               'TR3','TR6'  
 C               'QU4','QU8','QU9' 
-C I/O XI     : POINT DE CALCUL SUIVANT KSI1 DES
+C I/O KSI1   : POINT DE CALCUL SUIVANT KSI1 DES
 C               FONCTIONS DE FORME ET LEURS DERIVEES
-C I/O YI     : POINT DE CALCUL SUIVANT KSI2 DES
+C I/O KSI2   : POINT DE CALCUL SUIVANT KSI2 DES
 C               FONCTIONS DE FORME ET LEURS DERIVEES
 C IN  TOLEOU : TOLERANCE POUR PROJECTION HORS SEGMENT 
 C OUT LDIST  : VAUT .FALSE. SI POINT RAMENE DANS ELEMENT DE REFERENCE
@@ -46,50 +51,44 @@ C
 C
 C ----------------------------------------------------------------------
 C
-
       LDIST = .TRUE.
-      DIST = 1.D0 + 2.D0*TOLEOU
+      DIST  = 1.D0 + 2.D0*TOLEOU
       IF ((ALIAS(1:3).EQ.'SG2') .OR. (ALIAS(1:3).EQ.'SG3')) THEN
-
-C ---- PROJECTION OR ZONE
-        IF (ABS(XI).GT.DIST) LDIST = .FALSE.
-
-        IF (XI.LT.-1.D0) XI = -1.D0
-        IF (XI.GT.1.D0)  XI = 1.D0
+        IF (ABS(KSI1).GT.DIST) LDIST = .FALSE.
+        IF (KSI1.LT.-1.D0) KSI1 = -1.D0
+        IF (KSI1.GT.1.D0)  KSI1 = 1.D0
       ELSE IF ((ALIAS(1:3).EQ.'TR3') .OR. (ALIAS(1:3).EQ.'TR6')) THEN
-
-C ---- PROJECTION OR ZONE
-        IF (ABS(XI).GT.DIST .OR.
-     &      ABS(YI).GT.DIST) LDIST = .FALSE.
-
-        IF (XI.LT.-1.D0) XI = -1.D0
-        IF (YI.LT.-1.D0) YI = -1.D0
-        IF (((XI-YI+2.D0).LT.-0.D0) .AND. ((XI+YI).GT.-0.D0)) THEN
-          XI = -1.D0
-          YI = 1.D0
+        IF (ABS(KSI1).GT.DIST .OR.
+     &      ABS(KSI2).GT.DIST) LDIST = .FALSE.
+        IF (KSI1.LT.-1.D0) KSI1 = -1.D0
+        IF (KSI2.LT.-1.D0) KSI2 = -1.D0
+        IF (((KSI1-KSI2+2.D0).LT.-0.D0) .AND. 
+     &      ((KSI1+KSI2).GT.-0.D0)) THEN
+          KSI1 = -1.D0
+          KSI2 = 1.D0
         END IF
-        IF (((XI-YI-2.D0).GT.0.D0) .AND. ((XI+YI).GT.-0.D0)) THEN
-          XI = 1.D0
-          YI = -1.D0
+        IF (((KSI1-KSI2-2.D0).GT.0.D0) .AND. 
+     &      ((KSI1+KSI2).GT.-0.D0)) THEN
+          KSI1 = 1.D0
+          KSI2 = -1.D0
         END IF
-        IF (((XI-YI-2).LT.-0.D0) .AND. ((XI-YI+2).GT.0.D0) .AND.
-     &      ((XI+YI).GT.0.D0)) THEN
-          XII = (XI-YI)/2.D0
-          YII = (YI-XI)/2.D0
-          XI = XII
-          YI = YII
+        IF (((KSI1-KSI2-2).LT.-0.D0) .AND. 
+     &      ((KSI1-KSI2+2).GT.0.D0) .AND.
+     &      ((KSI1+KSI2).GT.0.D0)) THEN
+          XII = (KSI1-KSI2)/2.D0
+          YII = (KSI2-KSI1)/2.D0
+          KSI1 = XII
+          KSI2 = YII
         END IF
-      ELSE IF ((ALIAS(1:3).EQ.'QU4') .OR. (ALIAS(1:3).EQ.'QU8') .OR.
-     &    (ALIAS(1:3).EQ.'QU9')) THEN
-
-C ---- PROJECTION OR ZONE
-        IF (ABS(XI).GT.DIST .OR.
-     &      ABS(YI).GT.DIST) LDIST = .FALSE.
-
-        IF (XI.LT.-1.D0) XI = -1.D0
-        IF (XI.GT.1.D0) XI = 1.D0
-        IF (YI.GT.1.D0) YI = 1.D0
-        IF (YI.LT.-1.D0) YI = -1.D0
+      ELSE IF ((ALIAS(1:3).EQ.'QU4') .OR. 
+     &         (ALIAS(1:3).EQ.'QU8') .OR.
+     &         (ALIAS(1:3).EQ.'QU9')) THEN
+        IF (ABS(KSI1).GT.DIST .OR.
+     &      ABS(KSI2).GT.DIST) LDIST = .FALSE.
+        IF (KSI1.LT.-1.D0) KSI1 = -1.D0
+        IF (KSI1.GT.1.D0) KSI1 = 1.D0
+        IF (KSI2.GT.1.D0) KSI2 = 1.D0
+        IF (KSI2.LT.-1.D0) KSI2 = -1.D0
       END IF
 
       END

@@ -1,8 +1,10 @@
       SUBROUTINE DDLFAC(FONREE,IFACE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      CHARACTER*4  FONREE
+      INTEGER      IFACE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/12/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 24/09/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,13 +34,13 @@ C      IFACE : = 0 PAS DE REGLE DE SURCHARGE ENTRE LES 2 MOTS-CLE
 C              = 1 REGLE DE SURCHARGE => PAS DE REMPLISSAGE DU LIGREL
 C                  ET DES CARTES DANS CADDLI
 C
+      INTEGER      NDDLA,NMOCL,NDDLI,NFACI,NCMP,IOCC,NMCL,J,ICMP,N
       PARAMETER   (NMOCL=30)
       INTEGER      DDLIMP(NMOCL)
       REAL*8       ZRBID
       CHARACTER*3  TYMOCL(NMOCL)
       CHARACTER*8  ZK8BID
       CHARACTER*16 MOTCLE(NMOCL)
-      CHARACTER*4  FONREE
 C
       CALL GETFAC ('DDL_IMPO',NDDLI)
       CALL GETFAC ('FACE_IMPO',NFACI)
@@ -48,37 +50,43 @@ C
 C ---------------------------------------------------------
 C     BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR FACE_IMPO
 C ---------------------------------------------------------
-       DO 160 IOCC = 1, NFACI
-        CALL GETMJM('FACE_IMPO',IOCC,   0,MOTCLE,TYMOCL,N)
-        NMCL = ABS(N)
-        CALL GETMJM('FACE_IMPO',IOCC,NMCL,MOTCLE,TYMOCL,N)
-        I =1
-        DO 10 J = 1, NMCL
-          IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.
-     &       MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN'.AND.
-     &       MOTCLE(J).NE.'SANS_GROUP_MA'.AND.
-     &       MOTCLE(J).NE.'SANS_MAILLE') THEN
-            MOTCLE(I) = MOTCLE(J)
-            I = I + 1
-          ENDIF
-10      CONTINUE
-        NDDLA = I - 1
-        ICMP = 0
-        IF (FONREE.EQ.'REEL') THEN
-          DO 40  J = 1, NDDLA
-            CALL GETVR8('FACE_IMPO',MOTCLE(J),IOCC,1,1,ZRBID,DDLIMP(J))
-            ICMP = ICMP + DDLIMP(J)
-40        CONTINUE
-        ELSE IF (FONREE.EQ.'FONC') THEN
-          DO 50  J = 1, NDDLA
-            CALL GETVID('FACE_IMPO',MOTCLE(J),IOCC,1,1,ZK8BID,DDLIMP(J))
-            ICMP = ICMP + DDLIMP(J)
-50        CONTINUE
-        ELSE
-          CALL U2MESK('F','MODELISA2_37',1,FONREE)
-        END IF
-        NCMP=NCMP+ICMP
-160    CONTINUE
+      DO 160 IOCC = 1, NFACI
+         CALL GETMJM('FACE_IMPO',IOCC,   0,MOTCLE,TYMOCL,N)
+         NMCL = ABS(N)
+         CALL GETMJM('FACE_IMPO',IOCC,NMCL,MOTCLE,TYMOCL,N)
+         NDDLA =0
+         DO 10 J = 1, NMCL
+C           MEME TEST DANS CAFACI
+            IF (  MOTCLE(J).NE.'MAILLE' .AND.
+     &            MOTCLE(J).NE.'GROUP_MA' .AND.
+     &            MOTCLE(J).NE.'SANS_MAILLE' .AND.
+     &            MOTCLE(J).NE.'SANS_GROUP_MA' .AND.
+     &            MOTCLE(J).NE.'SANS_NOEUD' .AND.
+     &            MOTCLE(J).NE.'SANS_GROUP_NO' .AND.
+     &            MOTCLE(J).NE.'DNOR' .AND.
+     &            MOTCLE(J).NE.'DTAN') THEN
+               NDDLA = NDDLA + 1
+               MOTCLE(NDDLA) = MOTCLE(J)
+            ENDIF
+10       CONTINUE
+         ICMP = 0
+         IF (FONREE.EQ.'REEL') THEN
+            DO 40  J = 1, NDDLA
+               CALL GETVR8('FACE_IMPO',MOTCLE(J),IOCC,1,1,ZRBID,
+     &                                 DDLIMP(J))
+               ICMP = ICMP + DDLIMP(J)
+40          CONTINUE
+         ELSE IF (FONREE.EQ.'FONC') THEN
+            DO 50  J = 1, NDDLA
+               CALL GETVID('FACE_IMPO',MOTCLE(J),IOCC,1,1,ZK8BID,
+     &                                 DDLIMP(J))
+               ICMP = ICMP + DDLIMP(J)
+50          CONTINUE
+         ELSE
+            CALL U2MESK('F','MODELISA2_37',1,FONREE)
+         END IF
+         NCMP=NCMP+ICMP
+160      CONTINUE
       ENDIF
 C
       IF(NCMP.NE.0) IFACE = 1

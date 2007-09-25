@@ -2,7 +2,7 @@
      &                  COORMA,COEFNO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -174,10 +174,10 @@ C --- ATTENTION ! FCTIONS DE FORME AUSSI DANS PROJSQ !!
           COEFNO(8) = - FF(8)          
           COEFNO(9) = - FF(9)           
         ELSE
-          CALL U2MESS('F','CONTACT_30')
+          CALL ASSERT(.FALSE.)
         ENDIF        
       ELSE  
-        CALL U2MESS('F','CONTACT_30')
+        CALL ASSERT(.FALSE.)
       END IF    
 C
 

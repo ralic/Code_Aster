@@ -1,7 +1,7 @@
-      SUBROUTINE EPTHMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,NI,XYZ,REPERE,
+      SUBROUTINE EPTHMC (FAMI,NNO,NDIM,NBSIG,NPG,NI,XYZ,REPERE,
      +                  INSTAN,MATER,OPTION,EPSITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C                  POUR LES ELEMENTS ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
-C    MODELI         IN     K8       MODELISATION (AXI, FOURIER,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
@@ -46,7 +45,6 @@ C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            CHARACTER*(*)  FAMI
-           CHARACTER*8  MODELI
            CHARACTER*16 K16BID, OPTION
            INTEGER      NDIM
            REAL*8       NI(1), EPSITH(1)
@@ -55,6 +53,7 @@ C -----  VARIABLES LOCALES
            REAL*8       EPSTH(6),EPSHY(6),EPSSE(6),XYZGAU(3)
            REAL*8       TEMPG,HYDRG,SECHG
            CHARACTER*16 OPTIO2, OPTIO3
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -67,7 +66,7 @@ C
  10   CONTINUE
 
       NDIM2  = NDIM
-      IF (MODELI(1:2).EQ.'FO') THEN
+      IF (LTEATT(' ','FOURIER','OUI')) THEN
         NDIM2 = 2
       ENDIF
 C
@@ -90,7 +89,7 @@ C
 C  --      CALCUL DES DEFORMATIONS THERMIQUES  AU POINT D'INTEGRATION
 C  --      COURANT
 C          -------
-          CALL EPSTMC(FAMI,MODELI, NDIM, INSTAN, '+', IGAU, 1,
+          CALL EPSTMC(FAMI, NDIM, INSTAN, '+', IGAU, 1,
      &                XYZGAU,REPERE,MATER, K16BID, EPSTH)
 C
 C  --      DEFORMATIONS THERMIQUES SUR L'ELEMENT
@@ -101,10 +100,10 @@ C          -------------------------------------
   50      CONTINUE
 C
           OPTIO2 = OPTION(1:9) // '_HYDR'
-          CALL EPSTMC(FAMI,MODELI, NDIM, INSTAN, '+', IGAU, 1,
+          CALL EPSTMC(FAMI, NDIM, INSTAN, '+', IGAU, 1,
      &                XYZGAU,REPERE,MATER, OPTIO2, EPSHY)
           OPTIO3 = OPTION(1:9) // '_SECH'
-          CALL EPSTMC(FAMI,MODELI, NDIM, INSTAN, '+', IGAU, 1,
+          CALL EPSTMC(FAMI, NDIM, INSTAN, '+', IGAU, 1,
      &                XYZGAU,REPERE,MATER, OPTIO3, EPSSE)
 C
 C  --     DEFORMATIONS DE RETRAIT SUR L'ELEMENT

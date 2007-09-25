@@ -1,4 +1,4 @@
-#@ MODIF sd_macr_elem_stat SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_macr_elem_stat SD  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,12 +37,15 @@ class sd_macr_elem_stat(AsBase):
 
     # rigidité condensée :
     rigimeca = Facultatif(sd_matr_asse_gd(SDNom(nomj='.RIGIMECA', fin=19)))
-    KP_EE    = Facultatif(AsVR())
+    MAEL_RAID_VALE = Facultatif(AsVR())
     PHI_IE   = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
 
     # masse condensée :
     massmeca = Facultatif(sd_matr_asse_gd(SDNom(nomj='.MASSMECA', fin=19)))
-    MP_EE    = Facultatif(AsVR())
+    MAEL_MASS_VALE = Facultatif(AsVR())
+    
+    # amortissement condensé :
+    MAEL_AMOR_VALE = Facultatif(AsVR())
 
     # chargements condensés :
     LICA = Facultatif(AsColl(acces='NO', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))

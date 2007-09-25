@@ -1,6 +1,6 @@
       SUBROUTINE TE0218(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,6 @@ C      OPTION : 'EPOT_ELEM_DEPL'
 C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
-
-      CHARACTER*8 MODELI
 
       REAL*8 SIGMA(162),BSIGMA(81),REPERE(7)
       REAL*8 INSTAN,NHARM,BARY(3)
@@ -67,7 +65,6 @@ C     -----------------
       UNDEMI = 0.5D0
       INSTAN = ZERO
       NHARM = ZERO
-      MODELI(1:2) = NOMTE(3:4)
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -110,18 +107,18 @@ C      --------------------------------------------------
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E.  1/2*SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIMTEP('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+      CALL SIMTEP('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
      +            ZR(IGEOM),ZR(IDEPL),INSTAN,
      +            REPERE,ZI(IMATE),NHARM,SIGMA)
 
 C ---- CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
 C      ------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+      CALL BSIGMC(NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
      +              ZR(IGEOM), NHARM, SIGMA, BSIGMA )
 
 C ---- CALCUL DU TERME EPSTH_T*D*EPSTH
 C      -------------------------------
-      CALL ETHDST('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+      CALL ETHDST('RIGI',NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
      +            ZR(IGEOM),ZR(IDEPL),INSTAN,
      +            REPERE,ZI(IMATE),OPTION,ENTHTH)
 

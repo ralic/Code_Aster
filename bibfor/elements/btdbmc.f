@@ -1,6 +1,6 @@
-      SUBROUTINE  BTDBMC(B,D,JACOB,NDIM,MODELZ,NNO,NBSIG,PHENOZ,BTDB)
+      SUBROUTINE  BTDBMC(B,D,JACOB,NDIM,NNO,NBSIG,PHENOZ,BTDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,6 @@ C                                   GLOBAL
 C    JACOB          IN     R        PRODUIT JACOBIEN*POIDS AU POINT
 C                                   D'INTEGRATION COURANT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
-C    MODELZ         IN     K8       MODELISATION (AXI,FOURIER,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE A
 C                                   L'ELEMENT
@@ -44,17 +43,16 @@ C    BTDB(81,81)    OUT    R        MATRICE ELEMENTAIRE DE RIGIDITE
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           CHARACTER*(*) PHENOZ, MODELZ
+           CHARACTER*(*) PHENOZ
            REAL*8        B(NBSIG,*),D(NBSIG,*),JACOB,BTDB(81,81)
 C -----  VARIABLES LOCALES
-           CHARACTER*8  MODELI
            CHARACTER*16 PHENOM
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C ---- INITIALISATIONS
 C      ---------------
       PHENOM = PHENOZ
-      MODELI = MODELZ
       NBINCO = NNO*NDIM
 C
 C      ------------
@@ -64,7 +62,8 @@ C      ------------
 C
 C ----   CAS CONTRAINTES PLANES ET DEFORMATIONS PLANES
 C        ---------------------------------------------
-        IF (MODELI(1:2).EQ.'CP'.OR.MODELI(1:2).EQ.'DP') THEN
+        IF (LTEATT(' ','C_PLAN','OUI').OR.
+     &      LTEATT(' ','D_PLAN','OUI')) THEN
 C
           L1 = NBINCO - 1
 C
@@ -89,7 +88,8 @@ C
 C
 C ----   CAS AXI
 C        -------
-        ELSEIF (MODELI(1:2).EQ.'AX') THEN
+       ELSEIF (LTEATT(' ','AXIS','OUI').AND.
+     &        (.NOT.LTEATT(' ','FOURIER','OUI'))) THEN
 C
           L1 = NBINCO - 1
 C
@@ -124,7 +124,7 @@ C
 C
 C ----   CAS 3D
 C        ------
-        ELSEIF (MODELI(1:2).EQ.'CA') THEN
+        ELSEIF (LTEATT(' ','DIM_TOPO_MAILLE','3')) THEN
 C
           L2 = NBINCO - 2
 C
@@ -163,7 +163,7 @@ C
 C
 C ----   CAS FOURIER
 C        -----------
-        ELSEIF (MODELI(1:2).EQ.'FO') THEN
+        ELSEIF ( LTEATT(' ','FOURIER','OUI')) THEN
 C
           L2 = NBINCO - 2
 C

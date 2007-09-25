@@ -1,4 +1,4 @@
-#@ MODIF maillage Messages  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF maillage Messages  DATE 24/09/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,6 +74,15 @@ Arret en raison des conflits sur les noms de groupe.
    est contient des caractères interdits.
    Le groupe "%(k2)s" est renommé en "%(k3)s".
 """),
+
+11: _("""
+Plus de %(i1)d faces touchent le noeud %(k1)s.
+
+Risque & conseils :
+   Vérifier la validité de votre maillage autour de ce point.
+   Dans une grille, un noeud est commun à 12 faces.
+"""),
+
 
 }
 

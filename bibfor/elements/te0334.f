@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,11 +59,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPSFL(NBSGM),EPSFLF(NBSGM)
       REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN
       CHARACTER*2  CODRET(NBRES)
-      CHARACTER*8  NOMRES(NBRES),NOMPAR,MODELI,MOD3D
+      CHARACTER*8  NOMRES(NBRES),NOMPAR,MOD3D
       CHARACTER*6       EPSA(6)
       CHARACTER*16 OPTIO2,PHENOM,CMP1,CMP2
       CHARACTER*16 COMPOR
-      LOGICAL      LFLU
+      LOGICAL      LFLU, LTEATT
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
@@ -79,7 +79,6 @@ C     ---------------
       ZERO = 0.0D0
       UN = 1.0D0
       NHARM = ZERO
-      MODELI(1:2) = NOMTE(3:4)
       MOD3D = '3D'
 
       DO 10 I = 1,MXCMEL
@@ -145,7 +144,7 @@ C        --------------
 C ---    RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES
 C ---    PLANES :
 C        ---------------------------------------------------------
-      IF (MODELI(1:2).EQ.'CP') THEN
+      IF (LTEATT(' ','C_PLAN','OUI')) THEN
         CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
         IF (ICOMPO.NE.0) THEN
           COMPOR = ZK16(ICOMPO)
@@ -168,7 +167,7 @@ C ---       EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
 C          ----------------------
 
       OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
-      CALL EPSVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+      CALL EPSVMC('RIGI',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &              ZR(IGEOM),ZR(IDEPL),
      &              ZR(ITEMPS),ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
 

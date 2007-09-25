@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF modelisa2 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,9 +155,7 @@ cata_msg={
  pb pour recuperer "excent" pour la maille  %(k1)s 
 """),
 
-42: _("""
- melange mailles quadratiques avec quad8: liaison supprimee sur noeud milieu quad8
-"""),
+
 
 43: _("""
  deux mailles poi1 interdit

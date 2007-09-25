@@ -1,8 +1,8 @@
-      SUBROUTINE EPSVMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+      SUBROUTINE EPSVMC (FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
      &                   IDFDE, XYZ,DEPL,INSTAN,MATER,
      &                   REPERE,NHARM,OPTION,EPSM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,6 @@ C                  ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    FAMI           IN     K4       TYPE DE FAMILLE DE POINT DE GAUSS
-C    MODELI         IN     K8       MODELISATION (AXI, FOURIER,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
@@ -69,16 +68,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
-           CHARACTER*8  MODELI
            CHARACTER*16 OPTION
            CHARACTER*4  FAMI
            REAL*8       XYZ(1),  DEPL(1),  EPSM(1), REPERE(7)
            REAL*8       INSTAN,   NHARM
 C -----  VARIABLES LOCALES
-           CHARACTER*8  MODEDP,PHENOM
+           CHARACTER*8  PHENOM, MODELI
            CHARACTER*2  CODRET
            REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
            INTEGER      IER
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -86,7 +85,6 @@ C     -----------------
       ZERO   = 0.0D0
       UN     = 1.0D0
       DEUX   = 2.0D0
-      MODEDP = 'DP'
 C
       DO 10 I = 1, NBSIG*NPG
          EPSM(I) = ZERO
@@ -98,14 +96,14 @@ C
 C --- CALCUL DES DEFORMATIONS DU PREMIER ORDRE
 C --- AUX POINTS D'INTEGRATION :
 C      -----------------------
-      CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+      CALL EPS1MC(NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &            XYZ,DEPL,NHARM,EPSM)
 C
 C ---   CALCUL DES DEFORMATIONS DU SECOND ORDRE AUX POINTS
 C ---   D'INTEGRATION POUR LES GRANDES TRANSFORMATIONS :
 C       ----------------------------------------------
       IF (OPTION(4:4).EQ.'G') THEN
-         CALL EPS2MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+         CALL EPS2MC(NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &               XYZ,DEPL,EPS2)
       ENDIF
 C
@@ -114,7 +112,7 @@ C --- (AJOUTEES AUX DEFORMATIONS DE RETRAIT ENDOGENE/DESSICCATION)
 C      ----------------------------------------------------------
       CALL RCCOMA(MATER,'ELAS',PHENOM,CODRET)
       IF (PHENOM(1:8).NE.'ELAS_MET') THEN
-        CALL EPTHMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,REPERE,
+        CALL EPTHMC(FAMI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,REPERE,
      +         INSTAN,MATER,OPTION,EPSTH)
       ELSE IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG') THEN
         CALL U2MESK('F','ELEMENTS_15',1,PHENOM)
@@ -135,7 +133,7 @@ C
 C --- CAS DES CONTRAINTES PLANES, ON CALCULE EPSZZ A PARTIR
 C --- DE SIGZZ = 0 :
 C     ------------
-      IF (MODELI(1:2).EQ.'CP') THEN
+      IF (LTEATT(' ','C_PLAN','OUI')) THEN
 C
 C ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 C       -----------------------------------
@@ -151,7 +149,7 @@ C
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
-          CALL DMATMC(FAMI,MODEDP, MATER,
+          CALL DMATMC(FAMI,'DP',MATER,
      &                INSTAN,'+',IGAU,1,REPERE,XYZGAU,NBSIG,D,.FALSE.)
 C
           IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG'.OR.
@@ -171,7 +169,7 @@ C
 C
 C --- CAS DES DEFORMATIONS PLANES,  EPSZZ = 0 :
 C     ---------------------------------------
-      ELSEIF (MODELI(1:2).EQ.'DP') THEN
+      ELSEIF (LTEATT(' ','D_PLAN','OUI')) THEN
 C
 C ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 C       -----------------------------------

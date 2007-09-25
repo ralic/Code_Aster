@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF mecanonline2 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,23 @@
 def _(x) : return x
 
 cata_msg={
+
+3: _("""
+
+ Le résidu global converge plus vite que la condition des contraintes planes. 
+ La convergence de la condition des contraintes planes peut être améliorée en 
+ augmentant ITER_MAXI_DEBORST (=1 par défaut), sous le mot clef facteur COMP_INCR. 
+
+"""),
+
+36: _("""
+ Erreur dans la découpe initiale des pas.
+"""),
+
+37: _("""
+ Attention, ARRET=NON donc poursuite du calcul sans avoir eu convergence.
+"""),
+
 
 67: _("""
  Le code %(i1)d retourné lors de l'intégration de la loi de comportement n'est pas traité.  

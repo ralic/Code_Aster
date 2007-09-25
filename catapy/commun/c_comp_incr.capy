@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -329,11 +329,15 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",
                              into=("PETIT","PETIT_REAC","SIMO_MIEHE","GREEN_GR","GREEN","COROTATIONNEL","REAC_GEOM")),
            ALGO_C_PLAN     =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
-           b_deborst      = BLOC(condition = " ALGO_C_PLAN == 'DEBORST' ",
-                        fr="Tolérance relative sur la verification des contraintes planes",
-                 RESI_DEBORST  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-                                ),
+#           b_deborst      = BLOC(condition = " ALGO_C_PLAN == 'DEBORST' ",
+#                        fr="Tolérance relative sur la verification des contraintes planes",
+           RESI_DEBORST  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+#                                ),
            ALGO_1D         =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
+#           b_dbiter      = BLOC(condition = " (ALGO_C_PLAN == 'DEBORST') or (ALGO_1D == 'DEBORST')",
+#                        fr="Nombre d'iterations maximal pour la boucle pour les contraintes planes",
+           ITER_MAXI_DEBORST  =SIMP(statut='f',typ='I',defaut= 1),
+#                                ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

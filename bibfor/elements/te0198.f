@@ -1,6 +1,6 @@
       SUBROUTINE TE0198(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      CHARACTER*8   MODELI
       CHARACTER*4   FAMI
       REAL*8        BSIGMA(81), SIGTH(162), REPERE(7)
       REAL*8        NHARM, INSTAN,BARY(3)
@@ -61,7 +60,6 @@ C     -----------------
       ZERO = 0.0D0
       INSTAN = ZERO
       NHARM = ZERO
-      MODELI(1:2) = NOMTE(3:4)
       DIMMOD = 3
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -112,14 +110,14 @@ C      ------------------------------------
 C ---- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
-      CALL SIGTMC(FAMI,MODELI,NNO,DIMMOD,NBSIG,NPG1,ZR(IVF),
+      CALL SIGTMC(FAMI,NNO,DIMMOD,NBSIG,NPG1,ZR(IVF),
      &            ZR(IGEOM),
      &            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
 
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE
 C ---- OU DE SECHAGE (BT*SIGTH)
 C      ----------------------------------------------------------
-      CALL BSIGMC(MODELI,NNO,DIMMOD,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+      CALL BSIGMC(NNO,DIMMOD,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
      +              ZR(IGEOM), NHARM, SIGTH, BSIGMA )
 
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE AVEC LE

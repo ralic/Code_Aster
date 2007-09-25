@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,11 +75,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPSIM(NBCONT),DELTA(NBCONT),EPSS(MXCMEL)
       REAL*8 EPSSM(MXCMEL),SIGMM(NBCONT),SIGMA(NBCONT)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
-      CHARACTER*8 MODELI
       CHARACTER*4 FAMI
 C DEB ------------------------------------------------------------------
-
-      MODELI(1:2) = NOMTE(3:4)
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -173,14 +170,14 @@ C       -------------------
 C ---   CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
 C       ---------------------------------------------
-        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+        CALL EPS1MC(NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
      +              ZR(IGEOM),ZR(IDEPL),NHARM,EPSS)
 
 C ---   CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
 C       -----------------------------------------------------------
         IF (IDEPLM.NE.0) THEN
-        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
+        CALL EPS1MC(NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,IDFDE,
      +              ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
         END IF
 
@@ -223,7 +220,7 @@ C        ==========================================================
 C  --      CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 C  --      POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          ---------------------------------------------------------
-          CALL D1MAMC(FAMI,MODELI,ZI(IMATE),INSTAN,'+',IGAU,1,
+          CALL D1MAMC(FAMI,ZI(IMATE),INSTAN,'+',IGAU,1,
      &                REPERE,XYZGAU,NBSIG,D1)
 
 C  --      DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT

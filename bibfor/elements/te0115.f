@@ -1,6 +1,6 @@
       SUBROUTINE TE0115 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*8        MODELI
       CHARACTER*16       OPTION,NOMTE
       CHARACTER*4        FAMI
       REAL*8             SIGMA(54), REPERE(7), INSTAN, NHARM
@@ -57,7 +56,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-      MODELI(1:2) = NOMTE(3:4)
       DIMMOD = 3
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -115,7 +113,7 @@ C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
-      CALL SIGVMC(FAMI,MODELI,NNO,DIMMOD,NBSIG,NPG1,IPOIDS,IVF,
+      CALL SIGVMC(FAMI,NNO,DIMMOD,NBSIG,NPG1,IPOIDS,IVF,
      +            IDFDE,ZR(IGEOM),ZR(IDEPL),
      +            INSTAN,REPERE,
      +            ZI(IMATE),NHARM,SIGMA,.FALSE.)

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,11 +60,10 @@ C
       REAL*8           EPSM(54), REPERE(7),BARY(3)
       REAL*8           NHARM, INSTAN
       CHARACTER*4      FAMI
-      CHARACTER*8      MODELI
       CHARACTER*16     COMPOR
+      LOGICAL          LTEATT
+      INTEGER          NBSIGM
 C DEB ------------------------------------------------------------------
-C
-      MODELI(1:2) = NOMTE(3:4)
 C
       IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
         FAMI='GANO'
@@ -126,7 +125,7 @@ C      -----------------------------------
 C
 C ---- RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES PLANES :
 C      ---------------------------------------------------------------
-      IF (MODELI(1:2).EQ.'CP') THEN
+      IF (LTEATT(' ','C_PLAN','OUI')) THEN
       CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
         IF (ICOMPO.NE.0) THEN
           COMPOR = ZK16(ICOMPO)
@@ -146,7 +145,7 @@ C ---- ON CALCULE SIMPLEMENT EPSI_MECA POUR LES OPTIONS EPSI ET EPSG
 C ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
 C ----                    OPTIONS EPME ET EPMG :
 C      ---------------------------------------
-      CALL EPSVMC(FAMI,MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
+      CALL EPSVMC(FAMI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
      &            ZR(IGEOM),ZR(IDEPL),INSTAN,
      &            ZI(IMATE),REPERE,NHARM,OPTION,EPSM)
 C

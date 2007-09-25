@@ -1,7 +1,8 @@
-      SUBROUTINE MMEXCL(DEFICO,NOMA,IZONE,POSMA,NBN,
-     &                  NPEX,INI1,INI2,INI3)
+      SUBROUTINE MMEXCL(DEFICO,NOMA  ,IZONE ,POSMA ,NBN   ,
+     &                  NPEX  ,INI1  ,INI2  ,INI3  )
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,18 +19,25 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*24 DEFICO
       CHARACTER*8  NOMA
-      INTEGER      POSMA,IZONE,NBN,NPEX,INI1,INI2,INI3
-C
+      INTEGER      POSMA
+      INTEGER      IZONE
+      INTEGER      NBN
+      INTEGER      NPEX
+      INTEGER      INI1,INI2,INI3
+C      
 C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : MAPPAR
+C
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT)
+C
+C DIT SI UNE MAILLE ESCLAVE CONTIENT UN NOEUD EXCLUS PAR SANS_*_FR 
+C      
 C ----------------------------------------------------------------------
 C
-C DIT SI UNE MAILLE ESCLAVE CONTIENT UN NOEUD EXCLUS PAR SANS_NOEUD OU
-C SANS_GROUP_NO
 C
 C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
@@ -61,64 +69,64 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 NOMACO,PNOMA,CONTNO,FROTNO,PFROT,COTAMA
-      INTEGER      JNOMA,JPONO,JNOCO,JSANS,JPSANS,JMACO
-      INTEGER      INI,SUPPOK,POSNOE,NUMNOE,NSANS,NUMSAN,K,NUMA
+      CHARACTER*24 NOMACO,PNOMA,CONTNO,COTAMA,FROTNO,PFROT
+      INTEGER      JNOMA,JPONO,JNOCO,JMACO,JSANF,JPSANF
+      INTEGER      INI,SUPPOK,POSNOE,NUMNOE,NUMA
       INTEGER      IBID
       REAL*8       R8BID
       CHARACTER*24 K24BID,K24BLA
-      DATA         K24BLA /' '/
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- ACCES OBJETS
 C      
-      NOMACO = DEFICO(1:16) // '.NOMACO'
-      PNOMA  = DEFICO(1:16) // '.PNOMACO'
-      CONTNO = DEFICO(1:16) // '.NOEUCO'
-      FROTNO = DEFICO(1:16) // '.SANOFR'
-      PFROT  = DEFICO(1:16) // '.PSANOFR' 
-      COTAMA = DEFICO(1:16) // '.MAILCO'           
+      NOMACO = DEFICO(1:16)//'.NOMACO'
+      PNOMA  = DEFICO(1:16)//'.PNOMACO'
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      COTAMA = DEFICO(1:16)//'.MAILCO'   
+      FROTNO = DEFICO(1:16)//'.SANOFR'
+      PFROT  = DEFICO(1:16)//'.PSANOFR'               
       CALL JEVEUO(NOMACO,'L',JNOMA)
       CALL JEVEUO(PNOMA ,'L',JPONO)
       CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(FROTNO,'L',JSANS)
-      CALL JEVEUO(PFROT ,'L',JPSANS) 
-      CALL JEVEUO(COTAMA,'L',JMACO)           
+      CALL JEVEUO(COTAMA,'L',JMACO)
+      CALL JEVEUO(FROTNO,'L',JSANF)
+      CALL JEVEUO(PFROT ,'L',JPSANF)       
+C
+C --- INITIALISATIONS
+C                
+      K24BLA = ' '
+      NPEX   = 0
+      INI1   = 0
+      INI2   = 0
+      INI3   = 0
 C
 C --- ON TESTE SI LA MAILLE CONTIENT UN NOEUD INTERDIT DANS
 C --- SANS_GROUP_NO_FR OU SANS_NOEUD_FR
 C
       DO 50 INI = 1,NBN
-        SUPPOK = 0
         POSNOE = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI-1)
-        NUMNOE = ZI(JNOCO+POSNOE-1)
-        NSANS  = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
-        DO 30 K = 1,NSANS
-          NUMSAN = ZI(JSANS+ZI(JPSANS+IZONE-1)+K-1)
-          IF (NUMNOE .EQ. NUMSAN) THEN
-            SUPPOK = 1
-            GOTO 40
-          END IF
- 30     CONTINUE 
- 40     CONTINUE 
+        NUMNOE = ZI(JNOCO+POSNOE-1)     
+        CALL CFMMEX(DEFICO,'FROT',IZONE,NUMNOE,SUPPOK)     
         IF (SUPPOK .EQ. 1) THEN
           NPEX = NPEX + 1
           IF (NPEX .EQ. 1) THEN
-           INI1 = INI
+            INI1 = INI
           ELSEIF (NPEX .EQ. 2) THEN
-           INI2 = INI
+            INI2 = INI
+          ELSEIF (NPEX .EQ. 3) THEN
+            INI3 = INI
           ELSE
-           INI3 = INI
+            NUMA  = ZI(JMACO+POSMA-1)
+            CALL MMERRO(DEFICO,K24BLA,NOMA,
+     &                  'MMEXCL','F','TROP_NDS',
+     &                   NUMA,IBID,IBID,
+     &                   IBID,R8BID,K24BID)
           END IF
         END IF
  50   CONTINUE
- 
-      IF (NPEX.GT.3) THEN
-        NUMA  = ZI(JMACO+POSMA-1)
-        CALL MMERRO(DEFICO,K24BLA,NOMA,'MMEXCL','F','TROP_NDS',
-     &              NUMA,IBID,IBID,IBID,R8BID,K24BID) 
-      ENDIF
 C
       CALL JEDEMA()      
       END

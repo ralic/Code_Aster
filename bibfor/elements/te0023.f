@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,6 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      CHARACTER*8 MODELI
       REAL*8 SIGMA(162),CONTNO(162),REPERE(7),BARY(3)
       REAL*8 NHARM,INSTAN,ZERO,DEPLA(81),SIGM2(162)
       LOGICAL LSENS
@@ -58,8 +57,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
      &        IGEOM,IMATE,J,INO,IPOIDS,IVF,NBINCO,
      &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS,IGAU,IRET,IDIM
 C     ------------------------------------------------------------------
-
-      MODELI(1:2) = NOMTE(3:4)
 
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -125,7 +122,7 @@ C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES - SIGMA_RETRAIT)
 C      ------------------------------------
-        CALL SIGVMC('GANO',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+        CALL SIGVMC('GANO',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
      &              IDFDE,ZR(IGEOM),DEPLA,
      &              INSTAN,REPERE,
      &              ZI(IMATE),NHARM,SIGMA,.FALSE.)
@@ -140,7 +137,7 @@ C      ------------------------------------
           DO 60 I = 1,NBINCO
             DEPLA(I) = ZR(IDEPS-1+I)
    60     CONTINUE
-          CALL SIGVMC('GANO',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
+          CALL SIGVMC('GANO',NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
      &                IDFDE,ZR(IGEOM),DEPLA,
      &                INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,.TRUE.)
           DO 70 I = 1,NBSIG*NPG

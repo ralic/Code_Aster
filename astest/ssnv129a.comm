@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,19 +72,19 @@ CHA0=AFFE_CHAR_CINE(MODELE=MO,
                                   DRY=0.0,
                                   DRZ=0.0,),
                                _F(GROUP_NO=('DR1','DR21',),
-                                  DX=0.0,
+                                  DY=0.0,
                                   DZ=0.0,
                                   DRY=0.0,),
                                _F(GROUP_NO=('DR2','DR22',),
-                                  DY=0.0,
+                                  DX=0.0,
                                   DZ=0.0,
                                   DRX=0.0,),
                                _F(GROUP_NO=('DR3','DR23',),
-                                  DX=0.0,
+                                  DY=0.0,
                                   DZ=0.0,
                                   DRY=0.0,),
                                _F(GROUP_NO=('DR4','DR24',),
-                                  DY=0.0,
+                                  DX=0.0,
                                   DZ=0.0,
                                   DRX=0.0,),),);
 

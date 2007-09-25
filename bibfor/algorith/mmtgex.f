@@ -1,7 +1,9 @@
-      SUBROUTINE MMTGEX(DEFICO,NOMA,NDIM,IZONE,POSMA,INI,NPEX,
-     &                  INI1,INI2,SUPPOK,T1MIN,T2MIN,VALRET)
+      SUBROUTINE MMTGEX(NOMA  ,NDIM  ,DEFICO,IZONE ,POSMAI,
+     &                  IPC   ,NPEX  ,INI1  ,INI2  ,EXNOEF,
+     &                  TAU1  ,TAU2  ,VALRET)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,30 +20,45 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*24 DEFICO
       CHARACTER*8  NOMA
-      INTEGER      NDIM,IZONE,POSMA,SUPPOK,INI,NPEX,INI1,INI2,VALRET
-      REAL*8       T1MIN(3),T2MIN(3)
+      INTEGER      NDIM
+      INTEGER      IZONE
+      INTEGER      POSMAI
+      LOGICAL      EXNOEF
+      INTEGER      IPC
+      INTEGER      NPEX
+      INTEGER      INI1
+      INTEGER      INI2      
+      REAL*8       TAU1(3)
+      REAL*8       TAU2(3)
+      INTEGER      VALRET
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : MAPPAR
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT - UTILITAIRE)
 C
 C DEFINI LA BASE TANGENTE LOCALE LORS D'UN NOEUD A EXCLURE
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
-C IN  POSMA  : NUMERO DE LA MAILLE MAITRE
-C IN  INI    : NUMERO DU NOEUD DE LA MAILLE MAITRE
+C IN  POSMAI : NUMERO DE LA MAILLE MAITRE
+C IN  IPC    : NUMERO DU NOEUD DE LA MAILLE MAITRE
 C IN  NPEX   : NOMBRE DE NOEUDS EXCLUS SUR LA MAILLE
 C IN  INI1   : NUMERO DU PREMIER NOEUD A EXCLURE
 C IN  INI2   : NUMERO DU DEUXIEME NOEUD A EXCLURE
-C OUT SUPPOK : VAUT 1 SI NOEUD A SUPPRIMER
-C OUT T1MIN  : PREMIER VECTEUR TANGENT
-C OUT T2MIN  : SECOND VECTEUR TANGENT
+C OUT EXNOEF : VAUT .TRUE. SI LE NOEUD DOIT ETRE EXCLU DE 
+C              LA SURFACE DE CONTACT SUIVANT UNE DIRECTION (FROTTEMENT)
+C OUT TAU1   : PREMIER VECTEUR TANGENT
+C OUT TAU2   : SECOND VECTEUR TANGENT
 C OUT VALRET : CODE RETOUR ERREUR
 C               0 PAS DE PROBLEME
 C               1 VECTEUR NORMAL NUL AU POINT A EXCLURE
@@ -67,73 +84,71 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      POSNOE,NUMNOE,NSANS,NUMSAN
-      INTEGER      JNOMA,JNOCO,JPONO,JSANS,JPSANS
-      INTEGER      J,K,N1,N2,POSNO1,POSNO2,JCOOR,IBID
-      CHARACTER*24 NOMACO,CONTNO,PNOMA,FROTNO,PFROT
+      INTEGER      IFM,NIV
+      INTEGER      POSNOE,NUMNOE
+      CHARACTER*24 NOMACO,CONTNO,PNOMA
+      INTEGER      JNOMA,JNOCO,JPONO
       REAL*8       NORM(3),COON1(3),COON2(3)
       REAL*8       NORN,NORT1,NORT2,NORME1,R8PREM
+      INTEGER      J,N1,N2,POSNO1,POSNO2,SUPPOK
+      INTEGER      JCOOR,IBID
       LOGICAL      LBID
-      CHARACTER*24 K24BID,K24BLA
-      DATA         K24BLA /' '/       
+      CHARACTER*24 K24BID,K24BLA   
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFDBG('CONTACT',IFM,NIV) 
 C
-      NOMACO = DEFICO(1:16) // '.NOMACO'
-      CONTNO = DEFICO(1:16) // '.NOEUCO'
-      PNOMA  = DEFICO(1:16) // '.PNOMACO'      
-      FROTNO = DEFICO(1:16) // '.SANOFR'
-      PFROT  = DEFICO(1:16) // '.PSANOFR'      
+C --- ACCES OBJETS
+C 
+      NOMACO = DEFICO(1:16)//'.NOMACO'
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      PNOMA  = DEFICO(1:16)//'.PNOMACO'       
+C           
       CALL JEVEUO(NOMACO,'L',JNOMA)
       CALL JEVEUO(CONTNO,'L',JNOCO)     
-      CALL JEVEUO(PNOMA ,'L',JPONO)  
-      CALL JEVEUO(FROTNO,'L',JSANS)
-      CALL JEVEUO(PFROT ,'L',JPSANS)       
-      CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
+      CALL JEVEUO(PNOMA ,'L',JPONO)        
+      CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)  
 C
-C --- REPERAGE SI LE NOEUD INI EST UN NOEUD A EXCLURE
-C     DU FROTTEMENT (SUPPOK = 1)
+C --- INITIALISATIONS 
 C
       VALRET = 0
-      POSNOE = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI-1)
-      NUMNOE = ZI(JNOCO+POSNOE-1)
-      NSANS  = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
-      DO 31 K = 1,NSANS
-        NUMSAN = ZI(JSANS+ZI(JPSANS+IZONE-1)+K-1)
-        IF (NUMNOE .EQ. NUMSAN) THEN
-          SUPPOK = 1
-          GOTO 41
-        ENDIF
- 31   CONTINUE 
- 41   CONTINUE 
-
+      SUPPOK = 0
+      EXNOEF = .FALSE.
+      K24BLA = ' '
+      POSNOE = ZI(JNOMA+ZI(JPONO+POSMAI-1)+IPC-1)
+      NUMNOE = ZI(JNOCO+POSNOE-1)            
+C     
+C --- REPERAGE SI LE NOEUD IPC EST UN NOEUD A EXCLURE (SUPPOK = 1)
+C
+      CALL CFMMEX(DEFICO,'FROT',IZONE ,NUMNOE,SUPPOK)
+C
+C --- REDEFINITION DU REPERE
+C
       IF (SUPPOK .EQ. 1) THEN
-      
+        EXNOEF  = .TRUE.
         IF (NPEX .EQ. 1) THEN
-        
           IF (NDIM .EQ. 2) THEN        
             CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
-     &                  IBID,T1MIN,K24BID,LBID)
-          ELSE
-            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
-     &                  IBID,T1MIN,K24BID,LBID)
+     &                  IBID,TAU1,K24BID,LBID)
+          ELSEIF (NDIM .EQ. 3) THEN
             CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Z',
-     &                  IBID,T2MIN,K24BID,LBID)     
-          ENDIF
-          
+     &                  IBID,TAU1,K24BID,LBID)
+            CALL MMINFP(IZONE,DEFICO,K24BLA,'VECT_Y',
+     &                  IBID,TAU2,K24BID,LBID) 
+          ELSE
+            CALL ASSERT(.FALSE.)    
+          ENDIF  
         ELSE
-
-          CALL PROVEC(T2MIN,T1MIN,NORM)
-
-          IF (INI .EQ. INI1) THEN
+          CALL PROVEC(TAU2,TAU1,NORM)
+          IF (IPC .EQ. INI1) THEN
             N1     = NUMNOE
-            POSNO2 = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI2-1)
+            POSNO2 = ZI(JNOMA+ZI(JPONO+POSMAI-1)+INI2-1)
             N2     = ZI(JNOCO+POSNO2-1)
           ELSE
             N2     = NUMNOE
-            POSNO1 = ZI(JNOMA+ZI(JPONO+POSMA-1)+INI1-1)
+            POSNO1 = ZI(JNOMA+ZI(JPONO+POSMAI-1)+INI1-1)
             N1     = ZI(JNOCO+POSNO1-1)
           END IF
 
@@ -141,27 +156,23 @@ C
             COON1(J) = ZR(JCOOR+3*(N1-1)+J-1)
             COON2(J) = ZR(JCOOR+3*(N2-1)+J-1)
  59       CONTINUE
-          CALL VDIFF(3,COON1,COON2,T2MIN)
-          CALL NORMEV(T2MIN,NORME1)         
-          CALL PROVEC(T2MIN,NORM,T1MIN)
-          NORN = SQRT(NORM(1)*NORM(1)+NORM(2)*NORM(2)+NORM(3)*NORM(3))
-          IF (NORN .LT. R8PREM())  VALRET = 1                          
-                    
-        ENDIF
-  
-        NORT1 = SQRT( T1MIN(1)*T1MIN(1) + T1MIN(2)*T1MIN(2) +
-     &                T1MIN(3)*T1MIN(3) )
-        NORT2 = SQRT( T2MIN(1)*T2MIN(1) + T2MIN(2)*T2MIN(2) +
-     &                T2MIN(3)*T2MIN(3) )
-
+          CALL VDIFF(3,COON1,COON2,TAU2)
+          CALL NORMEV(TAU2,NORME1)         
+          CALL PROVEC(TAU2,NORM,TAU1)
+          NORN  = SQRT(NORM(1)*NORM(1)+NORM(2)*NORM(2)+
+     &            NORM(3)*NORM(3))    
+          IF (NORN.LT.R8PREM()) THEN   
+            VALRET = 1                          
+          ENDIF                   
+        ENDIF          
+        CALL NORMEV(TAU1,NORT1)
+        CALL NORMEV(TAU2,NORT2)
         IF (NORT1.LT.R8PREM()) THEN   
           VALRET = 2
         ELSEIF (NORT2.LT.R8PREM().AND.(NDIM.EQ.3)) THEN   
           VALRET = 3                          
         ENDIF
-
-      ENDIF
- 42   CONTINUE
-
+      ENDIF     
+C
       CALL JEDEMA()      
       END

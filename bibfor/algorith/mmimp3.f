@@ -1,6 +1,8 @@
-      SUBROUTINE MMIMP3(IFM,NOMA,LIGRCF,IPC,JVALV,JTABF,JJEU)
+      SUBROUTINE MMIMP3(IFM   ,NOMA  ,LIGRCF,IPC   ,JVALV ,
+     &                  JTABF ,JJEU)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,27 +19,28 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT     NONE
       INTEGER      IFM
       CHARACTER*19 LIGRCF                   
       CHARACTER*8  NOMA
       INTEGER      IPC
-      INTEGER      JVALV
-      INTEGER      JTABF
-      INTEGER      JJEU
+      INTEGER      JVALV,JTABF,JJEU
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : MMCART
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE - IMPRESSIONS)
 C
 C AFFICHAGE DE LA CARTE DES ELEMENTS DE CONTACT 
-C (METHODE CONTACT CONTINU)
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  LIGRCF : LIGREL POUR LES ELEMENTS DE CONTACT
 C IN  IPC    : NUMERO DU POINT DE CONTACT
-C IN  CARTCF : CARTE POUR LES ELEMENTS DE CONTACT
 C IN  JVALV  : POINTEUR VERS LA CARTE
 C IN  JTABF  : POINTEUR VERS DEFICO(1:16)//'.CARACF'
 C IN  JJEU   : POINTEUR VERS DEFICO(1:16)//'.JEUSUP'
@@ -63,13 +66,13 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      CFMMVD,ZTABF  
-      INTEGER      NUMAE,NUMAM
+      INTEGER      NUMMAE,NUMMAM
       CHARACTER*8  NOMESC,NOMMAI
       INTEGER      JAD      
       REAL*8       LAMBDA,COEFCA,COEFFA,COEFFF
       REAL*8       DELTAT,ASPERI,COEASP,CN,ALPHA,GAMMA,JEUSUP
       INTEGER      IFROTT,IAXIS
-      INTEGER      IFORM,ICOMPL,IMA     
+      INTEGER      IFORM,ICOMPL,IMAE     
 C
 C ----------------------------------------------------------------------
 C
@@ -92,20 +95,19 @@ C
       ALPHA  = ZR(JVALV-1+1+30)
       GAMMA  = ZR(JVALV-1+1+31)
       JEUSUP = ZR(JVALV-1+1+32)
-      IMA    = NINT(ZR(JVALV-1+1+33))                      
+      IMAE   = NINT(ZR(JVALV-1+1+33))                      
 C
 C --- ACCES A L'ELEMENT EN COURS            
 C
-      CALL JEVEUO(JEXNUM(LIGRCF//'.NEMA',IMA),'L',JAD)     
-      NUMAE  = NINT(ZR(JTABF+ZTABF*(IMA-1)+1))
-      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAE),NOMESC) 
-      NUMAM  = NINT(ZR(JTABF+ZTABF*(IMA-1)+2))
-      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMAM),NOMMAI)         
-      WRITE(IFM,1000) IMA,NOMESC,NOMMAI
-      WRITE(IFM,2000) IPC
-C      WRITE(IFM,2001) TAU1(1),TAU1(2),TAU1(3),
-C     &                TAU2(1),TAU2(2),TAU2(3) 
-      
+      CALL JEVEUO(JEXNUM(LIGRCF//'.NEMA',IMAE),'L',JAD)     
+      NUMMAE  = NINT(ZR(JTABF+ZTABF*(IMAE-1)+1))
+      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),NOMESC) 
+      NUMMAM  = NINT(ZR(JTABF+ZTABF*(IMAE-1)+2))
+      CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAM),NOMMAI)         
+      WRITE(IFM,1000) IPC,NOMESC,NOMMAI
+C
+C --- POINT DE CONTACT EN COURS
+C             
       IF (IAXIS.EQ.1) THEN
         WRITE(IFM,1011)            
       ELSE 
@@ -126,7 +128,7 @@ C     &                TAU2(1),TAU2(2),TAU2(3)
 C
 C --- FORMATS AFFICHAGE
 C
- 1000 FORMAT (' <CONTACT>     * L''ELEMENT DE CONTACT ',I5,
+ 1000 FORMAT (' <CONTACT>     * LA MAILLE DE CONTACT ',I5,
      &        '(',A8,'/',A8,')')    
  1001 FORMAT (' <CONTACT>        A POUR PROPRIETES') 
  1011 FORMAT (' <CONTACT>        A POUR PROPRIETES '//
@@ -148,13 +150,9 @@ C
      &        ' - E_V            :  ',E10.3)      
  1006 FORMAT (' <CONTACT>          AVEC FROTTEMENT DE COULOMB',
      &        ' - COEFFICIENT    :  ',E10.3,
-     &        ' - COEF_REGU_FROT :  ',E10.3)   
- 2000 FORMAT (' <CONTACT>     ** DONT LE POINT DE CONTACT ',I3)
-C 2001 FORMAT (' <CONTACT>          TANGENTES :',
-C     &         '(',E10.3,',',E10.3,',',E10.3,')',
-C     &         ' ET (',E10.3,',',E10.3,',',E10.3,')')     
+     &        ' - COEF_REGU_FROT :  ',E10.3)      
 C    
- 999  continue 
+ 999  CONTINUE 
       CALL JEDEMA()
 C
       END

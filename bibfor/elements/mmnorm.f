@@ -1,6 +1,7 @@
       SUBROUTINE MMNORM(NDIM,TAU1,TAU2,NORM)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,17 +18,22 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       INTEGER      NDIM
       REAL*8       TAU1(3)
       REAL*8       TAU2(3)
       REAL*8       NORM(3)
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : MMMBCA/TE0364/TE0365
+C      
 C ----------------------------------------------------------------------
 C
-C CALCULE LA NORMALE A PARTIR DES TANGENTES
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+C
+C CALCULE LA NORMALE A PARTIR DES TANGENTES DEJA DEFINIES
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  NDIM   : DIMENSION DE LA MAILLE DE CONTACT
 C IN  TAU1   : PREMIERE TANGENTE
@@ -51,6 +57,6 @@ C
 
       CALL NORMEV(NORM,NOOR)
       IF (NOOR.EQ.0.D0) THEN
-        CALL U2MESS('F','ELEMENTS2_35')
+        CALL U2MESS('F','CONTACT3_35')
       ENDIF
       END

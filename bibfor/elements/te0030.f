@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C =====================================================================
       INTEGER      NBSIGM, ICODE, IRET, TABTHM(3), DIMMAX, NPGU
       INTEGER      NDIM, NNO, NNOS, NPG, IPOIDS, IVF, IDFDE, JGANO
       REAL*8       VBIFUR, RACINE(4), DSDE(6,6)
-      CHARACTER*8  MOD, MODELI
+      CHARACTER*8  MOD
       CHARACTER*16 RELCOM
       LOGICAL      LTEATT
 C =====================================================================
@@ -69,11 +69,10 @@ C =====================================================================
 C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE DRAINE --------------------
 C =====================================================================
          LOGTHM  = .FALSE.
-         MODELI(1:2) = NOMTE(3:4)
-         IF (MODELI(1:2).EQ.'DP') THEN
+         IF (LTEATT(' ','D_PLAN','OUI')) THEN
             MOD(1:6) = 'D_PLAN'
             NBSIG = NBSIGM()
-         ELSE IF (MODELI(1:2).EQ.'CP') THEN
+         ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
             MOD(1:6) = 'C_PLAN'
             NBSIG = NBSIGM()
          ELSE IF (LTEATT(' ','AXIS','OUI')) THEN

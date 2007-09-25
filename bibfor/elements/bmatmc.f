@@ -1,7 +1,7 @@
-      SUBROUTINE  BMATMC ( IGAU, NBSIG, MODELI, XYZ, IPOIDS, IVF, IDFDE,
+      SUBROUTINE  BMATMC ( IGAU, NBSIG, XYZ, IPOIDS, IVF, IDFDE,
      &                     NNO, NHARM, JACOB, B )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C   ARGUMENT        E/S  TYPE         ROLE
 C    IGAU           IN     I        INDICE DU POINT D'INTEGRATION
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
 C                                   A L'ELEMENT
-C    MODELI         IN     K8       MODELISATION (AXI, FOURIER, ...)
 C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 C    IVF            IN     I        POINTEUR FONCTIONS DE FORME
 C    IPOIDS         IN     I        POINTEUR POIDS D'INTEGRATION
@@ -60,10 +59,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
-           CHARACTER*8  MODELI
            REAL*8       XYZ(1), NHARM, JACOB ,  B(NBSIG,1)
 C -----  VARIABLES LOCALES
            REAL*8       DFDX(27),DFDY(27),DFDZ(27), B3J(9), NHARAY
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C ---- INITIALISATIONS
@@ -78,7 +77,7 @@ C
 C       -------------
 C ----  CAS MASSIF 3D
 C       -------------
-      IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'TA') THEN
+      IF(LTEATT(' ','DIM_TOPO_MAILLE','3')) THEN
 C
           K = 3*(IGAU-1)*NNO
 C
@@ -109,7 +108,8 @@ C
 C       -------------------------------------------------------
 C ----  CAS MASSIF 2D CONTRAINTES PLANES ET DEFORMATIONS PLANES
 C       -------------------------------------------------------
-      ELSEIF (MODELI(1:2).EQ.'CP'.OR.MODELI(1:2).EQ.'DP') THEN
+      ELSEIF (LTEATT(' ','C_PLAN','OUI').OR.
+     &        LTEATT(' ','D_PLAN','OUI')) THEN
 C
           K = (IGAU-1)*NNO + 1
 C
@@ -134,7 +134,8 @@ C
 C       ------------------------
 C ----  CAS MASSIF AXISYMETRIQUE
 C       ------------------------
-      ELSEIF (MODELI(1:2).EQ.'AX') THEN
+      ELSEIF (LTEATT(' ','AXIS','OUI').AND.
+     &        (.NOT.LTEATT(' ','FOURIER','OUI'))) THEN
 C
           K     = (IGAU-1)*NNO
           RAYON = ZERO
@@ -178,7 +179,7 @@ C
 C       ------------------
 C ----  CAS MASSIF FOURIER
 C       ------------------
-      ELSEIF (MODELI(1:2).EQ.'FO') THEN
+      ELSEIF (LTEATT(' ','FOURIER','OUI')) THEN
 C
           K     = (IGAU-1)*NNO
           RAYON = ZERO
@@ -215,7 +216,7 @@ C
 C
  90      CONTINUE
       ELSE
-         CALL U2MESK('F','ELEMENTS_11',1,MODELI)
+         CALL U2MESS('F','ELEMENTS_11')
       ENDIF
 C.============================ FIN DE LA ROUTINE ======================
       END

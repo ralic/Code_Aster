@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements2 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,9 +158,7 @@ cata_msg={
  les vecteurs sont au nombre de 1 ou 2
 """),
 
-35: _("""
- normale nulle !
-"""),
+
 
 36: _("""
  le type d'element :  %(k1)s n'est pas traite.

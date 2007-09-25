@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,11 +70,8 @@ C
       REAL*8             EPSSM(MXCMEL), SIGMM(NBCONT), SIGMA(NBCONT)
       REAL*8             INTEG1, INTEG2, INTEG
       REAL*8             DFDX(9), DFDY(9)
-      CHARACTER*8        MODELI
       CHARACTER*4        FAMI
-C
-      MODELI = '        '
-      MODELI(1:2) = NOMTE(3:4)
+      LOGICAL            LTEATT
 C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
@@ -175,14 +172,14 @@ C
 C ---   CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
 C       ---------------------------------------------
-        CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+        CALL EPS1MC(NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +              ZR(IGEOM),ZR(IDEPL),NHARM,EPSS)
 C
 C ---   CALCUL EVENTUEL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT A L'INSTANT PRECEDENT :
 C       -----------------------------------------------------------
         IF (IDEPLM.NE.0) THEN
-          CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+          CALL EPS1MC(NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +                ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
         ENDIF
 C
@@ -201,7 +198,8 @@ C       ------------------------------
 C
          CALL DFDM2D ( NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
-         IF ((MODELI(1:2).EQ.'AX').OR.(MODELI(1:2).EQ.'FO')) THEN
+         IF ((LTEATT(' ','AXIS','OUI')).OR.
+     &       (LTEATT(' ','FOURIER','OUI'))) THEN
             RAYON = ZERO
             DO 41 I = 1, NNO
                RAYON = RAYON + ZR(IVF+K+I-1)*ZR(IGEOM+NDIM*(I-1))
@@ -236,7 +234,7 @@ C
 C  --      CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 C  --      POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          ---------------------------------------------------------
-           CALL D1MAMC(FAMI,MODELI, ZI(IMATE), INSTAN, '+',IGAU, 1,
+           CALL D1MAMC(FAMI, ZI(IMATE), INSTAN, '+',IGAU, 1,
      +                 REPERE,XYZGAU, NBSIG, D1)
 C
 C  --      DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
@@ -287,12 +285,12 @@ C          ----------------
            IF (IDEPLM.NE.0.AND.IDSIGM.NE.0) THEN
              INTEG1 =       SIGMA(1)*DELTA(1) +      SIGMA(2)*DELTA(2)
      +               +      SIGMA(3)*DELTA(3) + DEUX*SIGMA(4)*DELTA(4)
-             IF (MODELI(1:2).EQ.'FO') INTEG1 = INTEG1 +
+             IF (LTEATT(' ','FOURIER','OUI')) INTEG1 = INTEG1 +
      &                 DEUX*SIGMA(5)*DELTA(5) + DEUX*SIGMA(6)*DELTA(6)
 C
              INTEG2 =       SIGMM(1)*DELTA(1) +      SIGMM(2)*DELTA(2)
      +               +      SIGMM(3)*DELTA(3) + DEUX*SIGMM(4)*DELTA(4)
-             IF (MODELI(1:2).EQ.'FO') INTEG2 = INTEG2 +
+             IF (LTEATT(' ','FOURIER','OUI')) INTEG2 = INTEG2 +
      &                 DEUX*SIGMM(5)*DELTA(5) + DEUX*SIGMM(6)*DELTA(6)
 C
              ENERPG(IGAU) = UNDEMI*(INTEG1+INTEG2)
@@ -302,7 +300,7 @@ C  --        CAS D'ORDRE NUMERO 1 :
 C            --------------------
              INTEG  =       SIGMA(1)*EPSI(1) +      SIGMA(2)*EPSI(2)
      +               +      SIGMA(3)*EPSI(3) + DEUX*SIGMA(4)*EPSI(4)
-             IF (MODELI(1:2).EQ.'FO') INTEG = INTEG +
+             IF (LTEATT(' ','FOURIER','OUI')) INTEG = INTEG +
      &                 DEUX*SIGMA(5)*EPSI(5) + DEUX*SIGMA(6)*EPSI(6)
 C
              ENERPG(IGAU) = UNDEMI*INTEG

@@ -1,8 +1,9 @@
-        SUBROUTINE  MMNEWD(ALIAS,NNO,NDIM,GEOM,
-     &                     ITEMAX,EPSMAX,DIR,
-     &                     XI,YI,TAU1,TAU2,NIVERR)
+        SUBROUTINE  MMNEWD(ALIAS ,NNO   ,NDIM  ,COORMA,COORPT,
+     &                     ITEMAX,EPSMAX,FFORME,DIR   ,KSI1  ,
+     &                     KSI2  ,TAU1  ,TAU2  ,NIVERR)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,38 +20,47 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*8  ALIAS      
       INTEGER      NNO
       INTEGER      NDIM
-      REAL*8       GEOM(30)
+      REAL*8       COORMA(27)
+      REAL*8       COORPT(3)
+      CHARACTER*8  FFORME 
       REAL*8       DIR(3)
-      REAL*8       XI
-      REAL*8       YI
-      REAL*8       TAU1(3)
-      REAL*8       TAU2(3)
+      REAL*8       KSI1,KSI2
+      REAL*8       TAU1(3),TAU2(3)
       INTEGER      NIVERR
       INTEGER      ITEMAX
       REAL*8       EPSMAX
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELLEE PAR : 
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (TOUTES METHODES - APPARIEMENT)
 C
 C ALGORITHME DE NEWTON POUR CALCULER LA PROJECTION D'UN POINT SUR UNE
 C MAILLE - VERSION AVEC DIRECTION DE RECHERCHE IMPOSEE
+C      
+C ----------------------------------------------------------------------
 C
+C
+C IN  FFORME : TYPE DES FONCTIONS DE FORME
+C               'CONTINUE' POUR ELTS DE CONTACT
+C               'STANDARD' POUR ELTS STANDARDS
 C IN  ALIAS  : TYPE DE MAILLE
 C IN  NNO    : NOMBRE DE NOEUD SUR LA MAILLE
 C IN  NDIM   : DIMENSION DE LA MAILLE (2 OU 3)
-C IN  GEOM   : COORDONNEES DU POINT ET DE L'ELEMENT
+C IN  COORMA : COORDONNEES DES NOEUDS DE LA MAILLE
+C IN  COORPT : COORDONNEES DU NOEUD A PROJETER SUR LA MAILLE
 C IN  ITEMAX : NOMBRE MAXI D'ITERATIONS DE NEWTON POUR LA PROJECTION
 C IN  EPSMAX : RESIDU POUR CONVERGENCE DE NEWTON POUR LA PROJECTION 
 C IN  DIR    : DIRECTION D'APPARIEMENT
-C OUT XI     : PREMIERE COORDONNEE PARAMETRIQUE DU POINT PROJETE
-C OUT YI     : SECONDE COORDONNEE PARAMETRIQUE DU POINT PROJETE
-C OUT TAU1   : PREMIER VECTEUR TANGENT EN XI,YI
-C OUT TAU2   : SECOND VECTEUR TANGENT EN XI,YI
+C OUT KSI1   : PREMIERE COORDONNEE PARAMETRIQUE DU POINT PROJETE
+C OUT KSI2   : SECONDE COORDONNEE PARAMETRIQUE DU POINT PROJETE
+C OUT TAU1   : PREMIER VECTEUR TANGENT EN KSI1,KSI2
+C OUT TAU2   : SECOND VECTEUR TANGENT EN KSI1,KSI2
 C OUT NIVERR : RETOURNE UN CODE ERREUR
 C                0  TOUT VA BIEN
 C                1  ELEMENT INCONNU
@@ -59,121 +69,153 @@ C                3  DEPASSEMENT NOMBRE ITERATIONS MAX
 C
 C ----------------------------------------------------------------------
 C
-      REAL*8       TN(9),DR(2,9),ALPHA
-      REAL*8       DDR(3,9),TANG(3,3),TANG2(2,2)
-      REAL*8       RESIDU(3),VEC(3),DX(3)
-      REAL*8       IBID,TEST
-      INTEGER      I,J,ITER,IRET
+      REAL*8       FF(9),DFF(2,9),DDFF(3,9)  
+      REAL*8       VEC1(3)
+      REAL*8       MATRI3(3,3),MATRI2(2,2)
+      REAL*8       TEST,EPSREL,EPS,ALPHA
+      REAL*8       DKSI(3),R8BID      
+      INTEGER      INO,IDIM,ITER,IRET
+      REAL*8       ZERO
+      PARAMETER    (ZERO=0.D0)  
 C
 C ----------------------------------------------------------------------
 C
+C --- VERIF CARACTERISTIQUES DE LA MAILLE
+C
+      IF (NNO.GT.9)  CALL ASSERT(.FALSE.) 
+      IF (NDIM.GT.3) CALL ASSERT(.FALSE.) 
+      IF (NDIM.LE.1) CALL ASSERT(.FALSE.)
 C
 C --- POINT DE DEPART
 C
       NIVERR = 0
-      XI     = 0.D0
-      YI     = 0.D0
+      KSI1   = ZERO
+      KSI2   = ZERO
       ITER   = 0
       ALPHA  = 1.D0      
+      EPSREL = EPSMAX 
 C
 C --- DEBUT DE LA BOUCLE
 C      
  20   CONTINUE
- 
-C  INITIALISATIONS
-
-        DO 10 I = 1,3
-          DX(I)   = 0.D0
-          VEC(I)  = 0.D0
-          TAU1(I) = 0.D0
-          TAU2(I) = 0.D0
+C
+C --- INITIALISATIONS
+C 
+        DO 10 IDIM = 1,3
+          VEC1(IDIM)   = ZERO
+          TAU1(IDIM)   = ZERO
+          TAU2(IDIM)   = ZERO
+          DKSI(IDIM)   = ZERO
    10   CONTINUE
-        RESIDU(1) = 0.D0
-        RESIDU(2) = 0.D0
-        RESIDU(3) = 0.D0
-        DO 41 I=1,3
-          DO 42 J=1,3
-            TANG(I,J)=0.D0
+        DO 41 IDIM = 1,NDIM
+          DO 42 INO = 1,NDIM
+            MATRI2(IDIM,INO) = ZERO
+            MATRI3(IDIM,INO) = ZERO            
  42       CONTINUE
  41     CONTINUE
-
-C  CALCUL DES FONCTIONS DE FORME ET LEURS DERIVEES
-
-        CALL CALFFD(ALIAS,XI,YI,TN,DR,DDR,NIVERR)
+C       
+C --- CALCUL DES FONCTIONS DE FORME ET DE LEUR DERIVEES EN UN POINT 
+C --- DANS LA MAILLE
+C
+        CALL MMFONF(FFORME,ALIAS ,KSI1   ,KSI2  ,
+     &              FF    ,DFF   ,DDFF   ,NIVERR)        
         IF (NIVERR.NE.0) THEN
           GOTO 999
         ENDIF
-        
-C  CALCUL DU RESIDU
-
-        DO 91 I = 1,3
-          VEC(I)  = 0.D0
-          TAU1(I) = 0.D0
-          TAU2(I) = 0.D0
-          DO 81 J = 1,NNO
-            VEC(I)  = GEOM(3*J+I)*TN(J)   + VEC(I)
-            TAU1(I) = GEOM(3*J+I)*DR(1,J) + TAU1(I)
-            IF (NDIM.EQ.3) THEN
-              TAU2(I) = GEOM(3*J+I)*DR(2,J) + TAU2(I)
-            ENDIF
- 81       CONTINUE
- 91     CONTINUE
+C
+C --- CALCUL DU VECTEUR POSITION DU POINT COURANT SUR LA MAILLE
+C
+        DO 40 IDIM = 1,NDIM
+          DO 30 INO = 1,NNO
+            VEC1(IDIM)  = COORMA(3*(INO-1)+IDIM)*FF(INO) + VEC1(IDIM) 
+ 30      CONTINUE
+ 40     CONTINUE
+C
+C --- CALCUL DES TANGENTES
+C
+        CALL MMTANG(NDIM  ,NNO   ,COORMA,DFF   ,
+     &              TAU1  ,TAU2) 
+C
+C --- CALCUL DE LA QUANTITE A MINIMISER
+C
+        DO 35 IDIM = 1,NDIM
+          VEC1(IDIM) = COORPT(IDIM) - VEC1(IDIM)
+ 35     CONTINUE  
+C
+C --- CALCUL DU RESIDU
+C
+        DKSI(1) = VEC1(1) - ALPHA*DIR(1)
+        DKSI(2) = VEC1(2) - ALPHA*DIR(2)
         IF (NDIM.EQ.3) THEN
-          DO 25 I=1,3
-            RESIDU(I)= ALPHA*DIR(I)-GEOM(I)+VEC(I)
-            DX(I) = -1.D0*RESIDU(I)
- 25       CONTINUE
-        ELSE
-          RESIDU(1)= ALPHA*DIR(1)-GEOM(1)+VEC(1)
-          RESIDU(2)= ALPHA*DIR(2)-GEOM(2)+VEC(2)
-          DX(1) = -1.D0*RESIDU(1)
-          DX(2) = -1.D0*RESIDU(2)
-        ENDIF
-
-C  CALCUL DE LA MATRICE
-
+          DKSI(3) = VEC1(3)-ALPHA*DIR(3)  
+        ENDIF             
+C
+C --- CALCUL DE LA MATRICE TANGENTE
+C
         IF (NDIM.EQ.2) THEN
-          DO 23 I=1,2
-            TANG2(I,1)= TAU1(I)
-            TANG2(I,2)= DIR(I)
- 23       CONTINUE
-          CALL MGAUSS('NCVP',TANG2,DX,2,2,1,IBID,IRET)        
-          IF (IRET.GT.0) THEN
-            NIVERR = 2
-            GOTO 999            
-          ENDIF  
-          XI    = XI + DX(1)
-          YI    = 0.D0
-          ALPHA = ALPHA +DX(2)
-          TEST  = SQRT(DX(1)**2+DX(2)**2)
+          DO 23 IDIM = 1,NDIM
+            MATRI2(IDIM,1)= TAU1(IDIM)
+            MATRI2(IDIM,2)= DIR(IDIM)
+ 23       CONTINUE   
         ELSEIF (NDIM.EQ.3) THEN
-          DO 21 I=1,3
-            TANG(I,1)= TAU1(I)
-            TANG(I,2)= TAU2(I)
-            TANG(I,3)= DIR(I)
+          DO 21 IDIM = 1,NDIM
+            MATRI3(IDIM,1)= TAU1(IDIM)
+            MATRI3(IDIM,2)= TAU2(IDIM)
+            MATRI3(IDIM,3)= DIR(IDIM)
  21       CONTINUE
-          CALL MGAUSS('NCVP',TANG,DX,3,3,1,IBID,IRET)        
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+C
+C --- RESOLUTION K.dU=RESIDU
+C 
+        IF (NDIM.EQ.2) THEN
+          CALL MGAUSS('NCVP',MATRI2,DKSI,2,2,1,R8BID,IRET)        
           IF (IRET.GT.0) THEN
             NIVERR = 2
             GOTO 999            
-          ENDIF      
-          XI    = XI + DX(1)
-          YI    = YI + DX(2)
-          ALPHA = ALPHA +DX(3)
-          TEST  = SQRT(DX(1)**2+DX(2)**2+DX(3)**2)
+          ENDIF   
+        ELSEIF (NDIM.EQ.3) THEN
+          CALL MGAUSS('NCVP',MATRI3,DKSI,3,3,1,R8BID,IRET)        
+          IF (IRET.GT.0) THEN
+            NIVERR = 2
+            GOTO 999            
+          ENDIF
+        ELSE
+          CALL ASSERT(.FALSE.)
         ENDIF
-
-C   ACTUALISATION
-
-        ITER = ITER + 1
-
-C   TEST DE CONVERGENCE
-
-        IF ((TEST.GT.EPSMAX) .AND. (ITER.LT.ITEMAX)) THEN
+C  
+C --- ACTUALISATION
+C
+        IF (NDIM.EQ.2) THEN
+          KSI1  = KSI1 + DKSI(1)
+          KSI2  = ZERO
+          ALPHA = ALPHA + DKSI(2)   
+        ELSEIF (NDIM.EQ.3) THEN
+          KSI1  = KSI1 + DKSI(1)
+          KSI2  = KSI2 + DKSI(2)
+          ALPHA = ALPHA + DKSI(3)          
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF     
+        ITER = ITER + 1          
+C
+C --- CALCUL POUR LE TEST DE CONVERGENCE 
+C
+        EPS  = EPSREL
+        IF (NDIM.EQ.2) THEN
+          TEST  = SQRT(DKSI(1)*DKSI(1)+DKSI(2)*DKSI(2))
+        ELSEIF (NDIM.EQ.3) THEN
+          TEST  = SQRT(DKSI(1)*DKSI(1)+DKSI(2)*DKSI(2)+DKSI(3)*DKSI(3))
+        ENDIF
+C
+C --- EVALUATION DE LA CONVERGENCE
+C
+        IF ((TEST.GT.EPS) .AND. (ITER.LT.ITEMAX)) THEN
           GOTO 20
-        ELSEIF ((ITER.GT.ITEMAX).AND.(TEST.GT.EPSMAX)) THEN
+        ELSEIF ((ITER.GT.ITEMAX).AND.(TEST.GT.EPS)) THEN
           NIVERR = 3
-        ENDIF 
+        ENDIF                                  
 C
 C --- FIN DE LA BOUCLE
 C 

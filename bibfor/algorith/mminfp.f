@@ -2,7 +2,7 @@
      &                  IREP  ,RREP  ,KREP  ,LREP   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,10 +70,13 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER IZONE,CFMMVD,ZCMCF,ZMETH,ZTOLE,ZECPD,ZDIRE,ZPOUD,ZTGDE
-      INTEGER JCMCF,JNORLI,JDIR,JMETH,JTGDEF,JPOUDI,JECPD,JTOLE,NOC
+      INTEGER      IZONE
+      INTEGER      CFMMVD,ZCMCF,ZMETH,ZTOLE,ZECPD,ZDIRE
+      INTEGER      ZPOUD,ZTGDE
       CHARACTER*24 CARACF,NORLIS,DIRCO,METHCO,TANDEF,TANPOU,ECPDON
-      CHARACTER*24 TOLECO,VALK(2)      
+      INTEGER      JCMCF,JNORLI,JDIR,JMETH,JTGDEF,JPOUDI,JECPD
+      CHARACTER*24 TOLECO
+      INTEGER      JTOLE     
 C
 C ----------------------------------------------------------------------
 C
@@ -111,13 +114,12 @@ C
 C            
       CALL JEEXIN(CARACF,JCMCF)      
       IF (JCMCF.EQ.0) THEN
-        VALK(1) = CARACF
-        CALL U2MESK('F','CONTACT3_99',1,VALK)
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C --- QUESTIONS
 C
-      IF (QUESTI.EQ.'FOND_FISSURE') THEN
+      IF     (QUESTI.EQ.'FOND_FISSURE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         IF (ZR(JCMCF+ZCMCF*(IZONE-1)+11) .EQ. 0.D0) THEN
           LREP(1) = .FALSE.
@@ -125,7 +127,7 @@ C
           LREP(1) = .TRUE.
         ENDIF
 C        
-      ELSEIF (QUESTI.EQ.'RACC_LINE_QUAD') THEN
+      ELSEIF (QUESTI.EQ.'RACCORD_LINE_QUAD') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         IF (ZR(JCMCF+ZCMCF*(IZONE-1)+12) .EQ. 0.D0) THEN
           LREP(1) = .FALSE.
@@ -143,7 +145,7 @@ C
           LREP(1) = .FALSE.
         ELSE
           LREP(1) = .TRUE.
-        ENDIF    
+        ENDIF
 C
       ELSEIF (QUESTI.EQ.'COMPLIANCE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
@@ -172,16 +174,27 @@ C
       ELSEIF (QUESTI.EQ.'FROTTEMENT') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         IREP(1) = NINT(ZR(JCMCF+5))
-        NOC     = NINT(ZR(JCMCF+25))
-        IF (IREP(1).EQ.1 .OR. NOC.EQ.1) THEN
+        IF (IREP(1).EQ.1) THEN
           LREP(1) = .FALSE.
         ELSE
           LREP(1) = .TRUE.
         ENDIF
 C
       ELSEIF (QUESTI.EQ.'SANS_GROUP_NO') THEN
-        CALL JEVEUO(CARACF,'L',JCMCF)
-        IREP(1) = NINT(ZR(JCMCF+25))
+        CALL JEVEUO(CARACF,'L',JCMCF) 
+        IF (NINT(ZR(JCMCF+25)).EQ.1) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          LREP(1) = .FALSE.
+        ENDIF   
+C
+      ELSEIF (QUESTI.EQ.'SANS_GROUP_NO_FR') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF) 
+        IF (NINT(ZR(JCMCF+25)).EQ.2) THEN
+          LREP(1) = .TRUE.
+        ELSE
+          LREP(1) = .FALSE.
+        ENDIF             
 C        
       ELSEIF (QUESTI.EQ.'USURE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
@@ -190,6 +203,14 @@ C
         ELSE
           LREP(1) = .TRUE.
         ENDIF
+C        
+      ELSEIF (QUESTI.EQ.'USURE_K') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        RREP(1)  = ZR(JCMCF+ZCMCF*(IZONE-1)+14)  
+C        
+      ELSEIF (QUESTI.EQ.'USURE_H') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        RREP(1)  = ZR(JCMCF+ZCMCF*(IZONE-1)+15)                 
 C
       ELSEIF (QUESTI.EQ.'PROJ_NEWT_ITER') THEN
         IREP(1) = 20
@@ -319,7 +340,7 @@ C
         ENDIF
 C
       ELSE
-        CALL U2MESS('F','ALGORITH6_9')
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C     WRITE(6,*) 'APPEL A MMINFP... '

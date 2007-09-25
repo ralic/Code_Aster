@@ -7,7 +7,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 24/09/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,7 +132,7 @@ C
       INTEGER NNOTYP(NTYMAX),MODNUM(NTYMAX),NUMNOA(NTYMAX,NNOMAX)
       INTEGER TYPGEO(NTYMAX),LYGEOM(NTYMAX),LYPENT(NTYMAX),LTYP(NTYMAX)
       INTEGER RENUMD(NTYMAX),NLYVAL(NTYMAX), NUANOM(NTYMAX,NNOMAX)
-      INTEGER NBTYLU
+      INTEGER NBTYLU,IAUX2
       INTEGER JTYPMA,JLCONX,NBNOMA,NMATYP
       INTEGER JNUMTY, NROMAI, JAUX, NUMMA, NMATY0(NTYMAX)
 C
@@ -370,19 +370,19 @@ C
             CALL JEVEUO(PREFIX//'.INST','L',ADINST)
             CALL JEVEUO(PREFIX//'.NUME','L',ADNUME)
             LOGAUX = .FALSE.
-            DO 222 , IAUX = 1 , NPAS
+            DO 222 , IAUX2 = 1 , NPAS
               IF ( CRIT(1:4).EQ.'RELA' ) THEN
-                IF (ABS(ZR(ADINST-1+IAUX)-INST).LE.ABS(PREC*INST)) THEN
+                IF (ABS(ZR(ADINST-1+IAUX2)-INST).LE.ABS(PREC*INST)) THEN
                   LOGAUX = .TRUE.
                 ENDIF
               ELSE IF ( CRIT(1:4).EQ.'ABSO' ) THEN
-                IF (ABS(ZR(ADINST-1+IAUX)-INST).LE.ABS(PREC)) THEN
+                IF (ABS(ZR(ADINST-1+IAUX2)-INST).LE.ABS(PREC)) THEN
                   LOGAUX = .TRUE.
                 ENDIF
               ENDIF
               IF ( LOGAUX ) THEN
-                NUMPT = ZI(ADNUME+2*IAUX-2)
-                NUMORD = ZI(ADNUME+2*IAUX-1)
+                NUMPT = ZI(ADNUME+2*IAUX2-2)
+                NUMORD = ZI(ADNUME+2*IAUX2-1)
                 GOTO 2221
               ENDIF
   222       CONTINUE

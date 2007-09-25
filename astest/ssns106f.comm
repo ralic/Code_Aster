@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -314,6 +314,7 @@ RESU1 = STAT_NON_LINE(
                                     ITER_INTE_MAXI=10,
                                     RELATION='ENDO_ISOT_BETON',
                                     ALGO_C_PLAN='DEBORST',
+                                    ITER_MAXI_DEBORST=5, 
                                     DEFORMATION='PETIT'),
                                  _F(RESO_INTE='IMPLICITE',
                                     GROUP_MA=('ACIER1L','ACIER2L',
@@ -322,7 +323,7 @@ RESU1 = STAT_NON_LINE(
                                     ITER_INTE_PAS=0,
                                     ALGO_1D='ANALYTIQUE',
                                     ITER_INTE_MAXI=10,
-                                     RELATION='GRILLE_ISOT_LINE',
+                                    RELATION='GRILLE_ISOT_LINE',
                                     ALGO_C_PLAN='ANALYTIQUE',
                                     DEFORMATION='PETIT'),
                                   ),
@@ -362,9 +363,6 @@ RESU_G = STAT_NON_LINE(
                       MODELE=MO_G,
                       CHAM_MATER= MATER,
                       CARA_ELEM = CAEL_G,
-#                      COMP_INCR=_F(
-#                                   RELATION ='GLRC_DM',
-#                                  ),
                       COMP_INCR=_F(
                                    RELATION ='KIT_DDI',
                                    RELATION_KIT=('GLRC_DM','VMIS_CINE_LINE')

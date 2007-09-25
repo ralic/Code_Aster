@@ -1,9 +1,9 @@
-      SUBROUTINE NMCOFR(NOMA,DEPPLU,DEPDEL,DDEPLA,MATASS,
-     &                  DEFICO,RESOCO,CNCINE,ITERAT,INST,
-     &                  CONV,LICCVG,LREAC)
+      SUBROUTINE NMCOFR(NOMA  ,DEPPLU,DEPDEL,DDEPLA,MATASS,
+     &                  DEFICO,RESOCO,CNCINE,ITERAT,INST  ,
+     &                  CONV  ,LICCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C
       REAL*8       INST
       REAL*8       CONV(*)
       INTEGER      LICCVG(*)
-      LOGICAL      LREAC(2)
 C      
 C ----------------------------------------------------------------------
 C
@@ -71,8 +70,6 @@ C                       (1) PILOTAGE
 C                       (2) LOI DE COMPORTEMENT
 C                       (3) CONTACT/FROTTEMENT: NOMBRE MAXI D'ITERATIONS
 C                       (4) CONTACT/FROTTEMENT: MATRICE SINGULIERE
-C I/O LREAC  : (1) = TRUE  SI REACTUALISATION A FAIRE  
-C              (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -99,7 +96,10 @@ C
       INTEGER      IFM,NIV  
       CHARACTER*8  K8BID
       REAL*8       VALR(2)
-      INTEGER      IBID      
+      INTEGER      IBID 
+      LOGICAL      LREAC(2)
+      CHARACTER*24 CLREAC
+      INTEGER      JCLREA           
 C
 C ----------------------------------------------------------------------
 C
@@ -115,7 +115,14 @@ C
 C
 C --- TYPE DE CONTACT
 C
-      CALL CFDISC(DEFICO,'              ',TYPALC,IBID,IBID,IBID)
+      CALL CFDISC(DEFICO,' ',TYPALC,IBID,IBID,IBID)
+C
+C --- ACCES OBJETS
+C          
+      CLREAC = RESOCO(1:14)//'.REAL'             
+      CALL JEVEUO(CLREAC,'E',JCLREA)  
+      LREAC(1) = ZL(JCLREA+1-1)
+      LREAC(2) = ZL(JCLREA+2-1)         
 C
 C --- INITIALISATION DES TEMPS ET DES ITERATIONS
 C --- SI ITERAT = 0 C'EST QU'ON DEBUTE UN NOUVEAU PAS DE TEMPS
@@ -190,7 +197,12 @@ C
 C
   998 CONTINUE
 C  
-      CALL CFIMPE(IFM,NIV,'NMCOFR',4)            
+      CALL CFIMPE(IFM,NIV,'NMCOFR',4)
+C
+C --- SAUVEGARDE
+C        
+      ZL(JCLREA+1-1) = LREAC(1)
+      ZL(JCLREA+2-1) = LREAC(2)                  
 C
   999 CONTINUE
 C

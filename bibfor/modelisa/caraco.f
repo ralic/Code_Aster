@@ -2,7 +2,7 @@
      &                  NDIM  ,NZOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,11 +67,9 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      IOC,ISY,ISYME
-      INTEGER      IREAD,IWRITE
-      CHARACTER*24 SYMECO,FORMCO
-      INTEGER      JSYME,JFORM
-      INTEGER      NSYME,NZOCP
+      INTEGER      IZONE
+      CHARACTER*24 FORMCO
+      INTEGER      JFORM
       INTEGER      CFMMVD,ZMETH
       CHARACTER*24 METHCO
       INTEGER      JMETH      
@@ -79,13 +77,6 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
-C --- INITIALISATIONS
-C      
-      SYMECO = CHAR(1:8)//'.CONTACT.SYMECO'
-      CALL JEVEUO(SYMECO,'L',JSYME)
-      NSYME = ZI(JSYME)
-      NZOCP = NZOCO - NSYME
 C
 C --- CREATION DES SDS DE BASE
 C
@@ -96,38 +87,13 @@ C
       CALL WKVECT(METHCO,'G V I',ZMETH*NZOCO+1,JMETH) 
       ZI(JMETH) = NZOCO       
 C
-C --- ON NE BOUCLE QUE SUR LES ZONES PRINCIPALES:
+C --- LECTURE DES DONNEES
 C
-      DO 8 IOC = 1,NZOCP
-        IREAD  = IOC
-        IWRITE = IOC
+      DO 8 IZONE = 1,NZOCO
         CALL CAZOCO(CHAR  ,MOTFAC,FONREE,NOMA  ,NOMO  ,
-     &              NDIM  ,NZOCO ,IREAD ,IWRITE)
+     &              NDIM  ,NZOCO ,IZONE)
  8    CONTINUE
 C
-C --- ON BOUCLE SUR LES ZONES PRINCIPALES MAIS ON AGIT SUR LES
-C --- ZONES SYMETRIQUES
-C
-      IF (NSYME .GT. 0) THEN
-        ISYME = 0
-        DO 9 IOC = 1,NZOCP
-          IREAD = IOC
-          DO 10 ISY = 1,NSYME
-            IF (ZI(JSYME+ISY) .EQ. IOC) THEN
-              ISYME  = ISYME + 1
-              IWRITE = NZOCP + ISYME
-              CALL CAZOCO(CHAR  ,MOTFAC,FONREE,NOMA  ,NOMO  ,
-     &                    NDIM  ,NZOCO ,IREAD ,IWRITE)
-            END IF
- 10       CONTINUE
- 9      CONTINUE
-        IF (ISYME .NE. NSYME)
-     &    CALL U2MESS('F','CONTACT_38')
-        IF (IWRITE .NE. NZOCO)
-     &    CALL U2MESS('F','CONTACT_38')
-      END IF
-C
-C ======================================================================
-      CALL JEDEMA
+      CALL JEDEMA()
 C
       END

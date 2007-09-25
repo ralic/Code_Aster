@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,6 @@ C ----------------------------------------------------------------------
       CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
       CHARACTER*16     K16BID
       CHARACTER*24     VALK(3)
-      CHARACTER*75     CMESS
       INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
       INTEGER          VALI(7)
       REAL*8           VALR(1)
@@ -132,53 +131,26 @@ C
       CALL LXMINS(NOMF)
       KNOMF = NOMF
 C
-      IF ( KNOMF .EQ. '        ' .OR. LEN(NOMF) .GT. 8 ) THEN
-        CMESS = 'NOM DE BASE DE DONNEE '//KNOMF//' INVALIDE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
-      IF ( KCLAS .EQ. ' ' ) THEN
-        CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' EST UN BLANC'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE IF ( INDEX (CLASSE,KCLAS) .NE. 0 ) THEN
-        CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' DEJA DEFINIE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
+      CALL ASSERT (KNOMF .NE. '        ' .AND. LEN(NOMF) .LE. 8)
+      CALL ASSERT (KCLAS .NE. ' ' ) 
+      CALL ASSERT (INDEX (CLASSE,KCLAS) .EQ. 0)
 C
-      IF ( KSTIN .NE. 'DEBUT   ' .AND. KSTIN .NE. 'POURSUIT' .AND.
-     &     KSTIN .NE. 'DUMMY   '                                 ) THEN
-        CMESS = 'STATUT INITIAL DEMANDE POUR '//KNOMF//' NON VALABLE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
-      IF ( KSTOU .NE. 'SAUVE   ' .AND. KSTOU .NE. 'DETRUIT ') THEN
-        CMESS = 'STATUT FINAL DEMANDE POUR '//KNOMF//' NON VALABLE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
-      IF ( KSTIN .EQ. 'DUMMY   ' .AND. KSTOU .EQ. 'SAUVE   ') THEN
-        CMESS = 'STATUT INITIAL ET FINAL INCOMPATIBLES POUR '//KNOMF
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
-      IF ( NREP .LE. 0 ) THEN
-        CMESS = 'TAILLE DE REPERTOIRE POUR '//KNOMF//' NON VALABLE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
-      IF ( LBLOC .LE. 0 ) THEN
-        CMESS = 'LONGUEUR DE BLOC POUR '//KNOMF//' NON VALABLE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
+      CALL ASSERT (KSTIN .EQ. 'DEBUT   ' .OR. KSTIN .EQ. 'POURSUIT' .OR.
+     &             KSTIN .EQ. 'DUMMY   ')
+      CALL ASSERT (KSTOU .EQ. 'SAUVE   ' .OR. KSTOU .EQ. 'DETRUIT ') 
+      CALL ASSERT (KSTIN .NE. 'DUMMY   ' .OR. KSTOU .NE. 'SAUVE   ') 
+      CALL ASSERT (NREP .GT. 0) 
+      CALL ASSERT (LBLOC .GT. 0) 
 C
-      IC = INDEX ( CLASSE , ' ' )
-      IF ( IC .EQ. 0 ) THEN
-        CMESS = 'IMPOSSIBLE D''ACTIVER LE FICHIER '//KNOMF
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE
-        NOMFIC(IC) = KNOMF
-        NOMBAS(IC) = KNOM
-        KSTINI(IC) = KSTIN
-        KSTOUT(IC) = KSTOU
-        CLASSE(IC:IC) = KCLAS
-        NBCLA = INDEX( CLASSE , '$' ) - 1
-        IF ( NBCLA .EQ. -1 ) NBCLA = N
-      ENDIF
+      IC = INDEX (CLASSE , ' ')
+      CALL ASSERT (IC .GT. 0) 
+      NOMFIC(IC) = KNOMF
+      NOMBAS(IC) = KNOM
+      KSTINI(IC) = KSTIN
+      KSTOUT(IC) = KSTOU
+      CLASSE(IC:IC) = KCLAS
+      NBCLA = INDEX( CLASSE , '$' ) - 1
+      IF ( NBCLA .EQ. -1 ) NBCLA = N
 C
       ICLAS  = IC
       NBGROS(IC) = 0
@@ -430,7 +402,8 @@ C
         ELSE
           VALI(1) = NBLMAX(IC)
           VALI(2) = NBLMA2
-          CALL U2MESI('A','JEVEUX_36', 2 , VALI)
+          VALK(1) = NOMBAS(IC)
+          CALL U2MESG('A','JEVEUX_36', 1 , VALK, 2 , VALI, 0 , VALR)
           LENRG = .TRUE.
         ENDIF
 
@@ -489,11 +462,29 @@ C
         JIADD(IC) = IADRS - 1
         CALL JJECRS (KAT(2),IC,2,0,'E',IMARQ(JMARQ(IC)+2*2-1))
 C
+        CALL JXLIRO ( IC , KAT( 2) , IADADD  , 2*LON )
+C	
+        LON2 = 3*NBLMA2 * LOIS
+        CALL JJALLS (LON2,'V','I',LOIS,Z,IUSADI,IADRS,KAT(14),KDY(14))
+        DO 231 L=1,NBLMA2
+          IUSADI( IADRS + (3*L-2) - 1 ) = -1
+          IUSADI( IADRS + (3*L-1) - 1 ) = -1
+          IUSADI( IADRS + (3*L  ) - 1 ) =  0
+ 231    CONTINUE
+        JUSADI(IC) = IADRS - 1
+        CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))
+        LON1 = 3*NBLMA1 * LOIS
+        CALL JXLIRO ( IC , KAT(14), IADD(JIADD(IC)+2*14-1), LON1 )
+        IF ( LENRG ) THEN
+          CALL JXLIBD ( 0, 14 , IC , IADD(JIADD(IC)+2*14-1) , LON1 )
+          IADD(JIADD(IC)+2*14-1) = 0
+          IADD(JIADD(IC)+2*14  ) = 0
+          CALL JXECRO(IC,KAT(14),IADD(JIADD(IC)+2*14-1),LON2,0,14)
+        ENDIF
         LON2 = NBLMA2 * LOIS
         CALL JJALLS (LON2,'V','I',LOIS,Z,IACCE,IADRS,KAT(15),KDY(15))
         JIACCE(IC) = IADRS - 1
         CALL JJECRS (KAT(15),IC,15,0,'E',IMARQ(JMARQ(IC)+2*15-1))
-        CALL JXLIRO ( IC , KAT( 2) , IADADD  , 2*LON )
         LON1 = NBLMA1 * LOIS
         CALL JXLIRO ( IC , KAT(15) , IADD(JIADD(IC)+2*15-1) , LON1 )
         IF ( LENRG ) THEN
@@ -560,23 +551,6 @@ C
         JHCOD(IC) = IADRS - 1
         CALL JJECRS (KAT(13),IC,13,0,'E',IMARQ(JMARQ(IC)+2*13-1))
         CALL JXLIRO ( IC , KAT(13), IADD(JIADD(IC)+2*13-1), LON )
-        LON2 = 3*NBLMA2 * LOIS
-        CALL JJALLS (LON2,'V','I',LOIS,Z,IUSADI,IADRS,KAT(14),KDY(14))
-        DO 231 L=1,NBLMA2
-          IUSADI( IADRS + (3*L-2) - 1 ) = -1
-          IUSADI( IADRS + (3*L-1) - 1 ) = -1
-          IUSADI( IADRS + (3*L  ) - 1 ) =  0
- 231    CONTINUE
-        JUSADI(IC) = IADRS - 1
-        CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))
-        LON1 = 3*NBLMA1 * LOIS
-        CALL JXLIRO ( IC , KAT(14), IADD(JIADD(IC)+2*14-1), LON1 )
-        IF ( LENRG ) THEN
-          CALL JXLIBD ( 0, 14 , IC , IADD(JIADD(IC)+2*14-1) , LON1 )
-          IADD(JIADD(IC)+2*14-1) = 0
-          IADD(JIADD(IC)+2*14  ) = 0
-          CALL JXECRO(IC,KAT(14),IADD(JIADD(IC)+2*14-1),LON2,0,14)
-        ENDIF
         DO 20 I = 1 , LIDBAS
            IADM(JIADM(IC) + 2*I-1 ) = KAT(I)
            IADM(JIADM(IC) + 2*I   ) = KDY(I)
@@ -590,8 +564,8 @@ C
           CALL JXECRO(IC,KAT(9), IADD(JIADD(IC)+2*9-1), LON2,0,9)
           LON2 = LONO(JLONO(IC)+10) * LTYP(JLTYP(IC)+10)
           CALL JXECRO(IC,KAT(10),IADD(JIADD(IC)+2*10-1),LON2,0,10)
-          CALL JXECRO(IC,KAT(1),IADD(JIADD(IC)+2*I-1),
-     &                  LONO(JLONO(IC)+I)*LOIS,0,1)
+          CALL JXECRO(IC,KAT(1),IADD(JIADD(IC)+2*1-1),
+     &                  LONO(JLONO(IC)+1)*LOIS,0,1)
         ENDIF
       ENDIF
 C

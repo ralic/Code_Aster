@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ Les méthodes de contact doivent etre identiques pour toutes les zones de contact
 """),
 
 5: _("""
-Le type de formulation du contact doit etre le meme pour toutes les zones de contact.
+Le type de formulation du contact (DISCRET/CONTINUE/XFEM) doit être le même pour toutes les zones de contact.
 """),
 
 10: _("""
@@ -71,9 +71,14 @@ Les vecteurs tangents sont nuls au noeud maitre  %(k1)s  sur la maille maitre  %
 Une erreur de définition de la maille.
 """),
 
+15: _("""
+Contact méthode continue.
+Le vecteur DIRE_APPA est nul !
+"""),
+
 21: _("""
 Les vecteurs tangents sont nuls lors de la projection du point de contact sur la maille maitre  %(k1)s. 
-Une erreur de définition de la maille.s
+Une erreur de définition de la maille.
 """),
 
 22: _("""
@@ -117,6 +122,66 @@ Le modèle ne comporte pas de fissure XFEM.
 La définition du contact XFEM ne comporte pas autant de zones que de fissures XFEM dans le modèle. 
 """),
 
+
+35: _("""
+Contact méthode continue. 
+  -> La normale calculée sur une maille est nulle.
+  -> Risque & Conseil :
+     Vérifier votre maillage.
+"""),
+
+42: _("""
+Contact méthodes discrètes. Il y a mélange de mailles quadratiques (TRIA6, TRIA7 ou QUAD9) avec des mailles QUAD8 sur la surface escalve du contact.
+On supprime la liaison entre les noeuds sommets et noeud milieu sur le QUAD8.
+Il y a risque d'interpénétration du noeud milieu pour le QUAD8 considéré.
+"""),
+
+85: _("""
+Contact méthode continue. 
+  -> Il y a échec de la boucle contraintes actives lors du traitement
+     du contact
+  -> Risque & Conseil :
+     Vérifier votre maillage ou augmenter ITER_CONT_MAX.
+"""),
+
+86: _("""
+Contact méthode continue. 
+  -> Il y a convergence forcée sur boucle contraintes actives lors du traitement
+     du contact.
+  -> Risque & Conseil :
+     La convergence forcée se déclenche lorsque le problème a du mal à converger. Il y a des risques que le problème 
+     soit un peu moins bien traité. Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles. S'il y des 
+     interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
+"""),
+
+87: _("""
+Contact méthode continue. 
+  -> Il y a convergence forcée sur boucle seuil frottement lors du traitement du
+     contact.
+  -> Risque & Conseil :
+     La convergence forcée se déclenche lorsque le problème a du mal à converger. Il y a des risques que le problème 
+     soit un peu moins bien traité. La condition de frottement de Coulomb est peut etre mal prise en compte. Risque de 
+     résultats faux sur les forces d'adhérence. Essayez de découper plus finement en temps votre problème.
+"""),
+
+88: _("""
+Contact méthode continue. 
+  -> Il y a convergence forcée sur boucle de géométrie lors du traitement du
+     contact.
+  -> Risque & Conseil :
+     La convergence forcée se déclenche lorsque le problème a du mal à converger
+     lors de grands glissements relatifs entre deux surfaces de contact.
+     Il y a des risques que le problème soit un peu moins bien traité.
+     Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
+     S'il y des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
+"""),
+
+
+94: _("""
+Contact méthode discrète. 
+ Le jeu entre les noeuds milieux au niveau des lèvres risque
+ d'etre imprécis si les mailles en contact sont quadratiques.
+"""),
 
 99: _("""
 La SD contact < %(k1)s > est introuvable. Contactez les développeurs.

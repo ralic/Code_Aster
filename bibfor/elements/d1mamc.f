@@ -1,8 +1,8 @@
-      SUBROUTINE  D1MAMC(FAMI,MODELI,MATER,INSTAN,POUM,KPG,KSP,
+      SUBROUTINE  D1MAMC(FAMI,MATER,INSTAN,POUM,KPG,KSP,
      &                   REPERE,XYZGAU,
      &                   NBSIG,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C                 POUR LES ELEMENTS ISOPARAMETRIQUES POUR DES
 C                 MATERIAUX ISOTROPE, ORTHOTROPE ET ISOTROPE TRANSVERSE
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    MODELI         IN     K8       MODELISATION (AXI,FOURIER,...)
 C    MATER          IN     I        MATERIAU
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
@@ -41,36 +40,38 @@ C
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           CHARACTER*8  MODELI
            CHARACTER*(*) FAMI,POUM
            INTEGER      KPG,KSP
            REAL*8       REPERE(7), XYZGAU(1), D1(NBSIG,1), INSTAN
+           LOGICAL      LTEATT
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C       ------------------------
 C ----  CAS MASSIF 3D ET FOURIER
 C       ------------------------
-      IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'FO') THEN
+       IF(LTEATT(' ','DIM_TOPO_MAILLE','3').OR.
+     &    LTEATT(' ','FOURIER','OUI')) THEN
 C
           CALL D1MA3D(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,XYZGAU,D1)
 C
 C       ----------------------------------------
 C ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
 C       ----------------------------------------
-      ELSEIF (MODELI(1:2).EQ.'DP'.OR.MODELI(1:2).EQ.'AX') THEN
+      ELSEIF(LTEATT(' ','D_PLAN','OUI').OR.
+     &       LTEATT(' ','AXIS',  'OUI')) THEN
 C
           CALL D1MADP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C
 C       ----------------------
 C ----  CAS CONTRAINTES PLANES
 C       ----------------------
-      ELSEIF (MODELI(1:2).EQ.'CP') THEN
+      ELSEIF(LTEATT(' ','C_PLAN','OUI'))THEN
 C
           CALL D1MACP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C
       ELSE
-         CALL U2MESK('F','ELEMENTS_11',1,MODELI)
+         CALL U2MESS('F','ELEMENTS_11')
       ENDIF
 C.============================ FIN DE LA ROUTINE ======================
       END

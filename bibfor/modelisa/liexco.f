@@ -1,9 +1,9 @@
-      SUBROUTINE LIEXCO(CHAR  ,MOTFAC,NOMA  ,IREAD ,IWRITE,
-     &                  JTRAV ,ORDSTC,JZONE ,JSUMA ,JSUNO ,
-     &                  JNOQUA,JMACO ,JNOCO ,JNOQU)
+      SUBROUTINE LIEXCO(CHAR  ,MOTFAC,NOMA  ,IZONE ,JTRAV ,
+     &                  ORDSTC,JZONE ,JSUMA ,JSUNO ,JNOQUA,
+     &                  JMACO ,JNOCO ,JNOQU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,7 @@ C
       CHARACTER*8  CHAR
       CHARACTER*16 MOTFAC
       CHARACTER*8  NOMA
-      INTEGER      IREAD
-      INTEGER      IWRITE
+      INTEGER      IZONE
       INTEGER      JTRAV
       INTEGER      ORDSTC
       INTEGER      JZONE
@@ -52,8 +51,7 @@ C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  IREAD  : INDICE POUR LIRE LES DONNEES DANS AFFE_CHAR_MECA
-C IN  IWRITE : INDICE POUR ECRIRE LES DONNEES DANS LA SD DEFICONT
+C IN  IZONE  : INDICE POUR LIRE LES DONNEES DANS AFFE_CHAR_MECA
 C IN  JTRAV  : POINTEUR SUR LE VECTEUR DE TRAVAIL (VOIR LISTCO)
 C IN  ORDSTC : ORDRE DE STOCKAGE DES ZONES MAITRES ET ESCLAVES
 C              0: MAITRES PUIS ESCLAVES
@@ -93,21 +91,21 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- NOMBRE DE MAILLES ET DE NOEUDS DE LA ZONE IWRITE
+C --- NOMBRE DE MAILLES ET DE NOEUDS DE LA ZONE IZONE
 C
-      NBMA   = ZI(JSUMA+ZI(JZONE+IWRITE)) -
-     &             ZI(JSUMA+ZI(JZONE+IWRITE-1))
-      NBNO   = ZI(JSUNO+ZI(JZONE+IWRITE)) -
-     &             ZI(JSUNO+ZI(JZONE+IWRITE-1))
-      NBNOQU = ZI(JNOQUA+ZI(JZONE+IWRITE)) -
-     &             ZI(JNOQUA+ZI(JZONE+IWRITE-1))
+      NBMA   = ZI(JSUMA+ZI(JZONE+IZONE)) -
+     &             ZI(JSUMA+ZI(JZONE+IZONE-1))
+      NBNO   = ZI(JSUNO+ZI(JZONE+IZONE)) -
+     &             ZI(JSUNO+ZI(JZONE+IZONE-1))
+      NBNOQU = ZI(JNOQUA+ZI(JZONE+IZONE)) -
+     &             ZI(JNOQUA+ZI(JZONE+IZONE-1))
 C
 C --- ADRESSE DE DEBUT DE RANGEMENT DES MAILLES ET NOEUDS DE LA ZONE IOC
 C --- DANS LES TABLEAUX CONTMA, CONTNO ET NOEUQU
 C
-      JDECMA = ZI(JSUMA+ZI(JZONE+IWRITE-1)) + 1
-      JDECNO = ZI(JSUNO+ZI(JZONE+IWRITE-1)) + 1
-      JDECNQ = ZI(JNOQUA+ZI(JZONE+IWRITE-1)) + 1
+      JDECMA = ZI(JSUMA+ZI(JZONE+IZONE-1)) + 1
+      JDECNO = ZI(JSUNO+ZI(JZONE+IZONE-1)) + 1
+      JDECNQ = ZI(JNOQUA+ZI(JZONE+IZONE-1)) + 1
 C
 C --- LECTURE DES MAILLES ET NOEUDS DE LA ZONE IOC 
 C
@@ -119,28 +117,28 @@ C
 C --- REMPLISSAGE DE LA LISTE DE MAILLES ET DE LA LISTE DE NOEUDS
 C
       IF (ORDSTC.EQ.1) THEN
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_ESCL',IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_ESCL',IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
      &               ZI(JNOCO+JDECNO-1),
      &               ZI(JNOQU-1+3* (JDECNQ-1)+1))
 
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_ESCL'  ,IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_ESCL'  ,IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
      &               ZI(JNOCO+JDECNO-1),
      &               ZI(JNOQU-1+3* (JDECNQ-1)+1))
 C       LES MAITRES
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_MAIT',IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_MAIT',IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
      &               ZI(JNOCO+JDECNO-1),
      &               ZI(JNOQU-1+3* (JDECNQ-1)+1))
 
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_MAIT'  ,IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_MAIT'  ,IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
@@ -148,28 +146,28 @@ C       LES MAITRES
      &               ZI(JNOQU-1+3* (JDECNQ-1)+1))
       ELSE
 C       LES MAITRES
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_MAIT',IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_MAIT',IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
      &               ZI(JNOCO+JDECNO-1),
      &               ZI(JNOQU-1+3* (JDECNQ-1)+1))
 
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_MAIT'  ,IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_MAIT'  ,IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
      &               ZI(JNOCO+JDECNO-1),
      &               ZI(JNOQU-1+3* (JDECNQ-1)+1))
 C       LES ESCLAVES
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_ESCL',IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'GROUP_MA_ESCL',IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
      &               ZI(JNOCO+JDECNO-1),
      &               ZI(JNOQU-1+3* (JDECNQ-1)+1))
 
-         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_ESCL'  ,IREAD,
+         CALL EXNOCO(CHAR  ,MOTFAC,NOMA,'MAILLE_ESCL'  ,IZONE,
      &               JTRAV ,NBMA  ,NBNO,NBNOQU         ,IPMA,
      &               IPNO  ,IPNOQU,
      &               ZI(JMACO+JDECMA-1),
@@ -181,9 +179,9 @@ C
 C --- VERIFICATIONS ET ECRITURES
 C
       NBMA = NBMAIL
-      IF (IPMA.NE.NBMA)     CALL U2MESS('F','MODELISA4_84')
-      IF (IPNO.NE.NBNO)     CALL U2MESS('F','MODELISA4_85')
-      IF (IPNOQU.NE.NBNOQU) CALL U2MESS('F','MODELISA4_86')
+      IF (IPMA.NE.NBMA)     CALL ASSERT(.FALSE.)
+      IF (IPNO.NE.NBNO)     CALL ASSERT(.FALSE.)
+      IF (IPNOQU.NE.NBNOQU) CALL ASSERT(.FALSE.)
 
 C ----------------------------------------------------------------------
 C

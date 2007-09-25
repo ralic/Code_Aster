@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith5 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -378,65 +378,7 @@ cata_msg={
  projection nulle sur la boule unité (dvlp)
 """),
 
-83: _("""
- état de contact inconnu
-"""),
 
-84: _("""
- champ de géometrie introuvable (dvlp)
-"""),
 
-85: _("""
- échec dans le traitement du contact, augmenter ITER_CONT_MAX
-"""),
-
-86: _("""
-  -> Il y a convergence forcée sur boucle contraintes actives lors du traitement
-     du contact.
-  -> Risque & Conseil :
-     La convergence forcée se déclenche lorsque le problème a du mal à converger. Il y a des risques que le problème 
-     soit un peu moins bien traité. Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles. S'il y des 
-     interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
-"""),
-
-87: _("""
-  -> Il y a convergence forcée sur boucle seuil frottement lors du traitement du
-     contact.
-  -> Risque & Conseil :
-     La convergence forcée se déclenche lorsque le problème a du mal à converger. Il y a des risques que le problème 
-     soit un peu moins bien traité. La condition de frottement de Coulomb est peut etre mal prise en compte. Risque de 
-     résultats faux sur les forces d'adhérence. Essayez de découper plus finement en temps votre problème.
-"""),
-
-88: _("""
-  -> Il y a convergence forcée sur boucle de géométrie lors du traitement du
-     contact.
-  -> Risque & Conseil :
-     La convergence forcée se déclenche lorsque le problème a du mal à converger
-     lors de grands glissements relatifs entre deux surfaces de contact.
-     Il y a des risques que le problème soit un peu moins bien traité.
-     Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
-      S'il y des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
-"""),
-
-89: _("""
- élément de contact inconnu (dvlp)
-"""),
-
-90: _("""
- nom de l'élément inconnu
-"""),
-
-91: _("""
- schéma d'integration non conforme
-"""),
-
-92: _("""
- élément de contact non conforme (dvlp)
-"""),
-
-93: _("""
- dimension de l'espace incorrecte (dvlp)
-"""),
 
 }

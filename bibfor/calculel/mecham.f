@@ -6,7 +6,7 @@
       CHARACTER*(*)      CHGEOZ,CHCARA(*),CHHARZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,8 @@ C           --- BOUCLE SUR LES (SUPER)MAILLES ---
               DO 20 IMA = 1, NBSMA
                   IF (ZI(IASSSA-1+IMA).EQ.1) THEN
                      NOMACR = ZK8(IANMCR-1+IMA)
-                     CALL JEEXIN(NOMACR//'.MP_EE',IRET)
+C                     CALL JEEXIN(NOMACR//'.MP_EE',IRET)
+                     CALL JEEXIN(NOMACR//'.MAEL_MASS_VALE',IRET)
                      IF (IRET.EQ.0) THEN
                         IER = IER + 1
                         CALL U2MESK('E','CALCULEL3_31',1,NOMACR)
@@ -108,7 +109,8 @@ C           --- BOUCLE SUR LES (SUPER)MAILLES ---
                DO 22 IMA = 1, NBSMA
                   IF (ZI(IASSSA-1+IMA).EQ.1) THEN
                      NOMACR = ZK8(IANMCR-1+IMA)
-                     CALL JEEXIN(NOMACR//'.KP_EE',IRET)
+C                     CALL JEEXIN(NOMACR//'.KP_EE',IRET)
+                     CALL JEEXIN(NOMACR//'.MAEL_RAID_VALE',IRET)
                      IF (IRET.EQ.0) THEN
                         IER = IER + 1
                         CALL U2MESK('E','CALCULEL3_33',1,NOMACR)

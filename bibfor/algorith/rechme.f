@@ -3,7 +3,7 @@
 C     
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,8 +74,6 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFDISI,SYME
-      CHARACTER*24 NOESYM
       INTEGER      IFM,NIV  
       CHARACTER*8  K8BID
       REAL*8       R8BID
@@ -90,15 +88,7 @@ C --- AFFICHAGE
 C 
       VALI(1) = IZONE
       CALL CFIMPD(IFM   ,NIV  ,'RECHME',1, 
-     &            VALI  ,R8BID,K8BID)        
-C
-C --- CREATION OBJET SPECIFIQUE POUR APPARIEMENT SYMETRIQUE
-C
-      NOESYM = '&&CFSYME.SYMEXC' 
-      SYME = CFDISI(DEFICO,'MAIT_ESCL_SYME',IZONE)
-      IF ((IZONE.EQ.1).AND.(SYME.EQ.1)) THEN
-        CALL CFSYME(NOMA,DEFICO,RESOCO,NOESYM)
-      ENDIF     
+     &            VALI  ,R8BID,K8BID)            
 C
 C --- RECHERCHE DU NOEUD MAITRE LE PLUS PROCHE
 C
@@ -108,7 +98,7 @@ C
 C --- RECHERCHE DE LA MAILLE MAITRE LA PLUS PROCHE
 C
       CALL CHMANO(NOMA  ,IZONE ,NEWGEO,DEFICO,RESOCO,
-     &            NOESYM,IESCL0,NFESCL)    
+     &            IESCL0,NFESCL)    
 C     
       CALL JEDEMA ()
       END

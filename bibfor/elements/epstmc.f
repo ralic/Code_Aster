@@ -1,7 +1,7 @@
-      SUBROUTINE  EPSTMC(FAMI,MODELI, NDIM, INSTAN, POUM, IGAU,ISGAU,
+      SUBROUTINE  EPSTMC(FAMI,NDIM, INSTAN, POUM, IGAU,ISGAU,
      &                   XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,6 @@ C                 POUR LES ELEMENTS ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
-C    MODELI         IN     K8       MODELISATION (AXI, FOURIER,...)
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    POUM           IN     K1       T+ OU T-
 C    IGAU           IN     I        POINT DE GAUSS
@@ -42,7 +41,6 @@ C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            CHARACTER*(*)  FAMI,POUM
-           CHARACTER*8  MODELI
            CHARACTER*16 OPTION
            REAL*8       INSTAN,EPSTH(6), XYZGAU(3)
            REAL*8       REPERE(7)

@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith6 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,17 +26,7 @@ cata_msg={
  erreur point intégration (dvlp)
 """),
 
-9: _("""
- question inconnue (dvlp)
-"""),
 
-10: _("""
- element de contact incorrect (dvlp)
-"""),
-
-11: _("""
- pas d'éléments tardifs ! (dvlp)
-"""),
 
 12: _("""
  la méthode d'integration est GAUSS, le champ VALE_CONT n'est pas créé
@@ -51,9 +41,7 @@ cata_msg={
  cette routine ne doit etre appelée que dans le cas de la méthode continue du contact
 """),
 
-15: _("""
- le vecteur DIRE_APPA est nul !
-"""),
+
 
 16: _("""
  le fond de fissure d'un maillage 2d ne peut etre défini par des mailles

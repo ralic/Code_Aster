@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -313,7 +313,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'AXIS_FOURIER'     DIM__ 2 2   CODE__ 'AFO'
-              ATTRIBUT__  AXIS=OUI NBSIGM=X6
+              ATTRIBUT__  AXIS=OUI NBSIGM=X6 FOURIER=OUI
               MAILLE__ TRIA3     ELEMENT__ MEFOTR3
               MAILLE__ QUAD4     ELEMENT__ MEFOQU4
               MAILLE__ SEG2      ELEMENT__ MEFOSE2
@@ -335,14 +335,14 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'D_PLAN_SI'        DIM__ 2 2   CODE__ 'DPS'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ QUAD8     ELEMENT__ MEDPQS8
               MAILLE__ QUAD4     ELEMENT__ MEDPQS4
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'D_PLAN'           DIM__ 2 2   CODE__ 'DPL'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6
@@ -352,7 +352,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'D_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'DPG'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA3     ELEMENT__ MGDPTR3
               MAILLE__ TRIA6     ELEMENT__ MGDPTR6
               MAILLE__ QUAD8     ELEMENT__ MGDPQU8
@@ -360,7 +360,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'C_PLAN'           DIM__ 2 2   CODE__ 'CPL'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA3     ELEMENT__ MECPTR3
               MAILLE__ QUAD4     ELEMENT__ MECPQU4
               MAILLE__ TRIA6     ELEMENT__ MECPTR6
@@ -370,12 +370,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'C_PLAN_XFEM_CONT'   DIM__ 2 2   CODE__ 'CPX'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_X
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_X
        MODELISATION__ 'D_PLAN_XFEM_CONT'   DIM__ 2 2   CODE__ 'DPX'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_X
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_X
@@ -383,111 +383,111 @@ PHENOMENE_MODELISATION__
 %-------------------------------------------------------------------
 % modelisations 2d X-FEM non affectables par AFFE_MODELE
        MODELISATION__ 'C_PLAN_XH'         DIM__ 2 2   CODE__ 'CX1'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR3_XH
               MAILLE__ QUAD8     ELEMENT__ MECPQU4_XH
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XH
 
        MODELISATION__ 'D_PLAN_XH'         DIM__ 2 2   CODE__ 'DX1'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR3_XH
               MAILLE__ QUAD8     ELEMENT__ MEDPQU4_XH
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XH
 
        MODELISATION__ 'C_PLAN_XT'         DIM__ 2 2   CODE__ 'CX2'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR3_XT
               MAILLE__ QUAD8     ELEMENT__ MECPQU4_XT
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XT
 
        MODELISATION__ 'D_PLAN_XT'         DIM__ 2 2   CODE__ 'DX2'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR3_XT
               MAILLE__ QUAD8     ELEMENT__ MEDPQU4_XT
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XT
 
        MODELISATION__ 'C_PLAN_XHT'        DIM__ 2 2   CODE__ 'CX3'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR3_XHT
               MAILLE__ QUAD8     ELEMENT__ MECPQU4_XHT
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XHT
 
        MODELISATION__ 'D_PLAN_XHT'        DIM__ 2 2   CODE__ 'DX3'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR3_XHT
               MAILLE__ QUAD8     ELEMENT__ MEDPQU4_XHT
               MAILLE__ SEG3      ELEMENT__ MEPLSE2_XHT
 
        MODELISATION__ 'C_PLAN2XH'         DIM__ 2 2   CODE__ 'CX4'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XH
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XH
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_XH
 
        MODELISATION__ 'D_PLAN2XH'         DIM__ 2 2   CODE__ 'DX4'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XH
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XH
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_XH
 
        MODELISATION__ 'C_PLAN2XT'         DIM__ 2 2   CODE__ 'CX5'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XT
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XT
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_XT
 
        MODELISATION__ 'D_PLAN2XT'         DIM__ 2 2   CODE__ 'DX5'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XT
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XT
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_XT
 
        MODELISATION__ 'C_PLAN2XHT'        DIM__ 2 2   CODE__ 'CX6'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHT
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_XHT
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_XHT
 
        MODELISATION__ 'D_PLAN2XHT'        DIM__ 2 2   CODE__ 'DX6'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHT
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHT
               MAILLE__ SEG3      ELEMENT__ MEPLSE3_XHT
 
        MODELISATION__ 'C_PLAN2XHC'         DIM__ 2 2   CODE__ 'CX7'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR3_XHC
               MAILLE__ QUAD8     ELEMENT__ MECPQU4_XHC
 
        MODELISATION__ 'D_PLAN2XHC'         DIM__ 2 2   CODE__ 'DX7'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR3_XHC
               MAILLE__ QUAD8     ELEMENT__ MEDPQU4_XHC
 
        MODELISATION__ 'C_PLAN2XTC'         DIM__ 2 2   CODE__ 'CX8'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR3_XTC
               MAILLE__ QUAD8     ELEMENT__ MECPQU4_XTC
 
        MODELISATION__ 'D_PLAN2XTC'         DIM__ 2 2   CODE__ 'DX8'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR3_XTC
               MAILLE__ QUAD8     ELEMENT__ MEDPQU4_XTC
 
        MODELISATION__ 'C_PLAN2XHTC'        DIM__ 2 2   CODE__ 'CX9'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MECPTR3_XHTC
               MAILLE__ QUAD8     ELEMENT__ MECPQU4_XHTC
 
        MODELISATION__ 'D_PLAN2XHTC'        DIM__ 2 2   CODE__ 'DX9'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ TRIA6     ELEMENT__ MEDPTR3_XHTC
               MAILLE__ QUAD8     ELEMENT__ MEDPQU4_XHTC
 
 %-------------------------------------------------------------------
 
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
               MAILLE__ TRIA3     ELEMENT__ MGCPTR3
@@ -495,7 +495,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ MGCPQU8
 
        MODELISATION__ 'D_PLAN_GRAD_VARI'   DIM__ 2 2   CODE__ 'DPV'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
               MAILLE__ TRIA6     ELEMENT__ MVDPTR6
               MAILLE__ QUAD8     ELEMENT__ MVDPQS8
@@ -528,7 +528,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ PENTA6    ELEMENT__ MEFI_PENTA6
 
        MODELISATION__ 'PLAN_ELDI'     DIM__ 2 2   CODE__ 'PDI'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI
               MAILLE__ QUAD4     ELEMENT__ MDDPQU4
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
@@ -538,7 +538,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEAXSE2
 
        MODELISATION__ 'C_PLAN_SI'        DIM__ 2 2   CODE__ 'CPS'
-              ATTRIBUT__  NBSIGM=X4
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI
               MAILLE__ QUAD8     ELEMENT__ MECPQS8
               MAILLE__ QUAD4     ELEMENT__ MECPQS4
               MAILLE__ SEG3      ELEMENT__ MEPLSE3

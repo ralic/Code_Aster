@@ -1,6 +1,7 @@
       SUBROUTINE MMELIN(NOMA,NUMA,TYPINT,NNINT,IRET)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,59 +18,52 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*8 NOMA
       INTEGER     NUMA
       INTEGER     TYPINT
       INTEGER     NNINT
       INTEGER     IRET
-C
-C ----------------------------------------------------------------------
-C ROUTINE UTILITAIRE (CONTACT METHODE CONTINUE)
+C      
 C ----------------------------------------------------------------------
 C
-C RETOURNE LE NOMBRE DE POINTS D'INTEGRATION POUR UN ELEMENT
+C ROUTINE CONTACT (METHODE CONTINUE - UTILITAIRE)
+C
+C RETOURNE LE NOMBRE DE POINTS D'INTEGRATION POUR UN ELEMENT DE CONTACT
+C SUIVANT LE TYPE DE SCHEMA D'INTEGRATION
+C      
+C ----------------------------------------------------------------------
 C
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NUMA   : NUMERO ABSOLU DE LA MAILLE
 C IN  TYPINT : TYPE SCHEMA INTEGRATION
+C                 1 NOEUDS
+C                 2 GAUSS
+C                 3 SIMPSON
+C                 4 SIMPSON_1
+C                 5 SIMPSON_2
+C                 6 NEWTON-COTES
+C                 7 NEWTON-COTES_1
+C                 8 NEWTON-COTES_2
 C OUT NNINT  : NOMBRE DE POINTS D'INTEGRATION DE CET ELEMENT
 C OUT IRET   : CODE RETOUR ERREUR
 C                0 TOUT VA BIEN
 C                1 SCHEMA D'INTEGRATION INCONNU
 C
-C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
-C
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C ----------------------------------------------------------------------
 C
       INTEGER      IBID
       CHARACTER*8  ALIAS
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-C
       IRET = 0
       CALL MMELTY(NOMA,NUMA,ALIAS,IBID,IBID)
 C
       IF (TYPINT .EQ. 1) THEN
-C NOEUDS
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 2
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 3
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 3
@@ -78,7 +72,6 @@ C NOEUDS
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 2) THEN
-C PGAUSS
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 2
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 2
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 3
@@ -87,7 +80,6 @@ C PGAUSS
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 3) THEN
-C SIMPSON
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 3
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 3
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 6
@@ -96,7 +88,6 @@ C SIMPSON
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 9
       ELSEIF (TYPINT .EQ. 4) THEN
-C SIMPSON1
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 5
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 5
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 15
@@ -105,7 +96,6 @@ C SIMPSON1
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 21
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 21
       ELSEIF (TYPINT .EQ. 5) THEN
-C SIMPSON2
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 9
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 42
@@ -114,7 +104,6 @@ C SIMPSON2
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 65
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 65
       ELSEIF (TYPINT .EQ. 6) THEN
-C NEWTON-COTES
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 4
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 4
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 4
@@ -123,7 +112,6 @@ C NEWTON-COTES
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 16
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 16
       ELSEIF (TYPINT .EQ. 7) THEN
-C NEWTON-COTES1
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 5
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 5
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 6
@@ -132,7 +120,6 @@ C NEWTON-COTES1
         IF (ALIAS(1:3) .EQ. 'QU8') NNINT = 25
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 25
       ELSEIF (TYPINT .EQ. 8) THEN
-C NEWTON-COTES2
         IF (ALIAS(1:3) .EQ. 'SG2') NNINT = 10
         IF (ALIAS(1:3) .EQ. 'SG3') NNINT = 10
         IF (ALIAS(1:3) .EQ. 'TR3') NNINT = 42
@@ -142,8 +129,5 @@ C NEWTON-COTES2
         IF (ALIAS(1:3) .EQ. 'QU9') NNINT = 100
       ELSE
         IRET = 1
-        CALL U2MESS('F','ALGORITH5_91')
       END IF
-C
-      CALL JEDEMA()
       END

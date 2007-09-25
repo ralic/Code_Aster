@@ -2,12 +2,10 @@
      &                  POSESC,POSMA ,NORM  ,TANG  ,COEF  ,
      &                  COFX  ,COFY  ,JEU   ,NBNOM ,POSNO ,
      &                  NBDDLT,DDL   ,
-     &                  NOMA  ,PROJ  ,ZONESY,JEUPM,PROYES)
+     &                  NOMA  ,PROJ  ,JEUPM,PROYES)
 C     
-C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
-C TOLE CRP_21
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +23,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
+C TOLE CRP_21
 C
       IMPLICIT     NONE
       INTEGER      IZONE
@@ -34,7 +33,6 @@ C
       CHARACTER*24 RESOCO
       CHARACTER*24 DEFICO
       INTEGER      PROJ
-      INTEGER      ZONESY
       INTEGER      POSESC
       INTEGER      POSMA
       REAL*8       NORM(3)
@@ -59,9 +57,6 @@ C PROCHE
 C
 C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : CHMANO / PROJCO
-C ----------------------------------------------------------------------
 C
 C "PROJECTION" D'UN NOEUD ESCLAVE SUR UNE MAILLE MAITRE.
 C CALCUL DES COEFFICIENTS A UTILISER POUR REPRESENTER LE DEPLACEMENT
@@ -85,8 +80,6 @@ C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  PROJ   : 0 -> INTERDIT POUR L'INSTANT (SEUL JEU RECALCULE)
 C              1 -> PROJECTION LINEAIRE
 C              2 -> PROJECTION QUADRATIQUE
-C IN  ZONESY : 0 -> ZONE DE CONTACT NORMAL
-C              1 -> ZONE DE CONTACT AVEC APAPRIEMENT SYMETRIQUE
 C IN  POSNOE : INDICE DU NOEUD ESCLAVE DANS CONTNO
 C IN  POSMA  : INDICE DE LA MAILLE MAITRE (OU DU NOEUD MAITRE SI < 0)
 C OUT NORM   : DIRECTION DE PROJECTION (DIRECTION PM NORMEE)
@@ -141,10 +134,10 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       REAL*8       COORDP(3),COOR(27),COORDM(3)
       CHARACTER*19 NORMMA
-      INTEGER      MOYEN,LISSA,DIAGNO
+      INTEGER      MOYEN,LISSA
       CHARACTER*4  MATYP     
       REAL*8       TOLEIN,TOLEOU
-      INTEGER      NBDDLE
+      INTEGER      NBDDLE,DIAGNO
       REAL*8       COEFNO(9),ENORM(3)   
 C
 C ----------------------------------------------------------------------
@@ -158,14 +151,14 @@ C
 C
 C --- NOEUD ESCLAVE
 C
-      POSNO(1) = POSESC   
+      POSNO(1) = POSESC 
+      DIAGNO   = 0  
 C
 C --- CARACTERISTIQUES DE LA MAILLE MAITRE
 C
       CALL CARAMA(NOMA  ,DEFICO,RESOCO,NEWGEO,POSMA ,
      &            IZONE ,POSNO ,MATYP ,NBNOM ,COOR  ,
-     &            ZONESY,MOYEN ,LISSA ,NORMMA,TOLEIN,
-     &            TOLEOU,DIAGNO)
+     &            MOYEN ,LISSA ,NORMMA,TOLEIN,TOLEOU)
 C
 C --- PROJECTION SUR LA MAILLE (COORDONNEES PROJECTION, JEU, NORMALES) 
 C
@@ -176,7 +169,7 @@ C
      &              NORM  ,TANG  ,COORDM,COEFNO,JEUPM ,
      &              JEU   ,PROYES)    
       ELSE
-        CALL U2MESS('F','CONTACT_23')
+        CALL ASSERT(.FALSE.)
       ENDIF 
 C
 C --- CALCULE LES COEFFICIENTS DES RELATIONS LINEAIRES ET DONNE LES 

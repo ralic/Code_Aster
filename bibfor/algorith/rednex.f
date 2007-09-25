@@ -1,9 +1,7 @@
-      SUBROUTINE REDNEX(NU, NEQ, VECNTD,
-     &                  VECNTX, VECNTY, VECNTZ)
-C ======================================================================
+      SUBROUTINE REDNEX(NUMEDD,NEQ   ,RESOCO)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,139 +18,161 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT  NONE
-      INTEGER   NEQ
-      INTEGER   VECNTD(1,*),VECNTX(1,*),VECNTY(1,*),VECNTZ(1,*)
-      CHARACTER*(*)     NU
-C
-C ROUTINE APPELEE PAR : NMIBLE
-C ---------------------------------------------------------------------
-C     STOCKER LES NOM DES NOEUDS ET DES DDLS IMPLIQUES DANS  
-C     UNE EQUATION DE SYSTEME LINEAIRE DE TYPE LAGRANGE / 
-C     LIAISON_DDL EN VUE DU TRAITEMENT AUTOMATIQUE DES 
-C     RELATIONS SURABONDANTES AVEC LE CONTACT
+      INTEGER      NEQ
+      CHARACTER*24 NUMEDD,RESOCO
+C      
 C ----------------------------------------------------------------------
-C IN   NU        : NOM D'UN NUME_DDL OU D'UN PROF_CHNO
-C IN   NEQ       :
-C OUT VECLID     : VECTEUR CONTENANT LES NOEUDS IMPLIQUES DANS 
-C                  UNE EQUATION DE SYSTEME LINEAIRE DE TYPE 
 C
-C OUT VECNOD     : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                  DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C OUT VECNOX    : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                  DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C                  PORTANT SUR LE DDL 'DX'
-C OUT VECNOY    : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                  DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C                  PORTANT SUR LE DDL 'DY'
-C OUT VECNOZ    : VECTEUR CONTENANT LES NOEUDS IMPLIQUES
-C                  DANS DES RELATIONS DDL_IMPO OU LIAISON_DDL
-C                  PORTANT SUR LE DDL 'DZ'
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT - UTILITAIRE)
+C
+C STOCKER LES NOM DES NOEUDS ET DES DDLS IMPLIQUES DANS  
+C UNE EQUATION DE SYSTEME LINEAIRE DE TYPE LAGRANGE / 
+C LIAISON_DDL EN VUE DU TRAITEMENT AUTOMATIQUE DES 
+C RELATIONS SURABONDANTES AVEC LE CONTACT
+C      
 C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       IBID, GD, NBEC, NEC, JPRNO, JNUEQ ,IFM,IUNIFI
+C
+C
+C IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
+C IN  NEQ    : NOMBRE D'EQUATIONS DU SYSTEME
+C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
+C    OUT: VECNOD = RESOCO(1:14)//'.VECNOD'
+C    OUT: VECNOX = RESOCO(1:14)//'.VECNOX'
+C    OUT: VECNOY = RESOCO(1:14)//'.VECNOY'
+C    OUT: VECNOZ = RESOCO(1:14)//'.VECNOZ'
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32     JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER       IBID, GD, NBEC, NEC, JPRNO, JNUEQ
       INTEGER       IER,NLILI,I,ILO,NBNO,INO,IDEB,NCMP,ICMP,IIEQ,NULI
-      INTEGER       NUNO,NCMPMX,INOCMP,IADG1,JDEEQ,NUDDL,ICO
+      INTEGER       NUNO
       INTEGER       NBMAS,K,JNUNO,KNO,KKK
       INTEGER       II,JJ,KK,ITYP,IDEEQ,JVECLI
-      CHARACTER*8   NOMA, K8B, NOMEQ, NOMNO,NOMCMP
+      CHARACTER*8   NOMA, K8B, NOMEQ
       CHARACTER*19  PRNO, LIGREL
       CHARACTER*24  DEEQ
-      CHARACTER*80  INFOBL,TARDIF
-      LOGICAL       TROUVE, EXISDG
+      LOGICAL       TROUVE
+      CHARACTER*24  VECNOD,VECNOX,VECNOY,VECNOZ
+      INTEGER       JVECNO,JVECNX,JVECNY,JVECNZ      
 C
-C DEB-------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      
-        CALL WKVECT ('&&REDNEX.VECLID','V V I',NEQ,JVECLI )
-        DO 90 II = 1, NEQ
-          ZI(JVECLI-1+II) = 0
- 90     CONTINUE
- 
-        DEEQ = NU//'.NUME.DEEQ'
-        CALL JEVEUO(DEEQ,'L',IDEEQ)
-      
-        DO 2902 II = 1,NEQ
-          ITYP = ZI(IDEEQ-1+2*II)
-          IF(ITYP.LT.0)  THEN 
-            VECNTD(1,II)=ZI(IDEEQ-1+2*II-1)
-            IF(ITYP.EQ.-1) VECNTX(1,II)=1
-            IF(ITYP.EQ.-2) VECNTY(1,II)=1
-            IF(ITYP.EQ.-3) VECNTZ(1,II)=1        
-          END IF
-         
-          IF(ITYP.EQ.0) THEN
+C --- ACCES AUX STRUCTURES DE DONNEES POUR LA
+C --- GESTION AUTOMATIQUE DES RELATIONS REDONDANTES
+C 
+      VECNOD = RESOCO(1:14)//'.VECNOD'
+      VECNOX = RESOCO(1:14)//'.VECNOX'
+      VECNOY = RESOCO(1:14)//'.VECNOY'
+      VECNOZ = RESOCO(1:14)//'.VECNOZ'
+      CALL JEVEUO(VECNOD,'E',JVECNO)
+      CALL JEVEUO(VECNOX,'E',JVECNX)
+      CALL JEVEUO(VECNOY,'E',JVECNY)
+      CALL JEVEUO(VECNOZ,'E',JVECNZ)
 C
-          CALL DISMOI('F','NOM_MAILLA',NU,'NUME_DDL',IBID,NOMA,IER)
-          CALL DISMOI('F','NUM_GD_SI' ,NU,'NUME_DDL',GD  ,K8B ,IER)
-          PRNO( 1:14) = NU
+C --- INITIALISATIONS 
+C 
+      DO 90 I = 1, NEQ
+        ZI(JVECNX-1+I) = 0
+        ZI(JVECNY-1+I) = 0
+        ZI(JVECNZ-1+I) = 0
+ 90   CONTINUE
+      DO 91 I = 1,2*NEQ
+        ZI(JVECNO-1+I) = 0
+ 91   CONTINUE
+C
+C --- SD TEMPORAIRE
+C
+      CALL WKVECT('&&REDNEX.VECLID','V V I',NEQ,JVECLI )
+C
+C --- ACCES NUME_DDL
+C 
+      DEEQ = NUMEDD(1:14)//'.NUME.DEEQ'
+      CALL JEVEUO(DEEQ,'L',IDEEQ)
+C
+C -- DETECTION
+C      
+      DO 2902 II = 1,NEQ
+        ITYP = ZI(IDEEQ-1+2*II)
+        IF (ITYP.LT.0) THEN 
+          ZI(JVECNO+II-1) = ZI(IDEEQ-1+2*II-1)
+          IF(ITYP.EQ.-1) ZI(JVECNX+II-1)=1
+          IF(ITYP.EQ.-2) ZI(JVECNY+II-1)=1
+          IF(ITYP.EQ.-3) ZI(JVECNZ+II-1)=1       
+        END IF   
+        IF(ITYP.EQ.0) THEN
+          CALL DISMOI('F','NOM_MAILLA',NUMEDD,'NUME_DDL',IBID,NOMA,IER)
+          CALL DISMOI('F','NUM_GD_SI' ,NUMEDD,'NUME_DDL',GD  ,K8B ,IER)
+          PRNO( 1:14) = NUMEDD(1:14)
           PRNO(15:19) = '.NUME'
           NEC = NBEC(GD)
-C
-          CALL JEVEUO ( PRNO//'.NUEQ', 'L', JNUEQ )
-C
+          CALL JEVEUO(PRNO//'.NUEQ', 'L', JNUEQ )
           CALL JELIRA(PRNO//'.PRNO','NMAXOC',NLILI,K8B)
           TROUVE = .FALSE.
           DO 10 I = 1 , NLILI
-            CALL JENUNO ( JEXNUM(PRNO//'.LILI',I), LIGREL )
-            CALL JELIRA ( JEXNUM(PRNO//'.PRNO',I), 'LONMAX', ILO, K8B)
+            CALL JENUNO(JEXNUM(PRNO//'.LILI',I),LIGREL )
+            CALL JELIRA(JEXNUM(PRNO//'.PRNO',I),'LONMAX', ILO, K8B)
             IF ( ILO .EQ. 0 ) GOTO 10
-              CALL JEVEUO ( JEXNUM(PRNO//'.PRNO',I), 'L', JPRNO )
-              NBNO = ILO / ( NEC + 2 )
-              DO 20 INO = 1 , NBNO
-                IDEB = ZI(JPRNO-1+(INO-1)*(NEC+2)+1)
-                NCMP = ZI(JPRNO-1+(INO-1)*(NEC+2)+2)
-                DO 30 ICMP = 1 , NCMP
-                  IIEQ = ZI(JNUEQ-1+IDEB-1+ICMP)
-                  IF ( II .EQ. IIEQ ) THEN
-                    TROUVE = .TRUE.
-                    NULI = I
-                    NUNO = INO
-                    GO TO 9998
-                  ENDIF
- 30             CONTINUE
- 20          CONTINUE
+            CALL JEVEUO(JEXNUM(PRNO//'.PRNO',I),'L',JPRNO)
+            NBNO = ILO / ( NEC + 2 )
+            DO 20 INO = 1 , NBNO
+              IDEB = ZI(JPRNO-1+(INO-1)*(NEC+2)+1)
+              NCMP = ZI(JPRNO-1+(INO-1)*(NEC+2)+2)
+              DO 30 ICMP = 1 , NCMP
+                IIEQ = ZI(JNUEQ-1+IDEB-1+ICMP)
+                IF ( II .EQ. IIEQ ) THEN
+                  TROUVE = .TRUE.
+                  NULI = I
+                  NUNO = INO
+                  GO TO 9998
+                ENDIF
+ 30           CONTINUE
+ 20         CONTINUE
  10       CONTINUE
-C
  9998     CONTINUE
-
+C
+C --- GESTION ERREURS
+C 
           IF ( .NOT.TROUVE ) THEN
             CALL CODENT(II,'D',NOMEQ)
             CALL U2MESK('F','UTILITAI2_31',1,NOMEQ)
           END IF
-
-          CALL ASSERT( NULI .NE. 1 )
-
-C     ON PARCOURT LES MAILLES SUPPLEMENTAIRES DU LIGREL TROUVE
-C     POUR IMPRIMER LES CONNECTIVITES DE CES MAILLES :
-          CALL JENUNO ( JEXNUM(PRNO//'.LILI',NULI), LIGREL )
-          CALL JELIRA ( LIGREL//'.NEMA','NMAXOC', NBMAS, K8B)
+          CALL ASSERT( NULI .NE. 1 )  
+C
+C --- ON PARCOURT LES MAILLES SUPPLEMENTAIRES DU LIGREL TROUVE
+C --- POUR IMPRIMER LES CONNECTIVITES DE CES MAILLES 
+C
+          CALL JENUNO(JEXNUM(PRNO//'.LILI',NULI), LIGREL )
+          CALL JELIRA(LIGREL//'.NEMA','NMAXOC', NBMAS, K8B)
 
           DO 777,K=1,NBMAS
-            CALL JELIRA ( JEXNUM(LIGREL//'.NEMA',K),'LONMAX', NBNO, K8B)
+            CALL JELIRA(JEXNUM(LIGREL//'.NEMA',K),'LONMAX', NBNO, K8B)
 C       -- L'OBJET .NEMA CONTIENT LE TYPE_MAILLE AU BOUT :
             IF (NBNO.EQ.0) GO TO 777
             NBNO=NBNO-1
-            CALL JEVEUO ( JEXNUM(LIGREL//'.NEMA',K),'L', JNUNO)
+            CALL JEVEUO(JEXNUM(LIGREL//'.NEMA',K),'L', JNUNO)
             TROUVE=.FALSE.
             DO 778,KK=1,NBNO
               IF (ZI(JNUNO-1+KK).EQ.-NUNO) TROUVE=.TRUE.
@@ -170,16 +190,17 @@ C
           DO 1977 JJ=1,NEQ
             IF (ZI(JVECLI-1+JJ) .GT. 0) THEN 
               DO 1966 KK=NEQ+1,2*NEQ
-                IF (ZI(JVECLI-1+JJ) .NE. VECNTD(1,KK)) THEN  
-                  VECNTD(1,JJ+NEQ)=ZI(JVECLI-1+JJ)
+                IF (ZI(JVECLI-1+JJ) .NE. ZI(JVECNO+KK-1)) THEN  
+                  ZI(JVECNO+JJ+NEQ-1) = ZI(JVECLI-1+JJ)
                 ENDIF
  1966         CONTINUE    
             ENDIF
  1977     CONTINUE           
           ENDIF
  2902   CONTINUE
-      
-
+C
+C --- MENAGE
+C      
       CALL JEDETR('&&REDNEX.VECLID')
       CALL JEDEMA()
       END

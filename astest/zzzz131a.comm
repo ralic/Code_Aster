@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/09/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,6 +94,9 @@ LINST1=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
                _F( JUSQU_A = 1., NOMBRE = 1),
                _F( JUSQU_A = 2., NOMBRE = 10),
                _F( JUSQU_A = 3., NOMBRE = 10))  )
+
+LINST11=DEFI_LIST_REEL(DEBUT=1.,INTERVALLE=(
+               _F( JUSQU_A = 2., NOMBRE = 10),),)
 
 RESU1=STAT_NON_LINE(
                             MODELE=MO1,
@@ -533,6 +536,38 @@ TEST_RESU(RESU=(
 
           )
 ENGENDRE_TEST(FORMAT='OBJET',TOUT='OUI',FORMAT_R='1PE25.18')
+
+
+# VALIDATION INFORMATIQUE DE EXTR_RESU:
+
+RESU11=EXTR_RESU(RESULTAT=RESU1,
+                ARCHIVAGE=_F(LIST_INST=LINST11),)
+
+DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU1),)
+
+CALC_NO( reuse=RESU11,RESULTAT=RESU11,
+           OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),                     
+                  )
+
+TEST_RESU(RESU=(
+
+          _F( RESULTAT = RESU11,
+                 NUME_ORDRE = 8,
+                 NOM_CHAM = 'SIEF_NOEU_ELGA',
+                 NOEUD = 'N9',
+                 NOM_CMP = 'N',
+                 VALE = 4.00553E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU11,
+                 NUME_ORDRE = 8,
+                 NOM_CHAM = 'VARI_NOEU_ELGA',
+                 NOEUD = 'N1',
+                 NOM_CMP = 'V7',
+                 VALE =0.85 , REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),)
+
+           );
+
 
 FIN( )
 #

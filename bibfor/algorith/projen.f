@@ -4,7 +4,7 @@
      &                  NBDDLT,DDL)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -130,7 +130,7 @@ C
         NBNOM    = 0
         JEU      = 0.D0      
       ELSE
-        CALL U2MESS('F','CONTACT_23')
+        CALL ASSERT(.FALSE.)
       ENDIF           
 C
 C --- CALCULE LES COEFFICIENTS DES RELATIONS LINEAIRES ET DONNE LES 

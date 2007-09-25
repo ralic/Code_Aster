@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 24/09/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,8 @@ def extr_resu_prod(RESULTAT,**args):
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
             fr="Extraire des champs au sein d'une SD Résultat",
-         regles=(CONCEPT_SENSIBLE('SEPARE'), REUSE_SENSIBLE(),
+         regles=(CONCEPT_SENSIBLE('SEPARE'), 
+                 #REUSE_SENSIBLE(),
                  DERIVABLE('RESULTAT'),),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,mode_stat_depl,mode_stat_acce,mode_stat_forc,evol_ther,evol_noli,

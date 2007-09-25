@@ -6,7 +6,7 @@
 C
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -218,7 +218,7 @@ C
         COORDM(2) = COORM4(2)
         COORDM(3) = COORM4(3)
       ELSE
-        CALL U2MESS('F','CONTACT_31') 
+        CALL ASSERT(.FALSE.) 
       ENDIF      
 C
 C --- CALCUL DES COORDONNEES PARAMETRIQUES KSI1, KSI2 ET KSI3 DE M 
@@ -242,7 +242,7 @@ C
           KSI2 = LAMBD4(2)
           KSI3 = LAMBD4(3)
         ELSE
-          CALL U2MESS('F','CONTACT_31') 
+          CALL ASSERT(.FALSE.) 
         ENDIF      
       ELSE IF ((MATYP.EQ.'QUA8').AND.(PROJ.EQ.2)) THEN
         DO 100 K = 1, NDIM
@@ -278,7 +278,7 @@ C
           KSI2 = DDOT(NDIM,AM,1,BC,1)
           KSI2 = KSI2 / LBC
         ELSE
-          CALL U2MESS('F','CONTACT_31')           
+          CALL ASSERT(.FALSE.)           
         ENDIF
 C      
 C --- RABATTEMENT DE LA PROJECTION SUR LA MAILLE (ARETE)
@@ -340,7 +340,7 @@ C
         CALL DCOPY(3,COORDC,1,COORD2,1)
         CALL DCOPY(3,COORDD,1,COORD3,1) 
       ELSE
-        CALL U2MESS('F','CONTACT_31') 
+        CALL ASSERT(.FALSE.)
       ENDIF  
 
       

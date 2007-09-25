@@ -1,7 +1,7 @@
-      SUBROUTINE EPS2MC (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
+      SUBROUTINE EPS2MC (NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &                   XYZ,DEPL,EPS2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,6 @@ C                  POINTS D'INTEGRATION POUR LES ELEMENTS
 C                  ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    MODELI         IN     K8       MODELISATION (AXI,3D,...)
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
 C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
@@ -60,11 +59,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
-           CHARACTER*8  MODELI
            REAL*8       XYZ(1), DEPL(1), EPS2(1)
 C -----  VARIABLES LOCALES
            REAL*8       DFDX(27),DFDY(27),DFDZ(27)
            REAL*8       JACOB
+           LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -96,7 +95,7 @@ C
 C       -------------
 C ----  CAS MASSIF 3D
 C       -------------
-      IF (MODELI(1:2).EQ.'CA') THEN
+      IF (LTEATT(' ','DIM_TOPO_MAILLE','3')) THEN
 C
 C ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 C ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB) :
@@ -141,8 +140,9 @@ C
 C       ------------------------------------------------------------
 C ----  CAS MASSIF 2D CONTRAINTES PLANES, DEFORMATIONS PLANES ET AXI
 C       ------------------------------------------------------------
-      ELSEIF (MODELI(1:2).EQ.'CP'.OR.MODELI(1:2).EQ.'DP'.
-     &     OR.MODELI(1:2).EQ.'AX') THEN
+      ELSEIF (LTEATT(' ','C_PLAN','OUI').OR.
+     &        LTEATT(' ','D_PLAN','OUI').OR.
+     &        LTEATT(' ','AXIS','OUI')) THEN
 C
           K = (IGAU-1)*NNO
 C
@@ -161,7 +161,7 @@ C
             DVDX = DVDX + DFDX(I)*DEPL((I-1)*NDIM+2)
             DVDY = DVDY + DFDY(I)*DEPL((I-1)*NDIM+2)
 C
-            IF (MODELI(1:2).EQ.'AX') THEN
+            IF (LTEATT(' ','AXIS','OUI')) THEN
               IDECNO = 2*(I-1)
               RAYON = RAYON + ZR(IVF+I+K-1)*XYZ(1+IDECNO)
               DX    = DX    + ZR(IVF+I+K-1)*DEPL(1+IDECNO)
@@ -174,13 +174,13 @@ C         ----------------------------
          EPS2(NBSIG*(IGAU-1)+2) = UNDEMI*(  DUDY*DUDY + DVDY*DVDY )
          EPS2(NBSIG*(IGAU-1)+3) = ZERO
 C
-         IF (MODELI(1:2).EQ.'AX') THEN
+         IF (LTEATT(' ','AXIS','OUI')) THEN
             EPS2(NBSIG*(IGAU-1)+3) = UNDEMI*DX*DX/RAYON/RAYON
          ENDIF
 C
          EPS2(NBSIG*(IGAU-1)+4) = UNDEMI*(DUDX*DUDY + DVDX*DVDY)
       ELSE
-         CALL U2MESK('F','ELEMENTS_11',1,MODELI)
+         CALL U2MESS('F','ELEMENTS_11')
       ENDIF
 C
   20  CONTINUE

@@ -1,7 +1,8 @@
-      SUBROUTINE MMREND(DEFICO,NEWGEO,IZONE,COOR1,DIRAPP,DIR,
-     &                  POSMIN)
+      SUBROUTINE MMREND(DEFICO,NEWGEO,IZONE,COORPT,DIRAPP,
+     &                  DIR   ,POSMIN)
+C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,25 +19,31 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*24 DEFICO
       CHARACTER*24 NEWGEO
       INTEGER      IZONE
-      REAL*8       COOR1(3)
+      REAL*8       COORPT(3)
       LOGICAL      DIRAPP
       REAL*8       DIR(3)
       INTEGER      POSMIN
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : MAPPAR
+C      
 C ----------------------------------------------------------------------
 C
-C ON CHERCHE LE NOEUD MAITRE LE PLUS PROCHE DU POINT DE CONTACT
+C ROUTINE CONTACT (METHODE CONTINUE - APPARIEMENT)
+C
+C RECHERCHER LE NOEUD MAITRE LE PLUS PROCHE DU POINT DE CONTACT 
+C SELON UNE DIRECTION DE RECHERCHE DONNEE
+C      
+C ----------------------------------------------------------------------
+C
 C
 C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 C IN  NEWGEO : NOUVELLE GEOMETRIE (AVEC DEPLACEMENT GEOMETRIQUE)
 C IN  IZONE  : NUMERO DE LA ZONE DE CONTACT
-C IN  COOR1  : COORDONNEES DU POINT DE CONTACT (SUR MAILLE ESCLAVE)
+C IN  COORPT : COORDONNEES DU POINT DE CONTACT (SUR MAILLE ESCLAVE)
 C IN  DIRAPP : VAUT .TRUE. SI APPARIEMENT DANS UNE DIRECTION DE
 C              RECHERCHE DONNEE (PAR DIR)
 C IN  DIR    : DIRECTION DE RECHERCHE
@@ -63,6 +70,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER ISURF2,NBNO2,JDEC2,K2
       INTEGER POSNO2,NUMNO2
+      INTEGER      IFM,NIV      
       INTEGER JZONE,JNOCO,JSUNO
       INTEGER JCOOR
       REAL*8 COOR2(3),DMIN,DIST,NORMD,NORMV,R8GAEM
@@ -71,8 +79,9 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
-C --- LECTURE DES SD POUR LE CONTACT POTENTIEL
+      CALL INFDBG('CONTACT',IFM,NIV)              
+C      
+C --- RECUPERATION DE QUELQUES DONNEES      
 C
       PZONE  = DEFICO(1:16)//'.PZONECO'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
@@ -94,25 +103,28 @@ C
       DO 10 K2 = 1,NBNO2
         POSNO2 = JDEC2 + K2
         NUMNO2 = ZI(JNOCO+POSNO2-1)
-        COOR2(1) = ZR(JCOOR+3* (NUMNO2-1))
-        COOR2(2) = ZR(JCOOR+3* (NUMNO2-1)+1)
-        COOR2(3) = ZR(JCOOR+3* (NUMNO2-1)+2)
+        COOR2(1) = ZR(JCOOR+3*(NUMNO2-1))
+        COOR2(2) = ZR(JCOOR+3*(NUMNO2-1)+1)
+        COOR2(3) = ZR(JCOOR+3*(NUMNO2-1)+2)
         IF (DIRAPP) THEN
           NORMD    = SQRT(DIR(1)*DIR(1)+DIR(2)*DIR(2)+DIR(3)*DIR(3))
-          NORMV    = SQRT((COOR1(1)-COOR2(1))**2+(COOR1(2)-COOR2(2))**2
-     &                 +(COOR1(3)-COOR2(3))**2)
+          NORMV    = SQRT((COORPT(1)-COOR2(1))**2+
+     &                    (COORPT(2)-COOR2(2))**2+
+     &                    (COORPT(3)-COOR2(3))**2)
           IF (NORMD.EQ.0.D0) THEN
-            CALL U2MESS('F','ALGORITH6_15')
+            CALL U2MESS('F','CONTACT3_15')
           ENDIF
           IF (NORMV.EQ.0.D0) THEN
             DIST = 1.D0
           ELSE
-            DIST = ABS((COOR1(1)-COOR2(1))*DIR(1)+ (COOR1(2)-COOR2(2))
-     &             *DIR(2)+ (COOR1(3)-COOR2(3))*DIR(3))/(NORMD*NORMV)
+            DIST = ABS((COORPT(1)-COOR2(1))*DIR(1)+ 
+     &                 (COORPT(2)-COOR2(2))*DIR(2)+
+     &                 (COORPT(3)-COOR2(3))*DIR(3))/(NORMD*NORMV)
           ENDIF
         ELSE
-          DIST = SQRT((COOR1(1)-COOR2(1))**2+ (COOR1(2)-COOR2(2))**2+
-     &           (COOR1(3)-COOR2(3))**2)
+          DIST = SQRT((COORPT(1)-COOR2(1))**2+ 
+     &                (COORPT(2)-COOR2(2))**2+
+     &                (COORPT(3)-COOR2(3))**2)
         ENDIF
         IF (DIST.LT.DMIN) THEN
           POSMIN = POSNO2

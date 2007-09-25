@@ -5,7 +5,7 @@
      &                  JEU   ,PROYES)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,7 @@ C
 C --- INITIALISATIONS
 C
       IF (PROJ.EQ.0) THEN
-        CALL U2MESS('F','CONTACT_13')
+        CALL ASSERT(.FALSE.)
       END IF
 C      
 C --- PREPARATION DES NORMALES    
@@ -145,7 +145,7 @@ C
      &              ITRIA  ,NOEUD  ,ARETE  ,DIAG)
         
       ELSE
-        CALL U2MESS('F','CONTACT_30')
+        CALL ASSERT(.FALSE.)
       END IF
 C
 C --- CALCUL DU JEU SUR VECTEUR PM
