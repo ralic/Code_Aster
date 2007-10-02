@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -262,7 +262,8 @@ C            -- SI NUNO2 N'EST PAS ENCORE ELIMINE :
 C       1.4 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 C       ------------------------------------------
         GEOM2 = '&&CALIRC.GEOM_TRANSF'
-        CALL CALIRG(IOCC,NDIM,NOMA,'&&CALIRC.LINONU2',GEOM2,MROTA,LROTA)
+        CALL CALIRG('LIAISON_MAIL',IOCC,NDIM,NOMA,'&&CALIRC.LINONU2',
+     &              GEOM2,MROTA,LROTA)
 
 
 C       2. CALCUL DE CORRES :

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C
       IF ( NIV .GE. 2 ) THEN
          NOMOBJ = '&&OP0117.FONCTION'
          CALL TBEXVE ( NOMU, 'FONCTION_C', NOMOBJ, 'V', NBF1, K8B )
-         IF (NFCOD.NE.NBF1) CALL U2MESS('F','MODELISA2_88')
+         IF (NFCOD.NE.NBF1) CALL U2MESS('F','MODELISA2_89')
          CALL JEVEUO ( NOMOBJ, 'L', LTABL )
          CALL INTIMP ( IFM, ZR(LRMS), ZK24(LTABL), NMATR, NFCOD )
       ENDIF

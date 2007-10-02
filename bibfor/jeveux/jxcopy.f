@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,10 +60,11 @@ C
      &                 DN2(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C     ------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      NOMBA1,NOMBA2,NOM
-      CHARACTER*75     CMESS
       INTEGER          ITP(1),JITP,IADITP,LGBL1,LGBL2
 C DEB ------------------------------------------------------------------
       NOMIN  = NOMINZ
@@ -101,22 +102,21 @@ C
         CALL CODENT(NUMEXT+1,'G',NOMBA1(6:7))
         CALL READDR (NOMBA1,ISZON(JISZON+IADITP),LGBL1/LOUA,IADLOC,IERR)
         IF (IERR .NE. 0 ) THEN
-          CMESS = ' ERREUR LORS DE LA RELECTURE D''UN ENREGISTREMENT'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESS('F','JEVEUX_47')
         ENDIF
         CALL CODENT(NUMEXT+1,'G',NOMBA2(6:7))
         CALL WRITDR ( NOMBA2, ISZON(JISZON + IADITP),
      &                LGBL2/LOUA, IADLOC, -1, IB, IERR )
         IF (IERR .NE. 0 ) THEN
-          CMESS = ' ERREUR LORS DE L''ECRITURE D''UN ENREGISTREMENT'
-          CALL U2MESK('F','JEVEUX_01',1,CMESS)
+          CALL U2MESS('F','JEVEUX_48')
         ENDIF
  100  CONTINUE
       NBEXT = NUMEXT+1
       CALL JXFERM (ICI)
       CALL JXFERM (ICO)
       IF ( IADYN .NE. 0 ) THEN
-        CALL HPDEALLC (IADYN , IBID , IBID)
+        MCDYN = MCDYN - LGBL1
+        CALL HPDEALLC (IADYN , NBFREE , IBID)
       ELSE IF ( IADITP .NE. 0 ) THEN
         CALL JJLIBP (IADITP)
       ENDIF

@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMMAT
 C  ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,13 +106,12 @@ C  ------------------------------------------------------------------
 
       REAL*8 EPS
       REAL*8 R8VALI,R8VALS
-      CHARACTER*24 NOMDIA,UALF,NOMTRA
+      CHARACTER*24 NOMDIA,UALF
       CHARACTER*32 JEXNUM
       CHARACTER*19 NOMA19
 C  ------------------------------------------------------------------
       DATA UALF/'                   .UALF'/
       DATA NOMDIA/'                   .&VDI'/
-      DATA NOMTRA/'                   .&TRA'/
 C  ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -120,24 +119,10 @@ C
       NOMA19 = NOMMAT
       UALF(1:19) = NOMMAT
       NOMDIA(1:19) = NOMMAT
-      NOMTRA(1:19) = NOMMAT
 C
-C  --- CREATION/RAPPEL D'UN TABLEAU POUR STOCKER LA DIAGONALE ---
-      CALL JEEXIN(NOMDIA,IER)
-      IF (IER.EQ.0) THEN
-        CALL JECREO(NOMDIA,'V V R')
-        CALL JEECRA(NOMDIA,'LONMAX',NEQ,'  ')
-      END IF
-      CALL JEVEUO(NOMDIA,'E',LDIAG)
+C  --- CREATION D'UN TABLEAU POUR STOCKER LA DIAGONALE
+      CALL WKVECT(NOMDIA,'V V R',NEQ,LDIAG)
       CALL JEVEUO(NOMA19//'.DIGS','E',IADIGS)
-C
-C  --- CREATION/RAPPEL D'UN TABLEAU INTERMEDIAIRE (D'UNE COLONNE)---
-      CALL JEEXIN(NOMTRA,IER)
-      IF (IER.EQ.0) THEN
-        CALL JECREO(NOMTRA,'V V R')
-        CALL JEECRA(NOMTRA,'LONMAX',NEQ,'  ')
-      END IF
-      CALL JEVEUO(NOMTRA,'E',LTRAV)
 C
 C  --- INITIALISATIONS ET ALLOCATION ---
 C
@@ -379,7 +364,7 @@ C-      TERME DE LA LIGNE COURANTE A NORMALISER
             R8VALI = R8VALI - ZR(ICAI+I)*ZR(ICAS+I)
   130     CONTINUE
           ZR(IADIAI) = R8VALI
-          ZR(IADIGS-1+NEQ+IEQUA) = ABS(ZR(IADIAI))
+          ZR(IADIGS-1+NEQ+IEQUA) = ZR(IADIAI)
           ZR(LDIAG+IEQUA-1) = R8VALI
 
 C
@@ -409,6 +394,8 @@ C
       ELSE
          ZK24(JREFA-1+8)='DECP'
       ENDIF
+
+      CALL JEDETR(NOMDIA)
 
       CALL JEDEMA()
       END

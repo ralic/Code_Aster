@@ -1,6 +1,6 @@
       SUBROUTINE JEMARQ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,8 @@ C ----------------------------------------------------------------------
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       INTEGER          IADMA,IADRS,LSI,KTEMPO(2)
 C ----------------------------------------------------------------------
@@ -71,7 +73,8 @@ C
           ISZON(JISZON+KTEMPO(1)+K-1) = ISZON(JISZON+KPOSMA(1)+K-1)
  100    CONTINUE
         IF ( KPOSMA(2) .NE. 0 ) THEN
-          CALL HPDEALLC ( KPOSMA(2), IBID, IBID )
+          MCDYN = MCDYN - (LGP/2)*LOIS
+          CALL HPDEALLC ( KPOSMA(2), NBFREE, IBID )
         ELSE IF ( KPOSMA(1) .NE. 0 ) THEN
           CALL JJLIBP ( KPOSMA(1) )
         ENDIF  

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C
         TABLE = ZK16(ISPTE+3)(1:8)
         CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
      &              'DIMENSION', K8B, NBFONC, R8B, C16B, K8B, IRET )
-        IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
+        IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
         CALL WKVECT('&&SPECFF.TEMP.NOMF','V V K8',NBFONC,INOMF)
         DO 10 IFO = 1,NBFONC
           ZK8(INOMF+IFO-1) = ZK16(ISPTE+3+IFO)(1:8)

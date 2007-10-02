@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABLEZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C     -----------------------
      &              'MAILLAGE', K8B, IBID, R8B, C16B, NOMA, IRET )
       CALL TBLIVA ( TABLE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &              R8B, 'EY', K8B, IBID, XT, C16B, K8B, IRET )
-      IF ( IRET .NE. 0 ) CALL U2MESS('F','ALGELINE_6')
+      IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
       CALL TBLIVA ( TABLE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &              R8B, 'EZ', K8B, IBID, YT, C16B, K8B, IRET )
       IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')

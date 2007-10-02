@@ -1,7 +1,7 @@
       SUBROUTINE JELIBF ( COND , CLAS )
 C TOLE CRS_505
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,8 @@ C
       COMMON /JUSADI/  JUSADI(N)
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       INTEGER          NBENRG, LGENRG, NBENRV, LGENRV, NBENRL, LGENRL
       COMMON /STACOD/  NBENRG, LGENRG, NBENRV, LGENRV, NBENRL, LGENRL
@@ -80,27 +82,19 @@ C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      KCOND,VALK(1)
       CHARACTER*32     NOMCAR
-      CHARACTER*75     CMESS
       INTEGER          IADCAR,IADDAC(2),LGBL,VALI(7),IADCDY,IBID,
-     &                 IADDAD(2),KLEC,KECR
+     &                 IADDAD(2),KLEC,KECR,LGL(LIDBAS)
       REAL*8           VALR(1)
 C DEB ------------------------------------------------------------------
       KCOND = COND
       KCLAS = CLAS
       IC = INDEX ( CLASSE , KCLAS )
       ICLAOS = IC
-      IF ( IC .EQ. 0 ) THEN
-        NOMUTI = 'CLASSE '//KCLAS
-        CMESS  = ' FICHIER NON OUVERT OU DEJA LIBERE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
-      IF ( KCOND .NE. '        ' .AND. KCOND .NE. 'SAUVE   ' .AND.
-     &     KCOND .NE. 'ERREUR  ' .AND. KCOND .NE. 'DETRUIT ' .AND.
-     &     KCOND .NE. 'LIBERE  ' )                                 THEN
-        NOMUTI = NOMBAS(IC)
-        CMESS  = ' CONDITION DE LIBERATION ERRONEE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE IF ( KCOND .EQ. '        '  ) THEN
+      CALL ASSERT (IC .NE. 0)
+      CALL ASSERT (     KCOND .EQ. '        ' .OR. KCOND .EQ. 'SAUVE   '
+     &             .OR. KCOND .EQ. 'ERREUR  ' .OR. KCOND .EQ. 'DETRUIT '
+     &             .OR. KCOND .EQ. 'LIBERE  ' )
+      IF ( KCOND .EQ. '        '  ) THEN
         KCOND = KSTOUT(IC)
       ELSE IF ( KCOND .EQ. 'ERREUR  '  ) THEN
         KCOND = 'SAUVE'
@@ -143,18 +137,22 @@ C     ----------- DECHARGER TOUS LES OBJETS SYSTEME ----------------
 
         NOMCAR = RNOM (JRNOM(IC) + 1)
         IADCAR = IADM (JIADM(IC) + 2*1-1)
-        LACC   = LONO (JLONO(IC) + LIDEFF)
+        LACC   = LONO (JLONO(IC) + LIDEFF) * LTYP(JLTYP(IC)+LIDEFF)
         IADDAC(1) = IADD (JIADD(IC) + 2*LIDEFF-1)
         IADDAC(2) = IADD (JIADD(IC) + 2*LIDEFF  )
 
         IADADI = IADM (JIADM(IC) + 2*(LIDEFF-1)-1)
         IADADY = IADM (JIADM(IC) + 2*(LIDEFF-1)  )
-        LADI   = LONO (JLONO(IC) + LIDEFF-1)
+        LADI   = LONO (JLONO(IC) + LIDEFF-1)* LTYP(JLTYP(IC)+LIDEFF-1)
         IADDAD(1) = IADD (JIADD(IC) + 2*(LIDEFF-1)-1)
         IADDAD(2) = IADD (JIADD(IC) + 2*(LIDEFF-1)  )
 C       
         IDB    = IDEBUG
         IDEBUG = 0
+
+        DO 29 I = 1,LIDEFF
+          LGL(I)= LONO (JLONO(IC) + I) * LTYP(JLTYP(IC)+I)
+ 29     CONTINUE        
         DO 30 I = LIDEFF-2 , 2 , -1
           IADMI = IADM( JIADM(IC) + 2*I-1 )
           IF ( IADMI .NE. 0 ) THEN
@@ -162,12 +160,13 @@ C
             NOMOS  = RNOM ( JRNOM(IC) + I )
             CALL JJLIDE ( 'SYSTEM' , NOMOS , 1 )
           END IF
-   30   CONTINUE
+ 30     CONTINUE
         DO 33 I = LIDBAS+1 , NREUTI(IC)
           IADMI = IADM( JIADM(IC) + 2*I-1 )
           IADYN = IADM( JIADM(IC) + 2*I   )
           IF ( IADYN .NE. 0 ) THEN
-            CALL HPDEALLC ( IADYN , IBID , IBID )
+            MCDYN = MCDYN - LONO(JLONO(IC)+I)*LTYP(JLTYP(IC)+I)
+            CALL HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           END IF
@@ -205,7 +204,8 @@ C
           IADMI = IADM( JIADM(IC) + 2*I-1 )
           IADYN = IADM( JIADM(IC) + 2*I   )
           IF ( IADYN .NE. 0 ) THEN
-            CALL HPDEALLC ( IADYN , IBID , IBID )
+            MCDYN = MCDYN - LGL(I)
+            CALL HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           END IF
@@ -234,7 +234,8 @@ C       ---- ON DECHARGE MAINTENANT LES STATISTIQUES SUR LES ACCES
           CALL JXECRB ( IC,IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
         ENDIF
         IF ( IADACY .NE. 0 ) THEN
-          CALL HPDEALLC ( IADACY , IBID , IBID )
+          MCDYN = MCDYN - LGL(1)
+          CALL HPDEALLC ( IADACY , NBFREE , IBID )
           IADACY = 0
         ELSE IF ( IADACC.NE. 0 ) THEN
           CALL JJLIBP ( IADACC )
@@ -249,7 +250,8 @@ C       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
           CALL JXECRB ( IC,IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
         ENDIF
         IF ( IADADY .NE. 0 ) THEN
-          CALL HPDEALLC ( IADADY , IBID , IBID )
+          MCDYN = MCDYN - LGL(LIDEFF-1)
+          CALL HPDEALLC ( IADADY , NBFREE , IBID )
           IADADY = 0
         ELSE IF ( IADADI .NE. 0 ) THEN
           CALL JJLIBP ( IADADI )
@@ -285,13 +287,15 @@ C
         IF ( IADCAR.NE. 0 ) THEN
            IDATOS = 1
            IF (IADCDY .NE. 0 ) THEN 
-             CALL HPDEALLC ( IADCDY , IBID , IBID )
+             MCDYN = MCDYN - LGL(I)
+             CALL HPDEALLC ( IADCDY , NBFREE , IBID )
            ELSE
              CALL JJLIBP ( IADCAR )
            ENDIF
         END IF
         IF ( IADACY .NE. 0 ) THEN
-          CALL HPDEALLC ( IADACY , IBID , IBID )
+          MCDYN = MCDYN - LGL(LIDEFF)
+          CALL HPDEALLC ( IADACY , NBFREE , IBID )
         ELSE IF ( IADACC.NE. 0 ) THEN
           CALL JJLIBP ( IADACC )
         ENDIF  
@@ -301,27 +305,32 @@ C       ----------- CLORE LE FICHIER
         ENDIF
 C       ----------- LIBERER PLACE
         IF (K18 .NE. 0) THEN
-          CALL HPDEALLC ( K18 , IBID , IBID )
+          MCDYN = MCDYN - LGL(18)
+          CALL HPDEALLC ( K18 , NBFREE , IBID )
         ELSE
           CALL JJLIBP ( 1 + KITLEC(IC) / LOIS )
         ENDIF
         IF (K2 .NE. 0) THEN
-          CALL HPDEALLC ( K2 , IBID , IBID )
+          MCDYN = MCDYN - LGL(2)
+          CALL HPDEALLC ( K2 , NBFREE , IBID )
         ELSE
           CALL JJLIBP ( IAD2 )
         ENDIF
         IF (K19 .NE. 0) THEN
-          CALL HPDEALLC ( K19 , IBID , IBID )
+          MCDYN = MCDYN - LGL(19)
+          CALL HPDEALLC ( K19 , NBFREE , IBID )
         ELSE
           CALL JJLIBP ( 1 + KITECR(IC) / LOIS )
         ENDIF
         IF (K16 .NE. 0) THEN
-          CALL HPDEALLC ( K16 , IBID , IBID )
+          MCDYN = MCDYN - LGL(16)
+          CALL HPDEALLC ( K16 , NBFREE , IBID )
         ELSE IF ( KMARQ(IC) .NE. 0 ) THEN
           CALL JJLIBP ( KMARQ(IC) )
         ENDIF
         IF (K20 .NE. 0) THEN
-          CALL HPDEALLC ( K20 , IBID , IBID )
+          MCDYN = MCDYN - LGL(20)
+          CALL HPDEALLC ( K20 , NBFREE , IBID )
         ELSE IF ( KIADM(IC) .NE. 0 ) THEN
           CALL JJLIBP ( KIADM(IC) )
         ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE CNSPRJ(CNS1Z,CORREZ,BASEZ,CNS2Z,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
-C A_UTIL
       IMPLICIT NONE
       CHARACTER*(*) CNS1Z,CORREZ,BASEZ,CNS2Z
       INTEGER IRET
@@ -28,11 +27,16 @@ C ------------------------------------------------------------------
 C     ARGUMENTS:
 C CNS1Z  IN/JXIN  K19 : CHAM_NO_S A PROJETER
 C CORREZ IN/JXIN  K16 : NOM DE LA SD CORRESP_2_MAILLA
-C BASEZ  IN       K1  : BASE DE CREATION POUR CNS2Z : G/V/L
+C BASEZ  IN       K1  : BASE DE CREATION POUR CNS2Z : G/V
 C CNS2Z  IN/JXOUT K19 : CHAM_NO_S RESULTAT DE LA PROJECTION
 C ------------------------------------------------------------------
 C    ON NE TRAITE QUE LES CHAMPS REELS (R8) OU COMPLEXES (C16)
 C
+C
+C REMARQUE :
+C   LA PROJECTION EST APPROCHEE DANS LE CAS OU TOUS LES NOEUDS
+C   DE LA MAILLE M1 NE PORTENT PAS LES MEMES DDLS.
+C   LE TRAITEMENT EST EXPLIQUE DANS LA REPONSE A LA FICHE 9259
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -61,9 +65,10 @@ C     ------------------
       INTEGER JCNS1C,JCNS1L,JCNS1V,JCNS1K,JCNS1D
       INTEGER JCNS2C,JCNS2L,JCNS2V,JCNS2K,JCNS2D
       INTEGER NBNO1,NCMP,IBID,IACONO,IACONB,IACONU,IACOCF,GD,NBNO2
-      INTEGER IDECAL,INO2,ICMP,ICO,INO1,NUNO1
-      REAL*8 V1,V2,COEF1
-      COMPLEX*16 V1C,V2C
+      INTEGER IDECAL,INO2,ICMP,ICO1,ICO2,INO1,NUNO1
+      REAL*8 V1,V2,COEF1,COETOT,VRMOY
+      COMPLEX*16 V1C,V2C,VCMOY
+      LOGICAL LEXACT
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -139,28 +144,55 @@ C     -------------------------------
         NBNO1=ZI(IACONB-1+INO2)
         IF (NBNO1 .EQ. 0) GOTO 1
         DO 3,ICMP=1,NCMP
-C ================================================================
-C --  UNE CMP SERA PRESENTE SUR UN NOEUD (N2) SI :
-C --  1) ELLE EST PRESENTE SUR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE
-C --  2) OU SI ELLE EST PRESENTE SUR UN NOEUD DE LA MAILE SOUS-JACENTE
-C --     ET QUE CE NOEUD EST "PILE POIL" CONFONDU AVEC N2
-C --     CE CAS DE FIGURE PERMET DE PROJETER LES COMPOSANTES PORTEES
-C --     SEULEMENT PAR LES NOEUDS SOMMETS (MODELISATIONS THM PAR EX.)
-C --     ON PROJETTE LA SD RESULTAT SUR UN MAILLAGE LINEAIRE
-C ================================================================
-           ICO=0
+
+C          -- ON COMPTE (ICO1) LES NOEUDS PORTANT LE DDL :
+C             ON COMPTE AUSSI (ICO2) CEUX DONT LE COEF EST > 0
+C             ON CALCULE LA VALEUR MOYENNE SUR LA MAILLE (VXMOY)
+C             ON CALCULE LA SOMME DES COEF > 0 (COETOT)
+           ICO1=0
+           ICO2=0
+           VRMOY=0.D0
+           VCMOY=DCMPLX(0.D0,0.D0)
+           COETOT=0.D0
            DO 4,INO1=1,NBNO1
               NUNO1=ZI(IACONU+IDECAL-1+INO1)
               COEF1=ZR(IACOCF+IDECAL-1+INO1)
               IF (ZL(JCNS1L-1+ (NUNO1-1)*NCMP+ICMP)) THEN
-                 ICO=ICO+1
+                ICO1=ICO1+1
+                IF (COEF1.GT.0.D0) THEN
+                   ICO2=ICO2+1
+                   COETOT=COETOT+COEF1
+                ENDIF
+                IF (TSCA.EQ.'R') THEN
+                  VRMOY=VRMOY+ZR(JCNS1V-1+(NUNO1-1)*NCMP+ICMP)
               ELSE
-                 IF (COEF1.LT.1.0D-6) THEN
-                    ICO = ICO + 1
+                  VCMOY=VCMOY+ZC(JCNS1V-1+(NUNO1-1)*NCMP+ICMP)
                  ENDIF
               ENDIF
  4         CONTINUE
-           IF (ICO.LT.NBNO1) GO TO 3
+           IF (ICO1.EQ.0) GO TO 3
+           ZL(JCNS2L-1+ (INO2-1)*NCMP+ICMP)=.TRUE.
+
+
+C          -- 3 CAS DE FIGURE POUR L'INTERPOLATION :
+C          ----------------------------------------
+           IF (ICO1.EQ.NBNO1) THEN
+C            1 : NORMAL ON PREND TOUS LES NOEUDS N1
+             LEXACT=.TRUE.
+             COETOT=1.D0
+           ELSE IF (ICO2.GT.0) THEN
+C            2 : ON PREND LES NOEUDS N1 DE COEF > 0
+             LEXACT=.FALSE.
+           ELSE
+C            3 : ON FAIT UNE MOYENNE ARITHMETIQUE
+             IF (TSCA.EQ.'R') THEN
+                ZR(JCNS2V-1+ (INO2-1)*NCMP+ICMP)=VRMOY/ICO1
+             ELSE
+                ZC(JCNS2V-1+ (INO2-1)*NCMP+ICMP)=VCMOY/ICO1
+             ENDIF
+             GO TO 3
+           ENDIF
+
 
            IF (TSCA.EQ.'R') THEN
               V2=0.D0
@@ -168,32 +200,27 @@ C ================================================================
                 NUNO1=ZI(IACONU+IDECAL-1+INO1)
                 COEF1=ZR(IACOCF+IDECAL-1+INO1)
                 IF (ZL(JCNS1L-1+ (NUNO1-1)*NCMP+ICMP)) THEN
+                  IF (LEXACT.OR.COEF1.GT.0) THEN
                    V1=ZR(JCNS1V-1+ (NUNO1-1)*NCMP+ICMP)
-                ELSE
-                   IF (COEF1.LT.1.0D-6) THEN
-                      V1 = 0.0D0
+                    V2=V2+COEF1*V1
                    ENDIF
                 ENDIF
-                V2=V2+COEF1*V1
  2            CONTINUE
-              ZL(JCNS2L-1+ (INO2-1)*NCMP+ICMP)=.TRUE.
-              ZR(JCNS2V-1+ (INO2-1)*NCMP+ICMP)=V2
+              ZR(JCNS2V-1+ (INO2-1)*NCMP+ICMP)=V2/COETOT
+
            ELSE IF (TSCA.EQ.'C') THEN
               V2C=DCMPLX(0.D0,0.D0)
               DO 21,INO1=1,NBNO1
                 NUNO1=ZI(IACONU+IDECAL-1+INO1)
                 COEF1=ZR(IACOCF+IDECAL-1+INO1)
                 IF (ZL(JCNS1L-1+ (NUNO1-1)*NCMP+ICMP)) THEN
+                  IF (LEXACT.OR.COEF1.GT.0) THEN
                    V1C=ZC(JCNS1V-1+ (NUNO1-1)*NCMP+ICMP)
-                ELSE
-                   IF (COEF1.LT.1.0D-6) THEN
-                      V1C = 0.0D0
+                    V2C=V2C+COEF1*V1C
                    ENDIF
                 ENDIF
-                V2C=V2C+COEF1*V1C
  21           CONTINUE
-              ZL(JCNS2L-1+ (INO2-1)*NCMP+ICMP)=.TRUE.
-              ZC(JCNS2V-1+ (INO2-1)*NCMP+ICMP)=V2C
+              ZC(JCNS2V-1+ (INO2-1)*NCMP+ICMP)=V2C/COETOT
            END IF
  3      CONTINUE
         IDECAL=IDECAL+NBNO1

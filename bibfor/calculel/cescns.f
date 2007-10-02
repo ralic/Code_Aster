@@ -1,6 +1,6 @@
-      SUBROUTINE CESCNS(CESZ,MGANOZ,BASE,CNSZ)
+      SUBROUTINE CESCNS(CESZ,CELFPZ,BASE,CNSZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,31 +19,29 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
       IMPLICIT NONE
-      CHARACTER*(*) CNSZ,CESZ,BASE,MGANOZ
+      CHARACTER*(*) CNSZ,CESZ,BASE,CELFPZ
 C ------------------------------------------------------------------
 C BUT: TRANSFORMER UN CHAM_ELEM_S EN CHAM_NO_S
 C ------------------------------------------------------------------
 C     ARGUMENTS:
 C CESZ   IN/JXIN  K19 : SD CHAM_ELEM_S A TRANSFORMER
 
-C MGANOZ IN/JXIN  K19 : SD CHAM_ELEM_S CONTENANT LES MATRICES
-C                       DE PASSAGE GAUSS -> NOEUD.
-C    MGANOZ N'EST PAS UTILISE AUJOURD'HUI ('ELGA')
+C CELFPZ IN/JXIN  K24 :
+C    NOM DE L'OBJET DECRIVANT LES FAMILLES DE P.G. DE CESZ (OU ' ')
+C    CET OBJET N'EST UTILISE QUE SI CESZ EST 'ELGA'
+C    CET OBJET EST OBTENU PAR LA ROUTINE CELFPG.F
+
 C CNSZ   IN/JXOUT K19 : SD CHAM_NO_S RESULTAT
 C BASE    IN      K1  : BASE DE CREATION POUR CNSZ : G/V/L
 C-----------------------------------------------------------------------
 
 C  PRINCIPES RETENUS POUR LA CONVERSION :
 
-C  1) ON NE TRAITE QUE LES CHAM_ELEM_S REELS (R8)
-C  2)
-C    SI  TYPCES='ELEM'
-C      ON AFFECTE A UN NOEUD LA MOYENNE ARITHMETIQUE DES VALEURS
-C      PORTEES PAR LES MAILLES QUI SONT CONNECTEES A CE NOEUD
-C    SI  TYPCES='ELNO'
-C      ON AFFECTE A UN NOEUD LA MOYENNE ARITHMETIQUE DES VALEURS
-C      PORTEES PAR LES NOEUDS DES MAILLES QUI SONT CONNECTEES A CE NOEUD
-C    SI  TYPCES='ELGA'  : PAS ENCORE PROGRAMME
+C  1) ON NE TRAITE QUE LES CHAM_ELEM_S REELS ou complexes
+
+C  2) ON SE RAMENE TOUJOURS A UN CHAMP ELNO
+C     PUIS ON FAIT LA MOYENNE ARITHMETIQUE DES MAILLES
+C     QUI CONCOURRENT EN 1 MEME NOEUD.
 
 C  3) S'IL Y A DES SOUS POINTS, ON S'ARRETE EN ERREUR <F>
 
@@ -70,7 +68,7 @@ C     ------------------------------------------------------------------
       INTEGER      JCESK,JCESC,NBNOT,JNBNO,IEQ
       CHARACTER*1  KBID
       CHARACTER*3  TSCA
-      CHARACTER*8  MA,NOMGD,TYPCES
+      CHARACTER*8  MA,NOMGD
       CHARACTER*19 CES,CNS,CES1
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -79,21 +77,18 @@ C     ------------------------------------------------------------------
       CNS = CNSZ
 
       CALL JEVEUO(CES//'.CESK','L',JCESK)
-      TYPCES = ZK8(JCESK-1+3)
-C     CAS (TYPCES.EQ.'ELGA') RESTE A DEVELOPPER ...
-      CALL ASSERT(TYPCES.NE.'ELGA')
 
 C     1- ON TRANSFORME CES EN CHAM_ELEM_S/ELNO:
 C     --------------------------------------------
       CES1 = '&&CESCNS.CES1'
-      CALL CESCES(CES,'ELNO',' ',' ','V',CES1)
+      CALL CESCES(CES,'ELNO',' ',' ',CELFPZ,'V',CES1)
 
 
 C     2. RECUPERATION DE :
 C        MA     : NOM DU MAILLAGE
 C        NOMGD  : NOM DE LA GRANDEUR
 C        NCMP   : NOMBRE DE CMPS DE CES1
-C        TSCA   : TYPE SCALAIRE DE LA GRANDEUR : R/C/I ...
+C        TSCA   : TYPE SCALAIRE DE LA GRANDEUR : R/C
 C        NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 C        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 C     --------------------------------------------------------------
@@ -121,12 +116,13 @@ C     LE NOMBRE DE SOUS-POINTS NE PEUT ETRE >1
 C     ON ATTEND SEULEMENT DES REELS OU DES COMPLEXES
       CALL ASSERT((TSCA.EQ.'R').OR.(TSCA.EQ.'C'))
 
+
 C     3- ALLOCATION DE CNS :
 C     -------------------------------------------
       IF ( NOMGD .EQ. 'VARI_R' ) NOMGD = 'VAR2_R'
       CALL CNSCRE(MA,NOMGD,NCMP,ZK8(JCESC),BASE,CNS)
 
-C------------------------------------------------------------------
+
 C     4- REMPLISSAGE DE CNS.CNSL ET CNS.CNSV :
 C     -------------------------------------------
       CALL JEVEUO(CNS//'.CNSL','E',JCNSL)

@@ -13,7 +13,7 @@
      &                  ACCMOI,DEFICU,RESOCU,LSSTRU,SDDYNA)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -135,9 +135,8 @@ C
       CHARACTER*19 K19BLA
       CHARACTER*24 DEPMOI,SIGMOI,COMMOI
       CHARACTER*24 DEPPLU,SIGPLU,VARPLU,COMPLU
-      CHARACTER*24 K24BID,VARDEP,LAGDEP,K24BLA
+      CHARACTER*24 K24BID,VARDEP,LAGDEP,K24BLA,TABTRA
       REAL*8       DINST
-      CHARACTER*24 TABTRA
 C
 C ----------------------------------------------------------------------
 C
@@ -274,7 +273,7 @@ C
             ELSE
               CALL MMCMEM('CORRECTION',
      &                    MAILLA,MODELE,DEFICO,RESOCO,DEPMOI,
-     &                    DEPDEL,VITMOI,ACCMOI)
+     &                    DEPDEL,VITMOI,VITPLU,ACCMOI)
             ENDIF
           ENDIF
 C  Modif en test :

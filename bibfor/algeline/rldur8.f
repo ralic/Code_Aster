@@ -8,7 +8,7 @@ C
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,12 +123,7 @@ C
       NOMDIA(1:19) = NOMMAT
 C
 C     --- CREATION/RAPPEL D'UN TABLEAU POUR STOCKER LA DIAGONALE -------
-      CALL JEEXIN( NOMDIA , IER )
-      IF ( IER .EQ. 0 ) THEN
-          CALL JECREO(NOMDIA,'V V R')
-          CALL JEECRA(NOMDIA,'LONMAX',NEQ,'  ')
-      ENDIF
-      CALL JEVEUO( NOMDIA , 'E', LDIAG )
+      CALL WKVECT(NOMDIA,'V V R',NEQ,LDIAG)
 C
 C     ------------------------------------------------------------------
 C     --- PREMIERE  PARTIE : RESOLUTION DESCENDANTE ---
@@ -202,7 +197,7 @@ C     1              ZR(LDIAG+IXX+I-1)
          CALL JELIBE(JEXNUM(UALF,IBLOC-NBBLOC))
  300  CONTINUE
 C
-      CALL JELIBE(NOMDIA)
+      CALL JEDETR(NOMDIA)
       PGC = PGCANC
 C
       CALL JEDEMA()

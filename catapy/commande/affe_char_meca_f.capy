@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/09/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -415,14 +415,20 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            DDL             =SIMP(statut='o',typ='TXM',max='**'),
          ),
 
+
          LIAISON_SOLIDE  =FACT(statut='f',max='**',
-           fr="Modélise une partie indéformable d'une structure",
-           regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
-           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           fr="Modélise une partie indéformable d'une structure."
+            +" Les mots clés TRAN et ANGL_NAUT permettent d'imposer le déplacement de la partie indéformable.",
+           regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),
+                   ENSEMBLE('CENTRE','ANGL_NAUT'),),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-           NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES",) ),
+           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           TRAN            =SIMP(statut='f',typ='R',max=3 ),
+           ANGL_NAUT       =SIMP(statut='f',typ='R',max=3 ),
+           CENTRE          =SIMP(statut='f',typ='R',max=3 ),
+           NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
          ),
 
 

@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith8 Messages  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,6 +347,10 @@ cata_msg={
 
 93: _("""
  une maille maitre est de longueur nulle
+"""),
+
+94: _("""
+ le champ issu du concept %(k1)s n'est pas calculé à l'instant %(i3)i
 """),
 
 96: _("""

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NPREC,IATFAC,IBDEB,IBFIN,IBID,IER1,IFM,ILDEB,ILFIN
       INTEGER IRET,ISINGU,ISTOP,JADIA,PCPIV
       INTEGER LDTBLO,LFNBLO,NDECI,NEQ,NIV,NPVNEG
-      LOGICAL LPRECO
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -169,9 +168,6 @@ C     --- 2) AVEC BLOC_XXX
       END IF
 
 C     --- RECUPERATION DU TYPE DE CONDITIONNEMENT MATRICIEL ---
-      PRECON = '  '
-      CALL GETVTX('  ','PRE_COND',0,1,1,PRECON,IBID)
-      LPRECO = PRECON(1:4) .EQ. 'DIAG'
 
 
 
@@ -192,13 +188,10 @@ C     --- IMPRESSION SUR LE FICHIER MESSAGE ----------------------------
       END IF
 
 C     ------------------ FACTORISATION EFFECTIVE -------------------
-      IF (LPRECO) CALL MTCOND(IATFAC,'GLOBALE')
       CALL TLDLGG(ISTOP,IATFAC,ILDEB,ILFIN,NPREC,NDECI,ISINGU,NPVNEG,
      &            IRET)
 C     --------------------------------------------------------------
 
-      CALL JEDETR(MFAC//'.&VDI')
-      CALL JEDETR(MFAC//'.&TRA')
 
  9999 CONTINUE
       CALL TITRE

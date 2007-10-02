@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF indicateur Messages  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,6 +73,17 @@ perm_in: division par zéro
 21: _("""
 La %(k1)s caractéristique est nulle. On risque la division par zéro.
 """),
+
+
+
+28: _("""
+Pour le calcul de l'indicateur d'erreur en THM, il faut fournir
+les longueur et pression caractéristiques.
+"""),
+
+
+
+
 
 31: _("""
 deltat: division par zéro

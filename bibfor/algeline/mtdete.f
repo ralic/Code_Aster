@@ -1,10 +1,10 @@
       SUBROUTINE MTDETE ( LMAT  , MANTIS , EXPO )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             LMAT ,           EXPO
       REAL*8                      MANTIS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,19 +43,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
+      INTEGER I, NEQ, IRET, LDIAG,NBNEG
       CHARACTER*24     NOMDIA
-      DATA  NOMDIA/'                   .&VDI'/
+      DATA  NOMDIA/'                   .DIGS'/
 C     ------------------------------------------------------------------
 C
 C
       CALL JEMARQ()
       NOMDIA(1:19) = ZK24(ZI(LMAT+1))
       NEQ          = ZI(LMAT+2 )
-      CALL JEEXIN(NOMDIA, IRET )
-      IF ( IRET .EQ. 0 ) THEN
-         CALL U2MESK('F','MODELISA2_9',1,NOMDIA)
-      ENDIF
-      CALL JEVEUO( NOMDIA , 'L', LDIAG )
+      CALL JEEXIN(NOMDIA,IRET)
+      IF (IRET.EQ.0) CALL U2MESK('F','MODELISA2_9',1,NOMDIA)
+      CALL JEVEUO(NOMDIA,'L',LDIAG)
+      LDIAG=LDIAG+NEQ
 C
 C        --- CALCUL DU DETERMINANT --
       IF ( ZI(LMAT+3) .EQ. 1 ) THEN
@@ -67,12 +67,9 @@ C        --- DIAGONALE A COEFFICIENTS REELS ---
             IF ( ZR(LDIAG+I) .LE. 0.D0 ) NBNEG = NBNEG + 1
   10     CONTINUE
       ELSE
-C
-C        --- DIAGONALE A COEFFICIENTS COMPLEXES ---
-CCCC     CALL ALDETC( ZC(LDIAG), NEQ , MANTIS, EXPO )
+         CALL ASSERT(.FALSE.)
       ENDIF
-CCC   IMS = IUNIFI('MESSAGES')
-CCC   WRITE(IMS,'(10X,A,F20.15,A,I8)') 'DETERMINANT = ',MANTIS,' E',EXPO
 C
+      CALL JEDETR(NOMDIA)
       CALL JEDEMA()
       END

@@ -4,7 +4,7 @@
       INTEGER                    IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C         IIFIN = 0
             WRITE(IMPR,*) '<',APPELA,'> ',
      &           '<INFORMATION SUR LES CONCEPTS EXISTANTS.>'
          ELSE
-            CALL U2MESG(CODE2,'SUPERVIS_64',0,' ',0,0,0,0.D0)
+            CALL U2MESG(CODE2,'SUPERVIS_85',0,' ',0,0,0,0.D0)
 C            IIFIN = 1
          ENDIF
          IPASS = 1

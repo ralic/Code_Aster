@@ -1,7 +1,7 @@
       SUBROUTINE DIAGAV(NOMA19,NEQ,TYPVAR,EPS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,8 @@ C                    FACTORISATION SERA CONSIDERE COMME NUL
 C     ------------------------------------------------------------------
       CHARACTER*19 NOMA19
       CHARACTER*14 NU
-      REAL*8 EPS,DIAMAX,DIAMIN,R8GAEM,R8MAEM
+      CHARACTER*1 BASE
+      REAL*8 EPS,DIAMAX,DIAMIN,R8GAEM,R8MAEM,VABS
       INTEGER NEQ,TYPVAR,IFM,NIV,IRET,IADIGS,IBID,JREFA
       INTEGER JSXDI,JSCBL,JSCDE,NBBLOC,IBLOC,IAVALE,IDERN,IPREM,I
 C     ------------------------------------------------------------------
@@ -55,6 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CALL INFNIV(IFM,NIV)
 
       CALL JEVEUO(NOMA19//'.REFA','L',JREFA)
+      CALL JELIRA(NOMA19//'.REFA','CLAS',IBID,BASE)
       CALL ASSERT(ZK24(JREFA-1+3).NE.'ELIML')
 
 
@@ -64,7 +66,11 @@ C        AVANT ET APRES FACTORISATION :
 C        (1->NEQ : AVANT , NEQ+1 ->2*NEQ : APRES )
 C     -----------------------------------------
       CALL JEDETR(NOMA19//'.DIGS')
-      CALL WKVECT(NOMA19//'.DIGS','V V R',2*NEQ,IADIGS)
+      IF (TYPVAR.EQ.1) THEN
+        CALL WKVECT(NOMA19//'.DIGS',BASE//' V R',2*NEQ,IADIGS)
+      ELSE
+        CALL WKVECT(NOMA19//'.DIGS',BASE//' V C',2*NEQ,IADIGS)
+      ENDIF
       CALL DISMOI('F','NOM_NUME_DDL',NOMA19,'MATR_ASSE',IBID,NU,IBID)
 
 
@@ -76,11 +82,11 @@ C     ---------------------------------------------
         CALL JEVEUO(JEXNUM(NOMA19//'.VALM',1),'L',IAVALE)
         IF (TYPVAR.EQ.1) THEN
           DO 40 I = 1,NEQ
-            ZR(IADIGS-1+I) = ABS(ZR(IAVALE-1+ZI(JSXDI+I-1)))
+            ZR(IADIGS-1+I) = ZR(IAVALE-1+ZI(JSXDI+I-1))
    40     CONTINUE
         ELSE IF (TYPVAR.EQ.2) THEN
           DO 50 I = 1,NEQ
-            ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
+            ZC(IADIGS-1+I) = ZC(IAVALE-1+ZI(JSXDI+I-1))
    50     CONTINUE
         ELSE
           CALL ASSERT(.FALSE.)
@@ -104,11 +110,11 @@ C     ---------------------------------------------
         IPREM = ZI(JSCBL-1+IBLOC) + 1
         IF (TYPVAR.EQ.1) THEN
           DO 10 I = IPREM,IDERN
-            ZR(IADIGS-1+I) = ABS(ZR(IAVALE-1+ZI(JSXDI+I-1)))
+            ZR(IADIGS-1+I) = ZR(IAVALE-1+ZI(JSXDI+I-1))
    10     CONTINUE
         ELSE IF (TYPVAR.EQ.2) THEN
           DO 20 I = IPREM,IDERN
-            ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
+            ZR(IADIGS-1+I) = ZC(IAVALE-1+ZI(JSXDI+I-1))
    20     CONTINUE
         ELSE
           CALL ASSERT(.FALSE.)
@@ -134,9 +140,15 @@ C     DONC ON PREND UNE VALEUR ARBITRAIRE :
         DIAMAX = 0.D0
         DIAMIN = R8MAEM()
         DO 70 I = 1,NEQ
-           DIAMAX = MAX(DIAMAX,ZR(IADIGS-1+I))
-           IF (ZR(IADIGS-1+I).NE.0.D0)
-     &         DIAMIN = MIN(DIAMIN,ZR(IADIGS-1+I))
+           IF (TYPVAR.EQ.1) THEN
+             VABS=ABS(ZR(IADIGS-1+I))
+           ELSE
+             VABS=ABS(ZC(IADIGS-1+I))
+           ENDIF
+           DIAMAX = MAX(DIAMAX,VABS)
+           IF (VABS.NE.0.D0) DIAMIN = MIN(DIAMIN,VABS)
+
+
    70   CONTINUE
         WRITE (IFM,*) '<FACTOR> AVANT FACTORISATION :'
         WRITE (IFM,*) '<FACTOR>   NB EQUATIONS : ',NEQ

@@ -1,6 +1,6 @@
       SUBROUTINE JJALLS(LONOI,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/08/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +53,8 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      INTEGER          LDYN , LGDYN
-      COMMON /IDYNJE/  LDYN , LGDYN
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE 
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE 
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
      &               IDLONO     , IDLUTI     , IDNUM
@@ -64,7 +64,6 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER          INIT,IADDI(2),IBLANC,ID(2),IDEC(2),VALLOC,LSIC
       LOGICAL          LEXACT,LEPS,LINIT,LDEPS,LAMOV,LXA,LXD,RETRO
-      CHARACTER*75     CMESS
       CHARACTER *8     CBLANC
       EQUIVALENCE    ( CBLANC,IBLANC )
       DATA CBLANC     /'        '/
@@ -99,11 +98,14 @@ C
           IADMI  = JISZO2 + 5 - JISZON
           IDM    = JISZO2 + 1
           IADYN  = IADA
+          MCDYN  = MCDYN + LSIC*LOIS
+          MXDYN  = MAX(MXDYN,MCDYN)
+          NBDYN  = NBDYN + 1
         ELSE 
           IF ( IESSAI .GT. 1 ) THEN
             CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE,'
      &                  //' ALLOCATION IMPOSSIBLE')
-            CALL U2MESK('S','JEVEUX_01',1,'ERREUR ALLOCATION DYNAMIQUE')
+            CALL U2MESI('S','JEVEUX_60',1,LSIC)
           ELSE
             CALL JJLDYN(LTOT)
             CALL U2MESI('I','JEVEUX_46',1,LTOT)
@@ -125,15 +127,14 @@ C
       MAPLAC = 0
 C
       IF ( LONOI .LE. 0 ) THEN
-        CMESS = 'LONGUEUR DU SEGMENT DE VALEURS INVALIDE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESI('F','JEVEUX_57',1,LONOI)
       ENDIF
       IF (ITCOL .EQ. 3 .AND. LSI .LT. LMOTS) THEN
         ITRC = 4
       ELSEIF (ITCOL .EQ. 4) THEN
         ITRC = 2
       ELSE
-        ITRC = ITRECH
+        ITRC = ITRECH 
       ENDIF
 C
  800  CONTINUE
@@ -237,16 +238,12 @@ C --- DESTRUCTION DES SEGMENTS DE VALEURS LIBERES
                 IADM ( JIADM(ICLAI)+2*IDATCI   ) = 0
              ELSE
                 IBACOL = IADM ( JIADM(ICLAI) + 2*IDATCI-1 )
-                IF ( IBACOL .GT. 0 ) THEN
-                  IXIADM = ISZON( JISZON+IBACOL+IDIADM )
-                  IBIADM = IADM( JIADM(ICLAI)+2*IXIADM-1 )
-                  IF ( IBIADM .GT. 0 ) THEN
-                    ISZON( JISZON+IBIADM-1+2*IDATOI-1) = 0
-                    ISZON( JISZON+IBIADM-1+2*IDATOI  ) = 0
-                  ENDIF
-                ELSE
-                  CMESS='COLLECTION INCOMPLETE EN MEMOIRE '
-                  CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                CALL ASSERT (IBACOL .NE. 0) 
+                IXIADM = ISZON( JISZON+IBACOL+IDIADM )
+                IBIADM = IADM( JIADM(ICLAI)+2*IXIADM-1 )
+                IF ( IBIADM .GT. 0 ) THEN
+                  ISZON( JISZON+IBIADM-1+2*IDATOI-1) = 0
+                  ISZON( JISZON+IBIADM-1+2*IDATOI  ) = 0
                 ENDIF
              ENDIF
            ELSE
@@ -333,10 +330,7 @@ C --- DECHARGEMENT OU DESTRUCTION DES SEGMENTS DE VALEURS LIBERES
            IDATCI = ISZON( JISZON+ISI-3 )
            IF ( IDATCI .GT. 0 ) THEN
              IBACOL = IADM ( JIADM(ICLAI)+2*IDATCI-1 )
-             IF ( IBACOL .EQ. 0 ) THEN
-               CMESS='COLLECTION INCOMPLETE EN MEMOIRE'
-               CALL U2MESK('F','JEVEUX_01',1,CMESS)
-             ENDIF
+             CALL ASSERT (IBACOL .NE. 0) 
              IXDESO = ISZON( JISZON+IBACOL+IDDESO )
              LTYPI  = LTYP ( JLTYP(ICLAI)+IXDESO )
              IXIADM = ISZON( JISZON+IBACOL+IDIADM )

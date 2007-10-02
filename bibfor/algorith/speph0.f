@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,7 +132,7 @@ C-----------------------------------------------------------------------
       IDIM1 = NBMODE + NAPEXC
       CALL TBLIVA(TABLE,0,K8B,IBID,R8B,C16B,K8B,K8B,R8B,'DIMENSION',K8B,
      &            IDIM0,R8B,C16B,K8B,IRET)
-      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_88')
+      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
       IF (IDIM1.NE.IDIM0) THEN
         CALL U2MESS('F','ALGORITH10_63')
       END IF
@@ -250,7 +250,7 @@ C --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---
 
       CALL TBLIVA(TABLE,0,K8B,IBID,R8B,C16B,K8B,K8B,R8B,'OPTION',K8B,
      &            IBID,R8B,C16B,K8B,IRET)
-      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_88')
+      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
 
       INTDON = .TRUE.
       IF (K8B(1:4).EQ.'DIAG') INTDON = .FALSE.

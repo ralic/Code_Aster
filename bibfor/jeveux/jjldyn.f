@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/08/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,6 +54,8 @@ C
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      +               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -121,7 +123,8 @@ C
                       ISZON(JISZON + IBIADD -1 + 2*K-1) = IADDI(1)
                       ISZON(JISZON + IBIADD -1 + 2*K  ) = IADDI(2)
                     ENDIF
-                    CALL  HPDEALLC ( IADYOC , IBID , IBID )
+                    MCDYN = MCDYN - LSV
+                    CALL HPDEALLC ( IADYOC , NBFREE , IBID )
 C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL
                     LTOT = LTOT + IL
                     ISZON(JISZON + IBIADM - 1 +2*K-1) = 0
@@ -154,7 +157,8 @@ C
                   IADD( JIADD(IC)+2*J-1 ) = IADDI(1)
                   IADD( JIADD(IC)+2*J   ) = IADDI(2)
                 ENDIF
-                CALL  HPDEALLC ( IADYN , IBID , IBID )
+                MCDYN = MCDYN - LSV
+                CALL HPDEALLC ( IADYN , NBFREE , IBID )
 C               write(6,*) ' OS ',NOM32,' lg =',IL
                 LTOT = LTOT + IL
                 IADM(JIADM(IC)+2*J-1) = 0 

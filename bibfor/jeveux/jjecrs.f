@@ -1,6 +1,6 @@
       SUBROUTINE JJECRS ( IADMI , ICLAS , IDOS , IDCO , CUS , IMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,8 @@ C ----------------------------------------------------------------------
 C ---                  ISTAT(1)->X , (2)->U , (3)->A , (4)->D
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       INTEGER          ISTA1,ISTA2,IS,KTEMPO(2),IB
 C DEB ------------------------------------------------------------------
@@ -93,8 +95,9 @@ C
             DO 100 K=1,LSI
               ISZON(JISZON+KTEMPO(1)+K-1) = ISZON(JISZON+KDESMA(1)+K-1)
  100        CONTINUE
-            IF ( KDESMA(2) .NE. 0) THEN
-              CALL HPDEALLC (KDESMA(2), IBID, IBID)
+            IF ( KDESMA(2) .NE. 0) THEN 
+              MCDYN = MCDYN - (LGD/2)*LOIS
+              CALL HPDEALLC (KDESMA(2), NBFREE, IBID)
             ELSE IF (KDESMA(1) .NE. 0) THEN
               CALL JJLIBP (KDESMA(1))
             ENDIF  

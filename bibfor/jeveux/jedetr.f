@@ -1,6 +1,6 @@
       SUBROUTINE JEDETR ( NOMLU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
@@ -61,7 +63,6 @@ C     ------------------------------------------------------------------
      &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C     ------------------------------------------------------------------
-      CHARACTER*75    CMESS
       CHARACTER*32    NOML32 , NOM32
       INTEGER         ICRE , IRET , ID(IDNUM) , IADDI(2) , IBID
 C DEB ------------------------------------------------------------------
@@ -76,7 +77,8 @@ C
         IADMI = IADM (JIADM(IC) + 2*IDATOS-1 )
         IADYN = IADM (JIADM(IC) + 2*IDATOS   )
         IF ( IADYN .NE. 0 ) THEN
-          CALL  HPDEALLC ( IADYN , IBID , IBID )
+          MCDYN = MCDYN - LONO(JLONO(IC)+IDATOS)*LTYP(JLTYP(IC)+IDATOS)
+          CALL  HPDEALLC ( IADYN , NBFREE , IBID )
         ELSE IF ( IADMI .NE. 0 ) THEN
           CALL JJLIBP ( IADMI )
         ENDIF
@@ -117,7 +119,14 @@ C
               IADMOC = ISZON( JISZON + IBIADM - 1 + 2*K-1 )
               IADYOC = ISZON( JISZON + IBIADM - 1 + 2*K   )
               IF ( IADYOC .NE. 0 ) THEN
-                CALL  HPDEALLC ( IADYOC , IBID , IBID )
+                IF ( IXLONO .GT. 0 ) THEN
+                  IBLONO=IADM(JIADM(IC)+2*IXLONO-1)
+                  LONOI =ISZON(JISZON+IBLONO+K-1)*LTYP(JLTYP(IC)+IXDESO)
+                ELSE
+                  LONOI = LONO(JLONO(IC)+IXDESO)*LTYP(JLTYP(IC)+IXDESO)
+                ENDIF
+                MCDYN = MCDYN - LONOI
+                CALL  HPDEALLC ( IADYOC , NBFREE , IBID )
               ELSE IF ( IADMOC .NE. 0 ) THEN
                 CALL JJLIBP ( IADMOC )
               ENDIF
@@ -144,7 +153,9 @@ C
                 IADMI = IADM (JIADM(IC) + 2*ID(K)-1 )
                 IADYN = IADM (JIADM(IC) + 2*ID(K)   )
                 IF ( IADYN .NE. 0 ) THEN
-                  CALL  HPDEALLC ( IADYN , IBID , IBID )
+                  MCDYN = MCDYN - LONO(JLONO(IC)+ID(K))*
+     &                            LTYP(JLTYP(IC)+ID(K))
+                  CALL  HPDEALLC ( IADYN , NBFREE , IBID )
                 ELSE IF ( IADMI .NE. 0 ) THEN
                   CALL JJLIBP ( IADMI )
                 ENDIF
@@ -171,7 +182,8 @@ C
  2        CONTINUE
           IADYN = IADM(JIADM(IC)+2*IDATCO)
           IF ( IADYN .NE. 0 ) THEN
-            CALL  HPDEALLC ( IADYN , IBID , IBID )
+            MCDYN = MCDYN -LONO(JLONO(IC)+IDATCO)*LTYP(JLTYP(IC)+IDATCO)
+            CALL  HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IBACOL )
           ENDIF
@@ -195,15 +207,13 @@ C
           IXDESO = ISZON ( JISZON + IBACOL + IDDESO )
           IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
           IXMARQ = ISZON ( JISZON + IBACOL + IDMARQ )
-          IF ( IXIADD .EQ. 0 ) THEN
-            CMESS ='DESTRUCTION D''UN OBJET DE COLLECTION CONTIGUE'
-     &              //' REFUSEE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
-          ELSE IF ( IXNOM .EQ. 0 ) THEN
-            CMESS ='DESTRUCTION DANS UNE COLLECTION NON NOMMEE'
-     &              //' REFUSEE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
-          ENDIF
+C         
+C         DESTRUCTION D''UN OBJET DE COLLECTION CONTIGUE REFUSEE
+          CALL ASSERT (IXIADD .GT. 0)
+C         
+C         DESTRUCTION DANS UNE COLLECTION NON NOMMEE REFUSEE
+          CALL ASSERT (IXNOM .GT. 0 )
+C         
           IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
           IADDI(1) = ISZON ( JISZON + IBIADD - 1 + 2*IDATOC-1 )
           IADDI(2) = ISZON ( JISZON + IBIADD - 1 + 2*IDATOC   )
@@ -227,7 +237,8 @@ C
           IADMI = ISZON ( JISZON + IBIADM - 1 + 2*IDATOC-1 )
           IADYN = ISZON ( JISZON + IBIADM - 1 + 2*IDATOC   )
           IF ( IADYN .NE. 0 ) THEN
-            CALL  HPDEALLC ( IADYN , IBID , IBID )
+            MCDYN = MCDYN - LONOI
+            CALL  HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           ENDIF

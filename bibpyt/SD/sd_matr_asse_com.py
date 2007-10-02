@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_asse_com SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_matr_asse_com SD  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,9 @@ class sd_matr_asse_com(sd_titre):
     VALM = AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), )
     UALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), ))
     VALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), ))
+    WALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), ))
     CONL = Facultatif(OJBVect(type=Parmi('C', 'R')))
+    DIGS = Facultatif(OJBVect(type=Parmi('C', 'R'))) # seulement si solveurs LDLT et MULT_FRONT
     LIME = Facultatif(AsVK8(lonmax=1, ))
     cine = Facultatif(sd_matr_cine(SDNom(nomj='')))
 

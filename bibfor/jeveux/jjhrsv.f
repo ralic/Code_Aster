@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,8 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -44,13 +46,11 @@ C ----------------------------------------------------------------------
       INTEGER          IRET,JADR,KADM,NBV,K,LONOI,LTYPI,IBID
       INTEGER          HDFTSD,HDFRSV,HDFCLD,IR,KITAB,ICONV,IADYN
       CHARACTER*1      TYPEI
-      CHARACTER*75     CMESS
 C DEB ------------------------------------------------------------------
       ICONV = 0
       IRET = HDFTSD(IDTS,TYPEI,LTYPI,NBV)
       IF (IRET .NE. 0) THEN
-        CMESS='ERREUR DE RELECTURE DES PARAMETRES DU DATASET HDF'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESS('F','JEVEUX_52')
       ENDIF
       IF ( TYPEI .EQ. 'I' ) THEN
         ICONV = 1
@@ -66,7 +66,8 @@ C DEB ------------------------------------------------------------------
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE
           IF (IADYN .NE. 0) THEN
-            CALL HPDEALLC (IADYN, IBID, IBID)
+            MCDYN = MCDYN - LONOI
+            CALL HPDEALLC (IADYN, NBFREE, IBID)
           ELSE IF (KADM .NE. 0) THEN
             CALL JJLIBP (KADM)
           ENDIF
@@ -81,8 +82,7 @@ C DEB ------------------------------------------------------------------
         IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
       ENDIF
       IF (IRET .NE. 0) THEN
-        CMESS='RELECTURE AU FORMAT HDF IMPOSSIBLE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESS('F','JEVEUX_53')
       ENDIF
       IRET = HDFCLD(IDTS)
 C FIN ------------------------------------------------------------------

@@ -1,6 +1,6 @@
       SUBROUTINE CESPRJ(CES1Z,CORREZ,BASEZ,CES2Z,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C       -- ON NE PEUT PAS ENCORE TRAITER LES CHAMPS ELGA
       ELSE IF (TYPCES.EQ.'ELEM') THEN
         CES1 = '&&CESPRJ.CES1'
         CES2 = '&&CESPRJ.CES2'
-        CALL CESCES(CES1Z,'ELNO',' ',' ','V',CES1)
+        CALL CESCES(CES1Z,'ELNO',' ',' ',' ','V',CES1)
       ELSE
         CALL ASSERT(.FALSE.)
       END IF
@@ -191,42 +191,31 @@ C          LONGUEUR CUMULEE SUR LES OBJETS .PJEF_NU ET .PJEF_CF
           IDECAL = ZI(JDECAL-1+NUNO2)
           DO 40 ICMP = 1,NCMPMX
 C ================================================================
-C --- ON NE PROJETTE UNE CMP QUE SI ELLE EST PORTEE : ------------
-C --- * PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE ------------
-C --- * PAR TOUS LES NOEUDS SOMMETS DE LA MAILLE SOUS-JACENTE ET -
-C ---   QU'ELLE N'EST PAS DEFINIE AUX NOEUDS MILIEUX -------------
+C --- ON NE PROJETTE UNE CMP QUE SI ELLE EST PORTEE
+C     PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE
+C  EN PRINCIPE, C'EST TOUJOURS LE CAS POUR LES CHAM_ELEM
 C ================================================================
             ICO = 0
             DO 20,INO1 = 1,NBNO1
                CALL CESEXI('C',JCE1D,JCE1L,IMA1,INO1,1,ICMP,IAD1)
                COEF1 = ZR(IACOCF+IDECAL-1+INO1)
-               IF (IAD1.GT.0) THEN
-                  ICO = ICO + 1
-               ELSE IF (IAD1.EQ.0) THEN
-                  IF (COEF1.LT.1.0D-6) THEN
-                     ICO = ICO + 1
-                  ENDIF
-               ENDIF
+               IF (IAD1.GT.0)  ICO = ICO + 1
    20       CONTINUE
             IF (ICO.LT.NBNO1) GO TO 40
+
+            CALL CESEXI('S',JCE2D,JCE2L,IMA2,INO2,1,ICMP,IAD2)
+            CALL ASSERT(IAD2.LT.0)
+            ZL(JCE2L-1-IAD2) = .TRUE.
 
             IF (TSCA.EQ.'R') THEN
                V2 = 0.D0
                DO 30,INO1 = 1,NBNO1
                  COEF1 = ZR(IACOCF+IDECAL-1+INO1)
                  CALL CESEXI('C',JCE1D,JCE1L,IMA1,INO1,1,ICMP,IAD1)
-                 IF (IAD1.GT.0) THEN
+                 CALL ASSERT(IAD1.GT.0)
                     V1  = ZR(JCE1V-1+IAD1)
-                 ELSE IF (IAD1.EQ.0) THEN
-                    IF (COEF1.LT.1.0D-6) THEN
-                        V1 = 0.0D0
-                    ENDIF
-                 ENDIF
                  V2 = V2 + COEF1*V1
    30          CONTINUE
-               CALL CESEXI('S',JCE2D,JCE2L,IMA2,INO2,1,ICMP,IAD2)
-               CALL ASSERT(IAD2.LT.0)
-               ZL(JCE2L-1-IAD2) = .TRUE.
                ZR(JCE2V-1-IAD2) = V2
 
             ELSE IF (TSCA.EQ.'C') THEN
@@ -234,18 +223,10 @@ C ================================================================
                DO 31,INO1 = 1,NBNO1
                  COEF1 = ZR(IACOCF+IDECAL-1+INO1)
                  CALL CESEXI('C',JCE1D,JCE1L,IMA1,INO1,1,ICMP,IAD1)
-                 IF (IAD1.GT.0) THEN
+                 CALL ASSERT(IAD1.GT.0)
                     V1C = ZC(JCE1V-1+IAD1)
-                 ELSE IF (IAD1.EQ.0) THEN
-                    IF (COEF1.LT.1.0D-6) THEN
-                        V1C = 0.0D0
-                    ENDIF
-                 ENDIF
                  V2C = V2C + COEF1*V1C
    31          CONTINUE
-               CALL CESEXI('S',JCE2D,JCE2L,IMA2,INO2,1,ICMP,IAD2)
-               CALL ASSERT(IAD2.LT.0)
-               ZL(JCE2L-1-IAD2) = .TRUE.
                ZC(JCE2V-1-IAD2) = V2C
             ENDIF
 
@@ -257,7 +238,7 @@ C ================================================================
 
 C     -- ON TRANSFORME LE CHAM_ELEM_S/ELNO EN ELEM SI NECESSAIRE:
       IF (TYPCES.EQ.'ELEM') THEN
-        CALL CESCES(CES2,'ELEM',' ',' ',BASE,CES2Z)
+        CALL CESCES(CES2,'ELEM',' ',' ',' ',BASE,CES2Z)
       END IF
 
 

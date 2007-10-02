@@ -1,6 +1,6 @@
       SUBROUTINE SSVAU1(NOMACR,IAVEIN,IAVEOU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,6 @@ C     -----------------------------------------------------------------
 
 
    40 CONTINUE
-      CALL JEDETR(MATAS(1:19)//'.&VDI')
       CALL JELIBE(ZK24(JREFA-1+2)(1:14)//'.SLCS.SCHC')
 
       CALL JEDEMA()

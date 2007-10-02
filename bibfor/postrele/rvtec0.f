@@ -1,6 +1,6 @@
       SUBROUTINE RVTEC0 ( T, CO, SP, ABSC, X, CMP, ND, SDM, NBPOIN,
      &                    DOCU,  NBCMP, PADR, NOMTAB, IOC, IOCC,
-     &                    NCHEFF, I1, ISD )
+     &                    XNOVAR, NCHEFF, I1, ISD )
       IMPLICIT   NONE
       INTEGER             CO(*),SP(*),NBPOIN,NBCMP,PADR(*),IOC,IOCC,
      &                    I1, ISD
@@ -9,10 +9,10 @@
       CHARACTER*8         CMP(*), ND(*)
       CHARACTER*16        NCHEFF
       CHARACTER*19        NOMTAB
-      CHARACTER*24        SDM
+      CHARACTER*24        SDM, XNOVAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 02/10/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,17 +63,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      NBPAR, ILIGN, NBSP, I, IKK, L, JAM,
-     &             NBCO, LC, IS, IC, VALEI(52), N1, ADRVAL, NBMAIL, J,
-     &             ADRACC, JACC, IK, IR, II, ICO, LM, IM, NC,
+     &             NBCO, LC, IS, IC, VALEI(1052), N1, ADRVAL, NBMAIL, J,
+     &             ADRACC, JACC, IK, IR, II, IVARI(1000), NBCMP2, JVARI,
+     &             ICO, LM, IM, NC, JNPAR, JTPAR, NBVARI,
      &             NBACC, NBPR, JACES, IAC, IADR
-      REAL*8       VALER(50)
+      REAL*8       VALER(1050)
       COMPLEX*16   C16B
       LOGICAL      EXIST, ERREUR
       CHARACTER*3  TYPPAR
+      CHARACTER*7  KII
       CHARACTER*8  K8B, ACCES, NOMRES, CTYPE, NOPASE, COURBE
       CHARACTER*16 INTITU
-      CHARACTER*24 NOMVAL, NOMACC, NNORES, NOPARA(53), NOMJV
-      CHARACTER*80 VALEK(51)
+      CHARACTER*24 NOMVAL, NOMACC, NNORES, NOPARA(1053), NOMJV
+      CHARACTER*80 VALEK(1051)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -83,6 +85,23 @@ C
       IF ( DOCU.NE.'LSTN' .AND. DOCU.NE.'CHMM' .AND.
      &     DOCU.NE.'SGTD' .AND. DOCU.NE.'ARCC' .AND.
      &                          DOCU.NE.'SGT3' ) GOTO 9999
+C
+      CALL JELIRA(JEXNUM(XNOVAR,IOCC),'LONUTI',NBVARI,K8B)
+      IF ( NBVARI .NE. 0 ) THEN
+         CALL JELIRA ( JEXNUM(XNOVAR,IOCC), 'LONUTI', NBVARI, K8B )
+         CALL JEVEUO ( JEXNUM(XNOVAR,IOCC), 'L', JVARI )
+         IF ( NBVARI .EQ. 1  .AND. ZI(JVARI).EQ. -1 ) THEN
+            NBCMP2 = SP(1)
+         ELSE
+           NBCMP2 = NBVARI
+         ENDIF
+      ELSE
+         NBCMP2 = NBCMP
+         DO 2, I = 1, NBCMP2, 1
+            IVARI(I) = I
+ 2       CONTINUE
+      ENDIF
+      IF ( NBCMP2.GT.1000) CALL U2MESS('F','POSTRELE_13')
 C
       CALL GETVTX ( 'ACTION', 'INTITULE', IOCC,1,1, INTITU, N1 )
       CALL GETVID ( 'ACTION', 'CHEMIN'  , IOCC,1,1, COURBE, NC )
@@ -246,16 +265,41 @@ C
             NOPARA(NBPAR) = 'NUME_GAUSS'
          ENDIF
  20   CONTINUE
-      DO 40, I = 1, NBCMP, 1
-         NBPAR = NBPAR + 1
-         NOPARA(NBPAR) = CMP(I)
- 40   CONTINUE
+      IF ( NBVARI .EQ. 0 ) THEN
+         DO 40, I = 1, NBCMP2, 1
+            NBPAR = NBPAR + 1
+            NOPARA(NBPAR) = CMP(I)
+ 40      CONTINUE
+      ELSE
+         CALL WKVECT ( '&&RVTEC0.NOM_PARA', 'V V K8' , NBCMP2, JNPAR )
+         CALL WKVECT ( '&&RVTEC0.TYP_PARA', 'V V K8' , NBCMP2, JTPAR )
+         IF ( NBVARI .EQ. 1  .AND. ZI(JVARI).EQ. -1 ) THEN
+            DO 12, I = 1, NBCMP2, 1
+               IVARI(I) = I
+               CALL CODENT ( I, 'G', KII )
+               NBPAR = NBPAR + 1
+               NOPARA(NBPAR) = 'V'//KII
+               ZK8(JNPAR-1+I)  = 'V'//KII
+               ZK8(JTPAR-1+I)  = 'R'
+ 12         CONTINUE
+         ELSE
+            DO 14, I = 1, NBCMP2, 1
+               IVARI(I) = ZI(JVARI+I-1)
+               CALL CODENT ( ZI(JVARI+I-1), 'G', KII )
+               NBPAR = NBPAR + 1
+               NOPARA(NBPAR) = 'V'//KII
+               ZK8(JNPAR-1+I)  = 'V'//KII
+               ZK8(JTPAR-1+I)  = 'R'
+ 14         CONTINUE
+         ENDIF
+         CALL TBAJPA ( NOMTAB, NBCMP2, ZK8(JNPAR), ZK8(JTPAR) )
+      ENDIF
 C
       ERREUR = .FALSE.
-      IF ( NBPAR .GT. 50 )       ERREUR = .TRUE.
-      IF ( II+2  .GT. 50 )       ERREUR = .TRUE.
-      IF ( IR+4+NBCMP .GT. 50 )  ERREUR = .TRUE.
-      IF ( IK    .GT. 50 )       ERREUR = .TRUE.
+      IF ( NBPAR .GT. 1050 )        ERREUR = .TRUE.
+      IF ( II+2  .GT. 1050 )        ERREUR = .TRUE.
+      IF ( IR+4+NBCMP2 .GT. 1050 )  ERREUR = .TRUE.
+      IF ( IK    .GT. 1050 )        ERREUR = .TRUE.
       IF ( ERREUR ) CALL U2MESS('F','POSTRELE_12')
 C
       ILIGN = 0
@@ -312,6 +356,9 @@ C
                L    = 0
             ENDIF
          ENDIF
+C        POUR UN CHAMP DE TYPE "VARI"
+C        LES SOUS-POINTS SONT PRIS EN CHARGE PAR LE NBCMP
+         IF (NBVARI.NE.0) NBSP = 1
 C
          DO 200, ICO = 1, NBCO, 1
 C
@@ -329,9 +376,9 @@ C
                      VALEK(IK+IKK+1) = '   -    '
                   ENDIF
 C
-                  DO 224, IC = 1, NBCMP, 1
+                  DO 224, IC = 1, NBCMP2, 1
                      VALER(IR+4+IC) =
-     &                    T(J-1+(ICO-1)*LC+(IS-1)*NBCMP+(IM-1)*LM+IC)
+     &           T(J-1+(ICO-1)*LC+(IS-1)*NBCMP+(IM-1)*LM+IVARI(IC))
  224              CONTINUE
 C
                   CALL TBAJLI ( NOMTAB, NBPAR, NOPARA,
@@ -344,6 +391,11 @@ C
  200     CONTINUE
 C
  30   CONTINUE
+C
+      IF ( NBVARI .NE. 0 ) THEN
+         CALL JEDETR ( '&&RVTEC0.NOM_PARA' )
+         CALL JEDETR ( '&&RVTEC0.TYP_PARA' )
+      ENDIF
 C
  9999 CONTINUE
       CALL JEDEMA()

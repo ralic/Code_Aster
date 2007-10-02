@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1368,7 +1368,7 @@ C 2 - TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
 C 3 - TRANSFOMATION DU CHAMP CHSINS ELEM EN ELNO
 
               CHSINN='&&'//NOMPRO//'.SINN'
-              CALL CESCES(CHSINS,'ELNO',' ',' ','V',CHSINN)
+              CALL CESCES(CHSINS,'ELNO',' ',' ',' ','V',CHSINN)
 
 C 4 - STOCKAGE
 

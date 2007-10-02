@@ -1,6 +1,6 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,14 +58,15 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       CHARACTER *32    CLEL,CLE
-      CHARACTER *75    CMESS
       CHARACTER *4     Z
       INTEGER          JCOD,KADHC,JNOM,KADNO,LOREP,IADRS(20),KAT(20)
       INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2),KDY(20),IBID
       PARAMETER       (NBATT=12,NBTOT=NBATT+2,LGNOM=32)
-      INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT)
+      INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT),LGL(NBTOT)
       DATA NUMATT,Z   /2,3,4,5,6,8,9,10,11,12,16,7,13,20,'INIT'/
 C DEB ------------------------------------------------------------------
       IPGCA = IPGC
@@ -102,8 +103,7 @@ C
  5      CONTINUE
         IF ( HCOD(JCOD-1+I) .EQ. 0 ) THEN
           IF ( NUTI .GE. NRMAX ) THEN
-            CMESS = ' LE NOUVEAU REPERTOIRE EST SATURE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESS('F','JEVEUX_58')
           ELSE
             IDATIN = NUTI + 1
             IIN    = I
@@ -112,8 +112,7 @@ C
           J = HCOD(JCOD-1+I)
           CLE  = RNOM(JNOM-1+ABS(J))
           IF ( CLE .EQ. CLEL ) THEN
-            CMESS = ' LE NOM DEMANDE EXISTE DEJA DANS LE REPERTOIRE '
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_59',1,CLEL)
           ELSE
             IF ( NE .EQ. 1 ) IN = JXHCOD (CLEL,LOREP-2)
             NE = NE + 1
@@ -121,8 +120,7 @@ C
             IF ( NE .LE. LOREP ) THEN
               GOTO 5
             ELSE
-              CMESS = ' LE REPERTOIRE EST SATURE'
-              CALL U2MESK('F','JEVEUX_01',1,CMESS)
+              CALL U2MESS('F','JEVEUX_58')
             END IF
           END IF
         END IF
@@ -142,6 +140,7 @@ C
       DO 200 K=1,NBTOT
         KL = NUMATT(K)
         LONOI = LONO(JLONO(IC)+KL)*LTYP(JLTYP(IC)+KL)
+        LGL(K) = LONOI
         IF ( IADD(JIADD(IC)+2*KL-1) .GT. 0 ) THEN
           CALL JXLIBD ( 0 , KL , IC ,IADD(JIADD(IC)+2*KL-1) , LONOI )
           IADD(JIADD(IC)+2*KL-1) = 0
@@ -217,7 +216,8 @@ C
  315  CONTINUE
       DO 320 I = 1,NBTOT
         IF (IDY(I) .NE. 0) THEN
-          CALL HPDEALLC (IDY(I),IBID,IBID)
+          MCDYN = MCDYN - LGL(K)
+          CALL HPDEALLC (IDY(I),NBFREE,IBID)
         ELSE IF (IDM(I) .NE. 0) THEN
           CALL JJLIBP (IDM(I))
         ENDIF

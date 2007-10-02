@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 22/05/2007   AUTEUR GALENNE E.GALENNE 
+#@ MODIF elements3 Messages  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,6 +124,10 @@ cata_msg={
 
 24: _("""
  matns mal dimensionnee
+"""),
+
+25: _("""
+ calcul de sensibilite :  actuellement, on ne derive que les : pou_d_e
 """),
 
 26: _("""

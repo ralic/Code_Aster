@@ -1,6 +1,6 @@
       SUBROUTINE JEALDY ( IACT , LGSEG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,8 +30,8 @@ C             L'ALLOCATION EST DYNAMIQUE
 C ----------------------------------------------------------------------
       LOGICAL          LTESJE , LBUGJE
       COMMON /LPARJE/  LTESJE , LBUGJE
-      INTEGER          LDYN , LGDYN
-      COMMON /IDYNJE/  LDYN , LGDYN
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
 C     ------------------------------------------------------------------

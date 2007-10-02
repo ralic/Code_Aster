@@ -1,6 +1,6 @@
-      SUBROUTINE CESCES(CESA,TYPCES,CESMOZ,MNOGAZ,BASE,CESB)
+      SUBROUTINE CESCES(CESA,TYPCES,CESMOZ,MNOGAZ,CELFPZ,BASE,CESB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,13 +18,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
-C A_UTIL
       IMPLICIT NONE
-      CHARACTER*(*) CESA,CESB,BASE,CESMOZ,TYPCES,MNOGAZ
+      CHARACTER*(*) CESA,CESB,BASE,CESMOZ,TYPCES,MNOGAZ,CELFPZ
 C ------------------------------------------------------------------
 C BUT: TRANSFORMER UN CHAM_ELEM_S EN CHAM_ELEM_S D'UN AUTRE TYPE
 C      ELNO -> ELGA , ELEM -> ELNO , ...
-C      LE CAS 'ELGA -> ELNO' N'EST PAS ENCORE TRAITE
 C ------------------------------------------------------------------
 C     ARGUMENTS:
 C CESA  IN/JXIN  K19 : SD CHAM_ELEM_S A TRANSFORMER
@@ -36,15 +34,21 @@ C CESMOZ IN/JXIN  K19 :  SD CHAM_ELEM_S "MODELE" POUR CESZ
 C       SI TYPCES  ='ELGA' ON SE SERT DE CESMOZ POUR DETERMINER
 C          LE NOMBRE DE POINTS DE GAUSS DE CESB
 
-C MNOGAZ IN/JXIN  K19 : SD CHAM_ELEM_S CONTENANT LES MATRICES
-C                       DE PASSAGE NOEUD -> GAUSS.
-C                       MNOGAZ N'EST UTILISE QUE SI ELNO->ELGA
+C MNOGAZ IN/JXIN  K19 :
+C    SD CHAM_ELEM_S CONTENANT LES MATRICES DE PASSAGE NOEUD -> GAUSS.
+C    CET OBJET N'EST UTILISE QUE SI ELNO -> ELGA
+C    CET OBJET EST OBTENU PAR LA ROUTINE MANOPG.F
 C ATTENTION :  MNOGAZ EST UN CHAM_ELEM_S AVEC UNE CONVENTION
 C              TRES PARTICULIERE  (MAILLE DE REFERENCE)
 C              (VOIR ROUTINE MANOPG.F)
 
-C CESB   IN/JXOUT K19 : SD CHAM_ELEM_S RESULTAT DE LA TRANSFORMATION
-C BASE    IN      K1  : BASE DE CREATION POUR CES2 : G/V/L
+C CELFPZ IN/JXIN  K24 :
+C    NOM DE L'OBJET DECRIVANT LES FAMILLES DE P.G. DE CESA (OU ' ')
+C    CET OBJET N'EST UTILISE QUE SI ELGA -> ELNO
+C    CET OBJET EST OBTENU PAR LA ROUTINE CELFPG.F
+
+
+C BASE    IN      K1  : BASE DE CREATION POUR CESB : G/V
 C-----------------------------------------------------------------------
 
 
@@ -78,7 +82,9 @@ C     ------------------------------------------------------------------
       CHARACTER*8 MA,NOMGD
       CHARACTER*3 TSCA
       CHARACTER*19 CES1,CESMOD,CES2,MNOGA,MGANO
-      REAL*8 V,V1
+      CHARACTER*24 CELFPG
+      REAL*8 VR,V1R
+      COMPLEX*16 VC,V1C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -86,6 +92,7 @@ C     ------------------------------------------------------------------
       CES2 = CESB
       CESMOD = CESMOZ
       MNOGA = MNOGAZ
+      CELFPG=CELFPZ
 
 
 C     1. RECUPERATION DE :
@@ -111,32 +118,30 @@ C     --------------------------------------------------------------
       CALL JEVEUO(MA//'.CONNEX','L',IACNX1)
       CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',ILCNX1)
       CALL JELIRA(CES1//'.CESC','LONMAX',NCMP,KBID)
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
 
 
-C     SI C'EST FACILE, ON LE FAIT ... :
+C     2. SI C'EST FACILE, ON LE FAIT ... :
 C     ------------------------------------------------
       IF (TYPCE1.EQ.TYPCES) THEN
         CALL COPISD('CHAM_ELEM_S',BASE,CES1,CES2)
         GO TO 180
       END IF
+      CALL ASSERT(TSCA.EQ.'R'.OR.TSCA.EQ.'C')
 
-      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-C     CAS (TSCA.NE.'R') RESTE A PROGRAMMER ...
-      CALL ASSERT(TSCA.EQ.'R')
 
-C     2. QUELQUES VERIFICATIONS :
+
+C     3. VERIFICATIONS :
 C     ---------------------------
       IF ((TYPCE1.EQ.'ELNO') .AND. (TYPCES.EQ.'ELGA')) THEN
-C     --------------------------------------------------
         CALL EXISD('CHAM_ELEM_S',MNOGA,IRET)
-C       TEST MATRICE NOEUD->GAUSS NECESSAIRE
         CALL ASSERT(IRET.GT.0)
         CALL JEVEUO(MNOGA//'.CESK','L',JBREF)
         CALL ASSERT(MA.EQ.ZK8(JBREF-1+1))
       END IF
 
 
-C     2. CALCUL DES OBJETS  '.NBPT','.NBSP' ET '.NBCMP'
+C     4. CALCUL DES OBJETS  '.NBPT','.NBSP' ET '.NBCMP'
 C     -----------------------------------------------------------------
       CALL WKVECT('&&CESCES.NBPT','V V I',NBMA,JNBPT)
       CALL WKVECT('&&CESCES.NBSP','V V I',NBMA,JNBSP)
@@ -173,7 +178,7 @@ C       TEST ARGUMENT CESMOD OBLIGATOIRE
       END IF
 
 
-C     3. CREATION DE CES2 :
+C     5. CREATION DE CES2 :
 C     ---------------------------------------
       CALL CESCRE(BASE,CES2,TYPCES,MA,NOMGD,NCMP,ZK8(JCES1C),ZI(JNBPT),
      &            ZI(JNBSP),ZI(JNBCMP))
@@ -232,19 +237,36 @@ C             - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
    40         CONTINUE
               IF (ICO.NE.NBNO) GO TO 70
 
-              DO 60,IPG = 1,NBPG
-                V = 0.D0
-                DO 50,INO = 1,NBNO
-                  CALL CESEXI('C',JCES1D,JCES1L,IMA,INO,ISP,ICMP,IAD1)
-                  V1 = ZR(JCES1V-1+IAD1)
-                  V = V + V1*ZR(MNOGAV-1+IAD+1+NBNO* (IPG-1)+INO)
-   50           CONTINUE
+              IF (TSCA.EQ.'R') THEN
+                DO 60,IPG = 1,NBPG
+                  VR = 0.D0
+                  DO 50,INO = 1,NBNO
+                    CALL CESEXI('C',JCES1D,JCES1L,IMA,INO,ISP,ICMP,IAD1)
+                    V1R = ZR(JCES1V-1+IAD1)
+                    VR = VR + V1R*ZR(MNOGAV-1+IAD+1+NBNO* (IPG-1)+INO)
+   50             CONTINUE
 
-                CALL CESEXI('C',JCESD,JCESL,IMA,IPG,ISP,ICMP,IAD1)
-                IF (IAD1.GE.0) CALL U2MESS('F','ALGORITH_19')
-                ZL(JCESL-1-IAD1) = .TRUE.
-                ZR(JCESV-1-IAD1) = V
-   60         CONTINUE
+                  CALL CESEXI('C',JCESD,JCESL,IMA,IPG,ISP,ICMP,IAD1)
+                  IF (IAD1.GE.0) CALL U2MESS('F','ALGORITH_19')
+                  ZL(JCESL-1-IAD1) = .TRUE.
+                  ZR(JCESV-1-IAD1) = VR
+   60           CONTINUE
+
+              ELSEIF (TSCA.EQ.'C') THEN
+                DO 61,IPG = 1,NBPG
+                  VC = DCMPLX(0.D0,0.D0)
+                  DO 51,INO = 1,NBNO
+                    CALL CESEXI('C',JCES1D,JCES1L,IMA,INO,ISP,ICMP,IAD1)
+                    V1C = ZC(JCES1V-1+IAD1)
+                    VC = VC + V1C*ZR(MNOGAV-1+IAD+1+NBNO* (IPG-1)+INO)
+   51             CONTINUE
+
+                  CALL CESEXI('C',JCESD,JCESL,IMA,IPG,ISP,ICMP,IAD1)
+                  IF (IAD1.GE.0) CALL U2MESS('F','ALGORITH_19')
+                  ZL(JCESL-1-IAD1) = .TRUE.
+                  ZC(JCESV-1-IAD1) = VC
+   61           CONTINUE
+              ENDIF
    70       CONTINUE
 
    80     CONTINUE
@@ -266,7 +288,11 @@ C     ------------------------------------------------------
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
                 IF (IAD.GE.0) CALL U2MESS('F','ALGORITH_19')
                 ZL(JCESL-1-IAD) = .TRUE.
-                ZR(JCESV-1-IAD) = ZR(JCES1V-1+IAD1)
+                IF (TSCA.EQ.'R') THEN
+                  ZR(JCESV-1-IAD) = ZR(JCES1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'C') THEN
+                  ZC(JCESV-1-IAD) = ZC(JCES1V-1+IAD1)
+                ENDIF
   100         CONTINUE
   110       CONTINUE
 
@@ -282,23 +308,41 @@ C     ------------------------------------------------------
 
           DO 160 ICMP = 1,NCMP
             DO 150,ISP = 1,NBSP1
-              V = 0.D0
+              IF (TSCA.EQ.'R') THEN
+                VR = 0.D0
+              ELSEIF (TSCA.EQ.'C') THEN
+                VC = DCMPLX(0.D0,0.D0)
+              ENDIF
               NBV = 0
               DO 140,IPT1 = 1,NBPT1
                 CALL CESEXI('C',JCES1D,JCES1L,IMA,IPT1,ISP,ICMP,IAD1)
                 IF (IAD1.LE.0) GO TO 140
                 NBV = NBV + 1
-                V = V + ZR(JCES1V-1+IAD1)
+                IF (TSCA.EQ.'R') THEN
+                  VR = VR + ZR(JCES1V-1+IAD1)
+                ELSEIF (TSCA.EQ.'C') THEN
+                  VC = VC + ZC(JCES1V-1+IAD1)
+                ENDIF
   140         CONTINUE
               IF (NBV.GT.0) THEN
                 CALL CESEXI('C',JCESD,JCESL,IMA,1,ISP,ICMP,IAD)
                 IF (IAD.GE.0) CALL U2MESS('F','ALGORITH_19')
                 ZL(JCESL-1-IAD) = .TRUE.
-                ZR(JCESV-1-IAD) = V/DBLE(NBV)
+                IF (TSCA.EQ.'R') THEN
+                  ZR(JCESV-1-IAD) = VR/DBLE(NBV)
+                ELSEIF (TSCA.EQ.'C') THEN
+                  ZC(JCESV-1-IAD) = VC/DBLE(NBV)
+                ENDIF
               END IF
   150       CONTINUE
   160     CONTINUE
   170   CONTINUE
+
+
+      ELSE IF ((TYPCE1.EQ.'ELGA') .AND. (TYPCES.EQ.'ELNO')) THEN
+C     ------------------------------------------------------
+        CALL CESGNO(CES1,CELFPG,BASE,CES2)
+
 
       ELSE
 C       CAS NON ENCORE PROGRAMME ...

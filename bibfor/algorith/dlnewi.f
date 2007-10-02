@@ -7,7 +7,7 @@
      &                    INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 01/10/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,7 +185,7 @@ C N: SAISIE DES DONNEES AMOR_MODAL
 C    (  MOT CLE FACTEUR: AMOR_MODAL  )
       CALL GETFAC('AMOR_MODAL',NMODAM)
       IF (NMODAM.NE.0) THEN
-        CALL NMMOAM(K24AMO,IBID)
+        CALL NMMOAM(K24AMO)
         VALMOD=K24AMO(1:19)//'.VALM'
         BASMOD=K24AMO(1:19)//'.BASM'
       END IF

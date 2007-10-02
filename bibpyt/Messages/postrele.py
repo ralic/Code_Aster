@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF postrele Messages  DATE 02/10/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -377,6 +377,18 @@ cata_msg={
  Nombre de cycles admissibles négatif, 
  verifier la courbe de WOLHER
  contrainte calculee =  %(r1)f    nadm =  %(r2)f 
+ 
+"""),
+
+62: _("""
+ Attention lors de la définition de votre liste de noeuds,
+ %(i1)d noeud est hors de la matière 
+ 
+"""),
+
+63: _("""
+ Attention lors de la définition de votre liste de noeuds,
+ %(i1)d noeuds sont hors de la matière 
  
 """),
 

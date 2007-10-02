@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU ( NBFI, LZON, IADZON, LMO, CMES, CVIG, IDB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,9 +110,9 @@ C ----------------------------------------------------------------------
       COMMON /FENVJE/  LFIC,MFIC
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
-      INTEGER          LDYN , LGDYN
-      COMMON /IDYNJE/  LDYN , LGDYN
-C ----------------------------------------------------------------------
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+C --------------------------------- ------------------------------------
       INTEGER          MXLICI , IPREM  , INIT
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM, LOUAEM
       INTEGER          LOR8EM , LOC8EM , ISNNEM
@@ -141,8 +141,10 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       MSLOIS = LOIS - 1
       LDYN   = 0
       LGDYN  = LUNDEF
-      LDYN   = 1
-      LGDYN  = 200
+      MXDYN  = 0
+      MCDYN  = 0
+      NBDYN  = 0
+      NBFREE = 0
 C -----------------  NOMBRE DE BASES -----------------------------------
       NBFIC = MIN ( NBFI , N , LEN(CLASSE) )
       IF ( NBFIC .LE. 0 ) THEN
@@ -173,6 +175,8 @@ C -----------------  ZONE MEMOIRE  -------------------------------------
       CALL JXALLM ( IADZON, ISZON , LISZON , JISZON )
       LK1ZON = LISZON * LOIS
       JK1ZON = JISZON * LOIS
+      MCDYN  = MCDYN + LISZON*LOIS
+      MXDYN  = MAX(MXDYN,MCDYN)
       ISZON(JISZON + 1 )         = 0
       ISZON(JISZON + 2 )         = 0
       ISZON(JISZON + 3 )         = 0

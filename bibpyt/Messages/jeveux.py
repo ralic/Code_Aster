@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF jeveux Messages  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,7 @@ Erreur de programmation :
 10: _("""
 Erreur de programmation :
 
- Le nom demande existe déjà dans la base %(k1)s
+ Le nom demandé existe déjà dans la base %(k1)s
 """),
 
 11: _("""
@@ -84,15 +84,14 @@ Erreur de programmation :
 """),
 
 15: _("""
- Ecrasement amont, l'objet :< %(k1)s > est peut etre écrasé
-"""),
+ Ecrasement amont, l'objet :< %(k1)s > est peut être écrasé"""),
 
 16: _("""
- Ecrasement aval, l'objet :< %(k1)s > est peut etre ecrase
+ Ecrasement aval, l'objet :< %(k1)s > est peut être écrasé
 """),
 
 17: _("""
- Chainage cassé apres l'objet :  %(k1)s
+ Chainage cassé après l'objet :  %(k1)s
 """),
 
 18: _("""
@@ -174,7 +173,7 @@ La collection < %(k1)s > à recopier ne possède aucun objet ni en mémoire, ni sur
 
 32: _("""
      Erreur allocation de segment de mémoire de longueur %(i1)d (entiers).
-     Memoire allouée insuffisante. Fermeture des bases (glob.*) sur erreur
+     Mémoire allouée insuffisante. Fermeture des bases (glob.*) sur erreur
      Il faut relancer le calcul en augmentant la limite mémoire.
 """),
 
@@ -190,11 +189,11 @@ La collection < %(k1)s > à recopier ne possède aucun objet ni en mémoire, ni sur
 """),
 
 35: _("""
-     Le nombre de bases gérables est limité a %(i1)d
+     Le nombre de bases gérables est limité à %(i1)d
 """),
 
 36: _("""  
-     Le nombre d'enregistrements maximum de la base %(k1)s sera modifié,
+     Le nombre d'enregistrements maximum de la base %(k1)s sera modifié
      de %(i1)d a %(i2)d
 """),
 
@@ -209,14 +208,14 @@ La collection < %(k1)s > à recopier ne possède aucun objet ni en mémoire, ni sur
 """),
 
 39: _("""
-     Taille de repertoire demandée trop grande.
+     Taille de repertoire demandé trop grande.
      Le maximun est de %(i1)d
-     La valeur reclamée est de %(i2)d 
+     La valeur reclamé est de %(i2)d 
       
 """),
 
 40: _("""
-     Erreur écriture de l'enregistrement %(i1)s sur la base : %(k1)s %(i2)d
+     Erreur ériture de l'enregistrement %(i1)s sur la base : %(k1)s %(i2)d
      code retour WRITDR : %(i3)d 
      Erreur probablement provoquée par une taille trop faible du répertoire de travail.
 """),
@@ -229,7 +228,7 @@ La collection < %(k1)s > à recopier ne possède aucun objet ni en mémoire, ni sur
 
 
 42: _("""
-     Fichier saturé, le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
+     Fichier saturé le nombre maximum d'enregistrement %(i1)d de la base %(k1)s est atteint
      il faut relancer le calcul en modifiant le parametre NMAX_ENRE dans DEBUT 
      ou en passant une taille maximum de base sur la ligne de commande 
      argument "-max_base" suivi de la valeur en Mo.
@@ -251,6 +250,68 @@ La collection < %(k1)s > à recopier ne possède aucun objet ni en mémoire, ni sur
 46: _("""
  Libération des segments alloues dynamiquement pour une longueur cumulée de %(i1)d (entiers) 
 """),
+
+47: _("""
+ Erreur lors de la relecture d'un enregistrement sur le fichier d'accès direct.
+"""),
+
+48: _("""
+ Erreur lors de l'écriture d'un enregistrement sur le fichier d'accès direct.
+"""),
+
+49: _("""
+ Taille de la zone à allouer invalide %(i1)d < 0 .
+"""),
+
+50: _("""
+ Allocation dynamique impossible.
+"""),
+
+51: _("""
+ Relecture au format HDF impossible.
+"""),
+
+52: _("""
+ Erreur de relecture des paramètres du dataset HDF.
+"""),
+
+53: _("""
+ Relecture au format HDF impossible.
+"""),
+
+54: _("""
+ Impossible d'ouvrir le fichier HDF %(k1)s. 
+"""),
+
+55: _("""
+ Impossible de fermer le fichier HDF %(k1)s. 
+"""),
+
+56: _("""
+ Fermeture du fichier HDF %(k1)s. 
+"""),
+
+57: _("""
+ Longueur du segment de valeurs à allouer invalide %(i1)d.
+"""),
+
+58: _("""
+ Le répertoire est saturé.
+"""),
+
+59: _("""
+ Le nom demandé existe déjà dans le répertoire %(k1)s.
+
+"""),
+
+60: _("""
+ Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer 
+ une zone mémoire de longueur %(i1)d (entiers).
+
+"""),
+
+
+
 
 }
 

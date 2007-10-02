@@ -7,7 +7,7 @@ C
       COMPLEX*16                 XSOL (NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,13 +122,8 @@ C
       UALF(1:19)   = NOMMAT
       NOMDIA(1:19) = NOMMAT
 C
-C     --- CREATION/RAPPEL D'UN TABLEAU POUR STOCKER LA DIAGONALE -------
-      CALL JEEXIN( NOMDIA , IER )
-      IF ( IER .EQ. 0 ) THEN
-          CALL JECREO(NOMDIA,'V V C')
-          CALL JEECRA(NOMDIA,'LONMAX',NEQ,'  ')
-      ENDIF
-      CALL JEVEUO( NOMDIA , 'E', LDIAG )
+C     --- CREATION D'UN TABLEAU POUR STOCKER LA DIAGONALE
+      CALL WKVECT(NOMDIA,'V V C',NEQ,LDIAG)
 C
 C     ------------------------------------------------------------------
 C     --- PREMIERE  PARTIE : RESOLUTION DESCENDANTE ---
@@ -196,7 +191,7 @@ CMIC$*       PRIVATE(ISOL,C8VAL,I)
          CALL JELIBE(JEXNUM(UALF,IBLOC))
  300  CONTINUE
 C
-      CALL JELIBE(NOMDIA)
+      CALL JEDETR(NOMDIA)
       PGC = PGCANC
 C
       CALL JEDEMA()

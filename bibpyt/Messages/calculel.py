@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF calculel Messages  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,13 @@ cata_msg={
 
 4: _("""
  incoherence des maillages : %(k1)s  et  %(k2)s
+"""),
+
+5: _("""
+ Erreur de programmation (ou d'utilisation ?) :
+   Le changement de discrétisation : %(k1)s n'est pas encore programmé.
+ Risques et conseils :
+   Il y a peut-etre une demande d'évolution à émettre ...
 """),
 
 11: _("""
@@ -146,11 +153,14 @@ cata_msg={
 """),
 
 54: _("""
- le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
+ Le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
 """),
 
 55: _("""
- il manque la composante : %(k1)s
+ Erreur utilisateur :
+   On cherche à créer un CHAM_ELEM mais sur certains points, on ne trouve pas la composante : %(k1)s
+ Risques & conseils :
+   Si la commande que vous exécutez comporte le mot clé PROL_ZERO='OUI', vous devriez peut-etre l'utiliser.
 """),
 
 56: _("""
@@ -187,7 +197,7 @@ cata_msg={
 
 71: _("""
  numéro de composante invalide :  %(k1)s  (<1 ou >nbcmp)
- pour la maille                :  %(k2)s 
+ pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
  pour le sous-point            :  %(k4)s
 """),

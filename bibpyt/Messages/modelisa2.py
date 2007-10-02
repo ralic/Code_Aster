@@ -1,21 +1,21 @@
-#@ MODIF modelisa2 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa2 Messages  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -45,7 +45,10 @@ cata_msg={
 """),
 
 9: _("""
-  %(k1)s  n'existe pas
+  Erreur utilisateur :
+    l'objet %(k1)s n'existe pas. On ne peut pas continuer.
+  Risques & conseils :
+    Dans ce contexte, les seuls solveurs autorisés sont MULT_FRONT et LDLT
 """),
 
 13: _("""
@@ -57,11 +60,11 @@ cata_msg={
 """),
 
 15: _("""
- groupe de maille group_ma_1= %(k1)s  inexistant dans le maillage  %(k2)s 
+ groupe de maille group_ma_1= %(k1)s  inexistant dans le maillage  %(k2)s
 """),
 
 16: _("""
- groupe de maille group_ma_2= %(k1)s  inexistant dans le maillage  %(k2)s 
+ groupe de maille group_ma_2= %(k1)s  inexistant dans le maillage  %(k2)s
 """),
 
 17: _("""
@@ -136,7 +139,7 @@ cata_msg={
 
 
 37: _("""
- valeur inattendue:  %(k1)s 
+ valeur inattendue:  %(k1)s
 """),
 
 38: _("""
@@ -144,7 +147,7 @@ cata_msg={
 """),
 
 39: _("""
- pb pour recuperer "epais" pour la maille  %(k1)s 
+ pb pour recuperer "epais" pour la maille  %(k1)s
 """),
 
 40: _("""
@@ -152,7 +155,7 @@ cata_msg={
 """),
 
 41: _("""
- pb pour recuperer "excent" pour la maille  %(k1)s 
+ pb pour recuperer "excent" pour la maille  %(k1)s
 """),
 
 
@@ -162,11 +165,11 @@ cata_msg={
 """),
 
 44: _("""
- le mot clef evol_ther est incompatible avec: %(k1)s 
+ le mot clef evol_ther est incompatible avec: %(k1)s
 """),
 
 45: _("""
- aucun noeud ne connait le ddl:  %(k1)s 
+ aucun noeud ne connait le ddl:  %(k1)s
 """),
 
 46: _("""
@@ -174,7 +177,7 @@ cata_msg={
 """),
 
 47: _("""
- fonree non traite  %(k1)s 
+ fonree non traite  %(k1)s
 """),
 
 48: _("""
@@ -182,11 +185,11 @@ cata_msg={
 """),
 
 49: _("""
- les caracteristiques materielles n ont pas ete affectees a la maille no %(k1)s  appartenant au cable no %(k2)s 
+ les caracteristiques materielles n ont pas ete affectees a la maille no %(k1)s  appartenant au cable no %(k2)s
 """),
 
 50: _("""
- des materiaux differents ont ete affectes aux mailles appartenant au cable no %(k1)s 
+ des materiaux differents ont ete affectes aux mailles appartenant au cable no %(k1)s
 """),
 
 51: _("""
@@ -214,28 +217,28 @@ cata_msg={
 """),
 
 57: _("""
- les caracteristiques geometriques n ont pas ete affectees a la maille no %(k1)s  appartenant au cable no %(k2)s 
+ les caracteristiques geometriques n ont pas ete affectees a la maille no %(k1)s  appartenant au cable no %(k2)s
 """),
 
 58: _("""
- l aire de la section droite n a pas ete affectee a la maille no %(k1)s  appartenant au cable no %(k2)s 
+ l aire de la section droite n a pas ete affectee a la maille no %(k1)s  appartenant au cable no %(k2)s
 """),
 
 59: _("""
- valeur invalide pour l aire de la section droite affectee a la maille no %(k1)s  appartenant au cable no %(k2)s 
+ valeur invalide pour l aire de la section droite affectee a la maille no %(k1)s  appartenant au cable no %(k2)s
 """),
 
 60: _("""
- des aires de section droite differentes ont ete affectees aux mailles appartenant au cable no %(k1)s 
+ des aires de section droite differentes ont ete affectees aux mailles appartenant au cable no %(k1)s
 """),
 
 61: _("""
 Le mot-clef facteur < %(k1)s > est inconnu. Contactez les développeurs.
-Note DVP: erreur de cohérence fortran/catalogue. 
+Note DVP: erreur de cohérence fortran/catalogue.
 """),
 
 62: _("""
-  numero d"occurence negatif 
+  numero d"occurence negatif
 """),
 
 63: _("""
@@ -303,15 +306,15 @@ Note DVP: erreur de cohérence fortran/catalogue.
 """),
 
 79: _("""
- probleme pour recuperer le "cdg_x" dans  %(k1)s 
+ probleme pour recuperer le "cdg_x" dans  %(k1)s
 """),
 
 80: _("""
- probleme pour recuperer le "cdg_y" dans  %(k1)s 
+ probleme pour recuperer le "cdg_y" dans  %(k1)s
 """),
 
 81: _("""
- probleme pour recuperer le "cdg_z" dans  %(k1)s 
+ probleme pour recuperer le "cdg_z" dans  %(k1)s
 """),
 
 82: _("""
@@ -323,7 +326,7 @@ Note DVP: erreur de cohérence fortran/catalogue.
 """),
 
 84: _("""
- il faut que le cham_no dont les termes  servent de seconds membres a la relation lineaire a ecrire ait ete defini. 
+ il faut que le cham_no dont les termes  servent de seconds membres a la relation lineaire a ecrire ait ete defini.
 """),
 
 85: _("""
@@ -368,11 +371,11 @@ Les mots-cles admissibles pour definir la seconde liste de noeuds sous le mot-fa
 """),
 
 95: _("""
- le groupe  %(k1)s ne fait pas partie du maillage :  %(k2)s 
+ le groupe  %(k1)s ne fait pas partie du maillage :  %(k2)s
 """),
 
 96: _("""
-  %(k1)s   %(k2)s ne fait pas partie du maillage :  %(k3)s 
+  %(k1)s   %(k2)s ne fait pas partie du maillage :  %(k3)s
 """),
 
 98: _("""
@@ -380,6 +383,6 @@ Les mots-cles admissibles pour definir la seconde liste de noeuds sous le mot-fa
 """),
 
 99: _("""
- il faut que le cham_no dont les termes  servent de coefficients a la relation lineaire a ecrire ait ete defini. 
+ il faut que le cham_no dont les termes  servent de coefficients a la relation lineaire a ecrire ait ete defini.
 """),
 }

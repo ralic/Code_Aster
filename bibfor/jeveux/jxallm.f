@@ -1,6 +1,6 @@
       SUBROUTINE JXALLM ( IADZON, ISZON , LISZON , JISZON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,9 @@ C TOLE CFT_889 CRP_6 CRS_505
 C     ==================================================================
       INTEGER          IADA
       COMMON /IALLJE/  IADA
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE 
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE 
 C     ------------------------------------------------------------------
-      CHARACTER *75    CMESS
-      CHARACTER *9     CTAILL
       INTEGER          VALLOC
 C     ------------------------------------------------------------------
 C             ROUTINE AVEC APPEL SYSTEME  LOC
@@ -38,6 +38,7 @@ C     ------------------------------------------------------------------
       IERR = 0
       IF (IADZON .EQ. 0 ) THEN
          CALL  HPALLOC ( IADA , LISZON , IERR , 0 )
+         NBDYN = NBDYN+1
       ELSE
          IADA = IADZON
       ENDIF
@@ -49,13 +50,11 @@ C     ------------------------------------------------------------------
             ISZON(JISZON+I) = IMAX
    10        CONTINUE
       ELSE
-         IF      ( IERR .EQ. -1 ) THEN
-            CMESS = 'TAILLE A ALLOUER DEMANDEE NEGATIVE'
+         IF ( IERR .EQ. -1 ) THEN
+            CALL U2MESI('F','JEVEUX_49',1,LISZON)
          ELSE IF ( IERR .EQ. -2 ) THEN
-            WRITE ( CTAILL , '(I9)' ) LISZON
-            CMESS = 'MEMOIRE SATUREE POUR ALLOUER '//CTAILL
+            CALL U2MESS('F','JEVEUX_50')
          ENDIF
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C     ==================================================================
       END

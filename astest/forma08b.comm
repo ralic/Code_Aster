@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/10/2007   AUTEUR VIVAN L.VIVAN 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,30 +108,70 @@ TEST_TABLE(TABLE=TABDEP1,
            PRECISION=1.E-4,
            REFERENCE='NON_REGRESSION',);
            
+# -----------------------------------------------------------------------------
+#AVEC DEBORDEMENT
+#----------------
+#  COOR_ORIG=(3.6,  3.79753766804580E+00, 3.12868934704165E-02) : N5802,
+#  COOR_EXTR=(3.6,  3.802462332,         -3.12868934704165E-02) : COORD HORS DOMAINE,
+MAILB=LIRE_MAILLAGE( UNITE=23 );
 
-CHEM=INTE_MAIL_3D(    MAILLAGE=MAIL,
-                      DEFI_SEGMENT=_F(  NOEUD_ORIG = 'N5802',
-                                        NOEUD_EXTR = 'N5801'),
-                      INFO=2
-                       )
+MOBARRE=AFFE_MODELE(MAILLAGE=MAILB,
+                    AFFE=_F(PHENOMENE='MECANIQUE',
+                            MAILLE=('SE1','SE2'),
+                            MODELISATION='BARRE'),
+                       );
 
+PJBARRE = PROJ_CHAMP( TYPE_CHAM='NOEU',
+                      DISTANCE_MAX=3.1383638757482347E-05,
+                      METHODE='ELEM',
+                      RESULTAT=RESU,
+                      NOM_CHAM='DEPL',
+                      MODELE_1=MODMECA,
+                      MODELE_2=MOBARRE,
+                      );
 
-TABDEP3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB1',
-                                CHEMIN=CHEM,
-                                RESULTAT=RESU,
-                                NOM_CHAM='DEPL',
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+TABDEP3=POST_RELEVE_T(ACTION=_F(GROUP_NO='TOTO',
+                            TOUT_CMP='OUI',
+                            INTITULE='lbarre',
+                            NOM_CHAM='DEPL',
+                            RESULTAT=PJBARRE,
+                            OPERATION='EXTRACTION'), );
 
-#IMPR_TABLE(TABLE=TABDEP3)
+IMPR_TABLE ( TABLE = TABDEP3 , )
 
-TABDEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB1',
-                                CHEMIN=CHEM,
-                                RESULTAT=RESU,
-                                NOM_CHAM='DEPL',
-                                TOUT_CMP='OUI',
-                                OPERATION='MOYENNE',),);
-#IMPR_TABLE(TABLE=TABDEP2)
+TABDEP2=POST_RELEVE_T(ACTION=_F(GROUP_NO='TOTO',
+                            TOUT_CMP='OUI',
+                            INTITULE='lbarre',
+                            NOM_CHAM='DEPL',
+                            RESULTAT=PJBARRE,
+                            OPERATION='MOYENNE'), );
+
+IMPR_TABLE ( TABLE = TABDEP2 , )
+
+TEST_TABLE(      TABLE=TABDEP2,       NOM_PARA='DX',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= -3.56784E-02      )
+
+TEST_TABLE(      TABLE=TABDEP2,       NOM_PARA='DX',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= -3.55979E-02      )
+
+TEST_TABLE(      TABLE=TABDEP2,       NOM_PARA='DY',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MINIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE=  1.06552E-01      )
+
+TEST_TABLE(      TABLE=TABDEP2,       NOM_PARA='DY',
+                    FILTRE=_F(  NOM_PARA = 'QUANTITE', 
+                            VALE_K = 'MAXIMUM',         ),
+                REFERENCE='NON_REGRESSION',
+                     VALE= 1.06552E-01     )
+
 
 #SANS DEBORDEMENT
 #----------------
@@ -159,7 +199,7 @@ TME2=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
                                COOR_EXTR=(3.6,  3.802462332, -3.12868934704165E-02),#COORD HORS DOMAINE,
                             NB_POINTS=3,
                             OPERATION = 'EXTRACTION',),),)
-#IMPR_TABLE(TABLE=TME2)
+IMPR_TABLE(TABLE=TME2)
 
 TMM2=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
                 LIGN_COUPE=(_F(TYPE='SEGMENT',
@@ -167,8 +207,7 @@ TMM2=MACR_LIGN_COUPE(RESULTAT=RESU,NOM_CHAM='DEPL',
                                COOR_EXTR=(3.6,  3.802462332, -3.12868934704165E-02),#COORD HORS DOMAINE,
                             NB_POINTS=3,
                             OPERATION = 'MOYENNE',),),)
-
-#IMPR_TABLE(TABLE=TMM2)
+IMPR_TABLE(TABLE=TMM2)
 
 TEST_TABLE(      TABLE=TMM2,       NOM_PARA='DX',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE', 

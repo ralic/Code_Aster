@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -348,10 +348,8 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
         CALL JEDETR(AMOTEM//'           .CONL')
         CALL JEDETR(AMOTEM//'           .LIME')
       END IF
-      CALL JEDETR(MASTEM//'           .&VDI')
       CALL JEDETR(MASTEM//'           .UALF')
       CALL JEDETR(MASTEM//'           .VALM')
-      CALL JEDETR(MASTEM//'           .&TRA')
       CALL JEDETR(MASTEM//'           .REFA')
       CALL JEDETR(MASTEM//'           .CONL')
       CALL JEDETR(MASTEM//'           .LIME')

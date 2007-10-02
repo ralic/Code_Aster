@@ -5,7 +5,7 @@
       REAL*8                                       DET
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     -----------------------------------------------------------------
-      REAL*8         UN,ZERO ,DIST
+      REAL*8         UN,ZERO ,DIST,EPS
       CHARACTER*24   NOMDIA
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                  ZK32
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      DATA  NOMDIA/'                   .&VDI'/
+      DATA  NOMDIA/'                   .DIGS'/
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CALL JEMARQ()
@@ -51,18 +51,17 @@ C
 C     --- PRELIMINAIRE ---
       NOMDIA(1:19) = ZK24(ZI(LMAT+1))
       NEQ          = ZI(LMAT+2 )
-      CALL JEEXIN(NOMDIA, IRET )
-      IF ( IRET .EQ. 0 ) THEN
-         CALL U2MESK('F','MODELISA2_9',1,NOMDIA)
-      ENDIF
-      CALL JEVEUO( NOMDIA , 'L', LDIAG )
+      CALL JEEXIN(NOMDIA,IRET)
+      IF (IRET.EQ.0) CALL U2MESK('F','MODELISA2_9',1,NOMDIA)
+      CALL JEVEUO(NOMDIA,'L',LDIAG)
+      LDIAG=LDIAG+NEQ
+
 C
 C     --- CALCUL DE LA DEFLATION ---
       DETNOR = DCMPLX(UN,ZERO)
       DO 1 I=1,IMODE-1
          DETNOR = DETNOR / ( (Z-ZEROPO(I))*(Z-DCONJG(ZEROPO(I))) )
   1   CONTINUE
-C-DEL WRITE(6,*) '      /WP1DFT/   LA DEFLATION VAUT :',DETNOR
 C
 C     --- CALCUL DU DETERMINANT DE LA MATRICE DEFLATEE ---
       DET    = UN
@@ -74,7 +73,6 @@ C     --- CALCUL DU DETERMINANT DE LA MATRICE DEFLATEE ---
          IF(DBLE(ZC(I)).LT.ZERO) ISTURM = ISTURM + 1
          CALL ALMULR('CUMUL',DIST,1,DET,IDET)
  33   CONTINUE
-C-DEL WRITE(6,*) '      /WP1DFT/   DETNOR =',DETNOR,'   ISTURM =',ISTURM
-C-DEL WRITE(6,'(15X,A,F16.10,A,I8)') 'PRODUIT = ',DET,' E',IDET
+      CALL JEDETR(NOMDIA)
       CALL JEDEMA()
       END

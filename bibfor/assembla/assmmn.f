@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ASSEMBLA  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,13 +207,6 @@ C     --------------------------------------------------------------
 C --- ON DETRUIT LES OBJETS QUI SONT TOUJOURS A DETRUIRE :
 C     --------------------------------------------------
           CALL JEDETR(MATDEV//'.LIME')
-          CALL JEDETR(MATDEV//'.JDRF')
-          CALL JEDETR(MATDEV//'.JDDC')
-          CALL JEDETR(MATDEV//'.JDFF')
-          CALL JEDETR(MATDEV//'.JDHF')
-          CALL JEDETR(MATDEV//'.JDPM')
-          CALL JEDETR(MATDEV//'.JDES')
-          CALL JEDETR(MATDEV//'.JDVL')
           CALL JEDETR(MATDEV//'.REFA')
 
         ELSE
@@ -884,6 +877,7 @@ C     -- MISE A JOUR DE REFA(4)
 
       CALL JEDETR(KTMP1)
       CALL JEDETR(KTMP2)
+      CALL JEDETR(KMALIL)
       CALL JEDETR(MATDEV//'.ADNE')
       CALL JEDETR(MATDEV//'.ADLI')
   290 CONTINUE

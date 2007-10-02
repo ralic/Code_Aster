@@ -2,7 +2,7 @@
      &                  NNOCO ,NMANO ,NNOMA ,NMAMA)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 02/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -269,6 +269,8 @@ C ======================================================================
         JDECNO = ZI(JSUNO+ISUCO-1)
         JDECMA = ZI(JSUMA+ISUCO-1)
         NBNO = ZI(JSUNO+ISUCO) - ZI(JSUNO+ISUCO-1)
+        CALL JEVEUO(CONINV(ISUCO),'L',IAINVE)
+        CALL JEVEUO(JEXATR(CONINV(ISUCO),'LONCUM'),'L',ILINVE)
         DO 50 INO = 1,NBNO
           NUMNO = ZI(JNOCO+JDECNO+INO-1)
           NNN=ZI(ILINVE+NUMNO)-ZI(ILINVE-1+NUMNO)
@@ -287,6 +289,7 @@ C ======================================================================
 C ------- ADRESSES DE DEBUT DANS LES LISTES CONTNO ET CONTMA
 C ------- ET NOMBRE DE NOEUDS ET MAILLES POUR LA SURFACE ISUCO
 
+      INC=0
       DO 80 ISUCO = 1,NSUCO
         JDECNO = ZI(JSUNO+ISUCO-1)
         JDECMA = ZI(JSUMA+ISUCO-1)
@@ -309,25 +312,30 @@ C ------- EXAMEN DES MAILLES DE LA SURFACE
         DO 110 IMA = 1,NBMA
             ZI(JPONO+JDECMA+IMA)= ZI(JPONO+JDECMA+IMA-1)+
      &                               ZI(JTRAV2+JDECMA+IMA-1)
+
+          ZI(JTRAV+JDECMA+IMA-1) = 0
+
+C ----- NUMERO DE LA MAILLE ET ADRESSE DE SES NOEUDS
+
+          NUMA = ZI(JMACO+JDECMA+IMA-1)
+
+C --- COMPARAISON AVEC LES NOEUDS DE CONTACT DE LA SURFACE :
+C --- ON STOCKERA LES NOEUDS DE LA MAILLE DANS L'ORDRE OU ILS
+C --- APPARAISSENT, D'OU L'INVERSION DES BOUCLES 130 ET 140
+
+          DO 130 I = 1,NBNOM(NUMA)
+            NO=NUMGLM(NUMA,I)
+            DO 140 INO = 1,NBNO
+              NUMNO = ZI(JNOCO+JDECNO+INO-1)
+              IF (NO.EQ.NUMNO) THEN
+                INC = INC + 1
+                ZI(JNOMA+INC-1) = JDECNO + INO
+                GO TO 130
+              END IF
+  140       CONTINUE
+  130     CONTINUE
   110   CONTINUE
 
-        DO 120 INO = 1,NBNO
-          NUMNO = ZI(JNOCO+JDECNO+INO-1)
-          NNN=ZI(ILINVE+NUMNO)-ZI(ILINVE-1+NUMNO)
-          DO 130 IMA = 1,NNN
-            IDECMA=ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA-1)
-            NUMA = ZI(JMACO+JDECMA+IDECMA-1)
-            DO 140 I = 1,NBNOM(NUMA)
-              NO=NUMGLM(NUMA,I)
-              IF (NO.EQ.NUMNO) THEN
-                DECAL=I 
-                GOTO 140
-              ENDIF
-  140       CONTINUE
-            ZI(JNOMA-1+DECAL+ZI(JPONO+IDECMA+JDECMA-1))=
-     &                                   JDECNO + INO
-  130     CONTINUE
-  120    CONTINUE
   80  CONTINUE
 
 C ======================================================================
@@ -357,6 +365,8 @@ C ------- ADRESSE DE DEBUT DE LA LISTE DES MAILLES DANS CONTMA ET NOMBRE
 
         JDECMA = ZI(JSUMA+ISUCO-1)
         NBMA = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
+        CALL JEVEUO(CONINV(ISUCO),'L',IAINVE)
+        CALL JEVEUO(JEXATR(CONINV(ISUCO),'LONCUM'),'L',ILINVE)
 
 C ------- BOUCLE SUR LES MAILLES DE LA SURFACE ISUCO
 
@@ -435,7 +445,7 @@ C ======================================================================
 
       CALL JEDETR('&&TABLCO.TRAV')
       CALL JEDETR(SURF)
-      DO 250 I=1,NSUCO
+      DO 250 ISUCO=1,NSUCO
         CALL JEDETR(CONINV(ISUCO))
 250   CONTINUE
  

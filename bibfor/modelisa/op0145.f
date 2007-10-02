@@ -1,7 +1,7 @@
       SUBROUTINE OP0145 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C
           CALL TBEXP2(INTSPE,'DIMENSION')
           CALL TBLIVA ( INTSPE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
      &              'DIMENSION', K8B, DIM, R8B, C16B, K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
+          IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
           IF (ISPECT.EQ.11) THEN
             CALL GETVID(NOMMCF,'FONCTION',1,1,0,K8BID,IFONCT)
             IF ( ABS(IFONCT) .NE. DIM ) THEN

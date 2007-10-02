@@ -9,7 +9,7 @@
       CHARACTER*(*)       MCF, REP, OPTION, QUANT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 02/10/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -164,7 +164,7 @@ C======================================================================
      +                       ZI(APNSP+DEB-1), ZR(AABSC), ZR(ACOOR),
      +                       ZK8(ANOCP), ZK8(ANOMND), SDMAIL, NBPT,
      +                       DOCUL, NBCP, ZI(APADR), NOMTAB,
-     +                       IOC, IOCC, NCHEFF, I1, ISD )
+     +                       IOC, IOCC, XNOVAR, NCHEFF, I1, ISD )
             ELSE
                CALL WKVECT(NVAUX,'V V R',NBCO*NBSP*NBPT*NBCP,AVAUX)
                CALL WKVECT(NPNCA,'V V I',NBPT,APNCA)

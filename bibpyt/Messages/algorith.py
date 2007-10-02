@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith Messages  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,10 @@ cata_msg={
 
 5: _("""
  gradients confondus
+"""),
+
+8: _("""
+ le pas d'avancement est negatif
 """),
 
 10: _("""

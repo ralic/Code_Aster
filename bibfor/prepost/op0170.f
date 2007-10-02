@@ -3,7 +3,7 @@
       INTEGER             IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C
         CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
      &                'GRANDEUR', K8B, IBID, R8B, C16B, K8B, IRET )
         IF ( IRET.NE.0 .AND. IRET.NE.3 )
-     &                CALL U2MESS('F','MODELISA2_88')
+     &                CALL U2MESS('F','MODELISA2_89')
         IF ( K8B .NE. 'DSP_SIPO' .OR. K8B .NE. 'DSP_SIGM' .OR.
      &       K8B .NE. 'DSP_EFGE'  ) THEN
               CALL U2MESS('A','PREPOST4_16')

@@ -1,0 +1,254 @@
+      SUBROUTINE CESGNO(CES1,CELFPG,BASE,CES2)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PELLET J.PELLET
+      IMPLICIT NONE
+      CHARACTER*(*) BASE
+      CHARACTER*24 CELFPG
+      CHARACTER*19 CES2,CES1
+C ------------------------------------------------------------------
+C BUT: TRANSFORMER UN CHAM_ELEM_S/ELGA EN CHAM_ELEM_S/ELNO
+C ------------------------------------------------------------------
+C     ARGUMENTS:
+C CES1  IN/JXIN  K19 : CHAM_ELEM_S A TRANSFORMER
+
+C CELFPG IN/JXVAR  K24 :
+C    NOM DE L'OBJET DECRIVANT LES FAMILLES DE P.G. DE CES1 (OU ' ')
+C    CET OBJET N'EST UTILISE QUE SI ELGA -> ELNO
+C    CET OBJET EST OBTENU PAR LA ROUTINE CELFPG.F
+C  ATTENTION : CET OBJET EST EFFACE PENDANT L'OPERATION.
+
+
+C BASE    IN      K1  : BASE DE CREATION POUR CES2 : G/V/L
+C CES2    IN/JXVAR K19 : CHAM_ELEM_S RESULTAT
+C         REMARQUE : LE CHAM_ELEM_S EST DEJA ALLOUE.
+C-----------------------------------------------------------------------
+
+C---- COMMUNS NORMALISES  JEVEUX
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32,JEXNOM,JEXNUM,JEXATR
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ------------------------------------------------------------------
+      INTEGER NBNOMX,NBFAMX,NBPGMX
+      PARAMETER (NBNOMX=27,NBFAMX=20,NBPGMX=27)
+      CHARACTER*8 ELRF,FAPG1,FAPG(NBFAMX)
+      REAL*8 VOL,X(3*NBNOMX)
+      INTEGER NBFPG,NBPG(NBFAMX),NDIML,NNOL,NNOSL
+
+      INTEGER IMA,IBID,NCMP,ICMP,INO,ISP,NNO
+      INTEGER NBMA,IRET,NBSP,INDIK8
+      INTEGER NPG,IPG,NUJNI,NBOBJ
+      INTEGER JCES1K,JCES1D,JCES1L,JCES1V,JCES1C,IAD1,NBPT1,NBSP1
+      INTEGER JCES2K,JCES2D,JCES2L,JCES2V,JCES2C,IAD2,NBPT2,NBSP2
+      INTEGER JMAT,JGANOL,IVFL,JDFD2L,JCOOPL,IPOIDL,NPGL,LONFAM
+      INTEGER IFAM,DECAL,JVR,IDFDEL,NUFPG,AVANCE,JNOFPG
+      CHARACTER*1 KBID
+      CHARACTER*8 MA,NOMGD,ELREFA
+      CHARACTER*3 TSCA
+      CHARACTER*16 SCHEMA
+      CHARACTER*24 LIOBJ(10)
+      REAL*8 V,V1,VRPG(NBPGMX),VRNO(NBNOMX),SR
+      COMPLEX*16 VCPG(NBPGMX),VCNO(NBNOMX),SC
+C     ------------------------------------------------------------------
+      CALL JEMARQ()
+
+
+
+C     1. RECUPERATION DE :
+C        MA     : NOM DU MAILLAGE
+C        NOMGD  : NOM DE LA GRANDEUR
+C        NCMP   : NOMBRE DE CMPS DE CES1
+C        TSCA   : TYPE SCALAIRE DE LA GRANDEUR : R/C/I ...
+C        NBMA   : NOMBRE DE MAILLES DU MAILLAGE
+C        JCES1XX : ADRESSES CES1
+C        JCES2XX : ADRESSES CES2
+C        JNOFPG : ADRESSE DE CELFPG
+C     --------------------------------------------------------------
+      CALL EXISD('CHAM_ELEM_S',CES1,IRET)
+      CALL ASSERT(IRET.GT.0)
+      CALL JEVEUO(CES1//'.CESK','L',JCES1K)
+      CALL JEVEUO(CES1//'.CESC','L',JCES1C)
+      CALL JEVEUO(CES1//'.CESD','L',JCES1D)
+      CALL JEVEUO(CES1//'.CESV','L',JCES1V)
+      CALL JEVEUO(CES1//'.CESL','L',JCES1L)
+      MA = ZK8(JCES1K-1+1)
+      NOMGD = ZK8(JCES1K-1+2)
+      CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,KBID,IBID)
+      CALL JELIRA(CES1//'.CESC','LONMAX',NCMP,KBID)
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+      CALL ASSERT(TSCA.EQ.'R'.OR.TSCA.EQ.'C')
+
+      CALL JEVEUO(CES2//'.CESD','L',JCES2D)
+      CALL JEVEUO(CES2//'.CESV','E',JCES2V)
+      CALL JEVEUO(CES2//'.CESL','E',JCES2L)
+
+      CALL ASSERT(CELFPG.NE.' ')
+      CALL JEVEUO(CELFPG,'E',JNOFPG)
+
+
+
+C     3. REMPLISSAGE DES OBJETS .CESL ET .CESV :
+C     ------------------------------------------
+
+C     POUR DES RAISONS DE PERFORMANCE, ON TRAITE TOUTES LES MAILLES
+C     CORRESPONDANT AU MEME SCHEMA DE POINTS DE GAUSS
+
+C     BOUCLE TANT QUE CELFPG N'EST PAS TOTALEMENT EFFACE (AVANCE=1):
+C     ---------------------------------------------------------------
+   10 CONTINUE
+      SCHEMA = ' '
+      AVANCE = 0
+
+      DO 110,IMA = 1,NBMA
+        IF (ZK16(JNOFPG-1+IMA).EQ.' ') GOTO 110
+        IF (SCHEMA.EQ.' ') SCHEMA = ZK16(JNOFPG-1+IMA)
+        IF (ZK16(JNOFPG-1+IMA).NE.SCHEMA) GOTO 110
+
+        AVANCE = AVANCE + 1
+        SCHEMA = ZK16(JNOFPG-1+IMA)
+        ELRF = SCHEMA(1:8)
+        FAPG1 = SCHEMA(9:16)
+        ZK16(JNOFPG-1+IMA) = ' '
+
+
+C           3.1 : CALCUL DE LA MATRICE DE PASSAGE GA->NO
+C                 (ON NE LE FAIT QUE POUR LA 1ERE MAILLE DU SCHEMA)
+C           OUT : NPG,NNO,JMAT
+C           --------------------------------------------------------
+        IF (AVANCE.EQ.1) THEN
+          CALL ELRACA(ELRF,NDIML,NNOL,NNOSL,NBFPG,FAPG,NBPG,X,VOL)
+          NUFPG = INDIK8(FAPG,FAPG1,1,NBFPG)
+          CALL ASSERT(NUFPG.GT.0)
+          CALL NUELRF(ELRF,NUJNI)
+          CALL ASSERT(NUJNI.EQ.2)
+          CALL JNI002(ELRF,10,LIOBJ,NBOBJ)
+          CALL JEVEUO('&INEL.'//ELRF//'.ELRA_R','L',JVR)
+
+          DECAL = 0
+          DO 20,IFAM = 1,NUFPG - 1
+            NPGL = NBPG(IFAM)
+
+            LONFAM = NPGL
+            LONFAM = LONFAM + NPGL*NDIML
+            LONFAM = LONFAM + NPGL*NNOL
+            LONFAM = LONFAM + NPGL*NNOL*NDIML
+            LONFAM = LONFAM + NPGL*NNOL*NDIML*NDIML
+            LONFAM = LONFAM + 2 + NPGL*NNOL
+
+            DECAL = DECAL + LONFAM
+   20     CONTINUE
+
+          NPGL = NBPG(NUFPG)
+
+          IPOIDL = JVR + DECAL
+          JCOOPL = IPOIDL + NPGL
+          IVFL = JCOOPL + NPGL*NDIML
+          IDFDEL = IVFL + NPGL*NNOL
+          JDFD2L = IDFDEL + NPGL*NNOL*NDIML
+          JGANOL = JDFD2L + NPGL*NNOL*NDIML*NDIML
+          NPG = NINT(ZR(JGANOL-1+1))
+          NNO = NINT(ZR(JGANOL-1+2))
+          JMAT = JGANOL + 2
+          CALL ASSERT(NNO.LE.NBNOMX)
+          CALL ASSERT(NPG.LE.NBPGMX)
+        ENDIF
+
+
+C           3.2 : MULTIPLICATION PAR LA MATRICE
+C           ------------------------------------
+        NBPT1 = ZI(JCES1D-1+5+4* (IMA-1)+1)
+        NBSP1 = ZI(JCES1D-1+5+4* (IMA-1)+2)
+        NBPT2 = ZI(JCES2D-1+5+4* (IMA-1)+1)
+        NBSP2 = ZI(JCES2D-1+5+4* (IMA-1)+2)
+        CALL ASSERT(NBSP1.EQ.NBSP2)
+        CALL ASSERT(NBPT1.EQ.NPG)
+        CALL ASSERT(NBPT2.EQ.NNO)
+
+
+        DO 100 ICMP = 1,NCMP
+          CALL CESEXI('C',JCES1D,JCES1L,IMA,1,1,ICMP,IAD1)
+          IF (IAD1.LE.0) GOTO 100
+
+          DO 90 ISP = 1,NBSP1
+
+C               -- RECOPIE DANS VXPG :
+            DO 30 IPG = 1,NPG
+              CALL CESEXI('C',JCES1D,JCES1L,IMA,IPG,ISP,ICMP,IAD1)
+              CALL ASSERT(IAD1.GT.0)
+              IF (TSCA.EQ.'R') THEN
+                VRPG(IPG) = ZR(JCES1V-1+IAD1)
+
+              ELSE
+                VCPG(IPG) = ZC(JCES1V-1+IAD1)
+              ENDIF
+   30       CONTINUE
+
+C               -- MULTIPLICATION :
+            IF (TSCA.EQ.'R') THEN
+              DO 50 INO = 1,NNO
+                SR = 0.D0
+                DO 40 IPG = 1,NPG
+                  SR = SR + ZR(JMAT-1+ (IPG-1)*NPG+INO)*VRPG(IPG)
+   40           CONTINUE
+                VRNO(INO) = SR
+   50         CONTINUE
+
+            ELSE
+              DO 70 INO = 1,NNO
+                SC = DCMPLX(0.D0,0.D0)
+                DO 60 IPG = 1,NPG
+                  SC = SC + ZR(JMAT-1+ (IPG-1)*NPG+INO)*VCPG(IPG)
+   60           CONTINUE
+                VCNO(INO) = SC
+   70         CONTINUE
+            ENDIF
+
+
+C               -- RECOPIE DE VXNO :
+            DO 80 INO = 1,NNO
+              CALL CESEXI('C',JCES2D,JCES2L,IMA,INO,ISP,ICMP,IAD2)
+              CALL ASSERT(IAD2.LT.0)
+              IF (TSCA.EQ.'R') THEN
+                ZR(JCES2V-1-IAD2) = VRNO(INO)
+              ELSE
+                ZC(JCES2V-1-IAD2) = VCNO(INO)
+              ENDIF
+              ZL(JCES2L-1-IAD2) = .TRUE.
+   80       CONTINUE
+   90     CONTINUE
+  100   CONTINUE
+
+  110 CONTINUE
+      IF (AVANCE.GT.0) GOTO 10
+
+
+
+      CALL JEDEMA()
+      END

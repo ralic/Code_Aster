@@ -1,18 +1,17 @@
       SUBROUTINE MMVEC1(NBDM,NDIM,NNE,NNM,
      &                  IMA,IMABAR,INDNOB,INDRAC,
-     &                  HPG,FFPC,FFPR,JACOBI, 
-     &                  JDEPM,JDEPP,DEPLE,
+     &                  HPG,FFPC,FFPR,JACOBI,DEPLE,
      &                  TYALGC,COEFCA,COEFCS,COEFCP,ICOMPL,
-     &                  IFORM,COEASP,ASPERI,JEU,NORM,VTMP)
+     &                  IFORM,COEASP,ASPERI,JEU,JEUVIT,NORM,VTMP)
       IMPLICIT NONE
       INTEGER  NDIM,NNE,NNM,NBDM,ICOMPL,IFORM,TYALGC
       INTEGER  IMA,IMABAR,INDRAC,INDNOB
       REAL*8   HPG,FFPC(9),JACOBI,FFPR(9)
-      REAL*8   DEPLE(6),JEU,NORM(3),VTMP(81)
-      REAL*8   JDEPP,JDEPM,ASPERI,COEFCA,COEFCS,COEFCP,COEASP   
+      REAL*8   DEPLE(6),JEU,JEUVIT,NORM(3),VTMP(81)
+      REAL*8   ASPERI,COEFCA,COEFCS,COEFCP,COEASP   
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,8 +46,6 @@ C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFPC   : FONCTIONS DE FORME DU POINT DE CONTACT
 C IN  FFPR   : FONCTIONS DE FORME DE LA PROJECTION DU POINT DE CONTACT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  JDEPP  : JEU SUR DEPLACEMENT FINAL
-C IN  JDEPM  : JEU SUR DEPLACEMENT INITIAL
 C IN  DEPLE  : DEPLACEMENTS DE LA SURFACE ESCLAVE
 C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFPC   : FONCTIONS DE FORME DU POINT DE CONTACT
@@ -63,13 +60,16 @@ C IN  IFORM  : TYPE DE FORMUALTIOn (DEPL/VITE)
 C IN  COEASP : PARAMETRE E_N POUR LA COMPLIANCE
 C IN  ASPERI : VALEUR DE L'ASPERITE 
 C IN  JEU    : VALEUR DU JEU
+C IN  JEUVIT : VALEUR DU JEU EN VITESSE (FORMUALTION VITESSE)
 C IN  NORM   : VALEUR DE LA NORMALE AU POINT DE CONTACT
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
       INTEGER   I, J, II
 C ----------------------------------------------------------------------
 C
+C     FORMULATION DEPLACEMENT
       IF (IFORM .EQ. 1) THEN
+C     ======================
 C  
 C --- DDL DE DEPLACEMENT DE LA SURFACE CINEMATIQUE
 C 
@@ -139,7 +139,10 @@ C
             VTMP(II) = 0.D0
   223     CONTINUE
         END IF
-      ELSE
+C
+C     ===FORMULATION VITESSE====
+      ELSEIF (IFORM .EQ. 2) THEN
+C     ==========================
 C  
 C --- DDL DE DEPLACEMENT DE LA SURFACE CINEMATIQUE
 C 
@@ -148,14 +151,13 @@ C
             II = (I-1)*NBDM+J          
             IF (TYALGC .EQ. 1) THEN
               VTMP(II) = -HPG*JACOBI*
-     &                 (DEPLE(NDIM+1)-COEFCA*(JDEPP-JDEPM))*
-     &                  FFPC(I)*NORM(J)
+     &        (DEPLE(NDIM+1)-COEFCA*JEUVIT-COEFCP*JEU)
+     &        *FFPC(I)*NORM(J)
             ELSEIF (TYALGC .EQ. 2) THEN
               VTMP(II) = -HPG*JACOBI*DEPLE(NDIM+1)*FFPC(I)*NORM(J)
             ELSEIF (TYALGC .EQ. 3) THEN
               VTMP(II) = -HPG*JACOBI*
-     &                 (DEPLE(NDIM+1)-COEFCP*(JDEPP-JDEPM))*
-     &                  FFPC(I)*NORM(J)
+     &        (DEPLE(NDIM+1)-COEFCP*JEUVIT)*FFPC(I)*NORM(J)
             END IF
    61     CONTINUE
    71   CONTINUE
@@ -167,14 +169,13 @@ C
             II = NNE*NBDM+(I-1)*NDIM+J           
             IF (TYALGC .EQ. 1) THEN
               VTMP(II) = HPG*JACOBI*
-     &                 (DEPLE(NDIM+1)-COEFCA*(JDEPP-JDEPM))*
-     &                  FFPR(I)*NORM(J)
+     &        (DEPLE(NDIM+1)-COEFCA*JEUVIT-COEFCP*JEU)
+     &        *FFPR(I)*NORM(J)
             ELSEIF (TYALGC .EQ. 2) THEN
               VTMP(II) = HPG*JACOBI*DEPLE(NDIM+1)*FFPR(I)*NORM(J)
             ELSEIF (TYALGC .EQ. 3) THEN
               VTMP(II) = HPG*JACOBI*
-     &                 (DEPLE(NDIM+1)-COEFCP*(JDEPP-JDEPM))*
-     &                  FFPR(I)*NORM(J)
+     &        (DEPLE(NDIM+1)-COEFCP*JEUVIT)*FFPR(I)*NORM(J)
             END IF
    81     CONTINUE
    91   CONTINUE
@@ -183,7 +184,7 @@ C --- DDL DES MULTIPLICATEURS DE CONTACT (DE LA SURFACE CINEMATIQUE)
 C
         DO 105 I = 1,NNE
           II = (I-1)*NBDM+NDIM+1          
-          VTMP(II) = -HPG*JACOBI*FFPC(I)*(JDEPP-JDEPM) 
+          VTMP(II) = -HPG*JACOBI*FFPC(I)*JEU
   105   CONTINUE
       ENDIF           
 C

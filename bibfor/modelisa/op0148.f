@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---
 C
       CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
      &             'OPTION', K8B, IBID, R8B, C16B, K8B, IRET )
-      IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
+      IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
 C
       INTDON = .TRUE.
       IF ( K8B(1:4) .EQ. 'DIAG' ) INTDON = .FALSE.

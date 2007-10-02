@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,6 +97,8 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -117,8 +119,7 @@ C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       PARAMETER      ( Z = 'INIT' )
       CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
       CHARACTER*16     K16BID
-      CHARACTER*75     CMESS
-            INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2)
+      INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2)
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS,TYPEI,GENRI,TYPEB
@@ -170,31 +171,19 @@ C
       KNOMF = NOMF
       CALL LXMINS(KNOMF)
 C
-      IF ( KNOMF .EQ. '        ' .OR. LEN(NOMF) .GT. 8 ) THEN
-        CMESS = 'NOM DE BASE DE DONNEE '//KNOMF//' INVALIDE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
-      IF ( KCLAS .EQ. ' ' ) THEN
-        CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' EST UN BLANC'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE IF ( INDEX (CLASSE,KCLAS) .NE. 0 ) THEN
-        CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' DEJA DEFINIE'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
+      CALL ASSERT( KNOMF .NE. '        ' .AND. LEN(NOMF) .LE. 8 ) 
+      CALL ASSERT( KCLAS .NE. ' ' ) 
+      CALL ASSERT( INDEX (CLASSE,KCLAS) .EQ. 0 )
 C
-      IC = INDEX ( CLASSE , ' ' )
-      IF ( IC .EQ. 0 ) THEN
-        CMESS = 'IMPOSSIBLE D''ACTIVER LE FICHIER '//KNOMF
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE
-        NOMFIC(IC) = KNOMF
-        NOMBAS(IC) = KNOM
-        KSTINI(IC) = 'POURSUIT'
-        KSTOUT(IC) = 'SAUVE   '
-        CLASSE(IC:IC) = KCLAS
-        NBCLA = INDEX( CLASSE , '$' ) - 1
-        IF ( NBCLA .EQ. -1 ) NBCLA = N
-      ENDIF
+      IC = INDEX (CLASSE , ' ')
+      CALL ASSERT( IC .NE. 0 )
+      NOMFIC(IC) = KNOMF
+      NOMBAS(IC) = KNOM
+      KSTINI(IC) = 'POURSUIT'
+      KSTOUT(IC) = 'SAUVE   '
+      CLASSE(IC:IC) = KCLAS
+      NBCLA = INDEX( CLASSE , '$' ) - 1
+      IF ( NBCLA .EQ. -1 ) NBCLA = N
       ICLAS  = IC
       NOMUTI = ' '
       NOMOS  = D32
@@ -208,8 +197,7 @@ C
       NHDF  = FICHDF
       IDFIC = HDFOPF (NHDF)
       IF ( IDFIC .LT. 0 ) THEN
-        CMESS = 'IMPOSSIBLE D''OUVRIR LE FICHIER HDF '// NHDF
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_54',1,NHDF)
       ENDIF
       NGRP ='/'
       IDG  = HDFOPG (IDFIC,NGRP)
@@ -217,7 +205,7 @@ C
       IRET1 = HDFCLG (IDG)
       JULIST = IUNIFI ('MESSAGE')
       WRITE(JULIST,*) '<I> RELECTURE DE LA BASE GLOBALE AU FORMAT'//
-     &                ' HDF SUR LE FICHIER :'
+     &                ' HDF SUR LE FICHIER :' 
       WRITE(JULIST,*) '    ',NHDF
       WRITE(JULIST,*) '    '
       WRITE(JULIST,*) '    CONSTRUITE AVEC LA VERSION ',KATTR(1)
@@ -553,19 +541,17 @@ C
  201  CONTINUE
       IRET1 = HDFCLF (IDFIC)
       IF (IRET1 .NE. 0 ) THEN
-        CMESS = 'IMPOSSIBLE DE FERMER LE FICHIER '//NHDF
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_55',1,NHDF)
       ELSE
-        CMESS = 'FERMETURE DU FICHIER '//NHDF
-        CALL U2MESK('I','JEVEUX_01',1,CMESS)
+        CALL U2MESK('I','JEVEUX_56',1,NHDF)
       ENDIF
       IF ( IDYN32 .NE. 0 ) THEN
-        CALL HPDEALLC ( IDYN32 , IBID , IBID )
+        CALL HPDEALLC ( IDYN32 , NBFREE , IBID )
       ELSE IF (KTEMP1 .NE. 0) THEN
         CALL JJLIBP (KTEMP1)
       ENDIF     
       IF ( IDYN8 .NE. 0 ) THEN
-        CALL HPDEALLC ( IDYN8 , IBID , IBID )
+        CALL HPDEALLC ( IDYN8 , NBFREE , IBID )
       ELSE IF (KTEMP2 .NE. 0) THEN
         CALL JJLIBP (KTEMP2)
       ENDIF     

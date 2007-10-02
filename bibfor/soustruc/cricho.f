@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -327,6 +327,5 @@ C
       ENDIF
 C
  9999 CONTINUE
-      CALL JEDETC('V','.&VDI',20)
       CALL JEDETC('V','&&CRICHO',1)
       END

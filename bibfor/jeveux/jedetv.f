@@ -1,6 +1,6 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRP_18 CRS_508 CRS_512 CRS_505
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,6 +59,8 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      &               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -104,7 +106,15 @@ C
             IADMOC = ISZON( JISZON + IBIADM - 1 + 2*K-1 )
             IADYOC = ISZON( JISZON + IBIADM - 1 + 2*K   )
             IF ( IADYOC .NE. 0 ) THEN
-              CALL  HPDEALLC ( IADYOC , IBID , IBID )
+              IF ( IXLONO .GT. 0 ) THEN
+                IBLONO=IADM(JIADM(IC)+2*IXLONO-1)
+                MCDYN = MCDYN - ISZON(JISZON+IBLONO+K-1) *
+     &                  LTYP(JLTYP(IC)+IXDESO)
+              ELSE
+                MCDYN = MCDYN - LONO(JLONO(IC)+IXDESO) * 
+     &                  LTYP(JLTYP(IC)+IXDESO)
+              ENDIF
+              CALL HPDEALLC ( IADYOC , NBFREE , IBID )
             ELSE IF ( IADMOC .NE. 0 ) THEN
               CALL JJLIBP ( IADMOC )
             ENDIF
@@ -130,7 +140,9 @@ C
               IADMI = IADM (JIADM(IC) + 2*ID(K)-1 )
               IADYN = IADM (JIADM(IC) + 2*ID(K)   )
               IF ( IADYN .NE. 0 ) THEN
-                CALL  HPDEALLC ( IADYN , IBID , IBID )
+                MCDYN = MCDYN - LONO(JLONO(IC)+ID(K)) * 
+     &                  LTYP(JLTYP(IC)+ID(K))
+                CALL HPDEALLC ( IADYN , NBFREE , IBID )
               ELSE IF ( IADMI .NE. 0 ) THEN
                 CALL JJLIBP ( IADMI )
               ENDIF
@@ -158,7 +170,9 @@ C
         CRNOM = RNOM ( JRNOM(IC) + IDO )
         IADYN = IADM (JIADM(IC) + 2*IDO)
         IF ( IADYN .NE. 0 ) THEN
-          CALL  HPDEALLC (IADYN , IBID , IBID)
+          MCDYN = MCDYN - LONO(JLONO(IC)+IDO) * 
+     &            LTYP(JLTYP(IC)+IDO)
+          CALL HPDEALLC (IADYN , NBFREE , IBID)
         ELSE   
           CALL JJLIBP (IBACOL)
         ENDIF
@@ -189,7 +203,8 @@ C
           IADMI = IADM (JIADM(IC) + 2*IDO-1)
           IADYN = IADM (JIADM(IC) + 2*IDO  )
           IF ( IADYN .NE. 0 ) THEN
-            CALL  HPDEALLC ( IADYN , IBID , IBID )
+            MCDYN = MCDYN - LONO(JLONO(IC)+IDO)*LTYP(JLTYP(IC)+IDO)
+            CALL HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           ENDIF

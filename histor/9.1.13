@@ -1,0 +1,1128 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 01/10/2007 - 14:30:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011269 DU 2007-09-21 13:26:43
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.11, le cas test forma12a s'arrete en ARRET_ANORMAL (BCR)
+FONCTIONNALITE
+   L'arret anormal dans FORMA12a est du a l'amelioration de catalogue que j'ai faite la
+   semaine derniere (suppression dans le catapy de DYNA_LINE_TRAN du mot clef REAC_VITE, qui
+   n'est pas pertinent pour cet opérateur).
+   Je n'avais pas vu que NMOAM, routine commune à DYNA_LINE_TRAN et à DYNA_NON_LINE, fait
+   appel à ce mot-clef.
+   Suite a ma modification, DYNA_LINE_TRAN plante donc lorsque l'on met de l'amortissement modal.
+   Je corrige en deplacant l'appel a REAC_VITE de NMOAM a NDLECT.
+   Cette operation a l'avantage supplementaire de poursuivre le rassemblement de la lecture
+   des parametres spécifiques a DYNA_NON_LINE dans NDLECT, et de supprimer un passage
+   d'argument a travers DLNEWI.
+   
+   eb
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout sur DYNA_LINE_TRAN et DYNA_NON_LINE
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM Marc              DATE 01/10/2007 - 15:27:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010759 DU 2007-04-05 13:01:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CODHYBAR: Cas test d'une fondation filante sur sol homogxc3xa8ne modxc3xa9lisxc3xa9 en Cam-Clay
+FONCTIONNALITE
+   Dans le cadre du projet CODHYBAR, on restitue un cas-test de fondation filante à l'aide de
+   la loi de CAM-CLAY.
+   
+   Le modèle de fondation filante est 2D, et constitué d'une fondation infiniment rigide
+   d'une longueur de 1m posée sur un demi-espace anélastique, modélisé par un carré de 10m de
+   côté. Le modèle présente une symétrie d'axe verticale en x = 0, de sorte que seule une
+   moitié du problème est prise en compte. La fondation est soumise à un déplacement vertical
+   de -0.1m entre les instants T0 = 0 et T2 = 2.E+7s.
+   
+   On valide les résultats obtenus par Code_Aster par rapport à ceux fournis par le logiciel
+   FLAQ, en terme de trajet de chargement dans le plan P-Q aux points O et A
+   situés sous la fondation (voir Figure ci-après), ainsi qu'en terme de résultante des
+   forces appliquée sur la fondation.
+   
+                                                      * * * *
+   
+   => SSNP136A:
+      on ne prend pas en compte l'hydraulique. Ce calcul purement mécanique est équivalent à
+   un cas parfaitement drainé.
+   
+      Par la suite, on envisagera de restituer un calcul prenant en compte le couplage
+   hydro-mécanique, lorsqu'on aura récupérer des éléments
+      de comparaison FLAQ.
+   
+        ______
+       |______|_______________________  Y=10M
+       O      A                       |
+       |    X=1.1M                    |
+       |                              |
+       |                              |
+       |                              |
+       |                              |
+       |                              |
+       |                              |
+       |                              |
+       |______________________________| Y=0M
+   
+      X=0                           X=10M
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.03.136
+VALIDATION
+   ssnp136
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011215 DU 2007-09-07 08:12:06
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   En NEW9, le cas-test ssna111b s'arrete par manque de temps CPU (Bull)
+FONCTIONNALITE
+   temps CPU augmenté de 660s à 900s
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011263 DU 2007-09-19 14:48:10
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   erreur dans VALE_CONT
+FONCTIONNALITE
+   Les SD de contact telles que TABFIN, CARACF ... ne cessent d'être redimensionnées au gré
+   des évolutions. Mickael a eu la bonne idée de créer la routine CFMMVD qui centralise la
+   longueur de ces différents tableaux.
+   
+   Cependant, dans mmmres.f, routine importante s'il en est pour ceux qui utilisent le
+   contact  continu, on trouve encore valeurs en dur de dimension de tableau, dans le genre
+   
+                  INTEGR=ZR(JCMCF)+ 22   *(IZONE-1)+1)
+   ... au lieu de INTEGR=ZR(JCMCF)+ ZCMF *(IZONE-1)+1)
+   
+   Ce qui fait que d'une semaine à l'autre, le champ VALE_CONT vous sort n'importe quoi!
+   
+   J'émets cette fiche pour faire une remise au propre de mmmres.f
+   
+   A restituter en version STA9 aussi.
+   
+              * * *
+   
+   VALIDATION:
+   ----------
+   
+   SSNV504D (extrusion du lopin)
+   
+   On teste le statut du contact en un noeud appartenant à la zone de contact no.2.
+   On constate en effet qu'en STA9.1, VALE_CONT produit des NAN !!!
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 9.1
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.504
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011229 DU 2007-09-10 10:44:18
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   correction formulation vitesse contact continu
+FONCTIONNALITE
+   On corrige une erreur dans la programmation de la formulation en vitesse du contact
+   continu dans mmmbca:
+   En effet, dans cette routine, il y avait une evaluation erronée du champ de vitesse, car
+   on faisait
+   v+ = u+ - u0 (et non v+ = u+ - u- comme il faudrait).
+   
+   Pour permettre éventuellement une vraie résolution en vitesse, on récupère et traite
+   directement le champ de vitesse VITPLU dans MMMBCA et dans les TE0364 et TE0365,
+   au lieu de le reconstruire à partir des déplacements.
+   
+   L'intéret est double:
+   * on prépare ainsi le terrain pour une véritable résolution en vitesse;
+   * on n'a plus à se préoccuper du schéma d'intégration utilisé (theta-schéma ou newmark)
+   pour reconstruire le champ de vitesse, puisqu'on l'a directement. Par là même, il n'y a +
+   de raison de limiter la formulation vitesse à un theta-schéma, et on pourrait dorénavant
+   très bien l'associer à un schéma de Newmark....
+   
+   RESTITUTION
+   -----------
+   
+   En NEW8 et NEW9.
+   En NEW8, on se contente de corriger l'erreur de calcul de la vitesse:
+   on fait V+ = U+ - U- dans mmmbca, au lieu de V+ = U+ - U0
+   (voir fichiers joints)
+   
+   Validation
+   ----------
+   
+   Pour l'instant, SDNV100E
+   Mais on envisage d'autres cas-tests plus pertinent, comme par exemple le pendant de SDNV105C
+   (balancement du bloc).
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.2.0
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM Marc              DATE 02/10/2007 - 08:27:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011238 DU 2007-09-12 09:05:04
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   erreur dans le fichier datg du cas test SSNV504 modelisation C
+FONCTIONNALITE
+   le fichier datg de la modélisation C est régénéré.
+   on vérifie que le calcul passe bien avec ce nouveau maillage.
+   on modifie la doc V en conséquence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.504
+VALIDATION
+   cas-test
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 01/10/2007 - 13:45:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011300 DU 2007-10-01 06:38:33
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Information concernant l'usage de la mxc3xa9moire dynamique par JEVEUX
+FONCTIONNALITE
+   Instrumentation de l'ensemble des routines JEVEUX pour comptabiliser les allocations et
+   les libérations des zones mémoire allouées dynamiquement. Un affichage de type information
+   est effectué en fin d'exécution. On profite des modification de source pour remplacer un
+   certain nombre de messages d'erreurs <F> par des appels à ASSERT.
+   
+   Le message affiché par JEVEUX est le suivant :
+   
+   
+      STATISTIQUES CONCERNANT L'ALLOCATION DYNAMIQUE :
+        TAILLE CUMULEE MAXIMUM  1639 Mo,
+        DONT  400 Mo POUR LA ZONE GEREE PAR JEVEUX.
+        NOMBRE TOTAL D'ALLOCATIONS  : 815.
+        NOMBRE TOTAL DE LIBERATIONS : 815.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test yyyy104a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 02/10/2007 - 13:14:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010991 DU 2007-06-19 09:20:30
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   Messages python utilisxc3xa9s dans le fortran et absents des catalogues
+FONCTIONNALITE
+   Problème :
+   ----------
+   Les messages suivants ont disparu des catalogues de messages bien qu'ils soient encore
+   appelés dans le fortran.
+   
+   Solution :
+   ----------
+   On rétablit le texte de la plus part de ces messages. Les autres sont transormés en "assert".
+   
+   ------------------------------------------------------------
+   
+   ('jeveux', 2)
+   ('jeveux', 3)
+   ('jeveux', 4)
+   ('jeveux', 5)
+   ('jeveux', 6)
+   ('jeveux', 8)
+   ('jeveux', 9)
+                                                                                            
+                           
+   ('algeline', 6)
+   ('algorith', 8)
+   ('algorith11', 22)
+   ('algorith11', 89)
+   ('algorith8', 94)
+   ('calculel', 8)
+   ('elements3', 25)
+   ('indicateur', 28)
+   ('modelisa2', 88)
+   
+   ('supervis', 65)
+   ('supervis', 66)
+   ('supervis', 67)
+   ('supervis', 68)
+   ('supervis', 69)
+   ('supervis', 70)
+   ('supervis', 71)
+   ('supervis', 72)
+   ('supervis', 73)
+   ('supervis', 74)
+   ('supervis', 75)
+   ('supervis', 76)
+   ('supervis', 77)
+   ('supervis', 78)
+   ('supervis', 79)
+   ('supervis', 80)
+   ('supervis', 81)
+   ('supervis', 82)
+   ('supervis', 83)
+   ('supervis', 84)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 02/10/2007 - 13:55:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010163 DU 2006-10-20 09:07:51
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR02 - un peu de mxc3xa9nage dans la SD MATR_ASSE
+FONCTIONNALITE
+   Ménage du coté de la sd_matr_asse :
+    -----------------------------------
+                                                                                            
+                                                         
+    Problème :
+    ----------
+                                                                                            
+                                                         
+    Un certain nombre d'objets semblent faire partie de la sd_matr_asse quand on regarde les
+   routines detrsd.f et copisd.f
+    Mais on ne les retrouve pas dans le catalogue python de la SD.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+    Solution :
+    ----------
+                                                                                            
+                                                         
+    1) Suppression de l'objet .COND (car le conditionnement par la diagonale n'est plus utilisé)
+      => suppression des routines mrcond.f, mccond.f, mtcond.f
+                                                                                            
+                                                         
+    2) Suppression des 7 objets .JDDC, .JDES, .JDHF, .JDFF, .JDPM, .JDRF, .JDVL :
+       Ces objets apparaissaient dans les sources fortran mais n'étaient jamais créés !
+                                                                                            
+                                                         
+    3) Les 3 objets .TMP1, .TMP2 et .LILI sont des objets temporaires créés lors de l'assemblage.
+       Il ne doivent pas etre conservés dans la sd_matr_asse.
+                                                                                            
+                                                         
+    4) Les objets .&VDI et .&TRA ne sont utilisés que lors de la factorisation/résolution
+       => On les crée sur la base Volatile
+          On les détruit dès que l'on a fini de s'en servir.
+                                                                                            
+                                                         
+    5) En réalité,  .&VDI est utilisé dans les 2 routines wp1dft.f et mtdete.f :
+       Il contient les termes diagonaux de la matrice factorisée.
+       C'est pourquoi les fonctionnalités associées à ces 2 routines ne peuvent etre
+   utilisées qu'avec les solveurs MULT_FRONT et LDLT.
+                                                                                            
+                                                         
+       On le remplace par l'objet .DIGS qui contient (quand c'est possible) les valeurs de la
+   diagonale de la matrice initiale et de la matrice factorisée.
+                                                                                            
+                                                         
+       Remarque : l'objet .DIGS était jusqu'à présent un vecteur de réels contenant les
+   valeurs absolues des termes diagonaux. Il servait à mesurer le nombre de décimales
+   perdues. Maintenant quel'on s'en sert également dans mtdete.f et wp1dft.f, comme ces 2
+   routines ont besoin de la vraie valeur des termes diagonaux après factorisation. On est
+   donc obligé de stocker ce vecteur comme un vecteur de nombres complexes pour les matrices
+   complexes.
+                                                                                            
+                                                         
+    6) L'objet .WALF avait été oublié dans le catalogue python. On ne s'en était pas aperçu
+   car il n'existe que pour la factorisée (MULT_FRONT) d'une matrice non-symétrique.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   IMPACT DOC_D : D4.06.10 :
+   -------------------------
+       Ajouter objet .DIGS :
+         * Cet objet n'existe qu'après factorisation par LDLT et MULT_FRONT
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.10
+VALIDATION
+   52 tests utilisants les matrices
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011202 DU 2007-09-04 15:23:46
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   Bug PROJ_CHAMP : 2D-axi -> 3D
+FONCTIONNALITE
+   Problème :
+   ----------
+   Le mot clé PROJ_CHAMP/PROL_ZERO n'était pas activé pour les champs par éléments.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Solution:
+   ---------
+   Le mot clé PROL_ZERO de la commande PROJ_CHAMP est maintenant aussi utilisé pour les
+   champs par éléments.
+                                                                                            
+                                                         
+   Si l'utilisateur utilise PROL_ZERO='OUI', les champs de la sd_resultat sont prolongés par
+   "0" là où ils ne sont pas définis.
+   Par défaut, les champs ne sont pas prolongés par "0" et le code émet une erreur fatale, si
+   il existe des zones non projetées.
+                                                                                            
+                                                         
+   Impact documentaire : U4.72.05 (PROJ_CHAMP) :
+      - commenter PROL_ZERO
+      - renvoyer sur le test zzzz110a pour le mot clé TRANSF_GEOM2
+                                                                                            
+                                                         
+   Validation :
+   ------------
+   Je profite de cette petite évolution pour enrichir le test zzzz110a :
+      - Jusqu'à présent, il faisait la projection d'un champ de température (scalaire) d'un
+   maillage axis sur un maillage 3D
+      - Maintenant, il fait aussi la projection d'un cham_elem(ELNO) de contraintes (tenseur).
+        La difficulté supplémentaire consiste à gérer le changement de repère du tenseur des
+   contraintes : j'ai galéré pour établir les formules ... 
+   
+   Maintenant que les formules m'ont l'air au point, je pense qu'elles pourront resservir un
+   jour ou l'autre.
+   
+   Remarque sur la lourdeur de l'opération : pour faire cette projection de champ de
+   contraintes, il m'a fallu une centaine de lignes et 5 CREA_CHAMP intermédiaires.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.72.05
+VALIDATION
+   zzzz110a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008432 DU 2005-02-10 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.0)
+TITRE
+   PROJ_CHAMP(ELGA) / CREA_CHAMP
+FONCTIONNALITE
+   Tout d'abord, je tiens à m'excuser auprès de Jean-Luc pour avoir autant trainé à regarder
+   sa fiche.
+                                                                                            
+                                                         
+   Je propose de ne pas faire grand chose dans le cadre de cette fiche.
+                                                                                            
+                                                         
+   Argumentaire :
+   -------------
+                                                                                            
+                                                         
+   1) Jean-Luc suggèrere l'évolution N1 : PROJ_CHAMP doit savoir traiter les champs ELGA.
+      réponse :
+      * Ma seule idée est quelque chose de simple (comme on le fait pour les champs ELEM et
+   ELNO) : on transforme le champ ELGA en cham_no, puis on le projette (=> cham_no) puis on
+   repasse aux points de Gauss.
+      * Mais cette solution n'est pas bonne pour les champs discontinus car la passage par un
+   cham_no "lisse" le champ. D'ailleurs Jean-Luc fait la meme remarque dans sa fiche.
+                                                                                            
+                                                         
+      * Du coup, je ne sais pas comment répondre à la demande d'évolution. Jean-Luc m'a dit
+   (ce matin) qu'il pensait à une nouvelle méthode de projection suggérée par Nicolas Tardieu
+   dans un CR-AMA (projection au sens des moindres carrés ...). Pourquoi pas ? mais est-ce
+   que cette méthode est moins "lissante" que celle celle que l'on fait par un passage par
+   des champs aux noeuds ?
+      * Je ne pense pas qu'une telle évolution doive-t-être faite pour "pas cher" dans le
+   cadre de cette fiche : c'est un vrai travail qui doit être programmé dans le cadre d'ISTA.
+   De plus, on sent bien que cette réflexion dépasse le cadre Aster : échange entre codes,
+   MED, ...
+                                                                                            
+                                                         
+   2) Jean-Luc suggère une solution de contournement à l'aide de CREA_CHAMP. C'est la
+   solution que je recommande effectivement : je préfère que l'utilisateur prenne conscience
+   des "lissages" effectués plutot que de les faire pour lui en sous-terrain. Jean-Luc signe
+   dans sa fiche que malheureusement, le contournement échoue dans CREA_CHAMP pour les champs
+   de variables internes. Ce blocage a été levé en version 9.0.16 grâce à la correction d'une
+   fiche similaire (10466).
+                                                                                            
+                                                         
+   3)Jean-Luc suggérait également de compléter CREA_CHAMP/DISC : il signalait 2 "manques" :
+      * ELNO -> ELGA (déjà réalisé depuis en juillet 2005 en 8.1.9)
+      * ELGA -> ELNO
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Evolution :
+   ----------
+   Finalement, je complète CREA_CHAMP / OPERATION='DISC' :
+     DISC : ELGA -> ELNO
+     DISC : ELGA -> NOEU
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Validation :
+   ------------
+      On enrichit le test zzzz130a pour tester CREA_CHAMP/DISC :
+        * ELGA -> ELNO
+        * ELGA -> NOEU
+                                                                                            
+                                                         
+   IMPACT_DOC : U4.72.04 (CREA_CHAMP)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.72.04
+VALIDATION
+   zzzz130a
+NB_JOURS_TRAV  : 1.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009246 DU 2005-11-29 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   Mouvement de corps rigides par DDL_IMPO
+FONCTIONNALITE
+   Demande d'évolution :  (P. Massin)
+   ---------------------
+   Pouvoir imposer un mouvement de corps solide à un morceau du modèle (par exemple un poinçon).
+                                                                                            
+                                                         
+   Réponse :
+   ---------
+                                                                                            
+                                                         
+   1) Si la rotation du poinçon est nulle, on peut déjà le faire avec DDL_IMPO/GROUP_MA
+   2) On peut aussi penser utiliser LIAISON_SOLIDE pour rigidifier le poinçon et ajouter
+   quelques déplacements imposés (bien choisis) pour déplacer le poinçon où on le souhaite.
+   J'ai essayé cette solution mais comme le dit Patrick dans sa fiche, le poinçon se déforme
+   dans les rotations car les relations linéaires imposées pour réaliser LIAISON_SOLIDE ne
+   sont valables qu'en petites rotations.
+                                                                                            
+                                                         
+   3) Si l'on veut pouvoir imposer de grandes rotations pour le poinçon, il faut donc
+   développer quelque chose de neuf.
+                                                                                            
+                                                         
+   Développement proposé :
+   -----------------------
+    Je propose d'ajouter les 3 mots clés TRAN, ANGL_NAUT et CENTRE sous le mot clé facteur
+   LIAISON_SOLIDE.
+    (meme vocabulaire que pour LIAISON_MAIL).
+    Ces mots clés permettent à l'utilisateur d'imposer un déplacement quelconque du "solide".
+                                                                                            
+                                                         
+    Remarque : j'ai choisi d'utiliser le mot clé facteur LIAISON_SOLIDE car il me semble le
+   plus naturel.
+    Mais il faut noter une curiosité :
+       - si l'utilisateur n'utilise pas les mots clés TRAN ou ANGL_NAUT, les relations
+   linéaires engendrées sont des relations qui lient plusieurs ddls entre eux et que ne sont
+   valables que pour les petites rotations.
+       - si l'utilisateur utilise TRAN ou ANGL_NAUT, les relations linéaires engendrées sont
+   de simples "DDL_IMPO" et elles sont également valables pour les grandes rotations.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Validation :
+   ------------
+   Nouveau test zzzz777a (nom provisoire) pour tester AFFE_CHAR_MECA / LIAISON_SOLIDE / TRAN
+   + ANGL_NAUT + CENTRE
+                                                                                            
+                                                         
+   Impact documentaire : U4.44.05 (affe_char_meca).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.05
+VALIDATION
+   nouveau cas test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009259 DU 2005-12-14 00:00:00
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   PROJ_CHAMP pour les champs de type THM
+FONCTIONNALITE
+   Problème :
+   ----------
+   La demande de Roméo Fernandes concerne la projection des champs aux noeuds de THM qui ne
+   portent pas les memes ddls sur tous leurs noeuds. Dans son cas, les noeuds "milieux" ne
+   portent pas les memes ddls que les noeuds "sommets".
+                                                                                            
+                                                         
+   La programmation actuelle de PROJ_CHAMP est faite en 2 étapes :
+      1) la 1ère étape est purement géométrique. A la fin de cette étape, on sait pour chaque
+   noeud N2 du maillage 2 :
+        - quelle est la maille M1 du maillage 1 qui lui est associée
+        - quels sont les coefficients de pondérations (des noeuds N1 de la maille M1) qu'il
+   faudra utiliser lors de l'interpolation.
+                                                                                            
+                                                         
+      2) La projection proprement dite des champs aux noeuds :
+        - On se contente de faire un simple de calcul de pondération pour évaluer la quantité
+   sur les noeuds N2.
+                                                                                            
+                                                         
+   Cette architecture suppose implicitement que tous les noeuds des mailles M1 portent les
+   memes composantes (ou ddls).
+   En effet, les coefficients de pondération sont les valeurs des fonctions de forme des
+   noeuds N1 au point N2.
+   Les fonctions de forme sont telles qu'en tout point de la maille, leur somme vaut 1.
+   La formule de projection est donc en défaut s'il manque des composantes sur certains noeuds.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Solution :
+   ----------
+                                                                                            
+                                                         
+   Une première évolution a déjà été faite pour permettre la projection entre un maillage
+   quadratique et un maillage linéaire coincidents.
+   L'idée est : si un noeud N2 tombe "pile poil" sur un noeud N1 (c'est à dire que le
+   coefficient de pondération de N1 est > 0.999), il est acceptable d'affecter simplement la
+   valeur de N1 au noeud N2.
+                                                                                            
+                                                         
+   Pour aller plus loin (c'est à dire gérer des maillages non coincidents), j'avais envisagé
+   (dans ma demande initiale) de ne traiter que les 2 cas suivants :
+      - tous les noeuds sommets portent le ddl
+      - tous les noeuds milieux portent le ddl
+       (sinon : pas de projection du ddl)
+                                                                                            
+                                                         
+   Malheureusement, c'est dans l'étape 2 de PROJ_CHAMP que l'on se rend compte de l'abscence
+   des ddls alors que les coefficients de pondération ont été calculés dans l'étape 1 en
+   supposant que tous les noeuds N1 participent à la mondération.
+   Meme dans le cas "ddls sur les noeuds sommets", il est difficile de recalculer a
+   posteriori les bons coefficients de pondération : il faudrait recalculer les valeurs des
+   fonctions de forme linéaires.
+   Mais pour les ddls qui ne seraient portés que par les noeuds milieux, existe-t-il des
+   fonctions de forme pour les seuls noeuds milieux qui satisfassent l'exigence : somme des
+   fonctions de forme = 1 ?
+   Et que faire si le ddl est porté par 3 sommets (sur 4) et 1 noeud milieux  ??
+                                                                                            
+                                                         
+   Pour ne pas m'embarquer dans des cas particuliers trop nombreux, je propose le traitement
+   (artisanal) suivant :
+                                                                                            
+                                                         
+   1) Cas (standard) où tous les noeuds portent le ddl : on utilise les fonctions de forme
+   (comme avant).
+   2) Le ddl est porté par certains noeuds qui ont un coeffient de pondération > 0  :
+       - on utilise pour la pondération les seuls coefficients > 0 puis on fait une règle de
+   3 pour que la somme des coeffients fassent 1.
+   3) Le ddl n'est porté que par des noeuds qui ont un coeffient de pondération < 0 :
+      cela veut dire que le noeud N2 est proche des noeuds ne portant pas le ddl et éloigné
+   des noeuds qui le portent.
+      Je propose alors d'affecter la moyenne arithmétique des noeuds qui portent le ddl.
+                                                                                            
+                                                         
+                                                                                            
+                                                         
+   Validation :
+   -----------
+   J'ai fait un petit test perso avec un QUAD8. J'ai essayé 4 cas de figure :
+     * Tous les noeuds sont affectés        (TN)
+     * Les 4 noeuds sommets sont affectés   (NS)
+     * Les 4 noeuds milieux sont affectés   (NM)
+     * 3 noeuds sommets sont affectés       (3NS)
+   J'ai fait un petit dessin de l'interpolation que l'on obtient pour ces 4 cas de figure
+   (voir fichier joint interp.doc)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.72.05
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011291 DU 2007-09-27 12:58:52
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.12, le cas test sdls114a s'arrete par manque de temps CPU (BR)
+FONCTIONNALITE
+   On propose d'augmenter le .para à 240 s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test concernxc3xa9
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011292 DU 2007-09-27 13:01:04
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.12, le cas test ssnv129d termine NOOK (R)
+FONCTIONNALITE
+   Sur les conseils du responsable du test, on augmente légèrement les tolérances.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test concernxc3xa9
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 02/10/2007 - 10:08:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011196 DU 2007-08-31 17:13:02
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW9.1.8, le cas test sslv200a s'arrete en NOOK (CR)
+FONCTIONNALITE
+   Lors de la restitution de la correction de FORCE_ARETE, des TEST_RESU ont été rajoutés sur
+   le résultat de PROJ_CHAMP pour les champs ELNO.
+   
+   La projection se faisant sur un meme maillage, elle est très dépendante du type de machine
+   puisque un noeud se projette théoriquement sur le meme noeud et donc la maille peut varier.
+   Aussi la projection de champs ELNO est très dépendante de la machine.
+   
+   On supprime donc ces TEST_RESU sur les champs ELNO, les tests sur les champs de type NOEU
+   étant conservés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv200a sur rocks
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 02/10/2007 - 10:08:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011220 DU 2007-09-07 08:39:54
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   En NEW9, les cas-tests cabri02a, sdnv103a, sdnv103c,ssnv505f et/ou hsna120a s'arrete sans message (C et R)
+FONCTIONNALITE
+   Il s'agissait effectivement d'une erreur dans la routine tablco remodeler entierement.
+   
+   L'erreur provenait de l'hypothèse (fausse) que pour des surfaces  d'éléments quadratiques
+   en contact, tous les noeuds étaient bien stockés dans un objet jeveux. Or pour des raisons
+   propres au contact, seul les noeuds milieux des TRIA6 étaient bien stockés et non ceux des
+   QUAD8.
+   Ce décalage non prévu impliquait d'aller récupérer des informations aux mauvais endroits.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas tests concern?
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011251 DU 2007-09-13 15:53:30
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW9.1.10, les cas tests ssnv505f et ssnv505h s'arretent en ARRET_ANORMAL (CR)
+FONCTIONNALITE
+   Résolue par la fiche 11220 et une erreur de programmation :
+   
+        CALL JEDETR('&&TABLCO.TRAV')
+           CALL JEDETR(SURF)
+           DO 250 I=1,NSUCO
+             CALL JEDETR(CONINV(ISUCO))
+    250   CONTINUE
+   
+   est remplacé par 
+   
+         CALL JEDETR('&&TABLCO.TRAV')
+           CALL JEDETR(SURF)
+           DO 250 ISUCO=1,NSUCO
+             CALL JEDETR(CONINV(ISUCO))
+    250   CONTINUE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas tests concern?
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 02/10/2007 - 10:08:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011164 DU 2007-08-09 11:07:11
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW9.1.7, le cas test ssnv185n s'arrete par manque de temps CPU
+FONCTIONNALITE
+   Le cas test ssnv185n passe en 1150 s environ sur Calibre4. On passe le .para à 1800s pour
+   s'assurer une marge.
+   
+   Une étude de profiling sur Rocks donne :
+   
+   solveur / renuméroration / temps CPU total / routine / % du temps dans cette routine
+   MULT_FRONT / METIS /  900s / dgemm / 70%
+   MULT_FRONT / MD    / 1500s / dgemm / 74%
+   MULT_FRONT / MDA   / 4400s / dgemm / 66%
+   MUMPS      /       /  570s / dgemm / 47%
+   
+   dgemm est une BLAS de niveau 3 (opération de multiplication de matrices générales).
+   
+   
+   On peut en conclure que la rénumérotation METIS de MULT_FRONT est meilleure sur la Bull
+   que sur Rocks (dans ce cas de figure bien particulier).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test concern?
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 02/10/2007 - 12:17:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011025 DU 2007-06-28 05:34:43
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   POST_RELEVE_T calcule mal les moyennes si la ligne d?sse de la  mati?
+FONCTIONNALITE
+   Puisque aucun fichier n'est lié à la fiche, on regénère les fichiers qui ont abouti à
+   émettre l'anomalie.
+    
+   Apres analyse de l'anomalie, le probleme vient que le chemin sort du domaine.
+   Lors des calculs de moyenne  1/L * Somme(...)  la longueur L pris en compte est la
+   longueur totale du chemin. Il faut prendre la longueur du chemin qui est dans le domaine. 
+   
+   Routine à modifier : rvpstm.f 
+   Pour chaque composante calculée, il faut recalculer la longueur du chemin qui se situe
+   dans le domaine.
+   
+   Validation: forma08b
+   lors du traitement de la fiche 10837, on a amélioré la macro MACR_LIGN_COUPE pour éliminer
+   les noeuds qui se situent hors du domaine. 
+   On ajoute dans le cas test les commandes suivantes:
+   
+   #  COOR_ORIG=(3.6,  3.79753766804580E+00, 3.12868934704165E-02) : N5802,
+   #  COOR_EXTR=(3.6,  3.802462332,         -3.12868934704165E-02) : COORD HORS DOMAINE,
+   MAILB=LIRE_MAILLAGE( UNITE=23 );
+   
+   MOBARRE=AFFE_MODELE(MAILLAGE=MAILB,
+                       AFFE=_F(PHENOMENE='MECANIQUE',
+                               MAILLE=('SE1','SE2'),
+                               MODELISATION='BARRE'),  );
+   
+   PJBARRE = PROJ_CHAMP( TYPE_CHAM='NOEU',
+                         DISTANCE_MAX=3.1383638757482347E-05,
+                         METHODE='ELEM',
+                         RESULTAT=RESU,
+                         NOM_CHAM='DEPL',
+                         MODELE_1=MODMECA,
+                         MODELE_2=MOBARRE,
+                         );
+   
+   TABDEP3=POST_RELEVE_T(ACTION=_F(GROUP_NO='TOTO',
+                               TOUT_CMP='OUI',
+                               INTITULE='lbarre',
+                               NOM_CHAM='DEPL',
+                               RESULTAT=PJBARRE,
+                               OPERATION='EXTRACTION'), );
+   
+   TABDEP2=POST_RELEVE_T(ACTION=_F(GROUP_NO='TOTO',
+                               TOUT_CMP='OUI',
+                               INTITULE='lbarre',
+                               NOM_CHAM='DEPL',
+                               RESULTAT=PJBARRE,
+                               OPERATION='MOYENNE'), );
+   
+   C'est l'équivalent des 2 commandes MACR_LIGN_COUPE, concepts résultat TME2 et TTM2.
+   
+   Faut-il supprimer ces 2 commandes MACR_LIGN_COUPE qui émettent des Alarmes ?
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.21
+VALIDATION
+   forma08b
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011253 DU 2007-09-14 09:46:56
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   POST_RELEVE_T ne traite pas les composantes de VARI_ELNO_ELGA
+FONCTIONNALITE
+   orrection:
+   dans la routine rvtec0.f ajout du traitement des champs de variables internes (vecteur de
+   travail XNOVAR)
+   
+   Validation:
+   ajout des commandes suivantes dans le test hsnv124a
+   Vlff = POST_RELEVE_T (ACTION=_F(INTITULE = 'CUBE',
+                                   GROUP_NO = 'CUBE',
+                                   RESULTAT = U, INST = 1.,
+                                   NOM_CHAM = 'VARI_ELNO_ELGA',
+                                   NOM_CMP = ('V1','V2'),
+                                   OPERATION = 'EXTRACTION',
+                                   MOYE_NOEUD = 'NON'))
+   
+   TEST_TABLE( TABLE=Vlff,
+               FILTRE=_F( NOM_PARA='NOEUD',VALE_K='NO1' ),
+               NOM_PARA='V1',
+               VALE=2.10962E-03   )
+   TEST_TABLE( TABLE=Vlff,
+               FILTRE=_F( NOM_PARA='NOEUD',VALE_K='NO1' ),
+               NOM_PARA='V2',
+               VALE=1.00000E+00   )
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hsnv124a
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnp136a                         kham M.KHAM             715    715      0
+ CASTEST AJOUT zzzz229a                       pellet J.PELLET            70     70      0
+ CASTEST MODIF forma08b                        vivan L.VIVAN            506     60     21
+ CASTEST MODIF hsnv124a                        vivan L.VIVAN            523     25      2
+ CASTEST MODIF sdls114a                       pellet J.PELLET           341      1      1
+ CASTEST MODIF sdnv100e                         kham M.KHAM             373     48     45
+ CASTEST MODIF sslv200a                      salmona L.SALMONA         1088      1     64
+ CASTEST MODIF ssna111b                         kham M.KHAM             222      1      1
+ CASTEST MODIF ssnv129d                       pellet J.PELLET           200      5      5
+ CASTEST MODIF ssnv185n                      salmona L.SALMONA          388      1      1
+ CASTEST MODIF ssnv504a                    lebouvier F.LEBOUVIER        288      1      1
+ CASTEST MODIF ssnv504c                    lebouvier F.LEBOUVIER        223      1      1
+ CASTEST MODIF ssnv504d                         kham M.KHAM             298     83     45
+ CASTEST MODIF zzzz110a                       pellet J.PELLET           292    150     20
+ CASTEST MODIF zzzz130a                       pellet J.PELLET           341     32      5
+CATALOGU MODIF options/char_meca_cont           kham M.KHAM              44      2      1
+CATALOGU MODIF options/char_meca_frot           kham M.KHAM              44      2      1
+CATALOGU MODIF options/rigi_cont                kham M.KHAM              42      2      1
+CATALOGU MODIF options/rigi_frot                kham M.KHAM              42      2      1
+CATALOGU MODIF typelem/gener_cmcfz1             kham M.KHAM              74      5      5
+CATALOGU MODIF typelem/gener_cmcfz2             kham M.KHAM             162      5      5
+CATALOGU MODIF typelem/gener_cmcoz1             kham M.KHAM              74      5      5
+CATALOGU MODIF typelem/gener_cmcoz2             kham M.KHAM             162      5      5
+CATALOPY MODIF commande/affe_char_meca_f      pellet J.PELLET           680     12      6
+CATALOPY MODIF commande/affe_char_meca        pellet J.PELLET          1122      9      3
+CATALOPY MODIF commande/fact_ldlt             pellet J.PELLET            53      2      2
+CATALOPY MODIF commande/proj_champ            pellet J.PELLET           123     25     11
+ FORTRAN AJOUT algorith/vtgplk                  kham M.KHAM             157    157      0
+ FORTRAN AJOUT calculel/cesgno                pellet J.PELLET           254    254      0
+ FORTRAN AJOUT modelisa/drzrot                pellet J.PELLET           146    146      0
+ FORTRAN MODIF algeline/chcoma               macocco K.MACOCCO          171      3      3
+ FORTRAN MODIF algeline/chcomb               macocco K.MACOCCO          129      2      2
+ FORTRAN MODIF algeline/diagav                pellet J.PELLET           162     22     10
+ FORTRAN MODIF algeline/mlfc16                pellet J.PELLET           349      5     10
+ FORTRAN MODIF algeline/modsta                pellet J.PELLET           136      1      4
+ FORTRAN MODIF algeline/mtdete                pellet J.PELLET            75     10     13
+ FORTRAN MODIF algeline/mulfr8                pellet J.PELLET           361      5     10
+ FORTRAN MODIF algeline/op0014                pellet J.PELLET           199      1      8
+ FORTRAN MODIF algeline/op0015                pellet J.PELLET           184      1      5
+ FORTRAN MODIF algeline/rldlc8                pellet J.PELLET           198      4      9
+ FORTRAN MODIF algeline/rldlr8                pellet J.PELLET           198      4      9
+ FORTRAN MODIF algeline/rlduc8                pellet J.PELLET           209      3      8
+ FORTRAN MODIF algeline/rldur8                pellet J.PELLET           204      3      8
+ FORTRAN MODIF algeline/tldlc8                pellet J.PELLET           327      8     16
+ FORTRAN MODIF algeline/tldlg2                pellet J.PELLET           486      2      2
+ FORTRAN MODIF algeline/tldlg3                pellet J.PELLET           357      8      5
+ FORTRAN MODIF algeline/tldlr8                pellet J.PELLET           332      8     16
+ FORTRAN MODIF algeline/tlduc8                pellet J.PELLET           400      6     18
+ FORTRAN MODIF algeline/tldur8                pellet J.PELLET           401      7     20
+ FORTRAN MODIF algeline/wp1dft                pellet J.PELLET            78      9     11
+ FORTRAN MODIF algorith/cfcrma                pellet J.PELLET           243      1      3
+ FORTRAN MODIF algorith/conlig                  kham M.KHAM             145      5      4
+ FORTRAN MODIF algorith/dinit                   kham M.KHAM             341     12     18
+ FORTRAN MODIF algorith/dlnewi                boyere E.BOYERE           601      2      2
+ FORTRAN MODIF algorith/mmalgo                  kham M.KHAM             184      6      5
+ FORTRAN MODIF algorith/mmcmat                  kham M.KHAM             154      9      6
+ FORTRAN MODIF algorith/mmcmem                  kham M.KHAM              77      8      7
+ FORTRAN MODIF algorith/mmcvec                  kham M.KHAM             171      9      6
+ FORTRAN MODIF algorith/mmgeom                  kham M.KHAM             167     17      5
+ FORTRAN MODIF algorith/mmmbca                  kham M.KHAM             360     32     30
+ FORTRAN MODIF algorith/mmmjeu                  kham M.KHAM             104     18     16
+ FORTRAN MODIF algorith/mmvec1                  kham M.KHAM             191     19     18
+ FORTRAN MODIF algorith/ndlect                boyere E.BOYERE           273     10      4
+ FORTRAN MODIF algorith/nmdepl                  kham M.KHAM             315      3      4
+ FORTRAN MODIF algorith/nmible                  kham M.KHAM             167      2      2
+ FORTRAN MODIF algorith/nmmoam                boyere E.BOYERE           158      5     10
+ FORTRAN MODIF algorith/nmtble                  kham M.KHAM             198      6      6
+ FORTRAN MODIF algorith/op0070                  kham M.KHAM             872      4      2
+ FORTRAN MODIF algorith/op0120               macocco K.MACOCCO          218      2      2
+ FORTRAN MODIF algorith/speph0               macocco K.MACOCCO          373      3      3
+ FORTRAN MODIF algorith/ssdt74                pellet J.PELLET           359      1      3
+ FORTRAN MODIF algorith/vechnl               macocco K.MACOCCO          460      2      3
+ FORTRAN MODIF assembla/assmam                pellet J.PELLET          1154      2      8
+ FORTRAN MODIF assembla/assmmn                pellet J.PELLET           888      2      8
+ FORTRAN MODIF calculel/celfpg                pellet J.PELLET           146     14      7
+ FORTRAN MODIF calculel/cescel                pellet J.PELLET           542     11      9
+ FORTRAN MODIF calculel/cesces                pellet J.PELLET           362     71     27
+ FORTRAN MODIF calculel/cescns                pellet J.PELLET           179     18     22
+ FORTRAN MODIF calculel/cesprj                pellet J.PELLET           255     13     32
+ FORTRAN MODIF calculel/chpchd                pellet J.PELLET           234     32     14
+ FORTRAN MODIF calculel/cnsprj                pellet J.PELLET           231     59     32
+ FORTRAN MODIF calculel/mecalm                pellet J.PELLET          2434      2      2
+ FORTRAN MODIF calculel/pjefch                pellet J.PELLET           115      2      2
+ FORTRAN MODIF calculel/vrcin1                pellet J.PELLET           278      2      2
+ FORTRAN MODIF elements/te0364                  kham M.KHAM             387     10      9
+ FORTRAN MODIF elements/te0365                  kham M.KHAM             357     23     27
+ FORTRAN MODIF jeveux/jealdy                lefebvre J-P.LEFEBVRE        53      3      3
+ FORTRAN MODIF jeveux/jedebu                lefebvre J-P.LEFEBVRE       271     10      6
+ FORTRAN MODIF jeveux/jedetc                lefebvre J-P.LEFEBVRE       232     22     11
+ FORTRAN MODIF jeveux/jedetr                lefebvre J-P.LEFEBVRE       260     27     16
+ FORTRAN MODIF jeveux/jedetv                lefebvre J-P.LEFEBVRE       226     20      5
+ FORTRAN MODIF jeveux/jedisp                lefebvre J-P.LEFEBVRE        97      3      3
+ FORTRAN MODIF jeveux/jefini                lefebvre J-P.LEFEBVRE       134     31      9
+ FORTRAN MODIF jeveux/jelibf                lefebvre J-P.LEFEBVRE       359     37     28
+ FORTRAN MODIF jeveux/jelihd                lefebvre J-P.LEFEBVRE       560     14     28
+ FORTRAN MODIF jeveux/jemarq                lefebvre J-P.LEFEBVRE        97      5      2
+ FORTRAN MODIF jeveux/jerecu                lefebvre J-P.LEFEBVRE       177      5      2
+ FORTRAN MODIF jeveux/jetass                lefebvre J-P.LEFEBVRE       256      5      2
+ FORTRAN MODIF jeveux/jjalls                lefebvre J-P.LEFEBVRE       461     10     16
+ FORTRAN MODIF jeveux/jjarep                lefebvre J-P.LEFEBVRE       276     10     10
+ FORTRAN MODIF jeveux/jjecrs                lefebvre J-P.LEFEBVRE       127      5      2
+ FORTRAN MODIF jeveux/jjhrsv                lefebvre J-P.LEFEBVRE        89      7      7
+ FORTRAN MODIF jeveux/jjldyn                lefebvre J-P.LEFEBVRE       172      7      3
+ FORTRAN MODIF jeveux/jjlide                lefebvre J-P.LEFEBVRE       563     21     20
+ FORTRAN MODIF jeveux/jjlihd                lefebvre J-P.LEFEBVRE       155      6      5
+ FORTRAN MODIF jeveux/jxallm                lefebvre J-P.LEFEBVRE        60      6      7
+ FORTRAN MODIF jeveux/jxcopy                lefebvre J-P.LEFEBVRE       131      7      7
+ FORTRAN MODIF jeveux/jxlibm                lefebvre J-P.LEFEBVRE        33      4      2
+ FORTRAN MODIF modelisa/calirc                pellet J.PELLET           536      3      2
+ FORTRAN MODIF modelisa/calirg                pellet J.PELLET           160     19     13
+ FORTRAN MODIF modelisa/caliso                pellet J.PELLET           258     51     46
+ FORTRAN MODIF modelisa/op0145               macocco K.MACOCCO          354      2      2
+ FORTRAN MODIF modelisa/op0148               macocco K.MACOCCO          319      2      2
+ FORTRAN MODIF modelisa/specep               macocco K.MACOCCO          409      2      2
+ FORTRAN MODIF modelisa/specff               macocco K.MACOCCO          460      2      2
+ FORTRAN MODIF modelisa/tablco               salmona L.SALMONA          454     26     16
+ FORTRAN MODIF postrele/rvaffe                 vivan L.VIVAN            271      2      2
+ FORTRAN MODIF postrele/rvpstm                 vivan L.VIVAN            308     42     56
+ FORTRAN MODIF postrele/rvtec0                 vivan L.VIVAN            403     67     15
+ FORTRAN MODIF prepost/op0170                macocco K.MACOCCO          150      2      2
+ FORTRAN MODIF soustruc/cricho                pellet J.PELLET           331      1      2
+ FORTRAN MODIF soustruc/ssrige                pellet J.PELLET           121      1      3
+ FORTRAN MODIF soustruc/ssvau1                pellet J.PELLET           139      1      2
+ FORTRAN MODIF supervis/gcecco               macocco K.MACOCCO          249      2      2
+ FORTRAN MODIF utilitai/copisd                pellet J.PELLET           323      8     16
+ FORTRAN MODIF utilitai/detrsd                pellet J.PELLET           582      8     20
+ FORTRAN MODIF utilitai/pecapo               macocco K.MACOCCO          391      2      2
+ FORTRAN SUPPR algeline/mccond                pellet J.PELLET            94      0     94
+ FORTRAN SUPPR algeline/mrcond                pellet J.PELLET            93      0     93
+ FORTRAN SUPPR algeline/mtcond                pellet J.PELLET           138      0    138
+  PYTHON MODIF Messages/algorith8            macocco K.MACOCCO          371      5      1
+  PYTHON MODIF Messages/algorith             macocco K.MACOCCO          347      5      1
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           221     13      3
+  PYTHON MODIF Messages/elements3            macocco K.MACOCCO          422      5      1
+  PYTHON MODIF Messages/indicateur           macocco K.MACOCCO          140     12      1
+  PYTHON MODIF Messages/jeveux              lefebvre J-P.LEFEBVRE       318     74     13
+  PYTHON MODIF Messages/modelisa2             pellet J.PELLET           388      5      2
+  PYTHON MODIF Messages/postrele               vivan L.VIVAN            395     13      1
+  PYTHON MODIF Messages/supervis             macocco K.MACOCCO          374    101      1
+  PYTHON MODIF SD/sd_matr_asse_com            pellet J.PELLET            42      3      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    5        1342      1342             +1342
+ MODIF :  132       40379      1778    1231      +547
+ SUPPR :    3         325               325      -325
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  140       42046      3120    1556     +1564 

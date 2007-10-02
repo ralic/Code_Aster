@@ -1,16 +1,18 @@
       SUBROUTINE MMGEOM(NBDM,NDIM,NNE,NNM,ICOMPL,
-     &                  IGEOM,IDEPL,IDEPM,IVITM,IACCM,
+     &                  IGEOM,IDEPL,IDEPM,IVITM,IVITP,IACCM,
      &                  FFPC,FFPR,GEOME,GEOMM,
      &                  DEPLE,DEPLM,DEPLME,DEPLMM,
-     &                  VITME,ACCME,VITMM,ACCMM)
+     &                  VITME,ACCME,VITMM,ACCMM,
+     &                  IFORM,VITPE,VITPM)
       IMPLICIT NONE
-      INTEGER NBDM,NDIM,NNE,NNM,ICOMPL
-      INTEGER IGEOM,IDEPL,IDEPM,IVITM,IACCM
+      INTEGER NBDM,NDIM,NNE,NNM,ICOMPL,IFORM
+      INTEGER IGEOM,IDEPL,IDEPM,IVITM,IVITP,IACCM
       REAL*8  FFPC(9),FFPR(9),GEOMM(3),GEOME(3),DEPLE(6),DEPLME(6)
       REAL*8  DEPLM(3),DEPLMM(3),ACCME(6),VITME(6),ACCMM(6),VITMM(6)
+      REAL*8  VITPE(6),VITPM(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,15 +96,17 @@ C
         GEOME(I)  = 0.D0
         GEOMM(I)  = 0.D0
         DEPLM(I)  = 0.D0
-        DEPLMM(I) = 0.D0          
+        DEPLMM(I) = 0.D0
+        VITPM(I)  = 0.D0
  9    CONTINUE
       DO 10 I = 1,2*NDIM
         DEPLE(I)  = 0.D0
-        DEPLME(I) = 0.D0 
+        DEPLME(I) = 0.D0
         VITME(I)  = 0.D0 
         ACCME(I)  = 0.D0 
         VITMM(I)  = 0.D0
-        ACCMM(I)  = 0.D0                      
+        ACCMM(I)  = 0.D0
+        VITPE(I)  = 0.D0
  10   CONTINUE
 C
       DO 11 I = 1,NDIM
@@ -126,6 +130,10 @@ C
      &                FFPC(J)*ZR(IDEPL+(J-1)*NBDM+I-1)
           DEPLME(I) = DEPLME(I) +
      &                FFPC(J)*ZR(IDEPM+(J-1)*NBDM+I-1)
+          IF (IFORM.EQ.2) THEN
+          VITPE(I)  = VITPE(I) +
+     &                FFPC(J)*ZR(IVITP+(J-1)*NBDM+I-1)
+          ENDIF
           IF (ICOMPL.EQ.1) THEN 
             VITME(I)  = VITME(I) +
      &                  FFPC(J)*ZR(IVITM+(J-1)*NBDM+I-1)
@@ -143,6 +151,10 @@ C
      &                FFPR(J)*ZR(IDEPL+NNE*NBDM+(J-1)*NDIM+I-1)
           DEPLMM(I) = DEPLMM(I) +
      &                FFPR(J)*ZR(IDEPM+NNE*NBDM+(J-1)*NDIM+I-1)
+          IF (IFORM.EQ.2) THEN
+          VITPM(I)  = VITPM(I) +
+     &                FFPC(J)*ZR(IVITP+NNE*NBDM+(J-1)*NDIM+I-1)
+          ENDIF
           IF (ICOMPL.EQ.1) THEN      
             VITMM(I)  = VITMM(I) +
      &                  FFPR(J)*ZR(IVITM+NNE*NBDM+(J-1)*NDIM+I-1)

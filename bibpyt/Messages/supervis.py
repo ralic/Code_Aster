@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF supervis Messages  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -269,6 +269,106 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 
 64: _("""
   Réserve CPU prévue = %(i1)d secondes
+"""),
+
+65: _("""
+   %(k1)s   %(k2)s   %(k3)s   %(k4)s
+"""),
+ 
+66: _("""
+   %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
+"""),
+ 
+67: _("""
+ Passage numéro %(i1)d
+"""),
+ 
+68: _("""
+ information sur les concepts devant etre créés.
+"""),
+ 
+69: _("""
+   %(k1)s   %(k2)s   %(k3)s   %(k4)s
+"""),
+ 
+70: _("""
+   %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
+"""),
+ 
+71: _("""
+ rappel sur les executions précédentes
+   - il a ete executé %(i1)d procédures et opérateurs.
+"""),
+ 
+72: _("""
+   - l'execution précédente s'est terminée correctement.
+"""),
+ 
+73: _("""
+ 
+   - l'execution précédente s'est terminée en erreur dans la procédure %(k1)s.
+"""),
+ 
+74: _("""
+ 
+   - l'execution précédente s'est terminée en erreur dans l'opérateur %(k1)s.
+"""),
+ 
+75: _("""
+     le concept %(k1)s de type %(k2)s  est peut-etre errone.
+"""),
+ 
+76: _("""
+   - l'execution precedente s'est terminee prematurement dans l'operateur %(k1)s.
+"""),
+ 
+77: _("""
+     le concept %(k1)s de type %(k2)s  a ete néanmoims validé par l'opérateur
+"""),
+ 
+78: _("""
+     Message attache au concept  %(k1)s
+"""),
+ 
+79: _("""
+     Pas de message attache au concept %(k1)s
+"""),
+ 
+80: _("""
+ 
+"""),
+ 
+81: _("""
+ %(k1)s nom symbolique inconnu
+  - nombre de valeurs attendues %(i1)d
+  - valeurs attendues : %(k1)s, %(k2)s,...
+"""),
+ 
+82: _("""
+ L'argument du mot cle "CAS"  est errone.
+ Valeur lue %(k1)s
+ nombre de valeurs attendues %(i1)d
+ valeurs attendues : %(k1)s,%(k2)s, ...
+"""),
+ 
+83: _("""
+ 
+ le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent a un
+fichier
+ dont la taille maximale en octets (%(i1)d) est superieure a limite autorisee :  %(i2)d
+ 
+"""),
+ 
+84: _("""
+ Nom symbolique errone pour un fichier de sortie
+ Valeur lue %(k1)s
+ - nombre de valeurs attendues %(i2)d
+ - valeurs attendues           %(k2)s, %(k3)s
+ 
+"""),
+
+85: _("""
+ information sur les concepts existants.
 """),
 
 }

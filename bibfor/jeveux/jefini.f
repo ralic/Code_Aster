@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,18 +36,20 @@ C     ------------------------------------------------------------------
 C
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
+      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C     ==================================================================
+      INTEGER          VALI(4)         
       CHARACTER*8      KCOND , STAOU
       CHARACTER*24     LADATE
-      CHARACTER*75     CMESS
 C     ------------------------------------------------------------------
 C
       KCOND  = COND ( 1: MIN( LEN(COND) , LEN(KCOND) ) )
-      IF ( KCOND .NE. 'NORMAL  ' .AND. KCOND .NE. 'ERREUR  ' .AND.
-     &     KCOND .NE. 'TEST    '  ) THEN
-         CMESS = 'CONDITION DE CLOTURE '//KCOND//' ERRONEE'
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE IF ( KCOND .EQ. 'NORMAL  ' .OR. KCOND .EQ. 'TEST    ' ) THEN
+      CALL ASSERT (     KCOND .EQ. 'NORMAL  ' .OR. KCOND .EQ. 'ERREUR  '
+     &             .OR. KCOND .NE. 'TEST    '  ) 
+      IF ( KCOND .EQ. 'NORMAL  ' .OR. KCOND .EQ. 'TEST    ' ) THEN
          STAOU = '        '
       ELSE
          STAOU = 'SAUVE   '
@@ -72,12 +74,14 @@ C     -------------  LIBERATION FICHIER --------------------------------
    10   CONTINUE
 C       -----------  DESALLOCATION GESTION DES MARQUES -----------------
         IF ( KDESMA(2) .NE. 0) THEN
-          CALL HPDEALLC (KDESMA(2), IBID, IBID)
+          MCDYN = MCDYN - LGD*LOIS
+          CALL HPDEALLC (KDESMA(2), NBFREE, IBID)
         ELSE IF (KDESMA(1) .NE. 0) THEN
           CALL JJLIBP (KDESMA(1))
         ENDIF  
         IF ( KPOSMA(2) .NE. 0) THEN
-          CALL HPDEALLC (KPOSMA(2), IBID, IBID)
+          MCDYN = MCDYN - LGP*LOIS
+          CALL HPDEALLC (KPOSMA(2), NBFREE, IBID)
         ELSE IF (KPOSMA(1) .NE. 0) THEN
           CALL JJLIBP (KPOSMA(1))
         ENDIF  
@@ -99,6 +103,24 @@ C
         ENDIF
         IFM = IUNIFI('MESSAGE')
         IF (IFM .GT. 0) THEN
+          IF ( LDYN .EQ. 1 ) THEN
+            VALI(1) = MXDYN*LOIS/(1024*1024)
+            VALI(2) = LISZON*LOIS/(1024*1024)
+            VALI(3) = NBDYN
+            VALI(4) = NBFREE
+            WRITE(IFM,*) ' '
+            WRITE(IFM,*) '  STATISTIQUES CONCERNANT L'''
+     &                 //'ALLOCATION DYNAMIQUE :' 
+            WRITE(IFM,*) '    TAILLE CUMULEE MAXIMUM ',VALI(1),
+     &                   ' Mo,' 
+            WRITE(IFM,*) '    DONT ',VALI(2),' Mo POUR LA ZONE'    
+     &                 //' GEREE PAR JEVEUX.' 
+            WRITE(IFM,*) '    NOMBRE TOTAL D''ALLOCATIONS  :',    
+     &                 VALI(3),'.' 
+            WRITE(IFM,*) '    NOMBRE TOTAL DE LIBERATIONS :',    
+     &                 VALI(4),'.' 
+            WRITE(IFM,*) ' '
+          ENDIF         
           CALL ENLIRD(LADATE)
           WRITE(IFM,*) '<I>       FIN D''EXECUTION LE : '//LADATE
 C

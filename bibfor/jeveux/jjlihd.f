@@ -1,7 +1,7 @@
       SUBROUTINE JJLIHD (IDTS,NBVAL,LONOI,GENRI,TYPEI,LTYPI,
      &                   IC,IDO,IDC,IMARQ,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,9 +71,10 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       INTEGER*4          ZI4
       COMMON  / I4VAJE / ZI4(1)
+      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
 C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       CHARACTER*1      TYPEB
-      CHARACTER*75     CMESS
       INTEGER          HDFRSV,HDFTSD,ICONV,IADYN,KDYN
       INTEGER          IRET,JADR,KITAB,NBV,IR,LON,KADM,K,IBID,LTYPB
       INTEGER         IZR,IZC,IZL,IZK8,IZK16,IZK24,IZK32,IZK80,IZI4
@@ -128,7 +129,8 @@ C DEB ------------------------------------------------------------------
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE
           IF ( KDYN .NE. 0 ) THEN
-            CALL HPDEALLC ( KDYN , IBID , IBID )
+            MCDYN = MCDYN - LON
+            CALL HPDEALLC ( KDYN , NBFREE , IBID )
           ELSE  IF ( KADM .NE. 0 ) THEN
             CALL JJLIBP (KADM)
           ENDIF  
@@ -147,8 +149,7 @@ C DEB ------------------------------------------------------------------
         IRET = HDFRSV(IDTS,NBV,K1ZON(KITAB),ICONV)
       ENDIF
       IF (IRET .NE. 0) THEN
-        CMESS='RELECTURE AU FORMAT HDF IMPOSSIBLE '
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESS('F','JEVEUX_51')
       ENDIF
 C FIN ------------------------------------------------------------------
       END

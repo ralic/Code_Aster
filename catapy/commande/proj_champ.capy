@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,17 +22,28 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
     if CHAM_NO_REFE     != None : return cham_no_sdaster
     raise AsException("type de concept resultat non prevu")
 
+
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
                 fr="Projeter les champs aux noeuds d'une SD résultat de type evol_xxx sur un autre maillage",
-#
+
+
          METHODE         =SIMP(statut='f',typ='TXM',defaut="ELEM",
                                into=("NUAGE_DEG_0","NUAGE_DEG_1","ELEM",) ),
+
+
+         # Méthode NUAGE_xxx :
+         #--------------------
          b_nuage         =BLOC(condition="(METHODE=='NUAGE_DEG_1') or (METHODE=='NUAGE_DEG_0')",
                                fr="Lissage d'un nuage de points",
            CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
            CHAM_NO_REFE    =SIMP(statut='o',typ=cham_no_sdaster),
          ),
+
+
+
+         # Méthode ELEM :
+         #--------------------
          b_elem          =BLOC(condition="METHODE=='ELEM'",
                               fr="Utilisation des fonctions de forme du maillage initial",
            regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','LIST_INST','LIST_FREQ','LIST_ORDRE'),
@@ -51,9 +62,8 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
 
-#          POUR IMPOSER LA NUMEROTATION DES DDLS :
-#          ------------------------------------------------------------------
-           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster) ),
+           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),
+                fr="Utile en dynamique pour pouvoir imoser la numérotation des cham_no."),
 
 
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -67,7 +77,8 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
 
 
-           CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
+           CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",),
+                fr="Pour indiquer au programme le type de projection souhaité"),
            DISTANCE_MAX    =SIMP(statut='f',typ='R',
                 fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
            TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
@@ -80,10 +91,16 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                 fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
 
            PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
-                fr="Si le résultat est un mode_xxx ou une base_xxx, on peut prolonger"
-                   +" les champs par zéro la ou la projection ne donne pas de valeurs."),
+                fr="Pour prolonger les champs par zéro là ou la projection ne donne pas de valeurs."),
 
          ),
+
+
+
+         # Mots clés utilisables avec les 2 méthodes :
+         #---------------------------------------------
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 
          VIS_A_VIS       =FACT(statut='f',max='**',
            regles=(AU_MOINS_UN('TOUT_1','GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
@@ -103,7 +120,4 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                 fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
                    " aux noeuds du MODELE_2 avant la projection."),
          ),
-
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

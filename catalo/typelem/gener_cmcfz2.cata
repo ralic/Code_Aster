@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+%& MODIF TYPELEM  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,15 +148,15 @@ MATRICE__
 
 OPTION__
     CHAR_MECA_CONT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
-                                     ENEUTR   PUSULAR
+                                     ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FROT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
-                                     ENEUTR   PUSULAR
+                                     ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MVECTUR  PVECTUR
     RIGI_CONT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
-                                     ENEUTR   PUSULAR
+                                     ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MMATUUR  PMATUUR
     RIGI_FROT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
-                                     ENEUTR   PUSULAR
+                                     ENEUTR   PUSULAR  DDL_MECA PVITE_P
                               OUT__  MMATUUR  PMATUUR
 

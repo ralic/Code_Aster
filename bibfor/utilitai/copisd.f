@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,27 +210,19 @@ C --------------------------------------------------------------------
 C     ---------------------------------------------
         K191 = SD1
         K192 = SD2
-        CALL JEDUP1(K191//'.DESC',BAS2,K192//'.DESC')
-        CALL JEDUP1(K191//'.COND',BAS2,K192//'.COND')
+        CALL JEDUP1(K191//'.CCID',BAS2,K192//'.CCID')
+        CALL JEDUP1(K191//'.CCJJ',BAS2,K192//'.CCJJ')
+        CALL JEDUP1(K191//'.CCLL',BAS2,K192//'.CCLL')
+        CALL JEDUP1(K191//'.CCVA',BAS2,K192//'.CCVA')
         CALL JEDUP1(K191//'.CONL',BAS2,K192//'.CONL')
-        CALL JEDUP1(K191//'.JDRF',BAS2,K192//'.JDRF')
-        CALL JEDUP1(K191//'.JDDC',BAS2,K192//'.JDDC')
-        CALL JEDUP1(K191//'.JDFF',BAS2,K192//'.JDFF')
-        CALL JEDUP1(K191//'.JDHF',BAS2,K192//'.JDHF')
-        CALL JEDUP1(K191//'.JDPM',BAS2,K192//'.JDPM')
-        CALL JEDUP1(K191//'.JDES',BAS2,K192//'.JDES')
-        CALL JEDUP1(K191//'.JDVL',BAS2,K192//'.JDVL')
-        CALL JEDUP1(K191//'.LILI',BAS2,K192//'.LILI')
+        CALL JEDUP1(K191//'.DESC',BAS2,K192//'.DESC')
+        CALL JEDUP1(K191//'.DIGS',BAS2,K192//'.DIGS')
         CALL JEDUP1(K191//'.LIME',BAS2,K192//'.LIME')
         CALL JEDUP1(K191//'.REFA',BAS2,K192//'.REFA')
-        CALL JEDUP1(K191//'.VALM',BAS2,K192//'.VALM')
         CALL JEDUP1(K191//'.UALF',BAS2,K192//'.UALF')
         CALL JEDUP1(K191//'.VALF',BAS2,K192//'.VALF')
         CALL JEDUP1(K191//'.VALF',BAS2,K192//'.WALF')
-        CALL JEDUP1(K191//'.CCID',BAS2,K192//'.CCID')
-        CALL JEDUP1(K191//'.CCLL',BAS2,K192//'.CCLL')
-        CALL JEDUP1(K191//'.CCJJ',BAS2,K192//'.CCJJ')
-        CALL JEDUP1(K191//'.CCVA',BAS2,K192//'.CCVA')
+        CALL JEDUP1(K191//'.VALM',BAS2,K192//'.VALM')
 
 C --------------------------------------------------------------------
       ELSE IF (TYPESD.EQ.'TABLE') THEN

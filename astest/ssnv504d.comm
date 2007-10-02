@@ -1,4 +1,4 @@
-# MODIF  DATE 07/08/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@
 # CONTACT : METHODE CONTINUE
 #
 
-DEBUT(CODE=_F(NOM='SSNV504D',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSNV504D',NIV_PUB_WEB='INTERNET'));
 
 
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES
@@ -38,17 +38,17 @@ MAILL1=LIRE_MAILLAGE();
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
                   CREA_GROUP_MA=_F(NOM='TOUT',
-                                   UNION=('LOPIN','FILIERE'),),
+                                   UNION=('LOPIN','FILIERE')),
                   CREA_GROUP_NO=(_F(GROUP_MA='LJA',
-                                    NOM='LIM1',),
+                                    NOM='LIM1'),
                                  _F(GROUP_MA='LIJ',
-                                    NOM='LIM2',),
+                                    NOM='LIM2'),
                                  _F(GROUP_MA='LHI',
-                                    NOM='LIM3',),
+                                    NOM='LIM3'),
                                  _F(GROUP_MA='LMN',
-                                    NOM='LMN',),
+                                    NOM='LMN'),
                                  _F(GROUP_MA='LNK',
-                                    NOM='LNK',),),);
+                                    NOM='LNK')));
                                     
 #_____________________________________________________________________
 #
@@ -59,7 +59,7 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
 MO=AFFE_MODELE(MAILLAGE=MAILL1,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS',),);
+                       MODELISATION='AXIS'));
                        
 #
 # REORIENTATION DU MAILLAGE
@@ -67,13 +67,11 @@ MO=AFFE_MODELE(MAILLAGE=MAILL1,
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
-                     ORIE_PEAU_2D=_F(GROUP_MA=('SMAI1','SESC1'),),
-                     );
+                     ORIE_PEAU_2D=_F(GROUP_MA=('SMAI1','SESC1')));
 
 MAILL1=MODI_MAILLAGE(reuse =MAILL1,
                      MAILLAGE=MAILL1,
-                     ORIE_PEAU_2D=_F(GROUP_MA=('SMAI2','SESC2'),),
-                     );
+                     ORIE_PEAU_2D=_F(GROUP_MA=('SMAI2','SESC2')));
                      
 #____________________________________________________________________
 #
@@ -82,16 +80,16 @@ MAILL1=MODI_MAILLAGE(reuse =MAILL1,
 #
 
 MLOPIN=DEFI_MATERIAU(ELAS=_F(E=5000.0,
-                             NU=0.45000000000000001,),);
+                             NU=0.45000000000000001));
 
 MFILIERE=DEFI_MATERIAU(ELAS=_F(E=2.E5,
-                               NU=0.29999999999999999,),);
+                               NU=0.29999999999999999));
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                  AFFE=(_F(GROUP_MA='LOPIN',
-                          MATER=MLOPIN,),
+                          MATER=MLOPIN),
                        _F(GROUP_MA='FILIERE',
-                          MATER=MFILIERE,),),);
+                          MATER=MFILIERE)));
                           
 #_____________________________________________________________________
 #
@@ -102,20 +100,16 @@ CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_NO='LIM1',
-                                DX=0.0,
-                                DY=0.0,),
+                                DX=0.0, DY=0.0),
                              _F(GROUP_NO='LIM2',
-                                DX=0.0,
-                                DY=0.0,),
+                                DX=0.0, DY=0.0),
                              _F(GROUP_NO='LIM3',
-                                DX=0.0,
-                                DY=0.0,),
+                                DX=0.0, DY=0.0),
                              _F(GROUP_NO='LNK',
-                                DX=0.0,),),);
+                                DX=0.0)));
 
 CH0=AFFE_CHAR_MECA(MODELE=MO,
-                   DDL_IMPO=_F(GROUP_NO='LMN',
-                               DY=1.0,),);
+                   DDL_IMPO=_F(GROUP_NO='LMN', DY=1.0));
 
 CH2=AFFE_CHAR_MECA(MODELE=MO,
                    CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
@@ -123,15 +117,13 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                                METHODE='CONTINUE',
                                ITER_GEOM_MAXI=1,
                                GROUP_MA_MAIT='SMAI1',
-                               GROUP_MA_ESCL='SESC1',
-                              ),
-
+                               GROUP_MA_ESCL='SESC1'),
                             _F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='CONTINUE',
                                ITER_GEOM_MAXI=1,
                                GROUP_MA_ESCL='SMAI2',
-                               GROUP_MA_MAIT='SESC2',),),);
+                               GROUP_MA_MAIT='SESC2')));
 
 #_____________________________________________________________________
 #
@@ -142,34 +134,34 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
 DPLY=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0),
                    PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
+                   PROL_GAUCHE='LINEAIRE');
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=5.0,
-                                     PAS=5.0,),
+                                     PAS=5.0),
                                   _F(JUSQU_A=20.0,
-                                     PAS=5.0,),
+                                     PAS=5.0),
                                   _F(JUSQU_A=50.0,
-                                     PAS=5.0,),
+                                     PAS=5.0),
                                   _F(JUSQU_A=70.0,
-                                     PAS=5.0,),
+                                     PAS=5.0),
                                   _F(JUSQU_A=140.0,
-                                     PAS=5.0,),
+                                     PAS=5.0),
                                   _F(JUSQU_A=155.0,
-                                     PAS=5.0,),),);
+                                     PAS=5.0)));
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH0,
-                          FONC_MULT=DPLY,),
-                       _F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),),
+                          FONC_MULT=DPLY),
+                       _F(CHARGE=CH1),
+                       _F(CHARGE=CH2)),
                 COMP_INCR=_F(RELATION='ELAS',
-                             TOUT='OUI',),
-                INCREMENT=_F(LIST_INST=L_INST,),
+                             TOUT='OUI'),
+                INCREMENT=_F(LIST_INST=L_INST),
                 NEWTON=_F(MATRICE='TANGENTE',
-                          REAC_ITER=1,),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
+                          REAC_ITER=1),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07));
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,
@@ -254,7 +246,53 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    PARA='ITER_GLOB',
                    VALE_I=1,
                    PRECISION=1.E-3,
-                   REFERENCE='NON_REGRESSION',),),);
+                   REFERENCE='NON_REGRESSION')));
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=27,
+                   NOM_CHAM='VALE_CONT',
+                   NOM_CMP='CONT',
+                   NOEUD='N150',
+                   VALE=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-6,
+                   REFERENCE='ANALYTIQUE'),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=28,
+                   NOM_CHAM='VALE_CONT',
+                   NOM_CMP='CONT',
+                   NOEUD='N150',
+                   VALE=0,
+                   PRECISION=1.E-6,
+                   CRITERE='ABSOLU',
+                   REFERENCE='ANALYTIQUE'),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=29,
+                   NOM_CHAM='VALE_CONT',
+                   NOM_CMP='CONT',
+                   NOEUD='N150',
+                   VALE=1,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-6,
+                   REFERENCE='ANALYTIQUE'),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=30,
+                   NOM_CHAM='VALE_CONT',
+                   NOM_CMP='CONT',
+                   NOEUD='N150',
+                   VALE=1,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-6,
+                   REFERENCE='ANALYTIQUE'),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=31,
+                   NOM_CHAM='VALE_CONT',
+                   NOM_CMP='CONT',
+                   NOEUD='N150',
+                   VALE=1,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-6,
+                   REFERENCE='ANALYTIQUE')));
 
 FIN();
 #

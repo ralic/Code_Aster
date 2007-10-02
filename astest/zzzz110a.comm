@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE VABHHTS J.PELLET
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
@@ -28,7 +28,7 @@ DEBUT(CODE=_F(NOM='ZZZZ110A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #---------------------------------------------------------------------------------
 # Description du test :
 #-----------------------
-# 0) Les modeles CARRE1 et CARRE2 sont 2 maillages differents du meme carre ABCD
+# 0) On maille de 2 facons differentes un meme carre ABCD
 #    situe dans l'espace [0,1]X[0,1]       D--C
 #    AC est une diagonale de ce carre.     !  !
 #                                          A--B
@@ -38,13 +38,15 @@ DEBUT(CODE=_F(NOM='ZZZZ110A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # 2) le champ que l'on projette d'un modele sur l'autre est un champ analytique de
 #     temperature : T= 3. + X + Y
 #    On doit donc avoir : T(A)=3 ; T(B)=4 ; T(C)=5
+# 3) On se sert aussi de ce test pour illustrer (et valider) la projection
+#    d'un modele 2D axis (OXY) sur un modele 3D d'axe OZ
+#     3.1 : projection du champ de temperature : T= 3. + X + Y
+#     3.2 : projection d'un cham_elem de contraintes
 #---------------------------------------------------------------------------------
 
 FTEMP = FORMULE(NOM_PARA=('X','Y','INST'),VALE='3. + X + Y')
 PRE_GIBI(UNITE_GIBI=19,UNITE_MAILLAGE=20)
 MA=LIRE_MAILLAGE(UNITE=20)
-XX1=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_GEOM_R',MAILLAGE=MA,NOM_CHAM='GEOMETRIE',INFO=1,)
-DETRUIRE(CONCEPT=_F(NOM=XX1),INFO=1)
 
 
 # creation des 4 modeles CARRE1, CARRE2, AC, CUBE1 :
@@ -61,23 +63,23 @@ XX=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
                   AFFE=_F(GROUP_MA='CARRE1', NOM_CMP=('TEMP',), VALE_F=(FTEMP,))  )
 T_CARRE1=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
                  AFFE=_F(INST=1., CHAM_GD = XX)  )
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
 XX=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
                   AFFE=_F(GROUP_MA='CARRE2', NOM_CMP=('TEMP',), VALE_F=(FTEMP,))  )
 T_CARRE2=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
                  AFFE=_F(INST=1., CHAM_GD = XX)  )
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
 XX=CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
                   AFFE=_F(GROUP_MA='AC', NOM_CMP=('TEMP',), VALE_F=(FTEMP,))  )
 T_AC=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
                  AFFE=_F(INST=1., CHAM_GD = XX)  )
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
 #=================================================================================
-# 1) projection d'un maillage 2D sur un maillage 2D  (CARRE1 -> CARRE2)
+# 2.1) projection d'un maillage 2D sur un maillage 2D  (CARRE1 -> CARRE2)
 #=================================================================================
 XX=PROJ_CHAMP(RESULTAT=T_CARRE1,METHODE='ELEM',  MODELE_1=CARRE1,MODELE_2=CARRE2, CAS_FIGURE='2D')
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
@@ -88,11 +90,11 @@ TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    NOEUD='N364', VALE=4.66666, REFERENCE='ANALYTIQUE'),) #   N364: X=1. Y=0.666666
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
 #=================================================================================
-# 2) projection d'un maillage 2D sur un maillage 2D  (CARRE2 -> CARRE1)
+# 2.2) projection d'un maillage 2D sur un maillage 2D  (CARRE2 -> CARRE1)
 #=================================================================================
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=CARRE1,
               VIS_A_VIS=_F(GROUP_MA_1='CARRE2',GROUP_MA_2='CARRE1', CAS_FIGURE='2D'))
@@ -104,11 +106,11 @@ TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    NOEUD='N355', VALE=3.75, REFERENCE='ANALYTIQUE'),) # N355: X=0.5 Y=0.25
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
 #=================================================================================
-# 3) projection d'un maillage 2D sur un maillage filaire  (CARRE2 -> AC)
+# 2.3) projection d'un maillage 2D sur un maillage filaire  (CARRE2 -> AC)
 #=================================================================================
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=AC, CAS_FIGURE='2D' )
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
@@ -117,12 +119,12 @@ TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    NOEUD='N356', VALE=4.0, REFERENCE='ANALYTIQUE'),) # N356: X=0.5 Y=0.5
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
 
 #=================================================================================
-# 4) projection d'un maillage filaire sur un maillage 2D  (AC -> CARRE2)
+# 2.4) projection d'un maillage filaire sur un maillage 2D  (AC -> CARRE2)
 #=================================================================================
 XX=PROJ_CHAMP(RESULTAT=T_AC,METHODE='ELEM',  MODELE_1=AC,MODELE_2=CARRE2, CAS_FIGURE='1.5D',ALARME='NON' )
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
@@ -133,30 +135,158 @@ TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    GROUP_NO='C', VALE=5.0, REFERENCE='ANALYTIQUE'),)
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    NOEUD='N363', VALE=3.333333, REFERENCE='ANALYTIQUE'),)  # N363: X=0.33333 Y=0.
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
 
 
 #=================================================================================
-# 5) projection d'un maillage axis sur un solide 3D d'axe Oz:
+# 3) Projection d'un maillage axis sur un solide 3D d'axe Oz:
 #=================================================================================
 #   fx= sqrt(x**2 + y**2)
 #   fy= z
 FX = FORMULE(NOM_PARA=('X','Y'),VALE='sqrt(X**2+Y**2)')
 FY = FORMULE(NOM_PARA=('Z'),VALE='Z')
+
+# 3.1) Projection d'un champ de temperature :
+#--------------------------------------------
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=CUBE1, CAS_FIGURE='2D',
               TRANSF_GEOM_2=(FX,FY,),      )
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    NOEUD='N341', VALE=3.69371, REFERENCE='ANALYTIQUE'),) # N341: X=1/2  Y=-1/6   Z=1/6
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
 
-# la meme chose avec VIS_A_VIS :
-#--------------------------------
+# 3.2) la meme chose avec VIS_A_VIS :
+#-------------------------------------
 XX=PROJ_CHAMP(RESULTAT=T_CARRE2,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=CUBE1,
               VIS_A_VIS=_F(GROUP_MA_1='CARRE2',GROUP_MA_2='CUBE1', CAS_FIGURE='2D',TRANSF_GEOM_2=(FX,FY,),))
 TEST_RESU(RESU=_F( RESULTAT=XX,NOM_CHAM='TEMP',INST=1.,NOM_CMP='TEMP',
                    NOEUD='N341', VALE=3.69371, REFERENCE='ANALYTIQUE'),) # N341: X=1/2  Y=-1/6   Z=1/6
-DETRUIRE(CONCEPT=_F(NOM=XX),INFO=1)
+DETRUIRE(CONCEPT=_F(NOM=XX))
+
+
+# 3.3) Projection d'un champ de contraintes (probleme du changement de repere) :
+#--------------------------------------------------------------------------------
+DETRUIRE(CONCEPT=_F(NOM=(CARRE2,CUBE1)))
+CARRE2=AFFE_MODELE(MAILLAGE=MA, AFFE=_F( GROUP_MA='CARRE2',PHENOMENE='MECANIQUE',MODELISATION='D_PLAN'))
+CUBE1 =AFFE_MODELE(MAILLAGE=MA, AFFE=_F( GROUP_MA='CUBE1' ,PHENOMENE='MECANIQUE',MODELISATION='3D'))
+
+sixx = FORMULE(NOM_PARA=('X','Y'),VALE='2.')
+siyy = FORMULE(NOM_PARA=('X','Y'),VALE='Y')
+sizz = FORMULE(NOM_PARA=('X','Y'),VALE='1.')
+sixy = FORMULE(NOM_PARA=('X','Y'),VALE='0.')
+
+XX1=  CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELNO_NEUT_F', MODELE=CARRE2,  PROL_ZERO='OUI',   INFO=1,
+                 AFFE=_F( GROUP_MA = 'CARRE2', NOM_CMP = ('X1','X2','X3','X4'), VALE_F  = (sixx,siyy,sizz,sixy)))
+XXG=  CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_GEOM_R',MAILLAGE=MA,NOM_CHAM='GEOMETRIE')
+XXGN= CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELNO_GEOM_R',MODELE=CARRE2, CHAM_GD=XXG,  INFO=1 )
+XXGN2=CREA_CHAMP(OPERATION='DISC', TYPE_CHAM='ELNO_GEOM_R',MODELE=CUBE1, CHAM_GD=XXG,  INFO=1 )
+
+XX2=  CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELNO_NEUT_R', INFO=1,  CHAM_F=XX1,  CHAM_PARA=( XXGN,)   )
+XX2a= CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R', MODELE=CARRE2,  PROL_ZERO='OUI', INFO=1, OPTION='SIEF_ELNO_ELGA',
+                 ASSE=_F(TOUT='OUI', CHAM_GD= XX2, NOM_CMP=('X1','X2','X3','X4'), NOM_CMP_RESU=('SIXX','SIYY','SIZZ','SIXY',)))
+
+
+XX3=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_ELAS', NOM_CHAM='SIEF_ELNO',
+                 AFFE=_F(INST=1., CHAM_GD = XX2a)  )
+XX4=PROJ_CHAMP(RESULTAT=XX3,METHODE='ELEM',  MODELE_1=CARRE2,MODELE_2=CUBE1, CAS_FIGURE='2D', PROL_ZERO='OUI',
+               TRANSF_GEOM_2=(FX,FY,),      )
+XX5=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',INFO=1, RESULTAT=XX4, NOM_CHAM='SIEF_ELNO', INST=1.)
+
+# 3.3.1) passage du tenseur des contraintes du repere axis (oy) au repere 3D (OZ):
+#---------------------------------------------------------------------------------
+import Numeric, math
+
+def cyl2cart(P,sigcyl,epsilon=1.e-10):
+      """
+      Passage d'une repere cylindrique a un repere cartesien 3D :
+      Soit un calcul fait en axisymetrique (axe = oy)
+      On dispose d'un tenseur de contrainte axis (sigcyl) (sixx,siyy,sizz,sixy)
+      On veut calculer le tenseur de contraintes cartesien 3D au point P (x,y,z)
+      L'axisymetrie du calcul 3D est autour de OZ (=oy).
+      Retourne le tenseur 3D (sixx,siyy,sizz,sixy,siyz,sixz)
+
+      epsilon : distance a l'axe en deca de laquelle, les points sont consideres comme etant sur l'axe (pb atan2)
+      """
+
+      assert len(sigcyl)==4,sigcyl
+      assert len(P)==3,P
+
+      sig1=Numeric.zeros( (3,3), Numeric.Float32)
+      sig1[0][0]=sigcyl[0]  # sixx
+      sig1[2][2]=sigcyl[1]  # siyy
+      sig1[1][1]=sigcyl[2]  # sizz
+      sig1[0][2]=sigcyl[3]  # sixy
+      sig1[2][0]=sigcyl[3]  # sixy
+
+      if sqrt(P[1]**2+P[0]**2) < epsilon : # on est tout pres de l'axe, theta n'est pas determine
+          theta=0.
+      else :
+          theta=math.atan2(P[1],P[0])
+      sig2=change_rep(sig1,theta)
+      result= (sig2[0][0],sig2[1][1],sig2[2][2],sig2[0][1],sig2[1][2],sig2[0][2])
+      return result
+
+
+def change_rep(tens2,theta):
+    """ retourne le tenseur d'ordre 2 dans une rotation de theta autour de Oz"""
+    c=math.cos(theta)
+    s=math.sin(theta)
+
+    # P : matrice de rotation pour un vecteur de R3 autour de Oz :
+    P=Numeric.zeros( (3,3), Numeric.Float32)
+    P[0][0]=c
+    P[1][1]=c
+    P[2][2]=1
+    P[0][1]=s
+    P[1][0]=-s
+
+    Q=Numeric.dot(tens2,P)
+    R=Numeric.dot(Numeric.transpose(P),Q)
+
+    return R
+
+
+if 0 :  # petit test
+    sigcyl=(1.,2.,3.,0.1)
+    M=(2,-2,54)
+    print cyl2cart(M,sigcyl)
+
+#---------------------------------------------------------------------------------
+def fff(cmp,x,y,sixx,siyy,sizz,sixy):
+    result=cyl2cart((x,y,0.),(sixx,siyy,sizz,sixy))
+    if cmp=='SIXX' : return float(result[0])
+    if cmp=='SIYY' : return float(result[1])
+    if cmp=='SIZZ' : return float(result[2])
+    if cmp=='SIXY' : return float(result[3])
+    if cmp=='SIYZ' : return float(result[4])
+    if cmp=='SIXZ' : return float(result[5])
+
+SIXX = FORMULE(NOM_PARA=('X','Y','SIXX','SIYY','SIZZ','SIXY'),VALE='fff("SIXX",X,Y,SIXX,SIYY,SIZZ,SIXY)')
+SIYY = FORMULE(NOM_PARA=('X','Y','SIXX','SIYY','SIZZ','SIXY'),VALE='fff("SIYY",X,Y,SIXX,SIYY,SIZZ,SIXY)')
+SIZZ = FORMULE(NOM_PARA=('X','Y','SIXX','SIYY','SIZZ','SIXY'),VALE='fff("SIZZ",X,Y,SIXX,SIYY,SIZZ,SIXY)')
+SIXY = FORMULE(NOM_PARA=('X','Y','SIXX','SIYY','SIZZ','SIXY'),VALE='fff("SIXY",X,Y,SIXX,SIYY,SIZZ,SIXY)')
+SIYZ = FORMULE(NOM_PARA=('X','Y','SIXX','SIYY','SIZZ','SIXY'),VALE='fff("SIYZ",X,Y,SIXX,SIYY,SIZZ,SIXY)')
+SIXZ = FORMULE(NOM_PARA=('X','Y','SIXX','SIYY','SIZZ','SIXY'),VALE='fff("SIXZ",X,Y,SIXX,SIYY,SIZZ,SIXY)')
+
+XX6=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELNO_NEUT_F', MODELE=CUBE1,  PROL_ZERO='OUI',   INFO=1,
+     AFFE=_F( GROUP_MA = 'CUBE1', NOM_CMP = ('X1','X2','X3','X4','X5','X6'), VALE_F  = (SIXX,SIYY,SIZZ,SIXY,SIYZ,SIXZ)))
+XX7=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELNO_NEUT_R', INFO=1,  CHAM_F=XX6,  CHAM_PARA=( XXGN2,XX5)   )
+XX8=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELNO_SIEF_R', MODELE=CUBE1,  PROL_ZERO='OUI', INFO=1, OPTION='SIEF_ELNO_ELGA',
+      ASSE=_F(TOUT='OUI', CHAM_GD= XX7, NOM_CMP=('X1','X2','X3','X4','X5','X6'), NOM_CMP_RESU=('SIXX','SIYY','SIZZ','SIXY','SIYZ','SIXZ')))
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIXX', MAILLE='M24', NOEUD='N258', VALE=1.5,    REFERENCE='NON_REGRESSION'),) # N258: X=-1/3  Y=-1/3   Z=1/6
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIYY', MAILLE='M24', NOEUD='N258', VALE=1.5,    REFERENCE='NON_REGRESSION'),) # N258: X=-1/3  Y=-1/3   Z=1/6
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIZZ', MAILLE='M24', NOEUD='N258', VALE=1./6.,  REFERENCE='ANALYTIQUE'),)     # N258: X=-1/3  Y=-1/3   Z=1/6
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIXX', MAILLE='M216', NOEUD='N33', VALE=2.,     REFERENCE='ANALYTIQUE'),) # N33: X=-1/3  Y=0   Z=1
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIYY', MAILLE='M216', NOEUD='N33', VALE=1.,     REFERENCE='ANALYTIQUE'),) # N33: X=-1/3  Y=0   Z=1
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIZZ', MAILLE='M216', NOEUD='N33', VALE=1.,     REFERENCE='ANALYTIQUE'),) # N33: X=-1/3  Y=0   Z=1
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIXX', MAILLE='M200', NOEUD='N108', VALE=1.,    REFERENCE='ANALYTIQUE'),)    # N108: X=0  Y=1/2   Z=2/3
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIYY', MAILLE='M200', NOEUD='N108', VALE=2.,    REFERENCE='ANALYTIQUE'),)    # N108: X=0  Y=1/2   Z=2/3
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=XX8, NOM_CMP='SIZZ', MAILLE='M200', NOEUD='N108', VALE=2./3., REFERENCE='ANALYTIQUE'),)    # N108: X=0  Y=1/2   Z=2/3
+
+DETRUIRE(CONCEPT=_F(NOM=(XX1,XX2,XX2a,XX3,XX4,XX5,XX6,XX7,XX8,XXG,XXGN,XXGN2)))
 
 
 FIN()

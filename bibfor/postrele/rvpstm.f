@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 02/10/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,16 +82,14 @@ C
 C  VARIABLES LOCALES
 C  -----------------
 C
-      CHARACTER*24 NVALE,NPCMP,NPNBN,NPADR,NABSC,NNOCP,NTAB
-      CHARACTER*4  DOCUL,DOCU
-C
-      INTEGER AVALE,APNBN,APADR,AMOYE,ADESC,AABSC,ATAB,ADR1,ADR2
-      INTEGER DEB,FIN,LMOYE,NBCP,IFR,NBCO,NBSP,NBOC,NBSGT
-      INTEGER L1,L2,L3,L4,L5,L6,L7,IOC,ICO,ISGT,ISP,K,I,N
-C
-C
-      REAL*8 M1,M2,MA,MI,S1,S2,T1,T2,S12,L,T12,SMIL
+      INTEGER     AVALE,APNBN,APADR,AMOYE,ADESC,AABSC,ATAB,ADR1,ADR2
+      INTEGER     DEB,FIN,LMOYE,NBCP,IFR,NBCO,NBSP,NBOC,NBSGT
+      INTEGER     L1,L2,L3,L4,L5,L6,L7,IOC,ICO,ISGT,ISP,K,I,N, INOE
+      REAL*8      M1,M2,MA,MI,S1,S2,T1,T2,S12,XL,T12,SMIL
+      LOGICAL     DEJA
       CHARACTER*1 K1BID,BL
+      CHARACTER*4  DOCUL,DOCU
+      CHARACTER*24 NVALE,NPCMP,NPNBN,NPADR,NABSC,NNOCP,NTAB
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
@@ -131,6 +129,7 @@ C
       L1 = NBCO*L2
       L3 = 2*L1
 C
+      IF (L2.GT.6) CALL U2MESS('F','POSTRELE_7')
       LMOYE = 6*NBCP*NBCO*NBSP
       FIN   = 0
 C
@@ -141,46 +140,18 @@ C
          CALL JEVEUO(JEXNUM(SDMOYE,IOC),'E',AMOYE)
          CALL JELIRA(JEXNUM(NABSC ,IOC),'LONMAX',NBSGT,K1BID)
          CALL JEVEUO(JEXNUM(NABSC ,IOC),'L',AABSC)
+         DEJA = .FALSE.
 C
          NBSGT = NBSGT - 1
          IF ( NBSGT .EQ. 0 ) CALL U2MESS('F','POSTRELE_6')
          DEB   = FIN + 1
          FIN   = DEB + NBSGT
 C
-         IF ( (DOCU .EQ. 'CHLM') .OR. (DOCUL .NE. 'LSTN') ) THEN
-C
-            FIN = FIN - 1
-C
-         ENDIF
-C
-C     /* LONGEUR */
-C
-C
-         IF ( DOCUL .NE. 'SGTD' ) THEN
-C
-            IF ( DOCUL .EQ. 'ARCC' ) THEN
-C
-               CALL JEVEUO(SDLIEU(1:19)//'.DESC','L',ADESC)
-C
-               L = 1.0D0/(ZR(ADESC + 3-1)*(ZR(ADESC+5-1)-ZR(ADESC+4-1)))
-C
-            ELSE
-C
-               L = 1.0D0/( ZR(AABSC+NBSGT) - ZR(AABSC) )
-C
-            ENDIF
-C
-         ELSE
-C
-            L = 1.0D0/( ZR(AABSC+NBSGT) - ZR(AABSC) )
-C
-         ENDIF
-C
-         IF (L2.GT.6) CALL U2MESS('F','POSTRELE_7')
+         IF ((DOCU.EQ.'CHLM').OR.(DOCUL.NE.'LSTN')) FIN = FIN - 1
 C
 C     /* VECTEUR INTER */
 C
-         CALL WKVECT(NTAB,'V V R',L3*(NBSGT+1),ATAB)
+         CALL WKVECT ( NTAB, 'V V R', L3*(NBSGT+1), ATAB )
 C
          IF ( (DOCUL .EQ. 'LSTN') .OR. (DOCU .EQ. 'CHNO') ) THEN
 C
@@ -207,7 +178,7 @@ C
 230                  CONTINUE
 C
                      IF ( LLL .EQ. 0 ) THEN
-                        T1 = 0.D0
+                        T1 = R8VIDE()
                      ELSE
                         T1 = T1/LLL
                      ENDIF
@@ -237,16 +208,8 @@ C
 C
                      ADR2 = (ISGT-1)*L3 + L5 + L1 + K
 C
-                     IF(ZR(AVALE+ADR1+2*L5+K-2).EQ.R8VIDE()) THEN
-                        ZR(ATAB + ADR2   -1) = 0.D0
-                     ELSE
-                        ZR(ATAB + ADR2   -1) = ZR(AVALE+ADR1+2*L5+K-2)
-                     ENDIF
-                     IF(ZR(AVALE+ADR1+2*L5+L2+K-2).EQ.R8VIDE()) THEN
-                        ZR(ATAB + ADR2+L1-1) = 0.D0
-                     ELSE
-                        ZR(ATAB+ADR2+L1-1) = ZR(AVALE+ADR1+2*L5+L2+K-2)
-                     ENDIF
+                     ZR(ATAB+ADR2   -1) = ZR(AVALE+ADR1+2*L5   +K-2)
+                     ZR(ATAB+ADR2+L1-1) = ZR(AVALE+ADR1+2*L5+L2+K-2)
 C
 260               CONTINUE
 C
@@ -256,10 +219,11 @@ C
 C
          ENDIF
 C
-C
 C     /* CONTRIBUTION ELEMENTAIRE */
 C
          DO 110, ICMP = 1, NBCP, 1
+C
+            XL = 0.D0
 C
             DO 120, ICO = 1, NBCO, 1
 C
@@ -272,18 +236,29 @@ C
                   M2 =  0.0D0
                   MA = -1.0D50
                   MI =  1.0D50
+                  INOE = 0
 C
                   DO 140, ISGT = 1, NBSGT, 1
-C
-                     S1  = ZR(AABSC + ISGT-1) - ZR(AABSC)
-                     S2  = ZR(AABSC + ISGT+1-1) - ZR(AABSC)
-                     S12 = S2 - S1
 C
                      ADR1 = L3*(ISGT-1) + L5 + L6 + ICMP
                      ADR2 = ADR1 + L1
 C
                      T1 = ZR(ATAB-1 + L1 + ADR1)
                      T2 = ZR(ATAB-1 + L1 + ADR2)
+C
+                     IF( T1 .EQ. R8VIDE() ) THEN
+                       INOE = INOE + 1
+                       GOTO 140
+                     ENDIF
+                     IF( T2 .EQ. R8VIDE() ) THEN
+                        IF( ISGT .EQ. NBSGT ) INOE = INOE + 1
+                       GOTO 140
+                     ENDIF
+C
+                     S1  = ZR(AABSC + ISGT  -1) - ZR(AABSC)
+                     S2  = ZR(AABSC + ISGT+1-1) - ZR(AABSC)
+                     S12 = S2 - S1
+                     XL = XL + S12
                      T12  = (T1+T2)/2.0D0
                      SMIL = (S1+S2)/2.0D0
                   M1 = M1 + S12*(T1 + T2)
@@ -293,8 +268,19 @@ C
 C
 140               CONTINUE
 C
-                  M1 = M1*L
-                  M2 = M2*L*L
+                  IF (INOE.NE.0) THEN
+                     IF ( .NOT. DEJA ) THEN 
+                        IF ( INOE .EQ. 1 ) THEN
+                           CALL U2MESI('A','POSTRELE_62',1,INOE)
+                        ELSE
+                           CALL U2MESI('A','POSTRELE_63',1,INOE)
+                        ENDIF
+                        DEJA = .TRUE.
+                     ENDIF
+                  ENDIF
+C
+                  M1 = M1/XL
+                  M2 = M2/(XL*XL)
 C
                   M1 = 0.5D0*M1
                   M2 = 6.0D0*(M2 - M1)

@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,7 +239,7 @@ C     ----------------------------------------------------------
         CALL TBEXP2(RESU,'CDG_Y')
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &            R8B, 'AIRE', K8B, IBID, S, C16B, K8B, IRET )
-        IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
+        IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
         CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &            R8B, 'IY_PRIN_G', K8B, IBID, IY, C16B, K8B, IRET )
         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')

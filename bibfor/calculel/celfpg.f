@@ -3,7 +3,7 @@
       CHARACTER*(*)  CELZ , NOMOBJ
       INTEGER ICH,IRET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C ------------------------------------------------------------------
 C     ARGUMENTS:
 C CELZ    IN/JXIN  K19 : SD CHAM_ELEM A EXAMINER
 C         REMARQUE:   SI CELZ N'EST PAS "ELGA", NOMOBJ N'EST PAS CREE
+C
 C NOMOBJ  IN/JXOUT K24 : OBJET JEVEUX A CREER (SUR LA BASE 'V')
 C    EN SORTIE, L'OBJET NOMOBJ EST UN VECTEUR DE K16 DIMENSIONNE AU
 C    NOMBRE DE MAILLES DU MAILLAGE.
@@ -38,11 +39,12 @@ C    SI LA FAMILLE DE PG EST UNE FAMILLE "LISTE" (PAR EXEMPLE MATER),
 C    V(IMA) CONTIENT LE NUMERO (<0) DE LA FAMILLE. EX : "-185"
 C
 C
-
-C ICH     NUMERO D'ORDRE DU CHAMP
+C ICH / =1 : ON CREE ET ON REMPLIT NOMOBJ A PARTIR DE CELZ
+C     / >1 : NOMOBJ EST DEJA REMPLI ET ON VERIFIE QU'IL CORRESPOND
+C            BIEN AU CHAMP CELZ
 C IRET    CODE RETOUR
 C         0 : PAS D'ERREUR
-C         1 : LES CHAMPS NE SONT PAS DE LA MEME FAMMILE DE PG
+C         1 : CELZ NE CORRESPOND PAS A NOMOBJ (CAS ICH >1)
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -77,6 +79,7 @@ C     ------------------------------------------------------------------
       CEL = CELZ
       IRET = 0
 
+
 C     1 CALCUL DE LIGREL,NBMA,NEC :
 C     --------------------------------------------------------
       CALL DISMOI('F','NOM_MAILLA',CEL,'CHAM_ELEM',IBID,MA,IBID)
@@ -84,6 +87,7 @@ C     --------------------------------------------------------
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,KBID,IBID)
       CALL DISMOI('F','NOM_GD',CEL,'CHAM_ELEM',IBID,NOMGD,IBID)
       CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,KBID,IBID)
+
 
 C     2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
 C     -------------------------------------------------------
@@ -95,14 +99,14 @@ C     -------------------------------------------------------
       CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
       NBGR = ZI(JCELD-1+2)
 
+
 C     3 REPLISSAGE DE NOMOBJ :
 C     -------------------------------------------------------
 
       IF(ICH.EQ.1) THEN
         CALL WKVECT ( NOMOBJ, 'V V K16', NBMA, JOBJ )
-        CALL JEEXIN('&&CELFPG.NOFPG',IRET1)
-        IF(IRET1.NE.0) CALL JEDETR('&&CELFPG.NOFPG')
-        CALL WKVECT ( '&&CELFPG.NOFPG', 'V V K16', NBGR, INBGR )
+        CALL JEDETR('&&CELFPG.NOFPG')
+        CALL WKVECT('&&CELFPG.NOFPG', 'V V K16', NBGR,INBGR )
       ELSE
         CALL JEVEUO ( '&&CELFPG.NOFPG', 'L', INBGR )
       ENDIF
@@ -118,6 +122,7 @@ C     -------------------------------------------------------
         ELSE
           CALL CODENT(KFPG,'G',NOFPG)
         ENDIF
+
         IF(ICH.GT.1) THEN
           IF(ZK16(INBGR-1+IGR).NE.NOFPG) THEN
             IRET=1
@@ -126,6 +131,7 @@ C     -------------------------------------------------------
         ELSE
           ZK16(INBGR-1+IGR)=NOFPG
         ENDIF
+
         IF(ICH.EQ.1) THEN
           DO 80,IEL = 1,NBEL
             NUMA = NUMAIL(IGR,IEL)
@@ -133,6 +139,7 @@ C     -------------------------------------------------------
    80     CONTINUE
         ENDIF
    90 CONTINUE
+
 
 9999  CONTINUE
       CALL JEDEMA()

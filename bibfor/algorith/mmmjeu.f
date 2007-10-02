@@ -1,10 +1,10 @@
       SUBROUTINE MMMJEU(NDIM,JEUSUP,ICOMPL,NORM,BETA,GAMMA,
      &                  DELTAT,GEOME,GEOMM,DEPLE,DEPLM,
      &                  DEPLME,DEPLMM,VITME,VITMM,ACCME, 
-     &                  ACCMM,JEU,JDEPP,JDEPM,JEVITP,
-     &                  VALUSU)
+     &                  ACCMM,JEU,JEUVIT,JEVITP,
+     &                  VALUSU,IFORM,VITPE,VITPM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,17 +23,17 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
       IMPLICIT NONE
-      INTEGER NDIM 
+      INTEGER NDIM,K
       REAL*8  JEUSUP,VALUSU
       REAL*8  NORM(3)
-      INTEGER ICOMPL
+      INTEGER ICOMPL,IFORM
       REAL*8  BETA,GAMMA,DELTAT
       REAL*8  GEOMM(3),GEOME(3)
       REAL*8  DEPLE(6),DEPLME(6)
       REAL*8  DEPLM(3),DEPLMM(3)      
-      REAL*8  JEU,JDEPP,JDEPM,JEVITM,JEACCM,JEVITP
+      REAL*8  JEU,JEUVIT,JDEPP,JDEPM,JEVITM,JEACCM,JEVITP
       REAL*8  ACCME(6),ACCMM(6)
-      REAL*8  VITME(6),VITMM(6)
+      REAL*8  VITME(6),VITMM(6),VITPE(6),VITPM(3)
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0364/TE0365
@@ -71,32 +71,34 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER K
-C
-C ----------------------------------------------------------------------
-C
       CALL JEMARQ()
 C
       JEU    = JEUSUP - ABS(VALUSU)
-      JDEPP  = 0.D0
-      JDEPM  = 0.D0
-      JEVITM = 0.D0 
-      JEACCM = 0.D0  
-      JEVITP = 0.D0    
+      JEUVIT = 0.D0
       DO 10 K = 1,NDIM
         JEU   = JEU + (GEOME(K)+DEPLE(K)-GEOMM(K)-DEPLM(K))*NORM(K)   
-        JDEPP = JDEPP + (DEPLE(K)-DEPLM(K))*NORM(K)
-        JDEPM = JDEPM + (DEPLME(K)-DEPLMM(K))*NORM(K)
+        IF (IFORM .EQ. 2) THEN
+           JEUVIT = JEUVIT +  (VITPE(K)-VITPM(K)) * NORM(K)
+        ENDIF
  10   CONTINUE
+ 
+C ---- SI AVEC COMPLIANCE
+      JDEPP  = 0.D0
+      JDEPM  = 0.D0
+      JEVITM = 0.D0
+      JEACCM = 0.D0  
+      JEVITP = 0.D0
       IF (ICOMPL .EQ. 1) THEN
         DO 20 K = 1,NDIM
+          JDEPP  = JDEPP + (DEPLE(K)-DEPLM(K))*NORM(K)
+          JDEPM  = JDEPM + (DEPLME(K)-DEPLMM(K))*NORM(K)
           JEVITM = JEVITM + (VITME(K)-VITMM(K))*NORM(K)
           JEACCM = JEACCM + (ACCME(K)-ACCMM(K))*NORM(K)
- 20     CONTINUE    
+ 20     CONTINUE
         JEVITP = (JDEPP-JDEPM)*GAMMA/(BETA*DELTAT) +
      &            JEVITM*(BETA-GAMMA)/BETA +
      &            JEACCM*DELTAT*(2*BETA-GAMMA)/(2*BETA)   
-      ENDIF             
+      ENDIF
 C
       CALL JEDEMA()      
       END
