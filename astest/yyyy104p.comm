@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE  DSR3 - RENUM MDA / AFFE_CHAR_CINE  / MULT_FRONT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,10 +54,10 @@ DEP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', MAILLAGE=MA,
 VCINE=CALC_CHAR_CINE(   NUME_DDL=NU,     CHAR_CINE=CHCINE
                          )
 
-MATAS=FACT_LDLT(      reuse=MATAS,  MATR_ASSE=MATAS
+MATAS=FACTORISER(      reuse=MATAS,  MATR_ASSE=MATAS
                          )
 
-DEP=RESO_LDLT(      reuse=DEP,  MATR_FACT=MATAS,   CHAM_NO=DEP,
+DEP=RESOUDRE(      reuse=DEP,  MATR=MATAS,   CHAM_NO=DEP,
                             CHAM_CINE=VCINE
                          )
 

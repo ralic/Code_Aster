@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 24/09/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_modele SD  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF stanley Stanley  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,7 +68,7 @@ import ihm_parametres
 from Cata.cata import *
 from Accas import _F
 from types import *
-from Utilitai import Sensibilite
+from Macro import Sensibilite
 from Macro.test_fichier_ops import md5file
 
 # Salome

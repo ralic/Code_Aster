@@ -1,7 +1,7 @@
       SUBROUTINE OP0113(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,14 +70,15 @@ C
       CHARACTER*24    XINDIC,GRP(3),MAIL2
       INTEGER         JINDIC,JGRP,JMAIL2
       CHARACTER*24    TRAV
-      INTEGER         JTAB
+      INTEGER         JTAB,JNCMP,JVALV
       INTEGER         JXC     
       PARAMETER       (NFISMX=100)
       CHARACTER*8     MODELX,MOD1,FISS(NFISMX),K8BID,NOMA,K8CONT
       LOGICAL         LHEAV
       CHARACTER*19    PINTTO,CNSETO,HEAVTO,LONCHA
       CHARACTER*19    BASLOC,LTNO,LNNO,STNO 
-      CHARACTER*19    PINTER,AINTER,CFACE ,FACLON,BASECO
+      CHARACTER*19    PINTER,AINTER,CFACE ,FACLON,BASECO,CARTE
+      CHARACTER*19    GMAITR,GESCLA,GMAITO,GESCLO
 C      
 C --- FONCTION ACCESS MAILLAGE (POUR MAILLE NUMERO ABSOLU IMAIL)
 C --- ZZCONX: CONNECTIVITE DE LA MAILLE IMAIL
@@ -137,6 +138,14 @@ C
       DO 10 IFISS = 1,NFISS
         ZK8(JMOFIS+IFISS-1) = FISS(IFISS)
  10   CONTINUE  
+
+C     CREATION D'UNE CARTE CONTENANT LES NOMS DES SD FISS_XFEM
+      CARTE = MODELX(1:8)//'.XMAFIS'
+      CALL ALCART ( 'G', CARTE, NOMA, 'NEUT_K8')
+      CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
+      CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
+      ZK8(JNCMP)   = 'Z1'
+
 C
 C --- CONTACT ?
 C
@@ -190,10 +199,16 @@ C
               IMA                     = ZI(JGRP-1+I)
               ZI(JTAB-1+5*(IMA-1)+KK) = 1
               ZI(JTAB-1+5*(IMA-1)+4)  = 0
+
+              ZK8(JVALV) = FISS(IFISS)
+              CALL NOCART ( CARTE,3,' ','NUM',1,' ',IMA,' ',1)
+
  120        CONTINUE
           ENDIF
  1000   CONTINUE
  220  CONTINUE 
+
+C      CALL IMPRSD('CHAMP',CARTE,6,'NOM DES SD FISS')
 C
 C --------------------------------------------------------------------- 
 C       2)  MODIFICATION DE TAB EN FONCTION DE L'ENRICHISSEMENT
@@ -300,7 +315,10 @@ C
       CFACE  = MODELX(1:8)//'.TOPOFAC.CF'
       FACLON = MODELX(1:8)//'.TOPOFAC.LO'
       BASECO = MODELX(1:8)//'.TOPOFAC.BA'
-      
+      GESCLA = MODELX(1:8)//'.TOPOFAC.GE'
+      GMAITR = MODELX(1:8)//'.TOPOFAC.GM'
+      GESCLO = MODELX(1:8)//'.TOPOFAC.OE'
+      GMAITO = MODELX(1:8)//'.TOPOFAC.OM'
       
 C     pour le moment, on zappe la concaténation des champs de contact
 C     si on est en 2D et sans mailles HEAV (seules portant le contact)
@@ -316,7 +334,15 @@ C     pourra virer ce IF
         CALL XCONEL(MODELX,'.TOPOFAC.LO','G','TOPOFA',
      &              'PLONCHA',FACLON)
         CALL XCONEL(MODELX,'.TOPOFAC.BA','G','TOPOFA',
-     &              'PBASECO',BASECO)
+     &              'PBASECO',BASECO)     
+        CALL XCONEL(MODELX,'.TOPOFAC.GE','G','TOPOFA',
+     &              'PGESCLA',GESCLA)
+        CALL XCONEL(MODELX,'.TOPOFAC.GM','G','TOPOFA',
+     &              'PGMAITR',GMAITR)
+        CALL XCONEL(MODELX,'.TOPOFAC.OE','G','TOPOFA',
+     &              'PGESCLO',GESCLO)
+        CALL XCONEL(MODELX,'.TOPOFAC.OM','G','TOPOFA',
+     &              'PGMAITO',GMAITO)
       ENDIF
 C
 C --- MENAGE

@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,126 +17,112 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
- 
 
 def _(x) : return x
 
-cata_msg={
+cata_msg = {
 
-1: _("""
+1 : _("""
 Le mot-clef < %(k1)s > est inconnu dans AFFE_CONTACT. Contactez les développeurs.
 Note DVP: erreur de cohérence fortran/catalogue. 
 """),
 
-2: _("""
+2 : _("""
 Le mot-clef < %(k1)s > n'est pas renseigné dans AFFE_CONTACT alors qu'il est obligatoire. Contactez les développeurs.
 Note DVP: erreur de cohérence fortran/catalogue. 
 """),
 
-3: _("""
+3 : _("""
 L'option < %(k1)s > ne correspond a aucune option permise par le mot-clef < %(k2)s > dans AFFE_CONTACT. Contactez les développeurs.
 Note DVP: erreur de cohérence fortran/catalogue.            
 """),
 
-4: _("""
-Les méthodes de contact doivent etre identiques pour toutes les zones de contact.
-"""),
-
-5: _("""
+5 : _("""
 Le type de formulation du contact (DISCRET/CONTINUE/XFEM) doit être le même pour toutes les zones de contact.
 """),
 
-10: _("""
+10 : _("""
 La matrice est singulière lors du calcul du repère local tangent au noeud maitre  %(k1)s  sur la maille maitre %(k2)s.
 Une erreur de définition de la maille: les vecteurs tangents sont colinéaires.
 """),
 
-11: _("""
+11 : _("""
 La matrice est singulière lors de la projection du point de contact  sur la maille maitre  %(k1)s.
 Une erreur de définition de la maille: les vecteurs tangents sont colinéaires.
 """),
 
-12: _("""
+12 : _("""
 L'algorithme de Newton a échoué lors du calcul du repère local tangent au noeud maitre %(k1)s sur la maille maitre  %(k2)s.
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas. 
 """),
 
-13: _("""
+13 : _("""
 L'algorithme de Newton a échoué lors de la projection du point de contact  sur la maille maitre  %(k1)s.
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.  
 """),
 
-14: _("""
+14 : _("""
 Les vecteurs tangents sont nuls au noeud maitre  %(k1)s  sur la maille maitre  %(k2)s.
 Une erreur de définition de la maille.
 """),
 
-15: _("""
+15 : _("""
 Contact méthode continue.
 Le vecteur DIRE_APPA est nul !
 """),
 
-21: _("""
+21 : _("""
 Les vecteurs tangents sont nuls lors de la projection du point de contact sur la maille maitre  %(k1)s. 
 Une erreur de définition de la maille.
 """),
 
-22: _("""
+22 : _("""
 L'élement inconnu sur la maille maitre  %(k1)s.
 Cet élément n'est pas programmé pour le contact avec formualtion continue.
 Contactez l'assistance. 
 """),
 
-23: _("""
+23 : _("""
 Le vecteur normal est nul sur le noeud maitre  %(k1)s.
 Si vous avez activé le lissage, essayeé de le désactiver. 
 """),
 
-24: _("""
+24 : _("""
 Il y a plus de trois noeuds exclus sur la maille esclave  %(k1)s  par l'option SANS_GROUP_NO ou SANS_NOEUD.
 Supprimer directement la maille esclave de la définition de la surface.
 """),
 
-25: _("""
+25 : _("""
 L'élément porté par la maille esclave %(k1)s n'est pas du bon type pour un fond de fissure, elle est de type  %(k2)s 
 """),
 
-26: _("""
+26 : _("""
 Schema d'intégration inconnu sur la maille  %(k1)s. 
 """),
 
-27: _("""
+27 : _("""
 Code erreur introuvable. Contactez les développeurs.
 """),
 
-28: _("""
+28 : _("""
 Le statut du contact a changé %(i1)d fois au point de contact numéro %(i2)d sur la maille esclave %(k1)s
 Présence de flip-flop. 
 """),
 
-30: _("""
-Le modèle ne comporte pas de fissure XFEM. 
-"""),
-
-31: _("""
-La définition du contact XFEM ne comporte pas autant de zones que de fissures XFEM dans le modèle. 
-"""),
-
-
-35: _("""
+35 : _("""
 Contact méthode continue. 
   -> La normale calculée sur une maille est nulle.
   -> Risque & Conseil :
      Vérifier votre maillage.
 """),
 
-42: _("""
+42 : _("""
 Contact méthodes discrètes. Il y a mélange de mailles quadratiques (TRIA6, TRIA7 ou QUAD9) avec des mailles QUAD8 sur la surface escalve du contact.
 On supprime la liaison entre les noeuds sommets et noeud milieu sur le QUAD8.
 Il y a risque d'interpénétration du noeud milieu pour le QUAD8 considéré.
 """),
 
-85: _("""
+85 : _("""
 Contact méthode continue. 
   -> Il y a échec de la boucle contraintes actives lors du traitement
      du contact
@@ -144,7 +130,7 @@ Contact méthode continue.
      Vérifier votre maillage ou augmenter ITER_CONT_MAX.
 """),
 
-86: _("""
+86 : _("""
 Contact méthode continue. 
   -> Il y a convergence forcée sur boucle contraintes actives lors du traitement
      du contact.
@@ -154,7 +140,7 @@ Contact méthode continue.
      interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
 """),
 
-87: _("""
+87 : _("""
 Contact méthode continue. 
   -> Il y a convergence forcée sur boucle seuil frottement lors du traitement du
      contact.
@@ -164,7 +150,7 @@ Contact méthode continue.
      résultats faux sur les forces d'adhérence. Essayez de découper plus finement en temps votre problème.
 """),
 
-88: _("""
+88 : _("""
 Contact méthode continue. 
   -> Il y a convergence forcée sur boucle de géométrie lors du traitement du
      contact.
@@ -176,17 +162,10 @@ Contact méthode continue.
      S'il y des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
 """),
 
-
-94: _("""
+94 : _("""
 Contact méthode discrète. 
  Le jeu entre les noeuds milieux au niveau des lèvres risque
  d'etre imprécis si les mailles en contact sont quadratiques.
 """),
-
-99: _("""
-La SD contact < %(k1)s > est introuvable. Contactez les développeurs.
-"""),
-
-
 
 }

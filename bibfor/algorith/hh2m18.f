@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 09/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,17 +39,13 @@ C
      +         TYPELE.EQ.'HH2M_AXIS_SE3' ) THEN
          TYPEMO = 'AXIS_HH2MD'
 
-      ELSEIF ( TYPELE.EQ.'HH2M_DPQ8' .OR. TYPELE.EQ.'HHM_DPQ4' .OR.
-     +         TYPELE.EQ.'HH2M_DPTR3' .OR.
+      ELSEIF ( TYPELE.EQ.'HH2M_DPQ8'  .OR. 
      +         TYPELE.EQ.'HH2M_DPTR6' .OR.
-     +         TYPELE.EQ.'HH2M_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'HH2M_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_HH2M'
 
-      ELSEIF ( TYPELE.EQ.'HH2M_DPQ8D' .OR. TYPELE.EQ.'HHM_DPQ4D' .OR.
-     +         TYPELE.EQ.'HH2M_DPTR3D' .OR.
+      ELSEIF ( TYPELE.EQ.'HH2M_DPQ8D'  .OR. 
      +         TYPELE.EQ.'HH2M_DPTR6D' .OR.
-     +         TYPELE.EQ.'HH2M_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'HH2M_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_HH2MD'
 

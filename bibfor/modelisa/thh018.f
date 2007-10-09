@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 09/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,9 +29,6 @@ C
 
       ELSEIF ( TYPELE.EQ.'THH_AXIS_QU8D' .OR.
      +         TYPELE.EQ.'THH_AXIS_TR6D' .OR.
-     +         TYPELE.EQ.'THH_AXIS_QU4D' .OR.
-     +         TYPELE.EQ.'THH_AXIS_TR3D' .OR.
-     +         TYPELE.EQ.'THH_AXIS_SE2' .OR.
      +         TYPELE.EQ.'THH_AXIS_SE3' ) THEN
          TYPEMO = 'AXIS_THHD'
 
@@ -42,26 +39,16 @@ C
      +         TYPELE.EQ.'THH_TETRA10D' .OR.
      +         TYPELE.EQ.'THH_PYRAM13D' .OR.
      +         TYPELE.EQ.'THH_PENTA15D' .OR.
-     +         TYPELE.EQ.'THH_HEXA8D'   .OR.
-     +         TYPELE.EQ.'THH_TETRA4D'  .OR.
-     +         TYPELE.EQ.'THH_PENTA6D'  .OR.
-     +         TYPELE.EQ.'THH_FACE6' .OR. TYPELE.EQ.'THH_FACE8' .OR.
-     +         TYPELE.EQ.'THH_FACE3' .OR. TYPELE.EQ.'THH_FACE4' ) THEN
+     +         TYPELE.EQ.'THH_FACE6' .OR. TYPELE.EQ.'THH_FACE8' ) THEN
          TYPEMO = '3D_THHD'
 
       ELSEIF ( TYPELE.EQ.'THH_DPQ8'  .OR.
-     +         TYPELE.EQ.'THH_DPQ4'  .OR.
-     +         TYPELE.EQ.'THH_DPTR3' .OR.
      +         TYPELE.EQ.'THH_DPTR6' .OR.
-     +         TYPELE.EQ.'THH_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'THH_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_THH'
 
       ELSEIF ( TYPELE.EQ.'THH_DPQ8D'  .OR.
-     +         TYPELE.EQ.'THH_DPQ4D'  .OR.
-     +         TYPELE.EQ.'THH_DPTR3D' .OR.
      +         TYPELE.EQ.'THH_DPTR6D' .OR.
-     +         TYPELE.EQ.'THH_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'THH_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_THHD'
 

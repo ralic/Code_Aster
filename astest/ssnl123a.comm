@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE FLAMBEMENT D'UNE POUTRE DROITE MULTI-FIBRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,7 +297,7 @@ for i in range(1,3):
     NUME_DDL=NUMDDL,)
 
 # Factorisation de la matrice assemblee de rigidite
-  MASRIFA=FACT_LDLT(MATR_ASSE=MASRI,)
+  MASRIFA=FACTORISER(MATR_ASSE=MASRI,)
 
 # Prise en compte de la precontrainte au niveau elementaire
   VASFO=CREA_CHAMP(

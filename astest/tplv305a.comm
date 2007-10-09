@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TEMPERATURES IMPOSEES SUIVANT UNE FONCTION HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,9 +93,9 @@ VCTA0=ASSE_VECTEUR(   VECT_ELEM=VCTER0,
                            NUME_DDL=NUDL0
                         )
 
-MTRA0=FACT_LDLT( reuse=MTRA0,  MATR_ASSE=MTRA0 )
+MTRA0=FACTORISER( reuse=MTRA0,  MATR_ASSE=MTRA0 )
 
-TMOD0=RESO_LDLT(   MATR_FACT=MTRA0,
+TMOD0=RESOUDRE(   MATR=MTRA0,
                         CHAM_NO=VCTA0
                      )
 
@@ -125,9 +125,9 @@ VCTA1=ASSE_VECTEUR(   VECT_ELEM=VCTER1,
                            NUME_DDL=NUDL1
                         )
 
-MTRA1=FACT_LDLT( reuse=MTRA1,  MATR_ASSE=MTRA1 )
+MTRA1=FACTORISER( reuse=MTRA1,  MATR_ASSE=MTRA1 )
 
-TMOD1=RESO_LDLT(   MATR_FACT=MTRA1,
+TMOD1=RESOUDRE(   MATR=MTRA1,
                         CHAM_NO=VCTA1
                      )
 

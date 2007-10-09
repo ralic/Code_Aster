@@ -1,0 +1,141 @@
+# MODIF  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+# TITRE MISE EN OEUVRE DU "ZOOM STRUCTURAL" SUR UN PROBLEME 2D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       VALIDATION DE AFFE_CHAR_CINE/EVOL_IMPO
+
+# RESPONSABLE PELLET J.PELLET
+DEBUT(  CODE=_F(NOM='ZZZZ230A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#-------------------------------------------------------------------------------------
+# description du test :
+#----------------------
+#  Le 1er modele MO1 est un carre (ABCD) [0,1]X[0,1] maille assez grossierement.
+#  On fait un calcul mecanique sur ce maillage grossier (efforts surfaciques)
+#
+#  Le 2eme modele MO2 (plus fin) ne represente qu'1/4 du carre initial (AEFG) [0,0.5]X[0,0.5].
+#  C'est la zone sur laquelle on veut "zoomer" le resultat du 1er calcul.
+#
+#  Pour resoudre ce 2eme probleme, le chargement est un deplacement impose
+#  sur tous les noeuds du bord de MO2. Ce deplacement impose est celui qui a ete calcule
+#  lors du 1er calcul.
+#-------------------------------------------------------------------------------------
+# geometrie :
+# ------------
+#
+#   D-------------------------C
+#   !                         !
+#   !                         !
+#   !                         !
+#   !                         !
+#   !                         !
+#  G!-----------+ F           !
+#   !           !             !
+#   !     H     !             !
+#   !     +     !             !
+#   !           !             !
+#   !           !             !
+#   +-----------+-------------B
+#  A            E
+#
+# Geometrie des points :
+#   A: 0,0       B: 1,0    C: 1,1     D: 0,1
+#   G: 0,0.5     F: 0.5,0.5
+#   H: 0.25,0.25
+#
+#  Le carre ABCD est maille grossierement
+#  Le carre AEFG est maille plus finement : c'est le zoom
+#
+#  On s'interesse au deplacement du point H
+#    Dans le carre grossier (ABCD)  H se nomme HG
+#    Dans le carre zoom     (AEFG)  H se nomme HZ
+#
+#---------------------------------------------------------------------------------------
+# Remarques concernant le calcul "zoom":
+# --------------------------------------
+#  * Le chargement est fait par AFFE_CHAR_CINE/EVOL_IMPO
+#    C'est le seul chargement (car il n'y a pas ici de chargement reparti)
+#  * Dans STAT_NON_LINE/EXCIT, il ne faut pas utiliser FONC_MULT.
+#  * Dans STAT_NON_LINE on utilise ARCH_ETAT_INIT='OUI' pour pouvoir calculer sur le zoom
+#    a des instants anterieurs au 1er instant du 1er calcul.
+#  * Dans STAT_NON_LINE, on est oblige d'utiliser RESI_GLOB_MAXI car il n'y a pas de chargement en "force"
+#  * Les TEST_RESU faits sur le calcul "zoom" sont assez tolerants (3%) car la "reference" est le
+#    calcul grossier. Il est heureux que les 2 calculs different un peu !
+#---------------------------------------------------------------------------------------
+
+
+
+PRE_GIBI()
+MA=LIRE_MAILLAGE( )
+DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
+MAT=DEFI_MATERIAU(ELAS=_F(E=1.E+05, NU=0.3))
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI',MATER=MAT))
+
+
+# 1er modele et 1er calcul :
+#---------------------------
+MO1=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA=('ABCD','AB','CD'), PHENOMENE='MECANIQUE', MODELISATION='D_PLAN'))
+
+
+
+CHAR1=AFFE_CHAR_MECA( MODELE=MO1, FACE_IMPO= _F(GROUP_MA = 'AB', DX=0., DY=0.),
+                      FORCE_CONTOUR=_F(GROUP_MA='CD', FX=1.E4, FY=2.E4))
+FONC1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., 0., 1., 1.))
+
+LIST1=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2,),);
+RESU1=STAT_NON_LINE(MODELE=MO1, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE = CHAR1,FONC_MULT=FONC1),),
+                    COMP_INCR=_F(TOUT='OUI',RELATION='ELAS'),INCREMENT=_F(LIST_INST=LIST1,),
+                    ARCHIVAGE=_F(LIST_INST=LIST1, ARCH_ETAT_INIT='OUI',),)
+
+
+TEST_RESU( RESU=_F(RESULTAT = RESU1,  NUME_ORDRE = 2, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
+                   GROUP_NO='HG',NOM_CMP = 'DX', VALE = 1.116E-01 ))
+TEST_RESU( RESU=_F(RESULTAT = RESU1,  NUME_ORDRE = 2, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
+                   GROUP_NO='HG',NOM_CMP = 'DY', VALE = 8.777E-02 ))
+
+
+
+# 2eme modele (zoom) et 2eme calcul :
+#------------------------------------
+MO2=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(GROUP_MA='AEFG', PHENOMENE='MECANIQUE', MODELISATION='D_PLAN'))
+
+# les deplacements imposes sur le bord de MO2 sont obtenus par projection du resultat RESU1 sur le bord de MO2:
+UIMP=PROJ_CHAMP(RESULTAT=RESU1,METHODE='ELEM',  MODELE_1=MO1,MODELE_2=MO2,
+                VIS_A_VIS=_F(TOUT_1='OUI',GROUP_MA_2='BORD', CAS_FIGURE='2D'))
+
+CHAR2=AFFE_CHAR_CINE(MODELE=MO2, EVOL_IMPO=UIMP)
+
+LIST2=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=3,),);
+RESU2=STAT_NON_LINE(MODELE=MO2, CHAM_MATER=CHMAT, EXCIT=_F(CHARGE = CHAR2,),
+                    COMP_INCR=_F(TOUT='OUI',RELATION='ELAS'),
+                    INCREMENT=_F(LIST_INST=LIST2,),
+                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-10),)  # on est oblige d'utiliser RESI_GLOB_MAXI car il n'y a
+                                                             # de chargement "en force".
+
+
+TEST_RESU( RESU=_F(RESULTAT = RESU2,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='AUTRE_ASTER',
+                   GROUP_NO='HZ',NOM_CMP = 'DX', VALE = 1.116E-01 , PRECISION=0.03 ))
+TEST_RESU( RESU=_F(RESULTAT = RESU2,  NUME_ORDRE = 3, NOM_CHAM = 'DEPL', REFERENCE='AUTRE_ASTER',
+                   GROUP_NO='HZ',NOM_CMP = 'DY', VALE = 8.777E-02 , PRECISION=0.03 ))
+
+#IMPR_RESU(RESU=_F(RESULTAT=RESU2))
+#IMPR_RESU(FORMAT='CASTEM',RESU=_F(RESULTAT=RESU2, MAILLAGE=MA)) # pour visualisation
+
+FIN();
+
+

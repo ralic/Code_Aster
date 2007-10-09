@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHCINE, CNSZ, MO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+C MODIF MODELISA  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C OBJET : CREATION D"UNE CHARGE CINEMATIQUE.
 C        1) LE .REFE DE LA CHARGE DOIT DEJA EXISTER
-C        2) MISE A JOUR DE : .DEFI  .VALE .VALF
+C        2) MISE A JOUR DE : .AFCI ET .AFCV
 C-----------------------------------------------------------------------
 C OUT  CHCINE  K*19    : NOM DE LA CHARGE CINEMATIQUE
 C IN   CNS     K*19    : NOM D'UN CHAM_NO_S CONTENANT LES DEGRES IMPOSES
@@ -52,15 +52,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       NBLOC, IBLOC, ICMP, NCMP, INO, NBNO, NBEC, IER, II,
-     +              JCNSD, JCNSV, JCNSL, IDEFI, IVALE, IVALF, IAPRNM
+     +              JCNSD, JCNSV, JCNSL, JAFCI, JAFCV, IAPRNM
       LOGICAL       EXISDG
       CHARACTER*8   K8B, NOMO
       CHARACTER*19  CHCI, CNS
-      CHARACTER*24  CDEFI, CVALE, CVALF
+      CHARACTER*24  CAFCI, CAFCV
 C
-      DATA CDEFI /'                   .DEFI'/
-      DATA CVALE /'                   .VALE'/
-      DATA CVALF /'                   .VALF'/
+      DATA CAFCI /'                   .AFCI'/
+      DATA CAFCV /'                   .AFCV'/
 C
 C --- DEBUT -----------------------------------------------------------
 C
@@ -72,9 +71,8 @@ C
 C
       CHCI = CHCINE
       CNS  = CNSZ
-      CDEFI(1:19) = CHCI
-      CVALE(1:19) = CHCI
-      CVALF(1:19) = CHCI
+      CAFCI(1:19) = CHCI
+      CAFCV(1:19) = CHCI
 C
       CALL JEVEUO ( CNS//'.CNSD', 'L', JCNSD )
       CALL JEVEUO ( CNS//'.CNSV', 'L', JCNSV )
@@ -90,20 +88,20 @@ C
  110     CONTINUE
  100  CONTINUE
 C
-C --- CREATION DE LA SD 
+C --- CREATION DE LA SD
 C
-      CALL WKVECT ( CDEFI, 'G V I', (3*NBLOC+1), IDEFI )
+      CALL WKVECT ( CAFCI, 'G V I', (3*NBLOC+1), JAFCI )
       IF (TYPE.EQ.'R') THEN
-         CALL WKVECT ( CVALE, 'G V R' , NBLOC, IVALE )
+         CALL WKVECT ( CAFCV, 'G V R' , NBLOC, JAFCV )
       ELSE IF (TYPE.EQ.'C') THEN
-         CALL WKVECT ( CVALE, 'G V C' , NBLOC, IVALE )
+         CALL WKVECT ( CAFCV, 'G V C' , NBLOC, JAFCV )
       ELSE IF (TYPE.EQ.'F') THEN
-         CALL WKVECT ( CVALF, 'G V K8', NBLOC, IVALF )
+         CALL WKVECT ( CAFCV, 'G V K8', NBLOC, JAFCV )
       ENDIF
 C
-C --- ON REMPLIT LES .DEFI .VALE OU .VALF
+C --- ON REMPLIT LES .AFCI .AFCV
 C
-      ZI(IDEFI) = NBLOC
+      ZI(JAFCI) = NBLOC
 C
       IBLOC = 0
       IF (TYPE.EQ.'R') THEN
@@ -114,10 +112,9 @@ C
                   II = II + 1
                   IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
                      IBLOC = IBLOC + 1
-                     ZI(IDEFI+3*(IBLOC-1)+1) = INO
-                     ZI(IDEFI+3*(IBLOC-1)+2) = II
-                     ZI(IDEFI+3*(IBLOC-1)+3) = 1
-                     ZR(IVALE-1+IBLOC) = ZR(JCNSV+(INO-1)*NCMP+ICMP-1)
+                     ZI(JAFCI+3*(IBLOC-1)+1) = INO
+                     ZI(JAFCI+3*(IBLOC-1)+2) = II
+                     ZR(JAFCV-1+IBLOC) = ZR(JCNSV+(INO-1)*NCMP+ICMP-1)
                   ENDIF
                ENDIF
  122        CONTINUE
@@ -131,10 +128,9 @@ C
                   II = II + 1
                   IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
                      IBLOC = IBLOC + 1
-                     ZI(IDEFI+3*(IBLOC-1)+1) = INO
-                     ZI(IDEFI+3*(IBLOC-1)+2) = II
-                     ZI(IDEFI+3*(IBLOC-1)+3) = 1
-                     ZC(IVALE-1+IBLOC) = ZC(JCNSV+(INO-1)*NCMP+ICMP-1)
+                     ZI(JAFCI+3*(IBLOC-1)+1) = INO
+                     ZI(JAFCI+3*(IBLOC-1)+2) = II
+                     ZC(JAFCV-1+IBLOC) = ZC(JCNSV+(INO-1)*NCMP+ICMP-1)
                   ENDIF
                ENDIF
  132        CONTINUE
@@ -148,10 +144,9 @@ C
                   II = II + 1
                   IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
                      IBLOC = IBLOC + 1
-                     ZI(IDEFI+3*(IBLOC-1)+1) = INO
-                     ZI(IDEFI+3*(IBLOC-1)+2) = II
-                     ZI(IDEFI+3*(IBLOC-1)+3) = 2
-                     ZK8(IVALF-1+IBLOC) = ZK8(JCNSV+(INO-1)*NCMP+ICMP-1)
+                     ZI(JAFCI+3*(IBLOC-1)+1) = INO
+                     ZI(JAFCI+3*(IBLOC-1)+2) = II
+                     ZK8(JAFCV-1+IBLOC) = ZK8(JCNSV+(INO-1)*NCMP+ICMP-1)
                   ENDIF
                ENDIF
  142        CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,20 @@
 def _(x) : return x
 
 cata_msg={
+
+2: _("""
+Erreur Utilisateur :
+ Quand on utilise AFFE_CHAR_CINE/EVOL_IMPO, c'est le champ de l'evol_xxx correspondant
+ au 1er instant qui impose sa "loi" : tous les ddls de ce champ seront imposés pour tous
+ les instants du calcul.
+
+ Malheureusement, on ne trouve pas un ddl dans l'evol_xxx %(k1)s :
+   instant : %(r1)f  noeud : %(i1)d  cmp : %(k2)s
+
+Risques & conseils :
+ Assurez-vous que l'évolution imposée %(k1)s concerne les memes ddls pour tous les instants.
+"""),
+
 
 3: _("""
  la grandeur :  %(k1)s  n existe pas dans le catalogue des grandeurs.

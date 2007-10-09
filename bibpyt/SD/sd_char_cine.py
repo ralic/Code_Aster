@@ -1,4 +1,4 @@
-#@ MODIF sd_char_cine SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_char_cine SD  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,81 +25,75 @@ from SD.sd_fonction import sd_fonction
 
 class sd_char_cine(AsBase):
 #===========================
-    nomj = SDNom(fin=8)
+    nomj = SDNom(fin=19)
 
-    TYPE = AsVK8(lonmax=1, )
+    AFCK = AsVK8(lonmax=3)
+    AFCI = AsVI()
+    AFCV = Facultatif(OJBVect(type=Parmi('C','R','K')))
 
-    # UN_PARMI__ : CIAC_MODEL_NOMO  CITH_MODEL_NOMO  CIME_MODEL_NOMO
-    CIAC_MODEL_NOMO = Facultatif(AsVK8(SDNom(nomj='.CIAC.MODEL.NOMO'), lonmax=1, ))
-    CIME_MODEL_NOMO = Facultatif(AsVK8(SDNom(nomj='.CIME.MODEL.NOMO'), lonmax=1, ))
-    CITH_MODEL_NOMO = Facultatif(AsVK8(SDNom(nomj='.CITH.MODEL.NOMO'), lonmax=1, ))
-
-    DEFI = AsVI(SDNom(debut=19), )
-    # UN_PARMI__ : VALE  VALF
-    VALF = Facultatif(AsVK8(SDNom(debut=19), ))
-    # VALE = Facultatif(AsVR(SDNom(debut=19), ))
-    VALE = Facultatif(AsObject(SDNom(debut=19),genr='V', type=Parmi('C','R'), xous='S',))
 
 
     def exists(self):
         # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
-        return self.DEFI.exists
+        return self.AFCK.exists
 
 
     def u_veri1(self):   # retourne (CIME/CITH/CIAC, RE/CX/FO/FT)
-    #----------------------------------------------------------
-        type=self.TYPE.get()
-        l1=type[0].strip().split('_') ; assert len(l1)==2 , type
+    #---------------------------------------------------------------
+        afck=self.AFCK.get()
+        l1=afck[0].strip().split('_') ; assert len(l1)==2 , afck
         phen, tsca= l1[0], l1[1]
-        assert phen in ('CIME', 'CITH', 'CIAC'), type
+        assert phen in ('CIME', 'CITH', 'CIAC'), afck
         assert tsca in ('RE', 'CX', 'FO', 'FT'), tsca
         return phen, tsca
 
 
-    def check_NOMO(self,checker):   # objet .NOMO
+    def check_AFCK(self,checker):
     #---------------------------------------------
         phen, tsca = self.u_veri1()
-        if phen== 'CIME' :
-            nomo=self.CIME_MODEL_NOMO.get()
-        elif phen== 'CITH' :
-            nomo=self.CITH_MODEL_NOMO.get()
-        elif phen== 'CIAC' :
-            nomo=self.CIAC_MODEL_NOMO.get()
-        sd2=sd_modele(nomo[0]); sd2.check(checker)
+        afck=self.AFCK.get()
+        nomo=afck[1].strip()
+        sd2=sd_modele(nomo); sd2.check(checker)
+        if afck[2].strip() != '' : assert phen=='CIME' and tsca=='FT', afck
 
 
-    def check_DEFI(self,checker):   # objet .DEFI
+    def check_AFCI(self,checker):
     #---------------------------------------------
         phen, tsca = self.u_veri1()
-        defi=self.DEFI.get()
-        nbloc=defi[0]
-        assert len(defi)==3*nbloc+1 , defi
+        afci=self.AFCI.get()
+        nbloc=afci[0]
+        assert len(afci)==3*nbloc+1 , afci
         for k in range(nbloc) :
-            nuno =defi[3*k +1]
-            nucmp=defi[3*k +2]
-            assert defi[3*k +3] in  (1,2) , (k,defi)
-            assert nuno > 0 , (k,defi)
-            assert nucmp> 0 , (k,defi)
+            nuno =afci[3*k +1]
+            nucmp=afci[3*k +2]
+            assert afci[3*k +3] == 0 , (k,afci)
+            assert nuno > 0 , (k,afci)
+            assert nucmp> 0 , (k,afci)
 
 
-    def check_VALE(self,checker):   # objet .VALE/VALF
+    def check_AFCV(self,checker):
     #-------------------------------------------------
         phen, tsca = self.u_veri1()
-        defi=self.DEFI.get()
-        nbloc=defi[0]
-        if tsca in ( 'FO', 'FT') :  # 'FO' : fonction ; 'FT' : il existe une fonction de 'INST'
-            vale  = self.VALF.get()
-            tsca2 = self.VALF.type.strip()
-            for fonc in vale :
-                sd2=sd_fonction(fonc); sd2.check(checker)
-        elif tsca in ( 'RE', 'CX') :  # 'RE' : réel ; 'CX' : complexe
-            vale  = self.VALE.get()
-            tsca2 = self.VALE.type.strip()
-        assert len(vale)==nbloc , (defi,vale)
+        afci=self.AFCI.get()
+        nbloc=afci[0]
+        if not self.AFCV.exists :
+            assert tsca=='FT',tsca
+            afck=self.AFCK.get()
+            assert afck[2].strip() != '' , afck
+        else :
+            tsca2 = self.AFCV.type.strip()
+            assert self.AFCV.lonmax == nbloc , (nbloc,self.AFCV.lonmax)
 
-        if tsca=='RE' :
-            assert tsca2=='R', tsca2
-        if tsca in ('FO', 'FT') :
-            assert tsca2=='K', tsca2
-        if tsca=='CX' :
-            assert tsca2=='C', tsca2
+            if tsca == 'RE' :
+                assert tsca2=='R', tsca2
+            if tsca in ('FO', 'FT') :
+                assert tsca2=='K' , tsca2  # champ de fonctions
+            if tsca=='CX' :
+                assert tsca2=='C', tsca2
+
+            # vérification des fonctions :
+            if tsca in ( 'FO', 'FT')  :  # 'FO' : fonction ; 'FT' : il existe une fonction de 'INST'
+                afcv  = self.AFCV.get()
+                for fonc in afcv :
+                    sd2=sd_fonction(fonc); sd2.check(checker)
+

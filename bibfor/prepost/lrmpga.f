@@ -1,0 +1,282 @@
+      SUBROUTINE LRMPGA(NROFIC,LIGREL,NOCHMD,NBMA,PGMAIL,
+     &                 NTYPEL,NPGMAX,INDPG,IINST,NUMPT, NUMORD,
+     &                 INST,CRIT,PREC, OPTION, PARAM)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C-----------------------------------------------------------------------
+C     LECTURE FICHIER MED - LOCALISATION POINTS DE GAUSS
+C     -    -            -                  -         --
+C-----------------------------------------------------------------------
+C     IN :
+C       NROFIC : UNITE LOGIQUE DU FICHIER MED
+C       LIGREL : NOM DU LIGREL
+C       NOCHMD : NOM DU CHAMP MED
+C       NBMA   : NOMBRE DE MAILLES DU MAILLAGE
+C       NTYPEL : NOMBRE TOTAL DE TYPES DE MAILLE (=26)
+C       NPGMAX : NOMBRE DE PG MAX (=27)
+C       IINST  : 1 SI LA DEMANDE EST FAITE SUR UN INSTANT, 0 SINON
+C       NUMPT  : NUMERO DE PAS DE TEMPS EVENTUEL
+C       NUMORD : NUMERO D'ORDRE EVENTUEL DU CHAMP
+C       INST   : INSTANT EVENTUEL
+C       CRIT   : CRITERE SUR LA RECHERCHE DU BON INSTANT
+C       PREC   : PRECISION SUR LA RECHERCHE DU BON INSTANT
+
+C     OUT:
+C       PGMAIL : NOMBRE DE POINTS DE GAUSS PAR MAILLE
+C     IN/OUT:
+C       INDPG  : TABLEAU D'INDICES DETERMINANT L'ORDRE DES POINTS
+C                DE GAUSS DANS UN ELEMENT DE REFERENCE :
+C                INDPG(K,I_MED)=I_ASTER : 
+C                   - K = NUM DU TYPE DE MAILLE
+C                   - I_ASTER = NUMERO LOCAL DU PG DANS L'ELEMENT
+C                               DE REFERENCE ASTER
+C                   - I_MED  = NUMERO LOCAL DU PG DANS L'ELEMENT
+C                               DE REFERENCE MED
+C
+C-----------------------------------------------------------------------
+
+      IMPLICIT NONE
+C
+      INTEGER NROFIC,NBMA,NTYPEL,NPGMAX,IINST,NUMPT, NUMORD
+      INTEGER PGMAIL(NBMA),INDPG(NTYPEL,NPGMAX)
+      REAL*8  INST,PREC
+      CHARACTER*8 CRIT, PARAM
+      CHARACTER*19 LIGREL
+      CHARACTER*24 OPTION
+      CHARACTER*32  NOCHMD
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+      INTEGER NTYGEO
+      PARAMETER (NTYGEO=14)
+      INTEGER EDLECT
+      PARAMETER (EDLECT=0)
+      INTEGER NMEDMA
+      PARAMETER ( NMEDMA = 0 )
+
+      INTEGER MODAT2
+      INTEGER IDFIMD,CODRET,NLOC,IRET,IGREL
+      INTEGER J,NBGREL
+      INTEGER NUMTE,TYPELE,I,ITYG,NGAULU,IBID,NPDT
+      INTEGER TYGEO(NTYGEO),NBPG
+      INTEGER JTMFPG,NUFGPG
+      INTEGER DIME,JTYMED
+      INTEGER JNGALU,NBTYEL,NBMAG,IGR,IMA,IDT
+      INTEGER NUTYMA,IPG,IPGM,JPERM
+      INTEGER NUNO,NUMDT
+      INTEGER IOPT, IMOD, JMOD, IGRD, IADGD, NEC
+      REAL*8  DT,PREC2
+      LOGICAL LBID
+
+      CHARACTER*1 SAUX01
+      CHARACTER*3 TYELE(NTYGEO)
+      CHARACTER*8 SAUX08,K8B,FAPG,ELREF
+      CHARACTER*16 NOMTE,K16B,NOFGPG
+      CHARACTER*24 LIEL
+      CHARACTER*32 K32B
+      CHARACTER*200 NOFIMD
+      CHARACTER*255 KFIC
+
+      DATA TYGEO /    102,        103,         203,         206,
+     &                204,        208,         304,         310,
+     &                308,        320,         306,         315,
+     &                305,        313/
+      DATA TYELE /   'SE2',      'SE3',        'TR3',       'TR6',
+     &               'QU4',      'QU8',        'TE4',       'T10',
+     &               'HE8',      'H20',        'PE6',       'P15',
+     &               'PY5',      'P13'/
+
+C-----------------------------------------------------------------------
+      CALL JEMARQ()
+
+
+C  ======================================
+C  == 1 : EXPLOITATION DU FICHIER MED  ==
+C  ======================================
+C
+C     INITIALISATIONS
+      DO 5 I=1,NBMA
+         PGMAIL(I)=0
+ 5    CONTINUE
+
+C     NOM DU FICHIER MED
+      CALL ULISOG(NROFIC, KFIC, SAUX01)
+      IF ( KFIC(1:1).EQ.' ' ) THEN
+         CALL CODENT ( NROFIC, 'G', SAUX08 )
+         NOFIMD = 'fort.'//SAUX08
+      ELSE
+         NOFIMD = KFIC(1:200)
+      ENDIF
+
+C     OUVERTURE DU FICHIER MED
+      CALL EFOUVR (IDFIMD, NOFIMD, EDLECT, CODRET)
+
+C      A PARTIR DU NOM DU CHAMP MED ET DE L'INDICE DU PAS DE TEMPS, 
+C      ON RECUPERE POUR CHAQUE TYPE DE MAILLE PRESENT:
+C      - LE NOMBRE DE POINTS DE GAUSS : ZI(JNGALU)
+C      - LE NOM DU TYPE GEOMETRIQUE   : ZK8(JTYMED)
+C      REMARQUE: L'INDICE DU PAS DE TEMPS EST OBTENU EN PARCOURANT
+C      LA LISTE DES PAS DE TEMPS (BOUCLE 39)
+      CALL WKVECT('&&LRMPGA_TYPGEO_NBPG_MED','V V I',NTYGEO,JNGALU)
+      CALL WKVECT('&&LRMPGA_TYPGEO_TYPG_MED','V V K8',NTYGEO,JTYMED)
+      NBTYEL=0
+      DO 38 ITYG=1,NTYGEO
+         CALL EFNPDT(IDFIMD,NOCHMD,NMEDMA,TYGEO(ITYG),NPDT,IRET)
+         IF(NPDT.GT.0)THEN
+           DO 39 IDT=1,NPDT
+             CALL EFPDTI(IDFIMD,NOCHMD,NMEDMA,TYGEO(ITYG),IDT,
+     &              NGAULU,NUMDT,NUNO,K16B,DT,K32B,LBID,IBID,IRET)
+             IF(IINST.EQ.0)THEN
+                 IF(NUNO.EQ.NUMORD .OR. NUMDT.EQ.NUMPT)GOTO 37
+             ELSE
+                 IF(CRIT(1:4).EQ.'RELA')THEN
+                   PREC2=ABS(PREC*INST)
+                   IF(ABS(DT-INST).LE.PREC2)GOTO37
+                 ELSEIF(CRIT(1:4).EQ.'ABSO')THEN
+                   IF(ABS(DT-INST).LE.PREC)GOTO37
+                 ENDIF
+             ENDIF
+ 39        CONTINUE
+ 37        CONTINUE
+           NBTYEL=NBTYEL+1
+           ZK8(JTYMED+NBTYEL-1)=TYELE(ITYG)
+           ZI(JNGALU+NBTYEL-1)=NGAULU
+        ENDIF    
+ 38   CONTINUE     
+      CALL ASSERT(NBTYEL.GT.0)
+
+C     LECTURE DU NOMBRE DE LOCALISATIONS PRESENT DANS LE FICHIER MED
+C     NOMBRE DE LOCALISATION(S) : NLOC
+      NLOC=0
+      CALL EFNGAU(IDFIMD, NLOC, IRET)
+
+C
+      CALL DISMOI('F','DIM_GEOM',LIGREL(1:8),'MODELE',DIME,K8B,IRET)
+      LIEL=LIGREL//'.LIEL'
+      CALL JELIRA(LIEL,'NMAXOC',NBGREL,K8B)
+C   
+C  =========================================
+C  == 2 : EXPLOITATION DES DONNEES ASTER  ==
+C  =========================================
+
+      CALL JENONU(JEXNOM('&CATA.OP.NOMOPT', OPTION), IOPT)
+
+C     ON PARCOURT LES GROUPES D'ELEMENTS PRESENTS DANS LE MODELE
+      DO 30 IGREL=1,NBGREL
+
+C       NOM DU TYPE D'ELEMENT
+        NUMTE=TYPELE(LIGREL,IGREL)
+        CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUMTE),NOMTE)
+
+C       NOMBRE D'ELEMENTS DU GREL : NBMAG-1
+        CALL JEVEUO(JEXNUM(LIEL,IGREL),'L',IGR)
+        CALL JELIRA(JEXNUM(LIEL,IGREL),'LONMAX',NBMAG,K8B)
+
+C       MODE LOCAL ASSOCIE AU PARAMETRE PARAM DE L'OPTION OPTION
+        IMOD = MODAT2(IOPT, NUMTE, PARAM)
+        IF(IMOD.EQ.0)THEN
+            NBPG = 0
+        ELSE
+            CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC', IMOD), 'L', JMOD)
+C           CHAMP ELGA
+            CALL ASSERT(ZI(JMOD-1+1).EQ.3)
+            
+            IGRD = ZI(JMOD-1+2)
+            CALL JEVEUO(JEXNUM('&CATA.GD.DESCRIGD',IGRD),'L',IADGD)
+            NEC = ZI(IADGD-1+3)
+C           NUMERO ET NOM DE LA FAMILLE GLOBALE DE PTS GAUSS
+            NUFGPG = ZI(JMOD-1+4+NEC+1)
+            CALL JENUNO(JEXNUM('&CATA.TM.NOFPG',NUFGPG),NOFGPG)
+            ELREF= NOFGPG(1:8)
+            FAPG = NOFGPG(9:16)
+C           NOMBRE DE PG : NBPG
+            CALL JEVEUO('&CATA.TM.TMFPG', 'L', JTMFPG)
+            NBPG=ZI(JTMFPG+NUFGPG-1)
+
+C           ON PARCOURT LES ELEMENTS DE REFERENCE MED
+            DO 800 J=1,NBTYEL
+
+C           SI LES ELEMENTS DE REFERENCE ASTER/MED CORRESPONDENT :
+               IF(ZK8(JTYMED+J-1)(1:3).EQ.ELREF) THEN
+
+C                 VERIFICATION DU NOMBRE DE PG ASTER/MED
+C                 COMPARAISON DES COORDONNEES DES PG ASTER/MED
+                  CALL WKVECT('&&LRMPGA_PERMUT','V V I',NBPG,JPERM)
+                  CALL LRVCPG(IDFIMD,NBPG,ZI(JNGALU+J-1),DIME,
+     &                   ELREF,ZK8(JTYMED+J-1),FAPG,NLOC,ZI(JPERM),
+     &                   NUTYMA,CODRET)
+
+C                 SI PERMUTATIONS AU NIVEAU DES PG ASTER/MED :
+                  IF(CODRET.EQ.1)THEN
+C  ===>              REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A
+C                    UNE PERMUTATION DANS LES PG MED/ASTER
+                     DO 220 IPGM=1,NBPG
+                        INDPG(NUTYMA,IPGM)=ZI(JPERM+IPGM-1)
+ 220                 CONTINUE 
+                  ELSE
+C  ===>              SINON REMPLISSAGE DU TABLEAU INDPG: CAS OU L'ON A :
+C                  - ABSENCE DE LOCALISATION
+C                  - L UN DES PG MED N A PAS ETE IDENTIFIE A UN PG ASTER
+C                  - LES PG ASTER/MED CORRESPONDENT
+                     DO 145 IPG=1,NBPG
+                        INDPG(NUTYMA,IPG)=IPG
+ 145                 CONTINUE
+                  ENDIF
+
+C                 DESTRUCTION DU TABLEAU TEMPORAIRE
+                  CALL JEDETR('&&LRMPGA_PERMUT')
+
+               ENDIF
+
+ 800        CONTINUE
+
+C       REMPLISSAGE DU TABLEAU PGMAIL : PGMAIL(NUM_MAILLE_ASTER)=NBRE_PG
+        DO 301 IMA=1,NBMAG-1
+           PGMAIL(ZI(IGR+IMA-1))=NBPG
+ 301    CONTINUE
+
+        ENDIF
+
+ 30   CONTINUE
+
+C     DESTRUCTION DES TABLEAUX TEMPORAIRES
+      CALL JEDETR('&&LRMPGA_TYPGEO_NBPG_MED')
+      CALL JEDETR('&&LRMPGA_TYPGEO_TYPG_MED')
+
+      CALL JEDEMA()
+
+      END

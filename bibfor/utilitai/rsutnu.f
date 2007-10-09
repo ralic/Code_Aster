@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

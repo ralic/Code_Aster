@@ -1,6 +1,6 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 09/10/2007   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
-# TITRE CORRIGE TP2 FORMATION THERMOPLASTICITE PLAQUE TROUEE EN TRACTIO
+# TITRE TP FORMATION NON LINEAIRE PLAQUE TROUEE EN TRACTION - PILOTAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,15 +18,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 
 DEBUT(CODE=_F(NOM='FORMA03B',
-              NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),);
-#===========================================
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),);
 
-PRE_GIBI();
+M=LIRE_MAILLAGE(FORMAT='MED',
+                VERI_MAIL=_F(),);
 
-M=LIRE_MAILLAGE();
 # PLAQUE TROUEE : CONTRAINTES PLANES
 
 MO=AFFE_MODELE(MAILLAGE=M,
@@ -34,215 +33,169 @@ MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
+
 # COURBE DE TRACTION
 
-CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',
-                    VALE=(0.004,4.0,0.006,5.0,0.009,5.5,0.02,6.0,),
-                    PROL_DROITE='CONSTANT',);
+CTRAC=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(1.00000E-03,2.00000E+02,
+                          6.00000E-03,2.15275E+02,
+                          1.10000E-02,2.27253E+02,
+                          1.60000E-02,2.36630E+02,
+                          2.10000E-02,2.43964E+02,
+                          2.60000E-02,2.49694E+02,
+                          3.10000E-02,2.54168E+02,
+                          3.60000E-02,2.57659E+02,
+                          4.10000E-02,2.60382E+02,
+                          4.60000E-02,2.62506E+02,
+                          5.10000E-02,2.64161E+02,
+                          5.60000E-02,2.65451E+02,
+                          6.10000E-02,2.66457E+02,
+                          6.60000E-02,2.67240E+02,
+                          7.10000E-02,2.67850E+02,
+                          7.60000E-02,2.68325E+02,
+                          8.10000E-02,2.68696E+02,
+                          8.60000E-02,2.68984E+02,
+                          9.10000E-02,2.69209E+02,
+                          9.60000E-02,2.69384E+02,
+                          1.01000E-01,2.69520E+02,
+                          1.06000E-01,2.69626E+02,
+                          1.11000E-01,2.69709E+02,
+                          1.16000E-01,2.69773E+02,
+                          1.21000E-01,2.69823E+02,
+                          1.26000E-01,2.69862E+02,
+                          1.31000E-01,2.69893E+02,
+                          1.36000E-01,2.69917E+02,
+                          1.41000E-01,2.69935E+02,
+                          1.46000E-01,2.69949E+02,
+                          1.51000E-01,2.69961E+02,
+                          1.56000E-01,2.69969E+02,
+                          1.61000E-01,2.69976E+02,
+                          1.66000E-01,2.69981E+02,
+                          1.71000E-01,2.69986E+02,
+                          1.76000E-01,2.69989E+02,
+                          1.81000E-01,2.69991E+02,
+                          1.86000E-01,2.69993E+02,
+                          1.91000E-01,2.69994E+02,
+                          1.96000E-01,2.69996E+02,
+                          2.00000E-01,2.69996E+02,
+                          ),PROL_DROITE='CONSTANT',);
 
-MA=DEFI_MATERIAU(ELAS=_F(E=1000.0,
+MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.3,),
                  TRACTION=_F(SIGM=CTRAC,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,),);
+
 # CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
-                   FACE_IMPO=(_F(GROUP_MA=('LBC','LCD',),
+                   FACE_IMPO=(_F(GROUP_MA='bas',
                                  DY=0.0,),
-                              _F(GROUP_MA=('LGH','LHI','LIA',),
+                              _F(GROUP_MA='gauche',
                                  DX=0.0,),),);
+
 # TRACTION REPARTIE SUR LE HAUT
 
 CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   FORCE_CONTOUR=_F(GROUP_MA='LFG',
+                   FORCE_CONTOUR=_F(GROUP_MA='haut',
                                     FY=1.0,),);
-#PILOTAGE                            
-INSTFIN2 = 4.0;
 
+# L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR LFG
 
-L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=(_F(JUSQU_A=INSTFIN2,
-                                      NOMBRE=40,),),);
+F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           1000.0,1000.0,
+                           ),);
 
-RESUPILO=STAT_NON_LINE(MODELE=MO,
-                       CHAM_MATER=CM,
-                       EXCIT=(_F(CHARGE=CH1,),
-                              _F(CHARGE=CH2,
-                                 TYPE_CHARGE='FIXE_PILO',),),
-                       COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
-                       INCREMENT=_F(LIST_INST=L_INST2,
-                                    INST_FIN=INSTFIN2,),
-                       NEWTON=_F(REAC_ITER=1,),
-                       PILOTAGE=_F(TYPE='DDL_IMPO',
-                                   COEF_MULT=1.0,
-                                   GROUP_NO='A',
-                                   NOM_CMP='DY',),
-                       ARCHIVAGE=_F(LIST_INST=L_INST2,),);
-
-RESUPILO=CALC_ELEM(reuse =RESUPILO,
-                   RESULTAT=RESUPILO,
-                   OPTION='SIEF_ELNO_ELGA',);
-
-RESUPILO=CALC_NO(reuse =RESUPILO,
-                 RESULTAT=RESUPILO,
-                 OPTION='SIEF_NOEU_ELGA',);
-
-# POUR VISUALISER LE ETA_PILOTAGE = F(INST)
-
-ETA_PILO=RECU_FONCTION(RESULTAT=RESUPILO,
-                       NOM_PARA_RESU='ETA_PILOTAGE',
-                       TOUT_ORDRE='OUI',);
-
-IMPR_FONCTION(UNITE=8,
-              FORMAT='TABLEAU',
-              COURBE=_F(FONCTION=ETA_PILO,),);
-
-TEST_FONCTION(VALEUR=(_F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=0.1,
-                         VALE_REFE=3.11129783419,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=0.4,
-                         VALE_REFE=5.05005332837,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=1.0,
-                         VALE_REFE=5.38960514393,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=1.5,
-                         VALE_REFE=5.40087494544,
-                         REFERENCE='NON_REGRESSION',),
-                      _F(FONCTION=ETA_PILO,
-                         NOM_PARA='INST',
-                         VALE_PARA=2.0,
-                         VALE_REFE=5.40469494399,
-                         REFERENCE='NON_REGRESSION',),),);
-#=======================================================================        
-# CHARGE-DECHARGE
-INSTFIN1 = 5.4;
-
-INSTFIN3 = 6.0;
-
-
-F_DEPL=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,INSTFIN1,INSTFIN1,INSTFIN3,0.0,),);
 # DISCRETISATION EN TEMPS
+TFIN = 4.0;
+
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=1.0,
-                                     NOMBRE=1,),
-                                  _F(JUSQU_A=INSTFIN1,
-                                     NOMBRE=22,),
-                                  _F(JUSQU_A=INSTFIN3,
-                                     NOMBRE=6,),),);
-#  CALCUL JUSQU'A 5.4 MPA PUIS DECHARGE
+                      INTERVALLE=_F(JUSQU_A=TFIN,
+                                    NOMBRE=160,),);
+
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=TFIN,
+                                    NOMBRE=40,),);
+
+#PILOTAGE                            
 
 RESUNL=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=CM,
                      EXCIT=(_F(CHARGE=CH1,),
                             _F(CHARGE=CH2,
-                               FONC_MULT=F_DEPL,),),
+                               TYPE_CHARGE='FIXE_PILO',),),
                      COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                      INCREMENT=_F(LIST_INST=L_INST,
-                                  INST_FIN=INSTFIN1,
-                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                  SUBD_PAS_MINI=0.0001,),
+                                  INST_FIN=TFIN,
+                                  SUBD_METHODE='UNIFORME',
+                                  SUBD_PAS=10,
+                                  SUBD_NIVEAU=10,),
                      NEWTON=_F(REAC_ITER=1,),
-                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
+                     SOLVEUR=_F(STOP_SINGULIER='DECOUPE'),
+                     PILOTAGE=_F(TYPE='DDL_IMPO',
+                                 COEF_MULT=1.0,
+                                 GROUP_NO='G',
+                                 NOM_CMP='DY',),
+                     ARCHIVAGE=_F(LIST_INST=L_ARCH,),
+#                      SUIVI_DDL=(_F(NUME_SUIVI=1,
+#                                    NOM_CHAM='DEPL',
+#                                    NOM_CMP='DY',
+#                                    GROUP_NO='G',),
+#                                 _F(NUME_SUIVI=2,
+#                                    NOM_CHAM='SIEF_ELGA',
+#                                    NOM_CMP='SIYY',
+#                                    VALE_MAX='OUI',),
+#                                 _F(NUME_SUIVI=3,
+#                                    NOM_CHAM='VARI_ELGA',
+#                                    NOM_CMP='V1',
+#                                    VALE_MAX='OUI',),),
+                                   );
 
-RESUNL=STAT_NON_LINE(reuse =RESUNL,
-                     MODELE=MO,
-                     CHAM_MATER=CM,
-                     EXCIT=(_F(CHARGE=CH1,),
-                            _F(CHARGE=CH2,
-                               FONC_MULT=F_DEPL,),),
-                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
-                     ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
-                     INCREMENT=_F(LIST_INST=L_INST,
-                                  INST_FIN=INSTFIN3,),
-                     NEWTON=_F(PREDICTION='ELASTIQUE',
-                               REAC_ITER=1,),);
-# CALCUL DES CHAMPS AUX NOEUDS PAR ELEMENT
+#
+# INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
 
 RESUNL=CALC_ELEM(reuse =RESUNL,
                  RESULTAT=RESUNL,
-                 OPTION='SIEF_ELNO_ELGA',);
-# CALCUL DES CHAMPS MOYENNES AUX NOEUDS POUR TEST_RESU
+                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELGA_SIGM',),);
+
+# DEPOUILLEMENTS DES RESULTATS
+# VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
+
+IMPR_RESU(MODELE=MO,
+          RESU=(_F(RESULTAT=RESUNL,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   VALE_MAX='OUI',),
+                _F(RESULTAT=RESUNL,
+                   NOM_CHAM='VARI_ELGA',
+                   VALE_MAX='OUI',),),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUNL,),);
 
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
                OPTION='SIEF_NOEU_ELGA',);
 
+SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
+                       NOM_CHAM='SIEF_ELNO_ELGA',
+                       LIGN_COUPE=_F(NB_POINTS=30,
+                                     COOR_ORIG=(10,0,),
+                                     COOR_EXTR=(100,0,),),);
+
+IMPR_TABLE(TABLE=SIGBAS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=TFIN,),
+           NOM_PARA=('ABSC_CURV','SIYY',),);
+
 TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  INST=INSTFIN1,
+                  INST=TFIN,
                   NOM_CHAM='SIEF_NOEU_ELGA',
                   NOM_CMP='SIYY',
                   GROUP_NO='G',
-                  VALE=5.40262,
+                  VALE=243.0,
+                  PRECISION=(0.015,0.0001,),
                   REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESUNL,
-                  INST=INSTFIN3,
-                  NOM_CHAM='SIEF_NOEU_ELGA',
-                  NOM_CMP='SIYY',
-                  GROUP_NO='A',
-                  VALE=0.0871535,
-                  REFERENCE='NON_REGRESSION',),);
-#  CALCUL JUSQU'A 5.4 MPA PUIS DECHARGE
-# RECHERCHE LINEAIRE ET SUBDIVISION DU PAS DE TEMPS
-
-RESURL=STAT_NON_LINE(MODELE=MO,
-                     CHAM_MATER=CM,
-                     EXCIT=(_F(CHARGE=CH1,),
-                            _F(CHARGE=CH2,
-                               FONC_MULT=F_DEPL,),),
-                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
-                     INCREMENT=_F(LIST_INST=L_INST,
-                                  INST_FIN=INSTFIN3,
-                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                  SUBD_PAS_MINI=0.0001,),
-                     NEWTON=_F(PREDICTION='ELASTIQUE',
-                               REAC_ITER=1,),
-                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
-                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
-# CALCUL DES CHAMPS AUX NOEUDS PAR ELEMENT
-
-RESURL=CALC_ELEM(reuse =RESURL,
-                 RESULTAT=RESURL,
-                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
-# CALCUL DES CHAMPS MOYENNES AUX NOEUDS POUR TEST_RESU
-
-RESURL=CALC_NO(reuse =RESURL,
-               RESULTAT=RESURL,
-               OPTION='SIEF_NOEU_ELGA',);
-
-TEST_RESU(RESU=_F(RESULTAT=RESURL,
-                  INST=5.4,
-                  NOM_CHAM='SIEF_NOEU_ELGA',
-                  NOM_CMP='SIYY',
-                  GROUP_NO='G',
-                  VALE=5.40262,
-                  REFERENCE='NON_REGRESSION',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESURL,
-                  INST=INSTFIN3,
-                  NOM_CHAM='SIEF_NOEU_ELGA',
-                  NOM_CMP='SIYY',
-                  GROUP_NO='A',
-                  VALE=0.0871535,
-                  REFERENCE='NON_REGRESSION',),);
-
-IMPR_RESU(MODELE=MO, FORMAT='MED',
-          RESU=_F( RESULTAT=RESURL,
-                   NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                 ),);
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,9 +104,9 @@ K1=ASSE_MATRICE(        MATR_ELEM=ME1,
 F1=ASSE_VECTEUR(        VECT_ELEM=VE,
                               NUME_DDL=NU1          )
 
-K1=FACT_LDLT(      reuse=K1,     MATR_ASSE=K1           )
+K1=FACTORISER(      reuse=K1,     MATR_ASSE=K1           )
 
-DEP1=RESO_LDLT(           MATR_FACT=K1,
+DEP1=RESOUDRE(           MATR=K1,
                                CHAM_NO=F1           )
 
 RESU1=CREA_RESU(  OPERATION='AFFE',
@@ -125,9 +125,9 @@ K2=ASSE_MATRICE(        MATR_ELEM=ME2,
 F2=ASSE_VECTEUR(        VECT_ELEM=VE,
                               NUME_DDL=NU2          )
 
-K2=FACT_LDLT(      reuse=K2,     MATR_ASSE=K2           )
+K2=FACTORISER(      reuse=K2,     MATR_ASSE=K2           )
 
-DEP2=RESO_LDLT(           MATR_FACT=K2,
+DEP2=RESOUDRE(           MATR=K2,
                                CHAM_NO=F2           )
 RESU2=CREA_RESU(  OPERATION='AFFE',
                  TYPE_RESU='EVOL_ELAS',

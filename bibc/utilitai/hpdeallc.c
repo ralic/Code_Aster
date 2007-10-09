@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF HPDEALLC UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF HPDEALLC UTILITAI  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,8 +18,9 @@
 /* ================================================================== */
 #include "aster.h"
 
-void DEFPPP(HPDEALLC, hpdeallc, void **addr, INTEGER *errcode, INTEGER *abrt)
+void DEFPPP(HPDEALLC, hpdeallc, void **addr, INTEGER *nbapp, INTEGER *abrt)
 {
    void free(void *);
    free(*addr);
+   *nbapp=*nbapp+1;
 }

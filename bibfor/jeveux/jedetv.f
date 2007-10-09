@@ -1,6 +1,6 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRP_18 CRS_508 CRS_512 CRS_505
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,8 +59,10 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
-      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      REAL *8          MXDYN , MCDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN 
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      &               IDMARQ     , IDNOM      ,             IDLONG     ,

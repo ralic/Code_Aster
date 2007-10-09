@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,10 +89,10 @@ FTH=ASSE_VECTEUR(      VECT_ELEM=VETH,
                            )
 
 #
-KTH=FACT_LDLT(      reuse=KTH,   MATR_ASSE=KTH )
+KTH=FACTORISER(      reuse=KTH,   MATR_ASSE=KTH )
 
 #
-TEMP=RESO_LDLT(         MATR_FACT=KTH,
+TEMP=RESOUDRE(         MATR=KTH,
                                  CHAM_NO=FTH
                            )
 
@@ -162,10 +162,10 @@ FORCE=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
                          )
 
 #
-RIGIDITE=FACT_LDLT(    reuse=RIGIDITE,  MATR_ASSE=RIGIDITE)
+RIGIDITE=FACTORISER(    reuse=RIGIDITE,  MATR_ASSE=RIGIDITE)
 
 #
-DEP=RESO_LDLT(   MATR_FACT=RIGIDITE, 
+DEP=RESOUDRE(   MATR=RIGIDITE, 
                             CHAM_NO=FORCE
                        )
 

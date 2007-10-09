@@ -2,11 +2,11 @@
      &                    NOMAAS, TYPECH, NOMGD,
      &                    NBCMPV, NCMPVA, NCMPVM,
      &                    IINST, NUMPT,  NUMORD, INST, CRIT, PREC,
-     &                    NROFIC, CODRET )
+     &                    NROFIC, LIGREL, OPTION, PARAM, CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,9 @@ C        INST   : INSTANT EVENTUEL
 C        CRIT   : CRITERE SUR LA RECHERCHE DU BON INSTANT
 C        PREC   : PRECISION SUR LA RECHERCHE DU BON INSTANT
 C        NROFIC : NUMERO NROFIC LOGIQUE DU FICHIER MED
+C        LIGREL : NOM DU LIGREL
+C        OPTION / PARAM : POUR CREER LE CHAMP COMME S'IL ETAIT LE
+C                 PARAMETRE EN SORTIE DE CETTE OPTION (CHAMPS ELGA)
 C     SORTIES:
 C        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 C_____________________________________________________________________
@@ -55,11 +58,12 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*19 CHANOM
+      CHARACTER*19 CHANOM,LIGREL
       CHARACTER*(*) NCMPVA, NCMPVM
       CHARACTER*8 NOMAAS
       CHARACTER*8 NOMGD, TYPECH
-      CHARACTER*8 CRIT
+      CHARACTER*8 CRIT, PARAM
+      CHARACTER*24 OPTION
       CHARACTER*32 NOCHMD, NOMAMD
 C
       INTEGER NROFIC
@@ -98,7 +102,7 @@ C
      &                NOMAAS, NOMMOD, NOMGD,
      &                NBCMPV, NCMPVA, NCMPVM,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     &                NROFIC, CODRET )
+     &                NROFIC, LIGREL, OPTION, PARAM, CODRET )
       ELSE
         CODRET = 1
         CALL U2MESK('A','PREPOST_95',1,TYPECH(1:4))

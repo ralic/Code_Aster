@@ -1,6 +1,6 @@
       SUBROUTINE DISMCH(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C     ----------
       CHARACTER*(*) QUESTI,CODMES
       CHARACTER*(*) NOMOBZ,REPKZ
       CHARACTER*32 REPK
-      CHARACTER*8 NOMOB
+      CHARACTER*8 NOMOB,MODELE
 C ----------------------------------------------------------------------
 C     IN:
 C       CODMES : CODE DES MESSAGES A EMETTRE : 'F', 'A', ...
@@ -52,8 +52,9 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 ZR
       COMPLEX*16 ZC
       LOGICAL ZL
-      CHARACTER*8 ZK8
+      CHARACTER*8 ZK8,KTYP
       CHARACTER*16 ZK16,TYPECO
+      CHARACTER*19 NOM19
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
@@ -63,31 +64,48 @@ C
 C
       CALL JEMARQ()
       NOMOB = NOMOBZ
+      NOM19 = NOMOBZ
       REPK  = REPKZ
-      CALL JEVEUO(NOMOB//'.TYPE           ','L',ITYPE)
-      IF (ZK8(ITYPE) (1:5).EQ.'MECA_') THEN
+
+C     -- CHARGE OU CHAR_CINE ?
+      CALL JEEXIN(NOMOB//'.TYPE',IER)
+      IF (IER.GT.0) THEN
+        CALL JEVEUO(NOMOB//'.TYPE','L',IATYPE)
+        KTYP=ZK8(IATYPE)
+      ELSE
+        CALL JEVEUO(NOM19//'.AFCK','L',JAFCK)
+        KTYP=ZK8(JAFCK)
+        MODELE=ZK8(JAFCK-1+2)
+      ENDIF
+
+      IF (KTYP(1:5).EQ.'MECA_') THEN
          IPHEN = 1
          SUF = 'CHME'
-      ELSE IF (ZK8(ITYPE)(1:5).EQ.'THER_') THEN
+      ELSE IF (KTYP(1:5).EQ.'THER_') THEN
          IPHEN = 2
          SUF = 'CHTH'
-      ELSE IF (ZK8(ITYPE)(1:5).EQ.'ACOU_') THEN
+      ELSE IF (KTYP(1:5).EQ.'ACOU_') THEN
          IPHEN = 3
          SUF = 'CHAC'
-      ELSE IF (ZK8(ITYPE)(1:5).EQ.'CIME_') THEN
+      ELSE IF (KTYP(1:5).EQ.'CIME_') THEN
          IPHEN = 1
          SUF = 'CIME'
-      ELSE IF (ZK8(ITYPE)(1:5).EQ.'CITH_') THEN
+      ELSE IF (KTYP(1:5).EQ.'CITH_') THEN
          IPHEN = 2
          SUF = 'CITH'
-      ELSE IF (ZK8(ITYPE)(1:5).EQ.'CIAC_') THEN
+      ELSE IF (KTYP(1:5).EQ.'CIAC_') THEN
          IPHEN = 3
          SUF = 'CIAC'
       ELSE
          CALL U2MESS('F','UTILITAI_52')
       END IF
-C
-C
+
+      IF (SUF(1:2).EQ.'CH') THEN
+         CALL JEVEUO(NOMOB//'.'//SUF//'.MODEL.NOMO','L',IANOMO)
+         MODELE = ZK8(IANOMO)
+      ENDIF
+
+
       IF (QUESTI.EQ.'PHENOMENE') THEN
          IF (IPHEN.EQ.1) THEN
             REPK = 'MECANIQUE'
@@ -173,22 +191,19 @@ C
          ELSE
             CALL U2MESK('F','UTILITAI_53',1,SUF)
          END IF
-C
+
       ELSE IF (QUESTI.EQ.'NOM_MODELE') THEN
-         CALL JEVEUO(NOMOB//'.'//SUF//'.MODEL.NOMO','L',IANOMO)
-         REPK = ZK8(IANOMO)
-C
+         REPK = MODELE
+
       ELSE IF (QUESTI.EQ.'TYPE_CHARGE') THEN
-         CALL JEVEUO(NOMOB//'.TYPE','L',IATYPE)
-         REPK = ZK8(IATYPE)
-C
+         REPK = KTYP
+
       ELSE IF (QUESTI.EQ.'NOM_MAILLA') THEN
-         CALL JEVEUO(NOMOB//'.'//SUF//'.MODEL.NOMO','L',IANOMO)
-         CALL DISMMO(CODMES,QUESTI,ZK8(IANOMO),REPI,REPK,IERD)
-C
+         CALL DISMMO(CODMES,QUESTI,MODELE,REPI,REPK,IERD)
+
       ELSE IF (QUESTI.EQ.'NOM_LIGREL') THEN
          REPK = NOMOB//'.'//SUF//'.LIGRE'
-C
+
       ELSE
          REPK = QUESTI
          CALL U2MESK('F','UTILITAI_49',1,REPK)

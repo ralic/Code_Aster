@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+%& MODIF OPTIONS  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,6 +25,10 @@ OPTION__
         PDEPL_M  DEPL_R
         PDEPL_P  DEPL_R
         PVITE_P  DEPL_R
+        PCAR_PT  NEUT_R
+        PCAR_PI  NEUT_R
+        PCAR_AI  NEUT_R
+        PCAR_CF  NEUT_R
         PCONFR   NEUT_R
         PDEPLAR  DEPL_R
         PCHDYNR  DEPL_R

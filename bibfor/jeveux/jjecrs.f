@@ -1,6 +1,6 @@
       SUBROUTINE JJECRS ( IADMI , ICLAS , IDOS , IDCO , CUS , IMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,8 +45,10 @@ C ----------------------------------------------------------------------
 C ---                  ISTAT(1)->X , (2)->U , (3)->A , (4)->D
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      REAL *8          MXDYN , MCDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN 
 C ----------------------------------------------------------------------
       INTEGER          ISTA1,ISTA2,IS,KTEMPO(2),IB
 C DEB ------------------------------------------------------------------

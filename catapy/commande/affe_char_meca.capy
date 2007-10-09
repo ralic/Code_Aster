@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -444,6 +444,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              INTEGRATION    = SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG4","FPG6","FPG7",) ),
              COEF_REGU_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
              ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut=30),
+             ITER_GEOM_MAXI  =SIMP(statut='f',typ='I',defaut=0),
+             TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
              CONTACT_INIT   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
              ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",into=("NON","VERSION1","VERSION2" , ) ),
              COEF_ECHELLE   = SIMP(statut='f',typ='R',defaut=1.E+6),

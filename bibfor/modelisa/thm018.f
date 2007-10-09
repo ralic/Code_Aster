@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 09/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,18 +33,12 @@ C
          TYPEMO = 'AXIS_THMD'
 
       ELSEIF ( TYPELE.EQ.'THM_DPQ8'  .OR.
-     +         TYPELE.EQ.'THM_DPQ4'  .OR.
-     +         TYPELE.EQ.'THM_DPTR3' .OR.
      +         TYPELE.EQ.'THM_DPTR6' .OR.
-     +         TYPELE.EQ.'THM_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'THM_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_THM'
 
       ELSEIF ( TYPELE.EQ.'THM_DPQ8D'  .OR.
-     +         TYPELE.EQ.'THM_DPQ4D'  .OR.
-     +         TYPELE.EQ.'THM_DPTR3D' .OR.
      +         TYPELE.EQ.'THM_DPTR6D' .OR.
-     +         TYPELE.EQ.'THM_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'THM_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_THMD'
 

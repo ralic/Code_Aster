@@ -1,0 +1,331 @@
+
+# MODIF  DATE 09/10/2007   AUTEUR PROIX J-M.PROIX 
+# TITRE TP FORMATION NON LINEAIRE. RECALAGE PARAMETRES PUIS CALCUL PLAQUE TROUEE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE PROIX J-M.PROIX
+
+DEBUT(CODE=_F(NOM='FORMA03C',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON',),);
+
+#######################################################
+# RECALAGE DES PARAMETRES DE VISC_CIN1_CHAB
+#######################################################
+
+parametres =[['R_INF__',250.,200.,800.],['b__',20.,10.,100.],]
+
+calcul = [['RESU1','INST','SIYY'],]
+
+
+#######################################################
+# COURBE DE TRACTION MODELISATION A
+#######################################################
+
+experience=[    Numeric.array([
+                              [ 1.00000E-03 , 2.00000E+02  ],
+                              [ 6.00000E-03 , 2.15275E+02  ],
+                              [ 1.10000E-02 , 2.27253E+02  ],
+                              [ 1.60000E-02 , 2.36630E+02  ],
+                              [ 2.10000E-02 , 2.43964E+02  ],
+                              [ 2.60000E-02 , 2.49694E+02  ],
+                              [ 3.10000E-02 , 2.54168E+02  ],
+                              [ 3.60000E-02 , 2.57659E+02  ],
+                              [ 4.10000E-02 , 2.60382E+02  ],
+                              [ 4.60000E-02 , 2.62506E+02  ],
+                              [ 5.10000E-02 , 2.64161E+02  ],
+                              [ 5.60000E-02 , 2.65451E+02  ],
+                              [ 6.10000E-02 , 2.66457E+02  ],
+                              [ 6.60000E-02 , 2.67240E+02  ],
+                              [ 7.10000E-02 , 2.67850E+02  ],
+                              [ 7.60000E-02 , 2.68325E+02  ],
+                              [ 8.10000E-02 , 2.68696E+02  ],
+                              [ 8.60000E-02 , 2.68984E+02  ],
+                              [ 9.10000E-02 , 2.69209E+02  ],
+                              [ 9.60000E-02 , 2.69384E+02  ],
+                              [ 1.01000E-01 , 2.69520E+02  ],
+                              [ 1.06000E-01 , 2.69626E+02  ],
+                              [ 1.11000E-01 , 2.69709E+02  ],
+                              [ 1.16000E-01 , 2.69773E+02  ],
+                              [ 1.21000E-01 , 2.69823E+02  ],
+                              [ 1.26000E-01 , 2.69862E+02  ],
+                              [ 1.31000E-01 , 2.69893E+02  ],
+                              [ 1.36000E-01 , 2.69917E+02  ],
+                              [ 1.41000E-01 , 2.69935E+02  ],
+                              [ 1.46000E-01 , 2.69949E+02  ],
+                              [ 1.51000E-01 , 2.69961E+02  ],
+                              [ 1.56000E-01 , 2.69969E+02  ],
+                              [ 1.61000E-01 , 2.69976E+02  ],
+                              [ 1.66000E-01 , 2.69981E+02  ],
+                              [ 1.71000E-01 , 2.69986E+02  ],
+                              [ 1.76000E-01 , 2.69989E+02  ],
+                              [ 1.81000E-01 , 2.69991E+02  ],
+                              [ 1.86000E-01 , 2.69993E+02  ],
+                              [ 1.91000E-01 , 2.69994E+02  ],
+                              [ 1.96000E-01 , 2.69996E+02  ],
+                              [ 2.00000E-01 , 2.69996E+02  ],
+                              ]) ]
+                              
+
+# LANCEMENT DE L'IDENTIFICATION
+
+RESU=MACR_RECAL(
+         UNITE_ESCL       =3,
+         UNITE_RESU=91,
+     #   SUIVI_ESCLAVE='OUI',
+         RESU_EXP         =experience,
+         LIST_PARA        =parametres,
+         RESU_CALC        =calcul,
+         GRAPHIQUE = _F(UNITE=90,
+                       AFFICHAGE='ITERATION_FINALE',
+                        ),
+)  ;
+
+
+# On cree une liste bidon pour pouvoir
+# definir une fonction testable par TEST_RESU
+BIDON=DEFI_LIST_REEL(DEBUT=1.,
+                     INTERVALLE=_F(JUSQU_A = 2., NOMBRE=1));
+
+OPTIM=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE_PARA=BIDON,
+                    VALE_FONC=RESU);
+
+TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
+                           PRECISION = 0.01,
+                           VALE_PARA = 1.,
+                           REFERENCE = 'ANALYTIQUE',
+                           VALE_REFE = 270.,
+                         ),
+                       _F( FONCTION = OPTIM,
+                           PRECISION = 0.03,
+                           VALE_PARA = 2.,
+                           REFERENCE = 'ANALYTIQUE',
+                           VALE_REFE = 50.,
+                         ),
+              )
+              ) ;
+
+
+#######################################################
+# CALCUL DE LA PLAQUE TROUEE AVEC VISC_CIN1_CHAB
+#######################################################
+
+
+M=LIRE_MAILLAGE(FORMAT='MED');
+
+# PLAQUE TROUEE : CONTRAINTES PLANES
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
+C = 1700.0;
+
+GAMMA = 10.0;
+
+E = 200000.0;
+
+SigmaY = 200.0;
+
+R_INF__ = 270.0;
+
+b__ = 50.0;
+
+
+MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                         NU=0.3,),
+                 CIN1_CHAB=_F(R_0=SigmaY,
+                              R_I=R_INF__,
+                              B=b__,
+                              C_I=0.,
+                              G_0=GAMMA,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MA,),);
+
+# CONDITIONS DE SYMETRIE (QUART DE PLAQUE)
+
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   FACE_IMPO=(_F(GROUP_MA='bas',
+                                 DY=0.0,),
+                              _F(GROUP_MA='gauche',
+                                 DX=0.0,),),);
+
+# TRACTION REPARTIE SUR LE HAUT
+
+CH2=AFFE_CHAR_MECA(MODELE=MO,
+                   FORCE_CONTOUR=_F(GROUP_MA='haut',
+                                    FY=1.0,),);
+
+# L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR LFG
+
+F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           1000.0,1000.0,
+                           ),);
+
+# DISCRETISATION EN TEMPS
+Sy = SigmaY;
+
+Su = R_INF__;
+
+
+# 243
+TMAX = (0.9 * Su);
+
+TFIN = 230.0;
+
+TELAS = (Sy / 3.0);
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=TELAS,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=TFIN,
+                                     NOMBRE=30,),
+                                  _F(JUSQU_A=TMAX,
+                                     NOMBRE=60,),),);
+
+# PREMIER CALCUL : ON RESTE ELASTIQUE
+
+RESUNL=STAT_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CM,
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=CH2,
+                               FONC_MULT=F_DEPL,),),
+                     COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
+                                  ALGO_C_PLAN='DEBORST',),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_FIN=TELAS,),);
+
+# CALCUL SANS SOUCI JUSQU'A TFIN
+# SUBDIVISION DU PAS DE TEMPS
+# LE NOMBRE D'ITERATIONS POUR CONVERGER AUGMENTE
+
+RESUNL=STAT_NON_LINE(reuse =RESUNL,
+                     MODELE=MO,
+                     CHAM_MATER=CM,
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=CH2,
+                               FONC_MULT=F_DEPL,),),
+                     COMP_INCR=_F(RELATION='VMIS_CIN1_CHAB',
+                                  ALGO_C_PLAN='DEBORST',
+                                  ITER_INTE_MAXI=100,),
+                     ETAT_INIT=_F(EVOL_NOLI=RESUNL,),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_FIN=TFIN,
+                                  SUBD_METHODE='EXTRAPOLE',
+                                  SUBD_PAS=2,
+                                  SUBD_NIVEAU=20,),
+                     NEWTON=_F(REAC_ITER=1,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
+                     ARCHIVAGE=_F(LIST_INST=L_INST,),);
+
+
+# INTERPOLATION DES CONTRAINTES ET VARIABLE INTERNES AUX NOEUDS
+
+RESUNL=CALC_ELEM(reuse =RESUNL,
+                 RESULTAT=RESUNL,
+                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELGA_SIGM',),);
+
+# DEPOUILLEMENTS DES RESULTATS
+# VALEURS MAXI DES CONTRAINTES EQUIVALENTES ET DES VARIABLES INTERNES
+
+IMPR_RESU(MODELE=MO,
+          RESU=(_F(RESULTAT=RESUNL,
+                   NOM_CHAM='EQUI_ELGA_SIGM',
+                   VALE_MAX='OUI',),
+                _F(RESULTAT=RESUNL,
+                   NOM_CHAM='VARI_ELGA',
+                   VALE_MAX='OUI',),),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUNL,),);
+
+RESUNL=CALC_NO(reuse =RESUNL,
+               RESULTAT=RESUNL,
+               OPTION='SIEF_NOEU_ELGA',);
+
+#
+# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
+#######################################################
+
+
+DYG=RECU_FONCTION(RESULTAT=RESUNL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='G',);
+
+SYG=RECU_FONCTION(RESULTAT=RESUNL,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',);
+
+# COURBES AVEC XMGRACE 
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE='PNG',
+              UNITE=82,
+              COURBE=_F(FONC_X=DYG,
+                        FONC_Y=SYG,),
+              TITRE='SigmaYY en fonction de Dy au point G ',
+              BORNE_X=(0.0,3.0,),
+              BORNE_Y=(0.0,7.0,),
+              GRILLE_X=0.5,
+              GRILLE_Y=1.0,
+              LEGENDE_X='D\xe9placement DY au point G',
+              LEGENDE_Y='Contraine SIGMAYY',);
+
+SIGBAS=MACR_LIGN_COUPE(RESULTAT=RESUNL,
+                       NOM_CHAM='SIEF_ELNO_ELGA',
+                       LIGN_COUPE=_F(NB_POINTS=30,
+                                     COOR_ORIG=(10,0,),
+                                     COOR_EXTR=(100,0,),),);
+
+IMPR_TABLE(TABLE=SIGBAS,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=TFIN,),
+           NOM_PARA=('ABSC_CURV','SIYY',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESUNL,
+                   INST=TELAS,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='B',
+                   VALE=(3.0 * TELAS),
+                   PRECISION=0.03,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESUNL,
+                   INST=TELAS,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIXX',
+                   GROUP_NO='A',
+                   VALE=(-1.0 * TELAS),
+                   PRECISION=0.03,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESUNL,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='G',
+                   VALE=TFIN,
+                   REFERENCE='ANALYTIQUE',),),);
+
+FIN(FORMAT_HDF='OUI',);

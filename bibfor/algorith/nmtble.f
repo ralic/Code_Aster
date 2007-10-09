@@ -4,7 +4,7 @@
      &                  SDIMPR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -95,8 +95,8 @@ C
       CHARACTER*8  NOMO
       CHARACTER*24 K24BLA,K24BID
       REAL*8       R8BID
-      INTEGER      IBID
-      LOGICAL      LFROTT,IXFEM        
+      INTEGER      IBID,ITERG
+      LOGICAL      LFROTT,IXFEM,LBID     
 C
 C ----------------------------------------------------------------------
 C
@@ -123,8 +123,17 @@ C
 C --- CALCUL STATUTS DU CONTACT
 C
       IF (IXFEM) THEN
-        CALL XMMBCA(NOMA  ,NOMO  ,DEFICO,RESOCO,DEPPLU,
-     &              DEPMOI,MMCVCA)
+        CALL MMINFP(0,DEFICO,K24BLA,'ITER_GEOM_MAXI',
+     &                    ITERG,R8BID,K24BID,LBID)
+        IF (ITERG.GT.0) THEN
+
+          CALL XMTBCA(NOMA,NOMO,DEFICO,RESOCO,
+     &                   DEPPLU,DEPMOI,MMCVCA)
+        ELSEIF (ITERG.EQ.0) THEN
+          CALL XMMBCA(NOMA  ,NOMO  ,DEFICO,RESOCO,DEPPLU,
+     &              DEPMOI,MMCVCA) 
+        ENDIF     
+
       ELSE
         CALL MMMBCA(NOMA  ,NEQ   ,DEFICO,RESOCO,
      &              DEPPLU,VITPLU,MMCVCA)

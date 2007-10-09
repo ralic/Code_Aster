@@ -6,7 +6,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,7 +89,9 @@ C
       INTEGER IAUX
       INTEGER NBNOE
       INTEGER JCNSD,JCNSV,JCNSL
-      INTEGER JNOCMP, NCMPRF
+      INTEGER JNOCMP, NCMPRF,UBID
+      PARAMETER(UBID=1)
+      INTEGER DEUBID(UBID,UBID),UNBID(UBID)
 C
       CHARACTER*1 SAUX01
       CHARACTER*19 CHAMN
@@ -130,6 +132,7 @@ C====
 C
       CALL LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
      &              NBNOE,  'NOEU',
+     &              UBID, UNBID, UBID, UBID, DEUBID,
      &              NBCMPV, NCMPVA, NCMPVM,
      &              IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      &              NOMGD,  NCMPRF, JNOCMP, JCNSL, JCNSV, JCNSD,

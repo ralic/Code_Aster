@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE (CALCUL DE G,K1,K2)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,9 +60,9 @@ KTH=ASSE_MATRICE(        MATR_ELEM=METH,
 FTH=ASSE_VECTEUR(        VECT_ELEM=VETH,
                             NUME_DDL=NUTH )
 
-KTH=FACT_LDLT(     reuse=KTH,     MATR_ASSE=KTH  )
+KTH=FACTORISER(     reuse=KTH,     MATR_ASSE=KTH  )
 
-TEMP=RESO_LDLT(           MATR_FACT=KTH,
+TEMP=RESOUDRE(           MATR=KTH,
                              CHAM_NO=FTH          )
 
 # -------------------------------------------------------------- #
@@ -107,9 +107,9 @@ K=ASSE_MATRICE(        MATR_ELEM=ME,
 F=ASSE_VECTEUR(        VECT_ELEM=VE,
                             NUME_DDL=NU )
 
-K=FACT_LDLT(      reuse=K,     MATR_ASSE=K  )
+K=FACTORISER(      reuse=K,     MATR_ASSE=K  )
 
-DEP=RESO_LDLT(           MATR_FACT=K,
+DEP=RESOUDRE(           MATR=K,
                              CHAM_NO=F  )
 
 RESU=CREA_RESU(  OPERATION='AFFE', 

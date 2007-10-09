@@ -2,7 +2,7 @@
      &                  VRCPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -372,6 +372,7 @@ C               LA CARTE QUI EST DANS MATE
 
 C               POUR LES ELEMENTS DE BORD X-FEM
                 CALL JEEXIN(MODELE(1:8)//'.FISS',IER)
+
                 IF (IER.NE.0) THEN
                   LPAIN(NCHIN + 1) = 'PPINTTO'
                   LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOSE.PIN'
@@ -389,7 +390,8 @@ C               POUR LES ELEMENTS DE BORD X-FEM
                   IF (OPTION.EQ.'CHAR_MECA_PRES_R'.OR.
      &                OPTION.EQ.'CHAR_MECA_PRES_F') THEN
                     LPAIN(NCHIN + 1) = 'PPINTER'
-                    LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOFAC.PI'
+C                    LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOFAC.PI'
+                    LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOFAC.OE'
                     LPAIN(NCHIN + 2) = 'PAINTER'
                     LCHIN(NCHIN + 2) = MODELE(1:8)//'.TOPOFAC.AI'
                     LPAIN(NCHIN + 3) = 'PCFACE'
@@ -405,14 +407,18 @@ C             -- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER
                   CALL JEVEUO(LCHIN(1),'L',JLCHIN)
                   CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),RESUEL)
                 ELSE
+
                   CALL ASSERT(NCHIN.LE.NCHINX)
+
                   CALL CALCUL(STOP,OPTION,LIGREL,NCHIN,LCHIN,LPAIN,1,
-     &                        RESUEL,PAOUT,'V')
+     &                        RESUEL,PAOUT,'V')                 
+
                 END IF
 
 C               -- RECOPIE DU CHAMP (S'IL EXISTE) DANS LE VECT_ELEM
                 CALL EXISD('CHAMP_GD',RESUEL,IEXIS)
                 CALL ASSERT((IEXIS.GT.0).OR.(STOP.EQ.'C'))
+
                 IF (IEXIS.GT.0) THEN
                   ILVE = ILVE + 1
                   ZK24(JLVE-1+ILVE) = RESUEL

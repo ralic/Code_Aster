@@ -3,25 +3,18 @@ POURSUITE(CODE=_F(NOM='FORMA03A'))
 
 #######################################################
 #
-# DEPOUILLEMENT AVEC STANLEY EN INTERACTIF
-#
-#######################################################
-
-                       
-#######################################################
-#
 #  Courbe Sigma Theta sur le bord du trou en elasticite
 #
 #######################################################
 
 CERCLE=INTE_MAIL_2D(MAILLAGE=M,
-                    DEFI_CHEMIN=_F(GROUP_MA='CAB',),);
+                    DEFI_CHEMIN=_F(GROUP_MA='trou',),);
 
 STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
                                CHEMIN=CERCLE,
                                RESULTAT=RESUNL,
                                NOM_CHAM='SIEF_ELNO_ELGA',
-                               INST=1.0,
+                               INST=TELAS,
                                NOM_CMP=('SIXX','SIYY','SIXY',),
                                REPERE='POLAIRE',
                                OPERATION='EXTRACTION',),);
@@ -39,7 +32,8 @@ STCALC=RECU_FONCTION(TABLE=STHETA,
 R = 10.0;
 
 
-STTA = FORMULE(NOM_PARA='S',VALE='1.+2.*cos(2.*(pi/2-S/R))');
+#STTA = FORMULE(NOM_PARA='S',VALE='TELAS*(1.+2.*cos(2.*(pi/2-S/R)))');
+STTA = FORMULE(NOM_PARA='S',VALE='TELAS*(1.+2.*cos(2.*S/R))');
 #
 SMAX = pi/2*R
 
@@ -53,84 +47,25 @@ STTAC=CALC_FONC_INTERP(FONCTION=STTA,NOM_PARA='S',
                        LIST_PARA=LISABS,
                        INTERPOL='LIN',);
 
-IMPR_FONCTION(UNITE=81,
-              FORMAT='TABLEAU',
-              COURBE=(_F(FONCTION=STTAC,),
-                      _F(FONCTION=STCALC,),),);
 
-# COURBES AVEC XMGRACE EN INTERACTIF
+IMPR_FONCTION( FORMAT    = 'XMGRACE',
+	       UNITE=81,
+	       LEGENDE_X = 'Abscisse curviligne',
+	       LEGENDE_Y = 'Contraine Sigma Theta-Theta',
+              BORNE_X   = ( 0.,20.),
+              BORNE_Y   = (-2., 5.),
+	       TITRE     = "Sigma Theta-Theta le long de l arc de cercle AB ",
+	       COURBE    = (_F(FONCTION = STCALC, 
+                              LEGENDE  = 'Aster',
+                              MARQUEUR = 2,
+                              STYLE    = 1),
+                           _F(FONCTION = STTAC , 
+                              LEGENDE = 'Analytique',
+                              MARQUEUR = 1,
+                              STYLE    = 1),
+                          )
+            )
 
-#IMPR_FONCTION( FORMAT    = 'XMGRACE',
-#	       PILOTE    = 'INTERACTIF',
-#	       LEGENDE_X = 'Abscisse curviligne',
-#	       LEGENDE_Y = 'Contraine Sigma Theta-Theta',
-#               BORNE_X   = ( 0.,20.),
-#               BORNE_Y   = (-2., 5.),
-#	       TITRE     = "Sigma Theta-Theta le long de l'arc de cercle AB ",
-#	       COURBE    = (_F(FONCTION = STCALC, 
-#                               LEGENDE  = 'Aster',
-#                               MARQUEUR = 2,
-#                               STYLE    = 1),
-#                            _F(FONCTION = STTAC , 
-#                               LEGENDE = 'Analytique',
-#                               MARQUEUR = 1,
-#                               STYLE    = 1),
-#                           )
-#             )
-
-#######################################################
-#
-# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
-#
-#######################################################
-#
-
-SYY_G=POST_RELEVE_T(ACTION=_F(INTITULE='SYG',
-                              GROUP_NO='G',
-                              RESULTAT=RESUNL,
-                              NOM_CHAM='SIEF_NOEU_ELGA',
-                              NOM_CMP='SIYY',
-                              OPERATION='EXTRACTION',),);
-
-DY_G=POST_RELEVE_T(ACTION=_F(INTITULE='DYG',
-                             GROUP_NO='G',
-                             RESULTAT=RESUNL,
-                             NOM_CHAM='DEPL',
-                             NOM_CMP='DY',
-                             OPERATION='EXTRACTION',),);
-
-F_DY_G=RECU_FONCTION(TABLE=DY_G,
-                     PARA_X='INST',
-                     PARA_Y='DY',
-                     INTERPOL='LIN',);
-
-F_SYY_G=RECU_FONCTION(TABLE=SYY_G,
-                      PARA_X='INST',
-                      PARA_Y='SIYY',
-                      INTERPOL='LIN',);
-
-IMPR_FONCTION(UNITE=82,
-              FORMAT='TABLEAU',
-              COURBE=(_F(FONCTION=F_DY_G,
-                         LEGENDE='Dy au point G',),
-                      _F(FONCTION=F_SYY_G,
-                         LEGENDE='Sigma YY au point G',),),);
-
-
-# COURBES AVEC XMGRACE EN INTERACTIF
-
-
-#IMPR_FONCTION( FORMAT    = 'XMGRACE',
-#	       PILOTE    = 'INTERACTIF',
-#	       LEGENDE_X = 'Déplacement DY au point G',
-#	       LEGENDE_Y = 'Contraine SIGMAYY',
-#               BORNE_X   = ( 0.,3.),
-#               BORNE_Y   = ( 0.,7.),
-#               GRILLE_X  = 0.5,
-#               GRILLE_Y  = 1.,
-#	       TITRE     = "SigmaYY en fonction de Dy au point G ",
-#	       COURBE    =(_F(FONC_X=F_DY_G,
-#			      FONC_Y=F_SYY_G,),),);
                        
 #######################################################
 #
@@ -146,7 +81,7 @@ RESUNL=CALC_NO(reuse =RESUNL,
                CHAM_MATER=CM,);
 
 LH=INTE_MAIL_2D(MAILLAGE=M,
-                DEFI_CHEMIN=_F(GROUP_MA='LFG',),);
+                DEFI_CHEMIN=_F(GROUP_MA='haut',),);
 
 FHAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
                               CHEMIN=LH,
@@ -155,62 +90,29 @@ FHAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
                               RESULTANTE=('DX','DY','DZ',),
                               OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=FHAUT)
-
 
 F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_X='INST',
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-IMPR_FONCTION(UNITE=83,
-              FORMAT='TABLEAU',
-              COURBE=(_F(FONCTION=F_DY_G,
-                         LEGENDE='Deplacement suivant Y au point G',),
-                      _F(FONCTION=F_FY_G,
-                         LEGENDE='Resultante de forces nodales suivant Y sur FG',),),);
+# COURBES AVEC XMGRACE 
 
+IMPR_FONCTION( FORMAT    = 'XMGRACE',
+      #   PILOTE    = 'INTERACTIF',
+          UNITE = 83,
+         LEGENDE_X = 'Déplacement DY au point G',
+         LEGENDE_Y = 'Résultante FY sur FG',
+               BORNE_X   = ( 0.,3.),
+               BORNE_Y   = ( 0.,700.),
+               GRILLE_X  = 0.5,
+               GRILLE_Y  = 100.,
+         TITRE     = "Resultante de Fy(FG) fonction de Dy(G)",
+               COURBE    = (_F(FONC_X = DYG,
+                               FONC_Y = F_FY_G,),),);
 
-
-# COURBES AVEC XMGRACE EN INTERACTIF
-
-#IMPR_FONCTION( FORMAT    = 'XMGRACE',
-#	       PILOTE    = 'INTERACTIF',
-#	       LEGENDE_X = 'Déplacement DY au point G',
-#	       LEGENDE_Y = 'Résultante FY sur FG',
-#               BORNE_X   = ( 0.,3.),
-#               BORNE_Y   = ( 0.,700.),
-#               GRILLE_X  = 0.5,
-#               GRILLE_Y  = 100.,
-#	       TITRE     = "Resultante de Fy(FG) fonction de Dy(G)",
-#               COURBE    = (_F(FONC_X = F_DY_G,
-#                               FONC_Y = F_FY_G,),),);
-
-#######################################################
-#
-#  DEPOUILLEMENT AVEC CASTEM 2000
-#
-########################################################
-
-IMPR_RESU( FORMAT='CASTEM', UNITE=37,
-           MODELE=MO,
-           RESU=_F( MAILLAGE=M,
-                    RESULTAT=RESUNL,
-                    NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                    INST=(1.,5.4), ), );
 
                   
-#######################################################
-#
-#  DEPOUILLEMENT AVEC GMSH
-#
-#######################################################
-
-IMPR_RESU( FORMAT='GMSH', UNITE=36, 
-           MODELE=MO,
-           RESU=_F( RESULTAT=RESUNL,
-                    NOM_CHAM=('DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
-                    INST=(1.,5.4), ), );
 
 
 

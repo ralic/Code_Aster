@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,8 +182,6 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
 # VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
 # IMPR_RESU LORSQU'UN NOEUD EST PRESENT DANS PLUSIEURS FILTRES
 
-DEFI_FICHIER(UNITE=88)
-
 IMPR_RESU(UNITE=88,RESU=_F(RESULTAT=TEMPE1,
                   MAILLE='M5',NUME_ORDRE=5,
                   GROUP_MA='GRMA1',),);
@@ -213,7 +211,6 @@ TEST_FICHIER(FICHIER='./fort.88',
 # VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
 # IMPR_RESU AU FORMAT 'MED' (1/2)
 
-DEFI_FICHIER(UNITE=81)
 
 IMPR_RESU(FORMAT='MED', UNITE=81,
           RESU=_F( RESULTAT=TEMPE1,
@@ -229,8 +226,6 @@ TEMPE2=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
                                  NOM_CHAM    ='TEMP',),
                 TOUT_ORDRE='OUI',);
-
-DEFI_FICHIER(UNITE=82)
 
 IMPR_RESU(UNITE=82, FORMAT='GMSH',
           RESU=_F(RESULTAT=TEMPE2, NOM_CHAM='TEMP',NOM_CMP='TEMP'),)
@@ -335,8 +330,6 @@ U=CALC_ELEM(reuse =U,
             RESULTAT=U,
             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
-DEFI_FICHIER(FICHIER='MED_71', UNITE=71, TYPE='LIBRE')
-
 IMPR_RESU(FORMAT='MED', UNITE=71, RESU=_F(RESULTAT=U,),);
 
 UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
@@ -350,15 +343,79 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                               NOM_CMP=('V1','V2',),
                               NOM_CMP_MED=('V1','V2',),
                               NOM_CHAM    ='VARI_ELNO'),
+                          _F( NOM_CHAM_MED='U_______SIEF_ELGA_______________',
+                              NOM_CHAM    ='SIEF_ELGA'),
+                          _F( NOM_CHAM_MED='U_______VARI_ELGA_______________',
+                              NOM_CMP=('V1','V2',),
+                              NOM_CMP_MED=('V1','V2',),
+                              NOM_CHAM    ='VARI_ELGA'),
                          ) ,
               UNITE=71,
               TOUT_ORDRE='OUI',);
 
+IMPR_RESU(UNITE=74,RESU=_F(RESULTAT=UUU),);
+
+
+TEST_RESU ( RESU=(
+                    _F(  RESULTAT   = UUU,
+                         NOM_CHAM   = 'SIEF_ELGA',
+                         INST       = 9.00000E+01,
+                         MAILLE     = 'M1',
+                         REFERENCE  = 'NON_REGRESSION',
+                         POINT      =  1,
+                         NOM_CMP    = 'SIXX',
+                         VALE       = 1.17084E-03  ),
+                    _F(  RESULTAT   = UUU,
+                         NOM_CHAM   = 'VARI_ELGA',
+                         INST       = 9.00000E+01,
+                         MAILLE     = 'M1',
+                         REFERENCE  = 'NON_REGRESSION',
+                         POINT      =  1,
+                         NOM_CMP    = 'V1',
+                         VALE       =  5.25001E-04 ),
+
+                    ),)
+
+
+###CHSIEF=LIRE_CHAMP(MAILLAGE=MAIL,
+###                  MODELE=MOMECA,
+###                  FORMAT='MED',
+###                  UNITE=71,
+###                  NOM_MED='U_______SIEF_ELGA_______________',
+###                  NOM_CMP_IDEM='OUI',
+###                  INST= 9.00000E+01,
+###                  TYPE_CHAM='ELGA_SIEF_R')
+###IMPR_RESU(RESU=_F(CHAM_GD=CHSIEF),)
+###TEST_RESU ( CHAM_ELEM=(
+###                    _F(  CHAM_GD    = CHSIEF,
+###                         INST       = 9.00000E+01,
+###                         MAILLE     = 'M1',
+###                         REFERENCE  = 'NON_REGRESSION',
+###                         POINT      =  1,
+###                         NOM_CMP    = 'SIXX',
+###                         VALE       = 1.17084E-03  ),),)
+##CHVARI=LIRE_CHAMP(MAILLAGE=MAIL,
+###                  MODELE=MOMECA,
+###                  FORMAT='MED',
+###                  UNITE=71,
+###                  NOM_MED='U_______VARI_ELGA_______________',
+###                  NOM_CMP_IDEM='OUI',
+###                  INST= 9.00000E+01,
+###                  TYPE_CHAM='ELGA_SIEF_R')
+###
+###TEST_RESU ( CHAM_ELEM=(
+###                    _F(  CHAM_GD    = CHVARI,
+###                         INST       = 9.00000E+01,
+###                         MAILLE     = 'M1',
+###                         REFERENCE  = 'NON_REGRESSION',
+###                         POINT      =  1,
+###                         NOM_CMP    = 'V1',
+###                         VALE       = 5.25001E-04  ),),)
+
+
 # ----------------------------------------------------------------------------
 # VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
 # IMPR_RESU AU FORMAT 'MED' (2/2)
-
-DEFI_FICHIER(UNITE=83)
 
 IMPR_RESU(FORMAT='MED', UNITE=83,
           RESU=(_F(RESULTAT=U,NOM_CHAM=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),NUME_ORDRE=1,MAILLE='M1',),
@@ -380,8 +437,6 @@ UUU2=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                          ) ,
               UNITE=83,
               TOUT_ORDRE='OUI',);
-
-DEFI_FICHIER(UNITE=84)
 
 IMPR_RESU(UNITE=84, FORMAT='GMSH',
           RESU=(_F(RESULTAT=UUU2,
@@ -502,3 +557,5 @@ DEPLRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
 IMPR_RESU ( RESU=_F( CHAM_GD=DEPLRELU, ) )
 
 FIN();
+
+

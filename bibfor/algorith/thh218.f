@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 09/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,9 +28,6 @@ C ======================================================================
 
       ELSEIF ( TYPELE.EQ.'THH2_AXIS_QU8D' .OR.
      +         TYPELE.EQ.'THH2_AXIS_TR6D' .OR.
-     +         TYPELE.EQ.'THH2_AXIS_QU4D' .OR.
-     +         TYPELE.EQ.'THH2_AXIS_TR3D' .OR.
-     +         TYPELE.EQ.'THH2_AXIS_SE2' .OR.
      +         TYPELE.EQ.'THH2_AXIS_SE3' ) THEN
          TYPEMO = 'AXIS_THH2D'
 
@@ -41,26 +38,16 @@ C ======================================================================
      +         TYPELE.EQ.'THH2_TETRA10D' .OR.
      +         TYPELE.EQ.'THH2_PYRAM13D' .OR.
      +         TYPELE.EQ.'THH2_PENTA15D' .OR.
-     +         TYPELE.EQ.'THH2_HEXA8D'   .OR.
-     +         TYPELE.EQ.'THH2_TETRA4D'  .OR.
-     +         TYPELE.EQ.'THH2_PENTA6D'  .OR.
-     +         TYPELE.EQ.'THH2_FACE6' .OR. TYPELE.EQ.'THH_FACE8' .OR.
-     +         TYPELE.EQ.'THH2_FACE3' .OR. TYPELE.EQ.'THH_FACE4' ) THEN
+     +         TYPELE.EQ.'THH2_FACE6' .OR. TYPELE.EQ.'THH_FACE8' ) THEN
          TYPEMO = '3D_THH2D'
 
       ELSEIF ( TYPELE.EQ.'THH2_DPQ8'  .OR.
-     +         TYPELE.EQ.'THH2_DPQ4'  .OR.
-     +         TYPELE.EQ.'THH2_DPTR3' .OR.
      +         TYPELE.EQ.'THH2_DPTR6' .OR.
-     +         TYPELE.EQ.'THH2_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'THH2_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_THH2'
 
       ELSEIF ( TYPELE.EQ.'THH2_DPQ8D'  .OR.
-     +         TYPELE.EQ.'THH2_DPQ4D'  .OR.
-     +         TYPELE.EQ.'THH2_DPTR3D' .OR.
      +         TYPELE.EQ.'THH2_DPTR6D' .OR.
-     +         TYPELE.EQ.'THH2_D_PLAN_SE2' .OR.
      +         TYPELE.EQ.'THH2_D_PLAN_SE3' ) THEN
          TYPEMO = 'D_PLAN_THH2D'
 

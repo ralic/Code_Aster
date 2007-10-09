@@ -6,7 +6,7 @@
      &                  ACCMOI,VITINI,ACCINI,INST  ,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,17 +69,17 @@ C ----------------------------------------------------------------------
 C
       LOGICAL      NDYNLO
       CHARACTER*8  NOMO
-      INTEGER      MMITGO,MMITCA,MMITFR
+      INTEGER      MMITGO,MMITCA,MMITFR,ITERG
       CHARACTER*24 K24BLA,K24BID
       REAL*8       R8BID
       INTEGER      IBID
-      LOGICAL      LFROTT,IXFEM  
+      LOGICAL      LFROTT,IXFEM,LBID  
 C
 C ----------------------------------------------------------------------
 C 
       NOMO   = MODELE   
       K24BLA = ' '             
-C         
+C     
       IF (NIVEAU.LT.0) THEN 
         GOTO 9999
       ENDIF
@@ -106,8 +106,22 @@ C
  103  CONTINUE
       NIVEAU = 3
       CALL MMBOUC(RESOCO,'GEOM','INCR',MMITGO)
-      IF (.NOT.IXFEM) THEN   
-         
+      IF (IXFEM .AND. FONACT(5)) THEN
+        CALL MMINFP(0,DEFICO,K24BLA,'ITER_GEOM_MAXI',
+     &              ITERG,R8BID,K24BID,LBID)
+        IF (ITERG.GT.0) THEN
+          CALL NMIMPR('IMPR','BCL_GEOME',' ',0.D0,MMITGO)
+
+C ---  REACTUALISATION DES FACETTES DE CONTACT      
+          CALL XREACG(NOMO,NOMA,DEFICO,RESOCO)
+
+C ---  APPARIEMENT (CAS X-FEM)
+          CALL XAPPAR(PREMIE,NOMA,NOMO,DEFICO)
+
+        ENDIF
+      
+      ELSEIF (.NOT.IXFEM) THEN
+
         CALL NMIMPR('IMPR','BCL_GEOME',' ',0.D0,MMITGO)    
 C
 C --- APPARIEMENT
@@ -151,10 +165,12 @@ C
       IF (NDYNLO(SDDYNA,'DYNAMIQUE')) THEN
         CALL COPISD('CHAMP_GD','V',VITINI,VITPLU)
         CALL COPISD('CHAMP_GD','V',ACCINI,ACCPLU)
-      END IF  
+      END IF 
+
       IF (IXFEM) THEN
         CALL XCONLI(NOMA  ,NOMO  ,PREMIE,DEFICO,RESOCO,
-     &              DEPDEL,DDEPLA,DEPMOI,DEPPLU)
+     &              DEPDEL,DDEPLA,DEPMOI,DEPPLU,LISCHA,
+     &               SOLVEU,NUMEDD)
       ELSE
         CALL CONLIG(NOMA  ,MODELE,NUMEDD,NEQ   ,DEFICO,
      &              RESOCO,DEPDEL,DDEPLA,DEPMOI,DEPPLU,

@@ -1,108 +1,68 @@
-POURSUITE(CODE=_F( NOM = 'FORMA03B'),PAR_LOT='NON');
 
-#import Stanley
-#from Stanley import as_courbes
+POURSUITE(CODE=_F(NOM='FORMA03B',),);
+#######################################################
+
+
 #
-# DEPOUILLEMENT AVEC STANLEY EN INTERACTIF
-
-#from Stanley import stanley
-#stanley.PRE_STANLEY()
-
+# COURBE FORCE APLIQUEE  EN FONCTION DU TEMPS (ETA_PILOTAGE)
 #######################################################
-#                          PILOTAGE
+
+
+#
+
+ETA_PILO=RECU_FONCTION(RESULTAT=RESUNL,
+                       TOUT_ORDRE='OUI',
+                       NOM_PARA_RESU='ETA_PILOTAGE',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONCTION=ETA_PILO,),
+              UNITE=8,);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=81,
+              COURBE=_F(FONCTION=ETA_PILO,),
+              TITRE=' Fy(ETA_PILOTAGE) fonction du temps',
+              LEGENDE_X='Temps',
+              LEGENDE_Y='ETA_PILOTAGE',);
 #######################################################
+
+
+# COURBE SIYY AU POINT G EN FONCTION DU DEPLACEMENT 
+#######################################################
+
+
+DYG=RECU_FONCTION(RESULTAT=RESUNL,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='G',);
+
+SYG=RECU_FONCTION(RESULTAT=RESUNL,
+                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CMP='SIYY',
+                  GROUP_NO='G',);
+
+# COURBES AVEC XMGRACE 
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=82,
+              COURBE=_F(FONC_X=DYG,
+                        FONC_Y=SYG,),
+              TITRE='SigmaYY en fonction de Dy au point G ',
+              BORNE_X=(0.0,3.0,),
+              BORNE_Y=(0.0,7.0,),
+              GRILLE_X=0.5,
+              GRILLE_Y=1.0,
+              LEGENDE_X='D\xe9placement DY au point G',
+              LEGENDE_Y='Contraine SIGMAYY',);
+#######################################################
+
 
 #
 # COURBE FORCE RESULTANTE EN HAUT EN FONCTION DU DEPLACEMENT
-#
-
-RESUPILO=CALC_ELEM(reuse =RESUPILO,
-                   MODELE=MO,
-                   CHAM_MATER=CM,
-                   OPTION='VARI_ELNO_ELGA',
-                   RESULTAT=RESUPILO,);
-
-RESUPILO=CALC_NO(reuse =RESUPILO,
-                 RESULTAT=RESUPILO,
-                 OPTION='FORC_NODA',
-                 MODELE=MO,
-                 CHAM_MATER=CM,);
-
-LH=INTE_MAIL_2D(MAILLAGE=M,
-                DEFI_CHEMIN=_F(GROUP_MA='LFG',),);
-
-DY_P=POST_RELEVE_T(ACTION=_F(INTITULE='DYG',
-                             GROUP_NO='G',
-                             RESULTAT=RESUPILO,
-                             NOM_CHAM='DEPL',
-                             NOM_CMP='DY',
-                             OPERATION='EXTRACTION',),);
-
-F_DY_P=RECU_FONCTION(TABLE=DY_P,
-                     PARA_X='INST',
-                     PARA_Y='DY',
-                     INTERPOL='LIN',);
-
-FHAUTP=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
-                               CHEMIN=LH,
-                               RESULTAT=RESUPILO,
-                               NOM_CHAM='FORC_NODA',
-                               LIST_INST=L_INST2,
-                               RESULTANTE=('DX','DY','DZ',),
-                               OPERATION='EXTRACTION',),);
-
-F_FY_P=RECU_FONCTION(TABLE=FHAUTP,
-                     PARA_X='INST',
-                     PARA_Y='DY',
-                     INTERPOL='LIN',);
-
-IMPR_FONCTION(UNITE=81,
-              FORMAT='TABLEAU',
-              COURBE=(_F(FONCTION=F_DY_P,
-                         LEGENDE='Deplacement suivant Y au point G',),
-                      _F(FONCTION=F_FY_P,
-                         LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
-
-
-# COURBES AVEC XMGRACE EN INTERACTIF
-
-#FG_uyP = as_courbes.Courbe()
-#FG_uyP.Lire_x(DY_P,'DY')
-#FG_uyP.Lire_y(FHAUTP,'DY')
-#FG_uyP.Trace(titre = "Resultante de Fy=fde Dy(G), pilotage" )
+#######################################################
 
 
 #
-#  DEPOUILLEMENT AVEC GMSH
-
-TDEP=(1.,  4.)
-
-IMPR_RESU( FORMAT='GMSH', UNITE=82,
-           MODELE=MO,
-           RESU=(_F( RESULTAT=RESUPILO,
-                     NOM_CHAM='DEPL',
-                     INST=TDEP, ),
-                 _F( RESULTAT=RESUPILO,
-                     NOM_CHAM='SIEF_ELNO_ELGA',
-                     NOM_CMP='SIYY',
-                     INST=TDEP, ),
-                 _F( RESULTAT=RESUPILO,
-                     NOM_CHAM='VARI_ELNO_ELGA',
-                     INST=TDEP,
-                     NOM_CMP='V1', ), ), );
-
-
-#  
-#                          CHARGE-DECHARGE
-#
-# COURBE FORCE RESULTANTE EN HAUT EN FONCTION DU DEPLACEMENT
-#
-
-RESUNL=CALC_ELEM(reuse =RESUNL,
-                 MODELE=MO,
-                 CHAM_MATER=CM,
-                 OPTION='VARI_ELNO_ELGA',
-                 RESULTAT=RESUNL,);
 
 RESUNL=CALC_NO(reuse =RESUNL,
                RESULTAT=RESUNL,
@@ -110,104 +70,33 @@ RESUNL=CALC_NO(reuse =RESUNL,
                MODELE=MO,
                CHAM_MATER=CM,);
 
-DY_G=POST_RELEVE_T(ACTION=_F(INTITULE='DYG',
-                             GROUP_NO='G',
-                             RESULTAT=RESUNL,
-                             NOM_CHAM='DEPL',
-                             NOM_CMP='DY',
-                             OPERATION='EXTRACTION',),);
+LH=INTE_MAIL_2D(MAILLAGE=M,
+                DEFI_CHEMIN=_F(GROUP_MA='haut',),);
 
-F_DY_G=RECU_FONCTION(TABLE=DY_G,
-                     PARA_X='INST',
-                     PARA_Y='DY',
-                     INTERPOL='LIN',);
-
-FHAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
-                              CHEMIN=LH,
+FHAUT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='F_HAUT',
                               RESULTAT=RESUNL,
                               NOM_CHAM='FORC_NODA',
-                              LIST_INST=L_INST,
-                              RESULTANTE=('DX','DY','DZ',),
-                              OPERATION='EXTRACTION',),);
+                              CHEMIN=LH,
+                              RESULTANTE=('DX','DY','DZ',),),);
 
 F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_X='INST',
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-IMPR_FONCTION( UNITE=83,
-               FORMAT='TABLEAU',
-               COURBE=(_F(FONCTION=F_DY_G,
-                          LEGENDE='Deplacement suivant Y au point G',),
-                       _F(FONCTION=F_FY_G,
-                          LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
+# COURBES AVEC XMGRACE 
 
-
-
-# COURBES AVEC XMGRACE EN INTERACTIF
-
-#FG_uyG = as_courbes.Courbe()
-#FG_uyG.Lire_x(DY_G,'DY')
-#FG_uyG.Lire_y(FHAUT,'DY')
-#FG_uyG.Trace(titre = "Resultante de Fy(FG) fonction de Dy(G)" )
-
-
-#
-#  DEPOUILLEMENT AVEC GMSH
-
-TDEP2=( 5.4, 6.)
-
-IMPR_RESU( FORMAT='GMSH', UNITE=84,
-           MODELE=MO,
-           RESU=(_F( RESULTAT=RESUNL,
-                     NOM_CHAM='DEPL',
-                     INST=TDEP2, ),
-                 _F( RESULTAT=RESUNL,
-                     NOM_CHAM='SIEF_ELNO_ELGA',
-                     NOM_CMP='SIYY',
-                     INST=TDEP2, ),
-                 _F( RESULTAT=RESUNL,
-                     NOM_CHAM='VARI_ELNO_ELGA',
-                     INST=TDEP2,
-                     NOM_CMP='V1', ), ), );
-
-# IMPRESSION DU RESULTAT AUX POINTS DE GAUSS AVEC CASTEM2000:
-#
-
-
-MA2=CREA_MAILLAGE(MAILLAGE=M,
-                  ECLA_PG=_F(MODELE=MO,
-                             SHRINK=0.9,),);
-
-RESUNL2=CREA_RESU(OPERATION='ECLA_PG',
-                  TYPE_RESU='EVOL_NOLI',
-                  ECLA_PG=_F(NOM_CHAM=('SIEF_ELGA','VARI_ELGA',),
-                             MODELE_INIT=MO,
-                             RESU_INIT=RESUNL,
-                             MAILLAGE=MA2,),);
-
-import Gnuplot
-import Numeric
-
-DY_Ge = DY_G.EXTR_TABLE()
-NUMDY = DY_Ge.Array('INST','DY')
-FHAUTe= FHAUT.EXTR_TABLE()
-NUMFY = FHAUTe.Array('INST','DY')
-NUMFD = Numeric.transpose(Numeric.array([NUMDY[:,1],NUMFY[:,1]]))
-
-print NUMFD
-graphe = Gnuplot.Gnuplot()
-Gnuplot.GnuplotOpts.prefer_inline_data=1
-graphe('set terminal postscript color')
-graphe('set output "fort.24" ')
-graphe('set data style lines')
-graphe('set grid')
-graphe.plot(Gnuplot.Data(NUMFY,title='FY point G'))
-graphe.plot(Gnuplot.Data(NUMDY,title='DY point G'))
-graphe.plot(Gnuplot.Data(NUMFD,title='FY fonction de DY point G'))
-
-
-
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=83,
+              COURBE=_F(FONC_X=DYG,
+                        FONC_Y=F_FY_G,),
+              TITRE='Resultante de Fy(FG) fonction de Dy(G)',
+              BORNE_X=(0.0,3.0,),
+              BORNE_Y=(0.0,700.0,),
+              GRILLE_X=0.5,
+              GRILLE_Y=100.0,
+              LEGENDE_X='D\xe9placement DY au point G',
+              LEGENDE_Y='R\xe9sultante FY sur FG',);
 
 FIN();
-

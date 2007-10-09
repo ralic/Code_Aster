@@ -1,4 +1,4 @@
-#@ MODIF sd_fiss_xfem SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_fiss_xfem SD  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,10 @@ class sd_xfem_com1(AsBase):
     topofac_cf  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.CF')))
     topofac_lo  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.LO')))
     topofac_ba  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.BA')))
-
+    topofac_gm  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.GM')))
+    topofac_ge  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.GE')))
+    topofac_oe  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.OE')))
+    topofac_om  = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.OM')))
 
 
 class sd_fiss_xfem(AsBase):

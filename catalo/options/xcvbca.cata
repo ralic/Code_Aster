@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 23/04/2007   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF OPTIONS  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,13 @@ OPTION__
         PDONCO   XCONTAC
         PGLISS   NEUT_I
         PMEMCON  NEUT_I
+        PCAR_PT  NEUT_R
+        PCAR_PI  NEUT_R
+        PCAR_AI  NEUT_R
+        PCAR_CF  NEUT_R
 
    OUT__
         PINCOCA NEUT_I ELEM__
-        PINDCOO NEUT_I ELEM__ 
+        PINDCOO NEUT_I ELEM__
         PINDMEM NEUT_I ELEM__
+        PINDCOT NEUT_R ELEM__

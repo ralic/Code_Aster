@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -170,7 +170,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
            UNITE           =SIMP(statut='f',typ='I',defaut= 81, fr="Le fichier est : fort.n.",),
            FORMAT_MED      =FACT(statut='f',max='**',
              regles=(ENSEMBLE('NOM_CMP','NOM_CMP_MED'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=l_nom_cham_pas_elga()),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),),
              NOM_CHAM_MED    =SIMP(statut='o',typ='TXM',               fr="Nom du champ dans le fichier MED.",  ),
              NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans ASTER.", ),
              NOM_CMP_MED     =SIMP(statut='f',typ='TXM',max='**',      fr="Nom des composantes dans MED.", ),

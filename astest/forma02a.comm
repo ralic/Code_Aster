@@ -1,7 +1,7 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/10/2007   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 
-# TITRE FORMATION  THERMO-PLASTICITE DANS LE CODE_ASTER ENONCE DU TP1
+# TITRE FORMATION THERMO-PLASTICITE TRAJET DE CHARGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,166 +20,121 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
-# ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
+# ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
+
 
 
 DEBUT(CODE=_F( NOM = 'FORMA02A',NIV_PUB_WEB='INTERNET'))
 
-MA=LIRE_MAILLAGE( )
-
-MO=AFFE_MODELE( 
-                           MAILLAGE=MA,
-                              VERIF='MAILLE',
-                               AFFE=_F(  TOUT = 'OUI',
-                                      PHENOMENE = 'MECANIQUE',
-                                      MODELISATION = '3D')
-                        )
-
-ACIER=DEFI_MATERIAU( 
-                                 ELAS=_F( E = 195000.,
-                                       NU = 0.3),
-                            ECRO_LINE=_F( D_SIGM_EPSI = 1930.,
-                                       SY = 181.)
-                          )
-
-CM=AFFE_MATERIAU( 
-                             MAILLAGE=MA,
-                                 AFFE=_F(  TOUT = 'OUI',
-                                        MATER = ACIER)
-                          )
-
-SIGMA=AFFE_CHAR_MECA( 
-                                 MODELE=MO,
-                             FORCE_FACE=_F(  MAILLE = 'GAUCHE',
-                                          FX = -1.)
-                          )
-
-TAU=AFFE_CHAR_MECA( 
-                                 MODELE=MO,FORCE_FACE=(
-                            
-                                _F( MAILLE = 'GAUCHE',          FY = -1.),
-                                _F( MAILLE = 'DROITE',          FY = 1.),
-                                _F( MAILLE = 'HAUT',    FX = 1.),
-                                _F( MAILLE = 'BAS',     FX = -1.))
-                          )
-
-SIGMA_F=DEFI_FONCTION( 
-                                NOM_PARA='INST',
-                             PROL_DROITE='EXCLU',
-                             PROL_GAUCHE='EXCLU',
-                                    VALE=( 0.0,    0.0,
-                                           1.0,  151.2,
-                                           2.0,  257.2,
-                                           3.0,  259.3,
-                                           4.0,    0.0, )
-                          )
-
-TAU_F=DEFI_FONCTION( 
-                                NOM_PARA='INST',
-                             PROL_DROITE='EXCLU',
-                             PROL_GAUCHE='EXCLU',
-                                    VALE=( 0.0,    0.0,
-                                           1.0,   93.1,
-                                           2.0,   33.1,
-                                           3.0,    0.0,
-                                           4.0,    0.0, )
-                          )
-
-LIAISON=AFFE_CHAR_MECA( 
-                             MODELE=MO,DDL_IMPO=(
-                            
-                                _F( NOEUD = 'NO4', DX = 0.,  DY = 0.),
-                                _F( NOEUD = 'NO8', DX = 0.,  DY = 0.,  DZ = 0.),
-                                _F( NOEUD = 'NO2', DX = 0.),
-                                _F( NOEUD = 'NO6', DX = 0.))
-                          )
-
-L_INST=DEFI_LIST_REEL( 
-                             DEBUT=0.0,INTERVALLE=(
-                             _F( JUSQU_A = 1.0,  NOMBRE = 1),
-                             _F( JUSQU_A = 2.0,  NOMBRE = 1),
-                             _F( JUSQU_A = 3.0,  NOMBRE = 1))
-                          )
-
-UE=MECA_STATIQUE( 
-                                  MODELE=MO,
-                              CHAM_MATER=CM,EXCIT=(
-                                  
-                                _F(  CHARGE = LIAISON),
-                                _F(  CHARGE = SIGMA,   FONC_MULT = SIGMA_F),
-                                _F(  CHARGE = TAU,     FONC_MULT = TAU_F)),
-                             LIST_INST=L_INST
-                          )
-
-U=STAT_NON_LINE( 
-                                  MODELE=MO,
-                              CHAM_MATER=CM,EXCIT=(
-                                  
-                                _F(  CHARGE = LIAISON),
-                                _F(  CHARGE = SIGMA,   FONC_MULT = SIGMA_F),
-                                _F(  CHARGE = TAU,     FONC_MULT = TAU_F)),
-                             INCREMENT=_F( LIST_INST = L_INST),
-                               COMP_INCR=_F(  RELATION = 'ELAS')
-                          )
-
-UE=CALC_ELEM(     reuse=UE,
-                                RESULTAT=UE,
-                                 OPTION=('EPSI_ELNO_DEPL',
-                                          'EPSI_ELGA_DEPL',)
-                          )
-
-UE=CALC_NO(      reuse=UE,
-                               RESULTAT=UE,
-                                   OPTION='EPSI_NOEU_DEPL'
-                        )
-
-U=CALC_ELEM(     reuse=U,
-                                RESULTAT=U,
-                                 OPTION=('EPSI_ELNO_DEPL',
-                                        'EPSI_ELGA_DEPL',)
-                          )
-
-U=CALC_NO(      reuse=U,
-                              RESULTAT=U, 
-                                  OPTION='EPSI_NOEU_DEPL'
-                        )
-
-IMPR_RESU(
-              MODELE=MO,
-                RESU=_F(  RESULTAT = UE,
-                       NOEUD = 'NO1',
-                       NOM_CHAM = 'EPSI_ELNO_DEPL',
-                       NOM_CMP = ('EPXX', 'EPXY',))
-           )
-
-IMPR_RESU(
-              MODELE=MO,
-                RESU=_F(  RESULTAT = U,
-                       NOEUD = 'NO1',
-                       NOM_CHAM = 'EPSI_ELNO_DEPL',
-                       NOM_CMP = ('EPXX', 'EPXY',))
-           )
-
-#===========================================
-# IMPR_RESU FORMAT GMSH
-#===========================================
-
-IMPR_RESU(MODELE=MO, FORMAT='GMSH', VERSION=1.2, UNITE=55,
-          RESU=_F( NOM_CHAM='DEPL',
-                   RESULTAT=U,),
-         );
+Pilote = 'PNG';
 
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
+ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
+                                 SY=181.,),);
 
-TEST_RESU(RESU=( 
-           _F(  RESULTAT = U,       INST = 3.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',  REFERENCE = 'NON_REGRESSION',
-MAILLE = 'CUBE', NOEUD = 'NO1', NOM_CMP = 'EPXX', VALE = 1.32974E-03),
-           _F(  RESULTAT = U,       INST = 2.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',  REFERENCE = 'NON_REGRESSION',
- MAILLE = 'CUBE', NOEUD = 'NO1', NOM_CMP = 'EPXY', VALE = 2.20667E-04))
-             )
+Sig=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                        1.,151.2,
+                        2.,257.2,
+                        3.,259.3,
+                        4.,0.,
+                        ),);
 
-FIN()
-#
+Tau=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                        1.,93.1,
+                        2.,33.1,
+                        3.,0.,
+                        4.,0.,
+                        ),);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE=Pilote,
+              UNITE=30,
+              COURBE=_F(FONC_X=Sig,
+                        FONC_Y=Tau,),
+              LEGENDE_X='Sig',
+              LEGENDE_Y='Tau',);
+Ninst = 5;
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=0.81,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=1.0,
+                                     NOMBRE=Ninst,),
+                                  _F(JUSQU_A=2.0,
+                                     NOMBRE=Ninst,),
+                                  _F(JUSQU_A=3.0,
+                                     NOMBRE=Ninst,),),);
+
+U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                 MATER=ACIER,
+                 INCREMENT=_F(LIST_INST=L_INST,),
+                 NEWTON=_F(PREDICTION='ELASTIQUE',
+                           MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 SIGM_IMPOSE=_F(SIXX=Sig,
+                                SIXY=Tau,),);
+
+IMPR_TABLE(TABLE=U,);
+
+# A
+
+TEST_TABLE(TABLE=U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,
+                     PRECISION=1e-05,),
+           NOM_PARA='EPXX',
+           VALE=0.014830,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0,
+                     PRECISION=1e-05,),
+           NOM_PARA='EPXY',
+           VALE=0.0136014,
+           REFERENCE='ANALYTIQUE',);
+
+# B
+
+TEST_TABLE(TABLE=U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,
+                     PRECISION=1e-05,),
+           NOM_PARA='EPXX',
+           VALE=0.035265,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,
+                     PRECISION=1e-05,),
+           NOM_PARA='EPXY',
+           VALE=0.020471,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',);
+
+# C
+
+TEST_TABLE(TABLE=U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,
+                     PRECISION=1e-05,),
+           NOM_PARA='EPXX',
+           VALE=0.0352777,
+           PRECISION=0.05,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=U,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,
+                     PRECISION=1e-05,),
+           NOM_PARA='EPXY',
+           VALE=0.0202462,
+           PRECISION=0.05,
+           REFERENCE='AUTRE_ASTER',);
+
+FIN();

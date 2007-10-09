@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2000   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE GRILLAGE PLAN DE POUTRES ( PROFILES METALLIQUES )
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,9 +114,9 @@ MD=MODE_ITER_SIMULT(
 CMAT=COMB_MATR_ASSE(COMB_R=(  _F(  MATR_ASSE = MATASSR,  COEF_R = 1.),
                                 _F(  MATR_ASSE = MATASSM,  COEF_R = -6400.)) )
 
-CMAT=FACT_LDLT(reuse=CMAT,  MATR_ASSE=CMAT )
+CMAT=FACTORISER(reuse=CMAT,  MATR_ASSE=CMAT )
 
-REPHARM=RESO_LDLT(  MATR_FACT=CMAT,     CHAM_NO=VECTASS )
+REPHARM=RESOUDRE(  MATR=CMAT,     CHAM_NO=VECTASS )
 
 # --------------------------------------------------------------------
 

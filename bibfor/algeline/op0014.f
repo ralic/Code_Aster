@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     OPERATEUR FACT_LDLT
-
+C     ------------------------------------------------------------------
+C     OPERATEUR FACTORISER
+C     BUT: - FACTORISE UNE MATRICE ASSEMBLEE EN 2 MATRICES TRIANGULAIRES
+C            (SOLVEUR MUMPS,MULT_FRONT,LDLT), OU
+C          - DETERMINE UNE MATRICE DE PRECONDITIONNEMENT POUR L'ALGO DU
+C            GRADIENT CONJUGUE PRCONDITIONNE (SOLVEUR GCPC) 
+C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -41,11 +46,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*3 KSTOP,MUMPS,KLAG2
       CHARACTER*24 VALK(2)
-      CHARACTER*8 MATASS,MATFAC,TYPE,PRECON,KTYPR,KTYPS
+      CHARACTER*8 MATASS,MATFAC,TYPE,KTYPR,KTYPS,METRES
       CHARACTER*16 CONCEP,NOMCMD,METHOD
       CHARACTER*19 MASS,MFAC,SOLVEU
       INTEGER NPREC,IATFAC,IBDEB,IBFIN,IBID,IER1,IFM,ILDEB,ILFIN
-      INTEGER IRET,ISINGU,ISTOP,JADIA,PCPIV
+      INTEGER IRET,ISINGU,ISTOP,JADIA,PCPIV,NIREMP
       INTEGER LDTBLO,LFNBLO,NDECI,NEQ,NIV,NPVNEG
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -58,8 +63,29 @@ C     ------------------------------------------------------------------
       MFAC = MATFAC
       CALL GETVID('  ','MATR_ASSE',0,1,1,MATASS,IBID)
       MASS = MATASS
-
-
+C
+C     CAS DU SOLVEUR  GCPC :
+C     ---------------------
+C
+      CALL DISMOI('F','METH_RESO',MASS,'MATR_ASSE',IBID,METRES,IBID)
+      IF(METRES(1:4).EQ.'GCPC')THEN
+C        VERIFICATION : CONCEPT REENTRANT INTERDIT
+         CALL EXISD('MATR_ASSE',MATFAC,IRET)
+         IF(IRET.EQ.1)THEN
+           CALL U2MESS('F','ALGELINE5_56')
+         ENDIF
+C        VERIFICATION : MATR_ASSE A VALEURS COMPLEXES INTERDIT
+         IF(CONCEP(16:16).EQ.'C')THEN
+           CALL U2MESS('F','ALGELINE5_57')
+         ENDIF
+         CALL GETVIS(' ','NIVE_REMPLISSAGE',0,1,1,NIREMP,IRET)
+         CALL PCLDLT(MFAC,MASS,NIREMP,'G')
+         GO TO 9999
+      ENDIF
+C
+C     CAS DU SOLVEUR MUMPS :
+C     ----------------------
+C
       CALL GETVIS('  ','NPREC',0,1,1,NPREC,IBID)
       CALL GETVTX('  ','STOP_SINGULIER',0,1,1,KSTOP,IBID)
       IF (KSTOP.EQ.'OUI') THEN
@@ -68,9 +94,6 @@ C     ------------------------------------------------------------------
         ISTOP = 1
       END IF
 
-
-C     CAS DU SOLVEUR MUMPS :
-C     ----------------------
       CALL DISMOI('F','EST_MUMPS',MASS,'MATR_ASSE',IBID,MUMPS,IER1)
       IF (MUMPS.EQ.'OUI') THEN
          IF (MASS.NE.MFAC) CALL COPISD('MATR_ASSE','G',MASS,MFAC)
@@ -91,8 +114,10 @@ C     ----------------------
          IF (IRET.NE.0) CALL U2MESS('F','FACTOR_42')
          GO TO 9999
       END IF
-
-
+C
+C     CAS DES SOLVEURS LDLT ET MULT_FRONT :
+C     -------------------------------------
+C
 C     --- RECUPERATION DES INDICES DE DEBUT ET FIN DE LA FACTORISATION -
 C     - 1) AVEC DDL_XXX
       ILDEB = 1
@@ -167,10 +192,6 @@ C     --- 2) AVEC BLOC_XXX
         ILFIN = ZI(JADIA+IBFIN-1)
       END IF
 
-C     --- RECUPERATION DU TYPE DE CONDITIONNEMENT MATRICIEL ---
-
-
-
 C     --- IMPRESSION SUR LE FICHIER MESSAGE ----------------------------
       IF (NIV.EQ.2) THEN
         WRITE (IFM,*) ' +++ EXECUTION DE "',NOMCMD,'"'
@@ -191,7 +212,6 @@ C     ------------------ FACTORISATION EFFECTIVE -------------------
       CALL TLDLGG(ISTOP,IATFAC,ILDEB,ILFIN,NPREC,NDECI,ISINGU,NPVNEG,
      &            IRET)
 C     --------------------------------------------------------------
-
 
  9999 CONTINUE
       CALL TITRE

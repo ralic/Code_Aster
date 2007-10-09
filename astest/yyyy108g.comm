@@ -1,5 +1,5 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
-# TITRE  CTJ25 - RENUM RCMK / AFFE_CHAR_MECA / RESO_GRAD
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# TITRE  CTJ25 - RENUM RCMK / AFFE_CHAR_MECA / SOLVE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,11 +64,11 @@ VEL=CALC_VECT_ELEM(   CHARGE=CHA,     OPTION='CHAR_MECA'
 VECAS=ASSE_VECTEUR(     VECT_ELEM=VEL,  NUME_DDL=NU
                          )
 
-KMATAS=FACT_GRAD(        MATR_ASSE=MATAS
+KMATAS=FACTORISER(        MATR_ASSE=MATAS
                          )
 
-KVECAS=RESO_GRAD(          CHAM_NO=VECAS,      MATR_ASSE=MATAS,
-                            MATR_FACT=KMATAS,
+KVECAS=RESOUDRE(          CHAM_NO=VECAS,      MATR=MATAS,
+                            MATR_PREC=KMATAS,
                               RESI_RELA=.95E-7
                          )
 

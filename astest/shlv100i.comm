@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,9 +93,9 @@ VAS=ASSE_VECTEUR(      VECT_ELEM=VE,
 KHA=COMB_MATR_ASSE( COMB_R=(      _F(  MATR_ASSE = KAS, COEF_R = 1.),
                               _F(  MATR_ASSE = MAS, COEF_R = -.04)))
 
-KHA=FACT_LDLT(      reuse=KHA,   MATR_ASSE=KHA                              )
+KHA=FACTORISER(      reuse=KHA,   MATR_ASSE=KHA                              )
 
-DEPLA=RESO_LDLT(         MATR_FACT=KHA,
+DEPLA=RESOUDRE(         MATR=KHA,
                              CHAM_NO=VAS                              )
 
 DEP=CREA_RESU(OPERATION='AFFE',

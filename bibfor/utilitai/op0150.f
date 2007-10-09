@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*8 RESU,NOMA,NOMO,TYPCHA,CHMAT,CARAEL
       CHARACTER*8 K8B,CRIT,CHAINE,MODELE,BASENO
       CHARACTER*8 LPAIN(1),LPAOUT(1),K8BID,BLAN8
-      CHARACTER*8 NOMTYP(NTYMAX)
+      CHARACTER*8 NOMTYP(NTYMAX),PARAM
       CHARACTER*10 ACCES
       CHARACTER*13 INPSCO
       CHARACTER*16 NOMCMD,CONCEP,TYPRES,FICH
@@ -594,6 +594,8 @@ C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
       ELSE IF (FORM.EQ.'MED') THEN
 C     =============================
         DO 260 I = 1,NBNOCH
+          OPTION = ' '
+          PARAM  = ' '
           CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
 
           IF (N1.EQ.0) THEN
@@ -617,12 +619,22 @@ C     =============================
           ELSE IF (NOCH(1:9).EQ.'SIEF_NOEU') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:9).EQ.'SIEF_ELGA') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'ELGA'
+            OPTION = 'RAPH_MECA'
+            PARAM  = 'PCONTPR'
           ELSE IF (NOCH(1:9).EQ.'EPSI_ELNO') THEN
             NOMGD = 'EPSI_R'
             TYPCHA = 'ELNO'
           ELSE IF (NOCH(1:9).EQ.'EPSI_NOEU') THEN
             NOMGD = 'EPSI_R'
             TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:9).EQ.'EPSI_ELGA') THEN
+            NOMGD = 'EPSI_R'
+            TYPCHA = 'ELGA'
+            OPTION = 'EPSI_ELGA_DEPL'
+            PARAM  = 'PDEFORR'
           ELSE IF (NOCH(1:9).EQ.'EPSA_ELNO') THEN
             NOMGD = 'EPSA_R'
             TYPCHA = 'ELNO'
@@ -635,12 +647,22 @@ C     =============================
           ELSE IF (NOCH(1:9).EQ.'VARI_NOEU') THEN
             NOMGD = 'VARI_R'
             TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:9).EQ.'VARI_ELGA') THEN
+            NOMGD = 'VARI_R'
+            TYPCHA = 'ELGA'
+            OPTION = 'RAPH_MECA'
+            PARAM  = 'PVARIPR'
           ELSE IF (NOCH(1:14).EQ.'EQUI_ELNO_SIGM') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELNO'
           ELSE IF (NOCH(1:14).EQ.'EQUI_NOEU_SIGM') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:9).EQ.'EQUI_ELGA') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'ELGA'
+            OPTION = 'EQUI_ELGA_SIGM'
+            PARAM  = 'PCONTEQ'
           ELSE IF (NOCH(1:4).EQ.'PRES') THEN
             NOMGD = 'PRES_R  '
             TYPCHA = 'ELEM'
@@ -773,7 +795,7 @@ C
 C
             CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,NBCMPV,
      &                  NCMPVA,NCMPVM,IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
-     &                  MFICH,IRET)
+     &                  MFICH,LIGREL,OPTION,PARAM,IRET)
 
 
 C        -- POUR LES CHAM_NO :
@@ -819,6 +841,8 @@ C           DU CHAMP CREE AVEC LE PROF_CHNO PRECEDENT :
             ENDIF
             CALL DETRSD('CHAMP_GD',CHANOM)
   250     CONTINUE
+          CALL JEDETR(NCMPVA)
+          CALL JEDETR(NCMPVM)
   260   CONTINUE
 
 

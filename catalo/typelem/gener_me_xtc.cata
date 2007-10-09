@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -286,7 +286,11 @@ OPTION__
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N3NEUT_R PGRADLT
                                      N3NEUT_R PGRADLN  N3NEUT_R PGRADLT
                               OUT__  E18NEUTR PPINTER  E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONCHA
-                                     E54NEUTR PBASECO
+                                     E54NEUTR PBASECO  E18NEUTR PGESCLA  E18NEUTR PGMAITR  E18NEUTR PGESCLO
+                                     E18NEUTR PGMAITO
+    GEOM_FAC            519   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLA   E18NEUTR PPINTER  E2NEUTI  PLONCHA
+                                     E18NEUTR PGESCLO  E18NEUTR PGMAITO
+                              OUT__  E18NEUTR PNEWGES  E18NEUTR PNEWGEM  E54NEUTR PBASESC  E54NEUTR PBASMAI
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                               OUT__  E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA
                                      E1NEUTR  PCRITER

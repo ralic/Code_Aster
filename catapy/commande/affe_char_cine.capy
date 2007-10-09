@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+#& MODIF COMMANDE  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,21 +17,29 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
-def affe_char_cine_prod(MECA_IMPO,THER_IMPO,ACOU_IMPO,**args):
+def affe_char_cine_prod(MECA_IMPO,THER_IMPO,ACOU_IMPO,EVOL_IMPO,**args):
   if MECA_IMPO != None  : return char_cine_meca
   if THER_IMPO != None  : return char_cine_ther
   if ACOU_IMPO != None  : return char_cine_acou
+  if EVOL_IMPO != None  :
+      if AsType(EVOL_IMPO) in (evol_elas,evol_noli) :
+          return char_cine_meca
+      elif AsType(EVOL_IMPO) in (evol_ther,) :
+          return char_cine_ther
+      else :
+          raise AsException("Extension à faire ...")
+
   raise AsException("type de concept resultat non prevu")
+
 
 AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
                     ,fr="Affectation de conditions aux limites cinématiques constantes pour un traitement sans dualisation",
                      reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
-         regles=(AU_MOINS_UN('MECA_IMPO','THER_IMPO','ACOU_IMPO'),
-                 EXCLUS('MECA_IMPO','THER_IMPO'),
-                 EXCLUS('MECA_IMPO','ACOU_IMPO'),
-                 EXCLUS('THER_IMPO','ACOU_IMPO'),),
+         regles=(UN_PARMI('MECA_IMPO','THER_IMPO','ACOU_IMPO','EVOL_IMPO'),
+                 ),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
+         EVOL_IMPO  =SIMP(statut='f',typ=(evol_noli,evol_elas,evol_ther),fr="Pour imposer tous les ddls d'un evol_xxx"),
          MECA_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),
                    AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI',
@@ -99,19 +107,19 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
              DCZ             =SIMP(statut='f',typ='R' ),
              H1X             =SIMP(statut='f',typ='R' ),
              H1Y             =SIMP(statut='f',typ='R' ),
-             H1Z             =SIMP(statut='f',typ='R' ),                  
+             H1Z             =SIMP(statut='f',typ='R' ),
              E1X             =SIMP(statut='f',typ='R' ),
              E1Y             =SIMP(statut='f',typ='R' ),
-             E1Z             =SIMP(statut='f',typ='R' ),      
+             E1Z             =SIMP(statut='f',typ='R' ),
              E2X             =SIMP(statut='f',typ='R' ),
              E2Y             =SIMP(statut='f',typ='R' ),
-             E2Z             =SIMP(statut='f',typ='R' ),      
+             E2Z             =SIMP(statut='f',typ='R' ),
              E3X             =SIMP(statut='f',typ='R' ),
              E3Y             =SIMP(statut='f',typ='R' ),
-             E3Z             =SIMP(statut='f',typ='R' ),      
+             E3Z             =SIMP(statut='f',typ='R' ),
              E4X             =SIMP(statut='f',typ='R' ),
              E4Y             =SIMP(statut='f',typ='R' ),
-             E4Z             =SIMP(statut='f',typ='R' ),   
+             E4Z             =SIMP(statut='f',typ='R' ),
              V11             =SIMP(statut='f',typ='R' ),
              V12             =SIMP(statut='f',typ='R' ),
              V13             =SIMP(statut='f',typ='R' ),
@@ -129,7 +137,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
              PRES23          =SIMP(statut='f',typ='R' ),
              PRES31          =SIMP(statut='f',typ='R' ),
              PRES32          =SIMP(statut='f',typ='R' ),
-             PRES33          =SIMP(statut='f',typ='R' ),   
+             PRES33          =SIMP(statut='f',typ='R' ),
          ),
          THER_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),

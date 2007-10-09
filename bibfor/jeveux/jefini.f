@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,8 +38,10 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      REAL *8          MXDYN , MCDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN 
 C     ==================================================================
       INTEGER          VALI(4)         
       CHARACTER*8      KCOND , STAOU
@@ -104,7 +106,7 @@ C
         IFM = IUNIFI('MESSAGE')
         IF (IFM .GT. 0) THEN
           IF ( LDYN .EQ. 1 ) THEN
-            VALI(1) = MXDYN*LOIS/(1024*1024)
+            VALI(1) = MXDYN/(1024*1024)
             VALI(2) = LISZON*LOIS/(1024*1024)
             VALI(3) = NBDYN
             VALI(4) = NBFREE

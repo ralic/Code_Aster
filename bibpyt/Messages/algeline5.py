@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algeline5 Messages  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -287,6 +287,16 @@ cata_msg={
 
 55: _("""
     %(i1)d  éléments %(k1)s découpés en %(i2)d  éléments %(k2)s a %(i3)d noeuds
+"""),
+
+56: _("""
+    La matrice factorisée produit par l'opérateur FACTOR ne peut faire l'objet
+    d'un concept réentrant car la méthode de résolution définie dans NUME_DDL
+    est 'GCPC'.
+"""),
+
+57: _("""
+    Le préconditionnement d'une matrice assemblée complexe n'est pas permis.
 """),
 
 

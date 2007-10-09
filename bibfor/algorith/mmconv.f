@@ -3,7 +3,7 @@
      &                  MMCVGO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,14 +153,24 @@ C
 C --- CONVERGENCE GEOMETRIE
 C
       IF (IXFEM) THEN
-        MMCVGO = .TRUE.
+        IF (MAXB(3).GT.0) THEN
+          CALL MMMCRI(DEPGEO,DEPPLU,EPSGEO,MMCVGO)
+          IF (MMITGO.EQ.(MAXB(3)+1)) THEN
+            CALL U2MESS('A','CONTACT3_88')
+            MMCVGO = .TRUE.
+          ENDIF
+        ELSEIF (MAXB(3).EQ.0) THEN
+          MMCVGO = .TRUE.
+        ENDIF
       ELSE
         CALL MMMCRI(DEPGEO,DEPPLU,EPSGEO,MMCVGO)
       ENDIF
 C
-      IF (MMITGO.EQ.(MAXB(3)+1)) THEN
-        CALL U2MESS('A','CONTACT3_88')
-        MMCVGO = .TRUE.
+      IF (.NOT.IXFEM) THEN
+        IF (MMITGO.EQ.(MAXB(3)+1)) THEN
+          CALL U2MESS('A','CONTACT3_88')
+          MMCVGO = .TRUE.
+        ENDIF
       ENDIF
 C
       IF (MMCVGO) THEN

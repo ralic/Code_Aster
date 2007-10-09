@@ -5,7 +5,7 @@
       INTEGER NBCHC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,11 +93,11 @@ C----------------------------------------------------------------------
       NELIM=0
       DO 20 ICH = 1,NBCHC
         NOMCH = LCHCI(ICH)
-        CALL JEVEUO(NOMCH//'.DEFI','L',IDEFI)
-        NIMP = ZI(IDEFI)
+        CALL JEVEUO(NOMCH//'.AFCI','L',JAFCI)
+        NIMP = ZI(JAFCI)
         DO 10 IMP = 1,NIMP
-          INO = ZI(IDEFI+3* (IMP-1)+1)
-          IDDL = ZI(IDEFI+3* (IMP-1)+2)
+          INO = ZI(JAFCI+3* (IMP-1)+1)
+          IDDL = ZI(JAFCI+3* (IMP-1)+2)
           IEQ = ZI(IDPRNO-1+ (NEC+2)* (INO-1)+1) + IDDL - 1
           ZI(JCCID-1+IEQ) = 1
    10   CONTINUE

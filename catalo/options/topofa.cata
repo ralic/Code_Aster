@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,4 +34,7 @@ OPTION__
         PCFACE   NEUT_I ELEM__
         PLONCHA  NEUT_I ELEM__
         PBASECO  NEUT_R ELEM__
-
+        PGESCLA  NEUT_R ELEM__
+        PGMAITR  NEUT_R ELEM__
+        PGESCLO  NEUT_R ELEM__
+        PGMAITO  NEUT_R ELEM__

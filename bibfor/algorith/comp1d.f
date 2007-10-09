@@ -10,7 +10,7 @@
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,6 +108,7 @@ C ---    INITIALISATIONS :
 
          CALL R8INIR (6,ZERO,EPS,1)
          CALL R8INIR (6,ZERO,SIGM,1)
+         CALL R8INIR (6,ZERO,SIGP,1)
          CALL R8INIR (6,ZERO,DEPS,1)
          CALL R8INIR (36,ZERO,DSIDEP,1)
          EPS(1)=EPSX

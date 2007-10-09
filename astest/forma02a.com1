@@ -1,0 +1,40 @@
+
+POURSUITE(CODE=_F(NOM='FORMA02A',),);
+
+# courbes issues de la modelisation B, pas de temps fin
+
+EPXX_B=LIRE_FONCTION(FORMAT='LIBRE',
+                     UNITE=21,
+                     NOM_PARA='INST',);
+
+EPXY_B=LIRE_FONCTION(FORMAT='LIBRE',
+                     UNITE=22,
+                     NOM_PARA='INST',);
+
+EPXX=RECU_FONCTION(TABLE=U,
+                   PARA_X='INST',
+                   PARA_Y='EPXX',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=31,
+              COURBE=(_F(FONCTION=EPXX_B,
+                         LEGENDE='EPXX, N=100',
+                         MARQUEUR=0,),
+                      _F(FONCTION=EPXX,
+                         LEGENDE='EPXX N= 5',
+                         MARQUEUR=1,),),);
+
+EPXY=RECU_FONCTION(TABLE=U,
+                   PARA_X='INST',
+                   PARA_Y='EPXY',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=32,
+              COURBE=(_F(FONCTION=EPXY_B,
+                         LEGENDE='EPXY, N=100',
+                         MARQUEUR=0,),
+                      _F(FONCTION=EPXY,
+                         LEGENDE='EPXY N= 5',
+                         MARQUEUR=1,),),);
+
+FIN();

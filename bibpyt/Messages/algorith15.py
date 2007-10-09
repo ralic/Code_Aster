@@ -1,4 +1,4 @@
-#@ MODIF algorith15 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith15 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,315 +20,316 @@
 
 def _(x) : return x
 
-cata_msg={
-1: _("""
+cata_msg = {
+
+1 : _("""
  arret sur nombres de DDL interface non identiques 
  nombre de ddl interface droite:  %(i1)d 
  nombre de ddl interface gauche:  %(i2)d 
 """),
 
-2: _("""
+2 : _("""
  arret sur dimension matrice TETA incorrecte
  dimension effective :  %(i1)d 
  dimension en argument:  %(i2)d 
 """),
 
-3: _("""
+3 : _("""
   erreur de répétitivité cyclique
 """),
 
-4: _("""
+4 : _("""
   il manque un DDL sur un noeud gauche
   type du DDL  -->  %(k1)s 
   nom du noeud -->  %(k2)s 
 """),
 
-5: _("""
+5 : _("""
   erreur  de répétitivité cyclique
 """),
 
-6: _("""
+6 : _("""
   il manque un DDL sur un noeud droite
   type du ddl  -->  %(k1)s 
   nom du noeud -->  %(k2)s 
 """),
 
-7: _("""
+7 : _("""
  arret sur problème de répétitivité cyclique
 """),
 
-8: _("""
+8 : _("""
  la composante : %(k1)s  est une composante indefinie
 """),
 
-9: _("""
+9 : _("""
 """),
 
-10: _("""
+10 : _("""
  arret sur type de DDL non défini
 """),
 
-11: _("""
+11 : _("""
  "NB_POIN" est inférieur au nombre de points de l'interspectre.
  le spectre est tronqué à la fréquence :  %(r1)f 
 """),
 
-12: _("""
+12 : _("""
  le "NB_POIN" donné est modifié
  (en une puissance de 2 compatible avec l'interspectre)
  le "NB_POIN" retenu est :   %(i1)d 
 """),
 
-13: _("""
+13 : _("""
  la durée est trop grande ou NB_POIN et trop petit par rapport
  à la fréquence max (théorème de Shannon).
  on choisit NBPOIN =  %(i1)d 
 """),
 
-14: _("""
+14 : _("""
  la durée est petite par rapport au pas de discrétisation de l'interspectre.
  choisir plutot : durée >  %(r1)f 
 """),
 
-15: _("""
+15 : _("""
  "NB_POIN" est petit par rapport au pas de discrétisation de l'interspectre.
  NB_POIN =  %(i1)d 
  il faudrait un nombre supérieur à :  %(r1)f 
 """),
 
-16: _("""
+16 : _("""
  on n'a pas trouve le DDL pour le noeud :  %(k1)s 
 """),
 
-17: _("""
+17 : _("""
     de la sous-structure :  %(k1)s 
 """),
 
-18: _("""
+18 : _("""
     et sa composante :  %(k1)s 
 """),
 
-19: _("""
+19 : _("""
   il manque le seuil  pour la fonction interprétée  %(k1)s 
 """),
 
-20: _("""
+20 : _("""
  l'abscisse lineaire est nulle pour la courbe :  %(k1)s 
  abscisse :  %(r1)f 
 """),
 
-21: _("""
+21 : _("""
  on n'a pas trouve le DDL pour le noeud :  %(k1)s 
 """),
 
-22: _("""
+22 : _("""
     de la sous-structure :  %(k1)s 
 """),
 
-23: _("""
+23 : _("""
     et sa composante :  %(k1)s 
 """),
 
-24: _("""
+24 : _("""
  au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
 """),
 
-25: _("""
+25 : _("""
  ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
  risque de matrice singulière
 """),
 
-26: _("""
+26 : _("""
  calcul moindre norme 
 """),
 
-27: _("""
+27 : _("""
   problème calcul valeurs singulieres
   pas      =   %(i1)d
   abscisse =    %(r1)f 
 """),
 
-28: _("""
+28 : _("""
   la matrice (PHI)T*PHI + ALPHA n'est pas inversible
   pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
-29: _("""
+29 : _("""
   problème calcul valeurs singulières
   pas      =   %(i1)d
   abscisse =    %(r1)f 
 """),
 
-30: _("""
+30 : _("""
   matrice (PHI)T*PHI + ALPHA  n'est pas inversible
   pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
-31: _("""
+31 : _("""
  au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
 """),
 
-32: _("""
+32 : _("""
  ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
  risque de matrice singulière
 """),
 
-33: _("""
+33 : _("""
  calcul moindre norme 
 """),
 
-34: _("""
+34 : _("""
  problème calcul valeurs singulières
  pas      =   %(i1)d
  abscisse =    %(r1)f 
 """),
 
-35: _("""
+35 : _("""
   matrice (PHI)T*PHI + ALPHA n est pas inversible
   pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
-36: _("""
+36 : _("""
  problème calcul valeurs singulières
   pas =   %(i1)d
   abscisse =    %(r1)f 
 """),
 
-37: _("""
+37 : _("""
   matrice (PHI)T*PHI + ALPHA  n'est pas inversible
   pas =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
-38: _("""
+38 : _("""
  au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
 """),
 
-39: _("""
+39 : _("""
  ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
  risque de matrice singuliere
 """),
 
-40: _("""
+40 : _("""
  calcul moindre norme 
 """),
 
-41: _("""
+41 : _("""
  problème calcul valeurs singulières
  pas =   %(i1)d
  abscisse =    %(r1)f 
 """),
 
-42: _("""
+42 : _("""
   matrice (phi)t*phi + alpha n est pas inversible  pas =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
-43: _("""
+43 : _("""
   pb calcul valeurs singulieres pas =   %(i1)d  abscisse =    %(r1)f 
 """),
 
-44: _("""
+44 : _("""
   la matrice (PHI)T*PHI + ALPHA  n'est pas inversible
   pas      =   %(i1)d 
   abscisse =    %(r1)f 
 """),
 
-45: _("""
+45 : _("""
   on ne trouve pas DPMAX 
 """),
 
-46: _("""
+46 : _("""
   nombre d'itérations insuffisant 
 """),
 
-47: _("""
+47 : _("""
   F(XMIN) > 0 
 """),
 
-48: _("""
+48 : _("""
   maille :  %(k1)s
   nombre d iterations =  %(i1)d
   ITER_INTE_MAXI =  %(i2)d 
 """),
 
-49: _("""
+49 : _("""
   DP    actuel =  %(r1)f
   F(DP) actuel =  %(r2)f 
 """),
 
-50: _("""
+50 : _("""
   DP    initial   =  %(r1)f
   F(DP) initial   =  %(r2)f 
 """),
 
-51: _("""
+51 : _("""
   DP    maximum   =  %(r1)f
   F(DP) maximum   =  %(r2)f 
 """),
 
-52: _("""
+52 : _("""
   allure de la fonction
   nb points :  %(i1)d 
 """),
 
-53: _("""
+53 : _("""
   DP     =  %(r1)f
   F(DP)  =  %(r2)f 
 """),
 
-54: _("""
+54 : _("""
 """),
 
-55: _("""
+55 : _("""
   incohérence détectée 
 """),
 
-56: _("""
+56 : _("""
   le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s 
   n'appartient pas la sous-structure:  %(k3)s 
 """),
 
-57: _("""
+57 : _("""
   incohérence detectée 
 """),
 
-58: _("""
+58 : _("""
   le noeud :  %(k1)s  de l interface dynamique :  %(k2)s 
   n'est pas correctement référencé dans le squelette :  %(k3)s 
 """),
 
-59: _("""
+59 : _("""
   incohérence détectée 
 """),
 
-60: _("""
+60 : _("""
   le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s 
   n'appartient pas la sous-structure:  %(k3)s 
 """),
 
-61: _("""
+61 : _("""
   incohérence détectée 
 """),
 
-62: _("""
+62 : _("""
   le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s 
   n'est pas correctement référencé dans le squelette :  %(k3)s 
 """),
 
-63: _("""
+63 : _("""
   conflit mot clés TOUT et GROUP_NO dans RECO_GLOBAL 
 """),
 
-64: _("""
+64 : _("""
   erreur de nom
   la sous-structure :  %(k1)s  n a pas ete trouvée 
 """),
 
-65: _("""
+65 : _("""
   incohérence de nom
   l interface dynamique  :  %(k1)s 
   de la sous-structure   :  %(k2)s 
@@ -336,12 +337,12 @@ cata_msg={
   or group_no_1 =  %(k4)s 
 """),
 
-66: _("""
+66 : _("""
   erreur de nom
   la sous-structure :  %(k1)s  n'a pas ete trouvée 
 """),
 
-67: _("""
+67 : _("""
   incohérence de nom
   l interface dynamique  :  %(k1)s 
   de la sous-structure   :  %(k2)s 
@@ -349,7 +350,7 @@ cata_msg={
   or group_no_2 =  %(k4)s 
 """),
 
-68: _("""
+68 : _("""
  nombre de points pas période             :  %(i1)d 
  coefficient de remontee du pas de temps  :  %(r1)f 
  coefficient de division du pas de temps  :  %(r2)f 
@@ -358,32 +359,32 @@ cata_msg={
  vitesse minimale variable                :  %(k1)s 
 """),
 
-69: _("""
+69 : _("""
  nombre incorrect de sous-structures
  il vaut :  %(i1)d 
  alors que le nombre total de sous-structures vaut :  %(i2)d 
 """),
 
-70: _("""
+70 : _("""
  nombre incorrect de sous-structures
  pour le chargement numero : %(i1)d 
  il en faut exactement :  %(i2)d 
  vous en avez          :  %(i3)d 
 """),
 
-71: _("""
+71 : _("""
  nombre incorrect de vecteurs chargements
  pour le chargement numero : %(i1)d 
  il en faut exactement :  %(i2)d 
  vous en avez          :  %(i3)d 
 """),
 
-72: _("""
+72 : _("""
  un PROF_CHNO n'est pas défini
  il manque pour le chargement : %(k1)s 
 """),
 
-73: _("""
+73 : _("""
  on doit avoir le meme type de forces pour un meme chargement global
  or, la grandeur vaut   :  %(i1)d 
  pour la sous-structure    %(k1)s 
@@ -391,123 +392,74 @@ cata_msg={
  pour la sous-structure    %(k2)s 
 """),
 
-74: _("""
+74 : _("""
  une des bases modales a un type incorrect
  elle est associée à la sous-structure  %(k1)s 
 """),
 
-75: _("""
+75 : _("""
  les numérotations ne coincident pas pour la sous-structure : %(k1)s 
  le PROF_CHNO pour la base modale est :  %(k2)s 
  et celui pour le second membre       :  %(k3)s 
 """),
 
-76: _("""
-  Les deux interfaces n'ont pas le meme nombre de noeuds
-     Nombre de noeuds interface droite --> %(i1)d 
-     Nombre de noeuds interface gauche --> %(i2)d 
-"""),
-
-77: _("""
-     Conflit dans les VIS_A_VIS des noeuds :
-     Le noeud %(k1)s est le VIS-A-VIS des noeuds %(k2)s et %(k3)s
-"""),
-
-78: _("""
-     Axe de symétrie cyclique différent de OZ
-        Numéro du couple de noeud : %(i1)d 
-        Noeud droite --> %(k1)s
-        Noeud gauche --> %(k2)s
-"""),
-79: _("""
-     Problème de rayon droite-gauche différents:
-        Numéro du couple de noeud : %(i1)d 
-        Noeud droite --> %(k1)s
-        Noeud gauche --> %(k2)s
-"""),
-80: _("""
-     Problème signe angle entre droite et gauche:
-        Numéro du couple de noeud : %(i1)d 
-        Noeud droite --> %(k1)s
-        Noeud gauche --> %(k2)s
-"""),
-81: _("""
-     Problème valeur angle repetitivité cyclique:
-        Numéro du couple de noeud : %(i1)d 
-        Noeud droite --> %(k1)s
-        Noeud gauche --> %(k2)s
-"""),
-
-82: _("""
-     Vérification répétitivité: aucune erreur détectée
-"""),
-
-83: _("""
-     Les noeuds des interfaces ne sont pas alignes en VIS_A_VIS
-     Les noeuds ont été réordonnés.
-"""),
-84: _("""
-     Arret sur problème répétitivité cyclique
-     Tentative de diagnostique %(k1)s
- """),
-
-85: _("""
+85 : _("""
   l''interface de droite n'existe pas
   interface de nom %(k1)s 
 """),
 
-86: _("""
+86 : _("""
   l''interface de gauche n'existe pas
   interface de nom %(k1)s 
 """),
 
-87: _("""
+87 : _("""
   l'interface axe n'existe pas
   interface de nom %(k1)s 
 """),
 
-88: _("""
+88 : _("""
  arret sur problème interfaces de type différents
 """),
 
-89: _("""
+89 : _("""
  arret sur problème de type interface non supporté
  type interface -->  %(k1)s 
 """),
 
-90: _("""
+90 : _("""
  le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d 
  et le nombre de coefficients  :  %(i2)d 
  on ne garde donc que les  %(i3)d premiers coefficients
 """),
 
-91: _("""
+91 : _("""
  le nombre d'amortissements réduits est insuffisant
  il en manque :  %(i1)d 
  car le nombre de modes vaut :  %(i2)d 
  on rajoute %(i3)d coefficients avec la valeur du dernier coefficient.
 """),
 
-92: _("""
+92 : _("""
  Nombre de modes propres calculés insuffisant.
 """),
 
-93: _("""
+93 : _("""
  MODE_MECA : %(k1)s 
 """),
 
-94: _("""
+94 : _("""
  Nombre de modes propres limités à : %(i1)d 
 """),
 
-95: _("""
+95 : _("""
  l'entrée d'amortissements réduits est incompatible 
  avec des matrices de type  %(k1)s 
  Il faut des matrices de type MATR_ASSE_GENE_*
 """),
 
-96: _("""
+96 : _("""
  le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d 
  et le nombre de coefficients :  %(i2)d 
@@ -515,21 +467,21 @@ cata_msg={
  
 """),
 
-97: _("""
+97 : _("""
  le nombre d'amortissements réduits est insuffisant
  il en manque :  %(i1)d 
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d amortissement reduits avec la valeur du dernier mode propre.
 """),
 
-98: _("""
+98 : _("""
  incohérence dans le DATASET 58
  le nombre de valeurs fournies ne correspond pas au nombre de valeurs attendues
  mesure concernée :  %(i1)d 
  
 """),
 
-99: _("""
+99 : _("""
  le nombre maximum d'itérations  %(i1)d  est atteint sans converger 
  le résidu relatif final est  : %(r1)f 
  l instant de calcul vaut     : %(r2)f 

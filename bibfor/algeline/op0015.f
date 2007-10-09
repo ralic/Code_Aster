@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,15 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C     OPERATEUR RESOUDRE
 C     ------------------------------------------------------------------
-C     OPERA 15 :     RESOLUTION LDLT  (A DONNEES ALTEREES)
-C     ------------------------------------------------------------------
-C     RESOLUTION D'UN SYSTEME DE LA FORME TLDL * X = F
-C     ------------------------------------------------------------------
-C     LA MATRICE DOIT ETRE SYMETRIQUE ET STOCKEE "LIGN_CIEL" PAR BLOCS
-C     ------------------------------------------------------------------
-C
-C     ----------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -46,13 +39,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER IBID,IFM,NIV,NB,NBCINE,IRET,LMAT,IER1,JSLVR
-      INTEGER NBSOL,LXSOL,LCINE,JREFA
+      INTEGER NBSOL,LXSOL,LCINE,JREFA,MXITER,IREP
       CHARACTER*1 FTYPE(2)
       CHARACTER*4 MUMPS
-      CHARACTER*8 XSOL,SECMBR,MATFAC,TYPE,VCINE,TYPV
+      CHARACTER*8 XSOL,SECMBR,MATR,TYPE,VCINE,TYPV,METRES,MATF,OUINON
       CHARACTER*16 CONCEP,NOMCMD
       CHARACTER*19 XSOL19,VCIN19,MAT19,PCHN1,PCHN2,SOLVEU
-      CHARACTER*24 VXSOL,VXCIN
+      CHARACTER*24 VXSOL,VXCIN,CRITER
       CHARACTER*24 VALK(2)
       COMPLEX*16   CBID
       REAL*8       EPS,RBID
@@ -72,19 +65,10 @@ C     --- RECUPERATION SUR LA COMMANDE ET SON RESULAT ---
       XSOL19 = XSOL
 C
 C     --- RECUPERATION DES NOMS DE LA MATRICE ET DU SECOND MEMBRE ---
-C     --- ET EVANTUELLEMENT D'UN CHAM_CINE                        ---
-      CALL GETVID('  ','MATR_FACT',0,1,1,MATFAC,NB)
+C     --- ET EVENTUELLEMENT D'UN CHAM_CINE                        ---
+      CALL GETVID('  ','MATR',0,1,1,MATR,NB)
       CALL GETVID('  ','CHAM_NO',0,1,1,SECMBR,NB)
       CALL CHPVER('F',SECMBR,'NOEU','*',IER)
-
-C     -- ON VERIFIE QUE LE PROF_CHNO DE LA MATR_ASSE
-C        EST IDENTIQUE A CELUI DU  SECOND_MEMBRE :
-C     -----------------------------------------------
-       CALL DISMOI('F','PROF_CHNO',MATFAC,'MATR_ASSE',IBID,PCHN1,IBID)
-       CALL DISMOI('F','PROF_CHNO',SECMBR,'CHAM_NO',IBID,PCHN2,IBID)
-       IF (.NOT.IDENSD('PROF_CHNO',PCHN1,PCHN2))
-     & CALL U2MESS('F','ALGELINE2_22')
-
 
       CALL GETVID('  ','CHAM_CINE',0,1,1,VCINE,NBCINE)
       IF (NBCINE.NE.0) THEN
@@ -94,6 +78,44 @@ C     -----------------------------------------------
         VCIN19 = ' '
       ENDIF
 C
+C     --- RECUPERATION DU SOLVEUR : MUMPS, GCPC, MULT_FRONT, LDLT
+      CALL DISMOI('F','METH_RESO',MATR,'MATR_ASSE',IBID,METRES,IBID)
+C
+C
+C --- CAS DU SOLVEUR GCPC :
+C     ===================
+      IF(METRES(1:4).EQ.'GCPC')THEN
+
+C       MATRICE DE PRECONDITIONNEMENT
+        CALL GETVID(' ','MATR_PREC',0,1,1,MATF,IRET)
+
+        CALL GETVIS(' ','NMAX_ITER',0,1,1,MXITER,IBID)
+        CALL GETVR8(' ','RESI_RELA',0,1,1,EPS,IBID)
+
+C       REPRISE OU NON (XSOL INITIALISE OU NON LES ITERATIONS)
+        IREP = 0
+        CALL GETVTX(' ','REPRISE',0,1,1,OUINON,IRET)
+        IF (OUINON.EQ.'OUI') IREP = 1
+
+        CRITER = '&&RESGRA_GCPC'
+        CALL RESGRA ( XSOL, MATR, SECMBR, VCIN19, MATF, 'G',
+     &                IREP, MXITER, EPS, CRITER)
+
+        GOTO 9999
+      ENDIF
+C
+C
+C --- CAS DES SOLVEURS MUMPS,LDLT,MULT_FRONT :
+C     ======================================
+
+C     -- ON VERIFIE QUE LE PROF_CHNO DE LA MATR_ASSE
+C        EST IDENTIQUE A CELUI DU  SECOND_MEMBRE :
+C     -----------------------------------------------
+       CALL DISMOI('F','PROF_CHNO',MATR,'MATR_ASSE',IBID,PCHN1,IBID)
+       CALL DISMOI('F','PROF_CHNO',SECMBR,'CHAM_NO',IBID,PCHN2,IBID)
+       IF (.NOT.IDENSD('PROF_CHNO',PCHN1,PCHN2))
+     & CALL U2MESS('F','ALGELINE2_22')
+
       CALL EXISD('CHAMP_GD',XSOL,IRET)
       IF (IRET.NE.0) THEN
 C        --- VERIFICATION DES COMPATIBILITES --
@@ -116,8 +138,8 @@ C        --- TRANSFERT DU SECOND MEMBRE DANS LE VECTEUR SOLUTION ---
       ENDIF
 
 C     --- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
-      CALL MTDSCR(MATFAC)
-      CALL JEVEUO(MATFAC//'           .&INT','E', LMAT )
+      CALL MTDSCR(MATR)
+      CALL JEVEUO(MATR//'           .&INT','E', LMAT )
       CALL ASSERT(LMAT.NE.0)
 
 C     --- SI LA MATRICE A DES DDLS ELIM., IL FAUT RENSEIGNER CHAM_CINE:
@@ -125,27 +147,27 @@ C     --- SI LA MATRICE A DES DDLS ELIM., IL FAUT RENSEIGNER CHAM_CINE:
             CALL U2MESS('F','ALGELINE2_24')
       ENDIF
 
-      MAT19 = MATFAC
+      MAT19 = MATR
 C
-C     --------------------- RESOLUTION EFFECTIVE ----------------------
-
-
+C
 C     CAS DU SOLVEUR MUMPS :
-C     ----------------------
+C     ---------------------
       CALL DISMOI('F','EST_MUMPS',MAT19,'MATR_ASSE',IBID,MUMPS,IER1)
       IF (MUMPS.EQ.'OUI') THEN
          CALL DISMOI('F','SOLVEUR',MAT19,'MATR_ASSE',IBID,SOLVEU,IER1)
          CALL GETVR8(' ','RESI_RELA',1,1,1,EPS,IBID)
          CALL JEVEUO(SOLVEU//'.SLVR','E',JSLVR)
          ZR(JSLVR-1+2)=EPS
-         CALL AMUMPS('RESOUD',SOLVEU,MATFAC,SECMBR,XSOL,VCINE,IRET)
+         CALL AMUMPS('RESOUD',SOLVEU,MATR,SECMBR,XSOL,VCINE,IRET)
          CALL ASSERT(IRET.EQ.0)
          CALL JEVEUO(MAT19//'.REFA','E',JREFA)
          ZK24(JREFA-1+8)='DECT'
          GO TO 9999
       END IF
 
-
+C
+C     CAS DES SOLVEUR LDLT,MULT_FRONT :
+C     -------------------------------
       NBSOL = 1
 C
 C     ---RECUPERATION DU TABLEAU DEVANT CONTENIR LA SOLUTION ---

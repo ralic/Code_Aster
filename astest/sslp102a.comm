@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TAUX DE RESTITUTION AVEC DEFORMATION INITIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,9 +95,9 @@ VE=CALC_VECT_ELEM(         CHARGE=CHF,
 F=ASSE_VECTEUR(        VECT_ELEM=VE,
                              NUME_DDL=NU )
 
-K=FACT_LDLT(      reuse=K,     MATR_ASSE=K  )
+K=FACTORISER(      reuse=K,     MATR_ASSE=K  )
 
-DEPLA=RESO_LDLT(           MATR_FACT=K,
+DEPLA=RESOUDRE(           MATR=K,
                               CHAM_NO=F  );
 
 RESU=CREA_RESU(  OPERATION='AFFE',
@@ -156,9 +156,9 @@ VE1=CALC_VECT_ELEM(         CHARGE=CHF,
 F10=ASSE_VECTEUR(        VECT_ELEM=VE1,
                              NUME_DDL=NU )
 
-K1=FACT_LDLT(      reuse=K1,     MATR_ASSE=K1  )
+K1=FACTORISER(      reuse=K1,     MATR_ASSE=K1  )
 
-DEPLA1=RESO_LDLT(          MATR_FACT=K1,
+DEPLA1=RESOUDRE(          MATR=K1,
                               CHAM_NO=F10  )
 
 RESU1=CREA_RESU(  OPERATION='AFFE',
@@ -212,9 +212,9 @@ VE2=CALC_VECT_ELEM(         CHARGE=CHF,
 F20=ASSE_VECTEUR(        VECT_ELEM=VE2,
                              NUME_DDL=NU )
 
-K2=FACT_LDLT(      reuse=K2,     MATR_ASSE=K2  )
+K2=FACTORISER(      reuse=K2,     MATR_ASSE=K2  )
 
-DEPLA2=RESO_LDLT(          MATR_FACT=K2,
+DEPLA2=RESOUDRE(          MATR=K2,
                               CHAM_NO=F20 )
 
 RESU2=CREA_RESU(  OPERATION='AFFE',
@@ -269,9 +269,9 @@ VE3=CALC_VECT_ELEM(         CHARGE=CHF,
 F30=ASSE_VECTEUR(        VECT_ELEM=VE3,
                              NUME_DDL=NU )
 
-K3=FACT_LDLT(      reuse=K3,     MATR_ASSE=K3  )
+K3=FACTORISER(      reuse=K3,     MATR_ASSE=K3  )
 
-DEPLA3=RESO_LDLT(        MATR_FACT=K3,
+DEPLA3=RESOUDRE(        MATR=K3,
                               CHAM_NO=F30 )
 
 RESU3=CREA_RESU(  OPERATION='AFFE',

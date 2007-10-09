@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_elas_mult_ops Macro  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,10 +37,10 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   CALC_MATR_ELEM  =self.get_cmd('CALC_MATR_ELEM')
   NUME_DDL        =self.get_cmd('NUME_DDL')
   ASSE_MATRICE    =self.get_cmd('ASSE_MATRICE')
-  FACT_LDLT       =self.get_cmd('FACT_LDLT')
+  FACTORISER      =self.get_cmd('FACTORISER')
   CALC_VECT_ELEM  =self.get_cmd('CALC_VECT_ELEM')
   ASSE_VECTEUR    =self.get_cmd('ASSE_VECTEUR')
-  RESO_LDLT       =self.get_cmd('RESO_LDLT')
+  RESOUDRE        =self.get_cmd('RESOUDRE')
   CREA_RESU       =self.get_cmd('CREA_RESU')
   CALC_ELEM       =self.get_cmd('CALC_ELEM')
   CALC_NO         =self.get_cmd('CALC_NO')
@@ -100,7 +100,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
 
      __nomras=ASSE_MATRICE(MATR_ELEM=__nomrig,NUME_DDL=num)
 
-     __nomraf=FACT_LDLT(MATR_ASSE=__nomras,NPREC=SOLVEUR['NPREC'],STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
+     __nomraf=FACTORISER(MATR_ASSE=__nomras,NPREC=SOLVEUR['NPREC'],STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
 
 #####################################################################
 # boucle sur les items de CAS_CHARGE
@@ -126,7 +126,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
 
         __nomras=ASSE_MATRICE(MATR_ELEM=__nomrig,NUME_DDL=num)
 
-        __nomraf=FACT_LDLT(MATR_ASSE=__nomras,NPREC=SOLVEUR['NPREC'],STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
+        __nomraf=FACTORISER(MATR_ASSE=__nomras,NPREC=SOLVEUR['NPREC'],STOP_SINGULIER=SOLVEUR['STOP_SINGULIER'])
 
 
      if m['VECT_ASSE']==None :
@@ -142,7 +142,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
         __nomasv=m['VECT_ASSE']
 
 
-     __nomchn=RESO_LDLT(MATR_FACT=__nomraf,CHAM_NO=__nomasv,TITRE=m['SOUS_TITRE'])
+     __nomchn=RESOUDRE(MATR=__nomraf,CHAM_NO=__nomasv,TITRE=m['SOUS_TITRE'])
      nomchn.append(__nomchn)
 
 # fin de la boucle sur les items de CAS_CHARGE

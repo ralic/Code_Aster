@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF xfem Messages  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,6 +132,18 @@ Erreur dans le choix de la methode de calcul des level-sets: renseignez FONC_LT/
 
 24: _("""
 Erreur de développement : Attribut XFEM non renseigné pour cet élément.
+"""),
+
+25: _("""
+Le frottement n'est pas pris en compte pour l'approche <<Grands glissements avec XFEM>>.
+"""),
+
+26: _("""
+L'approche <<Grands glissements avec XFEM>> fonctionne seulement pour le cas 2D.
+"""),
+
+27: _("""
+Seulement les mailles QUAD4 sont prises en compte par l'approche <<Grands glissements avec XFEM>>.
 """),
 
 50: _("""

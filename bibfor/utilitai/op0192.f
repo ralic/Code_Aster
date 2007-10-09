@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,11 @@ C
       REAL*8 PREC
 C
       CHARACTER*8 CHANOM, NOMAAS, NOMO, NOMGD
-      CHARACTER*19 CHATMP
-      CHARACTER*8 TYPECH
+      CHARACTER*19 CHATMP,LIGREL
+      CHARACTER*8 TYPECH, PARAM
       CHARACTER*8 CRIT
       CHARACTER*16 NOMCMD, FORMAT, TYCH
+      CHARACTER*24 OPTION
       CHARACTER*32 NOCHMD, NOMAMD
       CHARACTER*72 REP
 C
@@ -108,6 +109,22 @@ C
       CALL GETVTX ( ' ', 'TYPE_CHAM', 0, 1, 1, TYCH, IAUX )
       CALL GETRES ( CHANOM, TYPECH, NOMCMD )
       NOMGD = TYCH(6:13)
+      IF (TYCH(1:11).EQ.'ELGA_SIEF_R') THEN
+         OPTION = 'RAPH_MECA'
+         PARAM  = 'PCONTPR'
+      ELSE IF (TYCH(1:9).EQ.'ELGA_EPSI_R') THEN
+         OPTION = 'EPSI_ELGA_DEPL'
+         PARAM  = 'PDEFORR'
+      ELSE IF (TYCH(1:9).EQ.'ELGA_VARI_R') THEN
+         OPTION = 'RAPH_MECA'
+         PARAM  = 'PVARIPR'
+C       ELSE IF (TYCH(1:9).EQ.'ELGA_EQUI_R') THEN
+C          OPTION = 'EQUI_ELGA_SIGM'
+C          PARAM  = 'PCONTEQ'
+C     AUTRE CHAMP ELGA : NON PREVU
+      ELSE IF (TYCH(1:4).EQ.'ELGA') THEN
+         CALL U2MESK('F','UTILITAI2_94',1,TYCH)
+      ENDIF
 C
 C 2.3. ==> NOM DES COMPOSANTES VOULUES
 C
@@ -155,12 +172,18 @@ C 2.4. ==> UNITE LOGIQUE LIE AU FICHIER
 C
       CALL GETVIS ( ' ', 'UNITE', 0, 1, 1, UNITE, IAUX )
 C
-C 2.5. ==> NOM DU MAILLAGE ASTER ASSOCIE
+C 2.5. ==> NOM DU MODELE, NOM DU MAILLAGE ASTER ASSOCIE
 C
+      CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMO, IAUX )
+      IF(IAUX.NE.0)THEN
+        LIGREL = NOMO//'.MODELE'
+      ELSE
+C                 1234567890123456789
+        LIGREL = '                   '
+      ENDIF
+
       CALL GETVID ( ' ', 'MAILLAGE', 0, 1, 1, NOMAAS, IAUX )
-C
       IF ( IAUX.EQ.0 ) THEN
-        CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMO, IAUX )
         CALL DISMOI ( 'F', 'NOM_MAILLA', NOMO, 'MODELE',
      &                IAUX, NOMAAS, CODRET )
         IF ( CODRET.NE.0 ) THEN
@@ -213,13 +236,12 @@ C====
 C
       IF ( FORMAT.EQ.'MED' ) THEN
 C
-
         CHATMP = '&&OP0192.TEMPOR'
         CALL LRCHME ( CHATMP, NOCHMD, NOMAMD,
      &                NOMAAS, TYCH(1:8), NOMGD,
      &                NBCMPV, NCMPVA, NCMPVM,
      &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     &                UNITE,CODRET )
+     &                UNITE,LIGREL,OPTION,PARAM,CODRET )
 C
         CALL COPISD('CHAMP_GD','G',CHATMP,CHANOM)
         IF (TYCH(1:2).EQ.'NO') THEN

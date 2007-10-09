@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,10 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      REAL *8          MXDYN , MCDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN 
 C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)

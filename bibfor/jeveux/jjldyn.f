@@ -1,6 +1,6 @@
       SUBROUTINE JJLDYN ( LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 01/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,8 +54,10 @@ C
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
-      INTEGER          LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
-      COMMON /IDYNJE/  LDYN , LGDYN , MXDYN , MCDYN , NBDYN , NBFREE
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
+      REAL *8          MXDYN , MCDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN 
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      +               IDMARQ     , IDNOM      ,             IDLONG     ,

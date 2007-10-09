@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE MINCE VRILLEE OU FLECHIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,21 +127,21 @@ NUD=NUME_DDL(  MATR_RIGI=MAT    )
 
 MATASS=ASSE_MATRICE(  MATR_ELEM=MAT,   NUME_DDL=NUD )
 
-MATASS=FACT_LDLT(reuse=MATASS,MATR_ASSE=MATASS )
+MATASS=FACTORISER(reuse=MATASS,MATR_ASSE=MATASS )
 
 # ---------------------------------------------------------------------
 
 
 VECASS1=ASSE_VECTEUR( VECT_ELEM=( VEL,VEL1, ),   NUME_DDL=NUD )
 
-VECASS1=RESO_LDLT(reuse=VECASS1, MATR_FACT=MATASS,     CHAM_NO=VECASS1  )
+VECASS1=RESOUDRE(reuse=VECASS1, MATR=MATASS,     CHAM_NO=VECASS1  )
 
 # ---------------------------------------------------------------------
 
 
 VECASS2=ASSE_VECTEUR(  VECT_ELEM=( VEL,VEL2, ),   NUME_DDL=NUD )
 
-VECASS2=RESO_LDLT(reuse=VECASS2, MATR_FACT=MATASS,     CHAM_NO=VECASS2  )
+VECASS2=RESOUDRE(reuse=VECASS2, MATR=MATASS,     CHAM_NO=VECASS2  )
 
 # ---------------------------------------------------------------------
 

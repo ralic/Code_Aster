@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline2 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,9 +20,9 @@
 
 def _(x) : return x
 
-cata_msg={
+cata_msg = {
 
-3: _("""
+3 : _("""
 
  Le résidu global converge plus vite que la condition des contraintes planes. 
  La convergence de la condition des contraintes planes peut être améliorée en 
@@ -30,20 +30,19 @@ cata_msg={
 
 """),
 
-36: _("""
+36 : _("""
  Erreur dans la découpe initiale des pas.
 """),
 
-37: _("""
+37 : _("""
  Attention, ARRET=NON donc poursuite du calcul sans avoir eu convergence.
 """),
 
-
-67: _("""
+67 : _("""
  Le code %(i1)d retourné lors de l'intégration de la loi de comportement n'est pas traité.  
 """),
 
-93: _("""
+93 : _("""
   -> Risque & Conseil :  dans le cas d'une résolution incrémentale, 
      on ne considère que la variation des variables de commande entre
      l'instant précédent et l'instant actuel.
@@ -57,20 +56,21 @@ cata_msg={
      (U4.51.03) mot-clé EXCIT, et le test FORMA09 (V7.20.101).
 """),
 
-94: _("""
+94 : _("""
   -> Indications supplémentaires : pour la variable de commande :  %(k1)s
      et la composante :  %(k2)s
      Valeur maximum : %(r1)f sur la maille : %(k3)s
      Valeur minimum : %(r2)f sur la maille : %(k4)s
 """),
-95: _("""
+
+95 : _("""
   -> Indications supplémentaires : pour la variable de commande :  %(k1)s 
      et la composante :  %(k2)s
      Valeur maximum de abs( %(k2)s - %(k5)s_REF) : %(r1)f sur la maille : %(k3)s
      Valeur minimum de abs( %(k2)s - %(k5)s_REF) : %(r2)f sur la maille : %(k4)s
 """),
 
-96: _("""
+96 : _("""
     -> Les surfaces en contact relatif ont bougé de plus de 5%%.
        Or vous n'avez pas activé la réactualisation géométrique (REAC_GEOM) automatique ou
        vous utiliser le mode "CONTROLE"
@@ -82,7 +82,7 @@ cata_msg={
        pas interpénétration.
 """),
 
-97: _("""
+97 : _("""
   -> Les variables de commandes initiales induisent des contraintes 
      incompatibles : 
      l'état initial (avant le premier instant de calcul) est tel que 
@@ -90,7 +90,7 @@ cata_msg={
      conduisent à des contraintes non équilibrées. 
 """),
 
-98: _("""
+98 : _("""
   -> Le chargement extérieur est nul (à la précision près).
      Or vous avez demandé une convergence avec le critère relatif (RESI_GLOB_RELA). 
      Pour éviter une division par zéro, le code est passé automatiquement en mode de convergence
@@ -100,14 +100,6 @@ cata_msg={
      critère de type référence (RESI_REFE_RELA).
      La valeur automatique prise pour RESI_GLOB_MAXI est égale à 1E-6 fois la dernière valeur
      de résidu maximum à l'instant précédent. 
-"""),
-
-99: _("""
-  -> Le chargement extérieur est nul (à la précision près).
-     Or vous avez demandé une convergence avec le critère relatif (RESI_GLOB_RELA). 
-  -> Risque & Conseil : Vérifier bien que votre chargement doit etre nul à cet instant 
-     Le chargement est "nul" dans le cas de l'utilisation d'AFFE_CHAR_CINE en particulier.
-     Il vous faut changer votre critère de convergence: RESI_GLOB_MAXI ou RESI_REFE_RELA
 """),
 
 }

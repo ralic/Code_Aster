@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,10 +66,10 @@ KTH=ASSE_MATRICE(MATR_ELEM=METH,
 FTH=ASSE_VECTEUR(VECT_ELEM=VETH,
                  NUME_DDL=NUTH,);
 
-KTH=FACT_LDLT(reuse =KTH,
+KTH=FACTORISER(reuse =KTH,
               MATR_ASSE=KTH,);
 
-TEMP=RESO_LDLT(MATR_FACT=KTH,
+TEMP=RESOUDRE(MATR=KTH,
                CHAM_NO=FTH,);
 #--------------------------------------------------------------------
 #               FIN DU THERMIQUE                                    #
@@ -116,10 +116,10 @@ K=ASSE_MATRICE(MATR_ELEM=ME,
 F=ASSE_VECTEUR(VECT_ELEM=VE,
                NUME_DDL=NU,);
 
-K=FACT_LDLT(reuse =K,
+K=FACTORISER(reuse =K,
             MATR_ASSE=K,);
 
-DEPLA=RESO_LDLT(MATR_FACT=K,
+DEPLA=RESOUDRE(MATR=K,
                 CHAM_NO=F,);
 
 RESU=CREA_RESU(  OPERATION='AFFE',
