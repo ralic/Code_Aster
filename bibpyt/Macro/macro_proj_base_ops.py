@@ -1,4 +1,4 @@
-#@ MODIF macro_proj_base_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_proj_base_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ def macro_proj_base_ops(self,BASE,NB_VECT,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,*
      Ecriture de la macro MACRO_PROJ_BASE
   """
   ier=0
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
   # On importe les definitions des commandes a utiliser dans la macro
   NUME_DDL_GENE  =self.get_cmd('NUME_DDL_GENE')
   PROJ_MATR_BASE =self.get_cmd('PROJ_MATR_BASE')

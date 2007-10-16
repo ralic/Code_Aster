@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF creation_donnees_homard Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ from types import ListType, TupleType
 EnumTypes = (ListType, TupleType)
 
 try:
-  from Utilitai.Utmess import  U2MESS as UTMESS
+  from Utilitai.Utmess import   UTMESS
 except ImportError:
   def UTMESS(code, idmess, valk=(), vali=(), valr=()):
     """Clone de utmess si on ne reussit pas à le charger

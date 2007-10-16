@@ -11,7 +11,7 @@ C ----------------------------------------------------------------------
       CHARACTER*(*) FAMI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
 
 C ***************** FIN COMMUNS NORMALISES JEVEUX **********************
       INTEGER NBRE2,NBRE3,NBPAR,I,NNO,JPROLP,JVALEP,NBVALP
-      INTEGER ITRAC,LGPG,IIRRAP,IRET,IRETP,IRETM,KP
+      INTEGER ITRAC,LGPG,IRET,IRETP,IRETM,KP,IRET1,IRET2
 
       PARAMETER (NBRE2=5,NBRE3=1)
       REAL*8 VALRE2(NBRE2),MU,FKN,RN0,RNP,RTM,RTP,SEUIL
@@ -147,24 +147,30 @@ C --- CARACTERISTIQUES DU MATERIAU
       NBPAR = 0
       NOMPAR = '   '
       RBID = 0.D0
-      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,1,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_CONTACT',
+     &            NBPAR,NOMPAR,RBID,1,
      &            NOMRE2(1),VALRE2(1),CODRE2(1),'  ')
-      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,2,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_CONTACT',
+     &            NBPAR,NOMPAR,RBID,2,
      &            NOMRE2(4),VALRE2(4),CODRE2(4),'  ')
       NBPAR = 1
       NOMPAR = 'INST'
       RBID = TP
-      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,1,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_CONTACT',
+     &            NBPAR,NOMPAR,TP,1,
      &            NOMRE2(2),VALRE2(2),CODRE2(2),'  ')
 
 C ATTENTION: NOMBRE DE NOEUDS = NOMBRE DE POINTS DE GAUSS
       NBPAR = 1
       NOMPAR = 'TEMP'
-      CALL MOYTEM(FAMI,NNO,1,'+',TEMPP)
-      CALL MOYTEM(FAMI,NNO,1,'-',TEMPM)
-      RBID = (TEMPP + TEMPM)/2.D0
+      CALL MOYTEM(FAMI,NNO,1,'+',TEMPP,IRET1)
+      CALL MOYTEM(FAMI,NNO,1,'-',TEMPM,IRET2)
+      IF ((IRET1+IRET2).EQ.0) THEN
+        RBID = (TEMPP+TEMPM)/2
+      ENDIF
 
-      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,1,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_CONTACT',
+     &            NBPAR,NOMPAR,RBID,1,
      &            NOMRE2(3),VALRE2(3),CODRE2(3),'  ')
 
       IF ((CODRE2(1).EQ.'OK') .AND. (CODRE2(3).EQ.'OK') .AND.
@@ -180,7 +186,8 @@ C ATTENTION: NOMBRE DE NOEUDS = NOMBRE DE POINTS DE GAUSS
 C          PRISE EN COMPTE DE L'IRRADIATION
             NBPAR = 1
             NOMPAR = 'INST'
-            CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,
+            CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_CONTACT',
+     &               NBPAR,NOMPAR,
      &               IRRAP, NBRE3,NOMRE3,VALRE3,CODRE3,' ')
             FKN = VALRE3(1)
           END IF

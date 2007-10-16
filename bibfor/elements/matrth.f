@@ -1,6 +1,6 @@
       SUBROUTINE MATRTH(FAMI,NPG,YOUNG,NU,ALPHA,INDITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       REAL*8        VALRES(26),VALPAR,VALPU(2)
-      CHARACTER*2   BL2,CODRET(26)
+      CHARACTER*2   CODRET(26)
       CHARACTER*8   NOMRES(26), NOMPAR,NOMPU(2)
       CHARACTER*10  PHENOM
       REAL*8 YOUNG, NU, ALPHA
@@ -49,21 +49,41 @@ C
 C
 
       INDITH=0
-      BL2='  '
+      NOMPAR = 'TEMP'
 C
       CALL JEVECH ('PMATERC' , 'L' , JMATE)
 C
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
 C
       IF ( PHENOM .EQ. 'ELAS' )  THEN
+
+         CALL JEVECH('PNBSP_I','L',JCOU)
+
          NOMRES(1)='E'
          NOMRES(2)='NU'
          NOMRES(3)='ALPHA'
+
+         CALL MOYTEM(FAMI,NPG,3*ZI(JCOU),'+',TEMP,IRET)
+         CALL RCVALA(ZI(JMATE),' ',PHENOM,
+     &               1,'TEMP',TEMP,3 ,NOMRES,
+     &               VALRES,CODRET, 'FM')
+         IF (CODRET(3).NE.'OK') THEN
+           INDITH = -1
+           GOTO 9999
+         ENDIF
+C
+C     MATERIAU ISOTROPE
+C
+         YOUNG = VALRES(1)
+         NU    = VALRES(2)
+         ALPHA = VALRES(3)
+ 
       ELSEIF ( PHENOM .EQ. 'ELAS_ORTH' )  THEN
          NOMRES(1)='ALPHA_L'
          NOMRES(2)='ALPHA_T'
-         CALL RCVALA(ZI(JMATE),' ',PHENOM,0,NOMPAR,VALPAR,2 ,NOMRES,
-     &                                            VALRES,CODRET, 'FM')
+         CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',PHENOM,
+     &               0,NOMPAR,VALPAR,2 ,NOMRES,
+     &               VALRES,CODRET, 'FM')
          IF (CODRET(1).NE.'OK') THEN
             INDITH = -1
             GOTO 9999
@@ -79,42 +99,6 @@ C
          CALL U2MESS('F','ELEMENTS_42')
       ENDIF
 C
-C===============================================================
-C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
-
-C
-        CALL JEVECH('PNBSP_I','L',JCOU)
-        CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-        CALL MOYTEM(FAMI,NPG,3*ZI(JCOU),'+',VALPAR)
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-
-C===============================================================
-C
-      IF ( PHENOM .EQ. 'ELAS' )  THEN
-C
-      CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2  ,NOMRES,
-     &                                            VALRES,CODRET, 'FM')
-C
-      CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1  ,
-     &                          NOMRES(3), VALRES(3),CODRET(3), BL2 )
-C
-      IF (CODRET(3) .NE. 'OK') THEN
-         INDITH = -1
-         GOTO 9999
-      ENDIF
-C
-C     MATERIAU ISOTROPE
-C
-         YOUNG = VALRES(1)
-         NU    = VALRES(2)
-         ALPHA = VALRES(3)
-C
-C     CONSTRUCTION DU COEFFICIENT EALPNU
-C
-C        ELAPNU=YOUNG*ALPHA/(1.D0-NU)
-C
-      ENDIF
 C
  9999 CONTINUE
       END

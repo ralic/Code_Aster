@@ -12,7 +12,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,21 +122,23 @@ C  recuperer les parametres de defi_materiau
       CALL R8INIR(NEQ,0.D0,FL,1)
 C
 C recuperation des donnees materiau pour le discret
-      CALL RCVALA(ICODMA,' ','DIS_GRICRA',0,' ',0.D0,4,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
+     &            0,' ',0.D0,4,
      &            NOMRE1,VALRE1,CODRE1,' ')
 
       KNAX=VALRE1(1)
       KTAX=VALRE1(2)/4.D0
       ETAX=VALRE1(3)*KTAX
 
-      CALL RCVALA(ICODMA,' ','DIS_GRICRA',0,' ',0.D0,2,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',0,' ',0.D0,2,
      &            NOMRE2,VALRE2,CODRE2,' ')
       IF (CODRE2(1).EQ.'OK') THEN
         FNO=VALRE2(1)/4.D0
         MUAX=VALRE2(2)
       ELSE
-        CALL MOYTEM(FAMI,NPG,1,'+',TEMPP)
-        CALL MOYTEM(FAMI,NPG,1,'-',TEMPM)
+        CALL MOYTEM(FAMI,NPG,1,'+',TEMPP,IRETP)
+        CALL MOYTEM(FAMI,NPG,1,'-',TEMPM,IRETM)
+        IF ((IRETP+IRETM).GE.1) CALL U2MESS('F','CALCULEL_31')
         TEMP = (TEMPP+TEMPM)/2.D0
 
         NBPAR=2
@@ -144,7 +146,8 @@ C recuperation des donnees materiau pour le discret
         NOMPAR(1)='TEMP'
         VALPAR(2)=IRRAP
         VALPAR(1)=TEMP
-        CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
+     &              NBPAR,NOMPAR,VALPAR,1,
      &              NOMRE3,VALRE3,CODRE3,' ')
         IF (CODRE3.EQ.'OK') THEN
             FNO=VALRE3/4.D0
@@ -152,7 +155,8 @@ C recuperation des donnees materiau pour le discret
         ENDIF
       ENDIF
 
-      CALL RCVALA(ICODMA,' ','DIS_GRICRA',0,' ',0.D0,5,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
+     &            0,' ',0.D0,5,
      &            NOMRE4,VALRE4,CODRE4,' ')
 
       IF (CODRE4(1).EQ.'OK') THEN
@@ -162,15 +166,17 @@ C recuperation des donnees materiau pour le discret
         KPHI=VALRE4(3)/2.D0-KTHETA
         KTHET2=VALRE4(5)/2.D0
       ELSE
-        CALL MOYTEM(FAMI,NPG,1,'+',TEMPP)
-        CALL MOYTEM(FAMI,NPG,1,'-',TEMPM)
+        CALL MOYTEM(FAMI,NPG,1,'+',TEMPP,IRETP)
+        CALL MOYTEM(FAMI,NPG,1,'-',TEMPM,IRETM)
+        IF ((IRETP+IRETM).GE.1) CALL U2MESS('F','CALCULEL_31')
         TEMP = (TEMPP + TEMPM)/2.D0
         NBPAR=2
         NOMPAR(2)='IRRA'
         NOMPAR(1)='TEMP'
         VALPAR(2)=IRRAP
         VALPAR(1)=TEMP
-        CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,5,
+        CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
+     &              NBPAR,NOMPAR,VALPAR,5,
      &              NOMRE5,VALRE5,CODRE5,' ')
         PHIC=VALRE5(1)
         THETAC=VALRE5(2)

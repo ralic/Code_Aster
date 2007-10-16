@@ -5,7 +5,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,7 +169,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C       ----------------------------------------------------------------
         INTEGER         IMAT , NDT   , NDI   , NR  , NVI
         INTEGER         ITMAX, ICOMP
-        INTEGER         NMAT , IRTET , IRTETI, NSEUI4
+        INTEGER         NMAT , IRTET , IRTETI, NSEUI4, IISNAN
         INTEGER         NSEUIL, NSEUI1, NSEUI2, NSEUI3, NSEUII
         INTEGER         IADZI, IAZK24
         REAL*8          TOLER
@@ -181,7 +181,7 @@ C
 C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
-        REAL*8          TEMPD,    TEMPF  , TREF
+        REAL*8          TEMPD,    TEMPF  
         REAL*8          ELGEOM(*)
         REAL*8          EPSD(6),     DEPS(6),   EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
@@ -196,7 +196,7 @@ C
         CHARACTER*8     NOMAIL
         CHARACTER*(*)   FAMI
         REAL*8          PC, PT, FC, FT, DFCDLC, DFTDLT, KUC, KUT, KE
-        REAL*8          R8V,R8VIDE
+        REAL*8          R8NNEM
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
         COMMON /ECRI/   NOMAIL
@@ -204,7 +204,6 @@ C       ----------------------------------------------------------------
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 C
-        R8V=R8VIDE()
         IRTETI = 0
         ITMAX    = INT(CRIT(1))
         TOLER    =     CRIT(3)
@@ -217,9 +216,9 @@ C        LOI      = COMP(1)
         NSEUI4   = 0
         NOMAIL   = ' '
 
-        CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
-        CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
-        CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+        CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
+        CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
+        CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
 
 C
 C --    OPTION SUPPRIMEE CAR TYPMA EST IMPOSE SUIVANT QUE L'ON EST EN
@@ -239,18 +238,23 @@ C --    LES PARAMETRES SONT FONCTIONS DE LA TEMPERATURE MAXIMALE
 C --    VIND(3) EST LE MAX DES TEMPERATURES DANS L'HISTORIQUE DES TEMP.
 C
         TMPMX = VIND(3)
-        IF(TEMPD.GT.TMPMX) TMPMX = TEMPD
+        IF (IISNAN(TEMPD).EQ.0) THEN
+          IF(TEMPD.GT.TMPMX) TMPMX = TEMPD
+        ELSE
+          TMPMX=R8NNEM()
+        ENDIF
 C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
+
         CALL BETMAT ( FAMI, KPG, KSP, MOD, IMAT, NMAT, TMPMX, TEMPF,
      &                MATERD, MATERF, MATCST, NDT, NDI , NR, NVI)
 C
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
-        CALL LCDEDI ( FAMI, KPG, KSP, NMAT,  MATERD, MATERF,R8V,R8V,
-     &                R8V, DEPST, EPSDT, DEPS,   EPSD )
+        CALL LCDEDI ( FAMI, KPG, KSP, NMAT,  MATERD, MATERF,TEMPD,TEMPF,
+     &                TREF, DEPST, EPSDT, DEPS,   EPSD )
 C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
@@ -285,7 +289,11 @@ C    2                SIGD ,VIND,  SIGE,  VINF )
         CALL LCELIN ( MOD ,  NMAT, MATERD, MATERF,
      &                NVI,   DEPS,  SIGD, VIND,   SIGE,   VINF )
         VINF(3) = TEMPF
-        IF(TEMPF.LT.TMPMX) VINF(3) = TMPMX
+        IF (IISNAN(TEMPF).EQ.0) THEN
+          IF(TEMPF.LT.TMPMX) VINF(3) = TMPMX
+        ELSE
+          VINF(3)=R8NNEM()
+        ENDIF
 C
         CALL LCEQVN ( NDT  ,  SIGE , SIGF )
 C

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 03/06/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 15/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,10 @@ C
       ENDIF
 C      
 C     ------------------------------------------------------------------
-      IF (BDVP) THEN
+      IF (BDVP .AND. LEXP) THEN
+        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+     +              //' CORRECTIVE '//CVERS//' AVANT STABILISATION --')
+      ELSE IF (BDVP .AND. .NOT. LEXP) THEN
         CALL PRTITR('C','-- CODE_ASTER -- VERSION'
      +                  //' DE DEVELOPPEMENT '//CVERS//' --')
       ELSE IF (LEXP) THEN
@@ -65,7 +68,7 @@ C     ------------------------------------------------------------------
      +                  //' D''EXPLOITATION '//CVERS//' --')
       ELSE
         CALL PRTITR('C','-- CODE_ASTER -- VERSION'
-     +                  //' DE DEVELOPPEMENT FIGEE '//CVERS//' --')
+     +                  //' DE DEVELOPPEMENT STABILISEE '//CVERS//' --')
       ENDIF
       CALL PRTITR('C','COPYRIGHT  EDF-R&D 1991 - '//DATEVE(7:10))
       
@@ -73,7 +76,7 @@ C     ------------------------------------------------------------------
       CALL PRTITR('C','EXECUTION DU : '//LADATE)
       CALL NODNAM(1,MACH,OS,PROC)
       CALL PRTITR('C','PLATE-FORME : '//MACH)
-      CALL PRTITR('C','NB MAX PROC : '//KPRO)
+      CALL PRTITR('C','NB MAX PROC OpenMP: '//KPRO)
       CALL PRTITR('C','SYSTEME : '//OS)
       CALL PRTITR('C','CPU : '//PROC)
 C

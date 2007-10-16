@@ -5,7 +5,7 @@
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,20 +41,20 @@ C ----------------------------------------------------------------------
 C ======================================================================
         INTEGER         NMAT , IMAT, NR, NVI, KPG, KSP, IRET
         CHARACTER*(*)   FAMI
-        REAL*8          MATERF(NMAT,2), TEMPF , SEUIL
+        REAL*8          MATERF(NMAT,2), SEUIL
         REAL*8          SIGF(6) , VIND(*),HSR(5,24,24)
         CHARACTER*16    LOI
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3),VP(3),VECP(3),TOUTMS(5,24,6)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C ======================================================================
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
-C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
-         CALL RSLCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
+         CALL RSLCVX ( FAMI, KPG, KSP, IMAT, NMAT, MATERF, 
+     &                 SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
-         CALL RSLCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
+         CALL RSLCVX ( FAMI, KPG, KSP, IMAT, NMAT, MATERF,
+     &                 SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:5) .EQ. 'LMARC'    ) THEN
          CALL LMACVX ( NMAT, MATERF, SIGF, VIND, SEUIL )

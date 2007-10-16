@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 def veri_tab(tab,nom,ndim) :
-   from Utilitai.Utmess     import U2MESS as UTMESS
+   from Utilitai.Utmess     import  UTMESS
    macro = 'POST_K1_K2_K3'
    for label in ('DX','DY','COOR_X','COOR_Y','ABSC_CURV') :
        if label not in tab.para :
@@ -74,7 +74,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    macro = 'POST_K1_K2_K3'
    from Accas               import _F
-   from Utilitai.Utmess     import U2MESS as UTMESS
+   from Utilitai.Utmess     import  UTMESS
 
    ier = 0
    # La macro compte pour 1 dans la numerotation des commandes

@@ -1,4 +1,4 @@
-#@ MODIF Sensibilite Macro  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Sensibilite Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ Module traite de la gestion des concepts sensibles :
 """
 
 import aster
-from Utilitai.Utmess import U2MESS as UTMESS
+from Utilitai.Utmess import  UTMESS
 
 _VIDE_ = '????????'
 

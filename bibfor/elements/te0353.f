@@ -1,6 +1,6 @@
       SUBROUTINE TE0353(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBRES=21)
-      CHARACTER*8 NOMRES(NBRES),NOMCLE(5),ACIER(4),ZIRC(2)
+      CHARACTER*8 NOMRES(NBRES),NOMCLE(5),ACIER(4),ZIRC(2),TYPE
       CHARACTER*4 FAMI
       CHARACTER*2 CODRET(NBRES),REP,TEST
       CHARACTER*16 COMPOR
@@ -53,7 +53,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 DFDX(9),DFDY(9),TPG,POIDS,R,CO,KRON(6)
       REAL*8 R0(5),RPRIM,VI(5),R8BID
       REAL*8 PHAS(5),DSDE,COEF,ZVARIM,ZVARIP,DELTAZ,TRANS
-      REAL*8 PHASP(4),PHASM(4)
+      REAL*8 PHASP(4),PHASM(4),RESU
       INTEGER NNO,KP,NPG1,I,IVECTU,JTAB(7),L,IRET
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JPROL,JVALE,NBVAL,NDIM,NNOS,JGANO
@@ -143,7 +143,7 @@ C
         K = (KP-1)*NNO
         CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         R = 0.D0
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TPG,IRET1)
 
         IF (COMPOR(1:5) .EQ. 'ACIER') THEN
           DO 7 L=1,4
@@ -194,7 +194,8 @@ C
              DELTAZ = (ZVARIP-ZVARIM)
            IF (DELTAZ.GT.0) THEN
              J = 6 + I
-             CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,
+             CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
+     +                  1,'META',ZFBM,1,
      +                  NOMRES(J),VALRES(J),CODRET(J),'  ')
              IF (CODRET(J).NE.'OK')  VALRES(J)=0.D0
              TRANS = TRANS + KPT(I)*VALRES(J)*DELTAZ
@@ -212,7 +213,8 @@ C
      &     ZK16(ICOMPO)(1:8).EQ.'META_V_I' ) THEN
             IF ((ZR(IVARI+ (KP-1)*LGPG+5) .GT. 0.5D0) .AND.
      +      (TEST.EQ.'NO')) THEN
-               CALL RCVALA(MATER,' ','ELAS_META',1,'META',ZFBM,1,
+               CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_META',
+     &                    1,'META',ZFBM,1,
      &                    NOMRES(11),VALRES(11),CODRET(11),'  ')
                IF (CODRET(11).NE.'OK') THEN
                  VALRES(11) = ZFBM
@@ -236,7 +238,8 @@ C
                ENDIF
                IF( ZK16(ICOMPO)(1:9).EQ.'META_P_CL' .OR.
      &            ZK16(ICOMPO)(1:9).EQ.'META_V_CL'   ) THEN
-                CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
+                CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_ECRO_LINE',
+     &                     1,'TEMP',TPG,5,
      &                    NOMRES(12),VALRES(12),CODRET(12), 'FM' )
                 R0(1) = (2.D0/3.D0)*VALRES(12)*E/(E-VALRES(12))
                 R0(2) = (2.D0/3.D0)*VALRES(13)*E/(E-VALRES(13))
@@ -252,9 +255,11 @@ C
                 VI(3) = ZR(IVARI+(KP-1)*LGPG+2)
                 VI(4) = ZR(IVARI+(KP-1)*LGPG+3)
                 VI(5) = ZR(IVARI+(KP-1)*LGPG+4)
-                CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
                 DO 44 I=1,5
-                 CALL RCTRAC(MATER,'META_TRACTION',NOMCLE(I),TPG,
+                  CALL RCTYPE(MATER,1,'TEMP',TPG,RESU,TYPE)
+                  IF ((TYPE.EQ.'TEMP').AND.(IRET1.EQ.1)) 
+     &              CALL U2MESS('F','CALCULEL_31')
+                  CALL RCTRAC(MATER,'META_TRACTION',NOMCLE(I),RESU,
      &                    JPROL,JVALE,NBVAL,R8BID)
                  CALL RCFONC('V','META_TRACTION',JPROL,JVALE,NBVAL,
      &           R8BID,R8BID,R8BID,VI(I),R8BID,R0(I),R8BID,R8BID,R8BID)
@@ -276,7 +281,8 @@ C
      &     ZK16(ICOMPO)(1:8).EQ.'META_V_C' ) THEN
             IF ((ZR(IVARI+ (KP-1)*LGPG+36) .GT. 0.5D0) .AND.
      +      (TEST.EQ.'NO')) THEN
-               CALL RCVALA(MATER,' ','ELAS_META',1,'META',ZFBM,1,
+               CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_META',
+     &                    1,'META',ZFBM,1,
      &                    NOMRES(11),VALRES(11),CODRET(11),'  ')
                IF (CODRET(11).NE.'OK') THEN
                  VALRES(11) = ZFBM
@@ -327,7 +333,8 @@ C
             DELTAZ = (ZVARIP-ZVARIM)
             TRANS = 0.D0
             IF (DELTAZ.GT.0) THEN
-              CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,NOMRES(5),
+              CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
+     +                    1,'META',ZFBM,1,NOMRES(5),
      +                   VALRES(5),CODRET(5),'  ')
               IF (CODRET(5).NE.'OK')  VALRES(5)=0.D0
               TRANS = TRANS + KPT(1)*VALRES(5)*DELTAZ
@@ -336,7 +343,8 @@ C
             ZVARIP = PHASP(2)
             DELTAZ = (ZVARIP-ZVARIM)
             IF (DELTAZ.GT.0) THEN
-               CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,
+               CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
+     +                  1,'META',ZFBM,1,
      +                  NOMRES(6),VALRES(6),CODRET(6),'  ')
                IF (CODRET(6).NE.'OK')  VALRES(6)=0.D0
                TRANS = TRANS + KPT(2)*VALRES(6)*DELTAZ
@@ -349,7 +357,8 @@ C
   46        CONTINUE
             IF ((ZR(IVARI+ (KP-1)*LGPG+3).GT.0.5D0) .AND.
      +      (TEST.EQ.'NO')) THEN
-               CALL RCVALA(MATER,' ','ELAS_META',1,'META',ZALPHA,1,
+               CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_META',
+     &                1,'META',ZALPHA,1,
      &                NOMRES(7),VALRES(7),CODRET(7),'  ')
                IF (CODRET(7).NE.'OK') THEN
                   VALRES(7) = ZALPHA
@@ -383,8 +392,10 @@ C
                    VI(1) = ZR(IVARI+(KP-1)*LGPG)
                    VI(2) = ZR(IVARI+(KP-1)*LGPG+1)
                    VI(3) = ZR(IVARI+(KP-1)*LGPG+2)
-                   CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
                    DO 45 I=1,3
+                    CALL RCTYPE(MATER,1,'TEMP',TPG,RESU,TYPE)
+                    IF ((TYPE.EQ.'TEMP').AND.(IRET1.EQ.1)) 
+     &              CALL U2MESS('F','CALCULEL_31')
                     CALL RCTRAC(MATER,'META_TRAC_ZIRC',NOMCLE(I),TPG,
      &                    JPROL,JVALE,NBVAL,R8BID)
                     CALL RCFONC('V','META_TRAC_ZIRC',JPROL,JVALE,NBVAL,

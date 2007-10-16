@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 29/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa8 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -389,12 +389,6 @@ cata_msg={
  nom aster retenu :  %(k4)s
 """),
 
-67: _("""
-
- le numero de la maille de type  nomtyp(ityp)  est superieur au nombre total de  mailles :
- numero de la maille :  %(i1)d
- nombre de mailles   :  %(i2)d
-"""),
 
 68: _("""
   la maille  de num  %(i1)d  de nom  %(k1)s

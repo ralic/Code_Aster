@@ -4,7 +4,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,10 @@ C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
-        INTEGER         NMAT, NDT , NDI  , NR , NVI,KPG,KSP
+        INTEGER         NMAT, NDT , NDI  , NR , NVI,KPG,KSP,IISNAN
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8           VALPAF
-        REAL*8          EPSI , THETA
+        REAL*8          EPSI , THETA,R8NNEM
         CHARACTER*8     MOD, NOM , NOMC(14) , NOMPAR
         CHARACTER*2     BL2, FB2, CERR(14)
         CHARACTER*3     MATCST
@@ -89,7 +89,11 @@ C -     TEMPERATURE MAXIMAL AU COURS DE L'HISTORIQUE DE CHARGEMENT
 C -     THEMIQUE THETA (T+DT)
 C
         THETA = TEMPF
-        IF ( TEMPD .GT. TEMPF ) THETA = TEMPD
+        IF ((IISNAN(TEMPD).NE.0).OR.(IISNAN(TEMPF).NE.0)) THEN
+          THETA=R8NNEM()
+        ELSE
+          IF ( TEMPD .GT. TEMPF ) THETA = TEMPD
+        ENDIF
 C
         NOMPAR = 'TEMP'
         VALPAF = THETA

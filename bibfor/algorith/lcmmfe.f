@@ -8,7 +8,7 @@
         CHARACTER*(*) FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,7 +127,6 @@ C      IF (NECOUL.EQ.'ECOU_VISC3') THEN
           DELTAV =COEFT(IFL+4)
           DELTAG =COEFT(IFL+5)
           
-          TEMPF=COEFT(IFL+6)
           TAUV=ABS(TAUS)-TAUMU
           IF (ABS(TAUS).LE.PTIT) THEN
              SGNS=1.D0
@@ -135,8 +134,13 @@ C      IF (NECOUL.EQ.'ECOU_VISC3') THEN
              SGNS=TAUS/ABS(TAUS)
           ENDIF
           IF (TAUV.GT.0.D0) THEN
-             TABS=TEMPF+273.15D0
-             DP=GAMMA0*EXP(-DELTAG/K/TABS)*EXP(DELTAV/K/TABS*TAUV)
+             CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)
+             IF (IRET2.EQ.0) THEN
+               TABS=TEMPF+273.15D0
+               DP=GAMMA0*EXP(-DELTAG/K/TABS)*EXP(DELTAV/K/TABS*TAUV)
+             ELSE
+               DP=GAMMA0
+             ENDIF
              DGAMMA=DP*TAUS/ABS(TAUS)
           ELSE
              DP=0.D0
@@ -156,7 +160,7 @@ C      IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
           KDCS      =COEFT(IFL+8)
           P         =COEFT(IFL+9)
           Q         =COEFT(IFL+10)
-          TEMPF     =COEFT(IFL+11)
+
           NUMHSR    =COEFT(IFL+12)
           
           IF (MATERF(NMAT).EQ.0) THEN
@@ -180,7 +184,6 @@ C         NON LINEARITE
 
           IF (TAUV.GT.0.D0) THEN
 
-             TABS=TEMPF+273.15D0
              SOM=0.D0
              TAUMU=0.D0
 
@@ -210,8 +213,14 @@ C                TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
                GOTO 9999
                ENDIF
 
-               DGAMMA=GAMMA0*EXP(-DELTAG/K/TABS*
-     &         AUX**Q)*SGNS*DT
+               CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)
+               IF (IRET.EQ.0) THEN
+                 TABS=TEMPF+273.15D0
+                 DGAMMA=GAMMA0*EXP(-DELTAG/K/TABS*
+     &           AUX**Q)*SGNS*DT
+               ELSE
+                 DGAMMA=GAMMA0*SGNS*DT
+               ENDIF
 
                DP=ABS(DGAMMA)
 

@@ -1,4 +1,4 @@
-#@ MODIF meidee0 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF meidee0 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,12 @@ def _(x) : return x
 cata_msg={
 1: _("""
 Le modèle mesuré doit etre un concept de type DYNA_HARMO ou MODE_MECA.
+"""),
+2: _("""
+Erreur pendant l'importation des modules MEIDEE.
+"""),
+3: _("""
+Le maillage et les déformées ne sont pas compatibles.
 """),
 
 }

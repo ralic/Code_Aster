@@ -2,7 +2,7 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C ----------------------------------------------------------------------
 C
       CHARACTER*8   NOMPAR
       CHARACTER*16  OPTION  
-      CHARACTER*19  CHELEX,VALK(3)  
+      CHARACTER*19  CHELEX  
       INTEGER       IRET   
 C      
 C ----------------------------------------------------------------------
@@ -67,13 +67,8 @@ C
 C --- CREATION DU CHAM_ELEM ETENDU
 C
       CALL ALCHML(LIGREL,OPTION,NOMPAR,'V',CHELEM,IRET,CHELEX)
-C
-      IF (IRET.EQ.1) THEN
-        VALK(1) = CHELEM
-        VALK(2) = LIGREL
-        VALK(3) = OPTION                
-        CALL U2MESK('F','XFEM2_44',3,VALK)
-      ENDIF  
+      CALL ASSERT(IRET.EQ.0)
+ 
 C
 C --- DESTRUTION DU CHAM_ELEM_S POUR EXTENSION        
 C

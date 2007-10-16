@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -402,6 +402,7 @@ CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                                  VALE_REF = 6.9),
                           _F(  GROUP_MA = 'GMA9',
                                  NOM_VARC='TEMP',
+                                 VALE_REF=0.,
                                  EVOL = THLIN,),
                           _F(  GROUP_MA = 'GMA10',
                                  EVOL = THLIN,
@@ -409,9 +410,11 @@ CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                                  VALE_REF = 11.7),
                           _F(  GROUP_MA = 'GMA11',
                                  NOM_VARC='TEMP',
+                                 VALE_REF=0.,
                                  EVOL = THLIN,),
                           _F(  GROUP_MA = 'GMA12',
                                  NOM_VARC='TEMP',
+                                 VALE_REF=0.,
                                  EVOL = THLIN,)),);
 
 CHMECF=AFFE_CHAR_MECA_F(         MODELE=MO,

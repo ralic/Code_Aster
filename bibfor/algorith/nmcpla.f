@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES
         INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3, IRE2
-        INTEGER         NVI2, NN, I,RETCOM
+        INTEGER         NVI2, NN, I,RETCOM, IISNAN
         CHARACTER*2     FB2, CERR(5)
         CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI
@@ -124,10 +124,10 @@ C       VARIABLES LOCALES
         REAL*8          MATERD(5) , MATERF(5), DEPST2(6), DEPSEL(6)
         REAL*8          EPSICV, TOLER, NDSIG, NSIGF
         REAL*8          DSIGF(6),HYDRD, HYDRF,SECHD, SECHF, SREF
-        REAL*8          EPSELD(6), EPSELF(6)
+        REAL*8          EPSELD(6), EPSELF(6),EPSTHE
 C
         INTEGER         K
-        INTEGER         ITER ,        ITEMAX
+        INTEGER         ITER ,        ITEMAX, IRET1,IRET2,IRET3
         REAL*8          SIGF2(6)
         REAL*8          TMPDMX,       TMPFMX,    EPSTH
         REAL*8          ALPHAD, ALPHAF, BENDOD, BENDOF, KDESSD, KDESSF
@@ -203,15 +203,16 @@ C
          CALL U2MESS('F','ALGORITH7_12')
               ENDIF
 C
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IBID)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IBID)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IBID)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET1)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET2)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET3)
 C
 C --- TEMPERATURE MAXIMALE AU COURS DE L'HISTORIQUE DE CHARGEMENT
 C
       TMPDMX = TEMPD
       TMPFMX = TEMPF
-      IF (CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP' ) THEN
+      IF (((IRET1+IRET2).EQ.0).AND.(IISNAN(VIND(NVI1+3)).EQ.0).AND.
+     &       (CMP2(1)(1:15).EQ. 'BETON_DOUBLE_DP' )) THEN
          IF (TMPDMX.LT.VIND(NVI1+3)) TMPDMX = VIND(NVI1+3)
          IF (TMPFMX.LT.VIND(NVI1+3)) TMPFMX = VIND(NVI1+3)
       ENDIF
@@ -261,12 +262,12 @@ C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALA(IMAT,' ','ELAS',1,NOMPAR,
+         CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS',1,NOMPAR,
      &               VALPAD,1,NOMC(2),MATERD(2),CERR(1),FB2 )
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALA(IMAT,' ','ELAS',1,NOMPAR,
+         CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS',1,NOMPAR,
      &               VALPAF,1,NOMC(2),MATERF(2),CERR(1),FB2 )
 C
          MATERD(1) = 1.D0
@@ -386,7 +387,12 @@ C        RECUPERATION DE L HYDRATATION ET DU SECCHAGE
          CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRE2)
          IF (IRE2.NE.0) SREF=0.D0
 
-         EPSTH = ALPHAF*(TEMPF-TREF)  - ALPHAD*(TEMPD-TREF)
+         IF ((IRET1+IRET2+IRET3).NE.0) THEN
+           EPSTHE = 0.D0
+         ELSE
+           EPSTHE = ALPHAF*(TEMPF-TREF)  - ALPHAD*(TEMPD-TREF)
+         ENDIF
+         EPSTH = EPSTHE
      &         - BENDOF*HYDRF        + BENDOD*HYDRD
      &         - KDESSF*(SREF-SECHF) + KDESSD*(SREF-SECHD)
          DO 110 K=1,3

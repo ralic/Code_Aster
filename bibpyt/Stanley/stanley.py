@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,8 +77,7 @@ try:
    __salome__ = True
    __rcstanley__ = '.stanley_salome'
 except:
-   txt = _('Le module python "pylotage" semble etre absent, ou mal configure, on desactive le mode Salome de Stanley')
-   UTMESS('I','STANLEY',txt)
+   UTMESS('I','STANLEY_21')
    __salome__ = False
    __rcstanley__ = '.stanley'
 
@@ -130,11 +129,11 @@ class ERREUR:
 
   def Remonte_Erreur(self, err, l_detr=[], l_return=1, texte=None):
 
-    if not texte: texte = texte_onFatalError + "\nRaison :\n" + str(err)
+    if not texte:
+       UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
+
     if l_detr: self.DETRUIRE(tuple(l_detr))
-
-    UTMESS('A','STANLEY',texte)
-
+    
     if l_return==0: return
     if l_return==1: return False
     if l_return==2: return False, False
@@ -226,8 +225,7 @@ class PARAMETRES :
                 self.para[section][cle] = dico[section][cle]
                 if dico[section][cle] != self.old_para[section][cle]: self.Saved = False
        except:
-                txt = _("<A> Impossible d'affecter la variable [") + self.dliste_section[section] + " / " + self.dparam[cle]['label'] + "]"
-                UTMESS('A','STANLEY',txt)
+                UTMESS('A','STANLEY_22',valk=[self.dliste_section[section],self.dparam[cle]['label']])
                 if   self.dparam[cle]['type'] == types.FloatType: self.para[section][cle] = 0.
                 elif self.dparam[cle]['type'] == types.IntType:   self.para[section][cle] = 0
                 else:                                             self.para[section][cle] = ''
@@ -444,8 +442,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     old_para = {}
     ok_env=False
 
-    txt = _("Lecture du fichier d'environnement : ") + fichier
-    UTMESS('I','STANLEY',txt)
+    UTMESS('I','STANLEY_23',valk=[fichier])
     try:
        f = open(fichier,'r')
        old_para = cPickle.load(f)
@@ -455,22 +452,19 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
        ok_env=False  # Le fichier n'existe plus
 
     if not ok_env:
-       txt = _("Il n'y a pas de fichier d'environnement. On demarre avec une configuration par defaut.")
-       UTMESS('A','STANLEY',txt)
+       UTMESS('A','STANLEY_24')
 
     if ok_env:
        # on verifie que le fichier d'environnement relu est conforme
-       txt = _("Le fichier d'environnement n'est pas exploitable (par exemple c'est une ancienne version). On demarre avec une configuration par defaut.")
        if old_para.has_key('VERSION'):
           if old_para['VERSION'].has_key('version_parametres'):
              if not str(old_para['VERSION']['version_parametres']) == str(__version_parametres__):
-                txt1 = _("Le fichier d'environnement n'a pas la version attendue. On continue mais en cas de probleme, effacer le repertoire ~/%s et relancer." % __rcstanley__)
-                UTMESS('A','STANLEY',txt1)
+                UTMESS('A','STANLEY_25',valk=[__rcstanley__])
           else:
-            UTMESS('A','STANLEY',txt)
+            UTMESS('A','STANLEY_26')
             ok_env=False    # Le fichier d'environnement est trop vieux
        else:
-          UTMESS('A','STANLEY',txt)
+          UTMESS('A','STANLEY_26')
           ok_env=False      # Le fichier d'environnement est trop vieux
 
     # Si la configuration relue est exploitable, on l'utilise
@@ -496,8 +490,7 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
        Creation d'une nouvelle configuration "vierge" (mais pre-remplie suivant le mode et le poste de travail detecte)
     '''
 
-    txt = _("On initialise une configuration par defaut.")
-    UTMESS('I','STANLEY',txt)
+    UTMESS('I','STANLEY_27')
 
     # Reinitialisation avec des parametres par defaut
     self.para={}
@@ -664,11 +657,11 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
     if res:
        self.Saved = True
        txt = _("Nouveaux parametres sauvegardés dans : " + fichier)
-       UTMESS('I','STANLEY', txt)
+       UTMESS('I','STANLEY_28',valk=[fichier])
        interface.ligne_etat.Affecter( txt )
     else:
        txt =  _("Impossible de sauvegarder les parametres dans : " + fichier)
-       UTMESS('A','STANLEY', txt)
+       UTMESS('A','STANLEY_29',valk=[fichier])
        interface.ligne_etat.Affecter( txt )
 
     return
@@ -869,13 +862,13 @@ class ETAT_GEOM:
                  CREA_GROUP_NO = _F(GROUP_MA=ligne, NOM=nom, OPTION='NOEUD_ORDO')
                 )
     except aster.error,err:
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+      UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
       return None
     except aster.FatalError,err:
-      UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+      UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
       return None
     except Exception,err:
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
+      UTMESS('A','STANLEY_5',valk=[str(err)])
       return None
 
     return nom
@@ -1107,12 +1100,11 @@ class ETAT_RESU:
       try:
         cata[nom_cham].Evalue(self.contexte, numeros, options)
       except aster.error,err:
-        UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+        UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
       except aster.FatalError,err:
-        UTMESS('A','STANLEY',texte_onFatalError+"\nRaison :\n"+str(err))
+        UTMESS('A','STANLEY_38',valk=[texte_onFatalError,str(err)])
       except Exception,err:
-        UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
-
+        UTMESS('A','STANLEY_5',valk=[str(err)])
     self.Refresh()
 
 
@@ -2111,11 +2103,11 @@ class DRIVER :
     """
 
     if contexte.para_sensi:
-      UTMESS('A','STANLEY', _("La visualisation aux points de Gauss n'est pas permise avec la sensibilité") )
+      UTMESS('A','STANLEY_30')
       return False, []
 
     if selection.nom_cham not in ['SIEF_ELGA','VARI_ELGA','SIEF_ELGA_TEMP','FLUX_ELGA_TEMP']:
-      UTMESS('A','STANLEY',SELECTION.NonDeveloppePG)
+      UTMESS('A','STANLEY_39',valk=[SELECTION.NonDeveloppePG])
       return False, []
 
     if   contexte.resultat.__class__ == evol_elas  : type_resu = 'EVOL_ELAS'
@@ -2125,7 +2117,7 @@ class DRIVER :
     elif contexte.resultat.__class__ == dyna_harmo : type_resu = 'DYNA_HARMO'
     elif contexte.resultat.__class__ == mode_meca  : type_resu = 'MODE_MECA'
     else :
-      UTMESS('A','STANLEY',SELECTION.NondeveloppeRS)
+      UTMESS('A','STANLEY_40',valk=[SELECTION.NondeveloppeRS])
       return False, []
 
     para = _F(  
@@ -2237,15 +2229,14 @@ class DRIVER :
        # Affichage de la ligne
        txt = mdsum + ' - ' + FICHIER + ' - ' + ' - '.join( [str(selection.nom_cham), str(selection.nom_cmp), str(selection.numeros), str(selection.geom) ] )
     except Exception,err:
-       texte = _("Probleme")+" :\n"+str(err)
-       UTMESS('A','STANLEY', texte )
+       UTMESS('A','STANLEY_31', valk=[str(err)] )
 
     try:
        f=open(self.stan.FICHIER_VALID, 'a')
        f.write(txt+'\n')
        f.close()
     except:
-       UTMESS('A','STANLEY', _("Impossible d'ouvrir en ecriture le fichier : " + self.stan.FICHIER_VALID) )
+       UTMESS('A','STANLEY_32', valk=[self.stan.FICHIER_VALID] )
 
     return
 
@@ -2300,9 +2291,9 @@ class DRIVER_ISOVALEURS(DRIVER):
       if options['case_sur_deformee'] == 1:
         if selection.nom_cham != 'DEPL':
           if type_champ in ['ELGA', 'ELEM']:
-             UTMESS('A','STANLEY',"Attention : on ne peut pas tracer un champs aux points de Gauss sur la deformee...")
+             UTMESS('A','STANLEY_33')
           else:
-             UTMESS('I','STANLEY',"Le champ est trace avec la deformee")
+             UTMESS('I','STANLEY_34')
              if selection.nom_cham != 'DEPL':
                 para0 = _F(RESULTAT   = contexte.resultat,
                            NOM_CHAM   = 'DEPL',
@@ -2606,7 +2597,7 @@ class DRIVER_COURBES(DRIVER) :
       if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
 
     else:
-      UTMESS('A','STANLEY',_("Cette action n'est pas realisable.") )
+      UTMESS('A','STANLEY_5',valk='')
       return False
 
     return l_courbes
@@ -2880,8 +2871,7 @@ class PRE_STANLEY :
 
       # On supprime de la liste les concept issus de la sensibilite
       if i.startswith(ignore_prefixe) and self.jdc_recupere.sds_dict[i].__class__.__name__ in lst:
-          txt = _('Concept ignore : ') + i
-          UTMESS('I','STANLEY',txt)
+          UTMESS('I','STANLEY_35',valk=[i])
 
       else:
 
@@ -2920,12 +2910,10 @@ class PRE_STANLEY :
     if len(t_evol) ==0:       _lst.append('EVOL_ELAS ou EVOL_NOLI ou EVOL_THER ou DYNA_TRANS ou DYNA_HARMO ou MODE_MECA')
     if len(t_cham_mater) ==0: _lst.append('CHAM_MATER')
     if len(_lst) > 0:
-      txt = """Tous les concepts Aster necessaires à Stanley n'ont
-               pas été calculés. Il manque :
-"""
+      txt=[]
       for l in _lst:
-        txt = txt +  '               - ' + l + '\n'
-      UTMESS('A','STANLEY',txt)
+        txt.append("- %s" % l)
+      UTMESS('A','STANLEY_37',valk=['\n'.join(txt)])
       self.Sortir()
 
 
@@ -2973,7 +2961,7 @@ class PRE_STANLEY :
              dico[evol].append( l_tmp[0] )
 
           elif len(l_tmp)>1:
-             UTMESS('A','STANLEY',_("Il y a plusieurs concepts ") + dico_concept[concept] + _(" stockés dans la structure de donnée résultat.") )
+             UTMESS('A','STANLEY_36',valk=[dico_concept[concept]])
              dico[evol].append( None )
           else:
              dico[evol].append( None )
@@ -3104,7 +3092,7 @@ class PRE_STANLEY :
            f.write(txt)
            f.close()
         except:
-           UTMESS('A','STANLEY', _("Impossible d'ouvrir en ecriture le fichier : " + self.FICHIER_VALID) )
+           UTMESS('A','STANLEY_32',valk=[self.FICHIER_VALID])
            self.FICHIER_VALID = None
 
      # Lancement de Stanley

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,9 +57,9 @@ C
       REAL*8         G,C1,C2,C3,R,ALPHA,D,ADET,A1,A2,A3
       REAL*8         CP1,CP2,CP3,DP1,DP2,DP3,XG,S1,S2,S3,S4,S5,S6
       REAL*8         DGRT,DIVT,EPS,POIDS,M1,M2,M3,M4,M5,M6
-      REAL*8         VALRES(3),DUDM(7),DTDM(7),TGD(2)
+      REAL*8         VALRES(2),DUDM(7),DTDM(7),TGD(2)
       REAL*8         DFDM(7),DFDX(9),DFDY(9),GUGT(5)
-      REAL*8         GUC(4),GUC1(4),VALPAR(3),TEMP
+      REAL*8         GUC(4),GUC1(4),VALPAR(3)
 C                       NDIM*NNO
       REAL*8         FORCN(18)
 C
@@ -102,7 +102,6 @@ C
       MATER = ZI(IMATE)
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
-      NOMRES(3) = 'ALPHA'
 C
 C  INITIALISATION
 C
@@ -148,7 +147,7 @@ C
 300     CONTINUE
 C
         CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS',0,' ',0.D0,
-     &              3,NOMRES,VALRES, CODRET, 'FM' )
+     &              2,NOMRES,VALRES, CODRET, 'FM' )
 C
         CP1 = VALRES(1)/(1.D0 -VALRES(2)*VALRES(2))
         CP2 = VALRES(2)*CP1
@@ -171,9 +170,9 @@ C
 C
 C DEFINITIONS DES COEFFICIENTS
 C
-        CALL RCVARC('F','TEMP','+',FAMI,KP,1,TEMP,IRET)
-        CALL GDFONC ( DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),FORCN,
-     &                TEMP,NNO,DUDM,DTDM,DFDM,TGD)
+        CALL GDFONC ( FAMI,DFDX,DFDY,KP,ZR(IVF),
+     &                ZR(IDEPL),ZR(ITHET),FORCN,
+     &                NNO,DUDM,DTDM,DFDM,TGD)
 C
 C CALCUL DE G
 C -----------

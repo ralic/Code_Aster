@@ -1,4 +1,4 @@
-#@ MODIF checksd Execution  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF checksd Execution  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 
 from sets import Set
 
-from Utilitai.Utmess import U2MESS as UTMESS
+from Utilitai.Utmess import UTMESS
 
 # pour utilisation dans eficas
 try:

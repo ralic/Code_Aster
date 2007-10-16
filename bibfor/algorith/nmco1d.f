@@ -4,7 +4,7 @@
      &                  SIGM, VIM,
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C ======================================================================
       CHARACTER*(*) FAMI
       REAL*8        EPSM,DEPS,SIGM,VIM(*)
       REAL*8        ANGMAS(3)
+      
       REAL*8        SIGP,VIP(*),DSIDEP
 C ----------------------------------------------------------------------
 C          REALISE LES LOIS 1D (DEBORST OU EXPLICITEMENT 1D)
@@ -68,13 +69,13 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LOGICAL       CINE,ISOT,PINTO,PCTNZR,COM1D
-      REAL*8        ALPH,E,ET,SIGY
+      REAL*8        E,ET,SIGY
       INTEGER       NVARPI
       PARAMETER    ( NVARPI=8)
       INTEGER       NCSTPM
       PARAMETER     (NCSTPM=13)
       REAL*8        CSTPM(NCSTPM)
-      REAL*8        EM,EP,ALPHAM,ALPHAP,R8VIDE
+      REAL*8        EM,EP,R8VIDE
       CHARACTER*2   CODRES
 
       ISOT = .FALSE.
@@ -98,31 +99,25 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       ENDIF
 
       IF (.NOT.COM1D) THEN
-          CALL NMMABA (IMATE,COMPOR,E,ALPH,ET,SIGY,
+          CALL NMMABA (IMATE,COMPOR,E,ET,SIGY,
      &             NCSTPM,CSTPM)
 C --- CARACTERISTIQUES ELASTIQUES A TMOINS
 
         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      &              1,'E',EM,CODRES,'FM')
-        CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     &              1,'ALPHA',ALPHAM,CODRES,' ')
-        IF (CODRES.NE.'OK') ALPHAM = 0.D0
 
 C --- CARACTERISTIQUES ELASTIQUES A TPLUS
 
         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      &              1,'E',EP,CODRES,'FM')
-        CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     &              1,'ALPHA',ALPHAP,CODRES,' ')
-        IF (CODRES.NE.'OK') ALPHAP = 0.D0
       ENDIF
 
 
       IF (ISOT) THEN
-        CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,SIGM,
+        CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &            DEPS,VIM,OPTION,COMPOR,' ',SIGP,VIP,DSIDEP)
       ELSE IF (CINE) THEN
-        CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,SIGM,
+        CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &            DEPS,VIM,OPTION,' ',SIGP,VIP,DSIDEP)
       ELSE IF (COM1D) THEN
 
@@ -131,7 +126,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
      &              ANGMAS,
      &              VIM,VIP,SIGP,DSIDEP,CODRET)
       ELSE IF (PINTO) THEN
-        CALL NM1DPM(FAMI,KPG,KSP,OPTION,NVARPI,ALPH,NCSTPM,CSTPM,
+        CALL NM1DPM(FAMI,KPG,KSP,IMATE,OPTION,NVARPI,NCSTPM,CSTPM,
      &              SIGM,VIM,DEPS,VIP,SIGP,DSIDEP)
       ENDIF
 

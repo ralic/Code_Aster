@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_precont_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   import types
   from Accas import _F
   from Noyau.N_utils import AsType
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
   ier=0
 
   # On importe les definitions des commandes a utiliser dans la macro

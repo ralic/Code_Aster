@@ -1,4 +1,4 @@
-# MODIF  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -846,8 +846,6 @@ MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,     NU = NU_F,
                                      TEMP_DEF_ALPHA=0.0,
                                        ALPHA = A_F) )
 
-CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,
-                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F)  )
 
 CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI',
@@ -870,8 +868,12 @@ TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                 _F(  INST = 3.,  CHAM_GD = CHT3))
                   )
 
+CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F),
+                  AFFE_VARC=_F(TOUT='OUI',EVOL=TEMP,NOM_VARC='TEMP',
+                                 NOM_CHAM='TEMP',VALE_REF=0.), )
+
 CHG1=AFFE_CHAR_MECA(   MODELE=MO,
-                           TEMP_CALCULEE=TEMP,
                           DDL_IMPO=_F(  GROUP_NO = 'A',   DX = 0.,   DY = 0.,
                                      DZ = 0.,  DRX = 0.,  DRY = 0.,  DRZ = 0.),
                           FORCE_NODALE=_F(  GROUP_NO = 'B',  FX = 1.)

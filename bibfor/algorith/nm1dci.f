@@ -1,8 +1,8 @@
-      SUBROUTINE NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,SIGM,
+      SUBROUTINE NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &                  DEPS,VIM,OPTION,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,8 +32,6 @@ C IN KSP    :  NUMERO DU SOUS-POINT DE GAUSS
 C IN IMATE  : POINTEUR MATERIAU
 C IN  EM        : MODULE D YOUNG MOINS
 C IN  EP        : MODULE D YOUNG PLUS
-C IN  ALPHAM     : COEF DILAT THERMIQUE MOINS
-C IN  ALPHAM     : COEF DILAT THERMIQUE PLUS
 
 C IN  SIGM    : CONTRAINTE AU TEMPS MOINS
 C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION MOINS
@@ -46,12 +44,12 @@ C OUT DSDE    : DSIG/DEPS
 C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
-      REAL*8 EP,EM,ALPHAM,ALPHAP,SIGY
+      REAL*8 EP,EM,SIGY
       REAL*8 SIGM,DEPS,VIM(2)
       REAL*8 SIGP,VIP(2),DSDE,SIELEQ
       CHARACTER*16 OPTION
       CHARACTER*(*) FAMI,MATERI
-      INTEGER KPG,KSP,IMATE
+      INTEGER KPG,KSP,IMATE,NPG,NSPG
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
@@ -75,11 +73,7 @@ C     ------------------------------------------------------------------
       SIGY = VALRES(2)
       XM = VIM(1)
 C     ------------------------------------------------------------------
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPP,IRET)
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPM,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-
-      DEPSTH = ALPHAP* (TEMPP-TREF) - ALPHAM* (TEMPM-TREF)
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
       SIGE = EP* (SIGM/EM+DEPS-DEPSTH) - HP/HM*XM
 
       SIELEQ = ABS(SIGE)

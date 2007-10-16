@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_matr_asse_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
      Ecriture de la macro MACRO_MATR_ASSE
   """
   ier=0
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
 
   # On met le mot cle NUME_DDL dans une variable locale pour le proteger
   numeddl=NUME_DDL

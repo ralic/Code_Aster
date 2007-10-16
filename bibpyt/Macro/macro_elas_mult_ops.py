@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_elas_mult_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   ier=0
   import types
   from Accas import _F
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
 
   # On met le mot cle NUME_DDL dans une variable locale pour le proteger
   numeddl=NUME_DDL

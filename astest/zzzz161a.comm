@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,11 +52,9 @@ MAILTRQU=MODI_MAILLAGE( reuse=MAILTRQU,   MAILLAGE=MAILTRQU,
 #
 MATETEST=AFFE_MATERIAU( MAILLAGE=MAILTRQU,
                         AFFE=(_F(  GROUP_MA = 'TRIA',
-                                   MATER    = MATER1,
-                                   TEMP_REF = 20.    ),
+                                   MATER    = MATER1),
                               _F(  GROUP_MA = 'QUAD',
-                                   MATER    = MATER2,
-                                   TEMP_REF = 20.))
+                                   MATER    = MATER2))
                       );
 
 #

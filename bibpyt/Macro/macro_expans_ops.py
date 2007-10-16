@@ -1,4 +1,4 @@
-#@ MODIF macro_expans_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_expans_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ def macro_expans_ops( self,
     """!macro MACRO_EXPANS """
     from Accas import _F
     from Cata.cata import CO, mode_meca, dyna_harmo
-    from Utilitai.Utmess import U2MESS as UTMESS
+    from Utilitai.Utmess import  UTMESS
     from types import ListType, TupleType
     ier = 0
 

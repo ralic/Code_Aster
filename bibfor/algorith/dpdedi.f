@@ -1,7 +1,7 @@
       SUBROUTINE DPDEDI( MATERF, TD, TF, TR, DEPST, DEPS)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2003   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,7 +31,7 @@ C ---------- : TR      TEMPERATURE DE REFERENCE -----------------------
 C ---------- : DEPST   INCREMENT DE DEFORMATION TOTALE ----------------
 C --- OUT -- : DEPSM   INCREMENT DE DEFORMATION MECANIQUE -------------
 C =====================================================================
-      INTEGER     II, NDT, NDI
+      INTEGER     II, NDT, NDI, IISNAN
       REAL*8      ALPHA
 C =====================================================================
       COMMON /TDIM/   NDT, NDI
@@ -39,13 +39,22 @@ C =====================================================================
 C --- LES PARAMETRES MATERIAUX SONT SUPPOSES CONSTANT -----------------
 C =====================================================================
       ALPHA = MATERF(3,1)
-      DO 10 II = 1, NDI
+      IF ((IISNAN(TR).EQ.0).AND.(IISNAN(TF).EQ.0).AND.(IISNAN(TD).EQ.0)
+     &    .AND.(ALPHA.NE.0.D0))  THEN
+        DO 10 II = 1, NDI
          DEPS(II) = DEPST(II) - ( ALPHA*(TF-TR) - ALPHA*(TD-TR))
-C         EPSD(II) = EPSDT(II) - ( ALPHA*(TD-TR) )
- 10   CONTINUE
-      DO 20 II = NDI+1, NDT
+ 10     CONTINUE
+        DO 20 II = NDI+1, NDT
          DEPS(II) = DEPST(II)
 C         EPSD(II) = EPSDT(II)
- 20   CONTINUE
+ 20     CONTINUE
+      ELSEIF (ALPHA.EQ.0.D0) THEN
+        DO 11 II = 1, NDT
+         DEPS(II) = DEPST(II)
+ 11     CONTINUE
+      ELSEIF   (((IISNAN(TR).EQ.0).OR.(IISNAN(TD).EQ.0).OR.
+     &         (IISNAN(TF).EQ.0)).AND.(ALPHA.NE.0.D0)) THEN
+        CALL U2MESS('F','CALCULEL_15')
+      ENDIF 
 C =====================================================================
       END

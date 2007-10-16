@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith9 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,10 +61,6 @@ cata_msg = {
 
 12 : _("""
  borne inférieure incorrecte
-"""),
-
-15 : _("""
- la norme du vecteur VECT_ORIE est nulle
 """),
 
 16 : _("""

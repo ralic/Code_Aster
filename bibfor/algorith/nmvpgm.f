@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C     COMMON POUR LES PARAMETRES DE LA LOI GATT-MONERIE
       REAL*8           AK1,AK2,XN1,XN2,EXPA1,EXPA2,EXPAB1,EXPAB2,A1,A2,
      &                 B1,B2,XW,XQ,XH,SIGE,SIGH,SIGH0,POROM,SGD
 C
-      REAL*8            DEPSTH(6),VALRES(5),ALPHAP,ALPHAM
+      REAL*8            DEPSTH(6),VALRES(5),EPSTHE
       REAL*8            DEPSDV(6),SIGDV(6),SIGEL(6),EPSMO,E,NU
       REAL*8            KRON(6),VALPAR(2),RAC2,T1,T2
       REAL*8            EM,NUM,TROIKM,DEUMUM,SIGMP(6),SIGMO
@@ -97,12 +97,12 @@ C
       REAL*8            DEGRAN(6)
       REAL*8            VPAGM1
       EXTERNAL          VPAGM1
-      INTEGER           IULMES,IUNIFI,K,L,IRET2,IRET1
+      INTEGER           IULMES,IUNIFI,K,L,IRET1,IRET2,IRET3,IRET4
       INTEGER           NDIMSI
-      REAL*8            A0,XAP,X,TM,TP,TREF
+      REAL*8            A0,XAP,X,TM,TP
       REAL*8            FG,FDGDST,FDGDEV
       REAL*8            COEF1,COEF2,DELTEV
-      CHARACTER*2       BL2, FB2, CODRET(5)
+      CHARACTER*2       FB2, CODRET(5)
       CHARACTER*6       EPSA(6)
       CHARACTER*8       NOMRES(5),NOMPAR(2)
 C RMS
@@ -113,11 +113,15 @@ C DEB ------------------------------------------------------------------
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
 C
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET1)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
-
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
       THETA = CRIT(4)
+      IF ((IRET1+IRET2).EQ.0) THEN
+        TSCHEM = TM*(1.D0-THETA)+TP*THETA
+      ELSE
+        TSCHEM = 0.D0
+      ENDIF
       T1 = ABS(THETA-0.5D0)
       T2 = ABS(THETA-1.D0)
       PREC = 0.01D0
@@ -132,13 +136,11 @@ C
         CALL U2MESS('F','ALGORITH6_92')
         GO TO 299
       ENDIF
-      BL2 = '  '
       FB2 = 'F '
       DO 90 K = 1,6
         DEGRAN(K) = 0.D0
   90  CONTINUE
       RAC2 = SQRT(2.D0)
-      TSCHEM = TM*(1.D0-THETA)+TP*THETA
       DELTAT = INSTAP - INSTAM
       DO 100 K=1,6
       DO 100 L=1,6
@@ -152,11 +154,11 @@ C
 
 C VARIABLE DE COMMANDE ANELASTIQUE
       DO 20 K=1,NDIMSI
-        CALL RCVARC(' ',EPSA(K),'-',FAMI,KPG,KSP,DEFAM(K),IRET2)
-        IF (IRET2.EQ.1) DEFAM(K)=0.D0
+        CALL RCVARC(' ',EPSA(K),'-',FAMI,KPG,KSP,DEFAM(K),IRET4)
+        IF (IRET4.EQ.1) DEFAM(K)=0.D0
 
-        CALL RCVARC(' ',EPSA(K),'+',FAMI,KPG,KSP,DEFAP(K),IRET2)
-        IF (IRET2.EQ.1) DEFAP(K)=0.D0
+        CALL RCVARC(' ',EPSA(K),'+',FAMI,KPG,KSP,DEFAP(K),IRET4)
+        IF (IRET4.EQ.1) DEFAP(K)=0.D0
  20   CONTINUE
 
 C
@@ -171,26 +173,17 @@ C
       VALPAR(1)=INSTAM
       NOMRES(1)='E'
       NOMRES(2)='NU'
-      NOMRES(3)='ALPHA'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRET, FB2 )
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRET(3), BL2 )
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       EM     = VALRES(1)
       NUM    = VALRES(2)
-      ALPHAM = VALRES(3)
       DEUMUM = EM/(1.D0+NUM)
       TROIKM = EM/(1.D0-2.D0*NUM)
       VALPAR(1)=INSTAP
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRET, FB2 )
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRET(3), BL2 )
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E      = VALRES(1)
       NU     = VALRES(2)
-      ALPHAP = VALRES(3)
       DEUXMU = E/(1.D0+NU)
       TROISK = E/(1.D0-2.D0*NU)
 C
@@ -254,7 +247,7 @@ C
       EPSMO = 0.D0
       DO 110 K=1,3
         DEPSTH(K)   = DEPS(K)
-     &                -(ALPHAP*(TP-TREF)-ALPHAM*(TM-TREF))
+     &                -(EPSTHE)
      &                -(DEFAP(K)-DEFAM(K))
         DEPSTH(K) = DEPSTH(K) - DEGRAN(K)
         DEPSTH(K)   = DEPSTH(K) * THETA

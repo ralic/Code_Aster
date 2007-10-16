@@ -1,6 +1,6 @@
       SUBROUTINE TE0561 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,18 +27,18 @@ C     IN   OPTION : OPTIONS DE CALCUL
 C                   'ALPH_ELGA_ZAC'
 C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
-      PARAMETER         ( NBRES = 4 , NCMP = 4)
+      PARAMETER         ( NBRES = 3 , NCMP = 4)
       CHARACTER*8        NOMRES(NBRES)
       CHARACTER*4        FAMI
       CHARACTER*2        CODRET(NBRES)
       REAL*8             VALRES(NBRES)
       REAL*8             DEFOPP(54),DEFORP(54),DEFORE(54),DEFOTH
       REAL*8             C1, C2, C, S
-      REAL*8             TREF,TRCP
-      REAL*8             DFDX(9),DFDY(9),TPG,POIDS,X,Y,EPSP(5),EPSE(5)
+      REAL*8             TRCP
+      REAL*8             DFDX(9),DFDY(9),POIDS,X,Y,EPSP(5),EPSE(5)
       INTEGER            NNO,KP,I,K,IDEPLP,IDEPLE,IALPHA
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER            NPG,NNOS,ICONTP,JGANO,NDIM,IRET
+      INTEGER            NPG,NNOS,ICONTP,JGANO,NDIM,IRET,IRET1
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -68,7 +68,6 @@ C
       CALL TECACH('ONN','PCONTRP',1,ICONTP,IRET)
       CALL JEVECH('PDEPLAE','L',IDEPLE)
       CALL JEVECH('PALPHAR','E',IALPHA)
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 
 C
       IF (IDEPLP.NE.0) THEN
@@ -77,8 +76,7 @@ C    ETAT INITIAL NON NUL (DONNEE ELASTOPLASTIQUE)
 C
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
-        NOMRES(3) = 'ALPHA'
-        NOMRES(4) = 'D_SIGM_ESPI'
+        NOMRES(3) = 'D_SIGM_ESPI'
 C
         DO 111 I = 1,NCMP*NPG
           DEFORP(I) = 0.D0
@@ -91,21 +89,18 @@ C
           CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
           X   = 0.D0
           Y   = 0.D0
-          CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+          CALL VERIFT('RIGI',KP,1,'+',ZI(IMATE),'ELAS',1,DEFOTH,IRET1)
           DO 102 I=1,NNO
             X   = X   + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
             Y   = Y   + ZR(IGEOM+2*I-1)*ZR(IVF+K+I-1)
 102       CONTINUE
           CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,
      &                2,NOMRES,VALRES, CODRET, 'FM' )
-          CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,
-     &                1,NOMRES(3),VALRES(3), CODRET(3), '  ' )
-          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
           CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ECRO_LINE',
      &                0,' ',0.D0,
-     &                1,NOMRES(4),VALRES(4), CODRET(4), 'FM' )
+     &                1,NOMRES(3),VALRES(3), CODRET(3), 'FM' )
 C
-          C = 2.D0/3.D0*(VALRES(1)*VALRES(4))/(VALRES(1)-VALRES(4))
+          C = 2.D0/3.D0*(VALRES(1)*VALRES(3))/(VALRES(1)-VALRES(3))
           DO 103 I=1,5
             EPSP(I) = 0.0D0
             EPSE(I) = 0.0D0
@@ -150,7 +145,6 @@ C
           DEFORE(IDPG+2) =  EPSE(2)
           DEFORE(IDPG+4) = (EPSE(4)+EPSE(5))/2.D0
 C
-          DEFOTH = VALRES(3)*(TPG-TREF)
           IF (NOMTE(3:4) .EQ. 'CP' ) THEN
             TRCP = ZR(ICONTP+IDPG)+ZR(ICONTP+IDPG+1)
           ELSE

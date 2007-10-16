@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+#@ MODIF sd_modele SD  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,40 +20,10 @@
 
 from SD import *
 
-from SD.sd_ligrel import sd_ligrel
-from SD.sd_fiss_xfem import sd_fiss_xfem, sd_xfem_com1
+from SD.sd_ligrel    import sd_ligrel
 from SD.sd_prof_chno import sd_prof_chno
-from SD.sd_carte import sd_carte
-
-
-class sd_modele_XFEM(AsBase):
-#-----------------------------
-    nomj = SDNom(fin=8)
-    # Questions aux responsables XFEM :
-    #   - faut-il garder FISS et NFIS ?
-    #   - Est-il normal de modifier les sd_fiss_xfem dans MODI_MODELE_XFEM ?
-
-    XFEM_CONT   = AsVI()
-    FISS   = AsVK8()
-    NFIS   = AsVI(lonmax=1,)  # nombre de fissures
-    XMAFIS = sd_carte()
-    com1   = sd_xfem_com1(SDNom(nomj=''))
-
-#    glute_XFEM = Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00000'))) # fiche 10833
-#    glute_XFEM2= Facultatif(sd_prof_chno(SDNom(nomj='.PRCHN00001'))) # fiche 10833
-
-
-    if 0 :
-        # Questions aux responsables XFEM :
-        #   - faut-il garder FISS et NFIS ?
-        #   - Est-il normal de modifier les sd_fiss_xfem dans MODI_MODELE_XFEM ?
-        # indirection vers FISS_XFEM car MODI_MODELE_XFEM modifie FISS_XFEM
-        # (Damijan va corriger cela avec la multi-fissuration)
-        # ATTENTION : Ce bout de programme suppose que FISS est de longueur 1 ce qui contradictoire avec la multi-fissuration)
-        def check_modele_i_FISS(self, checker):
-            if not self.FISS.get() : return
-            nom=self.FISS.get()[0]
-            sd2=sd_fiss_xfem(nom) ; sd2.check(checker)
+from SD.sd_carte     import sd_carte
+from SD.sd_xfem      import sd_modele_xfem
 
 
 
@@ -66,7 +36,7 @@ class sd_modele(AsBase):
     MAILLE = Facultatif(AsVI())
 
     # Si le modèle vient de MODI_MODELE_XFEM :
-    xfem = Facultatif(sd_modele_XFEM(SDNom(nomj='')))
+    xfem = Facultatif(sd_modele_xfem(SDNom(nomj='')))
 
 
     def check_existence(self,checker) :

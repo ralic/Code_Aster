@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PLAQUE CARREE EN TRACTION SOUMIS A UN CHAMP DE TEMPERATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,7 +99,7 @@ CAT=DEFI_LIST_REEL(    DEBUT=0.0,
 
 MATER=AFFE_MATERIAU(   MAILLAGE=MAYA,
                   AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
-                  AFFE_VARC =_F(TOUT='OUI', EVOL=TCALC, NOM_VARC='TEMP',),
+                  AFFE_VARC =_F(TOUT='OUI', EVOL=TCALC, VALE_REF=0.,NOM_VARC='TEMP',),
 
                          )
 

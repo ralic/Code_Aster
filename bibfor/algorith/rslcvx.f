@@ -1,8 +1,9 @@
-        SUBROUTINE RSLCVX(IMAT, NMAT, MATER, TEMP, SIG, VIN, SEUIL)
+        SUBROUTINE RSLCVX(FAMI, KPG, KSP, IMAT, NMAT, MATER, 
+     &                    SIG, VIN, SEUIL)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/12/2001   AUTEUR T2BAXJM R.MASSON 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,15 +29,18 @@ C                             SIGDV  = SIG -1/3 TR(SIG)I
 C                             R(P) = FCT DE P PAR POINTS
 C                             SIGM  = 1/3 TR(SIG) I
 C       ----------------------------------------------------------------
+C       IN  FAMI   :  FAMILLE DES POINTS DE GAUSS  
+C       IN  KPG    :  NUMERO DU POINT DE GAUSS  
+C       IN  KSP    :  NUMERO DU SOUS POINT DE GAUSS 
 C       IN  SIG    :  CONTRAINTE
 C       IN  VIN    :  VARIABLES INTERNES
 C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C       IN  NMAT   :  DIMENSION MATER
-C       IN  TEMP   :  TEMPERATURE
 C       IN  MATER  :  COEFFICIENTS MATERIAU A T+DT
 C       OUT SEUIL  :  SEUIL  ELASTICITE
 C       ----------------------------------------------------------------
-        INTEGER         NMAT, IMAT
+        INTEGER         NMAT, IMAT,KPG,KSP
+        CHARACTER*(*)   FAMI
 C
         REAL*8          MATER(NMAT,2), TEMP , SEUIL
         REAL*8          SIG(6), RIG(6), RIGDV(6), RIGM, VIN(3)
@@ -62,7 +66,7 @@ C --    MATERIAU SAIN
           CALL  LCPRSV (UNRHO, SIG, RIG)
           CALL  LCHYDR (RIG,  RIGM)
           CALL  LCSOMH (RIG, -RIGM, RIGDV)
-          CALL  RSLISO (IMAT, TEMP, P, RP, DRDP)
+          CALL  RSLISO (FAMI, KPG, KSP, '+', IMAT, P, RP, DRDP)
           SEUIL = LCNRTS(RIGDV) - RP
           IF ((RIGM/S1).GT.(ARGMAX)) THEN
             SEUIL = SEUIL + D*S1*F*EXP(ARGMAX)

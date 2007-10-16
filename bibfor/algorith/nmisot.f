@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(3),OPTION
-      REAL*8             CRIT(3),INSTAM,INSTAP,TP2,LINE
+      REAL*8             CRIT(3),INSTAM,INSTAP,LINE
       REAL*8             DEPS(6),PREC,DX,DEUXMU,DEMU,CINCO
       REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -63,7 +63,7 @@ C               = 0  => ECHEC DANS L'INTEGRATION DE LA LOI
 C
 C----- COMMONS NECESSAIRES A VON_MISES ISOTROPE C_PLAN :
 C      COMMONS COMMUNS A NMCRI1 ET NMISOT
-      COMMON /RCONM1/DEUXMU,NU,E,SIGY,RPRIM,PM,SIGEL,TP2,LINE
+      COMMON /RCONM1/DEUXMU,NU,E,SIGY,RPRIM,PM,SIGEL,LINE
       COMMON /KCONM1/IMATE2,JPROL2,JVALE2,NBVAL2
       REAL*8   NMCRI1
       EXTERNAL NMCRI1
@@ -94,14 +94,15 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       LOGICAL     CPLAN,PLASTI,INCO,DECH
-      REAL*8      DEPSTH(6),VALRES(3),ALPHAP,ALPHAM,PM,CO,VAL0
+      REAL*8      DEPSTH(6),VALRES(3),EPSTHE,PM,CO,VAL0
       REAL*8      DEPSMO,SIGMMO,E,NU,TROISK,RPRIM,RP,AIRERP
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,HYDRM,HYDRP
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM
       REAL*8      EM,NUM,TROIKM,DEUMUM,RBID,SIGMP(6),SIGEL(6),A,RBID2
-      REAL*8      SECHM,SECHP,SREF,TREF,TM,TP
+      REAL*8      SECHM,SECHP,SREF,TREF,TP
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
-      INTEGER     IMATE2,JPROLP,JVALEP,NBVALP,K,L,NITER,IRET2,IRET1
+      INTEGER     IMATE2,JPROLP,JVALEP,NBVALP,K,L,NITER
+      INTEGER     IRET1, IRET2, IRET3, IRET4, IRET0
       CHARACTER*2 BL2, FB2, CODRET(3)
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3),TYPE
@@ -121,7 +122,6 @@ C     ----------------------
         CO = 1.D0
       ENDIF
       NDIMSI = 2*NDIM
-      TP2    = TP
       IMATE2 = IMATE
 C
       BL2 = '  '
@@ -136,15 +136,14 @@ C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
       NOMRES(1)='E'
       NOMRES(2)='NU'
-      NOMRES(3)='ALPHA'
 C
       NOMPAR(1) = 'TEMP'
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET1)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET3)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET4)
       VALPAM(1) = TM
       VALPAP(1) = TP
 
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
       CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET2)
       IF (IRET2.NE.0) HYDRM=0.D0
       CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET2)
@@ -160,26 +159,14 @@ C
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NUM = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHAM = VALRES(3)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHAP = VALRES(3)
       ELSE
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
          EM  = VALRES(1)
          NUM = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHAM = VALRES(3)
          DEUMUM = EM/(1.D0+NUM)
          IF (INCO) THEN
            TROIKM = DEUMUM
@@ -188,9 +175,6 @@ C
          ENDIF
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          E      = VALRES(1)
          NU     = VALRES(2)
          IF (INCO) THEN
@@ -200,8 +184,8 @@ C
            DEUXMU = E/(1.D0+NU)
            TROISK = E/(1.D0-2.D0*NU)
          ENDIF
-         ALPHAP = VALRES(3)
       ENDIF
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET0)
 C
 C --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 C
@@ -265,7 +249,9 @@ C     ---------------------------------------
           NOMPAR(3)='HYDR'
           VALPAM(3)=HYDRM
           CALL RCTYPE(IMATE,3,NOMPAR,VALPAM,RESU,TYPE)
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLM,JVALEM,
+          IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1)) 
+     &        CALL U2MESS('F','CALCULEL_31')
+          CALL RCTRAC(IMATE,'TRACTION','SIGM',TM,JPROLM,JVALEM,
      &                NBVALM,EM)
           DEUMUM = EM/(1.D0+NUM)
           IF (INCO) THEN
@@ -278,6 +264,8 @@ C     ---------------------------------------
           NOMPAR(3)='HYDR'
           VALPAP(3)=HYDRP
           CALL RCTYPE(IMATE,3,NOMPAR,VALPAP,RESU,TYPE)
+          IF ((TYPE.EQ.'TEMP').AND.(IRET4.EQ.1)) 
+     &        CALL U2MESS('F','CALCULEL_31')
           CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLP,JVALEP,
      &                NBVALP,E)
           CALL RCFONC('S','TRACTION',JPROLP,JVALEP,NBVALP,SIGY,DUM,
@@ -304,7 +292,7 @@ C       -- CAS : COMPOR = 'ELAS'
 C
 C     -- 4 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
-      COEF = ALPHAP*(TP-TREF)     - ALPHAM*(TM-TREF)
+      COEF = EPSTHE
      &     - BENDOP*HYDRP        + BENDOM*HYDRM
      &     - KDESSP*(SREF-SECHP) + KDESSM*(SREF-SECHM)
       IF (CPLAN) DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
@@ -462,9 +450,11 @@ C         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
           RP = SQRT(1.5D0*RP)
         ELSE
 C         - - OPTION='FULL_MECA' => SIGMA(T+DT)
-          DO 119 K=1,NDIMSI
-            SIGDV(K) = SIGPDV(K)
- 119      CONTINUE
+          IF (COMPOR(1)(1:9) .EQ. 'VMIS_ISOT') THEN
+            DO 119 K=1,NDIMSI
+              SIGDV(K) = SIGPDV(K)
+ 119        CONTINUE
+          ENDIF
         ENDIF
 C
 C       -- 8.1 PARTIE PLASTIQUE:

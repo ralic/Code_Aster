@@ -2,7 +2,7 @@
      &                  NDIM  ,NZOCO ,IZONE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C
         OLDFOR = ZI(JFORM-1+IZONE-1)
         NEWFOR = ZI(JFORM-1+IZONE)
         IF (OLDFOR .NE. NEWFOR) THEN
-          CALL U2MESS('F','CONTACT3_5')
+          CALL U2MESS('F','XFEM2_4')
         END IF
       END IF                 
 C

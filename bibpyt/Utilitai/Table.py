@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 16/07/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF Table Utilitai  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,17 +31,7 @@ EnumTypes = (ListType, TupleType)
 NumberTypes = (IntType, LongType, FloatType, ComplexType)
 
 import transpose
-
-# try/except pour utiliser hors aster
-try:
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt = '\n <%s> <%s> %s\n\n'
-      if code == 'F':
-         raise StandardError, fmt % (code,sprg,texte)
-      else:
-         print fmt % (code,sprg,texte)
+from Macro.externe_mess import UTMESS
 
 if not sys.modules.has_key('Graph'):
    try:

@@ -3,7 +3,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C.......................................................................
 
       LOGICAL RESI,RIGI
       INTEGER I1,I2,I3,IJ,K,L,PQ,NDIMSI
-      REAL*8  EM(6),EP(6),YOUNG,NU,ALPHA
+      REAL*8  EM(6),EP(6),YOUNG,NU
       REAL*8  DDOT
 C ----------------------------------------------------------------------
 C  COMMON SIMO - MIEHE
@@ -96,16 +96,13 @@ C    PARAMETRES MATERIAU
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','ELAS',0,' ',0.D0,
      &            1,'NU',NU,K2,'F ')
 
-      CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
-
+      CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
+      IF (IRET.EQ.1) CALL U2MESS('F','CALCULEL_31')
       CALL RCTRAC(MATE,'TRACTION','SIGM',TEMP,
      &            I1,I2,I3,YOUNG)
-      CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','ELAS',0,' ',0.D0,
-     &            1,'ALPHA',ALPHA,K2,'  ')
-      IF(K2.NE.'OK') ALPHA = 0
 
 C    INITIALISATION DE L'OBJET COMMUN A SIMO-MIEHE
-      CALL LCSMIN(FAMI,KPG,KSP,POUM,YOUNG,NU,ALPHA)
+      CALL LCSMIN(FAMI,KPG,KSP,POUM,MATE,'ELAS',YOUNG,NU)
 
 C    DEFORMATION ELASTIQUE
       CALL R8INIR(6,0.D0,EM,1)

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,6 +51,11 @@ Risques & conseils :
    Il y a peut-etre une demande d'évolution à émettre ...
 """),
 
+8: _("""
+ sur la maille %(k1)s le calcul est thermo mécanique. Or il manque la température de référence.
+ On ne peut donc pas calculer de déformation thermique.
+"""),
+
 11: _("""
  le mode_local:  %(k1)s  ne doit pas etre vecteur ou matrice.
 """),
@@ -61,6 +66,11 @@ Risques & conseils :
 
 14: _("""
   incompatibilite des type_champ ("elga"/"elno")  pour l option :  %(k1)s  entre les 2 type_elem :  %(k2)s  et  %(k3)s
+"""),
+
+15: _("""
+ sur la maille %(k1)s le calcul est thermo mécanique. Or il manque le parametre matériau
+ %(k2)s . On ne peut donc pas calculer de déformation thermique. 
 """),
 
 16: _("""
@@ -121,6 +131,10 @@ Risques & conseils :
   -> Risque & Conseil :
      Vérifiez que l'option incomplètement calculée est bien une option de post-traitement
      et que le déficit de calcul n'entraine pas de résultats faux.
+"""),
+
+31: _("""
+  la température n'est pas correctement renseignée
 """),
 
 34: _("""

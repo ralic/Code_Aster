@@ -1,4 +1,4 @@
-#@ MODIF stanley_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF stanley_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
   import aster
   from Accas import _F
   from Noyau.N_utils import AsType
-  from Utilitai.Utmess import U2MESS as UTMESS
+  from Utilitai.Utmess import  UTMESS
   from Utilitai.UniteAster import UniteAster
 
   prev_onFatalError = aster.onFatalError()
@@ -43,12 +43,12 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
 
   # Redefinition eventuelle du DISPLAY
   if DISPLAY:
-    UTMESS('I','POST0_18',valk=DISPLAY)
+    UTMESS('I','STANLEY_1',valk=DISPLAY)
     os.environ['DISPLAY'] = DISPLAY
 
   # Mode validation de la non-regression
   if args['UNITE_VALIDATION']:
-     UTMESS('I','POST0_19')
+     UTMESS('I','STANLEY_2')
      UL = UniteAster()
      FICHIER_VALID=UL.Nom(args['UNITE_VALIDATION'])
   else:
@@ -72,7 +72,7 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,DISPLAY,**args):
       stanley.PRE_STANLEY(FICHIER_VALID)
 
   else:
-      UTMESS('A','POST0_20')
+      UTMESS('A','STANLEY_3',valk=['STANLEY'])
 
   aster.onFatalError(prev_onFatalError)
 

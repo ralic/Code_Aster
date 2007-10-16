@@ -1,4 +1,4 @@
-#@ MODIF co_mater SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_mater SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,12 +42,11 @@ class mater_sdaster(ASSD, sd_mater):
       valpar = tuple(valpar)
       nomres = tuple(nomres)
       if len(nompar) != len(valpar):
-         UTMESS('F', 'RCVALE', """Arguments incohérents :
-      Nom des paramètres : %s
-   Valeur des paramètres : %s""" \
-         % (', '.join(nompar), ', '.join([repr(v) for v in valpar])))
+         vk1=', '.join(nompar)
+         vk2=', '.join([repr(v) for v in valpar])
+         UTMESS('F','SDVERI_4',valk=[vk1,vk2])
       if len(nomres) < 1:
-         UTMESS('F', 'RCVALE', 'Argument invalide : "nomres" vide !')
+         UTMESS('F', 'SDVERI_5')
       # appel à l'interface Python/C
       return aster.rcvale(self.nom, phenomene, nompar, valpar, nomres, stop)
 

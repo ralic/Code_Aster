@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_gp_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ def post_gp_ops(self, **args):
    macro = 'POST_GP'
    ier=0
    from Accas import _F
-   from Utilitai.Utmess     import U2MESS as UTMESS
+   from Utilitai.Utmess     import  UTMESS
    from Utilitai.Table      import Table, merge
    from Utilitai.t_fonction import t_fonction
    import aster

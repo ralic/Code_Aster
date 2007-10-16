@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 10/09/2007   AUTEUR GALENNE E.GALENNE 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   """
   from Accas import _F
   import types
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
   ier=0
 #------------------------------------------------------------------
   # On recopie le mot cle affe_materiau pour le proteger

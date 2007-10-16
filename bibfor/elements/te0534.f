@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -343,7 +343,8 @@ C             TERME LN2
 
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
-              CALL U2MESS('F','ELEMENTS4_18')
+C             PROBLEME DE STATUT DE CONTACT.
+              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
             END IF
 C
 
@@ -463,12 +464,14 @@ C             TERME LN3
 
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
-              CALL U2MESS('F','ELEMENTS4_18')
+C             PROBLEME DE STATUT DE CONTACT.
+              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
             END IF
 
           ELSE
 C           SI OPTION NI 'CHAR_MECA_CONT' NI 'CHAR_MECA_FROT'
-            CALL U2MESS('F','ELEMENTS3_81')
+            CALL ASSERT(OPTION.EQ.'CHAR_MECA_FROT' .OR.
+     &                  OPTION.EQ.'CHAR_MECA_CONT')  
           ENDIF
 
 

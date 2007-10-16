@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C       MULTIPLIES PAR RACINE DE 2 > PRISE EN COMPTE DES DOUBLES
 C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
-        INTEGER         IMAT  , NDT   , NDI  , NVI, IRET
+        INTEGER         IMAT  , NDT   , NDI  , NVI, IRET, IISNAN
 C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),    VINF(*)
@@ -120,6 +120,7 @@ C
         CHARACTER*16    COMP(*), OPT
         INTEGER         NITER,I,NDEC
         REAL*8          EPSCON
+        REAL*8          EPSTHE,EPSTHM
         REAL*8          DEPSTH(6),EPSDTH(6),ALPHAF,ALPHAM
 C
         REAL*8 I1D
@@ -159,10 +160,20 @@ C
 C
 C     --  CALCUL DE DEPSTH ET EPSDTH
 C     --------------------------------
+
+        IF (((IISNAN(TEMPM).GT.0).OR.(IISNAN(TREF).GT.0)).
+     &     AND.(MATERF(3,1).NE.0.D0)) THEN
+          CALL U2MESS('F','CALCULEL_15')     
+        ELSEIF (MATERF(3,1).EQ.0.D0) THEN
+          EPSTHE = 0.D0
+          EPSTHM = 0.D0
+        ELSE
+          EPSTHE = ALPHAF*(TEMPF-TREF) - ALPHAM*(TEMPM-TREF)
+          EPSTHM = ALPHAM*(TEMPM-TREF)
+        ENDIF
         DO 20 I=1,NDI
-          DEPSTH(I)   = DEPS(I) -
-     &           (ALPHAF*(TEMPF-TREF) - ALPHAM*(TEMPM-TREF))
-          EPSDTH(I)   = EPSD(I) -ALPHAM*(TEMPM-TREF)
+          DEPSTH(I)   = DEPS(I) - EPSTHE
+          EPSDTH(I)   = EPSD(I) - EPSTHM 
   20    CONTINUE
         DO 21 I=NDI+1,NDT
           DEPSTH(I) = DEPS(I)

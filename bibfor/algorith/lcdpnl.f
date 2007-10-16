@@ -2,7 +2,7 @@
      &                  EPSM,DEPS,VIM,VIP,SIG,DSIDEP,PROJ,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C =====================================================================
 C =====================================================================
 C --- CARACTERISTIQUES MATERIAU ---------------------------------------
 C =====================================================================
-      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
+      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
      &            NOMRES,VALRES,CODRET,'F ')
       YOUNG  = VALRES(1)
       NU     = VALRES(2)
@@ -80,9 +80,9 @@ C =====================================================================
 
 C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 C RAISON: CETTE ROUTINE EST APPELEE POUR LE CALCUL THERMIQUE (CALCME)
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
       CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
      &                        DEPS(1,2),VIM,VIP,SIG,DSDP2,IRET)
 C =====================================================================

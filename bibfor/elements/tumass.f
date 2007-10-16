@@ -1,6 +1,6 @@
       SUBROUTINE TUMASS(NOMTE,NBRDDL,MASS)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,7 +134,7 @@ C     --- RECUPERATION DES ORIENTATIONS ---
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
 C          ------------------------------------------------------------
-      CALL MOYTEM('RIGI',NPG,3,'+',VALPAR)
+      CALL MOYTEM('RIGI',NPG,3,'+',VALPAR,IRET)
       NBPAR = 1
       NOMPAR = 'TEMP'
 

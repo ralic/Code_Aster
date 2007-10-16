@@ -1,7 +1,7 @@
       SUBROUTINE RCTYPE(JMAT,NBPU,NOMPU,VALPU,RESU,TYPE)
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,6 +89,7 @@ C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
 C
       JPRO = ZI(IPIF+1)
 C
+      TYPE = ' '
       IF (ZK16(JPRO).EQ.'NAPPE') THEN
         NBPARA = 2
         NOMPF(1) = ZK16(JPRO+2)
@@ -98,7 +99,8 @@ C
         NOMPF(1) = ZK16(JPRO+2)
         IF(NOMPF(1).EQ.'EPSI') THEN
            RESU = VALPU(1)
-           TYPE = NOMPU(1)
+C           TYPE = NOMPU(1)
+           TYPE = ' '
            GOTO 9999
         ELSE
            VALK = ZK16(JPRO)
@@ -107,7 +109,7 @@ C
       ENDIF
 C
       DO 30 I=1,NBPARA
-        IF(NOMPF(I).NE.'EPSI') THEN
+        IF(NOMPF(I)(1:4).NE.'EPSI') THEN
           DO 31 NUPAR=1,NBPU
             IF (NOMPU(NUPAR).EQ.NOMPF(I)) THEN
               RESU = VALPU(NUPAR)

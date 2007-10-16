@@ -1,6 +1,6 @@
       SUBROUTINE TE0140(OPTION,NOMTE)
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER LVECT,LVAPR,NDDL,NL
       INTEGER I, IMATE, J, LMAT, LORIEN, LRCOU
-      INTEGER LX, NBPAR, NBRES, NC, NNO, LSECT
+      INTEGER LX, NBPAR, NBRES, NC, NNO, LSECT,IRET
       PARAMETER (NDDL=12,NL=NDDL*(NDDL+1)/2)
       PARAMETER (NBRES=2)
       REAL*8 VALRES(NBRES),VALTOR
@@ -92,9 +92,9 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       END IF
       IF ( NOMTE.NE.'MECA_POU_D_TG' .AND.
      &     NOMTE.NE.'MECA_POU_D_TGM') THEN
-         CALL MOYTEM('NOEU',2,1,'+',VALPAR)
+         CALL MOYTEM('NOEU',2,1,'+',VALPAR,IRET)
       ELSE
-         CALL MOYTEM('RIGI',3,1,'+',VALPAR)
+         CALL MOYTEM('RIGI',3,1,'+',VALPAR,IRET)
       ENDIF
       NBPAR = 1
       NOMPAR = 'TEMP'

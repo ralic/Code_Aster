@@ -1,7 +1,7 @@
       SUBROUTINE RCVAD2(FAMI,KPG,KSP,POUM,JMAT,PHENOM,NBRES,NOMRES,
      &                  VALRES,DEVRES,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,6 +62,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER            NBOBJ,NBF,NBR,IVALR,IVALK,IR,IDF,IRES,NBRESP
       INTEGER            LMAT,LFCT,IMATPR,ICOMP,IPI,IFON,IK, NBMAT,IRET
+      REAL*8             R8BID
       CHARACTER*10       PHEN,PHEPRE
 C
       LOGICAL            CHANGE
@@ -72,7 +73,6 @@ C DEB ------------------------------------------------------------------
 C
 
       PHEN = PHENOM
-      CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
       NBMAT=ZI(JMAT)
 C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
       CALL ASSERT(NBMAT.EQ.1)
@@ -110,6 +110,8 @@ C
       IF (NBOBJ .NE. NBRES) THEN
         IDF = ZI(IPI)+ZI(IPI+1)
         NBF = ZI(IPI+2)
+        CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
+        IF (IRET.EQ.0) THEN 
         DO 170 IRES = 1,NBRES
           DO 160 IK = 1,NBF
             IF (NOMRES(IRES) .EQ. ZK8(IVALK+IDF+IK-1)) THEN
@@ -119,6 +121,17 @@ C
             ENDIF
 160       CONTINUE
 170     CONTINUE
+        ELSE
+        DO 180 IRES = 1,NBRES
+          DO 190 IK = 1,NBF
+            IF (NOMRES(IRES) .EQ. ZK8(IVALK+IDF+IK-1)) THEN
+              IFON = IPI+LMAT-1+LFCT*(IK-1)
+              CALL RCFODE(IFON,0.D0,VALRES(IRES),DEVRES(IRES))
+              CODRET(IRES)(1:2) = 'OK'
+            ENDIF
+190       CONTINUE
+180     CONTINUE
+        ENDIF
       ENDIF
 
 999   CONTINUE

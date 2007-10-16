@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_fonction SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ class fonction_class(ASSD):
         objev = '%-19s.PROL' % self.get_name()
         prol = aster.getvectjev(objev)
         if prol == None:
-           UTMESS('F', 'fonction.Parametres', "Objet '%s' inexistant" % objev)
+           UTMESS('F', 'SDVERI_2', valk=[objev])
         dico={
          'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
          'NOM_PARA'    : prol[2][0:16].strip(),
@@ -104,7 +104,7 @@ class fonction_sdaster(fonction_class, sd_fonction_aster):
         vale = '%-19s.VALE' % self.get_name()
         lbl = aster.getvectjev(vale)
         if lbl == None:
-           UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % vale)
+          UTMESS('F', 'SDVERI_2', valk=[vale])
         lbl = list(lbl)
         dim = len(lbl)/2
         lx = lbl[0:dim]
@@ -187,7 +187,7 @@ class fonction_c(fonction_class, sd_fonction_aster):
          vale = '%-19s.VALE' % self.get_name()
          lbl = aster.getvectjev(vale)
          if lbl == None:
-            UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % vale)
+           UTMESS('F', 'SDVERI_2', valk=[vale])
          lbl = list(lbl)
          dim=len(lbl)/3
          lx=lbl[0:dim]
@@ -272,7 +272,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       # les cles de dicv sont 1,...,N (indice du parametre)
       lpar=aster.getvectjev(nsd+'.PARA')
       if lpar == None:
-         UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % (nsd+'.PARA'))
+         UTMESS('F', 'SDVERI_2', valk=[nsd+'.PARA'])
       lval=[]
       for k in range(len(dicv)):
          lbl=dicv[k+1]
@@ -293,7 +293,7 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
       objev = '%-19s.PROL' % self.get_name()
       prol=aster.getvectjev(objev)
       if prol == None:
-         UTMESS('F', 'fonction.Parametres', "Objet '%s' inexistant" % objev)
+         UTMESS('F', 'SDVERI_2', valk=[objev])
       dico={
          'INTERPOL'      : [prol[1][0:3],prol[1][4:7]],
          'NOM_PARA'      : prol[2][0:16].strip(),

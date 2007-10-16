@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF exec_logiciel_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MAILLAGE, CODE_RETOUR_MAXI, INFO
    """
    macro='EXEC_LOGICIEL'
    import aster
-   from Utilitai.Utmess     import U2MESS as UTMESS
+   from Utilitai.Utmess     import  UTMESS
    from Utilitai.System     import ExecCommand
    from Utilitai.UniteAster import UniteAster
    

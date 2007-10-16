@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,8 +72,11 @@ NU=DEFI_FONCTION( NOM_PARA='TEMP',
                   VALE=(0.0,0.2,1.0,0.2,)
                 ),
 
+ALPHA=DEFI_CONSTANTE(VALE=0.);
+
 BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                   NU = NU ,
+                                  ALPHA=ALPHA,TEMP_DEF_ALPHA=0.,
                                   FONC_DESORP = FONC1),
                      BETON_UMLV_FP =_F( K_RS   = 2.0E+5,
                                         ETA_RS = 4.0E+10,

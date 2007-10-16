@@ -1,6 +1,6 @@
       SUBROUTINE TE0376 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,14 +29,14 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      PARAMETER         ( NBRES=10)
+      PARAMETER         ( NBRES=7)
       CHARACTER*8        NOMRES(NBRES)
-      CHARACTER*2        BL2, CODRET(NBRES)
+      CHARACTER*2        CODRET(NBRES)
       REAL*8             VALRES(NBRES),CG(54)
       REAL*8             DDZDZ,DDRXDZ,DDRYDZ,VX,VY,MT,S,JJ,EPS(5),C1
-      REAL*8             DFDX(9),DFDY(9),TPG,POIDS,X,Y
+      REAL*8             DFDX(9),DFDY(9),POIDS,X,Y
       REAL*8             A11,A12,A22,A33,G12,E1,E2,E3,DELTA
-      REAL*8             NU12,NU21,NU23,NU32,NU13,NU31,TREF
+      REAL*8             NU12,NU21,NU23,NU32,NU13,NU31,EPSTHE(3)
       INTEGER            NNO,KP,I,K,IDEPL,ICONT
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            NPG1,NNOS,NCMP,NBV,NDIM,JGANO,IRET
@@ -67,15 +67,12 @@ C
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PDEPLAR','L',IDEPL)
       CALL JEVECH('PCONTRR','E',ICONT)
-      CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IRET)
 
 C
-      BL2 = '  '
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
       IF (PHENOM.EQ.'ELAS') THEN
         NOMRES(1)='E'
         NOMRES(2)='NU'
-        NOMRES(3)='ALPHA'
       ELSE IF (PHENOM.EQ.'ELAS_ORTH') THEN
         NOMRES(1)='E_L'
         NOMRES(2)='E_T'
@@ -84,15 +81,11 @@ C
         NOMRES(5)='NU_LN'
         NOMRES(6)='NU_TN'
         NOMRES(7)='G_LT'
-        NOMRES(8)='ALPHA_L'
-        NOMRES(9)='ALPHA_T'
-        NOMRES(10)='ALPHA_N'
       ELSE IF (PHENOM.EQ.'ELAS_ISTR') THEN
         NOMRES(1)='E_L'
         NOMRES(2)='E_N'
         NOMRES(3)='NU_LT'
         NOMRES(4)='NU_LN'
-        NOMRES(5)='ALPHA_L'
         NOMRES(6)='ALPHA_N'
       ELSE
         CALL U2MESS('F','ELEMENTS_50')
@@ -104,7 +97,6 @@ C
 C
       DO 101 KP=1,NNO
         K=(KP-1)*NNO
-        CALL RCVARC('F','TEMP','+','NOEU',KP,1,TPG,IRET)
         CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         X   = 0.D0
         Y   = 0.D0
@@ -125,11 +117,8 @@ C
 CCC --- CAS ISOTROPE
            CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,0,' ',
      &                   0.D0,2,NOMRES,VALRES, CODRET, 'FM' )
-           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,1,' ',
-     &                   0.D0,1,NOMRES(3),VALRES(3), CODRET(3), BL2 )
-           IF ( CODRET(3) .NE. 'OK' )  VALRES(3) = 0.D0
 C
-           TPG = TPG - TREF
+           CALL VERIFT('NOEU',KP,1,'+',ZI(IMATE),PHENOM,1,EPSTHE,IRET)
            C1  = VALRES(1)/(1.D0 + VALRES(2))
            A11 = C1*(1.D0 - VALRES(2))/(1.D0 - 2.D0*VALRES(2))
            A12 = A11 - C1
@@ -138,7 +127,7 @@ C
            A23 = A12
            A33 = A11
            G12 = C1/2.D0
-           AL1 = VALRES(3)*TPG
+           AL1 = EPSTHE(1)
            AL2 = AL1
            AL3 = AL1
 C
@@ -146,13 +135,8 @@ C
 CCC --- CAS ORTHOTROPE
            CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,0,' ',
      &                   0.D0,7,NOMRES,VALRES, CODRET, 'FM' )
-           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,1,' ',
-     &                   0.D0,3,NOMRES(8),VALRES(8), CODRET(8), BL2 )
-           IF (CODRET(8).NE.'OK')  VALRES(8) =0.D0
-           IF (CODRET(9).NE.'OK')  VALRES(9) =0.D0
-           IF (CODRET(10).NE.'OK') VALRES(10)=0.D0
 C
-           TPG = TPG - TREF
+           CALL VERIFT('NOEU',KP,1,'+',ZI(IMATE),PHENOM,3,EPSTHE,IRET)
            E1   = VALRES(1)
            E2   = VALRES(2)
            E3   = VALRES(3)
@@ -170,21 +154,16 @@ C
            A23 = (NU23 + NU13*NU12)*E2/DELTA
            A33 = (1.D0 - NU21*NU12)*E3/DELTA
            G12 = VALRES(7)
-           AL1 = VALRES(8) *TPG
-           AL2 = VALRES(9) *TPG
-           AL3 = VALRES(10)*TPG
+           AL1 = EPSTHE(1)
+           AL2 = EPSTHE(2)
+           AL3 = EPSTHE(3)
 C
         ELSE IF (PHENOM.EQ.'ELAS_ISTR') THEN
 CCC     CAS ISOTROPE_TRANSVERSE
            CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,0,' ',
-     &                   0.D0,4,NOMRES,VALRES, CODRET, 'FM' )
-           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,1,' ',
-     &                   0.D0,2,NOMRES(5),VALRES(5), CODRET(5), BL2 )
-
-           IF (CODRET(5).NE.'OK') VALRES(5)=0.D0
-           IF (CODRET(6).NE.'OK') VALRES(6)=0.D0
+     &                   0.D0,6,NOMRES,VALRES, CODRET, 'FM' )
 C
-           TPG = TPG - TREF
+           CALL VERIFT('NOEU',KP,1,'+',ZI(IMATE),PHENOM,2,EPSTHE,IRET)
            E1   = VALRES(1)
            E3   = VALRES(2)
            NU12 = VALRES(3)
@@ -198,9 +177,9 @@ C
            A23 = A13
            A33 = E3*(1.D0 - NU12)/DELTA
            G12 = C1/2.D0
-           AL1 = VALRES(5)*TPG
+           AL1 = EPSTHE(1)
            AL2 = AL1
-           AL3 = VALRES(6)*TPG
+           AL3 = EPSTHE(3)
 C
         ENDIF
         IF ( NOMTE(3:4) .EQ. 'AX' ) THEN

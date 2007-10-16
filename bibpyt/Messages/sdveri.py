@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sdveri Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,24 @@ cata_msg = {
 
 1 : _("""
  Impossible d'importer le catalogue de la structure de données '%(k1)s'
+"""),
+
+2 : _("""
+ Objet %(k1)s inexistant.
+"""),
+
+3 : _("""
+ Attention, vous allez écraser des concepts existants.
+"""),
+
+4 : _("""
+ Arguments incohérents :
+      Nom des paramètres : %(k1)s
+   Valeur des paramètres : %(k2)s
+"""),
+
+5 : _("""
+ Arguments invalide : 'nomres' vide !
 """),
 
 30 : _("""

@@ -1,4 +1,4 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF defi_cable_bp_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,13 +144,7 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 
           motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': gma, 'GROUP_MA_AXE': __CAB, 'NOM': __NOM1}]}
         if i.has_key('MAILLE') == 1:
-          echo_mess=[]
-          echo_mess.append( ' \n' )
-          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
-          echo_mess.append( ' # DEFI_CABLE_BP - Erreur : MAILLE INTERDIT - UTILISER GROUP_MA               \n' )
-          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
-          message=string.join(echo_mess)
-          UTMESS('F',message)
+          UTMESS('F','CABLE0_2')
         if i.has_key('GROUP_NO_ANCRAGE') == 1:
           __PC1 = i['GROUP_NO_ANCRAGE'][0]
           motscle2['CREA_GROUP_NO'][0]['GROUP_NO_ORIG'] = __PC1
@@ -183,13 +177,7 @@ def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 
           motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': gma, 'GROUP_MA_AXE': __CAB, 'NOM': __NOM2}]}
         if i.has_key('MAILLE') == 1:
-          echo_mess=[]
-          echo_mess.append( ' \n' )
-          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
-          echo_mess.append( ' # DEFI_CABLE_BP - Erreur : MAILLE INTERDIT - UTILISER GROUP_MA               \n' )
-          echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
-          message=string.join(echo_mess)
-          UTMESS('F',message)
+          UTMESS('F','CABLE0_2')
         if i.has_key('GROUP_NO_ANCRAGE') == 1:
           __PC1 = i['GROUP_NO_ANCRAGE'][1]
           motscle2['CREA_GROUP_NO'][0]['GROUP_NO_ORIG'] = __PC1

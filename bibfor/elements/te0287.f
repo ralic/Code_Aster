@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       REAL*8             VALRES(NBRES),BIDON(7),BIDON1(7),TGD(2)
       REAL*8             DFDX(9),DFDY(9),DTDM(7),C1,C2,C3,POIDS,R,ALPHA
       REAL*8             XG,YG,CP1,CP2,CP3,DP1,DP2,DP3,VFI,VFJ
-      REAL*8             A11,A12,A21,A22,A,AAX,TEMP
+      REAL*8             A11,A12,A21,A22,A,AAX
 C
       CHARACTER*8        NOMRES(NBRES)
       CHARACTER*4        FAMI
@@ -104,9 +104,8 @@ C
            C1 = VALRES(1)/(1.D0 + VALRES(2))
            C2 = (1.D0 - VALRES(2))/(1.D0 - 2.D0*VALRES(2))
            C3 = VALRES(2)/(1.D0 - 2.D0*VALRES(2))
-           CALL RCVARC('F','TEMP','+',FAMI,KP,1,TEMP,IRET)
-           CALL GDFONC ( DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),
-     &                   ZR(IFORC),TEMP,NNO,BIDON,DTDM,BIDON1,TGD)
+           CALL GDFONC ( FAMI,DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),
+     &                   ZR(IFORC),NNO,BIDON,DTDM,BIDON1,TGD)
            DTDM(4) = DTDM(4)/R
            KD1=2
            KD2=1
@@ -208,9 +207,9 @@ C
       DP2 = VALRES(2)/(1.D0-VALRES(2))
       DP3 = (1.D0-2.D0*VALRES(2))/(2.D0*(1.D0-VALRES(2)))
 C
-      CALL RCVARC('F','TEMP','+',FAMI,KP,1,TEMP,IRET)
-      CALL GDFONC ( DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),ZR(IFORC),
-     &              TEMP,NNO,BIDON,DTDM,BIDON1,TGD)
+      CALL GDFONC ( FAMI,DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),
+     &              ZR(ITHET),ZR(IFORC),
+     &              NNO,BIDON,DTDM,BIDON1,TGD)
         A22 = 1 + ALPHA * DTDM(2)
         A11 = 1 + ALPHA * DTDM(1)
         A12 =   - ALPHA * DTDM(3)

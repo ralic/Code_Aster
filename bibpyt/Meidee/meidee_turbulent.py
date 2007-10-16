@@ -1,4 +1,4 @@
-#@ MODIF meidee_turbulent Meidee  DATE 06/03/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_turbulent Meidee  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,9 +37,7 @@ try:
     import aster
     
 except ImportError:    
-    UTMESS('A',  'MACRO_VISU_MEIDEE',
-           "ERREUR PENDANT L'IMPORTATION DES MODULES MEIDEE")
-
+    UTMESS('F','MEIDEE0_2')
 
 ########################
 #                      #

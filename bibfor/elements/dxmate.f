@@ -24,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -57,7 +57,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      JCOQU,JMATE,NBV,I,J,K,NBPAR,ELASCO
-      INTEGER      ICACOQ,IAZI,IAZK24,NPG,JCOU,NCOU,IRET,NPGH
+      INTEGER      ICACOQ,IAZI,IAZK24,NPG,JCOU,NCOU,IRET,NPGH,IRET1
       INTEGER      NDIM,NNOS,IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO
       REAL*8       KCIS,CDF,CDM,CDC,GCIS,VALRES(33)
       REAL*8       YOUNG,NU,EPAIS,VALPAR,EXCENT,CTOR
@@ -267,7 +267,7 @@ C        ET T2VE INVERSE DE T2EV
         CALL U2MESS('F','ELEMENTS_42')
       END IF
 C
-      CALL MOYTEM(FAMI,NPG,NPGH*NCOU,'+',VALPAR)
+      CALL MOYTEM(FAMI,NPG,NPGH*NCOU,'+',VALPAR,IRET1)
       NBPAR = 1
       NOMPAR = 'TEMP'
 
@@ -279,7 +279,8 @@ C        ------ MATERIAU ISOTROPE --------------------------------------
         IF (OPTION(11:14).EQ.'SENS') THEN
 
           CALL JEVECH('PMATSEN','L',JMATE)
-          CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &            PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
      &            NOMRES,VALRES,CODRET,'FM')
           YOUNG = VALRES(1)
           NU = VALRES(2)
@@ -290,7 +291,8 @@ C   SI : DERIVATION PAR RAPPORT A NU ALORS : YOUNG = 0 ET NU = 1
 C ICI, LA FORMULATION DE LA DERIVEE EST PLUS COMPLEXE
 
           CALL JEVECH('PMATERC','L',JMATE)
-          CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &            PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
      &            NOMRES,VALRES,CODRET,'FM')
           IF(ABS(NU).LT.R8PREM()) THEN
             DERIVE = 'E'
@@ -303,8 +305,9 @@ C ET REFORMULATION DES TERMES DE LA MATRICE (VOIR PLUS BAS)
           END IF
         ELSE
 
-          CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &             NOMRES, VALRES,CODRET,'FM')
+          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &               PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+     &               NOMRES, VALRES,CODRET,'FM')
 
           YOUNG = VALRES(1)
           NU = VALRES(2)
@@ -426,7 +429,8 @@ C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
         END IF
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &              PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
      &              NOMRES,VALRES,CODRET,'FM')
         IF (ELASCO.EQ.1) THEN
           MULTIC = 0
@@ -565,7 +569,8 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 C
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,18,NOMRES,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &              PHENOM,NBPAR,NOMPAR,VALPAR,18,NOMRES,
      &              VALRES,CODRET,'FM')
         DM(1,1) = VALRES(1)
         DM(1,2) = VALRES(2)
@@ -594,7 +599,8 @@ C        ------ MATERIAU MULTICOUCHE -----------------------------------
         DF(2,1) = DF(1,2)
         DF(3,1) = DF(1,3)
         DF(3,2) = DF(2,3)
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,6,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &             PHENOM,NBPAR,NOMPAR,VALPAR,6,
      &             NOMRES(21), VALRES(21),CODRET(21),'FM')
         DCI(1,1) = VALRES(21)
         DCI(2,2) = VALRES(22)

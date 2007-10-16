@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C     ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C     L'ORDRE :  XX YY ZZ XY XZ YZ         RR ZZ TT RZ
 C ----------------------------------------------------------------------
       INTEGER      NB, NP, NI, NR, NMAT, UN, NT, IRET1
-      REAL*8       ZERO, DAMMAX, DET
+      REAL*8       ZERO, DAMMAX, DET,EPSTHP,EPSTHM
       PARAMETER  (NB = 6, NP = 2, NI = 9, NR = 8, NT=3*NB)
       PARAMETER  (NMAT = 90)
       PARAMETER  ( UN   = 1.D0   )
@@ -110,7 +110,7 @@ C ----------------------------------------------------------------------
 C
       LOGICAL       CPLAN
 C
-      INTEGER       ITMAX, I, IER, ITER,IRET2
+      INTEGER       ITMAX, I, IER, ITER,IRET2,IRET3, IRET4
       INTEGER       NDT, NVI, NRV, NDI, K, L
       INTEGER       NBCOMM(NMAT,3)
 C
@@ -165,15 +165,25 @@ C
 C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET3)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET4)
+      IF (((IRET2+IRET3).EQ.0).AND.(IRET4.EQ.1)) THEN
+          CALL U2MESS('F','CALCULEL_31')
+      ENDIF
 
       CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM,TP,0,
      &               TYPMA, HSR,MATM,
      &               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
      &               TOLER, NDT, NDI, NRV, NVI, VIND ,TOUTMS)
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
+      IF ((IRET2+IRET3).EQ.0) THEN
+        EPSTHP = MATE(3,1)*(TP-TREF)
+        EPSTHM = MATM(3,1)*(TM-TREF)
+      ELSE
+        EPSTHP = 0.D0
+        EPSTHM = 0.D0
+      ENDIF
 C
 C-- 1.3. OPERATEUR DE HOOK
 C-------------------------
@@ -193,8 +203,8 @@ C-- VARIABLES D'ETAT DU MODELE A T-
       DO 00141 I = 1,3
         EP(I)=0.D0
         EPTHM(I)=0.D0
-        EP(I)=EP(I)+MATE(3,1)*(TP-TREF)
-        EPTHM(I)=EPTHM(I)+MATM(3,1)*(TM-TREF)
+        EP(I)=EP(I)+EPSTHP
+        EPTHM(I)=EPTHM(I)+EPSTHM
         EP(3+I)=0.D0
         EPTHM(3+I)=0.D0
 00141 CONTINUE

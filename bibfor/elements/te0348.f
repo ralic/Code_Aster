@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8       A, XL, XIY, XIZ, ALFAY, ALFAZ, EY, EZ, XJX, XJG
       REAL*8       ZERO, VALPAR(3), VALRES(3)
-      REAL*8       COEF, F, TEMP, E, NU, RHO, G, ALPHA
+      REAL*8       COEF, F, TEMP, E, NU, RHO, G, EPSTHE
       REAL*8       PGL(3,3), FE(14), MAT(105)
       REAL*8       Q(14), QQ(14), BSM(14,14), DE(14)
       CHARACTER*2  CODRET(3)
@@ -102,8 +102,9 @@ C     ------------------------------------------------------------------
 C
       IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 C
-         CALL RCVALA(ZI(LMATE),' ','ELAS',0,NOMPAR,VALPAR,
-     &                                1,'RHO',RHO,CODRET,'FM')
+         CALL RCVALB(FAMI,1,1,'+',ZI(LMATE),' ','ELAS',
+     &               0,NOMPAR,VALPAR,
+     &               1,'RHO',RHO,CODRET,'FM')
 C
          CALL JEVECH('PPESANR','L',LPESA)
          DO 100 I=1,3
@@ -148,14 +149,13 @@ C        FIN CHAR_MECA_PESA_R
 
          NOMRES(1) = 'E'
          NOMRES(2) = 'NU'
-         NOMRES(3) = 'ALPHA'
-         CALL MOYTEM(FAMI,NPG,1,'+',VALPAR)
-         CALL RCVALA(ZI(LMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,
-     &                                NOMRES,VALRES,CODRET, 'FM' )
+         CALL MOYTEM(FAMI,NPG,1,'+',VALPAR,IRET)
+         CALL RCVALB(FAMI,NPG,1,'+',ZI(LMATE),' ','ELAS',
+     &               NBPAR,NOMPAR,VALPAR,2,
+     &               NOMRES,VALRES,CODRET, 'FM' )
          E      = VALRES(1)
          NU     = VALRES(2)
          G      = E / ( 2.0D0 * ( 1.0D0 + NU ) )
-         ALPHA  = VALRES(3)
          DO 200 I = 1 , 105
             MAT(I) = ZERO
  200     CONTINUE
@@ -175,13 +175,9 @@ C        --- REMPLISSAGE DE LA MATRICE CARREE ---
 
          IF ( OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
 C           --- TEMPERATURE DE REFERENCE ---
-            CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-            TEMP = VALPAR(1) - TREF
-            F = ALPHA * TEMP
+            CALL VERIFM(FAMI,NPG,1,'+',ZI(LMATE),'ELAS',1,F,IRET)
 C
          ELSEIF ( OPTION.EQ.'CHAR_MECA_SECH_R') THEN
-C           --- TEMPERATURE EFFECTIVE ---
-            CALL MOYTEM(FAMI,NPG,1,'+',TEMP)
 C           ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
             CALL JEVECH('PSECHER','L',ISECH)
 C           ---- RECUPERATION DU SECHAGE DE REFERENCE
@@ -203,8 +199,8 @@ C           ---- RECUPERATION DE L'INSTANT
 C ----      INTERPOLATION DE K_DESSIC EN FONCTION DE LA TEMPERATURE
 C           OU DU SECHAGE
 C           ----------------------------------------------------------
-            CALL RCVALA(ZI(LMATE),' ','ELAS',3,NOMPAR,VALPAR,1,
-     &          'K_DESSIC',KDESSI, CODRET, ' ' )
+            CALL RCVALB(FAMI,1,1,'+',ZI(LMATE),' ','ELAS',
+     &          3,NOMPAR,VALPAR,1,'K_DESSIC',KDESSI, CODRET, ' ' )
             IF (CODRET(1).NE.'OK') KDESSI=0.D0
 C           DEPLACEMENT INDUIT PAR LE SECHAGE
             F = -KDESSI*(SREF-SECH)
@@ -229,7 +225,8 @@ C           RECUPERATION DE L'INSTANT
 C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           DE L HYDRATATION OU DU SECHAGE
 C           ----------------------------------------------------------
-            CALL RCVALA(ZI(LMATE),' ','ELAS',3,NOMPAR,VALPAR,1,
+            CALL RCVALB(FAMI,1,1,'+',ZI(LMATE),' ','ELAS',
+     &          3,NOMPAR,VALPAR,1,
      &          'B_ENDOGE',KENDOG, CODRET, ' ' )
             IF (CODRET(1).NE.'OK') KENDOG=0.D0
 C           DEPLACEMENT INDUIT PAR L'HYDRATATION

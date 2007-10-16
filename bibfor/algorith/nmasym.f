@@ -4,7 +4,7 @@
      &                 VIM,EFFNOP,VIP,KLV,FONO)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C ------------------------------------------------------------------
 
       CHARACTER*(*) FAMI,OPTION
       REAL*8        XLONG0,A,SYC,SYT,ETC,ETT,CR
-      REAL*8        E,ALPHA,DLONG0,TMOINS,TPLUS
+      REAL*8        E,DLONG0,TMOINS,TPLUS
       REAL*8        EFFNOM,VIM(NVAR)
       REAL*8        EFFNOP,VIP(NVAR),FONO(NEQ),KLV(NBT)
 C -------------------------------------------------------------------
@@ -59,9 +59,9 @@ C
       INTEGER NBPAR,NBRES
 C
       REAL*8       VALPAR,VALRES(4)
-      CHARACTER*2  BL2, FB2, CODRES(4)
-      CHARACTER*8  NOMPAR,NOMELA(2),NOMASL(4)
-      DATA NOMELA / 'E','ALPHA' /
+      CHARACTER*2  FB2, CODRES(4)
+      CHARACTER*8  NOMPAR,NOMELA,NOMASL(4)
+      DATA NOMELA / 'E' /
       DATA NOMASL / 'SY_C', 'DC_SIGM_','SY_T','DT_SIGM_' /
 
 C----------INITIALISATIONS
@@ -80,16 +80,12 @@ C
       NBPAR  = 0
       NOMPAR = '  '
       VALPAR = 0.D0
-      BL2 = '  '
       FB2 = 'FM'
 
-      CALL RCVALA(ICODMA,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,NOMELA,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ELAS',
+     &             NBPAR,NOMPAR,VALPAR,1,NOMELA,
      &             VALRES,CODRES,FB2)
-      CALL RCVALA(ICODMA,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,NOMELA(2),
-     &             VALRES(2),CODRES(2), BL2)
-      IF (CODRES(2).NE.'OK') VALRES(2) = 0.D0
       E     = VALRES(1)
-      ALPHA = VALRES(2)
 C
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE ASYMETRIQUE
 C
@@ -97,7 +93,8 @@ C
 CJMP  NBRES = 5
       NBRES = 4
       NBPAR  = 0
-      CALL RCVALA(ICODMA,' ','ECRO_ASYM_LINE',NBPAR,NOMPAR,VALPAR,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ECRO_ASYM_LINE',
+     &           NBPAR,NOMPAR,VALPAR,
      &           NBRES, NOMASL, VALRES,CODRES,FB2)
         SYC    = VALRES(1)
         ETC    = VALRES(2)
@@ -108,8 +105,8 @@ CJMP    CR     = VALRES(5) MODELE DE RESTAURATION PAS AU POINT
        CR = 0.D0
 
 C
-      CALL  NM1DAS(FAMI,KPG,KSP,E,ALPHA,SYC,SYT,ETC,ETT,CR,
-     &   TMOINS,TPLUS,SIGM,DEPS,VIM,SIGP,VIP,DSDEM,DSDEP)
+      CALL  NM1DAS(FAMI,KPG,KSP,E,SYC,SYT,ETC,ETT,CR,
+     &   TMOINS,TPLUS,ICODMA,SIGM,DEPS,VIM,SIGP,VIP,DSDEM,DSDEP)
       EFFNOP=SIGP*A
 C
 C --- CALCUL DU COEFFICIENT NON NUL DE LA MATRICE TANGENTE

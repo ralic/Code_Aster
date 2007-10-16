@@ -4,7 +4,7 @@
       LOGICAL       GRILLE,LTEATT
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,10 @@ C     ------------------------------------------------------------------
 C --- INITIALISATIONS :
 C     -----------------
       ZERO = 0.0D0
+      IRET1 = 0
+      IRET2 = 0
+      IRET3 = 0
+      IRET4 = 0
 
       DO 10 I = 1,32
         SIGT(I) = ZERO
@@ -71,7 +75,7 @@ C     -----------------
       GRILLE= LTEATT(' ','GRILLE','OUI')
       CALL JEVECH('PNBSP_I','L',JCOU)
       NBCOU=ZI(JCOU)
-      CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IRET)
+      CALL RCVARC(' ','TEMP','REF','NOEU',1,1,TREF,IRET1)
 
 
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
@@ -92,7 +96,7 @@ C          -- RECUPERATION DE LA TEMPERATURE  AUX NOEUDS
 C UNE COUCHE AVEC UN SEUL POINT DANS L EPAISSEUR.
 C LA TEMPERATURE EST IDENTIQUE
         DO 41 INO=1,NNO
-          CALL RCVARC('F','TEMP','+','NOEU',INO,1,TINF(INO),IRET)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TINF(INO),IRET2)
           TMOY(INO)=TINF(INO)
           TSUP(INO)=TINF(INO)
   41    CONTINUE
@@ -102,9 +106,9 @@ C ON RECUPERE LA TEMPERATURE INFERIEURE, SUPERIEURE ET DANS LA FIBRE
 C MOYENNE
         IMOY=(3*NBCOU+1)/2
         DO 42 INO = 1,NNO
-          CALL RCVARC('F','TEMP','+','NOEU',INO,IMOY,TMOY(INO),IRET)
-          CALL RCVARC('F','TEMP','+','NOEU',INO,NBCOU*3,TSUP(INO),IRET)
-          CALL RCVARC('F','TEMP','+','NOEU',INO,1,TINF(INO),IRET)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,IMOY,TMOY(INO),IRET4)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,NBCOU*3,TSUP(INO),IRET3)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TINF(INO),IRET2)
   42    CONTINUE
       ENDIF
 
@@ -114,8 +118,7 @@ C MOYENNE
       IF ((PHENOM.EQ.'ELAS') .OR. (PHENOM.EQ.'ELAS_COQUE') .OR.
      &    (PHENOM.EQ.'ELAS_COQMU')) THEN
 
-C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
-C --- DE L'EPAISSEUR DE LA COQUE
+C --- RECUPERATION DE L'EPAISSEUR DE LA COQUE
 C     --------------------------
 
         CALL JEVECH('PCACOQU','L',JCARA)
@@ -127,6 +130,12 @@ C     ----------------------------------------------------
         CALL DXMATH('NOEU',EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,
      &                                   GRILLE,T2EV,T2VE,T1VE,NNO)
         IF (INDITH.EQ.-1) GO TO 30
+
+        SOMIRE = IRET2+IRET3+IRET4
+        IF (SOMIRE.EQ.0) THEN
+          IF (IRET1.EQ.1) THEN
+            CALL U2MESS('F','CALCULEL_31')
+          ELSE
 
 C --- BOUCLE SUR LES NOEUDS
 C     ---------------------
@@ -154,6 +163,9 @@ C          ----------------------------------------
           SIGT(6+8* (INO-1)) = COE2* (DF(3,1)+DF(3,2)) +
      &                         COE1* (DMF(3,1)+DMF(3,2))
    20   CONTINUE
+   
+        ENDIF
+       ENDIF      
 
       END IF
 

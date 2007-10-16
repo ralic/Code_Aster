@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,9 +125,11 @@ C
 C
 C     --- RECUPERATION DES DONNEES MATERIAU ---
 C
-      CALL RCVALA ( ZI(IMATE),' ',PHENOM,0,' ',R8BID,3,NOMRES,
+      CALL RCVALB ( FAMI, 1, 1, '+', ZI(IMATE),' ',PHENOM,
+     &              0,' ',R8BID,3,NOMRES,
      &              VALRES, CODRET, 'FM' )
-      CALL RCVALA ( ZI(IMATE),' ',PHENOM,0,' ',R8BID,1,NOMRES(3),
+      CALL RCVALB ( FAMI, 1, 1, '+', ZI(IMATE),' ',PHENOM,
+     &              0,' ',R8BID,1,NOMRES(3),
      &              VALRES(3), CODRET(3),'FM')
       IF (CODRET(3).NE.'OK') VALRES(3) = 1.D-6
       M     = VALRES(1)
@@ -159,7 +161,7 @@ C VOLUME PLASTIFIE
                   CONG(II)=CONG(II)+DVOL*ZR(ICONG+4*KP+II-5)
  165           CONTINUE
 C           --- TEMPERATURE MOYENNE
-               CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG,IRET)
+               CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG,IRET)
                TMOY = TMOY + TG*DVOL
             ENDIF
 C VOLUME PLASTIQUE ACTIF
@@ -183,7 +185,8 @@ C
             CALL VPRI2D(SIG,SIGI)
 C
             TMOY = TMOY/VOLUME
-            CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TMOY,1,
+            CALL RCVALB (FAMI, 1, 1, '+', ZI(IMATE),' ',PHENOM,
+     &              1,'TEMP',TMOY,1,
      &              NOMRES(4),VALRES(4), CODRET(4), 'FM' )
             SREF = VALRES(4)
             SIGI = SIGI/SREF
@@ -287,7 +290,7 @@ C VOL PLASTIFIE
                   EPSQ(II)=EPSQ(II)+DVOL*ZR(IDEFG+4*KP+II-5)
 220            CONTINUE
 C           --- TEMPERATURE MOYENNE
-               CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG,IRET)
+               CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG,IRET)
                TMOY = TMOY + TG*DVOL
             ENDIF
 C VOL PLASTIQUE ACTIF
@@ -320,7 +323,8 @@ C
                 TDP(6) = 0.D0
                 CALL EPDCP(TC,TDP,SIGI,EPSGI)
                 TMOY = TMOY/VOLUME
-                CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TMOY,1,
+                CALL RCVALB ( FAMI, 1, 1, '+',  ZI(IMATE),' ',PHENOM,
+     &                  1,'TEMP',TMOY,1,
      &                  NOMRES(4),VALRES(4), CODRET(4), 'FM' )
                 SREF = VALRES(4)
                 SIGNEW=EXP((-EPSGI/2.D0))*SIGI/SREF

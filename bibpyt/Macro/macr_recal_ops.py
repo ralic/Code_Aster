@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,16 +32,7 @@ fichier_export = None
 mode_python = False
 type_fonctionnelle = 'float'
 
-
-try:
-   import Utilitai.Utmess
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
-      if code=='F': sys.exit()
-
+from externe_mess import UTMESS
 
 # --------------------------------------------------------------------------------------------------
 def Ecriture_Fonctionnelle(output_file, type_fonctionnelle, fonctionnelle):
@@ -87,7 +78,7 @@ def Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess):
    import Cata, aster, Macro
    from Cata.cata import DEFI_LIST_REEL
    from Accas import _F
-   from Utilitai.Utmess import UTMESS
+   from externe_mess import UTMESS
    from Macro import reca_message
    from Macro import reca_algo
    from Macro import reca_interp
@@ -172,7 +163,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
    from Macro import reca_utilitaires
    from Macro import reca_calcul_aster
    from Macro.reca_controles import gestion
-   from Utilitai.Utmess import UTMESS
+   from externe_mess import UTMESS
 
    # Gestion des Exceptions
    prev_onFatalError = aster.onFatalError()
@@ -203,7 +194,7 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
                ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
                GRAPHIQUE, SUIVI_ESCLAVE, METHODE, INFO, **args ):
 
-
+   from externe_mess import UTMESS
    # Import d'as_profil
    if os.environ.has_key('ASTER_ROOT'):
       sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
@@ -696,7 +687,8 @@ if __name__ == '__main__':
     mode_python = True
 
     from optparse import OptionParser, OptionGroup
-
+    from externe_mess import UTMESS
+    
     p = OptionParser(usage='usage: %s fichier_export [options]' % sys.argv[0])
     p.add_option('-i', '--input',        action='store',   dest='input',         type='string',   default='input.txt',   help='fichier contenant les parametres')
     p.add_option('-o', '--output',       action='store',   dest='output',        type='string',   default='output.txt',  help='fichier contenant la fonctionnelle')

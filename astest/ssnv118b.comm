@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -244,7 +244,7 @@ CHT0=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_R', MAILLAGE=CUBE,
            AFFE=_F(  TOUT='OUI',   NOM_CMP = 'TEMP',   VALE = 0.E0,  ) )
 MAT=AFFE_MATERIAU(  MAILLAGE=CUBE,
                     AFFE=_F(  MAILLE = 'MA1', MATER = ACIER),
-                    AFFE_VARC= _F( TOUT = 'OUI', NOM_VARC = 'TEMP', CHAMP_GD=CHT0,),
+                    AFFE_VARC= _F( TOUT = 'OUI', VALE_REF=0.,NOM_VARC = 'TEMP', CHAMP_GD=CHT0,),
                                            )
 
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(

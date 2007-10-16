@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,19 +46,19 @@ C
       INTEGER      JEFFG, LMATER, LSECT, LSECT2, LX,
      &             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES,IRET,
      &             NPG,ITEMP
-      PARAMETER   (        NBRES = 3 )
+      PARAMETER   (        NBRES = 2 )
       REAL*8        VALRES(NBRES)
       CHARACTER*2   CODRES(NBRES)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
       REAL*8       UL(14), PGL(3,3), D1B(7,14), DEGE(3,7)
-      REAL*8       ZERO, UN, DEUX, TEMP, TREF, E, XNU, ALPHA, G, XL
+      REAL*8       ZERO, UN, DEUX, TEMP, TREF, E, XNU, EPSTHE, G, XL
       REAL*8       A, XIY, XIZ, ALFAY, ALFAZ, EY, EZ, PHIY, PHIZ
       REAL*8       KSI1, D1B3(2,3)
 C      REAL*8       A2, XIY2, XIZ2, ALFAY2, ALFAZ2, XJX, XJX2
 C     ------------------------------------------------------------------
-      DATA NOMRES / 'E' , 'NU' , 'ALPHA'  /
+      DATA NOMRES / 'E' , 'NU'  /
 C     ------------------------------------------------------------------
       ZERO   = 0.D0
       UN     = 1.D0
@@ -80,20 +80,17 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          VALRES(I) = ZERO
  10   CONTINUE
 C
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-      CALL MOYTEM(FAMI,NPG,1,'+',TEMP)
+      CALL VERIFM(FAMI,NPG,1,'+',ZI(LMATER),'ELAS',1,EPSTHE,IRET)
+      CALL MOYTEM(FAMI,NPG,1,'+',TEMP,IRET)
       NBPAR  = 1
       NOMPAR = 'TEMP'
 C
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,TEMP,2,
-     &              NOMRES,VALRES,CODRES,'FM')
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,TEMP,1,
-     &              NOMRES(3),VALRES(3),CODRES(3),'  ')
-      IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
+      CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),' ','ELAS',
+     &            NBPAR,NOMPAR,TEMP,2,
+     &            NOMRES,VALRES,CODRES,'FM')
 C
       E      = VALRES(1)
       XNU    = VALRES(2)
-      ALPHA  = VALRES(3)
       G = E / ( DEUX * ( UN + XNU ) )
 C
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -168,9 +165,7 @@ C
                DEGE(KP,I) = DEGE(KP,I) + D1B(I,J)*UL(J)
  34         CONTINUE
  32      CONTINUE
-         IF (ALPHA.NE.ZERO)THEN
-            DEGE(KP,1) = DEGE(KP,1) - ALPHA*(TEMP-TREF)
-         ENDIF
+         DEGE(KP,1) = DEGE(KP,1) - EPSTHE
 C
  30   CONTINUE
 C

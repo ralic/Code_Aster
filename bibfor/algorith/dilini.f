@@ -4,7 +4,7 @@
      +                  INTERP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -111,7 +111,8 @@ C ======================================================================
       ELSE IF ( NOMTE(5:6).EQ.'3D' ) THEN
          TYPMOD(1) = '3D  '
       ELSE
-        CALL U2MESS('F','ELEMENTS3_15')
+C       NOM D'ELEMENT ILLICITE
+        CALL ASSERT(NOMTE(5:6).EQ.'DP' .OR. NOMTE(5:6).EQ.'3D' )
       ENDIF
 C ======================================================================
       IF (INTERP.EQ.'P0') THEN

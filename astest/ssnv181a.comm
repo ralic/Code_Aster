@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE VERIFICATION DE LA BONNE PRISE EN COMPTE DU CISAILLEMENT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,12 @@ NU=DEFI_FONCTION(NOM_PARA='TEMP',
                  PROL_DROITE='LINEAIRE',
                  PROL_GAUCHE='LINEAIRE',);
 
+ALPHA= DEFI_CONSTANTE(VALE=0.);
+
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
-                               NU=NU,
-                           FONC_DESORP=FONC1,),
+                               NU=NU, 
+                           FONC_DESORP=FONC1,ALPHA=ALPHA,
+                           TEMP_DEF_ALPHA=0.),
                     BETON_UMLV_FP=_F(K_RS=120000.0,
                                      ETA_RS=22100000000.0,
                                      K_IS=62200.0,
@@ -96,10 +99,9 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         ),
+                         MATER=BETON,),
                  AFFE_VARC=(_F(TOUT='OUI',EVOL=SECH1,NOM_VARC="SECH",NOM_CHAM='TEMP',VALE_REF=100),
-                            _F(TOUT='OUI',CHAMP_GD=TEMP,NOM_VARC="TEMP",VALE_REF=0.),),
+                            _F(TOUT='OUI',CHAMP_GD=TEMP,NOM_VARC="TEMP",VALE_REF=20.),),
                  );
 
 #CH3=AFFE_CHAR_MECA(MODELE=MO, TEMP_CALCULEE=TEMP);

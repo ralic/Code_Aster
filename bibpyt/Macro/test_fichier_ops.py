@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF test_fichier_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ def test_fichier_ops(self, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
    import aster
    from Accas import _F
    from Macro.test_fichier_ops import md5file
-   from Utilitai.Utmess import U2MESS as UTMESS
+   from Utilitai.Utmess import  UTMESS
 
    # vérifie la syntaxe des expressions régulières fournies
    l_regexp = []

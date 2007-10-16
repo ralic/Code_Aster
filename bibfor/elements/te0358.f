@@ -1,6 +1,6 @@
       SUBROUTINE TE0358(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NNO,KP,L,NPG1,I,IVECTU,NDIM
       INTEGER IPOIDS,IVF,IDFDE,JPROL,JVALE,NBVAL
-      INTEGER IGEOM,IMATE,JTAB(7),IRET
+      INTEGER IGEOM,IMATE,JTAB(7),IRET,IRET1
 
       DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA ACIER /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
@@ -156,7 +156,7 @@ C PARAMETRES EN ENTREE
         ICPG = 6* (KP-1)
         CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TPG,IRET1)
 
         IF (COMPOR(1:5) .EQ. 'ACIER') THEN
           DO 7 L=1,4
@@ -209,7 +209,8 @@ C PARAMETRES EN ENTREE
             DELTAZ = (ZVARIP-ZVARIM)
             IF (DELTAZ.GT.0) THEN
               J = 6 + I
-              CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,NOMRES(J),
+              CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
+     &                    1,'META',ZFBM,1,NOMRES(J),
      &                    VALRES(J),CODRET(J),'  ')
               IF (CODRET(J).NE.'OK') VALRES(J) = 0.D0
 
@@ -226,7 +227,8 @@ C PARAMETRES EN ENTREE
           IF ((ZR(IVARI+ (KP-1)*LGPG+5).GT.0.5D0) .AND.
      &        (TEST.EQ.'NO')) THEN
 
-            CALL RCVALA(MATER,' ','ELAS_META',1,'META',ZFBM,1,
+            CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_META',
+     &                1,'META',ZFBM,1,
      &                NOMRES(11),  VALRES(11),CODRET(11),'  ')
             IF (CODRET(11).NE.'OK') THEN
               VALRES(11) = ZFBM
@@ -270,6 +272,8 @@ C PARAMETRES EN ENTREE
               VI(3) = ZR(IVARI+ (KP-1)*LGPG+2)
               VI(4) = ZR(IVARI+ (KP-1)*LGPG+3)
               VI(5) = ZR(IVARI+ (KP-1)*LGPG+4)
+
+              IF (IRET1.EQ.1) CALL U2MESS('F','CALCULEL_31')
               DO 70 I = 1,5
                 CALL RCTRAC(MATER,'META_TRACTION',NOMCLE(I),TPG,JPROL,
      &                      JVALE,NBVAL,R8BID)
@@ -315,7 +319,8 @@ C PARAMETRES EN ENTREE
 
           TRANS = 0.D0
           IF (DELTAZ.GT.0) THEN
-            CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,NOMRES(5),
+            CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
+     &                  1,'META',ZFBM,1,NOMRES(5),
      &                  VALRES(5),CODRET(5),'  ')
             IF (CODRET(5).NE.'OK') VALRES(5) = 0.D0
 
@@ -328,7 +333,8 @@ C PARAMETRES EN ENTREE
           DELTAZ = (ZVARIP-ZVARIM)
           IF (DELTAZ.GT.0) THEN
 
-            CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,NOMRES(6),
+            CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
+     &                  1,'META',ZFBM,1,NOMRES(6),
      &                  VALRES(6),CODRET(6),'  ')
             IF (CODRET(6).NE.'OK') VALRES(6) = 0.D0
 
@@ -345,7 +351,8 @@ C PARAMETRES EN ENTREE
           IF ((ZR(IVARI+ (KP-1)*LGPG+3).GT.0.5D0) .AND.
      &        (TEST.EQ.'NO')) THEN
 
-            CALL RCVALA(MATER,' ','ELAS_META',1,'META',ZALPHA,1,
+            CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_META',
+     &                  1,'META',ZALPHA,1,
      &                 NOMRES(7), VALRES(7),CODRET(7),'  ')
             IF (CODRET(7).NE.'OK') THEN
               VALRES(7) = ZALPHA

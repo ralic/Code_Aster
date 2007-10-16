@@ -3,7 +3,7 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C OUT DSIG : DERIVEE LAGRANGIENNE DU TENSEUR DES CONTRAINTES (SI DG).
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
 C       ENVIMA: R8MIEM, R8PREM.
-C       MATERIAUX: RCVALA, RCTRAC, RCFONC.
+C       MATERIAUX: RCVALB, RCTRAC, RCFONC.
 C       DIVERS: NMCRI1, ZEROFO, NMELRU.
 C
 C     FONCTIONS INTRINSEQUES:
@@ -73,12 +73,12 @@ C DECLARATION PARAMETRES D'APPELS
       CHARACTER*(*) FAMI,POUM
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 COMPOR(*),OPTION
-      REAL*8      CRIT(3),TEMP,TREF,DLAGTG,DEPS(6),DSIG(6)
+      REAL*8      CRIT(3),TEMP,DLAGTG,DEPS(6),DSIG(6)
       REAL*8      EPS(6),SIG(6),VI,DSIDEP(6,6),ENERGI(2),DENERG(2)
       LOGICAL     DERIVL
 
 C DECLARATION VARIABLES LOCALES
-      LOGICAL     CPLAN,ELAS,VMIS,LINE,NONLIN,INCO
+      LOGICAL     CPLAN,ELAS,VMIS,LINE,NONLIN,INCO,PUIS
       CHARACTER*2 BL2, FB2, CODRET(3)
       CHARACTER*8 NOMRES(3)
       INTEGER     JPROL, JVALE, NBVALE
@@ -92,17 +92,26 @@ C DECLARATION VARIABLES LOCALES
       REAL*8 KRON(6)
       REAL*8 DUM,DIVU,R8PREM
       REAL*8 DEPSTH(6),DEPSDV(6),DEPSEQ,DEPSMO,DDIVU,R8MIEM,EPSTES
+      REAL*8 COCO,DP0,RPRIM0,XAP,VAL0,PRECR
 
 C====================================================================
 C---COMMONS NECESSAIRES A HENCKY C_PLAN (NMCRI1)
 C====================================================================
 
       INTEGER  IMATE2, JPROL2, JVALE2, NBVAL2
-      REAL*8   PM, SIGEL(6), TP2, LIN
-      COMMON /RCONM1/ DEUXMU, NU, E, SIGY, RPRIM, PM, SIGEL, TP2, LIN
+      REAL*8   PM, SIGEL(6), LIN, EPSTHE
+      COMMON /RCONM1/ DEUXMU, NU, E, SIGY, RPRIM, PM, SIGEL, LIN
       COMMON /KCONM1/ IMATE2, JPROL2, JVALE2, NBVAL2
       REAL*8   NMCRI1
       EXTERNAL NMCRI1
+C====================================================================
+C---COMMONS NECESSAIRES A ELAS_VMIS_PUIS
+C====================================================================
+
+      COMMON /RCONM2/ALFAFA,UNSURN,SIELEQ
+      REAL*8         ALFAFA,UNSURN
+      REAL*8   NMCRI2
+      EXTERNAL NMCRI2
 
 C====================================================================
 C - INITIALISATIONS
@@ -114,13 +123,11 @@ C====================================================================
       ELAS  = (COMPOR(1)(1:5) .EQ. 'ELAS ')
       VMIS  = (COMPOR(1)(1:9) .EQ. 'ELAS_VMIS')
       LINE  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_LINE')
+      PUIS  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_PUIS')
       EPSI  = R8PREM()
 
       BL2 = '  '
       FB2 = 'F '
-
-      CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
 
 C====================================================================
 C INITIALISATIONS LIEES AU CALCUL DE DERIVEES LAGRANGIENNE
@@ -137,6 +144,8 @@ C====================================================================
           DEPSDV(K) = 0.D0
 2       CONTINUE
       ENDIF
+      ENERGI(1) = 0.D0
+      ENERGI(2) = 0.D0
 
       IF (.NOT.(ELAS .OR. VMIS))
      &   CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
@@ -150,20 +159,27 @@ C====================================================================
       NOMRES(2)='NU'
       NOMRES(3)='ALPHA'
 
-      IF (ELAS .OR. LINE) THEN
+C TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
+      CALL VERIFT(FAMI,KPG,KSP,POUM,IMATE,'ELAS',1,EPSTHE,IRET)
+      
+      
+      CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
+
+      IF (ELAS .OR. LINE .OR. PUIS) THEN
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,2,
      &                 NOMRES,VALRES,CODRET, FB2 )
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
+         IF (CODRET(3).NE.'OK') VALRES(3)=0.D0
       ELSE
          CALL RCTRAC(IMATE,'TRACTION','SIGM',TEMP,JPROL,
      &               JVALE,NBVALE,VALRES(1))
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
+         IF (CODRET(3).NE.'OK') VALRES(3)=0.D0
       ENDIF
 
       E     = VALRES(1)
@@ -189,6 +205,17 @@ C====================================================================
         DSDE  = VALRES(1)
         SIGY  = VALRES(2)
 
+      ELSE IF (PUIS) THEN
+        NOMRES(1)='SY'
+        NOMRES(2)='A_PUIS'
+        NOMRES(3)='N_PUIS'
+        CALL RCVALA(IMATE,' ','ECRO_PUIS',1,'TEMP',TEMP,3,NOMRES,VALRES,
+     &              CODRET , FB2 )
+        SIGY   = VALRES(1)
+        ALFAFA = VALRES(2)
+        COCO   = E/ALFAFA/SIGY
+        UNSURN = 1.D0/VALRES(3)
+
       ELSE IF (VMIS) THEN
         CALL RCFONC('S','TRACTION',JPROL,JVALE,NBVALE,SIGY,DUM,DUM,
      &               DUM,DUM,DUM,DUM,DUM,DUM)
@@ -199,7 +226,7 @@ C CALCULS DIVERS
 C====================================================================
 
 C - CALCUL DE EPSMO ET EPSDV
-      THER = ALPHA*(TEMP-TREF)
+      THER = EPSTHE
 
 C CALCUL DE LA DERIVEE LAGRANGIENNE DE THER (DTHER) CAR DL(ALPHA)=0
 C ET DL(TREF) = 0 PAR ELEMENT
@@ -285,11 +312,12 @@ C        REMPLISSAGE DU COMMON
           DO 40 K=1,4
             SIGEL(K) = DEUXMU*EPSDV(K)
 40        CONTINUE
-          TP2 = TEMP
           IMATE2 = IMATE
           IF (LINE) THEN
             RPRIM = E*DSDE/(E-DSDE)
             LIN = 1.D0
+          ELSE IF (PUIS) THEN
+            CALL U2MESS('F','ALGORITH_1')
           ELSE
             JPROL2 = JPROL
             JVALE2 = JVALE
@@ -309,6 +337,8 @@ CJMP
           IF (LINE) THEN
             RP = SIGY +RPRIM*P
             AIRERP = 0.5D0*(SIGY+RP)*P
+          ELSE IF (PUIS) THEN
+            CALL U2MESS('F','ALGORITH_1')
           ELSE
             CALL RCFONC('V','TRACTION',JPROL,JVALE,NBVALE,DUM,E,
      &                   NU,P,RP,RPRIM,AIRERP,DUM,DUM)
@@ -334,6 +364,23 @@ C===========================================
             P = (SIELEQ - SIGY) / (RPRIM+1.5D0*DEUXMU)
             RP = SIGY +RPRIM*P
             AIRERP = 0.5D0*(SIGY+RP)*P
+          ELSE IF (PUIS) THEN
+C AMELIORATION DE LA PREDICTION EN ESTIMANT RPRIM(PM+DP0)
+            DP0 = ( SIELEQ - SIGY)/1.5D0/DEUXMU
+            RPRIM0 = UNSURN*SIGY*COCO * (COCO*DP0)**(UNSURN-1.D0)
+            DP0 = DP0 / (1+RPRIM0/1.5D0/DEUXMU)
+            XAP   = DP0
+            VAL0  = NMCRI2(0.D0)
+            PREC  = CRIT(3)
+            PRECR = PREC * SIGY
+            NITER = NINT(CRIT(1))
+            CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,P,IRET)
+            RP = SIGY *(COCO*P)**UNSURN+SIGY
+            IF (P.LE.R8PREM()) THEN
+              RPRIM=E
+            ELSE
+              RPRIM = UNSURN*SIGY*COCO*(COCO*P)**(UNSURN-1.D0)
+            ENDIF
           ELSE
             CALL RCFONC('E','TRACTION',JPROL,JVALE,NBVALE,DUM,E,NU,
      &                  0.D0,RP,RPRIM,AIRERP,SIELEQ,P)
@@ -441,9 +488,9 @@ C (ENERGI(2)) ET DE LEURS DERIVEES LAGRANGIENNES (DENER)
 C CALCUL INTERMEDIAIRE POUR LA DERIVEE LAGRANGIENNE
         IF (DERIVL) DDIVU = 3.D0*DEPSMO
 
-        CALL NMELRU(FAMI,KPG,KSP,POUM,IMATE,COMPOR,EPSEQ,DIVU,
+
+        CALL NMELRU(FAMI,KPG,KSP,POUM,IMATE,COMPOR,EPSEQ,P,DIVU,
      &              NONLIN,ENERGI,
      &              DERIVL,DDIVU,DEPSEQ,DENERG,DLAGTG)
       ENDIF
-
       END

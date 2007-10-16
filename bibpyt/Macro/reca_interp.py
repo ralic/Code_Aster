@@ -1,4 +1,4 @@
-#@ MODIF reca_interp Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_interp Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,18 +21,10 @@
 
 import os, sys, pprint
 import Numeric
+from externe_mess import UTMESS
 
 try: import Macro
 except: pass
-
-try:
-   import Utilitai.Utmess
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
-      if code=='F': sys.exit()
 
 
 #===========================================================================================

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/06/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/10/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN PLASTICITE AVEC LA METHODE ARLEQUIN - MODELE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,6 +74,7 @@ ARLQ=AFFE_CHAR_MECA(MODELE=MOD,
                                 GROUP_MA_2=('GM9','GM11',),
                                 GROUP_MA_COLL='GM11',
                                 COLLAGE='FIN',
+                                COND_LIM = SYMET,
                                 POIDS_FIN=0.9999,),);
 # L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR HAUT
 
@@ -89,6 +90,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=5.4,
                                      NOMBRE=5,),),);
 
+
 ### CALCUL NON-LINEAIRE
 
 RESU=STAT_NON_LINE(MODELE=MOD,
@@ -102,19 +104,14 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA=('GM6','GM11',),),
                    INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=3.5,                                
-                                SUBD_METHODE = 'UNIFORME',
-                                SUBD_PAS=4,
-                                SUBD_PAS_MINI=0.0001,),
+                                INST_FIN=3.5,                          
+                                ),
                    NEWTON=_F(REAC_INCR = 1,
+                             REAC_ITER = 1,
                              MATRICE='TANGENTE',),
-                   RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
-                                    ITER_LINE_CRIT=20,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
-
-IMPR_JEVEUX(ENTITE='REPERTOIRE',CLASSE='V')
 
 ### POST-TRAITEMENTS CLASSIQUES
 
@@ -145,9 +142,9 @@ DX_A=POST_RELEVE_T(ACTION=_F(INTITULE='DX_A',
 TEST_TABLE(TABLE=DX_A,
            FILTRE = _F(NOM_PARA='INST',VALE=2.50000E+00),
            NOM_PARA='DX',
-           VALE = -2.5141094755978E-02,
+           VALE = -2.5415171286325E-02,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,);
 
@@ -155,16 +152,16 @@ TEST_TABLE(TABLE=DX_A,
 TEST_TABLE(TABLE=DX_A,
            FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
            NOM_PARA='DX',
-           VALE = -3.3919824634336E-02,
+           VALE = -3.4446793017166E-02,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,);
            
 TEST_TABLE(TABLE=DX_A,
            FILTRE = _F(NOM_PARA='INST',VALE=2.50000E+00),
            NOM_PARA='DX',
-           VALE = -2.5161598452013E-02,
+           VALE = -2.5415171286325E-02,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
            PRECISION = 0.001,);
@@ -176,7 +173,7 @@ TEST_TABLE(TABLE=DX_A,
            VALE = -3.4606865864745E-02,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.02,);         
+           PRECISION = 0.01,);         
            
 
 # DEPLACEMENTS DU POINT B
@@ -193,9 +190,9 @@ DY_B=POST_RELEVE_T(ACTION=_F(INTITULE='DY_B',
 TEST_TABLE(TABLE=DY_B,
            FILTRE = _F(NOM_PARA='INST',VALE=2.50000E+00),
            NOM_PARA='DY',
-           VALE = 7.6841978528252E-02,
+           VALE = 7.7181865030523E-02,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,);
 
@@ -203,9 +200,9 @@ TEST_TABLE(TABLE=DY_B,
 TEST_TABLE(TABLE=DY_B,
            FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
            NOM_PARA='DY',
-           VALE = 1.1585515715834E-01,
+           VALE = 1.1666794741196E-01,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,); 
 
@@ -215,7 +212,7 @@ TEST_TABLE(TABLE=DY_B,
            VALE = 7.6498982211284E-02,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.005,); 
+           PRECISION = 0.01,); 
 
 
 TEST_TABLE(TABLE=DY_B,
@@ -224,7 +221,7 @@ TEST_TABLE(TABLE=DY_B,
            VALE = 1.1557688703700E-01,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.003,); 
+           PRECISION = 0.01,); 
 
 # CONTRAINTES
 
@@ -245,7 +242,7 @@ STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
 TEST_TABLE(TABLE=STHETA,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=1.57017E+01),
            NOM_PARA='SIXX',
-           VALE = -1.1537404793890E-01 ,
+           VALE = -1.1666995158918E-01 ,
            REFERENCE= 'NON_REGRESSION',
            VERSION  = '9.0.4',
            CRITERE = 'RELATIF',
@@ -258,7 +255,7 @@ TEST_TABLE(TABLE=STHETA,
            VALE = -1.0794845533703E-01 ,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.07,); 
+           PRECISION = 0.09,); 
 
 # COURBE SIYY AU POINT A EN FONCTION DU DEPLACEMENT 
 
@@ -272,9 +269,9 @@ SYY_A=POST_RELEVE_T(ACTION=_F(INTITULE='SYY_A',
 TEST_TABLE(TABLE=SYY_A,
            FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
            NOM_PARA='SIYY',
-           VALE = 6.2699623105153E+00 ,
+           VALE = 6.2769522007211E+00 ,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,);
 
@@ -300,9 +297,9 @@ SXX_B=POST_RELEVE_T(ACTION=_F(INTITULE='SXX_B',
 TEST_TABLE(TABLE=SXX_B,
            FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
            NOM_PARA='SIXX',
-           VALE = -3.5242204022303E+00 ,
+           VALE = -3.5733944601687E+00 ,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,);
 
@@ -312,7 +309,7 @@ TEST_TABLE(TABLE=SXX_B,
            VALE = -3.4520540472581E+00 ,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.021,);
+           PRECISION = 0.036,);
 
 #IMPR_TABLE(TABLE=SXX_B)
 
@@ -336,15 +333,15 @@ TEST_TABLE(TABLE=F_HAUT,
            VALE = -7.7257980876221E-01,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.21,);
+           PRECISION = 0.18,);
 
 
 TEST_TABLE(TABLE=F_HAUT,
            FILTRE = _F(NOM_PARA='INST',VALE=3.50000E+00),
            NOM_PARA='DX',
-           VALE = -6.1490100896757E-01,
+           VALE = -6.3371311722966E-01,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,);
            
@@ -386,14 +383,18 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA=('GM11','GM6',),),
                    INCREMENT=_F(LIST_INST=L_INST,
+                                SUBD_METHODE= 'UNIFORME',
+                                SUBD_PAS=4,
+                                SUBD_PAS_MINI=0.0001,
                                 INST_FIN=INSTFIN,),
                    NEWTON=_F(PREDICTION='TANGENTE',
+                              REAC_ITER=1,
                               ),
                    PILOTAGE=_F(TYPE='DDL_IMPO',
                                COEF_MULT=1.0,
                                GROUP_NO='GM39',
                                NOM_CMP='DY',),
-                   CONVERGENCE=_F(ARRET='NON',),
+                   CONVERGENCE=_F(ARRET='OUI',),
                    ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
 ### POST-TRAITEMENTS CLASSIQUES
@@ -426,9 +427,9 @@ STHETA2=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA2',
 TEST_TABLE(TABLE=STHETA2,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=1.56956E+01),
            NOM_PARA='SIXX',
-           VALE = -2.4138468256918E+00 ,
+           VALE = -1.6486779955235E+00 ,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-6,);
 
@@ -445,9 +446,9 @@ SYY_A2=POST_RELEVE_T(ACTION=_F(INTITULE='SYY_A2',
 TEST_TABLE(TABLE=SYY_A2,
            FILTRE = _F(NOM_PARA='INST',VALE=5.40000E+00),
            NOM_PARA='SIYY',
-           VALE = 6.9194957656660E+00,
+           VALE = 6.3977585932263E+00,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-8,);
 
@@ -457,7 +458,7 @@ TEST_TABLE(TABLE=SYY_A2,
            VALE = 6.6907391833841E+00 ,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.035,);
+           PRECISION = 0.046,);
            
 # COURBE SIXX AU POINT B EN FONCTION DU DEPLACEMENT 
 
@@ -471,9 +472,9 @@ SXX_B2=POST_RELEVE_T(ACTION=_F(INTITULE='SXX_B2',
 TEST_TABLE(TABLE=SXX_B2,
            FILTRE = _F(NOM_PARA='INST',VALE=5.40000E+00),
            NOM_PARA='SIXX',
-           VALE = -6.8409790876839E+00 ,
+           VALE = -6.4555408008187E+00 ,
            REFERENCE= 'NON_REGRESSION',
-           VERSION  = '9.0.4',
+           VERSION  = '9.1.14',
            CRITERE = 'RELATIF',
            PRECISION = 1E-6,);
 
@@ -483,7 +484,7 @@ TEST_TABLE(TABLE=SXX_B2,
            VALE = -6.6772484619171E+00 ,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 0.025,);
+           PRECISION = 0.040,);
            
 # POUR VISUALISER LE ETA_PILOTAGE = F(INST)
 

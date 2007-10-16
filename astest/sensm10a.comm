@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE COUDE SOUS PRESSION EN 3D (PLASTICITE VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,19 +70,13 @@ PS_DSDE = DEFI_PARA_SENSI(VALE=2000.0,);
 
 NU = DEFI_CONSTANTE(VALE=0.3,);
 
-ALPHA = DEFI_CONSTANTE(VALE=0.00001,);
-
 ACIER1=DEFI_MATERIAU(ELAS_FO=_F(E=PS_E1,
-                            NU=NU,
-                            ALPHA=ALPHA,
-                            TEMP_DEF_ALPHA=0.,),
+                            NU=NU,),
                     ECRO_LINE_FO=_F(D_SIGM_EPSI=PS_DSDE,
                                  SY=PS_SIGY,),);
 
 ACIER2=DEFI_MATERIAU(ELAS_FO=_F(E=PS_E2,
-                            NU=NU,
-                            ALPHA=ALPHA,
-                            TEMP_DEF_ALPHA=0.,),
+                            NU=NU,),
                     ECRO_LINE_FO=_F(D_SIGM_EPSI=PS_DSDE,
                                  SY=PS_SIGY,),);
 

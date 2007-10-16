@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -296,14 +296,17 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                                  MATER = MAT2,
                                  TEMP_REF = 2.9),
                           _F(  GROUP_MA = 'GMA16',
-                                 MATER = MAT3),
+                                 MATER = MAT3,
+                                 TEMP_REF = 0.),
                           _F(  GROUP_MA = 'GMA17',
                                  MATER = MAT4,
                                  TEMP_REF = 1.7),
                           _F(  GROUP_MA = 'GMA18',
-                                 MATER = MAT5),
+                                 MATER = MAT5,
+                                 TEMP_REF = 0.),
                           _F(  GROUP_MA = 'GMA19',
-                                 MATER = MAT6)) )
+                                 MATER = MAT6,
+                                 TEMP_REF = 0.)) )
 
 # DANS CHAQUE GROUP_MA, TOUS LES TYPES DE MAILLES SONT REPRESENTES
 

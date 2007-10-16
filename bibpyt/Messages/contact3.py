@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF contact3 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,10 +35,6 @@ Note DVP: erreur de cohérence fortran/catalogue.
 3 : _("""
 L'option < %(k1)s > ne correspond a aucune option permise par le mot-clef < %(k2)s > dans AFFE_CONTACT. Contactez les développeurs.
 Note DVP: erreur de cohérence fortran/catalogue.            
-"""),
-
-5 : _("""
-Le type de formulation du contact (DISCRET/CONTINUE/XFEM) doit être le même pour toutes les zones de contact.
 """),
 
 10 : _("""

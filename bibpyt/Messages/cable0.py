@@ -1,4 +1,4 @@
-#@ MODIF cable0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF cable0 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,13 @@ def _(x) : return x
 cata_msg={
 1: _("""
 INST_FIN plus petit que INST_INIT.
+"""),
+
+2: _("""
+
+ --------------------------------------------------------------------------- 
+ DEFI_CABLE_BP - Erreur : MAILLE INTERDIT - UTILISER GROUP_MA               
+ --------------------------------------------------------------------------- 
 """),
 
 }

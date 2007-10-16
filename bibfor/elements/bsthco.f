@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       I, ICARA, ICOMPO, ICOU, IER, IMATE, INTE, INTSN,
      &              INTSR, ITEMP, ITEMPF, ITREF, JGEOM, LZI, LZR, NB1,
-     &              NB2, NBCOU, NBPAR, NBV, NPGE, NPGSN, NPGSR, KWGT,
+     &              NB2, NBCOU, NPGE, NPGSN, NPGSR, KWGT,
      &              ITAB(8), IRET
       PARAMETER (NPGE=3)
       REAL*8        VECTA(9,2,3),VECTN(9,3),VECTPT(9,2,3)
@@ -60,12 +60,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        BTDF(3,42),BTILD(5,42)
       REAL*8        EPSTH(5),SIGMTH(5),BSIGT1(42)
       REAL*8        KSI3S2,KAPPA,MATC(5,5),VALPU(2)
-      REAL*8        ALPHA, COEF, DEUX, EPAIS, EPTOT, QUATRE, T, TEMPG3,
+      REAL*8        COEF, DEUX, EPAIS, EPTOT, QUATRE, T,
      &              TINF, TPG1, TREF, TROIS, TSUP, UN, VALPAR, VALRES,
-     &              ZERO, ZIC, ZMIN, TEMPG, TEMPG1, TEMPG2
+     &              ZERO, ZIC, ZMIN, EPSTHE
       LOGICAL       TEMPNO
       CHARACTER*2   CODRET
-      CHARACTER*8   NOMPU(2) , NOMRES(2) , NOMPAR
+      CHARACTER*8   NOMPU(2) , NOMPAR
       CHARACTER*10  PHENOM
 C     ------------------------------------------------------------------
 C
@@ -165,16 +165,10 @@ C --- RECUPERATION DU MATERIAU :
 C     ------------------------
       CALL JEVECH('PMATERC','L',IMATE)
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
-      NOMRES(1) = 'E'
-      NOMRES(2) = 'NU'
 C______________________________________________________________________
 C
 C---- RECUPERATION DE LA TEMPERATURE
 C
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
-      CALL MOYTEM('RIGI',NPGE,3,'+',VALPAR)
-      NBPAR = 1
-      NOMPAR = 'TEMP'
 C
       INDITH = .TRUE.
 C______________________________________________________________________
@@ -311,26 +305,16 @@ C           -------------------
 C
 C ---       EVALUATION DES DEFORMATIONS THERMIQUES :
 C           ======================================
-            CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
-            CALL MOYTEM('RIGI',INTE,3,'+',TEMPG)
-            NBPAR = 1
-            NOMPAR = 'TEMP'
+            CALL VERIFM('RIGI',INTE,3,'+',ZI(IMATE),PHENOM,
+     &                   1,EPSTHE,IRET)
+            CALL MOYTEM('RIGI',INTE,3,'+',VALPAR,IRET)
 C
-C
-            VALPAR = TEMPG
-            NBV = 1
-            NOMRES(1)  = 'ALPHA'
-            CALL RCVALA ( ZI(IMATE) ,' ',PHENOM ,NBPAR ,NOMPAR, VALPAR,
-     &                    NBV , NOMRES , VALRES , CODRET , '  ' )
-            IF (CODRET.NE.'OK') VALRES = ZERO
-            ALPHA = VALRES
-C
-            EPSTH(1) = ALPHA*(TEMPG-TREF)
-            EPSTH(2) = ALPHA*(TEMPG-TREF)
+            EPSTH(1) = EPSTHE
+            EPSTH(2) = EPSTHE
 C
 C ---       CALCUL DE LA MATRICE DE COMPORTEMENT  MATC(5,5) :
 C           ----------------------------------------------
-            CALL MATRC2( NBPAR, NOMPAR, VALPAR, KAPPA, MATC, VECTT )
+            CALL MATRC2( 1, 'TEMP    ', VALPAR, KAPPA, MATC, VECTT )
 C
 C ---       CALCUL DES CONTRAINTES THERMIQUES SIGMTH(5) :
 C           -------------------------------------------

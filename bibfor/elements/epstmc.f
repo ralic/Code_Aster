@@ -1,7 +1,7 @@
       SUBROUTINE  EPSTMC(FAMI,NDIM, INSTAN, POUM, IGAU,ISGAU,
      &                   XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
 C
            REAL*8 VALRES(NBRES),VALPAR,BENDOG,KDESSI,ANGL(3)
            REAL*8 DIRE(3),ORIG(3),P(3,3),EPSTHL(6)
-           REAL*8 VEPST1(6),VEPST2(6),HYDR,SECH,SREF,TEMPE,TREF
+           REAL*8 VEPST1(6),VEPST2(6),HYDR,SECH,SREF
            INTEGER I,J,K,IRET
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -78,8 +78,6 @@ C
       CALL RCVARC(' ','SECH','REF',FAMI,1,1,SREF,IRET)
       IF (IRET.EQ.1) SREF=0.D0
 
-      CALL RCVARC('F','TEMP',POUM,FAMI,IGAU,ISGAU,TEMPE,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
 C
 C ---- ------------------------------------------------------------
 C ---- CALCUL DES DEFORMATIONS HYDRIQUES (OPTION CHAR_MECA_HYDR_R)
@@ -150,22 +148,10 @@ C ---- CAS ISOTROPE
 C      ------------
       IF (PHENOM.EQ.'ELAS') THEN
 C
-          NOMRES(1) = 'ALPHA'
-          NBV = 1
-C
-C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
-C     ----------------------------------------------------
-          CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
-     &                VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
-C
-          IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
-C
-          ALPHA = VALRES(1)
-C
-          EPSTH(1) = ALPHA*(TEMPE-TREF)
-          EPSTH(2) = ALPHA*(TEMPE-TREF)
-          EPSTH(3) = ALPHA*(TEMPE-TREF)
-C
+          CALL VERIFT(FAMI,IGAU,ISGAU,POUM,MATER,'ELAS',1,EPSTH(1),IRET)
+          EPSTH(2) = EPSTH(1)
+          EPSTH(3) = EPSTH(1)
+
 C      --------------
 C ---- CAS ORTHOTROPE
 C      --------------
@@ -186,30 +172,14 @@ C
             ORIG(3) = REPERE(7)
             CALL UTRCYL(XYZGAU,DIRE,ORIG,P)
           ENDIF
-          NOMRES(1)='ALPHA_L'
-          NOMRES(2)='ALPHA_T'
-          NOMRES(3)='ALPHA_N'
-          NBV = 3
-C
-C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
-C     ------------------------------------------------------------
-          CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
-     &                VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
-C
-          IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
-          IF (CODRET(2).NE.'OK') VALRES(2) = ZERO
-          IF (CODRET(3).NE.'OK') VALRES(3) = ZERO
-C
-          ALPHAL = VALRES(1)
-          ALPHAT = VALRES(2)
-          ALPHAN = VALRES(3)
-C
-          EPSTHL(1) = ALPHAL*(TEMPE-TREF)
-          EPSTHL(2) = ALPHAT*(TEMPE-TREF)
-          EPSTHL(3) = ALPHAN*(TEMPE-TREF)
+
+          CALL VERIFT(FAMI,IGAU,ISGAU,POUM,MATER,PHENOM,3,
+     &                EPSTHL(1),IRET)
+
           EPSTHL(4) = 0.D0
           EPSTHL(5) = 0.D0
           EPSTHL(6) = 0.D0
+
 
 
           VEPST1(1)=EPSTHL(1)
@@ -252,24 +222,11 @@ C
             CALL UTRCYL(XYZGAU,DIRE,ORIG,P)
           ENDIF
 
-          NOMRES(1)='ALPHA_L'
-          NOMRES(2)='ALPHA_N'
-          NBV = 2
+          CALL VERIFT(FAMI,IGAU,ISGAU,POUM,MATER,PHENOM,2,
+     &                EPSTHL(1),IRET)
 C
-C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
-C     ------------------------------------------------------------
-          CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
-     &                VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
-C
-          IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
-          IF (CODRET(2).NE.'OK') VALRES(2) = ZERO
-C
-          ALPHAL = VALRES(1)
-          ALPHAN = VALRES(2)
-C
-          EPSTHL(1) = ALPHAL*(TEMPE-TREF)
-          EPSTHL(2) = ALPHAL*(TEMPE-TREF)
-          EPSTHL(3) = ALPHAN*(TEMPE-TREF)
+          EPSTHL(3) = EPSTHL(2)
+          EPSTHL(2) = EPSTHL(1)
           EPSTHL(4) = 0.D0
           EPSTHL(5) = 0.D0
           EPSTHL(6) = 0.D0

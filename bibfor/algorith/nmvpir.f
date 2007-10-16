@@ -6,7 +6,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C -------------------------------------------------------------
      &                  EPSFAB,TPREC,
      &                  VALDRP,TTAMAX,
      &                  A,B,CTPS,ENER
-      REAL*8            FLUPHI,TM,TP,TREF
+      REAL*8            FLUPHI,TM,TP
       REAL*8            VALDRP,TTAMAX
       REAL*8            EPSFAB,TPREC
       REAL*8            A,B,CTPS,ENER
@@ -93,8 +93,8 @@ C     COMMON POUR LES PARAMETRES DE LA LOI DE LEMAITRE (NON IRRADIEE)
       REAL*8            UNSURK,UNSURM,VALDEN
 C PARAMETRES MATERIAUX
 C ELASTIQUES
-      REAL*8            ALPHAP,EP,NUP,TROIKP,DEUMUP
-      REAL*8            ALPHAM,EM,NUM,TROIKM,DEUMUM
+      REAL*8            EP,NUP,TROIKP,DEUMUP
+      REAL*8            EM,NUM,TROIKM,DEUMUM
 C AUTRES
       INTEGER   NBCLEM, NBCVIL, NBCCYR, NBCEPR, NBCINT
       PARAMETER (NBCLEM=7, NBCVIL=5, NBCCYR=3, NBCEPR=3, NBCINT=2)
@@ -112,7 +112,7 @@ C GRANDISSEMENT
       CHARACTER*(*) FAMI
 C
       REAL*8            T1,T2,DEFAM(6),DEFAP(6)
-      INTEGER           IULMES,IUNIFI,IRET2
+      INTEGER           IULMES,IUNIFI,IRET1,IRET2,IRET3
       REAL*8            RAC2,TABS,R8T0,R8VIDE
       INTEGER           K,L
       INTEGER           NDIMSI
@@ -121,7 +121,7 @@ C
       COMMON /TDIM/     NDT , NDI
       REAL*8            DEPSGR,DP1,DEV(6),LCNRTS
       REAL*8            DEGRAN(6)
-      REAL*8            DEPSTH(6)
+      REAL*8            DEPSTH(6),EPSTHE
       REAL*8            DEPSDV(6),SIGDV(6),SIGEL(6),EPSMO,SIGMO
       REAL*8            SIEQM,SIEQP,D
       REAL*8            XNUMER
@@ -142,11 +142,18 @@ C
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
 C
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
 
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET3)
       THETA = CRIT(4)
+C TEMPERATURE AU MILIEU DU PAS DE TEMPS
+      IF (IRET3.EQ.0) THEN
+        TSCHEM = TM*(1.D0-THETA)+TP*THETA
+      ELSE
+        TSCHEM = 0.D0
+      ENDIF
+
       T1 = ABS(THETA-0.5D0)
       T2 = ABS(THETA-1.D0)
       PREC = 0.01D0
@@ -169,8 +176,6 @@ C DEFORMATIONS DE GRANDISSEMENT
       CALL R8INIR(6,0.D0,DEGRAN,1)
       CALL R8INIR(3,0.D0,COEFGR,1)
       DEPSGR = 0.D0
-C TEMPERATURE AU MILIEU DU PAS DE TEMPS
-      TSCHEM = TM*(1.D0-THETA)+TP*THETA
 C DEFORMATION PLASTIQUE CUMULEE
       DPC = VIM(1)
 C INCREMENT DE TEMPS
@@ -218,14 +223,15 @@ C
 C CARACTERISTIQUES ELASTIQUES VARIABLES
 C
       CALL NMASSE(FAMI,KPG,KSP,'-',IMATE,' ',INSTAM,
-     &            EM,NUM,ALPHAM,DEUMUM,TROIKM)
+     &            EM,NUM,DEUMUM,TROIKM)
 
 C CONNERIE DE COMMON DEBILE
       DEUXMU = DEUMUM
 
       CALL NMASSE(FAMI,KPG,KSP,'+',IMATE,' ',INSTAP,
-     &            EP,NUP,ALPHAP,DEUMUP,TROIKP)
+     &            EP,NUP,DEUMUP,TROIKP)
 
+    
 C ----------------------------------------------------------------------
 C ASSEMBLAGE COMBUSTIBLE
 C       LOIS DE COMPORTEMENT DISPONIBLES :
@@ -236,10 +242,12 @@ C ----------------------------------------------------------------------
 
 C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 
-         CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
+         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE_IRRA',
+     &                 0,' ',0.D0,
      &                 7,NOMLEM,COELEM,CODLEM, 'FM' )
 
-         CALL RCVALA(IMATE,' ','LEMAITRE_IRRA',0,' ',0.D0,
+         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE_IRRA',
+     &                 0,' ',0.D0,
      &                 3,NOMGRD,COEFGR,CODGRA, 'FM' )
 C          FLUX NEUTRONIQUE
          FLUPHI = (IRRAP-IRRAM)/DELTAT
@@ -275,7 +283,8 @@ C         PARAMETRES DE LA LOI DE FLUAGE
 
       ELSE IF (COMPOR(1)(1:10).EQ.'VISC_IRRA_') THEN
 C        PARAMETRES DE LA LOI DE FLUAGE
-         CALL RCVALA(IMATE,' ','VISC_IRRA_',1,'TEMP',TSCHEM,
+         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','VISC_IRRA_',
+     &           1,'TEMP',TSCHEM,
      &           5,NOMVIL(1),COEVIL(1),CODVIL, 'FM' )
          A         = COEVIL(1)
          B         = COEVIL(2)
@@ -292,9 +301,11 @@ C        PARAMETRES DE LA LOI DE FLUAGE
 
       ELSE IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
 C        PARAMETRES DE LA LOI DE FLUAGE
-         CALL RCVALA(IMATE,' ','GRAN_IRRA_',1,' ',0.D0,
+         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','GRAN_IRRA_',
+     &           1,' ',0.D0,
      &           5,NOMVIL(1),COEVIL(1),CODVIL, 'FM' )
-         CALL RCVALA(IMATE,' ','GRAN_IRRA_',0,' ',0.D0,
+         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','GRAN_IRRA_',
+     &               0,' ',0.D0,
      &                 3,NOMGRD,COEFGR,CODGRA, 'FM' )
          IF (CODGRA(3).NE.'OK') THEN
             COEFGR(3) = 1.D0
@@ -313,7 +324,8 @@ C        PARAMETRES DE LA LOI DE FLUAGE
          ENER  = COEVIL(4)
 
       ELSE IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
-         CALL RCVALA(IMATE,' ','LEMA_SEUIL',1,'TEMP',TSCHEM,
+         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMA_SEUIL',
+     &              1,'TEMP',TSCHEM,
      &              2,NOMINT(1),COEINT(1),CODINT, 'FM' )
          UNSURM=0.D0
          VALDEN=1.D0
@@ -349,8 +361,14 @@ C       TRAITEMENT DES PARAMETRES DE LA LOI DE GRANDISSEMENT
 C
       IF ((COEFGR(1).NE.0.D0).OR.(COEFGR(2).NE.0.D0)) THEN
 C      DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL
+         IF (IRET3.EQ.0) THEN
          DEPSGR = (COEFGR(1)*TP+COEFGR(2))*(IRRAP**COEFGR(3))-
      &            (COEFGR(1)*TM+COEFGR(2))*(IRRAM**COEFGR(3))
+         ELSE
+         DEPSGR = (COEFGR(2))*(IRRAP**COEFGR(3))-
+     &            (COEFGR(2))*(IRRAM**COEFGR(3))
+
+         ENDIF
 
 C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT
          IF (NDIM.EQ.2) THEN
@@ -378,7 +396,7 @@ C
 
       DO 110 K=1,3
          DEPSTH(K)   = DEPS(K)
-     &                -(ALPHAP*(TP-TREF)-ALPHAM*(TM-TREF))
+     &                -EPSTHE
      &                -(DEFAP(K)-DEFAM(K))
          DEPSTH(K) = DEPSTH(K) - DEGRAN(K)
          DEPSTH(K)   = DEPSTH(K) * THETA
@@ -393,7 +411,6 @@ C
  110  CONTINUE
 C
       EPSMO = EPSMO/3.D0
-
       DO 111 K=1,NDIMSI
          DEPSDV(K)   = DEPSTH(K) - EPSMO * KRON(K)
  111  CONTINUE

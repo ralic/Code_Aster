@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -57,14 +57,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       REAL*8       PGL(3,3), KLC(6,6), ENERTH,EPSGL(6)
       REAL*8       UGR(6),ULR(6),FLR(6),EPS(6)
-      CHARACTER*2  BL2, CODRES
+      CHARACTER*2  CODRES
       CHARACTER*4  FAMI
       CHARACTER*16 CH16
       LOGICAL      LTEIMP
-      REAL*8       A,ALPHAT,E,R8BID,RHO,TEMP,XFL1,XFL4,XL,XMAS,XRIG,TREF
+      REAL*8       A,EPSTH,E,R8BID,RHO,XFL1,XFL4,XL,XMAS,XRIG,TREF
       INTEGER      I,IF,ITYPE,J,JDEPL,JEFFO,JENDE,JFREQ,JDEFO,KANL
       INTEGER      LMATER,LORIEN,LSECT,LTEMP,IRET,LX,NC,NNO
 C     ------------------------------------------------------------------
+
       LTEIMP = .FALSE.
       NNO = 2
       NC  = 3
@@ -77,19 +78,14 @@ C
       ENDIF
 C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-      IF (IRET.EQ.1) TREF=0.D0
-      CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET)
-      IF (IRET.EQ.1) TEMP=TREF
-      TEMP=TEMP-TREF
-
-      BL2 = '  '
       CALL JEVECH ('PMATERC', 'L', LMATER)
-      CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+
+      CALL VERIFT(FAMI,1,1,'+',ZI(LMATER),'ELAS',1,EPSTH,IRET)
+
+      CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),' ','ELAS',
+     &            0,' ',R8BID,1,'E',E,
      &            CODRES, 'FM' )
-      CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',ALPHAT,
-     &            CODRES , BL2 )
-      IF ( CODRES .EQ. 'OK' ) LTEIMP = .TRUE.
+      IF (EPSTH.NE.0.D0) LTEIMP =.TRUE.
 C
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       CALL JEVECH ('PGEOMER', 'L',LX)
@@ -163,12 +159,13 @@ C     --- ENERGIE DE DEFORMATION ----
          CALL PTENPO(6,ULR,KLC,ZR(JENDE),IF,IF)
 C
          IF ( LTEIMP ) THEN
-           CALL PTENTH(ULR,XL,ALPHAT,6,KLC,IF,ENERTH)
+           CALL PTENTH(ULR,XL,EPSTH,6,KLC,IF,ENERTH)
            ZR(JENDE) = ZR(JENDE) - ENERTH
          ENDIF
 C
       ELSEIF( OPTION .EQ. 'ECIN_ELEM_DEPL' ) THEN
-         CALL RCVALA ( ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
+         CALL RCVALB(FAMI,1,1,'+', ZI(LMATER),' ','ELAS',
+     &                 0,' ',R8BID,1,'RHO',RHO,
      &                 CODRES , 'FM' )
          CALL JEVECH ('PENERCR', 'E', JENDE)
          CALL JEVECH ('PFREQR' , 'L', JFREQ)
@@ -201,14 +198,11 @@ C
 C        --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
          IF ( LTEIMP ) THEN
 C
-            IF ( TEMP .NE. 0.D0 ) THEN
-C
 C              --- CALCUL DES FORCES INDUITES ---
-               XFL1 = -ALPHAT * TEMP * E * A
+               XFL1 = -EPSTH * E * A
                XFL4 = -XFL1
                FLR(1) = FLR(1) - XFL1
                FLR(4) = FLR(4) - XFL4
-            ENDIF
          ENDIF
 C
          IF ( OPTION .EQ. 'EFFO_ELNO_DEPL' ) THEN

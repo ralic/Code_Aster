@@ -1,4 +1,4 @@
-# MODIF  DATE 27/08/2007   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -367,17 +367,17 @@ CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                                  NOM_VARC='TEMP',
                                  VALE_REF = 2.9),
                           _F(  GROUP_MA = 'GMA16',
-                                 EVOL=THLIN,
+                                 EVOL=THLIN,VALE_REF=0.,
                                  NOM_VARC='TEMP'),
                           _F(  GROUP_MA = 'GMA17',
                                  EVOL=THLIN,
                                  NOM_VARC='TEMP',
                                  VALE_REF=1.7),
                           _F(  GROUP_MA = 'GMA18',
-                                 EVOL=THLIN,
+                                 EVOL=THLIN,VALE_REF=0.,
                                  NOM_VARC='TEMP'),
                           _F(  GROUP_MA = 'GMA19',
-                                 EVOL=THLIN,
+                                 EVOL=THLIN,VALE_REF=0.,
                                  NOM_VARC='TEMP')) )
 
 

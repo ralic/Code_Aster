@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,28 +50,28 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      PARAMETER (NBRES=4,NBREF=6)
+      PARAMETER (NBRES=3,NBREF=6)
       PARAMETER (NDDL=12,NL=NDDL*(NDDL+1)/2)
       REAL*8 VALRES(NBRES),VALREF(NBREF)
       CHARACTER*2 CODRES(NBRES),CODREF(NBREF),DERIVE
-      CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMREF(NBREF),MATERI
+      CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMREF(NBREF)
       CHARACTER*16 CH16
-      REAL*8 ZERO,E,NU,ALPHA,RHO
+      REAL*8 ZERO,E,NU,RHO
       REAL*8 KLV(78),KLC(12,12),KLCS(12,12)
       REAL*8 MLV(78),MLC(12,12)
       REAL*8 EFGE(12)
       CHARACTER*24 SUROPT
-      INTEGER ICOMPO,ISDCOM,NBGFMX
+      INTEGER ICOMPO,ISDCOM,IRET
 C     ------------------------------------------------------------------
-      DATA NOMRES/'E','NU','ALPHA','RHO'/
+      DATA NOMRES/'E','NU','RHO'/
       DATA NOMREF/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
 C     --------------------------------------------------
       ZERO = 0.D0
-
+ 
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
-      CALL MOYTEM('NOEU',2,1,'+',VALPAR)
+      CALL MOYTEM('NOEU',2,1,'+',VALPAR,IRET)
       NOMPAR = 'TEMP'
       NBPAR = 1
 
@@ -81,11 +81,11 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         CALL JEVECH('PABSCUR','L',LABSC)
         CALL JEVECH('PCAGEPO','L',LCAGE)
         ABSMOY = (ZR(LABSC-1+1)+ZR(LABSC-1+2))/2.D0
-        CALL RCVALA(ZI(LMATER),' ','ELAS_FLUI',1,'ABSC',ABSMOY,NBREF,
+        CALL RCVALB('NOEU',1,1,'+',ZI(LMATER),' ','ELAS_FLUI',
+     &             1,'ABSC',ABSMOY,NBREF,
      &             NOMREF, VALREF,CODREF,'FM')
         E = VALREF(1)
         NU = VALREF(2)
-        ALPHA = 0.D0
         RHOS = VALREF(3)
         RHOFI = VALREF(4)
         RHOFE = VALREF(5)
@@ -99,25 +99,20 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       ELSE
         IF(NOMTE(1:13).NE.'MECA_POU_D_EM')THEN
-          CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
+          CALL RCVALB('NOEU',1,1,'+',ZI(LMATER),' ','ELAS',
+     &              NBPAR,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRES,'FM')
-          CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
+          CALL RCVALB('NOEU',1,1,'+',ZI(LMATER),' ','ELAS',
+     &             NBPAR,NOMPAR,VALPAR,1,
      &             NOMRES(3), VALRES(3),CODRES(3),'  ')
           IF (CODRES(3).NE.'OK') VALRES(3) = ZERO
-          IF (CODRES(4).NE.'OK') VALRES(4) = ZERO
           E = VALRES(1)
           NU = VALRES(2)
-          ALPHA = VALRES(3)
-          RHO = VALRES(4)
+          RHO = VALRES(3)
         ELSE
 C    --- RECUPERATION DU MATERIAU TORSION POUR ALPHA
           CALL JEVECH('PCOMPOR','L',ICOMPO)
           CALL JEVEUO(ZK16(ICOMPO-1+6),'L',ISDCOM)
-          READ(ZK16(ICOMPO-1+7),'(I16)')NBGFMX
-          MATERI=ZK16(ISDCOM+6*NBGFMX)(1:8)
-          CALL RCVALA(ZI(LMATER),MATERI,'ELAS',NBPAR,NOMPAR,VALPAR,1,
-     +                                  'ALPHA',ALPHA,CODRES,'  ')
-          IF (CODRES(1).NE.'OK') ALPHA = ZERO
         ENDIF
       END IF
 
@@ -135,7 +130,7 @@ C     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
 
       IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
         CALL JEVECH('PEFFORR','E',JEFFO)
-        CALL POEFGR(NOMTE,KLC,E,NU,RHO,ALPHA,ZR(JEFFO))
+        CALL POEFGR(NOMTE,KLC,ZI(LMATER),E,NU,RHO,ZR(JEFFO))
         DO 10 I = 1,6
           ZR(JEFFO+I-1) = -ZR(JEFFO+I-1)
           ZR(JEFFO+I+6-1) = ZR(JEFFO+I+6-1)
@@ -162,7 +157,8 @@ C
 C     --- CALCUL DE LA MATRICE DE RIGIDITE SENSIBLE LOCALE ---
 C
         CALL JEVECH('PMATSEN','L',IMATE)
-        CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
+        CALL RCVALB('NOEU',1,1,'+',ZI(IMATE),' ','ELAS',
+     &            NBPAR,NOMPAR,VALPAR,2,
      &            NOMRES,VALRES,CODRES,'FM')
         E   = VALRES(1)
         XNU = VALRES(2)
@@ -173,7 +169,8 @@ C   SI : DERIVATION PAR RAPPORT A NU ALORS : E = 0 ET XNU = 1
 C ICI, LA FORMULATION DE LA DERIVEE EST PLUS COMPLEXE
 C
         CALL JEVECH('PMATERC','L',IMATE)
-        CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
+        CALL RCVALB('NOEU',1,1,'+',ZI(IMATE),' ','ELAS',
+     &            NBPAR,NOMPAR,VALPAR,2,
      &            NOMRES,VALRES,CODRES,'FM')
         IF(ABS(XNU).LT.R8PREM()) THEN
           DERIVE = 'E'

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CALAGE DES PARAMETRES DU MODELE DE WEIBULL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,26 +165,23 @@ MAILLAGE=M,
                AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = -150.)
                     )
 
-CM=AFFE_MATERIAU(   MAILLAGE=M,
-                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER),)
-
 CM50=AFFE_MATERIAU(   MAILLAGE=M,
                          AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
                          AFFE_VARC=_F(TOUT='OUI',
-                                  CHAMP_GD=TEMP50,
+                                  CHAMP_GD=TEMP50,VALE_REF=0.,
                                   NOM_VARC='TEMP',),)
 
 
 CM100=AFFE_MATERIAU(   MAILLAGE=M,
                          AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
-                         AFFE_VARC=_F(TOUT='OUI',
+                         AFFE_VARC=_F(TOUT='OUI',VALE_REF=0.,
                                   CHAMP_GD=TEMP100,
                                   NOM_VARC='TEMP',),)
 
 CM150=AFFE_MATERIAU(   MAILLAGE=M,
                          AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
                          AFFE_VARC=_F(TOUT='OUI',
-                                  CHAMP_GD=TEMP150,
+                                  CHAMP_GD=TEMP150,VALE_REF=0.,
                                   NOM_VARC='TEMP',),)
 
 L_INST=DEFI_LIST_REEL(    DEBUT=0.,
@@ -232,7 +229,7 @@ T1=RECA_WEIBULL(
                    LIST_PARA=('SIGM_REFE','M',),RESU=(
 
                         _F(   EVOL_NOLI = U1,
-                               CHAM_MATER = CM,
+                               CHAM_MATER = CM50,
                                     TEMPE = -50.,
 
                            LIST_INST_RUPT = ( 10., 20., 30.,
@@ -244,7 +241,7 @@ T1=RECA_WEIBULL(
                             COEF_MULT = 12.5664),
 
                           _F(  EVOL_NOLI = U2,
-                                CHAM_MATER = CM,
+                                CHAM_MATER = CM100,
                                      TEMPE = -100.,
 
                             LIST_INST_RUPT = ( 10.,  20., 30.,
@@ -255,7 +252,7 @@ T1=RECA_WEIBULL(
                                TOUT = 'OUI',
                             COEF_MULT = 12.5664),
                         _F(  EVOL_NOLI = U3,
-                               CHAM_MATER = CM,
+                               CHAM_MATER = CM150,
                                     TEMPE = -150.,
 
                              LIST_INST_RUPT = (  10., 20., 30.,

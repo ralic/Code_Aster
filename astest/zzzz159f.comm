@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2007   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE TEST DU MODE EXTERNE DE LA MACRO-COMMANDE DE RECALAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,10 +39,9 @@ sys.path.append(os.path.join(ROOT, REPPY, 'Utilitai'))
 sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
 
 from Utilitai.System import ExecCommand
-from Utilitai.Utmess import UTMESS
 from as_profil import ASTER_PROFIL
 
-if not commande: UTMESS('F', '', "Probleme : impossible de recuperer le chemin de macr_recal_ops.py")
+if not commande: raise aster.FatalError,"<F> Probleme : impossible de recuperer le chemin de macr_recal_ops.py" 
 
 arguments = "-v 2 -F float -f True -G normal"        # Calcul du gradient par Aster
 commande = '%s %s %s' % (sys.executable, commande, arguments)
@@ -77,7 +76,7 @@ def fonction(val):
       f.write(txt)
       f.close()
    except:
-      UTMESS('F', '', "Probleme : impossible d ecrire le fichier des parametres : \n" + fichier_in)
+      raise aster.FatalError,"<F> Probleme : impossible d ecrire le fichier des parametres : %s" % fichier_in
 
    # Execution de Code_Aster
    iret = ExecCommand(commande, follow_output=verbose, verbose=verbose)
@@ -89,7 +88,7 @@ def fonction(val):
       f.close()
       fval = float(txt)
    except:
-      UTMESS('F', '', "Probleme : impossible de lire le fichier de la fonction F : \n"+fichier_out)
+      raise aster.FatalError,"<F> Probleme : impossible de lire le fichier de la focntion F : %s" % fichier_out
 
    # Affichage
    print '  --> fonctionnelle : ' + str(fval)
@@ -102,7 +101,7 @@ def fonction(val):
          f.close()
          gval = [ float(x) for x in txt.split(',') ]
       except:
-         UTMESS('F', '', "Probleme : impossible de lire le fichier de la fonction G : \n"+fichier_grad_out)
+         raise aster.FatalError,"<F> Probleme : impossible de lire le fichier de la fonction G: %s" % fichier_grad_out
 
       # Affichage
       print '  --> gradient : ' + str(gval)

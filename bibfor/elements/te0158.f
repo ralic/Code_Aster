@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,23 +54,19 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      JEFFG, LMATER, LSECT, LX,IRET,
      &             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES,
-     &             NPG
+     &             NPG,ITEMP
 
       PARAMETER   (        NBRES = 3 )
-      REAL*8        VALRES(NBRES)
       CHARACTER*2   CODRES(NBRES)
       CHARACTER*4  FAMI
-      CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
       INTEGER      LSECT2, IPOS, IN
       REAL*8       B(4),GG,XI,WI
       REAL*8       UL(14), PGL(3,3), D1B(6,12), DEGE(3,7),D1BTG(7,14)
       REAL*8       DEGEM(6)
-      REAL*8       ZERO, UN, DEUX, TEMP, TREF, E, XNU, ALPHA, G, XL
-      REAL*8       A, XIY, XIZ, ALFAY, ALFAZ, PHIY, PHIZ,TEMPG,TEMPP
+      REAL*8       ZERO, UN, DEUX, TEMP, TREF, E, XNU, EPSTHE, G, XL
+      REAL*8       A, XIY, XIZ, ALFAY, ALFAZ, PHIY, PHIZ
       REAL*8       KSI1, D1B3(2,3), EY, EZ
-C     ------------------------------------------------------------------
-      DATA NOMRES / 'E' , 'NU' , 'ALPHA'  /
 C     ------------------------------------------------------------------
       ZERO   = 0.D0
       UN     = 1.D0
@@ -108,24 +104,14 @@ C     --- RECUPERATION DES DEPLACEMENTS ---
       IF(NOMTE.NE.'MECA_POU_D_EM') THEN
 C     --- CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         DO 10 I = 1, NBRES
-            VALRES(I) = ZERO
- 10      CONTINUE
 C
-         CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-         CALL MOYTEM(FAMI,NPG,1,'+',TEMP)
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
+         CALL VERIFM(FAMI,NPG,1,'+',ZI(LMATER),'ELAS',1,EPSTHE,IRET)
+         ITEMP=0
+         IF (IRET.EQ.0) ITEMP=1
+
+         CALL MOYTEM(FAMI,NPG,1,'+',TEMP,IRET)
+         CALL MATELA(ZI(LMATER),' ',ITEMP,TEMP,E,XNU)
 C
-         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,TEMP,2,
-     &              NOMRES,VALRES,CODRES,'FM')
-         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,TEMP,1,
-     &              NOMRES(3),VALRES(3),CODRES(3),'  ')
-         IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
-C
-         E      = VALRES(1)
-         XNU    = VALRES(2)
-         ALPHA  = VALRES(3)
          G = E / ( DEUX * ( UN + XNU ) )
 C
 C        --- CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -200,9 +186,7 @@ C
                   ENDIF
 34             CONTINUE
 32          CONTINUE
-            IF (ALPHA.NE.ZERO) THEN
-               DEGE(KP,1) = DEGE(KP,1) - ALPHA*(TEMP-TREF)
-            ENDIF
+            DEGE(KP,1) = DEGE(KP,1) - EPSTHE
 C
 30       CONTINUE
 C        --- POUR LE POINT 1 ---

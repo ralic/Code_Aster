@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF supervis Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -369,6 +369,18 @@ fichier
 
 85: _("""
  information sur les concepts existants.
+"""),
+
+86: _("""
+ Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré.
+"""),
+
+87: _("""
+Types incompatibles entre glob.1 et pick.1 pour le concept de nom %(k1)s.
+"""),
+
+88: _("""
+Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
 """),
 
 }

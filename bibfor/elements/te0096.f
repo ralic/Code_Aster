@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
       INTEGER  NNO,NNOS,NPG,NCMP,JGANO
       INTEGER  I,J,K,KK,L,M,KP,NDIM,COMPT,NBVARI
       INTEGER  IDEPSE,ITHETA,IJ,IJ1,MATCOD,IDFD2E,
-     &         NBDIV2,IDEB,IFIN,I1,IRET,NPG1
+     &         NBDIV2,IDEB,IFIN,I1,IRET,IRET1,IRET2,NPG1
 
       LOGICAL  GRAND,AXI,CP,FONC,INCR,EPSINI,
      &         TSENUL,DERIVL,LTEATT
@@ -137,7 +137,6 @@ C =====================================================================
       CP     = .FALSE.
       EPSINI = .FALSE.
       TYPMOD(2) = ' '
-
 
       IF (LTEATT(' ','AXIS','OUI')) THEN
         TYPMOD(1) = 'AXIS'
@@ -230,9 +229,10 @@ C LE SIGNE (-) EST UNE CONVENTION POUR RECUPERER LA DERIVEE
          DERTEM(I) = 0.D0
 15     CONTINUE
 
-       DO 16, I = 1, NNO
-         CALL RCVARC(' ','TEMP','-','NOEU',I,1,DERTEM(I),IRET)
-16     CONTINUE
+      DO 16 I = 1,NNO
+        CALL RCVARC(' ','TEMP','-','NOEU',I,1,DERTEM(I),IRET2)
+16    CONTINUE
+
 C POINTEURS SUR LEURS DERIVEES SECONDES
 C (ATTENTION QU'EN NPG1 ET NNO=6, 8 OU 9, CF. INIT099)
         CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,JCOOPG,IVF,
@@ -403,8 +403,8 @@ C DE REFERENCE
 C ======================================================================
 
       DO 645 KP = 1,NNO
-        CALL RCVARC('F','TEMP','+','NOEU',KP,1,TN(KP),IRET)
-        IF (IRET.EQ.1) TN(KP)=0.D0
+        CALL RCVARC(' ','TEMP','+','NOEU',KP,1,TN(KP),IRET1)
+
   645 CONTINUE
 
 C ======================================================================
@@ -481,10 +481,14 @@ C   DE LA TEMPERATURE AUX POINTS DE GAUSS (TG) ET SON GRADIENT (TGDM)
           DER(1) = DFDI(I)
           DER(2) = DFDI(I+NNO)
           DER(4) = ZR(IVF+L+I1)
+          IF (IRET1.EQ.0) THEN
+            DO 309 J=1,NDIM
+              TGDM(J)     = TGDM(J)   + TN(I)*DER(J)
+309         CONTINUE
+          ENDIF
           DO 310 J=1,NDIM
             IJ1 = NDIM*I1+J
             IJ = IJ1 - 1
-            TGDM(J)     = TGDM(J)   + TN(I)*DER(J)
             DO 300 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+IJ)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+IJ)*DER(K)
@@ -519,12 +523,16 @@ C CALCUL DES DERIVEES SECONDES DES FONCTIONS DE FORMES
 C . DERIVEE DU DEPLACEMENT (GRADDU(.,4)) ET DE SON GRADIENT (GRADDU),
 C . THETA SENSIBILITE (GRADTH(.,4)) ET DE SON GRADIENT (GRADTH),
 C . DERIVEE DE LA TEMPERATURE (TEMSEG) ET DE SON GRADIENT (DTEMSG).
-          DO 323 I=1,NNO
+          IF (IRET2.EQ.0) THEN
+            DO 323 I=1,NNO
+            TEMSEG = TEMSEG + DERTEM(I)*ZR(IVF+L+I-1)
+323        CONTINUE
+          ENDIF
+          DO 324 I=1,NNO
             I1 = I-1
             DER(1) = DFDI(I)
             DER(2) = DFDI(I+NNO)
             DER(4) = ZR(IVF+L+I1)
-            TEMSEG = TEMSEG + DERTEM(I)*DER(4)
             DO 322 J=1,NDIM
               IJ1 = NDIM*I1+J
               IJ = IJ1 - 1
@@ -536,7 +544,7 @@ C . DERIVEE DE LA TEMPERATURE (TEMSEG) ET DE SON GRADIENT (DTEMSG).
               GRADDU(J,4) = GRADDU(J,4) + ZR(IDEPSE+IJ)*DER(4)
               GRADTH(J,4) = GRADTH(J,4) + ZR(ITHETA+IJ)*DER(4)
 322         CONTINUE
-323       CONTINUE
+324       CONTINUE
 
 C ====================================
 C SI LE THETA SENSIBILITE EST NON NUL
@@ -552,11 +560,13 @@ C DEPLACEMENT (DDUDM).
 C ON TRANSFORME GRAD(DL(T)) EN DL(GRAD(T)) (DTEMSG).
 
           IF (.NOT.TSENUL) THEN
-            DO 502 I=1,NDIM
-              DO 501 J=1,NDIM
-                DTEMSG(I) = DTEMSG(I) - TGDM(J)*GRADTH(J,I)
-501           CONTINUE
-502         CONTINUE
+            IF (IRET1.EQ.0) THEN
+              DO 502 I=1,NDIM
+                DO 501 J=1,NDIM
+                  DTEMSG(I) = DTEMSG(I) - TGDM(J)*GRADTH(J,I)
+501             CONTINUE
+502           CONTINUE
+            ENDIF
             DO 353 I=1,NNO
               DER(1) = DFD2DI(I)
               DER(2) = DFD2DI(I+NNO)
@@ -583,39 +593,39 @@ C ON TRANSFORME GRAD(DL(T)) EN DL(GRAD(T)) (DTEMSG).
 
 C CALCUL DE TERMES AUXILIAIRES POUR LA DERIVATION DE EPS (TAUX) ET DE
 C CELLE DU THETA FISSURE (DLDTDM)
-          DO 326 I=1,NDIM
-            DO 325 J=1,NDIM
-              DO 324 K=1,NDIM
+          DO 327 I=1,NDIM
+            DO 326 J=1,NDIM
+              DO 325 K=1,NDIM
                 TAUX(I,J) = TAUX(I,J) + DUDM(I,K)*GRADTH(K,J)
 C DL(THETAFISSURE)=0 C'EST UNE SORTE DE FONCTION TEST
                 DLDTDM(I,J) = DLDTDM(I,J) - DTDM(I,K)*GRADTH(K,J)
-324           CONTINUE
-325        CONTINUE
-326       CONTINUE
+325           CONTINUE
+326        CONTINUE
+327       CONTINUE
         ENDIF
 C =======================================
 C FIN DU IF THETA SENSIBILITE EST NON NUL
 C =======================================
 
 C CALCUL DE LA DERIVEE DE EPS (DEPS)
-        DO 328 I=1,NDIM
-          DO 327 J=1,NDIM
+        DO 329 I=1,NDIM
+          DO 328 J=1,NDIM
             DDUDM(I,J) = GRADDU(I,J) - TAUX(I,J)
-327       CONTINUE
-328     CONTINUE
+328       CONTINUE
+329     CONTINUE
 
-        DO 331 I=1,NDIM
-          DO 330 J=1,I
+        DO 332 I=1,NDIM
+          DO 331 J=1,I
             TMP = DDUDM(I,J) + DDUDM(J,I)
             IF (GRAND) THEN
-              DO 329 K=1,NDIM
+              DO 330 K=1,NDIM
                 TMP = TMP + (DDUDM(K,I)* DUDM(K,J)+
      &                        DUDM(K,I)*DDUDM(K,J))
-329           CONTINUE
+330           CONTINUE
             ENDIF
             DEPSTA(I,J) = 0.5D0*TMP
-330       CONTINUE
-331     CONTINUE
+331       CONTINUE
+332     CONTINUE
 
 C TRAITEMENTS PARTICULIERS LIES A LA REPRESENTATION DES TENSEURS
 C (RAC2), A L'INCIDENCE DE L'AXISYMETRIE SUR LES GRADIENTS ET
@@ -1022,37 +1032,52 @@ C               MULTIPLIE PAR LE POIDS, COMME POUR DTINI CI-APRES ?
 C =======================================================
 C TERME THERMIQUE :   -(D(ENER)/DT)(GRAD(T).THETA)
 C =======================================================
-
-        PROD = 0.D0
-        PROD2 = 0.D0
-        DO 500 I=1,NDIM
-          PROD = PROD + TGDM(I)*DTDM(I,4)
-500     CONTINUE
-        PROD2 = - POIDS*PROD*ENERGI(2)
+        IF (IRET1.EQ.0) THEN
+          PROD = 0.D0
+          PROD2 = 0.D0
+          DO 500 I=1,NDIM
+            PROD = PROD + TGDM(I)*DTDM(I,4)
+500       CONTINUE
+          PROD2 = - POIDS*PROD*ENERGI(2)
 C
-        IF ( DERIVL ) THEN
+          IF ( DERIVL ) THEN
 C LE TERME DPROD1 CORRESPOND A DL(T,I)*THFI
 C LE TERME DPROD2 CORRESPOND A T,I*DL(THFI)
 C LE TERME DENERG(2) A DL(DERIVEE EN T DE L'ENERGIE LIBRE)
-          DPROD1 = 0.D0
-          DPROD2 = 0.D0
-          DO 503 I=1,NDIM
-            DPROD1 = DPROD1 + DTEMSG(I)*DTDM(I,4)
+            DPROD1 = 0.D0
+            DPROD2 = 0.D0
+            DO 503 I=1,NDIM
+              DPROD1 = DPROD1 + DTEMSG(I)*DTDM(I,4)
+              IF (.NOT.TSENUL) THEN
+                DPROD2 = DPROD2 + TGDM(I)*DTDM(I,5)
+              ENDIF
+503         CONTINUE
+            DTTHE = DTTHE - POIDS*(DPROD1*ENERGI(2)+PROD*DENERG(2))
             IF (.NOT.TSENUL) THEN
-              DPROD2 = DPROD2 + TGDM(I)*DTDM(I,5)
+               DTTHE = DTTHE
+     &               - POIDS*DPROD2*ENERGI(2) + PROD2*DIVTS
             ENDIF
-503       CONTINUE
-          DTTHE = DTTHE - POIDS*(DPROD1*ENERGI(2)+PROD*DENERG(2))
-          IF (.NOT.TSENUL) THEN
-             DTTHE = DTTHE
-     &             - POIDS*DPROD2*ENERGI(2) + PROD2*DIVTS
-          ENDIF
 C GN REMARQUE : EST-CE NORMAL QUE PROD2*DIVTS NE SOIT PAS
 C               MULTIPLIE PAR LE POIDS, COMME POUR DTINI CI-APRES ?
+          ELSE
+            TTHE = TTHE + PROD2
+          ENDIF
         ELSE
-          TTHE = TTHE + PROD2
-        ENDIF
-
+          IF ( DERIVL ) THEN
+C LE TERME DPROD1 CORRESPOND A DL(T,I)*THFI
+C LE TERME DPROD2 CORRESPOND A T,I*DL(THFI)
+C LE TERME DENERG(2) A DL(DERIVEE EN T DE L'ENERGIE LIBRE)
+            DPROD1 = 0.D0
+            DO 504 I=1,NDIM
+              DPROD1 = DPROD1 + DTEMSG(I)*DTDM(I,4)
+504         CONTINUE
+            DTTHE = DTTHE - POIDS*(DPROD1*ENERGI(2))
+C GN REMARQUE : EST-CE NORMAL QUE PROD2*DIVTS NE SOIT PAS
+C               MULTIPLIE PAR LE POIDS, COMME POUR DTINI CI-APRES ?
+          ELSE
+            TTHE = 0.D0
+          ENDIF
+        ENDIF   
 C =======================================================
 C TERME FORCE VOLUMIQUE
 C REMARQUE : POUR LA DERIVEE, TFOR EST INUTILE.

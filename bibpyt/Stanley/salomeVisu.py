@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 04/06/2007   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF salomeVisu Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,14 +21,7 @@
 debug = False
 
 import os, commands, string, sys, socket
-
-try:
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
-
+from Utilitai.Utmess import UTMESS
 from pylotage.TOOLS import *
 from graphiqueTk import *
 import cata_champs
@@ -79,7 +72,7 @@ class VISU:
         try:
            studyList = self.__studyList( self.salomeParam )
         except:
-           UTMESS('A','STANLEY',_("Impossible de contacter le serveur SALOME! Verifier qu'il est bien lancé.") )
+           UTMESS('A','STANLEY_14')
            return 
 
         if studyList:
@@ -104,7 +97,7 @@ class VISU:
                try:
                   amachineName = socket.gethostname()
                except:
-                  UTMESS('A','STANLEY', _("Impossible de recuperer le nom de la machine locale! Solution alternative : utiliser le mode DISTANT en indiquant l'adresse IP ou le nom de la machine dans la case 'machine de salome'.") )
+                  UTMESS('A','STANLEY_15')
                   return {}
 
                result[ 'machineName']  = amachineName
@@ -119,20 +112,20 @@ class VISU:
             # Verifications
             for var in lst:
                 if not param[var].strip():
-                    UTMESS('A','STANLEY', _("Pour visualisation dans Salome, la variable '") + var + _("' est obligatoire. On abandonne.") )
+                    UTMESS('A','STANLEY_16', valk=[var])
                     return {}
 
             if '-ORBInitRef' not in sys.argv:
                 key = 'machine_salome_port'
                 nsPort = param[ key ]
                 if not nsPort:
-                    UTMESS('A','STANLEY', _("Pour visualisation dans Salome, la variable machine_salome_port est obligatoire. On abandonne.") )
+                    UTMESS('A','STANLEY_17')
                     return {}                    
                 aORBInitRef     = 'NameService=corbaname::%s:%s' %(  amachineName, nsPort  )
                 result[ 'ORBInitRef' ]  = aORBInitRef
 
         except KeyError:            
-            UTMESS('A','STANLEY', _("Pour visualisation dans Salome, la variable '") + key + _("' est obligatoire. On abandonne.") )
+            UTMESS('A','STANLEY_16',valk=[key])
             return {}
         except:            
             return {}
@@ -244,7 +237,7 @@ class ISOVALEURS( VISU ):
 
         # Copie du fichier
         cmd = copie + " " + fichier + " " + fmdis
-        UTMESS('I','STANLEY',_("Execution de : ") + cmd)
+        UTMESS('I','STANLEY_9',valk=[cmd])
         code, output = commands.getstatusoutput( cmd )
         if code!=0: 
             raise _("Erreur exécution commande : ") + cmd
@@ -256,7 +249,7 @@ class ISOVALEURS( VISU ):
         """
         mode WINDOWS
         """
-        UTMESS('A','STANLEY',_("Erreur : mode WINDOWS non implémenté") )
+        UTMESS('A','STANLEY_18')
         raise _("Arret sur erreur")
         
     
@@ -323,7 +316,7 @@ class ISOVALEURS( VISU ):
         try:
           salomeVisu = Visu.Visu( **salomeParam )
         except:
-          UTMESS('','STANLEY',_("Erreur: il est possible que Stanley ne puisse pas contacter Salome (machine salome definie : %s). Vous pouvez modifier la machine Salome dans les parametres dans Stanley\n" % salomeParam['machineName']) )
+          UTMESS('A','STANLEY_19',valk=[salomeParam['machineName']])
           raise _("Erreur lors de la visualisation.")
 
 
@@ -346,7 +339,7 @@ class ISOVALEURS( VISU ):
         if not ok:
             raise _("Erreur visualisation dans SALOME")
 
-        UTMESS('I','STANLEY',_("Execution terminée") )
+        UTMESS('I','STANLEY_20')
 
 
 # =========================================================================
@@ -394,7 +387,7 @@ class COURBES( VISU ):
         """
         mode WINDOWS
         """
-        UTMESS('A','STANLEY',_("Erreur : mode WINDOWS non implémenté") )
+        UTMESS('A','STANLEY_18')
         raise _("Arret sur erreur")
 
         

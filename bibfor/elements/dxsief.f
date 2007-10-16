@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,8 +56,8 @@ C --------------------------------------------------------------------
       REAL*8   DISTN, ROT(9), DH(9), D(4,4), REPERE(7), INST
       REAL*8   C,S,PI,PHI,EPSL(4),R8PI
       REAL*8   HIC, H, ZMIN,ZIC, VALPU(2), TINF, TMOY, TSUP,TREF
-      REAL*8   ZERO, DEUX, TEMPG, SIG, C1, C2, C3
-      REAL*8   ALPHA,E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
+      REAL*8   ZERO, DEUX, SIG, C1, C2, C3
+      REAL*8   E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
       REAL*8   EPS2D(6), KHI(3), DEPF(12), DEPM(8)
       REAL*8   BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
       REAL*8   CARAT3(21),CARAQ4(25),QSI,ETA,JACOB(5)
@@ -195,10 +195,6 @@ C       --------------------------------
               ZIC = ZMIN + HIC + (ICOU-1)*HIC
             END IF
 
-            CALL RCVALB(FAMI,IPG,IGAUH,'+',MATER,' ', 'ELAS', 0,' ',
-     &                             0.D0,1,'ALPHA',ALPHA,CODRET, '  ' )
-            IF ( CODRET.NE.'OK' ) ALPHA = ZERO
-
 C         -- CALCUL DE EPS2D
 C         ------------------
             EPS2D(1) = EPSM(1) + ZIC*KHI(1)
@@ -211,11 +207,10 @@ C         ------------------
 C
 C         -- INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
 C         ----------------------------------------------------
-            CALL RCVARC('F','TEMP','+','RIGI',IPG,IGAUH,TEMPG,IRET)
-            CALL RCVARC('F','TEMP','REF','RIGI',IPG,IGAUH,TREF,IRET)
+            CALL VERIFT('RIGI',IPG,IGAUH,'+',MATER,'ELAS',
+     &           1,EPSTH(1),IRET)
 
-            EPSTH(1) = ALPHA*(TEMPG-TREF)
-            EPSTH(2) = ALPHA*(TEMPG-TREF)
+            EPSTH(2) = EPSTH(1)
             EPSTH(3) = ZERO
             EPSTH(4) = ZERO
             IF (GRILLE) THEN

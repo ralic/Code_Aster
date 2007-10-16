@@ -1,8 +1,8 @@
-        SUBROUTINE RSLISO ( IMAT , TEMP , P , RP , DRDP )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        SUBROUTINE RSLISO ( FAMI, KPG, KSP, POUM, IMAT , P , RP , DRDP )
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2000   AUTEUR ADBHHVV V.CANO 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,15 +23,22 @@ C       ----------------------------------------------------------------
 C       LOI ECROUISSAGE ISOTROPE R(P,T) ENTREE POINT PAR POINT
 C       ET  DERIVEE LOI ECROUISSAGE ISOTROPE R(P,T)/ P
 C       IN  P      :  DEFORMATION CUMULEE
-C           TEMP   :  TEMPERATURE
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C       OUT RP     :  R (P,TEMP)
 C       OUT DRDP   :  DRDP ( P,TEMP) = INTERPOLATION LINEAIRE SUR P,TEMP
 C       ----------------------------------------------------------------
-        REAL*8          TEMP , P , RP ,  E , DRDP, AIRERP, DUM
-        INTEGER         IMAT, JPROL, JVALE, NBVALE
+        REAL*8          TEMP , P , RP ,  E , DRDP, AIRERP, DUM, RESU
+        INTEGER         IMAT, JPROL, JVALE, NBVALE, KPG, KSP,IRET
+        CHARACTER*(*)   FAMI
+        CHARACTER*1     POUM
+        CHARACTER*8     TYPE
 C       ----------------------------------------------------------------
-        CALL RCTRAC(IMAT,'TRACTION','SIGM',TEMP,JPROL,JVALE,
+C --  TEMPERATURE
+        CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
+        CALL RCTYPE(IMAT,1,'TEMP',TEMP,RESU,TYPE)
+        IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1))
+     &        CALL U2MESS('F','CALCULEL_31')
+        CALL RCTRAC(IMAT,'TRACTION','SIGM',RESU,JPROL,JVALE,
      &              NBVALE,E)
         CALL RCFONC('V','TRACTION',JPROL,JVALE,NBVALE,DUM,DUM,DUM,
      &               P,RP,DRDP,AIRERP,DUM,DUM)

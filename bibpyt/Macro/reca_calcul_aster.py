@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 23/07/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,15 +28,7 @@ debug = False
 
 import copy, Numeric, types, os, sys, pprint, math
 from glob import glob
-
-try:
-   import Utilitai.Utmess
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
-      if code=='F': sys.exit()
+from externe_mess import UTMESS
 
 from Utilitai.System import ExecCommand
 

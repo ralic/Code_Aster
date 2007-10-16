@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     COMMON POUR LES PARAMETRES DE LA LOI DE LEMAITRE (NON IRRADIEE)
       COMMON / NMPALE / UNSURK,UNSURM,VALDEN
       REAL*8            UNSURK,UNSURM,VALDEN
 C
-      REAL*8            DEPSTH(6),VALRES(5),ALPHAP,ALPHAM
+      REAL*8            DEPSTH(6),VALRES(5),EPSTHE
       REAL*8            DEPSDV(6),SIGDV(6),SIGEL(6),EPSMO,SIGMO,E,NU
       REAL*8            TROISK,KRON(6),VALPAR(2),RAC2,T1,T2
       REAL*8            EM,NUM,TROIKM,DEUMUM,SIGMP(6)
@@ -96,7 +96,7 @@ C
       REAL*8            A0,XAP,X,TM,TP,TREF
       REAL*8            FG,FDGDST,FDGDEV,DEFAM(6),DEFAP(6)
       REAL*8            COEF1,COEF2,DELTEV
-      CHARACTER*2       BL2, FB2, CODRET(5)
+      CHARACTER*2       FB2, CODRET(5)
       CHARACTER*6       EPSA(6)
       CHARACTER*8       NOMRES(5),NOMPAR(2)
       DATA              KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -104,9 +104,7 @@ C
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
 C
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET1)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET1)
 C
       THETA = CRIT(4)
       T1 = ABS(THETA-0.5D0)
@@ -123,13 +121,18 @@ C
         CALL U2MESS('F','ALGORITH6_92')
         GO TO 299
       ENDIF
-      BL2 = '  '
       FB2 = 'F '
       DO 90 K = 1,6
         DEGRAN(K) = 0.D0
   90  CONTINUE
       RAC2 = SQRT(2.D0)
-      TSCHEM = TM*(1.D0-THETA)+TP*THETA
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
+      IF ((IRET1+IRET2).EQ.0) THEN
+        TSCHEM = TM*(1.D0-THETA)+TP*THETA
+      ELSE
+        TSCHEM = 0.D0
+      ENDIF
       DPC = VIM(1)
       DELTAT = INSTAP - INSTAM
       DO 100 K=1,6
@@ -163,26 +166,17 @@ C
       VALPAR(1)=INSTAM
       NOMRES(1)='E'
       NOMRES(2)='NU'
-      NOMRES(3)='ALPHA'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRET, FB2 )
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRET(3), BL2 )
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       EM     = VALRES(1)
       NUM    = VALRES(2)
-      ALPHAM = VALRES(3)
       DEUMUM = EM/(1.D0+NUM)
       TROIKM = EM/(1.D0-2.D0*NUM)
       VALPAR(1)=INSTAP
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRET, FB2 )
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRET(3), BL2 )
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E      = VALRES(1)
       NU     = VALRES(2)
-      ALPHAP = VALRES(3)
       DEUXMU = E/(1.D0+NU)
       TROISK = E/(1.D0-2.D0*NU)
 C
@@ -192,7 +186,7 @@ C
         NOMRES(3) = 'UN_SUR_M'
         NOMPAR(1) = 'TEMP'
         VALPAR(1) = TSCHEM
-        CALL RCVALA(IMATE,' ','LEMAITRE',1,NOMPAR,
+        CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE',1,NOMPAR,
      &              VALPAR,3,NOMRES,VALRES,CODRET, FB2 )
         VALDEN = VALRES(1)
         UNSURK = VALRES(2)
@@ -201,7 +195,7 @@ C
       EPSMO = 0.D0
       DO 110 K=1,3
         DEPSTH(K)   = DEPS(K)
-     &                -(ALPHAP*(TP-TREF)-ALPHAM*(TM-TREF))
+     &                -EPSTHE
      &                -(DEFAP(K)-DEFAM(K))
         DEPSTH(K) = DEPSTH(K) - DEGRAN(K)
         DEPSTH(K)   = DEPSTH(K) * THETA

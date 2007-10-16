@@ -1,4 +1,4 @@
-#@ MODIF co_vect_asse_gene SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_vect_asse_gene SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ class vect_asse_gene(ASSD, sd_cham_gene):
       from Utilitai.Utmess import UTMESS
 
       # avertissement generique
-      UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
+      UTMESS('A','SDVERI_3')
 
       Numeric.asarray(vecteur)
       ncham=self.get_name()
@@ -88,7 +88,7 @@ class vect_asse_gene(ASSD, sd_cham_gene):
       from Utilitai.Utmess import UTMESS
 
       # avertissement generique
-      UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
+      UTMESS('A','SDVERI_3')
 
       Numeric.asarray(vecteur)
       ncham=self.get_name()

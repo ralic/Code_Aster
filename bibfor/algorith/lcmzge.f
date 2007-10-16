@@ -2,7 +2,7 @@
      &                   EPSTM,DEPST, VIM,
      &                   OPTION, SIG, VIP,  DSIDPT, PROJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,8 +63,8 @@ C ----------------------------------------------------------------------
       CHARACTER*2 CODRET(6)
       CHARACTER*8 NOMRES(6) , NOMPAR
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
-      INTEGER     I,J,K,L,IRET
-      REAL*8      E, NU, ALPHA, KDESS, BENDO
+      INTEGER     I,J,K,L,IRET,IRET1,IRET2,IRET3
+      REAL*8      E, NU, EPSTHE, KDESS, BENDO,R8NNEM
       REAL*8      DC, DT, AC, AT, BC, BT, BETA, EPSD0
       REAL*8      EPSM(6), EPSRM(6), DEPS(6), DEPSR(6), EPSPLU(6)
       REAL*8      EPSE(6), EPSER(6), EPSPR(3), EPST(3), EPSP(3)
@@ -92,6 +92,9 @@ C -- OPTION ET MODELISATION
       ELAS  = .TRUE.
       NDIMSI = 2*NDIM
       RAC2=SQRT(2.D0)
+      IRET1 = 0
+      IRET2 = 0
+      IRET3 = 0
 
 C -- PROJECTEUR DE COUPURE
       CALL R8INIR(36,0.D0,PROJ,1)
@@ -100,18 +103,26 @@ C -- PROJECTEUR DE COUPURE
 C     DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET
 C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       TMAXM = VIM(3)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
       CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
       IF (IRET.NE.0) SREF=0.D0
       IF (RESI) THEN
         POUM='+'
-        CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
-        TMAX = MAX(TMAXM, TEMP)
-        IF (TMAX.GT.TMAXM) VIP(3) = TMAX
+        CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET2)
+        IF (IRET2.EQ.1) THEN
+          TMAX = R8NNEM()
+        ELSE
+          TMAX = MAX(TMAXM, TEMP)
+          IF (TMAX.GT.TMAXM) VIP(3) = TMAX
+        ENDIF
       ELSE
         POUM='-'
-        CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
-        TMAX = TMAXM
+        CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET3)
+        IF (IRET3.EQ.1) THEN
+          TMAX = R8NNEM()
+        ELSE
+          TMAX = TMAX
+        ENDIF
       ENDIF
       CALL RCVARC(' ','HYDR',POUM,FAMI,KPG,KSP,HYDR,IRET)
       IF (IRET.NE.0) HYDR=0.D0
@@ -121,7 +132,6 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
 C  RECUPERATION DES CARACTERISTIQUES MATERIAUX QUI PEUVENT VARIER
 C  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
 C-----------------------------------------------------
-
       NOMPAR = 'TEMP'
       VALPAR = TMAX
 
@@ -134,10 +144,17 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES
      &              NOMRES,VALRES,CODRET, 'FM')
       CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',1,NOMPAR,VALPAR,1,
      &              NOMRES(3),VALRES(3),CODRET(3), ' ')
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
+      IF ((IRET2+IRET3).EQ.0) THEN
+        IF ((IRET1.NE.0).OR.(CODRET(3).NE.'OK')) THEN
+          CALL U2MESS('F','CALCULEL_15')
+        ELSE
+          EPSTHE = VALRES(3) * (TEMP - TREF)
+        ENDIF
+      ELSE
+          EPSTHE = 0.D0
+      ENDIF
       E     = VALRES(1)
       NU    = VALRES(2)
-      ALPHA = VALRES(3)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 
@@ -145,11 +162,11 @@ C --- LECTURE DU RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
-      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,1,
+      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
      +            NOMRES(1),VALRES(1),CODRET(1), ' ' )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       BENDO = VALRES(1)
-      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,1,
+      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
      +            NOMRES(2),VALRES(2),CODRET(2), ' ' )
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       KDESS = VALRES(2)
@@ -213,10 +230,10 @@ C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
       CALL R8INIR(6, 0.D0, EPSE,1)
       CALL R8INIR(6, 0.D0, EPSER,1)
       DO 35 K=1,NDIMSI
-        EPSE(K) = EPS(K) - (   ALPHA * (TEMP - TREF)
+        EPSE(K) = EPS(K) - (   EPSTHE
      &                      - KDESS * (SREF-SECH)
      &                      - BENDO *  HYDR         ) * KRON(K)
-        EPSER(K) = EPSR(K) - (   ALPHA * (TEMP - TREF)
+        EPSER(K) = EPSR(K) - (   EPSTHE
      &                      - KDESS * (SREF-SECH)
      &                      - BENDO *  HYDR         ) * KRON(K)
 35    CONTINUE

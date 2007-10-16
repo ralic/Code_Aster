@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_dyna_alea_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
    from types import ListType, TupleType
    EnumTypes = (ListType, TupleType)
    from Accas               import _F
-   from Utilitai.Utmess     import U2MESS as UTMESS
+   from Utilitai.Utmess     import  UTMESS
    from Utilitai.t_fonction import t_fonction
    from Utilitai.Table      import Table
    import Numeric

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -273,22 +273,37 @@ MAT6=DEFI_MATERIAU(    ELAS_ORTH_FO=_F(  E_L = FO1,
                          THER=_F(  RHO_CP = 2.5,
                                 LAMBDA = 1.7) )
 
+THMAT1=DEFI_MATERIAU(THER=_F(  RHO_CP = 1.4,
+                                LAMBDA = 0.8) )
+
+THMAT2=DEFI_MATERIAU(THER=_F(  RHO_CP = 1.2,
+                                LAMBDA = 0.9) )
+
+THMAT3=DEFI_MATERIAU(THER=_F(  RHO_CP = 2.2,
+                                LAMBDA = 1.9) )
+
+THMAT4=DEFI_MATERIAU(THER=_F(  RHO_CP = 2.7,
+                                LAMBDA = 0.4) )
+
+THMAT5=DEFI_MATERIAU(THER=_F(  RHO_CP = 3.2,
+                                LAMBDA = 1.9) )
+
+THMAT6=DEFI_MATERIAU(THER=_F(  RHO_CP = 2.5,
+                                LAMBDA = 1.7) )
+
 CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                           _F(  TOUT = 'OUI',
-                                 MATER = MAT1,
-                                 TEMP_REF = 4.8),
+                                 MATER = THMAT1),
                           _F(  GROUP_MA = 'GMA0',
-                                 MATER = MAT2,
-                                 TEMP_REF = 6.9),
+                                 MATER = THMAT2),
                           _F(  GROUP_MA = 'GMA9',
-                                 MATER = MAT3),
+                                 MATER = THMAT3),
                           _F(  GROUP_MA = 'GMA10',
-                                 MATER = MAT4,
-                                 TEMP_REF = 11.7),
+                                 MATER = THMAT4),
                           _F(  GROUP_MA = 'GMA11',
-                                 MATER = MAT5),
+                                 MATER = THMAT5),
                           _F(  GROUP_MA = 'GMA12',
-                                 MATER = MAT6)) )
+                                 MATER = THMAT6)) )
 
 # DANS CHAQUE GROUP_MA, TOUS LES TYPES DE MAILLES SONT REPRESENTES
 
@@ -349,17 +364,20 @@ CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                                  VALE_REF = 6.9),
                           _F(  GROUP_MA = 'GMA9',
                                  EVOL=THLIN,
-                                 NOM_VARC='TEMP'),
+                                 NOM_VARC='TEMP',
+                                 VALE_REF=0),
                           _F(  GROUP_MA = 'GMA10',
                                  EVOL=THLIN,
                                  NOM_VARC='TEMP',
                                  VALE_REF = 11.7),
                           _F(  GROUP_MA = 'GMA11',
                                  EVOL=THLIN,
-                                 NOM_VARC='TEMP',),
+                                 NOM_VARC='TEMP',
+                                 VALE_REF = 0.,),
                           _F(  GROUP_MA = 'GMA12',
                                  EVOL=THLIN,
-                                 NOM_VARC='TEMP',)))
+                                 NOM_VARC='TEMP',
+                                 VALE_REF=0,)))
 
 CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
@@ -1106,7 +1124,7 @@ TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL6,
 # --------------------------------------------------------------------
 
 TABLE1=POST_ELEM(        MODELE=MO,
-                        CHAM_MATER=CHMAT,
+                        CHAM_MATER=CHMAT2,
                          CARA_ELEM=CARA1,
                              TITRE='MASSE INERTIE ET CENTRE DE GRAVITE',MASS_INER=(
                          _F( GROUP_MA = 'GMA8'),

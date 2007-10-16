@@ -1,6 +1,6 @@
       SUBROUTINE DXSIGT(NOMTE,XYZL,PGL,IC,INIV,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,13 +65,18 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 N(4),T2EV(4),T2VE(4),T1VE(9),CARAT3(21),CARAQ4(25)
       REAL*8 ORDI,EPI,EPAIS
       INTEGER MULTIC,IAZK24,IADZI,INO
-      INTEGER VALI,IER,IMOY,NBCOU,JCOU
+      INTEGER VALI,IER,IMOY,NBCOU,JCOU,IRET1,IRET2,IRET3,IRET4,IRET5
 C     ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
 C     -----------------
+      IRET1 = 0
+      IRET2 = 0
+      IRET3 = 0
+      IRET4 = 0
+      IRET5 = 0
       CALL R8INIR(24,0.D0,SIGT,1)
-      CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IER)
+      CALL RCVARC(' ','TEMP','REF','NOEU',1,1,TREF,IRET1)
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
      &    NOMTE(1:8).EQ.'MEGRDKT'  .OR.
      &    NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
@@ -91,7 +96,7 @@ C     -----------------
       GRILLE= LTEATT(' ','GRILLE','OUI')
       IF (GRILLE) THEN
         DO 1 INO=1,NNO
-          CALL RCVARC('F','TEMP','+','NOEU',INO,1,TINF(INO),IER)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TINF(INO),IRET2)
           TMOY(INO)=TINF(INO)
           TSUP(INO)=TINF(INO)
 1       CONTINUE
@@ -100,12 +105,13 @@ C     -----------------
         NBCOU=ZI(JCOU)
         IMOY=(3*NBCOU+1)/2
         DO 5 INO=1,NNO
-          CALL RCVARC('F','TEMP','+','NOEU',INO,1,TINF(INO),IER)
-          CALL RCVARC('F','TEMP','+','NOEU',INO,IMOY,TMOY(INO),IER)
-          CALL RCVARC('F','TEMP','+','NOEU',INO,3*NBCOU,TSUP(INO),IER)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,1,TINF(INO),IRET2)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,IMOY,TMOY(INO),IRET3)
+          CALL RCVARC(' ','TEMP','+','NOEU',INO,3*NBCOU,TSUP(INO),IRET4)
+          IRET5 = IRET5 + IRET2+IRET3+IRET4
 5       CONTINUE
       ENDIF
-
+ 
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
 
@@ -133,24 +139,30 @@ C     ----------------------------------------------------
      &              INDITH,GRILLE,T2EV,T2VE,T1VE)
         IF (INDITH.EQ.-1) GO TO 20
 
+        IF (IRET5.EQ.0) THEN 
+          IF (IRET1.EQ.1) THEN
+            CALL U2MESS('F','CALCULEL_15')
+          ELSE
+
 C --- BOUCLE SUR LES NOEUDS
 C     ---------------------
-        DO 10 INO = 1,NNO
+            DO 10 INO = 1,NNO
 
 C  --      LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON
 C  --      LAQUELLE LA TEMPERATURE EST PARABOLIQUE DANS L'EPAISSEUR.
 C  --      LES COEFFICIENTS THERMOELASTIQUES PROVIENNENT DES
 C  --      MATRICES QUI SONT LES RESULTATS DE LA ROUTINE DXMATH.
 C          ----------------------------------------
-          COE1 = (TSUP(INO)+TINF(INO)+4.D0*TMOY(INO))/6.D0 - TREF
-          COE2 = (TSUP(INO)-TINF(INO))*
+            COE1 = (TSUP(INO)+TINF(INO)+4.D0*TMOY(INO))/6.D0 - TREF
+            COE2 = (TSUP(INO)-TINF(INO))*
      &           (ORDI+DBLE(INIV)*EPI/2.D0)/EPAIS
 
-          SIGT(1+6* (INO-1)) = ((DM(1,1)+DM(1,2))/EPI)* (COE1+COE2)
-          SIGT(2+6* (INO-1)) = ((DM(2,1)+DM(2,2))/EPI)* (COE1+COE2)
-          SIGT(4+6* (INO-1)) = ((DM(3,1)+DM(3,2))/EPI)* (COE1+COE2)
-   10   CONTINUE
-
+            SIGT(1+6* (INO-1)) = ((DM(1,1)+DM(1,2))/EPI)* (COE1+COE2)
+            SIGT(2+6* (INO-1)) = ((DM(2,1)+DM(2,2))/EPI)* (COE1+COE2)
+            SIGT(4+6* (INO-1)) = ((DM(3,1)+DM(3,2))/EPI)* (COE1+COE2)
+   10      CONTINUE
+          ENDIF
+        ENDIF
       ELSE
 
 C --- CAS ELAS_COQUE

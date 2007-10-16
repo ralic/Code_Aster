@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,11 +74,9 @@ MZERO=MODI_MAILLAGE(reuse =MZERO,
 
 MATEZERO=AFFE_MATERIAU(MAILLAGE=MZERO,
                        AFFE=(_F(GROUP_MA='MOITIE1',
-                                MATER=MATER1,
-                                TEMP_REF=20.,),
+                                MATER=MATER1,),
                              _F(GROUP_MA='MOITIE2',
-                                MATER=MATER2,
-                                TEMP_REF=20.,),),);
+                                MATER=MATER2,),),);
 #
 # 3.3. LES GRANDEURS GLOBALES
 
@@ -149,11 +147,9 @@ MODEUN=AFFE_MODELE(MAILLAGE=MUN,
 
 MATEUN=AFFE_MATERIAU(MAILLAGE=MUN,
                      AFFE=(_F(GROUP_MA='MOITIE1',
-                              MATER=MATER1,
-                              TEMP_REF=20.,),
+                              MATER=MATER1,),
                            _F(GROUP_MA='MOITIE2',
-                              MATER=MATER2,
-                              TEMP_REF=20.,),),);
+                              MATER=MATER2,),),);
 #
 # 5.3. LES GRANDEURS GLOBALES
 
@@ -280,11 +276,9 @@ MODEDEUX=AFFE_MODELE(MAILLAGE=MDEUX,
 
 MATEDEUX=AFFE_MATERIAU(MAILLAGE=MDEUX,
                        AFFE=(_F(GROUP_MA='MOITIE1',
-                                MATER=MATER1,
-                                TEMP_REF=20.,),
+                                MATER=MATER1,),
                              _F(GROUP_MA='MOITIE2',
-                                MATER=MATER2,
-                                TEMP_REF=20.,),),);
+                                MATER=MATER2,),),);
 #
 # 8.3. LES GRANDEURS GLOBALES
 
@@ -388,11 +382,9 @@ MODETROI=AFFE_MODELE(MAILLAGE=MTROI,
 
 MATETROI=AFFE_MATERIAU(MAILLAGE=MTROI,
                        AFFE=(_F(GROUP_MA='MOITIE1',
-                                MATER=MATER1,
-                                TEMP_REF=20.,),
+                                MATER=MATER1,),
                              _F(GROUP_MA='MOITIE2',
-                                MATER=MATER2,
-                                TEMP_REF=20.,),),);
+                                MATER=MATER2,),),);
 #
 # 11.4. CHARGEMENTS
 
@@ -507,11 +499,9 @@ MODEQUAT=AFFE_MODELE(MAILLAGE=MQUAT,
 
 MATEQUAT=AFFE_MATERIAU(MAILLAGE=MQUAT,
                        AFFE=(_F(GROUP_MA='MOITIE1',
-                                MATER=MATER1,
-                                TEMP_REF=20.,),
+                                MATER=MATER1,),
                              _F(GROUP_MA='MOITIE2',
-                                MATER=MATER2,
-                                TEMP_REF=20.,),),);
+                                MATER=MATER2,),),);
 #
 # 14.3. CHARGEMENTS
 

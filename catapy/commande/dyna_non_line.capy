@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,11 +73,12 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
          COMP_INCR       =C_COMP_INCR(),
          COMP_ELAS       =FACT(statut='f',max='**',
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
-                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC",
+                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS",
                                       "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
            ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            ELAS_VMIS_TRAC  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            ELAS_VMIS_LINE  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
+           ELAS_VMIS_PUIS  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            ELAS_HYPER      =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            ELAS_POUTRE_GR  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
            CABLE           =SIMP(statut='c',typ='I',defaut=1,into=(1,)),

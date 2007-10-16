@@ -9,7 +9,7 @@
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,12 +54,13 @@ C     ----------------------------------------------------------------
       REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS,R,INT1,INT2,INT3,DFDTMU
       REAL*8 DTMUDR,SOM,DRDGAM,CISA2, RR
 
-      INTEGER IFL,NS, IS, NBSYS,IU,IR,IRET,NUECOU,NULHSR
+      INTEGER IFL,NS, IS, NBSYS,IU,IR,IRET,NUECOU,NULHSR,IRET2
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TPERD,IRET2)
       NUECOU=COEFT(IFL)
       IRET=0
 
@@ -131,7 +132,6 @@ C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
           GAMMA0 =COEFT(IFL+3)
           DELTAV =COEFT(IFL+4)
           DELTAG =COEFT(IFL+5)
-          TPERD  =COEFT(IFL+6)
 
           CRIT=ABS(TAUS)-TAUMU
           IF (ABS(TAUS).LE.R8MIEM()) THEN
@@ -143,10 +143,13 @@ C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
           IF (CRIT.LT.0.D0) THEN
              DFDTAU=0.D0
           ELSE
-             
-             TABS=TPERD+273.15D0
-             DFDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTAG/K/TABS)
-     &              *EXP(DELTAV/K/TABS*CRIT-1.D0)*(DELTAV/K/TABS*CRIT)
+             IF (IRET2.EQ.0) THEN
+               TABS=TPERD+273.15D0
+               DFDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTAG/K/TABS)
+     &                *EXP(DELTAV/K/TABS*CRIT-1.D0)*(DELTAV/K/TABS*CRIT)
+             ELSE
+               DFDTAU=0.D0
+             ENDIF
           ENDIF
 
 C         DFDAL
@@ -168,7 +171,6 @@ C         DFDR
           KDCS      =COEFT(IFL+8)
           P         =COEFT(IFL+9)
           Q         =COEFT(IFL+10)
-          TPERD     =COEFT(IFL+11)
           NUMHSR    =COEFT(IFL+12)
           
           IF (MATERF(NMAT).EQ.0) THEN
@@ -186,8 +188,6 @@ C         DFDR
           ENDIF
 
           IF (TAUV.GT.0.D0) THEN
-
-             TABS=TPERD+273.15D0
 
              SOM    = 0.D0
              TAUMU  = 0.D0
@@ -215,9 +215,19 @@ C         DFDR
                INT2 = ((TAUV-TAUMU)/TAUR)**(P-1)
                INT3 = 1.D0+TAUMU/TAUV
 
-               DFDTAU = DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
-     &         EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
-     &         *INT1*INT2*INT3
+            IF (IRET2.EQ.0) THEN
+              TABS=TPERD+273.15D0
+              DFDTAU = DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
+     &        EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
+     &        *INT1*INT2*INT3
+
+               DFDTMU = -DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
+     &       EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
+     &         *INT1*INT2*SGNS
+             ELSE
+               DFDTAU=0.D0
+               DFDTMU=0.D0
+             ENDIF
 
                IF(IR.NE.0) THEN
                  RR  = VIND(3*(IR-1)+1)
@@ -229,10 +239,6 @@ C         DFDR
                  SOM = SQRT(SOM)
 C
                  DTMUDR = CISA2 * HSR(NUMHSR,IS,IR)/TAUV
-
-                 DFDTMU = -DT*GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
-     &           EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
-     &           *INT1*INT2*SGNS
 
                  DRDGAM = SGNR/(1.D0+GCB*ABS(DGAMMA))**2*
      &                  (BSD+SOM/KDCS-GCB*VIND(3*(IR-1)+1))

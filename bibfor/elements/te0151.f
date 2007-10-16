@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -51,16 +51,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      PARAMETER    (             NBRES = 4 )
+      PARAMETER    (             NBRES = 3 )
       REAL*8              VALRES(NBRES)
-      CHARACTER*2    BL2, CODRES(NBRES)
+      CHARACTER*2    CODRES(NBRES)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
       REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
-      REAL*8       PGL1(3,3), PGL2(3,3)
+      REAL*8       PGL1(3,3), PGL2(3,3), EPSTHE
 C     ------------------------------------------------------------------
-      DATA NOMRES / 'E' , 'NU' , 'ALPHA' , 'RHO' /
+      DATA NOMRES / 'E' , 'NU' , 'RHO' /
 C     ------------------------------------------------------------------
       ZERO   = 0.D0
       UN     = 1.D0
@@ -77,23 +77,19 @@ C
       NPG = 3
       IF (NOMTE.EQ.'MECA_POU_C_T') NPG = 2
 
-      CALL MOYTEM(FAMI,NPG,1,'+',VALPAR)
+      CALL MOYTEM(FAMI,NPG,1,'+',VALPAR,IRET)
+      CALL VERIFM(FAMI,NPG,1,'+',ZI(LMATER),'ELAS',1,EPSTHE,IRET)
       NBPAR  = 1
       NOMPAR = 'TEMP'
 C
-      BL2 = '  '
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
      &              NOMRES,VALRES,CODRES,'FM')
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRES(3),BL2)
-      IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRES(4),VALRES(4),CODRES(4),'FM')
+     &              NOMRES(3),VALRES(3),CODRES(3),'FM')
 C
       E      = VALRES(1)
       XNU    = VALRES(2)
-      ALPHAT = VALRES(3)
-      RHO    = VALRES(4)
+      RHO    = VALRES(3)
       G = E / ( DEUX * ( UN + XNU ) )
 C
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -221,8 +217,8 @@ C        ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
 C        --- ENERGIE DE DEFORMATION
          IF = 1
          CALL PTENPO(12,UL,KLC,ZR(JENDE),ITYPE,IF)
-         IF (ALPHAT.NE.ZERO) THEN
-           CALL PTENTH(UL,XL,ALPHAT,12,KLC,ITYPE,ENERTH)
+         IF (EPSTHE.NE.ZERO) THEN
+           CALL PTENTH(UL,XL,EPSTHE,12,KLC,ITYPE,ENERTH)
            ZR(JENDE) = ZR(JENDE) - ENERTH
          ENDIF
 C
@@ -254,7 +250,7 @@ C           --- ENERGIE CINETIQUE
             IF = 1
             CALL PTENCI(12,UL,KLC,ZR(JFREQ),ZR(JENDE),ITYPE,KANL,IF)
 C
-         ELSEIF ( CODRES(4)(1:2).NE.'OK') THEN
+         ELSEIF ( CODRES(3)(1:2).NE.'OK') THEN
             CALL U2MESS('F','ELEMENTS3_31')
          ENDIF
 C

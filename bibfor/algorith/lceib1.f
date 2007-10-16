@@ -1,9 +1,9 @@
-      SUBROUTINE LCEIB1 (IMATE, COMPOR, NDIM, EPSM,
+      SUBROUTINE LCEIB1 (FAMI,IMATE, COMPOR, NDIM, EPSM,
      &                    TM,TREF,SREF,SECHM,HYDRM,
      &                  T, LAMBDA, DEUXMU,
-     &                   ALPHA, KDESS, BENDO,  GAMMA, SEUIL, COUP)
+     &                   EPSTHE, KDESS, BENDO,  GAMMA, SEUIL, COUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,10 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*16       COMPOR(*)
+      CHARACTER*(*)      FAMI
       LOGICAL            COUP
-      INTEGER            IMATE,NDIM, T(3,3)
-      REAL*8             EPSM(6), LAMBDA, DEUXMU, ALPHA, KDESS, BENDO
+      INTEGER            IMATE,NDIM, T(3,3), IISNAN
+      REAL*8             EPSM(6), LAMBDA, DEUXMU, EPSTHE, KDESS, BENDO
       REAL*8             GAMMA, SEUIL
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDO_ISOT_BETON - INITIALISATION
@@ -85,9 +86,9 @@ C    LECTURE DES CARACTERISTIQUES DU MATERIAU
      &     (COMPOR(11)(1:15) .EQ. 'ENDO_ISOT_BETON')).OR.
      &     (COMPOR(1)(1:15) .EQ. 'ENDO_ISOT_BETON')) THEN
 C      IF (COUP) THEN
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',0.D0,2,
+      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,2,
      &              NOMRES,VALRES,CODRET, 'FM')
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',0.D0,1,
+      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,1,
      &              NOMRES(3),VALRES(3),CODRET(3), ' ')
 C      ELSE
 C      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
@@ -95,17 +96,26 @@ C     &              NOMRES,VALRES,CODRET, 'FM')
 C      CALL RCVALA(IMATE,' ','ELAS',3,' ',0.D0,1,
 C     &              NOMRES(3),VALRES(3),CODRET(3), ' ')
 C      ENDIF
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
+      IF (IISNAN(TM).EQ.0) THEN
+        IF ((IISNAN(TREF).EQ.1).OR.(CODRET(3).NE.'OK'))  THEN
+          CALL U2MESS('F','CALCULEL_15')
+        ELSE
+          EPSTHE = VALRES(3) * (TM - TREF)
+        ENDIF
+      ELSE
+        VALRES(3) = 0.D0
+        EPSTHE = 0.D0        
+      ENDIF 
       E     = VALRES(1)
       NU    = VALRES(2)
-      ALPHA = VALRES(3)
+   
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 
 C    LECTURE DES CARACTERISTIQUES DE RETRAIT ENDOGENE ET DESSICCATION
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
-      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
+      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
      &             NOMRES,VALRES,CODRET, ' ' )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
@@ -116,7 +126,8 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(1) = 'D_SIGM_EPSI'
       NOMRES(2) = 'SYT'
       NOMRES(3) = 'SYC'
-      CALL RCVALA(IMATE,' ','BETON_ECRO_LINE',0,' ',0.D0,3,
+      CALL RCVALB(FAMI,1,1,'+',IMATE,' ','BETON_ECRO_LINE',
+     &           0,' ',0.D0,3,
      &            NOMRES,VALRES,CODRET,' ')
       IF ((CODRET(1).NE.'OK').OR.(CODRET(2).NE.'OK')) THEN
          CALL U2MESS('F','ALGORITH4_51')
@@ -143,7 +154,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
 C      PASSAGE AUX DEFORMATIONS ELASTIQUES
             CALL R8INIR(6,0.D0,EPS,1)
             DO 5 K=1,NDIMSI
-              EPS(K) = EPSM(K) - (  ALPHA * (TM - TREF)
+              EPS(K) = EPSM(K) - (  EPSTHE
      &                       - KDESS * (SREF-SECHM)
      &                       - BENDO *  HYDRM  )     * KRON(K)
  5          CONTINUE

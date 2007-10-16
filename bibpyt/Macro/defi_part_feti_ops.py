@@ -1,4 +1,4 @@
-#@ MODIF defi_part_feti_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF defi_part_feti_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
 
   from Accas import _F
   from Noyau.N_utils import AsType
-  from Utilitai.Utmess import U2MESS as UTMESS
+  from Utilitai.Utmess import  UTMESS
 
   from Utilitai import partition
 

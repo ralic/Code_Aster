@@ -1,4 +1,4 @@
-# MODIF  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,7 +181,7 @@ MATERBO=DEFI_MATERIAU(
                                    ),);
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=(_F(GROUP_MA='BO',
+                     AFFE=(_F(GROUP_MA='BO',TEMP_REF=0.,
                               MATER=MATERBO,),
                               ),);
 

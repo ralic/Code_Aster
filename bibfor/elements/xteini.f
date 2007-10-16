@@ -5,7 +5,7 @@
       INTEGER        DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       NDIM,NNO,IBID,LXLGUT,IER
       CHARACTER*8   ELREFP,ENR
+      LOGICAL       LSTOP
 C
 C ----------------------------------------------------------------------
 C
@@ -68,6 +69,7 @@ C     INITIALISATIONS
       NFE   = 0
       SINGU = 0
       DDLC  = 0
+      LSTOP=.FALSE.
 
       CALL TEATTR (NOMTE,'S','XFEM',ENR,IER)
 C
@@ -82,7 +84,7 @@ C     DDLS PAR NOEUD SOMMET : HEAVYSIDE, ENRICHIS (FOND)
         NFE   = 4
         SINGU = 1
       ELSE
-        CALL U2MESS('F','XFEM_24')
+        CALL ASSERT(LSTOP)
       ENDIF
 
 C     DDLS DE CONTACT

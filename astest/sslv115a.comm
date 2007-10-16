@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -230,7 +230,7 @@ CHMTM=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
                                GROUP_MA='CABLE001',),),
                       AFFE_VARC=_F( TOUT='OUI',
                             EVOL=TEMPE2,
-                            NOM_VARC='TEMP',
+                            NOM_VARC='TEMP',VALE_REF=0.,
                             NOM_CHAM='TEMP',),
                       MAILLAGE=MAILLAGE,);
 

@@ -1,7 +1,7 @@
       SUBROUTINE VDGNLR ( OPTION , NOMTE )
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
-C MODIF ELEMENTS  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,10 +88,10 @@ C
       INTEGER      ITEMPM , ITEMPP , ITEMP , ITEMPF
       INTEGER      LZI , LZR , JCARA
       INTEGER      NB1 , NB2 , INO , NBPAR , NBV
-      INTEGER      IINSTM , IINSTP, IER , JMATE , ITREF
+      INTEGER      IINSTM , IINSTP, IER , JMATE 
       REAL*8       TMPG1 , TMPG2 , TMPG3 , TPPG1 , TPPG2 , TPPG3
-      REAL*8       TMC , TPC , TREF , ALPHA , TPG1,DDOT
-      REAL*8       VALPU(2) , ZERO , VALPAR , VALRES
+      REAL*8       TMC , TPC , ALPHA , TPG1,DDOT
+      REAL*8       VALPU(2) , VALPAR , EPSTHE
       CHARACTER*2  CODRET
       CHARACTER*8  NOMPU(2) , NOMRES , NOMPAR
       CHARACTER*10 PHENOM
@@ -130,7 +130,7 @@ C
       REAL * 8 VRIGNC ( 2601 ) , VRIGNI ( 2601 )
       REAL * 8 VRIGRC ( 2601 ) , VRIGRI ( 2601 )
       REAL * 8 KNN
-      INTEGER IUP , IUM,IUD,ITAB(8),ITABM(8),ITABP(8),IRET
+      INTEGER IUP , IUM,IUD,ITAB(8),ITABM(8),ITABP(8),IRET,IRET1
       REAL * 8 B1SU  ( 5 , 51 ) , B2SU  ( 5 , 51 )
       REAL * 8 B1SRC ( 2 , 51 , 4 )
       REAL * 8 B2SRC ( 2 , 51 , 4 )
@@ -156,9 +156,6 @@ C
 C DEB
 C
 C
-C---- LES REALS
-C
-      ZERO = 0.0D0
 C______________________________________________________________________
 C
 C---- CALCUL COMMUNS A TOUTES LES OPTIONS
@@ -310,12 +307,6 @@ C
 C---- EPAISSEUR D UNE COUCHE
 C
       EPAIS =   EPTOT / NBCOU
-C
-C______________________________________________________________________
-C
-C---- RECUPERATION DE LA TEMPERATURE
-C
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 C
 C______________________________________________________________________
 C
@@ -601,22 +592,16 @@ C
 C
 C------------- EVALUATION DES DEFORMATIONS THERMIQUES
 C
-               CALL MOYTPG('RIGI',INTSN,3,'-',TMC)
-               CALL MOYTPG('RIGI',INTSN,3,'+',TPC)
-C
-               VALPAR = TPC
-               NBV = 1
-               NOMRES  = 'ALPHA'
-               CALL RCVALA(ZI(JMATE),' ' , PHENOM , NBPAR , NOMPAR,
-     &             VALPAR,  NBV , NOMRES , VALRES , CODRET , '  ' )
-               IF (CODRET.NE.'OK') VALRES = ZERO
-               ALPHA = VALRES
-C
-               ETILD(1) = ETILD(1) - ALPHA*(TPC-TREF)
-               ETILD(2) = ETILD(2) - ALPHA*(TPC-TREF)
+               CALL VERIFG('RIGI',INTSN,3,'+',ZI(JMATE),PHENOM,
+     &                        1,EPSTHE,IRET1)
+               ETILD(1) = ETILD(1) - EPSTHE
+               ETILD(2) = ETILD(2) - EPSTHE
 C
 C------------- LA  MATRICE DE COMPORTEMENT  MATC ( 5 , 5 )
 C
+               CALL MOYTPG('RIGI',INTSN,3,'+',VALPAR,IRET)
+               NBPAR = 1
+               NOMPAR = 'TEMP'
                CALL MATRC2
      &         ( NBPAR, NOMPAR , VALPAR , KAPPA , MATC ,VECTT)
 C

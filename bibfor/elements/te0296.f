@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       NNO,KP,K,NPG,I,IDEFI,ITEMPS,IVECTU,IE1,IE2,IE3
       INTEGER       IPOIDS,IVF,IDFDE,IGEOM,IMATE,NNOS,NDIM,JGANO
-      INTEGER       ITEMPE,IDEPL,IFORC,IALPH,ITHET,MATER,NBRES,IE4
+      INTEGER       IDEPL,IFORC,IALPH,ITHET,MATER,NBRES,IE4
 C
       PARAMETER        ( NBRES = 2 )
 C
@@ -88,7 +88,6 @@ C
       CALL JEVECH('PALPHAR','L',IALPH)
       IDEPL=ITHET
       IFORC=ITHET
-      ITEMPE=ITHET
       MATER=ZI(IMATE)
       NOMRES(1)='E'
       NOMRES(2)='NU'
@@ -116,15 +115,16 @@ C
           CALL FOINTE('FM',ZK8(IDEFI+2),3,NOMPAR,VALPAR,EZZ,IE4)
         ENDIF
 C
-        CALL RCVALA(MATER,' ','ELAS',0,'TEMP',ZERO,2,NOMRES,
+        CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS',
+     +                0,'TEMP',ZERO,2,NOMRES,
      +                VALRES, CODRET, 'FM' )
 C
         IF ( NOMTE(3:4).EQ. 'AX' )  THEN
            C1=VALRES(1)/(UN+VALRES(2))
            C2=(UN-VALRES(2))/(UN-DEUX*VALRES(2))
            C3=VALRES(2)/(UN-DEUX*VALRES(2))
-           CALL GDFONC ( DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),
-     S                   ZR(IFORC),ZR(ITEMPE),NNO,BIDON,DTDM,BIDON1,TGD)
+           CALL GDFONC ('RIGI',DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),
+     +                   ZR(IFORC),NNO,BIDON,DTDM,BIDON1,TGD)
            POIDS= POIDS*R
            A11=(UN+ALPHA*(DTDM(4)/R))*(UN+ALPHA*DTDM(2))
            A12=-ALPHA*DTDM(3)*(UN+ALPHA*(DTDM(4)/R))
@@ -152,8 +152,8 @@ C
      +          *(UN-DEUX*VALRES(2)))
            DP2=VALRES(2)/(UN-VALRES(2))
            DP3=(UN-DEUX*VALRES(2))/(DEUX*(UN-VALRES(2)))
-           CALL GDFONC ( DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),
-     S                   ZR(IFORC),ZR(ITEMPE),NNO,BIDON,DTDM,BIDON1,TGD)
+           CALL GDFONC ('RIGI',DFDX,DFDY,KP,ZR(IVF),ZR(IDEPL),ZR(ITHET),
+     S                   ZR(IFORC),NNO,BIDON,DTDM,BIDON1,TGD)
            A22=UN+ALPHA*DTDM(1)
            A11=UN+ALPHA*DTDM(2)
            A12=-ALPHA*DTDM(3)

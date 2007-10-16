@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CHARACTER*2 BL2,CODRET(NBRES)
       REAL*8 VALRES(NBRES),DFDX(3),R,COUR,JAC,COSA,SINA
       REAL*8 TPG1,TPG2,TPG3,TPG,ZERO,UN,DEUX,X3
-      REAL*8 H,ALPHAE,NU,COEF,AXIS
+      REAL*8 H,EPSTHE,NU,COEF,AXIS
 
       DATA ZERO,UN,DEUX/0.D0,1.D0,2.D0/
 C     ------------------------------------------------------------------
@@ -69,7 +69,7 @@ C     ------------------------------------------------------------------
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PVECTUR','E',IVECTT)
 C     TEMPERATURE DE REFERENCE
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
+      CALL RCVARC(' ','TEMP','REF',FAMI,1,1,TREF,IRET1)
 
 C --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 C     -------------------------------------------------
@@ -95,9 +95,9 @@ C     ** BOUCLE CONCERNANT LES POINTS DE GAUSS **************
      &                COUR,JAC,COSA,SINA)
           R = ZERO
           TPG = ZERO
-          CALL RCVARC('F','TEMP','+',FAMI,KP,1,TPG2,IRET)
-          CALL RCVARC('F','TEMP','+',FAMI,KP,2,TPG1,IRET)
-          CALL RCVARC('F','TEMP','+',FAMI,KP,3,TPG3,IRET)
+          CALL RCVARC(' ','TEMP','+',FAMI,KP,1,TPG2,IRET2)
+          CALL RCVARC(' ','TEMP','+',FAMI,KP,2,TPG1,IRET3)
+          CALL RCVARC(' ','TEMP','+',FAMI,KP,3,TPG3,IRET4)
           DO 10 I = 1,NNO
             R = R + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
    10     CONTINUE
@@ -110,14 +110,22 @@ C---- COMME POUR LA LONGUEUR
             X3 = ZR(JCOOPG+IP-1)
             TPG = TPG1* (UN-X3**2) + X3* (TPG3* (UN+X3)-TPG2* (UN-X3))/
      &            DEUX
-            ALPHAE = ZERO
-            CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,2,NOMRES,
+            CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     &                 1,'TEMP',TPG,2,NOMRES,
      &                 VALRES, CODRET,'FM')
-            CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,1,NOMRES(3),
+            CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     &                  1,'TEMP',TPG,1,NOMRES(3),
      &                  VALRES(3),CODRET(3),BL2)
-            IF (CODRET(3).EQ.'OK') ALPHAE = VALRES(3)*VALRES(1)
+            IF (((IRET1+IRET2+IRET3+IRET4).GE.1).AND.
+     &              (CODRET(3).EQ.'OK')) THEN
+              CALL U2MESS('F','CALCULEL_15')
+            ELSEIF (CODRET(3).NE.'OK') THEN 
+              EPSTHE = 0.D0
+            ELSE
+               EPSTHE = (TPG-TREF)*VALRES(3)
+            ENDIF
             NU = VALRES(2)
-            COEF = (TPG-TREF)*JAC*ALPHAE*ZR(IPOIDS+IP-1)* (H/DEUX)
+            COEF = VALRES(1)*JAC*EPSTHE*ZR(IPOIDS+IP-1)* (H/DEUX)
             IF (NOMTE(1:8).NE.'METCSE3 ') COEF = COEF/ (UN-NU)
 
             DO 20 I = 1,NNO

@@ -3,7 +3,7 @@
      &   CRILDC,CODRET)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C ------------------------------------------------------------------
       REAL*8 DLONG0,CRILDC(3)
       REAL*8 EFFNOM,VIM(*)
       REAL*8 EFFNOP,VIP(*),FONO(NEQ),KLV(NBT)
-      CHARACTER*2 BL2,FB2,CODRES
+      CHARACTER*2 FB2,CODRES
       REAL*8 VALPAR,DSDE,EPSM
 C -------------------------------------------------------------------
 
@@ -66,7 +66,6 @@ C----------VARIABLES LOCALES
       REAL*8 SIGP,XRIG,TEMPM,TEMPP,TREF
       LOGICAL ISOT,CINE,ELAS,CORR
 
-      BL2 = '  '
       FB2 = 'FM'
 
 C----------INITIALISATIONS
@@ -98,32 +97,23 @@ C --- CARACTERISTIQUES ELASTIQUES A TMOINS
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,'E',EM,
      &       CODRES,FB2)
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
-     &            'ALPHA',ALPHAM,CODRES,BL2)
-      IF (CODRES.NE.'OK') ALPHAM = 0.D0
 
 C --- CARACTERISTIQUES ELASTIQUES A TPLUS
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,'E',EP,
      &              CODRES,FB2)
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
-     &            'ALPHA',ALPHAP,CODRES,BL2)
-      IF (CODRES.NE.'OK') ALPHAP = 0.D0
 
 
       IF (ISOT) THEN
-        CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,SIGM,
+        CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &              DEPS,VIM,OPTION,COMPOR,' ',SIGP,VIP,DSDE)
       ELSE IF (CINE) THEN
-        CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,SIGM,
+        CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &              DEPS,VIM,OPTION,' ',SIGP,VIP,DSDE)
       ELSE IF (ELAS) THEN
         DSDE = EP
         VIP(1) = 0.D0
-        CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
-        CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPM,IRET)
-        CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPP,IRET)
-        DEPSTH = ALPHAP* (TEMPP-TREF) - ALPHAM* (TEMPM-TREF)
+        CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
         SIGP = EP* (SIGM/EM+DEPS-DEPSTH)
       ELSE IF (CORR) THEN
         CALL NM1DCO(FAMI,KPG,KSP,OPTION,IMATE,' ',EP,SIGM,

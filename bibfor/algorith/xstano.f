@@ -9,7 +9,7 @@
       CHARACTER*24  LISNO,STANO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,7 +167,8 @@ C                 INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
 C               AUCUN POINT DE L'ARETE N'A LSN = 0,ALORS ON RETIENT RIEN
                 NRIEN=NRIEN+1
               ENDIF
-              IF (NRIEN.EQ.NBAR) CALL U2MESS('E','ALGORITH11_72')
+C             AUCUNE ARETE SUR LAQUELLE LSN S'ANNULE
+              CALL ASSERT(NRIEN.NE.NBAR)
  212        CONTINUE
 
             CALL PANBNO(ITYPMA,NBNOTT)

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,8 +105,8 @@ for k in range(1,10):
 #
    MATE[k]=AFFE_MATERIAU(  MAILLAGE=M[k],
                            AFFE=(
-       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,   TEMP_REF = 20.,   ),
-       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   TEMP_REF = 20.,   ))
+       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,    ),
+       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,    ))
                          )
 #
 # 4.4. Les grandeurs globales

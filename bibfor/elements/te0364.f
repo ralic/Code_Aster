@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/10/2007   AUTEUR KHAM M.KHAM 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -371,7 +371,9 @@ C
           CALL U2MESS('F','ELEMENTS3_80')
         END IF
       ELSE
-        CALL U2MESS('F','ELEMENTS3_81')
+C       SI OPTION NI 'RIGI_CONT' NI 'RIGI_FROT'
+        CALL ASSERT(OPTION.EQ.'RIGI_FROT' .OR.
+     &              OPTION.EQ.'RIGI_CONT')  
       END IF
 C
 C --- FIN DE CHANGEMENT ET COPIE

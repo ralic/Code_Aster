@@ -2,7 +2,7 @@
      &                    MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,9 +62,9 @@ C     NOMBRE DE PARAMETRES DE LA LOI : NBCARA
 
       REAL*8      P0,IRRAD,IRRAF,PE,K,A,TEMPD,TEMPF
       REAL*8      R02,EU,RM,AI0,ETAIS,RG0,ALPHA,PHI0,KAPPA,ZETAG,ZETAF
-      REAL*8      N0,N1,F0,F1,PASN,EXPH,EXP0,SPE
+      REAL*8      N0,N1,F0,F1,FE,PASN,EXPH,EXP0,SPE,COEFFA
 
-      REAL*8       VALRM(11)
+      REAL*8       VALRM(12)
       INTEGER      VALIM(2)
       CHARACTER*10 VALKM(2)
 
@@ -118,9 +118,9 @@ C     CARACTERISTIQUES ELASTIQUES A TEMP- ET IRRA-
      &            3,NOMCEL,MATERD(1,1),CERR, 'FM' )
 
 C     TEMPERATURE A T-
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
 C     IRRADIATION A T-
-      CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
+      CALL RCVARC(' ','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
 C     CARACTERISTIQUES MATERIAU A TEMP- ET IRRA-
       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','IRRAD3M',0,' ',0.0D0,
      &            NBCARA,NOMCIR,MAT,CERR, 'FM' )
@@ -149,15 +149,22 @@ C     POUR PLUS DE CLARETE, JE RENOMME LES GRANDEURS
 C     CALCUL DE LA PUISSANCE PAR DICHOTOMIE
 C       - LA FONCTION EST MONOTONE DECROISSANTE
 C       - NORMALISATION PAR R02
+      COEFFA = RM*EXP(EU)/R02
 C     F(n) = 1.0 - RM*EXP(EU)*((PE+n-EU)**n)/((n**n)*R02)
 C     F1 = Limite F(n)       F0 = Limite F(n)
 C          n->infini              n->0+
       N0 = EU - PE
-      F1 = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
-      F0 = 1.0D0 - RM*EXP(EU)/R02
-      IF ( ((N0.GT.0.0D0).AND.(F1.GE.0.0D0)) .OR.
-     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) .OR.
-     &      (N0.EQ.0.0D0) ) THEN
+      F1 = 1.0D0 - COEFFA*EXP(-N0)
+C     L'équation peut ne pas avoir de solution, pour le vérifier on
+C     calcule sa valeur FE à la 1ère borne de recherche +PE/10000.0
+C     C'est avec FE que l'on vérifie que l'on à des solutions
+      IF ( N0 .GE. 0.0D0 ) THEN
+         N1 = N0 + PE/1000.0D0
+      ELSE
+         N1 = PE/1000.0D0
+      ENDIF
+      FE = 1.0D0 - COEFFA*((N1-N0)**N1)/(N1**N1)
+      IF ( (FE*F1.GT.0.0D0) .OR. (N0.EQ.0.0D0) ) THEN
 C        VALEURS PAR DEFAUT
          N1 = EU
 C        VALEUR DE K , N
@@ -178,16 +185,17 @@ C        -----------------
          IF ( N0 .GT. 0.0D0 ) THEN
             F0   = 1.0D0
             PASN = N0/10.0D0
+            N1   = N0 - (PASN*0.9999D0)
          ELSE
-            N0   = 0.0D0
+            F0   = 1.0D0 - COEFFA
             PASN = PE/10.0D0
+            N1   = - (PASN*0.9999D0)
          ENDIF
          ITERAT = 0
-         N1     = N0
 C        WHILE TRUE
 10       CONTINUE
             N1 = N1 + PASN
-            F1 = 1.0D0 - RM*EXP(EU)*((PE+N1-EU)**N1)/((N1**N1)*R02)
+            F1 = 1.0D0 - COEFFA*((N1-N0)**N1)/(N1**N1)
             IF ( ABS(F1) .LE. RELA ) GOTO 12
             ITERAT=ITERAT+1
             IF (ITERAT.GT.ITMAX) THEN
@@ -203,16 +211,16 @@ C        WHILE TRUE
                VALRM(8) = RELA
 C              VALEURS INITIALES
                VALRM(9)  = EU - PE
-               VALRM(10) = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
-               VALRM(11) = 1.0D0 - RM*EXP(EU)/R02
-               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,11,VALRM)
+               VALRM(10) = 1.0D0 - COEFFA*EXP(PE-EU)
+               VALRM(11) = 1.0D0 - COEFFA
+               VALRM(12) = FE
+               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,12,VALRM)
             ENDIF
             IF ( F1*F0 .GT. 0.0D0 ) THEN
                F0 = F1
-               N0 = N1
             ELSE
+               N1   = N1 - PASN
                PASN = PASN * 0.5D0
-               N1 = N0
             ENDIF
          GOTO 10
 12       CONTINUE
@@ -282,9 +290,9 @@ C     CARACTERISTIQUES ELASTIQUES A TEMP+ ET IRRA+
      &            3,NOMCEL,MATERF(1,1),CERR, 'FM' )
 
 C     TEMPERATURE A T+
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
 C     IRRADIATION A T+
-      CALL RCVARC('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
+      CALL RCVARC(' ','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
 C     L'IRRADIATION NE PEUT PAS DECROITRE
       IF ( IRRAF .LT. IRRAD ) THEN
          VALRM(1) = TEMPD
@@ -322,15 +330,22 @@ C     POUR PLUS DE CLARETE
 C     CALCUL DE LA PUISSANCE PAR DICHOTOMIE
 C       - LA FONCTION EST MONOTONE DECROISSANTE
 C       - NORMALISATION PAR R02
+      COEFFA = RM*EXP(EU)/R02
 C     F(n) = 1.0 - RM*EXP(EU)*((PE+n-EU)**n)/((n**n)*R02)
 C     F1 = Limite F(n)       F0 = Limite F(n)
 C          n->infini              n->0+
       N0 = EU - PE
-      F1 = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
-      F0 = 1.0D0 - RM*EXP(EU)/R02
-      IF ( ((N0.GT.0.0D0).AND.(F1.GT.0.0D0)) .OR.
-     &     ((N0.LT.0.0D0).AND.(F0*F1.GE.0.0D0)) .OR.
-     &      (N0.EQ.0.0D0) ) THEN
+      F1 = 1.0D0 - COEFFA*EXP(-N0)
+C     L'équation peut ne pas avoir de solution, pour le vérifier on
+C     calcule sa valeur FE à la 1ère borne de recherche +PE/1000.0
+C     C'est avec FE que l'on vérifie que l'on à des solutions
+      IF ( N0 .GE. 0.0D0 ) THEN
+         N1 = N0 + PE/1000.0D0
+      ELSE
+         N1 = PE/1000.0D0
+      ENDIF
+      FE = 1.0D0 - COEFFA*((N1-N0)**N1)/(N1**N1)
+      IF ( (FE*F1.GE.0.0D0) .OR. (N0.EQ.0.0D0) ) THEN
 C        VALEURS PAR DEFAUT
          N1 = EU
 C        VALEUR DE K , N
@@ -351,16 +366,17 @@ C        -----------------
          IF ( N0 .GT. 0.0D0 ) THEN
             F0   = 1.0D0
             PASN = N0/10.0D0
+            N1   = N0 - (PASN*0.9999D0)
          ELSE
-            N0   = 0.0D0
+            F0   = 1.0D0 - COEFFA
             PASN = PE/10.0D0
+            N1   = - (PASN*0.9999D0)
          ENDIF
          ITERAT = 0
-         N1     = N0
 C        WHILE TRUE
 20       CONTINUE
             N1 = N1 + PASN
-            F1 = 1.0D0 - RM*EXP(EU)*((PE+N1-EU)**N1)/((N1**N1)*R02)
+            F1 = 1.0D0 - COEFFA*((N1-N0)**N1)/(N1**N1)
             IF ( ABS(F1) .LE. RELA ) GOTO 22
             ITERAT=ITERAT+1
             IF (ITERAT.GT.ITMAX) THEN
@@ -376,16 +392,16 @@ C        WHILE TRUE
                VALRM(8) = RELA
 C              VALEURS INITIALES
                VALRM(9)  = EU - PE
-               VALRM(10) = 1.0D0 - RM*EXP(EU)*EXP(PE-EU)/R02
-               VALRM(11) = 1.0D0 - RM*EXP(EU)/R02
-               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,11,VALRM)
+               VALRM(10) = 1.0D0 - COEFFA*EXP(PE-EU)
+               VALRM(11) = 1.0D0 - COEFFA
+               VALRM(12) = FE
+               CALL U2MESG('F','IRRAD3M_1',1,VALKM,1,VALIM,12,VALRM)
             ENDIF
             IF ( F1*F0 .GT. 0.0D0 ) THEN
                F0 = F1
-               N0 = N1
             ELSE
+               N1   = N1 - PASN
                PASN = PASN * 0.5D0
-               N1 = N0
             ENDIF
          GOTO 20
 22       CONTINUE

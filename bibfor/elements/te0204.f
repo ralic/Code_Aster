@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
 C       JEVEUX AND CO: JEMARQ, JEDEMA, JEVETE, JEVECH, TECACH.
 C       ENVIMA: R8PREM
-C       MATERIAUX: RCCOMA, RCVALA.
+C       MATERIAUX: RCCOMA, RCVALB.
 C       ELEMENTS FINIS: NMGEOM, PPGANO, D2GEOM.
 C       DIVERS: FOINTE, NMELNL, NMPLRU.
 C
@@ -100,7 +100,7 @@ C
       INTEGER  IFORC,IFORF,ITHET,IGTHET,IROTA,IPESA,IER
       INTEGER  NNO,NNOS,NPG,NPG1,NCMP
       INTEGER  I,J,K,KK,L,M,KP,NDIM,COMPT
-      INTEGER  IDEPSE,IJ,IJ1,MATCOD,I1,IRET,IDEFSE,ISIGSE
+      INTEGER  IDEPSE,IJ,IJ1,MATCOD,I1,IRET,IRET1,IDEFSE,ISIGSE
 
       LOGICAL  GRAND,AXI,CP,DP,FONC,INCR,EPSINI,
      &         DERIVE,DERIVF,DERFOR,LTEATT
@@ -294,7 +294,8 @@ C PESANTEUR ET ROTATION
 C
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
         CALL RCCOMA(MATCOD,'ELAS',PHENOM,CODRET)
-       CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'RHO',RHO,CODRET,'FM')
+       CALL RCVALB('RIGI',1,1,'+',MATCOD,' ',PHENOM,
+     &             1,' ',RBID,1,'RHO',RHO,CODRET,'FM')
         IF (IPESA.NE.0) THEN
           DO 95 I=1,NNO
             IJ = NDIM*(I-1)
@@ -351,16 +352,19 @@ C
 C ======================================================================
 C BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 C ======================================================================
-
+      IRET=0
       DO 645 KP = 1,NPG1
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG(KP),IRET)
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG(KP),IRET1)
+        IRET=IRET+IRET1
   645 CONTINUE
 
       DO 646 KP = 1,NNO
-        CALL RCVARC('F','TEMP','+','NOEU',KP,1,TGD(KP),IRET)
+        CALL RCVARC(' ','TEMP','+','NOEU',KP,1,TGD(KP),IRET1)
+        IRET=IRET+IRET1
   646 CONTINUE
 
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+      CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET1)
+      IRET=IRET+IRET1
 
       DO 800 KP=1,NPG1
 
@@ -418,10 +422,18 @@ C   DE LA TEMPERATURE AUX POINTS DE GAUSS (TG) ET SON GRADIENT (TGDM)
           DER(1) = DFDI(I)
           DER(2) = DFDI(I+NNO)
           DER(4) = ZR(IVF+L+I1)
+          IF (IRET.EQ.0) THEN
+            DO 301 J=1,NDIM
+              TGDM(J)     = TGDM(J)   + TGD(I)*DER(J)
+301         CONTINUE
+          ELSE
+            DO 302 J=1,NDIM
+              TGDM(J)=0.D0
+302         CONTINUE
+          ENDIF     
           DO 310 J=1,NDIM
             IJ1 = NDIM*I1+J
             IJ = IJ1 - 1
-            TGDM(J)     = TGDM(J)   + TGD(I)*DER(J)
             DO 300 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+IJ)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+IJ)*DER(K)
@@ -616,9 +628,14 @@ C
             EPSDEP = EPSDEP + 2.D0*EPS(4)*DEPSDE(4)
             TERM3 = EPSEPS*MU/E
             TERM4 = EPSDEP*MU*2.D0
-            TERM5 = -ALPHA*(TG(KP)-TREF)*E*TRADE/(1.D0-2.D0*NU)
-            TERM6 = -ALPHA*(TG(KP)-TREF)*(TRA-1.5D0*ALPHA*(TG(KP)-TREF))
-     &              /(1.D0-2.D0*NU)
+            IF (IRET.EQ.0) THEN
+              TERM5=-ALPHA*(TG(KP)-TREF)*E*TRADE/(1.D0-2.D0*NU)
+              TERM6=-ALPHA*(TG(KP)-TREF)*(TRA-1.5D0*ALPHA*(TG(KP)-TREF))
+     &                /(1.D0-2.D0*NU)
+            ELSE
+              TERM5=0.D0
+              TERM6=0.D0
+            ENDIF
             IF(DERIVE) DPSIDE = TERM1 + TERM2 + TERM3 + TERM4 + TERM5
      &                         +TERM6
             IF(DERIVF) DPSIDE = TERM2 + TERM4 + TERM5
@@ -634,15 +651,25 @@ C
              ELSE
               CALL U2MESS('F','MODELISA_67')
              ENDIF
-             DPSIDE = COE2*(EPS(1)*DEPSDE(2)+EPS(2)*DEPSDE(1))
-     &               +2.D0*COE1*(EPS(1)*DEPSDE(1)+EPS(2)*DEPSDE(2))
-     &               +2.D0*COE3*EPS(4)*DEPSDE(4)
-     &               -ALPHA*(TG(KP)-TREF)*E*TRADE/(1.D0-2.D0*NU)
-             IF(DERIVE) THEN
-               DPSIDE =  DPSIDE +(COE1/E)*(EPS(1)*EPS(1)+EPS(2)*EPS(2))
+             IF (IRET.EQ.0) THEN
+               DPSIDE=COE2*(EPS(1)*DEPSDE(2)+EPS(2)*DEPSDE(1))
+     &                 +2.D0*COE1*(EPS(1)*DEPSDE(1)+EPS(2)*DEPSDE(2))
+     &                 +2.D0*COE3*EPS(4)*DEPSDE(4)
+     &                 -ALPHA*(TG(KP)-TREF)*E*TRADE/(1.D0-2.D0*NU)
+               IF(DERIVE) THEN
+                 DPSIDE=DPSIDE +(COE1/E)*(EPS(1)*EPS(1)+EPS(2)*EPS(2))
+     &                    +(COE2/E)*EPS(1)*EPS(2)+(COE3/E)*EPS(4)*EPS(4)
+     &                    -ALPHA*(TG(KP)-TREF)*
+     &                    (TRA-1.5D0*ALPHA*(TG(KP)-TREF))/(1.D0-2.D0*NU)
+               ENDIF
+             ELSE
+               DPSIDE=COE2*(EPS(1)*DEPSDE(2)+EPS(2)*DEPSDE(1))
+     &                 +2.D0*COE1*(EPS(1)*DEPSDE(1)+EPS(2)*DEPSDE(2))
+     &                 +2.D0*COE3*EPS(4)*DEPSDE(4)
+               IF(DERIVE) THEN
+                 DPSIDE=DPSIDE +(COE1/E)*(EPS(1)*EPS(1)+EPS(2)*EPS(2))
      &                  +(COE2/E)*EPS(1)*EPS(2)+(COE3/E)*EPS(4)*EPS(4)
-     &                  -ALPHA*(TG(KP)-TREF)*
-     &                   (TRA-1.5D0*ALPHA*(TG(KP)-TREF))/(1.D0-2.D0*NU)
+               ENDIF
              ENDIF
 C
            TCLA = TCLA + POIDS* (PROD-DPSIDE*DIVT)
@@ -653,12 +680,17 @@ C =======================================================
         NU1 = 1.D0+NU
         NU1M = 1.D0-2.D0*NU
         NU12 = NU1*NU1
-        TERMT1 = -(ALPHA + DALPHA*(TG(KP)-TREF))*(TRA+E*TRADE)/NU1M
-     &           -(ALPHA*(TG(KP)-TREF)/NU1M)*(2.D0*DNU*TRA/NU1M
-     &           +(DE+2.D0*E*DNU/NU1M)*TRADE)
-        TERMT2 = ((3.D0*ALPHA*(TG(KP)-TREF))/NU1M)*
-     &         (ALPHA + DALPHA*(TG(KP)-TREF) + ALPHA*(TG(KP)-TREF)*DNU
-     &         /NU1M)
+        IF (IRET.EQ.0) THEN
+          TERMT1 = -(ALPHA + DALPHA*(TG(KP)-TREF))*(TRA+E*TRADE)/NU1M
+     &             -(ALPHA*(TG(KP)-TREF)/NU1M)*(2.D0*DNU*TRA/NU1M
+     &             +(DE+2.D0*E*DNU/NU1M)*TRADE)
+          TERMT2 = ((3.D0*ALPHA*(TG(KP)-TREF))/NU1M)*
+     &           (ALPHA + DALPHA*(TG(KP)-TREF) + ALPHA*(TG(KP)-TREF)*DNU
+     &           /NU1M)
+        ELSE
+          TERMT1 = -(ALPHA )*(TRA+E*TRADE)/NU1M
+          TERMT2 = 0.D0
+        ENDIF
         IF(AXI) THEN
           COEF = NU1*NU1M
           COEF = COEF*COEF

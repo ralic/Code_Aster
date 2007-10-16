@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF calculel6 Messages  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,11 +23,28 @@ def _(x) : return x
 
 cata_msg={
 
+1: _("""
+Erreur utilisateur (dans la commande AFFE_MATERIAU) :
+  Dans le CHAM_MATER %(k1)s, vous avez affecté le matériau %(k2)s.
+  Dans ce matériau, il existe un coefficient de dilatation (ELAS/ALPHA)
+  qui est une fonction de la température.
+  Pour pouvoir utiliser cette fonction, il est nécessaire de transformer
+  cette fonction (changement de repère : TEMP_DEF_ALPHA -> TEMP_REF).
+  Pour cela, l'utilisateur doit fournir une température de référence.
+
+Solution :
+  Vérifier que les mailles affectées par le matériau %(k2)s sont bien
+  toutes affectées par une température de référence
+  (AFFE/TEMP_REF ou AFFE_VARC/NOM_VARC='TEMP',VALE_REF).
+"""),
+
+
+
 9: _("""
   Erreur d'utilisation :
   Vous avez utilisé le mot clé AFFE_MATERIAU/AFFE/TEMP_REF
   alors que la température de référence doit etre fournie avec le mot clé :
-  AFFE_MATERIAU/AFFE_VARC/VALE_REF= ...     (NOM_VARC='TEMP)
+  AFFE_MATERIAU/AFFE_VARC/VALE_REF= ...     (NOM_VARC='TEMP')
 """),
 
 10: _("""

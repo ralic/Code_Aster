@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,7 +185,8 @@ CTM=AFFE_MATERIAU(
                    TOUT='OUI',
                    EVOL=TEMPRESU,
                    NOM_VARC='TEMP',
-                   NOM_CHAM='TEMP',),
+                   NOM_CHAM='TEMP',
+                   VALE_REF=0.),
               )
 
 LIAISON=AFFE_CHAR_MECA(

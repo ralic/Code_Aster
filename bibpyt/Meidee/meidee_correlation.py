@@ -1,4 +1,4 @@
-#@ MODIF meidee_correlation Meidee  DATE 02/04/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_correlation Meidee  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,8 +58,7 @@ try:
 
     
 except ImportError:
-    UTMESS('F',  'MACRO_VISU_MEIDEE',
-           "ERREUR PENDANT L'IMPORTATION DES MODULES MEIDEE")
+    UTMESS('F','MEIDEE0_2')
 
 try:
     from Stanley.gmsh import GMSH

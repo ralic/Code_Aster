@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PRISE EN COMPTE DU RETRAIT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,8 +78,11 @@ NU=DEFI_FONCTION( NOM_PARA='TEMP',
                   VALE=(0.0,0.2,1.0,0.2,)
                 ),
 
+ALPHA=DEFI_CONSTANTE(VALE=0.);
+
 BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                   NU = NU ,
+                                  ALPHA=ALPHA,TEMP_DEF_ALPHA=0.,
                                   K_DESSIC = 10.0E-6,
                                   B_ENDOGE = 60.0E-6,
                                   FONC_DESORP = FONC1, ),

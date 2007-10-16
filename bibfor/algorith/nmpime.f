@@ -1,10 +1,10 @@
-      SUBROUTINE NMPIME(FAMI,KPG,KSP,OPTION,ALPHA,
+      SUBROUTINE NMPIME(FAMI,KPG,KSP,IMATE,OPTION,
      &           XLONG0,A,XLONGM,DLONG0,
      >           NCSTPM,CSTPM,
      >           VIM,EFFNOM,
      &           VIP,EFFNOP,KLV,FONO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,7 @@ C -----------------------------------------------------------------
 
       CHARACTER*(*) FAMI,OPTION
       REAL*8        XLONG0,A,XLONGM
-      REAL*8        ALPHA
-      INTEGER       KPG,KSP,NCSTPM
+      INTEGER       KPG,KSP,NCSTPM,IMATE
       REAL*8        CSTPM(NCSTPM)
       REAL*8        TMOINS,TPLUS,DLONG0
       REAL*8        EFFNOM,VIM(NVAR)
@@ -44,7 +43,6 @@ C -----------------------------------------------------------------
 C IN  : E      : MODULE D'YOUNG
 C       XLONG0 : LONGUEUR DE L'ELEMENT DE BARRE AU REPOS
 C       A      : SECTION DE LA BARRE
-C       ALPHA  : COEFFICIENT DE DILATATION THERMIQUE
 C       NCSTPM : NOMBRE DE CONSTANTES DE MATERIAU
 C       CSTPM  : CONSTANTES DE MATERIAU :
 C           E      : MODULE D'YOUNG
@@ -94,8 +92,7 @@ C
       DEPS = EPSP - EPSM
       SIGM    =EFFNOM/A
 C
-      CALL NM1DPM(FAMI,KPG,KSP,OPTION,NVAR,
-     >           ALPHA,
+      CALL NM1DPM(FAMI,KPG,KSP,IMATE,OPTION,NVAR,
      >           NCSTPM,CSTPM,
      >           SIGM,VIM,
      >           DEPS,

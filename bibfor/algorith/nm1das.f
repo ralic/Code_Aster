@@ -1,9 +1,9 @@
-      SUBROUTINE NM1DAS(FAMI,KPG,KSP,E,ALPHA,SYC,SYT,ETC,ETT,CR,
-     &                  TMOINS,TPLUS,
+      SUBROUTINE NM1DAS(FAMI,KPG,KSP,E,SYC,SYT,ETC,ETT,CR,
+     &                  TMOINS,TPLUS,ICODMA,
      &                  SIGM,DEPS,VIM,SIG,VIP,DSDEM,DSDEP)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,6 @@ C IN  FAMI     : FAMILLE DES POINTS DE GAUSS
 C IN  KPG      : NUMERO DU POINT DE GAUSS
 C IN  KSP      : NUMERO DU SOUS-POINT DE GAUSS
 C IN  E        : MODULE D YOUNG
-C IN  ALPHA    : COEF DILAT THERMIQUE
 C       ETT    : ET EN TRACTION
 C       ETC    : ET EN COMPRESSION
 C       SYC    : LIMITE ELASTIQUE EN COMPRESSION
@@ -49,7 +48,7 @@ C OUT DSDEP   : DSIG/DEPS TEMPS PLUS
 C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
-      REAL*8        E,ALPHA,SYC,SYT,ETC,ETT,CR,TMOINS,TPLUS
+      REAL*8        E,EPSTHE,SYC,SYT,ETC,ETT,CR,TMOINS,TPLUS
       REAL*8        SIGM,DEPS,PMT,PMC,XMT,XMC,XPT,XPC,VIM(4),VIP(4)
       REAL*8        SIG,PPT,PPC,DSDEM,DSDEP
       INTEGER       KPG,KSP
@@ -57,8 +56,8 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
-      REAL*8        RMC,RMT,SIGE,HT,HC,DEPMEC,DPT,RPT,DPC,RPC,SIGD,T,TM
-      INTEGER       IRET
+      REAL*8        RMC,RMT,SIGE,HT,HC,DEPMEC,DPT,RPT,DPC,RPC,SIGD,T
+      INTEGER       IRET,ICODMA
 
 C     ------------------------------------------------------------------
 C     VARIABLES INTERMEDIAIRES
@@ -74,11 +73,9 @@ C     ------------------------------------------------------------------
 C     DELTA DEFORMATION MECANIQUE
 C     ------------------------------------------------------------------
 C
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,T,IRET)
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+      CALL VERIFT(FAMI,KPG,KSP,'T',ICODMA,'ELAS',1,EPSTHE,IRET)      
 
-
-      DEPMEC = DEPS-ALPHA*(T-TM)
+      DEPMEC = DEPS-EPSTHE
 C     ------------------------------------------------------------------
 C     FONCTIONS D'ECROUISSAGE AU TEMPS MOINS
 C     ------------------------------------------------------------------

@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,11 +75,11 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       LOGICAL     CPLAN,PLASTI
-      INTEGER     IADZI,IAZK24,UMESS,IUNIFI,IRET
+      INTEGER     IADZI,IAZK24,UMESS,IUNIFI,IRET, IISNAN
       REAL*8      EPXMAX
       PARAMETER   (EPXMAX = 5.D0)
       CHARACTER*8 NOMAIL
-      REAL*8      DEPSTH(6),VALRES(10),ALPHA
+      REAL*8      DEPSTH(6),VALRES(10)
       REAL*8      LAMBDA,KAPA,PORO,PRESCR,M,PA
       REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,FONC
       REAL*8      SIELEQ,SIMOEL,H,A(6),AA(6),SIEQM, TOTO, TOTO1
@@ -139,8 +139,16 @@ C
          NU = VALRES(2)
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHA = VALRES(3)
+         IF ((IISNAN(TP).EQ.0).AND.(IISNAN(TM).GT.0)) THEN
+           IF ((IISNAN(TREF).GT.0).OR.(CODRET(3) .NE.'OK')) THEN 
+             CALL U2MESS('F','CALCULEL_31')
+           ELSE
+             COEF = VALRES(3)*(TP-TREF) - VALRES(3)*(TM-TREF)
+           ENDIF
+         ELSE
+             VALRES(3) = 0.D0
+             COEF = 0.D0
+         ENDIF
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
@@ -174,7 +182,8 @@ C
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHA = VALRES(3)
+         COEF = VALRES(3)*(TP-TREF) - VALRES(3)*(TM-TREF)
+ 
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
@@ -212,7 +221,6 @@ C
 C
 C     -- 3 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
-      COEF = ALPHA*(TP-TREF) - ALPHA*(TM-TREF)
       IF (CPLAN)THEN
            CALL U2MESS('F','ALGORITH6_63')
       ENDIF

@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C TOLE CRP_7
 C TOLE CRP_20
 C
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            KPG,KSP,NDIM,IMATE,IRET,IRET2
+      INTEGER            KPG,KSP,NDIM,IMATE,IRET,IRET0,IRET1,IRET2
       CHARACTER*(*)      FAMI(*)
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(3),OPTION
@@ -86,16 +86,16 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       LOGICAL     CPLAN,PLASTI
-      REAL*8      DEPSTH(6),VALRES(3),ALPHAP,ALPHAM,PM,VAL0,XP(6),PLAST
+      REAL*8      DEPSTH(6),VALRES(3),PM,VAL0,XP(6),PLAST,RESU
       REAL*8      DEPSMO,SIGMMO,E,NU,TROISK,RPRIM,RP,HP,GP,G1,RPM
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,XM(6),SIGEDV(6)
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM,CC
       REAL*8      EM,NUM,TROIKM,DEUMUM,RBID,SIGMP(6),SIGEL(6)
-      REAL*8      HSG,PP,PRAG,PRAGM,PRECR,TM,TP,TREF
+      REAL*8      HSG,PP,PRAG,PRAGM,PRECR,TM,TP,EPSTHE
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
       INTEGER     JPROLP,JVALEP,NBVALP,K,L,NITER,IMATE2
-      CHARACTER*2 BL2, FB2, CODRET(3)
-      CHARACTER*8 NOMRES(3)
+      CHARACTER*2 FB2, CODRET(3)
+      CHARACTER*8 NOMRES(3),TYPE
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C DEB ------------------------------------------------------------------
 C
@@ -117,19 +117,12 @@ C
   10  CONTINUE
       DP=0.D0
 C
-      BL2 = '  '
       FB2 = 'F '
 C
       IF (.NOT.( COMPOR(1)(1:9) .EQ. 'VMIS_ECMI' )) THEN
             CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
 
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
-      IF (IRET2.EQ.1) TREF=0.D0
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
-      IF (IRET2.EQ.1) TM=TREF
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
-      IF (IRET2.EQ.1) TP=TREF
 
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
@@ -142,39 +135,24 @@ C
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NUM = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
-     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHAM = VALRES(3)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
      &                0.D0,1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
-     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHAP = VALRES(3)
       ELSE
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
      &                0.D0,2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
          EM  = VALRES(1)
          NUM = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
-     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-         ALPHAM = VALRES(3)
          DEUMUM = EM/(1.D0+NUM)
-           TROIKM = EM/(1.D0-2.D0*NUM)
+         TROIKM = EM/(1.D0-2.D0*NUM)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
      &                0.D0,2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
-     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          E      = VALRES(1)
          NU     = VALRES(2)
          DEUXMU = E/(1.D0+NU)
          TROISK = E/(1.D0-2.D0*NU)
-         ALPHAP = VALRES(3)
       ENDIF
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET0)
 C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
@@ -197,23 +175,34 @@ C     ---------------------------------------
           RPRIM    = DSDE*E/(E-DSDE)-1.5D0*PRAG
           RPM      = RPRIM*PM +SIGY
         ELSE
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',TM,JPROLM,
+
+          CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
+          CALL RCTYPE(IMATE,1,'TEMP',TM,RESU,TYPE)
+          IF ((TYPE.EQ.'TEMP').AND.(IRET2.EQ.1)) 
+     &        CALL U2MESS('F','CALCULEL_31')
+          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLM,
      &                JVALEM,NBVALM,EM)
           DEUMUM = EM/(1.D0+NUM)
           TROIKM = EM/(1.D0-2.D0*NUM)
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',TP,JPROLP,JVALEP,NBVALP,E)
+  
+          CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET1)
+          CALL RCTYPE(IMATE,1,'TEMP',TP,RESU,TYPE)
+          IF ((TYPE.EQ.'TEMP').AND.(IRET1.EQ.1)) 
+     &        CALL U2MESS('F','CALCULEL_31')
+          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLP,
+     &                JVALEP,NBVALP,E)
+          DEUXMU = E/(1.D0+NU)
+          TROISK = E/(1.D0-2.D0*NU)
 
           CALL RCFON2('S',JPROLP,JVALEP,NBVALP,SIGY,DUM,DUM,
      &                DUM,DUM,DUM,DUM,DUM,DUM)
           CALL RCFON2('V',JPROLP,JVALEP,NBVALP,RBID,RBID,
      &                RBID,PM,RPM,RPRIM,PRAG,RBID,RBID)
-            DEUXMU = E/(1.D0+NU)
-            TROISK = E/(1.D0-2.D0*NU)
         ENDIF
 C
 C     -- 4 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
-      COEF = ALPHAP*(TP-TREF)-ALPHAM*(TM-TREF)
+      COEF = EPSTHE
       IF (CPLAN) DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
      &                +(1.D0+NU)/(1.D0-NU)*COEF
       DEPSMO = 0.D0

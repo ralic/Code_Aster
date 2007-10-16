@@ -1,4 +1,4 @@
-#@ MODIF gene_vari_alea_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF gene_vari_alea_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ def gene_vari_alea_ops(self,**args):
   return 0
 
 def gene_vari_alea_init(self,d):
-  from Utilitai.Utmess import U2MESS as UTMESS
+  from Utilitai.Utmess import  UTMESS
   a     =self.etape['BORNE_INF']
   moyen =self.etape['VALE_MOY' ]
   TYPE  =self.etape['TYPE']

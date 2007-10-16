@@ -1,6 +1,6 @@
-      SUBROUTINE TE0299(OPTION,NOMTE)
+       SUBROUTINE TE0299(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,21 +35,21 @@ C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
-      CHARACTER*2  CODRET(3)
+      CHARACTER*2  CODRET(2)
       CHARACTER*4  FAMI
-      CHARACTER*8  NOMRES(3),NOMPAR(3)
+      CHARACTER*8  NOMRES(2),NOMPAR(3)
       CHARACTER*16 NOMTE,OPTION,PHENOM
 C
       REAL*8   EPSI,DEPI,R8DEPI,R8PREM
       REAL*8   DFDI(18),F(3,3),EPS(6),FNO(18)
       REAL*8   DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4)
       REAL*8   DU1DM(3,4),DU2DM(3,4),DV1DM(7),DV2DM(7)
-      REAL*8   RHO,OM,OMO,RBID,E,NU,ALPHA
-      REAL*8   THET,TREF,TG(27),TPN(20),TGDM(3),TTRG,K3A,K6A
+      REAL*8   RHO,OM,OMO,RBID,E,NU
+      REAL*8   THET,TREF,TPN(20),TGDM(3)
       REAL*8   XAG,YAG,XG,YG,XA,YA,RPOL,NORM,A,B
       REAL*8   PHI,CPHI,C2PHI,CPHI2,SPHI2
       REAL*8   C1,C2,C3,CS
-      REAL*8   TH,VALRES(3),DEVRES(3),VALPAR(3)
+      REAL*8   TH,VALRES(2),DEVRES(3),VALPAR(3)
       REAL*8   CK,COEFK,CFORM,CR1,CR2
       REAL*8   GELEM,GUV1,GUV2,GUV3,K1,K2,G,POIDS,RAY
 C
@@ -124,20 +124,12 @@ C
 C
       CALL JEVECH('PGTHETA','E',IFIC)
 
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
-
-      DO 645 KP = 1,NPG1
-        CALL RCVARC('F','TEMP','+',FAMI,KP,1,TG(KP),IRET)
-  645 CONTINUE
-
       DO 646 KP = 1,NNO
-        CALL RCVARC('F','TEMP','+','NOEU',KP,1,TPN(KP),IRET)
-        IF (IRET.EQ.1) TPN(KP)=0.D0
+        CALL RCVARC(' ','TEMP','+','NOEU',KP,1,TPN(KP),IRET)
   646 CONTINUE
 
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
-      NOMRES(3) = 'ALPHA'
       NORM = SQRT(ZR(IFOND+2)*ZR(IFOND+2)+ZR(IFOND+3)*ZR(IFOND+3))
       A =  ZR(IFOND+3)/NORM
       B = -ZR(IFOND+2)/NORM
@@ -164,7 +156,8 @@ C
 C
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
-        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',RBID,1,'RHO',RHO,
+        CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
+     &              1,' ',RBID,1,'RHO',RHO,
      &              CODRET,'FM')
         IF (IPESA.NE.0) THEN
           DO 95 I=1,NNO
@@ -224,6 +217,7 @@ C
           YG = YG + ZR(IGEOM+2*(I-1)+1)*DER(4)
           DO 310 J=1,NDIM
             TGDM(J)     = TGDM(J)   + TPN(I)*DER(J)
+    
             DO 300 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+NDIM*(I-1)+J-1)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+NDIM*(I-1)+J-1)*DER(K)
@@ -234,28 +228,20 @@ C
               DFDM(J,4) = DFDM(J,4) + FNO(NDIM*(I-1)+J)*DER(4)
 310       CONTINUE
 320     CONTINUE
-C
+     
         IF (AXI) THEN
           DUDM(3,3)= DUDM(1,4)/RAY
           DTDM(3,3)= DTDM(1,4)/RAY
           DFDM(3,3)= DFDM(1,4)/RAY
         ENDIF
-C	
-        TTRG  = TG(KP) - TREF
-        CALL RCVAD2 (FAMI,KP,1,'+',ZI(IMATE),'ELAS',3,
-     &                NOMRES,VALRES,DEVRES,CODRET)
-        IF (CODRET(3).NE.'OK') THEN
-          VALRES(3)= 0.D0
-          DEVRES(3)= 0.D0
-        ENDIF
+
+        CALL RCVALB (FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,
+     &               2,NOMRES,VALRES,CODRET,'FM')
         E     = VALRES(1)
         NU    = VALRES(2)
-        ALPHA = VALRES(3)
-        K3A = ALPHA*E/(1.D0-2.D0*NU)
-        K6A = 2.D0*K3A
         CFORM  = (1.D0+NU)/(SQRT(DEPI)*E)
         C3 = E/(2.D0*(1.D0+NU))
-        IF ( NOMTE(3:4) .EQ. 'DP' .OR. NOMTE(3:4) .EQ. 'AX') THEN
+        IF ( NOMTE(3:4) .EQ. 'DP'.OR. NOMTE(3:4) .EQ. 'AX' ) THEN
           C1 = E*(1.D0-NU)/((1.D0+NU)*(1.D0-2.D0*NU))
           C2 = NU/(1.D0-NU)*C1
           CK = 3.D0-4.D0*NU
@@ -319,32 +305,30 @@ C
        DU2DM(2,1)= A*B*(DV2DM(1)-DV2DM(2))-B*B*DV2DM(3)+A*A*DV2DM(5)
        DU2DM(1,4)= A*DV2DM(6)-B*DV2DM(7)
        DU2DM(2,4)= B*DV2DM(6)+A*DV2DM(7)
-C       
+C
        IF (AXI) THEN
           DU1DM(3,3)= DU1DM(1,4)/RAY
           DU2DM(3,3)= DU2DM(1,4)/RAY
        ENDIF
-       
 
-C
 C   INTRODUCTION DE U1S ET U2S DANS G(U,V)
 C
         GELEM =0.D0
         CS    =0.5D0
-        CALL GBILIN(DUDM,DU1DM,DTDM,DFDM,TGDM,TTRG,POIDS,
-     &              C1,C2,C3,CS,TH,K3A,0.D0,0.D0,AXI,GELEM)
+        CALL GBILIN(FAMI,KP,ZI(IMATE),DUDM,DU1DM,DTDM,DFDM,TGDM,POIDS,
+     &              C1,C2,C3,CS,TH,1.D0,0.D0,0.D0,AXI,GELEM)
         GUV1  = GUV1 + GELEM
 C
         GELEM =0.D0
         CS    =0.5D0
-        CALL GBILIN(DUDM,DU2DM,DTDM,DFDM,TGDM,TTRG,POIDS,
-     &              C1,C2,C3,CS,TH,K3A,0.D0,0.D0,AXI,GELEM)
+        CALL GBILIN(FAMI,KP,ZI(IMATE),DUDM,DU2DM,DTDM,DFDM,TGDM,POIDS,
+     &              C1,C2,C3,CS,TH,1.D0,0.D0,0.D0,AXI,GELEM)
         GUV2  = GUV2 + GELEM
 C
         GELEM =0.D0
         CS    =1.D0
-        CALL GBILIN(DUDM,DUDM,DTDM,DFDM,TGDM,TTRG,POIDS,
-     &            C1,C2,C3,CS,TH,K6A,0.D0,0.D0,AXI,GELEM)
+        CALL GBILIN(FAMI,KP,ZI(IMATE),DUDM,DUDM,DTDM,DFDM,TGDM,POIDS,
+     &            C1,C2,C3,CS,TH,2.D0,0.D0,0.D0,AXI,GELEM)
         GUV3  = GUV3 + GELEM
 800   CONTINUE
 C
@@ -353,7 +337,6 @@ C
       G = GUV3
 C
       ZR(IFIC)   = G
-      
       ZR(IFIC+1) = K1/SQRT(COEFK)
       ZR(IFIC+2) = K2/SQRT(COEFK)
       ZR(IFIC+3) = K1

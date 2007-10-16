@@ -1,6 +1,6 @@
       SUBROUTINE TE0342(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       PARAMETER   (       NBRES=2)
+      INTEGER      IRET
       REAL*8       VALRES(NBRES)
       CHARACTER*2  CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
@@ -83,11 +84,7 @@ C
 C --- RECUPERATION DE LA TEMPERATURE :
 C     -----------------------------------------------
       NPG = 3
-      DO 5 KP=1,NPG
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
-        VALPAR = VALPAR + TPG
-    5 CONTINUE
-      VALPAR = VALPAR/NPG
+      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR,IRET)
 
       NBPAR  = 1
       NOMPAR = 'TEMP'
@@ -96,8 +93,9 @@ C --- RECUPERATION ET INTERPOLATION DES CARACTERISTIQUES MATERIAUX :
 C     ------------------------------------------------------------
       CALL JEVECH('PMATERC','L',LMATER)
 C
-      CALL RCVALA(ZI(LMATER),' ', 'ELAS', NBPAR, NOMPAR, VALPAR,
-     &              NBRES, NOMRES, VALRES, CODRES, 'FM' )
+      CALL RCVALB('RIGI',NPG,1,'+',ZI(LMATER),' ', 'ELAS', 
+     &             NBPAR, NOMPAR, VALPAR, 
+     &             NBRES, NOMRES, VALRES, CODRES, 'FM' )
 C
       E     = VALRES(1)
       NU    = VALRES(2)

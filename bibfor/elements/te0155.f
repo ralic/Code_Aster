@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,7 +149,8 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
          A = ZR(LSECT)
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
+         CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &                 0,' ',R8BID,1,'RHO',RHO,
      &                 CODRES, 'FM' )
 C
          CALL JEVECH('PPESANR','L',LPESA)
@@ -347,7 +348,7 @@ C
           ZR(LVECT+1)   = VECT(2)
           ZR(LVECT+2)   = VECT(4)
           ZR(LVECT+3)   = VECT(5)
-      ENDIF
+         ENDIF
 C
 C
       ELSEIF ( OPTION.EQ.'CHAR_MECA_SR1D1D' ) THEN
@@ -427,7 +428,7 @@ C
           ZR(LVECT+1)   = VECT(2)
           ZR(LVECT+2)   = VECT(4)
           ZR(LVECT+3)   = VECT(5)
-      ENDIF
+         ENDIF
 C
 
       ELSEIF ( OPTION.EQ.'CHAR_MECA_TEMP_R' ) THEN
@@ -436,25 +437,18 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
          A = ZR(LSECT)
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+         CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),' ','ELAS',
+     &               0,' ',R8BID,1,'E',E,
      &               CODRES,'FM')
-         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
-     &                                      ALPHAT,CODRES,'FM')
 C
-         TEMP=0.D0
 C        TEMPERATURE DE REFERENCE
-         CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET1)
-C
-C        TEMPERATURE EFFETIVE
-         CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET2)
-C
-        IF ((IRET1.NE.1).AND.(IRET2.NE.1)) TEMP=TEMP-TREF
+         CALL VERIFT(FAMI,1,1,'+',ZI(LMATER),'ELAS',1,EPSTH,IRET)
 C
 C        TERME DE LA MATRICE ELEMENTAIRE
          XRIG = E * A / XL
 C
 C        DEPLACEMENT INDUIT PAR LA TEMPERATURE
-         XDEP = ALPHAT * TEMP * XL
+         XDEP = EPSTH * XL
 C
 C        --- CALCUL DES FORCES INDUITES ---
          FL(1) = -XRIG * XDEP
@@ -481,32 +475,31 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
          A = ZR(LSECT)
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+         CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),' ','ELAS',
+     &               0,' ',R8BID,1,'E',E,
      &               CODRES,'FM')
-         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
-     &                                      ALPHAT,CODRES,'FM')
 
-      CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
-      IF (ITEMPS.NE.0) THEN
-      INSTAN = ZR(ITEMPS)
-      ELSE
-      INSTAN = 0.D0
-      ENDIF
+        CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+        IF (ITEMPS.NE.0) THEN
+          INSTAN = ZR(ITEMPS)
+        ELSE
+          INSTAN = 0.D0
+         ENDIF
 C
 C        TEMPERATURE EFFETIVE
-         CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET)
+         CALL RCVARC(' ','TEMP','+',FAMI,1,1,TEMP,IRET)
 C
          CALL RCVARC(' ','SECH','+','RIGI',1,1,SECH,IRET)
          IF (IRET.NE.0) SECH=0.D0
          CALL RCVARC(' ','SECH','REF','RIGI',1,1,SREF,IRET)
          IF (IRET.NE.0) SREF=0.D0
 
-      NOMPAR(1) = 'TEMP'
-      VALPA2(1) = TEMP
-      NOMPAR(2) = 'INST'
-      VALPA2(2) = INSTAN
-      NOMPAR(3) = 'SECH'
-      VALPA2(3) = SECH
+         NOMPAR(1) = 'TEMP'
+         VALPA2(1) = TEMP
+         NOMPAR(2) = 'INST'
+         VALPA2(2) = INSTAN
+         NOMPAR(3) = 'SECH'
+         VALPA2(3) = SECH
 C
 C        TERME DE LA MATRICE ELEMENTAIRE
          XRIG = E * A / XL
@@ -514,7 +507,8 @@ C
 C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           DU SECHAGE
 C           ----------------------------------------------------------
-            CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
+            CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &          3,NOMPAR,VALPA2,1,
      &          'K_DESSIC',KDESSI, CODRES, ' ' )
 C
             IF (CODRES.NE.'OK') KDESSI=0.D0
@@ -547,10 +541,9 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
          A = ZR(LSECT)
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+         CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &               0,' ',R8BID,1,'E',E,
      &               CODRES,'FM')
-         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
-     &                                      ALPHAT,CODRES,'FM')
 
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
@@ -562,7 +555,7 @@ C      -------------------------
          ENDIF
 C
 C        TEMPERATURE EFFETIVE
-         CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET)
+         CALL RCVARC(' ','TEMP','+',FAMI,1,1,TEMP,IRET1)
 
 C        HYDRATATION EFFECTIVE
          CALL RCVARC(' ','HYDR','+','RIGI',1,1,HYDR,IRET)
@@ -581,7 +574,8 @@ C
 C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           OU DE L HYDRATATION
 C           ----------------------------------------------------------
-            CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
+            CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &          3,NOMPAR,VALPA2,1,
      &          'B_ENDOGE',KENDOG, CODRES, ' ' )
 C
             IF (CODRES.NE.'OK') KENDOG=0.D0

@@ -1,10 +1,10 @@
-      SUBROUTINE PTENTH ( UL, XL, ALPHAT, N, MAT, ITYPE, ENERTH )
+      SUBROUTINE PTENTH ( UL, XL, F, N, MAT, ITYPE, ENERTH )
       IMPLICIT  NONE
       INTEGER   ITYPE, N
-      REAL*8    UL(12), ALPHAT, MAT(N,N), ENERTH
+      REAL*8    UL(12), F, MAT(N,N), ENERTH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C          ELEMENTS POUTRE (POU_D_T, POU_D_E, POU_C_T)
 C     ------------------------------------------------------------------
 C IN  UL     :  DEPLACEMENTS DES NOEUDS DE LA POUTRE
 C IN  XL     :  LONGUEUR DE LA POUTRE
-C IN  ALPHAT :  COEFFICIENT DE DILATATION DU MATERIAU
+C IN  F      :  DILATATION DU MATERIAU
 C IN  N      :  DIMENSION DE LA MATRICE MAT
 C IN  MAT    :  MATRICE DE RAIDEUR
 C IN  ITYPE  :  TYPE DE LA SECTION
@@ -50,8 +50,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER  I, J, LRCOU, IRET
-      REAL*8   UGT(12), FLT(12), ALONG, ANGS2, DEUX, F, RAD, TEMP, XL,
-     +         ZERO, FLM(12),TREF
+      REAL*8   UGT(12), FLT(12), ALONG, ANGS2, DEUX,  RAD, XL,
+     +         ZERO, FLM(12)
 C     ------------------------------------------------------------------
 C
 C --- INITIALISATIONS :
@@ -75,20 +75,8 @@ C     -----------------------------------
          XL     = RAD * ANGS2 * DEUX
       ENDIF
 C
-C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
-C     -------------------------------------------
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 C
-C --- RECUPERATION DE LA TEMPERATURE EFFECTIVE :
-C     ----------------------------------------
-      CALL RCVARC('F','TEMP','+','RIGI',1,1,TEMP,IRET)
-C
-      TEMP = TEMP - TREF
-C
-      IF (TEMP.NE.ZERO) THEN
-C
-        F = ALPHAT*TEMP
-C
+      IF (F.NE.ZERO) THEN
         IF (ITYPE.NE.10) THEN
           UGT(1) = -F*XL
           UGT(7) = -UGT(1)
@@ -116,7 +104,8 @@ C       --------------------------------------------------------------
         DO 40 I = 1, 12
             ENERTH = ENERTH + (0.5D0*UGT(I)*FLT(I)-UGT(I)*FLM(I))
   40    CONTINUE
-C
+  
       ENDIF
+C
 C
       END

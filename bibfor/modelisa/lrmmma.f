@@ -5,7 +5,7 @@
      &                    PREFIX,
      &                    INFMED, MODNUM, NUMNOA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/07/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -188,24 +188,15 @@ C
         IF ( NMATYP(ITYP).NE.0 ) THEN
 C
 C 2.1. ==> LE NUMERO DES MAILLES
-C          SI LE FICHIER NE CONTIENT PAS DE NUMERO DES MAILLES, ON LEUR
-C          DONNE UN NUMERO PAR DEFAUT
-C          C'EST ICI QUE L'ORDRE DE PARCOURS DES TYPES PREND TOUT
-C          SON SENS
+C          ON NE TIENT PAS COMPTE DE LA NUMEROTATION DES MAILLES
+C          PRESENTE DANS LE FICHIER MED: ON NUMEROTE LES MAILLES
+C          SELON LEUR ORDRE D'APPARITION.
 C
-          CALL EFNUML ( FID, NOMAMD, ZI(JNUMTY(ITYP)), NMATYP(ITYP),
-     &                  EDMAIL, TYPGEO(ITYP), CODRET )
-C
-          IF ( CODRET.EQ.0 ) THEN
-            NROMAI = NROMAI + NMATYP(ITYP)
-          ELSE
-            CALL U2MESK('I','PREPOST3_20',1,NOMTYP(ITYP))
-            DO 211 , JAUX = 1 , NMATYP(ITYP)
-              ZI(JNUMTY(ITYP)+JAUX-1) = NROMAI
-              NROMAI = NROMAI + 1
-  211       CONTINUE
-            CODRET = 0
-          ENDIF
+          DO 211 , JAUX = 1 , NMATYP(ITYP)
+            ZI(JNUMTY(ITYP)+JAUX-1) = NROMAI
+            NROMAI = NROMAI + 1
+  211     CONTINUE
+
 C
 C 2.2. ==> LE NOM DES MAILLES
 C          SI LE FICHIER NE CONTIENT PAS DE NOMMAGE DES MAILLES, ON LEUR
@@ -233,10 +224,7 @@ C           MOINS DE 10 MILLIONS DE MAILLES, ON RESTE EN BASE 10
                  CALL CODENT(CODE,'G',SAUX15)
                  ZK16(JNOMTY(ITYP)+IAUX-1) = 'M'//SAUX15
   222          CONTINUE
-         ENDIF
-
-
-
+            ENDIF
             CODRET = 0
           ENDIF
 C
@@ -255,11 +243,6 @@ C
 C
           DO 231 , IMATYP = 1 , NMATYP(ITYP)
             IMA = ZI(JNUMTY(ITYP)+IMATYP-1)
-            IF ( IMA.GT.NBMAIL ) THEN
-              VALI (1) = IMA
-              VALI (2) = NBMAIL
-              CALL U2MESG('F', 'MODELISA8_67',0,' ',2,VALI,0,0.D0)
-            ENDIF
             ZK8(JNOMMA+IMA-1) = ZK16(JNOMTY(ITYP)+IMATYP-1)(1:8)
             ZI (JTYPMA+IMA-1) = ITYP
             IDEC   = (IMA-1)*2

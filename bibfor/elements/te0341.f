@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       PARAMETER                 (NBRES=3)
+      INTEGER      IRET
       REAL*8       VALPAR,VALRES(NBRES)
       CHARACTER*2         CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
@@ -72,7 +73,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
    10 CONTINUE
 C
       NPG = 3
-      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR)
+      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR,IRET)
       
       NBPAR  = 1
       NOMPAR = 'TEMP'

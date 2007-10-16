@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith16 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -593,15 +593,6 @@ cata_msg = {
 
 89 : _("""
    On passe outre car VERI_PAS = NON
-  """),
-
-90 : _("""
-   Point : %(r1)f %(r2)f
-  """),
-
-91 : _("""
-   Point : %(r1)f %(r2)f %(r3)f
-
   """),
 
 92 : _("""

@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_fonction_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
    from Utilitai import liss_enveloppe
    from Accas import _F
    from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
-   from Utilitai.Utmess import U2MESS as UTMESS
+   from Utilitai.Utmess import  UTMESS
    from Numeric import alltrue,less,array,reshape,cos,sin,exp,sqrt
    from Numeric import choose,zeros,Float
    import aster_fonctions

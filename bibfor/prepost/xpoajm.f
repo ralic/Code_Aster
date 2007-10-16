@@ -3,7 +3,7 @@
      &                  NGRM,JDIRGR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -88,7 +88,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
       INM    = INM    + 1
       INMTOT = INMTOT + 1
-      IF (INM.GT.NNM) CALL U2MESK('F','XFEM_9',2,VALK)
+      CALL ASSERT(INM.LE.NNM)
       CALL CODENT(INMTOT,'G',CHN)
 
       CALL JECROC(JEXNOM(MA2//'.NOMMAI',PREFNO(4)//CHN))        

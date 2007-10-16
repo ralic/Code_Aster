@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF elements3 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,16 +77,6 @@ cata_msg={
 """),
 
 
-
-
-
-
-
-
-15: _("""
- nom d'element illicite
-"""),
-
 16: _("""
  comportement: %(k1)s non implante
 """),
@@ -113,17 +103,6 @@ cata_msg={
 
 22: _("""
  erreur dans le calcul de coef_f
-"""),
-
-
-
-
-
-
-
-
-24: _("""
- matns mal dimensionnee
 """),
 
 25: _("""
@@ -279,22 +258,9 @@ cata_msg={
  linéaires et avec la deformation GREEN.
 """),
 
-69: _("""
- on a pas pu calculer les derivees des fonctions singulieres car on se trouve sur le fond de fissure
-"""),
-
 70: _("""
  il faut affecter les elements de  bord (e et nu) pour le calcul des fic
 """),
-
-
-
-
-
-
-
-
-
 
 
 73: _("""
@@ -333,10 +299,6 @@ cata_msg={
 
 80: _("""
  situation de contact impossible
-"""),
-
-81: _("""
- option inconnue 
 """),
 
 82: _("""

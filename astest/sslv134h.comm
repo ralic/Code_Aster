@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # METHODE X-FEM (FISSURE NON MAILLEE)
 
-DEBUT(   CODE=_F( NOM = 'SSLV134H',NIV_PUB_WEB='INTERNET'))
+DEBUT(   CODE=_F( NOM = 'SSLV134H',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 MA1=LIRE_MAILLAGE(INFO=1,);

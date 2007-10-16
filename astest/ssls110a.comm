@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PLAQUE RECTANGULAIRE SIMPLEMENT APPUIEE COMPRIMEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,7 +83,7 @@ RESU=MECA_STATIQUE(MODELE=MODELE_1,
                    CHAM_MATER=CH_MAT_1,
                    CARA_ELEM=CARAC_1,
                    EXCIT=_F(CHARGE=CHARGE_1,),
-                   );
+                   INFO=2);
 
 #
 #
@@ -94,7 +94,7 @@ RESU=MECA_STATIQUE(MODELE=MODELE_1,
 
 SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
                     RESULTAT=RESU, NUME_ORDRE=1,
-                    NOM_CHAM='SIEF_ELGA_DEPL' ),
+                    NOM_CHAM='SIEF_ELGA_DEPL', INFO=2),
 
 #
 #

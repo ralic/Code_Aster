@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 
 def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
 
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
   from math import pi,sqrt,atan2,asin
   import os,string,types
   import aster
@@ -317,7 +317,7 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
 # script PYTHON de creation des noeuds d'une ligne de coupe 'arc'
 
 def crea_noeu_lig_coup(dimension,pt1,pt2,anglj,dnor):
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
   from math import pi,sin,cos,sqrt
 
   a=pt1[0]-pt2[0]
@@ -369,7 +369,7 @@ def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
 
   import aster
   from Accas import _F
-  from Utilitai.Utmess import U2MESS as UTMESS
+  from Utilitai.Utmess import  UTMESS
   import os
   from sets import Set
   POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
@@ -446,7 +446,7 @@ def crea_grp_matiere(self,groupe,newgrp,m,__remodr,NOM_CHAM,__macou):
 def crea_mail_lig_coup(dimension,lignes,groups,arcs):
 
   import os,sys,copy
-  from Utilitai.Utmess     import U2MESS as UTMESS
+  from Utilitai.Utmess     import  UTMESS
 
 # construction du maillage au format Aster des segments de lignes de coupe
 
@@ -602,9 +602,9 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
   from Noyau.N_utils import AsType
   import aster,math
   from Utilitai.UniteAster import UniteAster
-  from Utilitai.Utmess import U2MESS as UTMESS
+  from Utilitai.Utmess import  UTMESS
   ier=0
-
+  
   # On importe les definitions des commandes a utiliser dans la macro
   LIRE_MAILLAGE  =self.get_cmd('LIRE_MAILLAGE')
   DEFI_GROUP     =self.get_cmd('DEFI_GROUP')

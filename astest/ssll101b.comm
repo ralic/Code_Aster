@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PROBLEME DE HOVGAARD : CALCUL DES EFFORTS POU_C_T + POU_D_T
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +169,7 @@ TEMPE=CREA_RESU(
 CHAMTH=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
                      AFFE=_F(  GROUP_MA = 'MAT_1',    MATER = MAT_1),
                      AFFE_VARC=_F( TOUT='OUI',
-                              EVOL=TEMPE,
+                              EVOL=TEMPE,VALE_REF=0.,
                               NOM_VARC='TEMP',
                               NOM_CHAM='TEMP',),
                     );

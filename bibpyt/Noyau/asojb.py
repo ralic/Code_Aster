@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF asojb Noyau  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ import traceback,sys
 # pour utilisation dans eficas
 try:
    import aster
-   from Utilitai.Utmess import U2MESS as UTMESS
+   from Utilitai.Utmess import UTMESS
 except:
    pass
 

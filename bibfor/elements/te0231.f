@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CHARACTER*8 NOMRES(3),ELREFE
       CHARACTER*2 BL2,CODRET(3)
       REAL*8 E,NU,TPG,TGMOY,TGSUP,TGINF,TREF
-      REAL*8 X3,EPS(5),C,H,DILAT,VALRES(3)
+      REAL*8 X3,EPS(5),C,H,EPSTHE,VALRES(3)
       REAL*8 E11,E22,K11,K22,EP11,EP22
       REAL*8 DFDX(3),EFFOPG(24)
       REAL*8 JAC,R,COSA,SINA,COUR
@@ -74,8 +74,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       ELSE
         CALL JEVECH('PCONTRR','E',IEFFOR)
       END IF
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
-      IF (IRET.EQ.1) TREF=0.D0
+      CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET)
 
       BL2 = '  '
       H = ZR(ICACO)
@@ -116,9 +115,9 @@ CJMP  CORREC = ZR(ICACO+2)
           K22 = 0.D0
         END IF
 
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TGINF,IRET1)
-        CALL RCVARC('F','TEMP','+','RIGI',KP,2,TGMOY,IRET2)
-        CALL RCVARC('F','TEMP','+','RIGI',KP,3,TGSUP,IRET3)
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TGINF,IRET1)
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,2,TGMOY,IRET2)
+        CALL RCVARC(' ','TEMP','+','RIGI',KP,3,TGSUP,IRET3)
         IRET4=IRET1+IRET2+IRET3
         CALL ASSERT(IRET4.EQ.0 .OR. IRET4.EQ.3)
 
@@ -139,22 +138,22 @@ C---- COMME POUR LA LONGUEUR
           NOMRES(1) = 'E'
           NOMRES(2) = 'NU'
           NOMRES(3) = 'ALPHA'
-          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,2,NOMRES,VALRES,
+          CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     &                1,'TEMP',TPG,2,NOMRES,VALRES,
      &                CODRET,'FM')
-          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,1,NOMRES(3),
+          CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     &                1,'TEMP',TPG,1,NOMRES(3),
      &                VALRES(3),CODRET(3),BL2)
           E = VALRES(1)
           NU = VALRES(2)
-          IF (CODRET(3).NE.'OK') THEN
-            DILAT = 0.D0
-            TPG=0.D0
-          ELSE
-            IF (IRET4.EQ.0) THEN
-               TPG = TPG - TREF
+          IF (IRET4.EQ.0) THEN
+            IF((CODRET(3).NE.'OK').OR.(IRET.EQ.1)) THEN
+                   CALL U2MESS('F','CALCULEL_15')
             ELSE
-               TPG = 0.D0
+              EPSTHE = (TPG - TREF)*VALRES(3)*E/ (1.D0-NU)
             ENDIF
-            DILAT = VALRES(3)*E/ (1.D0-NU)
+          ELSE 
+            EPSTHE = 0.D0
           END IF
 
           C = E/ (1.D0-NU*NU)
@@ -162,38 +161,38 @@ C---- COMME POUR LA LONGUEUR
             EP22 = (E22+X3*K22)/ (1.D0+ (CORREC*COSA*X3/R))
             EFFOPG(6* (KP-1)+1) = EFFOPG(6* (KP-1)+1) +
      &                            ZR(IPOIDS-1+IP)* (H/2.D0)*
-     &                            (C* (EP11+NU*EP22)-DILAT*TPG)
+     &                            (C* (EP11+NU*EP22)-EPSTHE)
             EFFOPG(6* (KP-1)+2) = EFFOPG(6* (KP-1)+2) +
      &                            ZR(IPOIDS-1+IP)* (H/2.D0)*
-     &                            (C* (NU*EP11+EP22)-DILAT*TPG)
+     &                            (C* (NU*EP11+EP22)-EPSTHE)
             EFFOPG(6* (KP-1)+4) = EFFOPG(6* (KP-1)+4) +
      &                            ZR(IPOIDS-1+IP)*X3* (H/2.D0)*
-     &                            (C* (EP11+NU*EP22)-DILAT*TPG)
+     &                            (C* (EP11+NU*EP22)-EPSTHE)
             EFFOPG(6* (KP-1)+5) = EFFOPG(6* (KP-1)+5) +
      &                            ZR(IPOIDS-1+IP)*X3* (H/2.D0)*
-     &                            (C* (NU*EP11+EP22)-DILAT*TPG)
+     &                            (C* (NU*EP11+EP22)-EPSTHE)
           ELSE IF (NOMTE(1:8).EQ.'METCSE3 ') THEN
             EFFOPG(6* (KP-1)+1) = EFFOPG(6* (KP-1)+1) +
      &                            ZR(IPOIDS-1+IP)* (H/2.D0)*
-     &                            (E* (EP11-DILAT*TPG))
+     &                            (E* (EP11-EPSTHE))
             EFFOPG(6* (KP-1)+4) = EFFOPG(6* (KP-1)+4) +
      &                            ZR(IPOIDS-1+IP)*X3* (H/2.D0)*
-     &                            (E* (EP11-DILAT*TPG))
+     &                            (E* (EP11-EPSTHE))
             EFFOPG(6* (KP-1)+2) = 0.D0
             EFFOPG(6* (KP-1)+5) = 0.D0
           ELSE
             EFFOPG(6* (KP-1)+1) = EFFOPG(6* (KP-1)+1) +
      &                            ZR(IPOIDS-1+IP)* (H/2.D0)*
-     &                            (C*EP11-DILAT*TPG)
+     &                            (C*EP11-EPSTHE)
             EFFOPG(6* (KP-1)+2) = EFFOPG(6* (KP-1)+2) +
      &                            ZR(IPOIDS-1+IP)* (H/2.D0)*
-     &                            (C*NU*EP11-DILAT*TPG)
+     &                            (C*NU*EP11-EPSTHE)
             EFFOPG(6* (KP-1)+4) = EFFOPG(6* (KP-1)+4) +
      &                            ZR(IPOIDS-1+IP)*X3* (H/2.D0)*
-     &                            (C*EP11-DILAT*TPG)
+     &                            (C*EP11-EPSTHE)
             EFFOPG(6* (KP-1)+5) = EFFOPG(6* (KP-1)+5) +
      &                            ZR(IPOIDS-1+IP)*X3* (H/2.D0)*
-     &                            (C*NU*EP11-DILAT*TPG)
+     &                            (C*NU*EP11-EPSTHE)
           END IF
 
    50   CONTINUE

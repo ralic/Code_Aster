@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,8 +45,6 @@ C IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
 C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
 C IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 C IN  INSTAP  : INSTANT DU CALCUL
-C IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
-C IN  TP      : TEMPERATURE A L'INSTANT DU CALCUL
 C IN  EPSM    : DEFORMATIONS A L'INSTANT DU CALCUL PRECEDENT
 C IN  DEPS    : INCREMENT DE DEFORMATION
 C IN  SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
@@ -68,8 +66,7 @@ C.......................................................................
       INTEGER  NDIMSI,I,J,K,L,MODE,IRE2
 
       REAL*8   PHASE(5),PHASM(5),ZALPHA
-      REAL*8   TM,TP,TREF
-      REAL*8   TEMP,DT
+      REAL*8   DT
             
       REAL*8   TTRG,EPSTH,E,NU,DEUXMU,DEUMUM,TROISK
       REAL*8   FMEL,SY(5),SYMOY,H(5),HMOY,RPRIM
@@ -89,7 +86,7 @@ C.......................................................................
       
       REAL*8   RBID,PRECR,R8PREM,RAC2
       REAL*8   KRON(6)
-      REAL*8   VALRES(20)
+      REAL*8   VALRES(20),EPSTHE(2)
       
       CHARACTER*1 C1
       CHARACTER*2   CODRET(20)
@@ -115,11 +112,7 @@ C *******************
       ENDIF
 
       DT = INSTAP-INSTAM
-      
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRE2)
-      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRE2)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRE2)
-            
+                  
 C 1.1 - NOMBRE DE PHASES
 
       NZ=5
@@ -128,7 +121,6 @@ C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
 
       IF (RESI) THEN
         
-        TEMP=TP
         C1='+'
         DO 5 K=1,NZ-1
           CALL RCVARC(' ',ACIER(K),'+',FAMI,KPG,KSP,PHASE(K),IRE2)
@@ -139,7 +131,6 @@ C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
       
       ELSE
         
-        TEMP=TM
         C1='-'
         DO 10 K=1,NZ-1
           CALL RCVARC(' ',ACIER(K),'-',FAMI,KPG,KSP,PHASE(K),IRE2)
@@ -147,6 +138,8 @@ C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
  10     CONTINUE
       
       ENDIF        
+      
+      CALL VERIFT(FAMI,KPG,KSP,C1,IMAT,'ELAS_META',2,EPSTHE,IRET)
       
       ZALPHA=PHASE(1)+PHASE(2)+PHASE(3)+PHASE(4)
       PHASE(NZ)=1.D0-ZALPHA
@@ -194,9 +187,8 @@ C 2.1 - ELASTIQUE ET THERMIQUE
       
       CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
      &            6,NOMRES,VALRES,CODRET,'F ')
-      TTRG  = TEMP -TREF
-      EPSTH = PHASE(NZ)*(VALRES(4)*TTRG-(1.D0-VALRES(5))*VALRES(6))
-     &     + ZALPHA*(VALRES(3)*TTRG + VALRES(5)*VALRES(6))
+      EPSTH = PHASE(NZ)*(EPSTHE(1)-(1.D0-VALRES(5))*VALRES(6))
+     &     + ZALPHA*(EPSTHE(2) + VALRES(5)*VALRES(6))
       E      = VALRES(1)
       DEUXMU = E/(1.D0+VALRES(2))
       TROISK = E/(1.D0-2.D0*VALRES(2))      
@@ -225,7 +217,8 @@ C 2.2 - LOI DES MELANGES
           NOMRES(6) ='S_VP_MEL'
         ENDIF
         
-        CALL RCVALA(IMAT,' ','ELAS_META',1,'META',ZALPHA,1,
+        CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS_META',
+     &             1,'META',ZALPHA,1,
      &              NOMRES(6),FMEL,CODRET(6),'  ')
         IF (CODRET(6).NE.'OK') FMEL = ZALPHA
 
@@ -456,7 +449,8 @@ C 2.9 - PLASTICITE DE TRANSFORMATION
               DELTAZ = (ZVARIP - ZVARIM)
               IF (DELTAZ.GT.0.D0) THEN
                 J = 4+K
-                CALL RCVALA(IMAT,' ','META_PT',1,'META',ZALPHA,1,
+                CALL RCVALB(FAMI,1,1,'+',IMAT,' ','META_PT',
+     &                     1,'META',ZALPHA,1,
      &                      NOMRES(J),VALRES(J),CODRET(J), 'F ')
                 TRANS = TRANS + KPT(K)*VALRES(J)*(ZVARIP-ZVARIM)
               ENDIF

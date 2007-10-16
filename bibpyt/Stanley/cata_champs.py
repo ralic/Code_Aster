@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF cata_champs Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,14 +22,7 @@
 '''Catalogue des champs de resultats Aster'''
 
 from Cata.cata import *
-
-try:
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
-
+from Utilitai.Utmess import UTMESS
 
 # ----------------------------------------------------------------------
 
@@ -66,11 +59,11 @@ class CHAMP :
     try:
       apply(CALC_NO,(),para)
     except aster.error,err:
-      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+      UTMESS('A','STANLEY_4',valk=[str(err)])
     except aster.FatalError,err:
-      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+      UTMESS('A','STANLEY_4',valk=[str(err)])
     except Exception,err:
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
+      UTMESS('A','STANLEY_5',valk=[str(err)])
 
 
   def Calc_elem(champ, contexte, numeros, options=None) :
@@ -99,11 +92,11 @@ class CHAMP :
     try:
       apply(CALC_ELEM,(),para)
     except aster.error,err:
-      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+      UTMESS('A','STANLEY_4',valk=[str(err)])
     except aster.FatalError,err:
-      UTMESS('A','STANLEY',"Une erreur est intervenue. Raison :\n"+str(err))
+      UTMESS('A','STANLEY_4',valk=[str(err)])
     except Exception,err:
-      UTMESS('A','STANLEY',"Cette action n'est pas realisable.\n"+str(err))
+      UTMESS('A','STANLEY_5',valk=[str(err)])
 
 
   def __init__(self, nom_cham, type_cham, heredite, comment, fonc) :

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -246,7 +246,8 @@ C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
               LSN=LSN+ZR(JLSN-1+I)*FFP(I)
               LST=LST+ZR(JLST-1+I)*FFP(I)
  112        CONTINUE
-            IF (ABS(LSN).GT.1.D-3) CALL U2MESS('A','ELEMENTS4_19')
+C           LSN NON NUL SUR LA SURFACE.
+            CALL ASSERT(ABS(LSN).LE.1.D-3)
             R=SQRT(LSN*LSN+LST*LST)
             RR=SQRT(R)
           ENDIF
@@ -355,7 +356,8 @@ C
 C
             ELSE
 C             SI INDCO N'EST NI EGAL A 0 NI EGAL A 1
-              CALL U2MESS('F','ELEMENTS4_18')
+C             PROBLEME DE STATUT DE CONTACT.
+              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
             END IF
 C
 C         II) CALCUL DES MATRICES DE FROTTEMENT
@@ -573,12 +575,14 @@ C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
 
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
-              CALL U2MESS('F','ELEMENTS4_18')
+C             PROBLEME DE STATUT DE CONTACT.
+              CALL ASSERT(INDCO(ISSPG).EQ.0 .OR. INDCO(ISSPG).EQ.1)
             END IF
 
           ELSE
 C           SI OPTION NI 'RIGI_CONT' NI 'RIGI_FROTT'
-            CALL U2MESS('F','ELEMENTS3_81')
+            CALL ASSERT(OPTION.EQ.'RIGI_FROT' .OR.
+     &                  OPTION.EQ.'RIGI_CONT')
           ENDIF
 
 C         FIN DE BOUCLE SUR LES POINTS DE GAUSS

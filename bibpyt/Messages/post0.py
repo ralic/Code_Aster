@@ -1,4 +1,4 @@
-#@ MODIF post0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post0 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,6 @@ Valeurs incorrectes pour VECT_Y.
 3: _("""
 Valeurs incorrectes pour VECT_Y: x colinéaire a y.
 """),
-
 
 4: _("""
 Le vecteur Y n'est pas orthogonal a la ligne de coupe.
@@ -96,27 +95,6 @@ avec des lignes de coupes SEGMENT ou GROUP_NO.
 17: _("""
 Le champ %(k1)s n'est pas traité par macr_ligne_coupe en repère %(k2)s.
 Le calcul est effectué en repère global.
-"""),
-
-18: _("""
-Redéfinition du DISPLAY vers %(k1)s.
-"""),
-
-19: _("""
-Stanley fonctionne en mode validation de non-regression.
-"""),
-
-20: _("""
-Aucune variable d'environnement DISPLAY définie !
-STANLEY ne pourra pas fonctionner. On l'ignore.
-
-Si vous etes en Interactif, cochez le bouton Suivi Interactif
-dans ASTK.
-
-Vous pouvez également préciser votre DISPLAY dans les arguments
-de la commande STANLEY :
-
-STANLEY(DISPLAY='adresse_ip:0.0');
 """),
 
 }

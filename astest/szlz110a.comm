@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -346,22 +346,20 @@ RESUTHER=THER_LINEAIRE(MODELE=MOTHER,
 
 MAT_TH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
-                               MATER=P10CD910,
-                               ),
+                               MATER=P10CD910),
                        AFFE_VARC=_F( TOUT='OUI',
                                      EVOL=RESUTHER,
                                      NOM_VARC='TEMP',
-                                     NOM_CHAM='TEMP',),
+                                     NOM_CHAM='TEMP',VALE_REF=20.),
                      );
 
 MAT_TH1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
-                               MATER=P10CD911,
-                               ),
+                               MATER=P10CD911,),
                        AFFE_VARC=_F( TOUT='OUI',
                                      EVOL=RESUTHER,
                                      NOM_VARC='TEMP',
-                                     NOM_CHAM='TEMP',),
+                                     NOM_CHAM='TEMP',VALE_REF=20.),
                      );
 
 #////////////////////////////////////////////////////////////////////////////////////

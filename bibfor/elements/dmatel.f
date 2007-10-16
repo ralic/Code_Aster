@@ -8,7 +8,7 @@
       CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -266,7 +266,7 @@ C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
         NPGH=3
       ENDIF
       CALL JEVECH('PNBSP_I','L',JCOU)
-      CALL MOYTEM(FAMI,NPG,NPGH*ZI(JCOU),'+',VALPAR)
+      CALL MOYTEM(FAMI,NPG,NPGH*ZI(JCOU),'+',VALPAR,IRET)
       NBPAR = 1
       NOMPAR = 'TEMP'
 

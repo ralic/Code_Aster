@@ -1,4 +1,4 @@
-#@ MODIF fiabilite_mefisto Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF fiabilite_mefisto Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ def fiabilite_mefisto ( self, Rep_Calc_LOGICIEL_global,
   import os
   import string
   import Numeric
-  from Utilitai.Utmess import U2MESS as UTMESS
+  from Utilitai.Utmess import  UTMESS
 #
 #____________________________________________________________________
 #

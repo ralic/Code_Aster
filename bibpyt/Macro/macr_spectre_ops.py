@@ -1,4 +1,4 @@
-#@ MODIF macr_spectre_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_spectre_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 from Accas import _F
 import aster
 import string
-from Utilitai.Utmess import U2MESS as UTMESS
+from Utilitai.Utmess import  UTMESS
 def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None,
                      FREQ=None,LIST_FREQ=None,LIST_INST=None,AMOR_SPEC=None,**args):
   """

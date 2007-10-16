@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILIFOR  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C               EPSDT   DEFORMATION TOTALE A T
 C       OUT     DEPSM   INCREMENT DE DEFORMATION MECANIQUE
 C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
-        INTEGER         KPG, KSP, NDT  , NDI , NMAT, K, IRET
+        INTEGER         KPG, KSP, NDT  , NDI , NMAT, K, IRET, IISNAN
         CHARACTER*(*)   FAMI
         CHARACTER*2     CE
         REAL*8          TD,  TF , TR,R8VIDE,TEMPD,TEMPF,TREF
@@ -66,52 +66,67 @@ C       ----------------------------------------------------------------
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
-
         IF (TREF.EQ.R8VIDE()) THEN
-          CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TD,IRET)
-          CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TF,IRET)
-          CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TR,IRET)
+          CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TD,IRET)
+          CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET)
+          CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TR,IRET)
         ELSE
           TD=TEMPD
           TF=TEMPF
           TR=TREF
         ENDIF
-
-        IF (MATERD(NMAT,1).EQ.0) THEN
-           ALPHAD = MATERD(3,1)
-           ALPHAF = MATERF(3,1)
-           DO 110 K = 1,NDI
-              DEPSM(K) = DEPST(K) - ( ALPHAF*(TF-TR) - ALPHAD*(TD-TR))
-              EPSDM(K) = EPSDT(K) - ( ALPHAD*(TD-TR) )
- 110      CONTINUE
+        IF ((IISNAN(TF).EQ.0).AND.(IISNAN(TD).EQ.0)) THEN
+          IF (IISNAN(TR).NE.0) THEN
+            CALL U2MESS('F','CALCULEL_31')
+          ELSE
+            IF (MATERD(NMAT,1).EQ.0) THEN
+              ALPHAD = MATERD(3,1)
+              ALPHAF = MATERF(3,1)
+              DO 110 K = 1,NDI
+                DEPSM(K) = DEPST(K) - ( ALPHAF*(TF-TR) - 
+     &                                ALPHAD*(TD-TR))
+                EPSDM(K) = EPSDT(K) - ( ALPHAD*(TD-TR) )
+ 110          CONTINUE
 C
-          DO 111 K  = NDI+1,NDT
-             DEPSM(K)  = DEPST(K)
-             EPSDM(K)  = EPSDT(K)
- 111      CONTINUE
+              DO 111 K  = NDI+1,NDT
+                DEPSM(K)  = DEPST(K)
+                EPSDM(K)  = EPSDT(K)
+ 111          CONTINUE
 
-        ELSEIF (MATERD(NMAT,1).EQ.1) THEN
+            ELSEIF (MATERD(NMAT,1).EQ.1) THEN
 
-          ALPHDL = MATERD(73,1)
-          ALPHDT = MATERD(74,1)
-          ALPHDN = MATERD(75,1)
+              ALPHDL = MATERD(73,1)
+              ALPHDT = MATERD(74,1)
+              ALPHDN = MATERD(75,1)
 C
-          ALPHFL = MATERF(73,1)
-          ALPHFT = MATERF(74,1)
-          ALPHFN = MATERF(75,1)
+              ALPHFL = MATERF(73,1)
+              ALPHFT = MATERF(74,1)
+              ALPHFN = MATERF(75,1)
 C
-          DEPSM(1) = DEPST(1) - ( ALPHFL*(TF-TR) - ALPHDL*(TD-TR))
-          DEPSM(2) = DEPST(2) - ( ALPHFT*(TF-TR) - ALPHDT*(TD-TR))
-          DEPSM(3) = DEPST(3) - ( ALPHFN*(TF-TR) - ALPHDN*(TD-TR))
+              DEPSM(1) = DEPST(1) - ( ALPHFL*(TF-TR) - 
+     &                              ALPHDL*(TD-TR))
+              DEPSM(2) = DEPST(2) - ( ALPHFT*(TF-TR) - 
+     &                              ALPHDT*(TD-TR))
+              DEPSM(3) = DEPST(3) - ( ALPHFN*(TF-TR) - 
+     &                              ALPHDN*(TD-TR))
 
-          EPSDM(1) = EPSDT(1) - ( ALPHDL*(TD-TR) )
-          EPSDM(2) = EPSDT(2) - ( ALPHDT*(TD-TR) )
-          EPSDM(3) = EPSDT(3) - ( ALPHDN*(TD-TR) )
+              EPSDM(1) = EPSDT(1) - ( ALPHDL*(TD-TR) )
+              EPSDM(2) = EPSDT(2) - ( ALPHDT*(TD-TR) )
+              EPSDM(3) = EPSDT(3) - ( ALPHDN*(TD-TR) )
 
-          DO 112 K  = 4,6
-             DEPSM(K)  = DEPST(K)
-             EPSDM(K)  = EPSDT(K)
- 112      CONTINUE
+              DO 112 K  = 4,6
+                DEPSM(K)  = DEPST(K)
+                EPSDM(K)  = EPSDT(K)
+ 112          CONTINUE
+            ENDIF
 
+          ENDIF
+        ELSE
+          ALPHAD = MATERD(3,1)
+          ALPHAF = MATERF(3,1)
+          DO 113 K = 1,NDT
+              DEPSM(K) = DEPST(K)
+              EPSDM(K) = EPSDT(K)
+ 113      CONTINUE
         ENDIF
         END

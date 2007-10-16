@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 15/10/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C ---------------------------------------------------------------------
      &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE,SDFETA
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       LOGICAL      LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2,LLICHP,LFETIC,
-     &             LSAUTE,LBID,LGOTO
+     &             LSAUTE,LBID,LGOTO,LARLQ
       INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
      &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,ILIGRT,
      &             ADMODL,LCMODL,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
@@ -180,6 +180,8 @@ C
 
       VECAS = VEC
       BAS = BASE
+      
+       
 
 C --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
       CALL DETRSD('CHAMP_GD',VECAS)
@@ -519,6 +521,29 @@ C==========================
 C NOM DU LIGREL GLOBAL
               NOMLI = ZK24(IAD)
               NOMOPT = ZK24(IAD+1)
+C --- TEST EXISTENCE &&POIDS_MAILLE (ARLEQUIN)
+              CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
+              IF (EPDMS.GT.0) THEN
+                IF ( (NOMOPT(1:9).EQ.'FULL_MECA').OR.
+     &               (NOMOPT(1:9).EQ.'RAPH_MECA').OR.     
+     &               (NOMOPT(1:9).EQ.'FORC_NODA')) THEN
+                  CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
+                  LARLQ = .TRUE.
+                ELSEIF ( (NOMOPT(1:9 ).EQ.'CHAR_MECA') .OR.
+     &                   (NOMOPT(1:10).EQ.'MECA_DDLI_').OR.     
+     &                   (NOMOPT(1:8) .EQ.'MECA_BU_')  .OR.
+     &                   (NOMOPT(1:10).EQ.'MECA_BTLA_')) THEN
+                  LARLQ = .FALSE. 
+                ELSEIF ( (NOMOPT(1:9 ).EQ.'CHAR_MECA').OR. 
+     &                   (NOMOPT(1:8) .EQ.'MECA_BU_') .OR.
+     &                   (NOMOPT(1:10).EQ.'MECA_BTLA_')) THEN
+                  LARLQ = .FALSE.                                 
+                ELSE
+                  CALL U2MESK('F','ARLEQUIN_99',1,NOMOPT)
+                ENDIF
+              ELSE
+                LARLQ = .FALSE.      
+              ENDIF 
 
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C RECHERCHE D'OBJET TEMPORAIRE SI FETI
@@ -582,15 +607,9 @@ C LIGREL DE MODELE
               ENDIF
 C--------- POUR FETI & LIGREL TARDIF: FIN
 
-C---- TEST EXISTENCE &&POIDS_MAILLE
-C------------------------------
-              IF ( NOMOPT(1:9).EQ.'FULL_MECA'.OR.
-     &             NOMOPT(1:9).EQ.'RAPH_MECA'     ) THEN
-                CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
-                IF (EPDMS.GT.0) CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
-              ELSE
-                EPDMS = 0
-              ENDIF
+C --- TEST EXISTENCE &&POIDS_MAILLE
+
+              
 
 C ILIVE: INDICE DANS LIST_RESU (GLOBAL) DES VECT_ELEM.LILI DU NOMLI
 C ILINU: INDICE DANS PROF_CHNO.LILI (GLOBAL OU LOCAL) DU NOMLI
@@ -674,7 +693,7 @@ C ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
 C---- LIGREL DE MODELE:
 C--------------------
                     IF (NUMA.GT.0) THEN
-                      IF (EPDMS.GT.0) R=R*ZR(JPDMS-1+NUMA)
+                      IF (LARLQ) R=R*ZR(JPDMS-1+NUMA)
                       IL = 0
                       DO 120 K1 = 1,NNOE
                         N1 = ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)

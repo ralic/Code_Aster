@@ -1,4 +1,4 @@
-#@ MODIF co_table SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_table SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,15 +33,15 @@ class table_sdaster(ASSD, sd_table):
       tabnom = aster.getvectjev(tblp)
       #tabnom = self.TBLP.get()
       if tabnom == None:
-         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tblp)
+         UTMESS('F','SDVERI_2',valk=[tblp])
       for i in range(len(tabnom)) :
          if tabnom[i]==requete: break
       resu=aster.getvectjev(tabnom[i+2])
       if resu == None:
-         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tabnom[i+2])
+         UTMESS('F','SDVERI_2',valk=[tabnom[i+2]])
       exist=aster.getvectjev(tabnom[i+3])
       if exist == None:
-         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tabnom[i+3])
+         UTMESS('F','SDVERI_2',valk=[tabnom[i+3]])
       if key[1]>len(resu) or exist[key[1]-1]==0:
          raise KeyError
       else:

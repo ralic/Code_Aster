@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,9 +50,9 @@ C       ----------------------------------------------------------------
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          EPSI, VIND(*), F0
-        REAL*8          VALPAD, VALPAF
+        REAL*8          VALPAD, VALPAF,RESU
 C
-        CHARACTER*8     MOD, NOMC(14)
+        CHARACTER*8     MOD, NOMC(14),TYPE
         CHARACTER*2     BL2, FB2, CERR(14)
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
@@ -99,8 +99,11 @@ C         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
-          CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
-          CALL RCTRAC (IMAT,'TRACTION','SIGM',TEMPD,
+          CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
+          CALL RCTYPE(IMAT,1,'TEMP',TEMPD,RESU,TYPE)
+          IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1)) 
+     &        CALL U2MESS('F','CALCULEL_31')
+          CALL RCTRAC (IMAT,'TRACTION','SIGM',RESU,
      &                 JPROL,JVALE,NBVALE,MATERD(1,1))
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
@@ -117,8 +120,11 @@ C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
-          CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
-          CALL RCTRAC (IMAT,'TRACTION','SIGM',TEMPF,
+          CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
+          CALL RCTYPE(IMAT,1,'TEMP',TEMPF,RESU,TYPE)
+          IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1)) 
+     &        CALL U2MESS('F','CALCULEL_31')
+          CALL RCTRAC (IMAT,'TRACTION','SIGM',RESU,
      &                 JPROL,JVALE,NBVALE,MATERF(1,1))
 C
 C -     MATERIAU CONSTANT ? ------------------------------------------

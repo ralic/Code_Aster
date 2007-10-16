@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,11 +34,11 @@ C ......................................................................
 C
       CHARACTER*24       CARAC,FF
       CHARACTER*8        NOMRES(2)
-      CHARACTER*2        BL2, CODRET(2)
+      CHARACTER*2        CODRET(2)
       REAL*8             A,W(9),NX,L1(3),L2(3),L10(3),L20(3)
-      REAL*8             VALRES(2),E,ALPHA,DDOT
+      REAL*8             VALRES(2),E,DDOT
       REAL*8             NORML1,NORML2,NORL10,NORL20,L0,ALLONG
-      REAL*8             PRETEN, R8BID, TEMP, ZERO
+      REAL*8             PRETEN, R8BID,EPSTHE
       INTEGER            IMATUU,JEFINT,LSIGMA
       INTEGER            ICOMPO,LSECT,IGEOM,IMATE,IDEPLA,IDEPLP
       INTEGER            I, ITEMPR, JCRET, KC, IRET
@@ -61,7 +61,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      ZERO  = 0.D0
 
 C***  ESSAI DE PRETENSION
 C     PRETEN = 1000.D0
@@ -76,16 +75,12 @@ C
       ENDIF
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
-      BL2 = '  '
       NOMRES(1) = 'E'
-      NOMRES(2) = 'ALPHA'
-      CALL RCVALA(ZI(IMATE),' ','ELAS',0,'  ',R8BID,1,NOMRES,
+      CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     &              0,'  ',R8BID,1,NOMRES,
      &              VALRES,CODRET , 'FM' )
-      CALL RCVALA(ZI(IMATE),' ','ELAS',0,'  ',R8BID,1,NOMRES(2),
-     &              VALRES(2),CODRET(2) , BL2 )
-      IF ( CODRET(2).NE.'OK' )  VALRES(2) = ZERO
+      CALL VERIFT('RIGI',1,1,'+',ZI(IMATE),'ELAS',1,EPSTHE,IRET)      
       E     = VALRES(1)
-      ALPHA = VALRES(2)
       CALL JEVECH('PCACABL','L',LSECT)
       A = ZR(LSECT)
       PRETEN = ZR(LSECT+1)
@@ -104,7 +99,6 @@ C
       ENDIF
 C
 
-      CALL RCVARC('F','TEMP','+','RIGI',1,1,TEMP,IRET)
       DO 10 I=1,9
         W(I)=ZR(IDEPLA-1+I)+ZR(IDEPLP-1+I)
 10    CONTINUE
@@ -132,7 +126,7 @@ C
         IF (ABS(NX).LE.1.D-6) THEN
           NX = PRETEN
         ELSE
-          NX = NX - E * A * ALPHA*TEMP
+          NX = NX - E * A * EPSTHE
         ENDIF
 C
         IF(OPTION(1:9)  .EQ. 'FULL_MECA' .OR.

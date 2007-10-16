@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 23/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    import aster
    from Accas import _F
    from Cata.cata import table_jeveux
-   from Utilitai.Utmess  import U2MESS as UTMESS
+   from Utilitai.Utmess  import  UTMESS
    from Utilitai.UniteAster import UniteAster
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes

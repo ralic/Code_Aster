@@ -8,7 +8,7 @@
       CHARACTER*19  CNSLT,CNSLN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,8 +94,10 @@ C     ON RÉCUPÈRE LA VALEUR DE LA PLUS PETITE ARETE DU MAILLAGE : ARMIN
       PARA = 'AR_MIN                  '
       CALL TBLIVA(NOMT19,0,' ',IBID,R8B,C16B,K8BID,K8BID,R8B,PARA,K8BID,
      &            IBID,ARMIN,C16B,K8BID,IRET)
-      IF (IRET.NE.0)  CALL U2MESS('F','ALGORITH11_68')
-      IF (ARMIN.LE.0) CALL U2MESS('F','ALGORITH11_69')
+C     PROBLEME POUR RECUPERER AR_MIN DANS LA TABLE "CARA_GEOM"
+      CALL ASSERT(IRET.EQ.0)
+C     ARMIN NEGATIF OU NUL
+      CALL ASSERT(ARMIN.GT.0)
 
       DO 100 I=1,NXPTFF
          ZL(JBORD-1+I)=.FALSE.
@@ -169,7 +171,8 @@ C             VÉRIFICATION SI CE POINT A DÉJÀ ÉTÉ TROUVÉ
 C               CE POINT N'A PAS DÉJÀ ÉTÉ TROUVÉ, ON LE GARDE
                 IN=IN+1
                 IPT=IN
-                IF (IN.GE.NXPTFF) CALL U2MESS('E','ALGORITH11_70')
+C               AUGMENTER NXPTFF
+                CALL ASSERT(IN.LT.NXPTFF)
 
                 ZR(JFON-1+4*(IN-1)+1)=M(1)
                 ZR(JFON-1+4*(IN-1)+2)=M(2)

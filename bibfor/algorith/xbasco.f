@@ -3,7 +3,7 @@
      &                  JGRLNV,JGRLTV,JCNSV ,JCNSL )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/07/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,14 +119,14 @@ C
       CALL NORMEV(TAU1,NORME)
 C
       IF (NORME.LT.1.D-12) THEN
-        CALL U2MESS('A','XFEM2_5')
+        CALL U2MESS('A+','XFEM2_5')
         VALR(1)= C(1)
         VALR(2)= C(2)
         IF(NDIM.EQ.2) THEN
-           CALL U2MESG('A','ALGORITH16_90',0,' ',0,0,2,VALR)
+           CALL U2MESG('A','XFEM2_1',0,' ',0,0,2,VALR)
         ELSE
            VALR(3)= C(3)
-           CALL U2MESG('A','ALGORITH16_91',0,' ',0,0,3,VALR)
+           CALL U2MESG('A','XFEM2_13',0,' ',0,0,3,VALR)
         ENDIF
 C
 C --- ESSAI AVEC LE PROJETE DE OX

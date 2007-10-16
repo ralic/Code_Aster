@@ -1,0 +1,214 @@
+#@ MODIF stanley Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+# -*- coding: iso-8859-1 -*-
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+def _(x) : return x
+
+cata_msg={
+
+1: _("""
+Redéfinition du DISPLAY vers %(k1)s.
+"""),
+
+2: _("""
+Stanley fonctionne en mode validation de non-regression.
+"""),
+
+3: _("""
+Aucune variable d'environnement DISPLAY définie !
+%(k1)s ne pourra pas fonctionner. On l'ignore.
+
+Si vous etes en Interactif, cochez le bouton Suivi Interactif
+dans ASTK.
+
+Vous pouvez également préciser votre DISPLAY dans les arguments
+de la commande STANLEY :
+
+STANLEY(DISPLAY='adresse_ip:0.0');
+"""),
+
+4: _("""
+Une erreur est intervenue. Raison : %(k1)s
+"""),
+
+5: _("""
+Cette action n'est pas réalisable: %(k1)s
+"""),
+
+6: _("""
+En mode DISTANT, la variable %(k1)s est obligatoire. On abandonne.
+"""),
+
+7: _("""
+Le parametre 'machine_gmsh_exe' ou 'machine_visu' n'est pas renseigné, 
+il faut ouvrir le fichier manuellement.
+"""),
+
+8: _("""
+Lancement terminé.
+"""),
+
+9: _("""
+Exécution de %(k1)s
+"""),
+
+10: _("""
+Erreur de lancement de la commande!
+"""),
+
+11: _("""
+Dans le mode WINDOWS, la variable %(k1)s est obligatoire. On abandonne.
+"""),
+
+12: _("""
+Les fichiers de post-traitement sont copiés.
+Veuillez maintenant ouvrir manuellement skin.pos avec GMSH.
+"""),
+
+13: _("""
+Le fichier de post-traitement est copie.
+Veuillez maintenant ouvrir manuellement fort.33.pos avec GMSH.
+"""),
+
+14: _("""
+Impossible de contacter le serveur SALOME! Vérifier qu'il est bien lancé.
+"""),
+
+15: _("""
+Impossible de récupérer le nom de la machine locale! 
+Solution alternative : utiliser le mode DISTANT en indiquant l'adresse IP
+ou le nom de la machine dans la case 'machine de salome'.
+"""),
+
+16: _("""
+Pour visualisation dans Salome, la variable %(k1)s est obligatoire. On abandonne.
+"""),
+
+17: _("""
+Pour visualisation dans Salome, la variable machine_salome_port est obligatoire. 
+On abandonne.
+"""),
+
+18: _("""
+Erreur : mode WINDOWS non implémenté
+"""),
+
+19: _("""
+Erreur: il est possible que Stanley ne puisse pas contacter Salome (machine salome definie : %(k1)s). 
+Vous pouvez modifier la machine Salome dans les parametres dans Stanley. 
+"""),
+
+20: _("""
+Execution terminée.
+"""),
+
+21: _("""
+Le module python "pylotage" semble etre absent, ou mal configuré, 
+on désactive le mode Salome de Stanley.
+"""),
+
+22: _("""
+Impossible d'affecter la variable [%(k1)s / %(k2)s].
+"""),
+
+23: _("""
+Lecture du fichier d'environnement : %(k1)s
+"""),
+
+24: _("""
+Il n'y a pas de fichier d'environnement. 
+On démarre avec une configuration par défaut.
+"""),
+
+25: _("""
+Le fichier d'environnement n'a pas la version attendue. 
+On continue mais en cas de problème, effacer le repertoire ~/%(k1)s et relancer.
+"""),
+
+26: _("""
+Le fichier d'environnement n'est pas exploitable (par exemple c'est une ancienne version).
+On démarre avec une configuration par défaut.
+"""),
+
+27: _("""
+On initialise une configuration par défaut.
+"""),
+
+28: _("""
+Nouveaux paramètres sauvegardés dans : %(k1)s
+"""),
+
+29: _("""
+Impossible de sauvegarder les paramètres dans : %(k1)s
+"""),
+
+30: _("""
+La visualisation aux points de Gauss n'est pas permise avec la sensibilité.
+"""),
+
+31: _("""
+Problème : %(k1)s
+"""),
+
+32: _("""
+Impossible d'ouvrir en écriture le fichier %(k1)s
+"""),
+
+33: _("""
+Attention : on ne peut pas tracer un champ aux points de Gauss sur la déformée...
+"""),
+
+34: _("""
+Le champ est tracé avec la déformée.
+"""),
+
+35: _("""
+Concept ignoré : %(k1)s
+"""),
+
+36: _("""
+Il y a plusieurs concepts %(k1)s stockés dans la structure de donnée résultat.
+"""),
+
+37: _("""
+Tous les concepts Aster nécessaires à Stanley n'ont pas été calculés. 
+Il manque :
+%(k1)s
+"""),
+
+38: _("""
+Stanley - Erreur lors de l'appel à la commande Aster:
+
+%(k1)s
+Raison:
+%(k2)s
+"""),
+
+39: _("""
+Stanley - Projection aux points de Gauss: champ non développé
+%(k1)s
+"""),
+
+40: _("""
+Stanley - Projection aux points de Gauss: type de résultat non développé
+%(k1)s
+"""),
+
+
+}

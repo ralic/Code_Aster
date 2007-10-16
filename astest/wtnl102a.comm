@@ -1,4 +1,4 @@
-# MODIF  DATE 07/05/2007   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,7 +139,7 @@ MATERIAU=DEFI_MATERIAU(
                                     LAMB_T=LAMBDA,),);
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=_F(TOUT='OUI',
+                     AFFE=_F(TOUT='OUI',TEMP_REF=0.,
                              MATER=MATERIAU,),);
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODELE,

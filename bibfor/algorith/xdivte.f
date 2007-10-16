@@ -5,7 +5,7 @@
       CHARACTER*8   TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,8 @@ C ----------------------------------------------------------------------
         CONNEC(1,2)=2
         NIT=1  
       ELSE
-        CALL U2MESS('F','ALGORITH5_15')
+C       TYPE D'ELEMENT FINI PAS TRAITE
+        CALL ASSERT(TYPMA(1:4).EQ.'HEXA')
       ENDIF
 
       CALL JEDEMA()

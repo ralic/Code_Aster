@@ -1,11 +1,12 @@
-      SUBROUTINE POEFGR(NOMTE,KLC,E,XNU,RHO,ALPHAT,EFFO)
+      SUBROUTINE POEFGR(NOMTE,KLC,MATER,E,XNU,RHO,EFFO)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) NOMTE
-      REAL*8 KLC(12,12),E,XNU,RHO,ALPHAT,EFFO(*)
+      REAL*8 KLC(12,12),E,XNU,RHO,EFFO(*)
+      INTEGER NPG
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +49,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 SUROPT
       REAL*8 TRIGOM
 C     ------------------------------------------------------------------
+
       ZERO = 0.D0
       DEUX = 2.D0
       NNO = 2
@@ -103,17 +105,13 @@ C     --- VECTEUR EFFORT LOCAL  EFFO = KLC * UL
 
 C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
 
-      IF (ALPHAT.NE.ZERO) THEN
-        DO 10 I = 1,12
-          UL(I) = ZERO
-   10   CONTINUE
-C         - CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
-        CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IRET)
-        CALL RCVARC('F','TEMP','+','NOEU',1,1,TEMP,IRET)
+      CALL VERIFM('NOEU',NNO,1,'+',MATER,'ELAS',1,F,IRET)
+      
+      IF (F.NE.ZERO) THEN
+          DO 10 I = 1,12
+            UL(I) = ZERO
+   10     CONTINUE
 
-        TEMP = TEMP - TREF
-
-          F = ALPHAT*TEMP
           IF (ITYPE.NE.10) THEN
             UL(1) = -F*XL
             UL(7) = -UL(1)
@@ -124,16 +122,14 @@ C         - CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
             UL(7) = -UL(1)
             UL(8) = UL(2)
           END IF
-
 C              --- CALCUL DES FORCES INDUITES ---
           DO 30 I = 1,6
             DO 20 J = 1,6
               EFFO(I) = EFFO(I) - KLC(I,J)*UL(J)
               EFFO(I+6) = EFFO(I+6) - KLC(I+6,J+6)*UL(J+6)
-
    20       CONTINUE
    30     CONTINUE
-      END IF
+      ENDIF
 
 C     --- TENIR COMPTE DES EFFORTS REPARTIS/PESANTEUR ---
 

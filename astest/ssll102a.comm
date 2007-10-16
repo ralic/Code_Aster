@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1020,7 +1020,7 @@ CHMTM=AFFE_MATERIAU(  MAILLAGE=MA,
                   AFFE_VARC=_F( TOUT='OUI',
                                 EVOL=TEMP,
                                 NOM_VARC='TEMP',
-                                NOM_CHAM='TEMP',),
+                                NOM_CHAM='TEMP',VALE_REF=0.),
                      );
 
 CHG1=AFFE_CHAR_MECA(   MODELE=MO,

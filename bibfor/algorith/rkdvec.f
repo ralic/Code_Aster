@@ -6,7 +6,7 @@
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,10 +63,10 @@ C     ----------------------------------------------------------------
 
 C -- TEMPERATURE
 C
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TPERD,IRET)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TF,IRET)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TPERD,IRET)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET)
       DTPERD = TF-TPERD
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TPEREF,IRET)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TPEREF,IRET)
 
 C
 C --    COEFFICIENTS MATERIAU INELASTIQUES
@@ -141,13 +141,14 @@ C
         VPAR(1) = TEMP
         VPAR(2) = SEDVP
 C
-        CALL RCVALA(IMAT,' ', 'VENDOCHAB', 2,  NOMPAR, VPAR, 1,
-     1              NOMCOE,  KD,  CERR, 'F ' )
+        CALL RCVALB(FAMI,1,1,'+',IMAT,' ', 'VENDOCHAB', 
+     &              2,  NOMPAR, VPAR, 1,
+     &              NOMCOE,  KD,  CERR, 'F ' )
       ELSE
         KD    = COEFT(9)
       ENDIF
 C
-C----- LA FONCTION SEUIL NE FAIT PAS APARAITRE D INFLUENCE DE L
+C----- LA FONCTION SEUIL NE FAIT PAS APPARAITRE D INFLUENCE DE L
 C----- ECROUISSAGE
       CRITV=GRJ2V-SVP*(1-DMG)
       IF (CRITV.LE.0.0D0) THEN

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE VALIDATION DE NON REGRESSION DU CHAINAGE 2D CYRANO3-CODE_ASTER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -453,13 +453,13 @@ EVOL=CREA_RESU(OPERATION='AFFE',
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='PASTILLE',
-                             MATER=MATERP ),
+                             MATER=MATERP),
                           _F(GROUP_MA='GAINE',
                              MATER=MATERG,
                              ),),
                     AFFE_VARC=(_F(TOUT='OUI', EVOL=ANEL, NOM_VARC='EPSA',
                                  NOM_CHAM='EPSA_ELNO', PROL_DROITE='CONSTANT',),
-                               _F(TOUT='OUI', EVOL=EVOL,  NOM_VARC='TEMP',  ),),);
+                               _F(TOUT='OUI', EVOL=EVOL,  NOM_VARC='TEMP',  VALE_REF=0.),),);
 #
 # --- FONCTION PRESSION INTERNE PINT(T) EN MPA
 #     ----------------------------------------

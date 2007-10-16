@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calc_table_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    macro = 'CALC_TABLE'
    from Accas                 import _F
    from Cata.cata             import table_sdaster, table_fonction, table_jeveux
-   from Utilitai.Utmess       import U2MESS as UTMESS
+   from Utilitai.Utmess       import  UTMESS
    from Utilitai              import transpose
    from Utilitai.Table        import Table, merge
 

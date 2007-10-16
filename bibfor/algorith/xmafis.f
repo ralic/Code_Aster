@@ -7,7 +7,7 @@
       CHARACTER*24  MAFIS,LISMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,9 +100,8 @@ C     BOUCLE SUR LES MAILLES DE GROUP_ENRI
 C           LSN A CHANGÉ DE SIGNE DONC ON STOCKE LA MAILLE DANS MAFIS
             I=I+1
             ZI(JMAFIS-1+I)=NMAABS
-            IF ((I-1).GE.NXMAFI) THEN
-              CALL U2MESS('E','ALGORITH11_55')
-            ENDIF
+C           AUGMENTEZ NXMAFI
+            CALL ASSERT((I-1).LT.NXMAFI)
             GOTO 100
           ENDIF
  101    CONTINUE

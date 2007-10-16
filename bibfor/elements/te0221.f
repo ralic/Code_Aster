@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -95,7 +95,7 @@ C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
 C     -- SI LA TEMPERATURE EST CONNUE AUX POINTS DE GAUSS :
 
-        CALL MOYTPG('RIGI',KP,3,'+',VALPAR)
+        CALL MOYTPG('RIGI',KP,3,'+',VALPAR,IRET)
         NBPAR = 1
         NOMPAR = 'TEMP'
 C===============================================================

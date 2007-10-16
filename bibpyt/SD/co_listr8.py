@@ -1,4 +1,4 @@
-#@ MODIF co_listr8 SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_listr8 SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ class listr8_sdaster(ASSD, sd_listr8):
          vale='%-19s.VALE' % self.get_name()
          t_vale = aster.getvectjev(vale)
          if t_vale == None:
-            UTMESS('F', 'listr8.Valeurs', "Objet '%s' inexistant" % vale)
+            UTMESS('F', 'SDVERI_2', valk=[vale])
          return list(t_vale)
       else:
          raise Accas.AsException("Erreur dans listr8.Valeurs en PAR_LOT='OUI'")

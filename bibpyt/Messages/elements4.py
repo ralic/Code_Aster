@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,14 +58,6 @@ cata_msg = {
  option non traitée  %(k1)s
  """),
 
-12 : _("""
- nombre total de sous-éléments limité a 32.
-"""),
-
-13 : _("""
- nombre total de points d'intersection limité a 11.
-"""),
-
 15 : _("""
   deformation :  %(k1)s non implantée sur les éléments "pou_d_tgm" : utiliser PETIT ou REAC_GEOM
 """),
@@ -76,14 +68,6 @@ cata_msg = {
 
 17 : _("""
  seuls comportements autorises :"elas" et "vmis_isot_trac"
-"""),
-
-18 : _("""
- pb de statut de contact
-"""),
-
-19 : _("""
- lsn non nul sur la surface.
 """),
 
 20 : _("""
@@ -100,10 +84,6 @@ cata_msg = {
 
 23 : _("""
  comp_incr non disponible pour les elements enrichis avec x-fem.
-"""),
-
-30 : _("""
- option refe_forc_noda plus tard...
 """),
 
 31 : _("""
@@ -212,14 +192,6 @@ cata_msg = {
 
 58 : _("""
   le code " %(k1)s " est non prévu. code doit etre = "gl" ou "lg"
-"""),
-
-59 : _("""
- nom d'élément fini incompatible
-"""),
-
-60 : _("""
- pb calcul des derivées des fonctions singulières sur le fond de fissure
 """),
 
 61 : _("""

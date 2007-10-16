@@ -1,4 +1,4 @@
-#@ MODIF lire_table_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF lire_table_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ def lecture_table(texte, nume, separ):
    """
    from Utilitai.transpose import transpose
    from Utilitai.Table     import Table
-   from Utilitai.Utmess    import U2MESS as UTMESS
+   from Utilitai.Utmess    import  UTMESS
    
    tab_lue = {}
    nume_lign = []
@@ -106,7 +106,7 @@ def lecture_table(texte, nume, separ):
 def lire_table_ops(self, **args):
    """Méthode corps de la macro LIRE_TABLE
    """
-   from Utilitai.Utmess     import U2MESS as UTMESS
+   from Utilitai.Utmess     import  UTMESS
    from Utilitai.UniteAster import UniteAster
    
    ier = 0

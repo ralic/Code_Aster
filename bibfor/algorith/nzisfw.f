@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/2007   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C               L'ORDRE :  XX YY ZZ XY XZ YZ
 C.......................................................................
 
       INTEGER  JPROL,JVALE,NBVAL(5),MAXVAL,NZ
-      INTEGER  NDIMSI,I,J,K,L,MODE,IRE2,IRET1
+      INTEGER  NDIMSI,I,J,K,L,MODE,IRE2,IRET1,IRET2
 
       REAL*8   PHASE(5),PHASM(5),ZALPHA
       REAL*8   TEMP,DT,TM,TP,TREF
@@ -89,7 +89,7 @@ C.......................................................................
       
       REAL*8   RBID,PRECR,R8PREM
       REAL*8   KRON(6)
-      REAL*8   VALRES(20)
+      REAL*8   VALRES(20),EPSTHE(2)
       
       CHARACTER*1   C1
       CHARACTER*2   CODRET(20),TEST
@@ -115,10 +115,6 @@ C *******************
       ENDIF
 
       DT = INSTAP-INSTAM
-
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET1)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
                   
 C 1.1 - NOMBRE DE PHASES
 
@@ -128,7 +124,6 @@ C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
 
       IF (RESI) THEN
         
-        TEMP=TP
         C1='+'
         DO 5 K=1,NZ-1
           CALL RCVARC(' ',ACIER(K),C1,FAMI,KPG,KSP,PHASE(K),IRE2)
@@ -139,7 +134,6 @@ C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
       
       ELSE
         
-        TEMP=TM
         C1='-'
         DO 10 K=1,NZ-1
           CALL RCVARC(' ',ACIER(K),C1,FAMI,KPG,KSP,PHASE(K),IRE2)
@@ -148,6 +142,8 @@ C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
  
       ENDIF        
       
+      CALL RCVARC(' ','TEMP',C1,FAMI,KPG,KSP,TEMP,IRET2)
+      CALL VERIFT(FAMI,KPG,KSP,C1,IMAT,'ELAS_META',2,EPSTHE,IRET1)
       ZALPHA=PHASE(1)+PHASE(2)+PHASE(3)+PHASE(4)
       PHASE(NZ)=1.D0-ZALPHA
       
@@ -180,10 +176,9 @@ C 2.1 - ELASTIQUE ET THERMIQUE
       
       CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',
      &            0.D0,6,NOMRES,VALRES,CODRET,'F ')
-      TTRG  = TEMP -TREF
             
-      EPSTH = PHASE(NZ)*(VALRES(4)*TTRG-(1.D0-VALRES(5))*VALRES(6))
-     &     + ZALPHA*(VALRES(3)*TTRG + VALRES(5)*VALRES(6))
+      EPSTH = PHASE(NZ)*(EPSTHE(1)-(1.D0-VALRES(5))*VALRES(6))
+     &     + ZALPHA*(EPSTHE(2) + VALRES(5)*VALRES(6))
       E      = VALRES(1)
       DEUXMU = E/(1.D0+VALRES(2))
       TROISK = E/(1.D0-2.D0*VALRES(2))
@@ -212,7 +207,8 @@ C 2.2 - LOI DES MELANGES
           NOMRES(6) ='S_VP_MEL'
         ENDIF
         
-        CALL RCVALA(IMAT,' ','ELAS_META',1,'META',ZALPHA,1,
+        CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS_META',
+     &              1,'META',ZALPHA,1,
      &              NOMRES(6),FMEL,CODRET(6),'  ')
         IF (CODRET(6).NE.'OK') FMEL = ZALPHA
 
@@ -399,7 +395,8 @@ C 2.8 - PLASTICITE DE TRANSFORMATION
               DELTAZ = (ZVARIP - ZVARIM)
               IF (DELTAZ.GT.0.D0) THEN
                 J = 4+K
-                CALL RCVALA(IMAT,' ','META_PT',1,'META',ZALPHA,1,
+                CALL RCVALB(FAMI,1,1,'+',IMAT,' ','META_PT',
+     &                      1,'META',ZALPHA,1,
      &                      NOMRES(J),VALRES(J),CODRET(J), 'F ')
                 TRANS = TRANS + KPT(K)*VALRES(J)*(ZVARIP-ZVARIM)
               ENDIF
@@ -450,6 +447,7 @@ C 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
           NOMCLE(4)='SIGM_F4'
           NOMCLE(5)='SIGM_C'
         
+          IF (IRET1.EQ.1) CALL U2MESS('F','CALCULEL_31')
           DO 75 K=1,NZ
             CALL RCTRAC(IMAT,'META_TRACTION',NOMCLE(K),TEMP,
      &                 JPROL,JVALE,NBVAL(K),RBID)

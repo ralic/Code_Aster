@@ -1,7 +1,7 @@
-      SUBROUTINE GBILIN(DUDM,DVDM,DTDM,DFDM,TGDM,TTRG,POIDS,
-     &            C1,C2,C3,CS,TH,K3A,RHO,PULS,AXI,G)
+      SUBROUTINE GBILIN(FAMI,KP,IMATE,DUDM,DVDM,DTDM,DFDM,TGDM,POIDS,
+     &            C1,C2,C3,CS,TH,COEF,RHO,PULS,AXI,G)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C
-      REAL*8 DUDM(3,4),DVDM(3,4),DTDM(3,4),DFDM(3,4),TGDM(2),TTRG
-      REAL*8 C1,C2,C3,CS,TH,K3A,POIDS,G, BIL(3,3,3,3)
+      CHARACTER*(*)  FAMI
+      INTEGER KP,IMATE
+      REAL*8 DUDM(3,4),DVDM(3,4),DTDM(3,4),DFDM(3,4),TGDM(2)
+      REAL*8 C1,C2,C3,CS,TH,POIDS,G, BIL(3,3,3,3),COEF
       LOGICAL AXI
 C
 C ----------------------------------------------------------------------
@@ -30,10 +32,14 @@ C     BILINEAIRE SYMETRIQUE G(U,V) EN ELATICITE LINEAIRE EN 2D
 C     (DEFORMATIONS OU CONTRAINTES PLANES)
 C ----------------------------------------------------------------------
 C
-      INTEGER I,J,K,P,L,M
+      INTEGER I,J,K,P,L,M,IRET
 C
+      CHARACTER*2 CODRET(3)
+      CHARACTER*8 NOMRES(3)
+      REAL*8      VALRES(3)
       REAL*8  VECT(7),S11,S12,S13,S21,S22,S23,S1,S2,PULS,RHO
-      REAL*8  TCLA,TFOR,TTHE,TDYN,DIVT,DIVV,S1TH,S2TH,PROD
+      REAL*8  TCLA,TFOR,TTHE,TDYN,DIVT,DIVV,S1TH,S2TH,PROD,EPSTHE
+      REAL*8  E,NU,ALPHA
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -53,6 +59,19 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C DEB-------------------------------------------------------------------
 C
+      
+      NOMRES(1) = 'E'
+      NOMRES(2) = 'NU'
+      NOMRES(3) = 'ALPHA'
+      
+      CALL VERIFT(FAMI,KP,1,'+',IMATE,'ELAS',1,EPSTHE,IRET)
+      CALL RCVALB(FAMI,KP,1,'+',IMATE,' ','ELAS',0,' ',0.D0,
+     &      2,NOMRES(1),VALRES(1),CODRET(1),'FM')
+      CALL RCVALB(FAMI,KP,1,'+',IMATE,' ','ELAS',0,' ',0.D0,
+     &      3,NOMRES(3),VALRES(3),CODRET(3),' ')
+      E = VALRES(1)
+      NU = VALRES(2)
+      ALPHA = VALRES(3)
       DIVT = DTDM(1,1)+DTDM(2,2)
       IF (AXI) DIVT = DIVT+DTDM(3,3)
       DIVV = TH*(DVDM(1,1)+DVDM(2,2))
@@ -152,24 +171,28 @@ C--------------------------AUTRE MANIERE DE CALCUL POUR S2----------
 
 C  TERME CLASSIQUE DU A LA THERMIQUE
 C
-      S1TH = K3A*TTRG*DIVV
+      S1TH = COEF*EPSTHE*DIVV*E/(1.D0-2.D0*NU)
       PROD = 0.D0
       DO 20 I=1,2
         DO 10 J=1,2
           PROD = PROD + DVDM(I,J)*DTDM(J,I)
 10      CONTINUE
 20    CONTINUE
-      S2TH = 0.5D0*TH*K3A*TTRG*PROD
+      S2TH = 0.5D0*TH*COEF*EPSTHE*PROD*E/(1.D0-2.D0*NU)
 C
       TCLA = (-DIVT/2.D0*(S1-S1TH)+ (S2-S2TH))*POIDS
 C
 C - TERME THERMIQUE
 C
       PROD = 0.D0
-      DO 50 I=1,2
-        PROD = PROD + TGDM(I)*DTDM(I,4)
-50    CONTINUE
-      TTHE = POIDS*PROD*DIVV*K3A/2.D0
+      IF (IRET.EQ.0) THEN
+        DO 50 I=1,2
+          PROD = PROD + TGDM(I)*DTDM(I,4)
+50      CONTINUE     
+        TTHE = POIDS*PROD*DIVV*COEF*ALPHA*E/(2.D0*(1.D0-2.D0*NU))
+       ELSE
+         TTHE = 0.D0
+       ENDIF
 C
 C - TERME FORCE VOLUMIQUE
 C     

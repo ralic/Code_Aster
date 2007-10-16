@@ -1,6 +1,6 @@
       SUBROUTINE TE0517(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NC,NNO
+      CHARACTER*2 NOMRES(2),CODRES(2)
       REAL*8 ZERO
 
       REAL*8 PGL(3,3),FL(14), D1B3(2,3),KSI1,TMAX(2),TMIN(2),XIY,XIZ
@@ -64,10 +65,11 @@ C
 C
       INTEGER IDEPLM,IDEPLP,IGEOM,IRET,ISECT,IMATE,K,KK,NPG
       REAL*8  UTG(14),XUG(6),XD(3),ANG1(3),DDOT,EY,EZ,TEMP,R8BID
-      REAL*8  XL,XL2,TET1,TET2,ALFA1,BETA1,GAMMA1,GAMMA
+      REAL*8  XL,XL2,TET1,TET2,ALFA1,BETA1,GAMMA1,GAMMA,VALRES(2)
       REAL*8  XLS2,D1B(7,14),CO(3),AA,E,NU,G,ALFAY,ALFAZ,PHIY,PHIZ
       LOGICAL REACTU
 C ----------------------------------------------------------------------
+
       ZERO = 0.0D+00
       DEUX = 2.0D+00
       NNO = 2
@@ -293,9 +295,14 @@ C           -- PASSAGE DE G (CENTRE DE GRAVITE) A C (CENTRE DE TORSION)
             EZ = -ZR(ISECT + 6)
 
             CALL JEVECH('PMATERC','L',IMATE)
-            CALL MOYTEM('RIGI',NPG,1,'+',TEMP)
-            CALL MATELA(ZI(IMATE),' ',1,TEMP,E,NU,R8BID)
-
+            CALL MOYTEM('RIGI',NPG,1,'+',TEMP,IRET)
+            NOMRES(1) = 'E'
+            NOMRES(2) = 'NU'
+            CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     +              0,'TEMP',TEMP,2,
+     +              NOMRES, VALRES, CODRES, 'FM' )
+            E = VALRES(1)
+            NU = VALRES(2)
             G = E / (2.D0*(1.D0+NU))
             PHIY = E*XIZ*12.D0*ALFAY/ (XL*XL*G*AA)
             PHIZ = E*XIY*12.D0*ALFAZ/ (XL*XL*G*AA)

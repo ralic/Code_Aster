@@ -1,4 +1,4 @@
-#@ MODIF xmgrace Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF xmgrace Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,14 +28,7 @@ try: from popen2 import Popen3
 except: pass
 
 import aster
-
-try:
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
-
+from Utilitai.Utmess import UTMESS
 
 TERMINAL = 0    # terminal actif ou non (au plus un terminal en meme temps)
 
@@ -75,7 +68,7 @@ class Xmgr :
     # Teste le DISPLAY avant de lancer xmgrace...
     if os.environ.has_key('DISPLAY'):
 
-      UTMESS('I','STANLEY',"Execution de : " + shell)
+      UTMESS('I','STANLEY_9',valk=[shell])
       self.controle = Popen3(shell)  
 
       # Mise a l'echelle des graphes
@@ -92,18 +85,8 @@ class Xmgr :
 
     else:
       TERMINAL = 0
-      UTMESS('A','XMGRACE',
-            """Aucune variable d'environnement DISPLAY définie !
-               XMGRACE ne pourra pas fonctionner. On l'ignore.
-
-               Si vous etes en Interactif, cochez le bouton Suivi Interactif
-               dans ASTK.
-
-               Vous pouvez également préciser votre DISPLAY dans les arguments
-               de la commande STANLEY :
-
-               STANLEY(DISPLAY='adresse_ip:0.0');""")
-
+      UTMESS('A','STANLEY_3',valk=['XMGRACE'])
+ 
 # --------------------------------------------------------------------
 
   def Terminal_ouvert(self) :

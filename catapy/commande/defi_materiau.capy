@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -614,7 +614,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                PHI0     =SIMP(statut='o',typ='R',val_min=0.0),
                KAPPA    =SIMP(statut='f',typ='R',val_min=0.0,defaut=0.8,val_max=1.0),
                ZETA_G   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-               TOLER_ET =SIMP(statut='c',typ='R',val_min=0.1E-2,val_max=10.0E-02,defaut=1.0E-02 ),
+               TOLER_ET =SIMP(statut='c',typ='R',val_min=0.0,defaut=0.15 ),
                VERI_P   =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP","IRRA") ),
          ),
            ZIRC_EPRI       =FACT(statut='f',
@@ -1667,10 +1667,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            LAMB_CT   = SIMP(statut='f',typ='R'),
 #
                                   regles = (EXCLUS('PERM_IN','PERM_END','PERMIN_X',),
-                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',), 
+                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',),
                                             ENSEMBLE('SATU_PRES','D_SATU_PRES','PERM_LIQU','D_PERM_LIQU_SATU',
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
-                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),                  
+                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                             UN_PARMI('VG_N','SATU_PRES'),
                                            ),
 
@@ -2081,7 +2081,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            VG_PR    = SIMP(statut='f',typ='R'),
                                            VG_SMAX  = SIMP(statut='f',typ='R'),
                                            VG_SATUR = SIMP(statut='f',typ='R'),
-#                                           
+#
                                            FICKV_T          = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
@@ -2101,10 +2101,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            LAMB_CT   = SIMP(statut='f',typ='R'),
 #
                                   regles = (EXCLUS('PERM_IN','PERM_END','PERMIN_X',),
-                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',), 
+                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',),
                                             ENSEMBLE('SATU_PRES','D_SATU_PRES','PERM_LIQU','D_PERM_LIQU_SATU',
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
-                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),                  
+                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                             UN_PARMI('VG_N','SATU_PRES'),
                                            ),
 # ---------------------------------------------------------------------------------
@@ -2270,10 +2270,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            LAMB_CT   = SIMP(statut='f',typ='R'),
 #
                                   regles = (EXCLUS('PERM_IN','PERM_END','PERMIN_X',),
-                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',), 
+                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',),
                                             ENSEMBLE('SATU_PRES','D_SATU_PRES','PERM_LIQU','D_PERM_LIQU_SATU',
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
-                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),                  
+                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                             UN_PARMI('VG_N','SATU_PRES'),
                                            ),
 # ---------------------------------------------------------------------------------
@@ -2450,10 +2450,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            LAMB_CT   = SIMP(statut='f',typ='R'),
 #
                                   regles = (EXCLUS('PERM_IN','PERM_END','PERMIN_X',),
-                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',), 
+                                            PRESENT_PRESENT('PERMIN_X','PERMIN_Y','PERMIN_Z',),
                                             ENSEMBLE('SATU_PRES','D_SATU_PRES','PERM_LIQU','D_PERM_LIQU_SATU',
                                                             'PERM_GAZ','D_PERM_SATU_GAZ','D_PERM_PRES_GAZ',),
-                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),                  
+                                            ENSEMBLE('VG_N','VG_SR','VG_PR','VG_SMAX','VG_SATUR',),
                                             UN_PARMI('VG_N','SATU_PRES'),
                                            ),
 # ---------------------------------------------------------------------------------

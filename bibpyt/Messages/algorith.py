@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith Messages  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,10 @@
 def _(x) : return x
 
 cata_msg = {
+
+1: _("""
+ La modélisation C_PLAN n'est pas compatible avec la loi de comportement ELAS_VMIS_PUIS.
+"""),
 
 3 : _("""
  type de matrice inconnu.

@@ -2,7 +2,7 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,8 +68,8 @@ C ----------------------------------------------------------------------
       CHARACTER*2 CODRET(6)
       CHARACTER*8 NOMRES(6), NOMPAR
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
-      INTEGER     I,J,K,L,IRET
-      REAL*8      E, NU, ALPHA, KDESS, BENDO
+      INTEGER     I,J,K,L,IRET, IISNAN
+      REAL*8      E, NU, EPSTHE, KDESS, BENDO,R8NNEM
       REAL*8      DC, DT, AC, AT, BC, BT, BETA, EPSD0
       REAL*8      EPS(6), EPSE(6), EPSPLU(6), EPSEP(3), EPST(3), EPSEQ
       REAL*8      SIGEL(6), SIGELP(3), TRSIG
@@ -103,8 +103,8 @@ C -- OPTION ET MODELISATION
 C   DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET
 C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       TMAXM = VIM(3)
-        CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
-        IF ( IRET.NE.0) SREF=0.D0
+      CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
+      IF ( IRET.NE.0) SREF=0.D0
       IF (RESI) THEN
         TEMP = TP
         CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDR,IRET)
@@ -112,8 +112,13 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
         POUM='+'
         CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECH,IRET)
         IF ( IRET.NE.0) SECH=0.D0
-        TMAX = MAX(TMAXM, TP)
-        IF (TMAX.GT.TMAXM) VIP(3) = TMAX
+        IF (IISNAN(TP).GT.0) THEN 
+          TMAX = R8NNEM()
+          VIP(3) = R8NNEM()
+        ELSE
+          TMAX = MAX(TMAXM, TP)
+          IF (TMAX.GT.TMAXM) VIP(3) = TMAX
+        ENDIF 
       ELSE
         TEMP = TM
         CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDR,IRET)
@@ -140,10 +145,19 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES
      &            NOMPAR,VALPAR,2,NOMRES,VALRES,CODRET,'FM')
       CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',1,NOMPAR,
      &            VALPAR,1,NOMRES(3),VALRES(3),CODRET(3),' ')
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
+      IF ((IISNAN(TP).EQ.0).AND.(IISNAN(TM).EQ.0)) THEN
+        IF ((IISNAN(TREF).NE.0).OR.(CODRET(3).NE.'OK')) THEN
+          CALL U2MESS('F','CALCULEL_15') 
+        ELSE
+          EPSTHE = VALRES(3)*(TEMP-TREF)
+        ENDIF
+      ELSE
+        VALRES(3) = 0.D0
+        EPSTHE = 0.D0
+      ENDIF
+      
       E     = VALRES(1)
       NU    = VALRES(2)
-      ALPHA = VALRES(3)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 C --- LECTURE DU RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
@@ -211,7 +225,7 @@ C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
 
       CALL R8INIR(6, 0.D0, EPSE,1)
       DO 35 K=1,NDIMSI
-        EPSE(K) = EPS(K) - (   ALPHA * (TEMP - TREF)
+        EPSE(K) = EPS(K) - (   EPSTHE
      &                      - KDESS * (SREF-SECH)
      &                      - BENDO *  HYDR         ) * KRON(K)
 35    CONTINUE

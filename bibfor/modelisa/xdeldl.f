@@ -1,7 +1,7 @@
       SUBROUTINE XDELDL(MOD,MA,GRMAEN,JSTANO,LISREL,NREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,10 +131,9 @@ C       SANS CONTACT : CE SONT TOUS LES NOEUDS
 
 C           1) CAS DES MAILLES 'ROND'
 C           -------------------------
-
-            IF (ISTATU.GT.1) THEN
-              CALL U2MESS('F','MODELISA7_94')
-            ELSE IF (ISTATU.EQ.1) THEN
+C           PB DE STATUT DES NOEUDS ENRICHIS
+            CALL ASSERT(ISTATU.LE.1) 
+            IF (ISTATU.EQ.1) THEN
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.0) THEN
 C             ON SUPPRIME LES DDLS H
@@ -150,9 +149,10 @@ C             ON SUPPRIME LES DDLS H
 C           2) CAS DES MAILLES 'CARRÉ'
 C           --------------------------
 
-            IF (ISTATU.GT.2 .OR. ISTATU.EQ.1) THEN
-              CALL U2MESS('F','MODELISA7_94')
-            ELSE IF (ISTATU.EQ.2) THEN
+
+C           PB DE STATUT DES NOEUDS ENRICHIS
+            CALL ASSERT(ISTATU.LE.2 .AND. ISTATU.NE.1) 
+            IF (ISTATU.EQ.2) THEN
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.0) THEN
 C             ON SUPPRIME LES DDLS E
@@ -170,9 +170,9 @@ C             ON SUPPRIME LES DDLS E
 C           3) CAS DES MAILLES 'ROND-CARRÉ'
 C           ------------------------------
 
-            IF (ISTATU.GT.3) THEN
-              CALL U2MESS('F','MODELISA7_94')
-            ELSE IF (ISTATU.EQ.3) THEN
+C           PB DE STATUT DES NOEUDS ENRICHIS
+            CALL ASSERT(ISTATU.LE.3) 
+            IF (ISTATU.EQ.3) THEN
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.2) THEN
 C             ON SUPPRIME LES DDLS H
@@ -207,7 +207,8 @@ C             ON SUPPRIME LES DDLS H ET E
             END IF
 
           ELSE
-            CALL U2MESS('F','MODELISA7_95')
+C           PB DE GROUPE MAILLES ENRICHIES
+            CALL ASSERT(GRMAEN(21:24).EQ.'HEAV')
           END IF
 
 C         POUR LES NOEUDS OÙ LE STATUT VAUT 0, IL FAUT IMPOSER

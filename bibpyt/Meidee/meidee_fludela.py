@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 02/04/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_fludela Meidee  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,7 @@ try:
     from Accas import _F
     
 except ImportError:
-    UTMESS('F',  'MACRO_VISU_MEIDEE',
-           "ERREUR PENDANT L'IMPORTATION DES MODULES MEIDEE")
-
+    UTMESS('F','MEIDEE0_2')
     
 
 
@@ -1710,7 +1708,7 @@ def calc_meidee_longeq( resultat,
                               maya[no,3], chano_x.valeurs[place],
                               chano_y.valeurs[place], chano_z.valeurs[place]])
             except ValueError:
-                UTMESS('A', 'MACRO_VISU_MEIDEE', "Le maillage et les deformees ne sont pas compatibles")
+                UTMESS('A', 'MEIDEE0_3')
                 pass
         data = Numeric.array(liste)
 

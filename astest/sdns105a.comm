@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ TEMPF = CREA_CHAMP ( OPERATION= 'AFFE',
                     )
                     
                     
-acier=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+acier=DEFI_MATERIAU(ELAS=_F(E=2.E11,ALPHA=0.,
                             NU=0.3,
                             RHO=750.00,),);
 
@@ -111,9 +111,9 @@ fissmob=DEFI_MATERIAU(RUPT_FRAG_FO = _F(
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=(_F(GROUP_MA=('SURFACE1','COTD','COTG',),
-                                MATER=acier,),
+                                MATER=acier,TEMP_REF=0.,),
                              _F(GROUP_MA=('JOINT'),
-                                MATER=fissmob,),
+                                MATER=fissmob),
                         ),
                                 );
 FONC=DEFI_FONCTION(NOM_PARA='INST',

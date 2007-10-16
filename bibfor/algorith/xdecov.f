@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,8 @@ C-----------------------------------------------------------------------
 
 
         IF (NINTER .LT. 2) THEN
-          IF (NPTS.NE.NINTER) CALL U2MESS('F','ALGORITH11_45')
+C         INTER DOUTEUSE
+          CALL ASSERT (NPTS.EQ.NINTER)
 C         1 SEUL ELEMENT
           NSE=1
           DO 90 IN=1,3
@@ -170,13 +171,15 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             CNSE(3,3)=CONNEC(IT,C)
           ENDIF
         ELSE
-          CALL U2MESS('F','ALGORITH11_46')
+C         TROP DE POINTS D'INTERSECTION
+          CALL ASSERT(NINTER.LE.2)
         ENDIF
         
       ELSEIF (NDIME .EQ. 1) THEN
 
         IF (NINTER .LT. 1) THEN
-          IF (NPTS.NE.NINTER) CALL U2MESS('F','ALGORITH11_45')
+C         INTER DOUTEUSE
+          CALL ASSERT (NPTS.EQ.NINTER)
 C         1 SEUL ELEMENT
           NSE=1
           DO 95 IN=1,2
@@ -205,7 +208,8 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             CNSE(2,2)=CONNEC(IT,B)
           ENDIF
         ELSE
-          CALL U2MESS('F','ALGORITH11_46')
+C         TROP DE POINTS D'INTERSECTION
+          CALL ASSERT(NINTER.LE.1)
         ENDIF   
 
 
@@ -218,7 +222,8 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
 C       1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
 C       ---------------------------------------------
 
-          IF (NPTS.NE.NINTER) CALL U2MESS('F','ALGORITH11_45')
+C         INTER DOUTEUSE
+          CALL ASSERT (NPTS.EQ.NINTER)
 C         ON A UN SEUL ELEMENT
           NSE=1
           DO 100 IN=1,4
@@ -310,8 +315,9 @@ C             CONFIGURATION N°4
               CNSE(1,4)=CONNEC(IT,4)
               CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,2),CONNEC(IT,3),
      &                                                      101,102,103)
-            ELSE
-              CALL U2MESS('F','ALGORITH11_47')
+            ELSE 
+C             PROBLEME DE DECOUPAGE À 3 POINTS
+              CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.3)
             ENDIF
 
           ENDIF
@@ -339,8 +345,9 @@ C          CONFIGURATION N°2
 C          CONFIGURATION N°3
            CALL XPENTE(1,CNSE,101,103,CONNEC(IT,3),102,104,CONNEC(IT,4))
            CALL XPENTE(4,CNSE,CONNEC(IT,2),104,103,CONNEC(IT,1),102,101)
-          ELSE
-           CALL U2MESS('F','ALGORITH11_48')
+          ELSE 
+C          PROBLEME DE DECOUPAGE A 4 POINTS
+           CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.5.AND.A4.EQ.6)
           ENDIF
         ENDIF
 

@@ -1,6 +1,6 @@
       SUBROUTINE TE0344(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      PARAMETER   (       NBRES=3)
+      PARAMETER   (       NBRES=2)
       REAL*8       VALRES(NBRES)
       CHARACTER*2  CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
@@ -60,12 +60,13 @@ C
       REAL*8       FLR(14), KLV(105)
       REAL*8       FE(12), FI(12)
 C     ------------------------------------------------------------------
-      DATA NOMRES/'E','NU','ALPHA'/
+      DATA NOMRES/'E','NU'/
 C     ------------------------------------------------------------------
 C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       CALL JEVECH('PMATERC','L',LMATER)
 C
+
       NBPAR = 0
       NOMPAR = '  '
       VALPAR = 0.D0
@@ -83,24 +84,18 @@ C
    11 CONTINUE
 C
       NPG = 3
-      DO 13 KP=1,NPG
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
-        VALPAR = VALPAR + TPG
-   13 CONTINUE
-      VALPAR = VALPAR/NPG
+      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR,IRET)
 
       NBPAR  = 1
       NOMPAR = 'TEMP'
 C
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
+      CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &            NBPAR,NOMPAR,VALPAR,2,NOMRES,
      &            VALRES, CODRES, 'FM' )
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,NOMRES(3),
-     &            VALRES(3), CODRES(3), '  ' )
-      IF ( CODRES(3) .NE. 'OK' )  VALRES(3) = 0.D0
 C
       E     = VALRES(1)
       NU    = VALRES(2)
-      ALPHA = VALRES(3)
+
       G = E / ( 2.D0 * ( 1.D0 + NU ) )
 C
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -157,35 +152,18 @@ C     --- VECTEUR EFFORT       LOCAL  FLR = KLC * ULR
       CALL PMAVEC('ZERO',14,KLC,ULR,FLR)
 C
 C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
-      IF (ALPHA.NE.0.D0) THEN
-          DO 20 I = 1,14
+      CALL VERIFT('RIGI',NPG,1,'+',ZI(LMATER),'ELAS',1,F,IRET1)
+      DO 20 I = 1,14
               UGR(I) = 0.D0
-   20     CONTINUE
-C         - CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
-C           TEMPERATURE DE REFERENCE
-          CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
-C
-C           TEMPERATURE EFFECTIVE
-           NPG = 3
-           DO 5 KP=1,NPG
-             CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
-             TEM = TEM + TPG
-    5      CONTINUE
-           TEMP = TEM/NPG - TREF
-
-C
-          IF (TEMP.NE.0.D0) THEN
-              F = ALPHA*TEMP
-              UGR(1) = -F*XL
-              UGR(8) = -UGR(1)
+   20 CONTINUE
+      UGR(1) = -F*XL
+      UGR(8) = -UGR(1)
 C
 C              --- CALCUL DES FORCES INDUITES ---
-              DO 35 I = 1,7
+      DO 35 I = 1,7
                   FLR(I)   = FLR(I)   - KLC(I,1)*UGR(1)
                   FLR(I+7) = FLR(I+7) - KLC(I+7,1+7)*UGR(1+7)
-   35         CONTINUE
-          END IF
-      END IF
+   35 CONTINUE
 C
 C --- PRISE EN COMPTE DES EFFORTS REPARTIS :
 C     ------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,8 +63,8 @@ MZERO_2=CREA_MAILLAGE(MAILLAGE=MZERO_1,
 # 3.1.1. MISE EN PLACE DES MATERIAUX
 #
 MAZERO_T=AFFE_MATERIAU(    MAILLAGE=MZERO_1,AFFE=(
-       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,   TEMP_REF = 20.,   ),
-       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   TEMP_REF = 20.,   ))
+       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,      ),
+       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,     ))
                          )
 #
 # 3.1.2. MODELE
@@ -173,8 +173,8 @@ MACR_ADAP_MAIL(INFO=1,
 # 5.1.1. MISE EN PLACE DES MATERIAUX
 #
 MAUN_T=AFFE_MATERIAU(    MAILLAGE=MUN_1,AFFE=(
-       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,   TEMP_REF = 20.,   ),
-       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   TEMP_REF = 20.,   ))
+       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,      ),
+       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,      ))
                     )
 #
 # 5.1.2. MODELE
@@ -310,8 +310,8 @@ MACR_ADAP_MAIL(INFO=1,
 # 8.1.1. MISE EN PLACE DES MATERIAUX
 #
 MADEUX_T=AFFE_MATERIAU(    MAILLAGE=MDEUX_1,AFFE=(
-       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,   TEMP_REF = 20.,   ),
-       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,   TEMP_REF = 20.,   ))
+       _F(  GROUP_MA = 'MOITIE1',    MATER = MATER1,     ),
+       _F(  GROUP_MA = 'MOITIE2',    MATER = MATER2,    ))
                     )
 #
 # 8.1.2. MODELE

@@ -1,6 +1,6 @@
       SUBROUTINE TE0095(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C.......................................................................
       INTEGER IGEOM,ITHET,IFIC,IDEPU,IDEPV
       INTEGER IMATE,JVAL,K,I,J,L,NDIM,NNOS
       INTEGER IFORFU,IFORFV,IFORCU,IFORCV
-      INTEGER IRET,IEPSRU,IEPSRV
+      INTEGER IRET,IEPSRU,IEPSRV,IRET0,IRET1,IRET2,IRET3
       INTEGER IPESAU,IPESAV,IROTAU,IROTAV,ITMPSU,ITMPSV
 
       INTEGER KK,IER
@@ -134,7 +134,7 @@ C
       CALL JEVECH('PGTHETA','E',IFIC)
 
       GUV3 = 0.D0
-      CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IRET)
+      CALL RCVARC(' ','TEMP','REF','NOEU',1,1,TREF,IRET0)
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
@@ -166,7 +166,8 @@ C
 C
       IF ((IPESAU.NE.0) .OR. (IROTAU.NE.0)) THEN
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
-        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',RBID,1,'RHO',
+        CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
+     &              1,' ',RBID,1,'RHO',
      &              RHO,CODRET,'FM')
         IF (IPESAU .NE. 0) THEN
           DO 160 I = 1,NNO
@@ -194,7 +195,8 @@ C
 C
       IF ((IPESAV.NE.0) .OR. (IROTAV.NE.0)) THEN
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
-        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',RBID,1,'RHO',
+        CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
+     &              1,' ',RBID,1,'RHO',
      &              RHO,CODRET,'FM')
         IF (IPESAV .NE. 0) THEN
           DO 260 I = 1,NNO
@@ -252,20 +254,31 @@ C   FU ET FV (DFUDM ET DFVDM)
 C   CALCUL DES CHAMPS DE TEMPERATURE (TGU ET TGV) ET DE LEURS GRADIENTS
 C   (TGUDM ET TGVDM)AUX POINTS DE GAUSS
 C
+        IRET3 = 0
         DO 80 I = 1,NNO
           DER(1) = DFDI(I)
           DER(2) = DFDI(I+NNO)
           DER(3) = DFDI(I+2*NNO)
           DER(4) = ZR(IVF+L+I-1)
-          CALL RCVARC('F','TEMP','-','NOEU',I,1,TGM,IRET)
-          CALL RCVARC('F','TEMP','+','NOEU',I,1,TGP,IRET)
-          TGU = TGU + TGM*DER(4)
-          TGV = TGV + TGP*DER(4)
+          CALL RCVARC(' ','TEMP','-','NOEU',I,1,TGM,IRET1)
+          CALL RCVARC(' ','TEMP','+','NOEU',I,1,TGP,IRET2)
+          IF ((IRET1+IRET2).EQ.0) THEN
+            IF (IRET0.EQ.1)  CALL U2MESS('F','CALCULEL_31')
+            TGU = TGU + TGM*DER(4)
+            TGV = TGV + TGP*DER(4)
+            DO 75 J = 1,NDIM
+              TGUDM(J) = TGUDM(J) + TGM*DER(J)
+              TGVDM(J) = TGVDM(J) + TGP*DER(J)
+  75        CONTINUE
+          ELSE
+            IRET3 = IRET3+1
+            TGU=0.D0
+            TGV=0.D0
+          ENDIF
+
           XG = XG + ZR(IGEOM+2* (I-1))*DER(4)
           YG = YG + ZR(IGEOM+2* (I-1)+1)*DER(4)
           DO 70 J = 1,NDIM
-            TGUDM(J) = TGUDM(J) + TGM*DER(J)
-            TGVDM(J) = TGVDM(J) + TGP*DER(J)
             DO 60 K = 1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPU+NDIM* (I-1)+J-1)*DER(K)
               DVDM(J,K) = DVDM(J,K) + ZR(IDEPV+NDIM* (I-1)+J-1)*DER(K)
@@ -282,18 +295,29 @@ C
    80   CONTINUE
 
 C - RECUPERATION DES DONNEES MATERIAUX
-        TTRGU = TGU - TREF
-        TTRGV = TGV - TREF
+        IF (IRET3.EQ.0) THEN
+          TTRGU = TGU - TREF
+          TTRGV = TGV - TREF
+        ELSE
+          DO 85 J = 1,NDIM
+            TGUDM(J) = 0.D0
+            TGVDM(J) = 0.D0
+  85      CONTINUE
+          TTRGU = 0.D0
+          TTRGV = 0.D0
+        ENDIF
         CALL RCVADA(ZI(IMATE),'ELAS',TGU,3,NOMRES,VALRES,DEVRES,CODRET)
         CALL RCVADA(ZI(IMATE),'ELAS',TGV,3,NOMRES,VALRSV,DEVRSV,CODRTV)
-        IF (CODRET(3) .NE. 'OK') THEN
-          VALRES(3) = 0.D0
-          DEVRES(3) = 0.D0
-        END IF
-        IF (CODRTV(3) .NE. 'OK') THEN
-          VALRSV(3) = 0.D0
-          DEVRSV(3) = 0.D0
-        END IF
+        IF (IRET0.EQ.0) THEN
+          IF ((CODRET(3) .NE. 'OK').OR.((CODRTV(3) .NE. 'OK')))  THEN
+            CALL U2MESS('F','CALCULEL_31')
+          ENDIF
+        ELSE
+            VALRES(3) = 0.D0
+            DEVRES(3) = 0.D0
+            VALRSV(3) = 0.D0
+            DEVRSV(3) = 0.D0
+        ENDIF
         IF ((VALRES(1) .NE. VALRSV(1)).OR.((VALRES(2) .NE. VALRSV(2)))
      &      .OR.(VALRES(3) .NE. VALRSV(3))) THEN
           CALL U2MESS('F','ELEMENTS3_12')
@@ -318,7 +342,6 @@ C PAS DE TERME DYNAMIQUE DANS GBIL
       G = GUV3
 
       ZR(IFIC) = G
-
   100 CONTINUE
       CALL JEDEMA()
       END

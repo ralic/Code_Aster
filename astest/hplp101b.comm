@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,7 @@ ZERO =    DEFI_CONSTANTE(VALE=0.)
 NU =    DEFI_CONSTANTE(VALE=0.3)
 ALPHA =    DEFI_CONSTANTE(VALE=0.)
 
-MAT=DEFI_MATERIAU(ELAS_FO=_F(  E = YOUNG, NU = NU,
-                                TEMP_DEF_ALPHA =20.,
-                               ALPHA = ALPHA, RHO=7800.,))
+MAT=DEFI_MATERIAU(ELAS_FO=_F(  E = YOUNG, NU = NU,RHO=7800.,))
 
 CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
                                   AFFE=_F(  TOUT = 'OUI',

@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 09/05/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF gmsh Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,18 +19,12 @@
 # ======================================================================
 import os, signal
 import aster
+from Utilitai.Utmess import UTMESS
 
 try:
   from popen2 import Popen3
 except:
   pass
-
-try:
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
 
 # Multi-langues
 try:
@@ -88,7 +82,7 @@ class GMSH_DISTANT :
       # Verifications
       for var in ['machine_gmsh', 'tmp', 'protocole']:
          if not param[var].strip():
-            UTMESS('A','STANLEY',_("En mode DISTANT, la variable '") + var + _("' est obligatoire. On abandonne.") )
+            UTMESS('A','STANLEY_6',valk=[var])
             return
 
       # On renomme le fichier fort.33 en fort.33.pos
@@ -148,10 +142,10 @@ class GMSH_DISTANT :
          txt = execution + " " + mdis + " '" + ex_gmsh + " " + param['tmp'] + '/' + fic + "'"
          self.Commande( txt )
       else:
-         UTMESS('A','STANLEY',_("Le parametre 'machine_gmsh_exe' ou 'machine_visu' n'est pas renseigné, il faut ouvrir le fichier manuellement.") )
+         UTMESS('A','STANLEY_7')
 
 
-      UTMESS('I','STANLEY',_("Lancement terminé.") )
+      UTMESS('I','STANLEY_8')
 
     if mode == 'MAIL' :
       raise  'NON DVP' 
@@ -176,7 +170,7 @@ class GMSH_DISTANT :
      """
         Lancement d'une commande
      """
-     UTMESS('I','STANLEY',_("Execution de : ") + cmd)
+     UTMESS('I','STANLEY_9',valk=[str(cmd)])
      res = os.system(cmd)
      return
 
@@ -242,15 +236,15 @@ View[der-1].ShowTime = 0; // Time display mode (0=hidden, 1=value if multiple, 2
       else:
         shell = param['gmsh'] + ' ' + fichier + '.pos'
 
-      UTMESS('I','STANLEY',_("Execution de : ") + shell)
+      UTMESS('I','STANLEY_9',valk=[str(shell)])
 
       if os.name=='nt':
         res = os.system(shell)
-        if res!=0: UTMESS('A','STANLEY',_("Erreur de lancement de la commande!") )
+        if res!=0: UTMESS('A','STANLEY_10')
       else:
         self.controle = Popen3(shell)  
 
-      UTMESS('I','STANLEY',_("Lancement terminé.") )
+      UTMESS('I','STANLEY_8')
 
     if mode == 'MAIL' :
       raise  'NON DVP' 
@@ -301,7 +295,7 @@ class GMSH_WINDOWS :
       # Verifications
       for var in ['machine_gmsh', 'smbclient', 'tmp']:
         if not param[var].strip():
-          UTMESS('A','STANLEY',_("Dans le mode WINDOWS, la variable '") + var + _("' est obligatoire. On abandonne.") )
+          UTMESS('A','STANLEY_11',valk=[var])
           return
 
       # Variables
@@ -323,11 +317,11 @@ class GMSH_WINDOWS :
       # Copie du fort.33.pos
       if partage_win_login == '':
         txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos'" 
-        UTMESS('I','STANLEY',_("Execution de : ") + txt)
+        UTMESS('I','STANLEY_9',valk=[txt])
         os.system(txt)
       else:
         txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + "****" + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos '"
-        UTMESS('I','STANLEY',_("Execution de : ") + txt)
+        UTMESS('I','STANLEY_9',valk=[txt])
         txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + partage_win_pass + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm " + fichier + ".pos ; put " + fichier + ".pos '"
         os.system(txt)
 
@@ -341,17 +335,16 @@ class GMSH_WINDOWS :
         fw.close()
         if partage_win_login == '':
           txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' -N -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
-          UTMESS('I','STANLEY',_("Execution de : ") + txt)
+          UTMESS('I','STANLEY_9',valk=[txt])
           os.system(txt)
         else:
           txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + "****" + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
-          UTMESS('I','STANLEY',_("Execution de : ") + txt)
+          UTMESS('I','STANLEY_9',valk=[txt])
           txt = smbclient + " '\\\\" + machine_win + "\\" + _nom_partage + "' " + partage_win_pass + " -U " + partage_win_login + " -c 'cd " + sous_rep + " ; rm skin.pos ; put skin.pos'"
           os.system(txt)
-        UTMESS('I','STANLEY',_("Les fichiers de post-traitement sont copies. Veuillez maintenant ouvrir manuellement skin.pos avec GMSH.") )
-
+        UTMESS('I','STANLEY_12')
       else:
-        UTMESS('I','STANLEY',_("Le fichier de post-traitement est copie. Veuillez maintenant ouvrir manuellement fort.33.pos avec GMSH.") )
+        UTMESS('I','STANLEY_13')
 
     if mode == 'MAIL' :
       raise  'NON DVP' 

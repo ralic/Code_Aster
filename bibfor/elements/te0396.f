@@ -1,6 +1,6 @@
       SUBROUTINE TE0396(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,9 +32,9 @@ C ......................................................................
       INTEGER LSECT,LORIEN,JEFINT,KC,IRET,IGEOM,I,K0,IFINT,IC
       CHARACTER*8 NOMRES(4),ELREFE
       CHARACTER*2 BL2,CODRET(4)
-      REAL*8 EN(3,2),ENPRIM(3,2),VALRES(4),GRANC(6),FINT(6,3),TEMPN(3),
+      REAL*8 EN(3,2),ENPRIM(3,2),VALRES(4),GRANC(6),FINT(6,3),
      &       Y0(3),X00(3,3),X0PG(3),ROT0(3,3),NU,GN(3),GM(3),PN(3),
-     &       PM(3),QIGK(3),ROTK(3,3),ROTABS(3,3),ALPHA,TREF
+     &       PM(3),QIGK(3),ROTK(3,3),ROTABS(3,3),EPSTHE
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -74,18 +74,12 @@ C PARAMETRES EN ENTREE
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'RHO'
-      NOMRES(4) = 'ALPHA'
-      CALL RCVALA(ZI(IMATE),' ','ELAS',0,'  ',R8BID,2,NOMRES,VALRES,
+      CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     &             0,'  ',R8BID,2,NOMRES,VALRES,
      &            CODRET,'FM')
-      CALL RCVALA(ZI(IMATE),' ','ELAS',0,'  ',R8BID,1,NOMRES(3),
+      CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
+     &            0,'  ',R8BID,1,NOMRES(3),
      &            VALRES(3),CODRET(3),BL2)
-      CALL RCVALA(ZI(IMATE),' ','ELAS',0,'  ',R8BID,1,NOMRES(4),
-     &            VALRES(4),CODRET(4),BL2)
-      IF (CODRET(4).NE.'OK') THEN
-        ALPHA = 0.D0
-      ELSE
-        ALPHA = VALRES(4)
-      END IF
       E = VALRES(1)
       NU = VALRES(2)
       G = E/ (2.D0* (1.0D0+NU))
@@ -126,7 +120,6 @@ C PARAMETRES EN SORTIE
    30   CONTINUE
    40 CONTINUE
 
-      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
       CALL JEVECH('PGEOMER','L',IGEOM)
 
       K0 = IGEOM - 1
@@ -160,7 +153,7 @@ C     BOUCLE SUR LES POINTS DE GAUSS
             X0PG(IC) = X0PG(IC) + UNSURJ*ENPRIM(NE,KP)*X00(IC,NE)
   100     CONTINUE
   110   CONTINUE
-        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TEMPG,IRET)
+        CALL VERIFT('RIGI',KP,1,'+',ZI(IMATE),'ELAS',1,EPSTHE,IRET)
         DO 130 I = 1,3
           GN(I) = 0.D0
           GM(I) = 0.D0
@@ -168,7 +161,7 @@ C     BOUCLE SUR LES POINTS DE GAUSS
 
 C        DILATATION THERMIQUE : -E*A*ALPHA*(T-TREF)
 
-        GN(1) = GN(1) + GRANC(1)*ALPHA* (TEMPG-TREF)
+        GN(1) = GN(1) + GRANC(1)*EPSTHE
 
         CALL PROMAT(ROTABS,3,3,3,GN,3,3,1,PN)
         CALL PROMAT(ROTABS,3,3,3,GM,3,3,1,PM)

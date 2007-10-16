@@ -1,4 +1,4 @@
-#@ MODIF co_fiss_xfem SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF co_fiss_xfem SD  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 from SD import *
-from sd_fiss_xfem import sd_fiss_xfem
+from sd_xfem import sd_fiss_xfem
 
 # -----------------------------------------------------------------------------
 class fiss_xfem(ASSD, sd_fiss_xfem):

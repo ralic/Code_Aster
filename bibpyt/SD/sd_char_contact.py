@@ -1,4 +1,4 @@
-#@ MODIF sd_char_contact SD  DATE 11/09/2007   AUTEUR KHAM M.KHAM 
+#@ MODIF sd_char_contact SD  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 from SD import *
 from SD.sd_champ import sd_champ
-from SD.sd_modele import sd_modele_XFEM
+from SD.sd_xfem import sd_modele_xfem
 
 class sd_char_contact(AsBase):
     nomj      =SDNom(fin=16)
@@ -92,7 +92,7 @@ class sd_char_contact(AsBase):
     TANDEF    = Facultatif(AsVR())
     TANPOU    = Facultatif(AsVR())
     TOLECO    = Facultatif(AsVR())
-    XFEM      = Facultatif(AsVI())
+    xfem      = Facultatif(AsVI())
     XFIMAI    = Facultatif(AsVK8())
     XNBASC    = Facultatif(AsVK24())
     XNRELL    = Facultatif(AsVK24())
@@ -122,11 +122,11 @@ class sd_char_contact(AsBase):
             oo  = AsObject(SDNom(nomj=nom,debut=0),genr='V', xous='S', type=Parmi('I','R'))          
             oo.check(checker) 
             
-    # Verification MODELE XFEM
+    # Verification MODELE xfem
     def check_char_contact_xfem_MODELX(self, checker):
         if not self.contact_xfem_actif() : return
         nom = self.MODELX.get()[0] 
-        sd2 = sd_modele_XFEM(nom)
+        sd2 = sd_modele_xfem(nom)
         sd2.check(checker)
                
         

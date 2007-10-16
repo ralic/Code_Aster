@@ -1,4 +1,4 @@
-#@ MODIF co_matr_asse_gene SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_matr_asse_gene SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ class matr_asse_gene_r(matr_asse_gene):
     from Utilitai.Utmess import UTMESS
 
     # avertissement generique
-    UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
+    UTMESS('A','SDVERI_3')
 
     ncham=self.get_name()
     ncham=ncham+(8-len(ncham))*' '
@@ -165,7 +165,7 @@ class matr_asse_gene_c(matr_asse_gene):
     from Utilitai.Utmess import UTMESS
 
     # avertissement generique
-    UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
+    UTMESS('A','SDVERI_3')
 
     Numeric.asarray(matrice)
     ncham=self.get_name()

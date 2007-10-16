@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    from Accas               import _F
    from Cata.cata           import nappe_sdaster, fonction_c
    from Utilitai            import Graph
-   from Utilitai.Utmess     import U2MESS
+   from Utilitai.Utmess     import UTMESS
    from Utilitai.UniteAster import UniteAster
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -64,7 +64,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          niv='A'
       else:
          niv='I'
-      U2MESS(niv, 'FONCT0_1', valk=nomfich)
+      UTMESS(niv, 'FONCT0_1', valk=nomfich)
 
    # 0.2. Récupération des valeurs sous COURBE
    unparmi=('FONCTION','LIST_RESU','FONC_X','ABSCISSE')
@@ -100,7 +100,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                obj=dCi[typi]
                break
          if obj==None:
-            U2MESS('S', 'SUPERVIS_56')
+            UTMESS('S', 'SUPERVIS_56')
          if typi=='FONCTION':
             if isinstance(obj, nappe_sdaster):
                lpar,lval=obj.Valeurs()
@@ -135,7 +135,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       if not dCi.has_key('LEGENDE') and hasattr(obj,'get_name'):
             dCi['LEGENDE']=obj.get_name()
       if obj==None:
-         U2MESS('S', 'SUPERVIS_56')
+         UTMESS('S', 'SUPERVIS_56')
 
       # 1.2. Extraction des valeurs
 
@@ -221,11 +221,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       # 1.2.2. Mot-clé LIST_RESU
       elif typi=='LIST_RESU':
          if interp and iocc>0:
-            U2MESS('S', 'FONCT0_2')
+            UTMESS('S', 'FONCT0_2')
          lx=dCi['LIST_PARA'].Valeurs()
          lr=obj.Valeurs()
          if len(lx)!=len(lr):
-            U2MESS('S', 'FONCT0_3')
+            UTMESS('S', 'FONCT0_3')
          # on stocke les données dans le Graph
          dicC={
             'Val' : [lx,lr],
@@ -241,9 +241,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          ob2=dCi['FONC_Y']
          # peut-on blinder au niveau du catalogue
          if isinstance(obj, nappe_sdaster) or isinstance(ob2, nappe_sdaster):
-            U2MESS('S', 'FONCT0_4')
+            UTMESS('S', 'FONCT0_4')
          if interp and iocc>0:
-            U2MESS('S', 'FONCT0_5')
+            UTMESS('S', 'FONCT0_5')
          ftmp__=obj
          dpar=ftmp__.Parametres()
          ftm2__=ob2
@@ -300,11 +300,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       # 1.2.4. Mot-clé ABSCISSE / ORDONNEE
       elif typi=='ABSCISSE':
          if interp and iocc>0:
-            U2MESS('S', 'FONCT0_6')
+            UTMESS('S', 'FONCT0_6')
          lx=obj
          lr=dCi['ORDONNEE']
          if len(lx)!=len(lr):
-            U2MESS('S', 'FONCT0_7')
+            UTMESS('S', 'FONCT0_7')
          # on stocke les données dans le Graph
          dicC={
             'Val' : [lx,lr],
@@ -378,7 +378,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    # 2.39. Format inconnu
    else:
-      U2MESS('S', 'FONCT0_8', valk=FORMAT)
+      UTMESS('S', 'FONCT0_8', valk=FORMAT)
 
    # Traiter le cas des UL réservées
    if args['UNITE'] and args['UNITE'] in ul_reserve:

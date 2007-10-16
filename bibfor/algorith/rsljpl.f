@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,9 +91,6 @@ C
       FDTOT = FD + ANN*PD
 
 C
-C --  TEMPERATURE
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMP,IRET)
-C
 C -- CAS DU MATERIAU CASSE---------------------------------------
       IF (FDTOT .GE. MATER(6,2)) THEN
         NDEPS = LCNRTE(DEPS)
@@ -109,7 +106,7 @@ C
 C -- CAS DU MATERIAU NON CASSE-----------------------------------
       ELSE
 C
-        CALL RSLISO ( IMAT, TEMP, P, RP, DRDP )
+        CALL RSLISO ( FAMI,KPG,KSP,'-',IMAT, P, RP, DRDP )
 C
         UNF= UN-F
         RHO = (UNF-ANN*P)/(UN-F0)

@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 15/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*2  CODRES
+      CHARACTER*8 MATERI
       CHARACTER*16 CH16,PHENOM
       REAL*8 RHO,A1,IY1,IZ1,A2,CDG(3),AB2,AB3,AB4,AMB,APB,EP
       REAL*8 RAD,ANG,ANGARC,ANGS2,XFL,XL,XL2,MATINL(6)
@@ -63,9 +64,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 XIG,XISL,XIXX,XIXZ,XIZZ,XZIG,YIG,ZERO,ZIG,PGL4(3,3)
       REAL*8 T1(3),T2(3),NORME1,NORME2,N(3),NORMEN,X3(3),Y3(3)
       REAL*8 COO1(3),COO2(3),COO3(3),PREC,R8PREM,OMEGA,TRIGOM
+      REAL*8 CASECT(6),CASEC1(6), VAL
 
       INTEGER LMATER,LX,LORIEN,NNO,NC,LCASTR,LSECT,LSECT2,ITYPE,ICOUDE
       INTEGER I,N1,N2,LRCOU,IADZI,IAZK24,NN2
+      INTEGER INBF, JACF, ICOMPO, ISDCOM, NBGF, NCARFI, IG
+      INTEGER NUGF, ICP, NBFIG, IPOS
 C     ------------------------------------------------------------------
       PREC = R8PREM()
       ZERO = 0.0D0
@@ -74,16 +78,18 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
 
-      CALL RCCOMA(ZI(LMATER),'ELAS',PHENOM,CODRES)
+      IF( NOMTE.NE.'MECA_POU_D_EM') THEN
+         CALL RCCOMA(ZI(LMATER),'ELAS',PHENOM,CODRES)
 
-      IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
-     &    PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
-     &    PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
-        CALL RCVALA(ZI(LMATER),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
+         IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
+     &       PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
+     &       PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
+           CALL RCVALA(ZI(LMATER),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
      &              CODRES,'FM')
-      ELSE
-        CALL U2MESS('F','ELEMENTS_50')
-      END IF
+         ELSE
+           CALL U2MESS('F','ELEMENTS_50')
+         END IF
+      ENDIF
 
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
 
@@ -111,6 +117,17 @@ C     --- ORIENTATION DE LA POUTRE ---
             MATINE(I) = 0.D0
             MATINL(I) = 0.D0
 10       CONTINUE
+
+         IF( NOMTE.EQ.'MECA_POU_D_EM') THEN
+C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
+            CALL JEVECH('PNBSP_I','L',INBF)
+            NBGF=ZI(INBF+1)
+            CALL JEVECH('PFIBRES','L',JACF)
+            NCARFI = 3
+C --- RECUPERATION DES DIFFERENTS MATERIAUX DANS SDCOMP DANS COMPOR
+            CALL JEVECH('PCOMPOR','L',ICOMPO)
+            CALL JEVEUO(ZK16(ICOMPO-1+6),'L',ISDCOM)
+         ENDIF
 
          IF ((NOMTE.NE.'MET3SEG3') .AND. (NOMTE.NE.'MET6SEG3') .AND.
      &       (NOMTE.NE.'MET3SEG4')) THEN
@@ -258,18 +275,54 @@ C     --- CALCUL DES CARACTERISTIQUES ELEMENTAIRES 'MASS_INER' ----
 C        --- POUTRE A SECTION CONSTANTE ---
          IF (ITYPE.EQ.0) THEN
 C           -------- MASSE
-            ZR(LCASTR) = RHO*A1*XL
+            IF( NOMTE.EQ.'MECA_POU_D_EM') THEN
+               DO 15 I = 1,6
+                  CASECT(I) = ZERO
+   15          CONTINUE
+C --- BOUCLE SUR LES GROUPES DE FIBRE
+               IPOS=JACF
+               DO 100 IG=1,NBGF
+                 NUGF=ZI(INBF+1+IG)
+                 ICP=ISDCOM-1+(NUGF-1)*6
+                 READ(ZK16(ICP+6),'(I16)')NBFIG
+                 MATERI=ZK16(ICP+2)(1:8)
+C ---   CALCUL DES CARACTERISTIQUES DU GROUPE ---
+                 CALL PMFITG(NBFIG,NCARFI,ZR(IPOS),CASEC1)
+C ---   ON MULTIPLIE PAR RHO (CONSTANT SUR LE GROUPE)
+                 CALL RCVALA(ZI(LMATER),MATERI,'ELAS',0,' ',ZERO,1,
+     +              'RHO',VAL,CODRES,'FM')
+                 DO 25 I = 1,6
+                    CASECT(I) = CASECT(I) + VAL*CASEC1(I)
+  25             CONTINUE
+                 IPOS=IPOS+NBFIG*NCARFI
+ 100           CONTINUE
+
+               ZR(LCASTR) = CASECT(1)*XL
 C           -------- CDG
-            ZR(LCASTR+1) = (ZR(LX+4)+ZR(LX+1))/2.D0
-            ZR(LCASTR+2) = (ZR(LX+5)+ZR(LX+2))/2.D0
-            ZR(LCASTR+3) = (ZR(LX+6)+ZR(LX+3))/2.D0
+               ZR(LCASTR+1) = (ZR(LX+4)+ZR(LX+1))/2.D0
+               ZR(LCASTR+2) = (ZR(LX+5)+ZR(LX+2))/2.D0
+               ZR(LCASTR+3) = (ZR(LX+6)+ZR(LX+3))/2.D0
 C           -------- INERTIE
-            MATINL(1) = RHO* (IY1+IZ1)*XL
-            MATINL(2) = 0.D0
-            MATINL(3) = RHO*XL* (IY1+A1*XL2/12.D0)
-            MATINL(4) = 0.D0
-            MATINL(5) = 0.D0
-            MATINL(6) = RHO*XL* (IZ1+A1*XL2/12.D0)
+               MATINL(1) = (CASECT(4)+CASECT(5))*XL
+               MATINL(2) = 0.D0
+               MATINL(3) = XL*CASECT(5)+ CASECT(1)*XL*XL2/12.D0
+               MATINL(4) = 0.D0
+               MATINL(5) = 0.D0
+               MATINL(6) = XL*CASECT(4)+ CASECT(1)*XL*XL2/12.D0
+            ELSE
+               ZR(LCASTR) = RHO*A1*XL
+C           -------- CDG
+               ZR(LCASTR+1) = (ZR(LX+4)+ZR(LX+1))/2.D0
+               ZR(LCASTR+2) = (ZR(LX+5)+ZR(LX+2))/2.D0
+               ZR(LCASTR+3) = (ZR(LX+6)+ZR(LX+3))/2.D0
+C           -------- INERTIE
+               MATINL(1) = RHO* (IY1+IZ1)*XL
+               MATINL(2) = 0.D0
+               MATINL(3) = RHO*XL* (IY1+A1*XL2/12.D0)
+               MATINL(4) = 0.D0
+               MATINL(5) = 0.D0
+               MATINL(6) = RHO*XL* (IZ1+A1*XL2/12.D0)
+            ENDIF
             CALL UTPSLG(NNO,NC,PGL,MATINL,MATINE)
 
 C        --- POUTRE A SECTION VARIABLE AFFINE ---

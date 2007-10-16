@@ -1,4 +1,4 @@
-#@ MODIF impr_oar_ops Macro  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF impr_oar_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 import aster
-from Utilitai.Utmess import U2MESS as UTMESS
+from Utilitai.Utmess import  UTMESS
 from Utilitai.Table import Table
 from Utilitai.partition import MAIL_PY
 

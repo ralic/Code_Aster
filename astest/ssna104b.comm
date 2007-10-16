@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CYLINDRE CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,7 +72,7 @@ FLUENC=CREA_RESU(
                       NOM_CHAM='IRRA',AFFE=_F( CHAM_GD = CHAM,LIST_INST=L_INST)
                     )
 CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
-          AFFE =_F(TOUT='OUI',  MATER = MAT, TEMP_REF = 20.),
+          AFFE =_F(TOUT='OUI',  MATER = MAT),
           AFFE_VARC=_F(NOM_VARC='IRRA', EVOL =FLUENC, ),
                        )
 RESU = STAT_NON_LINE (MODELE = MO,

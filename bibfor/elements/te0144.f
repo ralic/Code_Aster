@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      PARAMETER                 (NBRES=3)
+      PARAMETER                 (NBRES=2)
       REAL*8              VALRES(NBRES)
       CHARACTER*2    BL2, CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
@@ -59,7 +59,7 @@ C
       REAL*8       FL(12), FE(12), PGL1(3,3), PGL2(3,3)
       REAL*8       XFLY, XFLZ, XSIY, XSIZ,TRIGOM,X,R8VIDE
 C     ------------------------------------------------------------------
-      DATA NOMRES / 'E', 'NU', 'ALPHA'/
+      DATA NOMRES / 'E', 'NU'/
 C     ------------------------------------------------------------------
       ZERO = 0.D0
       DEUX = 2.D0
@@ -87,16 +87,14 @@ C     -----------------------------------------------
       ELSE
         NPG = 3
       ENDIF
-      CALL MOYTEM('RIGI',NPG,1,'+',TEMP)
+      CALL VERIFM('RIGI',NPG,1,'+',ZI(LMATER),'ELAS',1,F,IRET)
+      CALL MOYTEM('RIGI',NPG,1,'+',TEMP,IRET1)
 
-      CALL RCVALA(ZI(LMATER),' ','ELAS',1,'TEMP',TEMP,
+      CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &             1,'TEMP',TEMP,
      &                                2,NOMRES,VALRES,CODRES,'FM')
-      CALL RCVALA(ZI(LMATER),' ','ELAS',1,'TEMP',TEMP,
-     &                         1,NOMRES(3),VALRES(3),CODRES(3),'  ')
-      IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
       E      = VALRES(1)
       XNU    = VALRES(2)
-      ALPHAT = VALRES(3)
 C
 C     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
 C
@@ -153,16 +151,11 @@ C     --- VECTEUR EFFORT       LOCAL  FL = KLC * UL
       CALL PMAVEC('ZERO',12,KLC,UL,FL)
 C
 C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
-      IF ( ALPHAT .NE. ZERO ) THEN
+      IF ( F .NE. ZERO ) THEN
           DO 40 I = 1 , 12
              UG(I) = ZERO
  40       CONTINUE
-          CALL MOYTEM('RIGI',NPG,1,'+',TEMP)
-          CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
-          TEMP = TEMP-TREF
 C
-            IF ( TEMP .NE. ZERO ) THEN
-               F = ALPHAT * TEMP
                IF ( ITYPE .NE. 10 ) THEN
                   UG(1) = -F * XL
                   UG(7) = -UG(1)
@@ -182,7 +175,6 @@ C              --- CALCUL DES FORCES INDUITES ---
  22               CONTINUE
  20            CONTINUE
  21            CONTINUE
-            ENDIF
       ENDIF
 C
 C     --- ARCHIVAGE ---

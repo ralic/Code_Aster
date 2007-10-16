@@ -1,4 +1,4 @@
-      SUBROUTINE NMMABA (ICODMA,COMPOR,E,ALPHA,DSDE,SIGY,
+      SUBROUTINE NMMABA (ICODMA,COMPOR,E,DSDE,SIGY,
      &                   NCSTPM,CSTPM)
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  E,ALPHA,DSDE,SIGY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C IN  : ICODMA : NUMERO DU MATERIAU CODE
 C       COMPOR : NOM DE LA RELATION DE COMPORTEMENT
 C
 C OUT : E      : MODULE D'YOUNG
-C       ALPHA  : COEFFICIENT DE DILATATION THERMIQUE
 C       DSDE   : PENTE D'ECROUISSAGE
 C       SIGY   : LIMITE ELASTIQUE POUR L,ECROUISSAGE LINEAIRE
 C       NCSTPM : NOMBRE DE CONSTANTES DE MATERIAU POUR INTO
@@ -60,14 +59,15 @@ C
       PARAMETER    (NBVAL = 12)
       REAL*8       VALPAR,VALRES(NBVAL)
       CHARACTER*2  BL2, FB2, CODRES(NBVAL)
-      CHARACTER*8  NOMPAR,NOMELA(2),NOMECL(2)
+      CHARACTER*8  NOMPAR,NOMELA(1),NOMECL(2)
       CHARACTER*8  NOMPIM(12)
+      CHARACTER*4  FAMI
 C
 C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 C
 C ****************************** DATA  *********************************
 C
-      DATA NOMELA / 'E','ALPHA' /
+      DATA NOMELA / 'E' /
       DATA NOMECL / 'D_SIGM_EPSI', 'SY' /
       DATA NOMPIM / 'SY','EPSI_ULTM','SIGM_ULTM','ELAN','EPSP_HARD',
      &              'R_PM','EP_SUR_E', 'A1_PM','A2_PM','A6_PM',
@@ -91,6 +91,7 @@ C --- INITIALISATIONS
 C
       BL2 = '  '
       FB2 = 'FM'
+      FAMI = 'RIGI'
 C
       CALL R8INIR (NBVAL,0.D0,VALRES,1)
       NBPAR  = 0
@@ -100,13 +101,10 @@ C
 C --- CARACTERISTIQUES ELASTIQUES
 C
       NBRES = 2
-      CALL RCVALA(ICODMA,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,NOMELA,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ELAS',
+     &             NBPAR,NOMPAR,VALPAR,1,NOMELA,
      &             VALRES,CODRES,FB2)
-      CALL RCVALA(ICODMA,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,NOMELA(2),
-     &             VALRES(2),CODRES(2), BL2)
-      IF (CODRES(2).NE.'OK') VALRES(2) = 0.D0
       E     = VALRES(1)
-      ALPHA = VALRES(2)
 C
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
 C
@@ -123,9 +121,11 @@ C
       NBPAR  = 0
       NOMPAR = '  '
       VALPAR = 0.D0
-        CALL RCVALA(ICODMA,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,NOMECL,
+        CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ECRO_LINE',
+     &             NBPAR,NOMPAR,VALPAR,1,NOMECL,
      &             VALRES,CODRES,FB2)
-        CALL RCVALA(ICODMA,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ECRO_LINE',
+     &            NBPAR,NOMPAR,VALPAR,1,
      &            NOMECL(2), VALRES(2),CODRES(2), BL2)
         IF (CODRES(2).NE.'OK') VALRES(2) = 0.D0
         DSDE    = VALRES(1)
@@ -147,7 +147,8 @@ C
       NOMPAR = '  '
       VALPAR = 0.D0
 C
-      CALL RCVALA(ICODMA,' ','PINTO_MENEGOTTO',NBPAR,NOMPAR,VALPAR,
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','PINTO_MENEGOTTO',
+     &            NBPAR,NOMPAR,VALPAR,
      &            NBRES, NOMPIM,VALRES,CODRES,BL2)
       IF (CODRES(7).NE.'OK') VALRES(7) = -1.D0
       CSTPM(1)    =E

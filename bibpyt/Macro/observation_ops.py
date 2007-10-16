@@ -1,4 +1,4 @@
-#@ MODIF observation_ops Macro  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF observation_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,7 +66,7 @@ def observation_ops(self,
 
     # La macro n'est pas encoire capable de traiter les resultats dyna_harmo
     if isinstance(RESULTAT, dyna_harmo):
-        UTMESS('E',UTILITAI7_8)
+        UTMESS('E','UTILITAI7_8')
 
 
 #***********************************************
@@ -147,7 +147,7 @@ def observation_ops(self,
                     if modi_rep.has_key(option):
                         vect = { option : modi_rep[option] }
                 if len(vect) != 1 :
-                    U2MESS('E',UTILITAI7_9)
+                    UTMESS('E','UTILITAI7_9')
                 chnorm    = crea_normale(self, MODELE_1, MODELE_2,
                                          cham_mater, cara_elem, NUME_DDL)
 

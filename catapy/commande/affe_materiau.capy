@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
-           TEMP_REF        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+           TEMP_REF        =SIMP(statut='f',typ='R'),
          ),
 
          #  affectation du nom du matériau (par noeuds):
@@ -183,6 +183,8 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            CMP_GD          =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("V1","V2","V3")),
            CMP_VARC        =SIMP(statut='c',typ='TXM',max=3,min=3,defaut=("ALPHPUR","ALPHBETA","TZIRC",)),
          ),
+
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;
 
 

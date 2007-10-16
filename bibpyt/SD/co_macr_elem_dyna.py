@@ -1,4 +1,4 @@
-#@ MODIF co_macr_elem_dyna SD  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_macr_elem_dyna SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,7 +91,7 @@ class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
       from Utilitai.Utmess import UTMESS
 
       # avertissement generique
-      UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
+      UTMESS('A','SDVERI_3')
 
       nommacr=self.get_name()
       if (typmat=='MASS_GENE') :

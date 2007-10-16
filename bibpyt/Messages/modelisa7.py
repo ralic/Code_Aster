@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa7 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -397,18 +397,6 @@ cata_msg={
 93: _("""
  la maille de numero :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
 """),
-
-94: _("""
- pb de statut des noeuds enrichis
-"""),
-
-95: _("""
- pb de groupe mailles enrichies
-"""),
-
-
-
-
 
 
 98: _("""

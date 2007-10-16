@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE        D6BHHAR A.RAZAKANAIVO
 # TITRE THERMO_METALLO_MECANIQUE EDGAR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -272,7 +272,7 @@ CM2=AFFE_MATERIAU( MAILLAGE=MAIL,
                             NOM_VARC='M_ZIRC',
                             NOM_CHAM='META_ELNO_TEMP'),
                              _F(TOUT='OUI',
-                            EVOL=TEMPE,
+                            EVOL=TEMPE,VALE_REF=0.,
                             NOM_VARC='TEMP',
                             NOM_CHAM='TEMP'),)
 

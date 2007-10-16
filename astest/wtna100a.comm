@@ -1,4 +1,4 @@
-# MODIF  DATE 29/05/2007   AUTEUR FERNANDES R.FERNANDES 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,9 +290,9 @@ MATERBG=DEFI_MATERIAU(
                                    LAMB_CT=1.539),);
 
 CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
-                     AFFE=(_F(GROUP_MA='SURFBO',
+                     AFFE=(_F(GROUP_MA='SURFBO',TEMP_REF=0.,
                               MATER=MATERBO,),
-                           _F(GROUP_MA='SURFBG',
+                           _F(GROUP_MA='SURFBG',TEMP_REF=0.,
                               MATER=MATERBG,),),);
 #
 # AFFECTATION DE L ETAT INITIAL

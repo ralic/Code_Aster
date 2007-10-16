@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,21 +44,28 @@ C     OUT SIGI    :  CONTRAINTES A L'INSTANT COURANT
 C     ----------------------------------------------------------------
       CHARACTER*(*) FAMI
       CHARACTER*8 MOD
-      INTEGER KPG,KSP,ICP,NMAT,IRET
+      INTEGER KPG,KSP,ICP,NMAT,IRET,IRET1,IRET2,IRET3
       REAL*8 NU,COEL(NMAT),HOOK(6,6),ALPHAL,ALPHAT,ALPHAN,ETHL,ETHT
       REAL*8 EIN(6),XSDT,X,DTIME,ETH,ALPHA,TPERD,DTPER,TPEREF,ETHN
       REAL*8 EEL(6),SIGI(6),EPSD(6),DETOT(6),DEMU,E,TREEL,TF
 C     ----------------------------------------------------------------
 
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TPERD,IRET)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TF,IRET)
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TPERD,IRET1)
+      CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET2)
       DTPER = TF-TPERD
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TPEREF,IRET)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TPEREF,IRET3)
+
+      IRET=IRET1+IRET2+IRET3
+
 
       XSDT=X/DTIME
 
       IF (COEL(NMAT).EQ.0) THEN
-         ETH=ALPHA*(TPERD+XSDT*DTPER-TPEREF)
+         IF (IRET.EQ.0) THEN
+           ETH=ALPHA*(TPERD+XSDT*DTPER-TPEREF)
+         ELSE
+           ETH=0.D0
+         ENDIF
          DO 10 ICP=1,6
            EEL(ICP)=EPSD(ICP)+DETOT(ICP)*XSDT-EIN(ICP)-ETH
            IF (ICP.EQ.3) ETH=0.0D0
@@ -84,9 +91,15 @@ C
             ALPHAL = COEL(73)
             ALPHAT = COEL(74)
             ALPHAN = COEL(75)
-            ETHL=ALPHAL*(TPERD+XSDT*DTPER-TPEREF)
-            ETHN=ALPHAT*(TPERD+XSDT*DTPER-TPEREF)
-            ETHT=ALPHAN*(TPERD+XSDT*DTPER-TPEREF)
+            IF (IRET.EQ.0) THEN
+              ETHL=ALPHAL*(TPERD+XSDT*DTPER-TPEREF)
+              ETHN=ALPHAT*(TPERD+XSDT*DTPER-TPEREF)
+              ETHT=ALPHAN*(TPERD+XSDT*DTPER-TPEREF)
+            ELSE
+              ETHL=0.D0
+              ETHN=0.D0
+              ETHT=0.D0
+            ENDIF
             EEL(1) = EPSD(1)+DETOT(1)*XSDT-EIN(1)-ETHL
             EEL(2) = EPSD(2)+DETOT(2)*XSDT-EIN(2)-ETHN
             EEL(3) = EPSD(3)+DETOT(3)*XSDT-EIN(3)-ETHT

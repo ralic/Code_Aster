@@ -5,7 +5,7 @@
       INTEGER JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -256,7 +256,7 @@ C             MAIS CA DEVRAIT JAMAIS ARRIVER
               IF (ISEFIS.NE.1) THEN
                 PS=DDOT(3,VN,1,VNREF,1)
                 IF (PS.LT.0.D0) THEN
-                  CALL U2MESS('F','ALGORITH11_53')
+                  CALL U2MESS('F','XFEM2_16')
 C                  VN(1)=-1*VN(1)
 C                  VN(2)=-1*VN(2)
 C                  VN(3)=-1*VN(3)
@@ -294,7 +294,7 @@ C             MISE EN MÉMOIRE DE LSN=PM.N POUR LE SEG LE PLUS PROCHE
 
  31       CONTINUE
 
-          IF (.NOT.MA2FF) CALL U2MESS('F','ALGORITH11_54')
+          IF (.NOT.MA2FF) CALL U2MESS('F','XFEM2_17')
  3      CONTINUE
 
        ZR(JLTSV-1+(INO-1)+1)=XLT

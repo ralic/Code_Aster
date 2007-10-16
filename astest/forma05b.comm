@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,7 +92,7 @@ ENER     = [None]*nb_calc1
 DEBUT(CODE=_F(NOM = 'FORMA05B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
 
 # DEFINITION DU MATERIAU (ACIER 16MND5)
-ACIER_M=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,),);
+ACIER_M=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,ALPHA=0.),);
 ACIER_T=DEFI_MATERIAU(THER=_F(LAMBDA = 33.5,RHO_CP=526.E4))
 
 # DEFINITION DES INSTANTS POUR STAT_NON_LINE                            
@@ -199,7 +199,7 @@ for num_calc in range(0,nb_calc1) :
    CHMTM[num_calc]=AFFE_MATERIAU(MAILLAGE=MAM[num_calc],
                        AFFE=_F(GROUP_MA='GM38',
                                 MATER=ACIER_M,),
-                       AFFE_VARC=_F( TOUT='OUI',EVOL=TEMP2[num_calc],
+                       AFFE_VARC=_F( TOUT='OUI',EVOL=TEMP2[num_calc],VALE_REF=0.,
                                       NOM_VARC='TEMP',NOM_CHAM='TEMP',),)
 
 # CL D'ENCASTREMENT + ETIREMENT REPARTIE                                 

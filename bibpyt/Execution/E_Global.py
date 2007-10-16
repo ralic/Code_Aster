@@ -1,4 +1,4 @@
-#@ MODIF E_Global Execution  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_Global Execution  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ def checksd(nomsd, typesd):
       1 : erreurs lors du checksd
       4 : on n'a meme pas pu tester
    """
-   from Utilitai.Utmess import U2MESS as UTMESS
+   from Utilitai.Utmess import UTMESS
    nomsd  = nomsd.strip()
    typesd = typesd.lower().strip()
    

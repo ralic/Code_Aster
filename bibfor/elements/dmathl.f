@@ -8,7 +8,7 @@
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,7 +201,7 @@ C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
       CALL JEVECH('PNBSP_I','L',JCOU)
       NBCOU=ZI(JCOU)
-      CALL MOYTEM('NOEU',NNO,3*NBCOU,'+',VALPAR)
+      CALL MOYTEM('NOEU',NNO,3*NBCOU,'+',VALPAR,IRET)
       NBPAR = 1
       NOMPAR = 'TEMP'
 C===============================================================
@@ -211,13 +211,17 @@ C        ------ MATERIAU ISOTROPE ------------------------------------
 
         MULTIC = 0
 
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &              NBPAR,NOMPAR,VALPAR,2,NOMRES,
      &              VALRES,CODRET,'FM')
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &              NBPAR,NOMPAR,VALPAR,1,
      &              NOMRES(3),VALRES(3),CODRET(3),BL2)
-        IF (CODRET(3).NE.'OK') THEN
+        IF ((CODRET(3).NE.'OK').OR.(VALRES(3).EQ.0.D0)) THEN
           INDITH = -1
           GO TO 70
+        ELSEIF ((IRET.EQ.1).AND.(CODRET(3).NE.'OK')) THEN
+          CALL U2MESS('F','CALCULEL_15')
         END IF
         YOUNG = VALRES(1)
         NU = VALRES(2)
@@ -271,13 +275,17 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
 C        ---------------------------------------------------------------
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         MULTIC = 0
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &              NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
      &              VALRES,CODRET,'FM')
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &            NBPAR,NOMPAR,VALPAR,1,
      &            NOMRES(11),  VALRES(11),CODRET(11),BL2)
-        IF (CODRET(11).NE.'OK') THEN
+        IF ((CODRET(11).NE.'OK').OR.(VALRES(11).EQ.0.D0)) THEN
           INDITH = -1
           GO TO 70
+        ELSEIF ((IRET.EQ.1).AND.(CODRET(11).NE.'OK')) THEN
+          CALL U2MESS('F','CALCULEL_15')
         END IF
         ALPHAT = VALRES(11)
         CALL ASSERT(.NOT.GRILLE)
@@ -299,16 +307,20 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &             NBPAR,NOMPAR,VALPAR,1,
      &             NOMRES(19), VALRES(19),CODRET(19),'FM')
         EPAIS = VALRES(19)
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &             NBPAR,NOMPAR,VALPAR,1,
      &             NOMRES(57), VALRES(57),CODRET(57),'FM')
         EPI = VALRES(57)
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &              NBPAR,NOMPAR,VALPAR,1,
      &              NOMRES(59),VALRES(59),CODRET(59),'FM')
         ORDI = VALRES(59)
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,27,
+        CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
+     &             NBPAR,NOMPAR,VALPAR,27,
      &             NOMRES(102), VALRES(102),CODRET(102),'FM')
         DM(1,1) = VALRES(102)
         DM(1,2) = VALRES(103)

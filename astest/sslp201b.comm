@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -326,17 +326,17 @@ CHMAT2=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                                  NOM_VARC='TEMP',
                                  VALE_REF = 6.9),
                           _F(  GROUP_MA = 'GMA9',
-                                 EVOL=THLIN,
+                                 EVOL=THLIN,VALE_REF=0.,
                                  NOM_VARC='TEMP',),
                           _F(  GROUP_MA = 'GMA10',
                                  EVOL=THLIN,
                                  NOM_VARC='TEMP',
                                  VALE_REF = 11.7),
                           _F(  GROUP_MA = 'GMA11',
-                                 EVOL=THLIN,
+                                 EVOL=THLIN,VALE_REF=0.,
                                  NOM_VARC='TEMP',),
                           _F(  GROUP_MA = 'GMA12',
-                                 EVOL=THLIN,
+                                 EVOL=THLIN,VALE_REF=0.,
                                  NOM_VARC='TEMP',)))
 
 

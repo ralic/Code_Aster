@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,7 +152,7 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
      pickle_context=get_pickled_context()
      self.jdc.restore_pickled_attrs(pickle_context)
      if pickle_context==None :
-        UTMESS('F','Poursuite',"Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré")
+        UTMESS('F','SUPERVIS_86')
         return
      from Cata.cata  import ASSD,entier
      from Noyau.N_CO import CO
@@ -167,13 +167,13 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
             if elem in self.g_context.keys():
                poursu_class=self.g_context[elem].__class__
                if poursu_class!=pickle_class :
-                  UTMESS('F','Poursuite',"Types incompatibles entre glob.1 et pick.1 pour concept de nom "+elem)
+                  UTMESS('F','SUPERVIS_87',valk=[elem])
                   return
             elif isinstance(pickle_context[elem],ASSD) and pickle_class not in (CO,entier) : 
             # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
             # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
             # meme situation pour le type 'entier' produit uniquement par DEFI_FICHIER
-               UTMESS('F','Poursuite',"Concept de nom "+elem+" et de type "+str(pickle_class)+" introuvable dans la base globale")
+               UTMESS('F','SUPERVIS_88',valk=[elem,str(pickle_class)])
                return
          if pickle_context[elem]==None : del pickle_context[elem]
      self.g_context.update(pickle_context)

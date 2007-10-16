@@ -1,8 +1,8 @@
-      SUBROUTINE NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,SIGM,
+      SUBROUTINE NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &                  DEPS,VIM,OPTION,COMPOR,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C OUT DSDE    : DSIG/DEPS
 C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
-      REAL*8 TEMPP,TEMPM,EM,EP,ET,ALPHAM,ALPHAP,SIGY,TREF
+      REAL*8 TEMPP,TEMPM,EM,EP,ET,SIGY,TREF
       REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU
       REAL*8 SIGP,DSDE,RBID
       CHARACTER*16 OPTION,COMPOR(*)
@@ -69,9 +69,6 @@ C     ------------------------------------------------------------------
 
       NOMPAR = 'TEMP'
       PM = VIM(1)
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPM,IRET)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPP,IRET)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
 
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
 
@@ -92,12 +89,16 @@ C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
 C --- CARACTERISTIQUES ECROUISSAGE DONNE PAR COURBE DE TRACTION
 
       ELSE IF (COMPOR(1).EQ.'VMIS_ISOT_TRAC') THEN
-        VALPAR = TEMPM
+        CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,VALPAR,IRET)
         CALL RCTYPE(IMATE,1,NOMPAR,VALPAR,RESU,TYPE)
+        IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1)) 
+     &  CALL U2MESS('F','CALCULEL_31')
         CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLM,JVALEM,NBVALM,
      &              EM)
-        VALPAR = TEMPP
+        CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,VALPAR,IRET)
         CALL RCTYPE(IMATE,1,NOMPAR,VALPAR,RESU,TYPE)
+        IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1)) 
+     &       CALL U2MESS('F','CALCULEL_31')
         CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLP,JVALEP,NBVALP,
      &              EP)
         CALL RCFONC('S','TRACTION',JPROLP,JVALEP,NBVALP,SIGY,DUM,DUM,
@@ -109,7 +110,7 @@ C --- CARACTERISTIQUES ECROUISSAGE DONNE PAR COURBE DE TRACTION
 C     ------------------------------------------------------------------
 C     ESTIMATION ELASTIQUE
 C     ------------------------------------------------------------------
-      DEPSTH = ALPHAP* (TEMPP-TREF) - ALPHAM* (TEMPM-TREF)
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
       SIGE = EP* (SIGM/EM+DEPS-DEPSTH)
       SIELEQ = ABS(SIGE)
 C     ------------------------------------------------------------------

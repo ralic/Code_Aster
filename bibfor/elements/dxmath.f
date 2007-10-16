@@ -8,7 +8,7 @@
       CHARACTER*4  FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,7 +103,6 @@ C     ------------------------------------------------
       CALL JEVECH('PMATERC','L',JMATE)
       BL2 = '  '
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
-
       IF (PHENOM.EQ.'ELAS_COQMU') THEN
         IF (NORM.LE.R8PREM()) THEN
           CALL U2MESS('F','ELEMENTS_39')
@@ -181,10 +180,12 @@ C        ET T2VE INVERSE DE T2EV
         T1VE(9) =  T1VE(1) - T1VE(4)
 
 C
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',0.0D0,1,'MEMB_L  ',
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &              PHENOM,0,' ',0.0D0,1,'MEMB_L  ',
      &              VALRES(1),CODRET,' ')
         IF (CODRET(1).EQ.'NO') THEN
-          CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',0.0D0,1,'M_LLLL  ',
+          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &                PHENOM,0,' ',0.0D0,1,'M_LLLL  ',
      &                VALRES(1),CODRET,' ')
           IF (CODRET(1).EQ.'NO') THEN
             CALL U2MESS('F','ELEMENTS_41')
@@ -254,7 +255,7 @@ C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
       NPGH=3
       IF (GRILLE) NPGH=1
-      CALL MOYTEM(FAMI,NPG,NPGH,'+',VALPAR)
+      CALL MOYTEM(FAMI,NPG,NPGH,'+',VALPAR,IRET)
       NBPAR = 1
       NOMPAR = 'TEMP'
 C===============================================================
@@ -264,11 +265,13 @@ C        ------ MATERIAU ISOTROPE ------------------------------------
 
         MULTIC = 0
 
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &              PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES,
      &              VALRES,CODRET,'FM')
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &             PHENOM,NBPAR,NOMPAR,VALPAR,1,
      &             NOMRES(3), VALRES(3),CODRET(3),BL2)
-        IF (CODRET(3).NE.'OK') THEN
+        IF ((CODRET(3).NE.'OK').OR.(VALRES(3).EQ.0.D0)) THEN
           INDITH = -1
           GO TO 90
         END IF
@@ -331,16 +334,18 @@ C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
 C        ---------------------------------------------------------------
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         MULTIC = 0
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &              PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
      &              VALRES,CODRET,'FM')
         IF (ELASCO.EQ.1) THEN
           INDALF = 11
         ELSEIF (ELASCO.EQ.2) THEN
           INDALF = 34
         ENDIF
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &              PHENOM,NBPAR,NOMPAR,VALPAR,1,
      &              NOMRES(INDALF),VALRES(INDALF),CODRET(INDALF),BL2)
-        IF (CODRET(INDALF).NE.'OK') THEN
+        IF ((CODRET(INDALF).NE.'OK').OR.(VALRES(INDALF).EQ.0.D0)) THEN
           INDITH = -1
           GO TO 90
         END IF
@@ -409,10 +414,12 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &             PHENOM,NBPAR,NOMPAR,VALPAR,1,
      &             NOMRES(19), VALRES(19),CODRET(19),BL2)
         EPAIS = VALRES(19)
-        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,27,
+        CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
+     &              PHENOM,NBPAR,NOMPAR,VALPAR,27,
      &              NOMRES(30),VALRES(30),CODRET(30),BL2)
         DM(1,1) = VALRES(30)
         DM(1,2) = VALRES(31)

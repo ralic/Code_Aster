@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith7 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -371,15 +371,6 @@ cata_msg = {
 
 86 : _("""
  fonctionnalite modifiée (dvlp)
-"""),
-
-87 : _("""
-  -> Pour le traitement du contact avec X-FEM, le solveur mumps est vivement
-     recommandé.
-  -> Risque & Conseil :
-     Pour XFEM, la matrice produite est parfois non définie positive. Seul un solveur qui pivote peut alors résoudre 
-     le problème. Il est donc préférable d'utiliser MUMPS (mot-clef SOLVEUR) pour ne pas finir en erreur du type 
-     "PIVOT NUL" avec le solveur MULT_FRONT ou LDLT.
 """),
 
 89 : _("""

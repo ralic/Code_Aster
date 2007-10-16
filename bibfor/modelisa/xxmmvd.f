@@ -1,7 +1,7 @@
       INTEGER FUNCTION XXMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,12 +39,14 @@ C
       INTEGER   ZXCAR,ZXIND
       PARAMETER (ZXCAR=10,ZXIND=6) 
       INTEGER   ZXBAS
-      PARAMETER (ZXBAS=12)                         
+      PARAMETER (ZXBAS=12)  
+      LOGICAL    LVECT                       
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      LVECT=.FALSE.
       IF (VECT.EQ.'ZXCAR') THEN
         XXMMVD = ZXCAR  
       ELSEIF (VECT.EQ.'ZXIND') THEN
@@ -52,7 +54,7 @@ C
       ELSEIF (VECT.EQ.'ZXBAS') THEN
         XXMMVD = ZXBAS                          
       ELSE
-        CALL U2MESS('F','XFEM_19') 
+        CALL ASSERT(LVECT)
       ENDIF  
 C
       CALL JEDEMA()

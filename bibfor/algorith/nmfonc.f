@@ -2,7 +2,7 @@
      &                  LISCHA,FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,7 @@ C --- X-FEM ET CONTACT
           FONACT(9) = .TRUE.
         CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
         IF (ZK24(JSOLVE)(1:5).NE.'MUMPS')
-     &                 CALL U2MESS('A','ALGORITH7_87')
+     &                 CALL U2MESS('A','XFEM2_3')
         ENDIF
       ENDIF
 

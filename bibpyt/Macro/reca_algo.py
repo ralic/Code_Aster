@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 16/05/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_algo Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,6 +23,7 @@ import Numeric, MLab
 from Numeric import take, size
 import copy, os
 import LinearAlgebra 
+from externe_mess import UTMESS
 
 try:
   import aster
@@ -30,16 +31,6 @@ try:
   from Cata.cata import DETRUIRE
   from Accas import _F
 except: pass
-
-try:
-   import Utilitai.Utmess
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
-      if code=='F': sys.exit()
-
 
 
 def calcul_gradient(A,erreur):

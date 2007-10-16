@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,16 +50,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      PARAMETER           (NBRES=4,NBREF=6)
+      PARAMETER           (NBRES=3,NBREF=6)
       REAL*8              VALRES(NBRES),VALREF(NBREF)
       CHARACTER*2         CODRES(NBRES),CODREF(NBREF)
       CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMREF(NBREF)
       CHARACTER*16 CH16
       CHARACTER*24 SUROPT
-      REAL*8       ZERO, E, NU, ALPHA, RHO
+      REAL*8       ZERO, E, NU, RHO
       REAL*8       KLV(78), KLC(12,12), EFGE(12)
 C     ------------------------------------------------------------------
-      DATA NOMRES / 'E', 'NU', 'ALPHA', 'RHO'/
+      DATA NOMRES / 'E', 'NU', 'RHO'/
       DATA NOMREF / 'E', 'NU' , 'RHO' , 'RHO_F_IN' , 'RHO_F_EX' ,
      &             'CM'/
 C     ------------------------------------------------------------------
@@ -73,7 +73,7 @@ C      IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
 C      ELSE
 C        NPG = 3
 C      ENDIF
-      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR)
+      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR,IRET)
       NOMPAR = 'TEMP'
       NBPAR = 1
 
@@ -94,11 +94,11 @@ CJMP            EP2   =  ZR(LSECR+12)
          ENDIF
         CALL JEVECH ( 'PABSCUR', 'L', LABSC )
         ABSMOY = ( ZR(LABSC-1+1) + ZR(LABSC-1+2) ) /2.D0
-        CALL RCVALA(ZI(LMATER),' ','ELAS_FLUI',1,'ABSC',ABSMOY,NBREF,
+        CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS_FLUI',
+     &               1,'ABSC',ABSMOY,NBREF,
      &                                      NOMREF,VALREF,CODREF,'FM')
         E     = VALREF(1)
         NU   = VALREF(2)
-        ALPHA=0.D0
         RHOS  = VALREF(3)
         RHOFI = VALREF(4)
         RHOFE = VALREF(5)
@@ -111,16 +111,16 @@ CJMP            EP2   =  ZR(LSECR+12)
         CALL RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
 C
       ELSE
-         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,
+         CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &                NBPAR,NOMPAR,VALPAR,
      &                                2,NOMRES,VALRES,CODRES,'FM')
-         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,
-     &                         2,NOMRES(3),VALRES(3),CODRES(3),'  ')
+         CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
+     &                NBPAR,NOMPAR,VALPAR,
+     &                         1,NOMRES(3),VALRES(3),CODRES(3),'  ')
          IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
-         IF ( CODRES(4) .NE. 'OK' ) VALRES(4) = ZERO
          E     = VALRES(1)
          NU    = VALRES(2)
-         ALPHA = VALRES(3)
-         RHO   = VALRES(4)
+         RHO   = VALRES(3)
       ENDIF
 C
 C     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
@@ -134,7 +134,7 @@ C
       IF ( OPTION .EQ. 'SIGM_ELNO_DEPL' ) THEN
 C
 C     --- CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE ---
-         CALL POEFGR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE )
+         CALL POEFGR ( NOMTE,KLC, ZI(LMATER), E, NU, RHO, EFGE )
 C
 C     NOEUD 1 EFGE(1)  = N   EFGE(2)  = VY   EFGE(3)  = VZ
 C             EFGE(4)  = MT  EFGE(5)  = MFY  EFGE(6)  = MFZ
@@ -148,7 +148,7 @@ C
       ELSEIF ( OPTION .EQ. 'SIPO_ELNO_DEPL' ) THEN
 C
 C     --- CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE ---
-      CALL POEFGR ( NOMTE, KLC, E, NU, RHO, ALPHA, EFGE )
+      CALL POEFGR ( NOMTE, KLC, ZI(LMATER), E, NU, RHO, EFGE )
 C
 C     NOEUD 1 EFGE(1)  = N   EFGE(2)  = VY   EFGE(3)  = VZ
 C             EFGE(4)  = MT  EFGE(5)  = MFY  EFGE(6)  = MFZ

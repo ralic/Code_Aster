@@ -1,12 +1,15 @@
-      SUBROUTINE GDFONC ( DFDX,DFDY,KP,FFORM,DEPL,THET,FORC,TEMP,NNO,
+      SUBROUTINE GDFONC ( FAMI,DFDX,DFDY,KP,
+     &                    FFORM,DEPL,THET,FORC,NNO,
      &                    DUDM,DTDM,DFDM,TGD)
       IMPLICIT   NONE
+
+      CHARACTER*(*)     FAMI
       INTEGER           KP, NNO
-      REAL*8            DEPL(*),THET(*), TEMP(*), FORC(*), FFORM(*)
+      REAL*8            DEPL(*),THET(*), FORC(*), FFORM(*)
       REAL*8            DFDX(*),DFDY(*),DUDM(*),DTDM(*),DFDM(*),TGD(*)
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/08/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,10 +46,11 @@ C           DFDM     ---->  DERIVEES ET VALEURS DES EFFORTS SURFACIQUES
 C           TGD      ---->  DERIVEES DE LA TEMPERATURE AUX POINTS DE G
 C ......................................................................
 C
-      INTEGER      I
-      REAL*8       VF
+      INTEGER      I,IRET
+      REAL*8       VF,TEMP(1)
 C.......................................................................
 C
+      CALL RCVARC(' ','TEMP','+',FAMI,KP,1,TEMP,IRET)
       DO 10 I = 1 , 7
          DUDM(I) = 0.0D0
          DTDM(I) = 0.0D0
@@ -81,8 +85,16 @@ C
          DFDM(6) = DFDM(4)
          DFDM(7) = DFDM(7) + VF      * FORC( 2*(I - 1) + 2 )
 C
-         TGD(1)  = TGD(1)  + DFDX(I) * TEMP( I )
-         TGD(2)  = TGD(2)  + DFDY(I) * TEMP( I )
    3  CONTINUE
+      IF (IRET.EQ.0) THEN
+        DO 4 I = 1 , NNO
+           TGD(1)  = TGD(1)  + DFDX(I) * TEMP( I )
+           TGD(2)  = TGD(2)  + DFDY(I) * TEMP( I )
+   4    CONTINUE
+      ELSE
+           TGD(1)  = 0.D0
+           TGD(2)  = 0.D0
+      ENDIF
+      
 C
       END

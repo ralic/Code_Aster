@@ -1,9 +1,9 @@
       SUBROUTINE COMCQ1(FAMI,KPG,KSP,MOD,IMATE,
      &                  COMPOR,CARCRI,INSTM,INSTP,
-     &                  EPS,DEPS,TEMPM,TEMPP,TREF,SIGM,VIM,
+     &                  EPS,DEPS,TEMPM,TEMPP,SIGM,VIM,
      &                  OPTION,ANGMAS,SIGP,VIP,DSDE,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/09/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_21
+C  VARIABLE ENTREE/SORTIE
       IMPLICIT NONE
       CHARACTER*(*)  FAMI
       CHARACTER*16   OPTION,COMPOR(*)
@@ -31,6 +32,9 @@ C TOLE CRP_21
       CHARACTER*8    TYPMOD(2),NOMPAR
       CHARACTER*2    CODRES
 
+
+C  VARIABLE LOCALE
+      INTEGER IRET
       CALL R8INIR(36,0.D0,DSDE,1)
       CALL R8INIR(4,0.D0,SIGP,1)
       
@@ -64,39 +68,33 @@ C         EN COQUE_C_PLAN : COMPORTEMENT 1D.
      &                   SIGP,VIP,DSDE,CODRET)
 
          ELSE
-         
+
 C            COMPORTEMENT INTEGRE EN 1D
          
-C            CARACTERISTIQUES ELASTIQUES A TMOINS                  
-             NOMPAR = 'TEMP'                                       
-             CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,TEMPM,1,'E',EM, 
-     &            CODRES,'FM')                                      
-             CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,TEMPM,          
-     &                 1,'ALPHA',ALPHAM,CODRES,' ')                 
-             IF (CODRES.NE.'OK') ALPHAM = 0.D0                     
-                                
+C            CARACTERISTIQUES ELASTIQUES A TMOINS
+             NOMPAR = 'TEMP'
+             CALL RCVALB('RIGI',KPG,1,'-',IMATE,' ','ELAS',1,NOMPAR,
+     &            TEMPM,1,'E',EM,CODRES,'FM')
+
 C ---        CARACTERISTIQUES ELASTIQUES A TPLUS 
-             CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,TEMPP,1,'E',EP, 
-     &                  CODRES,'FM')                               
-             CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,TEMPP,          
-     &                1,'ALPHA',ALPHAP,CODRES,' ')
-             IF (CODRES.NE.'OK') ALPHAP = 0.D0                    
+             CALL RCVALB('RIGI',KPG,1,'+',IMATE,' ','ELAS',1,NOMPAR,
+     &            TEMPP,1,'E',EP,CODRES,'FM')
              IF (COMPOR(1).EQ.'ELAS') THEN
-                DEPSTH  = ALPHAP* (TEMPP-TREF) - ALPHAM* (TEMPM-TREF)
+                CALL VERIFG('RIGI',KPG,3,'T',IMATE,'ELAS',1,DEPSTH,IRET)
                 SIGP(1) = EP* (SIGM(1)/EM+DEPS(1)-DEPSTH)
                 VIP(1) = 0.D0
                 DSDE(1,1) = EP
                 DSDE(2,2) = EP
              ELSE IF ((COMPOR(1).EQ.'VMIS_ISOT_LINE') .OR.
      &                (COMPOR(1).EQ.'VMIS_ISOT_TRAC')) THEN
-                CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,
+                CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,
      &               SIGM,DEPS,VIM,OPTION,COMPOR,' ',SIGP(1),VIP,ETG)
                 DSDE(1,1) = ETG+1.D-6*EP
 C               DSDE(1,1) = ETG
                 DSDE(2,2) = EP
                 SIGP(2)=0.D0
              ELSE IF (COMPOR(1).EQ.'VMIS_CINE_LINE') THEN
-                CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,ALPHAM,ALPHAP,
+                CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,
      &                  SIGM,DEPS,VIM,OPTION,' ',SIGP(1),VIP,EP)
                 DSDE(1,1) = ETG
                 DSDE(2,2) = EP

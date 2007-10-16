@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER (PETIT_REAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -475,7 +475,7 @@ for k in range(1,NBPAS+1) :
   CHMTM=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
                                TOUT='OUI',),
                       AFFE_VARC=_F( TOUT='OUI',
-                                    EVOL=RESUTH,
+                                    EVOL=RESUTH,VALE_REF=0.,
                                     NOM_VARC='TEMP',
                                     NOM_CHAM='TEMP',),
                        MAILLAGE=MAIL,)

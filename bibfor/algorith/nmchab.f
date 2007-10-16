@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C                                        LORS DE L'INTEGRATION DE LA
 C                                        LOI VISC_CINX_CHAB
 C
 C -----  ARGUMENTS
-          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET,IRET2
+          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET,IRET1,IRET2
            REAL*8             CRIT(6),INSTAM,INSTAP
            REAL*8             DEPS(6),DEUXMU,DILATM,DILATP
            REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
@@ -192,44 +192,35 @@ C
 C
       PM    = VIM(1)
       PLAST = VIM(2)
+
+
+      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,COEF,IRET1)
 C
 C --- RECUPERATION DES CARACTERISTIQUES ELASTIQUES :
 C     ============================================
       NOMRES(1)='E'
       NOMRES(2)='NU'
-      NOMRES(3)='ALPHA'
 C
 C ---  CARACTERISTIQUES A L'INSTANT PRECEDENT :
 C      --------------------------------------
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,2,
      &              NOMRES(1),VALRES(1),CODRET(1), FB2 )
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
-     &              NOMRES(3),VALRES(3),CODRET(3), BL2 )
-      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
       EM     = VALRES(1)
       NUM    = VALRES(2)
-      DILATM = VALRES(3)
       DEUMUM = EM/(UN+NUM)
       TROIKM = EM/(UN-DEUX*NUM)
 C
 C ---  CARACTERISTIQUES A L'INSTANT ACTUEL :
 C      -----------------------------------
-      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
-      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
-      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
      &              NOMRES(1),VALRES(1),CODRET(1), FB2 )
 C
-       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
-     &               NOMRES(3),VALRES(3),CODRET(3), BL2 )
-       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
        E      = VALRES(1)
        NU     = VALRES(2)
        DEUXMU = E/(UN+NU)
        MU     = DEUXMU/DEUX
        TROISK = E/(UN-DEUX*NU)
-       DILATP = VALRES(3)
 C
 C --- RECUPERATION DES CARACTERISTIQUES D'ECROUISSAGE :
 C     ===============================================
@@ -332,7 +323,6 @@ C     ========================================
 C
 C --- CALCUL DE DEPSMO ET DEPSDV :
 C     ==========================
-      COEF   = DILATP*(TP-TREF)-DILATM*(TM-TREF)
       DEPSMO = ZERO
 C
 C ---   DEPSTH = B*DELTA _U - DELTA_EPS_THERMIQUE :

@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -509,7 +509,7 @@ MessageLog = MESSAGE_LOGGER()
 
 
 # -----------------------------------------------------------------------------
-def U2MESS(code, idmess, valk=(), vali=(), valr=()):
+def UTMESS(code, idmess, valk=(), vali=(), valr=()):
    """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
    optionnels.
       code   : 'A', 'E', 'S', 'F', 'I'
@@ -517,7 +517,7 @@ def U2MESS(code, idmess, valk=(), vali=(), valr=()):
       valk, vali, valr : liste des chaines, entiers ou réels.
    
    Appel sans valeurs :                avec valeurs :
-      U2MESS('A', 'SUPERVIS_55')          U2MESS('A', 'SUPERVIS_55', vali=[1, 2])
+      UTMESS('A', 'SUPERVIS_55')          UTMESS('A', 'SUPERVIS_55', vali=[1, 2])
    
    Remarques :
       - Nommer les arguments permet de ne pas tous les passer.
@@ -527,36 +527,4 @@ def U2MESS(code, idmess, valk=(), vali=(), valr=()):
    """
    MessageLog(code, idmess, valk, vali, valr, exception=True)
 
-
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-#
-#       !!! UTMESS sera remplacé par U2MESS !!!
-#       !!!     Ne plus utilisé UTMESS      !!!
-#
-def UTMESS(code, sprg, texte):
-   """Conserver le temps de réalisé le basculement
-   """
-   fmt='\n <%s> <%s> %s\n\n'
-   sanscode='\n <%s> %s\n\n'
-   UL=[
-      'MESSAGE',
-      'RESULTAT',
-      #'ERREUR',
-   ]
-#
-   # Comme l'UTMESS fortran, on supprime le code si on ne fait pas l'abort
-   if aster.onFatalError()=='EXCEPTION':
-      reason=sanscode % (sprg, texte)
-   else:
-      reason=fmt % (code, sprg, texte)
-   
-   for nom in UL:
-      # écriture du message
-      aster.affiche(nom,reason)
-
-   if code=='S':
-      raise aster.error, reason
-   elif code=='F':
-      raise aster.FatalError, reason
 

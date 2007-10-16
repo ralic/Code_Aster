@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,25 +188,18 @@ MATER=AFFE_MATERIAU( MAILLAGE=MA,
                           _F(GROUP_MA='DALLE_G',
                                MATER=MAT_G),
                           _F(GROUP_MA='DALLE',
-                               TEMP_REF=0.0,
                                MATER=BETON_E),
                           _F(GROUP_MA = 'ACIER1',
-                               TEMP_REF=0.0,
                                MATER=ACIER),
                           _F(GROUP_MA = 'ACIER2',
-                               TEMP_REF=0.0,
                                MATER=ACIER),
                           _F(GROUP_MA = 'ACIER1L',
-                               TEMP_REF=0.0,
                                MATER=ACIER),
                           _F(GROUP_MA = 'ACIER1T',
-                               TEMP_REF=0.0,
                                MATER=ACIER),
                           _F(GROUP_MA = 'ACIER2L',
-                               TEMP_REF=0.0,
                                MATER=ACIER),
                           _F(GROUP_MA = 'ACIER2T',
-                               TEMP_REF=0.0,
                                MATER=ACIER),
                       )
                     )

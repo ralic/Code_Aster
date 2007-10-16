@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &        IDEFP,ICOMPO,NBVARI,IVARI,K,
      &        NVI,NVIF,IBID,JTAB(7),IRET,IDIM
       PARAMETER (MXCMEL=162)
-      PARAMETER (NBRES=3)
+      PARAMETER (NBRES=2)
       PARAMETER (NBSGM=6)
       REAL*8 VALRES(NBRES)
       REAL*8 EPSM(MXCMEL),EPSANE(MXCMEL),EPSPLA(MXCMEL)
@@ -215,7 +215,7 @@ C     -----------------------------------
 
 C  ---   TEMPERATURE AU POINT D'INTEGRATION COURANT :
 C        ------------------------------------------
-        CALL RCVARC('F','TEMP','+','RIGI',IGAU,1,TEMPG,IRET)
+        CALL RCVARC(' ','TEMP','+','RIGI',IGAU,1,TEMPG,IRET)
 
         IF (LTEMP) THEN
           IF (TEMPG.LT.ZR(IVARI+ (IGAU-1)*NBVARI+NVI-
@@ -226,7 +226,6 @@ C ---    RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
 C        ---------------------------------------------
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
-        NOMRES(3) = 'ALPHA'
 
         NOMPAR(1) = 'TEMP'
         NOMPAR(2) = 'INST'
@@ -236,14 +235,9 @@ C        ---------------------------------------------
         CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',2,NOMPAR,
      &              VALPAR,2,NOMRES,VALRES, CODRET,'FM')
 
-        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',2,NOMPAR,
-     &              VALPAR,1,NOMRES(3),VALRES(3),CODRET(3),'  ')
 
         E = VALRES(1)
         NU = VALRES(2)
-        IF (CODRET(3).NE.'OK') THEN
-          VALRES(3) = ZERO
-        END IF
 
 C ---    TENSEUR DE DEFORMATION DE FLUAGE AU PT D'INTEGRATION COURANT :
 C        --------------------------------------------------------------

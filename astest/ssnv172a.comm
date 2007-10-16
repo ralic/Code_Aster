@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,7 +144,8 @@ KeV=KJ/1.6E-19
 
 # MATERIAU DE TYPE CHABOCHE, SOIT MACRO, SOIT MONOCRISTAL
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
-                            NU=0.0,),
+                            NU=0.0,
+                            ALPHA=0.),
                     CIN1_CHAB=_F(R_0=75.5,
                                  R_I=85.27,
                                  B=19.34,
@@ -186,7 +187,8 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   C=0.0,),);
 
 ACIERT=DEFI_MATERIAU(ELAS=_F(E=145200.0,
-                            NU=0.0,),
+                            NU=0.0,
+                            ALPHA=0.),
                     ECOU_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
@@ -219,7 +221,8 @@ ACIERT=DEFI_MATERIAU(ELAS=_F(E=145200.0,
 # MATERIAU DEFINI POUR LE COMPORTEMENT  KOCKS_RAUCH
 
 ACIER2=DEFI_MATERIAU(ELAS=_F(E=275200.,
-                            NU=0.3,),
+                            NU=0.3,
+                            ALPHA=0.),
                    KOCKS_RAUCH=_F(K      = 8.62E-5,
                                   TAUR   = 498.,
                                   TAU0   = 132.,
@@ -257,7 +260,8 @@ DELTAV=KeV*TEMP
 
 
 ACIER3=DEFI_MATERIAU(ELAS=_F(E=145200.0,
-                            NU=0.0,),
+                            NU=0.0,
+                            ALPHA=0.),
                     ECOU_VISC1=_F(N=COEFN,
                                   K=COEFK,
                                   C=0.0,),

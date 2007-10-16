@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ISIGIE,ISIGIS,INO,JTAB(7),IRET
 
 C======================== CORPS DU PROGRAMME ===========================
+
 
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -158,7 +159,8 @@ C VOLUME PLASTIFIE
               SIGM(I) = SIGM(I) + DVPG*ZR(ICONG+6*KP+I-7)
    20       CONTINUE
 C           --- TEMPERATURE MOYENNE
-            CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG,IRET)
+            CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG,IRET)
+            IF (IRET.EQ.1) CALL U2MESS('F','CALCULEL_31')
             TMOY = TG * DVPG
           END IF
 C VOLUME PLASTIQUE ACTIF
@@ -183,7 +185,8 @@ C           --------------------------------------------------------
    50     CONTINUE
 
           TMOY = TMOY/VKP
-          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TMOY,1,NOMRES(4),
+          CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
+     &                1,'TEMP',TMOY,1,NOMRES(4),
      &                VALRES(4),CODRET(4),'FM')
           SREF = VALRES(4)
 
@@ -224,7 +227,8 @@ C VOLUME PLASTIFIE
               EPSG(I) = EPSG(I) + DVPG*ZR(IDEFG+6*KP+I-7)
    60       CONTINUE
 C           --- TEMPERATURE AU PG
-            CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG,IRET)
+            CALL RCVARC(' ','TEMP','+','RIGI',KP,1,TG,IRET)
+            IF (IRET.EQ.1) CALL U2MESS('F','CALCULEL_31')
             TMOY = TG * DVPG
           ENDIF
 C VOLUME PLASTIQUE ACTIF
@@ -249,7 +253,8 @@ C           --------------------------------------------------------
    90     CONTINUE
 
           TMOY = TMOY/VKP
-          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TMOY,1,NOMRES(4),
+          CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
+     &                1,'TEMP',TMOY,1,NOMRES(4),
      &                VALRES(4),CODRET(4),'FM')
           SREF = VALRES(4)
 

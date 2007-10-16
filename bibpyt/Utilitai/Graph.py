@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,12 +38,7 @@ except ImportError:
       def repout(self): return '/opt/aster/outils'
    aster=fake_aster()
 
-try:
-   from Utilitai.Utmess import UTMESS
-except ImportError:
-   def UTMESS(code,sprg,texte):
-      fmt='\n <%s> <%s> %s\n\n'
-      print fmt % (code,sprg,texte)
+from Macro.externe_mess import UTMESS
 
 if not sys.modules.has_key('Table'):
    try:

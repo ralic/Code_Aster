@@ -15,7 +15,7 @@
       LOGICAL EXTIM
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 15/10/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -295,17 +295,17 @@ C  SOMMATION DES FIC ET G ELEMENTAIRES
       END IF
 
       IF (SYMECH.EQ.'SYME') THEN
-        ZR(IFIC) = 2.D0*FIC(1)
-        ZR(IFIC+1) = 2.D0*FIC(2)
+        ZR(IFIC) = 2.D0*ZR(IFIC)
+        ZR(IFIC+1) = 2.D0*ZR(IFIC+1)
         ZR(IFIC+2) = 0.D0
-        ZR(IFIC+3) = 2.D0*FIC(4)
+        ZR(IFIC+3) = 2.D0*ZR(IFIC+3)
         ZR(IFIC+4) = 0.D0
       ELSE IF (SYMECH.EQ.'ANTI') THEN
-        ZR(IFIC) = 2.D0*FIC(1)
+        ZR(IFIC) = 2.D0*ZR(IFIC)
         ZR(IFIC+1) = 0.D0
-        ZR(IFIC+2) = 2.D0*FIC(3)
+        ZR(IFIC+2) = 2.D0*ZR(IFIC+2)
         ZR(IFIC+3) = 0.D0
-        ZR(IFIC+4) = 2.D0*FIC(5)
+        ZR(IFIC+4) = 2.D0*ZR(IFIC+4)
       END IF
 
 C IMPRESSION DE K1,K2,G ET ECRITURE DANS LA TABLE RESU
