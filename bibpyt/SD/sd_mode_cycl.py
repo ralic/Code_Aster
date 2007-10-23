@@ -1,4 +1,4 @@
-#@ MODIF sd_mode_cycl SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_mode_cycl SD  DATE 23/10/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,6 +89,6 @@ class sd_mode_cycl(AsBase):
         nb_mod, nb_ddl, nb_ddli, nb_freq, nb_diam = self.u_dime()
         freq=self.CYCL_FREQ.get()
         assert len(freq) == nb_diam*nb_freq ,(self.CYCL_DESC.get(),len(freq))
-        for x in freq : assert x > 0 , freq
+        for x in freq : assert x >= 0 , freq
 
 

@@ -1,24 +1,24 @@
-# MODIF  DATE 02/04/2007   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE FISSURATION JOINT 2D LOI CZM_LIN_REG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNP118D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),)
+DEBUT(CODE=_F(NOM='SSNP118D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 
 MA=LIRE_MAILLAGE( )
@@ -26,12 +26,12 @@ MA=LIRE_MAILLAGE( )
 IMPR_RESU(RESU=_F(MAILLAGE=MA),FORMAT='GMSH',UNITE=19)
 
 MO=AFFE_MODELE(
-          
+
                 MAILLAGE=MA,
                 VERIF='MAILLE',
-                  
+
                 AFFE= (
-                _F( 
+                _F(
                    MAILLE = ('CUBE','DROITE'),
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'D_PLAN'
@@ -43,11 +43,11 @@ MO=AFFE_MODELE(
                    )
                  )
               )
-              
+
 
 ACIER=DEFI_MATERIAU(
-              
-     ELAS=_F( 
+
+     ELAS=_F(
               E =  0.5,
               NU = 0.0),
      RUPT_FRAG = _F(
@@ -59,9 +59,9 @@ ACIER=DEFI_MATERIAU(
 
 
 CM=AFFE_MATERIAU(
-              
+
                MAILLAGE=MA,
-               AFFE=_F( 
+               AFFE=_F(
                        TOUT = 'OUI',
                        MATER = ACIER),
               )
@@ -76,7 +76,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRACTION=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250),    
+    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250),
     )
   )
 
@@ -91,7 +91,7 @@ L_INST=DEFI_LIST_REEL(
      )
 
 L_INST2=DEFI_LIST_REEL(
-              
+
                      DEBUT   = 0.0001,
      INTERVALLE=(
       _F( JUSQU_A = 1.8,     NOMBRE = 18 ),
@@ -104,9 +104,9 @@ FCT = DEFI_FONCTION(
   VALE     = (-1, 0, 0, 1.E-8),
   PROL_DROITE = 'LINEAIRE'
   )
-  
-  
-U=STAT_NON_LINE( 
+
+
+U=STAT_NON_LINE(
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -118,14 +118,14 @@ U=STAT_NON_LINE(
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              MAILLE = 'CUBE',),
-          ),               
+          ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
 STAT_NON_LINE(reuse = U,
-  ETAT_INIT  = _F(EVOL_NOLI = U), 
+  ETAT_INIT  = _F(EVOL_NOLI = U),
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
@@ -144,14 +144,14 @@ STAT_NON_LINE(reuse = U,
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              GROUP_MA = 'G_CUBE',),
-          ),               
+          ),
   INCREMENT  = _F(LIST_INST = L_INST),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   ARCHIVAGE  = _F(LIST_INST = L_INST2)
   )
 
- 
+
 F_DX=RECU_FONCTION( RESULTAT=U,
               NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
 T_DX=CREA_TABLE(FONCTION=_F(FONCTION=F_DX))
@@ -164,7 +164,7 @@ T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA))
 IMPR_TABLE(TABLE=T_ETA)
 
 
-F_SIGN=RECU_FONCTION( RESULTAT=U, NOM_CHAM = 'SIEF_ELGA', 
+F_SIGN=RECU_FONCTION( RESULTAT=U, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
           MAILLE  = 'CUBEDEG',POINT=1)
 T_SIGN=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN))
@@ -199,7 +199,7 @@ TEST_RESU (
       ),
     )
   )
-  
+
 TEST_RESU (
   RESU = (
     _F(
@@ -215,7 +215,7 @@ TEST_RESU (
     )
   )
 
-  
+
 TEST_RESU (
   RESU = (
     _F(
@@ -240,7 +240,7 @@ TEST_RESU (
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SITX',
       VALE      = 0.0,
-      CRITERE   = 'ABSOLU',      
+      CRITERE   = 'ABSOLU',
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = 0.4,
@@ -248,5 +248,5 @@ TEST_RESU (
     )
   )
 
-  
+
 FIN()

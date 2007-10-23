@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,8 +39,8 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -69,6 +69,7 @@ C DEB ------------------------------------------------------------------
  1        CONTINUE
           IF (IADYN .NE. 0) THEN
             MCDYN = MCDYN - LONOI
+            MLDYN = MLDYN + LONOI
             CALL HPDEALLC (IADYN, NBFREE, IBID)
           ELSE IF (KADM .NE. 0) THEN
             CALL JJLIBP (KADM)

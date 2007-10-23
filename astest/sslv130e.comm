@@ -1,21 +1,21 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (PENTA15)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    e  
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    e
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # CAS_TEST__: SSLV130E
@@ -34,7 +34,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT(CODE=_F(  NOM = 'SSLV130E',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NOM='SSLV130E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 PRE_GIBI ();
 M=LIRE_MAILLAGE()
 
@@ -239,7 +239,7 @@ EVOL2   = STAT_NON_LINE (
             ) ;
 EVOL2 = CALC_ELEM (reuse=EVOL2,
               RESULTAT= EVOL2,
-             
+
               OPTION= (
                'EPSI_ELNO_DEPL',
                'SIEF_ELNO_ELGA',
@@ -356,30 +356,30 @@ TEST_RESU(RESU=(
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = EVOL2,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELEM_SIGM',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'ERRE_ELEM_SIGM',
+               CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                POINT = 1,
-               MAILLE='M1',    
-               NOM_CMP = 'NUEST',      
-               VALE = 1.3067945142608E+01, 
+               MAILLE='M1',
+               NOM_CMP = 'NUEST',
+               VALE = 1.3067945142608E+01,
                REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
              ),
             );
 
-TEST_RESU(RESU=(             
+TEST_RESU(RESU=(
            _F( RESULTAT = EVOL2,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELEM',   
-               CRITERE = 'RELATIF',    
+               INST = 1.,
+               NOM_CHAM = 'ERRE_ELNO_ELEM',
+               CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                GROUP_NO= 'A',
-               MAILLE='M1',    
-               NOM_CMP = 'ERREST',      
-               VALE = 5.9667910911071E-03, 
+               MAILLE='M1',
+               NOM_CMP = 'ERREST',
+               VALE = 5.9667910911071E-03,
                REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
              ),
             );

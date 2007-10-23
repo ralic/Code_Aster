@@ -1,7 +1,7 @@
       SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,
-     &           KLAG2,EPS,ISTOP)
+     &           KLAG2,EPS,ISTOP,KDISZ,SDFETZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2
+      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2,KDISZ,SDFETZ
       INTEGER PCPIVZ ,ISTOP
       REAL*8 EPS
 C ----------------------------------------------------------
@@ -43,6 +43,9 @@ C                  0.  -> DEFAUT
 C IN/JXOUT    SOLVEU  : LE SOLVEUR EST CREE ET REMPLI
 C IN I   ISTOP   : 0 : STOP_SINGULIER=OUI
 C                  1 : STOP_SINGULIER=NON
+C IN K  KDISZ     : PARAMETRE DE MUMPS PARALLELE: CENTRA/DISTRI
+C IN K  SDFETZ    : NOM DE LA SD_FETI DECRIVANT LA DISTRIBUTION DES
+C                   DONNEES SI KDISZ='DISTRI'
 C ----------------------------------------------------------
 C RESPONSABLE VABHHTS J.PELLET
 
@@ -69,7 +72,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
       INTEGER      I,IBID
       INTEGER      ISLVK,ISLVI,ISLVR,PCPIV
       CHARACTER*3  SYME
-      CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS
+      CHARACTER*8  K8BID,KTYPR,KTYPRN,KTYPS,SDFETI
+      CHARACTER*16 KDIS
       CHARACTER*19 SOLVEU
 
 C------------------------------------------------------------------
@@ -81,6 +85,8 @@ C------------------------------------------------------------------
       KTYPRN=KTYPRZ
       PCPIV=PCPIVZ
       EPSMAX=EPS
+      KDIS=KDISZ
+      SDFETI=SDFETZ
 
 C     SYME : (CE MOT CLE NE CONCERNE QUE L'ASSEMBLAGE)
 C     -------------------------------------------------
@@ -112,6 +118,9 @@ C     ERRE_RELA_MAX :
 C     ------------
       IF (EPSMAX.EQ.0.D0) EPSMAX=1.D-6
 
+C     PARALLELISME :
+C     ------------
+      IF (KDIS.EQ.' ') KDIS='CENTRALISE'
 
 C     CREATION DE LA SD ET STOCKAGE DES VALEURS OBTENUES :
 C     ---------------------------------------------------
@@ -125,6 +134,8 @@ C     ---------------------------------------------------
       ZK24(ISLVK-1+4) = KTYPRN
       ZK24(ISLVK-1+5) = SYME
       ZK24(ISLVK-1+6) = KLAG2
+      ZK24(ISLVK-1+7) = KDIS
+      ZK24(ISLVK-1+8) = SDFETI
 
       ZI(ISLVI-1+1) = -9999
       ZI(ISLVI-1+2) = PCPIV

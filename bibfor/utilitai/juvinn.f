@@ -3,7 +3,7 @@
       CHARACTER*(*)     OJB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF UTILITAI  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,7 +44,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8  TYPE, CBID
-      INTEGER N1,K,JOJB,IBID
+      INTEGER N1,K,JOJB,IBID,IISNAN
       REAL*8 R8VIDE,R8NNEM,RVID,RNAN
       CHARACTER*32 VALK(2)
 C     ------------------------------------------------------------------
@@ -59,7 +59,9 @@ C
       RVID=R8VIDE()
       RNAN=R8NNEM()
       DO 1, K=1,N1
-         IF (ZR(JOJB-1+K).EQ.RVID) ZR(JOJB-1+K)=RNAN
+         IF (IISNAN(ZR(JOJB-1+K)).EQ.0) THEN
+           IF (ZR(JOJB-1+K).EQ.RVID) ZR(JOJB-1+K)=RNAN
+         ENDIF
  1    CONTINUE
 
       CALL JEDEMA()

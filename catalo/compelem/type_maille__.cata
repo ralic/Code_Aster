@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 22/10/2007   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -250,6 +250,8 @@ MAILLE__ HEXA8      8       DIM__  3   CODE__  'HE8'
          FAMILLE__ FPG27       27
          FAMILLE__ SHB5        5
          FAMILLE__ XFEM540     540
+   ELREFE__ POHOH8
+         FAMILLE__ FPG8        8
 
 MAILLE__ HEXA20     20      DIM__  3   CODE__  'H20'
    ELREFE__ H20
@@ -260,6 +262,8 @@ MAILLE__ HEXA20     20      DIM__  3   CODE__  'H20'
          FAMILLE__ FPG8NOS     16
          FAMILLE__ FPG27       27
          FAMILLE__ XFEM540     540
+   ELREFE__ POHOH20
+         FAMILLE__ FPG27       27
 
 MAILLE__ HEXA27     27      DIM__  3   CODE__  'H27'
    ELREFE__ H27

@@ -1,24 +1,24 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT  170 N - 296 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSLS101B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLS101B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
 # POINTS:   O    MAILLES  M1    M2
@@ -65,7 +65,7 @@ CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
                       PESANTEUR=( 10., 0., 0., -1.,                 )   )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
-                               COQUE=_F(  
+                               COQUE=_F(
        GROUP_MA = 'TOUT',
   EPAIS = 0.1) )
 
@@ -80,7 +80,7 @@ DEF3=MECA_STATIQUE(MODELE=MODEL,
                    CARA_ELEM=CARELEM,
                    EXCIT=(_F(CHARGE=CINE,),
                           _F(CHARGE=CHF3,),),);
-                          
+
 DEPE=MECA_STATIQUE(MODELE=MODEL,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARELEM,
@@ -104,7 +104,7 @@ DEP=MACRO_ELAS_MULT(MODELE=MODEL,
 
 TEST_RESU(RESU=(
      # DEPLACEMENTS PRESSION
-        
+
           _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # O
             NOEUD = 'O', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = -695.6256),
@@ -127,7 +127,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # F
             NOEUD = 'F', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = -435.8974),
      # DEPLACEMENTS F3
-        
+
           _F(  RESULTAT = DEF3, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.2E-2,  # O
             NOEUD = 'O', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = -695.6256),
@@ -150,7 +150,7 @@ TEST_RESU(RESU=(
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # F
             NOEUD = 'F', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ', VALE = -435.8974),
      # DEPLACEMENTS PESANTEUR
-        
+
           _F(  RESULTAT = DEPE, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.2E-2,  # O
             NOEUD = 'O', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -695.6256),
@@ -176,13 +176,13 @@ TEST_RESU(RESU=(
 
 #--------------------------------------------------------------------
 
-EPOT_PR=POST_ELEM(  RESULTAT=DEPR, NUME_ORDRE=1 , 
+EPOT_PR=POST_ELEM(  RESULTAT=DEPR, NUME_ORDRE=1 ,
                        ENER_POT=_F(  TOUT = 'OUI')     )
 
-EPOT_F3=POST_ELEM(  RESULTAT=DEF3, NUME_ORDRE=1 , 
+EPOT_F3=POST_ELEM(  RESULTAT=DEF3, NUME_ORDRE=1 ,
                        ENER_POT=_F(  TOUT = 'OUI')     )
 
-EPOT_PE=POST_ELEM(  RESULTAT=DEPE, NUME_ORDRE=1 , 
+EPOT_PE=POST_ELEM(  RESULTAT=DEPE, NUME_ORDRE=1 ,
                        ENER_POT=_F(  TOUT = 'OUI')     )
 
 EPOT_PP=POST_ELEM(  RESULTAT=DEP, NUME_ORDRE=1 , MODELE=MODEL,
@@ -225,15 +225,15 @@ TEST_TABLE(      TABLE=EPOT_PP,
 
 
 #--------------------------------------------------------------------
-                   
+
 DEPR=CALC_ELEM( reuse= DEPR ,RESULTAT= DEPR ,
-                         
+
                          OPTION=('EFGE_ELNO_DEPL',),
                 )
-                
+
 #--------------------------------------------------------------------
-RELEVE_1=POST_RELEVE_T( 
-                   ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ), 
+RELEVE_1=POST_RELEVE_T(
+                   ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                             INTITULE = 'EFGE',
                             RESULTAT = DEPR,
                             NUME_ORDRE=1,

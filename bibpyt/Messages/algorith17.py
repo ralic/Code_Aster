@@ -1,4 +1,4 @@
-#@ MODIF sd_obstacle SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith17 Messages  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,13 +17,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+def _(x) : return x
 
-from SD import *
-
-class sd_obstacle(AsBase):
-    nomj = SDNom(fin=19)
-    VALR = Facultatif(AsVR(lonmax=19, ))
-    REFO = AsVK24(lonmax=1, )
-    VALT = Facultatif(AsVR(lonmax=19, ))
-
-
+cata_msg={
+1: _("""
+ Solveur linéaire MUMPS distribué, routine CRESOL.
+ Le processeur de rang %(i1)d ne s'est vu attribuer aucune maille physique
+ du modèle!
+"""),
+}

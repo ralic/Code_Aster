@@ -1,23 +1,23 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST THM, D_PLAN_DPQ8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'WTNV109B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNV109B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE()
 
@@ -27,7 +27,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                    )
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI', 
+                        AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
                       MODELISATION = 'D_PLAN_THM')
                      )
@@ -51,7 +51,7 @@ ZERO=DEFI_CONSTANTE(    VALE=0.)
 
 #
 #
-# 
+#
 # PERMEABILITE INTRINSEQUE, RELATIVE DU LIQUIDE, RELATIVE DU GAZ
 # UNITE INTRINSEQUE : METRES CARRES , UNITE RELATIVE : SANS
 #
@@ -89,7 +89,7 @@ DCONDHO=DEFI_CONSTANTE(    VALE=0.)
 
 CONDLIQ=DEFI_CONSTANTE(    VALE=3.E-16)
 
-MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(  
+MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    RHO = 1000.,
    UN_SUR_K = 3.77E-9,
    ALPHA = 1.E-4,
@@ -97,13 +97,13 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    VISC = UN,
    D_VISC_TEMP = ZERO,),
 #
-                              THM_GAZ=_F( 
+                              THM_GAZ=_F(
    MASS_MOL = 28.96E-3,
    CP = 1000.,
    VISC = UN,
-   D_VISC_TEMP = ZERO,),                     
+   D_VISC_TEMP = ZERO,),
 #
-                              THM_DIFFU=_F( 
+                              THM_DIFFU=_F(
    R_GAZ = 8.315,
    RHO = 1.6E3,
    CP = 2.85E6,
@@ -121,14 +121,14 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    D_PERM_PRES_GAZ = DPERGPG,
    LAMB_T = CONDHOMO,
    ),
-                              THM_INIT=_F( 
+                              THM_INIT=_F(
    TEMP = 273.,
    PRE1 = 0.,
    PRE2 = 0.,
    PORO = 0.4,
    PRES_VAPE = 1.),
                                COMP_THM = 'LIQU_SATU',
-                                     ELAS=_F( 
+                                     ELAS=_F(
    E = 225.E6,
    NU = 0.,
    RHO = 2.E3,
@@ -145,7 +145,7 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
                          _F(  GROUP_NO = 'BAS',
                                      DX = 0.,
                                      DY = 0.,),
-                         _F(NOEUD=('N1','N2'),             
+                         _F(NOEUD=('N1','N2'),
                                      TEMP = 0.),
 
                          _F(  NOEUD = ('N6','N8',),
@@ -169,27 +169,27 @@ MESTAT=STAT_NON_LINE(   MODELE=MODELE,
                           INCREMENT=_F( LIST_INST = LI),
                           NEWTON=_F( MATRICE = 'TANGENTE',
                                   REAC_ITER = 20),
-                         CONVERGENCE=_F( 
+                         CONVERGENCE=_F(
                                      ITER_GLOB_MAXI = 10,
                                      RESI_GLOB_RELA = 1.E-6),
                         )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'TEMP',
-             NOEUD = 'N3',    
+             NOEUD = 'N3',
              VALE = -1.2860E-08,
              CRITERE = 'RELATIF',
              PRECISION = 1.E-5,
                   REFERENCE='ANALYTIQUE',)
            )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'TEMP',
-             NOEUD = 'N4',    
+             NOEUD = 'N4',
              VALE = -1.2860E-08,
              CRITERE = 'RELATIF',
              PRECISION = 1.E-5,

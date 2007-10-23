@@ -3,7 +3,7 @@
       CHARACTER*(*)     BASE,MATEL,MODELE,MATE,CARA,SUROPT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,23 +51,20 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*1  BAS2
       CHARACTER*8  MATE2, MODE2
-C
+
       CALL JEMARQ()
       BAS2  = BASE
       MATE2 = MATEL
       MODE2 = MODELE
-      IF ( MODE2 .EQ. '        ' ) THEN
-         CALL U2MESS('F','CALCULEL3_51')
-      ENDIF
-C
-      CALL JEEXIN(MATE2//'.REFE_RESU',IRET)
-      IF (IRET.GT.0) CALL JEDETR(MATE2//'.REFE_RESU')
+      CALL ASSERT(MODE2.NE.' ')
+
+      CALL JEDETR(MATE2//'.REFE_RESU')
       CALL WKVECT(MATE2//'.REFE_RESU',BAS2//' V K24',5,IAREFE)
       ZK24(IAREFE-1+1) = MODELE
       ZK24(IAREFE-1+2) = SUROPT
       ZK24(IAREFE-1+3) = 'NON_SOUS_STRUC'
       ZK24(IAREFE-1+4) = MATE
       ZK24(IAREFE-1+5) = CARA
-C
+
       CALL JEDEMA()
       END

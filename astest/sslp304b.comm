@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE ORTHOTROPE EN TRACTION UNIAXIALE HORS AXES D'ORTHOTROPIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT( CODE=_F(  NOM = 'SSLP304B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLP304B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE()
 
@@ -84,8 +84,8 @@ DEF=MECA_STATIQUE(    MODELE=MODELE,
                          EXCIT=_F(  CHARGE = CHARGT),
                            )
 
-CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,     
-                         
+CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
+
                          OPTION='SIGM_ELNO_DEPL',  )
 
 #
@@ -213,7 +213,7 @@ TEST_RESU(CHAM_ELEM=(
 LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
-                                    
+
 DEFNL=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CARA,
@@ -222,7 +222,7 @@ DEFNL=STAT_NON_LINE(MODELE=MODELE,
                     INCREMENT=_F(LIST_INST=LISTE),
            NEWTON=_F(MATRICE='ELASTIQUE'),
                     );
-CALC_ELEM( reuse= DEFNL ,RESULTAT= DEFNL ,                              
+CALC_ELEM( reuse= DEFNL ,RESULTAT= DEFNL ,
                          OPTION='SIEF_ELNO_ELGA',  )
 
 UNL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
@@ -269,7 +269,7 @@ DEFNL2=MODI_REPERE(RESULTAT=DEFNL,
                               TYPE_CHAM='TENS_2D',),
                  DEFI_REPERE=_F(REPERE='UTILISATEUR',
                                 ANGL_NAUT=(30.0),),)
-                                
+
 SIGNL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 NOM_CHAM='SIEF_ELNO_ELGA', RESULTAT=DEFNL2,
                  NUME_ORDRE=1

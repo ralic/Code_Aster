@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (PYRAM13)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT( CODE=_F(  NOM = 'SSLV04M',NIV_PUB_WEB='INTERNET'), )
+DEBUT(CODE=_F(NOM='SSLV04M',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE()
 
@@ -70,28 +70,28 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=_F(CHARGE=CH,),
                    );
-                   
+
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('EPSI_ELNO_DEPL',),
                 )
 
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('SIGM_ELNO_DEPL',),
                 )
 
 RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('ENDO_ELNO_SIGA',),
                 )
-                
+
 RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
                              NUME_ORDRE=1,
-                             
+
                              OPTION=('ENDO_ELNO_SINO',),
                 )
 

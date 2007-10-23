@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,6 +92,7 @@ VECTEUR__
 MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
@@ -185,6 +186,8 @@ OPTION__
     MASS_MECA_EXPLI     141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
+    MECA_GYRO           259   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  MMATUNS  PMATUNS
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX

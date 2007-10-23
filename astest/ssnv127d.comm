@@ -1,21 +1,21 @@
-# MODIF  DATE 04/06/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 #
 #
 # ======================================================================
@@ -29,21 +29,21 @@
 # LES ELEMENTS DE BORD SONT DES SEG2
 #
 
-DEBUT(CODE=_F( NOM = 'SSNV127D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+DEBUT(CODE=_F(NOM='SSNV127D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
 
 
 PRE_GIBI();
-#_____________________________________________________________________ 
-#                                                       
-#                    LECTURE DE SSNV127D.MGIB           
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                    LECTURE DE SSNV127D.MGIB
+#_____________________________________________________________________
+#
 #
 
 
 SSNV127D=LIRE_MAILLAGE();
-#                                                       
+#
 #
 
 
@@ -61,12 +61,12 @@ SSNV127D=DEFI_GROUP(reuse =SSNV127D,
                                       NOM='RELEVE',
                                       GROUP_NO_ORIG='A1',
                                       GROUP_NO_EXTR='B2',),),);
-#                                                       
-#_____________________________________________________________________ 
-#                                                       
-#                    DEFINITION DU MODELE               
-#_____________________________________________________________________ 
-#                                                       
+#
+#_____________________________________________________________________
+#
+#                    DEFINITION DU MODELE
+#_____________________________________________________________________
+#
 #
 
 
@@ -84,29 +84,29 @@ SSNV127D=MODI_MAILLAGE(reuse =SSNV127D,
                        MAILLAGE=SSNV127D,
                        ORIE_PEAU_2D=_F(GROUP_MA='BCC2',),
                       );
-#_____________________________________________________________________ 
-#                                                       
-#                    DEFINITION DES MATERIAUX           
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                    DEFINITION DES MATERIAUX
+#_____________________________________________________________________
+#
 #
 
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
                            NU=0.29999999999999999,),);
-#                                                       
+#
 #
 
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV127D,
                     AFFE=_F(GROUP_MA='SURFF',
                             MATER=MAT1,),);
-#_____________________________________________________________________ 
-#                                                       
-#                    AFFECTATION DES CONDITIONS AUX LIMITES            
-#                       ET DU CHARGEMENT                
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                    AFFECTATION DES CONDITIONS AUX LIMITES
+#                       ET DU CHARGEMENT
+#_____________________________________________________________________
+#
 #
 
 
@@ -128,7 +128,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.0,),),
                     FORCE_NODALE=_F(GROUP_NO='O2',
                                     FY=-9.37500E5,),);
-#                                                       
+#
 #
 
 
@@ -143,11 +143,11 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                GROUP_MA_ESCL='BCC2',
                                COEF_MATR_FROT=0.3,
                                ),);
-#_____________________________________________________________________ 
-#                                                       
-#               DEFINITION DES FONCTIONS TEMPORELLES    
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#               DEFINITION DES FONCTIONS TEMPORELLES
+#_____________________________________________________________________
+#
 #
 
 
@@ -159,11 +159,11 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
-#_____________________________________________________________________ 
-#                                                       
-#                            RESOLUTION                 
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+#                            RESOLUTION
+#_____________________________________________________________________
+#
 #
 
 
@@ -184,7 +184,7 @@ U=STAT_NON_LINE(MODELE=MO,
 U=CALC_ELEM(reuse =U,
             OPTION=('SIEF_ELNO_ELGA'),
             RESULTAT=U,);
-#                                                       
+#
 #
 
 TPRESS=POST_RELEVE_T(ACTION=_F(INTITULE='PRESS',
@@ -209,11 +209,11 @@ IMPR_TABLE(TABLE=TPRESS)
 IMPR_TABLE(TABLE=TCONT)
 
 
-#_____________________________________________________________________ 
-#                                                       
-# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE       
-#_____________________________________________________________________ 
-#                                                       
+#_____________________________________________________________________
+#
+# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
+#_____________________________________________________________________
+#
 #
 
 

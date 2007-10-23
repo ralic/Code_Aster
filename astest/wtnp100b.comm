@@ -1,34 +1,34 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNP100B',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='WTNP100B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 ####################################
 ##### PERMEABILITE RELATIVE AU LIQ.ET SA DERIVEE (BO)
 ##### PERMEABILITE RELATIVE AU GAZ ET SA DERIRVEE (BO )
 ###### DERIVEE DE PERM21 DU GAZ PAR RAPPORT A SAT (BO )
-#############################                                  
-                                   
+#############################
+
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(
                       JUSQU_A=10000.,NOMBRE=1,),);
@@ -68,7 +68,7 @@ VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-05,);
 DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
 
 DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
-                      
+
 LI2=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=1.E6,
                                      NOMBRE=100,),
@@ -78,13 +78,13 @@ LI2=DEFI_LIST_REEL(DEBUT=0,
                                      NOMBRE=100,),
                                   _F(JUSQU_A=1.E9,
                                      NOMBRE=100,),),);
-                      
+
 LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
                    INTERVALLE=_F(JUSQU_A=0.98999999999999999,
                                  PAS=1.E-2,),);
 
 LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,);
-#LS = FORMULE(REEL = '''(REEL:SAT) = 
+#LS = FORMULE(REEL = '''(REEL:SAT) =
 #                (0.3*SAT)''');
 LS = FORMULE(NOM_PARA='SAT',VALE='(0.3*SAT)');
 
@@ -101,7 +101,7 @@ LAMBCT=DEFI_CONSTANTE(VALE=0.5,);
 #CONSTBO = DEFI_CONSTANTE ( VALE : 0.99);
 #
 
-#SLO = FORMULE(REEL = '''(REEL:PCAP) = 
+#SLO = FORMULE(REEL = '''(REEL:PCAP) =
 #                (0.5-1.E-12*(PCAP-3700.+1.E5))''');
 SLO = FORMULE(NOM_PARA='PCAP',VALE='(0.5-1.E-12*(PCAP-3700.+1.E5))');
 
@@ -114,7 +114,7 @@ NOM_PARA='PCAP',
 
 DSATBO=DEFI_CONSTANTE(VALE=-1.E-12,);
 
-#PERMO = FORMULE(REEL = '''(REEL:SAT) = 
+#PERMO = FORMULE(REEL = '''(REEL:SAT) =
 #             (1.+(0.5*(-1.+SAT**(-16.667))**0.940)**2)**(-0.5)''');
 PERMO = FORMULE(NOM_PARA='SAT',VALE='''
              (1.+(0.5*(-1.+SAT**(-16.667))**0.940)**2)**(-0.5)''');
@@ -127,12 +127,12 @@ NOM_PARA='SAT',
                           INFO=2,);
 
 #DPERMO = FORMULE(REEL =  '''(REEL:SAT) =
-#  -0.5*(1.+ (0.5*(-1.+(SAT)**(-16.667))**0.940)**2)**(-1.5) 
+#  -0.5*(1.+ (0.5*(-1.+(SAT)**(-16.667))**0.940)**2)**(-1.5)
 #  * (2*(0.5*(-1.+(SAT)**(-16.667))**0.940))
 # *0.47*(-1.+(SAT)**(-16.667))**(-0.06)
 #  * (-16.667) * (SAT)**(-17.667)''');
 DPERMO = FORMULE(NOM_PARA='SAT',VALE='''
-  -0.5*(1.+ (0.5*(-1.+(SAT)**(-16.667))**0.940)**2)**(-1.5) 
+  -0.5*(1.+ (0.5*(-1.+(SAT)**(-16.667))**0.940)**2)**(-1.5)
   * (2*(0.5*(-1.+(SAT)**(-16.667))**0.940))
  *0.47*(-1.+(SAT)**(-16.667))**(-0.06)
   * (-16.667) * (SAT)**(-17.667)''');
@@ -198,7 +198,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                               ),);
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(_F(TOUT='OUI',
                              NOM_CMP='TEMP',
@@ -216,7 +216,7 @@ FLUTH=AFFE_CHAR_MECA(MODELE=MODELE,
                                       );
 
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
-                   OPERATION='AFFE', 
+                   OPERATION='AFFE',
                    TYPE_CHAM='CART_SIEF_R',
                    AFFE=(_F(GROUP_MA='BO',
                             NOM_CMP=
@@ -262,17 +262,17 @@ U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',
              OPTION=('VARI_ELNO_ELGA'),
              RESULTAT=U0,);
-      
+
 U0=CALC_NO(reuse =U0,
              TOUT_ORDRE='OUI',
              OPTION=('VARI_NOEU_ELGA'),
              RESULTAT=U0,);
-             
+
 #################################################
 #IMPR_RESU(RESU=_F(RESULTAT=U0,
 #                  NOM_CHAM='DEPL',
 #                  GROUP_NO=('BO',),),);
-#         
+#
 #IMPR_RESU(RESU=_F(RESULTAT=U0,
 #                  NOM_CHAM='VARI_NOEU_ELGA',
 #                  GROUP_NO=('BO',),),);

@@ -6,7 +6,7 @@
       COMPLEX*16 CXSOL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,8 @@ C     ------------------------------------
         ELSE IF (TYPVAR.EQ.2) THEN
           CALL RLFC16(MAT19,NEQ,CXSOL,NBSOL,TYPSYM)
         END IF
+      ELSE
+        CALL ASSERT(.FALSE.)
       END IF
    10 CONTINUE
 

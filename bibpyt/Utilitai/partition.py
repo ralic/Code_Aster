@@ -1,21 +1,21 @@
-#@ MODIF partition Utilitai  DATE 10/02/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF partition Utilitai  DATE 22/10/2007   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
 
@@ -26,361 +26,382 @@ import Numeric as N
 from Accas import _F
 from Noyau.N_utils import AsType
 
-# ------------------------------------------------------------------ #
-
+# ============================================================================ #
 def enleve_doublons_liste(liste):
-  """ A partir d une liste qui peut contenir des doublons, on renvoie une liste sans
+   """
+      A partir d une liste qui peut contenir des doublons, on renvoie une liste sans
       doublons (et qui reviendra triée)
-  """
-
-  """ Au cas ou ca ne serait pas deja un vecteur numpy """  # Exemple
-  liste=N.sort(N.array(liste,copy=0))                 # [1, 2, 2, 3, 3, 4, 5]
-  liste_diff=liste[1:]-liste[:-1]                     # [1, 0, 1, 0, 1, 1]
-  liste_temp=N.nonzero(liste_diff)                    # [0, 2, 4, 5]
-  liste_indice=N.zeros(liste_temp.shape[0]+1)
-  liste_indice[0]=0
-  liste_indice[1:]=liste_temp+1                       # [0, 1, 3, 5, 6]
-  liste2=N.take(liste,liste_indice)                   # [1, 2, 3, 4, 5]
-  return liste2
+   """
+   # Au cas ou ca ne serait pas deja un vecteur numpy  # Exemple
+   liste=N.sort(N.array(liste,copy=0))                 # [1, 2, 2, 3, 3, 4, 5]
+   liste_diff=liste[1:]-liste[:-1]                     # [1, 0, 1, 0, 1, 1]
+   liste_temp=N.nonzero(liste_diff)                    # [0, 2, 4, 5]
+   liste_indice=N.zeros(liste_temp.shape[0]+1)
+   liste_indice[0]=0
+   liste_indice[1:]=liste_temp+1                       # [0, 1, 3, 5, 6]
+   liste2=N.take(liste,liste_indice)                   # [1, 2, 3, 4, 5]
+   return liste2
 
 
 # ============================================================================ #
-
-
 class CONNEC(UserList.UserList) :
-  """
-    Connectivite : sequence mutable de sequences de noeuds
-    Pour l'instant, on s'appuie sur une liste de liste.
-  """
-  
-  def __init__(self,nma) :
-  
-    UserList.UserList.__init__(self,[None]*nma)
+   """
+      Connectivite : sequence mutable de sequences de noeuds
+      Pour l'instant, on s'appuie sur une liste de liste.
+   """
+   def __init__(self,nma) :
+      UserList.UserList.__init__(self,[None]*nma)
 
+   def Index(self) :
+      """
+         Retourne la connectivite sous forme de deux vecteurs numpy :
+            ind -> tableau des index (y compris le n+1 eme)
+            noe -> tableau des listes de noeuds
+      """
+      # Dimension des deux vecteurs
+      nma  = len(self)
+      ltot = N.reduce(lambda x,y : x+len(y), self,0)
+      ind = N.zeros(nma+1,Int)
+      noe = N.zeros(ltot,Int)
 
-  def Index(self) :
-    """
-      Retourne la connectivite sous forme de deux vecteurs numpy :
-        ind -> tableau des index (y compris le n+1 eme)
-        noe -> tableau des listes de noeuds
-    """
+      # Construction des vecteurs
+      ind[0] = 0
+      for i in range(nma) :
+         m = self[i]
+         ind[i+1] = ind[i] + len(m)
+         noe[ind[i]:ind[i+1]] = N.array(m)
 
-    # Dimension des deux vecteurs
-    nma  = len(self)
-    ltot = N.reduce(lambda x,y : x+len(y), self,0)
-    ind = N.zeros(nma+1,Int)
-    noe = N.zeros(ltot,Int)
-
-    # Construction des vecteurs
-    ind[0] = 0
-    for i in range(nma) :
-      m = self[i]
-      ind[i+1] = ind[i] + len(m)
-      noe[ind[i]:ind[i+1]] = N.array(m)
-
-    return ind,noe
-
+      return ind,noe
 
 # ============================================================================ #
-# ============================================================================ #
-
 class MAIL_PY :
+   """
+      SD PYTHON  MAILLAGE
+      La numeration est 0..N-1 pour les noeuds et 0..M-1 pour les mailles
 
-  """
-    SD PYTHON  MAILLAGE
-    La numeration est 0..N-1 pour les noeuds et 0..M-1 pour les mailles
-  """
+EXEMPLE D'UTILISATION
+---------------------
+from Utilitai.Partition import *
+import Numeric as N
 
-  def __init__(self,nno=0,nma=0) :
+mail=LIRE_MAILLAGE();
 
-    self.cn  = N.zeros((nno,3),N.Float)
-    self.tm  = N.zeros(nma,N.Int)
-    self.co  = CONNEC(nma)
-    self.gma = {}
-    self.gno = {}
-    self.indice_noeuds = N.arange(nno)
+mm = MAIL_PY()
+mm.FromAster(mail)
 
-    self.correspondance_noeuds = []
-    self.correspondance_mailles = []
+# Nombre de noeuds
+nbno = mm.dime_maillage[0]
+# Nombre de mailles
+nbma = mm.dime_maillage[2]
 
-    try:
-      import aster
-      nom_mailles = (None,) + string.strip(aster.getvectjev('&CATA.TM.NOMTM'))
-    except:
-      nom_mailles = (None,
-      'POI1',   'SEG2',   'SEG22',  'SEG3',   'SEG33',  'SEG4',   'TRIA3',
-      'TRIA33', 'TRIA6',  'TRIA66', 'TRIA7',  'QUAD4',  'QUAD44', 'QUAD8',
-      'QUAD88', 'QUAD9',  'QUAD99', 'TETRA4', 'TETRA10','PENTA6', 'PENTA15',
-      'PYRAM5', 'PYRAM13','HEXA8',  'HEXA20', 'HEXA27', 'TR3QU4', 'QU4TR3',
-      'TR6TR3', 'TR3TR6', 'TR6QU4', 'QU4TR6', 'TR6QU8', 'QU8TR6', 'TR6QU9',
-      'QU9TR6', 'QU8TR3', 'TR3QU8', 'QU8QU4', 'QU4QU8', 'QU8QU9', 'QU9QU8',
-      'QU9QU4', 'QU4QU9', 'QU9TR3', 'TR3QU9', 'SEG32',  'SEG23' )
+# Coordonnées des noeuds
+coord    = mm.cn
+# Noms des noeuds
+linomno  = list(mm.correspondance_noeuds)
+# Groupe de Mailles
+collgrma = mm.gma
+# Groupe de Noeuds
+collgrno = mm.gno
+# La table de connextivité
+connex   = mm.co
 
-    dic_mailles = {}
-    for i in range(len(nom_mailles)) : 
-      dic_mailles[nom_mailles[i]] = i
+# Le décalage de -1 est déjà fait sur les numéros des noeuds et des mailles
+# Pour ajouter des Noeuds
+   #  Coordonnées
+         LesNoeudsEnPlus = N.array([[xx,yy,zz]])
+         LesNoeudsEnPlus = N.concatenate((LesNoeudsEnPlus,N.array([[xx,yy,zz]])))
+   #  Noms
+         NomNoeudsEnPlus =     ['X%' % in]
+         NomNoeudsEnPlus.append('X%' % in)
+# Ajout des noeuds au maillage : coordonnées , noms
+   mm.cn = N.concatenate((mm.cn,LesNoeudsEnPlus))
+   mm.correspondance_noeuds = tuple(linomno + NomNoeudsEnPlus )
 
-    self.nom = nom_mailles
-    self.dic = dic_mailles
+# Pour ajouter des mailles (ici TRIA3)  in [ 1 , NbMailleAjouté ]
+   #  Noms
+         NomMaillesEnPlus =     ['Z%d' % im]
+         NomMaillesEnPlus.append('Z%d' % im)
+   #  Numéro des mailles
+         num_maille = [ nbma + im ]
+         num_maille.append( nbma + im )
+   #  Noeuds des mailles
+         NoeudsMailles = [N.array([i1,i2,i3])]
+         NoeudsMailles.append(N.array(N.array([i1,i2,i3])))
+# Ajout des TRIA3
+   # Type de maille
+         typ_maille = mm.dic['TRIA3']
+         mm.tm = N.concatenate((mm.tm,N.array([typ_maille]*NbMailleAjouté)))
+   # Nom des mailles
+         mm.correspondance_mailles += tuple(NomMaillesEnPlus)
+   # connectivite des éléments
+      mm.co += NoeudsMailles
 
-    try:
-      psyco.bind(self.FromAster)
-    except: pass
+# Ajout d'un groupe de maille contenant les mailles ajoutés
+   maillage_python.gma['XXXAJOUT'] = N.array(num_maille)
 
+# Ecriture dans un fichier
+   MAIL9 = mm.ToAster(unite=38)
+   """
 
-# -------------------------------------------------------------
+   def __init__(self,nno=0,nma=0) :
+      self.cn  = N.zeros((nno,3),N.Float)
+      self.tm  = N.zeros(nma,N.Int)
+      self.co  = CONNEC(nma)
+      self.gma = {}
+      self.gno = {}
+      self.indice_noeuds = N.arange(nno)
 
-  def get_connexite(self, nom, nma):
-    co=CONNEC(nma)
-    dico_connexite = aster.getcolljev(nom)
-    for element in dico_connexite.keys() :
-      co[int(element)-1] = (N.array(dico_connexite[element])-1)
-    return co
+      self.correspondance_noeuds = []
+      self.correspondance_mailles = []
 
-
-  def get_coordonnees_noeuds(self, nom, nombre_noeuds):
-    coordonnees_noeuds = aster.getvectjev(nom)
-    coordonnees_noeuds = N.array(coordonnees_noeuds)
-    coordonnees_noeuds.shape = (nombre_noeuds,3)
-    cn = coordonnees_noeuds
-    return cn
-
-
-# -------------------------------------------------------------
-
-  def FromAster(self,nom) :
-
-    # On accepte le concept Aster ou bien la chaine texte de son nom
-    if type(nom)!=types.StringType:
-      nom_maillage = nom.nom
-    else:
-      nom_maillage = nom
-
-    nom_maillage=string.ljust(nom_maillage,8)
-
-    # recuperation de la taille
-    self.dime_maillage = aster.getvectjev(nom_maillage+'.DIME')
-    nombre_noeuds      = self.dime_maillage[0]
-    nombre_mailles     = self.dime_maillage[2]    
-
-    # coordonnees des noeuds
-    self.cn = self.get_coordonnees_noeuds(nom_maillage+'.COORDO    .VALE', nombre_noeuds)
-
-    # type de maille
-    self.tm = N.array(aster.getvectjev(nom_maillage+'.TYPMAIL'))
-
-    # connexite
-    self.co = self.get_connexite(nom_maillage+'.CONNEX', nombre_mailles)
-
-    self.indice_noeuds=N.arange(nombre_noeuds)
-
-    # groupe de noeuds
-    Lno_groupno_tot = aster.getcolljev(nom_maillage+'.GROUPENO')
-
-    Lno_groupno={}
-    for key in Lno_groupno_tot :
-      # Tolerance car parfois defi_group crée des groupes nuls à clé entiere
       try:
-        Lno_groupno[key.strip()]=N.array(Lno_groupno_tot[key])-1
-      except: pass
-    self.gno=Lno_groupno
-
-    # groupe de mailles 
-    Lma_groupma_tot     = aster.getcolljev(nom_maillage+'.GROUPEMA')
-    Lma_groupma={}
-    for key in Lma_groupma_tot :
-      Lma_groupma[key.strip()]=N.array(Lma_groupma_tot[key])-1
-    self.gma=Lma_groupma
-
-    del(Lma_groupma_tot)
-
-    # listes de correspondance entre Aster et Mail-Py
-    self.correspondance_noeuds  = aster.getvectjev(nom_maillage+'.NOMNOE')
-    self.correspondance_mailles = aster.getvectjev(nom_maillage+'.NOMMAI')
-
-
-# -------------------------------------------------------------
-
-  def ToAster(self) :
-
-    try:
-      INFO_EXEC_ASTER = self.jdc.get_cmd('INFO_EXEC_ASTER')
-      DETRUIRE        = self.jdc.get_cmd('DETRUIRE')
-      LIRE_MAILLAGE   = self.jdc.get_cmd('LIRE_MAILLAGE')
-    except:
-      try:
-        from Cata.cata import INFO_EXEC_ASTER
-        from Cata.cata import DETRUIRE
-        from Cata.cata import LIRE_MAILLAGE
+         import aster
+         nom_mailles = (None,) + string.strip(aster.getvectjev('&CATA.TM.NOMTM'))
       except:
-        print "\n\nERREUR : il faut lancer ce programme depuis Aster pour pouvoir \ngénérer un maillage Aster.\n\n"
-        sys.exit(1)
+         nom_mailles = (None,
+         'POI1',   'SEG2',   'SEG22',  'SEG3',   'SEG33',  'SEG4',   'TRIA3',
+         'TRIA33', 'TRIA6',  'TRIA66', 'TRIA7',  'QUAD4',  'QUAD44', 'QUAD8',
+         'QUAD88', 'QUAD9',  'QUAD99', 'TETRA4', 'TETRA10','PENTA6', 'PENTA15',
+         'PYRAM5', 'PYRAM13','HEXA8',  'HEXA20', 'HEXA27', 'TR3QU4', 'QU4TR3',
+         'TR6TR3', 'TR3TR6', 'TR6QU4', 'QU4TR6', 'TR6QU8', 'QU8TR6', 'TR6QU9',
+         'QU9TR6', 'QU8TR3', 'TR3QU8', 'QU8QU4', 'QU4QU8', 'QU8QU9', 'QU9QU8',
+         'QU9QU4', 'QU4QU9', 'QU9TR3', 'TR3QU9', 'SEG32',  'SEG23' )
 
-    # Recuperation d'une unité logique libre
-    _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-    ul1=_UL['UNITE_LIBRE',1]
-    DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
+      dic_mailles = {}
+      for i in range(len(nom_mailles)) :
+         dic_mailles[nom_mailles[i]] = i
 
-    # Sauvegarde du maillage dans un fichier .mail
-    fichier = 'fort.'+str(ul1)
-    f = open(fichier, 'w')
-    f.write( self.Voir_Mail() )
-    f.close()
+      self.nom = nom_mailles
+      self.dic = dic_mailles
 
-    # Récupération des concepts Aster présents dans la base
-# Note AA : ne marche pas encore bien :
-# Limitation : ne gere qu'un seul maillage genere par ToAster
-#
-#     nom='_MSH'
-#     try:
-#       self.jdc_recupere=CONTEXT.get_current_step()
-#       t_maillage=[]
-#       for i in self.jdc_recupere.sds_dict.keys( ):
-#         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'maillage_sdaster':
-#           if (mail[0:4]==nom):
-#             t_maillage.append( i )
-# 
-#       num=len(_lst)+1
-#     except:
-#       num=0
-
-    # Lecture de ce fichier .mail pour l'injecter dans l'espace Aster
-    _SMESH_ = LIRE_MAILLAGE(UNITE = ul1)
-
-    return(_SMESH_)
+      try:
+         psyco.bind(self.FromAster)
+      except: pass
 
 # -------------------------------------------------------------
+   def get_connexite(self, nom, nma):
+      co=CONNEC(nma)
+      dico_connexite = aster.getcolljev(nom)
+      for element in dico_connexite.keys() :
+         co[int(element)-1] = (N.array(dico_connexite[element])-1)
+      return co
 
-  def __str__(self) :
-    return self.Voir_Mail()
+   def get_coordonnees_noeuds(self, nom, nombre_noeuds):
+      coordonnees_noeuds = aster.getvectjev(nom)
+      coordonnees_noeuds = N.array(coordonnees_noeuds)
+      coordonnees_noeuds.shape = (nombre_noeuds,3)
+      cn = coordonnees_noeuds
+      return cn
 
 # -------------------------------------------------------------
+   def FromAster(self,nom) :
+      # On accepte le concept Aster ou bien la chaine texte de son nom
+      if type(nom)!=types.StringType:
+         nom_maillage = nom.nom
+      else:
+         nom_maillage = nom
+      nom_maillage=string.ljust(nom_maillage,8)
 
-  def Voir_Mail(self) :
-    """
-      Impression au format ASTER
-    """
+      # recuperation de la taille
+      self.dime_maillage = aster.getvectjev(nom_maillage+'.DIME')
+      nombre_noeuds      = self.dime_maillage[0]
+      nombre_mailles     = self.dime_maillage[2]
 
-    l = []
-    l.append('TITRE')
-    l.append('%  CLASSE PY_MAIL -> MAIL')
-    l.append('FINSF')
-    l.append('%')
+      # coordonnees des noeuds
+      self.cn = self.get_coordonnees_noeuds(nom_maillage+'.COORDO    .VALE', nombre_noeuds)
 
-    (nno,ndim) = self.cn.shape
-  
+      # type de maille
+      self.tm = N.array(aster.getvectjev(nom_maillage+'.TYPMAIL'))
 
-    # Coordonnees des noeuds
-    l.append('COOR_3D')
+      # connexite
+      self.co = self.get_connexite(nom_maillage+'.CONNEX', nombre_mailles)
 
-    # Si le maillage initial ne provient pas d'Aster
-    if len(self.correspondance_noeuds) == 0:
-      for i in range(nno) :
-        ch = 'N'+repr(i)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
-#        ch = 'N'+repr(i+1)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
-        l.append(ch)
+      self.indice_noeuds=N.arange(nombre_noeuds)
 
-    # Si le maillage initial provient d'Aster
-    else:
-      for i in range(nno) :
-        ch = self.correspondance_noeuds[i]+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
-#        ch = 'N'+repr(i+1)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
-        l.append(ch)
+      # groupe de noeuds
+      Lno_groupno_tot = aster.getcolljev(nom_maillage+'.GROUPENO')
 
-    # Connectivité des mailles
-    ind = N.argsort(self.tm)
-    ty = 0
+      Lno_groupno={}
+      for key in Lno_groupno_tot :
+         # Tolerance car parfois defi_group crée des groupes nuls à clé entiere
+         try:
+            Lno_groupno[key.strip()]=N.array(Lno_groupno_tot[key])-1
+         except:
+            pass
+      self.gno=Lno_groupno
 
-    # Si le maillage initial ne provient pas d'Aster
-    if len(self.correspondance_mailles) == 0:
-      for m in ind :
-        if self.tm[m] <> ty :
-          l.append('FINSF') ; l.append('%')
-          ty = self.tm[m]
-          l.append(self.nom[ty])
-        ch = 'M'+`m`+'  '
-#        ch = 'M'+`m+1`+'  '
-        for n in self.co[m] :
-          ch = ch + 'N'+`n` + ' '
-#          ch = ch + 'N'+`n+1` + ' '
-        l.append(ch)
+      # groupe de mailles
+      Lma_groupma_tot     = aster.getcolljev(nom_maillage+'.GROUPEMA')
+      Lma_groupma={}
+      for key in Lma_groupma_tot :
+         Lma_groupma[key.strip()]=N.array(Lma_groupma_tot[key])-1
+      self.gma=Lma_groupma
 
-    # Si le maillage initial provient d'Aster
-    else:
-      for m in ind :
-        if self.tm[m] <> ty :
-          l.append('FINSF') ; l.append('%')
-          ty = self.tm[m]
-          l.append(self.nom[ty])
-        ch = self.correspondance_mailles[m]+'  '
-#        ch = 'M'+`m+1`+'  '
-        for n in self.co[m] :
-          ch = ch + self.correspondance_noeuds[n] + ' '
-#          ch = ch + 'N'+`n+1` + ' '
-        l.append(ch)
+      del(Lma_groupma_tot)
 
-    l.append('FINSF') ; l.append('%')
+      # listes de correspondance entre Aster et Mail-Py
+      self.correspondance_noeuds  = aster.getvectjev(nom_maillage+'.NOMNOE')
+      self.correspondance_mailles = aster.getvectjev(nom_maillage+'.NOMMAI')
+
+# -------------------------------------------------------------
+   def ToAster(self,unite=None,transfert=False):
+      from Utilitai.UniteAster import UniteAster
+      try:
+         LIRE_MAILLAGE   = self.jdc.get_cmd('LIRE_MAILLAGE')
+      except:
+         try:
+            from Cata.cata import LIRE_MAILLAGE
+         except:
+            print "Il faut lancer ce programme depuis Aster pour pouvoir générer un maillage Aster."
+            sys.exit()
+
+      UL = UniteAster()
+      # Récupération d'une unité logique libre si besoin
+      if ( unite == None ): unite = UL.Libre()
+      fichier = UL.Nom(unite)
+      # Bascule le fichier en F : ferme
+      UL.Etat(unite,etat='F')
+      # Ouverture du fichier en WRITE
+      f = open(fichier, 'w')
+      # Sauvegarde du maillage dans le fichier
+      f.write( self.Voir_Mail() )
+      f.close()
+
+      # Remet les unités comme au debut
+      UL.EtatInit()
+      if ( transfert ):
+         # Lecture de ce fichier .mail pour l'injecter dans l'espace Aster
+         _SMESH_ = LIRE_MAILLAGE(UNITE = unite)
+         # Remet tout comme au debut
+         return _SMESH_
+
+      return None
+
+# -------------------------------------------------------------
+   def __str__(self) :
+      return self.Voir_Mail()
+
+# -------------------------------------------------------------
+   def Voir_Mail(self) :
+      """
+         Impression au format ASTER
+      """
+      l = []
+      l.append('TITRE')
+      l.append('%  CLASSE PY_MAIL -> MAIL')
+      l.append('FINSF')
+      l.append('%')
+
+      (nno,ndim) = self.cn.shape
+
+      # Coordonnees des noeuds
+      l.append('COOR_3D')
+
+      #  format des nombres : 21.14E ==> -3.00000000000002D-04
+      #  longueur d'une ligne : 8 + (2 + 21)*3 = 77
+      # Si le maillage initial ne provient pas d'Aster
+      if len(self.correspondance_noeuds) == 0:
+         for i in range(nno) :
+            #ch = 'N'+repr(i)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
+            ch = "%21.14E  %21.14E  %21.14E" % (self.cn[i,0], self.cn[i,1], self.cn[i,2])
+            l.append("%-8s  %s" % ('N'+repr(i), ch))
+
+      # Si le maillage initial provient d'Aster
+      else:
+         for i in range(nno) :
+            #ch = self.correspondance_noeuds[i]+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
+            ch = "%21.14E  %21.14E  %21.14E" % (self.cn[i,0], self.cn[i,1], self.cn[i,2])
+            l.append("%-8s  %s" % (self.correspondance_noeuds[i], ch))
+
+      # Connectivité des mailles
+      ind = N.argsort(self.tm)
+      ty = 0
+      # Si le maillage initial ne provient pas d'Aster
+      if len(self.correspondance_mailles) == 0:
+         for m in ind :
+            if self.tm[m] <> ty :
+               l.append('FINSF') ; l.append('%')
+               ty = self.tm[m]
+               l.append(self.nom[ty])
+            ch = 'M%d ' % m
+            for n in self.co[m] :
+               zn = ' N%d'% n
+               if ( len(ch)+len(zn) > 80 ):
+                  l.append(ch)
+                  ch = '      ' + zn
+               else:
+                  ch += zn
+            l.append(ch)
+
+      # Si le maillage initial provient d'Aster
+      else:
+         for m in ind :
+            if self.tm[m] <> ty :
+               l.append('FINSF') ; l.append('%')
+               ty = self.tm[m]
+               l.append(self.nom[ty])
+            ch = self.correspondance_mailles[m]+' '
+            for n in self.co[m] :
+               zn = ' ' + self.correspondance_noeuds[n]
+               if ( len(ch)+len(zn) > 80 ):
+                  l.append(ch)
+                  ch = '      ' + zn
+               else:
+                  ch += zn
+            l.append(ch)
+      l.append('FINSF') ; l.append('%')
 
 
-    # Group_ma et Group_no
-    entete = ['GROUP_MA','GROUP_NO']
-    d_gp   = [self.gma,self.gno]
-    pref   = ['M','N']  
+      # Group_ma et Group_no
+      entete = ['GROUP_MA','GROUP_NO']
+      d_gp   = [self.gma,self.gno]
+      pref   = ['M','N']
 
-    # Si le maillage initial ne provient pas d'Aster
-    if len(self.correspondance_mailles) == 0:
+      # Si le maillage initial ne provient pas d'Aster
+      if len(self.correspondance_mailles) == 0:
+         for (d_gp,entete,prefixe) in [(self.gma,'GROUP_MA','M'),(self.gno,'GROUP_NO','N')] :
+            for gp in d_gp :
+               if len(d_gp[gp])>0:  # On ne prend en compte que les group_* non vides
+                  l.append(entete)
+                  l.append('  ' + gp)
+                  ch = ''
+                  for o in d_gp[gp]:
+                     zm = ' %s%d' % (prefixe , o)
+                     if ( len(ch)+len(zm) > 80 ):
+                        l.append(ch)
+                        ch = zm
+                     else:
+                        ch += zm
+                  l.append(ch)
+                  l.append('FINSF') ; l.append('%')
 
-      for (d_gp,entete,prefixe) in [(self.gma,'GROUP_MA','M'),(self.gno,'GROUP_NO','N')] :
-        for gp in d_gp :
-         if len(d_gp[gp])>0:  # On ne prend en compte que les group_* non vides
-          l.append(entete)
-          l.append('  ' + gp)
-          ch = ' '
-          i=0
-          for o in d_gp[gp]:
-            i+=1  # on ne met que 8 mailles sur une meme ligne
-            if (len(ch) > 60 or i>7):
-              l.append(ch)
-              ch = ' '
-              i=0
-            ch = ch + prefixe + `o` + ' '
-          l.append(ch)
-          l.append('FINSF') ; l.append('%')            
+      # Si le maillage initial provient d'Aster
+      else:
+         for (d_gp,entete,prefixe) in [(self.gma,'GROUP_MA','M'),(self.gno,'GROUP_NO','N')] :
+            for gp in d_gp :
+               if len(d_gp[gp])>0:  # On ne prend en compte que les group_* non vides
+                  l.append(entete)
+                  l.append('  ' + gp)
+                  ch = ''
+                  for o in d_gp[gp]:
+                     if prefixe=='M':
+                        zm = ' ' + self.correspondance_mailles[o]
+                     else:
+                        zm = ' ' + self.correspondance_noeuds[o]
+                     if ( len(ch)+len(zm) > 80 ):
+                        l.append(ch)
+                        ch = zm
+                     else:
+                        ch += zm
+                  l.append(ch)
+                  l.append('FINSF') ; l.append('%')
 
-    # Si le maillage initial provient d'Aster
-    else:
-
-      for (d_gp,entete,prefixe) in [(self.gma,'GROUP_MA','M'),(self.gno,'GROUP_NO','N')] :
-        for gp in d_gp :
-         if len(d_gp[gp])>0:  # On ne prend en compte que les group_* non vides
-          l.append(entete)
-          l.append('  ' + gp)
-          ch = ' '
-          i=0
-          for o in d_gp[gp]:
-            i+=1  # on ne met que 8 mailles sur une meme ligne
-            if (len(ch) > 60 or i>7):
-              l.append(ch)
-              ch = ' '
-              i=0
-#            ch = ch + prefixe + `o` + ' '
-            if prefixe=='M':
-              ch = ch + self.correspondance_mailles[o] + ' '
-            else:
-              ch = ch + self.correspondance_noeuds[o] + ' '
-          l.append(ch)
-          l.append('FINSF') ; l.append('%')            
-
-    # Fin
-    l.append('FIN\n')
-    return string.join(l,'\n')
-
-
+      # Fin
+      l.append('FIN\n')
+      return string.join(l,'\n')
 
 
 # ============================================================================ #
-# ============================================================================ #
-
 class PARTITION:
 
   def __init__(self, jdc=None ,nb=0):
@@ -497,9 +518,9 @@ class PARTITION:
     _LST_TMA = self.MAILLAGE_Python.tm
 
     if self.OPTIONS['INFO']>=5:
-      print 'cn=', self.MAILLAGE_Python.cn 
-      print 'tm=', self.MAILLAGE_Python.tm 
-      print 'co=', self.MAILLAGE_Python.co 
+      print 'cn=', self.MAILLAGE_Python.cn
+      print 'tm=', self.MAILLAGE_Python.tm
+      print 'co=', self.MAILLAGE_Python.co
       print 'gma=', self.MAILLAGE_Python.gma
       print 'gno=', self.MAILLAGE_Python.gno
       print 'dim=', self.MAILLAGE_Python.dime_maillage
@@ -511,16 +532,16 @@ class PARTITION:
 
       # Liste des mailles à prendre en compte : dimension _DIM
       _D_DIM_MAILLES = self.Creation_Listes_Mailles_Par_Dim(self.MAILLAGE_Python.tm, _LST_MA=_LST_MA)
-  
+
       # Connectivité et connectivité inverse sur les bords
       self.Connectivite_Aretes()
-  
+
       self.liste_mailles = _D_DIM_MAILLES[ _DIM ]
-  
+
       # Pour prendre en compte des mélanges d'elements de dimension differente
       _LST, _LST_BD = self.Elimination_Mailles_de_bords(MAILLAGE_Python, _D_DIM_MAILLES, _DIM)
       self.liste_mailles = N.concatenate( (self.liste_mailles,N.array(_LST)) )
-  
+
       if self.OPTIONS['INFO']>=5:
         print '_LST_BD=',_LST_BD
         print '_LST=',_LST
@@ -751,7 +772,7 @@ class PARTITION:
     self.MAILLAGE_Python.cia = {}
 
     for n in _LST_OK:
-    
+
         n1 = self.MAILLAGE_Python.tm[n]
 
         l_aretes = maille2aretes[n1]           # liste des aretes de la maille n
@@ -782,7 +803,7 @@ class PARTITION:
 #             self.MAILLAGE_Python.cia[ll]=[n]
 
 
-    if self.OPTIONS['INFO']>=5: 
+    if self.OPTIONS['INFO']>=5:
       for k in self.MAILLAGE_Python.cia.keys():
         print 'cia:',k, '     ', self.MAILLAGE_Python.cia[k]
       if OPTION:
@@ -937,7 +958,7 @@ class PARTITION:
 
     MAILLAGE = self.ASTER['MAILLAGE']
     _LST_TMA = self.MAILLAGE_Python.tm
-    
+
     if self.OPTIONS['INFO']>=5:
       nommail = string.ljust(MAILLAGE.nom,8)
       _LST_MAI = aster.getvectjev(nommail.ljust(8)+'.NOMMAI')
@@ -1105,7 +1126,7 @@ class PARTITION:
           except:
             print 'on oublie le bord:', t
         fw.write( string.join(_tmp, ' ') + '\n' )
-#      except: 
+#      except:
 #        print 'Probleme ecriture graphe! On continue..'
     fw.close()
 
@@ -1137,7 +1158,7 @@ class PARTITION:
       os.system( 'mv ' + fichier + ' REPE_OUT/' )
 
       if self.OPTIONS['INFO']>=5: print '_l_domaines=',_l_domaines
-  
+
       print "--- FIN Lecture du fichier produit par metis : ", time.clock() - t0
 
     return _l_domaines

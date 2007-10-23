@@ -1,4 +1,4 @@
-# MODIF  DATE 12/02/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 22/10/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE  TEST DES ELEMENTS DE LA MODELISATION 3D_FAISCEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,8 @@
 #                 B :   ETUDE DU CAS AVEC FLUIDE
 #-------------------------------------------------------------------
 
-DEBUT(   CODE=_F(  NOM = 'SDLV111A',NIV_PUB_WEB='INTERNET') )
+DEBUT(   CODE  = _F(  NOM = 'SDLV111A',NIV_PUB_WEB='INTERNET'),
+         DEBUG = _F(  SDVERI='OUI' ) )
 
 MA=LIRE_MAILLAGE( )
 
@@ -48,7 +49,7 @@ MTA=DEFI_MATERIAU(
                 ELAS=_F(      E = 1.0E+9,
                            NU = 0.3,
                            RHO = 7641.),
-              FLUIDE=_F(      RHO = 1000.)
+             FLUIDE=_F(      RHO = 1000.)
                       )
 
 MTB=DEFI_MATERIAU(
@@ -112,6 +113,7 @@ ACA=AFFE_CARA_ELEM(
                            COEF_ECHELLE = 10.)
                        )
 
+
 CHA=AFFE_CHAR_MECA(
                    MODELE=MO,DDL_IMPO=(
                 _F(  GROUP_NO = ('SB', 'SH',),
@@ -137,6 +139,63 @@ CHB=AFFE_CHAR_MECA(
            _F(  GROUP_NO = 'SH',
                           DDL = 'DY'))
                        )
+
+MASSB=POST_ELEM(        MODELE=MO,
+                         CHAM_MATER=AMB,
+                          CARA_ELEM=ACB,
+                          MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+
+IMPR_TABLE(TABLE=MASSB)
+
+# TEST SUR LA MASSE:
+TEST_TABLE(      TABLE=MASSB,
+                 NOM_PARA='MASSE',
+                 VALE=12695.076,
+                 PRECISION=0.001,
+                 CRITERE='RELATIF',
+                 REFERENCE='ANALYTIQUE')
+# TEST SUR LE CENTRE DE GRAVITE:
+TEST_TABLE(      TABLE=MASSB,
+                 NOM_PARA='CDG_X',
+                 VALE=0.42,
+                 PRECISION=0.001,
+                 CRITERE='RELATIF',
+                 REFERENCE='ANALYTIQUE')
+TEST_TABLE(      TABLE=MASSB,
+                 NOM_PARA='CDG_Y',
+                 VALE=0.42,
+                 PRECISION=0.001,
+                 CRITERE='RELATIF',
+                 REFERENCE='ANALYTIQUE')
+TEST_TABLE(      TABLE=MASSB,
+                 NOM_PARA='CDG_Z',
+                 VALE=2.05,
+                 PRECISION=0.001,
+                 CRITERE='RELATIF',
+                 REFERENCE='ANALYTIQUE')
+# TEST SUR LES INERTIES AU CENTRE DE GRAVITE:
+TEST_TABLE(      TABLE=MASSB,
+                 NOM_PARA='IX_G',
+                 VALE=18530.155,
+                 PRECISION=0.001,
+                 CRITERE='RELATIF',
+                 REFERENCE='ANALYTIQUE')
+TEST_TABLE(      TABLE=MASSB,
+                 NOM_PARA='IY_G',
+                 VALE=18530.155,
+                 PRECISION=0.001,
+                 CRITERE='RELATIF',
+                 REFERENCE='ANALYTIQUE')
+TEST_TABLE(      TABLE=MASSB,
+                 NOM_PARA='IZ_G',
+                 VALE=1492.941,
+                 PRECISION=0.001,
+                 CRITERE='RELATIF',
+                 REFERENCE='ANALYTIQUE')
+
+
 
 MRA=CALC_MATR_ELEM(
                 MODELE=MO,

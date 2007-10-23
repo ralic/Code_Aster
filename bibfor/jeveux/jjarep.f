@@ -1,6 +1,6 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,8 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C ----------------------------------------------------------------------
       CHARACTER *32    CLEL,CLE
       CHARACTER *4     Z
@@ -219,6 +219,7 @@ C
       DO 320 I = 1,NBTOT
         IF (IDY(I) .NE. 0) THEN
           MCDYN = MCDYN - LGL(K)
+          MLDYN = MLDYN + LGL(K)
           CALL HPDEALLC (IDY(I),NBFREE,IBID)
         ELSE IF (IDM(I) .NE. 0) THEN
           CALL JJLIBP (IDM(I))

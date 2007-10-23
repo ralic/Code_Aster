@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,8 +62,8 @@ C
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C     ------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      NOMBA1,NOMBA2,NOM
@@ -118,6 +118,7 @@ C
       CALL JXFERM (ICO)
       IF ( IADYN .NE. 0 ) THEN
         MCDYN = MCDYN - LGBL1
+        MLDYN = MLDYN + LGBL1
         CALL HPDEALLC (IADYN , NBFREE , IBID)
       ELSE IF ( IADITP .NE. 0 ) THEN
         CALL JJLIBP (IADITP)

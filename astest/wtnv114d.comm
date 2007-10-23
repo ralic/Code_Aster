@@ -1,23 +1,23 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST HM, 3D , MODELISATION THMC=LIQU_GAZ_ATM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'WTNV114D',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNV114D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 ####################################
@@ -32,7 +32,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                      )
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI', 
+                        AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
                       MODELISATION = '3D_HM')
                      )
@@ -97,24 +97,24 @@ UN=DEFI_CONSTANTE(    VALE=1.)
 ZERO=DEFI_CONSTANTE(    VALE=0.)
 
 #
-MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(  
+MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    RHO = 1000.,
    UN_SUR_K = 3.77E-9,
    ALPHA = 1.E-4,
    CP = 2.85E6,
-   VISC = UN, 
+   VISC = UN,
    D_VISC_TEMP = ZERO,),
-                              THM_GAZ=_F( 
+                              THM_GAZ=_F(
    MASS_MOL = 28.96E-3,
    CP = 1000.,
    VISC = UN,
-   D_VISC_TEMP = ZERO,),                     
-                            THM_VAPE_GAZ=_F( 
+   D_VISC_TEMP = ZERO,),
+                            THM_VAPE_GAZ=_F(
    MASS_MOL = 18.E-3,
    CP = 1870.,
    VISC = VISCOGAZ,
-   D_VISC_TEMP = DVISCOG),                   
-                              THM_DIFFU=_F( 
+   D_VISC_TEMP = DVISCOG),
+                              THM_DIFFU=_F(
    R_GAZ = 8.315,
    RHO = 1.6E3,
    CP = 2.85E6,
@@ -130,15 +130,15 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PERM_GAZ = PERMGAZ,
    D_PERM_SATU_GAZ = DPERGSA,
    D_PERM_PRES_GAZ = DPERGPG,),
-                              THM_INIT=_F( 
+                              THM_INIT=_F(
    TEMP = 273.,
    PRE1 = 0.,
    PRE2 = 0.,
    PORO = 0.4,
    PRES_VAPE = 1.,
    DEGR_SATU = 1.),
-              COMP_THM = 'LIQU_GAZ_ATM', 
-                                     ELAS=_F( 
+              COMP_THM = 'LIQU_GAZ_ATM',
+                                     ELAS=_F(
    E = 225.E6,
    NU = 0.,
    RHO = 2000.,
@@ -150,10 +150,10 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                         MATER = MATERIAU))
 
 CH_FLU1=AFFE_CHAR_MECA(   MODELE=MODELE,FLUX_THM_REP=(
-                          _F( 
+                          _F(
                                   GROUP_MA = 'HAUT',
                                   FLUN_HYDR1 = -0.005),
-                          _F( 
+                          _F(
                                   GROUP_MA = 'BAS',
                                   FLUN_HYDR1 = 0.))
                                    )
@@ -165,108 +165,108 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
                                     DZ = 0.)
                                    )
 
-RESU0=STAT_NON_LINE( 
+RESU0=STAT_NON_LINE(
                             MODELE=MODELE,
-                           SOLVEUR=_F( 
+                           SOLVEUR=_F(
                 METHODE = 'LDLT'),
                         CHAM_MATER=CHMAT0,EXCIT=(
-                             _F( 
+                             _F(
                 CHARGE = CHARHO),
-                             _F( 
+                             _F(
                 CHARGE = CH_FLU1)),
                          COMP_INCR=_F( PARM_THETA=1.,
                 RELATION = 'KIT_HM',
                 RELATION_KIT = ('ELAS','LIQU_GAZ_ATM','HYDR_UTIL',),
                 ITER_INTE_MAXI = 5),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = LI),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 121),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-8,
                 ITER_GLOB_MAXI = 120),
-                         ARCHIVAGE=_F( 
+                         ARCHIVAGE=_F(
                 LIST_INST = ARCHI)
               )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',   
-             VALE = -6.62496E3,   
+             NOEUD = 'NO20',
+             VALE = -6.62496E3,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',   
-             VALE = 1.325E4,   
+             NOEUD = 'NO1',
+             VALE = 1.325E4,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',   
-             VALE = -3.3097E4,   
+             NOEUD = 'NO20',
+             VALE = -3.3097E4,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 2,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',   
-             VALE = 6.61826E4,    
+             NOEUD = 'NO1',
+             VALE = 6.61826E4,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',   
-             VALE = -6.61119E4,   
+             NOEUD = 'NO20',
+             VALE = -6.61119E4,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',   
-             VALE = 1.3223E5,   
+             NOEUD = 'NO1',
+             VALE = 1.3223E5,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',   
-             VALE = -3.30087E5,   
+             NOEUD = 'NO20',
+             VALE = -3.30087E5,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 4,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',   
-             VALE = 6.60346E5,   
+             NOEUD = 'NO1',
+             VALE = 6.60346E5,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 7,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO20',   
+             NOEUD = 'NO20',
              VALE = -6.52033E6,
              PRECISION = 5.E-2)           )
 
-TEST_RESU( 
+TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 7,
-             NOM_CHAM = 'DEPL', 
+             NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO1',   
+             NOEUD = 'NO1',
              VALE = 1.31189E7,
              PRECISION = 5.E-2)
            )

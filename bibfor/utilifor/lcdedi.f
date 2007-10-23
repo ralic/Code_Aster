@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF UTILIFOR  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,15 +66,22 @@ C       ----------------------------------------------------------------
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
-        IF (TREF.EQ.R8VIDE()) THEN
-          CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TD,IRET)
-          CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET)
-          CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TR,IRET)
+        IF (IISNAN(TREF).EQ.0) THEN
+          IF (TREF.EQ.R8VIDE()) THEN
+            CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TD,IRET)
+            CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET)
+            CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TR,IRET)
+          ELSE
+            TD=TEMPD
+            TF=TEMPF
+            TR=TREF
+          ENDIF
         ELSE
-          TD=TEMPD
-          TF=TEMPF
-          TR=TREF
+            TD=TEMPD
+            TF=TEMPF
+            TR=TREF
         ENDIF
+
         IF ((IISNAN(TF).EQ.0).AND.(IISNAN(TD).EQ.0)) THEN
           IF (IISNAN(TR).NE.0) THEN
             CALL U2MESS('F','CALCULEL_31')

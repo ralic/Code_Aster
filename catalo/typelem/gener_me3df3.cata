@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 22/10/2007   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,11 +20,13 @@ GENER_ME3DF3
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MECA_POHO_HEXA20 MAILLE__ HEXA20
-   ELREFE__  POHOH20
+   ELREFE__  H20  GAUSS__  RIGI=FPG27    FPG_LISTE__ MATER=(RIGI)
+   ELREFE__  POHOH20  
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ MECA_POHO_HEXA8  MAILLE__ HEXA8
-   ELREFE__  POHOH8
+   ELREFE__  HE8 GAUSS__  RIGI=FPG8    FPG_LISTE__ MATER=(RIGI)
+   ELREFE__  POHOH8 
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 
 MODE_LOCAL__
@@ -34,6 +36,8 @@ MODE_LOCAL__
                                         IY2      IZ2      AY2      AZ2      EY2      EZ2
                                         JX2      RY2      RZ2      RT2      TVAR     )
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     GAMMA    )
+    EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
+                                        IZZ      IXY      IXZ      IYZ      )
     CCAPOUF  = CAPOUF   ELEM__         (B_T      B_N      B_TN     A_FLUI   A_CELL   COEF_ECH )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       DZ       DRX      DRY      DRZ
@@ -47,8 +51,8 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    MASS_INER           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_INER           65    IN__   CCAGNPO  PCAGNPO  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER  CMATERC  PMATERC
+                              OUT__  EMASSINE PMASSINE
     MASS_MECA           470   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCAPOUF  PCAPOUF  NGEOMER  PGEOMER
                                      CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR

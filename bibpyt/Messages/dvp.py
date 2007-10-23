@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF dvp Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,6 +44,20 @@ cata_msg={
 3 : _("""
    Erreur de programmation : Nom de grandeur inattendu : %(k1)s
    Routine : %(k2)s
+"""),
+
+4 : _("""
+   On ne sait pas traiter ce type d'élément : %(k1)s
+"""),
+
+
+
+98 : _("""
+   Erreur lors du traitement du contact.
+"""),
+
+99 : _("""
+   Le calcul de l'option %(k1)s n'est pas prévue avec Arlequin.
 """),
 
 }

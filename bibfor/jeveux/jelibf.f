@@ -1,7 +1,7 @@
       SUBROUTINE JELIBF ( COND , CLAS )
 C TOLE CRS_505
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,8 +73,8 @@ C
       COMMON /UNDFJE/  LUNDEF,IDEBUG
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C ----------------------------------------------------------------------
       INTEGER          NBENRG, LGENRG, NBENRV, LGENRV, NBENRL, LGENRL
       COMMON /STACOD/  NBENRG, LGENRG, NBENRV, LGENRV, NBENRL, LGENRL
@@ -168,6 +168,7 @@ C
           IADYN = IADM( JIADM(IC) + 2*I   )
           IF ( IADYN .NE. 0 ) THEN
             MCDYN = MCDYN - LONO(JLONO(IC)+I)*LTYP(JLTYP(IC)+I)
+            MLDYN = MLDYN + LONO(JLONO(IC)+I)*LTYP(JLTYP(IC)+I)
             CALL HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
@@ -207,6 +208,7 @@ C
           IADYN = IADM( JIADM(IC) + 2*I   )
           IF ( IADYN .NE. 0 ) THEN
             MCDYN = MCDYN - LGL(I)
+            MLDYN = MLDYN + LGL(I)
             CALL HPDEALLC ( IADYN , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
@@ -237,6 +239,7 @@ C       ---- ON DECHARGE MAINTENANT LES STATISTIQUES SUR LES ACCES
         ENDIF
         IF ( IADACY .NE. 0 ) THEN
           MCDYN = MCDYN - LGL(1)
+          MLDYN = MLDYN + LGL(1)
           CALL HPDEALLC ( IADACY , NBFREE , IBID )
           IADACY = 0
         ELSE IF ( IADACC.NE. 0 ) THEN
@@ -253,6 +256,7 @@ C       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
         ENDIF
         IF ( IADADY .NE. 0 ) THEN
           MCDYN = MCDYN - LGL(LIDEFF-1)
+          MLDYN = MLDYN + LGL(LIDEFF-1)
           CALL HPDEALLC ( IADADY , NBFREE , IBID )
           IADADY = 0
         ELSE IF ( IADADI .NE. 0 ) THEN
@@ -290,6 +294,7 @@ C
            IDATOS = 1
            IF (IADCDY .NE. 0 ) THEN 
              MCDYN = MCDYN - LGL(I)
+             MLDYN = MLDYN + LGL(I)
              CALL HPDEALLC ( IADCDY , NBFREE , IBID )
            ELSE
              CALL JJLIBP ( IADCAR )
@@ -297,6 +302,7 @@ C
         END IF
         IF ( IADACY .NE. 0 ) THEN
           MCDYN = MCDYN - LGL(LIDEFF)
+          MLDYN = MLDYN + LGL(LIDEFF)
           CALL HPDEALLC ( IADACY , NBFREE , IBID )
         ELSE IF ( IADACC.NE. 0 ) THEN
           CALL JJLIBP ( IADACC )
@@ -308,30 +314,35 @@ C       ----------- CLORE LE FICHIER
 C       ----------- LIBERER PLACE
         IF (K18 .NE. 0) THEN
           MCDYN = MCDYN - LGL(18)
+          MLDYN = MLDYN + LGL(18)
           CALL HPDEALLC ( K18 , NBFREE , IBID )
         ELSE
           CALL JJLIBP ( 1 + KITLEC(IC) / LOIS )
         ENDIF
         IF (K2 .NE. 0) THEN
           MCDYN = MCDYN - LGL(2)
+          MLDYN = MLDYN + LGL(2)
           CALL HPDEALLC ( K2 , NBFREE , IBID )
         ELSE
           CALL JJLIBP ( IAD2 )
         ENDIF
         IF (K19 .NE. 0) THEN
           MCDYN = MCDYN - LGL(19)
+          MLDYN = MLDYN + LGL(19)
           CALL HPDEALLC ( K19 , NBFREE , IBID )
         ELSE
           CALL JJLIBP ( 1 + KITECR(IC) / LOIS )
         ENDIF
         IF (K16 .NE. 0) THEN
           MCDYN = MCDYN - LGL(16)
+          MLDYN = MLDYN + LGL(16)
           CALL HPDEALLC ( K16 , NBFREE , IBID )
         ELSE IF ( KMARQ(IC) .NE. 0 ) THEN
           CALL JJLIBP ( KMARQ(IC) )
         ENDIF
         IF (K20 .NE. 0) THEN
           MCDYN = MCDYN - LGL(20)
+          MLDYN = MLDYN + LGL(20)
           CALL HPDEALLC ( K20 , NBFREE , IBID )
         ELSE IF ( KIADM(IC) .NE. 0 ) THEN
           CALL JJLIBP ( KIADM(IC) )

@@ -1,29 +1,30 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 import os
 
-DEBUT( CODE=_F( NOM = 'DEMO006A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+DEBUT(CODE=_F(NOM='DEMO006A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+      PAR_LOT='NON')
 
 # TITRE TUYAUTERIE COMPORTANT UN COUDE - ELEMENTS COQUES DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       optimisation du rayon de courbure
 #
-# Cet exemple illustre l'utilisation du langage Python pour optimiser 
+# Cet exemple illustre l'utilisation du langage Python pour optimiser
 # le rayon de courbure d'une tuyauterie. Il permet :
 #
 #     - De modifier de la geometrie
@@ -82,7 +83,7 @@ RC=0.3
 #    Boucle sur k : a chaque iteration, geometrie,maillage, calcul mecanique
 #                   et verification de la contrainte VMIS max.
 #    ATTENTION :    en python, il faut indenter les commandes sous la
-#                   structure de controle 
+#                   structure de controle
 #                   (voir for statement dans PYTHON REF MANUAL)
 #    ATTENTION :    range(1,10) signifie que k varie de 1 a 9
 #                   (voir for statement dans PYTHON REF MANUAL)
@@ -90,7 +91,7 @@ RC=0.3
 for k in range(1,10):
 
    # Appel a GMSH pour le maillage
-   
+
    f=open("coque.geo","w")
    f.write("RC= %3f ;"  % RC)
    f.close()
@@ -101,14 +102,14 @@ for k in range(1,10):
        os.system(cmd_gmsh + ' coque.msh')
    os.system('cp coque.msh fort.19')
    # Calcul Aster avec ce maillage
-   
+
    PRE_GMSH();
- 
+
    MAIL[k]=LIRE_MAILLAGE();
 
    MAIL[k]=DEFI_GROUP(reuse=MAIL[k],MAILLAGE=MAIL[k],
                       CREA_GROUP_NO=_F(GROUP_MA='GM30'),)
- 
+
    MAIL[k]=MODI_MAILLAGE(reuse =MAIL[k],
                          MAILLAGE=MAIL[k],
                          ORIE_NORM_COQUE=_F(GROUP_MA='GM30',
@@ -119,14 +120,14 @@ for k in range(1,10):
    MODE[k]=AFFE_MODELE(MAILLAGE=MAIL[k],
                        AFFE=_F(GROUP_MA=('GM30','GM28'),
                                PHENOMENE='MECANIQUE',MODELISATION='DKT',),)
- 
+
    MATE[k]=AFFE_MATERIAU(MAILLAGE=MAIL[k],
                        AFFE=_F(TOUT='OUI',MATER=ACIER,),)
- 
+
    CARA[k]=AFFE_CARA_ELEM(MODELE=MODE[k],
                            COQUE=_F(GROUP_MA=('GM30','GM28'),
                                     EPAIS=0.02,),)
- 
+
    CHAR[k]=AFFE_CHAR_MECA(MODELE=MODE[k],
                            DDL_IMPO=(_F(GROUP_MA='GM27',DX=0.0,DY=0.0,DZ=0.0,
                                         DRX=0.0,DRY=0.0,DRZ=0.0,),
@@ -139,16 +140,16 @@ for k in range(1,10):
                        CARA_ELEM=CARA[k],
                        EXCIT=_F(CHARGE=CHAR[k],),
                        )
- 
+
    RESU[k]=CALC_ELEM(reuse=RESU[k],RESULTAT=RESU[k],MODELE=MODE[k],
                        REPE_COQUE=_F(NIVE_COUCHE='SUP',ANGL_REP=(0.0,90.0),),
                        OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM'),)
- 
+
    RESU[k]=CALC_NO(reuse=RESU[k],RESULTAT=RESU[k],
                        OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM'),)
-                           
-   # Impression des resultats au format GMSH 
-   
+
+   # Impression des resultats au format GMSH
+
    unit=50+k
    IMPR_RESU(MODELE=MODE[k],UNITE=unit,FORMAT='GMSH',
              RESU=(_F(MAILLAGE=MAIL[k],RESULTAT=RESU[k],
@@ -156,39 +157,39 @@ for k in range(1,10):
                    _F(MAILLAGE=MAIL[k],RESULTAT=RESU[k],
                       NOM_CHAM='DEPL',),)
                      );
-   
+
    # Post-traitement avec GMSH
- 
+
    if interactif  == 1 :
    # visualisation de la deformee, de la contrainte de mises sous GMSH
        DEFI_FICHIER(ACTION='LIBERER',UNITE=unit);
        os.system('cp fort.'+str(unit)+' resu.pos')
        os.system(cmd_gmsh + ' resu.pos')
- 
+
    RELV[k]=POST_RELEVE_T(
        ACTION=_F(  RESULTAT = RESU[k],INTITULE = 'CONTRAINTES',
                    NOM_CHAM = 'EQUI_NOEU_SIGM',NUME_ORDRE = 1,
                    OPERATION = 'MOYENNE',GROUP_NO = 'GM30',
                    NOM_CMP = ( 'VMIS',),))
-                      
+
    IMPR_TABLE(TABLE=RELV[k])
-   
-   
-  # Recuperation de VMIS max 
+
+
+  # Recuperation de VMIS max
   #    Affectation du reel contenu dans la table RELV[k]
   #   (ligne 'VMIS', colonne 4) dans la variable python SYY
-                    
+
    SYY=RELV[k]['VMIS',4]
-   
+
    print " Iteration numero ",k, " RC = ",RC
    print " VMIS(",k,")=",SYY
-   
+
    f2.write("RC= %3f "  % RC)
    f2.write("Vmis= %3f \n"  % SYY)
-   
+
    crit=2000.e+6
   # Test d arret des iterations :  abs(SIYY) est-il inferieur a crit.
-  # Le critere d'arret des iterations porte sur la valeur 
+  # Le critere d'arret des iterations porte sur la valeur
   #      de la contrainte "VMIS" max a l'iteration k
   #      ATTENTION : decalage de l'identation sous la structure de controle "if"
   #      ATTENTION : sortie de la boucle sur k avec "BREAK", on reprend
@@ -197,12 +198,12 @@ for k in range(1,10):
    if abs(SYY)<crit:
      print "arret des iterations  : iteration numero",k
      break
-     
+
    # Le critere n'est pas respecte, on continue les iterations
    # en augmentant le rayon de courbure de 0.2.
-     
+
    RC=RC+0.2
-   
+
 
 # Fin des iterations (boucle sur k)
 
@@ -212,13 +213,13 @@ TEST_TABLE( TABLE=RELV[k],
                FILTRE=(
                         _F( NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM'),),
-               NOM_PARA='VMIS', 
+               NOM_PARA='VMIS',
                VALE=1.9669824189084E9,
                REFERENCE='NON_REGRESSION',
                VERSION='8.1.0'  )
 
 f2.close()
-   
+
 FIN()
-                                                                                    
- 
+
+

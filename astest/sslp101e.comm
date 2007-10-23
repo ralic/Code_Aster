@@ -1,29 +1,29 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE AVEC PRESSION VARIABLE SUR LES LEVRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # DE LA FISSURE (CALCUL G,K1,K2 )
 #
-DEBUT(CODE=_F( NOM = 'SSLP101E',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLP101E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(  )
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
+MO=AFFE_MODELE(  MAILLAGE=MA,
                              AFFE=_F( TOUT = 'OUI',
                                    PHENOMENE = 'MECANIQUE',
                                    MODELISATION = 'C_PLAN'))
@@ -37,14 +37,14 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
 ZERO  = FORMULE(NOM_PARA=('X','Y'),VALE='0.')
 FCONT = FORMULE(NOM_PARA=('X','Y'),VALE='(X-100.0)/37.5')
 
-CHPRES=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=( 
+CHPRES=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=(
                               _F(  GROUP_NO = 'GRNM5', DY = ZERO),
                                        _F(  NOEUD = 'N451', DX = ZERO)),
                               PRES_REP=_F(  GROUP_MA = 'GRMA4',
                                          PRES = FCONT)
                            )
 
-CHFCONT=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=( 
+CHFCONT=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=(
                                  _F(  GROUP_NO = 'GRNM5', DY = ZERO),
                                           _F(  NOEUD = 'N451', DX = ZERO)),
                             FORCE_CONTOUR=_F(  GROUP_MA = 'GRMA4',
@@ -53,10 +53,10 @@ CHFCONT=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=(
 
 # ---------------------------------------------------------------------
 
-RESU1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+RESU1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
                           EXCIT=_F( CHARGE = CHPRES))
 
-RESU2=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+RESU2=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
                           EXCIT=_F( CHARGE = CHFCONT))
 
 
@@ -133,7 +133,7 @@ GKPRES2=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( MODULE = 1.,
                               R_SUP = 22.04078,
                               R_INF = 15.3061094,
-                              DIRECTION=( 1., 0., 0.,), 
+                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
@@ -150,7 +150,7 @@ GKPRES3=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( MODULE = 1.,
                               R_INF = 9.79591846,
                               R_SUP = 15.3061094,
-                              DIRECTION=( 1., 0., 0.,), 
+                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
@@ -184,7 +184,7 @@ GKPRES5=CALC_G(     RESULTAT=RESU1,
                     THETA=_F( MODULE = 1.,
                               R_INF = 2.448979377,
                               R_SUP = 5.510197639,
-                              DIRECTION=( 1., 0., 0.,), 
+                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
@@ -201,7 +201,7 @@ GKPRES6=CALC_G(     RESULTAT=RESU1,
                     THETA=_F(MODULE = 1.,
                              R_SUP = 2.448979377,
                              R_INF = 0.61225116,
-                             DIRECTION=( 1., 0., 0.,), 
+                             DIRECTION=( 1., 0., 0.,),
                              FOND_FISS=FOND),
                     SYME_CHAR='SYME',
                     OPTION='CALC_K_G')
@@ -288,7 +288,7 @@ GKFCON5=CALC_G(     RESULTAT=RESU2,
                     THETA=_F( MODULE = 1.,
                               R_INF = 2.448979377,
                               R_SUP = 5.510197639,
-                              DIRECTION=( 1., 0., 0.,), 
+                              DIRECTION=( 1., 0., 0.,),
                               FOND_FISS=FOND),
                     SYME_CHAR='SYME',
                     OPTION='CALC_K_G')

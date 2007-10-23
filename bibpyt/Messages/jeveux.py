@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux Messages  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,12 +26,36 @@ cata_msg = {
   %(k1)s
 """),
 
+2: _("""
+ Pointeur de longueur externe interdit maintenant.
+"""),
+
+3: _("""
+ Pointeur de nom externe interdit maintenant.
+"""),
+
+
+6: _("""
+ Erreur de programmation :
+ 
+  Appel invalide, la marque devient négative
+"""),
+
 7 : _("""
  Destruction de  %(k1)s
 """),
+ 
+8: _("""
+ La base  %(k1)s  a été constituée avec la version  %(k2)s
+ et vous utilisez la version  %(k3)s
+"""),
+
+9: _("""
+ Suppression de la partition mémoire
+"""),
 
 10 : _("""
-Erreur de programmation :
+ Erreur de programmation :
 
  Le nom demandé existe déjà dans la base %(k1)s
 """),
@@ -149,10 +173,6 @@ Erreur de programmation :
      Mode debug positionne a %(i1)d
 """),
 
-35 : _("""
-     Le nombre de bases gérables est limité à %(i1)d
-"""),
-
 36 : _("""  
      Le nombre d'enregistrements maximum de la base %(k1)s sera modifié
      de %(i1)d a %(i2)d
@@ -268,4 +288,10 @@ Erreur de programmation :
 
 """),
 
+62 : _("""
+ Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer 
+ une zone mémoire de longueur %(i1)d (octets), on dépasse la limite maximum 
+ fixée à %(i2)d (octets) et on occupe déjà %(i3)d (octets). 
+
+"""),
 }

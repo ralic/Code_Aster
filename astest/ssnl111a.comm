@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F( NOM = 'SSNL111A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNL111A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #......................................................................
 # TROIS BARRES EN THERMOPLASTICITE  CALCUL 2D CONTRAINTES PLANES

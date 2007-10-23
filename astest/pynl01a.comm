@@ -1,27 +1,26 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE INTEGRATION DU COMPORTEMENT VMIS_ISOT_LINE PAR LA COMMANDE CALCUL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
 
-DEBUT(CODE=_F(NOM='PYNL01A',
-              NIV_PUB_WEB='INTERNET',));
+DEBUT(CODE=_F(NOM='PYNL01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
 #=========================================================
 #          DEFINITION DE L'ETUDE
@@ -99,16 +98,16 @@ SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                         ),);
 
 
-VARI0=CREA_CHAMP(OPERATION='AFFE', 
-                 TYPE_CHAM='CART_NEUT_R', 
+VARI0=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='CART_NEUT_R',
                  MODELE=MO,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP= ('X1','X2',),
                          VALE = (0.,0.,))
                  )
 
-VARIP=CREA_CHAMP(OPERATION='ASSE', 
-                 TYPE_CHAM='ELGA_VARI_R', 
+VARIP=CREA_CHAMP(OPERATION='ASSE',
+                 TYPE_CHAM='ELGA_VARI_R',
                  MODELE=MO,
                  ASSE=_F(TOUT='OUI',
                          NOM_CMP= ('X1','X2',),
@@ -241,7 +240,7 @@ DIF_SIG=CREA_CHAMP(OPERATION='ASSE',
                          _F(CHAM_GD=SIGM,
                             TOUT='OUI',
                             CUMUL='OUI',
-                            COEF_R=-1.),  
+                            COEF_R=-1.),
                         ))
 
 IMPR_RESU(FORMAT='GMSH',
@@ -259,7 +258,7 @@ DIF_VAR=CREA_CHAMP(OPERATION='ASSE',
                          _F(CHAM_GD=VARI,
                             TOUT='OUI',
                             CUMUL='OUI',
-                            COEF_R=-1.),  
+                            COEF_R=-1.),
                         ))
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=DIF_SIG,
@@ -291,6 +290,6 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=DIF_SIG,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=1.E-8,),
                         ))
-       
+
 
 FIN();

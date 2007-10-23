@@ -1,21 +1,21 @@
-# MODIF  DATE 23/02/2000   AUTEUR CIBHHPD P.DAVID 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CHOC D'UNE POUTRE SUR UN APPUI : CALCUL DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__: SDNL104A
 #
@@ -23,7 +23,7 @@
 # CHOQUANT SUR UN APPUI ELASTIQUE.
 # CE CALCUL SERT DE REFERENCE AUX CAS TESTS PAR SOUS-STRUCTURATION.
 #
-DEBUT(  CODE=_F( NOM = 'SDNL104A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDNL104A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 MAYA=LIRE_MAILLAGE( )
@@ -45,8 +45,8 @@ BARRE=AFFE_MODELE(  MAILLAGE=MAYA,
                                   PHENOMENE = 'MECANIQUE'))
 
 #
-CARA=AFFE_CARA_ELEM(  MODELE=BARRE, 
-                           POUTRE=_F( 
+CARA=AFFE_CARA_ELEM(  MODELE=BARRE,
+                           POUTRE=_F(
        GROUP_MA = 'TOUT',
     SECTION = 'CERCLE',
                                    CARA = 'R',      VALE = 0.1))
@@ -54,7 +54,7 @@ CARA=AFFE_CARA_ELEM(  MODELE=BARRE,
 #
 GUIDAGE=AFFE_CHAR_MECA(    MODELE=BARRE,DDL_IMPO=(
                            _F( TOUT = 'OUI',
-                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.), 
+                                     DX = 0., DZ = 0., DRX = 0., DRY = 0.),
                            _F( NOEUD = 'N1',    DY = 0.,  DRZ = 0.)))
 
 #
@@ -62,21 +62,21 @@ CHARTRAN=AFFE_CHAR_MECA(        MODELE=BARRE,
                            FORCE_NODALE=_F( NOEUD = 'N11',  FY = -1000.))
 
 #
-K_ELEM=CALC_MATR_ELEM(      MODELE=BARRE, 
-                             CARA_ELEM=CARA, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
-                                CHARGE=GUIDAGE )
-
-#
-M_ELEM=CALC_MATR_ELEM(      MODELE=BARRE, 
-                             CARA_ELEM=CARA, 
+K_ELEM=CALC_MATR_ELEM(      MODELE=BARRE,
+                             CARA_ELEM=CARA,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
+                               OPTION='RIGI_MECA',
                                 CHARGE=GUIDAGE )
 
 #
-V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
+M_ELEM=CALC_MATR_ELEM(      MODELE=BARRE,
+                             CARA_ELEM=CARA,
+                            CHAM_MATER=CHMAT,
+                               OPTION='MASS_MECA',
+                                CHARGE=GUIDAGE )
+
+#
+V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA',
                             CHARGE=CHARTRAN)
 
 #
@@ -90,8 +90,8 @@ M_ASSE=ASSE_MATRICE( MATR_ELEM=M_ELEM,   NUME_DDL=NUM)
 V_ASSE=ASSE_VECTEUR( VECT_ELEM=V_ELEM,   NUME_DDL=NUM)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE, 
-                                 MATR_B=M_ASSE, 
+MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
+                                 MATR_B=M_ASSE,
                              CALC_FREQ=_F( NMAX_FREQ = 5) )
 
 #
@@ -104,17 +104,17 @@ NUMEMODE=NUME_DDL_GENE(       BASE=MODES,
 
 #
 K_PROJ=PROJ_MATR_BASE(            BASE=MODES,
-                             NUME_DDL_GENE=NUMEMODE, 
+                             NUME_DDL_GENE=NUMEMODE,
                                  MATR_ASSE=K_ASSE)
 
 #
 M_PROJ=PROJ_MATR_BASE(            BASE=MODES,
-                             NUME_DDL_GENE=NUMEMODE, 
+                             NUME_DDL_GENE=NUMEMODE,
                                  MATR_ASSE=M_ASSE)
 
 #
 F_PROJ=PROJ_VECT_BASE(            BASE=MODES,
-                             NUME_DDL_GENE=NUMEMODE, 
+                             NUME_DDL_GENE=NUMEMODE,
                                  VECT_ASSE=V_ASSE)
 
 #
@@ -128,8 +128,8 @@ OBSTACLE=DEFI_OBSTACLE( TYPE='CERCLE')
 ###
 #
 TRAN_GE1=DYNA_TRAN_MODAL(   METHODE='EULER',
-                             MASS_GENE=M_PROJ, 
-                             RIGI_GENE=K_PROJ, 
+                             MASS_GENE=M_PROJ,
+                             RIGI_GENE=K_PROJ,
                                 EXCIT=_F( VECT_GENE = F_PROJ,
                                        COEF_MULT = 1.),
                              INCREMENT=_F(  INST_INIT = 0.,
@@ -146,8 +146,8 @@ TRAN_GE1=DYNA_TRAN_MODAL(   METHODE='EULER',
 
 #
 TRAN_GE2=DYNA_TRAN_MODAL(   METHODE='DEVOGE',
-                             MASS_GENE=M_PROJ, 
-                             RIGI_GENE=K_PROJ, 
+                             MASS_GENE=M_PROJ,
+                             RIGI_GENE=K_PROJ,
                                 EXCIT=_F( VECT_GENE = F_PROJ,
                                        COEF_MULT = 1.),
                              INCREMENT=_F(  INST_INIT = 0.,
@@ -164,8 +164,8 @@ TRAN_GE2=DYNA_TRAN_MODAL(   METHODE='DEVOGE',
 
 #
 TRAN_GE3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
-                             MASS_GENE=M_PROJ, 
-                             RIGI_GENE=K_PROJ, 
+                             MASS_GENE=M_PROJ,
+                             RIGI_GENE=K_PROJ,
                                 EXCIT=_F( VECT_GENE = F_PROJ,
                                        COEF_MULT = 1.),
                              INCREMENT=_F(  INST_INIT = 0.,
@@ -204,66 +204,66 @@ TRAN3=REST_BASE_PHYS(   RESU_GENE=TRAN_GE3,
                              INTERPOL='LIN')
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1,
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = -1.25483E-04))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1,
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = 8.35213E-04))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN1, 
-                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN1,
+                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = 3.63953E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2,
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = -1.25437E-04))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2,
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = 8.40985E-04))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN2, 
-                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN2,
+                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = 2.85454E-01))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3, 
-                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN3,
+                  NOM_CHAM = 'DEPL',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = -1.25526E-04))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3, 
-                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN3,
+                  NOM_CHAM = 'VITE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = 8.32656E-04))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = TRAN3, 
-                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11, 
-                  CRITERE = 'RELATIF',    PRECISION = 1.E-4, 
-                  NOEUD = 'N11',            NOM_CMP = 'DY', 
+TEST_RESU( RESU=_F( RESULTAT = TRAN3,
+                  NOM_CHAM = 'ACCE',      NUME_ORDRE = 11,
+                  CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+                  NOEUD = 'N11',            NOM_CMP = 'DY',
                   VALE = 3.45755E-01))
 
 #

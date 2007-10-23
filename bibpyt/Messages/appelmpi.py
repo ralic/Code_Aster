@@ -1,4 +1,4 @@
-#@ MODIF appelmpi Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF appelmpi Messages  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,5 +37,15 @@ cata_msg={
 
 5: _("""
  Erreur MPI: %(k1)s
+"""),
+
+6: _("""
+ Processeur %(i1)d : option MUMMPI %(i2)d non prevue avec MUMPS !
+"""),
+7: _("""
+ &mumps.liste.sd.mpi existe deja !
+"""),
+8: _("""
+ &mumps.liste.sd.mpib existe deja !
 """),
 }

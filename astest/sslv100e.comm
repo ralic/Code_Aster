@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN D.P. (TRIA3 QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT( CODE=_F( NOM = 'SSLV100E',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLV100E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
@@ -59,11 +59,11 @@ CH=AFFE_CHAR_MECA(         MODELE=MO,
 
 RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
                           EXCIT=_F(  CHARGE = CH),
-                      )   
+                      )
 
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,              
-                          
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+
                       OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 CALC_NO( reuse=RESU,                      RESULTAT=RESU,

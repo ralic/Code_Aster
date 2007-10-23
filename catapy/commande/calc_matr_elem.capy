@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,7 @@ def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "MASS_FLUI_STRU"   : return matr_elem_depl_r
   if OPTION == "RIGI_GEOM"        : return matr_elem_depl_r
   if OPTION == "RIGI_ROTA"        : return matr_elem_depl_r
+  if OPTION == "MECA_GYRO"        : return matr_elem_depl_r
   if OPTION == "AMOR_MECA"        : return matr_elem_depl_r
   if OPTION == "IMPE_MECA"        : return matr_elem_depl_r
   if OPTION == "ONDE_FLUI"        : return matr_elem_depl_r
@@ -50,7 +51,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
                                into=("RIGI_MECA","MASS_MECA","RIGI_GEOM",
                                      "AMOR_MECA","RIGI_THER","MASS_THER","IMPE_MECA",
                                      "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
-                                     "RIGI_ROTA","MASS_MECA_DIAG","RIGI_ACOU",
+                                     "RIGI_ROTA","MECA_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
                                      "MASS_ID_MDEP_R","MASS_ID_MDNS_R","MASS_ID_MTEM_R","MASS_ID_MTNS_R",
                                      "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST",
                                      "RIGI_MECA_LAGR") ),
@@ -108,6 +109,12 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
            MODELE            =SIMP(statut='o',typ=modele_sdaster ),
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
            CHARGE            =SIMP(statut='o',typ=char_meca,validators=NoRepeat(),max='**' ),
+         ),
+
+         b_meca_gyro = BLOC( condition = "OPTION=='MECA_GYRO'",
+           MODELE          =SIMP(statut='o',typ=modele_sdaster ),
+           CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
+           CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
          ),
 
          b_amor_meca       =BLOC(condition = "OPTION=='AMOR_MECA'",

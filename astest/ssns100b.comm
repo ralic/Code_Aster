@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SOUS CHARGEMENT THERMIQUE. GRILLE_CINE_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSNS100B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNS100B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
 # VALIDATION DU MODELE GRILLE_CINE_LINE EN PLASTICITE

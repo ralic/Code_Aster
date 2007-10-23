@@ -1,8 +1,8 @@
-#@ MODIF prepost3 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF prepost3 Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,356 +20,352 @@
 
 def _(x) : return x
 
-cata_msg={
+cata_msg = {
 
-1: _("""
+1 : _("""
  med: erreur efgaul numero  %(k1)s 
 """),
 
-2: _("""
+2 : _("""
  med: erreur efgaue numero  %(k1)s 
 """),
 
-3: _("""
+3 : _("""
  ecriture des localisations des points de gauss
 """),
 
-4: _("""
+4 : _("""
   le nombre de noeuds selectionnes est superieur au nombre de noeuds du maillage. on va tronquer la liste.
 """),
 
-5: _("""
+5 : _("""
  chaine de caracteres trop longues : imprimer moins de champs
 """),
 
-6: _("""
+6 : _("""
  type inconnu" %(k1)s "
 """),
 
-7: _("""
+7 : _("""
  le maillage  %(k1)s  a deja ete ecrit au format ensight: le contenu du fichier  %(k2)s  sera ecrase.
 """),
 
-8: _("""
+8 : _("""
  probleme a l'ouverture du fichier " %(k1)s " pour impression du maillage  %(k2)s  au format ensight
 """),
 
-9: _("""
+9 : _("""
  type de base inconnu:  %(k1)s 
 """),
 
-10: _("""
+10 : _("""
  soit le fichier n'existe pas, soit c'est une mauvaise version de hdf (utilise par med).
 """),
 
-11: _("""
+11 : _("""
  pas de maillage dans  %(k1)s 
 """),
 
-12: _("""
+12 : _("""
  maillage  %(k1)s  inconnu dans  %(k2)s 
 """),
 
-13: _("""
+13 : _("""
  instant inconnu pour ce champ et ces supports dans le fichier.
 """),
 
-14: _("""
+14 : _("""
  champ inconnu.
 """),
 
-15: _("""
+15 : _("""
  il manque des composantes.
 """),
 
-16: _("""
+16 : _("""
  aucune valeur à cet instant.
 """),
 
-17: _("""
+17 : _("""
  aucune valeur à ce numéro d ordre.
 """),
 
-18: _("""
+18 : _("""
  mauvais nombre de valeurs.
 """),
 
-19: _("""
+19 : _("""
  lecture impossible.
 """),
 
-20: _("""
- absence de numerotation des mailles  %(k1)s  dans le fichier med
-"""),
-
-21: _("""
+21 : _("""
  grandeur inconnue
 """),
 
-22: _("""
+22 : _("""
  composante inconnue pour la grandeur
 """),
 
-23: _("""
+23 : _("""
  trop de composantes pour la grandeur
 """),
 
-24: _("""
+24 : _("""
  lecture impossible pour  %(k1)s  au format MED
 """),
 
-25: _("""
+25 : _("""
  MODELE obligatoire pour lire un CHAM_ELEM
 """),
 
-26: _("""
+26 : _("""
  med: erreur efchrl numero  %(k1)s 
 """),
 
-27: _("""
+27 : _("""
  nom de composante tronquee a 8 caracteres ( %(k1)s  >>>  %(k2)s )
 """),
 
-28: _("""
+28 : _("""
  impossible de trouver la composante ASTER associée a  %(k1)s 
 """),
 
-29: _("""
+29 : _("""
  pour LIRE_RESU / FORMAT=IDEAS
  le maillage doit normalement avoir été lu au format IDEAS.
 """),
 
-30: _("""
+30 : _("""
  on a trouve plusieurs champs pour le même DATASET
 """),
 
-31: _("""
+31 : _("""
  on n'a pas trouvé le numéro d'ordre à l'adresse indiquée
 """),
 
-32: _("""
+32 : _("""
  on n'a pas trouvé l'instant à l'adresse indiquée
 """),
 
-33: _("""
+33 : _("""
  on n'a pas trouvé la fréquence à l'adresse indiquée
 """),
 
-34: _("""
+34 : _("""
  on n'a pas trouvé dans le fichier UNV le type de champ
 """),
 
-35: _("""
+35 : _("""
  on n'a pas trouvé dans le fichier UNV le nombre de composantes à lire
 """),
 
-36: _("""
+36 : _("""
  on n'a pas trouvé dans le fichier UNV la nature du champ
  (réel ou complexe)
 """),
 
-37: _("""
+37 : _("""
  le type de champ demandé est différent du type de champ à lire
 """),
 
-38: _("""
+38 : _("""
  le champ demande n'est pas de même nature que le champ à lire
  (réel/complexe)
 """),
 
-39: _("""
+39 : _("""
  le mot cle MODELE est obligatoire pour un CHAM_ELEM
 """),
 
-40: _("""
+40 : _("""
  pb correspondance noeud IDEAS
 """),
 
-41: _("""
+41 : _("""
  le champ de type ELGA n'est pas supporté
 """),
 
-42: _("""
+42 : _("""
  probleme dans la lecture du nombre de champs
 """),
 
-43: _("""
+43 : _("""
  probleme dans la lecture du nombre de composantes
 """),
 
-44: _("""
+44 : _("""
  probleme dans la lecture du nom du champ et des ses composantes
 """),
 
-45: _("""
+45 : _("""
  le champ  %(k1)s n existe pas dans le fichier med
 """),
 
-46: _("""
+46 : _("""
  med: erreur efnpdt numero  %(k1)s 
 """),
 
-47: _("""
+47 : _("""
  med: erreur efpdti numero  %(k1)s 
 """),
 
-48: _("""
+48 : _("""
  med: on ne traite pas les maillages distants
 """),
 
-49: _("""
+49 : _("""
  probleme a la fermeture
 """),
 
-50: _("""
+50 : _("""
  probleme dans le diagnostic.
 """),
 
-51: _("""
+51 : _("""
  med: erreur efnval numero  %(k1)s 
 """),
 
-52: _("""
+52 : _("""
  probleme dans la lecture du nombre de maillages
 """),
 
-53: _("""
+53 : _("""
  probleme dans la lecture du nom du maillage.
 """),
 
-54: _("""
+54 : _("""
  attention le maillage n'est pas de type non structuré
 """),
 
-55: _("""
+55 : _("""
  le maillage ' %(k1)s ' est inconnu dans le fichier.
 """),
 
-56: _("""
+56 : _("""
  attention il s'agit d'un maillage structuré
 """),
 
-57: _("""
+57 : _("""
  ==> transfert impossible.
 """),
 
-58: _("""
+58 : _("""
  mauvaise definition de NORESU.
 """),
 
-59: _("""
+59 : _("""
  mauvaise definition de NOMSYM.
 """),
 
-60: _("""
+60 : _("""
  mauvaise definition de NOPASE.
 """),
 
-61: _("""
+61 : _("""
  mauvais dimensionnement de NOMAST.
 """),
 
-62: _("""
+62 : _("""
  impossible de déterminer un nom de maillage MED
 """),
 
-63: _("""
+63 : _("""
  on attend 10 ou 12 secteurs
 """),
 
-64: _("""
+64 : _("""
  ******* percement tube *******
 """),
 
-65: _("""
+65 : _("""
  pour la variable d'acces "noeud_cmp", il faut un nombre pair de valeurs.
 """),
 
-66: _("""
+66 : _("""
  le modèle et le maillage introduits ne sont pas cohérents
 """),
 
-67: _("""
+67 : _("""
  il faut donner le maillage pour une impression au format "CASTEM".
 """),
 
-68: _("""
+68 : _("""
  vous voulez imprimer sur un même fichier le maillage et un champ
  ce qui est incompatible avec le format GMSH
 """),
 
-69: _("""
+69 : _("""
  L'impression d'un champ complexe nécessite l'utilisation du mot-clé PARTIE.
  Ce mot-clé permet de choisir la partie du champ à imprimer (réelle ou imaginaire).
 """),
 
-70: _("""
+70 : _("""
  le mot cle "info_maillage" est reserve au format med
 """),
 
-71: _("""
+71 : _("""
  le mot cle "info_resu" est reserve au format resultat
 """),
 
-72: _("""
+72 : _("""
  l'impression avec selection sur des entites topologiques n'a pas de sens au format ensight : les valeurs de tous les noeuds du maillage seront donc imprimees.
 """),
 
-73: _("""
+73 : _("""
  l'impression avec selection sur des entites topologiques n'a pas de sens au format castem  : toutes les valeurs sur tout le maillage seront donc imprimees.
 """),
 
-75: _("""
+75 : _("""
  fichier GIBI créé par SORT FORMAT non supporté dans cette version
 """),
 
-76: _("""
+76 : _("""
  version de GIBI non supportée, la lecture peut échouer
 """),
 
-77: _("""
+77 : _("""
  fichier GIBI erroné
 """),
 
-78: _("""
+78 : _("""
  le fichier maillage GIBI est vide
 """),
 
-79: _("""
+79 : _("""
  cette commande ne fait que compléter un résultat composé déjà existant.
  il faut donc que le résultat de la commande :  %(k1)s
  soit identique à l'argument "RESULTAT" :  %(k2)s 
 """),
 
-80: _("""
+80 : _("""
  pour un résultat de type " %(k1)s ", on ne traite que l'option ..._NOEU_...
 """),
 
-81: _("""
+81 : _("""
  lmat =0
 """),
 
-84: _("""
+84 : _("""
  il faut autant de composantes en i et j
 """),
 
-85: _("""
+85 : _("""
  il faut autant de composantes que de noeuds
 """),
 
-92: _("""
+92 : _("""
  mot clé "TEST_NOOK" non validé avec le mot clé facteur "INTE_SPEC".
 """),
 
-93: _("""
+93 : _("""
  la fonction n'existe pas.
 """),
 
-94: _("""
+94 : _("""
  il faut définir deux paramètres pour une nappe.
 """),
 
-95: _("""
+95 : _("""
  pour le paramètre donné on n'a pas trouvé la fonction.
 """),
 

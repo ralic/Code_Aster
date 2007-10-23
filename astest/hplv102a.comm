@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,7 @@
 # MODELISATION AXISYMETRIQUE
 #
 
-DEBUT(CODE=_F(NOM='HPLV102A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='HPLV102A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 M=LIRE_MAILLAGE();
 #--------------------------------------------------------------------

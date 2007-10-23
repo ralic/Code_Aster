@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) TEST ORIE_PRES_2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #
 
-DEBUT( CODE=_F(  NOM = 'SSLV04O',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLV04O',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
@@ -64,8 +64,8 @@ RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
                     )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,              
-                          
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
+
                       OPTION=( 'EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',)
                     )
 

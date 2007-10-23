@@ -1,4 +1,4 @@
-# MODIF  DATE 10/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,9 +19,14 @@
 # ======================================================================
 
 #########################################################################
-#                                                                       #
-#   MODELISATION A : CUBE HEXA8 / 210131 DDLs / 8090562 NNZ             #
-#                                                                       #
+#                                                                       
+#   MODELISATION A : CUBE HEXA8 / 210131 DDLs / 8090562 NNZ             
+#   ON TESTE LES DIFFERENTES VARIANTES DE MUMPS (CENTRALISEE/DISTRIBUEE 
+#   PAR MAILLE ET PAR SOUS-DOMAINES, EN INFLUANT SUR L'EQUILIBRAGE      
+#   DE CHARGE VIA LES MOT-CLES CHARGE_PROC0_MA/SD).                               
+#   WARNING: EN PARALLELE, PAS PLUS DE 21 PROC SINON MODIFIER LE NOMBRE  
+#   DE SOUS-DOMAINES (NB_PART ET DIST_PROC0 DU 3.1/3.2).                        
+#   PARALLELE: VALEUR CONSEILLEE 8 PROCS
 #########################################################################
 #
 # Choix du solveur
@@ -88,32 +93,14 @@ CHARD=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_MA='COTE_B',
                                   DZ=0.,),),);
 
-CHARC=AFFE_CHAR_CINE(MODELE=MO,
-                     MECA_IMPO=(_F(GROUP_NO='A',
-                                   DX=0.,
-                                   DY=0.,),
-                                _F(GROUP_NO='B',
-                                   DY=0.,),
-                                _F(GROUP_MA='COTE_B',
-                                   DZ=0.,),),);
-
-CHARO=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=(_F(GROUP_NO='A',
-                                  DX=0.,
-                                  DY=0.,),
-                               _F(GROUP_NO='B',
-                                  DY=0.,),),
-                     FACE_IMPO=_F(GROUP_MA='COTE_B',
-                                  DNOR=0.,),);
-
 TPS=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1,
                                  NOMBRE=1,),);
 
-# 1 : AVEC CHARGE DUALISEE : CHARD
-#----------------------------------------
+# 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
+#-----------------------------------------------
 
-MECA_D=MECA_STATIQUE(INFO=niv_info,
+MECAC=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
                      EXCIT=(_F(CHARGE=CHARF,),
@@ -122,9 +109,11 @@ MECA_D=MECA_STATIQUE(INFO=niv_info,
                      SOLVEUR=_F(METHODE=solveur,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
-                                PCENT_PIVOT=mem_pivot,),);
+                                PCENT_PIVOT=mem_pivot,
+                                PARALLELISME='CENTRALISE'
+                                ),);
 
-TEST_RESU(RESU=_F(RESULTAT=MECA_D,
+TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
@@ -132,7 +121,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECA_D,
                   VALE=0.1,
                   REFERENCE='ANALYTIQUE',),);
 
-TEST_RESU(RESU=_F(RESULTAT=MECA_D,
+TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
@@ -142,4 +131,154 @@ TEST_RESU(RESU=_F(RESULTAT=MECA_D,
                   PRECISION=1e-08,
                   REFERENCE='ANALYTIQUE',),);
 
+# 2.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
+#       EQUILIBRAGE DE CHARGE AUTOMATIQUE
+#----------------------------------------------------------
+
+MECAD1=MECA_STATIQUE(INFO=niv_info,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     EXCIT=(_F(CHARGE=CHARF,),
+                            _F(CHARGE=CHARD,),),
+                     OPTION='SANS',
+                     SOLVEUR=_F(METHODE=solveur,
+                                RENUM=meth_renum,
+                                RESI_RELA=-1.0,
+                                PCENT_PIVOT=mem_pivot,
+                                PARALLELISME='DISTRIBUE_MAILLE',
+                                CHARGE_PROC0_MA=0,
+                                ),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=0.1,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='D',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-08,
+                  REFERENCE='ANALYTIQUE',),);
+
+# 2.2 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
+#       EQUILIBRAGE DE CHARGE FORCE POUR SOULAGER LE PROC 0
+#----------------------------------------------------------
+                  
+MECAD2=MECA_STATIQUE(INFO=niv_info,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     EXCIT=(_F(CHARGE=CHARF,),
+                            _F(CHARGE=CHARD,),),
+                     OPTION='SANS',
+                     SOLVEUR=_F(METHODE=solveur,
+                                RENUM=meth_renum,
+                                RESI_RELA=-1.0,
+                                PCENT_PIVOT=mem_pivot,
+                                PARALLELISME='DISTRIBUE_MAILLE',
+                                CHARGE_PROC0_MA=70,
+                                ),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=0.1,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='D',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-08,
+                  REFERENCE='ANALYTIQUE',),);
+                  
+# 3.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR SOUS-DOMAINES
+#       EQUILIBRAGE DE CHARGE AUTOMATIQUE
+#----------------------------------------------------------
+SDFETI = DEFI_PART_FETI(
+                MODELE=MO,
+                NB_PART=24,
+                EXCIT=(_F(CHARGE=CHARF,),_F(CHARGE=CHARD,),),
+                METHODE='KMETIS',
+                NOM_GROUP_MA='SD',);
+MECAD3=MECA_STATIQUE(INFO=niv_info,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     EXCIT=(_F(CHARGE=CHARF,),
+                            _F(CHARGE=CHARD,),),
+                     OPTION='SANS',
+                     SOLVEUR=_F(METHODE=solveur,
+                                RENUM=meth_renum,
+                                RESI_RELA=-1.0,
+                                PCENT_PIVOT=mem_pivot,
+                                PARALLELISME='DISTRIBUE_SD',
+                                CHARGE_PROC0_SD=0,
+                                PARTITION=SDFETI,
+                                ),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD3,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=0.1,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD3,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='D',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-08,
+                  REFERENCE='ANALYTIQUE',),);
+
+# 3.2 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
+#       EQUILIBRAGE DE CHARGE FORCE POUR SOULAGER LE PROC 0
+#----------------------------------------------------------
+                  
+MECAD4=MECA_STATIQUE(INFO=niv_info,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     EXCIT=(_F(CHARGE=CHARF,),
+                            _F(CHARGE=CHARD,),),
+                     OPTION='SANS',
+                     SOLVEUR=_F(METHODE=solveur,
+                                RENUM=meth_renum,
+                                RESI_RELA=-1.0,
+                                PCENT_PIVOT=mem_pivot,
+                                PARALLELISME='DISTRIBUE_SD',
+                                CHARGE_PROC0_SD=2,
+                                PARTITION=SDFETI,
+                                ),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD4,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=0.1,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD4,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='D',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-08,
+                  REFERENCE='ANALYTIQUE',),);
 FIN();

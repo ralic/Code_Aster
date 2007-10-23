@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,8 +65,8 @@ C ----------------------------------------------------------------------
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
@@ -535,6 +535,7 @@ C
         IF ( LLIBP ) THEN
           IF ( IDYNI .NE. 0 ) THEN
             MCDYN = MCDYN - LONOI
+            MLDYN = MLDYN + LONOI
             CALL HPDEALLC ( IDYNI , NBFREE , IBID )
           ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
@@ -551,12 +552,14 @@ C
   101 CONTINUE
       IF ( IADY1 .NE. 0 ) THEN
         MCDYN = MCDYN - NNN
+        MLDYN = MLDYN + NNN
         CALL HPDEALLC (IADY1, NBFREE, IBID)
       ELSE IF ( IADIT .NE. 0 ) THEN 
         CALL JJLIBP ( IADIT )
       ENDIF
       IF ( IADY2 .NE. 0 ) THEN
         MCDYN = MCDYN - NNN
+        MLDYN = MLDYN + NNN
         CALL HPDEALLC (IADY2, NBFREE, IBID)
       ELSE IF ( IASIG .NE. 0 ) THEN 
         CALL JJLIBP ( IASIG )

@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF elements4 Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,10 +176,6 @@ cata_msg = {
 
 54 : _("""
  ep/r > 0.2 modi_metrique=non pas adapté
-"""),
-
-55 : _("""
- alpha est pris egal a 0
 """),
 
 56 : _("""

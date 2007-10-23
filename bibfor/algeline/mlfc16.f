@@ -7,7 +7,7 @@
       LOGICAL PILMEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2007   AUTEUR DESOZA T.DESOZA 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -240,6 +240,7 @@ C--------------------------------------------------------------------
       CALL WKVECT(NMPRV2,' V V C ',NEQ,TABR2)
       CALL WKVECT(NMPRVI,' V V I ',NEQ,TEMPI)
       CALL WKVECT(NMPRI2,' V V I ',NEQ,TABI2)
+      CALL UTTCPU(7,'INIT',6,TEMPS)
       CALL UTTCPU(7,'DEBUT',6,TEMPS)
 C     3.2)                               ASSEMBLAGE ET FACTORISATION
 C     APPEL A MLTFAS1

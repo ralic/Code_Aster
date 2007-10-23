@@ -1,43 +1,43 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE HARMONIQUE : POUTRE BI-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# VALIDATION INDEPENDANTE PAR SAMTECH  (H.DRION) 
+# VALIDATION INDEPENDANTE PAR SAMTECH  (H.DRION)
 # CAS_TEST__: SHLV301A
 #
 #12345678901234567890123456789012345678901234567890123456789012345678901
 #
 # CE FICHIER DE COMMANDE CONTIENT LES INSTRUCTIONS POUR CALCULER LES
 # FREQUENCES  PROPRES D'UNE POUTRE BI-APPUYEE.
-# LES VALEURS DE REFERENCE SONT CALCULEES SUR UNE POUTRE DE 
+# LES VALEURS DE REFERENCE SONT CALCULEES SUR UNE POUTRE DE
 # TIMOSHENKO DEFORMABLE A L'EFFORT TRANCHANT ET TENANT COMPTE DE
 # L'INERTIE ROTATOIRE DES SECTIONS.
 #
 #################################################################
 #
-# LA POUTRE EST DIVISEE EN DEUX SUPER-ELEMENTS DE TYPE MAC_NEAL 
-# 
+# LA POUTRE EST DIVISEE EN DEUX SUPER-ELEMENTS DE TYPE MAC_NEAL
+#
 #################################################################
 #
-DEBUT(CODE=_F( NOM = 'SHLV301A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SHLV301A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
-MAT=DEFI_MATERIAU(  ELAS=_F( RHO = 7.8E03,  NU = 0.3,  E = 2.1E11,   
+MAT=DEFI_MATERIAU(  ELAS=_F( RHO = 7.8E03,  NU = 0.3,  E = 2.1E11,
                             AMOR_ALPHA = 1.6E-5, AMOR_BETA = 16.))
 
 #
@@ -49,43 +49,43 @@ MAYA=DEFI_GROUP(reuse=MAYA,  MAILLAGE=MAYA,CREA_GROUP_NO=(
                   )
 
 #
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA, 
-                              AFFE=_F( TOUT = 'OUI', 
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                              AFFE=_F( TOUT = 'OUI',
                                     MATER = MAT))
 
 #
 POVOL=AFFE_MODELE(  MAILLAGE=MAYA,
-                              AFFE=_F( TOUT = 'OUI', 
-                                  MODELISATION = '3D', 
+                              AFFE=_F( TOUT = 'OUI',
+                                  MODELISATION = '3D',
                                   PHENOMENE = 'MECANIQUE'))
 
 #
-PRESSION=AFFE_CHAR_MECA( 
-                  MODELE=POVOL, 
-                 PRES_REP=_F(  GROUP_MA = 'PRESSION', 
+PRESSION=AFFE_CHAR_MECA(
+                  MODELE=POVOL,
+                 PRES_REP=_F(  GROUP_MA = 'PRESSION',
                             PRES = 50.E4))
 
-# 
-#################################################################
-#
-#  MODELISATION DU SUPER ELEMENT  DE GAUCHE    
 #
 #################################################################
 #
-FIXAT1=AFFE_CHAR_MECA( 
+#  MODELISATION DU SUPER ELEMENT  DE GAUCHE
+#
+#################################################################
+#
+FIXAT1=AFFE_CHAR_MECA(
                   MODELE=POVOL,DDL_IMPO=(
                  _F(  GROUP_NO = 'COND1',  DY = 0.),
                  _F(  GROUP_NO = 'CONDZG',  DZ = 0.),
                  _F(  NOEUD = 'N26',  DX = 0.),
 
 #
-#  INTERFACE DE MAC NEAL --> MODELE INITIAL ISOSTATIQUE 
+#  INTERFACE DE MAC NEAL --> MODELE INITIAL ISOSTATIQUE
 #
                  _F(  GROUP_NO = 'DROITE', DX = 0.)))
 
 #
 PLAN_F1=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
-                            
+
      _F( NOEUD = ('N1','N21','N9',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
      _F( NOEUD = ('N2','N21','N9',), DDL = ('DX','DX','DX',),
@@ -151,21 +151,21 @@ PLAN_F1=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
        )
 
 #
-K_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
+K_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA',
                                 CHARGE=( FIXAT1, )
                              )
 
 #
-M_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL, 
+M_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
+                               OPTION='MASS_MECA',
                                 CHARGE=( FIXAT1, )
                            )
 
 #
-A_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL, 
+A_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL,
                             CHAM_MATER=CHMAT,
                                 OPTION='AMOR_MECA',
                              RIGI_MECA=K_ELEM1,
@@ -173,7 +173,7 @@ A_ELEM1=CALC_MATR_ELEM(      MODELE=POVOL,
                                 CHARGE=( FIXAT1, )
                            )
 
-#   
+#
 V_ELEM1=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
                               CHARGE=PRESSION )
 
@@ -205,7 +205,7 @@ MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
 INTERF1=DEFI_INTERF_DYNA(  NUME_DDL=NUM1,
                               INTERFACE=_F( NOM = 'DROITE',
                              TYPE = 'MNEAL',
-                             GROUP_NO = 'DROITE'),  
+                             GROUP_NO = 'DROITE'),
                              INFO=2)
 
 #
@@ -223,7 +223,7 @@ MACRO1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
 #
 #################################################################
 #
-#  MODELISATION DU SUPER ELEMENT DE DROITE 
+#  MODELISATION DU SUPER ELEMENT DE DROITE
 #
 #################################################################
 #
@@ -232,13 +232,13 @@ FIXAT2=AFFE_CHAR_MECA(    MODELE=POVOL,DDL_IMPO=(
                  _F(  GROUP_NO = 'CONDZD',  DZ = 0.),
                  _F(  NOEUD = 'N766',  DX = 0.),
 #
-#  INTERFACE DE MAC NEAL --> MODELE INITIAL ISOSTATIQUE 
+#  INTERFACE DE MAC NEAL --> MODELE INITIAL ISOSTATIQUE
 #
                  _F(  GROUP_NO = 'GAUCHE',  DX = 0.)))
 
 #
 PLAN_F2=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
-                            
+
      _F( NOEUD = ('N741','N761','N749',), DDL = ('DX','DX','DX',),
      COEF_MULT = ( 1.00,   .00000, -1.00000,), COEF_IMPO = 0.),
      _F( NOEUD = ('N742','N761','N749',), DDL = ('DX','DX','DX',),
@@ -304,21 +304,21 @@ PLAN_F2=AFFE_CHAR_MECA(   MODELE=POVOL,LIAISON_DDL=(
        )
 
 #
-K_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL, 
-                            CHAM_MATER=CHMAT, 
-                               OPTION='RIGI_MECA', 
-                                CHARGE=( FIXAT2, )
-                             )
-
-#
-M_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL, 
+K_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL,
                             CHAM_MATER=CHMAT,
-                               OPTION='MASS_MECA', 
+                               OPTION='RIGI_MECA',
                                 CHARGE=( FIXAT2, )
                              )
 
 #
-A_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL, 
+M_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL,
+                            CHAM_MATER=CHMAT,
+                               OPTION='MASS_MECA',
+                                CHARGE=( FIXAT2, )
+                             )
+
+#
+A_ELEM2=CALC_MATR_ELEM(      MODELE=POVOL,
                             CHAM_MATER=CHMAT,
                                 OPTION='AMOR_MECA',
                              RIGI_MECA=K_ELEM2,
@@ -346,7 +346,7 @@ A_ASSE2=ASSE_MATRICE(  MATR_ELEM=A_ELEM2,
                            NUME_DDL=NUM2)
 
 #
-V_ASSE2=ASSE_VECTEUR(   VECT_ELEM=V_ELEM2,  
+V_ASSE2=ASSE_VECTEUR(   VECT_ELEM=V_ELEM2,
                             NUME_DDL=NUM2 )
 
 #
@@ -358,7 +358,7 @@ MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
 INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUM2,
                               INTERFACE=_F( NOM = 'GAUCHE',
                                          TYPE = 'MNEAL',
-                                         GROUP_NO = 'GAUCHE'),  
+                                         GROUP_NO = 'GAUCHE'),
                                    INFO=2)
 
 #
@@ -375,10 +375,10 @@ MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
 #
 #################################################################
 #
-#       CALCUL SUR LE MODELE GENERALISE   
+#       CALCUL SUR LE MODELE GENERALISE
 #
 #################################################################
-#    
+#
 #   CREATION DU MODELE GENERALISE
 #
 MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=( _F( NOM = 'COTE1',
@@ -407,7 +407,7 @@ AMOGEN=ASSE_MATR_GENE(    NUME_DDL_GENE=NUMEGE,
                                      OPTION='AMOR_GENE' )
 
 #
-VECTGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,CHAR_SOUS_STRUC=( 
+VECTGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,CHAR_SOUS_STRUC=(
                             _F(  SOUS_STRUC = 'COTE1',
                                               VECT_ASSE = V_ASSE1),
                             _F(  SOUS_STRUC = 'COTE2',
@@ -448,7 +448,7 @@ DYNHAR2=REST_BASE_PHYS( RESU_GENE=DYNGEN,
                           SOUS_STRUC='COTE2')
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR1, 
+TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,
                   FREQ = 1000.,
                   NOM_CHAM = 'DEPL',
                   CRITERE = 'RELATIF',
@@ -458,7 +458,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,
                   VALE_C = 1.95994E-05+8.49179E-06j))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,  
+TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,
                   FREQ = 1000.,
                   NOM_CHAM = 'DEPL',
                   CRITERE = 'RELATIF',
@@ -468,17 +468,17 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR1,
                   VALE_C = -6.99938E-06-1.14501E-05j))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,  
+TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
                   FREQ = 1000.,
                   NOM_CHAM = 'DEPL',
-                  CRITERE = 'RELATIF', 
+                  CRITERE = 'RELATIF',
                   PRECISION = 5.E-2,
-                  NOEUD = 'N26', 
-                  NOM_CMP = 'DY', 
+                  NOEUD = 'N26',
+                  NOM_CMP = 'DY',
                   VALE_C = -6.99938E-06-1.14501E-05j))
 
 #
-TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,  
+TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
                   FREQ = 1000.,
                   NOM_CHAM = 'DEPL',
                   CRITERE = 'RELATIF',

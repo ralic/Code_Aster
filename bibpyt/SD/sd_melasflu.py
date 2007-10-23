@@ -1,4 +1,4 @@
-#@ MODIF sd_melasflu SD  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_melasflu SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,93 +41,99 @@ class sd_melasflu(AsBase):
     FACT = AsVR(SDNom(debut=19), )
     DESC = AsVK16(SDNom(debut=19), lonmax=1, )
 
-    # Critère présence VCN et VEN ????
+    # si FAISCEAU_TRANS + couplage fluide-structure + BASE_MODALE/AMOR_REDUIT_CONN :
     VCN  = Facultatif(AsVR())
     VEN  = Facultatif(AsVR())
 
-    sd_l_table = Facultatif(sd_l_table(SDNom(nomj=''))) # Si faisceau axial
     sd_table   = sd_table(SDNom(nomj=''))
+    sd_l_table = Facultatif(sd_l_table(SDNom(nomj=''))) # Si FAISCEAU_AXIAL
 
 
     # indirections via .REMF :
     #----------------------------------
     def check_melasflu_i_REMF(self, checker):
-        lnom=self.REMF.get()
-        sd2 = sd_type_flui_stru(lnom[0]) ; sd2.check(checker)
-        sd2 = sd_resultat_dyn(lnom[1]) ; sd2.check(checker)
+        remf=self.REMF.get_stripped()
+        sd2 = sd_type_flui_stru(remf[0]) ; sd2.check(checker)
+        sd2 = sd_resultat_dyn(remf[1]) ; sd2.check(checker)
 
 
     # Vérifications supplémentaires :
     #----------------------------------
     def check_veri1(self, checker):
-        desc=self.DESC.get()
-        numo=self.NUMO.get()
-        fact=self.FACT.get()
-        freq=self.FREQ.get()
-        masg=self.MASG.get()
-        vite=self.VITE.get()
-        vcn=self.VCN.get()
-        ven=self.VEN.get()
-        l_table = sd_l_table(self.nomj) # Si faisceau axial
+        remf=self.REMF.get()
+        desc=self.DESC.get_stripped()
 
         # calcul de itypfl (type d'interaction fluide / structure) :
-        typfl = sd_type_flui_stru(self.REMF.get()[0])
-        itypfl=typfl.FSIC.get()[0]
+        typfl = sd_type_flui_stru(remf[0])
+        itypfl=typfl.FSIC.get()[0]  # 1 -> FAISCEAU_TRANS
+                                    # 3 -> FAISCEAU_AXIAL
+        couplage=typfl.FSIC.get()[1]  # 1 -> prise en compte du couplage
+        assert itypfl > 0 , remf
 
         # calcul de nbmode (nombre de modes) :
-        nbmode=len(numo)
+        nbmode=self.NUMO.lonmax
+        assert nbmode > 0
 
         # calcul de nbvite (nombre de vitesses) :
-        nbvite=len(vite)
+        nbvite=self.VITE.lonmax
+        assert nbvite > 0
 
         # vérification de l'objet .DESC :
         #--------------------------------
-        sdu_compare(self.DESC,checker,desc[0].strip(),'==','DEPL','DESC[1]=="DEPL"')
+        assert len(desc)==1 , desc
+        assert desc[0] == 'DEPL' , desc
 
         # vérification de l'objet .NUMO :
         #--------------------------------
-        sdu_tous_compris(self.NUMO,checker,vmin=1)
+        for x in self.NUMO.get() :
+            assert x >= 1 , numo
 
         # vérification de l'objet .FACT :
         #--------------------------------
         if itypfl==3 :  # faisceau axial
-            sdu_compare(self.FACT,checker,len(fact),'==',3*nbmode*nbvite,'LONMAX(FACT)==3*nbmode*nbvite')
+            assert self.FACT.lonmax == 3*nbmode*nbvite
         else :
-            sdu_compare(self.FACT,checker,len(fact),'==',3*nbmode,'LONMAX(FACT)==3*nbmode')
+            assert self.FACT.lonmax == 3*nbmode
 
         # vérification de l'objet .MASG :
         #--------------------------------
         if itypfl==3 :  # faisceau axial
-            sdu_compare(self.MASG,checker,len(masg),'==',nbmode*nbvite,'LONMAX(MASG)==nbmode*nbvite')
+            assert self.MASG.lonmax == nbmode*nbvite
         else :
-            sdu_compare(self.MASG,checker,len(masg),'==',nbmode,'LONMAX(MASG)==nbmode')
+            assert self.MASG.lonmax == nbmode
 
         # vérification de l'objet .FREQ :
         #--------------------------------
-        sdu_compare(self.FREQ,checker,len(freq),'==',2*nbmode*nbvite,'LONMAX(FREQ)==2*nbmode*nbvite')
+        assert self.FREQ.lonmax == 2*nbmode*nbvite
+
+        # vérification existence .VCN et .VEN:
+        #-------------------------------------
+        if self.VCN.exists : assert self.VEN.exists
+        if self.VEN.exists : assert self.VCN.exists
+        if self.VEN.exists : assert itypfl == 1 and couplage == 1
 
         # vérification de l'objet .VCN :
         #--------------------------------
-        if vcn :
+        if self.VCN.exists :
             fsvi=typfl.FSVI.get()
-            nbzex=len(fsvi)
-            nbval=1
-            for i in range(nbzex) :
-                nbval=nbval+fsvi[nbzex+i]
-            sdu_compare(self.VCN,checker,len(vcn),'==',nbmode,'LONMAX(VCN)==nbmode*nbval')
+            nbzone=fsvi[1]
+            nbval=0
+            for i in range(nbzone) :
+                nbval=nbval+fsvi[2+nbzone+i]
+            assert self.VCN.lonmax == nbmode*nbval
 
         # vérification de l'objet .VEN :
         #--------------------------------
-        if ven :
-            sdu_compare(self.VEN,checker,len(ven),'==',nbmode,'LONMAX(VEN)==nbmode')
+        if self.VEN.exists :
+            assert self.VEN.lonmax == nbmode
 
 
         # vérification de la SD table contenant les cham_no :
         #----------------------------------------------------
-        tcham=sd_table(self.nomj)
-        sdu_compare(None,checker,tcham.nb_column(),'==',1,"1 seule colonne dans la table")
+        tcham=self.sd_table
+        assert tcham.nb_column() == 1  , tcham
         col1=tcham.get_column_name('NOM_CHAM')
-        sdu_assert(None, checker, col1, "Manque colonne NOM_CHAM")
+        assert col1, "Il manque la colonne NOM_CHAM"
 
         data=col1.data.get()
         mask=col1.mask.get()
@@ -142,12 +148,16 @@ class sd_melasflu(AsBase):
             if profchno == '':
                 profchno=profchn1
             else:
-                sdu_compare(None,checker,profchn1,'==',profchno,"Tous PROFCHNO identiques")
+                assert profchn1 == profchno  ,(profchn1, profchno)
 
 
         # vérification de la SD l_table :
         #--------------------------------
-        if itypfl==3 :  # faisceau axial
+        if self.sd_l_table.LTNT.exists : assert itypfl == 3   # FAISCEAU_AXIAL
+        if itypfl == 3  : assert self.sd_l_table.LTNT.exists
+
+        if self.sd_l_table.LTNT.exists :
+            l_table = self.sd_l_table
             l_table.check(checker)
 
             # la l_table ne contient qu'une seule table nommée 'MATR_GENE'

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 3 NOEUDS) MACRO_ELAS_MULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(  NOM = 'SSLL106A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
+DEBUT(CODE=_F(NOM='SSLL106A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 #PRE_GIBI () ;
 
@@ -510,9 +510,9 @@ _F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
       NOM_CAS = 'CHARGE NUMERO91'))
 
       )
-      
-      
-                   
+
+
+
 # Solutions analytiques pour les deformations generalisees de poutre DEGE_ELNO_DEPL
 L=5.0
 E=2.E11
@@ -616,14 +616,14 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='ANALYTIQUE',),),);
 
 
-                   
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
+
 # DILATATION THERMIQUE
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
               AFFE=_F(  TOUT = 'OUI',
@@ -652,14 +652,14 @@ REST=MECA_STATIQUE(             MODELE=MO,
 
                         )
 
-CALC_ELEM( reuse= REST ,RESULTAT= REST ,              
-                                  
+CALC_ELEM( reuse= REST ,RESULTAT= REST ,
+
                   OPTION=('EPSI_ELGA_DEPL',
                           'EFGE_ELNO_DEPL', )
                         )
 
-CALC_NO(reuse=REST,  
-                  
+CALC_NO(reuse=REST,
+
               OPTION='FORC_NODA',
                  RESULTAT=REST
          )

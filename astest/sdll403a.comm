@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,8 +20,7 @@
 # ======================================================================
 # ELEMENTS  : HEXA20
 
-DEBUT(CODE=_F(NOM='SDLL403A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SDLL403A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=7.E10,
                             NU=0.3,
@@ -106,7 +105,7 @@ SIGMA=CREA_CHAMP( OPERATION='EXTR',
                   TYPE_CHAM='ELGA_SIEF_R',
                   RESULTAT=RESU, NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA_DEPL' )
-                          
+
 CHARGE_2=AFFE_CHAR_MECA(MODELE=STRUCTUR,
                         PESANTEUR=(-9.81,0.0,0.0,1.0,),
                         ROTATION=(10.0,0.0,0.0,1.0,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL ELECTRIQUE ET THERMIQUE D'UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'TPLL101B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='TPLL101B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAIL=LIRE_MAILLAGE( )
 

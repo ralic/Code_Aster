@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CYLINDRE SOUMIS A CHOC THERMIQUE ET CHARGEMENT MECANIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -431,7 +431,7 @@ MAT2=DEFI_MATERIAU(      ELAS_FO=_F(  E = E_FO,
 MATER2=AFFE_MATERIAU(   MAILLAGE=MAYA,
                                 AFFE=_F(  TOUT = 'OUI',
                                        MATER = MAT2),
-                                AFFE_VARC=_F(TOUT='OUI',
+                                AFFE_VARC=_F(TOUT='OUI',VALE_REF=0.,
                                        NOM_VARC='TEMP',
                                        EVOL=THERL,
                                        NOM_CHAM='TEMP',),

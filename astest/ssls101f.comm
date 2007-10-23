@@ -1,24 +1,24 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DST  170 N - 296 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSLS101F',NIV_PUB_WEB='INTERNET')  )
+DEBUT(CODE=_F(NOM='SSLS101F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
 # POINTS:   O    MAILLES  M1    M2
@@ -71,7 +71,7 @@ CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
                       PESANTEUR=( 10., 0., 0., -1.,                 )   )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
-                               COQUE=_F( 
+                               COQUE=_F(
        GROUP_MA = 'TOUT',
   EPAIS = T) )
 
@@ -86,83 +86,83 @@ DEF3=MECA_STATIQUE(MODELE=MODEL,
                    CARA_ELEM=CARELEM,
                    EXCIT=(_F(CHARGE=CINE,),
                           _F(CHARGE=CHF3,),),);
-                          
+
 DEPE=MECA_STATIQUE(MODELE=MODEL,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARELEM,
                    EXCIT=(_F(CHARGE=CINE,),
                           _F(CHARGE=CHPE,),),);
-        
+
 #--------------------------------------------------------------------
 
 TEST_RESU(RESU=(
      # DEPLACEMENTS PRESSION
-        
+
           _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.2E-2,  # O
             NOEUD = 'O', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -703.39),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
             NOEUD = 'A', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
             NOEUD = 'B', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
             NOEUD = 'C', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # D
             NOEUD = 'D', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -495.56),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # E
             NOEUD = 'E', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -495.56),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # F
             NOEUD = 'F', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -441.18),
      # DEPLACEMENTS F3
-        
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.2E-2,  # O
             NOEUD = 'O', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -703.39),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
             NOEUD = 'A', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
             NOEUD = 'B', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
             NOEUD = 'C', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # D
             NOEUD = 'D', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -495.56),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # E
             NOEUD = 'E', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -495.56),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # F
             NOEUD = 'F', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -441.18),
      # DEPLACEMENTS PESANTEUR
-        
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.2E-2,  # O
             NOEUD = 'O', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -703.39),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
             NOEUD = 'A', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
             NOEUD = 'B', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
             NOEUD = 'C', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = 0.),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # D
             NOEUD = 'D', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -495.56),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # E
             NOEUD = 'E', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -495.56),
-          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL', 
+          _F(  RESULTAT = DEPR, NUME_ORDRE=1, NOM_CHAM='DEPL',
             CRITERE = 'RELATIF',  PRECISION = 0.1E-2,  # F
             NOEUD = 'F', REFERENCE = 'ANALYTIQUE', NOM_CMP = 'DZ',     VALE = -441.18))
           )
@@ -217,7 +217,7 @@ DEPR=CALC_ELEM( reuse= DEPR ,RESULTAT= DEPR ,
                 )
 
 #--------------------------------------------------------------------
-RELEVE_1=POST_RELEVE_T( 
+RELEVE_1=POST_RELEVE_T(
                    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                             INTITULE = 'EFGE',
                             RESULTAT = DEPR,
@@ -355,7 +355,7 @@ TSUP3=115.
 
 T3=100.
 
-TR3=(T3 + TSUP3 + TINF3)/ 3. 
+TR3=(T3 + TSUP3 + TINF3)/ 3.
 
 E1=1.
 
@@ -388,19 +388,19 @@ MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,   NU = NU_F,
                                        ALPHA = ALPHA_F,TEMP_DEF_ALPHA=0.) )
 
 
-CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
                                NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T1,     TINF1,      TSUP1, )))
 
-CHT2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+CHT2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
                                NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
                                VALE = ( T2,     TINF2,      TSUP2, )))
 
-CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+CHT3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 MAILLAGE=MAILL,
                         AFFE=_F(  TOUT = 'OUI',
                                NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -466,7 +466,7 @@ RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=2 )
 DE3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=3 )
 
-TEST_RESU(CHAM_NO=( 
+TEST_RESU(CHAM_NO=(
             _F(  CHAM_GD = DE1,  NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V1,
               CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', PRECISION = 0.2E-2),
             _F(  CHAM_GD = DE2,  NOEUD = 'O',   NOM_CMP = 'DZ',  VALE = V2,

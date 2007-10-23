@@ -1,21 +1,21 @@
-#@ MODIF assembla Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF assembla Messages  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -33,7 +33,7 @@ cata_msg = {
 
 3 : _("""
   le parametre :  %(k1)s  est incorrect.
-  on attend : "CUMU" ou "ZERO" 
+  on attend : "CUMU" ou "ZERO"
 """),
 
 4 : _("""
@@ -54,7 +54,7 @@ cata_msg = {
 
 8 : _("""
  le motcle :  %(k1)s  est incorrect.
- on attend : "CUMU" ou "ZERO" 
+ on attend : "CUMU" ou "ZERO"
 """),
 
 9 : _("""
@@ -75,23 +75,23 @@ cata_msg = {
 """),
 
 13 : _("""
- ICHIN = 0 
+ ICHIN = 0
 """),
 
 14 : _("""
- ICHIN < -2 
+ ICHIN < -2
 """),
 
 15 : _("""
- S => ICHIN=/0 
+ S => ICHIN=/0
 """),
 
 16 : _("""
- action : E/L/S 
+ action : E/L/S
 """),
 
 17 : _("""
- message vide    
+ message vide
 """),
 
 18 : _("""
@@ -103,7 +103,7 @@ cata_msg = {
 """),
 
 20 : _("""
-  -  aucun LIGREL dans les RESUELEM 
+  -  aucun LIGREL dans les RESUELEM
 """),
 
 21 : _("""
@@ -141,11 +141,11 @@ cata_msg = {
 """),
 
 29 : _("""
-  -  aucun LIGREL  
+  -  aucun LIGREL
 """),
 
 30 : _("""
-  plusieurs phénomènes 
+  plusieurs phénomènes
 """),
 
 31 : _("""
@@ -186,83 +186,95 @@ cata_msg = {
 """),
 
 41 : _("""
- le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s 
- n'a pas d'adresse dans : %(k3)s 
+ le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s
+ n'a pas d'adresse dans : %(k3)s
 """),
 
 42 : _("""
- le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s 
-   a une adresse  : %(i2)d  > NEQUA : %(i3)d 
+ le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s
+   a une adresse  : %(i2)d  > NEQUA : %(i3)d
 """),
 
 43 : _("""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
 44 : _("""
  --- VECT_ELEM     : %(k1)s
  --- RESU          : %(k2)s
- --- NOMLI         : %(k3)s 
- --- GREL numéro   : %(i1)d 
- --- MAILLE numéro : %(i2)d 
- --- NNOE par NEMA : %(i3)d 
- --- NNOE par NODE : %(i4)d 
+ --- NOMLI         : %(k3)s
+ --- GREL numéro   : %(i1)d
+ --- MAILLE numéro : %(i2)d
+ --- NNOE par NEMA : %(i3)d
+ --- NNOE par NODE : %(i4)d
 """),
 
 45 : _("""
- --- le LIGREL    : %(k1)s  réf. par le noeud supl.  : %(i1)d 
- --- de la maille : %(i2)d 
- --- du RESUELEM  : %(k2)s 
- --- du VECT_ELEM : %(k3)s 
- --- n'est pas présent  dans la numérotation : %(k4)s 
+Erreur Programmeur ou utilisateur :
+-----------------------------------
+ Le sd_ligrel    : %(k1)s  référencé par le noeud supplém. : %(i1)d
+ de la maille : %(i2)d  du sd_resuelem  : %(k2)s  du sd_vect_elem : %(k3)s
+ n'est pas présent  dans le sd_nume_ddl : %(k4)s
+
+Risques & conseils :
+--------------------
+ Si vous utilisez la commande MACRO_ELAS_MULT :
+   Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
+   Etes-vous sur d'avoir indiqué cette charge derrière le mot clé CHAR_MECA_GLOBAL ?
+   En effet, il faut indiquer TOUTES les charges dualisées derrière CHAR_MECA_GLOBAL.
+
+ Si vous utilisez directement la commande ASSE_VECTEUR :
+   Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
+   Etes-vous sur d'avoir indiqué cette charge derrière le mot clé CHARGE
+   de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?
 """),
 
 46 : _("""
- --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
+ --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
 47 : _("""
- --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
+ --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
 48 : _("""
- --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s 
- --- n'a pas d''adresse  dans la numérotation : %(k3)s 
+ --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s
+ --- n'a pas d''adresse  dans la numérotation : %(k3)s
 """),
 
 49 : _("""
- --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s 
- --- a une adresse : %(i2)d   > NEQUA : %(i3)d 
+ --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s
+ --- a une adresse : %(i2)d   > NEQUA : %(i3)d
 """),
 
 50 : _("""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
 52 : _("""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
 53 : _("""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d 
+ NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
 63 : _("""
  erreur sur le premier lagrange d'une LIAISON_DDL
- on a mis 2 fois le premier  lagrange :  %(i1)d 
- derrière le noeud :  %(i2)d 
+ on a mis 2 fois le premier  lagrange :  %(i1)d
+ derrière le noeud :  %(i2)d
 """),
 
 64 : _("""
  erreur sur le  2ème lagrange d'une LIAISON_DDL
- on a mis 2 fois le 2ème  lagrange :  %(i1)d 
- derrière le noeud :  %(i2)d 
+ on a mis 2 fois le 2ème  lagrange :  %(i1)d
+ derrière le noeud :  %(i2)d
 """),
 
 65 : _("""
  incohérence dans le dénombrement des ddls
- nombre de ddl a priori    : %(i1)d 
- nombre de ddl a posteriori: %(i2)d 
+ nombre de ddl a priori    : %(i1)d
+ nombre de ddl a posteriori: %(i2)d
 """),
 
 66 : _("""

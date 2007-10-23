@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE Sensibilite par rapport a la source imposee et temp exterieure
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,19 +6,19 @@
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NOM='SENST03A', NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NOM='SENST03A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 #
 #  On note T1=1+0.1*INST, T2=1+0.2*INST, T3=1+0.3*INST ET T4=1+0.4*INST
 #
@@ -35,14 +35,14 @@ DEBUT(CODE=_F(NOM='SENST03A', NIV_PUB_WEB='INTERNET',),)
 #       ORIGINE   BORD_IN1     BORD_IN2     I
 #       TEMP_IMPO: 100*T1
 #
-#    TRANSITOIRE T DE 0 A 10 PAR PAS DE 5       
+#    TRANSITOIRE T DE 0 A 10 PAR PAS DE 5
 #              1   < X < 11
 #             -1.5 < Y <  1.5
 #        55 NOEUDS, 28 SEG2 ET 80 TRIA3
 #
 # On calcule les sensibilites par rapport a la source imposee sur MOITIE2
 # (PS1) et par rapport a la temperature exterieure de la condition d'echan
-# ge du bord gauche (PS2) de deux manieres differentes: par differences 
+# ge du bord gauche (PS2) de deux manieres differentes: par differences
 # finies (via PYTHON) et de maniere numerique (via l'option
 # idoine de THER_LINEAIRE). La deuxieme strategie est evidemment celle qui
 # est preconisee (plus rapide, plus commode a utiliser, plus robuste...)
@@ -132,7 +132,7 @@ LR8=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A = 10.,NOMBRE=2))
 
 RETH=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
 #                   INFO=2,
                    EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),
@@ -144,25 +144,25 @@ RETH=THER_LINEAIRE(MODELE=MODEPLAN,
 #
 RETH1M=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1M),
                           _F(CHARGE=CH_2)))
 RETH1P=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1P),
                           _F(CHARGE=CH_2)))
 RETH2M=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1),
                           _F(CHARGE=CH_2M)))
 RETH2P=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
-                   INCREMENT=_F(LIST_INST = LR8), 
+                   INCREMENT=_F(LIST_INST = LR8),
                    TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1),
                           _F(CHARGE=CH_2P)))

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/09/2004   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,9 +38,7 @@
 #
 # ______________________________________________________________________
 
-DEBUT(CODE=_F(NOM='SSLS111A',
-              NIV_PUB_WEB='INTERNET',), 
-              );
+DEBUT(CODE=_F(NOM='SSLS111A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 h = 0.8;     # epaisseur
 hs2 = h/2
@@ -53,7 +51,7 @@ G = E/2/(1.0+Nu)
 # chargement
 frep = -1000.0;
 
-# solution analytique                      
+# solution analytique
 L=10.0
 b=5.0
 I=b*h*h*h/12.0
@@ -86,8 +84,8 @@ MA0=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 # creation de plaq2 : meme noeuds que plaq1 mais mailles distinctes
 
 MA1=CREA_MAILLAGE(MAILLAGE=MA0,
-                  CREA_GROUP_MA=_F(NOM = 'PLAQ2',  
-                                   PREF_MAILLE = 'B',  
+                  CREA_GROUP_MA=_F(NOM = 'PLAQ2',
+                                   PREF_MAILLE = 'B',
                                    GROUP_MA = 'PLAQ1',)
                  )
 
@@ -160,19 +158,19 @@ RESU2A=MECA_STATIQUE(MODELE=MO2,
                       _F(CHARGE=CHME2A),
                       ),
                       )
-                
+
 RESU2A=CALC_ELEM(reuse=RESU2A,
                 RESULTAT=RESU2A,
                 OPTION='EFGE_ELNO_DEPL',
                       )
-                
+
 
 
 RESU2A=CALC_NO(reuse=RESU2A,
                 RESULTAT=RESU2A,
                 OPTION='EFGE_NOEU_DEPL',
                       )
-                      
+
 
 # Test
 

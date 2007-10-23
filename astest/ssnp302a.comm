@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE EN TRACTION SOUMIS A UN CHAMP DE TEMPERATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # ELEMENTS QUAD4
 #.....................................................................
 
-DEBUT(   CODE=_F(  NOM = 'SSNP302A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNP302A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAYA=LIRE_MAILLAGE( )
 

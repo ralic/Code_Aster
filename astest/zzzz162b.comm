@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'ZZZZ162B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='ZZZZ162B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #......................................................................
 # CECI EST UN TEST DE L ECRITURE ET LA RELECTURE DES CHAMPS
 # AU FORMAT MED POUR MAILLE HEXA8 - C EST LA RECOPIE DE HSNV100G

@@ -1,4 +1,4 @@
-#@ MODIF sd_char_contact SD  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_char_contact SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 from SD import *
 from SD.sd_champ import sd_champ
-from SD.sd_xfem import sd_modele_xfem
+from SD.sd_xfem import sd_modele_xfem, sd_contact_xfem
 
 class sd_char_contact(AsBase):
     nomj      =SDNom(fin=16)
@@ -30,17 +30,17 @@ class sd_char_contact(AsBase):
     def exists(self):
         # retourne True si la SD semble exister.
         return self.FORMCO.exists
-    
+
 
     def formulation_xfem(self):
-        if not self.exists() : return
+        if not self.exists() : return False
         iform = self.FORMCO.get()[0]
-        return iform == 3       
+        return iform == 3
 
     def contact_xfem_actif(self):
-        if not self.formulation_xfem() : return
-        return self.XNBASC.exists  
-        
+        if not self.formulation_xfem() : return False
+        return self.XNBASC.exists
+
     BAMACO    = Facultatif(AsVI())
     BANOCO    = Facultatif(AsVI())
     CARACF    = Facultatif(AsVR())
@@ -98,8 +98,13 @@ class sd_char_contact(AsBase):
     XNRELL    = Facultatif(AsVK24())
     MODELX    = Facultatif(AsVK8(lonmax=1,))
 
-        
+    # si contact xfem :
+    xfem      = Facultatif(sd_contact_xfem(SDNom(nomj='')))
+
+
     # indirection vers les champs de .XNBASC :
+    # Question à Mickael :
+    #   la fonction suivante ne serait-elle pas mieux placée dans la classe sd_contact_xfem ?
     def check_char_contact_xfem_XNBASC(self, checker):
         if not self.contact_xfem_actif() : return
         lnom  = self.XNBASC.get()
@@ -109,24 +114,27 @@ class sd_char_contact(AsBase):
             if not nom.strip(): continue
             sd2 = sd_champ(nom)
             sd2.check(checker)
-          
+
 
     # indirection vers les champs de .XNRELL :
     # On ne vérifie rien pour l'instant
+    # Question à Mickael :
+    #   la fonction suivante ne serait-elle pas mieux placée dans la classe sd_contact_xfem ?
     def check_char_contact_xfem_XNRELL(self, checker):
         if not self.contact_xfem_actif() : return
-        lnom  = self.XNRELL.get()        
+        lnom  = self.XNRELL.get()
         nbnom = self.XNRELL.lonuti
         for k in range(nbnom) :
             nom = lnom[k]
-            oo  = AsObject(SDNom(nomj=nom,debut=0),genr='V', xous='S', type=Parmi('I','R'))          
-            oo.check(checker) 
-            
+            oo  = AsObject(SDNom(nomj=nom,debut=0),genr='V', xous='S', type=Parmi('I','R'))
+            oo.check(checker)
+
+
     # Verification MODELE xfem
     def check_char_contact_xfem_MODELX(self, checker):
         if not self.contact_xfem_actif() : return
-        nom = self.MODELX.get()[0] 
+        nom = self.MODELX.get()[0]
         sd2 = sd_modele_xfem(nom)
         sd2.check(checker)
-               
-        
+
+

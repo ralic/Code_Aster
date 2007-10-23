@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,8 +40,8 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C     ==================================================================
       INTEGER          VALI(4)         
       CHARACTER*8      KCOND , STAOU
@@ -77,12 +77,14 @@ C     -------------  LIBERATION FICHIER --------------------------------
 C       -----------  DESALLOCATION GESTION DES MARQUES -----------------
         IF ( KDESMA(2) .NE. 0) THEN
           MCDYN = MCDYN - LGD*LOIS
+          MLDYN = MLDYN + LGD*LOIS
           CALL HPDEALLC (KDESMA(2), NBFREE, IBID)
         ELSE IF (KDESMA(1) .NE. 0) THEN
           CALL JJLIBP (KDESMA(1))
         ENDIF  
         IF ( KPOSMA(2) .NE. 0) THEN
           MCDYN = MCDYN - LGP*LOIS
+          MLDYN = MLDYN + LGP*LOIS
           CALL HPDEALLC (KPOSMA(2), NBFREE, IBID)
         ELSE IF (KPOSMA(1) .NE. 0) THEN
           CALL JJLIBP (KPOSMA(1))
@@ -110,13 +112,14 @@ C
             VALI(2) = LISZON*LOIS/(1024*1024)
             VALI(3) = NBDYN
             VALI(4) = NBFREE
+            VALI(5) = MLDYN/(1024*1024)
             WRITE(IFM,*) ' '
             WRITE(IFM,*) '  STATISTIQUES CONCERNANT L'''
      &                 //'ALLOCATION DYNAMIQUE :' 
-            WRITE(IFM,*) '    TAILLE CUMULEE MAXIMUM ',VALI(1),
-     &                   ' Mo,' 
+            WRITE(IFM,*) '    TAILLE CUMULEE MAXIMUM ',VALI(1),' Mo,' 
             WRITE(IFM,*) '    DONT ',VALI(2),' Mo POUR LA ZONE'    
      &                 //' GEREE PAR JEVEUX.' 
+            WRITE(IFM,*) '    TAILLE CUMULEE LIBEREE ',VALI(5),' Mo.' 
             WRITE(IFM,*) '    NOMBRE TOTAL D''ALLOCATIONS  :',    
      &                 VALI(3),'.' 
             WRITE(IFM,*) '    NOMBRE TOTAL DE LIBERATIONS :',    

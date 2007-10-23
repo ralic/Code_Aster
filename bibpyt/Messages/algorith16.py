@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF algorith16 Messages  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -613,5 +613,26 @@ cata_msg = {
 95 : _("""
   Van_Genuchten non autorisé pour ce modèle de couplage
  """),
-
+96: _("""
+ le solveur linéaire MUMPS en mode parallèle distribué 'DISTSD' requiert un concept
+ produit de type SD_FETI en entrée du mot-clé PARTITION. Voir les commandes
+  DEFI_PART_FETI et DEFI_PART_OPS.
+ """),
+ 97: _("""
+ Attention, vous utilisez le solveur linéaire MUMPS en mode parallèle distribué,
+ mais vous n'avez alloué qu'un processeur MPI. Vous aurez bien les résultats
+ attendus mais sans doute pas les performances. Il s'agit sans doute d'un run
+ de test !
+ """),
+ 98: _("""
+ Solveur linéaire MUMPS distribué, routine CRESOL.
+ La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines!  
+"""),
+ 99: _("""
+ Valeur du parametre SOLVEUR/DIST_PROC0 incorrecte, routine CRESOL.
+ Si le solveur est MUMPS distribue DISTSD, cette valeur doit laisser au moins
+ un SD par processeur restant (hors proc 0) !
+ Si le solveur est MUMPS distribue DISTMC, cette valeur doit laisser au moins
+ une maille physique du modele par processeur restant (hors proc 0)!  
+"""),
 }

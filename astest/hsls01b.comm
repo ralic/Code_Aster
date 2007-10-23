@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -11,7 +11,7 @@
 # ET MODELISEE EN DKT- DKQ - DST - DSQ - Q4G
 #====================================================================
 
-DEBUT(CODE=_F(  NOM = 'HSLS01B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='HSLS01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
@@ -53,10 +53,10 @@ CARA=AFFE_CARA_ELEM(  MODELE=MOD,
 
 # ------------------------------------------------------------------
 
-TINF = 0. 
+TINF = 0.
 TMOY = 50.
 TSUP = 100.
-                        
+
 T_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                    AFFE=_F( TOUT='OUI',
                             NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
@@ -78,7 +78,7 @@ TEMP=CREA_RESU( OPERATION='AFFE',
 TEMPER=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
     PREP_VRC2= _F(  MODELE=MOD, CARA_ELEM=CARA, EVOL_THER = TEMP, ),)
 
-CHMAT=AFFE_MATERIAU( MAILLAGE=MA, 
+CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
                      AFFE=_F(  GROUP_MA = 'STOT', MATER = MAT, ),
                       AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,NOM_VARC='TEMP',
                                      NOM_CHAM='TEMP',VALE_REF=0.0),)
@@ -113,7 +113,7 @@ MESTA2=STAT_NON_LINE(     MODELE=MOD,
                        COMP_INCR=_F(RELATION='ELAS',),
                        INCREMENT=_F(LIST_INST=LINST,),
                    )
-                     
+
 MESTA2=CALC_ELEM( reuse=MESTA2, RESULTAT=MESTA2,
                   OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_COQU')
                 )
@@ -139,10 +139,10 @@ MESTAT=CALC_ELEM( reuse=MESTAT, RESULTAT=MESTAT,
                   EXCIT=_F(  CHARGE = CH1),
                   OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL','SIEF_ELNO_ELGA'),
                 )
-             
+
 # ------------------------------------------------------------------
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
             _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
                   NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
            _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
@@ -153,7 +153,7 @@ TEST_RESU(RESU=(
                   NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
              ),)
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
           _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
                   NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
           _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MAX',

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,23 +6,23 @@
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       COMPARAISON DU MODELE DE CHABOCHE A 2 CENTRES (RELATION DE
 #       COMPORTEMENT 'VISC_CIN1_CHAB') AVEC LE MODELE DE CHABOCHE A UN
 #       CENTRE (RELATION DE COMPORTEMENT 'VISC_CINE_CHAB') POUR LE 2D
 #       ET CELUI A DEUX CENTRES VISC_CIN2_CHAB DECLINE EN TROIS CAS :
-#       - 
+#       -
 #----------------------------------------------------------------------
 #    CAS TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT PROPORTIONNEL
 #                   ESSAI AVEC CHARGE EN RAMPE A 100 N
@@ -50,96 +50,96 @@
 #
 #----------------------------------------------------------------------
 #
-DEBUT(     CODE=_F(  NOM = 'SSNV101D',NIV_PUB_WEB='INTERNET'   ))
+DEBUT(CODE=_F(NOM='SSNV101D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 CARRE=LIRE_MAILLAGE(     )
 
 DPLAN=AFFE_MODELE(             MAILLAGE=CARRE,
-                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',     
-                                            MODELISATION = 'D_PLAN',  
+                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
+                                            MODELISATION = 'D_PLAN',
                                             TOUT = 'OUI',              ))
 
 
-ACIER2=DEFI_MATERIAU(    
-                                    ELAS=_F(   E = 145200.,             
-                                            NU = .3,            
+ACIER2=DEFI_MATERIAU(
+                                    ELAS=_F(   E = 145200.,
+                                            NU = .3,
                                             ALPHA = 0.,          ),
-                           CIN1_CHAB=_F(   R_I = 151.,           
-                                            R_0 = 87.,           
-                                            B = 2.3,             
+                           CIN1_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
                                            # K            : 1.
                                            # W            : 0.
                                            # A_I          : 1.
 # LE CINF DU MODELE A UN CENTRE EST DETERMINE PAR CINF = C1*A1
-                                            C_I = 63767.,           
+                                            C_I = 63767.,
                                             G_0 = 341.,             ))
 
-ACIER3=DEFI_MATERIAU(    
-                                    ELAS=_F(   E = 145200.,             
-                                            NU = .3,            
+ACIER3=DEFI_MATERIAU(
+                                    ELAS=_F(   E = 145200.,
+                                            NU = .3,
                                             ALPHA = 0.,          ),
-                           CIN2_CHAB=_F(   R_I = 151.,           
-                                            R_0 = 87.,           
-                                            B = 2.3,             
+                           CIN2_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
                                           #  K            : 1.
                                           #  W            : 0.
                                           #  A_I          : 1.
-                                            C1_I = 63767.,           
-                                            G1_0 = 341.,             
-                                            C2_I = 0.,           
-                                            G2_0 = 0.,             
+                                            C1_I = 63767.,
+                                            G1_0 = 341.,
+                                            C2_I = 0.,
+                                            G2_0 = 0.,
                                             ))
 
-ACIER4=DEFI_MATERIAU(    
-                                    ELAS=_F(   E = 145200.,             
-                                            NU = .3,            
+ACIER4=DEFI_MATERIAU(
+                                    ELAS=_F(   E = 145200.,
+                                            NU = .3,
                                             ALPHA = 0.,          ),
-                           CIN2_CHAB=_F(   R_I = 151.,           
-                                            R_0 = 87.,           
-                                            B = 2.3,             
+                           CIN2_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
                                           #  K            : 1.
                                           #  W            : 0.
                                           #  A_I          : 1.
-                                            C1_I = 0.,           
-                                            G1_0 = 341.,             
-                                            C2_I = 63767.,           
-                                            G2_0 = 341.,             
+                                            C1_I = 0.,
+                                            G1_0 = 341.,
+                                            C2_I = 63767.,
+                                            G2_0 = 341.,
                                             ))
 
-ACIER5=DEFI_MATERIAU(    
-                                    ELAS=_F(   E = 145200.,             
-                                            NU = .3,            
+ACIER5=DEFI_MATERIAU(
+                                    ELAS=_F(   E = 145200.,
+                                            NU = .3,
                                             ALPHA = 0.,          ),
-                           CIN2_CHAB=_F(   R_I = 151.,           
-                                            R_0 = 87.,           
-                                            B = 2.3,             
+                           CIN2_CHAB=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
                                          #   K            : 1.
                                          #   W            : 0.
                                          #   A_I          : 1.
-                                            C1_I = 31883.5,           
-                                            G1_0 = 341.,            
-                                            C2_I = 31883.5,           
-                                            G2_0 = 341.,            
+                                            C1_I = 31883.5,
+                                            G1_0 = 341.,
+                                            C2_I = 31883.5,
+                                            G2_0 = 341.,
                                              ))
 
 MAT2=AFFE_MATERIAU(            MAILLAGE=CARRE,
-                                    AFFE=_F(  MAILLE = ('MA1','MA2',),         
-                                           MATER = ACIER2,          
+                                    AFFE=_F(  MAILLE = ('MA1','MA2',),
+                                           MATER = ACIER2,
                                            TEMP_REF = 20.,            ))
 
 MAT3=AFFE_MATERIAU(            MAILLAGE=CARRE,
-                                    AFFE=_F(  MAILLE = ('MA1','MA2',),         
-                                           MATER = ACIER3,          
+                                    AFFE=_F(  MAILLE = ('MA1','MA2',),
+                                           MATER = ACIER3,
                                            TEMP_REF = 20.,            ))
 
 MAT4=AFFE_MATERIAU(            MAILLAGE=CARRE,
-                                    AFFE=_F(  MAILLE = ('MA1','MA2',),         
-                                           MATER = ACIER4,          
+                                    AFFE=_F(  MAILLE = ('MA1','MA2',),
+                                           MATER = ACIER4,
                                            TEMP_REF = 20.,            ))
 
 MAT5=AFFE_MATERIAU(            MAILLAGE=CARRE,
-                                    AFFE=_F(  MAILLE = ('MA1','MA2',),         
-                                           MATER = ACIER5,          
+                                    AFFE=_F(  MAILLE = ('MA1','MA2',),
+                                           MATER = ACIER5,
                                            TEMP_REF = 20.,            ))
 
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
@@ -163,264 +163,264 @@ COEF=DEFI_FONCTION(      NOM_PARA='INST',
                                  1.,  50.,     ))
 
 
-SOLNL2=STAT_NON_LINE(            
+SOLNL2=STAT_NON_LINE(
                            TITRE='TEST TRACTION_CISAILLEMENT CHABOCHE D_PLAN',
                                     MODELE=DPLAN,
                                 CHAM_MATER=MAT2,
-                                   EXCIT=_F(  CHARGE = TR_CS,          
-                                           FONC_MULT = COEF,       
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                           COMP_INCR=_F(  RELATION = 'VISC_CIN1_CHAB',  
-                                           ITER_INTE_MAXI = 20,       
-                                           DEFORMATION = 'PETIT',     
+                           COMP_INCR=_F(  RELATION = 'VISC_CIN1_CHAB',
+                                           ITER_INTE_MAXI = 20,
+                                           DEFORMATION = 'PETIT',
                                            TOUT = 'OUI',                ),
-                               INCREMENT=_F(  
+                               INCREMENT=_F(
                                            LIST_INST = LINST,           ),
-                                  NEWTON=_F(  MATRICE = 'TANGENTE',         
-                                           REAC_INCR = 1,       
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
                                            REAC_ITER = 1,               ),
                              CONVERGENCE=_F(  ITER_GLOB_MAXI = 20,         ))
 
-SOLNL2=CALC_ELEM( reuse=SOLNL2,              
+SOLNL2=CALC_ELEM( reuse=SOLNL2,
                                       INST=1.435,
                                    OPTION=(
                               'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
                                   RESULTAT=SOLNL2 )
 
-SOLNL2=CALC_ELEM( reuse=SOLNL2,              
+SOLNL2=CALC_ELEM( reuse=SOLNL2,
                                       INST=1.435,
                                     OPTION='EPSI_ELNO_DEPL',
                                   RESULTAT=SOLNL2 )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
   _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
  _F(  RESULTAT = SOLNL2,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1',  VALE = 3.7160E-2,   ))
                                                                      )
 
-SOLNL3=STAT_NON_LINE(           
+SOLNL3=STAT_NON_LINE(
                            TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
                                     MODELE=DPLAN,
                                 CHAM_MATER=MAT3,
-                                   EXCIT=_F(  CHARGE = TR_CS,          
-                                           FONC_MULT = COEF,       
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',  
-                                           RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,       
-                                           DEFORMATION = 'PETIT',     
+                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',
+                                           RESI_INTE_RELA = 1.E-8,
+                                           ITER_INTE_MAXI = 30,
+                                           DEFORMATION = 'PETIT',
                                            TOUT = 'OUI',                 ),
-                               INCREMENT=_F(  
+                               INCREMENT=_F(
                                            LIST_INST = LINST,            ),
-                                  NEWTON=_F(  MATRICE = 'TANGENTE',         
-                                           REAC_INCR = 1,       
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
                                            REAC_ITER = 1,                ),
-                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
-                                           RESI_GLOB_RELA = 1.E-8,    
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
+                                           RESI_GLOB_RELA = 1.E-8,
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
 
-# 
+#
 
 
 
-SOLNL3=CALC_ELEM( reuse=SOLNL3,       
+SOLNL3=CALC_ELEM( reuse=SOLNL3,
                             RESULTAT=SOLNL3,
                         NUME_ORDRE=13,
                               OPTION=( 'VARI_ELNO_ELGA',
-                                       'EPSI_ELNO_DEPL', 
+                                       'EPSI_ELNO_DEPL',
                                        'SIEF_ELNO_ELGA', )
                       )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
   _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
  _F(  RESULTAT = SOLNL3,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1',  VALE = 3.7160E-2,   ))
                                                                      )
 
-SOLNL4=STAT_NON_LINE(           
+SOLNL4=STAT_NON_LINE(
                            TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
                                     MODELE=DPLAN,
                                 CHAM_MATER=MAT4,
-                                   EXCIT=_F(  CHARGE = TR_CS,          
-                                           FONC_MULT = COEF,       
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',   
-                                           RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,      
-                                           DEFORMATION = 'PETIT',     
+                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',
+                                           RESI_INTE_RELA = 1.E-8,
+                                           ITER_INTE_MAXI = 30,
+                                           DEFORMATION = 'PETIT',
                                            TOUT = 'OUI',                 ),
-                               INCREMENT=_F(  
+                               INCREMENT=_F(
                                            LIST_INST = LINST,            ),
-                                  NEWTON=_F(  MATRICE = 'TANGENTE',         
-                                           REAC_INCR = 1,       
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
                                            REAC_ITER = 1,                ),
-                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
-                                           RESI_GLOB_RELA = 1.E-8,  
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
+                                           RESI_GLOB_RELA = 1.E-8,
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
 
-# 
+#
 
 
 
-SOLNL4=CALC_ELEM( reuse=SOLNL4,       
+SOLNL4=CALC_ELEM( reuse=SOLNL4,
                             RESULTAT=SOLNL4,
                         NUME_ORDRE=13,
                               OPTION=( 'VARI_ELNO_ELGA',
-                                       'EPSI_ELNO_DEPL', 
+                                       'EPSI_ELNO_DEPL',
                                        'SIEF_ELNO_ELGA', )
                       )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
   _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
  _F(  RESULTAT = SOLNL4,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1',  VALE = 3.7160E-2,   ))
                                                                      )
 
-SOLNL5=STAT_NON_LINE(           
+SOLNL5=STAT_NON_LINE(
                            TITRE='TEST TRACTION_CISAILLEMENT LOI CHABOCHE',
                                     MODELE=DPLAN,
                                 CHAM_MATER=MAT5,
-                                   EXCIT=_F(  CHARGE = TR_CS,          
-                                           FONC_MULT = COEF,       
+                                   EXCIT=_F(  CHARGE = TR_CS,
+                                           FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',  
-                                           RESI_INTE_RELA = 1.E-8,  
-                                           ITER_INTE_MAXI = 30,      
-                                           DEFORMATION = 'PETIT',     
+                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',
+                                           RESI_INTE_RELA = 1.E-8,
+                                           ITER_INTE_MAXI = 30,
+                                           DEFORMATION = 'PETIT',
                                            TOUT = 'OUI',                 ),
-                               INCREMENT=_F(  
+                               INCREMENT=_F(
                                            LIST_INST = LINST,            ),
-                                  NEWTON=_F(  MATRICE = 'TANGENTE',         
-                                           REAC_INCR = 1,       
+                                  NEWTON=_F(  MATRICE = 'TANGENTE',
+                                           REAC_INCR = 1,
                                            REAC_ITER = 1,                ),
-                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,  
-                                           RESI_GLOB_RELA = 1.E-8,    
+                             CONVERGENCE=_F(  ITER_GLOB_MAXI = 30,
+                                           RESI_GLOB_RELA = 1.E-8,
                                           ),
                                  SOLVEUR=_F(  SYME = 'NON',  )
                          )
 
-# 
+#
 
 
 
-SOLNL5=CALC_ELEM( reuse=SOLNL5,       
+SOLNL5=CALC_ELEM( reuse=SOLNL5,
                             RESULTAT=SOLNL5,
                         NUME_ORDRE=13,
                               OPTION=( 'VARI_ELNO_ELGA',
-                                       'EPSI_ELNO_DEPL', 
+                                       'EPSI_ELNO_DEPL',
                                        'SIEF_ELNO_ELGA', )
                       )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX', VALE = 1.435E+2,  ),
 
   _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX', VALE = 1.5329E-2,  ),
 
   _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
   _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                  MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY', VALE = 3.0066E-2,  ),
 
  _F(  RESULTAT = SOLNL5,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 13,
-         REFERENCE = 'AUTRE_ASTER',  
+         REFERENCE = 'AUTRE_ASTER',
                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1',  VALE = 3.7160E-2,   ))
                                                                      )
 
-# 
+#
 #  validation de IMPR_RESU au format IDEAS sur un nombre limite de
 #  variables internes
-# 
+#
 
 IMPR_RESU(MODELE=DPLAN, FORMAT='IDEAS',
           RESU=(_F( RESULTAT=SOLNL2,
@@ -447,13 +447,13 @@ IMPR_RESU(FORMAT='RESULTAT',
                   ),
           );
 
-# 
+#
 #  validation de NOM_CMP de IMPR_RESU au format CASTEM sur un nombre limite de
 #  deformations
-# 
+#
 
 IMPR_RESU( MODELE= DPLAN,
-           FORMAT='CASTEM', UNITE=37, 
+           FORMAT='CASTEM', UNITE=37,
            RESU= _F( MAILLAGE=CARRE,
                      RESULTAT=SOLNL2,
                      NUME_ORDRE=13,

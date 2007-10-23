@@ -1,4 +1,4 @@
-#@ MODIF maillage Messages  DATE 24/09/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF maillage Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,6 +83,17 @@ Risque & conseils :
    Dans une grille, un noeud est commun à 12 faces.
 """),
 
+12: _("""
+ L'option HEXA20_27 ne traite pas les macros mailles
+"""),
+
+13: _("""
+ L'option HEXA20_27 ne traite pas les absc_curv
+"""),
+
+14: _("""
+ Le mot-cle MAILLAGE est obligatoire avec le mot-cle HEXA20_27.
+"""),
 
 }
 

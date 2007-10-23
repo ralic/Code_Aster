@@ -1,24 +1,23 @@
-# MODIF  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU MECANISME DE SURCHARGE AFFE_CHAR_CINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NOM='ZZZZ222A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='ZZZZ222A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #=======================================================
 # A) VALIDATION AFFE_CHAR_CINE SURCHARGE (STAT_NON_LINE)
@@ -43,7 +42,7 @@ CH_FO=AFFE_CHAR_MECA(   MODELE=MO,
 # 1ERE OCC MECA_IMPO: 'DA': (DX=5, DY=7), 'DB':(DX=5, DY=7)
 # 2EME OCC MECA_IMPO: 'DA': (DX=0, DY=0)
 # --> CONCLUSION: CH_CI= { 'DA': (DX=0, DY=0), 'DB':(DX=5, DY=7)}
-# 
+#
 CH_CI =AFFE_CHAR_CINE(   MODELE=MO,
          MECA_IMPO=(
           _F( GROUP_MA = ('DA','BC'), DX = 5., DY = 7.,),
@@ -73,7 +72,7 @@ CH_CI2 =AFFE_CHAR_CINE(   MODELE=MO,
            ))
 
 U2CI1=STAT_NON_LINE(  MODELE=MO, CHAM_MATER=CM,
-    EXCIT=(  _F( CHARGE = CH_CI, FONC_MULT = RAMPE), 
+    EXCIT=(  _F( CHARGE = CH_CI, FONC_MULT = RAMPE),
              _F( CHARGE = CH_FO, FONC_MULT = RAMPE), ),
     COMP_INCR=_F( RELATION = 'ELAS', ),
     INCREMENT=_F( LIST_INST = L_INST,  NUME_INST_FIN = 4),
@@ -130,7 +129,7 @@ C2=DEFI_FONCTION(NOM_PARA='INST', VALE=(-10.,2.,1000.,2.,))
 # 1ERE OCC THER_IMPO: 'N1': (TEMP=50.), 'N2':(TEMP=50.), 'N41':(TEMP=50.)
 # 2EME OCC THER_IMPO:                                    'N41':(TEMP=10.)
 # --> CONCLUSION: CHT2= {'N1': (TEMP=50.), 'N2':(TEMP=50.), 'N41':(TEMP=10.) }
-# 
+#
 
 CHT2=AFFE_CHAR_CINE(  MODELE=MOTH,
                       THER_IMPO=(
@@ -142,16 +141,16 @@ CHT2=AFFE_CHAR_CINE(  MODELE=MOTH,
 # 2) SURCHARGE DUE A PLUSIEURS AFFE_CHAR_CINE:
 # --------------------------------------------
 # 1ER  AFFE_CHAR_CINE: 'N1': (TEMP=10.), 'N2':(TEMP=10.), 'N41':(TEMP=10.)
-# 2EME AFFE_CHAR_CINE: 'N1': (TEMP=40.), 'N2':(TEMP=40.)    
+# 2EME AFFE_CHAR_CINE: 'N1': (TEMP=40.), 'N2':(TEMP=40.)
 # --> CONCLUSION: CHT3+CHT4= {'N1': (TEMP=10+40=50.), 'N2':(TEMP=10+40=50.), 'N41':(TEMP=10.) }
 #                          =  CHT2
 
 CHT3=AFFE_CHAR_CINE(  MODELE=MOTH,
-                      THER_IMPO=_F( NOEUD = ('N1','N2','N41'), 
+                      THER_IMPO=_F( NOEUD = ('N1','N2','N41'),
                                     TEMP = 10.0),)
 
 CHT4=AFFE_CHAR_CINE(  MODELE=MOTH,
-                      THER_IMPO=_F( NOEUD = ('N1','N2'), 
+                      THER_IMPO=_F( NOEUD = ('N1','N2'),
                                     TEMP = 40.0))
 
 
@@ -186,7 +185,7 @@ NOM_CHAM='FLUX_ELNO_TEMP', RESULTAT=TEMP2, NUME_ORDRE=2)
 
 TEST_RESU(
    RESU=(_F( RESULTAT = TEMP1, NOM_CHAM = 'TEMP', NUME_ORDRE = 2,
-                NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506, 
+                NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506,
                  REFERENCE='AUTRE_ASTER'),
          _F( RESULTAT = TEMP2, NOM_CHAM = 'TEMP', NUME_ORDRE = 2,
                 NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506,
@@ -242,10 +241,10 @@ CHARG71=AFFE_CHAR_MECA(  MODELE=MO2,
 # 2EME OCC MECA_IMPO: 'N1': (DX=0.,DY=0.,DZ=0.,DRX=0.,DRY=0.,DRZ=0)
 # 3EME OCC MECA_IMPO: 'N1': (GRX=0)
 # --> CONCLUSION: CHARG72('N1')= (DX=0.,DY=0.,DZ=0.,DRX=0.,DRY=0.,DRZ=0,GRX=0)
-# 
+#
 
 CHARG72=AFFE_CHAR_CINE(  MODELE=MO2,MECA_IMPO=(
-   _F( NOEUD    = 'N1', DX=1.), #'N1' APPARTIENT AU GROUPE 'A'  
+   _F( NOEUD    = 'N1', DX=1.), #'N1' APPARTIENT AU GROUPE 'A'
    _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
    _F( TOUT = 'OUI',      GRX = 0.))
     )
@@ -255,38 +254,38 @@ CHARG72=AFFE_CHAR_CINE(  MODELE=MO2,MECA_IMPO=(
 # 1ER  AFFE_CHAR_CINE: 'N1': (DX=0.,DY=0.,DZ=0.,DRX=0.,DRY=0.,DRZ=0,GRX=0)
 # 2EME AFFE_CHAR_CINE: 'N1': (DX=1.)
 # 3EME AFFE_CHAR_CINE: 'N1': (DX=-1.)
-# --> CONCLUSION: 
+# --> CONCLUSION:
 # (CHARG73+CHARG74+CHARG75)('N1')=(DX=0.+1.-1.=0.,DY=0.,DZ=0.,DRX=0.,DRY=0.,DRZ=0,GRX=0)
 #                                = CHARG72('N1')
 
 CHARG73=AFFE_CHAR_CINE(  MODELE=MO2,
-                         MECA_IMPO=(_F( GROUP_NO = 'A', 
-                                        DX = 0., 
+                         MECA_IMPO=(_F( GROUP_NO = 'A',
+                                        DX = 0.,
                                         DY = 0.,
-                                        DZ = 0., 
-                                        DRX = 0., 
-                                        DRY = 0., 
+                                        DZ = 0.,
+                                        DRX = 0.,
+                                        DRY = 0.,
                                         DRZ = 0.),
                                     _F( TOUT = 'OUI',
                                         GRX = 0.),)
     )
 
 CHARG74=AFFE_CHAR_CINE(  MODELE=MO2,MECA_IMPO=(
-   _F( NOEUD    = 'N1', DX=1.)), #'N1' APPARTIENT AU GROUPE 'A' 
+   _F( NOEUD    = 'N1', DX=1.)), #'N1' APPARTIENT AU GROUPE 'A'
     )
 
 CHARG75=AFFE_CHAR_CINE(  MODELE=MO2,MECA_IMPO=(
-   _F( NOEUD    = 'N1', DX=-1.)), #'N1' APPARTIENT AU GROUPE 'A' 
+   _F( NOEUD    = 'N1', DX=-1.)), #'N1' APPARTIENT AU GROUPE 'A'
     )
 
 
-MEST7=MECA_STATIQUE( MODELE=MO2,    
+MEST7=MECA_STATIQUE( MODELE=MO2,
                      CHAM_MATER=CHMAT2,
                      CARA_ELEM=CAREL,
                      EXCIT=( _F( CHARGE = CHARG71),
                              _F( CHARGE = CHARG72),),)
 
-MEST8=MECA_STATIQUE( MODELE=MO2,    
+MEST8=MECA_STATIQUE( MODELE=MO2,
                      CHAM_MATER=CHMAT2,
                      CARA_ELEM=CAREL,
                      EXCIT=( _F( CHARGE = CHARG71),
@@ -297,19 +296,19 @@ MEST8=MECA_STATIQUE( MODELE=MO2,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8, 
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF',
                    REFERENCE='AUTRE_ASTER'),
    _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,         
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU',
                    REFERENCE='AUTRE_ASTER'),
    _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8, 
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,
                    PRECISION = 1.E-6, CRITERE = 'RELATIF',
                    REFERENCE='AUTRE_ASTER'),
    _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
-                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,         
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,
                    PRECISION = 1.E-13, CRITERE = 'ABSOLU',
                    REFERENCE='AUTRE_ASTER'),),)
 

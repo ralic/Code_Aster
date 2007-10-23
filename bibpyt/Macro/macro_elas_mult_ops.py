@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_elas_mult_ops Macro  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   ier=0
   import types
   from Accas import _F
-  from Utilitai.Utmess     import  UTMESS
+  from Utilitai.Utmess     import UTMESS
 
   # On met le mot cle NUME_DDL dans une variable locale pour le proteger
   numeddl=NUME_DDL
@@ -234,11 +234,13 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
               motscles['NUME_MODE']=m['MODE_FOURIER']
            motscles['EXCIT']=[]
            if   m['CHAR_MECA'] :
-              for chargt in m['CHAR_MECA'] : motscles['EXCIT'].append(_F(CHARGE=chargt))
+              for chargt in m['CHAR_MECA']   : motscles['EXCIT'].append(_F(CHARGE=chargt))
            elif m['CHAR_CINE'] :
-              for chargt in m['CHAR_CINE'] : motscles['EXCIT'].append(_F(CHARGE=chargt))
-           if   CHAR_MECA_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_MECA_GLOBAL))
-           elif CHAR_CINE_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_CINE_GLOBAL))
+              for chargt in m['CHAR_CINE']   : motscles['EXCIT'].append(_F(CHARGE=chargt))
+           if   CHAR_MECA_GLOBAL:
+              for chargt in CHAR_MECA_GLOBAL : motscles['EXCIT'].append(_F(CHARGE=chargt))
+           elif CHAR_CINE_GLOBAL:
+              for chargt in CHAR_CINE_GLOBAL : motscles['EXCIT'].append(_F(CHARGE=chargt))
            CALC_ELEM(reuse=nomres,
                      RESULTAT=nomres,
                      MODELE=MODELE,
@@ -256,11 +258,13 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
               motscles['NUME_MODE']=m['MODE_FOURIER']
            motscles['EXCIT']=[]
            if   m['CHAR_MECA'] :
-              for chargt in m['CHAR_MECA'] : motscles['EXCIT'].append(_F(CHARGE=chargt))
+              for chargt in m['CHAR_MECA']   : motscles['EXCIT'].append(_F(CHARGE=chargt))
            elif m['CHAR_CINE'] :
-              for chargt in m['CHAR_CINE'] : motscles['EXCIT'].append(_F(CHARGE=chargt))
-           if   CHAR_MECA_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_MECA_GLOBAL))
-           elif CHAR_CINE_GLOBAL:            motscles['EXCIT'].append(_F(CHARGE=CHAR_CINE_GLOBAL))
+              for chargt in m['CHAR_CINE']   : motscles['EXCIT'].append(_F(CHARGE=chargt))
+           if   CHAR_MECA_GLOBAL:
+              for chargt in CHAR_MECA_GLOBAL : motscles['EXCIT'].append(_F(CHARGE=chargt))
+           elif CHAR_CINE_GLOBAL:
+              for chargt in CHAR_CINE_GLOBAL : motscles['EXCIT'].append(_F(CHARGE=chargt))
            CALC_NO(reuse=nomres,
                    RESULTAT=nomres,
                    MODELE=MODELE,

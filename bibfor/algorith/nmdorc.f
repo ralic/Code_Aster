@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -100,6 +100,9 @@ C     ------------------------------------------------------------------
 C                           1234567890123
       CRILOC=.FALSE.
       EXIFIB=.FALSE.
+      ITDEBO=1
+      TYPTGT=0
+
       IF (NOMCMD(1:13).NE.'THER_LINEAIRE') THEN
 
         COMPOR = '&&NMDORC.COMPOR'
@@ -350,11 +353,11 @@ C  POUR COMPORTEMENT KIT_
  122            CONTINUE
                 CALL NMTHMC(COMP,MODELE,MOCLEF(I),K,COMEL(1),NCOMEL,
      &          NBNVI(1))
-     
+
               ELSEIF((COMP(1:7).EQ.'KIT_DDI') .AND. NCOMEL .GE. 2) THEN
-                IF(COMEL(1)(1:4) .EQ. 'GLRC') NBVARI = NBVARI + 10 
+                IF(COMEL(1)(1:4) .EQ. 'GLRC') NBVARI = NBVARI + 10
               END IF
-              
+
             ELSE IF (COMP(1:4).EQ.'META') THEN
               EXIST = GETEXM(MOCLEF(I),COMP)
               IF (EXIST) THEN

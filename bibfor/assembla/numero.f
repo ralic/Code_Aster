@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,9 +60,9 @@ C DECLARATION VARIABLES LOCALES
       INTEGER      NCHAR,NBLIG,IRET,JCHAR,JLLIGR,K,JTYPCH,ISLVK,IDIME,
      &             I,ILIMA,NBMA,NBSD,IFM,NIV,IBID,ISOLFS,IREFE,IDEEQ,
      &             IFETN,NEQUA,NBPB,NCHARF,L,IVLIGR,INUEQ,IFEL1,
-     &             LDEEQG,IINF,IFCPU,IDD,JMULT,
+     &             LDEEQG,IINF,IFCPU,IDD,JMULT,IER,
      &             NBPROC,RANG,ILIMPI,NIVMPI,NBCHAT,IFFCC,NEQUAG,NBI2,
-     &             IFETI,IAUX,INO,ICMP,IMULT,VALI(2),IER
+     &             IFETI,IAUX,INO,ICMP,IMULT,VALI(2)
       REAL*8       TEMPS(6),RBID
       CHARACTER*1  K1
       CHARACTER*3  VERIF
@@ -73,8 +73,8 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*24 LCHARG,LLIGR,NOMLIG,SDFETI,NOMSDA,K24B,K24CF,
      &             KSOLVF,LLIGRS,INFOFE,NOOBJ,K24MUL
       CHARACTER*32 JEXNUM
-      LOGICAL      LFETI,LFETIC,LCF
-
+      LOGICAL      LFETI,LFETIC,LCF,LMUMPS
+      
 C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
 C-----------------------------------------------------------------------
@@ -100,7 +100,7 @@ C-----------------------------------------------------------------------
         CALL JEVEUO(LCHARG,'L',JCHAR)
       ENDIF
       LLIGR = '&&NUMERO.LISTE_LIGREL'
-
+ 
 C     LISTE AUGMENTEE POUR L'EVENTUEL LIGRCF
       IF (LCF) THEN
         CALL WKVECT(LLIGR,'V V K24',NCHAR+2,JLLIGR)
@@ -153,7 +153,14 @@ C SOLVEUR FETI ?
         LFETI=.FALSE.
         INFOFE='FFFFFFFFFFFFFFFFFFFFFFFF'
       ENDIF
-
+C SOLVEUR MUMPS ?
+      IF ((METHOD(1:5).EQ.'MUMPS').AND.(NIV.GE.2)) THEN
+        LMUMPS=.TRUE.
+        CALL JEVEUO('&MUMPS.INFO.CPU.FACS','E',IFCPU)
+        CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
+      ELSE
+         LMUMPS=.FALSE.
+      ENDIF
 C CALCUL TEMPS
       IF ((NIV.GE.2).OR.(LFETIC)) THEN
         CALL UTTCPU(50,'INIT ',6,TEMPS)
@@ -174,6 +181,7 @@ C --------------------------------------------------------------
           CALL JEVEUO('&FETI.INFO.CPU.FACS','E',IFCPU)
           ZR(IFCPU)=TEMPS(5)+TEMPS(6)
         ENDIF
+        IF (LMUMPS) ZR(IFCPU+RANG)=TEMPS(5)+TEMPS(6)
       ENDIF
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -255,7 +263,7 @@ C DE GCNCON.
             CALL JEVEUO(LIGRCF(1:19)//'.FEL1','L',IFEL1)
             DO 35 IDD=1,NBSD
               K24B=ZK24(IFEL1+IDD-1)
-              IF ((K24B.NE.' ').AND.(K24B(1:19).NE.LIGRCF(1:19)))
+              IF ((K24B.NE.' ').AND.(K24B(1:19).NE.LIGRCF(1:19))) 
      &          CALL DETRSD('LIGREL',K24B)
    35       CONTINUE
             CALL JEDETR(LIGRCF(1:19)//'.FEL1')

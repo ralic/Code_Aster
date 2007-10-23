@@ -1,4 +1,4 @@
-# MODIF  DATE 10/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,9 +19,11 @@
 # ======================================================================
 
 #########################################################################
-#                                                                       #
-#   MODELISATION B : CUBE HEXA8 / 688391 DDLs / 27057822 NNZ            #
-#                                                                       #
+#                                                                       
+#   MODELISATION B : CUBE HEXA8 / 688391 DDLs / 27057822 NNZ            
+#   ON TESTE DIFFERENTES VARIANTES DE MUMPS (CENTRALISEE/DISTRIBUEE 
+#   PAR MAILLE).                                                       
+#   PARALLELE: VALEUR CONSEILLEE 32 PROCS                                                                       
 #########################################################################
 #
 # Choix du solveur
@@ -88,32 +90,14 @@ CHARD=AFFE_CHAR_MECA(MODELE=MO,
                                _F(GROUP_MA='COTE_B',
                                   DZ=0.,),),);
 
-CHARC=AFFE_CHAR_CINE(MODELE=MO,
-                     MECA_IMPO=(_F(GROUP_NO='A',
-                                   DX=0.,
-                                   DY=0.,),
-                                _F(GROUP_NO='B',
-                                   DY=0.,),
-                                _F(GROUP_MA='COTE_B',
-                                   DZ=0.,),),);
-
-CHARO=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=(_F(GROUP_NO='A',
-                                  DX=0.,
-                                  DY=0.,),
-                               _F(GROUP_NO='B',
-                                  DY=0.,),),
-                     FACE_IMPO=_F(GROUP_MA='COTE_B',
-                                  DNOR=0.,),);
-
 TPS=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1,
                                  NOMBRE=1,),);
 
-# 1 : AVEC CHARGE DUALISEE : CHARD
-#----------------------------------------
+# 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
+#----------------------------------------------------------
 
-MECA_D=MECA_STATIQUE(INFO=niv_info,
+MECAC=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
                      EXCIT=(_F(CHARGE=CHARF,),
@@ -122,9 +106,11 @@ MECA_D=MECA_STATIQUE(INFO=niv_info,
                      SOLVEUR=_F(METHODE=solveur,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
-                                PCENT_PIVOT=mem_pivot,),);
+                                PCENT_PIVOT=mem_pivot,
+                                PARALLELISME='CENTRALISE',
+                                ),);
 
-TEST_RESU(RESU=_F(RESULTAT=MECA_D,
+TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
@@ -132,7 +118,7 @@ TEST_RESU(RESU=_F(RESULTAT=MECA_D,
                   VALE=0.1,
                   REFERENCE='ANALYTIQUE',),);
 
-TEST_RESU(RESU=_F(RESULTAT=MECA_D,
+TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
@@ -142,4 +128,39 @@ TEST_RESU(RESU=_F(RESULTAT=MECA_D,
                   PRECISION=1e-08,
                   REFERENCE='ANALYTIQUE',),);
 
+# 2.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
+#       EQUILIBRAGE DE CHARGE AUTOMATIQUE
+#----------------------------------------------------------
+
+MECAD1=MECA_STATIQUE(INFO=niv_info,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     EXCIT=(_F(CHARGE=CHARF,),
+                            _F(CHARGE=CHARD,),),
+                     OPTION='SANS',
+                     SOLVEUR=_F(METHODE=solveur,
+                                RENUM=meth_renum,
+                                RESI_RELA=-1.0,
+                                PCENT_PIVOT=mem_pivot,
+                                PARALLELISME='DISTRIBUE_MAILLE',
+                                ),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=0.1,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAD1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='D',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-08,
+                  REFERENCE='ANALYTIQUE',),);
+                  
 FIN();

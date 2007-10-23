@@ -1,6 +1,6 @@
       SUBROUTINE JJALLS(LONOI,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,8 @@ C ----------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
      &               IDLONO     , IDLUTI     , IDNUM
@@ -65,6 +65,7 @@ C ----------------------------------------------------------------------
      &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          INIT,IADDI(2),IBLANC,ID(2),IDEC(2),VALLOC,LSIC
+      INTEGER          IVAL(3)
       LOGICAL          LEXACT,LEPS,LINIT,LDEPS,LAMOV,LXA,LXD,RETRO
       CHARACTER *8     CBLANC
       EQUIVALENCE    ( CBLANC,IBLANC )
@@ -89,9 +90,25 @@ C     LE SEGMENT DE VALEURS EST ALLOUE DYNAMIQUEMENT SI LDYN=1 ET SI
 C     SA LONGUEUR EST SUPERIEURE A LGDYN
 C
       IESSAI = 0
+      ILDYNA = 0
       IF ( LDYN .EQ. 1 .AND. LSI .GE. LGDYN ) THEN
         LSIC = LSI + 9
  50     CONTINUE
+        ILDYNA = ILDYNA+1
+        IF ( MXDYN+(LSIC-LISZON)*LOIS .GT. VMXDYN ) THEN 
+          IF ( ILDYNA .GT. 1 ) THEN
+            CALL JEIMPM ( 'MESSAGE',' LIMITE MEMOIRE DYNAMIQUE,'
+     &                  //' IMPOSEE ATTEINTE')
+            IVAL(1)=LSIC*LOIS
+            IVAL(2)=VMXDYN
+            IVAL(3)=MXDYN-(LISZON*LOIS)
+            CALL U2MESI('S','JEVEUX_62',3,IVAL)
+          ELSE
+            CALL JJLDYN(LTOT)
+            CALL U2MESI('I','JEVEUX_46',1,LTOT)
+            GOTO 50
+          ENDIF
+        ENDIF
         IESSAI = IESSAI+1
         CALL  HPALLOC ( IADA , LSIC , IERR , 0 )
         IF ( IERR .EQ. 0 ) THEN

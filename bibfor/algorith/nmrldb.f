@@ -1,7 +1,7 @@
-      SUBROUTINE NMRLDB(LMAT,RCINE,RESU,NBSM)
+      SUBROUTINE NMRLDB(LMAT,RCINE,RESU,NBSM,CHSECM,CHCINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER LMAT,NBSM
       REAL*8 RCINE(*),RESU(*)
+      CHARACTER*24 CHSECM,CHCINE
 C ----------------------------------------------------------------------
 C     CALCUL DE RESU = MAT-1(RESU,RCINE)
 C     NON LINEAIRE
@@ -29,6 +30,9 @@ C
 C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE
 C IN  RCINE   : .VALE DU CHAM_NO CINEMATIQUE
 C VAR RESU    : .VALE DU CHAM_NO RESULTAT EN OUT , SMB EN IN
+CC IN CHSECM   : NOM DU CHAM_NO.VALE
+C IN CHCINE   : NOM DU CHCINE.VALE
+C-----------------------------------------------------------------------
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -51,25 +55,44 @@ C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       CHARACTER*8 KBID
+      CHARACTER*19 SOLVEU,METRES
       CHARACTER*24 MAT
       COMPLEX*16 CBID
+      INTEGER    JSLVK,IBID,IRET
 C----------------------------------------------------------------------
 C                DEBUT DES INSTRUCTIONS
 C----------------------------------------------------------------------
-      MAT = ZK24(ZI(LMAT+1))
-      NEQ = ZI(LMAT+2)
-      CALL JEEXIN(MAT(1:19)//'.CCID',IRCCID)
-      IF (IRCCID.NE.0) THEN
-        DO 10 I = 1,NBSM
-          CALL CSMBGG(LMAT,RESU(NEQ* (I-1)+1),RCINE,CBID,CBID,'R')
-   10   CONTINUE
-      END IF
+C     -- SOLVEUR MUMPS ? CENTRALISE OU DISTRIBUE ?
+C     CETTE ROUTINE N'EST APPELEE QUE PAR OP0070 :
+      SOLVEU='&&OP0070.SOLVEUR'
+      CALL JEEXIN(SOLVEU//'.SLVK',IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEVEUO(SOLVEU//'.SLVK','L',JSLVK)
+        METRES = ZK24(JSLVK)
+        MAT = ZK24(ZI(LMAT+1))
+        NEQ = ZI(LMAT+2)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      
+      IF (METRES(1:5).NE.'MUMPS') THEN
+        CALL JEEXIN(MAT(1:19)//'.CCID',IRCCID)
+        IF (IRCCID.NE.0) THEN
+          DO 10 I = 1,NBSM
+            CALL CSMBGG(LMAT,RESU(NEQ*(I-1)+1),RCINE,CBID,CBID,'R')
+   10     CONTINUE
+        END IF
+        DO 20 I = 1,NBSM
+          CALL MRCONL(LMAT,NEQ,'R',RESU(NEQ*(I-1)+1),1)
+   20   CONTINUE
+        CALL RLDLGB(LMAT,RESU,CBID,NBSM)
+        DO 30 I = 1,NBSM
+          CALL MRCONL(LMAT,NEQ,'R',RESU(NEQ*(I-1)+1),1)
+   30   CONTINUE
+      ELSE
+        IRET=NBSM
+        CALL AMUMPS('RESOUD_CONTACT',SOLVEU,MAT,CHSECM,CHSECM,
+     &              CHCINE,IRET)
+      ENDIF
 
-      DO 20 I = 1,NBSM
-        CALL MRCONL(LMAT,NEQ,'R',RESU(NEQ* (I-1)+1),1)
-   20 CONTINUE
-      CALL RLDLGB(LMAT,RESU,CBID,NBSM)
-      DO 30 I = 1,NBSM
-        CALL MRCONL(LMAT,NEQ,'R',RESU(NEQ* (I-1)+1),1)
-   30 CONTINUE
       END

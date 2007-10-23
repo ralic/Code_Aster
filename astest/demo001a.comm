@@ -1,21 +1,21 @@
-# MODIF  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ILLUSTRATION D APPEL A HOMARD ET DE STAT_NON_LINE DANS DES BOUCLES PYTHON
 # TRACE DE COURBE AVEC XMGRACE
@@ -23,7 +23,7 @@
 # APPEL A STANLEY POUR LE POST_TRAITEMENT
 # RESPONSABLE JMBHH01 J.M.PROIX
 
-DEBUT(CODE=_F( NOM = 'DEMO001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+DEBUT(CODE=_F(NOM='DEMO001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 import os
 
@@ -69,7 +69,7 @@ for k in range(3):
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
-                       
+
    CM=AFFE_MATERIAU(MAILLAGE=MAIL[k],
                  AFFE=_F(TOUT='OUI',
                          MATER=MATEL,),);
@@ -81,15 +81,15 @@ for k in range(3):
    FPILO=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_CONTOUR=_F(GROUP_MA='GM10',
                                       FY=100.0,),);
-                                      
+
    RESUELAS=MECA_STATIQUE(CHAM_MATER=CM,MODELE=MO,
                        EXCIT=(_F(CHARGE=SYMETRIE,),
                               _F(CHARGE=FPILO),),);
-                       
+
    RESUELAS=CALC_ELEM(reuse =RESUELAS,
                  OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM'),
-                 RESULTAT=RESUELAS);  
-                                
+                 RESULTAT=RESUELAS);
+
    MAIL[k+1]=CO('MAIL_%d' % (k+1))
    MACR_ADAP_MAIL( ADAPTATION='RAFFINEMENT',
                    MAILLAGE_N = MAIL[k],
@@ -105,16 +105,16 @@ for k in range(3):
               )
 
    DEFI_FICHIER(UNITE=51)
-   
+
    IMPR_RESU(FORMAT='GMSH',UNITE=51,MODELE=MO,
              RESU=_F( RESULTAT=RESUELAS,NOM_CHAM='ERRE_ELEM_SIGM',NOM_CMP='ERREST'),)
    DEFI_FICHIER(ACTION='LIBERER',UNITE=51)
 
-#  Lancement de GMSH 
+#  Lancement de GMSH
    if interactif == 1:
       print 'Lancement de :', cmd_gmsh + ' fort.51'
       os.system( cmd_gmsh + ' fort.51' )
-      
+
    DETRUIRE(CONCEPT=_F(NOM=(MO,CM,SYMETRIE,FPILO,RESUELAS)),INFO=1)
 
 #-------------------------------------------------------------------------
@@ -175,7 +175,7 @@ IMPR_FONCTION(
 MA=DEFI_MATERIAU( ELAS=_F( E  = 200000., NU  = 0.3, ),
                   TRACTION=_F(SIGM=A5,),
                  )
-                 
+
 NPAST=8
 LISTT=DEFI_LIST_REEL(DEBUT=0, INTERVALLE=(
                      _F(JUSQU_A=1.6,NOMBRE=NPAST,),),)
@@ -184,7 +184,7 @@ MO=AFFE_MODELE(MAILLAGE=MAIL2,
             AFFE=_F(TOUT='OUI',
                     PHENOMENE='MECANIQUE',
                     MODELISATION='C_PLAN',),);
-                    
+
 CM=AFFE_MATERIAU(MAILLAGE=MAIL2,
               AFFE=_F(TOUT='OUI',
                       MATER=MA,),);
@@ -196,7 +196,7 @@ SYMETRIE=AFFE_CHAR_MECA(MODELE=MO,
 FPILO=AFFE_CHAR_MECA(MODELE=MO,
                   FORCE_CONTOUR=_F(GROUP_MA='GM10',
                                    FY=100.0,),);
-                                   
+
 #-------------------------------------------------------------------------
 # BOUCLE SUR LES INSTANTS POUR SUIVI INTERACTIF
 #-------------------------------------------------------------------------
@@ -222,7 +222,7 @@ for k in range(1,NPAST+1):
                                    GROUP_NO='GM12',
                                    NOM_CMP='DY',),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=100,),);
-                       
+
    else :
 
       RESUPILO=STAT_NON_LINE(reuse=RESUPILO,ETAT_INIT=_F(EVOL_NOLI=RESUPILO),
@@ -238,21 +238,21 @@ for k in range(1,NPAST+1):
                                    GROUP_NO='GM12',
                                    NOM_CMP='DY',),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=100,),);
-                       
+
    RESUPILO=CALC_ELEM(reuse =RESUPILO,
-                 OPTION=('SIEF_ELNO_ELGA',),RESULTAT=RESUPILO,NUME_ORDRE=k);  
-                                
+                 OPTION=('SIEF_ELNO_ELGA',),RESULTAT=RESUPILO,NUME_ORDRE=k);
+
    RESUPILO=CALC_NO(reuse =RESUPILO,RESULTAT=RESUPILO,
-               OPTION=('SIEF_NOEU_ELGA'),NUME_ORDRE=k);   
-                           
+               OPTION=('SIEF_NOEU_ELGA'),NUME_ORDRE=k);
+
    GNUSY=POST_RELEVE_T(ACTION=_F(  INTITULE = 'SYG',
               GROUP_NO='GM12', RESULTAT = RESUPILO,
              NOM_CMP = 'SIYY',NOM_CHAM = 'SIEF_NOEU_ELGA',OPERATION = 'EXTRACTION'))
-             
+
    GNUDY=POST_RELEVE_T( ACTION=_F(  INTITULE = 'DYG',
               GROUP_NO='GM12', RESULTAT = RESUPILO,
              NOM_CMP = 'DY',NOM_CHAM = 'DEPL',OPERATION = 'EXTRACTION'))
-             
+
    F_DY   = RECU_FONCTION(TABLE=GNUDY,PARA_X='INST',PARA_Y='DY',)
    F_SIYY = RECU_FONCTION(TABLE=GNUSY,PARA_X='INST',PARA_Y='SIYY')
 
@@ -262,7 +262,7 @@ for k in range(1,NPAST+1):
         PILOTE='INTERACTIF',
         BORNE_X=(0.,2.),
         BORNE_Y=(0.,600.),
-        COURBE=( _F( FONC_X   = F_DY, 
+        COURBE=( _F( FONC_X   = F_DY,
                      FONC_Y   = F_SIYY,
                      MARQUEUR = 1,
                      COULEUR  = 9,
@@ -272,12 +272,12 @@ for k in range(1,NPAST+1):
         LEGENDE_X='Deplacement DY',
         LEGENDE_Y='Contrainte SIYY',
         )
-      
+
    DETRUIRE(CONCEPT=_F(NOM=F_DY),INFO=1)
    DETRUIRE(CONCEPT=_F(NOM=F_SIYY),INFO=1)
    DETRUIRE(CONCEPT=_F(NOM=GNUSY),INFO=1)
    DETRUIRE(CONCEPT=_F(NOM=GNUDY),INFO=1)
-                
+
 if interactif == 1:
    STANLEY()
 

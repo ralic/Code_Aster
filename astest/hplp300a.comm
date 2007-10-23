@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PLAQUE AVEC MODULE D'YOUNG FONCTION DE LA TEMPERATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,11 +300,10 @@ F_E=DEFI_FONCTION(    NOM_PARA='TEMP',
 
 F_NU=DEFI_FONCTION(    NOM_PARA='TEMP',
                          VALE=( -35.,  0.3,    75.,  0.3, ) )
-
+ALPHA=DEFI_CONSTANTE(VALE=0.)
 # DEFINITION DU MATERIAU
-ACIER=DEFI_MATERIAU(     ELAS_FO=_F(  E = F_E,
+ACIER=DEFI_MATERIAU(     ELAS_FO=_F(  E = F_E,ALPHA=ALPHA,TEMP_DEF_ALPHA=0.,
                                      NU = F_NU),
-#                                    ALPHA : 1.E-5 )
                               THER=_F(  LAMBDA = 1.,  RHO_CP = 0.)
                       )
 
@@ -352,7 +351,7 @@ CHMTM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                              AFFE=_F(  TOUT = 'OUI',
                                     MATER = ACIER),
                              AFFE_VARC=_F( TOUT='OUI',
-                                    EVOL=TEMP,
+                                    EVOL=TEMP,VALE_REF=0.,
                                     NOM_VARC='TEMP',
                                     NOM_CHAM='TEMP',),
   )

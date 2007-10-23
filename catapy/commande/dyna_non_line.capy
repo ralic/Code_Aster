@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+#& MODIF COMMANDE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -235,11 +235,16 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            ),
            b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
              TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
-             SCALING         =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
+             PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
              ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
+             PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
+                                   into=("CENTRALISE","DISTRIBUE_MAILLE","DISTRIBUE_SD")),
+             PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
+             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=0,min=0),
+             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),       
              ),
            b_gcpc          =BLOC(condition="METHODE == 'GCPC'",fr="Paramètres de la méthode du gradient conjugué",
              PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),

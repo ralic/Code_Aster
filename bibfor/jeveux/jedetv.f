@@ -1,6 +1,6 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C TOLE CRP_18 CRS_508 CRS_512 CRS_505
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,8 +61,8 @@ C
       COMMON /JVNIVO/  IFNIVO, NIVO
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
      &               IDMARQ     , IDNOM      ,             IDLONG     ,
@@ -112,8 +112,12 @@ C
                 IBLONO=IADM(JIADM(IC)+2*IXLONO-1)
                 MCDYN = MCDYN - ISZON(JISZON+IBLONO+K-1) *
      &                  LTYP(JLTYP(IC)+IXDESO)
+                MLDYN = MLDYN + ISZON(JISZON+IBLONO+K-1) *
+     &                  LTYP(JLTYP(IC)+IXDESO)
               ELSE
                 MCDYN = MCDYN - LONO(JLONO(IC)+IXDESO) * 
+     &                  LTYP(JLTYP(IC)+IXDESO)
+                MLDYN = MLDYN + LONO(JLONO(IC)+IXDESO) * 
      &                  LTYP(JLTYP(IC)+IXDESO)
               ENDIF
               CALL HPDEALLC ( IADYOC , NBFREE , IBID )

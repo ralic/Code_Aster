@@ -1,29 +1,28 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME MASSE RESSORT AVEC EXCITATION HARMONIQUE ET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # FORCES DE LAME FLUIDE
 # CAS_TEST__:SDND111A
 #   FICHIER DE COMMANDE ASTER DU CAS-TEST DE FROTTEMNT A 1 DDL
 #
 
-DEBUT( CODE=_F(  NOM = 'SDND111A',NIV_PUB_WEB='INTERNET')
-        )
+DEBUT(CODE=_F(NOM='SDND111A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -40,11 +39,11 @@ MODELE=AFFE_MODELE(   MAILLAGE=POUTRE,
 
 #
 CHAMPCAR=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-      _F( 
+      _F(
        GROUP_MA = 'TOUT',
  CARA = 'K_T_D_N',
                              VALE = (24674.E0, 1.E0, 1.E0,)),
-      _F( 
+      _F(
        GROUP_MA = 'TOUT',
    CARA = 'M_T_D_N', VALE = 25.))
                          )
@@ -134,25 +133,25 @@ DEPLPHY3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
 #
 #
 MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
-                   _F( 
+                   _F(
                                    MATRICE = CO("MASSEGEN"),
                                    MATR_ASSE = MATRMASS),
-                   _F( 
+                   _F(
                                    MATRICE = CO("RIGIDGEN"),
                                    MATR_ASSE = MATRRIGI)),VECT_ASSE_GENE=(
-                   _F( 
+                   _F(
                                    VECTEUR = CO("VITINI1"),
                                    VECT_ASSE = DEPLPHY1,
                                    TYPE_VECT = 'VITE'),
-                   _F( 
+                   _F(
                                    VECTEUR = CO("VITINI2"),
                                    VECT_ASSE = DEPLPHY2,
                                    TYPE_VECT = 'VITE'),
-                   _F( 
+                   _F(
                                    VECTEUR = CO("VITINI3"),
                                    VECT_ASSE = DEPLPHY3,
                                    TYPE_VECT = 'VITE'),
-                   _F( 
+                   _F(
                                    VECTEUR = CO("FOGENE"),
                                    VECT_ASSE = VECTASS))
 )
@@ -189,7 +188,7 @@ NOM_PARA = 'INST',
                             )
 
 #
-DYNAMOD1=DYNA_TRAN_MODAL( 
+DYNAMOD1=DYNA_TRAN_MODAL(
                        METHODE='EULER',
                        MASS_GENE=MASSEGEN,
                        RIGI_GENE=RIGIDGEN,
@@ -200,10 +199,10 @@ DYNAMOD1=DYNA_TRAN_MODAL(
                       ARCHIVAGE=_F(  PAS_ARCH = 10),
                        NMAX_ITER=30,
                        RESI_RELA=1.2E-2,
-                       EXCIT=_F( 
+                       EXCIT=_F(
                       VECT_GENE = FOGENE,
                       FONC_MULT = FONCTIO1),
-                      CHOC=_F( 
+                      CHOC=_F(
                                NOEUD_1 = 'NO1',
                                NOEUD_2 = 'NO2',
                                INTITULE = 'LIAISON',
@@ -230,14 +229,14 @@ LISTER1=DEFI_LIST_REEL(  DEBUT=0.13,INTERVALLE=(
                             )
 
 #
-DYNATRAN=REST_BASE_PHYS( 
+DYNATRAN=REST_BASE_PHYS(
                     RESU_GENE=DYNAMOD1,
                     LIST_INST=LISTER1,
                     NOM_CHAM='DEPL',
                     INTERPOL='LIN'
                             )
 
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRAN,
                      NUME_ORDRE = 1,
                      NOEUD = 'NO1',
@@ -248,7 +247,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRAN,
                      NUME_ORDRE = 2,
                      NOEUD = 'NO1',
@@ -259,7 +258,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRAN,
                      NUME_ORDRE = 3,
                      NOEUD = 'NO1',
@@ -270,7 +269,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRAN,
                      NUME_ORDRE = 4,
                      NOEUD = 'NO1',
@@ -281,7 +280,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-DYNAMOD2=DYNA_TRAN_MODAL( 
+DYNAMOD2=DYNA_TRAN_MODAL(
                        MASS_GENE=MASSEGEN,
                        RIGI_GENE=RIGIDGEN,
                        AMOR_REDUIT=( 0.0, ),
@@ -289,10 +288,10 @@ DYNAMOD2=DYNA_TRAN_MODAL(
                                    INST_FIN = 2.,
                                    PAS = 1.E-5),
                       ARCHIVAGE=_F(  PAS_ARCH = 10),
-                       EXCIT=_F( 
+                       EXCIT=_F(
                       VECT_GENE = FOGENE,
                       FONC_MULT = FONCTIO1),
-                      CHOC=_F( 
+                      CHOC=_F(
                                NOEUD_1 = 'NO1',
                                NOEUD_2 = 'NO2',
                                INTITULE = 'LIAISON',
@@ -321,7 +320,7 @@ LISTER2=DEFI_LIST_REEL(
                             )
 
 #
-DYNATRA2=REST_BASE_PHYS( 
+DYNATRA2=REST_BASE_PHYS(
                     RESU_GENE=DYNAMOD2,
                     LIST_INST=LISTER2,
                     NOM_CHAM='DEPL',
@@ -330,7 +329,7 @@ DYNATRA2=REST_BASE_PHYS(
 
 #
 #
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRA2,
                      NUME_ORDRE = 1,
                      NOEUD = 'NO1',
@@ -341,7 +340,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRA2,
                      NUME_ORDRE = 2,
                      NOEUD = 'NO1',
@@ -352,7 +351,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRA2,
                      NUME_ORDRE = 3,
                      NOEUD = 'NO1',
@@ -363,7 +362,7 @@ TEST_RESU( RESU=_F(
           )
 
 #
-TEST_RESU( RESU=_F( 
+TEST_RESU( RESU=_F(
                      RESULTAT = DYNATRA2,
                      NUME_ORDRE = 4,
                      NOEUD = 'NO1',

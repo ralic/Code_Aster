@@ -1,6 +1,6 @@
       SUBROUTINE SSDEIN(UL,UG,MAIL,NOCAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,6 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*8 NOMU
 C ----------------------------------------------------------------------
 C     BUT:
 C      - CALCULER LE CHAMP DE DEPLACEMENT INTERNE A UNE SOUS-STRUCTURE
@@ -78,10 +77,10 @@ C     ------------------------------------
 C
       CALL DISMOI('F','NOM_MAILLA',NOMACR,'MACR_ELEM_STAT',IBI,MAL,IER)
       CALL JEVEUO(NOMACR//'.CONX','L',IACONX)
-      CALL JEVEUO(NOMACR//'.DESM','L',IADESM)
-      NBNOET= ZI(IADESM-1+2)+ZI(IADESM-1+8)+ZI(IADESM-1+9)
-      NDDLE= ZI(IADESM-1+4)
-      NDDLI= ZI(IADESM-1+5)
+      CALL JEVEUO(NOMACR//'.DESM','L',JDESM)
+      NBNOET= ZI(JDESM-1+2)+ZI(JDESM-1+8)+ZI(JDESM-1+9)
+      NDDLE= ZI(JDESM-1+4)
+      NDDLI= ZI(JDESM-1+5)
       NDDLT= NDDLE+NDDLI
 C                 '&&SSDEIN.VALP' EST UN VECTEUR DE TRAVAIL :
       CALL WKVECT('&&SSDEIN.VALP','V V R',NDDLT,IAVALP)
@@ -218,8 +217,8 @@ C
 C
 C     4-4  Q_I= Q_I + PHI_IE * Q_E :
 C     ------------------------------
-      LGBLPH=MIN(4*1024*1024,NDDLE*NDDLI)
-      NBLPH=(NDDLE*NDDLI-1)/LGBLPH +1
+      CALL JELIRA(NOMACR//'.PHI_IE','LONMAX',LGBLPH,KBID)
+      CALL JELIRA(NOMACR//'.PHI_IE','NMAXOC',NBLPH,KBID)
       NLBLPH=LGBLPH/NDDLI
 
       J=0

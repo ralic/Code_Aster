@@ -1,7 +1,7 @@
       SUBROUTINE JJLIHD (IDTS,NBVAL,LONOI,GENRI,TYPEI,LTYPI,
      &                   IC,IDO,IDC,IMARQ,IADMI,IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,8 +73,8 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / I4VAJE / ZI4(1)
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       CHARACTER*1      TYPEB
       INTEGER          HDFRSV,HDFTSD,ICONV,IADYN,KDYN
@@ -132,6 +132,7 @@ C DEB ------------------------------------------------------------------
  1        CONTINUE
           IF ( KDYN .NE. 0 ) THEN
             MCDYN = MCDYN - LON
+            MLDYN = MLDYN + LON
             CALL HPDEALLC ( KDYN , NBFREE , IBID )
           ELSE  IF ( KADM .NE. 0 ) THEN
             CALL JJLIBP (KADM)

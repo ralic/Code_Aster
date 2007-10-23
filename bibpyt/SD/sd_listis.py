@@ -1,4 +1,4 @@
-#@ MODIF sd_listis SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_listis SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,6 +20,7 @@
 
 from SD import *
 from SD.sd_titre import sd_titre
+from SD.sd_util import *
 
 
 class sd_listis(sd_titre):
@@ -51,6 +52,8 @@ class sd_listis(sd_titre):
                 assert  vale[n1] == bint[k+1]
 
             assert len(vale) == n1+1
+            assert sdu_monotone(vale) in (1,) , vale
+
 
         # cas particulier :
         if len(vale) == 1 :
@@ -58,5 +61,7 @@ class sd_listis(sd_titre):
             assert len(nbpa) == 1
             assert len(lpas) == 1
             assert  vale[0] == bint[0]
+            assert  nbpa[0] == 0, nbpa
+            assert  lpas[0] == 0, lpas
 
 

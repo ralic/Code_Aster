@@ -1,81 +1,81 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
-# TITRE FLAMBEMENT D'UNE POUTRE VERTICALE SOUS POIDS PROPRE   
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# TITRE FLAMBEMENT D'UNE POUTRE VERTICALE SOUS POIDS PROPRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ENCASTREE-LIBRE 
+# ENCASTREE-LIBRE
 #======================================================================
 #
-DEBUT( CODE=_F(  NOM = 'SSLL403A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLL403A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 MA=LIRE_MAILLAGE(  )
 
 MA=DEFI_GROUP(  reuse=MA, MAILLAGE=MA,
-                       CREA_GROUP_MA=_F(  NOM = 'TOTAL',  
-                                       TOUT = 'OUI',  
-                                      ) 
+                       CREA_GROUP_MA=_F(  NOM = 'TOTAL',
+                                       TOUT = 'OUI',
+                                      )
                      )
 
 #
 MO=AFFE_MODELE(   MAILLAGE=MA,
-                        AFFE=_F( TOUT = 'OUI',          
-                              PHENOMENE = 'MECANIQUE',     
-                              MODELISATION = 'POU_D_E',  
+                        AFFE=_F( TOUT = 'OUI',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'POU_D_E',
                              )
                     )
 
 #
-MATR=DEFI_MATERIAU(    ELAS=_F( E = 2.E11,    
-                                NU = 0.3,    
-                                RHO = 7800.,  
+MATR=DEFI_MATERIAU(    ELAS=_F( E = 2.E11,
+                                NU = 0.3,
+                                RHO = 7800.,
                                )
                       )
 
 #
 CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
-                              AFFE=_F( TOUT = 'OUI',  
-                                    MATER = MATR,  
+                              AFFE=_F( TOUT = 'OUI',
+                                    MATER = MATR,
                                    )
                       )
 
 #
 CAREL=AFFE_CARA_ELEM(     MODELE=MO,
-                           POUTRE=_F( SECTION = 'RECTANGLE',  
-                                   CARA = ('HY', 'HZ', ),     
-                                   GROUP_MA = 'TOTAL',     
-                                   VALE = (0.01, 0.01, ),     
-                                  ) 
+                           POUTRE=_F( SECTION = 'RECTANGLE',
+                                   CARA = ('HY', 'HZ', ),
+                                   GROUP_MA = 'TOTAL',
+                                   VALE = (0.01, 0.01, ),
+                                  )
                        )
 
 #
 COND_LIM=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
-                              _F( NOEUD = 'N1',  
-                                        DX = 0.,       
-                                        DY = 0.,     
-                                        DZ = 0.,      
-                                        DRX = 0.,    
-                                        DRZ = 0.,    
-                                        DRY = 0.,    
+                              _F( NOEUD = 'N1',
+                                        DX = 0.,
+                                        DY = 0.,
+                                        DZ = 0.,
+                                        DRX = 0.,
+                                        DRZ = 0.,
+                                        DRY = 0.,
                                        ),
-                              _F( TOUT = 'OUI',  
-                                        DY = 0.,     
-                                        DRZ = 0.,   
-                                       ))            
+                              _F( TOUT = 'OUI',
+                                        DY = 0.,
+                                        DRZ = 0.,
+                                       ))
                           )
 
 #
@@ -95,11 +95,11 @@ NUM=NUME_DDL(    MATR_RIGI=MELR )
 MATASSR=ASSE_MATRICE(    MATR_ELEM=MELR,
                             NUME_DDL=NUM
                        )
-        
+
 #
 # ------ RESOLUTION STATIQUE , CHARGEMENT = PESANTEUR-------------------
 #
-PESANT=AFFE_CHAR_MECA(       MODELE=MO, 
+PESANT=AFFE_CHAR_MECA(       MODELE=MO,
                            PESANTEUR=(9.81, 0., 0., -1.,)
                         )
 
@@ -138,11 +138,11 @@ MD_0=MODE_ITER_SIMULT(      MATR_A=MATASSR,
                         )
 
 #
-TEST_RESU(   RESU=_F(  RESULTAT = MD_0,    
-                     NUME_MODE = 5,  
-                     PARA = 'CHAR_CRIT',       
-                     VALE = -170.701E0,       
-                     PRECISION = 0.01E0,  
+TEST_RESU(   RESU=_F(  RESULTAT = MD_0,
+                     NUME_MODE = 5,
+                     PARA = 'CHAR_CRIT',
+                     VALE = -170.701E0,
+                     PRECISION = 0.01E0,
                    )
           )
 

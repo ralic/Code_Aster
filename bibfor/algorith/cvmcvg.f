@@ -4,7 +4,7 @@ C TOLE CRS_505 CRS_507
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 22/10/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,14 +243,10 @@ C
                         IRTETI = 3
                         GOTO 9999
                        ELSE
-                       VALI = ITER
-                       VALR = TOLER
-            CALL UTEXCM(23,'ALGORITH16_61',0,' ',1,VALI,1,VALR)
+                        IRTETI = 3
+                        GOTO 9999
                         ENDIF
                         ENDIF
-C
-C -                 SINON STOP
-C
                     ELSE
                     IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1) THEN
                     CALL CODENT(ITER,'G',CITER)
@@ -261,9 +257,8 @@ C
                     IRTETI = 3
                     GOTO 9999
                     ELSE
-                    VALI = ITER
-                    VALR = TOLER
-                CALL UTEXCM(23,'ALGORITH16_62',0,' ',1,VALI,1,VALR)
+                       IRTETI = 3
+                       GOTO 9999
                     ENDIF
                     ENDIF
 C
@@ -279,9 +274,8 @@ C
                   IRTETI = 3
                   GOTO 9999
                   ELSE
-                  VALI = ITER
-                  VALR = TOLER
-                 CALL UTEXCM(23,'ALGORITH16_63',0,' ',1,VALI,1,VALR)
+                  IRTETI = 3
+                  GOTO 9999
                   ENDIF
                   ENDIF
 C

@@ -1,21 +1,21 @@
-# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 #----------------------------------------------------------------------
@@ -37,7 +37,8 @@
 #----------------------------------------------------------------------
 
 
-DEBUT( CODE=_F( NOM = 'SSNV177A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',);
+DEBUT(CODE=_F(NOM='SSNV177A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+      PAR_LOT='NON')
 
 import Numeric as N
 import LinearAlgebra as LA
@@ -93,7 +94,7 @@ CHR_T = AFFE_CHAR_MECA(
                         MODELE = MO,
                         DDL_IMPO = (_F(NOEUD='N1', DX=1.),),
                         );
-   
+
 CHR_C = AFFE_CHAR_MECA(
                        MODELE = MO,
                        DDL_IMPO = (_F(NOEUD='N1', DX=0.5,DY=0.5),
@@ -102,7 +103,7 @@ CHR_C = AFFE_CHAR_MECA(
 
 
 BETON= DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0,),
-              ELAS = _F(E = 32000.,  NU = 0.2), 
+              ELAS = _F(E = 32000.,  NU = 0.2),
               ENDO_ORTH_BETON = _F(ALPHA = 0.87,
                                    K0 = 2.634e-4,
                                    K1 = 10.5,
@@ -127,7 +128,7 @@ U=STAT_NON_LINE(MODELE=MO,
                            RESI_INTE_RELA=1.E-06,
                            ITER_INTE_MAXI=20,),
               INCREMENT=_F(LIST_INST=L_INST,
-                           INST_FIN=1., 
+                           INST_FIN=1.,
                            SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                            SUBD_PAS_MINI=1.E-05,),
               NEWTON=_F(MATRICE='TANGENTE',
@@ -150,7 +151,7 @@ U=STAT_NON_LINE(reuse=U,
                                       RESI_INTE_RELA=1.E-06,
                                       ITER_INTE_MAXI=20,),
                 INCREMENT=_F(LIST_INST=L_INST,
-                             INST_FIN=2., 
+                             INST_FIN=2.,
                              SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                              SUBD_PAS_MINI=1.E-07,),
                 NEWTON=_F(MATRICE='TANGENTE',
@@ -168,15 +169,15 @@ U = CALC_ELEM(
    RESULTAT  =U,
    OPTION    =('EPSI_ELGA_DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
    );
-    
+
 ENDO = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
-       OPERATION='EXTR',                  
+       OPERATION='EXTR',
        INST = 2.,
        RESULTAT = U,
        NOM_CHAM = 'VARI_ELGA'
       )
 DEFO = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
-       OPERATION='EXTR',                  
+       OPERATION='EXTR',
        INST = 2.,
        RESULTAT = U,
        NOM_CHAM = 'EPSI_ELGA_DEPL'
@@ -234,7 +235,7 @@ ROT_EPSI=DEFI_FONCTION(NOM_PARA='INST',
 ROT_ENDO=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,angle_endo),
                      PROL_DROITE='CONSTANT',);
- 
+
 TEST_FONCTION(VALEUR=_F(FONCTION=ROT_EPSI,
                         VALE_PARA=1.,
                         VALE_REFE=4.57160E+01,

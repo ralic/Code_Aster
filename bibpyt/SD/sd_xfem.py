@@ -1,21 +1,21 @@
-#@ MODIF sd_xfem SD  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_xfem SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 from SD import *
@@ -23,6 +23,7 @@ from SD import *
 from SD.sd_cham_no   import sd_cham_no
 from SD.sd_cham_elem import sd_cham_elem
 from SD.sd_carte     import sd_carte
+from SD.sd_util      import *
 
 
 
@@ -31,10 +32,9 @@ from SD.sd_carte     import sd_carte
 #-------------------------------
 
 class sd_fiss_xfem(AsBase):
+    nomj = SDNom(fin=8)
 
 # I.1) objets relatifs aux level sets
-
-    nomj = SDNom(fin=8)
 
     LNNO   = sd_cham_no()
     LTNO   = sd_cham_no()
@@ -57,7 +57,7 @@ class sd_fiss_xfem(AsBase):
     MAILFISS_HECT  = Facultatif(AsVI(SDNom(nomj='.MAILFISS  .HECT')))
     MAILFISS_INDIC = AsVI(SDNom(nomj='.MAILFISS .INDIC'), lonmax=6, )
     LISNOH         = Facultatif(AsVI())
- 
+
 # I.3) objets relatifs à la propagation
 
     PRO_MES_EL  = Facultatif(sd_cham_elem(SDNom(nomj='.PRO.MES_EL')))
@@ -71,16 +71,22 @@ class sd_fiss_xfem(AsBase):
     LISRL  = Facultatif(AsVI(SDNom(nomj='.LISRL')))
 
 
+# 1.5) vérifications d'existence :
+
+    def check_existence(self,checker) :
+        sdu_ensemble((self.FONDFISS, self.FONDMULT))
+        sdu_ensemble((self.LISRL, self.LISCO))
+        sdu_ensemble((self.PRO_MES_EL.CELD, self.PRO_NORMAL.CELD))
+
 
 #-------------------------------
 #       II. sd modele
 #-------------------------------
 
 class sd_modele_xfem(AsBase):
+    nomj = SDNom(fin=8)
 
 # II.1) objets relatifs aux sous-éléments
-
-    nomj = SDNom(fin=8)
 
     TOPOSE_PIN  = sd_cham_elem(SDNom(nomj='.TOPOSE.PIN'))
     TOPOSE_CNS  = sd_cham_elem(SDNom(nomj='.TOPOSE.CNS'))
@@ -101,7 +107,7 @@ class sd_modele_xfem(AsBase):
     TOPOFAC_OE  = sd_cham_elem(SDNom(nomj='.TOPOFAC.OE'))
     TOPOFAC_OM  = sd_cham_elem(SDNom(nomj='.TOPOFAC.OM'))
 
-# II.3) objets concaténés relatifs aux level sets 
+# II.3) objets concaténés relatifs aux level sets
 
     LNNO   = sd_cham_no()
     LTNO   = sd_cham_no()
@@ -110,7 +116,7 @@ class sd_modele_xfem(AsBase):
 
 # II.4) autres objets
 
-    XFEM_CONT   = AsVI(lonmax=1) # contact ou pas 
+    XFEM_CONT   = AsVI(lonmax=1) # contact ou pas
     FISS   = AsVK8()             # noms des fissures
     NFIS   = AsVI(lonmax=1,)     # nombre de fissures
     XMAFIS = sd_carte()          # pour chaque maille : nom de la fissure
@@ -123,13 +129,12 @@ class sd_modele_xfem(AsBase):
 
 class sd_contact_xfem(AsBase):
 #-------------------------------
+    nomj = SDNom(fin=16)
 
-    nomj = SDNom(fin=8)
+    CARACF  = AsVR()
+    ECPDON  = AsVI()
+    METHCO  = AsVI()
 
-    CARACF  = AsVR(SDNom(nomj='CONTACT.CARACF'))
-    ECPDON  = AsVI(SDNom(nomj='CONTACT.ECPDON'))
-    METHCO  = AsVI(SDNom(nomj='CONTACT.METHCO'))
-
-    XFIMAI  = AsVK8(SDNom(nomj='CONTACT.XFIMAI'))
-    XNRELL  = AsVK24(SDNom(nomj='CONTACT.XNRELL'))
-    XNBASC  = AsVK24(SDNom(nomj='CONTACT.XNBASC'))
+    XFIMAI  = AsVK8()
+    XNRELL  = AsVK24()
+    XNBASC  = AsVK24()

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 03/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -8,25 +8,25 @@
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #---------------------------------------------------------------------
-#  - PROBLEME BIDIMENSIONNEL EN ANALYSE MODALE DYNAMIQUE D'UNE POUTRE 
-#    ELANCEE 
+#  - PROBLEME BIDIMENSIONNEL EN ANALYSE MODALE DYNAMIQUE D'UNE POUTRE
+#    ELANCEE
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_C_PLAN'
 #---------------------------------------------------------------------
 #
-DEBUT( CODE=_F( NOM = 'SDLL02C',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SDLL02C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 #PRE_IDEAS ();
@@ -93,9 +93,9 @@ MATRIGI=CALC_MATR_ELEM(       MODELE=MODEL,
 #
 MATMASS=CALC_MATR_ELEM(       MODELE=MODEL,
                             CHAM_MATER=AFFMATER,
-                             CARA_ELEM=CARA, 
+                             CARA_ELEM=CARA,
                                 OPTION='MASS_MECA',
-                                CHARGE=CHARGE 
+                                CHARGE=CHARGE
                           )
 
 #
@@ -107,7 +107,7 @@ MATRI_AS=ASSE_MATRICE(   MATR_ELEM=MATRIGI,   NUME_DDL=NU)
 #
 MATMA_AS=ASSE_MATRICE(   MATR_ELEM=MATMASS,   NUME_DDL=NU)
 
-#                                     
+#
 
 MODES=MODE_ITER_SIMULT(      MATR_A=MATRI_AS,
                                MATR_B=MATMA_AS,
@@ -125,42 +125,42 @@ MODE_1=CREA_CHAMP(      RESULTAT=MODES,
                         OPERATION='EXTR',
                          TYPE_CHAM='NOEU_DEPL_R',
                          NOM_CHAM='DEPL',
-                       NUME_ORDRE=1 
+                       NUME_ORDRE=1
                     )
 
 MODE_2=CREA_CHAMP(      RESULTAT=MODES,
                         OPERATION='EXTR',
                          TYPE_CHAM='NOEU_DEPL_R',
                          NOM_CHAM='DEPL',
-                       NUME_ORDRE=2 
+                       NUME_ORDRE=2
                     )
 
 MODE_3=CREA_CHAMP(      RESULTAT=MODES,
                         OPERATION='EXTR',
                          TYPE_CHAM='NOEU_DEPL_R',
                          NOM_CHAM='DEPL',
-                       NUME_ORDRE=3 
+                       NUME_ORDRE=3
                     )
 
 MODE_4=CREA_CHAMP(      RESULTAT=MODES,
                         OPERATION='EXTR',
                          TYPE_CHAM='NOEU_DEPL_R',
                          NOM_CHAM='DEPL',
-                       NUME_ORDRE=4 
+                       NUME_ORDRE=4
                     )
 
 MODE_7=CREA_CHAMP(      RESULTAT=MODES,
                         OPERATION='EXTR',
                          TYPE_CHAM='NOEU_DEPL_R',
                          NOM_CHAM='DEPL',
-                       NUME_ORDRE=7 
+                       NUME_ORDRE=7
                     )
 
 MODE_8=CREA_CHAMP(      RESULTAT=MODES,
                         OPERATION='EXTR',
                          TYPE_CHAM='NOEU_DEPL_R',
                          NOM_CHAM='DEPL',
-                       NUME_ORDRE=8 
+                       NUME_ORDRE=8
                     )
 
 #
@@ -204,56 +204,56 @@ TEST_RESU(RESU=(
              NUME_ORDRE = 8,                 VALE = 576.44)),CHAM_NO=(
 
        _F( CHAM_GD = MODE_1,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO2',                 VALE = -0.707),
 
        _F( CHAM_GD = MODE_1,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO41',                 VALE = 1.),
 
        _F( CHAM_GD = MODE_2,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO2',                 VALE = 0.707),
 
        _F( CHAM_GD = MODE_2,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO41',                 VALE = 1.),
 
        _F( CHAM_GD = MODE_3,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO2',                 VALE = 0.707),
 
        _F( CHAM_GD = MODE_3,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO41',                 VALE = 1.),
 
        _F( CHAM_GD = MODE_4,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO2',                 VALE = -0.370),
 
        _F( CHAM_GD = MODE_4,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO41',                 VALE = 0.523),
 
        _F( CHAM_GD = MODE_7,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO2',                 VALE = 0.707),
 
        _F( CHAM_GD = MODE_7,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.02,   
+               CRITERE = 'RELATIF',         PRECISION = 0.02,
                NOEUD = 'NO41',                 VALE = 1.0),
 
        _F( CHAM_GD = MODE_8,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.04,   
+               CRITERE = 'RELATIF',         PRECISION = 0.04,
                NOEUD = 'NO2',                 VALE = -0.388),
 
        _F( CHAM_GD = MODE_8,         NOM_CMP = 'DY',
-               CRITERE = 'RELATIF',         PRECISION = 0.04,   
-               NOEUD = 'NO41',                 VALE = 0.549))  
-               
+               CRITERE = 'RELATIF',         PRECISION = 0.04,
+               NOEUD = 'NO41',                 VALE = 0.549))
+
                )
 
 FIN()
-#    
 #
-# 
+#
+#

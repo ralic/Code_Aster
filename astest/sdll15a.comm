@@ -1,21 +1,21 @@
-# MODIF  DATE 28/11/2000   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE-LIBRE, AVEC MASSE OU INERTIE EXCENTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #CAS_TEST__: SDLL15A
 # SDLL15/A                 COMMANDES                             5/03/91
@@ -27,42 +27,42 @@
 #=======================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'SDLL15A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDLL15A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=( 
+MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                   _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'POU_D_E'),
                        _F(  NOEUD = 'N200',
-                       PHENOMENE = 'MECANIQUE', 
+                       PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'DIS_TR'))  )
 
 # ----------------------------------------------------------------------
 # DEFINITION DE 2 CARAC_ELEM:
 
 #         MASSE A L'EXTREMITE DE LA POUTRE
-CLEMCAS1=AFFE_CARA_ELEM(  MODELE=MO, 
-               POUTRE=_F(  
+CLEMCAS1=AFFE_CARA_ELEM(  MODELE=MO,
+               POUTRE=_F(
        GROUP_MA = 'TOUT',
  SECTION = 'CERCLE',
-                        CARA = ('R','EP',), 
+                        CARA = ('R','EP',),
                         VALE = ( 0.175,  0.015, )),
-              DISCRET=_F(  NOEUD = 'N200',  CARA = 'M_TR_D_N', 
+              DISCRET=_F(  NOEUD = 'N200',  CARA = 'M_TR_D_N',
          #           M    IXX IYY IZZ IXY IYZ IZX  EX  EY  EZ
              VALE = ( 1000., 0., 0., 0., 0., 0., 0., 0., 0., 0., )) )
 
 #         MASSE EXCENTREE
-CLEMCAS2=AFFE_CARA_ELEM(  MODELE=MO, 
-               POUTRE=_F( 
+CLEMCAS2=AFFE_CARA_ELEM(  MODELE=MO,
+               POUTRE=_F(
        GROUP_MA = 'TOUT',
  SECTION = 'CERCLE',
-                        CARA = ('R','EP',), 
+                        CARA = ('R','EP',),
                         VALE = ( 0.175,  0.015, )),
-              DISCRET=_F(  NOEUD = 'N200',  CARA = 'M_TR_D_N', 
+              DISCRET=_F(  NOEUD = 'N200',  CARA = 'M_TR_D_N',
          #           M    IXX IYY IZZ IXY IYZ IZX  EX  EY  EZ
              VALE = ( 1000., 0., 0., 0., 0., 0., 0., 0., 1., 0., )) )
 
@@ -70,10 +70,10 @@ CLEMCAS2=AFFE_CARA_ELEM(  MODELE=MO,
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
 
-CH=AFFE_CHAR_MECA(  MODELE=MO, 
+CH=AFFE_CHAR_MECA(  MODELE=MO,
           DDL_IMPO=_F(  NOEUD = 'N100', DX = 0.,  DY = 0.,  DZ = 0.,
                                   DRX = 0., DRY = 0., DRZ = 0.) )
 

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGELINE  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C ----------------------------------------------------------------------
       CALL GETFAC('HEXA20_27',NBMOMA)
       IF (NBMOMA.GT.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL U2MESS('F','MAILLAGE_11')
+          CALL U2MESS('F','MAILLAGE_14')
         ENDIF
         CALL GETVTX('HEXA20_27','PREF_NOEUD',1,1,1,PREFIX,N1)
         CALL GETVIS('HEXA20_27','PREF_NUME' ,1,1,1,NDINIT,N1)

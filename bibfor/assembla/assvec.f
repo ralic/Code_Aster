@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 15/10/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C ----------------------------------------------------------------------
       CHARACTER*14 NUM2
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*24 VALK(4)
+      CHARACTER*24 VALK(5)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -82,13 +82,13 @@ C ---------------------------------------------------------------------
      &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE,SDFETA
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       LOGICAL      LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2,LLICHP,LFETIC,
-     &             LSAUTE,LBID,LGOTO,LARLQ
+     &             LSAUTE,LBID,LGOTO,LMUMPS,LARLQ
       INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
      &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,ILIGRT,
      &             ADMODL,LCMODL,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
      &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,ILIMPB,
      &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,IAUX4,COMPT,
-     &             NIVMPI,RANG,NBLOG
+     &             NIVMPI,RANG,NBLOG,IMUMPS,NBPROC
       REAL*8       TEMPS(6),RBID
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -180,8 +180,6 @@ C
 
       VECAS = VEC
       BAS = BASE
-      
-       
 
 C --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
       CALL DETRSD('CHAMP_GD',VECAS)
@@ -253,6 +251,19 @@ C CONSTITUTION DE L'OBJET JEVEUX VECAS.FETC COMPLEMENTAIRE
 C PREPARATION DE DONNEES AUXILIAIRES POUR TEST
         CALL FETTSD(INFOFE,IBID,IBID,IBID,SDFETI(1:19),K24B,IBID,IBID,
      &              IBID,IFM,LBID,IBID,IBID,IBID,K19B,2,LBID)
+      ENDIF
+
+C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE MUMPS DISTRIBUE
+      LMUMPS=.FALSE.
+      RANG=0
+      NBPROC=1
+      CALL JEEXIN('&MUMPS.MAILLE.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
+        CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
+        LMUMPS=.TRUE.
+        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',IMUMPS)
+        IMUMPS=IMUMPS-1
       ENDIF
 
       CALL DISMOI('F','NOM_MODELE',NUDEV,'NUME_DDL',IBID,MO,IERD)
@@ -521,6 +532,7 @@ C==========================
 C NOM DU LIGREL GLOBAL
               NOMLI = ZK24(IAD)
               NOMOPT = ZK24(IAD+1)
+              
 C --- TEST EXISTENCE &&POIDS_MAILLE (ARLEQUIN)
               CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
               IF (EPDMS.GT.0) THEN
@@ -543,7 +555,7 @@ C --- TEST EXISTENCE &&POIDS_MAILLE (ARLEQUIN)
                 ENDIF
               ELSE
                 LARLQ = .FALSE.      
-              ENDIF 
+              ENDIF
 
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C RECHERCHE D'OBJET TEMPORAIRE SI FETI
@@ -607,9 +619,8 @@ C LIGREL DE MODELE
               ENDIF
 C--------- POUR FETI & LIGREL TARDIF: FIN
 
-C --- TEST EXISTENCE &&POIDS_MAILLE
-
-              
+C---- TEST EXISTENCE &&POIDS_MAILLE
+C------------------------------
 
 C ILIVE: INDICE DANS LIST_RESU (GLOBAL) DES VECT_ELEM.LILI DU NOMLI
 C ILINU: INDICE DANS PROF_CHNO.LILI (GLOBAL OU LOCAL) DU NOMLI
@@ -690,6 +701,25 @@ C ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
                     ENDIF
 
 
+C SI ON EST DANS UN CALCUL MUMPS DISTRIBUE, ON SE POSE LA QUESTION DE
+C L'APPARTENANCE DE LA MAILLE NUMA AUX DONNEES ATTRIBUEES AU PROC
+C SI MAILLE PHYSIQUE: CHAQUE PROC NE TRAITE QUE CELLES ASSOCIEES AUX
+C                     SD QUI LUI SONT ATTRIBUES
+C SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
+                    IF (LMUMPS) THEN
+                      IF (NUMA.GT.0) THEN
+                        IF (ZI(IMUMPS+NUMA).LT.0) THEN
+C                         WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
+                          GOTO 160
+                        ENDIF
+                       ELSE
+                        IF (RANG.NE.0) THEN
+C                         WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
+                          GOTO 160
+                        ENDIF
+                      ENDIF
+                    ENDIF
+                      
 C---- LIGREL DE MODELE:
 C--------------------
                     IF (NUMA.GT.0) THEN
@@ -848,9 +878,10 @@ C--------- POUR FETI & LIGREL TARDIF: FIN
                           VALK (2) = RESU
                           VALK (3) = VECEL
                           VALK (4) = NUDEV
+                          VALK (5) = NOMLI(1:8)
                           VALI (1) = N1
                           VALI (2) = NUMA
-      CALL U2MESG('F', 'ASSEMBLA_45',4,VALK,2,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_45',5,VALK,2,VALI,0,0.D0)
                           END IF
 
 C NUMERO D'EQUATION DU PREMIER DDL DE N1
@@ -956,11 +987,14 @@ C MONITORING
      &      'TEMPS CPU/SYS ASSEMBLAGE V                : ',TEMPS(5),
      &       TEMPS(6)
           IF (LFETIC) ZR(IFCPU+IDD)=ZR(IFCPU+IDD)+TEMPS(5)+TEMPS(6)
+C POUR QUE CELA FONCTIONNE AVEC MUMPS CENTRALISE
+          CALL JEEXIN('&MUMPS.INFO.CPU.ASSE',IRET)
+          IF (IRET.NE.0) THEN
+            CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
+            CALL JEVEUO('&MUMPS.INFO.CPU.ASSE','E',IFCPU)
+            ZR(IFCPU+RANG)=ZR(IFCPU+RANG)+TEMPS(5)+TEMPS(6)
+          ENDIF
         ENDIF
-C EVENTUELLE ECRITURE DANS FICHIER SI FETI ET INFO_FETI(14:14)='T'
-        K24B(1:14)=NUDEV
-        CALL FETTSD(INFOFE,IDD,NEQUA,IBID,SDFETI(1:19),K24B,IFETN,
-     &              IADVAL,IBID,IFM,LBID,IBID,IBID,IBID,K19B,7,LBID)
         IF (LFETI) CALL JEDEMA()
 
 C========================================
@@ -969,6 +1003,13 @@ C========================================
         ENDIF
   195 CONTINUE
 
+C POUR MONITORING
+C      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,VECAS(1:19),1,' ')
+
+C        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
+      IF ((NBPROC.GT.1).AND.LMUMPS)
+     &  CALL MUMMPI(5,IFM,NIV,KVALE,NEQUA,IBID)
+               
       CALL JEDETR(VECAS//'.LILI')
       CALL JEDETR(VECAS//'.LIVE')
       CALL JEDETR(VECAS//'.ADNE')

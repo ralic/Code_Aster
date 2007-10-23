@@ -1,9 +1,9 @@
       SUBROUTINE TE0065(OPTION,NOMTE)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*) OPTION,NOMTE
+      CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 22/10/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,31 +39,85 @@ C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
-      CHARACTER*2 CODRET
+      INTEGER       NBRES,NBFAMX
+      PARAMETER   ( NBRES = 3, NBFAMX = 20 )
 
+      CHARACTER*2 CODRET(NBRES)
+      CHARACTER*8 NOMRES(NBRES),LIELRF(NBFAMX)
       CHARACTER*16 PHENOM
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,VOLUME
       REAL*8 X(27),Y(27),Z(27),XG,YG,ZG,MATINE(6),R8B
-      INTEGER IPOIDS,IVF,IDFDE,IGEOM
-      INTEGER JGANO,NNO,KP,NPG,I,J,IMATE
+      REAL*8 RHOPOU,RHOFLU,TPG,VALRES(NBRES),AYZ,YCELL,RAPP,YF
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,NBV,LSECT,LCORR
+      INTEGER JGANO,NNO,KP,NPG,I,J,IMATE,NTROU
 C     ------------------------------------------------------------------
       ZERO = 0.D0
 
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      CALL ELREF2(NOMTE,NBFAMX,LIELRF,NTROU)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
 
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
 
-      IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
-     &    PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
-     &    PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
-        CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
-     &             CODRET,'FM')
+      IF(LIELRF(2)(1:4).EQ.'POHO')THEN
+C
+C        POUR LES ELEMENTS DE LA MODELISATION '3D_FAISCEAU':
+C        ===================================================
+C
+C        - DETERMINATION DU RHO 'POUTRE': RHOPOU
+         IF (PHENOM.EQ.'ELAS') THEN
+           NOMRES(1)  = 'RHO'
+           NBV = 1
+         ELSE
+           CALL U2MESS('F','ELEMENTS3_98')
+         ENDIF
+         TPG = 0.D0
+         CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,
+     &               NOMRES,VALRES,CODRET,'FM')
+         RHOPOU  = VALRES(1)
+
+C        - DETERMINATION DU RHO 'FLUIDE': RHOFLU
+         CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,CODRET)
+         IF (PHENOM.EQ.'FLUIDE') THEN
+            NOMRES(1)  = 'RHO'
+            NBV = 1
+         ELSE
+            CALL U2MESS('F','ELEMENTS3_98')
+         ENDIF
+         TPG = 0.D0
+         CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,
+     &             NOMRES,VALRES,CODRET,'FM')
+         RHOFLU  = VALRES(1)
+
+C        - DETERMINATION DU RHO 'EQUIVALENT' : RHO 
+C          RHO = ( RHOPOU * AYZ * RAPP ) +  ( RHOFLUI * YF )
+C                 RAPP :=  COEF_ECH **2 / A_CELL
+C                 YF   :=  A_FLUI  / A_CELL
+C                 AYZ  := AIRE_SECTION_POUTRE
+         CALL JEVECH ('PCAGNPO', 'L',LSECT)
+         AYZ   =  ZR(LSECT)
+         CALL JEVECH ('PCAPOUF','L',LCORR)
+         YCELL =  ZR(LCORR+4)
+         RAPP  =  ZR(LCORR+5)
+         RAPP  =  RAPP * RAPP / YCELL
+         YF    =  ZR(LCORR+3)/YCELL
+         RHO   = ( RHOPOU * AYZ * RAPP ) +  ( RHOFLU * YF )
+         CALL ELREF4(LIELRF(1),'RIGI',NDIM,NNO,NNOS,NPG,
+     &               IPOIDS,IVF,IDFDE,JGANO)
+         
       ELSE
-        CALL U2MESS('F','ELEMENTS_50')
-      END IF
+        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+        IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
+     &      PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
+     &      PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
+          CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
+     &               CODRET,'FM')
+        ELSE
+          CALL U2MESS('F','ELEMENTS_50')
+        END IF
+      ENDIF
+
 
       DO 20 I = 1,NNO
         X(I) = ZR(IGEOM+3* (I-1))

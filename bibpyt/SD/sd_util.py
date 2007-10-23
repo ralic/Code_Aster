@@ -1,4 +1,4 @@
-#@ MODIF sd_util SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_util SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,10 +141,8 @@ def sdu_monotone(seqini) :
     decroiss=1
     for k in range(n) :
         if seq[k] != seq2[k] :
-            if 0 : print "AJACOT non croissant ",k,seq[k],seq2[k]
             croiss=0
         if seq[k] != seq3[k] :
-            if 0 : print "AJACOT non décroissant ",k,seq[k],seq2[k]
             decroiss=0
 
     if   croiss==1 and decroiss==1 :
@@ -172,3 +170,17 @@ def sdu_licmp_gd(numgd) :
     nomgd=sdu_nom_gd(numgd)
     nocmp=aster.getcolljev('&CATA.GD.NOMCMP')
     return nocmp[nomgd.ljust(8)]
+
+
+
+#  3) Utilitaires pour la vérification de l'existence des objets :
+#  -----------------------------------------------------------------------------------------
+
+def sdu_ensemble(lojb) :
+    # vérifie que les objets JEVEUX de lojb existent simultanément :
+    assert len(lojb) > 1 , lojb
+    lexi=[]
+    for obj1 in lojb :
+        lexi.append(obj1.exists)
+    for x in lexi[1:] :
+        assert x==lexi[0] , (lojb,lexi)

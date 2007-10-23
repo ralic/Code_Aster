@@ -1,22 +1,22 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 #
 # TITRE : Cylindre mince sous pression hydrostatique
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #         ------------------------------------------
 
@@ -28,8 +28,7 @@
 # Commande obligatoire pour commencer
 # -----------------------------------
 
-DEBUT( CODE=_F( NOM = 'DEMO005A',
-                NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='DEMO005A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 # Lecture du maillage
@@ -108,7 +107,7 @@ chmat=AFFE_MATERIAU(MAILLAGE=mail,
 
 # Definition des conditions aux limites
 # -------------------------------------
-# Les conditions aux limites peuvent porter sur des noeuds, des groupes de noeuds, 
+# Les conditions aux limites peuvent porter sur des noeuds, des groupes de noeuds,
 # des mailles ou des groupes de mailles
 # Ici les noeuds du groupe de mailles APPUI (mailles de bord) sont affectees de
 # la condition: DY = 0 ce qui signifie "deplacement suivant y" nul.
@@ -120,7 +119,7 @@ clim=AFFE_CHAR_MECA(MODELE=modl,
 # Definition du chargement:
 # -------------------------
 #  Pression fonction de y
-# Les fonctions sont definies point par point (variation affine entre deux points 
+# Les fonctions sont definies point par point (variation affine entre deux points
 # par defaut)
 # Ici la pression varie entre
 #     20000 Pa pour y=0
@@ -129,12 +128,12 @@ clim=AFFE_CHAR_MECA(MODELE=modl,
 f_y=DEFI_FONCTION(NOM_PARA='Y',
                   VALE=(0.0,20000.0,
                         4.0,0.0,),);
-                        
+
 # Affectation du chargement
 # -------------------------
 # Affectation de la pression (fonction de y) sur le bord compose des groupes
 # de mailles LFA LDF
-   
+
 charg=AFFE_CHAR_MECA_F(MODELE=modl,
            PRES_REP=_F(GROUP_MA=('LFA','LDF',),
                        PRES=f_y,),);
@@ -151,12 +150,12 @@ res1=MECA_STATIQUE(
                    CHAM_MATER=chmat,
                    EXCIT=(_F(CHARGE=charg,),
                         _F(CHARGE=clim,),),);
-                       
+
 # Calcul des contraintes
 # ----------------------
-# reuse=res1 signifie que l'on "enrichi" le concept res1: le champ de contraintes 
+# reuse=res1 signifie que l'on "enrichi" le concept res1: le champ de contraintes
 # sera stocke en plus du champ de deplacements
-# le nom 'SIGM_ELNO_DEPL' signifie "contraintes calculees aux noeuds de chaque 
+# le nom 'SIGM_ELNO_DEPL' signifie "contraintes calculees aux noeuds de chaque
 # element a partir des deplacements
 
 res1=CALC_ELEM(reuse=res1,
@@ -168,18 +167,18 @@ res1=CALC_ELEM(reuse=res1,
 
 # Impression des resultats aux points A B C D
 # -------------------------------------------
-# Impression des resultats au format texte des deplacements aux noeuds 
+# Impression des resultats au format texte des deplacements aux noeuds
 # correspondant au point A
 
 IMPR_RESU(MODELE=modl,
           RESU=_F(RESULTAT=res1,
                   GROUP_MA='ND_A',),);
 
-# Impression des resultats au format texte des deplacements aux noeuds 
+# Impression des resultats au format texte des deplacements aux noeuds
 # correspondant au point B
 
 IMPR_RESU(MODELE=modl,
-          RESU=_F(RESULTAT=res1,                  
+          RESU=_F(RESULTAT=res1,
                   GROUP_MA='ND_B',),);
 
 IMPR_RESU(MODELE=modl,
@@ -189,11 +188,11 @@ IMPR_RESU(MODELE=modl,
           RESU=_F(RESULTAT=res1,
                   GROUP_MA='ND_D',),);
 
-# Impression des resultats au format texte deplacement/contraintes sur tout 
-# le maillage 
-                                                             
-IMPR_RESU(MODELE=modl,                            
-          RESU=_F(RESULTAT=res1,),);              
+# Impression des resultats au format texte deplacement/contraintes sur tout
+# le maillage
+
+IMPR_RESU(MODELE=modl,
+          RESU=_F(RESULTAT=res1,),);
 
 
 # Impression des resultats pour une visualisation avec GMSH
@@ -202,10 +201,10 @@ IMPR_RESU(MODELE=modl,UNITE=37,FORMAT='GMSH',
           RESU=_F(RESULTAT=res1,NOM_CHAM='DEPL',),);
 
 # Verification des resultats (Test de non-regression)
-# 
+#
 # Verification du deplacement suivant x et y au point A
 
-TEST_RESU(RESU=(              
+TEST_RESU(RESU=(
                 _F( RESULTAT = res1,
                     NOM_CHAM = 'DEPL',
                     GROUP_NO = 'ND_A',
@@ -219,7 +218,7 @@ TEST_RESU(RESU=(
           )
 # Verification du deplacement suivant x et y au point B
 
-TEST_RESU(RESU=(              
+TEST_RESU(RESU=(
                 _F( RESULTAT = res1,
                     NOM_CHAM = 'DEPL',
                     GROUP_NO = 'ND_B',
@@ -233,7 +232,7 @@ TEST_RESU(RESU=(
           )
 # Verification du deplacement suivant x et y au point C
 
-TEST_RESU(RESU=(              
+TEST_RESU(RESU=(
                 _F( RESULTAT = res1,
                     NOM_CHAM = 'DEPL',
                     GROUP_NO = 'ND_C',
@@ -257,7 +256,7 @@ TEST_RESU(RESU=(
 
 # Verification du deplacement suivant x et y au point D
 
-TEST_RESU(RESU=(              
+TEST_RESU(RESU=(
                 _F( RESULTAT = res1,
                     NOM_CHAM = 'DEPL',
                     GROUP_NO = 'ND_D',
@@ -283,4 +282,4 @@ TEST_RESU(RESU=(
 # Commande obligatoire pour clore une execution
 # ---------------------------------------------
 
-FIN();                   
+FIN();

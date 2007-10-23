@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -149,8 +149,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
          A = ZR(LSECT)
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
-     &                 0,' ',R8BID,1,'RHO',RHO,
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
      &                 CODRES, 'FM' )
 C
          CALL JEVECH('PPESANR','L',LPESA)

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster include  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

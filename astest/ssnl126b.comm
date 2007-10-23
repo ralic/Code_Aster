@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/10/2007   AUTEUR GREFFET N.GREFFET 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE 3D GREEN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,20 +65,39 @@ resuel=STAT_NON_LINE(MODELE=modele,
                              FONC_MULT=fonc,),),
                    COMP_INCR=_F(RELATION='ELAS',
                                 DEFORMATION='GREEN',),
-                   INCREMENT=_F(LIST_INST=list,),
+                   INCREMENT=_F(LIST_INST=list,INST_FIN=0.5,),
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                   ITER_GLOB_MAXI=10,),
-                  CRIT_FLAMB=_F()
+                   CRIT_FLAMB=_F()
                   );
+                  
+resuel=STAT_NON_LINE(reuse=resuel,
+                   MODELE=modele,
+                   CHAM_MATER=ch_mat,
+                   EXCIT=(_F(CHARGE=CC,),
+                          _F(CHARGE=CSEL,
+                             FONC_MULT=fonc,),),
+                   ETAT_INIT=_F(EVOL_NOLI=resuel),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                DEFORMATION='GREEN',),
+                   INCREMENT=_F(LIST_INST=list,INST_INIT=0.5,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=10,),
+                   CRIT_FLAMB=_F()
+                  );
+                  
 TEST_RESU(RESU=(
                  _F(RESULTAT=resuel,
                    INST=1.0,
                    PARA='CHAR_CRIT',
                    VALE=-19.065,
-                   PRECISION=0.03,
+                   PRECISION=1.E-4,
                    REFERENCE='NON_REGRESSION',),
                    ),)
 
@@ -93,13 +112,31 @@ resu=STAT_NON_LINE(MODELE=modele,
                              FONC_MULT=fonc,),),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='GREEN',),
-                   INCREMENT=_F(LIST_INST=list,),
+                   INCREMENT=_F(LIST_INST=list,INST_FIN=0.5,),
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                   ITER_GLOB_MAXI=10,),
-                  CRIT_FLAMB=_F()
+                   CRIT_FLAMB=_F()
+                  );
+                  
+resu=STAT_NON_LINE(reuse=resu,
+                   MODELE=modele,
+                   CHAM_MATER=ch_mat,
+                   EXCIT=(_F(CHARGE=CC,),
+                          _F(CHARGE=CS,
+                             FONC_MULT=fonc,),),
+                   ETAT_INIT=_F(EVOL_NOLI=resu),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                DEFORMATION='GREEN',),
+                   INCREMENT=_F(LIST_INST=list,INST_INIT=0.5,),
+                   NEWTON=_F(REAC_INCR=1,
+                             MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                  ITER_GLOB_MAXI=10,),
+                   CRIT_FLAMB=_F()
                   );
 TEST_RESU(RESU=(
                  _F(RESULTAT=resu,
@@ -115,5 +152,25 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                    ),)
 
+TEST_RESU(RESU=(
+   _F( RESULTAT  = resu,
+       NOM_CHAM  = 'MODE_FLAMB',
+       NOM_CMP   = 'DX',
+       NOEUD     = 'N1',   
+       CRITERE   = 'RELATIF',
+       PRECISION = 1.E-4,
+       INST      = 0.4,
+       VALE      = 0.,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( RESULTAT  = resu,
+       NOM_CHAM  = 'MODE_FLAMB',
+       NOM_CMP   = 'DX',
+       NOEUD     = 'N1',   
+       CRITERE   = 'RELATIF',
+       PRECISION = 1.E-4,
+       INST      = 1.0,
+       VALE      = 0.,
+       REFERENCE = 'ANALYTIQUE'),
+       ),);
 
 FIN();

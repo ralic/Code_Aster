@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat SD  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sd_resultat SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,12 +47,6 @@ class sd_resultat(sd_titre):
     # existence de la SD :
     def exists(self):
         return self.ORDR.exists
-
-
-    # glute XFEM :
-    def check_glute_XFEM(self, checker):
-        sd2 = sd_char_contact('&&OP0070.DEFIC')
-        sd2.check(checker)
 
 
     # indirection vers les champs de .TACH :

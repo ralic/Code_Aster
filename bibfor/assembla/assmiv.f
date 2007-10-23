@@ -4,7 +4,7 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C ----------------------------------------------------------------------
       CHARACTER*14 NUM2
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*24 VALK(4)
+      CHARACTER*24 VALK(5)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -78,16 +78,18 @@ C ---------------------------------------------------------------------
 C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
       PARAMETER (NBECMX=10)
-      INTEGER ICODLA(NBECMX),ICODGE(NBECMX)
+      INTEGER ICODLA(NBECMX),ICODGE(NBECMX),RANG,NBPROC,IRET,IFM,NIV,
+     &        IBID,IMUMPS
       CHARACTER*1 BAS
       CHARACTER*8 VECEL,MA,MO,MO2,NOGDSI,NOGDCO,NOMCAS
       CHARACTER*8 KBID
       CHARACTER*14 NUDEV
       CHARACTER*19 VECAS,VPROF
       CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
-     &             KNEQUA,KVALE,NOMOPT
+     &             KNEQUA,KVALE,NOMOPT,K24B
       CHARACTER*1  K1BID
       INTEGER      ADMODL, LCMODL, NBEC, EPDMS, JPDMS
+      LOGICAL      LMUMPS
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -179,6 +181,19 @@ C
       VECAS = VEC
       BAS = BASE
 
+C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE MUMPS DISTRIBUE
+      LMUMPS=.FALSE.
+      RANG=0
+      NBPROC=1
+      CALL JEEXIN('&MUMPS.MAILLE.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
+        CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
+        LMUMPS=.TRUE.
+        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',IMUMPS)
+        IMUMPS=IMUMPS-1
+      ENDIF
+      
 C --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
       CALL DETRSD('CHAMP_GD',VECAS)
       CALL WKVECT(VECAS//'.LIVE',BAS//' V K8 ',NBVEC,ILIVEC)
@@ -435,6 +450,26 @@ C------------------------------
                   NUMA = ZI(ZI(IADLIE+3* (ILIVE-1)+1)-1+
      &                   ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1)+IEL-1)
                   R = RCOEF
+                  
+C SI ON EST DANS UN CALCUL MUMPS DISTRIBUE, ON SE POSE LA QUESTION DE
+C L'APPARTENANCE DE LA MAILLE NUMA AUX DONNEES ATTRIBUEES AU PROC
+C SI MAILLE PHYSIQUE: CHAQUE PROC NE TRAITE QUE CELLES ASSOCIEES AUX
+C                     SD QUI LUI SONT ATTRIBUES
+C SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
+                  IF (LMUMPS) THEN
+                    IF (NUMA.GT.0) THEN
+                      IF (ZI(IMUMPS+NUMA).LT.0) THEN
+C                         WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
+                        GOTO 160
+                      ENDIF
+                    ELSE
+                      IF (RANG.NE.0) THEN
+C                        WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
+                        GOTO 160
+                      ENDIF
+                    ENDIF
+                  ENDIF
+                  
                   IF (NUMA.GT.0) THEN
                     IF (EPDMS.GT.0) R=R*ZR(JPDMS-1+NUMA)
                     IL = 0
@@ -517,9 +552,10 @@ CCDIR$ IVDEP
                         VALK (2) = RESU
                         VALK (3) = VECEL
                         VALK (4) = NUDEV
+                        VALK (5) = NOMLI(1:8)
                         VALI (1) = N1
                         VALI (2) = NUMA
-      CALL U2MESG('F', 'ASSEMBLA_45',4,VALK,2,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_45',5,VALK,2,VALI,0,0.D0)
                         END IF
 
                         IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILINU-1)+
@@ -630,5 +666,9 @@ C        WRITE (IFM,*) ' --------------------------- '
 C      END IF
       CALL JEDETR('&&ASSVEC.POSDDL')
       CALL JEDETR('&&ASSVEC.NUMLOC')
+
+C        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
+      IF ((NBPROC.GT.1).AND.LMUMPS)
+     &  CALL MUMMPI(5,IFM,NIV,KVALE,NEQUA,IBID)
       CALL JEDEMA()
       END

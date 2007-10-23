@@ -3,7 +3,7 @@ C TOLE CRS_505
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,10 +76,10 @@ C DEB-------------------------------------------------------------------
 C
 C     FETI PARALLELE OR NOT ?
 C     --------------------
-      CALL JEEXIN('&CALCUL.FETI.NUMSD',IRET)
+      CALL JEEXIN('&CALCUL.PARALLELE',IRET)
       IF (IRET.NE.0) THEN
         LFETI=.TRUE.
-        CALL JEVEUO('&CALCUL.FETI.NUMSD','L',IFETI)
+        CALL JEVEUO('&CALCUL.PARALLELE','L',IFETI)
         IFETI=IFETI-1
       ELSE
         LFETI=.FALSE.

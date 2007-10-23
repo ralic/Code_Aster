@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSLS101A',NIV_PUB_WEB='INTERNET')    )
+DEBUT(CODE=_F(NOM='SSLS101A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
 # POINTS: O     MAILLES  M30  M33
@@ -73,7 +73,7 @@ RESU=MECA_STATIQUE(     MODELE=MODEL,
                          EXCIT=_F(  CHARGE = CHARGE),
                              )
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,     
+CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
            OPTION=( 'EFGE_ELNO_DEPL','EPOT_ELEM_DEPL', )
                              )
 
@@ -87,7 +87,7 @@ CALC_ELEM( reuse=RESU, RESULTAT=RESU,
            REPE_COQUE=_F( NIVE_COUCHE='INF',),)
 
 #
-CALC_ELEM( reuse=RESU, RESULTAT=RESU,     
+CALC_ELEM( reuse=RESU, RESULTAT=RESU,
            OPTION='EQUI_ELNO_SIGM',    )
 
 #
@@ -469,13 +469,13 @@ CALC_ELEM( reuse=U3, RESULTAT=U3,
 #
 # TEST DE L'OPTION EQUI_ELNO_SIGM EN PLASTICITE
 
-CALC_ELEM( reuse=U3,  RESULTAT=U3,     
+CALC_ELEM( reuse=U3,  RESULTAT=U3,
            NUME_ORDRE=4,
            OPTION='SIGM_ELNO_COQU',
            REPE_COQUE =_F( NUME_COUCHE=1,
                            NIVE_COUCHE='INF',),        )
 
-CALC_ELEM( reuse=U3, RESULTAT=U3,      
+CALC_ELEM( reuse=U3, RESULTAT=U3,
            NUME_ORDRE=4,
            OPTION='EQUI_ELNO_SIGM'  )
 #

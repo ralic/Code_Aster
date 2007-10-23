@@ -3,7 +3,7 @@
       CHARACTER*(*)       MATOUT, MATIN, BASE, TYPC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,6 +120,8 @@ C     --------------------------------------------------------------
       CALL JEECRA(VALM,'LONMAX',LGBLOC,CBID)
       DO 20 IBLOC = 1, NBBLOC
          CALL JECROC( JEXNUM(VALM,IBLOC) )
+C        -- IL FAUT FAIRE UN JEVEUO/'E' POUR QUE L'OBJET EXISTE VRAIMENT
+         CALL JEVEUO( JEXNUM(VALM,IBLOC) ,'E',JVALM)
   20  CONTINUE
 
 

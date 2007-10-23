@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. CINE. BARRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #
 
-DEBUT(  CODE=_F(  NOM = 'SSNL112B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSNL112B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -145,14 +145,14 @@ UELAS=MECA_STATIQUE(
 
 CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
-                 
+
                   LIST_INST=LINST,
                  OPTION=('SIGM_ELNO_DEPL',
                          'EFGE_ELNO_DEPL',
                          )
                )
 
-CALC_NO(reuse=UELAS,  OPTION='FORC_NODA',  
+CALC_NO(reuse=UELAS,  OPTION='FORC_NODA',
                         RESULTAT=UELAS)
 
 TEST_RESU(RESU=(
@@ -204,7 +204,7 @@ CALC_ELEM( reuse=U,
                           RESULTAT=U,
               )
 
-CALC_NO(reuse=U,  OPTION='FORC_NODA',  
+CALC_NO(reuse=U,  OPTION='FORC_NODA',
                         RESULTAT=U)
 
 #

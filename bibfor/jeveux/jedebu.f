@@ -1,6 +1,6 @@
-      SUBROUTINE JEDEBU ( NBFI, LZON, IADZON, LMO, CMES, CVIG, IDB )
+      SUBROUTINE JEDEBU(NBFI, LZON, MXZON, IADZON, LMO, CMES, CVIG,IDB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             NBFI, LZON, IADZON, LMO, IDB
+      INTEGER             NBFI, LZON, MXZON, IADZON, LMO, IDB
       CHARACTER*(*)       CMES, CVIG
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR D'INITIALISATION GENERALE
@@ -27,6 +27,7 @@ C ROUTINE AVEC ADHERENCE SYSTEME CRAY : LOC
 C
 C IN  NBFI   : NOMBRE MAXIMUM DE BASES SIMULTANEES ( =< 5)
 C IN  LZON   : TAILLE DE LA MEMOIRE (EN ENTIER)
+C IN  MXZON  : LIMITE MEMOIRE DYNAMIQUE (EN ENTIER words)
 C IN  IADZON : SI DIFFERENTE DE 0, ADRESSE DE LA ZONE A GERER
 C IN  LMO    : LONGUEUR DE ZONE PRE ALLOUEE EN OCTETS
 C IN  CMES   : NOM LOCAL DU FICHIER D'ERREUR
@@ -112,8 +113,8 @@ C ----------------------------------------------------------------------
       COMMON /UNDFJE/  LUNDEF,IDEBUG
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
-      REAL *8          MXDYN , MCDYN  
-      COMMON /RDYNJE/  MXDYN , MCDYN 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN  
+      COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN 
 C --------------------------------- ------------------------------------
       INTEGER          MXLICI , IPREM  , INIT
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM, LOUAEM
@@ -145,15 +146,12 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LGDYN  = LUNDEF
       MXDYN  = 0
       MCDYN  = 0
+      MLDYN  = 0
       NBDYN  = 0
       NBFREE = 0
 C -----------------  NOMBRE DE BASES -----------------------------------
       NBFIC = MIN ( NBFI , N , LEN(CLASSE) )
-      IF ( NBFIC .LE. 0 ) THEN
-         CALL U2MESS('F','JEVEUX_04')
-      ELSE IF ( NBFIC .NE. NBFI ) THEN
-         CALL U2MESI('F','JEVEUX_35',1,N)
-      ENDIF
+      CALL ASSERT ( NBFIC .GT. 0 .AND. NBFIC .EQ. NBFI)
 C -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
       KSTAT  = 'XUAD'
       ISSTAT = ISPBEM( LBIS - 3 )
@@ -162,9 +160,7 @@ C -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
  2    CONTINUE
       IDEBUG = IDB
 C -----------------  ZONE MEMOIRE  -------------------------------------
-      IF ( LZON .LE. 0 ) THEN
-         CALL U2MESS('F','JEVEUX_05')
-      ENDIF
+      CALL ASSERT ( LZON .GT. 0 )
       LOSZON = LZON*LOIS
       LORC   = MAX ( LOR8 , LOC8 )
       IF ( MOD ( LOSZON , LORC ) .NE. 0 ) THEN
@@ -174,6 +170,10 @@ C -----------------  ZONE MEMOIRE  -------------------------------------
       IF (IADZON .GT. 0) THEN
          LISZON = MIN(LISZON,LMO/LOIS)
       ENDIF
+      VMXDYN = MXZON*LOIS
+      IF ( MXZON .EQ. 0 ) THEN
+        VMXDYN = ISMAEM() 
+      ENDIF     
       CALL JXALLM ( IADZON, ISZON , LISZON , JISZON )
       LK1ZON = LISZON * LOIS
       JK1ZON = JISZON * LOIS

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(    CODE=_F(  NOM = 'SSLS100A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLS100A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------------------------------
 # POINTS: O     MAILLES  M30  M33
@@ -71,7 +71,7 @@ CHARGE=AFFE_CHAR_MECA(  MODELE=MODEL,DDL_IMPO=(
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
                        COQUE=_F( GROUP_MA = 'TOUT',
-                                 EPAIS = 0.1, 
+                                 EPAIS = 0.1,
                                  ANGL_REP = (0., 0.,)))
 
 RESU=MECA_STATIQUE(    MODELE=MODEL,       CHAM_MATER=CHMAT,
@@ -111,11 +111,11 @@ REFERENCE='ANALYTIQUE', NOEUD = 'E',          NOM_CMP = 'DZ',    VALE = -95.9766
 REFERENCE='ANALYTIQUE', NOEUD = 'F',          NOM_CMP = 'DZ',    VALE = -78.897))
           )
 
-RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,        
+RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
                         REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                              OPTION='EFGE_ELNO_DEPL' )
 
-RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,        
+RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
                         REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                              OPTION='SIGM_ELNO_DEPL' )
 
@@ -267,7 +267,7 @@ TEST_TABLE(       TABLE=RELEVE_2,FILTRE=(
                            _F(  NOM_PARA = 'MAILLE',
                              VALE_K = 'M30')),
                   NOM_PARA='MXX',
-                 REFERENCE = 'ANALYTIQUE', 
+                 REFERENCE = 'ANALYTIQUE',
                  PRECISION=1.5E-2,
                       VALE=-8.01747E-02      )
 
@@ -277,7 +277,7 @@ TEST_TABLE(       TABLE=RELEVE_2,FILTRE=(
                            _F(  NOM_PARA = 'MAILLE',
                              VALE_K = 'M33')),
                   NOM_PARA='MXX',
-                 REFERENCE = 'ANALYTIQUE', 
+                 REFERENCE = 'ANALYTIQUE',
                  PRECISION=1.5E-2,
                       VALE=-8.04504E-02      )
 
@@ -295,7 +295,7 @@ TEST_TABLE(       TABLE=RELEVE_3,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'B'),
                   NOM_PARA='MXX',
-                 REFERENCE = 'ANALYTIQUE', 
+                 REFERENCE = 'ANALYTIQUE',
                  PRECISION=1.5E-2,
                       VALE=8.78319E-02          )
 
@@ -303,7 +303,7 @@ TEST_TABLE(       TABLE=RELEVE_3,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'D'),
                   NOM_PARA='MXX',
-                 REFERENCE = 'ANALYTIQUE', 
+                 REFERENCE = 'ANALYTIQUE',
                  PRECISION=1.5E-2,
                       VALE=-3.19177E-02         )
 
@@ -311,7 +311,7 @@ TEST_TABLE(       TABLE=RELEVE_3,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'F'),
                   NOM_PARA='MXX',
-                 REFERENCE = 'ANALYTIQUE', 
+                 REFERENCE = 'ANALYTIQUE',
                  PRECISION=1.5E-2,
                       VALE=-2.43854E-02         )
 

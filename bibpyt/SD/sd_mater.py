@@ -1,4 +1,4 @@
-#@ MODIF sd_mater SD  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_mater SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,12 +43,17 @@ class sd_compor1(AsBase):
     # parfois, THER_NL crée une sd_fonction pour BETA
     def check_compor1_i_VALK(self, checker):
         nom= self.nomj().strip()
-        valk=list(self.VALK.get())
-        if not valk : return
         if nom[8:16]=='.THER_NL' :
-           k=valk.index('BETA    ')
-           nomfon=valk[2*k+1]
-           sd2=sd_fonction(nomfon) ; sd2.check(checker)
+            valk=list(self.VALK.get_stripped())
+            if valk :
+                nbk2=self.VALK.lonuti
+                nbr=self.VALR.lonuti
+                nbc=self.VALC.lonuti
+                nbk=nbk2-nbr-nbc
+                k2=valk.index('BETA')
+                k=k2-nbr-nbc
+                nomfon=valk[nbr+nbc+nbk/2+k]
+                sd2=sd_fonction(nomfon) ; sd2.check(checker)
 
 
 class sd_mater(AsBase):
@@ -71,6 +76,6 @@ class sd_mater(AsBase):
             nomc1=self.nomj()[:8]+'.'+nom
             comp1 = sd_compor1(nomc1)
 
-            # parfois, comp1 est vide. AJACOT_PB : ssls115g/DEFI_COQU_MULT
+            # parfois, comp1 est vide : ssls115g/DEFI_COQU_MULT
             if comp1.VALK.get() : comp1.check(checker)
 

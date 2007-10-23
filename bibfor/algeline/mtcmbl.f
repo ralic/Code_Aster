@@ -9,7 +9,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,13 +88,15 @@ C     -----------------------------------------------------------------
       CHARACTER*1 BASE,BAS2,TYPRES
       CHARACTER*8 KBID,TYPMAT
       CHARACTER*19 MATEMP,MAT1,MATRES,MATI
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALM, VALK(2)
 C     -----------------------------------------------------------------
       INTEGER JREFAR,JREFA1,JREFAI,IER,IBID,IDLIMA,IER1
-      INTEGER I,LRES,NBLOC,JREFA
-      LOGICAL REUTIL,SYMR,SYMI,IDENOB
+      INTEGER I,LRES,NBLOC,JREFA,LGBLOC,IBLOC,IAD1,IAD2
+      LOGICAL REUTIL,SYMR,SYMI,IDENOB,CHGSYM
 C     -----------------------------------------------------------------
+
       CALL JEMARQ()
+      MATRES = MATREZ
 
       CALL ASSERT(ELIM.EQ.'ELIM=' .OR. ELIM.EQ.'ELIM1')
 
@@ -104,8 +106,9 @@ C     -----------------------------------------------------------------
       CALL JELIRA(MATRES//'.REFA','CLAS',IBID,BASE)
       CALL JELIRA(MATRES//'.VALM','TYPE',IBID,TYPRES)
       CALL JELIRA(MATRES//'.VALM','NMAXOC',NBLOC,KBID)
+      CALL JELIRA(MATRES//'.VALM','LONMAX',LGBLOC,KBID)
       CALL ASSERT(NBLOC.EQ.1.OR.NBLOC.EQ.2)
-      CALL JEVEUO(MATRES//'.REFA','L',JREFAR)
+      CALL JEVEUO(MATRES//'.REFA','E',JREFAR)
       CALL ASSERT(ZK24(JREFAR-1+9) (1:1).EQ.'M')
       SYMR = ZK24(JREFAR-1+9) .EQ. 'MS'
       IF (SYMR) CALL ASSERT(NBLOC.EQ.1)
@@ -127,7 +130,7 @@ C       CALL CHEKSD('sd_matr_asse',MATI,IRET)
         SYMI = ZK24(JREFAI-1+9) .EQ. 'MS'
         CALL ASSERT(NBLOC.EQ.1.OR.NBLOC.EQ.2)
         IF (SYMI) CALL ASSERT(NBLOC.EQ.1)
-        IF ((.NOT.SYMI).AND.SYMR) CALL U2MESS('F','ALGELINE2_8')
+C        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         IF (MATI.EQ.MATRES) REUTIL=.TRUE.
 C       CALL CHEKSD('sd_matr_asse',MATI,IRET)
    10 CONTINUE

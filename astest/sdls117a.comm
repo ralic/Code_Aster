@@ -1,26 +1,26 @@
-# MODIF  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE EXCENTREE ORTHOTROPE ET AMORTIE SOUMISE A DES VIBRATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       (CALCUL MODALE ET CALCUL HARMONIQUE)
 
-# SDLS117A             
-# PLAQUE  RECTANGULAIRE EXCENTREE 
+# SDLS117A
+# PLAQUE  RECTANGULAIRE EXCENTREE
 # LE MODELE COMPORTE 66 NOEUDS ET 100 ELEMENTS DKT
 # LE COTE A1A4 (L14) EST ENCASTRE
 # ON IMPOSE UNE FORCE LINEIQUE SELON X SUR LE COTE A2A3 (L12)
@@ -37,7 +37,7 @@
 # ______________________________________________________________________
 #
 
-DEBUT(CODE=_F(  NOM = 'SDLS117A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SDLS117A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 PRE_GIBI()
@@ -56,14 +56,14 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
                     AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
                     MODELISATION = 'DKT') )
 
-EP=AFFE_CARA_ELEM(  MODELE=MO,COQUE=( 
+EP=AFFE_CARA_ELEM(  MODELE=MO,COQUE=(
 
 #   POUR AFFECTER DES CARACTERISTIQUES AUX MAILLES DE BORD
 #   DONC EVITER LES ALARMES
-                       _F(  GROUP_MA = 'TOUT',  EPAIS = 0.2), 
+                       _F(  GROUP_MA = 'TOUT',  EPAIS = 0.2),
                        _F( GROUP_MA = 'PLAQ1', EPAIS = 0.2,
                        ANGL_REP = (0.,0.,),  EXCENTREMENT = 0.1,
-                       INER_ROTA = 'OUI')) 
+                       INER_ROTA = 'OUI'))
                      )
 
 ## AJOUT : amortissement hysteretique defini par eta
@@ -72,24 +72,24 @@ eta = 0.1
 alpha = 0.1
 beta  = 0.000001
 
-MAT1A=DEFI_MATERIAU(  ELAS_ORTH=_F( E_L = 20000., E_T = 20000., 
+MAT1A=DEFI_MATERIAU(  ELAS_ORTH=_F( E_L = 20000., E_T = 20000.,
                                     E_N = 20000., NU_LT = 0., NU_LN = 0., NU_TN = 0.,
-                                    G_LT = 2000.,  G_LN = 0., G_TN = 0., 
+                                    G_LT = 2000.,  G_LN = 0., G_TN = 0.,
                                     RHO = 1000.,
                                     AMOR_HYST  = eta,
                                     AMOR_ALPHA = alpha,
                                     AMOR_BETA  = beta) )
 
-MU=DEFI_COQU_MULT( 
+MU=DEFI_COQU_MULT(
                COUCHE=_F( EPAIS = 0.2, MATER = MAT1A, ORIENTATION = 0.)
                       )
 
-CHMUL=AFFE_MATERIAU(  MAILLAGE=MA, 
+CHMUL=AFFE_MATERIAU(  MAILLAGE=MA,
                       AFFE=_F( TOUT = 'OUI',MATER = MU) )
 
 CHME=AFFE_CHAR_MECA(  MODELE=MO,
-                     DDL_IMPO=_F( 
-                        GROUP_MA = 'L14', 
+                     DDL_IMPO=_F(
+                        GROUP_MA = 'L14',
                         DX = 0., DY = 0., DZ = 0.,  DRX = 0., DRY = 0., DRZ = 0.),)
 
 ## AJOUT : force dynamique elementaire

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE MURA 11.17 FISSURE SOUS FLUX DE CHALEUR UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,7 +122,7 @@ MAT=DEFI_MATERIAU(    ELAS=_F(  E = 2.E11,
 
 #
 CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
-                                  AFFE=_F(  TOUT = 'OUI',
+                                  AFFE=_F(  TOUT = 'OUI',TEMP_REF=0.,
                                          MATER = MAT)
                           )
 

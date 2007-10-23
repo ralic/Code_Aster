@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF main utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF main utilitai  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,7 +17,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
+/* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ------------------------------------------------------------------ */
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,6 +40,9 @@ INTEGER DEFP(LMEMEX, lmemex, INTEGER *);
 
 INTEGER DEFP(MEMJVX, memjvx, double *);
 #define CALL_MEMJVX(a) CALLP(MEMJVX, memjvx, a)
+
+INTEGER DEFP(MEJVDY, mejvdy, double *);
+#define CALL_MEJVDY(a) CALLP(MEJVDY, mejvdy, a)
 
 INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, int);
 #define CALL_REPMAT(a, b, c) CALLPPS(REPMAT, repmat, a, b, c)
@@ -262,6 +265,15 @@ void asterm(long argc, char** argv)
 			*argv++;
 			finter=(double) atof(*argv);
 			cerr=CALL_MEMJVX(&finter);
+		}
+		/*
+   ** Maximum memoire dynamique JEVEUX
+   */
+		if (strcmp(*argv,"-mxmemdy") == 0) {
+			double mxmem;
+			*argv++;
+			mxmem=(double) atof(*argv);
+			cerr=CALL_MEJVDY(&mxmem);
 		}
 		/*
    ** Type parcours de la segmentation Memoire JEVEUX

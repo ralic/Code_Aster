@@ -1,21 +1,21 @@
-# MODIF  DATE 18/06/2007   AUTEUR BOITEAU O.BOITEAU 
-# TITRE VALIDATION ARCHITECTURE D'UN CALCUL FETI + CONTACT CONTINUE 
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# TITRE VALIDATION ARCHITECTURE D'UN CALCUL FETI + CONTACT CONTINUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # (CAS 2)
 # ======================================================================
@@ -25,18 +25,18 @@
 # LE PARTITIONNEMENT EN SOUS-DOMAINES EST MANUEL.
 # LE SOUS-DOMAINE 1 EST RESPONSABLE DES 2 ZONES DE CONTACT.
 # LE SOUS-DOMAINE 2 N'EST PAS CONCERNE PAR LE CONTACT.
-# LES SOUS-DOMAINES SONT EN 2 PARTIES QUASI-NON CONNEXES 
+# LES SOUS-DOMAINES SONT EN 2 PARTIES QUASI-NON CONNEXES
 # (ELLES NE SE TOUCHENT QU'AU POINT N3, D'OU LE PAPILLON !)
 # LES ZONES DE CONTACT NE TOUCHENT PAS L'INTERFACE.
 # MEME CAS QUE FETI008A MAIS AVEC UN DECOUPAGE DIFFERENT.
 # ======================================================================
-DEBUT(CODE=_F(NOM ='FETI008B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='FETI008B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
-MATER=DEFI_MATERIAU( 
-           ELAS=_F(E = 180000., NU = 0.30, ALPHA = 15.E-6, RHO = 7700.,))                  
+MATER=DEFI_MATERIAU(
+           ELAS=_F(E = 180000., NU = 0.30, ALPHA = 15.E-6, RHO = 7700.,))
 MAIL=LIRE_MAILLAGE()
 MODM=AFFE_MODELE(MAILLAGE=MAIL,
-                 AFFE=(_F(GROUP_MA = 'STRU',PHENOMENE = 'MECANIQUE',  
+                 AFFE=(_F(GROUP_MA = 'STRU',PHENOMENE = 'MECANIQUE',
                           MODELISATION = 'D_PLAN',   ),))
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',MATER=MATER,TEMP_REF=20.,),))
@@ -47,19 +47,19 @@ CH2=AFFE_CHAR_MECA(MODELE=MODM,
 CH3=AFFE_CHAR_MECA(MODELE=MODM,
                        CONTACT=(
                                  _F(GROUP_MA_MAIT='CONTACT1',
-                                    GROUP_MA_ESCL='CONTACT2',                               
+                                    GROUP_MA_ESCL='CONTACT2',
                                    METHODE = 'CONTINUE',
                                    ),
                                  _F(GROUP_MA_MAIT='CONTACT3',
                                     GROUP_MA_ESCL='CONTACT4',
                                    METHODE = 'CONTINUE',
                                    ),
-                                   ),);       
+                                   ),);
 SDFETI=DEFI_PART_OPS(NOM='SD',
                      MODELE=MODM,
                      INFO=1,
                      EXCIT=(
-                            _F(CHARGE=CH1),                            
+                            _F(CHARGE=CH1),
                             _F(CHARGE=CH2),
                             _F(CHARGE=CH3),
                          ),
@@ -76,7 +76,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
 INSTNL=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=0.1,
                                      NOMBRE=3,),),);
-                        
+
 RESU=STAT_NON_LINE(MODELE=MODM,
                    CHAM_MATER=CHMAT,
                    SOLVEUR=_F(METHODE='FETI',
@@ -119,7 +119,7 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N3',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DX',    VALE = -6.6982574393290E-07, REFERENCE = 'NON_REGRESSION' ),                                   
+          NOM_CMP = 'DX',    VALE = -6.6982574393290E-07, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N3',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
@@ -135,7 +135,7 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N20',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DX',    VALE = -1.4121491847372E-03, REFERENCE = 'NON_REGRESSION' ),                                   
+          NOM_CMP = 'DX',    VALE = -1.4121491847372E-03, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N20',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
@@ -147,7 +147,7 @@ TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N22',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,
-          NOM_CMP = 'DX',    VALE = -2.3723358289233E-04, REFERENCE = 'NON_REGRESSION' ),                                   
+          NOM_CMP = 'DX',    VALE = -2.3723358289233E-04, REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RESU,   NUME_ORDRE = 3,
           NOM_CHAM = 'DEPL',   NOEUD = 'N22',
           CRITERE = 'RELATIF', PRECISION = 1.E-6,

@@ -1,7 +1,7 @@
       SUBROUTINE RAPO3D(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -470,13 +470,7 @@ C     ------------------------------------------------------------
 
 C --- CREATION DES .REFE_RESU DES VECTEURS EN SORTIE DE CALCUL
 C     --------------------------------------------------------
-
-      CALL WKVECT('&&RAPO3D.REFE_RESU','V V K24',5,IAREFE)
-      ZK24(IAREFE+1-1) = MOD
-      ZK24(IAREFE+2-1) = 'CHAR_MECA'
-      ZK24(IAREFE+3-1) = 'NON_SOUS_STRUC'
-      ZK24(IAREFE+4-1) = ' '
-      ZK24(IAREFE+5-1) = ' '
+      CALL MEMARE('V','&&RAPO3D',MOD,' ',' ','CHAR_MECA')
 
 C --- CREATION DU .LISTE_RESU
 C     -----------------------
