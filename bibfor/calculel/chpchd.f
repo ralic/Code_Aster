@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C         DES VALEURS DE CHOU QUI NE SONT PAS AFFECTEES DANS CHIN
 C   CELMOD IN/JXIN  K19 : NOM D'UN CHAM_ELEM "MODELE" SI TYPE='EL..'
 C -----------------------------------------------------------------
 
-      INTEGER IB,IRET,NNCP
+      INTEGER IB,IRET,NNCP,IBID
       CHARACTER*3 PROL0
       CHARACTER*8 MA,MA2,TYCHI,NOMGD,NOPAR2,PARAM
       CHARACTER*16 CAS,OPTION,NOMCMD,KBID
@@ -63,7 +63,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      MNOGA  = '&&CHPCHD.MANOGA'
+      MNOGA = '&&CHPCHD.MANOGA'
       CESMOD = '&&CHPCHD.CESMOD'
 
 
@@ -89,7 +89,7 @@ C ---------------------------------------------------------------
         CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IB,MA2,IB)
         CALL ASSERT(MA.EQ.MA2)
         CALL CELCES(CELMOD,'V',CESMOD)
-      END IF
+      ENDIF
 
 
 C 3.  -- CALCUL DE CAS :
@@ -113,7 +113,7 @@ C         /'ELNO->ELGA'   : ELNO    -> ELGA
 
 C 4.  TRAITEMENT DES DIFFERENTS CAS DE FIGURE :
 C ----------------------------------------------
-      NNCP=0
+      NNCP = 0
       IF (CAS.EQ.'NOEU->ELGA') THEN
 C     ----------------------------------
         CNS1 = '&&CHPCHD.CNS1'
@@ -125,11 +125,12 @@ C     ----------------------------------
         CALL DETRSD('CHAM_NO_S',CNS1)
         CALL DETRSD('CHAM_ELEM_S',MNOGA)
 
-        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU)
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
+     &              IBID)
         CALL DETRSD('CHAM_ELEM_S',CES1)
 
 
-      ELSE IF (CAS.EQ.'ELNO->ELGA') THEN
+      ELSEIF (CAS.EQ.'ELNO->ELGA') THEN
 C     ----------------------------------
         CES1 = '&&CHPCHD.CES1'
         CES2 = '&&CHPCHD.CES2'
@@ -140,11 +141,12 @@ C     ----------------------------------
         CALL DETRSD('CHAM_ELEM_S',CES1)
         CALL DETRSD('CHAM_ELEM_S',MNOGA)
 
-        CALL CESCEL(CES2,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU)
+        CALL CESCEL(CES2,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
+     &              IBID)
         CALL DETRSD('CHAM_ELEM_S',CES2)
 
 
-      ELSE IF (CAS.EQ.'NOEU->ELNO') THEN
+      ELSEIF (CAS.EQ.'NOEU->ELNO') THEN
 C     ----------------------------------------------------------------
         CNS1 = '&&CHPCHD.CNS1'
         CES1 = '&&CHPCHD.CES1'
@@ -153,55 +155,60 @@ C     ----------------------------------------------------------------
         CALL CNSCES(CNS1,'ELNO',CESMOD,' ','V',CES1)
         CALL DETRSD('CHAM_NO_S',CNS1)
 
-        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU)
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
+     &              IBID)
         CALL DETRSD('CHAM_ELEM_S',CES1)
 
 
-      ELSE IF ((CAS.EQ.'ELNO->NOEU') .OR. (CAS.EQ.'ELGA->NOEU') .OR.
-     &         (CAS.EQ.'CART->NOEU')) THEN
+      ELSEIF ((CAS.EQ.'ELNO->NOEU') .OR. (CAS.EQ.'ELGA->NOEU') .OR.
+     &        (CAS.EQ.'CART->NOEU')) THEN
 C     ----------------------------------------------------------------
         CNS1 = '&&CHPCHD.CNS1'
         CES1 = '&&CHPCHD.CES1'
 
         IF (CAS(1:4).EQ.'ELNO') THEN
           CALL CELCES(CHIN,'V',CES1)
-        ELSE IF (CAS(1:4).EQ.'ELGA') THEN
+
+        ELSEIF (CAS(1:4).EQ.'ELGA') THEN
           CALL CELCES(CHIN,'V',CES1)
           CALL CELFPG(CHIN,'&&CHPCHD.CELFPG',1,IRET)
-        ELSE IF (CAS(1:4).EQ.'CART') THEN
+
+        ELSEIF (CAS(1:4).EQ.'CART') THEN
           CALL CARCES(CHIN,'ELNO',' ','V',CES1,IRET)
+
         ELSE
           CALL ASSERT(.FALSE.)
-        END IF
+        ENDIF
 
         CALL CESCNS(CES1,'&&CHPCHD.CELFPG','V',CNS1)
-        CALL CNSCNO(CNS1,' ','NON',BASE,CHOU)
+        CALL CNSCNO(CNS1,' ','NON',BASE,CHOU,'F',IBID)
 
         CALL DETRSD('CHAM_NO_S',CNS1)
         CALL DETRSD('CHAM_ELEM_S',CES1)
         CALL JEDETR('&&CHPCHD.CELFPG')
 
 
-      ELSE IF (CAS(1:8).EQ.'CART->EL') THEN
+      ELSEIF (CAS(1:8).EQ.'CART->EL') THEN
 C     ----------------------------------------------------------------
         CALL ASSERT(LIGREL.NE.' ')
 
         CES1 = '&&CHPCHD.CES1'
         CALL CARCES(CHIN,CAS(7:10),CESMOD,'V',CES1,IB)
 
-        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU)
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
+     &              IBID)
         CALL DETRSD('CHAM_ELEM_S',CES1)
 
         IF (NNCP.NE.0) THEN
           CALL GETRES(KBID,KBID,NOMCMD)
           IF (NOMCMD.EQ.'CREA_CHAMP') THEN
-          VALK=CHOU(1:8)
-          CALL U2MESK('A','CALCULEL6_77',1,VALK)
-        END IF
-        END IF
+            VALK = CHOU(1:8)
+            CALL U2MESK('A','CALCULEL6_77',1,VALK)
+          ENDIF
+        ENDIF
 
 
-      ELSE IF (CAS.EQ.'ELGA->ELNO') THEN
+      ELSEIF (CAS.EQ.'ELGA->ELNO') THEN
 C     ----------------------------------------------------------------
         CES1 = '&&CHPCHD.CES1'
         CES2 = '&&CHPCHD.CES2'
@@ -210,7 +217,8 @@ C     ----------------------------------------------------------------
         CALL CELFPG(CHIN,'&&CHPCHD.CELFPG',1,IRET)
         CALL ASSERT(IRET.EQ.0)
         CALL CESCES(CES1,'ELNO',CESMOD,' ','&&CHPCHD.CELFPG','V',CES2)
-        CALL CESCEL(CES2,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU)
+        CALL CESCEL(CES2,LIGREL,OPTION,PARAM,PROL0,NNCP,BASE,CHOU,'F',
+     &              IBID)
 
         CALL DETRSD('CHAM_ELEM_S',CES1)
         CALL DETRSD('CHAM_ELEM_S',CES2)
@@ -220,7 +228,7 @@ C     ----------------------------------------------------------------
       ELSE
 C       CAS NON ENCORE PROGRAMME
         CALL U2MESK('F','CALCULEL_5',1,CAS)
-      END IF
+      ENDIF
 
 
 

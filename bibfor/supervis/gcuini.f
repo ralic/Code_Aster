@@ -9,7 +9,7 @@ C IN  MXCMDU : IS : NOMBRE DE COMMANDES UTILISATEURS MAXIMUM
 C IN  BASE   : CH : TYPE DE LA BASE 'L' 'G' 'V' ....
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     --- VARIABLES GLOBALES -------------------------------------------
       CHARACTER*4     CBID
-      CHARACTER*24    KINFO , KRESU, KSTAT
-      COMMON /GCUCC1/ KINFO , KRESU, KSTAT
 C
 C     --- VARIABLES LOCALES --------------------------------------------
-      INTEGER        ISTAT
       CHARACTER*1    DDBASE
       CHARACTER*8    NOMUSR,NOMOBJ
       CHARACTER*16   NOMCMD, TYPCON
@@ -58,13 +55,10 @@ C     --- VARIABLES LOCALES --------------------------------------------
       CHARACTER*80   INIT
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      KINFO  = '&USR0000INFORMATION    '
-      KRESU  = '&&SYS   RESULT.USER    '
-      KSTAT  = '&&SYS   RESULT.STAT    '
       IER    = 0
       NOMUSR = '  '
 C     ------------------------------------------------------------------
-C     DESCRIPTION DE KRESU :
+C     DESCRIPTION DE '&&SYS.KRESU' :
 C          ZK80(ICMD)( 1: 8) = NOM UTILISATEUR DU RESULTAT
 C          ZK80(ICMD)( 9:24) = NOM DU CONCEPT DU RESULTAT
 C          ZK80(ICMD)(25:40) = NOM DE L'OPERATEUR
@@ -75,23 +69,23 @@ C                       '&ENCOURS' : OPERATEUR EN COURS D'EXECUTION
 C                       '&EXECUTE' : OPERATEUR TERMINER CORRECTEMENT
 C     ------------------------------------------------------------------
       INIT   = '&ABSENT &PAS DE CONCEPT &PAS DE COMMANDE&A FAIRE'
-      CALL JEEXIN ( KRESU, IER )
+      CALL JEEXIN ('&&SYS.KRESU',IER)
       IF ( IER .EQ. 0 ) THEN
 C        --- INITIALISATION (DEBUT) ---
          IF ( MXCMDU .GT. 0 ) THEN
             DDBASE = BASE(1:1)
-            CALL WKVECT(KRESU,DDBASE//' V K80',MXCMDU,LGRESU)
+            CALL WKVECT('&&SYS.KRESU',DDBASE//' V K80',MXCMDU,LGRESU)
             DO 10 ICMD = LGRESU , LGRESU + MXCMDU - 1
                ZK80(ICMD) = INIT
   10        CONTINUE
-            CALL JEECRA ( KRESU , 'LONUTI',  0 , CBID )
+            CALL JEECRA ('&&SYS.KRESU','LONUTI',0,CBID)
          ELSE
            CALL U2MESS('F','SUPERVIS_9')
          ENDIF
       ELSE
 C           --- VERIFICATION (POURSUITE) ---
-         CALL JELIRA ( KRESU , 'LONUTI', LONUTI , CBID )
-         CALL JEVEUO ( KRESU , 'E' , LGRESU )
+         CALL JELIRA ('&&SYS.KRESU','LONUTI',LONUTI,CBID)
+         CALL JEVEUO ('&&SYS.KRESU','E',LGRESU)
          JCMD = LONUTI
          IF ( ZK80(LGRESU+JCMD)(41:48) .EQ. '&ENCOURS') THEN
            IF ( ZK80(LGRESU+JCMD)(9:24).EQ.' ') THEN
@@ -183,21 +177,5 @@ C       --- ON REINITILISE LE TABLEAU ET ON DETRUIT ----
          ENDIF
       ENDIF
 C     --- VECTEUR DE K80 DE STATISTIQUES ---
-      CALL JEEXIN ( KSTAT, ISTAT )
-      IF ( ISTAT .EQ. 0 ) THEN
-C        --- INITIALISATION (DEBUT) ---
-         IF ( MXCMDU .GT. 0 ) THEN
-            DDBASE = BASE(1:1)
-            CALL WKVECT(KSTAT,DDBASE//' V K80',MXCMDU,LGSTAT)
-            CALL JEECRA ( KSTAT , 'LONUTI',  0 , CBID )
-         ELSE
-           CALL U2MESS('F','SUPERVIS_9')
-         ENDIF
-      ELSE
-C         --- VERIFICATION (POURSUITE) ---
-         CALL JEECRA ( KSTAT , 'LONUTI',  0 , CBID )
-      ENDIF
-      IF ( ISTAT .EQ. 0 ) THEN
-      ENDIF
       CALL JEDEMA()
       END

@@ -1,21 +1,21 @@
-#@ MODIF calculel5 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel5 Messages  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -176,7 +176,7 @@ cata_msg = {
 
 48 : _("""
  PROJ_CHAMP (ou LAISON_MAIL) :
- Le noeud : %(k1)s      est projeté sur une maille un peu distante (%(k2)s).
+ Le noeud : %(k1)s  est projeté sur une maille un peu distante.
     distance à la maille  =   %(r1)g
     diamètre de la maille =   %(r2)g
 """),
@@ -195,7 +195,7 @@ cata_msg = {
 
 51 : _("""
  Le repère de post-traitement a été défini dans la commande AFFE_CARA_ELEM mot clé facteur COQUE.
- Il est conseillé de définir ce repère à l'aide du mot clé ANGL_REP ou VECTEUR du mot clé 
+ Il est conseillé de définir ce repère à l'aide du mot clé ANGL_REP ou VECTEUR du mot clé
  facteur REPE_COQUE de la commande CALC_ELEM.
 """),
 
@@ -218,18 +218,18 @@ cata_msg = {
 """),
 
 56 : _("""
- La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisée car 
+ La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisée car
  votre chargement %(k1)s contient une charge exprimée par une formule.
- Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction' 
+ Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
  (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP).
  On poursuit sans tenir compte de la fonction multiplicatrice.
 """),
 
 57 : _("""
- La combinaison de chargements de meme type n'est pas autorisée car l'un des chargements 
+ La combinaison de chargements de meme type n'est pas autorisée car l'un des chargements
  contient une charge exprimée par une formule.
- Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction' 
- (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP) 
+ Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction'
+ (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP)
 """),
 
 58 : _("""
@@ -250,91 +250,91 @@ cata_msg = {
 """),
 
 64 : _("""
- les champs ne sont pas de la meme grandeur:  type du cham_no  %(k1)s 
-   type du cham_no_affe  %(k2)s 
+ les champs ne sont pas de la meme grandeur:  type du cham_no  %(k1)s
+   type du cham_no_affe  %(k2)s
 """),
 
 65 : _("""
- composante non definie dans  la grandeur.  composante:  %(k1)s 
+ composante non definie dans  la grandeur.  composante:  %(k1)s
 """),
 
 66 : _("""
- 
+
  le nombre de composantes affectees n'est pas egal  au nombre de composantes a affecter
- occurence de affe numero %(i1)d 
- nbre de cmp affectees :  %(i2)d 
- nbre de cmp a affecter :  %(i3)d 
+ occurence de affe numero %(i1)d
+ nbre de cmp affectees :  %(i2)d
+ nbre de cmp a affecter :  %(i3)d
 """),
 
 67 : _("""
- erreurs donneesle group_ma  %(k1)s 
-  n'a pas le meme nombre de mailles  que le group_ma  %(k2)s 
+ erreurs donneesle group_ma  %(k1)s
+  n'a pas le meme nombre de mailles  que le group_ma  %(k2)s
 """),
 
 68 : _("""
- erreurs donneesle group_ma  %(k1)s 
-  n'a pas les memes types de maille  que le group_ma  %(k2)s 
+ erreurs donneesle group_ma  %(k1)s
+  n'a pas les memes types de maille  que le group_ma  %(k2)s
 """),
 
 69 : _("""
- erreurs donnees : la maille  %(k1)s  du maillage  %(k2)s 
-  n'est pas la translation de la  maille  %(k3)s 
-  du maillage  %(k4)s 
+ erreurs donnees : la maille  %(k1)s  du maillage  %(k2)s
+  n'est pas la translation de la  maille  %(k3)s
+  du maillage  %(k4)s
     vecteur translation :  %(r1)f %(r2)f %(r3)f
 """),
 
 70 : _("""
- l'instant  de calcul  %(r1)f  n'existe pas dans  %(k1)s 
+ l'instant  de calcul  %(r1)f  n'existe pas dans  %(k1)s
 """),
 
 71 : _("""
- plusieurs numeros d'ordre trouves pour l'instant  %(r1)f 
+ plusieurs numeros d'ordre trouves pour l'instant  %(r1)f
 """),
 
 72 : _("""
- cette commande est reentrante :   sd resultat en sortie     %(k1)s 
-    sd resultat "resu_final"  %(k2)s 
+ cette commande est reentrante :   sd resultat en sortie     %(k1)s
+    sd resultat "resu_final"  %(k2)s
 """),
 
 73 : _("""
- la sd resultat en sortie  %(k1)s 
-  doit contenir qu'un seul nume_ordre %(k2)s 
+ la sd resultat en sortie  %(k1)s
+  doit contenir qu'un seul nume_ordre %(k2)s
 """),
 
 74 : _("""
- manque le champ  %(k1)s  dans la sd resultat  %(k2)s 
-  pour le nume_ordre  %(i1)d 
+ manque le champ  %(k1)s  dans la sd resultat  %(k2)s
+  pour le nume_ordre  %(i1)d
 """),
 
 76 : _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
-    elrefa  :  %(k3)s 
-    famille :  %(k4)s 
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s
+    elrefa  :  %(k3)s
+    famille :  %(k4)s
 """),
 
 78 : _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
-    elrefa :  %(k3)s 
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s
+    elrefa :  %(k3)s
 """),
 
 83 : _("""
- ecla_pg : champ vide nom_cham:  %(k1)s  nume_ordre :  %(i1)d 
+ ecla_pg : champ vide nom_cham:  %(k1)s  nume_ordre :  %(i1)d
 """),
 
 84 : _("""
- elrefe mal programme nom local cherche (nomte elrefe famille)  %(k1)s 
- parmi les existants  %(k2)s 
+ elrefe mal programme nom local cherche (nomte elrefe famille)  %(k1)s
+ parmi les existants  %(k2)s
 """),
 
 85 : _("""
- pb liste de mailles carte : %(k1)s  numero entite : %(i1)d 
-  position ds liste : %(i2)d 
-  numero de maille  : %(i3)d 
+ pb liste de mailles carte : %(k1)s  numero entite : %(i1)d
+  position ds liste : %(i2)d
+  numero de maille  : %(i3)d
 """),
 
 87 : _("""
  famille non disponible
- maille de reference  %(k1)s 
+ maille de reference  %(k1)s
 """),
 
 }

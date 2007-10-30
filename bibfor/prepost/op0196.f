@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,13 +147,13 @@ C       ----------------------------------------------------------------
           IF (NIV.GT.1) WRITE(IFM,*)'6. ENREGISTREMENT DE ',NOMCHA
           CALL RSEXCH(RESUX,NOMCHA,IORD,CH,IRET)
           IF (NOMCHA.EQ.'DEPL') THEN
-            CALL CNSCNO(CNS2,' ','NON','G',CH)
+            CALL CNSCNO(CNS2,' ','NON','G',CH,'F',IBID)
           ELSEIF (NOMCHA.EQ.'SIEF_ELGA') THEN
             CALL CESCEL(CES2,MODVIS//'.MODELE','FULL_MECA','PCONTMR',
-     &                  'NON',IBID,'G',CH)
+     &                  'NON',IBID,'G',CH,'F',IBID)
           ELSEIF (NOMCHA.EQ.'VARI_ELGA') THEN
             CALL CESCEL(CESVI2,MODVIS//'.MODELE','FULL_MECA','PVARIMR',
-     &                  'NON',IBID,'G',CH)
+     &                  'NON',IBID,'G',CH,'F',IBID)
           ENDIF
           CALL RSNOCH(RESUX,NOMCHA,IORD,' ')
  20     CONTINUE

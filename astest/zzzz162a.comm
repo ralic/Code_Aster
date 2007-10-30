@@ -1,4 +1,4 @@
-# MODIF  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 29/10/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -323,12 +323,13 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                 EXCIT=_F(CHARGE=CHMECA,),
                 COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),
-                CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                ITER_GLOB_MAXI=10,),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+
 
 IMPR_RESU(FORMAT='MED', UNITE=71, RESU=_F(RESULTAT=U,),);
 
@@ -364,7 +365,9 @@ TEST_RESU ( RESU=(
                          REFERENCE  = 'NON_REGRESSION',
                          POINT      =  1,
                          NOM_CMP    = 'SIXX',
-                         VALE       = 1.17084E-03  ),
+                         CRITERE    = 'ABSOLU',
+                         PRECISION  = 1.E-8,
+                         VALE       = 0.  ),
                     _F(  RESULTAT   = UUU,
                          NOM_CHAM   = 'VARI_ELGA',
                          INST       = 9.00000E+01,
@@ -555,6 +558,78 @@ DEPLRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                 INFO=2
                ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD=DEPLRELU, ) )
+
+
+
+# ##################################################################################################
+# VALIDATION DE IMPR_RESU ET LIRE_RESU AU FORMAT MED POUR UN EVOL_VARC
+
+# Definition des champs d'irradiation
+IRRA_0=CREA_CHAMP(
+   TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=MAIL,
+   AFFE=_F(TOUT='OUI', NOM_CMP='IRRA', VALE=5.0,),
+)
+IRRA_1=CREA_CHAMP(
+   TYPE_CHAM='NOEU_IRRA_R', OPERATION='AFFE', MAILLAGE=MAIL,
+   AFFE=(
+      _F(TOUT='OUI',   NOM_CMP='IRRA', VALE=15.0,),
+   ),
+)
+# Definition de EVOL_VARC
+IRRAD=CREA_RESU(
+   OPERATION='AFFE', TYPE_RESU='EVOL_VARC', NOM_CHAM='IRRA',
+   AFFE=(
+      _F(CHAM_GD=IRRA_0, INST=   0.0,),
+      _F(CHAM_GD=IRRA_1, INST=  10.0,),
+   ),
+)
+
+# Ecriture de l'EVOL_VRAC
+lefic_m = './REPE_OUT/IRRAD.med'
+unit_m = DEFI_FICHIER(ACTION='ASSOCIER',FICHIER=lefic_m,TYPE='LIBRE')
+IMPR_RESU(
+   UNITE=unit_m, FORMAT= 'MED',
+   RESU=(
+      _F(RESULTAT=IRRAD, NOM_CHAM=('IRRA'),),
+   ),
+)
+
+# Lecture du maillage
+maillu=LIRE_MAILLAGE(UNITE=unit_m, FORMAT='MED',)
+# Lecture de l'EVOL_VARC
+chirra=LIRE_RESU(
+   TYPE_RESU='EVOL_VARC', FORMAT='MED',
+   MAILLAGE=maillu,
+   UNITE=unit_m,
+   FORMAT_MED=_F(
+      NOM_CHAM    ='IRRA',
+      NOM_CHAM_MED='IRRAD___IRRA____________________',
+   ),
+   TOUT_ORDRE = 'OUI',
+)
+DETRUIRE(CONCEPT=(_F(NOM=unit_m),), INFO=1, ALARME='NON')
+
+TEST_RESU(
+   RESU=(
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N1',VALE=5.0),
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N2',VALE=5.0),
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N3',VALE=5.0),
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=0.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N4',VALE=5.0),
+
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N1',VALE=15.0),
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N2',VALE=15.0),
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N3',VALE=15.0),
+      _F(RESULTAT=chirra,NOM_CHAM='IRRA',INST=10.0,NOM_CMP='IRRA',
+         MAILLE='M1',REFERENCE='ANALYTIQUE',NOEUD='N4',VALE=15.0),
+   ),
+)
 
 FIN();
 

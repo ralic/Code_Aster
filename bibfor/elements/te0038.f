@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
          IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
      &       PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
+     &       PHENOM.EQ.'ELAS_FLUI' .OR.
      &       PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
            CALL RCVALA(ZI(LMATER),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
      &              CODRES,'FM')

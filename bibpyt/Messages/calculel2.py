@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF calculel2 Messages  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ cata_msg={
 """),
 
 9: _("""
-  -> plus de 50 %% des valeurs de CHAMNO de déplacement n'ont pas été recopiées
+  -> plus de 50 %% des valeurs de CHAM_NO de déplacement n'ont pas été recopiées
      ce qui peut entrainer des erreurs graves de calcul sur la masse ajoutée des
      sous structures déduites par rotation et translation définies dans le modèle généralisé
   -> Risque & Conseil :
@@ -52,11 +52,11 @@ cata_msg={
 """),
 
 12: _("""
- le CHAM_NO est de longueur nulle.
+ Le CHAM_NO %(k3)s est vide.
 """),
 
 13: _("""
- il manque la cmp: %(k1)s  sur le noeud: %(k2)s
+ Il manque la composante: %(k1)s  sur le noeud: %(k2)s pour le CHAM_NO: %(k3)s
 """),
 
 21: _("""

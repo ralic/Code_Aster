@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER N1,IB,JPARA1,NPARA,JPARA2,K,NNCP
+      INTEGER N1,IB,JPARA1,NPARA,JPARA2,K,NNCP,IBID
       CHARACTER*4 TYP1,TYP2,KNUM
       CHARACTER*8 KBID,CHIN,CHOU,NOMGD
       CHARACTER*19 LIGREL,CHS1,CHS2,CHINS
@@ -87,11 +87,13 @@ C ------------------------------------------------------------
         CHS1 = '&&CHPEVA.'//KNUM
         IF (TYP1.EQ.'NOEU') THEN
           CALL CNOCNS(ZK8(JPARA1-1+K),'V',CHS1)
-        ELSE IF (TYP1.EQ.'CART') THEN
+
+        ELSEIF (TYP1.EQ.'CART') THEN
           CALL CARCES(ZK8(JPARA1-1+K),'ELEM',' ','V',CHS1,IB)
-        ELSE IF (TYP1(1:2).EQ.'EL') THEN
+
+        ELSEIF (TYP1(1:2).EQ.'EL') THEN
           CALL CELCES(ZK8(JPARA1-1+K),'V',CHS1)
-        END IF
+        ENDIF
         ZK24(JPARA2-1+K) = CHS1
    10 CONTINUE
 
@@ -101,21 +103,21 @@ C ------------------------------------------------------------
       IF (TYP1.EQ.'NOEU') THEN
         CALL CNOCNS(CHIN,'V',CHINS)
         CALL CNSEVA(CHINS,NPARA,ZK24(JPARA2),CHS2)
-        CALL CNSCNO(CHS2,' ','NON','G',CHOU)
+        CALL CNSCNO(CHS2,' ','NON','G',CHOU,'F',IBID)
         CALL DETRSD('CHAM_NO_S',CHINS)
         CALL DETRSD('CHAM_NO_S',CHS2)
 
-      ELSE IF (TYP1(1:2).EQ.'EL') THEN
+      ELSEIF (TYP1(1:2).EQ.'EL') THEN
         CALL CELCES(CHIN,'V',CHINS)
         CALL CESEVA(CHINS,NPARA,ZK24(JPARA2),CHS2)
         CALL DISMOI('F','NOM_LIGREL',CHIN,'CHAMP',IB,LIGREL,IB)
-        CALL CESCEL(CHS2,LIGREL,' ',' ','NON',NNCP,'G',CHOU)
+        CALL CESCEL(CHS2,LIGREL,' ',' ','NON',NNCP,'G',CHOU,'F',IBID)
         CALL DETRSD('CHAM_ELEM_S',CHINS)
         CALL DETRSD('CHAM_ELEM_S',CHS2)
 
       ELSE
         CALL U2MESS('F','MODELISA4_15')
-      END IF
+      ENDIF
 
 
 C 7. MENAGE :
@@ -124,9 +126,10 @@ C -----------------------------------------------------
       DO 20,K = 1,NPARA
         IF (TYP1.EQ.'NOEU') THEN
           CALL DETRSD('CHAM_NO_S',ZK24(JPARA2-1+K))
+
         ELSE
           CALL DETRSD('CHAM_ELEM_S',ZK24(JPARA2-1+K))
-        END IF
+        ENDIF
    20 CONTINUE
       CALL JEDETR('&&CHPEVA.LPARA2')
 

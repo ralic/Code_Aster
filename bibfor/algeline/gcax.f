@@ -1,6 +1,6 @@
       SUBROUTINE GCAX ( M , IN , IP , AC , X , Y )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 29/10/2007   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           M,  IN(M),IP(*)
       REAL*8                           AC(*),X(M),Y(M)
+      REAL*8 DTEMP
 C     ------------------------------------------------------------------
 C     MULTIPLICATION D'UNE MATRICE SYMETRIQUE COMPACTE PAR
 C                UN VECTEUR :  Y = AC*X
@@ -35,11 +36,17 @@ C     _____________ ____ ______________________________________________
       DO 10 I = 2 , M
          KDEB = IN(I-1)+1
          KFIN = IN(I)-1
-         KLONG = IN(I)-KDEB
-         Y(I) = SPDOT (KLONG+1,X,IP(KDEB),AC(KDEB))
-CCDIR$ IVDEP
+         KLONG = IN(I)
+         DTEMP = 0.0D0
+         DO 30 J = KDEB,KLONG
+            DTEMP = DTEMP + X(IP(J))*AC(J)
+30       CONTINUE
+         Y(I) = DTEMP
+         DTEMP = X(I)
+CDIR$ IVDEP
+CDIR$ NOPREFETCH Y
          DO 20 KI = KDEB , KFIN
-            Y(IP(KI)) = Y(IP(KI)) + AC(KI)*X(I)
+            Y(IP(KI)) = Y(IP(KI)) + AC(KI)*DTEMP
   20     CONTINUE
  10   CONTINUE
 C

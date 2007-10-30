@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TRANSF,CEL1,BASE,CEL2
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,8 +79,9 @@ C     =================================
         IF (NOMGD.NE.'VARI_R') THEN
 C     -- IL N'Y A RIEN A FAIRE : NBVARI EST CST !
           CALL COPISD('CHAMP_GD',BASE,CEL1,CEL2)
-          GO TO 60
-        END IF
+          GOTO 80
+
+        ENDIF
 
 
 C     1- ON TRANSFORME CEL1 EN CHAM_ELEM_S : CES1
@@ -145,9 +146,10 @@ C     ---------------------------------------------
                 ZL(JCESL2-1-IAD2) = .TRUE.
                 IF (IAD1.GT.0) THEN
                   ZR(JCESV2-1-IAD2) = ZR(JCESV1-1+IAD1)
+
                 ELSE
                   ZR(JCESV2-1-IAD2) = 0.D0
-                END IF
+                ENDIF
    20         CONTINUE
    30       CONTINUE
    40     CONTINUE
@@ -162,7 +164,8 @@ C     -------------------------------------------
         LIGREL = ZK24(JCELK1-1+1)
         OPTINI = ZK24(JCELK1-1+2)
         NOMPAR = ZK24(JCELK1-1+6)
-        CALL CESCEL(CES2,LIGREL,OPTINI,NOMPAR,'NON',NNCP,BASE,CEL2)
+        CALL CESCEL(CES2,LIGREL,OPTINI,NOMPAR,'NON',NNCP,BASE,CEL2,'F',
+     &              IBID)
 
 
 C     5- MENAGE :
@@ -173,36 +176,36 @@ C     -------------------------------------------
         CALL DETRSD('CHAM_ELEM_S',CES2)
 
 
-      ELSE IF (TRANSF.EQ.'PAS_DE_SP') THEN
+      ELSEIF (TRANSF.EQ.'PAS_DE_SP') THEN
 C     =====================================
 
-      CALL COPISD('CHAMP_GD',BASE,CEL1,CEL2)
-      CEL22=CEL2
-      CALL JEVEUO(CEL22//'.CELD','E',JCELD2)
-      NBGREL=ZI(JCELD2-1+2)
+        CALL COPISD('CHAMP_GD',BASE,CEL1,CEL2)
+        CEL22 = CEL2
+        CALL JEVEUO(CEL22//'.CELD','E',JCELD2)
+        NBGREL = ZI(JCELD2-1+2)
 
 C  -- ON MET A ZERO LE MODE LOCAL DES GRELS QUI ONT DES
 C     SOUS-POINTS :
-      DO 130,IGREL = 1,NBGREL
-        DEBUGR=ZI(JCELD2-1+4+IGREL)
-        NBEL = ZI(JCELD2-1+DEBUGR +1)
-        IMOLO= ZI(JCELD2-1+DEBUGR +2)
-        IF (IMOLO.GT.0) THEN
-          NBSPMX=0
-          DO 120,IEL = 1,NBEL
-            NBSP = ZI(JCELD2-1+DEBUGR+4+4*(IEL-1)+1)
-            NBSPMX = MAX(NBSPMX,NBSP)
-  120     CONTINUE
-          IF (NBSPMX.GT.1) ZI(JCELD2-1+DEBUGR +2)=0
-        END IF
-  130 CONTINUE
+        DO 70,IGREL = 1,NBGREL
+          DEBUGR = ZI(JCELD2-1+4+IGREL)
+          NBEL = ZI(JCELD2-1+DEBUGR+1)
+          IMOLO = ZI(JCELD2-1+DEBUGR+2)
+          IF (IMOLO.GT.0) THEN
+            NBSPMX = 0
+            DO 60,IEL = 1,NBEL
+              NBSP = ZI(JCELD2-1+DEBUGR+4+4* (IEL-1)+1)
+              NBSPMX = MAX(NBSPMX,NBSP)
+   60       CONTINUE
+            IF (NBSPMX.GT.1) ZI(JCELD2-1+DEBUGR+2) = 0
+          ENDIF
+   70   CONTINUE
 
 
       ELSE
 C       CAS RESTANT A PROGRAMMER ...
         CALL ASSERT(.FALSE.)
-      END IF
+      ENDIF
 
-   60 CONTINUE
+   80 CONTINUE
       CALL JEDEMA()
       END

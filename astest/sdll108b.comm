@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE : Table de Neubert
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,8 +105,7 @@ MODE_MEC=MODE_ITER_INV(  MATR_A=RIGIDITE,   MATR_B=MASSE,
 
 IMPR_RESU(RESU=_F(RESULTAT=MODE_MEC))
 
-MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',
-                         MASS_INER=TABL_MAS                          )
+MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
                          MODELE=MOD,

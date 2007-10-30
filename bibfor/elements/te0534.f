@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60),FFN(27)
       REAL*8      NDN(3,6),TAU1(3,6),TAU2(3,6),PB(3),RPB(3)
       REAL*8      RBID1(3,3),RBID2(3,3),RBID3(3,3),NBARY(3),DDOT
-      REAL*8      LST,R,RR,E,G(3),TT(2),TN(2),RBID
+      REAL*8      LST,R,RR,E,G(3),TT(3),RBID
 C.......................................................................
 
       CALL JEMARQ()
@@ -161,7 +161,7 @@ C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
 C     INITIALISATION DU VECTEUR DE TRAVAIL
 C     IL FAUT LE FAIRE APRES AVOIR RÉCUPERER NINTER
 C     POUR ETRE SUR QU'ON SOIT BIEN SUR UN ELEMENT LINEIARE
-C     CAR POUR LE MOMENT, ON EST AUSSI SUR DES ELEMENTS QUADRATIQUES 
+C     CAR POUR LE MOMENT, ON EST AUSSI SUR DES ELEMENTS QUADRATIQUES
 C     MAIS NINTER VAUT ALORS -1 ET ON SORT DIRECT
 C     SAUF QUE VTMP EST DIMENTIONNE POUR DES ELTS LINEAIRES
       DO 40 J=1,NDDL
@@ -321,12 +321,12 @@ C             TERME LN1
                 DO 151 J = 1,DDLH
                   VTMP(DDLS*(I-1)+NDIM+J) =
      &            VTMP(DDLS*(I-1)+NDIM+J) +
-     &            (REAC-RHON*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT  
+     &            (REAC-RHON*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT
  151            CONTINUE
                 DO 152 J = 1,SINGU*NDIM
                   VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
      &            VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
-     &            (REAC-RHON*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT   
+     &            (REAC-RHON*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT
  152            CONTINUE
  150          CONTINUE
 C
@@ -373,9 +373,9 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
               DN = 0.D0
               DO 164 J = 1,NDIM
                 DN = DN + SAUT(J)*ND(J)
- 164          CONTINUE            
-            
-          CALL LCINVN(NDIM,0.D0,TT)
+ 164          CONTINUE
+
+          CALL LCINVN(NDIM-1,0.D0,TT)
           DO 165 I = 1,NNOF
             FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
             NLI=CFACE(IFA,I)
@@ -386,17 +386,9 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
             METR(1)=DDOT(NDIM,TAU1(1,NLI),1,SAUT,1)
             IF (NDIM.EQ.3) METR(2)=DDOT(NDIM,TAU2(1,NLI),1,SAUT,1)
             TT(1)=DDOT(NDIM,TAU1(1,NLI),1,REAC12,1)
-            IF (NDIM .EQ.3) TT(2)=DDOT(NDIM,TAU2(1,NLI),1,REAC12,1) 
-            CALL LCINVN(NDIM,0.D0,TN)             
-C
-            IF (DDOT(NDIM,SAUT,1,TAU1(1,NLI),1).GE.0.D0) THEN
-C                 TN(1)=1.D0
-              ELSE
-C                 TN(1)=-1.D0
-            ENDIF
-C        
+            IF (NDIM .EQ.3) TT(2)=DDOT(NDIM,TAU2(1,NLI),1,REAC12,1)
            DO 167 K=1,NDIM-1
-               VTMP(PLI+K) = VTMP(PLI+K) + (TT(K)-TN(K))*FFI*JAC*MULT
+               VTMP(PLI+K) = VTMP(PLI+K) + TT(K)*FFI*JAC*MULT
  167       CONTINUE
  165      CONTINUE
 
@@ -444,7 +436,7 @@ C             TERME LN1
      &            2.D0*RR*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC*MULT
  187            CONTINUE
  185          CONTINUE
-              
+
 C             TERME LN3
               DO 194 I = 1,NNOF
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
@@ -471,7 +463,7 @@ C             PROBLEME DE STATUT DE CONTACT.
           ELSE
 C           SI OPTION NI 'CHAR_MECA_CONT' NI 'CHAR_MECA_FROT'
             CALL ASSERT(OPTION.EQ.'CHAR_MECA_FROT' .OR.
-     &                  OPTION.EQ.'CHAR_MECA_CONT')  
+     &                  OPTION.EQ.'CHAR_MECA_CONT')
           ENDIF
 
 

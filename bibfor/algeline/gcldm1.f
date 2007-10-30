@@ -1,6 +1,6 @@
       SUBROUTINE GCLDM1(M,IN,IP,PREC,X,Y)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/03/99   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/10/2007   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8 PREC(*),X(*),Y(*)
       INTEGER IN(*),IP(*)
+      REAL*8 FAC
 C-----------------------------------------------------------------------
 C  FONCTION  :  INVERSION D'UNE MATRICE DE PRECONDITIONNEMENT LDLT_INC
 C                        -1                   T
@@ -56,11 +57,13 @@ C-------------------------------------------
       DO 40 I = M , 2 , -1
          KDEB = IN(I-1)+1
          KFIN = IN(I)-1
+         FAC = Y(I)
 C
 C        ---- PROCEDURE A LA MAIN
-CCDIR$ IVDEP
+CDIR$ IVDEP
+CDIR$ NOPREFETCH Y
          DO 30 KI = KDEB , KFIN
-            Y(IP(KI)) = Y(IP(KI))-PREC(KI)*Y(I)
+            Y(IP(KI)) = Y(IP(KI))-PREC(KI)*FAC
    30    CONTINUE
    40 CONTINUE
       END

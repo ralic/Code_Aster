@@ -4,30 +4,30 @@
       REAL*8         DELTAT
       CHARACTER*8    MODEL,NOMA
       CHARACTER*19   CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN
-  
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C     ------------------------------------------------------------------
 C
 C       XPRLS   : X-FEM PROPAGATION DES LEVEL SETS
-C       -----     -     --              -     -       
+C       -----     -     --              -     -
 C    PROPAGATION DES LEVEL SETS AU PAS DE TEMP SUIVANT
 C
 C    ENTREE
@@ -67,8 +67,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER          I,IFM,NIV,NBNO,IRET,JLTNO,JLNNO,JGRTNO,JGRNNO,
-     &                 JVTNO,JVNNO,JLTI,JLTIL,JLNI,JLNIL,JGRTI,JGRNI
+      INTEGER    I,IFM,NIV,NBNO,IRET,JLTNO,JLNNO,JGRTNO,JGRNNO
+      INTEGER    JVTNO,JVNNO,JLTI,JLTIL,JLNI,JLNIL,JGRTI,JGRNI,IBID
       CHARACTER*8      K8B,LPAIN(2),LPAOUT(1)
       CHARACTER*19     CNSLTI,CNSLNI,CNSGTI,CNSGNI,CHGRTI,CHGRNI,CHAMSI,
      &                 CHGRLT,CHGRLN,CHAMS,CNOLTI,CNOLNI,CNOLT,CNOLN
@@ -82,10 +82,10 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
-      
+
 C  RECUPERATION DE CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
-      
+
       WRITE(IFM,*)'   DELTA_T = ',DELTAT
 
 C   RECUPERATION DE L'ADRESSE DES VALEURS DE LT, LN ET LEURS GRADIENTS
@@ -97,7 +97,7 @@ C   RECUPERATION DE L'ADRESSE DES VALEURS DE LT, LN ET LEURS GRADIENTS
 C   RECUPERATION DES ADRESSES DES CHAMPS DE VITESSE AUX NOEUDS
       CALL JEVEUO(CNSVT//'.CNSV','L',JVTNO)
       CALL JEVEUO(CNSVN//'.CNSV','L',JVNNO)
-      
+
 C     CREATION DES OBJETS VOLATILES
       CNSLTI = '&&XPRLS.CNSLTI'
       CNSLNI = '&&XPRLS.CNSLNI'
@@ -117,10 +117,10 @@ C     CREATION DES OBJETS VOLATILES
 C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL SETS INTERMEDIAIRES
 C-----------------------------------------------------------------------
-      
+
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSLTI)
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSLNI)
-      
+
       CALL JEVEUO(CNSLTI//'.CNSV','E',JLTI)
       CALL JEVEUO(CNSLTI//'.CNSL','E',JLTIL)
       CALL JEVEUO(CNSLNI//'.CNSV','E',JLNI)
@@ -147,9 +147,9 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     CALCUL DES GRADIENTS DES LEVEL SETS INTERMEDIAIRES
 C-----------------------------------------------------------------------
-      
+
 C  GRADIENT DE LTI
-      CALL CNSCNO(CNSLTI,' ','NON','V',CNOLTI)
+      CALL CNSCNO(CNSLTI,' ','NON','V',CNOLTI,'F',IBID)
 
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = NOMA//'.COORDO'
@@ -161,13 +161,13 @@ C  GRADIENT DE LTI
 
       CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
      &            LCHOUT,LPAOUT,'V')
-      
-      CALL CELCES ( CHGRTI, 'V', CHAMS ) 
+
+      CALL CELCES ( CHGRTI, 'V', CHAMS )
       CALL CESCNS ( CHAMS, ' ', 'V', CNSGTI )
       CALL JEVEUO ( CNSGTI//'.CNSV','L',JGRTI)
 
 C  GRADIENT DE LNI
-      CALL CNSCNO(CNSLNI,' ','NON','V',CNOLNI)
+      CALL CNSCNO(CNSLNI,' ','NON','V',CNOLNI,'F',IBID)
 
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = NOMA//'.COORDO'
@@ -179,15 +179,15 @@ C  GRADIENT DE LNI
 
       CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
      &            LCHOUT,LPAOUT,'V')
-      
-      CALL CELCES ( CHGRNI, 'V', CHAMS ) 
+
+      CALL CELCES ( CHGRNI, 'V', CHAMS )
       CALL CESCNS ( CHAMS, ' ', 'V', CNSGNI )
       CALL JEVEUO ( CNSGNI//'.CNSV','L',JGRNI)
 
 C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL SETS RESULTANTES
 C-----------------------------------------------------------------------
-      
+
       DO 200 I=1,NBNO
          NORGTI = ( ZR(JGRTI-1+3*(I-1)+1)**2.D0 +
      &              ZR(JGRTI-1+3*(I-1)+2)**2.D0 +
@@ -209,9 +209,9 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES
 C-----------------------------------------------------------------------
-       
+
 C  GRADIENT DE LT
-      CALL CNSCNO(CNSLT,' ','NON','V',CNOLT)
+      CALL CNSCNO(CNSLT,' ','NON','V',CNOLT,'F',IBID)
 
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = NOMA//'.COORDO'
@@ -223,12 +223,12 @@ C  GRADIENT DE LT
 
       CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
      &            LCHOUT,LPAOUT,'V')
-      
-      CALL CELCES ( CHGRLT, 'V', CHAMS ) 
+
+      CALL CELCES ( CHGRLT, 'V', CHAMS )
       CALL CESCNS ( CHAMS, ' ', 'V', GRLT )
 
 C  GRADIENT DE LN
-      CALL CNSCNO(CNSLN,' ','NON','V',CNOLN)
+      CALL CNSCNO(CNSLN,' ','NON','V',CNOLN,'F',IBID)
 
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = NOMA//'.COORDO'
@@ -240,8 +240,8 @@ C  GRADIENT DE LN
 
       CALL CALCUL('S','GRAD_NEUT_R',LIGRMO,2,LCHIN,LPAIN,1,
      &            LCHOUT,LPAOUT,'V')
-      
-      CALL CELCES ( CHGRLN, 'V', CHAMS ) 
+
+      CALL CELCES ( CHGRLN, 'V', CHAMS )
       CALL CESCNS ( CHAMS, ' ', 'V', GRLN )
 
 C  DESTRUCTION DES OBJETS VOLATILES
@@ -263,4 +263,4 @@ C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
       CALL JEDEMA()
-      END   
+      END

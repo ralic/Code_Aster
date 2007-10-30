@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,8 @@
 #**************   NOUVELLE REALISATION                   **********
 #************** PARTIE COMMUNE A TOUTES LES MODELISATION **********
 
-DEBUT( CODE=_F(  NOM = 'SDLL112B',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(  NOM = 'SDLL112B',NIV_PUB_WEB='INTERNET'),
+       DEBUG=_F(SDVERI='OUI',),);
 
 # MODELE POUTRE  CAS 2D  PLAN XZ
 
@@ -90,7 +91,6 @@ MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,    MATR_B=MASSE,
                   )
 
 MODE=NORM_MODE(reuse=MODE,   MODE=MODE,   NORME='TRAN_ROTA',
-                     MASS_INER=MAS
                   )
 
 MODE=CALC_ELEM(reuse=MODE,  MODELE=MODELE,

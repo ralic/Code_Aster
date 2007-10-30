@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,8 @@ C     PARAMETRES "MODE_FLAMB"
       CHARACTER*19  K19B,NORECG
       CHARACTER*24  MASSE, AMOR, RAIDE, REFE, NOMJV, METHOD,
      &              KVEC, KVALI, KVALR, KVALK,
-     &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT)
+     &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT),
+     &              MATE, CARA, MODELE
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
       DATA  KVEC  / '&&OP0037.VAL_PROPRE'/
@@ -133,6 +134,7 @@ C
       ELSE
          CALL U2MESK('F','ALGELINE2_33',1,TYPCON)
       ENDIF
+
 C
 C
 C     ---RECUPERATION DU NIVEAU D'IMPRESSION---
@@ -180,6 +182,7 @@ C     --- INITIALISATION ---
       LMAT(1)  = 0
       LMAT(2)  = 0
       LDDL  = 1
+      LMASIN = .TRUE.
 C
 C     --- MATRICES DE REFERENCE DES MODES ---
       LREFE = .TRUE.
@@ -205,6 +208,7 @@ C     --- MATRICES DE REFERENCE DES MODES ---
            CALL JEVEUO(REFE,'L',LMODE)
            NOMA = ZK24(LMODE  )(1:8)
            NUME = ZK24(LMODE+1)(1:14)
+           LMASIN=.FALSE.
            GOTO 100
         ENDIF
         CALL JEVEUO(REFE,'L',LMODE)
@@ -215,47 +219,31 @@ C     --- MATRICES DE REFERENCE DES MODES ---
 C
 C
 C     --- NUMEROTATION ASSOCIEE AUX DDL ---
-      CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,NUME,IERD)
-      CALL DISMOI('F','NOM_MAILLA'  ,RAIDE,'MATR_ASSE',IBID,NOMA,IERD)
+      CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,NUME,IRET)
+      CALL DISMOI('F','NOM_MAILLA'  ,RAIDE,'MATR_ASSE',IBID,NOMA,IRET)
+      CALL DISMOI('F','CARA_ELEM'   ,RAIDE,'MATR_ASSE',IBID,CARA,IRET)
+      CALL DISMOI('F','CHAM_MATER'  ,RAIDE,'MATR_ASSE',IBID,MATE,IRET)
+      CALL DISMOI('F','NOM_MODELE'  ,RAIDE,'MATR_ASSE',IBID,MODELE,IRET)
 C
 C     --- COMPATIBILITE DES MODES ---
       CALL VPCREA(0,MODEOU,MASSE,AMOR,RAIDE,NUME,IBID)
 C
-  100 CONTINUE
 C
-C     --- RECUPERATION DE LA MASSE ---
-      LMASIN = .FALSE.
-      XMASTR = 1.D0
-      CALL GETVID('  ','MASS_INER',1,1,1,MASINE,NMI)
-      IF ( NMI .NE. 0 ) THEN
-         CALL TBEXP2(MASINE,'LIEU')
-         CALL TBEXP2(MASINE,'MASSE')
-         CALL TBLIVA ( MASINE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     &              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
-         IF ( IRET .EQ. 2 ) THEN
-            VALK (1) = MASINE
-            CALL U2MESG('F', 'ALGELINE4_34',1,VALK,0,0,0,0.D0)
-         ELSEIF ( IRET .EQ. 3 ) THEN
-            CALL TBEXP2(MASINE,'ENTITE')
-            PARAKI(1) = 'LIEU'
-            PARAKI(2) = 'ENTITE'
-            VALEKI(1) = NOMA
-            VALEKI(2) = 'TOUT'
-            CALL TBLIVA ( MASINE, 2, PARAKI, IBID, R8B, C16B, VALEKI,
-     &           K8B, R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
-            IF ( IRET .NE. 0 ) THEN
-            VALK (1) = MASINE
-               CALL U2MESG('F', 'ALGELINE4_34',1,VALK,0,0,0,0.D0)
-            ENDIF
-         ENDIF
-         LMASIN = .TRUE.
+      CALL VPMAIN(MODELE,MATE,CARA,XMASTR,NBPARA)
+      IF (XMASTR.LE.R8PREM()) THEN
+         LMASIN = .FALSE.
+         CALL U2MESS('I','ALGELINE5_58')
+         XMASTR = 1.D0
       ENDIF
-C
+
+  100 CONTINUE
+
 C     --- OPTION DE NORMALISATION  ---
       METHOD = '                        '
       CALL GETVTX(' ','NORME',1,1,1,NORM,L)
       IF ( L .NE. 0 ) THEN
          IF      ( NORM .EQ. 'MASS_GENE'      ) THEN
+C        --- CALCUL DE LA MASSE DU MODELE
             IF (.NOT.LREFE) CALL U2MESS('F','ALGELINE2_35')
             METHOD(1:9) = 'MASS_GENE'
             CALL MTDSCR(MASSE)

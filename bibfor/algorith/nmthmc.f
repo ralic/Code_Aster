@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C =====================================================================
       INTEGER       NBMA, IERD, IBID, JNOMA, JMESM
       PARAMETER   ( DMTHMC = 7  )
       PARAMETER   ( DMHYDR = 4  )
-      PARAMETER   ( DMMECA = 11 )
+      PARAMETER   ( DMMECA = 12 )
       CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
       CHARACTER*16  THMC, THER, HYDR, MECA, MOCLES(2)
@@ -94,10 +94,11 @@ C --- PARTIE MECA -----------------------------------------------------
 C =====================================================================
       DATA POMECA / 'ELAS'            ,
      &              'CJS'             ,
-     &              'HUJEUX'             ,
+     &              'HUJEUX'          ,
      &              'CAM_CLAY'        ,
      &              'BARCELONE'       ,
      &              'LAIGLE'          ,
+     &              'LETK'            ,
      &              'HOEK_BROWN_EFF'  ,
      &              'HOEK_BROWN_TOT'  ,
      &              'MAZARS'          ,

@@ -1,7 +1,7 @@
       SUBROUTINE OP0010(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C RESPONSABLE MASSIN P.MASSIN
 C
       IMPLICIT NONE
       INTEGER           IER
-C      
+C
 C ----------------------------------------------------------------------
 C
 C OPERATEUR PROPA_XFEM
@@ -73,15 +73,15 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFMAJ()      
-      CALL INFDBG('XFEM',IFM,NIV)  
+      CALL INFMAJ()
+      CALL INFDBG('XFEM',IFM,NIV)
 C
 C --- NOM DU CONCEPT FISSURE
 C
       CALL GETRES(FISS,K16BID,K16BID)
 C
 C --- NOM DU MODELE
-C      
+C
       CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
 C
 C --- NOM DU MAILLAGE ATTACHE AU MODELE
@@ -104,19 +104,19 @@ C --- CONNECTIVITE INVERSEE
 C
       CNXINV = '&&XPRREO.CNCINV'
       CALL CNCINV(NOMA,IBID,0,'V',CNXINV)
-C      
+C
 C --- RECUPERATION DE LA FISSURE PRECEDENTE
 C
       CALL JEVEUO(NOMO//'.FISS','L',JFISS)
       FISPRE = ZK8(JFISS)
-C      
-C --- ACCES AUX OBJETS POUR MULTIFISSURATION DANS 
+C
+C --- ACCES AUX OBJETS POUR MULTIFISSURATION DANS
 C
       CALL JEVEUO(NOMO//'.NFIS','L',JNFIS)
-      NFISS  = ZI(JNFIS)  
+      NFISS  = ZI(JNFIS)
       IF (NFISS.GT.1) THEN
         CALL U2MESS('F','XFEM2_6')
-      ENDIF      
+      ENDIF
 C
 C --- RECUPERATION DES LEVEL SETS ET GRADIENTS
 C
@@ -262,10 +262,10 @@ C-----------------------------------------------------------------------
 
       CALL XPRMIL(NOMA,CNSLT,CNSLN)
 
-      CALL CNSCNO(CNSLT,' ','NON','G',FISS//'.LTNO')
-      CALL CNSCNO(CNSLN,' ','NON','G',FISS//'.LNNO')
-      CALL CNSCNO(GRLT,' ','NON','G',FISS//'.GRLTNO' )
-      CALL CNSCNO(GRLN,' ','NON','G',FISS//'.GRLNNO' )
+      CALL CNSCNO(CNSLT,' ','NON','G',FISS//'.LTNO','F',IBID)
+      CALL CNSCNO(CNSLN,' ','NON','G',FISS//'.LNNO','F',IBID)
+      CALL CNSCNO(GRLT,' ','NON','G',FISS//'.GRLTNO','F',IBID)
+      CALL CNSCNO(GRLN,' ','NON','G',FISS//'.GRLNNO','F',IBID)
 
 C----------------------------------------------------------------------+
 C                 FIN DE LA PARTIE PROPAGATION :                       |
@@ -284,8 +284,8 @@ C-----------------------------------------------------------------------
       CALL XENRCH(NOMO,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
      &                NDIM,FISS,LISMAE,LISNOE)
 
-      CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR')
-      CALL CNSCNO(CNSEN,' ','NON','G',FISS//'.STNO')
+      CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR','F',IBID)
+      CALL CNSCNO(CNSEN,' ','NON','G',FISS//'.STNO','F',IBID)
 
 C-----------------------------------------------------------------------
 C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE

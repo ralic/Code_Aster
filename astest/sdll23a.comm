@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,8 +81,7 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                   CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 6,
                               DIM_SOUS_ESPACE = 6) )
 
-MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',
-                         MASS_INER=TABL_MAS                          )
+MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
                          MODELE=MODELE,      OPTION=('SIEF_ELGA_DEPL',

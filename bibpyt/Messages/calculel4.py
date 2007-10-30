@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF calculel4 Messages  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -240,11 +240,12 @@ cata_msg={
 """),
 
 63: _("""
- on ne sait pas encore projeter les champs  %(k1)s
+ On n'a pas pu projeter le champ %(k1)s de la sd_resultat %(k2)s
+ vers la sd_resultat %(k3)s pour le numéro d'ordre %(i1)d
 """),
 
 64: _("""
- aucun champ projete.
+ Aucun champ projete.
 """),
 
 65: _("""
@@ -344,7 +345,7 @@ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les 
 """),
 
 98: _("""
- on n'a pas pu récupérer le paramètre THETA dans le résultat  %(k1)s 
+ on n'a pas pu récupérer le paramètre THETA dans le résultat  %(k1)s
  valeur prise pour THETA: 0.57
 """),
 

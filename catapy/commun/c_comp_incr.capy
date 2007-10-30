@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+#& MODIF COMMUN  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -108,6 +108,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "CAM_CLAY",
                                         "BARCELONE",
                                         "LAIGLE",
+                                        "LETK",
                                         "DRUCKER_PRAGER",
                                         "HOEK_BROWN",
                                         "HOEK_BROWN_EFF",
@@ -228,6 +229,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           CAM_CLAY        =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           BARCELONE       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
+          LETK            =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           DRUCKER_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           HOEK_BROWN      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           HOEK_BROWN_EFF  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
@@ -274,6 +276,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "CAM_CLAY",
                                        "BARCELONE",
                                        "LAIGLE",
+                                       "LETK",
                                        "DRUCKER_PRAGER",
                                        "HOEK_BROWN_EFF",
                                        "HOEK_BROWN_TOT",

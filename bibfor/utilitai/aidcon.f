@@ -3,7 +3,7 @@
       INTEGER             NBOCC, IMPR, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,20 +46,7 @@ C
       CHARACTER*4   CNUM
       CHARACTER*8   CODE
       CHARACTER*24  CNOM  , DESCRI, FICHIE
-      CHARACTER*24  OBJET
       INTEGER       LONG(5), LADR(8)
-C     ------------------------------------------------------------------
-      DATA          OBJET /'&&SYS   RESULT.USER    '/
-C             DESCRIPTION DE OBJET :
-C          ZK80(ICMD)( 1: 8) = NOM UTILISATEUR DU RESULTAT
-C          ZK80(ICMD)( 9:24) = NOM DU CONCEPT DU RESULTAT
-C          ZK80(ICMD)(25:40) = NOM DE L'OPERATEUR
-C          ZK80(ICMD)(41:48) = STATUT DE L'OBJET
-C              STATUT = '&A FAIRE' : VALEUR INITIALE
-C                       '&ATTENTE' : OPERATEUR DECODE, NON CHARGER
-C                       '&ENCOURS' : OPERATEUR EN COURS D'EXECUTION
-C                       '&EXECUTE' : OPERATEUR TERMINER CORRECTEMENT
-C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -81,11 +68,11 @@ C
   10     CONTINUE
 C
          CALL GETVTX('CONCEPT','OPTION',IOCC,1,1,DESCRI,L)
-      WRITE(6,*) ' <AIDCON> : ',DESCRI
+         WRITE(6,*) ' <AIDCON> : ',DESCRI
          IF ( ZK16(LLIST) .EQ. '*' ) THEN
-      WRITE(6,*) ' <AIDCON> :  ON A LU ETOILE '
+         WRITE(6,*) ' <AIDCON> :  ON A LU ETOILE '
             IF ( DESCRI .EQ. 'TOUT_TYPE' ) THEN
-      WRITE(6,*) ' <AIDCON> : ', IMPR
+               WRITE(6,*) ' <AIDCON> : ', IMPR
                CALL GCECCO('AIDE',IMPR,CODE,' ')
             ELSEIF ( DESCRI .EQ. 'CREER' ) THEN
                CALL GCECCO('AIDE',IMPR,CODE,' ')
@@ -95,7 +82,6 @@ C
                CALL U2MESK('I','UTILITAI_4',1,DESCRI(1:8))
             ENDIF
          ELSE
-            CALL JEVEUO( OBJET , 'L' , LDCMD )
             LDEB = LLIST
             LFIN = LLIST+NBCMD-1
             DO 20 ICMD = LDEB, LFIN

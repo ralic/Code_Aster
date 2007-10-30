@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 29/10/2007   AUTEUR SALMONA L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,7 @@ def lire_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "HARM_GENE" :  return harm_gene
   if TYPE_RESU == "MODE_MECA" :  return mode_meca
   if TYPE_RESU == "MODE_MECA_C" : return mode_meca_c
+  if TYPE_RESU == "EVOL_VARC" :  return evol_varc
   raise AsException("type de concept resultat non prevu")
 
 # pour éviter d'écrire 3 fois cette liste :
@@ -71,7 +72,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 #----------------------
          TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER","EVOL_ELAS","EVOL_NOLI","MODE_MECA",
                                                           "MODE_MECA_C","DYNA_TRANS","DYNA_HARMO","HARM_GENE",
-                                                          "EVOL_CHAR") ),
+                                                          "EVOL_CHAR","EVOL_VARC") ),
 
          FORMAT          =SIMP(statut='o',typ='TXM',into=("IDEAS","IDEAS_DS58","ENSIGHT","MED") ),
 
@@ -85,7 +86,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          NB_VARI         =SIMP(statut='f',typ='I' ),
 
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater,),
-         
+
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem,),
 
           b_evol_elas  = BLOC(condition="TYPE_RESU=='EVOL_ELAS'",

@@ -6,7 +6,7 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,9 @@ C IN  : DIMLIS  : I    : LONGUEUR DE LISCH
 C OUT : LISCH   : L_K16: LISTE DES NOMS TROUVES
 C OUT : NBCH    : I    : NOMBRE DE CHAMPS TROUVES (OU -NBCH SI
 C                        SI LISCH EST TROP COURTE)
+C OUT : ACCENO  : L : .TRUE. : L'UTILISATEUR A UTILISE NOM_CHAM
+C                     .FALSE. : L'UTILISATEUR N'A PAS UTILISE NOM_CHAM
+C                               (=> TOUT_CHAM PAR DEFAUT)
 
 C----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------

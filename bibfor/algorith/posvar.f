@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,6 +231,43 @@ C----- COMPORTEMENT DE LA ROCHE
 C----- INDICATEUR D ETAT
          ELSE IF (VARI(1:7).EQ.'IND_ETA') THEN
             NUME=ADVIME+3
+            GOTO 9999
+         ELSE
+            NUME=-1
+            GOTO 9999
+         ENDIF
+
+C-----LA LOI MECANIQUE VISCOPLASTIQUE DU CIH : LETK
+
+      ELSE IF (MECA(1:6).EQ.'LETK') THEN
+
+C----- VARIABLE D ECROUISSAGE ELASTOPLASTIQUE
+         IF (VARI(1:3).EQ.'XIP') THEN
+            NUME=ADVIME
+            GOTO 9999
+C----- DEFORMATION  DEVIATORIQUE PLASTIQUE
+         ELSE IF (VARI(1:6).EQ.'GAMMAP') THEN
+            NUME=ADVIME+1
+            GOTO 9999
+C----- VARIABLE D ECROUISSAGE VISCOPLASTIQUE
+         ELSE IF (VARI(1:3).EQ.'XIV') THEN
+            NUME=ADVIME+2
+            GOTO 9999
+C----- DEFORMATION  DEVIATORIQUE VISCOPLASTIQUE
+         ELSE IF (VARI(1:6).EQ.'GAMMAV') THEN
+            NUME=ADVIME+3
+            GOTO 9999
+C----- INDICATEUR DU DOMAINE DE CONTRACTANCE/DILATANCE
+         ELSE IF (VARI(1:5).EQ.'VARV') THEN
+            NUME=ADVIME+4
+            GOTO 9999
+C----- INDICATEUR DE LA VISCOSITE
+         ELSE IF (VARI(1:8).EQ.'IND_VISC') THEN
+            NUME=ADVIME+5
+            GOTO 9999
+C----- INDICATEUR DE LA PLASTICITE
+         ELSE IF (VARI(1:8).EQ.'IND_PLAS') THEN
+            NUME=ADVIME+6
             GOTO 9999
          ELSE
             NUME=-1

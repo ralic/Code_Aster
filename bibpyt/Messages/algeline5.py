@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF algeline5 Messages  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -299,5 +299,8 @@ cata_msg={
     Le préconditionnement d'une matrice assemblée complexe n'est pas permis.
 """),
 
+58: _("""
+    La masse du modele est nulle. On ne peut normer par rapport a la masse.
+"""),
 
 }

@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 
-      INTEGER N1,IB,NBOCC,IOCC,NBTROU,JNUTRO,NBMOCL,JDESC,LNOM
+      INTEGER N1,IB,NBOCC,IOCC,NBTROU,JNUTRO,NBMOCL,JDESC,LNOM,IBID
       LOGICAL CHGCMP,CUMUL,LCUMUL(2)
       INTEGER NCMP,JLICMP,GD,JCMPGD,JLICM2,IRET,NNCP,JREFE,NEQ,NCHG
       REAL*8 COEFR,LCOEFR(2)
@@ -95,15 +95,16 @@ C     ------------------------------------------------------------------
         CESMOD = '&&CHPASS.CESMOD'
         CALL CELCES(CELMOD,'V',CESMOD)
 
-        MODELE=LIGREL(1:8)
+        MODELE = LIGREL(1:8)
         CALL EXISD('MODELE',MODELE,IRET)
-        IF (IRET.NE.1) MODELE=' '
+        IF (IRET.NE.1) MODELE = ' '
+
       ELSE
         LIGREL = ' '
         OPTION = ' '
         CESMOD = ' '
-        MODELE=' '
-      END IF
+        MODELE = ' '
+      ENDIF
 
 
 C     2- BOUCLE DE VERIF SUR LES OCCURENCES DU MOT CLE "ASSE" :
@@ -117,27 +118,27 @@ C     ---------------------------------------------------------
 C       2.1 VERIFICATION DES CARACTERISTIQUES DU CHAMP :
 C       ------------------------------------------------
         CALL GETVID('ASSE','CHAM_GD',IOCC,1,1,CHAMP,IB)
-        ZK24(LNOM+IOCC-1)=CHAMP
+        ZK24(LNOM+IOCC-1) = CHAMP
         CALL DISMOI('F','TYPE_CHAMP',CHAMP,'CHAMP',IB,TYCH2,IB)
 
 
         IF (TYCHR.EQ.'NOEU') THEN
           IF (TYCH2.NE.'NOEU') CALL U2MESK('F','UTILITAI_28',1,CHAMP)
 
-        ELSE IF (TYCHR.EQ.'ELGA') THEN
-          IF ((TYCH2.NE.'CART').AND.(TYCH2.NE.'ELEM').AND.
-     &      (TYCH2.NE.'ELGA')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
+        ELSEIF (TYCHR.EQ.'ELGA') THEN
+          IF ((TYCH2.NE.'CART') .AND. (TYCH2.NE.'ELEM') .AND.
+     &        (TYCH2.NE.'ELGA')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
 
-        ELSE IF (TYCHR.EQ.'ELNO') THEN
-          IF ((TYCH2.NE.'CART').AND.
-     &      (TYCH2.NE.'ELNO')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
+        ELSEIF (TYCHR.EQ.'ELNO') THEN
+          IF ((TYCH2.NE.'CART') .AND. (TYCH2.NE.
+     &        'ELNO')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
 
-        ELSE IF (TYCHR.EQ.'ELEM') THEN
+        ELSEIF (TYCHR.EQ.'ELEM') THEN
           CALL U2MESS('F','UTILITAI_30')
 
         ELSE
           CALL ASSERT(.FALSE.)
-        END IF
+        ENDIF
 
    10 CONTINUE
 
@@ -159,17 +160,18 @@ C     ---------------------------------
       IF (TYCHR.EQ.'NOEU') THEN
         TYPEM = 'NU_NOEUD'
         NBMOCL = 5
+
       ELSE
         TYPEM = 'NU_MAILLE'
         NBMOCL = 3
-      END IF
+      ENDIF
 
 
 
 C     4- BOUCLE SUR LES OCCURENCES DU MOT CLE "ASSE" :
 C     -----------------------------------------------------
       CALL GETFAC('ASSE',NBOCC)
-      NCHG=0
+      NCHG = 0
       DO 20,IOCC = 1,NBOCC
         CALL GETVID('ASSE','CHAM_GD',IOCC,1,1,CHAMP,IB)
         CALL DISMOI('F','TYPE_CHAMP',CHAMP,'CHAMP',IB,TYCH2,IB)
@@ -190,32 +192,34 @@ C       ---------------------------------------------------------------
           CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,1,0,KBID,N1)
           IF (N1.LT.0) THEN
             CHGCMP = .TRUE.
-            NCHG=NCHG+1
+            NCHG = NCHG + 1
             IF (N1.NE.-NCMP) CALL U2MESS('F','UTILITAI_31')
             CALL WKVECT('&&CHPASS.LICMP2','V V K8',NCMP,JLICM2)
             CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,1,NCMP,ZK8(JLICM2),
      &                  IB)
-          END IF
+          ENDIF
+
         ELSE
           NCMP = 0
           JLICMP = 0
-        END IF
+        ENDIF
 
 C       4.1 VERIFICATION DE LA GRANDEUR ASSOCIEE AU CHAMP
 C       ------------------------------------------------------
         CALL DISMOI('F','NOM_GD',CHAMP,'CHAMP',IB,NOMGD2,IB)
-        IF ((.NOT.CHGCMP) .AND. (NOMGD2.NE.NOMGD)) CALL U2MESK('F','UTIL
-     &ITAI_32',1,CHAMP)
+        IF ((.NOT.CHGCMP) .AND. (NOMGD2.NE.NOMGD)) CALL U2MESK('F',
+     &      'UTILITAI_32',1,CHAMP)
 
         CALL DISMOI('F','TYPE_SCA',NOMGD2,'GRANDEUR',IB,TSCA,IB)
         CALL GETVC8('ASSE','COEF_C',IOCC,1,1,COEFC,IRET)
-        IF(IRET.NE.0)THEN
-           IF(TSCA.NE.'C')THEN
-             CALL U2MESS('F','UTILITAI_33')
-           ENDIF
-           LCOC=.TRUE.
+        IF (IRET.NE.0) THEN
+          IF (TSCA.NE.'C') THEN
+            CALL U2MESS('F','UTILITAI_33')
+          ENDIF
+          LCOC = .TRUE.
+
         ELSE
-          LCOC=.FALSE.
+          LCOC = .FALSE.
           CALL GETVR8('ASSE','COEF_R',IOCC,1,1,COEFR,IB)
         ENDIF
 
@@ -231,22 +235,25 @@ C       ------------------------------------------
         IF (TYCH2.EQ.'NOEU') THEN
           CALL CNOCNS(CHAMP,'V',CHS1)
           CALL CNSRED(CHS1,NBTROU,ZI(JNUTRO),NCMP,ZK8(JLICMP),'V',CHS2)
-        ELSE IF (TYCH2(1:2).EQ.'EL') THEN
+
+        ELSEIF (TYCH2(1:2).EQ.'EL') THEN
           CALL CELCES(CHAMP,'V',CHS1)
           CALL CESRED(CHS1,NBTROU,ZI(JNUTRO),NCMP,ZK8(JLICMP),'V',CHS2)
-        ELSE IF (TYCH2.EQ.'CART') THEN
+
+        ELSEIF (TYCH2.EQ.'CART') THEN
           CALL CARCES(CHAMP,TYCHR,CESMOD,'V',CHS1,IB)
           CALL CESRED(CHS1,NBTROU,ZI(JNUTRO),NCMP,ZK8(JLICMP),'V',CHS2)
+
         ELSE
           CALL ASSERT(.FALSE.)
-        END IF
+        ENDIF
 
 
 C       4.4 SI ON DOIT CHANGER LES CMPS ET/OU LA GRANDEUR :
 C       ----------------------------------------------------
         IF (CHGCMP) THEN
           CALL CHSUT1(CHS2,NOMGD,NCMP,ZK8(JLICMP),ZK8(JLICM2),'V',CHS2)
-        END IF
+        ENDIF
 
 
 C       4.4 FUSION DU CHAMP REDUIT AVEC LE CHAMP RESULTAT :
@@ -268,9 +275,11 @@ C              CHAMP "MODELE" :
             LCOEFC(2) = COEFC
             CALL CHSFUS(2,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,'V',CHS3)
             CALL DETRSD('CHAM_ELEM_S',CESRAZ)
+
           ELSE
             CALL CHSFUS(1,CHS2,.FALSE.,COEFR,COEFC,LCOC,'V',CHS3)
-          END IF
+          ENDIF
+
         ELSE
           LICHS(1) = CHS3
           LICHS(2) = CHS2
@@ -281,7 +290,7 @@ C              CHAMP "MODELE" :
           LCOEFC(1) = 1.D0
           LCOEFC(2) = COEFC
           CALL CHSFUS(2,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,'V',CHS3)
-        END IF
+        ENDIF
 
         CALL JEDETR('&&CHPASS.LICMP')
         CALL JEDETR('&&CHPASS.LICMP2')
@@ -290,12 +299,13 @@ C              CHAMP "MODELE" :
 
 C     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 C     ----------------------------------------------------
- 50   CONTINUE
+   30 CONTINUE
       IF (TYCH2.EQ.'NOEU') THEN
-        CALL CNSCNO(CHS3,' ','NON','G',CHOU)
+        CALL CNSCNO(CHS3,' ','NON','G',CHOU,'F',IBID)
+
       ELSE
-        CALL CESCEL(CHS3,LIGREL,OPTION,' ',PROL0,NNCP,'G',CHOU)
-      END IF
+        CALL CESCEL(CHS3,LIGREL,OPTION,' ',PROL0,NNCP,'G',CHOU,'F',IBID)
+      ENDIF
 
 
 C     7- MENAGE :
@@ -311,7 +321,7 @@ C     -----------------------------------------------------
       CALL JEDETR(NUTROU)
 
 
-   30 CONTINUE
+   40 CONTINUE
 
       CALL JEDEMA()
       END

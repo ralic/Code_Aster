@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,6 @@ NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
          ),
          AVEC_CMP   =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
          SANS_CMP   =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
-         MASS_INER  =SIMP(statut='f',typ=table_sdaster),
          MODE_SIGNE =FACT(statut='f',fr="Imposer un signe sur une des composantes des modes",
            NOEUD      =SIMP(statut='o',typ=no,fr="Noeud ou sera imposé le signe"),
            NOM_CMP    =SIMP(statut='o',typ='TXM',fr="Composante du noeud ou sera imposé le signe" ),

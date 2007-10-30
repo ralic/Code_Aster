@@ -6,11 +6,11 @@
      &                  MASSE, AMORT ,RIGID, MATASS,PREMIE,
      &                  MEMASS,DEPENT,VITENT,VITKM1,NREAVI,
      &                  LIMPED,LONDE, NONDP, CHONDP,
-     &                  PARCRI,RESOCO,CONV  , 
+     &                  PARCRI,RESOCO,CONV  ,
      &                  CNRESI,CNDIRI,DEPDEL,LSSTRU,SECOLD,
      &                  CNFOLD,FOPREC,SDDYNA)
 C
-C MODIF ALGORITH  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,13 +49,13 @@ C
       CHARACTER*24 VITKM1, CHONDP
       CHARACTER*24 RESOCO, DEPDEL
       LOGICAL      LSSTRU
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION)
 C
 C PREDICTION PAR METHODE DE NEWTON-EULER
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -156,7 +156,7 @@ C ======================================================================
       IF (NDYNLO(SDDYNA,'EXPLICITE')) THEN
         CALL MXMASS(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &              COMPOR,LISCHA,MEDIRI,METHOD,SOLVEU,
-     &              CARCRI,0     ,VALMOI,POUGD ,DEPDEL,  
+     &              CARCRI,0     ,VALMOI,POUGD ,DEPDEL,
      &              VALPLU,MATRIX,K16BID,STADYN,PREMIE,
      &              DEPENT,VITENT,MEMASS,MASSE ,AMORT ,
      &              LICCVG(5),SDDYNA)
@@ -204,18 +204,18 @@ C -- CALCUL DES FORCES EXTERIEURES SUIVEUSES (EN U- ET T+)
 
       CALL NMCHAR('SUIV',MODELE,NUMEDD,MATE  ,CARELE,
      &            COMPOR,LISCHA,CARCRI,INST  ,DEPMOI,
-     &            DEPDE0,VITPLU,ACCPLU,K24BID, 
+     &            DEPDE0,VITPLU,ACCPLU,K24BID,
      &            K24BID,K24BID,K24BID,IBID  ,
-     &            LBID  ,LBID  ,IBID  , 
+     &            LBID  ,LBID  ,IBID  ,
      &            K24BID,COMPLU,IBID  ,IBID  ,K13BID,
-     &            K8BID ,SECOLD,CNFOLD,FOPREC, 
+     &            K8BID ,SECOLD,CNFOLD,FOPREC,
      &            SECMBR,SDDYNA)
 
       IF (NDYNLO(SDDYNA,'IMPLICITE')) THEN
         CALL NMCHAR('INER',MODELE,NUMEDD,MATE  ,CARELE,
      &              COMPOR,LISCHA,CARCRI,INST  ,DEPMOI,
      &              DEPDE0,VITPLU,ACCPLU,MASSE ,
-     &              AMORT ,VITKM1,VITENT,NREAVI,  
+     &              AMORT ,VITKM1,VITENT,NREAVI,
      &              LIMPED,LONDE ,NONDP,
      &              CHONDP,COMPLU,IBID  ,IBID  ,K13BID,
      &              K8BID ,SECOLD,CNFOLD,FOPREC,
@@ -250,7 +250,7 @@ C    ET ON A BESOIN DE CALCULER LES FORCES INTERIEURES ICI
      &                 DEPENT, VITENT)
 C ------------> CALCUL DES ACCELERATIONS :
 C               {An+1}=[M-1]*({Fext}-{Fint})
-        CALL MXCACC(SOLVEU,SECMBR,CNRESI,ACCPLU,MATRIX, 
+        CALL MXCACC(SOLVEU,SECMBR,CNRESI,ACCPLU,MATRIX,
      &              CNVCPR,LSSTRU,INSTAP,SDDYNA)
 
       ELSE
@@ -261,7 +261,7 @@ C
         IF (NBSS.NE.0) THEN
           CALL JEVEUO(CNFINT(1:19) // '.VALE','E',JCNFI)
           CALL JELIRA(CNFEDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-          CALL JEEXIN('&&SSRIGI.REFE_RESU',IRES)
+          CALL JEEXIN('&SSR.ELE.REFE_RESU',IRES)
           IF (IRES.NE.0) THEN
             CALL JEEXIN(TABTRA,IRE2)
             IF (IRE2.EQ.0) THEN
@@ -270,7 +270,7 @@ C
               CALL JEVEUO(TABTRA,'E',JTRA)
             ENDIF
             CALL JEVEUO (DEPMOI(1:19)//'.VALE','L',JDEPM )
-            CALL JEVEUO('&&ASRSST           .&INT','L',JRSST)
+            CALL JEVEUO('&SSR.ASS           .&INT','L',JRSST)
             CALL MRMULT ('ZERO',JRSST,ZR(JDEPM),'R',ZR(JTRA),1)
             CALL DAXPY(NEQ, 1.D0, ZR(JTRA), 1, ZR(JCNFI), 1)
           ENDIF

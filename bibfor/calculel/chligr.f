@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,9 +92,10 @@ C     ------------------
       CALL JEEXIN(CHEL1//'.DESC',IBID)
       IF (IBID.GT.0) THEN
         CALL JELIRA(CHEL1//'.DESC','DOCU',IBID,TYCH)
+
       ELSE
         CALL JELIRA(CHEL1//'.CELD','DOCU',IBID,TYCH)
-      END IF
+      ENDIF
 
 C     TEST :
 C     SI TYCH='RESL' : ON NE SAIT PAS TRAITER LES RESUELEM
@@ -107,34 +108,35 @@ C     ------------------------------------------------------------
       CALL CELFPG(CHEL1,'&&CHLIGR.CHEL1',1,IBID)
       CALL JEEXIN('&&CHLIGR.CHEL1',IRET1)
       IF (IRET1.GT.0) THEN
-         CHELV='&&CHLIGR.CHELVIDE'
-         CALL ALCHML(LIGR2,OPTIO,PARAM,'V',CHELV,IRET,' ')
-         IF (IRET.NE.0) THEN
-            CALL JEDETR('&&CHLIGR.CHEL1')
-            GO TO 10
-         END IF
-         CALL CELFPG(CHELV,'&&CHLIGR.CHEL2',1,IBID)
-         CALL JEEXIN('&&CHLIGR.CHEL2',IRET2)
-         CALL ASSERT(IRET2.GT.0)
-         CALL JEVEUO('&&CHLIGR.CHEL1','L',J1)
-         CALL JEVEUO('&&CHLIGR.CHEL2','L',J2)
-         CALL JELIRA('&&CHLIGR.CHEL1','LONMAX',NBMA,KBID)
-         DO 20, IMA=1,NBMA
-           FPG1=ZK16(J1-1+IMA)
-           FPG2=ZK16(J2-1+IMA)
-           IF ((FPG1.NE.' ').AND.(FPG2.NE.' ').AND.(FPG2.NE.FPG1)) THEN
-              CALL DISMOI('F','NOM_MAILLA',CHEL1,'CHAM_ELEM',
-     &                    IBID,MA,IBID)
-              CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOMA)
-               VALK(1) = NOMA
-               VALK(2) = FPG1
-               VALK(3) = FPG2
-               CALL U2MESK('F','CALCULEL_91', 3 ,VALK)
-           END IF
-20       CONTINUE
-         CALL JEDETR('&&CHLIGR.CHEL2')
-         CALL DETRSD('CHAM_ELEM',CHELV)
-      END IF
+        CHELV = '&&CHLIGR.CHELVIDE'
+        CALL ALCHML(LIGR2,OPTIO,PARAM,'V',CHELV,IRET,' ')
+        IF (IRET.NE.0) THEN
+          CALL JEDETR('&&CHLIGR.CHEL1')
+          GOTO 20
+
+        ENDIF
+        CALL CELFPG(CHELV,'&&CHLIGR.CHEL2',1,IBID)
+        CALL JEEXIN('&&CHLIGR.CHEL2',IRET2)
+        CALL ASSERT(IRET2.GT.0)
+        CALL JEVEUO('&&CHLIGR.CHEL1','L',J1)
+        CALL JEVEUO('&&CHLIGR.CHEL2','L',J2)
+        CALL JELIRA('&&CHLIGR.CHEL1','LONMAX',NBMA,KBID)
+        DO 10,IMA = 1,NBMA
+          FPG1 = ZK16(J1-1+IMA)
+          FPG2 = ZK16(J2-1+IMA)
+          IF ((FPG1.NE.' ') .AND. (FPG2.NE.' ') .AND.
+     &        (FPG2.NE.FPG1)) THEN
+            CALL DISMOI('F','NOM_MAILLA',CHEL1,'CHAM_ELEM',IBID,MA,IBID)
+            CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOMA)
+            VALK(1) = NOMA
+            VALK(2) = FPG1
+            VALK(3) = FPG2
+            CALL U2MESK('F','CALCULEL_91',3,VALK)
+          ENDIF
+   10   CONTINUE
+        CALL JEDETR('&&CHLIGR.CHEL2')
+        CALL DETRSD('CHAM_ELEM',CHELV)
+      ENDIF
       CALL JEDETR('&&CHLIGR.CHEL1')
 
 
@@ -144,10 +146,10 @@ C     -- ON TRANSFORME LE CHAM_ELEM CHEL1 EN CHAM_ELEM_S :
 
 
 C     -- ON TRANSFORME LE CHAM_ELEM_S EN CHEL2 :
-      CALL CESCEL(CES,LIGR2,OPTIO,PARAM,'CHL',NNCP,BASE2,CHEL2)
+      CALL CESCEL(CES,LIGR2,OPTIO,PARAM,'CHL',NNCP,BASE2,CHEL2,'F',IBID)
       CALL DETRSD('CHAM_ELEM_S',CES)
 
 
-   10 CONTINUE
+   20 CONTINUE
       CALL JEDEMA()
       END

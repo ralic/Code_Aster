@@ -1,7 +1,7 @@
       SUBROUTINE OP0041(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE
       INTEGER           IER
-C      
+C
 C ----------------------------------------------------------------------
 C
 C OPERATEUR DEFI_FISS_XFEM
@@ -48,16 +48,16 @@ C
 C     CONDENU DE LA SD FISS_XFEM
 C         FISS//'.GROUP_MA_ENRI'
 C         FISS//'.GROUP_NO_ENRI'
-C         FISS//'.LTNO' 
+C         FISS//'.LTNO'
 C         FISS//'.LNNO'
-C         FISS//'.GRLTNO' 
+C         FISS//'.GRLTNO'
 C         FISS//'.GRLNNO'
 C         FISS//'.MAILFISS .INDIC'
 C         FISS//'.MAILFISS  .HEAV'
 C         FISS//'.MAILFISS  .CTIP'
 C         FISS//'.MAILFISS  .HECT'
 C         FISS//'.FONDFISS'
-C         FISS//'.FONDMULT' 
+C         FISS//'.FONDMULT'
 C         FISS//'.BASLOC'
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
@@ -94,14 +94,14 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
-      CALL INFDBG('XFEM',IFM,NIV)  
+      CALL INFDBG('XFEM',IFM,NIV)
 C
 C --- NOM DU CONCEPT FISSURE
 C
       CALL GETRES(FISS,K16BID,K16BID)
 C
 C --- NOM DU MODELE
-C      
+C
       CALL GETVID(' ','MODELE',1,1,1,NOMO,IBID)
 
 C
@@ -119,7 +119,7 @@ C
       ENDIF
 C
 C --- MOT-CLEFS DEFINITION FISSURE
-C      
+C
       CALL GETVID('DEFI_FISS','FONC_LT',1,1,1,NFONF,ME1)
       CALL GETVID('DEFI_FISS','FONC_LN',1,1,1,NFONG,ME1)
       CALL GETVID('DEFI_FISS','GROUP_MA_FISS',1,1,1,MAFIS,ME2)
@@ -132,17 +132,17 @@ C
         CALL GETVR8('DEFI_FISS','CENTRE',1,1,3,CENTRE,IBID)
         CALL GETVR8('DEFI_FISS','VECT_X',1,1,3,VECTX,IBID)
         CALL GETVR8('DEFI_FISS','VECT_Y',1,1,3,VECTY,IBID)
-        CALL GETVID('DEFI_FISS','COTE_FISS',1,1,1,COTE,IBID) 
+        CALL GETVID('DEFI_FISS','COTE_FISS',1,1,1,COTE,IBID)
       ENDIF
 C
 C --- STOCKAGE DES DONNEES ORIENTATION FOND DE FISSURE
-C     ON ENRICHI LA SD FISS_XFEM DE 
-C         FISS//'.CARAFOND' 
+C     ON ENRICHI LA SD FISS_XFEM DE
+C         FISS//'.CARAFOND'
 C
       CALL XLORIE(FISS,NDIM)
 C
 C --- RECUPERATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
-C     ON ENRICHI LA SD FISS_XFEM DE 
+C     ON ENRICHI LA SD FISS_XFEM DE
 C         FISS//'.GROUP_MA_ENRI'
 C         FISS//'.GROUP_NO_ENRI'
 C
@@ -153,10 +153,10 @@ C
 C-----------------------------------------------------------------------
 C     CALCUL DES LEVEL-SETS
 C
-C     ON ENRICHI LA SD FISS_XFEM DE 
-C         FISS//'.LTNO' 
+C     ON ENRICHI LA SD FISS_XFEM DE
+C         FISS//'.LTNO'
 C         FISS//'.LNNO'
-C 
+C
 C-----------------------------------------------------------------------
 C
       CNSLT  = '&&OP0041.CNSLT'
@@ -179,9 +179,9 @@ C
 C --- CREATION DES CHAM_NO DES LEVEL-SETS
 C
       LTNO   = FISS(1:8)//'.LTNO'
-      LNNO   = FISS(1:8)//'.LNNO'      
-      CALL CNSCNO(CNSLT,' ','NON','G',LTNO)
-      CALL CNSCNO(CNSLN,' ','NON','G',LNNO)
+      LNNO   = FISS(1:8)//'.LNNO'
+      CALL CNSCNO(CNSLT,' ','NON','G',LTNO,'F',IBID)
+      CALL CNSCNO(CNSLN,' ','NON','G',LNNO,'F',IBID)
 C
       IF (NIV.GE.3) THEN
         CALL IMPRSD('CHAMP',LTNO,IFM,'FISSURE.LTNO=')
@@ -191,8 +191,8 @@ C
 C-----------------------------------------------------------------------
 C     CALCUL DES GRADIENTS DES LEVEL-SETS
 C
-C     ON ENRICHI LA SD FISS_XFEM DE 
-C         FISS//'.GRLTNO' 
+C     ON ENRICHI LA SD FISS_XFEM DE
+C         FISS//'.GRLTNO'
 C         FISS//'.GRLNNO'
 C
 C-----------------------------------------------------------------------
@@ -206,8 +206,8 @@ C --- CREATION DES CHAM_NO DES GRADIENTS DES LEVEL-SETS
 C
       GRLTNO = FISS(1:8)//'.GRLTNO'
       GRLNNO = FISS(1:8)//'.GRLNNO'
-      CALL CNSCNO( GRLT,' ','NON','G',GRLTNO)
-      CALL CNSCNO( GRLN,' ','NON','G',GRLNNO)
+      CALL CNSCNO( GRLT,' ','NON','G',GRLTNO,'F',IBID)
+      CALL CNSCNO( GRLN,' ','NON','G',GRLNNO,'F',IBID)
 C
       IF (NIV.GE.3) THEN
         CALL IMPRSD('CHAMP',GRLTNO,IFM,'FISSURE.GRLTNO=')
@@ -217,13 +217,13 @@ C
 C-----------------------------------------------------------------------
 C     CALCUL DE L'ENRICHISSEMENT, DES POINTS DU FOND DE FISSURE
 C
-C     ON ENRICHI LA SD FISS_XFEM DE 
+C     ON ENRICHI LA SD FISS_XFEM DE
 C         FISS//'.MAILFISS .INDIC'
 C         FISS//'.MAILFISS  .HEAV'
 C         FISS//'.MAILFISS  .CTIP'
 C         FISS//'.MAILFISS  .HECT'
 C         FISS//'.FONDFISS'
-C         FISS//'.FONDMULT' 
+C         FISS//'.FONDMULT'
 C
 C-----------------------------------------------------------------------
 C
@@ -234,24 +234,24 @@ C
      &              NDIM,FISS,LISMAE,LISNOE)
 C
 C --- CREATION DU CHAM_NO POUR LE STATUT DES NOEUDS
-C   
+C
       STNO   = FISS(1:8)//'.STNO'
-      CALL CNSCNO(CNSEN ,' ','NON','G',STNO)
+      CALL CNSCNO(CNSEN ,' ','NON','G',STNO,'F',IBID)
       IF (NIV.GE.3) THEN
         CALL IMPRSD('CHAMP',STNO,IFM,'FISSURE.STNO=')
       ENDIF
-C      
+C
 C --- CREATION DU CHAM_NO POUR LA VISUALISATION
-C           
-      STNOR  = FISS(1:8)//'.STNOR' 
-      CALL CNSCNO(CNSENR,' ','NON','G',STNOR)      
+C
+      STNOR  = FISS(1:8)//'.STNOR'
+      CALL CNSCNO(CNSENR,' ','NON','G',STNOR,'F',IBID)
 C
 C-----------------------------------------------------------------------
 C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE
 C
-C     ON ENRICHI LA SD FISS_XFEM DE 
+C     ON ENRICHI LA SD FISS_XFEM DE
 C         FISS//'.BASLOC'
-C         
+C
 C-----------------------------------------------------------------------
 C
       CALL XBASLO(NOMO  ,NOMA  ,FISS  ,GRLT  ,GRLN  , NDIM)
@@ -262,10 +262,10 @@ C
       CALL DETRSD('CHAM_NO_S',CNSLT)
       CALL DETRSD('CHAM_NO_S',CNSLN)
       CALL DETRSD('CHAM_NO_S',GRLT)
-      CALL DETRSD('CHAM_NO_S',GRLN)      
+      CALL DETRSD('CHAM_NO_S',GRLN)
       CALL DETRSD('CHAM_NO_S',CNSEN)
       CALL DETRSD('CHAM_NO_S',CNSENR)
-      CALL DETRSD('CHAM_NO_S',CNSBAS) 
+      CALL DETRSD('CHAM_NO_S',CNSBAS)
       CALL JEDETR(LISMAE)
       CALL JEDETR(LISNOE)
 C

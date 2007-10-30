@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE TP ANALYSE SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,7 +247,7 @@ MODES=MACRO_MODE_MECA(
                VERI_MODE=_F( STOP_ERREUR = 'NON'),
                NORM_MODE=_F( 
                      NORME = 'MASS_GENE',
-                     MASS_INER =MASSINER),
+                     ),
                  IMPRESSION=_F( TOUT_PARA = 'OUI')
                   )
 

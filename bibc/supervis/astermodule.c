@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 29/10/2007   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -180,7 +180,7 @@ void STDCALL(XFINI,xfini)(_IN INTEGER *code)
 {
    /* jeveux est fermé */
    jeveux_status = 0;
-   
+
    switch( *code ){
         case CodeFinAster :
                 strcpy(exception_reason,"exit ASTER");
@@ -1092,18 +1092,18 @@ void DEFP(CHKMSG,chkmsg, _OUT INTEGER *iret)
       passé, destinée à etre appelée dans FIN.
    */
    PyObject *res, *mess_log;
-   
+
    mess_log = PyObject_GetAttrString(static_module, "MessageLog");
    if (!mess_log) {
       MYABORT("erreur lors de l'accès à l'objet MessageLog.");
    }
-   
+
    res = PyObject_CallMethod(mess_log, "check_counter", NULL);
    if (!res) {
       MYABORT("erreur lors de l'appel à la méthode MessageLog.check_counter");
    }
    *iret = (INTEGER)PyLong_AsLong(res);
-   
+
    Py_DECREF(res);
    Py_DECREF(mess_log);
 }
@@ -1115,18 +1115,18 @@ void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN int lnom, _IN char *typsd,_IN int 
    /*
       Interface Fortran/C pour vérifier que la structure de données `nomsd`
       est conforme au type `typsd`.
-      
+
       Exemple d'appel :
          CALL CHEKSD('MA', 'sd_maillage', IRET)
    */
    PyObject *res;
-   
+
    res = PyObject_CallMethod(static_module,"checksd","s#s#",nomsd,lnom,typsd,ltyp);
    if (!res) {
       MYABORT("erreur lors de l'appel à la méthode CHECKSD");
    }
    *iret = (INTEGER)PyLong_AsLong(res);
-   
+
    Py_DECREF(res);
 }
 
@@ -1840,16 +1840,12 @@ void DEFSSPPP(GETTVC,gettvc,char * nom,int lnom,char *ctyp,int lctyp,INTEGER *iv
 
 
 /* ------------------------------------------------------------------ */
-void DEFPPP(GCECDU,gcecdu,INTEGER *ul,INTEGER *icmdu, INTEGER *numint)
+void DEFP(GCECDU,gcecdu, INTEGER *numint)
 {
         /*
-          Entrees:
-            ul      unite logique pour les ecritures
-            icmdu   numero de la commande
-          Sorties :
+          Sortie :
             numint  numero de l operateur de la commande
           Fonction:
-             Ecriture d'un operateur ou d une commande utilisateur avec ses arguments (pas implemente)
              Recuperation du numero de l operateur
         */
         PyObject * res = (PyObject*)0 ;
@@ -2719,7 +2715,7 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, int l_attr)
 */
    PyObject *jdc, *val;
    INTEGER value;
-   
+
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
       MYABORT("Impossible de récupérer l'attribut 'jdc' !");
@@ -2729,15 +2725,15 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, int l_attr)
       printf("attribut inexistant dans le jdc : '%s'\n\n", attr);
       MYABORT("erreur dans JDCGET");
    }
-   
+
    if (!PyInt_Check(val))
       MYABORT("Seuls les attributs de type entier peuvent etre récupérés !");
-   
+
    value = PyInt_AsLong(val);
-   
+
    Py_XDECREF(jdc);
    Py_XDECREF(val);
-   
+
    return value;
 }
 
@@ -2748,15 +2744,15 @@ void DEFSP(JDCSET,jdcset,char *attr, int l_attr, INTEGER *value)
    Permet de positionner la valeur d'un attribut du jdc à `value`.
 */
    PyObject *jdc, *res;
-   
+
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
       MYABORT("Impossible de récupérer l'attribut 'jdc' !");
-   
+
    res = PyObject_CallMethod(jdc, "set_jdc_attr", "s#l", attr, l_attr, *value);
    if (res == NULL)
       MYABORT("erreur dans JDCSET");
-   
+
    Py_XDECREF(jdc);
    Py_XDECREF(res);
 }
@@ -2990,9 +2986,9 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
    long actif;
-   
+
    if (!PyArg_ParseTuple(args, "l:matfpe", &actif)) return NULL;
-   
+
    if (actif >= -1  && actif <= 1) {
       CALL_MATFPE(&actif);
    } else {
@@ -3455,7 +3451,7 @@ void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
 {
 /*       Récupère le nom composé bati sur un couple :
            ( structure de base , paramètre de sensibilité )
- 
+
       IN  nosimp  : nom de la sd de base
       IN  nopase  : nom du parametre de sensibilite
       OUT nocomp  : nom de la sd derivee
@@ -3467,7 +3463,7 @@ void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
    char *sret = (char*)0;
    int ier, longueur;
    *iret = 0;
-   
+
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
       MYABORT("Impossible de récupérer l'attribut 'jdc' !");
@@ -3480,14 +3476,14 @@ void DEFSSSP(PSGENC,psgenc, _IN  char *nosimp, int lnosimp,
    if (val == NULL){
       MYABORT("erreur lors de l'appel à memo_sensi.get_nocomp !");
    }
-   
+
    sret = PyString_AsString(val);
    longueur = strlen(sret);
    STRING_FCPY(nocomp, lnocomp, sret, longueur);
    if ( strncmp(nocomp, "????????", 8) == 0 ) {
       *iret = 1;
    }
-   
+
    Py_XDECREF(jdc);
    Py_XDECREF(memo_sensi);
    Py_XDECREF(val);
@@ -3516,14 +3512,14 @@ void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, int lnosimp,
                      --> retourne nbmocl
                   2ème appel avec nbmocl à la bonne valeur (on le vérifie)
                      --> remplit limocl, livale, limofa
-   
+
    Remarque 2 : AVANT limocl, livale et limofa étaient des noms de vecteurs dans ZK80.
                 MAINTENANT ce sont des CHARACTER*80(nbmocl)
 */
    PyObject *jdc, *memo_sensi;
    PyObject *tup3, *tmocl, *tvale, *tmofa;
    int ichk;
-   
+
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
       MYABORT("Impossible de récupérer l'attribut 'jdc' !");
@@ -3539,7 +3535,7 @@ void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, int lnosimp,
    tmocl = PyTuple_GetItem(tup3, 0);
    tvale = PyTuple_GetItem(tup3, 1);
    tmofa = PyTuple_GetItem(tup3, 2);
-   
+
    if (*nbmocl == 0) {
       /* Seul nbmocl est modifié (1er appel) */
       *nbmocl = PyTuple_Size(tmocl);
@@ -3552,7 +3548,7 @@ void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, int lnosimp,
       convertxt(*nbmocl, tvale, livale, l2);
       convertxt(*nbmocl, tmofa, limofa, l3);
    }
-   
+
    Py_XDECREF(jdc);
    Py_XDECREF(memo_sensi);
    Py_XDECREF(tup3);
@@ -3569,7 +3565,7 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, int lnomsd,
             . un tableau contenant les couples :
                (nom composé, nom du paramètre sensible)
             . iderive = 0
-      
+
       b. si nomsd est une structure dérivée, on récupère :
             . nbstse = 1
             . un tableau contenant le couple :
@@ -3591,17 +3587,17 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, int lnomsd,
                      --> retourne nbstse et iderive
                   2ème appel avec nbstse à la bonne valeur (on le vérifie)
                      --> remplit nostnc
-   
+
    Remarque 2 : AVANT nostnc étaient le nom d'un vecteur dans ZK80.
                 MAINTENANT c'est un CHARACTER*80(nbstse)
-  
+
    Remarque 3 : si cette structure de mémorisation est inconnue, on en
                 conclut qu'aucun calcul de sensibilité n'a été demandé.
 */
    PyObject *jdc, *memo_sensi, *tup2;
    PyObject *indic, *result;
    int size_result;
-   
+
    jdc = PyObject_GetAttrString(commande, "jdc");
    if (jdc == NULL)
       MYABORT("Impossible de récupérer l'attribut 'jdc' !");
@@ -3614,7 +3610,7 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, int lnomsd,
    indic = PyTuple_GetItem(tup2, 0);
    result = PyTuple_GetItem(tup2, 1);
    size_result = PyTuple_Size(result);
-   
+
    *iderive = PyInt_AsLong(indic);
    if (*nbstse == 0) {
       /* Seul nbstse est modifié (1er appel) */
@@ -3626,7 +3622,7 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, int lnomsd,
       }
       convertxt(size_result, result, nostnc, lnostnc);
    }
-   
+
    Py_XDECREF(jdc);
    Py_XDECREF(memo_sensi);
    Py_XDECREF(tup2);

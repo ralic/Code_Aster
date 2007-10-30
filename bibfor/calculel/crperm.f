@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,17 +45,17 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER        N1, NBCHAM, IORD1,IORD2, NBPERM, JORDR, NBTROU, IP,
-     +      IBID, IC, IRET, JLIM1, JLIM2, NBMA, JLINO, NBNO2,NNCP
+     &      IBID, IC, IRET, JLIM1, JLIM2, NBMA, JLINO, NBNO2,NNCP
       REAL*8         INST1, TRAN(3), PREC
       REAL*8 VALR
       COMPLEX*16     CBID
       CHARACTER*8    K8B, CRIT, RESU1, RESU2, RESU3, MA1, MA2,
-     +               GMA1, GMA2
+     &               GMA1, GMA2
       CHARACTER*16   TYPRES, NOMCMD, CHAM(3), OPTION
       CHARACTER*24 VALK(2)
       CHARACTER*19   PRCHNO
       CHARACTER*24   CH1, CH2, CHS1, CHS2, LINOEU,
-     +               LIMA1, LIMA2, LIGREL, CHSI1(3), CHSI2(3)
+     &               LIMA1, LIMA2, LIGREL, CHSI1(3), CHSI2(3)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -74,7 +74,7 @@ C
          CALL GETVR8 ( ' ', 'PRECISION' , 1,1,1, PREC, N1)
          CALL GETVTX ( ' ', 'CRITERE'   , 1,1,1, CRIT, N1)
          CALL RSORAC ( RESU1, 'INST', IBID, INST1, K8B, CBID, PREC,
-     +                 CRIT, IORD1, 1, NBTROU )
+     &                 CRIT, IORD1, 1, NBTROU )
          IF ( NBTROU .EQ. 0 ) THEN
             VALR = INST1
             VALK (1) = RESU1
@@ -171,9 +171,9 @@ C
       DO 10 IP = 1 , NBPERM
 C
          CALL GETVEM ( MA1, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_INIT',
-     +                 IP,1,1, GMA1, N1 )
+     &                 IP,1,1, GMA1, N1 )
          CALL GETVEM ( MA2, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_FINAL',
-     +                 IP,1,1, GMA2, N1 )
+     &                 IP,1,1, GMA2, N1 )
 C
          CALL GETVR8 ( 'PERM_CHAM', 'TRAN'      , IP,1,3, TRAN, N1)
          CALL GETVR8 ( 'PERM_CHAM', 'PRECISION' , IP,1,1, PREC, N1)
@@ -184,7 +184,7 @@ C
          CALL WKVECT ( LINOEU, 'V V I', NBNO2, JLINO )
 C
          CALL CRPCVG ( MA1, MA2, GMA1, GMA2, TRAN, PREC,
-     +                                       LIMA1, LIMA2, ZI(JLINO) )
+     &                                       LIMA1, LIMA2, ZI(JLINO) )
 C
          CALL JELIRA ( LIMA1, 'LONMAX', NBMA, K8B )
          CALL JEVEUO ( LIMA1, 'L', JLIM1 )
@@ -218,16 +218,17 @@ C
          CHS2 = CHSI2(IC)
          IF ( CHAM(IC) .EQ. 'DEPL' ) THEN
             CALL DISMOI ( 'F', 'PROF_CHNO', CH2, 'CHAM_NO',
-     +                                            IBID, PRCHNO, IBID )
-            CALL CNSCNO ( CHS2, PRCHNO,'NON','G',CH2)
+     &                                            IBID, PRCHNO, IBID )
+            CALL CNSCNO ( CHS2, PRCHNO,'NON','G',CH2,'F',IBID)
             CALL DETRSD ( 'CHAM_NO_S', CHS1 )
             CALL DETRSD ( 'CHAM_NO_S', CHS2 )
          ELSE
             CALL DISMOI ( 'F', 'NOM_LIGREL', CH2, 'CHAM_ELEM',
-     +                                             IBID, LIGREL, IBID )
+     &                                             IBID, LIGREL, IBID )
             CALL DISMOI ( 'F', 'NOM_OPTION', CH2, 'CHAM_ELEM',
-     +                                             IBID, OPTION, IBID )
-            CALL CESCEL(CHS2,LIGREL,OPTION,' ','OUI',NNCP,'G',CH2)
+     &                                             IBID, OPTION, IBID )
+            CALL CESCEL(CHS2,LIGREL,OPTION,' ','OUI',NNCP,'G',CH2,'F',
+     &                  IBID)
             CALL DETRSD ( 'CHAM_ELEM_S', CHS1 )
             CALL DETRSD ( 'CHAM_ELEM_S', CHS2 )
          ENDIF

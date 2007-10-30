@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
-C            CONFIGURATION MANAGEMENT OF EDF VERSION        
-C MODIF PREPOST  DATE 29/05/2007   AUTEUR VIVAN L.VIVAN 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -433,7 +433,7 @@ C
               IF (NBNO.NE.0) THEN
                 CALL CNSRED ( CHAMS1, NBNO,ZI(JNOE),0,K8BID,'V',CHAMS1)
               END IF
-              CALL CNSCNO (CHAMS1,PRFCHN,'NON','G',CHAMNO)
+              CALL CNSCNO (CHAMS1,PRFCHN,'NON','G',CHAMNO,'F',IBID)
               CALL RSNOCH ( LERES0, OPTION, IORDR, ' ')
               CALL DETRSD ( 'CHAM_ELEM_S', CHAMS0 )
               CALL DETRSD ( 'CHAM_NO_S'  , CHAMS1 )

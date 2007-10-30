@@ -1,7 +1,7 @@
       SUBROUTINE XBASLO(MODELE,NOMA  ,FISS  ,GRLT  ,GRLN  , NDIM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C
       INTEGER         NDIM
       CHARACTER*8     MODELE,NOMA,FISS
       CHARACTER*19    GRLT,GRLN
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE XFEM (PREPARATION)
@@ -35,8 +35,8 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  FISS   : NOM DE LA FISSURE 
-C IN  NOMA   : NOM DU MAILLAGE  
+C IN  FISS   : NOM DE LA FISSURE
+C IN  NOMA   : NOM DU MAILLAGE
 C IN  MODELE : NOM DE L'OBJET MODELE
 C IN  GRLT   : CHAM_NO_S DES GRADIENTS DE LA LEVEL-SET TANGENTE
 C IN  GRLN   : CHAM_NO_S DES GRADIENTS DE LA LEVEL-SET NORMALE
@@ -66,7 +66,7 @@ C
       CHARACTER*8       LICMP(9)
       CHARACTER*24      COORN
       CHARACTER*24      XFONFI
-      INTEGER           IFON,NPOINT,IFM,NIV,IER
+      INTEGER           IFON,NPOINT,IFM,NIV,IER,IBID
       CHARACTER*8       K8BID
       CHARACTER*19      CNSBAS,BASLOC
       INTEGER           IADRCO,JGSV,JGSL,JGT,JGN
@@ -77,12 +77,12 @@ C
 C
       DATA LICMP / 'X1','X2','X3',
      &             'X4','X5','X6',
-     &             'X7','X8','X9'/        
+     &             'X7','X8','X9'/
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('XFEM',IFM,NIV)  
+      CALL INFDBG('XFEM',IFM,NIV)
 
 C --- CREATION DU CHAM_NO
 C
@@ -99,7 +99,7 @@ C
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IRET)
 C
 C --- ACCES AUX OBJETS: NOM DES POINTS DU FOND DE FISSURE
-C      
+C
       XFONFI = FISS(1:8)//'.FONDFISS'
       CALL JEEXIN(XFONFI,IER)
       IF (IER.EQ.0) THEN
@@ -142,8 +142,8 @@ C       BOUCLE SUR PT DE FONFIS
         DO 110 J=1,NPOINT
           IF (NDIM.EQ.2) THEN
 C           COORD PT N
-            XN = ZR(IFON-1+4*(J-1)+1) 
-            YN = ZR(IFON-1+4*(J-1)+2) 
+            XN = ZR(IFON-1+4*(J-1)+1)
+            YN = ZR(IFON-1+4*(J-1)+2)
             ZN = 0.D0
 C           DISTANCE MN
             D = SQRT((XN-XM)*(XN-XM)+(YN-YM)*(YN-YM))
@@ -201,8 +201,8 @@ C       STOCKAGE DU PROJETÉ ET DES GRADIENTS
 C
 C     ENREGISTREMENT DU .BASLOC DANS LA SD FISS_XFEM
       BASLOC = FISS(1:8)//'.BASLOC'
-      CALL CNSCNO(CNSBAS,' ','NON','G',BASLOC)
-      CALL DETRSD('CHAM_NO_S',CNSBAS) 
+      CALL CNSCNO(CNSBAS,' ','NON','G',BASLOC,'F',IBID)
+      CALL DETRSD('CHAM_NO_S',CNSBAS)
 
       IF (NIV.GT.2) THEN
         CALL IMPRSD('CHAMP',BASLOC,IFM,'FISSURE.BASLOC=')

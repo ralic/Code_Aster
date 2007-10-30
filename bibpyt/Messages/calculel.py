@@ -1,21 +1,21 @@
-#@ MODIF calculel Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel Messages  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -69,7 +69,7 @@ Risques & conseils :
 
 15 : _("""
  sur la maille %(k1)s le calcul est thermo mécanique. Or il manque le parametre matériau
- %(k2)s . On ne peut donc pas calculer de déformation thermique. 
+ %(k2)s . On ne peut donc pas calculer de déformation thermique.
 """),
 
 16 : _("""
@@ -167,36 +167,43 @@ Risques & conseils :
  le CHAM_ELEM : %(k1)s a des sous-points.
 """),
 
-52 : _("""
- la cmp: %(k1)s  n'appartient pas à la grandeur: %(k2)s
+52: _("""
+ La composante: %(k1)s  n'appartient pas à la grandeur: %(k2)s
+ Champ : %(k4)s
 """),
 
-53 : _("""
- option : %(k1)s  inexistante dans les catalogues.
+53: _("""
+ Option : %(k1)s  inexistante dans les catalogues.
+ Champ : %(k4)s
 """),
 
-54 : _("""
+54: _("""
  Le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
+ Champ : %(k4)s
 """),
 
-55 : _("""
+55: _("""
  Erreur utilisateur :
    On cherche à créer un CHAM_ELEM mais sur certains points, on ne trouve pas la composante : %(k1)s
+   Champ : %(k4)s
  Risques & conseils :
    Si la commande que vous exécutez comporte le mot clé PROL_ZERO='OUI', vous devriez peut-etre l'utiliser.
 """),
 
-56 : _("""
- le LIGREL contient des mailles tardives
+56: _("""
+ Le LIGREL contient des mailles tardives
+ Champ : %(k4)s
 """),
 
-57 : _("""
- nombres de points différents pour la maille:  %(k1)s
+57: _("""
+ Nombres de points différents pour la maille:  %(k1)s
  CHAM_ELEM de :  %(k2)s
+ Champ : %(k4)s
 """),
 
-58 : _("""
- il manque la composante : %(k1)s  sur la maille : %(k2)s
+58: _("""
+ Il manque la composante : %(k1)s  sur la maille : %(k2)s
+ Champ : %(k4)s
 """),
 
 67 : _("""

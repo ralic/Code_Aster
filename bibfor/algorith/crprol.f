@@ -1,8 +1,8 @@
-      SUBROUTINE CRPROL ( )       
+      SUBROUTINE CRPROL ( )
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -265,7 +265,7 @@ C
             VALI = IORD
             CALL U2MESG('F', 'ALGORITH12_73',1,VALK,1,VALI,0,0.D0)
          ENDIF
-         CALL CNSCNO ( CNSINR,' ','NON', 'G', CNOINR )
+         CALL CNSCNO ( CNSINR,' ','NON', 'G', CNOINR,'F',IBID)
          CALL RSNOCH ( RESU, 'TEMP', IORD, ' ')
          CALL DETRSD ( 'CHAM_NO_S', CNSINR )
 C

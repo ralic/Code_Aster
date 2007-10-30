@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE TP ANALYSE MODALE TPAM3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,8 +108,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODES,
 # EFFECTIVES UNITAIRES.
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,
-                NORME='TRAN_ROTA',
-                MASS_INER=TABL_MAS,);
+                NORME='TRAN_ROTA',);
 
 # ON TRIE LES MODES.
 MODEST=EXTR_MODE(FILTRE_MODE=_F(MODE=MODES,
@@ -137,8 +136,7 @@ MODES2=MACRO_MODE_MECA(MATR_A=K_ASSE,
                        CALC_FREQ=_F(FREQ_MIN=0.0,
                                     FREQ_MAX=4.0,
                                     NB_BLOC_FREQ=2,),
-                       NORM_MODE=_F(MASS_INER=TABL_MAS,
-                                    NORME='TRAN_ROTA',),
+                       NORM_MODE=_F( NORME='TRAN_ROTA',),
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
 
@@ -153,8 +151,7 @@ MODES4=MACRO_MODE_MECA(MATR_A=K_ASSE,
                        CALC_FREQ=_F(FREQ_MIN=0.0,
                                     FREQ_MAX=4.0,
                                     NB_BLOC_FREQ=4,),
-                       NORM_MODE=_F(MASS_INER=TABL_MAS,
-                                    NORME='TRAN_ROTA',),
+                       NORM_MODE=_F( NORME='TRAN_ROTA',),
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
 
@@ -171,8 +168,7 @@ MODEL4=MACRO_MODE_MECA(MATR_A=K_ASSE,
                                     FREQ_MAX=4.0,
                                     DIM_SOUS_ESPACE = 180 ,  
                                     NB_BLOC_FREQ=4,),
-                       NORM_MODE=_F(MASS_INER=TABL_MAS,
-                                    NORME='TRAN_ROTA',),
+                       NORM_MODE=_F( NORME='TRAN_ROTA',),
                        FILTRE_MODE=_F(CRIT_EXTR='MASS_EFFE_UN',),
                        IMPRESSION=_F(CUMUL='OUI',),);
 

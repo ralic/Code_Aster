@@ -1,0 +1,131 @@
+      SUBROUTINE VPMAIN(MODELE,MATE,CARA,XMASTR,NBPARA)
+      IMPLICIT   NONE
+      CHARACTER*(*) MODELE,MATE,CARA
+      REAL*8 XMASTR
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRS_512
+C ======================================================================
+C     OPERATEUR   NORM_MODE
+C     CALCUL DE LA MASSE DU MODELE
+C     ------------------------------------------------------------------
+
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNOM,JEXNUM
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER MXVALE,IBID,IRET,NB,I,IORIG,ICAGE, NBPARA
+      PARAMETER (MXVALE=16)
+      REAL*8 ZERO,ORIG(3),R8B, RBI3(3), ZMAS(MXVALE)
+      CHARACTER*8 K8B,NOMA,LPAIN(15),LPAOUT(5)
+      CHARACTER*19 CHELEM
+      CHARACTER*24 LCHIN(15),LCHOUT(1),MLGGMA,MLGNMA, MATECO
+      CHARACTER*24 CHGEOM,CHGEO2,CHCARA(15),LIGRMO
+      LOGICAL LRET
+
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
+
+C --- RECUPERATION DU NIVEAU D'IMPRESSION
+
+      ZERO = 0.0D0
+      R8B = 0.0D0
+
+      CALL MEGEOM(MODELE,' ',LRET,CHGEOM)
+      IF (.NOT.LRET) CALL U2MESS('F','CALCULEL2_81')
+      CALL ASSERT(CHGEOM.NE.' ')
+
+      CALL MECARA(CARA,LRET,CHCARA)
+
+      NOMA = CHGEOM(1:8)
+      MLGNMA = NOMA//'.NOMMAI'
+      MLGGMA = NOMA//'.GROUPEMA'
+
+      MLGNMA = NOMA//'.NOMMAI'
+      MLGGMA = NOMA//'.GROUPEMA'
+
+      LIGRMO = MODELE(1:8)//'.MODELE'
+
+      IF ( MATE .NE. '        ') THEN
+            CALL RCMFMC (MATE , MATECO )
+      ELSE
+            MATECO = ' '
+      ENDIF
+
+C     --- CALCUL DE L'OPTION ---
+      CHELEM = '&&PEMAIN.MASS_INER'
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) = CHGEOM
+      LPAIN(2) = 'PMATERC'
+      LCHIN(2) = MATECO
+      LPAIN(3) = 'PCAORIE'
+      LCHIN(3) = CHCARA(1)
+      LPAIN(4) = 'PCADISM'
+      LCHIN(4) = CHCARA(3)
+      LPAIN(5) = 'PCAGNPO'
+      LCHIN(5) = CHCARA(6)
+      LPAIN(6) = 'PCACOQU'
+      LCHIN(6) = CHCARA(7)
+      LPAIN(7) = 'PCASECT'
+      LCHIN(7) = CHCARA(8)
+      LPAIN(8) = 'PCAARPO'
+      LCHIN(8) = CHCARA(9)
+      LPAIN(9) = 'PCAGNBA'
+      LCHIN(9) = CHCARA(11)
+      LPAIN(10) = 'PCAGEPO'
+      LCHIN(10) = CHCARA(5)
+      LPAIN(11)  = 'PNBSP_I'
+      LCHIN(11)  = CHCARA(1) (1:8)//'.CANBSP'
+      NB = 11
+      LPAOUT(1) = 'PMASSINE'
+      LCHOUT(1) = CHELEM
+
+      CALL CALCUL('S','MASS_INER',LIGRMO,NB,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
+     &            'V')
+
+
+      DO 33 I=1,MXVALE
+          ZMAS(I)=0.D0
+ 33   CONTINUE
+
+      IORIG=0
+      ICAGE=0
+
+      CALL PEMICA(CHELEM,MXVALE,ZMAS,0,IBID,RBI3,IORIG,ICAGE)
+      XMASTR=ZMAS(1)
+
+      CALL JEDETC('V','&&PEMAIN',1)
+
+   60 CONTINUE
+      CALL JEDEMA()
+      END

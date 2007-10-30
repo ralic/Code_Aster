@@ -1,6 +1,6 @@
-      SUBROUTINE PJEFCH (CORRES,CH1,CH2,PRFCHN,PROL0,LIGREL,IRET)
+      SUBROUTINE PJEFCH(CORRES,CH1,CH2,PRFCHN,PROL0,LIGREL,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,10 @@ C-------------------------------------------------------------------
 C     BUT : PROJETER UN CHAMP CH1 SUIVANT CORRES
 C           POUR CREER CH2
 C-------------------------------------------------------------------
+C  IRET (OUT)  : = 0    : OK
+C                = 1    : PB : ON N' A PAS PU PROJETER LE CHAMP
+C                = 10   : ON NE SAIT PAS ENCORE FAIRE
+C-------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -39,7 +43,7 @@ C-------------------------------------------------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C     ------------------------------------------------------------------
-      CHARACTER*19  CH1,CH2,CH0S,CH1S,CH2S,PRFCHN,LIGREL
+      CHARACTER*19 CH1,CH2,CH0S,CH1S,CH2S,PRFCHN,LIGREL
       CHARACTER*16 OPTION,CORRES
       CHARACTER*8 NOMPAR
       CHARACTER*4 TYCH,TYCHV
@@ -47,69 +51,79 @@ C     ------------------------------------------------------------------
       INTEGER IRET,IBID,JNOLI,JCELK,NNCP
 
 
-      CH0S='&&PJEFCH'//'.CH0S'
-      CH1S='&&PJEFCH'//'.CH1S'
-      CH2S='&&PJEFCH'//'.CH2S'
+      CH0S = '&&PJEFCH'//'.CH0S'
+      CH1S = '&&PJEFCH'//'.CH1S'
+      CH2S = '&&PJEFCH'//'.CH2S'
+      IRET = 0
 
       CALL DISMOI('F','TYPE_CHAMP',CH1,'CHAMP',IBID,TYCH,IBID)
 
 C     L'UTILISATEUR VEUT-IL DES CHAM_NO ?  TYCHV
-      IF (CORRES .EQ. ' ') THEN
-        TYCHV='NOEU'
+      IF (CORRES.EQ.' ') THEN
+        TYCHV = 'NOEU'
+
       ELSE
         CALL GETVTX(' ','TYPE_CHAM',1,1,1,TYCHV,IBID)
         IF (IBID.EQ.0) TYCHV = ' '
       ENDIF
 
-      CALL ASSERT(TYCHV.EQ.' '.OR.TYCHV.EQ.'NOEU')
+      CALL ASSERT(TYCHV.EQ.' ' .OR. TYCHV.EQ.'NOEU')
 
 C     1 : TRANSFORMATION DE CH1 EN CHAMP SIMPLE : CH1S
 C     -------------------------------------------------
-        IF (TYCH.EQ.'NOEU') THEN
-           CALL CNOCNS(CH1,'V',CH1S)
-        ELSE IF ((TYCH.EQ.'ELEM').OR.(TYCH.EQ.'ELNO')) THEN
-           IF (TYCHV.EQ.' ') THEN
-              CALL CELCES(CH1,'V',CH1S)
-           ELSE IF (TYCHV.EQ.'NOEU') THEN
-              TYCH='NOEU'
-              CALL CELCES(CH1,'V',CH0S)
-              CALL CESCNS(CH0S,' ','V',CH1S)
-              CALL DETRSD('CHAM_ELEM_S',CH0S)
-           END IF
-        ELSE
+      IF (TYCH.EQ.'NOEU') THEN
+        CALL CNOCNS(CH1,'V',CH1S)
+
+      ELSEIF ((TYCH.EQ.'ELEM') .OR. (TYCH.EQ.'ELNO')) THEN
+        IF (TYCHV.EQ.' ') THEN
+          CALL CELCES(CH1,'V',CH1S)
+
+        ELSEIF (TYCHV.EQ.'NOEU') THEN
+          TYCH = 'NOEU'
+          CALL CELCES(CH1,'V',CH0S)
+          CALL CESCNS(CH0S,' ','V',CH1S)
+          CALL DETRSD('CHAM_ELEM_S',CH0S)
+        ENDIF
+
+      ELSE
 C          -- ON NE SAIT PAS ENCORE TRAITER LES CART ET ELGA:
-           IRET=1
-           GO TO 9999
-        END IF
+        IRET = 10
+        GOTO 10
+
+      ENDIF
 
 
 C     2 : PROJECTION DU CHAMP SIMPLE : CH1S -> CH2S
 C     -------------------------------------------------
-        IF (CORRES .EQ. ' ') THEN
+      IF (CORRES.EQ.' ') THEN
 C CAS MODIFICATION STRUCTURALE : PROJECTION SUR MAILLAGE MESURE
-           CALL CNSPRM(CH1S,'V',CH2S,IRET)
-        ELSE
-          IF (TYCH.EQ.'NOEU') THEN
-           CALL CNSPRJ(CH1S,CORRES,'V',CH2S,IRET)
-          ELSE IF ((TYCH.EQ.'ELEM').OR.(TYCH.EQ.'ELNO')) THEN
-           CALL CESPRJ(CH1S,CORRES,'V',CH2S,IRET)
-          END IF
-        END IF
+        CALL CNSPRM(CH1S,'V',CH2S,IRET)
+
+      ELSE
+        IF (TYCH.EQ.'NOEU') THEN
+          CALL CNSPRJ(CH1S,CORRES,'V',CH2S,IRET)
+
+        ELSEIF ((TYCH.EQ.'ELEM') .OR. (TYCH.EQ.'ELNO')) THEN
+          CALL CESPRJ(CH1S,CORRES,'V',CH2S,IRET)
+        ENDIF
+      ENDIF
+      IF (IRET.GT.0) GOTO 10
 
 
 C     3 : TRANSFORMATION DE CH2S EN CHAMP : CH2
-        IF (TYCH.EQ.'NOEU') THEN
-           CALL CNSCNO(CH2S,PRFCHN,PROL0,'G',CH2)
-           CALL DETRSD('CHAM_NO_S',CH1S)
-           CALL DETRSD('CHAM_NO_S',CH2S)
-        ELSE IF ((TYCH.EQ.'ELEM').OR.(TYCH.EQ.'ELNO')) THEN
-           CALL JEVEUO(CH1//'.CELK','L',JCELK)
-           OPTION=ZK24(JCELK-1+2)
-           CALL CESCEL(CH2S,LIGREL,OPTION,' ',PROL0,NNCP,'G',CH2)
-           CALL DETRSD('CHAM_ELEM_S',CH1S)
-           CALL DETRSD('CHAM_ELEM_S',CH2S)
-        END IF
+      IF (TYCH.EQ.'NOEU') THEN
+        CALL CNSCNO(CH2S,PRFCHN,PROL0,'G',CH2,'A',IRET)
+        CALL DETRSD('CHAM_NO_S',CH1S)
+        CALL DETRSD('CHAM_NO_S',CH2S)
+
+      ELSEIF ((TYCH.EQ.'ELEM') .OR. (TYCH.EQ.'ELNO')) THEN
+        CALL JEVEUO(CH1//'.CELK','L',JCELK)
+        OPTION = ZK24(JCELK-1+2)
+        CALL CESCEL(CH2S,LIGREL,OPTION,' ',PROL0,NNCP,'G',CH2,'A',IRET)
+        CALL DETRSD('CHAM_ELEM_S',CH1S)
+        CALL DETRSD('CHAM_ELEM_S',CH2S)
+      ENDIF
 
 
-9999   CONTINUE
-       END
+   10 CONTINUE
+      END

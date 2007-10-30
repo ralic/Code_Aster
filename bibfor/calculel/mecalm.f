@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1374,8 +1374,8 @@ C 4 - STOCKAGE
 
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
 
-              CALL CESCEL(CHSINN,LIGRMO(1:19),'SING_ELNO_ELEM',
-     &                   'PSINGNO','NON',NNCP,'G',CHELEM(1:19))
+              CALL CESCEL(CHSINN,LIGRMO(1:19),'SING_ELNO_ELEM','PSINGNO'
+     &                    ,'NON',NNCP,'G',CHELEM(1:19),'F',IBID)
 
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
 

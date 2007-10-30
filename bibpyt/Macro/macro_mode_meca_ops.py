@@ -1,4 +1,4 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_mode_meca_ops Macro  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,7 +110,6 @@ def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
                                   **motscit)
 
      __nomre0=NORM_MODE(reuse     =__nomre0,
-                        MASS_INER =normode['MASS_INER'],
                         MODE      =__nomre0,
                         NORME     =normode['NORME'],
                         INFO      =normode['INFO'],)

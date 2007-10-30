@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,7 +120,7 @@ C ======================================================================
          NU     = ELAS(2)
          ALPHA0 = ELAS(3)
       ENDIF
-      IF ( MECA.EQ.'DRUCKER_PRAGER' ) THEN
+      IF (( MECA.EQ.'DRUCKER_PRAGER' ).OR.(MECA.EQ.'LETK')) THEN
          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      &                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
@@ -253,6 +253,39 @@ C ======================================================================
  206           CONTINUE
             ENDIF
          ENDIF
+      ENDIF
+C ======================================================================
+C --- LOI L&K -----------------------------------------------------
+C ======================================================================
+      IF (MECA.EQ.'LETK') THEN
+        TINI = T - DT
+        CALL LKCOMP(  NDIM, TYPMOD,  IMATE, COMPOR, CRIT,
+     &                      INSTAM, INSTAP,
+     &                      TINI,T, TREF,
+     &                      DEPS,
+     &                      CONGEM(ADCOME), VINTM, OPTION,
+     &                      CONGEP(ADCOME), VINTP,
+     &                      DSDEME,RETCOM)
+        IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
+     &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
+          DO 302 I = 1 , 2*NDIM
+           DO 303 J = 1 , 2*NDIM
+            DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)
+  303     CONTINUE
+  302     CONTINUE
+C ======================================================================
+C --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
+C --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
+C ======================================================================
+         IF (YATE.EQ.1) THEN
+            DO 306 I=1,3
+                  DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
+     &            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+ 306        CONTINUE
+         ENDIF
+        ENDIF
       ENDIF
 C ======================================================================
 C --- LOI CAM_CLAY -----------------------------------------------------

@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -251,8 +251,8 @@ C           --- MASSE ---
             ZR(LCASTR) = ZR(LCASTR) / DEUX
 C
 C           --- CDG ---
-            ZR(LCASTR+1) = ( ZR(LCOOR  ) + ZR(LCOOR+3) ) / DEUX
-            ZR(LCASTR+2) = ( ZR(LCOOR+1) + ZR(LCOOR+4) ) / DEUX
+            ZR(LCASTR+1) = ( ZR(LCOOR  ) + ZR(LCOOR+2) ) / DEUX
+            ZR(LCASTR+2) = ( ZR(LCOOR+1) + ZR(LCOOR+3) ) / DEUX
 C
          ELSEIF ( NOMTE .EQ. 'MECA_2D_DIS_TR_L' ) THEN
             NNO = 2
@@ -275,8 +275,8 @@ C           --- MASSE ---
             ZR(LCASTR) = ZR(LCASTR) / DEUX
 C
 C           --- CDG ---
-            ZR(LCASTR+1) = ( ZR(LCOOR  ) + ZR(LCOOR+3) ) / DEUX
-            ZR(LCASTR+2) = ( ZR(LCOOR+1) + ZR(LCOOR+4) ) / DEUX
+            ZR(LCASTR+1) = ( ZR(LCOOR  ) + ZR(LCOOR+2) ) / DEUX
+            ZR(LCASTR+2) = ( ZR(LCOOR+1) + ZR(LCOOR+3) ) / DEUX
 C
          ENDIF
 C

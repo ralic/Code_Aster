@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,15 +151,10 @@ C        --- COMMANDE ---
             IGEN = LXLGUT(CGEN(1:16))
          GOTO 9000
 C
-C        --- CODE ---
+C        --- CODE --- (SUPPRIME)
    70    CONTINUE
-         IGEN = 8
-         CGEN = '        '
-         CALL JEEXIN('&&SYS   .CODE',IRET)
-         IF ( IRET .NE. 0 ) THEN
-            CALL JEVEUO('&&SYS   .CODE','L',LCODE)
-            CGEN = ZK8(LCODE)
-         ENDIF
+         CGEN = ' '
+         IGEN = 0
          GOTO 9000
 C
 C        --- TITRE_MAILLAGE ---

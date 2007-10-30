@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,7 +125,6 @@ MODES=MODE_ITER_SIMULT(
 MODES=NORM_MODE(reuse=MODES,
                           MODE=MODES,
                          NORME='TRAN',
-                     MASS_INER=MAS
                   )
 
 #

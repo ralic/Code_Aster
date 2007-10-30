@@ -4,7 +4,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,10 +73,6 @@ C        (DEBUT/DEBUG/SDVERI='OUI')
 C
 C     --- INITIALISATION DE LA TABLE DES CONCEPTS ---
       CALL GCUINI( MXCMD , 'G' , IER )
-C    -- STATS SUR LA COMMANDE DE DEMARRAGE --
-C
-C     --- LECTURE DU MOT CLE FACTEUR CODE ---
-      IF ( IER .EQ. 0 .AND. FICHDF .EQ. '  ') CALL IBCODE( IER )
 C
 C     --- LECTURE DU MOT CLE FACTEUR  CATALOGUE ---
       IF ( IER .EQ. 0 .AND. FICHDF .EQ. '  ') CALL IBCATA( IER )

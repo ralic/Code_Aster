@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 17/07/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C     COMMANDE CREA_CHAMP
 C     -----------------------------------------------------------------
-      INTEGER N1,IB,IFM,NIV,IRET,I11,I12,TEST
+      INTEGER N1,IB,IFM,NIV,IRET,I11,I12,TEST,IBID
       CHARACTER*3 PROL0
       CHARACTER*4 TYCHR
       CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,CHIN,NOMGD2,NOMPAR,MA2,NOPAR2,TA
@@ -75,15 +75,15 @@ C     ------------------------------------------------------------------
       IF (N1.EQ.0) MA = ' '
       IF (MO.NE.' ') THEN
         CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IB,MA2,IB)
-        IF ((MA.NE.' ') .AND. (MA.NE.MA2)) CALL U2MESS('F','UTILITAI3_21
-     &')
+        IF ((MA.NE.' ') .AND. (MA.NE.MA2)) CALL U2MESS('F',
+     &      'UTILITAI3_21')
         MA = MA2
-      END IF
+      ENDIF
 
       CALL GETRES(CHOU,TYPCO,KBID)
       CALL EXISD('CHAMP',CHOU,TEST)
-      IF ((TEST.EQ.1).AND.(OPERA.NE.'ASSE')) THEN
-         CALL U2MESS('F','UTILITAI3_43')
+      IF ((TEST.EQ.1) .AND. (OPERA.NE.'ASSE')) THEN
+        CALL U2MESS('F','UTILITAI3_43')
       ENDIF
       CALL GETVTX(' ','TYPE_CHAM',0,1,1,TYCHR1,IB)
       TYCHR = TYCHR1(1:4)
@@ -100,7 +100,7 @@ C     -------------------------------------------------------------
 
       IF (TYCHR(1:2).EQ.'EL') THEN
         IF ((OPERA.EQ.'AFFE') .OR. (OPERA.EQ.'ASSE') .OR.
-     &      (OPERA.EQ.'DISC'))THEN
+     &      (OPERA.EQ.'DISC')) THEN
           IF (MO.EQ.' ') CALL U2MESS('F','UTILITAI3_22')
           LIGREL = MO//'.MODELE'
 
@@ -108,18 +108,19 @@ C         -- CALCUL D'UN CHAM_ELEM "MODELE" : CELMOD
 C         ---------------------------------------------------
           IF (OPTION.EQ.' ') THEN
             OPTIO2 = 'TOU_INI_'//TYCHR
-            IF(OPERA.EQ.'ASSE')THEN
+            IF (OPERA.EQ.'ASSE') THEN
               CALL GETVID('ASSE','CHAM_GD',1,1,1,CHIN,IB)
               CALL JEEXIN(CHIN//'           .CELK',IRET)
-              IF(IRET.NE.0)THEN
-                CALL DISMOI('F','NOM_OPTION',CHIN,'CHAM_ELEM',
-     &                       IB,OPTIO2,IB)
+              IF (IRET.NE.0) THEN
+                CALL DISMOI('F','NOM_OPTION',CHIN,'CHAM_ELEM',IB,OPTIO2,
+     &                      IB)
               ENDIF
             ENDIF
+
           ELSE
             OPTIO2 = OPTION
-          END IF
-          NOMPAR=NOPAR2(OPTIO2,NOMGD,'OUT')
+          ENDIF
+          NOMPAR = NOPAR2(OPTIO2,NOMGD,'OUT')
           CELMOD = '&&OP0195.CELMOD'
           CALL ALCHML(LIGREL,OPTIO2,NOMPAR,'V',CELMOD,IB,' ')
           IF (IB.NE.0) CALL U2MESK('F','UTILITAI3_23',1,OPTIO2)
@@ -127,12 +128,12 @@ C         ---------------------------------------------------
 C         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :
           CALL JEVEUO(CELMOD//'.CELK','L',IB)
           IF (ZK24(IB-1+3).NE.TYCHR) THEN
-             VALK(1) = OPTIO2
-             VALK(2) = TYCHR
-             CALL U2MESK('F','UTILITAI3_24', 2 ,VALK)
+            VALK(1) = OPTIO2
+            VALK(2) = TYCHR
+            CALL U2MESK('F','UTILITAI3_24',2,VALK)
           ENDIF
-        END IF
-      END IF
+        ENDIF
+      ENDIF
 
 
 
@@ -144,73 +145,77 @@ C     -------------------------------------------------------------
 C     -----------------------------------------
         IF (TYCHR.EQ.'NOEU') THEN
           IF (NOMGD.NE.'GEOM_R') CALL U2MESK('F','UTILITAI3_25',1,OPERA)
-          CALL CNONOR ( MO, NOMGD, 'G', CHOU )
+          CALL CNONOR(MO,NOMGD,'G',CHOU)
+
         ELSE
-           VALK(1) = OPERA
-           VALK(2) = TYCHR
-           CALL U2MESK('F','UTILITAI3_26', 2 ,VALK)
-        END IF
+          VALK(1) = OPERA
+          VALK(2) = TYCHR
+          CALL U2MESK('F','UTILITAI3_26',2,VALK)
+        ENDIF
 
 
 
-      ELSE IF (OPERA.EQ.'AFFE') THEN
+      ELSEIF (OPERA.EQ.'AFFE') THEN
 C     -----------------------------------------
         IF (TYCHR.EQ.'NOEU') THEN
           CALL CNOAFF(MA,NOMGD,'G',CHOU)
-        ELSE IF (TYCHR.EQ.'CART') THEN
+
+        ELSEIF (TYCHR.EQ.'CART') THEN
           CALL CARAFF(MA,NOMGD,'G',CHOU)
-        ELSE IF (TYCHR(1:2).EQ.'EL') THEN
+
+        ELSEIF (TYCHR(1:2).EQ.'EL') THEN
           CARTEM = '&&OP0195.CARTEM'
           CALL CARAFF(MA,NOMGD,'V',CARTEM)
           CALL CHPCHD(CARTEM,TYCHR,CELMOD,PROL0,'G',CHOU)
           CALL DETRSD('CHAMP_GD',CARTEM)
-        END IF
+        ENDIF
 
 
-      ELSE IF (OPERA.EQ.'ASSE') THEN
+      ELSEIF (OPERA.EQ.'ASSE') THEN
 C     -----------------------------------------
         CALL CHPASS(TYCHR,MA,CELMOD,NOMGD,PROL0,CHOU)
 
 
-      ELSE IF (OPERA.EQ.'EVAL') THEN
+      ELSEIF (OPERA.EQ.'EVAL') THEN
 C     -----------------------------------------
         CALL CHPEVA(CHOU)
 
 
-      ELSE IF (OPERA(1:3).EQ.'R2C') THEN
+      ELSEIF (OPERA(1:3).EQ.'R2C') THEN
 C     -----------------------------------------
         CALL CHCORE(CHOU)
 
 
-      ELSE IF (OPERA(1:3).EQ.'C2R') THEN
+      ELSEIF (OPERA(1:3).EQ.'C2R') THEN
 C     -----------------------------------------
         CALL CHRECO(CHOU)
 
 
-      ELSE IF (OPERA.EQ.'DISC') THEN
+      ELSEIF (OPERA.EQ.'DISC') THEN
 C     -----------------------------------------
         CALL GETVID(' ','CHAM_GD',0,1,1,CHIN,IB)
         CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD2,IB)
         IF (NOMGD.NE.NOMGD2) THEN
 C          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
-           IF (.NOT.(NOMGD.EQ.'VARI_R' .AND. NOMGD2.EQ.'VAR2_R')) THEN
-             VALK(1) = CHIN
-             VALK(2) = TYCHR1
-             CALL U2MESK('F','UTILITAI3_27', 2 ,VALK)
-           ENDIF
+          IF (.NOT. (NOMGD.EQ.'VARI_R'.AND.NOMGD2.EQ.'VAR2_R')) THEN
+            VALK(1) = CHIN
+            VALK(2) = TYCHR1
+            CALL U2MESK('F','UTILITAI3_27',2,VALK)
+          ENDIF
         ENDIF
         CALL CHPCHD(CHIN,TYCHR,CELMOD,PROL0,'G',CHOU)
 
 
-      ELSE IF (OPERA.EQ.'EXTR') THEN
+      ELSEIF (OPERA.EQ.'EXTR') THEN
 C     -----------------------------------------
-         CALL GETVID(' ','TABLE',0,1,1,TA,N1)
-         IF (N1.EQ.0)THEN
-            CALL CHPREC(CHOU)
-         ELSE
-            CALL U195TB(CHOU)
-         ENDIF
-      END IF
+        CALL GETVID(' ','TABLE',0,1,1,TA,N1)
+        IF (N1.EQ.0) THEN
+          CALL CHPREC(CHOU)
+
+        ELSE
+          CALL U195TB(CHOU)
+        ENDIF
+      ENDIF
 
 
 
@@ -228,14 +233,15 @@ C --------------------------------------------------------------
 
           CALL DISMOI('F','PROF_CHNO',CHOU,'CHAM_NO',IB,PRCHN2,IB)
           IF (PRCHN1.NE.PRCHN2) THEN
-             CNS1 = '&&OP0195.CNS1'
-             CALL CNOCNS(CHOU,'V',CNS1)
-          IF (PRCHN2(1:8).EQ.CHOU(1:8)) CALL DETRSD('PROF_CHNO',PRCHN2)
-             CALL CNSCNO(CNS1,PRCHN1,'NON','G',CHOU)
-             CALL DETRSD('CHAM_NO_S',CNS1)
-          END IF
-        END IF
-      END IF
+            CNS1 = '&&OP0195.CNS1'
+            CALL CNOCNS(CHOU,'V',CNS1)
+            IF (PRCHN2(1:8).EQ.CHOU(1:8)) CALL DETRSD('PROF_CHNO',
+     &          PRCHN2)
+            CALL CNSCNO(CNS1,PRCHN1,'NON','G',CHOU,'F',IBID)
+            CALL DETRSD('CHAM_NO_S',CNS1)
+          ENDIF
+        ENDIF
+      ENDIF
 
 
 

@@ -1,7 +1,7 @@
       SUBROUTINE PMFD01(NOMA,CARELE,VNBFIB,VPOINT,VCARFI,VNBFIG,
      &                  CESDEC,NGMXEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,8 @@ C     1. IL N'EXISTE PAS D'ELEMENTS PMF :
 C     -------------------------------------------
       IF (.NOT.EXIPMF) THEN
         CEL = CARELE//'.CANBSP'
-        CALL CESCEL(CESDEC,LIGRMO,'TOU_INI_ELEM',' ','NON',NNCP,'G',CEL)
+        CALL CESCEL(CESDEC,LIGRMO,'TOU_INI_ELEM',' ','NON',NNCP,'G',CEL,
+     &              'F',IBID)
         GO TO 50
       END IF
 
@@ -137,7 +138,8 @@ C     --------------------------------------
       CALL DETRSD('CHAM_ELEM_S',CES1)
 
       CEL = CARELE//'.CANBSP'
-      CALL CESCEL(CES3,LIGRMO,'TOU_INI_ELEM',' ','NON',NNCP,'G',CEL)
+      CALL CESCEL(CES3,LIGRMO,'TOU_INI_ELEM',' ','NON',NNCP,'G',CEL,'F',
+     &            IBID)
       CALL DETRSD('CHAM_ELEM_S',CES3)
 
 
@@ -181,7 +183,8 @@ C              CALL ASSERT(IAD.LT.0)
    40 CONTINUE
 
       CEL = CARELE//'.CAFIBR'
-      CALL CESCEL(CES1,LIGRMO,'TOU_INI_ELEM',' ','NON',NNCP,'G',CEL)
+      CALL CESCEL(CES1,LIGRMO,'TOU_INI_ELEM',' ','NON',NNCP,'G',CEL,'F',
+     &            IBID)
       CALL DETRSD('CHAM_ELEM_S',CES1)
 
 

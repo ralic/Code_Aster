@@ -7,7 +7,7 @@
      &                  MEMASS, MASSE,  AMORT,  LICCVG, SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -354,15 +354,15 @@ C -- CALCUL DE LA MATRICE MATASS
 C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
           CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8B,IRET)
           IF (NBSS.GT.0) THEN
-            CALL JEEXIN('&&SSRIGI.REFE_RESU',IRES)
+            CALL JEEXIN('&SSR.ELE.REFE_RESU',IRES)
             IF (IRES.EQ.0) THEN
-              CALL MEMARE('V','&&SSRIGI',MODELE(1:8),MATE,CARELE,
+              CALL MEMARE('V','&SSR.ELE',MODELE(1:8),MATE,CARELE,
      &                    'RIGI_MECA')
-              CALL JEVEUO('&&SSRIGI.REFE_RESU','E',IAREFE)
+              CALL JEVEUO('&SSR.ELE.REFE_RESU','E',IAREFE)
               ZK24(IAREFE-1+3) (1:3) = 'OUI'
-              CALL ASMATR(1,'&&SSRIGI',' ',NUMEDD,SOLVEU,LISCHA,'ZERO',
-     &                    'V',1,'&&ASRSST')
-              CALL MTDSCR('&&ASRSST')
+              CALL ASMATR(1,'&SSR.ELE',' ',NUMEDD,SOLVEU,LISCHA,'ZERO',
+     &                    'V',1,'&SSR.ASS')
+              CALL MTDSCR('&SSR.ASS')
             END IF
           END IF
 C   FIN MACRO-ELEMENT STATIQUE
@@ -376,15 +376,15 @@ C === CAS DE LA STATIQUE ===
 C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
           CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8B,IRET)
           IF (NBSS.GT.0) THEN
-            CALL JEEXIN('&&SSRIGI.REFE_RESU',IRES)
+            CALL JEEXIN('&SSR.ELE.REFE_RESU',IRES)
             IF (IRES.EQ.0) THEN
-              CALL MEMARE('V','&&SSRIGI',MODELE(1:8),MATE,CARELE,
+              CALL MEMARE('V','&SSR.ELE',MODELE(1:8),MATE,CARELE,
      &                    'RIGI_MECA')
-              CALL JEVEUO('&&SSRIGI.REFE_RESU','E',IAREFE)
+              CALL JEVEUO('&SSR.ELE.REFE_RESU','E',IAREFE)
               ZK24(IAREFE-1+3) (1:3) = 'OUI'
-              CALL ASMATR(1,'&&SSRIGI',' ',NUMEDD,SOLVEU,LISCHA,'ZERO',
-     &                    'V',1,'&&ASRSST')
-              CALL MTDSCR('&&ASRSST')
+              CALL ASMATR(1,'&SSR.ELE',' ',NUMEDD,SOLVEU,LISCHA,'ZERO',
+     &                    'V',1,'&SSR.ASS')
+              CALL MTDSCR('&SSR.ASS')
             END IF
           ENDIF
 C   FIN MACRO-ELEMENT STATIQUE

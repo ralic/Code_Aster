@@ -7,7 +7,7 @@
       CHARACTER*19   CNSLN,CNSLT,CNSGLS,NOESOM,NORESI,ISOZRO,CNXINV
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,7 +186,7 @@ C--------------------------------------
          ZR(JPTF-1+I) = SIGNLS
  10   CONTINUE
       CNOPTF = '&&XPRREI.CNOPTF'
-      CALL CNSCNO(CNSPTF,' ','NON','V',CNOPTF)
+      CALL CNSCNO(CNSPTF,' ','NON','V',CNOPTF,'F',IBID)
       CELPTF =  '&&XPRREI.CELPTF'
       LPAIN(1)='PNEUTR'
       LCHIN(1)=CNOPTF
@@ -221,8 +221,10 @@ C-----------------------------------------------------------------------
       CALL JEVEUO(CNSGDF//'.CNSL','E',JGDFL)
       CNOGDF = '&&XPRREI.CNOGDF'
       CELGDF =  '&&XPRREI.CELGDF'
-      IF (LEVSET.EQ.'LN')  CALL CNSCNO(CNSLN,' ','NON','V',CNOLS)
-      IF (LEVSET.EQ.'LT')  CALL CNSCNO(CNSLT,' ','NON','V',CNOLS)
+      IF (LEVSET.EQ.'LN')  CALL CNSCNO(CNSLN,' ','NON','V',CNOLS,'F',
+     &                                 IBID)
+      IF (LEVSET.EQ.'LT')  CALL CNSCNO(CNSLT,' ','NON','V',CNOLS,'F',
+     &                                 IBID)
 
 C-----BOUCLE PRINCIPALE-------------------------------------------------
 
@@ -244,7 +246,7 @@ C--------------------------------------
             ZL(JGDFL-1+I) = .TRUE.
             ZR(JGDF-1+I) = SIGNLS
  90      CONTINUE
-         CALL CNSCNO(CNSGDF,' ','NON','V',CNOGDF)
+         CALL CNSCNO(CNSGDF,' ','NON','V',CNOGDF,'F',IBID)
          LPAIN(1)='PNEUTR'
          LCHIN(1)=CNOGDF
          LPAOUT(1)='PMOYEL'
@@ -259,7 +261,7 @@ C-----------------------------------------------------------------------
 C---------------------------------------------------------
 C     CALCUL DU CHAM_ELEM DELTA_PHI ET DU CHAM_ELNO ALPHA
 C---------------------------------------------------------
-            CALL CNSCNO(CNSGLS,' ','NON','V',CNOGLS)
+            CALL CNSCNO(CNSGLS,' ','NON','V',CNOGLS,'F',IBID)
             LPAIN(1)='PLSNO'
             LCHIN(1)=CNOLS
             LPAIN(2)='PGRLS'
@@ -413,8 +415,10 @@ C     BOUCLE SUR LES NOEUDS DE LA MAILLE
 C---------------------------------------------------
 C     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE
 C---------------------------------------------------
-         IF (LEVSET.EQ.'LN')  CALL CNSCNO(CNSLN,' ','NON','V',CNOLS)
-         IF (LEVSET.EQ.'LT')  CALL CNSCNO(CNSLT,' ','NON','V',CNOLS)
+         IF (LEVSET.EQ.'LN')  CALL CNSCNO(CNSLN,' ','NON','V',CNOLS,
+     &                                    'F',IBID)
+         IF (LEVSET.EQ.'LT')  CALL CNSCNO(CNSLT,' ','NON','V',CNOLS,
+     &                                    'F',IBID)
          LPAIN(1)='PGEOMER'
          LCHIN(1)=NOMA//'.COORDO'
          LPAIN(2)='PNEUTER'

@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C
 C        ORIENTER LES SOUS-ELEMENTS DE PEAU DES ELEMENTS X-FEM
 C
-C  IN         MODELE    : NOM DE L'OBJET MODELE 
+C  IN         MODELE    : NOM DE L'OBJET MODELE
 C  IN/OUT     FISS      : NOM DE LA SD FISS_XFEM
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -79,7 +79,7 @@ C     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       CALL JEVEUO('&CATA.TM.TMDIM','L',JTMDIM)
-      CALL JEVEUO(NOMA//'.TYPMAIL','L',JTYPMA)     
+      CALL JEVEUO(NOMA//'.TYPMAIL','L',JTYPMA)
 
 C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
       CALL JEEXIN ( NOMA//'           .LTNT', IRET )
@@ -100,7 +100,7 @@ C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
       ELSE
          CALL U2MESS('F','MODELISA3_18')
       ENDIF
-      
+
 
 C     ------------------------------------------------------------------
 C     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
@@ -113,18 +113,17 @@ C     INITIALISATION DU NOMBRE DE MAILLES DE LA LISTE
       NBMAIL=0
 
 C     REMPLISSAGE DE LA LISTE
-     
       GRP(1) = FISS//'.MAILFISS  .HEAV'
       GRP(2) = FISS//'.MAILFISS  .CTIP'
       GRP(3) = FISS//'.MAILFISS  .HECT'
       XINDIC = FISS//'.MAILFISS .INDIC'
-      
-      CALL JEVEUO(XINDIC,'L',JINDIC)  
 
-C     BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT 
+      CALL JEVEUO(XINDIC,'L',JINDIC)
+
+C     BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT
       DO 100 KK = 1,3
 
-        IF (ZI(JINDIC-1+2*(KK-1)+1).EQ.1) THEN        
+        IF (ZI(JINDIC-1+2*(KK-1)+1).EQ.1) THEN
           CALL JEVEUO(GRP(KK),'L',JGRP)
           NMAENR = ZI(JINDIC-1+2*KK)
 
@@ -140,21 +139,19 @@ C           NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
  120      CONTINUE
 
         ENDIF
- 100  CONTINUE 
+ 100  CONTINUE
 
       IF (NBMAIL.EQ.0) GOTO 999
 
 C     ------------------------------------------------------------------
 C     II°) RECHERCHE DES MAILLES SUPPORT
 C     ------------------------------------------------------------------
-     
       CALL CODENT(NDIM,'D',KDIM)
       KDIM = KDIM//'D'
-     
       NOMOB = '&&XORIPE.NU_MAILLE_3D'
       CALL UTMASU ( NOMA, KDIM, NBMAIL, ZI(JMAIL), NOMOB, PREC, R8B )
       CALL JEVEUO (NOMOB,'L',JM3D)
-      
+
 C      DO 200 IMA=1,NBMAIL
 C        WRITE(6,*)'NUMAPR ',ZI(JM3D-1+IMA)
 C 200  CONTINUE
@@ -162,7 +159,7 @@ C 200  CONTINUE
 C     ------------------------------------------------------------------
 C     III°) CREATION DU VECTEUR DES NORMALES SORTANTES
 C     ------------------------------------------------------------------
-       
+
       VECNOR='&&XORIPE.VECNOR'
       CALL WKVECT(VECNOR,'V V R',NBMAIL*NDIM,JVECNO)
 
@@ -183,7 +180,7 @@ C       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
             GBO(J)=GBO(J)+ZR(JCOOR-1+3*(NUNO-1)+J)/NBNOBO
  311      CONTINUE
  310    CONTINUE
-      
+
 C       GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
         CALL LCINVN(3,0.D0,GPR)
         DO 320 INO=1,NBNOPR
@@ -192,7 +189,7 @@ C       GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
             GPR(J)=GPR(J)+ZR(JCOOR-1+3*(NUNO-1)+J)/NBNOPR
  321      CONTINUE
  320    CONTINUE
-       
+
 C       NORMALE EXTERIEURE : Next = GBO - GPR
         CALL LCINVN(3,0.D0,NEXT)
         CALL VDIFF(3,GBO,GPR,NEXT)
@@ -201,7 +198,7 @@ C       NORMALE EXTERIEURE : Next = GBO - GPR
         DO 330 J=1,NDIM
           ZR(JVECNO-1+NDIM*(IMA-1)+J)=NEXT(J)
  330    CONTINUE
- 
+
  300  CONTINUE
 
 
@@ -220,7 +217,7 @@ C     ------------------------------------------------------------------
       CALL CELCES(PINTTO,'V',CHS(1))
       CALL CELCES(CNSETO,'V',CHS(2))
       CALL CELCES(LONCHA,'V',CHS(3))
-      
+
       DO 40 ICH=1,3
         CALL JEVEUO(CHS(ICH)//'.CESD','L',JCESD(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESV','E',JCESV(ICH))
@@ -236,7 +233,7 @@ C     ------------------------------------------------------------------
         NUMAB=ZI(JMAIL-1+IMA)
         NDIME= ZI(JTMDIM-1+ZI(JTYPMA-1+NUMAB))
 
-C       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT 
+C       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT
 C       SOUS-ELEMENTS
         CALL CESEXI('S',JCESD(3),JCESL(3),NUMAB,1,1,1,IAD)
         NIT=ZI(JCESV(3)-1+IAD)
@@ -251,7 +248,7 @@ C         RECUPERATION DU DECOUPAGE EN NSE SOUS-ELEMENTS
 
 C         BOUCLE SUR LES NSE SOUS-ELEMENTS
           DO 420 ISE=1,NSE
-            
+
             CPT=CPT+1
 
 C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-ELEMENT
@@ -274,7 +271,7 @@ C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-ELEMENT
  423            CONTINUE
               ENDIF
  421        CONTINUE
-         
+
             DO 430 J=1,NDIM
                A(J) = CO(J,1)
                B(J) = CO(J,2)
@@ -284,7 +281,7 @@ C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-ELEMENT
                   A(3) = 0.D0
                   B(3) = 0.D0
                ENDIF
- 
+
 C           NORMALE AU SOUS-ELEMENT 2D
             CALL LCINVN(3,0.D0,AB)
             CALL VDIFF(3,B,A,AB)
@@ -321,9 +318,9 @@ C              ON INVERSE 2 ET 3 EN 3D)
  400  CONTINUE
 
 C     ON SAUVE LE NOUVEAU CHAM_ELEM MODIFIE A LA PLACE DE L'ANCIEN
-      CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',
-     &                               NNCP,'V',CNSETO)
-      
+      CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',NNCP,'V',
+     &            CNSETO,'F',IBID)
+
 C     ------------------------------------------------------------------
 C     FIN
 C     ------------------------------------------------------------------

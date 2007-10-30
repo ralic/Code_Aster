@@ -4,7 +4,7 @@
       INTEGER                    IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF SUPERVIS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,6 @@ C IN  IMPR   : IS  : NUMERO LOGIQUE D'IMPRESSION SI IMPR>0 SINON VOIR
 C IN  CODE   : CH1 : CODE POUR U2MESS SI IMPR=0, INUTILISE SI IMPR >0
 C IN  NOMOBJ : CH8 : NOM DU CONCEPT A EDITER, (SI '  ', ALORS TOUS)
 C     ------------------------------------------------------------------
-      CHARACTER*24    KINFO , KRESU, KSTAT
-      COMMON /GCUCC1/ KINFO , KRESU, KSTAT
 C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -56,16 +54,16 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL JEVEUO ( KRESU , 'E' , LGRESU )
+      CALL JEVEUO ('&&SYS.KRESU','E',LGRESU)
 C
-C     DESCRIPTION DE KRESU :
+C     DESCRIPTION DE '&&SYS.KRESU' :
 C          ZK80(JCMD)( 1: 8) = NOM UTILISATEUR DU RESULTAT
 C          ZK80(JCMD)( 9:24) = NOM DU CONCEPT DU RESULTAT
 C          ZK80(JCMD)(25:40) = NOM DE L'OPERATEUR
 C          ZK80(JCMD)(41:48) = STATUT DE L'OBJET
 C
-      CALL JELIRA ( KRESU , 'LONMAX', LONMAX, CBID )
-      CALL JELIRA ( KRESU , 'LONUTI', LONUTI, CBID )
+      CALL JELIRA ('&&SYS.KRESU','LONMAX',LONMAX,CBID)
+      CALL JELIRA ('&&SYS.KRESU','LONUTI',LONUTI,CBID)
       IERR = 0
       CODE2=CODE//'+'
 C

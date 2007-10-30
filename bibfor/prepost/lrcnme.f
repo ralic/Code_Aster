@@ -6,7 +6,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,7 @@ C
       PARAMETER ( NOMPRO = 'LRCNME' )
 C
       INTEGER IAUX
-      INTEGER NBNOE
+      INTEGER NBNOE,IBID
       INTEGER JCNSD,JCNSV,JCNSL
       INTEGER JNOCMP, NCMPRF,UBID
       PARAMETER(UBID=1)
@@ -144,7 +144,7 @@ C====
 C
       CHAMN = CHANOM
 C
-      CALL CNSCNO ( CHAMNS,' ','NON', 'G', CHAMN )
+      CALL CNSCNO ( CHAMNS,' ','NON', 'G', CHAMN,'F',IBID)
 C
       CALL DETRSD ( 'CHAM_NO_S', CHAMNS )
 C

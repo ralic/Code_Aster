@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE  SYSTEME 2 MASSES - 3 RESSORTS ENCASTRE EN NO1 ET NO4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,7 +131,6 @@ MODES=MODE_ITER_SIMULT(
 MODES=NORM_MODE(reuse=MODES,
                           MODE=MODES,
                          NORME='MASS_GENE',
-                     MASS_INER=MASSINER
                   )
 
 

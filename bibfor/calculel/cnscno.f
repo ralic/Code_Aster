@@ -1,8 +1,7 @@
-      SUBROUTINE CNSCNO(CNSZ,PRCHNZ,PROL0,BASEZ,CNOZ)
+      SUBROUTINE CNSCNO(CNSZ,PRCHNZ,PROL0,BASEZ,CNOZ,KSTOP,IRET)
 C RESPONSABLE VABHHTS J.PELLET
-C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) CNSZ,CNOZ,BASEZ,PRCHNZ,PROL0
+      CHARACTER*1 KSTOP
 C ------------------------------------------------------------------
 C BUT : TRANSFORMER UN CHAM_NO_S (CNSZ) EN CHAM_NO (CNOZ)
 C ------------------------------------------------------------------
@@ -47,6 +47,13 @@ C                 / .FALSE. POUR LES CHAMPS DE "L"
 C
 C BASEZ   IN       K1  : BASE DE CREATION POUR CNOZ : G/V/L
 C CNOZ    IN/JXOUT K19 : SD CHAM_NO A CREER
+C KSTOP   IN       K1  : COMPORTEMENT EN CAS DE PROBLEME :
+C              / 'A' : ON EMET UNE ALARME ET ON REND IRET > 0
+C              / 'F' : ON EMET UNE ERREUR FATALE
+C              / ' ' : ON N'EMET PAS DE MESSAGE
+C IRET    OUT       I  : CODE DE RETOUR :
+C              / 0 : OK
+C              / 1 : LE CHAM_NO N'A PAS PU ETRE CREE
 C----------------------------------------------------------------------
 
 C---- COMMUNS NORMALISES  JEVEUX
@@ -61,26 +68,26 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24,NOOJB
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(3)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----------------------------------------------------------------
-      INTEGER ICMP,NEC,JCNSK,JCNSD,JCNSV,JCNSL,GD
+      INTEGER ICMP,NEC,JCNSK,JCNSD,JCNSV,JCNSL,GD,IEXI
       INTEGER RESTE,IEC,CODE,NBNO,IBID,JNUCMP,JNUCM1,JCNSC
       INTEGER NCMPMX,JREFE,NCMP1,NEQ2,JCMPGD,ICMP1,K,IEQ2
       INTEGER JPRN2,INO,IDG2,ICO,JDESC,JDEEQ,JVALE,INDIK8,IRET
       CHARACTER*1 BASE,KBID
       CHARACTER*8 MA,NOMGD,NOMNO,NOMCMP
       CHARACTER*3 TSCA
-      CHARACTER*19 CNS,CNO,PRCHNO
+      CHARACTER*19 CNS,CNO,PRCHNO,MESSAG
       CHARACTER*32 JEXNOM,JEXNUM
 C     -----------------------------------------------------------------
       CALL JEMARQ()
 
 
       BASE = BASEZ
-      CALL ASSERT((BASE.EQ.'G').OR.(BASE.EQ.'V'))
+      CALL ASSERT((BASE.EQ.'G') .OR. (BASE.EQ.'V'))
       CNS = CNSZ
       CNO = CNOZ
 
@@ -116,11 +123,7 @@ C     --------------------------------------------
       DO 10,ICMP1 = 1,NCMP1
         NOMCMP = ZK8(JCNSC-1+ICMP1)
         ICMP = INDIK8(ZK8(JCMPGD),NOMCMP,1,NCMPMX)
-        IF (ICMP.EQ.0) THEN
-           VALK(1) = NOMCMP
-           VALK(2) = NOMGD
-           CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
-        ENDIF
+        CALL ASSERT(ICMP.GT.0)
         ZI(JNUCMP-1+ICMP) = ICMP1
         ZI(JNUCM1-1+ICMP1) = ICMP
    10 CONTINUE
@@ -128,28 +131,35 @@ C     --------------------------------------------
 
       IF (PRCHNZ.EQ.' ') THEN
         IF (BASE.EQ.'G') THEN
-          NOOJB='12345678.PRCHN00000.PRNO'
-          CALL GNOMSD ( NOOJB,15,19 )
-          PRCHNO=NOOJB(1:19)
+          NOOJB = '12345678.PRCHN00000.PRNO'
+          CALL GNOMSD(NOOJB,15,19)
+          PRCHNO = NOOJB(1:19)
+
         ELSE
-          CALL GCNCON ( '.' , PRCHNO )
-        END IF
+          CALL GCNCON('.',PRCHNO)
+        ENDIF
+
       ELSE
         PRCHNO = PRCHNZ
-      END IF
+      ENDIF
 
 
 C     2- ON CREE (SI NECESSAIRE) LE PROF_CHNO  :
 C     ------------------------------------------
-      CALL JEEXIN(PRCHNO//'.PRNO',IRET)
-      IF (IRET.EQ.0) THEN
+      CALL JEEXIN(PRCHNO//'.PRNO',IEXI)
+      IF (IEXI.EQ.0) THEN
 
 C       2.1 ON COMPTE LES CMPS PORTEES PAR CNS :
         NEQ2 = 0
-        DO 20,K = 1,NBNO * NCMP1
+        DO 20,K = 1,NBNO*NCMP1
           IF (ZL(JCNSL-1+K)) NEQ2 = NEQ2 + 1
    20   CONTINUE
-        IF (NEQ2.EQ.0) CALL U2MESS('F','CALCULEL2_12')
+        IF (NEQ2.EQ.0) THEN
+          VALK(1) = CNO
+          MESSAG = 'CALCULEL2_12'
+          GOTO 70
+
+        ENDIF
 
 C       2.2 ALLOCATION DES OBJETS :
         CALL CRPRN2(PRCHNO,BASE,NBNO,NEQ2,NEC)
@@ -168,7 +178,7 @@ C       2.3 REMPLISSAGE DE .PRNO :
               ZI(JPRN2-1+ ((2+NEC)* (INO-1))+2) = ZI(JPRN2-1+
      &          ((2+NEC)* (INO-1))+2) + 1
 
-            END IF
+            ENDIF
    30     CONTINUE
    40   CONTINUE
 
@@ -181,7 +191,7 @@ C       2.3 REMPLISSAGE DE .PRNO :
 C       2.4 CREATION  DE .DEEQ :
 C     CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,PRCHNO,1,' ')
         CALL PTEEQU(PRCHNO,BASE,NEQ2,GD)
-      END IF
+      ENDIF
 
 
 C     4- ON CREE LE .REFE :
@@ -212,73 +222,119 @@ C     -----------------------------------
           NOMCMP = ZK8(JCMPGD-1+ICMP)
           ICMP1 = ZI(JNUCMP-1+ICMP)
 
-          IF (ICMP1.EQ.0 ) THEN
+          IF (ICMP1.EQ.0) THEN
             IF (PROL0.EQ.'NON') THEN
-               CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
-                VALK(1) = NOMCMP
-                VALK(2) = NOMNO
-                CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
+              CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
+              VALK(1) = NOMCMP
+              VALK(2) = NOMNO
+              VALK(3) = CNO
+              MESSAG = 'CALCULEL2_13'
+              GOTO 70
+
             ELSE
-               CALL ASSERT(PROL0.EQ.'OUI')
-               IF (TSCA.EQ.'R') THEN
-                 ZR(JVALE-1+IEQ2) = 0.D0
-               ELSE IF (TSCA.EQ.'C') THEN
-                 ZC(JVALE-1+IEQ2) = (0.D0,0.D0)
-               ELSE IF (TSCA.EQ.'I') THEN
-                 ZI(JVALE-1+IEQ2) = 0
-               ELSE IF (TSCA.EQ.'L') THEN
-                 ZL(JVALE-1+IEQ2) = .FALSE.
-               ELSE IF (TSCA.EQ.'K8') THEN
-                 ZK8(JVALE-1+IEQ2) = ' '
-               ELSE
-                 CALL U2MESS('F','ALGORITH_19')
-               END IF
-               GO TO 60
+              CALL ASSERT(PROL0.EQ.'OUI')
+              IF (TSCA.EQ.'R') THEN
+                ZR(JVALE-1+IEQ2) = 0.D0
+
+              ELSEIF (TSCA.EQ.'C') THEN
+                ZC(JVALE-1+IEQ2) = (0.D0,0.D0)
+
+              ELSEIF (TSCA.EQ.'I') THEN
+                ZI(JVALE-1+IEQ2) = 0
+
+              ELSEIF (TSCA.EQ.'L') THEN
+                ZL(JVALE-1+IEQ2) = .FALSE.
+
+              ELSEIF (TSCA.EQ.'K8') THEN
+                ZK8(JVALE-1+IEQ2) = ' '
+
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF
+              GOTO 60
+
             ENDIF
           ENDIF
 
           IF (ZL(JCNSL-1+ (INO-1)*NCMP1+ICMP1)) THEN
             IF (TSCA.EQ.'R') THEN
               ZR(JVALE-1+IEQ2) = ZR(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
-            ELSE IF (TSCA.EQ.'C') THEN
+
+            ELSEIF (TSCA.EQ.'C') THEN
               ZC(JVALE-1+IEQ2) = ZC(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
-            ELSE IF (TSCA.EQ.'I') THEN
+
+            ELSEIF (TSCA.EQ.'I') THEN
               ZI(JVALE-1+IEQ2) = ZI(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
-            ELSE IF (TSCA.EQ.'L') THEN
+
+            ELSEIF (TSCA.EQ.'L') THEN
               ZL(JVALE-1+IEQ2) = ZL(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
-            ELSE IF (TSCA.EQ.'K8') THEN
+
+            ELSEIF (TSCA.EQ.'K8') THEN
               ZK8(JVALE-1+IEQ2) = ZK8(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
+
             ELSE
-              CALL U2MESS('F','ALGORITH_19')
-            END IF
+              CALL ASSERT(.FALSE.)
+            ENDIF
+
           ELSE
             IF (PROL0.EQ.'NON') THEN
-               CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
-                VALK(1) = NOMCMP
-                VALK(2) = NOMNO
-                CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
+              CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
+              VALK(1) = NOMCMP
+              VALK(2) = NOMNO
+              VALK(3) = CNO
+              MESSAG = 'CALCULEL2_13'
+              GOTO 70
+
             ELSE
-               CALL ASSERT(PROL0.EQ.'OUI')
-               IF (TSCA.EQ.'R') THEN
-                 ZR(JVALE-1+IEQ2) = 0.D0
-               ELSE IF (TSCA.EQ.'C') THEN
-                 ZC(JVALE-1+IEQ2) = (0.D0,0.D0)
-               ELSE IF (TSCA.EQ.'I') THEN
-                 ZI(JVALE-1+IEQ2) = 0
-               ELSE IF (TSCA.EQ.'L') THEN
-                 ZL(JVALE-1+IEQ2) = .FALSE.
-               ELSE IF (TSCA.EQ.'K8') THEN
-                 ZK8(JVALE-1+IEQ2) = ' '
-               ELSE
-                 CALL U2MESS('F','ALGORITH_19')
-               END IF
-               GO TO 60
+              CALL ASSERT(PROL0.EQ.'OUI')
+              IF (TSCA.EQ.'R') THEN
+                ZR(JVALE-1+IEQ2) = 0.D0
+
+              ELSEIF (TSCA.EQ.'C') THEN
+                ZC(JVALE-1+IEQ2) = (0.D0,0.D0)
+
+              ELSEIF (TSCA.EQ.'I') THEN
+                ZI(JVALE-1+IEQ2) = 0
+
+              ELSEIF (TSCA.EQ.'L') THEN
+                ZL(JVALE-1+IEQ2) = .FALSE.
+
+              ELSEIF (TSCA.EQ.'K8') THEN
+                ZK8(JVALE-1+IEQ2) = ' '
+
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF
+              GOTO 60
+
             ENDIF
-          END IF
-        END IF
+          ENDIF
+        ENDIF
    60 CONTINUE
 
+      IRET = 0
+      GOTO 80
 
+
+C     -- MESSAGES D'ERREUR:
+C     ---------------------
+   70 CONTINUE
+      CALL ASSERT(KSTOP.EQ.'F' .OR. KSTOP.EQ.'A' .OR. KSTOP.EQ.' ')
+      IRET = 1
+      CALL DETRSD('CHAMP',CNO)
+      IF (KSTOP.EQ.' ') GOTO 80
+
+      IF (MESSAG.EQ.'CALCULEL2_12') THEN
+        CALL U2MESK(KSTOP,'CALCULEL2_12',1,VALK)
+      ELSEIF (MESSAG.EQ.'CALCULEL2_13') THEN
+        CALL U2MESK(KSTOP,'CALCULEL2_13',3,VALK)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+
+
+   80 CONTINUE
       CALL JEDETR('&&CNSCNO.TMP_NUCMP')
       CALL JEDETR('&&CNSCNO.TMP_NUCM1')
       CALL JEDEMA()

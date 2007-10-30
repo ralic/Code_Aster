@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,21 +39,21 @@ C
 C 0.1. ==> ARGUMENTS
 C
       CHARACTER*16 CORRES,TYPRES
-      CHARACTER*8  RESU1,RESU2,MODEL2
+      CHARACTER*8 RESU1,RESU2,MODEL2
 C
 C 0.2. ==> COMMUNS
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24,NOOJB
-      CHARACTER*32     ZK32,JEXNUM,JEXNOM,JEXATR
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24,NOOJB
+      CHARACTER*32 ZK32,JEXNUM,JEXNOM,JEXATR
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
@@ -61,15 +61,17 @@ C 0.3. ==> VARIABLES LOCALES
 C
 
 C
-      INTEGER       IBID, IE, JCONO, IRET, JORDR, NBORDR, I, IORDR
-      INTEGER       IAINS1, IAINS2, NBSYM, ISYM, ICO, IND, J, NBMAX
-      PARAMETER     (NBMAX=50)
-      INTEGER       IPAR, IPAR1, IPAR2
-      LOGICAL       ACCENO
-      CHARACTER*8   KB, MA1, MA2, NUME,PROL0,K8B, TYP1, TYP2
-      CHARACTER*16  NOMSYM(200),K16B,NOMCMD
-      CHARACTER*19  CH1, CH2, PRFCHN,LIGREL,PRFCH2
-      CHARACTER*19  NOMS2,REFE, KPAR(NBMAX)
+      INTEGER IBID,IE,JCONO,IRET,JORDR,NBORDR,I,IORDR
+      INTEGER IAINS1,IAINS2,NBSYM,ISYM,ICO,IND,J,NBMAX
+      PARAMETER (NBMAX=50)
+      INTEGER IPAR,IPAR1,IPAR2
+      LOGICAL ACCENO
+      CHARACTER*8 KB,MA1,MA2,NUME,PROL0,K8B,TYP1,TYP2
+      CHARACTER*16 NOMSYM(200),K16B,NOMCMD
+      CHARACTER*19 CH1,CH2,PRFCHN,LIGREL,PRFCH2
+      CHARACTER*19 NOMS2,REFE,KPAR(NBMAX)
+      CHARACTER*24 VALK(5)
+      CHARACTER*1 TYPERR
       INTEGER IACONB,IACONU,NBNO2,JPJM1,IACNX1,ILCNX1,IDECAL,INO2
       INTEGER KMA1,NBNO1,IMA1,NBMA1,INO1
       INTEGER NUNO1A,NUNO1B
@@ -77,24 +79,23 @@ C
       REAL*8 R8B
       COMPLEX*16 C16B
 
-C     FONCTIONS FORMULES :
 
 C DEB -----------------------------------------------------------------
       CALL JEMARQ()
 C
-      K8B='        '
+      K8B = '        '
 C
-      LIGREL=MODEL2//'.MODELE'
+      LIGREL = MODEL2//'.MODELE'
 
       CALL GETRES(K8B,K16B,NOMCMD)
 
-      IF (NOMCMD .EQ. 'DEPL_INTERNE') THEN
+      IF (NOMCMD.EQ.'DEPL_INTERNE') THEN
 C       ON NE TRAITE QUE LE CHAMP DEPL
         NBSYM = 1
         NOMSYM(1) = 'DEPL'
         CALL RSORAC(RESU1,'LONUTI',IBID,R8B,KB,C16B,R8B,KB,NBORDR,1,
      &              IBID)
-        IF ( NBORDR.EQ.0 ) THEN
+        IF (NBORDR.EQ.0) THEN
           CALL U2MESK('F','CALCULEL4_62',1,RESU1)
         ENDIF
 
@@ -104,19 +105,18 @@ C       ON NE TRAITE QUE LE CHAMP DEPL
      &              ZI(JORDR),NBORDR,IBID)
 
         PROL0 = 'OUI'
+
       ELSE
 
-        CALL DISMOI('F','NOM_MAILLA', RESU1,'RESULTAT',IBID,MA1,IE)
-        CALL DISMOI('F','NOM_MAILLA', MODEL2,'MODELE',IBID,MA2,IE)
+        CALL DISMOI('F','NOM_MAILLA',RESU1,'RESULTAT',IBID,MA1,IE)
+        CALL DISMOI('F','NOM_MAILLA',MODEL2,'MODELE',IBID,MA2,IE)
 
         CALL JEVEUO(CORRES//'.PJEF_NO','L',JCONO)
-        IF (ZK8(JCONO-1+1).NE.MA1)
-     &  CALL U2MESS('F','CALCULEL4_59')
-        IF (ZK8(JCONO-1+2).NE.MA2)
-     &  CALL U2MESS('F','CALCULEL4_60')
+        IF (ZK8(JCONO-1+1).NE.MA1) CALL U2MESS('F','CALCULEL4_59')
+        IF (ZK8(JCONO-1+2).NE.MA2) CALL U2MESS('F','CALCULEL4_60')
 
         CALL RSUTC4(RESU1,' ',1,200,NOMSYM,NBSYM,ACCENO)
-        CALL ASSERT (NBSYM.GT.0)
+        CALL ASSERT(NBSYM.GT.0)
 
         CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IER)
 
@@ -124,131 +124,155 @@ C       ON NE TRAITE QUE LE CHAMP DEPL
 C     1- CREATION DE LA SD RESULTAT : RESU2
 C     ------------------------------------
         CALL RSUTNU(RESU1,' ',0,'&&PJEFPR.NUME_ORDRE',NBORDR,0.D0,
-     &            'ABSO',IRET)
-        IF ( IRET.NE.0 ) THEN
+     &              'ABSO',IRET)
+        IF (IRET.NE.0) THEN
           CALL U2MESK('F','CALCULEL4_61',1,RESU1)
         ENDIF
-        IF ( NBORDR.EQ.0 ) THEN
+        IF (NBORDR.EQ.0) THEN
           CALL U2MESK('F','CALCULEL4_62',1,RESU1)
         ENDIF
         CALL JEVEUO('&&PJEFPR.NUME_ORDRE','L',JORDR)
       ENDIF
 
       NOMS2 = RESU2
-      CALL JEEXIN (NOMS2//'.DESC', IRET )
-      IF ( IRET.EQ.0 ) THEN
+      CALL JEEXIN(NOMS2//'.DESC',IRET)
+      IF (IRET.EQ.0) THEN
         CALL GETTCO(RESU1,TYPRES)
-        CALL RSCRSD ( RESU2, TYPRES, NBORDR )
+        CALL RSCRSD(RESU2,TYPRES,NBORDR)
       ENDIF
 
-C Dans le cas des concepts type modes meca on teste la presence
-C des matrices afin de recuperer la numerotation sous-jacente
-      PRFCH2='12345678.00000.NUME'
-      IF (NOMCMD .EQ. 'DEPL_INTERNE') THEN
+C DANS LE CAS DES CONCEPTS TYPE MODE_MECA ON TESTE LA PRESENCE
+C DES MATRICES AFIN DE RECUPERER LA NUMEROTATION SOUS-JACENTE
+      PRFCH2 = '12345678.00000.NUME'
+      IF (NOMCMD.EQ.'DEPL_INTERNE') THEN
+
       ELSE
-C    On essaye de recuperer la numerotation imposee
+C    ON ESSAYE DE RECUPERER LA NUMEROTATION IMPOSEE
         CALL GETVID(' ','NUME_DDL',1,1,1,NUME,IER)
         IF (IER.NE.0) THEN
-          PRFCH2=NUME(1:8)//'      .NUME'
+          PRFCH2 = NUME(1:8)//'      .NUME'
         ENDIF
       ENDIF
 
 C     2- ON CALCULE LES CHAMPS RESULTATS :
 C     ------------------------------------
-      ICO=0
-      DO 4,ISYM=1,NBSYM
+      ICO = 0
+      DO 30,ISYM = 1,NBSYM
 
         IF (PRFCH2.NE.'12345678.00000.NUME') THEN
-C On prend la numerotation imposee
-          PRFCHN=PRFCH2
+C ON PREND LA NUMEROTATION IMPOSEE
+          PRFCHN = PRFCH2
+
         ELSE
-C On definit une numerotation 'bidon"
-          NOOJB='12345678.00000.NUME.PRNO'
-          CALL GNOMSD ( NOOJB,10,14)
-          PRFCHN=NOOJB(1:19)
+C ON DEFINIT UNE NUMEROTATION 'BIDON"
+          NOOJB = '12345678.00000.NUME.PRNO'
+          CALL GNOMSD(NOOJB,10,14)
+          PRFCHN = NOOJB(1:19)
         ENDIF
 
-        DO 5,I=1,NBORDR
+        DO 20,I = 1,NBORDR
           IORDR = ZI(JORDR+I-1)
           CALL RSEXCH(RESU1,NOMSYM(ISYM),IORDR,CH1,IRET)
-          IF (IRET.GT.0) GOTO 5
+          IF (IRET.GT.0) GOTO 20
 
 C       -- PROJECTION DU CHAMP SI POSSIBLE :
           CALL RSEXCH(RESU2,NOMSYM(ISYM),IORDR,CH2,IRET)
           CALL PJEFCH(CORRES,CH1,CH2,PRFCHN,PROL0,LIGREL,IRET)
+          CALL ASSERT(IRET.EQ.0.OR.IRET.EQ.1.OR.IRET.EQ.10)
+C         -- ELGA ET CART : ON NE FAIT RIEN :
+          IF (IRET.EQ.10) GOTO 20
+
           IF (IRET.GT.0) THEN
             IF (ACCENO) THEN
-              CALL U2MESK('F','CALCULEL4_63',1,NOMSYM(ISYM))
-            ELSE
-              GO TO 5
-            END IF
-          END IF
-          CALL RSNOCH ( RESU2, NOMSYM(ISYM), IORDR, ' ' )
+C             -- L'UTILISATEUR A DEMANDE EXPLICITEMENT LA PROJECTION :
+              TYPERR = 'F'
 
-C       -- Attribution des attributs du concept resultat
-C         Extraction des parametres modaux à sauver dans le resultat
+            ELSE
+C             -- L'UTILISATEUR N'A PAS DEMANDE EXPLICITEMENT
+C                LA PROJECTION, ON SE CONTENTE D'UNE ALARME  :
+              TYPERR = 'A'
+            ENDIF
+            VALK(1) = NOMSYM(ISYM)
+            VALK(2) = RESU1
+            VALK(3) = RESU2
+            CALL U2MESG(TYPERR,'CALCULEL4_63',3,VALK,1,IORDR,0,0.D0)
+            GOTO 20
+
+          ENDIF
+          CALL RSNOCH(RESU2,NOMSYM(ISYM),IORDR,' ')
+
+C       -- ATTRIBUTION DES ATTRIBUTS DU CONCEPT RESULTAT
+C         EXTRACTION DES PARAMETRES MODAUX à SAUVER DANS LE RESULTAT
           IF ((TYPRES(1:9).EQ.'MODE_MECA') .OR.
-     &     (TYPRES(1:4).EQ.'BASE')) THEN
-              CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
-              CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
-              CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
-              ZR(IAINS2)=ZR(IAINS1)
-C             Recuperation de nume_mode
-              CALL JEEXIN (RESU1//'           .NUMO', IRET )
-              IF ( IRET.NE.0 ) THEN
-                CALL JEVEUO (RESU1//'           .NUMO', 'L', IAINS1)
-                CALL JEVEUO (RESU2//'           .NUMO', 'E', IAINS2)
-                ZI(IAINS2+IORDR-1)=ZI(IAINS1+IORDR-1)
-              ENDIF
+     &        (TYPRES(1:4).EQ.'BASE')) THEN
+            CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
+            CALL RSADPA(RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
+            CALL RSADPA(RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
+            ZR(IAINS2) = ZR(IAINS1)
+C             RECUPERATION DE NUME_MODE
+            CALL JEEXIN(RESU1//'           .NUMO',IRET)
+            IF (IRET.NE.0) THEN
+              CALL JEVEUO(RESU1//'           .NUMO','L',IAINS1)
+              CALL JEVEUO(RESU2//'           .NUMO','E',IAINS2)
+              ZI(IAINS2+IORDR-1) = ZI(IAINS1+IORDR-1)
+            ENDIF
+
           ELSEIF (TYPRES(1:9).EQ.'MODE_STAT') THEN
-              CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
-              CALL RSADPA ( RESU1,'L',1,'NOEUD_CMP',IORDR,0,IAINS1,KB)
-              CALL RSADPA ( RESU2,'E',1,'NOEUD_CMP',IORDR,0,IAINS2,KB)
-              ZK16(IAINS2)=ZK16(IAINS1)
-          ELSEIF (TYPRES .EQ. 'DYNA_HARMO') THEN
-            CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
-            CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
-            ZR(IAINS2)=ZR(IAINS1)
-          ELSEIF ((TYPRES(1:4) .EQ. 'EVOL') .OR.
-     &        (TYPRES(1:4) .EQ. 'DYNA')) THEN
-            CALL RSADPA ( RESU1,'L',1,'INST',IORDR,0,IAINS1,KB)
-            CALL RSADPA ( RESU2,'E',1,'INST',IORDR,0,IAINS2,KB)
-            ZR(IAINS2)=ZR(IAINS1)
+            CALL VPCREA(0,RESU2,K8B,K8B,K8B,PRFCH2(1:8),IER)
+            CALL RSADPA(RESU1,'L',1,'NOEUD_CMP',IORDR,0,IAINS1,KB)
+            CALL RSADPA(RESU2,'E',1,'NOEUD_CMP',IORDR,0,IAINS2,KB)
+            ZK16(IAINS2) = ZK16(IAINS1)
+
+          ELSEIF (TYPRES.EQ.'DYNA_HARMO') THEN
+            CALL RSADPA(RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
+            CALL RSADPA(RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
+            ZR(IAINS2) = ZR(IAINS1)
+
+          ELSEIF ((TYPRES(1:4).EQ.'EVOL') .OR.
+     &            (TYPRES(1:4).EQ.'DYNA')) THEN
+            CALL RSADPA(RESU1,'L',1,'INST',IORDR,0,IAINS1,KB)
+            CALL RSADPA(RESU2,'E',1,'INST',IORDR,0,IAINS2,KB)
+            ZR(IAINS2) = ZR(IAINS1)
+
           ELSE
-C            on fait rien
+C            ON NE FAIT RIEN
           ENDIF
 
-          IF (NOMCMD .EQ. 'DEPL_INTERNE') THEN
+          IF (NOMCMD.EQ.'DEPL_INTERNE') THEN
             IPAR = 0
+
           ELSE
 C         REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
             CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)
           ENDIF
 
 
-          DO 15 IND=1,IPAR
-             CALL RSADPA ( RESU1,'L',1,KPAR(IND),
-     &                     IORDR,1,IPAR1,TYP1)
-             CALL RSADPA ( RESU2,'E',1,KPAR(IND),
-     &                     IORDR,0,IPAR2,TYP2)
-             IF (TYP1(1:1) .EQ. 'I') THEN
-                ZI(IPAR2) = ZI(IPAR1)
-             ELSEIF (TYP1(1:1) .EQ. 'R') THEN
-                ZR(IPAR2) = ZR(IPAR1)
-             ELSEIF (TYP1(1:2) .EQ. 'K8') THEN
-                ZK8(IPAR2) = ZK8(IPAR1)
-             ELSEIF (TYP1(1:3) .EQ. 'K16') THEN
-                ZK16(IPAR2) = ZK16(IPAR1)
-             ELSEIF (TYP1(1:3) .EQ. 'K32') THEN
-                ZK32(IPAR2) = ZK32(IPAR1)
-             ELSE
-C               ON NE FAIT RIEN
-             ENDIF
- 15       CONTINUE
-          ICO=ICO+1
+          DO 10 IND = 1,IPAR
+            CALL RSADPA(RESU1,'L',1,KPAR(IND),IORDR,1,IPAR1,TYP1)
+            CALL RSADPA(RESU2,'E',1,KPAR(IND),IORDR,0,IPAR2,TYP2)
+            IF (TYP1(1:1).EQ.'I') THEN
+              ZI(IPAR2) = ZI(IPAR1)
 
- 5      CONTINUE
- 4    CONTINUE
+            ELSEIF (TYP1(1:1).EQ.'R') THEN
+              ZR(IPAR2) = ZR(IPAR1)
+
+            ELSEIF (TYP1(1:2).EQ.'K8') THEN
+              ZK8(IPAR2) = ZK8(IPAR1)
+
+            ELSEIF (TYP1(1:3).EQ.'K16') THEN
+              ZK16(IPAR2) = ZK16(IPAR1)
+
+            ELSEIF (TYP1(1:3).EQ.'K32') THEN
+              ZK32(IPAR2) = ZK32(IPAR1)
+
+            ELSE
+C               ON NE FAIT RIEN
+            ENDIF
+   10     CONTINUE
+          ICO = ICO + 1
+
+   20   CONTINUE
+   30 CONTINUE
 
       IF (ICO.EQ.0) CALL U2MESS('F','CALCULEL4_64')
       CALL JEDETR('&&PJEFPR.NUME_ORDRE')

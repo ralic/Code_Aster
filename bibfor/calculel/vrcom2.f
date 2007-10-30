@@ -1,6 +1,6 @@
       SUBROUTINE VRCOM2(COMPOM,COMPOP,VARMOI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ------------------------------------------------------------------
       INTEGER IADP,JCOPPL,JCOPPD,JCOPPV
       INTEGER IADM,JCOPML,JCOPMD,JCOPMV,ACTION
       INTEGER JCEV1D,JCEV1V,JCEV1L,JCEV1K
-      INTEGER JCEV2D,JCEV2V,JCEV2L,NNCP
+      INTEGER JCEV2D,JCEV2V,JCEV2L,NNCP,IBID
       CHARACTER*8 NOMA,NOCMP
       CHARACTER*16 RELCOP,RELCOM
       CHARACTER*19 CESV1,CESV2,LIGREL,CES1,COTO,COPM,COPP
@@ -94,11 +94,12 @@ C     ----------------------------------------------------------
         IF (IAD1.LE.0) THEN
           ZI(JNBSP-1+IMA) = 0
           ZI(JNBCM-1+IMA) = 0
+
         ELSE
           ZI(JNBSP-1+IMA) = ZI(JCE1V-1+IAD1)
           ZI(JNBCM-1+IMA) = ZI(JCE1V-1+IAD2)
           NBVARI = MAX(NBVARI,ZI(JCE1V-1+IAD2))
-        END IF
+        ENDIF
    10 CONTINUE
 
       CALL WKVECT('&&VRCOM2.NOVARI','V V K8',NBVARI,JNOVAR)
@@ -150,21 +151,23 @@ C     -----------------------------------
         IF (NBSP.NE.NBSP2) CALL U2MESS('F','CALCULEL5_40')
 
         CALL CESEXI('C',JCOPPD,JCOPPL,IMA,1,1,1,IADP)
-        IF (IADP.LE.0) GO TO 60
+        IF (IADP.LE.0) GOTO 60
         RELCOP = ZK16(JCOPPV-1+IADP)
         CALL CESEXI('C',JCOPMD,JCOPML,IMA,1,1,1,IADM)
         CALL ASSERT(IADM.GT.0)
         RELCOM = ZK16(JCOPMV-1+IADM)
         IF (RELCOM.EQ.RELCOP) THEN
           ACTION = 1
+
         ELSE
           IF ((RELCOM.EQ.'ELAS') .OR. (RELCOM.EQ.'SANS') .OR.
      &        (RELCOP.EQ.'ELAS') .OR. (RELCOP.EQ.'SANS')) THEN
             ACTION = 2
+
           ELSE
             CALL ASSERT(.FALSE.)
-          END IF
-        END IF
+          ENDIF
+        ENDIF
 
         DO 50,IPG = 1,NBPG
           DO 40,ISP = 1,NBSP
@@ -176,9 +179,10 @@ C     -----------------------------------
                 CALL CESEXI('S',JCEV1D,JCEV1L,IMA,IPG,ISP,ICM,IAD1)
                 CALL ASSERT(IAD1.GT.0)
                 ZR(JCEV2V-1-IAD2) = ZR(JCEV1V-1+IAD1)
+
               ELSE
                 ZR(JCEV2V-1-IAD2) = 0.D0
-              END IF
+              ENDIF
    30       CONTINUE
    40     CONTINUE
    50   CONTINUE
@@ -189,8 +193,8 @@ C     4- ON TRANSFORME CESV2 EN CHAM_ELEM (VARMOI)
 C     --------------------------------------------------
       CALL DISMOI('F','NOM_LIGREL',VARMOI,'CHAM_ELEM',IB,LIGREL,IB)
       CALL DETRSD('CHAM_ELEM',VARMOI)
-      CALL CESCEL(CESV2,LIGREL,'RAPH_MECA','PVARIPR','OUI',NNCP,
-     &            'V',VARMOI)
+      CALL CESCEL(CESV2,LIGREL,'RAPH_MECA','PVARIPR','OUI',NNCP,'V',
+     &            VARMOI,'F',IBID)
 
 C     4. MENAGE :
 C     -----------

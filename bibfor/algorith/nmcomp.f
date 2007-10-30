@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -632,6 +632,20 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
      &                      INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &                      OPTION,TAMPON,ANGMAS,SIGP,VIP,DSIDEP,CODRET)
             ENDIF
+          ELSEIF ( COMPOR(1)(1:4) .EQ. 'LETK') THEN
+            IF ( INT(CRIT(6)) .NE. 0 )  THEN
+              CALL U2MESS('F','ALGORITH6_82')
+            ELSE
+C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+              CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+              CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+              CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+
+              CALL LKCOMP (NDIM,  TYPMOD, IMATE, COMPOR,
+     &                   CRIT,INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
+     &                   OPTION,SIGP,VIP,DSIDEP,CODRET)
+          ENDIF
           ELSEIF ( COMPOR(1)(1:10) .EQ. 'HOEK_BROWN' ) THEN
             IF ( INT(CRIT(6)) .NE. 0 )  THEN
                 CALL U2MESS('F','ALGORITH6_82')

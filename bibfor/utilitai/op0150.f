@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 29/10/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -666,6 +666,9 @@ C     =============================
           ELSE IF (NOCH(1:4).EQ.'PRES') THEN
             NOMGD = 'PRES_R  '
             TYPCHA = 'ELEM'
+          ELSE IF (NOCH(1:4).EQ.'IRRA') THEN
+            NOMGD = 'IRRA_R  '
+            TYPCHA = 'NOEU'
           ELSE
             CALL U2MESK('F','UTILITAI2_94',1,NOCH)
           END IF

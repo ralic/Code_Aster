@@ -1,9 +1,9 @@
-      SUBROUTINE CNOCRE ( MAZ, NOMGDZ, NBNOZ, LINOE, NCMPZ, LICMP,
-     &                    CNOCMP, BASEZ, CNOZ )
+      SUBROUTINE CNOCRE(MAZ,NOMGDZ,NBNOZ,LINOE,NCMPZ,LICMP,CNOCMP,BASEZ,
+     &                  CNOZ)
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*(*)  MAZ, NOMGDZ, CNOZ, BASEZ
-      INTEGER        NCMPZ, NBNOZ, LINOE(NBNOZ), CNOCMP(NBNOZ*NCMPZ)
-      CHARACTER*(*)  LICMP(NCMPZ)
+      CHARACTER*(*) MAZ,NOMGDZ,CNOZ,BASEZ
+      INTEGER NCMPZ,NBNOZ,LINOE(NBNOZ),CNOCMP(NBNOZ*NCMPZ)
+      CHARACTER*(*) LICMP(NCMPZ)
 C ------------------------------------------------------------------
 C BUT : CREER UN CHAM_NO A VALEURS NULLES
 C ------------------------------------------------------------------
@@ -55,17 +55,17 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER      IBID,NBNO,JCNSK,JCNSD,INO
-      INTEGER      I,K,JCNSL,JCNSV,NCMP
-      CHARACTER*3  TSCA
-      CHARACTER*8  NOMGD
+      INTEGER IBID,NBNO,JCNSK,JCNSD,INO
+      INTEGER I,K,JCNSL,JCNSV,NCMP
+      CHARACTER*3 TSCA
+      CHARACTER*8 NOMGD
       CHARACTER*19 CNS
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
 
-      CNS =  '&&CNOCRE.CNS'
-      CALL CNSCRE ( MAZ, NOMGDZ, NCMPZ, LICMP, 'V', CNS )
+      CNS = '&&CNOCRE.CNS'
+      CALL CNSCRE(MAZ,NOMGDZ,NCMPZ,LICMP,'V',CNS)
 
       CALL JEVEUO(CNS//'.CNSK','L',JCNSK)
       CALL JEVEUO(CNS//'.CNSD','L',JCNSD)
@@ -73,56 +73,58 @@ C     ------------------------------------------------------------------
       CALL JEVEUO(CNS//'.CNSL','E',JCNSL)
 
       NOMGD = ZK8(JCNSK-1+2)
-      NBNO  = ZI(JCNSD-1+1)
-      NCMP  = ZI(JCNSD-1+2)
+      NBNO = ZI(JCNSD-1+1)
+      NCMP = ZI(JCNSD-1+2)
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
 
-      CALL ASSERT((TSCA.EQ.'R').OR.(TSCA.EQ.'C'))
+      CALL ASSERT((TSCA.EQ.'R') .OR. (TSCA.EQ.'C'))
       IF (TSCA.EQ.'R') THEN
 C         -----------
-        IF ( NBNOZ .EQ. 0 ) THEN
-         DO 10,K = 1,NCMP
-            DO 12,INO = 1,NBNO
-               ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
-               ZR(JCNSV-1+(INO-1)*NCMP+K) = 0.0D0
- 12         CONTINUE
- 10      CONTINUE
+        IF (NBNOZ.EQ.0) THEN
+          DO 20,K = 1,NCMP
+            DO 10,INO = 1,NBNO
+              ZL(JCNSL-1+ (INO-1)*NCMP+K) = .TRUE.
+              ZR(JCNSV-1+ (INO-1)*NCMP+K) = 0.0D0
+   10       CONTINUE
+   20     CONTINUE
+
         ELSE
-         DO 20,I = 1,NBNOZ
+          DO 40,I = 1,NBNOZ
             INO = LINOE(I)
-            DO 22,K = 1,NCMP
-               IF ( CNOCMP((I-1)*NCMP+K) .EQ. 1 ) THEN
-                  ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
-                  ZR(JCNSV-1+(INO-1)*NCMP+K) = 0.0D0
-               ENDIF
- 22         CONTINUE
- 20      CONTINUE
+            DO 30,K = 1,NCMP
+              IF (CNOCMP((I-1)*NCMP+K).EQ.1) THEN
+                ZL(JCNSL-1+ (INO-1)*NCMP+K) = .TRUE.
+                ZR(JCNSV-1+ (INO-1)*NCMP+K) = 0.0D0
+              ENDIF
+   30       CONTINUE
+   40     CONTINUE
         ENDIF
 C
       ELSEIF (TSCA.EQ.'C') THEN
 C             -----------
-        IF ( NBNOZ .EQ. 0 ) THEN
-         DO 30,K = 1,NCMP
-            DO 32,INO = 1,NBNO
-               ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
-               ZC(JCNSV-1+(INO-1)*NCMP+K) = (0.0D0,0.0D0)
- 32         CONTINUE
- 30      CONTINUE
+        IF (NBNOZ.EQ.0) THEN
+          DO 60,K = 1,NCMP
+            DO 50,INO = 1,NBNO
+              ZL(JCNSL-1+ (INO-1)*NCMP+K) = .TRUE.
+              ZC(JCNSV-1+ (INO-1)*NCMP+K) = (0.0D0,0.0D0)
+   50       CONTINUE
+   60     CONTINUE
+
         ELSE
-         DO 40,I = 1,NBNOZ
+          DO 80,I = 1,NBNOZ
             INO = LINOE(I)
-            DO 42,K = 1,NCMP
-               IF ( CNOCMP((I-1)*NCMP+K) .EQ. 1 ) THEN
-                  ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
-                  ZC(JCNSV-1+(INO-1)*NCMP+K) = (0.0D0,0.0D0)
-               ENDIF
- 42         CONTINUE
- 40      CONTINUE
+            DO 70,K = 1,NCMP
+              IF (CNOCMP((I-1)*NCMP+K).EQ.1) THEN
+                ZL(JCNSL-1+ (INO-1)*NCMP+K) = .TRUE.
+                ZC(JCNSV-1+ (INO-1)*NCMP+K) = (0.0D0,0.0D0)
+              ENDIF
+   70       CONTINUE
+   80     CONTINUE
         ENDIF
       ENDIF
 
-      CALL CNSCNO(CNS,' ','NON',BASEZ,CNOZ)
+      CALL CNSCNO(CNS,' ','NON',BASEZ,CNOZ,'F',IBID)
       CALL DETRSD('CHAM_NO_S',CNS)
 
       CALL JEDEMA()

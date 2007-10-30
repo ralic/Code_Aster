@@ -7,7 +7,7 @@
      &               CNXINV
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -211,7 +211,7 @@ C-----------------------------------------------------------------------
       CNOGDF = '&&XPRREO.CNOGDF'
       CELGDF =  '&&XPRREO.CELGDF'
 
-      CALL CNSCNO(CNSLT,' ','NON','V',CNOLT)
+      CALL CNSCNO(CNSLT,' ','NON','V',CNOLT,'F',IBID)
 C-----BOUCLE PRINCIPALE-------------------------------------------------
       DO 995 ITEMP=1,ITERMX
          DO 110 I=1,NBNO
@@ -238,7 +238,7 @@ C--------------------------------------
      &             ZR(JGLTNO-1+3*(I-1)+3)*ZR(JVF-1+3*(I-1)+3) ) / NORMGT
             ENDIF
  90      CONTINUE
-         CALL CNSCNO(CNSGDF,' ','NON','V',CNOGDF)
+         CALL CNSCNO(CNSGDF,' ','NON','V',CNOGDF,'F',IBID)
 
          LPAIN(1)='PNEUTR'
          LCHIN(1)=CNOGDF
@@ -254,7 +254,7 @@ C-----------------------------------------------------------------------
 C---------------------------------------------------------
 C     CALCUL DU CHAM_ELEM DELTA_PHI ET DU CHAM_ELNO ALPHA
 C---------------------------------------------------------
-            CALL CNSCNO(CNSGLT,' ','NON','V',CNOGLT)
+            CALL CNSCNO(CNSGLT,' ','NON','V',CNOGLT,'F',IBID)
             LPAIN(1)='PLSNO'
             LCHIN(1)=CNOLT
             LPAIN(2)='PGRLS'
@@ -400,7 +400,7 @@ C     BOUCLE SUR LES NOEUDS DE LA MAILLE
 C---------------------------------------------------
 C     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE
 C---------------------------------------------------
-         CALL CNSCNO (CNSLT,' ','NON','V',CNOLT)
+         CALL CNSCNO (CNSLT,' ','NON','V',CNOLT,'F',IBID)
          LPAIN(1)='PGEOMER'
          LCHIN(1)=NOMA//'.COORDO'
          LPAIN(2)='PNEUTER'

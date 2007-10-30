@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,9 @@ C ----------------------------------------------------------------------
         MATSYM = .FALSE.
       ENDIF
 
+      IF (COMPOR(1)(1:4) . EQ . 'LETK') THEN
+        MATSYM = .FALSE.
+      ENDIF
       IF (COMPOR(1)(1:10) . EQ . 'HOEK_BROWN') THEN
         MATSYM = .FALSE.
       ENDIF

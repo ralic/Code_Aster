@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_compor SD  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,7 @@
 # ======================================================================
 
 from SD import *
+from SD.sd_mater import sd_mater
 
 # Remarque :
 #------------
@@ -32,4 +33,157 @@ class sd_compor(AsBase):
     CPRI = AsVI()
     CPRR = Facultatif(AsVR())
 
+
+    def check_tout(self,checker) :
+    #-------------------------------
+        cpri=self.CPRI.get()
+        type=cpri[0]
+        assert type in (1,2,3) , CPRI
+        if type == 1 :
+            self.monocristal(cpri,checker)
+        if type == 2 :
+            self.polycristal(cpri,checker)
+        if type == 3 :
+            self.multifibres(cpri,checker)
+
+
+
+    def monocristal(self,cpri,checker) :
+    #------------------------------------
+        nboccm=cpri[4]
+        nbsys=nboccm
+        cprk=self.CPRK.get_stripped()
+
+        # vérif existence et longueur
+        assert len(cpri)==7, cpri
+        assert len(cprk)==5*nbsys+1, (cpri,cprk)
+        assert not self.CPRR.get()
+
+        # vérif CPRI :
+        #-------------
+        nvi=8+3*nbsys
+        assert cpri[1] == 1   ,cpri
+        assert cpri[2] == nvi ,cpri
+        assert cpri[3] == 1   ,cpri
+        assert cpri[4] > 0    ,cpri
+        assert cpri[5] == 1   ,cpri
+        assert cpri[6] == nvi ,cpri
+
+        # vérif CPRK :
+        #-------------
+        elas=cprk[5*nbsys]
+        assert elas in ('ELAS', 'ELAS_ORTH')  ,cprk
+        for k in range(nbsys):
+            famil     =cprk[5*k+0]
+            mater     =cprk[5*k+1]
+            ecoul     =cprk[5*k+2]
+            ecro_isot =cprk[5*k+3]
+            ecro_cine =cprk[5*k+4]
+            sd2=sd_mater(mater) ; sd2.check(checker)
+            assert famil in ('BASAL','BCC24','PRISMATIQUE','OCTAEDRIQUE','PYRAMIDAL1',
+                            'PYRAMIDAL2','CUBIQUE1','CUBIQUE2','MACLAGE','JOINT_GRAIN',
+                            'RL','UNIAXIAL')
+            assert ecoul in ('ECOU_VISC1','ECOU_VISC2','ECOU_VISC3')
+            assert ecro_isot in ('ECRO_ISOT1','ECRO_ISOT2')
+            assert ecro_cine in ('ECRO_CINE1','ECRO_CINE2')
+
+
+
+    def polycristal(self,cpri,checker) :
+    #------------------------------------
+        nbphases=cpri[1]
+        assert nbphases > 0 , cpri
+        lgcprk  =cpri[6+3*nbphases-2]
+        assert lgcprk > 0 , cpri
+        cprk=self.CPRK.get_stripped()
+        cprr=self.CPRR.get()
+
+        # vérif existence et longueur
+        #------------------------------
+        assert len(cpri)==6+3*nbphases, (cpri,nbphases)
+        assert len(cprr)==2+4*nbphases, (cpri,cprr,nbphases)
+        assert len(cprk)==lgcprk, (cpri,cprk)
+
+        # vérif CPRI :
+        #-------------
+        nvitot=cpri[2]
+        assert nvitot >= 0        ,cpri
+        nbmono=cpri[3]
+        assert nbmono > 0         ,cpri
+        nbpara  =cpri[6+3*nbphases-1]
+        assert nbpara in (0,1,2)  ,cpri
+        for k in range(nbphases):
+            nbfam1 = cpri[4+3*k+0]
+            numono = cpri[4+3*k+1]
+            nvi1   = cpri[4+3*k+2]
+            assert nbfam1 > 0     ,cpri
+            assert numono > 0  and numono <= nbmono   ,(cpri,nbmono)
+            assert nvi1   >=0     ,cpri
+
+        # vérif CPRR :
+        #-------------
+        frac_tot=0.
+        for k in range(nbphases):
+            frac     =cprr[4*k+0]
+            assert frac >= 0. and frac <= 1.  ,(cprr,k)
+            frac_tot=frac_tot+frac
+            for dir in range(1,4):
+                angl     =cprr[4*k+dir]
+                assert angl >=0. and angl <=360. , (angl,dir)
+        assert frac_tot > 0.99 and frac_tot < 1.01
+
+        # vérif CPRK :
+        #-------------
+        locali   =cprk[0]
+        assert locali in ('BZ','BETA')  ,(locali,cprk)
+        decal=0
+        for k in range(nbmono):
+            mono1 =cprk[0+decal+1]
+            sd2=sd_compor(mono1) ; sd2.check(checker)
+            nbfam1=int(cprk[0+decal+2])
+            assert nbfam1 > 0 , (nbfam1,k,decal,cprk)
+            decal=decal+2+5*nbfam1+1
+            # on pourrait encore vérifier que le .CPRK de mono1 a bien été recopié
+            # mais il faut bien s'arreter ...
+
+
+
+    def multifibres(self,cpri,checker) :
+    #------------------------------------
+        nbgmax=cpri[2]
+        cprk=self.CPRK.get_stripped()
+
+        # vérif existence et longueur
+        assert len(cpri)==3, cpri
+        assert len(cprk)==6*nbgmax+1, (cpri,cprk)
+        assert not self.CPRR.get()
+
+        # vérif CPRI :
+        #-------------
+        assert cpri[2] > 0, cpri
+        assert cpri[1] >= 0, cpri
+
+        # vérif CPRK :
+        #-------------
+        mater=cprk[6*nbgmax]
+        assert mater != '', cprk
+        sd2=sd_mater(mater) ; sd2.check(checker)
+        nvimax=0
+        for k in range(nbgmax):
+            grfib1     =cprk[6*k+0]
+            mater1     =cprk[6*k+1]
+            loifib1    =cprk[6*k+2]
+            algo1d     =cprk[6*k+3]
+            deform     =cprk[6*k+4]
+            nvi=    int(cprk[6*k+5])
+            assert grfib1 != '' , cprk
+            assert mater1 != '' , cprk
+            sd2=sd_mater(mater1) ; sd2.check(checker)
+            assert loifib1 != '' , cprk
+            assert algo1d  in ('ANALYTIQUE','DEBORST') , cprk
+            assert deform  in ('PETIT','PETIT_REAC','REAC_GEOM') , cprk
+            assert nvi >=0      , cprk
+            nvimax=max(nvimax,nvi)
+
+        #assert nvimax==cpri[1]  # j'ai sans doute mal compris !!
 
