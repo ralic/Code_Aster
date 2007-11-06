@@ -1,0 +1,960 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 06/11/2007 - 14:12:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010451 DU 2007-01-16 14:18:49
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   NORM_MODE via MACRO_MODE_MECA ou pas d'ailleurs
+FONCTIONNALITE
+   NORM_MODE demandait jusqu'ici a l'utilisateur d'entrer la table POST_ELEM donnant la masse
+   du modele pour calculer les masses dites unitaires des modes (cf doc R5.01.03).
+   Or cette operation est relativement peu couteuse.
+   Donc pour faciliter l'usage de la commande et eviter les erreurs (masse calculee sur un
+   autre ensemble que le modele de la base modale), NORM_MODE se charge de calculer lui-meme
+   sa masse.
+   On retrouve bien sur l'evolution dans MACRO_MODE_MECA.
+   
+   consequences :
+   - suppression du mot clef MASS_INER dans les catapy de NORM_MODE et MACRO_MODE_MECA
+   - suppression de MASS_INER dans macro_mode_meca_ops.py
+   - adaptation d'op0037, routine principale de NORM_MODE
+   - creation de la routine vpmain pour calculer directement la masse du modele
+   - suppression du mot clef MASS_INER dans 21 cas tests
+   - mise a jour des docs de NORM_MODE (U4.52.11) et MACRO_MODE_MECA(U4.52.02)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.52.11, U4.52.02
+VALIDATION
+   astout sur NORM_MODE et MACRO_MODE_MECA
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011430 DU 2007-11-05 13:10:08
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.1.17, les cas tests sdls505a, sdls505b, ssll103a, sslv139a et c s'arretent en ERREUR_<F> (BCR)
+FONCTIONNALITE
+   En effet, dans mon EL sur NORM_MODE, j'avais oublié le cas particulier des modes de
+   flambage. Je corrige cette semaine dans la foulée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SDLS505a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011419 DU 2007-11-02 16:35:29
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+   suppression du mot clef MASS_INER dans NORM_MODE pour les tests MISS
+FONCTIONNALITE
+   Lors de la restitution de la semaine dernière pour simplifier l'usage de NORM_MODE
+   (suppresion du mot clef MASS_INER, fiche 10451) j'ai oublié la plupart des test MISS.
+   Je corrige mon étourderie.
+   
+   tests concernés :
+   MISS01a, MISS02a, MISS03a, MISS04a, MISS04b, MISS05a, MISS07a, MISS07b
+   sdll109c,sdnl131a,sdls300a, sdls139a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   MISS01a, MISS02a, MISS03a, MISS04a, MISS04b, MISS05a, MISS07a, MISS07b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011332 DU 2007-10-08 12:29:45
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   GRAPPE_FLUIDE gestion du transitoire
+FONCTIONNALITE
+   Dans le cadre de l'actualisation et de la correction des anomalies du module
+   GRAPPE_FLUIDE, on propose les évolutions suivantes :
+   
+   - émission d'un message pour les temps T5 et T6, respectivement temps d'entrée et de butée
+   dans le retreint.
+   - mise en place d'un mécanisme pour arrêter le calcul des forces fluide apres le temps T6,
+   temps apres lequel on sort du domaine de validite de GRAPPE_FLUIDE
+   - émission d'une alarme en cas de bloquage de la grappe
+   
+   On en profite pour rendre le calcul des forces GRAPPE_FLUIDE compatible avec le
+   redécoupage du pas de
+   temps (ajout de la sauvegarde du vecteur d'etat de la SD GRAPPE_FLUIDE dans nmarch)
+   
+   impact doc : DOC U4.44.01 - AFFE_CHAR_MECA
+   + doc de l'outil métier 7N, REPTIL
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   fdnl100a
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011396 DU 2007-10-24 14:38:38
+TYPE express concernant Code_Aster (VERSION 4.x)
+TITRE
+   elements 2D discrets: erreur dans le calcul de la masse et des inerties
+FONCTIONNALITE
+   En tentant de corriger la fiche 10451 (masses unitaires dans NORM_MODE), je suis tombé sur
+   une bogue dans le calcul de la masse et des inerties (POST_ELEM/MASS_INER) des éléments 2D
+   discrets (2D_DIS_T).
+   
+   En fait dans la TE0045 (calcul de la masse et des termes d'inertie des éléments discrets),
+   lors de l'extension du 3D vers le 2D, on a fait un copier/coller malheureux qui ne tenait
+   pas compte d'un decalage d'indices differents entre 2D et 3D.
+   
+   La bogue menait à un plantage sur la machine centrale mais sur ma machine elle donnait des
+   résultats faux quant au calcul par POST_ELEM du centre de gravité et donc, par
+   conséquence, des inerties. Toutefois, elle ne concerne que les éléments discrets en 2D,
+   qui sont d'usage relativement rare.
+   
+   J'ajoute un test sur la valeur de la masse et la position du centre de gravité des
+   éléments 2D discrets dans sdld02e.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 4.3.5
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdld02e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 06/11/2007 - 12:55:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010088 DU 2006-10-02 14:00:20
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   performances CPU de RECU_FONCTION dans sdls112a
+FONCTIONNALITE
+   Patologie observée il y a quelques temps :
+   
+   Temps CPU des 3 RECU_FONCTION :
+   ---------------------------------
+    * RECU_FONCTION    :      91.90 :      51.58 :     143.48 *
+    * RECU_FONCTION    :       0.37 :       0.03 :       0.40 *
+    * RECU_FONCTION    :       0.35 :       0.02 :       0.37 *
+   
+   Je suppose que le temps du 1er RECU_FONCTION était dû à l'accès images disque des champs
+   (d'où le temps système).
+   Le profiling n'avait rien donné d'évident à l'époque.
+   
+   Le phénomène n'apparait plus aujourd'hui, les RECU_FONCTION durent tous de l'ordre de la
+   seconde.
+   Le profiling sur la Bull montre un plantage dans POST_ELEM (plantage avec asterp, passe
+   avec asteru et asterd). J'ai passé le test avec valgrind (mais pas sur la Bull forcément)
+   : je n'ai rien trouvé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls112a sur Bull
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011422 DU 2007-11-05 08:28:14
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Correction de 2 messages et nettoyage
+FONCTIONNALITE
+   Dans l'analyse de la fiche 11338, je suis tombé sur des divisions par zéro sur Bull dans
+   zerofo.f. J'ajoute quelques vérifications : j'obtiens ensuite le même comportement que sur
+   ma machine.
+   
+   Message ARLEQUIN_99 remplacé par DVP_99 (assert spécifique Arlequin).
+   
+   Routine diinit.f : ALGORITH2_93 écrit sur une ligne !
+   
+   Quelques nettoyages et traces en INFO=2 dans LIRE_RESU/MED.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest simple
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 06/11/2007 - 12:55:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011401 DU 2007-10-26 09:46:30
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.16, de nombreux cas tests s'arretent en ERREUR_<F> (R)
+FONCTIONNALITE
+   Problème:
+   ---------
+   De nombreux tests s'arretent en erreur<F> sur Rocks en 9.1.16  : sdnl111e,f ...
+                                                                                            
+                                                     
+   Solution:
+   ---------
+   L'erreur a été introduite lors de l'évolution 11229 (formulation en vitesse continue)
+   faite par M. Kham en  9.1.13.
+   Dans les 2 routines mmcmat.f et mmcvec.f, on a augmenté le nombre de champs "in" (7 -> 8)
+   mais on a oublié de redimensionné les vecteurs fortran correspondants.
+                                                                                            
+                                                     
+   routines impactées : mmcmat.f et mmcvec.f
+                                                                                            
+                                                     
+   Validation:
+   -----------
+   J'ai fait passer avec succès les 28 tests les moins couteux en CPU de la liste des tests
+   cassés.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011402 DU 2007-10-26 09:52:16
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.16, les cas tests ssnv185g, ssnv186a,c,d et e , ssnv195b et c, ssnv201a s'arretent sur une erreur numerique (R)
+FONCTIONNALITE
+   Problème:
+   ---------
+   Les tests :
+   ssnv195b  ssnv186a   ssnv195c ssnv201a  ssnv186c
+   ssnv186d  ssnv186e   ssnv185g
+   s'arretent en erreur fatale sur Rocks en 9.1.16
+                                                                                            
+                           
+   Solution:
+   ---------
+   Le problème vient de la routine te0534.f :
+   Les tableaux TN et TT sont dimensionnés à 2 mais ils sont initialisés à 0. sur une
+   longueur de 3.
+                                                                                            
+                           
+   Correction :
+   Je supprime TN qui ne sert à rien.
+   J'initialise TT sur une longueur de 2.
+                                                                                            
+                           
+   NEW8 : rien à faire : le bug a été introduit en 9.1.1
+                                                                                            
+                           
+   Validation:
+   ------------
+   Passage (sur clpaster) des 8 tests incriminés
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   astout
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 06/11/2007 - 12:55:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011417 DU 2007-10-31 20:25:33
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Probleme dans GETCON sur AMD64
+FONCTIONNALITE
+   Sur une machine AMD64, le passage d'argument se passe mal pour une chaine de caractères
+   récupérée dans GETCON.F.
+   Le caractère de fin de chaine est mal passe et on n'arrive pas à  déterminer la longueur
+   de chaine ce qui cause une erreur fatale.
+   Apparait lors d'un getvectjev.
+   
+   La solution consiste à initialiser la chaine en C, puis y recopier la valeur fournie par
+   PyArg_ParseTuple avant de la passer au fortran.
+   On récupère alors dans le fortran une chaine avec des blancs à la fin et un '\0' en
+   dernière position.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011424 DU 2007-11-05 12:44:28
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.17, les cas tests ssnv197a,b,c et wtnv132a, wtnv135a s'arretent en ARRET_ANORMAL (R)
+FONCTIONNALITE
+   wtnv135a plante dans lkcomp en floating point exception.
+   ==> en initialisant MATERD(NBMAT,2) dans lklmat, çà passe bcp mieux
+   
+   
+   ssnv197a, b, c, wtnv132a plantent dans nmhuj.
+   ==> écrasement causé par HUJMAT lors du 2ème appel à RCVALA
+   
+   CHARACTER*20 CERR
+   RCVALA(NBRES=17, CERR(4)...) => il faut donc au moins 21.
+   correction restituée par Marc avec la modif de Hujeux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   4  tests en question sur clpaster
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM Marc              DATE 06/11/2007 - 17:16:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010512 DU 2007-02-06 15:56:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CODHYBAR: loi d'Hujeux en cyclique
+FONCTIONNALITE
+   RTA : 25/10/2007 avec Jean-Michel Proix, MK, AF et FV.
+   Conclusion Ok de JMP, avec les concluions reportées dans l'HISTOR ci-dessous.
+   
+   EDA visée pour la restitution : le 5/11/2007.
+   M.Kham fera la restitution (pre_eda...).
+   _________________________________________________________
+   HISTOR :
+   ======
+   
+   Objectif
+   ========
+   Developpement de la loi de Hujeux en cyclique, par A.Foucault. Suite  de la fiche 10435
+   (loi en monotone par M.Kham).
+   
+   Il s'agit d'une loi multi-mécanisme, avec 3 mécanismes
+   déviatoires et 1 mécanisme isotrope, chacun avec une version monotone et une version cyclique.
+   Ces 8 mécanismes sont couplés par la variable interne de
+   déformation volumique plastique.
+   Un algorithme spécial gère leur activation ou leur désactivation, selon le chargement et
+   sa direction.
+   L'intégration est implicite par intégration locale non linéaire (cf. fiche 10435).
+   
+   Modélisations permises : 3D, 2D en déformations planes et AXI, le tout en mécanique pure
+   (cas drainé) ou en hydromécanique (cas non drainé).
+   Le couplage avec la THM est appelé par la méthode classique dans COMP_INCR/KIT_THM.
+   
+   Projet Codhybar.
+   
+   Developpement
+   =============
+   Esquisse générale
+   -----------------
+   
+   Interface avec Code_Aster : via NMCOMP.f : appel à NMHUJ.  
+   Entrées : sig_moins, alpha_moins, delta_epsi, fournies à HUJELA: évaluation de sig_éla
+   (tir élastique).
+   méthode de sécante afin de calculer tr(sig_ela)_plus pour l'élasticité non liénaire.
+   HUJRES : coeur de l'intégration locale 
+   HUJPOT : détermination des mécanismes potentiellement actifs (pour le redécoupage de pas
+   de temps choisi, avec critère du type : tr_delta_sigma/tr_sigma <0.1, de même que
+   delta_r/r_moins <0.1, r étant les varint d'écrouissage).
+   HUJMID : méthode de Newton locale sur ces mécanismes avec HUJACT. (nombre d'itérations
+   régi par ITER_INTE_MAXI (30 en moyenne)).
+   Contrôle des lambda : 
+   * si lambda_m négatif, alors création d'un mécanisme cyclique, pas nécessairement activé
+   s'il ça reste élastique
+   * si lambda_c négatif, alors soit passage en monotone ou 
+   création d'un autre mécanisme cyclique si changement de direction, pas nécessairement
+   activé s'il ça reste élastique.
+   Dans tous les cas, on a stocké les variables d'histoire afin de se mémorer l'état des
+   mécanismes.
+   Vérification des seuils (tolérance fournie dans resi_inte_rela)
+   
+   Opérateur tangent dsigma/depsilon : obtenu à partir des estimations de lambda. L'opérateur
+   tangent peut ne pas être optimal pour la convergence de Newton. La comparaison avec une
+   méthode de perturbation ne marche pas, à cause des multimécanismes qui peuvent
+   s'enclencher de manière discontinue.
+   
+   Remarque : HUJMID  et HUJPOT pourront être rendues plus performantes (fiche de rex à ouvrir).
+   
+   
+   1)bibfor
+   --------
+   Routines nouvelles et modifiées
+   
+   30 fichiers fortrans sont impactés:
+   
+   * 14 routines sont modifiées : 
+   hujci1.f, hujcrd.f, hujcri.f, hujddd.f, hujela.f, hujiid.f, hujjid.f, hujksi.f, hujmat.f,
+   hujmid.f, hujnvi.f, hujtel.f, hujtid.f, nmhuj.f 
+   
+   * 15 routines sont ajoutées : 
+   hujact.f, hujcdc.f, hujcic.f, hujdp.f, hujdrc.f,  hujmed.f, hujmei.f, hujpic.f, hujpot.f,
+   hujprc.f, hujpxd.f, hujpxs.f, hujqc.f, hujres.f, hujrmo.f 
+   
+   * 1 routine est supprimée : hujpla.f
+   
+   * 2 routines ne sont pas touchées : hujprj.f, hujncv.f 
+   
+   2)catalo des commandes
+   --------
+   defi_materiau.capy (paramètres de Hujeux)
+   comp_incr.capy : prévoir 32 varint
+   
+   mots-clés dans DEFI_MATERIAU, sous le mot-clé facteur :
+                     HUJEUX=_F(N        = 0.4,
+                               BETA     = 24.,
+                               D        = 2.5,
+                               B        = 0.2,
+                               PHI      = 33.,
+                               ANGDIL   = 33.,
+                               PCO      = -1.E6,
+                               PREF     = -1.E6,
+                               AMON     = 0.0001,
+                               ACYC     = 0.008,
+                               CMON     = 0.2,
+                               CCYC     = 0.2,
+                               RD_ELA   = 0.005,
+                               RI_ELA   = 0.001,
+                               RHYS     = 0.05,
+                               RMOB     = 0.9,
+                               XM       = 1.,
+   			    RD_CYC   = 0.005,
+   			    RI_CYC   = 0.001,
+   			    DILA     = 1.0,));
+   
+   
+   3) Le vecteur des variables internes contient 32 composantes:
+     8 facteurs de mobilisation du mécanisme, puis
+     14 variables mémoratrices, puis
+     la déformation volumique plastique, puis
+     6 indicateurs d?activation, puis
+     le scalaire dsigm/dt*depsi/dt(critère de Hill).
+    
+   Validation
+   ==========
+   Comparaisons avec solutions numériques GEFDYN, cf. 
+   http://www.mssmat.ecp.fr/IMG/pdf/resp_loph40.pdf, qui elles-mêmes se réfèrent à des
+   résultats d'essais publiés.
+   
+   Sensibilité aux unités : le loi de Hujeux est écrite en valeurs adimensionnalisées par P_réf.
+   
+   Sensibilité aux rotations d'axes de chargement : ce sera l'objet de la fiche de rex à
+   ouvrir (cf. aussi affe_cara_elem (Massif)).
+   
+   Sensibilité à la modélisation : tests 3D. Un test sera rendu 2D _DEPL : fiche de rex à ouvrir.
+   
+   Pas de dépendance  de la loi en fonction de la température (excepté le traitement des
+   epsi_thermique par dilatation)
+   _________
+   
+   - modification des cas-tests ssnv197a et ssnv197b, suppression du ssnv197c (on se limite à
+   2 pressions de pré-consolidation : 50 et 200 kPa) et introduction de paramètres pour
+   comparaison avec Gefdyn :
+   ESSAI TRIAXIAL DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
+   
+   - modification du cas-test wtnv132a, 
+   suite à l'introduction des nouveaux paramètres de la loi, adaptation de ce test (pour
+   qu'il reste en monotone) : 
+   CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
+   
+   - ajout du cas-test ssnv204a,
+   ESSAI CONSOLIDATION DRAINE (MECA PUR) AVEC LA LOI DE HUJEUX
+   Intérêt : tester la consolidation puis le cyclique en conditions "méca pure" représentatives
+   
+   - ajout des cas-test wtnv133a et wtnv133b,
+   ESSAI TRIAXIAL NON-DRAINE (HM) AVEC LA LOI DE HUJEUX
+   Intérêt : tester la consolidation puis le cyclique en conditions HM représentatives
+   
+   
+   - ajout du cas-test ssnv205a  (cf. nouvelle fiche de Rex à émettre)
+    Drained cyclic strain-controlled shear test
+   Intérêt : tester le cyclique en conditions "méca pure" représentatives, en cisaillement
+   plan (solution avec parties analytiques)
+   
+   - ajout du cas-test wtnv134a, (cf. nouvelle fiche de Rex à émettre)
+   Undrained cyclic stress-controlled shear test
+   Intérêt : tester le cyclique en conditions HM représentatives, en cisaillement plan
+   
+   Documentation
+   =============
+   - doc V6.04.197 (cas-test ssnv197ab)
+   - doc V6.04.204 (cas-test ssnv204a)
+   - doc V7.31.132 (cas-test wtnv132a)
+   - doc V7.31.133 (cas-test wtnv133ab)
+   - doc V6.04.205 (cas-test ssnv205a)
+   - doc V7.31.134 (cas-test wtnv134a)
+   - doc R7.01.23 (comportement de Hujeux) quasi achevée
+   - doc U4.43.01 (DEFI_MATERIAU (Hujeux=_F())
+   - doc U4.51.11 (COMP_INCR) : ajouter le détail des 32 VARINT, préciser que le modèle est
+   exprimé dans le repère du maillage et que la rotation de repère par affe_cara_elem
+   (massif=_f()) n'est pas prise en compte (nouvelle fiche de Rex à émettre)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.23, V6.04.197, U4.43.01, U4.51.11, V6.04.204, V7.31.132, V7.31.133, V7.31.134
+VALIDATION
+   ssnv197a, ssnv197b, ssnv204a, wtnv132a , wtnv133a , ssnv205a, wtnv134a
+NB_JOURS_TRAV  : 175.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 05/11/2007 - 13:33:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011420 DU 2007-11-05 07:17:19
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Ajout de l'option MINMAX dans POST_ELEM
+FONCTIONNALITE
+   Une petite évolution pour récupérer (en FORTRAN) les extrema d'une CMP d'un champ dans une
+   table, avec leur localisation.
+   
+   Pour ce faire, un nouveau mot-clé de POST_ELEM est défini : MINMAX.
+   On peut calculer le min et le max sur tout le maillage, ou sur des groupes de mailles
+   (pour les chamelem). Pour les chamno, on calcule les extrema sur tout le maillage.  La
+   liste des composantes est à donner explicitement.
+   
+   
+   MINMAX  = FACT(statut='f',max=1,
+                     regles=(AU_MOINS_UN('TOUT','GROUP_MA'),),
+                     TOUT         = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                     GROUP_MA     = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                     NOM_CHAM       = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO()),
+                     NOM_CMP        = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
+                        ),
+   b_minmax = BLOC(condition = "( MINMAX != None )",
+             fr="calcul des extrema en espace d'une composante d'un chamelem sur le modele,
+   pour tous les instants spécifiés",
+                 regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
+                 MODELE         = SIMP(statut='f',typ=modele_sdaster),
+                 RESULTAT       = SIMP(statut='o',typ=(evol_noli,evol_ther,evol_elas) ),
+                 PRECISION      = SIMP(statut='f',typ='R',defaut= 1.0E-3),
+                 CRITERE        =
+   SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
+                 TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                 NUME_ORDRE     = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+                 LIST_ORDRE     = SIMP(statut='f',typ=listis_sdaster),
+                 INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+                 LIST_INST      = SIMP(statut='f',typ=listr8_sdaster),
+   ),
+   
+   Voici un exemple de résultat pour un chamelem :
+   
+   #ASTER  9.01.16 CONCEPT MAX_SI CALCULE LE 29/10/2007 A 19:27:18 DE TYPE          
+   #TABLE_SDASTER                                                                   
+    CHAMP_GD   NUME_ORDRE INST         TOUT             MAX_SIXX     MA_MAX_SIXX 
+    SIEF_ELGA           1  1.00000E-03 TOUT              4.46365E-13 M399        
+    SIEF_ELGA           2  1.20000E-03 TOUT              4.93262E-06 M1546       
+    SIEF_ELGA           3  1.40000E-03 TOUT              9.07370E-02 M888        
+    SIEF_ELGA           4  1.60000E-03 TOUT              5.62735E+00 M888        
+    SIEF_ELGA           5  1.80000E-03 TOUT              2.21161E+01 M888        
+    SIEF_ELGA           6  2.44000E-03 TOUT              6.63565E+01 M938        
+    SIEF_ELGA           7  3.08000E-03 TOUT              1.18372E+02 M635        
+    SIEF_ELGA           8  3.72000E-03 TOUT              1.61203E+02 M635        
+    SIEF_ELGA           9  4.36000E-03 TOUT              1.94111E+02 M635        
+    SIEF_ELGA          10  5.00000E-03 TOUT              2.21570E+02 M635 
+    
+    et pour un chamno :
+           
+    #ASTER  9.01.16 CONCEPT MAX_DE CALCULE LE 29/10/2007 A 19:27:22 DE TYPE          
+   #TABLE_SDASTER                                                                   
+    CHAMP_GD   , NUME_ORDRE INST         TOUT             MAX_DX       NO_MAX_DX 
+    DEPL                  1  1.00000E-03 TOUT              1.33861E-20 N205      
+    DEPL                  2  1.20000E-03 TOUT              3.00927E-36 N242      
+    DEPL                  3  1.40000E-03 TOUT              2.95562E-24 N206      
+    DEPL                  4  1.60000E-03 TOUT              1.58203E-22 N434      
+    DEPL                  5  1.80000E-03 TOUT              5.76109E-22 N50       
+    DEPL                  6  2.44000E-03 TOUT              2.52558E-21 N370      
+    DEPL                  7  3.08000E-03 TOUT              8.01799E-22 N242      
+    DEPL                  8  3.72000E-03 TOUT              6.37414E-22 N362      
+    DEPL                  9  4.36000E-03 TOUT              1.92586E-22 N204      
+    DEPL                 10  5.00000E-03 TOUT              4.29231E-22 N204      
+   
+   Validation : test SSNV194. Comparaison des valeurs de la table à IMPR_RESU(VALE_MAX).
+   
+   Comparaison des performances : 1000 occurences de :
+   
+   NBNUM=1000
+   
+   1. Le développement proposé dans POST_ELEM
+   for i in range(NBNUM):
+       MAX_SI=POST_ELEM(MODELE=TROISD,RESULTAT=SOLNL,INST=TFIN,
+                      MINMAX=_F(NOM_CHAM='DEPL',NOM_CMP='DZ',TOUT='OUI'),)
+       DETRUIRE(CONCEPT=_F(NOM=MAX_SI))
+       
+   2. IMPR_RESU MIN MAX
+   for i in range(NBNUM):
+       IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',
+                         INST=TFIN,NOM_CHAM='SIEF_ELGA',NOM_CMP='SIZZ'))
+      
+   3. la méthode EXTR_COMP utilisée de cette façon :
+   for i in range(NBNUM):
+      CHCOMP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',OPERATION='EXTR',
+                           RESULTAT=SOLNL,NOM_CHAM='SIEF_ELGA',INST=TFIN );
+      ldif=CHCOMP.EXTR_COMP('SIZZ', [], 0)
+      ldif1 = Numeric.array(ldif.valeurs)
+      maxdif1 = max(ldif1)
+      print 'max=',maxdif1
+      mindif1 = min(ldif1)
+      print 'min=',mindif1
+      DETRUIRE(CONCEPT=_F(NOM=CHCOMP))
+      
+   On obtient :
+   
+   1. 100.85 s
+   2. 290.52 s
+   3. 158.83 s
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.22
+VALIDATION
+   ssnv194a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011421 DU 2007-11-05 07:31:21
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Calcul de la contrainte de clivage pour le monocristal
+FONCTIONNALITE
+   Cette fiche est une contribution à la fiche 11087 : Post-traitement de Griffith sur les
+   agrégats, aussi appelé SubModelling (projet PERFECT)
+   
+   
+   Les évolutions a priori nécessaires dans Code_Aster pour le moment (pour pouvoir
+   poursuivre plus loin la réflexion)  sont les suivantes :
+   
+   - l'ajout d'une variable interne pour les comportements MONOCRISTAL : 
+   Joumana a calculé la contrainte de clivage (max sur les plans de glissement n de la
+   composante du tenseur des contraintes macroscopique suivant n).
+   Elle est stockée dans l'antepénultième variable interne.
+   
+   - petite modification dans AFFE_CARA_ELEM pour pouvoir utiliser le 
+   mot-clé MASSIF sur les éléments HEXA sous-intégrés (à 8 et 20 noeuds).
+   En effet ces éléments sont intéressants pour les calculs d'agrégats sur
+   maillages de type grille (réglés) :
+   
+   sur perfe03a 5832 Hexa8 6859 noeuds, pour 3 pas de temps, les résultats
+   diffèrent de moins de 0.1%, et le temps passe de 425s (HEXA8) à 270s (HEXAS8).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.11
+VALIDATION
+   ssnv194aR
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 05/11/2007 - 14:04:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011365 DU 2007-10-16 15:29:57
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   La carte COMPOR n'existe pas dans un evol_noli produit par LIRE_RESU
+FONCTIONNALITE
+   Enrichir LIRE_RESU du mot-cle COMP_INCR afin de permettre le stockage du comportement.
+   
+   2) But
+   =======
+   Actuellement,l'operateur STAT_NON_LINE stocke la carte de comportement dans la SD Resultat
+   qu'il genere, ce qui n'est pas le cas de l'operateur LIRE_RESU.
+   L'operateur POST_ELEM/WEIBULL qui a besoin de la loi de comportement ne peut accepter un
+   concept produit par LIRE_RESU etant donne que le comportement y est absent. 
+   L'evolution a donc consiste a munir LIRE_RESU d'un nouveau mot-cle, destine a recueillir
+   le comportement et permettre son stockage dans la SD Resultat.
+   
+   Ainsi on peut fournir a LIRE_RESU sous ce mot-cle:
+   - la carte de comportement, par l'intermediaire du mot-cle simple COMPOR,
+   - la loi de comportement, par l'intermediaire du mot-cle simple RELATION,
+   - les entites geometriques, ...
+   et reutiliser le concept issu de LIRE_RESU dans un operateur qui va exploiter le
+   comportement (comme c'est le cas avec POST_ELEM/WEIBULL).
+   
+   3) Developpement
+   ================
+   Impact: 
+   -------
+   - lire_resu.capy : ajout de COMP_INCR =C_COMP_INCR()
+   - op0150.f : appel a nmdorc pour creer la carte de comportement, puis
+   a rsnoch pour la stocker dans la SD Resultat. De plus, le champ   
+   EPSG_ELGA_DEPL, indispensable au calcul de correction avec deformation 
+   dans POST_ELEM/WEIBULL, n'etait pas traite par l'operateur LIRE_RESU/MED. Nous avons donc
+   enrichi l'op0150.f pour permettre cette prise en compte.
+   - nmdorc.f : ajout de la chaine de caractères LIRE_RESU pour la prendre en compte de cet
+   operateur lors de la creation de la carte.
+   - gener_me3d_3.cata: ajout du couple (EDEFOPG,PEPSI_R) pour l'option TOU_INI_ELGA.
+   
+   4) Validation
+   =============
+   4.1: restitution du cas-test ssnv171c dans lequel nous avons :
+   - cree un fichier med via IMPR_RESU/MED a partir du concept MONO1IMP,
+   - genere une SD Resultat en utilisant l'operateur LIRE_RESU et le fichier med,
+   - ajoute la commande POST_ELEM/WEIBULL
+   - tester la table issue de POST_ELEM/WEIBULL via l'operateur TEST_TABLE.
+   4.2: passage des 39 cas-tests de reference utilisant la commande LIRE_RESU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.22
+VALIDATION
+   tests LIRE_RESU
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR audebert     AUDEBERT Sylvie        DATE 05/11/2007 - 16:10:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010738 DU 2007-04-02 14:33:15
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   COMB_SISM_MODAL en Multi-appui
+FONCTIONNALITE
+   demande du client EDF :
+   =======================
+   Développement dans COMB_SISM_MODAL pour la prise en compte d'excitations corrélées
+   en multi-appui
+   Pour prendre en compte le cas des excitations corrélées en multi-appui, 
+   on propose le développement suivant dans l'opérateur COMB_SISM_MODAL :
+   
+   - possibilité pour l'utilisateur de choisir une option sous le mot-clé EXCIT parmi les
+     3 suivantes : 
+        MONO_APPUI = 'OUI', 
+        MULTI_DECORRELE = 'OUI', 
+        MULTI_CORRELE = 'OUI'. 
+     L'option MULTI_DECORRELE est celle qui est actuellement disponible pour traiter le cas
+   multi-appui. 
+     L'option MULTI_CORRELE est celle dont le développement est à réaliser.
+     
+   - Le calcul relatif à l'option MULTI_CORRELE diffère du calcul MULTI_DECORRELE 
+     uniquement sur l'ordre des cumuls effectués pour le calcul de la réponse directionnelle.
+     Le calcul actuel MULTI_DECORRELE effectue d'abord le cumul sur les modes, puis sur les
+   appuis.
+     Le calcul MULTI_CORRELE devra effectuer le cumul d'abord sur les appuis, puis sur les modes.
+   
+   - Les types de combinaisons possibles, que ce soit sur les modes (COMB_MODE) ou sur
+     les appuis (COMB_MULT_APPUI) sont inchangés.
+   
+   
+   Impact catalogue :
+   ==================
+   ajout de mots clés sous le mot clé facteur EXCIT :
+       o / MONO_APPUI = 'OUI'              traitement actuel du mono-appui (mot clé existant)
+         / MULT_APPUI = 'DECORRELE'        traitement actuel du multi-appuis
+                        'CORRELE'          développement demandé
+   		     
+   Les mots clés MONO_APPUI et MULTI_APPUI s'excluent, de meme en répétant les mots clés
+   facteur EXCIT.
+   
+   
+   Impact fortan :
+   ===============
+   prise en compte du développement dans le source de l'opérateur COMB_SISM_MODAL,
+   vérification des messages, mise ne forme des messages d'Informations
+   regroupement des messages dans le catalogue seisme.py
+   
+   Impact doc :
+   ============
+   doc U : U4.81.01
+   doc R : R4.05.03
+   doc V : V2.01.301
+   
+   
+   Validation :
+   ============
+   - cas test sdld301b: systeme 2 masses 3 ressorts
+     solution de référence analytique pour un MONO_APPUI, MULTI_APPUI 'DECORRELE' et 'CORRELE'
+   - ajout de MULT_APPUI = 'DECORRELE' dans les cas tests traitant actuellement le multi-appuis
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.01;R4.05.03;V2.01.301
+VALIDATION
+   sdld301b
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdld301b                        vivan L.VIVAN            891    891      0
+ CASTEST AJOUT ssnv204a                         kham M.KHAM             644    644      0
+ CASTEST AJOUT wtnv133a                         kham M.KHAM             665    665      0
+ CASTEST AJOUT wtnv133b                         kham M.KHAM             609    609      0
+ CASTEST MODIF fdnl100a                       boyere E.BOYERE           468      5      5
+ CASTEST MODIF sdld301a                        vivan L.VIVAN            781     53     44
+ CASTEST MODIF sdld30a                         vivan L.VIVAN           2274     22     22
+ CASTEST MODIF sdll109c                       boyere E.BOYERE          1681      2      3
+ CASTEST MODIF sdll112a                        vivan L.VIVAN            718     22     17
+ CASTEST MODIF sdll112b                        vivan L.VIVAN            601     20     20
+ CASTEST MODIF sdll131a                        vivan L.VIVAN           1476     10      7
+ CASTEST MODIF sdll132b                       boyere E.BOYERE           679      4      4
+ CASTEST MODIF sdls139a                       boyere E.BOYERE           753      4      7
+ CASTEST MODIF sdls300a                       boyere E.BOYERE           653      2      5
+ CASTEST MODIF sdls505a                       boyere E.BOYERE           294    194    175
+ CASTEST MODIF sdls505b                       boyere E.BOYERE           266      1      1
+ CASTEST MODIF sdnl131a                       boyere E.BOYERE           981      2      4
+ CASTEST MODIF ssnv171c                      rezette C.REZETTE          419     63      2
+ CASTEST MODIF ssnv194a                        proix J-M.PROIX          198      1      1
+ CASTEST MODIF ssnv197a                         kham M.KHAM             490    102    141
+ CASTEST MODIF ssnv197b                         kham M.KHAM             490    100    140
+ CASTEST MODIF ssnv197c                         kham M.KHAM             490    110    150
+ CASTEST MODIF wtnv132a                         kham M.KHAM             622     53     16
+CATALOGU MODIF typelem/gener_me3d_3          rezette C.REZETTE          668      2      2
+CATALOPY MODIF commande/comb_sism_modal        vivan L.VIVAN            118      7      3
+CATALOPY MODIF commande/defi_materiau           kham M.KHAM            2851      5      2
+CATALOPY MODIF commande/lire_resu            rezette C.REZETTE          206      2      2
+CATALOPY MODIF commande/post_elem              proix J-M.PROIX          434     28      2
+CATALOPY MODIF commun/c_comp_incr               kham M.KHAM             359      2      2
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3909      5      3
+ FORTRAN AJOUT algeline/ascorc                 vivan L.VIVAN             91     91      0
+ FORTRAN AJOUT algorith/gfcopy                boyere E.BOYERE            73     73      0
+ FORTRAN AJOUT algorith/hujact                  kham M.KHAM             370    370      0
+ FORTRAN AJOUT algorith/hujcdc                  kham M.KHAM             120    120      0
+ FORTRAN AJOUT algorith/hujcic                  kham M.KHAM              61     61      0
+ FORTRAN AJOUT algorith/hujdp                   kham M.KHAM             181    181      0
+ FORTRAN AJOUT algorith/hujdrc                  kham M.KHAM              78     78      0
+ FORTRAN AJOUT algorith/hujmed                  kham M.KHAM             123    123      0
+ FORTRAN AJOUT algorith/hujmei                  kham M.KHAM              75     75      0
+ FORTRAN AJOUT algorith/hujpic                  kham M.KHAM              76     76      0
+ FORTRAN AJOUT algorith/hujpot                  kham M.KHAM             398    398      0
+ FORTRAN AJOUT algorith/hujprc                  kham M.KHAM              99     99      0
+ FORTRAN AJOUT algorith/hujpxd                  kham M.KHAM              91     91      0
+ FORTRAN AJOUT algorith/hujpxs                  kham M.KHAM              70     70      0
+ FORTRAN AJOUT algorith/hujqc                   kham M.KHAM              99     99      0
+ FORTRAN AJOUT algorith/hujres                  kham M.KHAM             324    324      0
+ FORTRAN AJOUT algorith/hujrmo                  kham M.KHAM              58     58      0
+ FORTRAN AJOUT utilitai/pemaxe                 proix J-M.PROIX          223    223      0
+ FORTRAN AJOUT utilitai/pemaxn                 proix J-M.PROIX          180    180      0
+ FORTRAN AJOUT utilitai/pemima                 proix J-M.PROIX          217    217      0
+ FORTRAN MODIF algeline/ascarm                 vivan L.VIVAN             93     15     30
+ FORTRAN MODIF algeline/ascorm                 vivan L.VIVAN            205     31     49
+ FORTRAN MODIF algeline/op0037                boyere E.BOYERE           648     12      2
+ FORTRAN MODIF algorith/asacce                 vivan L.VIVAN            124     18     15
+ FORTRAN MODIF algorith/ascalc                 vivan L.VIVAN            231     75     51
+ FORTRAN MODIF algorith/asdir                  vivan L.VIVAN            106     22     23
+ FORTRAN MODIF algorith/asecon                 vivan L.VIVAN            272     30     29
+ FORTRAN MODIF algorith/asefen                 vivan L.VIVAN            231     36     24
+ FORTRAN MODIF algorith/asenap                 vivan L.VIVAN            249     19     19
+ FORTRAN MODIF algorith/asexc1                 vivan L.VIVAN            242     28     26
+ FORTRAN MODIF algorith/asexc2                 vivan L.VIVAN            354     44     43
+ FORTRAN MODIF algorith/asexci                 vivan L.VIVAN            146     36     18
+ FORTRAN MODIF algorith/asmsup                 vivan L.VIVAN            223     42     44
+ FORTRAN MODIF algorith/asstoc                 vivan L.VIVAN            215     30     28
+ FORTRAN MODIF algorith/astron                 vivan L.VIVAN            158     30     23
+ FORTRAN MODIF algorith/calcmm                 proix J-M.PROIX           57      4      4
+ FORTRAN MODIF algorith/calcms                 proix J-M.PROIX           85      4      4
+ FORTRAN MODIF algorith/gfdash                boyere E.BOYERE           274      5      2
+ FORTRAN MODIF algorith/gfforc                boyere E.BOYERE           241     21      4
+ FORTRAN MODIF algorith/gflect                boyere E.BOYERE           573     10      2
+ FORTRAN MODIF algorith/hujci1                  kham M.KHAM             200      2      2
+ FORTRAN MODIF algorith/hujcrd                  kham M.KHAM              85     11     10
+ FORTRAN MODIF algorith/hujcri                  kham M.KHAM              59     10      8
+ FORTRAN MODIF algorith/hujddd                  kham M.KHAM             579    325     65
+ FORTRAN MODIF algorith/hujela                  kham M.KHAM             123     21     10
+ FORTRAN MODIF algorith/hujiid                  kham M.KHAM             608    279     43
+ FORTRAN MODIF algorith/hujjid                  kham M.KHAM            1017    443     65
+ FORTRAN MODIF algorith/hujksi                  kham M.KHAM             103      2      2
+ FORTRAN MODIF algorith/hujmat                  kham M.KHAM              98     12      7
+ FORTRAN MODIF algorith/hujmid                  kham M.KHAM             359    152     41
+ FORTRAN MODIF algorith/hujncv                  kham M.KHAM              46      1      1
+ FORTRAN MODIF algorith/hujnvi                  kham M.KHAM              73      4      2
+ FORTRAN MODIF algorith/hujprj                  kham M.KHAM              60      2      3
+ FORTRAN MODIF algorith/hujtel                  kham M.KHAM              86      6      7
+ FORTRAN MODIF algorith/hujtid                  kham M.KHAM             394    152     38
+ FORTRAN MODIF algorith/lcdpec                 proix J-M.PROIX          134     46      3
+ FORTRAN MODIF algorith/lcmmap                 proix J-M.PROIX          499      3      3
+ FORTRAN MODIF algorith/lcmmat                 proix J-M.PROIX          374      5      5
+ FORTRAN MODIF algorith/lcmmin                 proix J-M.PROIX          160      4      4
+ FORTRAN MODIF algorith/lcmmja                 proix J-M.PROIX          258      3      3
+ FORTRAN MODIF algorith/lcmmjp                 proix J-M.PROIX          158      3      3
+ FORTRAN MODIF algorith/lcmmon                 proix J-M.PROIX          172      5      4
+ FORTRAN MODIF algorith/lcmmre                 proix J-M.PROIX          203      3      3
+ FORTRAN MODIF algorith/lcmmsg                 proix J-M.PROIX          570      2      2
+ FORTRAN MODIF algorith/lcmmvx                 proix J-M.PROIX          124      4      3
+ FORTRAN MODIF algorith/lklmat              courtois M.COURTOIS         156      9      2
+ FORTRAN MODIF algorith/nmarch                boyere E.BOYERE           330      7      1
+ FORTRAN MODIF algorith/nmdorc               rezette C.REZETTE          619      3      2
+ FORTRAN MODIF algorith/nmgrfl                boyere E.BOYERE           767     82     12
+ FORTRAN MODIF algorith/nmhuj                   kham M.KHAM             427    162     75
+ FORTRAN MODIF algorith/op0109                 vivan L.VIVAN            408     30     38
+ FORTRAN MODIF algorith/posthm                  kham M.KHAM             129      2      2
+ FORTRAN MODIF assembla/assvec              courtois M.COURTOIS        1045      2      2
+ FORTRAN MODIF elements/zerofo              courtois M.COURTOIS         122     12     10
+ FORTRAN MODIF jeveux/jeinif                courtois M.COURTOIS         574      2      2
+ FORTRAN MODIF modelisa/op0019                 proix J-M.PROIX          454      5      4
+ FORTRAN MODIF modelisa/op0059                 proix J-M.PROIX          376      7      3
+ FORTRAN MODIF prepost/lrceme               courtois M.COURTOIS         252     15      5
+ FORTRAN MODIF prepost/lrcmle               courtois M.COURTOIS         118      5      8
+ FORTRAN MODIF prepost/lrcmva               courtois M.COURTOIS         282      4      4
+ FORTRAN MODIF prepost/lrcmve               courtois M.COURTOIS         327      4      4
+ FORTRAN MODIF prepost/lrmpga               courtois M.COURTOIS         311     42     13
+ FORTRAN MODIF prepost/lrvcpg               courtois M.COURTOIS         267     19      5
+ FORTRAN MODIF supervis/getcon              courtois M.COURTOIS         208      3      1
+ FORTRAN MODIF utilitai/op0107                 proix J-M.PROIX          301     15     10
+ FORTRAN MODIF utilitai/op0150               rezette C.REZETTE         1013     26      3
+ FORTRAN MODIF utilitai/utlicm              courtois M.COURTOIS         153      6      6
+ FORTRAN SUPPR algorith/hujpla                  kham M.KHAM             287      0    287
+  PYTHON AJOUT Messages/seisme                 vivan L.VIVAN            155    155      0
+  PYTHON MODIF Messages/algorith12             vivan L.VIVAN            399      1     12
+  PYTHON MODIF Messages/algorith16             vivan L.VIVAN            578      1     61
+  PYTHON MODIF Messages/algorith               vivan L.VIVAN            323      1     17
+  PYTHON MODIF Messages/grappefluide          boyere E.BOYERE           103     22      3
+  PYTHON MODIF Messages/utilitai3              proix J-M.PROIX          404      5      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   25        5971      5971             +5971
+ MODIF :   98       44594      3325    1863     +1462
+ SUPPR :    1         287               287      -287
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  124       50852      9296    2150     +7146 

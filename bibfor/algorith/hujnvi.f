@@ -1,7 +1,7 @@
         SUBROUTINE HUJNVI ( MOD, NDT, NDI, NVI )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,9 @@ C - 1D
         ELSE 
           CALL U2MESS('F','COMPOR1_11')
         ENDIF
-        NVI = 9
+Caf 02/05/07 debut
+       NVI=32
+Caf 02/05/07 fin
         NDT = NDTLOC
         NDI = NDILOC
         

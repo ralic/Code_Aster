@@ -1,12 +1,13 @@
       SUBROUTINE GFDASH ( IT, Z,DZ,D2Z, DT, FPTG2, FFTG2, FRTG2, FLUID,
-     +                GEOM1, CFPCD1, RUGOSI, X, YY, ITDASH, Z0, L2, L3 )
+     +                GEOM1, CFPCD1, RUGOSI, X, YY, ITDASH, Z0, L2, L3 
+     &                 ,Y)
       IMPLICIT NONE
       INTEGER  IT, ITDASH
       REAL*8   FLUID(8), GEOM1(15), CFPCD1(6), RUGOSI(8), Z, DZ, D2Z,
      &         DT, X(5), YY(2), Z0, L2, L3, FPTG2, FFTG2, FRTG2
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -268,4 +269,6 @@ C
       FRTG2 = LAMR*ROC*LEQ*SQRT(PI*AC)/4*(Y(2)+DZ)**2
      &            +LAMF*ROC*LF*SQRT(PI*AC)/4*(AR/A*Y(2)+DZ)**2
 C
+
+
       END

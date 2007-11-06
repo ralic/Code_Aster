@@ -1,7 +1,7 @@
         SUBROUTINE HUJCRI (MATER, SIG , VIN, SEUILI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,37 +21,39 @@ C ======================================================================
 C       ---------------------------------------------------------------
 C       HUJEUX:  SEUIL DU MECANISME ISOTROPE   FI = ABS( I1 ) + R4*D*PC
 C       ---------------------------------------------------------------
-C       IN  SIG    :  CONTRAINTE
-C       IN  VIN    :  VARIABLES INTERNES = (R4,R1,R2,R3,EPSVP...)
-C       OUT SEUILI :  SEUIL  ELASTICITE DU MECANISME ISOTROPE
+C       IN  MATER  : COEFFICIENTS MATERIAU
+C           SIG    :  CONTRAINTE
+C           VIN    :  VARIABLES INTERNES = (R4,R1,R2,R3,EPSVP...)
+C       OUT SEUILI :  SEUIL DU MECANISME MONOTONE DE CONSOLIDATION
 C       ---------------------------------------------------------------
         INTEGER NDT, NDI, I
-        REAL*8  MATER(20,2), R4, I1, SIG(6), VIN(*)
+        REAL*8  MATER(22,2), R4, I1, SIG(6), VIN(*)
         REAL*8  D, PCO, BETA, SEUILI, PC, EPSVPM
         REAL*8  D13, ZERO, AEXP, EXPTOL, R8MAEM
 
-        COMMON /TDIM/ NDT, NDI
+        COMMON /TDIM/   NDT , NDI
 
-        DATA    D13, ZERO  /0.333333333334D0, 0.D0/
+        DATA      D13, ZERO  /0.333333333334D0, 0.D0/
 
         D      = MATER(3,2)
         PCO    = MATER(7,2)
         BETA   = MATER(2,2)
         R4     = VIN(4)
-        EPSVPM = VIN(5)
+        EPSVPM = VIN(23)
         
         EXPTOL = LOG(R8MAEM())
+
         EXPTOL = MIN(EXPTOL, 40.D0)
         AEXP   = -BETA*EPSVPM
         IF (AEXP .GE. EXPTOL) CALL U2MESS('F', 'COMPOR1_7')
-        
+
         PC     = PCO*EXP(-BETA*EPSVPM)
-                        
+
         I1 = ZERO
         DO 10 I = 1, NDI
           I1 = I1 + D13*SIG(I)
  10       CONTINUE
 
-        SEUILI = ABS(I1) + R4*D*PC
+        SEUILI = - ABS(I1)/(D*PC) - R4
 
         END

@@ -1,16 +1,15 @@
       SUBROUTINE ASEXC2( MOTFAC,NBOCC,NBMODE,PARMOD,AMORT,CORFRE,NOMA,
      &                   NDIR,NOMSUP,NOMSPE,DIRSPE,ECHSPE,NATURE,
-     &                   NBSUPM,NSUPP,KNOEU,
-     &                   KVSPE,KASPE )
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER          NDIR(*),NATURE(3,*),NSUPP(*)
+     &                   NBSUPM,NSUPP,KNOEU,KVSPE,KASPE )
+      IMPLICIT  NONE
+      INTEGER          NBOCC,NBMODE,NDIR(*),NATURE(3,*),NSUPP(*)
       REAL*8           PARMOD(NBMODE,*),AMORT(*),DIRSPE(3,*),ECHSPE(3,*)
       CHARACTER*8      NOMSUP(3,*),NOMSPE(3,*),NOMA
       CHARACTER*(*)    MOTFAC,KVSPE,KASPE,KNOEU
       LOGICAL          CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,15 +59,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32       JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      REAL*8       DIRSP0(3), ECHSP0(3), VALPU(2)
-      CHARACTER*1  DIR(3)
+      INTEGER      I, ID, IER, IFM, IGR, II, III, IM, INAT, INO, IOC,
+     +             IRET, IS, IUNIFI, J, JASPE, JDGN, JGRN, JKNO, JNOE,
+     +             JVAR1, JVSPE, N1, NBPT1, NBPT2, NBSUPM, NGR, NIMPR,
+     +             NNO
+      REAL*8       AMOR, COEF, DEUXPI, ECHEL, EPSI, FREQ, DIRSP0(3),
+     +             ECHSP0(3), VALPU(2), OMEGA, OMEGA2, R8B, R8DEPI,
+     +             RESU, UN, UNS2PI, XNORM, ZERO
+      CHARACTER*1  K1B, DIR(3)
       CHARACTER*4  KNAT
       CHARACTER*8  K8B, SPECT, NOEU, GRNOEU, NOMSP0(3), NOMPU(2)
       CHARACTER*9  NIVEAU
-      CHARACTER*24 VALE, OBJ1, OBJ2
-      CHARACTER*24 VALK(2)
-      CHARACTER*8  K8BID
-      CHARACTER*1 K1BID
+      CHARACTER*24 VALE, OBJ1, OBJ2, VALK(2)
 C     ------------------------------------------------------------------
       DATA   VALE / '                   .VALE' /
       DATA  NOMPU / 'AMOR' , 'FREQ'    /
@@ -106,25 +108,25 @@ C
          XNORM = UN
 C
 C        --- UN SPECTRE SUIVANT UN AXE ---
-         CALL GETVR8(MOTFAC,'AXE',IOC,1,0,R8B,NA)
-         IF (NA.NE.0) THEN
-            CALL GETVR8(MOTFAC,'AXE' ,IOC,1,3,DIRSP0,ND)
+         CALL GETVR8(MOTFAC,'AXE',IOC,1,0,R8B,N1)
+         IF (N1.NE.0) THEN
+            CALL GETVR8(MOTFAC,'AXE' ,IOC,1,3,DIRSP0,N1)
             XNORM = ZERO
             DO 12 ID = 1,3
                XNORM = XNORM + DIRSP0(ID) * DIRSP0(ID)
  12         CONTINUE
             IF (XNORM.LT.EPSI) THEN
                IER = IER + 1
-               CALL U2MESS('E','ALGORITH_26')
+               CALL U2MESS('E','SEISME_4')
                GOTO 10
             ENDIF
             XNORM = UN / SQRT(XNORM)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT,NP)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT,N1)
             NOMSP0(1) = SPECT
             NOMSP0(2) = SPECT
             NOMSP0(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,NE)
-            IF (NE.NE.0) THEN
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            IF (N1.NE.0) THEN
                ECHSP0(1) = ECHEL
                ECHSP0(2) = ECHEL
                ECHSP0(3) = ECHEL
@@ -132,15 +134,15 @@ C        --- UN SPECTRE SUIVANT UN AXE ---
 C
 C        --- UN SPECTRE DANS LES 3 DIRECTIONS ---
          ELSE
-         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,0,R8B,NT)
-         IF (NT.NE.0) THEN
-            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,3,DIRSP0,ND)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT,NP)
+         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,0,R8B,N1)
+         IF (N1.NE.0) THEN
+            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,3,DIRSP0,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT ,N1)
             NOMSP0(1) = SPECT
             NOMSP0(2) = SPECT
             NOMSP0(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,NE)
-            IF (NE.NE.0) THEN
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            IF (N1.NE.0) THEN
                ECHSP0(1) = ECHEL
                ECHSP0(2) = ECHEL
                ECHSP0(3) = ECHEL
@@ -149,13 +151,13 @@ C
 C        --- 3 SPECTRES DANS LES 3 DIRECTIONS ---
          ELSE
 
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,3,NOMSP0,NP)
-            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,1,3,ECHSP0,NE)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,3,NOMSP0,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,1,3,ECHSP0,N1)
 C
          ENDIF
          ENDIF
 C
-         CALL GETVTX(MOTFAC,'NATURE',IOC,1,1,KNAT,NT)
+         CALL GETVTX(MOTFAC,'NATURE',IOC,1,1,KNAT,N1)
          IF (KNAT.EQ.'ACCE') INAT = 1
          IF (KNAT.EQ.'VITE') INAT = 2
          IF (KNAT.EQ.'DEPL') INAT = 3
@@ -165,27 +167,26 @@ C
             IF (ABS(DIRSP0(ID)).GT.EPSI) THEN
                NDIR(ID) = 1
 C
-            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
-     &          IOC,1,0,NOEU,NN)
-            IF (NN.NE.0) THEN
-               NNO = -NN
+            CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',IOC,1,0,NOEU,N1)
+            IF (N1.NE.0) THEN
+               NNO = -N1
                CALL WKVECT('&&ASEXC2.NOEUD','V V K8',NNO,JNOE)
                CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
-     &             IOC,1,NNO,ZK8(JNOE),NN)
+     &                                  IOC,1,NNO,ZK8(JNOE),N1)
                DO 20 INO = 1, NNO
                   NOEU = ZK8(JNOE+INO-1)
                   CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
                   IF (IRET.EQ.0) THEN
                      IER = IER + 1
-                      VALK(1) = NOEU
-                      VALK(2) = NOMA
-                      CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
+                     VALK(1) = NOEU
+                     VALK(2) = NOMA
+                     CALL U2MESK('E','SEISME_1', 2 ,VALK)
                      GOTO 20
                   ENDIF
                   DO 22 IS = 1,NSUPP(ID)
                      IF (NOMSUP(ID,IS).EQ.NOEU) THEN
                         IER = IER + 1
-                        CALL U2MESK('E','ALGORITH_29',1,NOEU)
+                        CALL U2MESK('E','SEISME_7',1,NOEU)
                         GOTO 20
                      ENDIF
  22               CONTINUE
@@ -200,29 +201,29 @@ C
 C
             ELSE
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                IOC,1,0,K8BID,NG)
-               NGR = -NG
+     &                                     IOC,1,0,K8B,N1)
+               NGR = -N1
                CALL WKVECT('&&ASEXC2.GROUP_NO','V V K8',NGR,JGRN)
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     &                IOC,1,NGR,ZK8(JGRN),NG)
+     &                                     IOC,1,NGR,ZK8(JGRN),N1)
                DO 30 IGR = 1, NGR
                   GRNOEU = ZK8(JGRN+IGR-1)
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
                   IF (IRET .EQ. 0) THEN
                      IER = IER + 1
-                      VALK(1) = GRNOEU
-                      VALK(2) = NOMA
-                      CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
+                     VALK(1) = GRNOEU
+                     VALK(2) = NOMA
+                     CALL U2MESK('E','SEISME_2', 2 ,VALK)
                      GOTO 30
                   ENDIF
-                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K1BID)
+                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NNO,K1B)
                   CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
-                  DO 32 INO = 1, NN
+                  DO 32 INO = 1, NNO
                      CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)
                      DO 34 IS = 1,NSUPP(ID)
                         IF (NOMSUP(ID,IS).EQ.NOEU) THEN
                            IER = IER + 1
-                        CALL U2MESK('E','ALGORITH_29',1,NOEU)
+                           CALL U2MESK('E','SEISME_7',1,NOEU)
                            GOTO 32
                         ENDIF
  34                  CONTINUE
@@ -241,7 +242,7 @@ C
 C
  10   CONTINUE
 C
-      IF (IER.NE.0) CALL U2MESS('F','ALGORITH_28')
+      IF (IER.NE.0) CALL U2MESS('F','SEISME_6')
 C
 C     --- NOM DES SUPPORTS PAR DIRECTION ---
       NBSUPM = MAX(NSUPP(1),NSUPP(2),NSUPP(3))
@@ -317,7 +318,7 @@ C     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
             DO 62 IS = 1,NSUPP(ID)
                VALE(1:8) = NOMSPE(ID,IS)
                CALL JEVEUO(JEXNUM(VALE,1),'L',JVAR1)
-               CALL JELIRA(JEXNUM(VALE,1),'LONMAX',NBPT1,K1BID)
+               CALL JELIRA(JEXNUM(VALE,1),'LONMAX',NBPT1,K1B)
                NBPT2 = NBPT1 / 2
                OMEGA = DEUXPI * ZR(JVAR1+NBPT2-1)
                COEF  = DIRSPE(ID,IS)*ECHSPE(ID,IS)

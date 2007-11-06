@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith12 Messages  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,17 +58,6 @@ cata_msg={
  données incompatibles :
  pour les modes mecaniques :  %(k1)s
  il manque l'option        :  %(k2)s
-"""),
-
-9: _("""
-  problème stockage
-  option de calcul :  %(k1)s
-  direction        :  %(k2)s
-  nom du champ     :  %(k3)s
-"""),
-
-11: _("""
- correction statique non prise en compte pour l'option :  %(k1)s
 """),
 
 12: _("""

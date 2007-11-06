@@ -2,7 +2,7 @@
      &                    NOMGD, NCMPRF, NOMCMR,
      &                    NCMPVE, NUMCMP, NTNCMP, NTUCMP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,10 +144,10 @@ C        ZK16(ADUCMP-1+IAUX) = '        '
 C                              1234567890123456
         ZK16(ADUCMP-1+IAUX) = '                '
    21 CONTINUE
-      IF ( NIVINF.GT.1 ) THEN
-       DO 2100 , IAUX = 1 , NCMPVE
-        WRITE (IFM,*) '.. COMPOSANTE ', IAUX, ' : ', ZK16(ADNCMP-1+IAUX)
- 2100  CONTINUE
-      ENDIF
+C      IF ( NIVINF.GT.1 ) THEN
+C       DO 2100 , IAUX = 1 , NCMPVE
+C        WRITE(IFM,*) '.. COMPOSANTE ', IAUX, ' : ', ZK16(ADNCMP-1+IAUX)
+C 2100  CONTINUE
+C      ENDIF
 C
       END

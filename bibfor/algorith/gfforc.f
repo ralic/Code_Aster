@@ -1,13 +1,15 @@
       SUBROUTINE GFFORC ( CHGRFL, Z, DZ, D2Z, DT, FPMEC, FFMEC,
-     +                    FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2, FRTG2)
+     +                    FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2, FRTG2
+     &                    , PRESCR, P0)
       IMPLICIT NONE
       CHARACTER*24        CHGRFL
       REAL*8              Z, DZ, D2Z, DT, FPMEC, FFMEC, 
      +                    FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2, FRTG2
+      REAL*8              PRESCR
 C ----------------------------------------------------------------------
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,10 +76,12 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      I1, I2, I3, I5, I6, I7, I8, I9, I10, I11, I12,
      +             I13, I14, I15, I16, I19
-      INTEGER      II, JFFL, JIFL, IT
+      INTEGER      II, JFFL, JIFL, IT, I
       REAL*8       CGG, ROP, Q, Z0, L1, L2, L3, ROC, ROD, AC, 
      +             LTIGE, VARAI, LCRAY, DTM, PIS4, R8PI
       LOGICAL      DEBUG
+      REAL*8       X(5), Y(6)
+      REAL*8       P0
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -178,6 +182,10 @@ C        -----------------------------------------------
      +                ZI(JIFL-1+1), ZR(JFFL-1+I12+1), ZR(JFFL-1+I16+1),
      +                Z0 ) 
 
+         DO 111 I=1,5
+            X(I) = ZR(JFFL-1+I16+1+I)
+ 111     CONTINUE
+
          IF ( DEBUG ) THEN
             WRITE(6,*)' '
             WRITE(6,*)'******* FORCE TUBE GUIDE AVANT DASHPOT '
@@ -192,7 +200,7 @@ C        -----------------------------------------------
          CALL GFDASH ( IT, Z, DZ, D2Z, DT, FPTG2, FFTG2, FRTG2, 
      +              ZR(JFFL-1+I3+1), ZR(JFFL-1+I7+1), ZR(JFFL-1+I1+1),
      +              ZR(JFFL-1+I12+1), ZR(JFFL-1+I16+1),
-     +              ZR(JFFL-1+I19+1), ZI(JIFL-1+4), Z0, L2, L3 )
+     +              ZR(JFFL-1+I19+1), ZI(JIFL-1+4), Z0, L2, L3 ,Y)
 
          IF ( DEBUG ) THEN
             WRITE(6,*)' '
@@ -203,6 +211,15 @@ C        -----------------------------------------------
          ENDIF
 
       ENDIF 
+
+
+      IF ( (Z+Z0) .LT. L1 ) THEN
+       PRESCR = X(4)
+      ELSE
+       PRESCR = Y(5)
+      ENDIF
+      
+      P0 = ZR(JFFL-1+I3+5)
 
 C --- CALCUL DE LA MASSE APPARENTE :
 C     ----------------------------

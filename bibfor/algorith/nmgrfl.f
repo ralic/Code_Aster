@@ -6,7 +6,7 @@
       CHARACTER*24   CNFEDO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,6 +69,7 @@ C
       INTEGER      IVAL, INO, INO1, INO2, IDVALE, IDVITE, IDACCE
       INTEGER      IZONE, IPNOEU, IDNOEU
       INTEGER      K1, K2, K3, I8, I11, I14
+      INTEGER      I7
       INTEGER      I17, I18, I20, I21
       INTEGER      IARCH, IPLAQ, IFMEC, IFTG, ICDG, IIMPF, IIMPN
       INTEGER      IMIL, DISTND
@@ -77,11 +78,14 @@ C
       REAL*8       FRTG2, ZERO, Z, DZ, D2Z, MA, G, VDIR(3)
       REAL*8       XA12, XA1, XA2, COTE, Z1, Z2, AA12, AA1, AA2
       REAL*8       LDOME, LGDC, HGC, LCHUT, ZMAX, Z0, ZM1
+      REAL*8       ZINTER,L1,ZINTE1,ZMAXM1
       REAL*8       FARCHI, FPLAQ, FMEC, FTG, FFTG
       REAL*8       DIST(100), FF, R8VIDE, VDGC(3)
       LOGICAL      LDIGC
       CHARACTER*8  K8BID, NOMGD
-      CHARACTER*24 NOLILI
+      CHARACTER*24 NOLILI, CHGRF2
+      REAL*8       PCMAX, PRESCR,P0
+      INTEGER      I23
 
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -94,9 +98,8 @@ C
       CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,K8BID,IER)
 
       CALL JEVEUO ( '&&GFLECT.INDICE', 'E', JIFL )
-      CALL JEVEUO ( CHGRFL, 'E', JFFL )
       II    = 5 + ZI(JIFL-1+5)
-CCC      I7    = ZI(JIFL-1+II+7)
+      I7    = ZI(JIFL-1+II+7)
       I8    = ZI(JIFL-1+II+8)
       I11   = ZI(JIFL-1+II+11)
       I14   = ZI(JIFL-1+II+14)
@@ -116,6 +119,14 @@ C
 C --- RECUPERATION DU NOMBRE DE NOEUDS MODELISANT LA GRAPPE :
 C     -----------------------------------------------------
       NBNO = ZI(JIFL-1+5)
+
+C --- COPIE DE LA SD DE FORCE FLUIDE DANS UNE SD DE TRAVAIL
+C     -----------------------------------------------------
+      CHGRF2 = '&&OP0070.GRAPPE_FLUIDE_C'
+      CALL GFCOPY(CHGRFL,CHGRF2)
+      CALL JEVEUO ( CHGRF2, 'E', JFFL )
+
+
 C
 C --- RECUPERATION DU VECTEUR UNITAIRE ORIENTANT LE CRAYON :
 C     ----------------------------------------------------
@@ -185,13 +196,15 @@ C
       DZ  = DZ  / NBNO
       D2Z = D2Z / NBNO
 C
-C --- ON VERIFIE QUE L'ON CHUTE TOUJOURS
-C     ----------------------------------
+C --- ON VERIFIE SI L'ON ARRIVE EN FIN DE CHUTE
+C ET ON CALCULE T6
+C     -----------------------------------------
       LCHUT = ZR(JFFL-1+I8+4)
       Z0    = ZR(JFFL-1+I11+4)
       ZM1   = ZR(JFFL-1+I14+1)
       ZMAX  = LCHUT - Z0 - Z
-      IF ( ZMAX .LE. 0.D0 ) THEN
+      ZMAXM1  = LCHUT - Z0 - ZM1
+      IF ( ZMAX .LE. 0.D0 .AND. ZMAXM1.GT.0.D0) THEN
          IT = ZI(JIFL-1+3)
          VALI (1) = IT-1
          VALI (2) = IT
@@ -199,10 +212,44 @@ C     ----------------------------------
          VALR (2) = Z
          VALR (3) = ( IT - 1 ) * DT
          VALR (4) = IT * DT
-         CALL U2MESG('S', 'GRAPPEFLUIDE_11',0,' ',2,VALI,4,VALR)
+C MESSAGE T6
+         CALL U2MESG('I', 'GRAPPEFLUIDE_11',0,' ',2,VALI,4,VALR)
+C ON NE CHANGE RIEN AU VECTEUR DES FORCES EXTERIEURES ET ON VA
+C DIRECTEMENT A LA FIN
          GOTO 9999
+
       ENDIF
 C
+C ON CALCULE T5 ENTREE DANS LE RETREINT
+C ------------------------------------
+      L1 = ZR(JFFL-1+I7+14)
+      ZINTER = L1 - Z0 - Z
+      ZINTE1 = L1 - Z0 - ZM1
+      IF ( ZINTER .LE. 0.D0 .AND. ZINTE1.GT.0.D0) THEN
+         IT = ZI(JIFL-1+3)
+         VALI (1) = IT-1
+         VALI (2) = IT
+         VALR (1) = ZM1
+         VALR (2) = Z
+         VALR (3) = ( IT - 1 ) * DT
+         VALR (4) = IT * DT
+         CALL U2MESG('I', 'GRAPPEFLUIDE_14',0,' ',2,VALI,4,VALR)
+      ENDIF
+C ON TESTE SI LA GRAPPE EST  BLOQUEE
+C -------------------------------------------
+         IT = ZI(JIFL-1+3)
+      IF (IT.GT.2.D0.AND.DZ .LE. 0.D0 ) THEN
+         VALI (1) = IT-1
+         VALI (2) = IT
+         VALR (1) = ZM1
+         VALR (2) = Z
+         VALR (3) = ( IT - 1 ) * DT
+         VALR (4) = IT * DT
+         CALL U2MESG('A', 'GRAPPEFLUIDE_15',0,' ',2,VALI,4,VALR)
+C COMMENTAIRE EL  RAJOUTER UN ARRET  DU CALCUL AUTOMATIQUE       
+C         GOTO 9999
+      ENDIF
+
 C --- POUR LES ABSCISSES CURVILIGNES, ON PREND L'ORIGINE AU SOMMET
 C --- DU COEUR.
 C --- Z1 VA ETRE L'ABSCISSE CURVILIGNE DU SOMMET DU MECANISME DE
@@ -254,8 +301,30 @@ C
 C --- CALCUL DES FORCES FLUIDES S'EXERCANT SUR LES DIFFERENTES PARTIES
 C --- DE LA GRAPPE :
 C     ------------
-      CALL GFFORC ( CHGRFL, Z, DZ, D2Z, DT, FPMEC,
-     &              FFMEC, FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2, FRTG2)
+      CALL GFFORC ( CHGRF2, Z, DZ, D2Z, DT, FPMEC,
+     &              FFMEC, FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2, FRTG2,
+     &              PRESCR,P0)
+
+
+C CALCUL DE LA PRESSION MAXIMALE DANS LE RETREINT
+      I23 = ZI(JIFL-1+II+33)
+      PCMAX = ZR(JFFL-1+I23)
+      IF (PRESCR.GT.PCMAX) THEN
+        PCMAX = PRESCR
+      ENDIF
+      ZR(JFFL-1+I23) = PCMAX
+
+      IF ( ZMAX .LE. 0.D0 .AND. ZMAXM1.GT.0.D0) THEN
+         IT = ZI(JIFL-1+3)
+         VALI (1) = IT-1
+         VALI (2) = IT
+         VALR (1) = PCMAX
+         VALR (2) = P0
+         VALR (3) = ( IT - 1 ) * DT
+         VALR (4) = PCMAX - P0
+         CALL U2MESG('I', 'GRAPPEFLUIDE_16',0,' ',2,VALI,4,VALR)
+      ENDIF
+C
 C
 C --- AFFECTATION DU VECTEUR DE CHARGEMENT :
 C     ====================================
@@ -275,6 +344,7 @@ C
          ENDIF
          WRITE(IIMPF,1100) IT, Z, DZ, D2Z, MA, FFPLAQ, FPMEC, FFMEC,
      &               FPTG1, FFTG1, FPTG2, FFTG2, FRTG2
+     &               , PRESCR,P0, PRESCR-P0
       ENDIF
 C
 C     =================================================================
@@ -684,10 +754,10 @@ C
  1000 FORMAT('  IT       Z             DZ            D2Z          ',
      &       ' MA         PLAQUAGE     -----FORCE MECANISME-----   ',
      &       '--------TUBE GUIDE-------   ',
-     &       '----------------DASHPOT----------------')
+     &       '----------------DASHPOT----------------','PRESSION')
  1002 FORMAT(78X,'PRESSION      VISQUEUX      PRESSION      VISQUEUX',
      &           '      PRESSION      VISQUEUX      RETREINT')
- 1100 FORMAT(1P,I4,12(2X,E12.5))
+ 1100 FORMAT(1P,I4,15(2X,E12.5))
  1010 FORMAT('NOMBRE DE NOEUDS DANS LES DIFFERENTES ZONES')
  1012 FORMAT('  IT       Z        MECANISME_COMMANDE  GUIDAGE_CONTINU',
      &       '   TUBE_GUIDE/DASHPOT/RETREINT')

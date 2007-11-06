@@ -1,19 +1,102 @@
-POURSUITE(CODE=_F(NOM='SSNV194A'));
+POURSUITE(CODE=_F(NOM='SSNV194A'),);
 
 NB_GRAINS=10
 
+# Calcul des min et max 
+
+
+CUBE=DEFI_GROUP(reuse =CUBE,
+              MAILLAGE=CUBE,
+              CREA_GROUP_MA=_F(TOUT='OUI',NOM='ALL'),)
+
+MAX_SI=POST_ELEM(  
+                   MINMAX=_F(NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP=('SIXX','SIYY','SIZZ'),
+                                TOUT='OUI',RESULTAT=SOLNL,))
+
+IMPR_TABLE(TABLE=MAX_SI)
+
+TEST_TABLE(TABLE=MAX_SI,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=TFIN,),
+           NOM_PARA='MAX_SIXX',
+           VALE=221.57,
+           REFERENCE='AUTRE_ASTER',);
+
+VIMAX=CREA_CHAMP( OPERATION='EXTR',
+                   TYPE_CHAM='ELGA_VARI_R',
+                   RESULTAT=SOLNL,
+                   NOM_CHAM='VARI_ELGA',
+                   TYPE_MAXI='MAXI',
+                   TYPE_RESU='VALE',
+                 ) ;
+
+IMPR_RESU(RESU=_F(CHAM_GD=VIMAX,VALE_MAX='OUI',VALE_MIN='OUI'))
+
+MAX_VI=POST_ELEM(  
+                   MINMAX=_F(NOM_CHAM='VARI_ELGA',
+                   CHAM_GD=VIMAX, MODELE=TROISD,
+                                NOM_CMP=('V1','V2','V3'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=MAX_VI)
+
+TEST_TABLE(TABLE=MAX_VI,
+           NOM_PARA='MIN_V3',
+           VALE=9.33308E-04,
+           REFERENCE='AUTRE_ASTER',);
+
+
+MAX_EP=POST_ELEM( 
+                   MINMAX=_F(NOM_CHAM='EPSP_ELGA',RESULTAT=SOLNL,
+                                NOM_CMP=('EPXX','EPYY','EPZZ'),
+                                GROUP_MA='ALL'),)
+
+IMPR_TABLE(TABLE=MAX_EP)
+
+TEST_TABLE(TABLE=MAX_EP,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=TFIN,),
+           NOM_PARA='MIN_EPZZ',
+           VALE=9.33308E-04,
+           REFERENCE='AUTRE_ASTER',);
+
+
+
+MAX_DE=POST_ELEM(  
+                   MINMAX=_F(NOM_CHAM='DEPL',RESULTAT=SOLNL,
+                                NOM_CMP=('DX','DY','DZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=MAX_DE)
+
+
+TEST_TABLE(TABLE=MAX_DE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=TFIN,),
+           NOM_PARA='MAX_DZ',
+           VALE=5.00000E-03,
+           REFERENCE='AUTRE_ASTER',);
+
+IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),))
+
+IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ')))
+
+IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='EPSP_ELGA',NOM_CMP=('EPXX','EPYY','EPZZ'),))
+
+IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='VARI_ELGA',NOM_CMP=('V1','V2','V3'),))
+
+
 # Calcul des moyennes 
 
-INT_SI=POST_ELEM(MODELE=TROISD,
-                   RESULTAT=SOLNL,
+INT_SI=POST_ELEM(  RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
                                 TOUT='OUI'),)
 
 IMPR_TABLE(TABLE=INT_SI)
 
-INT_EP=POST_ELEM(MODELE=TROISD,
-                   RESULTAT=SOLNL,
+INT_EP=POST_ELEM(  RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='EPSP_ELGA',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 TOUT='OUI'),)
@@ -42,24 +125,16 @@ FEZ=[None]*NB_GRAINS
 for IP in range (NB_GRAINS):
   print 'GM'+str(IP+1)
   
-  INS[IP]=POST_ELEM(MODELE=TROISD,
-                   RESULTAT=SOLNL,
+  INS[IP]=POST_ELEM( RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
 				),)
-#   IMPR_TABLE(FORMAT = 'TABLEAU',
-#              TABLE=INS[IP],);
-
-  EPS[IP]=POST_ELEM(MODELE=TROISD,
-                   RESULTAT=SOLNL,
+  EPS[IP]=POST_ELEM( RESULTAT=SOLNL,
                    INTEGRALE=_F(NOM_CHAM='EPSI_ELGA_DEPL',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
 				),)
-#   IMPR_TABLE(FORMAT = 'TABLEAU',
-#              TABLE=EPS[IP],);
-# 
   INSX[IP]=CALC_TABLE(TABLE=INS[IP], 
                  ACTION=(_F(OPERATION ='EXTR',
 		            NOM_PARA=('INST','INTE_SIXX'),),),)
@@ -70,11 +145,6 @@ for IP in range (NB_GRAINS):
 
   COMX[IP]=CALC_TABLE(TABLE=EPSX[IP], 
                  ACTION=(_F(OPERATION ='COMB',TABLE=INSX[IP],NOM_PARA='INST',),),)
-
-#   IMPR_TABLE (FORMAT = 'TABLEAU',
-#               TABLE  = COMX[IP],
-#               NOM_PARA = ('INST', 'INTE_EPXX','INTE_SIXX'),
-#              ) ;
 
   INSY[IP]=CALC_TABLE(TABLE=INS[IP], 
                  ACTION=(_F(OPERATION ='EXTR',
@@ -87,11 +157,6 @@ for IP in range (NB_GRAINS):
   COMY[IP]=CALC_TABLE(TABLE=EPSY[IP], 
                  ACTION=(_F(OPERATION ='COMB',TABLE = INSY[IP], NOM_PARA='INST',),),)
 
-#   IMPR_TABLE (FORMAT = 'TABLEAU',
-#               TABLE  = COMY[IP],
-#               NOM_PARA = ('INST', 'INTE_EPYY','INTE_SIYY'),
-#              ) ;
-
   INSZ[IP]=CALC_TABLE(TABLE=INS[IP], 
                  ACTION=(_F(OPERATION ='EXTR',
                             NOM_PARA=('INST','INTE_SIZZ'),),),)
@@ -102,11 +167,6 @@ for IP in range (NB_GRAINS):
 
   COMZ[IP]=CALC_TABLE(TABLE=EPS[IP], 
                  ACTION=(_F(OPERATION ='COMB',TABLE = INS[IP], NOM_PARA='INST',),),)
-
-#   IMPR_TABLE (FORMAT = 'TABLEAU',
-#               TABLE  = COMZ[IP],
-#               NOM_PARA = ('INST', 'INTE_EPZZ','INTE_SIZZ'),
-#              ) ;
 
   FSX[IP]=RECU_FONCTION(TABLE=COMX[IP],
                            PARA_X='INST',

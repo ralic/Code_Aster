@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF algorith Messages  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,14 +39,6 @@ cata_msg = {
  initialisation à PULS0(I).
 """),
 
-12 : _("""
-  -> L'option 'ACCE_ABSOLU' est incorrectement traitée en multi appuis.
-     Sauf si les mouvements sont corrélés.
-  -> Risque & Conseil :
-     Assurez-vous que les mouvements sont décorrélés et indépendants.
-
-"""),
-
 13 : _("""
  le VECT_ELEM n'existe pas :  %(k1)s
 """),
@@ -78,14 +70,6 @@ cata_msg = {
 
 22 : _("""
  le groupe  %(k1)s  n'appartient pas au maillage :  %(k2)s
-"""),
-
-23 : _("""
- le noeud  %(k1)s  n'est pas un noeud support.
-"""),
-
-24 : _("""
- le nombre de cas doit etre supérieur à deux pour etre combiné
 """),
 
 25 : _("""

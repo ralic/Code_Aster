@@ -1,6 +1,6 @@
       SUBROUTINE GETCON(NOMRES,IOB,ISHF,ILNG,CTYPE,LCON,IADVAR,NOMOB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF SUPERVIS  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,6 +59,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    NOML32, JEXNUM
 C     ------------------------------------------------------------------
       CTYPE = -1
+C             123456789.123456789.12
+      NOML32='                      '
       NOML32=NOMRES
 C     AU DELA DE 24 : RESERVE JEVEUX &&xxxx
       CALL ASSERT(LXLGUT(NOML32).LE.24)

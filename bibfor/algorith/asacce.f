@@ -1,13 +1,15 @@
-      SUBROUTINE ASACCE(NOMSY,MONOAP,NBSUP,NEQ,NBMODE,
-     &                  ID,NUME,VECMOD,PARMOD,ASSPEC,ZRCREP)
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),ASSPEC(NBSUP,*),
-     &                  ZRCREP(NBSUP,NEQ,*)
-      CHARACTER*(*)     NOMSY,NUME
-      LOGICAL           MONOAP
+      SUBROUTINE ASACCE ( NOMSY, MONOAP, MUAPDE, NBSUP, NEQ, NBMODE,
+     &                    ID, NUME, VECMOD, PARMOD, ASSPEC, RECMOD )
+      IMPLICIT  NONE
+      INTEGER           NBSUP, NEQ, NBMODE, ID
+      REAL*8            VECMOD(NEQ,*), PARMOD(NBMODE,*),
+     &                  ASSPEC(NBSUP,*), RECMOD(NBSUP,NEQ,*)
+      CHARACTER*16      NOMSY
+      CHARACTER*(*)     NUME
+      LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +33,8 @@ C     ------------------------------------------------------------------
 C IN  : NOMSY  : OPTION DE CALCUL
 C IN  : MONOAP : =.TRUE.  , CAS DU MONO-SUPPORT
 C                =.FALSE. , CAS DU MULTI-SUPPORT
+C IN  : MUAPDE : =.TRUE.  , CAS DU MULTI-SUPPORTS DECORRELES
+C                =.FALSE. , CAS DU MULTI-SUPPORTS CORRELES
 C IN  : NBSUP  : NOMBRE DE SUPPORTS
 C IN  : NEQ    : NOMBRE D'EQUATIONS
 C IN  : NBMODE : NOMBRE DE MODES
@@ -38,7 +42,7 @@ C IN  : ID     : LA DIRECTION DE CALCUL
 C IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
 C IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
 C IN  : ASSPEC : VECTEUR DES ASYMPTOTES DES SPECTRES
-C OUT : ZRCREP : VECTEUR DES RECOMBINAISONS MODALES
+C OUT : RECMOD : VECTEUR DES RECOMBINAISONS MODALES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -57,9 +61,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      CHARACTER*8  NOEU,CMP,NOMCMP(3)
-      CHARACTER*16 MONACC, NOMSY2
-      CHARACTER*19 CHEXTR
+      INTEGER       IM, IN, IS, JMOD, JUNI     
+      REAL*8        GAMMA0, XXX         
+      CHARACTER*8   NOEU, CMP, NOMCMP(3)
 C     ------------------------------------------------------------------
       DATA NOMCMP / 'DX' , 'DY' , 'DZ' /
 C     ------------------------------------------------------------------
@@ -85,7 +89,7 @@ C
             GAMMA0 = ASSPEC(1,ID)
             DO 24 IN = 1,NEQ
                XXX = GAMMA0 * ( ZI(JUNI+IN-1) - ZR(JMOD+IN-1) )
-               ZRCREP(IS,IN,ID) = ZRCREP(IS,IN,ID) + XXX*XXX
+               RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + XXX*XXX
  24         CONTINUE
             CALL JEDETR('&&ASTRON.VECTEUR_UNIT')
             CALL JEDETR('&&ASTRON.VECTEUR_MODA')
@@ -108,11 +112,10 @@ C
             GAMMA0 = ASSPEC(1,ID)
             DO 44 IN = 1,NEQ
                XXX = GAMMA0 * ( ZI(JUNI+IN-1) - ZR(JMOD+IN-1) )
-               ZRCREP(IS,IN,ID) = ZRCREP(IS,IN,ID) + XXX*XXX
+               RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + XXX*XXX
  44         CONTINUE
             CALL JEDETR('&&ASTRON.VECTEUR_UNIT')
             CALL JEDETR('&&ASTRON.VECTEUR_MODA')
-            CALL U2MESS('A','ALGORITH_12')
          ENDIF
       ENDIF
 C

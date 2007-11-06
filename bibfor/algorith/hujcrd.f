@@ -1,7 +1,7 @@
         SUBROUTINE HUJCRD (K, MATER, SIG ,VIN, SEUILD)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,15 +20,16 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C    ---------------------------------------------------------------
 C    HUJEUX:  SEUIL DU MECANISME DEVIATOIRE K(=1 A 3)
-C 	      FD(K) = QII(K) + M*PK*RK*( 1 - B*LOG(PK/PC) )
+C             FD(K) = QII(K) + M*PK*RK*( 1 - B*LOG(PK/PC) )
 C    ---------------------------------------------------------------
-C    IN  SIG	:  CONTRAINTE
-C    IN  VIN	:  VARIABLES INTERNES = ( Q, R, X )
-C    OUT SEUILD :  SEUIL  ELASTICITE DU MECANISME DEVIATOIRE
+C    IN  K      : PLAN DE PROJECTION (K = 1 A 3)
+C        SIG    :  CONTRAINTE
+C        VIN    :  VARIABLES INTERNES = ( Q, R, X )
+C    OUT SEUILD :  SEUIL DU MECANISME DEVIATOIRE K
 C    ---------------------------------------------------------------
-        INTEGER      K, NDT, NDI
+        INTEGER      K, NDT, NDI, JJ
         INTEGER      IFM, NIV
-        REAL*8       MATER(20,2), SIG(6), VIN(*), SEUILD
+        REAL*8       MATER(22,2), SIG(6), VIN(*), SEUILD
         REAL*8       UN, RK, EPSVP, PCR, PA, TOLE
         REAL*8       DEGR, BETA, B, M, PHI, PCREF
         REAL*8       SIGD(3), PK, QK
@@ -42,13 +43,11 @@ C       ------------------------------------------------------------
 
         CALL INFNIV (IFM, NIV)
         
-        
 C ==================================================================
 C --- VARIABLES INTERNES -------------------------------------------
 C ==================================================================
-        EPSVP = VIN(5)
+        EPSVP = VIN(23)
         RK    = VIN(K)
-    
         
 C ==================================================================
 C --- CARACTERISTIQUES MATERIAU ------------------------------------
@@ -66,15 +65,17 @@ C ==================================================================
 C --- PROJECTION DANS LE PLAN DEVIATEUR K ------------------------
 C ==================================================================
         CALL HUJPRJ (K, SIG, SIGD, PK, QK)
-        
-        IF ((PK/PA) .LE. TOLE) THEN
+
+        IF ((PK/PA) .LE. TOLE) THEN        
            IF (DEBUG) WRITE (IFM,'(A)')
      &                'HUJCRD :: LOG(PK/PA) NON DEFINI'
-           SEUILD=-1.D0
+           SEUILD=-1.D0    
            GOTO 999
         ENDIF
 
-        
+        IF(K.EQ.1)THEN
+C         WRITE(6,*)'QK =',QK,' --- FR =',RK*(UN-B*LOG(PK/PCR))*M*PK
+        ENDIF
 C ==================================================================
 C --- CALCUL DU SEUIL DU MECANISME DEVIATOIRE K ------------------
 C ==================================================================

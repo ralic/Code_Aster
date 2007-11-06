@@ -4,7 +4,7 @@
      &                      TIMED,TIMEF,VIND,SIGD  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
       INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS
       REAL*8          EVP(6)
-      REAL*8          PGL(3,3),MS(6)
+      REAL*8          PGL(3,3),MS(6),NG(3)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*16    NOMFAM
       REAL*8          TIMED,TIMEF,VIND(*),SIGD(6),SIGDN(6)
@@ -121,7 +121,7 @@ C
 
          NOMFAM=CPMONO(5*(IFA-1)+1)
 C       RECUPERATION DU NOMBRE DE SYSTEME DE GLISSEMENT NBSYS
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG)
          IF (NBSYS.EQ.0) CALL U2MESS('F','ALGORITH_70')
 
          CALL R8INIR(6,0.D0,EVP,1)
@@ -135,7 +135,7 @@ C       RECUPERATION DU NOMBRE DE SYSTEME DE GLISSEMENT NBSYS
                DY (NDT+6+3*IFA*(IS-1)+1) = VIND(6+3*IFA*(IS-1)+1)
      &                       *(TIMEF-TIMED)/TIMEF
 C           RECUPERATION DE MS ET CALCUL DE EVP
-              CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS)
+              CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG)
               DO 110 I = 1,6
                  EVP(I) = EVP(I) + MS(I)*DY (NDT+6+3*IFA*(IS-1)+2)
   110           CONTINUE

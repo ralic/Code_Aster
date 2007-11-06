@@ -1,17 +1,16 @@
-      SUBROUTINE ASCARM(NOMSY,MONOAP,NBSUP,NSUPP,NEQ,NBMODE,VECMOD,
-     +                  PARMOD,ID,REASUP,SPECTR,REPMOD,
-     +                  CORFRE,AMORT)
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER           NSUPP(*)
-      REAL*8            VECMOD(NEQ,*),SPECTR(*),AMORT(*)
-      REAL*8            PARMOD(NBMODE,*)
-      REAL*8            REPMOD(NBMODE,NBSUP,NEQ,*)
+      SUBROUTINE ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ, NBMODE,
+     +                    VECMOD, PARMOD, ID, REASUP, SPECTR, REPMOD,
+     +                    CORFRE, AMORT )
+      IMPLICIT  NONE
+      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
+      REAL*8            VECMOD(NEQ,*), SPECTR(*), AMORT(*)
+      REAL*8            PARMOD(NBMODE,*), REPMOD(NBMODE,NBSUP,NEQ,*)
       REAL*8            REASUP(NBSUP,NBMODE,*)
-      CHARACTER*(*)     NOMSY
-      LOGICAL           MONOAP,CORFRE
+      CHARACTER*16      NOMSY
+      LOGICAL           MONOAP, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/10/2000   AUTEUR PIBAT01 J.PIGAT 
+C MODIF ALGELINE  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,29 +45,15 @@ C IN  : SPECTR : TABLEAU DES VALEURS DU SPECTRE
 C OUT : REPMOD : VECTEUR DES REPONSES MODALES
 C IN  : CORFRE : = .TRUE.  , CORRECTION DES FREQUENCES
 C IN  : AMORT  : VECTEUR DES AMORTISSEMENTS MODAUX
-
 C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI
-      COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16        ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL           ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8       ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                       ZK24
-      CHARACTER*32                                ZK32
-      CHARACTER*80                                         ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+      INTEGER   IM, IN, IS, IND
+      REAL*8    UN, XAMO, OMEGA, OMEGA2, XXM, XXX
+C     ------------------------------------------------------------------
 C
-      CALL JEMARQ()
       UN = 1.D0
 C
 C     --- CAS DU MONO-APPUI ---
+C
       IF ( MONOAP ) THEN
          DO 10 IM = 1,NBMODE
             OMEGA = SQRT(PARMOD(IM,1))
@@ -85,6 +70,7 @@ C     --- CAS DU MONO-APPUI ---
  10      CONTINUE
 C
 C     --- CAS DU MULTI-APPUI ---
+C
       ELSE
          DO 20 IM = 1,NBMODE
             OMEGA = SQRT(PARMOD(IM,1))
@@ -104,5 +90,4 @@ C     --- CAS DU MULTI-APPUI ---
  20      CONTINUE
       ENDIF
 C
-      CALL JEDEMA()
       END

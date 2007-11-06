@@ -1,7 +1,7 @@
       SUBROUTINE HUJCI1 (CRIT, MATER, DEPS, SIGD, I1F, TRACT, IRET)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C                 IRET=0 => PAS DE PROBLEME
 C                 IRET=1 => ECHEC 
 C -----------------------------------------------------------------
       INTEGER NDT, NDI, IRET, IFM, NIV
-      REAL*8  MATER(20,2), CRIT(*), DEPS(6), SIGD(6), I1D, I1F
+      REAL*8  MATER(22,2), CRIT(*), DEPS(6), SIGD(6), I1D, I1F
       REAL*8  TRDEPS, COEF, EXIST, PREC, ALPHA, THETA
       REAL*8  X(4), Y(4)
       REAL*8  YOUNG, POISSO, N, PA

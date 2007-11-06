@@ -5,7 +5,7 @@
         CHARACTER*16 CPMONO(5*NMAT+1)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C     CETTE ROUTINE CALCULE LES TENSEURS MS POUR GAGNER DU TEMPS
 C
 C     ----------------------------------------------------------------
       CHARACTER*16 NOMFAM
-      REAL*8 MS(6)
+      REAL*8 MS(6),NG(3)
       INTEGER NBFSYS,I,IFA,NBSYS,IS
 C     ----------------------------------------------------------------
 
@@ -45,9 +45,9 @@ C         CALCUl DES TENSEURS MS POUR GAGNER DU TEMPS
       ENDIF
       DO 2 IFA=1,NBFSYS
          NOMFAM=CPMONO(5*(IFA-1)+1)
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG)
          DO 3 IS=1,NBSYS
-            CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS)
+            CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS,NG)
             DO 4 I=1,6
                TOUTMS(IFA,IS,I)=MS(I)
  4          CONTINUE

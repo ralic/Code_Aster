@@ -1,7 +1,7 @@
         SUBROUTINE HUJPRJ (K, TIN, TOUD, P, Q)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,10 +20,10 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C  ------------------------------------------------------
 C  LOI DE HUJEUX: PROJECTION DANS LE PLAN DEVIATEUR K
-C  IN  K	:  DIRECTION K=1 A 3
-C      TIN( )	:  TENSEUR A PROJETER (NDIM), EGAL A:
-C  		      - TENSEUR DES CONTRAINTES DE CAUCHY
-C  		      - TENSEUR DES DEFORMATIONS
+C  IN  K        :  DIRECTION K=1 A 3
+C      TIN( )   :  TENSEUR A PROJETER (NDIM), EGAL A:
+C                     - TENSEUR DES CONTRAINTES DE CAUCHY
+C                     - TENSEUR DES DEFORMATIONS
 C
 C  OUT 
 C      TOUD  :  DEVIATEUR K (NDIM/2)
@@ -51,11 +51,10 @@ C  ------------------------------------------------------
         DD      = D12*( TOU(1)-TOU(2) )
         TOUD(1) = DD
         TOUD(2) = -DD
-C        TOUDK(3) = TOUK(3)/DSQR
         TOUD(3) = TOU(3)
 
         P = D12*( TOU(1)+TOU(2) )
-        Q = DD**DEUX + TOU(3)**DEUX
+        Q = DD**DEUX + ((TOU(3))**DEUX)/DEUX
         Q = SQRT(Q)
-
+        
         END

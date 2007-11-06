@@ -1,5 +1,6 @@
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 # TITRE  SYSTEME 2 MASSES - 3 RESSORTS ENCASTRE EN NO1 ET NO4
+#        SOUMISE A UNE EXCITATION  SPECTRALE MULTIPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#  SOUMISE A UNE EXCITATION  SPECTRALE MULTIPLE
 #
 #    K1       K2      K3
 # # <><><>M2<><><>M3<><><> #
@@ -261,18 +261,18 @@ RGQBC=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -399,18 +399,18 @@ RGLBC=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -539,18 +539,18 @@ RGQBI=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -678,18 +678,18 @@ RGLBI=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -853,18 +853,18 @@ RGQBIC=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -994,18 +994,18 @@ RGLBIC=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -1145,18 +1145,18 @@ PQQBC=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -1369,18 +1369,18 @@ PQLBI=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -1595,18 +1595,18 @@ PQABIC=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),
@@ -1812,18 +1812,18 @@ CDDS=COMB_SISM_MODAL(
               MASS_INER=MASSINER,
               EXCIT=(
 # APPUI NO1
-              _F(
-               NOEUD = 'NO1',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX1,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO1',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX1,
+                  ECHELLE = 1.,
                   ),
 # APPUI NO4
-              _F(
-               NOEUD = 'NO4',
-               AXE = ( 1., 0., 0. ),
-               SPEC_OSCI = SPEX2,
-               ECHELLE = 1.,
+              _F( MULTI_APPUI ='DECORRELE',
+                  NOEUD = 'NO4',
+                  AXE = ( 1., 0., 0. ),
+                  SPEC_OSCI = SPEX2,
+                  ECHELLE = 1.,
                   ),),
 
               COMB_MODE=_F(  TYPE = 'SRSS',  ),

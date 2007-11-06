@@ -1,13 +1,13 @@
-      SUBROUTINE ASECON(NOMSY,NEQ,MOME,RESU)
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER           NEQ
-      CHARACTER*(*)      NOMSY
-      CHARACTER*(*)     MOME,RESU
+      SUBROUTINE ASECON ( NOMSY, NEQ, MOME, RESU )
+      IMPLICIT  NONE
+      INTEGER             NEQ
+      CHARACTER*16        NOMSY
+      CHARACTER*(*)       MOME, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,18 +50,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*4  TYPCMO
+      INTEGER      IAD, IBID, ICAS, IDEP, IDIR, IER, II, IN, INO,IOC,
+     +             IOCC, IORDR, IORST, IRET, JABS, JAUX, JCAS, JCUM,
+     +             JDIR, JLIN, JNO, JORD, JQUA, JREP, JSTA, JTYP,
+     +             JVALE, JVAL1, LNOD, NBMODE, NBNO, NBOC, NBTROU,
+     +             NCAS, NDEP, NUCAS, NUME      
+      REAL*8       R8B,R8VIDE,EPSMAC,XXX,XX1,XX2,XX3
+      COMPLEX*16   CBID
+      LOGICAL      COMDIR
       CHARACTER*2  NK
+      CHARACTER*4  TYPCMO
       CHARACTER*8  K8B, NOEU, CMP, NOMCMP(3),NOMA,GRNOEU,KNUM,KDIR,STAT
       CHARACTER*8  MECA,OCCUR
       CHARACTER*16 MONACC,TCMP,CONCEP,NOMCMD,DEF,TOUTO
       CHARACTER*19 CHEXTR,MOTFAC,CHAMP,MONCHA
-      CHARACTER*24 OBJ1, OBJ2,VALE,NOMS2
-      CHARACTER*24 VALK(3)
+      CHARACTER*24 OBJ1, OBJ2,VALE,NOMS2,VALK(3)
       CHARACTER*80 NOMCAS
-      COMPLEX*16   CBID
-      LOGICAL      COMDIR
-      REAL*8       R8VIDE,EPSMAC
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
       DATA  VALE / '                   .VALE' /
@@ -92,9 +96,7 @@ C
      &    IORDR,1,NBTROU)
 
       CALL RSEXCH(MECA,NOMS2,IORDR,MONCHA,IER)
-      IF (IER.NE.0) THEN
-        CALL U2MESS('F','ALGORITH_20')
-      ENDIF
+      IF (IER.NE.0)  CALL U2MESS('F','SEISME_9')
       DEF = 'SECONDAIRE'
       IORDR = 200
 C           --- CHAMP PAR OCCURENCE DE COMB_DPL_APPUI ---
@@ -119,11 +121,9 @@ C
         IF ( IER .EQ. 100 ) THEN
           CALL VTDEFS(CHAMP,MONCHA,'G','R')
         ELSE
-         CALL CODENT(IOCC, 'D' , OCCUR )
-        VALK (1) = NOMSY
-        VALK (2) = OCCUR
-        VALK (3) = CHAMP
-         CALL U2MESG('F', 'ALGORITH12_4',3,VALK,0,0,0,0.D0)
+          VALK (1) = NOMSY
+          VALK (2) = CHAMP
+          CALL U2MESG('F','SEISME_25',2,VALK,1,IOCC,0,0.D0) 
         ENDIF
         VALE(1:19) = CHAMP
         CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
@@ -132,7 +132,7 @@ C
         ELSE
            VALE(20:24)='.CELV'
         END IF
-        CALL JEVEUO(VALE,'E',JVAL)
+        CALL JEVEUO(VALE,'E',JVALE)
 C
         DO 4 IN =1,NEQ
          ZR(JQUA+IN-1)= 0.0D0
@@ -173,12 +173,12 @@ C
                      CALL RSEXCH(STAT,NOMSY,IORST,CHEXTR,IRET)
                      CALL JEEXIN(CHEXTR//'.VALE',IBID)
                      IF (IBID.GT.0) THEN
-                        CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)
+                        CALL JEVEUO(CHEXTR//'.VALE','L',JVAL1)
                      ELSE
-                        CALL JEVEUO(CHEXTR//'.CELV','L',JVALE)
+                        CALL JEVEUO(CHEXTR//'.CELV','L',JVAL1)
                      END IF
                      DO 16 IN = 1,NEQ
-                       ZR(JREP+IN-1) = ZR(JVALE+IN-1) * XX1
+                       ZR(JREP+IN-1) = ZR(JVAL1+IN-1) * XX1
  16                  CONTINUE
                   IF (ZI(JTYP+IOCC-1).EQ.1) THEN
 C                 --- COMBINAISON QUADRATIQUE ---
@@ -208,20 +208,21 @@ C              --- COMBINAISON VALEUR ABSOLUE ---
           XX1 = ZR(JLIN+IN-1)
           XX2 = ZR(JABS+IN-1)
           XX3 = SQRT(ZR(JQUA+IN-1))
-          ZR(JVAL+IN-1) = XX1 + XX2 + XX3
+          ZR(JVALE+IN-1) = XX1 + XX2 + XX3
           II = II + 1
-          ZR(JAUX+II-1) =  ZR(JVAL+IN-1)
+          ZR(JAUX+II-1) =  ZR(JVALE+IN-1)
  26    CONTINUE
-      CALL RSNOCH(RESU,NOMSY,IORDR,' ')
-      CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IORDR,0,IAD,K8B)
-      CALL CODENT(IOCC, 'D' , OCCUR )
-      ZK16(IAD) = 'COMBI'// OCCUR
-      CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IORDR,0,IAD,K8B)
-      ZK16(IAD) = DEF
-      CALL JELIBE(VALE)
 
-      ZI(JORD+IOCC-1) = IORDR
-      IORDR = IORDR + 1
+        CALL RSNOCH(RESU,NOMSY,IORDR,' ')
+        CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IORDR,0,IAD,K8B)
+        CALL CODENT(IOCC, 'D' , OCCUR )
+        ZK16(IAD) = 'COMBI'// OCCUR
+        CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IORDR,0,IAD,K8B)
+        ZK16(IAD) = DEF
+        CALL JELIBE(VALE)
+
+        ZI(JORD+IOCC-1) = IORDR
+        IORDR = IORDR + 1
  10   CONTINUE
       ZI(JORD+NBOC) = IORDR
 C
@@ -229,9 +230,9 @@ C
       IF ( IER .EQ. 100 ) THEN
         CALL VTDEFS(CHAMP,MONCHA,'G','R')
       ELSE
-        VALK (1) = NOMSY
-        VALK (2) = CHAMP
-        CALL U2MESG('F', 'ALGORITH12_5',2,VALK,0,0,0,0.D0)
+        VALK(1) = NOMSY
+        VALK(2) = CHAMP
+        CALL U2MESG('F','SEISME_25',2,VALK,1,IORDR,0,0.D0)
       ENDIF
       VALE(1:19) = CHAMP
       CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
@@ -240,7 +241,7 @@ C
       ELSE
          VALE(20:24)='.CELV'
       END IF
-      CALL JEVEUO(VALE,'E',JVAL)
+      CALL JEVEUO(VALE,'E',JVALE)
 C
        DO 32 IOC = 1,NBOC
        DO 30 IN = 1,NEQ
@@ -250,7 +251,7 @@ C
  32   CONTINUE
 C STOCKAGE DU CUMUL QUADRATIQUE
       DO 34 IN = 1, NEQ
-          ZR(JVAL+IN-1) = SQRT( ABS ( ZR(JCUM+IN-1) ) )
+          ZR(JVALE+IN-1) = SQRT( ABS ( ZR(JCUM+IN-1) ) )
  34   CONTINUE
       CALL JELIBE(VALE)
       CALL RSNOCH(RESU,NOMSY,IORDR,' ')

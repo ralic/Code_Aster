@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,10 +59,11 @@ C     PARAMETRES "MODE_FLAMB"
       CHARACTER*14  NUME
       CHARACTER*16  TYPCON, NOMCMD, NORM, NOEUD, NOMSY, NOMVAR, OLDNOR
       CHARACTER*19  K19B,NORECG
-      CHARACTER*24  MASSE, AMOR, RAIDE, REFE, NOMJV, METHOD,
+      CHARACTER*24  MASSE, AMOR, RAIDE, REFE, NOMJV, METHOD, TITRMO,
      &              KVEC, KVALI, KVALR, KVALK,
      &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT),
      &              MATE, CARA, MODELE
+      CHARACTER*80  TYPPO
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
       DATA  KVEC  / '&&OP0037.VAL_PROPRE'/
@@ -229,6 +230,15 @@ C     --- COMPATIBILITE DES MODES ---
       CALL VPCREA(0,MODEOU,MASSE,AMOR,RAIDE,NUME,IBID)
 C
 C
+      TITRMO = MODEIN//'           .TITR'
+      CALL JEVEUO(TITRMO,'L',LTITR)
+      TYPPO = ZK80(LTITR-1+2)
+C     --- POUR LES MODES DE FLAMBAGE PAS DE MASSE UNITAIRE ---
+      IF (TYPPO(1:10).EQ.'MODE_FLAMB') THEN
+         XMASTR=1.D0
+         LMASIN=.FALSE.
+         GOTO 100
+      ENDIF
       CALL VPMAIN(MODELE,MATE,CARA,XMASTR,NBPARA)
       IF (XMASTR.LE.R8PREM()) THEN
          LMASIN = .FALSE.

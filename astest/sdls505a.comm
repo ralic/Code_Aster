@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 10/07/2000
 # AUTEUR : F. LEBOUVIER
@@ -26,250 +26,269 @@
 #    CALCUL DES CHARGES CRITIQUES CONDUISANT AU FLAMBEMENT ELASTIQUE
 #  - MODELISATION AVEC DES ELEMENTS 'COQUE_3D'(TRIA7)
 #---------------------------------------------------------------------
-#
-DEBUT( CODE=_F( NOM = 'SDLS505A',NIV_PUB_WEB='INTERNET'))
+
+DEBUT(CODE=_F(NOM='SDLS505A',
+              NIV_PUB_WEB='INTERNET',),);
 
 #
 #PRE_IDEAS ();
-#
-MA=LIRE_MAILLAGE( )
+
+MA=LIRE_MAILLAGE();
 
 #
-MAIL=CREA_MAILLAGE(     MAILLAGE=MA,
-                       MODI_MAILLE=_F( TOUT = 'OUI',    
-                                    OPTION = 'TRIA6_7',  
-                                   )
-                     )
 
-MAIL=DEFI_GROUP(reuse=MAIL,  MAILLAGE=MAIL,         
-               CREA_GROUP_NO=_F( NOM = 'A',   NOEUD = 'NO7',  ))
+MAIL=CREA_MAILLAGE(MAILLAGE=MA,
+                   MODI_MAILLE=_F(TOUT='OUI',
+                                  OPTION='TRIA6_7',),);
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(NOEUD='NO7',
+                                 NOM='A',),);
+
 #
-#
-MOEL=AFFE_MODELE(   MAILLAGE=MAIL,
-                          AFFE=(_F( GROUP_MA='TOUT_ELT',
-                                PHENOMENE = 'MECANIQUE',     
-                                MODELISATION = 'COQUE_3D',)  ,
-                                
-                               _F( GROUP_MA='ARETE',
-                                 PHENOMENE = 'MECANIQUE',     
-                                 MODELISATION = '3D',)
-                            ) 
-                   )
+
+MOEL=AFFE_MODELE(MAILLAGE=MAIL,
+                 AFFE=(_F(GROUP_MA='TOUT_ELT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='COQUE_3D',),
+                       _F(GROUP_MA='ARETE',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D',),),);
 
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
-#
-CAEL=AFFE_CARA_ELEM(   MODELE=MOEL,
-                          COQUE=_F( GROUP_MA = 'TOUT_ELT',  
-                                 EPAIS = 0.00045,     
-                                 A_CIS = 9000.,     
-                                 ANGL_REP = (90.,0.,),  
-                                 )
-                       )
+
+CAEL=AFFE_CARA_ELEM(MODELE=MOEL,
+                    COQUE=_F(GROUP_MA='TOUT_ELT',
+                             EPAIS=0.00045,
+                             ANGL_REP=(90.,0.,),
+                             A_CIS=9000.,),);
 
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
-#
-MATERIAU=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,   
-                                  NU = 0.3,  
-                                  )
-                          )
+
+MATERIAU=DEFI_MATERIAU(ELAS=_F(E=2.E+11,
+                               NU=0.3,),);
 
 #
-CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                                AFFE=_F( TOUT = 'OUI',   MATER = MATERIAU,  )
-                          )
+
+CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATERIAU,),);
 
 #
 #---------------------------------------------------------------------
 #                     CHARGEMENTS
 #---------------------------------------------------------------------
-#
-CON_LI=AFFE_CHAR_MECA(        MODELE=MOEL,DDL_IMPO=(
-                              _F( GROUP_NO = 'O_PRIME',  
-                                        DX = 0.,   DY = 0.,  
-                                       ),
-                              _F( GROUP_NO = 'E',  
-                                        DY = 0.,  
-                                       ),
-                              _F( GROUP_NO = 'CONTOUR',  
-                                        DZ = 0.,  
-                                       ))
-                         )
+
+CON_LI=AFFE_CHAR_MECA(MODELE=MOEL,
+                      DDL_IMPO=(_F(GROUP_NO='O_PRIME',
+                                   DX=0.,
+                                   DY=0.,),
+                                _F(GROUP_NO='E',
+                                   DY=0.,),
+                                _F(GROUP_NO='CONTOUR',
+                                   DZ=0.,),),);
 
 #
-CHARGE=AFFE_CHAR_MECA(        MODELE=MOEL,
-                           FORCE_COQUE=_F( GROUP_MA = 'CYLINDRE',  
-                                        PRES = -1.,      
-                                        ),
-                           FORCE_ARETE=_F( GROUP_MA = 'ARETE',  
-                                         FZ = -0.025,        
-                                        ) 
-                        )
+
+CHARGE=AFFE_CHAR_MECA(MODELE=MOEL,
+                      FORCE_ARETE=_F(GROUP_MA='ARETE',
+                                     FZ=-0.025,),
+                      FORCE_COQUE=_F(GROUP_MA='CYLINDRE',
+                                     PRES=-1.,),);
 
 #
 #---------------------------------------------------------------------
 #                        RESOLUTION
 #---------------------------------------------------------------------
-#
-RES=MECA_STATIQUE(      MODELE=MOEL,
-                      CHAM_MATER=CHAM_MAT,
-                       CARA_ELEM=CAEL,EXCIT=(
-                           _F( CHARGE = CON_LI,  ),
-                           _F( CHARGE = CHARGE,  )),
-                    )
+
+RES=MECA_STATIQUE(MODELE=MOEL,
+                  CHAM_MATER=CHAM_MAT,
+                  CARA_ELEM=CAEL,
+                  EXCIT=(_F(CHARGE=CON_LI,),
+                         _F(CHARGE=CHARGE,),),);
 
 #
-SIG=CREA_CHAMP(   RESULTAT=RES,
-                   OPERATION='EXTR',
-                   TYPE_CHAM='ELGA_SIEF_R',
-                    NOM_CHAM='SIEF_ELGA_DEPL',
-                   TYPE_MAXI='MINI',
-                   TYPE_RESU='VALE'
-                 )
+
+SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+               OPERATION='EXTR',
+               RESULTAT=RES,
+               NOM_CHAM='SIEF_ELGA_DEPL',
+               TYPE_MAXI='MINI',
+               TYPE_RESU='VALE',);
 
 #
-MEL_RI_G=CALC_MATR_ELEM(     OPTION='RIGI_GEOM',
-                               MODELE=MOEL,
-                            CARA_ELEM=CAEL,
-                            SIEF_ELGA=SIG
-                          )
+
+MEL_RI_G=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
+                        MODELE=MOEL,
+                        CARA_ELEM=CAEL,
+                        SIEF_ELGA=SIG,);
 
 #
-MEL_RI_M=CALC_MATR_ELEM(      OPTION='RIGI_MECA',
-                                MODELE=MOEL,
-                            CHAM_MATER=CHAM_MAT,
-                             CARA_ELEM=CAEL,
-                                CHARGE=(CHARGE, CON_LI,)
-                          )
+
+MEL_RI_M=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MOEL,
+                        CHAM_MATER=CHAM_MAT,
+                        CARA_ELEM=CAEL,
+                        CHARGE=(CHARGE,CON_LI,),);
 
 #
-NUM=NUME_DDL(   MATR_RIGI=MEL_RI_M)
+
+NUM=NUME_DDL(MATR_RIGI=MEL_RI_M,);
 
 #
-MAS_RI_M=ASSE_MATRICE(   MATR_ELEM=MEL_RI_M,   NUME_DDL=NUM)
+
+MAS_RI_M=ASSE_MATRICE(MATR_ELEM=MEL_RI_M,
+                      NUME_DDL=NUM,);
 
 #
-MAS_RI_G=ASSE_MATRICE(   MATR_ELEM=MEL_RI_G,   NUME_DDL=NUM)
+
+MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MEL_RI_G,
+                      NUME_DDL=NUM,);
 
 #
-RESULT=MODE_ITER_SIMULT(      MATR_A=MAS_RI_M,
-                                MATR_B=MAS_RI_G,
-#                               METHODE='TRI_DIAG',
-                               METHODE='SORENSEN',
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',     ),
-                             TYPE_RESU='MODE_FLAMB',
-                             VERI_MODE=_F( SEUIL = 1.E-5,   )
-                           )
 
-RES_NORM=NORM_MODE(      MODE=RESULT,
-                          NORME='TRAN'
-                      )
+RESULT=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
+                        MATR_B=MAS_RI_G,
+                        METHODE='SORENSEN',
+                        TYPE_RESU='MODE_FLAMB',
+                        CALC_FREQ=_F(OPTION='PLUS_PETITE',),
+                        VERI_MODE=_F(SEUIL=1.E-5,),);
 
-CHA_DEPL=CREA_CHAMP(     RESULTAT=RESULT,
-                          OPERATION='EXTR',
-                          TYPE_CHAM='NOEU_DEPL_R',
-                           NOM_CHAM='DEPL',
-                          NUME_MODE=1
-                       )
+IMPR_CO(CONCEPT=_F(NOM=RESULT,),);
 
-MODE_1=CREA_CHAMP(     RESULTAT=RES_NORM,
-                        OPERATION='EXTR',
-                        TYPE_CHAM='NOEU_DEPL_R',
-                         NOM_CHAM='DEPL',
-                       NUME_ORDRE=10 
-                    )
+RES_NORM=NORM_MODE(MODE=RESULT,
+                   NORME='TRAN',);
 
-RESU2=MODI_REPERE(
-                  RESULTAT    = RES_NORM,
-                  NUME_ORDRE  = 10,
-                  MODI_CHAM   = (_F(NOM_CHAM    = 'DEPL',
-                                   NOM_CMP     = ('DX','DY','DZ',),
-                                   TYPE_CHAM   = 'VECT_3D',),),
-                DEFI_REPERE = _F(
-                                   REPERE     = 'CYLINDRIQUE',
-                                   ORIGINE    = (0.0, 0.0, 0.0,),
-                                   AXE_Z      = (0.0, 0.0, 1.0,),
-                                  ),
-                  INFO=2,
-                )
+CHA_DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=RESULT,
+                    NOM_CHAM='DEPL',
+                    NUME_MODE=1,);
+
+MODE_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='EXTR',
+                  RESULTAT=RES_NORM,
+                  NOM_CHAM='DEPL',
+                  NUME_ORDRE=10,);
+
+RESU2=MODI_REPERE(RESULTAT=RES_NORM,
+                  NUME_ORDRE=10,
+                  MODI_CHAM=_F(TYPE_CHAM='VECT_3D',
+                               NOM_CHAM='DEPL',
+                               NOM_CMP=('DX','DY','DZ',),),
+                  DEFI_REPERE=_F(REPERE='CYLINDRIQUE',
+                                 ORIGINE=(0.0,0.0,0.0,),
+                                 AXE_Z=(0.0,0.0,1.0,),),
+                  INFO=2,);
 
 #
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
-#
-TEST_RESU(
-      RESU=_F( RESULTAT = RESULT,             NUME_MODE = 10,  
-            PARA = 'CHAR_CRIT',      
-            VALE = -1.523E6,               PRECISION = 0.108,  
-            CRITERE = 'RELATIF',   
-            ),CHAM_NO=(
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO6',
-            NOM_CMP = 'DX',   
-            VALE = -0.01021,                     PRECISION = 0.01,  
-            CRITERE = 'RELATIF',   
-            ),
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO6', 
-            NOM_CMP = 'DY',   
-            VALE = 1.,                     PRECISION = 0.01,  
-            CRITERE = 'RELATIF',   
-            ),
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO172',      
-            NOM_CMP = 'DX',   
-            VALE = -0.392,                PRECISION = 0.045,  
-            CRITERE = 'RELATIF',   
-            ),
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO172',      
-            NOM_CMP = 'DY',   
-            VALE = -0.928,                PRECISION = 0.045,  
-            CRITERE = 'RELATIF',   
-            ),
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO6',      
-            NOM_CMP = 'DX',   
-            VALE = -0.01021,                     PRECISION = 0.001,  
-            CRITERE = 'RELATIF',  REFERENCE = 'NON_REGRESSION',
-            ),
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO6',      
-            NOM_CMP = 'DY',   
-            VALE = 1.,                     PRECISION = 0.001,  
-            CRITERE = 'RELATIF',   REFERENCE = 'NON_REGRESSION', 
-            ),
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO172',      
-            NOM_CMP = 'DX',   
-            VALE = -0.376,                PRECISION = 0.001,  
-            CRITERE = 'RELATIF',   REFERENCE = 'NON_REGRESSION', 
-            ),
-   _F( CHAM_GD = MODE_1,              NOEUD = 'NO172',      
-            NOM_CMP = 'DY',   
-            VALE = -0.9498,                PRECISION = 0.001,  
-            CRITERE = 'RELATIF',   REFERENCE = 'NON_REGRESSION', 
-            ))
-            )
 
-TEST_RESU(RESU=(
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=MODE_1,
+                      NOEUD='NO6',
+                      NOM_CMP='DX',
+                      VALE=-0.01021,
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=MODE_1,
+                      NOEUD='NO6',
+                      NOM_CMP='DY',
+                      VALE=1.0,
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=MODE_1,
+                      NOEUD='NO172',
+                      NOM_CMP='DX',
+                      VALE=-0.392,
+                      CRITERE='RELATIF',
+                      PRECISION=0.045,),
+                   _F(CHAM_GD=MODE_1,
+                      NOEUD='NO172',
+                      NOM_CMP='DY',
+                      VALE=-0.928,
+                      CRITERE='RELATIF',
+                      PRECISION=0.045,),
+                   _F(CHAM_GD=MODE_1,
+                      NOEUD='NO6',
+                      NOM_CMP='DX',
+                      VALE=-0.01021,
+                      CRITERE='RELATIF',
+                      PRECISION=0.001,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=MODE_1,
+                      NOEUD='NO6',
+                      NOM_CMP='DY',
+                      VALE=1.0,
+                      CRITERE='RELATIF',
+                      PRECISION=0.001,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=MODE_1,
+                      NOEUD='NO172',
+                      NOM_CMP='DX',
+                      VALE=-0.376,
+                      CRITERE='RELATIF',
+                      PRECISION=0.001,
+                      REFERENCE='NON_REGRESSION',),
+                   _F(CHAM_GD=MODE_1,
+                      NOEUD='NO172',
+                      NOM_CMP='DY',
+                      VALE=-0.9498,
+                      CRITERE='RELATIF',
+                      PRECISION=0.001,
+                      REFERENCE='NON_REGRESSION',),),
+          RESU=_F(RESULTAT=RESULT,
+                  NUME_MODE=10,
+                  PARA='CHAR_CRIT',
+                  VALE=-1523000.0,
+                  CRITERE='RELATIF',
+                  PRECISION=0.108,),);
 
-   # MODI_REPERE
-   # -----------
-        
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-         RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 10,
-         NOEUD = 'NO6',     NOM_CMP = 'DX',           VALE=-1.,),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-2,
-         RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 10,
-         NOEUD = 'NO6',     NOM_CMP = 'DZ',           VALE=-0.01021,),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 2.5E-2,
-         RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 10,
-         NOEUD = 'NO172',     NOM_CMP = 'DX',           VALE=1.,),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 2.5E-2,
-         RESULTAT = RESU2, NOM_CHAM = 'DEPL',   NUME_ORDRE = 10,
-         NOEUD = 'NO172',     NOM_CMP = 'DZ',         VALE=0.01021,),
-        ))
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO6',
+                   VALE=-1.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='NO6',
+                   VALE=-0.01021,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='NO172',
+                   VALE=1.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.025,),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='NO172',
+                   VALE=0.01021,
+                   CRITERE='RELATIF',
+                   PRECISION=0.025,),),);
+
 #
-FIN()
+
+FIN();
+
 #
 # 
+

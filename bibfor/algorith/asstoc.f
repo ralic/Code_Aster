@@ -1,13 +1,14 @@
-      SUBROUTINE ASSTOC(MOME,RESU,NOMSY,NEQ,ZRCREP,NDIR,COMDIR,
-     & TYPCDI,GLOB,PRIM)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           NEQ,       NDIR(*)
-      CHARACTER*(*)     MOME,RESU,NOMSY, TYPCDI
-      REAL*8                                ZRCREP(NEQ,*)
-      LOGICAL           COMDIR,GLOB,PRIM
+      SUBROUTINE ASSTOC ( MOME, RESU, NOMSY, NEQ, REPDIR, NDIR,
+     &                    COMDIR, TYPCDI, GLOB, PRIM )
+      IMPLICIT NONE
+      INTEGER           NEQ, NDIR(*)
+      REAL*8            REPDIR(NEQ,*)
+      LOGICAL           COMDIR, GLOB, PRIM
+      CHARACTER*16      NOMSY
+      CHARACTER*(*)     MOME, RESU, TYPCDI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +33,7 @@ C IN  : MOME   : MODES MECANIQUES
 C IN  : RESU   : NOM UTILISATEUR DE LA COMMANDE
 C IN  : NOMSY  : OPTION DE CALCUL
 C IN  : NEQ    : NOMBRE D'EQUATIONS
-C IN  : ZRCREP : VECTEUR DES RECOMBINAISONS
+C IN  : REPDIR : VECTEUR DES RECOMBINAISONS
 C IN  : NDIR   : VECTEUR DES DIRECTIONS
 C IN  : COMDIR : =.TRUE.  , COMBINAISON DES DIRECTIONS
 C                =.FALSE. , PAS DE COMBINAISON DES DIRECTIONS
@@ -54,14 +55,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IBID
-      REAL*8       R8B, XXX
-      CHARACTER*8  K8B, COMP(5)
-      CHARACTER*16 NOMS2, CONCEP, NOMCMD,DEF
-      CHARACTER*19 MONCHA, CHAMP
-      CHARACTER*24 VALE
-      CHARACTER*24 VALK(3)
-      COMPLEX*16   C16B
+      INTEGER       IBID,I,  ID, IEQ, IER, IN, IORDR, JDEF, JDIR, JVAL,
+     &              LVALE, NBMODE, NBTROU
+      REAL*8        R8B, R1, R10, R11, R12, R13, R14, R15, R16, R17,
+     &              R18, R19, R2, R20, R21, R22, R23, R24, R3, R4, R5,
+     &              R6, R7, R8, R9, RX, RY, RZ, XXX
+      CHARACTER*8   K8B, COMP(5)
+      CHARACTER*16  NOMS2, CONCEP, NOMCMD, DEF
+      CHARACTER*19  MONCHA, CHAMP
+      CHARACTER*24  VALE
+      CHARACTER*24  VALK(3)
+      COMPLEX*16    C16B
 C     ------------------------------------------------------------------
       DATA  COMP / 'X' , 'Y' , 'Z' , 'QUAD' , 'NEWMARK' /
       DATA  VALE / '                   .VALE' /
@@ -85,9 +89,7 @@ C     --- CREATION DE LA STRUCTURE D'ACCUEIL ---
       CALL RSORAC(MOME,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
      &                                                  IORDR,1,NBTROU)
       CALL RSEXCH(MOME,NOMS2,IORDR,MONCHA,IER)
-      IF (IER.NE.0) THEN
-         CALL U2MESS('F','ALGORITH_20')
-      ENDIF
+      IF (IER.NE.0)  CALL U2MESS('F','SEISME_9')
 C
       IORDR = 0
 
@@ -105,10 +107,10 @@ C           --- CHAMP RECOMBINE ---
             IF ( IER .EQ. 100 ) THEN
                CALL VTDEFS(CHAMP,MONCHA,'G','R')
             ELSE
-            VALK (1) = NOMSY
-            VALK (2) = COMP(ID)
-            VALK (3) = CHAMP
-               CALL U2MESG('F', 'ALGORITH12_9',3,VALK,0,0,0,0.D0)
+               VALK(1) = NOMSY
+               VALK(2) = COMP(ID)
+               VALK(3) = CHAMP
+               CALL U2MESK('F', 'SEISME_26',3,VALK)
             ENDIF
             VALE(1:19) = CHAMP
             CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
@@ -120,7 +122,7 @@ C           --- CHAMP RECOMBINE ---
             CALL JEVEUO(VALE,'E',JVAL)
 
             DO 30 IN = 1, NEQ
-               ZR(JVAL+IN-1) = SQRT( ABS ( ZRCREP(IN,ID) ) )
+               ZR(JVAL+IN-1) = SQRT( ABS ( REPDIR(IN,ID) ) )
  30         CONTINUE
             CALL JELIBE(VALE)
             CALL RSNOCH(RESU,NOMSY,IORDR,' ')
@@ -141,10 +143,10 @@ C        --- CHAMP RECOMBINE ---
          IF ( IER .EQ. 100 ) THEN
             CALL VTDEFS(CHAMP,MONCHA,'G','R')
          ELSE
-            VALK (1) = NOMSY
-            VALK (2) = COMP(ID)
-            VALK (3) = CHAMP
-            CALL U2MESG('F', 'ALGORITH12_9',3,VALK,0,0,0,0.D0)
+            VALK(1) = NOMSY
+            VALK(2) = COMP(ID)
+            VALK(3) = CHAMP
+            CALL U2MESK('F', 'SEISME_26', 3, VALK)
          ENDIF
          VALE(1:19) = CHAMP
          CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
@@ -157,15 +159,15 @@ C        --- CHAMP RECOMBINE ---
 
          IF ( TYPCDI(1:4).EQ.'QUAD') THEN
             DO 40 IEQ = 1, NEQ
-               XXX = ABS ( ZRCREP(IEQ,1) ) + ABS ( ZRCREP(IEQ,2) )
-     &                                     + ABS ( ZRCREP(IEQ,3) )
+               XXX = ABS ( REPDIR(IEQ,1) ) + ABS ( REPDIR(IEQ,2) )
+     &                                     + ABS ( REPDIR(IEQ,3) )
                ZR(LVALE+IEQ-1) = SQRT( XXX )
  40         CONTINUE
          ELSEIF (TYPCDI(1:4).EQ.'NEWM') THEN
             DO 42 IEQ = 1, NEQ
-               RX = SQRT( ABS ( ZRCREP(IEQ,1) ) )
-               RY = SQRT( ABS ( ZRCREP(IEQ,2) ) )
-               RZ = SQRT( ABS ( ZRCREP(IEQ,3) ) )
+               RX = SQRT( ABS ( REPDIR(IEQ,1) ) )
+               RY = SQRT( ABS ( REPDIR(IEQ,2) ) )
+               RZ = SQRT( ABS ( REPDIR(IEQ,3) ) )
                R1  =      RX + 0.4D0*RY + 0.4D0*RZ
                R2  =  0.4D0*RX +     RY + 0.4D0*RZ
                R3  =  0.4D0*RX + 0.4D0*RY +     RZ

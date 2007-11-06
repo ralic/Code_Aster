@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,9 +44,13 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_stat,
          
          EXCIT           =FACT(statut='o',max='**',
            regles=(UN_PARMI('MONO_APPUI','NOEUD','GROUP_NO'),
-                   UN_PARMI('AXE','TRI_AXE','TRI_SPEC' ),),
+                   UN_PARMI('AXE','TRI_AXE','TRI_SPEC' ),
+                   UN_PARMI('MONO_APPUI','MULTI_APPUI' ),),
            
-           MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",),
+                                 fr="excitation imposée unique" ),
+           MULTI_APPUI =SIMP(statut='f',typ='TXM',into=("CORRELE","DECORRELE",),
+                                 fr="excitations décorrélés en multi-appuis: cumul sur les modes puis sur les appuis" ),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
            AXE             =SIMP(statut='f',typ='R',max=3,fr="Excitation suivant un seul axe",),

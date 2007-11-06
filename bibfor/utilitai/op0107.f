@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -164,18 +164,23 @@ C                   ----------
 C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
 
-         CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N1 )
-         IF(N1.EQ.0)THEN
-               CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , NP )
-               CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , NC )
-               CALL RSUTNU ( RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
-               CALL JEVEUO ( KNUM, 'L', JORDR )
-               CALL RSADPA(RESUCO,'L',1,'MODELE',ZI(JORDR),0,JPARA,K8B)
-               MODELE=ZK16(JPARA)
-         ENDIF
-
+         CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL PEEINT ( RESU, MODELE, NBOCC )
 
+      ENDIF
+
+
+      CALL GETFAC ( 'MINMAX' , NBOCC )
+C                   ----------
+      IF ( NBOCC .NE. 0 ) THEN
+         CALL GETVID ( 'MINMAX', 'CHAM_GD', 1,1,1, CHDEF, N1 )
+         IF (N1.NE.0) THEN
+            CALL GETVID ( 'MINMAX', 'MODELE', 1,1,1, MODELE, N2 )
+         ELSE
+            CALL GETVID ( 'MINMAX', 'RESULTAT' , 1,1,1, RESUCO, NR )
+            CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
+         ENDIF
+         CALL PEMIMA ( N1, CHDEF, RESU, MODELE, NBOCC )
       ENDIF
 
       CALL GETFAC ( 'WEIBULL' , NBOCC )

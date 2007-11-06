@@ -1,7 +1,7 @@
        SUBROUTINE HUJTEL (MOD, MATER, SIG, HOOK)
        IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,15 +20,15 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C  ---------------------------------------------------------------
 C  CALCUL DE LA MATRICE DE RIGIDITE ELASTIQUE DE LA LOI HUJEUX
-C  IN	MOD   :  MODELISATION
-C  	MATER :  COEFFICIENTS MATERIAU
-C  	SIG   :  CONTRAINTES
+C  IN   MOD   :  MODELISATION
+C       MATER :  COEFFICIENTS MATERIAU
+C       SIG   :  CONTRAINTES
 C  OUT  HOOK  :  OPERATEUR RIGIDITE ELASTIQUE
 C  ---------------------------------------------------------------
         INTEGER  NDT, NDI, I, J
 
-        REAL*8   SIG(6), HOOK(6,6), MATER(20,2), I1, COEF
-        REAL*8   E, NU, AL, BL, DEMU
+        REAL*8   SIG(6), HOOK(6,6), MATER(22,2), I1, COEF
+        REAL*8   E, NU, AL, DEMU, LA
         REAL*8   UN, D13, ZERO, DEUX
 
         CHARACTER*8 MOD
@@ -47,7 +47,7 @@ C --->   CALCUL PREMIER INVARIANT DES CONTRAINTES
         DO 10 I = 1, NDI
           I1 = I1 + D13*SIG(I)
   10    CONTINUE
-  
+
 
 C --->   CALCUL DES COEF. UTILES
         IF (I1 .EQ. ZERO) THEN
@@ -55,12 +55,11 @@ C --->   CALCUL DES COEF. UTILES
         ELSE
            COEF = (I1/MATER(8,2)) **MATER(1,2)
         ENDIF
-        
-        E    = MATER(1,1)*COEF
-        NU   = MATER(2,1)
-        AL   = E * (UN-NU)/(UN+NU) /(UN-DEUX*NU)
-        BL   = E * NU     /(UN+NU) /(UN-DEUX*NU)
-        DEMU = E / (UN+NU)
+        E  = MATER(1,1)*COEF
+        NU = MATER(2,1)
+        AL = E  * (UN-NU) / (UN+NU) / (UN-DEUX*NU)
+        DEMU = E       / (UN+NU)
+        LA   = E*NU/(UN+NU)/(UN-DEUX*NU)
         
 
 C --->   OPERATEUR DE RIGIDITE
@@ -71,7 +70,7 @@ C ----   3D/DP/AX
           DO 20 I = 1, NDI
             DO 20 J = 1, NDI
               IF (I .EQ. J) HOOK(I,J) = AL
-              IF (I .NE. J) HOOK(I,J) = BL
+              IF (I .NE. J) HOOK(I,J) = LA
  20           CONTINUE
           DO 30 I = NDI+1, NDT
             HOOK(I,I) = DEMU

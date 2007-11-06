@@ -1,7 +1,8 @@
-        SUBROUTINE HUJELA (MOD, CRIT, MATERF, DEPS, SIGD, SIGF, IRET)
+        SUBROUTINE HUJELA (MOD, CRIT, MATERF, DEPS, SIGD, SIGF, 
+     &                     EPSD, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/07/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,16 +26,17 @@ C           CRIT   :  CRITERES DE CONVERGENCE
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           SIGD   :  CONTRAINTE  A T
 C           DEPS   :  INCREMENT DE DEFORMATION
+C           EPSD   :  DEFORMATION TOTALE A T
 C       OUT SIGF   :  CONTRAINTE A T+DT
 C           IRET   :  CODE RETOUR DE  L'INTEGRATION DE LA LOI CJS
 C                         IRET=0 => PAS DE PROBLEME
 C                         IRET=1 => ECHEC 
 C       ---------------------------------------------------------------
         INTEGER       NDT, NDI, IRET, I, J
-        REAL*8        COEF, E, NU, AL, BL, DEMU, I1, N, PREF
+        REAL*8        COEF, E, NU, AL, DEMU, I1, N, PREF
         REAL*8        DEPS(6), DSIG(6), SIGD(6), SIGF(6)
-        REAL*8        HOOK(6,6), MATERF(20,2), CRIT(*)
-        REAL*8        ZERO, UN, DEUX
+        REAL*8        HOOK(6,6), MATERF(22,2), CRIT(*), EPSD(6)
+        REAL*8        ZERO, UN, DEUX, LA, EPSV, I1E
         CHARACTER*8   MOD
         LOGICAL       TRACT
 
@@ -52,8 +54,16 @@ C       ---------------------------------------------------------------
 C--->  CALCUL DE I1=TR(SIG) A T+DT PAR METHODE DE LA SECANTE
 C      OU EXPLICITEMENT SI NIVEAU HUJEUX
         CALL HUJCI1 (CRIT, MATERF, DEPS, SIGD, I1, TRACT, IRET)
+
+        I1E  = (SIGD(1) + SIGD(2) + SIGD(3))/3
+        EPSV  = DEPS(1) + DEPS(2) + DEPS(3)
+        I1E  = MATERF(1,1)/(3.D0*(UN-DEUX*MATERF(2,1)))*EPSV*
+     &            (I1E/PREF)**N+I1E
+C        WRITE(6,'(A,6(1X,E12.5))')'DEPS =',(DEPS(I),I=1,6)
+C       WRITE(6,*)'I1E =',I1E
+C       WRITE(6,*)'I1 =',I1
+        IF(I1E .GT. ZERO) I1E = I1
         IF (IRET.EQ.1) GOTO 9999
-        
 
 C--->  EN CAS D'ENTREE EN TRACTION, LES CONTRAINTES SONT
 C      RAMENEES SUR L'AXE HYDROSTATIQUE A DES VALEURS FAIBLES
@@ -71,14 +81,15 @@ CKH A REVOIR....
              GOTO 9999
         ENDIF
 
+        I1 = (I1 + I1E)/2
 
 C---> CALCUL DU COEF  (-----------)**N ET MODULE_YOUNG A T+DT
         COEF = (I1/PREF)**N
         E    = MATERF(1,1)*COEF
         NU   = MATERF(2,1)
-        AL   = E * (UN-NU) /(UN+NU) /(UN-DEUX*NU)
-        BL   = E * NU      /(UN+NU) /(UN-DEUX*NU)
-        DEMU = E           /(UN+NU)
+        AL   = E*(UN-NU) /(UN+NU) /(UN-DEUX*NU)
+        DEMU = E     / (UN+NU)
+        LA   = E*NU/(UN+NU)/(UN-DEUX*NU)
 
 
 C--->   OPERATEUR DE RIGIDITE
@@ -91,7 +102,7 @@ C - 3D/DP/AX
            DO 40 I = 1, NDI
              DO 40 J = 1, NDI
                IF(I.EQ.J) HOOK(I,J) = AL
-               IF(I.NE.J) HOOK(I,J) = BL
+               IF(I.NE.J) HOOK(I,J) = LA
  40          CONTINUE
            DO 45 I = NDI+1, NDT
              HOOK(I,I) = DEMU

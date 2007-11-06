@@ -1,5 +1,5 @@
 
-# MODIF  DATE 05/06/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 05/11/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
@@ -235,7 +235,10 @@ TEST_RESU(RESU=(_F(RESULTAT=MONO1IMP,
                    ),);
 
 
-# TEST DE WEIBULL
+# TESTS DE WEIBULL
+# ---------------
+
+# TEST 1-A (A PARTIR DE LA SD RESULTAT ISSUE DE STAT_NON_LINE)
 
 AE2=POST_ELEM(RESULTAT=MONO1IMP,
               TOUT_ORDRE='OUI',
@@ -254,7 +257,65 @@ TEST_TABLE(TABLE=AE2,
                       NOM_PARA='SIGMA_WEIBULL',
                       VALE=2.78611E+02,
                       CRITERE='ABSOLU',  )
-                      
+
+# TEST 1-B (A PARTIR DE LA SD RESULTAT ISSUE DE LIRE_RESU)
+
+DEFI_FICHIER(UNITE=81)
+
+IMPR_RESU(FORMAT='MED',UNITE=81,
+          RESU=_F(RESULTAT=MONO1IMP,),)
+
+MONO2IMP=LIRE_RESU(
+         TYPE_RESU='EVOL_NOLI',
+         CHAM_MATER=MAT,
+         CARA_ELEM=ORIEN1,
+         FORMAT='MED',
+         MODELE=TROISD,
+         FORMAT_MED=(_F( NOM_CHAM_MED='MONO1IMPDEPL____________________',
+                         NOM_CHAM    ='DEPL' ),
+                     _F( NOM_CHAM_MED='MONO1IMPSIEF_ELGA_______________',
+                         NOM_CHAM    ='SIEF_ELGA'),
+                     _F( NOM_CHAM_MED='MONO1IMPEPSG_ELGA_DEPL__________',
+                         NOM_CHAM    ='EPSG_ELGA_DEPL'),
+                     _F( NOM_CHAM_MED='MONO1IMPVARI_ELGA_______________',
+                         NOM_CHAM    ='VARI_ELGA', 
+                         NOM_CMP=('V1','V2','V3','V4','V5','V6','V7','V8','V9',                          
+                                 'V10','V11','V12','V13','V14','V15','V16','V17','V18','V19',
+                                 'V20','V21','V22','V23','V24','V25','V26','V27','V28','V29',
+                                 'V30','V31','V32','V33','V34','V35','V36','V37','V38','V39',
+                                 'V40','V41','V42','V43','V44',),
+                         NOM_CMP_MED=('V1','V2','V3','V4','V5','V6','V7','V8','V9',                          
+                                 'V10','V11','V12','V13','V14','V15','V16','V17','V18','V19',
+                                 'V20','V21','V22','V23','V24','V25','V26','V27','V28','V29',
+                                 'V30','V31','V32','V33','V34','V35','V36','V37','V38','V39',
+                                 'V40','V41','V42','V43','V44',),)
+                          ),
+          UNITE=81,
+          COMP_INCR=_F(RELATION='MONOCRISTAL',
+                       COMPOR=COMPORT,),
+          TOUT_ORDRE='OUI',);
+
+AE3=POST_ELEM(RESULTAT=MONO2IMP,
+              TOUT_ORDRE='OUI',
+              WEIBULL=_F(TOUT = 'OUI',
+                         OPTION = 'SIGM_ELGA',
+                         CORR_PLAST = 'OUI'
+                   )
+                   )
+
+TEST_TABLE(TABLE=AE3,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=100,),
+                   _F(NOM_PARA = 'LIEU',
+                      VALE_K = 'CUBE')), 
+                      REFERENCE='NON_REGRESSION',
+                      NOM_PARA='SIGMA_WEIBULL',
+                      VALE=2.78611E+02,
+                      CRITERE='ABSOLU',  )
+
+
+# TEST 2
+
 ORIEN2=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_REP=(15.,0.,0.,),),);

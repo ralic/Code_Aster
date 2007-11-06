@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 NOMJV, LIAR,TYPCOM
       CHARACTER*24 DESC, REFD, NOPARA(NBPARA)
       CHARACTER*24 VALK(3)
-      LOGICAL      TRONC,MONOAP,COMDIR,CORFRE,CALMAS
+      LOGICAL      TRONC,MONOAP,MUAPDE,COMDIR,CORFRE,CALMAS
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
       DATA  DIR    / 'X' , 'Y' , 'Z' /
@@ -128,9 +128,9 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
             CALL GETVR8(' ','AMOR_REDUIT',1,1,NBAMOR,ZR(JAMOR),NA)
          ENDIF
          IF (NBAMOR.GT.NBMODE) THEN
-            VALI (1) = NBAMOR
-            VALI (2) = NBMODE
-            CALL U2MESG('F','ALGORITH16_28',0,' ',2,VALI,0,0.D0)
+            VALI(1) = NBAMOR
+            VALI(2) = NBMODE
+            CALL U2MESI('F','SEISME_11',2,VALI)
          ENDIF
          IF (NBAMOR.LT.NBMODE) THEN
             CALL WKVECT('&&OP0109.AMORTISSEMEN2','V V R',NBMODE,JAMO2)
@@ -148,9 +148,9 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
          IF (NLA.NE.0) THEN
             CALL JELIRA(LIAR//'.VALE','LONUTI',NBAMOR,K8B)
             IF (NBAMOR.GT.NBMODE) THEN
-             VALI (1) = NBAMOR
-             VALI (2) = NBMODE
-             CALL U2MESG('F','ALGORITH16_29',0,' ',2,VALI,0,0.D0)
+              VALI(1) = NBAMOR
+              VALI(2) = NBMODE
+              CALL U2MESI('F','SEISME_11',2,VALI)
             ENDIF
             CALL JEVEUO(LIAR//'.VALE','L',JARM)
             CALL WKVECT('&&OP0109.AMORTISSEMENT','V V R',NBMODE,JAMOR)
@@ -174,8 +174,7 @@ C           A MODIFIER
             CALL JEVEUO(DESC,'L',JDESC)
             NBAMOR = ZI(JDESC)
             IF ( ZI(JDESC+3).NE.1) THEN
-               VALI (1) = NBAMOR
-               CALL U2MESG('F','ALGORITH16_30',0,' ',1,VALI,0,0.D0)
+               CALL U2MESS('F','SEISME_12')
             ELSE
             CALL WKVECT('&&OP0109.AMORTI','V V R8',NBAMOR*NBAMOR,JAMOG)
             CALL COPMAT(AMOGEN,NUMGEC,ZR(JAMOG))
@@ -184,9 +183,9 @@ C           A MODIFIER
          ENDIF
       ENDIF
       IF (NBAMOR.NE.NBMODE) THEN
-       VALI (1) = NBAMOR
-       VALI (2) = NBMODE
-       CALL U2MESG('F','ALGORITH16_31',0,' ',2,VALI,0,0.D0)
+       VALI(1) = NBAMOR
+       VALI(2) = NBMODE
+       CALL U2MESI('F','SEISME_13',2,VALI)
       ENDIF
 C     ----- DIVERS RECOMBINAISON -----
       CALL GETVTX('COMB_MODE','TYPE' ,1,1,1,TYPCMO,NCM)
@@ -201,7 +200,7 @@ C
       CALL GETFAC('COMB_MULT_APPUI',NMULT)
       CALL GETFAC('COMB_DEPL_APPUI',NDEPL)
       IF (NDEPL.NE.0.AND.NMULT.EQ.0) THEN
-       CALL U2MESG('F','ALGORITH16_32',0,' ',0,0,0,0.D0)
+         CALL U2MESS('F','SEISME_14')
       ENDIF
 C
       CALL INFMAJ
@@ -216,30 +215,27 @@ C
          VALK (2) = TYPCMO
          VALK (3) = ZK16(JOPT)
          VALI (1) = NBMODE
-         CALL U2MESG('I+','ALGORITH16_33',3,VALK,1,VALI,0,0.D0)
+         CALL U2MESG('I+','SEISME_15',3,VALK,1,VALI,0,0.D0)
          DO 15 J = 2,NBOPT
-            VALK (1) = ZK16(JOPT+J-1)
-            CALL U2MESG('I+','ALGORITH16_34',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('I+','SEISME_16',1,ZK16(JOPT+J-1))
    15    CONTINUE
          IF (NNA.NE.0) THEN
-            VALK(1) = NATURE
-            CALL U2MESG('I+','ALGORITH16_85',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('I+','SEISME_17',1,NATURE)
          ENDIF
          IF (NCD.NE.0) THEN
-            VALK(1) = TYPCDI
-            CALL U2MESG('I+','ALGORITH16_86',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('I+','SEISME_18',1,TYPCDI)
          ENDIF
          IF (NTY2.NE.0) THEN
-            VALK (1) = TYPCMA
-            CALL U2MESG('I+','ALGORITH16_35',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('I+','SEISME_19',1,TYPCMA)
          ENDIF 
+         CALL U2MESS('I','SEISME_27')
       ENDIF
 C     ----- RECUPERATION DES EXCITATIONS -----
       WRITE(IFM,1060)
       CALL WKVECT('&&OP0109.DIRECTION','V V I',3,JDIR)
       CALL WKVECT('&&OP0109.NB_SUPPOR','V V I',3,JNSU)
       CALL ASEXCI(MASSE,ZR(LVAL),ZR(JAMOR),NBMODE,CORFRE,INFO,ZI(JDIR),
-     +            MONOAP, KSPECT, KASYSP, NBSUP,ZI(JNSU),KNOEU)
+     +            MONOAP, MUAPDE, KSPECT, KASYSP, NBSUP,ZI(JNSU),KNOEU)
       CALL JEVEUO(KASYSP,'E',JASY)
       CALL JEVEUO(KSPECT,'E',JSPE)
       IF (.NOT.MONOAP) CALL JEVEUO(KNOEU,'E',JKNO)
@@ -254,8 +250,7 @@ C        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
          CALL TBLIVA ( TMAS, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
          IF ( IRET .EQ. 2 ) THEN
-            VALK (1) = TMAS
-            CALL U2MESG('F','ALGORITH16_36',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('F','SEISME_20',1,TMAS)
          ELSEIF ( IRET .EQ. 3 ) THEN
             CALL TBEXP2(TMAS,'ENTITE')
             PARAKI(1) = 'LIEU'
@@ -265,8 +260,7 @@ C        VERIFICATION DES PARAMETRES DE LA TABLE 'TMAS'
             CALL TBLIVA ( TMAS, 2, PARAKI, IBID, R8B, C16B, VALEKI, K8B,
      +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) THEN
-               VALK (1) = TMAS
-               CALL U2MESG('F','ALGORITH16_37',1,VALK,0,0,0,0.D0)
+               CALL U2MESK('F','SEISME_20',1,TMAS)
             ENDIF
          ENDIF
          CALMAS = .TRUE.
@@ -367,24 +361,22 @@ C     ----- CAS DU MULTI-SUPPORT -----
          CALL WKVECT('&&OP0109.REAC_SUP','V V R',NBSUP*NBMODE*3,JREA)
          CALL WKVECT('&&OP0109.DEPL_SUP','V V R',NBSUP*3,JDEP)
          CALL WKVECT('&&OP0109.TYPE_COM','V V I',NBSUP*3,JCSU)
-         CALL ASMSUP(MASSE,MECA,NBMODE,NEQ,NBSUP,ZI(JNSU),
-     +               ZK8(JKNO),ZI(JDIR),ZR(JREA),
-     +               ZI(JCSU),NUME,ZI(JORDR) )
+         CALL ASMSUP(MASSE,MECA,NBMODE,NEQ,NBSUP,ZI(JNSU),ZK8(JKNO),
+     +               ZI(JDIR),ZR(JREA),ZI(JCSU),NUME,ZI(JORDR) )
          CALL GETFAC('COMB_DEPL_APPUI',NBFAC)
-         IF (NBFAC.NE.0) THEN
-           CALL ASENAP(MASSE)
-         ENDIF
+         IF (NBFAC.NE.0)  CALL ASENAP(MASSE)
       ENDIF
+      
 C     --- CALCUL DES REPONSES ---
 
       CALL ASCALC(RESU,MASSE,MECA,PSMO,STAT,NBMODE,NEQ,ZI(JORDR),
-     +     ZK16(JOPT),NBOPT,ZI(JDIR),MONOAP,NBSUP,ZI(JNSU),TYPCMO,TEMPS,
-     +     COMDIR,TYPCDI,TRONC,ZR(JAMOR),ZR(JSPE),ZR(JASY),ZK8(JKNO),
-     +     ZR(JREA),ZR(JDEP),ZI(JCSU),CORFRE)
+     +            ZK16(JOPT),NBOPT,ZI(JDIR),MONOAP,MUAPDE,NBSUP,
+     +            ZI(JNSU),TYPCMO,TEMPS,COMDIR,TYPCDI,TRONC,
+     +            ZR(JAMOR),ZR(JSPE),ZR(JASY),ZK8(JKNO),
+     +            ZR(JREA),ZR(JDEP),ZI(JCSU),CORFRE)
       IF((.NOT. MONOAP).AND.COMDIR)
-     +    WRITE(IFM,*)' COMBINAISON DIRECTION : ', TYPCDI
-      IF (NDEPL.NE.0)
-     +   CALL ASIMPR(NBSUP,ZI(JCSU),ZK8(JKNO))
+     +          WRITE(IFM,*)' COMBINAISON DIRECTION : ', TYPCDI
+      IF (NDEPL.NE.0) CALL ASIMPR(NBSUP,ZI(JCSU),ZK8(JKNO))
 
 C
  9999 CONTINUE

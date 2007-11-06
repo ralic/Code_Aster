@@ -1,14 +1,14 @@
-      SUBROUTINE ASEXCI (MASSE,PARMOD,AMORT,NBMODE,CORFRE,IMPR, NDIR,
-     &                   MONOAP, KSPECT, KASYSP,
-     &                   NBSUP,NSUPP, KNOEU )
-      IMPLICIT  REAL*8  (A-H,O-Z)
-      INTEGER            NDIR(*), NSUPP(*)
+      SUBROUTINE ASEXCI (MASSE, PARMOD, AMORT, NBMODE, CORFRE, IMPR,
+     &                   NDIR, MONOAP, MUAPDE, KSPECT, KASYSP,
+     &                   NBSUP, NSUPP, KNOEU )
+      IMPLICIT  NONE
+      INTEGER            NBMODE, IMPR, NDIR(*), NBSUP, NSUPP(*)
       REAL*8             PARMOD(NBMODE,*), AMORT(*)
       CHARACTER*(*)      MASSE, KSPECT, KASYSP, KNOEU
-      LOGICAL            MONOAP, CORFRE
+      LOGICAL            MONOAP, MUAPDE, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,14 +40,18 @@ C IN  : IMPR   : NIVEAU D'IMPRESSION
 C OUT : NDIR   : VECTEUR DES DIRECTIONS
 C OUT : MONOAP : = .TRUE.  , STRUCTURE MONO-APPUI
 C                = .FALSE. , STRUCTURE MULTI-APPUI
+C OUT : MUAPDE : = .TRUE.  , STRUCTURE MULTI-APPUI DECORRELE
+C                = .FALSE. , STRUCTURE MULTI-APPUI CORRELE
 C IN  : KSPECT : NOM DU VECTEUR DES INTERPOLATIONS SPECTRALES
+C OUT : MONOAP : = .TRUE.  , STRUCTURE MONO-APPUI
+C                = .FALSE. , STRUCTURE MULTI-APPUI
 C IN  : KASYSP : NOM DU VECTEUR DES VALEURS ASYMPTOTIQUES DES SPECTRES
 C OUT : NBSUP  : SUP DES NOMBRES DE SUPPORTS PAR DIRECTION
 C OUT : NSUPP  : NOMBRE DE SUPPORTS PAR DIRECTION
 C IN  : KNOEU  : NOM DU VECTEUR DES NOMS DES SUPPORTS
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER            ZI
+      INTEGER            ZI        
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -62,6 +66,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                          ZK80
       COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      IBID, IER, IM1, IM2, IOC, NM, NN, NG, NBOCC, 
+     &             JPSE, JASY, NEQ, JDDL1, NBA, NBBLOQ, NBL, NBLIAI,
+     &             JNNO, JNSP, JDSP, JESP, JSPE, JNAS
       CHARACTER*5  MOTFAC
       CHARACTER*8  K8B, NOMA
       CHARACTER*14 NUME
@@ -70,31 +77,42 @@ C
       CALL JEMARQ()
       IER = 0
       MONOAP = .FALSE.
+      MUAPDE = .TRUE.
       MOTFAC = 'EXCIT'
-      CALL GETFAC(MOTFAC,NBOCC)
+      CALL GETFAC ( MOTFAC, NBOCC )
 C
 C     --- EST-ON EN MONO-APPUI OU MULTI-APPUI ? ---
+      IM1 = 0
+      IM2 = 0
       DO 10 IOC = 1,NBOCC
 C
-         CALL GETVTX(MOTFAC,'MONO_APPUI',IOC,1,0,K8B,NM)
-         IF (NM.NE.0) MONOAP = .TRUE.
+         CALL GETVTX(MOTFAC,'MONO_APPUI',IOC,1,1,K8B,NM)
+         IF ( NM .NE. 0 ) THEN
+            IM1 = IM1 + 1
+            IF (K8B(1:3).EQ.'OUI' ) MONOAP = .TRUE.
+         ENDIF
+C
+         CALL GETVTX(MOTFAC,'MULTI_APPUI',IOC,1,1,K8B,NM)
+         IF ( NM .NE. 0 ) THEN
+            IM2 = IM2 + 1
+            IF (K8B(1:7).EQ.'CORRELE' ) MUAPDE = .FALSE.
+         ENDIF
 C
          CALL GETVID(MOTFAC,'NOEUD',IOC,1,0,K8B,NN)
          IF ( NN.NE.0 .AND. MONOAP ) THEN
             IER = IER + 1
-            CALL U2MESS('E','ALGORITH_30')
+            CALL U2MESS('E','SEISME_8')
          ENDIF
 C
          CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,0,K8B,NG)
          IF ( NG.NE.0 .AND. MONOAP ) THEN
             IER = IER + 1
-            CALL U2MESS('E','ALGORITH_30')
+            CALL U2MESS('E','SEISME_8')
          ENDIF
  10   CONTINUE
 C
-      IF (IER.NE.0) THEN
-         CALL U2MESS('F','ALGORITH_28')
-      ENDIF
+      IF (IER.NE.0) CALL U2MESS('F','SEISME_6')
+      IF (IM1.NE.0 .AND. IM2.NE.0) CALL U2MESS('F','SEISME_8')
 C
       IF ( MONOAP ) THEN
          NBSUP = 1
@@ -103,9 +121,9 @@ C
          CALL ASEXC1( MOTFAC, NBOCC, NBMODE, PARMOD, AMORT, CORFRE,
      &                NDIR, ZR(JSPE), ZR(JASY) )
       ELSE
-         CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUME,IE)
-         CALL DISMOI('F','NOM_MAILLA'  ,MASSE,'MATR_ASSE',IBID,NOMA,IE)
-         CALL DISMOI('F','NB_EQUA'     ,MASSE,'MATR_ASSE',NEQ ,K8B ,IE)
+         CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUME,IER)
+         CALL DISMOI('F','NOM_MAILLA'  ,MASSE,'MATR_ASSE',IBID,NOMA,IER)
+         CALL DISMOI('F','NB_EQUA'     ,MASSE,'MATR_ASSE',NEQ ,K8B ,IER)
          CALL WKVECT('&&ASEXCI.POSITION.DDL1','V V I',NEQ,JDDL1)
          CALL TYPDDL('BLOQ',NUME,NEQ,ZI(JDDL1),NBA,NBBLOQ,NBL,NBLIAI)
          CALL WKVECT('&&ASEXCI.NOM_NOEUD'  ,'V V K8',3*NBBLOQ,JNNO)

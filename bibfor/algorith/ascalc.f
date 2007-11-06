@@ -1,17 +1,17 @@
-      SUBROUTINE ASCALC(RESU,MASSE,MOME,PSMO,STAT,NBMODE,NEQ,NORDR,
-     +                  KNOMSY,NBOPT,NDIR,MONOAP,NBSUP,NSUPP,TYPCMO,
-     +                  TEMPS,COMDIR,TYPCDI,TRONC,AMORT,SPECTR,
-     +                  ASSPEC,NOMSUP,REASUP,DEPSUP,TCOSUP,
-     +                  CORFRE)
-      IMPLICIT  REAL*8 (A-H,O-Z)
+      SUBROUTINE ASCALC ( RESU, MASSE, MOME, PSMO, STAT, NBMODE, NEQ,
+     +                    NORDR, KNOMSY, NBOPT, NDIR, MONOAP, MUAPDE,
+     +                    NBSUP, NSUPP, TYPCMO, TEMPS, COMDIR, TYPCDI,
+     +                    TRONC, AMORT, SPECTR, ASSPEC, NOMSUP, REASUP,
+     +                    DEPSUP, TCOSUP, CORFRE )
+      IMPLICIT  NONE
       INTEGER       NDIR(*),TCOSUP(*),NORDR(*),NSUPP(*)
       REAL*8        AMORT(*),SPECTR(*),ASSPEC(*),DEPSUP(*),REASUP(*)
       CHARACTER*(*) RESU,MASSE,MOME,PSMO,STAT,TYPCMO,TYPCDI,
      +              KNOMSY(*),NOMSUP(*)
-      LOGICAL       MONOAP, COMDIR, TRONC, CORFRE
+      LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,8 @@ C IN  : NBOPT  : NOMBRE D'OPTION DE CALCUL
 C IN  : NDIR   : DIRECTIONS DE CALCUL
 C IN  : MONOAP : =.TRUE.  , CAS DU MONO-SUPPORT
 C                =.FALSE. , CAS DU MULTI-SUPPORT
+C IN  : MUAPDE : =.TRUE.  , CAS DU MULTI-SUPPORTS DECORRELES
+C                =.FALSE. , CAS DU MULTI-SUPPORTS CORRELES
 C IN  : NBSUP  : NOMBRE DE SUPPORT
 C IN  : NSUPP  : MAX DU NOMBRE DE SUPPORT PAR DIRECTION
 C IN  : TYPCMO : TYPE DE RECOMBINAISON DES MODES
@@ -81,18 +83,30 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      PARAMETER    ( NBPARA = 5 )
-      CHARACTER*4  CTYP
-      CHARACTER*8  K8B, NUME
-      CHARACTER*16 NOMSY, NOPARA(NBPARA)
-      CHARACTER*19 KVEC, KVAL
-      LOGICAL     PRIM,SECON,GLOB
+      INTEGER       IBID, ID, IOPT, IRET, JCREP, JDIR, JMOD, JREP, 
+     &              JTABS, JVAL, NBMODE, NBOPT, NBPARA, NBPARI, NBPARK,
+     &              NBPARR, NBSUP, NDEPL, NEQ, JREP2, N2SUP
+      PARAMETER     ( NBPARA = 5 )
+      REAL*8        TEMPS
+      LOGICAL       PRIM, SECON, GLOB
+      CHARACTER*4   CTYP
+      CHARACTER*8   K8B, NUME
+      CHARACTER*16  NOMSY, NOMSY2, NOPARA(NBPARA)
+      CHARACTER*19  KVEC, KVAL
+      CHARACTER*24  KVE1, KVE2, KVE3, KVE4, KVE5
 C
       DATA  NOPARA /        'OMEGA2'          , 'MASS_GENE'       ,
      +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ'  /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+      KVEC = '&&ASCALC.VAL_PROPRE'
+      KVAL = '&&ASCALC.GRAN_MODAL'
+      KVE1 = '&&ASCALC.REP_MOD'
+      KVE2 = '&&ASCALC.C_REP_MOD'
+      KVE3 = '&&ASCALC.REP_DIR' 
+      KVE4 = '&&ASCALC.TABS'   
+      KVE5 = '&&ASCALC.CORRELE'   
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUME,IRET)
 C
       CALL GETFAC ( 'COMB_DEPL_APPUI', NDEPL )
@@ -106,24 +120,25 @@ C
          GLOB = .TRUE.
       ENDIF
 C
-C
 C     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
-      DO 10 IN = 1,NBOPT
-         KVEC = '&&ASCALC.VAL_PROPRE'
-         KVAL = '&&ASCALC.GRAN_MODAL'
-         NOMSY = KNOMSY(IN)
-         IF (NOMSY(1:4).EQ.'VITE') NOMSY = 'DEPL'
-         IF (NOMSY(1:4).EQ.'ACCE') NOMSY = 'DEPL'
-         CALL VPRECU ( MOME, NOMSY, NBMODE, NORDR, KVEC, 
+      DO 10 IOPT = 1,NBOPT
+         NOMSY = KNOMSY(IOPT)
+         NOMSY2 = NOMSY
+         IF (NOMSY(1:4).EQ.'VITE') NOMSY2 = 'DEPL'
+         IF (NOMSY(1:4).EQ.'ACCE') NOMSY2 = 'DEPL'
+         CALL VPRECU ( MOME, NOMSY2, NBMODE, NORDR, KVEC, 
      +                 NBPARA, NOPARA, K8B, KVAL, K8B,
      +                 NEQ, NBMODE, CTYP, NBPARI, NBPARR, NBPARK )
          CALL JEVEUO(KVEC,'L',JMOD)
          CALL JEVEUO(KVAL,'L',JVAL)
-         CALL WKVECT('&&ASCALC.REP_MOD','V V R',3*NEQ*NBMODE*NBSUP,JREP)
-         CALL WKVECT('&&ASCALC.C_REP_MOD','V V R',3*NEQ*NBSUP,JCREP)
-         CALL WKVECT('&&ASCALC.REP_DIR','V V R',3*NEQ,JDIR)
-         CALL WKVECT('&&ASCALC.TABS','V V R',NBSUP*NEQ,JTABS)
-
+         CALL WKVECT(KVE1, 'V V R',3*NEQ*NBMODE*NBSUP,JREP )
+         CALL WKVECT(KVE2, 'V V R',       3*NEQ*NBSUP,JCREP)
+         CALL WKVECT(KVE3, 'V V R',             3*NEQ,JDIR )
+         CALL WKVECT(KVE4, 'V V R',         NBSUP*NEQ,JTABS)
+         IF ( .NOT. MUAPDE ) THEN
+            N2SUP = 1
+            CALL WKVECT(KVE5, 'V V R',3*NEQ*NBMODE*NBSUP,JREP2 )
+         ENDIF
 C
 C        ---------------------------------------------------------------
 C                        REPONSE PRIMAIRE OU GLOBAL
@@ -135,71 +150,80 @@ C        --- BOUCLE SUR LES DIRECTIONS ----
 C
 C              --- CALCUL DES REPONSE MODALES ---
 C
-               CALL ASCARM(KNOMSY(IN),MONOAP,NBSUP,NSUPP,NEQ,NBMODE,
-     +                     ZR(JMOD),ZR(JVAL),ID,REASUP,SPECTR,
-     +                     ZR(JREP),CORFRE,AMORT)
+               CALL ASCARM ( NOMSY, MONOAP, NBSUP, NSUPP, NEQ,
+     +                       NBMODE, ZR(JMOD), ZR(JVAL), ID, REASUP,
+     +                       SPECTR, ZR(JREP), CORFRE, AMORT  )
+C
 C
 C              --- COMBINAISON DES REPONSES MODALES ---
-               CALL ASCORM(MONOAP,TYPCMO,NBSUP,NSUPP,NEQ,NBMODE,
-     +                     ZR(JREP),AMORT,ZR(JVAL),ID,TEMPS,
-     +                     ZR(JCREP),ZR(JTABS))
-
+               IF ( MUAPDE ) THEN
+                  CALL ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ, 
+     +                          NBMODE, ZR(JREP), AMORT, ZR(JVAL), ID,
+     +                          TEMPS, ZR(JCREP), ZR(JTABS) )
+               ELSE
+                  CALL ASCORC ( TYPCMO, NBSUP,N2SUP,NSUPP, NEQ, TCOSUP,
+     +                          NBMODE, ZR(JREP), AMORT, ZR(JVAL), ID,
+     +                          TEMPS, ZR(JCREP), ZR(JTABS), ZR(JREP2) )
+               ENDIF
 C
 C              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 C
                IF ( (.NOT.MONOAP) .AND. GLOB ) THEN
-                  CALL ASEFEN (NOMSY,ID,STAT,NEQ,NBSUP,NDIR,
-     +                  NSUPP,MASSE,NOMSUP,DEPSUP,ZR(JCREP))
+                  CALL ASEFEN ( MUAPDE, NOMSY2, ID, STAT, NEQ, NBSUP,
+     +                          NDIR, NSUPP, MASSE, NOMSUP, DEPSUP,
+     +                          ZR(JCREP))
                ENDIF
 C
 C              ----CALCUL DE L ACCELERATION ABSOLUE
 C
-               CALL ASACCE(KNOMSY(IN),MONOAP,NBSUP,NEQ,NBMODE,
-     +                     ID,NUME,ZR(JMOD),ZR(JVAL),ASSPEC,ZR(JCREP))
+               CALL ASACCE ( NOMSY, MONOAP, MUAPDE, NBSUP, NEQ, NBMODE,
+     +                       ID, NUME, ZR(JMOD), ZR(JVAL), ASSPEC,
+     +                       ZR(JCREP) )
+
 C
 C              --- PRISE EN COMPTE DE LA TRONCATURE ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 
                IF ( TRONC ) THEN
-                 CALL ASTRON(KNOMSY(IN),PSMO,MONOAP,NBSUP,NSUPP,
-     +                     NEQ,NBMODE,ID,ZR(JMOD),ZR(JVAL),ASSPEC,
-     +                     NOMSUP,REASUP,ZR(JCREP) )
+                  CALL ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP,
+     +                          NSUPP, NEQ, NBMODE, ID, ZR(JMOD),
+     +                          ZR(JVAL), ASSPEC, NOMSUP, REASUP,
+     +                          ZR(JCREP) )
                ENDIF
 C
 C              --- CALCUL DES RECOMBINAISONS PAR DIRECTIONS---
-               CALL ASDIR (MONOAP,ID,NEQ,NBSUP,NSUPP,
-     +                     TCOSUP,ZR(JCREP),ZR(JDIR))
+               CALL ASDIR ( MONOAP, MUAPDE, ID, NEQ, NBSUP, NSUPP,
+     +                      TCOSUP, ZR(JCREP), ZR(JDIR) )
             ENDIF
  20      CONTINUE
 C
 C        --- STOCKAGE ---
 C
-         CALL ASSTOC(MOME,RESU,KNOMSY(IN),NEQ,ZR(JDIR),NDIR,
-     +               COMDIR,TYPCDI,GLOB,PRIM)
+         CALL ASSTOC ( MOME, RESU, NOMSY, NEQ, ZR(JDIR), NDIR,
+     +                 COMDIR, TYPCDI, GLOB, PRIM )
 C
 C        ---------------------------------------------------------------
 C                            REPONSE SECONDAIRE
 C        ---------------------------------------------------------------
          IF ( SECON ) THEN
 C
-C        --- BOUCLE SUR LES DIRECTIONS ----
+C            --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
+C            --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 C
-C              --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
-C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
-C
-         IF (KNOMSY(IN).NE.'ACCE_ABSOLU') THEN 
-           CALL ASECON (KNOMSY(IN),NEQ,MOME,RESU)
-         ENDIF
+            IF ( NOMSY(1:11) .NE. 'ACCE_ABSOLU' ) THEN 
+               CALL ASECON ( NOMSY, NEQ, MOME, RESU )
+            ENDIF
 C
          ENDIF
 C
-         CALL JEDETR(KVEC)
-         CALL JEDETR(KVAL)
-         CALL JEDETR('&&ASCALC.REP_MOD')
-         CALL JEDETR('&&ASCALC.C_REP_MOD')
-         CALL JEDETR('&&ASCALC.REP_DIR')
-         CALL JEDETR('&&ASCALC.TABS')
+         CALL JEDETR ( KVEC )
+         CALL JEDETR ( KVAL )
+         CALL JEDETR ( KVE1 )
+         CALL JEDETR ( KVE2 )
+         CALL JEDETR ( KVE3 )
+         CALL JEDETR ( KVE4 )
+         IF ( .NOT. MUAPDE ) CALL JEDETR ( KVE5 )
 
  10   CONTINUE
 C

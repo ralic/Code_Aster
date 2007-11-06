@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algorith16 Messages  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,66 +192,6 @@ cata_msg = {
  le pas de temps du calcul est  : %(r1)f
  le nb de pas de calcul est     :  %(i1)d
  le nb de pas d'archive est     :  %(i2)d
-"""),
-
-27 : _("""
-"""),
-
-28 : _("""
- trop d'amortissements modaux
- nombre d'amortissement :  %(i1)d
- nombre de mode         :  %(i2)d
-
-"""),
-
-29 : _("""
- trop d'amortissements modaux
- nombre d'amortissement :  %(i1)d
- nombre de mode         :  %(i2)d
-
-"""),
-
-30 : _("""
- amortissement non diagonal
- on ne sait pas traiter  %(i1)d
-"""),
-
-31 : _("""
- il manque des amortissements modaux
- nombre d'amortissements :  %(i1)d
- nombre de modes         :  %(i2)d
-
-"""),
-
-32 : _("""
- on ne peut pas demander de réponse secondaire sans la réponse primaire
-"""),
-
-33 : _("""
- analyse spectrale :
- la base modale utilisee est :  %(k1)s
- le nombre de vecteurs de base est :  %(i1)d
- regle de combinaison modale :  %(k2)s
- les options de calcul demandees sont :  %(k3)s
-"""),
-
-34 : _("""
-   %(k1)s
-"""),
-
-35 : _("""
- règle de combinaison des contributions
- de chaque mouvement d'appui :  %(k1)s
-"""),
-
-36 : _("""
- erreur dans les données
- la masse n'existe pas dans la table  %(k1)s
-"""),
-
-37 : _("""
- erreur dans les données
- la masse n"existe pas dans la table  %(k1)s
 """),
 
 38 : _("""

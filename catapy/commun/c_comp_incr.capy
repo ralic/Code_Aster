@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+#& MODIF COMMUN  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -225,7 +225,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           DIS_GOUJ2E_ELAS =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           PINTO_MENEGOTTO =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           CJS             =SIMP(statut='c',typ='I',defaut=16,into=(16,)),
-          HUJEUX       =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
+          HUJEUX       =SIMP(statut='c',typ='I',defaut=32,into=(32,)),
           CAM_CLAY        =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           BARCELONE       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),

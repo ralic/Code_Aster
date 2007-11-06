@@ -1,4 +1,4 @@
-#@ MODIF grappefluide Messages  DATE 16/05/2007   AUTEUR BOYERE E.BOYERE 
+#@ MODIF grappefluide Messages  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,9 +69,9 @@ cata_msg={
 """),
 
 11: _("""
- Force fluide, grappe bloquée   
+ Force fluide, arrivee de la grappe en butee, fin du calcul de chute de grappe
   - iteration  %(i1)d , z =  %(r1)f    itération  %(i2)d  , z =  %(r2)f 
-    temps de chute compris entre  %(r3)f et  %(r4)f 
+    temps de chute total T5 + T6 compris entre  %(r3)f et  %(r4)f 
 """),
 
 12: _("""
@@ -81,4 +81,23 @@ cata_msg={
 13: _("""
  CALCUL GRAPPE FLUIDE : C1 nul (altitude %(r1)f m)
 """),
+
+14: _("""
+ Force fluide, grappe a l'entree du retreint
+  - iteration  %(i1)d , z =  %(r1)f    itération  %(i2)d  , z =  %(r2)f 
+    temps de chute T5 compris entre  %(r3)f et  %(r4)f 
+"""),
+
+15: _("""
+ Force fluide, attention grappe bloquee
+  - iteration  %(i1)d , z =  %(r1)f    itération  %(i2)d  , z =  %(r2)f 
+    attention temps de chute compris entre  %(r3)f et  %(r4)f 
+"""),
+
+16: _("""
+ Force fluide, pression maximale dans le retreint
+  - iteration  %(i1)d , z =  %(r1)f    itération  %(i2)d  , z =  %(r2)f 
+    pression maximale  %(r4)f Pa dans le retreint
+"""),
+
 }

@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 17/07/2007   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF utilitai3 Messages  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -395,6 +395,10 @@ cata_msg={
 
 93: _("""
  seuls les types "reel" et "complexe" sont autorises.
+"""),
+
+94: _("""
+ MINMAX est toujours calculé sur TOUT le modèle pour les champs aux noeuds.
 """),
 
 }

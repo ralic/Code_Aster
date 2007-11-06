@@ -1,15 +1,16 @@
-      SUBROUTINE ASTRON(NOMSY,PSMO,MONOAP,NBSUP,NSUPP,NEQ,NBMODE,
-     +                  ID,VECMOD,PARMOD,ASSPEC,NOMSUP,
-     +                                               REASUP,ZRCREP )
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER           NSUPP(ID)
+      SUBROUTINE ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP, NSUPP,
+     +                    NEQ, NBMODE, ID, VECMOD, PARMOD, ASSPEC,
+     +                    NOMSUP, REASUP, REPDIR )
+      IMPLICIT  NONE
+      INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
       REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),ASSPEC(NBSUP,*),
-     +                  REASUP(NBSUP,NBMODE,*),ZRCREP(NBSUP,NEQ,*)
-      CHARACTER*(*)     NOMSY,PSMO,NOMSUP(NBSUP,*)
-      LOGICAL           MONOAP
+     +                  REASUP(NBSUP,NBMODE,*),REPDIR(NBSUP,NEQ,*)
+      CHARACTER*16      NOMSY
+      CHARACTER*(*)     PSMO, NOMSUP(NBSUP,*)
+      LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +35,8 @@ C IN  : NOMSY  : OPTION DE CALCUL
 C IN  : PSMO   : PSEUDO-MODES
 C IN  : MONOAP : =.TRUE.  , CAS DU MONO-SUPPORT
 C                =.FALSE. , CAS DU MULTI-SUPPORT
+C IN  : MUAPDE : =.TRUE.  , CAS DU MULTI-SUPPORTS DECORRELES
+C                =.FALSE. , CAS DU MULTI-SUPPORTS CORRELES
 C IN  : NBSUP  : NOMBRE DE SUPPORTS
 C IN  : NEQ    : NOMBRE D'EQUATIONS
 C IN  : NBMODE : NOMBRE DE MODES
@@ -43,7 +46,7 @@ C IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
 C IN  : ASSPEC : VECTEUR DES ASYMPTOTES DES SPECTRES
 C IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 C IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
-C OUT : ZRCREP : VECTEUR DES RECOMBINAISONS MODALES
+C OUT : REPDIR : VECTEUR DES RECOMBINAISONS MODALES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -61,13 +64,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C     ------------------------------------------------------------------
-      CHARACTER*8  K8B, NOEU, CMP, NOMCMP(3)
-      CHARACTER*24 VALK
-      CHARACTER*16 MONACC, ACCES(3), NOMSY2
-      CHARACTER*19 CHEXTR
-      COMPLEX*16   CBID
-      CHARACTER*8  NOMCMD
+      INTEGER       IBID, IM, IN, IORDR, IRET, IS, JMOD, JVALE, NBTROU
+      REAL*8        R8B, GAMMA0, RNI, UN, XXX
+      COMPLEX*16    CBID
+      CHARACTER*8   K8B, NOEU, CMP, NOMCMD, NOMCMP(3)
+      CHARACTER*16  MONACC, ACCES(3)
+      CHARACTER*19  CHEXTR
 C     ------------------------------------------------------------------
       DATA NOMCMP / 'DX' , 'DY' , 'DZ' /
       DATA ACCES  / 'ACCE    X       ' , 'ACCE    Y       ',
@@ -77,10 +79,8 @@ C
       CALL JEMARQ()
       UN = 1.D0
       IF (NOMSY(1:4).NE.'ACCE') THEN
-         NOMSY2 = NOMSY
          IF (NOMSY(1:4).EQ.'VITE') THEN
-            VALK = NOMSY2
-            CALL U2MESG('A', 'ALGORITH12_11',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('A', 'SEISME_10',1,NOMSY)
             GOTO 9999
          ENDIF
          IF ( MONOAP ) THEN
@@ -97,7 +97,7 @@ C
 C           --- DEFORMEE STATIQUE ---
             CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,ACCES(ID),CBID,R8B,
      +                                              K8B,IORDR,1,NBTROU)
-            CALL RSEXCH(PSMO,NOMSY2,IORDR,CHEXTR,IRET)
+            CALL RSEXCH(PSMO,NOMSY,IORDR,CHEXTR,IRET)
             CALL JEEXIN(CHEXTR//'.VALE',IBID)
             IF (IBID.GT.0) THEN
               CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)
@@ -108,7 +108,7 @@ C
             GAMMA0 = ASSPEC(1,ID)
             DO 34 IN = 1,NEQ
                XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
-               ZRCREP(NBSUP,IN,ID) = ZRCREP(NBSUP,IN,ID) + XXX*XXX
+               REPDIR(NBSUP,IN,ID) = REPDIR(NBSUP,IN,ID) + XXX*XXX
  34         CONTINUE
             CALL JEDETR('&&ASTRON.VECTEUR_MODA')
 C
@@ -120,7 +120,7 @@ C
                GAMMA0 = ASSPEC(IS,ID)
                CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,
      +                                              K8B,IORDR,1,NBTROU)
-               CALL RSEXCH(PSMO,NOMSY2,IORDR,CHEXTR,IRET)
+               CALL RSEXCH(PSMO,NOMSY,IORDR,CHEXTR,IRET)
                CALL JEEXIN(CHEXTR//'.VALE',IBID)
                IF (IBID.GT.0) THEN
                  CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)
@@ -137,10 +137,17 @@ C              --- CONTRIBUTION MODALE ---
                      ZR(JMOD+IN-1) = ZR(JMOD+IN-1) + XXX*VECMOD(IN,IM)
  52               CONTINUE
  50            CONTINUE
-               DO 42 IN = 1,NEQ
-                  XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
-                  ZRCREP(IS,IN,ID) = ZRCREP(IS,IN,ID) + XXX*XXX
- 42            CONTINUE
+               IF ( MUAPDE ) THEN
+                  DO 42 IN = 1,NEQ
+                     XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
+                     REPDIR(IS,IN,ID) = REPDIR(IS,IN,ID) + XXX*XXX
+ 42               CONTINUE
+               ELSE
+                  DO 44 IN = 1,NEQ
+                     XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
+                     REPDIR(1,IN,ID) = REPDIR(1,IN,ID) + XXX*XXX
+ 44               CONTINUE
+               ENDIF
                CALL JEDETR('&&ASTRON.VECTEUR_MODA')
  40         CONTINUE
          ENDIF

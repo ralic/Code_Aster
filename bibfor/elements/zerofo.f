@@ -1,6 +1,6 @@
       SUBROUTINE ZEROFO(F,F0,XAP,EPSI,NITMAX,SOLU,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
       FX = F0
       IF (ABS(FX).LT.EPSI) THEN
          Z=0.D0
-         GO TO 90
+         GOTO 90
       ENDIF
       Y = XAP
       FY = F(Y)
@@ -68,6 +68,7 @@ C
         A = X
         B = Y
    20   CONTINUE
+        IF (FX.EQ.FY) GOTO 98
         Z = Y - (Y-X)*FY/(FY-FX)
         IF (((Z-A)*(Z-B)).GT.0.D0) THEN
           Z = (A+B)/2.D0
@@ -75,8 +76,8 @@ C
 C
         N = N + 1
         FZ = F(Z)
-        IF (ABS(FZ).LT.EPSI) GO TO 90
-        IF (N.GT.NITMAX) GO TO 98
+        IF (ABS(FZ).LT.EPSI) GOTO 90
+        IF (N.GT.NITMAX) GOTO 98
         IF (FZ.LT.0.D0) THEN
           A = Z
         ELSE
@@ -87,9 +88,10 @@ C
         Y = Z
 C        FY = F(Z)
         FY = FZ
-        GO TO 20
+        GOTO 20
       ELSE
-        IF (FY.LT.FX) GO TO 99
+        IF (FY.LT.FX) GOTO 99
+        IF (FX.EQ.FY) GOTO 98
         Z = Y - (Y-X)*FY/(FY-FX)
         N = N + 1
         X = Y
@@ -97,14 +99,14 @@ C        FY = F(Z)
         Y = Z
         FY = F(Z)
 C
-        IF (ABS(FY).LT.EPSI) GO TO 90
-        IF (N.GT.NITMAX) GO TO 98
+        IF (ABS(FY).LT.EPSI) GOTO 90
+        IF (N.GT.NITMAX) GOTO 98
       ENDIF
-      GO TO 10
+      GOTO 10
 C
    90 CONTINUE
       SOLU=Z
-      GO TO 9999
+      GOTO 9999
 C
    98 CONTINUE
       IRET=1

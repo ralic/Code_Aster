@@ -2,7 +2,7 @@
      &  PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI,HSR)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,7 +134,7 @@ C     ----------------------------------------------------------------
       REAL*8          HYDRD , HYDRF , SECHD , SECHF,R8DGRD,HOOK(6,6)
       REAL*8          REPERE(7),XYZ(3),KOOH(6,6)
       REAL*8          EPSI,R8PREM,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
-      REAL*8          VALRES(NMAT),HSR(5,24,24),MS(6)
+      REAL*8          VALRES(NMAT),HSR(5,24,24),MS(6),NG(3)
       CHARACTER*8     MOD, NOM , NOMC(14)
       CHARACTER*2     BL2, CERR(14)
       CHARACTER*3     MATCST
@@ -221,7 +221,7 @@ C     Boucle sur le nombre de monocristaux
          READ (CPMONO(INDCP),'(I16)') NBFSYS
          DO 7 IFA=1,NBFSYS
             NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
-            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG)
             NMATER=CPMONO(INDCP+5*(IFA-1)+2)
             NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
             NECRIS=CPMONO(INDCP+5*(IFA-1)+4)

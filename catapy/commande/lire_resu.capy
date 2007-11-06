@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/10/2007   AUTEUR SALMONA L.SALMONA 
+#& MODIF COMMANDE  DATE 05/11/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,11 +82,11 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          regles=(UN_PARMI('MAILLAGE','MODELE'),),
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
-
+         COMP_INCR       =C_COMP_INCR(),
          NB_VARI         =SIMP(statut='f',typ='I' ),
 
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater,),
-
+         
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem,),
 
           b_evol_elas  = BLOC(condition="TYPE_RESU=='EVOL_ELAS'",

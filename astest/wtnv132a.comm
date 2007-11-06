@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,9 @@ PREF      = -1.E+6   ;
 R_ELA_DEV = 0.025    ;
 R_ELA_ISO = .01      ;   # on desactive le mecanisme isotrope
 
-vari_cart    = [R_ELA_DEV,R_ELA_DEV,R_ELA_DEV,R_ELA_ISO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
+vari_1        = [R_ELA_DEV,R_ELA_DEV,R_ELA_DEV,R_ELA_ISO,1.,1.,1.,1.,
+                ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,] ;
+vari_2        = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO];
 vari_cart_cc = [-PCO/2,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
 
 list_no_later_dro = ['N46','N47','N48','N49','N50','N51','N52','N53',
@@ -137,7 +139,10 @@ MAT1=DEFI_MATERIAU(ELAS=_F(E     = YOUNG,
                             RI_ELA  = R_ELA_ISO,
                             RHYS    = 0.1,
                             RMOB    = 0.5,
-                            XM      = 2.),
+                            XM      = 2.,
+                            RD_CYC  = 1.,
+                            RI_CYC  = 1.,
+                            DILA    = 1.0),
                    COMP_THM='LIQU_SATU',
                    THM_INIT=_F(PRE1 = 0.0,
                                PORO = 0.35),
@@ -174,14 +179,20 @@ TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=5000000.0,
                                     NOMBRE=20,),
+                                 #_F(JUSQU_A=5050000.0,
+                                 #   NOMBRE=20,),
                                  _F(JUSQU_A=6000000.0,
                                     NOMBRE=20,),
+                                 #_F(JUSQU_A=6050000.0,
+                                 #   NOMBRE=20,),
                                  _F(JUSQU_A=7000000.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=8000000.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=9000000.0,
                                     NOMBRE=20,),
+                                 #_F(JUSQU_A=9050000.0,
+                                 #   NOMBRE=20),
                                  _F(JUSQU_A=10000000.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=11000000.0,
@@ -271,15 +282,18 @@ SIG[0]=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                 TYPE_RESU='VALE',
                 INFO=1,);
 
+
 VAR[0]=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U[0],
                 NOM_CHAM='VARI_ELGA',
                 TYPE_MAXI='MAXI_ABS',
                 TYPE_RESU='VALE',
-                INFO=1,);
+                INFO=2,);
 
 U[0]=CALC_ELEM(reuse=U[0],
+               MODELE     = MOD[0],
+               CHAM_MATER = AFFMAT1,
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                RESULTAT=U[0]);
 
@@ -354,7 +368,7 @@ T_VAR[1]=POST_RELEVE_T(ACTION=_F(INTITULE='VARIABLES INTERNES',
                                  NOEUD=list_no_later_dro[:2],
                                  RESULTAT=U[0],
                                  NOM_CHAM='VARI_ELNO_ELGA',
-                                 NOM_CMP=('V1','V2','V3','V4','V5','V6','V7'),
+                                 NOM_CMP=('V1','V2','V3','V4','V23','V33','V34'),
                                  OPERATION='EXTRACTION'));
 
 IMPR_TABLE(TABLE=T_DEP[1]);
@@ -372,8 +386,8 @@ list_noeu_haut=list_no_later_dro[:2]
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(CONCEPT=_F(NOM=('CHLAT','PHAUT','INIDEP','INISIG','SIEF','INIVAR',
-                             'INIVAC','CART_R','CART_C')));
+    DETRUIRE(CONCEPT=_F(NOM=('CHLAT','PHAUT','INIDEP','INISIG','SIEF',
+                             'INIVAC','CART1','CART2','CART_C')));
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
@@ -437,13 +451,25 @@ for n in range(1,nbcouche-1):
                                CUMUL='OUI',
                                COEF_R=1.0)));
 
-    CART_R=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
+    CART1 = CREA_CHAMP(INFO = 1,
+                   TYPE_CHAM='ELGA_NEUT_R',
                    OPERATION='AFFE',
                    MODELE=MOD[n],
                    PROL_ZERO='OUI',
                    AFFE=_F(GROUP_MA=list_group_ma[n+1],
-                           NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11'),
-                           VALE    =vari_cart));
+                           NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
+                                     'X12','X13','X14','X15','X16','X17',),
+                           VALE    =vari_1));
+
+    CART2 = CREA_CHAMP(INFO = 1,
+                   TYPE_CHAM='ELGA_NEUT_R',
+                   OPERATION='AFFE',
+                   MODELE=MOD[n],
+                   PROL_ZERO='OUI',
+                   AFFE=_F(GROUP_MA=list_group_ma[n+1],
+                           NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
+                                     'X12','X13','X14','X15','X16','X17',),
+                           VALE    =vari_2));
 
     INIVAR=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='ELGA_VARI_R',
@@ -455,12 +481,21 @@ for n in range(1,nbcouche-1):
                                CUMUL='OUI',
                                COEF_R=1.0),
                             _F(GROUP_MA=list_group_ma[n+1],
-                               CHAM_GD=CART_R,
-                               NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11'),
-                               NOM_CMP_RESU=('V1','V2','V3','V4','V5',
-                                             'V6','V7','V8','V9','V10','V11'),
+                               CHAM_GD=CART1,
+                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
+                                     'X12','X13','X14','X15','X16','X17',),
+                               NOM_CMP_RESU=('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11',
+                                             'V12','V13','V14','V15','V16','V17',),
                                CUMUL='OUI',
-                               COEF_R=1.0)
+                               COEF_R=1.0),
+                            _F(GROUP_MA=list_group_ma[n+1],
+                               CHAM_GD=CART2,
+                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
+                                     'X12','X13','X14','X15','X16','X17',),
+                               NOM_CMP_RESU=('V18','V19','V20','V21','V22','V23','V24','V25','V26','V27','V28',
+                                             'V29','V30','V31','V32','V33','V34',),
+                               CUMUL='OUI',
+                               COEF_R=1.0),
                                ));
 
     t_init=(n+1)*1.E6
@@ -494,6 +529,8 @@ for n in range(1,nbcouche-1):
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=20));
 
+    DETRUIRE(CONCEPT=_F(NOM=('INIVAR')));
+
     DEP[n]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='EXTR',
                       RESULTAT=U[n],
@@ -511,12 +548,12 @@ for n in range(1,nbcouche-1):
                       INFO=1,);
 
     VAR[n]=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                OPERATION='EXTR',
-                RESULTAT=U[n],
-                NOM_CHAM='VARI_ELGA',
-                TYPE_MAXI='MAXI_ABS',
-                TYPE_RESU='VALE',
-                INFO=1,);
+                      OPERATION='EXTR',
+                      RESULTAT=U[n],
+                      NOM_CHAM='VARI_ELGA',
+                      TYPE_MAXI='MAXI_ABS',
+                      TYPE_RESU='VALE',
+                      INFO=1,);
 
     U[n]=CALC_ELEM(reuse=U[n],
                    OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
@@ -570,7 +607,7 @@ for n in range(1,nbcouche-1):
                                        NOEUD=tuple(list_noeu_haut),
                                        RESULTAT=U[n],
                                        NOM_CHAM='VARI_ELNO_ELGA',
-                                       NOM_CMP=('V1','V2','V3','V4','V5','V6','V7'),
+                                       NOM_CMP=('V1','V2','V3','V4','V23','V33','V34'),
                                        OPERATION='EXTRACTION'));
 
     IMPR_TABLE(TABLE=T_DEP[n+1]);

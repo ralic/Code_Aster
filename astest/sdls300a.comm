@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE AEROREFRIGERANT SOUMIS A UNE EXCITATION SOL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,18 +106,15 @@ TABL_MAS=POST_ELEM(        MODELE=STRUC,
                       )
 
 MODE1=MACRO_MODE_MECA(    MATR_A=K_ASSE,
-                               MATR_B=M_ASSE,
-
-                               CALC_FREQ=_F(  FREQ_MIN = 1.,    
-                                           FREQ_MAX = 7.,    
-                                           COEF_DIM_ESPACE = 3,
-                                           NB_BLOC_FREQ = 6),
-                                NORM_MODE=_F(  NORME = 'TRAN_ROTA',
-                                            MASS_INER = TABL_MAS),
-                      FILTRE_MODE=_F(  CRIT_EXTR = 'MASS_EFFE_UN'),
-                       IMPRESSION=_F(  CUMUL = 'OUI')
-
-                            )
+                          MATR_B=M_ASSE,
+                          CALC_FREQ=_F(  FREQ_MIN = 1.,    
+                                         FREQ_MAX = 7.,    
+                                         COEF_DIM_ESPACE = 3,
+                                         NB_BLOC_FREQ = 6),
+                          NORM_MODE=_F(  NORME = 'TRAN_ROTA',),
+                          FILTRE_MODE=_F(  CRIT_EXTR = 'MASS_EFFE_UN'),
+                          IMPRESSION=_F(  CUMUL = 'OUI')
+                       )
 
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE1,

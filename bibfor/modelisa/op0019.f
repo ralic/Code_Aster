@@ -1,5 +1,5 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 05/11/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,9 +53,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
       PARAMETER (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
-      PARAMETER (NBEBA=2,NBEMA=46,NBEGB=6)
+      PARAMETER (NBEBA=2,NBEMA=48,NBEGB=6)
       PARAMETER (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGB)
-      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=52)
+      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=54)
 
       INTEGER NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3)
       INTEGER NTYELE(NBTEL)
@@ -102,7 +102,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DATA NOMEL2/'MECA_HEXA8      ','MECA_PENTA6     ',
      &     'MECA_TETRA4     ','MECA_HEXA27     ','MECA_HEXA20     ',
      &     'MECA_PENTA15    ','MECA_TETRA10    ','MECA_PYRAM5     ',
-     &     'MECA_PYRAM13    ','MEAXTR3         ','MEAXQU4         ',
+     &     'MECA_PYRAM13    ','MECA_HEXS8      ','MECA_HEXS20     ',
+     &     'MEAXTR3         ','MEAXQU4         ',
      &     'MEAXTR6         ','MEAXQU8         ','MEAXQU9         ',
      &     'MEDPTR3         ','MEDPQU4         ','MEDPTR6         ',
      &     'MEDPQU8         ','MEDPQU9         ','MECPTR3         ',

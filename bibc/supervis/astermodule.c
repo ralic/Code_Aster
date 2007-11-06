@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 29/10/2007   AUTEUR PELLET J.PELLET */
+/* MODIF astermodule supervis  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2030,7 +2030,7 @@ static PyObject* aster_getvectjev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        char *nomsd;
+        char *nomsd, nomsd32[33];
         char nomob[8];
         double *f;
         INTEGER *l;
@@ -2044,11 +2044,13 @@ PyObject *args;
         char *iaddr;
 
         if (!PyArg_ParseTuple(args, "s|ll:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
+        nomsd32[32] = '\0';
+        CSTRING_FCPY(nomsd32, 32, nomsd);
 
         try(1){
           iob=0 ;
           CALL_JEMARQ();
-          CALL_GETCON(nomsd,&iob,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
+          CALL_GETCON(nomsd32,&iob,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
           if(ctype < 0){
             /* Erreur */
 /*            PyErr_SetString(PyExc_KeyError, "Concept inexistant");

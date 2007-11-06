@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,8 +22,7 @@
 #**************   NOUVELLE REALISATION                   **********
 #************** PARTIE COMMUNE A TOUTES LES MODELISATION **********
 
-DEBUT( CODE=_F(  NOM = 'SDLL112B',NIV_PUB_WEB='INTERNET'),
-       DEBUG=_F(SDVERI='OUI',),);
+DEBUT( CODE=_F(  NOM = 'SDLL112B',NIV_PUB_WEB='INTERNET') )
 
 # MODELE POUTRE  CAS 2D  PLAN XZ
 
@@ -139,17 +138,16 @@ SPECT_Z=DEFI_NAPPE(  NOM_PARA='AMOR',    INTERPOL='LOG',
 #                           COMBINAISON SRSS
 #-----------------------------------------
 
-SISM_MO1=COMB_SISM_MODAL(  MODE_MECA=MODE,
-                                    AMOR_REDUIT=0.03,
+SISM_MO1=COMB_SISM_MODAL(      MODE_MECA=MODE,
+                             AMOR_REDUIT=0.03,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      AXE = ( 1., 0., 0., ),
-                                      SPEC_OSCI = SPECT_XY,
-                                      ECHELLE = 1.),
-                              COMB_MODE=_F(  TYPE = 'SRSS'),
-                                OPTION=( 'DEPL',
-                                         'ACCE_ABSOLU', 'REAC_NODA',)
+                                   EXCIT=_F( MONO_APPUI = 'OUI',
+                                             AXE = ( 1., 0., 0., ),
+                                             SPEC_OSCI = SPECT_XY,
+                                             ECHELLE = 1.),
+                               COMB_MODE=_F( TYPE = 'SRSS'),
+                                  OPTION=( 'DEPL', 'ACCE_ABSOLU', 'REAC_NODA',)
                            )
 
 #-----------------------------------------
@@ -248,18 +246,17 @@ MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,  MODELE=MODELE,
 
 #-----------------------------------------
 
-SISM_MO2=COMB_SISM_MODAL(  MODE_MECA=MODE,
-                                    AMOR_REDUIT=0.03,
+SISM_MO2=COMB_SISM_MODAL(     MODE_MECA=MODE,
+                             AMOR_REDUIT=0.03,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
                                MODE_CORR=MODE_ST1,
-                              EXCIT=_F(  MONO_APPUI = 'OUI',
-                                      AXE = ( 1., 0., 0., ),
-                                      SPEC_OSCI = SPECT_XY,
-                                      ECHELLE = 1.),
-                              COMB_MODE=_F(  TYPE = 'SRSS'),
-                                OPTION=('DEPL',
-                                        'ACCE_ABSOLU', 'REAC_NODA', )
+                                   EXCIT=_F( MONO_APPUI = 'OUI',
+                                             AXE = ( 1., 0., 0., ),
+                                             SPEC_OSCI = SPECT_XY,
+                                             ECHELLE = 1.),
+                               COMB_MODE=_F( TYPE = 'SRSS'),
+                                  OPTION=('DEPL', 'ACCE_ABSOLU', 'REAC_NODA', )
                            )
 
 #-----------------------------------------
@@ -361,27 +358,29 @@ MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,  MODELE=MODELE,
 
 #
 
-SISM_MU1=COMB_SISM_MODAL(  MODE_MECA=MODE,
-                               AMOR_REDUIT=0.03,
+SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
+                             AMOR_REDUIT=0.03,
                                MASS_INER=MAS,
-                               CORR_FREQ='NON',EXCIT=(
-                     _F(  GROUP_NO = 'ENCASTRE',
-                              AXE = ( 1., 0., 0., ),
-                              SPEC_OSCI = SPECT_XY,
-                              ECHELLE = 1.),
-                           _F(  NOEUD = 'N5',
-                              AXE = ( 1., 0., 0., ),
-                              SPEC_OSCI = SPECT_XY,
-                              ECHELLE = 1.),
-                           _F(  NOEUD = 'N9',
-                              AXE = ( 1., 0., 0., ),
-                              SPEC_OSCI = SPECT_XY,
-                              ECHELLE = 1.)),
-            COMB_MULT_APPUI=(
-                     _F(  GROUP_NO = 'ENCASTRE',
-                                       TYPE_COMBI = 'LINE'),
-                                     _F(  NOEUD = ( 'N5',  'N9', ),
-                                       TYPE_COMBI = 'LINE')),
+                               CORR_FREQ='NON',
+                                   EXCIT=(_F( MULTI_APPUI ='DECORRELE',
+                                              GROUP_NO = 'ENCASTRE',
+                                              AXE = ( 1., 0., 0., ),
+                                              SPEC_OSCI = SPECT_XY,
+                                              ECHELLE = 1.),
+                                          _F( MULTI_APPUI ='DECORRELE',
+                                              NOEUD = 'N5',
+                                              AXE = ( 1., 0., 0., ),
+                                              SPEC_OSCI = SPECT_XY,
+                                              ECHELLE = 1.),
+                                          _F( MULTI_APPUI ='DECORRELE',
+                                              NOEUD = 'N9',
+                                              AXE = ( 1., 0., 0., ),
+                                              SPEC_OSCI = SPECT_XY,
+                                              ECHELLE = 1.)),
+                         COMB_MULT_APPUI=(_F( GROUP_NO = 'ENCASTRE',
+                                              TYPE_COMBI = 'LINE'),
+                                          _F( NOEUD = ( 'N5',  'N9', ),
+                                              TYPE_COMBI = 'LINE')),
 # DEPLACEMENT RELATIF MAXIMAL
             DEPL_MULT_APPUI=(
                             _F(    NUME_CAS = 1,
@@ -482,25 +481,26 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
                                AMOR_REDUIT=0.03,
                                MASS_INER=MAS,
                                CORR_FREQ='NON',
-                               MODE_CORR=MODE_ST1,EXCIT=(
-
-                     _F(  GROUP_NO = 'ENCASTRE',
-                              AXE = ( 1., 0., 0., ),
-                              SPEC_OSCI = SPECT_XY,
-                              ECHELLE = 1.),
-                           _F(  NOEUD = 'N5',
-                              AXE = ( 1., 0., 0., ),
-                              SPEC_OSCI = SPECT_XY,
-                              ECHELLE = 1.5),
-                           _F(  NOEUD = 'N9',
-                              AXE = ( 1., 0., 0., ),
-                              SPEC_OSCI = SPECT_XY,
-                              ECHELLE = 2.)),
-      COMB_MULT_APPUI=(
-                     _F(  GROUP_NO = 'ENCASTRE',
-                                       TYPE_COMBI = 'LINE'),
-                                     _F(  NOEUD = ( 'N5',  'N9', ),
-                                       TYPE_COMBI = 'LINE')),
+                               MODE_CORR=MODE_ST1,
+                                   EXCIT=(_F( MULTI_APPUI ='DECORRELE',
+                                              GROUP_NO = 'ENCASTRE',
+                                              AXE = ( 1., 0., 0., ),
+                                              SPEC_OSCI = SPECT_XY,
+                                              ECHELLE = 1.),
+                                          _F( MULTI_APPUI ='DECORRELE',
+                                              NOEUD = 'N5',
+                                              AXE = ( 1., 0., 0., ),
+                                              SPEC_OSCI = SPECT_XY,
+                                              ECHELLE = 1.5),
+                                          _F( MULTI_APPUI ='DECORRELE',
+                                              NOEUD = 'N9',
+                                              AXE = ( 1., 0., 0., ),
+                                              SPEC_OSCI = SPECT_XY,
+                                              ECHELLE = 2.)),
+                         COMB_MULT_APPUI=(_F( GROUP_NO = 'ENCASTRE',
+                                              TYPE_COMBI = 'LINE'),
+                                          _F( NOEUD = ( 'N5',  'N9', ),
+                                              TYPE_COMBI = 'LINE')),
 # DEPLACEMENT RELATIF MAXIMAL
       DEPL_MULT_APPUI=(
                      _F(   NUME_CAS = 1,

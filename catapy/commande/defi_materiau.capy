@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+#& MODIF COMMANDE  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -962,7 +962,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              RI_ELA =SIMP(statut='o',typ='R' ),
              RHYS   =SIMP(statut='o',typ='R' ),
              RMOB   =SIMP(statut='o',typ='R' ),
-             XM     =SIMP(statut='o',typ='R'),
+             XM     =SIMP(statut='o',typ='R' ),
+             RD_CYC =SIMP(statut='o',typ='R' ),
+             RI_CYC =SIMP(statut='o',typ='R' ),
+             DILA   =SIMP(statut='o',typ='R' ),
            ),
            ECRO_ASYM_LINE  =FACT(statut='f',
              DC_SIGM_EPSI    =SIMP(statut='o',typ='R'),

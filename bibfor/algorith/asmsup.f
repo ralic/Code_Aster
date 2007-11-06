@@ -1,14 +1,14 @@
-      SUBROUTINE ASMSUP(MASSE,MECA,NBMODE,NEQ,NBSUP,NSUPP,
-     &                  NOMSUP,NDIR,REASUP,TCOSUP,
-     &                  NUME,LORDR)
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER           NDIR(*),NSUPP(*),TCOSUP(NBSUP,*),LORDR(*)
+      SUBROUTINE ASMSUP ( MASSE, MECA, NBMODE, NEQ, NBSUP, NSUPP,
+     &                    NOMSUP, NDIR, REASUP, TCOSUP, NUME, LORDR )
+      IMPLICIT  NONE
+      INTEGER           NBMODE, NEQ, NBSUP, NDIR(*), NSUPP(*),
+     &                  TCOSUP(NBSUP,*), LORDR(*)
       REAL*8            REASUP(NBSUP,NBMODE,*)
-      CHARACTER*8       MASSE,MECA,NOMSUP(NBSUP,*)
+      CHARACTER*8       MASSE, MECA, NOMSUP(NBSUP,*)
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,6 @@ C                TCOSUP(I) = 3 : COMBINAISON ABSOLUE
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
-      INTEGER VALI(2)
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -64,24 +63,25 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32       JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      IBID, ID, IDDL, IER, IGR, IM, IN, INO, IOC, IRET, IS,
+     +             JDDL1, JDDL2, JDGN, JGRN, JNOE, LVALE, NBA, NBB, N1,
+     +             NBBD, NBL, NBLIAI, NBOCC, NBTROU, NGR, NNO, NT,
+     +             VALI(2)
+      CHARACTER*1  K1B
       CHARACTER*4  CTYP, DIR(3)
-      CHARACTER*8  K8B, RESU, NOMA, GRNOEU, NOEU, CMP, NOMCMP(3), NOEREF
+      CHARACTER*8  K8B, NOMA, GRNOEU, NOEU, CMP, NOMCMP(3), NOEREF
       CHARACTER*15 MOTFAC,MOTFA2
       CHARACTER*16 NOMSY, CONCEP, NOMCMD, MONACC, MONPAR
       CHARACTER*19 CHAM19
-      CHARACTER*24 OBJ1, OBJ2
-      CHARACTER*24 VALK(2)
-      CHARACTER*8  K8BID
-      CHARACTER*1  K1BID
+      CHARACTER*24 OBJ1, OBJ2, VALK(2)
 C     ------------------------------------------------------------------
       DATA  DIR / 'X' , 'Y' , 'Z' /
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL GETRES(RESU,CONCEP,NOMCMD)
 C
-      CALL DISMOI('F','NOM_MAILLA',MASSE,'MATR_ASSE',IBID,NOMA,IRET)
+      CALL DISMOI('F','NOM_MAILLA',MASSE,'MATR_ASSE',IBID,NOMA,IER)
       OBJ1 = NOMA//'.GROUPENO'
       OBJ2 = NOMA//'.NOMNOE'
       IER = 0
@@ -92,17 +92,17 @@ C     --- VERIFICATION DES SUPPORTS ---
       CALL TYPDDL('BLOQ',NUME,NEQ,ZI(JDDL1),NBA,NBB,NBL,NBLIAI)
       DO 10 ID = 1,3
          IF (NDIR(ID).EQ.1) THEN
-            CALL PTEDDL('NUME_DDL',NUME,1,NOMCMP(ID),NEQ,ZI(JDDL2) )
+            CALL PTEDDL('NUME_DDL',NUME,1,NOMCMP(ID),NEQ,ZI(JDDL2))
             NBBD = 0
             DO 12 IN = 1,NEQ
                NBBD = NBBD + ( ZI(JDDL1+IN-1) * ZI(JDDL2+IN-1) )
  12         CONTINUE
             IF (NSUPP(ID).NE.NBBD) THEN
                IER = IER + 1
-         VALK (1) = DIR(ID)
-         VALI (1) = NBBD
-         VALI (2) = NSUPP(ID)
-               CALL U2MESG('E', 'ALGORITH12_6',1,VALK,2,VALI,0,0.D0)
+               VALK(1) = DIR(ID)
+               VALI(1) = NBBD
+               VALI(2) = NSUPP(ID)
+               CALL U2MESG('E', 'SEISME_23',1,VALK,2,VALI,0,0.D0)
             ENDIF
          ENDIF
  10   CONTINUE
@@ -114,21 +114,21 @@ C     --- VERIFICATION DE L'OPTION "REAC_NODA" ---
       CALL RSUTNC(MECA,NOMSY,0,K8B,IBID,NBTROU)
       IF (NBTROU.EQ.0) THEN
          IER = IER + 1
-         VALK (1) = MECA
-         VALK (2) = NOMSY
-         CALL U2MESG('E', 'ALGORITH12_7',2,VALK,0,0,0,0.D0)
+         VALK(1) = MECA
+         VALK(2) = NOMSY
+         CALL U2MESK('E', 'SEISME_24',2,VALK)
          GOTO 9999
       ENDIF
 C
 C     --- RECUPERATION DES REACTIONS NODALES ---
       DO 60 IM = 1,NBMODE
-         CALL RSEXCH(MECA,NOMSY,LORDR(IM),CHAM19,IE)
+         CALL RSEXCH(MECA,NOMSY,LORDR(IM),CHAM19,IRET)
          CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
          DO 62 ID = 1,3
             IF (NDIR(ID).EQ.1) THEN
                DO 64 IS = 1,NSUPP(ID)
                   NOEU = NOMSUP(IS,ID)
-                CALL POSDDL('NUME_DDL',NUME,NOEU,NOMCMP(ID),INOEUD,IDDL)
+                  CALL POSDDL('NUME_DDL',NUME,NOEU,NOMCMP(ID),INO,IDDL)
                   REASUP(IS,IM,ID) = ZR(LVALE+IDDL-1)
  64            CONTINUE
             ENDIF
@@ -136,90 +136,88 @@ C     --- RECUPERATION DES REACTIONS NODALES ---
  60   CONTINUE
 C
 C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
+      MOTFAC = 'COMB_MULT_APPUI'
+      CALL GETFAC ( MOTFAC, NBOCC )
       DO 39 ID = 1,3
          DO 40 IS = 1,NBSUP
             TCOSUP(IS,ID) = 1
  40      CONTINUE
  39   CONTINUE
-      MOTFAC = 'COMB_MULT_APPUI'
-      CALL GETFAC(MOTFAC,NBOCC)
       DO 42 IOC = 1,NBOCC
-         CTYP = ' '
-         CALL GETVTX(MOTFAC,'TYPE_COMBI',IOC,1,1,CTYP,NC)
-         CALL GETVTX(MOTFAC,'TOUT',IOC,1,1,K8B ,NT)
-         IF (CTYP.NE.'QUAD') THEN
+        CTYP = ' '
+        CALL GETVTX(MOTFAC,'TYPE_COMBI',IOC,1,1,CTYP,N1)
+        CALL GETVTX(MOTFAC,'TOUT',IOC,1,1,K8B,NT)
+        IF (CTYP.NE.'QUAD') THEN
           IF (NT.NE.0) THEN
-           DO 44 ID = 1,3
-            DO 45 IS = 1,NBSUP
-             IF (CTYP.EQ.'LINE')  TCOSUP(IS,ID) = 2
- 45         CONTINUE
- 44        CONTINUE
-          ELSE
-           CALL GETVID(MOTFAC,'NOEUD',IOC,1,0,NOEU,NN)
-           IF (NN.NE.0) THEN
-            NNO = -NN
-            CALL WKVECT('&&ASMSUP.NOEUD','V V K8',NNO,JNOE)
-            CALL GETVID(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),NN)
-            DO 46 INO = 1, NNO
-             NOEU = ZK8(JNOE+INO-1)
-             CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
-             IF (IRET.EQ.0) THEN
-              IER = IER + 1
-               VALK(1) = NOEU
-               VALK(2) = NOMA
-               CALL U2MESK('E','ALGORITH_31', 2 ,VALK)
-              GOTO 46
-             ENDIF
-             DO 48 IS = 1,NBSUP
-              DO 49 ID = 1,3
-               IF (NOMSUP(IS,ID).EQ.NOEU) THEN
+            DO 44 ID = 1,3
+              DO 45 IS = 1,NBSUP
                 IF (CTYP.EQ.'LINE')  TCOSUP(IS,ID) = 2
-               ENDIF
- 49           CONTINUE
- 48          CONTINUE
- 46         CONTINUE
-            CALL JEDETR('&&ASMSUP.NOEUD')
-           ELSE
-            CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,0,K8BID,NG)
-            IF (NG.NE.0) THEN
-             NGR = -NG
-             CALL WKVECT('&&ASMSUP.GROUP_NO','V V K8',NGR,JGRN)
-             CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,NGR,ZK8(JGRN),NG)
-             DO 50 IGR = 1, NGR
-              GRNOEU = ZK8(JGRN+IGR-1)
-              CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
-              IF (IRET .EQ. 0) THEN
-               IER = IER + 1
-                VALK(1) = GRNOEU
-                VALK(2) = NOMA
-                CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
-               GOTO 50
-              ELSE
-               CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,
-     &                              K1BID)
-               CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
-               DO 52 INO = 1, NN
-                CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)
-                DO 54 IS = 1,NBSUP
-                 DO 55 ID = 1,3
-                  IF (NOMSUP(IS,ID).EQ.NOEU) THEN
-                   IF (CTYP.EQ.'LINE')   TCOSUP(IS,ID) = 2
+ 45           CONTINUE
+ 44         CONTINUE
+          ELSE
+            CALL GETVID(MOTFAC,'NOEUD',IOC,1,0,NOEU,N1)
+            IF (N1.NE.0) THEN
+              NNO = -N1
+              CALL WKVECT('&&ASMSUP.NOEUD','V V K8',NNO,JNOE)
+              CALL GETVID(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),N1)
+              DO 46 INO = 1, NNO
+                NOEU = ZK8(JNOE+INO-1)
+                CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
+                IF (IRET.EQ.0) THEN
+                  IER = IER + 1
+                  VALK(1) = NOEU
+                  VALK(2) = NOMA
+                  CALL U2MESK('E','SEISME_1', 2 ,VALK)
+                  GOTO 46
+                ENDIF
+                DO 48 IS = 1,NBSUP
+                  DO 49 ID = 1,3
+                    IF (NOMSUP(IS,ID).EQ.NOEU) THEN
+                      IF (CTYP.EQ.'LINE')  TCOSUP(IS,ID) = 2
+                    ENDIF
+ 49               CONTINUE
+ 48             CONTINUE
+ 46           CONTINUE
+              CALL JEDETR('&&ASMSUP.NOEUD')
+            ELSE
+              CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,0,K8B,N1)
+              IF (N1.NE.0) THEN
+                NGR = -N1
+                CALL WKVECT('&&ASMSUP.GROUP_NO','V V K8',NGR,JGRN)
+                CALL GETVID(MOTFAC,'GROUP_NO',IOC,1,NGR,ZK8(JGRN),N1)
+                DO 50 IGR = 1, NGR
+                  GRNOEU = ZK8(JGRN+IGR-1)
+                  CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
+                  IF (IRET .EQ. 0) THEN
+                    IER = IER + 1
+                    VALK(1) = GRNOEU
+                    VALK(2) = NOMA
+                    CALL U2MESK('E','SEISME_2', 2 ,VALK)
+                    GOTO 50
+                  ELSE
+                    CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NNO,K1B)
+                    CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
+                    DO 52 INO = 1, NNO
+                      CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)
+                      DO 54 IS = 1,NBSUP
+                        DO 55 ID = 1,3
+                          IF (NOMSUP(IS,ID).EQ.NOEU) THEN
+                            IF (CTYP.EQ.'LINE')   TCOSUP(IS,ID) = 2
+                          ENDIF
+ 55                     CONTINUE
+ 54                   CONTINUE
+ 52                 CONTINUE
                   ENDIF
- 55              CONTINUE
- 54             CONTINUE
- 52            CONTINUE
+ 50             CONTINUE
+                CALL JEDETR('&&ASMSUP.GROUP_NO')
               ENDIF
- 50          CONTINUE
-             CALL JEDETR('&&ASMSUP.GROUP_NO')
             ENDIF
-           ENDIF
           ENDIF
-         ENDIF
+        ENDIF
  42   CONTINUE
 C
  9999 CONTINUE
-      IF (IER.NE.0) CALL U2MESS('F','ALGORITH_25')
+      IF (IER.NE.0) CALL U2MESS('F','SEISME_6')
 C
-99999 CONTINUE
       CALL JEDEMA()
       END

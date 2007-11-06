@@ -1,12 +1,12 @@
-      SUBROUTINE ASDIR (MONOAP,ID,NEQ,NBSUP,NSUPP,
-     +                  TCOSUP,ZRCREP,ZRDIR )
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER           NSUPP(*),TCOSUP(NBSUP,*)
-      REAL*8            ZRCREP(NBSUP,NEQ,*),ZRDIR(NEQ,*)
-      LOGICAL           MONOAP
+      SUBROUTINE ASDIR ( MONOAP, MUAPDE, ID, NEQ, NBSUP, NSUPP,
+     +                   TCOSUP, RECMOD, REPDIR )
+      IMPLICIT  NONE
+      INTEGER           ID, NEQ, NBSUP, NSUPP(*), TCOSUP(NBSUP,*)
+      REAL*8            RECMOD(NBSUP,NEQ,*), REPDIR(NEQ,*)
+      LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2000   AUTEUR PIBAT01 J.PIGAT 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,17 +25,19 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
-C        CALCUL DES REPONSES DIRECTIONNELLES
+C        CALCUL DES REPONSES DIRECTIONNELLES DES SUPPORTS
 C     ------------------------------------------------------------------
 C IN  : MONOAP : =.TRUE.  , CAS DU MONO-SUPPORT
 C                =.FALSE. , CAS DU MULTI-SUPPORT
+C IN  : MUAPDE : =.TRUE.  , CAS DU MULTI-SUPPORTS DECORRELES
+C                =.FALSE. , CAS DU MULTI-SUPPORTS CORRELES
 C IN  : ID     : LA DIRECTION
 C IN  : NEQ    : NOMBRE D'EQUATIONS
 C IN  : NBSUP  : NOMBRE DE SUPPORTS
 C IN  : NSUPP  : MAX DU NOMBRE DE SUPPORT PAR DIRECTION
 C IN  : TCOSUP : VECTEUR DES TYPES DE RECOMBINAISON DES SUPPORTS
-C IN  : ZRCREP : VECTEUR DES RECOMBINAISONS MODALES PAR APPUIS
-C OUT : ZRDIR  : VECTEUR DES RECOMBINAISONS PAR DIRECTIONS
+C IN  : RECMOD : VECTEUR DES RECOMBINAISONS MODALES PAR APPUIS
+C OUT : REPDIR : VECTEUR DES RECOMBINAISONS PAR DIRECTIONS
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -53,42 +55,39 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER     IN, IS, JQUA, JLIN, JABS
+      REAL*8      XXX, XX1, XX2
+C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      ZERO = 0.D0
 C
-      IF ( MONOAP )  THEN
+      IF ( MONOAP .OR. .NOT.MUAPDE  )  THEN
          DO 10 IN = 1,NEQ
-            ZRDIR(IN,ID)=ZRCREP(NBSUP,IN,ID)
+            REPDIR(IN,ID)=RECMOD(1,IN,ID)
  10      CONTINUE
       ELSE
          CALL WKVECT('&&ASDIR.QUAD','V V R',NEQ,JQUA)
          CALL WKVECT('&&ASDIR.LINE','V V R',NEQ,JLIN)
          CALL WKVECT('&&ASDIR.ABS ','V V R',NEQ,JABS)
-         DO 11 IN = 1,NEQ
-             ZR(JQUA+IN-1) = ZERO
-             ZR(JLIN+IN-1) = ZERO
-             ZR(JABS+IN-1) = ZERO
- 11      CONTINUE
          DO 20 IS = 1,NSUPP(ID)
             IF (TCOSUP(IS,ID).EQ.1) THEN
 C              --- COMBINAISON QUADRATIQUE ---
                DO 12 IN = 1,NEQ
-                  XXX          = ZRCREP(IS,IN,ID)
+                  XXX          = RECMOD(IS,IN,ID)
                   ZR(JQUA+IN-1)= ZR(JQUA+IN-1)+ XXX
  12            CONTINUE
             ELSEIF (TCOSUP(IS,ID).EQ.2) THEN
 C              --- COMBINAISON LINEAIRE ---
                DO 14 IN = 1,NEQ
-                  IF (ZRCREP(IS,IN,ID).GE.ZERO) THEN
-                     XXX          = SQRT(ZRCREP(IS,IN,ID))
+                  IF (RECMOD(IS,IN,ID).GE.0.D0) THEN
+                     XXX          = SQRT(RECMOD(IS,IN,ID))
                      ZR(JLIN+IN-1)= ZR(JLIN+IN-1)+ XXX
                   ENDIF
  14            CONTINUE
             ELSE
 C              --- COMBINAISON VALEUR ABSOLUE ---
                DO 16 IN = 1,NEQ
-                  XXX          = SQRT(ABS(ZRCREP(IS,IN,ID)))
+                  XXX          = SQRT(ABS(RECMOD(IS,IN,ID)))
                   ZR(JABS+IN-1)= ZR(JABS+IN-1)+ XXX
  16            CONTINUE
             ENDIF
@@ -96,7 +95,7 @@ C              --- COMBINAISON VALEUR ABSOLUE ---
          DO 30 IN = 1,NEQ
             XX1 = ZR(JLIN+IN-1) * ZR(JLIN+IN-1)
             XX2 = ZR(JABS+IN-1) * ZR(JABS+IN-1)
-            ZRDIR(IN,ID) = ZR(JQUA+IN-1)+XX1+XX2
+            REPDIR(IN,ID) = ZR(JQUA+IN-1)+XX1+XX2
  30      CONTINUE
          CALL JEDETR('&&ASDIR.QUAD')
          CALL JEDETR('&&ASDIR.LINE')

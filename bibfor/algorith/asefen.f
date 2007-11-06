@@ -1,13 +1,14 @@
-      SUBROUTINE ASEFEN(NOMSY,ID,STAT,NEQ,NBSUP,NDIR,
-     &           NSUPP,MASSE,NOMSUP, DEPSUP,ZRCREP )
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER           NSUPP(*),NDIR(*)
-      REAL*8            DEPSUP(NBSUP,*),ZRCREP(NBSUP,NEQ,*)
-      CHARACTER*(*)     STAT,NOMSUP(NBSUP,*),MASSE
+      SUBROUTINE ASEFEN ( MUAPDE, NOMSY, ID, STAT, NEQ, NBSUP, NDIR,
+     &                    NSUPP, MASSE, NOMSUP, DEPSUP, RECMOD )
+      IMPLICIT  NONE
+      INTEGER           ID, NEQ, NBSUP, NSUPP(*), NDIR(*)
+      REAL*8            DEPSUP(NBSUP,*), RECMOD(NBSUP,NEQ,*)
+      CHARACTER*(*)     STAT, NOMSUP(NBSUP,*), MASSE
       CHARACTER*16      NOMSY
+      LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +29,8 @@ C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
 C        CALCUL DES TERMES D'ENTRAINEMENT
 C     ------------------------------------------------------------------
+C IN  : MUAPDE : =.TRUE.  , CAS DU MULTI-SUPPORTS DECORRELES
+C                =.FALSE. , CAS DU MULTI-SUPPORTS CORRELES
 C IN  : NOMSY  : OPTION DE CALCUL
 C IN  : ID     : LA DIRECTION
 C IN  : STAT   : MODE STATIQUES
@@ -35,8 +38,8 @@ C IN  : NEQ    : NOMBRE D'EQUATIONS
 C IN  : NBSUP  : NOMBRE DE SUPPORTS
 C IN  : NSUPP  : MAX DU NOMBRE DE SUPPORT PAR DIRECTION
 C IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
-C OUT  : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
-C OUT : ZRCREP : VECTEUR DES RECOMBINAISONS MODALES
+C OUT : DEPSUP : VECTEUR DES DEPLACEMENTS DES SUPPORTS
+C OUT : RECMOD : VECTEUR DES RECOMBINAISONS MODALES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -55,15 +58,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*24 OBJ1, OBJ2
-      CHARACTER*24 VALK(2)
-      CHARACTER*1  K1BID
-      CHARACTER*8  K8B, NOEU, CMP, NOMCMP(3),NOMA,GRNOEU
-      CHARACTER*8  NOEREF
-      CHARACTER*16 MONACC
-      CHARACTER*19 CHEXTR,MOTFAC
-      COMPLEX*16   CBID
+      INTEGER       IBID, IDI, IER, IGR, IN, INO, INORF, IOC, IORDR,
+     &              IRE1, IRE2, IRET, IS, JDGN, JGRN, JNOE, JVALE,
+     &              NBTROU, NCAS, NG, NGR, NN, NNO, NNR, NX, NY, NZ
+      REAL*8        DX, DY, DZ, R8B, XX1, XXX
+      COMPLEX*16    CBID
+      CHARACTER*1   K1BID
+      CHARACTER*8   K8B, NOEU, CMP, NOMCMP(3), NOMA, GRNOEU
+      CHARACTER*8   NOEREF
+      CHARACTER*16  MONACC
+      CHARACTER*19  CHEXTR, MOTFAC
+      CHARACTER*24  OBJ1, OBJ2, VALK(2)
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
 C     ------------------------------------------------------------------
@@ -95,7 +100,7 @@ C
                   IER = IER + 1
                    VALK(1) = NOEU
                    VALK(2) = NOMA
-                   CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
+                   CALL U2MESK('E','SEISME_1', 2 ,VALK)
                   GOTO 22
                ENDIF
                IF (NX.NE.0) THEN
@@ -130,7 +135,7 @@ C
                   IER = IER + 1
                    VALK(1) = GRNOEU
                    VALK(2) = NOMA
-                   CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
+                   CALL U2MESK('E','SEISME_2', 2 ,VALK)
                   GOTO 26
                ELSE
                   CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K1BID)
@@ -166,7 +171,7 @@ C
             IER = IER + 1
              VALK(1) = NOEREF
              VALK(2) = NOMA
-             CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
+             CALL U2MESK('E','SEISME_1', 2 ,VALK)
             GOTO 9999
          ENDIF
          IF (IRE2.NE.0) THEN
@@ -184,33 +189,40 @@ C
                   ENDIF
  92            CONTINUE
                IER = IER + 1
-               CALL U2MESK('E','ALGORITH_23',1,NOEREF)
+               CALL U2MESK('E','SEISME_3',1,NOEREF)
                GOTO 9999
             ENDIF
  90      CONTINUE
       ENDIF
 C
  2    CONTINUE
-
+C
       CMP = NOMCMP(ID)
-      DO 10 IS = 1,NSUPP(ID)
+      DO 110 IS = 1,NSUPP(ID)
          NOEU   = NOMSUP(IS,ID)
          MONACC = NOEU//CMP
          XX1    = DEPSUP(IS,ID)
          CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,K8B,
-     &                                                  IORDR,1,NBTROU)
+     &                                                IORDR,1,NBTROU)
          CALL RSEXCH(STAT,NOMSY,IORDR,CHEXTR,IRET)
          CALL JEEXIN(CHEXTR//'.VALE',IBID)
          IF (IBID.GT.0) THEN
-           CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)
+            CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)
          ELSE
            CALL JEVEUO(CHEXTR//'.CELV','L',JVALE)
          END IF
-         DO 12 IN = 1,NEQ
-            XXX = ZR(JVALE+IN-1) * XX1
-            ZRCREP(IS,IN,ID) = ZRCREP(IS,IN,ID) + XXX*XXX
- 12     CONTINUE
- 10   CONTINUE
+         IF ( MUAPDE ) THEN
+            DO 112 IN = 1,NEQ
+               XXX = ZR(JVALE+IN-1) * XX1
+               RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + XXX*XXX
+ 112        CONTINUE
+         ELSE
+            DO 114 IN = 1,NEQ
+               XXX = ZR(JVALE+IN-1) * XX1
+               RECMOD(1,IN,ID) = RECMOD(1,IN,ID) + XXX*XXX
+ 114        CONTINUE
+         ENDIF
+ 110  CONTINUE
 C
  9999 CONTINUE
 

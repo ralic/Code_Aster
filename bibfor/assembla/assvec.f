@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -551,7 +551,7 @@ C --- TEST EXISTENCE &&POIDS_MAILLE (ARLEQUIN)
      &                   (NOMOPT(1:10).EQ.'MECA_BTLA_')) THEN
                   LARLQ = .FALSE.                                 
                 ELSE
-                  CALL U2MESK('F','ARLEQUIN_99',1,NOMOPT)
+                  CALL U2MESK('F','DVP_99',1,NOMOPT)
                 ENDIF
               ELSE
                 LARLQ = .FALSE.      

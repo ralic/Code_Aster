@@ -4,7 +4,7 @@
       CHARACTER*24        CHGRFL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,7 +46,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      I1, I2, I3, I4, I5, I6, I7, I8, I9, I10, I11, I12,
      +             I13, I14, I15, I16, I17, I18, I19, I20, I21, I22,
-     +             II, JFFL, JIFL, INO
+     +             I23,
+     +             II, JFFL, JFF2,JIFL, INO
       INTEGER      IDRDH, IDRGR, IDRMC, IDRMA, IDRTG, IDRAS, IDRPC,
      +             IDVDIR, IDGEOM, IDABSC, NBNO, IDLINO
       INTEGER      IAPPL, IMPF, IMPN
@@ -72,6 +73,7 @@ C
       REAL*8       DEMI, QUATRE, R8PI, PI, PIS4
       LOGICAL      ULEXIS
       CHARACTER*8  K8BID
+      CHARACTER*24 CHGRF2
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ()
@@ -251,6 +253,8 @@ C     ----------------------------------
 C
       CALL WKVECT ( CHGRFL, 'V V R', 5*NBNO+1000, JFFL ) 
       CALL WKVECT ( '&&GFLECT.INDICE', 'V V I', NBNO+50, JIFL ) 
+      CHGRF2 ='&&OP0070.GRAPPE_FLUIDE_C'
+      CALL WKVECT ( CHGRF2, 'V V R', 5*NBNO+1000, JFF2 ) 
 C
 C
 CCC      COMMON/CARTER/Li,Lml,Lig,deml,diml,dcsp,roml,numl,Aml,Ai,Dhml,
@@ -493,6 +497,8 @@ C     -----------------------------------------------
          ZR(JFFL-1+I21+INO) = 0.0D0
  12   CONTINUE
       I22 = I21 + NBNO
+      ZR(JFFL-1+I22+1) = 0.0D0
+      I23 = I22+1
 C
 CCC      COMMON/POINTEUR/eps,eps0
       ZI(JIFL-1+1) = 0
@@ -547,6 +553,8 @@ C     ----------------------------------------------------
       ZI(JIFL-1+II+30) = ZI( IAPPL-1+8 )
       ZI(JIFL-1+II+31) = ZI( IAPPL-1+9 )
       ZI(JIFL-1+II+32) = ZI( IAPPL-1+10)
+      ZI(JIFL-1+II+33) = I23
+
       IMPF = ZI(IAPPL-1+7)
       IF ( IMPF .GT. 0 ) THEN
         IF ( .NOT. ULEXIS( IMPF ) ) THEN

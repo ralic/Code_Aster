@@ -1,13 +1,13 @@
       SUBROUTINE ASEXC1( MOTFAC, NBOCC, NBMODE, PARMOD, AMORT, CORFRE,
      &                   NDIR, VALSPE, ASYSPE )
-      IMPLICIT  REAL*8 (A-H,O-Z)
-      INTEGER          NDIR(*)
+      IMPLICIT  NONE
+      INTEGER          NBOCC, NBMODE, NDIR(*)
       REAL*8           PARMOD(NBMODE,*),AMORT(*),VALSPE(3,*),ASYSPE(*)
       CHARACTER*(*)    MOTFAC
       LOGICAL          CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,14 +56,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32       JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER      NATURE(3)
-      REAL*8       DIRSPE(3), ECHSPE(3), VALPU(2)
-      CHARACTER*1  DIR(3)
+      INTEGER      NATURE(3), ID, IER, IFM, II, IM, INAT, IOC, NBPT1,
+     +             NBPT2, N1, NIMPR, IUNIFI, JVAR1
+      REAL*8       AMOR, COEF, DEUXPI, ECHEL, EPSI, FREQ, DIRSPE(3),
+     +             ECHSPE(3), VALPU(2), OMEGA, OMEGA2, R8B, R8DEPI,
+     +             RESU, UN, UNS2PI, NORM, XNORM, ZERO
+      CHARACTER*1  K1B, DIR(3)
       CHARACTER*4  KNAT
       CHARACTER*8  K8B, SPECT, NOMSPE(3), NOMPU(2)
       CHARACTER*9  NIVEAU
       CHARACTER*24 VALE
-      CHARACTER*1 K1BID
 C     ------------------------------------------------------------------
       DATA   VALE / '                   .VALE' /
       DATA  NOMPU / 'AMOR' , 'FREQ'    /
@@ -95,40 +97,40 @@ C
          XNORM = UN
 C
 C        --- RECUPERATION DE LA DIRECTION DU SPECTRE ---
-         CALL GETVR8(MOTFAC,'AXE',IOC,1,0,R8B,NA)
-         IF (NA.NE.0) THEN
-            CALL GETVR8(MOTFAC,'AXE' ,IOC,1,3,DIRSPE,ND)
+         CALL GETVR8(MOTFAC,'AXE',IOC,1,0,R8B,N1)
+         IF (N1.NE.0) THEN
+            CALL GETVR8(MOTFAC,'AXE' ,IOC,1,3,DIRSPE,N1)
             XNORM = ZERO
             DO 12 ID = 1,3
                XNORM = XNORM + DIRSPE(ID) * DIRSPE(ID)
  12         CONTINUE
             IF (XNORM.LT.EPSI) THEN
                IER = IER + 1
-               CALL U2MESS('E','ALGORITH_26')
+               CALL U2MESS('E','SEISME_4')
                GOTO 10
             ENDIF
             XNORM = UN / SQRT(XNORM)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT,NP)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT,N1)
             NOMSPE(1) = SPECT
             NOMSPE(2) = SPECT
             NOMSPE(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,NE)
-            IF (NE.NE.0) THEN
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            IF (N1.NE.0) THEN
                ECHSPE(1) = ECHEL
                ECHSPE(2) = ECHEL
                ECHSPE(3) = ECHEL
             ENDIF
 C
          ELSE
-         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,0,R8B,NT)
-         IF (NT.NE.0) THEN
-            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,3,DIRSPE,ND)
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT ,NP)
+         CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,0,R8B,N1)
+         IF (N1.NE.0) THEN
+            CALL GETVR8(MOTFAC,'TRI_AXE'  ,IOC,1,3,DIRSPE,N1)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,1,SPECT ,N1)
             NOMSPE(1) = SPECT
             NOMSPE(2) = SPECT
             NOMSPE(3) = SPECT
-            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,NE)
-            IF (NE.NE.0) THEN
+            CALL GETVR8(MOTFAC,'ECHELLE',IOC,1,1,ECHEL,N1)
+            IF (N1.NE.0) THEN
                ECHSPE(1) = ECHEL
                ECHSPE(2) = ECHEL
                ECHSPE(3) = ECHEL
@@ -136,12 +138,12 @@ C
 C
          ELSE
 
-            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,3,NOMSPE,NP)
-            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,1,3,ECHSPE,NE)
+            CALL GETVID(MOTFAC,'SPEC_OSCI',IOC,1,3,NOMSPE,N1)
+            CALL GETVR8(MOTFAC,'ECHELLE'  ,IOC,1,3,ECHSPE,N1)
          ENDIF
          ENDIF
 C
-         CALL GETVTX(MOTFAC,'NATURE',IOC,1,1,KNAT,NT)
+         CALL GETVTX(MOTFAC,'NATURE',IOC,1,1,KNAT,N1)
          IF (KNAT.EQ.'ACCE') INAT = 1
          IF (KNAT.EQ.'VITE') INAT = 2
          IF (KNAT.EQ.'DEPL') INAT = 3
@@ -151,7 +153,7 @@ C
             IF (ABS(DIRSPE(ID)).GT.EPSI) THEN
                IF (NDIR(ID).NE.0) THEN
                   IER = IER + 1
-                  CALL U2MESS('E','ALGORITH_27')
+                  CALL U2MESS('E','SEISME_5')
                   GOTO 10
                ELSE
                   NDIR(ID) = 1
@@ -162,7 +164,7 @@ C
 C
  10   CONTINUE
 C
-      IF (IER.NE.0) CALL U2MESS('F','ALGORITH_28')
+      IF (IER.NE.0) CALL U2MESS('F','SEISME_6')
 C
 C     --- INTERPOLATION DES SPECTRES ---
       IF (NIVEAU.EQ.'TOUT     ' .OR. NIVEAU.EQ.'SPEC_OSCI') THEN
@@ -210,7 +212,7 @@ C     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
          IF (NDIR(ID).EQ.1) THEN
             VALE(1:8) = NOMSPE(ID)
             CALL JEVEUO(JEXNUM(VALE,1),'L',JVAR1)
-            CALL JELIRA(JEXNUM(VALE,1),'LONMAX',NBPT1,K1BID)
+            CALL JELIRA(JEXNUM(VALE,1),'LONMAX',NBPT1,K1B)
             NBPT2 = NBPT1 / 2
             OMEGA = DEUXPI * ZR(JVAR1+NBPT2-1)
             RESU = ZR(JVAR1+NBPT1-1)

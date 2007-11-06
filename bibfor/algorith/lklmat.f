@@ -8,7 +8,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,7 @@ C --- : NDI    : NOMBRE DE COMPOSANTES DIRECTES DU TENSEUR --------
 C --- : NVI    : NB DE VARIABLES INTERNES -------------------------
 C --- : INDAL  : INDICATEUR SUR ALPHA
 C =================================================================
-      INTEGER         II,INDAL
+      INTEGER         II,INDAL,I,J
       REAL*8          E, NU, MU, K, GAMMA, KSI, SIGC, MULT, ME, AE
       REAL*8          UN, DEUX, TROIS, SIGMP2, SIGMP1, APIC, MPIC
       REAL*8          COHERE
@@ -106,6 +106,13 @@ C =================================================================
       NOMC(30) =  'XI0_V    '
       NOMC(31) =  'MU1      '
       NOMC(32) =  'XI1      '     
+
+      DO 101 I=1,NBMAT
+         DO 102 J=1,2
+            MATERD(I,J) = 0.D0
+ 102     CONTINUE
+ 101  CONTINUE
+
 C =================================================================
 C --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 C =================================================================

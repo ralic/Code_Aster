@@ -2,7 +2,7 @@
      &                  PERMU,NUTYMA,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -124,109 +124,120 @@ C     -SI LA LOCALISATION EST ABSENTE : ON PREND EN COMPTE LA
 C      LOCALISATION ASTER --> RISQUE DE RESULTATS FAUX
 C     -SI LA LOCALISATION EST PRESENTE, ON COMPARE LES
 C      COORDONNES DES PG ASTER/MED
-       DO 130 ILOC=1,NLOC
+      IF (NIVINF.GT.1) THEN
+         WRITE(IFM,1001) NLOC
+      ENDIF
+C
+      DO 130 ILOC=1,NLOC
          CALL EFGAUI(IDFIMD,ILOC,LOCNAM,TYPGEO,IBID,IRET)
          IF(LOCNAM(1:3).EQ.ELREFM(1:3))GOTO 140
- 130   CONTINUE
-C      SI ON EST ICI, CELA SIGNIFIE QU'AUCUNE LOCALISATION
-C      N'A ETE IDENTIFIEE POUR L'ELEMENT DE REFERENCE EN COURS
-       CALL U2MESK('A','MED_1',1,ELREFA)
-       CODRET=2             
-       GOTO 9999
- 140   CONTINUE
+ 130  CONTINUE
+C     SI ON EST ICI, CELA SIGNIFIE QU'AUCUNE LOCALISATION
+C     N'A ETE IDENTIFIEE POUR L'ELEMENT DE REFERENCE EN COURS
+      CALL U2MESK('A','MED_1',1,ELREFA)
+      CODRET=2             
+      GOTO 9999
+ 140  CONTINUE
 
-C      DETERMINATION DES COORDONNES DES PG 
-C      DE L'ELEMENT DE REFERENCE MED
-C      -------------------------------
-       NNOREF=(TYPGEO/100)*MOD(TYPGEO,100)
-       NPGREF=(TYPGEO/100)*NBPGM
-       CALL WKVECT('&&LRVCPG_COORD_NO_MED','V V R',NNOREF,JREFCO)
-       CALL WKVECT('&&LRVCPG_COORD_PG_MED','V V R',NPGREF,JGSCOO)
-       CALL WKVECT('&&LRVCPG_POIDS_PG_MED','V V R',NBPGM,JWG)
-       CALL EFGAUL(IDFIMD,ZR(JREFCO),ZR(JGSCOO),ZR(JWG),EDFUIN,
+      IF (NIVINF.GT.1) THEN
+         WRITE(IFM,1002) LOCNAM
+      ENDIF
+C
+C     DETERMINATION DES COORDONNES DES PG 
+C     DE L'ELEMENT DE REFERENCE MED
+C     -------------------------------
+      NNOREF=(TYPGEO/100)*MOD(TYPGEO,100)
+      NPGREF=(TYPGEO/100)*NBPGM
+      CALL WKVECT('&&LRVCPG_COORD_NO_MED','V V R',NNOREF,JREFCO)
+      CALL WKVECT('&&LRVCPG_COORD_PG_MED','V V R',NPGREF,JGSCOO)
+      CALL WKVECT('&&LRVCPG_POIDS_PG_MED','V V R',NBPGM,JWG)
+      CALL EFGAUL(IDFIMD,ZR(JREFCO),ZR(JGSCOO),ZR(JWG),EDFUIN,
      &             LOCNAM,IRET)
-       CALL ASSERT(TYPGEO/100.EQ.DIME)
+      CALL ASSERT(TYPGEO/100.EQ.DIME)
 
-C      COMPARAISON DES COORD DES PG ENTRE ASTER ET MED
-C      -----------------------------------------------
-C      NOMBRE DE PG NON APPARENTES : NCORRE
-C      TABLEAU DE TRAVAIL ZI(JCORRE) DIMENSIONNE AU NBRE DE PG QUI VAUT:
-C         -LE NUMERO DU PG LOCAL SI LA CORRESPONDANCE N'A PAS EU LIEU
-C         -0 SINON
+C     COMPARAISON DES COORD DES PG ENTRE ASTER ET MED
+C     -----------------------------------------------
+C     NOMBRE DE PG NON APPARENTES : NCORRE
+C     TABLEAU DE TRAVAIL ZI(JCORRE) DIMENSIONNE AU NBRE DE PG QUI VAUT:
+C        -LE NUMERO DU PG LOCAL SI LA CORRESPONDANCE N'A PAS EU LIEU
+C        -0 SINON
 
-       CALL WKVECT('&&LRVCPG_CORRESP_PG','V V I',NBPGM,JCORRE)
-       NCORRE=0
-       DO 100 IGAU=1,NBPGM
+      CALL WKVECT('&&LRVCPG_CORRESP_PG','V V I',NBPGM,JCORRE)
+      NCORRE=0
+      DO 100 IGAU=1,NBPGM
          ZI(JCORRE+IGAU-1)=0
          DO 110 IDIM=1,DIME
-           AD=DIME*(IGAU-1)+IDIM
-           IF(ABS(ZR(JGSCOO+AD-1)-ZR(JCOPGA+AD-1)).GT.1.D-3)THEN
-              NCORRE=NCORRE+1
-              ZI(JCORRE+IGAU-1)=IGAU
-              GOTO 100
-           ENDIF
+            AD=DIME*(IGAU-1)+IDIM
+            IF (NIVINF.GT.1) THEN
+               WRITE(IFM,1100) IGAU,IDIM,ZR(JGSCOO+AD-1),ZR(JCOPGA+AD-1)
+            ENDIF
+            IF(ABS(ZR(JGSCOO+AD-1)-ZR(JCOPGA+AD-1)).GT.1.D-3)THEN
+               NCORRE=NCORRE+1
+               ZI(JCORRE+IGAU-1)=IGAU
+               GOTO 100
+            ENDIF
  110     CONTINUE
- 100   CONTINUE
+ 100  CONTINUE
 
-C      SI LES PG ASTER/MED CORRESPONDENT : TOUT VA BIEN
-       IF(NCORRE.EQ.0)THEN
-          CODRET=0
-          GOTO 9999
-       ELSE
-C       .. SINON, ON RECHERCHE UNE EVENTUELLE PERMUTATION:
-C       PERMU = LE TABLEAU DE PERMUTATIONS DIMENSIONNE
-C       AU NBRE DE PG: PERMU(NUM_PG_MED)=NUM_PG_ASTER
-        DO 200 IPGM=1,NBPGM
-          PERMU(IPGM)=0
-          IF(ZI(JCORRE+IPGM-1).EQ.0)THEN
-            PERMU(IPGM)=IPGM
-          ELSE
-            AD=DIME*(IPGM-1)
-            XPGM=ZR(JGSCOO+AD+1-1)
-            YPGM=0.D0
-            ZPGM=0.D0
-            IF(DIME.GE.2)YPGM=ZR(JGSCOO+AD+2-1)
-            IF(DIME.GE.3)ZPGM=ZR(JGSCOO+AD+3-1)
-            DO 210 IPGA=1,NBPGM
-              ADA=DIME*(IPGA-1)
-              XPGA=ZR(JCOPGA+ADA+1-1)
-              YPGA=0.D0
-              ZPGA=0.D0
-              IF(DIME.GE.2)YPGA=ZR(JCOPGA+ADA+2-1)
-              IF(DIME.GE.3)ZPGA=ZR(JCOPGA+ADA+3-1)
-              IF(ABS(XPGM-XPGA).LT.1.D-3 .AND.
-     &           ABS(YPGM-YPGA).LT.1.D-3 .AND.
-     &           ABS(ZPGM-ZPGA).LT.1.D-3)THEN
-                 PERMU(IPGM)=IPGA
-                 CODRET=1
-                 GOTO 200
-              ENDIF
-C             SI ON EST ICI, CELA SIGNIFIE QUE L'UN DES PG MED
-C             N'A PAS PU ETRE IDENTIFIE A L'UN DES PG ASTER
-C             --> INCOMPATIBILITE DES PG, RISQUE DE RESULTATS FAUX
-              IF(IPGA.EQ.NBPGM)THEN
-                DO 190 IM=1,NBPGM
-                  CALL U2MESI('A+','MED_4',1,IM)  
-                  DO 191 IDIM=1,DIME
-                     VALR(1)=ZR(JGSCOO+DIME*(IM-1)+IDIM-1)
-                     VALR(2)=ZR(JCOPGA+DIME*(IM-1)+IDIM-1)
-                     CALL U2MESG('A+','MED_5',1,VALK(IDIM),
-     &                                  0,IBID,2,VALR)
- 191              CONTINUE
- 190            CONTINUE
-                CALL U2MESS('A','MED_3')
-                CODRET=2
-                GOTO 9999
-              ENDIF
- 210       CONTINUE
-          ENDIF
- 200    CONTINUE
-        ENDIF
+C     SI LES PG ASTER/MED CORRESPONDENT : TOUT VA BIEN
+      IF(NCORRE.EQ.0)THEN
+         CODRET=0
+         GOTO 9999
+      ELSE
+C        .. SINON, ON RECHERCHE UNE EVENTUELLE PERMUTATION:
+C        PERMU = LE TABLEAU DE PERMUTATIONS DIMENSIONNE
+C        AU NBRE DE PG: PERMU(NUM_PG_MED)=NUM_PG_ASTER
+         DO 200 IPGM=1,NBPGM
+            PERMU(IPGM)=0
+            IF(ZI(JCORRE+IPGM-1).EQ.0)THEN
+               PERMU(IPGM)=IPGM
+            ELSE
+               AD=DIME*(IPGM-1)
+               XPGM=ZR(JGSCOO+AD+1-1)
+               YPGM=0.D0
+               ZPGM=0.D0
+               IF(DIME.GE.2)YPGM=ZR(JGSCOO+AD+2-1)
+               IF(DIME.GE.3)ZPGM=ZR(JGSCOO+AD+3-1)
+               DO 210 IPGA=1,NBPGM
+                  ADA=DIME*(IPGA-1)
+                  XPGA=ZR(JCOPGA+ADA+1-1)
+                  YPGA=0.D0
+                  ZPGA=0.D0
+                  IF(DIME.GE.2)YPGA=ZR(JCOPGA+ADA+2-1)
+                  IF(DIME.GE.3)ZPGA=ZR(JCOPGA+ADA+3-1)
+                  IF(ABS(XPGM-XPGA).LT.1.D-3 .AND.
+     &               ABS(YPGM-YPGA).LT.1.D-3 .AND.
+     &               ABS(ZPGM-ZPGA).LT.1.D-3)THEN
+                     PERMU(IPGM)=IPGA
+                     CODRET=1
+                     GOTO 200
+                  ENDIF
+C                 SI ON EST ICI, CELA SIGNIFIE QUE L'UN DES PG MED
+C                 N'A PAS PU ETRE IDENTIFIE A L'UN DES PG ASTER
+C                 --> INCOMPATIBILITE DES PG, RISQUE DE RESULTATS FAUX
+                  IF(IPGA.EQ.NBPGM)THEN
+                     DO 190 IM=1,NBPGM
+                        CALL U2MESI('A+','MED_4',1,IM)  
+                        DO 191 IDIM=1,DIME
+                           VALR(1)=ZR(JGSCOO+DIME*(IM-1)+IDIM-1)
+                           VALR(2)=ZR(JCOPGA+DIME*(IM-1)+IDIM-1)
+                           CALL U2MESG('A+','MED_5',1,VALK(IDIM),
+     &                                              0,IBID,2,VALR)
+ 191                    CONTINUE
+ 190                 CONTINUE
+                     CALL U2MESS('A','MED_3')
+                     CODRET=2
+                     GOTO 9999
+                  ENDIF
+ 210           CONTINUE
+            ENDIF
+ 200     CONTINUE
+      ENDIF
 
-        IF(CODRET.EQ.1)THEN
-C         AFFICHAGE DES COORD DES PG MED/ASTER POUR
-C         METTRE EN EVIDENCE LES PERMUTATIONS
-          DO 211 IM=1,NBPGM
+      IF(CODRET.EQ.1)THEN
+C        AFFICHAGE DES COORD DES PG MED/ASTER POUR
+C        METTRE EN EVIDENCE LES PERMUTATIONS
+         DO 211 IM=1,NBPGM
             CALL U2MESI('A+','MED_4',1,IM)  
             DO 212 IDIM=1,DIME
                VALR(1)=ZR(JGSCOO+DIME*(IM-1)+IDIM-1)
@@ -234,20 +245,23 @@ C         METTRE EN EVIDENCE LES PERMUTATIONS
                CALL U2MESG('A+','MED_5',1,VALK(IDIM),
      &                                  0,IBID,2,VALR)
  212        CONTINUE
- 211      CONTINUE
-          CALL U2MESS('A','MED_6')
-        ENDIF
+ 211     CONTINUE
+         CALL U2MESS('A','MED_6')
+      ENDIF
+C
+9999  CONTINUE
+C
+      CALL JEDETR('&&LRVCPG_COORD_PG_ASTER')
+      CALL JEDETR('&&LRVCPG_POIDS_PG_ASTER')
+      CALL JEDETR('&&LRVCPG_COORD_NO_MED')
+      CALL JEDETR('&&LRVCPG_COORD_PG_MED')
+      CALL JEDETR('&&LRVCPG_POIDS_PG_MED')
+      CALL JEDETR('&&LRVCPG_CORRESP_PG')
 
-
-9999    CONTINUE
-
-        CALL JEDETR('&&LRVCPG_COORD_PG_ASTER')
-        CALL JEDETR('&&LRVCPG_POIDS_PG_ASTER')
-        CALL JEDETR('&&LRVCPG_COORD_NO_MED')
-        CALL JEDETR('&&LRVCPG_COORD_PG_MED')
-        CALL JEDETR('&&LRVCPG_POIDS_PG_MED')
-        CALL JEDETR('&&LRVCPG_CORRESP_PG')
-
-        CALL JEDEMA()
-
-        END
+      CALL JEDEMA()
+C
+ 1001 FORMAT('  NOMBRE DE LOCALISATIONS LUES :',I4)
+ 1002 FORMAT('  LOCALISATION MED UTILISEE    :', A32)
+ 1100 FORMAT('  PT GAUSS',I4,' DIM ',I1,' COORD MED',1PE12.5,
+     &                                  ' COORD ASTER',1PE12.5)
+      END
