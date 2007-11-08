@@ -1,8 +1,8 @@
-      SUBROUTINE NTSTOC ( IARCH, NUMORD, TEMPER, COMPOR, NOMCH, VTEMP,
-     &                    VTEMPP, VHYDR, LONCH, TPSNP1, CRITHE, PARA,
-     &                    MODELE, MATE, CARELE, LISCHA )
+      SUBROUTINE NTSTOC ( PARTPS,LOSTAT,NUMORD,FORCE,INCR,TEMPER, 
+     &                   COMPOR,NOMCH,VTEMP,VTEMPP,VHYDR,LONCH, 
+     &                   TPSNP1,CRITHE,PARA,MODELE,MATE,CARELE,LISCHA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +21,12 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      INTEGER      NUMORD, LONCH, IARCH
+      INTEGER      NUMORD, LONCH, DIARCH,JARCH
       REAL*8       TPSNP1, PARA(*)
-      CHARACTER*19 LISCHA
+      CHARACTER*19 LISCHA,PARTPS
       CHARACTER*24 TEMPER, NOMCH, VTEMP, VTEMPP, CRITHE, COMPOR, VHYDR
       CHARACTER*24 MODELE, MATE, CARELE
+      LOGICAL      FORCE,INCR,LOSTAT
 C
 C ----------------------------------------------------------------------
 C
@@ -51,7 +52,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      JTEMP, JTEMPP, K, IFM, IUNIFI
+      INTEGER      JTEMP, JTEMPP, K, IFM, IUNIFI, NUMARC
 C
 C ----------------------------------------------------------------------
 C
@@ -71,11 +72,20 @@ C
 C
 C --- ARCHIVAGE
 C
-      IF ( IARCH .EQ. 1 ) THEN
-         CALL NTARCH (NUMORD,TEMPER,NOMCH,COMPOR,VTEMP,VHYDR,
+      IF (LOSTAT) THEN
+        NUMARC=0
+      ELSE
+        NUMARC = DIARCH(PARTPS,NUMORD,FORCE,INCR)
+        IF ( NUMARC .GE. 0 ) THEN
+          CALL JEVEUO(PARTPS // '.DIAL','E',JARCH)
+          ZL(JARCH+NUMORD) = .TRUE.
+        ENDIF
+      ENDIF
+        IF ( NUMARC .GE. 0 ) THEN
+         CALL NTARCH (NUMARC,TEMPER,NOMCH,COMPOR,VTEMP,VHYDR,
      &                TPSNP1,CRITHE,PARA,
      &                MODELE, MATE, CARELE, LISCHA)
-         WRITE(IFM,1010) 'TEMP',NUMORD,TPSNP1
+         WRITE(IFM,1010) 'TEMP',NUMARC,TPSNP1
          WRITE(IFM,'(/)')
       ENDIF
 C

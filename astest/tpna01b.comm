@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PB 3D STATIONNAIRE AVEC RAYONNEMENT - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,7 +193,7 @@ CHTHC=AFFE_CHAR_THER_F(MODELE=MOTH,
 
 TEMPE=THER_NON_LINE(         MODELE=MOTH,
                             CHAM_MATER=CHMAT,
-                             TEMP_INIT=_F(  STATIONNAIRE = 'OUI'),EXCIT=(
+                             ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),EXCIT=(
                                  _F(  CHARGE = CHTH),
                                        _F(  CHARGE = CHTHB),
                                        _F(  CHARGE = CHTHC)),

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE   : SPHERE CREUSE: CONVECTION, RAYONNEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,7 +194,7 @@ CHARGE=AFFE_CHAR_THER_F(MODELE=MOTH,
 #
 
 TEMPEB=THER_NON_LINE(       MODELE=MOTH,
-               TEMP_INIT=_F(    STATIONNAIRE = 'OUI'),
+               ETAT_INIT=_F(    STATIONNAIRE = 'OUI'),
                CHAM_MATER=CHMATB,
                     EXCIT=_F(  CHARGE = CHARGE)
              )
@@ -202,7 +202,7 @@ TEMPEB=THER_NON_LINE(       MODELE=MOTH,
 #
 
 TEMPER=THER_NON_LINE(       MODELE=MOTH,
-               TEMP_INIT=_F(    STATIONNAIRE = 'OUI'),
+               ETAT_INIT=_F(    STATIONNAIRE = 'OUI'),
                CHAM_MATER=CHMATR,
                     EXCIT=_F(  CHARGE = CHARGE)
              )
@@ -364,7 +364,7 @@ CHMATR2=AFFE_MATERIAU(  MAILLAGE=MAIL,
 #
 
 TEMPEB2=THER_NON_LINE(       MODELE=MOTH,
-                              TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+                              ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
                              CHAM_MATER=CHMATB2,
                                   EXCIT=_F( CHARGE = CHARGE)
                            )
@@ -372,7 +372,7 @@ TEMPEB2=THER_NON_LINE(       MODELE=MOTH,
 #
 
 TEMPER2=THER_NON_LINE(       MODELE=MOTH,
-                              TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+                              ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
                              CHAM_MATER=CHMATR2,
                                   EXCIT=_F( CHARGE = CHARGE)
                            )

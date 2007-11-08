@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PB 2D STATIONNAIRE DE CONVECTION-DIFFUSION - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,7 +141,7 @@ TEMPE=THER_NON_LINE_MO(   MODELE=MOTH,
                             )
 
 TEMPE2=THER_NON_LINE_MO(  MODELE=MOTH, CHAM_MATER=IMAT,
-                        TEMP_INIT=_F( EVOL_THER = TEMPE),
+                        ETAT_INIT=_F( EVOL_THER = TEMPE),
                            EXCIT=_F( CHARGE = CHTHF),
                       CONVERGENCE=_F( CRIT_TEMP_RELA = 1.E-4,
                                    CRIT_ENTH_RELA = 1.E-3,

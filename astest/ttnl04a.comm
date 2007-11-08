@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE THERMIQUE AVEC FLUX NON LINEAIRE EN TRANSITOIRE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,25 +299,30 @@ LPAS=DEFI_LIST_REEL(          DEBUT=0.,INTERVALLE=(
                        )
 
 TEMPE=THER_NON_LINE(         MODELE=MOTH,
-                            INCREMENT=_F(  LIST_INST = LPAS,
-                                        NUME_FIN = 32),
-                           CHAM_MATER=IMAT,EXCIT=(
+                             INCREMENT=_F(  LIST_INST = LPAS,
+                                           SUBD_METHODE='UNIFORME',
+                                           SUBD_PAS = 10,SUBD_NIVEAU=3,
+                                           NUME_INST_FIN = 32),
+                             CHAM_MATER=IMAT,EXCIT=(
                                 _F(  CHARGE = CHTH1),
                                       _F(  CHARGE = CHFLUX,
                                         FONC_MULT = FMUL)),
-                            TEMP_INIT=_F(  VALE = 20.),
-                          CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-5),
-                               NEWTON=_F(  REAC_ITER = 1)
+                             ETAT_INIT=_F(  VALE = 20.),
+                             CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-5,
+                                           ITER_GLOB_MAXI=6),
+                             NEWTON=_F(  REAC_ITER = 1),
+                             ARCHIVAGE=_F(LIST_INST=LPAS,),
+
                        )
 
 TEMPE=THER_NON_LINE( reuse=TEMPE,        MODELE=MOTH,
                              INCREMENT=_F(  LIST_INST = LPAS,
-                                         NUME_INIT = 32,
-                                         NUME_FIN = 216),
+                                         NUME_INST_INIT = 32,
+                                         NUME_INST_FIN = 216),
                             CHAM_MATER=IMAT,
                                  EXCIT=_F(  CHARGE = CHTH2),
-                             TEMP_INIT=_F(  EVOL_THER = TEMPE,
-                                         NUME_INIT = 32),
+                             ETAT_INIT=_F(  EVOL_THER = TEMPE,
+                                         NUME_ORDRE = 32),
                            CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-5),
                                 NEWTON=_F(  REAC_ITER = 1)
                         )

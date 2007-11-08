@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -341,7 +341,7 @@ RESUTHER=THER_LINEAIRE(MODELE=MOTHER,
                        INCREMENT=_F(
                                     LIST_INST=L_INST,
                                    ),
-                       TEMP_INIT=_F(STATIONNAIRE='OUI',),
+                       ETAT_INIT=_F(STATIONNAIRE='OUI',),
                        ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
 MAT_TH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,

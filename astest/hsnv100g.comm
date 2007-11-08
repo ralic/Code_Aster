@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,7 +110,7 @@ CHTHER=AFFE_CHAR_THER_F(    MODELE=MOTHER,TEMP_IMPO=(
 
 TEMPE=THER_LINEAIRE(  MODELE=MOTHER,   CHAM_MATER=CM,
                    EXCIT=_F( CHARGE = CHTHER),
-                   TEMP_INIT=_F( CHAM_NO = T0),
+                   ETAT_INIT=_F( CHAM_NO = T0),
                    INCREMENT=_F( LIST_INST = L_INST)
                         )
 

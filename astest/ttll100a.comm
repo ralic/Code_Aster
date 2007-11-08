@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CHOC THERMIQUE SUR UN MUR PLAN AVEC CONDITION D ECHANGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ LIST=DEFI_LIST_REEL(  VALE=(0.1, 0.5, 2.0, 10.0) );
 TEMPE=THER_LINEAIRE(        MODELE=MOTHER,
                            CHAM_MATER=CHMAT,
                                 EXCIT=_F( CHARGE = CHAR_TH),
-                            TEMP_INIT=_F( VALE = 100.),
+                            ETAT_INIT=_F( VALE = 100.),
                             INCREMENT=_F( LIST_INST = LISTTH),
                             ARCHIVAGE=_F( LIST_INST = LIST)
                        )

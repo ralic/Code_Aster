@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algorith14 Messages  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,6 +62,10 @@ cata_msg={
 
 16: _("""
  arrêt sur matrice d'amortissement non unique en argument
+"""),
+
+17: _("""
+ Le type de matrice %(k1)s est inconnu. Erreur développeur
 """),
 
 21: _("""

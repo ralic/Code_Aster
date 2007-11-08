@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE D6BHHAR A.RAZAKANAIVO
 # TITRE TREMPE D'UN BARREAU INFINI A SECTION CARREE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -628,8 +628,8 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
                            PARM_THETA=0.57,
                                 EXCIT=_F(  CHARGE = CHTH1),
                             INCREMENT=_F(  LIST_INST = LR8,
-                                        NUME_FIN = 40),
-                            TEMP_INIT=_F(  VALE = 700.)
+                                        NUME_INST_FIN = 40),
+                            ETAT_INIT=_F(  VALE = 700.)
                        )
 
 TEMPE=CALC_META( reuse=TEMPE,       MODELE=MOTH,
@@ -646,9 +646,9 @@ TEMPE=THER_LINEAIRE( reuse=TEMPE,       MODELE=MOTH,
                            PARM_THETA=0.57,
                                 EXCIT=_F(  CHARGE = CHTH2),
                             INCREMENT=_F(  LIST_INST = LR8,
-                                        NUME_INIT = 40),
-                            TEMP_INIT=_F(  EVOL_THER = TEMPE,
-                                        NUME_INIT = 40)
+                                        NUME_INST_INIT = 40),
+                            ETAT_INIT=_F(  EVOL_THER = TEMPE,
+                                        NUME_ORDRE = 40)
                         )
 
 TEMPE=CALC_META( reuse=TEMPE,   MODELE=MOTH,

@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -164,8 +164,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
      if RESU_THER!=None : self.DeclareOut('resuth',RESU_THER)
      mcsimp={}
-     if INCREMENT['NUME_INST_INIT']!=None : mcsimp['NUME_INIT']=INCREMENT['NUME_INST_INIT']
-     if INCREMENT['NUME_INST_FIN' ]!=None : mcsimp['NUME_FIN' ]=INCREMENT['NUME_INST_FIN' ]
+     if INCREMENT['NUME_INST_INIT']!=None : mcsimp['NUME_INST_INIT']=INCREMENT['NUME_INST_INIT']
+     if INCREMENT['NUME_INST_FIN' ]!=None : mcsimp['NUME_INST_FIN' ]=INCREMENT['NUME_INST_FIN' ]
      mcfact=_F(LIST_INST=INCREMENT['LIST_INST'],**mcsimp)
      resuth = THER_LINEAIRE( MODELE     = __modthe ,
                              CHAM_MATER = __affmat ,

@@ -4,7 +4,7 @@
      &                  NBOBS ,NUOBSE,LSUIVI,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,6 +248,8 @@ C
            TYPCHA = 9
          ELSEIF ( LSUIVI .AND. CHAM(1:9) .EQ. 'FORC_NODA' ) THEN
            TYPCHA = 10
+         ELSEIF ( CHAM(1:9) .EQ. 'TEMP' ) THEN
+           TYPCHA = 11
          ELSE
            CALL U2MESS('F','CALCULEL_17')
          ENDIF
@@ -382,6 +384,10 @@ C              VALR = VALR
                TABI(2) = SUBTOP
                TABR(2) = VALR
                CALL TBAJLI(NOMTAB,7,NPARAS,TABI,TABR,CBID,TABK,0)
+             ELSEIF (TYPCHA.EQ.11) THEN
+               TABK(3) = TOPO
+               TABR(2) = ZR(JDEPP+ICMP-1)
+               CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
              ELSE
                CALL U2MESS('F','CALCULEL_17')
              ENDIF

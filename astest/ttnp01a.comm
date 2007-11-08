@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PROBLEME DE STEFAN AVEC ELEMENTS LUMPES - QUAD9
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.E0,INTERVALLE=(
 LSAVE=DEFI_LIST_REEL(VALE=(1.0, 2.0, 3.0, 4.0),);
 
 TEMPE=THER_NON_LINE( MODELE     = MOTH,
-                     TEMP_INIT  = _F(  CHAM_NO = TINIT),
+                     ETAT_INIT  = _F(  CHAM_NO = TINIT),
                      INCREMENT  = _F(  LIST_INST = LR8),
                      CHAM_MATER = CHMAT,
                      EXCIT      = _F(  CHARGE = CHTH),

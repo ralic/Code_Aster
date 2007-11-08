@@ -1,7 +1,7 @@
       LOGICAL FUNCTION NDYNLO(SDDYNA,CHAINE)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*24 TSCH,LOSD
-      INTEGER      JTYSCH,JISD
+      INTEGER      JTYSCH,JISD,IRET
       CHARACTER*19 VALK(1)
 C
 C ----------------------------------------------------------------------
@@ -77,6 +77,15 @@ C
       TSCH   = SDDYNA(1:15)//'.TYPE_SCH'
       LOSD   = SDDYNA(1:15)//'.INFO_SD'      
 C      
+      CALL JEEXIN(TSCH,IRET)
+      IF (IRET.EQ.0) THEN
+        IF (CHAINE(1:8).EQ.'STATIQUE') THEN
+          NDYNLO = .TRUE.
+        ELSE
+          NDYNLO = .FALSE.           
+        ENDIF 
+        GOTO 9999
+      ENDIF        
       CALL JEVEUO(TSCH,'L',JTYSCH)
 C  
       IF (ZK16(JTYSCH+1-1)(1:8).EQ.'STATIQUE') THEN

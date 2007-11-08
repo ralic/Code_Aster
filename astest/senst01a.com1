@@ -38,11 +38,11 @@ RETH=THER_LINEAIRE(reuse =RETH,
                    CHAM_MATER=MATEPLAN,
                    EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
                    SENSIBILITE=(PS1),
-                   TEMP_INIT=_F( EVOL_THER = RETH,
-                                 NUME_INIT = 2, ),
+                   ETAT_INIT=_F( EVOL_THER = RETH,
+                                 NUME_ORDRE = 2, ),
                    INCREMENT=_F( LIST_INST = LINST,
-                                 NUME_INIT = 2,
-                                 NUME_FIN  = 5, ),
+                                 NUME_INST_INIT = 2,
+                                 NUME_INST_FIN  = 5, ),
                   );
 #IMPR_CO (CO=(RETH))
 #

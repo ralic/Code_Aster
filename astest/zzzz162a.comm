@@ -1,4 +1,4 @@
-# MODIF  DATE 29/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -164,7 +164,7 @@ TEMPE1=THER_LINEAIRE(MODELE=MOTHER,
                      CHAM_MATER=CM,
                      EXCIT=_F(CHARGE=CHTHER,),
                      INCREMENT=_F(LIST_INST=L_INST,),
-                     TEMP_INIT=_F(CHAM_NO=T0,),);
+                     ETAT_INIT=_F(CHAM_NO=T0,),);
 
 DEFI_FICHIER(FICHIER='MED_70', UNITE=70, TYPE='LIBRE')
 

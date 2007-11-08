@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_calc_ops Macro  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_cabri_calc_ops Macro  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -277,7 +277,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                          _F(CHARGE=cl_th3,),
                          _F(CHARGE=cl_th4,),),
                   INCREMENT=_F(LIST_INST=transi1,),
-                  TEMP_INIT=_F(VALE=temp_ini,),
+                  ETAT_INIT=_F(VALE=temp_ini,),
                   TITRE='CABRI THERMIQUE &DATE &HEURE',);
  
       # Affectation des materiaux (mécanique)

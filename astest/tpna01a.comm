@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PB 2D AXISYMETRIQUE STATIONNAIRE AVEC RAYONNEMENT - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,7 +171,7 @@ CHTHB=AFFE_CHAR_THER(MODELE=MOTH,
          )
 
 TEMPE=THER_NON_LINE(          MODELE=MOTH,
-                            TEMP_INIT=_F(  STATIONNAIRE = 'OUI'),
+                            ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),
                            CHAM_MATER=CHMAT,EXCIT=(
                                 _F(  CHARGE = CHTH),
                                       _F(  CHARGE = CHTHB)),

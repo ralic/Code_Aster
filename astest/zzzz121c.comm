@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ CHTHZERO=AFFE_CHAR_THER(    MODELE=MOTHZERO,
 RETHZERO=THER_LINEAIRE( MODELE=MOTHZERO,
                         CHAM_MATER=MAZERO_T,
                         EXCIT=_F(  CHARGE = CHTHZERO,   ),
-                        TEMP_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                        ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
                         INCREMENT=_F(  LIST_INST = INSTZERO,   )
                       )
 #
@@ -196,10 +196,9 @@ CHTHUN=AFFE_CHAR_THER(    MODELE=MOTHUN,
 RETHUN=THER_LINEAIRE( MODELE=MOTHUN,
                       CHAM_MATER=MAUN_T,
                       EXCIT=_F(  CHARGE = CHTHUN,   ),
-                      TEMP_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                      ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
                       INCREMENT=_F(  LIST_INST = INSTUN,   )
                       )
-###                      TEMP_INIT=_F(  CHAM_NO = TEMPUN,   ),
 #
 # 5.2. LA MECANIQUE
 
@@ -333,10 +332,9 @@ CHTHDEUX=AFFE_CHAR_THER(    MODELE=MOTHDEUX,
 RETHDEUX=THER_LINEAIRE( MODELE=MOTHDEUX,
                       CHAM_MATER=MADEUX_T,
                       EXCIT=_F(  CHARGE = CHTHDEUX,   ),
-                      TEMP_INIT=_F(  STATIONNAIRE = 'OUI',   ),
+                      ETAT_INIT=_F(  STATIONNAIRE = 'OUI',   ),
                       INCREMENT=_F(  LIST_INST = INSTDEUX,   )
                       )
-###                      TEMP_INIT=_F(  CHAM_NO = TEMPDEUX,   ),
 #
 # 8.2. LA MECANIQUE
 

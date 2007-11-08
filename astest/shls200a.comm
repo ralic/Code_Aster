@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -285,11 +285,9 @@ BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F(INTERF_DYNA = INTERF2,
                                     NMAX_MODE=100,),)
                               
 MACRO1M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
-                         MATR_AMOR =  MATD1,
-                                OPTION='CLASSIQUE' )
+                         MATR_AMOR =  MATD1,)
 MACRO2M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
-                         MATR_AMOR =  MATD2,
-                                OPTION='CLASSIQUE' )
+                         MATR_AMOR =  MATD2, )
                                 
 
 LFREQ=DEFI_LIST_REEL(DEBUT=30.,

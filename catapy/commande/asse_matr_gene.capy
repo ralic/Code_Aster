@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,13 +16,18 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-ASSE_MATR_GENE=OPER(nom="ASSE_MATR_GENE",op= 128,sd_prod=matr_asse_gene_r,
+def asse_matr_gene_prod(METHODE,**args):
+    if   (METHODE=="INITIAL") : return matr_asse_gene_r
+    elif (args['OPTION']=="RIGI_GENE_C") : return matr_asse_gene_c
+    else : return matr_asse_gene_r
+
+ASSE_MATR_GENE=OPER(nom="ASSE_MATR_GENE",op= 128,sd_prod=asse_matr_gene_prod,
                     fr="Assemblage des matrices généralisées de macro éléments pour construction de la matrice globale généralisée",
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
          METHODE          =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("CLASSIQUE","INITIAL") ),
          b_option     =BLOC(condition = "METHODE == 'CLASSIQUE'",
-           OPTION          =SIMP(statut='o',typ='TXM',into=("RIGI_GENE","MASS_GENE","AMOR_GENE") ),
+           OPTION          =SIMP(statut='o',typ='TXM',into=("RIGI_GENE","RIGI_GENE_C","MASS_GENE","AMOR_GENE") ),
            ),
 )  ;

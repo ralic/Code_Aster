@@ -1,6 +1,6 @@
       SUBROUTINE OP0128 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,8 @@ C-----------------------------------------------------------------------
 C
       INTEGER          IER
       CHARACTER*8 NOMRES,NUMEG
-      CHARACTER*9 OPTION,METHOD
+      CHARACTER*9 METHOD
+      CHARACTER*11 OPTION
       CHARACTER*14 NUGENE
       CHARACTER*16 NOMCON,NOMOPE
 C-----------------------------------------------------------------------

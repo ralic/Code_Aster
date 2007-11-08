@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CYLINDRE SOUMIS A CHOC THERMIQUE ET CHARGEMENT MECANIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ CAT=DEFI_LIST_REEL(    DEBUT=0.0,
 THERL=THER_LINEAIRE(        MODELE=MODEL,
                            CHAM_MATER=MATER,
                                 EXCIT=_F( CHARGE = CHA),
-                            TEMP_INIT=_F( VALE = 0.),
+                            ETAT_INIT=_F( VALE = 0.),
                             INCREMENT=_F( LIST_INST = CAT),
                            PARM_THETA=1.
                        )

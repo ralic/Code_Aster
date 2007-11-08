@@ -1,4 +1,4 @@
-# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE  MUR INFINI SOUMIS A UN FLUX CONSTANT AVEC PROPRIETES VARIABLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,7 +117,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.,INTERVALLE=(
 
 
 TEMPE=THER_NON_LINE(       MODELE=MOTH,
-                   TEMP_INIT=_F(       VALE = 0.0),
+                   ETAT_INIT=_F(       VALE = 0.0),
                    INCREMENT=_F(   LIST_INST = LR8),
                   CHAM_MATER=CHMAT,
                        EXCIT=_F(  CHARGE = CHTH),

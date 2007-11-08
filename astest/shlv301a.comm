@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE REPONSE HARMONIQUE : POUTRE BI-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -216,7 +216,6 @@ BAMO1=DEFI_BASE_MODALE(  CLASSIQUE=_F( INTERF_DYNA = INTERF1,
 
 #
 MACRO1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
-                                 OPTION='CLASSIQUE',
                               MATR_AMOR=A_ASSE1 )
 
 #
@@ -369,7 +368,6 @@ BAMO2=DEFI_BASE_MODALE(  CLASSIQUE=_F( INTERF_DYNA = INTERF2,
 
 #
 MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
-                                OPTION='CLASSIQUE',
                               MATR_AMOR=A_ASSE2 )
 
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -322,8 +322,8 @@ for num_calc in range(1,nb_calc_total_plus_1) :
    TEMPT[num_calc]=THER_LINEAIRE(   MODELE = MOTH[num_calc],
                      CHAM_MATER = CMTH[num_calc],
                      EXCIT = _F(CHARGE = CHTH[num_calc],),
-                     TEMP_INIT = _F( VALE = 20.,),                               
-                     INCREMENT = _F( LIST_INST = LIST, NUME_FIN = 100),
+                     ETAT_INIT = _F( VALE = 20.,),                               
+                     INCREMENT = _F( LIST_INST = LIST, NUME_INST_FIN = 100),
                      );
                      
                      

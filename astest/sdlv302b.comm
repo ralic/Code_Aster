@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2001   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : POUTRE BI-APPUYEE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,8 +176,7 @@ BAMO1=DEFI_BASE_MODALE(  CLASSIQUE=_F( INTERF_DYNA = INTERF1,
                                          NMAX_MODE = 05))
 
 #
-MACRO1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
-                           OPTION='CLASSIQUE')
+MACRO1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,)
 
 #
 #
@@ -304,8 +303,7 @@ BAMO2=DEFI_BASE_MODALE(  CLASSIQUE=_F( INTERF_DYNA = INTERF2,
                                          NMAX_MODE = 05))
 
 #
-MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
-                                OPTION='CLASSIQUE')
+MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,)
 
 #
 #################################################################

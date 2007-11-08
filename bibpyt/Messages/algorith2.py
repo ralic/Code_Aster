@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 29/10/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF algorith2 Messages  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -324,11 +324,11 @@ cata_msg = {
 """),
 
 91 : _("""
- NUME_INST_INIT plus petit que NUME_FIN avec EVOLUTION: 'RETROGRADE'
+ NUME_INST_INIT plus petit que NUME_INST_FIN avec EVOLUTION: 'RETROGRADE'
 """),
 
 92 : _("""
- NUME_INIT plus grand que NUME_FIN
+ NUME_INST_INIT plus grand que NUME_INST_FIN
 """),
 
 93: _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE THERMO_METALLO_MECANIQUE EN DEFORMATIONS PLANES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,7 +100,7 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
                            PARM_THETA=0.57,
                                 EXCIT=_F(  CHARGE = CHTH),
                             INCREMENT=_F(  LIST_INST = LR8),
-                            TEMP_INIT=_F(  VALE = 900.)
+                            ETAT_INIT=_F(  VALE = 900.)
 
                         )
 

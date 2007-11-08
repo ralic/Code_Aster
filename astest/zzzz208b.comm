@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,13 +190,11 @@ BASE2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,
 # que des modes statiques
 MACRSTA1=MACR_ELEM_DYNA(BASE_MODALE=BASE1,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS,
-                     OPTION='RITZ',);
+                     MATR_MASS=MASS);
 
 MACRSTA2=MACR_ELEM_DYNA(BASE_MODALE=BASE2,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS,
-                     OPTION='RITZ',);
+                     MATR_MASS=MASS,);
 
 MODLGENE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
                                          MACR_ELEM_DYNA=MACRSTA1,),
@@ -251,13 +249,11 @@ BASE22=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES,),
 
 MACR1=MACR_ELEM_DYNA(BASE_MODALE=BASE11,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS,
-                     OPTION='RITZ',);
+                     MATR_MASS=MASS,);
 
 MACR2=MACR_ELEM_DYNA(BASE_MODALE=BASE22,
                      MATR_RIGI=KASS,
-                     MATR_MASS=MASS,
-                     OPTION='RITZ',);
+                     MATR_MASS=MASS,);
 
 # definition du modele generalise avec option REDUIT
 # pour prise en compte des modes d'interface

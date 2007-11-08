@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CHOC THERMIQUE SUR UN MUR INFINI QUAD8 - TEMP_INIT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.,INTERVALLE=(
                        )
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTH,
-           TEMP_INIT=_F( CHAM_NO = TEMP0),
+           ETAT_INIT=_F( CHAM_NO = TEMP0),
           INCREMENT=_F( LIST_INST = LR8),
              CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH)
              )
@@ -137,8 +137,8 @@ CHTH2=AFFE_CHAR_THER_F(MODELE=MOTH,TEMP_IMPO=(
          )
 
 TEMPE2=THER_LINEAIRE(        MODELE=MOTH,
-           TEMP_INIT=_F( CHAM_NO = TEMP0),
-          INCREMENT=_F( LIST_INST = LR8, NUME_FIN = 29),
+           ETAT_INIT=_F( CHAM_NO = TEMP0),
+          INCREMENT=_F( LIST_INST = LR8, NUME_INST_FIN = 29),
              CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH2)
              )
 
@@ -197,8 +197,8 @@ TEMPAE=LIRE_RESU(        MAILLAGE=MAIL,
                     )
 
 TEMPAE=THER_LINEAIRE(reuse=TEMPAE,       MODELE=MOTH,
-                         TEMP_INIT=_F( EVOL_THER = TEMPAE,
-                         NUME_INIT = 37),
+                         ETAT_INIT=_F( EVOL_THER = TEMPAE,
+                         NUME_ORDRE = 37),
                          INCREMENT=_F( LIST_INST = LR8),
                            CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH)
                         )

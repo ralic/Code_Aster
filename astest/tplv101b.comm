@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE : ECHANGE_PAROI ET LIAISON_GR. EN THERMIQUE LIN. (MOD:3D,HEXA20)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,7 +86,7 @@ TEMPE=THER_LINEAIRE(MODELE=MO,
                            _F(CHARGE=CHF1),
                            _F(CHARGE=CHF2,),),
                     INCREMENT=_F(LIST_INST=LR8,),
-                    TEMP_INIT=_F(STATIONNAIRE='OUI',),);
+                    ETAT_INIT=_F(STATIONNAIRE='OUI',),);
 
 T0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
               OPERATION='EXTR',

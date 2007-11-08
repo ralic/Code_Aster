@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CYLINDRE CREUX EN THERMIQUE STATIONNAIRE (TRIA3/QUAD4 AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ CHTH=AFFE_CHAR_THER(  MODELE=MOTH,FLUX_REP=(
 
 TEMPE=THER_LINEAIRE(       MODELE=MOTH,
                            CHAM_MATER=CHMAT,
-                            TEMP_INIT=_F(  STATIONNAIRE = 'OUI'),
+                            ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),
                             INCREMENT=_F(  LIST_INST = LR8),
                                 EXCIT=_F(  CHARGE = CHTH)
                         )
@@ -222,7 +222,7 @@ CHT2=AFFE_CHAR_CINE(  MODELE=MOTH,THER_IMPO=(
 C2=DEFI_FONCTION(NOM_PARA='INST', VALE=(-10.,2.,1000.,2.,))
 
 TEMP2=THER_LINEAIRE(        MODELE=MOTH,
-           TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+           ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
           INCREMENT=_F( LIST_INST = LR8),
              CHAM_MATER=CHMAT,EXCIT=( _F( CHARGE = CHT1),
                               _F( CHARGE = CHT2, FONC_MULT = C2))
@@ -259,7 +259,7 @@ CHT3=AFFE_CHAR_CINE_F(  MODELE=MOTH,THER_IMPO=(
           _F( NOEUD = 'N41',      TEMP = C20))    )
 
 TEMP3=THER_LINEAIRE(        MODELE=MOTH,
-           TEMP_INIT=_F( STATIONNAIRE = 'OUI'), INCREMENT=_F( LIST_INST = LR8),
+           ETAT_INIT=_F( STATIONNAIRE = 'OUI'), INCREMENT=_F( LIST_INST = LR8),
              CHAM_MATER=CHMAT,EXCIT=( _F( CHARGE = CHT1),
                               _F( CHARGE = CHT3))
              )

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ESSAI DE COMPRESSION-DILATATION POUR ETUDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,7 +104,7 @@ T =THER_LINEAIRE(MODELE    = MOTHER,
                  CHAM_MATER= CHMAT,
                  EXCIT     =_F(CHARGE=CHTHER,),
                  INCREMENT =_F(LIST_INST=L_INST,),
-                 TEMP_INIT =_F(CHAM_NO=T0,),)
+                 ETAT_INIT =_F(CHAM_NO=T0,),)
 
 
 #  CHARGEMENT MECANIQUE

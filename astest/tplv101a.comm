@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ECHANGE-PAROI ET LIAISON_GR. EN THERMIQUE LIN.(MOD:PLAN,QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,7 @@ LR8=DEFI_LIST_REEL(      DEBUT=0.,
                               INTERVALLE=_F(  JUSQU_A = 10., NOMBRE = 2))
 
 TEMPE=THER_LINEAIRE(    MODELE=MO,
-                              TEMP_INIT=_F(  STATIONNAIRE = 'OUI'),
+                              ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),
                               INCREMENT=_F(  LIST_INST = LR8),
                              CHAM_MATER=CHMAT,
                                   EXCIT=_F(  CHARGE = CH),

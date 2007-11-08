@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ECHANGE_PAROI EN THERMIQUE LINEAIRE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ RESUTHLI=THER_LINEAIRE(
                               MODELE=MODTHER,
                               CHAM_MATER=CHMAT,
                               EXCIT=_F(  CHARGE = CHATHER),
-                              TEMP_INIT=_F(  CHAM_NO = TEMPINIT),
+                              ETAT_INIT=_F(  CHAM_NO = TEMPINIT),
                               PARM_THETA=0.57,
                               INCREMENT=_F(  LIST_INST = LINST)
                            )

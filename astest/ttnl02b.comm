@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE THERMIQUE TRANSITOIRE AVEC CHANGEMENT DE PHASE 3D - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,8 +99,8 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.E0,INTERVALLE=(
                        )
 
 TEMPE=THER_NON_LINE(       MODELE=MOTH,
-           TEMP_INIT=_F(    VALE = 740.0),
-#         TEMP_INIT :(   STATIONNAIRE : 'OUI' )
+           ETAT_INIT=_F(    VALE = 740.0),
+#         ETAT_INIT :(   STATIONNAIRE : 'OUI' )
             INCREMENT=_F(   LIST_INST = LR8),
            CHAM_MATER=CHMAT1,
            EXCIT=_F(  CHARGE = CHTH),

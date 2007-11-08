@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TRANSFERT DE CHALEUR DANS UNE PLAQUE PERFOREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,7 @@ LTMPS=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 #
 
 TEMPE=THER_LINEAIRE(  MODELE=MOTH,
-                          TEMP_INIT=_F(  VALE = 0.E0),
+                          ETAT_INIT=_F(  VALE = 0.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
                           EXCIT=_F( CHARGE = CHTH)

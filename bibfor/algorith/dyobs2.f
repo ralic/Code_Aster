@@ -1,7 +1,7 @@
       SUBROUTINE DYOBS2(MAILLA,NBOCC,LSUIVI,NTOBS,NBSUIV,SUIVCO)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C
       INTEGER      JSDDL, IICHAM, IICOMP, IINUCM, IINOEU, IIMAIL, IIPOIN
       INTEGER      JSUINB, JSUIMA, IOBS1, IOBS2
       CHARACTER*8  K8B, NOMGD
+      LOGICAL      CHAMES,CHAMEV
 C
 C ----------------------------------------------------------------------
 C
@@ -127,6 +128,8 @@ C
          CALL WKVECT ('&&DYOBS2.NOM_CHAM', 'V V K16', NCHP, KNCHP )
          CALL GETVTX ('OBSERVATION','NOM_CHAM',IOCC,1,NCHP,
      &                ZK16(KNCHP),N1)
+         CHAMES = .FALSE.
+         CHAMEV = .FALSE.
          DO 12 I = 1 , NCHP
             IF ( ZK16(KNCHP+I-1)(1:4) .EQ. 'DEPL' ) THEN
                NOMGD = 'DEPL_R'
@@ -138,8 +141,12 @@ C
                NOMGD = 'INFC_R'
             ELSEIF ( ZK16(KNCHP+I-1)(1:9) .EQ. 'SIEF_ELGA' ) THEN
                NOMGD = 'SIEF_R'
+               CHAMES = .TRUE.
             ELSEIF ( ZK16(KNCHP+I-1)(1:9) .EQ. 'VARI_ELGA' ) THEN
                NOMGD = 'VARI_R'
+               CHAMEV = .TRUE.
+            ELSEIF ( ZK16(KNCHP+I-1)(1:9) .EQ. 'TEMP' ) THEN
+               NOMGD = 'TEMP_R'
             ELSEIF (LSUIVI(IOCC) .AND. 
      &              ZK16(KNCHP+I-1)(1:9) .EQ. 'FORC_NODA' ) THEN
                NOMGD = 'FORC_R'
@@ -162,8 +169,13 @@ C ------ LES NOEUDS ET MAILLES -----------------------------------------
 C
          CALL GETVID ( 'OBSERVATION','NOEUD'   , IOCC,1,0, K8B ,N4 )
          CALL GETVID ( 'OBSERVATION','GROUP_NO', IOCC,1,0, K8B ,N5 )
-         CALL GETVID ( 'OBSERVATION','MAILLE'  , IOCC,1,0, K8B ,N6 )
-         CALL GETVIS ( 'OBSERVATION','POINT'   , IOCC,1,0, IBID,N7 )
+         IF (CHAMEV.OR.CHAMES) THEN
+           CALL GETVID ( 'OBSERVATION','MAILLE'  , IOCC,1,0, K8B ,N6 )
+           CALL GETVIS ( 'OBSERVATION','POINT'   , IOCC,1,0, IBID,N7 )
+         ELSE
+           N6=0
+           N7=0
+         ENDIF
          IF(LSUIVI(IOCC))THEN
            CALL GETVID ( 'OBSERVATION','GROUP_MA', IOCC,1,0, K8B ,N8 )
            CALL GETVTX('OBSERVATION','VALE_MAX' ,IOCC,1,0,K8B ,N9 )
@@ -218,6 +230,7 @@ C
      &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'VITE'      .OR.
      &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE'      .OR.
      &                  ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT' .OR.
+     &                  ZK16(KNCHP+I-1)(1:9) .EQ. 'TEMP'      .OR.
      &                 (ZK16(KNCHP+I-1)(1:9) .EQ. 'FORC_NODA'
      &                        .AND. LSUIVI(IOCC))          ) THEN
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ECHANGE_PAROI EN THERMIQUE NON LINEAIRE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,8 +129,8 @@ RESUTHER=THER_NON_LINE(MODELE=MODTHER,
                        EXCIT=(_F(CHARGE=CHATHER,),
                               _F(CHARGE=CHATIMP,),),
                        INCREMENT=_F(LIST_INST=LINST,
-                                    NUME_FIN=15,),
-                       TEMP_INIT=_F(CHAM_NO=TEMPINIT,),
+                                    NUME_INST_FIN=15,),
+                       ETAT_INIT=_F(CHAM_NO=TEMPINIT,),
                        ARCHIVAGE=_F(PAS_ARCH=10,),);
 
 RESUTHER=THER_NON_LINE(reuse=RESUTHER,
@@ -139,10 +139,10 @@ RESUTHER=THER_NON_LINE(reuse=RESUTHER,
                        EXCIT=(_F(CHARGE=CHATHE2,),
                               _F(CHARGE=CHATIMP,),),
                        INCREMENT=_F(LIST_INST=LINST,
-                                    NUME_INIT=15,),
-                       TEMP_INIT=_F(EVOL_THER=RESUTHER,
-                                    NUME_INIT=15,),
-                       ARCHIVAGE=_F(PAS_ARCH=10,),);
+                                    NUME_INST_INIT=15,),
+                       ETAT_INIT=_F(EVOL_THER=RESUTHER,
+                                    NUME_ORDRE=2,),
+                       );
 #
 # =====================================================================
 #                VERIFICATION QUE L'ON A BIEN ATTEINT
@@ -153,7 +153,7 @@ TSTAT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='EXTR',
                  RESULTAT=RESUTHER,
                  NOM_CHAM='TEMP',
-                 NUME_ORDRE=30,);
+                 INST=1.45E-05,);
 #
 
 GRAD = FORMULE(VALE="""

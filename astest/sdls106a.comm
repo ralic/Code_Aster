@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,14 +205,12 @@ BAMO2_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_2),
 
 MACEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1_CL,
                        MATR_MASS=MASS_1,
-                       MATR_RIGI=RAID_1,
-                       OPTION='RITZ')
+                       MATR_RIGI=RAID_1,)
 
 #
 MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2_CL,
                        MATR_MASS=MASS_2,
-                       MATR_RIGI=RAID_2,
-                       OPTION='RITZ')
+                       MATR_RIGI=RAID_2)
 
 #
 #   CALCUL SUR MODELE GENERALISE

@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,6 +106,8 @@ C
          DO 12 I = 1 , NCHP
             IF ( NOCHP(I)(1:4) .EQ. 'DEPL' ) THEN
                CHAMNO = .TRUE.
+            ELSEIF ( NOCHP(I)(1:4) .EQ. 'TEMP' ) THEN
+               CHAMNO = .TRUE.
             ELSEIF ( NOCHP(I)(1:4) .EQ. 'VITE' ) THEN
                CHAMNO = .TRUE.
             ELSEIF ( NOCHP(I)(1:4) .EQ. 'ACCE' ) THEN
@@ -143,8 +145,15 @@ C ------ VERIFICATION DES NOEUDS ET MAILLES ----------------------------
 C
          CALL GETVID ('OBSERVATION','NOEUD'   ,IOCC,1,0,K8B ,N1 )
          CALL GETVID ('OBSERVATION','GROUP_NO',IOCC,1,0,K8B ,N2 )
-         CALL GETVID ('OBSERVATION','MAILLE'  ,IOCC,1,0,K8B ,N3 )
-         CALL GETVIS ('OBSERVATION','POINT'   ,IOCC,1,0,IBID,N4 )
+
+         IF (CHAMEV.OR.CHAMES) THEN
+           CALL GETVID ('OBSERVATION','MAILLE'  ,IOCC,1,0,K8B ,N3 )
+           CALL GETVIS ('OBSERVATION','POINT'   ,IOCC,1,0,IBID,N4 )
+         ELSE
+           N3=0
+           N4=0
+         ENDIF
+
          IF(LSUIVI(IOCC))THEN
            CALL GETVID('OBSERVATION','GROUP_MA',IOCC,1,0,K8B ,N6 )
            CALL GETVTX('OBSERVATION','VALE_MAX' ,IOCC,1,1,K8B ,N7 )
@@ -216,6 +225,7 @@ C
          NBPT = 0
          DO 16 I = 1 , NCHP
             IF ( NOCHP(I)(1:4) .EQ. 'DEPL' .OR.
+     &           NOCHP(I)(1:4) .EQ. 'TEMP' .OR.
      &           NOCHP(I)(1:4) .EQ. 'VITE' .OR.
      &           NOCHP(I)(1:4) .EQ. 'ACCE' .OR.
      &           NOCHP(I)(1:9) .EQ. 'VALE_CONT'.OR.

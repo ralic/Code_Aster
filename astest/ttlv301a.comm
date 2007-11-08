@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PARALLELEPIPEDE SOUMIS A TEMPERATURE IMPOSEE SUR SES FACES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ LTMPS=DEFI_LIST_REEL(   DEBUT=0.E0,INTERVALLE=(
 #
 
 TEMPE=THER_LINEAIRE(   MODELE=MOTH,
-                           TEMP_INIT=_F(  VALE = 1.0),
+                           ETAT_INIT=_F(  VALE = 1.0),
                            INCREMENT=_F(  LIST_INST = LTMPS),
                            CHAM_MATER=CHMAT,
                            EXCIT=_F(  CHARGE = CHTH)

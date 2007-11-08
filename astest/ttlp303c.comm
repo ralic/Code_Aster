@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TRANSFERT DE CHALEUR DANS UNE PLAQUE ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,7 +81,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.,
 
 TEMP=THER_LINEAIRE( 
                       MODELE=MODEL,
-                   TEMP_INIT=_F( VALE = -1.111E0),
+                   ETAT_INIT=_F( VALE = -1.111E0),
                   CHAM_MATER=CHMATE,
                      CARA_ELEM=ESSAI,
                    INCREMENT=_F( LIST_INST = LR8),

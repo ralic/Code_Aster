@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2004   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : MAILLAGE INCOMPATIBLE ET MODES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,8 +102,7 @@ BASE1=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES1,
 
 MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BASE1,
                       MATR_RIGI=KASS1,
-                      MATR_MASS=MASS1,
-                      OPTION='RITZ',);
+                      MATR_MASS=MASS1,);
 
 
 #**************************************
@@ -175,8 +174,7 @@ BASE2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES2,
 
 MACEL2=MACR_ELEM_DYNA(BASE_MODALE=BASE2,
                       MATR_RIGI=KASS2,
-                      MATR_MASS=MASS2,
-                      OPTION='RITZ',);
+                      MATR_MASS=MASS2,);
 
 #****************************************
 # COUPLAGE DES 2 MACRO-ELEMENTS DYNAMIQUE
@@ -248,13 +246,11 @@ BASER2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODES2,),
                        
 MACELR1=MACR_ELEM_DYNA(BASE_MODALE=BASER1,
                       MATR_RIGI=KASS1,
-                      MATR_MASS=MASS1,
-                      OPTION='RITZ',);
+                      MATR_MASS=MASS1,);
 
 MACELR2=MACR_ELEM_DYNA(BASE_MODALE=BASER2,
                       MATR_RIGI=KASS2,
-                      MATR_MASS=MASS2,
-                      OPTION='RITZ',);
+                      MATR_MASS=MASS2,);
                        
 #
 # CREATION DU MODELE GENERALISE AVEC MODES D'INTERFACE

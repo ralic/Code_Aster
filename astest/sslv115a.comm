@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,7 +213,7 @@ TEMPE1=THER_LINEAIRE(MODELE=MODTHER1,
                     CHAM_MATER=CHMATER,
                     INCREMENT=_F(LIST_INST=LINST,),
                     CARA_ELEM=CARAELEM,
-                     TEMP_INIT=_F(VALE=0.0,),
+                     ETAT_INIT=_F(VALE=0.0,),
                     EXCIT=_F(CHARGE=CHTHER,),);
 
 

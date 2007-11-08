@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE O.BOITEAU
 # TITRE Validation de la sensibilite par rapport au coefficient
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,7 +135,7 @@ TEMPINIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
 
 RESU=THER_NON_LINE(MODELE=MODTHER,CHAM_MATER=CMAT,
                     EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1)),
-                    TEMP_INIT=_F(CHAM_NO=TEMPINIT),
+                    ETAT_INIT=_F(CHAM_NO=TEMPINIT),
                     INFO=2,
                     SENSIBILITE=(PS1,PS2),
                     INCREMENT=_F(LIST_INST=LINST))
@@ -144,11 +144,11 @@ RESU=THER_NON_LINE(MODELE=MODTHER,CHAM_MATER=CMAT,
 #
 RESU1P=THER_NON_LINE(MODELE=MODTHER,CHAM_MATER=CMAT,
                     EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1P)),
-                    TEMP_INIT=_F(CHAM_NO=TEMPINIT),
+                    ETAT_INIT=_F(CHAM_NO=TEMPINIT),
                     INCREMENT=_F(LIST_INST=LINST))
 RESU2P=THER_NON_LINE(MODELE=MODTHER,CHAM_MATER=CMATP,
                     EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1)),
-                    TEMP_INIT=_F(CHAM_NO=TEMPINIT),
+                    ETAT_INIT=_F(CHAM_NO=TEMPINIT),
                     INCREMENT=_F(LIST_INST=LINST))
 #
 # 5.1 Verifications analytiques des sensibilites par rapport

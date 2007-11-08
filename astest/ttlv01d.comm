@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE ECHANGE DE CHALEUR PAR CONVECTION SUR UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,7 @@ LTMPS=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
 #
 
 TEMPE=THER_LINEAIRE(  MODELE=MOTH,
-                          TEMP_INIT=_F(  VALE = 20.E0),
+                          ETAT_INIT=_F(  VALE = 20.E0),
                           INCREMENT=_F(  LIST_INST = LTMPS),
                           CHAM_MATER=CHMAT,
                           EXCIT=_F( CHARGE = CHTH)

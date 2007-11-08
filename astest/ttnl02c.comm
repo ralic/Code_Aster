@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TRANSITOIRE THERMIQUE AVEC CHANGEMENT DE PHASE 2D - QUAD9 LUMPES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,9 +97,9 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.E0,INTERVALLE=(
                        )
 
 TEMPE=THER_NON_LINE(    MODELE=MOTH,
-             TEMP_INIT=_F(  CHAM_NO = TINIT),
+             ETAT_INIT=_F(  CHAM_NO = TINIT),
              INCREMENT=_F(  LIST_INST = LR8,
-                         NUME_FIN = 10),
+                         NUME_INST_FIN = 10),
             CHAM_MATER=CHMAT1,
              EXCIT=_F(  CHARGE = CHTH, FONC_MULT = F),
                   NEWTON=_F(  ITER_LINE_MAXI = 2,
@@ -109,11 +109,11 @@ TEMPE=THER_NON_LINE(    MODELE=MOTH,
              )
 
 TEMPE=THER_NON_LINE( reuse=TEMPE,   MODELE=MOTH,
-             TEMP_INIT=_F(  EVOL_THER = TEMPE,
-                         NUME_INIT = 10),
+             ETAT_INIT=_F(  EVOL_THER = TEMPE,
+                         NUME_ORDRE = 10),
              INCREMENT=_F(  LIST_INST = LR8,
-                         NUME_INIT = 10,
-                         NUME_FIN = 118),
+                         NUME_INST_INIT = 10,
+                         NUME_INST_FIN = 118),
             CHAM_MATER=CHMAT1,
              EXCIT=_F(  CHARGE = CHTH),
              NEWTON=_F( ITER_LINE_MAXI = 3,

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE Sensibilite par rapport a la source imposee et temp exterieure
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,7 +133,7 @@ LR8=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A = 10.,NOMBRE=2))
 RETH=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
                    INCREMENT=_F(LIST_INST = LR8),
-                   TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
+                   ETAT_INIT=_F(STATIONNAIRE = 'OUI'),
 #                   INFO=2,
                    EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),
                           _F(CHARGE=CH_2,)),
@@ -145,25 +145,25 @@ RETH=THER_LINEAIRE(MODELE=MODEPLAN,
 RETH1M=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
                    INCREMENT=_F(LIST_INST = LR8),
-                   TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
+                   ETAT_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1M),
                           _F(CHARGE=CH_2)))
 RETH1P=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
                    INCREMENT=_F(LIST_INST = LR8),
-                   TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
+                   ETAT_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1P),
                           _F(CHARGE=CH_2)))
 RETH2M=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
                    INCREMENT=_F(LIST_INST = LR8),
-                   TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
+                   ETAT_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1),
                           _F(CHARGE=CH_2M)))
 RETH2P=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
                    INCREMENT=_F(LIST_INST = LR8),
-                   TEMP_INIT=_F(STATIONNAIRE = 'OUI'),
+                   ETAT_INIT=_F(STATIONNAIRE = 'OUI'),
                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1),
                           _F(CHARGE=CH_2P)))
 #

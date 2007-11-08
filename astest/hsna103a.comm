@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE PREDICTION D'AMORCAGE PAR LE CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,7 +247,7 @@ THERMIK=THER_NON_LINE(MODELE=MO_THER,
                       EXCIT=_F(CHARGE=CHA_THER,),
                       INCREMENT=_F(LIST_INST=LINST,),
                       ARCHIVAGE=_F(LIST_INST=LARCH,),
-                      TEMP_INIT=_F(VALE=289.5,),
+                      ETAT_INIT=_F(VALE=289.5,),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-06,),);
 
 THERMIK2 = EXTR_RESU(RESULTAT=THERMIK,

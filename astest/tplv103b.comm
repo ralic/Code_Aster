@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CYLINDRE INFINI EN THERMIQUE STATIONNAIRE ANISOTROPE (QUAD4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.,
                        )
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTH,
-           TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+           ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
           INCREMENT=_F( LIST_INST = LR8),
            PARM_THETA=0.8,
              CHAM_MATER=CHMAT,EXCIT=( _F( CHARGE = CHTH1),

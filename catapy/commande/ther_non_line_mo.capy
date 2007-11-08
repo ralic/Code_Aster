@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,9 +28,9 @@ THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
            CHARGE          =SIMP(statut='o',typ=char_ther ),
            FONC_MULT       =SIMP(statut='c',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
-         TEMP_INIT       =FACT(statut='f',
+         ETAT_INIT       =FACT(statut='f',
            EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
-           NUME_INIT       =SIMP(statut='f',typ='I',defaut= 0 ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',defaut= 0 ),
          ),
          CONVERGENCE     =FACT(statut='d',
            CRIT_TEMP_RELA  =SIMP(statut='f',typ='R',defaut= 1.E-3 ),

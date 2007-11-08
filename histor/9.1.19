@@ -1,0 +1,523 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 08/11/2007 - 14:04:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011157 DU 2007-08-02 15:20:40
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   NUME INIT / NUME FIN dans les calculs thermiques
+FONCTIONNALITE
+   Probleme :
+   ==========
+   
+   Homogénéiser les catalogues de THER_* avec celui de STAT_NON_LINE pour les mots clés
+   facteurs INCREMENT et OBSERVATION. Utiliser un diinit.f (et dyobse.f) qui seraient communs
+   entre méca et thermique (avec la SD temporaire commune).
+   
+   Les méthodes de Newton étant commune, la subdivision du pas de temps devrait pouvoir être
+   mutualisée.
+   
+   Aujourd'hui, la récupération de la liste d'instants pour la thermique se résume aux trois
+   lignes GETV dans ntinst.f
+   
+   
+   Solution :
+   ==========
+   
+   Les catalogues de THER_NON_LINE et dans une moindre mesure THER_LINEAIRE sont désormais
+   quasiment identique avec le catalogue de STAT_NON_LINE.
+   
+   Les nouvelles fonctionnalités sont :
+   
+   Pour THER_NON_LINE et THER_LINEAIRE :
+   =====================================
+   
+   1) Pour la definition de la liste d'instants, il est désormais possible de préciser les
+   bornes inférieures et supérieures via le numero d'ordre ou d'instant.
+   
+   ATTENTION : Comme cette partie du code est commune avec STAT_NON_LINE (appel a diinit), la
+   syntaxe a été modifié.
+   
+   Ancienne syntaxe
+   
+   EVOTH1=THER_NON_LINE(reuse =EVOTH1,
+                       CHAM_MATER=IMAT,
+                       ARCHIVAGE=_F(PAS_ARCH=1,),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=25,
+                                      RESI_GLOB_RELA=1.E-07,),
+                       INCREMENT=_F(NUME_FIN=325,
+                                    LIST_INST=LPAS,
+                                    NUME_INIT=128,),
+                       TEMP_INIT=_F(NUME_INIT=128,
+                                    EVOL_THER=EVOTH1,),
+                       EXCIT=_F(CHARGE=CHTH2,),
+                       NEWTON=_F(REAC_ITER=2,),
+                       MODELE=MOTH,);
+   
+   
+   Nouvelle syntaxe
+   
+   EVOTH1=THER_NON_LINE(reuse =EVOTH1,
+                       CHAM_MATER=IMAT,
+                       ARCHIVAGE=_F(PAS_ARCH=1,),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=25,
+                                      RESI_GLOB_RELA=1.E-07,),
+                       INCREMENT=_F(NUME_INST_FIN=325, =====> modifié
+                                    LIST_INST=LPAS,
+                                    NUME_INST_INIT=128,), =====> modifié
+                       ETAT_INIT=_F(NUME_ORDRE=128, =====> modifié
+                                    EVOL_THER=EVOTH1,),
+                       EXCIT=_F(CHARGE=CHTH2,),
+                       NEWTON=_F(REAC_ITER=2,),
+                       MODELE=MOTH,);
+   
+   
+   2) La définition de l'archivage connait aussi une modification pour concordre avec la syntaxe
+   de STAT_NON_LINE (notamment la liste donnée n'est plus une liste de numéro d'ordre mais
+   une liste d'instant)
+   
+   
+    Pour THER_NON_LINE seulement :
+    ==============================
+    
+    1) L'observation des résultats est désormais possible. Encore une fois la syntaxe est
+   identique à la syntaxe de STAT_NON_LINE.
+    
+    Par exemple
+    
+    TEMPE=THER_NON_LINE(    MODELE=MOTH,
+                ETAT_INIT=_F(  CHAM_NO = TINIT),
+                INCREMENT=_F(  LIST_INST = LR8,
+                            NUME_INST_FIN = 10),
+               CHAM_MATER=CHMAT1,
+                EXCIT=_F(  CHARGE = CHTH, FONC_MULT = F),
+                     NEWTON=_F(  ITER_LINE_MAXI = 2,
+                              REAC_ITER = 2),
+                CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-1),
+                PARM_THETA=0.9
+                OBSERVATION=(_F(NOM_CHAM='TEMP',
+                                NOM_CMP='TEMP',PAS_OBSE=1,
+                                NOEUD='N81',
+                               ),
+                             _F(NOM_CHAM='TEMP',
+                                NOM_CMP='TEMP',
+                                MAILLE='M1',
+                                ),),
+                )
+   
+   On peut alors récuperer l'observation dans une table.
+   
+   Par contre, par rapport à ce qui a été demandé initialement, le suivi de DDL au cours du
+   calcul n'a pas été réalisé car il nécessite une modification profonde de l'affichage des
+   résultats. 
+   Une modification mineure de l'affichage a tout de meme été réalisé :
+   
+   
+   ****************************************************************************
+   *         NUMERO D'ORDRE:   2           INSTANT:  1.870E+01                *
+   *************************************************************************************
+   * ITERATION      RESIDU         RESIDU      ITERATION   COEFFICIENT   ACTUALISATION *
+   *                RELATIF        ABSOLU      RECH. LIN.   RECH. LIN.      MATRICE    *
+   *            RESI_GLOB_RELA  RESI_GLOB_MAXI                 RHO         TANGENTE    *
+   *************************************************************************************
+   *     1       7.49376E-04     1.71685E-02        0      1.00000E+00        NON      *
+   *     2       1.73238E-07     3.30403E-06        0      0.00000E+00        NON      *
+   *************************************************************************************
+      CHAMP    STOCKE   : TEMP           NUME_ORDRE:       2 INSTANT: 1.87000D+01
+   
+   
+   ****************************************************************************
+   *                     DUREE:  1.05E-01                                     *
+   ****************************************************************************
+   
+   
+      CHAMP    STOCKE   : FLUX_ELGA_TEMP NUME_ORDRE:       0 INSTANT: 3.00000D-01
+      CHAMP    STOCKE   : FLUX_ELGA_TEMP NUME_ORDRE:       2 INSTANT: 1.79769+308
+      CHAMP    STOCKE   : FLUX_ELNO_TEMP NUME_ORDRE:       0 INSTANT: 3.00000D-01
+      CHAMP    STOCKE   : FLUX_ELNO_TEMP NUME_ORDRE:       2 INSTANT: 1.79769+308
+   
+   
+   
+   devient 
+   
+   
+   
+   ****************************************************************************
+   *                         INSTANT:  1.870E+01                              *
+   *************************************************************************************
+   * ITERATION      RESIDU         RESIDU      ITERATION   COEFFICIENT   ACTUALISATION *
+   *                RELATIF        ABSOLU      RECH. LIN.   RECH. LIN.      MATRICE    *
+   *            RESI_GLOB_RELA  RESI_GLOB_MAXI                 RHO         TANGENTE    *
+   *************************************************************************************
+   *     1       7.49376E-04     1.71685E-02        0      1.00000E+00        NON      *
+   *     2       1.73238E-07     3.30403E-06        0      0.00000E+00        NON      *
+   *************************************************************************************
+      CHAMP    STOCKE   : TEMP           NUME_ORDRE:       1 INSTANT: 1.87000D+01
+   
+   
+   ****************************************************************************
+   *                     DUREE:  9.96E-02                                     *
+   ****************************************************************************
+   
+   
+      CHAMP    STOCKE   : FLUX_ELGA_TEMP NUME_ORDRE:       0 INSTANT: 3.00000D-01
+      CHAMP    STOCKE   : FLUX_ELGA_TEMP NUME_ORDRE:       1 INSTANT: 1.87000D+01
+      CHAMP    STOCKE   : FLUX_ELNO_TEMP NUME_ORDRE:       0 INSTANT: 3.00000D-01
+      CHAMP    STOCKE   : FLUX_ELNO_TEMP NUME_ORDRE:       1 INSTANT: 1.87000D+01
+    
+    Ce changement de syntaxe impacte de la meme facon THER_LINEAIRE
+    
+    
+   2) Il est désormais possible de demander une redécoupe du pas de temps, encore une fois
+   sous les memes conditions que STAT_NON_LINE.
+   
+   
+   
+   Toutes ces évolutions ont été validés dans au moins un cas test ( un seul pour
+   l'observation, plusieurs pour les autres fonctionnalités)
+   
+   
+   
+   Remarque pour la commande THER_NON_LINE_MO :
+   
+   Cette commande ne nécessite pas de liste d'instants, elle n'a donc subi aucune modification.
+   Mais pour etre homogene avec la nouvelle syntaxe, le mot clé TEMP_INIT a été remplacé en
+   ETAT_INIT
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.54.03,U4.54.02,U4.54.01
+VALIDATION
+   passage de tous les tests THER_XXX
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 08/11/2007 - 14:04:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009684 DU 2006-04-14 12:54:02
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   MACR_ELEM_DYNA
+FONCTIONNALITE
+   Objectifs
+   =========
+   
+   Cette demande d?évolution concerne les opérateurs MACR_ELEM_DYNA et ASSE_MATR_GENE. Il
+   s?agit de :
+   1.	permettre la création de macro-éléments dynamiques avec une matrice de rigidité
+   complexe (matr_asse_depl_c) ainsi que leur assemblage afin de produire un SD matr_asse_gene_c.
+   2.	rationaliser la phase de calcul de MACR_ELEM_DYNA, c'est-à-dire la phase de projection
+   des matrices assemblées sur une base de modes.
+   
+   
+   Les objectifs de cette fiche peuvent se découper en deux parties : 
+   -une partie évolution qui consiste à créer des macro-éléments dynamiques avec une matrice
+   de rigidité complexe et donc permette ensuite la gestion de ces macro éléments
+   
+   -une phase de nettoyage des sources pour ne plus avoir des routines de projection sur base
+   modale multiple
+   
+   
+   Le premier point a été réalisé en dupliquant les routines responsables de la projection
+   réelle et en faisant une version en complexe
+   
+   -Le second point a été partiellement réalisé : la routine ORTPRO qui servait à projeter
+   les matrices réelles était identique à calpro. Elle était censé être appelée lorsque
+   l'utilisateur indiqué OPTION='CLASSIQUE'.
+   Cette modification a déjà été faite par G. Devesa en 9.0.13.
+   On complete cette modification en supprimant du catalogue de la commande le mot clé OPTION
+   (inutile) et de l'ensemble des cas tests.
+   En ce qui  concerne la fusion des routines calpro et projmr, c'est un objectif de plus
+   grande envergure qui ne sera pas réalisé dans cette fiche.
+   
+   Pour la validation : (recopie du cahier des charges d'O. Nicolas )
+   
+   Un test pertinent consiste à récupérer un cas test de sous-structuration dynamique sans
+   amortissement par exemple SHLL100. Il s?agit alors de comparer les résultats de ces 2
+   modélisations : 
+   1.	Après assemblage des matrices généralisées, il est possible par COMB_MATR_ASSE de créer
+   une matrice de raideur généralisée complexe de type K(1+j*eta). Ceci correspond à une
+   amortissement hystéritique global et homogène sur toute la structure.
+   2.	Une fois le développement réalisé, il s?agit de définir un amortissement hystéritique
+   identique sur toute la structure (AMOR_HYST dans DEFI_MATERIAU) et d?assembler la matrice
+   de raideur complexe (RIGI_MECA_HYST dans CALC_MATR_ELEM). Le calcul sous-structuré se fait
+   normalement en prenant en compte cette matrice complexe pour la phase de création des
+   macro-éléments dynamiques (mais pas de calcul des modes propres ou statiques).
+   
+   La comparaison pourra s?effectuer sur les résultats d?un calcul harmonique par DYNA_LINE_HARM.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.65.01-G
+VALIDATION
+   shll100c
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT shll100c                      salmona L.SALMONA          584    584      0
+ CASTEST MODIF aspic01b                      salmona L.SALMONA          605      2      3
+ CASTEST MODIF cabri02a                      salmona L.SALMONA          503      2      2
+ CASTEST MODIF epicu01a                      salmona L.SALMONA          900      2      2
+ CASTEST MODIF epicu01b                      salmona L.SALMONA          867      2      2
+ CASTEST MODIF fdlv106a                      salmona L.SALMONA          485      1      1
+ CASTEST MODIF forma01c                      salmona L.SALMONA          348      2      2
+ CASTEST MODIF forma09a                      salmona L.SALMONA          162      2      2
+ CASTEST MODIF forma09b                      salmona L.SALMONA          407      4      4
+ CASTEST MODIF hpla100c                      salmona L.SALMONA          559      2      2
+ CASTEST MODIF hpla100d                      salmona L.SALMONA          434      2      2
+ CASTEST MODIF hpla101a                      salmona L.SALMONA          169      1      1
+ CASTEST MODIF hpla101b                      salmona L.SALMONA          309      2      2
+ CASTEST MODIF hpla310a                      salmona L.SALMONA         1046      2      2
+ CASTEST MODIF hplp300a                      salmona L.SALMONA          506      2      2
+ CASTEST MODIF hsna100a                      salmona L.SALMONA          463     15     15
+ CASTEST MODIF hsna100b                      salmona L.SALMONA          530     15     15
+ CASTEST MODIF hsna100c                      salmona L.SALMONA          428     15     15
+ CASTEST MODIF hsna100d                      salmona L.SALMONA          559     15     15
+ CASTEST MODIF hsna100e                      salmona L.SALMONA          560     15     15
+ CASTEST MODIF hsna102a                      salmona L.SALMONA          225      2      2
+ CASTEST MODIF hsna102b                      salmona L.SALMONA          227      2      2
+ CASTEST MODIF hsna102c                      salmona L.SALMONA          260      2      2
+ CASTEST MODIF hsna102d                      salmona L.SALMONA          242      2      2
+ CASTEST MODIF hsna102e                      salmona L.SALMONA          231      2      2
+ CASTEST MODIF hsna103a                      salmona L.SALMONA          556      2      2
+ CASTEST MODIF hsna120a                      salmona L.SALMONA          760      3      3
+ CASTEST MODIF hsnv100a                      salmona L.SALMONA          372      3      3
+ CASTEST MODIF hsnv100b                      salmona L.SALMONA          224      2      2
+ CASTEST MODIF hsnv100e                      salmona L.SALMONA          296      2      2
+ CASTEST MODIF hsnv100g                      salmona L.SALMONA          221      2      2
+ CASTEST MODIF hsnv101a                      salmona L.SALMONA          432      1      1
+ CASTEST MODIF hsnv101b                      salmona L.SALMONA          402      2      2
+ CASTEST MODIF hsnv102a                      salmona L.SALMONA          447      2      2
+ CASTEST MODIF hsnv102b                      salmona L.SALMONA          440      2      2
+ CASTEST MODIF hsnv102c                      salmona L.SALMONA          467      2      2
+ CASTEST MODIF hsnv103a                      salmona L.SALMONA          344      2      2
+ CASTEST MODIF hsnv103b                      salmona L.SALMONA          332      2      2
+ CASTEST MODIF hsnv104a                      salmona L.SALMONA          282      2      2
+ CASTEST MODIF hsnv105a                      salmona L.SALMONA          461      2      2
+ CASTEST MODIF hsnv122a                      salmona L.SALMONA          396      2      2
+ CASTEST MODIF hsnv127a                      salmona L.SALMONA          435      2      2
+ CASTEST MODIF hsnv128a                      salmona L.SALMONA          379      2      2
+ CASTEST MODIF hsnv129a                      salmona L.SALMONA          201      2      2
+ CASTEST MODIF hsnv129b                      salmona L.SALMONA          216      2      2
+ CASTEST MODIF hsnv131a                      salmona L.SALMONA          214      2      2
+ CASTEST MODIF htna100a                      salmona L.SALMONA         1194     13     13
+ CASTEST MODIF miss01a                       salmona L.SALMONA          475      2      4
+ CASTEST MODIF miss02a                       salmona L.SALMONA          525      2      4
+ CASTEST MODIF miss03a                       salmona L.SALMONA          992      2      4
+ CASTEST MODIF miss04a                       salmona L.SALMONA          309      2      4
+ CASTEST MODIF miss04b                       salmona L.SALMONA          469      2      4
+ CASTEST MODIF miss05a                       salmona L.SALMONA          431      2      3
+ CASTEST MODIF miss06a                       salmona L.SALMONA          639      2      2
+ CASTEST MODIF miss07a                       salmona L.SALMONA          357      2      4
+ CASTEST MODIF miss07b                       salmona L.SALMONA          414      2      3
+ CASTEST MODIF miss08a                       salmona L.SALMONA          372      2      2
+ CASTEST MODIF miss09a                       salmona L.SALMONA          847      2      3
+ CASTEST MODIF mtlp100a                      salmona L.SALMONA          783      6      6
+ CASTEST MODIF mtlp100b                      salmona L.SALMONA          732      6      6
+ CASTEST MODIF rccm05a                       salmona L.SALMONA         2034      3      3
+ CASTEST MODIF rccm06a                       salmona L.SALMONA         1449      3      3
+ CASTEST MODIF sdll113a                      salmona L.SALMONA          429      3      5
+ CASTEST MODIF sdll113b                      salmona L.SALMONA          460      1      3
+ CASTEST MODIF sdls01c                       salmona L.SALMONA          496      3      5
+ CASTEST MODIF sdls106a                      salmona L.SALMONA          385      3      5
+ CASTEST MODIF sdls110a                      salmona L.SALMONA          235      2      3
+ CASTEST MODIF sdls111a                      salmona L.SALMONA          401      4      7
+ CASTEST MODIF sdlv302b                      salmona L.SALMONA          381      3      5
+ CASTEST MODIF sdlv402a                      salmona L.SALMONA          346      5      9
+ CASTEST MODIF sdnl104b                      salmona L.SALMONA          477      3      5
+ CASTEST MODIF sdnl105b                      salmona L.SALMONA          562      3      5
+ CASTEST MODIF sdnl105d                      salmona L.SALMONA          560      1      4
+ CASTEST MODIF senst01a                      salmona L.SALMONA          155      4      4
+ CASTEST MODIF senst02a                      salmona L.SALMONA          290      6      6
+ CASTEST MODIF senst02b                      salmona L.SALMONA          297      6      6
+ CASTEST MODIF senst03a                      salmona L.SALMONA          285      6      6
+ CASTEST MODIF senst03b                      salmona L.SALMONA          233      6      6
+ CASTEST MODIF senst04a                      salmona L.SALMONA          457      4      4
+ CASTEST MODIF senst04b                      salmona L.SALMONA          361      4      4
+ CASTEST MODIF senst05a                      salmona L.SALMONA          307      6      6
+ CASTEST MODIF shll100a                      salmona L.SALMONA          695      1      3
+ CASTEST MODIF shll100b                      salmona L.SALMONA          645      1      3
+ CASTEST MODIF shls200a                      salmona L.SALMONA          560      3      5
+ CASTEST MODIF shlv301a                      salmona L.SALMONA          490      1      3
+ CASTEST MODIF sslv115a                      salmona L.SALMONA          388      2      2
+ CASTEST MODIF ssnp117b                      salmona L.SALMONA          651      8      5
+ CASTEST MODIF ssnv301a                      salmona L.SALMONA          563      2      2
+ CASTEST MODIF ssnv301b                      salmona L.SALMONA          579      2      2
+ CASTEST MODIF szlz110a                      salmona L.SALMONA          889      2      2
+ CASTEST MODIF tpla01a                       salmona L.SALMONA          273      4      4
+ CASTEST MODIF tpla01b                       salmona L.SALMONA          103      2      2
+ CASTEST MODIF tpla01c                       salmona L.SALMONA          104      2      2
+ CASTEST MODIF tpll01b                       salmona L.SALMONA          182      2      2
+ CASTEST MODIF tpll01c                       salmona L.SALMONA          122      2      2
+ CASTEST MODIF tpll01d                       salmona L.SALMONA          111      2      2
+ CASTEST MODIF tpll01e                       salmona L.SALMONA           92      2      2
+ CASTEST MODIF tpll01f                       salmona L.SALMONA           90      2      2
+ CASTEST MODIF tpll01g                       salmona L.SALMONA           86      2      2
+ CASTEST MODIF tpll01h                       salmona L.SALMONA           97      2      2
+ CASTEST MODIF tpll01i                       salmona L.SALMONA           90      2      2
+ CASTEST MODIF tpll01j                       salmona L.SALMONA          116      1      1
+ CASTEST MODIF tpll100a                      salmona L.SALMONA          119      2      2
+ CASTEST MODIF tpll100b                      salmona L.SALMONA          117      2      2
+ CASTEST MODIF tplv101a                      salmona L.SALMONA          144      2      2
+ CASTEST MODIF tplv101b                      salmona L.SALMONA          305      2      2
+ CASTEST MODIF tplv103a                      salmona L.SALMONA          103      2      2
+ CASTEST MODIF tplv103b                      salmona L.SALMONA           99      2      2
+ CASTEST MODIF tplv105a                      salmona L.SALMONA          184      2      2
+ CASTEST MODIF tpna01a                       salmona L.SALMONA          226      2      2
+ CASTEST MODIF tpna01b                       salmona L.SALMONA          268      2      2
+ CASTEST MODIF tpna300a                      salmona L.SALMONA          124      2      2
+ CASTEST MODIF tpna300b                      salmona L.SALMONA          148      2      2
+ CASTEST MODIF tpna300c                      salmona L.SALMONA          133      2      2
+ CASTEST MODIF tpna300d                      salmona L.SALMONA          202      2      2
+ CASTEST MODIF tpnl300a                      salmona L.SALMONA          303      2      2
+ CASTEST MODIF tpnl300b                      salmona L.SALMONA          308      2      2
+ CASTEST MODIF tpnv01a                       salmona L.SALMONA          434      5      5
+ CASTEST MODIF tpnv01b                       salmona L.SALMONA          262      2      2
+ CASTEST MODIF ttll01a                       salmona L.SALMONA          120      7      7
+ CASTEST MODIF ttll01b                       salmona L.SALMONA          216      6      6
+ CASTEST MODIF ttll01c                       salmona L.SALMONA           96      2      2
+ CASTEST MODIF ttll01d                       salmona L.SALMONA          103      2      2
+ CASTEST MODIF ttll01e                       salmona L.SALMONA          103      2      2
+ CASTEST MODIF ttll01f                       salmona L.SALMONA          102      2      2
+ CASTEST MODIF ttll01g                       salmona L.SALMONA          102      2      2
+ CASTEST MODIF ttll01h                       salmona L.SALMONA           96      2      2
+ CASTEST MODIF ttll01i                       salmona L.SALMONA          108      2      2
+ CASTEST MODIF ttll01j                       salmona L.SALMONA          102      2      2
+ CASTEST MODIF ttll01k                       salmona L.SALMONA          100      2      2
+ CASTEST MODIF ttll01l                       salmona L.SALMONA           96      2      2
+ CASTEST MODIF ttll01m                       salmona L.SALMONA          169      2      2
+ CASTEST MODIF ttll01n                       salmona L.SALMONA          161      2      2
+ CASTEST MODIF ttll100a                      salmona L.SALMONA          131      2      2
+ CASTEST MODIF ttll100b                      salmona L.SALMONA          136      4      4
+ CASTEST MODIF ttll301a                      salmona L.SALMONA          117      2      2
+ CASTEST MODIF ttll301b                      salmona L.SALMONA          124      2      2
+ CASTEST MODIF ttll303a                      salmona L.SALMONA          222      2      2
+ CASTEST MODIF ttlp100a                      salmona L.SALMONA          198      2      2
+ CASTEST MODIF ttlp100b                      salmona L.SALMONA          199      8      8
+ CASTEST MODIF ttlp300a                      salmona L.SALMONA          133      2      2
+ CASTEST MODIF ttlp301a                      salmona L.SALMONA          173      2      2
+ CASTEST MODIF ttlp301b                      salmona L.SALMONA          178      2      2
+ CASTEST MODIF ttlp302a                      salmona L.SALMONA          195      2      2
+ CASTEST MODIF ttlp303c                      salmona L.SALMONA          216      2      2
+ CASTEST MODIF ttlp304a                      salmona L.SALMONA          164      2      2
+ CASTEST MODIF ttlv01a                       salmona L.SALMONA          350      2      2
+ CASTEST MODIF ttlv01b                       salmona L.SALMONA          295      2      2
+ CASTEST MODIF ttlv01c                       salmona L.SALMONA          335      2      2
+ CASTEST MODIF ttlv01d                       salmona L.SALMONA          335      2      2
+ CASTEST MODIF ttlv100a                      salmona L.SALMONA          135      4      4
+ CASTEST MODIF ttlv100b                      salmona L.SALMONA          141      4      4
+ CASTEST MODIF ttlv300a                      salmona L.SALMONA          171      2      2
+ CASTEST MODIF ttlv301a                      salmona L.SALMONA          194      2      2
+ CASTEST MODIF ttna200a                      salmona L.SALMONA          606      7      7
+ CASTEST MODIF ttnl02a                       salmona L.SALMONA          287    103      9
+ CASTEST MODIF ttnl02b                       salmona L.SALMONA          175      3      3
+ CASTEST MODIF ttnl02c                       salmona L.SALMONA          183      7      7
+ CASTEST MODIF ttnl03a                       salmona L.SALMONA          418      2      2
+ CASTEST MODIF ttnl03b                       salmona L.SALMONA          358      2      2
+ CASTEST MODIF ttnl04a                       salmona L.SALMONA          367     14      9
+ CASTEST MODIF ttnl302a                      salmona L.SALMONA          200      2      2
+ CASTEST MODIF ttnl302b                      salmona L.SALMONA          248      2      2
+ CASTEST MODIF ttnl302c                      salmona L.SALMONA          457      2      2
+ CASTEST MODIF ttnl302d                      salmona L.SALMONA          430      2      2
+ CASTEST MODIF ttnl302e                      salmona L.SALMONA          537      2      2
+ CASTEST MODIF ttnl303a                      salmona L.SALMONA          168      2      2
+ CASTEST MODIF ttnl303b                      salmona L.SALMONA          162      2      2
+ CASTEST MODIF ttnl303c                      salmona L.SALMONA          338      2      2
+ CASTEST MODIF ttnl303d                      salmona L.SALMONA          337      2      2
+ CASTEST MODIF ttnp01a                       salmona L.SALMONA          155      2      2
+ CASTEST MODIF ttnp200a                      salmona L.SALMONA          600      7      7
+ CASTEST MODIF yyyy101a                      salmona L.SALMONA          171      2      2
+ CASTEST MODIF yyyy101b                      salmona L.SALMONA          170      2      2
+ CASTEST MODIF yyyy101c                      salmona L.SALMONA          171      2      2
+ CASTEST MODIF yyyy101d                      salmona L.SALMONA          171      2      2
+ CASTEST MODIF yyyy101e                      salmona L.SALMONA          170      2      2
+ CASTEST MODIF yyyy105a                      salmona L.SALMONA           73      2      2
+ CASTEST MODIF yyyy105b                      salmona L.SALMONA           74      2      2
+ CASTEST MODIF yyyy105c                      salmona L.SALMONA           74      2      2
+ CASTEST MODIF yyyy105d                      salmona L.SALMONA           74      2      2
+ CASTEST MODIF yyyy105e                      salmona L.SALMONA           74      2      2
+ CASTEST MODIF yyyy105f                      salmona L.SALMONA           74      2      2
+ CASTEST MODIF yyyy105g                      salmona L.SALMONA           74      2      2
+ CASTEST MODIF yyyy105h                      salmona L.SALMONA           74      2      2
+ CASTEST MODIF zmat002a                      salmona L.SALMONA          249      3      3
+ CASTEST MODIF zmat002b                      salmona L.SALMONA          217      2      2
+ CASTEST MODIF zzzz108a                      salmona L.SALMONA         1139      3      3
+ CASTEST MODIF zzzz118c                      salmona L.SALMONA           37      1      1
+ CASTEST MODIF zzzz118d                      salmona L.SALMONA           35      1      1
+ CASTEST MODIF zzzz121c                      salmona L.SALMONA          403      4      6
+ CASTEST MODIF zzzz127a                      salmona L.SALMONA          192      1      1
+ CASTEST MODIF zzzz162a                      salmona L.SALMONA          636      2      2
+ CASTEST MODIF zzzz162b                      salmona L.SALMONA          227      2      2
+ CASTEST MODIF zzzz186a                      salmona L.SALMONA           40      1      1
+ CASTEST MODIF zzzz200b                      salmona L.SALMONA         1117      2      2
+ CASTEST MODIF zzzz208b                      salmona L.SALMONA          449      5      9
+ CASTEST MODIF zzzz221a                      salmona L.SALMONA          297     11     10
+ CASTEST MODIF zzzz222a                      salmona L.SALMONA          318      3      3
+ CASTEST MODIF zzzz223a                      salmona L.SALMONA          145      3      3
+CATALOPY MODIF commande/asse_matr_gene       salmona L.SALMONA           33      8      3
+CATALOPY MODIF commande/macr_elem_dyna       salmona L.SALMONA           39      2      4
+CATALOPY MODIF commande/ther_lineaire        salmona L.SALMONA          114     29     16
+CATALOPY MODIF commande/ther_non_line_mo     salmona L.SALMONA           68      3      3
+CATALOPY MODIF commande/ther_non_line        salmona L.SALMONA          190     77     11
+ FORTRAN AJOUT algorith/asgnbc               salmona L.SALMONA           94     94      0
+ FORTRAN AJOUT algorith/calprc               salmona L.SALMONA          171    171      0
+ FORTRAN AJOUT algorith/maxblc               salmona L.SALMONA           72     72      0
+ FORTRAN MODIF algorith/assgen               salmona L.SALMONA          378     21     13
+ FORTRAN MODIF algorith/diinit               salmona L.SALMONA          590     23     18
+ FORTRAN MODIF algorith/dyobar               salmona L.SALMONA          567      7      1
+ FORTRAN MODIF algorith/dyobs1               salmona L.SALMONA          334     11      1
+ FORTRAN MODIF algorith/dyobs2               salmona L.SALMONA          348     14      1
+ FORTRAN MODIF algorith/dyoext               salmona L.SALMONA          194      3      1
+ FORTRAN MODIF algorith/ntdoet               salmona L.SALMONA          281     53     21
+ FORTRAN MODIF algorith/ntinit               salmona L.SALMONA          279     57     24
+ FORTRAN MODIF algorith/ntoptc               salmona L.SALMONA          140      3      3
+ FORTRAN MODIF algorith/ntrep0               salmona L.SALMONA           73      5      6
+ FORTRAN MODIF algorith/ntrepr               salmona L.SALMONA          130     26     18
+ FORTRAN MODIF algorith/ntreso               salmona L.SALMONA          249     23     19
+ FORTRAN MODIF algorith/ntstoc               salmona L.SALMONA           97     20     10
+ FORTRAN MODIF algorith/nxacmv               salmona L.SALMONA          578     13     13
+ FORTRAN MODIF algorith/nxlect               salmona L.SALMONA          111      1      1
+ FORTRAN MODIF algorith/nxpred               salmona L.SALMONA          168      5      5
+ FORTRAN MODIF algorith/op0025               salmona L.SALMONA          336     86     82
+ FORTRAN MODIF algorith/op0081               salmona L.SALMONA          115     18      4
+ FORTRAN MODIF algorith/op0128               salmona L.SALMONA           60      3      2
+ FORTRAN MODIF algorith/op0186               salmona L.SALMONA          682    128     67
+ FORTRAN MODIF algorith/prasml               salmona L.SALMONA          272      8      6
+ FORTRAN MODIF algorith/prasmp               salmona L.SALMONA          211     12      5
+ FORTRAN MODIF algorith/vechnl               salmona L.SALMONA          461      7      6
+ FORTRAN MODIF algorith/vechth               salmona L.SALMONA          709      8      7
+ FORTRAN MODIF algorith/vetnth               salmona L.SALMONA          389      6      6
+ FORTRAN MODIF calculel/nttcmv               salmona L.SALMONA          206      3      3
+ FORTRAN MODIF calculel/op0171               salmona L.SALMONA          395      3      3
+ FORTRAN MODIF utilitai/ndynlo               salmona L.SALMONA          148     11      2
+  PYTHON MODIF Macro/macr_ascouf_calc_ops    salmona L.SALMONA          727      3      3
+  PYTHON MODIF Macro/macr_aspic_calc_ops     salmona L.SALMONA          813      4      4
+  PYTHON MODIF Macro/macr_cabri_calc_ops     salmona L.SALMONA          561      2      2
+  PYTHON MODIF Messages/algorith14           salmona L.SALMONA          340      5      1
+  PYTHON MODIF Messages/algorith2            salmona L.SALMONA          369      3      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4         921       921              +921
+ MODIF :  237       78988      1406    1042      +364
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  241       79909      2327    1042     +1285 

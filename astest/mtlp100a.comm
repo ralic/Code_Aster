@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE D6BHHAR A.RAZAKANAIVO
 # TITRE TREMPE D UN BARREAU INFINI A SECTION CARREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -627,8 +627,8 @@ TEMPE=THER_LINEAIRE(MODELE=MOTH,
                     CHAM_MATER=CHMAT,
                     EXCIT=_F(CHARGE=CHTH1,),
                     INCREMENT=_F(LIST_INST=LR8,
-                                 NUME_FIN=40,),
-                    TEMP_INIT=_F(VALE=700.0,),
+                                 NUME_INST_FIN=40,),
+                    ETAT_INIT=_F(VALE=700.0,),
                     SOLVEUR=_F(METHODE='LDLT',
                                RENUM='RCMK',),
                     PARM_THETA=0.57,);
@@ -654,9 +654,9 @@ TEMPE1=THER_LINEAIRE(reuse =TEMPE1,
                      CHAM_MATER=CHMAT,
                      EXCIT=_F(CHARGE=CHTH2,),
                      INCREMENT=_F(LIST_INST=LR8,
-                                  NUME_INIT=40,),
-                     TEMP_INIT=_F(EVOL_THER=TEMPE,
-                                  NUME_INIT=40,),
+                                  NUME_INST_INIT=40,),
+                     ETAT_INIT=_F(EVOL_THER=TEMPE,
+                                  NUME_ORDRE=40,),
                      SOLVEUR=_F(METHODE='LDLT',
                                 RENUM='RCMK',),
                      PARM_THETA=0.57,);

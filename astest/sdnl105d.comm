@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION ELEMENTAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,6 @@ BAMO1=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = INTERF1,
 
 #
 MACRO1M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
-                                OPTION='CLASSIQUE',
                                 AMOR_REDUIT=(0.04,0.04,0.04,0.04,0.04,),
                                  )
 
@@ -173,7 +172,6 @@ BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = INTERF2,
                              )
 
 MACRO2M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2, 
-                                OPTION='CLASSIQUE',
                                 AMOR_REDUIT=(0.04,0.04,0.04,0.04,0.04,),
                                 )
 #
@@ -191,7 +189,6 @@ BAMO3=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = INTERF3,
                               )
 
 MACRO3M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO3, 
-                                OPTION='CLASSIQUE',
                                 AMOR_REDUIT=(0.04,0.04,0.04,0.04,0.04,),
                                 )
 #

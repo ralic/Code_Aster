@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE validation des commandes DEFI_PARA_SENSI et MEMO_NOM_SENSI en thermique
 #       Controle de EXTR_RESU et CREA_CHAMP en sensibilite
@@ -85,10 +85,10 @@ RETH=THER_LINEAIRE(MODELE=MODEPLAN,
                    CHAM_MATER=MATEPLAN,
                    EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
                    SENSIBILITE=(PS1),
-                   TEMP_INIT=_F( STATIONNAIRE = 'OUI', ),
+                   ETAT_INIT=_F( STATIONNAIRE = 'OUI', ),
                    INCREMENT=_F( LIST_INST = LINST,
-                                 NUME_INIT = 0,
-                                 NUME_FIN  = 2 )
+                                 NUME_INST_INIT = 0,
+                                 NUME_INST_FIN  = 2 )
                   );
 #
 #IMPR_CO (CONCEPT=(RETH))

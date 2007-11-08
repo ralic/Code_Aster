@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER (PETIT_REAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -459,8 +459,8 @@ RESUTH=THER_LINEAIRE(MODELE=MOD_THER,
                      CHAM_MATER=CHMAT,
                      EXCIT=_F(CHARGE=CH_SOU0,),
                      INCREMENT=_F(LIST_INST=LINST,
-                                 NUME_FIN=1,),
-                     TEMP_INIT=_F(VALE = 0.,),);                        
+                                 NUME_INST_FIN=1,),
+                     ETAT_INIT=_F(VALE = 0.,),);                        
 
 # ------------------------------------------------------------
 #  6. DEBUT DE LA BOUCLE DE RESOLUTION MECANIQUE / THERMIQUE
@@ -545,17 +545,20 @@ for k in range(1,NBPAS+1) :
   CH_SOU=AFFE_CHAR_THER(MODELE=MOD_THER,
                         SOURCE=_F(SOUR_CALCULEE=DISSIP,),);
                                
-  RESUTH=THER_LINEAIRE(reuse=RESUTH,
-                    TEMP_INIT=_F(EVOL_THER=RESUTH,NUME_INIT=k),
-                    MODELE=MOD_THER,
-                    CHAM_MATER=CHMAT,
-                    EXCIT=_F(CHARGE=CH_SOU,),
-                    INCREMENT=_F(LIST_INST=LINST,
-                                 NUME_FIN=k+1,),);                              
+  if ( k < NBPAS ) :
+    RESUTH=THER_LINEAIRE(reuse=RESUTH,
+                      ETAT_INIT=_F(EVOL_THER=RESUTH,NUME_ORDRE=k),
+                      MODELE=MOD_THER,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CH_SOU,),
+                      INCREMENT=_F(LIST_INST=LINST,
+                                   NUME_INST_FIN=k+1,),);                              
   
   if k < NBPAS :                                   
     DETRUIRE(CONCEPT=_F(NOM=(CH_SOU,CH1,DISSIP,CHMTM )))                                        
 
+
+IMPR_RESU(RESU=_F(RESULTAT=RESUTH),);
 # ------------------------------------------------------------
 #  7. TESTS
 # ------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -375,7 +375,7 @@ THL10=THER_LINEAIRE(        MODELE=MO,
                                _F( CHARGE = CHCIF,
                                       FONC_MULT = FOE)),
                            INCREMENT=_F(  LIST_INST = LR1),
-                           TEMP_INIT=_F( VALE = 0.) )
+                           ETAT_INIT=_F( VALE = 0.) )
 
 THL10=CALC_ELEM(reuse=THL10,
                           OPTION=( 'FLUX_ELNO_TEMP',
@@ -407,7 +407,7 @@ THNL6=THER_NON_LINE(        MODELE=MO,
                           CONVERGENCE=_F(),
                           PARM_THETA=1.,
                            ARCHIVAGE=_F(  PAS_ARCH = 2),
-                           TEMP_INIT=_F( VALE = 0.),
+                           ETAT_INIT=_F( VALE = 0.),
                           OPTION=( 'FLUX_ELGA_TEMP', 'FLUX_ELNO_TEMP',))
 
 THNL6=CALC_META( reuse=THNL6,  MODELE=MO,
@@ -568,7 +568,7 @@ TEST_RESU(RESU=(
                       CRITERE = 'ABSOLU'),
                               _F(
                       RESULTAT = THNL6,
-                      NUME_ORDRE = 2,
+                      NUME_ORDRE = 1,
                       NOM_CHAM = 'TEMP',
                       TYPE_TEST = 'SOMM_ABS',
                       VALE =     6.4796860937371E+02  ,
@@ -577,7 +577,7 @@ TEST_RESU(RESU=(
 
                               _F(
                       RESULTAT = THNL6,
-                      NUME_ORDRE = 2,
+                      NUME_ORDRE = 1,
                       NOM_CHAM = 'META_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
                       VALE =     3.1183561266124E+03  ,
@@ -585,7 +585,7 @@ TEST_RESU(RESU=(
                       VERSION = '6.2.3'),
                               _F(
                       RESULTAT = THNL6,
-                      NUME_ORDRE = 2,
+                      NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELGA_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
                       VALE =     1.0254920106078E+03  ,
@@ -593,7 +593,7 @@ TEST_RESU(RESU=(
                       VERSION = '6.2.3'),
                               _F(
                       RESULTAT = THNL6,
-                      NUME_ORDRE = 2,
+                      NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELNO_TEMP',
                       TYPE_TEST = 'SOMM_ABS',
                       VALE =     1.1292229279412E+03  ,

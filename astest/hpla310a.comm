@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,7 +78,7 @@ LR8=DEFI_LIST_REEL(          DEBUT=0.,INTERVALLE=(
 TEMP=THER_LINEAIRE(        MODELE=MOTH,
                                CHAM_MATER=CMTH,
                                     EXCIT=_F( CHARGE = CHTH),
-                                TEMP_INIT=_F( CHAM_NO = T0),
+                                ETAT_INIT=_F( CHAM_NO = T0),
                                 INCREMENT=_F( LIST_INST = LR8)
                            )
 

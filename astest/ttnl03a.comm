@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 3D - HEXA8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,7 +172,7 @@ RESUTHYD=THER_NON_LINE(
                               CHAM_MATER=CHMATNL,
                               EXCIT=_F(  CHARGE = CHATHER),
                                COMP_THER_NL=_F( RELATION = 'THER_HYDR'),
-                              TEMP_INIT=_F(  CHAM_NO = TEMPINIT),
+                              ETAT_INIT=_F(  CHAM_NO = TEMPINIT),
                               PARM_THETA=0.57,
                               INCREMENT=_F(  LIST_INST = LINST),
                               CONVERGENCE=_F(  RESI_GLOB_MAXI = 1.E-5)

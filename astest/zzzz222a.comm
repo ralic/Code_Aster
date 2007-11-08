@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE VALIDATION DU MECANISME DE SURCHARGE AFFE_CHAR_CINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,7 +155,7 @@ CHT4=AFFE_CHAR_CINE(  MODELE=MOTH,
 
 
 TEMP1=THER_LINEAIRE( MODELE=MOTH,
-                     TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
                      INCREMENT=_F( LIST_INST = LR8),
                      CHAM_MATER=CHMAT,
                      EXCIT=( _F( CHARGE = CHT1),
@@ -169,7 +169,7 @@ F1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_FLUX_R',
 NOM_CHAM='FLUX_ELNO_TEMP', RESULTAT=TEMP1, NUME_ORDRE=2)
 
 TEMP2=THER_LINEAIRE( MODELE=MOTH,
-                     TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+                     ETAT_INIT=_F( STATIONNAIRE = 'OUI'),
                      INCREMENT=_F( LIST_INST = LR8),
                      CHAM_MATER=CHMAT,
                      EXCIT=( _F( CHARGE = CHT1),

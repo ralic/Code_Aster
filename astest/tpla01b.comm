@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE CYLINDRE CREUX EN THERMIQUE STATIONNAIRE (TRIA6/QUAD8 AXIS)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.,
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTH,
                              CHAM_MATER=CHMAT,
-                            TEMP_INIT=_F(  STATIONNAIRE = 'OUI'),
+                            ETAT_INIT=_F(  STATIONNAIRE = 'OUI'),
                             INCREMENT=_F(  LIST_INST = LR8),
                                 EXCIT=_F(  CHARGE = CHTH)
                         )

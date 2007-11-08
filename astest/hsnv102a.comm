@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE THERMO_METALLO_MECANIQUE COUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,7 +150,7 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
                             PARM_THETA=0.57,
                                  EXCIT=_F(  CHARGE = CHTH),
                              INCREMENT=_F(  LIST_INST = LR8),
-                             TEMP_INIT=_F(  VALE = 900.)
+                             ETAT_INIT=_F(  VALE = 900.)
 
                         )
 

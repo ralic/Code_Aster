@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE  VALIDATION DES LOIS DE SECHAGE SUR UNE EPROUVETTE CYLINDRIQUE EN BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,7 +102,7 @@ RESUSECH = THER_NON_LINE( MODELE        = MOTH,
                           CHAM_MATER     = CHMAT,
                           SOLVEUR        = _F( METHODE = 'MULT_FRONT',   ),
                           PARM_THETA     = 0.57,
-                          TEMP_INIT      = _F( VALE = 128.8,   ),
+                          ETAT_INIT      = _F( VALE = 128.8,   ),
                           INCREMENT      = _F( LIST_INST = LISTSECH, ),
                           COMP_THER_NL   = _F( RELATION = 'SECH_BAZANT',
                                                TOUT     = 'OUI', ),

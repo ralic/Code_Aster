@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE TRANSFERT THERMIQUE AVEC GENERATION DE CHALEUR INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ LR8=DEFI_LIST_REEL(        DEBUT=0.,
 #
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTH,
-                      TEMP_INIT=_F( VALE = 0.E0),
+                      ETAT_INIT=_F( VALE = 0.E0),
                       INCREMENT=_F( LIST_INST = LR8),
                        CHAM_MATER=CHMAT,
                           EXCIT=_F( CHARGE = CHTH)

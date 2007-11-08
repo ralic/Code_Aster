@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
 # TITRE : CHOC THERMIQUE DANS UN TUYAU AVEC CONDITION D'ECHANGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,14 +86,14 @@ LISTTH=DEFI_LIST_REEL(         DEBUT=0.,INTERVALLE=(
                        _F(  JUSQU_A = 2000.,  NOMBRE = 8))
                           )
 
-LIST=DEFI_LIST_ENTI(   VALE=( 12,  18,  23,  30, )  )
+LIST=DEFI_LIST_REEL(   VALE=( 12.,  100.,  600.,  2000., )  )
 
 TEMPE=THER_LINEAIRE(        MODELE=MOTHER,
                            CHAM_MATER=CHMAT,
                                 EXCIT=_F( CHARGE = CHAR_TH),
-                            TEMP_INIT=_F( VALE = 289.),
+                            ETAT_INIT=_F( VALE = 289.),
                             INCREMENT=_F( LIST_INST = LISTTH),
-                            ARCHIVAGE=_F( LIST_ARCH = LIST)
+                            ARCHIVAGE=_F( LIST_INST = LIST)
                         )
 
 TEMP_1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
