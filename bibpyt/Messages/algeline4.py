@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF algeline4 Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,10 +111,10 @@ cata_msg={
  il est impossible d'avoir comme concept produit  %(k1)s et %(k2)s comme concept d'entrée.
 """),
 
-34: _("""
- erreur dans les données
- la masse n'existe pas dans la table  %(k1)s
-"""),
+
+
+
+
 
 36: _("""
  l'option de normalisation  %(k1)s  n'est pas implantée. %(i1)d

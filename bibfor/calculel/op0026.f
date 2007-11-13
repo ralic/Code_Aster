@@ -1,6 +1,6 @@
       SUBROUTINE OP0026 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
+C MODIF CALCULEL  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -189,6 +189,9 @@ C     ------------------------------------
      &            K24BID, K24BID, 4,      VALPLU)
 
       ITERAT=1
+      MERIGI = ' '
+      VERESI = ' '
+      VEDIRI = ' '
       CALL MERIMO('G',    MODELE, CARELE, MATE,   K24BID, COMPOR,
      &            LISCHA, CARCRI, DEPDEL, K24BID, K24BID, K24BID,
      &            K24BID, VALMOI, VALPLU, OPTION, MERIGI, VERESI,

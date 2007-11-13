@@ -3,7 +3,7 @@
      &                  NBTYMA, DEFFAC )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/09/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 13/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,8 +25,8 @@ C ======================================================================
       INTEGER      NFMAX
       PARAMETER  ( NFMAX = 24 )
       INTEGER      NBMA,NBNO,LIMA(*),MXNOFA,TYPEMA(*),NBTRI
-      INTEGER      MILIEU(4,NFMAX,NBNO),NOMIMA(6,NBMA),NOMIPE(4,*),
-     &             NBTYMA, DEFFAC(4,0:6,NBTYMA),NOEUD(4),NBHE20,
+      INTEGER      MILIEU(4,NFMAX,NBNO),NOMIMA(6,NBMA),NOMIPE(8,*),
+     &             NBTYMA, DEFFAC(8,0:6,NBTYMA),NOEUD(4),NBHE20,
      &             FACE,INO,NBFA
       CHARACTER*8 MAIN
       CHARACTER*24 CONNEX
@@ -149,10 +149,14 @@ C           PLUS DE NFMAX FACES TOUCHENT NO1 ?
             CALL U2MESG('F', 'MAILLAGE_11', 1, NOMNOE, 1, NFMAX, 0,RBID)
  31         CONTINUE
             NOMIMA(FACE,M)  = NOMI
-            NOMIPE(1,NOMI) = NO1
-            NOMIPE(2,NOMI) = NO2
-            NOMIPE(3,NOMI) = NO3
-            NOMIPE(4,NOMI) = NO4
+            NOMIPE(1,NOMI) = ZI(JNOMA-1 + DEFFAC(1,FACE,TYMA))
+            NOMIPE(2,NOMI) = ZI(JNOMA-1 + DEFFAC(2,FACE,TYMA))
+            NOMIPE(3,NOMI) = ZI(JNOMA-1 + DEFFAC(3,FACE,TYMA))
+            NOMIPE(4,NOMI) = ZI(JNOMA-1 + DEFFAC(4,FACE,TYMA))
+            NOMIPE(5,NOMI) = ZI(JNOMA-1 + DEFFAC(5,FACE,TYMA))
+            NOMIPE(6,NOMI) = ZI(JNOMA-1 + DEFFAC(6,FACE,TYMA))
+            NOMIPE(7,NOMI) = ZI(JNOMA-1 + DEFFAC(7,FACE,TYMA))
+            NOMIPE(8,NOMI) = ZI(JNOMA-1 + DEFFAC(8,FACE,TYMA))
 
  20      CONTINUE
  10   CONTINUE

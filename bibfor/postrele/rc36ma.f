@@ -3,7 +3,7 @@
       CHARACTER*8 NOMMAT,NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 12/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,6 +106,8 @@ C    RECUP TYPE KE
 
       CHNMAT = NOMMAT//'.CHAMP_MAT '
       CHSMAT = '&&RC36MA.NOM_MATER'
+      write(6,*) 'CARTE: ',CHSMAT
+      K8B  = ' '
       CALL CARCES(CHNMAT,'ELNO',K8B,'V',CHSMAT,IER)
       IF (IER.NE.0) CALL U2MESS('F','POSTRCCM_13')
       CALL JEVEUO(CHSMAT//'.CESV','L',JCESVM)
@@ -114,6 +116,7 @@ C    RECUP TYPE KE
 
       MATREF = NOMMAT//'.TEMPE_REF '
       CHTMAT = '&&RC36MA.TEMPE_REF '
+      write(6,*) 'CARTE: ',CHTMAT
       CALL CARCES(MATREF,'ELNO',K8B,'V',CHTMAT,IER)
       IF (IER.NE.0) CALL U2MESS('F','POSTRCCM_14')
       CALL JEVEUO(CHTMAT//'.CESV','L',JCESVT)

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -298,7 +298,7 @@ C     -----------------------------------------------------
       ELSE IF (ZK8(IAWTYP-1+IPARG) (1:3).EQ.'K24') THEN
         ITAB(5) = 6
       ELSE
-        CALL U2MESS('F','ASSEMBLA_17')
+        CALL ASSERT(.FALSE.)
       END IF
       IF (NVAL.LT.6) GO TO 20
 

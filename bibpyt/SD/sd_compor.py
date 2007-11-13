@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_compor SD  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,17 +51,18 @@ class sd_compor(AsBase):
     def monocristal(self,cpri,checker) :
     #------------------------------------
         nboccm=cpri[4]
-        nbsys=nboccm
+        nvi   =cpri[2]
+        nbsys=(nvi-8)/3
+        assert nvi==8+3*nbsys , (nvi, nbsys, cpri)
         cprk=self.CPRK.get_stripped()
 
         # vérif existence et longueur
         assert len(cpri)==7, cpri
-        assert len(cprk)==5*nbsys+1, (cpri,cprk)
+        assert len(cprk)==5*nboccm+1, (cpri,cprk)
         assert not self.CPRR.get()
 
         # vérif CPRI :
         #-------------
-        nvi=8+3*nbsys
         assert cpri[1] == 1   ,cpri
         assert cpri[2] == nvi ,cpri
         assert cpri[3] == 1   ,cpri
@@ -71,9 +72,9 @@ class sd_compor(AsBase):
 
         # vérif CPRK :
         #-------------
-        elas=cprk[5*nbsys]
+        elas=cprk[5*nboccm]
         assert elas in ('ELAS', 'ELAS_ORTH')  ,cprk
-        for k in range(nbsys):
+        for k in range(nboccm):
             famil     =cprk[5*k+0]
             mater     =cprk[5*k+1]
             ecoul     =cprk[5*k+2]
@@ -160,30 +161,27 @@ class sd_compor(AsBase):
 
         # vérif CPRI :
         #-------------
+        assert cpri[1] > 0, cpri
         assert cpri[2] > 0, cpri
-        assert cpri[1] >= 0, cpri
 
         # vérif CPRK :
         #-------------
         mater=cprk[6*nbgmax]
         assert mater != '', cprk
         sd2=sd_mater(mater) ; sd2.check(checker)
-        nvimax=0
         for k in range(nbgmax):
             grfib1     =cprk[6*k+0]
             mater1     =cprk[6*k+1]
             loifib1    =cprk[6*k+2]
             algo1d     =cprk[6*k+3]
             deform     =cprk[6*k+4]
-            nvi=    int(cprk[6*k+5])
+            nbfib=    int(cprk[6*k+5])
             assert grfib1 != '' , cprk
             assert mater1 != '' , cprk
             sd2=sd_mater(mater1) ; sd2.check(checker)
             assert loifib1 != '' , cprk
             assert algo1d  in ('ANALYTIQUE','DEBORST') , cprk
             assert deform  in ('PETIT','PETIT_REAC','REAC_GEOM') , cprk
-            assert nvi >=0      , cprk
-            nvimax=max(nvimax,nvi)
+            assert nbfib > 0      , cprk
 
-        #assert nvimax==cpri[1]  # j'ai sans doute mal compris !!
 

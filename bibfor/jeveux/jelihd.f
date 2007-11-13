@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C ----------------------------------------------------------------------
       PARAMETER      ( NOMATR = 'ATTRIBUTS JEVEUX',
      &                 NOMAT2 = 'BASE GLOBALE JEVEUX' )
       INTEGER          IPGCA,LTYPI,LONOI,NBOBJ,IK32(1),JK32,IK8(1),JK8
-      INTEGER          IDFIC,IDTS,LTYPB,LONIND,NBVAL,IADMI
+      INTEGER          IDFIC,IDTS,LTYPB,LONIND,NBVAL,IADMI,VALI(2)
       INTEGER          IDOS,KITAB,IDGR,IDT1,IDT2,IDG,JULIST,IUNIFI
       INTEGER          HDFOPF,HDFNBO,HDFOPD,HDFTSD,HDFRSV,HDFRAT
       INTEGER          HDFNOM,HDFTYP,HDFCLD,HDFOPG,HDFCLG,HDFRSI,HDFCLF
@@ -138,7 +138,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE     (IK32,K32),(IK8,K8)
       INTEGER          IGENR(1),ITYPE(1),IDOCU(1),IORIG(1),IRNOM(1)
       INTEGER          I,K,KTEMP1,KTEMP2,LON,LON2,IC,LCARAO,IADRS,LONOK
-      INTEGER          LONGJ,JJPREM,ITAB,JTAB,ICONV
+      INTEGER          LONGJ,JJPREM,ITAB,JTAB,ICONV,NBLMA2
       EQUIVALENCE     (IGENR,GENR),(ITYPE,TYPE),
      &                (IDOCU,DOCU),(IORIG,ORIG),(IRNOM,RNOM)
 C     ------------------------------------------------------------------
@@ -151,6 +151,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24     VALK(3)
       CHARACTER*32     NOMSYS,D32
       INTEGER          KAT(LIDBAS),LSO(LIDBAS),KDY(LIDBAS),LGBL,IADYN
+      REAL*8           VALR
       LOGICAL          LEXP
       DATA CIDBAS  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,
@@ -243,6 +244,23 @@ C
          CALL U2MESK('A','JEVEUX_08', 3 ,VALK)
       ENDIF
 C
+C --- LORSQUE LE NOMBRE D'ENREGISTREMENTS MAXIMUM EST MODIFIE
+C
+      NBLMA2 = MFIC/(LONGBL(IC)*LOIS)
+      IF ( NBLMAX(IC) .GE. NBLMA2 ) THEN
+        NBLMA2 = NBLMAX(IC)
+      ELSE
+        VALI(1) = NBLMAX(IC)
+        VALI(2) = NBLMA2
+        VALK(1) = NOMBAS(IC)
+        CALL U2MESG('A','JEVEUX_36', 1 , VALK, 2 , VALI, 0 , VALR)
+      ENDIF
+C
+      NBLMAX(IC)= NBLMA2
+C
+      KAT(17) = 0      
+      KDY(17) = 0      
+C
       LMARQ = 2 * NREMAX(IC) * LOIS
       CALL JJALLS (LMARQ,'V','I',LOIS,Z,IMARQ,IADRS,KMARQ(IC),KDY(16))
       KAT(16) = KMARQ(IC)
@@ -287,7 +305,7 @@ C
       JIADD(IC) = IADRS - 1
       CALL JJECRS (KAT(2),IC,2,0,'E',IMARQ(JMARQ(IC)+2*2-1))
 C
-      LON2 = NBLMAX(IC) * LOIS
+      LON2 = NBLMA2 * LOIS
       CALL JJALLS (LON2,'V','I',LOIS,Z,IACCE,IADRS,KAT(15),KDY(15))
       JIACCE(IC) = IADRS - 1
       CALL JJECRS (KAT(15),IC,15,0,'E',IMARQ(JMARQ(IC)+2*15-1))
@@ -387,7 +405,7 @@ C
       IRET1 = HDFTSD(IDTS,TYPEI,LTYPI,LONOI)
       CALL JJHRSV (IDTS,LONOI,KAT(13))
 C
-      LON = 3*NBLMAX(IC) * LOIS
+      LON = 3*NBLMA2 * LOIS
       CALL JJALLS (LON,'V','I',LOIS,Z,IUSADI,IADRS,KAT(14),KDY(14))
       JUSADI(IC) = IADRS - 1
       CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))
@@ -395,7 +413,7 @@ C
 C     LA BASE ETANT RECREE, IL FAUT RETABLIR L'ETAT D'USAGE DES
 C     ENREGISTREMENTS A -1
 C
-      DO 14 I = 1,NBLMAX(IC)
+      DO 14 I = 1,NBLMA2
         IUSADI( IADRS + (3*I-2) - 1 ) = -1
         IUSADI( IADRS + (3*I-1) - 1 ) = -1
         IUSADI( IADRS + (3*I  ) - 1 ) =  0
@@ -453,7 +471,7 @@ C     ON TRAITE EN PREMIER LES COLLECTIONS AFIN DE POUVOIR LES LIBERER
 C
       CALL JEMARQ()
       DO 101 K=1,NBOBJ
-       IF (K8(JK8+K-1) .EQ. 'dataset') then
+       IF (K8(JK8+K-1) .EQ. 'dataset') THEN
           IDTS=HDFOPD(IDFIC,NGRP,K32(JK32+K-1))
           IRET1=HDFRAT(IDTS,NOMATR,5,KATTR)
           IF ( KATTR(1) .EQ. 'COLLECTION' ) THEN

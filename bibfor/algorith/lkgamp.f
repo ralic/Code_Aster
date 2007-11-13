@@ -1,14 +1,14 @@
       SUBROUTINE LKGAMP (VAL,VARV,IM,SM,VINM,NBMAT,MATER,
-     &                   DE,DEPS,DEPSV,DGAMV,DEPSP, DGAMP)
+     &                   DE,DEPS,DEPSV,DGAMV,DEPSP, DGAMP,RETCOM)
 C
       IMPLICIT    NONE
-      INTEGER     NBMAT,  VAL, VARV
+      INTEGER     NBMAT,  VAL, VARV,RETCOM
       REAL*8      IM,SM(6), MATER(NBMAT,2), VINM(7)
       REAL*8      DEPSP(6),DEPS(6)
       REAL*8      DGAMP,DGAMV, DEPSV(6), DE(6,6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,8 +66,8 @@ C =================================================================
 
       CALL LKCRIP(VARV,DGAMV,IM, SM,VINM,NBMAT,MATER,UCRIP,SEUILP)
       
-      CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS)
-      CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS)
+      CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS,RETCOM)
+      CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS,RETCOM)
       CALL LKVARP(VARV,DGAMV,VINM, NBMAT, MATER, PARAEP)
 
       CALL LKVACP(NBMAT, MATER,PARAEP, VARPL)
@@ -81,14 +81,14 @@ C =================================================================
 
       BPRIMP = LKBPRI (VAL,VINM,NBMAT,MATER,PARAEP,IM,SM)
 
-      CALL LKCALN(SM, BPRIMP, VECNP)   
+      CALL LKCALN(SM, BPRIMP, VECNP, RETCOM)   
            
       CALL LKCALG(DFDSP,VECNP,GP,BIDON)
 C =================================================================
 C --- CALCUL DE D LAMBDA ------------------------------------
 C =================================================================
       CALL LKDLAM (VAL,VARV,NBMAT, MATER,DEPS, DEPSV,DGAMV,
-     &             IM,SM,VINM,DE,DLAM)
+     &             IM,SM,VINM,DE,DLAM,RETCOM)
 
 C =================================================================
 C --- CALCUL DE DEDEV --------DEVIATEUR DU TENSEUR DES DEFORMATIONS

@@ -1,14 +1,14 @@
       SUBROUTINE LKOPTG (MATR,VAL,DUM,DGAMV,VINTR,DT,NBMAT, MATER,
-     &                   INVAR,S, VINM, DE, DEPSV,DSIDE)
+     &                   INVAR,S, VINM, DE, DEPSV,DSIDE,RETCOM)
 C
       IMPLICIT   NONE
-      INTEGER    MATR,VAL, DUM, NBMAT
+      INTEGER    MATR,VAL, DUM, NBMAT,RETCOM
       REAL*8     DT,INVAR,S(6), MATER(NBMAT,2),VINM(7),DSIDE(6,6)
       REAL*8     DESPV(6), DE(6,6), DGAMV, VINTR
       CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,8 +81,8 @@ C =================================================================
 C =================================================================
 C --- RECUPERATION DE DFd/DSIGMA -----------------------------------
 C =================================================================
-      CALL LKDHDS(NBMAT,MATER,INVAR,S,DHDS)
-      CALL LKDS2H(NBMAT,MATER,INVAR,S,DHDS,DS2HDS)
+      CALL LKDHDS(NBMAT,MATER,INVAR,S,DHDS,RETCOM)
+      CALL LKDS2H(NBMAT,MATER,INVAR,S,DHDS,DS2HDS,RETCOM)
 
       IF ((MATR .EQ. 1).OR.(MATR .EQ. 2)) THEN
 
@@ -108,7 +108,7 @@ C =================================================================
       IF ((MATR .EQ. 1).OR.(MATR .EQ. 2)) THEN
       BPRIMP = LKBPRI(VAL,VINM,NBMAT,MATER,PARAEP,INVAR,S)
 
-      CALL LKCALN(S, BPRIMP, VECNP)     
+      CALL LKCALN(S, BPRIMP, VECNP,RETCOM)     
       
       CALL LKCALG(DFDSP,VECNP,GP,DEVGII)
       ENDIF
@@ -118,7 +118,7 @@ C =================================================================
       IF ((MATR .EQ. 1).OR.(MATR .EQ. 3)) THEN
       BPRIMV = LKBPRI(VAL,VINM,NBMAT,MATER,PARAVI,INVAR,S)
 
-      CALL LKCALN(S, BPRIMV, VECNV)     
+      CALL LKCALN(S, BPRIMV, VECNV,RETCOM)     
 
       CALL LKCALG(DFDSV,VECNV,GV,BIDON)      
       ENDIF

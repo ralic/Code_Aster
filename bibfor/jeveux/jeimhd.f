@@ -1,6 +1,6 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,12 @@ C
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
+      INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
+      COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
@@ -79,7 +85,6 @@ C ----------------------------------------------------------------------
       PARAMETER      ( NOMATR = 'BASE GLOBALE JEVEUX' )
       PARAMETER      ( NOMATC = 'ATTRIBUTS JEVEUX' )
       CHARACTER*32     CRNOM,NGRP,NOMCOL
-      CHARACTER*75     CMESS
       CHARACTER*80     NHDF
       LOGICAL          LEXP
       REAL*8           RBID
@@ -105,8 +110,7 @@ C DEB ------------------------------------------------------------------
       NHDF  = FICHDF
       IDFIC = HDFCRF (NHDF)
       IF ( IDFIC .LT. 0 ) THEN
-        CMESS = 'IMPOSSIBLE DE CREER LE FICHIER HDF '// NHDF
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESG('F','JEVEUX_01',1,NHDF,1,IDFIC,0,RBID)
       ENDIF
       NGRP ='/'
       IDG  = HDFOPG (IDFIC,NGRP)
@@ -133,6 +137,7 @@ C DEB ------------------------------------------------------------------
 C       ----------- ACTUALISER CARA
 C
         CARA(JCARA(IC)+1) = NREUTI(IC)
+        CARA(JCARA(IC)+3) = NBLMAX(IC)
         DO 5 J = 1 , NREUTI(IC)
           CRNOM = RNOM(JRNOM(IC)+J)
           DO 1 K=1,5
@@ -253,7 +258,8 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
                   IADDI(2) = ISZON(JISZON + IBIADD - 1 + 2*K   )
                   IF ( IADDI(1) .EQ. 0 ) THEN
                     IF (NIVO .GE. 2) THEN
-                      CALL U2MESG('A','JEVEUX_29',1,CMESS,1,K,0,RBID)
+                      CALL U2MESG('A','JEVEUX_29',1,NOMCOL(1:24),1,K,
+     &                             0,RBID)
                     ENDIF
                     GOTO 10
                   ENDIF
@@ -319,8 +325,7 @@ C                TRAITEMENT DES OBJETS SYSTEME DE COLLECTION
  1001 FORMAT(I5,1X,A,'  -',2(A,'-'),I2,1X,I8,1X,I7,I7,I7,I9)
       IRET = HDFCLF (IDFIC)
       IF (IRET .NE. 0 ) THEN
-        CMESS = 'IMPOSSIBLE DE FERMER LE FICHIER '//NHDF
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_55',1,NHDF)
       ENDIF
       IPGC = IPGCEX
 C FIN ------------------------------------------------------------------

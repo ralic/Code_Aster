@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -420,6 +420,7 @@ C
 C
 C        --- CALCUL DES SIGMA_WEIBULL
 C
+        CARA = '        '
         CALL PEWEIB(ZK16(ITABW-1+IRESU),ZK8(IMOD-1+IRESU),MATE,
      &              CARA,CHCOP1,NCHAR,ZK8(JCHA),0,1,IRESU,NOMCMD)
         CALL JEDETR ('&&TE0331')

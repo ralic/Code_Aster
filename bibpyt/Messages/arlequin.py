@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF arlequin Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@ cata_msg={
 
 4: _("""
  Il y a plusieurs cinematiques dans le meme groupe de maille
- (melange elements de structures/elements de milieu continu) 
+ (melange elements de structures/elements de milieu continu)
 """),
 
 5: _("""
@@ -90,9 +90,9 @@ cata_msg={
  - Erreur avancée: contacter le support
 """),
 
-14: _("""
- La gestion des conditions limites redondantes a été déconnectée dans Arlequin
-"""),
+
+
+
 
 23: _("""
  Mauvaise intersection

@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa2 Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,6 +156,18 @@ cata_msg={
 
 41: _("""
  pb pour recuperer "excent" pour la maille  %(k1)s
+"""),
+
+42: _("""
+Erreur Utilisateur :
+ Le paramètre ALPHA (dilatation) du matériau est une fonction de la température.
+ Cette fonction (%(k1)s) n'est définie que par 1 point.
+ TEMP_DEF_ALPHA et TEMP_REF ne sont pas identiques.
+ On ne peut pas faire le changement de variable TEMP_DEF_ALPHA -> TEMP_REF.
+ On s'arrete donc.
+
+Risque & Conseil:
+ Il faut définir la fonction ALPHA avec plus d'1 point.
 """),
 
 

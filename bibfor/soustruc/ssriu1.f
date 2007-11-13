@@ -1,6 +1,6 @@
       SUBROUTINE SSRIU1(NOMU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF SOUSTRUC  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -177,7 +177,7 @@ C           -- ON COMPTE LES NOEUDS INTERNES ET EXTERNES:
               ICOI = ICOI + 1
             ELSE
               ICOE = ICOE + 1
-              IF (ICOE.GT.NBNOE) CALL U2MESS('F','ASSEMBLA_17')
+              CALL ASSERT(ICOE.LE.NBNOE)
             END IF
           END IF
         ELSE
@@ -249,7 +249,7 @@ C           -- TYPE LAGRANGE DES NOEUDS SUPPLEMENTAIRES:
               ICO = ICO + 1
               ZI(IACONX-1+3* (ICO-1)+3) = ITYLAG
               IEQN = ZI(IANUEQ-1+I)
-              IF (IEQN.LE.NDDLI) CALL U2MESS('F','ASSEMBLA_17')
+              CALL ASSERT(IEQN.GT.NDDLI)
               ZI(IAWRK1-1+IEQN) = ICO
             END IF
           END IF
@@ -261,7 +261,7 @@ C           -- NOEUDS LAGRANGES DU MAILLAGE :
             ZI(IACONX-1+3* (ICO-1)+2) = NUNO
             ZI(IACONX-1+3* (ICO-1)+3) = ITYLAG
             IEQN = ZI(IANUEQ-1+I)
-            IF (IEQN.LE.NDDLI) CALL U2MESS('F','ASSEMBLA_17')
+            CALL ASSERT(IEQN.GT.NDDLI)
             ZI(IAWRK1-1+IEQN) = ICO
           END IF
 
@@ -280,7 +280,7 @@ C           -- NOEUDS LAGRANGE DES LIAISONS DDL :
           ICO = ICO + 1
           ZI(IACONX-1+3* (ICO-1)+3) = ITYLAG
           IEQN = ZI(IANUEQ-1+I)
-          IF (IEQN.LE.NDDLI) CALL U2MESS('F','ASSEMBLA_17')
+          CALL ASSERT(IEQN.GT.NDDLI)
           ZI(IAWRK1-1+IEQN) = ICO
         END IF
    40 CONTINUE

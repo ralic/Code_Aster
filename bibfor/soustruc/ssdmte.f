@@ -1,6 +1,6 @@
       SUBROUTINE SSDMTE(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -166,8 +166,7 @@ C     ------------------------------------------
       DO 6 ,INO=1,NBNOPH
         JNO=ZI(IANCNF-1+INO)
         IF (JNO.NE.INO) THEN
-          IF (JNO.GT.INO)
-     & CALL U2MESS('F','ASSEMBLA_17')
+          CALL ASSERT(JNO.LE.INO)
           KNO=ZI(IANCNF-1+JNO)
           IF (KNO.NE.JNO) THEN
             ZI(IANCNF-1+INO)= KNO

@@ -2,7 +2,7 @@
      &                  CONNEZ, PREFIX, NDINIT, NOMIPE, NOMNOE, COOR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF PREPOST  DATE 13/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ======================================================================
 
       IMPLICIT NONE
 
-      INTEGER      NBNO, NBNOMI, NBNOHE, NOMIPE(4,NBNOMI), NDINIT,NBMA
+      INTEGER      NBNO, NBNOMI, NBNOHE, NOMIPE(8,NBNOMI), NDINIT,NBMA
       INTEGER      LIMA(*),TYPEMA(*)
       REAL*8       COOR(3,*)
       CHARACTER*8  PREFIX
@@ -66,7 +66,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER NO,NO1,NO2,NO3,NO4,NO5,NO6,NO7,NO8, LGPREF,LGND, IRET
+      INTEGER NO,NO1,NO2,NO3,NO4,NO5,NO6,NO7,NO8,NO9, LGPREF,LGND, IRET
+      INTEGER NO10,NO11,NO12,NO13,NO14,NO15,NO16,NO17,NO18,NO19,NO20
       INTEGER LXLGUT,NBHE20,IMA,TYMA,JNOMA,MA,IHEX27
 
       CHARACTER*8  NOMND
@@ -105,14 +106,24 @@ C - CALCUL DES COORDONNEES DES NOUVEAUX NOEUDS DES FACES
         NO2 = NOMIPE(2,NO)
         NO3 = NOMIPE(3,NO)
         NO4 = NOMIPE(4,NO)
-        COOR(1,NO+NBNO) = (COOR(1,NO1) + COOR(1,NO2) +
-     &                     COOR(1,NO3) + COOR(1,NO4))/4
+        NO5 = NOMIPE(5,NO)
+        NO6 = NOMIPE(6,NO)
+        NO7 = NOMIPE(7,NO)
+        NO8 = NOMIPE(8,NO)
+        COOR(1,NO+NBNO) = -(COOR(1,NO1) + COOR(1,NO2) +
+     &                      COOR(1,NO3) + COOR(1,NO4))/4.D0+
+     &                     (COOR(1,NO5) + COOR(1,NO6)+
+     &                      COOR(1,NO7) + COOR(1,NO8))/2.D0
 
-        COOR(2,NO+NBNO) = (COOR(2,NO1) + COOR(2,NO2) +
-     &                     COOR(2,NO3) + COOR(2,NO4))/4
+        COOR(2,NO+NBNO) = -(COOR(2,NO1) + COOR(2,NO2) +
+     &                      COOR(2,NO3) + COOR(2,NO4))/4.D0+
+     &                     (COOR(2,NO5) + COOR(2,NO6)+
+     &                      COOR(2,NO7) + COOR(2,NO8))/2.D0
 
-        COOR(3,NO+NBNO) = (COOR(3,NO1) + COOR(3,NO2) +
-     &                     COOR(3,NO3) + COOR(3,NO4))/4
+        COOR(3,NO+NBNO) = -(COOR(3,NO1) + COOR(3,NO2) +
+     &                      COOR(3,NO3) + COOR(3,NO4))/4.D0+
+     &                     (COOR(3,NO5) + COOR(3,NO6)+
+     &                      COOR(3,NO7) + COOR(3,NO8))/2.D0
  20   CONTINUE
 
 C - CALCUL DES COORDONNEES DES NOUVEAUX NOEUDS CENTRAUX A LA MAILLE
@@ -132,21 +143,51 @@ C - CALCUL DES COORDONNEES DES NOUVEAUX NOEUDS CENTRAUX A LA MAILLE
           NO6 = ZI(JNOMA-1+6)
           NO7 = ZI(JNOMA-1+7)
           NO8 = ZI(JNOMA-1+8)
+          NO9 = ZI(JNOMA-1+9)
+          NO10 = ZI(JNOMA-1+10)
+          NO11 = ZI(JNOMA-1+11)
+          NO12 = ZI(JNOMA-1+12)
+          NO13 = ZI(JNOMA-1+13)
+          NO14 = ZI(JNOMA-1+14)
+          NO15 = ZI(JNOMA-1+15)
+          NO16 = ZI(JNOMA-1+16)
+          NO17 = ZI(JNOMA-1+17)
+          NO18 = ZI(JNOMA-1+18)
+          NO19 = ZI(JNOMA-1+19)
+          NO20 = ZI(JNOMA-1+20)
 
-          COOR(1,NBNOMI+NBNO+IHEX27) = (COOR(1,NO1) + COOR(1,NO2) +
-     &                       COOR(1,NO3) + COOR(1,NO4) +
-     &                       COOR(1,NO5) + COOR(1,NO6) +
-     &                       COOR(1,NO7) + COOR(1,NO8))/8
+          COOR(1,NBNOMI+NBNO+IHEX27) = (-COOR(1,NO1) - COOR(1,NO2) -
+     &                       COOR(1,NO3) - COOR(1,NO4) -
+     &                       COOR(1,NO5) - COOR(1,NO6) -
+     &                       COOR(1,NO7) - COOR(1,NO8) +
+     &                       COOR(1,NO9) + COOR(1,NO10) +
+     &                       COOR(1,NO11) + COOR(1,NO12) +
+     &                       COOR(1,NO13) + COOR(1,NO14) +
+     &                       COOR(1,NO15) + COOR(1,NO16) +
+     &                       COOR(1,NO17) + COOR(1,NO18) +
+     &                       COOR(1,NO19) + COOR(1,NO20))/4.D0
 
-          COOR(2,NBNOMI+NBNO+IHEX27) = (COOR(2,NO1) + COOR(2,NO2) +
-     &                       COOR(2,NO3) + COOR(2,NO4) +
-     &                       COOR(2,NO5) + COOR(2,NO6) +
-     &                       COOR(2,NO7) + COOR(2,NO8))/8
+          COOR(2,NBNOMI+NBNO+IHEX27) = (-COOR(2,NO1) - COOR(2,NO2) -
+     &                       COOR(2,NO3) - COOR(2,NO4) -
+     &                       COOR(2,NO5) - COOR(2,NO6) -
+     &                       COOR(2,NO7) - COOR(2,NO8) +
+     &                       COOR(2,NO9) + COOR(2,NO10) +
+     &                       COOR(2,NO11) + COOR(2,NO12) +
+     &                       COOR(2,NO13) + COOR(2,NO14) +
+     &                       COOR(2,NO15) + COOR(2,NO16) +
+     &                       COOR(2,NO17) + COOR(2,NO18) +
+     &                       COOR(2,NO19) + COOR(2,NO20))/4.D0
 
-          COOR(3,NBNOMI+NBNO+IHEX27) = (COOR(3,NO1) + COOR(3,NO2) +
-     &                       COOR(3,NO3) + COOR(3,NO4) +
-     &                       COOR(3,NO5) + COOR(3,NO6) +
-     &                       COOR(3,NO7) + COOR(3,NO8))/8
+          COOR(3,NBNOMI+NBNO+IHEX27) = (-COOR(3,NO1) - COOR(3,NO2) -
+     &                       COOR(3,NO3) - COOR(3,NO4) -
+     &                       COOR(3,NO5) - COOR(3,NO6) -
+     &                       COOR(3,NO7) - COOR(3,NO8) +
+     &                       COOR(3,NO9) + COOR(3,NO10) +
+     &                       COOR(3,NO11) + COOR(3,NO12) +
+     &                       COOR(3,NO13) + COOR(3,NO14) +
+     &                       COOR(3,NO15) + COOR(3,NO16) +
+     &                       COOR(3,NO17) + COOR(3,NO18) +
+     &                       COOR(3,NO19) + COOR(3,NO20))/4.D0
         ENDIF
  30   CONTINUE
 

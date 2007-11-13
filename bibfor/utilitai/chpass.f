@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*16 LIMOCL(5),TYMOCL(5),TYPEM
       CHARACTER*19 CHS1,CHS2,NUTROU,LICHS(2),CESMOD,OPTION,CESRAZ
       CHARACTER*19 CHS3,LIGREL,CHAMN2
-      CHARACTER*24 CNOM
+      CHARACTER*24 CNOM,VALK(3)
 
       LOGICAL LCOC
 C     -----------------------------------------------------------------
@@ -207,8 +207,13 @@ C       ---------------------------------------------------------------
 C       4.1 VERIFICATION DE LA GRANDEUR ASSOCIEE AU CHAMP
 C       ------------------------------------------------------
         CALL DISMOI('F','NOM_GD',CHAMP,'CHAMP',IB,NOMGD2,IB)
-        IF ((.NOT.CHGCMP) .AND. (NOMGD2.NE.NOMGD)) CALL U2MESK('F',
-     &      'UTILITAI_32',1,CHAMP)
+        IF ((.NOT.CHGCMP) .AND. (NOMGD2.NE.NOMGD)) THEN
+          VALK(1)=CHAMP
+          VALK(2)=NOMGD
+          VALK(3)=NOMGD2
+          CALL U2MESK('F', 'UTILITAI_32',3,VALK)
+        ENDIF
+
 
         CALL DISMOI('F','TYPE_SCA',NOMGD2,'GRANDEUR',IB,TSCA,IB)
         CALL GETVC8('ASSE','COEF_C',IOCC,1,1,COEFC,IRET)

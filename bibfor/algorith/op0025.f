@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C               12   345678   9012345678901234
 
 C     DETERMINATION DU NOM DE LA SD INFO_CHARGE
 C             12345678    90123    45678901234
-      NOOBJ ='12345678'//'.1234'//'.EXCIT01234'
+      NOOBJ ='12345678'//'.1234'//'.EXCIT.INFC'
       CALL GNOMSD(NOOBJ,10,13)
       LISCHA = NOOBJ(1:19)
 C====

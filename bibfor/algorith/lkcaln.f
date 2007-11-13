@@ -1,10 +1,11 @@
-      SUBROUTINE LKCALN(S, B, VECN)
+      SUBROUTINE LKCALN(S, B, VECN,RETCOM)
 C
       IMPLICIT      NONE
+      INTEGER       RETCOM
       REAL*8        B, S(6), VECN(6),DDOT
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,13 +32,14 @@ C --- : B      : PARAMETRE DU CALCUL DE LA NORMALE ----------------
 C OUT : VECN   : N = (B*S/SII-I)/SQRT(B**2+3) ---------------------
 C =================================================================
       INTEGER I, NDT, NDI
-      REAL*8  SII, RACINE, UN, TROIS, KRON(6), ZERO
+      REAL*8  SII, RACINE, UN, TROIS, KRON(6), ZERO, LGLEPS
 C =================================================================
 C --- INITIALISATION DE PARAMETRE ---------------------------------
 C =================================================================
       PARAMETER       ( UN      =   1.0D0  )
       PARAMETER       ( TROIS   =   3.0D0  )
       PARAMETER       ( ZERO    =   0.0D0  )
+      PARAMETER       ( LGLEPS  =  1.0D-8  )
 C =================================================================
       COMMON /TDIM/   NDT , NDI
 C =================================================================
@@ -46,6 +48,11 @@ C --- INITIALISATION ----------------------------------------------
 C =================================================================
       CALL     LCPRSC(S, S, SII)
       SII    = SQRT  (SII)
+      IF (SII .LT. LGLEPS) THEN
+        CALL U2MESS('A','COMPOR1_31')
+       RETCOM = 1
+       GOTO 1000
+      ENDIF
 C =================================================================
 C --- CALCUL DE N -------------------------------------------------
 C =================================================================
@@ -54,4 +61,5 @@ C =================================================================
          VECN(I) = (B*S(I)/SII-KRON(I))/RACINE
  10   CONTINUE
 C =================================================================
+1000  CONTINUE
       END

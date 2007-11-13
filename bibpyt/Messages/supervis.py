@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF supervis Messages  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,11 +101,6 @@ cata_msg={
 
 21: _("""
   Erreur(s) fatale(s) lors de la lecture des catalogues
-"""),
-
-22: _("""
-L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 caractères.
-Le nom de code est donc "%(k1)s".
 """),
 
 23: _("""
@@ -238,14 +233,6 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
    %(k2)s
 """),
 
-58: _("""
- valeur initiale du temps CPU maximum =   %(i1)d secondes 
-"""),
-
-59: _("""
- valeur du temps CPU maximum passé aux commandes =   %(i1)d secondes 
-"""),
-
 60: _("""
  la procédure a un numéro non appelable dans cette version.
  le numero errone est  %(i1)d 
@@ -268,7 +255,9 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 64: _("""
-  Réserve CPU prévue = %(i1)d secondes
+  Valeur initiale du temps CPU maximum =   %(i1)d secondes 
+  Valeur du temps CPU maximum passé aux commandes =   %(i2)d secondes 
+  Réserve CPU prévue = %(i3)d secondes
 """),
 
 65: _("""

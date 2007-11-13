@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF Utmess Utilitai  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,6 +34,8 @@ except:
 
 def _(s):
    return s
+
+MAXLENGTH = 132
 
 # -----------------------------------------------------------------------------
 contacter_assistance = """
@@ -188,7 +190,7 @@ Le message %s n'a pas pu etre formaté correctement.
             'context_info'  : '',
          }
       # limite la longueur des ligness
-      dictmess['corps_message'] = cut_long_lines(dictmess['corps_message'], 80)
+      dictmess['corps_message'] = cut_long_lines(dictmess['corps_message'], MAXLENGTH)
       return dictmess
 
 # -----------------------------------------------------------------------------

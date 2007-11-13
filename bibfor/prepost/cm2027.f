@@ -1,7 +1,7 @@
       SUBROUTINE CM2027 ( MAIN, MAOUT, NBMA, LIMA, PREFIX, NDINIT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/09/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 13/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,7 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBTYMA = 26, NFMAX = 24 )
       INTEGER JNOMIM, JNOMIP, JMILIE, JDIM, NBNO, MXAR, IRET, NBMAT
       INTEGER NBNOMI, NBNOHE, NBTOT, NO, JCOOR, NBNOMX, NBMATO
-      INTEGER      DEFFAC(4,0:6,NBTYMA),JTYPMA,JREFE,
+      INTEGER      DEFFAC(8,0:6,NBTYMA),JTYPMA,JREFE,
      &             REFTYP(NBTYMA), NBREF(NBTYMA), IMPMAI(NBTYMA)
       CHARACTER*8  NOMND, KBID, NOMAST(NBTYMA)
       CHARACTER*19 COORDO
@@ -121,14 +121,16 @@ C       HEXA8
 C       HEXA20  HEXA27
 
       DATA DEFFAC /
-     &  28*0, 28*0,  28*0,   28*0,  28*0,   28*0,
-     &  28*0, 28*0,  28*0,   28*0,  28*0,
-     &  28*0, 28*0,  1,3*0,1,2,3,4,20*0,   28*0,  28*0,   28*0,
-     &  28*0,  28*0,
-     &  28*0,  28*0,
-     &  28*0,  28*0,
-     &  28*0,
-     &  6,3*0,1,2,3,4,1,5,6,2,2,6,7,3,3,7,8,4,4,8,5,1,5,8,7,6, 28*0   /
+     &  56*0, 56*0,  56*0,   56*0,  56*0,   56*0,
+     &  56*0, 56*0,  56*0,   56*0,  56*0,
+     &  56*0, 56*0,  1,7*0,1,2,3,4,5,6,7,8,40*0,   56*0,  56*0,   56*0,
+     &  56*0,  56*0,
+     &  56*0,  56*0,
+     &  56*0,  56*0,
+     &  56*0,
+     &  6,7*0,1,2,3,4,9,10,11,12,     1,5,6,2,13,17,14,9,    
+     &        2,6,7,3,14,18,15,10,    3,7,8,4,15,19,16,11,
+     &        4,8,5,1,16,20,13,12,    5,8,7,6,20,19,18,17,    56*0   /
 
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -159,7 +161,7 @@ C --- LE NOEUD CENTRAL EST CREE PLUS TARD
       NOMIPE = '&&CM2027.NOMIPE'
       CALL WKVECT(NOMIMA,'V V I',6*NBMA,     JNOMIM)
       CALL WKVECT(MILIEU,'V V I',4*NFMAX*NBNO,   JMILIE)
-      CALL WKVECT(NOMIPE,'V V I',4*6*NBMA,   JNOMIP)
+      CALL WKVECT(NOMIPE,'V V I',8*6*NBMA,   JNOMIP)
       CALL JEVEUO(MAIN//'.TYPMAIL','L',JTYPMA)
 
       CALL CM27NA(MAIN,NBMA,NBNO,LIMA,ZI(JTYPMA),

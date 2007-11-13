@@ -1,21 +1,21 @@
-#@ MODIF algorith16 Messages  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF algorith16 Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -349,29 +349,6 @@ cata_msg = {
   - Changer la taille d'incrément.
 """),
 
-61 : _("""
- VISCOCHABOCHE : erreur
-  - Non convergence à l'itération maxi : %(i1)d
-  - Convergence régulière mais trop lente,
-  - Erreur > %(r1)f
-  - Diminuer la taille d'incrément
-
-"""),
-
-62 : _("""
- VISCOCHABOCHE: ERREUR)
-  - Non convergence à l'itération maxi : %(i1)d
-  - Convergence régulière
-  - Erreur > %(r1)f
-  - Diminuer la taille d'incrément
-"""),
-
-63 : _("""
- VISCOCHABOCHE: ERREUR)
-  - Non convergence à l'itération maxi : %(i1)d
-  - Erreur > %(r1)f
-  - Diminuer la taille d'incrément
-"""),
 
 64 : _("""
     NADAI_B, erreur d'intégration
@@ -553,26 +530,28 @@ cata_msg = {
 95 : _("""
   Van_Genuchten non autorisé pour ce modèle de couplage
  """),
+
 96: _("""
  le solveur linéaire MUMPS en mode parallèle distribué 'DISTSD' requiert un concept
  produit de type SD_FETI en entrée du mot-clé PARTITION. Voir les commandes
   DEFI_PART_FETI et DEFI_PART_OPS.
  """),
- 97: _("""
+
+97: _("""
  Attention, vous utilisez le solveur linéaire MUMPS en mode parallèle distribué,
  mais vous n'avez alloué qu'un processeur MPI. Vous aurez bien les résultats
  attendus mais sans doute pas les performances. Il s'agit sans doute d'un run
  de test !
  """),
- 98: _("""
- Solveur linéaire MUMPS distribué, routine CRESOL.
- La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines!  
-"""),
- 99: _("""
+
+
+
+
+99: _("""
  Valeur du parametre SOLVEUR/DIST_PROC0 incorrecte, routine CRESOL.
  Si le solveur est MUMPS distribue DISTSD, cette valeur doit laisser au moins
  un SD par processeur restant (hors proc 0) !
  Si le solveur est MUMPS distribue DISTMC, cette valeur doit laisser au moins
- une maille physique du modele par processeur restant (hors proc 0)!  
+ une maille physique du modele par processeur restant (hors proc 0)!
 """),
 }

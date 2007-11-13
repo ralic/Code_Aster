@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/11/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -925,7 +925,7 @@ C   --------------------------------------------------------
        ENDIF
        CALL GETFAC('EXCIT',NEXCI)
        IF(NEXCI.GT.0)THEN
-         NOOBJ ='12345678'//'.1234'//'.EXCIT01234'
+         NOOBJ ='12345678'//'.1234'//'.EXCIT.INFC'
          CALL GNOMSD(NOOBJ,10,13)
          LISCH2 = NOOBJ(1:19)
          IAUX = 1

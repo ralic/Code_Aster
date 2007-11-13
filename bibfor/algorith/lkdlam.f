@@ -1,15 +1,15 @@
       SUBROUTINE LKDLAM (VAL,VARV,NBMAT, MATER,DEPS,DEPSV,DGAMV,
-     &                   IM,SM,VINM, DE,DLAM)
+     &                   IM,SM,VINM, DE,DLAM,RETCOM)
 C
       IMPLICIT   NONE
-      INTEGER    VAL, VARV,NBMAT
+      INTEGER    VAL, VARV,NBMAT,RETCOM
       REAL*8     SM(6),IM,DEPS(6),DEPSV(6), MATER(NBMAT,2)
       REAL*8     DGAMV
       REAL*8     VINM(7),DLAM, DE(6,6)
       CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,8 +74,8 @@ C =================================================================
 C =================================================================
 C --- RECUPERATION DE DFd/DSIGMA -----------------------------------
 C =================================================================
-      CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS)
-      CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS)
+      CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS,RETCOM)
+      CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS,RETCOM)
  
       CALL LKVARP(VARV,DGAMV,VINM, NBMAT, MATER, PARAEP)
       CALL LKVACP(NBMAT, MATER, PARAEP, VARPL)
@@ -87,7 +87,7 @@ C --- RECUPERATION DE G -------------------------------------------
 C =================================================================
       BPRIMP = LKBPRI (VAL,VINM,NBMAT,MATER,PARAEP,IM,SM)
 
-      CALL LKCALN(SM, BPRIMP, VECNP)   
+      CALL LKCALN(SM, BPRIMP, VECNP, RETCOM)   
 
       CALL LKCALG(DFDSP,VECNP,GP,DEVGII)
 

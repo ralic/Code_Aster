@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 12/11/2007   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,6 @@ C     PARAMETRES "MODE_FLAMB"
      &              KVEC, KVALI, KVALR, KVALK,
      &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT),
      &              MATE, CARA, MODELE
-      CHARACTER*80  TYPPO
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
       DATA  KVEC  / '&&OP0037.VAL_PROPRE'/
@@ -230,11 +229,8 @@ C     --- COMPATIBILITE DES MODES ---
       CALL VPCREA(0,MODEOU,MASSE,AMOR,RAIDE,NUME,IBID)
 C
 C
-      TITRMO = MODEIN//'           .TITR'
-      CALL JEVEUO(TITRMO,'L',LTITR)
-      TYPPO = ZK80(LTITR-1+2)
 C     --- POUR LES MODES DE FLAMBAGE PAS DE MASSE UNITAIRE ---
-      IF (TYPPO(1:10).EQ.'MODE_FLAMB') THEN
+      IF (TYPCON(1:10).EQ.'MODE_FLAMB') THEN
          XMASTR=1.D0
          LMASIN=.FALSE.
          GOTO 100

@@ -13,7 +13,7 @@ C
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,6 +67,7 @@ C TOLE CRP_20
 C TOLE CRP_21
 C=======================================================================
       INTEGER          NBMAT, NDT, NDIM, NDI,NR,NVI,VAL,VARV,I,K,MATR
+      INTEGER          IRET
       INTEGER          DUM, IISNAN, INDAL
       REAL*8           MUN, UN, ZERO, DEUX, TROIS,  BIDON
 C      REAL*8           LGLEPS
@@ -294,8 +295,12 @@ C =================================================================
                         
 C -------------CALCUL DE d GAMMAV -----------CRITERE VISQUEUX------
                CALL LKDGDE(VAL,VINTR,DT,IEL,SEL,I1ML,SML,VINM,
-     &                     NBMAT,MATERD,DEPSV,DGAMV)
-
+     &                     NBMAT,MATERD,DEPSV,DGAMV,IRET)
+               IF (IRET .EQ. 1 ) THEN
+                 RETCOM = 1
+                 GOTO 1000
+               ENDIF
+                 
                DVML1 = TRACE(NDI,DEPSV)
                CALL LCDEVI(DEPSV,DEVML1)
                
@@ -397,7 +402,11 @@ C =================================================================
 
 C ------- CALCUL DE d GAMMAP -------------CRITERE ELASTOPLASTIQUE--
             CALL LKGAMP(VAL,VARV,I1ML,SML,VINM,NBMAT,
-     &           MATERD,DE,DEPML,DEPSV,DGAMV,DEPSP,DGAMP)
+     &           MATERD,DE,DEPML,DEPSV,DGAMV,DEPSP,DGAMP,IRET)
+               IF (IRET .EQ. 1 ) THEN
+                 RETCOM = 1
+                 GOTO 1000
+               ENDIF
 
              
 C -------- DELTA XIP 
@@ -489,7 +498,7 @@ C          DUM=0
 C           CALL LKCRIP(DUM,DGAMV, IPL,SPL,VINP,NBMAT,MATERD,UCRIPL,
 C     &                  SEUIPL)
 C           IF (UCRIPL  .LT. ZERO) THEN
-C       CALL U2MESS('F','COMPOR1_17')
+C       CALL U2MESS('A','COMPOR1_28')
 C           write (6,*) 'COND 4 UCRIPL ',UCRIPL
 C           RETCOM = 1
 C           GOTO 1000
@@ -555,8 +564,12 @@ C =================================================================
             VAL  = 1
           ENDIF
           CALL LKOPTG(MATR,VAL,VARV,DGAMV,VINTR,DT,NBMAT, 
-     &                MATERD,I1ML, SML,VINM,DE,DEPSV,DSIDE)
+     &                MATERD,I1ML, SML,VINM,DE,DEPSV,DSIDE,IRET)
       
+               IF (IRET .EQ. 1 ) THEN
+                 RETCOM = 1
+                 GOTO 1000
+               ENDIF
        ENDIF
   
       ENDIF

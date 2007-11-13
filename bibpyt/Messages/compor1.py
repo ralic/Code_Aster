@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+#@ MODIF compor1 Messages  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,4 +167,18 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
  Le calcul de la distance au critère n'est pas fait.
 """),
 
+29: _("""
+ lkdhds :: division par zéro - entrée rapide en plasticité avec un déviateur nul. 
+ réduire le pas de temps.
+"""),
+
+30: _("""
+ lkds2h :: division par zéro - entrée rapide en plasticité avec un déviateur nul. 
+ réduire le pas de temps.
+"""),
+
+31: _("""
+ lkcaln :: division par zéro - entrée rapide en plasticité avec un déviateur nul. 
+ réduire le pas de temps.
+"""),
 }

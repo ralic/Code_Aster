@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF assembla Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,9 +90,9 @@ cata_msg = {
  action : E/L/S
 """),
 
-17 : _("""
- message vide
-"""),
+
+
+
 
 18 : _("""
  incohérence des MATR_ELEM

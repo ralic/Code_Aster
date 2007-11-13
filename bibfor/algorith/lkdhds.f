@@ -1,11 +1,11 @@
-      SUBROUTINE LKDHDS(NBMAT, MATER,INVAR,S,DHDS)
+      SUBROUTINE LKDHDS(NBMAT, MATER,INVAR,S,DHDS,RETCOM)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT
+      INTEGER       NBMAT,RETCOM
       REAL*8        MATER(NBMAT,2),INVAR,S(6), DHDS(6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,6 +61,11 @@ C --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 C =================================================================
       CALL     LCPRSC(S, S, SII)
       SII    = SQRT  (SII)
+      IF (SII .LT. LGLEPS) THEN
+       CALL U2MESS('A','COMPOR1_29')
+       RETCOM = 1
+       GOTO 1000
+      ENDIF
 C =================================================================
 C --- CALCUL DE h(THETA) ------------------------------------------
 C =================================================================
@@ -84,4 +89,5 @@ C =================================================================
          DHDS(II) = FACT1*S(II)+FACT2*DEVT(II)
  10   CONTINUE
 C =================================================================
+1000  CONTINUE
       END

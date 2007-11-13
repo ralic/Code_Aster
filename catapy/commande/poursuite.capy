@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,13 +67,16 @@ POURSUITE=MACRO(nom="POURSUITE",op=ops.build_poursuite,repetable='n',
            PARTITION       =SIMP(statut='f',typ='R' ),
            DYNAMIQUE       =SIMP(statut='f',typ='I'),
          ),
-         RESERVE_CPU     =FACT(fr="reserve de temps pour terminer une execution",statut='f',max=1,
+ 
+         RESERVE_CPU     =FACT(fr="reserve de temps pour terminer une execution",statut='d',max=1,
            regles=(EXCLUS('VALE','POURCENTAGE'),),
            VALE            =SIMP(statut='f',typ='I',val_min=0),
+#                            valeur par défaut fixée à 10. dans le FORTRAN si CODE présent
            POURCENTAGE     =SIMP(statut='f',typ='R',val_min=0.,val_max=1.0),
-#          valeur en pourcentage du temps maximum bornée à 180 secondes
-           BORNE           =SIMP(statut='f',typ='I',val_min=0,defaut=180)
-         ),
+#                           valeur par défaut fixée à 10% dans le FORTRAN
+           BORNE           =SIMP(statut='f',typ='I',val_min=0,defaut=900) ),
+#          valeur en pourcentage du temps maximum bornée à 900 secondes
+
          CODE            =FACT("définition d'un nom pour l'ensemble d'une étude",
                                statut='f',min=1,max=1,
            NOM             =SIMP(statut='o',typ='TXM'),

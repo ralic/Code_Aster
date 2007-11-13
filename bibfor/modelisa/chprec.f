@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,7 +158,7 @@ C     --- SENSIBILITE : NOMBRE DE PASSAGES ---
 C
       IAUX = 1
       JAUX = 1
-      CALL PSRESE ( ' ', IBID, IAUX, RESUCO, JAUX,
+      CALL PSRESE ( ' ', 0, IAUX, RESUCO, JAUX,
      &              NBPASS, NORECG, IRET )
       CALL JEVEUO ( NORECG, 'L', ADRECG )
 C

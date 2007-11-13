@@ -1,6 +1,6 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,12 +56,16 @@ C ----------------------------------------------------------------------
      &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C     ------------------------------------------------------------------
-      CHARACTER*75     CMESS
       CHARACTER*1      GENRI,TYPEI
       INTEGER          COL(1),JCOL,ITAB(1)
       INTEGER          IADMI,IADDI(2),LTYPI,LONOI,ISTA1,ISTA2
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
+C
+C --- ON MODIFIE LA FACON DE PARCOURIR LA SEGMENTATION MEMOIRE POUR 
+C --- EVITER DE LIBERER DE FACON INTEMPESTIVE DES SEGMENTS DE VALEURS
+C --- QUI VIENNENT D'ETRE ALLOUES
+C
       ITROLD = ITRECH
       IF (ITCOL .EQ. 2) THEN
         ITRECH = 4
@@ -83,8 +87,7 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
             CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
      &                   COL , JCOL , IADML, IADYN)
           ELSE
-            CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_18',1,RNOM(JRNOM(IC)+ID))
           ENDIF
         ELSE
           CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT' ,
@@ -109,6 +112,7 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
       ENDIF
       IBACOL = IADMI
       CALL JJECRS (IADMI, IC, ID, 0, CEL, IMARQ(JMARQ(IC)+2*ID-1) )
+ 100  CONTINUE
 C
       DO 20 K = 2,IDNUM
 C     ----------- OBJETS ATTRIBUTS DE COLLECTION
@@ -135,8 +139,7 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE
                 CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT',
      &                       COL , JCOL , IADML ,IADYN)
               ELSE
-                CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-                CALL U2MESK('F','JEVEUX_01',1,CMESS)
+                CALL U2MESK('F','JEVEUX_18',1,RNOM(JRNOM(IC)+IX))
               ENDIF
             ELSE
               CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT',
@@ -173,6 +176,5 @@ C
           CALL JJECRS (IADMI, IC, IX, 0, CEL, IMARQ(JMARQ(IC)+2*IX-1))
         ENDIF
       ENDIF
- 100  CONTINUE
 C FIN ------------------------------------------------------------------
       END

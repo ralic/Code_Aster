@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C     ------------------------------------------------------------
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
         CALL TECACH('ONN','PMATUUC',5,IDRESU,IRET)
       ELSE
-        CALL U2MESS('F','ASSEMBLA_17')
+        CALL ASSERT(.FALSE.)
       END IF
       NBVAL= IDRESU(2)
 C
@@ -131,7 +131,7 @@ C     ------------------------------------------
      &                NOMPAR,VALPAR,1,NOMRES,VALRES,CODRET, BL2 )
         ENDIF
       ELSE
-        CALL U2MESS('F','ASSEMBLA_17')
+        CALL ASSERT(.FALSE.)
       END IF
 C
 C

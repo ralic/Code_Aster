@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,6 +85,11 @@ cata_msg = {
 
 17 : _("""
  Chainage cassé après l'objet :  %(k1)s
+"""),
+
+18 : _("""
+ Le segment de valeurs associé à l'objet : %(k1)s, n'existe pas en mémoire et
+ l'objet ne possède pas d'image disque. 
 """),
 
 19 : _("""
@@ -286,6 +291,10 @@ cata_msg = {
  Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer 
  une zone mémoire de longueur %(i1)d (entiers).
 
+"""),
+
+61 : _("""
+ Impossible de créer le fichier HDF %(k1)s, le code retour vaut %(i1)d . 
 """),
 
 62 : _("""
