@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa9 Messages  DATE 19/11/2007   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -509,4 +509,7 @@ Conseil :
  ... 
 """),
 
+94: _("""
+     On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
+"""),
 }

@@ -1,0 +1,594 @@
+# MODIF  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+# TITRE ETUDE:  ESSAI DE CISAILLEMENT CYCLIQUE DRAINE (MECA PUR)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#                     AVEC LA LOI DE HUJEUX
+# PRESSION DE CONSOLIDATION P0 = 100KPA
+
+
+DEBUT(CODE=_F(NOM='SSNV205A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+
+# modules mecaniques [kPa]
+K=516.2E6
+G=238.2E6
+# =>
+YOUNG = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+P0 = - 5.E4
+
+MATE=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
+                   HUJEUX=_F(N=0.4,
+                             BETA=24,
+                             B=0.2,
+                             D=2.5,
+                             PHI=33,
+                             ANGDIL=33,
+                             PCO=-1.E6,
+                             PREF=-1.E6,
+                             ACYC=0.0001,
+                             AMON=0.008,
+                             CCYC=0.2,
+                             CMON=0.2,
+                             RD_ELA=0.005,
+                             RI_ELA=0.001,
+                             RHYS=0.05,
+                             RMOB=0.9,
+                             XM=1,
+                             RD_CYC=0.005,
+                             RI_CYC=0.001,
+                             DILA  =1.,),);
+
+TEMPS1=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=(_F(JUSQU_A=10,
+                                     NOMBRE=20,),
+                                  _F(JUSQU_A=30,
+                                     NOMBRE=40,),
+                                  _F (JUSQU_A=50,
+                                     NOMBRE=40,),),);
+
+################################################################
+#ESSAI DE CISAILLEMENT CYCLIQUE A 0.2% DE DEFORMATIONS IMPOSEES#
+################################################################
+COEF1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
+                          10,-0.002,
+                          30,0.002,
+                          50,-0.002,),PROL_DROITE='CONSTANT',);
+
+COEF2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,P0,
+                          50,P0,),PROL_DROITE='CONSTANT',);
+
+COEF3=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
+                          50,0.,
+                          ),PROL_DROITE='CONSTANT',);
+                          
+
+U1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
+                              ITER_INTE_PAS = -10),
+                  MATER=MATE,
+                  INCREMENT=_F(LIST_INST=TEMPS1,
+                               NUME_INST_INIT=0,
+                               INST_FIN=50.,
+                               SUBD_METHODE='UNIFORME',
+                               SUBD_PAS=10,
+                               SUBD_NIVEAU=10,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+#                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
+                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                 ITER_GLOB_MAXI = 10),
+                  ARCHIVAGE=_F(LIST_INST=TEMPS1,),
+                  SIGM_IMPOSE=_F(SIXX=COEF2,
+                                 SIYY=COEF2,
+                                 SIZZ=COEF2,),
+                  EPSI_IMPOSE=_F(EPXY=COEF1,),
+                  SIGM_INIT=_F(SIXX=P0,
+                               SIYY=P0,
+                               SIZZ=P0,),
+                  EPSI_INIT=_F(EPXX=0,
+                               EPYY=0,
+                               EPZZ=0,
+                               EPXY=0,
+                               EPXZ=0,
+                               EPYZ=0,),);
+
+IMPR_TABLE(TABLE=U1,);
+
+#################################################################
+#ESSAI DE CISAILLEMENT CYCLIQUE A 0.02% DE DEFORMATIONS IMPOSEES#
+#################################################################
+COEF4=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
+                          10,-0.0002,
+                          30,0.0002,
+                          50,-0.0002,),PROL_DROITE='CONSTANT',);
+
+U2=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
+                              ITER_INTE_PAS = -10),
+                  MATER=MATE,
+                  INCREMENT=_F(LIST_INST=TEMPS1,
+                               NUME_INST_INIT=0,
+                               INST_FIN=50.,
+                               SUBD_METHODE='UNIFORME',
+                               SUBD_PAS=10,
+                               SUBD_NIVEAU=10,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+#                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
+                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                 ITER_GLOB_MAXI = 10),
+                  ARCHIVAGE=_F(LIST_INST=TEMPS1,),
+                  SIGM_IMPOSE=_F(SIXX=COEF2,
+                                 SIYY=COEF2,
+                                 SIZZ=COEF2,),
+                  EPSI_IMPOSE=_F(EPXY=COEF4,),
+                  SIGM_INIT=_F(SIXX=P0,
+                               SIYY=P0,
+                               SIZZ=P0,),
+                  EPSI_INIT=_F(EPXX=0,
+                               EPYY=0,
+                               EPZZ=0,
+                               EPXY=0,
+                               EPXZ=0,
+                               EPYZ=0,),);
+
+IMPR_TABLE(TABLE=U2,);
+
+##################################################################
+#ESSAI DE CISAILLEMENT CYCLIQUE A 0.002% DE DEFORMATIONS IMPOSEES#
+##################################################################
+COEF5=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
+                          10,-2.E-5,
+                          30,2.E-5,
+                          50,-2.E-5,),PROL_DROITE='CONSTANT',);
+
+U3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
+                              ITER_INTE_PAS = -10),
+                  MATER=MATE,
+                  INCREMENT=_F(LIST_INST=TEMPS1,
+                               NUME_INST_INIT=0,
+                               INST_FIN=50.,
+                               SUBD_METHODE='UNIFORME',
+                               SUBD_PAS=10,
+                               SUBD_NIVEAU=10,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+#                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
+                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                 ITER_GLOB_MAXI = 10),
+                  ARCHIVAGE=_F(LIST_INST=TEMPS1,),
+                  SIGM_IMPOSE=_F(SIXX=COEF2,
+                                 SIYY=COEF2,
+                                 SIZZ=COEF2,),
+                  EPSI_IMPOSE=_F(EPXY=COEF5,),
+                  SIGM_INIT=_F(SIXX=P0,
+                               SIYY=P0,
+                               SIZZ=P0,),
+                  EPSI_INIT=_F(EPXX=0,
+                               EPYY=0,
+                               EPZZ=0,
+                               EPXY=0,
+                               EPXZ=0,
+                               EPYZ=0,),);
+
+IMPR_TABLE(TABLE=U3,);
+
+
+################################################################
+#ESSAI DE CISAILLEMENT CYCLIQUE A 0.2% DE DEFORMATIONS IMPOSEES#
+################################################################
+# TEST DE DE LA COMPOSANTE XY DES CONTRAINTES PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='SIXY',
+           VALE=-1.959051E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='SIXY',
+           VALE=-2.431954E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='SIXY',
+           VALE=1.479332E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='SIXY',
+           VALE=2.431003E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='SIXY',
+           VALE=-1.488693E4,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=40.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='SIXY',
+           VALE=-2.44262E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+# TEST DE LA DEFORMATION VOLUMIQUE PLASTIQUE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='V23',
+           VALE=-1.323375E-4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='V23',
+           VALE=-2.357258E-4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='V23',
+           VALE=-6.967887E-4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='V23',
+           VALE=-9.885073E-4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='V23',
+           VALE=-1.447546E-3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=40.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U1,
+           NOM_PARA='V23',
+           VALE=-1.734764E-3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+
+#################################################################
+#ESSAI DE CISAILLEMENT CYCLIQUE A 0.02% DE DEFORMATIONS IMPOSEES#
+#################################################################
+# TEST DE DE LA COMPOSANTE XY DES CONTRAINTES PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='SIXY',
+           VALE=-7.207E3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='SIXY',
+           VALE=-1.017E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='SIXY',
+           VALE=4.223E3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='SIXY',
+           VALE=1.015E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='SIXY',
+           VALE=-4.243E3,
+           PRECISION=0.02,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=40.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='SIXY',
+           VALE=-1.017E4,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+# TEST DE LA DEFORMATION VOLUMIQUE PLASTIQUE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='V23',
+           VALE=-3.593E-6,
+           PRECISION=0.03,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='V23',
+           VALE=-1.402E-5,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='V23',
+           VALE=-2.265E-5,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='V23',
+           VALE=-4.492E-5,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='V23',
+           VALE=-5.354E-5,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=40.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U2,
+           NOM_PARA='V23',
+           VALE=-7.578E-5,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+
+##################################################################
+#ESSAI DE CISAILLEMENT CYCLIQUE A 0.002% DE DEFORMATIONS IMPOSEES#
+##################################################################
+# TEST DE DE LA COMPOSANTE XY DES CONTRAINTES PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='SIXY',
+           VALE=-1.26E3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=5.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='SIXY',
+           VALE=-2.465E3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='SIXY',
+           VALE=5.403E1,
+           PRECISION=0.05,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='SIXY',
+           VALE=2.463E3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='SIXY',
+           VALE=-5.578E1,
+           PRECISION=0.07,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=40.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='SIXY',
+           VALE=-2.465E3,
+           PRECISION=0.01,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+# TEST DE LA DEFORMATION VOLUMIQUE PLASTIQUE PAR RAPPORT AUX REFERENCES LAWYER
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='V23',
+           VALE=-1.828E-9,
+           PRECISION=0.27,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=10.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='V23',
+           VALE=-1.828E-9,
+           PRECISION=0.27,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='V23',
+           VALE=-5.740E-9,
+           PRECISION=0.1,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='V23',
+           VALE=-5.740E-9,
+           PRECISION=0.1,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=40.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+TEST_TABLE(TABLE=U3,
+           NOM_PARA='V23',
+           VALE=-9.651E-9,
+           PRECISION=0.08,
+           CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=50.00,
+                     PRECISION=.00009,
+                     CRITERE='ABSOLU'));
+
+FIN();

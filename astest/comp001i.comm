@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST EN 3D VMIS_ISOT_PUIS, UTILISANT SIMU_POINT_MAT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1323,7 +1323,7 @@ TEST_RESU(RESU=_F(RESULTAT=PUIS2,
                   NOM_CMP='SIZZ',
                   POINT=1,MAILLE='VOLUME',
                   CRITERE='ABSOLU',
-                  PRECISION=1.E-7,
+                  PRECISION=1.E-6,
                   VALE=0,
                   REFERENCE='NON_REGRESSION'),);
 TEST_RESU(RESU=_F(RESULTAT=PUIS2,

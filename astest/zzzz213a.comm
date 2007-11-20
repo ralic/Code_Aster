@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # TITRE VALIDATION DES COMMANDES COMB_MATR_ASSE ET CALC_CHAR_CINE (REEL/SYMETRIQUE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@
 #              DY(E)=1.5       (SOLUTION)
 #--------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ZZZZ213A', NIV_PUB_WEB='INTERNET'), ERREUR=_F(ERREUR_F='EXCEPTION'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='ZZZZ213A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), ERREUR=_F(ERREUR_F='EXCEPTION'), PAR_LOT='NON', DEBUG=_F(SDVERI='OUI'))
 import re
 fmt_raison='-'*80+"""
 

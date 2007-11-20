@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION DE PRE_IDEAS POUR DATASET 82
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,12 +124,12 @@ IMPR_RESU(FORMAT='IDEAS', UNITE=uniideas, RESU=_F(MAILLAGE=MAYA,),);
 DEFI_FICHIER (ACTION='LIBERER',UNITE=uniideas)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/fic_ideas',
-             NB_CHIFFRE=6,
-             EPSILON=1.E-14,
-             VALE_K='036904db5ced1eb25b9fca4416630d3a',
+             NB_VALE=1012,
+             VALE=9.43225e+03,
+             VALE_K='6cd4022a57bc668ad5fa781af95fb054',
              EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4}',),
              REFERENCE='NON_REGRESSION',
-             VERSION='8.2.19',
+             VERSION='9.1.21',
              INFO=1)
 
 # FORMAT CASTEM

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -203,26 +203,6 @@ FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
                            CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE1',
                                             VECT_ASSE = V_ASSE))
 
-#TEST_RESU( GENE=( _F(  RESU_GENE = FGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       NUME_CMP_GENE = 1,
-#                       VALE = 1.00000E+00 ) ,
-#                  _F(  RESU_GENE = FGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       NUME_CMP_GENE = 2,
-#                       VALE = 0.50000E+00 ) ,
-#                  _F(  RESU_GENE = FGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       NUME_CMP_GENE = 3,
-#                       CRITERE = 'ABSOLU',
-#                       VALE = 0.00000E+00 ) ,
-#                  _F(  RESU_GENE = FGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       NUME_CMP_GENE = 4,
-#                       CRITERE = 'ABSOLU',
-#                       VALE = 0.00000E+00 ) ,
-#                  ) ) ;
-
 #---------------------------------------------------------------------
 # TEST IMPR_GENE
 DEFI_FICHIER( UNITE=38,
@@ -241,13 +221,12 @@ IMPR_GENE(UNITE=38,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
-#TEST_FICHIER(FICHIER='./REPE_OUT/FGEN.gene',
-#             NB_CHIFFRE=6,
-#             EPSILON=1.E-14,
-#             VALE_K='237245f111c3e077aa6a8f0ce7d0a36b',
-#             REFERENCE='NON_REGRESSION',
-#             VERSION='8.0.21',
-#             INFO=1)
+TEST_FICHIER(FICHIER='./REPE_OUT/FGEN.gene',
+             NB_VALE=24,
+             VALE=2.7175237e+01,
+             REFERENCE='NON_REGRESSION',
+             VERSION='9.1.21',
+             INFO=1)
 
 #---------------------------------------------------------------------
 #
@@ -259,36 +238,6 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
                                         NMAX_FREQ = 3),
                          TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE' )
 
-## IMPRESSION D'UN MODE_GENE
-#
-#TEST_RESU( GENE=( _F(  RESU_GENE = RESGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       NUME_ORDRE = 1,
-#                       PARA = 'FREQ',
-#                       VALE = 1.21812E-01 ) ,
-#                  _F(  RESU_GENE = RESGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       NUME_MODE = 1,
-#                       PARA = 'MASS_GENE',
-#                       VALE = 2.00000E+00 ) ,
-#                  _F(  RESU_GENE = RESGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       FREQ = 1.21812E-01,
-#                       PARA = 'RIGI_GENE',
-#                       VALE = 1.17157E+00 ) ,
-#                  _F(  RESU_GENE = RESGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       NUME_ORDRE = 1,
-#                       NOM_CHAM = 'DEPL',
-#                       NUME_CMP_GENE = 2,
-#                       VALE = 1.00000E+00 ) ,
-#                  _F(  RESU_GENE = RESGEN,
-#                       REFERENCE = 'NON_REGRESSION',
-#                       FREQ = 1.21812E-01,
-#                       NOM_CHAM = 'DEPL',
-#                       NUME_CMP_GENE = 4,
-#                       VALE = 1.00000E+00 ) ,
-#                  ) ) ;
 
 #---------------------------------------------------------------------
 # TEST IMPR_GENE
@@ -313,13 +262,12 @@ IMPR_GENE(UNITE=37,
           )
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
-#TEST_FICHIER(FICHIER='./REPE_OUT/RESU.gene',
-#             NB_CHIFFRE=6,
-#             EPSILON=1.E-14,
-#             VALE_K='4a96c092a776c4d9c6ca2fb940e886ad',
-#             REFERENCE='NON_REGRESSION',
-#             VERSION='8.0.21',
-#             INFO=1)
+TEST_FICHIER(FICHIER='./REPE_OUT/RESU.gene',
+             NB_VALE=104,
+             VALE=4.0198038e+02,
+             REFERENCE='NON_REGRESSION',
+             VERSION='9.1.21',
+             INFO=1)
 
 #---------------------------------------------------------------------
 #

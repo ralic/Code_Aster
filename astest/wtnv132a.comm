@@ -1,4 +1,4 @@
-# MODIF  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -261,35 +261,31 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                               INST_FIN=2000000.0,
                               SUBD_METHODE='UNIFORME',
                               SUBD_PAS=10,
-                              SUBD_PAS_MINI=1000.0),
+                              SUBD_NIVEAU=5,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=50));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=20));
 
 DEP[0]=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
                 RESULTAT=U[0],
                 NOM_CHAM='DEPL',
-                TYPE_MAXI='MAXI_ABS',
-                TYPE_RESU='VALE',
+                INST=2000000.0,
                 INFO=1,);
 
-SIG[0]=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+SIG[0]=CREA_CHAMP(INFO=1,
+                TYPE_CHAM='ELGA_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=U[0],
                 NOM_CHAM='SIEF_ELGA',
-                TYPE_MAXI='MAXI_ABS',
-                TYPE_RESU='VALE',
-                INFO=1,);
-
-
-VAR[0]=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                INST=2000000.0,);
+                
+VAR[0]=CREA_CHAMP(INFO=1,
+                TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U[0],
                 NOM_CHAM='VARI_ELGA',
-                TYPE_MAXI='MAXI_ABS',
-                TYPE_RESU='VALE',
-                INFO=2,);
+                INST=2000000.0,);
 
 U[0]=CALC_ELEM(reuse=U[0],
                MODELE     = MOD[0],
@@ -524,7 +520,7 @@ for n in range(1,nbcouche-1):
                               INST_FIN=t_fin,
                               SUBD_METHODE='UNIFORME',
                               SUBD_PAS=10,
-                              SUBD_PAS_MINI=1000.0),
+                              SUBD_NIVEAU=5),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=20));
@@ -535,25 +531,22 @@ for n in range(1,nbcouche-1):
                       OPERATION='EXTR',
                       RESULTAT=U[n],
                       NOM_CHAM='DEPL',
-                      TYPE_MAXI='MAXI_ABS',
-                      TYPE_RESU='VALE',
+                      INST = t_fin,
                       INFO=1,);
 
     SIG[n]=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                       OPERATION='EXTR',
                       RESULTAT=U[n],
                       NOM_CHAM='SIEF_ELGA',
-                      TYPE_MAXI='MAXI_ABS',
-                      TYPE_RESU='VALE',
+                      INST = t_fin,
                       INFO=1,);
 
-    VAR[n]=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                      OPERATION='EXTR',
-                      RESULTAT=U[n],
-                      NOM_CHAM='VARI_ELGA',
-                      TYPE_MAXI='MAXI_ABS',
-                      TYPE_RESU='VALE',
-                      INFO=1,);
+    VAR[n]=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                OPERATION='EXTR',
+                RESULTAT=U[n],
+                NOM_CHAM='VARI_ELGA',
+                INST = t_fin,
+                INFO=1,);
 
     U[n]=CALC_ELEM(reuse=U[n],
                    OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),

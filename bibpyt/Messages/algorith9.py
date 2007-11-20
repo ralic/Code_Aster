@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF algorith9 Messages  DATE 20/11/2007   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,6 +48,10 @@ cata_msg = {
 
 7 : _("""
  la charge  %(k1)s  n'est pas compatible avec FONC_MULT
+"""),
+8 : _("""
+ La SD evol_ther fournie comme état initial (via THER_NON_LINE / ETAT_INIT / EVOL_THER ) contient un champ HYDR_NOEU_ELGA mais pas de champ HYDR_ELNO_ELGA. 
+ L'état hydrique initial sera pris "vierge" (0.).
 """),
 
 9 : _("""

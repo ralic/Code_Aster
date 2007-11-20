@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 15/11/2007   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,8 @@ C
       INTEGER      NBGNO,NBGN1,NBGN2,II,JJ,IGEOMR,IADESC,IBID,IAREFE
       INTEGER      IATYMA,IACOO1,IACOO2,IAVALE,IRET,IRET1,IRET2
       INTEGER      LXLGUT,IAMAM1,IAMAM2,NBPAR
-      LOGICAL      MATCH
+      INTEGER      ILGMA,ILGM2,DECAL
+      LOGICAL      MATCH, ELIM
       REAL*8       PREC1,PREC2,PREC,DIST,X1,Y1,Z1,X2,Y2,Z2,R8B,ARMIN
       COMPLEX*16   C16B
 C
@@ -105,6 +106,7 @@ CCC RECUPERATION DES 2 GROUP_MA A COLLER
 CCC   ------------------------------------------------------------------
       CALL GETVTX('COLLAGE','GROUP_MA_1',1,1,1,CGPM1,IBID)
       CALL GETVTX('COLLAGE','GROUP_MA_2',1,1,1,CGPM2,IBID)
+      ELIM=.FALSE.
       CALL JEEXIN(JEXNOM(MA1//'.GROUPEMA',CGPM1),IRET1)
       IF(IRET1.EQ.0) THEN
         VALK(1) = CGPM1
@@ -210,7 +212,13 @@ CCC              4       DE SUPER MAILLES
 CCC              5       DU MAJORANT DE SUPER MAILLES
       ZI(IADIME-1+1)=ZI(IADIM1-1+1)+ZI(IADIM2-1+1)
       ZI(IADIME-1+2)=ZI(IADIM1-1+2)+ZI(IADIM2-1+2)
-      ZI(IADIME-1+3)=ZI(IADIM1-1+3)+ZI(IADIM2-1+3)-2*NBNGM
+      IF (ELIM) THEN
+CCC   SI ELIM : ON SUPPRIME LES MAILLES DES 2 GROUPES CGPM1 ET CGPM2
+        ZI(IADIME-1+3)=ZI(IADIM1-1+3)+ZI(IADIM2-1+3)-2*NBNGM
+      ELSE
+CCC   SINON, SEULES LES MAILLES DE CGPM1 SONT SUPPRIMEES
+        ZI(IADIME-1+3)=ZI(IADIM1-1+3)+ZI(IADIM2-1+3)-NBNGM
+      ENDIF
       ZI(IADIME-1+4)=ZI(IADIM1-1+4)+ZI(IADIM2-1+4)
       ZI(IADIME-1+5)=ZI(IADIM1-1+5)+ZI(IADIM2-1+5)
 C
@@ -240,7 +248,12 @@ CCC   ------------------------------------------------------------------
           NOMA='M'//KIND
           CALL JECROC(JEXNOM(MAG//'.NOMMAI',NOMA))
  21     CONTINUE
-        DO 22,I=1,NBM2-NBNGM
+        IF (ELIM) THEN
+          DECAL=NBNGM
+        ELSE
+          DECAL=0
+        ENDIF
+        DO 22,I=1,NBM2-DECAL
           CALL CODENT(NBM1-NBNGM+I,'G',KIND)
           NOMA='M'//KIND
           CALL JECROC(JEXNOM(MAG//'.NOMMAI',NOMA))
@@ -286,7 +299,7 @@ CCC   ------------------------------------------------------------------
  32     CONTINUE
         DO 33,I=1,NBNGM
            ZI(IAMAM1+ZI(IAGMA1+I-1)-1)=0
-           ZI(IAMAM2+ZI(IAGMA2+I-1)-1)=0
+           IF (ELIM) ZI(IAMAM2+ZI(IAGMA2+I-1)-1)=0
  33     CONTINUE
         II=0
         DO 34,I=1,NBM1
@@ -325,11 +338,16 @@ CCC   ------------------------------------------------------------------
             ZI(IACONX-1+II)=ZI(IACON1-1+II)
  411      CONTINUE
  41     CONTINUE
-        DO 42,I=1,NBM2-NBNGM
+        IF (ELIM) THEN
+          DECAL=NBNGM
+        ELSE
+          DECAL=0
+        ENDIF
+        DO 42,I=1,NBM2-DECAL
           I1= I+NBM1-NBNGM
-          CALL JEVEUO(JEXNUM(MA2//'.CONNEX',ZI(IAMAM2+NBNGM+I-1)),
+          CALL JEVEUO(JEXNUM(MA2//'.CONNEX',ZI(IAMAM2+DECAL+I-1)),
      &                                      'L',IACON2)
-          CALL JELIRA(JEXNUM(MA2//'.CONNEX',ZI(IAMAM2+NBNGM+I-1)),
+          CALL JELIRA(JEXNUM(MA2//'.CONNEX',ZI(IAMAM2+DECAL+I-1)),
      &                                      'LONMAX',N,K8B)
           CALL JEECRA(JEXNUM(MAG//'.CONNEX',I1),'LONMAX',N,K8B)
           CALL JEVEUO(JEXNUM(MAG//'.CONNEX',I1),'E',IACONX)
@@ -392,10 +410,15 @@ CCC   ------------------------------------------------------------------
           IATYPX=IATYMA-1+I
           ZI(IATYPX)=ZI(IATYP1)
  61     CONTINUE
-        DO 62,I=1,NBM2-NBNGM
+        IF (ELIM) THEN
+          DECAL=NBNGM
+        ELSE
+          DECAL=0
+        ENDIF
+        DO 62,I=1,NBM2-DECAL
           I1=I+NBM1-NBNGM
           CALL JEVEUO(MA2//'.TYPMAIL','L',IATYMA)
-          IATYP2=IATYMA-1+ZI(IAMAM2+NBNGM+I-1)
+          IATYP2=IATYMA-1+ZI(IAMAM2+DECAL+I-1)
           CALL JEVEUO(MAG//'.TYPMAIL','E',IATYMA)
           IATYPX=IATYMA-1+I1
           ZI(IATYPX)=ZI(IATYP2)
@@ -403,10 +426,14 @@ CCC   ------------------------------------------------------------------
       END IF
 CCC   ------------------------------------------------------------------
 CCC   --OBJET .GROUPEMA:
-CCC   ON RECREE TOUS LES GROUP_MA DANS LE NOUVEAU MAILLAGE, SAUF LES 2
-CCC   QUI ON SERVI A REALISER LE COLLAGE. IL FAUDRAIT VERIFIER
-CCC   (PAS FAIT) QU AUCUNE DES MAILLES SUPPRIMEES NE FIGURE DANS UN
-CCC   AUTRE GROUP_MA QUE CELUI QUI A SERVI AU COLLAGE, ET DONC SUPPRIME
+CCC   ON RECREE TOUS LES GROUP_MA DANS LE NOUVEAU MAILLAGE
+CCC - SAUF : CELUI QUI SERT A REALISER LE COLLAGE DANS LE MAILLAGE 1
+CCC - SAUF : SON EQUIVALENT DANS LE MAILLAGE 2 SI ELIM=.TRUE.
+CCC - SAUF : LES GROUPES QUI SE RETROUVENT VIDES (TOUTES MAILLES SUPPR.)
+CCC   DANS CE DERNIER CAS, LA COLLECTION EST INUTILEMENT SURDIMENSIONNEE
+CCC   A NBGMA (PAS GRAVE) EN TENANT COMPTE DES GMA DE COLLAGE SUPPRIMES
+CCC   MAIS PAS DES GMA VIDES NON CREES
+CCC - ICOMPT COMPTE LES GROUP_MA EFFECTIVEMENT CREES (PAR JECROC)
 CCC   ------------------------------------------------------------------
       CALL JEEXIN(MA1//'.GROUPEMA',IRET1)
       CALL JEEXIN(MA2//'.GROUPEMA',IRET2)
@@ -414,7 +441,12 @@ CCC   ------------------------------------------------------------------
       NBGM2 = 0
       IF (IRET1.GT.0) CALL JELIRA(MA1//'.GROUPEMA','NUTIOC',NBGM1,K8B)
       IF (IRET2.GT.0) CALL JELIRA(MA2//'.GROUPEMA','NUTIOC',NBGM2,K8B)
+      IF (ELIM) THEN
       NBGMA = NBGM1 - 1 + NBGM2 - 1
+      ELSE
+      NBGMA = NBGM1 - 1 + NBGM2
+      ENDIF
+C
       IF ( NBGMA .GT. 0 ) THEN
         CALL JECREC(MAG//'.GROUPEMA','G V I','NO',
      &                               'DISPERSE','VARIABLE',NBGMA)
@@ -424,22 +456,41 @@ CCC   ------------------------------------------------------------------
           CALL JELIRA(JEXNUM(MA1//'.GROUPEMA',I),'LONMAX',N,K8B)
           CALL JENUNO(JEXNUM(MA1//'.GROUPEMA',I),NOGMA)
           IF (NOGMA.NE.CGPM1) THEN
-            ICOMPT=ICOMPT+1
-            CALL JECROC(JEXNOM(MAG//'.GROUPEMA',NOGMA))
-            CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'LONMAX',N,K8B)
-            CALL JEVEUO(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'E',IAGMAX)
-            DO 711, II=1,N
-              ZI(IAGMAX-1+II)=ZI(IAMAM1+NBM1+ZI(IAGMA1-1+II)-1)
- 711        CONTINUE
+C
+            ILGMA=0
+            DO 710, II=1,N
+              IF (ZI(IAMAM1+NBM1+ZI(IAGMA1-1+II)-1).NE.0) THEN
+                 ILGMA=ILGMA+1
+              ENDIF
+ 710        CONTINUE
+C
+            IF (ILGMA.NE.0) THEN
+              ICOMPT=ICOMPT+1
+              CALL JECROC(JEXNOM(MAG//'.GROUPEMA',NOGMA))
+              CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'LONMAX',
+     &                           ILGMA,K8B)
+              CALL JEVEUO(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'E',IAGMAX)
+              ILGM2=0
+              DO 711, II=1,N
+                IF (ZI(IAMAM1+NBM1+ZI(IAGMA1-1+II)-1).NE.0) THEN
+                   ILGM2=ILGM2+1
+                ZI(IAGMAX-1+ILGM2)=ZI(IAMAM1+NBM1+ZI(IAGMA1-1+II)-1)
+                ENDIF
+ 711          CONTINUE
+            ELSE
+               VALK(1) = NOGMA
+               VALK(2) = MA1
+               CALL U2MESK('A','MODELISA7_97',2,VALK)
+            ENDIF
           ENDIF
  71     CONTINUE
-        ICOMPT = 0
         DO 72,I=1,NBGM2
           CALL JEVEUO(JEXNUM(MA2//'.GROUPEMA',I),'L',IAGMA2)
           CALL JELIRA(JEXNUM(MA2//'.GROUPEMA',I),'LONMAX',N,K8B)
           CALL JENUNO(JEXNUM(MA2//'.GROUPEMA',I),NOGMA)
-          IF (NOGMA.NE.CGPM2) THEN
+          IF ((NOGMA.NE.CGPM2).OR.(.NOT.ELIM)) THEN
             CALL JEEXIN(JEXNOM(MAG//'.GROUPEMA',NOGMA),IRET)
+C
             IF (IRET.GT.0) THEN
               CALL U2MESK('A','MODELISA2_21',1,NOGMA)
               NOGMAB=NOGMA
@@ -458,15 +509,33 @@ CCC   ------------------------------------------------------------------
      &             //MA2//' EST RENOMME '//NOGMAB//' DANS '//MAG
               NOGMA=NOGMAB
             END IF
-            ICOMPT = ICOMPT + 1
-            I1 = NBGM1 -1 + ICOMPT
-            CALL JECROC(JEXNOM(MAG//'.GROUPEMA',NOGMA))
-            CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',I1),'LONMAX',N,K8B)
-            CALL JEVEUO(JEXNUM(MAG//'.GROUPEMA',I1),'E',IAGMAX)
-            DO 721, II=1,N
-              ZI(IAGMAX-1+II)=ZI(IAMAM2+NBM2+ZI(IAGMA2-1+II)-1)
-     &                        +NBM1-NBNGM
- 721        CONTINUE
+C
+            ILGMA=0
+            DO 720, II=1,N
+              IF (ZI(IAMAM2+NBM2+ZI(IAGMA2-1+II)-1).NE.0) THEN
+                 ILGMA=ILGMA+1
+              ENDIF
+ 720        CONTINUE
+C
+            IF (ILGMA.NE.0) THEN
+              ICOMPT = ICOMPT + 1
+              CALL JECROC(JEXNOM(MAG//'.GROUPEMA',NOGMA))
+              CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'LONMAX',
+     &                    ILGMA,K8B)
+              CALL JEVEUO(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'E',IAGMAX)
+              ILGM2=0
+              DO 721, II=1,N
+                IF (ZI(IAMAM2+NBM2+ZI(IAGMA2-1+II)-1).NE.0) THEN
+                   ILGM2=ILGM2+1
+                   ZI(IAGMAX-1+ILGM2)=ZI(IAMAM2+NBM2+ZI(IAGMA2-1+II)-1)
+     &                                +NBM1-NBNGM
+                ENDIF
+ 721          CONTINUE
+            ELSE
+               VALK(1) = NOGMA
+               VALK(2) = MA2
+               CALL U2MESK('A','MODELISA7_97',2,VALK)
+            ENDIF
           ENDIF
  72     CONTINUE
       END IF

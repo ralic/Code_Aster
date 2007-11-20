@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV185F',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV185F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
 #----------------------------------------------
 #                MAILLAGE : hexa_5_31_51.mgib

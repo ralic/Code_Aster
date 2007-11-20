@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 19/11/2007   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,10 +84,11 @@ C     NNOEMA : NBRE MAXI DE DDLS PAR NOEUD ADMIS PAR LE S.P.
       CHARACTER*14 NUDEV
       CHARACTER*19 MATDEV,RESUL
       CHARACTER*24 KMAILL,K24PRN,KNULIL,KMALIL,RESU,NOMLI,KSMHC,KSMDI,
-     &             KVALM,KTMP1,KTMP2,KCONL
-      REAL*8 R,RINF,RSUP
-      INTEGER HMAX,NMALIL,IMO,ILAGR,ILIMO
-      INTEGER ADMODL,LCMODL,NBNO
+     &             KVALM,KTMP1,KTMP2,KCONL,K24B
+      REAL*8 R,RINF,RSUP,TEMPS(6)
+      INTEGER HMAX,NMALIL,IMO,ILAGR,ILIMO,IRET,IFM,NIV,RANG,IBID,IMUMPS
+      INTEGER ADMODL,LCMODL,NBNO,IFCPU
+      LOGICAL LMUMPS
 C-----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     TYPE MANIPULEES DANS LE SOUS PROGRAMME
@@ -179,6 +180,21 @@ C---------------------------------------------------------------------
       MATDEV = MATAS
       BASE1 = BASE
 
+C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE MUMPS DISTRIBUE
+      LMUMPS=.FALSE.
+      CALL JEEXIN('&MUMPS.MAILLE.NUMSD',IRET)
+      IF (IRET.NE.0) THEN
+        CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
+        LMUMPS=.TRUE.
+        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',IMUMPS)
+        IMUMPS=IMUMPS-1
+      ENDIF
+C CALCUL TEMPS
+      IF (NIV.GE.2)  THEN
+        CALL UTTCPU(90,'INIT ',6,TEMPS)
+        CALL UTTCPU(90,'DEBUT',6,TEMPS)
+      ENDIF
+            
 C --- VERIF DE MOTCLE: SI ZERO ON ECRASE SI CUMU ON CUMULE :
 C     ----------------------------------------------------
       IF (MOTCLE(1:4).EQ.'ZERO') THEN
@@ -430,6 +446,25 @@ C---- R = COEF MULTIPLICATEUR
                   R = LICOEF(IMAT)
                   NUMA = ZZLIEL(ILIMA,IGR,IEL)
 
+C SI ON EST DANS UN CALCUL MUMPS DISTRIBUE, ON SE POSE LA QUESTION DE
+C L'APPARTENANCE DE LA MAILLE NUMA AUX DONNEES ATTRIBUEES AU PROC
+C SI MAILLE PHYSIQUE: CHAQUE PROC NE TRAITE QUE CELLES ASSOCIEES AUX
+C                     SD QUI LUI SONT ATTRIBUES
+C SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
+                  IF (LMUMPS) THEN
+                    IF (NUMA.GT.0) THEN
+                      IF (ZI(IMUMPS+NUMA).LT.0) THEN
+C                       WRITE(IFM,*)'ASSMMN, SAUTE LA MAILLE ',NUMA
+                        GOTO 110
+                      ENDIF
+                    ELSE
+                      IF (RANG.NE.0) THEN
+C                       WRITE(IFM,*)'ASSMMN, SAUTE LA MAILLE ',NUMA
+                          GOTO 110
+                      ENDIF
+                    ENDIF
+                  ENDIF
+                      
 C ---   NUMA > 0 : CAS DES ELEMENTS 'PHYSIQUES' :
 C       --------------------------------------
                   IF (NUMA.GT.0) THEN
@@ -562,6 +597,25 @@ C    ---------------------------------------------
 C---- R = COEF MULTIPLICATEUR
                   R = LICOEF(IMAT)
                   NUMA = ZZLIEL(ILIMA,IGR,IEL)
+
+C SI ON EST DANS UN CALCUL MUMPS DISTRIBUE, ON SE POSE LA QUESTION DE
+C L'APPARTENANCE DE LA MAILLE NUMA AUX DONNEES ATTRIBUEES AU PROC
+C SI MAILLE PHYSIQUE: CHAQUE PROC NE TRAITE QUE CELLES ASSOCIEES AUX
+C                     SD QUI LUI SONT ATTRIBUES
+C SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
+                  IF (LMUMPS) THEN
+                    IF (NUMA.GT.0) THEN
+                      IF (ZI(IMUMPS+NUMA).LT.0) THEN
+C                       WRITE(IFM,*)'ASSMMN, SAUTE LA MAILLE ',NUMA
+                        GOTO 230
+                      ENDIF
+                    ELSE
+                      IF (RANG.NE.0) THEN
+C                       WRITE(IFM,*)'ASSMMN, SAUTE LA MAILLE ',NUMA
+                          GOTO 230
+                      ENDIF
+                    ENDIF
+                  ENDIF
 
 C ---   NUMA > 0 : CAS DES ELEMENTS 'PHYSIQUES' :
 C       --------------------------------------
@@ -875,12 +929,25 @@ C     -- MISE A JOUR DE REFA(4)
         IF (ZK24(JREFA-1+4).NE.OPTIO2) ZK24(JREFA-1+4) = '&&MELANGE'
       END IF
 
+      IF (NIV.GE.2) THEN
+        CALL UTTCPU(90,'FIN  ',6,TEMPS)
+        WRITE(IFM,'(A44,D11.4,D11.4)')
+     & 'TEMPS CPU/SYS ASSEMBLAGE M                : ',TEMPS(5),TEMPS(6)
+C POUR QUE CELA FONCTIONNE AVEC MUMPS CENTRALISE
+        CALL JEEXIN('&MUMPS.INFO.CPU.ASSE',IRET)
+        IF (IRET.NE.0) THEN
+          CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
+          CALL JEVEUO('&MUMPS.INFO.CPU.ASSE','E',IFCPU)
+          ZR(IFCPU+RANG)=ZR(IFCPU+RANG)+TEMPS(5)+TEMPS(6)
+        ENDIF
+      ENDIF
       CALL JEDETR(KTMP1)
       CALL JEDETR(KTMP2)
       CALL JEDETR(KMALIL)
       CALL JEDETR(MATDEV//'.ADNE')
       CALL JEDETR(MATDEV//'.ADLI')
   290 CONTINUE
+
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()
 C     CALL CHEKSD('sd_matr_asse',MATDEV,IRET)

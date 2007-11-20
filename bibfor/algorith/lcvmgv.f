@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -420,13 +420,11 @@ C PAS TRES EFFICACE : ON GAGNE UNE ITERATION DANS ZEROFO !
                 DP0 = DP0 / (1+(RPRIM0+RAUG)/1.5D0/DEUXMU)
                 XAP   = DP0
                 VAL0  = NMCRI2(0.D0)
-                PREC  = CRIT(3)
-                PRECR = PREC * (SIGY-PHI)
+                PRECR = CRIT(3) * (SIGY-PHI)
                 NITER = NINT(CRIT(1))
                 CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,DP,IRET)
                 IF(IRET.EQ.1) GOTO 9999
-                COCO   = E/ALFAFA*(SIGY-PHI)
-                RP = (SIGY-PHI) * (COCO*(PM+DP))**UNSURN
+                CALL ECPUIS(E,SIGY,ALFAFA,UNSURN,PM,DP,RP,RPRIM)
               ELSE
                 CALL RCFOGV('TRACTION',NONLOC,JPROLP,JVALEP,NBVALP,
      &                      E,NU,PM,RP,RPRIM,SIELEQ,DP)

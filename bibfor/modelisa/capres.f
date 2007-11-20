@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/08/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 19/11/2007   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,6 +109,7 @@ C
             CALL GETVID (MOTCLF, 'PRES'   , IOCC,1,1,ZK8(JVALV)  ,NP)
             CALL GETVID (MOTCLF, 'CISA_2D', IOCC,1,1,ZK8(JVALV+1),NC)
          ENDIF
+         IF (NC.NE.0.AND.NDIM.EQ.3) CALL U2MESS('F','MODELISA9_94')
 C
          CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
          CALL GETVID ( MOTCLF, 'FISSURE',IOCC , 1, 0, K8B, NFISS )

@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,7 +111,11 @@ class ETAPE:
                       la commande avant son execution.
       """
       # top départ du chrono de la commande
-      self.jdc.timer.Start(id(self), name=self.nom)
+      etiq = self.nom
+      if (isinstance(self.parent,MACRO_ETAPE)) or \
+         (self.parent.nom=='INCLUDE'         ):
+         etiq = ' . ' + etiq
+      self.jdc.timer.Start(id(self), name=etiq)
       
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE

@@ -2,7 +2,7 @@
      &             VIND, SIGF, VINF, NITER, EPSCON, IRET, ETATF)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,7 +42,7 @@ C       ETATF  :  ETAT PLASTIQUE OU ELASTIQUE DU POINT DE GAUSS
 C   ------------------------------------------------------------------
         INTEGER       NDT, NDI, NVI, NITER, NDEC, IRET
         INTEGER       I, K, IFM, NIV, JJ, NSUBD, MAJ
-        INTEGER       NVIMAX, INDMEC
+        INTEGER       NVIMAX, IMPO
         PARAMETER     (NVIMAX=32)
         REAL*8        EPSD(6), DEPS(6),VINS(NVIMAX)
         REAL*8        SIGD(6), SIGF(6), PREDIC(6)
@@ -52,7 +52,7 @@ C   ------------------------------------------------------------------
         REAL*8        SEUIL, RF, RD
         REAL*8        ZERO, VINT(NVIMAX)
         LOGICAL       CHGMEC, NOCONV, AREDEC, STOPNC, NEGMUL(8)
-        LOGICAL       SUBD, RDCTPS, LOOP
+        LOGICAL       SUBD, RDCTPS, LOOP, INDMEC(8)
         CHARACTER*8   MOD
         CHARACTER*7   ETATF
         PARAMETER     (ZERO  = 0.D0)
@@ -144,13 +144,6 @@ C   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
         CALL LCEQVE (SIGD0, SIGD)
         CALL LCEQVN (NVI, VIND0, VIND)
         
-C       DO 2 I = 1, 4
-C         IF(RDCTPS(I) .NE. ZERO) THEN
-C           VIND(19 + RDCTPS(I)) = UN
-C           VIND(23 + RDCTPS(I)) = ZERO
-C         ENDIF
-C  2    CONTINUE
-
         DO  10 I = 1, NDT
          DEPS(I) = DEPS0(I)/NDEC
  10      CONTINUE
@@ -228,13 +221,12 @@ Caf 18/05/07 Debut
      &     NEGMUL, NITER0, EPSCON, IRET, SUBD, LOOP, NSUBD)
          NITER = NITER + NITER0
          
-C        WRITE(6,'(A,L1,A,L1,A,L1)') 'NOCONV =',NOCONV,
-C     &    ' AREDEC =', AREDEC, ' SUBD =', SUBD
-         
          IF ((NOCONV .OR. SUBD) .AND. (.NOT. AREDEC)) 
      &               GOTO 500
-         IF (NOCONV) GOTO 9999
-         
+         IF (NOCONV) THEN
+           IRET = 1
+           GOTO 9999
+         ENDIF         
 
 Caf 12/06/07 Debut
 C --- REPRISE A CE NIVEAU SI MECANISME SUPPOSE ELASTIQUE   
@@ -247,11 +239,8 @@ C                  DES MULTIPLICATEURS PLASTIQUES
 C                  DES SEUILS EN DECHARGE
 
          CALL HUJACT(MATER, VIND, VINF, VINS, SIGD, SIGF,
-     &               NEGMUL, CHGMEC,AREDEC, INDMEC)
+     &               NEGMUL, CHGMEC, INDMEC)
 Caf 05/09/2007 Fin
-C       CALL HUJRMO(MATER, SIGD , VIND, RD)
-C       CALL HUJRMO(MATER, SIGF , VINF, RF)
-C       WRITE(6,'(A,E16.9,A,E16.9)')'RD =',RD,' --- RF =',RF
   
 C - SI ON MODIFIE LE DOMAINE POTENTIEL DE MECANISMES ACTIVES : RETOUR
 C   AVEC UNE CONDITION DE CONVERGENCE DE LA METHODE DE NEWTON
@@ -275,14 +264,17 @@ C --- PREDICTEUR MIS A JOUR TENANT COMPTE DE L'ETAT PRECEDEMMENT OBTENU
               LOOP = .TRUE.
               CALL LCEQVN (NVI, VIND, VINF)
               GOTO 100
-            ELSE        
-              IF (INDMEC.EQ.8) THEN
-                VINF(31) = ZERO 
-                GOTO 45
-              ELSE
-                IRET = 1
-                GOTO 9999
-              ENDIF          
+            ELSE      
+              IMPO = 0
+              DO 41 I = 5, 8 
+                IF(INDMEC(I))THEN
+                  VINF(23+I) = ZERO
+                  IMPO = 1
+                ENDIF 
+ 41           CONTINUE 
+              IF (IMPO.EQ.1) GOTO 45
+              IRET = 1
+              GOTO 9999      
             ENDIF            
           ENDIF
                  
@@ -300,9 +292,6 @@ C --- S'IL N'Y A PAS DE CHANGEMENT DE MECANISME, ON POURSUIT
  60         CONTINUE
 C --- APPLICATION DE L'INCREMENT DE DÉFORMATIONS, SUPPOSE ELASTIQUE  
             CALL HUJELA(MOD,CRIT,MATER,DEPS,SIGD,SIGF,EPSD,IRET)
-C         WRITE(6,'(A,6(1X,E16.9))')'HUJRES -- SIGD =',(SIGD(I),I=1,6)
-C         WRITE(6,*)'HUJRES -- R4 =',VINF(4)
-
           ENDIF
         
         ELSE

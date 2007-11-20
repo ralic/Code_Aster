@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/11/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,10 +132,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   SOLVEUR=_F(METHODE='LDLT',
-                              RENUM='RCMK',
-                              STOP_SINGULIER='OUI',
-                                  NPREC=8,),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=20,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
@@ -169,17 +166,33 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 
 
 
-IMPR_TABLE(TABLE=LAG,
-           FORMAT='AGRAF',
-           FORMAT_R='1PE12.5',
-           FORMAT_C='MODULE_PHASE',
-           IMPR_FONCTION='NON',);
+IMPR_TABLE(TABLE=LAG);
+
+
+VC_0=POST_RELEVE_T(ACTION=_F(INTITULE='VC_O',
+                             GROUP_NO='VOLQUAD',
+                             RESULTAT=UTOT1,
+                             NOM_CHAM='VALE_CONT',
+                             TOUT_ORDRE='OUI',
+#                             NOM_CMP=('CONT'),
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=VC_0)
 
 LAREF=-5.
 LA1REF=0.
 LA2REF=0.
 
 # TESTS
+TEST_TABLE(TABLE=VC_0,
+           NOM_PARA='R',
+           TYPE_TEST='MAX',
+           VALE=1.,
+           CRITERE='RELATIF',
+           PRECISION=1.E-12,
+           REFERENCE='ANALYTIQUE',);
+
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',

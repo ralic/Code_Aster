@@ -1,4 +1,4 @@
-#@ MODIF N_GEOM Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF N_GEOM Noyau  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,9 @@ class GEOM(ASSD):
       return self.nom
 
    def __convert__(cls,valeur):
-      return valeur
+      if isinstance(valeur, (str,unicode)):
+         return valeur
+      raise ValueError, 'On attend un chaine de caractères'
    __convert__=classmethod(__convert__)
 
 class geom(GEOM):pass

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,32 +76,36 @@ VEFZAS=ASSE_VECTEUR(   VECT_ELEM=VEFZ,       NUME_DDL=NU )
 
 VEFYAS=ASSE_VECTEUR(   VECT_ELEM=VEFY,       NUME_DDL=NU )
 
-MATASS=FACT_LDLT( reuse=MATASS,  MATR_ASSE=MATASS )
+MATASS=FACTORISER( reuse=MATASS,  MATR_ASSE=MATASS )
 
-DEFZ=RESO_LDLT( MATR_FACT=MATASS,     CHAM_NO=VEFZAS)
+DEFZ=RESOUDRE( MATR=MATASS,     CHAM_NO=VEFZAS)
 
-DEFY=RESO_LDLT( MATR_FACT=MATASS,     CHAM_NO=VEFYAS)
+DEFY=RESOUDRE( MATR=MATASS,     CHAM_NO=VEFYAS)
 
 TEST_RESU(CHAM_NO=(
      # DEPLACEMENT FZ
        
             _F(  CHAM_GD = DEFZ,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = -1.72E-3),
+              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = -1.72E-3,
+              REFERENCE='ANALYTIQUE',),
 
             _F(  CHAM_GD = DEFZ,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = 5.42E-3),
+              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = 5.42E-3,
+              REFERENCE='ANALYTIQUE',),
 
      # DEPLACEMENT FY
        
             _F(  CHAM_GD = DEFY,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = 1.75E-3),
+              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = 1.75E-3,
+              REFERENCE='ANALYTIQUE',),
 
             _F(  CHAM_GD = DEFY,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
-              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = -1.72E-3))
+              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = -1.72E-3,
+              REFERENCE='ANALYTIQUE',))
              )
 
 #---------------------------------------------------------------------
-# TEST IMPR_RESU/GMSH 1.0 MAILLAGE
+# TEST IMPR_RESU/GMSH MAILLAGE
 DEFI_FICHIER( UNITE=35,
               FICHIER='./REPE_OUT/MA10.pos')
 
@@ -113,15 +117,15 @@ IMPR_RESU ( MODELE=MODELE_1,
 DEFI_FICHIER(ACTION='LIBERER',UNITE=35)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/MA10.pos',
-             NB_CHIFFRE=6,
-             EPSILON=1.E-10,
-             VALE_K='2c1b4d9afac623728eaae5d5169ee16f',
+             NB_VALE=1654,
+             VALE=2.92826E+06,
+             VALE_K='4d37dac458a3fb580fa52823e645370a',
              REFERENCE='NON_REGRESSION',
-             VERSION='7.2.23',
+             VERSION='9.1.21',
              INFO=1)
 
 #---------------------------------------------------------------------
-# TEST IMPR_RESU/GMSH 1.0 RESU
+# TEST IMPR_RESU/GMSH RESU
 DEFI_FICHIER( UNITE=36,
               FICHIER= './REPE_OUT/DEP10.pos')
 
@@ -132,17 +136,15 @@ IMPR_RESU ( MODELE=MODELE_1,
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 
-TEST_FICHIER(
-             FICHIER= './REPE_OUT/DEP10.pos',
-             NB_CHIFFRE=5,
-             EPSILON=1.E-10,
-             VALE_K='f82c1705ff73e61d420842276e2996e0',
+TEST_FICHIER(FICHIER= './REPE_OUT/DEP10.pos',
+             NB_VALE=13061,
+             VALE=1.91692E+04,
              REFERENCE='NON_REGRESSION',
-             VERSION='8.0.21',
+             VERSION='9.1.21',
              INFO=1)
 
 #---------------------------------------------------------------------
-# TEST IMPR_RESU/GMSH 1.0 MAILLAGE
+# TEST IMPR_RESU/GMSH MAILLAGE
 DEFI_FICHIER( UNITE=37,
               FICHIER='./REPE_OUT/MA12.pos')
 
@@ -154,15 +156,14 @@ IMPR_RESU ( MODELE=MODELE_1,
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/MA12.pos',
-             NB_CHIFFRE=6,
-             EPSILON=1.E-10,
-             VALE_K='2c1b4d9afac623728eaae5d5169ee16f',
+             NB_VALE=1654,
+             VALE=2.92826E+06,
              REFERENCE='NON_REGRESSION',
-             VERSION='7.2.23',
+             VERSION='9.1.21',
              INFO=1)
 
 #---------------------------------------------------------------------
-# TEST IMPR_RESU/GMSH 1.0 RESU
+# TEST IMPR_RESU/GMSH RESU
 DEFI_FICHIER( UNITE=38,
               FICHIER='./REPE_OUT/DEP12.pos')
 
@@ -174,11 +175,10 @@ IMPR_RESU ( MODELE=MODELE_1,
 DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/DEP12.pos',
-             NB_CHIFFRE=6,
-             EPSILON=1.E-10,
-             VALE_K='533e4cab3eaf312e5027aa0a4b5aae1a',
+             NB_VALE=10551,
+             VALE=1.64317E+04,
              REFERENCE='NON_REGRESSION',
-             VERSION='8.0.21',
+             VERSION='9.1.21',
              INFO=1)
 
 #---------------------------------------------------------------------

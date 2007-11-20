@@ -3,7 +3,7 @@
      &  NEGMUL, NITER, EPSCON, IRET, SUBD, LOOP, NDEC0 )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,7 @@ C   -------------------------------------------------------------------
         REAL*8    R(NMOD), DRDY(NMOD,NMOD)
         REAL*8    DDY(NMOD), DY(NMOD), YD(NMOD), YF(NMOD)
         REAL*8    ERR, ERR1, ERR2, SIGNE(4), DSIG(6)
-        REAL*8    DET, ZERO, UN, RATIO, TOLE
+        REAL*8    DET, ZERO, UN, RATIO
         REAL*8    EVOL, KSI, ACYC, AMON, AD
         REAL*8    RDEC, PCO, BETA, CMON, CCYC
         
@@ -76,7 +76,7 @@ C   -------------------------------------------------------------------
        
         CHARACTER*8 MOD
 
-        DATA   ZERO, UN, TOLE / 0.D0, 1.D0, 1D-6 /
+        DATA   ZERO, UN / 0.D0, 1.D0/
 
 C ====================================================================
 
@@ -262,7 +262,7 @@ C ---- VERIFICATION DES MULTIPLICATEURS PLASTIQUES
         DO 210 K = 1, NBMECA
 C          WRITE(6,'(A,15(1X,E12.5))')'YF =',(YF(I),I=1,15)
           RATIO = YF(NDT+1+NBMECA+K)/ABS(PREF/YOUNG)
-          IF (RATIO .LT. -TOLE) 
+          IF (RATIO .LT. ZERO) 
      &    NEGMUL(INDI(K)) = .TRUE.
  210    CONTINUE    
         

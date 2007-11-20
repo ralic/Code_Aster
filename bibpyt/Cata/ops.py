@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF ops Cata  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,8 +56,6 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
    if CODE != None:
       jdc.fico = CODE['NOM']
    if aster_exists:
-      # on commence l'execution proprement dite, fin des initialisations
-      jdc.timer.Stop('JDC init')
       # en POURSUITE, ne pas écraser la mémorisation existante.
       if not hasattr(jdc, 'memo_sensi'):
          jdc.memo_sensi = MEMORISATION_SENSIBILITE()

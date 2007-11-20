@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF stanley Stanley  DATE 20/11/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ from Cata.cata import *
 from Accas import _F
 from types import *
 from Macro import Sensibilite
-from Macro.test_fichier_ops import md5file
+from Macro.test_fichier_ops import test_file
 
 # Salome
 try:
@@ -2106,10 +2106,6 @@ class DRIVER :
       UTMESS('A','STANLEY_30')
       return False, []
 
-    if selection.nom_cham not in ['SIEF_ELGA','VARI_ELGA','SIEF_ELGA_TEMP','FLUX_ELGA_TEMP']:
-      UTMESS('A','STANLEY_39',valk=[SELECTION.NonDeveloppePG])
-      return False, []
-
     if   contexte.resultat.__class__ == evol_elas  : type_resu = 'EVOL_ELAS'
     elif contexte.resultat.__class__ == evol_ther  : type_resu = 'EVOL_THER'
     elif contexte.resultat.__class__ == evol_noli  : type_resu = 'EVOL_NOLI'
@@ -2192,7 +2188,7 @@ class DRIVER :
 
         ldetr = [__MA_G, __MO_G, __RESU_G]
 
-    return CONTEXTE(__RESU_G, __MA_G, __MO_G, None, None, None), ldetr
+    return CONTEXTE(contexte.jdc, __RESU_G, __MA_G, __MO_G, None, None, contexte.para_sensi), ldetr
 
 
   # ----------------------------------------------------------------------------
@@ -2203,21 +2199,13 @@ class DRIVER :
 
     # Type de trace
     if   driver == 'Isovaleurs':
-       NB_CHIFFRE = 4
-       EPSILON = 10E-10
        regexp_ignore = []
     elif driver == 'Courbes':
-       NB_CHIFFRE = 4
-       EPSILON = 10E-10
        regexp_ignore=[]
     elif driver == 'SalomeCourbes':
-       NB_CHIFFRE = 4
-       EPSILON = 10E-10
        regexp_ignore=[]
        return
     elif driver == 'SalomeIsovaleurs':
-       NB_CHIFFRE = 4
-       EPSILON = 10E-10
        regexp_ignore=[]
        return
     else:
@@ -2225,7 +2213,7 @@ class DRIVER :
 
     try:
        # calcule le md5sum du fichier
-       ier, mdsum = md5file(FICHIER, NB_CHIFFRE, EPSILON, regexp_ignore, info=1)
+       nbv, somme, md5sum = test_file(FICHIER, type_test='SOMM', regexp_ignore=regexp_ignore, verbose=False)
        # Affichage de la ligne
        txt = mdsum + ' - ' + FICHIER + ' - ' + ' - '.join( [str(selection.nom_cham), str(selection.nom_cmp), str(selection.numeros), str(selection.geom) ] )
     except Exception,err:
@@ -2366,7 +2354,6 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
     if self.stan.FICHIER_VALID:
        self.Test_fichier_resu(driver=selection.mode, FICHIER='fort.'+str(ul), FICHIER_VALID=self.stan.FICHIER_VALID, selection=selection)
 
-
     if l_detr : 
        DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
 
@@ -2404,9 +2391,9 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
     contexte   = self.stan.contexte
     type_champ = cata[selection.nom_cham].type
         
-    if type_champ == 'ELGA' :
-      contexte, l_detr = self.Ecla_Gauss(selection, contexte)
-      if not contexte: return
+#     if type_champ == 'ELGA' :
+#       contexte, l_detr = self.Ecla_Gauss(selection, contexte)
+#       if not contexte: return
 
     # On efface le fichier si il existe deja
     if os.path.isfile('fort.'+str(ul)):
@@ -2535,7 +2522,7 @@ class DRIVER_COURBES(DRIVER) :
 
           # Sensibilite
           if contexte.para_sensi:
-             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom) )
+             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
              courbe.Lire_y(table_sensible_jeveux, comp)
              nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
           else:
@@ -2545,7 +2532,7 @@ class DRIVER_COURBES(DRIVER) :
           l_courbes.append( (courbe, nom) )
 
         DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
-        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
         if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ),INFO=1, ALARME='NON')
 
 
@@ -2579,7 +2566,7 @@ class DRIVER_COURBES(DRIVER) :
 
           # Sensibilite
           if contexte.para_sensi:
-             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom) )
+             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
              courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
              courbe.Lire_y(table_sensible_jeveux, comp)
              nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
@@ -2592,7 +2579,7 @@ class DRIVER_COURBES(DRIVER) :
           l_courbes.append( (courbe, nom) )
 
         DETRUIRE(CONCEPT = _F(NOM = 'STNTBLGR'),INFO=1, ALARME='NON')
-        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
+        if contexte.para_sensi: DETRUIRE(CONCEPT = _F(NOM = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
 
       if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
 

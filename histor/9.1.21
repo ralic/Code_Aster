@@ -1,0 +1,1650 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 20/11/2007 - 16:16:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011475 DU 2007-11-16 16:40:19
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Problemes dans Stanley suite xc3xa0 recette graphique
+FONCTIONNALITE
+   La recette graphique de stanley a mis en evidence plusieurs problemes :
+   
+   - lors de changements dans la classe sensibilité, celles-ci n'ont pas été completement
+   reportée dans stanley.py
+   
+   - lors de changements dans la classe table_sdaster, celles-ci n'ont pas été reportée dans
+   stanley.py
+   
+   - on en profite pour supprimer le test limitant l'impression au points de Gauss (via
+   ECLA_PG). Dorenavent, tous les champs sont possibles dans Stanley et on rattrape l'erreur
+   dans crea_resu / ecla_pg si celui-ci s'arrete.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   stanley
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 19/11/2007 - 14:51:49
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011022 DU 2007-06-27 12:03:35
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   cas test feti002a avec SDVERI='OUI'
+FONCTIONNALITE
+   Problème:
+   ---------
+   Avec le solveur linéaire FETI, le ménage des structures de 
+   données "filles" a été prévue via les routines usuelles (DETRSD, 
+   ASSDE1...). Seulement, la partie PROF_CHNO des NUME_DDLs "fils" 
+   n'est plus
+   détruite par ces chemins logiciels !
+   Solution proposée:
+   ------------------
+   On les créé sur la base volatile (leur PROF_CHNO père est 
+   toujours lui
+   créé sur la base globale).  Ils sont alors automatiquement 
+   détruit par
+   le superviseur.
+   Détails:
+   -------
+   Ce qui n'est pas choquant car ils ne sont que des intermédiaires 
+   de
+   calculs: on ne conserve pas de données réparties par sous-domaine 
+   (type 
+   MATR_ASSE ou CHAM_NO) entre deux opérateurs. En fin d'opérateurs, 
+   les
+   données de calculs locales à chaque sous-domaine sont détruites. 
+   Il ne
+   reste que les globales. Bref, on a pas besoin de les conserver 
+   dans une
+   base JEVEUX.
+   Validation:
+   ----------
+   qqes cas-tests FETI (feti002a/07a/08a/09a/10a) avec 
+   SD_VERI='OUI'/'NON'
+   sur la BULL;qqes cas-tests avec MULT_FRONT au cas où.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011455 DU 2007-11-12 15:57:35
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   MUMPS distribue parallele: oublie de la routine assmmn
+FONCTIONNALITE
+   Contexte-Probleme:
+   -----------------
+   L'assemblage des matrices non symétriques ne passe pas par le canevas
+   habituel (ASSMAM), mais par ASSMMN. Cette routine a ete oubliee lors du
+   dernier chantier sur MUMPS distribue (cf. fiche 11319). Cela ne produit
+   pas de résultat faux mais c'est sous-optimal en parallele et inhomogene
+   en terme de programmation avec les 3 autres routines d'assemblages: 
+   ASSMAM, ASSVEC et ASSMIV.
+   
+   Solution:
+   ---------
+   On reconduit le filtrage des mailles en fonction du proc. base sur l'objet
+   '&MUMPS.MAILLE.NUMSD' de le meme maniere que pour les 3 routines pre-
+   citées.
+   
+   Validation:
+   -----------
+   cas tests non symétriques: mumps04a et ssnv145a.
+   
+   Impact logiciel: ASSMMN.
+   ---------------
+   
+   En supplement:
+   --------------
+    * pour répondre à un voeux de Jacques, on remplace les appels aux com
+   munications MPI de la forme
+    IF (LMUMPS.AND.(NBPROC.GT.1)) CALL MUMMPI(...
+   par IF (LMUMPS) CALL MUMMPI(...
+   le test sur NBPROC est fait dans MUMMPI suivant les options.
+    Impact logiciel: ASSMIV, ASSVEC
+   
+    * Pour faciliter la detection de calcul mumps parallele avec repartition
+   de charge desequilibree, enrichissement du monitoring si INFO=2 avec 
+   MUMPS:
+   cas-test ssnv145a  
+   *************************************************************************
+     <MONITORING MUMPS >
+     TAILLE DU SYSTEME       384
+     RANG     NBRE MAILLES     NBRE TERMES K     LU FACTEURS
+     N    0 :               2            1773              19
+     N    1 :               2            3231              19
+     N    2 :               2            3213            1111
+     N    3 :               5            7774           20387
+     -----------------------------------------------------------
+    TOTAL   :              11           15991           21536
+     
+     TEMPS CPU+SYSTEME
+   RANG  ASTER: FACS CALCUL_ELEM  ASSEMBLAGE|MUMPS: ANALYSE  FACTO_NUM  RESOL
+     N    0 :  3.91D-03  5.86D-02  1.95D-03   6.84D-03   9.77D-03   3.91D-03
+     N    1 :  4.88D-03  7.13D-02  2.93D-03   5.86D-03   9.77D-03   3.91D-03
+     N    2 :  8.79D-03  8.20D-02  4.88D-03   5.86D-03   9.77D-03   3.91D-03
+     N    3 :  3.91D-03  1.08D-01  5.86D-03   6.84D-03   1.07D-02   3.91D-03
+     -----------------------------------------------------------------------
+    MOYENNE :  5.37D-03  8.01D-02  3.91D-03   6.35D-03   1.00D-02   3.91D-03
+     EN % : VALEUR RELATIVE ET DESEQUILIBRAGE MAX
+            :  4.90D+00  7.31D+01  3.56D+00   5.79D+00   9.13D+00   3.56D+00
+            :  6.36D+01  3.54D+01 -5.00D+01   7.69D+00   7.32D+00   0.00D+00
+     
+     !! ATTENTION DESEQUILIBRAGE DE CHARGE > 20% SUR LA PHASE!!
+     !! DE CALCUL ELEMENTAIRE ASTER !!
+     !! CONSEILS: ENLEVER MAILLES INUTILES, !!
+     !! UTILISER DISTRIBUTION_SD OU DIMINUER!!
+     !! NBRE DE PROCESSEURS                 !!    
+   **************************************************************************
+   
+   Impact logiciel: CRESOL, AMUMPR, AMUMPC.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   informatique
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 19/11/2007 - 14:51:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010403 DU 2006-12-21 07:50:42
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV04 - temps systeme MUMPS sur machine Bull
+FONCTIONNALITE
+   Les versions séquentielle et parallèle de MUMPS_4.7.2 sur Bull ont été recompilées avec
+   l'option du compilateur Intel fortran90 -align sequence. 
+   Le fichier de configuration de la version NEW9 est modifié pour ajouter cette option pour F90.
+   Les routines amumps.f, amumpr.f et amumpc.f sont restituées sans modification pour être
+   recompilées.
+   
+   NB : le comportement n'a pas été observé sur les autres machines avec compilateur Intel.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Tests Mumps5
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 19/11/2007 - 18:22:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011276 DU 2007-09-24 08:52:58
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   performances DYNA_LINE_TRAN
+FONCTIONNALITE
+   En 9.1.11, le test sdll135d s'est arrêté par manque de temps CPU. Il passait 845 s dans
+   DYNA_LINE_TRAN alors qu'en version 8, il ne lui fallait que 490 s.
+   On pensait à une détériotation des performances.
+   
+   En fait, en repassant le test sur toutes les 9.1.x, le temps est quasi-constant.
+   Il semble donc que le temps constaté en 9.1.11 soit dû à un problème d'exploitation de la
+   machine.
+   
+   Pour info, temps de DYNA_LINE_TRAN au fil des versions :
+   
+   sdll135d.9.1.1.resu  : 462.96
+   sdll135d.9.1.2.resu  : 462.52
+   sdll135d.9.1.3.resu  : 502.78
+   sdll135d.9.1.4.resu  : 493.17
+   sdll135d.9.1.5.resu  : 496.79
+   sdll135d.9.1.6.resu  : 562.55
+   sdll135d.9.1.7.resu  : 496.93
+   sdll135d.9.1.8.resu  : 562.38
+   sdll135d.9.1.9.resu  : 564.49
+   sdll135d.9.1.10.resu : 485.42
+   sdll135d.9.1.11.resu : 473.11
+   sdll135d.9.1.12.resu : 502.91
+   sdll135d.9.1.13.resu : 496.80
+   sdll135d.9.1.14.resu : 493.14
+   sdll135d.9.1.15.resu : 511.18
+   sdll135d.9.1.16.resu : 511.58
+   sdll135d.9.1.17.resu : 511.35
+   sdll135d.9.1.18.resu : 511.32
+   
+   
+   Pour produire les sous-versions, j'ai introduit une nouvelle option dans as_run. Mode
+   d'emploi :
+   1. dans REP (répertoire chez moi, indépendant de l'installation existante d'aster), je
+   copie les sources + config.txt de la STA9.1
+   2. re-construction de la STA : as_run --aster_root=REP --make --version_dev=STA9.1
+   3. creation des sous-versions : as_run --aster_root=REP --auto_update --nolocal
+   --keep_increment
+   4. lancement d'un test à partir d'un .export (forcément astk ne saura pas que ces versions
+   existent) en y mettant le config.txt de la version choisie.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll135d
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011378 DU 2007-10-18 15:13:30
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.15, le cas test ssnl135a s'arrete par manque de temps CPU (B)
+FONCTIONNALITE
+   Le .para est à 400 s, le test a été cassé en 9.1.15 et est régulièrement limite (autour de
+   390 s).
+   
+   Avec les différentes sous-versions de la 9.1, le temps passé dans STAT_NON_LINE :
+    9.1.1  :  301.23
+    9.1.2  :  300.36
+    9.1.3  :  304.96
+    9.1.4  :  302.08
+    9.1.5  :  304.88
+    9.1.6  :  304.21
+    9.1.7  :  299.13
+    9.1.8  :  298.83
+    9.1.9  :  300.10
+    9.1.10 :  299.65
+    9.1.11 :  302.50
+    9.1.12 :  299.05
+    9.1.13 :  305.45
+    9.1.14 :  303.08
+    9.1.15 :  371.63  <<<
+    9.1.16 :  366.48  <<<
+    9.1.17 :  365.08  <<<
+    9.1.18 :  365.29  <<<
+   
+   En 9.1.15, on a introduit verift.f pour calculer la dilatation ce qui ajoute, sous la
+   boucle sur le nombre de fibres, un certain nombre de CALL RCVARC (+ des RCVALB qui appelle
+   RCVARC).
+   
+   En plus, dans ce test, on n'a pas de température.
+   sans verift : 256.69
+   
+   La généralité est-elle à ce prix ? Aux responsables des PMF de juger. La température ne
+   variant pas d'une fibre à l'autre, peut-être faut-il développer un utilitaire spécifique
+   pour ce type d'élément...
+   En attendant, j'augmente le .para.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnl135a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011246 DU 2007-09-13 15:27:42
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.10, le cas test ssls108a est NOOK (BCR)
+FONCTIONNALITE
+   L'idée initiale de TEST_FICHIER était d'arrondir les nombres réels trouvés dans le fichier
+   puis de calculer un md5sum sur l'ensemble de ces arrondis.
+   Il faut donc que tous les arrondis soient identiques sur les différentes machines.
+   Mais prenons ces deux nombres : 0.4967 et 0.5003, l'arrondi sera 0 ou 1. Statistiquement,
+   quelque soit la précision demandée, on aura toujours un nombre dans ce cas.
+   
+   Pour corriger ces "faux" NOOK, on revient à un test plus basique :
+   - on récupère les réels et entiers du fichier.
+   - (o) on teste le cardinal de cette liste [présence de NB_VALE].
+   - (f) on teste la somme, somme des valeurs absolues, min/max, min/max des valeurs absolues
+   [présence de VALE].
+   - (f) on teste exactement (md5) le reste du fichier (tout ce qui n'est pas un nombre)
+   [présence de VALE_K].
+   
+   
+   Exemple :
+   .TEST_FICHIER(FICHIER='fort.38',
+   .             NB_VALE=4590,
+   .             VALE=7.46868879e+04,
+   .             VALE_K='ae40c689586fd84841c49cde0aee2cdc',
+   .             # date a ignorer : ...-2004 15:00:10
+   .             EXPR_IGNORE='\-[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}',
+   .             REFERENCE='NON_REGRESSION',
+   .             VERSION='9.1.21',
+   .             INFO=1)
+   
+   Validation : astout des 14 tests appellant TEST_FICHIER sur 4 machines (Calibre4, Rocks,
+   Bull, Ubuntu) :
+   sdld102a
+   sdld313d
+   sdll138a
+   sdls08a : norme d'erreur d'un mode à 2.e-6 sur Ubuntu
+   ssll11b
+   ssls108a
+   ssls108b
+   ssnv102c
+   zzzz140a
+   zzzz161a
+   zzzz162a
+   zzzz176a
+   zzzz206a
+   zzzz216a
+   
+   
+   D'autre part, dans zzzz216a, TEST_FICHIER prenait 21s (fichier de 5 Mo).
+   
+   Si on lit tout le fichier d'un coup, on va environ 3 fois plus vite que si on le lit ligne
+   à ligne, mais on consomme en mémoire environ 5 fois la taille du fichier...
+   En lisant par paquet de 1000 (ou 10000), on va quasiment aussi vite en consommant très peu
+   de mémoire.
+   
+   #    fichier     tout   ligne/ligne   1000 lignes
+   #     10 Mo       3 s      10 s       3 s
+   #     50 Mo      17 s      48 s      17 s
+   #    100 Mo      34 s      96 s      35 s
+   
+   Sur zzzz216a, on descend à 2.9s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.92.04
+VALIDATION
+   14 tests TEST_FICHIER
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010229 DU 2006-11-08 14:34:18
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   TEST_FICHIER dans sdll138a - modification de l'arrondi
+FONCTIONNALITE
+   Réalisé lors de la correction de l'anomalie 11246.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   14 tests TEST_FICHIER
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011471 DU 2007-11-16 09:37:43
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Conformite avec Eficas
+FONCTIONNALITE
+   Dans Eficas, N_GEOM.py vérifie que les groupes de mailles fournis par l'utilisateur sont
+   bien des chaines de caractères.
+   
+   Il y a aucune raison de diverger dans les sources Aster.
+   
+   
+   Je glisse aussi une modif de asojb.py : en PAR_LOT='NON' (ou dans les macros), "print
+   concept" faisait automatiquement un IMPR_CO : pratique dans les phases de débuggage mais
+   pas quand un print traine par erreur.
+   Par défaut, __repr__ fait short_repr (type et non du concept). long_repr (IMPR_CO) peut
+   toujours etre appelé explicitement.
+   
+   
+   Ajout de vide.py : quand on fait des messages à suite UTMESS('A+',...), pour terminer le
+   message, on n'a pas toujours un vrai texte à écrire. Au lieu de garder des messages vides
+   dans les différents catalogues (qui disparaisseront lors des nettoyages), on crée à ces
+   fins un message VIDE_1 (cf. mdtr74.f).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   simple asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011474 DU 2007-11-16 14:12:16
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Modif pour eficas
+FONCTIONNALITE
+   Ajout de protection lors des imports pour eficas :
+   - ops.py (v8 uniquement)
+   - impr_oar_ops.py
+   - macr_ascouf_mail_ops.py
+   - macr_spectre_ops.py
+   - Sensibilite.py
+   
+   
+   
+   diff -urBb ORIG/ops.py v8.PY/ops.py
+   --- ORIG/ops.py	2007-11-16 15:14:02.000000000 +0100
+   +++ v8.PY/ops.py	2007-11-16 15:11:45.000000000 +0100
+   @@ -27,7 +27,6 @@
+    # Modules Eficas
+    import Accas
+    from Accas import ASSD
+   -from Utilitai.Utmess import UTMESS
+    
+    try:
+       import aster
+   @@ -35,6 +34,8 @@
+       # au JDC
+       import Build.B_CODE
+       Build.B_CODE.CODE.codex=aster
+   +
+   +   from Utilitai.Utmess import UTMESS
+    except:
+       pass
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ras
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010559 DU 2007-02-22 14:39:06
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   MACR_CABRI_MAIL : entiers dans des variables rxc3xa9elles
+FONCTIONNALITE
+   Ce type de modification m'a l'air jouable.
+   
+   On ne modifie que certains objets. Les objets modifiés et ceux qui
+   ne le sont pas sont tous validés par la suite car Accas valide l'attribut "valeur"
+   qui stocke la valeur convertie.
+   
+   Le fichier sauvegardé par Eficas restituera la valeur après conversion.
+   
+   Je propose de réduire au strict minimum l'utilisation de la conversion.
+   
+   Pour moi, elle n'est utile que si le mot clé simple attend un entier. Le cas où on attend 
+   un réel et où l'utilisateur fournit un entier est déjà traité par ailleurs.
+   
+   J'ai modifié les fichiers N_CONVERT.py et N_MCSIMP.py en conséquence (voir propal2.tgz joint)
+   
+   J'ai vérifié qu'Eficas fonctionne toujours après modification. 
+   
+   Il y a des restrictions qui me semblent légères :
+   Les paramètres ne sont pas impactés ce qui veut dire qu'un paramètre à 
+   valeur réelle ne sera pas accepté comme entier. 
+   Cette remarque est générale : tout objet qui se veut un entier (concept
+   entier, par exemple) ne peut avoir de valeur réelle (qui se convertit en entier)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 19/11/2007 - 18:22:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011352 DU 2007-10-12 08:34:20
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.14, le cas test forma03b s'arrete en ERREUR_<F> (C)
+FONCTIONNALITE
+   Fichier .mail supprimé sur les versions Bull (aster), Rocks (clpaster) et Calibre 4 (clp50a8).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.001
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 19/11/2007 - 16:20:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011443 DU 2007-11-09 16:42:23
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.18, le cas tes ssnv166b s'arrete par manque de temps CPU (C)
+FONCTIONNALITE
+   Problème
+   ========
+   
+   Le cas-test ssnv166b s'arrête par manque de temps CPU en 9.1.18 sur Calibre, par ailleurs
+   il présente des temps très différents selon les plate-formes.
+   L'essentiel du temps étant passé dans les STAT_NON_LINE :
+   
+   ### Bull ###
+    * STAT_NON_LINE    :     128.80 :       6.19 :     134.99 :     135.16 *
+    * STAT_NON_LINE    :     164.44 :      19.69 :     184.13 :     184.32 *
+   
+   ### Clpaster ###
+    * STAT_NON_LINE    :     486.84 :      15.06 :     501.90 :     646.48 *
+    * STAT_NON_LINE    :     445.65 :      38.66 :     484.31 :     546.22 *
+   
+   ### Calibre ###
+    * STAT_NON_LINE    :     687.58 :      19.68 :     707.26 :     796.43 *
+    * STAT_NON_LINE    :     605.29 :      48.31 :     653.60 :     693.60 *
+   
+   Il faut comprendre cette variabilité. Sont ce les paramétres mémoires ajustés (dans DEBUT)
+   ? Voir l'impact du info=2 sur le temps système (mais marginal). Essayer le profiling.
+   
+   
+   Analyse
+   =======
+   
+   Plusieurs possibilités ont été étudiées :
+   
+   * INFO=2 passé en INFO=1
+   ==> Aucun changement n'est à noter pour le temps des STAT_NON_LINE, par contre les
+   POST_K1_K2_K3, voient leur temps divisés par 2 (mais ce temps était négligable à l'origine)
+   
+   
+   * Les bibiothèques mathématiques BLAS
+   ==> C'est un point que j'avais déjà évoqué avec Jean-Pierre. Pour les plate-formes Linux
+   et Clpaster, les bibliothèques mathématiques utilisées à la compilation d'Aster sont les
+   versions fournies avec la distribution (respectivement Calibre et Rocks). On le sait ces
+   versions ne sont pas du tout optimisées (comme peuvent l'être les MKL de la Bull). Or le
+   principe même des méthodes multifrontales est de se ramener à des opérations de type BLAS,
+   on passe souvent 75% du temps de factorisation dans ces routines.
+   
+   J'ai compilé sur Calibre (claut623) et Rocks, une version GotoBLAS(meilleure
+   implémentation actuellement disponible à des fins non commerciales) que j'ai linké avec
+   Aster. Les résultats sont spectaculaires :
+   
+   ### Clpaster(GotoBLAS) ###
+    * STAT_NON_LINE    :     191.83 :      14.92 :     206.75 :     207.45 *
+    * STAT_NON_LINE    :     241.37 :      39.53 :     280.90 :     281.06 *
+   
+   ### Calibre(GotoBLAS) ###
+    * STAT_NON_LINE    :     161.69 :       8.69 :     170.38 :     187.37 *
+    * STAT_NON_LINE    :     196.07 :      26.31 :     222.38 :     238.04 *
+   
+   
+   * Jeveux dynamique
+   
+   Pour voir si le temps système était lié à JEVEUX, j'ai aussi essayé JEVEUX dynamique. Le
+   calcul plante alors dans POST_K1_K2_K3 à cause du bug de la fiche 11426 sauf sur Calibre
+   où on note une diminution des temps :
+   
+   ### Calibre (GotoBLAS + JEVEUX dynamique) ###
+    * STAT_NON_LINE    :     157.31 :       2.93 :     160.24 :     171.98 *
+    * STAT_NON_LINE    :     174.98 :       8.84 :     183.82 :     196.90 *
+   
+   * MUMPS
+   
+   Comme le temps système était encore un peu présent, j'ai aussi essayé d'utiliser MUMPS
+   (possible avec du contact grâce aux travaux d'Olivier). Là encore le gain est fort :
+   
+   ### Calibre (GotoBLAS + JEVEUX dynamique + MUMPS) ###
+    * STAT_NON_LINE    : 80.42s
+    * STAT_NON_LINE    : 91.06s
+   
+   
+   ### Bull (MKL + JEVEUX dynamique + MUMPS) ###
+    * STAT_NON_LINE    : 91.80s (20s de temps système à cause bug MUMPS Fiche 10403)
+    * STAT_NON_LINE    : 97.79s (10s de temps système à cause bug MUMPS Fiche 10403)
+   
+   Conclusion
+   ==========
+   
+   Il n'y a donc rien d'anormal à signaler sur ce cas-test. Pour répondre aux questions de
+   Christophe, la variabilité n'est due qu'au BLAS. Les paramètres de DEBUT ont une légère
+   influence.
+   
+   Comme évoqué avec Jean-Pierre, s'il est possible d'installer une version optimisée sur
+   Clpaster, ce n'est pas possible sur Calibre car on doit laisser vierge l'installation EDF
+   (sauf à demander l'installation par défaut de bibliothèques un peu mieux optimisées type
+   ATLAS).
+   
+   Modification proposée
+   =====================
+   
+   Afin de réduire quand même les temps de ce test. On propose 3 modifications :
+   
+   - passage en INFO=2
+   - solveur MUMPS (à la place de MULT_FRONT)
+   - JEVEUX dynamique (1 Mo passé à JEVEUX statique)
+   
+   Réduction du temps dans le .para de 1500s==>1000s. Paramètre mem_aster à 0.01
+   
+   Même avec les bibliothèques BLAS d'origine, cela réduit notablement les temps sur Clpaster
+   et Calibre. Il y a aussi une réduction sur Bull grâce à l'utilisation de MUMPS.
+   
+   ### Bull (JEVEUX dynamique + MUMPS) ###
+    * STAT_NON_LINE    :      69.39 :      20.12 :      89.51 :      89.66 *
+    * STAT_NON_LINE    :      86.48 :      10.54 :      97.02 :      97.03 *
+   
+   ### Clpaster (JEVEUX dynamique + MUMPS) ###
+    * STAT_NON_LINE    :     288.49 :       3.14 :     291.63 :     291.75 *
+    * STAT_NON_LINE    :     229.83 :       2.35 :     232.18 :     232.28 *
+   
+   ### Calibre (JEVEUX dynamique + MUMPS) ###
+    * STAT_NON_LINE    :     140.37 :       1.78 :     142.15 :     154.20 *
+    * STAT_NON_LINE    :     124.70 :       1.28 :     125.98 :     135.05 *
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv166b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 19/11/2007 - 17:47:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010376 DU 2006-12-12 09:13:46
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   CISA_2D et les xc3xa9lxc3xa9ments 3D
+FONCTIONNALITE
+   Si on essaie d'affecter un chargement CISA_2D sur un 
+   modèle 3D on émet un message d'erreur fatale.
+   Par contre, c'est bien dit dans la doc de AFFE_CHAR_MECA
+   PRES_REP : CISA_2D s'applique sur les éléments 2D.
+   La routine modifiée est CAPRES.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test 3D
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011406 DU 2007-10-26 12:07:58
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   HEXA8 sous-integre
+FONCTIONNALITE
+   les résultats obtenus avec une modélisation 3D_SI sur
+   un élément HEXA8 donne des résultats différents entre la 
+   machine Bull et une machine Calibre locale.
+   
+   cela ne se produit qu'avec MONOCRISTAL, POLYCRISTAL et sans 
+   doute ELAS_ORTH, c'est à dire les lois qui utilisent une 
+   orientation.
+   
+   En effet, si on met une orientation avec AFFE_CARA_ELEM / 
+   MASSIF, tout se passe bien. Mais si on n'en met pas, alors on 
+   a des résultats faux, différents entre machines.
+   
+   Cela vient du fait qu'au début du TE0407 l'orientation est 
+   initialisée à R8VIDE. C'est cette valeur qui doit être 
+   variable suivant les machines.
+   On corrige en initialisant à 0 les angles comme pour le 3D.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers associ?a la fiche
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010704 DU 2007-03-28 16:14:02
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   CALC_ELEM / REPE_COQUE
+FONCTIONNALITE
+   On modifie la routine mechn2 pour qu'elle initialise aux 
+   valeurs par défaut les entités non affectées , ce qui 
+   n'était pas le cas et expliquait le plantage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers associxc3xa9s a la fiche
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR devesa       DEVESA Georges         DATE 19/11/2007 - 18:45:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011460 DU 2007-11-13 18:33:06
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+   Macro-?ment dynamique comme super-maille de sous-structure
+FONCTIONNALITE
+   On corrige dans la routine COMP81 l'algorithme de 
+   recherche des noeuds internes au modèle de macro-élément 
+   dynamique correspondant aux modes propres dynamiques qui 
+   était mal programmé.
+   En outre, on précise par un nouveau mot clé 
+   SANS_GROUP_NO dans MACR_ELEM_DYNA la liste des noeuds de 
+   l'interface physique quand les interfaces physique et 
+   dynamique ne coïncident pas. Par exemple dans le cas de 
+   l'interface dynamique réduite à un point combinée à une 
+   liaison solide sur l'interface physique.
+   Le cas test MISS06B est normalement dans ce cas 
+   problématique, mais a pu passer du fait d'un ordre de 
+   numérotation favorable qui a permis d'obtenir de bons 
+   noeuds internes. Toutefois, une numérotation dans un 
+   autre sens aurait pu générer le problème. On corrige 
+   donc le cas test par précaution avec le nouveau mot clé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.1.1
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.65.01
+VALIDATION
+   test MISS06B
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 15/11/2007 - 14:40:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011340 DU 2007-10-10 13:49:37
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   corrections asse_maillage
+FONCTIONNALITE
+   En complément de la réalisation de l'évolution 11323 (à rentrer ultérieurement en v9),
+   correction en v9 et report en v8 de d'ASSE_MAILLAGE / COLLAGE : cas des group_ma se
+   retrouvant vides du fait de l'élimination des mailles de collage, problèmes de
+   dimensionnement de tableaux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests utilisant ASSE_MAILLAGE
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 15/11/2007 - 14:40:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010825 DU 2007-05-02 14:21:27
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   Salome_Meca : le mode distant de Stanley ne marche pas
+FONCTIONNALITE
+   Au sein de la plate-forme Salome_Meca, il est possible de lancer des visualisations
+   distantes sur d'autres sessions de Salomé. Malheuresement, ce mode distant de Stanley ne
+   marche pas... On corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   stanley
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 19/11/2007 - 18:05:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011182 DU 2007-08-28 07:35:16
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   Elements POU_D_TG en ELAS avec STAT_NON_LINE
+FONCTIONNALITE
+   Effectivement le comportement ELAS sous COMP_INCR, pour les POU_D_TG, n'était pas licite,
+   et est conforme à la documentation U3.11.04. Le seul comportement était VMIS_POUTRE avec 2
+   choix pour l'écrouissage de la fonction seuil de plasticité.
+   Aucun blindage du code n'était prévu dans le cas d'une utilisation non licite.
+   
+   La correction/évolution consiste à autoriser le comportement ELAS sous COMP_INCR, sans
+   être obligé de renseigner dans DEFI_MATERIAU un comportement de type VMIS_POUTRE.
+   
+   Validation :
+   Ajout dans le test ssnl106a, d'un nouveau cas :
+   CHMATE : nouveau matériau avec seulement la définition ELAS
+   RESE : recopie d'un STAT_NON_LINE précédent, avec modification du COMP_INCR=_F(RELATION =
+   'ELAS')
+   TEST_RESU: sur l'effort normal N=ES*Du/L
+   
+   Impact sur la doc :
+   Indiquer dans V6.02.106, modélisation a, qu'un test_resu existe sur le comportement élastique.
+   Indiquer dans U3.11.04, qu'il est maintenant possible d'affecter un comportement ELAS sous
+   COMP_INCR.
+   
+   
+   Impact sur le code :
+   te0346.f : dans le cas ou COMPOR=ELAS, il n'y a pas de variables internes. Il ne faut donc
+   plus chercher les pointeurs correspondant.
+   nmvmpo.f : dans le cas ELAS il faut rendre, la matrice élastique et le vecteur d'efforts
+   F(+)=F(-) + HELAS*DEPS
+   nmvmpm.f : affectations des paramètres matériau pour l'intégration. Création d'un nouveau
+   cas NUMLOI=0 qui correspond au comportement ELAS. Blindage avec erreur <F> si on essaye
+   d'affecter un comportement et un matériau non conforme à la doc.
+   algorith8.py : réécriture des messages 80, 81 avec plus de détails et suppression des
+   messages 82 et 83
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.02.106, U3.11.04
+VALIDATION
+   cas tests
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fournier     FOURNIER Isabelle      DATE 20/11/2007 - 10:26:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011472 DU 2007-11-16 11:21:55
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Liste de tests a passer en VISU_EFICAS='NON'
+FONCTIONNALITE
+   Version 9
+   Pour les cas-tests présentant du python, ajout de VISU_EFICAS = 'NON'
+   Pour le cas ssnp110c.comm, déplacement de la définition du paramètre 
+   relation après la commande DEBUT
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Sans objet
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 19/11/2007 - 16:08:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010732 DU 2007-04-02 06:29:24
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   XFEM - Post-traitement VALE_CONT
+FONCTIONNALITE
+   Problème :
+   La routine xmmres de création du champ VALE_CONT pour XFEM a deux problèmes:
+   - une de l'ordre "philosopique": les champs créées n'ont ni les mêmes noms (X1 à X6) 
+   ni les mêmes significations que pour les autres méthodes de contact
+   - une de l'ordre de l'anomalie: ne fonctionne qu'en mono-fissuration. A priori, dans 
+   le cas de la multifissuration, seule la première fissure sera prise en compte.
+   Je suggère que l'on alarme l'utilisateur pour le deuxième point (objet de cette 
+   anomalie)
+   
+   
+   Solution :
+   xmmres est maintenant calquée sur mmmres.f et a les memes fonctionnalités. Le VALE_CONT
+   est donc disponible.
+   je rajoute 3 valeurs dans VALE_CONT : les coordonnées du vrai point de contact (car dans
+   X-FEM, le point de contact ne coincide pas avec le noeuds qui porte les ddls).
+   
+   remarque : si le schema d'intégration du contact n'est pas nodal, il n'est pas possible de
+   connaitre le statut des points de contact.
+   
+   impact : cfmmvd.f  te0533.f  te0534.f  xmafr1.f  xmmcme.f  xmmres.f
+   grandeur_simple__.cata
+   
+   validation : ssnv182a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.182
+VALIDATION
+   ssnv182a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011450 DU 2007-11-12 10:34:49
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   Anomalie dans xkin2d pour un calcul XFEM sans contact
+FONCTIONNALITE
+   Problème:
+   ---------
+   
+   Pour un calcul XFEM, avec COMP_INCR (DEFORMATION='PETIT'), sans contact, avec des éléments
+   quadratiques, 
+   on obtient une erreur dans un TE.
+   
+   Le nombre de points de gauss est ecrit en dur NPG = 3 en dimension 2.
+   
+   or si le maillage est quadratique, le nombre de points de gauss des sous-triangles vaut 6
+   d'ou erreur quand on compare.
+   
+   
+   Solution : 
+   ----------
+   
+   On récupère le nombre de points de gauss des sous-triangles par un appel à elref4.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test en question
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET Sylvie          DATE 19/11/2007 - 14:16:43
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011389 DU 2007-10-23 14:42:22
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Cas test gravitaire en non saturxc3xa9
+FONCTIONNALITE
+   le cas test est le cas wtnp118 (a,b,c)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V7.32.118
+VALIDATION
+   Passage du cas test
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM Marc              DATE 19/11/2007 - 16:11:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011441 DU 2007-11-09 15:10:31
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   Loi de Hujeux: test wtnv132a et nmhuj.f ...
+FONCTIONNALITE
+   1)J'ai constaté une anomalie dans le fichier de commande 
+   wtnv132a.comm lors de la création des champs de variables internes 
+   à chaque couche ajoutée. L'utilisation du mot-clé MAXI_ABS est 
+   néfaste pour l'aspect multi-mécanisme de la loi de Hujeux. En 
+   effet, des variables internes indiquent l'état d'activation des 
+   mécanismes par 0, 1 ou -1.
+   
+   2) Corrections BUG:
+   2.1)Modification de la routine nmhuj.f:
+     changement test IF sur zéro numérique (R8PREM()) au lieu de zéro (0.D0)
+   
+   2.2)Modification de la routine hujci1.f:
+       dans la prédiction élastique, acceptation d'un incrément
+       de déformation volumique nul (dans ce cas, on court-circuite
+       carrément la méthode des sécantes et on calcule directement
+       la solution exacte de la prédiction)
+     
+   
+   3)Modification hujact.f  hujmei.f  hujmid.f  hujpot.f  hujpxd.f  hujres.f :
+    * Anomalie dans la gestion des mécanismes cycliques de 
+      consolidation. Il est nécessaire de retarder la création de la 
+      nouvelle surface de charge cyclique de consolidation au moment où 
+      l'état de contraintes sort du domaine élastique de cette surface 
+      cyclique potentielle;
+   * Anomalie dans le passage cyclique->monotone des mécanismes déviatoires:
+     on modifie le seuil de tolérance déclenchant le changement de mécanisme;
+   * Anomalie dans le passage mécanisme actif->inactif en sortie de l'intégration locale:
+     on modifie aussi le seuil de tolérance déclenchant le changement de statut;
+   
+   Validation:
+   ----------
+   
+   1) wtnv132a (construction par couches) à modifier
+   2) wtnv134a nouveau (référence comparative GEFDYN): essai triaxial non drainé cyclique
+   3) ssnv205a nouveau (référence comparative GEFDYN): essai de cisaillement drainé cyclique
+   
+   Traitement de la fiche par Alexandre FOUCAULT
+   
+   Resitution par Marc Kham
+   
+   Version cible 9.3
+   
+   Projet CODHYBAR
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.23, V6.04.205, V7.31.132, V7.31.134
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010629 DU 2007-03-12 07:56:33
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.12, le cas test sdnv105c s'arrete en ERREUR_<F> (R)
+FONCTIONNALITE
+   IDEM que pour la 10801, le bug a été corrigée par Nicolas Greffet dans la fiche 11212.
+   Voici le message que je recopie ici:
+   
+   =============================================================================
+   
+   Ce bug a pu être corrigé grâce à l'aide précieuse de Jacques et Jean-Michel, que 
+   je tiens à remercier ici.
+   
+   En fait il y avait 2 bugs, dont le premier, le plus ancien et à l'origine de la 
+   fiche, n'entrainait un plantage en FPE que sur Rocks, et encore pas en 
+   interactif mais en batch, et au bout de plusieurs minutes de calcul, dans un 
+   DYNA_NON_LINE.
+   
+   En fait, dans nmisot, on arrive avec OPTION = 'FULL_MECA', et COMPORT = 'ELAS'.
+   Or, dans ce cas, on passe quand même dans la boucle :
+             DO 119 K=1,NDIMSI
+               SIGDV(K) = SIGPDV(K)
+    119      CONTINUE
+   Ce qui n'a pas de sens en élasticité : SIGPDV n'est pas calculé, on recopie donc 
+   des valeurs non initialisées.
+   Sur Rocks, cela entraine une FPE... mais rien ailleurs.
+   En élasticité, SIGDV ne sert pas non plus...
+   
+   Je rajoute donc un test sur COMPOR :
+             IF (COMPOR(1)(1:9) .EQ. 'VMIS_ISOT') THEN
+               DO 119 K=1,NDIMSI
+                 SIGDV(K) = SIGPDV(K)
+    119        CONTINUE
+             ENDIF
+   
+   Ensuite, un deuxième bug est apparu la semaine dernière dans mmmbca.
+   A la fin de cette routine, on detruit l'objet CHAVIT qui n'est pas toujours crée.
+   Cet objet est utilisé si on a l'option LVITES, donc je remplace :
+         CALL JEDETR(CHAVIT)
+   par :
+         IF (LVITES) CALL JEDETR(CHAVIT)
+   
+   Routines impactées : nmisot et mmmbca.
+   
+   =====================================================================
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010801 DU 2007-04-23 10:39:35
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.0.16, sur Rocks (clpaster), le cas test sdnv105c s'arrete en ERREUR_NUMERIQUE
+FONCTIONNALITE
+   le bug a été corrigée par Nicolas Greffet dans la fiche 11212.
+   Voici le message que je recopie ici:
+   
+   =============================================================================
+   
+   Ce bug a pu être corrigé grâce à l'aide précieuse de Jacques et Jean-Michel, que 
+   je tiens à remercier ici.
+   
+   En fait il y avait 2 bugs, dont le premier, le plus ancien et à l'origine de la 
+   fiche, n'entrainait un plantage en FPE que sur Rocks, et encore pas en 
+   interactif mais en batch, et au bout de plusieurs minutes de calcul, dans un 
+   DYNA_NON_LINE.
+   
+   En fait, dans nmisot, on arrive avec OPTION = 'FULL_MECA', et COMPORT = 'ELAS'.
+   Or, dans ce cas, on passe quand même dans la boucle :
+             DO 119 K=1,NDIMSI
+               SIGDV(K) = SIGPDV(K)
+    119      CONTINUE
+   Ce qui n'a pas de sens en élasticité : SIGPDV n'est pas calculé, on recopie donc 
+   des valeurs non initialisées.
+   Sur Rocks, cela entraine une FPE... mais rien ailleurs.
+   En élasticité, SIGDV ne sert pas non plus...
+   
+   Je rajoute donc un test sur COMPOR :
+             IF (COMPOR(1)(1:9) .EQ. 'VMIS_ISOT') THEN
+               DO 119 K=1,NDIMSI
+                 SIGDV(K) = SIGPDV(K)
+    119        CONTINUE
+             ENDIF
+   
+   Ensuite, un deuxième bug est apparu la semaine dernière dans mmmbca.
+   A la fin de cette routine, on detruit l'objet CHAVIT qui n'est pas toujours crée.
+   Cet objet est utilisé si on a l'option LVITES, donc je remplace :
+         CALL JEDETR(CHAVIT)
+   par :
+         IF (LVITES) CALL JEDETR(CHAVIT)
+   
+   Routines impactées : nmisot et mmmbca.
+   
+   =====================================================================
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 19/11/2007 - 16:16:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011438 DU 2007-11-07 11:19:36
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   STAT_NON_LINE - comportement ECRO_PUIS
+FONCTIONNALITE
+   Il y avait effectivement un problème de conception de la loi : au tout début de la
+   plastification, on n'arrivait pas à converger, car sur la courbe de traction déduite de 
+   la loi en puissance, la pente à l'origine est infinie. La résolution itérative locale
+   prenant des centaines d'itérations pour calculer des valeurs de l'incrément de déformation
+   plastique de l'ordre de 1.E-40. (on voit bien la forme de la courbe sur les fichiers joints).
+   
+   La solution proposée consiste à linéariser la fonction d'écrouissage entre 0 et une valeur
+   arbitraire p0 (j'ai choisi p0 = 1.E-10, valeur indépendante des unités car c'est une
+   déformation). 
+   La courbe obtenue est comparée à la courbe 'analytique' dans les fichiers joints. 
+   
+   Les calculs passent alors (cf fichiers .resu), en 
+    * STAT_NON_LINE    :    1885.34 :       7.17 :    1892.51 :    1892.84 *
+   au lieu de 
+    * STAT_NON_LINE    :    1522.72 :      10.79 :    1533.51 :    1535.96 *
+   avec un comportement VMIS_ISOT_TRAC. Les résultats sont quasi-identiques.
+   
+   Cette différence de temps calcul est normale : avec VMIS_ISOT_TRAC, on tire parti de la
+   linéarité par morceaux de la courbe de traction pour résoudre. La résolution est immédiate
+   et ne nécessite aucune itération (cf R5.03.02).
+   Par contre avec VMIS_ISOT_PUIS, il faut nécessairement un procédé itératif pour résoudre,
+   d'où un accroissement de temps calcul.
+   
+   Je propose de restituer cette modification (seule la routine nmcri2 est modifiée). Elle
+   est testée dans l'étude jointe et dans COMP001H.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R5.03.02
+VALIDATION
+   comp001h, xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011375 DU 2007-10-18 15:01:32
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.1.15, les cas tests perfe03a et hplp100a s'arretent en NOOK (BCR)
+FONCTIONNALITE
+   Pb de départ : Avec la version 9.1.15, les cas tests perfe03a et hplp100a s'arretent en
+   NOOK sur les machines Bull Calibre4 et Rocks pour perfe03a et Rocks seulement pour hplp100a.
+   
+   Dans la fiche deux tests sont groupés mais les erreurs sont différentes 
+   
+   Le cas test hplp100a avait exactement le meme probleme que la fiche 11423. La routine
+   gbilin a été corrigée en 9.1.20 et le test passe.
+   
+   Pour le test PERFE03A, l'écart était minime  et identique sur toutes les plates-formes :  
+   NOOK INT_SI       RELA     0.101 % VALE: 3.7574249488936D+02
+   MOYE_SIZZ         TOLE     0.100 % REFE: 3.7536500000000D+02
+   je pourrais ajuster simplement la tolérance. 
+   
+   Mais j'en profite en fait pour améliorer ce test, en vue d'un futur développement sur le
+   sub-modelling. J'en profite également pour faire un petit "lifting" sur les tests PERFE01
+   et PERFE02, suite au travail avec l'equipe Perfect.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.03.118, V1.03.119, V1.03.120
+VALIDATION
+   perfe03a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011377 DU 2007-10-18 15:07:35
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.15, le cas test ssna103a s'arrete en ARRET_ANORMAL (B)
+FONCTIONNALITE
+   Il est OK en 9.1.20.
+   
+   La correction de Mathieu est donc  efficace (comme toujours !)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssna110a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010998 DU 2007-06-20 08:35:30
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   AR02 - sd_compor et doc D4.06.24
+FONCTIONNALITE
+   Je peux clore cette fiche grâce au travail de Jacques :
+   
+   Structure de Données sd_compor :
+   --------------------------------
+   la doc sd compor est écrite
+   Jacques a ajouté les vérifications nécessaires dans le fichier sd_compor.py.
+   
+   Impact_documentaire : D4.06.24
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.24
+VALIDATION
+   ssnv171b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011469 DU 2007-11-15 13:21:19
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.1.20, les cas tests ssnv171b,ssnv172b, sslv120a et zmat004a s'arretent en ERREUR_<F> (BCR)
+FONCTIONNALITE
+   Avec la version 9.1.20, les cas tests ssnv171b,ssnv172b, sslv120a et zmat004a s'arretaient
+   en ERREUR_<F> sur les machines Bull, Calibre4 et Rocks avec le message suivant :
+      COMPOR2=DEFI_COMPOR(MONOCRISTAL=_F(ECRO_ISOT='ECRO_ISOT2',
+                                        FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                        ECRO_CINE='ECRO_CINE1',
+                                        ELAS='ELAS',
+                                        MATER=ACIER,
+                                        ECOULEMENT='ECOU_VISC2'), );
+      !-------------------------------------------------!
+      ! <E> <SDVERI_45>                                 !
+      !       Erreur Python : voir traceback ci-dessous !
+   
+   C'est moi le coupable : j'ai restitué en version 9.1.18 :
+   
+   124a126,128
+   >          NVI = NVI+1
+   
+   Du coup, la formule écrite dans la doc de sd_compor.py :
+   nvi=8+3*nbsys doit etre modifiée par :
+   nvi=9+3*nbsys
+   
+   Après correction de sd_compor.py, les 4 tests cités dans la fiche sont OK
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.24
+VALIDATION
+   ssnv172
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 20/11/2007 - 09:39:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011463 DU 2007-11-14 14:17:25
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+   bug CALC_G en 3D, option CALC_K_G : pression fonction sur les levres
+FONCTIONNALITE
+   Problème rencontré :
+   Plantage brutal dans CALC_G/option CALC_K_G en 3D dans le cas où on a une pression de type
+   FORMULE sur les lèvres de la fissure et une pression constante sur la partie supérieure de
+   la structure.
+   Il y a donc deux chargements de type PRESSION.
+   
+   Explication :
+   On peut combiner plusieurs charges du même type à condition qu'aucune d'entre elles ne
+   soit du type FORMULE. Le plantage brutal vient d'un test mal formulé dans gcharg : le
+   calcul devrait s'arréter avec le message calculel5_57, mais il poursuit plus loin et
+   s'arrête dans un fointe...
+   
+   Correction :
+   On corrige le test dans gcharg pour s'arréter proprement.
+   Pour que l'utilisateur puisse faire son calcul, il doit ajouter le mot clé EXCIT dans
+   CALC_G en n'y mettant que le chargement de pression qui affecte les lèvres de la fissure
+   (-> message d'alarme pour signaler qu'il n'utilise pas toutes les charges).
+   
+   Remarques :
+   En version 8, il est interdit d'avoir deux chargements du même type ; le calcul s'arrête
+   "proprement" en indiquant le nom des deux charges considérées.
+   La prise en compte des chargements de type Formule fait l'objet de la fiche 10450.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test CALC_G + xc3xa9tude fournie
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND Christophe      DATE 20/11/2007 - 10:08:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011451 DU 2007-11-12 10:39:15
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   champ initial hydratation abusivement cr?
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Suite à un signalement sur le forum, on a remarqué que pour TNL, le champ d'hydratation du
+   premier instant (nul) est abusivement créé si on fait une résolution purement thermique
+   (voir infos dans .mess suite au premier pas de temps, ou infos sur champs archivés).
+   
+   Solution :
+   ==========
+   
+   On s'assure de bien faire un calcul thermo-hydrique avant de créer ce champ.
+   On sait qu'on est dans un calcul hydrique si le comportement est THER_HYDR (utilitaire
+   nthydr).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de tous les tests THER_XXX
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010955 DU 2007-06-07 15:40:19
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   ther_non_line poursuite avec hydratation
+FONCTIONNALITE
+   Comme le suggère Jacques, on scrute la SD evol_ther fournie comme état initial.
+   Si cette SD possède un champ HYDR_NOEU_ELGA mais pas de champ HYDR_ELNO_ELGA, on emet un
+   message d'alarme pour prévenir l'utilisateur que ce champ ne sera pas pris en compte et
+   que l'état initial hydrique est nul.
+   
+   Le message d'alarme est le suivant :
+   
+   8 : _("""
+    La SD evol_ther fournie comme état initial (via THER_NON_LINE / ETAT_INIT / EVOL_THER )
+   contient un champ HYDR_NOEU_ELGA mais pas de champ HYDR_ELNO_ELGA.
+    L'état hydrique initial sera pris "vierge" (0.).
+   """),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.54.02
+VALIDATION
+   passage de tous les cas tests THER_NON_LINE
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 20/11/2007 - 10:08:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011468 DU 2007-11-15 13:17:38
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW9.1.20, les cas tests rccm02a et rccm03a s'arretent en ARRET_ANORMAL (BCR)
+FONCTIONNALITE
+   On remplace TEMP_INIT par ETAT_INIT dans les THER_NON_LINE appelés dans les fichiers de
+   commande suivants :
+   - rccm02a.39
+   - rccm03a.41
+   - rccm03a.42
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas tests concern?
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 19/11/2007 - 18:28:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011457 DU 2007-11-13 12:16:04
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   COMB_MATR_ASSE: correction de amogen.f
+FONCTIONNALITE
+   Si on trouve une raideur négative, on la met à zero.
+   On vérifie à posteriori que la valeur de cette raideur 
+   est négligeable par rapport aux autres (on calcule le 
+   rapport entre la plus petite valeur negative (valeur 
+   absolue) et la plus grande valeur, puis on arrete en 
+   erreur si le rapport est trop important).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdns01b
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv205a                         kham M.KHAM             594    594      0
+ CASTEST AJOUT wtnp118a                       granet S.GRANET           295    295      0
+ CASTEST AJOUT wtnp118b                       granet S.GRANET           304    304      0
+ CASTEST AJOUT wtnp118c                       granet S.GRANET           309    309      0
+ CASTEST AJOUT wtnv134a                         kham M.KHAM             586    586      0
+ CASTEST MODIF comp001h                        proix J-M.PROIX          418      3      3
+ CASTEST MODIF comp001i                        proix J-M.PROIX         1525      2      2
+ CASTEST MODIF comp005a                     fournier I.FOURNIER         289      2      2
+ CASTEST MODIF comp005b                     fournier I.FOURNIER         289      2      2
+ CASTEST MODIF comp005c                     fournier I.FOURNIER         289      2      2
+ CASTEST MODIF erreu01a                     fournier I.FOURNIER         121      2      2
+ CASTEST MODIF erreu02a                     fournier I.FOURNIER         279      2      2
+ CASTEST MODIF miss02a                      fournier I.FOURNIER         525      2      2
+ CASTEST MODIF miss06b                        devesa G.DEVESA           759      5      1
+ CASTEST MODIF miss07a                      fournier I.FOURNIER         357      2      2
+ CASTEST MODIF miss09a                      fournier I.FOURNIER         847      2      2
+ CASTEST MODIF perfe01a                        proix J-M.PROIX          386     72     36
+ CASTEST MODIF perfe02a                        proix J-M.PROIX          246     44    347
+ CASTEST MODIF perfe03a                        proix J-M.PROIX          472    167     59
+ CASTEST MODIF rccm02a                       salmona L.SALMONA          353      1      1
+ CASTEST MODIF rccm03a                       salmona L.SALMONA         4279      1      1
+ CASTEST MODIF sdld102a                     courtois M.COURTOIS         788     13     65
+ CASTEST MODIF sdld313d                     courtois M.COURTOIS         320      4      5
+ CASTEST MODIF sdll138a                     courtois M.COURTOIS         660      9      9
+ CASTEST MODIF sdls08a                      courtois M.COURTOIS         282      5      5
+ CASTEST MODIF sdls112a                     fournier I.FOURNIER         419      2      2
+ CASTEST MODIF sdls113a                     fournier I.FOURNIER         416      2      2
+ CASTEST MODIF sdnl105c                     fournier I.FOURNIER         620      2      2
+ CASTEST MODIF sensd09b                     fournier I.FOURNIER         192      2      2
+ CASTEST MODIF sensd10a                     fournier I.FOURNIER         155      2      2
+ CASTEST MODIF sensd10b                     fournier I.FOURNIER         155      2      2
+ CASTEST MODIF sensd10c                     fournier I.FOURNIER         155      2      2
+ CASTEST MODIF sensd10d                     fournier I.FOURNIER         144      2      2
+ CASTEST MODIF sensd11a                     fournier I.FOURNIER         214      2      2
+ CASTEST MODIF sensd11b                     fournier I.FOURNIER         215      3      2
+ CASTEST MODIF sensd11c                     fournier I.FOURNIER         214      2      2
+ CASTEST MODIF sensd11d                     fournier I.FOURNIER         216      2      2
+ CASTEST MODIF ssll11b                      courtois M.COURTOIS         482      7      9
+ CASTEST MODIF ssll501a                     courtois M.COURTOIS         386      1      1
+ CASTEST MODIF ssls108a                     courtois M.COURTOIS         186     30     30
+ CASTEST MODIF ssls108b                     courtois M.COURTOIS         119      1     79
+ CASTEST MODIF ssnl106a                       flejou J-L.FLEJOU         450     58      1
+ CASTEST MODIF ssnl132a                     fournier I.FOURNIER         909      2      2
+ CASTEST MODIF ssnl135a                     courtois M.COURTOIS         731      1      1
+ CASTEST MODIF ssnp110c                     fournier I.FOURNIER         260    143    104
+ CASTEST MODIF ssnp117b                     fournier I.FOURNIER         651      2      2
+ CASTEST MODIF ssns108a                     fournier I.FOURNIER         405      2      2
+ CASTEST MODIF ssnv102c                     courtois M.COURTOIS         301     19     19
+ CASTEST MODIF ssnv166b                       desoza T.DESOZA           436     14     11
+ CASTEST MODIF ssnv182a                      geniaut S.GENIAUT          269     23     10
+ CASTEST MODIF ssnv185a                     fournier I.FOURNIER         336      2      2
+ CASTEST MODIF ssnv185e                     fournier I.FOURNIER         235      2      2
+ CASTEST MODIF ssnv185f                     fournier I.FOURNIER         251      2      2
+ CASTEST MODIF ssnv185i                     fournier I.FOURNIER         266      2      2
+ CASTEST MODIF ssnv185j                     fournier I.FOURNIER         252      2      2
+ CASTEST MODIF ssnv185l                     fournier I.FOURNIER         459      2      2
+ CASTEST MODIF ssnv185m                     fournier I.FOURNIER         282      2      2
+ CASTEST MODIF ssnv192a                     fournier I.FOURNIER         412      2      2
+ CASTEST MODIF wtnv132a                         kham M.KHAM             615     15     22
+ CASTEST MODIF zmat004a                        proix J-M.PROIX          429      2      2
+ CASTEST MODIF zzzz110a                     fournier I.FOURNIER         292      2      2
+ CASTEST MODIF zzzz140a                     courtois M.COURTOIS         166     18     17
+ CASTEST MODIF zzzz161a                     courtois M.COURTOIS         261      4      5
+ CASTEST MODIF zzzz162a                     courtois M.COURTOIS         633     10     13
+ CASTEST MODIF zzzz176a                     courtois M.COURTOIS         167      5      5
+ CASTEST MODIF zzzz186a                     courtois M.COURTOIS          40      1      1
+ CASTEST MODIF zzzz206a                     courtois M.COURTOIS          54      5      5
+ CASTEST MODIF zzzz208a                     fournier I.FOURNIER         481      2      2
+ CASTEST MODIF zzzz208b                     fournier I.FOURNIER         449      2      2
+ CASTEST MODIF zzzz213a                     fournier I.FOURNIER         232      2      2
+ CASTEST MODIF zzzz216a                     courtois M.COURTOIS         280      4      5
+ CASTEST MODIF zzzz223a                     fournier I.FOURNIER         145      2      2
+CATALOGU MODIF compelem/grandeur_simple__    geniaut S.GENIAUT          702      7      3
+CATALOPY MODIF commande/factoriser          courtois M.COURTOIS          60      3      3
+CATALOPY MODIF commande/macr_elem_dyna        devesa G.DEVESA            40      2      1
+CATALOPY MODIF commande/test_fichier        courtois M.COURTOIS          47     10      4
+CATALOPY MODIF entete/accas                 courtois M.COURTOIS         227      4      1
+FORTRAN90 MODIF mumps/amumpc                  boiteau O.BOITEAU          837     75     10
+FORTRAN90 MODIF mumps/amumpr                  boiteau O.BOITEAU          860     74     11
+FORTRAN90 MODIF mumps/amumps                  boiteau O.BOITEAU          225      1      1
+ FORTRAN AJOUT algorith/ecpuis                 proix J-M.PROIX           46     46      0
+ FORTRAN MODIF algeline/amogen               zentner I.ZENTNER          177     17      3
+ FORTRAN MODIF algorith/comp81                devesa G.DEVESA           308     19     11
+ FORTRAN MODIF algorith/cresol               boiteau O.BOITEAU          590     15      6
+ FORTRAN MODIF algorith/hujact                  kham M.KHAM             400     93     63
+ FORTRAN MODIF algorith/hujci1                  kham M.KHAM             203      5      2
+ FORTRAN MODIF algorith/hujmei                  kham M.KHAM              49     10     36
+ FORTRAN MODIF algorith/hujmid                  kham M.KHAM             359      4      4
+ FORTRAN MODIF algorith/hujpot                  kham M.KHAM             395     24     27
+ FORTRAN MODIF algorith/hujpxd                  kham M.KHAM              90      3      4
+ FORTRAN MODIF algorith/hujres                  kham M.KHAM             313     16     27
+ FORTRAN MODIF algorith/lcvmgv                 proix J-M.PROIX          551      3      5
+ FORTRAN MODIF algorith/mdtr74              courtois M.COURTOIS         724      2      2
+ FORTRAN MODIF algorith/nmcri2                 proix J-M.PROIX           52      3      7
+ FORTRAN MODIF algorith/nmelnl                 proix J-M.PROIX          493      7     10
+ FORTRAN MODIF algorith/nmhuj                   kham M.KHAM             428     30     29
+ FORTRAN MODIF algorith/nmisot                 proix J-M.PROIX          508      6      9
+ FORTRAN MODIF algorith/nmvmpm                flejou J-L.FLEJOU         215     95     14
+ FORTRAN MODIF algorith/nmvmpo                flejou J-L.FLEJOU         339     51     41
+ FORTRAN MODIF algorith/xinc3d               geniaut S.GENIAUT          188     30     25
+ FORTRAN MODIF algorith/xmafr1               geniaut S.GENIAUT           68      5      6
+ FORTRAN MODIF algorith/xmmcme               geniaut S.GENIAUT          255     23      2
+ FORTRAN MODIF algorith/xmmres               geniaut S.GENIAUT          461    294    105
+ FORTRAN MODIF assembla/assmiv               boiteau O.BOITEAU          674      2      2
+ FORTRAN MODIF assembla/assmmn               boiteau O.BOITEAU          955     72      5
+ FORTRAN MODIF assembla/assvec               boiteau O.BOITEAU         1045      2      2
+ FORTRAN MODIF assembla/numero               boiteau O.BOITEAU          429      2      3
+ FORTRAN MODIF calculel/gcharg               rezette C.REZETTE          467      5      5
+ FORTRAN MODIF calculel/mechn2             desroches X.DESROCHES        171     44     27
+ FORTRAN MODIF elements/te0346                flejou J-L.FLEJOU         194     38     28
+ FORTRAN MODIF elements/te0407             desroches X.DESROCHES        171     20     11
+ FORTRAN MODIF elements/te0533               geniaut S.GENIAUT          607      2      2
+ FORTRAN MODIF elements/te0534               geniaut S.GENIAUT          488      2      2
+ FORTRAN MODIF modelisa/asmaco                durand C.DURAND           622     90     21
+ FORTRAN MODIF modelisa/capres             desroches X.DESROCHES        148      2      1
+ FORTRAN MODIF modelisa/cfmmvd               geniaut S.GENIAUT           97      5      3
+ FORTRAN MODIF prepost/xpoajc                geniaut S.GENIAUT          159      3      1
+  PYTHON AJOUT Messages/vide                courtois M.COURTOIS          26     26      0
+  PYTHON AJOUT Noyau/N_CONVERT              courtois M.COURTOIS          78     78      0
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         467      1      3
+  PYTHON MODIF Execution/E_ETAPE            courtois M.COURTOIS         277      6      2
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         323      3      1
+  PYTHON MODIF Execution/E_SUPERV           courtois M.COURTOIS         369     12      2
+  PYTHON MODIF Macro/impr_oar_ops           courtois M.COURTOIS         773      9      5
+  PYTHON MODIF Macro/macr_ascouf_mail_ops   courtois M.COURTOIS        2632      6      3
+  PYTHON MODIF Macro/macr_recal_ops         courtois M.COURTOIS        1027      1      1
+  PYTHON MODIF Macro/macr_spectre_ops       courtois M.COURTOIS         362      8      3
+  PYTHON MODIF Macro/Sensibilite            courtois M.COURTOIS         226      7      3
+  PYTHON MODIF Macro/test_fichier_ops       courtois M.COURTOIS         313    225    189
+  PYTHON MODIF Messages/algorith8             flejou J-L.FLEJOU         378     19      9
+  PYTHON MODIF Messages/algorith9            salmona L.SALMONA          324      5      1
+  PYTHON MODIF Messages/factor               boiteau O.BOITEAU          238     11      1
+  PYTHON MODIF Messages/modelisa7             durand C.DURAND           415      6      1
+  PYTHON MODIF Messages/modelisa9          desroches X.DESROCHES        515      4      1
+  PYTHON MODIF Messages/test0               courtois M.COURTOIS          56     28      4
+  PYTHON MODIF Noyau/asojb                  courtois M.COURTOIS         337      6      2
+  PYTHON MODIF Noyau/N_GEOM                 courtois M.COURTOIS          65      3      1
+  PYTHON MODIF Noyau/N_MCSIMP               courtois M.COURTOIS         182      5      3
+  PYTHON MODIF SD/sd_compor                    proix J-M.PROIX          187      3      3
+  PYTHON MODIF Stanley/salomeVisu             durand C.DURAND           501      2      2
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          3149     11     24
+  PYTHON MODIF Utilitai/as_timer            courtois M.COURTOIS         253      4      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        2238      2238             +2238
+ MODIF :  134       58681      2365    1799      +566
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  142       60919      4603    1799     +2804 

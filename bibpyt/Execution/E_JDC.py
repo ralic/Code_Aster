@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,7 +80,9 @@ class JDC:
       self.cr=self.CR(debut="CR d'execution de JDC en MIXTE",
                      fin  ="fin CR d'execution de JDC en MIXTE")
 
+      self.timer.Start(" . build")
       ret=self._Build()
+      self.timer.Stop(" . build")
       if ret != 0:
         CONTEXT.unset_current_step()
         return ret

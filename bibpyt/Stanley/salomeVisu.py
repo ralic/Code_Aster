@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF salomeVisu Stanley  DATE 15/11/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,14 +115,14 @@ class VISU:
                     UTMESS('A','STANLEY_16', valk=[var])
                     return {}
 
-            if '-ORBInitRef' not in sys.argv:
-                key = 'machine_salome_port'
-                nsPort = param[ key ]
-                if not nsPort:
-                    UTMESS('A','STANLEY_17')
-                    return {}                    
-                aORBInitRef     = 'NameService=corbaname::%s:%s' %(  amachineName, nsPort  )
-                result[ 'ORBInitRef' ]  = aORBInitRef
+            # Construction du paramètre 'ORBInitRef'
+            key = 'machine_salome_port'
+            nsPort = param[ key ]
+            if not nsPort:
+                UTMESS('A','STANLEY_17')
+                return {}                    
+            aORBInitRef     = 'NameService=corbaname::%s:%s' %(  amachineName, nsPort  )
+            result[ 'ORBInitRef' ]  = aORBInitRef
 
         except KeyError:            
             UTMESS('A','STANLEY_16',valk=[key])

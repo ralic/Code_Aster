@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -337,11 +337,10 @@ IMPR_RESU(
 DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/ssll11b.36',
-             NB_CHIFFRE=6,
-             EPSILON=1.E-14,
-             VALE_K='c8f2f64188fe698aecc76e321200e848',
+             NB_VALE=271,
+             VALE=4.7320008E+02,
              REFERENCE='NON_REGRESSION',
-             VERSION='8.1.1',);
+             VERSION='9.1.21',)
 
 DEFI_FICHIER( UNITE=37,
               FICHIER= './REPE_OUT/ssll11b.37')
@@ -353,11 +352,10 @@ IMPR_RESU(UNITE=37,FORMAT='GMSH',
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
 TEST_FICHIER(FICHIER='./REPE_OUT/ssll11b.37',
-             NB_CHIFFRE=6,
-             EPSILON=1.E-14,
-             VALE_K='c48487446413d181e2ae5c5bdc42a3e4',
+             NB_VALE=271,
+             VALE=4.7320009E+02,
              REFERENCE='NON_REGRESSION',
-             VERSION='8.1.1',);
+             VERSION='9.1.21',);
 #
 #======================================================================
 #

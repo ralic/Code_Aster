@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # TITRE VALIDATION DE LA MODELISATION D_PLAN_GRAD_VARI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='COMP005B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='COMP005B', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 
 
 MA_L  =  LIRE_MAILLAGE();

@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -357,13 +357,12 @@ C       -------------------------------------------
             VIP(2) = 1.D0
             PM = VIM(1)
             IF (CPLAN) THEN
-              PREC= CRIT(3)
               NITER=NINT(CRIT(1))
               JPROL2 = JPROLP
               JVALE2 = JVALEP
               NBVAL2 = NBVALP
               VAL0 = NMCRI1(0.D0)
-              PRECR = PREC * SIGY
+              PRECR = CRIT(3) * SIGY
 C
 C             CALCUL DE L'APPROXIMATION : DP SANS CONTRAINTE PLANE
 C
@@ -396,19 +395,17 @@ C
                 RP = SIGY +RPRIM*(PM+DP)
               ELSEIF (COMPOR(1)(10:14) .EQ. '_PUIS') THEN
                 DP0 = (SIELEQ - RP)/(1.5D0*DEUXMU)
-C AMELIORATION DE LA PREDICTION DE DP EN ESTIMANT RPRIM(PM+DP0)
-C PAS TRES EFFICACE : ON GAGNE UNE ITERATION DANS ZEROFO !
+C               AMELIORATION DE LA PREDICTION DE DP EN ESTIMANT
+C               RPRIM(PM+DP0)
                 RPRIM0 = UNSURN*SIGY*COCO * (COCO*(PM+DP0))**(UNSURN-1)
                 DP0 = DP0 / (1+RPRIM0/1.5D0/DEUXMU)
                 XAP   = DP0
                 VAL0  = NMCRI2(0.D0)
-                PREC  = CRIT(3)
-                PRECR = PREC * SIGY
+                PRECR = CRIT(3) * SIGY
                 NITER = NINT(CRIT(1))
                 CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,DP,IRET)
                 IF(IRET.EQ.1) GOTO 9999
-                COCO   = E/ALFAFA/SIGY
-                RP = SIGY + SIGY * (COCO*(PM+DP))**UNSURN
+                CALL ECPUIS(E,SIGY,ALFAFA,UNSURN,PM,DP,RP,RPRIM)
               ELSE
                 CALL RCFONC('E','TRACTION',JPROLP,JVALEP,NBVALP,RBID,E,
      &                      NU,VIM(1),RP,RPRIM,AIRERP,SIELEQ,DP)

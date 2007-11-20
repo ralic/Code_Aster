@@ -1,7 +1,7 @@
       SUBROUTINE NMVMPM(COMPOR,ICODMA,ITEMP,TEMP,E,XNU,LOI346)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,17 +37,32 @@ C      LOI346  : TABLEAU DE CARACTERISTIQUES
 C
 C     VARIABLES NECESSAIRE AUX LOIS DE COMPORTEMENT
 C
-      REAL*8  XNP,XMPY,XMEY,XAY,XBY,XMPZ,XMEZ,XMPX,XAZ,XBZ,
-     &  SU, SY , E , EP , PUISS, XNU
-      INTEGER NUMLOI,NBPAR
+      REAL*8   ZERO
+      PARAMETER (ZERO = 0.0D0)
+
+      REAL*8   XNP,XMPY,XMEY,XAY,XBY,XMPZ,XMEZ,XMPX,XAZ,XBZ,
+     &         SU, SY , E , EP , PUISS, XNU
+      INTEGER  NUMLOI,NBPAR
       REAL*8       VALPAR,VALRES(10)
       CHARACTER*2  CODRET(10)
       CHARACTER*8  NOPAR,NOMRE2(4),NOMRE3(10),NOMRE4(2)
+
+C     POUR LES MESSAGES
+      REAL*8       VALRM(2)
+      INTEGER      VALIM(2)
+      CHARACTER*15 VALKM(5)
 C
       DATA NOMRE2/'EP','SY','SU','PUISS'/
       DATA NOMRE3/'NP','MEY','MPY','CAY','CBY','MEZ','MPZ','CAZ','CBZ',
-     &     'MPX'/
+     &            'MPX'/
       DATA NOMRE4/'D_SIGM_EPSI','SY'/
+
+
+      IF ( COMPOR(1) .EQ. 'ELAS' ) THEN
+         LOI346(1) = 0
+         GOTO 9999
+      ENDIF
+
       IF (ITEMP.EQ.0) THEN
          NBPAR  = 0
          NOPAR  = ' '
@@ -57,36 +72,83 @@ C
          NOPAR  = 'TEMP'
          VALPAR = TEMP
       ENDIF
-C
-C     SI C'EST DE L'ECROUISSAGE LINEAIRE
-C
+
+      NUMLOI = 0
+      XMPY = ZERO
+      XMEY = ZERO
+      XAY  = ZERO
+      XBY  = ZERO
+      XMPZ = ZERO
+      XMEZ = ZERO
+      XMPX = ZERO
+      XAZ  = ZERO
+      XBZ  = ZERO
+      XNP  = ZERO
+      EP   = ZERO
+      SY   = ZERO
+      SU   = ZERO
+      PUISS= ZERO
+
+C     LE TYPE D'ECROUISSAGE
       IF ( COMPOR(1) .EQ. 'VMIS_POU_LINE' ) THEN
-        NUMLOI = 1
-        CALL RCVALA(ICODMA,' ','ECRO_LINE',NBPAR,NOPAR,VALPAR,2,
-     &              NOMRE4,VALRES,CODRET,'FM')
-        EP = VALRES(1)
-        SY = VALRES(2)
+         NUMLOI = 1
+         CALL RCVALA(ICODMA,' ','ECRO_LINE',NBPAR,NOPAR,VALPAR,2,
+     &               NOMRE4,VALRES,CODRET,'FM')
+         EP = VALRES(1)
+         SY = VALRES(2)
+         IF (EP .GE. E) THEN
+            VALKM(1) = 'EP'
+            VALKM(2) = 'E'
+            VALKM(3) = 'VMIS_POU_LINE'
+            VALKM(4) = 'ECRO_LINE'
+            VALRM(1) = EP
+            VALRM(2) = E
+            CALL U2MESG('F','ALGORITH8_80',4,VALKM,0,VALIM,2,VALRM)
+         ENDIF
+
       ELSE IF ( COMPOR(1) .EQ. 'VMIS_POU_FLEJOU' ) THEN
-        NUMLOI = 2
-        CALL RCVALA(ICODMA,' ','ECRO_FLEJOU',NBPAR,NOPAR,VALPAR,4,
-     &              NOMRE2,VALRES,CODRET,'FM')
-        EP    = VALRES(1)
-        SY    = VALRES(2)
-        SU    = VALRES(3)
-        PUISS = VALRES(4)
-        IF (SY .GE. SU) THEN
-           CALL U2MESS('F','ALGORITH8_80')
-        ENDIF
+         NUMLOI = 2
+         CALL RCVALA(ICODMA,' ','ECRO_FLEJOU',NBPAR,NOPAR,VALPAR,4,
+     &               NOMRE2,VALRES,CODRET,'FM')
+         EP    = VALRES(1)
+         SY    = VALRES(2)
+         SU    = VALRES(3)
+         PUISS = VALRES(4)
+C
+         IF (SY .GE. SU) THEN
+            VALKM(1) = 'SY'
+            VALKM(2) = 'SU'
+            VALKM(3) = 'VMIS_POU_FLEJOU'
+            VALKM(4) = 'ECRO_FLEJOU'
+            VALRM(1) = SY
+            VALRM(2) = SU
+            CALL U2MESG('F','ALGORITH8_80',4,VALKM,0,VALIM,2,VALRM)
+         ENDIF
+         IF (EP .GE. E) THEN
+            VALKM(1) = 'EP'
+            VALKM(2) = 'E'
+            VALKM(3) = 'VMIS_POU_FLEJOU'
+            VALKM(4) = 'ECRO_FLEJOU'
+            VALRM(1) = EP
+            VALRM(2) = E
+            CALL U2MESG('F','ALGORITH8_80',4,VALKM,0,VALIM,2,VALRM)
+         ENDIF
       ENDIF
-        IF (EP .GE. E) THEN
-           CALL U2MESS('F','ALGORITH8_81')
-        ENDIF
-        EP = E*EP/(E-EP)
-C
+      IF ( NUMLOI .EQ. 0 ) THEN
+         VALKM(1) = 'VMIS_POU_LINE'
+         VALKM(2) = 'ECRO_LINE'
+         VALKM(3) = 'VMIS_POU_FLEJOU'
+         VALKM(4) = 'ECRO_FLEJOU'
+         VALKM(5) = 'VMIS_POUTRE'
+         CALL U2MESK('F','ALGORITH8_81',5,VALKM)
+      ENDIF
+
+C     CALCUL DU EP : MODULE PLASTIQUE TANGENT
+      EP = E*EP/(E-EP)
+
 C     NP,MEY,CAY,...,MPX
-C
       CALL RCVALA(ICODMA,' ','VMIS_POUTRE',NBPAR,NOPAR,VALPAR,10,
-     &              NOMRE3,VALRES,CODRET,'FM')
+     &            NOMRE3,VALRES,CODRET,'FM')
       XNP  = VALRES(1)
       XMEY = VALRES(2)
       XMPY = VALRES(3)
@@ -99,17 +161,34 @@ C
       XMPX = VALRES(10)
 
       IF (XMEY .GT. XMPY) THEN
-         CALL U2MESS('F','ALGORITH8_82')
+         VALKM(1) = 'MEY'
+         VALKM(2) = 'MPY'
+         IF ( NUMLOI .EQ. 1 ) THEN
+            VALKM(3) = 'VMIS_POU_LINE'
+         ELSE
+            VALKM(3) = 'VMIS_POU_FLEJOU'
+         ENDIF
+         VALKM(4) = 'VMIS_POUTRE'
+         VALRM(1) = XMEY
+         VALRM(2) = XMPY
+         CALL U2MESG('F','ALGORITH8_80',4,VALKM,0,VALIM,2,VALRM)
       ENDIF
-
       IF (XMEZ .GT. XMPZ) THEN
-         CALL U2MESS('F','ALGORITH8_83')
+         VALKM(1) = 'MEZ'
+         VALKM(2) = 'MPZ'
+         IF ( NUMLOI .EQ. 1 ) THEN
+            VALKM(3) = 'VMIS_POU_LINE'
+         ELSE
+            VALKM(3) = 'VMIS_POU_FLEJOU'
+         ENDIF
+         VALKM(4) = 'VMIS_POUTRE'
+         VALRM(1) = XMEZ
+         VALRM(2) = XMPZ
+         CALL U2MESG('F','ALGORITH8_80',4,VALKM,0,VALIM,2,VALRM)
       ENDIF
-C
 C     VARIABLES NECESSAIRES A LA LOI DE COMPORTEMENT PLASTIQUE
 C     XNP,XMPY,XMEY,XAY,XBY,XMPZ,XMEZ,XMPX,XAZ,XBZ,
 C     SU, SY , E , EP , PUISS, AA,XIY,XIZ,XJX,XNU
-C
       LOI346(1    ) = NUMLOI
       LOI346(1+ 1 ) = XMPY
       LOI346(1+ 2 ) = XMEY
@@ -125,10 +204,12 @@ C
       LOI346(1+12 ) = E
       LOI346(1+13 ) = EP
       LOI346(1+14 ) = PUISS
-C      LOI346(1+15 ) = AA
-C      LOI346(1+16 ) = XIY
-C      LOI346(1+17 ) = XIZ
-C      LOI346(1+18 ) = XJX
+C     LOI346(1+15 ) = AA
+C     LOI346(1+16 ) = XIY
+C     LOI346(1+17 ) = XIZ
+C     LOI346(1+18 ) = XJX
       LOI346(1+19 ) = XNU
       LOI346(1+20 ) = XNP
+
+9999  CONTINUE
       END

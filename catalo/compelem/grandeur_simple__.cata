@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF COMPELEM  DATE 19/11/2007   AUTEUR GENIAUT S.GENIAUT 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -457,13 +457,17 @@ GRANDEUR_SIMPLE__
         I      : PERCUSSION POUR DYNA_NON_LINE
         IX     : COMPOSANTE X DE LA PERCUSSION
         IY     : COMPOSANTE Y DE LA PERCUSSION
-        IZ     : COMPOSANTE Z DE LA PERCUSSION >>
-    INFC_R   = R    CONT     JEU      RN    RNX   RNY  RNZ
+        IZ     : COMPOSANTE Z DE LA PERCUSSION 
+        PT_X   : COORDONNEE SUIANT X DU POINT DE CONTACT
+        PT_Y   : COORDONNEE SUIANT Y DU POINT DE CONTACT
+        PT_Z   : COORDONNEE SUIANT Z DU POINT DE CONTACT
+        >>
+    INFC_R   = R    CONT     JEU      RN       RNX      RNY      RNZ
                     GLIX     GLIY     GLI
                     RTAX     RTAY     RTAZ
                     RTGX     RTGY     RTGZ
-                    RX       RY       RZ    R
-                    HN       I        IX    IY    IZ
+                    RX       RY       RZ       R
+                    HN       I        IX       IY       IZ       PT_X     PT_Y     PT_Z
     INST_R   = R    INST     DELTAT   THETA    KHI      R        RHO
     INTE_R   = R    INTX     INTY     INTZ
     IRRA_R   = R    IRRA

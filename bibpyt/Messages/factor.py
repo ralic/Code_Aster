@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF factor Messages  DATE 19/11/2007   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,6 +222,16 @@ Alarme Solveur MUMPS :
 Solution :
   On peut essayer de corriger l'affectation de XMPSK%ICNTL(10) dans AMUMPR/C.F.
   Contactez l'assistance.
+"""),
+
+#-----------------------------------------------------------------------------------------------
+63: _("""
+Information Solveur MUMPS :
+  Déséquilibrage de charge maximum supérieur à %(r1)g %% sur au moins une des 6 étapes profilées.
+Conseils: Pour optimiser l'équilibrage de votre calcul, vous pouvez essayer
+        - d'enlever du modèle les mailles qui ne participent pas au calcul,
+        - utiliser l'option 'DISTRIBUE_SD' au lieu de 'DISTRIBUE_MAILLE' ou 'CENTRALISE',
+        - diminuer le nombre de processeurs utilisés.
 """),
 
 #-----------------------------------------------------------------------------------------------

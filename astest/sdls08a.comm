@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -271,12 +271,12 @@ IMPR_GENE(UNITE=38,
 DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
 
 TEST_FICHIER(FICHIER='fort.38',
-             NB_CHIFFRE=4,
-             EPSILON=1.E-4,
-             VALE_K='080614fa072e39052f1b96aaa829e0d4',
+             NB_VALE=4590,
+             VALE=7.46868879e+04,
+             VALE_K='ae40c689586fd84841c49cde0aee2cdc',
              EXPR_IGNORE = ('ASTER','INSTANT','ORDRE','FREQ'),
              REFERENCE='NON_REGRESSION',
-             VERSION='8.0.21',
+             VERSION='9.1.21',
              INFO=1);
 
 FIN();

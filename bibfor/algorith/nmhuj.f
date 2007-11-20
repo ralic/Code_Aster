@@ -3,7 +3,7 @@
      &   DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -101,9 +101,9 @@ C       ----------------------------------------------------------------
         REAL*8        CRIT(*), VIND(*), VINF(*)
         REAL*8        INSTAM, INSTAP, TEMPM, TEMPF, TREF
         REAL*8        EPSD(6), DEPS(6), EPSF(6), DEPS0(6)
-        REAL*8        SIGD(6), SIGF(6), DSDE(6,6)
-        REAL*8        SEUILI, SEUILD(3)
-        REAL*8        D, PISO, DEPSR(6), DEPSQ(6)
+        REAL*8        SIGD(6), SIGF(6), DSDE(6,6), SEUIL
+        REAL*8        D, PISO, DEPSR(6), DEPSQ(6), TIN(3), Q
+        REAL*8        M, PHI, B, DEGR
         REAL*8        PC0, RATIO(6), SIGD0(6), HILL, DSIG(6) 
         CHARACTER*6   MECAND, MECANF
         CHARACTER*7   ETATD, ETATF
@@ -113,8 +113,12 @@ C       ----------------------------------------------------------------
         REAL*8        DEPSTH(6), EPSDTH(6), ALPHAF, ALPHAM
         REAL*8        EPSTHE,EPSTHM
         REAL*8        MATERF(22,2), I1D, D13, ZERO, UN
+        REAL*8        R8PREM
         INTEGER       UMESS, IUNIFI, IISNAN
         LOGICAL       DEBUG, CONV
+       
+        PARAMETER     ( DEGR  = 0.0174532925199D0 )
+
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT, NDI
         COMMON /MESHUJ/ DEBUG
@@ -130,11 +134,10 @@ C        DEBUG = .FALSE.
 
 C        UMESS = IUNIFI('MESSAGE')
         MOD   = TYPMOD(1)
-
+C        WRITE(6,*)'R8PREM =',R8PREM()
 C        WRITE(6,'(A)')'***********************************'
-C        WRITE(6,'(A,8(1X,E16.9))')'VIND =',(VIND(I),I=1,8)
-C        WRITE(6,'(A,2(1X,E16.9))')'VIND =',(VIND(I),I=21,22)
-
+C        WRITE(6,'(A,32(1X,E16.9))')'VIND =',(VIND(I),I=1,32)
+C        WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPS(I),I=1,6)
 C ---> RECUPERATION COEF DE LA LOI HUJEUX
 C      (INDEPENDANTS DE LA TEMPERATURE)
 C      NB DE CMP DIRECTES/CISAILLEMENT
@@ -185,35 +188,33 @@ C       --------------------------
 
 
 C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
-       IF (VIND(1) .EQ. ZERO) THEN
-          IF (MATERF(13, 2) .EQ. ZERO) THEN
-            VIND(1) = 1.D-3
-          ELSE
-            VIND(1) = MATERF(13,2)
-          ENDIF
-       ENDIF
-       IF (VIND(2) .EQ. ZERO) THEN
-          IF (MATERF(13, 2) .EQ. ZERO) THEN
-            VIND(2) = 1.D-3
-          ELSE
-            VIND(2) = MATERF(13,2)
-          ENDIF
-       ENDIF
-       IF (VIND(3) .EQ. ZERO) THEN
-          IF (MATERF(13, 2) .EQ. ZERO) THEN
-            VIND(3) = 1.D-3
-          ELSE
-            VIND(3) = MATERF(13,2)
-          ENDIF
-       ENDIF
+       DO 30 I = 1, 3
+         IF (VIND(I) .EQ. ZERO) THEN
+            IF (MATERF(13, 2) .EQ. ZERO) THEN
+              VIND(I) = 1.D-3
+            ELSE
+              VIND(I) = MATERF(13,2)
+            ENDIF
+            CALL HUJCRD(I, MATERF, SIGD, VIND, SEUIL)
+            IF(SEUIL.GT.ZERO)THEN
+              CALL HUJPRJ(I,SIGD,TIN,PISO,Q)
+              B          = MATERF(4,2)
+              PHI        = MATERF(5,2)
+              M          = SIN(DEGR*PHI) 
+              PC0        = MATERF(7,2)
+              VIND(I)    = -Q/(M*PISO*(UN-B*LOG(PISO/PC0)))
+              VIND(23+I) = UN
+            ENDIF
+         ENDIF
+  30   CONTINUE
        IF (VIND(4) .EQ. ZERO) THEN
           IF (MATERF(14, 2) .EQ. ZERO) THEN
             VIND(4) = 1.D-3
           ELSE
             VIND(4) = MATERF(14,2)
           ENDIF
-          CALL HUJCRI(MATERF, SIGD, VIND, SEUILI)   
-          IF (SEUILI .GT. ZERO) THEN
+          CALL HUJCRI(MATERF, SIGD, VIND, SEUIL)   
+          IF (SEUIL .GT. ZERO) THEN
             PISO    = (SIGD(1)+SIGD(2)+SIGD(3))/3
             D        = MATERF(3,2)
             PC0      = MATERF(7,2)
@@ -307,6 +308,7 @@ C         IF(INC.GT.100)THEN
 C           IRET = 1
 C           GOTO 9999
 C         ENDIF  
+C          WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPSR(I),I=1,6)
           CALL HUJELA (MOD, CRIT, MATERF, DEPSR, SIGD, SIGF, 
      &               EPSDTH, IRET)
           IF (IRET .EQ. 1) GOTO 9999
@@ -327,7 +329,7 @@ C CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 C ---------------------------------------------
 C          WRITE(6,'(A,10(1X,E16.9))')'VIND0 =',(VIND(I),I=1,31)
 C          WRITE(6,'(A,6(1X,E16.9))')'SIGD =',(SIGD(I),I=1,6)
-C         WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPSR(I),I=1,6)
+C         WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPSR(I),I=1,6)         
           CALL HUJRES(MOD, CRIT, MATERF, NVI, EPSDTH, DEPSR,
      &               SIGD, VIND, SIGF, VINF, NITER, 
      &               EPSCON, IRET, ETATF)
@@ -346,8 +348,7 @@ C - CONTROLE DES DEFORMATIONS DEJA APPLIQUEES
 C -------------------------------------------   
           CONV = .TRUE.
           DO 56 I = 1, NDT
-C           RATIO(I) = ABS(DEPSR(I)/DEPS0(I))
-            IF (DEPSR(I).NE.ZERO) CONV = .FALSE.            
+            IF (ABS(DEPSR(I)).GT.R8PREM()) CONV = .FALSE.            
  56       CONTINUE
           IF(.NOT.CONV)THEN
             CALL LCEQVE(SIGF,SIGD)
@@ -422,6 +423,6 @@ C         ENDIF
         
 9999    CONTINUE
 C        IF(IRET .EQ. 1)WRITE(6,'(A,I3,A)')'**** IRET =',IRET,' ****'   
-C        WRITE(6,'(A,8(1X,E16.9))')'VINF =',(VINF(I),I=1,8)
+C        WRITE(6,'(A,10(1X,E16.9))')'VINF =',(VINF(I),I=1,32)
 C        WRITE(6,'(A,2(1X,E16.9))')'VINF =',(VINF(I),I=21,22)
         END

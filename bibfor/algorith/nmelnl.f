@@ -3,7 +3,7 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -300,6 +300,7 @@ C====================================================================
 
 C - CALCUL DE P, RP, RPRIM ET AIRERP
       IF (NONLIN) THEN
+         IRET=0
 
 C===========================================
 C      CAS DES CONTRAINTES PLANES
@@ -330,10 +331,10 @@ C        REMPLISSAGE DU COMMON
 C        CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
           F0=NMCRI1(0.D0)
           APPROX = 2.D0*EPSEQ/3.D0 - SIGY/1.5D0/DEUXMU
-CJMP
           PREC= CRIT(3) * SIGY
           NITER = INT(CRIT(1))
           CALL ZEROFO(NMCRI1,F0,APPROX,PREC,NITER,P,IRET)
+          IF(IRET.EQ.1) CALL U2MESS('F','ALGORITH8_65')
           IF (LINE) THEN
             RP = SIGY +RPRIM*P
             AIRERP = 0.5D0*(SIGY+RP)*P
@@ -359,28 +360,24 @@ C===========================================
 C NON CONTRAINTE PLANE
 C===========================================
 
+          PM=0.D0
           IF (LINE) THEN
             RPRIM = E*DSDE/(E-DSDE)
             P = (SIELEQ - SIGY) / (RPRIM+1.5D0*DEUXMU)
             RP = SIGY +RPRIM*P
             AIRERP = 0.5D0*(SIGY+RP)*P
           ELSE IF (PUIS) THEN
-C AMELIORATION DE LA PREDICTION EN ESTIMANT RPRIM(PM+DP0)
+C           AMELIORATION DE LA PREDICTION EN ESTIMANT RPRIM(PM+DP0)
             DP0 = ( SIELEQ - SIGY)/1.5D0/DEUXMU
             RPRIM0 = UNSURN*SIGY*COCO * (COCO*DP0)**(UNSURN-1.D0)
             DP0 = DP0 / (1+RPRIM0/1.5D0/DEUXMU)
             XAP   = DP0
             VAL0  = NMCRI2(0.D0)
-            PREC  = CRIT(3)
-            PRECR = PREC * SIGY
+            PRECR = CRIT(3) * SIGY
             NITER = NINT(CRIT(1))
             CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,P,IRET)
-            RP = SIGY *(COCO*P)**UNSURN+SIGY
-            IF (P.LE.R8PREM()) THEN
-              RPRIM=E
-            ELSE
-              RPRIM = UNSURN*SIGY*COCO*(COCO*P)**(UNSURN-1.D0)
-            ENDIF
+            IF(IRET.EQ.1) CALL U2MESS('F','ALGORITH8_65')
+            CALL ECPUIS(E,SIGY,ALFAFA,UNSURN,PM,P,RP,RPRIM)
           ELSE
             CALL RCFONC('E','TRACTION',JPROL,JVALE,NBVALE,DUM,E,NU,
      &                  0.D0,RP,RPRIM,AIRERP,SIELEQ,P)

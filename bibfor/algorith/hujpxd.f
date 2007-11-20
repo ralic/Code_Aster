@@ -1,7 +1,7 @@
         SUBROUTINE HUJPXD (K, MATER, SIG ,VIN, PROX)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,9 +80,8 @@ C --- CALCUL DU SEUIL DU MECANISME DEVIATOIRE K ------------------
 C ==================================================================
         RK = -QK /(M*PK*(UN-B*LOG(PK/PCR)))
         DIST = ABS(RK-RH)/RH
-C        WRITE(6,'(A,E16.9,A,E16.9)')'RK =',
-C     & RK,' --- DIST =',DIST
-        IF (DIST .LT. 1.D-3) THEN
+
+        IF (DIST .LT. 1.D-5) THEN
           PROX = .TRUE.
         ELSE
           PROX = .FALSE.

@@ -4,7 +4,7 @@
       CHARACTER*24              CHNUMC, CHPLAN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 19/11/2007   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,20 +46,16 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID, IVAL(3), NX3, NCOU, NANGL, IOC, N1, NA, NVEC,
-     +             NREP, NBMA, JMAIL, JDCC, JDVC, JDCP, JDVP
+     +             NREP, NBMA, JMAIL, JDCC, JDVC, JDCP, JDVP, IRET
       REAL*8       R8B, RPLAN
       CHARACTER*3  ORDO
-      CHARACTER*8  K8B, LICMP(3), MOTCLS(2), TYPMCL(2), PLAN
+      CHARACTER*8  K8B, MOTCLS(2), TYPMCL(2), PLAN
       CHARACTER*16 MOTCLE
       CHARACTER*24 MESMAI
       COMPLEX*16   C16B
 C DEB-------------------------------------------------------------------
 C
       MOTCLE = 'REPE_COQUE'
-C
-      LICMP(1) = 'NUMC'
-      LICMP(2) = 'ORDO'
-      LICMP(3) = 'ANGL'
 C
       MOTCLS(1) = 'GROUP_MA'
       MOTCLS(2) = 'MAILLE'
@@ -68,39 +64,60 @@ C
       MESMAI = '&&MECHN2.MES_MAILLES'
 C
       CALL GETFAC ( MOTCLE, NREP ) 
-C
-      IF ( NREP .EQ. 0 ) THEN
-C
 C ------ VALEURS PAR DEFAUT
 C
-         IVAL(1) = 1
-         IVAL(2) = 0
-         IVAL(3) = 0
-         CALL MECACT ( 'V', CHNUMC, 'MAILLA', NOMA, 'NUMC_I', 3, LICMP,
-     +                                            IVAL, R8B, C16B, K8B )
+      IBID = 0
+      K8B  = ' '
+      CALL JEEXIN(CHNUMC(1:19)//'.NOMA',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHNUMC(1:19)//'.NOMA')
+      CALL JEEXIN(CHNUMC(1:19)//'.NOLI',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHNUMC(1:19)//'.NOLI')
+      CALL JEEXIN(CHNUMC(1:19)//'.DESC',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHNUMC(1:19)//'.DESC')
+      CALL JEEXIN(CHNUMC(1:19)//'.LIMA',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHNUMC(1:19)//'.LIMA')
+      CALL JEEXIN(CHNUMC(1:19)//'.VALE',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHNUMC(1:19)//'.VALE')
+      CALL JEEXIN(CHNUMC(1:19)//'.NCMP',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHNUMC(1:19)//'.NCMP')
+      CALL JEEXIN(CHNUMC(1:19)//'.VALV',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHNUMC(1:19)//'.VALV')
+      CALL ALCART ( 'V', CHNUMC, NOMA, 'NUMC_I' )
+      CALL JEVEUO ( CHNUMC(1:19)//'.NCMP', 'E', JDCC )
+      CALL JEVEUO ( CHNUMC(1:19)//'.VALV', 'E', JDVC )
+      ZK8(JDCC)   = 'NUMC'
+      ZK8(JDCC+1) = 'ORDO'
+      ZK8(JDCC+2) = 'ANGL'
+      ZI(JDVC) = 1
+      ZI(JDVC+1) = 0
+      ZI(JDVC+2) = 0
+      CALL NOCART ( CHNUMC,1,K8B,K8B,0,K8B,IBID,K8B,3 )
 C
-         RPLAN = DBLE(0)
-         CALL MECACT ( 'V', CHPLAN, 'MAILLA', NOMA, 'FREQ_R', 1, 'FREQ',
-     &                                          IBID, RPLAN, C16B, K8B )
+      CALL JEEXIN(CHPLAN(1:19)//'.NOMA',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.NOMA')
+      CALL JEEXIN(CHPLAN(1:19)//'.NOLI',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.NOLI')
+      CALL JEEXIN(CHPLAN(1:19)//'.DESC',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.DESC')
+      CALL JEEXIN(CHPLAN(1:19)//'.LIMA',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.LIMA')
+      CALL JEEXIN(CHPLAN(1:19)//'.VALE',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.VALE')
+      CALL JEEXIN(CHPLAN(1:19)//'.NCMP',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.NCMP')
+      CALL JEEXIN(CHPLAN(1:19)//'.VALV',IRET)
+      IF (IRET.GT.0) CALL JEDETR(CHPLAN(1:19)//'.VALV')
+      CALL ALCART ( 'V', CHPLAN, NOMA, 'FREQ_R' )
+      CALL JEVEUO ( CHPLAN(1:19)//'.NCMP', 'E', JDCP )
+      CALL JEVEUO ( CHPLAN(1:19)//'.VALV', 'E', JDVP )
+      ZK8(JDCP)   = 'FREQ'
+      ZR(JDVP) = DBLE(0)
+      CALL NOCART ( CHPLAN,1,K8B,K8B,0,K8B,IBID,K8B,1 )
 C
-      ELSE
+      IF ( NREP .NE. 0 ) THEN
 C
 C ------ AFFECTATION PAR LISTE DE MAILLES
 C
-         CALL ALCART ( 'V', CHNUMC, NOMA, 'NUMC_I' )
-         CALL JEVEUO ( CHNUMC(1:19)//'.NCMP', 'E', JDCC )
-         CALL JEVEUO ( CHNUMC(1:19)//'.VALV', 'E', JDVC )
-         ZK8(JDCC)   = 'NUMC'
-         ZK8(JDCC+1) = 'ORDO'
-         ZK8(JDCC+2) = 'ANGL'
-C
-         CALL ALCART ( 'V', CHPLAN, NOMA, 'FREQ_R' )
-         CALL JEVEUO ( CHPLAN(1:19)//'.NCMP', 'E', JDCP )
-         CALL JEVEUO ( CHPLAN(1:19)//'.VALV', 'E', JDVP )
-         ZK8(JDCP)   = 'FREQ'
-C
-         IBID = 0
-         K8B  = ' '
          DO 10 IOC = 1 , NREP
 
             CALL RELIEM(' ', NOMA, 'NO_MAILLE', MOTCLE, IOC, 2, 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,11 +25,17 @@ TEST_FICHIER=MACRO(nom="TEST_FICHIER", op=test_fichier_ops,
                    UIinfo={"groupes":("Impression",)},
                    fr="Tester la non régression de fichiers produits par des commandes aster",
    FICHIER          =SIMP(statut='o',typ='TXM',validators=LongStr(1,255)),
-   NB_CHIFFRE      =SIMP(statut='o',typ='I',),   # defaut=6        pas de defaut, il faut
-   EPSILON         =SIMP(statut='o',typ='R',),   # defaut=1.E-12   se poser la question !
-   EXPR_IGNORE     =SIMP(statut='f',typ='TXM',max='**',
-                         fr="Liste d'expressions régulières permettant d'ignorer certaines lignes"),
-   VALE_K          =SIMP(statut='o',typ='TXM' ),
+   EXPR_IGNORE      =SIMP(statut='f',typ='TXM',max='**',
+                          fr="Liste d'expressions régulières permettant d'ignorer certaines lignes"),
+
+   TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut='SOMM',into=("SOMM_ABS","SOMM","MAXI","MINI","MAXI_ABS","MINI_ABS")),
+   NB_VALE         =SIMP(statut='o',typ='I',),
+   VALE            =SIMP(statut='f',typ='R',max='**'),
+   VALE_K          =SIMP(statut='f',typ='TXM'),
+
+   CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
+   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3),
+
    REFERENCE       =SIMP(statut='f',typ='TXM',
                          into=("ANALYTIQUE","SOURCE_EXTERNE","NON_REGRESSION","AUTRE_ASTER") ),
 

@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF asojb Noyau  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,7 +112,7 @@ class AsBase(Type):
     def short_repr(self):
         return "<%s(%x,%r)>" % (self.__class__.__name__, id(self), self.nomj() )
 
-    def __repr__(self):
+    def long_repr(self):
         if not hasattr(self, "par_lot") or self.par_lot():
            # hors Aster ou en par_lot='oui'
            return self.short_repr()
@@ -120,6 +120,10 @@ class AsBase(Type):
            from Cata.cata import IMPR_CO, _F
            IMPR_CO(CONCEPT=_F(NOM=self.nom), UNITE=6)
            return ''
+
+    def __repr__(self):
+        # par défaut, on fait court !
+        return self.short_repr()
 
 
 # -----------------------------------------------------------------------------

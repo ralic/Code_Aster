@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF modelisa7 Messages  DATE 15/11/2007   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -398,6 +398,11 @@ cata_msg={
  la maille de numero :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
 """),
 
+97: _("""
+  -> Le group_ma %(k1)s du maillage %(k2)s se retrouve vide du fait
+     de l'élimination des mailles servant au collage.
+     Il n'est donc pas recréé dans le maillage assemblé.
+"""),
 
 98: _("""
  Erreur lors de la vérification des noms de groupes.

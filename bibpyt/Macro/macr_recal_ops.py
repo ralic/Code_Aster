@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_recal_ops Macro  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

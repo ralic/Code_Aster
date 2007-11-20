@@ -1,4 +1,4 @@
-#@ MODIF as_timer Utilitai  DATE 24/09/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF as_timer Utilitai  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,9 +103,9 @@ class ASTER_TIMER:
             'elapsed' : _('elapsed'),
          }
       elif format == 'aster':
-         self.fmtlig = ' * %(name)-16s : %(cpu_dt)10.2f : %(sys_dt)10.2f : %(cpu_sys)10.2f : %(tot_dt)10.2f *'
-         self.fmtstr = ' * %(title)-16s : %(cpu)10s : %(sys)10s : %(cpu+sys)10s : %(elapsed)10s *'
-         self.sepa   = ' ' + '*'*72
+         self.fmtlig = ' * %(name)-24s : %(cpu_dt)10.2f : %(sys_dt)10.2f : %(cpu_sys)10.2f : %(tot_dt)10.2f *'
+         self.fmtstr = ' * %(title)-24s : %(cpu)10s : %(sys)10s : %(cpu+sys)10s : %(elapsed)10s *'
+         self.sepa   = ' ' + '*'*80
          self.TotalKey = 'TOTAL_JOB'
          self.d_labels = {
             'title'   : 'COMMAND',

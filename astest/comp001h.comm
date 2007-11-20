@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D ISOT_TRAC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -292,7 +292,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
 RESU_TGT=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor,                
                                 TYPE_MATR_TANG='VERIFICATION',
-                                VALE_PERT_RELA=1.E-5,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=50
+                                VALE_PERT_RELA=1.E-5,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=150
                                ),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
@@ -379,7 +379,7 @@ temps2=DEFI_LIST_REEL(DEBUT=0.0,
                          _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
 RESU2=SIMU_POINT_MAT(
-           COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=50),
+           COMP_INCR=_F(RELATION=compor,RESI_INTE_RELA=1.E-6,ITER_INTE_MAXI=150),
            NEWTON=_F(MATRICE='TANGENTE',
                      REAC_ITER=1,),
            CONVERGENCE=_F(ITER_GLOB_MAXI=10,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # TITRE PLAQUE RECTANGULAIRE EN APPUI SIMPLE SUR LES BORDS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@
 # ----------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='SENSD10A',
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
 PRE_GIBI();
 

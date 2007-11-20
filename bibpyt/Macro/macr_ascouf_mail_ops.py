@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,10 +21,13 @@
 
 import os.path
 from math import sqrt,cos,sin,pi,tan,log,fabs,ceil,fmod,floor
-import aster
 import string
-from Utilitai.Utmess     import  UTMESS
 
+try:
+   import aster
+   from Utilitai.Utmess     import  UTMESS
+except:
+   pass
 
 # ------------------------------------------------------------------------------
 def ASCFON(RC,RM,EP,ORIEN,AZIM,AXEC,POS,Y):

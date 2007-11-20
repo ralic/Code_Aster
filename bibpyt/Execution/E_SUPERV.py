@@ -1,4 +1,4 @@
-#@ MODIF E_SUPERV Execution  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,7 @@ class SUPERV:
       try:
          from Utilitai.as_timer import ASTER_TIMER
          self.timer = ASTER_TIMER(format='aster')
-         self.timer.Start('JDC init')
+         self.timer.Start('init (jdc)')
          ier = 0
       except:
          print traceback.print_exc()
@@ -195,7 +195,9 @@ class SUPERV:
       j.timer = self.timer
       
       # On compile le texte Python
+      j.timer.Start(" . compile")
       j.compile()
+      j.timer.Stop(" . compile")
 
       if not j.cr.estvide(): 
          self.MESSAGE("ERREUR DE COMPILATION DANS ACCAS - INTERRUPTION")
@@ -205,7 +207,9 @@ class SUPERV:
          j.supprime()
          return 1
 
+      j.timer.Start(" . exec_compile")
       j.exec_compile()
+      j.timer.Stop(" . exec_compile")
       ier=0
       if not j.cr.estvide(): 
          self.MESSAGE("ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION")
@@ -225,7 +229,9 @@ class SUPERV:
          return ier
 
       # Verification de la validite du jeu de commande
+      j.timer.Start(" . report")
       cr=j.report()
+      j.timer.Stop(" . report")
       if not cr.estvide(): 
          self.MESSAGE("ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION")
          print ">> JDC.py : DEBUT RAPPORT"
@@ -243,7 +249,9 @@ class SUPERV:
       codret, est_sensible = j.is_sensible()
       if codret == 0 :
         if est_sensible :
+          j.timer.Start(" . sensi")
           codret, new_j = j.cree_jdc_sensible()
+          j.timer.Stop(" . sensi")
           if codret == 0 :
             cr=new_j.report()
             if not cr.estvide():
@@ -259,6 +267,8 @@ class SUPERV:
       else :
         self.MESSAGE("ERREUR AU DECODAGE DES SENSIBILITES - INTERRUPTION")
         return 1
+      # fin des initialisations
+      j.timer.Stop("init (jdc)")
       #ier= self.ParLot( j )
       ier= self.ParLotMixte( j )
       return ier

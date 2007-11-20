@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCSIMP Noyau  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,7 @@ from copy import copy
 from Noyau.N_ASSD import ASSD,assd
 from Noyau.N_CO import CO
 import N_OBJECT
+from N_CONVERT import TypeConversion
 
 class MCSIMP(N_OBJECT.OBJECT):
    """
@@ -58,6 +59,7 @@ class MCSIMP(N_OBJECT.OBJECT):
       self.nom=nom
       self.val = val
       self.parent = parent
+      self.convProto = TypeConversion('type', typ=self.definition.type)
       self.valeur = self.GETVAL(self.val)
       if parent :
          self.jdc = self.parent.jdc
@@ -68,16 +70,16 @@ class MCSIMP(N_OBJECT.OBJECT):
          self.jdc = None
          self.niveau = None
          self.etape = None
-         
+
    def GETVAL(self,val):
       """ 
           Retourne la valeur effective du mot-clé en fonction
           de la valeur donnée. Defaut si val == None
       """
       if (val is None and hasattr(self.definition,'defaut')) :
-        return self.definition.defaut
-      else:
-        return val
+         val = self.definition.defaut
+      val = self.convProto.convert(val)
+      return val
 
    def get_valeur(self):
       """

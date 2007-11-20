@@ -1,4 +1,4 @@
-#@ MODIF sd_compor SD  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_compor SD  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,8 +52,8 @@ class sd_compor(AsBase):
     #------------------------------------
         nboccm=cpri[4]
         nvi   =cpri[2]
-        nbsys=(nvi-8)/3
-        assert nvi==8+3*nbsys , (nvi, nbsys, cpri)
+        nbsys=(nvi-9)/3
+        assert nvi==9+3*nbsys , (nvi, nbsys, cpri)
         cprk=self.CPRK.get_stripped()
 
         # vérif existence et longueur

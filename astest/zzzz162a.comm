@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,15 +196,14 @@ IMPR_RESU(UNITE=88,RESU=_F(RESULTAT=TEMPE1,NUME_ORDRE=5,
 DEFI_FICHIER(UNITE=88, ACTION='LIBERER')
 
 TEST_FICHIER(FICHIER='./fort.88',
-             VALE_K='b18b319496f7b8ff7494bf8f491f3664',
              REFERENCE='NON_REGRESSION',
              # date a ignorer : ...15/09/2005 A 08:48:30
              # version a ignorer: ASTER  8.01.14
              EXPR_IGNORE=('[0-9]{2}/[0-9]{2}/[0-9]{4} A [0-9]{2}:'\
              +'[0-9]{2}:[0-9]{2}','ASTER  [0:9].[0:9]{2}.[0:9]{2}',),
-             NB_CHIFFRE=4,
-             EPSILON=1.E-6,
-             VERSION='8.1.13')
+             NB_VALE=24,
+             VALE=8.44e+02,
+             VERSION='9.1.21')
 
 
 # ----------------------------------------------------------------------------
@@ -233,11 +232,10 @@ IMPR_RESU(UNITE=82, FORMAT='GMSH',
 DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
 TEST_FICHIER(FICHIER='./fort.82',
-             VALE_K='06316ba52f604a212be8e39c8c4219e7',
              REFERENCE='NON_REGRESSION',
-             NB_CHIFFRE=4,
-             EPSILON=1.E-6,
-             VERSION='8.1.13')
+             NB_VALE=95,
+             VALE=1.156862e+03,
+             VERSION='9.1.21')
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE LIRE_RESU FORMAT 'MED' POUR UNE LISTE D'INSTANTS
@@ -452,11 +450,10 @@ IMPR_RESU(UNITE=84, FORMAT='GMSH',
 DEFI_FICHIER(UNITE=84, ACTION='LIBERER')
 
 TEST_FICHIER(FICHIER='./fort.84',
-             VALE_K='a4bfdc206535743d586491e27d27a0e6',
              REFERENCE='NON_REGRESSION',
-             NB_CHIFFRE=4,
-             EPSILON=1.E-6,
-             VERSION='8.1.13')
+             NB_VALE=445,
+             VALE=2.202078e+02,
+             VERSION='9.1.21')
 
 # ----------------------------------------------------------------------------
 # ----------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def fact_ldlt_prod(MATR_ASSE,**args):
+def factoriser_prod(MATR_ASSE,**args):
   if AsType(MATR_ASSE) == matr_asse_depl_r : return matr_asse_depl_r
   if AsType(MATR_ASSE) == matr_asse_depl_c : return matr_asse_depl_c
   if AsType(MATR_ASSE) == matr_asse_temp_r : return matr_asse_temp_r
@@ -26,7 +26,7 @@ def fact_ldlt_prod(MATR_ASSE,**args):
   if AsType(MATR_ASSE) == matr_asse_pres_c : return matr_asse_pres_c
   raise AsException("type de concept resultat non prevu")
 
-FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=fact_ldlt_prod,
+FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
                fr="Factoriser une matrice assemblée en un produit de deux matrices triangulaires"+
                   "ou construire une matrice de préconditionnement pour une résolution par gradient conjugué",
                reentrant='f', UIinfo={"groupes":("Résolution",)},

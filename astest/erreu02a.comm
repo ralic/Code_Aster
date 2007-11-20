@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # ---------------------------------------------------------------------
 # TITRE VERIFICATION GARDES-FOUS S'IL MANQUE DES VARIABLES DE COMMANDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 # ======================================================================
 # ---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ERREU02A',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),
+DEBUT(CODE=_F(NOM='ERREU02A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       ERREUR=_F(ERREUR_F='EXCEPTION',),
       PAR_LOT='NON',)
 

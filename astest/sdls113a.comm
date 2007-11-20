@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE   
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 import Numeric
 from Numeric import size,asarray
 
-DEBUT(CODE=_F( NOM = 'SDLS113A',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F( NOM = 'SDLS113A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       PAR_LOT='NON',);
 
 # Definition des parametres de l'excitation sinusoidale

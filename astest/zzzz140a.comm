@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST IMPR_FONCTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,11 +94,11 @@ IMPR_FONCTION(
 
 TEST_FICHIER(
    FICHIER='fort.51',
-   VALE_K='95c87d621e8e7b3889d9c0f8733b7f13',
-   EPSILON=1.E-12,
-   NB_CHIFFRE=6,
+   VALE_K='05857d474c8e16cf4ae88b0437d9d24c',
+   VALE=3.06506E+03,
+   NB_VALE=22,
    REFERENCE='NON_REGRESSION',
-   VERSION='8.0.10',
+   VERSION='9.1.21',
 )
 # ------------------------------------------------------------------------------
 IMPR_FONCTION(
@@ -110,12 +110,13 @@ IMPR_FONCTION(
 
 TEST_FICHIER(
    FICHIER='fort.52',
-   VALE_K='254189d6d02d1287b41db68f8ca240e3',
-   EPSILON=1.E-12,
-   NB_CHIFFRE=6,
+   VALE_K='47299fa5171fc622480c45638cd65c98',
+   VALE=1.502E+03,
+   NB_VALE=8,
    REFERENCE='NON_REGRESSION',
-   VERSION='8.0.10',
+   VERSION='9.1.21',
 )
+
 # ------------------------------------------------------------------------------
 IMPR_FONCTION(
    FORMAT='XMGRACE',
@@ -134,11 +135,11 @@ IMPR_FONCTION(
 )
 TEST_FICHIER(
    FICHIER='fort.53',
-   VALE_K='b9cf9363d8c50d5c3a49aa532c6fe081',
-   EPSILON=1.E-12,
-   NB_CHIFFRE=6,
+   VALE_K='49c8e63ede6638d28a72aa42c3b6fdd4',
+   VALE=6.47129982e+04,
+   NB_VALE=381,
    REFERENCE='NON_REGRESSION',
-   VERSION='7.4.0',
+   VERSION='9.1.21',
 )
 
 # ------------------------------------------------------------------------------
@@ -155,11 +156,11 @@ IMPR_FONCTION(
 DEFI_FICHIER(UNITE=54, ACTION='LIBERER')
 TEST_FICHIER(
    FICHIER='./REPE_OUT/unite.54',
-   VALE_K='e4d530d30f396d4c5c6e7c3172275066',
-   EPSILON=1.E-12,
-   NB_CHIFFRE=6,
+   VALE_K='e7f764d48ba4bec78e56e2c41ff86617',
+   VALE=6.258603563e+04,
+   NB_VALE=463,
    REFERENCE='NON_REGRESSION',
-   VERSION='7.4.0',
+   VERSION='9.1.21',
 )
 
 FIN()

@@ -1,10 +1,11 @@
-      SUBROUTINE NMVMPO(FAMI,NPG,OPTION,NOMTE,NC,XL,ICODMA,SECT,CARCRI,
-     &            COMPOR,U,DU,CONTM,VARIM,
-     &            HOEL,HOTA,D1B,WORK,RG0,
-     &            VARIP,CONTP,FL,KLV)
+      SUBROUTINE NMVMPO(FAMI, NPG, OPTION, NOMTE, NC,
+     &                  XL, ICODMA, SECT, CARCRI, COMPOR,
+     &                  U, DU, CONTM, VARIM, HOEL,
+     &                  HOTA, D1B, WORK, RG0, VARIP,
+     &                  CONTP, FL, KLV)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,17 +115,15 @@ C
       NOMRES(2) = 'NU'
 
       CALL MOYTEM(FAMI,NPG,1,'+',TEMP,IRET)
-      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ELAS',
-     +              1,'TEMP',TEMP,2,
-     +              NOMRES, VALRES, CODRES, 'FM' )
+      CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ELAS',1,'TEMP',TEMP,2,
+     &            NOMRES, VALRES, CODRES, 'FM' )
       E = VALRES(1)
       NU = VALRES(2)
       CALL NMVMPM(COMPOR,ICODMA,ITEMP,TEMP,E,NU,L346P)
 
       CALL MOYTEM(FAMI,NPG,1,'-',TEMM,IRET)
-      CALL RCVALB(FAMI,1,1,'-',ICODMA,' ','ELAS',
-     +              1,'TEMP',TEMM,2,
-     +              NOMRES, VALRES, CODRES, 'FM' )
+      CALL RCVALB(FAMI,1,1,'-',ICODMA,' ','ELAS',1,'TEMP',TEMM,2,
+     &            NOMRES, VALRES, CODRES, 'FM' )
       EM = VALRES(1)
       NUM = VALRES(2)
       CALL NMVMPM(COMPOR,ICODMA,ITEMP,TEMM,EM,NUM,LOI346)
@@ -137,22 +136,22 @@ C
 C
 C     CARACTERISTIQUES DE LA SECTION :
 C
-      AA = SECT(1)
-      XIY = SECT(2)
-      XIZ = SECT(3)
+      AA    = SECT(1)
+      XIY   = SECT(2)
+      XIZ   = SECT(3)
       ALFAY = SECT(4)
       ALFAZ = SECT(5)
-      XJX = SECT(8)
-      XJG = SECT(12)
+      XJX   = SECT(8)
+      XJG   = SECT(12)
 C
       LOI346(1+15 ) = AA
       LOI346(1+16 ) = XIY
       LOI346(1+17 ) = XIZ
       LOI346(1+18 ) = XJX
-      L346P(1+15 ) = AA
-      L346P(1+16 ) = XIY
-      L346P(1+17 ) = XIZ
-      L346P(1+18 ) = XJX
+      L346P(1+15 )  = AA
+      L346P(1+16 )  = XIY
+      L346P(1+17 )  = XIZ
+      L346P(1+18 )  = XJX
 C
 C     MATERIAU INTEGRE SUR LA SECTION
 C
@@ -175,155 +174,166 @@ C
          HOEL(7,7) = E*XJG
       ENDIF
 
-
-
-      CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
-      LGPG = MAX(JTAB(6),1)*JTAB(7)
-
+      IF ( COMPOR(1) .EQ. 'ELAS' ) THEN
+         LGPG = 0
+      ELSE
+         CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
+         LGPG = MAX(JTAB(6),1)*JTAB(7)
+      ENDIF
 
 C
 C     BOUCLE SUR LES POINTS DE GAUSS
-C
       DO 101 KP = 1,3
+C        CALCUL DE D1B ( EPSI = D1B * U ) :
+         IF (NOMTE.EQ.'MECA_POU_D_TG') THEN
+            CALL JSD1FF(KP,XL,PHIY,PHIZ,D1B)
+         ELSE
+            CALL JPD1FF(KP,XL,PHIY,PHIZ,D1B)
+         ENDIF
+C        CALCUL DE EPS ET DEPS ET SIGM (EFFORT AU PT DE GAUSS)
+C        ET DE DSIGM = INCREMENT D'EFFORT ELASTIQUE
+         CALL R8INIR(NC,0.D0,EPS,1)
+         CALL R8INIR(NC,0.D0,DEPS,1)
+         CALL R8INIR(NC,0.D0,SIGM,1)
 C
-C       CALCUL DE D1B ( EPSI = D1B * U ) :
-C
-        IF (NOMTE.EQ.'MECA_POU_D_TG') THEN
-           CALL JSD1FF(KP,XL,PHIY,PHIZ,D1B)
-        ELSE
-           CALL JPD1FF(KP,XL,PHIY,PHIZ,D1B)
-        ENDIF
-C
-C       CALCUL DE EPS ET DEPS ET SIGM (EFFORT AU PT DE GAUSS)
-C       ET DE DSIGM = INCREMENT D'EFFORT ELASTIQUE
-C
-        CALL R8INIR(NC,0.D0,EPS,1)
-        CALL R8INIR(NC,0.D0,DEPS,1)
-        CALL R8INIR(NC,0.D0,SIGM,1)
-C
-        DO 210 I = 1,NC
-          DO 211 J = 1,2*NC
-            EPS(I) = EPS(I) + D1B(I,J)*U(J)
-            DEPS(I) = DEPS(I) + D1B(I,J)*DU(J)
-  211     CONTINUE
-          SIGM(I) = CONTM(NC*(KP-1)+I)*E/EM
-  210   CONTINUE
-        IF ((EPSTHD.NE.0.D0).AND.(ITEMP.NE.0) ) THEN
-           F = EPSTHF
-           DF= EPSTHD
-           EPS(1)=EPS(1)-F
-           DEPS(1)=DEPS(1)-DF
-        ENDIF
-        DO 565 I=1,9
-           VIM(I)  = VARIM(LGPG*(KP-1)+I)
- 565    CONTINUE
-C
-C       IMPLICITE OU EXPLICITE ?
-C
-CJMP        IF ( INT(CARCRI(6)).EQ.1) THEN
-        IF ( INT(CARCRI(6)).GT.0.5D0) THEN
-           CALL NMVMPK(NC,EPS,DEPS,VIM,SIGM,LOI346,HOEL,
-     &              VECTEU,MATRIC,CARCRI,SIGP,VIP,HOTA)
-        ELSE
+         DO 210 I = 1,NC
+            DO 211 J = 1,2*NC
+               EPS(I)  =  EPS(I) + D1B(I,J)* U(J)
+               DEPS(I) = DEPS(I) + D1B(I,J)*DU(J)
+211         CONTINUE
+            SIGM(I) = CONTM(NC*(KP-1)+I)*E/EM
+210      CONTINUE
+         IF ((EPSTHD.NE.0.D0).AND.(ITEMP.NE.0) ) THEN
+            F = EPSTHF
+            DF= EPSTHD
+            EPS(1) = EPS(1)- F
+            DEPS(1)=DEPS(1)-DF
+         ENDIF
+         DO 565 I=1,9
+            VIM(I)  = VARIM(LGPG*(KP-1)+I)
+565      CONTINUE
 
-C           IMPLICITE
+C        QUELQUE SOIT LE COMPORTEMENT, IL FAUT :
+C            HOTA : MATRICE DE COMPORTEMENT TANGENT
+C            VIP  : VARIABLES INTERNES ACTUALISEES
+C            SIGP : CONTRAINTES ACTUALISEES
 
-            DO 57 I=1,4
-              II = ICORES(I)
-              DEPS4(I)=DEPS(II)
-              SIGM4(I)=SIGM(II)
-57          CONTINUE
-            DO 571 I=1,6
-               DO 572 J=1,6
-                  HOTA(I,J)=HOEL(I,J)
-572            CONTINUE
-571         CONTINUE
+C        LOI346(1)   = 0   ==>   ELASTICITE
+C                    = 1   ==>   VMIS_POU_LINE / ECRO_LINE
+C                    = 2   ==>   VMIS_POU_FLEJOU / ECRO_FLEJOU
 
-            L346P(25)=HOEL(1,1)
-            L346P(26)=HOEL(5,5)
-            L346P(27)=HOEL(6,6)
-            L346P(28)=HOEL(4,4)
-            DO 554 I = 1, 5
-               VIM7(I)=VIM(I)
-554         CONTINUE
-            VIM7(6)=VIM(8)
-            VIM7(7)=VIM(9)
+C        CAS ELASTIQUE
+         IF ( LOI346(1).LE.0.5D0) THEN
+            DO 800 I = 1, NC
+               HOTA(I,I) = HOEL(I,I)
+800         CONTINUE
+            DO 810 I = 1, NC
+               SIGP(I)=SIGM(I)+HOEL(I,I)*DEPS(I)
+810         CONTINUE
+            CALL R8INIR(9,0.D0,VIP,1)
+         ELSE
+C        IMPLICITE OU EXPLICITE ? SI CARCRI(6)=1 ==> EXPLICITE
+            IF ( INT(CARCRI(6)).GT.0.5D0) THEN
+               CALL NMVMPK(NC,EPS,DEPS,VIM,SIGM,LOI346,HOEL,
+     &                     VECTEU,MATRIC,CARCRI,SIGP,VIP,HOTA)
+            ELSE
+C              IMPLICITE
+               DO 57 I=1,4
+                  II = ICORES(I)
+                  DEPS4(I)=DEPS(II)
+                  SIGM4(I)=SIGM(II)
+57             CONTINUE
+               DO 571 I=1,6
+                  DO 572 J=1,6
+                     HOTA(I,J)=HOEL(I,J)
+572               CONTINUE
+571            CONTINUE
 
-            CALL NMVMPI(DEPS4,VIM7,SIGM4,L346P,
-     &           OPTION,MATRIC,CARCRI,SIGP4,VIP7,DSIDEP)
+               L346P(25)=HOEL(1,1)
+               L346P(26)=HOEL(5,5)
+               L346P(27)=HOEL(6,6)
+               L346P(28)=HOEL(4,4)
+               DO 554 I = 1, 5
+                  VIM7(I)=VIM(I)
+554            CONTINUE
+               VIM7(6)=VIM(8)
+               VIM7(7)=VIM(9)
 
-            CALL POUCRI(L346P,SIGP4,VIP7,RC,RP,SEUIL)
-            DO 552 I = 1, 5
-               VIP(I)=VIP7(I)
-552         CONTINUE
-            VIP(8)=VIP7(6)
-            VIP(9)=VIP7(7)
+               CALL NMVMPI(DEPS4,VIM7,SIGM4,L346P,
+     &                     OPTION,MATRIC,CARCRI,SIGP4,VIP7,DSIDEP)
 
-            DO 55 I = 1,4
-              II = ICORES(I)
-              SIGP(II)=SIGP4(I)
-55          CONTINUE
-            SIGP(2)=SIGM(2)+HOEL(2,2)*DEPS(2)
-            SIGP(3)=SIGM(3)+HOEL(3,3)*DEPS(3)
+               CALL POUCRI(L346P,SIGP4,VIP7,RC,RP,SEUIL)
+               DO 552 I = 1, 5
+                  VIP(I)=VIP7(I)
+552            CONTINUE
+               VIP(8)=VIP7(6)
+               VIP(9)=VIP7(7)
 
-C           CALCUL DE L'INDICATEUR DE TAUX DE CHARGEMENT DE LA BARRE
-C           UTILISE POUR POST-TRAITEMENTS PYLONES
+               DO 55 I = 1,4
+                  II = ICORES(I)
+                  SIGP(II)=SIGP4(I)
+55             CONTINUE
+               SIGP(2)=SIGM(2)+HOEL(2,2)*DEPS(2)
+               SIGP(3)=SIGM(3)+HOEL(3,3)*DEPS(3)
 
-C            VIP(6) = RP
-            SY = L346P(12)
-            CRIT =  RC  / ( AA * SY )
-C            IF ( RP .GT. 0.D0 ) CRIT = 1.D0 + RP / SY
-            IF ( RP .GT. (AA*SY) ) CRIT = RP / (AA*SY)
-            EPSX  = VIP(1)
-            IF ( EPSX  .LT. 0.D0 ) CRIT = - CRIT
-            VIP(6) = (RP-AA*SY)/AA
-            VIP(7) = CRIT
+C              CALCUL DE L'INDICATEUR DE TAUX DE CHARGEMENT DE LA BARRE
+C              UTILISE POUR POST-TRAITEMENTS PYLONES
+C              VIP(6) = RP
+               SY = L346P(12)
+               CRIT =  RC  / ( AA * SY )
+C              IF ( RP .GT. 0.D0 ) CRIT = 1.D0 + RP / SY
+               IF ( RP .GT. (AA*SY) ) CRIT = RP / (AA*SY)
+               EPSX  = VIP(1)
+               IF ( EPSX  .LT. 0.D0 ) CRIT = - CRIT
+               VIP(6) = (RP-AA*SY)/AA
+               VIP(7) = CRIT
 
-            IF (MATRIC) THEN
-               DO 61 I = 1,4
-                 II = ICORES(I)
-                 DO 62 J = 1,4
-                    JJ = ICORES(J)
-                    HOTA(II,JJ) = DSIDEP(I,J)
-62               CONTINUE
-61             CONTINUE
-           ENDIF
-           IF (NOMTE.EQ.'MECA_POU_D_TG') THEN
-              HOTA(7,7) = HOEL(7,7)
-              SIGP(7)=SIGM(7)+HOEL(7,7)*DEPS(7)
-           ENDIF
-        ENDIF
+               IF (MATRIC) THEN
+                  DO 61 I = 1,4
+                     II = ICORES(I)
+                     DO 62 J = 1,4
+                        JJ = ICORES(J)
+                        HOTA(II,JJ) = DSIDEP(I,J)
+62                   CONTINUE
+61                CONTINUE
+               ENDIF
+               IF (NOMTE.EQ.'MECA_POU_D_TG') THEN
+                  HOTA(7,7) = HOEL(7,7)
+                  SIGP(7)=SIGM(7)+HOEL(7,7)*DEPS(7)
+               ENDIF
+            ENDIF
+         ENDIF
+
+C        CALCUL DE BT*H*B :
+         IF (MATRIC) THEN
+            CALL DSCAL(NC*NC,XLS2,HOTA,1)
+            CALL DSCAL(NC*NC,CO(KP),HOTA,1)
+            CALL UTBTAB('CUMU',NC,2*NC,HOTA,D1B,WORK,RG0)
+         END IF
+
+C        ON STOCKE   LES  VARIABLES INTERNES "+"
+C                    LES CONTRAINTES "+" ET LE FL :
+         IF (VECTEU) THEN
+            IF ( COMPOR(1) .NE. 'ELAS' ) THEN
+               DO 58 I=1,9
+                  VARIP(LGPG*(KP-1)+I) = VIP(I)
+58             CONTINUE
+            ENDIF
+            DO 59 I=1,NC
+               CONTP(NC*(KP-1)+I) = SIGP(I)
+59          CONTINUE
 C
-C       CALCUL DE BT*H*B :
+            DO 214 K = 1,2*NC
+               DO 215 KK = 1,NC
+                  FL(K)=FL(K) + XLS2*SIGP(KK)*D1B(KK,K)*CO(KP)
+215            CONTINUE
+214         CONTINUE
+         END IF
 C
-        IF (MATRIC) THEN
-           CALL DSCAL(NC*NC,XLS2,HOTA,1)
-           CALL DSCAL(NC*NC,CO(KP),HOTA,1)
-           CALL UTBTAB('CUMU',NC,2*NC,HOTA,D1B,WORK,RG0)
-        END IF
-C
-C       ON STOCKE LES  VARIABLES INTERNES "+"
-C           LES CONTRAINTES "+" ET LE FL :
-C
-        IF (VECTEU) THEN
-           DO 58 I=1,9
-              VARIP(LGPG*(KP-1)+I) = VIP(I)
-   58      CONTINUE
-           DO 59 I=1,NC
-              CONTP(NC*(KP-1)+I) = SIGP(I)
-   59      CONTINUE
-C
-           DO 214 K = 1,2*NC
-              DO 215 KK = 1,NC
-                 FL(K)=FL(K) + XLS2*SIGP(KK)*D1B(KK,K)*CO(KP)
-  215         CONTINUE
-  214      CONTINUE
-        END IF
-C
-  101 CONTINUE
+101   CONTINUE
 C
       IF ( MATRIC ) THEN
-         CALL MAVEC  ( RG0, 2*NC, KLV, DIMKLV )
+         CALL MAVEC( RG0, 2*NC, KLV, DIMKLV )
       ENDIF
 C
       END

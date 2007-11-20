@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -631,7 +631,7 @@ C     --- ALLOCATION DES VECTEURS DE SORTIE ---
           VALI (1) = NBREVI
           CALL U2MESG('I+','ALGORITH16_84',0,' ',1,VALI,0,0.D0)
         ENDIF
-        CALL U2MESG('I','ALGORITH16_27',0,' ',0,0,0,0.D0)
+        CALL U2MESG('I','VIDE_1',0,' ',0,0,0,0.D0)
       END IF
 
       IF (METHOD.EQ.'EULER') THEN

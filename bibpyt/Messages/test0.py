@@ -1,4 +1,4 @@
-#@ MODIF test0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF test0 Messages  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,12 +21,36 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
-<INVALID_REGEXP> %(k1)s pour %(k2)s.
+1 : _("""
+Expression régulière invalide : %(k2)s
+
+Exception retournée :
+   %(k1)s
 """),
 
-2: _("""
+2 : _("""
 Le fichier n'a pas été fermé : %(k1)s
 """),
 
+3 : _("""
+TEST_FICHIER impossible, fichier inexistant : %(k1)s
+"""),
+
+4 : _("""
+
+     Nom du fichier   : %(k3)s
+
+                       -----------------------------------------------------------------------
+                       |             FICHIER              |            REFERENCE             |
+   -------------------------------------------------------------------------------------------
+   | Nombre de valeurs |            %(i1)6d                |            %(i2)6d                |
+   | Somme des valeurs |      %(r1)20.13e        |      %(k4)20s        |
+   | md5sum des textes | %(k1)-32s | %(k2)-32s |
+   -------------------------------------------------------------------------------------------
+
+"""),
+
 }
+
+
+

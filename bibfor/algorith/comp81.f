@@ -3,7 +3,7 @@
       CHARACTER*8  NOMRES,NOMA,BASMOD
       CHARACTER*19 MASSF,RAIDF,AMORF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 19/11/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C
       REAL*8       RBNDYN
 C      CHARACTER*6  PGC
       CHARACTER*8  NOMO,BLANC,LINTF,K8BID,CHMAT,CHCAR,NOGDSI,NOGDS2
-      CHARACTER*8  NOMCAS,VECTAS
+      CHARACTER*8  NOMCAS,VECTAS,GNEX
       CHARACTER*14 NUMDDL
       CHARACTER*19 NU
 C
@@ -151,23 +151,31 @@ C On prend comme postulat que NBNDYN=PARTIE_ENTIERE de NBMDYN/NCMPMX
          CALL WKVECT(NOMRES//'.NEUBID','V V I',1,INEBID)
          GOTO 554
       ENDIF
+      CALL GETVID(' ','SANS_GROUP_NO',1,1,1,GNEX,IGEX)
+      IF (IGEX.NE.0) THEN
+        CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',GNEX),'LONMAX',NBNO2,K8BID)
+        CALL JEVEUO(JEXNOM(NOMA//'.GROUPENO',GNEX),'L',LDGN)
+      ELSE
+        NBNO2=NBNOE
+        IF (NBNO2.NE.0) THEN
+          CALL WKVECT('&&COMP81.NEUEXC','V V I',NBNO2,LDGN)
+          DO 557 J=1,NBNO2
+            ZI(LDGN+J-1)=ZI(LLDEF+J-1)
+  557     CONTINUE
+        ENDIF
+      ENDIF
       CALL WKVECT(NOMRES//'.NEUBID','V V I',NBNDYN,INEBID)
       DO 555 I=1,NBNO
         NUNOT=ZI(IAPRNO-1+ (I-1)* (NEC+2)+1)
         IF (NUNOT.NE.0) THEN
           NUEQ = ZI(IAPRNO-1+ (I-1)* (NEC+2)+2)
           IF (NUEQ.EQ.NCMPMX) THEN
-            DO 556 J=1,NBNOE
-              IF (I.NE.ZI(LLDEF+J-1)) THEN
-                ZI(INEBID+K-1)= I
-                IF (K.EQ.NBNDYN) THEN
-                  GOTO 554
-                ELSE
-                  K=K+1
-                  GOTO 555
-                ENDIF
-              ENDIF
+            DO 556 J=1,NBNO2
+              IF (I.EQ.ZI(LDGN+J-1)) GOTO 555
   556       CONTINUE
+            ZI(INEBID+K-1)= I
+            IF (K.EQ.NBNDYN) GOTO 554
+            K=K+1
           ENDIF
         ENDIF
   555 CONTINUE

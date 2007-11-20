@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # RESPONSABLE VABHHTS J.PELLET
 # TITRE VALIDATION DE LA COMMANDE PROJ_CHAMP/ELEM (EN 2D ET EN FILAIRE)
 #                   + CAS_FIGURE='2D'
@@ -23,7 +23,7 @@
 #======================================================================
 #CAS_TEST__: ZZZZ110A
 
-DEBUT(CODE=_F(NOM='ZZZZ110A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='ZZZZ110A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
 
 #---------------------------------------------------------------------------------
 # Description du test :

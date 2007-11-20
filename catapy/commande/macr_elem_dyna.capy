@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+#& MODIF COMMANDE  DATE 19/11/2007   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,8 @@ MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=  81,sd_prod=macr_elem_dyna,
          MATR_RIGI       =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c),),
          MATR_MASS       =SIMP(statut='f',typ=matr_asse_depl_r ),
          MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r ),
-         AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),         
+         AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'), 
+         SANS_GROUP_NO   =SIMP(statut='f',typ=grno ),
          MATR_IMPE       =SIMP(statut='f',typ=matr_asse_gene_c ),
          b_matr_impe     =BLOC(condition = "MATR_IMPE != None",
              FREQ_EXTR       =SIMP(statut='o',typ='R' ),

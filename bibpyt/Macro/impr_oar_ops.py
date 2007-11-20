@@ -1,4 +1,4 @@
-#@ MODIF impr_oar_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF impr_oar_ops Macro  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,10 +18,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import aster
-from Utilitai.Utmess import  UTMESS
-from Utilitai.Table import Table
-from Utilitai.partition import MAIL_PY
+# protection pour eficas
+try:
+   import aster
+   from Utilitai.Utmess import  UTMESS
+   from Utilitai.Table import Table
+   from Utilitai.partition import MAIL_PY
+except:
+   pass
 
 def buildTabString(tabLevel):
    """

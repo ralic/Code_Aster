@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,204 +18,243 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 #            C: MODELISATION 2D X-FEM AVEC ELEMENTS LINEAIRES
-
-
 #relation = 'ELAS'
-relation = 'ELAS_VMIS_LINE',
 
 
-DEBUT(CODE=_F( NOM = 'SSNP110C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNP110C',
+              NIV_PUB_WEB='INTERNET',
+              ),
+      DEBUG=_F(SDVERI='OUI',),);
+relation = 'ELAS_VMIS_LINE';
 
-PRE_GIBI()
 
-MAILLAG1=LIRE_MAILLAGE()
+PRE_GIBI();
+
+MAILLAG1=LIRE_MAILLAGE();
 
 #----------------------------------------
 # epaisseur (suivant x)
-lx = 16.
+lx = 16.0;
+
 
 # largeur (suivant y)
-ly = 50.
+ly = 50.0;
 
 
 # nb element suivant la largeur
-nx = 18.
+nx = 18.0;
+
 
 # nb element suivant la hauteur
-ny = 31.
+ny = 31.0;
+
 
 # longueur de la fissure
-a = 6
-#----------------------------------------
+a = 6;
 
+
+#----------------------------------------
 # tailles des elements suivant x et y
-hy = ly/ny
-hx = lx/nx
+hy = (ly / ny);
+
+hx = (lx / nx);
+
 
 # creation des noeuds servant a bloquer les modes rigides
+
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                 MAILLAGE=MAILLAG1,
-                 CREA_GROUP_NO=(
-                                 _F(NOM='A1',OPTION='ENV_SPHERE',POINT=(lx-a,      -hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
-                                 _F(NOM='A2',OPTION='ENV_SPHERE',POINT=(lx-a,       hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
-                                 _F(NOM='C1',OPTION='ENV_SPHERE',POINT=(lx-a-2*hx, -hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
-                                 _F(NOM='C2',OPTION='ENV_SPHERE',POINT=(lx-a-2*hx,  hy/2.),PRECISION=1/(8.*ny),RAYON=1/(8.*ny)),
-                                ),
-                 );
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
+                                      NOM='A1',
+                                      POINT=((lx - a),(-(hy) / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),
+                                   _F(OPTION='ENV_SPHERE',
+                                      NOM='A2',
+                                      POINT=((lx - a),(hy / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),
+                                   _F(OPTION='ENV_SPHERE',
+                                      NOM='C1',
+                                      POINT=(((lx - a) - (2 * hx)),(-(hy) / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),
+                                   _F(OPTION='ENV_SPHERE',
+                                      NOM='C2',
+                                      POINT=(((lx - a) - (2 * hx)),(hy / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),),);
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('SURFTOT',),
+                     AFFE=(_F(GROUP_MA='SURFTOT',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);  
+                              MODELISATION='C_PLAN',),),);
 
+LN = FORMULE(VALE='Y',
+             NOM_PARA=('X','Y',),);
 
-LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y');
-LT=FORMULE(NOM_PARA=('X','Y'),VALE='X');
+LT = FORMULE(VALE='X',
+             NOM_PARA=('X','Y',),);
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    GROUP_MA_ENRI='SURFTOT',
-                    );
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    DEFI_FISS=_F(FONC_LT=LT,
+                                 FONC_LN=LN,),
+                    GROUP_MA_ENRI='SURFTOT',);
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         INFO=1,);
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      LIAISON_XFEM='OUI',
+                      INFO=1,);
 
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
 
-MAT=DEFI_MATERIAU(ELAS=_F(E = 2.0601E5, NU = 0.3, ALPHA = 0.),
-                  ECRO_LINE=_F(  D_SIGM_EPSI = 0., SY = 808.344)
-                         )
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.0601E5,
+                          NU=0.3,
+                          ALPHA=0.,),
+                  ECRO_LINE=_F(D_SIGM_EPSI=0.,
+                               SY=808.344,),);
+
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
-                       AFFE=_F(TOUT = 'OUI',
-                                MATER=MAT,
-                                ),
-                             );
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MAT,),);
 
 #----------------------------------------------------------
 #                   CHARGEMENT 
 #----------------------------------------------------------
-
 # blocage des modes rigides 
+
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                  LIAISON_DDL=(
-                               _F(GROUP_NO=('A1','A2',),DDL=('DX','DX',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('A1','A2',),DDL=('DY','DY',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                               _F(GROUP_NO=('C1','C2',),DDL=('DY','DY',),COEF_MULT=(0.5,0.5),COEF_IMPO=0.,),
-                              ),
-                  );
+                  LIAISON_DDL=(_F(GROUP_NO=('A1','A2',),
+                                  DDL=('DX','DX',),
+                                  COEF_MULT=(0.5,0.5,),
+                                  COEF_IMPO=0.,),
+                               _F(GROUP_NO=('A1','A2',),
+                                  DDL=('DY','DY',),
+                                  COEF_MULT=(0.5,0.5,),
+                                  COEF_IMPO=0.,),
+                               _F(GROUP_NO=('C1','C2',),
+                                  DDL=('DY','DY',),
+                                  COEF_MULT=(0.5,0.5,),
+                                  COEF_IMPO=0.,),),);
 
 CHF=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(
-                             _F(GROUP_MA='LIG1',DY = -1.,),
-                             _F(GROUP_MA='LIG3',DY =  1.,),
-                            ),
-                   );
+                   DDL_IMPO=(_F(GROUP_MA='LIG1',
+                                DY=-1.,),
+                             _F(GROUP_MA='LIG3',
+                                DY=1.,),),);
 
-RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
-                        VALE=(0.,0.,1.,1.,),
-                        PROL_DROITE='LINEAIRE'
-                      )
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                          1.,1.,
+                          ),PROL_DROITE='LINEAIRE',);
+
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
-npas = 50
+npas = 50;
+
+
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F( JUSQU_A = 0.1,  NOMBRE = npas)
-#                      INTERVALLE=_F( JUSQU_A = 0.1,  NOMBRE = 1)
-                        )
+                      INTERVALLE=_F(JUSQU_A=0.1,
+                                    NOMBRE=npas,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CHF,FONC_MULT = RAMPE),
-                          _F(CHARGE=CH),),
-                       COMP_ELAS=_F(
-                                   RELATION = relation,
-                                    DEFORMATION = 'PETIT'),
-                       INCREMENT=_F(LIST_INST = L_INST,
-                                    SUBD_COEF_PAS_1=1.0,
-                                    SUBD_METHODE='UNIFORME', SUBD_PAS=2,
-                                    SUBD_PAS_MINI=0.00001),
-                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
-                   SOLVEUR=_F(PCENT_PIVOT = 200,METHODE='MUMPS',),
-                   NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                    CHAM_MATER=CHAMPMA1,
+                    EXCIT=(_F(CHARGE=CHXFEM,),
+                           _F(CHARGE=CHF,
+                              FONC_MULT=RAMPE,),
+                           _F(CHARGE=CH,),),
+                    COMP_ELAS=_F(RELATION=relation,
+                                 DEFORMATION='PETIT',),
+                    INCREMENT=_F(LIST_INST=L_INST,
+                                 SUBD_METHODE='UNIFORME',
+                                 SUBD_COEF_PAS_1=1.0,
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI=1.E-5,),
+                    NEWTON=_F(REAC_ITER=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-5,),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               PCENT_PIVOT=200,),
+                    ARCHIVAGE=_F(LIST_INST=L_INST,
+                                 CHAM_EXCLU='VARI_ELGA',),
+                    INFO=1,);
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
 #------------------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MODELE        = MODELEK)
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
+                       MAILLAGE_SAIN=MAILLAG1,);
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=(_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),
-                              );  
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='C_PLAN',),);
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
-                        MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,
-                        NOM_CHAM      = ('DEPL','SIEF_ELGA'))
+RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN=MAILLAG1,
+                        MAILLAGE_FISS=MA_XFEM,
+                        NOM_CHAM=('DEPL','SIEF_ELGA',),
+                        MODELE=MODELEK,
+                        RESULTAT=UTOT1,
+                        MODELE_VISU=MOD_VISU,);
 
+IMPR_RESU(FORMAT='GMSH',
+          UNITE=82,
+          RESU=_F(RESULTAT=RES_XFEM,
+                  NOM_CHAM='DEPL',
+                  NUME_ORDRE=npas,),);
 
-IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM,
-                                         NOM_CHAM='DEPL',
-                                         NUME_ORDRE=npas,
-             ));
+DEPLFIN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                   OPERATION='EXTR',
+                   RESULTAT=RES_XFEM,
+                   NOM_CHAM='DEPL',
+                   NUME_ORDRE=npas,);
 
-DEPLFIN = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                    NUME_ORDRE=npas,
-                    OPERATION='EXTR',
-                    RESULTAT = RES_XFEM,
-                    NOM_CHAM='DEPL',
-                   );
-
-MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
+MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                    MAILLAGE=MA_XFEM,
-                   CREA_GROUP_NO= _F(NOM = 'NTEST',
-                                     OPTION='ENV_SPHERE',
-                                     POINT=(-a, 0.),
-                                     PRECISION=0.0001,
-                                     RAYON=0.0001),);
+                   CREA_GROUP_NO=_F(OPTION='ENV_SPHERE',
+                                    NOM='NTEST',
+                                    POINT=(-(a),0.,),
+                                    RAYON=0.0001,
+                                    PRECISION=0.0001,),);
 
-TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT_FISSURE',
-                                   GROUP_NO  = 'NTEST',
-                                   CHAM_GD   = DEPLFIN,
-                                   NOM_CMP   = ( 'DX','DY'),
-                                   OPERATION = 'EXTRACTION',),);
+TABDEP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='DEPLACEMENT_FISSURE',
+                               CHAM_GD=DEPLFIN,
+                               GROUP_NO='NTEST',
+                               NOM_CMP=('DX','DY',),),);
 
 IMPR_TABLE(TABLE=TABDEP,);
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
-DEPREF=9.8756898959655e-02;
+DEPREF = 0.0987568989597;
+
 
 TEST_TABLE(TABLE=TABDEP,
-           NOM_PARA='DY',
            TYPE_TEST='MIN',
-           VALE=-DEPREF,
+           NOM_PARA='DY',
+           VALE=-(DEPREF),
            CRITERE='RELATIF',
            PRECISION=0.04,
-           REFERENCE='AUTRE_ASTER',);         
+           REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABDEP,
-           NOM_PARA='DY',
            TYPE_TEST='MAX',
+           NOM_PARA='DY',
            VALE=DEPREF,
            CRITERE='RELATIF',
            PRECISION=0.04,
-           REFERENCE='AUTRE_ASTER',);         
+           REFERENCE='AUTRE_ASTER',);
 
-FIN()
+FIN();
+
 #
+

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/08/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 19/11/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,14 +44,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      REAL*8 U(14),DU(14),FL(14),PGL(3,3), KLV(105)
-      REAL*8 ALFA1,BETA1,GAMMA1,XD(3),XUG(6),ANG1(3),UTG(14),TET1,TET2
-      REAL*8 HOEL(7*7),HOTA(7*7),D1B(7*14),WORK(14*7),RG0(14*14)
-      REAL*8  ALFA, BETA, EY, EZ, GAMMA, XL, XL2 ,DDOT
-      LOGICAL VECTEU,MATRIC,REACTU
-      INTEGER NNO,NC,I,JCRET,IRETM,IRETP,NPG
-      INTEGER IGEOM,IMATE,ICONTM,ISECT,IORIEN,ICOMPO,IVARIM,IINSTP
-      INTEGER ICARCR,IDEPLM,IDEPLP,IINSTM,IVECTU,ICONTP,IVARIP,IMAT
+      REAL*8   U(14),DU(14),FL(14),PGL(3,3),KLV(105),R8BID
+      REAL*8   ALFA1,BETA1,GAMMA1,XD(3),XUG(6),ANG1(3),UTG(14)
+      REAL*8   HOEL(7*7),HOTA(7*7),D1B(7*14),WORK(14*7),RG0(14*14)
+      REAL*8   ALFA, BETA, EY, EZ, GAMMA, XL, XL2 ,DDOT,TET1,TET2
+      LOGICAL  VECTEU,MATRIC,REACTU
+      INTEGER  NNO,NC,I,J,JCRET,IRETM,IRETP,NPG
+      INTEGER  IGEOM,IMATE,ICONTM,ISECT,IORIEN,ICOMPO,IVARIM,IINSTP
+      INTEGER  ICARCR,IDEPLM,IDEPLP,IINSTM,IVECTU,ICONTP,IVARIP,IMAT
       CHARACTER*4   FAMI
 C
       NNO = 2
@@ -76,63 +76,66 @@ C
       CALL JEVECH('PDEPLMR','L',IDEPLM)
       CALL JEVECH('PCARCRI','L',ICARCR)
 
+C     SEULEMENT EN COMP_INCR
+      IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
+         CALL U2MESS('F','ELEMENTS2_90')
+      ENDIF
+      NPG = 3
+      FAMI = 'RIGI'
+
 C ---- LA PRESENCE DU CHAMP DE DEPLACEMENT A L INSTANT T+
 C ---- DEVRAIT ETRE CONDITIONNE  PAR L OPTION (AVEC RIGI_MECA_TANG
 C ---- CA N A PAS DE SENS).
 C ---- CEPENDANT CE CHAMP EST INITIALISE A 0 PAR LA ROUTINE NMMATR.
       CALL JEVECH('PDEPLPR','L',IDEPLP)
       IF (VECTEU) THEN
-        CALL JEVECH('PVECTUR','E',IVECTU)
-        CALL JEVECH('PCONTPR','E',ICONTP)
-        CALL JEVECH('PVARIPR','E',IVARIP)
+         CALL JEVECH('PVECTUR','E',IVECTU)
+         CALL JEVECH('PCONTPR','E',ICONTP)
+         IF ( ZK16(ICOMPO) .NE. 'ELAS' ) THEN
+            CALL JEVECH('PVARIPR','E',IVARIP)
+         ENDIF
       END IF
       IF ( MATRIC ) CALL JEVECH('PMATUUR','E',IMAT)
 C
-      IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
-         CALL U2MESS('F','ELEMENTS2_90')
-      ENDIF
-      NPG = 3
-      FAMI = 'RIGI'
 C
 C     GEOMETRIE EVENTUELLEMENT  REACTUALISEE :
 C
       DO 111 I = 1,14
-        UTG(I) = ZR(IDEPLM-1+I) + ZR(IDEPLP-1+I)
-  111 CONTINUE
+         UTG(I) = ZR(IDEPLM-1+I) + ZR(IDEPLP-1+I)
+111   CONTINUE
       REACTU =  ZK16(ICOMPO+2)(6:10) .EQ. '_REAC'
       IF ( REACTU ) THEN
+         CALL U2MESS('A','ELEMENTS3_78')
 C
-        CALL U2MESS('A','ELEMENTS3_78')
-C
-        DO 512 I = 1,3
-          XUG(I) = UTG(I) + ZR(IGEOM-1+I)
-          XUG(I+3) = UTG(I+7) + ZR(IGEOM-1+I+3)
-  512   CONTINUE
-        CALL VDIFF(3,XUG(4),XUG(1),XD)
-        XL2=DDOT(3,XD,1,XD,1)
-        XL = SQRT(XL2)
-        TET1=DDOT(3,UTG(4),1,XD,1)
-        TET2=DDOT(3,UTG(11),1,XD,1)
-        TET1 = TET1/XL
-        TET2 = TET2/XL
-        CALL ANGVX(XD,ALFA1,BETA1)
-        GAMMA = ZR(IORIEN+2)
-        GAMMA1 = GAMMA + (TET1+TET2)/2.D0
-        ANG1(1) = ALFA1
-        ANG1(2) = BETA1
-        ANG1(3) = GAMMA1
-        CALL MATROT ( ANG1 , PGL )
+         DO 512 I = 1,3
+            XUG(I) = UTG(I) + ZR(IGEOM-1+I)
+            XUG(I+3) = UTG(I+7) + ZR(IGEOM-1+I+3)
+512      CONTINUE
+         CALL VDIFF(3,XUG(4),XUG(1),XD)
+         XL2=DDOT(3,XD,1,XD,1)
+         XL = SQRT(XL2)
+         TET1=DDOT(3,UTG(4),1,XD,1)
+         TET2=DDOT(3,UTG(11),1,XD,1)
+         TET1 = TET1/XL
+         TET2 = TET2/XL
+         CALL ANGVX(XD,ALFA1,BETA1)
+         GAMMA = ZR(IORIEN+2)
+         GAMMA1 = GAMMA + (TET1+TET2)/2.D0
+         ANG1(1) = ALFA1
+         ANG1(2) = BETA1
+         ANG1(3) = GAMMA1
+         CALL MATROT ( ANG1 , PGL )
       ELSE
-        CALL VDIFF(3,ZR(IGEOM-1+4),ZR(IGEOM),XD)
-        XL2=DDOT(3,XD,1,XD,1)
-        XL = SQRT(XL2)
-        ALFA = ZR(IORIEN+0)
-        BETA = ZR(IORIEN+1)
-        GAMMA = ZR(IORIEN+2)
-        ANG1(1) = ALFA
-        ANG1(2) = BETA
-        ANG1(3) = GAMMA
-        CALL MATROT ( ANG1 , PGL )
+         CALL VDIFF(3,ZR(IGEOM-1+4),ZR(IGEOM),XD)
+         XL2=DDOT(3,XD,1,XD,1)
+         XL = SQRT(XL2)
+         ALFA = ZR(IORIEN+0)
+         BETA = ZR(IORIEN+1)
+         GAMMA = ZR(IORIEN+2)
+         ANG1(1) = ALFA
+         ANG1(2) = BETA
+         ANG1(3) = GAMMA
+         CALL MATROT ( ANG1 , PGL )
       END IF
 C
 C     PASSAGE DES DEPLACEMENTS DANS LE REPERE LOCAL:
@@ -145,33 +148,40 @@ C
       EY = -ZR(ISECT-1+6)
       EZ = -ZR(ISECT-1+7)
       DO 217 I = 1,2
-        U(7* (I-1)+2) = U(7* (I-1)+2) - EZ*U(7* (I-1)+4)
-        U(7* (I-1)+3) = U(7* (I-1)+3) + EY*U(7* (I-1)+4)
-        DU(7* (I-1)+2) = DU(7* (I-1)+2) - EZ*DU(7* (I-1)+4)
-        DU(7* (I-1)+3) = DU(7* (I-1)+3) + EY*DU(7* (I-1)+4)
-  217 CONTINUE
+         J=7*(I-1)
+          U(J+2) =  U(J+2) - EZ* U(J+4)
+          U(J+3) =  U(J+3) + EY* U(J+4)
+         DU(J+2) = DU(J+2) - EZ*DU(J+4)
+         DU(J+3) = DU(J+3) + EY*DU(J+4)
+217   CONTINUE
 C
-      CALL NMVMPO(FAMI,NPG,OPTION,NOMTE,NC,XL,ZI(IMATE),ZR(ISECT),
-     &            ZR(ICARCR),ZK16(ICOMPO),U,DU,ZR(ICONTM),
-     &            ZR(IVARIM),
-     &               HOEL,HOTA,D1B,WORK,RG0,
-     &            ZR(IVARIP),ZR(ICONTP),FL,KLV)
+      IF ( ZK16(ICOMPO) .EQ. 'ELAS' ) THEN
+         CALL NMVMPO(FAMI, NPG, OPTION, NOMTE, NC,
+     &            XL, ZI(IMATE), ZR(ISECT), ZR(ICARCR), ZK16(ICOMPO),
+     &            U, DU, ZR(ICONTM), ZR(IVARIM), HOEL,
+     &            HOTA, D1B,  WORK, RG0,  R8BID,
+     &            ZR(ICONTP), FL, KLV)
+      ELSE
+         CALL NMVMPO(FAMI, NPG, OPTION, NOMTE, NC,
+     &            XL, ZI(IMATE), ZR(ISECT), ZR(ICARCR), ZK16(ICOMPO),
+     &            U, DU, ZR(ICONTM), ZR(IVARIM), HOEL,
+     &            HOTA, D1B,  WORK, RG0,  ZR(IVARIP),
+     &            ZR(ICONTP), FL, KLV)
+      ENDIF
 C
 C     ON REND LE FL DANS LE REPERE GLOBAL :
 C
       IF (VECTEU) THEN
-        DO 216 I = 1,2
-          FL(7*(I-1)+4)=FL(7*(I-1)+4)-EZ*FL(7*(I-1)+2)+EY*FL(7*(I-1)+3)
-  216   CONTINUE
+         FL( 4)=FL( 4)-EZ*FL(2)+EY*FL( 3)
+         FL(11)=FL(11)-EZ*FL(9)+EY*FL(10)
 C
-        CALL UTPVLG ( NNO, NC, PGL, FL, ZR(IVECTU) )
+         CALL UTPVLG ( NNO, NC, PGL, FL, ZR(IVECTU) )
       END IF
 C
 C     ON REND LA MATRICE TANGENTE :
-C
       IF ( MATRIC ) THEN
-        CALL POUEX7 ( KLV, EY, EZ )
-        CALL UTPSLG ( NNO, NC, PGL, KLV, ZR(IMAT) )
+         CALL POUEX7 ( KLV, EY, EZ )
+         CALL UTPSLG ( NNO, NC, PGL, KLV, ZR(IMAT) )
       ENDIF
 C
 9999  CONTINUE
