@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,6 +98,7 @@ NONE = None
       # Dictionnaire pour stocker tous les concepts du JDC (acces rapide par le nom)
       self.sds_dict={}
       self.etapes=[]
+      self.index_etapes = {}
       self.mc_globaux={}
       self.current_context={}
       self.condition_context={}
@@ -112,13 +113,23 @@ NONE = None
          compte-rendu self.cr
       """
       try:
-        if self.appli != None : 
-           self.appli.affiche_infos('Compilation du fichier de commandes en cours ...')
-        self.proc_compile=compile(self.procedure,self.nom,'exec')
-      except SyntaxError,e:
-        if CONTEXT.debug : traceback.print_exc()
-        l=traceback.format_exception_only(SyntaxError,e)
-        self.cr.exception("Compilation impossible : "+string.join(l))
+         if self.appli != None : 
+            self.appli.affiche_infos('Compilation du fichier de commandes en cours ...')
+         self.proc_compile=compile(self.procedure,self.nom,'exec')
+      except SyntaxError, e:
+         if CONTEXT.debug : traceback.print_exc()
+         l=traceback.format_exception_only(SyntaxError,e)
+         self.cr.exception("Compilation impossible : "+string.join(l))
+      except SystemError, e:
+         erreurs_connues = """
+Causes possibles :
+ - offset too large : liste trop longue derrière un mot-clé.
+   Solution : liste = (valeurs, ..., )
+              MOT_CLE = *liste,
+"""
+         l=traceback.format_exception_only(SystemError,e)
+         l.append(erreurs_connues)
+         self.cr.exception("Compilation impossible : " + ''.join(l))
       return
 
    def exec_compile(self):
@@ -241,6 +252,7 @@ NONE = None
          et retourne un numéro d'enregistrement
       """
       self.etapes.append(etape)
+      self.index_etapes[etape] = len(self.etapes) - 1
       return self.g_register(etape)
 
    def o_register(self,sd):
@@ -418,7 +430,7 @@ NONE = None
       # Si on insère des commandes (par ex, dans EFICAS), il faut préalablement
       # remettre ce pointeur à 0
       if etape:
-         index_etape=self.etapes.index(etape)
+         index_etape = self.index_etapes[etape]
       else:
          index_etape=len(self.etapes)
       if index_etape >= self.index_etape_courante:
@@ -429,7 +441,8 @@ NONE = None
          liste_etapes=self.etapes[self.index_etape_courante:index_etape]
       else:
          d=self.current_context={}
-         if self.context_ini:d.update(self.context_ini)
+         if self.context_ini:
+            d.update(self.context_ini)
          liste_etapes=self.etapes
 
       for e in liste_etapes:
@@ -459,5 +472,6 @@ NONE = None
           et remet à jour la parenté de l'étape et des concepts
        """
        self.etapes.append(etape)
+       self.index_etapes[etape] = len(self.etapes) - 1
        etape.reparent(self)
        etape.reset_jdc(self)

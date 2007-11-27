@@ -1,7 +1,7 @@
-      SUBROUTINE NMDOMT(METHOD,PARMET)
+      SUBROUTINE NMDOMT(METHOD,PARMET,NOMCMD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*16 METHOD(*)
+      CHARACTER*16 METHOD(*),NOMCMD
       REAL*8       PARMET(*)
 C 
 C ----------------------------------------------------------------------
@@ -107,7 +107,12 @@ C
         IF (IRET.LE.0) CALL U2MESS('F','ALGORITH7_45')
       END IF
 
-      CALL GETFAC('RECH_LINEAIRE',NOCC)
+      IF (NOMCMD(1:4).EQ.'DYNA') THEN
+        NOCC = 0
+      ELSE
+        CALL GETFAC('RECH_LINEAIRE',NOCC)   
+      ENDIF
+      
       IF (NOCC.NE.0) THEN
         CALL GETVTX('RECH_LINEAIRE','METHODE',1,1,1,METHOD(7),IRET)
         CALL GETVR8('RECH_LINEAIRE','RESI_LINE_RELA',1,1,1,PARMET(11),

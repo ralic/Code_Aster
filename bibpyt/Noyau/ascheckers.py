@@ -1,4 +1,4 @@
-#@ MODIF ascheckers Noyau  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF ascheckers Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,12 +39,18 @@ class Parmi(object):
         return "".join( l )
 
 class CheckLog(object):
-    """Un validateur qui enregistre toutes
-    les erreurs trouvées"""
+    """Un validateur qui enregistre toutes les erreurs trouvées.
+    checkedXXX répond True si la "marq" courante est inférieure ou égale
+    à la celle de la dernière vérification.
+    Si on incrémentait "marq" à chaque étape, on revérifie à chaque fois.
+    """
     def __init__(self):
-        self.msg = []
-        self.names = {}
-        self.optional = False
+        self.msg       = []
+        self.names     = {}
+        self.optional  = False
+        self._marq     = 1
+        self._lastmarq = self._marq
+        self._debug    = False
 
     def log(self, level, obj, msg ):
         if obj :
@@ -58,8 +64,40 @@ class CheckLog(object):
     def warn(self, obj, msg ):
         self.log( 1, obj, msg )
 
-    def visit(self, obj ):
-        self.names[obj.nomj()] = 1
+    def visitOJB(self, obj):
+        key = obj.nomj()
+        self.names[key] = self._marq
+
+    def visitAsBase(self, obj):
+        key = (obj.nomj(), obj.__class__.__name__)
+        self.names[key] = self._marq
+
+    def force(self, force=False):
+        if not force:
+           self._marq = 1
+        else:
+           self._lastmarq += 1
+           self._marq = self._lastmarq
+
+    def checkedOJB(self, obj):
+        key = obj.nomj()
+        res = self.names.get(key, 0) >= self._marq
+        self.help_dbg([key,], res)
+        return res
+
+    def checkedAsBase(self, obj):
+        key = (obj.nomj(), obj.__class__.__name__)
+        res = self.names.get(key, 0) >= self._marq
+        self.help_dbg(key, res)
+        return res
+
+    def help_dbg(self, key, res):
+        if self._debug:
+            if res:
+               s = 'ignore'
+            else:
+               s = 'check '
+            print '#DBG %6d %s : %s' % (self._marq, s, ', '.join(key))
 
     def __str__(self):
         d = { 0: "E", 1:"W" }

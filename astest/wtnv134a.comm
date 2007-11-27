@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,7 +119,7 @@ SOL0=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                             AMON     = 0.0001,
                             ACYC     = 0.008,
                             CMON     = 0.2,
-                            CCYC     = 0.2,
+                            CCYC     = 0.1,
                             RD_ELA   = 0.005,
                             RI_ELA   = 0.001,
                             RHYS     = 0.05,
@@ -215,7 +215,7 @@ SOL=DEFI_MATERIAU(ELAS=_F(E=YOUNG, NU=POISSON, RHO=2500., ALPHA=0.),
                             AMON     = 0.0001,
                             ACYC     = 0.008,
                             CMON     = 0.2,
-                            CCYC     = 0.2,
+                            CCYC     = 0.1,
                             RD_ELA   = 0.005,
                             RI_ELA   = 0.001,
                             RHYS     = 0.05,

@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,6 +76,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       self.current_context={}
       self.index_etape_courante=0
       self.etapes=[]
+      self.index_etapes={}
       self.sds=[]
       #  Dans le cas d'une macro écrite en Python, l'attribut Outputs est un 
       #  dictionnaire qui contient les concepts produits de sortie 
@@ -268,7 +269,7 @@ Causes possibles :
       # Si on insère des commandes (par ex, dans EFICAS), il faut
       # préalablement remettre ce pointeur à 0
       if etape:
-         index_etape=self.etapes.index(etape)
+         index_etape = self.index_etapes[etape]
       else:
          index_etape=len(self.etapes)
 
@@ -426,6 +427,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
           et demande d enregistrement global aupres du JDC
       """
       self.etapes.append(etape)
+      self.index_etapes[etape] = len(self.etapes) - 1
       idetape=self.jdc.g_register(etape)
       return idetape
 
@@ -651,6 +653,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
           passée en argument (etape)
       """
       self.etapes=[]
+      self.index_etapes={}
       for etp in etape.etapes:
           new_etp=etp.copy()
           new_etp.copy_reuse(etp)
@@ -665,6 +668,8 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
                 self.NommerSdprod(new_sd,etp.sd.nom)
           new_etp.copy_intern(etp)
           self.etapes.append(new_etp)
+          self.index_etapes[new_etp] = len(self.etapes) - 1
+          
 
    def reset_jdc(self,new_jdc):
        """

@@ -11,7 +11,7 @@
       INTEGER           NTCMP,IMPR
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 26/11/2007   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,6 +169,10 @@ C
           ELSEIF(MCOMPT(1:6).EQ.'TAHERI') THEN
            CALL FGCOTA(NBORD,ZR(IVPT),NCYC,ZR(IVMIN),ZR(IVMAX))
           ENDIF
+          IF (NCYC .EQ. 0) THEN
+             CALL U2MESI('F', 'FATIGUE1_77',1,NCYC)
+          ENDIF
+
           IF(IMPR.GE.2) THEN
             VALI = NBORD
             VALR (1) = ZR(IVPT)

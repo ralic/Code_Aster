@@ -3,7 +3,7 @@
         INTEGER         IER
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 26/11/2007   AUTEUR ANGLES J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -283,6 +283,9 @@ C
       ENDIF
 C
       CALL JELIRA(NOMSD//'.ORDR','LONUTI',NBORD,K8B)
+      IF (NBORD .LT. 2) THEN
+         CALL U2MESI('F', 'FATIGUE1_76',1,NBORD)
+      ENDIF
 C
       CALL JENONU(JEXNOM(NOMSD//'.DESC',NOMSYM),NUMSYM)
         IF(NUMSYM.EQ.0) THEN

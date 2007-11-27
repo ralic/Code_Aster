@@ -1,4 +1,4 @@
-#@ MODIF sd_tran_gene SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_tran_gene SD  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@ from SD import *
 from SD.sd_titre import sd_titre
 from SD.sd_nume_ddl_gene import sd_nume_ddl_gene
 from SD.sd_matr_asse_gene import sd_matr_asse_gene
+from SD.sd_proj_mesu import sd_proj_mesu
 from SD.sd_util import *
 
 
@@ -61,13 +62,9 @@ class sd_tran_gene(sd_titre) :
     REDC = Facultatif(AsVI())
     REDD = Facultatif(AsVR())
 
-    # objets commencant en 8 :
-    # Ces objets ne sont pas encore documentés.
-    # une fiche a été émise pour ces objets : 10882
-    BASEPR = Facultatif(AsVR(SDNom(debut=8)))
-    VNOEUD = Facultatif(AsVI(SDNom(debut=8)))
-    VORIEN = Facultatif(AsVR(SDNom(debut=8)))
-    VRANGE = Facultatif(AsVK8(SDNom(debut=8)))
+    # si utilisation de PROJ_MESU_MODAL :
+    PROJM = Facultatif(sd_proj_mesu(SDNom(debut=8)))
+
 
 
 
@@ -90,12 +87,15 @@ class sd_tran_gene(sd_titre) :
 
 
     def check_REFD(self,checker):
+        # AJACOT : j'avais cru comprendre des choses ... mais sdld104a me prouve le contraire !
+        # à revoir ?????
+        return
         refd=self.REFD.get_stripped()
         assert refd[0] != '' , refd
         sd2= sd_matr_asse_gene(refd[0]) ; sd2.check()
         assert refd[1] != '' , refd
-        sd2= sd_matr_asse_gene(refd[1]) ; sd2.check()
-        if  refd[2] != '' :
+        sd2= sd_matr_asse_gene(refd[0]) ; sd2.check()
+        if refd[2] != '' :
             sd2= sd_matr_asse_gene(refd[2]) ; sd2.check()
         assert refd[3] != '' , refd
         sd2= sd_nume_ddl_gene(refd[3]) ; sd2.check()

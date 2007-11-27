@@ -1,23 +1,23 @@
-#@ MODIF E_SUPERV Execution  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_SUPERV Execution  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -45,7 +45,7 @@ class SUPERV:
              par .py ;
            - dans tous les autres cas les commandes sont au format python.
     repertoire_materiau : est le repertoire contenant la description des materiaux pour INCLUDE_MATERIAU
-    interact : si présent, indique que le superviseur passera en interactif apres avoir interprété le 
+    interact : si présent, indique que le superviseur passera en interactif apres avoir interprété le
                fichier de commandes fic_commandes
     verif : si présent indique que seule la phase de vérification sera exécutée
 
@@ -117,12 +117,12 @@ class SUPERV:
          k=k+1
 
       if self.CHEMIN==None :
-         print """JDC.py. Il faut passer un chemin en argument : 
+         print """JDC.py. Il faut passer un chemin en argument :
                            python JDC.py -eficas_path chemin"""
          print self.usage
          return 1
       elif self.nomFichierCommandes==None :
-         print """JDC.py. Il faut passer un nom de fichier de commandes en argument : 
+         print """JDC.py. Il faut passer un nom de fichier de commandes en argument :
                           python JDC.py -commandes nom_fichier"""
          print self.usage
          return 1
@@ -141,6 +141,7 @@ class SUPERV:
          from Utilitai.as_timer import ASTER_TIMER
          self.timer = ASTER_TIMER(format='aster')
          self.timer.Start('init (jdc)')
+         self.timer.Start(' . part Superviseur', num=1.1e6)
          ier = 0
       except:
          print traceback.print_exc()
@@ -188,18 +189,18 @@ class SUPERV:
       if self.rep_mat :args['rep_mat'] =self.rep_mat
 
       j=self.JdC(procedure=text,cata=self.cata,nom=self.nomFichierCommandes,
-             **args      
+             **args
            )
 
       # on transmet le timer au jdc
       j.timer = self.timer
-      
+
       # On compile le texte Python
       j.timer.Start(" . compile")
       j.compile()
       j.timer.Stop(" . compile")
 
-      if not j.cr.estvide(): 
+      if not j.cr.estvide():
          self.MESSAGE("ERREUR DE COMPILATION DANS ACCAS - INTERRUPTION")
          print ">> JDC.py : DEBUT RAPPORT"
          print j.cr
@@ -211,7 +212,7 @@ class SUPERV:
       j.exec_compile()
       j.timer.Stop(" . exec_compile")
       ier=0
-      if not j.cr.estvide(): 
+      if not j.cr.estvide():
          self.MESSAGE("ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION")
          ier=1
          print ">> JDC.py : DEBUT RAPPORT"
@@ -232,7 +233,7 @@ class SUPERV:
       j.timer.Start(" . report")
       cr=j.report()
       j.timer.Stop(" . report")
-      if not cr.estvide(): 
+      if not cr.estvide():
          self.MESSAGE("ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION")
          print ">> JDC.py : DEBUT RAPPORT"
          print cr
@@ -240,7 +241,7 @@ class SUPERV:
          return 1
 
       if self.verif:return
-      
+
 #     Modification du JDC dans le cas de sensibilité
 #     On détermine si le jdc en cours est concerné par un calcul de sensibilité
 #     . Si c'est le cas, on crée un nouveau jdc. On controle ce nouveau jdc. Si tout
@@ -278,7 +279,7 @@ class SUPERV:
 
       try:
          ier=j.Build()
-         if ier or not j.cr.estvide(): 
+         if ier or not j.cr.estvide():
             self.MESSAGE("ERREUR A LA CONSTRUCTION DES MACROS - INTERRUPTION")
             print ">> JDC.py : DEBUT RAPPORT"
             print j.cr
@@ -295,21 +296,21 @@ class SUPERV:
          print ">> JDC.py : DEBUT RAPPORT"
          print cr
          print ">> JDC.py : FIN RAPPORT"
-         return 1   
+         return 1
 
 
       j.setmode(1)
       ier=j.Exec()
       if ier :
          self.MESSAGE("ERREUR A LA VERIFICATION FORTRAN - INTERRUPTION")
-         return 1   
+         return 1
 
       j.setmode(2)
       try:
          ier=j.Exec()
-         if ier : 
+         if ier :
             self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
-            return 1   
+            return 1
       except EOFError:
          if j.fico!=None :
             open('fort.15', 'a').write(open('ficode', 'r').read())
@@ -317,7 +318,7 @@ class SUPERV:
       except :
          self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
          traceback.print_exc()
-         return 1   
+         return 1
 
 
    def ParLotMixte(self,j):
@@ -327,7 +328,7 @@ class SUPERV:
        try:
            j.BuildExec()
            ier=0
-           if not j.cr.estvide(): 
+           if not j.cr.estvide():
                self.MESSAGE("ERREUR A L'EXECUTION - INTERRUPTION")
                ier=1
                print ">> JDC.py : DEBUT RAPPORT"
@@ -341,7 +342,7 @@ class SUPERV:
        except :
            self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
            traceback.print_exc()
-           return 1   
+           return 1
 
    def main(self):
       """
@@ -352,7 +353,7 @@ class SUPERV:
       if ier:return ier
 
       self.set_path()
-      
+
       ier = self.init_timer()
       if ier:return ier
 
@@ -362,8 +363,15 @@ class SUPERV:
       #ier=self.testeCata();if ier:return ier
 
       return self.Execute()
-      
+
+
+def main():
+    appli=SUPERV()
+    ier=appli.main()
+    sys.exit(ier)
+
 if __name__ == '__main__':
-   appli=SUPERV()
-   ier=appli.main()
-   sys.exit(ier)
+   main()
+#   import profile
+#   profile.run('main()')
+

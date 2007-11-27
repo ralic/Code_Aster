@@ -1,4 +1,4 @@
-#@ MODIF dynamique Messages  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF dynamique Messages  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,6 +92,14 @@ cata_msg={
  le pas de temps maximal est    : %(r2)f
  
  Avec le pas de temps maximal, le nombre de pas de calcul est %(i1)d
+"""),
+
+13: _("""
+   Arret par manque de temps CPU à la fréquence : %(i1)d
+      - Temps moyen par pas fréquence : %(r1)f
+      - Temps cpu restant             : %(r2)f
+   
+   La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
 """),
 
 }

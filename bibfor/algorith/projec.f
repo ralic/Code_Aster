@@ -5,7 +5,7 @@
      &                  NOMA  ,PROJ  ,JEUPM,PROYES)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,7 +165,7 @@ C
       IF (POSMA.GT.0) THEN     
         CALL PROJMA(DEFICO,IZONE ,MATYP ,NDIM  ,COOR  ,
      &              COORDP,NORMMA,PROJ  ,MOYEN ,LISSA ,
-     &              DIAGNO,TOLEIN,TOLEOU,ENORM ,
+     &              NBNOM ,DIAGNO,TOLEIN,TOLEOU,ENORM ,
      &              NORM  ,TANG  ,COORDM,COEFNO,JEUPM ,
      &              JEU   ,PROYES)    
       ELSE

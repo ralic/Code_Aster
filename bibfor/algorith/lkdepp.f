@@ -2,10 +2,10 @@
 C
       IMPLICIT      NONE
       INTEGER       NBMAT, DUM
-      REAL*8        VIN(9),PARAEP(3),MATER(NBMAT,2),DERPAR(3),DGAMV
+      REAL*8        VIN(7),PARAEP(3),MATER(NBMAT,2),DERPAR(3),DGAMV
 C ===================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

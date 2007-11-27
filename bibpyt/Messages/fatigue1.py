@@ -1,4 +1,4 @@
-#@ MODIF fatigue1 Messages  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF fatigue1 Messages  DATE 26/11/2007   AUTEUR ANGLES J.ANGLES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -268,6 +268,22 @@ cata_msg={
  nous ne pouvons pas récupérer la valeur du paramètre A du critère FATEMI_SOCIE
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
+"""),
+
+76: _("""
+ Le nombre d'instants calculés est égal à %(i1)d.
+
+ Il faut que l'histoire du chargement comporte au moins 2 instants
+ pour calculer un dommage.
+
+"""),
+
+77: _("""
+ Le nombre de cycles extraits est égal à %(i1)d.
+
+ Votre chargement est constant.
+ On ne peut donc pas extraire de cycles.
+
 """),
 
 }

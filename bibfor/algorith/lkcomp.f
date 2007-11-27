@@ -13,7 +13,7 @@ C
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -181,7 +181,7 @@ C =================================================================
 C --- PREDICTION ELASTIQUE ----------------------------------------
 C =================================================================
       CALL LKELAS ( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML, VINM, DE,KK,MU)
+     &              DEPML, SIGML,  DE,KK,MU)
 
       IEL = I1ML + TROIS*KK*DVML
 
@@ -220,18 +220,16 @@ C----      : EN DESSOUS DU PIC : VAL = 0
 C----      : AU DESSUS DU PIC  : VAL = 1
 
            IF ((SEUIVM .LT. ZERO).AND.(VINM(1).LT.XIPIC)) THEN 
-            VINTR = VINM(3)
             VARV = 0
            ELSEIF ((SEUIVM .GT. ZERO).AND.(VINM(1).LT.XIPIC)) THEN
-            VINTR = XIVM
             VARV = 1       
            ELSEIF ((SEUIVM .GT. ZERO).AND.(VINM(1).GT.XIPIC)) THEN
-            VINTR = XIVM
             VARV = 1
            ELSEIF ((SEUIVM .LT. ZERO).AND.(VINM(1).GT.XIPIC)) THEN
-            VINTR = XIVM
             VARV = 0        
            ENDIF
+            
+           VINTR = VINM(3)
            
            CALL LKCRIV(VINTR,IEL,SEL,VINM,NBMAT,MATERD,UCRIV,SEUILV)
 
@@ -513,7 +511,7 @@ C --- TERMES DE L OPERATEUR TANGENT -------------------------------
 C =================================================================
       IF (OPTION(11:14).EQ.'ELAS') THEN
           CALL LKELAS ( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML, VINM, DE,KK,MU)
+     &              DEPML, SIGML,  DE,KK,MU)
           CALL LCEQMA(DE, DSIDE)
       ENDIF
       IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG'.OR.
@@ -544,7 +542,7 @@ C =================================================================
        IF (MATR .EQ. 0) THEN
 
           CALL LKELAS ( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML, VINM, DE,KK,MU)
+     &              DEPML, SIGML,  DE,KK,MU)
 
           DO 120 I = 1,NDT
           DO 130 K = 1,NDT
@@ -556,7 +554,7 @@ C =================================================================
       
           CALL LKLNVI( MOD, NDT, NDI, NVI)
           CALL LKELAS( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML, VINM, DE,KK,MU)
+     &              DEPML, SIGML,  DE,KK,MU)
           VINTR = VINM(3)
           IF (VINM(1).LT.XIPIC) THEN 
             VAL  = 0

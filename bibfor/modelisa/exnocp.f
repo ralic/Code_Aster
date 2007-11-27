@@ -1,9 +1,9 @@
-      SUBROUTINE EXNOCP(NOMA  ,LIGRMO,NOMTM ,NUMAIL,NBNO  ,
+      SUBROUTINE EXNOCP(NOMA  ,NOMO ,NOMTM ,NUMAIL,NBNO  ,
      &                  INDQUA,LISTMA,LISTNO,LISTQU,IPMA  ,
      &                  IPNO  ,IPNOQU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,9 +23,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8  NOMA
-      CHARACTER*8  NOMTM
-      CHARACTER*19 LIGRMO      
+      CHARACTER*8  NOMA,NOMO
+      CHARACTER*8  NOMTM     
       INTEGER      NUMAIL
       INTEGER      INDQUA      
       INTEGER      NBNO  
@@ -45,7 +44,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  LIGRMO : NOM DU LIGREL DU MODELE
+C IN  NOMO   : NOM DU MODELE
 C IN  NOMTM  : NOM DU TYPE DE MAILLE
 C IN  NUMAIL : NUMERO ABSOLU DE LA MAILLE
 C IN  NBNO   : NOMBRE NOEUDS TOTAL DE LA MAILLE
@@ -79,7 +78,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      INO,IRET,JDES,INPROJ      
+      INTEGER      INO,JDES   
       INTEGER      NOEUMI,NOEUSO
       LOGICAL      LVERIF,LQUADV 
 C
@@ -89,14 +88,12 @@ C
 C
 C --- INITIALISATIONS
 C 
-      CALL JEEXIN(LIGRMO(1:19)//'.LIEL',IRET)
-      INPROJ = 1
       CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',NUMAIL),'L',JDES)      
 C
 C --- NOMBRE DE NOEUDS SOMMETS ET MILIEUX
 C
-      CALL NBNOCP(LIGRMO,NOMTM ,NBNO    ,NUMAIL,INDQUA,
-     &            INPROJ,NOEUMI,NOEUSO,LVERIF,LQUADV)    
+      CALL NBNOCP(NOMO  ,NOMTM ,NBNO  ,NUMAIL,INDQUA,
+     &            NOEUMI,NOEUSO,LVERIF,LQUADV)   
 C
 C --- AJOUT DE LA MAILLE
 C 
@@ -111,21 +108,53 @@ C
    60 CONTINUE      
 C
 C --- AJOUT DES NOEUDS QUADRATIQUES
+C --- NOEUSO=4
+C ---    SI NOEUMI=4: QUAD8 STANDARD
+C ---    SINON: ABORT
+C --- NOEUSO=8
+C ---    SI NOEUMI=1: QUAD9 DE COQUE 3D
+C ---    SINON: ABORT
+C --- NOEUSO=6
+C ---    SI NOEUMI=1: TRIA7 DE COQUE 3D
+C ---    SINON: ABORT 
 C    
-      IF (NOEUMI.EQ.0) THEN
-        GOTO 999
-      ENDIF
-      IF (NOMTM(1:5).EQ.'QUAD8') THEN
-        DO 10 INO = 1,NOEUMI - 1
-          IPNOQU = IPNOQU + 1
-          LISTQU((IPNOQU-1)*3+1) = ZI(JDES+(NOEUSO+INO)-1)
-          LISTQU((IPNOQU-1)*3+2) = ZI(JDES+INO-1)
-          LISTQU((IPNOQU-1)*3+3) = ZI(JDES+(INO+1)-1)
-   10   CONTINUE
-        IPNOQU = IPNOQU + 1
-        LISTQU((IPNOQU-1)*3+1) = ZI(JDES+NBNO-1)
-        LISTQU((IPNOQU-1)*3+2) = ZI(JDES+NOEUMI-1)
-        LISTQU((IPNOQU-1)*3+3) = ZI(JDES+1-1) 
+      IF (NOEUMI.NE.0) THEN 
+        IF (NOEUSO.EQ.4) THEN
+          IF (NOEUMI.EQ.4) THEN
+            DO 10 INO = 1,NOEUMI - 1
+              IPNOQU = IPNOQU + 1
+              LISTQU((IPNOQU-1)*3+1) = ZI(JDES+(NOEUSO+INO)-1)
+              LISTQU((IPNOQU-1)*3+2) = ZI(JDES+INO-1)
+              LISTQU((IPNOQU-1)*3+3) = ZI(JDES+(INO+1)-1)
+   10       CONTINUE
+            IPNOQU = IPNOQU + 1
+            LISTQU((IPNOQU-1)*3+1) = ZI(JDES+NBNO-1)
+            LISTQU((IPNOQU-1)*3+2) = ZI(JDES+NOEUMI-1)
+            LISTQU((IPNOQU-1)*3+3) = ZI(JDES+1-1) 
+          ELSE
+            CALL ASSERT(.FALSE.)  
+          ENDIF  
+        ELSEIF (NOEUSO.EQ.8) THEN  
+          IF (NOEUMI.EQ.1) THEN
+            IPNOQU = IPNOQU + 1
+            LISTQU((IPNOQU-1)*3+1) = ZI(JDES+9-1)
+            LISTQU((IPNOQU-1)*3+2) = 0
+            LISTQU((IPNOQU-1)*3+3) = 0  
+          ELSE
+            CALL ASSERT(.FALSE.)            
+          ENDIF 
+        ELSEIF (NOEUSO.EQ.6) THEN  
+          IF (NOEUMI.EQ.1) THEN
+            IPNOQU = IPNOQU + 1
+            LISTQU((IPNOQU-1)*3+1) = ZI(JDES+7-1)
+            LISTQU((IPNOQU-1)*3+2) = 0
+            LISTQU((IPNOQU-1)*3+3) = 0  
+          ELSE
+            CALL ASSERT(.FALSE.)            
+          ENDIF 
+        ELSE
+          CALL ASSERT(.FALSE.)              
+        ENDIF       
       ENDIF 
 C
  999  CONTINUE        

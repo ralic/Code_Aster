@@ -1,4 +1,4 @@
-#@ MODIF sd_macr_elem_stat SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_macr_elem_stat SD  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,7 @@ from SD import *
 
 from SD.sd_matr_asse_gd import sd_matr_asse_gd
 from SD.sd_stoc_lciel import sd_stoc_lciel
+from SD.sd_proj_mesu import sd_proj_mesu
 
 
 class sd_macr_elem_stat(AsBase):
@@ -50,6 +51,9 @@ class sd_macr_elem_stat(AsBase):
     # chargements condensés :
     LICA = Facultatif(AsColl(acces='NO', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
     LICH = Facultatif(AsColl(acces='NO', stockage='CONTIG', modelong='CONSTANT', type='K', ltyp=8))
+
+    # si utilisation de PROJ_MESU_MODAL :
+    PROJM = Facultatif(sd_proj_mesu())
 
 
     def check_longueurs(self, checker):

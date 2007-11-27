@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE (MODE_MECA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@
 #
 ######################################################################
 #
-DEBUT(  CODE=_F( NOM = 'SDLV122A',NIV_PUB_WEB='INTERNET') )
+DEBUT(  CODE=_F( NOM = 'SDLV122A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI') )
 
 #
 # DEFINITION DU MODELE NUMERIQUE

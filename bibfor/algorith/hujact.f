@@ -2,7 +2,7 @@
      &                     NEGMUL, CHGMEC, INDMEC)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,14 +39,14 @@ C   ------------------------------------------------------------------
         REAL*8        TOLE, SIGD(6),SIGF(6)
         REAL*8        VIND(*), VINF(*), VINS(32), VINT(32)
         REAL*8        MATER(22,2), UN, ZERO 
-        REAL*8        I1F, I1D, PCREF, PSF, PSD
+        REAL*8        I1F, I1D, PCREF, PSF, PSM
         REAL*8        SEUIL, RD, RF
         LOGICAL       DEBUG, CHGMEC, NEGMUL(8), PROX, INDMEC(8) 
 C --------------------------------------------------------------------
         COMMON /TDIM/   NDT, NDI
         COMMON /MESHUJ/ DEBUG
 C --------------------------------------------------------------------
-        PARAMETER     (TOLE = 1.D-10)
+        PARAMETER     (TOLE = 1.D-7)
         PARAMETER     (UN   = 1.D0)
         PARAMETER     (ZERO = 0.D0)
         
@@ -213,8 +213,8 @@ C ************************************
 C --- VERIFICATION DES POINTS TANGENTS
 C ************************************
             IF ((I.LT.4).AND.(VINF(27+I).EQ.UN))THEN
-              CALL HUJDRC(I, MATER, SIGF, VINF, RF, PSF)
-              IF(ABS(PSF).LT.TOLE)THEN
+              CALL HUJDRC(I, MATER, SIGF, VINF, PSM, PSF)
+              IF(PSM.GT.TOLE)THEN
                 CHGMEC = .TRUE.       
                 INDMEC(I+4) = .TRUE.          
                 VIND(4*I+5) = VIND(4*I+5)-2*VIND(I+4)*VIND(4*I+7)
@@ -243,8 +243,7 @@ C ------------------------
      &             (VINS(4*I+5).NE.ZERO)).OR.
      &             ((VINS(4*I+6).NE.VIND(4*I+6)).AND.
      &             (VINS(4*I+6).NE.ZERO)))THEN
-                  CALL HUJDRC(I, MATER, SIGF, VINF, RF, PSF)
-                  CALL HUJDRC(I, MATER, SIGD, VIND, RD, PSD)
+                  CALL HUJDRC(I, MATER, SIGF, VINF, PSM, PSF)
 C                  WRITE(6,*)'PSF =',PSF
                   IF(PSF.GT.ZERO)THEN
                     VINF(4*I+5) = VINS(4*I+5)
@@ -268,8 +267,7 @@ C                  WRITE(6,*)'PSF =',PSF
      &                 (VINS(4*I+5).EQ.ZERO)).OR.
      &                 ((VINS(4*I+6).NE.VIND(4*I+6)).AND.
      &                 (VINS(4*I+6).EQ.ZERO)))THEN
-                  CALL HUJDRC(I, MATER, SIGF , VINF, RF, PSF)
-                  CALL HUJDRC(I, MATER, SIGD , VIND, RD, PSD)
+                  CALL HUJDRC(I, MATER, SIGF , VINF, PSM, PSF)
                   IF(PSF.GT.TOLE)THEN
                     VINF(4*I+5) = ZERO
                     VINF(4*I+6) = ZERO

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@
 #
 ######################################################################
 #
-DEBUT(CODE=_F(NOM='SDLV122B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NOM='SDLV122B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 # DEFINITION DU MODELE NUMERIQUE

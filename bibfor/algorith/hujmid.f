@@ -3,7 +3,7 @@
      &  NEGMUL, NITER, EPSCON, IRET, SUBD, LOOP, NDEC0 )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,7 +60,7 @@ C   -------------------------------------------------------------------
         PARAMETER (NITIMP = 200)
         PARAMETER (ESSMAX = 10)
 
-        REAL*8    EPSD(6), DEPS(6), I1F
+        REAL*8    EPSD(6), DEPS(6), I1F, DEUX
         REAL*8    SIGD(6), SIGF(6), GD(6)
         REAL*8    VIND(*), VINF(*), EPSCON
         REAL*8    CRIT(*), MATER(22,2)
@@ -76,7 +76,7 @@ C   -------------------------------------------------------------------
        
         CHARACTER*8 MOD
 
-        DATA   ZERO, UN / 0.D0, 1.D0/
+        DATA   ZERO, UN, DEUX / 0.D0, 1.D0, 2.D0/
 
 C ====================================================================
 
@@ -327,7 +327,7 @@ C     SI DR/R > TOLE ---> SUBD = .TRUE.
                 IF(NDEC.LT.1)NDEC=1
               
               ELSE
-                CCYC   = MATER(11,2)
+                CCYC   = DEUX*MATER(11,2)
                 BETA   = MATER(2,2)
                 PREF   = MATER(8,2)
                 PCO    = MATER(7,2)

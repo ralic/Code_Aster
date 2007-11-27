@@ -93,6 +93,7 @@ TEST_TABLE(    TABLE=PMPB1,
                   NOM_PARA='PMB',
                       VALE=200.                 )
 
+
 #--------------------------------------------------------------------------------
 #   option = PM_PB
 #   chargement mécanique + thermique
@@ -213,6 +214,23 @@ TEST_TABLE(    TABLE=PMPBTH,
                   NOM_PARA='PB',
                       VALE=100.                 )
 
+PMPBTH1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                        OPTION='PM_PB',
+                     TYPE_RESU='VALE_MAX',
+                         MATER=MAT,
+                         TITRE='PM_PB, RESULTAT: RESUTH',
+                   TRANSITOIRE=_F( TABL_RESU_MECA = T_RESUTH,
+                                    INST = 0.,),
+                 )
+
+# le PM
+TEST_TABLE(    TABLE=PMPBTH1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PM',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
 #--------------------------------------------------------------------------------
 #   option = SN   avec RESU_SIGM_THER pour le SN*
 #   chargement thermique

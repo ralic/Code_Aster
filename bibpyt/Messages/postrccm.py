@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF postrccm Messages  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -187,5 +187,18 @@ cata_msg={
    distance calculée: %(r1)12.5E
    D_AMORC          : %(r2)12.5E
 """),
+
+34: _("""
+ avec une ou des situations de passage, il faut définir au plus 2 groupes
+"""),
+
+35: _("""
+ avec une ou des situations de passage, il ne faut définir qu'un seul séisme. 
+"""),
+
+36: _("""
+ bug ! contactez l'assistance.
+"""),
+
 
 }

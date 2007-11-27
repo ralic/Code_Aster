@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF ENTETE  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,11 +18,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-__version__ = "$Name:  $"
-__Id__ = "$Id: cata_aster_v6.py,v 1.12 2001/01/16 15:55:05 iliade Exp $"
-
 # faire que la division soit toujours réelle
 from __future__ import division
+
+__version__ = "$Name:  $"
+__Id__ = "$Id: cata_aster_v6.py,v 1.12 2001/01/16 15:55:05 iliade Exp $"
 
 import Accas
 from Accas import *

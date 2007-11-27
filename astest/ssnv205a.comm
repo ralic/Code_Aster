@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
 # TITRE ETUDE:  ESSAI DE CISAILLEMENT CYCLIQUE DRAINE (MECA PUR)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ MATE=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
                              PREF=-1.E6,
                              ACYC=0.0001,
                              AMON=0.008,
-                             CCYC=0.2,
+                             CCYC=0.1,
                              CMON=0.2,
                              RD_ELA=0.005,
                              RI_ELA=0.001,

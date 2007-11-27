@@ -3,7 +3,7 @@
      &                  JMACO ,JNOCO ,JNOQU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,8 +182,6 @@ C
       IF (IPMA.NE.NBMA)     CALL ASSERT(.FALSE.)
       IF (IPNO.NE.NBNO)     CALL ASSERT(.FALSE.)
       IF (IPNOQU.NE.NBNOQU) CALL ASSERT(.FALSE.)
-
-C ----------------------------------------------------------------------
 C
       CALL JEDEMA()
       END

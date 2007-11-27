@@ -4,7 +4,7 @@
      &                  COEFCU,CMPGCU,MULTCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,7 +192,7 @@ C
  3000     CONTINUE
 
           ZI(JNOEU-1+CPTND)  = NUMND
-          CPTND              = CPTND + 1
+          
 
           IF (TYPCMP.EQ.1) THEN
             ZR(JCOEFD-1+CPTD)  = ZR(JCOEF+IOCC-1)
@@ -200,8 +200,10 @@ C
             ZK8(JCOEFD-1+CPTD) = ZK8(JCOEF+IOCC-1)
           ENDIF
 
+          ZI(JINDIR+CPTND) = ZI(JINDIR+CPTND-1) + NBCP - NBSUP
+
           CPTD  = CPTD  + 1
-          ZI(JINDIR+INO) = ZI(JINDIR+INO-1) + NBCP - NBSUP
+          CPTND = CPTND + 1
 
  2000   CONTINUE
 
@@ -210,7 +212,7 @@ C
 
       CPTD  = CPTD  - 1
       CPTND = CPTND - 1
-      CPTG  = CPTG  - 1
+      CPTG  = CPTG  - 1 
 
       IF (CPTD.NE.NBNOE) THEN
         CALL U2MESS('F','MODELISA4_38')

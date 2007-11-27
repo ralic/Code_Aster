@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       CHARACTER*8      RESU1,RESU2,CBID,MATGEN,K8B,BASEMO,TYP
       CHARACTER*14     NUGENE
       CHARACTER*16     NOMCMD
-      CHARACTER*19     CHAMNO
+      CHARACTER*19     CHAMGE
       CHARACTER*24     RAIDE
       REAL*8           VECPR8(NBMODE,*)
       COMPLEX*16       VECPC8(NBMODE,*)
@@ -67,11 +67,12 @@ C
       CALL JEMARQ()
 
       LREFE = .TRUE.
-      NUGENE = '&&MDALNU'
+      NUGENE = RESU2//'.NUGENE'
       MATGEN = '&&MDALMA'
 
 C CREATION DE LA NUMEROTATION GENERALISE SUPPORT
       CALL  NUMMO1(NUGENE,BASEMO,NBMODE,'PLEIN')
+      CALL  CRNSLV(NUGENE,'LDLT','SANS','G')
 
 C CREATION DE LA MATRICE GENERALISE SUPPORT
       CALL WKVECT(MATGEN//'           .REFA','V V K24',10,JREFA)
@@ -87,18 +88,19 @@ C recuperation des parametres a garder dans le modele gene
 
       DO 100 IMODE = 1, NBSAUV
 C        --- VECTEUR PROPRE ---
-        CALL RSEXCH (RESU2, 'DEPL', IMODE, CHAMNO, IER )
+        CALL RSEXCH (RESU2, 'DEPL', IMODE, CHAMGE, IER )
         IF     ( IER .EQ. 0   ) THEN
         ELSEIF ( IER .EQ. 100 .AND. LREFE ) THEN
           IF (.NOT. ZCMPLX) THEN
-            CALL VTCREM (CHAMNO, MATGEN, 'G', 'R' )
+            CALL VTCREM (CHAMGE, MATGEN, 'G', 'R' )
           ELSE
-            CALL VTCREM (CHAMNO, MATGEN, 'G', 'C' )
+            CALL VTCREM (CHAMGE, MATGEN, 'G', 'C' )
           ENDIF
         ELSE
           CALL U2MESG('F', 'ALGORITH13_36',0,' ',0,0,0,0.D0)
         ENDIF
-        CALL JEVEUO (CHAMNO//'.VALE', 'E', LVALE )
+        CALL JEECRA (CHAMGE//'.DESC', 'DOCU', IBID, 'VGEN' )
+        CALL JEVEUO (CHAMGE//'.VALE', 'E', LVALE )
         DO 110 IER = 1, NBMODE
           IF (.NOT. ZCMPLX) THEN
               ZR(LVALE+IER-1) = VECPR8(IER,IMODE)
@@ -128,7 +130,6 @@ C        --- VECTEUR PROPRE ---
       CALL VPCREA(0,RESU2,' ',' ',' ',' ',IER)
 C     CALL CHEKSD('sd_nume_ddl',NUGENE,IRET)
 C     CALL CHEKSD('sd_matr_asse',MATGEN,IRET)
-      CALL JEDETC (' ',NUGENE,1)
       CALL JEDETC (' ',MATGEN,1)
 
       CALL JEDEMA()

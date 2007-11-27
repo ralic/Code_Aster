@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF asojb Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,6 +56,11 @@ class AsBase(Type):
         if checker is None:
             checker = CheckLog()
 
+        # vérif déjà faite ? (en tenant compte du type)
+        if checker.checkedAsBase(self):
+            return checker
+        checker.visitAsBase( self )
+        
         # vérifie les enfants :
         optional = checker.optional
         checker.optional = checker.optional or self.optional
@@ -243,9 +248,9 @@ class OJB(AsBase):
         if checker is None:
             checker = CheckLog()
         # l'objet a déjà été vérifié, on ne fait rien
-        if checker.names.has_key(self.nomj()):
-            return checker
-        checker.visit( self )
+        if checker.checkedOJB(self):
+           return checker
+        checker.visitOJB( self )
         if self.exists:
             self.foreachattr( lambda k,v,obj,c: v.check(k, obj, c),
                               self, checker )

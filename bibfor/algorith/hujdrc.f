@@ -1,7 +1,7 @@
-        SUBROUTINE HUJDRC (K, MATER, SIG , VIN, RC, PS)
+        SUBROUTINE HUJDRC (K, MATER, SIG , VIN, PSM, PST)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,21 +19,25 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C   -------------------------------------------------------------------
-C   CALCUL DE LA VALEUR DE RC = QCYC/(M*P*(1-B*LOG(P/PC))
+C   CALCUL DE PRODUIT SCALAIRE ENTRE LA NORME DES MECANISMES CYCLIQUES 
+C   DEVIATOIRES ET DES VECTEURS DE RAYONS ISSUS VARIABLES D'HISTOIRE
+C   ET LA POSITION ACTUELLE DANS LE PLAN DEVIATOIRE K.
+C
 C   IN  K      :  PLAN DE PROJECTION (K = 1 A 3)  
 C       MATER  :  COEFFICIENTS MATERIAU A T+DT
 C       VIN    :  VARIABLES INTERNES  A T
 C       SIG    :  CONTRAINTE A T+DT
 C
-C   OUT RC     : FACTEUR DE MOBILISATION ACTUEL DU MECANISME DEVIATOIRE
-C       PS     : PRODUIT SCALAIRE ENTRE LA NORME DE LA SURFACE ET DR
+C   OUT PSM    : PRODUIT SCALAIRE ENTRE LA NORME DU SEUIL ET LE VECTEUR
+C                DEFINI PAR LE RAYON MOBILISE ET LE CENTRE DU SEUIL
+C       PST    : PRODUIT SCALAIRE ENTRE LA NORME DE LA SURFACE ET DR
 C   -------------------------------------------------------------------
         INTEGER NDT, NDI, I, K
-        REAL*8  MATER(22,2), RC, I1, SIG(6), VIN(*)
-        REAL*8  B, PCO, BETA, SEUILI, PC, EPSVPM
+        REAL*8  MATER(22,2), SIG(6), VIN(*)
+        REAL*8  B, PCO, BETA, PC, EPSVPM
         REAL*8  UN, ZERO, AEXP, EXPTOL, R8MAEM
-        REAL*8  P, QC, Q, M, PHI, DEGR, SIGD(3), RM
-        REAL*8  POSF(3), REF(2), NORM(2), PS, TOLE
+        REAL*8  P, Q, M, PHI, DEGR, SIGD(3), PSM, REFM(2)
+        REAL*8  POSF(3), REF(2), NORM(2), PST, TOLE
        
         PARAMETER     ( DEGR  = 0.0174532925199D0 )
        
@@ -56,15 +60,10 @@ C   -------------------------------------------------------------------
               
         PC     = PCO*EXP(-BETA*EPSVPM)
         
-        CALL HUJQC(K+4, SIG, VIN, MATER, P, QC)        
-
-        RC = ABS(QC/(M*P*(UN-B*LOG(P/PC))))
-        
         CALL HUJPRJ(K,SIG,SIGD,P,Q)
-        RM = Q/(M*P*(UN-B*LOG(P/PC)))
         DO 5 I = 1, 3
           IF(Q.GT.TOLE)THEN
-            POSF(I) = RM*SIGD(I)/Q
+            POSF(I) = SIGD(I)/(M*P*(UN-B*LOG(P/PC)))
           ELSE
             POSF(I) = ZERO
           ENDIF
@@ -73,6 +72,9 @@ C   -------------------------------------------------------------------
         NORM(2) = VIN(4*K+8)
         REF(1)  = VIN(4*K+5)
         REF(2)  = VIN(4*K+6)
+        REFM(1) = VIN(4*K+5) - VIN(K+4)*VIN(4*K+7)
+        REFM(2) = VIN(4*K+6) - VIN(K+4)*VIN(4*K+8)
 
-        PS = 2.D0*NORM(1)*(POSF(1)-REF(1))+NORM(2)*(POSF(3)-REF(2))
+        PST = 2.D0*NORM(1)*(POSF(1)-REF(1))+NORM(2)*(POSF(3)-REF(2))
+        PSM = 2.D0*NORM(1)*(POSF(1)-REFM(1))+NORM(2)*(POSF(3)-REFM(2))
         END

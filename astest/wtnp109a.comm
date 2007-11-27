@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,13 +123,23 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
 #                                COEF_MULT_ESCL=1.0,),);
 ###
 
-CHAR1=AFFE_CHAR_MECA(MODELE=MODELE,
-                     LIAISON_UNILATER=_F(
-                               GROUP_MA=('GM14','GM16'),
-                                SANS_GROUP_NO=('MIL_GM14','MIL_GM16',),
+CHAR1=AFFE_CHAR_MECA(MODELE=MODELE,INFO=2,
+                     LIAISON_UNILATER=(_F(
+                               GROUP_MA=('GM14'),
+                                SANS_GROUP_NO=('MIL_GM14'),
                                 NOM_CMP='PRE1',
                                 COEF_IMPO=3.0,
-                                COEF_MULT=1.0,),);
+                                COEF_MULT=1.0,),
+                                       _F(
+                               GROUP_MA=('GM16'),
+                                SANS_GROUP_NO=('MIL_GM16',),
+                                NOM_CMP='PRE1',
+                                COEF_IMPO=3.0,
+                                COEF_MULT=1.0,),
+                                ),
+                                
+                                
+                                );
 
 CHARG0=AFFE_CHAR_MECA(MODELE=MODELE,
                       PESANTEUR=(9.81,0.0,-1.0,0.0,),);

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN ELASTICITE AVEC LA METHODE ARLEQUIN - MODELE ARLEQUIN AVEC STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,7 +147,7 @@ TEST_TABLE(TABLE=STHETA,
            REFERENCE= 'NON_REGRESSION',
            VERSION  = '8.3.19',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-10,);
+           PRECISION = 1E-8,);
 
 TEST_TABLE(TABLE=STHETA,
            FILTRE = _F(NOM_PARA='COOR_X',VALE=1.00000E+01),
@@ -163,7 +163,7 @@ TEST_TABLE(TABLE=STHETA,
            VALE = sigst1,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 5E-12,);
+           PRECISION = 1E-8,);
 
 sigth2 = -1.0
 signr2 = -9.4424095957837E-01
@@ -203,7 +203,7 @@ TEST_TABLE(TABLE=STHETA,
            VALE = sigst2,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 2E-11,);
+           PRECISION = 1E-8,);
 
 # DEPLACEMENTS
 # DEUX COMPARAISONS: NON-REGRESSION ET SANS ARLEQUIN
@@ -238,7 +238,7 @@ TEST_TABLE(TABLE=DPL_H,
            REFERENCE= 'NON_REGRESSION',
            VERSION  = '8.3.19',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-12,);
+           PRECISION = 1E-10,);
 
 TEST_TABLE(TABLE=DPL_H,
            FILTRE = _F(NOM_PARA='COOR_X',VALE=1.00000E+02),
@@ -246,7 +246,7 @@ TEST_TABLE(TABLE=DPL_H,
            VALE = depst1,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-12,);
+           PRECISION = 1E-10,);
 
 depsa2 = 1.53288E-01
 depnr2 = 1.5325113035190E-01
@@ -267,7 +267,7 @@ TEST_TABLE(TABLE=DPL_H,
            REFERENCE= 'NON_REGRESSION',
            VERSION  = '8.3.19',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-12,);
+           PRECISION = 1E-10,);
 
 TEST_TABLE(TABLE=DPL_H,
            FILTRE = _F(NOM_PARA='COOR_X',VALE=0.00000E+02),
@@ -275,7 +275,7 @@ TEST_TABLE(TABLE=DPL_H,
            VALE = depst2,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-12,);
+           PRECISION = 1E-10,);
 
 FIN();
 

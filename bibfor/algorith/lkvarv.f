@@ -5,7 +5,7 @@ C
       REAL*8        PARAVI(3), MATER(NBMAT,2)
 C ==================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,7 @@ C ------------ : AXIV, SXIV, MXIV ----------------------------------
 C ==================================================================
       REAL*8  M0, A0, S0, AVMAX, MVMAX, SVMAX, XIVMAX
       REAL*8  SXIV, AXIV, MXIV, XIV
-      REAL*8  FACT1, FACT2, VINTR
+      REAL*8  FACT1,  VINTR
 C ==================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE -------------------------
 C ==================================================================

@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 20/11/2007   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 26/11/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2213,7 +2213,7 @@ class DRIVER :
 
     try:
        # calcule le md5sum du fichier
-       nbv, somme, md5sum = test_file(FICHIER, type_test='SOMM', regexp_ignore=regexp_ignore, verbose=False)
+       nbv, somme, mdsum = test_file(FICHIER, type_test='SOMM', regexp_ignore=regexp_ignore, verbose=False)
        # Affichage de la ligne
        txt = mdsum + ' - ' + FICHIER + ' - ' + ' - '.join( [str(selection.nom_cham), str(selection.nom_cmp), str(selection.numeros), str(selection.geom) ] )
     except Exception,err:

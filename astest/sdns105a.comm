@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,7 +175,6 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
                                 ALPHA=0.25,DELTA=0.5,),
                    NEWTON=_F(PREDICTION='TANGENTE',
                              MATRICE='TANGENTE',REAC_ITER=1),
-                           RECH_LINEAIRE=_F(),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,
                                  RESI_GLOB_RELA=1e-06,),);
 

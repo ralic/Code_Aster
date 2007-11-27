@@ -3,10 +3,10 @@
 C
       IMPLICIT    NONE
       INTEGER     NBMAT, DUM
-      REAL*8      INVAR, S(6), MATER(NBMAT,2), VIN(9), SEUIL, DGAMV
+      REAL*8      INVAR, S(6), MATER(NBMAT,2), VIN(7), SEUIL, DGAMV
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -82,7 +82,7 @@ C =================================================================
       UCRIP  = VARPL(1)*SII*HTHETA + VARPL(2)*INVAR+VARPL(3)
       IF (UCRIP .LT. ZERO) GOTO 100
 
-      SEUIL  = SII*HTHETA - SIGC*H0C*UCRIP**PARAEP(1)
+      SEUIL  = SII*HTHETA - SIGC*H0C*(UCRIP)**PARAEP(1)
 C =================================================================
 100   CONTINUE
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 26/11/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -200,9 +200,9 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         NOM_CHAM      = ('DEPL','SIEF_ELGA','VARI_ELGA'))
 
 
-IMPR_RESU(FORMAT='GMSH',UNITE=33,RESU=_F(RESULTAT=RES_XFEM,
-                                         NOM_CHAM=('DEPL','SIEF_ELGA','VARI_ELGA'),
-             ));
+#IMPR_RESU(FORMAT='GMSH',UNITE=33,RESU=_F(RESULTAT=RES_XFEM,
+#                                         NOM_CHAM=('DEPL','SIEF_ELGA','VARI_ELGA'),
+#             ));
 
 DEPL_1 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     NUME_ORDRE=npas,
@@ -304,10 +304,10 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                    ),);
 
-IMPR_RESU(MODELE=MODELEK,
-          FORMAT='GMSH',
-          RESU=_F(RESULTAT=UTOT1,
-                  NOM_CHAM=('VARI_ELGA'),),);
+#IMPR_RESU(MODELE=MODELEK,
+#          FORMAT='GMSH',
+#          RESU=_F(RESULTAT=UTOT1,
+#                  NOM_CHAM=('VARI_ELGA'),),);
 
 FIN()
 #

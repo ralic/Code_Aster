@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 27/11/2007   AUTEUR GALENNE E.GALENNE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,7 +103,7 @@ C
         IF ( N1 .NE. 0 )  LROCHT = .TRUE.
 C
         NBINS0 = 0
-        CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,1, R8B, N1 )
+        CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,0, R8B, N1 )
         IF ( N1 .NE. 0 ) THEN
            NBINS0 = -N1
         ELSE
@@ -368,7 +368,7 @@ C
 C
 C ----- ON RECUPERE LES INSTANTS DANS LA TABLE
 C
-        CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,1, R8B, N1 )
+        CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,0, R8B, N1 )
         IF ( N1 .NE. 0 ) THEN
           NBINS0 = -N1
           CALL WKVECT ( INSTAN, 'V V R', NBINS0, KINST )

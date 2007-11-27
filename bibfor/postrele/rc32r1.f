@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,7 @@ C
 C     -----------------------------------------------------------------
 C
       DO 100 IG = 1 , NBGR
-         NUMGR = ZI(JNUMGR+IG-1)
+         NUMGR = ABS(ZI(JNUMGR+IG-1))
          IOCS  = ZI(JSEIGR+IG-1)
          VALEI(1) = NUMGR
          CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',

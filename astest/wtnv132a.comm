@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ PREF      = -1.E+6   ;
 R_ELA_DEV = 0.025    ;
 R_ELA_ISO = .01      ;   # on desactive le mecanisme isotrope
 
-vari_1        = [R_ELA_DEV,R_ELA_DEV,R_ELA_DEV,R_ELA_ISO,1.,1.,1.,1.,
+vari_1        = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,
                 ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,] ;
 vari_2        = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO];
 vari_cart_cc = [-PCO/2,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
@@ -140,8 +140,8 @@ MAT1=DEFI_MATERIAU(ELAS=_F(E     = YOUNG,
                             RHYS    = 0.1,
                             RMOB    = 0.5,
                             XM      = 2.,
-                            RD_CYC  = 1.,
-                            RI_CYC  = 1.,
+                            RD_CYC  = R_ELA_DEV,
+                            RI_CYC  = R_ELA_ISO,
                             DILA    = 1.0),
                    COMP_THM='LIQU_SATU',
                    THM_INIT=_F(PRE1 = 0.0,
@@ -520,7 +520,7 @@ for n in range(1,nbcouche-1):
                               INST_FIN=t_fin,
                               SUBD_METHODE='UNIFORME',
                               SUBD_PAS=10,
-                              SUBD_NIVEAU=5),
+                              SUBD_NIVEAU=10),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=20));

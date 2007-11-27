@@ -1,8 +1,8 @@
-      SUBROUTINE CFRELI(MATYP ,PROJ  ,ITRIA,LAMBDA,COORDM,
-     &                  COORMA,COEFNO)
+      SUBROUTINE CFRELI(MATYP ,NBNOM  ,PROJ  ,ITRIA,LAMBDA,
+     &                  COORDM,COORMA,COEFNO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
       CHARACTER*4  MATYP
       REAL*8       LAMBDA(3)
       REAL*8       COEFNO(9)
-      INTEGER      PROJ
+      INTEGER      PROJ,NBNOM
       INTEGER      ITRIA
       REAL*8       COORDM(3),COORMA(27)      
 C      
@@ -41,6 +41,11 @@ C
 C IN  MATYP  : TYPE DE LA MAILLE MAITRE
 C                -> SEG2,SEG3,TRI3,TRI6,QUA4,QUA8,QUA9,NODE
 C                'NODE' EST POUR L'APPARIEMENT NODAL PUR
+C IN  NBNOM  : NOMBRE DE NOEUDS SUR LA MAILLE MAITRE
+C               /!\ NBRE DE NOEUDS POUR CALCUL COEFFICIENTS RELA. LINE.
+C              PEUT ETRE DIFFERENT DU NBRE NOEUDS PHYSIQUES SI COQUE 3D
+C                QUAD9_COQUE3D : NBNOM =8
+C                TRIA7_COQUE3D : NBNOM =6
 C IN  PROJ   : TYPE DE PROJECTION
 C               1 PROJECTION LINEAIRE
 C               2 PROJECTION QUADRATIQUE
@@ -99,9 +104,6 @@ C --- ATTENTION ! FCTIONS DE FORME AUSSI DANS PROJSQ !!
         KSIR(1)   = KSI1 
         KSIR(2)   = KSI2 
         KSIR(3)   = KSI3              
-        COEFNO(1) = - KSI3
-        COEFNO(2) = - KSI1
-        COEFNO(3) = - KSI2
         CALL ELRFVF('TR3',KSIR,3,FF,IBID)
         COEFNO(1) = - FF(1)
         COEFNO(2) = - FF(2)
@@ -120,15 +122,24 @@ C --- ATTENTION ! FCTIONS DE FORME AUSSI DANS PROJSQ !!
       ELSE IF (MATYP(1:4).EQ.'TRI7') THEN 
         KSIR(1)   = KSI1 
         KSIR(2)   = KSI2 
-        KSIR(3)   = KSI3              
-        CALL ELRFVF('TR7',KSIR,7,FF,IBID)        
-        COEFNO(1) = - FF(1)
-        COEFNO(2) = - FF(2)
-        COEFNO(3) = - FF(3)
-        COEFNO(4) = - FF(4)
-        COEFNO(5) = - FF(5)
-        COEFNO(6) = - FF(6)
-        COEFNO(7) = - FF(7)                             
+        KSIR(3)   = KSI3   
+        IF (NBNOM.EQ.7) THEN           
+          CALL ELRFVF('TR7',KSIR,7,FF,IBID)        
+          COEFNO(1) = - FF(1)
+          COEFNO(2) = - FF(2)
+          COEFNO(3) = - FF(3)
+          COEFNO(4) = - FF(4)
+          COEFNO(5) = - FF(5)
+          COEFNO(6) = - FF(6)
+          COEFNO(7) = - FF(7)
+        ELSEIF (NBNOM.EQ.6) THEN           
+          CALL ELRFVF('TR3',KSIR,3,FF,IBID)        
+          COEFNO(1) = - FF(1)
+          COEFNO(2) = - FF(2)
+          COEFNO(3) = - FF(3)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF                               
       ELSE IF (MATYP(1:3).EQ.'QUA') THEN
         IF (ITRIA.EQ.1) THEN
           KSIR(1)   = DEUX*(KSI1+KSI2) - UN
@@ -160,19 +171,32 @@ C --- ATTENTION ! FCTIONS DE FORME AUSSI DANS PROJSQ !!
           COEFNO(1) = - FF(1)
           COEFNO(2) = - FF(2)
           COEFNO(3) = - FF(3)
-          COEFNO(4) = - FF(4)         
-       
+          COEFNO(4) = - FF(4)             
         ELSEIF (MATYP.EQ.'QUA9') THEN
-          CALL ELRFVF('QU9',KSIR,9,FF,IBID)
-          COEFNO(1) = - FF(1)
-          COEFNO(2) = - FF(2)
-          COEFNO(3) = - FF(3)
-          COEFNO(4) = - FF(4) 
-          COEFNO(5) = - FF(5) 
-          COEFNO(6) = - FF(6) 
-          COEFNO(7) = - FF(7) 
-          COEFNO(8) = - FF(8)          
-          COEFNO(9) = - FF(9)           
+          IF (NBNOM.EQ.9) THEN         
+            CALL ELRFVF('QU9',KSIR,9,FF,IBID)
+            COEFNO(1) = - FF(1)
+            COEFNO(2) = - FF(2)
+            COEFNO(3) = - FF(3)
+            COEFNO(4) = - FF(4) 
+            COEFNO(5) = - FF(5) 
+            COEFNO(6) = - FF(6) 
+            COEFNO(7) = - FF(7) 
+            COEFNO(8) = - FF(8)          
+            COEFNO(9) = - FF(9)
+          ELSEIF (NBNOM.EQ.8) THEN   
+            CALL ELRFVF('QU8',KSIR,8,FF,IBID)
+            COEFNO(1) = - FF(1)
+            COEFNO(2) = - FF(2)
+            COEFNO(3) = - FF(3)
+            COEFNO(4) = - FF(4) 
+            COEFNO(5) = - FF(5) 
+            COEFNO(6) = - FF(6) 
+            COEFNO(7) = - FF(7) 
+            COEFNO(8) = - FF(8)                   
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF          
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF        

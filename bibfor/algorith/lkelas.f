@@ -1,15 +1,14 @@
         SUBROUTINE LKELAS ( NDI, NDT, MOD , NMAT, MATER, 
-     &                      DEPS, SIGD, VIND, DE,K,MU)
+     &                      DEPS, SIGD,  DE,K,MU)
         IMPLICIT NONE
         INTEGER         NDI, NDT, NMAT 
         REAL*8          MATER(NMAT,2) 
         REAL*8          SIGD(6) 
-        REAL*8          VIND(9) 
         REAL*8          DEPS(6), DE(6,6), MU, K
         CHARACTER*8     MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +36,6 @@ C           NMAT   :  DIMENSION MATER
 C           MATER :  COEFFICIENTS MATERIAU 
 C           DEPS   :  INCREMENT DE DEFORMATION
 C           SIGD   :  CONTRAINTE  A T
-C           VIND   :  VARIABLES INTERNES A T
 C       OUT DE     :  MATRICE HYPOELASTIQUE
 C            K     :  MODULE DE COMPRESSIBILITE
 C            G     :  MODULE DE CISAILLEMENT

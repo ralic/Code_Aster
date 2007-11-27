@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 27/11/2007   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -984,24 +984,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                                        "CDI","CDG") ),
              VALE_PDC        =SIMP(statut='f',typ='R',max='**',
                                  fr="valeurs des coefficients de perte de charge singulière",),
-             APPL_FORC_ARCHI  =SIMP(statut='f',typ='TXM',defaut="REPARTIE" ,
-                                 fr="application de la force d'archimède",
-                                 into=("REPARTIE","CDG") ),
-             APPL_FORC_FPLAQ  =SIMP(statut='f',typ='TXM',defaut="REPARTIE" ,
-                                 fr="application de la force de plaquage dans le guidage continu",
-                                 into=("REPARTIE","CDG","ZONE","MILIEU","DISTRI") ),
-             APPL_FORC_FMEC   =SIMP(statut='f',typ='TXM',defaut="REPARTIE" ,
-                                 fr="application de la force dans le mécanisme de levée",
-                                 into=("REPARTIE","CDG","ZONE","PTREP") ),
-             APPL_FORC_FTG    =SIMP(statut='f',typ='TXM',defaut="REPARTIE" ,
-                                 fr="application de la force tube_guide",
-                                 into=("REPARTIE","CDG","ZONE","PTREP") ),
              DIRE_FORC_FPLAQ  =SIMP(statut='f',typ='R',min=3,max=3,
                                  fr="direction d'application de la force de plaquage",),
-             b_CDG    =BLOC(condition = "(APPL_FORC_ARCHI == 'CDG') or (APPL_FORC_FPLAQ == 'CDG') or \
-                                         (APPL_FORC_FMEC  == 'CDG') or (APPL_FORC_FTG   == 'CDG')",
-                MASS_INER        =SIMP(statut='o',typ=table_sdaster ),
-             ),
              UNITE_IMPR_FORCE =SIMP(statut='f',typ='I',
                                  fr="unité d'impression des forces",),
              UNITE_IMPR_NOEUD =SIMP(statut='f',typ='I',

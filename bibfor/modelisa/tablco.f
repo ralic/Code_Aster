@@ -2,7 +2,7 @@
      &                  NNOCO ,NMANO ,NNOMA ,NMAMA)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF MODELISA  DATE 27/11/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,9 +97,9 @@ C
 
       CHARACTER*24 MANOCO,PMANO,NOMACO,PNOMA,MAMACO,PMAMA,NOZOCO
       INTEGER      JNOMA,JPONO,JMAMA,JPOIN,JZOCO,ISURF,NNN,IAINVE,ILINVE
+      INTEGER      NUMALO
       CHARACTER*3  K3
-      CHARACTER*19 SURF,CONINV(NSUCO)
-      DATA SURF /'&&TABLCO.SURF'/
+      CHARACTER*19 CONINV
 
 C ----------------------------------------------------------------------
 C
@@ -123,31 +123,9 @@ C
       CALL JEVEUO(PSURNO,'L',JSUNO)
       CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JECREC(SURF,'V V I','NU','DISPERSE','VARIABLE',NSUCO)
 
-      DO 1 ISUCO = 1,NSUCO
-
-C ------- ADRESSES DE DEBUT DANS LES LISTES CONTMA
-C ------- ET NOMBRE DE MAILLES POUR LA SURFACE ISUCO
-
-        JDECMA = ZI(JSUMA+ISUCO-1)
-        NBMA   = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
-
-        CALL JECROC(JEXNUM(SURF,ISUCO))
-        CALL JEECRA(JEXNUM(SURF,ISUCO),'LONMAX',NBMA,' ')
-        CALL JEVEUO(JEXNUM(SURF,ISUCO),'E',ISURF)
-
-        DO 2 IMA = 1,NBMA
-          NUMA = ZI(JMACO+JDECMA+IMA-1)
-          ZI(ISURF-1+IMA)=NUMA
- 2      CONTINUE
-
-        CALL CODENT(ISUCO,'G',K3)
-        CONINV(ISUCO)='&&TABLCO.CONINV.'//K3
-        CALL CNCINV(NOMA,ZI(ISURF),NBMA,'V',CONINV(ISUCO))
-
- 1    CONTINUE
-
+      CONINV='&&TABLCO.CONINV'
+      CALL CNCINV(NOMA,ZI(JMACO),NMACO,'V',CONINV)
       CALL JEVEUO(NOMA//'.CONNEX','L',IAMACO)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILMACO)
 
@@ -199,6 +177,8 @@ C ======================================================================
       INC = 0
       LONG = NBID
 
+      CALL JEVEUO(CONINV,'L',IAINVE)
+      CALL JEVEUO(JEXATR(CONINV,'LONCUM'),'L',ILINVE)
       DO 40 ISUCO = 1,NSUCO
 
 C ------- ADRESSES DE DEBUT DANS LES LISTES CONTNO ET CONTMA
@@ -209,9 +189,6 @@ C ------- ET NOMBRE DE NOEUDS ET MAILLES POUR LA SURFACE ISUCO
         NBNO   = ZI(JSUNO+ISUCO) - ZI(JSUNO+ISUCO-1)
         NBMA   = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
         
-        CALL JEVEUO(CONINV(ISUCO),'L',IAINVE)
-        CALL JEVEUO(JEXATR(CONINV(ISUCO),'LONCUM'),'L',ILINVE)
-
 C ------- EXAMEN DES NOEUDS DE LA SURFACE
         DO 30 INO = 1,NBNO
 
@@ -225,14 +202,18 @@ C ----- EXAMEN DE TOUTES LES MAILLES DE LA SURFACE
 
           NNN=ZI(ILINVE+NUMNO)-ZI(ILINVE-1+NUMNO)
           DO 20 IMA = 1,NNN
-            INC=INC+1
-            IF (INC.GT.LONG) THEN
-              LONG = 2*LONG
-              CALL JUVECA(MANOCO,LONG)
-              CALL JEVEUO(MANOCO,'E',JMANO)
-            END IF
-            ZI(JMANO-1+INC)=JDECMA+ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA-1)
-            ZI(JTRAV+JDECNO+INO-1) = ZI(JTRAV+JDECNO+INO-1) + 1
+            NUMALO=ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA-1)
+            IF (NUMALO.LE.ZI(JSUMA+ISUCO).AND.
+     &          NUMALO.GT.ZI(JSUMA+ISUCO-1)) THEN
+              INC=INC+1
+              IF (INC.GT.LONG) THEN
+                LONG = 2*LONG
+                CALL JUVECA(MANOCO,LONG)
+                CALL JEVEUO(MANOCO,'E',JMANO)
+              END IF
+              ZI(JMANO-1+INC)=NUMALO
+              ZI(JTRAV+JDECNO+INO-1) = ZI(JTRAV+JDECNO+INO-1) + 1
+            ENDIF
    20     CONTINUE
 
 C ----- INCREMENTATION DU POINTEUR PMANO
@@ -267,19 +248,20 @@ C ======================================================================
       INC=0
       DO 70 ISUCO = 1,NSUCO
         JDECNO = ZI(JSUNO+ISUCO-1)
-        JDECMA = ZI(JSUMA+ISUCO-1)
         NBNO = ZI(JSUNO+ISUCO) - ZI(JSUNO+ISUCO-1)
-        CALL JEVEUO(CONINV(ISUCO),'L',IAINVE)
-        CALL JEVEUO(JEXATR(CONINV(ISUCO),'LONCUM'),'L',ILINVE)
+        JDECMA = ZI(JSUMA+ISUCO-1)
         DO 50 INO = 1,NBNO
           NUMNO = ZI(JNOCO+JDECNO+INO-1)
           NNN=ZI(ILINVE+NUMNO)-ZI(ILINVE-1+NUMNO)
           DO 60 IMA = 1,NNN
-            INC=INC+1
-            IF (INC.GT.LONG) THEN
-              LONG = 2*LONG
-              CALL JUVECA(NOMACO,LONG)
-            END IF
+            NUMALO=ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA-1)
+            IF (NUMALO.LE.ZI(JSUMA+ISUCO).AND.
+     &          NUMALO.GT.ZI(JSUMA+ISUCO-1)) THEN
+              INC=INC+1
+              IF (INC.GT.LONG) THEN
+                LONG = 2*LONG
+              END IF
+            ENDIF
   60      CONTINUE
   50    CONTINUE
   70  CONTINUE
@@ -292,11 +274,9 @@ C ------- ET NOMBRE DE NOEUDS ET MAILLES POUR LA SURFACE ISUCO
       INC=0
       DO 80 ISUCO = 1,NSUCO
         JDECNO = ZI(JSUNO+ISUCO-1)
-        JDECMA = ZI(JSUMA+ISUCO-1)
         NBNO = ZI(JSUNO+ISUCO) - ZI(JSUNO+ISUCO-1)
         NBMA = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
-        CALL JEVEUO(CONINV(ISUCO),'L',IAINVE)
-        CALL JEVEUO(JEXATR(CONINV(ISUCO),'LONCUM'),'L',ILINVE)
+        JDECMA = ZI(JSUMA+ISUCO-1)
 
 C ------- EXAMEN DES MAILLES DE LA SURFACE
 
@@ -304,8 +284,11 @@ C ------- EXAMEN DES MAILLES DE LA SURFACE
           NUMNO = ZI(JNOCO+JDECNO+INO-1)
           NNN=ZI(ILINVE+NUMNO)-ZI(ILINVE-1+NUMNO)
           DO 100 IMA = 1,NNN
-            IDECMA=ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA-1)
-            ZI(JTRAV2+JDECMA+IDECMA-1)=ZI(JTRAV2+JDECMA+IDECMA-1)+1
+            NUMALO=ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA-1)
+            IF (NUMALO.LE.ZI(JSUMA+ISUCO).AND.
+     &          NUMALO.GT.ZI(JSUMA+ISUCO-1)) THEN
+              ZI(JTRAV2+NUMALO-1)=ZI(JTRAV2+NUMALO-1)+1
+            ENDIF
   100     CONTINUE
   90    CONTINUE
 
@@ -313,7 +296,6 @@ C ------- EXAMEN DES MAILLES DE LA SURFACE
             ZI(JPONO+JDECMA+IMA)= ZI(JPONO+JDECMA+IMA-1)+
      &                               ZI(JTRAV2+JDECMA+IMA-1)
 
-          ZI(JTRAV+JDECMA+IMA-1) = 0
 
 C ----- NUMERO DE LA MAILLE ET ADRESSE DE SES NOEUDS
 
@@ -365,14 +347,12 @@ C ------- ADRESSE DE DEBUT DE LA LISTE DES MAILLES DANS CONTMA ET NOMBRE
 
         JDECMA = ZI(JSUMA+ISUCO-1)
         NBMA = ZI(JSUMA+ISUCO) - ZI(JSUMA+ISUCO-1)
-        CALL JEVEUO(CONINV(ISUCO),'L',IAINVE)
-        CALL JEVEUO(JEXATR(CONINV(ISUCO),'LONCUM'),'L',ILINVE)
 
 C ------- BOUCLE SUR LES MAILLES DE LA SURFACE ISUCO
 
         DO 160 IMA = 1,NBMA
 
-          ZI(JTRAV+JDECMA+IMA-1) = 0
+          ZI(JTRAV2+JDECMA+IMA-1) = 0
           CALL WKVECT('&&TABLCO.PROCH','V V I',NBMA,JPROC)
 
 C ----- ADRESSE DE RANGEMENT DES NOEUDS DE LA MAILLE, NOMBRE ET NUMEROS
@@ -385,24 +365,29 @@ C ----- ADRESSE DE RANGEMENT DES NOEUDS DE LA MAILLE, NOMBRE ET NUMEROS
             NUMNO = ZI(JNOCO+NO1-1)
             NNN=ZI(ILINVE+NUMNO)-ZI(ILINVE-1+NUMNO)
             DO 180 IMA2 = 1,NNN
-              IDECMA=ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA2-1)
-              IF (ZI(JPROC-1+IDECMA).EQ.0) THEN
-               INC = INC + 1
-               IF (INC.GT.LONG) THEN
-                 LONG = 2*LONG
-                 CALL JUVECA(MAMACO,LONG)
-                 CALL JEVEUO(MAMACO,'E',JMAMA)
-               END IF
-               ZI(JMAMA+INC-1) = JDECMA + IDECMA
-               ZI(JTRAV+JDECMA+IMA-1) = ZI(JTRAV+JDECMA+IMA-1) + 1
-               ZI(JPROC-1+IDECMA)=1
+              NUMALO=ZI(IAINVE-1+ZI(ILINVE-1+NUMNO)+IMA2-1)
+              IDECMA=NUMALO-JDECMA
+              IF (IDECMA.EQ.IMA) GOTO 180
+              IF (NUMALO.LE.ZI(JSUMA+ISUCO).AND.
+     &            NUMALO.GT.ZI(JSUMA+ISUCO-1)) THEN
+                IF (ZI(JPROC-1+IDECMA).EQ.0) THEN
+                 INC = INC + 1
+                 IF (INC.GT.LONG) THEN
+                   LONG = 2*LONG
+                   CALL JUVECA(MAMACO,LONG)
+                   CALL JEVEUO(MAMACO,'E',JMAMA)
+                 END IF
+                 ZI(JMAMA+INC-1) = NUMALO
+                 ZI(JTRAV2+JDECMA+IMA-1) = ZI(JTRAV2+JDECMA+IMA-1) + 1
+                 ZI(JPROC-1+IDECMA)=1
+                ENDIF
               ENDIF
   180       CONTINUE
   170     CONTINUE
 
 
           ZI(JPOIN+JDECMA+IMA) = ZI(JPOIN+JDECMA+IMA-1) +
-     &                           ZI(JTRAV+JDECMA+IMA-1)
+     &                           ZI(JTRAV2+JDECMA+IMA-1)
           CALL JEDETR('&&TABLCO.PROCH')
   160   CONTINUE
   150 CONTINUE
@@ -444,11 +429,8 @@ C ======================================================================
   210 CONTINUE
 
       CALL JEDETR('&&TABLCO.TRAV')
-      CALL JEDETR(SURF)
-      DO 250 ISUCO=1,NSUCO
-        CALL JEDETR(CONINV(ISUCO))
-250   CONTINUE
- 
+      CALL JEDETR('&&TABLCO.TRAV2')
+      CALL JEDETR(CONINV)
 C ======================================================================
       CALL JEDEMA()
       END

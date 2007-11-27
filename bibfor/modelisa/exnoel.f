@@ -3,7 +3,7 @@
      &                  LISTNO,LISTQU,IPMA  ,IPNO  ,IPNOQU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,6 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*1  K1BID
       CHARACTER*8  NOMTM,NOMO
-      CHARACTER*19 LIGRMO
       CHARACTER*24 GRMAMA,MAILMA
       INTEGER      IER,INDQUA,IBID
       INTEGER      IGRMA,IMA      
@@ -109,7 +108,7 @@ C
       CALL JEVEUO(NOMA(1:8)//'.TYPMAIL','L',IATYMA)
       CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,
      &            NOMO,IER)
-      LIGRMO = NOMO(1:8)//'.MODELE'
+
       IF (NBNOQU.EQ.0) THEN
         INDQUA = 1
       ELSE
@@ -130,7 +129,7 @@ C
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),NOMTM)  
             CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMAIL),'LONMAX',N1,
      &                  K1BID)
-            CALL EXNOCP(NOMA  ,LIGRMO,NOMTM ,NUMAIL,N1    ,
+            CALL EXNOCP(NOMA  ,NOMO  ,NOMTM ,NUMAIL,N1    ,
      &                  INDQUA,LISTMA,LISTNO,LISTQU,IPMA  ,
      &                  IPNO  ,IPNOQU)
    70     CONTINUE
@@ -144,7 +143,7 @@ C
           CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYP),NOMTM)
           CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMAIL),'LONMAX',N1,
      &                K1BID)
-          CALL EXNOCP(NOMA  ,LIGRMO,NOMTM ,NUMAIL,N1    ,
+          CALL EXNOCP(NOMA  ,NOMO  ,NOMTM ,NUMAIL,N1    ,
      &                INDQUA,LISTMA,LISTNO,LISTQU,IPMA  ,
      &                IPNO  ,IPNOQU)     
   150   CONTINUE

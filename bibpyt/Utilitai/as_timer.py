@@ -1,4 +1,4 @@
-#@ MODIF as_timer Utilitai  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF as_timer Utilitai  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
    Definition of ASTER_TIMER class.
 """
 
-__revision__ = "$Id: as_timer.py 2860 2007-02-12 08:37:17Z courtois $"
+__revision__ = "$Id: as_timer.py 3125 2007-11-22 11:39:50Z courtois $"
 
 # ----- differ messages translation
 def _(mesg):
@@ -91,9 +91,9 @@ class ASTER_TIMER:
          format = 'as_run'
       
       if format == 'as_run':
-         self.fmtlig = '   %(name)-26s  %(cpu_dt)9.2f  %(sys_dt)9.2f  %(cpu_sys)9.2f  %(tot_dt)9.2f'
-         self.fmtstr = '   %(title)-26s  %(cpu)9s  %(sys)9s  %(cpu+sys)9s  %(elapsed)9s'
-         self.sepa   = ' ' + '-'*74
+         self.fmtlig = '   %(name)-33s  %(cpu_dt)9.2f  %(sys_dt)9.2f  %(cpu_sys)9.2f  %(tot_dt)9.2f'
+         self.fmtstr = '   %(title)-33s  %(cpu)9s  %(sys)9s  %(cpu+sys)9s  %(elapsed)9s'
+         self.sepa   = ' ' + '-'*81
          self.TotalKey = _('Total time')
          self.d_labels = {
             'title'   : '',
@@ -124,7 +124,7 @@ class ASTER_TIMER:
       """Start a new timer or restart one
       """
       name = name or str(timer)
-      isnew = not timer in self.timers.keys()
+      isnew = self.timers.get(timer) is None
       if not num:
          num = len(self.timers)
       if mode == 'INIT':
@@ -155,7 +155,7 @@ class ASTER_TIMER:
    def Stop(self, timer, hide=False):
       """Stop a timer
       """
-      if not timer in self.timers.keys():
+      if self.timers.get(timer) is None:
          self.timers[timer] = {
             'name'   : str(timer),
             'hide'   : hide,
@@ -207,7 +207,7 @@ class ASTER_TIMER:
       lk = self.timers.keys()
       if self.add_total:
          lk.remove(self.total_key)
-      for timer in lk:
+      for timer in [t for t in lk if self.timers[t]['state'] != 'stop']:
          self.Stop(timer)
 
 #-------------------------------------------------------------------------------

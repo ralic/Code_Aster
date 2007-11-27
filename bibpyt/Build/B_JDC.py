@@ -1,4 +1,4 @@
-#@ MODIF B_JDC Build  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF B_JDC Build  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,6 +66,7 @@ class JDC(CODE):
         etape.actif=0
 
      self.etapes.append(etape)
+     self.index_etapes[etape] = len(self.etapes) - 1
      return self.g_register(etape)
 
 

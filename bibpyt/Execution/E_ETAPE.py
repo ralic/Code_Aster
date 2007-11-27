@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,11 +86,23 @@ class ETAPE:
              if self.sd and self.jdc.sdveri:
                 l_before = checksd.get_list_objects()
 
+          self.jdc.timer.Stop(' . part Superviseur')
+          self.jdc.timer.Start(' . part Fortran', num=1.2e6)
           ier=self.codex.oper(self,self.jdc.jxveri,self.modexec,self.icmd)
+          self.jdc.timer.Start(' . part Superviseur')
+          self.jdc.timer.Stop(' . part Fortran')
 
           if (self.modexec == 2) and (self.definition.op_init==None):
              # vérification de la SD produite
              if self.sd and self.jdc.sdveri:
+                # on force la vérif si :
+                     # concept réentrant
+                     # sd.nom absent du contexte (detruit ? car les nouveaux sont forcément vérifiés)
+                     # pb avec macro reentrante et commande non reentrante : cf. ssnv164b ou ssll14a
+                force = (self.reuse is not None) \
+                     or (self.parent.get_contexte_avant(self).get(self.sd.nom) is None) \
+                     or (self.parent != self.jdc)
+                self.jdc.sd_checker.force(force)
                 self.jdc.sd_checker = checksd.check(self.jdc.sd_checker, self.sd, l_before)
              # affichage du texte de la commande
              self.AfficheFinCommande()

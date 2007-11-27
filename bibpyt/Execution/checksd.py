@@ -1,4 +1,4 @@
-#@ MODIF checksd Execution  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF checksd Execution  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ def check(checker, sd, l_before):
     # on détruit les messages déjà imprimés pour ne pas les réimprimer avec la SD suivante :
     checker.msg=[]
 
-    # on vérifie que le commande n'a pas créé d'objets interdits
+    # on vérifie que la commande n'a pas créé d'objets interdits
     l_possible = Set(checker.names.keys())
     l_interdit = list(l_new - l_possible)
     l_interdit.sort()

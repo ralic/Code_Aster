@@ -2,7 +2,7 @@
      &                     YD, YF, VIND, R, SIGNE, DRDY, IRET )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,7 +104,7 @@ C =====================================================================
         PREF   = MATER(8,2)
         ACYC   = MATER(9,2)
         AMON   = MATER(10,2)
-        CCYC   = MATER(11,2)
+        CCYC   = DEUX*MATER(11,2)
         CMON   = MATER(12,2)
         M      = SIN(DEGR*PHI)
         MDIL   = SIN(DEGR*ANGDIL)

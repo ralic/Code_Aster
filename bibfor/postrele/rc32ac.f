@@ -1,10 +1,10 @@
       SUBROUTINE RC32AC ( LPMPB, LSN, LSNET, LFATIG, LROCHT, MATER )
-      IMPLICIT   NONE
+      IMPLICIT   NONE        
       LOGICAL             LPMPB, LSN, LSNET, LFATIG, LROCHT
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,10 +75,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR, 
-     +             JCOMBI, JPRESA, JPRESB, JNBOCC, IM, JNUMGR, JPASSA,
+     +             JCOMBI, JPRESA, JPRESB, JNBOCC, IM, JNUMGR,
      +             NPASS, NUM1, NUM2, IFM, NIV, IOCS, JSEIGR, JRESU,
      +             JNSITU, NSITUP, NSITUQ, IRET, I1, JFACT, I, J,
-     +             JREAS, JRESS, JRECA, JRECS, NDIM
+     +             JREAS, JRESS, JRECA, JRECS, NDIM, NBP12, NBP23, NBP13
       REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ, VALRES,
      +             UG, NADM, MPI(12), MPJ(12), SM, SN, SNET, SP, SMM,
      +             MATPI(8), MATPJ(8), MSE(12),TYPEKE,SPMECA,SPTHER,
@@ -106,7 +106,10 @@ C
       CALL JEVEUO ( '&&RC3200.SITU_PRES_A'    , 'L', JPRESA )
       CALL JEVEUO ( '&&RC3200.SITU_PRES_B'    , 'L', JPRESB )
       CALL JEVEUO ( '&&RC3200.SITU_NB_OCCUR'  , 'L', JNBOCC )
-      CALL JEVEUO ( '&&RC3200.SITU_PASSAGE'   , 'L', JPASSA )
+C
+      CALL JELIRA ('&&RC32SI.PASSAGE_1_2','LONUTI', NBP12, K8B )
+      CALL JELIRA ('&&RC32SI.PASSAGE_2_3','LONUTI', NBP23, K8B )
+      CALL JELIRA ('&&RC32SI.PASSAGE_1_3','LONUTI', NBP13, K8B )
 C
 C --- IL FAUT CALCULER LE FACTEUR D'USAGE A CHAQUE EXTREMITE
 C
@@ -188,10 +191,17 @@ C
          DO 100 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
+            IF ( NUMGR .LT. 0 ) GOTO 100
+C
             IOCS  = ZI(JSEIGR+IG-1)
 C
-            CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
+            CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONUTI',
      +                                                    NBSIGR, K8B )
+            CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
+            IF (NIV.GE.2) THEN
+               WRITE (IFM,3000) NUMGR,NBSIGR
+               WRITE (IFM,3002) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
+            END IF
             CALL JECROC (JEXNUM(K24AS,IG))
             CALL JEECRA (JEXNUM(K24AS,IG), 'LONMAX', 10*NBSIGR, ' ' )
             CALL JEVEUO (JEXNUM(K24AS,IG), 'E', JREAS )
@@ -213,13 +223,21 @@ C
             CALL JEECRA (JEXNUM(K24FU,IG), 'LONMAX', 4*50, ' ' )
             CALL JEVEUO (JEXNUM(K24FU,IG), 'E', JFACT )
 C
+            IF ( IG .EQ. 1 ) THEN
+               IF ( NBP12.NE.0 .OR. NBP13.NE.0 ) GOTO 100
+            ELSEIF ( IG .EQ. 2 ) THEN
+               IF ( NBP12.NE.0 .OR. NBP23.NE.0 ) GOTO 100
+            ELSEIF ( IG .EQ. 3 ) THEN
+               IF ( NBP13.NE.0 .OR. NBP23.NE.0 ) GOTO 100
+            ENDIF
+C
             NPASS = 0
             IF ( IOCS .EQ. 0 ) THEN
                SEISME = .FALSE.
             ELSE
                SEISME = .TRUE.
             ENDIF
-C
+C  
             CALL RC3201 ( LPMPB, LSN, LSNET, LFATIG, LROCHT, LIEU(IM),
      +                    NUMGR, IOCS, SEISME, NPASS, MATER, SNMAX,
      +                    SNEMAX, SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX,  
@@ -245,9 +263,10 @@ C
          DO 200 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
+            IF ( NUMGR .LT. 0 ) GOTO 200
 C
             CALL JELIRA (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),
-     +                                             'LONMAX',NBSIGR,K8B)
+     +                                             'LONUTI',NBSIGR,K8B)
             CALL JEVEUO (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
 C
             NPASS = 0
@@ -414,35 +433,55 @@ C
 C ------ ON TRAITE LES SITUATIONS DE PASSAGE
 C        -----------------------------------
 C
-         CFAIT = .FALSE.
          DO 310 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
+            IF ( NUMGR .GE. 0 ) GOTO 310
+            NUMGR = -NUMGR
+            IOCS  = ZI(JSEIGR+IG-1)
+            IF ( IOCS .EQ. 0 ) THEN
+               SEISME = .FALSE.
+            ELSE
+               SEISME = .TRUE.
+            ENDIF
 C
-            CALL JELIRA (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),
-     +                                             'LONMAX',NBSIGR,K8B)
-            CALL JEVEUO (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
+            CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONUTI',
+     +                                                    NBSIGR, K8B )
+            CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
+            IF (NIV.GE.2) THEN
+               WRITE (IFM,3004)
+               WRITE (IFM,3002) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
+            END IF
 C
-            DO 320 IS = 1 , NBSIGR
-              IOC1 = ZI(JNSG+IS-1)
-              IF ( ZI(JPASSA+2*IOC1-2).EQ.0 .AND.
-     +             ZI(JPASSA+2*IOC1-1).EQ.0 )  GOTO 320
-C   
-              IF ( .NOT.CFAIT .AND. NIV.GE.2 ) THEN
-                CFAIT = .TRUE.
-                WRITE(IFM,*) ' '
-                WRITE(IFM,*) '=> ON TRAITE LES SITUATIONS DE PASSAGE'
-              ENDIF
+            CALL JECROC (JEXNUM(K24AS,IG))
+            CALL JEECRA (JEXNUM(K24AS,IG), 'LONMAX', 10*NBSIGR, ' ' )
+            CALL JEVEUO (JEXNUM(K24AS,IG), 'E', JREAS )
 C
-              NUM1 = ZI(JPASSA+2*IOC1-2)
-              NUM2 = ZI(JPASSA+2*IOC1-2)
-              IF ( NIV.GE.2 )  WRITE (IFM,2010) NUM1, NUM2
+            CALL JECROC (JEXNUM(K24SS,IG))
+            CALL JEECRA (JEXNUM(K24SS,IG), 'LONMAX', 10*NBSIGR, ' ' )
+            CALL JEVEUO (JEXNUM(K24SS,IG), 'E', JRESS )
 C
-              NPASS = ZI(JNBOCC+2*IOC1-2)
+            NDIM = MAX(9,9*NBSIGR*(NBSIGR-1)/2)
+            CALL JECROC (JEXNUM(K24CA,IG))
+            CALL JEECRA (JEXNUM(K24CA,IG), 'LONMAX', NDIM, ' ' )
+            CALL JEVEUO (JEXNUM(K24CA,IG), 'E', JRECA )
 C
-              CALL RC3203 ( LIEU(IM), NUM1, NUM2, NPASS,
-     +                      MATER, SNMAX, SPMAX, KEMAX, SPMECM, SPTHEM, 
-     +                      SAMAX, UTOT, SM, LROCHT, SIPMAX )
+            CALL JECROC (JEXNUM(K24CS,IG))
+            CALL JEECRA (JEXNUM(K24CS,IG), 'LONMAX', NDIM, ' ' )
+            CALL JEVEUO (JEXNUM(K24CS,IG), 'E', JRECS )
+C
+            CALL JECROC (JEXNUM(K24FU,IG))
+            CALL JEECRA (JEXNUM(K24FU,IG), 'LONMAX', 4*50, ' ' )
+            CALL JEVEUO (JEXNUM(K24FU,IG), 'E', JFACT )
+C
+            NPASS = 7
+C  
+            CALL RC3201 ( LPMPB, LSN, LSNET, LFATIG, LROCHT, LIEU(IM),
+     +                    NUMGR, IOCS, SEISME, NPASS, MATER, SNMAX,
+     +                    SNEMAX, SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX,  
+     +                    UTOT, SM, SIPMAX, ZR(JREAS), ZR(JRESS),
+     +                    ZR(JRECA), ZR(JRECS), ZR(JFACT), PMMAX,
+     +                    PBMAX, PMBMAX )
 C
  320        CONTINUE
 C
@@ -489,6 +528,9 @@ C
 C
  10   CONTINUE
 C
+ 3000 FORMAT (/,'=> GROUPE: ',I4,' , NOMBRE DE SITUATIONS: ',I4)
+ 3002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
+ 3004 FORMAT (/,'=> SITUATION DE PASSAGE')
  2000 FORMAT ('=> GROUPE: ',I4,' , SITUATION: ',I4)
  2010 FORMAT ('=> PASSAGE DU GROUPE: ',I4,' AU GROUPE: ',I4)
  2020 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,

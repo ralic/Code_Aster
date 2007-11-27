@@ -1,4 +1,4 @@
-# MODIF  DATE 06/11/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 27/11/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTE DE GRAPPE
 # RESPONSABLE LONGATTE E.LONGATTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -243,13 +243,7 @@ F_FLUIDE=AFFE_CHAR_MECA(MODELE=MODELE,
                                         CARA_PDC = C_PDC ,
                                         VALE_PDC = V_PDC ,
                                       ),
-                                    _F( APPL_FORC_FMEC  = 'REPARTIE',
-                                        APPL_FORC_FPLAQ = 'REPARTIE',
-                                        APPL_FORC_FTG   = 'REPARTIE',
-                                        APPL_FORC_ARCHI = 'REPARTIE',
-#                                        APPL_FORC_ARCHI = 'CDG',
-#                                        MASS_INER = MASSESTR,
-                                        CARA_GRAPPE = ('M'    ,'ROTIGE','ROCRAY','RORAI'),
+                                    _F( CARA_GRAPPE = ('M'    ,'ROTIGE','ROCRAY','RORAI'),
                                         VALE_GRAPPE = (M_GRAPP, ROTIGE , ROCRAY , RORAI ),
                                         UNITE_IMPR_FORCE = 38 ,
                                         UNITE_IMPR_NOEUD = 37 ,

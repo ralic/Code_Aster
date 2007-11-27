@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,7 +137,7 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                              DEFORMATION='GREEN_GR',
                              GROUP_MA='STRUCT',),
                 INCREMENT=_F(LIST_INST=LINST,
-                             INST_FIN=1.,
+                             INST_FIN=0.8,
                              SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                              SUBD_PAS_MINI=1E-5,
                              ),
@@ -181,46 +181,46 @@ TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.2),
-           VALE=4.37897E+02,
+           VALE=3.1396515859657E+02,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+           VERSION='9.1.22',);
 
 TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.4),
-           VALE=1.65012E+03,
+           VALE=1.2206114997884E+03,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+           VERSION='9.1.22',);
 
 TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
-           VALE=3.35705E+03,
+           VALE=2.4568221137607E+03,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+           VERSION='9.1.22',);
 
 TEST_TABLE(TABLE=TAB_REAC,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
-           VALE=3.01163E+03,
+           VALE=2.0677188799695E+03,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+           VERSION='9.1.22',);
 
-TEST_TABLE(TABLE=TAB_REAC,
-           NOM_PARA='DY',
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.),
-           VALE=3.14692E+03,
-           PRECISION=0.1E-2,
-           REFERENCE='NON_REGRESSION',
-           VERSION='6.3.17',);
+#TEST_TABLE(TABLE=TAB_REAC,
+#           NOM_PARA='DY',
+#           FILTRE=_F(NOM_PARA='INST',
+#                     VALE=1.),
+#           VALE=3.14692E+03,
+#           PRECISION=0.1E-2,
+#           REFERENCE='NON_REGRESSION',
+#           VERSION='6.3.17',);
 
 
 FIN();

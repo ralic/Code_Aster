@@ -3,7 +3,7 @@
       CHARACTER*8       CHAR, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 27/11/2007   AUTEUR BOYERE E.BOYERE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -235,47 +235,47 @@ C
 C
 C --- LECTURE DES DONNEES SUR LIEUX D'APP. DES FORCES FLUIDES
 C
-      CALL GETVTX ( MOTCLF, 'APPL_FORC_ARCHI',1,1,1, K8ARC, NKAR)
-      IF ( K8ARC .EQ. 'REPARTIE' ) THEN
+C      CALL GETVTX ( MOTCLF, 'APPL_FORC_ARCHI',1,1,1, K8ARC, NKAR)
+C      IF ( K8ARC .EQ. 'REPARTIE' ) THEN
          ZI(JAPL-1+1) = 1
-      ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
-         ZI(JAPL-1+1) = 2
-      ENDIF
+C      ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
+C         ZI(JAPL-1+1) = 2
+C      ENDIF
 C
-      CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',1,1,1, K8PLA, NKFP)
-      IF ( K8PLA .EQ. 'REPARTIE' ) THEN
+C      CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',1,1,1, K8PLA, NKFP)
+C      IF ( K8PLA .EQ. 'REPARTIE' ) THEN
          ZI(JAPL-1+2) = 1
-      ELSEIF ( K8PLA .EQ. 'CDG' ) THEN
-         ZI(JAPL-1+2) = 2
-      ELSEIF ( K8PLA .EQ. 'ZONE' ) THEN
-         ZI(JAPL-1+2) = 3
-      ELSEIF ( K8PLA .EQ. 'MILIEU' ) THEN
-         ZI(JAPL-1+2) = 4
-      ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
-         ZI(JAPL-1+2) = 5
-      ENDIF
+C      ELSEIF ( K8PLA .EQ. 'CDG' ) THEN
+C         ZI(JAPL-1+2) = 2
+C      ELSEIF ( K8PLA .EQ. 'ZONE' ) THEN
+C         ZI(JAPL-1+2) = 3
+C      ELSEIF ( K8PLA .EQ. 'MILIEU' ) THEN
+C         ZI(JAPL-1+2) = 4
+C      ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
+C         ZI(JAPL-1+2) = 5
+C      ENDIF
 C
-      CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,1,1,1, K8MEC, NKFM)
-      IF ( K8MEC .EQ. 'REPARTIE' ) THEN
+C      CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,1,1,1, K8MEC, NKFM)
+C      IF ( K8MEC .EQ. 'REPARTIE' ) THEN
          ZI(JAPL-1+3) = 1
-      ELSEIF ( K8MEC .EQ. 'CDG' ) THEN
-         ZI(JAPL-1+3) = 2
-      ELSEIF ( K8MEC .EQ. 'ZONE' ) THEN
-         ZI(JAPL-1+3) = 3
-      ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
-         ZI(JAPL-1+3) = 4
-      ENDIF
+C      ELSEIF ( K8MEC .EQ. 'CDG' ) THEN
+C         ZI(JAPL-1+3) = 2
+C      ELSEIF ( K8MEC .EQ. 'ZONE' ) THEN
+C         ZI(JAPL-1+3) = 3
+C      ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
+C         ZI(JAPL-1+3) = 4
+C      ENDIF
 C
-      CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,1,1,1, K8TG, NKF)
-      IF ( K8TG .EQ. 'REPARTIE' ) THEN
+C      CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,1,1,1, K8TG, NKF)
+C      IF ( K8TG .EQ. 'REPARTIE' ) THEN
          ZI(JAPL-1+4) = 1
-      ELSEIF ( K8TG .EQ. 'CDG' ) THEN
-         ZI(JAPL-1+4) = 2
-      ELSEIF ( K8TG .EQ. 'ZONE' ) THEN
-         ZI(JAPL-1+4) = 3
-      ELSEIF ( K8TG .EQ. 'PTREP' ) THEN
-         ZI(JAPL-1+4) = 4
-      ENDIF
+C      ELSEIF ( K8TG .EQ. 'CDG' ) THEN
+C         ZI(JAPL-1+4) = 2
+C      ELSEIF ( K8TG .EQ. 'ZONE' ) THEN
+C         ZI(JAPL-1+4) = 3
+C      ELSEIF ( K8TG .EQ. 'PTREP' ) THEN
+C         ZI(JAPL-1+4) = 4
+C      ENDIF
 C
 C --- LECTURE DES DONNEES HYDRAULIQUES
 C
@@ -558,47 +558,47 @@ C
         CALL GETVIS ( MOTCLF, 'UNITE_IMPR_NOEUD', IOC,1,1, IMPN, N2 )
         IF ( N2 .NE. 0 )  ZI(JAPL-1+8) = IMPN
 C
-        CALL GETVTX ( MOTCLF, 'APPL_FORC_ARCHI',IOC,1,1, K8ARC, NKAR)
-        IF ( K8ARC .EQ. 'REPARTIE' ) THEN
+C        CALL GETVTX ( MOTCLF, 'APPL_FORC_ARCHI',IOC,1,1, K8ARC, NKAR)
+C        IF ( K8ARC .EQ. 'REPARTIE' ) THEN
            ZI(JAPL-1+1) = 1
-        ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
-           ZI(JAPL-1+1) = 2
-        ENDIF
+C        ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
+C           ZI(JAPL-1+1) = 2
+C        ENDIF
 C
-        CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',IOC,1,1, K8PLA, NKFP)
-        IF ( K8PLA .EQ. 'REPARTIE' ) THEN
+C        CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',IOC,1,1, K8PLA, NKFP)
+C        IF ( K8PLA .EQ. 'REPARTIE' ) THEN
            ZI(JAPL-1+2) = 1
-        ELSEIF ( K8PLA .EQ. 'CDG' ) THEN
-           ZI(JAPL-1+2) = 2
-        ELSEIF ( K8PLA .EQ. 'ZONE' ) THEN
-           ZI(JAPL-1+2) = 3
-        ELSEIF ( K8PLA .EQ. 'MILIEU' ) THEN
-           ZI(JAPL-1+2) = 4
-        ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
-           ZI(JAPL-1+2) = 5
-        ENDIF
+C        ELSEIF ( K8PLA .EQ. 'CDG' ) THEN
+C           ZI(JAPL-1+2) = 2
+C        ELSEIF ( K8PLA .EQ. 'ZONE' ) THEN
+C           ZI(JAPL-1+2) = 3
+C        ELSEIF ( K8PLA .EQ. 'MILIEU' ) THEN
+C           ZI(JAPL-1+2) = 4
+C        ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
+C           ZI(JAPL-1+2) = 5
+C        ENDIF
 C
-        CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,IOC,1,1, K8MEC, NKFM)
-        IF ( K8MEC .EQ. 'REPARTIE' ) THEN
+C        CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,IOC,1,1, K8MEC, NKFM)
+C        IF ( K8MEC .EQ. 'REPARTIE' ) THEN
            ZI(JAPL-1+3) = 1
-        ELSEIF ( K8MEC .EQ. 'CDG' ) THEN
-           ZI(JAPL-1+3) = 2
-        ELSEIF ( K8MEC .EQ. 'ZONE' ) THEN
-           ZI(JAPL-1+3) = 3
-        ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
-           ZI(JAPL-1+3) = 4
-        ENDIF
+C        ELSEIF ( K8MEC .EQ. 'CDG' ) THEN
+C           ZI(JAPL-1+3) = 2
+C        ELSEIF ( K8MEC .EQ. 'ZONE' ) THEN
+C           ZI(JAPL-1+3) = 3
+C        ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
+C           ZI(JAPL-1+3) = 4
+C        ENDIF
 C
-        CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,IOC,1,1, K8TG, NKF)
-        IF ( K8TG .EQ. 'REPARTIE' ) THEN
+C        CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,IOC,1,1, K8TG, NKF)
+C        IF ( K8TG .EQ. 'REPARTIE' ) THEN
            ZI(JAPL-1+4) = 1
-        ELSEIF ( K8TG .EQ. 'CDG' ) THEN
-           ZI(JAPL-1+4) = 2
-        ELSEIF ( K8TG .EQ. 'ZONE' ) THEN
-           ZI(JAPL-1+4) = 3
-        ELSEIF ( K8TG .EQ. 'PTREP' ) THEN
-           ZI(JAPL-1+4) = 4
-        ENDIF
+C        ELSEIF ( K8TG .EQ. 'CDG' ) THEN
+C           ZI(JAPL-1+4) = 2
+C        ELSEIF ( K8TG .EQ. 'ZONE' ) THEN
+C           ZI(JAPL-1+4) = 3
+C        ELSEIF ( K8TG .EQ. 'PTREP' ) THEN
+C           ZI(JAPL-1+4) = 4
+C        ENDIF
 C
  200  CONTINUE
 C

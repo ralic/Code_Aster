@@ -13,7 +13,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,12 +89,8 @@ C DEB ------------------------------------------------------------------
       CALL JEVEUO('&&RC3200.SITU_PRES_B'    ,'L',JPRESB)
       CALL JEVEUO('&&RC3200.SITU_NB_OCCUR'  ,'L',JNBOCC)
 
-      CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',IG),'LONMAX',NBSIGR,K8B)
+      CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',IG),'LONUTI',NBSIGR,K8B)
       CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',IG),'L',JNSG)
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,1000) IG,NBSIGR
-        WRITE (IFM,1002) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
-      END IF
 
       DO 11 IS1 = 1,NBSIGR
         DO 12 IS2 = 1,10
@@ -325,12 +321,14 @@ C
         KEMAX = MAX( KEMAX , KEMECA )
         IF (NIV.GE.2)  WRITE (IFM,2050) NSITUP, SALTIJ
 
+        ZR(JMSA-1+INDI+2) = SALTIJ
         ZR(JMSA-1+INDI+3) = SALTIJ
         IF (SALTIJ.GT.SAMAX) THEN
           SAMAX = SALTIJ
           SM = SMM
         END IF
         IF (SEISME) THEN
+          ZR(JMSAB-1+INDI+2) = SALTIJ
           ZR(JMSAB-1+INDI+3) = SALTIJ
           CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
      +                SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
@@ -341,6 +339,7 @@ C
           RESUAS(10*(IS1-1)+8) = KETHES
           RESUAS(10*(IS1-1)+9) = SALIJS
           KEMAX = MAX( KEMAX , KEMECA )
+          ZR(JMSAS-1+INDI+2) = SALIJS
           ZR(JMSAS-1+INDI+3) = SALIJS
         END IF
 
@@ -637,8 +636,13 @@ C --- CALCUL DU FACTEUR D'USAGE
      &                ZR(JMSAS),ZR(JMSAB),SALTSE,NS,NSCY,MATER,UG)
           UTOT = UTOT + UG
         END IF
-        CALL RC32FU(NBSIG2,ZI(JNOC),ZI(JIST),NBSIG2,ZI(JNOC),ZI(JIST),
-     &              ZR(JMSA),NPASS,MATER,UG,FACTUS)
+        IF ( NPASS .EQ. 0 ) THEN
+           CALL RC32FU ( NBSIG2, ZI(JNOC), ZI(JIST),
+     &                   ZR(JMSA), MATER, UG, FACTUS )
+        ELSE
+           CALL RC32FP ( NBSIG2, ZI(JNOC), ZI(JIST), ZI(JNSG),
+     &                   ZR(JMSA), MATER, UG, FACTUS )
+        ENDIF
         UTOT = UTOT + UG
       END IF
 C
@@ -654,8 +658,6 @@ C
  2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
  2060 FORMAT (1P,' SITUATION ',I4,' FACT_USAGE =',E12.5)
 
- 1000 FORMAT ('=> GROUPE: ',I4,' , NOMBRE DE SITUATIONS: ',I4)
- 1002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
  1010 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5,' PM =',E12.5,
      +                            ' PB =',E12.5,' PMPB =',E12.5)
  1012 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
