@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,7 +181,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            TYPE_TEST='MAX',
            VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1e-14,
+           PRECISION=1e-12,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP_BACK,
@@ -189,7 +189,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            TYPE_TEST='MIN',
            VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1e-14,
+           PRECISION=1e-12,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP_BACK,
@@ -197,7 +197,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            TYPE_TEST='MAX',
            VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1e-14,
+           PRECISION=1e-12,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP_BACK,
@@ -205,7 +205,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            TYPE_TEST='MIN',
            VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1e-14,
+           PRECISION=1e-12,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP_BACK,
@@ -213,7 +213,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            TYPE_TEST='MAX',
            VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1e-14,
+           PRECISION=1e-12,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP_BACK,
@@ -221,7 +221,7 @@ TEST_TABLE(TABLE=DEP_BACK,
            TYPE_TEST='MIN',
            VALE=0.,
            CRITERE='ABSOLU',
-           PRECISION=1e-14,
+           PRECISION=1e-12,
            REFERENCE='ANALYTIQUE',);
 
 
@@ -231,7 +231,7 @@ TEST_TABLE(TABLE=DEP_FRON,
            TYPE_TEST='MAX',
            VALE=1.E-6,
            CRITERE='RELATIF',
-           PRECISION=1e-08,
+           PRECISION=1e-06,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=DEP_FRON,
@@ -239,7 +239,7 @@ TEST_TABLE(TABLE=DEP_FRON,
            TYPE_TEST='MIN',
            VALE=1.E-6,
            CRITERE='RELATIF',
-           PRECISION=1e-08,
+           PRECISION=1e-06,
            REFERENCE='ANALYTIQUE',);
 
 

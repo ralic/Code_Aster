@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,7 +103,9 @@ class ETAPE:
                      or (self.parent.get_contexte_avant(self).get(self.sd.nom) is None) \
                      or (self.parent != self.jdc)
                 self.jdc.sd_checker.force(force)
+                self.jdc.timer.Start('   . sdveri', num=1.15e6)
                 self.jdc.sd_checker = checksd.check(self.jdc.sd_checker, self.sd, l_before)
+                self.jdc.timer.Stop('   . sdveri')
              # affichage du texte de la commande
              self.AfficheFinCommande()
       else:

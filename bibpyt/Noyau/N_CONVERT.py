@@ -1,4 +1,4 @@
-#@ MODIF N_CONVERT Noyau  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_CONVERT Noyau  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,56 +23,80 @@
 """
 
 # -----------------------------------------------------------------------------
-class ConversionError(Exception):
-   pass
-
-# -----------------------------------------------------------------------------
 def is_int(real):
    """Est-ce que 'real' a une valeur entière ?
    """
    return abs(int(real) - real) < 1.e-12
 
 # -----------------------------------------------------------------------------
-class TypeConversion:
-   """Conversion de type
+class Conversion:
+   """Conversion de type.
    """
-   def __init__(self, name, typ=None):
+   def __init__(self, name, typ):
       self.name = name
-      self.typ = typ
+      self.typ  = typ
 
    def convert(self, obj):
       """Filtre liste
       """
       in_type = type(obj)
-      is_simple = in_type not in (list, tuple)
-      if is_simple:
+      if in_type not in (list, tuple):
          obj = (obj,)
       
       result = []
       for o in obj:
-         result.append(self.defaut(o))
+         result.append(self.function(o))
       
-      if is_simple:
+      if in_type not in (list, tuple):
          return result[0]
       else:
-         return in_type(result)
+         # ne marche pas avec MACR_RECAL qui attend une liste et non un tuple
+         return tuple(result)
 
-   def defaut(self, obj):
-      """Conversion de obj si c'est possible.
-      """
-      for type_permis in self.typ:
-         # attention si plusieurs types sont permis, l'ordre de self.typ peut influer sur le résultat.
-         if type_permis == 'R':
-            if type(obj) in (int, float, long):
-               return float(obj)
-         elif type_permis == 'I':
-            if type(obj) in (int, float, long):
-               if is_int(obj):
-                  return int(obj)
-               else:
-                  raise ConversionError("%s (%s) ne peut pas être considéré comme entier" % (repr(obj), type(obj)))
+   def function(self, o):
+      raise NotImplementedError, 'cette classe doit être dérivée'
 
-      # autres types : pas de conversion, la validation arrêtera si obj est incorrect.
-      return obj
+# -----------------------------------------------------------------------------
+class TypeConversion(Conversion):
+   """Conversion de type
+   """
+   def __init__(self, typ):
+      Conversion.__init__(self, 'type', typ)
+
+# -----------------------------------------------------------------------------
+class IntConversion(TypeConversion):
+   """Conversion en entier
+   """
+   def __init__(self):
+      TypeConversion.__init__(self, 'I')
+
+   def function(self, o):
+      if type(o) is float and is_int(o):
+         o = int(o)
+      return o
+
+# -----------------------------------------------------------------------------
+class FloatConversion(TypeConversion):
+   """Conversion de type
+   """
+   def __init__(self):
+      TypeConversion.__init__(self, 'R')
+
+   def function(self, o):
+      if type(o) in (int, float, long):
+         o = float(o)
+      return o
+
+# -----------------------------------------------------------------------------
+_convertI = IntConversion()
+_convertR = FloatConversion()
+
+def ConversionFactory(name, typ):
+   if name == 'type':
+      if 'I' in typ:
+         return _convertI
+      elif 'R' in typ:
+         return _convertR
+   return None
 
 

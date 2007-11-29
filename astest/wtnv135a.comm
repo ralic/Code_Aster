@@ -1,4 +1,4 @@
-# MODIF  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+# MODIF  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE ETUDE ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -338,7 +338,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIZZ',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -2.37935E7),),)
+                      VALE       = -2.397142E7),),)
 
 
 FIN () ;
