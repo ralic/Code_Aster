@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF med Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,37 +20,433 @@
 
 def _(x) : return x
 
-cata_msg={
-1: _("""
- Absence de localisation de points de Gauss dans le fichier MED
- pour l'élément de référence %(k1)s.
- On suppose que l'ordre des points de Gauss est celui d'Aster.
- Risque de résultats faux.
+cata_msg = {
+
+1 : _("""
+  -> Absence de localisation de points de Gauss dans le fichier MED
+     pour l'élément de référence %(k1)s.
+     On suppose que l'ordre des points de Gauss est celui d'Aster.
+  -> Risque & Conseil:     
+     Risque de résultats faux.
 """),
 
-2: _("""
- Le nombre de points de Gauss est différent entre le fichier med et Aster:
- - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
- - nombre de points de Gauss défini  dans Aster          : %(i1)d
+2 : _("""
+  -> Le nombre de points de Gauss est différent entre le fichier med et Aster:
+     - nombre de points de Gauss contenu dans le fichier MED : %(i2)d
+     - nombre de points de Gauss défini dans Aster           : %(i1)d
 """),
 
-3: _("""
-Risque de résultats faux à cause d'une incompatibilité de points de Gauss
-entre Med et Aster.
+3 : _("""
+  -> Les point de Gauss Med/Aster ne correspondent pas géométriquement.
+  -> Risque & Conseil:
+     Risque de résultats faux à cause ce cette incompatibilité.
 """),
 
-4: _("""
+4 : _("""
 
-Point De Gauss : %(i1)d              MED               ASTER
-"""), 
+     Point De Gauss : %(i1)d              MED               ASTER
+"""),
 
-5: _("""
-   %(k1)s                          %(r1)f          %(r2)f
-"""), 
+5 : _("""
+        %(k1)s                          %(r1)f          %(r2)f
+"""),
 
-6: _("""
-Une ou plusieurs permutations ont été effectuées sur l'ordre des points de Gauss
-pour que la localisation Med corresponde à celle d'Aster.
+6 : _("""
+  -> Une ou plusieurs permutations ont été effectuées sur l'ordre des points
+     de Gauss pour que la localisation Med corresponde à celle d'Aster.
+"""),
+
+7 : _("""
+  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
+     est trop long. Il sera tronqué à 8 caractères.
+     Le groupe "%(k2)s" est renommé en "%(k3)s".
+"""),
+
+8 : _("""
+  -> Famille %(k1)s :
+       Incohérence sur les nombres de %(k2)s, il y en a %(i1)d alors
+       que la fonction MED en annonce %(i2)d.
+  -> Risque & Conseil: 
+       Impossible de lire ce fichier. 
+       On peut utiliser mdump (utilitaire med) pour voir si le problème
+       vient du fichier MED ou de la lecture dans Code_Aster.
+"""),
+
+9 : _("""
+  -> Vous ne pouvez pas renommer le groupe "%(k1)s" en "%(k2)s"
+     car "%(k2)s" existe déjà dans le fichier MED.
+"""),
+
+10 : _("""
+  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
+     est contient des caractères interdits.
+     Le groupe "%(k2)s" est renommé en "%(k3)s".
+"""),
+
+11 : _("""
+  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
+     est vide.
+"""),
+
+12 : _("""
+  -> Erreur lors de l'appel à EFNEMA, code retour = %(k1)s
+  -> Risque & Conseil :
+     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
+     Si le maillage a été produit par un code externe, vérifier que les
+     noms de maillage, de groupes, de familles ne contiennent pas de
+     blancs à la fin.
+     Dans Salomé, on peut renommer ces entités et supprimer les espaces
+     invalides.
+"""),
+
+13 : _("""
+  -> La famille %(k1)s n'a ni groupe, ni attribut.
+"""),
+
+14 : _("""
+  -> Lecture de la famille numéro %(i1)4d de nom %(k1)s.
+"""),
+
+15 : _("""
+      Groupe numéro %(i1)6d : %(k1)s
+"""),
+
+16 : _("""
+      Groupe numéro %(i1)6d : %(k1)s
+                renommé en : %(k2)s
+"""),
+
+17 : _("""
+  -> Aucune famille n'est présente dans ce fichier med.
+  -> Risque & Conseil :
+     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
+"""),
+
+18 : _("""
+  -> Arret en raison des conflits sur les noms de groupe.
+"""),
+
+19 : _("""
+  -> Les mailles  %(k1)s ne sont pas nommées dans le fichier med.
+"""),
+
+20 : _("""
+  -> Impossible de retrouver l'adresse associée au groupe  %(k1)s 
+"""),
+
+21 : _("""
+  -> Il manque les coordonnées !
+"""),
+
+22 : _("""
+  Le nom de groupe numéro  %(i1)d  est en double. %(k1)s
+  - premier nom med  :  %(k2)s
+  - second nom med   :  %(k3)s
+  - nom aster retenu :  %(k4)s
+"""),
+
+23 : _("""
+  -> Mailles  %(k1)s 
+"""),
+
+24 : _("""
+  -> Le fichier n'a pas été construit avec la meme version de med.
+  -> Risque & Conseil :
+     La lecture du fichier peut échouer !
 
 """),
+
+25 : _("""
+   Version de la bibliothèque med utilisee par Code_Aster:  %(i1)d %(i2)d %(i3)d
+"""),
+
+26 : _("""
+   Version de la bibliothèque med qui a créé le fichier  : < 2.1.5
+"""),
+
+27 : _("""
+   Version de la bibliothèque med pour créer le fichier  :  %(i1)d %(i2)d %(i3)d 
+"""),
+
+28 : _("""
+
+   Un utilitaire vous permet peut-etre de convertir votre fichier (medimport)
+"""),
+
+29 : _("""
+  -> Il manque les mailles !
+"""),
+
+30 : _("""
+  -> Erreur: numéro de groupe = 0
+"""),
+
+31 : _("""
+  -> Ce champ existe déjà dans le fichier MED. 
+     On ne peut pas le créer de nouveau.
+
+     Nom MED du champ : "%(k1)s"
+
+  -> Risque & Conseil :
+     Si vous essayez d'imprimer les différentes composantes d'un champ,
+     ne faites qu'un seul IMPR_RESU avec la liste des composantes à
+     retenir derrière le mot-clé NOM_CMP.
+     Pour la visualisation dans Salomé (Scalar Map par exemple),
+     sélectionner la composante dans Scalar Range/Scalar Mode.
+"""),
+
+32 : _("""
+     Le champ est inconnu.
+"""),
+
+33 : _("""
+     Il manque des composantes.
+"""),
+
+34 : _("""
+     Aucune valeur n'est présente à cet instant.
+"""),
+
+35 : _("""
+     Aucune valeur n'est présente à ce numéro d'ordre.
+"""),
+
+36 : _("""
+     Le nombre de valeurs n'est pas correct.
+"""),
+
+37 : _("""
+  -> La lecture est donc impossible.
+  -> Risque & Conseil :
+     Veuillez vérifier l'intégrité du fichier MED avec medconforme/mdump.
+"""),
+
+38 : _("""
+  -> Incohérence catalogue - fortran (nbtyp fortran différent de nbtyp catalogue)
+"""),
+
+39 : _("""
+  -> Incohérence catalogue - fortran (nomtyp fortran différent de nomtyp catalogue)
+"""),
+
+40 : _("""
+  -> Ouverture du fichier med en mode  %(k1)s  %(k2)s 
+"""),
+
+41 : _("""
+  -> Incohérence de version détectée.
+"""),
+
+42 : _("""
+  -> Le type d'entité  %(k1)s  est inconnu.
+"""),
+
+43 : _("""
+  -> Le maillage est introuvable !
+"""),
+
+44 : _("""
+  -> Pas d'écriture pour  %(k1)s 
+"""),
+
+45 : _("""
+     Issu de  %(k1)s 
+"""),
+
+46 : _("""
+  -> Le type de champ est inconnu :  %(k1)s 
+"""),
+
+47 : _("""
+  -> Création des tableaux de valeurs à écrire avec :
+"""),
+
+48 : _("""
+  -> Renumérotation impossible avec plus d'un sous-point.
+"""),
+
+49 : _("""
+  -> Veritable écriture des tableaux de valeurs
+"""),
+
+50 : _("""
+  -> Pas de maillage dans  %(k1)s 
+"""),
+
+51 : _("""
+  -> Maillage  %(k1)s  inconnu dans  %(k2)s 
+"""),
+
+52 : _("""
+  ->  Instant inconnu pour ce champ et ces supports dans le fichier.
+"""),
+
+55 : _("""
+  -> Lecture impossible pour  %(k1)s  au format MED
+"""),
+
+57 : _("""
+  -> Le champ  %(k1)s n'existe pas dans le fichier med.
+  -> Risque & Conseil :
+     Vérifier l'intégrité du fichier MED avec medconforme/mdump.
+"""),
+
+60 : _("""
+  -> On ne traite pas les maillages distants.
+"""),
+
+62 : _("""
+  -> Impossible de déterminer un nom de maillage MED.
+"""),
+
+63 : _("""
+  -> Le mot clé "INFO_MAILLAGE" est réservé au format med.
+"""),
+
+65 : _("""
+  -> Grandeur inconnue.
+"""),
+
+66 : _("""
+  -> Composante inconnue pour la grandeur.
+"""),
+
+67 : _("""
+  -> Le maillage %(k2)s est déjà présent dans le fichier med %(k1)s.
+"""),
+
+68 : _("""
+  -> Instant voulu :  %(r1)f
+"""),
+
+69 : _("""
+  -> Numéro d'ordre :  %(i1)d numéro de pas de temps :  %(i2)d 
+
+"""),
+
+70 : _("""
+  -> Trop de composantes pour la grandeur.
+"""),
+
+71 : _("""
+  -> le mot-clé MODELE est obligatoire pour lire un CHAM_ELEM
+"""),
+
+72 : _("""
+  -> Nom de composante tronqué à 8 caractères ( %(k1)s  >>>  %(k2)s )
+"""),
+
+73 : _("""
+  -> Impossible de trouver la composante ASTER associée a  %(k1)s 
+"""),
+
+74 : _("""
+  -> Ecriture des localisations des points de gauss.
+"""),
+
+75 : _("""
+  -> Problème dans la lecture du nom du champ et de ses composantes.
+"""),
+
+76 : _("""
+  -> Problème dans le diagnostic.
+"""),
+
+79 : _("""
+  -> Attention le maillage n'est pas de type non structuré
+"""),
+
+80 : _("""
+  -> Le maillage ' %(k1)s ' est inconnu dans le fichier.
+"""),
+
+81 : _("""
+  -> Attention, il s'agit d'un maillage structuré
+"""),
+
+82 : _("""
+  -> L'objet  %(k1)s  n'existe pas.
+  -> Risque & Conseil:
+     Veuillez renseigner le modèle.
+"""),
+
+83 : _("""
+  -  valeurs lues dans le fichier        : %(i1)d 
+  -  valeurs non affectees dans le champ : %(i2)d 
+"""),
+
+84 : _("""
+  -> Type incorrect  %(i1)d 
+"""),
+
+85 : _("""
+  -> Maillage présent :  %(k1)s 
+"""),
+
+86 : _("""
+  -> champ à lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d 
+     instant voulu :  %(r1)f 
+     --> numéro d'ordre :  %(i3)d 
+     --> numéro de pas de temps :  %(i4)d 
+ 
+"""),
+
+88 : _("""
+  -> Fichier med :  %(k1)s, nombre de maillages présents : %(i1)d 
+"""),
+
+89 : _("""
+  -> Ecriture impossible pour  %(k1)s  au format MED.
+"""),
+
+90 : _("""
+     Début de l'écriture MED de  %(k1)s 
+"""),
+
+91 : _("""
+  -> Impossible de déterminer un nom de champ MED.
+  -> Risque & Conseil:  
+"""),
+
+92 : _("""
+  -> Le type de champ  %(k1)s  est inconnu pour med.
+  -> Risque & Conseil:
+     Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
+     (LIRE_RESU) ou NOM_MED (LIRE_CHAMP).
+"""),
+
+93 : _("""
+     Fin de l'écriture MED de  %(k1)s 
+"""),
+
+94 : _("""
+  -> Le nom du champ med est introuvable.
+  -> Risque & Conseil:
+     Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED.
+"""),
+
+95 : _("""
+  -> Le champ med %(k1)s est introuvable.
+  -> Risque & Conseil:
+     Veuillez vérifier la mise en données du mot-clé NOM_CHAM_MED
+     ainsi que le fichier med fourni à l'opérateur.
+"""),
+
+96 : _("""
+  -> NOM_MED absent !
+  -> Risque & Conseil:
+     Veuillez renseigner le mot-cle NOM_MED de l'opérateur LIRE_CHAMP.
+"""),
+
+97 : _("""
+  -> Fichier med :  %(k1)s, Champ :  %(k2)s, Instant voulu :  %(r1)f 
+     - typent :  %(i1)d 
+     - typgeo :  %(i2)d 
+ 
+"""),
+
+98 : _("""
+  -> Fichier med :  %(k1)s champ :  %(k2)s 
+"""),
+
 }

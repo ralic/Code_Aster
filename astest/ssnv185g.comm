@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/12/2007   AUTEUR GALENNE E.GALENNE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -289,6 +289,24 @@ for i in range(0,nbc+1) :
               PRECISION=0.0005,
               REFERENCE='ANALYTIQUE',);
 
+
+PK=POST_K1_K2_K3(MODELISATION='3D',
+                     MAILLAGE=MAILLAG1,
+                     MATER=ACIER,
+                     FISSURE = FISS,
+                     INFO =2,
+                     ABSC_CURV_MAXI = 3.,
+                     RESULTAT  = UTOT1,
+                     VECT_K1        = ( 0., 0., 1.,),
+                    )
+
+IMPR_TABLE(TABLE = PK)
+TEST_TABLE(TABLE=PK,
+           FILTRE=(_F(NOM_PARA='METHODE',VALE_I=3),_F(NOM_PARA='PT_FOND',VALE_I=1)),
+           NOM_PARA='G_MAX',
+           VALE= 0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.e-6,);                      
 
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   

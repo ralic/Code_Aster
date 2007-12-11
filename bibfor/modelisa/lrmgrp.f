@@ -4,7 +4,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -224,7 +224,7 @@ C
                ENDIF
   322        CONTINUE
 C
-             CALL U2MESK('F','MODELISA5_13',1,NOMGRP)
+             CALL U2MESK('F','MED_20',1,NOMGRP)
 C
  3221        CONTINUE
 C

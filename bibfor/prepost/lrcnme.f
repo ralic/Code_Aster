@@ -6,7 +6,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -106,7 +106,7 @@ C 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 C
       CALL JENONU ( JEXNOM ( '&CATA.GD.NOMGD', NOMGD ) , IAUX )
       IF ( IAUX.EQ.0 ) THEN
-        CALL U2MESS('F','PREPOST3_21')
+        CALL U2MESS('F','MED_65')
       ENDIF
       CALL JEVEUO ( JEXNOM ( '&CATA.GD.NOMCMP', NOMGD ) ,
      &              'L', JNOCMP )
@@ -153,7 +153,7 @@ C 4. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL U2MESK('A','PREPOST3_24',1,CHAMN)
+         CALL U2MESK('A','MED_55',1,CHAMN)
       ENDIF
       CALL JEDEMA ( )
 C

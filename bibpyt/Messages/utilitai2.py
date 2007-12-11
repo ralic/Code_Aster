@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai2 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -329,10 +329,6 @@ cata_msg = {
  element non prevu  %(k1)s 
 """),
 
-92 : _("""
- nom_cham_med ? (svp)
-"""),
-
 93 : _("""
  evol_ther - champ temp uniqmt
 """),
@@ -343,10 +339,6 @@ cata_msg = {
 
 95 : _("""
   %(k1)s  et  %(k2)s  : nombre de composantes incompatible.
-"""),
-
-96 : _("""
- champ med introuvable :  %(k1)s 
 """),
 
 97 : _("""

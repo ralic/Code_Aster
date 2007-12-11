@@ -2,7 +2,7 @@
      &                    NOMAST, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,13 +98,9 @@ C
 C 2.2. ==> NOM DU MAILLAGE
 C
       IAUX = LXLGUT(NOMAST)
-      IF ( IAUX.GE.1 .AND. IAUX.LE.8 ) THEN
-        NOMAMD(1:IAUX) = NOMAST(1:IAUX)
-        LNOMAM = IAUX
-      ELSE
-        CODRET = 1
-        CALL U2MESS('E','PREPOST3_61')
-      ENDIF
+      CALL ASSERT( IAUX.GE.1 .AND. IAUX.LE.8 )
+      NOMAMD(1:IAUX) = NOMAST(1:IAUX)
+      LNOMAM = IAUX
 C
       ENDIF
 C
@@ -113,7 +109,7 @@ C 3. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL U2MESS('E','PREPOST3_62')
+        CALL U2MESS('E','MED_62')
       ENDIF
 C
       END

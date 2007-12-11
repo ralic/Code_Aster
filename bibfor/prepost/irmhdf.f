@@ -4,7 +4,7 @@
      &                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,9 +129,10 @@ C 1.3. ==> NOM DU MAILLAGE
 C
       CALL MDNOMA ( NOMAMD, LNOMAM, NOMAST, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST_72',1,SAUX08)
+        SAUX08='MDNOMA  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
+
 C
 C 1.4. ==> LE MAILLAGE EST-IL DEJA PRESENT DANS LE FICHIER ?
 C          SI OUI, ON NE FAIT RIEN DE PLUS QU'EMETTRE UNE INFORMATION
@@ -143,8 +144,7 @@ C
 C
         VALK (1) = NOFIMD
         VALK (2) = NOMAMD
-        CALL U2MESG('A', 'PREPOST5_33',2,VALK,0,0,0,0.D0)
-        CALL U2MESS('A','PREPOST2_87')
+        CALL U2MESG('A', 'MED_67',2,VALK,0,0,0,0.D0)
 C
 C     ------------------------------------------------------------------
 C
@@ -167,8 +167,8 @@ C     TEST L'EXISTENCE DU FICHIER
          EDMODE = EDLEAJ
          CALL EFFERM ( FID, CODRET)
          IF ( CODRET.NE.0 ) THEN
-          CALL CODENT ( CODRET,'G',SAUX08 )
-          CALL U2MESK('F','PREPOST2_13',1,SAUX08)
+           SAUX08='EFFERM  '
+           CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
          ENDIF
       ENDIF
 C
@@ -180,16 +180,13 @@ C                         1234567890123456
         CALL CODENT ( EDMODE,'G',SAUX08 )
          VALK(1) = SAUX08
          VALK(2) = SAUX16(EDMODE)
-         CALL U2MESK('I','PREPOST2_88', 2 ,VALK)
+         CALL U2MESK('I','MED_40', 2 ,VALK)
       ENDIF
 C
       CALL EFOUVR (FID, NOFIMD, EDMODE, CODRET)
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOMAMD
-        VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_22',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_69')
+        SAUX08='EFOUVR  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 2.2. ==> CREATION DU MAILLAGE AU SENS MED (TYPE MED_NON_STRUCTURE)
@@ -201,9 +198,10 @@ CGN      PRINT *,EDNSTR
       CALL EFMAAC ( FID, NOMAMD, NDIM, EDNSTR,
      &              'CREE PAR CODE_ASTER', CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST2_89',1,SAUX08)
+        SAUX08='EFMAAC  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
+
 C
 C 2.3. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
 C            DANS CATALOGUE
@@ -273,11 +271,8 @@ C====
 C
       CALL EFFERM ( FID, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOMAMD
-        VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_35',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_70')
+        SAUX08='EFFERM  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C====

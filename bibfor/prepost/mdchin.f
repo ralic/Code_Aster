@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C
 C
 C 0.2. ==> VARIABLES LOCALES
 C
+      CHARACTER*8  SAUX08
       CHARACTER*24 VALK(2)
 C
       INTEGER EDLECT
@@ -73,10 +74,8 @@ C====
 C
       CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_36',1,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_69')
+        SAUX08='EFOUVR  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C====
@@ -93,11 +92,8 @@ C====
 C
       CALL EFFERM ( IDFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOCHMD
-        VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_23',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_70')
+        SAUX08='EFFERM  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
       END

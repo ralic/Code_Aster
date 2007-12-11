@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 11/12/2007   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,6 +70,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    from types import ListType, TupleType
    from Accas import _F
    from Utilitai.Table      import Table, merge
+   from SD.sd_l_charges import sd_l_charges
+   from SD.sd_mater     import sd_compor1
    EnumTypes = (ListType, TupleType)
 
    macro = 'POST_K1_K2_K3'
@@ -98,7 +100,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #   ------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #   ------------------------------------------------------------------
-   matph = aster.getvectjev( string.ljust(MATER.nom,8)+'.MATERIAU.NOMRC         ')
+   matph = MATER.NOMRC.get()  
    phenom=None
    for cmpt in matph :
        if cmpt[:4]=='ELAS' :
@@ -106,18 +108,18 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           break
    if phenom==None : UTMESS('F','RUPTURE0_5')
 #   --- RECHERCHE SI LE MATERIAU DEPEND DE LA TEMPERATURE:
-   valk = aster.getvectjev( string.ljust(MATER.nom,8)+'.'+phenom[:10]+'.VALK')
-   valk = [x.strip() for x in valk]
-   valr = aster.getvectjev( string.ljust(MATER.nom,8)+'.'+phenom[:10]+'.VALR')
+   compor = sd_compor1('%-8s.%s' % (MATER.nom, phenom))
+   valk = [s.strip() for s in compor.VALK.get()]
+   valr = compor.VALR.get()
    dicmat=dict(zip(valk,valr))
 #   --- PROPRIETES MATERIAUX DEPENDANTES DE LA TEMPERATURE
    Tempe3D = False
    if dicmat.has_key('TEMP_DEF') and FOND_FISS and RESULTAT : 
 # on recupere juste le nom du resultat thermique
       ndim   = 3
-      Lchar = aster.getvectjev(string.ljust(RESULTAT.nom,8)+'.0000.EXCIT.LCHA        ')
+      Lchar = sd_l_charges(RESULTAT.CHAR.get()[0]).LCHA
       for i in range(len(Lchar)):
-         resuth = aster.getvectjev(Lchar[i][0:8]+'.CHME.TEMPE.TEMP        ')
+         resuth = sd_char_meca(Lchar).CHME.TEMPE_TEMP.get()
          if resuth !=None :
             Tempe3D = True
             break
@@ -185,19 +187,19 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       TYPE_MAILLAGE = args['TYPE_MAILLAGE']
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
       if NB_NOEUD_COUPE ==None : NB_NOEUD_COUPE = 5
-      LNOFO = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.FOND      .NOEU        ')
+      LNOFO = FOND_FISS.FOND_______NOEU.get()
       RECOL = False
 # Cas double fond de fissure : par convention les noeuds sont ceux de fond_inf
       if LNOFO==None :
          RECOL = True
-         LNOFO = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.FOND_INF  .NOEU        ')
+         LNOFO = FOND_FISS.FONDINF____NOEU.get()
          if LNOFO==None : UTMESS('F','RUPTURE0_11')
       LNOFO = map(string.rstrip,LNOFO)
       Nbfond = len(LNOFO)
 
       if MODELISATION=='3D' :
 #   ----------Mots cles TOUT, NOEUD, SANS_NOEUD -------------
-        Typ = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.FOND      .TYPE        ')
+        Typ = FOND_FISS.FOND_______TYPE.get()
         if (Typ[0]=='SEG2    ') or (Typ[0]=='SEG3    ' and TOUT=='OUI') :
            pas = 1
         elif (Typ[0]=='SEG3    ') : 
@@ -208,8 +210,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         NO_SANS = []
         NO_AVEC = []
         if GROUP_NO!=None :
-          collgrno=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.GROUPENO')
-          cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
+          collgrno = MAILLAGE.GROUPENO.get()
+          cnom = MAILLAGE.NOMNOE.get()
           if type(GROUP_NO) not in EnumTypes : GROUP_NO = (GROUP_NO,)
           for m in range(len(GROUP_NO)) :
             ngrno=GROUP_NO[m].ljust(8).upper()
@@ -221,8 +223,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           if type(NOEUD) not in EnumTypes : NO_AVEC = (NOEUD,)
           else : NO_AVEC = NOEUD
         if SANS_GROUP_NO!=None :
-          collgrno=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.GROUPENO')
-          cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
+          collgrno = MAILLAGE.GROUPENO.get()
+          cnom = MAILLAGE.NOMNOE.get()
           if type(SANS_GROUP_NO) not in EnumTypes : SANS_GROUP_NO = (SANS_GROUP_NO,)
           for m in range(len(SANS_GROUP_NO)) :
             ngrno=SANS_GROUP_NO[m].ljust(8).upper()
@@ -258,9 +260,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         if not RESULTAT : UTMESS('F','RUPTURE0_16')
         Lnofon = Lnf1
         Nbnofo = Nbf1
-        ListmaS = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.LEVRESUP  .MAIL        ')
+        ListmaS = FOND_FISS.LEVRESUP___MAIL.get()
         if SYME_CHAR=='SANS':
-          ListmaI = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.LEVREINF  .MAIL        ')
+          ListmaI = FOND_FISS.LEVREINF___MAIL.get()
         __NCOFON=POST_RELEVE_T(ACTION=_F(INTITULE='Tab pour coordonnees noeuds du fond',
                                             NOEUD=LNOFO,
                                             RESULTAT=RESULTAT,
@@ -279,11 +281,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         l_coorf = [(i[0],i[1:]) for i in l_coorf]
         d_coorf = dict(l_coorf) 
 # Coordonnee d un pt quelconque des levres pr determination sens de propagation
-        cmail=aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMMAI')
+        cmail=MAILLAGE.NOMMAI.get()
         for i in range(len(cmail)) :
             if cmail[i] == ListmaS[0] : break
-        colcnx=aster.getcolljev(string.ljust(MAILLAGE.nom,8)+'.CONNEX')
-        cnom = aster.getvectjev(string.ljust(MAILLAGE.nom,8)+'.NOMNOE')
+        colcnx=MAILLAGE.CONNEX.get()
+        cnom = MAILLAGE.NOMNOE.get()
         NO_TMP = []
         for k in range(len(colcnx[i+1])) : NO_TMP.append(cnom[colcnx[i+1][k]-1])
         __NCOLEV=POST_RELEVE_T(ACTION=_F(INTITULE='Tab pour coordonnees pt levre',
@@ -303,7 +305,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         VN = [None]*Nbfond
         absfon = [0,]
         if MODELISATION=='3D' :
-          DTANOR = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_ORIGINE')
+          DTANOR = FOND_FISS.DTAN_ORIGINE.get()
           Pfon2 = array([d_coorf[LNOFO[0]][0],d_coorf[LNOFO[0]][1],d_coorf[LNOFO[0]][2]])
           VLori = Pfon2 - Plev
           if DTANOR != None :
@@ -328,7 +330,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           VLextr = Pfon2 - Plev
           absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
           absfon.append(absf)
-          DTANEX = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.DTAN_EXTREMITE')
+          DTANEX = FOND_FISS.DTAN_EXTREMITE.get()
           if DTANEX != None :
             VN[i] = array(DTANEX)
           else :
@@ -357,8 +359,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           NB_NOEUD_COUPE = 5
         MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
         if MOD==None : UTMESS('F','RUPTURE0_18')
-        MOD = map(string.rstrip,MOD)
-        MODEL = self.jdc.sds_dict[MOD[0]]
+        MODEL = self.jdc.sds_dict[MOD[0].rstrip()]
         for i in range(Nbf1):
           Porig = array(d_coorf[Lnf1[i]] )
           if Lnf1[i]==LNOFO[0] and DTANOR : Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnf1[i]]
@@ -378,7 +379,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 ##### Cas maillage regle###########
       else:
 #   ---------- Dictionnaires des levres  -------------  
-        NnormS = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.SUPNORM   .NOEU        ')
+        NnormS = FOND_FISS.SUPNORM____NOEU.get()
         if NnormS==None : 
           UTMESS('F','RUPTURE0_19')
         NnormS = map(string.rstrip,NnormS)
@@ -387,7 +388,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         NnormS = [(i[0],i[1][0:]) for i in NnormS]
         dicoS = dict(NnormS)
         if SYME_CHAR=='SANS':
-           NnormI = aster.getvectjev(string.ljust(FOND_FISS.nom,8)+'.INFNORM   .NOEU        ')
+           NnormI = FOND_FISS.INFNORM____NOEU.get()
            if NnormI==None : 
              UTMESS('F','RUPTURE0_20')
            NnormI = map(string.rstrip,NnormI)
@@ -514,18 +515,22 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #Projection du resultat sur le maillage lineaire initial     
      MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
      if MOD==None : UTMESS('F','RUPTURE0_31')
-     MOD = map(string.rstrip,MOD)
-     MODEL = self.jdc.sds_dict[MOD[0]]
-     __MODLINE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+     MODEL = self.jdc.sds_dict[MOD[0].rstrip()]
+     xcont = MODEL.xfem.XFEM_CONT.get()
+     if xcont[0] == 0 :
+       __RESX = RESULTAT
+# Si XFEM + contact : il faut reprojeter sur le maillage lineaire
+     if xcont[0] != 0 :
+       __MODLINE=AFFE_MODELE(MAILLAGE=MAILLAGE,
                            AFFE=(_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION=MODELISATION,),),);        
-     __RESLIN=PROJ_CHAMP(METHODE='ELEM',TYPE_CHAM='NOEU',NOM_CHAM='DEPL',
+       __RESX=PROJ_CHAMP(METHODE='ELEM',TYPE_CHAM='NOEU',NOM_CHAM='DEPL',
                      RESULTAT=RESULTAT,
                      MODELE_1=MODEL,
                      MODELE_2=__MODLINE, );   
 #Recuperation des coordonnees des points du fond de fissure (x,y,z,absc_curv)
-     Listfo = aster.getvectjev(string.ljust(FISSURE.nom,8)+'.FONDFISS               ')
+     Listfo = FISSURE.FONDFISS.get()
      Nbfond = len(Listfo)/4
 # Calcul des normales a chaque point du fond
      v1 =  array(VECT_K1)
@@ -577,7 +582,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      Po =  array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
      Porig = Po + ABSC_CURV_MAXI*VN[i]
      Pextr = Po - ABSC_CURV_MAXI*VN[i]
-     __Tabg = MACR_LIGN_COUPE(RESULTAT=__RESLIN,NOM_CHAM='DEPL',
+     __Tabg = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
                    LIGN_COUPE=_F(NB_POINTS=3,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
                                   TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
      tmp=__Tabg.EXTR_TABLE()
@@ -600,13 +605,14 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         if i==0 and DTAN_ORIG!=None : Pextr = Porig - ABSC_CURV_MAXI*VN[i]
         elif i==(Nbfond-1) and DTAN_EXTR!=None : Pextr = Porig - ABSC_CURV_MAXI*VN[i]
         else : Pextr = Porig + ABSC_CURV_MAXI*VN[i]*sens
-        TSaut[i] = MACR_LIGN_COUPE(RESULTAT=__RESLIN,NOM_CHAM='DEPL',
+        TSaut[i] = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
                          LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
                                         TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
 
      Nbnofo = Nbfond
-     DETRUIRE(CONCEPT=_F(NOM=__MODLINE),INFO=1) 
-     DETRUIRE(CONCEPT=_F(NOM=__RESLIN),INFO=1) 
+     if xcont[0] != 0 :  
+       DETRUIRE(CONCEPT=_F(NOM=__MODLINE),INFO=1) 
+       DETRUIRE(CONCEPT=_F(NOM=__RESX),INFO=1) 
    
    
    else :
@@ -712,7 +718,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
              if type(NUME_ORDRE) not in EnumTypes : NUME_ORDRE=(NUME_ORDRE,)
              l_ord=list(NUME_ORDRE)
            elif LIST_ORDRE !=None : 
-              l_ord= aster.getvectjev(string.ljust(LIST_ORDRE.nom,19)+'.VALE') 
+              l_ord = LIST_ORDRE.VALE.get() 
            l_inst = []
            for ord in l_ord :
              if ord in l_ord_tab : l_inst.append(d_ord_tab[ord])
@@ -860,8 +866,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
 #     --- CAS FISSURE X-FEM ---
         if  FISSURE : 
-           nbval = NB_NOEUD_COUPE
            H1 = getattr(tabsupi,'H1X').values()
+           nbval = len(H1)
            if H1[-1]==None : 
              UTMESS('F','RUPTURE0_45')
            H1 = complete(H1)

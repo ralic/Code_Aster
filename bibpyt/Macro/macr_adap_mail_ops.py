@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_adap_mail_ops Macro  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V1.1"
+__revision__ = "V1.2"
 #
 def macr_adap_mail_ops ( self,
                          INFO, VERSION_HOMARD, MAILLAGE_FRONTIERE,
@@ -262,9 +262,7 @@ def macr_adap_mail_ops ( self,
 #
     if args.has_key("ZONE") :
 #
-      if args["ZONE"] is None :
-        les_zones = []
-      else :
+      if args["ZONE"] is not None :
         les_zones = args["ZONE"]
 #
       for zone in les_zones :
@@ -646,7 +644,7 @@ def macr_adap_mail_ops ( self,
 #gn  if dico_configuration.has_key("Indicateur") :
 #gn    print "dico_configuration[Indicateur] = ", dico_configuration["Indicateur"]
 #
-# 5.4. ==> Les zones de raffinement
+# 5.4. ==> Les éventuelles zones de raffinement
 #
   prem = 1
   for dico in liste_zones :
@@ -721,7 +719,8 @@ def macr_adap_mail_ops ( self,
 #gn  if ( mode_homard == "ADAP" ) :
 #gn    if args.has_key("MAJ_CHAM") :
 #gn      if args["MAJ_CHAM"] is not None :
-#gn        os.system("sleep 1000")
+#gn        import time
+#gn        time.sleep(3600)
 #
 #====================================================================
 # 6. Ecriture de la commande d'exécution de homard
@@ -740,9 +739,10 @@ def macr_adap_mail_ops ( self,
                              ),
                   LOGICIEL = homard
                 )
-#  os.system("sleep 3600")
+#gn  import time
+#gn  time.sleep(3600)
 #
- #gn if ( mode_homard == "ADAP" ) :
+#gn  if ( mode_homard == "ADAP" ) :
 #gn    fichier_homard_vers_aster_2 = os.path.join("/tmp" , "fort." + str(unite_fichier_homard_vers_aster))
 #gn    shutil.copyfile(fichier_homard_vers_aster, fichier_homard_vers_aster_2)
 #gn    fichier_homard_vers_aster_2_1 = os.path.join("/tmp" , "fort." + str(unite_fichier_homard_vers_aster)+".1")
@@ -782,7 +782,8 @@ def macr_adap_mail_ops ( self,
           maillage_np1_nom_med = dico["NOM_MED"]
 #
 # 7.2. ==> Les champs
-#gn      os.system("sleep 100")
+#gn    import time
+#gn    time.sleep(3600)
 #
     for dico in liste_champs :
       if ( dico["Type_Champ"] == "CHAMP_MAJ" ) :
@@ -843,6 +844,7 @@ def macr_adap_mail_ops ( self,
 #====================================================================
 #
 #gn  if ( mode_homard == "ADAP" ) :
-#gn    os.system("sleep 1")
+#gn    import time
+#gn    time.sleep(3600)
 #
   return

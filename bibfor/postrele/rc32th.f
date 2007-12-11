@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -88,6 +88,9 @@ C
          CALL CODENT ( NUME , 'D0' , KNUME(2:8)  )
 C
          CALL GETVID ( MOTCLF, 'TABL_RESU_THER', IOCC,1,1, TABLE, N1 )
+C
+C ------ ON VERIFIE L'ORDRE DES NOEUDS DANS LA TABLE
+         CALL RCVERI(TABLE)
 C
 C ------ ON RECUPERE LES INSTANTS DANS LA TABLE
 C

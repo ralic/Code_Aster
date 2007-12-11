@@ -4,7 +4,7 @@
      &                    MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/07/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,7 @@ C
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
-        CALL U2MESS('I','PREPOST3_3')
+        CALL U2MESS('I','MED_74')
         CALL UTFLSH (CODRET)
       ENDIF
  1001 FORMAT(/,4X,10('='),A,10('='),/)

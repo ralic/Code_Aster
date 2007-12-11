@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +52,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V8_7",
-                        into=("V8_7", "V8_N", "V8_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V8_11",
+                        into=("V8_11", "V8_N", "V8_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -201,6 +201,18 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
     ),
 #
+# 6.1.7. Type d'opération sur l'indicateur : la valeur par maille ou le max du saut entre mailles
+#
+    b_usage_indicateur = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
+                              fr="Usage de l'indicateur : direct ou saut",
+                              ang="Use type for error indicator : direct or jump",
+#
+      TYPE_OPER_INDICA = SIMP(statut='f',typ='TXM',defaut="MAILLE",into=("MAILLE","SAUT"),
+                              fr="Usage de l'indicateur : la valeur par maille ou le saut entre mailles voisines",
+                              ang="Use of indicator : value over every mesh or jump between neighbour" ),
+#
+    ),
+#
   ) ,
 #
 # 7. Les criteres pour de l'adaptation libre avec un indicateur d'erreur :
@@ -331,7 +343,27 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                     ang="Minimum level for unrefinement"),
   ) ,
 #
-# 10. Suivi d'une frontiere
+# 10. Filtrage de l'adaptation par des groupes
+#
+  b_filtrage_par_des_groupes = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
+                                                   (ADAPTATION == 'RAFFINEMENT') or \
+                                                   (ADAPTATION == 'RAFFINEMENT_UNIFORME') or \
+                                                   (ADAPTATION == 'RAFFINEMENT_ZONE') or \
+                                                   (ADAPTATION == 'DERAFFINEMENT') or \
+                                                   (ADAPTATION == 'DERAFFINEMENT_UNIFORME') " ,
+                                fr="Filtrage de l'adaptation par des groupes.",
+                                ang="Filtering of adaptation by groups.",
+#
+    GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                    fr="Liste des groupes de mailles pour le filtrage de l'adaptation.",
+                    ang="List of groups of meshes for filtering of adaptation." ),  
+#
+    GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**',
+                    fr="Liste des groupes de noeuds pour le filtrage de l'adaptation.",
+                    ang="List of groups of nodes for filtering of adaptation." ),  
+  ) ,
+#
+# 11. Suivi d'une frontiere
 #
   MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
                            fr="Maillage de la frontiere à suivre",
@@ -341,41 +373,41 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                       fr="Information complémentaire sur la frontière",
                       ang="Further information about boundary",
 #
-    GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                    fr="Liste des groupes de mailles définissant la frontière",
-                    ang="Mesh groups which define the boundary" ),
+    GROUP_MA_FRONT = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+                          fr="Liste des groupes de mailles définissant la frontière",
+                          ang="Mesh groups which define the boundary" ),
 #
   ) ,
 #
-# 11. Mise à jour de champs sur le nouveau maillage
+# 12. Mise à jour de champs sur le nouveau maillage
 #
   MAJ_CHAM = FACT(statut='f',max='**',
                   fr="Mise à jour de champs sur le nouveau maillage.",
                   ang="Updating of fields over the new mesh.",
 #
-# 11.1. Le nom du champ de grandeur qui contiendra le resultat de la mise a jour
+# 12.1. Le nom du champ de grandeur qui contiendra le resultat de la mise a jour
 #
     CHAM_MAJ = SIMP(statut='o',typ=CO,
                     fr="Nom du champ de grandeur qui contiendra le champ mis à jour",
                     ang="Name of the field for the updated field"),
 #
-# 11.2. Le type du champ qui contiendra le resultat de la mise a jour
+# 12.2. Le type du champ qui contiendra le resultat de la mise a jour
 #
     TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO(),
                      fr="Type du champ qui contiendra le champ mis à jour",
                      ang="Type of the field for the updated field" ),
 #
-# 11.3. Le champ a interpoler
+# 12.3. Le champ a interpoler
 #
     regles=(UN_PARMI('CHAM_GD','RESULTAT')),
 #
-# 11.3.1. Sous forme de champ de grandeur
+# 12.3.1. Sous forme de champ de grandeur
 #
     CHAM_GD = SIMP(statut='f',typ=cham_gd_sdaster,
                    fr="Champ de grandeur Code_Aster contenant le champ à mettre à jour",
                    ang="Champ de grandeur with field to be updated" ),
 #
-# 11.3.2. Sous forme de champ dans un resultat
+# 12.3.2. Sous forme de champ dans un resultat
 #
     RESULTAT = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther),
                     fr="Resultat contenant le champ à mettre à jour",
@@ -391,13 +423,13 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
     ),
 #
-# 11.4. Est-ce un champ dérivé
+# 12.4. Est-ce un champ dérivé
 #
     SENSIBILITE = SIMP(statut='f',typ=(para_sensi,theta_geom),
                        fr="Paramètre de sensibilité.",
                        ang="Sensitivity parameter"),
 #
-# 11.5. Le paramètre temporel pour le champ a interpoler
+# 12.5. Le paramètre temporel pour le champ a interpoler
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT != None)",
                                 fr="Choix éventuel du paramètre temporel pour le champ à interpoler",
@@ -405,20 +437,20 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
-# 11.5.1. Soit le numero d'ordre
+# 12.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
                         fr="Numero d ordre du champ à mettre à jour",
                         ang="Rank of the field to be updated" ),
 #
-# 11.5.2. Soit l'instant
-# 11.5.2.1. Sa valeur
+# 12.5.2. Soit l'instant
+# 12.5.2.1. Sa valeur
 #
       INST = SIMP(statut='f',typ='R',
                   fr="Instant associé",
                   ang="Instant" ),
 #
-# 11.5.2.2. La précision du choix de l'instant
+# 12.5.2.2. La précision du choix de l'instant
 #
       b_precision = BLOC(condition="(INST != None)",
                          fr="Choix de la précision du choix de l'instant",
@@ -437,38 +469,38 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
     ),
   ),
 #
-# 12. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
-# 12.1. Nombre de noeuds et éléments
+# 13. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres
+# 13.1. Nombre de noeuds et éléments
 #
   NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Nombre de noeuds et éléments du maillage",
                           ang="Number of nodes and éléments in the mesh" ),
 #
-# 12.2. Determination de la qualité des éléments du maillage
+# 13.2. Determination de la qualité des éléments du maillage
 #
   QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Qualité du maillage",
                           ang="Mesh quality" ),
 #
-# 12.3. Connexite du maillage
+# 13.3. Connexite du maillage
 #
   CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Connexité du maillage.",
                           ang="Mesh connexity." ),
 #
-# 12.4. Taille des sous-domaines du maillage
+# 13.4. Taille des sous-domaines du maillage
 #
   TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Tailles des sous-domaines du maillage.",
                           ang="Sizes of mesh sub-domains." ),
 #
-# 12.5. Controle de la non-interpenetration des éléments
+# 13.5. Controle de la non-interpenetration des éléments
 #
   INTERPENETRATION= SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
                           fr="Controle de la non interpénétration des éléments.",
                           ang="Overlapping checking." ),
 #
-# 13. Gestion des éléments autres que ceux compatibles avec HOMARD
+# 14. Gestion des éléments autres que ceux compatibles avec HOMARD
 #       "REFUSER" : ils sont refuses (defaut)
 #       "IGNORER" : ils sont ignorés
 #

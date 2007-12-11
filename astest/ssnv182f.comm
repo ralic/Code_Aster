@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,17 +109,21 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=2,),);
 
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(  0.0, 0.0,
+                              1.0, 1.0,),
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',)
+
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CTXFEM,),
-                          _F(CHARGE=CH1,),),
+                          _F(CHARGE=CH1,FONC_MULT=RAMPE),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='SURF',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0,),
-                   CONVERGENCE=(_F(ARRET='OUI',
-                                  RESI_GLOB_RELA=1E-9)),
                    SOLVEUR=_F(METHODE='MUMPS',
                               ),
                    NEWTON=_F(REAC_ITER=10,),
@@ -174,7 +178,11 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
  
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,
+                                            NOM_CHAM='DEPL',
+                                            TYPE_CHAM='VECT_3D',
+                                            NOM_CMP=('DX','DY','DZ')),);
+
 
 
 

@@ -2,7 +2,7 @@
      &                  VRCPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (NOMPRO='VECHME')
 
       INTEGER NCHINX
-      PARAMETER (NCHINX=40)
+      PARAMETER (NCHINX=41)
 
       INTEGER NBCHMX
       PARAMETER (NBCHMX=17)
@@ -386,7 +386,9 @@ C               POUR LES ELEMENTS DE BORD X-FEM
                   LCHIN(NCHIN + 5) = MODELE(1:8)//'.LNNO'
                   LPAIN(NCHIN + 6) = 'PLST'
                   LCHIN(NCHIN + 6) = MODELE(1:8)//'.LTNO'
-                  NCHIN = NCHIN + 6
+                  LPAIN(NCHIN + 7) = 'PSTANO'
+                  LCHIN(NCHIN + 7) = MODELE(1:8)//'.STNO'
+                  NCHIN = NCHIN + 7
                   IF (OPTION.EQ.'CHAR_MECA_PRES_R'.OR.
      &                OPTION.EQ.'CHAR_MECA_PRES_F') THEN
                     LPAIN(NCHIN + 1) = 'PPINTER'

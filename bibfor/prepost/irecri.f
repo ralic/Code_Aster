@@ -18,7 +18,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,6 +111,13 @@ C     ------------------------------------------------------------------
       INTEGER      NBCHCA,NBACC,NBCARA,NORDEN,IORDEN,IORDR1,NUORD1
       INTEGER      LGCONC,NBCHEN,LGCH16
       INTEGER      NBRK16,NBK16,IERD,IBID
+      INTEGER I, IBIB, ICHA, ICPRES, IFI,ISY, ITYPE
+      INTEGER IUN, IDEU
+      INTEGER IORD, IORDR, IVSI
+      INTEGER IRET
+      INTEGER JCHAM, JCPRES, JLAST, JPARA, JTABL, JTITR, JTOT
+      INTEGER IVIDAP, IVIDAV, JVIDAP, JVIDAV
+      INTEGER NBOBJ, NBTITR
       INTEGER LXLGUT
 C     ------------------------------------------------------------------
 C     --- IMPRESSION D'UN TABLEAU SYNTHETIQUE DES PARAMETRES-----
@@ -295,8 +302,10 @@ C     -------------------------
 C
       IF (FORM .EQ. 'GMSH') THEN
 
-         CALL IRGMSH ( NOMCON, PARTIE, IFI, NBCHAM, CHAM, LRESU,NBORDR,
-     &        ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI, VERSIO, LGMSH, TYCHA )
+         CALL IRGMSH ( NOMCON, NOSIMP, NOPASE,
+     &                 PARTIE, IFI, NBCHAM, CHAM, LRESU,NBORDR,
+     &                 ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI,
+     &                 VERSIO, LGMSH, TYCHA )
 C
 C     -----------------------------
 C     TRAITEMENT DES AUTRES FORMATS

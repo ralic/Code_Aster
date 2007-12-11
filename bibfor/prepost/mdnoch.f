@@ -2,7 +2,7 @@
      &                    LRESU, NORESU, NOMSYM, NOPASE, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,37 +109,23 @@ C
 C 2.2. ==> NOM DU RESULTAT
 C
       IAUX = LXLGUT(NORESU)
-      IF ( IAUX.GE.1 .AND. IAUX.LE.8 ) THEN
-        NOCHMD(1:IAUX) = NORESU(1:IAUX)
-      ELSE
-        CODRET = 1
-        CALL U2MESS('E','PREPOST3_58')
-      ENDIF
+      CALL ASSERT(IAUX.GE.1 .AND. IAUX.LE.8 )
+      NOCHMD(1:IAUX) = NORESU(1:IAUX)
 C
 C 2.3. ==> NOM SYMBOLIQUE DU CHAMP
 C
       IF ( LRESU ) THEN
-C
         IAUX = LXLGUT(NOMSYM)
-        IF ( IAUX.GE.1 .AND. IAUX.LE.16 ) THEN
-          NOCHMD(9:8+IAUX) = NOMSYM(1:IAUX)
-        ELSE
-          CODRET = 1
-          CALL U2MESS('E','PREPOST3_59')
-        ENDIF
-C
+        CALL ASSERT(IAUX.GE.1 .AND. IAUX.LE.16)
+        NOCHMD(9:8+IAUX) = NOMSYM(1:IAUX)
       ENDIF
 C
 C 2.4. ==> NOM DU PARAMETRE COMPLEMENTAIRE
 C
       IAUX = LXLGUT(NOPASE)
       IF ( IAUX.NE.0 ) THEN
-        IF ( IAUX.GE.1 .AND. IAUX.LE.8 ) THEN
-          NOCHMD(25:24+IAUX) = NOPASE(1:IAUX)
-        ELSE
-          CODRET = 1
-          CALL U2MESS('E','PREPOST3_60')
-        ENDIF
+        CALL ASSERT(IAUX.GE.1 .AND. IAUX.LE.8 )
+        NOCHMD(25:24+IAUX) = NOPASE(1:IAUX)
       ENDIF
 C
 C 2.5. ==> REMPLACEMENT DES BLANCS PAR DES _
@@ -162,7 +148,7 @@ C 3. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL U2MESS('F','PREPOST_92')
+         CALL U2MESS('F','MED_91')
       ENDIF
 C
       END

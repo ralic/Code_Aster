@@ -5,7 +5,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,8 +106,8 @@ C      >              NUMPT,  NUMORD, CODRET )
      &              NUMPT,  NUMORD, CODRET)
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST3_26',1,SAUX08)
+        SAUX08='EFCHRL  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C                     12345678901234567890123456789012 = MED_NOGAUSS
       IF ( LXLGUT(NELREF).NE.0 .AND. NIVINF.GT.1) THEN

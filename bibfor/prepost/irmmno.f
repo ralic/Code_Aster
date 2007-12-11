@@ -2,7 +2,7 @@
      &                    NBNOEU, COORDO, NOMNOE,
      &                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,8 +167,8 @@ C
       ENDIF
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST2_97',1,SAUX08)
+        SAUX08='EFCOOE  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C====
@@ -187,8 +187,8 @@ C
      &              EDNOEU, TYGENO, CODRET )
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST2_95',1,SAUX08)
+        SAUX08='EFNOME  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C====

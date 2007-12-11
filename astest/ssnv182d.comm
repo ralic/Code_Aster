@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,8 +110,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='SURF',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.0,),
-                   CONVERGENCE=(_F(ARRET='OUI',
-                                  RESI_GLOB_RELA=1E-9)),
+#                   CONVERGENCE=(_F(ARRET='OUI',
+#                                  RESI_GLOB_RELA=1E-9)),
                    SOLVEUR=_F(METHODE='MUMPS',
                               ),
                    NEWTON=_F(REAC_ITER=10,),
@@ -201,7 +201,10 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
  
-IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,
+                                            NOM_CHAM='DEPL',
+                                            TYPE_CHAM='VECT_3D',
+                                            NOM_CMP=('DX','DY','DZ')),);
 
 TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',

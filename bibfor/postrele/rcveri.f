@@ -1,0 +1,222 @@
+      SUBROUTINE RCVERI(TABLZ)
+      IMPLICIT      NONE
+      CHARACTER*(*) TABLZ
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF POSTRELE  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C     ------------------------------------------------------------------
+C      OPERATEUR POST_RCCM
+C      VERIFICATION 
+C      - SUR L'ORDRE DES NOEUDS DANS LA TABLE
+C      - SUR L'ALIGNEMENT DES NOEUDS DANS LA TABLE
+C
+C     IN  TABLE: TABLE A EXPLOITER
+C
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32     JEXNOM, JEXNUM
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+      INTEGER JINST,NBNO,JCOX,JCOY,JCOZ,IBID,I,NBINST,IRET,NBINTI,INTM
+      INTEGER INTI,JINTI,INTIM
+      REAL*8  AB(3),AM(3),PS,EPS,NOR(3),NORME,INST,R8B,EPS2,MAXDIS
+      REAL*8  ASIN,MAXD,MM(3),NORAM,NORNOR,NORAB,VALR(2),DISREL
+      COMPLEX*16 CBID
+      CHARACTER*8 K8B,CRIT,TYVA     
+      CHARACTER*16 VALEK(5),TABLE,TBTMP1,TBTMP2,TITU,VALK(2)
+      CHARACTER*24 COORX,COORY,COORZ,INSTAN,INTITU
+      LOGICAL EXI1,EXI2,EXI3,EXIST,NOINST,IMPNOR,IMPNM
+      PARAMETER(CRIT='RELATIF ',EPS=1.0D-6, EPS2=1.0D-2)
+
+      CALL JEMARQ()
+
+      VALEK(1) = 'INST            '
+      VALEK(2) = 'COOR_X          '
+      VALEK(3) = 'COOR_Y          '
+      VALEK(4) = 'COOR_Z          '
+      VALEK(5) = 'INTITULE        '
+      TBTMP1   = '&&RCVERI_TBTMP1 '
+      TBTMP2   = '&&RCVERI_TBTMP2 '
+      COORX    = '&&RCVERI_COOR_X '
+      COORY    = '&&RCVERI_COOR_Y '
+      COORZ    = '&&RCVERI_COOR_Z '
+      INSTAN   = '&&RCVERI_INST   '
+      INTITU   = '&&RCVERI_INTITU '
+      TABLE    =  TABLZ
+      NOINST   = .FALSE.
+      IMPNM    = .FALSE.
+      MAXD     =  EPS2
+C
+C     VERIFICATION DE LA PRESENCE DU PARAMETRE "INST"
+      CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
+      IF(.NOT.EXIST)THEN
+C       LA VERIFICATION PORTERA SUR TOUS LES NOEUDS
+C       CONTENUS DANS LA TABLE
+        NBINTI=1
+        NOINST=.TRUE.
+      ELSE
+C        VERIFICATION DE LA PRESENCE DU PARAMETRE "INTITULE"
+         CALL TBEXP2(TABLE, VALEK(5))
+C        RECUPERATION DES INTITULES DE LA TABLE
+         CALL TBEXV1 ( TABLE, VALEK(5), INTITU, 'V', NBINTI, TYVA)
+         CALL JEVEUO(INTITU,'L',JINTI)
+      ENDIF
+
+C     VERIFICATION DE LA PRESENCE DES COORDONNEES DANS LA TABLE
+      CALL TBEXIP ( TABLE, VALEK(2), EXI1, K8B )
+      CALL TBEXIP ( TABLE, VALEK(3), EXI2, K8B )
+      CALL TBEXIP ( TABLE, VALEK(4), EXI3, K8B )
+      IF(.NOT.EXI1 .AND. .NOT.EXI2 .AND. .NOT.EXI3)THEN
+          CALL U2MESK('I','POSTRCCM_39',1,TABLE)
+          GOTO 999
+      ENDIF
+   
+C ------------------------
+C     ON PARCOURT LES INTITULES
+      DO 100 INTI=1,NBINTI
+
+        IMPNOR   = .FALSE.
+
+        IF (NOINST)THEN
+
+            CALL COPISD('TABLE','V',TABLE,TBTMP2)
+
+        ELSE
+
+C         EXTRACTION D'UNE NOUVELLE TABLE A PARTIR DE "TABLE"
+C         CONTENANT UNIQUEMENT L'INTITULE EN COURS
+          IF(TYVA(1:2).EQ.'K8') THEN
+            CALL TBEXTB ( TABLE, 'V', TBTMP1, 1, VALEK(5), 'EQ', IBID,
+     &                  R8B, CBID,ZK8(JINTI+INTI-1), R8B, K8B, IRET )
+          ELSEIF(TYVA(1:3).EQ.'K16') THEN
+            CALL TBEXTB ( TABLE, 'V', TBTMP1, 1, VALEK(5), 'EQ', IBID,
+     &                  R8B, CBID,ZK16(JINTI+INTI-1), R8B, K8B, IRET )
+          ELSE
+            CALL U2MESS('F','DVP_1')
+          ENDIF
+          
+C         LECTURE DU PREMIER INSTANT
+          CALL TBEXV1 ( TBTMP1, VALEK(1), INSTAN, 'V', NBINST, K8B)
+          CALL JEVEUO(INSTAN,'L',JINST)
+          INST=ZR(JINST)
+C         EXTRACTION D'UNE NOUVELLE TABLE A PARTIR DE "TBTMP1"
+C         CONTENANT UNIQUEMENT L'INSTANT "INST".
+          CALL TBEXTB ( TBTMP1, 'V', TBTMP2, 1, VALEK(1), 'EQ', IBID, 
+     &                  INST, CBID, K8B, EPS, CRIT, IRET )
+          CALL DETRSD('TABLE',TBTMP1)
+          CALL JEDETR(INSTAN)
+
+        ENDIF
+
+C       LECTURE DE LA COLONNE "COOR_X"
+        CALL TBEXVE ( TBTMP2, VALEK(2), COORX, 'V', NBNO, K8B)
+        CALL JEVEUO ( COORX, 'L', JCOX )
+C       LECTURE DE LA COLONNE "COOR_Y"
+        CALL TBEXVE ( TBTMP2, VALEK(3), COORY, 'V', NBNO, K8B)
+        CALL JEVEUO ( COORY, 'L', JCOY )
+C       LECTURE DE LA COLONNE "COOR_Z"
+        CALL TBEXVE ( TBTMP2, VALEK(4), COORZ, 'V', NBNO, K8B)
+        CALL JEVEUO ( COORZ, 'L', JCOZ )
+        CALL DETRSD('TABLE',TBTMP2)
+
+        AB(1)=ZR(JCOX+NBNO-1)-ZR(JCOX)
+        AB(2)=ZR(JCOY+NBNO-1)-ZR(JCOY)
+        AB(3)=ZR(JCOZ+NBNO-1)-ZR(JCOZ)
+        CALL NORMEV(AB,NORAB)
+
+C       ON VERIFIE QUE LES NOEUDS SONT ORDONNES
+        DO 10 I=1,NBNO-1
+          MM(1)=ZR(JCOX+I)-ZR(JCOX+I-1)
+          MM(2)=ZR(JCOY+I)-ZR(JCOY+I-1)
+          MM(3)=ZR(JCOZ+I)-ZR(JCOZ+I-1)
+          CALL NORMEV(MM,NORME)
+          CALL LCPRSN(3,MM,AB,PS)  
+          IF(PS.LE.EPS)THEN
+             CALL U2MESK('F','POSTRCCM_37',1,TABLE)
+          ENDIF
+ 10     CONTINUE
+C
+C       ON VERIFIE QUE LES NOEUDS SONT ALIGNES
+        MAXDIS=EPS2
+        DO 20 I=1,NBNO-1
+          AM(1)=ZR(JCOX+I)-ZR(JCOX)
+          AM(2)=ZR(JCOY+I)-ZR(JCOY)
+          AM(3)=ZR(JCOZ+I)-ZR(JCOZ)
+          CALL NORMEV(AM,NORAM)
+          CALL PROVEC(AM,AB,NOR)
+          CALL NORMEV(NOR,NORNOR)
+          DISREL=NORAM*NORNOR/NORAB
+          IF(DISREL.GT.EPS2)THEN
+             IMPNM=.TRUE.
+             MAXDIS=DISREL
+             IMPNOR=.TRUE.
+             INTIM = INTI
+          ENDIF
+ 20     CONTINUE
+C 
+        IF(IMPNOR)THEN
+           IF(MAXD.LT.MAXDIS)THEN
+             MAXD=MAXDIS
+             INTM=INTIM
+           ENDIF
+        ENDIF
+
+        CALL JEDETR(COORX)
+        CALL JEDETR(COORY)
+        CALL JEDETR(COORZ)
+
+
+100   CONTINUE
+
+       
+      IF(IMPNM)THEN
+        IF(TYVA(1:2).EQ.'K8') THEN
+           TITU= ZK8(JINTI+INTM-1)
+        ELSEIF(TYVA(1:3).EQ.'K16') THEN
+           TITU=ZK16(JINTI+INTM-1)
+        ENDIF
+        VALK(1)=TABLE
+        VALK(2)=TITU(1:LEN(TITU))
+        VALR(1)=MAXD*NORAB
+        VALR(2)=NORAB
+        CALL U2MESG('A','POSTRCCM_38',2,VALK,0,IBID,2,VALR)
+      ENDIF
+
+C ------------------------
+C
+999   CONTINUE
+C
+      CALL JEDETR(INTITU)
+C
+      CALL JEDEMA()
+C
+      END

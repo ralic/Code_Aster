@@ -6,7 +6,7 @@
      &                    TYPENT, TYPGEO,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C
 C 1.2. ==> INFORMATION
 C
       IF ( NIVINF.GT.1 ) THEN
-        CALL U2MESS('I','PREPOST2_7')
+        CALL U2MESS('I','MED_49')
         WRITE (IFM,13001) NBREPG, TYPENT, TYPGEO
         DO 13 , IAUX = 1 , NCMPVE
           WRITE (IFM,13002)
@@ -199,8 +199,8 @@ C
      &              INSTAN, NUMORD, CODRET )
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST2_8',1,SAUX08)
+        SAUX08='EFCHRE  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
       END

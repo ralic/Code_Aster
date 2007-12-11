@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -599,7 +599,7 @@ C     =============================
           CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
 
           IF (N1.EQ.0) THEN
-            CALL U2MESS('F','UTILITAI2_92')
+            CALL U2MESS('F','MED_94')
           END IF
 
           CALL GETVTX('FORMAT_MED','NOM_CHAM',I,1,1,NOCH,N1)
@@ -739,7 +739,7 @@ C     --------------------------------------------
             TYPGOM = TYPNOE
             CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
             IF (NPAS.EQ.0) THEN
-              CALL U2MESK('A','UTILITAI2_96',1,NOCHMD)
+              CALL U2MESK('A','MED_95',1,NOCHMD)
               GO TO 240
             END IF
             CALL JEVEUO(PREFIX//'.INST','L',IPAS)

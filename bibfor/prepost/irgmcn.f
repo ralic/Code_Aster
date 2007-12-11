@@ -1,4 +1,6 @@
-      SUBROUTINE IRGMCN ( CHAMSY, PARTIE, IFI, NOMCON, ORDR, NBORDR,
+      SUBROUTINE IRGMCN ( CHAMSY, PARTIE, IFI,
+     &                    NOMCON, NOSIMP, NOPASE,
+     &                    ORDR, NBORDR,
      &                    COORD, CONNX, POINT, NOBJ, NBEL,
      &                    NBCMPI, NOMCMP, LRESU, PARA,
      &                    VERSIO, TYCHA )
@@ -7,7 +9,7 @@
       INTEGER        ORDR(*), CONNX(*), POINT(*)
       REAL*8         COORD(*), PARA(*)
       LOGICAL        LRESU
-      CHARACTER*(*)  NOMCON,CHAMSY,NOMCMP(*),PARTIE
+      CHARACTER*(*)  NOMCON, NOSIMP, NOPASE, CHAMSY, NOMCMP(*), PARTIE
 C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       INTEGER    NELETR
       PARAMETER (NELETR =  8)
@@ -17,7 +19,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*8 TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +79,6 @@ C
       INTEGER      IOR, IBID, K, NCMP, IRET, NBORD2, JNCMP, NCMPU
       INTEGER      JTABC, JTABV, JTABL, JTABD, JCNSK, JTYPE
       LOGICAL      SCAL, VECT, TENS
-      CHARACTER*1  TSCA
       CHARACTER*8  K8B, NOCMP, TBCMP(3)
       CHARACTER*19 NOCH19, CHAMPS
 C     ------------------------------------------------------------------
@@ -185,8 +186,9 @@ C
 C        ECRITURE DE L'ENTETE DE View
 C        ****************************
          NOCMP = 'TENSEUR '
-         CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     &                 NBEL, .FALSE., .FALSE., TENS, VERSIO )
+         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+     &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL,
+     &                 .FALSE., .FALSE., TENS, VERSIO )
 
 C ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
 C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
@@ -215,8 +217,9 @@ C        ECRITURE DE L'ENTETE DE View
 C        ****************************
 C
          NOCMP = 'VECTEUR '
-         CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     &                 NBEL, .FALSE., VECT, TENS, VERSIO )
+         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+     &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL,
+     &                 .FALSE., VECT, TENS, VERSIO )
 C
 C        LISTE DES COMPOSANTES
          IF(VERSIO.EQ.1)THEN
@@ -259,8 +262,9 @@ C
 C        ECRITURE DE L'ENTETE DE View
 C        ****************************
 C
-         CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     &                 NBEL, SCAL, .FALSE., TENS, VERSIO )
+         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+     &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL,
+     &                 SCAL, .FALSE., TENS, VERSIO )
 C
 C        LISTE DES COMPOSANTES
          TBCMP(1)=NOCMP

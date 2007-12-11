@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 19/11/2007   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF modelisa9 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,44 +210,6 @@ Conseil :
 
 43 : _("""
  il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d 
-"""),
-
-44 : _("""
- fichier med :  %(k1)s maillage :  %(k2)s erreur effoco numero  %(i1)d 
-"""),
-
-45 : _("""
- le fichier n'a pas ete construit avec la meme version de med.
- la lecture du fichier peut echouer!
- erreur efveco numero  %(i1)d 
-"""),
-
-46 : _("""
- version de la bibliotheque med utilisee par code_aster :  %(i1)d %(i2)d %(i3)d
-"""),
-
-47 : _("""
- version de la bibliotheque med qui a cree le fichier   : < 2.1.5
-"""),
-
-48 : _("""
- version de la bibliotheque med pour creer le fichier   :  %(i1)d %(i2)d %(i3)d 
-"""),
-
-49 : _("""
- un utilitaire vous permet peut-etre de convertir votre fichier (medimport)
-"""),
-
-50 : _("""
- 
-"""),
-
-51 : _("""
- fichier med :  %(k1)s maillage :  %(k2)s erreur efouvr numero  %(i1)d 
-"""),
-
-52 : _("""
- fichier med :  %(k1)s maillage :  %(k2)s erreur efferm numero  %(i1)d 
 """),
 
 53 : _("""
@@ -512,4 +474,5 @@ Conseil :
 94: _("""
      On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
 """),
+
 }

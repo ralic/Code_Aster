@@ -6,7 +6,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -189,7 +189,7 @@ C
           IF ( LXLGUT(ZK16(ADNCFI-1+IAUX)).GT.8 ) THEN
              VALK(1) = ZK16(ADNCFI-1+IAUX)
              VALK(2) = SAUX08
-             CALL U2MESK('A','PREPOST3_27', 2 ,VALK)
+             CALL U2MESK('A','MED_72', 2 ,VALK)
           ENDIF
           NRCMP = INDIK8 ( NOMCMR, SAUX08, 1, NCMPRF )
 C
@@ -200,7 +200,7 @@ C
   12    CONTINUE
 C
         IF ( NRCMP.EQ.0 ) THEN
-          CALL U2MESK('F','PREPOST3_28',1,ZK16(ADNCFI-1+IAUX))
+          CALL U2MESK('F','MED_73',1,ZK16(ADNCFI-1+IAUX))
         ENDIF
 C
 C 1.3. ==> TRANSFERT DES VALEURS DANS LA COMPOSANTE NRCMP

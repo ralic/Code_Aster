@@ -4,7 +4,7 @@
      &                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
      &                    NROFIC, LIGREL, OPTION, PARAM, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 C
       CALL JENONU ( JEXNOM ( '&CATA.GD.NOMGD', NOMGD ) , IAUX )
       IF ( IAUX.EQ.0 ) THEN
-        CALL U2MESS('F','PREPOST3_21')
+        CALL U2MESS('F','MED_65')
       ENDIF
       CALL JEVEUO ( JEXNOM ( '&CATA.GD.NOMCMP', NOMGD ) ,
      &              'L', JNOCMP )
@@ -173,11 +173,11 @@ C
               IF (ZK8(JCMPVA+I-1).EQ.ZK8(JNOCMP+J-1)) TTT=.TRUE.
  30          CONTINUE
              IF (.NOT.TTT) THEN
-                CALL U2MESS('F','PREPOST3_22')
+                CALL U2MESS('F','MED_66')
              ENDIF
  20       CONTINUE
         ELSE
-          CALL U2MESS('F','PREPOST3_23')
+          CALL U2MESS('F','MED_70')
         ENDIF
       ENDIF
 C
@@ -226,7 +226,7 @@ C
  40      CONTINUE
          VALI (1) = IAUX
          VALI (2) = NNCP
-         CALL U2MESG('A', 'PREPOST5_42',0,' ',2,VALI,0,0.D0)
+         CALL U2MESG('A', 'MED_83',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
       CALL DETRSD ( 'CHAM_ELEM_S', CHAMES )
@@ -236,7 +236,7 @@ C 5. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL U2MESK('A','PREPOST3_24',1,CHANOM)
+         CALL U2MESK('A','MED_55',1,CHANOM)
       ENDIF
 
       IF(TYPECH(1:4).EQ.'ELGA')THEN

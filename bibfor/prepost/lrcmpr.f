@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
+      CHARACTER*8 SAUX08
       PARAMETER ( NOMPRO = 'LRCMPR' )
 C
       INTEGER IFM, NIVINF
@@ -89,10 +90,8 @@ C====
 C
       CALL EFNPFL ( IDFIMD, NOMPRF, LGPROM, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK = NOMPRF
-        VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_43',1,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST2_12')
+        SAUX08='EFNPFL  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
@@ -109,10 +108,8 @@ C
 C
       CALL EFPFLL ( IDFIMD, ZI(ADPROM), NOMPRF, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK = NOMPRF
-        VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_44',1,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST2_12')
+        SAUX08='EFPFLL  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL 3D DE K1 FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,7 +122,6 @@ UTOT1=STAT_NON_LINE(INFO=1,
                                 GROUP_MA='TUBE',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                      SOLVEUR=_F(METHODE='MUMPS',),
                    );
 
 #MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)

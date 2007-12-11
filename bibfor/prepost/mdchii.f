@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,9 +109,8 @@ C 1.1. ==> NBCHAM : NOMBRE DE CHAMPS DANS LE FICHIER
 C
       CALL EFNCHA ( IDFIMD, 0, NBCHAM, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALI (1) = CODRET
-        CALL U2MESG('A','PREPOST5_83',0,' ',1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST3_42')
+        SAUX08='EFNCHA  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 1.2. ==> RECHERCHE DU CHAMP VOULU
@@ -126,10 +125,8 @@ C                     LE CHAMP NUMERO IAUX
 C
       CALL EFNCHA ( IDFIMD, IAUX, NBCMFI, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALI (1) = IAUX
-        VALI (2) = CODRET
-        CALL U2MESG('A','PREPOST5_84',0,' ',2,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST3_43')
+        SAUX08='EFNCHA  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 1.2.2. ==> POUR LE CHAMP NUMERO IAUX, ON RECUPERE :
@@ -147,19 +144,16 @@ C               12345678901234567890123456789012
       CALL EFCHAI ( IDFIMD, IAUX, SAUX32, JAUX,
      &              ZK16(ADNCMP), ZK16(ADUCMP), NBCMFI, CODRET )
       IF ( CODRET.NE.0 .OR. JAUX.NE.MFLOAT ) THEN
-        VALI (1) = IAUX
-        VALK = SAUX32
-        CALL U2MESG('A+','PREPOST5_85',1,VALK,1,VALI,0,0.D0)
-        IF (CODRET.NE.0) THEN
-          VALI (1) = CODRET
-          CALL U2MESG('A+','PREPOST5_86',0,' ',1,VALI,0,0.D0)
+        IF ( CODRET.NE.0 ) THEN
+          SAUX08='EFCHAI  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
         ENDIF
+C       TYPE INCORRECT
         IF (JAUX.NE.MFLOAT) THEN
           VALI (1) = JAUX
-          CALL U2MESG('A+','PREPOST5_87',0,' ',1,VALI,0,0.D0)
+          CALL U2MESG('A+','MED_84',0,' ',1,VALI,0,0.D0)
+          CALL U2MESS('F','MED_75')
         ENDIF
-        CALL U2MESG('A','PREPOST5_88',0,' ',0,0,0,0.D0)
-        CALL U2MESS('F','PREPOST3_44')
       ENDIF
 C
 C 1.2.3. ==> COMPARAISON DU NOM DU CHAMP
@@ -175,7 +169,7 @@ C
    12 CONTINUE
 C
       IF ( EXISTC.NE.1 ) THEN
-        CALL U2MESK('F','PREPOST3_45',1,NOCHMD(1:LNOCHM))
+        CALL U2MESK('F','MED_57',1,NOCHMD(1:LNOCHM))
       ENDIF
 C
 C====
@@ -185,8 +179,8 @@ C
       CALL EFNPDT ( IDFIMD, NOCHMD, TYPENT, TYPGEO, NBTV, CODRET )
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST3_46',1,SAUX08)
+        SAUX08='EFNPDT  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
@@ -235,12 +229,12 @@ C      >                CODRET )
      &                CODRET )
 C
         IF ( CODRET.NE.0 ) THEN
-          CALL CODENT ( CODRET,'G',SAUX08 )
-          CALL U2MESK('F','PREPOST3_47',1,SAUX08)
+          SAUX08='EFPDTI  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
         ENDIF
 C
         IF ( .NOT. ILOCAL ) THEN
-          CALL U2MESS('F','PREPOST3_48')
+          CALL U2MESS('F','MED_60')
         ENDIF
 C
         IF ( NIVINF.GT.1 ) THEN

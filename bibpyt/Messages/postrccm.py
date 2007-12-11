@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF postrccm Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,6 +199,28 @@ cata_msg={
 36: _("""
  bug ! contactez l'assistance.
 """),
+
+37: _("""
+ -> L'ordre des noeuds de la table %(k1)s n'est pas respecté.
+    Les noeuds doivent etre rangés d'une des peaux vers l'autre.
+ -> Risque & Conseil:
+    Veuillez consulter la documentation U2.09.03.
+"""),
+
+38: _("""
+ -> Les noeuds de la ligne de coupe %(k2)s (table %(k1)s) ne sont pas alignés:
+    - distance maximale à la ligne de coupe: %(r1)f
+    - longueur de la ligne de coupe        : %(r2)f
+ -> Risque & Conseil:
+    Les calculs avec POST_RCCM ne sont théoriquement valides que pour des lignes
+    de coupe rectilignes. Vérifier les données d'entrée ou utiliser
+    MACR_LIGN_COUPE pour extraire le résultat sur un segment de droite.
+"""),
+
+39: _("""
+ -> Il est préférable de fournir des tables comportant les coordonnées des noeuds.
+"""),
+
 
 
 }

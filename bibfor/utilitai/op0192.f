@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
       IF ( FORMAT.EQ.'MED' ) THEN
         CALL GETVTX ( ' ', 'NOM_MED', 0, 1, 1, NOCHMD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
-          CALL U2MESS('F','UTILITAI3_16')
+          CALL U2MESS('F','MED_96')
         ENDIF
       ELSE
         CALL U2MESK('F','UTILITAI3_17',1,FORMAT)

@@ -1,8 +1,12 @@
-      SUBROUTINE IRGMCE(CHAMSY,PARTIE,IFI,NOMCON,ORDR,NBORDR,COORD,
-     &                  CONNX,POINT,NOBJ,NBEL,NBCMPI,NOMCMP,
-     &                  LRESU,PARA,NOMAOU,NOMAIN,VERSIO,TYCHA)
+      SUBROUTINE IRGMCE ( CHAMSY, PARTIE, IFI,
+     &                    NOMCON, NOSIMP, NOPASE,
+     &                    ORDR, NBORDR,
+     &                    COORD, CONNX, POINT, NOBJ, NBEL,
+     &                    NBCMPI, NOMCMP, LRESU, PARA,
+     &                    NOMAOU, NOMAIN,
+     &                    VERSIO, TYCHA)
       IMPLICIT NONE
-      CHARACTER*(*) NOMCON,CHAMSY,NOMCMP(*),PARTIE
+      CHARACTER*(*) NOMCON, NOSIMP, NOPASE, CHAMSY, NOMCMP(*), PARTIE
       CHARACTER*8 NOMAOU,NOMAIN,TYCHA
       REAL*8 COORD(*),PARA(*)
       LOGICAL LRESU
@@ -22,7 +26,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +43,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
 
 C        IMPRESSION D'UN CHAM_ELEM AU FORMAT GMSH
 
@@ -87,7 +92,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER(NCMPME=12)
       LOGICAL IWRI, TENS, SCAL, VECT, LCMP
       CHARACTER*1 TSCA
-      CHARACTER*8 K8B,NOMGD,TYPE,NOCMP,NOCMPU
+      CHARACTER*8 K8B,NOMGD,TYPE,NOCMP
       CHARACTER*19 NOCH19,CHAMPS
       CHARACTER*24 NUMOLD,CONNEX
 C     ------------------------------------------------------------------
@@ -283,8 +288,9 @@ C
 
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
-        CALL IRGMPV(IFI,LRESU,NOMCON,CHAMSY,NBORD2,PARA,NOCMP,NBEL2,
-     &              SCAL,VECT,TENS,VERSIO)
+        CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+     &                CHAMSY, NBORD2, PARA, NOCMP, NBEL2,
+     &                SCAL, VECT, TENS, VERSIO )
 C
         IWRI = .TRUE.
 
@@ -339,8 +345,9 @@ C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
          NOCMP = 'TENSEUR'
-         CALL IRGMPV(IFI,LRESU,NOMCON,CHAMSY,NBORD2,PARA,NOCMP,NBEL2,
-     &               SCAL,VECT,TENS,VERSIO)
+         CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+     &                 CHAMSY, NBORD2, PARA, NOCMP, NBEL2,
+     &                 SCAL, VECT, TENS, VERSIO )
 C
         IWRI = .TRUE.
 

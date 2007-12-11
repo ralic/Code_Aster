@@ -4,7 +4,7 @@
      &                    TYMAST, MODNUM, NUANOM,
      &                    VAL, PROFAS, IDEB, IFIN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C
 C 1.2. ==> INFORMATION
 C
       IF ( NIVINF.GT.1 ) THEN
-        CALL U2MESS('I','PREPOST2_16')
+        CALL U2MESS('I','MED_47')
         WRITE (IFM,13001) NVALEC, NCMPVE, NBPG, NBSP
       ENDIF
 13001 FORMAT('  NVALEC =',I8,', NCMPVE =',I8,
@@ -219,7 +219,7 @@ C
         IF ( LOGAUX ) THEN
           IF ( NBSP.GT.1 ) THEN
             WRITE (IFM,13001) NVALEC, NCMPVE, NBPG, NBSP
-            CALL U2MESS('F','PREPOST2_17')
+            CALL U2MESS('F','MED_48')
           ENDIF
         ENDIF
 C

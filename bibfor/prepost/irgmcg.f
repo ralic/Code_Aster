@@ -1,9 +1,11 @@
-      SUBROUTINE IRGMCG ( CHAMSY, PARTIE, IFI, NOMCON, ORDR, NBORDR,
+      SUBROUTINE IRGMCG ( CHAMSY, PARTIE, IFI,
+     &                    NOMCON, NOSIMP, NOPASE,
+     &                    ORDR, NBORDR,
      &                    COORD, CONNX, POINT, NOBJ, NBEL,
      &                    NBCMPI, NOMCMP, LRESU, PARA,
      &                    NOMAOU, VERSIO)
       IMPLICIT NONE
-      CHARACTER*(*)  NOMCON,CHAMSY,NOMCMP(*),PARTIE
+      CHARACTER*(*)  NOMCON, NOSIMP, NOPASE, CHAMSY, NOMCMP(*), PARTIE
       CHARACTER*8 NOMAOU
       REAL*8 COORD(*),PARA(*)
       LOGICAL LRESU
@@ -24,7 +26,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -236,8 +238,9 @@ C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
 C
-        CALL IRGMPV(IFI,LRESU,NOMCON,CHAMSY,NBORD2,PARA,NOCMP,NBEL2,
-     &              .TRUE.,.FALSE.,.FALSE.,VERSIO)
+        CALL IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+     &                CHAMSY, NBORD2, PARA, NOCMP, NBEL2,
+     &                .TRUE., .FALSE., .FALSE., VERSIO )
 C
         IWRI = .TRUE.
 C

@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF creation_donnees_homard Macro  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,11 +17,11 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE ABBAS M.ABBAS
+# RESPONSABLE GNICOLAS G.NICOLAS
 """
 Cette classe crée le fichier de configuration permettant de lancer HOMARD depuis Code_Aster.
 """
-__revision__ = "V1.2"
+__revision__ = "V1.3"
 __all__ = [ ]
  
 import os
@@ -443,6 +443,23 @@ class creation_donnees_homard:
         for aux in self.niveau :
           self.ecrire_ligne_configuration_2(aux[0], aux[1])
 #
+#     5.5. L'usage de l'indicateur
+#
+        if self.mots_cles.has_key("TYPE_OPER_INDICA") :
+          if self.mots_cles["TYPE_OPER_INDICA"] is not None :
+            self.ecrire_ligne_configuration_2("CCModeFI", self.mots_cles["TYPE_OPER_INDICA"])
+#
+#     5.6. Les éventuels groupes de filtrage du raffinement/deraffinement
+#
+        for cle in ( "GROUP_MA", "GROUP_NO" ) :
+          if self.mots_cles.has_key(cle) :
+            if self.mots_cles[cle] is not None :
+              if not type(self.mots_cles[cle]) in EnumTypes :
+                self.ecrire_ligne_configuration_2("CCGroAda", self.mots_cles[cle])
+              else :
+                for group in self.mots_cles[cle] :
+                  self.ecrire_ligne_configuration_2("CCGroAda", group)
+#
 #     6. Les éventuels champs à mettre à jour
 #
       if self.dico_configuration.has_key("Champs") :
@@ -467,12 +484,12 @@ class creation_donnees_homard:
         self.ecrire_ligne_configuration_2("SuivFron", "oui")
         self.ecrire_ligne_configuration_2("CCFronti", self.dico_configuration["Fichier_ASTER_vers_HOMARD"])
         self.ecrire_ligne_configuration_2("CCNoMFro", self.dico_configuration["NOM_MED_MAILLAGE_FRONTIERE"])
-        if self.mots_cles.has_key("GROUP_MA") :
-          if self.mots_cles["GROUP_MA"] is not None :
-            if not type(self.mots_cles["GROUP_MA"]) in EnumTypes :
-              self.ecrire_ligne_configuration_2("CCGroFro", self.mots_cles["GROUP_MA"])
+        if self.mots_cles.has_key("GROUP_MA_FRONT") :
+          if self.mots_cles["GROUP_MA_FRONT"] is not None :
+            if not type(self.mots_cles["GROUP_MA_FRONT"]) in EnumTypes :
+              self.ecrire_ligne_configuration_2("CCGroFro", self.mots_cles["GROUP_MA_FRONT"])
             else :
-              for group_ma in self.mots_cles["GROUP_MA"] :
+              for group_ma in self.mots_cles["GROUP_MA_FRONT"] :
                 self.ecrire_ligne_configuration_2("CCGroFro", group_ma)
 #
 #     8. L'éventuel maillage annexe

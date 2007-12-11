@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+%& MODIF TYPELEM  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,6 +91,7 @@ MODE_LOCAL__
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
 
@@ -113,12 +114,12 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA
-                                     N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  STANO_I  PSTANO
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST
@@ -136,18 +137,18 @@ OPTION__
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST
+                                     N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      542   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO   E6NEUTR  PPINTTO  E18NEUI  PCNSETO
                                      E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     
-                                     N1NEUT_R PLST 
+                                     N1NEUT_R PLST
                               OUT__  MVECTUR  PVECTUR
     RIGI_MECA           81    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_TANG      539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC
-                                     ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  STANO_I  PSTANO
                                      ZVARIPG  PVARIMR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO  E6NEUTI  PHEAVTO
                                      E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR

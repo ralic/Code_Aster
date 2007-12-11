@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -101,6 +101,11 @@ C
          CALL WKVECT ( CPRES, 'V V K8', 1, JRESP )
          ZK8(JRESP-1+1) = TABPR0
       ENDIF
+C
+C     VERIFICATION DE L'ORDRE DES NOEUDS DANS LES TABLES
+      CALL RCVERI(TABL0)
+      IF(FLEXIO) CALL RCVERI(TABFL0)
+      IF(LROCHT) CALL RCVERI(TABPR0)
 C
       CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,1, R8B, N1 )
       IF ( N1 .NE. 0 ) THEN
@@ -322,6 +327,7 @@ C
          ENDIF
       ENDIF
 C
+C ---
       DO 102 I = 1 , NBINS0
 C
          ZR (JINST+I-1) = ZR(KINST+I-1)

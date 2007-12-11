@@ -6,7 +6,7 @@
      &                    NMATYP,
      &                    INFMED, MODNUM, NUANOM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -279,8 +279,8 @@ C
      &                  NMATYP(ITYP),
      &                  EDMAIL, TYPGEO(ITYP), EDNODA, CODRET )
           IF ( CODRET.NE.0 ) THEN
-           CALL CODENT ( CODRET,'G',SAUX08 )
-           CALL U2MESK('F','PREPOST2_94',1,SAUX08)
+            SAUX08='EFCONE  '
+            CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
           ENDIF
 C
 C 3.2. ==> LE NOM DES MAILLES
@@ -288,8 +288,8 @@ C
           CALL EFNOME ( FID, NOMAMD, ZK16(JNOMMA(ITYP)), NMATYP(ITYP),
      &                  EDMAIL, TYPGEO(ITYP), CODRET )
           IF ( CODRET.NE.0 ) THEN
-           CALL CODENT ( CODRET,'G',SAUX08 )
-           CALL U2MESK('F','PREPOST2_95',1,SAUX08)
+            SAUX08='EFNOME  '
+            CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
           ENDIF
 C
 C 3.3. ==> LE NUMERO DES MAILLES
@@ -297,8 +297,8 @@ C
           CALL EFNUME ( FID, NOMAMD, ZI(JNUMMA(ITYP)), NMATYP(ITYP),
      &                  EDMAIL, TYPGEO(ITYP), CODRET )
           IF ( CODRET.NE.0 ) THEN
-           CALL CODENT ( CODRET,'G',SAUX08 )
-           CALL U2MESK('F','PREPOST2_96',1,SAUX08)
+            SAUX08='EFNUME  '
+            CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
           ENDIF
 C
         ENDIF

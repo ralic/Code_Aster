@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,10 +57,6 @@ cata_msg = {
 
 12 : _("""
  nous ne pouvons pas récupérer la valeur du coefficient de Poisson : NU.
-"""),
-
-13 : _("""
-  le type d entité  %(k1)s  est inconnu.
 """),
 
 21 : _("""
@@ -236,22 +232,6 @@ cata_msg = {
  problème à l'ouverture du fichier
 """),
 
-70 : _("""
- problème à la fermeture du fichier
-"""),
-
-71 : _("""
- maillage introuvable
-"""),
-
-72 : _("""
- MED : erreur MDNOMA numéro  %(k1)s 
-"""),
-
-73 : _("""
- le champ est écrit dans le fichier
-"""),
-
 74 : _("""
  la variable  %(k1)s  n'existe pas
 """),
@@ -280,10 +260,6 @@ cata_msg = {
 
 80 : _("""
  on traite les TRIA7 QUAD9 en oubliant le noeud centre
-"""),
-
-82 : _("""
- écriture impossible pour  %(k1)s  au format MED
 """),
 
 84 : _("""
@@ -315,30 +291,6 @@ cata_msg = {
 
 90 : _("""
  on ne sait pas imprimer le champ  %(k1)s  au format  %(k2)s 
-"""),
-
-91 : _("""
- debut de l'écriture MED de  %(k1)s 
-"""),
-
-92 : _("""
- impossible de déterminer un nom de champ MED.
-"""),
-
-93 : _("""
- pas d'écriture pour  %(k1)s 
-"""),
-
-94 : _("""
- issu de  %(k1)s 
-"""),
-
-95 : _("""
- type  %(k1)s  inconnu pour med.
-"""),
-
-96 : _("""
- fin de l'écriture MED de  %(k1)s 
 """),
 
 97 : _("""

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+%& MODIF TYPELEM  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -215,9 +215,10 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F    37    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E18NEUTR PPINTER  
                                      E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONGCO   N1NEUT_R PLST   
+                                     STANO_I  PSTANO 
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    37    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E18NEUTR PPINTER  E24NEUTR PAINTER 
-                                     E15NEUTI PCFACE   E2NEUTI  PLONGCO  N1NEUT_R PLST   
+                                     E15NEUTI PCFACE   E2NEUTI  PLONGCO  N1NEUT_R PLST     STANO_I  PSTANO 
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
@@ -228,7 +229,7 @@ OPTION__
                               OUT__  E90NEUTR PDEXFEM
     FORC_NODA           542   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E9NEUTI  PLONCHA
-                                     N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
@@ -236,7 +237,7 @@ OPTION__
                                      ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST
+                                     N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
@@ -253,7 +254,7 @@ OPTION__
                                      ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
-                                     N1NEUT_R PLST
+                                     N1NEUT_R PLST     STANO_I  PSTANO
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      542   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO   E33NEUTR PPINTTO  E128NEUI PCNSETO
                                      E36NEUTI PHEAVTO  E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
@@ -274,7 +275,7 @@ OPTION__
     RIGI_MECA_TANG      539   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR
+                                     ZVARCPG  PVARCRR  STANO_I  PSTANO
                                      ZVARIPG  PVARIMR  E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO
                                      E9NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  MMATUUR  PMATUUR

@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTG (GEOM2,NOMA2,MOTFAC,IOCC)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  

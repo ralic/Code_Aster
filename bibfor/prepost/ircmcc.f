@@ -3,7 +3,7 @@
      &                    NCMPVE, NTNCMP, NTUCMP,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C
       CALL INFNIV ( IFM, NIVINF )
 C
       IF ( EXISTC.EQ.1 ) THEN
-        CALL U2MESK('S', 'PREPOST2_5', 1, NOCHMD)
+        CALL U2MESK('S', 'MED_31', 1, NOCHMD)
       ENDIF
 C
 C====
@@ -108,8 +108,8 @@ C
      &                ZK16(ADNCMP), ZK16(ADUCMP), NCMPVE, CODRET )
 C
         IF ( CODRET.NE.0 ) THEN
-          CALL CODENT ( CODRET,'G',SAUX08 )
-          CALL U2MESK('F','PREPOST2_6',1,SAUX08)
+          SAUX08='EFCHAC  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
         ENDIF
 C
 C 2.3. ==> IMPRESSION D'INFORMATION

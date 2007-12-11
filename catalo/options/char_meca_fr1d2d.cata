@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +31,7 @@ OPTION__
         PLONCHA  NEUT_I
         PLSN     NEUT_R
         PLST     NEUT_R    
+        PSTANO   NEUT_I
    OUT__
 PVECTUR VDEP_R RESL__
 

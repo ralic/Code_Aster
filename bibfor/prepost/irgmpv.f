@@ -1,17 +1,18 @@
-      SUBROUTINE IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORDR, PARA,  
-     +                    NOCMP, NBEL, SCAL, VECT, TENS, VERSIO)
+      SUBROUTINE IRGMPV ( IFI, LRESU, NOMCON, NOSIMP, NOPASE,
+     &                    CHAMSY, NBORDR, PARA, NOCMP, NBEL,
+     &                    SCAL, VECT, TENS, VERSIO )
       IMPLICIT NONE
 C
       INTEGER        IFI, NBORDR, LCH,ICH, VERSIO
       REAL*8         PARA(*)
       LOGICAL        LRESU, SCAL, VECT, TENS
       CHARACTER*8    NOCMP
-      CHARACTER*(*)  NOMCON, CHAMSY
+      CHARACTER*(*)  NOMCON, NOSIMP, NOPASE, CHAMSY
 C     NBRE POUR CHAQUE TYPE D'ELEMENT
       INTEGER        NBEL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,11 +34,12 @@ C     BUT :   ECRITURE D'UN RESULTAT AU FORMAT GMSH
 C
 C     ------------------------------------------------------------------
       INTEGER      IOR,LXLGUT
-      CHARACTER*19 K19B
-      CHARACTER*36 K36B
-      INTEGER     NBPOI, NBSEG, NBTRI, NBTET, NBQUA, NBPYR, NBPRI, NBHEX
-      INTEGER      TYPPOI, TYPSEG, TYPTRI, TYPTET, TYPQUA,
-     +             TYPPYR, TYPPRI, TYPHEX
+      INTEGER LGNOPA
+      CHARACTER*8 NOMSD
+      CHARACTER*50 K50B
+      INTEGER NBPOI, NBSEG, NBTRI, NBTET, NBQUA, NBPYR, NBPRI, NBHEX
+      INTEGER TYPPOI, TYPSEG, TYPTRI, TYPTET, TYPQUA
+      INTEGER TYPPYR, TYPPRI, TYPHEX
       CHARACTER*32 JEXNOM
 C     ------------------------------------------------------------------
 C
@@ -62,28 +64,51 @@ C
 C
 C     ECRITURE DE LIGNE 1 (VIEW_NAME NB_TIME_STEPS)
 C
-      IF ( LRESU ) THEN 
-         LCH = LXLGUT(NOMCON)
-         K36B(1:LCH) = NOMCON(1:LCH)
-         ICH=LCH+1
-         K36B(ICH:ICH) = '_'
-         LCH=LXLGUT(CHAMSY)
-         K36B(ICH+1:ICH+LCH) = CHAMSY(1:LCH)
-         ICH=ICH+LCH+1
-         K36B(ICH:ICH) = '_'
-         LCH=LXLGUT(NOCMP)
-         K36B(ICH+1:ICH+LCH) = NOCMP(1:LCH)
-         K36B(ICH+LCH+1:ICH+LCH+1) = ' '
-         WRITE(IFI,1020) K36B(1:ICH+LCH+1), NBORDR   
+      LGNOPA = LXLGUT(NOPASE)
+      IF ( LGNOPA.EQ.0 ) THEN
+        NOMSD = NOMCON(1:8)
       ELSE
-         LCH = LXLGUT(NOMCON)
-         K19B(1:LCH) = NOMCON(1:LCH)
-         ICH=LCH+1
-         K19B(ICH:ICH) = '_'
+        NOMSD = NOSIMP(1:8)
+      ENDIF
+C
+      IF ( LRESU ) THEN 
+C
+         LCH = LXLGUT(NOMSD)
+         K50B(1:LCH) = NOMSD(1:LCH)
+         ICH = LCH+1
+C
+         IF ( LGNOPA.GT.0 ) THEN
+           K50B(ICH:ICH) = '_'
+           LCH=LGNOPA
+           K50B(ICH+1:ICH+LCH) = NOPASE(1:LCH)
+           ICH = ICH+LCH+1
+         ENDIF
+C
+         K50B(ICH:ICH) = '_'
+         LCH=LXLGUT(CHAMSY)
+         K50B(ICH+1:ICH+LCH) = CHAMSY(1:LCH)
+         ICH = ICH+LCH+1
+C
+         K50B(ICH:ICH) = '_'
          LCH=LXLGUT(NOCMP)
-         K19B(ICH+1:ICH+LCH) = NOCMP(1:LCH)
-         K19B(ICH+LCH+1:ICH+LCH+1) = ' '
-         WRITE(IFI,1022) K19B(1:ICH+LCH+1), NBORDR
+         K50B(ICH+1:ICH+LCH) = NOCMP(1:LCH)
+C
+         K50B(ICH+LCH+1:ICH+LCH+1) = ' '
+         WRITE(IFI,1020) K50B(1:ICH+LCH+1), NBORDR   
+C
+      ELSE
+C
+         LCH = LXLGUT(NOMSD)
+         K50B(1:LCH) = NOMSD(1:LCH)
+C
+         ICH = LCH+1
+         K50B(ICH:ICH) = '_'
+         LCH=LXLGUT(NOCMP)
+         K50B(ICH+1:ICH+LCH) = NOCMP(1:LCH)
+C
+         K50B(ICH+LCH+1:ICH+LCH+1) = ' '
+         WRITE(IFI,1022) K50B(1:ICH+LCH+1), NBORDR
+C
       ENDIF
 C
 C     ECRITURE DE LA LIGNE 2 A 4 (nb elt par de type de maille)

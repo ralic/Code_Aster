@@ -8,7 +8,7 @@
      &                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,8 +165,8 @@ C
      &              IDATFA, VAATFA, DESCAT, NBATTR,
      &              NOGRFA, NBGROU, CODRET)
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','MODELISA5_20',1,SAUX08)
+        SAUX08='EFFAMI  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 1.2. ==> INFORMATION EVENTUELLE
@@ -190,7 +190,7 @@ C====
 C
       IF ( NUMFAM.NE.0 ) THEN
 C
-        CALL U2MESG('I','MAILLAGE_5',1,NOMFAM,1,NUMFAM,0,MR)
+        CALL U2MESG('I','MED_14',1,NOMFAM,1,NUMFAM,0,MR)
 C
 C 2.0. ==> CONTROLE DE LA LONGUEUR DES NOMS DES GROUPES
 C
@@ -211,7 +211,7 @@ C   2.0.1. --- RENOMMAGE PAR L'UTILISATEUR
                      RENOMM = .TRUE.
                      MK(1) = NOGRFA(IAUX)
                      MK(2) = KBID(1:ILNEW)
-                     CALL U2MESG('I','MAILLAGE_7',2,MK,1,IAUX,0,MR)
+                     CALL U2MESG('I','MED_16',2,MK,1,IAUX,0,MR)
                      NEWGRM = KBID(1:ILNEW)
                   ENDIF
 C
@@ -222,17 +222,17 @@ C          --- VERIFIER QUE LES NOUVEAUX NOMS N'EXISTENT PAS DEJA
                      ERRGM = .TRUE.
                      MK(1) = ZK32(IVGRM-1+I*2-1)
                      MK(2) = KBID(1:ILNEW)
-                     CALL U2MESK('E','MAILLAGE_8',2,MK)
+                     CALL U2MESK('E','MED_9',2,MK)
                   ENDIF
  910           CONTINUE
             ENDIF
             IF ( .NOT. RENOMM ) THEN
-               CALL U2MESG('I','MAILLAGE_6',1,NOGRFA(IAUX),1,IAUX,0,MR)
+               CALL U2MESG('I','MED_15',1,NOGRFA(IAUX),1,IAUX,0,MR)
             ELSE
                NOGRFA(IAUX) = NEWGRM
             ENDIF
             IF ( ERRGM ) THEN
-               CALL U2MESS('F', 'MAILLAGE_9')
+               CALL U2MESS('F', 'MED_18')
             ENDIF
 C
 C   2.0.2. --- SUPPRESSION DES CARACTERES INTERDITS (ACCENTS...)
@@ -243,7 +243,7 @@ C   2.0.2. --- SUPPRESSION DES CARACTERES INTERDITS (ACCENTS...)
               MK(1) = NOMFAM(1:JAU2)
               MK(2) = NOGRFA(IAUX)
               MK(3) = NEWGRM(1:8)
-              CALL U2MESG('A', 'MAILLAGE_10', 3, MK, 1, MI, 0, MR)
+              CALL U2MESG('A', 'MED_10', 3, MK, 1, MI, 0, MR)
               NOGRFA(IAUX) = NEWGRM(1:8)
             ENDIF
 C
@@ -255,14 +255,14 @@ C   2.0.3. --- CONTROLE QUE LA LONGUEUR <= 8
               MK(1) = NOMFAM(1:JAU2)
               MK(2) = NOGRFA(IAUX)
               MK(3) = NOGRFA(IAUX)(1:8)
-              CALL U2MESG('A', 'MAILLAGE_1', 3, MK, 1, MI, 0, MR)
+              CALL U2MESG('A', 'MED_7', 3, MK, 1, MI, 0, MR)
 C
 C   2.0.4. --- CONTROLE QUE LE NOM EST NON VIDE
             ELSEIF(JAUX.EQ.0)THEN
               JAU2 = LXLGUT(NOMFAM)
               MI(1) = IAUX
               MK(1) = NOMFAM(1:JAU2)
-              CALL U2MESG('F', 'MAILLAGE_2', 1, MK, 1, MI, 0, MR)
+              CALL U2MESG('F', 'MED_11', 1, MK, 1, MI, 0, MR)
             ENDIF
    20     CONTINUE
 C
@@ -271,7 +271,7 @@ C
 C 2.1. ==> IL FAUT AU MOINS UN GROUPE OU UN ATTRIBUT
 C
         IF ( NBGROU.EQ.0 .AND. NBATTR.EQ.0 ) THEN
-          CALL U2MESK('F','MAILLAGE_4',1,NOMFAM)
+          CALL U2MESK('F','MED_13',1,NOMFAM)
         ENDIF
 C
 C 2.2. ==> COHERENCE DES NOMBRES DE GROUPES OU D'ATTRIBUTS
@@ -289,7 +289,7 @@ C
         ENDIF
         IF ( ( NBGROU.NE.CARAFA(1,RANGFA) ) .OR. 
      &       ( NBATTR.NE.CARAFA(2,RANGFA) ) ) THEN
-          CALL U2MESG('F','MAILLAGE_3', 2, MK, 2, MI, 0, MR)
+          CALL U2MESG('F','MED_8', 2, MK, 2, MI, 0, MR)
         ENDIF
 C
 C 2.3. ==> CREATION :
@@ -401,7 +401,7 @@ C
                   ITMP = LXLGUT(NOGRFA(INOM))
                   VALK (3) = NOGRFA(INOM)(1:ITMP)
                   VALK (4) = K8B
-                  CALL U2MESG('E', 'MODELISA8_66',4,VALK,1,VALI,0,0.D0)
+                  CALL U2MESG('E', 'MED_22',4,VALK,1,VALI,0,0.D0)
                ENDIF
                ZK8(ADNOMG-1+IAUX) = K8B
                ZI(ADNUMG-1+IAUX) = JAUX
@@ -413,7 +413,8 @@ C
 C
       ENDIF
 C
-      IF (IERR)CALL U2MESS('F','MODELISA7_98')
+C     ERREUR LORS DE LA VERIFICATION DES NOMS DE GROUPES:
+      CALL ASSERT(.NOT.IERR)
 C
       IF ( NIVINF.GE.2 ) THEN
 C

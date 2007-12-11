@@ -5,7 +5,7 @@
      &                    NBNOEU, NBMAIL, NBCOOR, VECGRM, NBCGRM )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -124,11 +124,8 @@ C 1.2.1. ==> VERIFICATION DE LA VERSION HDF
 C
       CALL EFFOCO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOMAMD
-        VALI (1) = CODRET
-        CALL U2MESG('A','MODELISA9_44',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST3_10')
+        SAUX08='EFFOCO  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 1.2.2. ==> VERIFICATION DE LA VERSION MED
@@ -136,34 +133,34 @@ C
       CALL EFVECO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
         VALI (1) = CODRET
-        CALL U2MESG('A+','MODELISA9_45',0,' ',1,VALI,0,0.D0)
+        CALL U2MESG('A+','MED_24',0,' ',1,VALI,0,0.D0)
         CALL EFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
         IF( IRET.EQ.0) THEN
           VALI (1) = VLIB(1)
           VALI (2) = VLIB(2)
           VALI (3) = VLIB(3)
-          CALL U2MESG('A+','MODELISA9_46',0,' ',3,VALI,0,0.D0)
+          CALL U2MESG('A+','MED_25',0,' ',3,VALI,0,0.D0)
         ENDIF
         CALL EFOUVR ( FID, NOFIMD, EDLECT, CODRET )
         CALL EFVELI ( FID, VFIC(1),VFIC(2),VFIC(3), IRET )
         IF( IRET.EQ.0) THEN
           IF ( VFIC(2).EQ.-1 .OR. VFIC(3).EQ.-1) THEN
-            CALL U2MESG('A+','MODELISA9_47',0,' ',0,0,0,0.D0)
+            CALL U2MESG('A+','MED_26',0,' ',0,0,0,0.D0)
           ELSE
           VALI (1) = VFIC(1)
           VALI (2) = VFIC(2)
           VALI (3) = VFIC(3)
-            CALL U2MESG('A+','MODELISA9_48',0,' ',1,VALI,0,0.D0)
+            CALL U2MESG('A+','MED_27',0,' ',1,VALI,0,0.D0)
           ENDIF
           IF (     VFIC(1).LT.VLIB(1)
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).LT.VLIB(2) )
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).EQ.VLIB(2) .AND.
      &             VFIC(3).EQ.VLIB(3) ) ) THEN
-            CALL U2MESG('A+','MODELISA9_49',0,' ',0,0,0,0.D0)
+            CALL U2MESG('A+','MED_28',0,' ',0,0,0,0.D0)
           ENDIF
         ENDIF
         CALL EFFERM ( FID, CODRET )
-        CALL U2MESG('A','MODELISA9_50',0,' ',0,0,0,0.D0)
+        CALL U2MESG('A','MED_41',0,' ',0,0,0,0.D0)
       ENDIF
 C
 C 1.3. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE A LIRE
@@ -175,7 +172,7 @@ C
 C
         CALL MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
-          CALL U2MESK('F','PREPOST3_11',1,NOFIMD)
+          CALL U2MESK('F','MED_50',1,NOFIMD)
         ENDIF
 C
 C 1.3.2. ==> C'EST UN MAILLAGE DESIGNE PAR UN NOM
@@ -188,7 +185,7 @@ C
         IF ( .NOT.EXISTM ) THEN
            VALK(1) = NOMAMD
            VALK(2) = NOFIMD
-           CALL U2MESK('F','PREPOST3_12', 2 ,VALK)
+           CALL U2MESK('F','MED_51', 2 ,VALK)
         ENDIF
 C
       ENDIF
@@ -203,12 +200,10 @@ C 2.1. ==> OUVERTURE FICHIER MED EN LECTURE
 C
       CALL EFOUVR ( FID, NOFIMD, EDLECT, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOMAMD
-        VALI (1) = CODRET
-        CALL U2MESG('A','MODELISA9_51',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_69')
+        SAUX08='EFOUVR  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
+
 C
 C 2.2. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
 C            DANS CATALOGUE
@@ -286,11 +281,8 @@ C 9.1. ==> FERMETURE FICHIER
 C
       CALL EFFERM ( FID, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOMAMD
-        VALI (1) = CODRET
-        CALL U2MESG('A','MODELISA9_52',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_70')
+        SAUX08='EFFERM  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 9.2. ==> MENAGE

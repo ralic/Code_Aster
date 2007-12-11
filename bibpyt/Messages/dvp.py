@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dvp Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,12 @@ cata_msg={
    On ne sait pas traiter ce type d'élément : %(k1)s
 """),
 
+
+97 : _("""
+   Erreur signalée dans la bibliothèque MED
+     nom de l'utilitaire : %(k1)s
+             code retour : %(i1)d
+"""),
 
 
 98 : _("""

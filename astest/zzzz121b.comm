@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,14 +21,54 @@
 # RESPONSABLE GNICOLAS G.NICOLAS
 # Attention :ceci est un test de non regression et non pas d'evaluation
 # de l'adaptation de maillage.
+# . Cas d'un cube decoupe en 6 tetraedres, en degre 2
+#
+#             7                   8
+#             --------------------
+#            /                   /.
+#           /                   / .
+#          /                   /  .
+#         /                   /   .
+#       3 -------------------- 4  .
+#         .                  .    .
+#         .                  .    .
+#         .    5             .    . 6
+#         .                  .   /
+#         .                  .  /
+#         .                  . /
+#         .                  ./
+#         --------------------
+#         1                  2
+# NOMBRE DE NOEUDS  : 27
+# 
+# NOMBRE DE MAILLES : 20
+#                   POI1    :  2
+#                   SEG3    :  1
+#                   TRIA6   : 12
+#                   TETRA10 :  6
+# 
+# NOMBRE DE GROUPES DE NOEUDS : 5
+#                   ORIGINE : 1    NO1(0.,0.,0.)
+#                   I       : 1    NO2(1.,0.,0.)
+#                   J       : 1    NO5(0.,1.,0.)
+#                   K       : 1    NO3(0.,0.,1.)
+#                   OPPOSE  : 1    NO8(1.,1.,1.)
+# 
+# NOMBRE DE GROUPES DE MAILLES : 7
+#                   BORD_EXT  : 12  Les 12 triangles de bord
+#                   MOITIE1   :  3  cote ORIGINE par rapport au plan (2,4,5,7)
+#                   MOITIE2   :  3  cote OPPOSE par rapport au plan (2,4,5,7)
+#                   Y_0       :  2  triangles du plan y=0 (1,2,4,3)
+#                   Z_1       :  2  triangles du plan z=1 (3,4,7,8)
+#                   O_I       :  1  segment de la ligne y=z=0 (NO1->NO2)
+#                   MP_K      :  1  maille-point basee sur K (NO3)
+#                   MP_O      :  1  maille-point basee sur ORIGINE (NO1)
 # . Information
-# . 3 adaptations, dont la derniere sans modification de maillage
-# . Sans mise a jour de champs
-# . Cas 3D
-# . Elements POI1, TRIA6, TETRA10
-# . GROUP_NO, GROUP_MA
+# . 5 adaptations avec des variantes
 
-DEBUT(CODE=_F(NOM='ZZZZ121B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NOM='ZZZZ121B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='NON',),);
 #
 # 1. DEFINITION DES MATERIAUX
 
@@ -42,8 +82,6 @@ MATER2=DEFI_MATERIAU(ELAS=_F(E=220000.,
                              NU=0.33,
                              RHO=8300.,
                              ALPHA=16.E-6,),);
-
-FZ=DEFI_PARA_SENSI(VALE=78480.0,);
 #
 # 2. LECTURE DU MAILLAGE ET TEST DE LA MACRO SUR L'INFORMATION
 
@@ -67,8 +105,7 @@ MODEZERO=AFFE_MODELE(MAILLAGE=MZERO,
 
 MZERO=MODI_MAILLAGE(reuse =MZERO,
                     MAILLAGE=MZERO,
-                    ORIE_PEAU_3D=_F(GROUP_MA='COUL_11',),
-                   );
+                    ORIE_PEAU_3D=_F(GROUP_MA='BORD_EXT',),);
 #
 # 3.2. MISE EN PLACE DES MATERIAUX
 
@@ -78,30 +115,16 @@ MATEZERO=AFFE_MATERIAU(MAILLAGE=MZERO,
                              _F(GROUP_MA='MOITIE2',
                                 MATER=MATER2,),),);
 #
-# 3.3. LES GRANDEURS GLOBALES
-
-MCGZERO=POST_ELEM(MASS_INER=_F(TOUT='OUI',
-                               GROUP_MA=('MOITIE1','MOITIE2',),),
-                  MODELE=MODEZERO,
-                  CHAM_MATER=MATEZERO,
-                  TITRE='MASSE, CENTRE DE GRAVITE ET INERTIE DE LA STRUCTURE',);
-#
-
-IMPR_TABLE(TABLE=MCGZERO,);
-#
 # 3.4. CHARGEMENTS
 
 CHARZERO=AFFE_CHAR_MECA(MODELE=MODEZERO,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=(_F(GROUP_NO='ORIGINE',
+                        DDL_IMPO=_F(GROUP_NO='J',
+                                    DZ=0.,),
+                        FACE_IMPO=_F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
                                      DZ=0.,),
-                                  _F(GROUP_NO='I',
-                                     DY=0.,
-                                     DZ=0.,),
-                                  _F(GROUP_NO='J',
-                                     DZ=0.,),),
                         FORCE_FACE=_F(GROUP_MA='Z_1',
                                       FZ=78480.,),);
 #
@@ -111,27 +134,14 @@ RESUZERO=MECA_STATIQUE(MODELE=MODEZERO,
                        CHAM_MATER=MATEZERO,
                        EXCIT=_F(CHARGE=CHARZERO,),);
 #
-# 3.6. CALCUL DE L'INDICATEUR D'ERREUR
-
-RESUZERO=CALC_ELEM(reuse =RESUZERO,
-                   RESULTAT=RESUZERO,
-                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
-#
-# 3.7. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_3d_cube_d2 A L'ITERATION 0
-###IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUZERO, NOM_CHAM='ERRE_ELEM_SIGM',NOM_CMP='ERREST' ) ) ;
-###IMPR_RESU ( RESU=_F( RESULTAT=RESUZERO ) ) ;
-
-#
 # 4. ADAPTATION DU MAILLAGE DE ZERO VERS UN
+#    . TOUTES LES MAILLES CONTENANT A LA FOIS LES 2 NOEUDS SOUS LES
+#      MAILLES-POINTS DES 2 GROUPES.
 
-MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
-               LANGUE='ANGLAIS',
-               MAILLAGE_N=MZERO,
+MACR_ADAP_MAIL(MAILLAGE_N=MZERO,
                MAILLAGE_NP1=CO('MUN'),
-               RESULTAT_N=RESUZERO,
-               INDICATEUR='ERRE_ELEM_SIGM',
-               NOM_CMP_INDICA='ERREST',
-               CRIT_RAFF_REL=0.9,
+               ADAPTATION='RAFFINEMENT_UNIFORME',
+               GROUP_MA = ('MP_K', 'MP_O',),
                QUALITE='OUI',
                INTERPENETRATION='NON',);
 #
@@ -151,30 +161,16 @@ MATEUN=AFFE_MATERIAU(MAILLAGE=MUN,
                            _F(GROUP_MA='MOITIE2',
                               MATER=MATER2,),),);
 #
-# 5.3. LES GRANDEURS GLOBALES
-
-MCGUN=POST_ELEM(MASS_INER=_F(TOUT='OUI',
-                             GROUP_MA=('MOITIE1','MOITIE2',),),
-                MODELE=MODEUN,
-                CHAM_MATER=MATEUN,
-                TITRE='MASSE, CENTRE DE GRAVITE ET INERTIE DE LA STRUCTURE',);
-#
-
-IMPR_TABLE(TABLE=MCGUN,);
-#
 # 5.4. CHARGEMENTS
 
 CHARUN=AFFE_CHAR_MECA(MODELE=MODEUN,
                       PESANTEUR=(9.81,0.,0.,-1.,),
-                      DDL_IMPO=(_F(GROUP_NO='ORIGINE',
+                      DDL_IMPO=_F(GROUP_NO='J',
+                                  DZ=0.,),
+                      FACE_IMPO=_F(GROUP_MA='O_I',
                                    DX=0.,
                                    DY=0.,
                                    DZ=0.,),
-                                _F(GROUP_NO='I',
-                                   DY=0.,
-                                   DZ=0.,),
-                                _F(GROUP_NO='J',
-                                   DZ=0.,),),
                       FORCE_FACE=_F(GROUP_MA='Z_1',
                                     FZ=78480.,),);
 #
@@ -183,17 +179,12 @@ CHARUN=AFFE_CHAR_MECA(MODELE=MODEUN,
 RESUUN=MECA_STATIQUE(MODELE=MODEUN,
                      CHAM_MATER=MATEUN,
                      EXCIT=_F(CHARGE=CHARUN,),);
-
-###IMPR_RESU(RESU=_F(MAILLAGE=MUN,RESULTAT=RESUUN,IMPR_COOR='OUI',),);
-
 #
 # 5.6. CALCUL DE L'INDICATEUR D'ERREUR
 
 RESUUN=CALC_ELEM(reuse =RESUUN,
                  RESULTAT=RESUUN,
                  OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
-#
-# 5.7. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_3d_cube_d2 A L'ITERATION 1
 #
 # 6. TEST DE NON REGRESSION
 
@@ -202,9 +193,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUUN,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='OPPOSE',
-                   VALE=0.0266848,
+                   VALE=0.00368805181,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),
                 _F(RESULTAT=RESUUN,
@@ -212,9 +203,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUUN,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='OPPOSE',
-                   VALE=0.1655607,
+                   VALE=0.0616572976,
                    CRITERE='RELATIF',
-                   PRECISION=2.5e-06,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),
                 _F(RESULTAT=RESUUN,
@@ -222,24 +213,22 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUUN,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='OPPOSE',
-                   VALE=-0.0652198,
+                   VALE=0.0404077437,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),),);
 #
 # 7. ADAPTATION DU MAILLAGE DE UN VERS DEUX
-#    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
-#               DE LA COMMANDE :
-#               . RAFFINEMENT ET DERAFFINEMENT AU LIEU DE RAFFINEMENT SEUL
-#               . SELECTION DE L'INDICATEUR PAR UN CHAMP DE GRANDEUR
-#               . MISE A JOUR D'UN CHAMP DE GRANDEUR
+#    . RAFFINEMENT ET DERAFFINEMENT
+#    . SELECTION DE L'INDICATEUR PAR UN CHAMP DE GRANDEUR
+#    . MISE A JOUR D'UN CHAMP DE GRANDEUR
 
-INDIC=CREA_CHAMP(TYPE_CHAM='ELEM_ERREUR',
-                 OPERATION='EXTR',
-                 RESULTAT=RESUUN,
-                 NOM_CHAM='ERRE_ELEM_SIGM',
-                 NUME_ORDRE=1,);
+INDICUN=CREA_CHAMP(TYPE_CHAM='ELEM_ERREUR',
+                   OPERATION='EXTR',
+                   RESULTAT=RESUUN,
+                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NUME_ORDRE=1,);
 #
 
 DEPLUN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -249,13 +238,14 @@ DEPLUN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   NUME_ORDRE=1,);
 #
 
-MACR_ADAP_MAIL(ADAPTATION='RAFF_DERA',
+MACR_ADAP_MAIL(LANGUE='ANGLAIS',
                MAILLAGE_N=MUN,
                MAILLAGE_NP1=CO('MDEUX'),
-               CHAM_GD=INDIC,
+               ADAPTATION='RAFF_DERA',
+               CHAM_GD=INDICUN,
                NOM_CMP_INDICA='ERREST',
-               CRIT_RAFF_REL=0.9,
-               CRIT_DERA_REL=0.25,
+               CRIT_RAFF_PE=0.08,
+               CRIT_DERA_PE=0.25,
                NIVE_MAX=8,
                NIVE_MIN=0,
                MAJ_CHAM=_F(CHAM_MAJ=CO('DEPLDEUX'),
@@ -280,34 +270,20 @@ MATEDEUX=AFFE_MATERIAU(MAILLAGE=MDEUX,
                              _F(GROUP_MA='MOITIE2',
                                 MATER=MATER2,),),);
 #
-# 8.3. LES GRANDEURS GLOBALES
-
-MCGDEUX=POST_ELEM(MASS_INER=_F(TOUT='OUI',
-                               GROUP_MA=('MOITIE1','MOITIE2',),),
-                  MODELE=MODEDEUX,
-                  CHAM_MATER=MATEDEUX,
-                  TITRE='MASSE, CENTRE DE GRAVITE ET INERTIE DE LA STRUCTURE',);
-#
-
-IMPR_TABLE(TABLE=MCGDEUX,);
-#
-# 8.4. CHARGEMENTS
+# 8.3. CHARGEMENTS
 
 CHARDEUX=AFFE_CHAR_MECA(MODELE=MODEDEUX,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=(_F(GROUP_NO='ORIGINE',
+                        DDL_IMPO=_F(GROUP_NO='J',
+                                    DZ=0.,),
+                        FACE_IMPO=_F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
                                      DZ=0.,),
-                                  _F(GROUP_NO='I',
-                                     DY=0.,
-                                     DZ=0.,),
-                                  _F(GROUP_NO='J',
-                                     DZ=0.,),),
                         FORCE_FACE=_F(GROUP_MA='Z_1',
                                       FZ=78480.,),);
 #
-# 8.5. RESOLUTION
+# 8.4. RESOLUTION
 
 RESUDEUX=MECA_STATIQUE(MODELE=MODEDEUX,
                        CHAM_MATER=MATEDEUX,
@@ -318,9 +294,9 @@ RESUDEUX=MECA_STATIQUE(MODELE=MODEDEUX,
 TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLDEUX,
                      GROUP_NO='OPPOSE',
                      NOM_CMP='DY',
-                     VALE=0.1655607,
+                     VALE=0.0616572976,
                      CRITERE='RELATIF',
-                     PRECISION=1e-05,
+                     PRECISION=1e-06,
                      REFERENCE='NON_REGRESSION',
                      VERSION='8.02.05',),
           RESU=(_F(RESULTAT=RESUDEUX,
@@ -328,9 +304,9 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLDEUX,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='OPPOSE',
-                   VALE=0.0919241,
+                   VALE=0.0168243275,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),
                 _F(RESULTAT=RESUDEUX,
@@ -338,9 +314,9 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLDEUX,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='OPPOSE',
-                   VALE=0.3511123,
+                   VALE=0.101817503,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),
                 _F(RESULTAT=RESUDEUX,
@@ -348,21 +324,19 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLDEUX,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='OPPOSE',
-                   VALE=-0.2508121,
+                   VALE=-0.00314065302,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),),);
 #
 # 10. ADAPTATION DU MAILLAGE DE DEUX VERS TROIS
-#    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
-#               DE LA COMMANDE :
-#               . NI RAFFINEMENT, NI DERAFFINEMENT
-#               . MISE A JOUR DE CHAMP
+#     . NI RAFFINEMENT, NI DERAFFINEMENT
+#     . MISE A JOUR DE CHAMP
 
-MACR_ADAP_MAIL(ADAPTATION='RIEN',
-               MAILLAGE_N=MDEUX,
+MACR_ADAP_MAIL(MAILLAGE_N=MDEUX,
                MAILLAGE_NP1=CO('MTROI'),
+               ADAPTATION='RIEN',
                MAJ_CHAM=_F(CHAM_MAJ=CO('DEPLTROI'),
                            TYPE_CHAM='NOEU_DEPL_R',
                            RESULTAT=RESUDEUX,
@@ -390,39 +364,35 @@ MATETROI=AFFE_MATERIAU(MAILLAGE=MTROI,
 
 CHA_TROI=AFFE_CHAR_MECA(MODELE=MODETROI,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=(_F(GROUP_NO='ORIGINE',
+                        DDL_IMPO=_F(GROUP_NO='J',
+                                    DZ=0.,),
+                        FACE_IMPO=_F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
-                                     DZ=0.,),
-                                  _F(GROUP_NO='I',
-                                     DY=0.,
-                                     DZ=0.,),
-                                  _F(GROUP_NO='J',
-                                     DZ=0.,),),);
+                                     DZ=0.,),);
+
+FZ=DEFI_PARA_SENSI(VALE=78480.0,);
 
 CHAFTROI=AFFE_CHAR_MECA_F(MODELE=MODETROI,
-                        FORCE_FACE=_F(GROUP_MA='Z_1',
-                                      FZ=FZ,),);
+                          FORCE_FACE=_F(GROUP_MA='Z_1',
+                                        FZ=FZ,),);
 #
 # 11.5. RESOLUTION
 
 RESUTROI=MECA_STATIQUE(MODELE=MODETROI,
                        CHAM_MATER=MATETROI,
-                       SENSIBILITE = FZ,
                        EXCIT=(_F(CHARGE=CHA_TROI,),
-                              _F(CHARGE=CHAFTROI,)));
-#
-###IMPR_RESU ( RESU=_F( RESULTAT=RESUTROI ) ) ;
-###IMPR_RESU ( RESU=_F( RESULTAT=RESUTROI, SENSIBILITE = FZ) ) ;
+                              _F(CHARGE=CHAFTROI,),),
+                       SENSIBILITE=FZ,);
 #
 # 12. TEST DE NON REGRESSION
 
 TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLTROI,
                      GROUP_NO='OPPOSE',
                      NOM_CMP='DZ',
-                     VALE=-0.2508121,
+                     VALE=-0.00314065302,
                      CRITERE='RELATIF',
-                     PRECISION=1e-05,
+                     PRECISION=1e-06,
                      REFERENCE='NON_REGRESSION',
                      VERSION='8.02.05',),
           RESU=(_F(RESULTAT=RESUTROI,
@@ -430,9 +400,9 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLTROI,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='OPPOSE',
-                   VALE=0.0919241,
+                   VALE=0.0168243275,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),
                 _F(RESULTAT=RESUTROI,
@@ -440,9 +410,9 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLTROI,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='OPPOSE',
-                   VALE=0.3511123,
+                   VALE=0.101817503,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),
                 _F(RESULTAT=RESUTROI,
@@ -450,42 +420,38 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLTROI,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='OPPOSE',
-                   VALE=-0.2508121,
+                   VALE=-0.00314065302,
                    CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   PRECISION=1e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),),);
 #
 # 13. ADAPTATION DU MAILLAGE DE TROIS VERS QUATRE
-#    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
-#               DE LA COMMANDE :
-#               . RAFFINEMENT SELON LA VALEUR RELATIVE DE l'INDICATEUR
-#               . SELECTION DE L'INDICATEUR PAR LA DERIVEE D'UN CHAMP DE GRANDEUR
-#               . MISE A JOUR LA DERIVEE D'UN CHAMP DE GRANDEUR
-#
+#     . RAFFINEMENT SELON LA VALEUR RELATIVE DE l'INDICATEUR
+#     . SELECTION DE L'INDICATEUR PAR LA DERIVEE D'UN CHAMP DE GRANDEUR
+#     . MISE A JOUR DE LA DERIVEE D'UN CHAMP DE GRANDEUR
 
-###IMPR_RESU ( RESU=_F( RESULTAT=RESUTROI, SENSIBILITE = FZ) ) ;
-MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
-               MAILLAGE_N=MTROI,
+MACR_ADAP_MAIL(MAILLAGE_N=MTROI,
                MAILLAGE_NP1=CO('MQUAT'),
+               ADAPTATION='RAFF_DERA',
                RESULTAT_N=RESUTROI,
                INDICATEUR='DEPL',
-               SENSIBILITE = FZ,
+               SENSIBILITE=FZ,
                NOM_CMP_INDICA='DX',
+               TYPE_VALEUR_INDICA='V_RELATIVE',
                CRIT_RAFF_PE=0.08,
-               TYPE_VALEUR_INDICA = 'V_RELATIVE',
-               MAJ_CHAM=(_F(RESULTAT   = RESUTROI,
-                           NOM_CHAM   = 'DEPL',
-                           SENSIBILITE = FZ,
-                           TYPE_CHAM  = 'NOEU_DEPL_R',
-                           NUME_ORDRE = 1,
-                           CHAM_MAJ   = CO("DUDFQUAT"),),
-                         _F(RESULTAT   = RESUTROI,
-                           NOM_CHAM   = 'DEPL',
-                           TYPE_CHAM  = 'NOEU_DEPL_R',
-                           NUME_ORDRE = 1,
-                           CHAM_MAJ   = CO("U___QUAT"),),),);
-###IMPR_RESU ( RESU=_F( CHAM_GD=DUDFQUAT) ) ;
+               CRIT_DERA_PE=0.25,
+               MAJ_CHAM=(_F(CHAM_MAJ=CO('DUDFQUAT'),
+                            TYPE_CHAM='NOEU_DEPL_R',
+                            RESULTAT=RESUTROI,
+                            NOM_CHAM='DEPL',
+                            SENSIBILITE=FZ,
+                            NUME_ORDRE=1,),
+                         _F(CHAM_MAJ=CO('U___QUAT'),
+                            TYPE_CHAM='NOEU_DEPL_R',
+                            RESULTAT=RESUTROI,
+                            NOM_CHAM='DEPL',
+                            NUME_ORDRE=1,),),);
 #
 # 14. CALCUL SUR LE MAILLAGE QUAT
 # 14.1. MODELE MECANIQUE
@@ -507,15 +473,12 @@ MATEQUAT=AFFE_MATERIAU(MAILLAGE=MQUAT,
 
 CHARQUAT=AFFE_CHAR_MECA(MODELE=MODEQUAT,
                         PESANTEUR=(9.81,0.,0.,-1.,),
-                        DDL_IMPO=(_F(GROUP_NO='ORIGINE',
+                        DDL_IMPO=_F(GROUP_NO='J',
+                                    DZ=0.,),
+                        FACE_IMPO=_F(GROUP_MA='O_I',
                                      DX=0.,
                                      DY=0.,
                                      DZ=0.,),
-                                  _F(GROUP_NO='I',
-                                     DY=0.,
-                                     DZ=0.,),
-                                  _F(GROUP_NO='J',
-                                     DZ=0.,),),
                         FORCE_FACE=_F(GROUP_MA='Z_1',
                                       FZ=78480.,),);
 #
@@ -525,25 +488,179 @@ RESUQUAT=MECA_STATIQUE(MODELE=MODEQUAT,
                        CHAM_MATER=MATEQUAT,
                        EXCIT=_F(CHARGE=CHARQUAT,),);
 #
+# 14.5. CALCUL DE L'INDICATEUR D'ERREUR
+
+RESUQUAT=CALC_ELEM(reuse =RESUQUAT,
+                   RESULTAT=RESUQUAT,
+                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
+#
 # 15. TEST DE NON REGRESSION
 
 TEST_RESU(CHAM_NO=_F(CHAM_GD=DUDFQUAT,
                      GROUP_NO='OPPOSE',
                      NOM_CMP='DX',
-                     VALE=-1.70473E-05,
+                     VALE=-1.78227646e-05,
                      CRITERE='RELATIF',
-                     PRECISION=1e-05,
+                     PRECISION=1e-06,
                      REFERENCE='NON_REGRESSION',
                      VERSION='8.03.19',),
-          RESU=(_F(RESULTAT=RESUQUAT,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   GROUP_NO='OPPOSE',
-                   VALE=-0.333748,
-                   CRITERE='RELATIF',
-                   PRECISION=1e-05,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.19',),),);
+          RESU=_F(RESULTAT=RESUQUAT,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='OPPOSE',
+                  VALE=-0.0909341888,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-06,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.03.19',),);
+#
+# 16. ADAPTATION DU MAILLAGE DE QUATRE VERS CINQ
+#     . RAFFINEMENT SELON L'INDICATEUR D'ERREUR
+#     . FILTRAGE SUR LES MAILLES DU GROUPE 'MOITIE2'
+
+MACR_ADAP_MAIL(MAILLAGE_N=MQUAT,
+               MAILLAGE_NP1=CO('MCINQ'),
+               ADAPTATION='RAFFINEMENT',
+               RESULTAT_N=RESUQUAT,
+               INDICATEUR='ERRE_ELEM_SIGM',
+               NOM_CMP_INDICA='ERREST',
+               GROUP_MA='MOITIE2',
+               CRIT_RAFF_PE=0.08,);
+#
+# 17. CALCUL SUR LE MAILLAGE CINQ
+# 17.1. MODELE MECANIQUE
+
+MODECINQ=AFFE_MODELE(MAILLAGE=MCINQ,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
+#
+# 17.2. MISE EN PLACE DES MATERIAUX
+
+MATECINQ=AFFE_MATERIAU(MAILLAGE=MCINQ,
+                       AFFE=(_F(GROUP_MA='MOITIE1',
+                                MATER=MATER1,),
+                             _F(GROUP_MA='MOITIE2',
+                                MATER=MATER2,),),);
+#
+# 17.3. CHARGEMENTS
+
+CHARCINQ=AFFE_CHAR_MECA(MODELE=MODECINQ,
+                        PESANTEUR=(9.81,0.,0.,-1.,),
+                        DDL_IMPO=_F(GROUP_NO='J',
+                                    DZ=0.,),
+                        FACE_IMPO=_F(GROUP_MA='O_I',
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),
+                        FORCE_FACE=_F(GROUP_MA='Z_1',
+                                      FZ=78480.,),);
+#
+# 17.4. RESOLUTION
+
+RESUCINQ=MECA_STATIQUE(MODELE=MODECINQ,
+                       CHAM_MATER=MATECINQ,
+                       EXCIT=_F(CHARGE=CHARCINQ,),);
+#
+# 18. TEST DE NON REGRESSION
+
+TEST_RESU(RESU=_F(RESULTAT=RESUCINQ,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='OPPOSE',
+                  VALE=-0.119736821,
+                  CRITERE='RELATIF',
+                  PRECISION=1e-06,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='8.03.19',),);
+#
+# 19. LES GRANDEURS GLOBALES
+# 19.1. MAILLAGE INITIAL
+
+MCGZERO=POST_ELEM(MASS_INER=_F(TOUT='OUI',
+                               GROUP_MA=('MOITIE1','MOITIE2',),),
+                  MODELE=MODEZERO,
+                  CHAM_MATER=MATEZERO,
+                  TITRE='POUR LE MAILLAGE INITIAL',);
+#
+# 19.2. APRES LA PREMIERE ADAPTATION
+
+MCGUN=POST_ELEM(MASS_INER=_F(TOUT='OUI',
+                             GROUP_MA=('MOITIE1','MOITIE2',),),
+                MODELE=MODEUN,
+                CHAM_MATER=MATEUN,
+                TITRE='APRES LA PREMIERE ADAPTATION',);
+#
+#
+# 19.3. A LA FIN DES ADAPTATIONS
+
+MCGCINQ=POST_ELEM(MASS_INER=_F(TOUT='OUI',
+                               GROUP_MA=('MOITIE1','MOITIE2',),),
+                  MODELE=MODECINQ,
+                  CHAM_MATER=MATECINQ,
+                  TITRE='A LA FIN DES ADAPTATIONS',);
+#
+# 19.4. Impressions comparatives
+
+IMPR_TABLE(TABLE=MCGZERO,
+           NOM_PARA=('LIEU','ENTITE','MASSE','CDG_X','CDG_Y','CDG_Z',),);
+
+IMPR_TABLE(TABLE=MCGUN,
+           NOM_PARA=('LIEU','ENTITE','MASSE','CDG_X','CDG_Y','CDG_Z',),);
+
+IMPR_TABLE(TABLE=MCGCINQ,
+           NOM_PARA=('LIEU','ENTITE','MASSE','CDG_X','CDG_Y','CDG_Z',),);
+
+IMPR_TABLE(TABLE=MCGZERO,
+           NOM_PARA=('LIEU','IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G',),);
+
+IMPR_TABLE(TABLE=MCGUN,
+           NOM_PARA=('LIEU','IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G',),);
+
+IMPR_TABLE(TABLE=MCGCINQ,
+           NOM_PARA=('LIEU','IX_G','IY_G','IZ_G','IXY_G','IXZ_G','IYZ_G',),);
+
+IMPR_TABLE(TABLE=MCGZERO,
+           NOM_PARA=('LIEU','IX_PRIN_G','IY_PRIN_G','IZ_PRIN_G','ALPHA','BETA','GAMMA',),);
+
+IMPR_TABLE(TABLE=MCGUN,
+           NOM_PARA=('LIEU','IX_PRIN_G','IY_PRIN_G','IZ_PRIN_G','ALPHA','BETA','GAMMA',),);
+
+IMPR_TABLE(TABLE=MCGCINQ,
+           NOM_PARA=('LIEU','IX_PRIN_G','IY_PRIN_G','IZ_PRIN_G','ALPHA','BETA','GAMMA',),);
+#
+# 19.5. Test de non regression
+
+TEST_TABLE(TABLE=MCGCINQ,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='MOITIE2',),
+           NOM_PARA='IZ_PRIN_G',
+           VALE=691.666667,
+           CRITERE='RELATIF',
+           PRECISION=1e-06,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.01.17',);
+#
+# 20. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_3d_cube_d2_fig
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(MAILLAGE=MZERO,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(MAILLAGE=MUN,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(CHAM_GD=INDICUN,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(CHAM_GD=DEPLUN,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(RESULTAT=RESUDEUX,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(RESULTAT=RESUTROI,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(RESULTAT=RESUTROI,
+###                  SENSIBILITE=FZ,),);
+###IMPR_RESU(FORMAT='MED',
+###          RESU=_F(RESULTAT=RESUQUAT,),);
+
 
 FIN();

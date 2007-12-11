@@ -8,7 +8,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -202,11 +202,8 @@ C 1.4.1. ==> VERIFICATION DE LA VERSION HDF
 C
       CALL EFFOCO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOCHMD
-        VALI (1) = CODRET
-        CALL U2MESG('A','PREPOST6_12',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST3_10')
+        SAUX08='EFFOCO  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 1.4.2. ==> VERIFICATION DE LA VERSION MED
@@ -214,34 +211,33 @@ C
       CALL EFVECO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
         VALI (1) = CODRET
-        CALL U2MESG('F+','PREPOST6_13',0,' ',1,VALI,0,0.D0)
+        CALL U2MESS('F+','MED_24')
         CALL EFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
         IF( IRET.EQ.0) THEN
           VALI (1) = VLIB(1)
           VALI (2) = VLIB(2)
           VALI (3) = VLIB(3)
-          CALL U2MESG('F+','PREPOST6_14',0,' ',3,VALI,0,0.D0)
+          CALL U2MESG('F+','MED_25',0,' ',3,VALI,0,0.D0)
         ENDIF
         CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET )
         CALL EFVELI ( IDFIMD, VFIC(1),VFIC(2),VFIC(3), IRET )
         IF( IRET.EQ.0) THEN
           IF ( VFIC(2).EQ.-1 .OR. VFIC(3).EQ.-1) THEN
-            CALL U2MESG('F+','PREPOST6_15',0,' ',0,0,0,0.D0)
+            CALL U2MESG('F+','MED_26',0,' ',0,0,0,0.D0)
           ELSE
           VALI (1) = VFIC(1)
           VALI (2) = VFIC(2)
           VALI (3) = VFIC(3)
-            CALL U2MESG('F+','PREPOST6_16',0,' ',3,VALI,0,0.D0)
+            CALL U2MESG('F+','MED_27',0,' ',3,VALI,0,0.D0)
           ENDIF
           IF (     VFIC(1).LT.VLIB(1)
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).LT.VLIB(2) )
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).EQ.VLIB(2) .AND.
      &             VFIC(3).EQ.VLIB(3) ) ) THEN
-            CALL U2MESG('F+','PREPOST6_17',0,' ',0,0,0,0.D0)
+            CALL U2MESG('F+','MED_28',0,' ',0,0,0,0.D0)
           ENDIF
         ENDIF
         CALL EFFERM ( IDFIMD, CODRET )
-        CALL U2MESG('F','PREPOST6_18',0,' ',0,0,0,0.D0)
       ENDIF
 C
 C 1.5. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE CONCERNE
@@ -253,7 +249,7 @@ C
 C
         CALL MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
-          CALL U2MESK('F','PREPOST3_11',1,NOFIMD)
+          CALL U2MESK('F','MED_50',1,NOFIMD)
         ENDIF
 C
 C 1.5.2. ==> C'EST UN MAILLAGE DESIGNE PAR UN NOM
@@ -266,7 +262,7 @@ C
         IF ( .NOT.EXISTM ) THEN
            VALK(1) = NOMAMD
            VALK(2) = NOFIMD
-           CALL U2MESK('F','PREPOST3_12', 2 ,VALK)
+           CALL U2MESK('F','MED_51', 2 ,VALK)
         ENDIF
 C
       ENDIF
@@ -299,11 +295,8 @@ C====
 C
       CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET)
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOCHMD
-        VALI (1) = CODRET
-        CALL U2MESG('A','PREPOST6_19',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_69')
+        SAUX08='EFOUVR  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 2.1. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
@@ -399,8 +392,8 @@ C
             VALR = INST
             VALI (1) = TYPENT
             VALI (2) = TYPGEO(1)
-            CALL U2MESG('A','PREPOST6_20',2,VALK,2,VALI,1,VALR)
-            CALL U2MESS('A','PREPOST3_13')
+            CALL U2MESG('A','MED_97',2,VALK,2,VALI,1,VALR)
+            CALL U2MESS('A','MED_52')
             GOTO 22
  2221       CONTINUE
 C
@@ -411,7 +404,7 @@ C
               VALI (3) = NUMORD
               VALI (4) = NUMPT
               VALR = INST
-              CALL U2MESG('I','PREPOST6_21',1,VALK,4,VALI,1,VALR)
+              CALL U2MESG('I','MED_86',1,VALK,4,VALI,1,VALR)
             ENDIF
             CALL JEDETC ( 'V', PREFIX, 1 )
           ENDIF
@@ -456,30 +449,29 @@ C
       IF ( .NOT.EXISTT ) THEN
         VALK (1) = NOFIMD
         VALK (2) = NOCHMD
-        CALL U2MESG('A+','PREPOST6_22',2,VALK,0,0,0,0.D0)
+        CALL U2MESG('A+','MED_98',2,VALK,0,0,0,0.D0)
         IF ( IINST.NE.0 ) THEN
           VALR = INST
-          CALL U2MESG('A+','PREPOST6_23',0,' ',0,0,1,VALR)
+          CALL U2MESG('A+','MED_68',0,' ',0,0,1,VALR)
         ELSE
           VALI (1) = NUMORD
           VALI (2) = NUMPT
-          CALL U2MESG('A+','PREPOST6_24',0,' ',2,VALI,0,0.D0)
+          CALL U2MESG('A+','MED_69',0,' ',2,VALI,0,0.D0)
         ENDIF
-        CALL U2MESG('A','PREPOST6_25',0,' ',0,0,0,0.D0)
         IF ( EXISTC.EQ.0 ) THEN
-         CALL U2MESS('A','PREPOST3_14')
+         CALL U2MESS('A','MED_32')
         ELSEIF ( EXISTC.EQ.1 ) THEN
-         CALL U2MESS('A','PREPOST3_15')
+         CALL U2MESS('A','MED_33')
         ELSEIF ( EXISTC.EQ.2 ) THEN
          IF ( IINST.NE.0 ) THEN
-          CALL U2MESS('A','PREPOST3_16')
+          CALL U2MESS('A','MED_34')
          ELSE
-          CALL U2MESS('A','PREPOST3_17')
+          CALL U2MESS('A','MED_35')
          ENDIF
         ELSEIF ( EXISTC.EQ.4 ) THEN
-         CALL U2MESS('A','PREPOST3_18')
+         CALL U2MESS('A','MED_36')
         ENDIF
-        CALL U2MESS('F','PREPOST3_19')
+        CALL U2MESS('F','MED_37')
       ENDIF
 C
 C=====================================================================
@@ -611,11 +603,8 @@ C 5.1. ==> FERMETURE FICHIER
 C
       CALL EFFERM ( IDFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
-        VALK (2) = NOCHMD
-        VALI (1) = CODRET
-        CALL U2MESG('A','PREPOST6_26',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_70')
+        SAUX08='EFFERM  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 5.2. ==> MENAGE

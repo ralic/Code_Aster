@@ -5,7 +5,7 @@
       CHARACTER*24        CHTH(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,6 +128,8 @@ C
 14       CONTINUE
 
          CALL GETVID ( MOTCLF,'TABL_RESU_THER' ,IOCC,1,1,TBTHER,N1)
+C        ON VERIFIE L'ORDRE DES NOEUDS DANS LA TABLE
+         CALL RCVERI(TBTHER)
 C
          CALL TBEXIP ( TBTHER, 'INST', EXIST, K8B )
          IF ( .NOT. EXIST ) THEN

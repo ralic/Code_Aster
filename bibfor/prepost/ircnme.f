@@ -5,7 +5,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,7 +120,7 @@ C 4. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL U2MESK('A','PREPOST_82',1,CHANOM)
+         CALL U2MESK('A','MED_89',1,CHANOM)
       ENDIF
 C
       CALL JEDEMA()

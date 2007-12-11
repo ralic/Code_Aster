@@ -4,7 +4,7 @@
      &                    INFMED, NIVINF, IFM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,7 +167,7 @@ C
 C  PROBLEME ?
 C
             ELSE
-              CALL U2MESS('F','MODELISA5_23')
+              CALL U2MESS('F','MED_30')
             ENDIF
 C
    21     CONTINUE

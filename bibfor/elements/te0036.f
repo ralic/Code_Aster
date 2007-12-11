@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,12 +62,13 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID,IER,NDIM,NNO,NNOP,NPG,NNOS,JGANO,KPG,KDEC,J
       INTEGER       IPOIDS,IVF,IDFDE,JDFD2,IGEOM,IPRES,ITEMPS,IRES,I
       INTEGER       DDLH,NFE,DDLC,NNOM,DDL,NIT,CPT,IT,NSE,ISE
-      INTEGER       IN,INO,JCORLO,IGEOLO,IADZI,IAZK24
-      INTEGER       NSEMAX(3),IFORC,IRET,IG,POS,NDIME,NDDL,JDIM
+      INTEGER       IN,INO,JCORLO,IGEOLO,IADZI,IAZK24,JSTNO
+      INTEGER       NSEMAX(3),IFORC,IRET,IG,POS,NDIME,NDDL,JDIM,DDLS
       REAL*8        Y(3),XG(4),RBID,FE(4),XE(2),LSNG,LSTG,RG,TG
       REAL*8        PRES,MATR(6561),FF(27),A(3),B(3),C(3),AB(3),AC(3)
       REAL*8        ND(3),NORME,NAB,RB1(3),RB2(3),GLOC(2),N(3),CISA
       REAL*8        AN(3),G(3),HE,POIDS,DDOT,PADIST,FORREP(3),VF
+      LOGICAL LBID
       DATA          ELRESE /'SE2','TR3'/
       DATA          NSEMAX /2,3,6/
 C
@@ -163,6 +164,7 @@ C     PARAMETRES PROPRES A X-FEM
       CALL JEVECH('PCNSETO','L',JCNSET)
       CALL JEVECH('PHEAVTO','L',JHEAVT)
       CALL JEVECH('PLONCHA','L',JLONCH)
+      CALL JEVECH('PSTANO' ,'L',JSTNO)
 
       CALL JEVECH('PVECTUR','E',IRES)
 
@@ -407,7 +409,6 @@ C             TERME HEAVISIDE
      &                           + HE * FORREP(J) * POIDS * FF(INO)  
  292          CONTINUE
 
-
 C             TERME SINGULIER   
               DO 293 IG=1,NFE
                 DO 294 J=1,NDIM
@@ -429,6 +430,19 @@ C-----------------------------------------------------------------------
 
  110    CONTINUE
  100  CONTINUE
+
+C     SUPPRESSION DES DDLS SUPERFLUS
+      DDLC = 0
+      DDLS = NDIM+DDLH+NFE*NDIM+DDLC
+      IF (NDIM .EQ. 3) THEN
+         NNOM=3*(NNOP/2)
+      ELSE
+         NNOM=NNOP
+      ENDIF  
+      NDDL = (NNOP*DDLS)+(NNOM*DDLC)
+      CALL XTEDDL(NDIM,DDLH,NFE,DDLC,DDLS,NDDL,NNOP,NNOS,ZI(JSTNO),
+     &                  LBID,OPTION,NOMTE,
+     &                  RBID,ZR(IRES))
 
 C-----------------------------------------------------------------------
 C     FIN

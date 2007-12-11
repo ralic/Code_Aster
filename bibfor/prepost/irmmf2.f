@@ -5,7 +5,7 @@
      &                    NUFAEN, NUFACR, NOGRFA, NOFAEX, TABAUX,
      &                    INFMED, NIVINF, IFM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -321,8 +321,8 @@ C
      &                  IAUX, IAUX, K200, NATT,
      &                  NOGRFA, NBGNOF, CODRET )
           IF ( CODRET.NE.0 ) THEN
-            CALL CODENT ( CODRET,'G',SAUX08 )
-            CALL U2MESK('F','PREPOST2_90',1,SAUX08)
+            SAUX08='EFFAMC  '
+            CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
           ENDIF
 C
  23    CONTINUE
@@ -343,8 +343,8 @@ C
      &                EDNOEU, TYGENO, CODRET )
 C
         IF ( CODRET.NE.0 ) THEN
-          CALL CODENT ( CODRET,'G',SAUX08 )
-          CALL U2MESK('F','PREPOST2_91',1,SAUX08)
+          SAUX08='EFFAME  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
         ENDIF
 C
 C 3.2. ==> ECRITURE DANS LE CAS DES MAILLES : IL FAUT PASSER PAR LA
@@ -370,10 +370,8 @@ C
      &                    EDMAIL, TYPGEO(ITYP), CODRET )
 C
             IF ( CODRET.NE.0 ) THEN
-              CALL CODENT ( CODRET,'G',SAUX08 )
-               VALK(1) = NOMTYP(ITYP)
-               VALK(2) = SAUX08
-               CALL U2MESK('F','PREPOST2_92', 2 ,VALK)
+              SAUX08='EFFAME  '
+              CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
             ENDIF
 C
           ENDIF

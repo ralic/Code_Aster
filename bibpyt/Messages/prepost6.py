@@ -1,4 +1,4 @@
-#@ MODIF prepost6 Messages  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost6 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,130 +20,55 @@
 
 def _(x) : return x
 
-cata_msg={
-1: _("""
- 
-"""),
+cata_msg = {
 
-2: _("""
- fichier med :  %(k1)s erreur efferm numero  %(i1)d 
-"""),
-
-3: _("""
+3 : _("""
  le volume differe du volume use mais le nombre d'iteration
   est superieur a  %(i1)d 
       volume use:  %(r1)f 
   volume calcule:  %(r2)f 
 """),
 
-4: _("""
+4 : _("""
  verifier les parametres d'usure pour le secteur  %(i1)d 
 """),
 
-5: _("""
+5 : _("""
  verifier les parametres d'usure pour le secteur  %(i1)d 
 """),
 
-6: _("""
+6 : _("""
  composante %(k1)s / point  %(i1)d 
 """),
 
-7: _("""
+7 : _("""
    nombre de valeurs        =  %(i1)d    
      %(r1)f, %(r2)f, ... 
 """),
 
-8: _("""
+8 : _("""
    nombre de pics extraits   =  %(i1)d
      %(r1)f, %(r2)f, ... 
 """),
 
-9: _("""
+9 : _("""
    nombre de cycles detectes =  %(i1)d 
 """),
 
-10: _("""
+10 : _("""
    %(i1)d  /  %(r1)f   %(r2)f 
 """),
 
-11: _("""
+11 : _("""
    dommage en ce point/cmp  =  %(r1)f 
 """),
 
-12: _("""
- fichier med :  %(k1)s champ :  %(k2)s erreur effoco numero  %(i1)d 
-"""),
-
-13: _("""
- le fichier n'a pas ete construit avec la meme version de med.
- erreur efveco numero  %(i1)d 
-"""),
-
-14: _("""
- version de la bibliotheque med utilisee par code_aster: %(i1)d %(i2)d %(i3)d 
-"""),
-
-15: _("""
- version de la bibliotheque med qui a cree le fichier   : < 2.1.5
-"""),
-
-16: _("""
- version de la bibliotheque med pour creer le fichier  : %(i1)d %(i2)d %(i3)d
-"""),
-
-17: _("""
- un utilitaire vous permet peut-etre de convertir votre fichier (medimport)
-"""),
-
-18: _("""
- 
-"""),
-
-19: _("""
- fichier med :  %(k1)s champ :  %(k2)s erreur efouvr numero  %(i1)d 
-"""),
-
-20: _("""
- fichier med :  %(k1)s champ :  %(k2)s instant voulu :  %(r1)f 
- typent :  %(i1)d 
- typgeo :  %(i2)d 
- 
-"""),
-
-21: _("""
- champ a lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d 
- instant voulu :  %(r1)f 
- --> numero d ordre :  %(i3)d 
- --> numero de pas de temps :  %(i4)d 
- 
-"""),
-
-22: _("""
- fichier med :  %(k1)s champ :  %(k2)s 
-"""),
-
-23: _("""
- instant voulu :  %(r1)f 
-"""),
-
-24: _("""
- numero d ordre :  %(i1)d numero de pas de temps :  %(i2)d 
-"""),
-
-25: _("""
- 
-"""),
-
-26: _("""
- fichier med :  %(k1)s champ :  %(k2)s erreur efferm numero  %(i1)d 
-"""),
-
-27: _("""
+27 : _("""
  parametres de calcul du dommagenombre de numeros d'ordre  =  %(i1)d 
  nombre de points de calcul =  %(i2)d 
 """),
 
-28: _("""
+28 : _("""
  calcul     du      dommage en %(k1)s points  de   calcul  du    dommage %(k2)s 
  composante(s) grandeur equivalente %(k3)s 
  methode  d'extraction  des    pics %(k4)s 
@@ -152,42 +77,42 @@ cata_msg={
  
 """),
 
-29: _("""
+29 : _("""
  maille:  %(k1)s 
 """),
 
-30: _("""
+30 : _("""
  des mailles de peau ne s'appuient sur aucune maille support
     maille:  %(k1)s 
 """),
 
-31: _("""
+31 : _("""
 
      ===== GROUP_MA ASTER / PHYSICAL GMSH =====
 
 """),
 
-32: _("""
+32 : _("""
 
   Le GROUP_MA GMSH GM10000 contient %(i1)d éléments :
 """),
 
-33: _("""
+33 : _("""
        %(i1)d éléments de type %(k1)s
 """),
 
-34: _("""
+34 : _("""
     La composante %(k1)s que vous avez renseignée ne fait pas partie
     des composantes du champ à imprimer.
 """),
 
-35: _("""
+35 : _("""
     Le type de champ %(k1)s n'est pas autorisé avec les champs 
     élémentaires %(k2)s.
     L'impression du champ sera effectué avec le type SCALAIRE.
 """),
 
-36: _("""
+36 : _("""
  Veuillez utiliser IMPR_GENE pour l'impression 
  de résultats en variables généralisées.
 """),

@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa5 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,94 +56,6 @@ cata_msg = {
 
 9 : _("""
  transcodage : une incoherence a ete detectee entre les declarations de noms de noeuds ou de mailles lors du transcodage des objets groupes et connectivitees
-"""),
-
-10 : _("""
- med: erreur eflfde numero  %(k1)s 
-"""),
-
-11 : _("""
- med: erreur effien numero  %(k1)s 
-"""),
-
-12 : _("""
- probleme a la lecture de la description
-"""),
-
-13 : _("""
- impossible de retrouver l'adresse associee au groupe  %(k1)s 
-"""),
-
-14 : _("""
- MED : Erreur lors de l'appel à EFNEMA, code retour = %(k1)s
-
-  -> Risque & Conseil :
-    Vérifier l'intégrité du fichier MED avec medconforme/mdump.
-    Si le maillage a été produit par un code externe, vérifier que les
-    noms de maillage, de groupes, de familles ne contiennent pas de
-    blancs à la fin.
-    Dans Salomé, on peut renommer ces entités et supprimer les espaces
-    invalides.
-"""),
-
-15 : _("""
- il manque les coordonnees !
-"""),
-
-16 : _("""
- mailles  %(k1)s 
-"""),
-
-17 : _("""
- il manque les mailles !
-"""),
-
-18 : _("""
- med: erreur efngro numero  %(k1)s 
-"""),
-
-19 : _("""
- med: erreur efnatt numero  %(k1)s 
-"""),
-
-20 : _("""
- med: erreur effami numero  %(k1)s 
-"""),
-
-23 : _("""
- erreur numero de groupe = 0
-"""),
-
-24 : _("""
- med: erreur efnfam numero  %(k1)s 
-"""),
-
-25 : _("""
- aucune famille dans ce fichier med
-"""),
-
-26 : _("""
- med: erreur effaml numero  %(k1)s 
-"""),
-
-27 : _("""
- les mailles  %(k1)s ne sont pas nommees dans le fichier med
-"""),
-
-28 : _("""
- med: erreur efconl numero  %(k1)s 
-"""),
-
-29 : _("""
- med: erreur efcool numero  %(k1)s 
-"""),
-
-30 : _("""
- incoherence catalogue - fortran (nbtyp fortran different de nbtyp catalogue)
-"""),
-
-31 : _("""
- incoherence catalogue - fortran (nomtyp fortran different de nomtyp catalogue)
 """),
 
 32 : _("""

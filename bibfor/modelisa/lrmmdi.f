@@ -4,7 +4,7 @@
      &                    NBNOEU, NBMAIL, NBNOMA,
      &                    DESCFI, ADAPMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,10 +113,10 @@ C
      &              NBNOEU, CODRET)
       IF ( CODRET.NE.0 ) THEN
         CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','MODELISA5_14',1,SAUX08)
+        CALL U2MESK('F','MED_12',1,SAUX08)
       ENDIF
       IF ( NBNOEU.EQ.0 ) THEN
-        CALL U2MESS('F','MODELISA5_15')
+        CALL U2MESS('F','MED_21')
       ENDIF
 C
 C 1.2. ==> NOMBRE DE MAILLES PAR TYPE ET LONGUEUR TOTALE DU TABLEAU
@@ -133,9 +133,9 @@ C
      &                  EDCONN, EDMAIL, TYPGEO(ITYP), EDNODA,
      &                  NMATYP(ITYP), CODRET )
           IF ( CODRET.NE.0 ) THEN
-            CALL U2MESK('A','MODELISA5_16',1,NOMTYP(ITYP))
+            CALL U2MESK('A','MED_23',1,NOMTYP(ITYP))
             CALL CODENT ( CODRET,'G',SAUX08 )
-            CALL U2MESK('F','MODELISA5_14',1,SAUX08)
+            CALL U2MESK('F','MED_12',1,SAUX08)
           ENDIF
 C
           NBMAIL       = NBMAIL + NMATYP(ITYP)
@@ -150,7 +150,7 @@ C
    12 CONTINUE
 C
       IF ( NBMAIL.EQ.0 ) THEN
-        CALL U2MESS('F','MODELISA5_17')
+        CALL U2MESS('F','MED_29')
       ENDIF
 C
 C====

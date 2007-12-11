@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF prepost3 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,18 +22,6 @@ def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
- med: erreur efgaul numero  %(k1)s 
-"""),
-
-2 : _("""
- med: erreur efgaue numero  %(k1)s 
-"""),
-
-3 : _("""
- ecriture des localisations des points de gauss
-"""),
-
 4 : _("""
   le nombre de noeuds selectionnes est superieur au nombre de noeuds du maillage. on va tronquer la liste.
 """),
@@ -56,78 +44,6 @@ cata_msg = {
 
 9 : _("""
  type de base inconnu:  %(k1)s 
-"""),
-
-10 : _("""
- soit le fichier n'existe pas, soit c'est une mauvaise version de hdf (utilise par med).
-"""),
-
-11 : _("""
- pas de maillage dans  %(k1)s 
-"""),
-
-12 : _("""
- maillage  %(k1)s  inconnu dans  %(k2)s 
-"""),
-
-13 : _("""
- instant inconnu pour ce champ et ces supports dans le fichier.
-"""),
-
-14 : _("""
- champ inconnu.
-"""),
-
-15 : _("""
- il manque des composantes.
-"""),
-
-16 : _("""
- aucune valeur à cet instant.
-"""),
-
-17 : _("""
- aucune valeur à ce numéro d ordre.
-"""),
-
-18 : _("""
- mauvais nombre de valeurs.
-"""),
-
-19 : _("""
- lecture impossible.
-"""),
-
-21 : _("""
- grandeur inconnue
-"""),
-
-22 : _("""
- composante inconnue pour la grandeur
-"""),
-
-23 : _("""
- trop de composantes pour la grandeur
-"""),
-
-24 : _("""
- lecture impossible pour  %(k1)s  au format MED
-"""),
-
-25 : _("""
- MODELE obligatoire pour lire un CHAM_ELEM
-"""),
-
-26 : _("""
- med: erreur efchrl numero  %(k1)s 
-"""),
-
-27 : _("""
- nom de composante tronquee a 8 caracteres ( %(k1)s  >>>  %(k2)s )
-"""),
-
-28 : _("""
- impossible de trouver la composante ASTER associée a  %(k1)s 
 """),
 
 29 : _("""
@@ -185,88 +101,8 @@ cata_msg = {
  le champ de type ELGA n'est pas supporté
 """),
 
-42 : _("""
- probleme dans la lecture du nombre de champs
-"""),
-
-43 : _("""
- probleme dans la lecture du nombre de composantes
-"""),
-
-44 : _("""
- probleme dans la lecture du nom du champ et des ses composantes
-"""),
-
-45 : _("""
- le champ  %(k1)s n existe pas dans le fichier med
-"""),
-
-46 : _("""
- med: erreur efnpdt numero  %(k1)s 
-"""),
-
-47 : _("""
- med: erreur efpdti numero  %(k1)s 
-"""),
-
-48 : _("""
- med: on ne traite pas les maillages distants
-"""),
-
 49 : _("""
  probleme a la fermeture
-"""),
-
-50 : _("""
- probleme dans le diagnostic.
-"""),
-
-51 : _("""
- med: erreur efnval numero  %(k1)s 
-"""),
-
-52 : _("""
- probleme dans la lecture du nombre de maillages
-"""),
-
-53 : _("""
- probleme dans la lecture du nom du maillage.
-"""),
-
-54 : _("""
- attention le maillage n'est pas de type non structuré
-"""),
-
-55 : _("""
- le maillage ' %(k1)s ' est inconnu dans le fichier.
-"""),
-
-56 : _("""
- attention il s'agit d'un maillage structuré
-"""),
-
-57 : _("""
- ==> transfert impossible.
-"""),
-
-58 : _("""
- mauvaise definition de NORESU.
-"""),
-
-59 : _("""
- mauvaise definition de NOMSYM.
-"""),
-
-60 : _("""
- mauvaise definition de NOPASE.
-"""),
-
-61 : _("""
- mauvais dimensionnement de NOMAST.
-"""),
-
-62 : _("""
- impossible de déterminer un nom de maillage MED
 """),
 
 63 : _("""
@@ -297,10 +133,6 @@ cata_msg = {
 69 : _("""
  L'impression d'un champ complexe nécessite l'utilisation du mot-clé PARTIE.
  Ce mot-clé permet de choisir la partie du champ à imprimer (réelle ou imaginaire).
-"""),
-
-70 : _("""
- le mot cle "info_maillage" est reserve au format med
 """),
 
 71 : _("""

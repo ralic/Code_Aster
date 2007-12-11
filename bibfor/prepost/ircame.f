@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -184,15 +184,15 @@ C
       CALL DISMOI ( 'F', 'DIM_GEOM', NOMAAS, 'MAILLAGE', NDIM,
      &              SAUX32, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL U2MESS('F','PREPOST_71')
+        CALL U2MESS('F','MED_43')
       ENDIF
 C
 C 2.2. ==> CREATION DU NOM DU MAILLAGE POUR MED
 C
       CALL MDNOMA ( NOMAMD, LNOMAM, NOMAAS, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL U2MESK('F','PREPOST_72',1,SAUX08)
+        SAUX08='MDNOMA  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 2.3. ==> CE MAILLAGE EST-IL DEJA PRESENT DANS LE FICHIER ?
@@ -303,11 +303,8 @@ C
 C
       ELSE
 C
-        VALK (1) = NOFIMD
-        VALK (2) = NOCHMD
-        VALI = EXISTC
-        CALL U2MESG('A', 'PREPOST5_24',2,VALK,1,VALI,0,0.D0)
-        CALL U2MESS('F','PREPOST_73')
+        SAUX08='MDEXCH  '
+        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
 C
       ENDIF
 C

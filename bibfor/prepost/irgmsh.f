@@ -1,15 +1,17 @@
-      SUBROUTINE IRGMSH ( NOMCON, PARTIE, IFI, NBCHAM, CHAM, LRESU,
+      SUBROUTINE IRGMSH ( NOMCON, NOSIMP, NOPASE,
+     &                    PARTIE, IFI, NBCHAM, CHAM, LRESU,
      &                    NBORDR, ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI,
      &                    VERSIO, LGMSH, TYCHA )
       IMPLICIT NONE
       INTEGER           IFI, NBCHAM, NBORDR, NBCMP, ORDR(*), NBMAT,
      &                  NUMMAI(*),VERSIO
       LOGICAL           LRESU,LGMSH
-      CHARACTER*(*)     NOMCON, CHAM(*),NOMCMP(*),PARTIE
+      CHARACTER*(*)     NOMCON, NOSIMP, NOPASE
+      CHARACTER*(*)     CHAM(*),NOMCMP(*),PARTIE
       CHARACTER*8       TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 11/12/2007   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +33,8 @@ C     BUT: ECRITURE D'UN CHAMP OU D'UN CONCEPT RESULTAT AU FORMAT GMSH
 C
 C     ENTREE:
 C     NOMCON : K8  : NOM DU CONCEPT A IMPRIMER
+C     NOSIMP : K8  : NOM SIMPLE ASSOCIE AU CONCEPT NOMCON SI SENSIBILITE
+C     NOPASE : K8  : NOM DU PARAMETRE SENSIBLE
 C     PARTIE : K4  : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
 C     IFI    : I   : NUMERO D'UNITE LOGIQUE DU FICHIER GMSH
 C     NBCHAM : I   : NOMBRE DE CHAMP DANS LE TABLEAU CHAM
@@ -182,9 +186,12 @@ C
 C ------ TRAITEMENT DU CAS CHAM_NO:
 C
          IF (TYCH(1:4).EQ.'NOEU' ) THEN
-            CALL IRGMCN (CHAM(ICH),PARTIE,IFI,NOMCON,ORDR,NBORDR,
-     &                   ZR(JCOOR),ZI(JCONX),ZI(JPOIN),NOBJ,NBEL,
-     &                   NBCMP,NOMCMP,LRESU,ZR(JPARA),VERSIO,TYCHA)
+            CALL IRGMCN ( CHAM(ICH), PARTIE, IFI,
+     &                    NOMCON, NOSIMP, NOPASE,
+     &                    ORDR,NBORDR,
+     &                    ZR(JCOOR), ZI(JCONX), ZI(JPOIN), NOBJ, NBEL,
+     &                    NBCMP, NOMCMP, LRESU, ZR(JPARA),
+     &                    VERSIO, TYCHA )
 C
 C ------ TRAITEMENT DU CAS CHAM_ELEM AUX NOEUDS:
 C
@@ -195,10 +202,13 @@ C
               CALL U2MESK('A','PREPOST6_35',2,VALK)
               TYCHA='SCALAIRE'
             ENDIF
-            CALL IRGMCE (CHAM(ICH),PARTIE,IFI,NOMCON,ORDR,NBORDR,
-     &                   ZR(JCOOR),ZI(JCONX),ZI(JPOIN),NOBJ,NBEL,
-     &                   NBCMP,NOMCMP,LRESU,ZR(JPARA),NOMAOU,NOMA,
-     &                   VERSIO,TYCHA)
+            CALL IRGMCE ( CHAM(ICH), PARTIE, IFI,
+     &                    NOMCON, NOSIMP, NOPASE,
+     &                    ORDR,NBORDR,
+     &                    ZR(JCOOR), ZI(JCONX), ZI(JPOIN), NOBJ, NBEL,
+     &                    NBCMP, NOMCMP, LRESU, ZR(JPARA),
+     &                    NOMAOU, NOMA,
+     &                    VERSIO, TYCHA )
 
 C
 C ------ TRAITEMENT DU CAS CHAM_ELEM AUX GAUSS:
@@ -210,9 +220,12 @@ C
               VALK(2)=TYCH(1:4)
               CALL U2MESK('A','PREPOST6_35',2,VALK)
             ENDIF
-            CALL IRGMCG (CHAM(ICH),PARTIE,IFI,NOMCON,ORDR,NBORDR,
-     &                   ZR(JCOOR),ZI(JCONX),ZI(JPOIN),NOBJ,NBEL,
-     &                   NBCMP,NOMCMP,LRESU,ZR(JPARA),NOMAOU,VERSIO)
+            CALL IRGMCG ( CHAM(ICH), PARTIE, IFI,
+     &                    NOMCON, NOSIMP, NOPASE,
+     &                    ORDR,NBORDR,
+     &                    ZR(JCOOR), ZI(JCONX), ZI(JPOIN), NOBJ, NBEL,
+     &                    NBCMP, NOMCMP, LRESU, ZR(JPARA),
+     &                    NOMAOU,VERSIO )
 C
 C ------ AUTRE: PAS D'IMPRESSION
 C

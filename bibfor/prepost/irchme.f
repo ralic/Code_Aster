@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/06/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,7 +107,7 @@ C
       INTEGER IAUX
 C
       CHARACTER*8 SAUX08
-      CHARACTER*24 VALK(3)
+      CHARACTER*24 VALK(1)
       CHARACTER*8 UNIINS, MODELE
       CHARACTER*32 NOCHMD
 C
@@ -124,7 +124,7 @@ C
       IF ( NIVINF.GT.1 ) THEN
         CALL UTFLSH (CODRET)
         WRITE (IFM,10000)
-        CALL U2MESK('I','PREPOST_91',1,CHANOM)
+        CALL U2MESK('I','MED_90',1,CHANOM)
       ENDIF
 C
 C 1.1. ==> NOM DU CHAMP DANS LE FICHIER MED
@@ -149,9 +149,9 @@ C
         ENDIF
         WRITE (IFM,11004) NOCHMD
       ELSE
-         CALL U2MESS('A','PREPOST_92')
-         CALL U2MESK('A','PREPOST_93',1,CHANOM)
-         CALL U2MESK('A','PREPOST_94',1,NORESU)
+         CALL U2MESS('A','MED_91')
+         CALL U2MESK('A','MED_44',1,CHANOM)
+         CALL U2MESK('A','MED_45',1,NORESU)
       ENDIF
 C
 11000 FORMAT(1X,'RESULTAT           : ',A8)
@@ -161,12 +161,6 @@ C
 11004 FORMAT(3X,'==> NOM MED DU CHAMP : ',A32,/)
 C
 C 1.2. ==> INSTANT CORRESPONDANT AU NUMERO D'ORDRE
-C          REMARQUE : COMME ON NE SAIT PAS FAIRE MIEUX, ON IDENTIFIE
-C                     LE NUMERO DE PAS DE TEMPS ET LE NUMERO D'ORDRE.
-C                     L'UNITE EST INCONNUE.
-C          REMARQUE : CELA N'A DU SENS QUE POUR UN CHAMP ISSU D'UN
-C                     RESULTAT. POUR UNE GRANDEUR, IL N'Y A NI NUMERO
-C                     D'ORDRE, NI PAS DE TEMPS.
 C
       IF ( CODRET.EQ.0 ) THEN
 C
@@ -184,8 +178,7 @@ C
            INSTAN = ZR(IAUX)
          ENDIF
         NUMPT = NUMORD
-C                 12345678
-        UNIINS = 'INCONNUE'
+        UNIINS = '_'
 C
       ELSE
 C
@@ -213,9 +206,7 @@ C
           CALL JEEXIN ( MODELE//'.MAILLE', IRET)
           IF(IRET.EQ.0)THEN
             VALK (1) = MODELE//'.MAILLE'
-            VALK (2) = ' '
-            VALK (3) = ' '
-            CALL U2MESG('F', 'PREPOST5_27',3,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'MED_82',1,VALK,0,0,0,0.D0)
           ENDIF
         ENDIF
 C
@@ -245,7 +236,7 @@ C
      &                CODRET )
       ELSE
         CODRET = 1
-        CALL U2MESK('A','PREPOST_95',1,TYPECH(1:4))
+        CALL U2MESK('A','MED_92',1,TYPECH(1:4))
       ENDIF
 C
       ENDIF
@@ -255,11 +246,11 @@ C 3. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL U2MESK('A','PREPOST_82',1,CHANOM)
+         CALL U2MESK('A','MED_89',1,CHANOM)
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
-        CALL U2MESK('I','PREPOST_96',1,CHANOM)
+        CALL U2MESK('I','MED_93',1,CHANOM)
         WRITE (IFM,10000)
         CALL UTFLSH (CODRET)
       ELSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/12/2007   AUTEUR GALENNE E.GALENNE 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,7 +180,27 @@ TEST_TABLE(TABLE=TABDEP,
            REFERENCE='AUTRE_ASTER');                     
 
 
+# CALCUL AVEC POST_K1_K2_K3
+PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
+                     MAILLAGE=MAILLAG1,
+                     MATER=ACIER,
+                     FISSURE = FISS,
+                     INFO =2,
+                     ABSC_CURV_MAXI = 0.03,
+                     RESULTAT  = UTOT,
+                     VECT_K1        = ( 0., 1., 0.,),
+                    )
 
+IMPR_TABLE(TABLE = PK)
+
+# REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES - CALCUL AVEC POST_K1_K2_K3)
+TEST_TABLE(TABLE=PK,
+           FILTRE=(_F(NOM_PARA='METHODE',VALE_I=3),),
+           NOM_PARA='K1_MAX',
+           VALE= 9.69223E+06,
+           CRITERE='RELATIF',
+           PRECISION=0.035,
+           REFERENCE='AUTRE_ASTER');                      
 
 
 

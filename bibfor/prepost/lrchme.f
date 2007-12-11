@@ -6,7 +6,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,7 +96,7 @@ C
       ELSEIF ( TYPECH(1:2).EQ.'EL' ) THEN
         CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMMOD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
-          CALL U2MESS('F','PREPOST3_25')
+          CALL U2MESS('F','MED_71')
         ENDIF
         CALL LRCEME ( CHANOM,  NOCHMD, TYPECH(1:4), NOMAMD,
      &                NOMAAS, NOMMOD, NOMGD,
@@ -105,7 +105,7 @@ C
      &                NROFIC, LIGREL, OPTION, PARAM, CODRET )
       ELSE
         CODRET = 1
-        CALL U2MESK('A','PREPOST_95',1,TYPECH(1:4))
+        CALL U2MESK('A','MED_92',1,TYPECH(1:4))
       ENDIF
 C
 C====
@@ -113,7 +113,7 @@ C 2. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL U2MESK('A','PREPOST3_24',1,CHANOM)
+        CALL U2MESK('A','MED_55',1,CHANOM)
       ENDIF
 C
       END
