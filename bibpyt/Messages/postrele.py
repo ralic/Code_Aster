@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 02/10/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF postrele Messages  DATE 17/12/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -389,6 +389,11 @@ cata_msg={
 63: _("""
  Attention lors de la définition de votre liste de noeuds,
  %(i1)d noeuds sont hors de la matière 
+ 
+"""),
+
+64: _("""
+ Le cas de charge %(k1)s n'a pas été trouvé dans la SD Resultat %(k2)s.
  
 """),
 

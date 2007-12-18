@@ -1,8 +1,9 @@
-      SUBROUTINE NSISOT(OPTION,COMPOR,NDIM,IMATE,IMATSE,DEPS,DEDT,
+      SUBROUTINE NSISOT(OPTION,TYPMOD,COMPOR,NDIM,IMATE,IMATSE,DEPS,
      & SIGMS,VARMS,VARM,SIGM,VARP,SIPAS,SIGP,SIGPS,VARPS,STYPSE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,19 +26,20 @@ C
       INTEGER            NDIM,IMATE,IMATSE
       CHARACTER*16      OPTION,COMPOR(4)
       CHARACTER*24      STYPSE
-      REAL*8    DEPS(*),SIGMS(*),VARMS(*),VARPS(*),DEDT(*)
+      CHARACTER*8       TYPMOD(*)
+      REAL*8    DEPS(*),SIGMS(*),VARMS(*),VARPS(*)
       REAL*8    VARM(*),SIGM(*),VARP(*),SIPAS(*),SIGP(*),SIGPS(*)
            
 C ----------------------------------------------------------------------
 C     INTEGRATION DES LOIS ELASTIQUE ET VON MISES ISOTROPE SENSIBLES 
-C     POUR LES ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
+C     POUR LES ELEMENTS ISOPARAMETRIQUES ET LES COQUES 
+C     EN PETITES DEFORMATIONS
 C
 C IN  OPTION  : OPTION DEMANDEE 
 C IN  COMPOR  : COMPORTEMENT
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  IMATE   : ADRESSE DU MATERIAU CODE
 C IN  DEPS    : INCR. DE DEFORMATION 
-C IN  DEDT    : INCR. DE DEFORMATION (2EME PASSAGE)
 C IN  SIGMS   : CONTRAINTES SENSIBLES A L'INSTANT -
 C IN  VARMS   : VAR INTERNES SENSIBLES A L'INSTANT -
 C IN  VARM    : VAR INTERNES A L'INSTANT -
@@ -57,8 +59,7 @@ C      - POUR L'OPTION MECA_SENS_CHAR, DEPS EST UN
 C        CHAMPS DIRECT (NON DERIVE),SIGMS SONT LES CONTRAINTES
 C        SENSIBLES A L'INSTANT -, SIGPS SONT LES CONTRAINTES
 C        SENSIBLES PARTIELLES A L'INSTANT +
-C      - POUR L'OPTION MECA_SENS_RAPH, DEDT EST UN
-C        CHAMP DIRECT (NON DERIVE), DEPS EST UN
+C      - POUR L'OPTION MECA_SENS_RAPH, DEPS EST UN
 C        CHAMPS SENSIBLE (DERIVE),SIGMS SONT LES CONTRAINTES
 C        SENSIBLES A L'INSTANT -,SIPAS SONT LES CONTRAINTES
 C        SENSIBLES PARTIELLES A L'INSTANT +, SIGPS SONT LES
@@ -66,8 +67,11 @@ C        CONTRAINTES SENSIBLES A L'INSTANT +
 C 
 C ----------------------------------------------------------------------
 C
+C----- COMMON NECESSAIRE A VON_MISES ISOTROPE C_PLAN :
+C      COMMON COMMUN A NMCRI1 ET NMISOT
+      COMMON /RCONM1/DEUXMU,NU,E,SIGY,RPRIM,PM,SIGEL,LINE
       REAL*8 SIGMDV(6)
-      REAL*8 DDESMO,SEUIL,SIELEQ,SIGEL(6)
+      REAL*8 DDESMO,SEUIL,SIELEQ,SIGEL(6),PM,LINE,DX
       REAL*8 TEMP,TRSIGM,DSIEEQ,DDESDV(6)
       REAL*8 VALRES(3),DELTAP,DPMIN,TROIMU
       REAL*8 E,NU,TROISK,RPRIM,DSY,DEUXMU
@@ -77,7 +81,14 @@ C
       REAL*8 ES,NUS,DSDES,SIGYS
       REAL*8 APUIS, NPUIS, UNSURN, COCO, R8PREM
       REAL*8 APUISS, NPUISS
-      INTEGER NDIMSI,K,I,L
+      REAL*8 NU2M, NU2P, TRACE, DLAMDB, LAMDB 
+      REAL*8 PREC, PRECR, VAL0, XAP, DP0
+      REAL*8 FDDX(6), DENO, DDX
+      REAL*8 DDXDE, DDXDNU, DDXDSI, DDXDET
+      REAL*8 COE1, COE2, COE3, COE4
+      REAL*8 NUM, DEN, NUMP, DENP, PROD
+      REAL*8 DPDE, DPDNU, DPDSI, DPDET, DPDPS
+      INTEGER NDIMSI,K,I,L,NITER,IRET
       CHARACTER*2 BL2,FB2,CODRET(3)
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3)
@@ -98,6 +109,8 @@ C     --------------------
 
       IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
         DELTAP = VARP(1) - VARM(1)
+           WRITE(6,*) 
+           WRITE(6,*) 'DELTAP=',DELTAP
       ELSE
         DELTAP = 0.D0
       ENDIF
@@ -122,7 +135,6 @@ C     ---------------------------------------
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
       IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_LINE') THEN
-CCC        NOMRES(1) = 'D_SIGM_EPSI'
         NOMRES(1) = 'D_SIGM_E'
         NOMRES(2) = 'SY'
         CALL RCVALA(IMATE,' ','ECRO_LINE',3,NOMPAR,VALPAP,2,NOMRES,
@@ -171,7 +183,6 @@ C     ------------------------------------
         NUS = VALRES(2)
 
         IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_LINE') THEN
-CCC          NOMRES(1) = 'D_SIGM_EPSI'
           NOMRES(1) = 'D_SIGM_E'
           NOMRES(2) = 'SY'
           CALL RCVALA(IMATSE,' ','ECRO_LINE',3,NOMPAR,VALPAP,2,
@@ -213,6 +224,10 @@ C     ------------------------------------
       IF (OPTION(1:14).EQ.'MECA_SENS_MATE') THEN
 
         DDESMO = 0.D0
+        IF (TYPMOD(1).EQ.'C_PLAN') THEN
+C   HYPOTHESE DE CONTRAINTES PLANES POUR LES PLAQUES
+          DEPS(3)=-(NU/(1.D0-NU))*(DEPS(1)+DEPS(2))
+        ENDIF
         DO 20 K = 1,3
           DDESMO = DDESMO + DEPS(K)
    20   CONTINUE
@@ -221,52 +236,176 @@ C     ------------------------------------
           DDESDV(K) = DEPS(K) - DDESMO*KRON(K)
    30   CONTINUE
 
-        TRSIGM = 0.D0
-        DO 40 K = 1,3
-          TRSIGM = TRSIGM + SIGM(K)
-   40   CONTINUE
-        TRSIGM = TRSIGM/3.D0
-        SIELEQ = 0.D0
-        DO 50 K = 1,NDIMSI
-          SIGMDV(K) = SIGM(K) - TRSIGM*KRON(K)
-          SIGEL(K) = SIGMDV(K) + DEUXMU*DDESDV(K)
-          SIELEQ = SIELEQ + SIGEL(K)**2
-   50   CONTINUE
-        SIELEQ = SQRT(1.5D0*SIELEQ)
-        TROIMU = 1.5D0*DEUXMU
-        IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
-          SEUIL = SIELEQ - RPRIM*VARM(1) - SIGY
-          RPTM = RPRIM + 1.5D0*DEUXMU
+       IF ((COMPOR(1)(1:4).EQ.'VMIS').AND.
+     &      (DELTAP.GT.DPMIN)) THEN
+         TRSIGM = 0.D0
+         DO 40 K = 1,3
+           TRSIGM = TRSIGM + SIGM(K)
+   40    CONTINUE
+         TRSIGM = TRSIGM/3.D0
+         SIELEQ = 0.D0
+         DO 50 K = 1,NDIMSI
+           SIGMDV(K) = SIGM(K) - TRSIGM*KRON(K)
+           SIGEL(K) = SIGMDV(K) + DEUXMU*DDESDV(K)
+           SIELEQ = SIELEQ + SIGEL(K)**2
+   50    CONTINUE
+         SIELEQ = SQRT(1.5D0*SIELEQ)
+         TROIMU = 1.5D0*DEUXMU
+         IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
+           SEUIL = SIELEQ - RPRIM*VARM(1) - SIGY
+           RPTM = RPRIM + 1.5D0*DEUXMU
+         ENDIF
+
+         TEMP = 0.D0
+         DO 60 K = 1,NDIMSI
+           TEMP = TEMP + DDESDV(K)*SIGEL(K)
+   60    CONTINUE
+        IF (SIELEQ.EQ.0.0D0) THEN
+          DSIEEQ = 0.D0
+        ELSE
+          DSIEEQ = 1.5D0*DDEUMU*TEMP/SIELEQ
         ENDIF
 
-        TEMP = 0.D0
-        DO 60 K = 1,NDIMSI
-          TEMP = TEMP + DDESDV(K)*SIGEL(K)
-   60   CONTINUE
-        DSIEEQ = 1.5D0*DDEUMU*TEMP/SIELEQ
+         TRDSIM = 0.D0
+         DO 70 K = 1,3
+           TRDSIM = TRDSIM + SIGMS(K)
+   70    CONTINUE
+         TRDSIM = TRDSIM/3.D0
 
-        TRDSIM = 0.D0
-        DO 70 K = 1,3
-          TRDSIM = TRDSIM + SIGMS(K)
-   70   CONTINUE
-        TRDSIM = TRDSIM/3.D0
+         SOUTOT = 0.D0
+         DO 90 K = 1,NDIMSI
+           SOUTOT = SOUTOT + SIGEL(K)*SIGMS(K)
+   90    CONTINUE
 
-        SOUTOT = 0.D0
-        DO 90 K = 1,NDIMSI
-          SOUTOT = SOUTOT + SIGEL(K)*SIGMS(K)
-   90   CONTINUE
-
+       ENDIF
 C === CALCUL DE (D DELTA SIG / D PHI) ===
 
         IF ((COMPOR(1)(1:4).NE.'VMIS').OR.
      &      (DELTAP.LE.DPMIN)) THEN
-          DO 100 I = 1,NDIMSI
-            SIGPS(I) = SIGMS(I) + DDEUMU*DDESDV(I) +
-     &                 DTROIK*DDESMO*KRON(I)
-  100     CONTINUE
+           IF (TYPMOD(1).EQ.'C_PLAN') THEN
+C  LE COEFFICIENT DTROIK DE LA LOI DERIVEE CHANGE POUR LA PARTIE NUS
+             DTROIK = ES/(1.D0-2.D0*NU)+E*NUS*(2.D0+NU)/
+     &               ((1.D0-2.D0*NU)*(1.D0+NU)*(1.D0-NU))
+           ENDIF
+           DO 100 I = 1,NDIMSI
+              SIGPS(I) = SIGMS(I) + DDEUMU*DDESDV(I) +
+     &                   DTROIK*DDESMO*KRON(I)
+  100      CONTINUE
         ELSE
-          DO 110 I = 1,NDIMSI
-            SIGPS(I) = SIGMS(I)
+            IF (SIELEQ.EQ.0.0D0) THEN
+              DO 110 I = 1,NDIMSI
+                SIGPS(I) = SIGMS(I)
+110           CONTINUE
+            ELSE
+            IF (TYPMOD(1).EQ.'C_PLAN') THEN
+C  DTROIK CHANGE A CAUSE DES CONTRAINTES PLANES
+C             DTROIK = ES/(1.D0-2.D0*NU)+E*NUS*(2.D0+NU)/
+C     &               ((1.D0-2.D0*NU)*(1.D0+NU)*(1.D0-NU))
+              PM = VARM(1)
+              IF (COMPOR(1)(10:14) .EQ. '_LINE') THEN
+                RP = SIGY +RPRIM*(PM+DELTAP)
+C              ELSEIF (COMPOR(1)(10:14) .EQ. '_PUIS') THEN
+C                RP=SIGY+SIGY*(E*(PM+DELTAP)/ALFAFA/SIGY)**UNSURN
+              ENDIF
+              DX = 3.D0*(1.D0-2.D0*NU)*SIGEL(3)*DELTAP/
+     &            (E*DELTAP+2.D0*(1.D0-NU)*RP)
+              WRITE(6,*) 'DX=',DX
+              COE1 = 3.D0*(1.D0-2.D0*NU)
+              COE2 = DSDE*DSDE/((E-DSDE)*(E-DSDE))
+              COE3 = E*E/((E-DSDE)*(E-DSDE))
+              COE4 = RPRIM+TROIMU
+              PROD = 0.D0
+              DO 108 I = 1,NDIMSI
+                PROD = PROD + DDESDV(I)/(1.D0+NU)
+     &                      * (SIGMDV(I)+DEUXMU*DDESDV(I))
+  108         CONTINUE
+              PROD = PROD * 1.5D0/SIELEQ
+              DPDE = (PROD + VARM(1)*COE2 - RPRIM*VARMS(1))/COE4
+     &                -(SIELEQ - SIGY - RPRIM*VARM(1))
+     &                *(1.5D0*DDEUMU-COE2)/(COE4*COE4)
+              WRITE(6,*) 'DPDE=',DPDE
+              DPDNU = (PROD - RPRIM*VARMS(1))/COE4
+     &                -(SIELEQ - SIGY - RPRIM*VARM(1))
+     &                *(1.5D0*DDEUMU)/(COE4*COE4)
+              WRITE(6,*) 'DPDNU=',DPDNU
+              DPDSI = (-1.D0 - RPRIM*VARMS(1))/COE4
+              WRITE(6,*) 'DPDSI=',DPDSI
+              DPDET = (-VARM(1)*COE3 - RPRIM*VARMS(1))/COE4
+     &                -(SIELEQ - SIGY - RPRIM*VARM(1))*COE3/(COE4*COE4)
+              WRITE(6,*) 'DPDET=',DPDET
+              DPDPS = DPDE*ES + DPDNU*NUS + DPDSI*SIGYS + DPDET*DSDES
+              WRITE(6,*) 'DPDPS=',DPDPS
+C
+              NUM = COE1*DELTAP*SIGEL(3)
+              DEN = E*DELTAP+2.D0*(1.D0-NU)*(RPRIM*VARP(1)+SIGY)
+C   DERIVEE PAR RAPPORT A E
+              NUMP = COE1*(DELTAP*DDESDV(3)/(1.D0+NU)
+     &               + SIGEL(3)*DPDE)
+              DENP = DELTAP+E*DPDE+2.D0*(1.D0-NU)*
+     &               (RPRIM*(DPDE+VARMS(1))-VARP(1)*COE2)
+              DDXDE = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
+              WRITE(6,*) 'DDXDE=',DDXDE
+C   DERIVEE PAR RAPPORT A NU
+              NUMP = COE1*(-DELTAP*DDESDV(3)*E/((1.D0+NU)*(1.D0+NU))
+     &               + SIGEL(3)*DPDNU)-6.D0*DELTAP*SIGEL(3)
+              DENP = E*DPDNU-2.D0*(RPRIM*VARP(1)+SIGY)
+     &               +2.D0*(1.D0-NU)*RPRIM*(DPDNU+VARMS(1))
+              DDXDNU = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
+              WRITE(6,*) 'DDXDNU=',DDXDNU
+C   DERIVEE PAR RAPPORT A SIGY
+              NUMP = COE1*SIGEL(3)*DPDSI
+              DENP = E*DPDSI+2.D0*(1.D0-NU)*(RPRIM*(VARMS(1)+DPDSI)
+     &               +1.D0)
+              DDXDSI = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
+              WRITE(6,*) 'DDXDSI=',DDXDSI
+C   DERIVEE PAR RAPPORT A DSDE
+              NUMP = COE1*SIGEL(3)*DPDET
+              DENP = E*DPDET+2.D0*(1.D0-NU)*(RPRIM*(VARMS(1)+DPDET)
+     &               +COE3*(VARM(1)+DELTAP))
+              DDXDET = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
+              WRITE(6,*) 'DDXDET=',DDXDET
+C ======================================================================
+              DDX = DDXDE*ES + DDXDNU*NUS + DDXDSI*SIGYS + DDXDET*DSDES
+              WRITE(6,*) 'DDX=',DDX
+              FDDX(1) = -DDX/3.D0
+              FDDX(2) = -DDX/3.D0
+              FDDX(3) = 2.D0*DDX/3.D0
+              DO 111 I = 4,6
+                FDDX(I) = 0.D0
+111           CONTINUE
+C   HYPOTHESE DE CONTRAINTES PLANES POUR LES PLAQUES
+              DDESMO   =DDESMO   +DX/3.D0
+              DDESDV(1)=DDESDV(1)-DX/3.D0
+              DDESDV(2)=DDESDV(2)-DX/3.D0
+              DDESDV(3)=DDESDV(3)+DX*2.D0/3.D0
+              DO 112 I = 1,NDIMSI
+                SIGPS(I) = SIGMS(I)
+     &                 +DDEUMU*DDESDV(I) + DEUXMU*FDDX(I) -
+     &                 1.5D0*DDEUMU*SEUIL/ (RPTM*SIELEQ)*SIGEL(I) -
+     &                 TROIMU* (DSIEEQ-DSY-DRPRIM*VARM(1))/
+     &                 (RPTM*SIELEQ)*SIGEL(I) + TROIMU*SEUIL*
+     &                 ((DRPRIM+1.5D0*DDEUMU)*SIELEQ+
+     &                 (RPRIM+TROIMU)*DSIEEQ)/
+     &                 ((RPTM*SIELEQ)* (RPTM*SIELEQ))*SIGEL(I) -
+     &                 TROIMU*SEUIL/ (RPTM*SIELEQ)*
+     &                 (DDEUMU*DDESDV(I) + DEUXMU*FDDX(I))
+     &                 +DTROIK*DDESMO*KRON(I)
+     &                 +TROISK*DDX/3.D0*KRON(I)
+     &                 -TROIMU/ (RPTM*SIELEQ)* (1.D0- (SEUIL/SIELEQ))*
+     &                 1.5D0/SIELEQ*SIGEL(I)*SOUTOT -
+     &                 TROIMU*SEUIL/ (RPTM*SIELEQ)*
+     &                 (SIGMS(I)-(1.D0/3.D0)*(SIGMS(1)+SIGMS(2)+
+     &                 SIGMS(3))*KRON(I))
+     &                 +TROIMU*RPRIM/ (RPTM*SIELEQ)*SIGEL(I)*VARMS(1)
+112           CONTINUE
+              WRITE(6,*) 'SIGPS(1)=',SIGPS(1)
+              WRITE(6,*) 'SIGPS(2)=',SIGPS(2)
+              WRITE(6,*) 'SIGPS(3)=',SIGPS(3)
+              WRITE(6,*) 'SIGMS(1)=',SIGMS(1)
+              WRITE(6,*) 'VARMS(1)=',VARMS(1)
+         ELSE
+              DO 113 I = 1,NDIMSI
+                SIGPS(I) = SIGMS(I)
      &                 +DDEUMU*DDESDV(I) -
      &                 1.5D0*DDEUMU*SEUIL/ (RPTM*SIELEQ)*SIGEL(I) -
      &                 TROIMU* (DSIEEQ-DSY-DRPRIM*VARM(1))/
@@ -283,10 +422,13 @@ C === CALCUL DE (D DELTA SIG / D PHI) ===
      &                 (SIGMS(I)-(1.D0/3.D0)*(SIGMS(1)+SIGMS(2)+
      &                 SIGMS(3))*KRON(I))
      &                 +TROIMU*RPRIM/ (RPTM*SIELEQ)*SIGEL(I)*VARMS(1)
-110       CONTINUE
+113           CONTINUE
+            ENDIF
+            ENDIF
         ENDIF
 
-      ELSEIF (OPTION(1:14).EQ.'MECA_SENS_CHAR') THEN
+      ELSEIF (OPTION(1:14).EQ.'MECA_SENS_CHAR'.OR.
+     &        OPTION(1:14).EQ.'MECA_SENS_EPAI') THEN
 
         DDESMO = 0.D0
         DO 21 K = 1,3
@@ -297,41 +439,49 @@ C === CALCUL DE (D DELTA SIG / D PHI) ===
           DDESDV(K) = DEPS(K) - DDESMO*KRON(K)
    31   CONTINUE
 
-        TRSIGM = 0.D0
-        DO 41 K = 1,3
-          TRSIGM = TRSIGM + SIGM(K)
-   41   CONTINUE
-        TRSIGM = TRSIGM/3.D0
-        SIELEQ = 0.D0
-        DO 51 K = 1,NDIMSI
-          SIGMDV(K) = SIGM(K) - TRSIGM*KRON(K)
-          SIGEL(K) = SIGMDV(K) + DEUXMU*DDESDV(K)
-          SIELEQ = SIELEQ + SIGEL(K)**2
-   51   CONTINUE
-        SIELEQ = SQRT(1.5D0*SIELEQ)
-        TROIMU = 1.5D0*DEUXMU
-        IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
-          SEUIL = SIELEQ - RPRIM*VARM(1) - SIGY
-          RPTM = RPRIM + 1.5D0*DEUXMU
+       IF ((COMPOR(1)(1:4).EQ.'VMIS').AND.
+     &      (DELTAP.GT.DPMIN)) THEN
+       
+         TRSIGM = 0.D0
+         DO 41 K = 1,3
+           TRSIGM = TRSIGM + SIGM(K)
+   41    CONTINUE
+         TRSIGM = TRSIGM/3.D0
+         SIELEQ = 0.D0
+         DO 51 K = 1,NDIMSI
+           SIGMDV(K) = SIGM(K) - TRSIGM*KRON(K)
+           SIGEL(K) = SIGMDV(K) + DEUXMU*DDESDV(K)
+           SIELEQ = SIELEQ + SIGEL(K)**2
+   51    CONTINUE
+         SIELEQ = SQRT(1.5D0*SIELEQ)
+         TROIMU = 1.5D0*DEUXMU
+         IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
+           SEUIL = SIELEQ - RPRIM*VARM(1) - SIGY
+           RPTM = RPRIM + 1.5D0*DEUXMU
+         ENDIF
+
+         TEMP = 0.D0
+         DO 61 K = 1,NDIMSI
+           TEMP = TEMP + DDESDV(K)*SIGEL(K)
+   61    CONTINUE
+        IF (SIELEQ.EQ.0.0D0) THEN
+          DSIEEQ = 0.D0
+        ELSE
+          DSIEEQ = 1.5D0*DDEUMU*TEMP/SIELEQ
         ENDIF
 
-        TEMP = 0.D0
-        DO 61 K = 1,NDIMSI
-          TEMP = TEMP + DDESDV(K)*SIGEL(K)
-   61   CONTINUE
-        DSIEEQ = 1.5D0*DDEUMU*TEMP/SIELEQ
+         TRDSIM = 0.D0
+         DO 71 K = 1,3
+           TRDSIM = TRDSIM + SIGMS(K)
+   71    CONTINUE
+         TRDSIM = TRDSIM/3.D0
 
-        TRDSIM = 0.D0
-        DO 71 K = 1,3
-          TRDSIM = TRDSIM + SIGMS(K)
-   71   CONTINUE
-        TRDSIM = TRDSIM/3.D0
+         SOUTOT = 0.D0
+         DO 91 K = 1,NDIMSI
+           SOUTOT = SOUTOT + SIGEL(K)*SIGMS(K)
+   91    CONTINUE
 
-        SOUTOT = 0.D0
-        DO 91 K = 1,NDIMSI
-          SOUTOT = SOUTOT + SIGEL(K)*SIGMS(K)
-   91   CONTINUE
-
+       ENDIF
 C === CALCUL DE (D DELTA SIG / D PHI) ===
 
         IF ((COMPOR(1)(1:4).NE.'VMIS').OR.
@@ -340,8 +490,13 @@ C === CALCUL DE (D DELTA SIG / D PHI) ===
             SIGPS(I) = SIGMS(I)
   101     CONTINUE
         ELSE
-          DO 111 I = 1,NDIMSI
-            SIGPS(I) = SIGMS(I)
+          IF (SIELEQ.EQ.0.0D0) THEN
+            DO 310 I = 1,NDIMSI
+              SIGPS(I) = SIGMS(I)
+310         CONTINUE
+          ELSE
+            DO 311 I = 1,NDIMSI
+              SIGPS(I) = SIGMS(I)
      &                 +0.D0
      &                 +0.D0
      &                 -TROIMU/ (RPTM*SIELEQ)* (1.D0- (SEUIL/SIELEQ))*
@@ -350,7 +505,8 @@ C === CALCUL DE (D DELTA SIG / D PHI) ===
      &                 (SIGMS(I)- (1.D0/3.D0)* (SIGMS(1)+SIGMS(2)+
      &                 SIGMS(3))*KRON(I))
      &                 +TROIMU*RPRIM/ (RPTM*SIELEQ)*SIGEL(I)*VARMS(1)
-111       CONTINUE
+311         CONTINUE
+          ENDIF
         ENDIF
 
 C CALCUL DES DERIVEES DES CONTRAINTES ET VARIABLES INTERNES
@@ -359,21 +515,24 @@ C CALCUL DES DERIVEES DES CONTRAINTES ET VARIABLES INTERNES
 
         IF ((COMPOR(1)(1:4).NE.'VMIS').OR.
      &      (DELTAP.LE.DPMIN)) THEN
-          DDESMO = 0.D0
-          DO 120 K = 1,3
-            DDESMO = DDESMO + DEPS(K)
-  120     CONTINUE
-          DDESMO = DDESMO/3.D0
-          DO 130 K = 1,NDIMSI
-            DDESDV(K) = DEPS(K) - DDESMO*KRON(K)
-  130     CONTINUE
+            DDESMO = 0.D0
+            IF (TYPMOD(1).EQ.'C_PLAN') THEN
+C   HYPOTHESE DE CONTRAINTES PLANES POUR LES PLAQUES
+              DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
+            ENDIF
+            DO 120 K = 1,3
+              DDESMO = DDESMO + DEPS(K)
+  120       CONTINUE
+            DDESMO = DDESMO/3.D0
+            DO 130 K = 1,NDIMSI
+              DDESDV(K) = DEPS(K) - DDESMO*KRON(K)
+  130       CONTINUE
+            DO 140 I = 1,NDIMSI
+              SIGPS(I) = SIPAS(I) + DEUXMU*DDESDV(I) +
+     &                   TROISK*DDESMO*KRON(I)
+  140       CONTINUE
 
-          DO 140 I = 1,NDIMSI
-            SIGPS(I) = SIPAS(I) + DEUXMU*DDESDV(I) +
-     &                 TROISK*DDESMO*KRON(I)
-  140     CONTINUE
-
-          VARPS(1) = VARMS(1)
+            VARPS(1) = VARMS(1)
 
         ELSE
 

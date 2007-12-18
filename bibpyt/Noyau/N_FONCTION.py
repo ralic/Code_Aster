@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_FONCTION Noyau  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,8 +26,6 @@
 from __future__ import division
 
 from N_ASSD import ASSD
-import string
-
 from asojb import AsBase
 
 class FONCTION(ASSD):pass
@@ -50,7 +48,7 @@ class formule(ASSD,AsBase):
        res=eval(self.expression,self.jdc.const_context, context)
       except :
        print 75*'!'
-       print '! '+string.ljust('Erreur evaluation formule '+self.nom,72)+'!'
+       print '! ' + '%-72s' % ('Erreur evaluation formule '+self.nom) + '!'
        print 75*'!'
        raise
       return res
@@ -67,7 +65,7 @@ class formule(ASSD,AsBase):
         self.code=compile(texte,texte,'eval')
       except SyntaxError :
         print 75*'!'
-        print '! '+string.ljust('Erreur evaluation formule '+self.nom,72)+'!'
+        print '! ' + '%-72s' % ('Erreur evaluation formule '+self.nom) + '!'
         print 75*'!'
         raise
 
@@ -88,4 +86,33 @@ class formule(ASSD,AsBase):
       del d['code']
       return d
 
-class formule_c(formule): pass
+   def Parametres(self):
+      """Equivalent de fonction.Parametres pour pouvoir utiliser des formules
+      à la place de fonctions dans certaines macro-commandes.
+      """
+      from SD.sd_fonction  import sd_formule
+      from Utilitai.Utmess import UTMESS
+      if not self.par_lot():
+        TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT', 'I':'INTERPRE' }
+        sd = sd_formule(self.get_name())
+        prol = sd.PROL.get()
+        nova = sd.NOVA.get()
+        if prol is None or nova is None:
+           UTMESS('F', 'SDVERI_2', valk=[objev])
+        dico={
+         'INTERPOL'    : ['LIN','LIN'],
+         'NOM_PARA'    : [s.strip() for s in nova],
+         'NOM_RESU'    : prol[3][0:16].strip(),
+         'PROL_DROITE' : TypeProl['E'],
+         'PROL_GAUCHE' : TypeProl['E'],
+        }
+      else:
+         raise Accas.AsException("Erreur dans fonction.Parametres en PAR_LOT='OUI'")
+      return dico
+
+
+class formule_c(formule):
+   pass
+
+
+

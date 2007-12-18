@@ -1,4 +1,4 @@
-#@ MODIF irrad3m Messages  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF irrad3m Messages  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,26 +27,26 @@ cata_msg={
 La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvée de solution pour
 le nombre d'itération donné <%(i1)d>.\n
 Info pour le debug
-   Borne 0                 : <%(r1)E>
-   Borne 1                 : <%(r2)E>
-   Puissance N             : <%(r3)E>
-   Pas pour la recherche   : <%(r4)E>
-   RM                      : <%(r5)E>
-   EU                      : <%(r6)E>
-   R02                     : <%(r7)E>
-   Précision demandée      : <%(r8)E>
+   Borne 0                 : <%(r1).15E>
+   Borne 1                 : <%(r2).15E>
+   Puissance N             : <%(r3).15E>
+   Pas pour la recherche   : <%(r4).15E>
+   RM                      : <%(r5).15E>
+   EU                      : <%(r6).15E>
+   R02                     : <%(r7).15E>
+   Précision demandée      : <%(r8).15E>
 Valeurs initiales
-   N0                      : <%(r9)E>
-   Borne 0                 : <%(r10)E>
-   Borne 1                 : <%(r11)E>
-   Borne E                 : <%(r12)E>
+   N0                      : <%(r9).15E>
+   Borne 0                 : <%(r10).15E>
+   Borne 1                 : <%(r11).15E>
+   Borne E                 : <%(r12).15E>
 """),
 
 2: _("""
 L'irradiation diminue au cours du temps. C'EST PHYSIQUEMENT IMPOSSIBLE.
-Grandeurs au point de Gauss qui pose problème :
-   Irradiation a t- : <%(r1)E>
-   Irradiation a t+ : <%(r2)E>
+Grandeurs au point de Gauss :
+   Irradiation a t- : <%(r1).15E>
+   Irradiation a t+ : <%(r2).15E>
 """),
 
 3: _("""

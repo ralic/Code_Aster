@@ -6,7 +6,7 @@
       INTEGER BTDI(*),BTNB(*),BTLC(*),BTCO(*),TETR4(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C     -------------------------------------------------------
       Q0 = INT((GEOM2(3* (INO2-1)+2)-YMIN)/DY) + 1
       R0 = INT((GEOM2(3* (INO2-1)+3)-ZMIN)/DZ) + 1
 
-      DO 40,K = 0,MAX(NX,NY) - 1
+      DO 40,K = 0,MAX(NX,NY,NZ) - 1
         DO 30,P = MAX(P0-K,1),MIN(P0+K,NX)
           DO 20,Q = MAX(Q0-K,1),MIN(Q0+K,NY)
             DO 10,R = MAX(R0-K,1),MIN(R0+K,NZ)

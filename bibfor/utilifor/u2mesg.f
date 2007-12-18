@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,17 +54,18 @@ C     --- COMPORTEMENT EN CAS D'ERREUR <F>
       CALL ONERRF(' ', COMPEX, LOUT)
       LEXC = IDF.EQ.2 .AND. COMPEX(1:LOUT).EQ.'EXCEPTION'
 C     --- SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP/UTDEXC
-      IF ( IDF .EQ. 6 .OR. (IDF .EQ. 2 .AND. .NOT. LEXC )) THEN
-          CALL TRACEB('Liste des appels successifs ' // 
-     &                '(option -traceback)',-1)
-      ENDIF
-
       IF ( IDF.NE.8 ) THEN
 C        ASTER.ERROR DANS ASTERMODULE.C
          NEXCEP = 21
       ENDIF
 C
       CALL UTPRIN(CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
+C
+C     --- REMONTEE D'ERREUR SI DISPO
+      IF ( IDF .EQ. 6 .OR. (IDF .EQ. 2 .AND. .NOT. LEXC )) THEN
+          CALL TRACEB('Liste des appels successifs ' // 
+     &                '(option -traceback)',-1)
+      ENDIF
 C
       IF (LEXC) THEN
 C     -- SI L'UTILISATEUR L'A DEMANDE, ON LEVE L'EXCEPTION FATALERROR

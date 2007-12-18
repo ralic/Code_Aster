@@ -1,4 +1,4 @@
-#@ MODIF N_MCLIST Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCLIST Noyau  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,7 +121,7 @@ class MCList(UserList.UserList):
       """
       l=[]
       for child in self.data:
-        l.extend(child.get_sd_utilisees())
+         l.extend(child.get_sd_utilisees())
       return l
 
    def get_sd_mcs_utilisees(self):
@@ -136,12 +136,13 @@ class MCList(UserList.UserList):
                 { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
                               <Cata.cata.para_sensi instance at 0x941a204> ],
                   'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
-     """
+      """
       dico = {}
       for child in self.data:
-        daux = child.get_sd_mcs_utilisees()
-        for cle in daux.keys():
-          dico[cle] = daux[cle]
+         daux = child.get_sd_mcs_utilisees()
+         for cle in daux.keys():
+            dico[cle] = dico.get(cle, [])
+            dico[cle].extend(daux[cle])
       return dico
 
    def get_mcs_with_co(self,co):

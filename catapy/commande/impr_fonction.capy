@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ IMPR_FONCTION=MACRO(nom="IMPR_FONCTION",op=impr_fonction_ops,sd_prod=None,
            b_fonction      =BLOC(condition = "FONCTION != None",
              LIST_PARA       =SIMP(statut='f',typ=listr8_sdaster ),
            ),
-           b_fonction_c  =BLOC(condition = "AsType(FONCTION) == fonction_c",
+           b_fonction_c  =BLOC(condition = "AsType(FONCTION) in (fonction_c, formule_c)",
                                  fr="Fonction complexe définie par le mot-clé fonction",
              PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
            ),

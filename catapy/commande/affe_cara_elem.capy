@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -122,10 +122,12 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
          COQUE           =FACT(statut='f',max='**',
            regles=(UN_PARMI('MAILLE','GROUP_MA' ),
                    PRESENT_PRESENT( 'EXCENTREMENT','INER_ROTA' ),
+                   AU_MOINS_UN('EPAIS','EPAIS_F',),PRESENT_ABSENT('EPAIS','EPAIS_F',),
                    EXCLUS('ANGL_REP','VECTEUR'),),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           EPAIS           =SIMP(statut='o',typ='R' ),
+           EPAIS           =SIMP(statut='f',typ='R' ),
+           EPAIS_F         =SIMP(statut='f',typ=(para_sensi,),min=1 ,max=1 ),
            ANGL_REP        =SIMP(statut='f',typ='R',min=2,max=2),
            VECTEUR         =SIMP(statut='f',typ='R',min=3,max=3),
            A_CIS           =SIMP(statut='c',typ='R',defaut= 0.8333333E0),

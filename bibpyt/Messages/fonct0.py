@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF fonct0 Messages  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -288,6 +288,44 @@ Erreur lors de la lecture des blocs de valeurs :
 
 43: _("""
 Les fréquences doivent etre strictement positives.
+"""),
+
+44: _("""
+Les abscisses de la fonction %(k1)s ne sont pas strictement croissantes.
+"""),
+
+45: _("""
+Les abscisses de la fonction %(k1)s ne sont pas croissantes.
+"""),
+
+46: _("""
+Les abscisses de la fonction %(k1)s ne sont pas décroissantes.
+"""),
+
+47: _("""
+Les abscisses de la fonction %(k1)s ne sont pas strictement décroissantes.
+"""),
+
+48 : _("""
+La fonction ou formule ne doit avoir qu'une ou deux variables.
+"""),
+
+49 : ("""
+La nappe ou formule a deux paramètres. Il faut renseigner le mot-clé NOM_PARA_FONC
+et soit VALE_PARA_FONC, soit LIST_PARA_FONC.
+"""),
+
+50 : _("""
+Seules les formules à une variable peuvent être traitées directement par IMPR_FONCTION.
+
+La formule '%(k1)s' dépend de %(i1)d paramètres.
+
+  -> Risque & Conseil :
+      - Si votre formule dépend de 2 paramètres, utilisez CALC_FONC_INTERP pour produire
+        une nappe puis appeler IMPR_FONCTION.
+      - Si votre formule dépend de 3 paramètres ou plus, vous devez d'abord créer une
+        nouvelle formule à un seul paramètre (et appelé IMPR_FONCTION) ou à 2 paramètres
+        et passer par CALC_FONC_INTERP puis IMPR_FONCTION.
 """),
 
 }

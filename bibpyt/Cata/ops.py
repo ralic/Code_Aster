@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ try:
    Build.B_CODE.CODE.codex=aster
    
    from Utilitai.Utmess   import UTMESS
-   from Macro.Sensibilite import MEMORISATION_SENSIBILITE
+   from Build.B_SENSIBILITE_MEMO_NOM_SENSI import MEMORISATION_SENSIBILITE
 except:
    aster_exists = False
 

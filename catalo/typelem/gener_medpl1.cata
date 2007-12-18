@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 17/12/2007   AUTEUR GALENNE E.GALENNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,16 @@ ENTETE__ ELEMENT__ MEPLSE3_X          MAILLE__ SEG3
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN2     =     3
    ENS_NOEUD__  EN1     =     1  2
+ENTETE__ ELEMENT__ MEAXSE2          MAILLE__ SEG2
+   ELREFE__  SE2        GAUSS__  RIGI=FPG2   FPG_LISTE__ MATER=(RIGI)
+   ATTRIBUT__  BORD=OUI
+   ENS_NOEUD__  EN1     =     1  2
+   OPTION__   CALC_DG                 -1
+   OPTION__   CALC_DG_F               -1
+ENTETE__ ELEMENT__ MEAXSE3          MAILLE__ SEG3
+   ELREFE__  SE3        GAUSS__  RIGI=FPG4   FPG_LISTE__ MATER=(RIGI)
+   ATTRIBUT__  BORD=OUI
+   ENS_NOEUD__  EN1     =     1  2  3
 
 
 

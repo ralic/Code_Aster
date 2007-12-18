@@ -1,0 +1,917 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 18/12/2007 - 18:31:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011465 DU 2007-11-14 16:48:18
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Problxc3xa8me dans U2MESS en NODEBUG
+FONCTIONNALITE
+   On renseigne un mot-clé avec une valeur invalide (mais autorisée par le catalogue), c'est
+   donc le fortran qui arrête en erreur fatale.
+   
+   Sur la Bull, en debug, ok : message d'erreur attendu.
+   En nodebug, le code plante sans message clair dans tracebackqq, la routine du compilo
+   Intel qui permet d'afficher une remontée d'erreur.
+   
+   Après essais, je me suis convaincu que c'est le source d'op0100 qui pose problème :
+   - j'ajoute CALL TRACEB('blabla', -1) au début d'op0100 : çà plante (alors qu'un autre
+   ajouté juste avant dans ex0100 fonctionne)
+   - je supprime le source d'op0100 : tracebackqq fonctionne.
+   
+   Evidemment, je n'ai pas vu de bug flagrant dans op0100 !
+   Je ne sais pas si le compilateur (optimisation) est en cause.
+   
+   Je solde en inversant l'ordre des actions dans U2MESS :
+   - on commence par imprimer le message,
+   - puis on appelle TRACEB.
+   
+   Sur le cas en question, çà plante toujours dans tracebackqq, mais l'utilisateur a au moins
+   le message qui lui explique son erreur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   plantage provoquxc3xa9
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011538 DU 2007-12-06 15:16:37
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Stanley cassxc3xa9 en STA8
+FONCTIONNALITE
+   erreur dans stanley.py ligne 625 :
+   
+   'initialdir=='         AU LIEU DE       'initialdir='
+   
+   
+   NB : la correction est aussi disponible dans la STA8.6.0.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   lancement de stanley
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011521 DU 2007-11-29 08:43:25
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Poursuite : info errones ?
+FONCTIONNALITE
+   Au tout début du fichier .mess il y a ces informations
+   
+    rappel sur les executions précédentes
+      - il a ete executé 99999999 procédures et opérateurs.
+      - l'execution précédente s'est terminée correctement.
+   
+   
+   => on utilisait un format %d (entier) dans le message et on passait VALK !
+   Correction dans gcuini : U2MESI. On en profite pour remplacer les U2MESG par des U2MESK
+   pour la plupart.
+   
+   
+   En cas d'arrêt CPU, la dernière étape (STAT_NON_LINE) s'est terminée correctement
+   (d'ailleurs la base est propre) d'où le message qui peut surprend l'utilisateur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test xc3xa9lxc3xa9mentaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011547 DU 2007-12-10 17:14:43
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   IMPR_FONCTION et FORMULE
+FONCTIONNALITE
+   Pour imprimer directement une formule ou formule_c sans passer par CALC_FONC_INTERP, on
+   ajoute une méthode Parametres à la classe formule.
+   La formule peut ensuite se faire passer pour une fonction dans les macro-commandes sauf :
+   - elle n'a pas de méthode Valeurs
+   - Parametres dit que l'interpolation est linéaire, les prolongements exclus. Ce seront
+   donc les valeurs utilisées par CALC_FONC_INTERP pour définir la fonction en sortie si on
+   ne les surcharge pas.
+   
+   
+   On modifie très légèrement IMPR_FONCTION pour que le mot-clé PARTIE soit utilisable pour
+   les fonction_c et les formule_c.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz100a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010106 DU 2006-10-04 13:34:04
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   POST_RELEVE_T en POURSUITE en sensibilitxc3xa9
+FONCTIONNALITE
+   En fait, ce n'est pas lié à la poursuite elle-même.
+   
+   Dans B_SENSIBILITE_JDC, on cherche le mot-clé SENSIBILITE dans les commandes pour savoir
+   si le calcul est sensible ou non.
+   Or dans POST_RELEVE_T, le mot-clé est sous un MCFACT donc pas dans etape.mc_liste (voir
+   ligne 140).
+   
+   La solution consiste à parcourir aussi le contenu des mots-clés facteurs.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sens*
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010164 DU 2006-10-20 11:21:24
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Poursuite et sensibilite en non-lineaire
+FONCTIONNALITE
+   L'utilisateur essaie de couper un calcul avec sensibilité en 2 STAT_NON_LINE :
+   EVOL = STAT_NON_LINE(...)
+   
+   puis en poursuite :
+   EVOL2 = STAT_NON_LINE(...ETAT_INIT=_F(EVOL_NOLI=EVOL,...))
+   
+   Le calcul échoue avec l'erreur "EVOL2 : nom de concept déjà défini" !!!
+   
+   
+   En fait, le fonctionnement de la poursuite en cas de sensibilité est le suivant :
+   - exécution de POURSUITE : lecture de la base et du pickle
+   - exec_compile : création des étapes du jdc initial et sd
+   - si on détecte la sensibilité :
+      * création du jdc sensible (new_jdc) dans lequel on recopie le contexte du jdc initial
+   
+   Dans notre cas, EVOL2 est une sd du jdc initial et donc existe dans le contexte de new_jdc
+   dès le début. Ensuite, new_jdc.exec_compile met les sd du contexte dans new_jdc.sds_dict.
+   PB quand on crée les étapes de new_jdc, on "nomme" les sd ==> existe déjà.
+   En fait, il faudrait pouvoir repartir du contexte dans l'état où il était juste après
+   POURSUITE.
+   Cela me paraissait un peu compliqué de garder quelque part l'image du contexte juste après
+   POURSUITE ou bien de reconstruire le contexte en relisant le pick.1...
+   La solution mise en oeuvre consiste à : dans le cas d'une poursuite, à chaque étape créée
+   dans new_jdc, on retire etape.sd du sds_dict avant de dériver l'étape. Ensuite, on nommera
+   la sd dans new_jdc comme si de rien n'était.
+   
+   Rem : Que EVOL2 soit produit par une commande sensible ne change rien. On a ce problème
+   dès la première sd produite.
+   
+   
+   Pour que cela fonctionne, il faut avoir toutes les informations nécessaires à la
+   dérivation des étapes en poursuite.
+   Il y a très longtemps, on avait :
+      - une structure jeveux de mémorisation qui stockait la correspondance entre les noms
+   des sd, des para_sensi et des sd dérivées et les mots-clés utilisant les para_sensi et sd
+   dérivées
+      - une classe python qui servait à la dérivation des commandes qui stockait les objets
+   sd, para_sensi et sd dérivées
+      - la commande MEMO_NOM_SENSI pour enregistrer les sd dérivées dans le jdc
+      - génération du texte des commandes MEMO_NOM_SENSI lors de la dérivation des commandes
+   
+   
+   Avant cette fiche :
+      - modification de MEMO_NOM_SENSI en macro-commande pour pouvoir enregistrer les sd
+   dérivées dans le jdc avec le bon type ET dans la liste des concepts jeveux pour être
+   sauver dans la base (pour post-traitement uniquement sinon on serait tomber sur cette
+   anomalie)
+      - la structure jeveux a été remplacée par une classe python pour être facilement
+   utilisable par la macro
+   
+   
+   Maintenant :
+      - une unique classe de mémorisation des objets nécessaires à la dérivation d'un jdc :
+   on stocke tout sous forme d'objet ASSD (sd, para_sensi et sd_derivée). Pour les mots-clés
+   utilisant les sd sensibles, on stocke uniquement leur nom car les MCSIMP et MCFACT ne sont
+   pas "picklables". Ce n'est pas génant pour le moment, car seul le fortran interroge ces
+   listes de mot-clés. En fait, on stocke les objets sans les utiliser au cas où on en aurait
+   besoin ; il faudrait juste ajouter une étape de reconstruction lors du "unpickling".
+      - suppression de MEMO_NOM_SENSI. On nomme directement les sd dérivées via jdc.NommerSdprod.
+   
+   
+   Le repérage des paramètres sensibles, de ceux réellement utilisés et dans quelles
+   commandes a été revu.
+   Notamment, on recherche maintenant le mot-clé SENSIBILITE à tous les niveaux de l'étape
+   (MCSIMP et liste de MCFACT).
+   Cette correction permet de résoudre la fiche 10106 où
+   POST_RELEVE_T(ACTION_F(SENSIBILITE=...)) n'était pas vu en poursuite.
+   
+   
+   Ceci a permis de lever une anomalie dans la méthode get_sd_mcs_utilisees des classes
+   MCLIST et MCCOMPO qui retourne un dictionnaire { 'nom du mot-clé' : [liste des sd
+   utilisées derrière ce mot-clé]}. Or dans ces deux cas, la liste était uniquement
+   constituée à partir de la dernière occurrence. On écrasait la liste au lieu de l'étendre.
+   Modif de N_MCLIST.py et N_MCCOMP.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sens*
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 17/12/2007 - 16:20:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011543 DU 2007-12-10 12:32:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - Validation du contact en gxc3xa9omxc3xa9trie initiale et/ou xc3xa9tat initial
+FONCTIONNALITE
+   Objet
+   =====
+   
+   Suite à la correction apportée par la fiche 11413 sur le contact en géométrie initiale
+   avec état initial ou reprise d'un calcul non linéaire, on restitue un cas-test très simple
+   permettant de vérifier la non régression.
+   
+   Nouveau cas-test : zzzz231 (validation du contact en géométrie initiale avec état initial
+   imposé)
+   
+   3 modélisations : 
+   
+   A : REAC_GEOM='AUTOMATIQUE', un seul calcul STAT_NON_LINE
+   
+   B : REAC_GEOM='SANS', deux calculs STAT_NON_LINE, le second en reprise
+   
+   C : REAC_GEOM='SANS', un seul calcul STAT_NON_LINE avec état initial imposé en déplacement
+   
+   
+   Description
+   ===========
+   
+   
+   Cas-test "élémentaire" : Un cylindre écrase un tore. Le tore étant bloqué à sa base, on
+   vérifie que le déplacement de la partie haute est bien homogène et égal au déplacement
+   imposé sur le cylindre.
+   La référence est analytique.
+   
+   Ressources consommées
+   =====================
+   
+   Tps : 20s pour chaque
+   Mem : 256 Mo (dont 128 pour Aster). Ce cas-test utilise le solveur MUMPS.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.231
+VALIDATION
+   zzzz231 + xc3xa9tudes prxc3xa9cxc3xa9dentes
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011283 DU 2007-09-26 07:37:19
+TYPE aide utilisation concernant Code_Aster (VERSION 2.x)
+TITRE
+   MULT_FRONT + openMP + performances
+FONCTIONNALITE
+   Quelques éléments de contexte tout d'abord :
+   
+   - il s'agit d'une étude réalisée par Jean-Luc Fléjou et qui constitue à ce jour le plus
+   gros problème jamais traité avec  Aster : la dimension du problème est environ 6.7
+   millions de DDLs.
+   - le but de la fiche est de vérifier s'il n'y a pas un bug dans la multi-frontale
+   (Jean-Luc a observé des temps très largement différents entre deux pas de temps ainsi que
+   des consommations mémoires très importantes), et éventuellement de proposer une solution
+   pour faire tourner "confortablement" cette étude (soit en corrigeant le bug, soit en
+   utilisant MUMPS parallèle)
+   
+   ===========================================================
+   
+   Réponses apportées : 
+   
+   1. Il n'y a pas de bug dans MULT_FRONT, le temps de la factorisation qui double entre deux
+   pas de temps est simplement du à une mesure de temps déficiente (cf. fiche REX 11339)
+   
+   2. Le speed-up obtenu avec MULT_FRONT en augmentant le nombre de processeurs OpenMP est
+   décevant :
+   ==> 1 proc 13287,42s 
+   ==> 4 proc 12395,36s
+   ==> 8 proc 12030,99s
+   Mais d'autres études ont montré des gains bien meilleurs (calcul d'agrégats), et comme
+   ceux-ci dépendent en général de la structure du problème, on ne peut pas dire qu'il y ait
+   un bug.
+   
+   3. Pour améliorer les temps de calcul, plusieurs voies ont été explorées :
+   
+   a) FETI : problème lors du partitionnement (Fiche REX 11334)
+   
+   b) MUMPS parallèle (mode centralisé) : possible dès à présent.
+      On constate alors une accélération importante sur la phase de factorisation/résolution.
+   Le temps obtenu avec 4 processeurs est :
+   ==> 4 proc (MUMPS centralisé) : 8602,97 s
+   
+   Comme les calculs élémentaires et les assemblages occupent une large part dans cette
+   étude, le gain global n'est pas très satisfaisant (1.5 pour 4 processeurs).
+   
+   c) MUMPS parallèle (mode distribué) : sera possible avec les développements de O. Boiteau
+   (Fiche REX 11319)
+      Cette évolution est prometteuse puisqu'elle parallèlise non seulement la résolution
+   mais aussi tous les calculs élémentaires. Les accélérations constatées sont plus
+   spectaculaires :
+   ==> 4 proc (MUMPS distribué) : 3892,45 s
+   ==> 9 proc (MUMPS distribué) : 2938,97 s
+   
+   L'accélération peut donc atteindre 4.5 pour 9 processeurs, par contre le coût mémoire
+   reste très très fort : plus de 40 Go par processeur. C'est le prix à payer pour avoir
+   quelque chose de plus générique que FETI.
+   
+   ===========================================================
+   
+   Les modifications apportées aux fichiers originaux sont :
+   
+   - découpage de l'étude en deux, de sorte que seul le STAT_NON_LINE soit en POURSUITE
+   - utilisation de MUMPS, éventuellement avec raffinement de la solution
+   - mode distribué de MUMPS
+   
+   ===========================================================
+   
+   Des réponses ont donc été apportées pour accélérer le calcul.  Elles tirent parti de
+   développements engagés depuis longtemps pour certains (MUMPS distribué repose aussi sur
+   l'expérience FETI d'Olivier) et qui seront bientôt disponible en NEW9.
+   Les ajouts de Mathieu et Jean-Pierre à l'interface ASTK et aux scripts de lancement
+   permettent d'utiliser sans encombre une version parallèle d'Aster.
+   Reste à la rendre facilement accessible(actuellement, elle doit être placée en surcharge
+   depuis /aster/NEW9/asteru_mpi)
+   
+   Je propose de recontacter Jean-Luc quand tout sera effectif et lui indiquer la marche à
+   suivre.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude fournie
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 17/12/2007 - 17:47:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011507 DU 2007-11-27 13:42:31
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   AFFE_CHAR_MECA+ROTATION+AXIS_FOURIER
+FONCTIONNALITE
+   Il y a effectivement une erreur dans le fortran concernant 
+   l'ordre des composantes en Fourier pour le chargement 
+   rotation.
+   L'ordre normal Aster est (r, z, theta) et ici le chargement 
+   est interprété dans l'ordre (r, theta, z).
+   On corrige dans le te0197.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fichiers associxc3xa9s xc3xa0 la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008632 DU 2005-05-02 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.0)
+TITRE
+   QUAD4 sous-integre dans le cas OPTIMAL BENDING
+FONCTIONNALITE
+   On initialise le tableau DQ (incrément de contraintes 
+   généralisées) dans la routine NMAS2D pour PROJ=1 de la 
+   même façon que pour PROJ=2, à savoir :
+   
+     ELSE IF (PROJ.EQ.1.OR.PROJ.EQ.2) THEN
+               DQ(1) = (DSIDEP(1,1)-DSIDEP(2,1))*PQX
+               DQ(2) = (DSIDEP(2,1)-DSIDEP(1,1))*PQY
+               DQ(3) = (DSIDEP(1,2)-DSIDEP(2,2))*PQX
+               DQ(4) = (DSIDEP(2,2)-DSIDEP(1,2))*PQY
+               DQ(5) = 0.D0
+               DQ(6) = 0.D0
+   
+   Ceci n'était pas une erreur dans la mesure où dans le 
+   fortran PROJ est initialisé en dur à 2.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009747 DU 2006-05-12 06:57:35
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Coques et sensibilite aux materiaux et chargements
+FONCTIONNALITE
+   CALCULS DE SENSIBILITE SUR LES ELEMENTS DE PLAQUE (DKT, 
+   DKQ, DST, DSQ) ET DE COQUE (COQUE_3D)
+   
+   Cette fiche traite du calcul des dérivées par rapport 
+   aux paramètres matériaux (module d'Young, coefficient de 
+   Poisson) et au chargement (pression, force_coque, 
+   force_nodale, etc...)
+   
+   L'implantation est faite 
+   - dans MECA_STATIQUE en linéaire
+   - dans STAT_NON_LINE en incrémental
+   
+   Elle permet le calcul des dérivées par rapport aux 
+   déplacements, aux déformations et aux contraintes.
+   
+   Toutefois, la dérivation en plasticité (loi VMIS_ISOT_)
+   ne fonctionne pas actuellement (à cause de l'hypothèse 
+   de contraintes planes qui ne permet pas d'utiliser 
+   l'algorithme donné en R4.03.03 qui permet de calculer 
+   l'incrément de déplacement dérivé). Il faut écrire un 
+   nouvel algorithme (fiche d'évolution).
+   
+   La dérivation ne porte pas aussi sur les COQUE_1D (autre 
+   fiche d'évolution).
+   
+   Docs impactées : 
+   U4.50.02  : mot-clé sensibilité
+   V3.03.100  : 2 nouvelles modélisations 
+               SSLS100M : COQUE_3D
+               SSLS100N : PLAQUES
+   Pour les 2 modélisations on teste toutes les dérivées 
+   dans MECA_STATIQUE  et STAT_NON_LINE .
+   
+   Cette fiche est jumelée avec la fiche 9748 qui traite de 
+   la dérivation par rapport à l'épaisseur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.50.02  V3.03.100
+VALIDATION
+   SSLS100M SSLS100N
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009748 DU 2006-05-12 07:00:19
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Coques et sensibilite par rapport xc3xa0 l'epaisseur
+FONCTIONNALITE
+   CALCULS DE SENSIBILITE SUR LES ELEMENTS DE PLAQUE (DKT, 
+   DKQ, DST, DSQ) ET DE COQUE (COQUE_3D)
+   
+   Cette fiche traite du calcul des dérivées par rapport 
+   à l'épaisseur des éléments coque.
+   
+   L'implantation est faite 
+   - dans MECA_STATIQUE en linéaire
+   - dans STAT_NON_LINE en incrémental
+   
+   Elle permet le calcul des dérivées par rapport aux 
+   déplacements, aux déformations et aux contraintes.
+   
+   Toutefois, la dérivation en plasticité (loi VMIS_ISOT_)
+   ne fonctionne pas actuellement (à cause de l'hypothèse 
+   de contraintes planes qui ne permet pas d'utiliser 
+   l'algorithme donné en R4.03.03 qui permet de calculer 
+   l'incrément de déplacement dérivé). Il faut écrire un 
+   nouvel algorithme (fiche d'évolution).
+   
+   La dérivation ne porte pas aussi sur les COQUE_1D (autre 
+   fiche d'évolution).
+   
+   Docs impactées : 
+   U4.50.02  : mot-clé sensibilité
+   V3.03.100  : 2 nouvelles modélisations 
+               SSLS100M : COQUE_3D
+               SSLS100N : PLAQUES
+   Pour les 2 modélisations on teste toutes les dérivées 
+   dans MECA_STATIQUE  et STAT_NON_LINE .
+   
+   Cette fiche est jumelée avec la fiche 9747 qui traite de 
+   la dérivation par rapport au matériau et au chargement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.50.02  V3.03.100
+VALIDATION
+   SSLS100M SSLS100N
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 17/12/2007 - 16:58:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011520 DU 2007-11-29 08:30:48
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CREA_CHAMP + EXTR pour un EVOL_VARC
+FONCTIONNALITE
+   Maintenant il est possible avec un EVOL_VARC, d'utiliser l'option INTERPOL='LIN' dans la
+   commande CREA_CHAMP avec l'option EXTR.
+   
+   Ajout dans zzzz126 d'un CREA_CHAMP, OPERATION='EXTR' sur un EVOL_VARC
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.126
+VALIDATION
+   cas tests
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011528 DU 2007-11-30 13:27:58
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   IRRAD3M  Irradiation decroissante (precison du test)
+FONCTIONNALITE
+   Le passage des noeuds aux points de gauss, fait que même si les valeurs sont identiques
+   aux noeuds, le passage se fait à la précision machine.
+   Donc si on a CHAMP(N1,t-) = CHAMP(N1,t+),  après le passage au points de gauss on a toutes
+   les chances d'avoir CHAMP(G1,t-) != CHAMP(G1,t+). La physique fait que l'on devrait
+   toujours avoir : CHAMP(N1,t-) <= CHAMP(N1,t+), dans le cas ou CHAMP(N1,t-) = CHAMP(N1,t+)
+   on peut donc avoir CHAMP(G1,t-) > CHAMP(G1,t+) à la précision machine.
+   
+   Le test sur le champ est changé, pour tenir compte de la précision machine.
+   
+   Le test sur le champ était dans plusieurs fortran, ils sont modifiés en conséquence :
+   irrcvx.f irrini.f irrjac.f irrjpl.f irrmat.f
+   Je change également le nombre de décimale lors de l'affichage des messages en cas d'erreur
+   : irrad3m.py
+   
+   L'anomalie ne conduit à aucun résultat faux, et est contournable en mettant un champ
+   légèrement croissant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage xc3xa9tude
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011546 DU 2007-12-10 15:58:54
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   PROJ_CHAMP
+FONCTIONNALITE
+   Problème:
+   ---------
+   Dans certains cas (sans doute assez rares), la commande PROJ_CHAMP, quand on est en 3D,
+   s'arrête en erreur fatale :
+   CALL ASSERT(.FALSE.) <- PJ3DGB (ligne 88)
+                                                                                           
+   Solution :
+   ----------
+   Il s'agit d'une erreur de copier-coller (à partir de la routine équivalente 2D pj2dgb.f) :
+     DO 40,K = 0,MAX(NX,NY,NZ) - 1
+   J'avais oublié le NZ dans le MAX().
+                                                                                           
+   Détails:
+   ------------
+   La boucle 40, permet de "tourner" autour de la "petite boite" qui contient le point à
+   projeter.
+   
+   La plus part du temps, on trouve un élément dans la petite boite et l'on sort sans avoir
+   besoin de "tourner".
+   C'est pourquoi le bug n'avait pas encore été signalé.
+   Il se trouve que dans le cas de Jean-Luc, les nombres NX,NY et NZ sont petits et l'oubli
+   de NZ dans la formule ne permettait pas de trouver une boite non-vide près du point à
+   projeter.
+   
+   Validation :
+   ------------
+   Jean-Luc a vérifié que sur son étude, la correction du bug était efficace.
+                                                                                            
+                                                                                          
+   Correction à reporter en version 8 :
+   ------------------------------------
+   routine pj3dgb.f :
+                                                                                            
+                           
+   71c71
+   <       DO 40,K = 0,MAX(NX,NY) - 1
+   ---
+   >       DO 40,K = 0,MAX(NX,NY,NZ) - 1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage xc3xa9tude
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 17/12/2007 - 15:45:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011536 DU 2007-12-05 15:51:40
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   CALC_G : probleme pour rxc3xa9cupxc3xa9rer la tempxc3xa9rature en AXI
+FONCTIONNALITE
+   Problème :  l'option CALC_K_G de CALC_G ne fonctionne pas dès qu'il y a un chargement
+   thermique et que les propriétés matériau dépendent de la témpérature.
+   
+   Correction : La correction initiale a consisté en rajouter le champ de température (type
+   ZVARCPG) dans le catalogue gener_meax_1.cata (éléments de bord en axi), ainsi que l'option
+   INIT_VARC.
+   Après disussion avec Jacques, il apparait plus pertinent de fusionner le catalogue des
+   éléments de bords axi avec les autres éléments de bords 2D (gener_medpl1.cata).
+   
+   Suite à cette correction, on détecte deux autres anomalies dans CALC_K_G que l'on corrige :
+   - petite erreur dans le calcul de la partie thermique du terme classique de G en
+   axisymétrique (correction dans gbilin)
+   - plantage si on donne des couronnes théta plus grande que le rayon du fond de fissure ->
+   on détecte ce cas et on émet un message d'erreur explicite.
+   
+   Validation : ajout de CALC_G/CALC_K_G dans les deux modélisations du cas test existant
+   hpla311.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.01.311
+VALIDATION
+   hpla311
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 17/12/2007 - 15:13:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010645 DU 2007-03-14 14:13:50
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Bascule schxc3xa9mas en temps explicite vers implicite
+FONCTIONNALITE
+   On restitue une macro python pour la bascule : macro_bascule_schema.
+   Pour résumer cette macro gère une boucle autour de DYNA_NON_LINE.
+   On retrouve donc les arguments de DYNA_NON_LINE, avec quelques spécificités :
+   INCR_I : listes des instants pour le schéma implicite
+   INCR_E : liste des instants pour le schéma explicite
+   TP_BAS : liste des instants de bascule
+   
+   SCH_INI : schéma d'intégration au début 
+   SCH_TEMPS_I : schéma de temps implicite
+   SCH_TEMPS_E : schéma de temps explicite
+   
+   C_INCR_I : COMP_INCR pour l'implicite
+   C_INCR_E : COMP_INCR pour l'explicite
+   On fait la distinction car certains comportements comme le contact ne sont pas 
+   tous autorisés en explicite.
+   
+   Pour gérer le passage explicite vers implicte, on a le mot clé facteur 
+   EQUILIBRAGE.
+   En linéaire, l'équilibrage est obtenu directement, alors qu'en non linéaire, il 
+   faut rééquilibrer : donc cela se choisit par EQU_EXP_IMP='OUI' ou 'NON'.
+   On donne aussi la valeur des pas de temps avant et après la bascule :
+   DT_IMP et DT_EXP.
+   On doit aussi spécifier le schéma sur la zone de recouvrement : SCH_TEMPS_EQ. 
+   Pour ce recouvrement on recommande le schéma de Tchamwa (schéma explicite 
+   dissipatif).
+   
+   
+   La validation se fait sur un nouveau cas-test sdnv100j qui s'inspire du sdnv100f 
+   (impact d'une barre) : on passe d'implicite avant le cho à explicite durant le 
+   contact, puis on rebascule en implicite jusqu'à la fin.
+   Les résultats sont proches de ceux obtenus sans bascule, les différences sont 
+   dues aux schémas en temps qui ne sont pas les mêmes et à la discrétisation en 
+   temps implicite qui est volontairement grossière : 50 fois le pas explicite.
+   
+   ¨
+   Perspectives :
+   - la syntaxe va évoluer pour permettre de coupler des schémas de même type (tout 
+   implicite ou tout explicite),
+   - choix de diagonaliser ou pas la matrice de masse et influence sur le calcul,
+   - et surtout : critère automatique de bascule (donc gestion simplifiée des 
+   listes d'instants à fournir).
+   Dans ce cadre, on emettra donc une nouvelle fiche qui fera suite à celle-ci.
+   La finalisation de la bascule en fortran se fera à partir des conclusions tirées 
+   de l'utilisation de la macro python sur des cas représentatifs : en particulier 
+   en séisme sur structures en béton.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdnv100j
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 17/12/2007 - 14:19:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011436 DU 2007-11-07 09:09:16
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   CALC_G et MACRO_ELAS_MULT
+FONCTIONNALITE
+   Objectif
+   ========
+   Permettre la prise en compte d'un resultat de type "mult_elas"
+   par l'operateur CALC_G.
+   
+   Developpement
+   =============
+   catapy : calc_g.capy 
+   - enrichir le mot-cle RESULTAT du type mult_elas.
+   - ajout du mot-cle NOM_CAS pour que l'operateur CALC_G ne traite que les   
+     champs deplacements associes aux cas de charges fournis a ce mot-cle.
+   - ajout d'une verification: 
+     si type SD = mult_elas, alors on exclut les mots-cles
+      NUME_ORDRE,LIST_ORDRE,INST,LIST_INST,TOUT_MODE, 
+      NUME_MODE,LIST_MODE,LIST_FREQ,FREQ.
+   
+   bibfor
+   - op0100.f, cakg3d.f, mbilgl.f, mecalg.f, mlagrg.f, mecagl.f, meficg.f, mmaxkl.f:
+   L'acces a une SD Resultat de type mult_elas s'effectue par les noms de cas de charge,(et
+   non par les instants),ainsi tous les appels a RSADPA(..,'INST',..) presents dans ces
+   routines ont ete remplaces par RSADPA(..,'NOM_CAS',..).
+   
+   - cgcrtb.f: On a remplace les parametres : INST par NOM_CAS, et NUME_ORDRE par NUME_CAS.
+   
+   bibpyt : postrele.py, rupture0.py: ajout de messages
+   
+   validation
+   ----------
+   - validation informatique : passage de l'etude fournie avec la demande
+   - validation globale : cas-test sslp310a
+     on remplace les MECA_STATIQUE existants par un MACRO_MULT_ELAS 
+   
+   Remarque
+   ========
+   L'utilisateur desireux d'utiliser CALC_G avec un resultat produit par MACRO_ELAS_MULT doit
+   renseigner les mot-cles EXCIT et NOM_CAS dans CALC_G, sinon une alarme est emise pour le
+   lui rappeler.
+   Pourquoi? Il n'est pas possible actuellement de traiter dans un seul CALC_G tous les cas
+   de charge.
+   Conclusion: L'utilisateur devra repeter autant de CALC_G que de cas de charge.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03
+VALIDATION
+   sslp310a
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdnv100j                      greffet N.GREFFET          285    285      0
+ CASTEST AJOUT sensm15a                    desroches X.DESROCHES        340    340      0
+ CASTEST AJOUT sensm15b                    desroches X.DESROCHES        392    392      0
+ CASTEST AJOUT zzzz231a                       desoza T.DESOZA           126    126      0
+ CASTEST AJOUT zzzz231b                       desoza T.DESOZA           148    148      0
+ CASTEST AJOUT zzzz231c                       desoza T.DESOZA           135    135      0
+ CASTEST MODIF hpla311a                      galenne E.GALENNE          341    108     63
+ CASTEST MODIF hpla311b                      galenne E.GALENNE          296     70     73
+ CASTEST MODIF sslp310a                      rezette C.REZETTE         1200    130     81
+ CASTEST MODIF ssnv166b                       desoza T.DESOZA           436      1      1
+ CASTEST MODIF zzzz100a                     courtois M.COURTOIS        1986      6      1
+ CASTEST MODIF zzzz126a                       flejou J-L.FLEJOU         389     42      1
+CATALOGU AJOUT options/meca_sens_epai      desroches X.DESROCHES         42     42      0
+CATALOGU AJOUT options/meca_sens_raphep    desroches X.DESROCHES         43     43      0
+CATALOGU MODIF options/meca_sens_char      desroches X.DESROCHES         40      4      1
+CATALOGU MODIF options/meca_sens_mate      desroches X.DESROCHES         40      4      1
+CATALOGU MODIF options/meca_sens_raph      desroches X.DESROCHES         43      4      1
+CATALOGU MODIF typelem/gener_mecq32        desroches X.DESROCHES        291     31      5
+CATALOGU MODIF typelem/gener_medkt2        desroches X.DESROCHES        330     31      5
+CATALOGU MODIF typelem/gener_medpl1          galenne E.GALENNE          157     11      1
+CATALOGU SUPPR commande/memo_nom_sensi      courtois M.COURTOIS          70      0     70
+CATALOGU SUPPR typelem/gener_meax_1          galenne E.GALENNE           92      0     92
+CATALOPY AJOUT commande/macro_bascule_schema    greffet N.GREFFET          440    440      0
+CATALOPY MODIF commande/affe_cara_elem     desroches X.DESROCHES        565      4      2
+CATALOPY MODIF commande/calc_fonction       courtois M.COURTOIS         159      3      3
+CATALOPY MODIF commande/calc_g               rezette C.REZETTE          150     13      5
+CATALOPY MODIF commande/formule             courtois M.COURTOIS          46      9      8
+CATALOPY MODIF commande/impr_fonction       courtois M.COURTOIS         135      2      2
+ FORTRAN AJOUT elements/bptkb              desroches X.DESROCHES         45     45      0
+ FORTRAN AJOUT elements/coqsep             desroches X.DESROCHES        448    448      0
+ FORTRAN AJOUT elements/coqsnl             desroches X.DESROCHES        414    414      0
+ FORTRAN AJOUT elements/dbtdfn             desroches X.DESROCHES        145    145      0
+ FORTRAN AJOUT elements/dbtdms             desroches X.DESROCHES        162    162      0
+ FORTRAN AJOUT elements/dhfmss             desroches X.DESROCHES        130    130      0
+ FORTRAN AJOUT elements/dhsjf              desroches X.DESROCHES         45     45      0
+ FORTRAN AJOUT elements/dhsjm              desroches X.DESROCHES         63     63      0
+ FORTRAN AJOUT elements/djacbm             desroches X.DESROCHES        123    123      0
+ FORTRAN AJOUT elements/dktsnl             desroches X.DESROCHES        550    550      0
+ FORTRAN AJOUT elements/dmahsf             desroches X.DESROCHES         37     37      0
+ FORTRAN AJOUT elements/dmahsm             desroches X.DESROCHES         37     37      0
+ FORTRAN AJOUT elements/dvect              desroches X.DESROCHES         81     81      0
+ FORTRAN AJOUT elements/te0475             desroches X.DESROCHES        184    184      0
+ FORTRAN AJOUT elements/te0476             desroches X.DESROCHES        165    165      0
+ FORTRAN MODIF algorith/cakg3d               rezette C.REZETTE          434     21      5
+ FORTRAN MODIF algorith/irrcvx                flejou J-L.FLEJOU          82      5      5
+ FORTRAN MODIF algorith/irrini                flejou J-L.FLEJOU         182      7      2
+ FORTRAN MODIF algorith/irrjac                flejou J-L.FLEJOU         301      7      2
+ FORTRAN MODIF algorith/irrjpl                flejou J-L.FLEJOU         180      7      2
+ FORTRAN MODIF algorith/irrmat                flejou J-L.FLEJOU         470      7      4
+ FORTRAN MODIF algorith/meacmv             desroches X.DESROCHES        465      6      3
+ FORTRAN MODIF algorith/nmas2d             desroches X.DESROCHES        482      2      2
+ FORTRAN MODIF algorith/nmchar             desroches X.DESROCHES        564      4      4
+ FORTRAN MODIF algorith/nmsens             desroches X.DESROCHES        257      7      6
+ FORTRAN MODIF algorith/nscomp             desroches X.DESROCHES         82      4      4
+ FORTRAN MODIF algorith/nsisot             desroches X.DESROCHES        592    175     16
+ FORTRAN MODIF algorith/nsldc              desroches X.DESROCHES        294     46     15
+ FORTRAN MODIF algorith/op0070             desroches X.DESROCHES        887      2      2
+ FORTRAN MODIF algorith/vemsme             desroches X.DESROCHES        318     66     15
+ FORTRAN MODIF calculel/cgcrtb               rezette C.REZETTE          304     80      3
+ FORTRAN MODIF calculel/gbilin               galenne E.GALENNE          222      2      1
+ FORTRAN MODIF calculel/mbilgl               rezette C.REZETTE          388     21      6
+ FORTRAN MODIF calculel/mecagl               rezette C.REZETTE          386     21      8
+ FORTRAN MODIF calculel/mecalg               rezette C.REZETTE          440     12      5
+ FORTRAN MODIF calculel/meficg               rezette C.REZETTE          374     25      6
+ FORTRAN MODIF calculel/mlagrg               rezette C.REZETTE          219     10      4
+ FORTRAN MODIF calculel/op0100               rezette C.REZETTE         1076    110     24
+ FORTRAN MODIF calculel/pj3dgb                flejou J-L.FLEJOU         122      2      2
+ FORTRAN MODIF elements/btdfn              desroches X.DESROCHES        135      2      1
+ FORTRAN MODIF elements/btdmsr             desroches X.DESROCHES        174      3      2
+ FORTRAN MODIF elements/dxmate             desroches X.DESROCHES        656     22      4
+ FORTRAN MODIF elements/te0197             desroches X.DESROCHES         79      2      2
+ FORTRAN MODIF elements/te0299               galenne E.GALENNE          348      2      1
+ FORTRAN MODIF elements/te0300               galenne E.GALENNE          329      2      1
+ FORTRAN MODIF modelisa/aceaco             desroches X.DESROCHES        152     11      4
+ FORTRAN MODIF modelisa/acevco             desroches X.DESROCHES         69      3      2
+ FORTRAN MODIF modelisa/chprec                flejou J-L.FLEJOU         279      3      2
+ FORTRAN MODIF supervis/gcuini              courtois M.COURTOIS         179     11     13
+ FORTRAN MODIF utilifor/u2mesg              courtois M.COURTOIS         118      7      6
+ FORTRAN MODIF utilitai/foverf              courtois M.COURTOIS         133     11      8
+ FORTRAN MODIF utilitai/mmaxkl               rezette C.REZETTE          311     25     11
+  PYTHON AJOUT Intranet/macro_bascule_schema_ops    greffet N.GREFFET          296    296      0
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES   courtois M.COURTOIS         261      2      3
+  PYTHON MODIF Build/B_SENSIBILITE_DERIVATION   courtois M.COURTOIS         483     60    232
+  PYTHON MODIF Build/B_SENSIBILITE_JDC      courtois M.COURTOIS         432    148    218
+  PYTHON MODIF Build/B_SENSIBILITE_MEMO_NOM_SENSI   courtois M.COURTOIS         358    323    209
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         467      2      2
+  PYTHON MODIF Execution/E_ETAPE            courtois M.COURTOIS         294      5      2
+  PYTHON MODIF Macro/impr_fonction_ops      courtois M.COURTOIS         406     14      4
+  PYTHON MODIF Messages/fonct0              courtois M.COURTOIS         331     39      1
+  PYTHON MODIF Messages/irrad3m               flejou J-L.FLEJOU          66     16     16
+  PYTHON MODIF Messages/modelisa8             flejou J-L.FLEJOU         357      3      2
+  PYTHON MODIF Messages/postrele             rezette C.REZETTE          400      6      1
+  PYTHON MODIF Messages/rupture0             galenne E.GALENNE          250     17      1
+  PYTHON MODIF Noyau/N_FONCTION             courtois M.COURTOIS         118     33      6
+  PYTHON MODIF Noyau/N_MCCOMPO              courtois M.COURTOIS         418      3      2
+  PYTHON MODIF Noyau/N_MCLIST               courtois M.COURTOIS         225      3      2
+  PYTHON MODIF Stanley/stanley              courtois M.COURTOIS        3148      1      2
+  PYTHON SUPPR Macro/Sensibilite            courtois M.COURTOIS           0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   25        4876      4876             +4876
+ MODIF :   70       26701      1901    1160      +741
+ SUPPR :    3         162               162      -162
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   98       31739      6777    1322     +5455 

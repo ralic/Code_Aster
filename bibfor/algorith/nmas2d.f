@@ -8,7 +8,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -330,7 +330,7 @@ C         ---------------------
 
 C         INCOMPRESSIBLE
 C         --------------
-          ELSE IF (PROJ.EQ.2) THEN
+          ELSE IF (PROJ.EQ.1.OR.PROJ.EQ.2) THEN
             DQ(1) = (DSIDEP(1,1)-DSIDEP(2,1))*PQX
             DQ(2) = (DSIDEP(2,1)-DSIDEP(1,1))*PQY
             DQ(3) = (DSIDEP(1,2)-DSIDEP(2,2))*PQX

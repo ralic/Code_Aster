@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,8 +89,11 @@ class ETAPE:
           self.jdc.timer.Stop(' . part Superviseur')
           self.jdc.timer.Start(' . part Fortran', num=1.2e6)
           ier=self.codex.oper(self,self.jdc.jxveri,self.modexec,self.icmd)
-          self.jdc.timer.Start(' . part Superviseur')
           self.jdc.timer.Stop(' . part Fortran')
+          self.jdc.timer.Start(' . part Superviseur')
+
+          # enregistrement des concepts sensibles en attente
+          self.jdc.memo_sensi.register_sensi()
 
           if (self.modexec == 2) and (self.definition.op_init==None):
              # vérification de la SD produite

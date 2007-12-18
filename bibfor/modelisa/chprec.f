@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,7 +175,8 @@ C
 C     --- ON PEUT FAIRE UNE INTERPOLATION ---
 C         ===============================
       IF (TYSD.EQ.'EVOL_THER' .OR. TYSD.EQ.'EVOL_ELAS' .OR.
-     &    TYSD.EQ.'EVOL_NOLI' .OR. TYSD.EQ.'DYNA_TRANS') THEN
+     &    TYSD.EQ.'EVOL_NOLI' .OR. TYSD.EQ.'DYNA_TRANS' .OR.
+     &    TYSD.EQ.'EVOL_VARC') THEN
 
         IF (INTERP(1:3).EQ.'LIN') THEN
           CALL GETVR8(' ','INST',0,1,1,INST,N4)

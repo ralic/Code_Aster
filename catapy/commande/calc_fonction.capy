@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -129,7 +129,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
          ),
          FRACTILE        =FACT(statut='f',fr="Fractile d une famille de fonctions ou de nappes",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
-           FRACT           =SIMP(statut='o',typ='R',defaut="SUP",val_min=0.,val_max=1.,fr="Valeur du fractile" ),
+           FRACT           =SIMP(statut='o',typ='R',defaut=1.,val_min=0.,val_max=1.,fr="Valeur du fractile" ),
          ),
          ASSE            =FACT(statut='f',fr="Concatenation de fonctions",
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster,min=2,max=2 ),
@@ -141,7 +141,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
          ),
          PUISSANCE       =FACT(statut='f',fr="Fonction élevée à une puissance",
             FONCTION      =SIMP(statut='o', typ=(fonction_sdaster,nappe_sdaster) ),
-            EXPOSANT      =SIMP(statut='f', typ='R', defaut=1 ),
+            EXPOSANT      =SIMP(statut='f', typ='I', defaut=1 ),
          ),
          INVERSE         =FACT(statut='f',fr="Inverse d'une fonction",
             FONCTION      =SIMP(statut='o', typ=fonction_sdaster),

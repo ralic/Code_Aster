@@ -9,7 +9,7 @@ C IN  MXCMDU : IS : NOMBRE DE COMMANDES UTILISATEURS MAXIMUM
 C IN  BASE   : CH : TYPE DE LA BASE 'L' 'G' 'V' ....
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,33 +104,31 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
          NOMUSR = ZK80(LGRESU+JCMD-1)(1:8)
          TYPCON = ZK80(LGRESU+JCMD-1)(9:24)
          NOMCMD = ZK80(LGRESU+JCMD-1)(25:40)
-         CALL CODENT( JCMD,'D0',CBID)
-         VALK (1)= CBID
-         CALL U2MESG('I+','SUPERVIS_71',1,VALK,0,0,0,0.D0)
+         CALL U2MESI('I+','SUPERVIS_71',1,JCMD)
          IF (IER .EQ. 0 ) THEN
-             CALL U2MESG('I+','SUPERVIS_72',0,' ',0,0,0,0.D0)
+             CALL U2MESS('I+','SUPERVIS_72')
          ELSEIF (IER .EQ. 1 ) THEN
              LG = LXLGUT(NOMCMD)
              VALK (1)= NOMCMD(1:LG)
-             CALL U2MESG('I+','SUPERVIS_73',1,VALK,0,0,0,0.D0)
+             CALL U2MESK('I+','SUPERVIS_73',1,VALK)
          ELSEIF (IER .EQ. 2 ) THEN
              LG = LXLGUT(NOMCMD)
              VALK (1) = NOMCMD(1:LG)
-             CALL U2MESG('I+','SUPERVIS_74',1,VALK,0,0,0,0.D0)
+             CALL U2MESK('I+','SUPERVIS_74',1,VALK)
              LG1 = LXLGUT(NOMUSR)
              LG2 = LXLGUT(TYPCON)
              VALK(1) = NOMUSR(1:LG1)
              VALK(2) = TYPCON(1:LG2)
-             CALL U2MESG('I+','SUPERVIS_75',2,VALK,0,0,0,0.D0)
+             CALL U2MESK('I+','SUPERVIS_75',2,VALK)
          ELSEIF (IER .EQ. 3 ) THEN
              LG = LXLGUT(NOMCMD)
              VALK(1) = NOMCMD(1:LG)
-             CALL U2MESG('I+','SUPERVIS_76',1,VALK,0,0,0,0.D0)
+             CALL U2MESK('I+','SUPERVIS_76',1,VALK)
              LG1 = LXLGUT(NOMUSR)
              LG2 = LXLGUT(TYPCON)
              VALK(1) = NOMUSR(1:LG1)
              VALK(2) = TYPCON(1:LG2)
-             CALL U2MESG('I+','SUPERVIS_77',2,VALK,0,0,0,0.D0)
+             CALL U2MESK('I+','SUPERVIS_77',2,VALK)
              CALL UTSAUT()
             SPVR = NOMUSR
             SPVR(20:24) = '.SPVR'
@@ -139,14 +137,14 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
                CALL JEVEUO(SPVR,'L',LSPVR)
                CALL JELIRA(SPVR,'LONMAX',LONMAX,CBID)
                VALK (1) = ZK80(LSPVR)
-               CALL U2MESG('I+','SUPERVIS_78',1,VALK,0,0,0,0.D0)
+               CALL U2MESK('I+','SUPERVIS_78',1,VALK)
             ELSE
-               CALL U2MESG('I+','SUPERVIS_79',0,' ',0,0,0,0.D0)
+               CALL U2MESS('I+','SUPERVIS_79')
             ENDIF
             NOMUSR = '   '
             CALL UTSAUT()
          ENDIF
-        CALL U2MESG('I','SUPERVIS_80',0,' ',0,0,0,0.D0)
+        CALL U2MESS('I','SUPERVIS_80')
 C
 C     --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
       CALL JEDETC('G','.',1)

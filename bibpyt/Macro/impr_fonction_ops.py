@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF impr_fonction_ops Macro  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,10 +33,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    import pprint
    import aster
    from Accas               import _F
-   from Cata.cata           import nappe_sdaster, fonction_c
+   from Cata.cata           import nappe_sdaster, fonction_c, formule, formule_c
    from Utilitai            import Graph
    from Utilitai.Utmess     import UTMESS
    from Utilitai.UniteAster import UniteAster
+   
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
@@ -141,6 +142,12 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
       # 1.2.1. Mot-clé FONCTION
       if   typi=='FONCTION':
+         # formule à un paramètre seulement
+         if isinstance(obj, formule):
+            dpar = obj.Parametres()
+            if len(dpar['NOM_PARA']) != 1:
+               UTMESS('S', 'FONCT0_50', valk=obj.nom, vali=len(dpar['NOM_PARA']))
+         
          if isinstance(obj, nappe_sdaster):
             lpar,lval=obj.Valeurs()
             dico,ldicf=obj.Parametres()
@@ -185,6 +192,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          else:
             ftmp__=obj
             dpar=ftmp__.Parametres()
+            # pour les formules à un paramètre (test plus haut)
+            if type(dpar['NOM_PARA']) in (list, tuple):
+               dpar['NOM_PARA'] = dpar['NOM_PARA'][0]
             if interp:
                ftmp__=CALC_FONC_INTERP(
                   FONCTION=obj,
@@ -200,10 +210,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             lval=list(ftmp__.Valeurs())
             lx=lval[0]
             lr=lval[1]
-            if isinstance(obj, fonction_c) and dCi.get('PARTIE') == 'IMAG':
+            if isinstance(obj, (fonction_c, formule_c)) and dCi.get('PARTIE') == 'IMAG':
                lr=lval[2]
             # on stocke les données dans le Graph
-            if isinstance(obj, fonction_c) and not dCi.has_key('PARTIE'):
+            if isinstance(obj, (fonction_c, formule_c)) and not dCi.has_key('PARTIE'):
                nomresu=dpar['NOM_RESU'].strip()+'_'+str(len(graph.Legendes))
                dicC={
                   'Val' : lval,

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1949,6 +1949,11 @@ labs=DEFI_LIST_REEL( VALE=( 0., 1., 2., 3. ) )
 fctcpx=CALC_FONC_INTERP( FONCTION=frmcpx,
                          LIST_PARA=labs,
                          NOM_PARA = 'X', )
+
+IMPR_FONCTION( COURBE=_F(FONCTION=frmcpx,
+                         LIST_PARA=labs,
+                         PARTIE='IMAG',),
+               UNITE=6,);
 
 TEST_FONCTION( VALEUR =( _F( FONCTION  = fctcpx,
                              VALE_PARA = 1.,

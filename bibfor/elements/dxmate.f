@@ -24,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -288,7 +288,8 @@ C        ------ MATERIAU ISOTROPE --------------------------------------
 C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
 C   SI : DERIVATION PAR RAPPORT A YOUNG ALORS : YOUNG = 1 ET NU = 0
 C   SI : DERIVATION PAR RAPPORT A NU ALORS : YOUNG = 0 ET NU = 1
-C ICI, LA FORMULATION DE LA DERIVEE EST PLUS COMPLEXE
+C   SINON  : DERIVATION PAR RAPPORT A L EPAISSEUR 
+C            (EVITE DE DEFINIR UNE OPTION EN PLUS)
 
           CALL JEVECH('PMATERC','L',JMATE)
           CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
@@ -301,8 +302,10 @@ C ICI, LA FORMULATION DE LA DERIVEE EST PLUS COMPLEXE
             DERIVE = 'NU'
             YOUNG = VALRES(1)
             NU = VALRES(2)
-C ET REFORMULATION DES TERMES DE LA MATRICE (VOIR PLUS BAS)
+          ELSE 
+            DERIVE = 'EP'
           END IF
+C ET REFORMULATION DES TERMES DE LA MATRICE (VOIR PLUS BAS)
         ELSE
 
           CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
@@ -358,7 +361,7 @@ C        --- CALCUL DES MATRICES DE RIGIDITE EN MEMBRANE ET FLEXION --
             DO 30 I = 1,3
               DM(I,J) = DH(I,J)*EPAIS
 C              DF(I,J) = DH(I,J)*CDF
-C              SUPPRESION DE LA RIGIDITE DE FLEXION PROPRE
+C              SUPPRESSION DE LA RIGIDITE DE FLEXION PROPRE
               DF(I,J) = 0.D0
    30       CONTINUE
    40     CONTINUE
@@ -383,6 +386,11 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN FLEXION --------------
             DF(2,1) = DF(1,2)
             DF(2,2) = DF(1,1)
             DF(3,3) = -DF(3,3)/(1.D0+NU)
+          ELSE IF(DERIVE(1:2).EQ.'EP') THEN
+            DO 51 I = 1,3
+            DO 51 J = 1,3
+              DF(I,J) = DF(I,J)*3.D0/EPAIS
+   51       CONTINUE
           ENDIF
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           CDM = EPAIS*YOUNG/ (1.D0-NU*NU)
@@ -400,6 +408,11 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
             DM(2,1) = DM(1,2)
             DM(2,2) = DM(1,1)
             DM(3,3) = -DM(3,3)/(1.D0+NU)
+          ELSE IF(DERIVE(1:2).EQ.'EP') THEN
+            DO 52 I = 1,3
+            DO 52 J = 1,3
+              DM(I,J) = DM(I,J)/EPAIS
+   52       CONTINUE
           ENDIF
 C        --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
           GCIS = YOUNG/2.D0/ (1.D0+NU)
@@ -411,6 +424,11 @@ C        --- CALCUL DE LA MATRICE DE RIGIDITE EN CISAILLEMENT ----------
           IF(DERIVE(1:2).EQ.'NU') THEN
             DC(1,1) = -DC(1,1)/(1.D0+NU)
             DC(2,2) = DC(1,1)
+          ELSE IF(DERIVE(1:2).EQ.'EP') THEN
+            DO 53 I = 1,3
+            DO 53 J = 1,3
+              DC(I,J) = DC(I,J)/EPAIS
+   53       CONTINUE
           ENDIF
 C        --- CALCUL DE SON INVERSE ------------------------------------
           DCI(1,1) = 1.D0/DC(1,1)

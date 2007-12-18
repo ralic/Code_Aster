@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU,NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF MODELISA  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,9 +51,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       ANG(2), CRB, EPA, KAPPA, CORREC, RIGI, EXCENT
       REAL*8       VECT(3),R8PI
-      INTEGER NVEC
-      CHARACTER*8  INERT, KORREC
-      CHARACTER*19 CARTCO
+      INTEGER NVEC, LVAL, NVALF
+      CHARACTER*8  INERT, KORREC, K8B
+      CHARACTER*19 CARTCO, K19B
       CHARACTER*24 TMPNCO, TMPVCO
 C     ------------------------------------------------------------------
 C
@@ -94,6 +94,13 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTCO
          CALL GETVEM(NOMA,'MAILLE',  'COQUE','MAILLE',
      +                                IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVR8('COQUE','EPAIS'        ,IOC,1,1   ,EPA      ,NV  )
+C ET POUR LES PARA_SENSI
+         CALL GETVID ( 'COQUE', 'EPAIS_F',IOC,1,0, K8B , NVALF)
+         IF (NVALF .NE. 0) THEN
+           CALL GETVID ('COQUE','EPAIS_F',IOC,1,1, K19B ,NVALF)
+           CALL JEVEUO(K19B//'.VALE','L',LVAL)
+           EPA = ZR(LVAL+1)
+         ENDIF
          CALL GETVR8('COQUE','ANGL_REP'     ,IOC,1,2   ,ANG(1)   ,NA  )
          CALL GETVR8('COQUE','VECTEUR'      ,IOC,1,3   ,VECT     ,NVEC)
          CALL GETVR8('COQUE','A_CIS'        ,IOC,1,1   ,KAPPA    ,NK  )

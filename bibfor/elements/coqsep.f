@@ -1,0 +1,448 @@
+      SUBROUTINE COQSEP ( NOMTE, OPT, GEOM, IMATE, IMATSE, CARCRI,
+     &                    TEMPS, COMPOR, CACOQ, CAC3D, NBCOU, LGPG, 
+     &                    UM, UP, SIGMOS, VARMOS, SIGMOI, VARMOI,
+     &                    STYPSE, SIGPAS, SIGPLU, VARPLU, US, DUS, 
+     &                    VECTU, SIGPLS, VARPLS )
+      IMPLICIT  NONE
+      INTEGER         NBCOU, LGPG, IMATE, IMATSE
+      REAL*8          GEOM(3,9), UM(*), UP(*), CACOQ(6), CARCRI(*) 
+      REAL*8          SIGMOS(6,*), VARMOS(LGPG,*), US(*), DUS(*)
+      REAL*8          SIGMOI(6,*), VARMOI(LGPG,*), CAC3D
+      REAL*8          SIGPLU(6,*), VARPLU(LGPG,*), SIGPAS(6,*), TEMPS(3)
+      REAL*8          VECTU(*), SIGPLS(6,*), VARPLS(LGPG,*)
+      CHARACTER*16    NOMTE, OPT, COMPOR(6)
+      CHARACTER*24    STYPSE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C TOLE CRP_20
+C TOLE CRP_21
+C     ------------------------------------------------------------------
+C     CALCULS DE SENSIBILITE POUR L'ELEMENT COQUE_3D
+C     ------------------------------------------------------------------
+C IN  NOMTE    : NOM DU TYPE ELEMENT
+C IN  OPT      : OPTION A CALCULER :
+C         'MECA_SENS_EPAI'  SENSIBILITE PAR RAPPORT A L EPAISSEUR
+C         'MECA_SENS_RAPHEP' CONTRAINTES ET VARIABLES INTERNES SENSIBLES
+C                            PAR RAPPORT A L EPAISSEUR
+C IN  GEOM    : COORDONNEES DES NOEUDS EN GLOBAL
+C IN  IMATE   : MATERIAU CODE
+C IN  IMATSE  : MATERIAU CODE SENSIBLE
+C IN  CARCRI  : PARAMETRES DE CONVERGENCE
+C IN  INSTM   : INSTANT -
+C IN  INSTP   : INSTANT +
+C IN  COMPOR  : COMPORTEMENT
+C IN  CACOQ   : CARAC COQUES
+C IN  CAC3D   : COEF ROTATION FICTIVE
+C IN  NBCOU   : NOMBRE DE COUCHES (INTEGRATION DE LA PLASTICITE)
+C IN  LGPG    : "LONGUEUR" DES VARIABLES INTERNES POUR 1 POINT DE GAUSS
+C               CETTE LONGUEUR EST UN MAJORANT DU NBRE REEL DE VAR. INT.
+C IN  UM      : DEPLACEMENT A L'INSTANT -
+C IN  UP      : INCREMENT DE DEPLACEMENT
+C IN  SIGMOS  : CONTRAINTES SENSIBLE A L'INSTANT -
+C IN  VARMOS  : V. INTERNES SENSIBLE A L'INSTANT -
+C IN  SIGMOI  : CONTRAINTES A L'INSTANT PRECEDENT
+C IN  VARMOI  : V. INTERNES A L'INSTANT -
+C IN  STYPSE  : SOUS-TYPE DE SENSIBILITE
+C IN  SIGPAS  : CONTRAINTES SENSIBLES PARTIELLES A L'INSTANT +  
+C IN  SIGPLU  : CONTRAINTES A L'INSTANT +
+C IN  VARPLU  : V. INTERNES A L'INSTANT +
+C IN  US      : DEPLACEMENT SENSIBLE A L'INSTANT -
+C IN  DUS     : INCR DE DEPLACEMENT SENSIBLE
+C OUT VECTU   : FORCES NODALES (MECA_SENS_MATE ET MECA_SENS_CHAR)
+C OUT SIGPLS  : CONTRAINTES SENSIBLES A L'INSTANT +
+C OUT VARPLS  : V. INTERNES SENSIBLES A L'INSTANT +
+C     ------------------------------------------------------------------
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR,R8VIDE
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      CHARACTER*2 VALRET(26)
+      CHARACTER*8 NOMRES(26),NOMPAR,NOMPU(2),TYPMOD(2),NOMAIL
+      CHARACTER*10 PHENOM
+      CHARACTER*16 OPTI
+      INTEGER NB1,NB2,NPGE,NPGSR,NPGSN,ITAB(8),IB,NBC,NDDLET,NDDLE,IND
+      INTEGER COD,KSP,LZI,LZR,NBVARI,NBV,KWGT,KPGS,INTE,INTSR,INTSN
+      INTEGER  INO, IRET, ISP,IVSP, J, K, NBCON, NBSP, I, ICOU, ICPG, KL
+      REAL*8 DEDT(6),KTAN(300),RAC2,INSTM,INSTP,BTDF(3,42),BTILD(5,42)
+      REAL*8 SIGM(6),SIGP(6),SIGMS(6),SIGPS(6),SIPAS(6),KPRIMU(51)
+      REAL*8 COE, SIGBID(360),VARBID(120),RIG(51,51)
+      REAL*8 VECTA(9,2,3),VECTN(9,3),VECTPT(9,2,3),VECPT(9,3,3),HSF(3,9)
+      REAL*8 HSFM(3,9),HSS(2,9),HSJ1M(3,9),HSJ1S(2,9),HSJ1FX(3,9),WGT
+      REAL*8 DHSFM(3,9),DHSS(2,9),DHSJ1M(3,9),DHSJ1S(2,9)
+      REAL*8 BTDM(4,3,42),BTDS(4,2,42),EPS2D(4),DEPS2D(4),DEDT2D(4)
+      REAL*8 DBTDM(4,3,42),DBTDS(4,2,42),DBTILD(5,42),DBTDF(3,42)
+      REAL*8 VECTG(2,3),VECTT(3,3),DHSF(3,9),DHSJ1F(3,9)
+      REAL*8 DVECTG(2,3),DVECTT(3,3),KTILDI(42,42),VECL(48),CTOR
+      REAL*8 VALRES(2),EPAIS,KAPPA,CISAIL,E,NU,ES,NUS,DERCIS,UNPLNU
+      REAL*8 DEPLM(42),DEPLP(42),DEPLMS(42),DEPLPS(42),ROTFCM(9)
+      REAL*8 SGMTD(5),VECLL(51),ROTFCP(9),DTILD(5,5),WMATCB(5,42)
+      REAL*8 SIGN(4),SIGMA(4),DSIDEP(6,6),ANGMAS(3),EPSI(5),DEPSI(5)
+      REAL*8 LC,ZMIN,HIC,ZIC,COEF,DZIC,KSI3S2,X,GXZ,GYZ,KPRIM(42,42)
+      REAL*8 DNSDSF(9,42),DNSDSM(9,42),DNSDS(9,42)
+      PARAMETER (NPGE=3)
+      COMMON /COUCHE/NBC,ICOU,INTE
+      COMMON /DNSMS/DNSDSM,DNSDS
+      COMMON /DNSF/DNSDSF
+C ----------------------------------------------------------------------
+C
+      NBC = NBCOU
+      RAC2 = SQRT(2.D0)
+      TYPMOD(1) = 'C_PLAN  '
+      TYPMOD(2) = '        '
+      NBV    = 2
+      NOMRES(1) = 'E'
+      NOMRES(2) = 'NU'
+
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ',LZI)
+      NB1 = ZI(LZI-1+1)
+      NB2 = ZI(LZI-1+2)
+      NPGSR = ZI(LZI-1+3)
+      NPGSN = ZI(LZI-1+4)
+
+      NDDLE = 5*NB1 + 2
+      DO 20 I = 1,NDDLE
+        DO 10 J = 1,NDDLE
+          KPRIM(I,J) = 0.D0
+   10   CONTINUE
+   20 CONTINUE
+
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)
+C
+      IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_12')
+      IF (NBCOU.GT.10) CALL U2MESS('F','ELEMENTS_13')
+      READ (COMPOR(2),'(I16)') NBVARI
+      CALL TECACH('OON','PVARIMR',7,ITAB,IRET)
+      NBSP=ITAB(7)
+
+      EPAIS = CACOQ(1)
+      KAPPA = CACOQ(4)
+      CTOR  = CACOQ(5)
+      ZMIN  = -EPAIS/2.D0
+      HIC   = EPAIS/NBCOU
+
+      CALL VECTAN(NB1,NB2,GEOM,ZR(LZR),VECTA,VECTN,VECTPT)
+
+      CALL RCCOMA(IMATE,'ELAS',PHENOM,VALRET)
+
+      IF ( PHENOM.NE.'ELAS') THEN
+         CALL U2MESS('F','ELEMENTS_42')
+      END IF
+
+C===============================================================
+C     CALCULS DES 2 DDL INTERNES
+C    DEPLM ET DEPLP SONT EN REPERE LOCAL
+      CALL TRNDGL(NB2,VECTN,VECTPT,UM,DEPLM,ROTFCM)
+      CALL TRNDGL(NB2,VECTN,VECTPT,UP,DEPLP,ROTFCP)
+      IF(OPT(1:14).EQ.'MECA_SENS_RAPH') THEN
+        CALL TRNDGL(NB2,VECTN,VECTPT,US,DEPLMS,ROTFCM)
+        CALL TRNDGL(NB2,VECTN,VECTPT,DUS,DEPLPS,ROTFCP)
+      END IF
+C
+      KWGT = 0
+      KPGS = 0
+      DO 140 ICOU = 1,NBCOU
+        DO 130 INTE = 1,NPGE
+          IF (INTE.EQ.1) THEN
+            ZIC = ZMIN + (ICOU-1)*HIC
+            COEF = 1.D0/3.D0
+          ELSE IF (INTE.EQ.2) THEN
+            ZIC = ZMIN + HIC/2.D0 + (ICOU-1)*HIC
+            COEF = 4.D0/3.D0
+          ELSE
+            ZIC = ZMIN + HIC + (ICOU-1)*HIC
+            COEF = 1.D0/3.D0
+          END IF
+          KSI3S2 = ZIC/HIC
+
+C     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
+
+          DO 60 INTSR = 1,NPGSR
+            CALL MAHSMS(0,NB1,GEOM,KSI3S2,INTSR,ZR(LZR),HIC,VECTN,VECTG,
+     &                  VECTT,HSFM,HSS)
+            CALL DMAHSM(0,NB1,INTSR,ZR(LZR),VECTN,VECTG,
+     &                  VECTT,DVECTG,DVECTT,DHSFM,DHSS)
+
+            CALL HSJ1MS(HIC,VECTG,VECTT,HSFM,HSS,HSJ1M,HSJ1S)
+            CALL DHSJM(HIC,VECTG,DVECTG,VECTT,HSFM,HSS,DHSFM,DHSS,
+     &                  DHSJ1M,DHSJ1S)
+
+            CALL BTDMSR(NB1,NB2,KSI3S2,INTSR,ZR(LZR),HIC,VECTPT,
+     &                  HSJ1M,HSJ1S,BTDM,BTDS)
+            CALL DBTDMS(NB1,NB2,INTSR,ZR(LZR),VECTPT,
+     &                  DHSJ1M,HSJ1S,DHSJ1S,DBTDM,DBTDS)
+   60     CONTINUE
+
+C     BOUCLE SUR LES PTS DE GAUSS
+          DO 120 INTSN = 1,NPGSN
+            KSP = (ICOU-1)*NPGE+INTE
+            ICPG = (INTSN-1)*NBSP + KSP
+            IVSP = (ICOU-1)*NPGE*NBVARI + NBVARI*(INTE-1)+1
+C     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
+C     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
+C                          (NORMAL) ET DU DETERMINANT DU JACOBIEN
+
+            IND=1
+            CALL MAHSF(IND,NB1,GEOM,KSI3S2,INTSN,ZR(LZR),HIC,VECTN,
+     &                 VECTG,VECTT,HSF)
+            CALL DMAHSF(IND,NB1,INTSN,ZR(LZR),VECTN,VECTG,VECTT,
+     &                 DVECTG,DHSF)
+            CALL HSJ1F(INTSN,ZR(LZR),HIC,VECTG,VECTT,HSF,KWGT,
+     &                 HSJ1FX,WGT)
+            CALL DHSJF(INTSN,HIC,VECTG,VECTT,DVECTG,HSF,DHSF,DHSJ1F)
+
+C     PRODUIT DU POIDS DES PTS DE GAUSS DANS L'EPAISSEUR ET DE WGT
+
+            WGT = COEF*WGT
+
+            CALL BTDFN(1,NB1,NB2,KSI3S2,INTSN,ZR(LZR),HIC,VECTPT,
+     &                 HSJ1FX,BTDF)
+            CALL DBTDFN(1,NB1,NB2,KSI3S2,INTSN,ZR(LZR),HIC,VECTPT,
+     &                  HSJ1FX,DHSJ1F,BTDF,DBTDF)
+C     CALCUL DE BTILD
+
+            CALL BTDMSN(1,NB1,INTSN,NPGSR,ZR(LZR),BTDM,BTDF,
+     &                  BTDS,BTILD)
+
+C     CALCUL DE DBTILD = d(BTILD)/d(H) H ETANT L'EPAISSEUR
+
+            CALL BTDMSN(1,NB1,INTSN,NPGSR,ZR(LZR),DBTDM,DBTDF,
+     &                  DBTDS,DBTILD)
+C     CALCULS DES COMPOSANTES DE DEFORMATIONS TRIDIMENSIONNELLES :
+C     EPSXX, EPSYY, EPSXY, EPSXZ, EPSYZ (CE SONT LES COMPOSANTES TILDE)
+            KPGS = KPGS + 1
+            IF(OPT.EQ.'MECA_SENS_EPAI') THEN
+              CALL EPSEFF('DEFORM',NB1,DEPLM,BTILD,X,EPSI,WGT,X)
+              EPS2D(1) = EPSI(1)
+              EPS2D(2) = EPSI(2)
+              EPS2D(3) = 0.D0
+              EPS2D(4) = EPSI(3)/RAC2
+
+              CALL EPSEFF('DEFORM',NB1,DEPLP,BTILD,X,DEPSI,WGT,X)
+              DEPS2D(1) = DEPSI(1)
+              DEPS2D(2) = DEPSI(2)
+              DEPS2D(3) = 0.D0
+              DEPS2D(4) = DEPSI(3)/RAC2
+
+              GXZ = EPSI(4) + DEPSI(4)
+              GYZ = EPSI(5) + DEPSI(5)
+C
+            ELSE IF(OPT.EQ.'MECA_SENS_RAPHEP') THEN
+              CALL EPSEFF('DEFORM',NB1,DEPLMS,BTILD,X,EPSI,WGT,X)
+              EPS2D(1) = EPSI(1)
+              EPS2D(2) = EPSI(2)
+              EPS2D(3) = 0.D0
+              EPS2D(4) = EPSI(3)/RAC2
+
+              CALL EPSEFF('DEFORM',NB1,DEPLPS,BTILD,X,DEPSI,WGT,X)
+              DEPS2D(1) = DEPSI(1)
+              DEPS2D(2) = DEPSI(2)
+              DEPS2D(3) = 0.D0
+              DEPS2D(4) = DEPSI(3)/RAC2
+
+              GXZ = EPSI(4) + DEPSI(4)
+              GYZ = EPSI(5) + DEPSI(5)
+C
+              CALL EPSEFF('DEFORM',NB1,DEPLP,BTILD,X,DEDT,WGT,X)
+              DEDT2D(1) = DEDT(1)
+              DEDT2D(2) = DEDT(2)
+              DEDT2D(3) = 0.D0
+              DEDT2D(4) = DEDT(3)/RAC2
+C              DEDT(1) = DEDTM(1) + ZIC*DEDTF(1)
+C              DEDT(2) = DEDTM(2) + ZIC*DEDTF(2)
+C              DEDT(3) = 0.0D0
+C              DEDT(4) = (DEDTM(3)+ZIC*DEDTF(3))/RAC2
+C              DEDT(5) = 0.D0
+C              DEDT(6) = 0.D0
+C   TERME SUPPLEMENTAIRE DANS LE CAS DERIVEE EPAISSEUR
+C                DZIC = ZIC/H
+C
+C ATTENTION IL FAUT RECUPERER LA PARTIE FLEXION DE DEDT
+C
+C                DEPS2D(1) = DEPS2D(1) + DZIC*DEDTF(1)
+C                DEPS2D(2) = DEPS2D(2) + DZIC*DEDTF(2)
+C                DEPS2D(4) = DEPS2D(4) + DZIC*DEDTF(3)/RAC2
+            END IF
+
+            DO 44 I = 1,3
+              SIGMS(I) = SIGMOS(I,ICPG)
+   44       CONTINUE
+            DO 50 I = 4,6
+              SIGMS(I) = SIGMOS(I,ICPG)*RAC2
+   50       CONTINUE
+C
+            DO 41 I = 1,3
+              SIGM(I) = SIGMOI(I,ICPG)
+   41       CONTINUE
+            DO 51 I = 4,6
+              SIGM(I) = SIGMOI(I,ICPG)*RAC2
+   51       CONTINUE
+C
+            DO 42 I = 1,3
+              SIGP(I) = SIGPLU(I,ICPG)
+   42       CONTINUE
+            DO 52 I = 4,6
+              SIGP(I) = SIGPLU(I,ICPG)*RAC2
+   52       CONTINUE
+
+            IF (OPT.EQ.'MECA_SENS_RAPHEP') THEN
+              DO 54 I = 1,3
+               SIPAS(I) = SIGPAS(I,ICPG)
+   54         CONTINUE
+              DO 56 I = 4,6
+                SIPAS(I) = SIGPAS(I,ICPG)*RAC2
+   56         CONTINUE
+            ELSE
+              DO 57 I = 1,6
+                SIPAS(I) = 0.D0
+   57         CONTINUE
+            ENDIF
+
+            IF(OPT.EQ.'MECA_SENS_EPAI') THEN
+C         -- APPEL A NMCOMP POUR CALCULER LA MATRICE TANGENTE :
+C         -----------------------------------------------------
+C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
+               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
+               INSTP = TEMPS(1)
+               INSTM = TEMPS(1) - TEMPS(2)
+               OPTI= 'RIGI_MECA_TANG'
+               CALL NMCOMP('RIGI',INTSN,KSP,2,TYPMOD,IMATE,COMPOR,
+     &                     CARCRI,INSTM,INSTP,EPS2D,DEPS2D,SIGM,
+     &                     VARMOI(IVSP,INTSN),OPTI,ANGMAS,LC,
+     &                     SIGBID,VARBID,DSIDEP,COD)
+C           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
+               IF (COD.NE.0) THEN
+                 CALL U2MESS('F','UTILITAI3_8')
+               ENDIF
+C
+              IF (PHENOM.EQ.'ELAS') THEN
+                NBV = 2
+                NOMRES(1) = 'E'
+                NOMRES(2) = 'NU'
+              ELSE
+                CALL U2MESS('F','ELEMENTS_42')
+              END IF
+
+              CALL RCVALB('MASS',INTSN,KSP,'+',IMATE,' ',PHENOM,
+     &                     0,' ',0.D0,NBV,NOMRES,VALRES,VALRET,'FM')
+
+              E=VALRES(1)
+              NU=VALRES(2)
+              UNPLNU=1.D0+NU
+              CISAIL = E/UNPLNU
+C
+C  CALCUL DE DTILD
+C
+              DTILD(1,1) = DSIDEP(1,1)
+              DTILD(1,2) = DSIDEP(1,2)
+              DTILD(1,3) = DSIDEP(1,4)/RAC2
+              DTILD(1,4) = 0.D0
+              DTILD(1,5) = 0.D0
+
+              DTILD(2,1) = DSIDEP(2,1)
+              DTILD(2,2) = DSIDEP(2,2)
+              DTILD(2,3) = DSIDEP(2,4)/RAC2
+              DTILD(2,4) = 0.D0
+              DTILD(2,5) = 0.D0
+
+              DTILD(3,1) = DSIDEP(4,1)/RAC2
+              DTILD(3,2) = DSIDEP(4,2)/RAC2
+              DTILD(3,3) = DSIDEP(4,4)/2.D0
+              DTILD(3,4) = 0.D0
+              DTILD(3,5) = 0.D0
+
+              DTILD(4,1) = 0.D0
+              DTILD(4,2) = 0.D0
+              DTILD(4,3) = 0.D0
+              DTILD(4,4) = CISAIL*KAPPA/2.D0
+              DTILD(4,5) = 0.D0
+
+              DTILD(5,1) = 0.D0
+              DTILD(5,2) = 0.D0
+              DTILD(5,3) = 0.D0
+              DTILD(5,4) = 0.D0
+              DTILD(5,5) = CISAIL*KAPPA/2.D0
+              CALL DSCAL(25,WGT,DTILD,1)
+
+              CALL BPTKB(5,42,NDDLE,DTILD,BTILD,DBTILD,WMATCB,KTILDI)
+C
+C CALCUL DE KPRIM = tDBTILD * DTILD * BTILD +  tBTILD * DTILD * DBTILD 
+C
+              DO 100 I = 1,NDDLE
+                DO 90 J = 1,NDDLE
+                  KPRIM(I,J) = KPRIM(I,J) + KTILDI(I,J) + KTILDI(J,I)
+   90           CONTINUE
+  100         CONTINUE
+            ENDIF
+C   -- APPEL A NSCOMP POUR RESOUDRE LE PB DERIVE SUR LA COUCHE :
+C   ------------------------------------------------------------
+           CALL NSCOMP(OPT,TYPMOD,COMPOR,3,IMATE,IMATSE,EPS2D, 
+     &                 DEPS2D,DEDT2D,SIGMS,VARMOS(IVSP,INTSN),
+     &                 VARMOI(IVSP,INTSN),SIGM,VARPLU(IVSP,INTSN),
+     &                 SIPAS,SIGP,SIGPS,VARPLS(IVSP,INTSN),STYPSE)
+
+C            DIVISION DE LA CONTRAINTE DE CISAILLEMENT PAR SQRT(2)
+C            POUR STOCKER LA VALEUR REELLE
+           DO 94 KL = 1,3
+             SIGPLS(KL,ICPG) = SIGPS(KL)
+   94      CONTINUE
+           DO 95 KL = 4,6
+             SIGPLS(KL,ICPG) = SIGPS(KL)/RAC2
+   95      CONTINUE
+C
+            IF(OPT.EQ.'MECA_SENS_RAPHEP') THEN
+              SIGPLS(5,ICPG) = SIPAS(5)/RAC2 + CISAIL*KAPPA*GXZ/2.D0
+              SIGPLS(6,ICPG) = SIPAS(6)/RAC2 + CISAIL*KAPPA*GYZ/2.D0
+            ENDIF
+ 120     CONTINUE
+ 130     CONTINUE
+ 140   CONTINUE
+C
+      IF(OPT.EQ.'MECA_SENS_EPAI') THEN
+C
+C     EXPANSION DE LA MATRICE : AJOUT DE LA ROTATION FICTIVE
+
+        NDDLET = 6*NB1 + 3
+        CALL MATRKB(NB1,42,51,NDDLET,KPRIM,CTOR,RIG,CAC3D)
+C
+C     PRODUIT RIG * U ET STOCKAGE DE L OPPOSE DANS VECTU
+
+        DO 210 I = 1,NDDLET
+          KPRIMU(I) = 0.0D0
+          DO 210 J = 1,NDDLET
+             KPRIMU(I) = KPRIMU(I) + RIG(I,J) * UP(J)
+  210   CONTINUE
+        DO 220 I = 1,NDDLET
+             VECTU(I) =  - KPRIMU(I)
+  220   CONTINUE
+      END IF
+      END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+#& MODIF COMMANDE  DATE 17/12/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,9 +24,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          regles=(EXCLUS('COMP_ELAS','COMP_INCR'),
                  CONCEPT_SENSIBLE("ENSEMBLE"),
                  REUSE_SENSIBLE(),
-                 DERIVABLE('RESULTAT'),
-                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',
-                           'TOUT_MODE','NUME_MODE','LIST_MODE','FREQ','LIST_FREQ',),),
+                 DERIVABLE('RESULTAT'),),
 
          THETA          =FACT(statut='o',
            THETA           =SIMP(statut='f',typ=(theta_geom,cham_no_sdaster),),
@@ -50,23 +48,33 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
              ),
             ),
 
-         RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),
+         RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca,mult_elas),),
 
-         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-         LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
-         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
-         TOUT_MODE       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-         LIST_MODE       =SIMP(statut='f',typ=listis_sdaster),
-         LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
-         FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-           
-         b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)or(FREQ != None)or(LIST_FREQ != None)",
-           PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
-           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+         b_no_mult          =BLOC(condition="(AsType(RESULTAT) != mult_elas)",
+         regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST',
+                  'TOUT_MODE','NUME_MODE','LIST_MODE','FREQ','LIST_FREQ'),),
+            
+            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+            LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+            LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+            TOUT_MODE       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+            NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+            LIST_MODE       =SIMP(statut='f',typ=listis_sdaster),
+            LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
+            FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+       
+           b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)or(FREQ != None)or(LIST_FREQ != None)",
+              PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-6),
+              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+            ),
          ),
+
+         b_mult_elas     =BLOC(condition="(AsType(RESULTAT) == mult_elas)",
+            NOM_CAS         =SIMP(statut='f',typ='TXM',validators=NoRepeat() ),
+         ),
+
         
          EXCIT           =FACT(statut='f',max='**',
                CHARGE          =SIMP(statut='f',typ=(char_meca,char_cine_meca)),

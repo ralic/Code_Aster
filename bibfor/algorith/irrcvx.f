@@ -3,7 +3,7 @@
       IMPLICIT  NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/04/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C ======================================================================
 
       REAL*8  IRRAD,IRRAF,P,DEV(6),K,N,P0,LCNRTS
-      REAL*8  PK,PENPE,KAPPA,R02,PE,SPE
+      REAL*8  PK,PENPE,KAPPA,R02,PE,SPE,R8PREM
       INTEGER IRET
 
       REAL*8  VALRM(2)
@@ -60,13 +60,13 @@ C PARAMETRES MATERIAUX
       PE    = MATER(15,2)
       SPE   = MATER(16,2)
 
-      IF      ( (IRRAF-IRRAD).GT.0.D0) THEN
+      IF      ( IRRAF .GT. IRRAD) THEN
          SEUIL = 1.D0
          GOTO 9999
-      ELSE IF ( (IRRAF-IRRAD).LT.0.D0) THEN
+      ELSE IF ( IRRAD .GT. IRRAF*1.00001D0 ) THEN
          VALRM(1) = IRRAD
          VALRM(2) = IRRAF
-         CALL U2MESR('F','IRRAD3M_2',2,VALRM)
+         CALL U2MESR('I','IRRAD3M_2',2,VALRM)
       ELSE
          CALL LCDEVI( SIG, DEV )
          IF      (P.LT.PK) THEN

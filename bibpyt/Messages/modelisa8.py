@@ -1,21 +1,21 @@
-#@ MODIF modelisa8 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF modelisa8 Messages  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -39,11 +39,11 @@ cata_msg = {
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_AIRE :
 
-   - occurence de multifire : %(r1)d 
+   - occurence de multifire : %(r1)d
 
-   - aire de la poutre      : %(r2)12.5E 
+   - aire de la poutre      : %(r2)12.5E
 
-   - aire des fibres        : %(r3)12.5E 
+   - aire des fibres        : %(r3)12.5E
 
    - erreur relative        : %(r4)12.5E
 """),
@@ -53,11 +53,11 @@ cata_msg = {
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
 
-   - occurence de multifire : %(r1)d 
+   - occurence de multifire : %(r1)d
 
-   - moment d'inertie de la poutre : %(r2)12.5E 
+   - moment d'inertie de la poutre : %(r2)12.5E
 
-   - aire d'inertie des fibres     : %(r3)12.5E 
+   - aire d'inertie des fibres     : %(r3)12.5E
 
    - erreur relative               : %(r4)12.5E
 """),
@@ -67,11 +67,11 @@ cata_msg = {
 
  L'erreur relative est superieure a la precision definie par le mot cle PREC_INERTIE :
 
-   - occurence de multifire : %(r1)d 
+   - occurence de multifire : %(r1)d
 
-   - moment d'inertie de la poutre : %(r2)12.5E 
+   - moment d'inertie de la poutre : %(r2)12.5E
 
-   - aire d'inertie des fibres     : %(r3)12.5E 
+   - aire d'inertie des fibres     : %(r3)12.5E
 
    - erreur relative               : %(r4)12.5E
 """),
@@ -226,7 +226,8 @@ cata_msg = {
 """),
 
 55 : _("""
- interpolation interditepour un resultat de type :  %(k1)s
+Interpolation interdite pour un résultat de type :  %(k1)s
+Seule l'extraction est possible : OPERATION='EXTR'
 """),
 
 56 : _("""

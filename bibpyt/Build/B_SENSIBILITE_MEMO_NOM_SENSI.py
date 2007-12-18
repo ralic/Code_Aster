@@ -1,8 +1,8 @@
-#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_SENSIBILITE_MEMO_NOM_SENSI Build  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,227 +18,341 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
-# RESPONSABLE GNICOLAS G.NICOLAS
 """
-Classe de mémorisation des noms liés à la sensibilité
+Classe pour la mémorisation des paramètres nécessaires à la dérivation du jdc.
 """
 
-class SENSIBILITE_MEMO_NOM_SENSI :
+from sets import Set
+
+# protection pour eficas
+try:
+   import aster
+   from Utilitai.Utmess import  UTMESS
+except:
+   pass
+
+#-------------------------------------------------------------------------------
+_VIDE_ = '????????'
+
+def addto(liste, obj):
+   """Ajoute un élément ou une séquence en tant qu'élément de 'liste'.
    """
-   Attributs :
-   l_param_sensi = liste des paramètres sensibles concernés.
-     Un paramètre n'est présent qu'une seule fois dans la liste.
-   d_noms_composes = dictionnaire des noms composés.
-     La clé est le tuple (nom_simple,paramètre sensible).
-     La valeur est le nom composé correspondant.
-     On ne peut enregistrer un nom composé que si le paramètre sensible est connu.
-   d_param_commande = dictionnaire des commandes à dériver ensemble.
-     La clé est un paramètre sensibles.
-     La valeur est la liste des commandes à dériver meme si le paramètre sensible ne
-     fait pas partie des données de la commande.
+   if type(obj) in (list, tuple):
+      liste.extend(obj)
+   else:
+      liste.append(obj)
+
+
+#-------------------------------------------------------------------------------
+class MEMORISATION_SENSIBILITE:
+   """Classe pour la mémorisation des concepts sensibles et leurs dérivées.
    """
-#
-# ---------- Début du constructeur ----------
-#
-   def __init__(self,l_param_sensi=[]) :
-       self.l_param_sensi=l_param_sensi
-       self.d_noms_composes={}
-       self.d_param_commande={}
-#
-# ---------- Fin du constructeur ----------
-#
-#  1. Les paramètres sensibles
-#
-   def add_param_sensi(self,param_sensi) :
-       """
-       Ajoute un paramètre sensible à la liste
-       Code de retour : 0, tout va bien
-                        1, le paramètre sensible est déjà dans la liste
-       """
-       if param_sensi in self.l_param_sensi :
-         print "Le paramètre sensible ", param_sensi, " est déjà dans la liste."
-         codret = 1
-       else :
-         codret = 0
-         self.l_param_sensi.append(param_sensi)
-       return codret
-#
-   def get_l_param_sensi(self) :
-       """
-       Récupère la liste des paramètres sensibles
-       """
-       return self.l_param_sensi
-#
-#  2. Les noms composés
-#
-   def get_d_noms_composes(self) :
-       """
-       Récupère le dictionnaire des noms composes
-       """
-       return self.d_noms_composes
-# 
-   def add_nom_compose(self,nom_simple,param_sensi,nom_compose) :
-       """
-       Ajoute un nom composé dans la structure de mémorisation.
-       'nom_compose' est le nom associé à la dérivation de 'nom_simple' par rapport
-       à 'param_sensi'.
-       Code de retour : 0, tout va bien
-                        1, le paramètre sensible est inconnu dans la liste
-                        2, un nom composé existe déjà
-       """
-###       print ">>>> dans add_nom_compose, nom_simple  = ", nom_simple
-###       print ">>>> dans add_nom_compose, param_sensi = ", param_sensi
-###       print ">>>> dans add_nom_compose, l_param_sensi = ", self.l_param_sensi
-       if self.d_noms_composes.has_key((nom_simple,param_sensi)) :
-         print "Un nom composé existe déjà pour ",nom_simple," et ",param_sensi,"."
-         codret = 2
-       elif param_sensi in self.l_param_sensi :
-         codret = 0
-         self.d_noms_composes[(nom_simple,param_sensi)] = nom_compose
-       else :
-         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
-         codret = 1
-       return codret
-#
-   def get_nom_compose(self,nom_simple,param_sensi,message=None) :
-       """
-       Pour un un nom simple et un paramètre sensible donnés :
-        1. Code de retour : 0, tout va bien
-                            1, le paramètre sensible est inconnu dans la liste
-                            2, aucun nom composé n'a été défini
-        2. Le nom composé associé
-       """
-###       print ">>>> dans get_nom_compose, nom_simple  = ", nom_simple
-###       print ">>>> dans get_nom_compose, param_sensi = ", param_sensi
-       nom_compose= None
-       if self.d_noms_composes.has_key((nom_simple,param_sensi)) :
-         codret = 0
-         nom_compose = self.d_noms_composes[(nom_simple,param_sensi)]
-       elif param_sensi not in self.l_param_sensi :
-         if ( message ) :
-           print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
-         codret = 1
-       else :
-         if ( message ) :
-           print "Aucun nom composé n'a été défini pour ",nom_simple," et ",param_sensi,"."
-         codret = 2
-       return codret, nom_compose
-#
-   def get_d_nom_s_c(self,param_sensi) :
-       """
-       Pour un paramètre sensible donné :
-        1. Code de retour : 0, tout va bien
-                            1, le paramètre sensible est inconnu dans la liste
-        2. Le dictionnaire des couples (nom simple,nom composé) existant
-       """
-       if param_sensi in self.l_param_sensi :
-         d_nom_s_c = {}
-         codret = 0
-         for cle,valeur in self.d_noms_composes.items() :
-           le_nom_simple,le_param_sensi = cle
-           if param_sensi == le_param_sensi :
-             d_nom_s_c[le_nom_simple] = valeur
-       else :
-         d_nom_s_c = None
-         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
-         codret = 1
-       return codret, d_nom_s_c
-#
-#  3. Les noms simples
-#
-   def get_l_noms_simples(self,param_sensi) :
-       """
-       Pour un paramètre sensible donné :
-        1. Code de retour : 0, tout va bien
-                            1, le paramètre sensible est inconnu dans la liste
-        2. La liste des noms simples pour lesquels un nom composé existe
-       """
-       if param_sensi in self.l_param_sensi :
-         l_noms_simples = []
-         codret = 0
-         for cle in self.d_noms_composes.keys() :
-           le_nom_simple,le_param_sensi = cle
-           if param_sensi == le_param_sensi :
-             l_noms_simples.append(le_nom_simple)
-       else :
-         l_noms_simples = None
-         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
-         codret = 1
-       return codret, l_noms_simples
-#
-#  4. Les commandes particulières
-#
-   def add_commande(self,param_sensi,commande) :
-       """
-       Ajoute une commande pour un paramètre sensible.
-       Code de retour : 0, tout va bien
-                        1, le paramètre sensible est inconnu dans la liste
-       """
-#       print ">>>> dans add_commande, param_sensi = ", param_sensi
-#       print ">>>> dans add_commande, commande  = ", commande
-       if param_sensi in self.l_param_sensi :
-         if self.d_param_commande.has_key(param_sensi) :
-           liste = self.d_param_commande[param_sensi]
-         else :
-           liste = []
-         if not commande in liste :
-           liste.append(commande)
-           self.d_param_commande[param_sensi] = liste
-         codret = 0
-       else :
-         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
-         codret = 1
-#       print self.d_param_commande
-       return codret
-#
-   def get_l_commandes(self,param_sensi) :
-       """
-       Pour un paramètre sensible donné :
-        1. Code de retour : 0, tout va bien
-                            1, le paramètre sensible est inconnu dans la liste
-        2. La liste des commandes à dériver
-       """
-       if param_sensi in self.l_param_sensi :
-         if self.d_param_commande.has_key(param_sensi) :
-           l_commandes = self.d_param_commande[param_sensi]
-         else :
-           l_commandes = []
-         codret = 0
-       else :
-         print "Le paramètre sensible ", param_sensi, " est inconnu dans la liste."
-         l_commandes = None
-         codret = 1
-       return codret, l_commandes
-#
-#
-if __name__ == "__main__" :
-#
-#
-  t1 = SENSIBILITE_MEMO_NOM_SENSI()
-  print "\n",t1
-  print "Liste des paramètres sensibles : ",t1.get_l_param_sensi()
-  print "Dictionnaire des noms composés : ", t1.get_d_noms_composes()
-  print "Ajout de 'PS3' : ", t1.add_param_sensi('PS3')
-  print "Liste des paramètres sensibles : ",t1.get_l_param_sensi()
-  print "Ajout de 'PS3' : ", t1.add_param_sensi('PS3')
-#
-  memo_nom_sensi = SENSIBILITE_MEMO_NOM_SENSI(['PS1','PS2'])
-  print "\n",memo_nom_sensi
-  print "Liste des paramètres sensibles : ",memo_nom_sensi.get_l_param_sensi()
-  print "Dictionnaire des noms composés : ",memo_nom_sensi.get_d_noms_composes()
-  print memo_nom_sensi.add_nom_compose('CH0','PS2','CH0_PS2')
-  print "Dictionnaire des noms composés : ",memo_nom_sensi.get_d_noms_composes()
-  l_param = ['PS1','PS2','PS2','PS3']
-  for param in l_param :
-    print "Ajout de la composition de 'CH1' par ",param," : ",memo_nom_sensi.add_nom_compose('CH1',param,'CH1_'+param)
-  print "Dictionnaire des noms composés : ",memo_nom_sensi.get_d_noms_composes()
-  print memo_nom_sensi.get_nom_compose('CH1','PS2')
-  print memo_nom_sensi.get_nom_compose('CH1','PS3')
-  print memo_nom_sensi.get_nom_compose('CH2','PS2','0')
-  print memo_nom_sensi.get_nom_compose('CH2','PS2')
-  l_param = ['PS1','PS2','PS3']
-  for param in l_param :
-    print ". Noms simples associés à ",param," :" , memo_nom_sensi.get_l_noms_simples(param)
-    print ". Noms s/c associés à ",param,"     :" , memo_nom_sensi.get_d_nom_s_c(param)
+   def __init__(self, jdc=None, debug=False):
+      """Initialisation de la structure
+      """
+      self.jdc = jdc
+      self._debug = debug
+      # dictionnaire de correspondance : (sd_nominale, para_sensi) : sd_derivee
+      self.d_sd_deriv = {}
+      # dictionnaire inverse : sd_derivee : (sd_nominale, para_sensi)
+      self.d_acces = {}
+      
+      # dictionnaire pour ne pas passer par le jdc.sds_dict par exemple : nom : sd
+      self.d_sd = {}
+      
+      # dictionnaire : (sd_nominale, para_sensi) : 3 tuples ((mcsimp...), (valeur...), (mcfact...))
+      #                l'ordre n'est pas le plus naturel mais on garde le même que dans le fortran
+      self.d_mcle = {}
+      # idem juste avec les noms : c'est celui-ci qu'on utilise car on ne peut pas pickler les mcfact/mcsimp
+      self.d_nom_mcle = {}
+      
+      # liste des sd produites (par les commandes de calcul) qui doivent être stockées dans la base jeveux
+      self.l_regjv = []
+      
+      # liste de tous les para_sensi (même ceux qui ne sont pas utilisés par la suite)
+      self._all_para_sensi = Set()
+      # dictionnaire : para_sensi : Set(commande1, commande2, ...)
+      self.d_para_cmde = {}
+      # dictionnaire : para_autre : Set()       (pour les theta geom)
+      self.d_para_autre = {}
+      
+
+   def reparent(self, parent):
+      """On a besoin du jdc père pour NommerSdprod.
+      """
+      self.jdc = parent      
+
+
+   def add_commande(self, para, nom_cmde):
+      """Ajoute une commande concerné par le paramètre sensible donné.
+      """
+      if self.d_para_cmde.get(para) is None:
+         self.d_para_cmde[para] = Set()
+      if nom_cmde is not None:
+         self.d_para_cmde[para].add(nom_cmde)
+      if self._debug:
+         print '#memo_sensi# add_commande : ', para, nom_cmde
+
+   
+   def add_para_sensi(self, para):
+      """Ajoute un paramètre sensible. On verra plus tard si on l'utilise dans le jdc.
+      """
+      self._all_para_sensi.add(para)
+
+   
+   def used_para_sensi(self, para):
+      """Ajoute un paramètre sensible utilisé.
+      """
+      self.add_commande(para, None)
+      if self._debug:
+         print '#memo_sensi# used_para_sensi : ', para, self.d_para_cmde[para]
+
+   
+   def add_para_autre(self, para):
+      """Ajoute un paramètre autre (champ theta).
+      """
+      if self.d_para_autre.get(para) is None:
+         self.d_para_autre[para] = Set()
+      if self._debug:
+         print '#memo_sensi# add_para_autre : ', para
+
+   
+   def memo_para_sensi(self, mc_liste, mc_sensi='SENSIBILITE'):
+      """Cherche dans la liste des mots-clés le mot-clé 'mc_sensi'
+      et stocke le para_sensi."""
+      is_sensi = 0
+      for child in mc_liste:
+         assert hasattr(child, 'get_sd_mcs_utilisees'), '%s (type %s)' % (child.nom, child.__class__.__name__)
+         d_sd_mcs = child.get_sd_mcs_utilisees()
+         # récupère les paramètres présents derrière 'mc_sensi'
+         liste = d_sd_mcs.get(mc_sensi,  [])
+         if len(liste) > 0:
+            is_sensi = 1
+            # Un argument peut etre de deux types :
+            # . soit c'est un paramètre sensible stricto sensu car il est dans la liste
+            #   et alors on le marque comme 'utilisé'
+            # . soit c'est un autre type de paramètre de dérivation (champ theta par exemple)
+            for argu in liste:
+               if self._debug:
+                  print '... Paramètre sensible :', argu.nom
+               if self.is_para_sensi(argu):
+                  self.used_para_sensi(argu)
+               else:
+                  self.add_para_autre(argu)
+      return is_sensi
+
+
+   def get_l_para_sensi(self):
+      """Retourne la liste des para_sensi.
+      """
+      return self.d_para_cmde.keys()
+
+
+   def get_l_para_autre(self):
+      """Retourne la liste des paramètres autres.
+      """
+      return self.d_para_autre.keys()
+
+
+   def get_l_commandes(self, para):
+      """Retourne la liste des commandes concernées par le para_sensi.
+      """
+      return list(self.d_para_cmde.get(para, []))
+
+
+   def is_para_sensi(self, obj):
+      """Retourne True si obj est dans la liste des para_sensi.
+      """
+      return obj in self._all_para_sensi
+
+   
+   def is_para_sensi_used(self, obj):
+      """Retourne True si obj est un para_sensi utilisé pour la dérivation du jdc.
+      """
+      return obj in self.get_l_para_sensi()
+
+
+   def register(self, sd_nomi, para_sensi, sd_deriv=None, l_mcf_mcs_val=None, new_etape=None):
+      """Enregistrement de la dérivée de 'sd_nomi' par rapport à 'para_sensi' dans 'sd_deriv'.
+      """
+      # mots-clés
+      limofa, limocl, livale = [], [],  []
+      if l_mcf_mcs_val:
+         for mcf, mcs, val in l_mcf_mcs_val:
+            addto(limofa, mcf)
+            addto(limocl, mcs)
+            addto(livale, val)
+      limofa = tuple(limofa)
+      limocl = tuple(limocl)
+      livale = tuple(livale)
+
+      if self._debug:
+         print '#memo_sensi#register ', sd_nomi, para_sensi, sd_deriv, new_etape, limofa, limocl, livale
+      # on demande l'enregistrement de la sd_deriv
+      if new_etape is not None:
+         sdnom = sd_deriv
+         type_sd_deriv = new_etape.sd.__class__.__name__
+         assert type(sd_deriv) == str
+         sd_deriv = new_etape.sd.__class__(etape=new_etape)
+         self.jdc.NommerSdprod(sd_deriv, sdnom)
+         # enregistrement dans le tableau des concepts jeveux
+         self.l_regjv.append(sd_deriv)
+      
+      # structure de mémorisation
+      key = (sd_nomi, para_sensi)
+      self.d_sd_deriv[key]   = sd_deriv
+      self.d_acces[sd_deriv] = key
+      self.d_mcle[key]       = (limocl, livale, limofa)
+      self.d_nom_mcle[key]   = self.just_nom((limocl, livale, limofa))
+      # sd
+      for sd in (sd_nomi, para_sensi, sd_deriv):
+         self.d_sd[sd.nom.strip()] = sd
+
+
+   # appelé par SENSIBILITE_JDC.new_jdc
+   def get_nom_compose(self, sd_nomi, para_sensi):
+      """On récupère la sd dérivée de sd_nomi par rapport à para_sensi.
+      """
+      key = (sd_nomi, para_sensi)
+      sd_deriv = self.d_sd_deriv.get(key)
+      return sd_deriv
+
+
+   # appelé par SENSIBILITE_JDC.new_jdc
+   def get_d_nom_s_c(self, para) :
+      """Retourne un dictionnaire : sd_nomi : sd_deriv par rapport à ce paramètre sensible.
+      """
+      d = {}
+      l_sd = [sd_nomi for sd_nomi, para_sensi in self.d_sd_deriv.keys() if para_sensi == para]
+      for sd_nomi in l_sd:
+         d[sd_nomi] = self.d_sd_deriv[(sd_nomi, para)]
+      if self._debug:
+         print '#memo_sensi#get_d_nom_s_c', d
+      return d
+
+
+   # appelé par psgenc (astermodule.c)
+   def get_nocomp(self, nosimp, nopase):
+      """On récupère le nom composé associé à un nom simple et un para_sensi
+      """
+      key = self._key_(nosimp, nopase)
+      sd_deriv   = self.get_nom_compose(*key)
+      nocomp = _VIDE_
+      if hasattr(sd_deriv, 'nom'):
+         nocomp = sd_deriv.nom
+      if self._debug:
+         print '#memo_sensi#get_nocomp', nosimp, nopase, nocomp
+      return nocomp
+
+
+   # appelé par psgemc (astermodule.c)
+   def get_mcle(self, nosimp, nopase):
+      """On récupère les mots-clés associés à un couple ('nom concept', 'nom para_sensi')
+      """
+      key = self._key_(nosimp, nopase)
+      t_res = self.d_nom_mcle.get(key, ((), (), ()) )
+      if self._debug:
+         print '#memo_sensi#get_mcle ', nosimp, nopase, t_res
+      return t_res
+
+
+   # appelé par psinfo (astermodule.c)
+   def psinfo(self, nom_co):
+      """Pendant de l'ex-routine psnosd : retour selon le type de `nosimp`.
+      Si nom_co est une dérivée, on retourne : 1, (sd_nomi, para_sensi).
+      Si nom_co est une sd nominale, on retourne : 0, (deriv1, para1, deriv2, para2, ...)
+      """
+      sd = self.d_sd.get(nom_co.strip())
+      # On n'a jamais vu nom_co (cas si pas de sensibilité)
+      if sd is None:
+         return 0, ()
+      # est-ce une structure dérivée ?
+      if self.d_acces.get(sd) is not None:
+         t_couples = self.d_acces[sd]
+         ideriv = 1
+      else:
+         t_der = self.get_deriv(sd)
+         # on met le tuple des couples à plat : un tuple de longueur double
+         t_couples = []
+         for l_obj in t_der:
+            t_couples.extend(l_obj)
+         t_couples = tuple(t_couples)
+         ideriv = 0
+      t_res = self.just_nom(t_couples)
+      if self._debug:
+         print '#memo_sensi#psinfo', nom_co, ideriv, t_res
+      return ideriv, t_res
+
+
+   # appelé par psinfo ici
+   def get_deriv(self, sd):
+      """On récupère la liste des couples (sd_deriv, para_sensi) associé à une sd nominale.
+      """
+      res = []
+      # liste des para_sensi par rapport auxquels sd a été dérivée
+      l_ps = [para_sensi for sd_nomi, para_sensi in self.d_sd_deriv.keys() if sd_nomi == sd]
+      for para_sensi in l_ps:
+         key = (sd, para_sensi)
+         res.append((self.d_sd_deriv[key], para_sensi))
+      return tuple(res)
+
+
+   # appelé par regsen (astermodule.c)
+   def register_sensi(self):
+      """Enregistre les sd dérivées produites par les commandes principales pour qu'elles
+      soient enregistrées dans la base jeveux.
+      """
+      while len(self.l_regjv) > 0:
+         sd = self.l_regjv.pop(0)
+         typsd = sd.__class__.__name__
+         icmdt = aster.co_register_jev(sd.nom, typsd.upper(), 'MEMO_NOM_SENSI')
+
+
+   def _key_(self, nosimp, nopase):
+      """Retourne la clé (sd_nomi, para_sensi) à partir des noms.
+      """
+      return self.d_sd.get(nosimp.strip()), self.d_sd.get(nopase.strip())
+
+
+   def just_nom(self, obj):
+      """Retourne le nom de obj ou de chaque élément de obj si c'est une
+      list ou tuple ou tuple(tuple) ou...
+      """
+      in_type = type(obj)
+      if in_type in (tuple, list):
+         res = []
+         for o in obj:
+            res.append(self.just_nom(o))
+         return in_type(res)
+      else:
+         return obj.nom
+
+
+   def print_memo(self):
+      """Affichage des correspondances sd_nomi, para_sensi, sd_deriv.
+      """
+      from pprint import pprint
+      pprint(self.d_sd)
+      pprint(self.d_sd_deriv)
+
+
+   def __getstate__(self):
+      """Méthode permettant de pickler les instances de MEMORISATION_SENSIBILITE.
+      """
+      d=self.__dict__.copy()
+      # pourquoi d_mcle ? parce que mcsimp et mcfact ne sont pas pickables
+      for key in ('jdc', 'd_mcle'):
+         if d.has_key(key):
+            del d[key]
+      return d
+
+
+   def __setstate__(self, state):
+      """Méthode pour restaurer les attributs lors d'un unpickle.
+      """
+      self.__dict__.update(state)                  # update attributes
+      self.jdc    = None
+      self.d_mcle = {}
+
+
 

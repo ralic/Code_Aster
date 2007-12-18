@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_MCCOMPO Noyau  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -367,17 +367,17 @@ class MCCOMPO(N_OBJECT.OBJECT):
         mocle.reparent(self)
 
    def get_sd_utilisees(self):
-    """ 
+      """ 
         Retourne la liste des concepts qui sont utilisés à l'intérieur de self
         ( comme valorisation d'un MCS) 
-    """
-    l=[]
-    for child in self.mc_liste:
-      l.extend(child.get_sd_utilisees())
-    return l
+      """
+      l=[]
+      for child in self.mc_liste:
+         l.extend(child.get_sd_utilisees())
+      return l
 
    def get_sd_mcs_utilisees(self):
-    """ 
+      """ 
           Retourne la ou les SD utilisée par self sous forme d'un dictionnaire :
             - Si aucune sd n'est utilisée, le dictionnaire est vide.
             - Sinon, les clés du dictionnaire sont les mots-clés derrière lesquels on
@@ -387,13 +387,14 @@ class MCCOMPO(N_OBJECT.OBJECT):
                 { 'VALE_F': [ <Cata.cata.para_sensi instance at 0x9419854>,
                               <Cata.cata.para_sensi instance at 0x941a204> ],
                   'MODELE': [<Cata.cata.modele instance at 0x941550c>] }
-    """
-    dico = {}
-    for child in self.mc_liste:
-      daux = child.get_sd_mcs_utilisees()
-      for cle in daux.keys():
-        dico[cle] = daux[cle]
-    return dico
+      """
+      dico = {}
+      for child in self.mc_liste:
+         daux = child.get_sd_mcs_utilisees()
+         for cle in daux.keys():
+            dico[cle] = dico.get(cle, [])
+            dico[cle].extend(daux[cle])
+      return dico
 
    def get_mcs_with_co(self,co):
       """

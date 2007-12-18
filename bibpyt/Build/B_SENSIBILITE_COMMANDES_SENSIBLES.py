@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 10/09/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_SENSIBILITE_COMMANDES_SENSIBLES Build  DATE 18/12/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,13 +84,12 @@ class SENSIBILITE_COMMANDES_SENSIBLES :
                                      'RECU_FONCTION',],
          # celles qui ne créent rien ne sont pas ici, of course ! (IMPR_xxxx, TEST_xxxx)
          # commandes dupliquées pour chaque paramètre sensible
-         self.a_deriver_ensemble  : ['DEFI_MATERIAU',],
+         self.a_deriver_ensemble  : ['DEFI_MATERIAU','AFFE_CARA_ELEM',],
          # commandes à dupliquer en fonction des concepts sensibles présents en argument
          self.a_deriver           : ['AFFE_MATERIAU',
                                      'AFFE_CHAR_MECA',
                                      'AFFE_CHAR_MECA_F',
                                      'AFFE_CHAR_THER_F',
-                                     'AFFE_CARA_ELEM',
                                      #'CALC_MATR_ELEM',
                                      ],
          self.poursuite           : ['POURSUITE',],

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 17/12/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -234,6 +234,7 @@ C   RPOL,PHI COORDONNEES POLAIRES DU POINT DE GAUSS
         XGA = XG - XA
         YGA = YG - YA
         XXG = XG
+        IF (AXI.AND.(XXG .LT. R8PREM())) CALL U2MESS('F','RUPTURE0_56')
         XG = (YNORM*XGA-XNORM*YGA)/NORM
         YG = (XNORM*XGA+YNORM*YGA)/NORM
 

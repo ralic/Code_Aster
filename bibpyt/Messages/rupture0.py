@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF rupture0 Messages  DATE 17/12/2007   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,4 +231,20 @@ Plusieurs instants trouves dans la table pour l instant %(r1)f.
 Aucun instant ou numéro d'ordre trouvé.
 """),
 
+55: _("""
+-> Attention:
+   En présence d'une SD Résultat de type mult_elas, les mots-clés EXCIT et NOM_CAS sont obligatoires.
+-> Risque & conseil:
+   Risque de résultats faux si un des chargements impacte le calcul de G et de K (par exemple force de pression sur 
+   les lèvres de la fissure, force volumique...).
+"""),
+
+56 : _("""
+CALC_G - option CALC_K_G : le calcul est impossible sur un point de rayon nul (point sur 
+l'axe de rotation).
+-> Risque et Conseils
+Modifier les couronnes R_INF et R_SUP pour qu'elles soient toutes les deux plus petites que
+le rayon du fond de fissure. De manière générale en axisymétrie, le calcul de K est 
+d'autant plus précis que le rayon des couronnes est petit devant le rayon du fond de fissure.
+"""),
 }

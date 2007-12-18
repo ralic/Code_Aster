@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 17/12/2007   AUTEUR GALENNE E.GALENNE 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,22 +109,23 @@ MO=AFFE_MODELE( MAILLAGE=MA,
                        )
 
 #
-MAT=DEFI_MATERIAU( 
-                               ELAS=_F(  E = 2.E11,
-                                 NU = 0.3,
-                                 RHO = 7800.,
-                                 ALPHA = 1.2E-5)
+MAT=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,
+                     NU = 0.3,
+                     RHO = 7800.,
+                     ALPHA = 1.2E-5)
                          )
 
 #
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                                AFFE=_F( TOUT = 'OUI',TEMP_REF=0.,
-                                      MATER = MAT)
+                      AFFE=_F( TOUT = 'OUI',
+                               MATER = MAT),
+                      AFFE_VARC=_F( TOUT='OUI',CHAMP_GD=TEMP,VALE_REF=0.,
+                                    NOM_VARC='TEMP',),
                          )
 
 #
 CH=AFFE_CHAR_MECA(           MODELE=MO,
-                              TEMP_CALCULEE=TEMP,DDL_IMPO=(
+                              DDL_IMPO=(
                                    _F(  GROUP_NO = 'LP8P9',
                                               DX = 0.),
                                             _F(  GROUP_NO = 'LP9PC2',
@@ -181,118 +182,114 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                            NORMALE=(0., 1., 0.,)
                       )
 
-#
-THETA0=CALC_THETA(    MODELE=MO,
-                        THETA_2D=_F(  GROUP_NO = ('P0',),
-                                   MODULE = 1.,
-                                   R_INF = 2.5E-5,
-                                   R_SUP = 2.75E-5),
-                       DIRECTION=(1., 0., 0.,)
-                     )
 
+# CALCUL DE G AVEC CALC_G / OPTION CALC_G
 #
-G00=CALC_G(       
-                  RESULTAT=RESU,
-                  NUME_ORDRE=1,
-                  THETA=_F(THETA=THETA0),
-                  EXCIT=_F(CHARGE=CH,),
-                  SYME_CHAR='SYME'
+G00=CALC_G(
+                      RESULTAT=RESU,
+                      NUME_ORDRE=1,
+                      THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                          R_INF = 2.5E-5, R_SUP = 2.75E-5,
+                          DIRECTION=(1., 0., 0.,),),
+                      EXCIT=_F(CHARGE=CH,),
+                      SYME_CHAR='SYME'
              )
-
-#
-#
-# LA VALEUR DE REFERENCE VAUT 4.2019 ,LE RAYON LA FISSURE VAUT  :
-# ET DONC LA VALEUR A TESTER VAUT 4.2019*2.5E-5=1.050475E-4
-#
-
-TEST_TABLE(       TABLE=G00,
-                   NOM_PARA='G',
-                       VALE=1.050475E-4,
-                  PRECISION=0.02        )
-
-#
-THETA01=CALC_THETA(    MODELE=MO,
-                         THETA_2D=_F(  GROUP_NO = ('P0',),
-                                    MODULE = 1.,
-                                    R_INF = 2.75E-5,
-                                    R_SUP = 3.E-5),
-                        DIRECTION=(1., 0., 0.,)
-                     )
 
 #
 G01=CALC_G(   
                  RESULTAT=RESU,
                  NUME_ORDRE=1,
-                 THETA=_F(THETA=THETA01),
+                 THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                          R_INF = 2.75E-5, R_SUP = 3.E-5,
+                          DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
                  SYME_CHAR='SYME'
              )
-
-#
-# LA VALEUR DE REFERENCE VAUT 4.2019 ,LE RAYON LA FISSURE VAUT  :
-# ET DONC LA VALEUR A TESTER VAUT 4.2019*2.5E-5=1.050475E-4
-#
-
-TEST_TABLE(       TABLE=G01,
-                    NOM_PARA='G',
-                        VALE=1.050475E-4,
-                   PRECISION=0.02        )
-
-#
-THETA02=CALC_THETA(    MODELE=MO,
-                         THETA_2D=_F(  GROUP_NO = ('P0',),
-                                    MODULE = 1.,
-                                    R_INF = 3.E-5,
-                                    R_SUP = 3.25E-5),
-                        DIRECTION=(1., 0., 0.,)
-                     )
 
 #
 G02=CALC_G(    
-                 RESULTAT=RESU,
-                 NUME_ORDRE=1,
-                 THETA=_F(THETA=THETA02),
-                 EXCIT=_F(CHARGE=CH,),
-                 SYME_CHAR='SYME'
-             )
-
-#
-# LA VALEUR DE REFERENCE VAUT 4.2019 ,LE RAYON LA FISSURE VAUT  :
-# ET DONC LA VALEUR A TESTER VAUT 4.2019*2.5E-5=1.050475E-4
-#
-
-TEST_TABLE(       TABLE=G02,
-                       NOM_PARA='G',
-                           VALE=1.050475E-4,
-                      PRECISION=0.02        )
-
-#
-THETA03=CALC_THETA(    MODELE=MO,
-                         THETA_2D=_F(  GROUP_NO = ('P0',),
-                                    MODULE = 1.,
-                                    R_INF = 3.25E-5,
-                                    R_SUP = 3.5E-5),
-                        DIRECTION=(1., 0., 0.,)
-                     )
+                RESULTAT=RESU,
+                NUME_ORDRE=1,
+                THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                          R_INF = 3.E-5, R_SUP = 3.25E-5,
+                          DIRECTION=(1., 0., 0.,),),
+                EXCIT=_F(CHARGE=CH,),
+                SYME_CHAR='SYME'
+            )
 
 #
 G03=CALC_G(   
                  RESULTAT=RESU,
                  NUME_ORDRE=1,
-                 THETA=_F(THETA=THETA03),
+                 THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                          R_INF = 3.25E-5, R_SUP = 3.5E-5,
+                          DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
                  SYME_CHAR='SYME'
             )
 
-## LA VALEUR DE REFERENCE VAUT 4.2019 ,LE RAYON LA FISSURE VAUT  :
-# ET DONC LA VALEUR A TESTER VAUT 4.2019*2.5E-5=1.050475E-4
+
 #
+#
+# LA VALEUR DE REFERENCE VAUT 4.2019 ,LE RAYON LA FISSURE VAUT  2.5E-5 :
+# LA VALEUR A TESTER POUR L OPTION CALC_G VAUT 4.2019*2.5E-5=1.050475E-4
+#
+
+TEST_TABLE(       TABLE=G00,
+                   NOM_PARA='G',
+                   REFERENCE='ANALYTIQUE',
+                       VALE=1.050475E-4,
+                  PRECISION=0.02        )
+
+
+TEST_TABLE(       TABLE=G01,
+                    NOM_PARA='G',
+                   REFERENCE='ANALYTIQUE',
+                        VALE=1.050475E-4,
+                   PRECISION=0.02        )
+
+
+TEST_TABLE(       TABLE=G02,
+                       NOM_PARA='G',
+                   REFERENCE='ANALYTIQUE',
+                           VALE=1.050475E-4,
+                      PRECISION=0.02        )
 
 
 TEST_TABLE(       TABLE=G03,
                        NOM_PARA='G',
+                   REFERENCE='ANALYTIQUE',
                            VALE=1.050475E-4,
                       PRECISION=0.02        )
+
+# CALCUL DE K ET G AVEC CALC_G / OPTION CALC_K_G
+#
+KG=CALC_G(RESULTAT=RESU,
+             NUME_ORDRE=1,
+             OPTION='CALC_K_G',
+             THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                 R_INF = 1.E-6, R_SUP = 2.5E-5,
+                 DIRECTION=(1., 0., 0.,),),
+             EXCIT=_F(CHARGE=CH,),
+             SYME_CHAR='SYME',INFO=2,
+             )
+
+#
+#
+# LA VALEUR A TESTER POUR L OPTION CALC_K_G EST DIRECTEMENT LA VALEUR DE REFERENCE
+#
+TEST_TABLE(       TABLE=KG,
+                   NOM_PARA='G',
+                       VALE=4.2019,
+                   REFERENCE='ANALYTIQUE',
+                  PRECISION=0.02        )
+
+TEST_TABLE(       TABLE=KG,
+                   NOM_PARA='K1',
+                   REFERENCE='ANALYTIQUE',
+                       VALE=9.609E5,
+                  PRECISION=0.02        )
+
 
 #
 FIN()

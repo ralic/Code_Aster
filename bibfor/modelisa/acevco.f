@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,12 +40,13 @@ C
          CALL GETVID('COQUE','GROUP_MA'     ,IOC,1,0,K8B,NG  )
          CALL GETVID('COQUE','MAILLE'       ,IOC,1,0,K8B,NM  )
          CALL GETVR8('COQUE','EPAIS'        ,IOC,1,0,R8B,NE  )
+         CALL GETVID('COQUE','EPAIS_F'      ,IOC,1,0,K8B,NEF )
          CALL GETVR8('COQUE','A_CIS'        ,IOC,1,0,R8B,NK  )
          CALL GETVR8('COQUE','EXCENTREMENT' ,IOC,1,0,R8B,NEX )
          CALL GETVTX('COQUE','INER_ROTA'    ,IOC,1,0,INT,NIN )
          CALL GETVTX('COQUE','MODI_METRIQUE',IOC,1,0,K8B,NCO )
 C
-         IF (IOC.EQ.1 .AND. NE.EQ.0) THEN
+         IF (IOC.EQ.1 .AND. NE.EQ.0 .AND. NEF.EQ.0) THEN
             CALL U2MESS('E','MODELISA_53')
             IER = IER + 1
          ENDIF
