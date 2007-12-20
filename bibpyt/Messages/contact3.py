@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF contact3 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,6 +65,11 @@ Une erreur de définition de la maille.
 15 : _("""
 Contact méthode continue.
 Le vecteur DIRE_APPA est nul !
+"""),
+
+16 : _("""
+Contact méthode continue.
+La méthode d'intégration est GAUSS, le champ VALE_CONT n'est pas créé.
 """),
 
 21 : _("""

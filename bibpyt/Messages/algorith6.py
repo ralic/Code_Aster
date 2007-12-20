@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith6 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,7 @@ cata_msg = {
  erreur point intégration (dvlp)
 """),
 
-12 : _("""
- la méthode d'integration est GAUSS, le champ VALE_CONT n'est pas créé
-"""),
+
 
 13 : _("""
  dimension du problème inconnu
@@ -253,29 +251,13 @@ cata_msg = {
  on doit obligatoirement avoir UN_SUR_M = zéro
 """),
 
-70 : _("""
- macro_element statique et FETI incompatibles
-"""),
 
-71 : _("""
- chargement onde plane et FETI incompatibles
-"""),
-
-72 : _("""
- forces fluides sur les grappes et FETI incompatibles
-"""),
-
-73 : _("""
- forces d'inertie et FETI incompatibles
-"""),
 
 74 : _("""
  forces explicites et FETI incompatibles
 """),
 
-75 : _("""
- forces d'inertie derivées et FETI incompatibles
-"""),
+
 
 76 : _("""
  mode  %(k1)s  non reconnu (dvlp)

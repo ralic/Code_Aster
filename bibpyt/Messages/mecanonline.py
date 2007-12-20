@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF mecanonline Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,9 +22,7 @@ def _(x) : return x
 
 cata_msg = {
 
-2 : _("""
- Melange de champs de nature différente dans le meme mot-clé facteur OBSERVATION
-"""),
+
 
 10 : _("""
  Le concept dans ETAT_INIT n'est pas du type EVOL_NOLI

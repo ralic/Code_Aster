@@ -1,0 +1,116 @@
+      SUBROUTINE NMPOST(MODELE,NUMEDD,CARELE,COMPOR,SOLVEU,
+     &                  NUMINS,RESULT,MATE  ,COMREF,LISCHA,
+     &                  DEFICO,RESOCO,METHOD,PARMET,FONACT,
+     &                  CARCRI,ITERAT,SDDISC,PREMIE,LICCVG,
+     &                  VALMOI,VALPLU,DEPALG,POUGD ,MATASS,
+     &                  MAPREC,MEELEM,MEASSE,VEELEM,SDDYNA)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C TOLE CRP_21 
+C
+      IMPLICIT     NONE
+      INTEGER      NUMINS,ITERAT,LICCVG(*)
+      REAL*8       PARMET(*)
+      CHARACTER*8  RESULT
+      CHARACTER*8  MEELEM(8),VEELEM(30)
+      CHARACTER*19 MEASSE(8)
+      CHARACTER*24 RESOCO
+      CHARACTER*16 METHOD(*)
+      CHARACTER*19 MATASS,MAPREC
+      CHARACTER*19 LISCHA,SOLVEU,SDDISC,SDDYNA
+      CHARACTER*24 MODELE,NUMEDD,CARELE,COMPOR
+      CHARACTER*24 VALMOI(8),VALPLU(8),DEPALG(8)
+      CHARACTER*24 DEFICO,MATE
+      CHARACTER*24 CARCRI,POUGD,COMREF
+      LOGICAL      PREMIE,FONACT(*)
+
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C CALCULS DE POST-TRAITEMENT (FLAMBEMENT ET MODES VIBRATOIRES)
+C      
+C ----------------------------------------------------------------------
+C
+C
+C                         
+C ----------------------------------------------------------------------
+C
+      LOGICAL      ISFONC,LMVIBR,LFLAMB
+      LOGICAL      NDYNLO,LSTAT ,LIMPL
+      CHARACTER*8  OPTFLA
+C      
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- FONCTIONNALITES ACTIVEES
+C
+      LMVIBR = ISFONC(FONACT,'MODE_VIBR')
+      LFLAMB = ISFONC(FONACT,'CRIT_FLAMB')
+      LSTAT  = NDYNLO(SDDYNA,'STATIQUE')
+      LIMPL  = NDYNLO(SDDYNA,'IMPLICITE') 
+C            
+C -- CALCUL DE FLAMBEMENT EN STATIQUE ET DYNAMIQUE
+C
+      IF (LFLAMB) THEN
+        IF (LSTAT) THEN
+          OPTFLA = 'FLAMBSTA'
+        ELSE IF (LIMPL) THEN
+          OPTFLA = 'FLAMBDYN'
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        CALL NMIMPR('TITR','POST','FLAMBEMENT        ',0.D0,0)        
+        CALL NMFLAM(MODELE,NUMEDD,CARELE,COMPOR,SOLVEU,
+     &              NUMINS,RESULT,MATE  ,COMREF,LISCHA,
+     &              DEFICO,RESOCO,METHOD,PARMET,FONACT,
+     &              CARCRI,ITERAT,SDDISC,PREMIE,LICCVG,
+     &              OPTFLA,VALMOI,VALPLU,DEPALG,POUGD ,
+     &              MATASS,MAPREC,MEELEM,MEASSE,VEELEM,
+     &              SDDYNA)
+      ENDIF
+
+C
+C --- CALCUL DE MODES VIBRATOIRES EN DYNAMIQUE
+C
+      IF (LMVIBR) THEN
+        IF (LSTAT) THEN
+          CALL ASSERT(.FALSE.)
+        ELSE IF (LIMPL) THEN
+          OPTFLA = 'VIBRDYNA'
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        CALL NMIMPR('TITR','POST','MODES VIBRATOIRES ',0.D0,0)         
+        CALL NMFLAM(MODELE,NUMEDD,CARELE,COMPOR,SOLVEU,
+     &              NUMINS,RESULT,MATE  ,COMREF,LISCHA,
+     &              DEFICO,RESOCO,METHOD,PARMET,FONACT,
+     &              CARCRI,ITERAT,SDDISC,PREMIE,LICCVG,
+     &              OPTFLA,VALMOI,VALPLU,DEPALG,POUGD ,
+     &              MATASS,MAPREC,MEELEM,MEASSE,VEELEM,
+     &              SDDYNA)
+      ENDIF
+C
+      CALL JEDEMA()      
+C   
+      END

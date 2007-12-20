@@ -4,7 +4,7 @@
      &                  COEFCU,CMPGCU,MULTCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,7 +186,7 @@ C
               CALL JENUNO(JEXNUM(NOEUMA,NUMND),NOMNO)
               VALK (1) = NOMNO
               VALK (2) = CMP
-              CALL U2MESG('I', 'ALGORITH12_75',2,VALK,0,0,0,0.D0)
+              CALL U2MESG('I', 'UNILATER_75',2,VALK,0,0,0,0.D0)
             ENDIF
 
  3000     CONTINUE

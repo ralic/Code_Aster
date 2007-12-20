@@ -1,14 +1,11 @@
-      SUBROUTINE NMCHAR(MODE  ,MODELE,NUMEDD,MATE  ,CARELE,
-     &                  COMPOR,LISCHA,CARCRI,INST  ,DEPMOI,
-     &                  DEPDEL,VITPLU,ACCPLU,MASSE,
-     &                  AMORT, VITKM1,VITENT,NREAVI,
-     &                  LIMPED,LONDE, NONDP,
-     &                  CHONDP,COMPLU,NRPASE,NBPASE,INPSCO,
-     &                  NOPASE,SECOLD,CNFOLD,FOPREC,
-     &                  SECMBR,SDDYNA)
+      SUBROUTINE NMCHAR(MODE  ,PHASEZ,MODELE,NUMEDD,MATE  ,
+     &                  CARELE,COMPOR,LISCHA,CARCRI,INST  ,
+     &                  FONACT,PARMET,SOLVEU,VALMOI,VALPLU,
+     &                  POUGD ,SECMBR,DEPALG,VEELEM,MEELEM,
+     &                  MEASSE,SDSENS,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,17 +27,16 @@ C TOLE CRP_20
 C TOLE CRP_21
 C
       IMPLICIT NONE
-      INTEGER       NREAVI, NONDP,  NBPASE, NRPASE
-      REAL*8        INST(*)
-      LOGICAL       LIMPED, LONDE, FOPREC
+      REAL*8        INST(*),PARMET(*)
       CHARACTER*4   MODE
-      CHARACTER*8   NOPASE
-      CHARACTER*13  INPSCO
-      CHARACTER*19  LISCHA, CNFOLD, SDDYNA
-      CHARACTER*24  MODELE, MATE,CARELE, NUMEDD, SECMBR(8) , SECOLD(8)
-      CHARACTER*24  DEPMOI, DEPDEL, COMPLU, COMPOR, CARCRI
-      CHARACTER*24  ACCPLU, VITPLU, MASSE,  AMORT,  TABTRA
-      CHARACTER*24  VITKM1, VITENT, VALMOD, BASMOD, CHONDP
+      CHARACTER*(*) PHASEZ
+      CHARACTER*19  LISCHA,SDDYNA,SOLVEU
+      CHARACTER*24  MODELE,MATE,CARELE, NUMEDD
+      CHARACTER*24  VALMOI(8),VALPLU(8),SECMBR(8),DEPALG(8),POUGD(8)
+      CHARACTER*24  COMPOR,CARCRI,SDSENS
+      LOGICAL       FONACT(*)
+      CHARACTER*8   MEELEM(8),VEELEM(30)      
+      CHARACTER*19  MEASSE(8)
 C 
 C ----------------------------------------------------------------------
 C
@@ -54,9 +50,6 @@ C
 C
 C IN  MODE   : 'FIXE' -> CALCUL CHARGES FIXES
 C              'SUIV' -> CALCUL CHARGES SUIVEUSES
-C              'INER' -> CALCUL FORCES D'INERTIE
-C              'TOUS' -> CALCUL CHARGES FIXES ET SUIVEUSES
-C              'EXPL' -> CALCUL DES FORCES "EXPLICITES"
 C IN  MODELE : MODELE
 C IN  NUMEDD : NUME_DDL
 C IN  MATE   : CHAMP MATERIAU
@@ -96,469 +89,261 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
-      INTEGER      NEQ,   IRET,  JTRA,   NBCHAR, ICH,    JINFC,  JCHAR
-      INTEGER      JMASS, JAMOR, JVITP,  JACCP,  JCNFS , IREFN
-      INTEGER      JCNFE, JVITKM,IONDP,  TYPESE
-      INTEGER      JPREC, IRET2, JFOMU2, IFO,    IBID
-      REAL*8       INSTAP,INSTAM,RBID,   COEFML, COEFM2
-      LOGICAL      LGRFL, LFETI ,NDYNLO
-      CHARACTER*4  TYPCAL
-      CHARACTER*8  K8BID, VEMASE,NOMCHA
-      CHARACTER*24 CNFEDO,CNFEPI,CNDIDO, CNDIPI, CNFSDO, CNFSPI
-      CHARACTER*24 FEDOLD,FEPILD,DIDOLD, DIPILD, FSDOLD, FSPILD
-      CHARACTER*24 CINELD,DIDILD,VRCPLU
-      CHARACTER*24 VEFEDO,VEFEPI,VEDIDO, VEDIPI, VEFSDO, VEANEC
-      CHARACTER*24 VAFEDO,VAFEPI,VADIDO,         VAFSDO, VAANEC
-      CHARACTER*24 K24BLA,STYPSE,CNDIDI, CNCINE, CNLAMP
-      CHARACTER*24 CHARGE,INFOCH,FOMULT, CHGRFL, FOMUL2
-      CHARACTER*24 VECCOR,VELAMP,VALAMP, VAPRIN, NDYNKK
-C
-      INTEGER      JCNST, NBSST, NBSS
-      CHARACTER*8  VESSTR
-      CHARACTER*24 CNSSTR,KAMMO
-C
-      DATA VEFEDO,VEFEPI  /'&&VEFEDO.LISTE_RESU','&&VEFEPI.LISTE_RESU'/
-      DATA VEFSDO         /'&&VEFSDO.LISTE_RESU'/
-      DATA CHGRFL         /'&&OP0070.GRAPPE_FLUIDE  '/
-      DATA VEDIDO,VEDIPI  /'&&VEDIDO.LISTE_RESU','&&VEDIPI.LISTE_RESU'/
-      DATA TYPESE / 0 /
-      DATA STYPSE / ' ' /
-      DATA VRCPLU /'&&NMCHAR.VAR'/
+C 
+      REAL*8       INSTAP,INSTAM,COEFML, COEFM2
+      LOGICAL      LDYNA
+      LOGICAL      NDYNLO,FOPREC,LONDE,LSENSI,LIMPL,LEXPL
+      INTEGER      NRPASE
+      CHARACTER*24 CNFEDO,CNFEPI,CNDIDO,CNDIPI,CNFSDO,CNFSPI,CNCINE
+      CHARACTER*24 K24BID
+      CHARACTER*10 PHASE       
+      CHARACTER*1  BASE 
+      INTEGER      IFM,NIV
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()   
+      CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE><CHAR> CALCUL DU CHARGEMENT: ',MODE 
+      ENDIF          
 C
 C --- INITIALISATIONS
 C
-      K24BLA = ' '
-      CHARGE = LISCHA // '.LCHA'
-      INFOCH = LISCHA // '.INFC'
-      FOMULT = LISCHA // '.FCHA'
-      FOMUL2 = LISCHA // '.FCSS'
-      VAFEDO = '&&VAFEDO'
-      VAFSDO = '&&VAFSDO'
-      VADIDO = '&&VADIDO'
+      PHASE  = PHASEZ
+      BASE   = 'V'    
+C
+C --- FONCTIONNALITES ACTIVEES
+C    
+      FOPREC = NDYNLO(SDDYNA,'FOPREC') 
+      LONDE  = NDYNLO(SDDYNA,'ONDE_PLANE') 
+      LIMPL  = NDYNLO(SDDYNA,'IMPLICITE')
+      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
+      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE') 
+C
+C --- PAS DE SENSIBILITE
+C      
+      LSENSI = .FALSE.
+      NRPASE = 0         
+C
+C --- DECOMPACTION DES VARIABLES CHAPEAUX
+C
+      CALL DESAGG(SECMBR,CNFEDO,CNFEPI,CNDIDO,CNDIPI,
+     &            CNFSDO,CNFSPI,K24BID,CNCINE)   
+C
+C --- COEFFICIENTS POUR DYNAMIQUE
+C
+      INSTAM = INST(1) - INST(2)
       INSTAP = INST(1)
-      TABTRA = '&&TABTRA'
-      VECCOR = '&&VECCOR'
-      VEANEC = '&&VEANEC'
-      VAANEC = '&&VAANEC'
-      VELAMP = '&&VELAME.LISTE_RESU'
-      VALAMP = '&&VALAME'
-      CNLAMP = '&&CNLAME'
-      LGRFL  = .FALSE.
-
-      VESSTR = '&&VESSTR'
-      CNSSTR = '&&CNSSTR'
-C
-C --- FETI OR NOT FETI ?
-C
-      CALL JEVEUO(NUMEDD(1:14)//'.NUME.REFN','L',IREFN)
-      IF (ZK24(IREFN+2)(1:4).EQ.'FETI') THEN
-        LFETI=.TRUE.
-      ELSE
-        LFETI=.FALSE.
-      ENDIF
-
-      CALL DESAGG (SECMBR, CNFEDO, CNFEPI, CNDIDO, CNDIPI,
-     &                     CNFSDO, CNFSPI, CNDIDI, CNCINE)
-      IF ( FOPREC ) THEN
-        CALL DESAGG (SECOLD,FEDOLD, FEPILD, DIDOLD,DIPILD ,
-     &             FSDOLD, FSPILD, DIDILD, CINELD )
-      ENDIF
-
-      CALL NMVCEX('TOUT',COMPLU,VRCPLU)
-
-      CALL JEEXIN ( CHARGE, IRET )
-      IF ( IRET .NE. 0 ) THEN
-         CALL JEVEUO ( INFOCH, 'L', JINFC )
-         CALL JEVEUO ( CHARGE, 'L', JCHAR )
-         NBCHAR = ZI(JINFC)
-         DO 10 ICH = 1, NBCHAR
-            NOMCHA = ZK24(JCHAR+ICH-1)(1:8)
-            CALL JEEXIN ( NOMCHA//'.CHME.GRFLU.LINO', IRET )
-            IF ( IRET .NE. 0 )  LGRFL = .TRUE.
- 10      CONTINUE
-      ENDIF
-C
-C  POUR HHT, ON SAUVEGARDE LES CHARGEMENTS DU PAS PRECEDENT
-C
       COEFML = 1.D0
       COEFM2 = -1.D0
-      IF ( NDYNLO(SDDYNA,'HHT_COMPLET').AND.(FOPREC))  THEN
+      IF ( NDYNLO(SDDYNA,'HHT_COMPLET'))  THEN
+        FOPREC = NDYNLO(SDDYNA,'FOPREC')
+        IF (FOPREC) THEN
           COEFML = (INST(5)-0.5D0)/(1.5D0-INST(5))
+        ENDIF
+        COEFM2 = -1.D0/(1.5D0-INST(5))  
       ENDIF
-      RBID = INST(5)
+      
 C ======================================================================
 C                            CHARGEMENTS FIXES
 C ======================================================================
-      IF (MODE.EQ.'FIXE' .OR. MODE.EQ.'TOUS' ) THEN
+      IF (MODE.EQ.'FIXE') THEN
 
 C -- DEPLACEMENTS IMPOSES DONNES                             ---> CNDIDO
-C    CNDIDO = CNDIDO + CNDIDI
-
-        TYPESE=0
-        CALL VEDIME ( MODELE, CHARGE, INFOCH, INSTAP, 'R',
-     &                TYPESE, NOPASE, VEDIDO)
-        CALL ASASVE (VEDIDO, NUMEDD, 'R', VADIDO)
-        CALL ASCOVA('D',VADIDO, FOMULT, 'INST', INSTAP, 'R', CNDIDO)
-
-
-C      CORRECTION POUR TENIR COMPTE DU TYPE DIRICHLET DIFFERENTIEL
-        CALL EXISD('CHAMP',CNDIDI, IRET)
-        IF (IRET.NE.0) CALL VTAXPY(1.D0,CNDIDI,CNDIDO)
+ 
+        CALL NMCALV('DEPL_FIXE',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &              VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &              SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &              VEELEM)
+          
+        CALL NMASSV('DEPL_FIXE',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              SOLVEU,NUMEDD,FONACT,INSTAM,INSTAP,
+     &              COEFML,COEFM2,SDDYNA,MEELEM,VALMOI,
+     &              VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
+     &              LSENSI,SDSENS,NRPASE,MEASSE,CNDIDO)  
 
 C -- DEPLACEMENTS IMPOSES PILOTES                            ---> CNDIPI
-C    CNDIPI = CNDIPI + COEFML*DIPILD
 
-        CALL VEDPME (MODELE, CHARGE, INFOCH, INSTAP, 'R', VEDIPI)
-        CALL ASSVEC ('V',CNDIPI,1,VEDIPI,1.D0,NUMEDD,' ','ZERO',1)
+        CALL NMCALV('DEPL_PILO',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &              VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &              SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &              VEELEM)
+
+        CALL NMASSV('DEPL_PILO',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              SOLVEU,NUMEDD,FONACT,INSTAM,INSTAP,
+     &              COEFML,COEFM2,SDDYNA,MEELEM,VALMOI,
+     &              VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
+     &              LSENSI,SDSENS,NRPASE,MEASSE,CNDIPI)  
+
+C -- CHARGEMENTS FORCES DE LAPLACE                    
+
+        CALL NMCALV('FORC_LAPLACE',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &              VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &              SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &              VEELEM)
+
+C -- CHARGEMENTS ONDE_PLANE 
+
+        IF (LONDE) THEN
+          CALL NMCALV('FORC_ONDE_PLANE',
+     &                MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                VEELEM)
+        ENDIF
+
+C -- AUTRES CHARGEMENTS MECANIQUES FIXES
+
+        CALL NMCALV('FORC_FIXE_MECA',
+     &                MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                VEELEM)
+
+C -- CHARGEMENTS MECANIQUES PILOTES                         ---> CNFEPI
+
+        CALL NMCALV('FORC_PILO',
+     &                MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                VEELEM)
+
+        CALL NMASSV('FORC_PILO',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              SOLVEU,NUMEDD,FONACT,INSTAM,INSTAP,
+     &              COEFML,COEFM2,SDDYNA,MEELEM,VALMOI,
+     &              VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
+     &              LSENSI,SDSENS,NRPASE,MEASSE,CNFEPI)   
 
 C -- CHARGEMENTS MECANIQUES DONNES                           ---> CNFEDO
 
-        TYPCAL = 'MECA'
-        TYPESE=0
-        CALL VECHME ( TYPCAL, MODELE, CHARGE, INFOCH, INST,
-     &                CARELE, MATE, VRCPLU, K24BLA,
-     &                VAPRIN, NOPASE, TYPESE, STYPSE,
-     &                VEFEDO )
-        CALL ASASVE (VEFEDO, NUMEDD, 'R', VAFEDO)
-        CALL ASCOVA('D',VAFEDO, FOMULT, 'INST', INSTAP, 'R', CNFEDO)
-
-C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
-        CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8BID,IRET)
-        IF (NBSS.NE.0) THEN
-C -- ALERTE SI FETI
-         IF (LFETI) CALL U2MESS('F','ALGORITH6_70')
-          CALL GETFAC('SOUS_STRUC',NBSST)
-          IF (NBSST.NE.0) THEN
-            CALL JEEXIN(FOMUL2,IRET2)
-            IF (IRET2.EQ.0) THEN
-              CALL WKVECT(FOMUL2,'V V K24',NBSST,JFOMU2)
-              DO 1 IFO = 1,NBSST
-                CALL GETVID('SOUS_STRUC','FONC_MULT',IFO,1,1,
-     &                      ZK24(JFOMU2+IFO-1),IBID)
-                IF (IBID.EQ.0) ZK24(JFOMU2+IFO-1) = '&&CONSTA' 
-    1         CONTINUE
-            ENDIF
-            CALL EXISD('CHAMP',CNSSTR(1:19),IRET)
-            IF (IRET.EQ.0) THEN
-              CALL MEMARE('V',VESSTR,MODELE,MATE,CARELE(1:8),
-     &                    'CHAR_MECA')
-              CALL JEEXIN(VESSTR//'.LISTE_CHAR',IRET2)
-              IF (IRET2.NE.0) THEN
-                CALL JEDETR(VESSTR//'.LISTE_CHAR')
-              ENDIF
-              CALL SS2MME(MODELE(1:8),VESSTR,'V')
-C              CALL UTIMSD(8,2,.TRUE.,.TRUE.,VESSTR,1,' ')
-            END IF
-            CALL ASSVSS('V',CNSSTR,VESSTR,NUMEDD,' ','ZERO',1,FOMUL2,
-     &                  INSTAP)
-            CALL JEVEUO(CNSSTR(1:19) // '.VALE','L',JCNST)
-            CALL JEVEUO(CNFEDO(1:19) // '.VALE','E',JCNFE)
-            CALL JELIRA(CNFEDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-            CALL DAXPY(NEQ, 1.D0, ZR(JCNST), 1, ZR(JCNFE), 1)
-          ENDIF
-        ENDIF
-
-C   FIN MACRO-ELEMENT STATIQUE
-
-C -- CHARGEMENTS MECANIQUES PILOTES                         ---> CNFEPI
-C    CNFEPI = CNFEPI + COEFML*FEPILD
-
-        CALL VEFPME (MODELE, CARELE, MATE, CHARGE, INFOCH, INST, VRCPLU,
-     &               VEFEPI, ' ')
-        CALL ASASVE (VEFEPI, NUMEDD, 'R', VAFEPI)
-        CALL ASCOVA('D',VAFEPI, FOMULT, 'INST', INSTAP, 'R', CNFEPI)
-
-        IF (NDYNLO(SDDYNA,'HHT_COMPLET').AND.(FOPREC)) THEN
-          CALL EXISD('CHAMP',FEPILD, IRET)
-          IF (IRET.NE.0) CALL VTAXPY(COEFML,FEPILD,CNFEPI)
-        ENDIF
-
+        CALL NMASSV('FORC_FIXE',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              SOLVEU,NUMEDD,FONACT,INSTAM,INSTAP,
+     &              COEFML,COEFM2,SDDYNA,MEELEM,VALMOI,
+     &              VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
+     &              LSENSI,SDSENS,NRPASE,MEASSE,CNFEDO)               
 
 C -- CONDITIONS CINEMATIQUES IMPOSEES  (AFFE_CHAR_CINE) ---> CNCINE
 
-        CALL NMCVCI(CHARGE,INFOCH,FOMULT,NUMEDD,DEPMOI,INSTAP,CNCINE)
-
-C -- CHARGEMENTS FORCES DE LAPLACE                         ---> CNLAMP
-C    CNFEDO = CNFEDO + CNLAMP
-
-        CALL VELAME(MODELE,CHARGE,INFOCH,DEPMOI,VELAMP)
-        CALL ASASVE (VELAMP,NUMEDD,'R',VALAMP)
-        CALL ASCOVA('D',VALAMP,FOMULT,'INST',INSTAP,'R',CNLAMP)
-        CALL JELIRA(CNFEDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-        CALL JEVEUO(CNFEDO(1:19) // '.VALE','E',JCNFE)
-        CALL VTAXPY(1.D0,CNLAMP,CNFEDO)
-
-C -- CHARGEMENTS ONDES PLANES                            ---> CHONDP
-C    CNFEDO = CNFEDO + TABTRA
-        CALL JEEXIN(TABTRA,IRET)
-        IF (IRET.EQ.0) THEN
-          CALL WKVECT(TABTRA,'V V R',NEQ,JTRA)
-        ELSE
-          CALL JEVEUO(TABTRA,'E',JTRA)
-        ENDIF
-        IF (LONDE) THEN
-         IF (LFETI) CALL U2MESS('F','ALGORITH6_71')
-           CALL JEVEUO(CHONDP,'L',IONDP)
-           CALL FONDPL(MODELE,MATE,NUMEDD,NEQ,ZK8(IONDP),NONDP,VECCOR,
-     &                 VEANEC,VAANEC,INSTAP,ZR(JTRA))
-           CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFE), 1)
-        ENDIF
-
-
-C -- CHARGEMENTS FORCES FLUIDES SUR LES GRAPPES          ---> CNFEDO
-C    CNFEDO = CNFEDO + FORCE_FLUIDE + FEDOLD*COEFML
-        IF ( LGRFL ) THEN
-C -- ALERTE SI FETI
-         IF (LFETI) CALL U2MESS('F','ALGORITH6_72')
-            CALL NMGRFL ( NUMEDD, CHGRFL, DEPMOI, DEPDEL,
-     &                             VITPLU, ACCPLU, INST(2), CNFEDO )
-        ENDIF
-        IF (NDYNLO(SDDYNA,'HHT_COMPLET').AND.(FOPREC)) THEN
-          CALL EXISD('CHAMP',FEDOLD,IRET)
-          IF (IRET.NE.0) CALL VTAXPY(COEFML,FEDOLD,CNFEDO)
-        ENDIF
-
+        CALL NMASSV('CINE_IMPO',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              SOLVEU,NUMEDD,FONACT,INSTAM,INSTAP,
+     &              COEFML,COEFM2,SDDYNA,MEELEM,VALMOI,
+     &              VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
+     &              LSENSI,SDSENS,NRPASE,MEASSE,CNCINE)
 
 C ======================================================================
 C                        CHARGEMENTS SUIVEURS
 C ======================================================================
-      ELSE IF (MODE.EQ.'SUIV' .OR. MODE.EQ.'TOUS') THEN
-        IF (NDYNLO(SDDYNA,'HHT_COMPLET').AND.(FOPREC)) THEN
-          CALL JEVEUO(CNFSDO(1:19) // '.VALE','L',JPREC)
-        ENDIF
+      ELSE IF (MODE.EQ.'SUIV') THEN
+
 C -- FORCES SUIVEUSES DONNEES
 
-C      POUR THM
-        INSTAM = INST(1) - INST(2)
+        CALL NMCALV('FORC_SUIV_IMPO',
+     &                MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                VEELEM)
 
-        CALL VECGME (MODELE,CARELE,MATE,CHARGE,INFOCH,INSTAP,
-     &               DEPMOI,DEPDEL,VEFSDO,INSTAM,COMPOR,CARCRI,' ',
-     &               VITPLU,ACCPLU)
-        CALL ASASVE (VEFSDO,NUMEDD,'R',VAFSDO)
-        CALL ASCOVA('D',VAFSDO,FOMULT,'INST',INSTAP,'R',CNFSDO)
-
-C    FORCES SUIVEUSES PILOTEES (NON IMPLANTEES -> VECTEUR NUL)
-
-       CALL EXISD('CHAMP',CNFSPI(1:19),IRET)
-       IF (IRET.EQ.0) CALL VTCREB (CNFSPI,NUMEDD,'V','R',NEQ)
-
-
-C ======================================================================
-C                        FORCES D'INERTIE
-C ======================================================================
-      ELSE IF (MODE.EQ.'INER' .OR. MODE.EQ.'TOUS') THEN
-
-C -- ALERTE SI FETI
-        IF (LFETI) CALL U2MESS('F','ALGORITH6_73')
-        IF (NDYNLO(SDDYNA,'HHT_COMPLET')) THEN
-          COEFM2 = -1.D0/(1.5D0-INST(5))
-        ENDIF
-
-C -- FORCES D'INERTIE
-C -- ON LES RANGE DANS LE MEME VECTEUR QUE LES FORCES SUIVEUSES
-        INSTAM = INST(1) - INST(2)
-        CALL EXISD('CHAMP',CNFSDO(1:19),IRET)
-        IF (IRET.EQ.0) THEN
-           CALL VTCREB (CNFSDO,NUMEDD,'V','R',NEQ)
-        END IF
-        CALL JELIRA(CNFSDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-        CALL JEEXIN(TABTRA,IRET)
-        IF (IRET.EQ.0) THEN
-          CALL WKVECT(TABTRA,'V V R',NEQ,JTRA)
-        ELSE
-          CALL JEVEUO(TABTRA,'E',JTRA)
-        ENDIF
-        CALL JEVEUO(CNFSDO(1:19) // '.VALE','E',JCNFS)
-        CALL JEVEUO(ACCPLU(1:19) // '.VALE','E',JACCP)
-        CALL JEVEUO(MASSE(1:19)  // '.&INT','L',JMASS)
-        CALL MRMULT ('ZERO',JMASS,ZR(JACCP),'R',ZR(JTRA),1)
-        CALL DAXPY(NEQ, COEFM2, ZR(JTRA), 1, ZR(JCNFS), 1)
-
-        IF(.NOT.NDYNLO(SDDYNA,'STATIQUE')) THEN
-          IF(NDYNLO(SDDYNA,'MAT_AMORT'))THEN
-           CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
-           CALL JEVEUO(AMORT(1:19) //'.&INT','L',JAMOR)
-           CALL MRMULT ('ZERO',JAMOR,ZR(JVITP),'R',ZR(JTRA),1)
-           CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
+C -- FORCES SUIVEUSES D'INERTIE
+       
+        IF (LDYNA) THEN
+          IF (LIMPL) THEN
+            CALL NMCALV('FORC_INER',
+     &                  MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                  INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                  VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                  SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                  VEELEM)
           ENDIF
-        ENDIF
-
-        IF(.NOT.NDYNLO(SDDYNA,'STATIQUE')) THEN
-         IF(NDYNLO(SDDYNA,'AMOR_MODAL'))THEN
-           CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
-           CALL JEVEUO(VITKM1(1:19)//'.VALE','L',JVITKM)
-           KAMMO=NDYNKK(SDDYNA,'AMOR_MODAL')
-           VALMOD=KAMMO(1:19)//'.VALM'
-           BASMOD=KAMMO(1:19)//'.BASM'
-           CALL FMODAM(NEQ,ZR(JVITKM),VALMOD,BASMOD,ZR(JTRA))
-           IF (NREAVI.EQ.1)
-     &       CALL FMODAM(NEQ,ZR(JVITP),VALMOD,BASMOD,ZR(JTRA))
-           CALL DAXPY(NEQ, COEFM2, ZR(JTRA), 1, ZR(JCNFS), 1)
-          ENDIF
-        ENDIF
-
-        IF (LIMPED) THEN
-           CALL FIMPED(MODELE,MATE,NUMEDD,NEQ,VITKM1,VITENT,VECCOR,
-     &                 VEANEC,VAANEC,INSTAM,ZR(JTRA))
-           CALL DAXPY(NEQ, COEFM2, ZR(JTRA), 1, ZR(JCNFS), 1)
-        ENDIF
-
-C
-C   Etape : F_HHT=F_HHT-alphaFint(n)
-C
-        IF (NDYNLO(SDDYNA,'HHT_COMPLET')) THEN
-          CALL EXISD('CHAMP',CNFOLD, IRET)
-          IF ((IRET.NE.0).AND.FOPREC) THEN
-            CALL JEVEUO(CNFOLD(1:19)//'.VALE','L',JTRA)
-C   Theorique :
-            CALL DAXPY(NEQ, ((-1.D0)*COEFML), ZR(JTRA), 1, ZR(JCNFS), 1)
-          ENDIF
-        ENDIF
-
-
-
-C ======================================================================
-C                        FORCES EXPLICITES
-C ======================================================================
-      ELSE IF (MODE.EQ.'EXPL') THEN
-
-C -- ALERTE SI FETI
-        IF (LFETI) CALL U2MESS('F','ALGORITH6_74')
-C -- FORCES EXPLICITES
-C -- ON LES TRAITE DE LA MEME FACON QUE LES FORCES D'INERTIE
-        INSTAM = INST(1) - INST(2)
-        CALL EXISD('CHAMP',CNFSDO(1:19),IRET)
-        IF (IRET.EQ.0) THEN
-           CALL VTCREB (CNFSDO,NUMEDD,'V','R',NEQ)
-        END IF
-        CALL JELIRA(CNFSDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-        CALL JEEXIN(TABTRA,IRET)
-        IF (IRET.EQ.0) THEN
-          CALL WKVECT(TABTRA,'V V R',NEQ,JTRA)
-        ELSE
-          CALL JEVEUO(TABTRA,'E',JTRA)
-        ENDIF
-        CALL JEVEUO(CNFSDO(1:19) // '.VALE','E',JCNFS)
-
-        IF(.NOT.NDYNLO(SDDYNA,'STATIQUE')) THEN
-          IF(NDYNLO(SDDYNA,'MAT_AMORT'))THEN
-           CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
-           CALL JEVEUO(AMORT(1:19) //'.&INT','L',JAMOR)
-           CALL MRMULT ('ZERO',JAMOR,ZR(JVITP),'R',ZR(JTRA),1)
-           CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
-          ENDIF
-        ENDIF
-
-        IF(.NOT.NDYNLO(SDDYNA,'STATIQUE')) THEN
-         IF(NDYNLO(SDDYNA,'AMOR_MODAL'))THEN
-           CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
-           CALL JEVEUO(VITKM1(1:19)//'.VALE','L',JVITKM)
-           KAMMO=NDYNKK(SDDYNA,'AMOR_MODAL')
-           VALMOD=KAMMO(1:19)//'.VALM'
-           BASMOD=KAMMO(1:19)//'.BASM'
-           CALL FMODAM(NEQ,ZR(JVITKM),VALMOD,BASMOD,ZR(JTRA))
-           IF (NREAVI.EQ.1)
-     &       CALL FMODAM(NEQ,ZR(JVITP),VALMOD,BASMOD,ZR(JTRA))
-           CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
-          ENDIF
-        ENDIF
-
-        IF (LIMPED) THEN
-           CALL FIMPED(MODELE,MATE,NUMEDD,NEQ,VITKM1,VITENT,VECCOR,
-     &                 VEANEC,VAANEC,INSTAM,ZR(JTRA))
-           CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFS), 1)
-        ENDIF
-
-
-C ======================================================================
-C                        CHARGEMENTS SENSIBILITE
-C ======================================================================
-      ELSE IF ((MODE.EQ.'SENS').OR.(MODE.EQ.'SEDY')) THEN
-
-C -- TYPE DE SENSIBILITE
-        CALL METYSE(NBPASE, INPSCO, NOPASE, TYPESE, STYPSE)
-
-C -- CHARGEMENT DU A LA DERIVATION (PARTIE COMPORTEMENT)    ---> CNFEDO
-
-        CALL VEMSME(MODELE,MATE,CARCRI,CARELE,COMPOR,INST,INPSCO,
-     &              NRPASE,TYPESE,NOPASE,VEMASE,STYPSE)
-        CALL ASSVEC ('V',CNFEDO,1,VEMASE,1.D0,NUMEDD,K24BLA,'ZERO',1)
-        CALL DETRSD('VECT_ELEM',VEMASE)
-        IF (TYPESE.NE.2) THEN
-C -- DERIVATION CHARGEMENTS MECANIQUES DONNES                ---> CNFEDO
-
-          TYPCAL = 'MECA'
-          CALL VECHME ( TYPCAL, MODELE, CHARGE, INFOCH, INST,
-     &                CARELE, MATE,   K24BLA, K24BLA,
-     &                VAPRIN, NOPASE, TYPESE, STYPSE,
-     &                VEFEDO )
-          CALL ASASVE (VEFEDO, NUMEDD, 'R', VAFEDO)
-          CALL ASCOVA('D',VAFEDO, FOMULT, 'INST', INSTAP, 'R', TABTRA)
-          CALL JELIRA(CNFEDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
-          CALL JEVEUO(TABTRA(1:19) // '.VALE','L',JTRA)
-          CALL JEVEUO(CNFEDO(1:19) // '.VALE','E',JCNFE)
-          CALL VTAXPY(1.D0,TABTRA,CNFEDO)
-        ENDIF
-C -- DERIVATION DEPLACEMENTS IMPOSES DONNES                 ---> CNDIDO
-
-        CALL VEDIME ( MODELE, CHARGE, INFOCH, INSTAP, 'R',
-     &                TYPESE, NOPASE, VEDIDO)
-        CALL ASASVE (VEDIDO, NUMEDD, 'R', VADIDO)
-        CALL ASCOVA('D',VADIDO, FOMULT, 'INST', INSTAP, 'R', CNDIDO)
-
-        IF (MODE.EQ.'SEDY') THEN
-C -- ALERTE SI FETI
-          IF (LFETI) CALL U2MESS('F','ALGORITH6_75')
-
-C -- CONTRIBUTION FORCES D'INERTIE ET AMORT. DERIVEES        ---> CNFEDO
-          INSTAM = INST(1) - INST(2)
-          CALL JEVEUO(TABTRA,'E',JTRA)
-          CALL JEVEUO(ACCPLU(1:19) // '.VALE','E',JACCP)
-          CALL JEVEUO(MASSE(1:19)  // '.&INT','L',JMASS)
-          CALL MRMULT ('ZERO',JMASS,ZR(JACCP),'R',ZR(JTRA),1)
-          CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFE), 1)
-
-          IF(.NOT.NDYNLO(SDDYNA,'STATIQUE')) THEN
-            IF(NDYNLO(SDDYNA,'MAT_AMORT'))THEN
-              CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
-              CALL JEVEUO(AMORT(1:19) //'.&INT','L',JAMOR)
-              CALL MRMULT ('ZERO',JAMOR,ZR(JVITP),'R',ZR(JTRA),1)
-              CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFE), 1)
+          
+          IF ((LEXPL.AND.PHASE.EQ.'PREDICTION').OR.LIMPL) THEN
+            IF (PHASE.EQ.'PREDICTION') THEN
+              CALL NMCALV('FORC_MODA_PRED',
+     &                    MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                    INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                    VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                    SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                    VEELEM)
+            ELSEIF (PHASE.EQ.'CORRECTION') THEN    
+               CALL NMCALV('FORC_MODA_CORR',
+     &                    MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                    INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                    VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                    SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                    VEELEM)           
+            ELSE
+              CALL ASSERT(.FALSE.)
             ENDIF
-          ENDIF
+     
+            CALL NMCALV('FORC_AMOR',
+     &                  MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                  INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                  VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                  SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                  VEELEM) 
+     
+            IF (PHASE.EQ.'PREDICTION') THEN
+              CALL NMCALV('FORC_IMPE_PRED',
+     &                    MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                    INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                    VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                    SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                    VEELEM) 
+            ELSEIF (PHASE.EQ.'CORRECTION') THEN
+              CALL NMCALV('FORC_IMPE_CORR',
+     &                    MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &                    INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
+     &                    VALMOI,VALPLU,DEPALG,POUGD ,SDSENS,
+     &                    SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
+     &                    VEELEM)
+            ELSE
+              WRITE(6,*) 'PHASE: ',PHASE
+              CALL ASSERT(.FALSE.)
+            ENDIF
 
-         IF(.NOT.NDYNLO(SDDYNA,'STATIQUE')) THEN
-          IF(NDYNLO(SDDYNA,'AMOR_MODAL'))THEN
-            CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
-            KAMMO=NDYNKK(SDDYNA,'AMOR_MODAL')
-            VALMOD=KAMMO(1:19)//'.VALM'
-            BASMOD=KAMMO(1:19)//'.BASM'
-            CALL FMODAM(NEQ,ZR(JVITP),VALMOD,BASMOD,ZR(JTRA))
-            CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFE), 1)
-           ENDIF
-          ENDIF
 
-          IF (LIMPED) THEN
-            CALL FIMPED(MODELE,MATE,NUMEDD,NEQ,VITPLU,VITENT,VECCOR,
-     &                 VEANEC,VAANEC,INSTAM,ZR(JTRA))
-            CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFE), 1)
-          ENDIF
-
+          ENDIF 
         ENDIF
+     
+C -- ASSEMBLAGE
+     
+        CALL NMASSV('FORC_SUIV_IMPO',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              SOLVEU,NUMEDD,FONACT,INSTAM,INSTAP,
+     &              COEFML,COEFM2,SDDYNA,MEELEM,VALMOI,
+     &              VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
+     &              LSENSI,SDSENS,NRPASE,MEASSE,CNFSDO)
 
+C -- FORCES SUIVEUSES PILOTEES (NON IMPLANTEES -> VECTEUR NUL)
 
-C ======================================================================
-C                        FORCE INCONNUE
-C ======================================================================
+        CALL NMASSV('FORC_SUIV_PILO',
+     &              MODELE,LISCHA,MATE  ,CARELE,COMPOR,
+     &              SOLVEU,NUMEDD,FONACT,INSTAM,INSTAP,
+     &              COEFML,COEFM2,SDDYNA,MEELEM,VALMOI,
+     &              VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
+     &              LSENSI,SDSENS,NRPASE,MEASSE,CNFSPI)
+     
       ELSE
-        CALL U2MESK('F','ALGORITH6_76',1,MODE)
+        CALL ASSERT(.FALSE.)
       END IF
 
-      INST(5) = RBID
       CALL JEDEMA()
       END

@@ -1,7 +1,8 @@
       SUBROUTINE ASCOMA(MESUIV,INSTAP,NUMEDD,SOLVEU,LISCHA,
      &                  MATSUI)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,11 +20,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
+C
       IMPLICIT NONE
-      CHARACTER*24  MESUIV,NUMEDD
+      CHARACTER*8   MESUIV
+      CHARACTER*24  NUMEDD
       CHARACTER*19  SOLVEU,LISCHA
       REAL*8        INSTAP
-      CHARACTER*(*) MATSUI
+      CHARACTER*19  MATSUI
 C      
 C ----------------------------------------------------------------------
 C
@@ -66,9 +69,7 @@ C
       INTEGER            K,ILICOE,ICHA,IER,JRESU,JCOEF
       REAL*8             VALRES
       CHARACTER*24       LICOEF,FOMULT
-      CHARACTER*8        K8BLA
-C
-      DATA K8BLA /' '/      
+      CHARACTER*8        K8BID     
 C
 C ----------------------------------------------------------------------
 C
@@ -76,13 +77,13 @@ C
 C      
       FOMULT = LISCHA(1:19)//'.FCHA'
       BIDON  = .FALSE.
-      CALL JEEXIN(MESUIV,IRET)
+      CALL JEEXIN(MESUIV(1:8)//'.LISTE_RESU',IRET)
       IF ( IRET .NE. 0 ) THEN
-        CALL JELIRA(MESUIV,'LONUTI',NBCHME,K8BLA)
+        CALL JELIRA(MESUIV(1:8)//'.LISTE_RESU','LONUTI',NBCHME,K8BID)
         IF ( NBCHME .EQ. 0 ) THEN
           BIDON = .TRUE.
         ELSE
-          CALL JEVEUO(MESUIV,'L',JMEC)
+          CALL JEVEUO(MESUIV(1:8)//'.LISTE_RESU','L',JMEC)
           IF ( ZK24(JMEC)(7:8) .EQ. '00' ) THEN
             BIDON = .TRUE.
           ENDIF  
@@ -100,7 +101,7 @@ C
         FCT = .FALSE.
       ELSE
         FCT = .TRUE.
-        CALL JELIRA(FOMULT,'LONMAX',NCHAR,K8BLA)
+        CALL JELIRA(FOMULT,'LONMAX',NCHAR,K8BID)
         IF ( NCHAR .EQ. 0 ) GOTO 9999
         CALL JEVEUO(FOMULT,'L',JFONCT)
       ENDIF

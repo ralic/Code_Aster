@@ -1,7 +1,7 @@
-      INTEGER FUNCTION DININS(PARTPS, NUMINS)
-
+      INTEGER FUNCTION DININS(SDDISC,NUMINS)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,21 +19,26 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
+C
       IMPLICIT NONE
       INTEGER      NUMINS
-      CHARACTER*19 PARTPS
-
-C ----------------------------------------------------------------------
-C        SD DISCRETISATION : ACCES AU NIVEAU DE SUBDIVISION D'UN INSTANT
+      CHARACTER*19 SDDISC
+C
 C ----------------------------------------------------------------------
 C
-C  IN PARTPS K19 : SD DISCRETISATION
-C  IN NUMINS  I  : NUMERO D'INSTANTS
-C OUT DININS  I  : NIVEAU DE SUBDIVISION DE L'INSTANT (1=PAS REDECOUPE)
+C ROUTINE MECA_NON_LINE (UTILITAIRE - DISCRETISATION)
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C ACCES AU NIVEAU DE SUBDIVISION D'UN INSTANT
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDDISC : SD DISCRETISATION
+C IN  NUMINS : NUMERO DE L'INSTANT
+C OUT DININS : NIVEAU DE SUBDIVISION DE L'INSTANT (1=PAS REDECOUPE)
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -49,13 +54,21 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      INTEGER JTEMPS
-
-
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      JNIVTP
+      CHARACTER*24 TPSDIN
+C      
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      CALL JEVEUO(PARTPS // '.DINI','L',JTEMPS)
-      DININS = ZI(JTEMPS+NUMINS)
+C
+C --- ACCES SD LISTE D'INSTANTS
+C    
+      TPSDIN = SDDISC(1:19)//'.DINI' 
+      CALL JEVEUO(TPSDIN,'L',JNIVTP) 
+C
+      DININS = ZI(JNIVTP+NUMINS)
+C      
       CALL JEDEMA()
       END

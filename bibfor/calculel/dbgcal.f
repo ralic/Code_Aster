@@ -1,9 +1,9 @@
       SUBROUTINE DBGCAL(OPTIOZ,IFM,
-     &                  NBIN  ,LPAIN ,LCHIN ,
-     &                  NBOUT ,LPAOUT,LCHOUT)     
+     &                  NBIN  ,LPAIZ ,LCHIZ ,
+     &                  NBOUT ,LPAOUZ,LCHOUZ)     
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,8 +26,8 @@ C
       CHARACTER*(*) OPTIOZ
       INTEGER       IFM
       INTEGER       NBIN,NBOUT
-      CHARACTER*8   LPAIN(NBIN),LPAOUT(NBOUT)      
-      CHARACTER*19  LCHIN(NBIN),LCHOUT(NBOUT)           
+      CHARACTER*(*)  LPAIZ(NBIN),LPAOUZ(NBOUT)      
+      CHARACTER*(*)  LCHIZ(NBIN),LCHOUZ(NBOUT)                
 C      
 C ----------------------------------------------------------------------
 C
@@ -42,10 +42,10 @@ C IN  OPTION : OPTION CALCULEE
 C IN  IFM    : UNITE LOGIQUE D'IMPRESSION
 C IN  NBIN   : NOMBRE DE CHAMPS IN
 C IN  NBOUT  : NOMBRE DE CHAMPS OUT
-C IN  LPAIN  : NOM DES TYPES DE CHAMP D'ENTREE
-C IN  LCHIN  : NOM DES CHAMPS D'ENTREE
-C IN  LPAOUT : NOM DES TYPES DE CHAMP DE SORTIE
-C IN  LCHOUT : NOM DES CHAMPS DE SORTIE
+C IN  LPAIZ  : NOM DES TYPES DE CHAMP D'ENTREE
+C IN  LCHIZ  : NOM DES CHAMPS D'ENTREE
+C IN  LPAOUZ : NOM DES TYPES DE CHAMP DE SORTIE
+C IN  LCHOUZ : NOM DES CHAMPS DE SORTIE
 C
 C ----------------------------------------------------------------------
 C 
@@ -66,58 +66,58 @@ C
       WRITE(IFM,*) '***** <CHAMPS_IN>' 
       DO 100 ICH = 1,NBIN
         WRITE(IFM,*) ' * CHAMP IN  <',ICH,'>'
-        WRITE(IFM,*) ' * PARAMETRE <',LPAIN(ICH),'>'
-        WRITE(IFM,*) ' * CHAMP     <',LCHIN(ICH),'>'
-        IF (LPAIN(ICH)(1:1).EQ.' ') THEN
+        WRITE(IFM,*) ' * PARAMETRE <',LPAIZ(ICH),'>'
+        WRITE(IFM,*) ' * CHAMP     <',LCHIZ(ICH),'>'
+        IF (LPAIZ(ICH)(1:1).EQ.' ') THEN
           CALL U2MESI('A','PRECALCUL_60',1,ICH)
         ENDIF
-        IF (LCHIN(ICH)(1:1).EQ.' ') THEN
+        IF (LCHIZ(ICH)(1:1).EQ.' ') THEN
           CALL U2MESI('A','PRECALCUL_61',1,ICH)
         ENDIF       
 C        
-        CALL JELSTC(' ',LCHIN(ICH)(1:19),1,0,K8BID,NBVAL)
+        CALL JELSTC(' ',LCHIZ(ICH)(1:19),1,0,K8BID,NBVAL)
         NBOBJ  = -NBVAL   
         IF (NBOBJ.EQ.0) THEN   
-          CALL JELSTC(' ',LCHIN(ICH),1,0,K8BID,NBVAL)
+          CALL JELSTC(' ',LCHIZ(ICH),1,0,K8BID,NBVAL)
           NBOBJ  = -NBVAL 
           IF (NBOBJ.EQ.0) THEN
             WRITE(IFM,*) ' * SD INTROUVABLE !'
           ELSE  
             WRITE(IFM,*) ' * RESUME DE LA SD :'   
-            CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHIN(ICH),1,' ')
+            CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHIZ(ICH),1,' ')
           ENDIF  
         ELSE 
           WRITE(IFM,*) ' * RESUME DE LA SD :' 
-          CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHIN(ICH)(1:19),1,' ')
+          CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHIZ(ICH)(1:19),1,' ')
         ENDIF  
   100 CONTINUE
 C  
       WRITE(IFM,*) '***** <CHAMPS_OUT>'   
       DO 200 ICH = 1,NBOUT
         WRITE(IFM,*) ' * CHAMP OUT <',ICH,'>'
-        WRITE(IFM,*) ' * PARAMETRE <',LPAOUT(ICH),'>'
-        WRITE(IFM,*) ' * CHAMP     <',LCHOUT(ICH),'>'
-        IF (LPAOUT(ICH)(1:1).EQ.' ') THEN
+        WRITE(IFM,*) ' * PARAMETRE <',LPAOUZ(ICH),'>'
+        WRITE(IFM,*) ' * CHAMP     <',LCHOUZ(ICH),'>'
+        IF (LPAOUZ(ICH)(1:1).EQ.' ') THEN
           CALL U2MESI('A','PRECALCUL_62',1,ICH)
         ENDIF
-        IF (LCHOUT(ICH)(1:1).EQ.' ') THEN
+        IF (LCHOUZ(ICH)(1:1).EQ.' ') THEN
           CALL U2MESI('A','PRECALCUL_63',1,ICH)
         ENDIF 
 C
-        CALL JELSTC(' ',LCHOUT(ICH)(1:19),1,0,K8BID,NBVAL)
+        CALL JELSTC(' ',LCHOUZ(ICH)(1:19),1,0,K8BID,NBVAL)
         NBOBJ  = -NBVAL   
         IF (NBOBJ.EQ.0) THEN  
-          CALL JELSTC(' ',LCHOUT(ICH),1,0,K8BID,NBVAL)
+          CALL JELSTC(' ',LCHOUZ(ICH),1,0,K8BID,NBVAL)
           NBOBJ  = -NBVAL    
           IF (NBOBJ.EQ.0) THEN
             WRITE(IFM,*) ' * SD INTROUVABLE !'
           ELSE  
             WRITE(IFM,*) ' * RESUME DE LA SD :'   
-            CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHOUT(ICH),1,' ')
+            CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHOUZ(ICH),1,' ')
           ENDIF
         ELSE  
           WRITE(IFM,*) ' * RESUME DE LA SD :' 
-          CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHOUT(ICH)(1:19),1,' ')
+          CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,LCHOUZ(ICH)(1:19),1,' ')
         ENDIF                        
   200 CONTINUE  
       END

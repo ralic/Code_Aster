@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOK(MESSAG,LONG,UNITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,15 +43,15 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      IF (LONG.EQ.0) THEN
+      IF (LONG.LE.0) THEN
         FORMA = '(A)'
       ELSEIF (LONG.GT.ZLIG) THEN
-        CALL U2MESS('F','ALGORITH4_9')
+        CALL ASSERT(.FALSE.)
       ELSE
         WRITE(FORMA,1001) LONG
       ENDIF
-      IF (UNITE.EQ.0) THEN
-        CALL U2MESS('F','ALGORITH4_10')
+      IF (UNITE.LE.0) THEN
+        CALL ASSERT(.FALSE.)
       ELSE
         WRITE(UNITE,FORMA) MESSAG(1:LONG)
       ENDIF

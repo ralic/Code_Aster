@@ -4,7 +4,7 @@
      &                  OPTI  ,STITE)         
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,27 +40,30 @@ C
 C ----------------------------------------------------------------------
 C
 C
+C I/O FM     : BORNE MINIMALE DE LA FONCTIONNELLE
+C IN  F      : VALEUR COURANTE DE LA FONCTIONNELLE
+C I/O FOPT   : VALEUR OPTIMALE DE LA FONCTIONNELLE
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       REAL*8       RHOTMP
       REAL*8       R8PREM
 C
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C
       STITE = .FALSE.
 C      PRISE EN COMPTE D'UN RESIDU OPTIMAL SI NECESSAIRE
-        IF (ABS(F) .LT. FOPT) THEN
-          RHOOPT = RHO
-          LICOPT = LICCVG
-          FOPT   = ABS(F)
-          OPT    = ACT
-          ACT    = 3 - ACT
-          IF (ABS(F) .LT. FCVG) THEN
-            STITE = .TRUE.
-            GOTO 100
-          ENDIF  
-        END IF
+      IF (ABS(F) .LT. FOPT) THEN
+        RHOOPT = RHO
+        LICOPT = LICCVG
+        FOPT   = ABS(F)
+        OPT    = ACT
+        ACT    = 3 - ACT
+        IF (ABS(F) .LT. FCVG) THEN
+          STITE = .TRUE.
+          GOTO 100
+        ENDIF  
+      END IF
 
 
 C -- CALCUL DE RHO(N+1) PAR METHODE DE SECANTE AVEC BORNES

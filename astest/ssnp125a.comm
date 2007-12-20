@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -389,7 +389,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=3,
-                   VALE=2.18286E+01,
+                   VALE=2.1777025654337E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(
                    NOM_CMP='DIR4',
                    MAILLE='M1',
                    POINT=4,
-                   VALE=-1.76347E+01,
+                   VALE=-1.7537121857843E+01,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),

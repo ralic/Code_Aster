@@ -1,0 +1,233 @@
+      SUBROUTINE NMCRSU(SDDISC,DELMIN,NOMCMD)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*19 SDDISC 
+      REAL*8       DELMIN    
+      CHARACTER*16 NOMCMD              
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
+C
+C CREATION SD DISCRETISATION - SUBDIVISION AUTO
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NOMCMD : NOM DE LA COMMANDE APPELANTE (THER, STAT ou DYNA)
+C I/O SDDISC : SD DISCRETISATION
+C IN  DELMIN : PAS DE TEMPS MINI ENTRE INSTANT DE LA LISTE
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER      ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8       ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16   ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL      ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8  ZK8
+      CHARACTER*16    ZK16
+      CHARACTER*24        ZK24
+      CHARACTER*32            ZK32
+      CHARACTER*80                ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      REAL*8       ZERO,UN
+      PARAMETER    (ZERO=0.D0,UN= 1.0D+00)
+      CHARACTER*24 TPSMET,TPSDII,TPSERR
+      INTEGER      JMETH ,JINFO ,JERRE
+      CHARACTER*16 METHOD,OPTION
+      INTEGER      N1,N2,NOCC,IRET,IRE1,IRE2    
+      REAL*8       PASMIN,RATIO,R8VIDE
+      INTEGER      NIVEAU,NBRPAS,NBPLUS,ITEIGN,ITEFIN
+      INTEGER      ITER1,ITER2,NBITER
+      INTEGER      IFM,NIV 
+C      
+C ----------------------------------------------------------------------
+C      
+      CALL JEMARQ()
+C
+C --- AFFICHAGE
+C
+      IF (NOMCMD(1:4).EQ.'THER') THEN
+        CALL INFDBG('THER_NON_LINE',IFM,NIV)
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<THERNONLINE> ... CREATION SD SUBDIVISION'
+        ENDIF    
+      ELSE
+        CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ... CREATION SD SUBDIVISION'
+        ENDIF          
+      ENDIF       
+C
+C --- ACCES SD LISTE D'INSTANTS
+C    
+      TPSMET = SDDISC(1:19)//'.METH'  
+      TPSDII = SDDISC(1:19)//'.DIIR'
+      TPSERR = SDDISC(1:19)//'.ERRE'
+C
+C --- RECUPERATION DES CRITERES DE CONVERGENCE GLOBAUX
+C
+      CALL GETVIS('CONVERGENCE','ITER_GLOB_MAXI',1,1,1,ITER1,IRET)
+      IF (NOMCMD.EQ.'THER_NON_LINE') THEN
+        ITER2  = 0
+      ELSE
+        CALL GETVIS('CONVERGENCE','ITER_GLOB_ELAS',1,1,1,ITER2,IRET)
+      ENDIF      
+C      
+C --- RECUPERE LA METHODE DE DECOUPAGE ET SES PARAMETRES
+C
+      CALL WKVECT(TPSMET,'V V K16',1,JMETH)
+      CALL GETVTX('INCREMENT','SUBD_METHODE',1,1,1,METHOD,N1)
+      ZK16(JMETH)   = METHOD
+C
+C --- ECRITURE DES DIFFERENTES INFOS
+C     ZR(JINFO-1 + 1) <===> 'ARCHIVAGE','NUME_INIT' (NMCRAR)
+C     ZR(JINFO-1 + 2) <===> 'ARCHIVAGE','PAS_ARCH'  (NMCRAR)
+C     ZR(JINFO-1 + 3) <===> 'SUBD_PAS'
+C     ZR(JINFO-1 + 4) <===> 'SUBD_PAS_MINI'
+C     ZR(JINFO-1 + 5) <===> 'SUBD_COEF_PAS_1'
+C     ZR(JINFO-1 + 6) <===> 'SUBD_NIVEAU'
+C     ZR(JINFO-1 + 7) <===> 'SUBD_ITER_IGNO'
+C     ZR(JINFO-1 + 8) <===> 'SUBD_ITER_FIN'
+C
+      CALL JEVEUO(TPSDII,'E',JINFO)
+
+      IF ( METHOD(1:6) .NE. 'AUCUNE' ) THEN
+        
+        NIVEAU = 0
+        CALL GETVIS('INCREMENT','SUBD_NIVEAU'  ,1,1,1,NIVEAU,N1)
+        IF ((N1.NE.0).AND.(NIVEAU.LT.1)) THEN
+          CALL U2MESS('F','DISCRETISATION_99')
+        ENDIF
+        ZR(JINFO-1 + 6) = NIVEAU
+
+        PASMIN = ZERO
+        CALL GETVR8('INCREMENT','SUBD_PAS_MINI',1,1,1,PASMIN,N2)
+        IF (PASMIN .GT. DELMIN) THEN
+           CALL U2MESS('F','DISCRETISATION_1')
+        ENDIF
+        ZR(JINFO-1 + 4) = PASMIN
+        
+        IF ( N1+N2 .EQ. 0 ) THEN
+          CALL U2MESS('F','DISCRETISATION_2')
+        ENDIF
+
+        NBRPAS = 4
+        CALL GETVIS('INCREMENT','SUBD_PAS'     ,1,1,1,NBRPAS,NOCC)
+        IF (NBRPAS .LT. 2) THEN
+          CALL U2MESS('F','DISCRETISATION_3')
+        ENDIF
+        ZR(JINFO-1 + 3) = NBRPAS
+
+        RATIO  = UN
+        CALL GETVR8('INCREMENT','SUBD_COEF_PAS_1',1,1,1,RATIO,NOCC)
+        ZR(JINFO-1 + 5) = RATIO
+
+        IF     ( METHOD(1:8) .EQ. 'UNIFORME' ) THEN
+          ZR(JINFO-1 + 7) = 0
+          ZR(JINFO-1 + 8) = 0
+          NBPLUS          = 20
+          ZK16(JMETH)     = 'SIMPLE'
+        ELSEIF ( METHOD(1:9) .EQ. 'EXTRAPOLE' ) THEN
+          OPTION = 'IGNORE_PREMIERES'
+          CALL GETVTX('INCREMENT','SUBD_OPTION',1,1,1,OPTION,NOCC)
+          IF     ( OPTION(1:16) .EQ. 'IGNORE_PREMIERES') THEN
+            ZK16(JMETH) = 'EXTRAP_IGNO'
+          ELSEIF ( OPTION(1:15) .EQ. 'GARDE_DERNIERES') THEN
+            ZK16(JMETH) = 'EXTRAP_FIN'
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+
+          ITEIGN = 3
+          CALL GETVIS('INCREMENT','SUBD_ITER_IGNO',1,1,1,ITEIGN,NOCC)
+          ZR(JINFO-1 + 7) = ITEIGN
+           
+          ITEFIN = 8
+          CALL GETVIS('INCREMENT','SUBD_ITER_FIN' ,1,1,1,ITEFIN,NOCC)
+          ZR(JINFO-1 + 8) = ITEFIN
+
+          NBPLUS = 20
+          CALL GETVIS('INCREMENT','SUBD_ITER_PLUS',1,1,1,NBPLUS,NOCC)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+C
+C --- VERIFIE COHERENCE
+C
+        IF      ( METHOD(7:10) .EQ. '_EXT' ) THEN
+          IF ( (ZR(JINFO-1+7)+3) .GE. ITER1 ) THEN
+            CALL U2MESS('F','DISCRETISATION_6')
+          ENDIF
+        ELSE IF ( METHOD(7:10) .EQ. '_FIN' ) THEN
+          IF ( (ZR(JINFO-1+8)+3) .GE. ITER1 ) THEN
+            CALL U2MESS('F','DISCRETISATION_7')
+          ENDIF
+        ENDIF
+      ENDIF
+C              
+C --- CREATION DU TABLEAU DES ERREURS AU COURS DES ITERATIONS
+C        NATURE DU STOCKAGE
+C          JEREUR + 0 : MAX( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
+C          JEREUR + 1 : MIN( ITER_GLOB_MAXI , ITER_GLOB_ELAS )
+C          JEREUR + 2 : NBITER (DIMENSION DU VECTEUR)
+C          JEREUR + 3 : RESI_GLOB_RELA
+C          JEREUR + 4 : RESI_GLOB_MAXI
+C          + 2 VALEURS PAR ITERATIONS PRECEDENTES
+C          + 2 VALEURS POUR L'ITERATION EN COURS
+C          + 2 VALEURS POUR L'ITERATION A VENIR
+C        !!!! LE NUMERO DES ITERATIONS COMMENCE A ZERO
+C        
+      IF ( METHOD(1:6) .NE. 'AUCUNE' ) THEN
+        NBITER = NINT(MAX(ITER1,ITER2)*(UN + NBPLUS/100.0D0)+0.6D0)
+        CALL WKVECT(TPSERR,'V V R8',5+NBITER*2+2+2,JERRE)
+        ZR(JERRE)   = MAX(ITER1,ITER2)
+        ZR(JERRE+1) = MIN(ITER1,ITER2)
+        ZR(JERRE+2) = NBITER
+        CALL GETVR8('CONVERGENCE','RESI_GLOB_RELA',1,1,1,
+     &                             ZR(JERRE+3),IRE1)
+        IF (IRE1.LE.0) ZR(JERRE+3) = R8VIDE()
+        CALL GETVR8('CONVERGENCE','RESI_GLOB_MAXI',1,1,1,
+     &                             ZR(JERRE+4),IRE2)
+        IF (IRE2.LE.0) ZR(JERRE+4) = R8VIDE()
+        IF (IRE1.LE.0 .AND. IRE2.LE.0 ) THEN
+           ZR(JERRE+3) = 1.0D-06
+           ZR(JERRE+4) = 1.0D-06
+        ENDIF
+      ELSE
+        CALL WKVECT(TPSERR,'V V R8',3,JERRE)
+        ZR(JERRE)   = ZERO
+        ZR(JERRE+1) = ZERO
+        ZR(JERRE+2) = ZERO
+      ENDIF
+C
+      CALL JEDEMA()
+
+      END

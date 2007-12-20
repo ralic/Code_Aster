@@ -1,7 +1,7 @@
       SUBROUTINE NMDOMT(METHOD,PARMET,NOMCMD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,14 @@ C
 C 
 C ----------------------------------------------------------------------
 C
-C ROUTINE MECA_NON_LINE (DYNAMIQUE - INITIALISATIONS)
+C ROUTINE MECA_NON_LINE (LECTURE)
 C
-C SAISIE DES DONNEES DE LA METHODE DE RESOLUTION
+C LECTURE DES DONNEES DE RESOLUTION
 C      
 C ----------------------------------------------------------------------
 C
 C
+C IN  NOMCMD  : COMMANDE APPELANTE
 C OUT METHOD  : DESCRIPTION DE LA METHODE DE RESOLUTION
 C                 1 : NOM DE LA METHODE NON LINEAIRE : NEWTON
 C                 2 : TYPE DE MATRICE (TANGENTE OU ELASTIQUE)
@@ -46,6 +47,7 @@ C                 1 : REAC_INCR
 C                 2 : REAC_ITER
 C                 3 : PAS_MINI_ELAS
 C                 4 : REAC_ITER_ELAS
+C             5 - 9 : -- INUTILISES --
 C                10 : ITER_LINE_MAXI
 C                11 : RESI_LINE_RELA
 C                12 : ITER_LINE_CRIT
@@ -53,17 +55,26 @@ C                13 : PAS_MINI_CRIT
 C                14 : RHO_MIN
 C                15 : RHO_MAX
 C                16 : RHO_EXCL
-C                20 : RHO (LAGRANGIEN)
-C                21 : ITER_GLOB_MAXI (LAGRANGIEN)
-C                22 : ITER_INTE_MAXI (LAGRANGIEN)
+C           17 - 30 : -- INUTILISES --
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER  IRET, ITMP,REINCR, REITER, NOCC
-      REAL*8   PASMIN
-C
+      INTEGER      IRET, ITMP,REINCR, REITER, NOCC
+      REAL*8       PASMIN
+      INTEGER      IFM,NIV 
+C      
 C ----------------------------------------------------------------------
+C      
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... LECTURE DONNEES RESOLUTION' 
+      ENDIF
+C
+C --- INITIALISATIONS
+C      
       METHOD(1) = 'NEWTON'
       METHOD(3) = 'RIEN'
       METHOD(4) = 'NON'
@@ -110,9 +121,8 @@ C
       IF (NOMCMD(1:4).EQ.'DYNA') THEN
         NOCC = 0
       ELSE
-        CALL GETFAC('RECH_LINEAIRE',NOCC)   
-      ENDIF
-      
+        CALL GETFAC('RECH_LINEAIRE',NOCC)
+      ENDIF  
       IF (NOCC.NE.0) THEN
         CALL GETVTX('RECH_LINEAIRE','METHODE',1,1,1,METHOD(7),IRET)
         CALL GETVR8('RECH_LINEAIRE','RESI_LINE_RELA',1,1,1,PARMET(11),

@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith3 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,36 +22,6 @@ def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
- certains pas de temps de la liste (LISTE_INST) sont plus petits
- que le pas de temps minimal renseigné (SUBD_PAS_MINI)
-"""),
-
-2 : _("""
- il faut donner SUBD_NIVEAU et/ou SUBD_PAS_MINI
-"""),
-
-3 : _("""
- le nombre de subdivisions du pas de temps doit etre plus grand que 1 (SUBD_PAS)
-"""),
-
-4 : _("""
- option inconnue < %(k1)s > incohérence catalogue
-"""),
-
-5 : _("""
- méthode de subdivision inconnue < %(k1)s > incohérence catalogue
-"""),
-
-6 : _("""
- valeur de SUBD_ITER_IGNO incoherent avec ITER_GLOB_MAXI.
- augmentez ITER_GLOB_MAXI
-"""),
-
-7 : _("""
- valeur de SUBD_ITER_FIN incoherent avec ITER_GLOB_MAXI.
- augmentez ITER_GLOB_MAXI
-"""),
 
 8 : _("""
  élément non traité
@@ -189,27 +159,6 @@ Nombre d'itérations     : %(i2)d
  critère inconnu :  %(k1)s 
 """),
 
-45 : _("""
- le champ absolu n'est accessible qu'en présence de modes statiques
-"""),
-
-47 : _("""
- débordement tableau
-"""),
-
-48 : _("""
- absence de LIST_INST dans INCREMENT
-"""),
-
-49 : _("""
- il faut definir "LIST_ARCH" ou "LIST_INST" ou "INST" ou "PAS_OBSE"
- au premier mot cle facteur "OBSERVATION"
-"""),
-
-50 : _("""
- seule la valeur de "LIST_ARCH" ou "LIST_INST" ou "INST" ou "PAS_OBSE"
- du premier mot cle facteur "OBSERVATION" est prise en compte
-"""),
 
 55 : _("""
  ITER_INTE_MAXI insuffisant
@@ -386,8 +335,5 @@ Nombre d'itérations     : %(i2)d
  check your poisson ratio
 """),
 
-99 : _("""
- erreur numero colonne (dvlp)
-"""),
 
 }

@@ -1,8 +1,7 @@
-      SUBROUTINE NMASFR ( DEFICO, RESOCO, MATASS )
-
-
+      SUBROUTINE NMASFR(DEFICO,RESOCO,MATASS)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,24 +18,29 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      CHARACTER*14 RESOCO
+      CHARACTER*24 RESOCO
       CHARACTER*19 MATASS
       CHARACTER*24 DEFICO
-
-C ======================================================================
-C ROUTINE APPELEE PAR : NMMATR
-C ======================================================================
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES DISCRETES - ALGORITHME)
+C
 C CREATION DE LA MATRICE DE FROTTEMENT
+C      
+C ----------------------------------------------------------------------
+C     
+C
 C IN  DEFICO  : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO  : SD CONTACT
-C VAR  MATASS
-C      IN/JXIN  : MATR_ASSE TANGENTE
-C      OUT/JXOUT: MATR_ASSE TANGENTE + FROTTEMENT (EVENTUEL)
-C ======================================================================
-
-
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C I/O MATASS  : IN  MATR_ASSE TANGENTE
+C               OUT MATR_ASSE TANGENTE + FROTTEMENT (EVENTUEL)
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -51,45 +55,53 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      IFM,NIV
       CHARACTER*14 NUMEDF,NT
       CHARACTER*24 APPARI
       INTEGER      ICONTA,TYPALC,TYPALF,FROT3D,MATTAN,IBID,IER
-      INTEGER      IEXI,JREFA
       CHARACTER*19 MAFROT
       CHARACTER*24 LIMAT(2)
       REAL*8       COEFMU(2)
       CHARACTER*1  TYPCST(2)
-C     ----------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
+      CALL INFDBG('CONTACT',IFM,NIV)    
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<CONTACT> AJOUT MATRICE FROTTEMENT' 
+      ENDIF
+C
+C --- INITIALISATIONS
+C
       APPARI = RESOCO(1:14)//'.APPARI'
       CALL JEEXIN (APPARI,ICONTA)
-      IF ( ICONTA .EQ. 0 ) THEN
-         GO TO 9999
+      IF (ICONTA .EQ. 0 ) THEN
+        GOTO 9999
       ELSE
-         CALL CFDISC(DEFICO,RESOCO,TYPALC,TYPALF,FROT3D,MATTAN)
-         IF(TYPALC.LE.0) THEN
-           GO TO 9999
-         ENDIF
-         IF (MATTAN.EQ.0) THEN
-             GO TO 9999
-         ENDIF
+        CALL CFDISC(DEFICO,RESOCO,TYPALC,TYPALF,FROT3D,MATTAN)
+        IF (TYPALC.LE.0) THEN
+          GOTO 9999
+        ENDIF
+        IF (MATTAN.EQ.0) THEN
+          GOTO 9999
+        ENDIF
       ENDIF
- 111  CONTINUE
-
-      MAFROT = RESOCO(1:8)//'.MAFR'
-
-      LIMAT(1) = MATASS
-      LIMAT(2) = MAFROT
+C
+      MAFROT    = RESOCO(1:8)//'.MAFR'
+      LIMAT(1)  = MATASS
+      LIMAT(2)  = MAFROT
       COEFMU(1) = 1.D0
       COEFMU(2) = 1.D0
       TYPCST(1) = 'R'
       TYPCST(2) = 'R'
-      NT = '&&NMASFR.NUTANG'
+      NT        = '&&NMASFR.NUTANG'
       CALL DETRSD('NUME_DDL',NT)
-
-C     ON REND LE CODE MUET QUAND INFO=1
+C
       CALL INFMUE()
       CALL MTCMBL(2,TYPCST,COEFMU,LIMAT,MATASS,' ',NT,'ELIM1')
       CALL INFBAV()
@@ -99,6 +111,7 @@ C     ON REND LE CODE MUET QUAND INFO=1
       CALL DETRSD('NUME_DDL',NUMEDF)
 
  9999 CONTINUE
+C 
       CALL JEDEMA()
 
       END

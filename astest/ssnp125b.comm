@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -162,6 +162,7 @@ except aster.NonConvergenceError:
 # POUR FAIRE UNE VERIFICATION EN NON-REGRESSION SUR CE NUMERO D'ORDRE
 
      last_iter=U.LIST_VARI_ACCES()['NUME_ORDRE'][-1]
+
 
 U = CALC_ELEM(
               reuse      = U,
@@ -409,7 +410,7 @@ TEST_RESU(RESU=(
                    NUME_ORDRE=last_iter,
                    NOM_CHAM='INDI_LOCA_ELGA',
                    TYPE_TEST='SOMM',
-                   VALE= 3.24289E+02,
+                   VALE= 3.1837939417841E+02,
                    PRECISION=1.E-3,
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),

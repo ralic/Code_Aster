@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 19/11/2007   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF factor Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

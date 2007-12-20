@@ -1,4 +1,4 @@
-#@ MODIF subdivise Messages  DATE 02/07/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF subdivise Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,8 +44,9 @@ cata_msg={
 # Plus de messages pour développeur ==> ASSERT
 
 # Messages utilisateurs
-10: _("""Le nombre d'itération autorisée est atteint. La méthode de subdivision ne peut
-pas faire d'extrapolation. La subdivision UNIFORME est déclanchée.
+10: _("""Le nombre maximale d'itérations autorisées ITER_GLOB_* est atteint. 
+La méthode de subdivision ne peut pas faire d'extrapolation.
+La subdivision UNIFORME est déclenchée.
 Cela peut etre du à une oscillation de l'erreur ou à une divergence.
    Nombre d'intervalle             = <%(i1)d>
    Niveau de subdivision           = <%(i2)d>

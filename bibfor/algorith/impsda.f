@@ -3,7 +3,7 @@
      &                  LONGR,PRECR,LONGI,LONGK)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
       ELSE IF (OPER.EQ.'ECRI') THEN
         OPEJEV = 'E'
       ELSE
-          CALL U2MESS('F','ALGORITH4_20')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
 
@@ -128,29 +128,29 @@ C
         IF ((LONGR.GT.(LARMAX - 3)).OR.
      &      (LONGI.GT.(LARMAX - 3)).OR.
      &      (LONGK.GT.LARMAX)) THEN
-          CALL U2MESS('F','ALGORITH4_21')
+          CALL U2MESS('F','MECANONLINE4_21')
         ENDIF
       ENDIF
 
 
       IF (OPER.EQ.'AJOU') THEN
         IF (ICOL.NE.0) THEN
-           CALL U2MESS('F','ALGORITH4_22')
+          CALL ASSERT(.FALSE.)
         ENDIF
         IF (COLUTI.EQ.COLMAX) THEN
-           CALL U2MESS('F','ALGORITH4_23')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSE IF (OPER.EQ.'SUPP') THEN
         IF ((ICOL.LE.0).OR.(ICOL.GT.COLUTI)) THEN
-           CALL U2MESS('F','ALGORITH4_24')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSE IF (OPER.EQ.'LIRE') THEN
         IF ((ICOL.LE.0).OR.(ICOL.GT.COLUTI)) THEN
-           CALL U2MESS('F','ALGORITH4_25')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSE IF (OPER.EQ.'ECRI') THEN
         IF ((ICOL.LE.0).OR.(ICOL.GT.COLUTI)) THEN
-           CALL U2MESS('F','ALGORITH4_26')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
 

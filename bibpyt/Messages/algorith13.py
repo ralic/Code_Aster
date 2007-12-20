@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith13 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,39 +22,9 @@ def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
- l'entité  %(k1)s  n'est pas possible  %(k2)s 
-"""),
 
-2 : _("""
- erreur dans les données  d'observation
- le noeud  %(k1)s n'existe pas dans  %(k2)s 
-"""),
 
-3 : _("""
- erreur dans les données d'observation
- le GROUP_NO  %(k1)s n'existe pas dans  %(k2)s 
-"""),
 
-4 : _("""
- erreur dans les données d'observation
- la maille  %(k1)s n'existe pas dans  %(k2)s 
-"""),
-
-5 : _("""
- erreur dans les données d'observation
- le GROUP_MA  %(k1)s n'existe pas dans  %(k2)s 
-"""),
-
-6 : _("""
- erreur dans les données d'observation
- pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s 
-"""),
-
-7 : _("""
- erreur dans les données d'observation
- pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s et  %(k3)s 
-"""),
 
 8 : _("""
  arret sur maillage non squelette

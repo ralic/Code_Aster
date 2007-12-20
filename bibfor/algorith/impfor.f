@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOR(UNITE,LONG,PREC,VALR,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C
         FOR9(8:8) = FOR1
         FOR9(9:9) = ')'
       ELSE
-        CALL U2MESS('F','ALGORITH4_7')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
 
@@ -92,7 +92,7 @@ C
         ELSE IF (LONFOR.EQ.9) THEN
           WRITE(UNITE,FOR9) VALR
         ELSE
-          CALL U2MESS('F','ALGORITH4_8')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSE
         IF (LONFOR.EQ.8) THEN
@@ -100,7 +100,7 @@ C
         ELSE IF (LONFOR.EQ.9) THEN
           WRITE(CHAINE,FOR9) VALR
         ELSE
-          CALL U2MESS('F','ALGORITH4_8')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
 

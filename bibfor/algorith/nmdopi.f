@@ -1,6 +1,7 @@
-      SUBROUTINE NMDOPI (MODELZ, NUMEDD, PILOTE)
+      SUBROUTINE NMDOPI(MODELZ,NUMEDD,SDPILO)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,77 +19,94 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
+C
       IMPLICIT NONE
       CHARACTER*(*)      MODELZ
-      CHARACTER*8        MODELE
       CHARACTER*24       NUMEDD
-      CHARACTER*14       PILOTE
+      CHARACTER*14       SDPILO
+C 
 C ----------------------------------------------------------------------
-C     CONSTRUCTION DE LA SD PILOTAGE
 C
-C IN     MODELE K8  : MODELE
-C IN     NUMEDD K24 : NUME_DDL
-C OUT SD PILOTE K14 : PILOTAGE
-C                      .PLTK K24
-C                       (1) = TYPE DE PILOTAGE
-C                       (2) = LIGREL POUR LES PILOTAGES PAR ELEMENTS
-C                       (3) = NOM DE LA CARTE DU TYPE (PILO_K)
-C                       (4) = NOM DE LA CARTE DU TYPE (PILO_R) MIN/MAX
-C                       (5) = PROJECTION 'OUI' OU 'NON' SUR LES BORNES
-C                       (6) = TYPE DE SELECTION : 'RESIDU',
-C                               'NORM_INCR_DEPL' OU 'ANGL_INCR_DEPL'
-C                      .PLCR K19 COEFFICIENTS DU PILOTAGE
-C                      .PLIR R8  PARAMETRES DU PILOTAGE
-C                       (1) = COEF_PILO
-C                       (2) = ETA_PILO_MAX
-C                       (3) = ETA_PILO_MIN
-C                       (4) = ETA_PILO_R_MAX
-C                       (5) = ETA_PILO_R_MIN
+C ROUTINE MECA_NON_LINE (STRUCTURES DE DONNEES)
+C
+C CONSTRUCTION DE LA SD PILOTAGE
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  MODELE : MODELE
+C IN  NUMEDD : NUME_DDL
+C OUT SDPILO : SD PILOTAGE
+C               .PLTK K24
+C                (1) = TYPE DE PILOTAGE
+C                (2) = LIGREL POUR LES PILOTAGES PAR ELEMENTS
+C                (3) = NOM DE LA CARTE DU TYPE (PILO_K)
+C                (4) = NOM DE LA CARTE DU TYPE (PILO_R) MIN/MAX
+C                (5) = PROJECTION 'OUI' OU 'NON' SUR LES BORNES
+C                (6) = TYPE DE SELECTION : 'RESIDU',
+C                        'NORM_INCR_DEPL' OU 'ANGL_INCR_DEPL'
+C               .PLCR K19 COEFFICIENTS DU PILOTAGE
+C               .PLIR R8  PARAMETRES DU PILOTAGE
+C                (1) = COEF_PILO
+C                (2) = ETA_PILO_MAX
+C                (3) = ETA_PILO_MIN
+C                (4) = ETA_PILO_R_MAX
+C                (5) = ETA_PILO_R_MIN
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32       JEXNOM
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      LOGICAL       LBEL
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
       INTEGER       NOCC, NBG,JVALE,NBNO,NUMNOE, NUMEQU, NDDL, I, N
       INTEGER       JGRO, JLICMP, JDDL, JEQU, JINFO, JTYPE
       INTEGER       IBID, IER, N1, N2, NEQ
       REAL*8        COEF, MX, MI, R8VIDE, R8BID, LM(2), R8GAEM
       COMPLEX*16    CBID
-      CHARACTER*8   K8BID,NOMA,NOMNOE,NOMDDL,NOMGRP,RESULT,LBORN(2)
-      CHARACTER*16  CONCEP, NOMCMD, COMP
+      CHARACTER*8   K8BID,NOMA,NOMNOE,NOMDDL,NOMGRP,LBORN(2)
+      CHARACTER*8   MODELE      
       CHARACTER*24  GRNO, LISCMP, LISDDL, LISEQU, TYPE,PROJ
       CHARACTER*19  CHAPIL, LIGREL, LIGRMO, CARTE, CARTE2
-
-
+      INTEGER       IFM,NIV 
+C      
+C ----------------------------------------------------------------------
+C      
       CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- INITIALISATIONS
+C
       MODELE = MODELZ
 
 C -- PAS DE PILOTAGE
 
       CALL GETFAC('PILOTAGE',NOCC)
-      IF (NOCC .EQ. 0) GOTO 9999
-
+      IF (NOCC .EQ. 0) THEN 
+        GOTO 9999
+      ELSE
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
+        ENDIF      
+      ENDIF
 
 C -- LECTURE DU TYPE ET DE LA ZONE
 
-      CALL WKVECT (PILOTE // '.PLTK','V V K24',6,JTYPE)
+      CALL WKVECT (SDPILO // '.PLTK','V V K24',6,JTYPE)
       CALL GETVTX('PILOTAGE','TYPE',1,1,1,TYPE,N1)
       ZK24(JTYPE) = TYPE
       CALL GETVTX('PILOTAGE','PROJ_BORNES',1,1,1,PROJ,N1)
@@ -99,7 +117,7 @@ C -- LECTURE DU TYPE ET DE LA ZONE
 
 C -- PARAMETRES COEF_MULT ET ETA_PILO_MAX
 
-      CALL WKVECT(PILOTE // '.PLIR','V V R8',5,JINFO)
+      CALL WKVECT(SDPILO // '.PLIR','V V R8',5,JINFO)
       CALL GETVR8 ('PILOTAGE','COEF_MULT',1,1,1,COEF  , N1)
       ZR(JINFO) = COEF
 
@@ -162,7 +180,7 @@ C              PILOTAGE PAR UN DEGRE DE LIBERTE : DDL_IMPO
 C ======================================================================
 
       ELSE IF (TYPE .EQ. 'DDL_IMPO') THEN
-        CHAPIL = PILOTE // '.PLCR'
+        CHAPIL = SDPILO // '.PLCR'
         CALL VTCREB(CHAPIL,NUMEDD,'V','R',NEQ)
         CALL JEVEUO(CHAPIL//'.VALE','E',JVALE)
 
@@ -211,7 +229,7 @@ C ======================================================================
 
       ELSE IF (TYPE .EQ. 'LONG_ARC' ) THEN
 
-        CHAPIL = PILOTE // '.PLCR'
+        CHAPIL = SDPILO // '.PLCR'
         CALL VTCREB(CHAPIL,NUMEDD,'V','R',NEQ)
         CALL JEVEUO(CHAPIL//'.VALE','E',JVALE)
 

@@ -1,6 +1,8 @@
-      SUBROUTINE MAJOUR (LONCH,REAROT,INDRO,CHAINI,CHADEL,COEF,  CHAMAJ)
+      SUBROUTINE MAJOUR(NEQ   ,REAROT,INDRO ,CHAINI,CHADEL,
+     &                  COEF  ,CHAMAJ)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,61 +20,73 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C FONCTION: MET A JOUR LE CHAM_NO CHAMAJ D'APRES LA RELATION:
-C                   CHAMAJ = CHAINI + COEF*CHADEL.
-C           POUR LES TRANSLATIONS ET LES PETITES ROTATIONS, ON APPLIQUE
-C           LA FORMULE PRECEDENTE A LA LETTRE.
-C           POUR LES GRANDES ROTATIONS, LE VECTEUR-ROTATION DE CHAMAJ
-C           EST CELUI DU PRODUIT DE LA ROTATION DEFINIE DANS CHAINI PAR
-C           COEF FOIS L'INCREMENT DE ROTATION DEFINI DANS CHADEL.
+      IMPLICIT NONE
+      LOGICAL       REAROT
+      INTEGER       NEQ
+      INTEGER       INDRO(*)
+      REAL*8        CHAINI(*),CHADEL(*),CHAMAJ(*),COEF      
+C 
+C ----------------------------------------------------------------------
 C
-C     IN  : LONCH     : LONGUEUR DES CHAM_NO
-C           REAROT    : LOGICAL: TRUE  S'IL Y A DES DDL DE GRDE ROTATION
-C                                FALSE SINON
-C           INDRO     : VECTEUR DONNANT LE TYPE DES DDL:
-C                          0: TRANSLATION OU PETITE ROTATION
-C                          1: GRANDE ROTATION
-C           CHAINI    : CHAM_NO DONNE
-C           CHADEL    : CHAM_NO DONNE
-C           COEF      : REEL DONNE
+C ROUTINE MECA_NON_LINE (ALGORITHME - UTILITAIRE - STATIQUE)
 C
-C     OUT : CHAMAJ    : CHAM_NO MIS A JOUR
-C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
-      LOGICAL REAROT
-      INTEGER INDRO(*)
-      REAL*8 CHAINI(*),CHADEL(*),CHAMAJ(*)
-      INTEGER IRAN(3)
+C MET A JOUR LES CHAM_NO DES DEPLACEMENTS 
+C      
+C ----------------------------------------------------------------------
+C 
+C
+C CHAMAJ = CHAINI + COEF*CHADEL.
+C   POUR LES TRANSLATIONS ET LES PETITES ROTATIONS, ON APPLIQUE
+C   LA FORMULE PRECEDENTE A LA LETTRE.
+C   POUR LES GRANDES ROTATIONS, LE VECTEUR-ROTATION DE CHAMAJ
+C   EST CELUI DU PRODUIT DE LA ROTATION DEFINIE DANS CHAINI PAR
+C   COEF FOIS L'INCREMENT DE ROTATION DEFINI DANS CHADEL.
+C
+C IN  NEQ    : LONGUEUR DES CHAM_NO
+C IN  REAROT : TRUE  S'IL Y A DES DDL DE GRDE ROTATION
+C                       FALSE SINON
+C IN  INDRO  : VECTEUR DONNANT LE TYPE DES DDL:
+C                 0: TRANSLATION OU PETITE ROTATION
+C                 1: GRANDE ROTATION
+C IN  CHAINI : CHAM_NO DONNE
+C IN  CHADEL : CHAM_NO DONNE
+C IN  COEF   : REEL DONNE
+C OUT CHAMAJ : CHAM_NO MIS A JOUR
+C      
+C ----------------------------------------------------------------------
+C
+      INTEGER IRAN(3),I,ICOMP,IC
       REAL*8 TETA(3),DELTET(3),QUATER(4),DELQUA(4)
-C
+C      
+C ----------------------------------------------------------------------
 C
       IF (.NOT.REAROT) THEN
-         DO 10 I=1,LONCH
-            CHAMAJ(I) = CHAINI(I) + COEF*CHADEL(I)
-10       CONTINUE
+        DO 10 I=1,NEQ
+          CHAMAJ(I) = CHAINI(I) + COEF*CHADEL(I)
+10      CONTINUE
       ELSE
-         ICOMP = 0
-         DO 20 I=1,LONCH
-            IF (INDRO(I).EQ.0) THEN
-               CHAMAJ(I) = CHAINI(I) + COEF*CHADEL(I)
-            ELSE IF (INDRO(I).EQ.1) THEN
-               ICOMP = ICOMP + 1
-               IRAN(ICOMP) = I
-               TETA  (ICOMP) = CHAINI(I)
-               DELTET(ICOMP) = COEF*CHADEL(I)
-               IF (ICOMP.EQ.3) THEN
-                  ICOMP = 0
-                  CALL VROQUA (TETA  ,QUATER)
-                  CALL VROQUA (DELTET,DELQUA)
-                  CALL PROQUA (DELQUA,QUATER)
-                  CALL QUAVRO (TETA  ,QUATER)
-                  DO 15 IC=1,3
-                     CHAMAJ(IRAN(IC)) = TETA (IC)
-15                CONTINUE
-               ENDIF
-            ELSE
-               CALL U2MESS('F','UTILITAI2_33')
+        ICOMP = 0
+        DO 20 I=1,NEQ
+          IF (INDRO(I).EQ.0) THEN
+            CHAMAJ(I)     = CHAINI(I) + COEF*CHADEL(I)
+          ELSE IF (INDRO(I).EQ.1) THEN
+            ICOMP         = ICOMP + 1
+            IRAN(ICOMP)   = I
+            TETA  (ICOMP) = CHAINI(I)
+            DELTET(ICOMP) = COEF*CHADEL(I)
+            IF (ICOMP.EQ.3) THEN
+              ICOMP = 0
+              CALL VROQUA(TETA  ,QUATER)
+              CALL VROQUA(DELTET,DELQUA)
+              CALL PROQUA(DELQUA,QUATER)
+              CALL QUAVRO(TETA  ,QUATER)
+              DO 15 IC=1,3
+                CHAMAJ(IRAN(IC)) = TETA (IC)
+15            CONTINUE
             ENDIF
-20       CONTINUE
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+20      CONTINUE
       ENDIF
       END

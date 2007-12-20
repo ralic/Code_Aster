@@ -1,7 +1,7 @@
       SUBROUTINE IMPFOI(UNITE,LONG,VALI,CHAINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
         FOR5(4:4) = FOR1
         FOR5(5:5) = ')'
       ELSE
-        CALL U2MESS('F','ALGORITH4_7')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       IF (UNITE.NE.0) THEN
@@ -69,7 +69,7 @@ C
         ELSE IF (LONFOR.EQ.5) THEN
           WRITE(UNITE,FOR5) VALI
         ELSE
-          CALL U2MESS('F','ALGORITH4_8')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSE
         IF (LONFOR.EQ.4) THEN
@@ -77,7 +77,7 @@ C
         ELSE IF (LONFOR.EQ.5) THEN
           WRITE(CHAINE,FOR5) VALI
         ELSE
-          CALL U2MESS('F','ALGORITH4_8')
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
 

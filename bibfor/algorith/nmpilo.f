@@ -1,9 +1,9 @@
-      SUBROUTINE NMPILO(PILOTE, DINST , RHO   , OFFSET, DEPPIL,
-     &                  DEPDEL, DEPOLD, MODELE, MATE  , COMPOR,
-     &                  VALMOI, NBATTE, NBEFFE, ETA   , LICCVG)
-
+      SUBROUTINE NMPILO(SDPILO,DINST ,RHO   ,DEPALG,CNFEPI,
+     &                  MODELE,MATE  ,COMPOR,VALMOI,NBATTE,
+     &                  NUMEDD,NBEFFE,ETA   ,PILCVG)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,43 +21,45 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
-
+C
       IMPLICIT NONE
-      INTEGER       NBATTE, LICCVG, NBEFFE
-      REAL*8        DINST, RHO, ETA(NBATTE), OFFSET
-      CHARACTER*14  PILOTE
-      CHARACTER*24  DEPDEL, DEPOLD, DEPPIL(2)
-      CHARACTER*24  MODELE, MATE, COMPOR, VALMOI
-
+      INTEGER       NBATTE,PILCVG,NBEFFE
+      REAL*8        DINST, RHO, ETA(NBATTE)
+      CHARACTER*14  SDPILO
+      CHARACTER*24  DEPALG(8),VALMOI(8)
+      CHARACTER*24  MODELE,MATE  ,COMPOR
+      CHARACTER*24  CNFEPI,NUMEDD
+C 
 C ----------------------------------------------------------------------
-C     CALCUL DE ETA_PILOTAGE :
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
+C
+C CALCUL DE ETA_PILOTAGE
+C      
+C ----------------------------------------------------------------------
+C
+C
 C       DU = DUN + RHO.DU0 + ETA.RHO.DU1
 C       AVEC UN CHARGEMENT F0 + ETA_VRAI.F1
 C       ET ETA_VRAI = ETA + ETAN * (1-RHO)
 C       ETA_MIN < ETA_VRAI < ETA_MAX
-C       ETA_VRAI - ETA = OFFSET
-C       => ETA_MIN - OFFSET < ETA < ETA_MAX-OFFSET
-C  PILOTAGE: DDL_IMPO, LONG_ARC, DEFORMATION, PRED_ELAS, ANA_LIM
-C ----------------------------------------------------------------------
+C 
 C
-C       IN PILOTE : SD PILOTAGE
-C       IN DINST  : INCREMENT DE TEMPS
-C       IN RHO    : VALEUR DU PAS DE RECHERCHE LINEAIRE
-C       IN OFFSET : DECALAGE ENTRE ETA_VRAI (CHARGEMENT) ET ETA
-C                    (DEPLACEMENT) : OFFSET = ETA_VRAI - ETA
-C                                           = ETAN*(1-RHO)
-C       IN OFFSET : DECALAGE DES BORNES DE RECHERCHE
-C       IN DEPDEL : INCREMENT DE DEPLACEMENT
-C       IN DEPOLD : INCREMENT DE DEPLACEMENT PAS PRECEDENT ('LONG_ARC')
-C       IN MODELE : MODELE               ('DEFORMATION', 'PRED_ELAS_*')
-C       IN MATE   : MATERIAU             ('DEFORMATION', 'PRED_ELAS_*')
-C       IN COMPOR : COMPORTEMENT         ('DEFORMATION', 'PRED_ELAS_*')
-C       IN VALMOI : ETAT EN T-           ('DEFORMATION', 'PRED_ELAS_*')
-C IN/JXOUT DDEPLA : CORRECTION DE DEPLACEMENT
-C       IN NBATTE : NOMBRE DE SOLUTIONS ATTENDUES
-C      OUT NBEFFE : NOMBRE DE SOLUTIONS EFFECTIVES
-C      OUT ETA    : ETA_PILOTAGE
-C      OUT LICCVG : CODE DE CONVERGENCE POUR LE PILOTAGE
+C IN  SDPILO : SD PILOTAGE
+C IN  DINST  : INCREMENT DE TEMPS
+C IN  RHO    : VALEUR DU PAS DE RECHERCHE LINEAIRE
+C IN  CNFEPI : VECTEUR ASSEMPLE DES FORCES PILOTES
+C IN  DEPDEL : INCREMENT DE DEPLACEMENT
+C IN  DEPPRE : CORRECTION DE DEPLACEMENT DE L'ITERATION
+C IN  MODELE : MODELE 
+C IN  NUMEDD : NUMEROTATION DES EQUATIONS             
+C IN  MATE   : MATERIAU            
+C IN  COMPOR : COMPORTEMENT        
+C IN  VALMOI : ETAT EN T-          
+C IN  NBATTE : NOMBRE DE SOLUTIONS ATTENDUES
+C OUT NBEFFE : NOMBRE DE SOLUTIONS EFFECTIVES
+C OUT ETA    : ETA_PILOTAGE
+C OUT PILCVG : CODE DE CONVERGENCE POUR LE PILOTAGE
 C                     - 1 : BORNE ATTEINTE -> FIN DU CALCUL
 C                       0 : RAS
 C                       1 : PAS DE SOLUTION
@@ -81,139 +83,142 @@ C
 C
 C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
 C
-      INTEGER      JPLTK, JPLIR,JINFO
-      INTEGER      NEQ, N, JU0, JU1,JDEPM
-      INTEGER      JDEPDE, JLINE, JDEP0, JDEP1,JCOEF
+      INTEGER      NEQ, I, IRET
+      INTEGER      JPLTK,JPLIR,JU0, JU1,JDEPM
+      INTEGER      JDEPDE, JLINE,JCOEF
       REAL*8       DTAU, UM, DU, RN, RD
       REAL*8       DDOT,ETRMIN,ETRMAX
       CHARACTER*8  K8BID
       CHARACTER*16 TYPILO
-      CHARACTER*19 CNDEP0, CNDEP1,LIGRPI, CARTYP, CARETA
-      CHARACTER*24 DEPMOI, K24BID
+      CHARACTER*19 CNDEP0,CNDEP1
+      INTEGER      JDEP0 ,JDEP1  
+      CHARACTER*19 LIGRPI,CARTYP,CARETA
+      CHARACTER*24 DEPMOI,K24BID
+      CHARACTER*24 DDEPLA,DEPDEL,DEPOLD,DEPPRE(2)
+      INTEGER      IFM,NIV      
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
-C    TYPE DE PILOTAGE
-      CALL JEVEUO (PILOTE // '.PLTK','L',JPLTK)
-      TYPILO = ZK24(JPLTK)
-
-C    INCREMENT DELTA TAU
-      CALL JEVEUO(PILOTE // '.PLIR','L',JPLIR)
-      DTAU = DINST / ZR(JPLIR)
-
-C    BORNE MAX
-CCC-DUR      IF (ZR(JPLIR+1) .NE. R8VIDE()) THEN
-CCC-DUR        ETAMAX = ZR(JPLIR+1) - OFFSET
-CCC-DUR      ELSE
-CCC-DUR        ETAMAX = R8VIDE()
-CCC-DUR      END IF
-
-C    BORNE MIN
-CCC-DUR      IF (ZR(JPLIR+2) .NE. R8VIDE()) THEN
-CCC-DUR        ETAMIN = ZR(JPLIR+2) - OFFSET
-CCC-DUR      ELSE
-CCC-DUR        ETAMIN = R8VIDE()
-CCC-DUR      END IF
-
-CCC-DUR      BORNE(1)=ETAMAX
-CCC-DUR      BORNE(2)=ETAMIN
-
-
-C   INCREMENTS DE DEPLACEMENT RHO.DU0 ET RHO.DU1
+      CALL INFDBG('PILOTAGE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<PILOTAGE> ... CALCUL DU ETA_PILOTAGE' 
+      ENDIF       
+C
+C --- INITIALISATIONS
+C
       CNDEP0 = '&&CNPART.CHP1'
       CNDEP1 = '&&CNPART.CHP2'
-      CALL JEVEUO(DEPPIL(1)(1:19) // '.VALE','L',JU0)
-      CALL JEVEUO(CNDEP0    // '.VALE','E',JDEP0)
-      CALL JEVEUO(DEPPIL(2)(1:19) // '.VALE','L',JU1)
-      CALL JEVEUO(CNDEP1    // '.VALE','E',JDEP1)
-      CALL JELIRA(DEPPIL(1)(1:19) // '.VALE', 'LONMAX', NEQ, K8BID)
-      DO 10 N = 0, NEQ-1
-        ZR(JDEP0+N) = RHO * ZR(JU0+N)
-        ZR(JDEP1+N) =       ZR(JU1+N)
+C
+C --- DECOMPACTION VARIABLES CHAPEAUX
+C
+      CALL DESAGG(VALMOI,DEPMOI,K24BID,K24BID,K24BID,
+     &            K24BID,K24BID,K24BID,K24BID)
+      CALL DESAGG(DEPALG,DDEPLA,DEPDEL,DEPOLD,DEPPRE(1),
+     &            DEPPRE(2),K24BID,K24BID,K24BID)  
+      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)  
+C
+C --- LECTURE DONNEES PILOTAGE
+C
+      CALL JEVEUO(SDPILO(1:14)//'.PLTK','L',JPLTK)
+      CALL JEVEUO(SDPILO(1:14)//'.PLIR','L',JPLIR)
+      ETRMIN = ZR(JPLIR+4)
+      ETRMAX = ZR(JPLIR+3)      
+      TYPILO = ZK24(JPLTK)
+      DTAU   = DINST / ZR(JPLIR)
+      LIGRPI = ZK24(JPLTK+1)
+      CARTYP = ZK24(JPLTK+2)
+      CARETA = ZK24(JPLTK+3)      
+C
+C --- INCREMENTS DE DEPLACEMENT RHO.DU0 ET RHO.DU1
+C         
+      CALL JEVEUO(DEPPRE(1)(1:19)//'.VALE','L',JU0)
+      CALL JEVEUO(CNDEP0(1:19)   //'.VALE','E',JDEP0)
+      CALL JEVEUO(DEPPRE(2)(1:19)//'.VALE','L',JU1)
+      CALL JEVEUO(CNDEP1(1:19)   //'.VALE','E',JDEP1)
+      CALL JELIRA(DEPPRE(1)(1:19)//'.VALE','LONMAX', NEQ, K8BID)
+      DO 10 I = 1, NEQ
+        ZR(JDEP0+I-1) = RHO * ZR(JU0+I-1)
+        ZR(JDEP1+I-1) =       ZR(JU1+I-1)
  10   CONTINUE
-
-
-
-C ======================================================================
-C                       PILOTAGE PAR UN DDL IMPOSE
-C ======================================================================
-
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<PILOTAGE> ...... SECOND MEMBRE DTAU : ',DTAU
+      ENDIF  
+C
+C --- PILOTAGE PAR UN DDL IMPOSE
+C 
       IF (TYPILO.EQ.'DDL_IMPO') THEN
-
-        CALL JEVEUO (DEPDEL(1:19) // '.VALE','L',JDEPDE)
-        CALL JEVEUO (PILOTE //'.PLCR.VALE','L',JLINE)
+        CALL JEVEUO(DEPDEL(1:19)//'.VALE'     ,'L',JDEPDE)
+        CALL JEVEUO(SDPILO(1:14)//'.PLCR.VALE','L',JLINE)
         RN = DDOT(NEQ,ZR(JDEP0) ,1,ZR(JLINE),1)
         RD = DDOT(NEQ,ZR(JDEP1) ,1,ZR(JLINE),1)
         DU = DDOT(NEQ,ZR(JDEPDE),1,ZR(JLINE),1)
-        IF (RD.EQ.0.D0) CALL U2MESS('F','ALGORITH8_23')
-        ETA(1) = (DTAU - DU - RN) / RD
-        NBEFFE = 1
-        LICCVG = 0
-
-C ======================================================================
-C            PILOTAGE POUR ANALYSE LIMITE : TRAVAIL UNITAIRE
-C ======================================================================
-
+        IF (RD.EQ.0.D0) THEN
+          CALL U2MESS('F','ALGORITH8_23')
+        ELSE  
+          ETA(1) = (DTAU - DU - RN) / RD
+          NBEFFE = 1
+          PILCVG = 0
+        ENDIF
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR UN DDL IMPOSE'
+          WRITE (IFM,*) '<PILOTAGE> ...... (RN,RD,DU) : ',
+     &                  RN,RD,DU
+        ENDIF        
+C
+C --- PILOTAGE POUR ANALYSE LIMITE : TRAVAIL UNITAIRE
+C 
       ELSE IF (TYPILO.EQ.'ANA_LIM') THEN
-
-        CALL DESAGG(VALMOI, DEPMOI, K24BID, K24BID, K24BID,
-     &                      K24BID, K24BID, K24BID, K24BID)
-
-        CALL JEVEUO (DEPMOI(1:19) // '.VALE','L',JDEPM)
-        CALL JEVEUO (DEPDEL(1:19) // '.VALE','L',JDEPDE)
-        K24BID = '&&OP0070.CNFEPI'
-        CALL JEVEUO (K24BID(1:19) // '.VALE','L',JLINE)
+        CALL JEVEUO(DEPMOI(1:19)//'.VALE','L',JDEPM)
+        CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
+        CALL JEVEUO(CNFEPI(1:19)//'.VALE','L',JLINE)   
         UM = DDOT(NEQ,ZR(JDEPM) ,1,ZR(JLINE),1)
         DU = DDOT(NEQ,ZR(JDEPDE),1,ZR(JLINE),1)
         RN = DDOT(NEQ,ZR(JDEP0) ,1,ZR(JLINE),1)
         RD = DDOT(NEQ,ZR(JDEP1) ,1,ZR(JLINE),1)
-        IF (RD.EQ.0.D0) CALL U2MESS('F','ALGORITH8_23')
-        ETA(1) = (1 - UM - DU - RN) / RD
-        NBEFFE = 1
-        LICCVG = 0
-
-C ======================================================================
-C                       PILOTAGE PAR LONGUEUR D'ARC
-C ======================================================================
-
+        IF (RD.EQ.0.D0) THEN
+          CALL U2MESS('F','ALGORITH8_23')
+        ELSE  
+          ETA(1) = (1 - UM - DU - RN) / RD
+          NBEFFE = 1
+          PILCVG = 0
+        ENDIF
+        IF (NIV.GE.2) THEN
+         WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR TRAVAIL UNITAIRE'
+          WRITE (IFM,*) '<PILOTAGE> ...... (RN,RD,DU,UM) : ',
+     &                  RN,RD,DU,UM
+        ENDIF 
+C
+C --- PILOTAGE PAR LONGUEUR D'ARC
+C 
       ELSE IF (TYPILO.EQ.'LONG_ARC') THEN
-
-        CALL JEVEUO(DEPDEL(1:19) // '.VALE','L',JDEPDE)
-        CALL JEVEUO(PILOTE // '.PLCR.VALE','L',JCOEF)
-        CALL NMPILA(NEQ, ZR(JDEPDE), ZR(JDEP0), ZR(JDEP1), ZR(JCOEF),
-     &              DTAU, NBEFFE, ETA, LICCVG)
-
-
-
-C ======================================================================
-C                         PILOTAGE PAR CRITERE
-C ======================================================================
-
+        CALL JEVEUO(DEPDEL(1:19)//'.VALE'     ,'L',JDEPDE)
+        CALL JEVEUO(SDPILO(1:14)//'.PLCR.VALE','L',JCOEF)
+        CALL NMPILA(NEQ   ,ZR(JDEPDE),ZR(JDEP0),ZR(JDEP1),ZR(JCOEF),
+     &              DTAU  ,NBEFFE    ,ETA      ,PILCVG)
+C
+C --- PILOTAGE PAR CRITERE
+C 
       ELSE IF (TYPILO.EQ.'PRED_ELAS'
      &    .OR. TYPILO.EQ.'DEFORMATION') THEN
 
-CCC-DUR   CALL DISMOI('F','PROF_CHNO',DEPDEL,'CHAM_NO',IBID, PROFCH,IER)
-        LIGRPI = ZK24(JPLTK+1)
-        CARTYP = ZK24(JPLTK+2)
-        CARETA = ZK24(JPLTK+3)
-
-        CALL NMPIPE(MODELE, LIGRPI, CARTYP, CARETA, MATE  , COMPOR,
-     &              VALMOI, DEPDEL, CNDEP0, CNDEP1, DTAU  ,
-     &              NBEFFE, ETA   , LICCVG, TYPILO)
-        IF (LICCVG.EQ.1) GOTO 9999
+        CALL NMPIPE(MODELE,LIGRPI,CARTYP,CARETA,MATE  , 
+     &              COMPOR,VALMOI,DEPDEL,CNDEP0,CNDEP1,
+     &              DTAU  ,NBEFFE,ETA   ,PILCVG,TYPILO)
+        IF (PILCVG.EQ.1) GOTO 9999
+      ELSE
+        CALL ASSERT(.FALSE.)  
       END IF
-
+C
  9999 CONTINUE
 C
-C --- BORNES ETA_PILO_R_MIN ET ETA_PILO_R_MAX
+C --- RECADRAGE DANS LES BORNES ETA_PILO_R_MIN ET ETA_PILO_R_MAX
 C
-      CALL JEVEUO(PILOTE // '.PLIR','L',JINFO)
-      ETRMIN = ZR(JINFO+4)
-      ETRMAX = ZR(JINFO+3)
-
-      IF (LICCVG.NE.1) THEN
+      IF (PILCVG.NE.1) THEN
         IF (NBEFFE.EQ.2) THEN
           IF ((ETA(1).LT.ETRMIN).OR.(ETA(1).GT.ETRMAX)) THEN
             NBEFFE = NBEFFE-1
@@ -229,7 +234,7 @@ C
           ENDIF
         ENDIF
         IF (NBEFFE.EQ.0) THEN
-          LICCVG = 1
+          PILCVG = 1
         ENDIF
       ENDIF
 C

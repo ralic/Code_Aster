@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2006   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -282,15 +282,15 @@ U2=STAT_NON_LINE(
                 VARI = VAR_INI),
                          INCREMENT=_F( 
                 LIST_INST = TEMPS2,
-                SUBD_METHODE='UNIFORME', SUBD_PAS  = 2,
-                SUBD_PAS_MINI = 1.E-8,
+           #     SUBD_METHODE='UNIFORME', SUBD_PAS  = 2,
+           #     SUBD_PAS_MINI = 1.E-8,
                 INST_FIN=5.0),
                 NEWTON=_F(
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1,
                 ),
                        CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.1E-8,
+                RESI_GLOB_RELA = 1.0E-6,
                 ITER_GLOB_MAXI = 100),
               )
 

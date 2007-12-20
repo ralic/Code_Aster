@@ -1,8 +1,7 @@
-      SUBROUTINE DIERRE(PARTPS, CRITNL , ITERAT)
-
+      SUBROUTINE DIERRE(SDDISC,SDCRIT ,ITERAT)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/07/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,23 +18,28 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE FLEJOU J-L.FLEJOU
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
       INTEGER      ITERAT
-      CHARACTER*19 PARTPS, CRITNL
+      CHARACTER*19 SDDISC,SDCRIT
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (UTILITAIRE)
+C
+C ENREGISTRE LES ERREURS A ITERAT
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDDISC : SD DISCRETISATION
+C IN  SDCRIT : SD CRITERE
+C IN  ITERAT : NUMERO ITERATION NEWTON
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
 
-C ----------------------------------------------------------------------
-C        SD DISCRETISATION :   ENREGISTRE LES ERREURS A ITERAT
-C ----------------------------------------------------------------------
-C
-C  IN PARTPS K19 : SD DISCRETISATION
-C  IN CRITNL K19 : SD CRITERE
-C  IN ITERAT  I  : NUMERO D'INSTANTS
-C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -51,28 +55,32 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      INTEGER      IRET,JCRR,JERRE,XXITER
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*24 TPSERR
+      INTEGER      JERRE
+      INTEGER      IRET,JCRR,XXITER
+C      
 C ----------------------------------------------------------------------
-
+C
       CALL JEMARQ()
-
+C
 C --- ENREGISTRE LES ERREURS A CETTE ITERATION
-      CALL JEEXIN(CRITNL //'.CRTR',IRET)
-      IF (IRET.EQ.0) GOTO 9999
-
-      CALL JEVEUO(CRITNL // '.CRTR','L',JCRR)
+C
+      TPSERR = SDDISC(1:19)//'.ERRE'
+      CALL JEEXIN(SDCRIT(1:19)//'.CRTR',IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEVEUO(SDCRIT(1:19)//'.CRTR','L',JCRR)
 C     STOCKAGE DES INFOS SUR LA CONVERGENCE
-      CALL JEVEUO(PARTPS // '.ERRE','E',JERRE)
-      XXITER = NINT(ZR(JERRE+2))
-      IF ( XXITER .NE. 0 ) THEN
-         CALL ASSERT( (ITERAT .LE. XXITER+1) )
+        CALL JEVEUO(TPSERR,'E',JERRE)
+        XXITER = NINT(ZR(JERRE+2))
+        IF ( XXITER .NE. 0 ) THEN
+          CALL ASSERT( (ITERAT .LE. XXITER+1) )
 C       !!!! LE NUMERO DES ITERATIONS COMMENCE A ZERO
-        ZR(JERRE + 5 + ITERAT*2     ) = ZR(JCRR+2)
-        ZR(JERRE + 5 + ITERAT*2 + 1 ) = ZR(JCRR+3)
+          ZR(JERRE + 5 + ITERAT*2     ) = ZR(JCRR+2)
+          ZR(JERRE + 5 + ITERAT*2 + 1 ) = ZR(JCRR+3)
+        ENDIF
       ENDIF
-
-9999  CONTINUE
+C
       CALL JEDEMA()
       END

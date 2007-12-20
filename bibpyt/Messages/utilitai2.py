@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF utilitai2 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,10 +92,6 @@ cata_msg = {
 
 31 : _("""
  on ne trouve pas l'equation  %(k1)s  dans le "prof_chno"
-"""),
-
-33 : _("""
- le champ nuro cree par nurota comporte d'autres valeurs que 0 ou 1
 """),
 
 34 : _("""

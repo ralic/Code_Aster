@@ -1,7 +1,7 @@
-      REAL*8 FUNCTION DIINST(PARTPS, NUMINS)
-
+      REAL*8 FUNCTION DIINST(SDDISC,NUMINS)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,22 +19,27 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
-
+C
       IMPLICIT NONE
       INTEGER      NUMINS
-      CHARACTER*19 PARTPS
+      CHARACTER*19 SDDISC
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (UTILITAIRE)
+C
+C ACCES A LA VALEUR D'UN INSTANT
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDDISC : SD DISCRETISATION
+C IN  NUMINS : NUMERO D'INSTANTS
+C OUT DIINST : VALEUR DE L'INSTANT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
 
-C ----------------------------------------------------------------------
-C        SD DISCRETISATION :   ACCES A LA VALEUR D'UN INSTANT
-C ----------------------------------------------------------------------
-C
-C  IN PARTPS K19 : SD DISCRETISATION
-C  IN NUMINS  I  : NUMERO D'INSTANTS
-C OUT DIINST R8  : VALEUR DE L'INSTANT
-C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -50,13 +55,23 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      INTEGER JTEMPS
-
-
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      JTEMPS
+      CHARACTER*24 TPSDIT
+C      
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      CALL JEVEUO(PARTPS // '.DITR','L',JTEMPS)
+C
+C --- ACCES SD LISTE D'INSTANTS
+C    
+      TPSDIT = SDDISC(1:19)//'.DITR' 
+      CALL JEVEUO(TPSDIT,'L',JTEMPS)      
+C
+C --- VALEUR DE L'INSTANT
+C
       DIINST = ZR(JTEMPS+NUMINS)
+C      
       CALL JEDEMA()
       END

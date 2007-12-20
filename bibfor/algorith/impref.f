@@ -1,8 +1,8 @@
-      SUBROUTINE IMPREF(ICOD,SUIVCO,
+      SUBROUTINE IMPREF(ICOD,SDSUIV,
      &                  TITRE,FORMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C
       IMPLICIT NONE
       INTEGER      ICOD
-      CHARACTER*24 SUIVCO
+      CHARACTER*24 SDSUIV
       INTEGER      ZTIT,ZDEF
       PARAMETER    (ZTIT=3,ZDEF=30)
       CHARACTER*16 TITRE(ZTIT)
@@ -37,7 +37,7 @@ C  - LE TITRE DE LA COLONNE (SUR 3 LIGNES)
 C  - LE TYPE DE LA COLONNE
 C
 C IN  ICOD   : CODE DE LA COLONNE
-C IN  SUIVCO : NOM DE LA SD POUR SUIVI DDL
+C IN  SDSUIV : NOM DE LA SD POUR SUIVI DDL
 C OUT TITRE  : TITRES STANDARDS DE LA COLONNE
 C OUT FORMA  : TYPE DE LA COLONNE
 C              1: ENTIER
@@ -234,14 +234,14 @@ C ----------------------------------------------------------------------
 C
 
       IF (ZTIT.NE.3) THEN
-         CALL U2MESS('F','ALGORITH4_17')
+        CALL ASSERT(.FALSE.)
       ENDIF
       IF (ZDEF.NE.30) THEN
-         CALL U2MESS('F','ALGORITH4_18')
+       CALL ASSERT(.FALSE.)
       ENDIF
       IF ((ICOD.LE.0).OR.(ICOD.GT.28)) THEN
-         WRITE(6,*) 'ICOD:',ICOD
-         CALL U2MESS('F','ALGORITH4_19')
+        WRITE(6,*) 'ICOD:',ICOD
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       FORMA    = FORCOL(ICOD)
@@ -249,7 +249,7 @@ C
 
       IF ((ICOD.GE.24).AND.(ICOD.LE.27)) THEN
         ISUIV = (ICOD-23)
-        CALL SUIIMP(SUIVCO,ISUIV,ZTIT,
+        CALL SUIIMP(SDSUIV,ISUIV,ZTIT,
      &              TITRE)
       ELSE
         DO 10 J = 1,ZTIT

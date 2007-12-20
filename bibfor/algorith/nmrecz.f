@@ -1,7 +1,8 @@
-      SUBROUTINE NMRECZ(NEQ,DEPL,FINT,FEXT,
-     &                  FONC)
+      SUBROUTINE NMRECZ(NEQ   ,DEPL  ,FINT  ,FDIR  ,FEXT  ,
+     &                  FONC  )
+C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,21 +20,25 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
+C
       IMPLICIT NONE  
       INTEGER  NEQ   
       REAL*8   DEPL(*)
-      REAL*8   FINT(*)      
-      REAL*8   FEXT(*)
+      REAL*8   FINT(*),FEXT(*),FDIR(*)
       REAL*8   FONC
+C      
 C ----------------------------------------------------------------------
 C
-C  CALCUL DE LA FONCTION POUR LA RECHERCHE LINEAIRE
+C ROUTINE MECA_NON_LINE (RECHERCHE LINEAIRE)
+C
+C CALCUL DE LA FONCTION POUR LA RECHERCHE LINEAIRE
 C
 C ----------------------------------------------------------------------
 C
 C IN  NEQ    : NOMBRE D'EQUATIONS
 C IN  DEPL   : VECTEUR DE TOUS LES DEPLACEMENTS
 C IN  FINT   : VECTEUR DES FORCES INTERNES
+C IN  FDIR   : VECTEUR DES REACTIONS D'APPUI
 C IN  FEXT   : VECTEUR DES FORCES EXTERNES
 C I/O FONC   : VALEUR DE LA FONCTION    
 C
@@ -46,7 +51,7 @@ C
       FONC = 0.D0
       DO 10 IEQ = 1, NEQ
          FONC = FONC + 
-     &          DEPL(IEQ) * (FINT(IEQ)-FEXT(IEQ))   
+     &          DEPL(IEQ) * (FINT(IEQ)+FDIR(IEQ)-FEXT(IEQ))   
   10  CONTINUE
   
       END

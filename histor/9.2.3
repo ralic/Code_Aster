@@ -1,0 +1,689 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 19/12/2007 - 12:53:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010206 DU 2006-10-30 12:16:19
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN08 - MECA_NON_LINE - Gestion des seconds membres et des matrices
+FONCTIONNALITE
+   Cette fiche rassemble deux points principaux:
+   - mise au carré de la construction des vecteurs seconds membres
+   - mise au carré de la construction des matrices
+   
+   Le but initial était d'éclaircir la construction du vecteur second membre dans            
+   MECA_NON_LINE, en particulier pour la dynamique qui fait fort usage de            
+   seconds membres dédiées (amortissement physique ou généralisé, ondes            
+   planes, inertie, ...), qui s'ajoutent nuitament aux vecteurs  
+   génériques comme les forces suiveuses (???).       
+   Cette construction anarchique nuit à la lisibilité générale d'op0070    
+   (ce que l'on a vu lors de l'intégration de FETI par O.B.)    
+   Cette fiche va plus loin en traitant également le problème de l'assemblage des 
+   matrices.
+       
+   <> Architecture générale
+   
+   On décompose l'ensemble des opérations en plusieurs niveaux
+   - calcul des VECT_ELEM/MATR_ELEM: nmcalv, nmcalm
+   - assemblage des VECT_ELEM/MATR_ELEM: nmassv, nmassm
+   - calcul des forces externes: nmchar et nmfext
+   - calcul des forces internes et des réactions d'appui: nmfint et vebtla
+   - calcul et factorisation de la matrice globale assemblée: nmmatr
+   - résolution K.dU = dF: nmreso
+   - calcul du résidu: nmresi
+   
+   On crée trois nouvelles variables chapeaux (NMCHAP):
+   * CHARACTER*8  VEELEM(30): Nom de tous les VECT_ELEM utilisables dans MECA_NON_LINE
+   * CHARACTER*8  MEELEM(8): Nom de tous les MATR_ELEM utilisables dans MECA_NON_LINE         
+   * CHARACTER*19 MEASSE(8): Nom de tous les MATR_ASSE utilisables dans MECA_NON_LINE
+   Pour les vecteurs assemblés, on utilise l'ancienne variable chapeau:
+   * CHARACTER*24 SECMBR(8): contient les vecteurs assemblés NEUMANN donné, NEUMANN 
+   piloté, DIRICHLET donnée, DIRICHLET piloté, NEUMANN suiveurs, NEUMANN suiveurs 
+   pilotés, DIRICHLET différentiel (DIDI), CL CINEMATIQUE (AFFE_CHAR_CINE)
+   
+   <> Calcul et assemblage des VECT_ELEM
+   
+   Pour calculer les VECT_ELEM et pour les assembler, deux nouvelles routines 
+   génériques: NMCALV et NMASSV. Ces routines gèrent tous les cas de chargement, la 
+   prise en compte des macro-éléments statiques, etc.
+   *** NMCALV
+   'LAGR_MECA': dirichlet - composante B.U
+   'FORC_NODA': force nodale
+   'DEPL_FIXE': dirichlet - déplacement non piloté
+   'DEPL_PILO': dirichlet - déplacement piloté
+   'FORC_SENS_COMP': sensibilité (comportement)
+   'FORC_SENS_FIXE': sensibilité (autre)
+   'FORC_FIXE_MECA': force Neumann fixe
+   'FORC_LAPLACE': force de Laplace
+   'FORC_ONDE_PLANE': force onde plane
+   'FORC_IMPE': force impédance absorbante
+   'FORC_PILO': force pilotée
+   'FORC_SUIV_IMPO': force suiveuse
+   'FORC_INER': force inertie
+   'FORC_AMOR': force amortissement
+   'FORC_MODA': force pour modes propes
+   'FORC_ACCE_INIT': force pour calcul accélération initial
+   *** NMASSV
+   'LAGR_MECA': dirichlet - composante B.U
+   'FORC_NODA': force nodale
+   'DEPL_FIXE': dirichlet - déplacement non piloté
+   'DEPL_PILO': dirichlet - déplacement piloté
+   'FORC_SENS': force sensibilité
+   'FORC_FIXE': force Neumann fixe
+   'FORC_PILO': force pilotée
+   'CINE_IMPO': dirichlet (AFFE_CHAR_CINE)
+   'FORC_SUIV_IMPO': force suiveuse imposée
+   'FORC_SUIV_PILO': force suiveuse pilotée
+   'FORC_SENS_DYNA': force sensibilité en dynamique
+   'FORC_ACCE_INIT1': force pour calcul acc. initiale
+   'FORC_ACCE_INIT2': force pour calcul acc. initiale
+   'FORC_ACCE_INIT3': force pour calcul acc. initiale     
+   
+   <> Calcul des forces externes
+   
+   La routine NMCHAR, entièrement ré-écrite, construit les vecteurs de SECMBR avec deux 
+   grands modes:
+   - FIXE calcule tous les chargements fixes
+   - SUIV calcule tous les chargements suiveurs
+   
+   La routine NMCHSE fait de même pour le cas de la sensibilité (mode 'SENS' pour la 
+   statique et mode 'SEDY' pour la dynamique)
+   
+   (On appelle NMCALV et NMASSV)
+   
+   <> Calcul du vecteur résidu d'équilibre 
+   
+   Le vecteur résidu d'équilibre s'écrit comme la somme suivante:
+   CNRESI = CNFINT+CNDIRI-CNFEXT
+   CNFINT est le vecteur des forces internes
+   CNFEXT est le vecteur des forces externes
+   CNRESI est le vecteur des réactions d'appui (éléments de "Lagrange")
+   
+   Deux routines s'occupe de ces calculs.
+   
+   NMFINT: calcul des forces internes et des réactions d'appui (CNFINT et CNDIRI)
+   Les forces internes "pures" viennnent de l'intégration des lois de comportement et on 
+   calcule ses VECT_ELEM via la routine MERIMO (option RAPH_MECA ou FULL_MECA). On y 
+   ajoute les composantes provenant du frottement et du contact continu. 
+   Les VECT_ELEM correspondant aux réactions d'appui sont calculé dans la routine 
+   VEBTLA.
+   L'ensemble est assemblé via la routine NMASSR (ASSemblage Residu).
+   En sortie de NMFINT: CNFINT, CNDIRI et un code retour d'erreur (intégration LdC).
+   NB: on a complétement séparé forces internes et réaction d'appui. Les deux étaient 
+   autrefois confondus dans le même vecteur appelé CNRESI, ce qui était confus.
+   NB2: la routine NMFINT est utilisé dans la recherhce linéaire
+   
+   NMFEXT: calcul des forces (NEUMANN) externes (CNFEXT)
+   Cette routine fait une simple combinaison linéaire des différents forces de Neumann 
+   (CNFEDO/CNFSDO/CNFEPI et CNFSPI) et y ajoute le contact discret.
+   
+   <> Calcul des MATR_ELEM
+   
+   Pour calculer les MATR_ELEM et pour les assembler (sauf la rigidité, voir 
+   ci-dessous), deux nouvelles routines génériques: NMCALM et NMASSM. Ces routines 
+   gèrent tous les cas de chargement, la prise en compte des macro-éléments statiques, 
+   la dynamique, etc.
+   
+   <> Calcul des matrices assemblées
+   
+   Il n'y a qu'UNE matrice assemblé, son nom est contenu dans la variable MATASS (à 
+   noter que dans le cas de GCPC, on a une seconde matrice dite de préconditionnement 
+   dans MAPREC)
+   Pour calculer la matrice MATASS (CHARACTER*19), on passe exclusivement dans la 
+   routine NMMATR. C'est elle qui va:
+   - faire le calcul des MATR_ELEM de rigidité et de Lagrange, via la routine MERIMO 
+   directement (et non via NMCALM, trop de paramètres, rendrait NMCALM illisible)
+   - assembler ces MATR_ELEM (par des routines commençant en général par AS*, come 
+   ASMARI, ASMAAM, ASMAMA, etc)
+   - combiner ces matrices avec les bons coefs (pour la dynamique), ajouter les termes 
+   pour le contact discret et continu, pour former une seule matrice: MATASS.
+   - factoriser la matrice MATASS.
+   Le choix de la réactualisation de la matrice globale, de son type (élastique, 
+   tangente, sécante, etc) est fait via une routien appelée NMCHOI.
+   
+   <> Résolution
+   
+   LA résolution K.dU = dF se fait en trois endroits (via NMRESO):
+   - en dynamique, lors du calcul de l'accélération initiale (ACCEL0)
+   - en prédiction (NMPRTA, NMPRDE). Il y a une légère différence dans le sens où l'on 
+   n'utilise pas les forces internes mais les forces nodales. On apsse pour celà dans la 
+   routine NMASSP (ASSemblage Prediction)
+   - en correction (NMDESC)
+   Pour la dynamique explicite, On appelle directement NMRESO dans MXCACC, à cause de 
+   l'utilisation éventuelle de modes. 
+   
+   <> Vecteurs solutions
+   
+   Les vecteurs solutions (incrément d'Euler avec pilotage, incrément de Newton, 
+   incrément total, etc) sont stockés dans une seule variable chapeau appelée DEPALG 
+   (voir MCHAP). Cette solution n'est pas TYPEE. De manière abstraite, c'est simplement 
+   le "dU" issu de la résolution de K.dU = dF.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D9.05.01
+VALIDATION
+   liste compl?
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010150 DU 2006-10-18 07:49:07
+TYPE evolution concernant Code_Aster (VERSION 8.3)
+TITRE
+   MN08 - MECA_NON_LINE - Nettoyage explicite
+FONCTIONNALITE
+   Les routines dédiées à la dynamique explicite (commençant par MX) ne                     
+   sont pas toutes aux normes d'OP0070. On met donc à niveau                     
+   - commentaires dans toutes les en-têtes                     
+   - utilisation des variables chapeaux pour passage des inconnues
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D9.05.01
+VALIDATION
+   cas-tests DYNA_NON_LINE
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009487 DU 2006-02-23 15:44:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN08 - MECA_NON_LINE - Nettoyage dans OP0070
+FONCTIONNALITE
+   RESTRUCTURATION DE L'OP0070              
+                 
+   Objectifs: rendre plus lisible et plus "factoriel" l'op0070, pour les opérateurs STAT_NON_LINE
+   et DYNA_NON_LINE              
+    
+   *** MECANISME DES VARIABLES CHAPEAUX - Extension  
+     
+   Une variable chapeau est un vecteur de CHARACTER*24 contenant le nom des  
+   variables. On y accède par:  
+   - AGGLOM pour leur création (routine NMCHAP)  
+   - DESAGG pour l'accés aux variables  
+     
+   Liste des variables chapeaux dans OP0070:  
+   VALMOI : CHAPEAU VARIABLES D'ETAT EN T-    
+   VALPLU : CHAPEAU VARIABLES D'ETAT EN T+   
+   POUGD  : CHAPEAU POUTRES EN GRANDES ROTATIONS  
+   SECMBR : CHAPEAU SECONDS MEMBRES 
+   VEELEM : CHAPEAU VECTEURS ELEMENTAIRES    
+   MAELEM : CHAPEAU MATRICES ELEMENTAIRES  
+   MAASSE : CHAPEAU MATRICES ASSEMBLEES  
+   DEPALG : VECTEURS SOLUTIONS DE L'ALGO
+         
+   - Les variables chapeaux sont créées dans NMCHAP. Les vecteurs  
+   eux-memes sont crees un peu partout. Principalement dans NMCRCH  
+   toutefois.  
+     
+   *** MECANISME DES FONCTIONNALITES ACTIVEES  
+     
+   Le vecteur de booleens FONACT (dimensionne par un parameter ZFON)  
+   contient des informations sur certaines fonctionnalites activees dans  
+   OP0070.  
+   Il est initialise dans NMFONC. Les incompatiblités entre fonctionnalités  
+   sont dans EXFONC. Voici la liste exhaustive des informations contenues  
+   dans ce vecteur:  
+   C
+   C  'RECH_LINE'      :  RECHERCHE LINEAIRE
+   C  'PILOTAGE'       :  PILOTAGE
+   C  'CONTACT'        : CONTACT (TOUTES METHODES)
+   C  'FROTTEMENT'     :  FROTTEMENT (TOUTES METHODES)
+   C  'CONT_DISCRET'   :  CONTACT DISCRET
+   C  'CONT_VERIF'     :  CONTACT DISCRET METHODE VERIF
+   C  'CONT_CONTINU'   :  CONTACT CONTINU
+   C  'CONT_XFEM'      :  CONTACT XFEM
+   C  'FROT_DISCRET'   :  FROTTEMENT DISCRET
+   C  'FROT_CONTINU'   :  FROTTEMENT CONTINU
+   C  'XFEM'           :  METHODE XFEM
+   C  'DEBORST'        :  ALGORITHME DE DE BORST
+   C  'RESI_REFE'      :  CONVERGENCE PAR RESIDU DE REFERENCE
+   C  'FETI'           :  SOLVEUR FETI
+   C  'LIAISON_UNILATER'  :  LIAISON UNILATERALE
+   C  'FORCE_SUIVEUSE' :  CHARGEMENT SUIVEUR
+   C  'MACR_ELEM_STAT' :  MACRO-ELEMENTS STATIQUES
+   C  'REAROT'         :  POUTRES EN GRANDES ROTATIONS
+   C  'SENSIBILITE'    :  SENSIBILITE
+   C  'CRIT_FLAMB'     :  CALCUL DE FLAMBEMENT
+   C  'MODE_VIBR'      :  CALCUL DE MODES VIBRATOIRES
+   C
+   
+   - Ce vecteur est passe comme LOGICAL FONACT(*) adimensionné dans les  
+   routines filles d'OP0070.    
+   - Pour l'interroger, il faut utiliser la fonction ISFONC.  
+     
+   LOGICAL FUNCTION ISFONC(FONACT,NOMFOZ)  
+   Exemple: y a t-il de la recherche lineaire ?  
+       LRECH = ISFONC(FONACT,'RECH_LINE')  
+         
+   - Pour ajouter de nvelles fonctionnalités, modifier ZFON dans OP0070,  
+   NMINI0, NMFONC et ISFONC.                  
+     
+   *** LES VARIABLES GLOBALES d'OP0070  
+     
+   Suppression du maximum de variables dans la routine coeur op0070:              
+   bcp de variables ne servent qu'à une seule fonctionnalite et ne sont              
+   pas documentées. Effet sur le nombre de paramètres passés en  
+   argument des  routines filles d'OP0070.     
+     
+   Il reste 90 variables globales. Elles ont été regroupées par type:
+   
+    * Les variables diverses et inclassables
+   
+    * PARAMETRES DE MECA_NON_LINE: contient les informations provenant de l'utilisateur 
+   (options de MECA_NON_LINE): FONACT, PARMET,PARCRI,CONV,INST,PARCON,LMETHOD,LICCVG.
+   Ces tableaux sont initialises a zero/blanc/false dans nmini0. Ils sont dimensionnés 
+   par des PARAMETER au debut d'OP0070 mais passes en (*) dans les arguments des 
+   routines. Tout changement de leur taille via PARAMETER  provoquera une erreur fatale 
+   dans nmini0. 
+   
+    * CODES RETOURS POUR GESTION DE L'ALGO: les différents drapeaux de convergence
+    * STRUCTURES DE DONNEES:
+         CHARACTER*24 SDSUIV,SDIMPR,SDSENS,SDTIME
+     pour SUIVI_DDL, impressions, sensibilité, gestion des timers
+         CHARACTER*19 SDNURO,SDDYNA,SDDISC
+     pour poutres en grande rotation, dynamique, discrétisation temporelle 
+         CHARACTER*14 SDPILO,SDOBSE
+     pour pilotage, observation
+         CHARACTER*24 DEFICO,RESOCO,DEFICU,RESOCU 
+     pour contact et liaison_unilater
+   
+    * VARIABLES CHAPEAUX: VALMOI(8),VALPLU(8),SECMBR(8),POUGD (8),DEPALG(8)
+    VALMOI: déplacements, vitesses, accélérations, contraintes, variables internes, 
+   variables de commands en T-
+    VALPLU: déplacements, vitesses, accélérations, contraintes, variables internes, 
+   variables de commands en T+
+    SECMBR: seconds membres de chargement contient les vecteurs assemblés NEUMANN donné, 
+   NEUMANN piloté, DIRICHLET donnée, DIRICHLET piloté, NEUMANN suiveurs, NEUMANN 
+   suiveurs pilotés, DIRICHLET différentiel (DIDI), CL CINEMATIQUE (AFFE_CHAR_CINE)
+    POUGD : informations pour poutres en grandes rotations 
+    DEPALG: solutions et incréments de solutions, DDEPLA (solution dU de k.dU = dF en 
+   correction), DEPDEL (incrément de déplacement cumulé depuis début pas de temps), 
+   DEPOLD (incrément de déplacement du pas de temps précédent), DEPPRE (solution DU de 
+   k.DU = DF en prédiction)
+   
+    * MATR_ELEM, VECT_ELEM ET MATR_ASSE
+   VEELEM(30): Nom de tous les VECT_ELEM utilisables dans MECA_NON_LINE
+   MEELEM(8): Nom de tous les MATR_ELEM utilisables dans MECA_NON_LINE          
+   MEASSE(8): Nom de tous les MATR_ASSE utilisables dans MECA_NON_LINE
+   
+    * MATASS et MAPREC
+   Il ne reste que DEUX matrices globales en argument:  
+   CHARACTER*19 MAPREC,MATASS    
+   La variable MATRIX(2) qui contenait MAPREC (preconditionnement) et  
+   MATASS disparait. Les autres matrices (élémentaires ou assemblees) sont dans les  
+   variables chapeaux idoines.  
+   
+   *** SENSIBILITE
+   
+   Nouvelle SD qui regroupe les anciennes SD de sensibilite (dans nmcrss)
+     SENSNB = SDSENS(1:16)//'.NBPASE '
+     SENSBA = SDSENS(1:16)//'.BASENO '
+     SENSIN = SDSENS(1:16)//'.INPSCO '
+     CALL WKVECT(SENSNB,'V V I'  ,1,JSENSN)
+     CALL WKVECT(SENSBA,'V V K8' ,1,JSENSB)
+     CALL WKVECT(SENSIN,'V V K16',1,JSENSI)
+   Regroupe NBPASE, BASENO et INPSCO
+   Routine utilitaire NMCALS qui retourne diverses infos à partir de SDSENS et du numero 
+   du paramètre sensible NRPASE:
+   C OUT INPSCO : STRUCTURE CONTENANT LA LISTE DES NOMS
+   C OUT NOPASE : NOM DU PARAMETRE SENSIBLE
+   C OUT TYPESE : TYPE DE SENSIBILITE
+   C OUT STYPSE : SOUS-TYPE DE SENSIBILITE DANS CERTAINS CAS 
+   Routine utilitaire NMNSLE qui encapsule PSNSLE, retourne le nom d'un champ si 
+   sensibilité
+   CALL NMNSLE(SDSENS,NRPASE,TYPCHP,NOMCHZ)
+   Exemple: CALL NMNSLE(SDSENS,4,'DEPMOI',NOMCHA) NOMCHA contiendra le nom du champ de 
+   type "DEPMOI" (déplacement en T-), pour le paramètre sensible 4
+   
+   
+   *** NOUVELLES ROUTINES
+   cfmxre.f: POST_TRAITEMENT DU CONTACT (TOUTES METHODES)
+   dyobs4.f: CREATION DE LA TABLE D'OBSERVATION
+   exfonc.f: GESTION DES EXCLUSIONS DE FONCTIONNALITES
+   isfonc.f: DIT SI UNE FONCTIONNALITE EST ACTIVEE
+   merimp.f: PREPAATION DES CHAMPS POUR MERIMO
+   ndcrdy.f: CREATION DE LA SD DYNAMIQUE
+   nmassf.f: ASSEMBLAGE DES FORCES EXTERIEURES
+   nmassi.f: CALCUL DU SECOND MEMBRE POUR LE CALCUL DE L'ACCELERATION INITIALE
+   nmassp.f: CALCUL DU SECOND MEMBRE POUR LA PREDICTION
+   nmassr.f: ASSEMBLAGE DES FORCES INTERIEURES ET DES REACTIONS D'APPUI
+   nmcals.f: DONNNES SI CHARGEMENT AVEC SENSIBILITE
+   nmchap.f: CREATION DES VARIABLES CHAPEAUX
+   nmcrar.f: CREATION SD ARCHIVAGE (anciennement dans DIINIT) - SDDISC
+   nmcrcv.f: CREATION SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE - CRITNL
+   nmcrli.f: CREATION SD DISCRETISATION (anciennement dans DIINIT)
+   nmcrob.f: CREATION SD OBSERVATION (anciennement dans DIINIT)
+   nmcrss.f: CREATION SD SENSIBILITE - SDSENS
+   nmcrsu.f: CREATION SD DISCRETISATION - SUBDIVISION AUTO (anciennement dans DIINIT) - 
+   SDDISC
+   nmdata.f: LECTURE DES INFORMATIONS DE LA COMMANDE POUR MECA_NON_LINE
+   nmdebg.f: ROUTINE DE DEBUG - PERMET D'AFFICHER UN RESUME DES VECT_ASSE ee des MATR_ASSE
+   nmdoin.f: DONNE INSTANT ET NUME_ORDRE INITIAL DANS ETAT INITIAL
+   nmfcom.f: CALCUL DES FORCES NODALES LIEES AUX VAR. COMMANDES
+   nmfeti.f: PREPARATION DE FETI (APPEL A FETMPI)
+   nmfpas.f: MISE A JOUR DES CHAMPS D'INCONNUES A LA FIN DU PAS DE TEMPS
+   nmgrin.f: INITIALISATION DU CHARGEMENT GRAPPE_FLUIDE
+   nmleop.f: LECTURE DONNEES GENERALES
+   nmlssv.f: LECTURE ET PREPARATION POUR SOUS_STRUCT 
+   nmmacv.f: CALCUL DE LA CONTRIBUTION AU SECOND MEMBRE DES MACRO-ELEMENTS
+   nmmajd.f: MISE A JOUR LES DEPLACEMENTS/VITESSES/ACCELERATIONS/ROTATIONS AVEC INCREMENT 
+             SOLUTION ET CONTACT/LIAISON_UNILATER
+   nmnpas.f: INITIALISATION DES CHAMPS D'INCONNUES AU DEBUT DU PAS DE TEMPS
+   nmnsle.f: RETOURNE LE NOM D'UN CHAMP EN SENSIBILITE
+   nmpild.f: AJUSTEMENT DE LA DIRECTION DE DESCENTE AVEC RECH. LINE. ET PILOTAGE
+   nmpilr.f: CALCUL DE LA NORME MAX DU RESIDU D'EQUILIBRE POUR LE PILOTAGE
+   nmpost.f: CALCULS DE POST-TRAITEMENT (FLAMBEMENT ET MODES VIBRATOIRES)
+   nmprde.f: CALCUL PREDICTION PAR DEPLACEMENT DONNE (DEPL_CALCULE ET EXTRAPOLE)
+   nmprof.f: CREATION DE LA NUMEROTATION ET DU PROFIL DE LA MATRICE
+   nmsssv.f: CALCUL DE LA CONTRIBUTION AU SECOND MEMBRE MODULO LES CHARGEMENTS DES MACRO-ELEMENTS
+   nmtime.f: GESTION DE LA SD TIMER
+   nmvccc.f: CALCUL DES VECT_ELEM DES VARIABLES DE COMMANDES
+   nmvcom.f: LECTURE DES VARIABLES DE COMMANDE T+/T- ET CREATION VAR. COMMAND VREF.
+   ntcrcv.f: CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE 
+               (VERSION THER_NON_LINE DE NMCRCV)
+   tiinit.f: CREATION SD DISCRETISATION, ARCHIVAGE ET OBSERVATION
+               (VERSION THER_NON_LINE DE DIINIT)
+   veimpd.f: CALCUL DES VECTEURS ELEMENTAIRES DES IMPEDANCES DE SOL
+   veondp.f: CALCUL DES VECTEURS ELEMENTAIRES DES ONDES PLANES
+   
+   *** PREDICTION
+   
+   UTILISATION D'UNE SEULE ROUTINE POUR LA PREDICTION (EULER) AVEC DEPL_CALCULE ET EXTRAPOLE
+   
+   *** POST TRAITEMENT
+   
+   Points d'entrée uniques:
+   - NMPOST pour flambement et modes vibratoires + amélioration affichage (mécanisme NMIMPR)
+   - CFMXRE pour post-traitement du contact toutes méthodes
+   
+   *** CATALOGUES MESSAGES
+   
+   Nettoyage des différents algorith_*
+   Création de:
+   archivage.py, discretisation.py et observation.py (communs avec THER_NON_LINE)
+   
+   
+   *** GENERIQUE  
+     
+   - Commentaires de toutes les entrees/sorties, initialisations  
+   sytematiques des chaines vides, passage en IMPLICIT NONE  
+   - Passage de la carte responsable sur toutes les routines.
+   
+   *** VALIDATION: 975 tests
+   
+   Cas-tests cassés:
+   
+   ssnp125a.comm et ssnp125b.comm
+     --> Test sur le dernier NUME_ORDRE atteint. Or le calcul un pas plus loin. NOOK. On
+   change les valeurs de non-régression (on a testé que les anciens NUME_ORDRE étaient OK)
+   ssnv194a 
+     --> Passage à 70 Mo au lieu de 60Mo
+   wtnv129b (HOEK-BROWN)
+     --> Ne converge plus avec subdivision+RESI_GLOB_RELA à 1.1E-8 (!!)
+         On passe à 1.0.E-6. Converge et tests OK (!)
+   wtnv132b (HUJEUX)
+     --> Ne converge plus. Cette loi de comportement convergeait déjà très mal avant l'évolution.
+            Passage à RESI_GLOB_RELA=1E-5. Converge mais avec un léger NOOK :
+   NOOK Z            RELA     1.801 % VALE:-2.6977248664246D-02
+         8.00000E+00 TOLE     1.000 % REFE:-2.6500000000000D-02
+   On passe à 2%
+   Remarques: d'autres valeurs de test sont meilleures !
+   Cette loi n'est pas très robuste.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D9.05.01,U4.51.03
+VALIDATION
+   MECA_NON_LINE 3 plateformes
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF ssnp125a                        abbas M.ABBAS            491      3      3
+ CASTEST MODIF ssnp125b                        abbas M.ABBAS            420      3      2
+ CASTEST MODIF ssnv194a                        abbas M.ABBAS            198      1      1
+ CASTEST MODIF wtnv129b                        abbas M.ABBAS            538      4      4
+ CASTEST MODIF wtnv132a                        abbas M.ABBAS            615      2      2
+ FORTRAN AJOUT algorith/cfmxre                 abbas M.ABBAS            130    130      0
+ FORTRAN AJOUT algorith/dyobs4                 abbas M.ABBAS            106    106      0
+ FORTRAN AJOUT algorith/exfonc                 abbas M.ABBAS            224    224      0
+ FORTRAN AJOUT algorith/isfonc                 abbas M.ABBAS            116    116      0
+ FORTRAN AJOUT algorith/merimp                 abbas M.ABBAS            321    321      0
+ FORTRAN AJOUT algorith/ndcrdy                 abbas M.ABBAS            123    123      0
+ FORTRAN AJOUT algorith/nmassf                 abbas M.ABBAS            118    118      0
+ FORTRAN AJOUT algorith/nmassi                 abbas M.ABBAS            160    160      0
+ FORTRAN AJOUT algorith/nmassm                 abbas M.ABBAS            127    127      0
+ FORTRAN AJOUT algorith/nmassp                 abbas M.ABBAS            168    168      0
+ FORTRAN AJOUT algorith/nmassr                 abbas M.ABBAS            163    163      0
+ FORTRAN AJOUT algorith/nmassv                 abbas M.ABBAS            374    374      0
+ FORTRAN AJOUT algorith/nmcalm                 abbas M.ABBAS            172    172      0
+ FORTRAN AJOUT algorith/nmcals                 abbas M.ABBAS             94     94      0
+ FORTRAN AJOUT algorith/nmcalv                 abbas M.ABBAS            322    322      0
+ FORTRAN AJOUT algorith/nmchap                 abbas M.ABBAS            231    231      0
+ FORTRAN AJOUT algorith/nmchoi                 abbas M.ABBAS            261    261      0
+ FORTRAN AJOUT algorith/nmchse                 abbas M.ABBAS            199    199      0
+ FORTRAN AJOUT algorith/nmcrar                 abbas M.ABBAS            276    276      0
+ FORTRAN AJOUT algorith/nmcrcv                 abbas M.ABBAS             82     82      0
+ FORTRAN AJOUT algorith/nmcrli                 abbas M.ABBAS            318    318      0
+ FORTRAN AJOUT algorith/nmcrob                 abbas M.ABBAS            114    114      0
+ FORTRAN AJOUT algorith/nmcrss                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT algorith/nmcrsu                 abbas M.ABBAS            233    233      0
+ FORTRAN AJOUT algorith/nmdata                 abbas M.ABBAS            172    172      0
+ FORTRAN AJOUT algorith/nmdebg                 abbas M.ABBAS            106    106      0
+ FORTRAN AJOUT algorith/nmdoin                 abbas M.ABBAS            159    159      0
+ FORTRAN AJOUT algorith/nmfcom                 abbas M.ABBAS            106    106      0
+ FORTRAN AJOUT algorith/nmfeti                 abbas M.ABBAS             91     91      0
+ FORTRAN AJOUT algorith/nmfpas                 abbas M.ABBAS            117    117      0
+ FORTRAN AJOUT algorith/nmgrin                 abbas M.ABBAS             99     99      0
+ FORTRAN AJOUT algorith/nmleop                 abbas M.ABBAS            109    109      0
+ FORTRAN AJOUT algorith/nmlssv                 abbas M.ABBAS             92     92      0
+ FORTRAN AJOUT algorith/nmmacv                 abbas M.ABBAS             94     94      0
+ FORTRAN AJOUT algorith/nmmajd                 abbas M.ABBAS            151    151      0
+ FORTRAN AJOUT algorith/nmnpas                 abbas M.ABBAS            131    131      0
+ FORTRAN AJOUT algorith/nmnsle                 abbas M.ABBAS            120    120      0
+ FORTRAN AJOUT algorith/nmpild                 abbas M.ABBAS            136    136      0
+ FORTRAN AJOUT algorith/nmpilr                 abbas M.ABBAS             87     87      0
+ FORTRAN AJOUT algorith/nmpost                 abbas M.ABBAS            116    116      0
+ FORTRAN AJOUT algorith/nmprde                 abbas M.ABBAS            258    258      0
+ FORTRAN AJOUT algorith/nmprof                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT algorith/nmsssv                 abbas M.ABBAS             97     97      0
+ FORTRAN AJOUT algorith/nmtime                 abbas M.ABBAS            178    178      0
+ FORTRAN AJOUT algorith/nmvccc                 abbas M.ABBAS            172    172      0
+ FORTRAN AJOUT algorith/nmvcom                 abbas M.ABBAS             94     94      0
+ FORTRAN AJOUT algorith/ntcrcv                 abbas M.ABBAS             79     79      0
+ FORTRAN AJOUT algorith/tiinit                 abbas M.ABBAS            118    118      0
+ FORTRAN AJOUT algorith/veimpd                 abbas M.ABBAS            139    139      0
+ FORTRAN AJOUT algorith/veondp                 abbas M.ABBAS            157    157      0
+ FORTRAN MODIF algeline/nmop45                 abbas M.ABBAS            435     56    102
+ FORTRAN MODIF algorith/accel0                 abbas M.ABBAS            359    278    213
+ FORTRAN MODIF algorith/ascoma                 abbas M.ABBAS            147     11     10
+ FORTRAN MODIF algorith/asmaam                 abbas M.ABBAS             48     10      8
+ FORTRAN MODIF algorith/asmama                 abbas M.ABBAS             84     10      6
+ FORTRAN MODIF algorith/asmari                 abbas M.ABBAS            111     31     26
+ FORTRAN MODIF algorith/cfcrsd                 abbas M.ABBAS            468     11      7
+ FORTRAN MODIF algorith/cfinit                 abbas M.ABBAS            183     52     12
+ FORTRAN MODIF algorith/cfmxme                 abbas M.ABBAS            172     28      9
+ FORTRAN MODIF algorith/cfmxr0                 abbas M.ABBAS            189    106     53
+ FORTRAN MODIF algorith/cfresu                 abbas M.ABBAS            489     94    145
+ FORTRAN MODIF algorith/conlig                 abbas M.ABBAS            175     40     10
+ FORTRAN MODIF algorith/cucrsd                 abbas M.ABBAS            286      9      9
+ FORTRAN MODIF algorith/diarch                 abbas M.ABBAS             98     33     21
+ FORTRAN MODIF algorith/dideco                 abbas M.ABBAS            466    133    102
+ FORTRAN MODIF algorith/didern                 abbas M.ABBAS             75     29     17
+ FORTRAN MODIF algorith/diincl                 abbas M.ABBAS            113     51     34
+ FORTRAN MODIF algorith/diinit                 abbas M.ABBAS            108     54    536
+ FORTRAN MODIF algorith/diinst                 abbas M.ABBAS             77     32     17
+ FORTRAN MODIF algorith/dinins                 abbas M.ABBAS             74     31     18
+ FORTRAN MODIF algorith/dinit                  abbas M.ABBAS            364    158    135
+ FORTRAN MODIF algorith/dyobar                 abbas M.ABBAS            590     94     71
+ FORTRAN MODIF algorith/dyobs1                 abbas M.ABBAS            336     64     62
+ FORTRAN MODIF algorith/dyobs2                 abbas M.ABBAS            350     76     74
+ FORTRAN MODIF algorith/dyobs3                 abbas M.ABBAS            194     32     27
+ FORTRAN MODIF algorith/dyobse                 abbas M.ABBAS            165     65     80
+ FORTRAN MODIF algorith/fmodam                 abbas M.ABBAS             92     45     31
+ FORTRAN MODIF algorith/gfguid                 abbas M.ABBAS            246      1      1
+ FORTRAN MODIF algorith/impdea                 abbas M.ABBAS             86      4      4
+ FORTRAN MODIF algorith/impdef                 abbas M.ABBAS            230     26     48
+ FORTRAN MODIF algorith/impfih                 abbas M.ABBAS             83      3      3
+ FORTRAN MODIF algorith/impfoi                 abbas M.ABBAS             85      4      4
+ FORTRAN MODIF algorith/impfok                 abbas M.ABBAS             61      5      5
+ FORTRAN MODIF algorith/impfor                 abbas M.ABBAS            109      4      4
+ FORTRAN MODIF algorith/impinf                 abbas M.ABBAS            105      7      7
+ FORTRAN MODIF algorith/impini                 abbas M.ABBAS            353     48     43
+ FORTRAN MODIF algorith/impmin                 abbas M.ABBAS            129     19     28
+ FORTRAN MODIF algorith/impper                 abbas M.ABBAS            196     27     36
+ FORTRAN MODIF algorith/impref                 abbas M.ABBAS            260      8      8
+ FORTRAN MODIF algorith/impsda                 abbas M.ABBAS            233      8      8
+ FORTRAN MODIF algorith/impsdm                 abbas M.ABBAS            116      3      4
+ FORTRAN MODIF algorith/impsdr                 abbas M.ABBAS            127      3      3
+ FORTRAN MODIF algorith/impsdv                 abbas M.ABBAS            123      3      3
+ FORTRAN MODIF algorith/impstd                 abbas M.ABBAS            126     20     29
+ FORTRAN MODIF algorith/lobs                   abbas M.ABBAS            105     44     31
+ FORTRAN MODIF algorith/majdva                 abbas M.ABBAS            190      6      5
+ FORTRAN MODIF algorith/mappar                 abbas M.ABBAS            376      5      7
+ FORTRAN MODIF algorith/mecgme                 abbas M.ABBAS            309    120     82
+ FORTRAN MODIF algorith/medime                 abbas M.ABBAS            142     75     34
+ FORTRAN MODIF algorith/merimo                 abbas M.ABBAS            286    138    355
+ FORTRAN MODIF algorith/mmconv                 abbas M.ABBAS            199     20     15
+ FORTRAN MODIF algorith/mminit                 abbas M.ABBAS            110     17      7
+ FORTRAN MODIF algorith/mmmbca                 abbas M.ABBAS            364     16     12
+ FORTRAN MODIF algorith/mmmres                 abbas M.ABBAS            971    592    824
+ FORTRAN MODIF algorith/mxcacc                 abbas M.ABBAS            269     98     38
+ FORTRAN MODIF algorith/mxmajd                 abbas M.ABBAS            133     34     37
+ FORTRAN MODIF algorith/mxmoam                 abbas M.ABBAS            277     61     40
+ FORTRAN MODIF algorith/nddoet                 abbas M.ABBAS            370    183    265
+ FORTRAN MODIF algorith/ndiner                 abbas M.ABBAS             97     29     16
+ FORTRAN MODIF algorith/ndlect                 abbas M.ABBAS            367    213    119
+ FORTRAN MODIF algorith/nmarch                 abbas M.ABBAS            382    184    132
+ FORTRAN MODIF algorith/nmasfr                 abbas M.ABBAS            117     43     30
+ FORTRAN MODIF algorith/nmceta                 abbas M.ABBAS            447    234    203
+ FORTRAN MODIF algorith/nmchar                 abbas M.ABBAS            349    216    431
+ FORTRAN MODIF algorith/nmchsv                 abbas M.ABBAS            135     56     33
+ FORTRAN MODIF algorith/nmconv                 abbas M.ABBAS            652     62     52
+ FORTRAN MODIF algorith/nmcrch                 abbas M.ABBAS            187     97     66
+ FORTRAN MODIF algorith/nmdepl                 abbas M.ABBAS            319    200    202
+ FORTRAN MODIF algorith/nmdesc                 abbas M.ABBAS            199     94     62
+ FORTRAN MODIF algorith/nmdidi                 abbas M.ABBAS            196    112     76
+ FORTRAN MODIF algorith/nmdocn                 abbas M.ABBAS            144     58     41
+ FORTRAN MODIF algorith/nmdoet                 abbas M.ABBAS            361    187    197
+ FORTRAN MODIF algorith/nmdomt                 abbas M.ABBAS            153     17      7
+ FORTRAN MODIF algorith/nmdopi                 abbas M.ABBAS            285     44     26
+ FORTRAN MODIF algorith/nmerro                 abbas M.ABBAS             98     16      8
+ FORTRAN MODIF algorith/nmfext                 abbas M.ABBAS            105     42     80
+ FORTRAN MODIF algorith/nmfint                 abbas M.ABBAS            188    120    142
+ FORTRAN MODIF algorith/nmflam                 abbas M.ABBAS            282    156    100
+ FORTRAN MODIF algorith/nmfonc                 abbas M.ABBAS            349    197    135
+ FORTRAN MODIF algorith/nmgrfl                 abbas M.ABBAS            767      1      1
+ FORTRAN MODIF algorith/nmible                 abbas M.ABBAS            175     33     41
+ FORTRAN MODIF algorith/nmimpm                 abbas M.ABBAS            592     65     12
+ FORTRAN MODIF algorith/nmimpr                 abbas M.ABBAS            162      2      1
+ FORTRAN MODIF algorith/nmini0                 abbas M.ABBAS            185     84     64
+ FORTRAN MODIF algorith/nminit                 abbas M.ABBAS            371    189    240
+ FORTRAN MODIF algorith/nmlect                 abbas M.ABBAS             92     24     84
+ FORTRAN MODIF algorith/nmmatr                 abbas M.ABBAS            372    256    337
+ FORTRAN MODIF algorith/nmmeng                 abbas M.ABBAS             66      1      1
+ FORTRAN MODIF algorith/nmmoam                 abbas M.ABBAS            153      2      7
+ FORTRAN MODIF algorith/nmmuap                 abbas M.ABBAS            134     44      7
+ FORTRAN MODIF algorith/nmnoli                 abbas M.ABBAS            180     80     63
+ FORTRAN MODIF algorith/nmondp                 abbas M.ABBAS             85     13     14
+ FORTRAN MODIF algorith/nmpich                 abbas M.ABBAS            152    110     92
+ FORTRAN MODIF algorith/nmpila                 abbas M.ABBAS            108     54     36
+ FORTRAN MODIF algorith/nmpilo                 abbas M.ABBAS            242    136    131
+ FORTRAN MODIF algorith/nmpipe                 abbas M.ABBAS            270     95     54
+ FORTRAN MODIF algorith/nmprdc                 abbas M.ABBAS            112     49    160
+ FORTRAN MODIF algorith/nmpred                 abbas M.ABBAS            143     63     51
+ FORTRAN MODIF algorith/nmprex                 abbas M.ABBAS            120     52    147
+ FORTRAN MODIF algorith/nmprta                 abbas M.ABBAS            262    149    198
+ FORTRAN MODIF algorith/nmrebo                 abbas M.ABBAS             67      1      1
+ FORTRAN MODIF algorith/nmrech                 abbas M.ABBAS             88      6      3
+ FORTRAN MODIF algorith/nmrecz                 abbas M.ABBAS             57     11      6
+ FORTRAN MODIF algorith/nmrefe                 abbas M.ABBAS            211      9      7
+ FORTRAN MODIF algorith/nmreli                 abbas M.ABBAS            321    138     90
+ FORTRAN MODIF algorith/nmrepl                 abbas M.ABBAS            365    212    195
+ FORTRAN MODIF algorith/nmresi                 abbas M.ABBAS            271     91     93
+ FORTRAN MODIF algorith/nmreso                 abbas M.ABBAS            203    115     88
+ FORTRAN MODIF algorith/nmsens                 abbas M.ABBAS            261    159    155
+ FORTRAN MODIF algorith/nmtble                 abbas M.ABBAS            202     24     29
+ FORTRAN MODIF algorith/nmvcpr                 abbas M.ABBAS            228    140    216
+ FORTRAN MODIF algorith/ntinit                 abbas M.ABBAS            255     29     53
+ FORTRAN MODIF algorith/op0025                 abbas M.ABBAS            336     33     33
+ FORTRAN MODIF algorith/op0046                 abbas M.ABBAS            274     53     54
+ FORTRAN MODIF algorith/op0070                 abbas M.ABBAS            611    369    645
+ FORTRAN MODIF algorith/op0186                 abbas M.ABBAS            673     36     45
+ FORTRAN MODIF algorith/reaclm                 abbas M.ABBAS            105     10      4
+ FORTRAN MODIF algorith/suiimp                 abbas M.ABBAS            143     14     14
+ FORTRAN MODIF algorith/vebtla                 abbas M.ABBAS            153     87     48
+ FORTRAN MODIF algorith/vebume                 abbas M.ABBAS            153     95     63
+ FORTRAN MODIF algorith/vechme                 abbas M.ABBAS            474     13      9
+ FORTRAN MODIF algorith/vemsme                 abbas M.ABBAS            320    185    183
+ FORTRAN MODIF algorith/xconli                 abbas M.ABBAS            145     21      8
+ FORTRAN MODIF algorith/xmmbca                 abbas M.ABBAS            222     14      9
+ FORTRAN MODIF algorith/xmmres                 abbas M.ABBAS            475     25     17
+ FORTRAN MODIF algorith/xmtbca                 abbas M.ABBAS            190     67     39
+ FORTRAN MODIF algorith/xreacl                 abbas M.ABBAS            160     10      5
+ FORTRAN MODIF calculel/dbgcal                 abbas M.ABBAS            123     25     25
+ FORTRAN MODIF calculel/meamme                 abbas M.ABBAS            268    154     91
+ FORTRAN MODIF calculel/op0009                 abbas M.ABBAS            202      3      4
+ FORTRAN MODIF calculel/op0026                 abbas M.ABBAS            266     66     44
+ FORTRAN MODIF modelisa/cfmmvd                 abbas M.ABBAS            100      9      6
+ FORTRAN MODIF modelisa/creaun                 abbas M.ABBAS            287      2      2
+ FORTRAN MODIF utilitai/dierre                 abbas M.ABBAS             86     34     26
+ FORTRAN MODIF utilitai/infdbg                 abbas M.ABBAS             64      3      1
+ FORTRAN MODIF utilitai/initia                 abbas M.ABBAS             75     37     22
+ FORTRAN MODIF utilitai/majour                 abbas M.ABBAS             92     38     24
+ FORTRAN MODIF utilitai/ndcoef                 abbas M.ABBAS            147     58     23
+ FORTRAN MODIF utilitai/ndynin                 abbas M.ABBAS             96     19      8
+ FORTRAN MODIF utilitai/ndynkk                 abbas M.ABBAS            149     71     10
+ FORTRAN MODIF utilitai/ndynlo                 abbas M.ABBAS            160     43     31
+ FORTRAN MODIF utilitai/ndynre                 abbas M.ABBAS            128      9      2
+ FORTRAN MODIF utilitai/nurota                 abbas M.ABBAS            280     82     62
+ FORTRAN SUPPR algorith/chtota                 abbas M.ABBAS            116      0    116
+ FORTRAN SUPPR algorith/mxmass                 abbas M.ABBAS            188      0    188
+ FORTRAN SUPPR algorith/ntinst                 abbas M.ABBAS            141      0    141
+  PYTHON AJOUT Messages/archivage              abbas M.ABBAS             41     41      0
+  PYTHON AJOUT Messages/discretisation         abbas M.ABBAS             97     97      0
+  PYTHON AJOUT Messages/mecanonline3           abbas M.ABBAS             77     77      0
+  PYTHON AJOUT Messages/mecanonline4           abbas M.ABBAS             42     42      0
+  PYTHON AJOUT Messages/observation            abbas M.ABBAS             92     92      0
+  PYTHON AJOUT Messages/unilater               abbas M.ABBAS             35     35      0
+  PYTHON MODIF Messages/algorith10             abbas M.ABBAS            317      1     19
+  PYTHON MODIF Messages/algorith12             abbas M.ABBAS            393      2      8
+  PYTHON MODIF Messages/algorith13             abbas M.ABBAS            317      1     31
+  PYTHON MODIF Messages/algorith2              abbas M.ABBAS            305      2     66
+  PYTHON MODIF Messages/algorith3              abbas M.ABBAS            339      1     55
+  PYTHON MODIF Messages/algorith4              abbas M.ABBAS            294      1    119
+  PYTHON MODIF Messages/algorith6              abbas M.ABBAS            344      3     21
+  PYTHON MODIF Messages/algorith7              abbas M.ABBAS            391      1     31
+  PYTHON MODIF Messages/calculel2              abbas M.ABBAS            301      1      9
+  PYTHON MODIF Messages/contact2               abbas M.ABBAS             39      1      1
+  PYTHON MODIF Messages/contact3               abbas M.ABBAS            172      6      1
+  PYTHON MODIF Messages/contact                abbas M.ABBAS            152      1      1
+  PYTHON MODIF Messages/contactdebg            abbas M.ABBAS            130      1      1
+  PYTHON MODIF Messages/factor                 abbas M.ABBAS            238      1      1
+  PYTHON MODIF Messages/mecanonline2           abbas M.ABBAS            105      1      1
+  PYTHON MODIF Messages/mecanonline            abbas M.ABBAS            138      2      4
+  PYTHON MODIF Messages/subdivise              abbas M.ABBAS            103      4      3
+  PYTHON MODIF Messages/utilitai2              abbas M.ABBAS            352      1      5
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   56        8170      8170             +8170
+ MODIF :  166       39350      9778   10606      -828
+ SUPPR :    3         445               445      -445
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  225       47965     17948   11051     +6897 

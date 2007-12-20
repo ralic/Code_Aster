@@ -1,7 +1,7 @@
       SUBROUTINE CUCRSD(NOMA,LISCHA,NUMEDD,NEQ,DEFICU,RESOCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,14 +26,15 @@ C
       CHARACTER*24 NUMEDD
       CHARACTER*24 DEFICU
       CHARACTER*24 RESOCU
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : NMINIT
-C ----------------------------------------------------------------------
+C ROUTINE LIAISON_UNILATER
 C
 C CREATION DES STRUCTURES DE DONNEES NECESSAIRES AU TRAITEMENT
 C DES LIAISONS UNILATERALES (MOT-CLE "LIAISON_UNIL" D'AFFE_CHAR_MECA).
-C ROUTINE APPELEE AU DEBUT DE L'OPERATEUR STAT_NON_LINE.
+C
+C ----------------------------------------------------------------------
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  LISCHA : SD L_CHARGES
@@ -82,8 +83,6 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C ----------------------------------------------------------------------
-
       CALL INFNIV(IFM,NIV)
 C
 C --- INITIALISATIONS
@@ -114,14 +113,15 @@ C
       END IF
 C
       IF (ILIAI.GT.1) THEN
-        CALL U2MESS('F','ALGORITH2_51')
+        CALL U2MESS('F','UNILATER_51')
       END IF
+      
 C
 C --- NOM DE LA SD DE DEFINITION DE LIAISON_UNILATERALE
 C
       DEFICU = CHAR(1:8)//'.UNILATE'
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<LIA_UNIL> CREATION DE LA SD RESULTAT'//
+        WRITE (IFM,*) '<MECANONLINE> CREATION DE LA SD RESULTAT'//
      &                ' LIAISON_UNILATERALE'
       END IF
 C
@@ -181,7 +181,7 @@ C
           IF (CDDL.EQ.0) THEN
             VALK (1) = NOMNO
             VALK (2) = CMP
-            CALL U2MESG('F', 'ALGORITH12_75',2,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'UNILATER_75',2,VALK,0,0,0,0.D0)
           ELSE
             ZK8(JNOMNO+IDDL-1) = NOMNO
             ZK8(JNOMCM+IDDL-1) = CMP

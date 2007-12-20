@@ -1,0 +1,159 @@
+       SUBROUTINE NMDOIN(EVOL  ,EVONOL,INST  ,NUME  )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*24 EVOL
+      LOGICAL      EVONOL
+      INTEGER      NUME
+      REAL*8       INST
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (INITIALISATION)
+C
+C DONNE INSTANT ET NUME_ORDRE INITIAL DANS ETAT INITIAL
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  EVOL   : NOM DU CONCEPT EVOL_NOLI DANS ETAT_INIT
+C IN  EVONOL : .TRUE. SI CONCEPTER EVOL_NOLI DANS ETAT_INIT
+C OUT INST   : INSTANT INITIAL
+C OUT NUME   : NUMERO ORDRE INSTANT INITIAL
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      IBID,IRET
+      INTEGER      N1,N2,N3
+      INTEGER      JINST    
+      CHARACTER*24 TYPEVO  
+      CHARACTER*19 LISINS
+      REAL*8       R8BID,PREC
+      COMPLEX*16   C16BID
+      CHARACTER*8  K8BID,CRITER
+      INTEGER      IFM,NIV
+C      
+C ----------------------------------------------------------------------
+C      
+      CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... INSTANT INITIAL'
+      ENDIF      
+C
+C --- INITIALISATIONS
+C   
+      INST  = 0.D0
+      NUME  = 0
+C
+C --- RECHERCHE INSTANT INITIAL
+C
+      IF (EVONOL) THEN      
+C
+C --- CONTROLE DU TYPE DE EVOL
+C
+        CALL DISMOI('F','TYPE_RESU',EVOL,'RESULTAT',IBID,TYPEVO,IRET)
+        IF (TYPEVO.NE.'EVOL_NOLI') THEN
+          CALL U2MESS('F','MECANONLINE_10')
+        ENDIF  
+C
+C --- NUMERO D'ACCES ET INSTANT CORRESPONDANT
+C
+        CALL GETVR8('ETAT_INIT','INST'      ,1,1,1,INST,N1)
+        CALL GETVIS('ETAT_INIT','NUME_ORDRE',1,1,1,NUME,N2)
+C
+C --- NUME_ORDRE ET INST ABSENTS, ON PREND LE DERNIER PAS ARCHIVE
+C
+        IF (N1+N2.EQ.0) THEN
+          CALL RSORAC(EVOL  ,'DERNIER',IBID  ,R8BID ,K8BID,
+     &                C16BID,R8BID    ,K8BID ,NUME  ,1    ,
+     &                N2)
+          IF (N2.EQ.0) THEN
+            CALL U2MESK('F','ALGORITH6_37',1,EVOL)
+          ENDIF  
+        END IF
+C
+C --- ACCES PAR INSTANT
+C
+        IF (N1.NE.0) THEN
+          CALL GETVR8('ETAT_INIT','PRECISION',1,1,1,PREC  ,IBID)
+          CALL GETVTX('ETAT_INIT','CRITERE'  ,1,1,1,CRITER,IBID)
+          CALL RSORAC(EVOL  ,'INST',IBID  ,INST  ,K8BID,
+     &                C16BID,PREC  ,CRITER,NUME  ,1    ,
+     &                N3)
+          IF (N3.EQ.0) CALL U2MESS('F','MECANONLINE_12')
+          IF (N3.LT.0) CALL U2MESS('F','MECANONLINE_13')
+        END IF
+C
+C --- ACCES PAR NUMERO D'ORDRE
+C
+        IF (N2.NE.0) THEN
+          CALL RSADPA(EVOL,'L',1,'INST',NUME,0,JINST,K8BID)
+          INST = ZR(JINST)
+        END IF
+      ELSE
+C
+C --- DEFINITION CHAMP PAR CHAMP (OU PAS D'ETAT INITIAL DU TOUT)
+C 
+        CALL GETVR8('ETAT_INIT','INST_ETAT_INIT',1,1,1,INST,N2)
+        IF (N2.EQ.0) THEN
+          CALL GETVR8('INCREMENT','INST_INIT',1,1,1,
+     &                INST     ,N3)
+          IF (N3.EQ.0) THEN
+            CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
+            CALL JEVEUO(LISINS(1:19)//'.VALE','L',JINST)
+            INST = ZR(JINST)
+          ENDIF
+        ENDIF
+        NUME = 0
+      END IF
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ...... VALEUR    : ',INST
+        WRITE (IFM,*) '<MECANONLINE> ...... NUME_ORDRE: ',NUME
+      ENDIF       
+C
+      CALL JEDEMA()      
+C
+      END

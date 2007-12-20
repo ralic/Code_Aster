@@ -1,7 +1,8 @@
-      SUBROUTINE ASMAMA(MEMASS,MEDIRZ,NUMEDD,SOLVEU,LISCHA,
+      SUBROUTINE ASMAMA(MEMASZ,MEDIRZ,NUMEDD,SOLVEU,LISCHA,
      &                  MATMAS)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,14 +20,15 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
+C
       IMPLICIT NONE
-      CHARACTER*24       MEMASS,NUMEDD
-      CHARACTER*(*)      MATMAS,MEDIRZ
+      CHARACTER*24       NUMEDD
+      CHARACTER*(*)      MEMASZ,MATMAS,MEDIRZ
       CHARACTER*19       SOLVEU,LISCHA
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE POUR OP0070 (*_NON_LINE)
+C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C ASSEMBLAGE DE LA MATRICE DE MASSE GLOBALE 
 C
@@ -59,13 +61,15 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C  
-      CHARACTER*24 MEDIRI,TLIMAT(2)    
+      CHARACTER*8  MEDIRI,MEMASS,TLIMAT(2)    
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
       MEDIRI = MEDIRZ
+      MEMASS = MEMASZ
+      
       IF (MEDIRI.EQ.' ') THEN
         CALL ASMATR(1,MEMASS,' ',NUMEDD,SOLVEU,LISCHA,
      &              'ZERO','V',1,MATMAS)

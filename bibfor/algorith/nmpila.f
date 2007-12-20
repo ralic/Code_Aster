@@ -1,8 +1,8 @@
-      SUBROUTINE NMPILA(NEQ   , DU    , DU0   , DU1   , C     ,
-     &                  DTAU  , NBEFFE, ETA   , LICCVG)
-
+      SUBROUTINE NMPILA(NEQ   ,DU    ,DU0   ,DU1   ,C     ,
+     &                  DTAU  ,NBEFFE,ETA   ,PILCVG)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,70 +20,88 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
-
+C
       IMPLICIT NONE
-      INTEGER  NEQ, LICCVG, NBEFFE
+      INTEGER  NEQ, PILCVG, NBEFFE
       REAL*8   DU(NEQ), DU0(NEQ), DU1(NEQ)
       REAL*8   C(NEQ), DTAU, ETA(2)
-
-C ----------------------------------------------------------------------
-C        PILOTAGE PAR LONGUEUR D'ARC :   P(U) = SQR(U.C.U) = DTAU
+C 
 C ----------------------------------------------------------------------
 C
-C IN  NEQ    NOMBRE DE DEGRES DE LIBERTE
-C IN  DU     INCREMENT DE DEPLACEMENT (DEPDEL.VALE)
-C IN  DU0    CORRECTION DE DEPLACEMENT POUR CHARGEMENT CONSTANT
-C IN  DU1    CORRECTION DE DEPLACEMENT POUR CHARGEMENT PILOTE
-C IN  C      COEFFICIENT DU PRODUIT SCALAIRE
-C IN  DTAU   SECOND MEMBRE DE L'EQUATION DE PILOTAGE
-C OUT ETA    ETA_PILOTAGE
-C OUT LICCVG CODE RETOUR (0 = OK, 1 = PAS DE SOLUTION)
+C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE - CALCUL DE ETA)
+C
+C PILOTAGE PAR LONGUEUR D'ARC
+C      
 C ----------------------------------------------------------------------
-
+C
+C
+C IN  NEQ    : NOMBRE DE DEGRES DE LIBERTE
+C IN  DU     : INCREMENT DE DEPLACEMENT (DEPDEL.VALE)
+C IN  DU0    : CORRECTION DE DEPLACEMENT POUR CHARGEMENT CONSTANT
+C IN  DU1    : CORRECTION DE DEPLACEMENT POUR CHARGEMENT PILOTE
+C IN  C      : COEFFICIENT DU PRODUIT SCALAIRE
+C IN  DTAU   : SECOND MEMBRE DE L'EQUATION DE PILOTAGE
+C OUT NBEFFE : NOMBRE DE SOLUTIONS EFFECTIVES
+C OUT ETA    : ETA_PILOTAGE
+C OUT PILCVG : CODE RETOUR (0 = OK, 1 = PAS DE SOLUTION)
+C
+C ----------------------------------------------------------------------
+C
       INTEGER I, NRAC
-      REAL*8  R0, R1, R2, DTAU2, RAC(2), R8NRM2
-      REAL*8  SCA1, SCA2, NODUP1, NODUP2, CO1, CO2
+      REAL*8  R0, R1, R2, DTAU2, RAC(2)
+      INTEGER IFM,NIV      
+C
 C ----------------------------------------------------------------------
-
-
-
-      LICCVG = 0
-
-C -- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
-
+C
+      CALL INFDBG('PILOTAGE',IFM,NIV)
+C
+C --- INITIALISATIONS
+C
+      PILCVG = 0
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR LONGUEUR D''ARC'
+      ENDIF      
+C
+C --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
+C
       DTAU2 = DTAU**2
-      R0 = - DTAU2
-      R1 =   0.D0
-      R2 =   0.D0
+      R0    = - DTAU2
+      R1    = 0.D0
+      R2    = 0.D0
       DO 10 I = 1, NEQ
         R0 = R0 + C(I) * (DU(I)+DU0(I))**2
         R1 = R1 + C(I) * (DU(I)+DU0(I))*DU1(I)
         R2 = R2 + C(I) *  DU1(I)**2
  10   CONTINUE
       R1 = 2.D0*R1
-      IF (R2.EQ.0) CALL U2MESS('F','ALGORITH8_23')
-
-
-C -- RESOLUTION DE L'EQUATION
-
+      IF (R2.EQ.0) THEN
+        CALL U2MESS('F','ALGORITH8_23')
+      ENDIF 
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<PILOTAGE> ...... EQUATION X+BX+C: ',
+     &                R1/R2,R0/R2
+      ENDIF          
+C
+C --- RESOLUTION DE L'EQUATION
+C
       CALL ZEROP2(R1/R2,R0/R2,RAC,NRAC)
-
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<PILOTAGE> ...... PILOTAGE PAR LONGUEUR D''ARC'
+        WRITE (IFM,*) '<PILOTAGE> ...... SOLUTIONS: ',NRAC,RAC
+      ENDIF     
 C    PAS DE RACINE -> ON MINIMISE LA CONTRAINTE (CONV. INTERDITE)
       IF (NRAC.EQ.0) THEN
-        LICCVG = 1
+        PILCVG    = 1
         GOTO 9999
-
 C    RACINE DOUBLE
       ELSE IF (NRAC.EQ.1) THEN
         NBEFFE    = 1
         ETA(1)    = RAC(1)
-
 C    DEUX RACINES
       ELSE
         NBEFFE    = 2
         ETA(1)    = RAC(1)
         ETA(2)    = RAC(2)
-
       END IF
 
  9999 CONTINUE

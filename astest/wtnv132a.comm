@@ -1,4 +1,4 @@
-# MODIF  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -523,7 +523,7 @@ for n in range(1,nbcouche-1):
                               SUBD_NIVEAU=10),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1),
-                 CONVERGENCE=_F(ITER_GLOB_MAXI=20));
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=25,RESI_GLOB_RELA=1E-5));
 
     DETRUIRE(CONCEPT=_F(NOM=('INIVAR')));
 

@@ -1,10 +1,7 @@
-      SUBROUTINE FMODAM(NEQ,VITE,VALMOD,BASMOD,FORCE)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*24 VALMOD,BASMOD
-      REAL*8 VITE(NEQ),FORCE(NEQ)
-C     ------------------------------------------------------------------
+      SUBROUTINE FMODAM(NEQ   ,VITE  ,VALMOD,BASMOD,FORCE )
+C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/04/98   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,58 +18,75 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6  PGC
-      CHARACTER*8  K8B
-      CHARACTER*8  MODMEC, MAILLA
-      CHARACTER*14 NUMDDL
-      CHARACTER*24 DEEQ
-      CHARACTER*24 KBID, MATRIC, NOMCHA
-      REAL*8       AMOR, MASGEN, PULS, SOMME
-      DATA PGC/'FMODAM'/
-C     ------------------------------------------------------------------
+      IMPLICIT NONE
+      INTEGER      NEQ
+      CHARACTER*24 VALMOD,BASMOD
+      REAL*8       VITE(NEQ),FORCE(NEQ)
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE DYNA_NON_LINE (CALCUL)
+C
+C CALCUL DES FORCES D'AMORTISSEMENT MODALE
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  NEQ    : NOMBRE D'EQUATIONS DU SYSTEME
+C IN  VITE   : VECTEUR VITESSE
+C IN  VALMOD : MODES PROPRES
+C IN  BASMOD : BASE MODALE
+C OUT FORCE  : FORCE D'AMORTISSEMENT MODALE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*8  K8BID
+      INTEGER      IMODE ,N1    ,NBMODE
+      REAL*8       AMOR  ,MASGEN,PULS  ,SOMME
+      INTEGER      JVALMO,JBASMO
+C 
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL JELIRA(VALMOD,'LONMAX',NBMODE,KBID)
+C
+      CALL JELIRA(VALMOD,'LONMAX',NBMODE,K8BID)
       NBMODE = NBMODE/3
       CALL JEVEUO(VALMOD,'L',JVALMO)
       CALL JEVEUO(BASMOD,'L',JBASMO)
-      DO 1 I=1,NEQ
-        FORCE(I) = 0.D0
- 1    CONTINUE
-      DO 10 I=1,NBMODE
-        MASGEN = ZR(JVALMO+3*(I-1)+1-1) 
-        PULS = ZR(JVALMO+3*(I-1)+2-1) 
-        AMOR = ZR(JVALMO+3*(I-1)+3-1)
+C
+      CALL R8INIR(NEQ   ,0.D0,FORCE,1)
+C
+      DO 10 IMODE = 1,NBMODE
+        MASGEN = ZR(JVALMO+3*(IMODE-1)+1-1) 
+        PULS   = ZR(JVALMO+3*(IMODE-1)+2-1) 
+        AMOR   = ZR(JVALMO+3*(IMODE-1)+3-1)
         SOMME = 0.D0
         DO 11 N1=1,NEQ
-            SOMME = SOMME + ZR(JBASMO+(I-1)*NEQ+N1-1)*VITE(N1)
+          SOMME = SOMME + ZR(JBASMO+(IMODE-1)*NEQ+N1-1)*VITE(N1)
  11     CONTINUE 
         DO 12 N1=1,NEQ
-            FORCE(N1) = FORCE(N1) + 2.D0*AMOR/MASGEN/PULS**3
-     &      *ZR(JBASMO+(I-1)*NEQ+N1-1)*SOMME
+          FORCE(N1) = FORCE(N1) + 2.D0*AMOR/MASGEN/PULS**3
+     &      *ZR(JBASMO+(IMODE-1)*NEQ+N1-1)*SOMME
  12     CONTINUE
  10   CONTINUE
-C
-      CALL JEDETC('V','&&'//PGC,1)
 C
       CALL JEDEMA()
       END

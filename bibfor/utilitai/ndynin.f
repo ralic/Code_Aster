@@ -1,7 +1,7 @@
       INTEGER FUNCTION NDYNIN(SDDYNA,CHAINE)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C
 C 
 C ----------------------------------------------------------------------
 C
-C ROUTINE MECA_NON_LINE (SDDYNA - UTILITAIRE)
+C ROUTINE MECA_NON_LINE (UTILITAIRE)
 C
 C INTERROGE SDDYNA POUR RENVOYER UN ENTIER
 C      
@@ -61,8 +61,9 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      JTFOR
-      CHARACTER*19 VALK(1)
+      INTEGER      JTFOR,JNCHA
+      CHARACTER*24 TFOR ,NCHA
+      LOGICAL      NDYNLO,LDYNA
 C
 C ----------------------------------------------------------------------
 C
@@ -70,15 +71,25 @@ C
 C
 C --- INITIALISATIONS
 C
-      CALL JEVEUO(SDDYNA(1:15)//'.TYPE_FOR','L',JTFOR)
-
-      IF (CHAINE.EQ.'FORMUL_DYNAMIQUE')THEN
-        NDYNIN = ZI(JTFOR+1-1)
-      ELSEIF (CHAINE.EQ.'FORMUL_CONTACT')THEN
-        NDYNIN = ZI(JTFOR+2-1)
-      ELSE
-        VALK(1)=CHAINE
-        CALL U2MESK('F','UTILITAI7_7',1,VALK)
+      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')
+      NDYNIN = 0
+C
+C --- INTERROGATION
+C      
+      IF (LDYNA) THEN
+        TFOR = SDDYNA(1:15)//'.TYPE_FOR'
+        NCHA = SDDYNA(1:15)//'.NBRE_CHA'
+        CALL JEVEUO(TFOR,'L',JTFOR)
+        CALL JEVEUO(NCHA,'L',JNCHA)
+        IF (CHAINE.EQ.'FORMUL_DYNAMIQUE')THEN
+          NDYNIN = ZI(JTFOR+1-1)
+        ELSEIF (CHAINE.EQ.'FORMUL_CONTACT')THEN
+          NDYNIN = ZI(JTFOR+2-1)
+        ELSEIF (CHAINE.EQ.'NBRE_ONDE_PLANE')THEN
+          NDYNIN = ZI(JNCHA+1-1)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
       ENDIF
 C
       CALL JEDEMA()

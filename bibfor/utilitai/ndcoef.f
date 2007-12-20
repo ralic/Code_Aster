@@ -1,8 +1,7 @@
-      SUBROUTINE NDCOEF(PHASE ,METHOD,SDDYNA,
-     &                  COEDEP,COEVIT,COEACC)
+      SUBROUTINE NDCOEF(PHASE ,METHOD,SDDYNA,COEMAT)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +24,7 @@ C
       CHARACTER*10  PHASE
       CHARACTER*19  SDDYNA
       CHARACTER*16  METHOD(*)
-      REAL*8        COEDEP,COEVIT,COEACC
+      REAL*8        COEMAT(3)
 C 
 C ----------------------------------------------------------------------
 C
@@ -43,9 +42,9 @@ C                  'CORRECTION'
 C                  'FLAMBEMENT'
 C                  'FORCES_INT'
 C IN  METHOD : OPTION DE LA MATRICE
-C OUT COEDEP : COEF. MULT. DEVANT LES DEPLACEMENTS
-C OUT COEVIT : COEF. MULT. DEVANT LES VITESSES
-C OUT COEACC : COEF. MULT. DEVANT LES ACCELERATIONS
+C OUT COEMAT : (1) - MULT. DEVANT LES DEPLACEMENTS (RIGIDITE)
+C              (3) - MULT. DEVANT LES VITESSES (AMORTISSEMENT)
+C              (2) - MULT. DEVANT LES ACCELERATIONS (MASSE)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -66,46 +65,82 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      LOGICAL    NDYNLO
-      INTEGER    JCFSC
+      LOGICAL    NDYNLO,LSTAT,LEXPL
       REAL*8     ZERO,UN
       PARAMETER (UN=1.D0,ZERO=0.D0)
+      INTEGER    IFM,NIV
+      REAL*8     NDYNRE,COEDEP,COEVIT,COEACC
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- INITIALISATIONS
 C
       COEDEP = UN
       COEVIT = ZERO
       COEACC = ZERO
-
-      IF(NDYNLO(SDDYNA,'STATIQUE'))  GOTO 9999
-      IF(NDYNLO(SDDYNA,'EXPLICITE')) GOTO 9999
-
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... COEFFICIENTS POUR COMB. LIN.'//
+     &                ' DES MATRICES EN DYNAMIQUE' 
+      ENDIF      
+C
+C --- FONCTIONNALITES ACTIVEES
+C    
+      LSTAT  = NDYNLO(SDDYNA,'STATIQUE')      
+      LEXPL  = NDYNLO(SDDYNA,'EXPLICITE') 
+C        
+      IF (LSTAT) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF 
+C
       IF(PHASE.EQ.'PREDICTION')THEN
         IF(METHOD(5).EQ.'ELASTIQUE' .OR.  METHOD(5).EQ.'TANGENTE')THEN
-           CALL JEVEUO(SDDYNA(1:15)//'.COEF_SCH','L',JCFSC)
-           COEDEP=ZR(JCFSC+1-1)
-           COEVIT=ZR(JCFSC+2-1)
-           COEACC=ZR(JCFSC+3-1)
+           COEDEP = NDYNRE(SDDYNA,'COEDEP')
+           COEVIT = NDYNRE(SDDYNA,'COEVIT')
+           COEACC = NDYNRE(SDDYNA,'COEACC') 
         ENDIF
       ELSEIF(  PHASE.EQ.'CORRECTION'  .OR.
      &         PHASE.EQ.'FORCES_INT'  )THEN
-        CALL JEVEUO(SDDYNA(1:15)//'.COEF_SCH','L',JCFSC)
-        COEDEP=ZR(JCFSC+1-1)
-        COEVIT=ZR(JCFSC+2-1)
-        COEACC=ZR(JCFSC+3-1)
+        COEDEP = NDYNRE(SDDYNA,'COEDEP')
+        COEVIT = NDYNRE(SDDYNA,'COEVIT')
+        COEACC = NDYNRE(SDDYNA,'COEACC')
       ELSEIF (PHASE.EQ.'FLAMBEMENT') THEN 
         COEDEP = UN
         COEVIT = ZERO
-        COEACC = ZERO             
+        COEACC = ZERO     
+      ELSEIF (PHASE.EQ.'EXPLICITE') THEN 
+        IF(.NOT.LEXPL) THEN
+          CALL ASSERT(.FALSE.)
+        ENDIF           
+        COEDEP = UN
+        COEVIT = NDYNRE(SDDYNA,'COEVIT')
+        COEACC = NDYNRE(SDDYNA,'COEACC')                  
       ELSE  
         CALL ASSERT(.FALSE.)
       ENDIF
-
- 9999 CONTINUE
+C
+C --- COEFFICIENTS DEVANT MATRICES
+C      
+      COEMAT(1) = UN
+      COEMAT(2) = COEACC/COEDEP
+      COEMAT(3) = COEVIT/COEDEP      
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. RIGIDITE      : ',
+     &                 COEMAT(1) 
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. AMORTISSEMENT : ',
+     &                 COEMAT(3) 
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. MASSE         : ',
+     &                 COEMAT(2)           
+      ENDIF
+C
 
       CALL JEDEMA()
 

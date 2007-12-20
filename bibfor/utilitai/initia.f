@@ -1,6 +1,7 @@
-      SUBROUTINE INITIA (LONCH,REAROT,INDRO,CHAMRO,   CHAMIN)
+      SUBROUTINE INITIA(NEQ   ,REAROT,INDRO ,CHAMRO,CHAMIN)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,44 +18,58 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
-C FONCTION: INITIALISE LE CHAM_NO CHAMIN A:
-C           . SI REAROT=FALSE:  ZERO
-C           . SI REAROT=TRUE :  ZERO POUR LES DDL DE TRANSLATION OU DE
-C                               PETITE ROTATION
-C                               LA VALEUR DE MME RANG EXTRAITE DE CHAMRO
-C                               POUR LES DDL DE GRANDE ROTATION
+      IMPLICIT NONE
+      LOGICAL  REAROT
+      INTEGER  NEQ,INDRO(*)
+      REAL*8   CHAMRO(*),CHAMIN(*)    
+C 
+C ----------------------------------------------------------------------
 C
-C     IN  : LONCH     : LONGUEUR DES CHAM_NO
-C           REAROT    : LOGICAL: TRUE  S'IL Y A DES DDL DE GRDE ROTATION
-C                                FALSE SINON
-C           INDRO     : VECTEUR DONNANT LE TYPE DES DDL:
-C                          0: TRANSLATION OU PETITE ROTATION
-C                          1: GRANDE ROTATION
-C           CHAMRO    : CHAM_NO DONNE
+C ROUTINE MECA_NON_LINE (ALGORITHME - UTILITAIRE)
 C
-C     OUT : CHAMIN    : CHAM_NO INITIALISE
-C ------------------------------------------------------------------
-      IMPLICIT REAL*8(A-H,O-Z)
-      LOGICAL REAROT
-      INTEGER INDRO(*)
-      REAL*8 CHAMRO(*),CHAMIN(*)
+C INITIALISE UN CHAM_NO EN TENANT COMPTE DES GRANDES ROTATIONS
+C      
+C ----------------------------------------------------------------------
+C 
 C
+C IN  NEQ    : LONGUEUR DES CHAM_NO
+C IN  REAROT : TRUE  S'IL Y A DES DDL DE GRDE ROTATION
+C                       FALSE SINON
+C IN  INDRO  : VECTEUR DONNANT LE TYPE DES DDL:
+C                 0: TRANSLATION OU PETITE ROTATION
+C                 1: GRANDE ROTATION
+C IN  CHAMRO  : CHAM_NO DONNE
+C OUT CHAMIN  : CHAM_NO INITIALISE
+C 
+C    SI REAROT=FALSE:  ZERO
+C    SI REAROT=TRUE :  ZERO POUR LES DDL DE TRANSLATION OU DE
+C                      PETITE ROTATION
+C                      LA VALEUR DE MME RANG EXTRAITE DE CHAMRO
+C                      POUR LES DDL DE GRANDE ROTATION
+C      
+C ----------------------------------------------------------------------
+C 
+      REAL*8  ZERO
+      INTEGER I
+C      
+C ----------------------------------------------------------------------
+C 
       ZERO = 0.D0
-C
       IF (.NOT.REAROT) THEN
-         DO 10 I=1,LONCH
-            CHAMIN(I) = ZERO
-10       CONTINUE
+        DO 10 I=1,NEQ
+          CHAMIN(I) = ZERO
+10      CONTINUE
       ELSE
-         DO 20 I=1,LONCH
-            IF (INDRO(I).EQ.0) THEN
-               CHAMIN(I) = ZERO
-            ELSE IF (INDRO(I).EQ.1) THEN
-               CHAMIN(I) = CHAMRO(I)
-            ELSE
-               CALL U2MESS('F','UTILITAI2_33')
-            ENDIF
-20       CONTINUE
+        DO 20 I=1,NEQ
+          IF (INDRO(I).EQ.0) THEN
+            CHAMIN(I) = ZERO
+          ELSE IF (INDRO(I).EQ.1) THEN
+            CHAMIN(I) = CHAMRO(I)
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+20      CONTINUE
       ENDIF
       END

@@ -1,7 +1,7 @@
       REAL*8 FUNCTION NDYNRE ( SDDYNA, CHAINE)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,7 +59,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
        LOGICAL      LSCHE1,NDYNLO
-       INTEGER      JPSCHE
+       INTEGER      JPSCHE,JCFSC
        CHARACTER*19 VALK(2)
 C
 C ----------------------------------------------------------------------
@@ -69,7 +69,8 @@ C
 C --- INITIALISATIONS
 C
       CALL JEVEUO(SDDYNA(1:15)//'.PARA_SCH','L',JPSCHE)
-
+      CALL JEVEUO(SDDYNA(1:15)//'.COEF_SCH','L',JCFSC)
+      
       IF (CHAINE.EQ.'ALPHA')THEN
         VALK(1)='THETA_METHODE'
         LSCHE1 = NDYNLO ( SDDYNA,VALK(1))
@@ -111,6 +112,12 @@ C
           VALK(2)=CHAINE
           CALL U2MESK('F','UTILITAI7_6',2,VALK)
         ENDIF
+      ELSEIF (CHAINE.EQ.'COEDEP')THEN
+        NDYNRE = ZR(JCFSC+1-1)
+      ELSEIF (CHAINE.EQ.'COEVIT')THEN
+        NDYNRE = ZR(JCFSC+2-1) 
+      ELSEIF (CHAINE.EQ.'COEACC')THEN
+        NDYNRE = ZR(JCFSC+3-1)                     
       ELSE
         VALK(1)=CHAINE
         CALL U2MESK('F','UTILITAI7_7',1,VALK)

@@ -1,6 +1,7 @@
-      SUBROUTINE OP0026 ( IER )
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/11/2007   AUTEUR COURTOIS M.COURTOIS 
+      SUBROUTINE OP0026(IER   )
+C     
+C            CONFIGURATION MANAGEMENT OF EDF VERSION 
+C MODIF CALCULEL  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,6 +18,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      INTEGER  IER
+
 C-----------------------------------------------------------------------
 C
 C           O P E R A T E U R    C A L C U L
@@ -24,34 +30,34 @@ C           ================================
 C
 C-----------------------------------------------------------------------
 C
-      IMPLICIT NONE
+
 C
-      INTEGER  IER
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNOM, JEXNUM,JEXATR
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-C ----- DECLARATIONS
-C
-C-----------------------------------------------------------------------
       INTEGER         NBPAR
       PARAMETER       (NBPAR=5)
+      CHARACTER*19    NOMPAR(NBPAR),TYPPAR(NBPAR)
+      CHARACTER*24    VK(NBPAR)   
+C
+      INTEGER         ZFON  
+      PARAMETER      (ZFON    = 19 )        
 C-----------------------------------------------------------------------
       INTEGER         N1,NIV,IFM,NBOPT,ITERAT,NUMEOR,I
       INTEGER         IRET,KNINDI,IBID,NUORD,NBPASE,VI(1),JLINST
@@ -61,13 +67,17 @@ C-----------------------------------------------------------------------
       CHARACTER*8     RESULT,TABLE
       CHARACTER*14    NUMMOI,NUMDEL
       CHARACTER*16    LOPT(3),OPTION
-      CHARACTER*19    LISCHA
-      CHARACTER*19    NOMPAR(NBPAR),TYPPAR(NBPAR),LINST
-      CHARACTER*24    DEPDEL,MATE,CARELE,COMPOR,CARCRI,MERIGI,INPSCO
-      CHARACTER*24    DEPPLU,SIGPLU,VARPLU,VERESI,COMMOI,MODELE,DEPMOI
-      CHARACTER*24    COMPLU,K24BID,VALMOI(8),VALPLU(8),VEDIRI,VK(NBPAR)
+      CHARACTER*19    LISCHA,K19BLA
+      CHARACTER*19    LINST
+      CHARACTER*8     MEDIRI,MERIGI,VEFINT
+      CHARACTER*24    DEPDEL,MATE,CARELE,COMPOR,CARCRI,INPSCO
+      CHARACTER*24    DEPPLU,SIGPLU,VARPLU,COMMOI,MODELE,DEPMOI
+      CHARACTER*24    COMPLU
+      CHARACTER*24    VALMOI(8),VALPLU(8),DEPALG(8)
       CHARACTER*24    SIGMOI,VARMOI,NOMCH(2),CHPRES,DEPMO1
-      LOGICAL         TABRET(0:10)
+      CHARACTER*24    K24BLA,K24BID
+      CHARACTER*8     MEELEM(8),VEELEM(30)      
+      LOGICAL         TABRET(0:10),FONACT(19)
 C-----------------------------------------------------------------------
       DATA LISCHA     /'&&OP0026.LISCHA'/
       DATA CARELE     /'&&OP0026.CARELE'/
@@ -80,8 +90,12 @@ C-----------------------------------------------------------------------
       DATA SIGPLU     /'&&OP0026.SIGPLU'/
       DATA COMMOI     /'&&OP0026.COMMOI'/
       DATA COMPLU     /'&&OP0026.COMPLU'/
-C-----------------------------------------------------------------------
-
+      DATA MEDIRI     /'&&MEDIRI'/
+      DATA MERIGI     /'&&MERIGI'/
+      DATA VEFINT     /'&&VEFINT'/      
+C      
+C ----------------------------------------------------------------------
+C      
       CALL JEMARQ()
 
 
@@ -114,9 +128,14 @@ C     ----------------------------------
 
 C     RECUPERATION DU MODELE, DU MATERIAU, DES CHARGES
 C     ------------------------------------------------
-      NBPASE=0
-      NUORD=0
-      MODELE=' '
+      NBPASE = 0
+      NUORD  = 0
+      MODELE = ' '
+      K19BLA = ' '
+      K24BLA = ' '
+      DO 2 I = 1,ZFON
+        FONACT(I) = .FALSE.
+  2   CONTINUE
       CALL NMDOME(MODELE,MATE,CARELE,LISCHA,NBPASE,INPSCO,
      &            RESULT, NUORD)
 
@@ -181,29 +200,32 @@ C ======================================================================
 C --- PREPARATION DES ARGUMENTS DE CALCUL
 C ======================================================================
 
-C     CALCUL DE LA CONTRIBUTION "PHYSIQUE"
-C     ------------------------------------
-      CALL AGGLOM(DEPMOI, SIGMOI, VARMOI, COMMOI, K24BID, K24BID,
-     &            K24BID, K24BID, 4,      VALMOI)
-      CALL AGGLOM(DEPPLU, SIGPLU, VARPLU, COMPLU, K24BID, K24BID,
-     &            K24BID, K24BID, 4,      VALPLU)
-
+C
+C --- VARIABLES CHAPEAUX
+C
+      CALL AGGLOM(DEPMOI,SIGMOI,VARMOI,COMMOI,K24BLA, 
+     &            K24BLA,K24BLA,K24BLA,4     ,VALMOI)
+      CALL AGGLOM(DEPPLU,SIGPLU,VARPLU,COMPLU,K24BLA, 
+     &            K24BLA,K24BLA,K24BLA,4     ,VALPLU)
+      CALL AGGLOM(K24BLA,DEPDEL,K24BLA,K24BLA,K24BLA,
+     &            K24BLA,K24BLA,K24BLA,5     ,DEPALG)   
+      MEELEM(1)  = MERIGI 
+      MEELEM(2)  = MEDIRI       
+      VEELEM(1)  = VEFINT   
+C
+C --- CALCUL MERIGI ET VEFINT
+C       
       ITERAT=1
-      MERIGI = ' '
-      VERESI = ' '
-      VEDIRI = ' '
-      CALL MERIMO('G',    MODELE, CARELE, MATE,   K24BID, COMPOR,
-     &            LISCHA, CARCRI, DEPDEL, K24BID, K24BID, K24BID,
-     &            K24BID, VALMOI, VALPLU, OPTION, MERIGI, VERESI,
-     &            VEDIRI, ITERAT, TABRET)
-
-      CALL DESAGG(VALPLU, DEPPLU, SIGPLU, VARPLU, COMPLU, K24BID,
-     &            K24BID, K24BID, K24BID)
+     
+      CALL MERIMO('G'   ,MODELE,CARELE,MATE  ,K24BID,
+     &            COMPOR,LISCHA,CARCRI,ITERAT,FONACT,
+     &            K19BLA,VALMOI,VALPLU,K24BID,DEPALG,
+     &            MEELEM,VEELEM,OPTION,TABRET)
 
 
 C     CALCUL DE LA CONTRIBUTION DES "LAGRANGE"
 C     ----------------------------------------
-      CALL MEDIME(MODELE,LISCHA,MERIGI)
+      CALL MEDIME(MODELE,LISCHA,MEDIRI)
 
 
 C ======================================================================
@@ -226,7 +248,7 @@ C ======================================================================
       VK(1)=MERIGI
       VK(2)=SIGPLU
       VK(3)=VARPLU
-      VK(4)=VERESI
+      VK(4)=VEFINT
       IF (TABRET(0)) THEN
         VI(1)=1
       ELSE

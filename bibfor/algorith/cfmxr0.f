@@ -1,7 +1,7 @@
-      SUBROUTINE CFMXR0(RESOCO,MODELE,CNSINR)
+      SUBROUTINE CFMXR0(RESOCO,NOMA  ,FONACT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/08/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,21 +21,22 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*19 CNSINR
-      CHARACTER*24 MODELE,RESOCO
+      CHARACTER*24 RESOCO
+      CHARACTER*8  NOMA
+      LOGICAL      FONACT(*)
 C      
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (TOUTES METHODES - POST-TRAITEMENT)
 C
-C CREER LE CHAM_NO_S POUR L ARCHIVAGE DU CONTACT PAR NMARCH
+C CREER LE CHAM_NO_S POUR L ARCHIVAGE DU CONTACT 
 C
 C ----------------------------------------------------------------------
 C
 C
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-C IN  MODELE : SD MODELE
-C I/O CNSINR : CHAM_NO_S POUR L'ARCHIVAGE DU CONTACT
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 C
 C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -56,16 +57,27 @@ C
 C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C 
-      INTEGER      CFMMVD,ZRESU
+      INTEGER      NBCMP
+      PARAMETER    (NBCMP = 24)
+      CHARACTER*8  NOMCMP(NBCMP)
+      INTEGER      NBPER
+      PARAMETER    (NBPER = 4)
+      CHARACTER*8  NOMPER(NBPER)            
+C
+      INTEGER      CFMMVD,ZRESU,ZPERC
       INTEGER      IFM,NIV
-      INTEGER      ILIAI,IBID
+      INTEGER      ILIAI,ICMP,IRET,IER
       INTEGER      NBLIAI,NESCL
-      INTEGER      ICMP,ICONTA
-      CHARACTER*8  LICMPR(24),NOMCMP(24), NOMA
+
       CHARACTER*24 APPARI
       INTEGER      JAPPAR
-      INTEGER      IRET
       INTEGER      JCNSVR,JCNSLR
+      CHARACTER*19 CNSINR
+      INTEGER      JCNSVP,JCNSLP
+      CHARACTER*8  K8BID
+      LOGICAL      ISFONC,LCTCC,LCTCD,LXFEM
+      
+      CHARACTER*19 CNSPER      
 C ----------------------------------------------------------------------
       DATA NOMCMP
      &   / 'CONT','JEU' ,'RN'  ,
@@ -76,61 +88,102 @@ C ----------------------------------------------------------------------
      &     'RX'  ,'RY'  ,'RZ'  ,
      &     'R'   ,'HN'  ,'I'   ,
      &     'IX'  ,'IY'  ,'IZ'  /
+C ----------------------------------------------------------------------
+      DATA NOMPER
+     &   / 'V1','V2','V3','V4'/     
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
-C ======================================================================
-C --- SORTIE SI PAS DE CONTACT 
-C ======================================================================
-      APPARI = RESOCO(1:14)//'.APPARI'
-      CALL JEEXIN(APPARI,ICONTA)
-      CNSINR = '&&RESUCO.CNSINR'
-       
-      IF (ICONTA.EQ.0) THEN
-        GOTO 999
-      ENDIF
-
-C ======================================================================
-C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C ======================================================================
-
-      CALL JEVEUO(APPARI,'L',JAPPAR)
-
+C
+C --- ACCES SD CONTACT
+C    
+      CNSINR = RESOCO(1:14)//'.VALE'
+      CNSPER = RESOCO(1:14)//'.PERC'    
       ZRESU  = CFMMVD('ZRESU')
-      
-C --- CHANGEZ LA TAILLE DE LICMPR,NOMCMP   
-C      IF (ZRESU.GT.20) CALL ASSERT(.FALSE.)
-      
-C -- MAILLAGE SOUS-TENDU PAR LE MODELE
-      CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IRET)
-
-C ======================================================================
+      ZPERC  = CFMMVD('ZPERC')
+      IF (ZRESU.NE.NBCMP) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      IF (ZPERC.NE.NBPER) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF    
+      LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
+      LCTCD  = ISFONC(FONACT,'CONT_DISCRET')  
+      LXFEM  = ISFONC(FONACT,'XFEM')
+      IF (LXFEM) THEN
+        GOTO 999
+      ENDIF                   
 C
-C --- CREATION DU CHAM_NO_S VIDE POUR LE CONTACT INITIAL
+C -- LONGUEUR DU CHAM_NO_S VALE_CONT 
+C      
+      IF (LCTCD) THEN
+        APPARI = RESOCO(1:14)//'.APPARI'
+        CALL JEVEUO(APPARI,'L',JAPPAR)
+        NESCL  = ZI(JAPPAR)
+        NBLIAI = NESCL
+      ENDIF 
 C
-C ======================================================================
-      NESCL  = ZI(JAPPAR)
-      NBLIAI = NESCL
-      
-
-      DO 1 ICMP = 1,ZRESU
-        LICMPR(ICMP) = NOMCMP(ICMP)
- 1    CONTINUE
-
-      CALL CNSCRE(NOMA,'INFC_R',ZRESU,LICMPR,'V',CNSINR)
-      CALL JEVEUO(CNSINR//'.CNSV','E',JCNSVR)
-      CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)
-
-      DO 10 ILIAI = 1,NBLIAI
-         DO 11 ICMP = 1,ZRESU
-            ZR(JCNSVR-1+(ILIAI-1)*ZRESU+ICMP) = 0.0D0
-            ZL(JCNSLR-1+(ILIAI-1)*ZRESU+ICMP) = .TRUE.
- 11      CONTINUE
-         ZR(JCNSVR-1+(ILIAI-1)*ZRESU+2 ) = 0.0D0
- 10   CONTINUE
-
-999   CONTINUE
+      IF (LCTCC) THEN
+        CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBLIAI,K8BID,IER)
+      ENDIF                   
+C
+C --- CREATION DU CHAM_NO_S VALE_CONT
+C
+      CALL JEEXIN(CNSINR(1:19)//'.CNSV',IRET)
+      IF (IRET.EQ.0) THEN
+        CALL CNSCRE(NOMA,'INFC_R',ZRESU,NOMCMP,'V',CNSINR)
+      ENDIF  
+      CALL JEVEUO(CNSINR(1:19)//'.CNSV','E',JCNSVR)
+      CALL JEVEUO(CNSINR(1:19)//'.CNSL','E',JCNSLR)
+C
+C --- INITIALISATION DU CHAM_NO_S VALE_CONT - CAS DISCRET
+C
+      IF (LCTCD) THEN
+        DO 10 ILIAI = 1,NBLIAI
+          DO 11 ICMP = 1,ZRESU
+            ZR(JCNSVR-1+ZRESU*(ILIAI-1)+ICMP) = 0.D0
+            ZL(JCNSLR-1+ZRESU*(ILIAI-1)+ICMP) = .TRUE.
+ 11       CONTINUE
+          ZR(JCNSVR-1+ZRESU*(ILIAI-1)+2 ) = 0.0D0
+ 10     CONTINUE
+      ENDIF
+C
+C --- INITIALISATION DU CHAM_NO_S VALE_CONT - CAS CONTINUE
+C
+      IF (LCTCC) THEN
+        DO 20 ILIAI = 1,NBLIAI
+          DO 21 ICMP = 1,ZRESU
+            ZR(JCNSVR-1+ZRESU*(ILIAI-1)+ICMP) = 0.D0
+            ZL(JCNSLR-1+ZRESU*(ILIAI-1)+ICMP) = .TRUE.
+ 21       CONTINUE
+          ZR(JCNSVR-1+ZRESU*(ILIAI-1)+2 ) = 0.0D0
+ 20     CONTINUE
+      ENDIF
+C
+C --- CREATION DU CHAM_NO_S PERCUSSION
+C 
+      CALL JEEXIN(CNSPER(1:19)//'.CNSV',IRET)
+      IF (IRET.EQ.0) THEN
+        CALL CNSCRE(NOMA,'VARI_R',ZPERC,NOMPER,'V',CNSPER)
+      ENDIF  
+      CALL JEVEUO(CNSPER(1:19)//'.CNSV','E',JCNSVP)
+      CALL JEVEUO(CNSPER(1:19)//'.CNSL','E',JCNSLP)   
+C
+C --- INITIALISATION DU CHAM_NO_S PERCUSSION
+C --- ON NE REMET PAS A ZERO D'UN PAS A L'AUTRE
+C     
+      IF (IRET.EQ.0) THEN    
+        DO 4 ILIAI = 1,NBLIAI     
+          DO 3 ICMP = 1,ZPERC
+            ZR(JCNSVP-1+ZPERC*(ILIAI-1)+ICMP) = 0.D0
+            ZL(JCNSLP-1+ZPERC*(ILIAI-1)+ICMP) = .FALSE.
+ 3        CONTINUE
+ 4      CONTINUE
+      ENDIF
+C
+ 999  CONTINUE  
+C
       CALL JEDEMA()
       END

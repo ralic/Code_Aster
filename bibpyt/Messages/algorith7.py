@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF algorith7 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -337,10 +337,6 @@ cata_msg = {
  développement non implanté
 """),
 
-78 : _("""
- FETI et frottement incompatibles !
-"""),
-
 79 : _("""
  N doit etre > 0
 """),
@@ -373,33 +369,7 @@ cata_msg = {
  fonctionnalite modifiée (dvlp)
 """),
 
-89 : _("""
- contact et recherche linéaire peuvent poser des problèmes de convergence
-"""),
 
-90 : _("""
- la combinaison: contact-frottement et solveur GCPC n'est pas disponible.
-"""),
-
-91 : _("""
- contact méthode continue et recherche linéaire sont incompatibles
-"""),
-
-92 : _("""
- contact méthode continue et pilotage sont incompatibles
-"""),
-
-93 : _("""
- la combinaison: méthode continue en contact et solveur GCPC n'est pas disponible.
-"""),
-
-94 : _("""
- LIAISON_UNILATER et PILOTAGE sont des fonctionnalités incompatibles
-"""),
-
-95 : _("""
- LIAISON_UNILATER et recherche linéaire peuvent poser des problèmes de convergence
-"""),
 
 96 : _("""
  comportement ZMAT obligatoire

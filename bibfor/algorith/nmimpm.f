@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C IN  NATURE : NATURE DE L'IMPRESSION
 C              'MATR_ASSE' -> ASSEMBLAGE DE LA MATRICE
 C              'ARCH_INIT' -> TITRE ARCHIVAGE ETAT INITIAL
 C              'ARCHIVAGE' -> STOCKAGE DES CHAMPS
+C              'ARCH_SENS' -> STOCKAGE DES CHAMPS DERIVES (SENSIBILITE)
 C              'ITER_MAXI' -> MAXIMUM ITERATIONS ATTEINT
 C              'SUBDIVISE' -> SUBDIVISION DU PAS DE TEMPS
 C              'CONV_OK  ' -> CONVERGENCE ATTEINTE
@@ -112,6 +113,8 @@ C
       CHARACTER*9      NATURE
       CHARACTER*1      MARQ
       CHARACTER*4      ARG4
+      CHARACTER*8      ARG8  
+      CHARACTER*18     ARG18    
       INTEGER          LONGR,PRECR,LONGI,LONGK,FORCOL
       INTEGER          VALI
       REAL*8           VALR
@@ -230,42 +233,46 @@ C ======================================================================
 C
 C --- AFFICHAGE DE L'INSTANT DE CALCUL
 C
-        CALL IMPFOR(UNIBID,R8LONG,R8PREC,ARGR(1),ARG16)
-
+        IF (NATURE(1:4).EQ.'POST') THEN
+          ARG18 = ARGZ(1)
+        ELSE
+          CALL IMPFOR(UNIBID,R8LONG,R8PREC,ARGR(1),ARG16)
+        ENDIF
+C        
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
           CALL IMPFOK(LIGNE,LARGE,UNITM)
-          WRITE(UNITM,*)
-          CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
-          WRITE(UNITM,*)
-
-          IF (NATURE(1:1).EQ.' ') THEN
-            CALL IMPFOK(LIGNE,LARGE,UNITM)
-            DO 39 K = 1,TITMAX
-              CALL IMPFOK(TITRE(K),LARGE,UNITM)
- 39         CONTINUE
-            CALL IMPFOK(LIGNE,LARGE,UNITM)
-          ENDIF
-
-
+          WRITE(UNITM,*)        
+          IF (NATURE(1:4).EQ.'POST') THEN
+            CALL IMPFOK('POST-TRAITEMENT: '//ARG18,35,UNITM)
+          ELSE
+            CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
+            WRITE(UNITM,*)
+            IF (NATURE.EQ.'IMPLICITE') THEN
+              CALL IMPFOK(LIGNE,LARGE,UNITM)
+              DO 39 K = 1,TITMAX
+                CALL IMPFOK(TITRE(K),LARGE,UNITM)
+ 39           CONTINUE
+              CALL IMPFOK(LIGNE,LARGE,UNITM)
+            ENDIF
+          ENDIF        
         ELSE
-
           WRITE(UNITM,*)
-          WRITE(UNITM,*)
-
-          CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
-          WRITE(UNITM,*)
-
-          IF (NATURE(1:1).EQ.' ') THEN
-            CALL IMPFOK(LIGNE,LARGE,UNITM)
-            DO 33 K = 1,TITMAX
-              CALL IMPFOK(TITRE(K),LARGE,UNITM)
- 33         CONTINUE
-            CALL IMPFOK(LIGNE,LARGE,UNITM)
+          WRITE(UNITM,*)       
+          IF (NATURE(1:4).EQ.'POST') THEN
+            CALL IMPFOK('POST-TRAITEMENT: '//ARG18,35,UNITM)
+          ELSE
+            CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
+            WRITE(UNITM,*)
+            IF (NATURE.EQ.'IMPLICITE') THEN
+              CALL IMPFOK(LIGNE,LARGE,UNITM)
+              DO 33 K = 1,TITMAX
+                CALL IMPFOK(TITRE(K),LARGE,UNITM)
+ 33           CONTINUE
+              CALL IMPFOK(LIGNE,LARGE,UNITM)
+            ENDIF
           ENDIF
-
         ENDIF
-
         GOTO 9999
       END IF
 
@@ -308,6 +315,52 @@ C --- ARCHIVAGE DES CHAMPS
           WRITE (UNITM,1000) ARG16,ARGR(1),ARGI(1)
         ENDIF
 
+C --- ARCHIVAGE DES CHAMPS DERIVES (SENSIBILITE)
+
+      ELSE IF (NATURE .EQ. 'ARCH_SENS') THEN
+
+ 1001   FORMAT(1P,3X,'ARCHIVAGE DES CHAMPS DERIVES PAR RAPPORT A ',A8)
+        IF (UNITM.EQ.MESS) THEN
+          ARG8 = ARGZ(1)
+          WRITE (UNITM,1001) ARG8
+        ENDIF
+        
+C --- ARCHIVAGE DES MODES (FLAMBEMENT ET VIBRATOIRES)
+
+      ELSE IF (NATURE .EQ. 'ARCH_MODE') THEN
+        ARG8 = ARGZ(1) 
+        IF (ARG8.EQ.'VIBR') THEN
+          ARG18 = 'MODE VIBRATOIRE   '
+        ELSEIF(ARG8.EQ.'FLAM') THEN
+          ARG18 = 'MODE DE FLAMBEMENT'
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        
+ 1002   FORMAT(1P,3X,'ARCHIVAGE - ',A18,' - NUMERO D''ORDRE : ',
+     &         I5)
+        IF (UNITM.EQ.MESS) THEN
+          WRITE(UNITM,*)
+          WRITE (UNITM,1002) ARG18,ARGI(1)
+        ENDIF
+
+C --- IMPRESSION DES MODES (FLAMBEMENT ET VIBRATOIRES)
+
+      ELSE IF (NATURE .EQ. 'IMPR_MODE') THEN
+        ARG8 = ARGZ(1) 
+        IF (ARG8.EQ.'VIBR') THEN
+          ARG18 = 'MODE VIBRATOIRE   '
+        ELSEIF(ARG8.EQ.'FLAM') THEN
+          ARG18 = 'MODE DE FLAMBEMENT'
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+ 1003   FORMAT(1P,3X,A18,': ',1PE16.9,' - NUMERO DU MODE : ',I5)
+        IF (UNITM.EQ.MESS) THEN
+          WRITE(UNITM,*)
+          WRITE (UNITM,1003) ARG18,ARGR(1),ARGI(1)
+        ENDIF        
+        
       ELSE IF (NATURE .EQ. 'TPS_PAS') THEN
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
