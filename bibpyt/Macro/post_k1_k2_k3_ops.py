@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 11/12/2007   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 08/01/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,16 +114,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    dicmat=dict(zip(valk,valr))
 #   --- PROPRIETES MATERIAUX DEPENDANTES DE LA TEMPERATURE
    Tempe3D = False
-   if dicmat.has_key('TEMP_DEF') and FOND_FISS and RESULTAT : 
-# on recupere juste le nom du resultat thermique
+   if FOND_FISS and args['EVOL_THER'] : 
+# on recupere juste le nom du resultat thermique (la température est variable de commande)
       ndim   = 3
-      Lchar = sd_l_charges(RESULTAT.CHAR.get()[0]).LCHA
-      for i in range(len(Lchar)):
-         resuth = sd_char_meca(Lchar).CHME.TEMPE_TEMP.get()
-         if resuth !=None :
-            Tempe3D = True
-            break
-   elif dicmat.has_key('TEMP_DEF') and not Tempe3D :
+      Tempe3D=True
+      resuth=string.ljust(args['EVOL_THER'].nom,8).rstrip()
+   if dicmat.has_key('TEMP_DEF') and not args['EVOL_THER'] :
       UTMESS('A','RUPTURE0_6')
       nompar = ('TEMP',)
       valpar = (dicmat['TEMP_DEF'],)
@@ -620,8 +616,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
  
 #   ----------Recuperation de la temperature au fond -------------  
    if Tempe3D :
-      resuth = map(string.rstrip,resuth)
-      Rth = self.jdc.sds_dict[resuth[0]]
+      Rth = self.jdc.sds_dict[resuth]
       __TEMP=POST_RELEVE_T(ACTION=_F(INTITULE='Temperature fond de fissure',
                                        NOEUD=Lnofon,TOUT_CMP='OUI',
                                        RESULTAT=Rth,NOM_CHAM='TEMP',TOUT_ORDRE='OUI',

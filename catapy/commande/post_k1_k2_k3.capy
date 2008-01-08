@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 08/01/2008   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,8 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          SANS_GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                         TOUT          = SIMP(statut='f',typ='TXM',into=("OUI",) )
+                         TOUT          = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                         EVOL_THER     = SIMP(statut='f',typ=(evol_ther),fr="Température sur le fond de fissure")
                          ),
          b_fissure   =BLOC (condition="(FISSURE!= None)",
                          MAILLAGE       = SIMP(statut='o',typ=maillage_sdaster),

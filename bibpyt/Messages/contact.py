@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 08/01/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,15 +23,17 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
-La méthode de résolution du contact utilisée suppose la symétrie de la
-matrice du système à résoudre.
-Dans le cas où votre modélisation ferait intervenir une matrice 
-non-symétrique, on force sa symétrie. On émet une alarme pour vous 
-en avertir. 
-
-CONSEIL : 
-Vous pouvez supprimer cette alarme en renseignant SYME='OUI' sous le 
-mot-clé facteur SOLVEUR.
+Contact méthodes discrètes.
+ -> Les méthodes de contact discrètes supposent la symétrie de la matrice obtenue après assemblage.
+    Si votre modélisation produit une matrice non-symétrique, on force donc sa symétrie pour résoudre
+    le contact.
+ -> Risque & Conseil :
+    Ce changement peut conduire à des difficultés de convergence dans le processus de Newton mais en
+    aucun cas il ne produit des résultats faux.
+    
+    Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
+    Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant SYME='OUI'
+    sous le mot-clé facteur SOLVEUR.
 """),
 
 2 : _("""

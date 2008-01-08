@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 08/01/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -203,15 +203,19 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   VERSION='7.1.1',),);
 
 # Xx = 0.
+# Valeur de non regression modifiee suite a changement de compilo
+# Ancienne valeur : 1.7844700000000D+04
+#                   v7.3.23
+# (etait OK avec solveur MUMPS)
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N300',
                   INST=0.1,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
-                  VALE=1.78447E+04,
-                  PRECISION=0.0015,
+                  VALE=1.7993162477886E+04,
+                  #PRECISION=0.0015,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='7.3.23',),);
+                  VERSION='9.2.3',),);
 
 TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOEUD='N302',

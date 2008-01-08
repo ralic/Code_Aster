@@ -1,4 +1,4 @@
-#@ MODIF System Utilitai  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF System Utilitai  DATE 08/01/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,6 +46,12 @@ def _exitcode(status, default=0):
    iret = default
    if os.WIFEXITED(status):
       iret = os.WEXITSTATUS(status)
+   elif os.WIFSIGNALED(status):
+      iret = os.WTERMSIG(status)
+   elif os.WIFSTOPPED(status):
+      iret = os.WSTOPSIG(status)
+   else:
+      iret = default
    return iret
 
 #-------------------------------------------------------------------------------

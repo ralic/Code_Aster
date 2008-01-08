@@ -1,4 +1,4 @@
-#@ MODIF sd_fond_fiss SD  DATE 11/12/2007   AUTEUR GALENNE E.GALENNE 
+#@ MODIF sd_fond_fiss SD  DATE 08/01/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,8 +26,8 @@ class sd_fond_fiss(AsBase):
     NORMALE = Facultatif(AsVR(lonmax=3, ))
     FOND_______TYPE = AsVK8(SDNom(nomj='.FOND      .TYPE'), lonmax=1, )
     FOND_______NOEU = AsVK8(SDNom(nomj='.FOND      .NOEU'), )
-    FONDSUP____NOEU = Facultatif(SDNom(nomj='.FOND_SUP  .NOEU'), )
-    FONDINF____NOEU = Facultatif(SDNom(nomj='.FOND_INF  .NOEU'), )
+    FONDSUP____NOEU = Facultatif(AsVK8(SDNom(nomj='.FOND_SUP  .NOEU'), ))
+    FONDINF____NOEU = Facultatif(AsVK8(SDNom(nomj='.FOND_INF  .NOEU'), ))
     DTAN_EXTREMITE = Facultatif(AsVR(lonmax=3, ))
     INFNORM____NOEU = Facultatif(AsVK8(SDNom(nomj='.INFNORM   .NOEU'), ))
     DTAN_ORIGINE = Facultatif(AsVR(lonmax=3, ))

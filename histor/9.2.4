@@ -1,0 +1,610 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 08/01/2008 - 15:27:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011579 DU 2007-12-19 16:21:51
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Probleme de performance CALC_TABLE sur une grosse table
+FONCTIONNALITE
+   Le problËme concerne le post-traitement d'une table obtenue avec OBSERVATION dans
+   DYNA_NON_LINE. Il y a 4000 pas de temps, plusieurs noeuds et composantes de champs: soit
+   au total une table de 350.000 lignes.
+   
+   J'ai reproduit le problËme en repartant de la table imprimÈe au format ASTER. LIRE_TABLE
+   prend environ 80 s (contre 11 s pour une table de 50.000 lignes).
+   
+   L'opÈration co˚teuse est l'intersection de deux tables activÈe par le mot-clÈ FILTRE. Il
+   faut pour chaque ligne de la table 2 regarder si une ligne identique existe dans la table
+   1, et si oui, on ajoute cette ligne dans la table intersection.
+   Pour le test "est-ce qu'une ligne est dans la table ?", on fait "if ligne in tab2.rows" en
+   o(n).
+   Donc l'intersection Ètait en o(n^2).
+   
+   Je modifie l'algo pour qu'il reste en o(n) :
+   - fonction qui retourne un tuple ordonnÈ des valeurs d'une ligne (_tuplevalues)
+   - construction d'un dictionnaire : dico = { _tuplevalues(ligne) : 1}
+   - le test "est-ce qu'une ligne est dans la table ?" devient dico.get(_tuplevalues(ligne))
+   == 1 qui est immÈdiat.
+   
+   
+   Sur la table de 50.000, CALC_TABLE( 3 FILTREs ) passe de 43 s ‡ 1.15 s.
+   Sur la table de 350.000, Á‡ passe de 2900 s ‡ 9.6 s.
+   
+   NB : il faut environ 100 Mo hors jeveux pour CALC_TABLE avec la plus grosse table.
+   
+   Au passage, une anomalie a ÈtÈ corrigÈe dans la mÈthode SansColonneVide (qui comme son nom
+   l'indique permet de supprimer les colonnes vides d'une table).
+   
+   
+   Modif reportÈe en version 8 (Table.py).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests CALC_TABLE
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011591 DU 2008-01-03 16:08:54
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Probleme de memoire
+FONCTIONNALITE
+   Petite explication sur le pourquoi du "dont Aster" :
+   Jusqu'‡ rÈcemment, on donnait une seule valeur de mÈmoire pour un calcul, elle Ètait
+   disponible pour les objets jeveux (fortran). La partie Python (superviseur, analyseur du
+   jeu de commandes) se contentait de prendre "‡ cÙtÈ" et il n'y avait pas de mÈcanisme pour
+   limiter ce surplus de mÈmoire. Un job pouvait alors prendre 4 Go de mÈmoire jeveux et 200
+   Mo en plus sans qu'on l'en interdise (ce qui pose des problËmes ensuite d'exploitation des
+   serveurs de calcul).
+   
+   Depuis la version 9, un mÈcanisme interdit de prendre beaucoup plus de mÈmoire que ce qui
+   est demandÈ dans le champ "MÈmoire totale". Dans certains cas d'utilisation, on peut avoir
+   besoin de beaucoup de mÈmoire hors de jeveux : solveur externe (Mumps), manipulation
+   Python importante...On peut alors rÈpartir finement la mÈmoire totale entre ce qui sera
+   donnÈ ‡ Jeveux et ce qui sera libre pour le reste.
+   Le "reste" peut Ítre du python (dans une macro ou dans le fichier de commandes), un
+   solveur (para exemple MUMPS) ou un outil (Miss, Gibi) appelÈs en externe qui alloue leurs
+   propres objets en mÈmoire.
+   
+   
+   ProblËme remontÈ dans la fiche :
+   Il y a 120.000 lignes de DEFI_FONCTION dans le fichier de commandes.
+   - le VALE est un tuple python qu'il faut bien allouÈ : perte de mÈmoire
+   - chacune des valeurs du VALE des fonctions sont analysÈes et vÈrifiÈes : inutile, cela
+   peut co˚ter en temps ‡ la longue.
+   
+   La solution naturelle est d'utiliser LIRE_FONCTION qui est fait pour Á‡ : lire des
+   colonnes de chiffres dans un fichier pour en faire des fonctions. Le jeu de commandes sera
+   beaucoup plus facile ‡ lire.
+   
+   Sinon on peut aussi ajuster les paramËtres pour laisser un peu plus de mÈmoire pour Python.
+   Le cas passe (batch sur Bull) avec 96 Mo dont 32 Mo pour Aster (soit un max de 64 Mo pour
+   python, ce qui ne semble pas aberrant avec un jeu de commandes qui fait 3.5 Mo de texte).
+   Ce qui donne dans astk : MÈmoire totale = 96 Mo, dont Aster = 32 Mo.
+   
+   
+   Emission d'un message plus clair :
+   Quand la limite mÈmoire est atteinte en Python, on s'arrÍte normalement avec MemoryError.
+   Dans ce cas, l'exception est rÈcupÈrÈe et on Èmet un message plus dÈtaillÈ :
+   
+      """
+      En gÈnÈral, cette erreur se produit car la mÈmoire utilisÈe hors du fortran
+      (jeveux) est importante.
+   
+      Causes possibles :
+         - le calcul produit de gros objets Python dans une macro-commande ou
+           dans le jeu de commande lui-mÍme,
+         - le calcul appelle un solveur (MUMPS par exemple) ou un outil externe
+           qui a besoin de mÈmoire hors jeveux,
+         - utilisation de jeveux dynamique,
+         - ...
+   
+      Solution :
+         - distinguer la mÈmoire limite du calcul (case "MÈmoire totale" de astk)
+           de la mÈmoire rÈservÈe ‡ jeveux (case "dont Aster"), le reste Ètant
+           disponible pour les allocations dynamiques.
+      """
+   
+   Cependant, il arrive souvent que l'arrÍt soit plus brutal : "Memory fault" ou "Cannot
+   allocate memory" et on ne rÈcupËre pas la main pour imprimer le message.
+   
+   A noter qu'‡ l'avenir (a priori avant la 9.3), jeveux dynamique sera activÈ par dÈfaut et
+   donc seul le paramËtre "MÈmoire totale" (borne sup) sera ‡ renseigner par l'utilisateur
+   (suppression de "dont Aster").
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests en erreur
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 08/01/2008 - 11:14:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011533 DU 2007-12-04 17:58:33
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   MISS09A : temps CPU insuffisant sur Calibre et Rocks : problxc3xa8mes de performances dans DYNA_LINE_HARM
+FONCTIONNALITE
+   ProblËme
+   ========
+   
+   VariabilitÈ des temps d'exÈcution sur les diffÈrentes machines de validation du cas-test
+   MISS09A utilisant DYNA_LINE_HARM.
+   
+   ==> La rÈfÈrence est ici la Bull (Itanium II 1.6Ghz, RAM illimitÈe)
+   
+    ********************************************************************************
+    * COMMAND                  :       USER :     SYSTEM :   USER+SYS :    ELAPSED *
+    ********************************************************************************
+    * DYNA_LINE_HARM           :     234.43 :       8.87 :     243.30 :     243.64 *
+    * DYNA_LINE_HARM           :     231.46 :       8.29 :     239.75 :     239.89 *
+   
+   Dans chaque DYNA_LINE_HARM, il y a deux inversions de systËmes linÈaires (taille de la
+   liste de frÈquences : 2). Le solveur utilisÈ est MULT_FRONT (sÈlectionnÈ indirectement par
+   le NUME_DDL des matrices en entrÈe).
+   
+   
+   ==> Sur une machine Linux (claut617, Bi Intel Xeon 3.4 GHz, 3,5 Go de RAM), on obtient ceci :
+    * DYNA_LINE_HARM           :     880.84 :      14.77 :     895.61 :     900.45 *
+   
+   ==> Sur une machine Linux (claut625, Intel Quad Xeon 2.33 GHz, 3 Go de RAM)
+    * DYNA_LINE_HARM           :     653.90 :      12.41 :     666.31 :     822.11 *
+    * DYNA_LINE_HARM           :     650.34 :      10.95 :     661.29 :     817.27 *
+   
+   ==> Sur Rocks (Clpaster, Bi Opteron 2.2 Ghz, 4 Go de RAM)
+    * DYNA_LINE_HARM           :     864.73 :      19.18 :     883.91 :     885.11 *
+    * DYNA_LINE_HARM           :     862.62 :      16.47 :     879.09 :     880.29 *
+   
+   
+   Plus de 3 fois plus longs en moyenne.
+   
+   Analyse
+   =======
+   
+   a/ La premiËre idÈe est d'essayer comme pour la fiche 11443 d'utiliser des bibliothËques
+   mathÈmatiques plus optimisÈes sur les machines dont les temps sont mauvais.
+   On obtient alors :
+   
+   ==> Sur une machine Linux (claut617, Bi Intel Xeon 3.4 GHz, 3,5 Go de RAM)
+    * DYNA_LINE_HARM           :     304.60 :      15.58 :     320.18 :     322.33 *
+    * DYNA_LINE_HARM           :     301.25 :      11.09 :     312.34 :     315.02 *
+   
+   ==> Sur une machine Linux (claut625, Intel Quad Xeon 2.33 GHz, 3 Go de RAM)
+    * DYNA_LINE_HARM           :     253.00 :      12.80 :     265.80 :     405.36 *
+    * DYNA_LINE_HARM           :     248.44 :       9.79 :     258.23 :     372.44 *
+   
+   ==> Sur Rocks (Clpaster, Bi Opteron 2.2 Ghz, 4 Go de RAM)
+    * DYNA_LINE_HARM           :     405.35 :      18.17 :     423.52 :     424.28 *
+    * DYNA_LINE_HARM           :     399.21 :      15.92 :     415.13 :     415.39 *
+   
+   
+   Les temps sont donc sensiblement amÈliorÈs mais ils restent quand mÍme supÈrieurs ‡ ceux
+   de la Bull. Deux cas de figure existent :
+   
+   ==> Sur la machine claut625 o˘ la quantitÈ de RAM est moindre que sur Rocks ou claut617,
+   on remarque que les temps USER+SYS ne sont pas Ègaux ‡ ELAPSED. C'est l‡ le signe d'une
+   utilisation du swap, ce qui est comprÈhensible dans la mesure o˘ le test nÈcessite pas
+   moins de 2Go de RAM et qu'un systËme Linux mÍme fraÓchement dÈmarrÈ (comme c'Ètait le cas
+   sur ces benchs) consomme dÈj‡ 900 Mo ...
+   
+   La question qui vient ‡ l'esprit est pourquoi a-t-on besoin d'autant de RAM pour un test
+   qui ne comporte que 80000 DDLs ?
+   
+   En Ètudiant un peu la rÈpartition de la mÈmoire (avec JEVEUX dynamique), on se rend compte
+   que c'est la MULT_FRONT qui reprÈsente l'essentiel des 2 Go. Est-ce normal ? RÈponse plus
+   loin ...
+   
+   ==> Sur ROCKS ou claut617, les temps ÈcoulÈs sont de 50 ‡ 100% supÈrieurs ‡ celui de la
+   Bull, par contre USER+SYS=ELAPSED. C'est cohÈrent avec la quantitÈ de RAM installÈe
+   (respectivement 4 et 3.5 Go)
+   Quand ‡ la diffÈrence de temps entre ROCKS et Calibre, on peut lÈgitimement penser la
+   machine clpaster qui a presque 3 ans est plus lente que les autres.
+   
+   b/ Pour revenir sur la consommation mÈmoire de la MULT_FRONT qui est ici la version
+   complexe j'ai voulu utiliser MUMPS. Il y a alors un plantage en ASSERT(.FALSE.) (Fiche 11587).
+   J'ai modifiÈ quelques sources pour inverser le systËme linÈaire par la voie canonique
+   PRERES/RESOUD et je peux donc comparer avec le solveur MUMPS.
+   
+   J'ai commencÈ par des tests sur la Bull :
+   
+   MUMPS & JEVEUX dynamique (fortement conseillÈ avec MUMPS)
+    * DYNA_LINE_HARM           :     186.79 :       1.41 :     188.20 :     188.28 *
+    * DYNA_LINE_HARM           :     186.57 :       1.45 :     188.01 :     188.02 *
+   ==> environ 2.1 Go (via Top, majoration incluant Python)
+   
+   MULT_FRONT & JEVEUX dynamique (pour comparer la mÍme chose)
+    * DYNA_LINE_HARM           :     209.77 :       5.10 :     214.88 :     215.18 *
+    * DYNA_LINE_HARM           :     207.25 :       1.46 :     208.71 :     208.71 *
+   ==> 1842 Mo (Jeveux)
+   
+   On constate d'une part que MUMPS est meilleur que MULT_FRONT mais que JEVEUX dynamique
+   apporte un gain dans le solveur MULT_FRONT, pour s'en convaincre j'ai fait tourner :
+   
+   MUMPS & JEVEUX statique 
+    * DYNA_LINE_HARM           :     186.96 :       1.47 :     188.42 :     188.43 *
+    * DYNA_LINE_HARM           :     187.10 :       1.42 :     188.52 :     188.52 *
+   ==> environ 2.2 Go (via Top, majoration incluant Python)
+   
+   DeuxiËme point important : la mÈmoire. La rÈsolution de ce systËme de dimension 80000
+   complexe nÈcessite bien un bon Go de mÈmoire ‡ lui tout seul.
+   
+   c/ Application ‡ Calibre et Rocks
+   
+   J'ai tout simplement essayÈ de faire tourner le test sans rien changer sauf JEVEUX
+   dynamique et les BLAS optimisÈes : cela ne marche pas car les machines 32 bits sont
+   limitÈes par le maximum de RAM allouable par un exÈcutable.
+   
+   Sans conviction j'ai essayÈ Jeveux Dynamique + MUMPS + Blas optimisÈes   ..... et Áa a
+   marchÈ :
+   
+   ==> Sur une machine Linux (claut617, Bi Intel Xeon 3.4 GHz, 3,5 Go de RAM), on obtient ceci :
+    * DYNA_LINE_HARM           :     193.41 :       3.31 :     196.72 :     220.84 *
+    * DYNA_LINE_HARM           :     192.46 :       3.46 :     195.92 :     219.66 *
+   11
+   ==> Sur une machine Linux (claut625, Intel Quad Xeon 2.33 GHz, 3 Go de RAM), on obtient ceci :
+    * DYNA_LINE_HARM           :     178.31 :       2.36 :     180.67 :     194.81 *
+    * DYNA_LINE_HARM           :     178.16 :       2.34 :     180.50 :     194.82 *
+   
+   ==> Sur Rocks (Clpaster, Bi Opteron 2.2 Ghz, 4 Go de RAM)
+   ProblËme ...
+   
+   
+   
+   Conclusion
+   ==========
+   
+   Il ne semble pas y avoir de problËmes flagrants dans l'algorithmie de DYNA_LINE_HARM. La
+   MULT_FRONT complexe semble consommer un peu plus de mÈmoire que MUMPS sur machine Calibre
+   mais y-a-t-il vraiment un problËme ?
+   
+   Modifier les cas-tests pour essayer de les faire passer comme il faut sur Calibre et Rocks
+   (en utilisant JEVEUX dynamique, etc ...) n'est pas une bonne idÈe car les benchs ici ont
+   ÈtÈ faits sans charge et puis la machine de rÈfÈrence est encore moins puissante et a
+   encore moins de RAM (clp50a8).
+   
+   Seule prÈconisation : installer des BLAS optimisÈes, peut Ítre Èmettre une fiche dÈdiÈe.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   miss09a
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011548 DU 2007-12-10 17:48:06
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   Ecrasement de surface rugueuse
+FONCTIONNALITE
+   On modifie le message Èmis lorsque l'on fait du contact et que SYME='NON' (dÈfaut) dans le
+   mot clÈ SOLVEUR :
+   
+      !------------------------------------------------------------------------!
+      ! <A> <CONTACT_1>                                                        !
+      !                                                                        !
+      !                                                                        !
+      !  Contact mÈthodes discrËtes.                                           !
+      !   -> Les mÈthodes de contact discrËtes supposent la symÈtrie de la     !
+      !      matrice obtenue aprËs assemblage.                                 !
+      !      Si votre modÈlisation produit une matrice non-symÈtrique, on force!
+      !      donc sa symÈtrie pour rÈsoudre le contact.                        !
+      !   -> Risque & Conseil :                                                !
+      !      Ce changement peut conduire ‡ des difficultÈs de convergence dans !
+      !      le processus de Newton mais en aucun cas il ne produit des        !
+      !      rÈsultats faux.                                                   !
+      !                                                                        !
+      !      Si la matrice de rigiditÈ de votre structure est symÈtrique, vous !
+      !      pouvez ignorer ce qui prÈcËde.                                    !
+      !      Enfin, il est possible de supprimer l'affichage de cette alarme en!
+      !      renseignant SYME='OUI' sous le mot-clÈ facteur SOLVEUR.           !
+      !                                                                        !
+      !                                                                        !
+      ! Ceci est une alarme. Si vous ne comprenez pas le sens de cette         !
+      ! alarme, vous pouvez obtenir des rÈsultats inattendus !                 !
+      !------------------------------------------------------------------------!
+   
+   
+   Par ailleurs on modifie la documentation du mot clÈ SOLVEUR pour remplacer la phrase "La
+   symÈtrisation de la matrice A conduit donc ‡ rÈsoudre un autre problËme que celui que l'on
+   cherche ‡ rÈsoudre !". On pourrait par exemple renvoyer vers la documentation de rÈfÈrence
+   de STAT_NON_LINE qui explique clairement que l'utilisation d'une matrice tangente non
+   cohÈrente ou bien une erreur dans l'estimation des dÈplacements ne conduit jamais ‡ des
+   rÈsultats faux. C'est le calcul correct des forces internes (et donc l'intÈgration du
+   comportement) qui est garant de la justesse des rÈsultats.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.50.01-F
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011565 DU 2007-12-14 16:11:29
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   En NEW9.2.1, le cas-test ssnv506d est NOOK sur Bull.
+FONCTIONNALITE
+   ProblËme
+   ========
+   
+   Suite au changement de compilateur, le cas-test ssnv506d est NOOK sur Bull. Le test porte
+   sur une valeur de non rÈgression.
+   
+   Analyse
+   =======
+   
+   1/ Sur ma machine : compilateur identique ‡ ceux de la Bull (Intel 10.0.026), le test est
+   OK, la valeur est la mÍme qu'en STA9 sur Bull.
+      Sur la Bull : avec un exÈcutable instrumentÈ pour la couverture de code, le test est
+   aussi OK
+   
+   
+   2/ En INFO=2, on compare les informations du contact avant et aprËs le changement de
+   compilateur. On voit alors qu'‡ partir du second pas de temps, des diffÈrences d'arrondis
+   dans le contact conduisent ‡ calculer des jeux diffÈrents, puis ces diffÈrences se
+   rÈpercutant, des appariemments noeuds-mailles changent aussi.
+   
+   3/ Avec le solveur MUMPS, ce cas-test est OK (il n'est pas nÈcessaire d'activer le
+   raffinement de la solution).
+      Avec le solveur MUMPS en parallËle sur 4 processeurs, il est NOOK avec exactement la
+   mÍme valeur que celle obtenue avec MULT_FRONT. Si on active le raffinement alors il
+   devient OK.
+   
+   
+   
+   Conclusion et remarques
+   =======================
+   
+   Je conclue que l'on peut ajuster la rÈfÈrence sur la nouvelle valeur. Cependant je fais
+   une remarque :
+   
+   En consultant le document de validation de ce cas-test (V6.04.506-B), on s'aperÁoit que
+   les TEST_RESU dÈcrits dans celui-ci qui utilisent une source externe ANALYTIQUE ne sont
+   plus du tout les mÍmes que ceux effectuÈs dans le .comm qui sont des tests de non
+   rÈgression (pourtant le document n'est pas si vieux : 15/02/2006).
+   
+   En consultant le diff du fichier de commandes, je me suis aperÁu qu'en effet les anciens
+   TEST_RESU ont ÈtÈ supprimÈs en 7.3.14. ¿ la dÈcharge de la personne qui les a supprimÈs,
+   ils ne servaient en effet ‡ rien : les valeurs de rÈfÈrence commencent ‡ l'instant 0.2
+   alors que le calcul ne va qu'‡ l'instant 0.1. On peut cependant penser que les rÈdacteurs
+   du document de validation avaient ‡ l'Èpoque fait tourner le calcul jusqu'au bout puis
+   comparÈ les rÈsultats sans les laisser dans le fichier de commandes car le test devait
+   Ítre trop long (d'o˘ la prÈsence de tests de non rÈgresssion).
+   J'ai repris ces TEST_RESU et en faisant tourner le calcul jusqu'au "bout", le test est
+   NOOK avec des valeurs qui diffËrent trËs largement de ce qui est dans le document de
+   validation ... Comme les rÈfÈrences sont soi disant analytiques, c'est un peu embÍtant.
+   J'aimerai bien consulter le livre donnant la rÈfÈrence mais il est semble-t-il ‡ SINETICS.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.506
+VALIDATION
+   ssnv506d
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011597 DU 2008-01-04 09:11:40
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Variables non initialisxc3xa9es dans le contact discret
+FONCTIONNALITE
+   Des variables ne sont pas initialisÈes dans le contact discret. Rien de bien mÈchant mais
+   cela conduit par exemple l'affichage d'un message d'alarme sur Calibre qui n'a pas lieu
+   d'Ítre (cf zzzz231a sur Calibre).
+   
+   Routines impactÈes :
+   
+   exnocp.f : mettre LVERIF et LQUADV ‡ .FALSE.
+   nbsuco.f : mettre LQUADV ‡ .FALSE.
+   
+   
+   DÈcouvert gr‚ce ‡ Valgrind.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   valgrind
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 08/01/2008 - 13:56:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010895 DU 2007-05-24 08:19:19
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   POST_K1_K2_K3 : prise en compte de la temperature
+FONCTIONNALITE
+   # Objectif
+   Dans POST_K1_K2_K3, si les propriÈtÈs matÈriau dÈpendent de la tempÈrature, il est
+   nÈcessaire de connaitre la tempÈrature en fond de fissure pour faire le calcul des
+   facteurs d'intensitÈ des contraintes.
+   Cette fonctionnalitÈ avait ÈtÈ dÈveloppÈe quand la tempÈrature Ètait une des charges
+   mÈcaniques (AFFE_CHAR_MECA/TEMP_CALCULEE), on l'adapte dans cette fiche ‡ la nouvelle
+   dÈfinition de la tempÈrature comme variable de commande.
+   La solution retenue consiste ‡ demander ‡ l'utilisateur de donner explicitement le nom du
+   champ de tempÈrature en entrÈe de POST_K1_K2_K3.
+   
+   # DÈtails
+   -> catalogue post_k1_k2_k3.capy : un nouveau mot clÈ EVOL_THER est ajoutÈ (appelable
+   uniquement si FISSURE est renseignÈ)
+   -> macro post_k1_k2_k3_ops.py : prise en compte du nouveau mot clÈ
+   
+   Remarque : on en profite pour corriger le catalogue de la structure de donnÈe FOND_FISS
+   qui n'avait pas ÈtÈ correctement dÈfini dans une Èvolution prÈcÈdente (remplacement des
+   astergetvect par get dans la fiche 11439).
+   
+   # Validation
+   Passage du cas test sslv134g (-> corrige en mÍme temps la fiche 11569)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05
+VALIDATION
+   sslv134g
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011569 DU 2007-12-14 16:31:30
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TMA : CS
+TITRE
+   En NEW9.2.1, le cas-test sslv134g s'arrete en ARRET_ANORMAL sur Bull, Calibre et Rocks.
+FONCTIONNALITE
+   Cette fiche a ÈtÈ rÈsolue dans le cadre de la rÈalisation de la fiche 10895.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134g
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 07/01/2008 - 11:11:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011479 DU 2007-11-20 11:35:33
+TYPE aide utilisation concernant Code_Aster (VERSION 2.x)
+TITRE
+   Faire des calculs thermo m?nique avec des coques et des grilles
+FONCTIONNALITE
+   Bonjour
+   
+   Les solutions proposÈes ont permis au prestataire d'avancer correctement sans 
+   renoncer au calcul coque.
+   
+   Je tiens ‡ remercier ici Jean-Michel et tous ceux qui l'ont aidÈ ‡ proposer 
+   cette AOM rapidement et ‡ dÈbloquer ainsi la situation
+   
+   Cordialement
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   aucune
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011493 DU 2007-11-22 15:48:29
+TYPE aide utilisation concernant Code_Aster (VERSION 9.1)
+TITRE
+   STAT_NON_LINE: type de fonction inconnu
+FONCTIONNALITE
+   ProblËme rencontrÈ : Arret de Code Aster dans STAT_NON_LINE avec le message suivant:
+   
+      !--------------------------------------------------------------------!
+      ! <F> <UTILITAI6_36>                                                 !
+      !  erreur de programmationtype de fonction inconnu  √ê??????C?????? !
+      ! Cette erreur est fatale. Le code s'arrete.                         !
+      !--------------------------------------------------------------------!
+      
+   #8  0x40000000000e3410 in u2mesg_??unw ()
+   #9  0x40000000000f4ab0 in fonbpa_??unw ()
+   #10 0x4000000000169160 in dismca_??unw ()
+   #11 0x40000000000e9350 in dismoi_??unw ()
+   #12 0x4000000000374fb0 in nmdome_??unw ()
+   #13 0x4000000000fa96c0 in nmlect_??unw ()
+   #14 0x400000000039e7c0 in op0070_??unw ()
+   
+   Solution : Plusieurs petites corrections sont ‡ apporter au fichier de commandes pour
+   qu'il tourne en version 9 (‡ cause principalement des nouvelles variables de commandes).
+   Moyennant cela, et avec le paramËtre -max_base=50000 dans astk, le calcul tourne.
+   Je n'ai donc pas rÈussi ‡ reproduire l'erreur. Si quelqu'un veut poursuivre... la
+   recherche de ce message d'erreur...
+   
+    <I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.
+    <I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".
+   
+    ************************************************************************
+    * COMMAND          :       USER :     SYSTEM :   USER+SYS :    ELAPSED *
+    ************************************************************************
+    * POURSUITE        :       0.00 :       0.00 :       0.00 :       0.00 *
+    * STAT_NON_LINE    :    4925.59 :     165.57 :    5091.16 :    5285.60 *
+    * CALC_ELEM        :      24.39 :       0.04 :      24.42 :      24.43 *
+    * IMPR_RESU        :      99.31 :      24.71 :     124.02 :     124.74 *
+    * FIN              :       0.09 :       0.40 :       0.49 :       0.53 *
+    ************************************************************************
+    * TOTAL_JOB        :    5049.44 :     190.71 :    5240.15 :    5435.36 *
+    ************************************************************************
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude jointe
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF comp005b                     courtois M.COURTOIS         289      1      1
+ CASTEST MODIF miss09a                        desoza T.DESOZA           847      1      1
+ CASTEST MODIF sdll138a                     courtois M.COURTOIS         660      1      1
+ CASTEST MODIF sslv134g                      macocco K.MACOCCO         1143     10     10
+ CASTEST MODIF ssnl109a                     courtois M.COURTOIS         645      1      1
+ CASTEST MODIF ssnv506d                       desoza T.DESOZA           232      8      4
+ CASTEST MODIF wtna105a                     courtois M.COURTOIS         761      1      1
+ CASTEST MODIF wtnv126b                     courtois M.COURTOIS         823      1      1
+ CASTEST MODIF wtnv126c                     courtois M.COURTOIS         827      1      1
+ CASTEST MODIF wtnv132a                     courtois M.COURTOIS         615      1      1
+ CASTEST MODIF zzzz108a                     courtois M.COURTOIS        1139      1      1
+ CASTEST SUPPR ssnl108a.comm                courtois M.COURTOIS         152      0    152
+CATALOPY MODIF commande/post_k1_k2_k3        macocco K.MACOCCO           80      3      2
+ FORTRAN MODIF algorith/nsisot              courtois M.COURTOIS         573      2     21
+ FORTRAN MODIF modelisa/exnocp                desoza T.DESOZA           165      3      1
+ FORTRAN MODIF modelisa/nbsuco                desoza T.DESOZA           131      2      1
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         344     22      1
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       macocco K.MACOCCO         1094      7     12
+  PYTHON MODIF Messages/contact               desoza T.DESOZA           154     12     10
+  PYTHON MODIF SD/sd_fond_fiss               macocco K.MACOCCO           37      3      3
+  PYTHON MODIF Utilitai/System              courtois M.COURTOIS         223      7      1
+  PYTHON MODIF Utilitai/Table               courtois M.COURTOIS        1002     43     35
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   21       11784       131     110       +21
+ SUPPR :    1         152               152      -152
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   22       11936       131     262      -131 

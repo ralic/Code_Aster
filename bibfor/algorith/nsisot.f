@@ -2,7 +2,7 @@
      & SIGMS,VARMS,VARM,SIGM,VARP,SIPAS,SIGP,SIGPS,VARPS,STYPSE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ALGORITH  DATE 08/01/2008   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,7 +87,7 @@ C      COMMON COMMUN A NMCRI1 ET NMISOT
       REAL*8 DDXDE, DDXDNU, DDXDSI, DDXDET
       REAL*8 COE1, COE2, COE3, COE4
       REAL*8 NUM, DEN, NUMP, DENP, PROD
-      REAL*8 DPDE, DPDNU, DPDSI, DPDET, DPDPS
+      REAL*8 DPDE, DPDNU, DPDSI, DPDET
       INTEGER NDIMSI,K,I,L,NITER,IRET
       CHARACTER*2 BL2,FB2,CODRET(3)
       CHARACTER*8 NOMRES(3)
@@ -109,8 +109,6 @@ C     --------------------
 
       IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
         DELTAP = VARP(1) - VARM(1)
-           WRITE(6,*) 
-           WRITE(6,*) 'DELTAP=',DELTAP
       ELSE
         DELTAP = 0.D0
       ENDIF
@@ -309,7 +307,6 @@ C                RP=SIGY+SIGY*(E*(PM+DELTAP)/ALFAFA/SIGY)**UNSURN
               ENDIF
               DX = 3.D0*(1.D0-2.D0*NU)*SIGEL(3)*DELTAP/
      &            (E*DELTAP+2.D0*(1.D0-NU)*RP)
-              WRITE(6,*) 'DX=',DX
               COE1 = 3.D0*(1.D0-2.D0*NU)
               COE2 = DSDE*DSDE/((E-DSDE)*(E-DSDE))
               COE3 = E*E/((E-DSDE)*(E-DSDE))
@@ -323,18 +320,12 @@ C                RP=SIGY+SIGY*(E*(PM+DELTAP)/ALFAFA/SIGY)**UNSURN
               DPDE = (PROD + VARM(1)*COE2 - RPRIM*VARMS(1))/COE4
      &                -(SIELEQ - SIGY - RPRIM*VARM(1))
      &                *(1.5D0*DDEUMU-COE2)/(COE4*COE4)
-              WRITE(6,*) 'DPDE=',DPDE
               DPDNU = (PROD - RPRIM*VARMS(1))/COE4
      &                -(SIELEQ - SIGY - RPRIM*VARM(1))
      &                *(1.5D0*DDEUMU)/(COE4*COE4)
-              WRITE(6,*) 'DPDNU=',DPDNU
               DPDSI = (-1.D0 - RPRIM*VARMS(1))/COE4
-              WRITE(6,*) 'DPDSI=',DPDSI
               DPDET = (-VARM(1)*COE3 - RPRIM*VARMS(1))/COE4
      &                -(SIELEQ - SIGY - RPRIM*VARM(1))*COE3/(COE4*COE4)
-              WRITE(6,*) 'DPDET=',DPDET
-              DPDPS = DPDE*ES + DPDNU*NUS + DPDSI*SIGYS + DPDET*DSDES
-              WRITE(6,*) 'DPDPS=',DPDPS
 C
               NUM = COE1*DELTAP*SIGEL(3)
               DEN = E*DELTAP+2.D0*(1.D0-NU)*(RPRIM*VARP(1)+SIGY)
@@ -344,29 +335,24 @@ C   DERIVEE PAR RAPPORT A E
               DENP = DELTAP+E*DPDE+2.D0*(1.D0-NU)*
      &               (RPRIM*(DPDE+VARMS(1))-VARP(1)*COE2)
               DDXDE = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
-              WRITE(6,*) 'DDXDE=',DDXDE
 C   DERIVEE PAR RAPPORT A NU
               NUMP = COE1*(-DELTAP*DDESDV(3)*E/((1.D0+NU)*(1.D0+NU))
      &               + SIGEL(3)*DPDNU)-6.D0*DELTAP*SIGEL(3)
               DENP = E*DPDNU-2.D0*(RPRIM*VARP(1)+SIGY)
      &               +2.D0*(1.D0-NU)*RPRIM*(DPDNU+VARMS(1))
               DDXDNU = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
-              WRITE(6,*) 'DDXDNU=',DDXDNU
 C   DERIVEE PAR RAPPORT A SIGY
               NUMP = COE1*SIGEL(3)*DPDSI
               DENP = E*DPDSI+2.D0*(1.D0-NU)*(RPRIM*(VARMS(1)+DPDSI)
      &               +1.D0)
               DDXDSI = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
-              WRITE(6,*) 'DDXDSI=',DDXDSI
 C   DERIVEE PAR RAPPORT A DSDE
               NUMP = COE1*SIGEL(3)*DPDET
               DENP = E*DPDET+2.D0*(1.D0-NU)*(RPRIM*(VARMS(1)+DPDET)
      &               +COE3*(VARM(1)+DELTAP))
               DDXDET = (DEN*NUMP-NUM*DENP)/(DEN*DEN)
-              WRITE(6,*) 'DDXDET=',DDXDET
 C ======================================================================
               DDX = DDXDE*ES + DDXDNU*NUS + DDXDSI*SIGYS + DDXDET*DSDES
-              WRITE(6,*) 'DDX=',DDX
               FDDX(1) = -DDX/3.D0
               FDDX(2) = -DDX/3.D0
               FDDX(3) = 2.D0*DDX/3.D0
@@ -398,11 +384,6 @@ C   HYPOTHESE DE CONTRAINTES PLANES POUR LES PLAQUES
      &                 SIGMS(3))*KRON(I))
      &                 +TROIMU*RPRIM/ (RPTM*SIELEQ)*SIGEL(I)*VARMS(1)
 112           CONTINUE
-              WRITE(6,*) 'SIGPS(1)=',SIGPS(1)
-              WRITE(6,*) 'SIGPS(2)=',SIGPS(2)
-              WRITE(6,*) 'SIGPS(3)=',SIGPS(3)
-              WRITE(6,*) 'SIGMS(1)=',SIGMS(1)
-              WRITE(6,*) 'VARMS(1)=',VARMS(1)
          ELSE
               DO 113 I = 1,NDIMSI
                 SIGPS(I) = SIGMS(I)
