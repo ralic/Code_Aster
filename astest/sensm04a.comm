@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 14/01/2008   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -62,7 +62,7 @@ for i in range(n):
 #
 # 3. Prealable
 #
-PRE_GIBI()
+#PRE_GIBI()
 MAILLAGE=LIRE_MAILLAGE();
 #
 # 3.1. Modele
@@ -137,6 +137,36 @@ RES = CALC_ELEM(
                  OPTION = 'SIGM_ELNO_DEPL',
                  SENSIBILITE=tuple(PS)
                  );
+
+RES = CALC_ELEM(
+                 reuse = RES,
+                 RESULTAT = RES,
+
+                 OPTION = 'SIEF_ELGA_DEPL'
+                 );
+RES = CALC_ELEM(
+                 reuse = RES,
+                 RESULTAT = RES,
+
+                 OPTION = 'SIEF_ELGA_DEPL',
+                 SENSIBILITE = tuple(PS)
+                 );
+
+
+RES = CALC_NO( reuse      =  RES         ,
+              RESULTAT   =  RES         ,
+              MODELE     =  MODEMECA     ,
+              CHAM_MATER =  MATEMAIL      ,
+              OPTION     = ('REAC_NODA',),);
+
+RES = CALC_NO( reuse      =  RES         ,
+              RESULTAT   =  RES         ,
+              MODELE     =  MODEMECA     ,
+              CHAM_MATER =  MATEMAIL      ,
+              OPTION     = ('REAC_NODA',),
+              SENSIBILITE = tuple(PS)
+              );
+
 
 TAB_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                             GROUP_NO=('I'),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/12/2007   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -415,6 +415,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            TRAN            =SIMP(statut='f',typ='R',max=3 ),
            ANGL_NAUT       =SIMP(statut='f',typ='R',max=3 ),
            CENTRE          =SIMP(statut='f',typ='R',max=3 ),
+           DIST_MIN        =SIMP(statut='f',typ='R'),
            NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
          ),
 

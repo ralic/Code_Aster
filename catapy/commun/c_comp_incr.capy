@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+#& MODIF COMMUN  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -94,7 +94,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "ZIRC_EPRI",
                                         "VENDOCHAB",
                                         "NADAI_B",
-                                        "DIS_CONTACT",
                                         "DIS_CHOC",
                                         "DIS_GRICRA",
                                         "DIS_GOUJ2E_PLAS",
@@ -218,7 +217,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           GRILLE_ISOT_LINE=SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           GRILLE_CINE_LINE=SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           GRILLE_PINTO_MEN=SIMP(statut='c',typ='I',defaut=16,into=(16,)),
-          DIS_CONTACT     =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           DIS_CHOC        =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           DIS_GRICRA     =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           DIS_GOUJ2E_PLAS =SIMP(statut='c',typ='I',defaut=2,into=(2,)),

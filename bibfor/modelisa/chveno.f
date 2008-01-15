@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
      &              JGRO, NORIE1, NORIE2, NBMAIL, IMA, NUMAIL,NUMA,IBID,
      &              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,
      &              NOC11,NOC12,NOC1, JCOOR, JTYMA, JNMA, NTRAIT
-      INTEGER       JMAB, NBMAPR, NBMABO, JPRI, JBOR, IMPB
+      INTEGER       JMAB, NBMAPR, NBMABO, JPRI, JBOR, IMPB, ZERO
       INTEGER VALI
       PARAMETER    ( NBT = 5 )
       REAL*8        R8B, DNOR, R8PREM, DIR(3), ARMIN, PREC
@@ -77,6 +77,7 @@ C     LA NORMALE DOIT ETRE SORTANTE:
 C     ------------------------------------------------------------------
 C
       IER = 0
+      ZERO = 0
       REORIE = .FALSE.
       CALL GETRES ( K8B, CONCEP, CMD )
 C
@@ -277,7 +278,7 @@ C
      &                                                          NORIE1 )
                     ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.NBMAIL ) THEN
                       CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL,
-     &                                    NORIE1, NTRAIT, REORIE, PREC )
+     &                     NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID )
                     ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                       CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
      &                                                          NORIE1 )
@@ -298,7 +299,7 @@ C
                       CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
      &                                                          NORIE1 )
                       CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO,
-     &                                    NORIE1, NTRAIT, REORIE, PREC )
+     &                     NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
                       CALL JEDETR('&&CHVENO.PRIN')
                       CALL JEDETR('&&CHVENO.BORD')
                     ENDIF
@@ -385,7 +386,7 @@ C
      &                                                          NORIE1 )
                     ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.NBOBJ ) THEN
                       CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ,
-     &                                    NORIE1, NTRAIT, REORIE, PREC )
+     &                     NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
                     ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
                       CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
      &                                                          NORIE1 )
@@ -406,7 +407,7 @@ C
                       CALL ORNORM ( NOMMA, ZI(JPRI), NBMAPR, REORIE,
      &                                                          NORIE1 )
                       CALL ORILMA ( NOMMA, NDIM, ZI(JBOR), NBMABO,
-     &                                    NORIE1, NTRAIT, REORIE, PREC )
+     &                     NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
                       CALL JEDETR('&&CHVENO.PRIN')
                       CALL JEDETR('&&CHVENO.BORD')
                     ENDIF

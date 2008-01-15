@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,16 +20,16 @@
 # ======================================================================
 DEBUT(CODE=_F(NOM='TTNP200A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
-# ================================================
+# ========================================================================
+# TEST DE NON REGRESSION :
+# (les valeurs de reference ont ete obtenues par Code_Aster)
 #
-#      TEST TTNP200A DE NON_REGRESSION ASTER
+# - On utilise dans le maillage de nombreux types de mailles
+#   (pour valider le plus d'elements finis)
 #
-#         THERMIQUE 2D, MODELISATION PLAN
-#
-#      ATTENTION :
-#      LES VALEURS DE REFERENCE ONT ETE OBTENUES
-#      PAR UN PASSAGE PRECEDENT DU CODE_ASTER.
-# ================================================
+# - domaines testes :
+#      THERMIQUE LINEAIRE (OU NON), MODELISATION='PLAN'
+# =========================================================================
 
 # ----------------------------------------------------------------------
 #    DEFINITION DU MODELE

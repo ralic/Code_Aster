@@ -1,11 +1,11 @@
-      SUBROUTINE LKDEPP(DUM, DGAMV,VIN,  NBMAT, MATER, PARAEP, DERPAR)
+      SUBROUTINE LKDEPP(VIN,  NBMAT, MATER, PARAEP, DERPAR)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT, DUM
-      REAL*8        VIN(7),PARAEP(3),MATER(NBMAT,2),DERPAR(3),DGAMV
+      INTEGER       NBMAT
+      REAL*8        VIN(7),PARAEP(3),MATER(NBMAT,2),DERPAR(3)
 C ===================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,18 +27,16 @@ C --- MODELE LETK : LAIGLE VISCOPLASTIQUE----------------------------
 C ===================================================================
 C --- BUT : DERIVEES DES VARIABLES D'ECROUISSAGE PAR RAPPORT A XIP---
 C ===================================================================
-C IN  : DUM    : INDICATEUR DU DOMAINE CONTRACTANCE OU DILATANCE ----
-C --- : DGAMV  : ACCROISSEMENT DE GAMMA VISCOPLASTIQUE ------------
-C --- : VIN    : VARIABLE INTERNE ( ICI XIP) ------------------------
+C IN  : VIN    : VARIABLE INTERNE ( ICI XIP) ------------------------
 C --- : NBMAT  : NOMBRE DE PARAMETRES DU MODELE ---------------------
 C --- : MATER  : PARAMETRES DU MODELE -------------------------------
-C OUT : PARAEP : VARIABLE D'ECROUISSAGE -----------------------------
-C ------------ : SXIP, AXIP, KXIP, MXIP -----------------------------
+C IN  : PARAEP : VARIABLE D'ECROUISSAGE -----------------------------
+C ------------ : AXIP -----------------------------------------------
 C ----: DERPAR : DERIVEES DES VARIABLE D'ECROUISSAGE ----------------
 C ------------ : DS/DXIP, DA/DXIP, DK/DXIP, DM/DXIP -----------------
 C ===================================================================
-      REAL*8  SXIP, AXIP, MXIP
-      REAL*8  XIULT, XIE, XIPIC, M0, ME, MPIC, A0, AE, APIC
+      REAL*8  AXIP
+      REAL*8  XIULT, XIE, XIPIC, M0, ME, MPIC, A0, AE, APIC,MULT
       REAL*8  S0, SE, SPIC, XAMS, ETA, SIGC
       REAL*8  SIGP1, SIGP2, UN, MUN, ZERO
       REAL*8  FACT1, FACT2, FACT3, FACT4, FACT5, FACT6
@@ -46,50 +44,50 @@ C ===================================================================
 C ===================================================================
 C --- INITIALISATION DE PARAMETRES ----------------------------------
 C ===================================================================
-      PARAMETER       ( ZERO   = 0.0D0   )
-      PARAMETER       ( UN     = 1.0D0   )
+      PARAMETER       ( ZERO   =  0.0D0   )
+      PARAMETER       ( UN     =  1.0D0   )
       PARAMETER       ( MUN    = -1.0D0   )
 C ===================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE --------------------------
 C ===================================================================
-      XIULT  = MATER(17,2)
-      XIE    = MATER(18,2)
-      XIPIC  = MATER(19,2)
-      M0     = MATER(13,2)
-      ME     = MATER(14,2)
-      MPIC   = MATER(15,2)
 
+      SIGC   = MATER(3,2)
+      XAMS   = MATER(6,2)
+      ETA    = MATER(7,2)
       A0     = MATER(8,2)
       AE     = MATER(9,2)
       APIC   = MATER(10,2)
-
       S0     = MATER(11,2)
-C      SE     = MATER(12,2)
+      M0     = MATER(12,2)
+      ME     = MATER(13,2)
+      MPIC   = MATER(14,2)
+      MULT   = MATER(15,2)
+      XIULT  = MATER(16,2)
+      XIE    = MATER(17,2)
+      XIPIC  = MATER(18,2)
+
+      SIGP1  = MATER(23,2)
+
+      AXIP   = PARAEP(1)
       SPIC   = UN
 
-      XAMS   = MATER(6,2)
-      ETA    = MATER(7,2)
-      SIGC   = MATER(3,2)
-      SIGP1  = MATER(24,2)
-      SIGP2  = MATER(25,2)
-      
-      AXIP = PARAEP(1)
+      SIGP2 = ((MULT*(SIGC)**(AE-UN))/(ME**AE))**(UN/(AE-UN))
+
 C ===================================================================
 C CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS 0<XIP<XIPIC--------
 C ===================================================================
-      IF (DUM.EQ.0) XIP = VIN(1)
-      IF (DUM.EQ.1) XIP = VIN(1) + DGAMV
-
+      XIP = VIN(1)
+      
       IF ((XIP.GE. ZERO).AND.(XIP.LT. XIPIC)) THEN
-         FACT1 = UN/(XIP+XAMS*XIPIC)
-         FACT2 = (APIC-A0)/LOG(UN+UN/XAMS)
+         FACT1 = UN/(XIP+(XAMS*XIPIC))
+         FACT2 = (APIC-A0)/LOG(UN+(UN/XAMS))
          DAD    = FACT1* FACT2
 C
-         FACT3 = (MPIC-M0)/LOG(UN+UN/XAMS)
+         FACT3 = (MPIC-M0)/LOG(UN+(UN/XAMS))
          DMD  = FACT1*FACT3
 
 C       
-         FACT4 = (SPIC-S0)/LOG(UN+UN/XAMS)       
+         FACT4 = (SPIC-S0)/LOG(UN+(UN/XAMS))       
          DSD  = FACT1*FACT4
 
 C ===================================================================
@@ -104,7 +102,7 @@ C ===================================================================
          
          FACT3 = SIGC/SIGP1
          FACT4 = (MPIC /FACT3 + SPIC)**(APIC/AXIP)
-         FACT5 = LOG(MPIC /FACT3 + SPIC)
+         FACT5 = LOG((MPIC /FACT3) + SPIC)
          FACT6 = -APIC/(PARAEP(1)**2)
          
          DMD = FACT3*(FACT6*FACT4*FACT5*DAD-DSD)
@@ -113,8 +111,10 @@ C CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS XIE< XIP < XIULT---
 C ===================================================================
       ELSEIF ((XIP.GE.XIE).AND.(XIP.LT.XIULT)) THEN
 
-         FACT1 = (UN-AE)/(LOG(UN+UN/ETA))
-         FACT2 = UN/(XIP+ETA*XIULT-(UN+ETA)*XIE)
+         FACT1 = (UN-AE)/(LOG(UN+(UN/ETA)))
+         
+         FACT2 = UN/(XIP+(ETA*XIULT)-(UN+ETA)*XIE)
+
          DAD =  FACT1*FACT2
          
          DSD = ZERO

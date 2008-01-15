@@ -1,7 +1,7 @@
       SUBROUTINE LCPITG (COMPOR,DF,LINE,DP,DVBE,DTAUDF)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,12 +60,12 @@ C  COMMON MATERIAU POUR VON MISES
 
       INTEGER JPROL,JVALE,NBVAL
       REAL*8  PM,YOUNG,NU,MU,UNK,TROISK,COTHER
-      REAL*8  SIGM0,EPSI0,DT,COEFM,RPM,PENTE
+      REAL*8  SIGM0,EPSI0,DT,COEFM,RPM,PENTE,APUI,NPUI,SIGY
 
       COMMON /LCPIM/
      &          PM,YOUNG,NU,MU,UNK,TROISK,COTHER,
      &          SIGM0,EPSI0,DT,COEFM,RPM,PENTE,
-     &          JPROL,JVALE,NBVAL
+     &          APUI,NPUI,SIGY,JPROL,JVALE,NBVAL
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER IJ,KL,PQ,I,J,K,L

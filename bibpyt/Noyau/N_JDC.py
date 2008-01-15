@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,6 +34,30 @@ import N_OBJECT
 import N_CR
 from N_Exception import AsException
 from N_ASSD import ASSD
+
+
+
+
+MemoryErrorMsg = """MemoryError :
+
+En général, cette erreur se produit car la mémoire utilisée hors du fortran
+(jeveux) est importante.
+
+Causes possibles :
+   - le calcul produit de gros objets Python dans une macro-commande ou
+     dans le jeu de commande lui-même,
+   - le calcul appelle un solveur (MUMPS par exemple) ou un outil externe
+     qui a besoin de mémoire hors jeveux,
+   - utilisation de jeveux dynamique,
+   - ...
+
+Solution :
+   - distinguer la mémoire limite du calcul (case "Mémoire totale" de astk)
+     de la mémoire réservée à jeveux (case "dont Aster"), le reste étant
+     disponible pour les allocations dynamiques.
+"""
+
+
 
 class JDC(N_OBJECT.OBJECT):
    """
@@ -120,6 +144,8 @@ NONE = None
          if CONTEXT.debug : traceback.print_exc()
          l=traceback.format_exception_only(SyntaxError,e)
          self.cr.exception("Compilation impossible : "+string.join(l))
+      except MemoryError, e:
+         self.cr.exception(MemoryErrorMsg)
       except SystemError, e:
          erreurs_connues = """
 Causes possibles :
@@ -189,7 +215,12 @@ Causes possibles :
         # une erreur a ete identifiee
         if CONTEXT.debug :
           traceback.print_exc()
-        self.cr.exception(str(e))
+        # l'exception a été récupérée avant (où, comment ?),
+        # donc on cherche dans le texte
+        txt = str(e)
+        if txt.find('MemoryError') >= 0:
+           txt = MemoryErrorMsg
+        self.cr.exception(txt)
         CONTEXT.unset_current_step()
 
       except NameError,e:

@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 14/01/2008   AUTEUR DEBONNIERES P.DE-BONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,7 @@ C DANS LE CAS D'UN CALCUL STANDARD :
           TYPESE = 0
         ELSE
 C DANS LE CAS D'UN CALCUL DE DERIVE AVEC UN TYPESE PROVISOIRE
-          TYPESE = 1
+          TYPESE = 3
         END IF
         STYPSE = ' '
 

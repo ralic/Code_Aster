@@ -1,21 +1,21 @@
-# MODIF  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
-# TITRE IMPR_STURM SUR UN GROS MODELE 3D
+# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# TITRE PERFORMANCE MODE_ITER_INV SUR UN GROS MODELE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__:YYYY115A
 #
@@ -186,7 +186,7 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAILTOT,AFFE=(
 #      BR
 #-------------------------
 #
-BETON=DEFI_MATERIAU(ELAS=_F( E = 4.0E+10, 
+BETON=DEFI_MATERIAU(ELAS=_F( E = 4.0E+10,
                             NU = 0.1494252874,
                             RHO = 2516.)
                       )
@@ -372,7 +372,7 @@ CHMAT=AFFE_MATERIAU(   MAILLAGE=MAILTOT,AFFE=(
 #   BR
 #---------------------
 #
-CARA=AFFE_CARA_ELEM( 
+CARA=AFFE_CARA_ELEM(
                               MODELE=MODELE,
                              MASSIF=_F(  GROUP_MA = (
                                                  'E_INTER',
@@ -2433,7 +2433,7 @@ CARA=AFFE_CARA_ELEM(
 #     BR
 #----------------------------
 #
-CH_CL=AFFE_CHAR_MECA( 
+CH_CL=AFFE_CHAR_MECA(
                               MODELE=MODELE,LIAISON_SOLIDE=(
                           _F( GROUP_NO = ('CENT_RAD','N_RAD_H',)),
 #
@@ -2621,7 +2621,7 @@ CH_CL=AFFE_CHAR_MECA(
                     _F(  GROUP_NO = ('NPP4ARH3', 'BPP4ARH3',)),
                     _F(  GROUP_NO = ('NPP4ARH3', 'CPP4ARH3',)),
                     _F(  GROUP_NO = ('NPP4ARH3', 'DPP4ARH3',))),
-                            DDL_IMPO=_F( 
+                            DDL_IMPO=_F(
                                        GROUP_NO = 'SOL',
                                         DX = 0.,
                                         DY = 0.,
@@ -2634,28 +2634,28 @@ CH_CL=AFFE_CHAR_MECA(
 #----------------------------
 # LA CUVE
 #
-                    _F( 
+                    _F(
                                    GROUP_NO = ( 'NCU1ANCV', 'BCU1ANCV', ),
                                    DDL = ( 'DZ', )),
-                    _F( 
+                    _F(
                                    GROUP_NO = ( 'NCU2ANCV', 'BCU2ANCV', ),
                                    DDL = ( 'DZ', )),
-                    _F( 
+                    _F(
                                    GROUP_NO = ( 'NCU3ANCV', 'BCU3ANCV', ),
                                    DDL = ( 'DZ', )),
-                    _F( 
+                    _F(
                                    GROUP_NO = ( 'NCU4ANCV', 'BCU4ANCV', ),
                                    DDL = ( 'DZ', )),
-                    _F( 
+                    _F(
                                    GROUP_NO = ( 'NCU1ANCH', 'BCU1ANCH', ),
                                    DDL = ( 'DX',  'DY', )),
-                    _F( 
+                    _F(
                                    GROUP_NO = ( 'NCU2ANCH', 'BCU2ANCH', ),
                                    DDL = ( 'DX',  'DY', )),
-                    _F( 
+                    _F(
                                    GROUP_NO = ( 'NCU3ANCH', 'BCU3ANCH', ),
                                    DDL = ( 'DX',  'DY', )),
-                    _F( 
+                    _F(
                                    GROUP_NO = ('NCU4ANCH', 'BCU4ANCH',),
                                    DDL = ( 'DX',  'DY', )))
 #
@@ -2675,15 +2675,12 @@ MACRO_MATR_ASSE(  MODELE=MODELE,
                 )
 
 MODE=MODE_ITER_INV(   MATR_A=KASSE,   MATR_B=MASSE,
-                         CALC_FREQ=_F( 
+                         CALC_FREQ=_F(
                            FREQ = (1.259,),
                            OPTION = 'PROCHE'),
                       )
 
-TEST_RESU( RESU=_F(  RESULTAT = MODE,
-                  PARA = 'FREQ',  NUME_ORDRE = 1,
-                  VALE = 1.259)
-          )
+TEST_RESU( RESU=_F(RESULTAT=MODE, PARA='FREQ',NUME_ORDRE=1, VALE=1.259, REFERENCE='NON_REGRESSION'))
 
 FIN()
 #

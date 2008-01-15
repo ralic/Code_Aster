@@ -1,14 +1,15 @@
-      SUBROUTINE LKGAMP (VAL,VARV,IM,SM,VINM,NBMAT,MATER,
+      SUBROUTINE LKGAMP (VAL,VARV,IM,SM,UCRIP,SEUILP,VINM,NBMAT,MATER,
      &                   DE,DEPS,DEPSV,DGAMV,DEPSP, DGAMP,RETCOM)
 C
       IMPLICIT    NONE
       INTEGER     NBMAT,  VAL, VARV,RETCOM
       REAL*8      IM,SM(6), MATER(NBMAT,2), VINM(7)
-      REAL*8      DEPSP(6),DEPS(6)
-      REAL*8      DGAMP,DGAMV, DEPSV(6), DE(6,6)
+      REAL*8      DEPSP(6),DEPS(6), DEPSV(6)
+      REAL*8      DGAMP,DGAMV, DE(6,6)
+      REAL*8      UCRIP,  SEUILP
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,6 +35,8 @@ C IN  : VAL   : INDICATEUR POUR DISTINGUER LES LOIS DE DILATANCE --
 C --- : VARV  : INDICATEUR CONTRACTANCE OU DILATANCE --------------
 C --- : IM    :  INVARIANT DES CONTRAINTES A T---------------------
 C --- : SM    :  DEVIATEUR DES CONTRAINTES A T---------------------
+C --- : UCRIP :  VALEUR DE U POUR LES CONTRAINTES A L INSTANT MOINS
+C --- : SEUILP:  VALEUR DU SEUIL PLASTIAQUE A L INSTANT MOINS -----
 C --  : VINM   :  VARIABLES INTERNES ------------------------------
 C --- : NBMAT :  NOMBRE DE PARAMETRES MATERIAU --------------------
 C --- : MATER :  COEFFICIENTS MATERIAU A T+DT ---------------------
@@ -45,16 +48,15 @@ C --- : DEPSV :  ACCROISSEMENT DES DEFORMATIONS VISCOPLASTIQUE A T
 C --- : DGAMV :  ACCROISSEMENT DE GAMMA VISCOPLASTIQUE ------------
 C OUT : DEPSP : DEFORMATIONS PLASTIQUES ---------------------------
 C     : DGAMP : PARAMETRE D ECROUISSAGE PLASTIQUES-----------------
+C ----: RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS ------
 C =================================================================
       COMMON /TDIM/   NDT , NDI
       INTEGER   I, K, NDI, NDT
-      REAL*8    AA(6)
-      REAL*8    BIDON, DEUX, TROIS
+      REAL*8    DEUX, TROIS
       REAL*8    PARAEP(3), VARPL(4)
-      REAL*8    DHDS(6), DS2HDS(6),DFDSP(6)
-      REAL*8    VECNP(6), GP(6), DLAM, DEV(6)
-      REAL*8    LKBPRI, BPRIMP, DDEPSP(6)
-      REAL*8    UCRIP,  SEUILP
+      REAL*8    DHDS(6), DS2HDS(6),DFDSP(6), DDEPSP(6)
+      REAL*8    VECNP(6), GP(6)
+      REAL*8    LKBPRI, BPRIMP, DLAM,DEVGII
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
@@ -63,12 +65,10 @@ C =================================================================
 C =================================================================
 C --- CALCUL DE DF/DSIG ------------------------------------
 C =================================================================
-
-      CALL LKCRIP(VARV,DGAMV,IM, SM,VINM,NBMAT,MATER,UCRIP,SEUILP)
       
       CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS,RETCOM)
       CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS,RETCOM)
-      CALL LKVARP(VARV,DGAMV,VINM, NBMAT, MATER, PARAEP)
+      CALL LKVARP(VINM, NBMAT, MATER, PARAEP)
 
       CALL LKVACP(NBMAT, MATER,PARAEP, VARPL)
 
@@ -83,12 +83,13 @@ C =================================================================
 
       CALL LKCALN(SM, BPRIMP, VECNP, RETCOM)   
            
-      CALL LKCALG(DFDSP,VECNP,GP,BIDON)
+      CALL LKCALG(DFDSP,VECNP,GP,DEVGII)
 C =================================================================
 C --- CALCUL DE D LAMBDA ------------------------------------
 C =================================================================
-      CALL LKDLAM (VAL,VARV,NBMAT, MATER,DEPS, DEPSV,DGAMV,
-     &             IM,SM,VINM,DE,DLAM,RETCOM)
+      CALL LKDLAM (VARV,NBMAT, MATER,DEPS, DEPSV,DGAMV,
+     &             IM,SM,VINM,DE,UCRIP,SEUILP,GP,DEVGII,PARAEP,VARPL,
+     &             DFDSP,DLAM,RETCOM)
 
 C =================================================================
 C --- CALCUL DE DEDEV --------DEVIATEUR DU TENSEUR DES DEFORMATIONS

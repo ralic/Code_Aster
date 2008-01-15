@@ -1,4 +1,4 @@
-# MODIF  DATE 08/01/2008   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 14/01/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,9 +111,9 @@ DPLIMPO=AFFE_CHAR_MECA(MODELE=MO,
 
 CONT=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               RECHERCHE='NOEUD_BOUCLE',
-                               REAC_GEOM='CONTROLE',
-                               NB_REAC_GEOM=2,
+#                               RECHERCHE='NOEUD_BOUCLE',
+#                                REAC_GEOM='CONTROLE',
+#                                NB_REAC_GEOM=2,
                                METHODE='CONTRAINTE',
                               # FROTTEMENT='SANS',
                                GROUP_MA_MAIT='SMAI',
@@ -136,7 +136,8 @@ SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                        COMP_ELAS=_F(RELATION='ELAS',
                                     GROUP_MA='SPHSUP',),
                        INCREMENT=_F(LIST_INST=LINST,
-                                    INST_FIN=0.1,
+                                    #INST_FIN=0.1,
+                                    INST_FIN=1.0,
                                     SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                     SUBD_PAS_MINI=9.9999999999999995E-07,),
                        NEWTON=_F(MATRICE='TANGENTE',
@@ -176,57 +177,83 @@ IMPR_TABLE(TABLE=TAB_REAC,
 #----------------------------------------------------------------------
 #                   TESTS DES RESULTATS
 #----------------------------------------------------------------------
+# TESTS DE REFERENCE
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2),
+           VALE=-3.201351E+06,
+           PRECISION=0.25,
+           REFERENCE='SOURCE_EXTERNE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4),
+           VALE=-6.402702E+06,
+           PRECISION=0.20,
+           REFERENCE='SOURCE_EXTERNE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6),
+           VALE=-9.604053E+06,
+           PRECISION=0.20,
+           REFERENCE='SOURCE_EXTERNE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8),
+           VALE=-1.280540E+07,
+           PRECISION=0.10,
+           REFERENCE='SOURCE_EXTERNE',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0),
+           VALE=-1.600675E+07,
+           PRECISION=0.05,
+           REFERENCE='SOURCE_EXTERNE',);
+
 
 # TESTS DE NON REGRESSION
-# Xz = 0.
-# sur clpaster VALE: 1.7577986142998E+04
-# sur clayastr VALE: 1.7439251752626D+04
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N75',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=1.75085E+04,
-                  PRECISION=0.005,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.9',),);
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.2),
+           VALE=-3.9567637019277E+06,
+           REFERENCE='NON_REGRESSION',);
 
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N76',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=0.0,
-                  PRECISION=1.E-12,
-                  CRITERE='ABSOLU',
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.1',),);
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.4),
+           VALE=-7.6390352398039E+06,
+           REFERENCE='NON_REGRESSION',);
 
-# Xx = 0.
-# Valeur de non regression modifiee suite a changement de compilo
-# Ancienne valeur : 1.7844700000000D+04
-#                   v7.3.23
-# (etait OK avec solveur MUMPS)
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N300',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=1.7993162477886E+04,
-                  #PRECISION=0.0015,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='9.2.3',),);
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.6),
+           VALE=-1.1024436144268E+07,
+           REFERENCE='NON_REGRESSION',);
 
-TEST_RESU(RESU=_F(RESULTAT=SSNV506,
-                  NOEUD='N302',
-                  INST=0.1,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RN',
-                  VALE=0.0,
-                  PRECISION=1.E-12,
-                  CRITERE='ABSOLU',
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='7.1.1',),);
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.8),
+           VALE=-1.3349791650673E+07,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TAB_REAC,
+           NOM_PARA='DY',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1.0),
+           VALE=-1.6247167606679E+07,
+           REFERENCE='NON_REGRESSION',);
 
 
 FIN();

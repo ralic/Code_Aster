@@ -5,7 +5,7 @@ C
       REAL*8        PARAEP(3), MATER(NBMAT,2), VARPL(4)
 C ===============================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C ------------ : PARAEP(3)=MXIP ---------------------------------
 C OUT : VARPL  : ADXIP, BDXIP, DDXIP, KDXIP ---------------------
 C ===============================================================
       REAL*8  SIGC, GAMCJS, H0C
-      REAL*8  XIP, ADXIP, BDXIP, DDXIP, KDXIP
+      REAL*8  ADXIP, BDXIP, DDXIP, KDXIP
       REAL*8  UN, DEUX, TROIS, SIX
 C ===============================================================
 C --- INITIALISATION DE PARAMETRES ------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,10 +90,7 @@ MATO=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=200000.0,
 #
 
 
-CM=AFFE_MATERIAU(MAILLAGE=MAIL,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=MAT,
-                         TEMP_REF=0.0,),);
+CM=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=MAT, ),)
 #
 #
 
@@ -177,6 +174,10 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
                                  NOM_CHAM    ='TEMP',),
                 TOUT_ORDRE='OUI',);
+
+CM1=AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT='OUI', MATER=MAT, ),
+                  AFFE_VARC=_F(NOM_VARC='TEMP',EVOL=TEMPE,VALE_REF=0.),
+             )
 
 # ----------------------------------------------------------------------------
 # VALIDATION DE GROUP_NO, GROUP_MA, NOEUD, MAILLE DE L'OPERATEUR
@@ -310,14 +311,14 @@ DETRUIRE(CONCEPT=_F(NOM=TEMP0))
 #---------------------------------------------------------------------------------
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
-                      TEMP_CALCULEE=TEMPE,
+                      #TEMP_CALCULEE=TEMPE,
                       DDL_IMPO=(_F(GROUP_NO='GRNO1',
                                    DY=0.0,),
                                 _F(GROUP_NO='GRNO3',
                                    DY=0.0,),),);
 
 U=STAT_NON_LINE(MODELE=MOMECA,
-                CHAM_MATER=CM,
+                CHAM_MATER=CM1,
                 EXCIT=_F(CHARGE=CHMECA,),
                 COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),
@@ -362,9 +363,19 @@ TEST_RESU ( RESU=(
                          MAILLE     = 'M1',
                          REFERENCE  = 'NON_REGRESSION',
                          POINT      =  1,
+                         NOM_CMP    = 'SIYY',
+                         CRITERE    = 'RELATIF',
+                         PRECISION  = 1.E-6,
+                         VALE       = -7.5E+01  ),
+                    _F(  RESULTAT   = UUU,
+                         NOM_CHAM   = 'SIEF_ELGA',
+                         INST       = 9.00000E+01,
+                         MAILLE     = 'M1',
+                         REFERENCE  = 'NON_REGRESSION',
+                         POINT      =  1,
                          NOM_CMP    = 'SIXX',
                          CRITERE    = 'ABSOLU',
-                         PRECISION  = 1.E-8,
+                         PRECISION  = 1.E-6,
                          VALE       = 0.  ),
                     _F(  RESULTAT   = UUU,
                          NOM_CHAM   = 'VARI_ELGA',

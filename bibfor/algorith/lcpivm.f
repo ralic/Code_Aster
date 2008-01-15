@@ -3,7 +3,7 @@
      &                   OPTION,TAUP,VIP,DTAUDF,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
+C TOLE CRP_7
 
       IMPLICIT NONE
       INTEGER            MATE,IRET,KPG,KSP
@@ -64,23 +65,27 @@ C               IRET=1 => DJ<0 ET INTEGRATION IMPOSSIBLE
 C ----------------------------------------------------------------------
 C  COMMON MATERIAU POUR VON MISES
 
-      INTEGER JPROL,JVALE,NBVAL
-      REAL*8  PM,YOUNG,NU,MU,UNK,TROISK,COTHER
-      REAL*8  SIGM0,EPSI0,DT,COEFM,RPM,PENTE
+      INTEGER JPROL,JVALE,NBVAL,NITER
+      REAL*8  PM,YOUNG,NU,MU,UNK,TROISK,COTHER,SIGY
+      REAL*8  SIGM0,EPSI0,DT,COEFM,RPM,PENTE,APUI,NPUI
       CHARACTER*1 POUM
+      REAL*8 XAP ,VAL0 ,PRECR, RPRIM, NMCRI6
+      EXTERNAL NMCRI6
 
       COMMON /LCPIM/
      &          PM,YOUNG,NU,MU,UNK,TROISK,COTHER,
      &          SIGM0,EPSI0,DT,COEFM,RPM,PENTE,
-     &          JPROL,JVALE,NBVAL
+     &          APUI,NPUI,SIGY,JPROL,JVALE,NBVAL
 C ----------------------------------------------------------------------
 C COMMON GRANDES DEFORMATIONS SIMO - MIEHE
 
       INTEGER IND(3,3),IND1(6),IND2(6)
       REAL*8  KR(6),RAC2,RC(6),ID(6,6)
       REAL*8 BEM(6),BETR(6),DVBETR(6),EQBETR,TRBETR
-      REAL*8 JP,DJ,JM,DFB(3,3)
+      REAL*8 JP,DJ,JM,DFB(3,3),MUTRBE,TAUTEQ
       REAL*8 DJDF(3,3),DBTRDF(6,3,3)
+      
+      COMMON /RCONM6/MUTRBE,TAUTEQ
 
       COMMON /GDSMC/
      &            BEM,BETR,DVBETR,EQBETR,TRBETR,
@@ -138,6 +143,19 @@ C-----------------------------------------------------------------------
           IF (COMPOR.EQ.'VMIS_ISOT_LINE') THEN
             DP = SEUIL/(PENTE+MU*TRBETR)
 
+          ELSEIF (COMPOR .EQ. 'VMIS_ISOT_PUIS') THEN
+            TAUTEQ=MU*EQBETR
+            MUTRBE=MU*TRBETR
+            CALL ECPUIS(YOUNG,SIGY,APUI,1.D0/NPUI,PM,0.D0,RP,RPRIM) 
+            XAP = (TAUTEQ - RP)/MUTRBE                     
+            VAL0  = NMCRI6(0.D0)                                       
+            PRECR = CARCRI(3) * SIGY                                   
+            NITER = NINT(CARCRI(1))                                    
+                                                                       
+            CALL ZEROFO(NMCRI6,VAL0,XAP,PRECR,NITER,DP,IRET)           
+            IF(IRET.EQ.1) GOTO 9999                                    
+            CALL ECPUIS(YOUNG,SIGY,APUI,1.D0/NPUI,PM,DP,RP,RPRIM) 
+            PENTE=RPRIM
           ELSE IF (COMPOR.EQ.'VMIS_ISOT_TRAC') THEN
             CALL RCFONC('E','TRACTION',JPROL,JVALE,NBVAL,R8BID,
      &             YOUNG*TRBETR/3,NU,PM,RP,PENTE,AIRERP,MU*EQBETR,DP)
@@ -210,5 +228,5 @@ C 5 - CALCUL DE LA MATRICE TANGENTE
         CALL GDSMTG()
         CALL LCPITG(COMPOR,DF,LINE,DP,DVBE,DTAUDF)
       ENDIF
-
+9999  CONTINUE
       END

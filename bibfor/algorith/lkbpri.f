@@ -5,7 +5,7 @@ C
       REAL*8    VIN(7), MATER(NBMAT,2),PARA(3),INVAR,S(6),LKBPRI
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,14 +69,14 @@ C =====================================================================
       SIGC   = MATER(3,2)
       H0EXT  = MATER(4,2)
       S0     = MATER(11,2)
-      MULT   = MATER(16,2)
-      XIE    = MATER(18,2)
-      MVMAX  = MATER(20,2)
+      MULT   = MATER(15,2)
+      XIE    = MATER(17,2)
+      MVMAX  = MATER(19,2)
       
-      MU0V   = MATER(26,2)
-      XI0V   = MATER(27,2)
-      MU1    = MATER(28,2)
-      XI1    = MATER(29,2)
+      MU0V   = MATER(24,2)
+      XI0V   = MATER(25,2)
+      MU1    = MATER(26,2)
+      XI1    = MATER(27,2)
 C =================================================================
 C --- CALCUL DE ALPHA RES -----------------------------------------
 C =================================================================

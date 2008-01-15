@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/11/2007   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 14/01/2008   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -365,7 +365,10 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
          ),
          MODE_VIBR     =FACT(statut='f',min=1,max=1,
            MATR_RIGI        =SIMP(statut='f',typ='TXM',defaut="ELASTIQUE",into=("ELASTIQUE","TANGENTE") ),
-           NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),
+           NB_FREQ          =SIMP(statut='f',typ='I',max=1,defaut=3,
+                            fr="Nombre de fréquences propres à calculer"),
+           BANDE            =SIMP(statut='f',typ='R',min=2,max=2,
+                            fr="Valeur des deux fréquences délimitant la bande de recherche",),
          ),
 #-------------------------------------------------------------------
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',

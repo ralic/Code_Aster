@@ -5,7 +5,7 @@
      &                    NBNOEU, NBMAIL, NBCOOR, VECGRM, NBCGRM )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -133,34 +133,34 @@ C
       CALL EFVECO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
         VALI (1) = CODRET
-        CALL U2MESG('A+','MED_24',0,' ',1,VALI,0,0.D0)
+        CALL U2MESI('A+','MED_24',1,VALI)
         CALL EFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
         IF( IRET.EQ.0) THEN
           VALI (1) = VLIB(1)
           VALI (2) = VLIB(2)
           VALI (3) = VLIB(3)
-          CALL U2MESG('A+','MED_25',0,' ',3,VALI,0,0.D0)
+          CALL U2MESI('A+','MED_25',3,VALI)
         ENDIF
         CALL EFOUVR ( FID, NOFIMD, EDLECT, CODRET )
         CALL EFVELI ( FID, VFIC(1),VFIC(2),VFIC(3), IRET )
         IF( IRET.EQ.0) THEN
           IF ( VFIC(2).EQ.-1 .OR. VFIC(3).EQ.-1) THEN
-            CALL U2MESG('A+','MED_26',0,' ',0,0,0,0.D0)
+            CALL U2MESS('A+','MED_26')
           ELSE
           VALI (1) = VFIC(1)
           VALI (2) = VFIC(2)
           VALI (3) = VFIC(3)
-            CALL U2MESG('A+','MED_27',0,' ',1,VALI,0,0.D0)
+            CALL U2MESI('A+','MED_27',3,VALI)
           ENDIF
           IF (     VFIC(1).LT.VLIB(1)
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).LT.VLIB(2) )
      &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).EQ.VLIB(2) .AND.
      &             VFIC(3).EQ.VLIB(3) ) ) THEN
-            CALL U2MESG('A+','MED_28',0,' ',0,0,0,0.D0)
+            CALL U2MESS('A+','MED_28')
           ENDIF
         ENDIF
         CALL EFFERM ( FID, CODRET )
-        CALL U2MESG('A','MED_41',0,' ',0,0,0,0.D0)
+        CALL U2MESS('A','MED_41')
       ENDIF
 C
 C 1.3. ==> VERIFICATION DE L'EXISTENCE DU MAILLAGE A LIRE

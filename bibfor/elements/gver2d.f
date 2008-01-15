@@ -1,7 +1,7 @@
       SUBROUTINE GVER2D(NOMA,NOCC,OPTION,MOTFAZ,NOMNO,NOEUD,RINF,
      &                  RSUP,MODULE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
 C     ------------------------------------------------------------------
 C
       CHARACTER*(*)     MOTFAZ
-      CHARACTER*8       NOMA,NOEUD,MODELE,K8B,FOND
+      CHARACTER*8       NOMA,NOEUD,MODELE,K8B,FOND,KFON
       CHARACTER*16      MOTFAC,NOMCMD,K16B
       CHARACTER*19      OPTION
       CHARACTER*24      OBJ1
@@ -58,7 +58,7 @@ C
       CHARACTER*24      GRPNO,NOMNO,CHFOND
 C
       INTEGER           JJJ,NGRO,NENT,NSOM,IOCC,NOCC,NDIM,IADR,I,L,N1
-      INTEGER           IGR,NGR,INO,NNO,IRET,NBM,IFOND,LNOFF
+      INTEGER           IGR,NGR,INO,NNO,IRET,NBM,N2,LNOFF,NUMFON,IBID
 C
       REAL*8            RINF,RSUP,MODULE
 C
@@ -187,19 +187,29 @@ C
         ENDIF
 C
       ELSE
-         CALL GETVID('THETA','FOND_FISS',1,1,1,FOND,IFOND)
-         IF(IFOND.EQ.0)THEN
-          CALL U2MESS('F','ELEMENTS_91')
-         ELSE
+         CALL GETVID ( 'THETA','FOND_FISS',1,1,1,FOND,N1)
+         IF (N1.NE.0) THEN
+C          CAS CLASSIQUE         
            CHFOND = FOND//'.FOND      .NOEU'
            CALL JELIRA(CHFOND,'LONMAX',LNOFF,K8B)
            IF(LNOFF.NE.1)THEN
-                 CALL U2MESS('F','ELEMENTS_92')
+             CALL U2MESS('F','ELEMENTS_92')
            ELSE
-             CALL JEVEUO(CHFOND,'L',IFOND)
-             NOEUD=ZK8(IFOND)
+             CALL JEVEUO(CHFOND,'L',N1)
+             NOEUD=ZK8(N1)
            ENDIF
-        ENDIF
+        ELSE
+C         CAS X-FEM
+          CALL GETVID ( 'THETA','FISSURE'  ,1,1,1,FOND,N2)
+          IF (N2.EQ.0) CALL U2MESK('F','CALCULEL4_21',1,OPTION)
+C         RECUPERATION DU NUMERO DU FOND DE FISSURE DEMANDE
+          CALL GETVIS('THETA','NUME_FOND',1,1,1,NUMFON,IBID)
+C         ON ECRIT 'NUM'+_i OU i=NUMFON 
+C         A LA PLACE DU NOM DU NOEUD EN FOND DE FISSURE
+          CALL CODENT(NUMFON,'G',KFON)
+          NOEUD(1:8)='NUM_'//KFON
+        ENDIF 
+              
       ENDIF
 2     CONTINUE
 C

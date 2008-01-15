@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_cine SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_matr_cine SD  DATE 14/01/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,6 @@ class sd_matr_cine(AsBase):
     CCID = AsVI()
     CCJJ = Facultatif(AsVI())
     CCLL = Facultatif(AsVI())
-    CCVA = Facultatif(AsVR())
+    CCVA = Facultatif(AsObject(genr='V', xous='S', type=Parmi('R','C')))
 
 

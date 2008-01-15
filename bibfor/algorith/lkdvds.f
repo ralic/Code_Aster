@@ -6,7 +6,7 @@ C
       REAL*8      GV(6), DFDSV(6), SEUILV
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,8 +52,8 @@ C =================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 C =================================================================
       PA     = MATER(1,2)
-      A      = MATER(22,2)
-      N      = MATER(23,2)      
+      A      = MATER(21,2)
+      N      = MATER(22,2)      
 C =================================================================
 C --- MATRICE INTERMEDIAIRE ---------------------------------------
 C =================================================================

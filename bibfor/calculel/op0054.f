@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
       INTEGER       IADRNO, IMPR, IADRCO, IADRMA, IADRT2, IADRT3,
      &              IADRT4, IADRT5, ICODE, NOCCTB, IFIC, N1, IUNIFI
       REAL*8        R8B, DIR(3), RINF, RSUP, ABSC
-      LOGICAL       DIREC, ULEXIS
+      LOGICAL       LDIREC, ULEXIS 
       CHARACTER*3   OUINON
       CHARACTER*8   K8B, NOMA, MODELE, FOND, RESU, NOEUD, FORMAT
       CHARACTER*16  TYPE, OPER, FICHIE
@@ -61,6 +61,8 @@ C
       CALL INFMAJ()
 C
       OPTION = ' '
+      LDIREC = .FALSE.
+
 C
       CALL GETRES ( RESU, TYPE, OPER )
 C
@@ -129,14 +131,13 @@ C
 C
          CALL GETVR8 ( ' ', 'DIRECTION', 0, 1, 0, R8B, NBR8)
 C
-         DIREC = .FALSE.
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             IF ( NBR8 .NE. 3 ) THEN
                CALL U2MESS('F','CALCULEL3_99')
             ELSE
                CALL GETVR8(' ','DIRECTION', 0, 1, 3, DIR, NBR8)
-               DIREC = .TRUE.
+               LDIREC = .TRUE.
             ENDIF
          ENDIF
 C
@@ -154,7 +155,7 @@ C
          IF ( OPTION .EQ. 'COURONNE' ) THEN
 C
             CALL GCOURO ( 'G', THETA, NOMA, NOMNO,COORN,NBNO,TRAV1,
-     &                   TRAV2,TRAV3,DIR,ZK8(IADRNO),FOND,DIREC,STOK4)
+     &                   TRAV2,TRAV3,DIR,ZK8(IADRNO),FOND,LDIREC,STOK4)
 C
          ELSE
 C
@@ -191,6 +192,7 @@ C
                CALL U2MESS('F','CALCULEL4_2')
             ELSE
                CALL GETVR8 ( ' ', 'DIRECTION', 0, 1, 3, DIR, NBR8 )
+               LDIREC = .TRUE.
             ENDIF
          ELSE
             CALL U2MESS('F','CALCULEL4_3')
@@ -204,7 +206,7 @@ C
          IF ( OPTION .EQ. 'COURONNE' ) THEN
 C
             CALL GCOU2D ( 'G',THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO),
-     &                   RINF, RSUP, MODULE, DIR )
+     &                   RINF, RSUP, MODULE, LDIREC,DIR )
 C
          ELSE
 C

@@ -1,4 +1,4 @@
-#@ MODIF co_vect_asse_gene SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF co_vect_asse_gene SD  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,10 +45,6 @@ class vect_asse_gene(ASSD, sd_cham_gene):
          Attributs ne retourne rien """
       if self.par_lot():
          raise Accas.AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
-      from Utilitai.Utmess import UTMESS
-
-      # avertissement generique
-      UTMESS('A','SDVERI_3')
 
       Numeric.asarray(vecteur)
       ncham=self.get_name()
@@ -85,10 +81,6 @@ class vect_asse_gene(ASSD, sd_cham_gene):
          Attributs ne retourne rien """
       if self.par_lot():
          raise Accas.AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
-      from Utilitai.Utmess import UTMESS
-
-      # avertissement generique
-      UTMESS('A','SDVERI_3')
 
       Numeric.asarray(vecteur)
       ncham=self.get_name()

@@ -1,13 +1,13 @@
-      SUBROUTINE LKDFDX(NBMAT,MATER,DUM,DGAMV,VIN,INVAR,S,PARAEP,VARPL,
+      SUBROUTINE LKDFDX(NBMAT,MATER,UCRIP,INVAR,S,PARAEP,VARPL,
      &                  DERPAR,DFDXIP)
       IMPLICIT      NONE
-      INTEGER       NBMAT, DUM
+      INTEGER       NBMAT
       REAL*8        MATER(NBMAT,2)
-      REAL*8        VIN(7), INVAR,S(6), PARAEP(3), VARPL(4), DERPAR(3)
-      REAL*8        DFDXIP, DGAMV
+      REAL*8        UCRIP,INVAR,S(6), PARAEP(3), VARPL(4), DERPAR(3)
+      REAL*8        DFDXIP
 C ====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,9 +31,7 @@ C --- BUT : CALCUL DE DF/DSIG ----------------------------------------
 C ====================================================================
 C IN  : NBMAT  : NOMBRE DE PARAMETRES DU MODELE ----------------------
 C --- : MATER  : PARAMETRES DU MODELE --------------------------------
-C     : DUM    : INDICATEUR DU DOMAINE CONTRACTANCE OU DILATANCE -----
-C     : DGAMV  : ACCROISSEMENT DE GAMMA VISCOPLASTIQUE ---------------
-C     : VIN    : VARIABLES INTERNES  ---------------------------------
+C     : UCRIP  : PARTIE SOUS LA PUISSANCE DANS LE CRITERE ------------
 C     : INVAR  : INVARIANT TCONTRAINTES ------------------------------
 C     : S      : DEVIATEUR DES CONTRAINTES ---------------------------
 C     : PARAEP : VARIABLE D'ECROUISSAGE ------------------------------
@@ -52,11 +50,12 @@ C ====================================================================
       COMMON /TDIM/   NDT , NDI
       INTEGER NDI, NDT, I, K
       REAL*8  PREF, SIGC, COS3T, RCOS3T, H0C, H0E, HTHETA
-      REAL*8  SII, UCRIP, SEUILP
-      REAL*8  UN, DEUX, TROIS, LGLEPS
+      REAL*8  SII
+      REAL*8  UN,  LGLEPS
       REAL*8  DFDAD, DFDSD, DFDMD
       REAL*8  FACT1, FACT3, FACT4, FACT5
-C     REAL*8  FACT6, FACT7, FACT8
+C      REAL*8  DEUX,  TROIS
+      REAL*8  FACT6, FACT7, FACT8
 C ====================================================================
 C --- INITIALISATION DE PARAMETRES -----------------------------------
 C ====================================================================
@@ -64,6 +63,7 @@ C ====================================================================
 C      PARAMETER       ( DEUX    =  2.0D0   )
 C      PARAMETER       ( TROIS   =  3.0D0   )
       PARAMETER       ( LGLEPS  =  1.0D-8  )
+C ====================================================================
 C ====================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE ---------------------------
 C ====================================================================
@@ -83,14 +83,13 @@ C =================================================================
 C --- CALCUL DE d(F)/d(sd)
 C =================================================================
       FACT1 =  - PARAEP(1) * VARPL(4) * SIGC * H0C
-      CALL LKCRIP (DUM,DGAMV,INVAR,S,VIN,NBMAT,MATER,UCRIP,SEUILP)
       DFDSD =    FACT1 * (UCRIP)**(PARAEP(1) - UN)
 C =================================================================
 C --- CALCUL DE d(F)/d(md)
 C =================================================================
       FACT3 =  - PARAEP(1) * SIGC * H0C
-      FACT4 =    VARPL(1) * SII * HTHETA / PARAEP(3) 
-      FACT5 =    VARPL(2) * INVAR / PARAEP(3) 
+      FACT4 =  VARPL(1) * SII * HTHETA / PARAEP(3) 
+      FACT5 =  VARPL(2) * INVAR / PARAEP(3) 
       DFDMD = FACT3 * (FACT4 + FACT5) * (UCRIP)**(PARAEP(1) - UN)
 C =================================================================
 C --- CALCUL DE d(F)/d(ad)
@@ -101,7 +100,6 @@ C      FACT8 = LOG(DEUX/TROIS)*(DEUX/TROIS)**(UN/DEUX/PARAEP(1))
 
 C      DFDAD = FACT6*(UCRIP)**PARAEP(1)*
 C     &        (LOG(UCRIP)-(FACT7*FACT8/UCRIP))
-      
 C VERSION CIH
       DFDAD = - SIGC*H0C*LOG(UCRIP/VARPL(4))*(UCRIP)**PARAEP(1)
       DFDXIP = DERPAR(1)*DFDAD + DERPAR(2)*DFDSD + DERPAR(3)*DFDMD

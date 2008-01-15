@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel2 Messages  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,11 @@ cata_msg={
 """),
 
 8: _("""
-  %(k1)s  valeurs de chamno de deplacement n'ont pas ete recopiees sur  %(k2)s  noeuds a affecter  ce qui peut entrainer des erreurs de calcul sur la masse ajoutee des sous structures deduites par rotation et translation definies dans le modele  generalise. augmentez dist_refe ou assurez vous de l' invariance du maillage de structure par la translation et la rotation definies dans le modele generalise.
+  %(k1)s  valeurs de CHAMNO de deplacement n'ont pas ete recopiees sur  %(k2)s  noeuds
+  a affecter  ce qui peut entrainer des erreurs de calcul sur la masse ajoutee des sous structures
+  deduites par rotation et translation definies dans le modele  generalise. augmentez dist_refe
+  ou assurez vous de l' invariance du maillage de structure par la translation et la rotation
+  definies dans le modele generalise.
 """),
 
 9: _("""
@@ -72,7 +76,8 @@ cata_msg={
 """),
 
 24: _("""
- on traite un superelement  et le noeud courant n'est ni un noeud lagrange, ni un noeud physqiue du maillage.
+ on traite un superelement  et le noeud courant n'est ni un noeud lagrange,
+ ni un noeud physique du maillage.
 """),
 
 25: _("""
@@ -92,7 +97,8 @@ cata_msg={
 """),
 
 29: _("""
- la grandeur associee au champ  %(k1)s : %(k2)s  n est pas celle associee au parametre  %(k3)s : %(k4)s  (option: %(k5)s
+ la grandeur associee au champ  %(k1)s : %(k2)s  n est pas celle associee
+ au parametre  %(k3)s : %(k4)s  (option: %(k5)s
 """),
 
 30: _("""
@@ -108,7 +114,8 @@ cata_msg={
 """),
 
 33: _("""
- pour le modele  %(k1)s  on ne peut pas visualiser les champs ensemble  %(k2)s  ... car les familles de pg sont differentes
+ pour le modele  %(k1)s  on ne peut pas visualiser les champs ensemble  %(k2)s  ...
+ car les familles de pg sont differentes
 """),
 
 35: _("""

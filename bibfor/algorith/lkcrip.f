@@ -1,12 +1,12 @@
-      SUBROUTINE LKCRIP (DUM,DGAMV,INVAR, S, VIN, NBMAT, MATER,
+      SUBROUTINE LKCRIP (INVAR, S, VIN, NBMAT, MATER,
      &                   UCRIP, SEUIL)
 C
       IMPLICIT    NONE
-      INTEGER     NBMAT, DUM
-      REAL*8      INVAR, S(6), MATER(NBMAT,2), VIN(7), SEUIL, DGAMV
+      INTEGER     NBMAT
+      REAL*8      INVAR, S(6), MATER(NBMAT,2), VIN(7), SEUIL
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,9 +28,7 @@ C --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 C =================================================================
 C --- BUT : VALEUR SEUIL POUR LE CONVEXE ELASTO-PLASTIQUE ---------
 C =================================================================
-C IN  : DUM   :  INDICATEUR DU DOMAINE CONTRACTANCE OU DILATANCE --
-C --- : DGAMV :  ACCROISSEMENT DE GAMMA VISCOPLASTIQUE ------------
-C --- : INVAR :  INVARIANT DES CONTRAINTES ------------------------
+C IN  : INVAR :  INVARIANT DES CONTRAINTES ------------------------
 C --- : S     :  DEVIATEUR DES CONTRAINTES ------------------------
 C --- : VIN   :  VARIABLES INTERNES -------------------------------
 C --- : NBMAT :  NOMBRE DE PARAMETRES MATERIAU --------------------
@@ -73,7 +71,8 @@ C =================================================================
 C --- APPEL AUX FONCTIONS D ECROUISSAGE DU CRITERE ELASTOPLASTIQUE-
 C =================================================================
       
-      CALL LKVARP(DUM,DGAMV,VIN, NBMAT, MATER, PARAEP)
+      CALL LKVARP(VIN, NBMAT, MATER, PARAEP)
+      
       CALL LKVACP(NBMAT, MATER, PARAEP, VARPL)
       
 C =================================================================
@@ -81,7 +80,7 @@ C ---  CRITERE ELASTOPLASTIQUE ------------------------------------
 C =================================================================
       UCRIP  = VARPL(1)*SII*HTHETA + VARPL(2)*INVAR+VARPL(3)
       IF (UCRIP .LT. ZERO) GOTO 100
-
+      
       SEUIL  = SII*HTHETA - SIGC*H0C*(UCRIP)**PARAEP(1)
 C =================================================================
 100   CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,6 +48,17 @@ Risques & conseils :
    Le changement de discrétisation : %(k1)s n'est pas encore programmé.
  Risques et conseils :
    Il y a peut-etre une demande d'évolution à émettre ...
+"""),
+
+6 : _("""
+ Erreur d'utilisation :
+   On n'arrive pas à construire correctement le champ contenant le nombre de sous-points
+   des éléments finis (coques multi-couches, tuyaux, poutre multi-fibres, ...)  du modèle %(k1)s.
+
+ Risques & conseils :
+   Cette erreur intervient lorsque l'on ne définit pas TOUTES les caractéristiques élémentaires
+   dans le meme AFFE_CARA_ELEM.
+   Pour les commandes de calcul, il ne faut qu'un seul MODELE et qu'un seul CARA_ELEM.
 """),
 
 8 : _("""

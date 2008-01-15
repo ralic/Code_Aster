@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 14/01/2008   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE COUDE SOUS PRESSION EN 3D (PLASTICITE VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -159,6 +159,20 @@ EVOL=STAT_NON_LINE(MODELE=MODMECA,
             CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                   ITER_GLOB_MAXI=20,),
             SENSIBILITE=(PSP,PS_E1,PS_E2,PS_SIGY,PS_DSDE,PS_DY,DY_FOND),);
+
+EVOL = CALC_NO( reuse      =  EVOL         ,
+              RESULTAT   =  EVOL         ,
+              MODELE     =  MODMECA     ,
+              CHAM_MATER =  CHMAT      ,
+              OPTION     = ('REAC_NODA',),);
+
+EVOL = CALC_NO( reuse      =  EVOL         ,
+              RESULTAT   =  EVOL         ,
+              MODELE     =  MODMECA     ,
+              CHAM_MATER =  CHMAT      ,
+              OPTION     = ('REAC_NODA',),
+              SENSIBILITE = (PSP,PS_SIGY,PS_DSDE)
+              );
 
 
 
@@ -366,6 +380,32 @@ TEST_RESU(RESU=(
       CRITERE = 'RELATIF', PRECISION = 1.E-4,
       NOM_CMP = 'DZ',   SENSIBILITE = DY_FOND,
       VALE = 4.53766E-04, REFERENCE = 'AUTRE_ASTER' ),
+      ));
+
+# SENSIBILITES DE REAC_NODA
+
+TEST_RESU(RESU=(
+   _F(RESULTAT = EVOL,
+      INST = 1.0,
+      NOEUD = 'N3075',MAILLE = 'M802',
+      NOM_CHAM = 'REAC_NODA',
+      CRITERE = 'RELATIF', PRECISION = 1.E-3,
+      NOM_CMP = 'DX',   SENSIBILITE = PS_SIGY,
+      VALE = -2.2141075E-03, REFERENCE = 'AUTRE_ASTER' ),
+   _F(RESULTAT = EVOL,
+      INST = 1.0,
+      NOEUD = 'N3075',MAILLE = 'M802',
+      NOM_CHAM = 'REAC_NODA',
+      CRITERE = 'RELATIF', PRECISION = 1.E-4,
+      NOM_CMP = 'DY',   SENSIBILITE = PS_DSDE,
+      VALE = -1.58991E-06, REFERENCE = 'AUTRE_ASTER' ),
+   _F(RESULTAT = EVOL,
+      INST = 1.0,
+      NOEUD = 'N3075',MAILLE = 'M802',
+      NOM_CHAM = 'REAC_NODA',
+      CRITERE = 'RELATIF', PRECISION = 1.E-3,
+      NOM_CMP = 'DZ',   SENSIBILITE = PSP,
+      VALE = -8.47124E-02, REFERENCE = 'AUTRE_ASTER' ),
       ));
 
 

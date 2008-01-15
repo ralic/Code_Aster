@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 08/01/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,6 +32,7 @@ import pickle
 from Noyau.N_Exception import AsException
 from Noyau.N_ASSD import ASSD
 from Noyau.N_ENTITE import ENTITE
+from Noyau.N_JDC    import MemoryErrorMsg
 import aster
 
 from Noyau import basetype
@@ -101,25 +102,7 @@ class JDC:
          self.traiter_fin_exec("par_lot",e)
 
       except MemoryError, e:
-         pb_memoire = """MemoryError :
-
-En général, cette erreur se produit car la mémoire utilisée hors du fortran
-(jeveux) est importante.
-
-Causes possibles :
-   - le calcul produit de gros objets Python dans une macro-commande ou
-     dans le jeu de commande lui-même,
-   - le calcul appelle un solveur (MUMPS par exemple) ou un outil externe
-     qui a besoin de mémoire hors jeveux,
-   - utilisation de jeveux dynamique,
-   - ...
-
-Solution :
-   - distinguer la mémoire limite du calcul (case "Mémoire totale" de astk)
-     de la mémoire réservée à jeveux (case "dont Aster"), le reste étant
-     disponible pour les allocations dynamiques.
-"""
-         self.cr.exception(pb_memoire)
+         self.cr.exception(MemoryErrorMsg)
 
       except EOFError:
          # L'exception EOFError a ete levee par l'operateur FIN

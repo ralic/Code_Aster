@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat_dyn SD  DATE 27/11/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF sd_resultat_dyn SD  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,13 +39,13 @@ class sd_resultat_dyn(sd_resultat):
 
     # indirection vers les SD de .REFD :
     def check_resultat_dyn_i_REFD(self, checker):
-        lnom = self.REFD.get()
-        if not lnom : return
+        refd = self.REFD.get_stripped()
+        if not refd : return
         for k in 0,1,2 :
-            if lnom[k].strip() :
-                sd2 = sd_matr_asse(lnom[0]); sd2.check(checker)
-        if lnom[3].strip() :
-            sd2 = sd_nume_ddl(lnom[3]); sd2.check(checker)
-        if lnom[4].strip() :
-            sd2 = sd_interf_dyna_clas(lnom[4]); sd2.check(checker)
+            if refd[k] :
+                sd2 = sd_matr_asse(refd[0]); sd2.check(checker)
+        if refd[3] :
+            sd2 = sd_nume_ddl(refd[3]); sd2.check(checker)
+        if refd[4] :
+            sd2 = sd_interf_dyna_clas(refd[4]); sd2.check(checker)
 

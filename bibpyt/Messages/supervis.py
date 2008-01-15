@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,19 @@
 def _(x) : return x
 
 cata_msg={
+
+1 : _("""
+ L'utilisation du mot-clé PAR_LOT='NON' permet d'accéder en lecture et en écriture
+ au contenu des concepts Aster. De ce fait, votre étude est exclue du périmètre
+ qualifié de Code_Aster puisque toutes ses étapes ne peuvent être certifiées.
+ 
+ Conseils :
+   - Il n'y a pas particulièrement de risque de résultat faux... sauf si votre
+     programmation l'introduit.
+   - Distinguez le calcul lui-même (qui doit sans doute passer en PAR_LOT='OUI')
+     des post-traitements (qui nécessiteraient le mode PAR_LOT='NON') qui peuvent
+     être réalisés en POURSUITE.
+"""),
 
 2: _("""
  Arret sur erreur(s) utilisateur

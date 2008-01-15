@@ -4,7 +4,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,10 +30,10 @@ C     ------------------------------------------------------------------
 C
       INTEGER    MXCMD
       PARAMETER (MXCMD = 500 )
-      CHARACTER*8 K8B
+      CHARACTER*8 K8B, REPONS
       CHARACTER*16 NOMCMD, CMPOUT, K16B
       CHARACTER*80 FICHDF
-      INTEGER IERIMP,ICMD,LOUT
+      INTEGER IERIMP,ICMD,LOUT,N
 C
 C --- INITIALISATION AVEC SET='ABORT'
       CALL ONERRF('ABORT', CMPOUT, LOUT)
@@ -46,6 +46,12 @@ C
          CALL UTINIT( 2 , 80 , 1 )
 C     --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
       CALL IBDBGS()
+C
+C     --- ALARME GENERIQUE
+      CALL GETVTX(' ','PAR_LOT',1,1,1,REPONS,N)
+      IF ( REPONS .EQ. 'NON' ) THEN
+         CALL U2MESS('A', 'SUPERVIS_1')
+      ENDIF
 C
 C     --- LECTURE DU MOT CLEF TEMPS_CPU
 C

@@ -1,7 +1,8 @@
       SUBROUTINE DRZ02D(LISNOZ,LONLIS,CHARGZ,TYPLAZ,LISREZ,DMIN)
+
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,36 +23,36 @@ C ======================================================================
       CHARACTER*19 LISREL
       CHARACTER*24 LISNOE
       CHARACTER*(*) CHARGZ,LISNOZ,TYPLAZ,LISREZ
-      REAL*8 DMIN,RPETIT
-C -------------------------------------------------------
+      REAL*8 DMIN
+C --------------------------------------------------------------
 C     BLOCAGE DES DEPLACEMENTS RELATIFS D'UNE LISTE DE NOEUDS
-C     SPECIFIEE PAR L'UTILISATEUR DANS LE CAS OU L' ON EST
+C     SPECIFIEE PAR L'UTILISATEUR DANS LE CAS OU L'ON EST
 C     EN 2D ET AUCUN  NOEUD NE PORTE LE DDL DRZ
-C -------------------------------------------------------
-C  LISNOE        - IN    - K24 - : NOM DE LA LISTE DES
-C                -       -     -   NOEUDS A LIER
-C -------------------------------------------------------
-C  LONLIS        - IN    - I   - : LONGUEUR DE LA LISTE DES
-C                -       -     -   NOEUDS A LIER
-C -------------------------------------------------------
-C  CHARGE        - IN    - K8  - : NOM DE LA SD CHARGE
-C                - JXIN  -     -
-C -------------------------------------------------------
-C TYPLAG         - IN    - K2  - : TYPE DES MULTIPLICATEURS DE LAGRANGE
-C                                  ASSOCIES A LA RELATION :
-C                              SI = '12'  LE PREMIER LAGRANGE EST AVANT
-C                                         LE NOEUD PHYSIQUE
-C                                         LE SECOND LAGRANGE EST APRES
-C                              SI = '22'  LE PREMIER LAGRANGE EST APRES
-C                                         LE NOEUD PHYSIQUE
-C                                         LE SECOND LAGRANGE EST APRES
-C -------------------------------------------------------
-C  LISREL        - IN    - K19 - : NOM DE LA SD
-C                - JXVAR -     -   LISTE DE RELATIONS
-C -------------------------------------------------------
-C  DMIN          - IN    - R8 - : LONGUEUR DE L APLUS PETITE ARRETE
-C                                 DU MAILLAGE
-C -------------------------------------------------------
+C --------------------------------------------------------------
+C  LISNOE - IN    - K24 - : NOM DE LA LISTE DES
+C         -       -     -   NOEUDS A LIER
+C --------------------------------------------------------------
+C  LONLIS - IN    - I   - : LONGUEUR DE LA LISTE DES
+C         -       -     -   NOEUDS A LIER
+C --------------------------------------------------------------
+C  CHARGE - IN    - K8  - : NOM DE LA SD CHARGE
+C         - JXIN  -     -
+C --------------------------------------------------------------
+C TYPLAG  - IN    - K2  - : TYPE DES MULTIPLICATEURS DE LAGRANGE
+C                           ASSOCIES A LA RELATION :
+C                       SI = '12'  LE PREMIER LAGRANGE EST AVANT
+C                                  LE NOEUD PHYSIQUE
+C                                  LE SECOND LAGRANGE EST APRES
+C                       SI = '22'  LE PREMIER LAGRANGE EST APRES
+C                                  LE NOEUD PHYSIQUE
+C                                  LE SECOND LAGRANGE EST APRES
+C --------------------------------------------------------------
+C  LISREL - IN    - K19 - : NOM DE LA SD
+C         - JXVAR -     -   LISTE DE RELATIONS
+C --------------------------------------------------------------
+C  DMIN   - IN    - R8 - : LONGUEUR EN DESSOUS DE LAQUELLE ON CONSIDERE
+C                          QUE 2 POINTS SONT CONFONDUS
+C --------------------------------------------------------------
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -75,6 +76,7 @@ C --------- VARIABLES LOCALES ---------------------------
       PARAMETER (NMOCL=300)
       COMPLEX*16 BETAC
       CHARACTER*2 TYPLAG
+      REAL*8 LAB
       CHARACTER*4 TYPVAL,TYPCOE
       CHARACTER*8 BETAF,RESU
       CHARACTER*8 MOD,NOMG,NOMNOE,K8BID,NO1
@@ -94,32 +96,17 @@ C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
       TYPLAG = TYPLAZ
       LISNOE = LISNOZ
 
-C --- INITIALISATIONS
-
       BETAF = '&FOZERO'
       BETA = 0.0D0
       BETAC = (0.0D0,0.0D0)
       UN = 1.0D0
-      RPETIT = 1.D-6*DMIN
-
-C --- MODELE ASSOCIE AU LIGREL DE CHARGE
+      CALL ASSERT (DMIN .GT. 0.D0)
 
       CALL DISMOI('F','NOM_MODELE',CHARGE(1:8),'CHARGE',IBID,MOD,IER)
-
-C ---  LIGREL DU MODELE
-
       LIGRMO = MOD(1:8)//'.MODELE'
-
-C --- MAILLAGE ASSOCIE AU MODELE
-
       CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
-
-C --- TYPE DES VALEURS DES COEFFICIENTS DES RELATIONS
-
       TYPCOE = 'REEL'
-
-C --- TYPE DES VALEURS AU SECOND MEMBRE DES RELATIONS
 
       IF (OPER(15:16).EQ.'_F') THEN
         TYPVAL = 'FONC'
@@ -175,25 +162,22 @@ C ---  VECTEUR DES DIMENSIONS DE CES DIRECTIONS
       CALL WKVECT('&&DRZ02D.DIME','V V I',NBTERM,JLISDM)
 
 C --- RECUPERATION DU TABLEAU DES COORDONNEES
-
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
 
 C --- ACQUISITION DE LA LISTE DES NOEUDS A LIER
 C --- (CETTE LISTE EST NON REDONDANTE)
-
       CALL JEVEUO(LISNOE,'L',ILISNO)
 
+      CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(ILISNO+1-1)),INO1)
       MEMNOE = 0
 
-C ---  TRAITEMENT DU CAS OU TOUS LES NOEUDS ONT LES MEMES
-C ---  COORDONNEES
 
-      CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(ILISNO+1-1)),INO1)
 
+C     1) CAS OU TOUS LES NOEUDS SONT CONFONDUS :
+C        ATTENTION : ON CALCULE AUSSI INO2,I2,X0 ET Y0 POUR LE CAS 2)
+C     ----------------------------------------------------------------
       DO 20 I = 2,LONLIS
-
         CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(ILISNO+I-1)),IN)
-
         X = ZR(JCOOR-1+3* (IN-1)+1) - ZR(JCOOR-1+3* (INO1-1)+1)
         Y = ZR(JCOOR-1+3* (IN-1)+2) - ZR(JCOOR-1+3* (INO1-1)+2)
 
@@ -202,7 +186,8 @@ C ---  COORDONNEES
         X0 = X
         Y0 = Y
 
-        IF (ABS(X).GT.RPETIT .OR. ABS(Y).GT.RPETIT) GO TO 40
+        LAB=SQRT(X*X+Y*Y)
+        IF (ABS(LAB).GT.DMIN) GO TO 40
    20 CONTINUE
 
       NBTERM = 2
@@ -213,34 +198,30 @@ C ---  COORDONNEES
 
       DO 30 I = 2,LONLIS
         ZK8(JLISNO+1-1) = ZK8(ILISNO+I-1)
-
 C ---  PREMIERE RELATION
 C ---  DX(M) -DX(A) = 0
-
         ZK8(JLISDL+1-1) = 'DX'
         ZK8(JLISDL+2-1) = 'DX'
-
         CALL AFRELA(ZR(JLISCR),ZC(JLISCC),ZK8(JLISDL),ZK8(JLISNO),
      &              ZI(JLISDM),ZR(JLISDI),NBTERM,BETA,BETAC,BETAF,
      &              TYPCOE,TYPVAL,TYPLAG,0.D0,LISREL)
 
 C ---  DEUXIEME RELATION
 C ---  DY(M) -DY(A) = 0
-
         ZK8(JLISDL+1-1) = 'DY'
         ZK8(JLISDL+2-1) = 'DY'
-
         CALL AFRELA(ZR(JLISCR),ZC(JLISCC),ZK8(JLISDL),ZK8(JLISNO),
      &              ZI(JLISDM),ZR(JLISDI),NBTERM,BETA,BETAC,BETAF,
      &              TYPCOE,TYPVAL,TYPLAG,0.D0,LISREL)
    30 CONTINUE
-
       MEMNOE = 1
 
+
+
+
+C     2) CAS OU LES NOEUDS NE SONT PAS TOUS CONFONDUS :
+C      ---------------------------------------------------------------
    40 CONTINUE
-
-C --- TRAITEMENT DU CAS OU TOUS LES NOEUDS NE SONT PAS CONFONDUS
-
       IF (MEMNOE.EQ.0) THEN
 
 C ---   LES NOEUDS D'INDICE 1 ET I2 DE LA LISTE ONT DES

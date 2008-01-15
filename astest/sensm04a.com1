@@ -268,6 +268,27 @@ TEST_RESU(RESU=(
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M47',
           NOM_CMP = 'SIYY',    VALE = -2.0465491E-07,
           REFERENCE = 'NON_REGRESSION' ),
+
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_0,
+          NOM_CHAM = 'REAC_NODA',   GROUP_NO = 'ORIGINE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,
+          NOM_CMP = 'DX',    VALE = -1.3333775E-06,
+          REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_1,
+          NOM_CHAM = 'REAC_NODA',   GROUP_NO = 'ORIGINE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,
+          NOM_CMP = 'DX',    VALE = 8.768546E-06,
+          REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_6,
+          NOM_CHAM = 'REAC_NODA',   GROUP_NO = 'ORIGINE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,
+          NOM_CMP = 'DX',    VALE = -3.0507915E-06,
+          REFERENCE = 'NON_REGRESSION' ),
+
+
          ),)
 
 FIN()

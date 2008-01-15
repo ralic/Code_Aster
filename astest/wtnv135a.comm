@@ -1,6 +1,6 @@
-# MODIF  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 # ======================================================================
-# TITRE ETUDE ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
+# TITRE ETUDE ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH : LETK
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,10 +66,10 @@ MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
 SOL=DEFI_MATERIAU(              ELAS=_F(  E  = 5000.E6,
                                           NU = 0.12  ,
                                           RHO = 2500.,
-                                          ALPHA = 1.E-5),  
+                                          ALPHA = 0.),  
                                 LETK =_F(    PA          =   0.1E6,     
                                              NELAS       =   0. ,
-                                             SIGMA_C     =   9.E6,
+                                             SIGMA_C     =   12.E6,
                                              H0_EXT      =   1.10292,
                                              GAMMA_CJS   =   0.8,
                                              XAMS        =   0.1,
@@ -78,7 +78,6 @@ SOL=DEFI_MATERIAU(              ELAS=_F(  E  = 5000.E6,
                                              A_E         =   0.60,
                                              A_PIC       =   0.4,
                                              S_0         =   0.0005,
-                                             S_E         =   0.,
                                              M_0         =   0.01,
                                              M_E         =   2.,
                                              M_PIC       =   6.,
@@ -91,7 +90,6 @@ SOL=DEFI_MATERIAU(              ELAS=_F(  E  = 5000.E6,
                                              A           =   1.5E-12,
                                              N           =   4.5,
                                              SIGMA_P1    =   57.8E6,
-                                             SIGMA_P2    =   57.8E6,
                                              MU0_V       =   0.1,
                                              XI0_V       =   0.3,
                                              MU1         =   0.1,
@@ -138,7 +136,7 @@ SOL=DEFI_MATERIAU(              ELAS=_F(  E  = 5000.E6,
                                  ),
                               THM_INIT=_F( 
                                 TEMP = 293.,  
-                                PRE1 = 1.0,  
+                                PRE1 = 0.0,  
                                 PRE2 = 0.1E6,  
                                 PORO = 0.14,  
                                 PRES_VAPE = 2269.8,  
@@ -181,8 +179,8 @@ EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 
 TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
-                           INTERVALLE=(_F(  JUSQU_A = 3600.0,    NOMBRE = 10),
-                                       _F(  JUSQU_A = 7000.0,   NOMBRE =  10),
+                           INTERVALLE=(_F(  JUSQU_A = 3600.0,    NOMBRE = 1),
+                                       _F(  JUSQU_A = 7000.0,   NOMBRE =  1),
                          ),)
 
 U1=STAT_NON_LINE( 
@@ -272,7 +270,10 @@ U2=STAT_NON_LINE(
                 ), _F( 
                 CHARGE = DEP_V,            
                 FONC_MULT = EVOL_DEV,         
-                )),
+                ),_F( 
+                CHARGE = P0,            
+                ),
+                ),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HM',          
                 RELATION_KIT = (
@@ -289,8 +290,8 @@ U2=STAT_NON_LINE(
                 SUBD_PAS_MINI=1.,
                 ),
                             NEWTON=_F(
-                MATRICE = 'ELASTIQUE',
-                PAS_MINI_ELAS=1000,   
+                MATRICE = 'TANGENTE',
+                REAC_ITER=1,   
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,    
@@ -319,26 +320,26 @@ TEST_RESU(RESU=(
 # DX
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.1.15',
+                      VERSION    = '9.02.04',
                       NOEUD      = 'NO8',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DX',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = 2.8859E-2),),)
+                      VALE       = 3.35767E-2),),)
 
 TEST_RESU(RESU=(
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '9.1.15',
+                      VERSION    = '9.02.04',
                       NOEUD      = 'NO8',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIZZ',
                       INST       = TFIN2,
                       PRECISION  = (1.E-3,1.E-6),
-                      VALE       = -2.397142E7),),)
+                      VALE       = -1.17996E7),),)
 
 
 FIN () ;

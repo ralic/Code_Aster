@@ -8,7 +8,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -88,24 +88,22 @@ C =================================================================
       NOMC(12) =  'A_E      '
       NOMC(13) =  'A_PIC    '
       NOMC(14) =  'S_0      '
-      NOMC(15) =  'S_E      '
-      NOMC(16) =  'M_0      '
-      NOMC(17) =  'M_E      '
-      NOMC(18) =  'M_PIC    '
-      NOMC(19) =  'M_ULT    '
-      NOMC(20) =  'XI_ULT   '
-      NOMC(21) =  'XI_E     '
-      NOMC(22) =  'XI_PIC   '
-      NOMC(23) =  'MV_MAX   '
-      NOMC(24) =  'XIV_MAX'
-      NOMC(25) =  'A        '
-      NOMC(26) =  'N        '
-      NOMC(27) =  'SIGMA_P1 '
-      NOMC(28) =  'SIGMA_P2 '
-      NOMC(29) =  'MU0_V    '
-      NOMC(30) =  'XI0_V    '
-      NOMC(31) =  'MU1      '
-      NOMC(32) =  'XI1      '     
+      NOMC(15) =  'M_0      '
+      NOMC(16) =  'M_E      '
+      NOMC(17) =  'M_PIC    '
+      NOMC(18) =  'M_ULT    '
+      NOMC(19) =  'XI_ULT   '
+      NOMC(20) =  'XI_E     '
+      NOMC(21) =  'XI_PIC   '
+      NOMC(22) =  'MV_MAX   '
+      NOMC(23) =  'XIV_MAX'
+      NOMC(24) =  'A        '
+      NOMC(25) =  'N        '
+      NOMC(26) =  'SIGMA_P1 '
+      NOMC(27) =  'MU0_V    '
+      NOMC(28) =  'XI0_V    '
+      NOMC(29) =  'MU1      '
+      NOMC(30) =  'XI1      '     
 
       DO 101 I=1,NBMAT
          DO 102 J=1,2

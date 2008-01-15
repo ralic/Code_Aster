@@ -15,7 +15,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C----------------------------------------------------------------
       INTEGER       IBID,NSEMAX(3),IDECPG,NBSIG
       DATA          NSEMAX / 2 , 3 , 6 /
       DATA    ELRESE /'SE2','TR3','TE4'/
-      DATA    FAMI   /'BID','RIGI','XINT'/
+      DATA    FAMI   /'BID','XINT','XINT'/
 
 
 C     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE

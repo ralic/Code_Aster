@@ -1,13 +1,14 @@
       SUBROUTINE ORILMA ( NOMA, NDIM, LISTMA, NBMAIL, NORIEN, NTRAIT,
-     &                    REORIE, PREC )
+     &                    REORIE, PREC, NBMAVO, MAILVO )
       IMPLICIT NONE
-      INTEGER             NDIM, LISTMA(*), NBMAIL, NORIEN, NTRAIT
+      INTEGER             NDIM, LISTMA(*), NBMAIL, NORIEN, NTRAIT,
+     &                    NBMAVO, MAILVO(*)
       CHARACTER*8         NOMA
       LOGICAL             REORIE
       REAL*8              PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +44,11 @@ C    NBMAIL         IN    I       NB DE MAILLES DE LA LISTE
 C    NORIEN        VAR            NOMBRE DE MAILLES REORIENTEES
 C    REORIE         IN    L       INDIQUE SI L'ON DOIT APPELER ORIEMA
 C    PREC           IN    R       PRECISION
+C    MAILVO         IN    I       SI ORIE_PEAU_3D ("GROUP_MA_VOLU")
+C                                   = LISTE DES MAILLES VOLUMIQUES
+C                                     UTILES A LA REORIENTATION
+C                                 SINON: MAILVO N'EST PAS UTILISE
+C    NBMAVO         IN    I       NB DE MAILLES DE MAILVO 
 C.========================= DEBUT DES DECLARATIONS ====================
 C ----- COMMUNS NORMALISES  JEVEUX
       INTEGER          ZI
@@ -139,8 +145,8 @@ C
       IF ( DIME1 ) KDIM ='2D'
       IF ( DIME2 ) KDIM ='3D'
       NOMOB1 = '&&ORILMA.MAILLE_3D'
-      CALL UTMASU ( NOMA, KDIM, NBMAIL, LISTMA, NOMOB1, PREC,
-     &                                                      ZR(JCOOR) )
+      CALL UTMASU ( NOMA, KDIM, NBMAIL, LISTMA, NOMOB1, PREC, ZR(JCOOR),
+     &              NBMAVO, MAILVO)
       CALL JEVEUO ( NOMOB1, 'L', JM3D )
 C
       NORIEG = 0

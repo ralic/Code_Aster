@@ -1,13 +1,15 @@
       SUBROUTINE GCOU2D ( BASE, RESU, NOMA, NOMNO, NOEUD, COOR, RINF,
-     &                    RSUP, MODULE, DIR )
+     &                    RSUP, MODULE, LDIREC, DIR )
       IMPLICIT   NONE
       REAL*8              RINF, RSUP, MODULE, DIR(3), COOR(*)
       CHARACTER*1         BASE
       CHARACTER*8               NOMA,        NOEUD
       CHARACTER*24        RESU,       NOMNO
+      LOGICAL             LDIREC
+
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +48,7 @@ C        RINF   : RAYON INFERIEURE DE LA COURONNE
 C        RSUP   : RAYON SUPERIEURE DE LA COURONNE
 C        MODULE : MODULE(THETA)
 C        DIR    : DIRECTION DU CHAMPS THETA
+C        LDIREC : INDIQUE SI LA DIRECTION A ETE DONNEE
 C
 C SORTIE:
 C        DIR    : DIRECTION DU CHAMPS THETA NORMALISEE
@@ -70,28 +73,55 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       ITHETA, I, IREFE, IDESC, NUM, IERD, NBEL, NUMA
-      INTEGER       NEC,IBID
+      INTEGER       NEC,IBID,JFOND,NUMFON,N1,N2,NDIM,JGT
+      PARAMETER     (NDIM=2)
       REAL*8        XM, YM, XI, YI, EPS, D, NORME, ALPHA, VALX, VALY
-      CHARACTER*8   K8B
+      REAL*8        R8PREM
+      CHARACTER*8   K8B,FISS
+      CHARACTER*16  K16B,NOMCMD
+      CHARACTER*19  GRLT,CHGRS
       CHARACTER*24  CHAMNO
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       EPS = 1.D-06
+
+      CALL GETRES(K8B,K16B,NOMCMD)
+      N1=1
+      N2=0
+          WRITE(6,*)'NOMCMD ',NOMCMD
+
+      IF (NOMCMD.EQ.'CALC_G') THEN
+C       CAS CLASSIQUE (N1 NON NUL) OU CAS X-FEM (N2 NON NUL) 
+        CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,K8B,N1)
+        CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,FISS,N2)
+      ENDIF
+
+C     DANS LE CAS X-FEM, SI LA DIRECTION A ETE DONNEE, ON LA GARDE FIXE
+C     SI ELLE N'A PAS ETE DONNEE, ON PREND UNE DIRECTION VARIABLE QUI
+C     VAUT LE GRADIENT DE LA LEVEL SET TANGENTE
 C
+      IF (LDIREC) THEN 
+
 C     --- LA DIRECTION DE THETA EST DONNEE, ON LA NORME ---
 C
-      NORME = 0.D0
-      DO 1 I = 1,2
-         NORME =  NORME + DIR(I)*DIR(I)
-1     CONTINUE
-      NORME = SQRT(NORME)
-      DIR(1) = DIR(1)/NORME
-      DIR(2) = DIR(2)/NORME
+        NORME = 0.D0
+        DO 1 I = 1,2
+           NORME =  NORME + DIR(I)*DIR(I)
+1       CONTINUE
+        NORME = SQRT(NORME)
+        DIR(1) = DIR(1)/NORME
+        DIR(2) = DIR(2)/NORME
+
+      ENDIF
 C
 C     --- RECUPERATION DU NUMERO DE NOEUD DU FOND DE FISSURE ---
 C
-      CALL JENONU ( JEXNOM(NOMNO,NOEUD), NUM )
+      IF (N1.NE.0) THEN
+        CALL JENONU ( JEXNOM(NOMNO,NOEUD), NUM )
+      ELSEIF (N2.NE.0) THEN
+        NUM = 0
+      ENDIF
 C
 C  .DESC
       CHAMNO = RESU(1:19)//'.DESC'
@@ -115,24 +145,58 @@ C  .VALE
       CALL WKVECT ( CHAMNO, BASE//' V R', 2*NBEL, ITHETA )
 C
 C     --- CALCUL DE THETA ---
-C
-C     ---NOEUD DU FOND DE FISSURE
-C
-      ZR(ITHETA + (NUM-1)*2 + 1 - 1) = MODULE*DIR(1)
-      ZR(ITHETA + (NUM-1)*2 + 2 - 1) = MODULE*DIR(2)
-C
+
+C     CAS CLASSIQUE
+      IF (N1.NE.0) THEN
+C       NOEUD DU FOND DE FISSURE
+        ZR(ITHETA + (NUM-1)*2 + 1 - 1) = MODULE*DIR(1)
+        ZR(ITHETA + (NUM-1)*2 + 2 - 1) = MODULE*DIR(2)
+        XI = COOR((NUM-1)*3+1)
+        YI = COOR((NUM-1)*3+2)
+C     CAS X-FEM
+      ELSEIF (N2.NE.0) THEN
+        CALL GETVIS('THETA','NUME_FOND',1,1,1,NUMFON,IBID)
+        CALL JEVEUO(FISS//'.FONDFISS','L',JFOND)
+        XI = ZR(JFOND-1+4*(NUMFON-1)+1)
+        YI = ZR(JFOND-1+4*(NUMFON-1)+2)
+        IF (.NOT.LDIREC) THEN
+          CALL U2MESS('I','XFEM_10')
+C         RÉCUPÉRATION DU GRADIENT DE LST
+          GRLT = FISS//'.GRLTNO'
+          CHGRS = '&&GCOU2D.GRLT'
+          CALL CNOCNS(GRLT,'V',CHGRS)
+          CALL JEVEUO(CHGRS//'.CNSV','L',JGT)
+        ENDIF
+      ENDIF
+
+C 
 C BOUCLE SUR LES AUTRES NOEUDS COURANTS DU MAILLAGE
 C
+      
       DO 500 I=1,NBEL
          IF ( I .NE. NUM ) THEN
             XM = COOR((I-1)*3+1)
             YM = COOR((I-1)*3+2)
-            XI = COOR((NUM-1)*3+1)
-            YI = COOR((NUM-1)*3+2)
             D  = SQRT((XI-XM)*(XI-XM)+(YI-YM)*(YI-YM))
+            ALPHA = (D-RINF)/(RSUP-RINF)
+            IF (.NOT.LDIREC) THEN
+              DIR(1) = ZR(JGT-1+NDIM*(I-1)+1)
+              DIR(2) = ZR(JGT-1+NDIM*(I-1)+2)            
+              NORME  = SQRT(DIR(1)**2+DIR(2)**2)
+C             IL SE PEUT QUE EN CERTAINS POINTS, LE GRADIENT SOIT NUL
+C             CES POINTS SONT NORMALEMENT HORS COURONNE THETA
+              IF (NORME.LE.R8PREM()) THEN
+                IF ((ABS(ALPHA-1).GT.EPS).AND.((ALPHA-1).LE.0)) THEN
+                  CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',I),K8B)
+                  CALL U2MESK('F','XFEM_12',1,K8B)
+                ENDIF
+                NORME = 1.D0
+              ENDIF
+              DIR(1) = DIR(1)/NORME
+              DIR(2) = DIR(2)/NORME
+            ENDIF
             VALX = MODULE*DIR(1)
             VALY = MODULE*DIR(2)
-            ALPHA = (D-RINF)/(RSUP-RINF)
             IF ((ABS(ALPHA).LE.EPS).OR.(ALPHA.LT.0)) THEN
                ZR(ITHETA+(I-1)*2+1-1) = VALX
                ZR(ITHETA+(I-1)*2+2-1) = VALY
@@ -146,5 +210,7 @@ C
          ENDIF
 500   CONTINUE
 C
+      IF (.NOT.LDIREC) CALL DETRSD('CHAM_NO_S',CHGRS)
+
       CALL JEDEMA()
       END

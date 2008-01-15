@@ -7,7 +7,7 @@
       REAL*8        DS2HDS(6), DFDSIG(6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,12 +62,6 @@ C --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 C =================================================================
       SIGC   = MATER(3,2)
       PREF   = MATER(1,2)
-C =================================================================
-C --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
-C =================================================================
-      CALL     LCPRSC(S, S, SII)
-      SII    = SQRT  (SII)
-      
 C =================================================================
 C --- CALCUL DE h(THETA), H0E ET H0C, -----------------------------
 C =================================================================

@@ -1,6 +1,6 @@
       SUBROUTINE OP0100(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -225,10 +225,12 @@ C------------------------------------------
       ENDIF
       IF(DIME.EQ.2)THEN
         IF(OPTION.EQ.'CALC_K_G' .OR. OPTION.EQ.'K_G_MODA')THEN
-          CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,K8B,N1)
-          IF(N1.EQ.0)THEN
-             CALL U2MESK('F','CALCULEL4_21',1,OPTION)
-          ENDIF
+           CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,K8B,N1)
+           CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,K8B,N2)
+           IF (N2.NE.0.AND.OPTION.EQ.'K_G_MODA')
+     &         CALL U2MESS('F','XFEM_9')
+           IF (N1+N2.EQ.0.OR.N1*N2.NE.0)
+     &         CALL U2MESK('F','CALCULEL4_21',1,OPTION)
         ENDIF
       ENDIF
 C
@@ -274,9 +276,7 @@ C ---  2.7.2 : THETA CALCULE
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             SUITE='.'
-            IF(DIME.EQ.2)THEN
-              SUITE=',LA 3-EME NULLE.'
-            ENDIF
+            IF (DIME.EQ.2) SUITE=',LA 3-EME NULLE.'
             IF ( NBR8 .NE. 3 ) THEN
                CALL U2MESK('F','CALCULEL4_24',1,SUITE)
             ELSE
@@ -284,9 +284,7 @@ C ---  2.7.2 : THETA CALCULE
                DIREC=.TRUE.
             ENDIF
          ELSE
-          IF(DIME.EQ.2)THEN
-            CALL U2MESS('F','CALCULEL4_3')
-          ENDIF
+           IF (DIME.EQ.2.AND.N2.EQ.0) CALL U2MESS('F','CALCULEL4_3')
          ENDIF
 
 C      - THETA 2D (COURONNE)
@@ -295,7 +293,7 @@ C      - THETA 2D (COURONNE)
           CALL GVER2D ( NOMA,1,OPTIO3,'THETA',NOMNO,
      &                 NOEUD, RINF, RSUP, MODULE )
           CALL GCOU2D ( 'V',THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO), RINF,
-     &                    RSUP, MODULE, DIR )
+     &                    RSUP, MODULE, DIREC, DIR )
 C     - THETA 3D
         ELSE IF(DIME.EQ.3)THEN
           CHFOND  = FOND//'.FOND      .NOEU'
@@ -411,9 +409,10 @@ C 2.8.2 ==> SI 2D
       ELSE IF(DIME.EQ.2)THEN
 C
 C        - FOND_FISS 2D
-           CALL GETVID ( 'THETA', 'FOND_FISS', 1,1,1,FOND,IFOND)
-           IF ( (OPTION .EQ. 'CALC_K_G') .AND. (IFOND.EQ.0) ) THEN
-              CALL U2MESS('F','CALCULEL4_32')
+           CALL GETVID ( 'THETA', 'FOND_FISS', 1,1,1,FOND,N1)
+           CALL GETVID ( 'THETA','FISSURE', 1,1,1, FISS, N2 )
+           IF ( (OPTION .EQ. 'CALC_K_G') .AND. (N1+N2.EQ.0) ) THEN
+              CALL U2MESS('F','CALCULEL4_21')
            ENDIF
 C
       ENDIF
@@ -1024,9 +1023,10 @@ C
       ELSE IF (OPTIO1.EQ.'CALC_K_G' .AND. DIME.EQ.2) THEN
 C
             CALL MEFICG (OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                   ZK8(ICHA),SYMECH,FOND,EXITIM,TIME,IORD,
+     &                   ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,TIME,IORD,
      &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
-     &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS)
+     &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
+     &                   COMPOR)
 C
       ELSE IF (OPTIO1.EQ.'CALC_DK_DG_E') THEN
             OPTIO2 = 'CALC_DG_E'
@@ -1042,9 +1042,10 @@ C           ON LES AJOUTE DIRECTEMENT
             CALL TBAJLI(LATABL,2,NOPRUP(4),IORD,VAL,CBID,K8B,1)
       ELSE IF (OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
             CALL MEFICG (OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
-     &                   ZK8(ICHA),SYMECH,FOND,EXITIM,TIME,IORD,
+     &                   ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,TIME,IORD,
      &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
-     &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS)
+     &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
+     &                   COMPOR)
 
       ELSE
            CALL U2MESS('F','CALCULEL4_40')

@@ -13,7 +13,7 @@ C
       REAL*8             DSIDE(6,6)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,34 +66,35 @@ C=======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
 C=======================================================================
-      INTEGER          NBMAT, NDT, NDIM, NDI,NR,NVI,VAL,VARV,I,K,MATR
-      INTEGER          IRET
-      INTEGER          DUM, IISNAN, INDAL
-      REAL*8           MUN, UN, ZERO, DEUX, TROIS,  BIDON
-C      REAL*8           LGLEPS
-      PARAMETER       (NBMAT  = 90 )
-      REAL*8           MATERD(NBMAT,2), MATERF(NBMAT,2)
-      REAL*8           DT, ALPHA, COEF
-      REAL*8           SIGML(6),SIGPL(6),SIGPN(6),DEPML(6),DEPSTH(6)
-      REAL*8           TRACE 
-      REAL*8           I1ML, SML(6), SIIM
-      REAL*8           I1PL, IPL, SPL(6), SIIP
-      REAL*8           IEL , I1EL, SEL1(6), SIGEL1(6), I2EL, SEL2(6)
-      REAL*8           DVML, DEVML(6) 
-      REAL*8           DVML1, DEVML1(6) 
-      REAL*8           SEL(6), SIGEL(6), SIGI(6)
-      REAL*8           PARAVI(3), VARVI(4)
-      REAL*8           PARAEP(3),VARPL(4)
-      REAL*8           RCOS3T, COS3T, BPRIME
-      REAL*8           H0E, H0C,HTHETA, SEUILV,SEUILP
-      REAL*8           DHDS(6),DS2HDS(6),DFDSV(6),DFDSP(6)
-      REAL*8           GV(6), DEPSV(6), DGAMV, DXIVM, XIPIC
-      REAL*8           GP(6), DEPSP(6), DGAMP, XIVM, DXIP,DXIV
-      REAL*8           SEUIVM,UCRIVM,UCRIP, UCRIV,IRREV(6)
-      REAL*8           DSIG(6),DERPAR(3), VECD(6),UCRIPL, SEUIPL
-      REAL*8           DEDEP(6), ETA, DE(6,6),KK,MU
-      REAL*8           KRON(6),  VINTR
-      CHARACTER*3      MATCST
+      INTEGER       NBMAT, NDT, NDIM, NDI,NR,NVI,VAL,VARV,I,K,MATR
+      INTEGER       IRET
+      INTEGER       IISNAN, INDAL
+      REAL*8        MUN, UN, ZERO, DEUX, TROIS,  BIDON
+C      REAL*8        LGLEPS
+      PARAMETER    (NBMAT  = 90 )
+      REAL*8        MATERD(NBMAT,2), MATERF(NBMAT,2)
+      REAL*8        DT, ALPHA, COEF
+      REAL*8        SIGML(6),SIGPL(6),SIGPN(6),DEPML(6),DEPSTH(6)
+      REAL*8        TRACE 
+      REAL*8        I1ML, SML(6), SIIM
+      REAL*8        I1PL, IPL, SPL(6), SIIP
+      REAL*8        IEL , I1EL, SEL1(6), SIGEL1(6), I2EL, SEL2(6)
+      REAL*8        DVML, DEVML(6) 
+      REAL*8        DVML1, DEVML1(6) 
+      REAL*8        SEL(6), SIGEL(6), SIGI(6)
+      REAL*8        PARAVI(3), VARVI(4)
+      REAL*8        PARAEP(3),VARPL(4)
+      REAL*8        RCOS3T, COS3T
+      REAL*8        H0E, H0C,HTHETA, SEUILV,SEUILP
+      REAL*8        UCRVM, SEUVM,UCRPM, SEUPM 
+      REAL*8        DHDS(6),DS2HDS(6),DFDSV(6),DFDSP(6)
+      REAL*8        GV(6), DEPSV(6), DGAMV, DXIVM, XIPIC
+      REAL*8        GP(6), DEPSP(6), DGAMP, XIVM, DXIP,DXIV
+      REAL*8        SEUIVM,UCRIVM,UCRIP, UCRIV,IRREV(6)
+      REAL*8        DSIG(6),DERPAR(3), VECD(6),UCRIPL, SEUIPL
+      REAL*8        DEDEP(6), ETA, DE(6,6),KK,MU
+      REAL*8        KRON(6),  VINTR
+      CHARACTER*3   MATCST
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
@@ -106,16 +107,16 @@ C      PARAMETER       (LGLEPS =  1.0D-8 )
 C =================================================================
       COMMON /TDIM/   NDT , NDI
 C =================================================================
-      DATA             KRON /UN , UN , UN , ZERO ,ZERO ,ZERO/
+      DATA   KRON /UN , UN , UN , ZERO ,ZERO ,ZERO/
       
       DT = INSTAP - INSTAM
 
       CALL R8INIR(6,0.D0,DEPSP,1)
       CALL R8INIR(6,0.D0,DEPSV,1)
       DGAMP = ZERO
-      DGAMV= ZERO
-      DXIP = ZERO
-      DXIV = ZERO
+      DGAMV = ZERO
+      DXIP  = ZERO
+      DXIV  = ZERO
 C =================================================================
 C --- RECUPERATION DES PARAMETRES DU MODELE -----------------------
 C --- LES COEFFICIENTS MATERIAU N EVOLUENT PAS AVEC LE TEMPS-------
@@ -126,8 +127,8 @@ C =================================================================
      &              MATERF, MATCST, NDT, NDI, NVI, INDAL)
 
 C      SIGC   = MATERD(3,2)
-      XIPIC  = MATERD(19,2)
-      XIVM   = MATERD(21,2)
+      XIPIC  = MATERD(18,2)
+      XIVM   = MATERD(20,2)
 C =================================================================
 C --- CONVENTIONS DE SIGNE DU MODELE LAIGLE VISCOPLASTIQUE --------
 C =================================================================
@@ -137,7 +138,7 @@ C =================================================================
          DEPML(I) = MUN *  DEPS(I)
   10  CONTINUE
 C =================================================================
-C --- DEFINITION DES INVARIANTS ET DU DEVIATEUR -------------------
+C --- DEFINITION DES INVARIANTS ET DU DEVIATEUR A L'INSTANT MOINS--
 C =================================================================
 
       I1ML = TRACE(NDI,SIGML)
@@ -149,7 +150,7 @@ C =================================================================
       SIIM = SQRT(SIIM)
 
 C =================================================================
-C --- DEFINITION DES DEFORMATIONS VOLUMIQUES ET DEVIATORIQUES -----
+C ---PRISE EN COMPTE DE LA DILATATION THERMIQUE--------------------
 C =================================================================
 
       ALPHA = MATERD(3,1)
@@ -164,6 +165,9 @@ C =================================================================
              COEF = ZERO
          ENDIF
 
+C =================================================================
+C --- DEFINITION DES DEFORMATIONS VOLUMIQUES ET DEVIATORIQUES -----
+C =================================================================
       DVML = 0.D0
 
       DO 110 K=1,NDT
@@ -181,7 +185,7 @@ C =================================================================
 C --- PREDICTION ELASTIQUE ----------------------------------------
 C =================================================================
       CALL LKELAS ( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML,  DE,KK,MU)
+     &              DEPSTH, SIGML,  DE,KK,MU)
 
       IEL = I1ML + TROIS*KK*DVML
 
@@ -200,46 +204,44 @@ C =================================================================
 C --- CRITERE VISQUEUX --------------------------------------------
 C =================================================================
 C =================================================================
-C --- CALCUL DE fv(SIGE, XIVM) ---CRITERE VISQUEUX-----------------
+C --- CALCUL DE fv(SIGE, XIVM) ---CRITERE VISQUEUX MAX-------------
 C =================================================================
-           CALL LKCRIV(XIVM,IEL,SEL, VINM, NBMAT,MATERD,UCRIVM,SEUIVM)
+           CALL LKCRIV(XIVM,IEL,SEL,VINM, NBMAT,MATERD,UCRIVM,SEUIVM)
 
            IF (UCRIVM.LT.ZERO)  CALL U2MESS('F','COMPOR1_27')
            
-C --- VERIFICATION DU SEUIL VISQUEUX MAX ---------------------------
-C --- CES 4 TESTS SONT NECESSAIRE POUR PRENDRE EN COMPTE LES SITUATIONS 
-C --- AVANT ET APRES LE PIC-----------------------------------------
-
-C---- VINTR : TROISIEME VARIABLE INTERNE QUI VAUT XIVMAX AU DELA DU -
-C------------VISCOPLASTIQUE MAX-------------------------------------
 C---- VARV : EN DESSOUS DU CRITERE VISQUEUX MAX : CONTRACTANCE: VARV=0
 C---- VARV : AU DESSUS DU CRITERE VISQUEUX MAX  : DILATANCE:    VARV=1
 
 C---- VAL  : INDICATEUR POUR LES LOIS DE DILALANCE
-C----      : EN DESSOUS DU PIC : VAL = 0
+C----      : EN DESSOUS DU PIC ET POUR LA VISCOSITE : VAL = 0
 C----      : AU DESSUS DU PIC  : VAL = 1
 
-           IF ((SEUIVM .LT. ZERO).AND.(VINM(1).LT.XIPIC)) THEN 
+           IF (SEUIVM .LT. ZERO) THEN 
             VARV = 0
-           ELSEIF ((SEUIVM .GT. ZERO).AND.(VINM(1).LT.XIPIC)) THEN
-            VARV = 1       
-           ELSEIF ((SEUIVM .GT. ZERO).AND.(VINM(1).GT.XIPIC)) THEN
-            VARV = 1
-           ELSEIF ((SEUIVM .LT. ZERO).AND.(VINM(1).GT.XIPIC)) THEN
-            VARV = 0        
+           ELSE
+            VARV = 1        
            ENDIF
             
            VINTR = VINM(3)
            
+C =================================================================
+C --- CALCUL DE fv(SIGE, XIVM) ---CRITERE VISCOPLASTIQUE ---------
+C =================================================================
            CALL LKCRIV(VINTR,IEL,SEL,VINM,NBMAT,MATERD,UCRIV,SEUILV)
+
+C --- VERIFICATION DU SIGNE DE U A L INSTANT MOINS AVANT ENTREE 
+C --- DANS LKDGDE
+
+           CALL LKCRIV(VINTR,I1ML,SML,VINM,NBMAT,MATERD,UCRVM,SEUVM)
 
 C =================================================================
 C --- VERIFICATION SUR L'AXE HYDROSTATIQUE ------------------------
 C =================================================================
 
-           IF (UCRIV .LT. ZERO) THEN 
+           IF ((UCRIV .LT. ZERO).OR.(UCRVM .LT. ZERO)) THEN 
 
-              CALL LKVARP(VARV,DGAMV, VINM, NBMAT,  MATERD, PARAEP)
+              CALL LKVARP(VINM, NBMAT,  MATERD, PARAEP)
               
               CALL LKVACP(NBMAT, MATERD, PARAEP, VARPL)     
               
@@ -283,16 +285,14 @@ C---- GAMMAV A T + DT ---------------------------------------------
 C --  INDICATEUR DE VISCOSITE
            VINP(6) = 0.D0 
 
-            
-
            ELSE
 C =================================================================
 C --- VISCOSITE  --------------------------------------------------
 C =================================================================
                VAL = 0
                         
-C -------------CALCUL DE d GAMMAV -----------CRITERE VISQUEUX------
-               CALL LKDGDE(VAL,VINTR,DT,IEL,SEL,I1ML,SML,VINM,
+C -------------CALCUL DE DEPSV ET DE GAMMAV ----CRITERE VISQUEUX---
+               CALL LKDGDE(VAL,VINTR,DT,SEUILV,UCRVM,I1ML,SML,VINM,
      &                     NBMAT,MATERD,DEPSV,DGAMV,IRET)
                IF (IRET .EQ. 1 ) THEN
                  RETCOM = 1
@@ -302,8 +302,8 @@ C -------------CALCUL DE d GAMMAV -----------CRITERE VISQUEUX------
                DVML1 = TRACE(NDI,DEPSV)
                CALL LCDEVI(DEPSV,DEVML1)
                
-               
 C -------------DELTA XIV 
+
                DXIVM = XIVM - VINM(3)
                DXIV  = MIN(DGAMV,DXIVM)
                
@@ -327,16 +327,20 @@ C --- MISE A JOUR DE LA PREDICTION DE LA CONTRAINTE ---------------
               DO 22 I = 1, NDT  
               SEL1(I) = SEL(I) - DEUX* MU *DEVML1(I)
  22           CONTINUE
-
 C =================================================================
 C --- CRITERE ELASTOPLASTIQUE  ------------------------------------
 C =================================================================
+C --- VERIFICATION DU SIGNE DE U A L INSTANT MOINS AVANT ENTREE 
+C --- DANS LKGAMP et LKOPTG 
+
+           CALL LKCRIP(I1ML,SML,VINM,NBMAT,MATERD,UCRPM,SEUPM)
+
 C =================================================================
 C --- CALCUL DE fp(SIGE, XIPM) ---CRITERE ELASTOPLASTIQUE ---------
 C =================================================================
-           CALL LKCRIP(VARV,DGAMV,I1EL,SEL1,VINM,NBMAT,MATERD,UCRIP,
-     &                 SEUILP)
-           IF (UCRIP  .LT. ZERO) THEN
+           CALL LKCRIP(I1EL,SEL1,VINM,NBMAT,MATERD,UCRIP,SEUILP)
+           
+           IF ((UCRIP  .LT. ZERO).OR.(UCRPM  .LT. ZERO)) THEN
            RETCOM = 1
            GOTO 1000
            ENDIF 
@@ -398,15 +402,16 @@ C =================================================================
             VAL  = 1
            ENDIF
 
-C ------- CALCUL DE d GAMMAP -------------CRITERE ELASTOPLASTIQUE--
-            CALL LKGAMP(VAL,VARV,I1ML,SML,VINM,NBMAT,
-     &           MATERD,DE,DEPML,DEPSV,DGAMV,DEPSP,DGAMP,IRET)
+C ------- CALCUL DE  GAMMAP -------------CRITERE ELASTOPLASTIQUE--
+
+            CALL LKGAMP(VAL,VARV,I1ML,SML,UCRPM,SEUPM,VINM,NBMAT,
+     &           MATERD,DE,DEPSTH,DEPSV,DGAMV,DEPSP,DGAMP,IRET)
+
                IF (IRET .EQ. 1 ) THEN
                  RETCOM = 1
                  GOTO 1000
                ENDIF
 
-             
 C -------- DELTA XIP 
            
              IF (VARV.EQ.0) THEN 
@@ -433,7 +438,7 @@ C --- DEFORMATIONS IRREVERSIBLES ----------------------------------
 
              CALL LCSOVE (DEPSV, DEPSP, IRREV )
 
-             CALL LCDIVE (DEPML, IRREV, VECD)
+             CALL LCDIVE (DEPSTH, IRREV, VECD)
            
              CALL LCPRMV (DE, VECD, DSIG)
 
@@ -441,20 +446,8 @@ C --- DEFORMATIONS IRREVERSIBLES ----------------------------------
               SIGPL(I) = SIGML(I) + DSIG(I)
    40        CONTINUE
 
-C =================================================================
-C --- DEFINITION DES INVARIANTS ET DU DEVIATEUR -------------------
-C =================================================================
-
-C             I1PL = TRACE(NDI,SIGPL)
-           
-C             CALL LCDEVI(SIGPL,SPL)
-
-C             CALL LCPRSC(SPL, SPL, SIIP)
-
-C             SIIP = SQRT(SIIP)
-
 C==================================================================
-C--------- REACTUALISATION DES VARIABLES INTERNES VISQUEUSES ------
+C--------- REACTUALISATION DES VARIABLES INTERNES PLASTIQUES ------
 C==================================================================
 C---- XIP A T + DT ------------------------------------------------
 
@@ -468,11 +461,23 @@ C --  INDICATEUR DE PLASTICITE
            
              VINP(7) = 1.D0
 C =================================================================
-C --- AJUSTEMENT DES CONTRAINTES POUR ANNULER LE CRITER PLASTIQUE -
+C --- DEFINITION DES INVARIANTS ET DU DEVIATEUR  A L ETAT PLUS-----
+C =================================================================
+
+C             I1PL = TRACE(NDI,SIGPL)
+           
+C             CALL LCDEVI(SIGPL,SPL)
+
+C             CALL LCPRSC(SPL, SPL, SIIP)
+
+C             SIIP = SQRT(SIIP)
+
+C =================================================================
+C --- AJUSTEMENT DES CONTRAINTES POUR ANNULER LE CRITERE PLASTIQUE 
 C =================================================================
 C           CALL LKVARV(VINTR,NBMAT, MATERD, PARAVI)
 
-           CALL LKVARP(VARV,DGAMV, VINP, NBMAT, MATERD, PARAEP)
+C          CALL LKVARP(VINP, NBMAT, MATERD, PARAEP)
 
 C           RCOS3T = COS3T  (SPL, MATERD(1,2), LGLEPS)
         
@@ -492,8 +497,7 @@ C           SIGPN(I) = SPL(I) + IPL/TROIS*KRON(I)
 C           SIGPL(I) = SIGPN(I)
 C  45    CONTINUE
         
-C          DUM=0 
-C           CALL LKCRIP(DUM,DGAMV, IPL,SPL,VINP,NBMAT,MATERD,UCRIPL,
+C           CALL LKCRIP( IPL,SPL,VINP,NBMAT,MATERD,UCRIPL,
 C     &                  SEUIPL)
 C           IF (UCRIPL  .LT. ZERO) THEN
 C       CALL U2MESS('A','COMPOR1_28')
@@ -511,7 +515,7 @@ C --- TERMES DE L OPERATEUR TANGENT -------------------------------
 C =================================================================
       IF (OPTION(11:14).EQ.'ELAS') THEN
           CALL LKELAS ( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML,  DE,KK,MU)
+     &              DEPSTH, SIGML,  DE,KK,MU)
           CALL LCEQMA(DE, DSIDE)
       ENDIF
       IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG'.OR.
@@ -519,30 +523,23 @@ C =================================================================
        IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG' ) THEN
            IF ((VINM(7) .EQ. 0.D0).AND.(VINM(6) .EQ. 0.D0)) THEN
             MATR = 0
-           ELSEIF ((VINM(7) .EQ. 0.D0).AND.(VINM(6) .NE. 0.D0)) THEN
-            MATR = 3
-           ELSEIF ((VINM(7) .NE. 0.D0).AND.(VINM(6) .EQ. 0.D0)) THEN
-            MATR = 2
-           ELSEIF ((VINM(7) .NE. 0.D0).AND.(VINM(6) .NE. 0.D0)) THEN
+           ELSEIF ((VINM(7) .EQ. 1.D0).OR.(VINM(6) .EQ. 1.D0)) THEN
             MATR = 1 
            END IF
        END IF
        IF ( OPTION(1:9) .EQ. 'FULL_MECA' ) THEN
            IF ((VINP(7) .EQ. 0.D0).AND.(VINP(6) .EQ. 0.D0)) THEN
             MATR = 0
-           ELSEIF ((VINP(7) .EQ. 0.D0).AND.(VINP(6) .EQ. 1.D0)) THEN
-            MATR = 3
-           ELSEIF ((VINP(7) .EQ. 1.D0).AND.(VINP(6) .EQ. 0.D0)) THEN
-            MATR = 2
-           ELSEIF ((VINP(7) .EQ. 1.D0).AND.(VINP(6) .EQ. 1.D0)) THEN
+           ELSEIF ((VINP(7) .EQ. 1.D0).OR.(VINP(6) .EQ. 1.D0)) THEN
             MATR = 1
            END IF
-        END IF
+       END IF
        CALL R8INIR(6*6,0.D0,DSIDE,1)
+          CALL LKELAS ( NDI, NDT, MOD , NBMAT, MATERD, 
+     &                  DEPSTH,SIGML,DE,KK,MU)
+
        IF (MATR .EQ. 0) THEN
 
-          CALL LKELAS ( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML,  DE,KK,MU)
 
           DO 120 I = 1,NDT
           DO 130 K = 1,NDT
@@ -551,23 +548,36 @@ C =================================================================
  120     CONTINUE
 
        ELSE
-      
-          CALL LKLNVI( MOD, NDT, NDI, NVI)
-          CALL LKELAS( NDI, NDT, MOD , NBMAT, MATERD, 
-     &              DEPML, SIGML,  DE,KK,MU)
-          VINTR = VINM(3)
+
           IF (VINM(1).LT.XIPIC) THEN 
             VAL  = 0
             ELSE
             VAL  = 1
           ENDIF
-          CALL LKOPTG(MATR,VAL,VARV,DGAMV,VINTR,DT,NBMAT, 
-     &                MATERD,I1ML, SML,VINM,DE,DEPSV,DSIDE,IRET)
+
+          IF (SEUIVM .LT. ZERO) THEN 
+           VARV = 0
+          ELSE
+           VARV = 1        
+          ENDIF
+          
+          VINTR=VINM(3)
+
+          CALL LKCRIP(I1ML,SML,VINM,NBMAT,MATERD,UCRPM,SEUPM)
+
+          CALL LKCRIV(VINTR,I1ML,SML,VINM,NBMAT,MATERD,UCRVM,SEUVM)
+          
+          CALL LKCRIV(VINTR,IEL,SEL,VINM,NBMAT,MATERD,UCRIV,SEUILV)
+
+          CALL LKOPTG(VAL,VARV,DT,NBMAT,MATERD, 
+     &                I1ML,SML,IEL,SEL,UCRPM,UCRVM,UCRIV,SEUILV,
+     &                VINM,DE,DEPSV,DSIDE,IRET)
       
-               IF (IRET .EQ. 1 ) THEN
-                 RETCOM = 1
-                 GOTO 1000
-               ENDIF
+           IF (IRET .EQ. 1 ) THEN
+             RETCOM = 1
+             GOTO 1000
+           ENDIF
+       
        ENDIF
   
       ENDIF
@@ -577,7 +587,7 @@ C -------- RETABLISSEMENT DES SIGNES POUR ASTER --
 C==================================================================
            DO 50 I = 1,NDT
               SIGP(I) =  MUN *  SIGPL(I)
-              DEPS(I) =  MUN *  DEPML(I) 
+              DEPS(I) =  MUN *  DEPSTH(I) 
   50       CONTINUE
 C =================================================================
  1000 CONTINUE

@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/09/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF MODELISA  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8             VALR8,E1,EI,PRECMA,VALRR(4)
       CHARACTER*4        VALTX
-      CHARACTER*8        VALCH,TYPFON,NOMPF(10),K8BID,CPROL,NOMCLE(5)
+      CHARACTER*8        VALCH,TYPFON,NOMPF(10),K8BID,NOMCLE(5)
       CHARACTER*8        MCLE8,TABLE
       CHARACTER*19       RDEP,NOMFCT,CH19,MZP,NOMINT
       CHARACTER*24       PROL1,PROL2,VALKK(2)
@@ -329,7 +329,7 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
          IF ( IRET .NE. 0 ) THEN
           CALL U2MESS('F','MODELISA6_73')
          ENDIF
-         CPROL = ZK16(JFCT+1)
+
         ELSE IF ( ZK16(JFCT)(1:1) .EQ. 'N' ) THEN
          CALL JELIRA(NOMFCT//'.VALE','NUTIOC',NBFCT,K8BID)
          NBPTM = 0
@@ -383,7 +383,7 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
            CALL U2MESS('F','MODELISA6_73')
           ENDIF
  160     CONTINUE
-         CPROL = ZK16(JFCT+7)
+
         ELSE
          CALL U2MESS('F','MODELISA6_76')
         ENDIF
@@ -396,126 +396,6 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
        ZK16(JPROL+2) = 'EPSI    '
        ZK16(JPROL+3) = ZK16(JFCT+3)
        CALL WKVECT (RDEP//'.VALE','G V R',2*NBMAX,JVALE)
-      ENDIF
-C
-C --- 5- CREATION D'UNE FONCTION POUR STOCKER MZ(P)
-C
-      IEXIST = 0
-      IF ( NOMRC(1:8) .EQ. 'DIS_CONT'  ) THEN
-        IEXIST = 1
-        DO 400 I=1,NBK
-          IF ( VALK(NBR+NBC+I)(1:7) .EQ. 'RELA_MZ' ) THEN
-            IEXIST = 2
-            NOMFCT = VALK(NBR+NBC+NBK+I)
-            GOTO 451
-          ENDIF
- 400    CONTINUE
- 451    CONTINUE
-        IF (IEXIST .EQ. 2) THEN
-        CALL JEVEUO(NOMFCT//'.PROL','L',JFCT)
-        IF ( ZK16(JFCT)(1:1) .EQ. 'F' ) THEN
-          CALL JELIRA(NOMFCT//'.VALE','LONMAX',NBPTM,K8BID)
-          IF ( NBPTM .LT. 4 ) THEN
-            CALL U2MESS('F','MODELISA6_77')
-          ENDIF
-          NBCOUP = NBPTM / 2
-          CALL JEVEUO(NOMFCT//'.VALE','L',JRPV)
-          IF ( ZR(JRPV) .LE . 0.D0 ) THEN
-            VALKK (1) = NOMFCT
-            VALRR (1) = ZR(JRPV)
-            CALL U2MESG('F','MODELISA9_66',1,VALKK,0,0,1,VALRR)
-          ENDIF
-          IF ( ZR(JRPV+NBPTM/2) .LE. 0.D0 ) THEN
-            VALKK (1) = NOMFCT
-            VALRR (1) = ZR(JRPV+NBPTM/2)
-            CALL U2MESG('F','MODELISA9_67',1,VALKK,0,0,1,VALRR)
-          ENDIF
-C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
-          IRET=2
-          CALL FOVERF(ZR(JRPV),NBCOUP,IRET)
-          IRET = 0
-          E1 = ZR(JRPV+NBCOUP) / ZR(JRPV)
-          PRECMA = 1.D-10
-          DO 460 I = 1 , NBCOUP-1
-             EI = ( ZR(JRPV+NBCOUP+I) - ZR(JRPV+NBCOUP+I-1) ) /
-     &            ( ZR(JRPV+I)        - ZR(JRPV+I-1)        )
-             IF ( EI .GT. E1 ) THEN
-               IRET = IRET + 1
-               VALRR (1) = E1
-               VALRR (2) = EI
-               VALRR (3) = ZR(JRPV+I)
-               CALL U2MESG('E','MODELISA9_68',0,' ',0,0,3,VALRR)
-             ELSEIF ( (E1-EI)/E1 .LE. PRECMA ) THEN
-               VALRR (1) = E1
-               VALRR (2) = EI
-               VALRR (3) = PRECMA
-               VALR (4) = ZR(JRPV+I)
-               CALL U2MESG('A','MODELISA9_69',0,' ',0,0,4,VALRR)
-             ENDIF
- 460      CONTINUE
-          IF ( IRET .NE. 0 ) THEN
-            CALL U2MESS('F','MODELISA6_73')
-          ENDIF
-          CPROL = ZK16(JFCT+1)
-        ELSE IF ( ZK16(JFCT)(1:1) .EQ. 'N' ) THEN
-          CALL JELIRA(NOMFCT//'.VALE','NUTIOC',NBFCT,K8BID)
-          NBPTM = 0
-          DO 470 K=1,NBFCT
-            CALL JELIRA(JEXNUM(NOMFCT//'.VALE',K),'LONMAX',NBPTS,K8BID)
-            NBCOUP = NBPTS / 2
-            IF ( NBPTS .LT. 4 ) THEN
-             CALL U2MESS('F','MODELISA6_74')
-            ENDIF
-            CALL JEVEUO(JEXNUM(NOMFCT//'.VALE',K),'L',JRPV)
-            IF ( ZR(JRPV) .LE . 0.D0 ) THEN
-              VALI = K
-              VALKK (1) = NOMFCT
-              VALRR (1) = ZR(JRPV)
-              CALL U2MESG('F','MODELISA9_70',1,VALKK,1,VALI,1,VALRR)
-            ENDIF
-            IF ( ZR(JRPV+NBPTS/2) .LE . 0.D0 ) THEN
-              VALI = K
-              VALKK (1) = NOMFCT
-              VALRR (1) = ZR(JRPV+NBPTS/2)
-              CALL U2MESG('F','MODELISA9_71',1,VALKK,1,VALI,1,VALRR)
-            ENDIF
-C           VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
-            IRET=2
-            CALL FOVERF(ZR(JRPV),NBCOUP,IRET)
-            IF ( IRET .NE. 0 ) THEN
-              CALL U2MESS('F','MODELISA6_78')
-            ENDIF
-            IRET = 0
-            E1 = ZR(JRPV+NBCOUP) / ZR(JRPV)
-            DO 480 I = 1 , NBCOUP-1
-              EI = ( ZR(JRPV+NBCOUP+I) - ZR(JRPV+NBCOUP+I-1) ) /
-     &             ( ZR(JRPV+I)        - ZR(JRPV+I-1)        )
-              IF ( EI .GT. E1 ) THEN
-                IRET = IRET + 1
-                VALRR (1) = E1
-                VALRR (2) = EI
-                VALRR (3) = ZR(JRPV+I)
-                CALL U2MESG('E','MODELISA9_72',0,' ',0,0,3,VALRR)
-              ENDIF
- 480        CONTINUE
-            IF ( IRET .NE. 0 ) THEN
-              CALL U2MESS('F','MODELISA6_73')
-            ENDIF
-            NBPTM = MAX(NBPTM,NBPTS)
- 470      CONTINUE
-          CPROL = ZK16(JFCT+7)
-        ELSE
-          CALL U2MESS('F','MODELISA6_79')
-        ENDIF
-        MZP = NOMMAT//'.&&MZP'
-C
-        CALL WKVECT (MZP//'.PROL','G V K16',6,JPROL)
-        ZK16(JPROL  ) = 'FONCTION'
-        ZK16(JPROL+1) = CPROL
-        ZK16(JPROL+2) = ZK16(JFCT+2)
-        ZK16(JPROL+3) = ZK16(JFCT+3)
-        CALL WKVECT (MZP//'.VALE','G V R',NBPTM,JVALE)
-      ENDIF
       ENDIF
 C
 C --- 6 CREATION SI NECESSAIRE D'UNE FONCTION POUR STOCKER BETA

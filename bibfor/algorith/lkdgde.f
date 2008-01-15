@@ -1,14 +1,14 @@
-      SUBROUTINE LKDGDE (VAL,VINTR,DT,IE,SE,IM,SM,VINM, NBMAT, MATER, 
-     &                   DEPSV, DGAMV,RETCOM)
+      SUBROUTINE LKDGDE (VAL,VINTR,DT,SEUIVE,UCRIM,IM,SM,VINM, 
+     &                    NBMAT, MATER,DEPSV, DGAMV,RETCOM)
 C
       IMPLICIT    NONE
-      INTEGER     NBMAT,RETCOM
-      REAL*8      INVAR,S(6),IE, SE(6), IM, SM(6), VINTR
+      INTEGER     NBMAT,RETCOM, VAL
+      REAL*8      INVAR,S(6),SEUIVE,UCRIM,IM,SM(6), VINTR
       REAL*8      MATER(NBMAT,2), VINM(7), DEPSV(6), DGAMV
       REAL*8      DT
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,8 +34,8 @@ C =================================================================
 C IN  : VAL   :  INDICATEUR POUR LES LOIS DE DILATANCE ------------
 C --- : VINTR  :  INDICATEUR CONTRACTANCE OU  DILATANCE ------------
 C --- : DT    :  PAS DE TEMPS -------------------------------------
-C --- : IE    :  INVARIANT DES CONTRAINTES DE PREDICTION ----------
-C --- : SE    :  DEVIATEUR DES CONTRAINTES DE PREDICTION ----------
+C --- : SEUIVE:  SEUIL VISQUEUX EN FONCTION DE LA PREDICITION------
+C---- : UCRIM :  EN FONCTION DES CONTRAINTES A LINSTANT MOINS------
 C --- : IM    :  INVARIANT DES CONTRAINTES A L INSTANT MOINS-------
 C --- : SM    :  DEVIATEUR DES CONTRAINTES A L INSTANT MOINS-------
 C --- : VINM  :  VARIABLES INTERNES -------------------------------
@@ -45,15 +45,16 @@ C ----------- :  MATER(*,1) = CARACTERISTIQUES ELASTIQUES ---------
 C ----------- :  MATER(*,2) = CARACTERISTIQUES PLASTIQUES ---------
 C OUT : DEPSV : DEFORMATIONS VISQUEUSES ---------------------------
 C     : DGAMV : PARAMETRE D ECROUISSAGE VISQUEUX ------------------
+C --- : RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS-------
 C =================================================================
       COMMON /TDIM/   NDT , NDI
-      INTEGER   I, K, NDI, NDT, VAL
+      INTEGER   I, K, NDI, NDT
       REAL*8    A, N, PA , AA(6)
       REAL*8    BIDON, DEUX, TROIS, ZERO
       REAL*8    PARAVI(3), VARVI(4)
       REAL*8    DHDS(6),DS2HDS(6),DFDSV(6)
       REAL*8    BPRIME, LKBPRI, VECNV(6), GV(6)
-      REAL*8    DDEPSV(6),SEUIVM,SEUIVE, UCRIVM, UCRIVE
+      REAL*8    DDEPSV(6),SEUIVM, UCRIVM
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
@@ -64,15 +65,11 @@ C =================================================================
 C --- RECUPERATION DES DONNEES MATERIAUX --------------------------
 C =================================================================
       PA = MATER(1,2)
-      A  = MATER(22,2)
-      N  = MATER(23,2)
+      A  = MATER(21,2)
+      N  = MATER(22,2)
 C =================================================================
 C --- CALCUL DE DF/DSIG ------------------------------------
 C =================================================================
-C --- DANS LE CALCUL DE F ON UTILISE LA CONTRAINTE SIGE
-      CALL LKCRIV(VINTR,IE,SE,VINM,NBMAT,MATER,UCRIVE,SEUIVE)
-C --- DANS LE CALCUL DE DF/DSIG ON UTILISE LA CONTRAINTE A T - 
-      CALL LKCRIV(VINTR,IM,SM,VINM,NBMAT,MATER,UCRIVM,SEUIVM)
 
       CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS,RETCOM)
       CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS,RETCOM)
@@ -80,7 +77,7 @@ C --- DANS LE CALCUL DE DF/DSIG ON UTILISE LA CONTRAINTE A T -
       
       CALL LKVACV(NBMAT, MATER,  PARAVI, VARVI)
       CALL LKDFDS(NBMAT,MATER,SM,PARAVI,VARVI,DS2HDS,
-     &            UCRIVM,DFDSV)
+     &            UCRIM,DFDSV)
 
       BPRIME = LKBPRI (VAL,VINM,NBMAT,MATER,PARAVI,IM,SM)
 

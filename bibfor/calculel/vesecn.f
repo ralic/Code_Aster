@@ -4,7 +4,7 @@ C     VERIFICATION DE LA SENSIBILITE POUR CALC_NO
 C     **                 **               *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 14/01/2008   AUTEUR DEBONNIERES P.DE-BONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,9 +73,14 @@ C
 C    ------------------------------------------------------------------
       ELSEIF ( OPTION.EQ.'FORC_NODA' .OR. OPTION.EQ.'REAC_NODA' ) THEN
 C
-        IF ( TYPESE.NE.0 ) THEN
-          CODRET = 1
+        CODRET = 1
+        IF ((TYPESE.EQ.0).OR.(TYPESE.EQ.2)) THEN
+          CODRET = 0
         ENDIF
+        IF ((TYPESE.EQ.3).OR.(TYPESE.EQ.5)) THEN
+          CODRET = 0
+        ENDIF
+
 C
 C    ------------------------------------------------------------------
       ELSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D C_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,16 +20,16 @@
 # ======================================================================
 DEBUT(CODE=_F(NOM='SSLP201A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 
-# ======================================================
+# ========================================================================
+# TEST DE NON REGRESSION :
+# (les valeurs de reference ont ete obtenues par Code_Aster)
 #
-#      TEST SSLP201A DE NON_REGRESSION ASTER
+# - On utilise dans le maillage de nombreux types de mailles
+#   (pour valider le plus d'elements finis)
 #
-#      MECANIQUE LINEAIRE 2D, MODELISATION C_PLAN
-#
-#      ATTENTION :
-#      LES VALEURS DE REFERENCE ONT ETE OBTENUES
-#      PAR UN PASSAGE PRECEDENT DU CODE_ASTER.
-# ======================================================
+# - domaines testes :
+#      MECANIQUE LINEAIRE, MODELISATION='C_PLAN'
+# =========================================================================
 
 # ----------------------------------------------------------------------
 #    DEFINITION DU MODELE

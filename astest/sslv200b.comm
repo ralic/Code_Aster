@@ -1,5 +1,5 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
-# TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D
+# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D_SI
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,16 +20,16 @@
 # ======================================================================
 DEBUT(CODE=_F(NOM='SSLV200B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
-# ================================================
+# ========================================================================
+# TEST DE NON REGRESSION :
+# (les valeurs de reference ont ete obtenues par Code_Aster)
 #
-#      TEST SSLV200B DE NON_REGRESSION ASTER
+# - On utilise dans le maillage de nombreux types de mailles
+#   (pour valider le plus d'elements finis)
 #
-#      MECANIQUE LINEAIRE 3D, MODELISATION 3D_SI
-#
-#      ATTENTION :
-#      LES VALEURS DE REFERENCE ONT ETE OBTENUES
-#      PAR UN PASSAGE PRECEDENT DU CODE_ASTER.
-# ================================================
+# - domaines testes :
+#      MECANIQUE LINEAIRE, MODELISATION='3D_SI'
+# =========================================================================
 
 # ----------------------------------------------------------------------
 #    DEFINITION DU MODELE
@@ -590,7 +590,7 @@ CALC_NO( reuse=MSLIN,  RESULTAT=MSLIN,
 
 ENGENDRE_TEST (  CO = MSLIN )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
           _F( RESULTAT= MSLIN   , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  1.2076546554673E+09 ),
@@ -764,7 +764,7 @@ MSLINP=PROJ_CHAMP(RESULTAT=MSLIN,     METHODE='ELEM',
 
 ENGENDRE_TEST (  CO = MSLINP, )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
           _F( RESULTAT= MSLINP  , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  1.1919948787198E+09 ),
@@ -834,48 +834,48 @@ CHAMEL7=CALC_CHAM_ELEM(    MODELE=MO,
 ENGENDRE_TEST (  CO = (CHAMNO1, CHAMNO2 ), )
 ENGENDRE_TEST (  CO = (CHAMEL1,CHAMEL2,CHAMEL3,CHAMEL4,CHAMEL5,CHAMEL6,CHAMEL7 ), )
 
-TEST_RESU(CHAM_NO= 
-          _F( CHAM_GD= CHAMNO1 , 
+TEST_RESU(CHAM_NO=
+          _F( CHAM_GD= CHAMNO1 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  1.2110143842296E+09 ),
           )
-TEST_RESU(CHAM_NO= 
-          _F( CHAM_GD= CHAMNO2 , 
+TEST_RESU(CHAM_NO=
+          _F( CHAM_GD= CHAMNO2 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  1.4867191101706E+07 ),
           )
-TEST_RESU(CHAM_ELEM= 
-          _F( CHAM_GD= CHAMEL1 , 
+TEST_RESU(CHAM_ELEM=
+          _F( CHAM_GD= CHAMEL1 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  1.5124987393300E+09 ),
           )
-TEST_RESU(CHAM_ELEM= 
-          _F( CHAM_GD= CHAMEL2 , 
+TEST_RESU(CHAM_ELEM=
+          _F( CHAM_GD= CHAMEL2 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  8.1392256699850E+08 ),
           )
-TEST_RESU(CHAM_ELEM= 
-          _F( CHAM_GD= CHAMEL3 , 
+TEST_RESU(CHAM_ELEM=
+          _F( CHAM_GD= CHAMEL3 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  1.6721516653112E+09 ),
           )
-TEST_RESU(CHAM_ELEM= 
-          _F( CHAM_GD= CHAMEL4 , 
+TEST_RESU(CHAM_ELEM=
+          _F( CHAM_GD= CHAMEL4 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  9.1613738072474E+08 ),
           )
-TEST_RESU(CHAM_ELEM= 
-          _F( CHAM_GD= CHAMEL5 , 
+TEST_RESU(CHAM_ELEM=
+          _F( CHAM_GD= CHAMEL5 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  4.1324486435336E+09 ),
           )
-TEST_RESU(CHAM_ELEM= 
-          _F( CHAM_GD= CHAMEL6 , 
+TEST_RESU(CHAM_ELEM=
+          _F( CHAM_GD= CHAMEL6 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  8.1746884119176E+08 ),
           )
-TEST_RESU(CHAM_ELEM= 
-          _F( CHAM_GD= CHAMEL7 , 
+TEST_RESU(CHAM_ELEM=
+          _F( CHAM_GD= CHAMEL7 ,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
               TYPE_TEST= 'SOMM_ABS', VALE=  1.1178711964438E+03 ),
           )

@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa6 Messages  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -294,8 +294,7 @@ cata_msg = {
   erreur lors de la definition dela courbe de traction: fonction ou nappe ! 
 """),
 
-77 : _("""
- erreur lors de la definition de la courbe rela_mz : nb de points < 2  ! 
+77 : _(""" 
 """),
 
 78 : _("""

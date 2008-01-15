@@ -6,7 +6,7 @@
      &                  VEELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/01/2008   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -306,8 +306,8 @@ C
       IF (LMACR) THEN
         NBDONN    = 7
         NBPILO    = 0
-        CNDONN(8) = CNTRAV(1:19)
-        CODONN(8) = -1
+        CNDONN(7) = CNTRAV(1:19)
+        CODONN(7) = -1
       ELSE
         NBDONN    = 6   
         NBPILO    = 0      

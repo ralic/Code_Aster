@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -275,6 +275,7 @@ C----------------------------------------------------------------------
           IF (INT(CRIT(6)) .NE. 0) CALL U2MESS('F','ALGORITH6_85')
           IF  ( COMPOR(1) .EQ. 'VMIS_ISOT_LINE  ' .OR.
      &         COMPOR(1) .EQ. 'VMIS_ISOT_TRAC  ' .OR.
+     &         COMPOR(1) .EQ. 'VMIS_ISOT_PUIS  ' .OR.
      &         COMPOR(1) .EQ. 'VISC_ISOT_LINE  ' .OR.
      &         COMPOR(1) .EQ. 'VISC_ISOT_TRAC  ' ) THEN
             CALL LCPIVM(FAMI,KPG,KSP,IMATE,COMPOR,CRIT,INSTAM,INSTAP,

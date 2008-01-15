@@ -1,15 +1,17 @@
-      SUBROUTINE LKDLAM (VAL,VARV,NBMAT, MATER,DEPS,DEPSV,DGAMV,
-     &                   IM,SM,VINM, DE,DLAM,RETCOM)
+      SUBROUTINE LKDLAM (VARV,NBMAT, MATER,DEPS,DEPSV,DGAMV,
+     &                   IM,SM,VINM, DE,UCRIP,SEUILP,GP,DEVGII,
+     &                   PARAEP,VARPL,DFDSP,DLAM,RETCOM)
 C
       IMPLICIT   NONE
-      INTEGER    VAL, VARV,NBMAT,RETCOM
+      INTEGER    VARV,NBMAT,RETCOM
       REAL*8     SM(6),IM,DEPS(6),DEPSV(6), MATER(NBMAT,2)
-      REAL*8     DGAMV
+      REAL*8     DGAMV,GP(6),DEVGII,PARAEP(3),VARPL(4),DFDSP(6)
       REAL*8     VINM(7),DLAM, DE(6,6)
+      REAL*8     UCRIP, SEUILP
       CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,8 +33,7 @@ C --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 C =================================================================
 C --- BUT : VALEUR DE L ACCROISSEMENT DU MULTIPLICATEUR PLASTIQUE -
 C =================================================================
-C IN  : VAL   : INDICATEUR POUR DISTINGUER LES LOIS DE DILATANCE --
-C --- : VARV  : INDICATEUR CONTRACTANCE OU DILATANCE --------------
+C IN  : VARV  : INDICATEUR CONTRACTANCE OU DILATANCE --------------
 C --- : NBMAT :  NOMBRE DE PARAMETRES MATERIAU --------------------
 C --- : MATER :  COEFFICIENTS MATERIAU A T+DT ---------------------
 C ----------- :  MATER(*,1) = CARACTERISTIQUES ELASTIQUES ---------
@@ -44,72 +45,41 @@ C --- : IM    :  INVARIANT DES CONTRAINTES A T---------------------
 C --- : SM    :  DEVIATEUR DES CONTRAINTES A T---------------------
 C --- : VINM  :  VARIABLES INTERNES ------------------------------
 C --- : DE    :  MATRICE ELASTIQUE --------------------------------
+C --- : UCRIP :  VALEUR DE U POUR LES CONTRAINTES A L INSTANT MOINS
+C --- : SEUILP:  VALEUR DU SEUIL PLASTIAQUE A L INSTANT MOINS -----
 C OUT : DLAM  :  VALEUR DE DELTA LAMBDA  ELASTOPLASTIQUE ----------
 C =================================================================
       COMMON /TDIM/   NDT , NDI
       INTEGER NDI, NDT, I, K, NVI
-      REAL*8  ZERO, DEUX, TROIS, BIDON, A, N
-      REAL*8  PARAEP(3), PARAVI(3)
-      REAL*8  VARPL(4), VARVI(4)
-      REAL*8  DHDS(6),DS2HDS(6), DFDSP(6), DFDSV(6)
-      REAL*8  VECNV(6),VECNP(6), GP(6), DEVGII
-      REAL*8  SIGINT(6), SIGV(6), DEGV(6), DEGP(6)
-      REAL*8  DFDEGP, DERPAR(3), DFDXIP, DFDSIG
-      REAL*8  BPRIMP, LKBPRI,TRACE
-      REAL*8  IL,SL(6)
-      REAL*8  VININT, SIG(6),SIGT(6)
-      REAL*8  UCRIP, SEUILP, XIP
+      REAL*8  ZERO, DEUX, TROIS,  A, N
+      REAL*8  DEGP(6),DFDEGP, DERPAR(3), DFDXIP, DFDSIG
+      REAL*8  SIGINT(6), SIGV(6),SIGT(6)
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
       PARAMETER       ( ZERO   =  0.0D0   )
       PARAMETER       ( DEUX   =  2.0D0   )
       PARAMETER       ( TROIS  =  3.0D0   )
-C =================================================================
-C --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
-C =================================================================
-      CALL LCPRMV(DE,DEPS, SIGT)
-      CALL LKCRIP(VARV,DGAMV,IM, SM, VINM, NBMAT, MATER,
-     &            UCRIP, SEUILP)
-C =================================================================
-C --- RECUPERATION DE DFd/DSIGMA -----------------------------------
-C =================================================================
-      CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS,RETCOM)
-      CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS,RETCOM)
- 
-      CALL LKVARP(VARV,DGAMV,VINM, NBMAT, MATER, PARAEP)
-      CALL LKVACP(NBMAT, MATER, PARAEP, VARPL)
-      CALL LKDFDS(NBMAT,MATER,SM,PARAEP,VARPL,DS2HDS,
-     &            UCRIP,DFDSP)
-      
-C =================================================================
-C --- RECUPERATION DE G -------------------------------------------
-C =================================================================
-      BPRIMP = LKBPRI (VAL,VINM,NBMAT,MATER,PARAEP,IM,SM)
-
-      CALL LKCALN(SM, BPRIMP, VECNP, RETCOM)   
-
-      CALL LKCALG(DFDSP,VECNP,GP,DEVGII)
 
 C =================================================================
 C --- CONTRAINTES INTERMEDIARES -----------------------------------
 C =================================================================
+      CALL LCPRMV(DE,DEPS, SIGT)
+C =================================================================
       CALL R8INIR(6,0.D0,SIGINT,1)
-      
-     
+           
       CALL LCPRMV(DE,DEPSV,SIGV)      
      
       DO 20 I = 1, NDT
       SIGINT(I) = SIGT(I) - SIGV(I)
  20   CONTINUE 
- 
-        
+         
 C =================================================================
 C --- RECUPERATION DE DF/DXIP -------------------------------------
 C =================================================================
-      CALL LKDEPP(VARV, DGAMV, VINM, NBMAT, MATER, PARAEP, DERPAR)
+      CALL LKDEPP(VINM, NBMAT, MATER, PARAEP, DERPAR)
 
-      CALL LKDFDX(NBMAT,MATER,VARV,DGAMV,VINM,IM,SM,PARAEP,VARPL,
+      CALL LKDFDX(NBMAT,MATER,UCRIP,IM,SM,PARAEP,VARPL,
      &            DERPAR,DFDXIP)
 C =================================================================
 C --- PRODUIT DE DE PAR G -----------------------------------------
@@ -118,7 +88,6 @@ C =================================================================
       CALL R8INIR(6,0.D0,DEGP,1)
       CALL LCPRMV(DE,GP,DEGP)
       
-
 C =================================================================
 C --- PRODUIT DE DF/DSIG PAR DEGP----------------------------------
 C =================================================================
@@ -143,5 +112,4 @@ C =================================================================
       DLAM = ZERO
       ENDIF
 C =================================================================
- 100  CONTINUE
       END

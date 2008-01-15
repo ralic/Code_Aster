@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF xfem Messages  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,10 +65,28 @@ cata_msg={
      Veuillez réduire la taille du maillage.
 """),
 
+9: _("""
+     L'option K_G_MODA n'est pas autorisée avec une fissure définie 
+     par la commande DEFI_FISS_XFEM (méthode X-FEM).
+"""),
+
+10: _("""
+     La direction du champ theta n'a pas été donnée. La direction automatique
+     est une direction variable, basée sur le grandient de la level set tangente.
+"""),
+
 11: _("""
   -> On a trouvé plus de 2 points de fond de fissure, ce qui est impossible en 2d.
   -> Risque & Conseil:
      Veuillez revoir la définition des level sets.
+"""),
+
+12: _("""
+  Le gradient de la level set tangente est nul au noeud %(k1)s.
+  Ceci est certainement du à un point singulier dans la définition de la levet set.
+  Il vaut veuiller à ce que ce point singulier ne soit pas inclus dans la couronne
+  d'intégration du champ theta. 
+  Conseil : réduisez la taille de la couronne du champ theta : (mot-clés RSUP et RINF).
 """),
 
 14: _("""

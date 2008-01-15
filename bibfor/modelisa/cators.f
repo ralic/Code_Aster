@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNOM, JEXNUM
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C
-      REAL*8        ARMIN, PREC
+      REAL*8        ARMIN, PREC, ZERO
       COMPLEX*16    C16B
       CHARACTER*1   K1BID
       CHARACTER*8   CHARGE, NOMA, MODELE
@@ -65,6 +65,7 @@ C
       CALL JEMARQ()
       CHARGE = CHARGZ
 C
+      NUL    = 0
       ZERO   = 0.0D0
       UNDEMI = 0.5D0
       DEUX   = 2.0D0
@@ -157,7 +158,7 @@ C ---     REORIENTATION DES MAILLES DU GROUP_MA :
 C         -------------------------------------
           NORIEN = 0
           CALL ORILMA (  NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
-     &                  .TRUE., PREC )
+     &                  .TRUE., PREC, NUL, IBID )
 C
           NBMA = NBMA + NBMAIL
 C

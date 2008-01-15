@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macro_matr_asse_ops Macro  DATE 14/01/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 
 def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
-                        SOLVEUR,NUME_DDL,CHARGE,CHAR_CINE,INST,**args):
+                        SOLVEUR,NUME_DDL,CHARGE,CHAR_CINE,INST,INFO,**args):
   """
      Ecriture de la macro MACRO_MATR_ASSE
   """
@@ -30,6 +30,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
 
   # On met le mot cle NUME_DDL dans une variable locale pour le proteger
   numeddl=NUME_DDL
+  info=INFO
   # On importe les definitions des commandes a utiliser dans la macro
   # Le nom de la variable doit etre obligatoirement le nom de la commande
   CALC_MATR_ELEM=self.get_cmd('CALC_MATR_ELEM')
@@ -38,39 +39,9 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
 
-  if SOLVEUR:
-    methode=SOLVEUR['METHODE']
-    if methode=='LDLT':
-      if SOLVEUR['RENUM']:
-         renum=SOLVEUR['RENUM']
-      else:
-         renum='RCMK'
-      if renum not in ('SANS','RCMK'):
-        UTMESS('F','MATRICE0_5')
-    elif methode=='MULT_FRONT':
-      if SOLVEUR['RENUM']:
-         renum=SOLVEUR['RENUM']
-      else:
-         renum='MDA'
-      if renum not in ('MDA','MD','METIS'):
-        UTMESS('F','MATRICE0_6')
-    elif methode=='MUMPS':
-      if SOLVEUR['RENUM']:
-         renum=SOLVEUR['RENUM']
-      else:
-         renum='SANS'
-      if renum not in ('SANS',):
-        UTMESS('F','MATRICE0_7')
-    elif methode=='GCPC':
-      if SOLVEUR['RENUM']:
-         renum=SOLVEUR['RENUM']
-      else:
-         renum='SANS'
-      if renum not in ('SANS','RCMK'):
-        UTMESS('F','MATRICE0_8')
-  else:
-    methode='MULT_FRONT'
-    renum  ='MDA'
+  # Les mots cles simples sous SOLVEUR sont par defaut MULT_FRONT/METIS
+  methode=SOLVEUR['METHODE']
+  renum=SOLVEUR['RENUM']
 
   if numeddl in self.sdprods:
     # Si le concept numeddl est dans self.sdprods
@@ -144,7 +115,7 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
     if lnume and option in ('RIGI_MECA','RIGI_THER','RIGI_ACOU','RIGI_MECA_LAGR'):
       self.DeclareOut('num',numeddl)
       # On peut passer des mots cles egaux a None. Ils sont ignores
-      num=NUME_DDL(MATR_RIGI=_a,METHODE=methode,RENUM=renum)
+      num=NUME_DDL(MATR_RIGI=_a,METHODE=methode,RENUM=renum,INFO=info)
     else:
       num=numeddl
 

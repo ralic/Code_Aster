@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/01/2008   AUTEUR DEBONNIERES P.DE-BONNIERES 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE validation des commandes DEFI_PARA_SENSI et MEMO_NOM_SENSI en MECA_STATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,8 +49,8 @@ DEBUT(CODE=_F(NOM='SENSM01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 #
 # 1. Definition des parametres sensibles
 #
-PSX=DEFI_PARA_SENSI(VALE=10.0,);
-PSY=DEFI_PARA_SENSI(VALE=3.0,);
+PSX=DEFI_PARA_SENSI(VALE=10.,);
+PSY=DEFI_PARA_SENSI(VALE=3.,);
 #
 # 2. Prealable
 #
@@ -113,6 +113,36 @@ REMS = CALC_ELEM(
                  OPTION = 'SIGM_ELNO_DEPL',
                  SENSIBILITE = (PSX,PSY)
                  );
+
+REMS = CALC_ELEM(
+                 reuse = REMS,
+                 RESULTAT = REMS,
+
+                 OPTION = 'SIEF_ELGA_DEPL'
+                 );
+REMS = CALC_ELEM(
+                 reuse = REMS,
+                 RESULTAT = REMS,
+
+                 OPTION = 'SIEF_ELGA_DEPL',
+                 SENSIBILITE = (PSX,PSY)
+                 );
+
+
+REMS = CALC_NO( reuse      =  REMS         ,
+              RESULTAT   =  REMS         ,
+              MODELE     =  MODEMECA     ,
+              CHAM_MATER =  MATEMAIL      ,
+              OPTION     = ('REAC_NODA',),);
+
+REMS = CALC_NO( reuse      =  REMS         ,
+              RESULTAT   =  REMS         ,
+              MODELE     =  MODEMECA     ,
+              CHAM_MATER =  MATEMAIL      ,
+              OPTION     = ('REAC_NODA',),
+              SENSIBILITE = (PSX,PSY)
+              );
+
 
 #
 TEST_RESU(RESU=(
@@ -247,6 +277,23 @@ TEST_RESU(RESU=(
           CRITERE = 'RELATIF', PRECISION = 1.E-6,MAILLE ='MA74',
           NOM_CMP = 'SIYY',    VALE = 4.22799826E+01,
           REFERENCE = 'AUTRE_ASTER' ),
+
+     _F(  RESULTAT = REMS,   NUME_ORDRE = 1,
+          SENSIBILITE=(PSX),
+          NOM_CHAM = 'REAC_NODA',   GROUP_NO = 'ORIGINE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-5,
+          NOM_CMP = 'DX',    VALE = -2.6226E+04, REFERENCE = 'AUTRE_ASTER' ),
+     _F(  RESULTAT = REMS,   NUME_ORDRE = 1,
+          SENSIBILITE=(PSX),
+          NOM_CHAM = 'REAC_NODA',   GROUP_NO = 'ORIGINE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-5,
+          NOM_CMP = 'DY',    VALE = -7.867846E+03, REFERENCE = 'AUTRE_ASTER' ),
+     _F(  RESULTAT = REMS,   NUME_ORDRE = 1,
+          SENSIBILITE=(PSY),
+          NOM_CHAM = 'REAC_NODA',   GROUP_NO = 'ORIGINE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-5,
+          NOM_CMP = 'DX',    VALE = -7.867845E+03, REFERENCE = 'AUTRE_ASTER' ),
+
 
         ),);
 #

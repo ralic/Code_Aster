@@ -5,7 +5,7 @@ C
       REAL*8        MATER(NBMAT,2),INVAR,S(6), DHDS(6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,6 +34,7 @@ C -----------  :  MATER(*,2) = CARACTERISTIQUES PLASTIQUES --------
 C --- :  INVAR : INVARINAT DES CONTRAINTES ------------------------
 C --- :  S     : DEVIATEUR DES CONTRAINTES ------------------------
 C OUT : DHDS: dh(theta)/ds ----------------------------------------
+C     : RETCOM : CODE RETOUR POUR REDECOUPAGE ---------------------
 C =================================================================
       INTEGER NDT, NDI, II
       REAL*8  GAMCJS, PREF
@@ -72,11 +73,9 @@ C =================================================================
       RCOS3T = COS3T (S, PREF, LGLEPS)
       RHLODE = LKHLOD (GAMCJS, RCOS3T)
       H5     = (RHLODE)**CINQ
-C      CALL LETKT(S,T) 
+
       CALL CJST(S,T)
-       
-      
-      CALL LCDEVI(T,DEVT) 
+             
 C =================================================================
 C --- VARIABLES INTERMEDIAIRES-------------------------------------
 C =================================================================
@@ -86,7 +85,7 @@ C =================================================================
 C --- CALCUL FINAL ------------------------------------------------
 C =================================================================
       DO 10 II=1,NDT
-         DHDS(II) = FACT1*S(II)+FACT2*DEVT(II)
+         DHDS(II) = FACT1*S(II)-FACT2*T(II)
  10   CONTINUE
 C =================================================================
 1000  CONTINUE

@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,10 +30,6 @@ C                           MECA_DIS_T_N  : SUR UNE MAILLE A 1 NOEUD
 C    ON CALCULE LES OPTIONS FULL_MECA
 C                           RAPH_MECA
 C                           RIGI_MECA_TANG
-C    POUR LES COMPORTEMENTS ELAS
-C                           ASSE_CORN
-C                           ARME
-C                           DIS_CONTACT
 C     ELEMENTS CONCERNES :  MECA_2D_DIS_TR_L : SUR UNE MAILLE A 2 NOEUDS
 C                           MECA_2D_DIS_T_L  : SUR UNE MAILLE A 2 NOEUDS
 C                           MECA_2D_DIS_TR_N : SUR UNE MAILLE A 1 NOEUD
@@ -595,47 +591,6 @@ C        ET DES VARIABLES INTERNES
       END IF
 C ======================================================================
 C                 FIN DU COMPORTEMENT ARMEMENT
-C ======================================================================
-
-C ======================================================================
-C  COMPORTEMENT DIS_CONTACT : APPLICATION : LIAISON GRILLE-CRAYON COMBU
-C ======================================================================
-      IF (ZK16(ICOMPO).EQ.'DIS_CONTACT') THEN
-         CALL JEVECH('PCADISK','L',JDC)
-C        MATRICE DE RIGIDITE EN REPERE LOCAL
-         IREP = NINT(ZR(JDC+NBT))
-         IF (IREP.EQ.1) THEN
-            CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
-         ELSE
-            CALL DCOPY(NBT,ZR(JDC),1,KLV,1)
-         END IF
-         IF ( OPTION.EQ.'FULL_MECA' .OR.
-     &        OPTION.EQ.'RAPH_MECA' ) THEN
-            CALL JEVECH('PMATERC','L',IMATE)
-            CALL JEVECH('PVARIMR','L',IVARIM)
-            CALL JEVECH('PINSTPR','L',JTP)
-            CALL JEVECH('PVECTUR','E',IFONO)
-            CALL JEVECH('PCONTPR','E',ICONTP)
-            CALL JEVECH('PVARIPR','E',IVARIP)
-C
-C           ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
-            CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
-            IF (IRET2.GT.0) IRRAP=0.D0
-C           RELATION DE COMPORTEMENT : ELASTIQUE PARTOUT
-C           SAUF SUIVANT Y LOCAL : FROTTEMENT DE COULOMB
-            CALL DICOUL(FAMI,OPTION,NNO,NBT,NEQ,NC,ZI(IMATE),
-     &                ULM,DUL,ZR(ICONTM),ZR(JTP),ZR(IVARIM),
-     &                PGL,KLV,ZR(IVARIP),ZR(IFONO),ZR(ICONTP),
-     &                IRRAP)
-         END IF
-         IF ( OPTION.EQ.'FULL_MECA' .OR.
-     &        OPTION.EQ.'RIGI_MECA_TANG' ) THEN
-            CALL JEVECH('PMATUUR','E',IMAT)
-            CALL UTPSLG(NNO,NC,PGL,KLV,ZR(IMAT))
-         END IF
-      END IF
-C ======================================================================
-C                 FIN DU COMPORTEMENT DIS_CONTACT
 C ======================================================================
 
 C ======================================================================

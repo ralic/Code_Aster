@@ -1,5 +1,4 @@
-      SUBROUTINE LKDEPV(NBMAT,MATER,
-     &                  DEPSV,DDEPSV,DGAMV,DDGAMV)
+      SUBROUTINE LKDEPV(NBMAT,MATER,DEPSV,DDEPSV,DGAMV,DDGAMV)
 C
       IMPLICIT    NONE
       INTEGER     NBMAT
@@ -7,7 +6,7 @@ C
       REAL*8      DGAMV, DDGAMV(6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +44,7 @@ C =================================================================
       INTEGER   I, K, NDI, NDT
       REAL*8    AA(6)
       REAL*8    ZERO, UN, MUN, DEUX, TROIS
-      REAL*8    DEVIA(6,6)
+      REAL*8    DEVIA(6,6), DEVIAT(6,6)
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
@@ -87,21 +86,23 @@ C =================================================================
       DO 50 I = 1, NDT
       DEVIA(I,I) = DEVIA(I,I)+ UN
   50  CONTINUE
-     
+  
+      CALL LCTRMA(DEVIA,DEVIAT)
 C =================================================================
 C --- CALCUL DE DERIVEE DE DGAMV/DEPS ---------------------------
 C =================================================================
       
       CALL R8INIR(6,0.D0,DDGAMV,1)
-      
+
+C      SI PAS DE VISCOSITE DGAMV=0       
        IF (DGAMV .EQ. ZERO) THEN
         DO 60 I = 1, NDT
         DDGAMV(I) = ZERO
   60  CONTINUE
        ELSE
-        CALL LCPRMV(DEVIA,DDEPSV,DDGAMV)
+        CALL LCPRMV(DEVIAT,DDEPSV,DDGAMV)
         DO 70 I = 1, NDT
-        DDGAMV(I) = DEUX/TROIS*DDGAMV(I)
+        DDGAMV(I) = DEUX/TROIS*DDGAMV(I)/DGAMV
   70  CONTINUE
        ENDIF
       

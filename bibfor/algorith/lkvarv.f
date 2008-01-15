@@ -5,7 +5,7 @@ C
       REAL*8        PARAVI(3), MATER(NBMAT,2)
 C ==================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,15 +39,15 @@ C ==================================================================
 C ==================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE -------------------------
 C ==================================================================
-      M0     = MATER(13,2)
       A0     = MATER( 8,2)
       S0     = MATER(11,2)
+      M0     = MATER(12,2)
       
       AVMAX  = 1.D0
-      MVMAX  = MATER(20,2)
+      MVMAX  = MATER(19,2)
       SVMAX  = S0
       
-      XIVMAX = MATER(21,2)
+      XIVMAX = MATER(20,2)
 C ==================================================================
 C CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS XIV < XIVMAX------
 C ==================================================================

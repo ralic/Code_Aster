@@ -1,11 +1,11 @@
-      SUBROUTINE LKVARP(DUM,DGAMV,VIN, NBMAT, MATER, PARAEP)
+      SUBROUTINE LKVARP(VIN, NBMAT, MATER, PARAEP)
 C
       IMPLICIT      NONE
-      INTEGER       NBMAT, DUM
-      REAL*8        VIN(7), PARAEP(3), MATER(NBMAT,2),DGAMV
+      INTEGER       NBMAT
+      REAL*8        VIN(7), PARAEP(3), MATER(NBMAT,2)
 C ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,8 +27,6 @@ C --- MODELE LETK : LAIGLE VISCOPLASTIQUE-------------------------
 C ================================================================
 C --- BUT : CALCUL DES VARIABLES D'ECROUISSAGE -------------------
 C ================================================================
-C --- : DUM   : INDICATEUR CONTRACTANCE OU DILATANCE -------------
-C --- : DGAMV :  ACCROISSEMENT DE GAMMA VISCOPLASTIQUE -----------
 C --- : VIN    : TABLEAU DES VARIABLE INTERNES (ICI XIP) ---------
 C --- : NBMAT  : NOMBRE DE PARAMETRES DU MODELE ------------------
 C --- : MATER  : PARAMETRES DU MODELE ----------------------------
@@ -48,32 +46,29 @@ C ================================================================
 C ================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE -----------------------
 C ================================================================
-      XIULT  = MATER(17,2)
-      XIE    = MATER(18,2)
-      XIPIC  = MATER(19,2)
-      M0     = MATER(13,2)
-      MULT   = MATER(16,2)
-      ME     = MATER(14,2)
-      MPIC   = MATER(15,2)
-
+      SIGC   = MATER(3,2)
+      XAMS   = MATER(6,2)
+      ETA    = MATER(7,2)
       A0     = MATER(8,2)
       AE     = MATER(9,2)
       APIC   = MATER(10,2)
-
       S0     = MATER(11,2)
-C      SE     = MATER(12,2)
-      XAMS   = MATER(6,2)
-      ETA    = MATER(7,2)
-      SIGC   = MATER(3,2)
-      SIGP1  = MATER(24,2)
-      SIGP2  = MATER(25,2)
+      M0     = MATER(12,2)
+      ME     = MATER(13,2)
+      MPIC   = MATER(14,2)
+      MULT   = MATER(15,2)
+      XIULT  = MATER(16,2)
+      XIE    = MATER(17,2)
+      XIPIC  = MATER(18,2)
+
+      SIGP1  = MATER(23,2)
       
+      SIGP2 = ((MULT*(SIGC)**(AE-UN))/(ME**AE))**(UN/(AE-UN))
+
 C ================================================================
 C CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS 0<XIP<XIPIC-----
 C ================================================================
-      IF (DUM.EQ.0) XIP = VIN(1)
-      IF (DUM.EQ.1) XIP = VIN(1) + DGAMV
-      
+      XIP = VIN(1)
       
       
       IF ((XIP.GE. ZERO).AND.(XIP.LT. XIPIC)) THEN
@@ -111,8 +106,9 @@ C ================================================================
          
          FACT3 = SIGC/SIGP2
          FACT4 = (ME / FACT3)**(AE/AXIP)
+
          MXIP  = FACT3*FACT4
-C ================================================================
+C  ================================================================
 C CALCUL DES VARIABLES D'ECROUISSAGES POUR LE CAS XIP > XIULT ----
 C ================================================================
       ELSEIF (XIP.GE.XIULT) THEN

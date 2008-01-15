@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF modelisa9 Messages  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,29 +300,15 @@ Conseil :
 """),
 
 66 : _("""
- erreur lors de la definition de la courbe RELA_MZ
- le premier point de la courbe RELA_MZ %(k1)s a pour abscisse:  %(r1)f 
- 
 """),
 
 67 : _("""
- erreur lors de la definition de la courbe RELA_MZ
- le premier point de la courbe RELA_MZ %(k1)s a pour ordonnee:  %(r1)f 
- 
 """),
 
 68 : _("""
- erreur lors de la definition de la courbe RELA_MZ pente initiale :  %(r1)f 
- pente courante:  %(r2)f 
- pour l'abscisse:  %(r3)f 
- 
 """),
 
 69 : _("""
- Courbe RELA_MZ points presque alignés. Risque de PB dans STAT_NON_LINE, en particulier 
- en C_PLAN pente initiale :  %(r1)f pente courante:  %(r2)f 
- precision relative:  %(r3)f pour l'abscisse:  %(r4)f 
- 
 """),
 
 70 : _("""

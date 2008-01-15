@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/01/2008   AUTEUR GREFFET N.GREFFET 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,7 +162,7 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                                ITER_GLOB_MAXI = 10),
                 CRIT_FLAMB = _F(NB_FREQ=1,
                                 CHAR_CRIT=(-100.0,100.),),
-                MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='ELASTIQUE',),
+                MODE_VIBR = _F(BANDE=(0.1,0.5),MATR_RIGI='ELASTIQUE',),
              );
 #
 #  Frequence du premier mode pour le materiau elastique raide

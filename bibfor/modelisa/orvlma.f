@@ -6,7 +6,7 @@
       REAL*8              VECT(*), PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       CHARACTER*32     JEXNUM, JEXATR
 C -----  VARIABLES LOCALES
       INTEGER       IDTYMA, NUTYMA, LORI, JORI, NORI, KORI, ILISTE
-      INTEGER       IMA, NUMAIL, NUMA, NORIEG, LLISTE
+      INTEGER       IMA, NUMAIL, NUMA, NORIEG, LLISTE, ZERO, IBID
       INTEGER       IM1, IM2, ICO, IORIM1, IORIM2
       INTEGER       P1, P2, IFM , NIV, P3, P4
       INTEGER       NBNMAI, JDESM1, JDESM2
@@ -75,6 +75,7 @@ C
       CALL INFNIV ( IFM , NIV )
       MAILMA = NOMA//'.NOMMAI'
       REORIE = .TRUE.
+      ZERO   = 0
 C
 C --- VECTEUR DU TYPE DES MAILLES DU MAILLAGE :
 C     ---------------------------------------
@@ -135,7 +136,7 @@ C     ---------------------------------------------
       IF ( DIME1 ) KDIM ='1D'
       IF ( DIME2 ) KDIM ='2D'
       NOMAVO = '&&ORVLMA.MAILLE_VOISINE '
-      CALL UTMAVO ( NOMA, KDIM, LISTMA, NBMAIL, 'V', NOMAVO )
+      CALL UTMAVO ( NOMA, KDIM, LISTMA, NBMAIL, 'V', NOMAVO,ZERO,IBID )
       CALL JEVEUO ( JEXATR(NOMAVO,'LONCUM'), 'L', P4 )
       CALL JEVEUO ( NOMAVO, 'L', P3 )
 C

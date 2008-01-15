@@ -5,7 +5,7 @@
       INTEGER            INDMAT,NBMAT,IMATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,8 +185,7 @@ C           CH19 = '&&'//CHMA(1:8)//'.'//KNUMA2//'.'//KNUMA1
            CALL JEVEUT ( CH19//'.VALK', 'L',      ZI(KK+5)      )
            ZI(KK+4) = ( NBK - ZI(KK) - ZI(KK+2) ) / 2
            NBCO = NBCO + ZI(KK+4)
-           IF ((ZK16(JNOMRC+K-1)(1:8) .EQ. 'TRACTION')   .OR.
-     &         (ZK16(JNOMRC+K-1)(1:8) .EQ. 'DIS_CONT') ) THEN
+           IF ((ZK16(JNOMRC+K-1)(1:8) .EQ. 'TRACTION') ) THEN
               ZI(KK+6) = 1
               NBT = NBT + 1
            ENDIF
@@ -317,14 +316,6 @@ C
                  CALL JEVEUT ( CH19//'.PROL', 'E', ZI(IPIFC)   )
                  CALL JEVEUT ( CH19//'.VALE', 'E', ZI(IPIFC+1) )
                  IPIF = IPIFC + LSUP
-               ELSE IF ((ZK16(JNOMRC+K-1)(1:8) .EQ. 'DIS_CONT') .AND.
-     &            (ZK8(ZI(KK+5)+ZI(KK)+ZI(KK+2)+L).EQ. 'RELA_MZ')) THEN
-                  IPIFC = IPIF+LFCT
-                  ZI(IPIF+6) = IPIFC
-                  CH19 = NOMMAT//'.&&MZP'
-                  CALL JEVEUT ( CH19//'.PROL', 'E', ZI(IPIFC)   )
-                  CALL JEVEUT ( CH19//'.VALE', 'E', ZI(IPIFC+1) )
-                  IPIF = IPIFC + LSUP
                ELSE
                  IPIF = IPIF + LFCT
                ENDIF

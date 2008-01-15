@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,14 +22,14 @@ TYPE_GENE__
 %  CATALOGUES DES ELEMENTS 2D_CP X-FEM CRACKTIP AVEC CONTACT (QUE LINEAIRES)
 
 ENTETE__ ELEMENT__ MECPTR3_XTC      MAILLE__ TRIA6
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3  XINT=FPG12 GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
    ATTRIBUT__  XFEM=XTC
    ENS_NOEUD__  EN2     =     4   5   6
    ENS_NOEUD__  EN1     =     1   2   3
 ENTETE__ ELEMENT__ MECPQU4_XTC      MAILLE__ QUAD8
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG_LISTE__  MATER = (RIGI XFEM NOEU)
-   ELREFE__  TR3       GAUSS__  RIGI=FPG3  GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3  XINT=FPG12 GANO=FPG3  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
    ATTRIBUT__  XFEM=XTC
    ENS_NOEUD__  EN2     =     5   6   7   8
@@ -45,8 +45,13 @@ MODE_LOCAL__
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
                                         KIT6     KIT7     KIT8     KIT9     )
+    CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH)
+    CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
+    CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
+    CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
+                                        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DCX      DCY      E1X     E1Y     E2X     E2Y
@@ -54,6 +59,7 @@ MODE_LOCAL__
                                  EN2   (   )
                                  EN3   (DCX      DCY      E1X     E1Y     E2X     E2Y
                                         E3X      E3Y      E4X     E4Y     )
+    DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX      DY      )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E2NEUTI  = NEUT_I   ELEM__         (X1       X2      )
@@ -84,12 +90,15 @@ MODE_LOCAL__
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X1  X2  X3  X4  X5  X6  X7  X8  X9  X10
                                         X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
                                         X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
+    EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
     EREFCO   = PREC     ELEM__         (SIGM     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
+    NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
@@ -106,6 +115,21 @@ MATRICE__
     MMATZZR = MSIZ_R DDL_NOZ1 DDL_NOZ1
 
 OPTION__
+    CALC_K_G            297   IN__   DDL_MECA PDEPLAR  CCOMPOR  PCOMPOR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCRR  DDL_MECC PTHETAR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     EPRESNO  PPRESSR  E4NEUTR  PPINTER  
+                                     E8NEUTR  PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
+                              OUT__  EKTHETA  PGTHETA
+    CALC_K_G_F          297   IN__   DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  DDL_MECC PTHETAR  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CPESANR  PPESANR  CROTATR  PROTATR  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  E6NEUTR  PPINTTO  E18NEUI  PCNSETO
+                                     E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  N6NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     CPRESSF  PPRESSF  CCOMPOR  PCOMPOR
+                                     E4NEUTR  PPINTER  E8NEUTR  PAINTER  E2NEUTI  PCFACE   E2NEUTI  PLONGCO
+                                     CTEMPSR  PTEMPSR  
+                              OUT__  EKTHETA  PGTHETA
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC

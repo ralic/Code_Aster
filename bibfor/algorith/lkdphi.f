@@ -1,13 +1,12 @@
-      SUBROUTINE LKDPHI (INVAR,S,  NBMAT,MATER,DE,
-     &                   SEUILV, DFDSV,DPHI)
+      SUBROUTINE LKDPHI (NBMAT,MATER,DE,SEUILV, DFDSV,DPHI)
 C
       IMPLICIT    NONE
       INTEGER     NBMAT
-      REAL*8      INVAR,S(6), MATER(NBMAT,2), DE(6,6)
+      REAL*8      MATER(NBMAT,2), DE(6,6)
       REAL*8      DPHI(6), DFDSV(6),SEUILV
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,9 +29,7 @@ C =================================================================
 C --- BUT : DERIVEE DE L AMPLITUDE DES DEFORMATIONS IRREVERSIBLES -
 C ----------PAR RAPPORT A DEPS
 C =================================================================
-C IN  : INVAR :  INVARIANT DES CONTRAINTES A T+DT -----------------
-C --- : S     :  DEVIATEUR DU TENSEUR DES CONTRAINTES -------------
-C --- : NBMAT :  NOMBRE DE PARAMETRES MATERIAU --------------------
+C IN  : NBMAT :  NOMBRE DE PARAMETRES MATERIAU --------------------
 C --- : MATER :  COEFFICIENTS MATERIAU A T+DT ---------------------
 C ----------- :  MATER(*,1) = CARACTERISTIQUES ELASTIQUES ---------
 C ----------- :  MATER(*,2) = CARACTERISTIQUES PLASTIQUES ---------
@@ -47,17 +44,14 @@ C =================================================================
       INTEGER   I, K, NDI, NDT
       REAL*8    UN, ZERO
       REAL*8    PA , A, N, AA(6)
-      REAL*8    PARAVI(3), VARVI(4)
-      REAL*8    DHDS(6), DS2HDS(6)
-      REAL*8    DEV(6)
       PARAMETER       (UN     =  1.0D0  )
       PARAMETER       (ZERO   =  0.0D0  )
 C =================================================================
 C --- RECUPERATION DE PARAMETRES DU MODELE ------------------------
 C =================================================================
       PA     = MATER(1,2)
-      A      = MATER(22,2)
-      N      = MATER(23,2)      
+      A      = MATER(21,2)
+      N      = MATER(22,2)      
 
 C =================================================================
 C --- MATRICE INTERMEDIAIRE ---------------------------------------

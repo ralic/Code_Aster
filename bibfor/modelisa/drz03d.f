@@ -1,7 +1,7 @@
       SUBROUTINE DRZ03D(LISNOZ,LONLIS,CHARGZ,TYPLAZ,LISREZ,DMIN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,36 +29,36 @@ C     BLOCAGE DES DEPLACEMENTS RELATIFS D'UNE LISTE DE NOEUDS
 C     SPECIFIEE PAR L'UTILISATEUR DANS LE CAS OU L' ON EST
 C     EN 3D ET AUCUN  NOEUD NE PORTE LE DDL DRZ
 C -------------------------------------------------------
-C  LISNOE        - IN    - K24 - : NOM DE LA LISTE DES
-C                -       -     -   NOEUDS A LIER
+C  LISNOE - IN    - K24 - : NOM DE LA LISTE DES
+C         -       -     -   NOEUDS A LIER
+C ------------------------------------------------
+C  LONLIS - IN    - I   - : LONGUEUR DE LA LISTE DES
+C         -       -     -   NOEUDS A LIER
+C ------------------------------------------------
+C  CHARGE - IN    - K8   - : NOM DE LA SD CHARGE
+C         - JXIN  -      -
+C ------------------------------------------------
+C TYPLAG  - IN    - K2  - : TYPE DES MULTIPLICATEURS DE LAGRANGE
+C                           ASSOCIES A LA RELATION :
+C                       SI = '12'  LE PREMIER LAGRANGE EST AVANT
+C                                  LE NOEUD PHYSIQUE
+C                                  LE SECOND LAGRANGE EST APRES
+C                       SI = '22'  LE PREMIER LAGRANGE EST APRES
+C                                  LE NOEUD PHYSIQUE
+C                                  LE SECOND LAGRANGE EST APRES
+C ------------------------------------------------
+C  LISREL - IN    - K19  - : NOM DE LA SD
+C         - JXVAR -      -   LISTE DE RELATIONS
 C -------------------------------------------------------
-C  LONLIS        - IN    - I   - : LONGUEUR DE LA LISTE DES
-C                -       -     -   NOEUDS A LIER
-C -------------------------------------------------------
-C  CHARGE        - IN    - K8   - : NOM DE LA SD CHARGE
-C                - JXIN  -      -
-C -------------------------------------------------------
-C TYPLAG         - IN    - K2  - : TYPE DES MULTIPLICATEURS DE LAGRANGE
-C                                  ASSOCIES A LA RELATION :
-C                              SI = '12'  LE PREMIER LAGRANGE EST AVANT
-C                                         LE NOEUD PHYSIQUE
-C                                         LE SECOND LAGRANGE EST APRES
-C                              SI = '22'  LE PREMIER LAGRANGE EST APRES
-C                                         LE NOEUD PHYSIQUE
-C                                         LE SECOND LAGRANGE EST APRES
-C -------------------------------------------------------
-C  LISREL        - IN    - K19  - : NOM DE LA SD
-C                - JXVAR -      -   LISTE DE RELATIONS
-C -------------------------------------------------------
-C  DMIN          - IN    - R8 - : LONGUEUR DE L APLUS PETITE ARRETE
-C                                 DU MAILLAGE
+C  DMIN   - IN    - R8 - : LONGUEUR EN DESSOUS DE LAQUELLE ON CONSIDERE
+C                          QUE 2 POINTS SONT CONFONDUS
 C -------------------------------------------------------
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR,RPETIT
+      REAL*8 ZR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -84,13 +84,14 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*9 NOMTE
       CHARACTER*16 TYPE,OPER
       CHARACTER*19 LIGRMO
-      INTEGER NTYPEL(NMOCL),DG
-      INTEGER VALI(2)
+      INTEGER NTYPEL(NMOCL),DG,J2,K,K2,INOB
+      INTEGER INOC,INOEM
+      INTEGER VALI(2),I2,INOI,INO2,IALIGN,J1
       REAL*8 M1(3,3),MINV1(3,3),M2(3,12),M3(3,3)
-      REAL*8 M4(3,12),M5(3,12)
+      REAL*8 M4(3,12),M5(3,12),X1,Y1,Z1
       REAL*8 B(3),C(3),M(3),N(3),BN(3),CN(3)
-      REAL*8 ML1(3,9),ML3(3,3),ML5(3,9)
-      REAL*8 N1(3),N2(3),ABM(3)
+      REAL*8 ML1(3,9),ML3(3,3),ML5(3,9),XI,YI,ZIJ
+      REAL*8 N1(3),N2(3),ABM(3),COEK,COEK1,LAB,SABC,LAC
       LOGICAL VERIF,EXISDG
       CHARACTER*1 K1BID
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
@@ -108,27 +109,15 @@ C --- INITIALISATIONS
       BETAC = (0.0D0,0.0D0)
       UN = 1.0D0
       ZERO = 0.0D0
-      RPETIT = 1.D-6*DMIN
-
-C --- MODELE ASSOCIE AU LIGREL DE CHARGE
+      CALL ASSERT(DMIN .GT. 0.D0)
 
       CALL DISMOI('F','NOM_MODELE',CHARGE(1:8),'CHARGE',IBID,MOD,IER)
-
-C ---  LIGREL DU MODELE
-
       LIGRMO = MOD(1:8)//'.MODELE'
-
-C --- MAILLAGE ASSOCIE AU MODELE
-
       CALL JEVEUO(LIGRMO//'.LGRF','L',JNOMA)
       NOMA = ZK8(JNOMA)
-
-C --- TYPE DES VALEURS DES COEFFICIENTS DES RELATIONS
-
       TYPCOE = 'REEL'
 
 C --- TYPE DES VALEURS AU SECOND MEMBRE DES RELATIONS
-
       IF (OPER(15:16).EQ.'_F') THEN
         TYPVAL = 'FONC'
       ELSE IF (OPER(15:16).EQ.'_C') THEN
@@ -188,11 +177,10 @@ C --- RECUPERATION DU TABLEAU DES COORDONNEES
 
 C --- ACQUISITION DE LA LISTE DES NOEUDS A LIER
 C --- (CETTE LISTE EST NON REDONDANTE)
-
       CALL JEVEUO(LISNOE,'L',ILISNO)
 
-C ---       INITIALISATIONS
 
+C --- INITIALISATIONS
       DO 30 I = 1,3
         DO 20 J = 1,12
           M2(I,J) = ZERO
@@ -208,6 +196,8 @@ C ---       INITIALISATIONS
           M3(I,J) = ZERO
    40   CONTINUE
    50 CONTINUE
+
+
 
 C ---  RECHERCHE DE NOEUDS A, B, C FORMANT UN TRIANGLE
 C ---  DE SURFACE NON-NULLE.
@@ -226,48 +216,49 @@ C ---                  ET NON COLINEAIRE A AB.
         B(1) = ZR(JCOOR-1+3* (INOB-1)+1) - ZR(JCOOR-1+3* (INOA-1)+1)
         B(2) = ZR(JCOOR-1+3* (INOB-1)+2) - ZR(JCOOR-1+3* (INOA-1)+2)
         B(3) = ZR(JCOOR-1+3* (INOB-1)+3) - ZR(JCOOR-1+3* (INOA-1)+3)
+C       -- LAB : LONGUEUR AB
+        LAB=SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3))
 
         J2 = J
-        IF (SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3)).GT.RPETIT) THEN
+        IF (LAB.LE.DMIN) GOTO 70
 
-          NOEUB = ZK8(ILISNO+J2-1)
-          DO 60 K = J2 + 1,LONLIS
+        NOEUB = ZK8(ILISNO+J2-1)
+        DO 60 K = J2 + 1,LONLIS
+          CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(ILISNO+K-1)),INOC)
 
-            CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(ILISNO+K-1)),INOC)
+          C(1) = ZR(JCOOR-1+3* (INOC-1)+1) - ZR(JCOOR-1+3* (INOA-1)+1)
+          C(2) = ZR(JCOOR-1+3* (INOC-1)+2) - ZR(JCOOR-1+3* (INOA-1)+2)
+          C(3) = ZR(JCOOR-1+3* (INOC-1)+3) - ZR(JCOOR-1+3* (INOA-1)+3)
+          LAC=SQRT(C(1)*C(1)+C(2)*C(2)+C(3)*C(3))
+          IF (LAC.LE.DMIN) GOTO 60
 
-            C(1) = ZR(JCOOR-1+3* (INOC-1)+1) - ZR(JCOOR-1+3* (INOA-1)+1)
-            C(2) = ZR(JCOOR-1+3* (INOC-1)+2) - ZR(JCOOR-1+3* (INOA-1)+2)
-            C(3) = ZR(JCOOR-1+3* (INOC-1)+3) - ZR(JCOOR-1+3* (INOA-1)+3)
+C         -- CALCUL DE SABC : 2*SURFACE ABC
+          CALL PROVEC(B,C,N)
+          SABC=SQRT(N(1)*N(1)+N(2)*N(2)+N(3)*N(3))
 
-C ---    CALCUL DE N = B X C
-
-            CALL PROVEC(B,C,N)
-            IF (SQRT(N(1)*N(1)+N(2)*N(2)+N(3)*N(3)).LT.RPETIT) THEN
-              GO TO 60
-            ELSE
-              K2 = K
-              NOEUC = ZK8(ILISNO+K2-1)
-              ITRIAN = 1
-              GO TO 80
-            END IF
-   60     CONTINUE
-C ---  FIN DU TEST SUR LA NORME DE B
-        END IF
+          IF (SABC/MAX(LAB,LAC).LE.DMIN) THEN
+            GO TO 60
+          ELSE
+            K2 = K
+            NOEUC = ZK8(ILISNO+K2-1)
+            ITRIAN = 1
+            GO TO 80
+          END IF
+   60   CONTINUE
    70 CONTINUE
-
    80 CONTINUE
 
-C ---  CAS OU L'ON A PU TOUVER 3 NOEUDS FORMANT UN TRIANGLE
-C ---  DE SURFACE NON NULLE
 
+
+C ---  1) CAS OU L'ON A PU TOUVER 3 NOEUDS FORMANT UN TRIANGLE
+C ---     DE SURFACE NON NULLE
+C--------------------------------------------------------------
       IF (ITRIAN.EQ.1) THEN
 
-C ---  CALCUL DE BN = B X N
-
+C ---   CALCUL DE BN = B X N
         CALL PROVEC(B,N,BN)
 
-C ---     CALCUL DE CN = C X N
-
+C ---   CALCUL DE CN = C X N
         CALL PROVEC(C,N,CN)
 
 C ---     DEFINITION DE M1
@@ -471,8 +462,11 @@ C ---     ECRITURE DES 3 RELATIONS CORRESPONDANTES A M5.UABCM = 0
 C ---     FIN DE LA BOUCLE SUR LES NOEUDS DE LA LISTE
   150   CONTINUE
 
-C ---   ANALYSE DU CAS OU L'ON N'A PAS PU TROUVER 3 NOEUDS DE LA
-C ---   LISTE FORMANT UN TRIANGLE
+
+
+C ---   2)  CAS OU L'ON N'A PAS PU TROUVER 3 NOEUDS DE LA
+C ---        LISTE FORMANT UN TRIANGLE
+C--------------------------------------------------------------
 
       ELSE IF (ITRIAN.EQ.0) THEN
 
@@ -487,14 +481,17 @@ C ---   LISTE FORMANT UN TRIANGLE
           XI = ZR(JCOOR-1+3* (INOI-1)+1)
           YI = ZR(JCOOR-1+3* (INOI-1)+2)
           ZIJ = ZR(JCOOR-1+3* (INOI-1)+3)
-          IF ((ABS(XI-X1).GT.RPETIT) .OR. (ABS(YI-Y1).GT.RPETIT) .OR.
-     &        (ABS(ZIJ-Z1).GT.RPETIT)) THEN
+          IF ((ABS(XI-X1).GT.DMIN) .OR. (ABS(YI-Y1).GT.DMIN) .OR.
+     &        (ABS(ZIJ-Z1).GT.DMIN)) THEN
             IALIGN = 1
             GO TO 200
           END IF
   160   CONTINUE
 
-C ---   CAS OU TOUS LES NOEUDS DE LA LISTE ONT LES MEMES COORDONNEES
+
+
+C ---   3) CAS OU TOUS LES NOEUDS DE LA LISTE ONT LES MEMES COORDONNEES
+C-----------------------------------------------------------------------
 
 C ---     PREMIERE RELATION
 C ---     DX(M) -DX(A) = 0
@@ -544,8 +541,10 @@ C ---     DZ(M) -DZ(A) = 0
 
   200   CONTINUE
 
-C ---    CAS OU TOUS LES NOEUDS SONT ALIGNES
 
+
+C ---   4) CAS OU TOUS LES NOEUDS SONT ALIGNES
+C--------------------------------------------------------------
         IF (IALIGN.EQ.1) THEN
 
 C ---           CAS OU L'ON N'A QUE 2 POINTS, LA SEULE RELATION EST :
@@ -604,7 +603,7 @@ C ---               INITIALISATIONS
      &               ZR(JCOOR-1+3* (INOA-1)+2)
               B(3) = ZR(JCOOR-1+3* (INOB-1)+3) -
      &               ZR(JCOOR-1+3* (INOA-1)+3)
-              IF (SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3)).GT.RPETIT) THEN
+              IF (SQRT(B(1)*B(1)+B(2)*B(2)+B(3)*B(3)).GT.DMIN) THEN
                 I2 = I
                 INO2 = INOB
                 NOEUB = ZK8(ILISNO+I2-1)
@@ -621,7 +620,7 @@ C ---              ON ESSAIE D'ABORD N1 = I X B
             N1(2) = -B(3)
             N1(3) = B(2)
 
-            IF (SQRT(B(3)*B(3)+B(2)*B(2)).LT.RPETIT) THEN
+            IF (SQRT(B(3)*B(3)+B(2)*B(2)).LE.DMIN) THEN
 
 C ---                ON FAIT UN AUTRE ESSAI AVEC N1 = J X B
 
@@ -629,7 +628,7 @@ C ---                ON FAIT UN AUTRE ESSAI AVEC N1 = J X B
               N1(2) = ZERO
               N1(3) = -B(1)
 
-              IF (SQRT(B(3)*B(3)+B(1)*B(1)).LT.RPETIT) THEN
+              IF (SQRT(B(3)*B(3)+B(1)*B(1)).LE.DMIN) THEN
                 CALL U2MESS('F','MODELISA4_41')
               END IF
             END IF
@@ -676,7 +675,7 @@ C ---                 DEFINITION DU VECTEUR ABM = AB X AM
               ABM(3) = B(1)*M(2) - B(2)*M(1)
 
               IF (SQRT(ABM(1)*ABM(1)+ABM(2)*ABM(2)+ABM(3)*ABM(3)).GT.
-     &            RPETIT) THEN
+     &            DMIN) THEN
                 CALL U2MESS('F','MODELISA4_42')
               END IF
   270       CONTINUE
@@ -783,16 +782,17 @@ C ---     MATRICIELLE : (ML4+1/K*ML3*ML1)*UABM = 0
      &                      LISREL)
   320         CONTINUE
   330       CONTINUE
-C ---           FIN DU CAS LONLIS GT 2
+C ---       FIN DU CAS LONLIS GT 2
           END IF
-C ---         FIN DU CAS OU LES NOEUDS SONT ALIGNES
+C ---     FIN DU CAS OU LES NOEUDS SONT ALIGNES
         END IF
-C ---       FIN DU CAS OU L'ON NE PEUT PAS TROUVER 3 NOEUDS FORMANT
-C ---       UN TRIANGLE
+C ---   FIN DU CAS OU L'ON NE PEUT PAS TROUVER 3 NOEUDS FORMANT
+C ---   UN TRIANGLE
       END IF
 
-C --- DESTRUCTION DES OBJETS DE TRAVAIL
 
+
+C --- DESTRUCTION DES OBJETS DE TRAVAIL
       CALL JEDETR('&&DRZ03D.LISNO')
       CALL JEDETR('&&DRZ03D.LISDDL')
       CALL JEDETR('&&DRZ03D.COER')

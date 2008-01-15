@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -153,19 +153,12 @@ U=STAT_NON_LINE(
                 RENUM = 'RCMK')
               )
 
-U=CALC_ELEM( reuse=U,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=U,
-              )
+U=CALC_ELEM( reuse=U, OPTION=( 'SIEF_ELNO_ELGA','VARI_ELNO_ELGA',), RESULTAT=U, )
 
 CHU1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 RESULTAT=U, NOM_CHAM='DEPL', NUME_ORDRE=5)
 
-TEST_RESU(
-  CHAM_NO=_F( CHAM_GD = CHU1, NOEUD = 'N100',   NOM_CMP = 'DX',
-  VALE = 1.100E-3,               PRECISION = 1.0E-3)
-)
+TEST_RESU(CHAM_NO=_F(CHAM_GD=CHU1, NOEUD='N100', NOM_CMP='DX', VALE=1.100E-3, REFERENCE='ANALYTIQUE'))
 
 FIN()
 #

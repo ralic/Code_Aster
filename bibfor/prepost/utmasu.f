@@ -1,14 +1,14 @@
       SUBROUTINE UTMASU ( MAIL, KDIM, NLIMA, LIMA, NOMOB1, PREC,
-     &                    COOR )
+     &                    COOR, NBMAVO, MAILVO )
       IMPLICIT NONE
-      INTEGER             LIMA(*), NLIMA
+      INTEGER             LIMA(*), NLIMA, NBMAVO, MAILVO(*)
       REAL*8              PREC, COOR(*)
       CHARACTER*2         KDIM
       CHARACTER*8         MAIL
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,12 @@ C     LIMA   : LISTE DES NUMEROS DE MAILLES
 C     NLIMA  : NOMBRE DE MAILLES
 C     BASE   : BASE DE CREATION
 C     NOMOB1 : NOM DE L' OJB A CREER
+C     MAILVO : SI ORIE_PEAU_3D ("GROUP_MA_VOLU"):
+C                  = LISTE DES MAILLES VOLUMIQUES
+C                    UTILES A LA REORIENTATION
+C              SINON: MAILVO N'EST PAS UTILISE
+C     NBMAVO : NB DE MAILLES DE MAILVO 
+
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -63,15 +69,27 @@ C
       INTEGER       IMA, NUMA, NNOE, INO, NBM, I, K, INDI, NNOEM, NNOE1
       INTEGER       IFM , NIV, IPOS, ITYPMA, NUTYMA
       INTEGER       LISNOE(27)
-      LOGICAL       FIRST
+      LOGICAL       FIRST,LVNOR
       CHARACTER*1   TYPERR
-      CHARACTER*8   K8B, NOMAIL, TYPE
+      CHARACTER*8   K8B, NOMAIL, TYPE, VNOR
+      CHARACTER*16  OPER,K16B
       CHARACTER*24  NOMAVO,VALK(4)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
       CALL INFNIV ( IFM , NIV )
       FIRST = .FALSE.
+      CALL GETRES(K8B,K16B,OPER)
+C
+C --- VERIFIERA T'ON LES NORMALES ?
+C     -----------------------------
+      LVNOR=.TRUE.
+      IF(OPER(1:14).EQ.'AFFE_CHAR_MECA')THEN
+         CALL GETVID(' ','VERI_NORM',0,1,1,VNOR,IRET)
+         IF(IRET.NE.0)THEN
+            IF(VNOR(1:3).EQ.'NON')LVNOR=.FALSE.
+         ENDIF
+      ENDIF
 C
 C --- APPEL A LA CONNECTIVITE :
 C     -----------------------
@@ -86,7 +104,7 @@ C
 C --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
 C     ---------------------------------------------
       NOMAVO = '&&UTMASU.MAILLE_VOISINE '
-      CALL UTMAVO ( MAIL, KDIM, LIMA, NLIMA, 'V', NOMAVO )
+      CALL UTMAVO ( MAIL, KDIM, LIMA, NLIMA, 'V', NOMAVO,NBMAVO,MAILVO)
       CALL JEVEUO ( JEXATR(NOMAVO,'LONCUM'), 'L', P4 )
       CALL JEVEUO ( NOMAVO, 'L', P3 )
 C
@@ -124,7 +142,7 @@ C     -----------------
                CALL ORIEM0 ( TYPE, MAIL, COOR, ZI(P1+ZI(P2+IM1-1)-1),
      &              NNOE1, ZI(P1+ZI(P2+IM2-1)-1), NNOEM, LISNOE, NNOE,
      &              PREC, IRET, IPOS )
-               IF ( IPOS .NE. 0 ) THEN
+               IF ( IPOS .NE. 0 .AND. LVNOR) THEN
                  CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),VALK(1))
                  CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM1),VALK(2))
                  CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM2),VALK(3))

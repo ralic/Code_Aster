@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER K,KK,NUNO1,NUNO2,INO1,INO2,NDIM,IER,NOCC,IOCC
       INTEGER IBID,JNOMA,NNOMX,IDMAX,IDNOMN,IDCOEF,JCMUC,IDNOMD
       INTEGER IDIREC,IDIMEN,IAGMA1,IAGMA2,IAGNO2,NBMA1,NBMA2
-      INTEGER NBNO2,IDCAL1,IDCAL2
+      INTEGER NBNO2,IDCAL1,IDCAL2, NUL
       INTEGER ICONB1,ICONU1,ICOCF1,ICONB2,ICONU2,ICOCF2
       INTEGER NNO11,NNO12,I,INDIRE,LNO
       INTEGER NBTYP,NDDL2,JLISTK,JDIM,NDIM1,IRET,NBPAR
@@ -75,6 +75,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
+      NUL=0
       MOTFAC = 'LIAISON_CYCL'
       CALL GETFAC(MOTFAC,NOCC)
       IF (NOCC.EQ.0) GO TO 310
@@ -230,7 +231,7 @@ C        ---------------------------------------------
 
           NORIEN = 0
           CALL ORILMA ( NOMA, NDIM, ZI(IDMAI3), NBMA3, NORIEN, NTRAIT,
-     &                  LREORI, PREC )
+     &                  LREORI, PREC, NUL, IBID )
           IF (NORIEN.NE.0) THEN
               CALL U2MESS('F','MODELISA3_19')
           END IF

@@ -1,4 +1,4 @@
-#@ MODIF matrice0 Messages  DATE 17/07/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF matrice0 Messages  DATE 14/01/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,22 +35,6 @@ cata_msg={
 
 4: _("""
  Rigidité ajouté sur modele généralisé non encore implanté.
-"""),
-
-5: _("""
- Avec méthode LDLT, RENUM doit etre SANS ou RCMK.
-"""),
-
-6: _("""
- Avec méthode MULT_FRONT, RENUM doit etre MDA, MD ou RCMK.
-"""),
-
-7: _("""
- Avec méthode MUMPS, RENUM doit etre SANS.
-"""),
-
-8: _("""
- Avec méthode GCPC, RENUM doit etre SANS ou RCMK.
 """),
 
 9: _("""

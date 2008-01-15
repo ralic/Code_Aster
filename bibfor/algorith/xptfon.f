@@ -1,14 +1,14 @@
       SUBROUTINE XPTFON(NOMA,NMAFON,CNSLT,CNSLN,JMAFON,NXPTFF,JFON,NFON,
-     &                                               JBORD,NPTBOR,ARMIN)
+     &                                          JBORD,NPTBOR,ARMIN,FISS)
       IMPLICIT NONE
 
       INTEGER       NMAFON,JMAFON,JFON,NFON,NXPTFF,JBORD,NPTBOR
       REAL*8        ARMIN
-      CHARACTER*8   NOMA
+      CHARACTER*8   NOMA,FISS
       CHARACTER*19  CNSLT,CNSLN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C     NMAFON       :    NOMBRE DE MAILLES DE LA ZONE FOND DE FISSURE
 C     JMAFON       :    MAILLES DE LA ZONE FOND DE FISSURE
 C     NXPTFF       :    NOMBRE MAXIMUM DE POINTS DU FOND DE FISSURE
 C     CNSLT,CNSLN  :    LEVEL-SETS
+C     FISS         :   SD FISS_XFEM (POUR RECUP DES GRADIENTS)  
 C
 C  SORTIES :
 C     JFON         :   ADRESSE DES POINTS DU FOND DE FISSURE
@@ -65,12 +66,14 @@ C
       INTEGER         IN,IMA,IFT,I,J,IBID,IRET,ITYPMA,IBID2(6,4),NDIM
       INTEGER         NMAABS,FT(12,3),NBFT,NA,NB,NC,NUNOA,NUNOB,NUNOC
       INTEGER         JCONX1,JCONX2,JCOOR,JLTSV,JLNSV,JMA,IPT,ADDIM
+      INTEGER         JGT
       REAL*8          LSTA,LSNA,LSTB,LSNB,LSTC,LSNC,L(2,2),DETL,LL(2,2)
       REAL*8          R8PREM,EPS1,EPS2,A(3),B(3),C(3),M(3),P(3),PADIST
       REAL*8          R8B,EPS3
+      REAL*8          G1A,G1B,G1C,G2A,G2B,G2C,DIRX(2),DIRY(2)
       COMPLEX*16      C16B
       CHARACTER*8     K8BID,TYPMA
-      CHARACTER*19    NOMT19,MAI,CNXINV
+      CHARACTER*19    NOMT19,MAI,CNXINV,GRLT,CHGRS
       CHARACTER*24    PARA
       CHARACTER*32    JEXATR
       LOGICAL         DEJA,FABORD
@@ -85,6 +88,12 @@ C ----------------------------------------------------------------------
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNSV)
       MAI=NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMA)
+
+C     GRADIENT LST
+      GRLT = FISS//'.GRLTNO'
+      CHGRS = '&&XPTFON.GRLT'
+      CALL CNOCNS(GRLT,'V',CHGRS)
+      CALL JEVEUO(CHGRS//'.CNSV','L',JGT)
 
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
@@ -178,6 +187,18 @@ C               AUGMENTER NXPTFF
                 ZR(JFON-1+4*(IN-1)+2)=M(2)
                 ZR(JFON-1+4*(IN-1)+3)=M(3)
 
+C               SPECIAL 2d : DIRECTION DE PROPA
+                IF (NDIM.EQ.2) THEN
+                  G1A = ZR(JGT-1+NDIM*(NUNOA-1)+1)
+                  G1B = ZR(JGT-1+NDIM*(NUNOB-1)+1)
+                  G1C = ZR(JGT-1+NDIM*(NUNOC-1)+1)
+                  G2A = ZR(JGT-1+NDIM*(NUNOA-1)+2)
+                  G2B = ZR(JGT-1+NDIM*(NUNOB-1)+2)
+                  G2C = ZR(JGT-1+NDIM*(NUNOC-1)+2)
+                  DIRX(IN)=G1A+EPS1*(G1B-G1A)+EPS2*(G1C-G1A)
+                  DIRY(IN)=G2A+EPS1*(G2B-G2A)+EPS2*(G2C-G2A)
+                ENDIF
+
               ENDIF
 
 C             ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
@@ -196,6 +217,14 @@ C             CELA N'A DE SENS QU'EN 3D
  400  CONTINUE
 
       NFON=IN
+
+C     SPECIAL 2d : ON STOCKE EN POSITION 3 ET 4 LA DIRECTION DE PROPA
+      IF (NDIM.EQ.2) THEN
+        DO 444 I=1,NFON
+          ZR(JFON-1+4*(I-1)+3)=DIRX(I)
+          ZR(JFON-1+4*(I-1)+4)=DIRY(I)
+ 444    CONTINUE
+      ENDIF
 
       CALL JEDETR(CNXINV)
       CALL JEDEMA()

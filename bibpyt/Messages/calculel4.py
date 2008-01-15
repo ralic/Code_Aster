@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,7 +88,7 @@ cata_msg={
 """),
 
 21: _("""
- mot cle FOND_FISS obligatoire pour l option  %(k1)s
+ il faut un mot cle parmis FOND_FISS ou FISSURE pour l option  %(k1)s
 """),
 
 22: _("""

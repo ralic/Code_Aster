@@ -7,7 +7,7 @@
       CHARACTER*(*)      NOMAT,PHENOM,ARRET,NOMPAR(NBPAR),NOMRES(NBRES)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,11 +155,7 @@ C
                   CODRET(IRES) = 'OK'
                ENDIF
                IPIF = IPIF + LFCT
-               IF ( NOMPHE .EQ. 'DIS_CONTAC' ) THEN
-                  IF ( ZK8(IVALK+NBR+NBC+IK-1) .EQ. 'RELA_MZ ' ) THEN
-                     IPIF = IPIF + LSUP
-                  ENDIF
-               ELSEIF (  NOMPHE(1:8) .EQ. 'TRACTION' ) THEN
+               IF (  NOMPHE(1:8) .EQ. 'TRACTION' ) THEN
                   IPIF = IPIF + LSUP
                ELSEIF ( NOMPHE .EQ. 'META_TRACT' ) THEN
                   IPIF = IPIF + LSUP
