@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements2 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,13 +26,6 @@ cata_msg = {
  le mot cle normale doit comporter 3 composantes
 """),
 
-3 : _("""
- le degre du polynome doit etre                            au plus egal a 7 
-"""),
-
-4 : _("""
- probleme dans rinf et rsup 
-"""),
 
 5 : _("""
  le mot cle dtan_orig doit comporter 3 composantes
@@ -94,9 +87,6 @@ cata_msg = {
  melang4 seg2 et seg3 : les mailles du fond de fissure doivent etre du meme type
 """),
 
-20 : _("""
- arret sur erreur(s) utilisateur: deux mailles du fond de fissure sont non consecutives dans la numerotation des noeuds 
-"""),
 
 21 : _("""
  erreur : le fond de fissure possede un noeud repete 2 fois : noeud  %(k1)s . revoir les donnees
@@ -106,13 +96,7 @@ cata_msg = {
  les mailles du fond_inf                           et du fond_sup sont de type different
 """),
 
-24 : _("""
- le noeud  %(k1)s  n appartient pas au fond de fissure 
-"""),
 
-25 : _("""
- le fond de fissure n est pas complet
-"""),
 
 26 : _("""
  pb prgm
@@ -280,9 +264,6 @@ cata_msg = {
  option non traitee
 """),
 
-68 : _("""
- une deformation initiale est presente dans la charge : incompatible avec la contrainte initiale sigma_init
-"""),
 
 69 : _("""
  relation de comportement non traite

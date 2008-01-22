@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 17/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF postrele Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -392,9 +392,5 @@ cata_msg={
  
 """),
 
-64: _("""
- Le cas de charge %(k1)s n'a pas été trouvé dans la SD Resultat %(k2)s.
- 
-"""),
 
 }

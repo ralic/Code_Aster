@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,13 +92,8 @@ C          ---------------------
          CALL GETVR8 (' ','NORMALE',1,1,0,ZRBID,NCMP)
          IF(NCMP.NE.0) THEN
            NCMP = -NCMP
-           IF(NCMP.EQ.3) THEN
-             CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
-             CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NCMP)
-           ELSE
-             CALL U2MESS('E','ELEMENTS2_2')
-             IER = IER + 1
-           ENDIF
+           CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
+           CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NCMP)
          ENDIF
          GO TO 9999
       ENDIF
@@ -109,13 +104,8 @@ C          -----------------------
          CALL GETVR8 (' ',MOTFAC,1,1,0,ZRBID,NCMP)
          IF(NCMP.NE.0) THEN
            NCMP = -NCMP
-           IF(NCMP.EQ.3) THEN
-             CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
-             CALL GETVR8 (' ',MOTFAC,1,1,3,ZR(JORIG),NCMP)
-           ELSE
-             CALL U2MESS('E','ELEMENTS2_5')
-             IER = IER + 1
-           ENDIF
+           CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
+           CALL GETVR8 (' ',MOTFAC,1,1,3,ZR(JORIG),NCMP)
          ENDIF
          GO TO 9999
       ENDIF
@@ -126,13 +116,8 @@ C          -----------------------
          CALL GETVR8 (' ',MOTFAC,1,1,0,ZRBID,NCMP)
          IF(NCMP.NE.0) THEN
            NCMP = -NCMP
-           IF(NCMP.EQ.3) THEN
-             CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
-             CALL GETVR8 (' ',MOTFAC,1,1,3,ZR(JEXTR),NCMP)
-           ELSE
-             CALL U2MESS('E','ELEMENTS2_6')
-             IER = IER + 1
-           ENDIF
+           CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
+           CALL GETVR8 (' ',MOTFAC,1,1,3,ZR(JEXTR),NCMP)
          ENDIF
          GO TO 9999
       ENDIF
@@ -144,30 +129,25 @@ C          --------------------------
      &                   ' ',MOTFAC,1,1,0,NOMGRP,NCMP)
          IF(NCMP.NE.0) THEN
            NCMP = -NCMP
-           IF(NCMP.EQ.2) THEN
-             CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
-             CALL GETVEM (NOMA,'GROUP_NO',
-     &                   ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
+           CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
+           CALL GETVEM (NOMA,'GROUP_NO',
+     &                 ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
 C
-             CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
-             NUMER = ZI(IAGRN)
-             XPFO = ZR(JVALE-1+3*(NUMER-1)+1)
-             YPFO = ZR(JVALE-1+3*(NUMER-1)+2)
-             ZPFO = ZR(JVALE-1+3*(NUMER-1)+3)
+           CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
+           NUMER = ZI(IAGRN)
+           XPFO = ZR(JVALE-1+3*(NUMER-1)+1)
+           YPFO = ZR(JVALE-1+3*(NUMER-1)+2)
+           ZPFO = ZR(JVALE-1+3*(NUMER-1)+3)
 C
-             CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(2)),'L',IAGRN)
-             NUMER = ZI(IAGRN)
-             XPFI = ZR(JVALE-1+3*(NUMER-1)+1)
-             YPFI = ZR(JVALE-1+3*(NUMER-1)+2)
-             ZPFI = ZR(JVALE-1+3*(NUMER-1)+3)
-             ZR(JORIG+0)=XPFI-XPFO
-             ZR(JORIG+1)=YPFI-YPFO
-             ZR(JORIG+2)=ZPFI-ZPFO
+           CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(2)),'L',IAGRN)
+           NUMER = ZI(IAGRN)
+           XPFI = ZR(JVALE-1+3*(NUMER-1)+1)
+           YPFI = ZR(JVALE-1+3*(NUMER-1)+2)
+           ZPFI = ZR(JVALE-1+3*(NUMER-1)+3)
+           ZR(JORIG+0)=XPFI-XPFO
+           ZR(JORIG+1)=YPFI-YPFO
+           ZR(JORIG+2)=ZPFI-ZPFO
 C
-           ELSE
-             CALL U2MESS('E','ELEMENTS2_7')
-             IER = IER + 1
-           ENDIF
          ENDIF
          GO TO 9999
       ENDIF
@@ -179,30 +159,25 @@ C          ----------------------------
      &                   ' ',MOTFAC,1,1,0,NOMGRP,NCMP)
          IF(NCMP.NE.0) THEN
            NCMP = -NCMP
-           IF(NCMP.EQ.2) THEN
-             CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
-             CALL GETVEM (NOMA,'GROUP_NO',
-     &                   ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
+           CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
+           CALL GETVEM (NOMA,'GROUP_NO',
+     &                 ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
 C
-             CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
-             NUMER = ZI(IAGRN)
-             XPFO = ZR(JVALE-1+3*(NUMER-1)+1)
-             YPFO = ZR(JVALE-1+3*(NUMER-1)+2)
-             ZPFO = ZR(JVALE-1+3*(NUMER-1)+3)
+           CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
+           NUMER = ZI(IAGRN)
+           XPFO = ZR(JVALE-1+3*(NUMER-1)+1)
+           YPFO = ZR(JVALE-1+3*(NUMER-1)+2)
+           ZPFO = ZR(JVALE-1+3*(NUMER-1)+3)
 C
-             CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(2)),'L',IAGRN)
-             NUMER = ZI(IAGRN)
-             XPFI = ZR(JVALE-1+3*(NUMER-1)+1)
-             YPFI = ZR(JVALE-1+3*(NUMER-1)+2)
-             ZPFI = ZR(JVALE-1+3*(NUMER-1)+3)
-             ZR(JEXTR+0)=XPFI-XPFO
-             ZR(JEXTR+1)=YPFI-YPFO
-             ZR(JEXTR+2)=ZPFI-ZPFO
+           CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(2)),'L',IAGRN)
+           NUMER = ZI(IAGRN)
+           XPFI = ZR(JVALE-1+3*(NUMER-1)+1)
+           YPFI = ZR(JVALE-1+3*(NUMER-1)+2)
+           ZPFI = ZR(JVALE-1+3*(NUMER-1)+3)
+           ZR(JEXTR+0)=XPFI-XPFO
+           ZR(JEXTR+1)=YPFI-YPFO
+           ZR(JEXTR+2)=ZPFI-ZPFO
 C
-           ELSE
-             CALL U2MESS('E','ELEMENTS2_8')
-             IER = IER + 1
-           ENDIF
          ENDIF
          GO TO 9999
       ENDIF
@@ -264,10 +239,10 @@ C
             DIM1 = DIM1 + NBOBJ
          ELSE
             IER = IER + 1
-            CALL U2MESK('E','ELEMENTS_93',1,ZK8(JJJ+I-1))
+            CALL U2MESK('E','RUPTURE1_2',1,ZK8(JJJ+I-1))
          ENDIF
 100   CONTINUE
-      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
+
       DIM2 = MAX(DIM1,NENT)
 C
 C --- ALLOCATION DE 5 AUTRES OBJETS DE TRAVAIL
@@ -329,7 +304,7 @@ C
                       IF (TYPE(1:3).EQ.'SEG ') THEN
                         IF ((IT.GT.1) .AND.
      &                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
-                          CALL U2MESS('F','ELEMENTS2_9')
+                          CALL U2MESS('F','RUPTURE0_60')
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
                         IT = IT + 1
@@ -338,7 +313,7 @@ C
                       IF (.NOT.LFON .AND. NUMA .EQ. NUMB ) GOTO 24
  22                 CONTINUE
  20               CONTINUE
-                  CALL U2MESK('F','ELEMENTS2_10',1,ZK8(JJJ+IGR-1))
+                  CALL U2MESK('F','RUPTURE0_61',1,ZK8(JJJ+IGR-1))
  24               CONTINUE
 
 
@@ -351,7 +326,7 @@ C
                ZI(IAB + IGR - 1) = ZI(JADR)
                IF ( IGR .GE. 2 ) THEN
                   IF (ZI(IAA + IGR - 2) .NE. ZI(IAB + IGR - 1)) THEN
-                     CALL U2MESS('F','ELEMENTS2_11')
+                     CALL U2MESS('F','RUPTURE0_62')
                   ELSE
                     DO 102 I=2,NBOBJ
                        CALL JENUNO(JEXNUM(OBJ2,ZI(JADR+I-1)),NOEUD)
@@ -377,13 +352,12 @@ C
                   ITYP = IATYMA-1+IBID
                   CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                   TYPMA = TYPE(1:3)
-                  IF(TYPMA.NE.'SEG ')  CALL U2MESS('F','ELEMENTS2_12')
+                  IF(TYPMA.NE.'SEG ')  CALL U2MESS('F','RUPTURE0_63')
                   TYPM = TYPE(1:4)
                   IF ((IMA.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
-                   CALL U2MESS('F','ELEMENTS2_13')
+                   CALL U2MESS('F','RUPTURE0_60')
                   ENDIF
                   TYPMP(1:4) = TYPM(1:4)
-
 
 C
 C --------------- VERIFICATION DES NOEUDS IDENTIQUES POUR 2 MAILLES
@@ -398,7 +372,7 @@ C
                   IF (IMA.EQ.NBOBJ) ZI(IGAA + IGR - 1) = ZI(IADM + 1)
                   IF (IMA.GE.2) THEN
                      IF (ZI(IAA + IMA - 2).NE.ZI(IAB + IMA - 1)) THEN
-                        CALL U2MESS('F','ELEMENTS2_14')
+                        CALL U2MESS('F','RUPTURE0_64')
                      ELSE
                         IF (TYPE(1:4) .EQ. 'SEG2' ) THEN
                            CALL JENUNO(JEXNUM(OBJ5,ZI(IADM+1)),NOEUD)
@@ -438,7 +412,7 @@ C              CONSECUTIFS
 C
                IF (IGR.GE.2) THEN
                   IF (ZI(IGAA + IGR - 2).NE.ZI(IGAB + IGR - 1)) THEN
-                     CALL U2MESS('F','ELEMENTS2_15')
+                     CALL U2MESS('F','RUPTURE0_64')
                   ENDIF
                ENDIF
             ENDIF
@@ -453,7 +427,9 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:4)
                IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-                  CALL U2MESS('F','ELEMENTS2_16')
+                  VK(1) = TYPE(1:6)
+                  VK(2) = MOTFAC
+                  CALL U2MESK('F','RUPTURE0_65',2,VK)
                ELSE
                   ZK8(KK2) = MAILLE
                   KK2 = KK2 + 1
@@ -466,7 +442,9 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:4)
                IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-                  CALL U2MESS('F','ELEMENTS2_16')
+                  VK(1) = TYPE(1:6)
+                  VK(2) = MOTFAC
+                  CALL U2MESK('F','RUPTURE0_65',2,VK)
                ELSE
                   ZK8(KK3) = MAILLE
                   KK3 = KK3 + 1
@@ -486,11 +464,11 @@ C
              VALK(1) = MOTCLE
              VALK(2) = ZK8(JJJ+INO-1)
              VALK(3) = NOMA
+             IER = IER + 1
              CALL U2MESK('E','MODELISA2_96', 3 ,VALK)
-            IER = IER + 1
          ENDIF
  200  CONTINUE
-      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
+
 C
       IF ( MOTFAC(1:4) .EQ. 'FOND' ) THEN
          IF (NOUM(1:2).EQ.'NO') THEN
@@ -516,7 +494,7 @@ C
                      IF (TYPE(1:3).EQ.'SEG ') THEN
                         IF ((IT.GT.1) .AND.
      &                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
-                          CALL U2MESS('F','ELEMENTS2_17')
+                          CALL U2MESS('F','RUPTURE0_60')
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
                         IT = IT + 1
@@ -525,7 +503,7 @@ C
                       IF (.NOT.LFON .AND. NUMA .EQ. NUMB ) GOTO 216
  214              CONTINUE
  212           CONTINUE
-               CALL U2MESS('F','ELEMENTS2_18')
+               CALL U2MESS('F','RUPTURE0_66')
  216           CONTINUE
 
 
@@ -541,10 +519,10 @@ C
                ITYP=IATYMA-1+IBID
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:3)
-               IF(TYPMA.NE.'SEG ')  CALL U2MESS('F','ELEMENTS2_12')
+               IF(TYPMA.NE.'SEG ')  CALL U2MESS('F','RUPTURE0_63')
                TYPM = TYPE(1:4)
                IF ((INO.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
-                CALL U2MESS('F','ELEMENTS2_19')
+                CALL U2MESS('F','RUPTURE0_60')
                ENDIF
                TYPMP(1:4) = TYPM(1:4)
 
@@ -558,7 +536,7 @@ C
                ZI(IAB + INO - 1) = ZI(IADM)
                IF (INO.GE.2) THEN
                   IF (ZI(IAA + INO - 2).NE.ZI(IAB + INO - 1)) THEN
-                     CALL U2MESS('F','ELEMENTS2_20')
+                     CALL U2MESS('F','RUPTURE1_29')
                   ELSE
                      IF (TYPE(1:4).EQ.'SEG2') THEN
                         CALL JENUNO(JEXNUM(OBJ5,ZI(IADM+1)),NOEUD)
@@ -600,7 +578,9 @@ C
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
             TYPMA = TYPE(1:4)
             IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-               CALL U2MESS('F','ELEMENTS2_16')
+               VK(1) = TYPE(1:6)
+               VK(2) = MOTFAC
+               CALL U2MESK('F','RUPTURE0_65',2,VK)
             ELSE
                ZK8(KK2) = ZK8(JJJ + INO - 1)
                KK2 = KK2 + 1
@@ -614,7 +594,9 @@ C
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
             TYPMA = TYPE(1:4)
             IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-               CALL U2MESS('F','ELEMENTS2_16')
+               VK(1) = TYPE(1:5)
+               VK(2) = MOTFAC
+               CALL U2MESK('F','RUPTURE0_65',2,VK)
             ELSE
                ZK8(KK3) = ZK8(JJJ + INO - 1)
                KK3 = KK3 + 1
@@ -660,8 +642,8 @@ C          -----------------------
         K1 = K1 - 1
 C
         IF (K1.NE.DIM) THEN
-           CALL U2MESK('E','ELEMENTS2_21',1,ZK8(LL1 + J1 - 1))
            IER = IER+1
+           CALL U2MESK('E','RUPTURE0_67',1,ZK8(LL1 + J1 - 1))
         ENDIF
 C
         IF (MOTFAC(6:10).EQ.'FERME')  ZK8(MM1+DIM+1-1) = ZK8(MM1+1- 1)
@@ -674,7 +656,9 @@ C
           ELSE
              CALL JEVEUO(RESU//'.FOND      .TYPE','L',JJTYP)
              IF(ZK8(JJTYP)(1:4).NE.TYPMP)THEN
-                CALL U2MESS('F','ELEMENTS2_22')
+                VK(1) = TYPMP
+                VK(2) = ZK8(JJTYP)(1:4)
+                CALL U2MESK('F','RUPTURE0_68',2,VK)
              ENDIF
           ENDIF
         ELSE
@@ -711,7 +695,7 @@ C       ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
              IF ( SQRT(D) .GT.PRECR)THEN
                VK(1) = ZK8(JFINF+IN-1)
                VK(2) = ZK8(JFSUP+IN-1)
-               CALL U2MESK('F','ELEMENTS5_14', 2 ,VK)
+               CALL U2MESK('F','RUPTURE0_69', 2 ,VK)
              ENDIF
  555       CONTINUE
         ENDIF
@@ -740,7 +724,7 @@ C              -----------------------
          K2 = K2 - 1
 C
          IF (K2.NE.DIM2) THEN
-            CALL U2MESK('E','ELEMENTS_96',1,ZK8(LL2 + J2 - 1))
+            CALL U2MESK('E','RUPTURE0_70',1,ZK8(LL2 + J2 - 1))
             IER = IER+1
          ENDIF
 
@@ -769,7 +753,9 @@ C VERIFICATION COHERENCE LEVRE SUP / FOND
             ELSE IF(TYPE(1:5).EQ.'TRIA6') THEN
              NN = 6
             ELSE
-              CALL U2MESS('F','ELEMENTS2_16')
+              VK(1) = TYPE(1:5)
+              VK(2) = MOTFAC
+              CALL U2MESK('F','RUPTURE0_65',2,VK)
             ENDIF
             CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IAMASE)
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',ZI(IAMASE)),NOEUG)
@@ -783,7 +769,7 @@ C VERIFICATION COHERENCE LEVRE SUP / FOND
 630         CONTINUE
 620       CONTINUE
           IF(COMPTA .EQ. 0)  THEN
-            CALL U2MESK('F','ELEMENTS5_12',1,ZK8(MM1+I-1))
+            CALL U2MESK('F','RUPTURE0_72',1,ZK8(MM1+I-1))
           ENDIF
 610     CONTINUE
         
@@ -811,7 +797,7 @@ C              -----------------------
          K3 = K3 - 1
 C
          IF (K3.NE.DIM2) THEN
-            CALL U2MESK('E','ELEMENTS_97',1,ZK8(LL3 + J3 - 1))
+            CALL U2MESK('E','RUPTURE0_71',1,ZK8(LL3 + J3 - 1))
             IER = IER+1
          ENDIF
 
@@ -821,7 +807,7 @@ C COMPARAISON LEVRE SUP / LEVRE INF
          DO 710 I = 1,NBMAS
            DO 715 J = 1,DIM2
             IF (ZK8(JSUP+I-1) .EQ. ZK8(MM3+J-1) ) THEN
-              CALL U2MESS('F','ELEMENTS_98')
+              CALL U2MESK('F','RUPTURE0_73',1,ZK8(JSUP+I-1))
             END IF
 715        CONTINUE
 710      CONTINUE
@@ -851,7 +837,9 @@ C VERIFICATION COHERENCE LEVRE INF / FOND
             ELSE IF(TYPE(1:5).EQ.'TRIA6') THEN
              NN = 6
             ELSE
-              CALL U2MESS('F','ELEMENTS2_16')
+              VK(1) = TYPE(1:5)
+              VK(2) = MOTFAC
+              CALL U2MESK('F','RUPTURE0_65',2,VK)
             ENDIF
             CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IAMASE)
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',ZI(IAMASE)),NOEUG)
@@ -865,7 +853,7 @@ C VERIFICATION COHERENCE LEVRE INF / FOND
 730         CONTINUE
 720       CONTINUE
           IF(COMPTA .EQ. 0)  THEN
-            CALL U2MESK('F','ELEMENTS5_13',1,ZK8(MM1+I-1))
+            CALL U2MESK('F','RUPTURE0_74',1,ZK8(MM1+I-1))
           ENDIF
        
 711     CONTINUE
@@ -887,7 +875,7 @@ C
          CALL JEDETR('&&VERIFE.LEVREINF  .MAIL')
       ENDIF
 C
-      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
+
 9999  CONTINUE
       CALL JEDEMA()
       END

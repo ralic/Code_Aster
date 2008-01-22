@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,11 +101,6 @@ C
         IF ( N1 .NE. 0 )  FLEXIO = .TRUE.
         CALL GETVID ( MOTCLF, 'TABL_RESU_PRES', IOCC,1,1, TABPR0, N1 )
         IF ( N1 .NE. 0 )  LROCHT = .TRUE.
-C
-C       VERIFICATION DE L'ORDRE DES NOEUDS DANS LES TABLES
-        CALL RCVERI(TABL0)
-        IF(FLEXIO) CALL RCVERI(TABFL0)
-        IF(LROCHT) CALL RCVERI(TABPR0)
 C
         NBINS0 = 0
         CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,0, R8B, N1 )

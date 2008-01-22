@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF postrccm Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,6 +221,44 @@ cata_msg={
  -> Il est préférable de fournir des tables comportant les coordonnées des noeuds.
 """),
 
+40: _("""
+ -> Pour le cas unitaire, il doit y avoir un seul ligament.
+    La table %(k1)s contient %(i1)d ligaments.
+ -> Risque & Conseil:
+    Veuillez revoir le contenu de votre table.
+ """),
 
+41: _("""
+ -> Les tables %(k1)s et %(k2)s ont des noeuds possédant
+    des coordonnées différentes:
+    - table %(k1)s : %(k3)s = %(r1)f
+    - table %(k2)s : %(k3)s = %(r2)f
+ -> Risque & Conseil:
+    Veuillez revoir le contenu de vos tables
+"""),    
+
+ 42: _("""
+ -> Les tables %(k1)s et %(k2)s ne sont pas cohérentes en terme de nombre
+    de ligaments:
+    - table %(k1)s : %(i1)d ligaments 
+    - table %(k2)s : %(i2)d ligaments 
+ -> Risque & Conseil:
+    Veuillez revoir le contenu de vos tables
+"""),
+
+43: _("""
+ -> Les tables %(k1)s et %(k2)s ne sont pas cohérentes en terme d'instant:
+    Une différence a été observée entre les valeurs d'instant d'un meme point
+    - table %(k1)s : INST = %(r1)f
+    - table %(k2)s : INST = %(r2)f
+ -> Risque & Conseil:
+    Veuillez revoir le contenu de vos tables
+   
+"""),
+
+44: _("""
+ probleme pour récupérer dans la table %(k1)s la valeur du parametre %(k2)s
+ pour le parametre %(k3)s de valeur %(r1)12.5E.
+"""),
 
 }

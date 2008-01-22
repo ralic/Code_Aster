@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 22/01/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVNO=32,NAEVNO=9)
+      PARAMETER (NPEVNO=33,NAEVNO=9)
       CHARACTER*16 PAEVNO(NPEVNO)
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
@@ -132,7 +132,7 @@ C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
       DATA PAEVNO/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
      &     'ITER_GLOB','ITER_LINE','ITER_DASHPOT','GFITER',
-     &     'RESI_GLOB_RELA','RESI_GLOB',
+     &     'RESI_GLOB_RELA','RESI_GLOB','RESI_REFE',
      &     'CHAR_MINI','ETA_PILOTAGE','RESI_GLOB_MOINS',
      &     'CHAR_CRIT','GFUM','GFUA','GFUML','GFUI','GFVAG','GFVFD',
      &     'GFVAD','FREQ','ERREUR_ABSOLUE','ERREUR_RELATIVE',

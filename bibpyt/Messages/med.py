@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF med Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -390,6 +390,14 @@ cata_msg = {
      --> numéro de pas de temps :  %(i4)d 
  
 """),
+
+87 : _("""
+  Le numéro d'ordre %(i1)d que vous avez renseigné ne figure pas
+  dans la liste des numéros d'ordre du résultat med. 
+  Conséquence: le champ correspondant ne figurera pas dans la 
+  SD Résultat %(k1)s
+"""),
+
 
 88 : _("""
   -> Fichier med :  %(k1)s, nombre de maillages présents : %(i1)d 

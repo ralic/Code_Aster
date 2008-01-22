@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements5 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,10 +79,6 @@ cata_msg={
  et en définissant C_GONF<>0 sous l'opérande NON_LOCAL de DEFI_MATERIAU
 """), 
 
-11: _("""
- Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement etre supérieur au rayon R_INF 
- (resp. R_INF_FO).
-"""), 
 
 12: _("""
  Le noeud %(k1)s du fond de fissure n est rattaché à aucune maille surfacique 

@@ -3,7 +3,7 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C====================================================================
 
       IF (DERIVL) THEN
         IF (.NOT.ELAS)
-     &    CALL U2MESS('F','ALGORITH7_72')
+     &    CALL U2MESS('F','RUPTURE1_21')
         EPSTES = R8MIEM()
         DENERG(1) = 0.D0
         DENERG(2) = 0.D0

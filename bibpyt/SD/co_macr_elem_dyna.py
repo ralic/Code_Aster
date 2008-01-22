@@ -1,4 +1,4 @@
-#@ MODIF co_macr_elem_dyna SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF co_macr_elem_dyna SD  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,17 +24,33 @@ from sd_macr_elem_dyna import sd_macr_elem_dyna
 
 import Numeric
 
+def VALE_triang2array(vect_VALE, dim, typ):
+   """Conversion (par recopie) de l'objet .VALE decrivant une matrice pleine
+   par sa triangulaire sup en Numeric.array plein.
+   """
+   triang_sup = Numeric.array(vect_VALE)
+   assert dim*(dim+1)/2 == len(triang_sup), \
+         'Matrice non pleine : %d*(%d+1)/2 != %d' % (dim, dim, len(triang_sup))
+
+   valeur = Numeric.zeros([dim, dim], typ)
+   for i in range(1, dim+1):
+     for j in range(1, i+1):
+       k = i*(i-1)/2 + j
+       valeur[j-1, i-1]=triang_sup[k-1]
+   valeur = valeur + Numeric.transpose(valeur)
+   for i in range(dim):
+      valeur[i, i] = 0.5 * valeur[i, i]
+
+   return valeur
+
 # -----------------------------------------------------------------------------
 class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
    def NBRE_MODES(self) :
       """ retourne le nombre de modes total, dynamiques et d'interface """
       if self.par_lot() :
          raise Accas.AsException("Erreur dans macr_elem_dyna.NBRE_MODES en PAR_LOT='OUI'")
-      nommacr=self.get_name()
-      ncham=nommacr+(8-len(nommacr))*' '
-      ncham=nommacr+(8-len(nommacr))*' '+'.MAEL'
-      nombase=aster.getvectjev(ncham+'_REFE')[0]
-      nbmode=Numeric.array(aster.getvectjev(nombase[0:8]+(19-len(nombase[0:8]))*' '+'.UTIL'))
+      nombase = self.MAEL_REFE.get()[0]
+      nbmode=Numeric.array(aster.getvectjev('%-19s' % nombase[0:8] + '.UTIL'))
       nbmodtot=nbmode[1]
       nbmoddyn=nbmode[2]
       nbmodint=nbmode[3]
@@ -51,32 +67,21 @@ class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
       if self.par_lot() :
          raise Accas.AsException("Erreur dans macr_elem_dyna.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
-      nommacr=self.get_name()
       if (typmat=='MASS_GENE') :
-         ext='.MAEL_MASS'
+         macr_elem = self.MAEL_MASS
       elif (typmat=='RIGI_GENE') :
-         ext='.MAEL_RAID'
+         macr_elem = self.MAEL_RAID
       elif (typmat=='AMOR_GENE') :
-         ext='.MAEL_AMOR'
+         macr_elem = self.MAEL_AMOR
       else:
          raise Accas.AsException("Le type de la matrice est incorrect")
-      ncham=nommacr+(8-len(nommacr))*' '+ext
-      desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
 
+      desc=Numeric.array(macr_elem.DESC.get())
       # On teste si le DESC du vecteur existe
       if (desc==None):
-         raise Accas.AsException("L'objet matrice n'existe pas ou \
-         est mal cree par Code Aster")
+         raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
 
-      tmp=Numeric.array(aster.getvectjev(ncham+'_VALE'))
-      matrice=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
-      for j in range(desc[1]+1):
-         for i in range(j):
-            k=j*(j-1)/2+i
-            matrice[j-1,i]=tmp[k]
-      matrice=(matrice+Numeric.transpose(matrice))
-      for i in range(desc[1]):
-         matrice[i,i]=0.5*matrice[i,i]
+      matrice = VALE_triang2array(macr_elem.VALE.get(), desc[1], Numeric.Float)
       return matrice
 
    def RECU_MATR_GENE(self,typmat,matrice) :
@@ -88,46 +93,38 @@ class macr_elem_dyna(ASSD, sd_macr_elem_dyna):
          Attributs ne retourne rien """
       if self.par_lot() :
          raise Accas.AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
-      from Utilitai.Utmess import UTMESS
-
-      # avertissement generique
-      UTMESS('A','SDVERI_3')
 
       nommacr=self.get_name()
       if (typmat=='MASS_GENE') :
-         ext='.MAEL_MASS'
+         macr_elem = self.MAEL_MASS
       elif (typmat=='RIGI_GENE') :
-         ext='.MAEL_RAID'
+         macr_elem = self.MAEL_RAID
       elif (typmat=='AMOR_GENE') :
-         ext='.MAEL_AMOR'
+         macr_elem = self.MAEL_AMOR
       else:
-         raise Accas.AsException("Le type de la matrice \
-                                 est incorrect")
-      ncham=nommacr+(8-len(nommacr))*' '+ext
-      desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
+         raise Accas.AsException("Le type de la matrice est incorrect")
+      nom_vale = macr_elem.VALE.nomj()
+      desc=Numeric.array(macr_elem.DESC.get())
 
       # On teste si le DESC de la matrice jeveux existe
       if (desc==None):
-         raise Accas.AsException("L'objet matrice n'existe pas ou \
-                                 est mal cree par Code Aster")
+         raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
       Numeric.asarray(matrice)
 
       # On teste si la matrice python est de dimension 2
       if (len(Numeric.shape(matrice))<>2):
-         raise Accas.AsException("La dimension de la matrice \
-                                 est incorrecte")
+         raise Accas.AsException("La dimension de la matrice est incorrecte")
 
       # On teste si les tailles de la matrice jeveux et python sont identiques
       if (tuple([desc[1],desc[1]])<>Numeric.shape(matrice)) :
-         raise Accas.AsException("La dimension de la matrice \
-                                 est incorrecte")
+         raise Accas.AsException("La dimension de la matrice est incorrecte")
       taille=desc[1]*desc[1]/2.0+desc[1]/2.0
       tmp=Numeric.zeros([int(taille)],Numeric.Float)
       for j in range(desc[1]+1):
          for i in range(j):
             k=j*(j-1)/2+i
             tmp[k]=matrice[j-1,i]
-      aster.putvectjev(ncham+'_VALE',len(tmp),tuple((
-      range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
+      aster.putvectjev(nom_vale,len(tmp),tuple((
+         range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
       return
 

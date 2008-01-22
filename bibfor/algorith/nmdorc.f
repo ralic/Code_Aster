@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -59,19 +59,19 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
       INTEGER INV,DIMANV,NBMONO,NUNIT,ITEINT,ITEPAS,NUMGD,JACMP,NBCRIT
       INTEGER JCRIT,JVALC,IMPEXP,TYPTGT,ITDEBO
-      REAL*8 RBID,RESI,THETA,R8VIDE,PERT,RESID
+      REAL*8 RBID,RESI,THETA,R8VIDE,PERT,RESID,TSEUIL,TSAMPL,TSRETU
       COMPLEX*16 CBID
-      LOGICAL      BUG, NIVO
+      LOGICAL      BUG, NIVO,TSEC
       CHARACTER*1  K1BID
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
 C    DIMAKI = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       PARAMETER (DIMANV=4)
       PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
-      LOGICAL EXIST,GETEXM,EXICP,EXI1D,CRILOC,EXIFIB
+      LOGICAL EXIST,GETEXM,EXICP,EXI1D,CRILOC,EXIFIB,EXITS
       CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2),SDCOMP,CHMAT
       CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2),TYPMAT
-      CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D,RESO
+      CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D,RESO,TXTS
       CHARACTER*19 COMPOR,CHS(2),CHS3
       CHARACTER*24 LIGRMO,MODELE,MESMAI
       CHARACTER*50 CHAIN1, CHAIN2, VALK(4)
@@ -101,6 +101,9 @@ C                           1234567890123
       CRILOC=.FALSE.
       EXIFIB=.FALSE.
       ITDEBO=1
+      TSEUIL = -1.0D0
+      TSAMPL = -1.0D0
+      TSRETU = -1.0D0
       TYPTGT=0
       IMPEXP=-999
 
@@ -461,6 +464,26 @@ C           DEBORST SEULEMENT EN COMP_INCR
               END IF
             END IF
 
+C           MATRICE EVOLUTIVE TANGENTE/SECANTE
+            IF (I.EQ.1) THEN
+              EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
+              IF (EXITS) THEN
+                 CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TXTS,N1)
+                 IF (TXTS(1:16).EQ.'TANGENTE_SECANTE') THEN 
+                   NBVARI = NBVARI + 1
+                   CALL GETVR8(MOCLEF(I),'SEUIL',
+     &                           K,1,1,TSEUIL,IRET)
+                   CALL GETVR8(MOCLEF(I),'AMPLITUDE',
+     &                           K,1,1,TSAMPL,IRET)
+                   CALL GETVR8(MOCLEF(I),'TAUX_RETOUR',
+     &                           K,1,1,TSRETU,IRET)
+                 ENDIF
+              END IF            
+            ENDIF
+            
+            
+            
+            
             EXIST = GETEXM(MOCLEF(I),'DEFORMATION')
             IF (EXIST) THEN
               CALL GETVTX(MOCLEF(I),'DEFORMATION',K,1,1,DEFO,N1)
@@ -544,15 +567,18 @@ C  STOCKAGE DE LA CARTE CARCRI
               CALL NOCART(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NCMPMA)
               IF (CRILOC) THEN
-                ZR(JVALC)   = ITEINT
-                ZR(JVALC+1) = TYPTGT
-                ZR(JVALC+2) = RESI
-                ZR(JVALC+3) = THETA
-                ZR(JVALC+4) = ITEPAS
-                ZR(JVALC+5) = IMPEXP
-                ZR(JVALC+6) = PERT
-                ZR(JVALC+7) = RESID
-                ZR(JVALC+8) = ITDEBO
+                ZR(JVALC)    = ITEINT
+                ZR(JVALC+1)  = TYPTGT
+                ZR(JVALC+2)  = RESI
+                ZR(JVALC+3)  = THETA
+                ZR(JVALC+4)  = ITEPAS
+                ZR(JVALC+5)  = IMPEXP
+                ZR(JVALC+6)  = PERT
+                ZR(JVALC+7)  = RESID
+                ZR(JVALC+8)  = ITDEBO
+                ZR(JVALC+9)  = TSEUIL
+                ZR(JVALC+10) = TSAMPL
+                ZR(JVALC+11) = TSRETU
                 CALL NOCART(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NBCRIT)
               ENDIF
@@ -563,15 +589,18 @@ C  STOCKAGE DE LA CARTE CARCRI
 C ------- PAR DEFAUT C'EST TOUT='OUI'
               CALL NOCART(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
               IF (CRILOC) THEN
-                ZR(JVALC)   = ITEINT
-                ZR(JVALC+1) = TYPTGT
-                ZR(JVALC+2) = RESI
-                ZR(JVALC+3) = THETA
-                ZR(JVALC+4) = ITEPAS
-                ZR(JVALC+5) = IMPEXP
-                ZR(JVALC+6) = PERT
-                ZR(JVALC+7) = RESID
-                ZR(JVALC+8) = ITDEBO
+                ZR(JVALC)    = ITEINT
+                ZR(JVALC+1)  = TYPTGT
+                ZR(JVALC+2)  = RESI
+                ZR(JVALC+3)  = THETA
+                ZR(JVALC+4)  = ITEPAS
+                ZR(JVALC+5)  = IMPEXP
+                ZR(JVALC+6)  = PERT
+                ZR(JVALC+7)  = RESID
+                ZR(JVALC+8)  = ITDEBO
+                ZR(JVALC+9)  = TSEUIL
+                ZR(JVALC+10) = TSAMPL
+                ZR(JVALC+11) = TSRETU
                 CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
               ENDIF
 

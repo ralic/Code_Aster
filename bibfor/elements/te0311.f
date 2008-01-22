@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -304,7 +304,7 @@ C
         CALL RCVAD2(FAMI,KP,1,'+',ZI(IMATE),'ELAS',3,NOMRES,
      &              VALRES,DEVRES,CODRET)
         IF ((CODRET(1).NE.'OK') .OR. (CODRET(2).NE.'OK')) THEN
-          CALL U2MESS('F','ELEMENTS3_70')
+          CALL U2MESS('F','RUPTURE1_25')
         END IF
         IF (CODRET(3) .NE. 'OK') THEN
           VALRES(3) = 0.D0

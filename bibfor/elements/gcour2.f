@@ -4,7 +4,7 @@
        IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,12 +198,10 @@ C
              MILIEU = .TRUE.
           ELSE IF(REPK.EQ.'NON') THEN
              MILIEU = .FALSE.
-          ELSE IF(REPK.EQ.'MEL') THEN
-             CALL U2MESS('F','ELEMENTS_79')
           ENDIF
           CALL GDINOR(NORM,NBNOEU,IADNUM,COORN,IN2)
         ELSE
-          CALL U2MESS('F','ELEMENTS_80')
+          CALL U2MESS('F','RUPTURE0_98')
         ENDIF
 C
 C  ON RECUPERE LES DIRECTIONS UTILISATEUR AUX EXTREMITES DU FOND
@@ -239,26 +237,23 @@ C
         CALL JELIRA(DIRTH,'LONMAX',LNDIR,K1BID)
         DIRTH(20:24) = '.DEEQ'
         CALL JEVEUO(DIRTH,'L',IDEEQ)
-        IF (LNDIR.NE.(3*NBNOEU)) THEN
-          CALL U2MESS('F','ELEMENTS_81')
-        ELSE
-          DO 5 I=1,NBNOEU
-            DIRX = ZR(IDIRTH+(I-1)*3+1-1)
-            DIRY = ZR(IDIRTH+(I-1)*3+2-1)
-            DIRZ = ZR(IDIRTH+(I-1)*3+3-1)
-            NORME = SQRT(DIRX*DIRX + DIRY*DIRY + DIRZ*DIRZ)
-            SUIV = .FALSE.
-            DO 6 J=1,NBNOEU
-              IF (ZI(IADNUM+J-1).EQ.ZI(IDEEQ+6*(I-1)+1-1)) THEN
-                ZR(IN2+(J-1)*3+1-1) = DIRX/NORME
-                ZR(IN2+(J-1)*3+2-1) = DIRY/NORME
-                ZR(IN2+(J-1)*3+3-1) = DIRZ/NORME
-                SUIV = .TRUE.
-              END IF
-              IF (SUIV) GOTO 5
- 6          CONTINUE
- 5        CONTINUE
-        ENDIF
+        CALL ASSERT(LNDIR.EQ.(3*NBNOEU))
+        DO 5 I=1,NBNOEU
+          DIRX = ZR(IDIRTH+(I-1)*3+1-1)
+          DIRY = ZR(IDIRTH+(I-1)*3+2-1)
+          DIRZ = ZR(IDIRTH+(I-1)*3+3-1)
+          NORME = SQRT(DIRX*DIRX + DIRY*DIRY + DIRZ*DIRZ)
+          SUIV = .FALSE.
+          DO 6 J=1,NBNOEU
+            IF (ZI(IADNUM+J-1).EQ.ZI(IDEEQ+6*(I-1)+1-1)) THEN
+              ZR(IN2+(J-1)*3+1-1) = DIRX/NORME
+              ZR(IN2+(J-1)*3+2-1) = DIRY/NORME
+              ZR(IN2+(J-1)*3+3-1) = DIRZ/NORME
+              SUIV = .TRUE.
+            END IF
+            IF (SUIV) GOTO 5
+ 6        CONTINUE
+ 5      CONTINUE
       ENDIF
 C
 C ALLOCATION D UN OBJET INDICATEUR DU CHAMP THETA SUR GAMMO
@@ -279,7 +274,7 @@ C
           NDIMTE = 1+NBNOS/2
           PAIR = .TRUE.
           IF (CONNEX) THEN
-          CALL U2MESS('F','ELEMENTS_82')
+          CALL U2MESS('F','RUPTURE1_1')
           ENDIF
         END IF
       ELSEIF(THLAGR) THEN
@@ -297,13 +292,13 @@ C
         CHAMNO = RESU(1:8)//'_CHAM'//KIORD//'     '
         ZK24(JRESU+K-1) = CHAMNO
         CALL JEEXIN(CHAMNO(1:19)//'.DESC',IRET)
+        CALL ASSERT(IRET.GE.0 .AND. IRET.LE.100)
         IF(IRET.EQ.0) THEN
            CALL JEDETR(CHAMNO(1:19)//'.DESC')
            CALL JEDETR(CHAMNO(1:19)//'.REFE')
            CALL JEDETR(CHAMNO(1:19)//'.VALE')
-        ELSE IF(IRET.GT.100) THEN
-           CALL U2MESS('A','ALGORITH13_36')
         ENDIF
+
 C  .DESC
         CHAMNO(20:24) = '.DESC'
         CALL WKVECT(CHAMNO,'V V I',3,IDESC)

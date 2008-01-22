@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 08/01/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,8 @@ def veri_tab(tab,nom,ndim) :
           label='DZ'
           UTMESS('F','RUPTURE0_2',valk=[label,nom])
       if 'COOR_Z' not in tab.para :
-          UTMESS('F','RUPTURE0_4',valk=[nom])
+          label='COOR_Z'
+          UTMESS('F','RUPTURE0_2',valk=[label,nom])
 
 def cross_product(a,b):
     cross = [0]*3
@@ -120,9 +121,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       Tempe3D=True
       resuth=string.ljust(args['EVOL_THER'].nom,8).rstrip()
    if dicmat.has_key('TEMP_DEF') and not args['EVOL_THER'] :
-      UTMESS('A','RUPTURE0_6')
       nompar = ('TEMP',)
       valpar = (dicmat['TEMP_DEF'],)
+      UTMESS('A','RUPTURE0_6',valr=valpar)
       nomres=['E','NU']
       valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
       e = valres[0]
@@ -141,7 +142,6 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       unpnu  = 1. + nu
       if MODELISATION=='3D' :
          coefk='K1 K2 K3'
-         UTMESS('I','RUPTURE0_7',valk=coefk)
          ndim   = 3
          coefd  = coefd      / ( 8.0 * unmnu2 )
          coefd3 = e*sqrt(2*pi) / ( 8.0 * unpnu )
@@ -154,14 +154,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          coefg3 = unpnu  / e
       elif MODELISATION=='D_PLAN' :
          coefk='K1 K2'
-         UTMESS('I','RUPTURE0_7',valk=coefk)
          ndim   = 2
          coefd  = coefd / ( 8. * unmnu2 )
          coefg  = unmnu2 / e
          coefg3 = unpnu  / e
       elif MODELISATION=='C_PLAN' :
          coefk='K1 K2'
-         UTMESS('I','RUPTURE0_7',valk=coefk)
          ndim   = 2
          coefd  = coefd / 8.
          coefg  = 1. / e
@@ -225,7 +223,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           for m in range(len(SANS_GROUP_NO)) :
             ngrno=SANS_GROUP_NO[m].ljust(8).upper()
             if ngrno not in collgrno.keys() :
-              UTMESS('F','RUPTURE0_14',valk=ngrno)
+              UTMESS('F','RUPTURE0_13',valk=ngrno)
             for i in range(len(collgrno[ngrno])) : NO_SANS.append(cnom[collgrno[ngrno][i]-1])
           NO_SANS= map(string.rstrip,NO_SANS)
         if SANS_NOEUD!=None : 
@@ -510,7 +508,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      DTAN_EXTR = args['DTAN_EXTR']
 #Projection du resultat sur le maillage lineaire initial     
      MOD = aster.getvectjev(string.ljust(RESULTAT.nom,19)+'.MODL        ')
-     if MOD==None : UTMESS('F','RUPTURE0_31')
+     if MOD==None : UTMESS('F','RUPTURE0_18')
      MODEL = self.jdc.sds_dict[MOD[0].rstrip()]
      xcont = MODEL.xfem.XFEM_CONT.get()
      if xcont[0] == 0 :
@@ -594,7 +592,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      TSaut = [None]*Nbfond    
      NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
      if NB_NOEUD_COUPE < 3 : 
-       UTMESS('A','RUPTURE0_34')
+       UTMESS('A','RUPTURE0_17')
        NB_NOEUD_COUPE = 5
      for i in range(Nbfond):
         Porig = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
@@ -689,7 +687,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
                Li = [string.ljust(Lnoinf[ino][i],8) for i in range(len(Lnoinf[ino]))]
                tabinf=tabinf.NOEUD==Li
          else :
-            if TABL_DEPL_INF==None : UTMESS('F','RUPTURE0_36')
+            if TABL_DEPL_INF==None : UTMESS('F','RUPTURE0_35')
             tabinf=TABL_DEPL_INF.EXTR_TABLE()
             veri_tab(tabinf,TABL_DEPL_INF.nom,ndim)
 
@@ -770,7 +768,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           if not FOND_FISS :
             refs=copy.copy(abscs)
             refs.sort()
-            if refs!=abscs : UTMESS('F','RUPTURE0_40')
+            if refs!=abscs :
+               mctabl='TABL_DEPL_INF' 
+               UTMESS('F','RUPTURE0_40',valk=mctabl)
             if ABSC_CURV_MAXI!=None : rmax = ABSC_CURV_MAXI
             else                    : rmax = abscs[-1]
             precv = PREC_VIS_A_VIS
@@ -812,7 +812,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           if not FOND_FISS :
             refi=copy.copy(absci)
             refi.sort()
-            if refi!=absci : UTMESS('F','RUPTURE0_41')
+            if refi!=absci :
+                mctabl='TABL_DEPL_SUP' 
+                UTMESS('F','RUPTURE0_40',valk=mctabl)
             refic=[x for x in refi if x<rmprec]
             nbvali=len(refic)
           else :
@@ -864,7 +866,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            H1 = getattr(tabsupi,'H1X').values()
            nbval = len(H1)
            if H1[-1]==None : 
-             UTMESS('F','RUPTURE0_45')
+             UTMESS('F','RUPTURE0_33')
            H1 = complete(H1)
            E1 = getattr(tabsupi,'E1X').values()
            E1 = complete(E1)

@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF calculel4 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,33 +22,6 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- option non opérationnelle:
- seule l'option COURONNE est à utiliser dans le cas où
- on emploie le mot clé THETA_3D
-"""),
-
-2: _("""
- il faut donner 3 composantes de la direction
- la 3ème nulle
-"""),
-
-3: _("""
- il faut donner la direction de propagation en 2D
- la direction par defaut n'existe plus
-"""),
-
-4: _("""
- option non opérationnelle:
- seule l'option COURONNE est à utiliser dans le cas où
- on emploie le mot clé THETA_2D
-"""),
-
-5: _("""
- option inexistante:
- seule l'option BANDE est à utiliser dans le cas ou on emploie le mot clé THETA_BANDE .
-"""),
-
 6: _("""
  la normale n'est pas orthogonale à la tangente à l'origine
 """),
@@ -59,100 +32,6 @@ cata_msg={
 
 8: _("""
  le resultat  %(k1)s  n'existe pas
-"""),
-
-9: _("""
- creation de la table  %(k1)s
-"""),
-
-13: _("""
- probleme a la recuperation d'un champ
-"""),
-
-16: _("""
- dans le cas d'une SD RESULTAT de type DYNA_TRANS,
- le mot-cle EXCIT est obligatoire.
-"""),
-
-17: _("""
- pour un resultat de type MODE_MECA,
- l option de calcul doit etre K_G_MODA.
-"""),
-
-19: _("""
- le mot cle 'FISSURE' est obligatoire avec l'option  %(k1)s
-"""),
-
-20: _("""
- le mot cle 'FOND_FISS' est obligatoire avec l'option  %(k1)s
-"""),
-
-21: _("""
- il faut un mot cle parmis FOND_FISS ou FISSURE pour l option  %(k1)s
-"""),
-
-22: _("""
- champ THETA calcule automatiquement
-"""),
-
-23: _("""
- pour l option  %(k1)s (3d local) utiliser le mot cle THETA_LAGR
-"""),
-
-24: _("""
- il faut donner 3 composantes de la direction %(k1)s
-"""),
-
-25: _("""
- mot cle PROPAGATION utilisé seulement pour le calcul de G avec propagation lagrangienne
-"""),
-
-26: _("""
- cette combinaison de lissage n'est pas programmee pour l'option :  %(k1)s .
-"""),
-
-27: _("""
- le degré des polynomes de legendre doit etre inferieur ou egal au nombre de noeuds du fond de fissure avec la methode theta-lagrange
-"""),
-
-28: _("""
- le lissage de G doit etre de type LEGENDRE si le lissage de THETA est de type LEGENDRE
-"""),
-
-29: _("""
- l'option  %(k1)s  n'est pas permise avec le lissage 'lagrange_regu'
-"""),
-
-30: _("""
- si la methode 'lagrange_regu' est utilisee pour le lissage, alors le lissage de g et de theta doivent etre de type 'lagrange_regu'.
-"""),
-
-31: _("""
- champ theta obligatoire avec  %(k1)s . utiliser le mot cle theta_lagr.
-"""),
-
-32: _("""
- fond obligatoire avec option calc_k_g
-"""),
-
-36: _("""
- l usage des polynomes de legendre dans le cas d un fond de fissure clos est interdit.
-"""),
-
-37: _("""
- acces impossible au deplacement
-"""),
-
-38: _("""
- mot-clef <bornes> obligatoire avec l option  %(k1)s  !
-"""),
-
-39: _("""
- acces impossible au mode propre
-"""),
-
-40: _("""
- option non dispo actuellement
 """),
 
 41: _("""

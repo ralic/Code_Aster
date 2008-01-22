@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calculel3 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,17 +194,6 @@ cata_msg = {
  données incorrectes.
 """),
 
-46 : _("""
- CALC_K_G : champ initial impossible
-"""),
-
-47 : _("""
- le fond de fissure doit contenir un noeud et un seul
-"""),
-
-48 : _("""
- il faut définir la normale au fond de fissure
-"""),
 
 49 : _("""
  on ne trouve pas le .nomo pour: %(k1)s 
@@ -377,16 +366,6 @@ cata_msg = {
   le mot cle "ACCE" n'est pas traité et les résultats risquent d'être faux.
 """),
 
-97 : _("""
- le champ de nom symbolique THETA existe deja dans la SD RESULTAT  %(k1)s 
-"""),
 
-98 : _("""
- le champ de nom symbolique GRAD_NOEU_THETA existe deja dans la SD RESULTAT  %(k1)s 
-"""),
-
-99 : _("""
- il faut donner 3 composantes de la direction
-"""),
 
 }

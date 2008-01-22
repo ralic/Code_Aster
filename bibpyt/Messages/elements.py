@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -358,22 +358,7 @@ cata_msg = {
  GROUP_NO orienté : noeud extremité =  %(k1)s
 """),
 
-79 : _("""
- il y a à la fois des éléments volumiques de degré 1 et de degré 2 dans le modèle
- on a besoin de savoir si on est en lineaire ou en quadratique pour choisir la methode de lissage.
-"""),
 
-80 : _("""
- le concept FOND_FISS est mal créé
-"""),
-
-81 : _("""
- le .VALE du CHAM_NO DIRE_THETA n'a pas la bonne taille
-"""),
-
-82 : _("""
- l'option de lissage 'LAGRANG2' n'a pas ete développée lorsque le nombre de noeuds d'un fond de fissure fermé est pair.
-"""),
 
 83 : _("""
  le type des mailles des lèvres doit etre quadrangle ou triangle
@@ -395,14 +380,6 @@ cata_msg = {
  bad definition of MP1 and MP2
 """),
 
-88 : _("""
- le fond de fissure ne doit etre défini que par un noeud
- ( revoir le GROUP_NO )
-"""),
-
-89 : _("""
- le fond de fissure ne doit etre défini que par un noeud
-"""),
 
 90 : _("""
 Erreur de programmation :
@@ -411,18 +388,7 @@ Solution :
    Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
 """),
 
-91 : _("""
- mot clé FOND_FISS obligatoire
-"""),
 
-92 : _("""
- le fond de fissure ne doit etre défini que par un noeud
- ( revoir FOND_FISS )
-"""),
-
-93 : _("""
-  %(k1)s  n'est pas un GROUP_NO ou un GROUP_MA
-"""),
 
 94 : _("""
  arret sur erreur(s) utilisateur.
@@ -447,8 +413,5 @@ Solution :
  revoir les données
 """),
 
-99 : _("""
- problème dans le calcul de la normale à la fissure
-"""),
 
 }

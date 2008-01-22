@@ -1,7 +1,7 @@
       SUBROUTINE LCLDSB (FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
-     &                   DEPS,VIM,TM,TP,TREF,OPTION,SIG,VIP,DSIDEP)
+     &              DEPS,VIM,TM,TP,TREF,OPTION,SIG,VIP,DSIDEP,CRIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,12 +19,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*8        TYPMOD(2)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
       CHARACTER*(*)      FAMI
       INTEGER            NDIM, IMATE, KSP, KPG
-      REAL*8             EPSM(6), DEPS(6), VIM(2),TP,TM,TREF
-      REAL*8             SIG(6), VIP(2), DSIDEP(6,12)
+      REAL*8             EPSM(6),DEPS(6),VIM(*),TP,TM,TREF,CRIT(*)
+      REAL*8             SIG(6), VIP(*), DSIDEP(6,12)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDO_ISOT_BETON (EN LOCAL)
 C
@@ -34,6 +36,7 @@ C IN  IMATE   : NATURE DU MATERIAU
 C IN  EPSM    : DEFORMATION EN T-
 C IN  DEPS    : INCREMENT DE DEFORMATION
 C IN  VIM     : VARIABLES INTERNES EN T-
+C IN  CRIT    : CRITERES DE CONVERGENCE
 C IN  OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
 C                 FULL_MECA      -> SIG DSIDEP VIP
@@ -45,16 +48,16 @@ C OUT DSIDEP  : MATRICE TANGENTE
 C ----------------------------------------------------------------------
 C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       LOGICAL     RIGI, RESI,ELAS,MTG, COUP
-      INTEGER     NDIMSI, K, L, I, J, M, N, P, T(3,3), IRET, IISNAN
+      INTEGER     NDIMSI,K,L,I,J,M,N,P,T(3,3),IRET,IISNAN,ICARCR,ITERAT
       REAL*8      EPS(6),  TREPS, SIGEL(6), KRON(6),R8BID
-      REAL*8      RAC2,COEF
+      REAL*8      RAC2,COEF,COEF2
       REAL*8      RIGMIN, FD, D, ENER, TROISK, G
       REAL*8      TR(6), RTEMP2, EPSTHE(2)
       REAL*8      EPSP(3), VECP(3,3), DSPDEP(6,6),VECP2(3,3)
       REAL*8      DEUMUD(3), LAMBDD, SIGP(3),RTEMP,RTEMP3,RTEMP4
       REAL*8      E, NU, ALPHA, KDESS, BENDO, LAMBDA, DEUXMU, GAMMA
       REAL*8      SEUIL,TREPSM
-      REAL*8      DDOT
+      REAL*8      DDOT,TSEUIL,TSAMPL,TSRETU
       REAL*8      TPS(6),HYDRM,HYDRP,SECHM,SECHP,SREF
       CHARACTER*2 CODRET
       PARAMETER  (RIGMIN = 1.D-5)
@@ -83,6 +86,10 @@ C -- OPTION ET MODELISATION
 
 C -- INITIALISATION
 
+      TSEUIL = CRIT(10)
+      TSAMPL = CRIT(11)
+      TSRETU = CRIT(12)
+        
       CALL LCEIB1 (FAMI,IMATE, COMPOR, NDIM, EPSM, TM,TREF,SREF,
      &             SECHM,HYDRM,T, LAMBDA, DEUXMU,EPSTHE, KDESS, 
      &            BENDO, GAMMA, SEUIL,COUP)
@@ -228,7 +235,18 @@ C -- CALCUL DES CONTRAINTES
       
 C -- CALCUL DE LA MATRICE TANGENTE
       
-      
+C----EVOLUTION DES PARALETRES DE CONTROLANT LA MATRICE TANGENTE/SECANTE
+      IF(TSEUIL .GE. 0.0D0) THEN
+        CALL JEVECH('PITERAT','L',ITERAT)
+        ITERAT = NINT(ZR(ITERAT)) 
+        IF ((OPTION(1:4) .EQ. 'RIGI') .OR. (ITERAT .LE. 1)) THEN 
+          VIP(3) = 0.0D0
+        ELSE  
+          CALL EVOLTS(TSEUIL,TSRETU,VIP(2),VIP(3),ITERAT)
+        ENDIF 
+        
+      ENDIF
+C-----------------------------------------------------------      
       IF (RIGI) THEN
         IF (OPTION(11:14).EQ.'ELAS') ELAS=.TRUE.
         CALL R8INIR(36, 0.D0, DSPDEP, 1)
@@ -426,6 +444,17 @@ C -- CONTRIBUTION DISSIPATIVE
             SIGEL(K)=RAC2*SIGEL(K)
 28        CONTINUE
           COEF = (1+GAMMA)/(2*GAMMA*(1+GAMMA*D)*ENER)
+          
+C CALCUL DE LA MATRICE EVOLUTIVE TANGENTE/SECANTE
+          IF(TSEUIL .GT. 0.0D0) THEN
+            IF(ABS(VIP(3)) .GT. TSEUIL) THEN
+              COEF2 = COEF/(TSAMPL**(ABS(VIP(3)) - TSEUIL))
+              IF (ABS(COEF2) .LT. ABS(COEF)) THEN
+                COEF = COEF2
+              ENDIF
+            ENDIF
+          ENDIF
+          
           DO 200 K = 1,NDIMSI
             DO 210 L = 1, NDIMSI
               DSIDEP(K,L) = DSIDEP(K,L) - COEF * SIGEL(K) * SIGEL(L)

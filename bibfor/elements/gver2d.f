@@ -1,7 +1,7 @@
       SUBROUTINE GVER2D(NOMA,NOCC,OPTION,MOTFAZ,NOMNO,NOEUD,RINF,
      &                  RSUP,MODULE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,7 @@ C
         CALL GETVR8(MOTFAC(1:L),'R_INF',IOCC,1,NDIM,RINF,NBM)
         CALL GETVR8(MOTFAC(1:L),'R_SUP',IOCC,1,NDIM,RSUP,NBM)
         IF (RSUP .LE. RINF) THEN
-           CALL U2MESS('F','ELEMENTS5_11')
+           CALL U2MESS('F','RUPTURE1_6')
         ENDIF
 C
        IF(NOMCMD.NE.'CALC_G')THEN
@@ -148,13 +148,13 @@ C
              IF(IRET.EQ.0) THEN
                 VALK(1) = ZK8(JJJ+IGR-1)
                 VALK(2) = NOMA
-                CALL U2MESK('F','ALGORITH_22', 2 ,VALK)
+                CALL U2MESK('F','RUPTURE1_8', 2 ,VALK)
              ELSE
 C
                CALL JELIRA (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'LONMAX',
      &                      N1,K1BID)
                IF(N1.GT.1) THEN
-                 CALL U2MESS('F','ELEMENTS_88')
+                 CALL U2MESS('F','RUPTURE1_10')
               ELSE
                 CALL JEVEUO (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'L',IADR)
                 CALL JENUNO(JEXNUM(NOMNO,ZI(IADR)),NOEUD)
@@ -170,14 +170,14 @@ C
 C
           DO 6 I=1,NNO
             IF(NNO.GT.1) THEN
-              CALL U2MESS('F','ELEMENTS_89')
+              CALL U2MESS('F','RUPTURE1_10')
             ELSE
 C
               CALL JENONU(JEXNOM(NOMNO,ZK8(JJJ+I-1)),IRET)
               IF(IRET.EQ.0) THEN
                   VALK(1) = ZK8(JJJ+I-1)
                   VALK(2) = NOMA
-                  CALL U2MESK('F','ALGORITH_21', 2 ,VALK)
+                  CALL U2MESK('F','RUPTURE0_14', 2 ,VALK)
               ELSE
                  CALL JENUNO(JEXNUM(NOMNO,IRET),NOEUD)
               ENDIF
@@ -193,7 +193,7 @@ C          CAS CLASSIQUE
            CHFOND = FOND//'.FOND      .NOEU'
            CALL JELIRA(CHFOND,'LONMAX',LNOFF,K8B)
            IF(LNOFF.NE.1)THEN
-             CALL U2MESS('F','ELEMENTS_92')
+             CALL U2MESS('F','RUPTURE1_10')
            ELSE
              CALL JEVEUO(CHFOND,'L',N1)
              NOEUD=ZK8(N1)
@@ -201,7 +201,7 @@ C          CAS CLASSIQUE
         ELSE
 C         CAS X-FEM
           CALL GETVID ( 'THETA','FISSURE'  ,1,1,1,FOND,N2)
-          IF (N2.EQ.0) CALL U2MESK('F','CALCULEL4_21',1,OPTION)
+          IF (N2.EQ.0) CALL U2MESK('F','RUPTURE1_11',1,OPTION)
 C         RECUPERATION DU NUMERO DU FOND DE FISSURE DEMANDE
           CALL GETVIS('THETA','NUME_FOND',1,1,1,NUMFON,IBID)
 C         ON ECRIT 'NUM'+_i OU i=NUMFON 
@@ -209,7 +209,7 @@ C         A LA PLACE DU NOM DU NOEUD EN FOND DE FISSURE
           CALL CODENT(NUMFON,'G',KFON)
           NOEUD(1:8)='NUM_'//KFON
         ENDIF 
-              
+
       ENDIF
 2     CONTINUE
 C

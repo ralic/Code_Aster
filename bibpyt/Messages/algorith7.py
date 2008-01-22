@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith7 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -316,10 +316,6 @@ cata_msg = {
  elements isoparamétriques 3D non disponibles en grandes rotations
 """),
 
-72 : _("""
- seule une loi de comportement élastique isotrope est valide pour
- le calcul de DG
-"""),
 
 73 : _("""
  le tenseur EPSEQ=0 on a donc une derivée DEPSEQ très grande !
@@ -368,8 +364,6 @@ cata_msg = {
 86 : _("""
  fonctionnalite modifiée (dvlp)
 """),
-
-
 
 96 : _("""
  comportement ZMAT obligatoire

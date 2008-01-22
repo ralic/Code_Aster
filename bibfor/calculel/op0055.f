@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C
       INTEGER       NBV, IFM, IRET,IRETEX,IRETNO,IRETOR,JEXTR,JNORM
       INTEGER       JORIG,NIV,N1,N2, IOC, ILEV,NBNO,JSUP,IRETS,IRETI
       INTEGER       NBMA,JLIMA,IM
-      REAL*8        PS1, PS2, R8PREM, ZERO,DDOT
+      REAL*8        PS1, PS2, R8PREM, ZERO,DDOT,VALR(6)
       CHARACTER*8   K8B, RESU, NOMA, ENTIT1, ENTIT2,FONLEV(2)
       CHARACTER*16  TYPE, OPER, TYPFON, MOTCLE(2), TYPMCL(2)
       CHARACTER*24  NCNCIN,MSUP,FONNOE
@@ -162,10 +162,22 @@ C
             PS2=DDOT(3,ZR(JNORM),1,ZR(JEXTR),1)
             ZERO = R8PREM()
             IF(ABS(PS1).GT.ZERO) THEN
-               CALL U2MESS('E','CALCULEL4_6')
+               VALR(1) = ZR(JNORM)
+               VALR(2) = ZR(JNORM+1)
+               VALR(3) = ZR(JNORM+2)
+               VALR(4) = ZR(JORIG)
+               VALR(5) = ZR(JORIG+1)
+               VALR(6) = ZR(JORIG+2)
+               CALL U2MESR('F','RUPTURE0_78',6,VALR)
             ENDIF
             IF(ABS(PS2).GT.ZERO) THEN
-               CALL U2MESS('E','CALCULEL4_7')
+               VALR(1) = ZR(JNORM)
+               VALR(2) = ZR(JNORM+1)
+               VALR(3) = ZR(JNORM+2)
+               VALR(4) = ZR(JEXTR)
+               VALR(5) = ZR(JEXTR+1)
+               VALR(6) = ZR(JEXTR+2)
+               CALL U2MESR('F','RUPTURE0_79',6,VALR)
             ENDIF
           ENDIF
 C

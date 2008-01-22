@@ -1,7 +1,7 @@
       SUBROUTINE GVERI2(CHFOND,LOBJ2,NOMNO,COORN,
      &       TRAV1,TRAV2,TRAV3,THLAGR,THLAG2,NDEG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,9 +105,6 @@ C
         NBRE   = LOBJ2 - 1
       ELSE
         NBRE = NDEG
-        IF(NDEG.GT.7) THEN
-          CALL U2MESS('F','ELEMENTS2_3')
-        ENDIF
       ENDIF
 C
 C OBJET DEFINISSANT LES GROUP_NO DU MAILLAGE
@@ -127,7 +124,7 @@ C
       CALL GETVR8 ('THETA', 'R_INF', 1, 1, 1,RINF, NR)
       CALL GETVR8 ('THETA', 'R_SUP', 1, 1, 1,RSUP, NR)
       IF (NR.NE.0 .AND. RSUP .LE. RINF) THEN
-           CALL U2MESS('F','ELEMENTS5_11')
+           CALL U2MESS('F','RUPTURE1_6')
       ENDIF
       CALL GETVID ('THETA', 'R_INF_FO', 1, 1, 1,RINFF, NRF)
       CALL GETVID ('THETA', 'R_SUP_FO', 1, 1, 1,RSUPF, NRF)
@@ -153,10 +150,10 @@ C
                  CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                  ZR(IADRT2 + J - 1) = VALRES
                  IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
-                    CALL U2MESS('F','ELEMENTS5_11')
+                    CALL U2MESS('F','RUPTURE1_6')
                  ENDIF
              ELSE
-                CALL U2MESS('F','ELEMENTS2_4')
+                CALL U2MESS('F','RUPTURE1_7')
              ENDIF
 50       CONTINUE
 C
@@ -181,10 +178,10 @@ C
                  CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                  ZR(IADRT2 + J - 1) = VALRES
                  IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
-                    CALL U2MESS('F','ELEMENTS5_11')
+                    CALL U2MESS('F','RUPTURE1_6')
                  ENDIF
              ELSE
-                CALL U2MESS('F','ELEMENTS2_4')
+                CALL U2MESS('F','RUPTURE1_7')
              ENDIF
 60       CONTINUE
 C

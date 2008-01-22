@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,67 +60,68 @@ C
       PREC = 1.0D-06
       CRIT = 'RELATIF'
 C
+      CALL GETVID ( MOTCLF, 'TABL_PRES', 1,1,1, TBSIG(13), NS(13) )
+      IF( NS(13) .NE. 0 )THEN
+        CALL RCVERI(TBSIG(13))
+      ENDIF
+
       CALL GETVID ( MOTCLF, 'TABL_FX', 1,1,1, TBSIG(1), NS(1) )
       IF ( NS(1) .EQ. 0 )
      &   CALL GETVID ( MOTCLF, 'TABL_FX_TUBU', 1,1,1, TBSIG(1), NS(1) )
       IF( NS(1) .NE. 0 )
-     &   CALL RCVERI(TBSIG(1))
+     &   CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(1))
       CALL GETVID ( MOTCLF, 'TABL_FY', 1,1,1, TBSIG(2), NS(2) )
       IF ( NS(2) .EQ. 0 )
      &   CALL GETVID ( MOTCLF, 'TABL_FY_TUBU', 1,1,1, TBSIG(2), NS(2) )
       IF ( NS(2) .NE. 0 )
-     &   CALL RCVERI(TBSIG(2))
+     &   CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(2))
       CALL GETVID ( MOTCLF, 'TABL_FZ', 1,1,1, TBSIG(3), NS(3) )
       IF ( NS(3) .EQ. 0 )
      &   CALL GETVID ( MOTCLF, 'TABL_FZ_TUBU', 1,1,1, TBSIG(3), NS(3) )
       IF ( NS(3) .NE. 0 )
-     &   CALL RCVERI(TBSIG(3))
+     &   CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(3))
 C
       CALL GETVID ( MOTCLF, 'TABL_MX', 1,1,1, TBSIG(4), NS(4) )
       IF ( NS(4) .EQ. 0 )
      &   CALL GETVID ( MOTCLF, 'TABL_MX_TUBU', 1,1,1, TBSIG(4), NS(4) )
       IF ( NS(4) .NE. 0 )
-     &   CALL RCVERI(TBSIG(4))
+     &   CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(4))
       CALL GETVID ( MOTCLF, 'TABL_MY', 1,1,1, TBSIG(5), NS(5) )
       IF ( NS(5) .EQ. 0 )
      &   CALL GETVID ( MOTCLF, 'TABL_MY_TUBU', 1,1,1, TBSIG(5), NS(5) )
       IF ( NS(5) .NE. 0 )
-     &   CALL RCVERI(TBSIG(5))
+     &   CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(5))
       CALL GETVID ( MOTCLF, 'TABL_MZ', 1,1,1, TBSIG(6), NS(6) )
       IF ( NS(6) .EQ. 0 )
      &   CALL GETVID ( MOTCLF, 'TABL_MZ_TUBU', 1,1,1, TBSIG(6), NS(6) )
       IF ( NS(6) .NE. 0 )
-     &   CALL RCVERI(TBSIG(6))
+     &   CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(6))
 C
       CALL GETVID ( MOTCLF, 'TABL_FX_CORP', 1,1,1, TBSIG(7), NS(7) )
       IF( NS(7) .NE. 0 )THEN
-        CALL RCVERI(TBSIG(7))
+        CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(7))
       ENDIF
       CALL GETVID ( MOTCLF, 'TABL_FY_CORP', 1,1,1, TBSIG(8), NS(8) )
       IF( NS(8) .NE. 0 )THEN
-        CALL RCVERI(TBSIG(8))
+        CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(8))
       ENDIF
       CALL GETVID ( MOTCLF, 'TABL_FZ_CORP', 1,1,1, TBSIG(9), NS(9) )
       IF( NS(9) .NE. 0 )THEN
-        CALL RCVERI(TBSIG(9))
+        CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(9))
       ENDIF
       CALL GETVID ( MOTCLF, 'TABL_MX_CORP', 1,1,1, TBSIG(10), NS(10) )
       IF( NS(10) .NE. 0 )THEN
-        CALL RCVERI(TBSIG(10))
+        CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(10))
       ENDIF
       CALL GETVID ( MOTCLF, 'TABL_MY_CORP', 1,1,1, TBSIG(11), NS(11) )
       IF( NS(11) .NE. 0 )THEN
-        CALL RCVERI(TBSIG(11))
+        CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(11))
       ENDIF
       CALL GETVID ( MOTCLF, 'TABL_MZ_CORP', 1,1,1, TBSIG(12), NS(12) )
       IF( NS(12) .NE. 0 )THEN
-        CALL RCVERI(TBSIG(12))
+        CALL RCVER1('MECANIQUE',TBSIG(13),TBSIG(12))
       ENDIF
 C
-      CALL GETVID ( MOTCLF, 'TABL_PRES', 1,1,1, TBSIG(13), NS(13) )
-      IF( NS(13) .NE. 0 )THEN
-        CALL RCVERI(TBSIG(13))
-      ENDIF
 C
 C --- ON RECUPERE L'ABSC_CURV DANS LA TABLE 'TABL_MX'
 C
@@ -171,7 +172,7 @@ C
                   VALK (1) = TBSIG(I)
                   VALK (2) = NOCMP(J)
                   VALK (3) = VALEK
-                  CALL U2MESG('F','POSTRCCM_2',3,VALK,0,0,
+                  CALL U2MESG('F','POSTRCCM_44',3,VALK,0,0,
      &                                         1,ZR(JABSC+K-1))
                ENDIF
  14         CONTINUE

@@ -19,7 +19,7 @@
       LOGICAL UFONC,VFONC,EPSIU,EPSIV,THLAG2,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,7 +156,7 @@ C- RECUPERATION DE L'ETAT INITIAL
             CALL CHPVER('F',CHDEPI,'NOEU','DEPL_R',IER)
         ENDIF
         IF ((NSIG.EQ.0) .AND. (NDEP.EQ.0)) THEN
-          CALL U2MESS('F','ALGORITH_56')
+          CALL U2MESS('F','RUPTURE1_12')
         END IF
       END IF
 

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -356,7 +356,7 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
                 CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET)
                 CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
                 CALL LCLDSB(FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
-     &                     DEPS,VIM,TM,TP,TREF,OPTION,SIGP,VIP,DSIDEP)
+     &                 DEPS,VIM,TM,TP,TREF,OPTION,SIGP,VIP,DSIDEP,CRIT)
               ENDIF
           ELSE IF ( COMPOR(1) .EQ. 'ENDO_ORTH_BETON' ) THEN
             IF ( INT(CRIT(6)) .NE. 0 )  THEN
@@ -682,7 +682,7 @@ C -- FLUAGE PROPRE UMLV
             ELSE
               CALL LCUMFP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,INSTAM,
      &                     INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,
-     &                     SIGP,VIP,DSIDEP)
+     &                     SIGP,VIP,DSIDEP,CRIT)
             END IF
 C----LOI D'ACIER CORRODE
           ELSEIF ( COMPOR(1)(1:10) .EQ. 'CORR_ACIER') THEN

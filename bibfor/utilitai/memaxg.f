@@ -6,7 +6,7 @@ C
       CHARACTER*8 RESULT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C
       CALL TBAJPA ( TABGMA,NBPRUP,ZK16(INOPR),ZK8(ITYPR) )
 C
       IF (NBORN.NE.(2.D0*LONVEC)) THEN
-             CALL U2MESS('F','UTILITAI2_50')
+             CALL U2MESS('F','RUPTURE1_14')
 
       END IF
       COLLEC = '&&MEMAXG.BORNES_Q'

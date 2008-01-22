@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -164,7 +164,7 @@ C
          CALL GETVR8(MOTFAC(1:L),'R_INF',IOCC,1,NDIM,RINF,NBM)
          CALL GETVR8(MOTFAC(1:L),'R_SUP',IOCC,1,NDIM,RSUP,NBM)
          IF (NBM.NE.0 .AND. RSUP .LE. RINF) THEN
-           CALL U2MESS('F','ELEMENTS5_11')
+           CALL U2MESS('F','RUPTURE1_6')
          ENDIF
          CALL GETVID(MOTFAC(1:L),'MODULE_FO',IOCC,1,NDIM,THETF,NBMOF)
          CALL GETVID(MOTFAC(1:L),'R_INF_FO',IOCC,1,NDIM,RINFF,NBMF)
@@ -196,7 +196,7 @@ C
                   CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT2 + J - 1) = VALRES
                   IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
-                    CALL U2MESS('F','ELEMENTS5_11')
+                    CALL U2MESS('F','RUPTURE1_6')
                   ENDIF
                   IF (NBMOF .NE. 0 ) THEN
                     CALL FOINTE('FM',THETF,NBPAR,NOMPAR,VALPAR,
@@ -225,7 +225,7 @@ C
             IF(IRET.EQ.0) THEN
                 VALK(1) = ZK8(JJJ+IGR-1)
                 VALK(2) = NOMA
-                CALL U2MESK('F','ALGORITH_22', 2 ,VALK)
+                CALL U2MESK('F','RUPTURE1_8', 2 ,VALK)
             ELSE
 C LES NOEUDS DE CE GROUP_NO DOIVENT APPARTENIR A GAMMO
 C
@@ -252,7 +252,7 @@ C
                   CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT2 + I - 1) = VALRES
                   IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
-                    CALL U2MESS('F','ELEMENTS5_11')
+                    CALL U2MESS('F','RUPTURE1_6')
                   ENDIF
                   CALL FOINTE('FM',THETF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT3 + I - 1) = VALRES
@@ -260,7 +260,7 @@ C
                  ENDIF
 5               CONTINUE
                 IF(CANOEU.EQ.0) THEN
-                  CALL U2MESK('F','ELEMENTS2_24',1,NOEUD1)
+                  CALL U2MESK('F','RUPTURE0_15',1,NOEUD1)
                 ENDIF
 4             CONTINUE
             ENDIF
@@ -276,7 +276,7 @@ C
             IF(IRET.EQ.0) THEN
                  VALK(1) = ZK8(JJJ+I-1)
                  VALK(2) = NOMA
-                 CALL U2MESK('F','ALGORITH_21', 2 ,VALK)
+                 CALL U2MESK('F','RUPTURE0_14', 2 ,VALK)
             ELSE
 C LES NOEUDS DOIVENT APPARTENIR A GAMMO
               CALL JENUNO(JEXNUM(NOMNO,IRET),NOEUD1)
@@ -298,7 +298,7 @@ C LES NOEUDS DOIVENT APPARTENIR A GAMMO
                   CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT2 + J - 1) = VALRES
                   IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
-                    CALL U2MESS('F','ELEMENTS5_11')
+                    CALL U2MESS('F','RUPTURE1_6')
                   ENDIF
                   CALL FOINTE('FM',THETF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT3 + J - 1) = VALRES
@@ -306,7 +306,7 @@ C LES NOEUDS DOIVENT APPARTENIR A GAMMO
                    ENDIF
 7             CONTINUE
               IF(CANOEU.EQ.0) THEN
-                  CALL U2MESK('F','ELEMENTS2_24',1,ZK8(IADRNO+J-1))
+                  CALL U2MESK('F','RUPTURE0_15',1,ZK8(IADRNO+J-1))
               ENDIF
             ENDIF
 6     CONTINUE
@@ -317,7 +317,7 @@ C VERIFICATION QUE GAMM0 EST COMPLET
 C
       DO 8 I=1,LOBJ2
          IF(ZK8(IADRNO+ I -1).NE.ZK8(IADRT0+I-1)) THEN
-            CALL U2MESS('F','ELEMENTS2_25')
+            CALL U2MESS('F','RUPTURE1_9')
          ENDIF
 8     CONTINUE
 C

@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF algorith Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,9 +68,6 @@ cata_msg = {
  le noeud  %(k1)s  n'appartient pas au maillage :  %(k2)s
 """),
 
-22 : _("""
- le groupe  %(k1)s  n'appartient pas au maillage :  %(k2)s
-"""),
 
 25 : _("""
  données incompatibles.
@@ -181,25 +178,7 @@ cata_msg = {
  le cas des contraintes planes n'est pas traité pour ce modèle.
 """),
 
-52 : _("""
- le résultat n'est pas un EVOL_NOLI
-"""),
 
-53 : _("""
- champ SIEF_ELGA non trouvé
-"""),
-
-54 : _("""
- champ EPSP_ELNO non trouvé
-"""),
-
-55 : _("""
- champ VARI_ELNO_ELGA non trouvé
-"""),
-
-56 : _("""
- aucun champ initial trouvé
-"""),
 
 57 : _("""
  le matériau dépend de la température 
@@ -207,9 +186,6 @@ cata_msg = {
  le calcul est impossible
 """),
 
-59 : _("""
- THLAG-GLEG pas possible
-"""),
 
 60 : _("""
  certains coefficients de masse ajoutée sont négatifs.

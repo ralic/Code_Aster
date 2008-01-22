@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,8 +73,8 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER IBID,NBV,NBTROU,NSTAR,J,IREST
       INTEGER TE,TYPELE,NBGREL,NFIC,NBELEM,IGR
       INTEGER MFICH,N1,PRECIS,JINST,ITPS,NBPASE
-      INTEGER LNOMA,IFM,NIVINF,ULISOP,I0,JREFE
-      REAL*8 EPSI
+      INTEGER LNOMA,IFM,NIVINF,ULISOP,I0,JREFE,JNUOM
+      REAL*8 EPSI,R8B
       CHARACTER*1 KBID
       CHARACTER*4 ACCE
       CHARACTER*8 RESU,NOMA,NOMO,TYPCHA,CHMAT,CARAEL
@@ -772,23 +772,13 @@ C
              NPAS0=NPAS
          ENDIF
 
-C     DETERMINATION DES NUMEROS D'INSTANT POUR UNE SELECTION
-C     DE NUMEROS D'ORDRE
+C        DETERMINATION DES NUMEROS D'ORDRE MED : ZI(JNUOM)
          IF(NNU.NE.0)THEN
-            CALL JEEXIN('&&SELECT_NUM_INST',IRET)
-            IF(IRET.NE.0)CALL JEDETR('&&SELECT_NUM_INST')
-            CALL WKVECT('&&SELECT_NUM_INST','V V I',NPAS0,JSNI)
-            DO 241 IORD=1,NPAS0
-               DO 242 I0=1,NPAS
-                  IF(ZI(INUM+2*I0-1).EQ.ZI(JNUME+IORD-1))THEN
-                     GOTO 243
-                  ENDIF
- 242           CONTINUE
- 243        CONTINUE
-            ZI(JSNI+IORD-1)=I0
- 241        CONTINUE
+            CALL WKVECT('&&OP0150_NUMORD_MED','V V I',NPAS,JNUOM)
+            DO 242 J=1,NPAS
+              ZI(JNUOM+J-1)=ZI(INUM+2*J-1)
+ 242        CONTINUE
          ENDIF
-
 
 C     -- BOUCLE SUR LES PAS DE TEMPS
 C     --------------------------------------------
@@ -799,8 +789,12 @@ C     --------------------------------------------
 C
             IF(NNU.NE.0)THEN
               NUMORD = ZI(JNUME+ITPS-1)
-              ITPS0 = ZI(JSNI+ITPS-1)
-              NUMPT = ZI(INUM+2*ITPS0-2)
+              ITPS0=INDIIS(ZI(JNUOM),NUMORD,1,NPAS)
+              IF(ITPS0.EQ.0)THEN
+                CALL U2MESG('A','MED_87',1,RESU,1,NUMORD,0,R8B)
+                GOTO 250
+              ENDIF
+              NUMPT=ZI(INUM+2*ITPS0-2)
             ELSEIF(NTO.NE.0)THEN
               NUMORD = ZI(INUM+2*ITPS-1)
               NUMPT  = ZI(INUM+2*ITPS-2)
@@ -858,6 +852,7 @@ C           DU CHAMP CREE AVEC LE PROF_CHNO PRECEDENT :
   250     CONTINUE
           CALL JEDETR(NCMPVA)
           CALL JEDETR(NCMPVM)
+          CALL JEDETR('&&OP0150_NUMORD_MED')
   260   CONTINUE
 
 
@@ -986,7 +981,7 @@ C     --------------------------------------------
 
 
       IF (NTO.EQ.0) THEN
-        IF (NBORDR.NE.NBORLU) THEN
+        IF (NBORDR.NE.NBORLU .AND. FORM(1:3).NE.'MED') THEN
           CALL U2MESS('F','UTILITAI2_98')
         END IF
       END IF

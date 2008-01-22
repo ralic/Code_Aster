@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k_trans_ops Macro  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,9 +162,9 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
       if CRITERE=='RELATIF' and ins!=0.: match=[x for x in l0_inst if abs((ins-x)/ins)<PRECISION]
       else                             : match=[x for x in l0_inst if abs(ins-x)<PRECISION]
       if len(match)==0 : 
-         UTMESS('A','RUPTURE0_52',valr=ins)
+         UTMESS('A','RUPTURE0_38',valr=ins)
       elif len(match)>=2 :
-         UTMESS('A','RUPTURE0_53',valr=ins)
+         UTMESS('A','RUPTURE0_39',valr=ins)
       else :
          l_inst.append(match[0])
          l_ord.append(d_ord[match[0]][0])

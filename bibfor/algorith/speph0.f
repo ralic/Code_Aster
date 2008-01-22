@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
      &             TYPCHA,ACCES,TYPMEC,NOCHAM,OPTCH1,MAILLE
       CHARACTER*24 CHAM19,NOMFON
       CHARACTER*24 VALK(3)
-
+      CHARACTER*3  TOUTOR
       DATA NOPAOU/'NUME_ORDRE_I','NUME_ORDRE_J'/
       DATA NOPAR/'NOM_CHAM','OPTION','DIMENSION','NOEUD_I','NOM_CMP_I',
      &     'NOEUD_J','NOM_CMP_J','FONCTION_C'/
@@ -73,27 +73,36 @@ C-----------------------------------------------------------------------
       CALL WKVECT('&&SPEPH0.NUMERO.ORDRE','V V I',NBMOD1,LNUMOR)
       CALL RSORAC(MODMEC,'TOUT_ORDRE',IBID,R8B,K8B,C16B,0.0D0,K8B,
      &            ZI(LNUMOR),NBMOD1,NBTROU)
-
       CALL GETVIS(' ','NUME_ORDRE',1,1,0,IBID,NBMODE)
       NBMODE = -NBMODE
       IF (NBMODE.EQ.0) THEN
-        CALL GETVR8(' ','BANDE',1,1,2,BANDE,IBID)
-        IF (IBID.EQ.0) THEN
-          CALL U2MESS('F','ALGORITH10_61')
-        END IF
-        CALL WKVECT('&&SPEPH0.LISTEMODES','V V I',NBMOD1,ILMODE)
-        DO 10 IM = 1,NBMOD1
-          IMOD1 = ZI(LNUMOR+IM-1)
-          CALL RSADPA(MODMEC,'L',1,'FREQ',IMOD1,0,IAD,K8B)
-          FREQ1 = ZR(IAD)
-          IF ((FREQ1-BANDE(1))* (FREQ1-BANDE(2)).LE.0.D0) THEN
-            NBMODE = NBMODE + 1
-            ZI(ILMODE-1+NBMODE) = IMOD1
+        CALL GETVTX(' ','TOUT_ORDRE',1,1,1,TOUTOR,IBID) 
+        IF  (TOUTOR.EQ.'OUI') THEN
+          NBMODE=NBMOD1
+          CALL WKVECT('&&SPEPH0.LISTEMODES','V V I',NBMOD1,ILMODE)
+          DO 11 IM = 1,NBMOD1
+            ZI(ILMODE-1+IM)=IM
+            ZI(ILMODE-1+IM)=ZI(LNUMOR+IM-1)        
+   11     CONTINUE       
+        ELSE
+          CALL GETVR8(' ','BANDE',1,1,2,BANDE,IBID)
+          IF (IBID.EQ.0) THEN
+            CALL U2MESS('F','ALGORITH10_61')
           END IF
-   10   CONTINUE
-        IF (NBMODE.EQ.0) THEN
-          CALL U2MESS('F','ALGORITH10_31')
-        END IF
+          CALL WKVECT('&&SPEPH0.LISTEMODES','V V I',NBMOD1,ILMODE)
+          DO 10 IM = 1,NBMOD1
+            IMOD1 = ZI(LNUMOR+IM-1)
+            CALL RSADPA(MODMEC,'L',1,'FREQ',IMOD1,0,IAD,K8B)
+            FREQ1 = ZR(IAD)
+            IF ((FREQ1-BANDE(1))* (FREQ1-BANDE(2)).LE.0.D0) THEN
+              NBMODE = NBMODE + 1
+              ZI(ILMODE-1+NBMODE) = IMOD1
+            END IF
+   10     CONTINUE
+          IF (NBMODE.EQ.0) THEN
+            CALL U2MESS('F','ALGORITH10_31')
+          ENDIF
+        ENDIF
       ELSE
         CALL GETVIS(' ','NUME_ORDRE',1,1,0,ILMODE,IBID)
         IF (IBID.EQ.0) THEN
@@ -132,7 +141,7 @@ C-----------------------------------------------------------------------
       IDIM1 = NBMODE + NAPEXC
       CALL TBLIVA(TABLE,0,K8B,IBID,R8B,C16B,K8B,K8B,R8B,'DIMENSION',K8B,
      &            IDIM0,R8B,C16B,K8B,IRET)
-      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
+      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_88')
       IF (IDIM1.NE.IDIM0) THEN
         CALL U2MESS('F','ALGORITH10_63')
       END IF
@@ -166,7 +175,7 @@ C     --- VERIFICATION DES DONNEES INTERSPECTRE ---
       OPTCH1 = OPTCHA
       IF (OPTCHA(1:4).EQ.'VITE') OPTCH1 = 'DEPL'
       IF (OPTCHA(1:4).EQ.'ACCE') OPTCH1 = 'DEPL'
-
+C 
 C     --- RECUPERATION DES NOEUDS, NOM_CMP ET MAILLE ---
 
       CALL GETVID(' ','NOEUD',0,1,0,K8B,NBN1)
@@ -198,9 +207,9 @@ C     --- RECUPERATION DU NUMERO DU DDL ---
           VALI = ZI(ILMODE)
         CALL U2MESG('F', 'ALGORITH14_62',1,VALK,1,VALI,0,0.D0)
       END IF
-
       CALL WKVECT('&&SPEPH0.NUME_DDL','V V I',NBN,INDDL)
       CALL DISMOI('F','TYPE_SUPERVIS',CHAM19,'CHAMP',IBID,TYPCHA,IRET)
+
       IF (TYPCHA(1:7).EQ.'CHAM_NO') THEN
         DO 30 I = 1,NBN
           NOEUD = ZK8(INOEN+I-1)
@@ -215,6 +224,7 @@ C     --- RECUPERATION DU NUMERO DU DDL ---
           END IF
           ZI(INDDL+I-1) = IDDL
    30   CONTINUE
+
       ELSE IF (TYPCHA(1:9).EQ.'CHAM_ELEM') THEN
         IF (NBMAIL.EQ.0) THEN
           CALL U2MESS('F','ALGORITH10_72')
@@ -250,7 +260,7 @@ C --- INTERSPECTRES OU AUTOSPECTRES UNIQUEMENT ---
 
       CALL TBLIVA(TABLE,0,K8B,IBID,R8B,C16B,K8B,K8B,R8B,'OPTION',K8B,
      &            IBID,R8B,C16B,K8B,IRET)
-      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
+      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_88')
 
       INTDON = .TRUE.
       IF (K8B(1:4).EQ.'DIAG') INTDON = .FALSE.
@@ -301,11 +311,41 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
           CALL U2MESG('F', 'ALGORITH14_62',1,VALK,1,VALI,0,0.D0)
         END IF
         CALL JEVEUO(CHAM19(1:19)//'.VALE','L',ISIP)
+        
         IF (TYPMEC.EQ.'MODE_MECA_C') THEN
           DO 70 IN = 1,NBN
             ICHAM1 = ICHAM + NAPEX1*NBN + NBN* (IMR-1) + IN - 1
             ZR(ICHAM1) = DBLE(ZC(ISIP+ZI(INDDL+IN-1)-1))
    70     CONTINUE
+C  -------------------------------  
+C  si base modale, alors les nume_ddl des differents modes peuvent 
+C              etres differents
+        ELSEIF(TYPMEC.EQ.'BASE_MODALE') THEN
+          CALL DISMOI('F','TYPE_SUPERVIS',CHAM19,'CHAMP',IBID,
+     &                                               TYPCHA,IRET)
+          IF (TYPCHA(1:7).EQ.'CHAM_NO') THEN
+             DO 71 IN = 1,NBN
+                NOEUD = ZK8(INOEN+IN-1)
+                CMP = ZK8(ICMPN+IN-1)
+                CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
+                ICHAM1 = ICHAM + NBN* (IMR-1) + IN - 1
+                ZR(ICHAM1) = ZR(ISIP+IDDL-1)
+   71        CONTINUE
+          ELSE IF (TYPCHA(1:9).EQ.'CHAM_ELEM') THEN
+             CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAM_ELEM',
+     &                                              IBID,NOMA,IRET)
+             NUPO = 0
+             IVARI = 1 
+             DO 72 I = 1,NBN
+                MAILLE = ZK8(IMAIN+I-1)
+                NOEUD = ZK8(INOEN+I-1)
+                CMP = ZK8(ICMPN+I-1)
+                CALL UTCHDL(CHAM19,NOMA,MAILLE,NOEUD,NUPO,0,IVARI,
+     &                                                      CMP,IDDL)
+                ZR(ICHAM1) = ZR(ISIP+IDDL-1)
+  72         CONTINUE
+          ENDIF
+C  -------------------------------
         ELSE
           DO 80 IN = 1,NBN
             ICHAM1 = ICHAM + NAPEX1*NBN + NBN* (IMR-1) + IN - 1
@@ -332,9 +372,8 @@ C     --- CREATION DE LA TABLE DE SORTIE ---
          VALK(2) = TABLE
          CALL U2MESK('F','MODELISA2_91', 2, VALK)
       ENDIF
-      CALL JELIRA(NOMFON(1:19)//'.VALE','LONUTI',NBPF,K8B)
+      CALL JELIRA(NOMFON(1:19)//'.VALE','LONMAX',NBPF,K8B)
       NBPF = NBPF/3
-
       NBFO1 = (NBMR* (NBMR+1))/2
       CALL WKVECT('&&SPEPH0.TEMP.FONR','V V R',NBPF*NBFO1,IFOR)
       CALL WKVECT('&&SPEPH0.TEMP.FONI','V V R',NBPF*NBFO1,IFOI)

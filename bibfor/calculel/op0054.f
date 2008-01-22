@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       LOGICAL       LDIREC, ULEXIS 
       CHARACTER*3   OUINON
       CHARACTER*8   K8B, NOMA, MODELE, FOND, RESU, NOEUD, FORMAT
-      CHARACTER*16  TYPE, OPER, FICHIE
+      CHARACTER*16  TYPE, OPER, FICHIE,VALK(2)
       CHARACTER*19  OPTION, METHOD
       CHARACTER*24  TRAV1, TRAV2, TRAV3, TRAV4, STOK4
       CHARACTER*24  OBJ1, NOMNO, COORN, OBJ2
@@ -100,7 +100,9 @@ C
 C --- SI LE CHAMP THETA EXISTE DEJA, ON SORT EN ERREUR FATALE :
 C     -------------------------------------------------------
       IF (ICODE.EQ.0) THEN
-        CALL U2MESK('F','CALCULEL3_97',1,RESU)
+        VALK(1)='THETA'
+        VALK(2)=RESU
+        CALL U2MESK('F','RUPTURE1_28',2,VALK)
       ENDIF
 C
 C --- CREATION DU NOM DU CHAMP CORRESPONDANT AU NOM SYMBOLIQUE
@@ -111,7 +113,9 @@ C
 C --- SI LE CHAMP THETA EXISTE DEJA, ON SORT EN ERREUR FATALE :
 C     -------------------------------------------------------
       IF (ICODE.EQ.0) THEN
-        CALL U2MESK('F','CALCULEL3_98',1,RESU)
+        VALK(1)='GRAD_NOEU_THETA'
+        VALK(2)=RESU
+        CALL U2MESK('F','RUPTURE1_28',2,VALK)
       ENDIF
 C
       OBJ1 = MODELE//'.MODELE    .LGRF'
@@ -134,7 +138,7 @@ C
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             IF ( NBR8 .NE. 3 ) THEN
-               CALL U2MESS('F','CALCULEL3_99')
+               CALL U2MESS('F','RUPTURE1_30')
             ELSE
                CALL GETVR8(' ','DIRECTION', 0, 1, 3, DIR, NBR8)
                LDIREC = .TRUE.
@@ -159,7 +163,7 @@ C
 C
          ELSE
 C
-            CALL U2MESS('F','CALCULEL4_1')
+            CALL U2MESS('F','RUPTURE1_31')
          ENDIF
 C
 C        --- IMPRESSION DES OBJETS DECRIVANT LE CHAMP THETA ---
@@ -189,13 +193,13 @@ C
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             IF ( NBR8 .NE. 3 ) THEN
-               CALL U2MESS('F','CALCULEL4_2')
+               CALL U2MESS('F','RUPTURE1_30')
             ELSE
                CALL GETVR8 ( ' ', 'DIRECTION', 0, 1, 3, DIR, NBR8 )
                LDIREC = .TRUE.
             ENDIF
          ELSE
-            CALL U2MESS('F','CALCULEL4_3')
+            CALL U2MESS('F','RUPTURE0_81')
          ENDIF
 C
          CALL GVER2D ( NOMA, NOCC2D, OPTION, 'THETA_2D',NOMNO,
@@ -210,7 +214,7 @@ C
 C
          ELSE
 C
-            CALL U2MESS('F','CALCULEL4_4')
+            CALL U2MESS('F','RUPTURE1_31')
          ENDIF
 C
       ENDIF
@@ -233,7 +237,7 @@ C
 C
          ELSE
 C
-            CALL U2MESS('F','CALCULEL4_5')
+            CALL U2MESS('F','RUPTURE1_32')
          ENDIF
 C
 C        --- IMPRESSION DES OBJETS DECRIVANT LES CHAMPS THETA ---

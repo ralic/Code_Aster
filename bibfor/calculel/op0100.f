@@ -1,6 +1,6 @@
       SUBROUTINE OP0100(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C 2.2. ==> LE CONCEPT DE SORTIE, SON TYPE, LA COMMANDE
 C-----------------------------------------------------
       CALL GETRES(TABLE1,TYPCO,OPER)
       IF ( NIV.GE.2 ) THEN
-        CALL U2MESK('I','CALCULEL4_9',1,TABLE1)
+        CALL U2MESK('I','RUPTURE0_3',1,TABLE1)
       ENDIF
 C
 C----------------
@@ -138,14 +138,12 @@ C
       CALL GETVR8(' ','PRECISION',0,1,1,PREC,NP)
       CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,NC)
       CALL RSUTNU ( RESUCO, ' ', 0, VECORD, LONVEC, PREC, CRIT, IER )
-      IF(IER.NE.0) THEN
-        CALL U2MESS('F','CALCULEL4_13')
-      ENDIF
+      CALL ASSERT(IER.EQ.0)
       CALL GETTCO(RESUCO,TYSD)
       IF (TYSD.EQ.'DYNA_TRANS') THEN
          CALL GETFAC('EXCIT',NEXCI)
          IF (NEXCI.EQ.0 ) THEN
-           CALL U2MESS('F','CALCULEL4_16')
+           CALL U2MESS('F','RUPTURE0_9')
          ENDIF
       ELSEIF (TYSD.EQ.'MULT_ELAS') THEN
 C 
@@ -163,7 +161,7 @@ C        PASSER DE LA PRESENCE DE CES MOTS-CLES.
 
       IF (((OPTION.EQ.'K_G_MODA') .AND. (TYSD.NE.'MODE_MECA')) .OR.
      &   ((TYSD.EQ.'MODE_MECA') .AND. (OPTION.NE.'K_G_MODA'))) THEN
-        CALL U2MESS('F','CALCULEL4_17')
+        CALL U2MESS('F','RUPTURE0_27')
       ENDIF
 
       CALL JEVEUO ( VECORD, 'L', IVEC )
@@ -193,7 +191,7 @@ C        PASSER DE LA PRESENCE DE CES MOTS-CLES.
               IF(NBTROU.EQ.0)THEN
                  VALK(1)=ZK16(JNCAS+I-1)
                  VALK(2)=RESUCO
-                 CALL U2MESK('F','POSTRELE_64',2,VALK)
+                 CALL U2MESK('F','RUPTURE0_28',2,VALK)
               ELSE
                  IIND=INDIIS(ZI(IVEC),NUTROU,LONVEC,1)
                  ZL(JNORD+IIND-1)=.TRUE.
@@ -216,10 +214,10 @@ C------------------------------------------
            CALL GETVID ( 'THETA','FISSURE', 1,1,1, K8B,N2)
            IF((OPTION(1:6).EQ.'CALC_K' .OR. OPTION.EQ.'K_G_MODA')
      &        .AND.N2.EQ.0)THEN
-              CALL U2MESK('F','CALCULEL4_19',1,OPTION(1:8))
+              CALL U2MESK('F','RUPTURE0_29',1,OPTION(1:8))
            ELSEIF((OPTION(1:6).NE.'CALC_K' .AND. OPTION.NE.'K_G_MODA')
      &          .AND.N1.EQ.0)THEN
-              CALL U2MESK('F','CALCULEL4_20',1,OPTION(1:8))
+              CALL U2MESK('F','RUPTURE0_48',1,OPTION(1:8))
            ENDIF
          ENDIF
       ENDIF
@@ -230,7 +228,7 @@ C------------------------------------------
            IF (N2.NE.0.AND.OPTION.EQ.'K_G_MODA')
      &         CALL U2MESS('F','XFEM_9')
            IF (N1+N2.EQ.0.OR.N1*N2.NE.0)
-     &         CALL U2MESK('F','CALCULEL4_21',1,OPTION)
+     &         CALL U2MESK('F','RUPTURE1_11',1,OPTION)
         ENDIF
       ENDIF
 C
@@ -241,10 +239,10 @@ C----------------
 
       CALL GETVID ( 'THETA','THETA', 1,1,1, SDTHET,IRET)
       IF (TROIDL.AND.(OPTION.EQ.'CALC_G') .AND. (IRET.NE.0)) THEN
-        CALL U2MESS('F','CALCULEL4_22')
+        CALL U2MESS('F','RUPTURE0_57')
       ENDIF
       IF(IRET.NE.0.AND.OPTION.EQ.'G_LAGR'.AND.TROIDL)THEN
-        CALL U2MESK('F','CALCULEL4_23',1,OPTION)
+        CALL U2MESK('F','RUPTURE0_58',1,OPTION)
       ENDIF
 
 C ---  2.7.1 : THETA FOURNI
@@ -253,7 +251,7 @@ C ---  2.7.1 : THETA FOURNI
         IF (TYPCO(1:10).EQ.'THETA_GEOM') THEN
           CALL RSEXCH(SDTHET,'THETA',0,THETA,N1)
           IF (N1.GT.0) THEN
-            CALL U2MESK('F','CALCULEL3_90',1,SDTHET)
+            CALL U2MESK('F','RUPTURE0_59',1,SDTHET)
           ENDIF
         ELSE
           THETA=SDTHET
@@ -278,13 +276,13 @@ C ---  2.7.2 : THETA CALCULE
             SUITE='.'
             IF (DIME.EQ.2) SUITE=',LA 3-EME NULLE.'
             IF ( NBR8 .NE. 3 ) THEN
-               CALL U2MESK('F','CALCULEL4_24',1,SUITE)
+               CALL U2MESK('F','RUPTURE0_30',1,SUITE)
             ELSE
                CALL GETVR8 ( 'THETA', 'DIRECTION', 1, 1, 3, DIR, NBR8 )
                DIREC=.TRUE.
             ENDIF
          ELSE
-           IF (DIME.EQ.2.AND.N2.EQ.0) CALL U2MESS('F','CALCULEL4_3')
+           IF (DIME.EQ.2.AND.N2.EQ.0) CALL U2MESS('F','RUPTURE0_81')
          ENDIF
 
 C      - THETA 2D (COURONNE)
@@ -316,7 +314,7 @@ C    - PROPAGATION ALPHA
        CALL GETVR8(' ','PROPAGATION',0,1,1,ALPHA,IPROPA)
        IF (IPROPA.EQ.0) ALPHA = 0.D0
        IF ((OPTION(1:6).NE.'G_LAGR') .AND. (IPROPA.NE.0)) THEN
-         CALL U2MESS('F','CALCULEL4_25')
+         CALL U2MESS('F','RUPTURE0_82')
        ENDIF
 C
 C 2.8.1 ==> SI 3D LOCAL :
@@ -363,10 +361,10 @@ C     - METHODE DE DECOMPOSITION DE THETA ET G : LAGRANGE OU LEGENDRE
         NBRE = LNOFF
         IF ((OPTION .EQ. 'G_MAX') .OR.
      &      (OPTION .EQ. 'G_BILI')) THEN
-           CALL U2MESK('F','CALCULEL4_26',1,OPTION)
+           CALL U2MESK('F','RUPTURE0_83',1,OPTION)
         ENDIF
         IF (NDEG.GT.LNOFF) THEN
-          CALL U2MESS('F','CALCULEL4_27')
+          CALL U2MESS('F','RUPTURE0_84')
         ENDIF
       ELSE IF ((LISSTH.EQ.'LAGRANGE') .AND.
      &         ((LISSG.EQ.'LAGRANGE').OR. (LISSG.EQ.
@@ -375,20 +373,20 @@ C     - METHODE DE DECOMPOSITION DE THETA ET G : LAGRANGE OU LEGENDRE
         GLAGR = .TRUE.
         NBRE = LNOFF
       ELSE IF ((LISSTH.EQ.'LEGENDRE') .AND. (LISSG.NE.'LEGENDRE')) THEN
-        CALL U2MESS('F','CALCULEL4_28')
+        CALL U2MESS('F','RUPTURE0_85')
       ELSE IF ((LISSTH.EQ.'LAGRANGE_REGU') .AND.
      &         (LISSG.EQ.'LAGRANGE_REGU'))THEN
         THLAG2 = .TRUE.
         GLAGR  = .FALSE.
         THLAGR = .FALSE.
         IF(OPTION.EQ.'G_LAGR')THEN
-          CALL U2MESK('F','CALCULEL4_29',1,OPTION(1:6))
+          CALL U2MESK('F','RUPTURE0_86',1,OPTION(1:6))
         ENDIF
       ELSE IF(((LISSTH.EQ.'LAGRANGE_REGU') .AND.
      &         (LISSG.NE.'LAGRANGE_REGU')).OR.
      &      ((LISSTH.NE.'LAGRANGE_REGU') .AND.
      &       (LISSG.EQ.'LAGRANGE_REGU'))) THEN
-        CALL U2MESS('F','CALCULEL4_30')
+        CALL U2MESS('F','RUPTURE0_87')
       ENDIF
 
 C    - PROPAGATION CHAMP THETA
@@ -398,11 +396,11 @@ C    - PROPAGATION CHAMP THETA
       ELSE
         CALL RSEXCH(SDTHET,'THETA',0,THETLG,IRET)
         IF (IRET.NE.0) THEN
-          CALL U2MESK('F','CALCULEL3_90',1,SDTHET)
+          CALL U2MESK('F','RUPTURE0_59',1,SDTHET)
         ENDIF
       ENDIF
       IF ((OPTION.EQ.'G_LAGR') .AND. (ITHETA.EQ.0)) THEN
-        CALL U2MESK('F','CALCULEL4_31',1,OPTION)
+        CALL U2MESK('F','RUPTURE0_88',1,OPTION)
       ENDIF
 C
 C 2.8.2 ==> SI 2D
@@ -412,7 +410,7 @@ C        - FOND_FISS 2D
            CALL GETVID ( 'THETA', 'FOND_FISS', 1,1,1,FOND,N1)
            CALL GETVID ( 'THETA','FISSURE', 1,1,1, FISS, N2 )
            IF ( (OPTION .EQ. 'CALC_K_G') .AND. (N1+N2.EQ.0) ) THEN
-              CALL U2MESS('F','CALCULEL4_21')
+              CALL U2MESS('F','RUPTURE1_11')
            ENDIF
 C
       ENDIF
@@ -642,7 +640,7 @@ C
       IF (.NOT.THLAG2)THEN
         IF ((CONNEX.AND. (.NOT.THLAGR)) .OR.
      &    (CONNEX.AND. (.NOT.GLAGR))) THEN
-          CALL U2MESS('F','CALCULEL4_36')
+          CALL U2MESS('F','RUPTURE0_90')
         ENDIF
       ENDIF
       OBJMA = MODELE//'.MODELE    .LGRF'
@@ -736,7 +734,9 @@ C
               IORD2 = ZI(IVEC-1+J)
               CALL RSEXCH(RESUCO,'DEPL',IORD2,DEPLA2,IRET)
               IF(IRET.NE.0) THEN
-                CALL U2MESS('F','CALCULEL4_37')
+                VALK(1) = 'DEPL'
+                VALI    = IORD2
+                CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
               ENDIF
             ENDIF
 
@@ -806,7 +806,7 @@ C
             ENDIF
 
           ELSE
-            CALL U2MESK('F','CALCULEL4_38',1,OPTIO1)
+            CALL U2MESK('F','RUPTURE0_92',1,OPTIO1)
           ENDIF
           ENDIF
 C
@@ -839,7 +839,7 @@ C
             IF (IRET.NE.0) THEN
                 VALK (1) = 'DEPL'
                 VALI     = IORD
-              CALL U2MESG('F', 'CALCULEL6_27',1,VALK,1,VALI,0,0.D0)
+              CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
             ENDIF
 
             CALL CAKG3D(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
@@ -873,7 +873,9 @@ C  -----------------------
             IORD = ZI(IVEC-1+I)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
             IF(IRET.NE.0) THEN
-              CALL U2MESS('F','CALCULEL4_39')
+                VALK(1) = 'DEPL'
+                VALI = IORD
+                CALL U2MESG('F', 'RUPTURE0_95',1,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID)
             PULS = ZR(IPULS)
@@ -893,7 +895,7 @@ C  -------------------------
             IF (IRET.NE.0) THEN
                 VALK (1) = 'DEPL'
                 VALI = IORD
-              CALL U2MESG('F', 'CALCULEL6_28',1,VALK,1,VALI,0,0.D0)
+              CALL U2MESG('F', 'RUPTURE0_95',1,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8B)
             PULS = ZR(IPULS)
@@ -937,7 +939,7 @@ C
           IF(IRET.NE.0) THEN
                 VALK (1) = 'DEPL'
                 VALI = IORD
-             CALL U2MESG('F', 'CALCULEL6_27',1,VALK,1,VALI,0,0.D0)
+              CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
           ENDIF
           CALL RSEXCH(RESUCO,'VITE',IORD,CHVITE,IRET)
           IF(IRET.NE.0) THEN
@@ -1048,7 +1050,7 @@ C           ON LES AJOUTE DIRECTEMENT
      &                   COMPOR)
 
       ELSE
-           CALL U2MESS('F','CALCULEL4_40')
+           CALL U2MESS('F','RUPTURE0_96')
 
       ENDIF
  

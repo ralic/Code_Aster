@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,7 +192,7 @@ C
       CALL TECACH('ONN','PDEPINR',1,IDEPI,IRET)
 
       IF ((ISIGI.NE.0) .AND. EPSINI) THEN
-        CALL U2MESS('F','ELEMENTS2_68')
+        CALL U2MESS('F','RUPTURE1_20')
       END IF
 
       IF (INCR) THEN

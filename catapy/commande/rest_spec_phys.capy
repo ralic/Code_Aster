@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,11 +20,12 @@ REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=table_fonction,
                     reentrant='n',
             fr="Calculer la réponse d'une structure dans la base physique",
             UIinfo={"groupes":("Matrices/vecteurs",)},
-         regles=(AU_MOINS_UN('BASE_ELAS_FLUI','MODE_MECA'),),
+         regles=(AU_MOINS_UN('BASE_ELAS_FLUI','MODE_MECA'),),        
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster ),
-         MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
+         MODE_MECA       =SIMP(statut='f',typ=(mode_meca, base_modale ),),
          BANDE           =SIMP(statut='f',typ='R',min=2,validators=NoRepeat(),max=2    ),  
-         NUME_ORDRE      =SIMP(statut='f',typ='I'      ,validators=NoRepeat(),max='**' ),  
+         NUME_ORDRE      =SIMP(statut='f',typ='I'      ,validators=NoRepeat(),max='**' ),
+         TOUT_ORDRE       =SIMP(statut='f',typ='TXM',defaut="NON",  into=("OUI","NON")  ),
          INTE_SPEC_GENE  =SIMP(statut='o',typ=table_fonction),
          NOEUD           =SIMP(statut='o',typ=no   ,max='**'),
          MAILLE          =SIMP(statut='f',typ=ma   ,max='**'),

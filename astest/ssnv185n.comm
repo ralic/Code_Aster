@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/01/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -286,7 +286,7 @@ TEST_TABLE( TABLE=PK,
                     _F( NOM_PARA = 'METHODE',  
                         VALE_I = 3,  ),),
             VALE=K1REF,
-            PRECISION=0.03,
+            PRECISION=0.035,
             REFERENCE='ANALYTIQUE' )
 
 #------------------------------------------------------------------------

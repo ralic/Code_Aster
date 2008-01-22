@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,10 +262,6 @@ cata_msg={
 
 82: _("""
  il faut un MODELE
-"""),
-
-85: _("""
- G_BILI : champ initial impossible
 """),
 
 86: _("""

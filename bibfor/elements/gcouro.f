@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,26 +180,24 @@ C
         CALL JELIRA(DIRTH,'LONMAX',LNDIR,K1BID)
         DIRTH(20:24) = '.DEEQ'
         CALL JEVEUO(DIRTH,'L',IDEEQ)
-        IF (LNDIR.NE.(3*LOBJ2)) THEN
-          CALL U2MESS('F','ELEMENTS_81')
-        ELSE
-          DO 5 I=1,LOBJ2
-            DIRX = ZR(IDIRTH+(I-1)*3+1-1)
-            DIRY = ZR(IDIRTH+(I-1)*3+2-1)
-            DIRZ = ZR(IDIRTH+(I-1)*3+3-1)
-            NORME = SQRT(DIRX*DIRX + DIRY*DIRY + DIRZ*DIRZ)
-            SUIV = .FALSE.
-            DO 6 J=1,LOBJ2
-              IF (ZI(IADNUM+J-1).EQ.ZI(IDEEQ+6*(I-1)+1-1)) THEN
-                ZR(IN2+(J-1)*3+1-1) = DIRX/NORME
-                ZR(IN2+(J-1)*3+2-1) = DIRY/NORME
-                ZR(IN2+(J-1)*3+3-1) = DIRZ/NORME
-                SUIV = .TRUE.
-              ENDIF
-              IF (SUIV) GOTO 5
- 6          CONTINUE
- 5        CONTINUE
-        ENDIF
+        CALL ASSERT(LNDIR.EQ.(3*LOBJ2))
+        DO 5 I=1,LOBJ2
+          DIRX = ZR(IDIRTH+(I-1)*3+1-1)
+          DIRY = ZR(IDIRTH+(I-1)*3+2-1)
+          DIRZ = ZR(IDIRTH+(I-1)*3+3-1)
+          NORME = SQRT(DIRX*DIRX + DIRY*DIRY + DIRZ*DIRZ)
+          SUIV = .FALSE.
+          DO 6 J=1,LOBJ2
+            IF (ZI(IADNUM+J-1).EQ.ZI(IDEEQ+6*(I-1)+1-1)) THEN
+              ZR(IN2+(J-1)*3+1-1) = DIRX/NORME
+              ZR(IN2+(J-1)*3+2-1) = DIRY/NORME
+              ZR(IN2+(J-1)*3+3-1) = DIRZ/NORME
+              SUIV = .TRUE.
+            ENDIF
+            IF (SUIV) GOTO 5
+ 6        CONTINUE
+ 5      CONTINUE
+
       ELSE
 C
 C 3ER CAS: LA DIRECTION DE THETA EST CALCULEE, ON LA NORME
@@ -246,7 +244,7 @@ C
         ELSE IF (IENORM.NE.0) THEN
           CALL GDINOR(NORM,LOBJ2,IADNUM,COORN,IN2)
         ELSE
-          CALL U2MESS('F','ELEMENTS_80')
+          CALL U2MESS('F','RUPTURE0_98')
         ENDIF
 C
 C  ON RECUPERE LES DIRECTIONS UTILISATEUR AUX EXTREMITES DU FOND(EN 3D)

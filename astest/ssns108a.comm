@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
 # TITRE SIMULATION DE L'ESSAI SAFE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,13 +27,14 @@ RHOACI=7800.
 LOI_COMPORTEMENT = 'ENDO_ISOT_BETON'
 CALCUL = 'STATIQUE'
 RESOLUTION = 'TANGENTE'
+TANG_SEC = 'TANGENTE_SECANTE'
 
 SUBD_PAS = 2;
-Nmax = 25;
-Nmaxdb = 10
-RESI_GLOB_RELA = 1E-7 #1e-7
-Pas = 7.5E-4
-Tmax = 0.051 # 0.07
+Nmax = 80;
+Nmaxdb = 15
+RESI_GLOB_RELA = 1E-7 
+Pas = 1.5E-3
+Tmax = 0.15 
 
 ALGO_C_PLAN = 'DEBORST'
 
@@ -226,6 +227,7 @@ coque.append({'EPAIS' : 0.20,
               'GROUP_MA':'MUR_QUAD',
               'COQUE_NCOU' : 11,
               'ANGL_REP': (0.0,0.0,),
+#              'COEF_RIGI_DRZ' : 1.0E-10,
             })
 
 coque.append({'EPAIS' : 0.16,
@@ -259,19 +261,22 @@ comp_incr.append({'GROUP_MA' : gr_armature,
 comp_incr.append({'GROUP_MA' : ('MUR_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
                   'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb
+                  'ITER_MAXI_DEBORST' : Nmaxdb,
+                  'TYPE_MATR_TANG' : TANG_SEC,
                 })               
 
 comp_incr.append({'GROUP_MA' : ('F1_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
                   'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb
+                  'ITER_MAXI_DEBORST' : Nmaxdb,
+                  'TYPE_MATR_TANG' : TANG_SEC,
                   })
                   
 comp_incr.append({'GROUP_MA' : ('F2_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
                   'ALGO_C_PLAN' : ALGO_C_PLAN,
-                  'ITER_MAXI_DEBORST' : Nmaxdb
+                  'ITER_MAXI_DEBORST' : Nmaxdb,
+                  'TYPE_MATR_TANG' : TANG_SEC,
                   })
 
 RIGI_ELE = CALC_MATR_ELEM( MODELE= MO,
@@ -386,8 +391,8 @@ TEST_RESU(RESU=(
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    NOEUD ='N311',
-                   VALE= 4.729794E-04,
-                   PRECISION = 1E-4,
+                   VALE= 1.35E-03,
+                   PRECISION = (5E-2,1E-6),
                    REFERENCE='NON_REGRESSION',),
                    
                  _F(RESULTAT=DYNA,
@@ -395,9 +400,9 @@ TEST_RESU(RESU=(
                    NOM_CHAM='FORC_NODA',
                    NOM_CMP='DX',
                    NOEUD ='N332',
-                   VALE= 1.56876E+05,
-                   PRECISION = 1E-4,
-                   REFERENCE='NON_REGRESSION',),
+                   VALE= 1.74E+05,
+                   PRECISION = (5E-2,1E-6),
+                   REFERENCE='NON_REGRESSION',),               
                 )
           )
 

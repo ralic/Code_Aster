@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai2 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,13 +154,6 @@ cata_msg = {
  type base inconnu : %(k1)s 
 """),
 
-50 : _("""
- nombre de bornes errone : on doit en avoir autant que de numeros d'ordre
-"""),
-
-51 : _("""
- mot-clef <signes> obligatoire avec option calc_k_max !
-"""),
 
 52 : _("""
  ajout de l'option "sief_elga_depl", les charges sont-elles correctes ?

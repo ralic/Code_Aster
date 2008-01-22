@@ -5,7 +5,7 @@
       CHARACTER*24  INTITU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,9 +43,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      N1, JINTI, NBINT0, I, J, JINT0
+      INTEGER      N1, JINTI, NBINT0, I, J, JINT0, IOCC, N2, N3
       LOGICAL      EXIST
-      CHARACTER*8  K8B, TABLE
+      CHARACTER*8  K8B, TABLE,TABFL0,TABPR0
       CHARACTER*16 MOTCLF
       CHARACTER*24 INTIT0
 C DEB ------------------------------------------------------------------
@@ -55,16 +55,29 @@ C
       MOTCLF = 'TRANSITOIRE'
       CALL GETFAC ( MOTCLF, NBTRAN )
       IF (NBTRAN.EQ.0) GOTO 9999
+
+      DO 100, IOCC = 1, NBTRAN
+
+        CALL GETVID ( MOTCLF, 'TABL_RESU_MECA', IOCC,1,1, TABLE , N1 )
+        CALL GETVID ( MOTCLF, 'TABL_SIGM_THER', IOCC,1,1, TABFL0, N2 )
+        CALL GETVID ( MOTCLF, 'TABL_RESU_PRES', IOCC,1,1, TABPR0, N3 )
 C
-      CALL GETVID ( MOTCLF, 'TABL_RESU_MECA', 1,1,1, TABLE, N1 )
-C
-      CALL TBEXIP ( TABLE, 'INTITULE', EXIST, K8B )
-      IF ( EXIST ) THEN
-         CALL TBEXV1 ( TABLE, 'INTITULE', INTITU, 'V', NBINTI, K8B)
-      ELSE
-         CALL WKVECT ( INTITU, 'V V K16', 1, JINTI )
-         ZK16(JINTI) = ' '
-      ENDIF
+C       VERIFICATION DE L'ORDRE DES NOEUDS DANS LES TABLES
+        CALL RCVERI(TABLE)
+        IF(N2.NE.0) CALL RCVER1('MECANIQUE',TABLE,TABFL0)
+        IF(N3.NE.0) CALL RCVER1('MECANIQUE',TABLE,TABPR0)
+
+        IF(IOCC.EQ.1)THEN
+          CALL TBEXIP ( TABLE, 'INTITULE', EXIST, K8B )
+          IF ( EXIST ) THEN
+            CALL TBEXV1 ( TABLE, 'INTITULE', INTITU, 'V', NBINTI, K8B)
+          ELSE
+            CALL WKVECT ( INTITU, 'V V K16', 1, JINTI )
+            ZK16(JINTI) = ' '
+          ENDIF
+        ENDIF
+
+ 100  CONTINUE
 C
       IF ( LSN .AND. .NOT.LFATIG .AND. NBTRAN.GT.1 ) THEN
          NBINT0 = NBTRAN * NBINTI

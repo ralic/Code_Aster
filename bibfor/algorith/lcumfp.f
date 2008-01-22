@@ -1,8 +1,8 @@
        SUBROUTINE LCUMFP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,
      &                    TINSTM,TINSTP,EPSM,DEPS,SIGM,
-     &                    VIM,OPTION,SIGP,VIP,DSIDEP)
+     &                    VIM,OPTION,SIGP,VIP,DSIDEP,CRIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C TOLE CRP_21
       CHARACTER*(*)    FAMI
       REAL*8           TINSTM,TINSTP
       REAL*8           EPSM(6),DEPS(6),SIGM(6),SIGP(6),VIM(23),VIP(23)
-      REAL*8           DSIDEP(6,6)
+      REAL*8           DSIDEP(6,6),CRIT(*)
 
 C---&s---1---------2---------3---------4---------5---------6---------7--
 C IN  NDIM    : DIMENSION DE L'ESPACE
@@ -409,7 +409,7 @@ C
           COMPOZ(1)='ENDO_ISOT_BETON'
           CALL LCLDSB(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOZ,EPSM,
      &        DEPS,VIM(22),TM,TP,TREF,'RAPH_COUP       ',
-     &        RBID,VIP(22),DEP)
+     &        RBID,VIP(22),DEP,CRIT)
 C        ELSE IF (OPTION(2).EQ.'MAZARS') THEN
 C          CALL LCMAZA()
         ELSE
@@ -468,7 +468,7 @@ C    FULL_MECA | RIGI_MECA_
             COMPOZ(1)='ENDO_ISOT_BETON'
             CALL LCLDSB(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOZ,EPSM,
      &               RBID,VIM(22),TM,TP,TREF,'RIGI_COUP       ',
-     &                 RBID,RBID,DEP)
+     &                 RBID,RBID,DEP,CRIT)
 C          ELSE IF (OPTION(2).EQ.'MAZARS') THEN
 C            CALL LCMAZA()
           ELSE

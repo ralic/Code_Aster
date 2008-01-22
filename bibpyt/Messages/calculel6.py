@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF calculel6 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,13 +101,6 @@ Solution :
  recherche nbre d entiers codes grandeur %(i1)d a un code inconnu:  %(i2)d
 """),
 
-27: _("""
- acces impossible  champ :  %(k1)s , nume_ordre :  %(i1)d
-"""),
-
-28: _("""
- acces impossible au mode propre champ :  %(k1)s , nume_ordre :  %(i1)d
-"""),
 
 34: _("""
  famille non disponible    type de maille  %(k1)s

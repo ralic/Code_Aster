@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/01/2008   AUTEUR KHAM M.KHAM 
 # TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,9 +18,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__:SDNL301A
+
 DEBUT(CODE=_F(NOM='SDNL301A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
 
 #----- GRANDEURS PHYSIQUE: UNITE MKS ---
+
 KN=1.75E+6
 
 CN=.28
@@ -31,11 +33,11 @@ EPAIS=.00115
 
 AMPL=41.38
 
-FORCEP=8.276
+FORCEP=8.276 /2;
 
-FORCEM=-8.276
+FORCEM=-8.276 /2;
 
-OMEGA=251.2
+OMEGA=251.2 # (#40 Hz)
 
 TDEB=.17
 
@@ -43,251 +45,377 @@ TFIN=.25
 
 DELT=.5E-5
 
-#DELT = .5E-4 ;
-ACIER=DEFI_MATERIAU(   ELAS=_F( E = 2.07E11, NU = 0.3, RHO = 7870.,
-                        AMOR_ALPHA = 1.79E-5, AMOR_BETA = .1526) )
+ACIER=DEFI_MATERIAU(ELAS=_F(E = 2.07E11, NU = 0.3, RHO = 7870.,
+                            AMOR_ALPHA = 1.79E-5, AMOR_BETA = .1526));
 
 #-----   MODELE ----------------
-POUTRE=LIRE_MAILLAGE()
 
-POUTRE=DEFI_GROUP( reuse=POUTRE,   MAILLAGE=POUTRE,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+POUTRE=LIRE_MAILLAGE();
 
-MO=AFFE_MODELE(  MAILLAGE=POUTRE,
-             AFFE=_F(  TOUT = 'OUI',
-                    PHENOMENE = 'MECANIQUE',
-                    MODELISATION = 'POU_D_T') )
+POUTRE=DEFI_GROUP(reuse=POUTRE,
+                  MAILLAGE=POUTRE,
+                  CREA_GROUP_MA=_F(NOM = 'TOUT',
+                                   TOUT = 'OUI'));
 
-#
-SINO = FORMULE(NOM_PARA='INST',VALE='sin (OMEGA *INST)')
-LINST=DEFI_LIST_REEL(   DEBUT=0.,
-                          INTERVALLE=_F(  JUSQU_A = TFIN, PAS = .0001) )
+MO=AFFE_MODELE(MAILLAGE=POUTRE,
+               AFFE=_F(TOUT        = 'OUI',
+                       PHENOMENE   = 'MECANIQUE',
+                       MODELISATION= 'POU_D_T'));
 
-SINOT=CALC_FONC_INTERP(   FONCTION=SINO,   LIST_PARA=LINST,
-NOM_PARA='INST'  )
+SINO = FORMULE(NOM_PARA='INST',
+               VALE    ='sin (OMEGA *INST)');
 
-CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-                            POUTRE=_F(
-       GROUP_MA = 'TOUT',
+LINST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A= TFIN,
+                                   PAS    = .0001));
 
-                           SECTION = 'CERCLE',
-                           CARA = ( 'R','EP', ),
-                           VALE = ( RAYON,  EPAIS,)) )
+SINOT=CALC_FONC_INTERP(FONCTION=SINO,
+                       LIST_PARA=LINST,
+                       NOM_PARA='INST');
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=POUTRE,
-                         AFFE=_F(  TOUT = 'OUI',
-                               MATER = ACIER) )
+CARELEM=AFFE_CARA_ELEM(MODELE=MO,
+                       POUTRE=_F(GROUP_MA= 'TOUT',
+                                 SECTION = 'CERCLE',
+                                 CARA    = ('R','EP'),
+                                 VALE    = (RAYON, EPAIS)));
 
-CLIMIT=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
-                           _F(  TOUT = 'OUI', DZ = .0, DRX = .0, DRY = .0),
-                           _F(  NOEUD = 'N1', DX = .0, DY = .0, DRZ = .0)))
+CHMAT=AFFE_MATERIAU(MAILLAGE=POUTRE,
+                    AFFE=_F(TOUT = 'OUI',
+                            MATER= ACIER));
 
-FORCE=AFFE_CHAR_MECA(   MODELE=MO,FORCE_NODALE=(
-                           _F( FY = FORCEP,
-                          NOEUD = ('N2','N3','N4','N5','N6','N14','N15','N16','N17','N18',)),
-                           _F( FY = FORCEM,
-                       NOEUD = ('N8','N9','N10','N11','N12','N20','N21','N22','N23','N24',))))
+CLIMIT=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=(_F(TOUT ='OUI',
+                                   DZ=.0, DRX=.0, DRY=.0),
+                                _F(NOEUD='N1',
+                                   DX=.0, DY=.0, DRZ=.0)));
 
-BUTE=DEFI_OBSTACLE(   TYPE='PLAN_Y' )
+FORCE=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_NODALE=(_F(FY = FORCEP,
+                                      NOEUD = ('N3','N4','N5',
+                                               'N6','N7','N8','N9',
+                                               'N10','N11','N12','N13',
+                                               'N27','N28','N29','N30',
+                                               'N31','N32','N33','N34',
+                                               'N35','N36','N37',)),
+                                   _F(FY = FORCEM,
+                                      NOEUD = ('N15','N16','N17','N18',
+                                               'N19','N20','N21','N22',
+                                               'N23','N24','N25',
+                                               'N39','N40','N41','N42',
+                                               'N43','N44','N45','N46',
+                                               'N47','N48','N49',))));
+                                               
+BUTE=DEFI_OBSTACLE(TYPE='PLAN_Y');
 
 # ASSEMBLAGE MATRICE
 
-MELER=CALC_MATR_ELEM(  MODELE=MO,
-                       OPTION='RIGI_MECA',
-                       CARA_ELEM=CARELEM,
-                       CHAM_MATER=CHMAT,
-                       CHARGE=CLIMIT)
+MELER=CALC_MATR_ELEM(MODELE    =MO,
+                     OPTION    ='RIGI_MECA',
+                     CARA_ELEM =CARELEM,
+                     CHAM_MATER=CHMAT,
+                     CHARGE    =CLIMIT);
 
-MELEM=CALC_MATR_ELEM(  MODELE=MO,
-                       OPTION='MASS_MECA',
-                       CARA_ELEM=CARELEM,
-                       CHAM_MATER=CHMAT,
-                       CHARGE=CLIMIT)
+MELEM=CALC_MATR_ELEM(MODELE    =MO,
+                     OPTION    ='MASS_MECA',
+                     CARA_ELEM =CARELEM,
+                     CHAM_MATER=CHMAT,
+                     CHARGE    =CLIMIT);
 
-MELEA=CALC_MATR_ELEM(  MODELE=MO,
-                       OPTION='AMOR_MECA',
-                       CARA_ELEM=CARELEM,
-                       MASS_MECA=MELEM,
-                       RIGI_MECA=MELER,
-                       CHAM_MATER=CHMAT)
+MELEA=CALC_MATR_ELEM(MODELE    =MO,
+                     OPTION    ='AMOR_MECA',
+                     CARA_ELEM =CARELEM,
+                     MASS_MECA =MELEM,
+                     RIGI_MECA =MELER,
+                     CHAM_MATER=CHMAT);
 
-#                      CHARGE: CLIMIT);
-VELEM=CALC_VECT_ELEM(CHARGE=FORCE, OPTION='CHAR_MECA')
+# CHARGE: CLIMIT);
 
-NDDL=NUME_DDL(   MATR_RIGI=MELER)
+VELEM=CALC_VECT_ELEM(CHARGE=FORCE, OPTION='CHAR_MECA');
 
-MATR=ASSE_MATRICE(  MATR_ELEM=MELER,  NUME_DDL=NDDL )
+NDDL=NUME_DDL(MATR_RIGI=MELER);
 
-MATM=ASSE_MATRICE(  MATR_ELEM=MELEM,  NUME_DDL=NDDL )
+MATR=ASSE_MATRICE(MATR_ELEM=MELER, NUME_DDL=NDDL);
 
-MATA=ASSE_MATRICE(  MATR_ELEM=MELEA,  NUME_DDL=NDDL )
+MATM=ASSE_MATRICE(MATR_ELEM=MELEM, NUME_DDL=NDDL);
 
-VECT=ASSE_VECTEUR(  VECT_ELEM=VELEM,  NUME_DDL=NDDL )
+MATA=ASSE_MATRICE(MATR_ELEM=MELEA, NUME_DDL=NDDL);
+
+VECT=ASSE_VECTEUR(VECT_ELEM=VELEM, NUME_DDL=NDDL);
 
 # CALCUL MODAL :30 MODES
+# (jusqu'a 4800 Hz)
 
-MODE=MODE_ITER_SIMULT(   MATR_A=MATR,   MATR_B=MATM,
-                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
-                          NMAX_FREQ = 30) )
+MODE=MODE_ITER_SIMULT(MATR_A   =MATR,
+                      MATR_B   =MATM,
+                      CALC_FREQ=_F(OPTION = 'PLUS_PETITE',
+                                   NMAX_FREQ= 30));
 
-NDDLGEN=NUME_DDL_GENE(   BASE=MODE )
+NDDLGEN=NUME_DDL_GENE(BASE=MODE);
 
 # PROJECTION DANS LA BASSE MODALE
 
-RIGIPROJ=PROJ_MATR_BASE(  BASE=MODE,  NUME_DDL_GENE=NDDLGEN,
-                            MATR_ASSE=MATR )
+RIGIPROJ=PROJ_MATR_BASE(BASE         =MODE,
+                        NUME_DDL_GENE=NDDLGEN,
+                        MATR_ASSE    =MATR);
 
-MASSPROJ=PROJ_MATR_BASE(  BASE=MODE,  NUME_DDL_GENE=NDDLGEN,
-                            MATR_ASSE=MATM )
+MASSPROJ=PROJ_MATR_BASE(BASE         =MODE,
+                        NUME_DDL_GENE=NDDLGEN,
+                        MATR_ASSE    =MATM);
 
-AMORPROJ=PROJ_MATR_BASE(  BASE=MODE,  NUME_DDL_GENE=NDDLGEN,
-                            MATR_ASSE=MATA)
+AMORPROJ=PROJ_MATR_BASE(BASE         =MODE,
+                        NUME_DDL_GENE=NDDLGEN,
+                        MATR_ASSE    =MATA);
 
-VECTPROJ=PROJ_VECT_BASE(  BASE=MODE,  VECT_ASSE=VECT,
-                            NUME_DDL_GENE=NDDLGEN,  TYPE_VECT='FORC' )
+VECTPROJ=PROJ_VECT_BASE(BASE         =MODE,
+                        VECT_ASSE    =VECT,
+                        NUME_DDL_GENE=NDDLGEN,
+                        TYPE_VECT    ='FORC');
 
-TRANGENE=DYNA_TRAN_MODAL(   METHODE='EULER',
-                              MASS_GENE=MASSPROJ,  RIGI_GENE=RIGIPROJ,
-                              AMOR_GENE=AMORPROJ,
-                             INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = TFIN,
-                                         PAS = DELT),
-                             ARCHIVAGE=_F(  PAS_ARCH=10),
-                              EXCIT=_F(  VECT_GENE = VECTPROJ,
-                                      FONC_MULT = SINOT),CHOC=(
-                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (.609, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (1.218, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (1.827, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (2.436, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN)),
-                               INFO=1,
-                              IMPRESSION=_F(  NIVEAU = 'DEPL_LOC',
-                                           INST_FIN = 0.01)
-                             )
+TRANGENE=DYNA_TRAN_MODAL(METHODE  ='EULER',
+                         MASS_GENE=MASSPROJ,
+                         RIGI_GENE=RIGIPROJ,
+                         AMOR_GENE=AMORPROJ,
+                         INCREMENT=_F(INST_INIT= 0.,
+                                      INST_FIN = TFIN,
+                                      PAS      = DELT),
+                         ARCHIVAGE=_F(PAS_ARCH  =10),
+                         EXCIT=_F(VECT_GENE= VECTPROJ,
+                                  FONC_MULT= SINOT),
+                         CHOC=(_F(NOEUD_1  = 'N14',
+                                  JEU      = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (.609, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN),
+                               _F(NOEUD_1  = 'N26',
+                                  JEU      = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (1.218, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN),
+                               _F(NOEUD_1  = 'N38',
+                                  JEU = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (1.827, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN),
+                               _F(NOEUD_1  = 'N2',
+                                  JEU      = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (2.436, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN)),
+                          INFO=1,
+                          IMPRESSION=_F(NIVEAU  = 'DEPL_LOC',
+                          #              TOUT='OUI',
+                          #              INST_INIT= 0.01,
+                                        INST_FIN= 0.01),);
 
-POST=POST_DYNA_MODA_T(  RESU_GENE=TRANGENE,
-                 CHOC=_F( INST_INIT = TDEB,  INST_FIN = TFIN) )
+POST=POST_DYNA_MODA_T(RESU_GENE=TRANGENE,
+                      CHOC=_F(INST_INIT= TDEB,
+                              INST_FIN = TFIN));
 
-TEST_TABLE(      TABLE=POST,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'FORCE_NORMALE'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N25')),
-                 NOM_PARA='RMS_T_TOTAL',
-                     VALE=23.4,
-                PRECISION=0.1
-             )
-MODE_STA = MODE_STATIQUE( MATR_RIGI= MATR,
-                          MATR_MASS= MATM,
-                      FORCE_NODALE=_F(NOEUD= ('N6','N13','N19','N25',),
-                                   AVEC_CMP= ('DX','DY',),
-                                   ),
-                          INFO=1 );
+IMPR_TABLE(TABLE=POST);
 
-BASEMODA = DEFI_BASE_MODALE (RITZ =(_F(MODE_MECA=MODE,NMAX_MODE=30),
-                                    _F(MODE_STAT=MODE_STA,),),
-                         NUME_REF=NDDL,)
+TEST_TABLE(TABLE=POST,
+           FILTRE=(_F(NOM_PARA= 'CALCUL',
+                      VALE_K  = 'FORCE_NORMALE'),
+                   _F(NOM_PARA= 'NOEUD',
+                      VALE_K  = 'N2')),
+           NOM_PARA ='RMS_T_TOTAL',
+           VALE     =23.4,
+           PRECISION=0.05);
 
-IMPR_CO( CHAINE='BASEMODA           .REFE' )
-IMPR_CO( CHAINE='MODE_STA           .REFE' )
-IMPR_CO( CHAINE='MODE               .REFE' )
+RESPHY1 = REST_BASE_PHYS(RESU_GENE =TRANGENE,
+                         TOUT_ORDRE='OUI',
+                         NOM_CHAM  ='DEPL');
 
-NDDLGEN2 = NUME_DDL_GENE( BASE= BASEMODA,
-                          STOCKAGE= 'PLEIN',)
-#
+dN25_Y1a = RECU_FONCTION(RESULTAT= RESPHY1,
+                         NOM_CHAM= 'DEPL',
+                         NOEUD   = 'N2',
+                         INTERPOL= 'LIN',
+                         NOM_CMP = 'DY');
+
+dN25_Y1b = RECU_FONCTION(RESU_GENE= TRANGENE,
+                         NOM_CHAM = 'DEPL',
+                         NOEUD    = 'N2',
+                         INTERPOL = 'LIN',
+                         NOM_CMP  = 'DY');
+                        
+                        
+# ---- PRISE EN COMPTE DES MODES STATIQUES DANS LA BASE MODALE
+#      =======================================================
+
+MODE_STA = MODE_STATIQUE(MATR_RIGI   = MATR,
+                         MATR_MASS   = MATM,
+                         FORCE_NODALE=_F(NOEUD=('N14','N26','N38','N2'),
+                                         AVEC_CMP=('DX','DY',)),
+                         INFO=1);
+                         
+BASEMODA = DEFI_BASE_MODALE(RITZ =(_F(MODE_MECA=MODE,
+                                      NMAX_MODE=30),
+                                   _F(MODE_STAT=MODE_STA)),
+                            NUME_REF=NDDL,
+                            INFO=2);
+
+IMPR_CO(CHAINE='BASEMODA           .REFE');
+IMPR_CO(CHAINE='MODE_STA           .REFE');
+IMPR_CO(CHAINE='MODE               .REFE');
+
+NDDLGEN2 = NUME_DDL_GENE(BASE= BASEMODA,
+                         STOCKAGE= 'PLEIN');
+
 # MATRICES GENERALISEES
 # ---------------------
-#
+# PROJECTION DANS LA BASSE MODALE
+
 MACRO_PROJ_BASE(BASE=BASEMODA,
-                MATR_ASSE_GENE=(_F(MATRICE=CO('RIGIPRO2'),
-                                   MATR_ASSE=MATR,),
-                                _F(MATRICE=CO('MASSPRO2'),
-                                   MATR_ASSE=MATM,),
-                                _F(MATRICE=CO('AMORPRO2'),
-                                   MATR_ASSE=MATA,),
-                                   ),
-                PROFIL='PLEIN',);
-VECTPRO2=PROJ_VECT_BASE(  BASE=BASEMODA,  VECT_ASSE=VECT,
-                            NUME_DDL_GENE=NDDLGEN2,  TYPE_VECT='FORC' )
+                MATR_ASSE_GENE=(_F(MATRICE  =CO('RIGIPRO2'),
+                                   MATR_ASSE=MATR),
+                                _F(MATRICE  =CO('MASSPRO2'),
+                                   MATR_ASSE=MATM),
+                                _F(MATRICE  =CO('AMORPRO2'),
+                                   MATR_ASSE=MATA)),
+                PROFIL='PLEIN');
+                
+VECTPRO2=PROJ_VECT_BASE(BASE         =BASEMODA,
+                        VECT_ASSE    =VECT,
+                        NUME_DDL_GENE=NDDLGEN2,
+                        TYPE_VECT    ='FORC');
 
-TRANGEN2=DYNA_TRAN_MODAL(   METHODE='EULER',
-                              MASS_GENE=MASSPRO2,  RIGI_GENE=RIGIPRO2,
-                              AMOR_GENE=AMORPRO2,
-                             INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = TFIN,
-                                         PAS = DELT),
-                             ARCHIVAGE=_F(  PAS_ARCH=10),
-                              EXCIT=_F(  VECT_GENE = VECTPRO2,
-                                      FONC_MULT = SINOT),CHOC=(
-                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (.609, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (1.218, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (1.827, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN),
-                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,
-                                    OBSTACLE = BUTE,
-                                    ORIG_OBST = (2.436, 0.0, 0.0, ),
-                                    NORM_OBST = ( 1.,  0., 0., ),
-                                    RIGI_NOR = KN, AMOR_NOR = CN)),
-                               INFO=1,
-                              IMPRESSION=_F(  NIVEAU = 'DEPL_LOC',
-                                           INST_FIN = 0.01)
-                             )
+TRANGEN2=DYNA_TRAN_MODAL(METHODE='EULER',
+                         MASS_GENE=MASSPRO2,
+                         RIGI_GENE=RIGIPRO2,
+                         AMOR_GENE=AMORPRO2,
+                         
+                         INCREMENT=_F(INST_INIT= 0.,
+                                      INST_FIN = TFIN,
+                                      PAS      = DELT),
+                         ARCHIVAGE=_F(PAS_ARCH=10),
+                         EXCIT=_F(VECT_GENE = VECTPRO2,
+                                  FONC_MULT = SINOT),
+                         CHOC=(_F(NOEUD_1  = 'N14',
+                                  JEU      = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (.609, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN),
+                               _F(NOEUD_1  = 'N26',
+                                  JEU      = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (1.218, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN),
+                               _F(NOEUD_1  = 'N38',
+                                  JEU      = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (1.827, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN),
+                               _F(NOEUD_1  = 'N2',
+                                  JEU      = .406E-3,
+                                  OBSTACLE = BUTE,
+                                  ORIG_OBST= (2.436, 0.0, 0.0, ),
+                                  NORM_OBST= ( 1.,  0., 0., ),
+                                  RIGI_NOR = KN,
+                                  AMOR_NOR = CN)),
+                           INFO=1,
+                           IMPRESSION=_F(NIVEAU  = 'DEPL_LOC',
+                           #              TOUT='OUI',
+                           #             INST_INIT= 0.01,
+                                        INST_FIN= 0.01));
 
-POST2=POST_DYNA_MODA_T(  RESU_GENE=TRANGEN2,
-                 CHOC=_F( INST_INIT = TDEB,  INST_FIN = TFIN) )
+POST2=POST_DYNA_MODA_T(RESU_GENE=TRANGEN2,
+                      CHOC=_F(INST_INIT= TDEB,
+                              INST_FIN = TFIN));
+IMPR_TABLE(TABLE=POST2);
 
-TEST_TABLE(      TABLE=POST2,FILTRE=(
-                   _F(  NOM_PARA = 'CALCUL',
-                            VALE_K = 'FORCE_NORMALE'),
-                   _F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'N25')),
-                 NOM_PARA='RMS_T_TOTAL',
-                     VALE=23.4,
-                PRECISION=0.1
-             )
+TEST_TABLE(TABLE=POST2,
+           FILTRE=(_F(NOM_PARA= 'CALCUL',
+                      VALE_K  = 'FORCE_NORMALE'),
+                   _F(NOM_PARA= 'NOEUD',
+                      VALE_K  = 'N2')),
+           NOM_PARA ='RMS_T_TOTAL',
+           VALE     =23.4,
+           PRECISION=0.01);
 
-RESPHY = REST_BASE_PHYS(RESU_GENE=TRANGEN2,
-                        TOUT_ORDRE='OUI',
-                        NOM_CHAM='DEPL',)
 
-dN25_Ya = RECU_FONCTION ( RESULTAT = RESPHY,
-                          NOM_CHAM = 'DEPL',
-                          NOEUD  = 'N25',
-                          INTERPOL= 'LIN',
-                          NOM_CMP = 'DY',
-                         )
+# RESTITUTION SUR BASE PHYSIQUE ET POST-TRAITEMENT
 
-dN25_Yb = RECU_FONCTION (
-                          RESU_GENE = TRANGEN2,
-                          NOM_CHAM = 'DEPL',
-                          NOEUD  = 'N25',
-                          INTERPOL= 'LIN',
-                          NOM_CMP = 'DY',
-                         )
-
-FIN( )
-#
+# RESPHY = REST_BASE_PHYS(RESU_GENE =TRANGEN2,
+#                         TOUT_ORDRE='OUI',
+#                         NOM_CHAM  ='DEPL');
+# 
+# dN25_Y2a = RECU_FONCTION(RESULTAT= RESPHY,
+#                         NOM_CHAM= 'DEPL',
+#                         NOEUD   = 'N2',
+#                         INTERPOL= 'LIN',
+#                         NOM_CMP = 'DY');
+# 
+# dN7_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
+#                         NOM_CHAM = 'DEPL',
+#                         NOEUD    = 'N14',
+#                         INTERPOL = 'LIN',
+#                         NOM_CMP  = 'DY');
+# 
+# dN13_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
+#                         NOM_CHAM = 'DEPL',
+#                         NOEUD    = 'N26',
+#                         INTERPOL = 'LIN',
+#                         NOM_CMP  = 'DY');
+#                         
+# dN19_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
+#                         NOM_CHAM = 'DEPL',
+#                         NOEUD    = 'N38',
+#                         INTERPOL = 'LIN',
+#                         NOM_CMP  = 'DY',);
+#                         
+# dN25_Y2b = RECU_FONCTION(RESU_GENE= TRANGEN2,
+#                         NOM_CHAM = 'DEPL',
+#                         NOEUD    = 'N2',
+#                         INTERPOL = 'LIN',
+#                         NOM_CMP  = 'DY');
+#                         
+# IMPR_FONCTION(FORMAT='XMGRACE',
+#             UNITE = 25,
+#             LEGENDE_X='TEMPS',
+#             LEGENDE_Y='DEPL',
+#             COURBE=(_F(FONCTION=dN25_Y1b,
+#                        LEGENDE='dN25_Y1b',
+#                        COULEUR=9,
+#                        MARQUEUR=0,),
+#                     _F(FONCTION=dN25_Y2b ,
+#                        LEGENDE='dN25_Y2b',
+#                        COULEUR=6,
+#                        MARQUEUR=0,)));
+# 
+# 
+# IMPR_FONCTION(FORMAT='XMGRACE',
+#             UNITE = 26,
+#             LEGENDE_X='TEMPS',
+#             LEGENDE_Y='DEPL',
+#             COURBE=(_F(FONCTION=dN7_Y2b,
+#                        LEGENDE='dN7_Y2b',
+#                        COULEUR=7,
+#                        MARQUEUR=0,),
+#                     _F(FONCTION=dN13_Y2b,
+#                        LEGENDE='dN13_Y2b',
+#                        COULEUR=8,
+#                        MARQUEUR=0,),
+#                     _F(FONCTION=dN19_Y2b,
+#                        LEGENDE='dN19_Y2b',
+#                        COULEUR=9,
+#                        MARQUEUR=0,),
+#                     _F(FONCTION=dN25_Y2b ,
+#                        LEGENDE='dN25_Y2b',
+#                        COULEUR=6,
+#                        MARQUEUR=0,)));
+                       
+FIN();

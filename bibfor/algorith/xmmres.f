@@ -1,7 +1,7 @@
       SUBROUTINE XMMRES(DEFICO,DEPDEL,NUMEDD,MODELE,CNSINR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/01/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -405,11 +405,17 @@ C           LE POINT EST GLISSANT
             RTGX = RTXYZ(1)
             RTGY = RTXYZ(2)
             RTGZ = RTXYZ(3)
+            RTAX = 0.D0
+            RTAY = 0.D0
+            RTAZ = 0.D0          
           ELSE
 C           LE POINT EST ADHERENT
             RTAX = RTXYZ(1)
             RTAY = RTXYZ(2)
             RTAZ = RTXYZ(3)
+            RTGX = 0.D0
+            RTGY = 0.D0
+            RTGZ = 0.D0             
           END IF
 
           ZR(JCNSVR-1+ZCNS*(NUNO-1)+2)=JEU

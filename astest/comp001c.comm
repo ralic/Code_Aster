@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 21/01/2008   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE  TEST LOI DE COMPORTEMENT 3D CINE_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,8 +70,8 @@ N_cas = len(N_pas)
 
 # les differents calculs effectues et les precisions sur chaque TEST_RESU
 label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
-prec_tgt=1.e-6
+prec_ecart=4*[2.] + [1.E-1] + (N_cas-5)*[1.E-2]   
+prec_tgt=1.E-6
 
 
 

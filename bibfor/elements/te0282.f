@@ -1,7 +1,7 @@
       SUBROUTINE TE0282 ( OPTION , NOMTE )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -413,8 +413,8 @@ C CAS PARTICULIER D'UN CALCUL SUR L'AXE
 C ON EST SUR L'AXE AVEC CHARGEMENTS NULS DONC G (ET DG) = 0
            IF (CHARGN) THEN
              GOTO 799
-           ELSE
-             CALL U2MESS('F','ELEMENTS3_65')
+           ELSEIF ( CHELEM .EQ. 'AX' )THEN
+             CALL U2MESS('F','RUPTURE1_23')
            ENDIF
          ELSE
 

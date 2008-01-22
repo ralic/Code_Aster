@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/01/2008   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -274,11 +274,13 @@ TEST_TABLE(TABLE=TABDEP_2,
            PRECISION=0.04,
            REFERENCE='NON_REGRESSION',);  
 
-VREF_1=0.123051
-VREF_2=0.243858
+# CES VALEURS DE NON REGRESSION ONT ETE OBTENUES AVEC LA 9.2.5
+# MAIS ON NE SAIT PAS PAS SI ELLES SONT CORRECTES.
+VREF_1=1.2697828769295E-02
+VREF_2=2.8958028166836E-02
 
 TEST_RESU(RESU=(
-                 _F(RESULTAT=UTOT1,
+                _F(RESULTAT=UTOT1,
                    INST=0.1,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
@@ -286,7 +288,7 @@ TEST_RESU(RESU=(
                    POINT=10,
                    VALE=VREF_1,
                    REFERENCE='NON_REGRESSION',),
-                 _F(RESULTAT=UTOT1,
+                _F(RESULTAT=UTOT1,
                    INST=0.14,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
@@ -294,7 +296,7 @@ TEST_RESU(RESU=(
                    POINT=10,
                    VALE=VREF_1,
                    REFERENCE='NON_REGRESSION',),
-                 _F(RESULTAT=UTOT1,
+                _F(RESULTAT=UTOT1,
                    INST=0.3,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
