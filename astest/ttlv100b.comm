@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE : CHOC THERMIQUE DANS UN TUYAU AVEC CONDITION D'ECHANGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,7 @@ INOX=DEFI_MATERIAU(    THER=_F( LAMBDA = 19.97E-3,
 CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
                                AFFE=_F(  TOUT = 'OUI',
                                       MATER = INOX,
-                                      TEMP_REF = 289.)
+                                      )
                        )
 
 PAROI=DEFI_CONSTANTE(   VALE=40000.E-6 )

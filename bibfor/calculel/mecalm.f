@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -653,8 +653,7 @@ C=======================================================================
                 TIME = ZERO
               END IF
 
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 C -- POUR LES POUTRES MULTIFIBRES ON A BESOIN DE COMPOR ISSU DE MATERIAU
@@ -724,8 +723,7 @@ C ---- VERIF SENSIBILITE FIN
               ELSE
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL RSEXCH(RESUCO,'DEPL',IORDR,CHAMGD,IRET)
 
@@ -812,8 +810,7 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
      &                    K24B,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
@@ -922,8 +919,7 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL MECHDA(MODELE,NCHAR,ZK8(JCHA),EXITIM,TIME,CHEPSA)
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
@@ -1467,8 +1463,7 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
 
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
@@ -1701,8 +1696,7 @@ C ---- VERIF SENSIBILITE FIN
               ELSE
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL COENDO(OPTION,MODELE,LIGREL,MATE,CHVARC,CHSIG,CHELEM)
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   342         CONTINUE
@@ -1810,10 +1804,8 @@ C --- A3/ RECUPERATION DU TEMPS CORRESPONDANT AUX ORDRES #IORDR[1,2]
 C --- A4/ EVALUATION DES DONNEES MATERIAUX AUX INSTANTS - ET +
 C     --------------------------------------------------------
 
-                  CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME1,CHVARC)
-                  CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME2,CHVAC2)
+                  CALL VRCINS(MODELE,MATE,CARA,TIME1,CHVARC)
+                  CALL VRCINS(MODELE,MATE,CARA,TIME2,CHVAC2)
 
 C --- A5/ CALCUL DU TAUX DE TRIAXIALITE, DE LA CONTRAINTE
 C ---     D'ENDOMMAGEMENT ET DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
@@ -1879,8 +1871,7 @@ C ---- VERIF SENSIBILITE FIN
               ELSE
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL MECALC(OPTION,MODELE,K24B,CHGEOM,MATE,CHCARA,K24B,
      &                    K24B,K24B,CHNUMC,K24B,CHSIG,CHDEPL,K24B,
@@ -1927,8 +1918,7 @@ C ---- VERIF SENSIBILITE FIN
               ELSE
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
      &                    K24B,K24B,K24B,CHNUMC,K24B,CHSIG,K24B,
@@ -2206,8 +2196,7 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
-     &                    TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
 
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,

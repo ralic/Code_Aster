@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TEST DE REFERENCE POUR LA MACRO DE CALCUL DE BRIDES CABRI
@@ -19,6 +19,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+
+from Intranet.macr_cabri_mail_cata import MACR_CABRI_MAIL
 
 DEBUT(CODE=_F(  NOM = 'CABRI02A',NIV_PUB_WEB='INTRANET'));
 
@@ -209,21 +211,11 @@ MA=MODI_MAILLAGE(reuse =MA,
 # Affectation des materiaux
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     MODELE=MO_TH,
-                    AFFE=(_F(GROUP_MA='BRIDE',
-                             MATER=MA_BRI,
-                             TEMP_REF=TEMP_INI,),
-                          _F(GROUP_MA='ROND',
-                             MATER=MA_RON,
-                             TEMP_REF=TEMP_INI,),
-                          _F(GROUP_MA='ECROU',
-                             MATER=MA_ECR,
-                             TEMP_REF=TEMP_INI,),
-                          _F(GROUP_MA='GOUJON',
-                             MATER=MA_GOU,
-                             TEMP_REF=TEMP_INI,),
-                          _F(GROUP_MA='JOINT',
-                             MATER=MA_LIM,
-                             TEMP_REF=TEMP_INI,),),);
+                    AFFE=(_F(GROUP_MA='BRIDE',  MATER=MA_BRI, ),
+                          _F(GROUP_MA='ROND',   MATER=MA_RON, ),
+                          _F(GROUP_MA='ECROU',  MATER=MA_ECR, ),
+                          _F(GROUP_MA='GOUJON', MATER=MA_GOU, ),
+                          _F(GROUP_MA='JOINT',  MATER=MA_LIM, ),),);
 
 #----- CONDITIONS AUX LIMITES THERMIQUES --------------------
 # ECHANGES THERMIQUES INTERNES ENTRE LE FLUIDE ET LA BRIDE
@@ -328,11 +320,7 @@ CHMTM=AFFE_MATERIAU(MAILLAGE=MA,
                              MATER=MA_GOU,),
                           _F(GROUP_MA='JOINT',
                              MATER=MA_LIM,),),
-                     AFFE_VARC=_F(NOM_VARC='TEMP',
-                             TOUT='OUI',
-                             EVOL=TH1,
-                             NOM_CHAM='TEMP',
-                             VALE_REF=TEMP_INI),);
+                     AFFE_VARC=_F(NOM_VARC='TEMP', TOUT='OUI', EVOL=TH1, NOM_CHAM='TEMP', VALE_REF=TEMP_INI),);
 
 # SERRAGE ECROU/GOUJON
 

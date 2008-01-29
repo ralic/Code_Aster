@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -221,7 +221,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT='OUI',
                                MATER=ACIER,
-                               TEMP_REF=0.0,),);
+                               ),);
 
 #----------------------------------------------
 #         BLOCAGE DES MODES RIGIDES

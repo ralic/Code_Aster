@@ -1,7 +1,8 @@
-#& MODIF COMMANDE  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+#@ MODIF macr_cabri_mail_cata Intranet  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,7 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from Macro.macr_cabri_mail_ops import macr_cabri_mail_ops
+from Intranet.macr_cabri_mail_ops import macr_cabri_mail_ops
+from Cata.cata import *
 
 MACR_CABRI_MAIL=MACRO(nom="MACR_CABRI_MAIL",
                       op=macr_cabri_mail_ops,
@@ -88,4 +90,3 @@ MACR_CABRI_MAIL=MACRO(nom="MACR_CABRI_MAIL",
                                             ),
                                           ),
                      );
-

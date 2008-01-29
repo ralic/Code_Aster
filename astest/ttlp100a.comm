@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE ECHANGE_PAROI EN THERMIQUE LINEAIRE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ CHMAT=AFFE_MATERIAU(
                              MAILLAGE=MAIL,
                              AFFE=_F(  TOUT = 'OUI',
                                     MATER = MAT,
-                                    TEMP_REF = 20.)
+                                    )
                           )
 
 #

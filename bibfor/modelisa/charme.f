@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,6 @@ C                                      ET AFFE_CHAR_MECA_F
 C      MOTS-CLES ACTUELLEMENT TRAITES:
 
 C        MODELE
-C        TEMP_CALCULEE
 C        EPSA_CALCULEE
 C        EVOL_CHAR
 C        PESANTEUR
@@ -213,7 +212,6 @@ C     DEFORMATIONS ANELASTIQUES, RELA_CINE_BP ---
 
       IF (FONREE.EQ.'REEL') THEN
 C         ================
-         CALL CBTEMP ( CHAR )
          CALL CBPRCA ( CHAR )
          CALL CBPESA ( CHAR, NOMA )
          CALL CBROTA ( CHAR, NOMA )

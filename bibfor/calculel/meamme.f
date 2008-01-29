@@ -3,7 +3,7 @@
      &                  MEMASS,MEAMOR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-      IMPLICIT NONE     
+      IMPLICIT NONE
       INTEGER NCHAR
       REAL*8 TIME
       CHARACTER*(*) MODELE,OPTIOZ,CARA,MATE
@@ -29,12 +29,12 @@ C
       CHARACTER*8 LCHAR(*)
       LOGICAL EXITIM
       CHARACTER*1  BASE
-C 
+C
 C ----------------------------------------------------------------------
 C
 C CALCUL DES MATRICES ELEMENTAIRES D'AMOR_MECA
 C OU DES MATRICES ELEMENTAIRES DE RIGI_MECA_HYST
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -84,15 +84,15 @@ C
       CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,ARGU
       CHARACTER*16 OPTION
       LOGICAL      DEBUG
-      INTEGER      IFMDBG,NIVDBG         
+      INTEGER      IFMDBG,NIVDBG
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()      
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG) 
+      CALL JEMARQ()
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
-C       
+C
       IF (MODELE(1:1).EQ.' ') THEN
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -102,27 +102,26 @@ C
         DEBUG  = .TRUE.
       ELSE
         DEBUG  = .FALSE.
-      ENDIF      
+      ENDIF
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT)    
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- CREATION DES CHAMPS DE GEOMETRIE, CARA_ELEM ET FOURIER
 C
       NH     = 0
       CALL MECHAM(OPTION,MODELE(1:8),NCHAR ,LCHAR ,CARA(1:8),
      &            NH    ,CHGEOM     ,CHCARA,CHHARM,ICODE)
-C     
-C --- CREATION CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT 
+C
+C --- CREATION CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT
 C
       CHVARC = '&&MEAMME.CHVARC'
-      CALL VRCINS(MODELE(1:8),MATE(1:8),CARA(1:8),NCHAR ,LCHAR ,
-     &            TIME       ,CHVARC)
+      CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
 C
 C --- NOM DES RESUELEM DE RIGIDITE
-C 
+C
       RIGICH = ' '
       IF (MERIGI(1:1).NE.' ') THEN
         CALL JEEXIN(MERIGI(1:8)//'.LISTE_RESU',IRET)
@@ -141,7 +140,7 @@ C
       END IF
 C
 C --- NOM DES RESUELEM DE MASSE
-C 
+C
       MASSCH = ' '
       IF (MEMASS(1:1).NE.' ') THEN
         CALL JEEXIN(MEMASS(1:8)//'.LISTE_RESU',IRET)
@@ -195,7 +194,7 @@ C
       LCHIN(10) = CHCARA(2)
 C
 C --- REMPLISSAGE DES CHAMPS DE SORTIE
-C      
+C
       IF (OPTION(1:9).EQ.'AMOR_MECA') THEN
         LPAOUT(1) = 'PMATUUR'
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
@@ -222,7 +221,7 @@ C
         CALL DBGCAL(OPTION,IFMDBG,
      &              NOP   ,LPAIN ,LCHIN ,
      &              1     ,LPAOUT,LCHOUT)
-      ENDIF  
+      ENDIF
 C
       CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
       IF (IRET.NE.0) THEN
@@ -233,7 +232,7 @@ C
 C
 C --- PRISE EN COMPTE DES MATRICES DE BLOCAGE DANS LE CAS D'UNE
 C --- RIGIDITE HYSTERETIQUE :
-C     
+C
       IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
         DO 50 ICHA = 1,NCHAR
           LIGRCH = LCHAR(ICHA) (1:8)//'.CHME.LIGRE'

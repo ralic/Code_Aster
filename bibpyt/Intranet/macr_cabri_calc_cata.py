@@ -1,7 +1,8 @@
-#& MODIF COMMANDE  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+#@ MODIF macr_cabri_calc_cata Intranet  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,7 +18,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from Macro.macr_cabri_calc_ops import macr_cabri_calc_ops
+from Intranet.macr_cabri_calc_ops import macr_cabri_calc_ops
+from Cata.cata import *
    
 def macr_cabri_calc_prod(self,MODELE_THER,MODELE_MECA,CHAM_MATER,
                          CHAR_THER,CHAR_MECA,RESU_THER,**args):
@@ -186,4 +188,3 @@ MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                         ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
                       ),
                      );
-

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE DEPLACEMENT IMPOSE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,7 +66,7 @@ CHMAT=AFFE_MATERIAU(
                             MAILLAGE=MAIL,
                             AFFE=_F(  TOUT = 'OUI',
                                    MATER = MATER,
-                                   TEMP_REF = 20.0)
+                                   )
                          )
 
 #

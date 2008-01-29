@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/12/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,7 +90,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3',),
                                 MATER=ACIER,
-                                TEMP_REF=0.0,),);
+                                ),);
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIG1',

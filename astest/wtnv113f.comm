@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST HM 2D, MODELISATION THMC=LIQU_GAZ_ATM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,8 +165,9 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    )
 
 CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
-                          AFFE=_F( TOUT = 'OUI',TEMP_REF=0.,
-                        MATER = MATERIAU))
+                     AFFE=_F( TOUT = 'OUI', MATER = MATERIAU),
+                     AFFE_VARC=_F(TOUT='OUI', NOM_VARC='TEMP',VALE_REF=0.,),
+                          )
 
 CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
                           DDL_IMPO=(_F(  TOUT = 'OUI',

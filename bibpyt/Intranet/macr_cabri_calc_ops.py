@@ -1,8 +1,8 @@
-#@ MODIF macr_cabri_calc_ops Macro  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF macr_cabri_calc_ops Intranet  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,16 +19,14 @@
 # ======================================================================
 
 
-
-
 def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
     CHAR_MECA,RESU_THER,RESO_INTE,
-    AFFE_MATERIAU,DEFI_CHAR_THER,DEFI_CHAR_MECA,RELATION,SOLVEUR,CONVERGENCE,NEWTON, 
+    AFFE_MATERIAU,DEFI_CHAR_THER,DEFI_CHAR_MECA,RELATION,SOLVEUR,CONVERGENCE,NEWTON,
     INCREMENT,CHAM_MATER,**args):
    """
      Ecriture de la macro MACR_CABRI_CALC
    """
-   
+
    #################################################################
    ########## PREPARATION MACRO
    #################################################################
@@ -36,22 +34,22 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
    from Accas import _F
 
    ier =0
-   
+
    # On met certains mots-clefs dans des variables locales pour les proteger
    affemateriau = AFFE_MATERIAU
-   mail         = MAILLAGE  
+   mail         = MAILLAGE
    resointe     = RESO_INTE
 
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    DEFI_GROUP       = self.get_cmd('DEFI_GROUP')
    AFFE_MATERIAU    = self.get_cmd('AFFE_MATERIAU')
-   AFFE_MODELE      = self.get_cmd('AFFE_MODELE') 
-   MODI_MAILLAGE    = self.get_cmd('MODI_MAILLAGE')   
+   AFFE_MODELE      = self.get_cmd('AFFE_MODELE')
+   MODI_MAILLAGE    = self.get_cmd('MODI_MAILLAGE')
    AFFE_CHAR_THER_F = self.get_cmd('AFFE_CHAR_THER_F')
-   AFFE_CHAR_THER   = self.get_cmd('AFFE_CHAR_THER')  
+   AFFE_CHAR_THER   = self.get_cmd('AFFE_CHAR_THER')
    AFFE_CHAR_MECA_F = self.get_cmd('AFFE_CHAR_MECA_F')
-   AFFE_CHAR_MECA   = self.get_cmd('AFFE_CHAR_MECA')  
+   AFFE_CHAR_MECA   = self.get_cmd('AFFE_CHAR_MECA')
    DEFI_FONCTION    = self.get_cmd('DEFI_FONCTION')
    DEFI_LIST_REEL   = self.get_cmd('DEFI_LIST_REEL')
    THER_LINEAIRE    = self.get_cmd('THER_LINEAIRE')
@@ -60,11 +58,11 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
-   # Le concept sortant (de type evol_noli) est nomme 'resumeca' dans 
+   # Le concept sortant (de type evol_noli) est nomme 'resumeca' dans
    # le contexte de la macro
    self.DeclareOut('resumeca',self.sd)
    self.DeclareOut('mail',MAILLAGE)
-           
+
    #################################################################
    ########## PREPARATION DES MODELES
    #################################################################
@@ -83,7 +81,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
    # Creation du modele thermique
    if MODELE_THER != None:
       self.DeclareOut('modther',MODELE_THER)
-         
+
    modther=AFFE_MODELE(MAILLAGE=mail,
                           AFFE=_F(GROUP_MA=('VTOT','M_GOU','M_TUB','M_JOI','SCBJ','SCJB',
                           'M_L_AA','M_INT','M_L_SA','M_EXT','SCEG','SCGE',),
@@ -94,7 +92,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
    # Creation du modele mecanique
    if MODELE_MECA != None:
       self.DeclareOut('modmeca',MODELE_MECA)
-         
+
    modmeca = AFFE_MODELE(MAILLAGE=mail,
                           AFFE=_F(GROUP_MA=('VTOT','M_GOU','M_TUB','M_JOI','SCBJ','SCJB',
                           'M_L_AA','M_L_SA','SCEG','SCGE','M_INT','M_EXT',),
@@ -118,14 +116,12 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
       if mat['TOUT'] == None:
          # Creation de mots-cles pour les AFFE_CHAR_MECA
          motscles['AFFE'].append(_F(GROUP_MA=mat['GROUP_MA'],
-                                    MATER = mat['MATER'],
-                                    TEMP_REF = mat['TEMP_REF'],) )
+                                    MATER = mat['MATER']))
       else:
          # Creation de mots-cles pour les AFFE_CHAR_MECA
          motscles['AFFE'].append(_F(TOUT='OUI',
-                                    MATER = mat['MATER'],
-                                    TEMP_REF = mat['TEMP_REF'],) )
-      
+                                    MATER = mat['MATER']))
+
    __cham = AFFE_MATERIAU(MAILLAGE=mail,
                     MODELE=modther,
                     AFFE=motscles['AFFE'],
@@ -133,7 +129,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
 
    #################################################################
    ########## CONDITIONS AUX LIMITES THERMIQUES
-   #################################################################   
+   #################################################################
    # Recuperation des parametres thermiques
 
    if DEFI_CHAR_THER != None:
@@ -145,7 +141,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                     VALE=(0.0,0.016,
                        7200.0,0.016,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);      
+                    PROL_GAUCHE='CONSTANT',);
       if DEFI_CHAR_THER['TEMP_EXT_FLUI']!=None:
          temp_int = DEFI_CHAR_THER['TEMP_EXT_FLUI']
       else:
@@ -153,7 +149,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                     VALE=(0.0,temp_ini,1.0,temp_ini,11.0,60.0,
                           600.0,60.0,610.0,280.0,1800.0,280.0,7200.0,280.0,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);    
+                    PROL_GAUCHE='CONSTANT',);
       if DEFI_CHAR_THER['COEF_H_AIR']!=None:
          coef_ext = DEFI_CHAR_THER['COEF_H_AIR']
       else:
@@ -161,14 +157,14 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                     VALE=(0.0,1e-05,7200.0,1e-05,),
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='CONSTANT',);
-     
+
       if DEFI_CHAR_THER['TEMP_EXT_AIR']!=None:
          temp_ext = DEFI_CHAR_THER['TEMP_EXT_AIR']
       else:
          temp_ext = DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,20.0,7200.0,20.0,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);    
+                    PROL_GAUCHE='CONSTANT',);
       if DEFI_CHAR_THER['LIST_INST']!=None:
          transi1  = DEFI_CHAR_THER['LIST_INST']
       else:
@@ -184,27 +180,27 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                                  _F(JUSQU_A=1800.0,
                                     NOMBRE=30,),
                                  _F(JUSQU_A=7200.0,
-                                    NOMBRE=10,),),);                                                        
+                                    NOMBRE=10,),),);
    else:
       temp_ini = DEFI_CHAR_THER['TEMP_INIT']
       coef_int = DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.016,
                        7200.0,0.016,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);      
+                    PROL_GAUCHE='CONSTANT',);
       temp_int = DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,temp_ini,1.0,temp_ini,11.0,60.0,
                           600.0,60.0,610.0,280.0,1800.0,280.0,7200.0,280.0,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);    
+                    PROL_GAUCHE='CONSTANT',);
       coef_ext = DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,1e-05,7200.0,1e-05,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);    
+                    PROL_GAUCHE='CONSTANT',);
       temp_ext = DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,20.0,7200.0,20.0,),
                     PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);                                       
+                    PROL_GAUCHE='CONSTANT',);
       transi1  = DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=1.0,
                                     NOMBRE=1,),
@@ -217,7 +213,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                                  _F(JUSQU_A=1800.0,
                                     NOMBRE=30,),
                                  _F(JUSQU_A=7200.0,
-                                    NOMBRE=10,),),);     
+                                    NOMBRE=10,),),);
    # Que sauver ?
    if CHAR_THER != None:
       for m in CHAR_THER:
@@ -266,9 +262,9 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
 
    #################################################################
    ########## CALCUL THERMIQUE
-   #################################################################   
+   #################################################################
    if RESU_THER != None:
-      self.DeclareOut('resuther',RESU_THER)   
+      self.DeclareOut('resuther',RESU_THER)
 
    resuther=THER_LINEAIRE(MODELE=modther,
                   CHAM_MATER=__cham,
@@ -279,7 +275,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                   INCREMENT=_F(LIST_INST=transi1,),
                   ETAT_INIT=_F(VALE=temp_ini,),
                   TITRE='CABRI THERMIQUE &DATE &HEURE',);
- 
+
       # Affectation des materiaux (mécanique)
    if CHAM_MATER != None:
       self.DeclareOut('_chamt',CHAM_MATER)
@@ -297,12 +293,11 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
       else:
          # Creation de mots-cles pour les AFFE_CHAR_MECA
          motscles['AFFE'].append(_F(TOUT='OUI',
-                                    MATER = mat['MATER'],
-                                    TEMP_REF = mat['TEMP_REF'],) )
+                                    MATER = mat['MATER']) )
          motscles['AFFE_VARC'].append(_F(NOM_VARC='TEMP',TOUT='OUI',
                                          EVOL=resuther,NOM_CHAM='TEMP',
                                          VALE_REF = mat['TEMP_REF'],))
-      
+
    _chamt = AFFE_MATERIAU(MAILLAGE=mail,
                     MODELE=modther,
                     AFFE=motscles['AFFE'],
@@ -311,7 +306,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
 
    #################################################################
    ########## CONDITIONS AUX LIMITES MECANIQUES
-   #################################################################   
+   #################################################################
    # Recuperation des parametres mecaniques
    if DEFI_CHAR_MECA != None:
      if DEFI_CHAR_MECA['PRETENS']!=None:
@@ -320,14 +315,14 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
          f_pret=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,1.0,-0.02,),
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);                                 
+                     PROL_GAUCHE='CONSTANT',);
      if DEFI_CHAR_MECA['PRES_REP']!=None:
          pre_int = DEFI_CHAR_MECA['PRES_REP']
      else:
          pre_int = DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0,0.0,1.0,0.0,11.0,16.0,),
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);  
+                      PROL_GAUCHE='CONSTANT',);
      if DEFI_CHAR_MECA['EFFE_FOND']!=None:
          eff_fond = DEFI_CHAR_MECA['EFFE_FOND']
      else:
@@ -339,17 +334,17 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
       f_pret=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,1.0,-0.02,),
                      PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',);                                 
+                     PROL_GAUCHE='CONSTANT',);
 
       pre_int = DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.0,0.0,1.0,0.0,11.0,16.0,),
                       PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',);  
+                      PROL_GAUCHE='CONSTANT',);
 
       eff_fond=DEFI_FONCTION(NOM_PARA='INST',
                        VALE=(0.0,-0.0,1.0,-0.0,11.0,-20.607059,),
                        PROL_DROITE='CONSTANT',
-                       PROL_GAUCHE='CONSTANT',);     
+                       PROL_GAUCHE='CONSTANT',);
    # Que sauver ?
    if CHAR_MECA != None:
       for m in CHAR_MECA:
@@ -372,8 +367,8 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
          if m['TYPE']=="SERR_ECROU_1":
             self.DeclareOut('cl_me10',m['CHARGE'])
          if m['TYPE']=="SERR_ECROU_2":
-            self.DeclareOut('cl_me11',m['CHARGE'])            
-                            
+            self.DeclareOut('cl_me11',m['CHARGE'])
+
 
    # Blocage bas du goujon
    cl_me1=AFFE_CHAR_MECA(MODELE=modmeca,
@@ -445,10 +440,10 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
 
    #################################################################
    ########## CALCUL MECANIQUE
-   #################################################################  
-   # Options de convergence        
+   #################################################################
+   # Options de convergence
    solveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
-   
+
    # Elimination des valeurs "None"
    for i in solveur.keys():
       if solveur[i]==None : del solveur[i]
@@ -466,37 +461,37 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                                  _F(JUSQU_A=1800.0,
                                     NOMBRE=20,),
                                  _F(JUSQU_A=7200.0,
-                                    NOMBRE=20,),),);   
+                                    NOMBRE=20,),),);
 
-   # Options d'incrementation  
+   # Options d'incrementation
    if INCREMENT != None:
       if INCREMENT['LIST_INST'] != None:
          listinst = INCREMENT['LIST_INST']
       else:
-         listinst = transi2   
-   
+         listinst = transi2
+
       increment=INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
-   
+
       # Elimination des valeurs "None"
       for i in increment.keys():
          if increment[i]==None : del increment[i]
-      
+
       increment['LIST_INST'] = listinst
-            
+
    else:
       listinst  = transi2
       increment =_F(
                LIST_INST       = listinst,
-               ),       
-                              
-   # Options de Newton     
+               ),
+
+   # Options de Newton
    newton=NEWTON[0].cree_dict_valeurs(NEWTON[0].mc_liste)
    # Elimination des valeurs "None"
    for i in newton.keys():
-      if newton[i]==None : del newton[i]   
+      if newton[i]==None : del newton[i]
 
-   # Options de convergence        
-   convergence=CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste) 
+   # Options de convergence
+   convergence=CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste)
    # Elimination des valeurs "None"
    for i in convergence.keys():
       if convergence[i]==None : del convergence[i]
@@ -514,7 +509,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
       relation = 'ELAS'
       comp_incr = 0
 
-         
+
    # Parametres du calcul
    if comp_incr == 1:
       resumeca=STAT_NON_LINE(MODELE=modmeca,
@@ -524,13 +519,13 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                          _F(CHARGE=cl_me3,),
                          _F(CHARGE=cl_me4,),
                          _F(CHARGE=cl_me5,),
-                         _F(CHARGE=cl_me6,), 
-                         _F(CHARGE=cl_me7,), 
-                         _F(CHARGE=cl_me8,), 
-                         _F(CHARGE=cl_me10,), 
-                         _F(CHARGE=cl_me11,),                            
+                         _F(CHARGE=cl_me6,),
+                         _F(CHARGE=cl_me7,),
+                         _F(CHARGE=cl_me8,),
+                         _F(CHARGE=cl_me10,),
+                         _F(CHARGE=cl_me11,),
                   ),
-                  SOLVEUR        = solveur, 
+                  SOLVEUR        = solveur,
                   COMP_INCR      =_F(RELATION=relation,RESO_INTE=resointe),
                   NEWTON         = newton,
                   INCREMENT      = increment,
@@ -544,18 +539,17 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                          _F(CHARGE=cl_me3,),
                          _F(CHARGE=cl_me4,),
                          _F(CHARGE=cl_me5,),
-                         _F(CHARGE=cl_me6,), 
-                         _F(CHARGE=cl_me7,), 
-                         _F(CHARGE=cl_me8,), 
-                         _F(CHARGE=cl_me10,), 
-                         _F(CHARGE=cl_me11,),                            
+                         _F(CHARGE=cl_me6,),
+                         _F(CHARGE=cl_me7,),
+                         _F(CHARGE=cl_me8,),
+                         _F(CHARGE=cl_me10,),
+                         _F(CHARGE=cl_me11,),
                   ),
-                  SOLVEUR        = solveur, 
+                  SOLVEUR        = solveur,
                   COMP_ELAS      =_F(RELATION=relation,RESO_INTE=resointe),
                   NEWTON         = newton,
                   INCREMENT      = increment,
                   CONVERGENCE    = convergence,
-                  TITRE='CABRI THERMOM\xe9CANIQUE &DATE &HEURE',);                  
+                  TITRE='CABRI THERMOM\xe9CANIQUE &DATE &HEURE',);
 
    return ier
-

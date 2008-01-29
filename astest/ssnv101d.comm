@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,22 +125,22 @@ ACIER5=DEFI_MATERIAU(
 MAT2=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = ('MA1','MA2',),
                                            MATER = ACIER2,
-                                           TEMP_REF = 20.,            ))
+                                           ))
 
 MAT3=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = ('MA1','MA2',),
                                            MATER = ACIER3,
-                                           TEMP_REF = 20.,            ))
+                                           ))
 
 MAT4=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = ('MA1','MA2',),
                                            MATER = ACIER4,
-                                           TEMP_REF = 20.,            ))
+                                           ))
 
 MAT5=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = ('MA1','MA2',),
                                            MATER = ACIER5,
-                                           TEMP_REF = 20.,            ))
+                                           ))
 
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                               _F( JUSQU_A = 0.4,    NOMBRE = 1,  ),

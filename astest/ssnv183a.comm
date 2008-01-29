@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/01/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=150000.0,
 MAT=AFFE_MATERIAU(MAILLAGE=EPROU,
                   AFFE=_F(MAILLE='MA1',
                           MATER=ACIER,
-                          TEMP_REF=1000.0,),);
+                          ),);
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.2,

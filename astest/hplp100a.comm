@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE (CALCUL DE G,K1,K2)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,12 +80,13 @@ MAT=DEFI_MATERIAU(            ELAS=_F(  E = 20000.,
                                        ALPHA = 0.000005) )
 
 CM=AFFE_MATERIAU(        MAILLAGE=MA,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MAT,
-                                         TEMP_REF = 0.) )
+                    AFFE=_F(  TOUT = 'OUI', MATER = MAT ),
+                    AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',CHAMP_GD=TEMP,VALE_REF=0.),
+                                  )
 
 CH=AFFE_CHAR_MECA(           MODELE=MO,
-                         TEMP_CALCULEE=TEMP,DDL_IMPO=(
+                         #TEMP_CALCULEE=TEMP,
+                         DDL_IMPO=(
                               _F(  GROUP_NO = 'GRNM2', DY = 0.),
                               _F(  NOEUD = 'N695', DX = 0.),
                               _F(  GROUP_NO = 'GRNM4', DY = 0.)))

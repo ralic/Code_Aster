@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER DIMGE(3)
-      LOGICAL MELANG
+      LOGICAL MELANG,LTEATT
       CHARACTER*1  K1BID
       CHARACTER*8  KBID
       CHARACTER*16 NOMTE,PHENOM,NOMODL
@@ -78,7 +78,7 @@ C     -----------------------------------
 
 C     -----------------------------------------------------------------
       ELSEIF ((QUESTI.EQ.'EXI_RDM')    .OR. (QUESTI.EQ.'EXI_POUX')  .OR.
-     &        (QUESTI.EQ.'EXI_THM_CT') .OR. (QUESTI.EQ.'EXI_THM_VR').OR.
+     &        (QUESTI(1:7).EQ.'EXI_THM') .OR.
      &        (QUESTI.EQ.'EXI_TUYAU')  .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
      &        (QUESTI.EQ.'EXI_COQ1D')  .OR. (QUESTI.EQ.'EXI_GRILLE').OR.
      &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE')
@@ -164,6 +164,12 @@ C              END IF
                 REPK = 'OUI'
                 GO TO 40
               END IF
+
+            ELSE IF (QUESTI.EQ.'EXI_THM') THEN
+              IF  (LTEATT (NOMTE,'THM','OUI')) THEN
+                REPK='OUI'
+                GO TO 40
+              ENDIF
 
             ELSE IF (QUESTI.EQ.'EXI_THM_CT') THEN
               I7 = INDEX(NOMTE,'THM_LI')

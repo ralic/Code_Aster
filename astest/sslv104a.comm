@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE EN ROTATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.0E11,  NU = 0.0,  RHO = 7800.0))
 #
 #
 CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILET,
-                      AFFE=_F( TOUT = 'OUI',MATER = MATER,TEMP_REF = 0.))
+                      AFFE=_F( TOUT = 'OUI',MATER = MATER))
 
 #
 #

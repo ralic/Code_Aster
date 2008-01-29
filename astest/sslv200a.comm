@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -289,24 +289,13 @@ MAT6=DEFI_MATERIAU(    ELAS_ORTH_FO=_F(  E_L = FO1,
                                 LAMBDA = 1.7) )
 
 CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
-                          _F(  TOUT = 'OUI',
-                                 MATER = MAT1,
-                                 TEMP_REF = 1.8),
-                          _F(  GROUP_MA = 'GMA0',
-                                 MATER = MAT2,
-                                 TEMP_REF = 2.9),
-                          _F(  GROUP_MA = 'GMA16',
-                                 MATER = MAT3,
-                                 TEMP_REF = 0.),
-                          _F(  GROUP_MA = 'GMA17',
-                                 MATER = MAT4,
-                                 TEMP_REF = 1.7),
-                          _F(  GROUP_MA = 'GMA18',
-                                 MATER = MAT5,
-                                 TEMP_REF = 0.),
-                          _F(  GROUP_MA = 'GMA19',
-                                 MATER = MAT6,
-                                 TEMP_REF = 0.)) )
+                          _F(  TOUT = 'OUI', MATER = MAT1, ),
+                          _F(  GROUP_MA = 'GMA0' , MATER = MAT2, ),
+                          _F(  GROUP_MA = 'GMA16', MATER = MAT3, ),
+                          _F(  GROUP_MA = 'GMA17', MATER = MAT4, ),
+                          _F(  GROUP_MA = 'GMA18', MATER = MAT5, ),
+                          _F(  GROUP_MA = 'GMA19', MATER = MAT6, )),
+                          )
 
 # DANS CHAQUE GROUP_MA, TOUS LES TYPES DE MAILLES SONT REPRESENTES
 
@@ -325,7 +314,7 @@ THLIN=THER_LINEAIRE(        MODELE=MOTH,
                            INCREMENT=_F(  LIST_INST = LR1),
                                EXCIT=_F(  CHARGE = CHTHF) )
 
-ENGENDRE_TEST (  CO = THLIN, )
+#ENGENDRE_TEST (  CO = THLIN, )
 
 TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      TYPE_TEST = 'SOMM_ABS',
@@ -344,11 +333,30 @@ TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
       VALE=  9.3469644801437E+02  )   )   )
 
 
+CMT=AFFE_MATERIAU(    MAILLAGE=MA,
+                    AFFE=(
+                          _F(  TOUT = 'OUI',       MATER = MAT1, ),
+                          _F(  GROUP_MA = 'GMA0' , MATER = MAT2, ),
+                          _F(  GROUP_MA = 'GMA16', MATER = MAT3, ),
+                          _F(  GROUP_MA = 'GMA17', MATER = MAT4, ),
+                          _F(  GROUP_MA = 'GMA18', MATER = MAT5, ),
+                          _F(  GROUP_MA = 'GMA19', MATER = MAT6, )),
+                    AFFE_VARC=(
+                        _F(NOM_VARC='TEMP',TOUT='OUI'       ,EVOL=THLIN,VALE_REF=1.8),
+                        _F(NOM_VARC='TEMP',GROUP_MA='GMA0'  ,EVOL=THLIN,VALE_REF=2.9),
+                        _F(NOM_VARC='TEMP',GROUP_MA='GMA16' ,EVOL=THLIN,VALE_REF=0.0),
+                        _F(NOM_VARC='TEMP',GROUP_MA='GMA17' ,EVOL=THLIN,VALE_REF=1.7),
+                        _F(NOM_VARC='TEMP',GROUP_MA='GMA18' ,EVOL=THLIN,VALE_REF=0.0),
+                        _F(NOM_VARC='TEMP',GROUP_MA='GMA19' ,EVOL=THLIN,VALE_REF=0.0),
+                          ))
+
+
 CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
                                PESANTEUR=(9.8, 0.3,  0.1, -0.4,),
                                 ROTATION=(0.2, 0.5, -0.2, 0.2,),
-                           TEMP_CALCULEE=THLIN,FORCE_INTERNE=(
+                           #TEMP_CALCULEE=THLIN,
+                           FORCE_INTERNE=(
 #  ----  MAILLES 3D
                            _F(  GROUP_MA = 'GMA1',
                                            FY = 0.51,
@@ -522,7 +530,7 @@ CHCIF=AFFE_CHAR_CINE_F(       MODELE=MO,MECA_IMPO=(
 
 MSLIN=MECA_STATIQUE(        MODELE=MO,
                             CARA_ELEM=CARA1,
-                           CHAM_MATER=CHMAT,EXCIT=(
+                           CHAM_MATER=CMT,EXCIT=(
                            _F(  CHARGE = CHMEC,
                                    FONC_MULT = FO13),
                            _F(  CHARGE = CHCI,
@@ -851,7 +859,7 @@ CHAMEL6=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_EPSI_R',
                         TOUT_ORDRE='OUI' )
 
 CHAMEL7=CALC_CHAM_ELEM(    MODELE=MO,
-                             CHAM_MATER=CHMAT,
+                             CHAM_MATER=CMT,
                               CARA_ELEM=CARA1,
                              GROUP_MA='GMA20',
                              OPTION='COOR_ELGA' )
@@ -908,7 +916,7 @@ TEST_RESU(CHAM_ELEM=
 # --------------------------------------------------------------------
 
 TABLE1=POST_ELEM(        MODELE=MO,
-                        CHAM_MATER=CHMAT,
+                        CHAM_MATER=CMT,
                          CARA_ELEM=CARA1,
                           RESULTAT=MSLIN,MASS_INER=(
                          _F( GROUP_MA = 'GMA21'),
@@ -1076,14 +1084,14 @@ FO28=CALC_FONCTION(    ENVELOPPE=_F(  FONCTION = ( FO13, FO14, ),
 
 MATELEM1=CALC_MATR_ELEM(        OPTION='RIGI_MECA',
                                   MODELE=MO,
-                              CHAM_MATER=CHMAT,
+                              CHAM_MATER=CMT,
                                CARA_ELEM=CARA1,
                                  CHARGE=(CHMEC, CHMECF, ),
                                     INST=2.9 )
 
 MATELEM2=CALC_MATR_ELEM(        OPTION='MASS_MECA',
                                    MODELE=MO,
-                               CHAM_MATER=CHMAT,
+                               CHAM_MATER=CMT,
                                 CARA_ELEM=CARA1,
                                   CHARGE=(CHMEC, CHMECF, ),
                                      INST=2.9 )

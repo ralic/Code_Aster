@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 16/05/2007   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+C MODIF UTILITAI  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -241,8 +241,7 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
            IF (NOMGD(1:4).EQ.'DEPL') THEN
             OPTIO2 = 'ECIN_ELEM_DEPL'
             CHAMGD = DEPLA
-            CALL VRCINS(MODELE(1:8),MATE(1:8),CARA(1:8),NCHAR,
-     &           LCHAR,INST,CHVARC)
+            CALL VRCINS(MODELE,MATE,CARA,INST,CHVARC)
             CALL VRCREF(MODELE(1:8),MATE(1:8),CARA(1:8),CHVREF(1:19))
            ELSE IF (NOMGD(1:4).EQ.'TEMP') THEN
             OPTIO2 = 'ECIN_ELEM_TEMP'

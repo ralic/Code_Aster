@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE COMPRESSION-DILATATION POUR ETUDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,7 +75,7 @@ MAT=DEFI_MATERIAU( ELAS_FO=_F(E = E,
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT,
-                            TEMP_REF=0.0,),)
+                            ),)
 #  CHARGEMENT THERMIQUE
 #-------------------------------------------------------
 

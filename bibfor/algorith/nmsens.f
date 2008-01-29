@@ -6,7 +6,7 @@
      &                  VEELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,15 +36,15 @@ C
       CHARACTER*24 SDSENS,RESOCO
       CHARACTER*8  MEELEM(8),VEELEM(30)
       CHARACTER*19 MEASSE(8)
-      LOGICAL      FONACT(*)     
-      CHARACTER*24 CARCRI 
-      REAL*8       PARMET(*)        
-C 
+      LOGICAL      FONACT(*)
+      CHARACTER*24 CARCRI
+      REAL*8       PARMET(*)
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - SENSIBILITE)
 C
-C      
+C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER            ZI
@@ -67,7 +67,7 @@ C
       INTEGER      NBDONN,NBPILO
       REAL*8       CODONN(3)
       CHARACTER*19 CNDONN(3)
-C  
+C
       INTEGER      JDEPLS,JDEPMS,TYPESE
       INTEGER      IFM,NIV
       INTEGER      JVITPS,JACCPS, JINF, NCHAR, NUMCHT, ICFSC
@@ -85,19 +85,19 @@ C
       CHARACTER*24 CNFEDO,CNDIDO,CNBUDI
       CHARACTER*24 VALPLS(8),VALMOS(8), STYPSE
       INTEGER      NRPASE,NBPASE
-      CHARACTER*13 INPSCO 
+      CHARACTER*13 INPSCO
       CHARACTER*24 SENSNB,SENSIN
-      INTEGER      JSENSN,JSENSI      
+      INTEGER      JSENSN,JSENSI
 C
       CNBUDI = '&&NMSENS.BUDI'
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()   
+      CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
 C --- INITIALISATIONS
-C      
+C
       K14BID    = ' '
       K19BID    = ' '
       K24BID    = ' '
@@ -114,15 +114,15 @@ C
 C
 C --- ACCES SD SENSIBILITE
 C
-      SENSIN = SDSENS(1:16)//'.INPSCO '     
+      SENSIN = SDSENS(1:16)//'.INPSCO '
       SENSNB = SDSENS(1:16)//'.NBPASE '
       CALL JEVEUO(SENSNB,'L',JSENSN)
-      CALL JEVEUO(SENSIN,'L',JSENSI) 
-      INPSCO = ZK16(JSENSI+1-1)       
-      NBPASE = ZI(JSENSN+1-1) 
+      CALL JEVEUO(SENSIN,'L',JSENSI)
+      INPSCO = ZK16(JSENSI+1-1)
+      NBPASE = ZI(JSENSN+1-1)
 C
 C --- BOUCLE SUR LES PARAMETRES SENSIBLES
-C    
+C
       DO 10 NRPASE=1,NBPASE
         CALL NMNSLE(SDSENS,NRPASE,'NOPASE',NOPASE)
         CALL NMNSLE(SDSENS,NRPASE,'RESULT',RESULT)
@@ -134,26 +134,14 @@ C
         CALL NMNSLE(SDSENS,NRPASE,'VARMOI',VARMOS)
         CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
         IF (LDYNA) THEN
-          CALL NMNSLE(SDSENS,NRPASE,'VITPLU',VITPLU) 
-          CALL NMNSLE(SDSENS,NRPASE,'VITMOI',VITMOI) 
-          CALL NMNSLE(SDSENS,NRPASE,'ACCPLU',ACCPLU) 
-          CALL NMNSLE(SDSENS,NRPASE,'ACCMOI',ACCMOI) 
+          CALL NMNSLE(SDSENS,NRPASE,'VITPLU',VITPLU)
+          CALL NMNSLE(SDSENS,NRPASE,'VITMOI',VITMOI)
+          CALL NMNSLE(SDSENS,NRPASE,'ACCPLU',ACCPLU)
+          CALL NMNSLE(SDSENS,NRPASE,'ACCMOI',ACCMOI)
           CALL AGGLOM(K24BLA,K24BLA,K24BLA,K24BLA,
-     &                VITPLU,ACCPLU,K24BLA,K24BLA,8, VALPLS) 
+     &                VITPLU,ACCPLU,K24BLA,K24BLA,8, VALPLS)
         ENDIF
 
-        IF ((TYPESE.EQ.2).OR.
-     &      (TYPESE.EQ.3).OR.
-     &      (TYPESE.EQ.4).OR.     
-     &      (TYPESE.EQ.5)) THEN
-          INFOCH = LISCHA//'.INFC'
-          CALL JEVEUO(INFOCH,'L',JINF)
-          NCHAR  = ZI(JINF)
-          NUMCHT = ZI(JINF-1+2+2*NCHAR)
-          IF (NUMCHT.GT.0) THEN
-            CALL U2MESS('F','SENSIBILITE_14')
-          ENDIF
-        ENDIF
 
         IF (LSTAT) THEN
           CALL NMCHSE('SENS',MODELE,NUMEDD,MATE  ,CARELE,
@@ -166,9 +154,9 @@ C
      &                COMPOR,LISCHA,CARCRI,INST  ,FONACT,
      &                PARMET,SOLVEU,VALMOI,VALPLS,POUGD ,
      &                SECMBR,DEPALG,VEELEM,MEELEM,MEASSE,
-     &                SDSENS,SDDYNA,NRPASE)  
+     &                SDSENS,SDDYNA,NRPASE)
         ELSE
-          CALL ASSERT(.FALSE.)   
+          CALL ASSERT(.FALSE.)
         ENDIF
 
         CALL DESAGG(SECMBR,CNFEDO,K24BID,CNDIDO,K24BID,
@@ -179,26 +167,26 @@ C --- BT.LAMBDA ET B.U
 C
         IF (TYPESE.EQ.2) THEN
           CALL AGGLOM(DEPMOS,K24BLA,K24BLA,K24BLA,
-     &                K24BLA,K24BLA,K24BLA,K24BLA, 6, VALMOS)        
+     &                K24BLA,K24BLA,K24BLA,K24BLA, 6, VALMOS)
           CALL NMCALV('LAGR_MECA',
      &                MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &                INSTAM,INSTAP,CARCRI,PARMET,NUMEDD,
      &                VALMOS,VALPLU,DEPALG,POUGD ,SDSENS,
      &                SDDYNA,LSENSI,NRPASE,BASE  ,MEASSE,
-     &                VEELEM) 
+     &                VEELEM)
           CALL NMASSV('LAGR_MECA',
      &                MODELE,LISCHA,MATE  ,CARELE,COMPOR,
      &                SOLVEU,NUMEDD,FONACT,R8BID ,R8BID ,
      &                R8BID ,R8BID ,SDDYNA,MEELEM,VALMOS,
      &                VALPLU,SECMBR,DEPALG,POUGD ,VEELEM,
-     &                LSENSI,SDSENS,NRPASE,MEASSE,CNBUDI)        
+     &                LSENSI,SDSENS,NRPASE,MEASSE,CNBUDI)
           NBDONN = 3
           NBPILO = 0
         ELSE
           NBDONN = 2
           NBPILO = 0
         ENDIF
-C     
+C
 C --- RESOLUTION
 C
         CNDONN(1) = CNFEDO(1:19)

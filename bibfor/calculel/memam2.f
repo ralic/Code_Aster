@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,8 +74,7 @@ C ----------------------------------------------------------------------
       NH = 0
       CALL MECHAM('MASS_MECA',MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
-      CALL VRCINS(MODELE(1:8),MATE(1:8),'        ',NCHAR,
-     &            LCHAR,TIME,CHVARC)
+      CALL VRCINS(MODELE,MATE,' ',TIME,CHVARC)
 
       CALL MEMARE(BASE,VECEL,MODELE,MATE,CARA,OPTION)
       CALL JEVEUO(VECELZ(1:8)//'.REFE_RESU','E',IAREFE)

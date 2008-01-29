@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE FATIGUE-COMPTAGE DE CYCLES RAINFLOW-DOMMAGE-EQUIVALENTS-C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,7 @@ ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 1.,
 MAT=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = 'MA1',
                                            MATER = ACIER,
-                                           TEMP_REF = 20.))
+                                           ))
 
 LINST=DEFI_LIST_REEL(              DEBUT=1.,
                               INTERVALLE=_F(  JUSQU_A = 8.,  NOMBRE = 7))

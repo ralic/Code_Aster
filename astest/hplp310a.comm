@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -15,21 +15,17 @@ PRE_GIBI()
 
 MA=LIRE_MAILLAGE()
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
+MO=AFFE_MODELE(  MAILLAGE=MA,
       AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'D_PLAN'))
 
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 1000., NU = 0.3, ALPHA = 1.E-6))
 
 MATFIC=DEFI_MATERIAU(ELAS=_F(  E = 1.E10, NU = 0.3, ALPHA = 0.))
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
-            _F( TOUT = 'OUI', MATER = MAT,TEMP_REF=0.,),
-            _F( GROUP_MA = 'VBLOCON', MATER = MATFIC,TEMP_REF=0.))
-                         )
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=( 
-                     _F( 
-                   GROUP_MA = ( 'L_AB',  'L_DE',  'L_EA',  'LPOP8', 
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
+                     _F(
+                   GROUP_MA = ( 'L_AB',  'L_DE',  'L_EA',  'LPOP8',
                                 'LP9P10S',  'LPOP8S',  'VTOT', )),
                      _F(  GROUP_MA = 'TOT')),
                      CREA_GROUP_MA=_F(  NOM = 'TOT', TOUT = 'OUI')
@@ -89,7 +85,7 @@ TEMP_EV=CREA_RESU(    reuse=TEMP_EV,OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                   INST = 1.)
                     )
 
-CL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=( 
+CL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
             _F( GROUP_NO = ( 'L_AB',  'L_DE', ), DY = 0.),
                      _F( GROUP_NO = 'LP9P10S',  DX = 0.),
                      _F( GROUP_NO = 'LP9P10S',  DY = 0.)),
@@ -99,14 +95,14 @@ CL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
                           DDL = ('DX',  'DX',),
                           COEF_MULT = (1., 1.,),
                           COEF_IMPO = 0.),
-            CONTACT    =_F( 
+            CONTACT    =_F(
                   NORMALE = 'MAIT_ESCL',
                   GROUP_MA_MAIT = 'LPOP8',
                   GROUP_MA_ESCL = 'LPOP8S')
 
                      )
 
-CL_SL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=( 
+CL_SL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
             _F( GROUP_NO = ( 'L_AB',  'L_DE', ), DY = 0.),
                      _F( GROUP_NO = 'LP9P10S',  DX = 0.),
                      _F( GROUP_NO = 'LP9P10S',  DY = 0.)),
@@ -117,53 +113,64 @@ CL_SL=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
 
                      )
 
-CH0=AFFE_CHAR_MECA(   MODELE=MO, 
+CH0=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.30)
                             )
 
-CH1=AFFE_CHAR_MECA(   MODELE=MO, 
+CH1=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.32)
                             )
 
-CH2=AFFE_CHAR_MECA(   MODELE=MO, 
+CH2=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.33)
                             )
 
-CH3=AFFE_CHAR_MECA(   MODELE=MO, 
+CH3=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.335)
                             )
 
-CH4=AFFE_CHAR_MECA(   MODELE=MO, 
+CH4=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.34)
                             )
 
-CH5=AFFE_CHAR_MECA(   MODELE=MO, 
+CH5=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.345)
                             )
 
-CH6=AFFE_CHAR_MECA(   MODELE=MO, 
+CH6=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.35)
                             )
 
-CH7=AFFE_CHAR_MECA(   MODELE=MO, 
+CH7=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.36)
                             )
 
-CH8=AFFE_CHAR_MECA(   MODELE=MO, 
+CH8=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.38)
                             )
 
-CH9=AFFE_CHAR_MECA(   MODELE=MO, 
+CH9=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -.40)
                             )
 
-CH10=AFFE_CHAR_MECA(   MODELE=MO, 
+CH10=AFFE_CHAR_MECA(   MODELE=MO,
               PRES_REP=_F(  GROUP_MA = 'L_EA',   PRES = -1.)
                             )
 
-CH_TEMP=AFFE_CHAR_MECA(   MODELE=MO, 
-                TEMP_CALCULEE=TEMP_EV
-                               )
+#CH_TEMP=AFFE_CHAR_MECA(   MODELE=MO, TEMP_CALCULEE=TEMP_EV )
+
+# champ de materiau sans temperature :
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
+            _F( TOUT = 'OUI', MATER = MAT),
+            _F( GROUP_MA = 'VBLOCON', MATER = MATFIC)),
+                         )
+
+# champ de materiau avec temperature :
+CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
+            _F( TOUT = 'OUI', MATER = MAT),
+            _F( GROUP_MA = 'VBLOCON', MATER = MATFIC)),
+            AFFE_VARC=_F(NOM_VARC='TEMP',TOUT='OUI',EVOL=TEMP_EV,VALE_REF=0.),
+                         )
 
 L_INST=DEFI_LIST_REEL(
                              DEBUT=0.0,
@@ -174,13 +181,13 @@ INSTMECA=DEFI_LIST_REEL(VALE=1.)
 # CALCUL AVEC LES CHARGEMENTS 1 ET 2 DE LA FICHE (SANS CONTACT)
 # -------------------------------------------------------------
 
-CHAMDEPP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+CHAMDEPP=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=(
               _F( CHARGE = CH10),
               _F( CHARGE = CL_SL)),
                           )
 
-CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
-              _F( CHARGE = CH_TEMP),
+CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT2,EXCIT=(
+              #_F( CHARGE = CH_TEMP),
               _F( CHARGE = CL_SL)),
               LIST_INST=INSTMECA,
                           )
@@ -191,25 +198,25 @@ CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=(
 # -----------------------------------------------------------
 
 
-CHAMDEP0=STAT_NON_LINE( 
+CHAMDEP0=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH0),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST,
                         SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
                    SUBD_PAS_MINI = 0.000001),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4),
 #              INFO=2
               )
@@ -222,25 +229,25 @@ CHAMDEP0=CALC_ELEM( reuse=CHAMDEP0,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP1=STAT_NON_LINE( 
+CHAMDEP1=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH1),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST,
                         SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                    SUBD_PAS_MINI = 0.000001),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -252,25 +259,25 @@ CHAMDEP1=CALC_ELEM( reuse=CHAMDEP1,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP2=STAT_NON_LINE( 
+CHAMDEP2=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH2),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST,
                         SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
                    SUBD_PAS_MINI = 0.000001),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -282,23 +289,23 @@ CHAMDEP2=CALC_ELEM( reuse=CHAMDEP2,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP3=STAT_NON_LINE( 
+CHAMDEP3=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH3),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -310,23 +317,23 @@ CHAMDEP3=CALC_ELEM( reuse=CHAMDEP3,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP4=STAT_NON_LINE( 
+CHAMDEP4=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH4),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -338,23 +345,23 @@ CHAMDEP4=CALC_ELEM( reuse=CHAMDEP4,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP5=STAT_NON_LINE( 
+CHAMDEP5=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH5),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -366,23 +373,23 @@ CHAMDEP5=CALC_ELEM( reuse=CHAMDEP5,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP6=STAT_NON_LINE( 
+CHAMDEP6=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH6),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -394,23 +401,23 @@ CHAMDEP6=CALC_ELEM( reuse=CHAMDEP6,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP7=STAT_NON_LINE( 
+CHAMDEP7=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH7),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -422,23 +429,23 @@ CHAMDEP7=CALC_ELEM( reuse=CHAMDEP7,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP8=STAT_NON_LINE( 
+CHAMDEP8=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH8),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 
@@ -450,25 +457,25 @@ CHAMDEP8=CALC_ELEM( reuse=CHAMDEP8,
                         CHAM_MATER=CHMAT
               )
 
-CHAMDEP9=STAT_NON_LINE( 
+CHAMDEP9=STAT_NON_LINE(
 SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
+                        CHAM_MATER=CHMAT2,
+                        EXCIT=(
+                             _F(
                 CHARGE = CH9),
-                             _F( 
-                CHARGE = CH_TEMP),
-                             _F( 
+                             #_F( CHARGE = CH_TEMP),
+                             _F(
                 CHARGE = CL)),
-                         COMP_ELAS=_F( 
+                         COMP_ELAS=_F(
                 RELATION = 'ELAS'),
-                            NEWTON=_F( 
+                            NEWTON=_F(
                 MATRICE = 'ELASTIQUE'),
-                         INCREMENT=_F( 
+                         INCREMENT=_F(
                 LIST_INST = L_INST,
                         SUBD_METHODE='UNIFORME', SUBD_PAS = 10,
                    SUBD_PAS_MINI = 0.000001),
-                       CONVERGENCE=_F( 
+                       CONVERGENCE=_F(
                 ITER_GLOB_MAXI = 4)
               )
 

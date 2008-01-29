@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel4 Messages  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,29 @@ cata_msg={
 8: _("""
  le resultat  %(k1)s  n'existe pas
 """),
+
+
+10: _("""
+ Erreur d'utilisation :
+   On ne trouve pas de variables de commandes ('TEMP', 'HYDR', ...) :
+   Option: %(k2)s  type_element: %(k3)s )
+
+ Risques & conseils :
+   La cause la plus fréquente de cette erreur est d'avoir oublié de
+   renseigner AFFE_MATERIAU/AFFE_VARC.
+   (Ou de n'avoir renseigné que AFFE_VARC/VALE_REF sans avoir renseigné EVOL ou CHAMP_GD)
+"""),
+
+11: _("""
+ Erreur d'utilisation lors de l'affectation des variables de commande (AFFE_MATERIAU/AFFE_VARC):
+   Pour la variable de commande %(k1)s,
+   Vous avez oublié d'utiliser l'un des 2 mots clés CHAMP_GD ou EVOL.
+   L'abscence de ces 2 mots clés n'est permise que pour NOM_VARC='TEMP' (modélisations THM)
+"""),
+
+
+
+
 
 41: _("""
  erreur_01
@@ -210,12 +233,13 @@ Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les 
 """),
 
 95: _("""
- erreur de programmation :
- on ne trouve pas dans les arguments de la routine calcul de champ a associer au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
+ Erreur de programmation ou d'utilisation :
+   On ne trouve pas dans les arguments de la routine calcul de champ a associer
+   au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
 """),
 
 96: _("""
- erreur de programmation :
+ Erreur de programmation :
  on n'a pas pu extraire toutes les cmps voulues du champ global associe au parametre: %(k1)s  (option: %(k2)s  type_element: %(k3)s )
 """),
 

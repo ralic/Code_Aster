@@ -3,7 +3,7 @@
       CHARACTER*8 CHMAT,NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF MODELISA  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,15 +66,6 @@ C     ------------------------------------------------------------------
       CALL DISMOI('F','NB_MA_MAILLA',NOMAIL,'MAILLAGE',NBMA,K8B,IRET)
       IF (NBMA.EQ.0) GOTO 50
       CALL WKVECT('&&CMTREF.LISMAIL','V V I',NBMA,JLINT)
-
-
-C     1BIS) VERIF: SI AFFE_VARC/'TEMP', ON N'UTILISE PAS AFFE/TEMP_REF
-C     ------------------------------------------------------------------
-      CALL GETFAC('AFFE',NOCC)
-      DO 10, IOCC=1,NOCC
-         CALL GETVR8('AFFE','TEMP_REF',IOCC,1,1,TREF,IBID)
-         IF (IBID.NE.0) CALL U2MESS('F','CALCULEL6_9')
-   10   CONTINUE
 
 
 C     2) MISE EN MEMOIRE DES OBJETS DE CARCM1 ET CARTRF :
@@ -161,7 +152,7 @@ C          CONCERNEES PAR AUCUN KTRF :
           ENDIF
           ZK8(JVALV-1+NM+2) = KTREF
 
-C           -- LISTE DES MAILLESCONCERNEES PAR KTRF :
+C           -- LISTE DES MAILLES CONCERNEES PAR KTRF :
           IF (CODTRF.EQ.3) THEN
             CALL JEVEUO(JEXNUM(CARTRF//'.LIMA',NUTRF),'L',JLTRF)
             CALL JELIRA(JEXNUM(CARTRF//'.LIMA',NUTRF),'LONMAX',NTRF,K8B)

@@ -1,7 +1,7 @@
       SUBROUTINE OP0046(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,16 +21,16 @@ C ======================================================================
 C
       IMPLICIT NONE
       INTEGER IER
-C      
+C
 C ----------------------------------------------------------------------
 C
 C COMMANDE:  MECA_STATIQUE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
-C OUT IER    : NOMBRE D'ERREURS RENCONTREES      
-C      
+C OUT IER    : NOMBRE D'ERREURS RENCONTREES
+C
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -80,7 +80,7 @@ C
       CHARACTER*24 COMPOR
       LOGICAL      EXIPOU
       COMPLEX*16   CALPHA
-C      
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -192,20 +192,6 @@ C
         ENDIF
       ENDIF
 C
-C     RECHERCHE DE LA CHARGE CONTENANT LA TEMPERATURE
-C     -----------------------------------------------
-      CALL JEVEUO(CHARGE,'L',JCHAR)
-      CALL JEVEUO(INFOCH,'L',JINF)
-      NBID = ZI(JINF)
-      NUMCHA = ZI(JINF-1+2+2*NBID)
-      IF (NUMCHA.NE.0) THEN
-         TEMP = ZK24(JCHAR-1+NUMCHA)(1:8)
-         NCHA = 1
-      ELSE
-         TEMP = ' '
-         NCHA = 0
-      ENDIF
-C
 C     BOUCLE SUR LES OPTIONS DE MECANIQUE : SIEF_ELGA_DEPL OU SANS
 C     ------------------------------------------------------------
       CALL JEVEUO(LISTPS//'           .VALE','L',IAINST)
@@ -215,13 +201,12 @@ C
          IF (IRET.GT.0) GOTO 13
 C
          CALL RSEXCH(RESULT,NOSY,IORDR,CHAMEL,IRET)
-         CALL MECHAM(NOSY,NOMODE,NCHA,TEMP,CARELE(1:8),NH,
+         CALL MECHAM(NOSY,NOMODE,0,' ',CARELE(1:8),NH,
      &                           CHGEOM,CHCARA,CHHARM,IRET )
          IF (IRET.NE.0) GOTO 13
          TIME = ZR(IAINST-1+IORDR)
          CALL MECHTI(CHGEOM(1:8),TIME,CHTIME)
-         CALL VRCINS(MODELE(1:8),MATE(1:8),CARELE(1:8),NCHAR,
-     &               ZK24(JCHAR),TIME,CHVARC(1:19))
+         CALL VRCINS(MODELE,MATE,CARELE,TIME,CHVARC(1:19))
          CALL VRCREF(MODELE(1:8),MATE(1:8),CARELE(1:8),
      &                                       CHVREF(1:19))
 

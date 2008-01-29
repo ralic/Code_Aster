@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE  COMMANDE MODI_MAILLAGE ET SYMETRIE / PROJ_CHAMP ET DISTANCE_MAX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,7 +79,7 @@ monmat=DEFI_MATERIAU(
 )
 mater08=AFFE_MATERIAU(
   MAILLAGE=mail08,
-  AFFE=_F(TOUT='OUI', MATER=monmat, TEMP_REF=0.0,),
+  AFFE=_F(TOUT='OUI', MATER=monmat),
 )
 # A.4
 chther08=AFFE_CHAR_THER(
@@ -281,7 +281,7 @@ rprojec=CREA_RESU(
 # C.1
 mater04=AFFE_MATERIAU(
   MAILLAGE=mail04,
-  AFFE=_F(TOUT='OUI', MATER=monmat, TEMP_REF=0.0,),
+  AFFE=_F(TOUT='OUI', MATER=monmat),
 )
 # C.2
 chther04=AFFE_CHAR_THER(

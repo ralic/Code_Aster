@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXI QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,7 +105,7 @@ MATHYDR=DEFI_MATERIAU(  THER_HYDR=_F(  LAMBDA = COND,
 CHMATNL=AFFE_MATERIAU(  MAILLAGE=MAILTH,
                         AFFE=_F(  TOUT = 'OUI',
                                   MATER = MATHYDR,
-                                  TEMP_REF = 25.)    )
+                                  )    )
 
 #
 # CHARGEMENT

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,7 +96,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
                                 MATER=ACIER,
-                                TEMP_REF=0.0,),);
+                                ),);
 
 pres=100.*E/1e6
 

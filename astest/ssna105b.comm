@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,10 +64,10 @@ MATG = DEFI_MATERIAU(
 CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
                        AFFE =(_F(GROUP_MA = 'MAILP',
                                 MATER = MATP,
-                                TEMP_REF = 20.),
+                                ),
                               _F(GROUP_MA = 'MAILG',
                                 MATER = MATG,
-                                TEMP_REF = 20.), )
+                                ), )
                        ) 
 
 # PRESSION P1

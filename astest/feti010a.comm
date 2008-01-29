@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION CALCUL FETI + CONTACT CONTINU ENTRE DEUX CLOISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,7 @@ CM1=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(GROUP_MA=('CLOIS_1B','CLOIS_1H','CLOIS_2B','CLOIS_2H','BAS_CL_1','BAS_CL_2','FAC_EX11','FAC_EX12',
                                     'FAC_EX21','FAC_EX22','FAC_PRE1','FAC_PRE2',),
                           MATER=MACLOI,
-                          TEMP_REF=20.0,),);
+                          ),);
 
 CHCONT=AFFE_CHAR_MECA(MODELE=MOMEQ,
                       CONTACT=(_F(METHODE='CONTINUE',

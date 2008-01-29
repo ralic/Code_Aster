@@ -1,8 +1,8 @@
       SUBROUTINE OP0017 ( IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 28/01/2008   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,9 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER       IRET,NRPASS,NBPASS,ADRECG
+      INTEGER       IRET,NRPASS,NBPASS,ADRECG,IER
+      INTEGER       NIVO,N3,N1,IFI,N2,NBOCC,IALICO,NCON,IPOS,LONG,N4
+      INTEGER       I,IAUX,IOCC
       LOGICAL       LATTR, LCONT, ULEXIS
       CHARACTER*1   BASE
       CHARACTER*6   NOMPRO
@@ -92,8 +94,8 @@ C
            CALL GETVID('CONCEPT','NOM',IOCC,1,NCON,ZK8(IALICO),N1)
            DO 1, I=1,NCON
              IAUX = IOCC
-             CALL JEEXIN(NORECG,IER)
-             IF (IER.NE.0) CALL JEDETR(NORECG)
+             CALL JEEXIN(NORECG,IRET)
+             IF (IRET.NE.0) CALL JEDETR(NORECG)
              CALL PSRESE('CONCEPT',IAUX,1,ZK8(IALICO-1+I),1,
      1                    NBPASS,NORECG,IRET)
              CALL JEVEUO(NORECG,'L',ADRECG)
@@ -121,6 +123,6 @@ C          . NOM DU PARAMETRE DE SENSIBILITE
       IF (N2.GT.0) THEN
          CALL UTIMSD(IFI,NIVO,LATTR,LCONT,' ',0,BASE)
       END IF
-  
       CALL JEDEMA()
+      IER=0
       END

@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF MODELISA  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /IVARJE/ZI(1)
       REAL*8             ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16         ZC
+      COMPLEX*16         ZC,CBID
       COMMON /CVARJE/ZC(1)
       LOGICAL            ZL
       COMMON /LVARJE/ZL(1)
@@ -42,22 +42,23 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER N1,NBOCCV,I,NBMA,K,NCMP,IFM,NIV
+      INTEGER N1,N2,NBOCCV,I,NBMA,K,NCMP,IFM,NIV
       INTEGER IFAC,NBFAC,NMXFAC,NMXCMP,IBID,NBVARC,NBTOU,JMA
       INTEGER IOCC,JNCMP1,JNCMP2,JVALV1,JVALV2,KVARC,NBCVRC,NBAFFE
       INTEGER JCVNOM,JCVVAR,JCVCMP,JCVGD,JCVDEF,ITROU,NBM1,NBGM1,N
+      INTEGER JCVEXI
 
-      CHARACTER*8 K8B,CHMAT,NOMAIL,NOMODE,TYPMCL(2),NOMGD
-      CHARACTER*8 NOMGD2,CHAMGD,EVOL,NOCMP1,NOCMP2,FINST
+      CHARACTER*8 K8B,CHMAT,NOMAIL,NOMODE,TYPMCL(2),NOMGD,KBID
+      CHARACTER*8 NOMGD2,CHAMGD,EVOL,NOCMP1,NOCMP2,FINST,EVOUCH
       CHARACTER*16 MOTCLE(2),TYPE,NOMCMD,NOMCHA,PROLGA,PROLDR
       LOGICAL GETEXM,EXIST
       CHARACTER*24 MESMAI,CVNOM,CVVAR,CVGD,CVCMP,CVDEF,VALK(3)
       PARAMETER (NMXFAC=20,NMXCMP=20)
       CHARACTER*16 MOTFAC(NMXFAC),LIMFAC(NMXFAC),MOFAC
-      CHARACTER*19 CART1,CART2
-      CHARACTER*8  NOVARC,NOVAR1,NOVAR2,LIVARC(NMXFAC)
-      REAL*8 VRCREF(NMXCMP),R8VIDE,TREF
-      LOGICAL ERRGD,TEMPVC
+      CHARACTER*19 CART1,CART2,CARVID
+      CHARACTER*8  NOVARC,NOVAR1,NOVAR2,LIVARC(NMXFAC),KNUMER
+      REAL*8 VRCREF(NMXCMP),R8NNEM,TREF,RCMP(10),RBID,R8VIDE
+      LOGICAL ERRGD
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -78,14 +79,6 @@ C ----------------------------------------------------------------------
       CALL GETFAC('AFFE_VARC',NBOCCV)
       CALL GETFAC('AFFE',NBAFFE)
 
-C     CALCUL DE TEMPVC :
-C       .TRUE. => IL EXISTE AFFE_VARC/NOM_VARC='TEMP'
-      TEMPVC=.FALSE.
-      DO 19,IOCC = 1,NBOCCV
-          CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,1,1,NOVAR1,N1)
-          IF (NOVAR1.EQ.'TEMP') TEMPVC=.TRUE.
-19    CONTINUE
-
 
 C     1- TRAITEMENT DU MOT CLE AFFE :
 C     -----------------------------------------
@@ -93,12 +86,6 @@ C     -----------------------------------------
 C     1.1 : FABRICATION DE LA CARTE CONTENANT LES NOMS DES MATERIAUX:
       CALL RCMATE(CHMAT,NOMAIL,NOMODE)
 
-C     1.2 : FABRICATION DE LA CARTE CONTENANT LES TEMP_REF:
-C           CETTE CARTE N'EST CREEE QU'EN L'ABSCENCE DE AFFE_VARC/TEMP
-C
-C           IMPORTANT : LES CARTES CREES PAR RCMATE ET RCTREF DOIVENT
-C           AVOIR LA MEME "STRUCTURE" (A CAUSE DE ALFINT.F)
-      IF (.NOT.TEMPVC) CALL RCTREF(CHMAT,NOMAIL,NOMODE)
 
 
 C     1-BIS TRAITEMENT DU MOT CLE AFFE_NOEUD :
@@ -197,7 +184,7 @@ C       ------------------------------------------------------------
         CALL ASSERT(N1.EQ.NCMP)
         DO 49,K = 1,NCMP
             ZK8(JCVVAR+NBCVRC-1+K) = NOVARC
-            ZK8(JCVGD+NBCVRC-1+K) = NOMGD
+            ZK8(JCVGD +NBCVRC-1+K) = NOMGD
    49   CONTINUE
 
         EXIST = GETEXM(MOFAC,'VALE_DEF')
@@ -206,7 +193,7 @@ C       ------------------------------------------------------------
           CALL ASSERT(N1.EQ.NCMP)
         ELSE
           DO 50,K = 1,NCMP
-            ZR(JCVDEF+NBCVRC-1+K) = R8VIDE()
+            ZR(JCVDEF+NBCVRC-1+K) = R8NNEM()
    50     CONTINUE
         END IF
 
@@ -226,7 +213,6 @@ C         ---------------------------
               VALK(2) = NOVARC
               CALL U2MESK('F','CALCULEL6_60', 2 ,VALK)
             ENDIF
-            CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
           ELSE
             DO 60,K = 1,NCMP
               VRCREF(K) = R8VIDE()
@@ -240,20 +226,55 @@ C         ------------------------------------------------------------
           CHAMGD = ' '
           NOMCHA = ' '
           ERRGD = .FALSE.
+
           CALL GETVID('AFFE_VARC','CHAMP_GD',IOCC,1,1,CHAMGD,N1)
-          IF (N1.GT.0) THEN
+          CALL GETVID('AFFE_VARC','EVOL',IOCC,1,1,EVOL,N2)
+          CALL ASSERT(N1+N2.LE.1)
+          IF (N1.EQ.1) THEN
+            EVOUCH='CHAMP'
+          ELSEIF (N2.EQ.1) THEN
+            EVOUCH='EVOL'
+          ELSE
+            EVOUCH='VIDE'
+            IF (NOVARC.NE.'TEMP') CALL U2MESK('F','CALCULEL4_11',
+     &                                        1 ,NOVARC)
+          ENDIF
+
+
+          IF (EVOUCH.EQ.'CHAMP') THEN
             CALL DISMOI('F','NOM_GD',CHAMGD,'CHAMP',IBID,NOMGD2,
      &                  IER)
             IF (NOMGD2.NE.NOMGD) ERRGD = .TRUE.
-          ELSE
-            CALL GETVID('AFFE_VARC','EVOL',IOCC,1,1,EVOL,N1)
+
+          ELSEIF (EVOUCH.EQ.'EVOL') THEN
             CALL GETVTX('AFFE_VARC','NOM_CHAM',IOCC,1,1,NOMCHA,N1)
+C           -- NOM_CHAMP (VALEUR PAR DEFAUT) :
+            IF (N1.EQ.0) THEN
+              IF (NOVARC.EQ.'SECH') THEN
+                NOMCHA='TEMP'
+              ELSEIF (NOVARC.EQ.'HYDR')  THEN
+                NOMCHA='HYDR_ELNO_ELGA'
+              ELSEIF (NOVARC.EQ.'HYDR')   THEN
+                NOMCHA='EPSA'
+              ELSEIF (NOVARC.EQ.'EPSA_ELNO') THEN
+                NOMCHA='NEUT'
+              ELSEIF (NOVARC.EQ.'M_ACIER') THEN
+                NOMCHA='META_ELNO_TEMP'
+              ELSEIF (NOVARC.EQ.'M_ZIRC') THEN
+                NOMCHA='META_ELNO_TEMP'
+              ELSEIF (NOVARC(1:4).EQ.'NEUT') THEN
+                NOMCHA='NEUT'
+              ELSE
+                NOMCHA=NOVARC
+              ENDIF
+            ENDIF
             CALL GETVTX('AFFE_VARC','PROL_GAUCHE',IOCC,1,1,PROLGA,N1)
             CALL GETVTX('AFFE_VARC','PROL_DROITE',IOCC,1,1,PROLDR,N1)
             CALL GETVID('AFFE_VARC','FONC_INST',IOCC,1,1,FINST,N1)
             IF (N1.EQ.0) FINST=' '
 C           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
           END IF
+
           IF (ERRGD) THEN
              VALK(1) = MOFAC
              VALK(2) = NOMGD
@@ -264,20 +285,37 @@ C           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
 C         2-5 ECRITURE DANS LES CARTES :
 C         ------------------------------------------------------------
           ZK16(JVALV2-1+1) = LIVARC(KVARC)
-          IF (EVOL.EQ.' ') THEN
+          IF (EVOUCH.EQ.'CHAMP') THEN
             ZK16(JVALV2-1+2) = 'CHAMP'
             ZK16(JVALV2-1+3) = CHAMGD
             ZK16(JVALV2-1+4) = ' '
             ZK16(JVALV2-1+5) = ' '
             ZK16(JVALV2-1+6) = ' '
             ZK16(JVALV2-1+7) = ' '
-          ELSE
+          ELSE IF (EVOUCH.EQ.'EVOL') THEN
             ZK16(JVALV2-1+2) = 'EVOL'
             ZK16(JVALV2-1+3) = EVOL
             ZK16(JVALV2-1+4) = NOMCHA
             ZK16(JVALV2-1+5) = PROLGA
             ZK16(JVALV2-1+6) = PROLDR
             ZK16(JVALV2-1+7) = FINST
+          ELSE IF (EVOUCH.EQ.'VIDE') THEN
+C           -- ON AFFECTE UNE CARTE CONTENANT DES R8NNEM :
+            CALL GCNCON('_',KNUMER)
+            CARVID = KNUMER
+            CALL ASSERT(NCMP.LE.10)
+            DO 31,K = 1,NCMP
+              RCMP(K) = R8NNEM()
+   31       CONTINUE
+            CALL MECACT('G',CARVID,'MAILLA',NOMAIL,NOMGD,NCMP,
+     &                  ZK8(JCVCMP+NBCVRC),IBID,RCMP,CBID,KBID)
+
+            ZK16(JVALV2-1+2) = 'CHAMP'
+            ZK16(JVALV2-1+3) = CARVID
+            ZK16(JVALV2-1+4) = ' '
+            ZK16(JVALV2-1+5) = ' '
+            ZK16(JVALV2-1+6) = ' '
+            ZK16(JVALV2-1+7) = ' '
           END IF
           DO 70,K = 1,NCMP
             ZR(JVALV1-1+K) = VRCREF(K)

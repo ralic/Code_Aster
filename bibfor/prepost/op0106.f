@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/01/2008   AUTEUR DEBONNIERES P.DE-BONNIERES 
+C MODIF PREPOST  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -554,8 +554,7 @@ C             -- CALCUL D'UN NUME_DDL "MINIMUM" POUR ASASVE :
                 TIME = ZR(IAD)
               END IF
 
-              CALL VRCINS(MODELE(1:8),MATER(1:8),CARAC(1:8),NBCHAR,
-     &                    ZK8(ICHAR),TIME,CHVARC(1:19))
+              CALL VRCINS(MODELE,MATER,CARAC,TIME,CHVARC(1:19))
 
 C           --- CALCUL DES VECTEURS ELEMENTAIRES ---
               CALL RSEXCH(LERES0,'COMPORTEMENT',IORDR,COMPOR,IRET1)

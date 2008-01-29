@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE TP ANALYSE SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,10 +191,10 @@ SUPPORT=AFFE_CHAR_MECA(
 CHMATP=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                      AFFE=(_F(GROUP_MA='GMAT01',
                               MATER=MATP01,
-                              TEMP_REF=20.0,),
+                              ),
                            _F(GROUP_MA='GMAT03',
                               MATER=MATP03,
-                              TEMP_REF=20.0,),),)
+                              ),),)
 
 #-----------------------------------------------------------------------
 # ASSEMBLAGE MATRICE MASSE ET RIGIDITE

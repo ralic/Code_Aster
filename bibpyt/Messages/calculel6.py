@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel6 Messages  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -159,38 +159,18 @@ Solution :
   trouve sur la maille :  %(i2)d
 """),
 
-54: _("""
- Utilisation d'un mot clé obsolète : AFFE_CHAR_MECA/TEMP_CALCULEE
 
- L'une des charges contient un chargement thermique (TEMP_CALCULEE).
- L'utilisation de la température comme variable de commande en mécanique doit
- maintenant se faire en utilisant AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP'.
 
- Néanmoins, jusqu'à la version 9.1 (incluse), les 2 syntaxes sont acceptées.
 
- Conseil :
- Déplacer le chargement thermique de AFFE_CHAR_MECA/TEMP_CALCULEE vers
- AFFE_MATERIAU/AFFE_VARC
-"""),
 
-55: _("""
- Erreur d'utilisation (préparation des variables de commande) :
- Le CHAM_MATER %(k1)s contient des variables de commandes (AFFE_VARC).
- Une des charges contient un chargement thermique (TEMP_CALCULEE).
-
- Conseil :
- Déplacer le chargement thermique de AFFE_CHAR_MECA/TEMP_CALCULEE vers
- AFFE_MATERIAU/AFFE_VARC
-"""),
 
 56: _("""
  Erreur d'utilisation (rcmaco/alfint) :
- Le CHAM_MATER %(k1)s contient des variables de commandes (AFFE_MATERIAU/AFFE_VARC).
- Un des matériaux du CHAM_MATER contient un coefficient de dilation ALPHA=f(TEMP).
- Mais la température n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC
+ Un des matériaux du CHAM_MATER %(k1)s contient un coefficient de dilation ALPHA=f(TEMP).
+ Mais la température de référence n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC/VALE_REF
 
  Conseil :
- Renseignez le chargement thermique à l'aide de AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP'
+ Renseignez la température de référence à l'aide de AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP' + VALE_REF
 """),
 
 57: _("""

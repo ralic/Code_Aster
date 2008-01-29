@@ -9,7 +9,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +90,7 @@ C     ------------------------------------------------------------------
 
 
       IF (NOMCMD.EQ.'MECA_STATIQUE'.OR.NOMCMD.EQ.'CALC_MATR_ELEM') THEN
-        CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,LCHAR,TIME,CHVARC)
+        CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
       END IF
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/11/2007   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,7 @@ CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEIN,
                        AFFE=(_F(GROUP_MA=('VOLSUP','VOLINF','LEVSUP','LEVINF','SURFSUP','SURFINF','FONFIS',),
                                 MATER=ACIER,
-                                TEMP_REF=0.0,),
+                                ),
                              ),);
 
 #----------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE PREDICTION D'AMORCAGE PAR LE CRITERE ENERGETIQUE GP EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,7 +116,7 @@ MAT_THE=DEFI_MATERIAU(THER_NL=_F(LAMBDA=LAMBDA_T,
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(GROUP_MA='SCYL',
                              MATER=MAT_THE,
-                             TEMP_REF=289.5,),),);
+                             ),),);
 
 #----------------------------------------------------------------------
 # CHARGEMENT THERMIQUE

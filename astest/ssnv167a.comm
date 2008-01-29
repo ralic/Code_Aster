@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@ MAT=DEFI_MATERIAU(     ELAS=_F(  E = 200000.,
 
 CHMAT=AFFE_MATERIAU( MAILLAGE=MA,
                      AFFE=_F(  TOUT = 'OUI',  MATER = MAT,
-                               TEMP_REF = 0.)
+                               )
                     )
 
 

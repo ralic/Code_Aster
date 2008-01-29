@@ -1,4 +1,4 @@
-# MODIF  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE AXISYMETRIQUE
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -276,15 +276,15 @@ MAT6=DEFI_MATERIAU(    ELAS_ORTH_FO=_F(  E_L = FO1,
 CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,AFFE=(
                           _F(  TOUT = 'OUI',
                                  MATER = MAT1,
-                                 TEMP_REF = 4.8),
+                                 ),
                           _F(  GROUP_MA = 'GMA0',
                                  MATER = MAT2,
-                                 TEMP_REF = 6.9),
+                                 ),
                           _F(  GROUP_MA = 'GMA9',
                                  MATER = MAT3),
                           _F(  GROUP_MA = 'GMA10',
                                  MATER = MAT4,
-                                 TEMP_REF = 11.7),
+                                 ),
                           _F(  GROUP_MA = 'GMA11',
                                  MATER = MAT5),
                           _F(  GROUP_MA = 'GMA12',

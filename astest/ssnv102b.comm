@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,7 +71,7 @@ ACIER=DEFI_MATERIAU(            ELAS=_F(   E = 200000.,
 MAT=AFFE_MATERIAU(            MAILLAGE=CARRE,
                                     AFFE=_F(  MAILLE = 'MA1',
                                            MATER = ACIER,
-                                           TEMP_REF = 20.))
+                                           ))
 
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                               _F(  JUSQU_A = .35, NOMBRE = 1),

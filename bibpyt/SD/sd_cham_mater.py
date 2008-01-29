@@ -1,4 +1,4 @@
-#@ MODIF sd_cham_mater SD  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_cham_mater SD  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 from SD import *
 
 from SD.sd_carte import sd_carte
+from SD.sd_champ import sd_champ
 from SD.sd_mater import sd_mater
 from SD.sd_compor import sd_compor
 from SD.sd_util import *
@@ -56,25 +57,41 @@ class sd_cham_mater_varc(AsBase):
         for nom in lnom :
            nom2=self.nomj()[:8]+'.'+nom+'.1'
            sd2=sd_carte(nom2)  ; sd2.check(checker)
+
            nom2=self.nomj()[:8]+'.'+nom+'.2'
            sd2=sd_carte(nom2)  ; sd2.check(checker)
+
+           # dans le cas de la temperature, on cree parfois des cartes sous-terraines
+           # (lorsque l'on indique VALE_REF sans donner de CHAMP_GD/EVOL) :
+           if nom.strip()=='TEMP':
+               desc=sd2.DESC.get()
+               ngdmax=desc[1]
+               ngdedi=desc[2]
+               vale=sd2.VALE.get_stripped()
+               ncmp=len(vale)/ngdmax
+               assert len(vale)==ncmp*ngdmax, (ngdmax, ncmp, vale)
+               for kedit in range(ngdedi):
+                   assert vale[ncmp*kedit+0]=='TEMP' , (vale, kedit,ncmp)
+                   if vale[ncmp*kedit+1]=='CHAMP' :
+                      sd3=sd_champ(vale[ncmp*kedit+2]) ; sd3.check(checker)
+
 
     # vérification des objets .CVRC* :
     def check_CVRC(self, checker):
         if not self.exists() : return
-        xcmp=self.CVRCCMP.get()
-        xnom=self.CVRCNOM.get()
-        xgd=self.CVRCGD.get()
-        xvarc=self.CVRCVARC.get()
-        xdef=self.CVRCDEF.get()
+        cvrccmp=self.CVRCCMP.get()
+        cvrcnom =self.CVRCNOM.get_stripped()
+        cvrcgd  =self.CVRCGD.get_stripped()
+        cvrcvarc=self.CVRCVARC.get_stripped()
+        cvrcdef =self.CVRCDEF.get()
 
-        # Les 5 objets ont la meme longueur > 0 :
-        nbcvrc=len(xnom)
+        # Les 6 objets ont la meme longueur > 0 :
+        nbcvrc=len(cvrcnom)
         assert nbcvrc > 0, (self)
-        assert len(xcmp)  == nbcvrc , (xcmp,xnom,self)
-        assert len(xgd)   == nbcvrc , (xgd,xnom,self)
-        assert len(xvarc) == nbcvrc , (xvarc,xnom,self)
-        assert len(xdef)  == nbcvrc , (xdef,xnom,self)
+        assert len(cvrccmp)  == nbcvrc , (cvrccmp,cvrcnom,self)
+        assert len(cvrcgd)   == nbcvrc , (cvrcgd,cvrcnom,self)
+        assert len(cvrcvarc) == nbcvrc , (cvrcvarc,cvrcnom,self)
+        assert len(cvrcdef)  == nbcvrc , (cvrcdef,cvrcnom,self)
 
         # Les 4 objets sont "non blancs" :
         sdu_tous_non_blancs(self.CVRCCMP,checker)
@@ -87,6 +104,7 @@ class sd_cham_mater_varc(AsBase):
 
 
 
+
 class sd_cham_mater(AsBase):
 #=============================
     nomj = SDNom(fin=8)
@@ -94,10 +112,6 @@ class sd_cham_mater(AsBase):
     # CHAMP_MAT est une carte contenant la liste des noms de matériaux
     # affectées sur les mailles du maillage.
     CHAMP_MAT = sd_carte()
-
-    # La carte TEMPE_REF n'existe pas si AFFE_VARC/NOM_VARC='TEMP' :
-    # (voir routine cmtref.f)
-    TEMPE_REF = Facultatif(sd_carte())
 
     # si AFFE_VARC :
     varc = Facultatif(sd_cham_mater_varc(SDNom(nomj='')))

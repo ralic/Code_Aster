@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE : APPLICATION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MO,
                        AFFE=_F(GROUP_MA='VOL',
                                MATER=ACIER,
-                               TEMP_REF=20.0,),);
+                               ),);
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------

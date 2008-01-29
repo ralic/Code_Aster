@@ -1,4 +1,4 @@
-# MODIF  DATE 01/09/2003   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE SPHERE SOUS PRESSION EN PLASTICITE (PLAS2 CASTEM 18 DDL)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ MAT=DEFI_MATERIAU(   ELAS=_F(  E = 1.E11,  NU = .3,  ALPHA = 10.0E-6),
                          TRACTION=_F(  SIGM = CTRAC)      )
 
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT,  TEMP_REF = 0.)  )
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT)  )
 
 L_INST=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
                  _F(  JUSQU_A = 50.E0,   NOMBRE = 1),

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
-                                TEMP_REF=0.0,),
+                                ),
                              );
 
 

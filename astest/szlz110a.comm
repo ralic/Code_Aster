@@ -1,4 +1,4 @@
-# MODIF  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -296,11 +296,11 @@ P10CD911=DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
 MAT_PLAS=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
                                MATER=P10CD910,
-                               TEMP_REF=20.0,),);
+                               ),);
 MAT_PLA1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        AFFE=_F(TOUT='OUI',
                                MATER=P10CD911,
-                               TEMP_REF=20.0,),);
+                               ),);
 
 # ====================================================================
 # DEFINITION DES PAS DE TEMPS POUR LA RESOLUTION DU PROBLEME THERMIQUE

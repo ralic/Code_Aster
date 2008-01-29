@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,7 +150,7 @@ MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,
-                         TEMP_REF=0.0,),);
+                         ),);
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_NO='SUPX',

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3',),
                                 MATER=ACIER,
-                                TEMP_REF=0.0,),);
+                                ),);
 
 PRES=100.
 FCTPRES=FORMULE(NOM_PARA=('X','Y'),VALE='(PRES-(X-10.)*(X-10.)/2.)*E/(1e6)');

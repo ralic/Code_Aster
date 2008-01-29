@@ -1,4 +1,4 @@
-# MODIF  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOL',),
                                 MATER=ACIER,
-                                TEMP_REF=0.0,),
+                                ),
                              ),);
 ZERO=0.0
 DEPX=1.E-3

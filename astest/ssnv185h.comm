@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,8 +175,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
-                                MATER=ACIER,
-                                TEMP_REF=0.0,),
+                                MATER=ACIER),
                              );
 
 #---------------------------------------------------------
@@ -213,7 +212,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
-                   SOLVEUR=_F(METHODE='MUMPS', PRETRAITEMENTS='SANS', 
+                   SOLVEUR=_F(METHODE='MUMPS', PRETRAITEMENTS='SANS',
                               PCENT_PIVOT=50 ),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
@@ -268,9 +267,9 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
                        MODELE        = MODELEK,
@@ -279,7 +278,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MAILLAGE_FISS = MA_XFEM,

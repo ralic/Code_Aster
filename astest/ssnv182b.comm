@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,14 +57,14 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
-                   
+
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
                          CONTACT='OUI',
                          INFO=1,);
-                    
+
 CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT      = FISS,
                                      METHODE        = 'XFEM',
                                      INTEGRATION    = 'GAUSS',
@@ -79,7 +79,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT      = FISS,
                                      SEUIL_INIT     = -1.E11,
                                     ),
                           MODELE=MODELEK,
-                          ),                     
+                          ),
 
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
@@ -103,8 +103,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
-                                MATER=ACIER,
-                                TEMP_REF=0.0,),);
+                                MATER=ACIER,),);
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='SURFINF',
@@ -128,7 +127,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH1,),
-                          _F(CHARGE=CTXFEM,),                   
+                          _F(CHARGE=CTXFEM,),
                           _F(CHARGE=CHXFEM,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
@@ -261,9 +260,9 @@ TEST_TABLE(TABLE=LAG,
            PRECISION=1.E-12,
            REFERENCE='ANALYTIQUE',);
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
                        MODELE        = MODELEK,
@@ -272,7 +271,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MAILLAGE_FISS = MA_XFEM,
@@ -281,7 +280,7 @@ RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         RESULTAT      = UTOT1,
                         NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
- 
+
 #IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 FIN();

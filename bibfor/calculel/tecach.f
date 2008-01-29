@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,8 +185,13 @@ C     -------------------------------------------------
            VALK(1) = NOMPAR
            VALK(2) = OPTION
            VALK(3) = NOMTE
-           CALL U2MESK('E','CALCULEL4_95', 3 ,VALK)
-          CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+           IF (NOMPAR(1:5).EQ.'PVARC') THEN
+             CALL U2MESK('F','CALCULEL4_10', 3 ,VALK)
+           ELSE
+             CALL U2MESK('E','CALCULEL4_95', 3 ,VALK)
+             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+           ENDIF
+
         END IF
 
         IF (LGCATA.EQ.-1) THEN
@@ -195,7 +200,7 @@ C     -------------------------------------------------
              VALK(2) = OPTION
              VALK(3) = NOMTE
              CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
-            CALL CONTEX(OPTION,0,NOMPAR,' ',0)
+             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
         END IF
       ELSE
@@ -204,7 +209,7 @@ C     -------------------------------------------------
              VALK(1) = NOMPAR
              VALK(2) = OPTION
              VALK(3) = NOMTE
-             CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
+              CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
         ELSE

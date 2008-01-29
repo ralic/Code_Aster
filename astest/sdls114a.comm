@@ -1,4 +1,4 @@
-# MODIF  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ MA=DEFI_MATERIAU(ELAS=_F(E=200.0E+9,
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=MA,
-                         TEMP_REF=0.0,),);  
+                         ),);  
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_MA='COT_SUP',

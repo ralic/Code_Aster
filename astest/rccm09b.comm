@@ -1,4 +1,4 @@
-# MODIF  DATE 22/05/2007   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,7 +63,7 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
 MATERIO=AFFE_MATERIAU (MAILLAGE=MAILLAGE,
                        AFFE=_F(GROUP_MA = 'SCYL',
                                 MATER=MAT,
-                                TEMP_REF=20.0,),);
+                                ),);
 
 #
 #  Conditions aux limites

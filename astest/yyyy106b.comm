@@ -1,4 +1,4 @@
-# MODIF  DATE 03/09/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,25 +193,7 @@ GRAP=DEFI_MATERIAU(ELAS=_F(E=1.00E6,
                            NU=0.4,
                            ALPHA=0.0,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA1,
-                    AFFE=(_F(GROUP_MA=('E_COR','E_PLA',),
-                             MATER=ACIE_32,
-                             TEMP_REF=20.0,),
-                          _F(GROUP_MA='E_GOU',
-                             MATER=ACIE_22,
-                             TEMP_REF=20.0,),
-                          _F(GROUP_MA=('E_ECR','E_RON',),
-                             MATER=ACIE_22,
-                             TEMP_REF=20.0,),
-                          _F(GROUP_MA='E_CHA',
-                             MATER=ACIE_11,
-                             TEMP_REF=20.0,),
-                          _F(GROUP_MA='E_STE',
-                             MATER=ACIE_32,
-                             TEMP_REF=20.0,),
-                          _F(GROUP_MA='E_JOI',
-                             MATER=GRAP,
-                             TEMP_REF=20.0,),),);
+
 
 CHMLIA1=AFFE_CHAR_MECA(VERI_NORM='OUI',
                        MODELE=MODMECA,
@@ -325,10 +307,6 @@ THERCST=CREA_RESU(OPERATION='AFFE',
                   _F(CHAM_GD=T286,
                      INST=2.0,),),);
 
-CHT286=AFFE_CHAR_MECA(VERI_NORM='OUI',
-                      MODELE=MODMECA,
-                      TEMP_CALCULEE=THERCST,
-                      INFO=1,);
 
 LR3=DEFI_LIST_REEL(DEBUT=-2.0,
                    INTERVALLE=(_F(JUSQU_A=-1.0,
@@ -359,6 +337,17 @@ CHMP1=AFFE_CHAR_MECA(VERI_NORM='NON',
 FONCP=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(-2.0,0.0,-1.0,0.0,0.0,1.0,9000.0,1.0,),);
 
+#CHT286=AFFE_CHAR_MECA(VERI_NORM='OUI', MODELE=MODMECA, TEMP_CALCULEE=THERCST, );
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=(_F(GROUP_MA=('E_COR','E_PLA',), MATER=ACIE_32),
+                          _F(GROUP_MA='E_GOU',            MATER=ACIE_22),
+                          _F(GROUP_MA=('E_ECR','E_RON',), MATER=ACIE_22),
+                          _F(GROUP_MA='E_CHA',            MATER=ACIE_11),
+                          _F(GROUP_MA='E_STE',            MATER=ACIE_32),
+                          _F(GROUP_MA='E_JOI',            MATER=GRAP),
+                          ),
+                     AFFE_VARC=_F(TOUT='OUI', NOM_VARC='TEMP',EVOL=THERCST,PROL_DROITE='CONSTANT',VALE_REF=20.,),)
+
 DEP=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                   MODELE=MODMECA,
                   CHAM_MATER=CHMAT,
@@ -369,8 +358,7 @@ DEP=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                          _F(CHARGE=CHMS1,
                             FONC_MULT=FONCS,
                             TYPE_CHARGE='FIXE_CSTE',),
-                         _F(CHARGE=CHT286,
-                            TYPE_CHARGE='FIXE_CSTE',),
+                         #_F(CHARGE=CHT286, TYPE_CHARGE='FIXE_CSTE',),
                          _F(CHARGE=CHMP1,
                             FONC_MULT=FONCP,
                             TYPE_CHARGE='FIXE_CSTE',),),
@@ -399,10 +387,8 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MA1,
                              MATER=ACIE_32,),
                           _F(GROUP_MA='E_JOI',
                              MATER=GRAP,),),
-                    AFFE_VARC=_F(TOUT='OUI',
-                             EVOL=TEMP2,PROL_GAUCHE='CONSTANT',
-                             NOM_VARC='TEMP',VALE_REF=20,
-                             NOM_CHAM='TEMP'),);
+                    AFFE_VARC=_F(TOUT='OUI', EVOL=TEMP2,PROL_GAUCHE='CONSTANT',
+                             NOM_VARC='TEMP',VALE_REF=20., NOM_CHAM='TEMP'),);
 
 DEP=STAT_NON_LINE(reuse =DEP,
                   MODELE=MODMECA,

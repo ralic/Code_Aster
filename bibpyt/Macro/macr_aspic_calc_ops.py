@@ -1,21 +1,21 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -23,7 +23,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                              FOND_FISS_1,FOND_FISS_2,CHARGE,RESU_THER,AFFE_MATERIAU,EQUILIBRE,
                              PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMP_INCR,COMP_ELAS,
                              THETA_3D,OPTION,SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
-                             INCREMENT,PAS_AZIMUT,IMPRESSION,INFO,TITRE,BORNES ,**args):          
+                             INCREMENT,PAS_AZIMUT,IMPRESSION,INFO,TITRE,BORNES ,**args):
   """
      Ecriture de la macro MACR_ASPIC_CALC
   """
@@ -54,7 +54,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
- 
+
 #------------------------------------------------------------------
 # data
   GRMAIL= ('EQUERRE','PEAUINT','EXCORP1','EXCORP2','EXTUBU','LEVRTUBU','LEVRCORP')
@@ -137,8 +137,8 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
   mcfact=[]
   for mater in mc_AFFE_MATERIAU :
-     if mater['TOUT']!=None : mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
-     else                   : mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
+     if mater['TOUT']!=None : mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER']))
+     else                   : mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER']))
   __affmat = AFFE_MATERIAU( MAILLAGE = MAILLAGE ,
                           MODELE   = modele ,
                           AFFE     = mcfact    )
@@ -190,12 +190,12 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   mcfact=[]
   mcfac2=[]
   for mater in mc_AFFE_MATERIAU :
-     if mater['TOUT']!=None : 
+     if mater['TOUT']!=None :
        mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],))
        if indther==1:
          mcfac2.append(_F(NOM_VARC='TEMP',TOUT='OUI',
                         EVOL=resuth,NOM_CHAM='TEMP',VALE_REF=mater['TEMP_REF']),)
-     else: 
+     else:
        mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER'],))
        if indther==1:
          mcfac2.append(_F(NOM_VARC='TEMP',GROUP_MA=mater['GROUP_MA'],
@@ -237,7 +237,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                                    DRZ       = 0.0 , ) )
 #
 #     --- commande AFFE_CHAR_MECA ---
-#         chargement mecanique : pres_rep, effet de fond 
+#         chargement mecanique : pres_rep, effet de fond
 #
   motscles={}
   if (PRES_REP['PRES_LEVRE']=='OUI') and (TYPE_MAILLAGE[-4:]=='_DEB') :
@@ -668,7 +668,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                 LEVRE_SUP = _F(GROUP_MA='LEVRCORP',),
                                 LEVRE_INF = _F(GROUP_MA='LEVRTUBU',),**motscles)
       if THETA_3D!=None:
-        for tht3d in THETA_3D : 
+        for tht3d in THETA_3D :
 #
 #          --- commande CALC_THETA ---
 #

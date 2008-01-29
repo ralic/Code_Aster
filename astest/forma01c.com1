@@ -52,7 +52,7 @@ MOD2=AFFE_MODELE(MAILLAGE=MAIL2,
 CHM2=AFFE_MATERIAU(MAILLAGE=MAIL2,
                    AFFE=_F(TOUT='OUI',
                            MATER=MAT,
-                           TEMP_REF=20.0,),);
+                           ),);
 
 CHARG=AFFE_CHAR_MECA(MODELE=MOD2,
                      DDL_IMPO=(_F(GROUP_MA='ENCAST',

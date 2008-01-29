@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 13/11/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   mcfact=[]
   for mater in mc_AFFE_MATERIAU :
      if mater['TOUT']!=None :
-       mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER'],TEMP_REF=mater['TEMP_REF']))
+       mcfact.append(_F(TOUT    =mater['TOUT'    ],MATER=mater['MATER']))
        rccmat = mater['MATER']
      else                   :
        mcfact.append(_F(GROUP_MA=mater['GROUP_MA'],MATER=mater['MATER']))

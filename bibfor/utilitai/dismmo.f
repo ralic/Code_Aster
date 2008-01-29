@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C     ------------------------------------
 C
 C     -----------------------------------------------------------------
       ELSE IF ((QUESTI.EQ.'EXI_RDM'   ).OR.(QUESTI.EQ.'EXI_POUX'  ).OR.
-     &         (QUESTI.EQ.'EXI_THM_CT').OR.(QUESTI.EQ.'EXI_THM_VR').OR.
+     &         (QUESTI(1:7).EQ.'EXI_THM').OR.
      &         (QUESTI.EQ.'EXI_TUYAU' ).OR.(QUESTI.EQ.'EXI_COQ3D' ).OR.
      &         (QUESTI.EQ.'EXI_COQ1D' ).OR.(QUESTI.EQ.'EXI_PLAQUE').OR.
      &         (QUESTI.EQ.'EXI_COQUE' ).OR.(QUESTI.EQ.'EXI_GRILLE')

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(0. ,20. ,h ),),
                     );
-                    
+
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
@@ -89,7 +89,7 @@ CTXFEM = AFFE_CHAR_MECA( CONTACT=_F( FISS_MAIT=FISS,
                                CONTACT_INIT='OUI',
                                     ),
                           MODELE=MODELEK,
-                          ),                     
+                          ),
 
 
 
@@ -109,8 +109,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(TOUT = 'OUI',
-                                MATER=ACIER,
-                                TEMP_REF=0.0,),
+                                MATER=ACIER),
                              );
 
 #----------------------------------------------
@@ -158,7 +157,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CTXFEM,), 
+                          _F(CHARGE=CTXFEM,),
                           _F(CHARGE=CH1,),
                           _F(CHARGE=CH2,),),
                    COMP_ELAS=_F(RELATION='ELAS',
@@ -306,11 +305,11 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='G_MAX',
            VALE= 0.,
            CRITERE='ABSOLU',
-           PRECISION=1.e-6,);                      
+           PRECISION=1.e-6,);
 
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
                        MODELE        = MODELEK,
@@ -319,7 +318,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
                         MAILLAGE_FISS = MA_XFEM,

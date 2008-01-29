@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+#& MODIF COMMANDE  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,6 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
-           TEMP_REF        =SIMP(statut='f',typ='R'),
          ),
 
          #  affectation du nom du matériau (par noeuds):
@@ -65,36 +64,26 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                   PRESENT_ABSENT('GROUP_MA','TOUT'),
                   PRESENT_ABSENT('MAILLE','TOUT'),
-                  UN_PARMI('EVOL','CHAMP_GD'),),
+                  AU_MOINS_UN('EVOL','CHAMP_GD','VALE_REF'),
+                  EXCLUS('EVOL','CHAMP_GD'),
+                  ),
 
           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # [défaut]
           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
-          CHAMP_GD      =SIMP(statut='f',typ=cham_gd_sdaster,),
-          B_CHAMP_GD    =BLOC(condition="CHAMP_GD!=None",
-              NOM_VARC    =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER","M_ZIRC",
+          NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER","M_ZIRC",
                                                             "EPSA","NEUT1","NEUT2")),
-          ),
+          CHAMP_GD        =SIMP(statut='f',typ=cham_gd_sdaster,),
           EVOL            =SIMP(statut='f',typ=evol_sdaster,),
+
           B_EVOL          =BLOC(condition="EVOL!=None",
-              NOM_VARC    =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER",
-                                                            "M_ZIRC","EPSA","NEUT1","NEUT2")),
-              B_NOM_TEMP    =BLOC(condition="NOM_VARC=='TEMP'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'TEMP',),),
-              B_NOM_CORR    =BLOC(condition="NOM_VARC=='CORR'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'CORR',),),
-              B_NOM_IRRA    =BLOC(condition="NOM_VARC=='IRRA'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'IRRA',),),
-              B_NOM_HYDR    =BLOC(condition="NOM_VARC=='HYDR'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'HYDR_ELNO_ELGA',),),
-              B_NOM_SECH    =BLOC(condition="NOM_VARC=='SECH'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'TEMP',),),
-              B_NOM_EPSA    =BLOC(condition="NOM_VARC=='EPSA'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'EPSA_ELNO',),),
-              B_NOM_M_ACIER =BLOC(condition="NOM_VARC=='M_ACIER'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'META_ELNO_TEMP',),),
-              B_NOM_M_ZIRC  =BLOC(condition="NOM_VARC=='M_ZIRC'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'META_ELNO_TEMP',),),
-              B_NOM_NEUT1   =BLOC(condition="NOM_VARC=='NEUT1'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'NEUT',),),
-              B_NOM_NEUT2   =BLOC(condition="NOM_VARC=='NEUT2'",NOM_CHAM=SIMP(statut='f',typ='TXM',defaut= 'NEUT',),),
+              NOM_CHAM      =SIMP(statut='f',typ='TXM'),
               PROL_DROITE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
               PROL_GAUCHE   =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
               FONC_INST     =SIMP(statut='f',typ=(fonction_sdaster,formule)),
           ),
-          VALE_REF          =SIMP(statut='f',typ='R'),  # defaut=0. pour TEMP (fait dans le fortran : op0006.f)
+          VALE_REF          =SIMP(statut='f',typ='R'),
          ),
 
          #  mots clés cachés pour les variables de commande NEUTi :

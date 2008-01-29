@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 # TITRE TAUX DE RESTITUTION AVEC DEFORMATION INITIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,7 +52,7 @@ ZERO=DEFI_FONCTION(   NOM_PARA='X',
 CM=AFFE_MATERIAU(    MAILLAGE=M,
                            AFFE=_F(  TOUT = 'OUI',
                                   MATER = MA,
-                                  TEMP_REF = 0.) )
+                                  ) )
 
 CHF=AFFE_CHAR_MECA_F(         MODELE=MO,DDL_IMPO=(
                                 _F(  GROUP_NO = 'GRNM4', DY = ZERO),

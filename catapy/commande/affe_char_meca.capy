@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                              'FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
                              'PRES_REP','FORCE_POUTRE','FORCE_COQUE','LIAISON_OBLIQUE',
                              'FORCE_ELEC','INTE_ELEC','PESANTEUR','ROTATION','IMPE_FACE',
-                             'VITE_FACE','TEMP_CALCULEE','RELA_CINE_BP','EPSI_INIT','CONTACT',
+                             'VITE_FACE','RELA_CINE_BP','EPSI_INIT','CONTACT',
                              'LIAISON_GROUP','LIAISON_UNIF','FLUX_THM_REP','LIAISON_SOLIDE',
                              'LIAISON_ELEM','ONDE_FLUI','LIAISON_CHAMNO','VECT_ASSE','LIAISON_COQUE',
                              'LIAISON_MAIL','LIAISON_CYCL','FORCE_TUYAU',
@@ -34,8 +34,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                          ),
          VERI_NORM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
-         TEMP_CALCULEE   =SIMP(statut='f',fr="Champ de température issu d'un autre calcul",
-                               typ=(evol_ther,cham_no_sdaster,carte_sdaster) ),
          EVOL_CHAR       =SIMP(statut='f',fr="Champ de pression issu d'un autre calcul",
                                typ=evol_char ),
 

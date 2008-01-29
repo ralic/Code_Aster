@@ -1,6 +1,6 @@
       SUBROUTINE VRCIN4(MODELE,CARELE,CHTEMP,CHVARC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,29 +57,9 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*19 CHS,CES1,DCELI,MNOGA,CELMOD,CESMOD,LIGRMO
       CHARACTER*4 TYCH
 C     -- VARIABLES DE SAUVEGARDE POUR GAGNER DU TEMPS
-      CHARACTER*8 MODELS,CARELS
-      CHARACTER*19 CHVARS
-      DATA CHVARS,MODELS,CARELS /3*' '/
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-
-
-C     0. ON REGARDE SI LE TRAVAIL N'EST PAS DEJA FAIT (POUR VRCREF) :
-C     ---------------------------------------------------------------
-      IF (CHTEMP(9:18).EQ.'.TEMPE_REF') THEN
-        IF (  MODELS.EQ.MODELE .AND. CARELS.EQ.CARELE
-     &                       .AND. CHVARS.EQ.CHVARC) THEN
-          CALL JEEXIN(CHVARC//'.CELD',IRET)
-          IF (IRET.GT.0) THEN
-             GOTO 9999
-          ENDIF
-        ELSE
-          MODELS=MODELE
-          CARELS=CARELE
-          CHVARS=CHVARC
-        ENDIF
-      ENDIF
 
 
       LIGRMO = MODELE//'.MODELE'

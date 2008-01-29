@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C     ------------------------------------------------------------------
       CALL MECHAM(OPTION,MODELE,0,' ',CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
 
-      CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,LCHAR,TIME,CHVARC)
+      CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC)
 
       CALL MEMARE('G',MATEL,MODELE,MATE,CARA,OPTION)
 C     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:

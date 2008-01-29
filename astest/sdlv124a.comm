@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/01/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 import Numeric
 from Numeric import size,asarray
 
-DEBUT(CODE=_F( NOM = 'SDLV124A',NIV_PUB_WEB='INTERNET'),
+DEBUT(CODE=_F( NOM = 'SDLV124A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       PAR_LOT='NON');
 
 # Definition des parametres de l'excitation sinusoidale
