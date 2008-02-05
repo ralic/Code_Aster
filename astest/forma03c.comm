@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/10/2007   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE TP FORMATION NON LINEAIRE. RECALAGE PARAMETRES PUIS CALCUL PLAQUE TROUEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NOM='FORMA03C',
               VISU_EFICAS='NON',),);
 
 #######################################################
-# RECALAGE DES PARAMETRES DE VISC_CIN1_CHAB
+# RECALAGE DES PARAMETRES DE VMIS_CIN1_CHAB
 #######################################################
 
 parametres =[['R_INF__',250.,200.,800.],['b__',20.,10.,100.],]
@@ -123,7 +123,7 @@ TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
 
 
 #######################################################
-# CALCUL DE LA PLAQUE TROUEE AVEC VISC_CIN1_CHAB
+# CALCUL DE LA PLAQUE TROUEE AVEC VMIS_CIN1_CHAB
 #######################################################
 
 

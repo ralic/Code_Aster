@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -174,7 +174,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
          CALL PMFMAS(NOMTE,ZI(LMATER),KANL,MLV)
       ELSE IF (NOMTE.EQ.'MECA_POU_D_TG'.OR.
      &         NOMTE.EQ.'MECA_POU_D_TGM') THEN
-         DO 20 I = 1 , 78
+         DO 20 I = 1 , 105
             MATP1(I) = 0.0D0
 20       CONTINUE
          CALL PTMA01(KANL,ITYPE,MATP1,ISTRUC,RHO,E,A,A,XL,XIY,XIY,XIZ,

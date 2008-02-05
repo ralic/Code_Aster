@@ -5,7 +5,7 @@
       INTEGER            IPOP1,IPOP2,NBVARI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ELEMENTS  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,11 @@ C
       IF (  (COMPOR.EQ.'LEMAITRE'      )
      &     .OR.(COMPOR.EQ.'VMIS_ECMI_TRAC')
      &     .OR.(COMPOR.EQ.'VMIS_ECMI_LINE')
+     &     .OR.(COMPOR.EQ.'VMIS_CIN1_CHAB')
+     &     .OR.(COMPOR.EQ.'VMIS_CIN2_CHAB') 
      &     .OR.(COMPOR.EQ.'VISC_CIN1_CHAB')
-     &     .OR.(COMPOR.EQ.'VISC_CIN2_CHAB') ) THEN
+     &     .OR.(COMPOR.EQ.'VISC_CIN2_CHAB') 
+     &  ) THEN
         IPOP1  = 1
         IPOP2  = 2
         

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,11 +58,19 @@ C
       REAL*8 ALP(20),AN1(20),AN2(20),AN3(20),AN4(20)
       REAL*8 V1,V2,V3,V(3),W(3),WM
       REAL*8 X0,Y0,Z0,X1,Y1,Z1,X2,Y2,Z2,A,B,C,LAM1,LAM2
+      REAL*8 FORCE(12)
+      INTEGER IPT
       CHARACTER*1 K1BID
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       ZERO = 0.D0
+C
+C     --- INITIALISATION
+C
+      DO 40 I=1,12
+         FORCE(I) = ZERO
+40    CONTINUE
 C
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       CALL JEVECH ('PGEOMER','L',LX)
@@ -192,15 +200,27 @@ CC           CAS DES SYMETRIES
             S=F1*(Q1-R1)+F2*(Q2-R2)+F3*(Q3-R3)
             S=S*.10D0*XL/D
             DO 2 J = 1,3
-            ZR(IVECT-1+J)=ZR(IVECT-1+J)+S*U(J)*AN1(I)
-            ZR(IVECT-1+J+3)=ZR(IVECT-1+J+3)+S*W(J)*AN2(I)
-            ZR(IVECT-1+J+6)=ZR(IVECT-1+J+6)+S*U(J)*AN3(I)
-            ZR(IVECT-1+J+9)=ZR(IVECT-1+J+9)+S*W(J)*AN4(I)
+            FORCE(J)   = FORCE(J)+S*U(J)*AN1(I)
+            FORCE(J+3) = FORCE(J+3)+S*W(J)*AN2(I)
+            FORCE(J+6) = FORCE(J+6)+S*U(J)*AN3(I)
+            FORCE(J+9) = FORCE(+J+9)+S*W(J)*AN4(I)
     2       CONTINUE
    30    CONTINUE
     1 CONTINUE
 C
  1000 CONTINUE
+C
+C   --- STOCKAGE
+C
+      IPT = 6 
+      IF(NOMTE.EQ.'MECA_POU_D_EM' .OR.
+     &   NOMTE.EQ.'MECA_POU_D_TG' .OR.
+     &   NOMTE.EQ.'MECA_POU_D_TGM'     ) IPT=7
+
+      DO 50 I=1,6
+          ZR(IVECT-1+I)  = FORCE(I)
+          ZR(IVECT-1+I+IPT)= FORCE(I+6)
+ 50   CONTINUE
 C
       CALL JEDEMA()
       END

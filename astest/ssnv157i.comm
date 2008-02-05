@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D CPLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,6 +110,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                               MATRICE='TANGENTE',
                               REAC_INCR=1,),
                       PILOTAGE=_F(TYPE='PRED_ELAS',
+                                  COEF_MULT=3.,
                                   SELECTION='RESIDU',
                                   GROUP_MA = ('GMA10',),
                                   ETA_PILO_R_MIN = 0.,
@@ -119,14 +120,14 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
 TEST_RESU(RESU=(  _F(
                RESULTAT = EVOL1,
                REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 39,
+               NUME_ORDRE = 31,
               NOEUD = 'N2',
               NOM_CHAM = 'DEPL',
               NOM_CMP = 'DY',
               VALE = 7.559659E-3), _F(
               RESULTAT = EVOL1,
               REFERENCE = 'NON_REGRESSION',
-              NUME_ORDRE = 39,
+              NUME_ORDRE = 31,
               MAILLE = 'M31',
               POINT = 1,
               NOM_CHAM = 'VARI_ELGA',

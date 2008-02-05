@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,9 +30,9 @@ C       'FF1D1D_MECA'       : FORCES LINEIQUES (FONCTION)
 C       'SR1D1D_MECA'       : FORCES LINEIQUES SUIVEUSES (REEL)
 C       'SF1D1D_MECA'       : FORCES LINEIQUES SUIVEUSES (FONCTION)
 C       'CHAR_MECA_PESA_R'  : CHARGES DE PESANTEUR
-C       'CHAR_MECA_TEMP_R'  :
-C       'CHAR_MECA_SECH_R'  :
-C       'CHAR_MECA_HYDR_R'  :
+C       'CHAR_MECA_TEMP_R'  : DEFORMATIONS THERMIQUES
+C       'CHAR_MECA_SECH_R'  : DEFORMATIONS DUES AU SECHAGE
+C       'CHAR_MECA_HYDR_R'  : DEFORMATIONS HYDRIQUES
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C       'MECA_POU_D_E'  : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 C       'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
@@ -233,6 +233,7 @@ C        --- POUTRE DROITE DE TIMOSKENKO A 7 DDL (GAUCHISSEMENT)---
          NNO = 2
          NC  = 7
          CALL MATROT ( ZR(LORIEN) , PGL )
+         A2    = A
          EY    = -ZR(LSECT+6)
          EZ    = -ZR(LSECT+7)
          XJG   =  ZR(LSECT+12)
@@ -255,9 +256,22 @@ C           (GAUCHISSEMENT, MULTIFIBRES)---
 C
 C     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
       IF ( OPTION .EQ. 'CHAR_MECA_FC1D1D' ) THEN
-         CALL PTFOCP(ITYPE,OPTION,NOMTE,XL,RAD,
-     &               ANGS2,NNO,NC,PGL,PGL1,PGL2, FR, FI )
          CALL JEVECH ('PVECTUC','E',LVECT)
+         IF (NOMTE.EQ.'MECA_POU_D_TG' .OR.
+     &       NOMTE.EQ.'MECA_POU_D_TGM') THEN
+             CALL PTFOCP(ITYPE,OPTION,NOMTE,XL,RAD,
+     &                  ANGS2,NNO,6,PGL,PGL1,PGL2, FR, FI )
+               CALL UTPVLG ( NNO, 6, PGL, FR, FGR )
+               CALL UTPVLG ( NNO, 6, PGL, FI, FGI )
+                DO 25 I = 1,6
+                  ZC(LVECT+I-1)   = DCMPLX(FGR(I),FGI(I))
+                  ZC(LVECT+I-1+7) = DCMPLX(FGR(I+6),FGI(I+6))
+ 25             CONTINUE
+                ZC(LVECT+7-1)  = DCMPLX(0.D0,0.D0)
+                ZC(LVECT+14-1) = DCMPLX(0.D0,0.D0)
+         ELSE
+            CALL PTFOCP(ITYPE,OPTION,NOMTE,XL,RAD,
+     &                  ANGS2,NNO,NC,PGL,PGL1,PGL2, FR, FI )
          IF ( NOMTE .EQ. 'MECA_POU_C_T' ) THEN
             CALL UTPVLG ( NNO, NC, PGL1, FR, FGR )
             CALL UTPVLG ( NNO, NC, PGL2, FR(7), FGR(7) )
@@ -270,6 +284,7 @@ C     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
          DO 15 I = 1,12
             ZC(LVECT+I-1) = DCMPLX(FGR(I),FGI(I))
  15      CONTINUE
+         ENDIF
       ELSE IF( OPTION.EQ.'CHAR_MECA_FR1D1D' .OR.
      &         OPTION.EQ.'CHAR_MECA_FF1D1D' .OR.
      &         OPTION.EQ.'CHAR_MECA_SR1D1D' .OR.
@@ -278,7 +293,7 @@ C     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
          IF(NOMTE.EQ.'MECA_POU_D_TG' .OR.
      &      NOMTE.EQ.'MECA_POU_D_TGM' ) THEN
             CALL PTFORP(0,OPTION,NOMTE,A,A2,XL,RAD,
-     &               ANGS2,1,NNO,NC,PGL,PGL1,PGL2, FER, FEI )
+     &               ANGS2,1,NNO,6,PGL,PGL1,PGL2, FER, FEI )
          ELSE
             CALL PTFORP(ITYPE,OPTION,NOMTE,A,A2,XL,RAD,
      &               ANGS2,1,NNO,NC,PGL,PGL1,PGL2, FER, FEI )

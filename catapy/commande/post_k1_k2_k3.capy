@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/01/2008   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,8 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
            regles=(UN_PARMI('RESULTAT','TABL_DEPL_SUP'),
                   EXCLUS('FISSURE','FOND_FISS'),
                   PRESENT_PRESENT('FISSURE','RESULTAT'),
+                  PRESENT_PRESENT('FOND_FISS','VECT_K1'),
+                  PRESENT_PRESENT('TABL_DEPL_SUP','VECT_K1'),
                    #PRESENT_PRESENT('RESULTAT','FOND_FISS'),
                    ),
 
@@ -74,7 +76,7 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
              ),
          SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS") ),
          INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         VECT_K1       =SIMP(statut='o',typ='R',max=3,
+         VECT_K1       =SIMP(statut='f',typ='R',max=3,
                              fr="Vecteur normal au plan de fissure, orienté de la lèvre inférieure vers la lèvre supérieure"),  
          TITRE         =SIMP(statut='f',typ='TXM',max='**'),  
 )  ;

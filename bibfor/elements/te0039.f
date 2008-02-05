@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_20
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
@@ -66,7 +67,7 @@ C     ------------------------------------------------------------------
       PARAMETER (NBRES=4)
 
       CHARACTER*2  BL2,CODRES(NBRES)
-      CHARACTER*8  NOMRES(NBRES),NOMPAR
+      CHARACTER*8  NOMRES(NBRES),NOMPAR,MATERI
       CHARACTER*16 CH16
 
       REAL*8   VALRES(NBRES),MATK(78),ALFAY,ALFAZ,XNU,XL,XIZ,XIY2,XIY
@@ -74,11 +75,16 @@ C     ------------------------------------------------------------------
       REAL*8   PM2,R1,R2,VALPAR,E,G,EPX,XKY,XKZ,ANG,TRIGOM,ALONG
       REAL*8   PGL(3,3),PGL1(3,3),PGL2(3,3)
       REAL*8   BSM(12,12),DE(12),FS(14),N1,N2,MX1,MX2,MY1,MY2,MZ1,MZ2
+      REAL*8   FSS(14)
       REAL*8   RAD,ANGARC,ANGS2
+      REAL*8   CARSEC(6), R8BID, ALPHA
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
       INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN
+      INTEGER  NEQ1
+      INTEGER  INBF,JACF,IPOS,ICP,NBFIG,NBGF,NCARFI,IG,NUGF
+      INTEGER  ISDCOM,ICOMPO
       CALL JEMARQ()
 
       BL2 = '  '
@@ -260,7 +266,9 @@ C                    PMPB = ABS(N/S) + SQRT(MY**2+MZ**2)*R/I
          IF (OPTION.EQ.'SIGM_ELNO_CART') THEN
             CALL JEVECH('PCONTRR','L',ICONTG)
             CALL JEVECH('PCONTGL','E',IVECTU)
-            DO 30 IN = 1,NEQ
+            NEQ1 = NEQ
+            IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG') NEQ1 = 12
+            DO 30 IN = 1,NEQ1
                FS(IN) = ZR(ICONTG+IN-1)
 30          CONTINUE
 
@@ -345,8 +353,8 @@ C              --- SECTION FINALE ---
                FS(5) = E*XIY*XKY
                FS(6) = E*XIZ*XKZ
 
-               IF ( (NOMTE.EQ.'MECA_POU_D_TG') .OR.
-     &              (NOMTE.EQ.'MECA_POU_D_TGM') ) THEN
+               IF ( (NOMTE.EQ.'MECA_POU_D_TG').OR.
+     &              (NOMTE.EQ.'MECA_POU_D_TGM') )THEN
                   FS( 7) = 0.D0
                   FS( 8) = E*A*EPX
                   FS( 9) = 0.D0
@@ -355,6 +363,21 @@ C              --- SECTION FINALE ---
                   FS(12) = E*XIY*XKY
                   FS(13) = E*XIZ*XKZ
                   FS(14) = 0.D0
+               ELSE IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
+C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
+                  CALL PMFITX(ZI(LMATER),1,CARSEC,R8BID)
+                  FS(1) = CARSEC(1)*EPX
+                  FS(2) = 0.D0
+                  FS(3) = 0.D0
+                  FS(4) = 0.D0
+                  FS(5) = CARSEC(5)*XKY
+                  FS(6) = CARSEC(4)*XKZ
+                  FS(7) = FS(1)
+                  FS(8) = 0.D0
+                  FS(9) = 0.D0
+                  FS(10) = 0.D0
+                  FS(11) = FS(5)
+                  FS(12) = FS(6)
                ELSE
                   FS( 7) = E*A2*EPX
                   FS( 8) = 0.D0
@@ -466,11 +489,35 @@ C           --- COORDONNEES DES NOEUDS
          ELSE
             CALL MATROT(ZR(LORIEN),PGL)
             IF (NDIM.EQ.3) THEN
-               CALL UTPVLG(NNO,NC,PGL,FS,ZR(IVECTU))
-               IF (IREPE.NE.0) THEN
-                  CALL MATROT(ZR(IREPE),PGL)
-                  CALL UTPVLG(NNO,NC,PGL,ZR(IVECTU),ZR(IVECTU))
-               END IF
+               IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND. 
+     &              OPTION.EQ.'EFGE_ELNO_CART') THEN     
+                        CALL UTPVLG(NNO,NC,PGL,FS,FSS)
+                     IF (IREPE.NE.0) THEN
+                        CALL MATROT(ZR(IREPE),PGL)
+                        CALL UTPVLG(NNO,NC,PGL,FSS,FSS)
+                     END IF
+                     DO 120 IN=1,6
+                        ZR(IVECTU-1+IN)   = FSS(IN) 
+                        ZR(IVECTU-1+IN+6) = FSS(IN+7) 
+120                  CONTINUE
+               ELSE IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND. 
+     &              OPTION.EQ.'SIGM_ELNO_CART') THEN     
+                        CALL UTPVLG(NNO,6,PGL,FS,FSS)
+                     IF (IREPE.NE.0) THEN
+                        CALL MATROT(ZR(IREPE),PGL)
+                        CALL UTPVLG(NNO,6,PGL,FSS,FSS)
+                     END IF
+                     DO 130 IN=1,6
+                        ZR(IVECTU-1+IN)   = FSS(IN) 
+                        ZR(IVECTU-1+IN+6) = FSS(IN+6) 
+130                  CONTINUE
+              ELSE      
+                 CALL UTPVLG(NNO,NC,PGL,FS,ZR(IVECTU))
+                 IF (IREPE.NE.0) THEN
+                    CALL MATROT(ZR(IREPE),PGL)
+                    CALL UTPVLG(NNO,NC,PGL,ZR(IVECTU),ZR(IVECTU))
+                 END IF
+              ENDIF  
             ELSE IF (NDIM.EQ.2) THEN
                CALL UT2VLG(NNO,NC,PGL,FS,ZR(IVECTU))
                IF (IREPE.NE.0) THEN

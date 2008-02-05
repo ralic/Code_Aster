@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_xfem SD  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,6 +42,7 @@ class sd_fiss_xfem(AsBase):
     GRLTNO = sd_cham_no()
     BASLOC = sd_cham_no()
     FONDFISS        = Facultatif(AsVR())
+    BASEFOND        = Facultatif(AsVR())
     FONDMULT        = Facultatif(AsVI())
     CARAFOND        = AsVR()
 

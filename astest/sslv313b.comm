@@ -1,0 +1,243 @@
+# MODIF  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
+# TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# MODELISATION B : FISSURE NON MAILLEE
+
+
+DEBUT(CODE=_F( NOM = 'SSLV313B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON');
+# PAR_LOT='NON' NECESSAIRE TANT QU ON NE PEUT PAS APPLIQUER DNOR=0 SUR LES ELEMENTS XFEM
+
+#---------------------------------------------
+# description de la FISSURE
+# =========================
+
+# longueur de la FISSURE 
+l_fiss = 0.22
+
+# rayon de la fissure
+r = 1.02
+
+
+#---------------------------------------------
+PRE_GIBI();
+MAILLAGE=LIRE_MAILLAGE();
+
+
+MAILLAGE=DEFI_GROUP( reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=(_F(GROUP_MA=('SINT','SHAUT','FACE1','FACE2'),),
+                                    _F(INTERSEC = ('SINT', 'SHAUT'),NOM='LH'),
+                                   ),
+                   );
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('FACE1','FACE2','SINT','SBAS'),),
+                       );
+
+MODELEIN=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                      AFFE=_F(  GROUP_MA= ('STRUCT','FACE1','FACE2'),
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = '3D') )
+
+
+#----------------------------------------------
+#         DEFINITION DE LA FISSURE
+#----------------------------------------------
+
+def SIGN(x) : 
+   if x<0. : return -1. 
+   if x>=0. : return 1.
+
+def ATAN3(x,y) : 
+   if (x*x+y*y) < 1.e-16 : return 0. 
+   else : return atan2(x,y)
+
+LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt((X-r*cos(ATAN3(Z,X)))**2+(Z-r*sin(ATAN3(Z,X)))**2)*SIGN(r*r-X*X-Z*Z)');
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y-l_fiss'); 
+
+XFONI = r ;
+YFONI = l_fiss;
+ZFONI = 0. ;
+
+XVECT = 0. ;
+YVECT = 1. ;
+ZVECT = 0. ;
+
+XORI  = 0 ;
+YORI  = 0 ;
+ZORI  = 0 ;
+
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    GROUP_MA_ENRI='VOL',
+                    ORIE_FOND=_F(PFON_INI= (XFONI, YFONI , ZFONI ),
+                                 VECT_ORIE=(XVECT, YVECT , ZVECT ),
+                                 PT_ORIGIN=(XORI , YORI  , ZORI  ),),
+                    INFO=1,
+                    );
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+ 
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+
+
+# STOCKAGE DANS UNE LISTE LES NOEUDS X_FEM APPARTENANT AU GROUPE REPCYCLI
+#  Dans le but de les extraire de la condition FACE_IMPO
+STNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+              OPERATION='EXTR',
+              NOM_CHAM='STNOR',
+              FISSURE=FISS,);
+              
+TAB= POST_RELEVE_T(ACTION=_F(INTITULE='test',
+                                            GROUP_NO='FACE2',
+                                           CHAM_GD=STNO,
+                                            TOUT_CMP='OUI',
+                                            OPERATION='EXTRACTION',),);
+
+tab2=TAB.EXTR_TABLE()
+
+numno = tab2['NOEUD'].values()['NOEUD']
+nbno =  len(numno)
+valx =  tab2['X1'].values()['X1']
+Listno = []
+for i in range(0,nbno) :                                          
+  if valx[i] > 0. :
+    Listno.append(numno[i])
+print Listno
+#----------------------------------------------
+#    DEFINITIONS ET AFFECTATIONS DES MATERIAUX
+#----------------------------------------------
+
+MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11,
+                             NU = 0.3,
+                             ALPHA = 0.) )
+
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                       AFFE=_F(  TOUT = 'OUI',
+                              MATER = MAT) )
+
+
+#----------------------------------------------
+#             CHARGEMENTS MECANIQUES
+#----------------------------------------------
+
+pres = 1.e6
+           
+# pression sur levres                  
+
+CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      PRES_REP=(_F(FISSURE=FISS,PRES=pres,),
+                                _F(GROUP_MA = 'SINT',PRES=pres,),
+                               ),   
+                     );
+                     
+#  Conditions avec liaisons unilaterales (type DZ=cste)
+SYMETRI = AFFE_CHAR_MECA(MODELE=MODELEK,
+                      DDL_IMPO=(
+                                _F(GROUP_NO = 'LH',DY=0.0,),
+                                _F(GROUP_NO = 'FACE1',DZ=0.0,),
+                               ),
+                      FACE_IMPO=_F(GROUP_MA= 'FACE2',
+                                    SANS_NOEUD=Listno,
+                                    DNOR=0.0,),
+                      );
+                      
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
+
+CHAMDEPL=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHMAT,              
+                   EXCIT=(_F(CHARGE=CHXFEM,),                                        
+                          _F(CHARGE=SYMETRI,),
+                          _F(CHARGE=CHPRES,),
+                         ),  
+                   COMP_ELAS=_F(RELATION='ELAS', GROUP_MA=('STRUCT')),
+                   INCREMENT=_F(LIST_INST=L_INS1,
+                                INST_FIN=1.0,),
+                   NEWTON=_F(REAC_ITER=1,),
+                   INFO=1,);
+
+                   
+
+# POST-TRAITEMENT
+RSUP=6e-3
+RINF=2e-3
+
+KGLOC1=CALC_G(           RESULTAT=CHAMDEPL,
+                        NUME_ORDRE = 1,
+                        OPTION='CALC_K_G',
+                        LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                          LISSAGE_G='LAGRANGE'),
+                        THETA=_F(FISSURE=FISS,
+                                 R_SUP=RSUP,
+                                 R_INF=RINF,),
+                    )
+IMPR_TABLE(TABLE=KGLOC1);
+
+TEST_TABLE( TABLE=KGLOC1,
+            NOM_PARA='K1_LOCAL',
+            FILTRE=_F(  NOM_PARA = 'NUM_PT',  
+                            VALE_I = 1,      ),
+            REFERENCE='AUTRE_ASTER',
+            VALE= 1.12448E+06,
+            PRECISION=0.05      )
+
+TEST_TABLE( TABLE=KGLOC1,
+            NOM_PARA='G_LOCAL',
+            FILTRE=_F(  NOM_PARA = 'NUM_PT',  
+                            VALE_I = 1,      ),
+            REFERENCE='AUTRE_ASTER',
+            VALE= 6.31937E+00,
+            PRECISION=0.08      )            
+            
+TABL_K=POST_K1_K2_K3(  MODELISATION='3D',
+              MAILLAGE=MAILLAGE,
+              MATER=MAT,
+              INFO = 2,
+              FISSURE = FISS,
+              RESULTAT = CHAMDEPL,
+              ABSC_CURV_MAXI = RSUP,
+           )
+IMPR_TABLE(TABLE=TABL_K)
+
+TEST_TABLE( TABLE=TABL_K,
+            NOM_PARA='K1_MAX',
+            FILTRE=(_F(  NOM_PARA = 'METHODE',  
+                        VALE_I = 3,      ),
+                     _F(  NOM_PARA = 'PT_FOND',  
+                            VALE_I = 1,      ),),
+            REFERENCE='AUTRE_ASTER',
+            VALE= 1.15799E+06 ,
+            PRECISION=0.05     )
+
+TEST_TABLE( TABLE=TABL_K,
+            NOM_PARA='K1_MAX',
+            FILTRE=(_F(  NOM_PARA = 'METHODE',  
+                        VALE_I = 3,      ),
+                     _F(  NOM_PARA = 'PT_FOND',  
+                            VALE_I = 1,      ),),
+            REFERENCE='NON_REGRESSION',
+            VALE= 1.13174E+06 ,
+            PRECISION=0.001     )            
+FIN();

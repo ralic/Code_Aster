@@ -1,7 +1,7 @@
       SUBROUTINE NMCHCR (MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
-     &                   DEUXMU,ETA,DT,VALDEN,F)
+     &                   DEUXMU,VISC,ETA,DT,VALDEN,F,SEQ,DENOMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C    ALFAM(6)       IN    R       LE TENSEUR DE RAPPEL XM A L'INSTANT
 C    ALFA2M(6)                     DU CALCUL PRECEDENT EST RELIE
 C                                 AU TENSEUR ALFAM PAR XM = 2/3*C*ALFAM
 C    DEUXMU         IN    R       COEFFICIENT DE LAME :2*MU
+C    VISC           IN    I       INDICATEUR DE VISCOSITE
 C    ETA            IN    R       PARAMETRE ETA DE VISCOSITE
 C    DT             IN    R       VALEUR DE L'INCREMENT DE TEMPS DELTAT
 C    VALDEN         IN    R       PARAMETRE N DE VISCOSITE
@@ -56,7 +57,7 @@ C    F              OUT   R       VALEUR DU CRITERE DE PLASTICITE
 C                                 POUR LA VALEUR DP
 C
 C -----  ARGUMENTS
-          INTEGER             NDIMSI,NBVAR
+          INTEGER             NDIMSI,NBVAR,VISC
            REAL*8             MAT(*),PM,SIGEDV(6),ALFAM(*),DEUXMU,DP
            REAL*8             F,ALFA2M(*),ETA,DT,VALDEN
 C -----  VARIABLES LOCALES
@@ -106,16 +107,14 @@ C     =============
          M2P=ZERO
        ENDIF
        DENOMI = RP + (TROIS/DEUX*DEUXMU+MP+M2P)*DP
-       DENOMI = DENOMI + ETA*((DP/DT)**(UN/VALDEN))
-C      AP     = RP/DENOMI
-C      BP     = MP*GAMMAP*DP*(-DEUX/TROIS+DP/DENOMI*
-C     +                                  (DEUXMU+DEUX/TROIS*MP))
+       IF (VISC.EQ.1) THEN
+          DENOMI = DENOMI + ETA*((DP/DT)**(UN/VALDEN))
+       ENDIF
 C
       SEQ = ZERO
 C
       DO 10 I = 1, NDIMSI
 C
-C        S(I) = AP*SIGEDV(I) -BP*ALFAM(I)
         IF (NBVAR.EQ.1) THEN
             S(I) = SIGEDV(I) -DEUX/TROIS*MP*ALFAM(I)
         ELSEIF (NBVAR.EQ.2) THEN
@@ -128,23 +127,10 @@ C
 C
       SEQ = SQRT(TROIS/DEUX*SEQ)
 C
-      IF (ETA.EQ.0.D0) THEN
-C    CAS DE L'ELASTOPLASTICITE PURE
-         IF (R0.EQ.ZERO) THEN
-            F = SEQ - DENOMI
-         ELSE
-            F = SEQ/DENOMI - UN
-         ENDIF
-      ELSE
-C CAS DE LA VISCOPLASTICITE
-         XN=MAX(R0,RINF)
-         XN=MAX(XN,ETA)
-         IF (XN.LE.R8MIEM()) THEN
-            CALL U2MESS('A','ALGORITH6_77')
-            F = (SEQ - DENOMI)
-         ELSE
-            F = (SEQ - DENOMI)/XN
-         ENDIF
+      IF (SEQ.LE.R8MIEM()) THEN   
+         F = SEQ - DENOMI         
+      ELSE                        
+         F = UN - DENOMI/SEQ      
       ENDIF
-C
+                       
       END

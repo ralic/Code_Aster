@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,6 +114,16 @@ REST=CALC_ELEM( reuse=REST,
                      RESULTAT=REST,
                        OPTION='DEGE_ELNO_DEPL'    )
 
+REST=CALC_ELEM( reuse=REST,
+                     RESULTAT=REST,
+                       OPTION='SIGM_ELNO_SIEF'    )
+
+
+REST=CALC_ELEM( reuse=REST,
+                     RESULTAT=REST,
+                       OPTION='SIPO_ELNO_SIEF'    )
+
+
 TEST_RESU(RESU=(_F( RESULTAT = REST,
                  NUME_ORDRE = 11,
                  NOM_CHAM = 'SIEF_ELNO_ELGA',
@@ -170,6 +180,74 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  NOM_CMP = 'V7',
                  VALE = 1.02000E+00, REFERENCE = 'NON_REGRESSION',
                  PRECISION = 1.E-3))
+          )
+
+TEST_RESU(RESU=(_F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'SIGM_ELNO_SIEF',
+                 NOEUD = 'R3',
+                 MAILLE = 'SR2',
+                 NOM_CMP = 'SIXX',
+                 VALE = 1.5615E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIGM_ELNO_SIEF',
+                 NOEUD = 'R3',
+                 MAILLE = 'SR2',
+                 NOM_CMP = 'SIXX',
+                 VALE = 1.57645E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'SIGM_ELNO_SIEF',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'SIXX',
+                 VALE = 1.515E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIGM_ELNO_SIEF',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'SIXX',
+                 VALE = 1.53E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'SIPO_ELNO_SIEF',
+                 NOEUD = 'R3',
+                 MAILLE = 'SR2',
+                 NOM_CMP = 'SN',
+                 VALE = 1.5615E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIPO_ELNO_SIEF',
+                 NOEUD = 'R3',
+                 MAILLE = 'SR2',
+                 NOM_CMP = 'SN',
+                 VALE = 1.57645E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 11,
+                 NOM_CHAM = 'SIPO_ELNO_SIEF',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'SN',
+                 VALE = 1.515E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = REST,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIPO_ELNO_SIEF',
+                 NOEUD = 'C3',
+                 MAILLE = 'SC2',
+                 NOM_CMP = 'SN',
+                 VALE = 1.53E8, REFERENCE = 'ANALYTIQUE',
+                 PRECISION = 1.E-3),
+                 )
           )
 
 # ------ FLEXION GZ EN PLASTICITE PARFAITE ---------------------------
@@ -247,6 +325,15 @@ RESM=CALC_ELEM( reuse=RESM,
 RESM=CALC_ELEM( reuse=RESM,
                      RESULTAT=RESM,
                        OPTION='DEGE_ELNO_DEPL'    )
+
+RESM=CALC_ELEM( reuse=RESM,
+                     RESULTAT=RESM,
+                       OPTION='SIGM_ELNO_SIEF'    )
+
+RESM=CALC_ELEM( reuse=RESM,
+                     RESULTAT=RESM,
+                       OPTION='SIPO_ELNO_SIEF'    )
+
 
 # RESULTATS EN PLASTICITE PARFAITE
 

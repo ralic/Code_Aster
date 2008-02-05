@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+#& MODIF COMMUN  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -23,6 +23,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
 # Spécial Discrets : début
                                         "DIS_VISC",
                                         "DIS_ECRO_CINE",
+                                        "DIS_BILI_ELAS",
 # Spécial Discrets : fin
                                         "ELAS_HYPER",
                                         "VMIS_ISOT_TRAC",
@@ -140,6 +141,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
 # Spécial discrets : début
           DIS_VISC       =SIMP(statut='c',typ='I',defaut=12,into=(12,)),
           DIS_ECRO_CINE  =SIMP(statut='c',typ='I',defaut=18,into=(18,)),
+          DIS_BILI_ELAS  =SIMP(statut='c',typ='I',defaut= 6,into=( 6,)),
 # Spécial discrets : fin
           ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           ELAS_HYPER      =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
@@ -360,5 +362,4 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                  TAUX_RETOUR  =SIMP(statut='f',typ='R',defaut= 0.05 ),
                                 ),
            PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
-           TANGSEC         =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON"),
          ) ;

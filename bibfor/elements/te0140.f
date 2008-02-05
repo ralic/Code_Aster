@@ -1,6 +1,6 @@
       SUBROUTINE TE0140(OPTION,NOMTE)
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -241,7 +241,8 @@ C     --- COORDONNEES DES NOEUDS ---
             MAT(I) = 0.D0
 20       CONTINUE
 C     --- CALCUL DES MATRICES ELEMENTAIRES ----
-         IF ( OPTION(1:9) .EQ. 'RIGI_MECA' ) THEN
+         IF ( OPTION(1:9) .EQ. 'RIGI_MECA' .OR.
+     &        OPTION(1:9) .EQ. 'RIGI_FLUI') THEN
             CALL PTKA21(MAT,E,A,XL,XIY,XIZ,XJX,XJG,G,ALFAY,
      &                  ALFAZ,EY,EZ)
          ENDIF

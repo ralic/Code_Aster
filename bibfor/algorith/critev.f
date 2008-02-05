@@ -2,7 +2,7 @@
      &            CRIT,CRITP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,10 +52,10 @@ C ----------------------------------------------------------------------
 
 C -- ON DIAGONALISE LE TENSEUR DE DEFORMATION
       TR(1) = EPSP(1)+ETA*EPSD(1)
-      TR(2) = EPSP(4)+ETA*EPSD(4)
-      TR(3) = EPSP(5)+ETA*EPSD(5)
+      TR(2) = (EPSP(4)+ETA*EPSD(4))/RAC2
+      TR(3) = (EPSP(5)+ETA*EPSD(5))/RAC2
       TR(4) = EPSP(2)+ETA*EPSD(2)
-      TR(5) = EPSP(6)+ETA*EPSD(6)
+      TR(5) = (EPSP(6)+ETA*EPSD(6))/RAC2
       TR(6) = EPSP(3)+ETA*EPSD(3)
 
       CALL DIAGP3(TR,VECP,EPM)
@@ -107,13 +107,9 @@ C -- CALCUL DE LA DERIVEE DU CRITERE
 51    CONTINUE
       DO 52 I=4,6
         DFDE(I)=DEUXMU*FPD*PPEPS(I)*RAC2
-        EPSD(I)=EPSD(I)*RAC2
 52    CONTINUE
 
       CRITP=DDOT(6,DFDE,1,EPSD,1)+EPSD(7)
 
-      DO 53 I=4,6
-        EPSD(I)=EPSD(I)/RAC2
-53    CONTINUE
       
       END

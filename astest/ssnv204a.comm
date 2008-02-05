@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -361,6 +361,7 @@ TAB_VAR0=CALC_TABLE(reuse=TAB_VAR0,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_SIG0,
                               NOM_PARA='INST'));
+IMPR_TABLE(TABLE=TAB_VAR0);
 
 #*******************************************************************************
 #                                      U1
@@ -396,7 +397,7 @@ TAB_VAR1=CALC_TABLE(reuse=TAB_VAR1,
                     ACTION=_F(OPERATION='COMB',
                               TABLE=TAB_SIG1,
                               NOM_PARA='INST'));
-
+IMPR_TABLE(TABLE=TAB_VAR1);
 #*******************************************************************************
 #                                      U2
 #*******************************************************************************
@@ -432,7 +433,7 @@ TAB_VAR2=CALC_TABLE(reuse=TAB_VAR2,
                               TABLE=TAB_SIG2,
                               NOM_PARA='INST'));
 
-
+IMPR_TABLE(TABLE=TAB_VAR2);
 #*******************************************************************************
 #                                  TEST_RESU
 #*******************************************************************************

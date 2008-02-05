@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF rupture1 Messages  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,4 +188,46 @@ Seule l'option BANDE est à utiliser dans le cas ou on emploie
 le mot clé THETA_BANDE .
 """),
 
+33: _("""
+La tangente à l'origine n'est pas orthogonale à la normale au plan de la fissure.
+Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
+-> Risque et Conseil :
+La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure, 
+donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
+(level set) qui définissent la fissure. Vérifier les données.
+"""),
+
+34: _("""
+La tangente à l'extrémité n'est pas orthogonale à la normale au plan de la fissure.
+Normale au plan :  (%(r1)f,%(r2)f,%(r3)f)
+-> Risque et Conseil :
+La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure, 
+donc orthogonale à la normale au plan, calculée à partir des fonctions de niveaux
+(level set) qui définissent la fissure. Vérifier les données.
+"""),
+
+35: _("""
+Les directions normales au plan de la fissure entre les points %(i1)d et %(i2)d successifs du fond forment un angle 
+supérieur à 10 degrés.
+-> Risque et Conseils
+L'interpolation des sauts de déplacements est basée sur les champs singuliers 
+correspondants à une fissure plane. La fissure utilisée ici est trop irrégulière et 
+il y a donc un risque d'obtenir des résultats imprécis.
+"""),
+
+36: _("""
+La tangente à l'origine n'est pas orthogonale à la normale au plan de la fissure 
+défini par VECT_K1.
+-> Risque et Conseil :
+La tangente à l'origine DTAN_ORIG est nécessairement dans le plan de la fissure, 
+donc orthogonale au VECT_K1 fourni. Vérifier les données.
+"""),
+
+37: _("""
+La tangente à l'extrémité n'est pas orthogonale à la normale au plan de la fissure 
+défini par VECT_K1.
+-> Risque et Conseil :
+La tangente à l'extrémité DTAN_EXTR est nécessairement dans le plan de la fissure, 
+donc orthogonale au VECT_K1 fourni. Vérifier les données.
+"""),
 }

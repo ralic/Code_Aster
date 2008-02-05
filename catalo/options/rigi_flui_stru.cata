@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,10 @@ OPTION__
         PCAORIE  CAORIE
         PCAARPO  CAARPO
         PVARCPR  VARI_R
+        PNBSP_I  NBSP_I
+        PFIBRES  CAFI_R
+% pour les poutres multifibres
+        PCOMPOR  COMPOR
    OUT__
 PMATUUR MDEP_R RESL__
 

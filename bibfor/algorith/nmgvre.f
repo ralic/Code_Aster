@@ -1,7 +1,7 @@
       SUBROUTINE NMGVRE (COMPOR, MAT, DPIDA2, DBDPHI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,7 +81,7 @@ C ----------------------------------------------------------------------
         GAMMA  = -VAL(4)/VAL(1)
         KG     = VAL(3)**2 / (2*VAL(1)) * (1+GAMMA)**2
 
-        DPIDA2 = 2*KG/GAMMA**3
+        DPIDA2 = 8.D0/13.D0/(1.D0+GAMMA)*VAL(3)**2 / (2*VAL(1))
         DBDPHI = 2*KG/(1+GAMMA)**3
       END IF
 

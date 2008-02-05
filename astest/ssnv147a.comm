@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 # TITRE BARREAU FRAGILE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,8 +70,8 @@ CHMAT=AFFE_MATERIAU(
 L_INST=DEFI_LIST_REEL(
                DEBUT=0.0,INTERVALLE=(
 
-                _F(  JUSQU_A = 1.,       NOMBRE = 1),
-                _F(  JUSQU_A = 100.,     NOMBRE = 2000))
+                _F(  JUSQU_A = 100.,       NOMBRE = 100),
+                )
               )
 
 LIAISON=AFFE_CHAR_MECA(
@@ -129,7 +129,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 SUBD_PAS_MINI = 1.E-6),
                PILOTAGE=_F(
                 TYPE = 'PRED_ELAS',
-                COEF_MULT = 1.,
+                COEF_MULT = 10.,
                 ETA_PILO_MIN = 0.50),
                      NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -158,20 +158,20 @@ TRAVAIL = POST_ELEM(
 
 TEST_RESU(RESU=(  _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 44,
+               NUME_ORDRE = 11,
                GROUP_NO = 'E',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DZ',
                VALE = 9.25E-5), _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 44,
+               NUME_ORDRE = 11,
                MAILLE = 'M1',
                POINT = 1,
                NOM_CHAM = 'SIEF_ELGA',
                NOM_CMP = 'SIZZ',
                VALE = 5.E-1), _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 44,
+               NUME_ORDRE = 11,
                MAILLE = 'M1',
                POINT = 1,
                NOM_CHAM = 'VARI_ELGA',
@@ -183,15 +183,15 @@ TEST_RESU(RESU=(  _F(
 TEST_TABLE (
   TABLE = PILO,
   NOM_PARA = 'INST',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=44),
-  VALE = 3.1285,
+  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
+  VALE = 11.,
   REFERENCE = 'NON_REGRESSION'
   )
 
 TEST_TABLE (
   TABLE = PILO,
   NOM_PARA = 'ETA_PILOTAGE',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=44),
+  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
   VALE = 0.5,
   REFERENCE = 'ANALYTIQUE'
   )
@@ -199,7 +199,7 @@ TEST_TABLE (
 TEST_TABLE (
   TABLE = TRAVAIL,
   NOM_PARA = 'TRAV_ELAS',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=44),
+  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
   VALE = 2.3125E-7,
   REFERENCE = 'ANALYTIQUE'
   )
@@ -207,7 +207,7 @@ TEST_TABLE (
 TEST_TABLE (
   TABLE = TRAVAIL,
   NOM_PARA = 'TRAV_REEL',
-  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=44),
+  FILTRE = _F(NOM_PARA = 'NUME_ORDRE',VALE_I=11),
   VALE = 1.91875E-6,
   REFERENCE = 'ANALYTIQUE'
   )

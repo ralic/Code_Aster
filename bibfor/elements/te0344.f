@@ -1,6 +1,6 @@
       SUBROUTINE TE0344(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C
       CHARACTER*2  CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
-      INTEGER      KP
+      INTEGER      KP,JEFFO
       REAL*8       NU,ULI(14)
       REAL*8       ULR(14), UGR(14), PGL(14,14), KLC(14,14)
       REAL*8       PGL1(3,3), PGL2(3,3)
@@ -63,10 +63,11 @@ C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU'/
 C     ------------------------------------------------------------------
 C
+      IF(OPTION(11:14).NE.'SIEF') THEN
+       
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       CALL JEVECH('PMATERC','L',LMATER)
 C
-
       NBPAR = 0
       NOMPAR = '  '
       VALPAR = 0.D0
@@ -129,13 +130,6 @@ C     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
       CALL JEVECH('PCAORIE','L',LORIEN)
       CALL MATROT ( ZR(LORIEN) , PGL )
 C
-      IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-          CALL JEVECH('PEFFORR','E',JEFFO)
-      ELSE
-          CH16 = OPTION
-          CALL U2MESK('F','ELEMENTS3_27',1,CH16)
-      ENDIF
-C
 C     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE
       CALL PTKA21(KLV,E,A,XL,XIY,XIZ,XJX,XJG,G,ALFAY,ALFAZ,EY,EZ)
 C
@@ -188,16 +182,57 @@ C     -------------------------------------------------------------
             FLR(I+7) = FLR(I+7) - FE(I+6)
  110     CONTINUE
       ENDIF
+ 120  CONTINUE
 C
-C     ENDIF
-C
-C
+      ENDIF
 C       --- ARCHIVAGE ---
+      IF(OPTION.EQ.'EFGE_ELNO_DEPL') THEN
 C       --- NOTER L INVERSION DU SIGNE DES EFFORTS SUR LE PREMIER NOEUD
 C           (CONVENTION ADOPTEE/AL95-205)
-      DO 700 I = 1,7
-          ZR(JEFFO-1+I)   = - FLR(I)
-          ZR(JEFFO-1+I+7) =   FLR(I+7)
-  700 CONTINUE
+         CALL JEVECH('PEFFORR','E',JEFFO)
+         DO 200 I = 1,7
+             ZR(JEFFO-1+I)   = - FLR(I)
+             ZR(JEFFO-1+I+7) =   FLR(I+7)
+ 200     CONTINUE
+  
+      ELSEIF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
+         CALL JEVECH('PCONTRR','E',JEFFO)
+         DO 210 I = 1,6
+             FE(I)   =   FLR(I)
+             FE(I+6) =   FLR(I+7)
+ 210     CONTINUE
+         CALL POSIGR ( NOMTE, FE, ZR(JEFFO) )
+
+      ELSEIF (OPTION.EQ.'SIPO_ELNO_DEPL') THEN
+         CALL JEVECH('PCONTPO','E',JEFFO)
+         DO 220 I = 1,6
+             FE(I)   =   FLR(I)
+             FE(I+6) =   FLR(I+7)
+ 220     CONTINUE
+         CALL POSIPR ( NOMTE, FE, ZR(JEFFO) )
+
+      ELSEIF ( OPTION .EQ. 'SIGM_ELNO_SIEF' ) THEN
+         CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )
+         CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
+         DO 230 I = 1,6
+            FE(I)   =   -ZR(JEFGE+I-1)
+            FE(I+6) =    ZR(JEFGE+I-1+7)
+ 230     CONTINUE
+         CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
+         CALL POSIGR ( NOMTE, FE, ZR(JEFFO) )
+C
+      ELSEIF ( OPTION .EQ. 'SIPO_ELNO_SIEF' ) THEN
+         CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )
+         CALL JEVECH ( 'PCONTPO' , 'E' , JEFFO )
+         DO 240 I = 1,6
+            FE(I)   =   -ZR(JEFGE+I-1)
+            FE(I+6) =    ZR(JEFGE+I-1+7)
+ 240      CONTINUE
+         CALL POSIPR ( NOMTE, FE, ZR(JEFFO) )
+C
+      ELSE
+          CH16 = OPTION
+          CALL U2MESK('F','ELEMENTS3_27',1,CH16)
+      ENDIF
 C
       END

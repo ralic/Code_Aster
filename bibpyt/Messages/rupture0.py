@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF rupture0 Messages  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,8 +186,15 @@ Veuillez vérifier les données, notamment celles du mot-clé DIRECTION.
 """),
 
 32: _("""
-Différence entre le vecteur VECT_K1 et la normale au plan de la fissure %(k1)s.
-On continue avec la normale au plan : (%(r1)f,%(r2)f,%(r3)f)
+Différence entre la normale au plan déduite de VECT_K1 et la normale 
+au plan de la fissure calculée pour le noeud %(i1)d :
+  VECT_K1 : (%(r4)f,%(r5)f,%(r6)f)
+  Vecteur normal calculé à partir de la définition de la fissure : (%(r1)f,%(r2)f,%(r3)f)
+-> Risque et Conseil :
+On poursuit le calcul mais si l'écart entre les deux vecteurs est trop important, 
+le calcul risque d'échouer ou de conduire à des résultats peu précis.
+Vérifier absolument le VECT_K1 fourni ou supprimer ce mot clé pour que la normale
+au plan soit calculée automatiquement.
 """),
 
 33: _("""

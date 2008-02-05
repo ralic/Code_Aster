@@ -2,7 +2,7 @@
      &                   DEPS,VIM,NONLOC,OPTION,SIG,VIP,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C                        2: ruine endommagement = 1
 C OUT DSIDEP  : MATRICE TANGENTE
 C ----------------------------------------------------------------------
 C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-      LOGICAL     RIGI, RESI,ELAS,MTG, COUP
+      LOGICAL     RIGI, RESI,ELAS,MTG, COUP,SECANT
       INTEGER     NDIMSI, K, L, I, J, M, N, P, T(3,3),IRET,NRAC
       REAL*8      EPS(6),  TREPS, SIGEL(6), KRON(6)
       REAL*8      RAC2,COEF
@@ -79,6 +79,8 @@ C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       
 C ----------------------------------------------------------------------
 
+
+
 C -- OPTION ET MODELISATION
 
       RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
@@ -87,6 +89,7 @@ C -- OPTION ET MODELISATION
       IF (COUP) RIGI=.TRUE.
       NDIMSI = 2*NDIM
       RAC2=SQRT(2.D0)
+      SECANT=.FALSE.
 
       CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET)
       CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
@@ -108,6 +111,9 @@ C -- INITIALISATION
       CALL LCEIB1 (FAMI,IMATE, COMPOR, NDIM, EPSM, TM,TREF,SREF,SECHM,
      &             HYDRM,T, LAMBDA, DEUXMU,EPSTHM, KDESS, BENDO, GAMMA, 
      &            SEUIL,COUP)
+
+
+
 
 C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 
@@ -175,8 +181,21 @@ C -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
 
       IF (.NOT.RESI) GOTO 5000
 C    ESTIMATION DU CRITERE
-      IF (ETAT.EQ.2) GOTO 2000      
+      IF (ETAT.EQ.2) GOTO 2000
+
+
+C      WRITE(6,*) 'ener=     ',ENER
+C      WRITE(6,*) 'phi=      ',PHI
+C      WRITE(6,*) 'seuil=    ',SEUIL/(1.D0+GAMMA)**2
+
+
+
       FEL = (1+GAMMA)*ENER/(1+GAMMA*D)**2+PHI-R*D-SEUIL
+
+
+C      WRITE(6,*) 'FEL=    ',FEL
+
+
 C    CAS ELASTIQUE ?
       IF (FEL.LE.0) THEN
         ETAT = 0
@@ -184,15 +203,21 @@ C    CAS ELASTIQUE ?
         GOTO 2000
       END IF
 C    CAS SATURE ?
+
       FSAT = (1+GAMMA)*ENER/(1+GAMMA)**2+PHI-R-SEUIL
+
       IF (FSAT.GE.0) THEN
         ETAT = 2
         D    = 1.D0
+
         GOTO 2000
       END IF
+
 C     ON RESOUD SI NON ELASTIQUE ET NON SATURE
 
+
       ELAS=.FALSE.
+
       Q2 = (2.D0*GAMMA*R-(PHI-SEUIL)*GAMMA**2.D0)/R/GAMMA**2
       Q1 = (R-2.D0*GAMMA*(PHI-SEUIL))/R/GAMMA**2
       Q0 = -((PHI-SEUIL)+(1+GAMMA)*ENER)/R/GAMMA**2
@@ -209,12 +234,19 @@ C     ON RESOUD SI NON ELASTIQUE ET NON SATURE
         ELAS=.TRUE.
         ETAT = 2
       ENDIF
+
+C      WRITE(6,*) 'deltaD=         ', D-VIM(1)
+
+
       
  2000 CONTINUE
 
 C -- CALCUL DES CONTRAINTES
 
+
+
       FD  = (1-D)/(1+GAMMA*D)
+
       TREPS=EPSP(1)+EPSP(2)+EPSP(3)
       CALL R8INIR(3,0.D0,SIGP,1)
 
@@ -246,6 +278,7 @@ C -- CALCUL DES CONTRAINTES
         SIG(K)=RAC2*SIG(K)
 18    CONTINUE
 
+
       VIP(1) = D
       VIP(2) = ETAT
 
@@ -257,6 +290,8 @@ C -- CALCUL DE LA MATRICE TANGENTE
       IF (.NOT.RIGI) GOTO 9000
 
       FD=(1-D)/(1+GAMMA*D)
+
+
       TREPS=EPSP(1)+EPSP(2)+EPSP(3)
       IF (TREPS.GE.0.D0) THEN
         LAMBDD=LAMBDA * FD
@@ -271,7 +306,7 @@ C -- CALCUL DE LA MATRICE TANGENTE
         ENDIF
  203  CONTINUE  
 
-      IF (OPTION(11:14).EQ.'ELAS') ELAS=.TRUE.
+      IF (OPTION(11:14).EQ.'ELAS') SECANT=.TRUE.
         CALL R8INIR(36, 0.D0, DSPDEP, 1)
         CALL R8INIR(36*4, 0.D0, DSIDEP, 1)
 
@@ -356,7 +391,17 @@ C -- CALCUL DE LA MATRICE TANGENTE
 
 
 C -- CONTRIBUTION DISSIPATIVE
-        IF (.NOT. ELAS) THEN
+        IF ((.NOT. ELAS).OR.(ETAT.EQ.1.D0)) THEN
+
+
+
+C      TREPS = EPS(1)+EPS(2)+EPS(3)
+C        DO 960 K=1,3
+C          SIGEL(K) = LAMBDA*TREPS
+C 960     CONTINUE
+C        DO 915 K=1,6
+C          SIGEL(K) = SIGEL(K) + DEUXMU*EPS(K)
+C 915    CONTINUE
 
           TR(1) = SIGEL(1)
           TR(2) = SIGEL(2)
@@ -383,14 +428,26 @@ C -- CONTRIBUTION DISSIPATIVE
      &              +2.D0*GAMMA*(1.D0+GAMMA)*ENER)
 
 
-          DO 200 K = 1,NDIMSI
-            DO 210 L = 1, NDIMSI
-             DSIDEP(K,L,1)=DSIDEP(K,L,1)-COEF1*COEF2*SIGEL(K)*SIGEL(L)
- 210        CONTINUE
+C dans le cas de la matrice secante, on enleve la partie dissipative
+C seulement sur la partie meca/meca
+          IF (.NOT.SECANT) THEN
+            DO 200 K = 1,NDIMSI
+              DO 210 L = 1, NDIMSI
+               DSIDEP(K,L,1)=DSIDEP(K,L,1)-COEF1*COEF2*SIGEL(K)*SIGEL(L)
+ 210          CONTINUE
+ 200        CONTINUE
+          ENDIF
+
+
+C les autres termes ne sont pas annules car ils permettent de faire
+C converger sur la regularisation
+          DO 220 K = 1,NDIMSI
              DSIDEP(K,1,3) = COEF2*SIGEL(K)
              DSIDEP(K,1,2) = - DSIDEP(K,1,3)
- 200      CONTINUE
+ 220      CONTINUE
           DSIDEP(1,1,4) = COEF3
+
+
         ENDIF
 
 

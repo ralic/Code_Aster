@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRE DE SECTION RECTANGULAIRE  (ENCASTREE-LIBRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,7 @@
 # MODELISATION POU_D_E : 10 MAILLES SEG2
 # MODELISATION POU_D_T : 10 MAILLES SEG2
 # MODELISATION POU_D_TG: 10 MAILLES SEG2
+# MODELISATION POU_D_EM: 10 MAILLES SEG2
 # POINTS   A=N1     B=N11
 # TOUTES LES CARACTERISTIQUES DE LA POUTRE SONT PRISES EGALES A 1
 # LA LONGUEUR DE LA POUTRE EST EGALE A 100
@@ -37,6 +38,10 @@ MA=LIRE_MAILLAGE( )
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
+PRE_GMSH(UNITE_MAILLAGE=21,);
+
+MASEC=LIRE_MAILLAGE(UNITE=21,);
+
 MO1=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'POU_D_E') )
@@ -49,10 +54,25 @@ MO3=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
                          MODELISATION = 'POU_D_TG') )
 
+MO4=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_EM') )
+
+GF=DEFI_GEOM_FIBRE(
+           SECTION = _F ( GROUP_FIBRE='SEC1',
+                            MAILLAGE_SECT = MASEC , GROUP_MA_SECT = 'GM1000',
+                            COOR_AXE_POUTRE = (0., 0.,)),
+            )
+
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 1., NU = 0.))
 
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='SEC1',MATER=MAT),))
+
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT),
+                       AFFE_COMPOR=_F(GROUP_MA = 'TOUT',COMPOR=COMPF)
+                    )
 
 # --------- PB PLAN + NOEUDS 'A ET B' ENCASTRES
 #
@@ -73,6 +93,14 @@ CH2=AFFE_CHAR_MECA(  MODELE=MO2,
                     )
 
 CH3=AFFE_CHAR_MECA(  MODELE=MO3,
+          DDL_IMPO=_F(
+                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
+                               DRX = 0., DRY = 0., DRZ = 0.),
+           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,
+                                    KY = 2.E-3, KZ = 3.E-3)
+                    )
+
+CH4=AFFE_CHAR_MECA(  MODELE=MO4,
           DDL_IMPO=_F(
                    NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
                                DRX = 0., DRY = 0., DRZ = 0.),
@@ -124,6 +152,22 @@ CELEM3=AFFE_CARA_ELEM(   MODELE=MO3,
                               1.,     1.,     1.,     1.,   )),
                      )
 
+CELEM4=AFFE_CARA_ELEM(   MODELE=MO4,
+                         VERIF=( 'MAILLE',  'NOEUD',  ),
+            POUTRE=
+               _F(  GROUP_MA = 'TOUT',
+                    SECTION = 'GENERALE', VARI_SECT = 'HOMOTHETIQUE',
+                    CARA = ( 'A1',       'IZ1',    'A2',    'IZ2',
+                             'AY1',      'AZ1',    'AY2',   'AZ2',
+                             'IY1',      'JX1',    'IY2',   'JX2', ),
+                    VALE = (  1.,         0.0833,     1.,     0.0833,
+                              1.,         1.,         1.,     1.,
+                              0.0833,     1.,     0.0833,     1.,   )),
+            GEOM_FIBRE=GF,
+            MULTIFIBRE=_F(GROUP_MA='TOUT',
+                       GROUP_FIBRE='SEC1'),
+                     )
+
 # ------------------------------------------------------------------
 
 MELR1=CALC_MATR_ELEM(  MODELE=MO1,            CHARGE=CH1,
@@ -138,17 +182,25 @@ MELR3=CALC_MATR_ELEM(  MODELE=MO3,            CHARGE=CH3,
                        CARA_ELEM=CELEM3,
                        CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
 
+MELR4=CALC_MATR_ELEM(  MODELE=MO4,            CHARGE=CH4,
+                       CARA_ELEM=CELEM4,
+                       CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
+
 NUM1=NUME_DDL(  MATR_RIGI=MELR1  )
 
 NUM2=NUME_DDL(  MATR_RIGI=MELR2  )
 
 NUM3=NUME_DDL(  MATR_RIGI=MELR3  )
 
+NUM4=NUME_DDL(  MATR_RIGI=MELR4  )
+
 MATASS1=ASSE_MATRICE(MATR_ELEM=MELR1,NUME_DDL=NUM1)
 
 MATASS2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
 
 MATASS3=ASSE_MATRICE(MATR_ELEM=MELR3,NUME_DDL=NUM3)
+
+MATASS4=ASSE_MATRICE(MATR_ELEM=MELR4,NUME_DDL=NUM4)
 
 VEL1=CALC_VECT_ELEM(    CHARGE=CH1,
                               OPTION='CHAR_MECA',
@@ -165,6 +217,11 @@ VEL3=CALC_VECT_ELEM(    CHARGE=CH3,
                              CHAM_MATER=CHMAT,
                              CARA_ELEM=CELEM3 )
 
+VEL4=CALC_VECT_ELEM(    CHARGE=CH4,
+                              OPTION='CHAR_MECA',
+                             CHAM_MATER=CHMAT,
+                             CARA_ELEM=CELEM4 )
+
 VECASS1=ASSE_VECTEUR(    VECT_ELEM=VEL1,
                               NUME_DDL=NUM1   )
 
@@ -174,11 +231,16 @@ VECASS2=ASSE_VECTEUR(    VECT_ELEM=VEL2,
 VECASS3=ASSE_VECTEUR(    VECT_ELEM=VEL3,
                               NUME_DDL=NUM3   )
 
+VECASS4=ASSE_VECTEUR(    VECT_ELEM=VEL4,
+                              NUME_DDL=NUM4   )
+
 MATASS1=FACTORISER( reuse=MATASS1,   MATR_ASSE=MATASS1 )
 
 MATASS2=FACTORISER( reuse=MATASS2,   MATR_ASSE=MATASS2 )
 
 MATASS3=FACTORISER( reuse=MATASS3,   MATR_ASSE=MATASS3 )
+
+MATASS4=FACTORISER( reuse=MATASS4,   MATR_ASSE=MATASS4 )
 
 VECASS1=RESOUDRE( reuse=VECASS1,   MATR=MATASS1,
                             CHAM_NO=VECASS1  )
@@ -188,6 +250,9 @@ VECASS2=RESOUDRE( reuse=VECASS2,   MATR=MATASS2,
 
 VECASS3=RESOUDRE( reuse=VECASS3,   MATR=MATASS3,
                             CHAM_NO=VECASS3  )
+
+VECASS4=RESOUDRE( reuse=VECASS4,   MATR=MATASS4,
+                            CHAM_NO=VECASS4  )
 
 TEST_RESU(CHAM_NO=(
      # DEPLACEMENTS
@@ -267,7 +332,34 @@ TEST_RESU(CHAM_NO=(
          _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 5.E-9,
            NOEUD = 'N6',       NOM_CMP = 'DRY',    VALE = 9.4734345491E-03),
          _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRZ',    VALE = 1.2247448714E-01),
+
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 1.E-8,
+           NOEUD = 'N11',       NOM_CMP = 'DX',    VALE = -6.4663837862E+00),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 5.E-8,
+           NOEUD = 'N11',       NOM_CMP = 'DY',    VALE = 1.4746819649E+01),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+           NOEUD = 'N11',       NOM_CMP = 'DZ',    VALE = -8.1072307824E+00),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 5.E-8,
+           NOEUD = 'N11',       NOM_CMP = 'DRX',   VALE = -2.6389584338E-01),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 5.E-7,
+           NOEUD = 'N11',       NOM_CMP = 'DRY',   VALE = 1.8946869098E-02),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 5.E-8,
+           NOEUD = 'N11',       NOM_CMP = 'DRZ',   VALE = 2.4494897428E-01),
+
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 1.E-8,
+           NOEUD = 'N6',       NOM_CMP = 'DX',     VALE = -1.6021621898E+00),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+           NOEUD = 'N6',       NOM_CMP = 'DY',     VALE = 3.7011386691E+00),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+           NOEUD = 'N6',       NOM_CMP = 'DZ',     VALE = -2.0123739389E+00),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+           NOEUD = 'N6',       NOM_CMP = 'DRX',    VALE = -1.3194792169E-01),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 5.E-7,
+           NOEUD = 'N6',       NOM_CMP = 'DRY',    VALE = 9.4734345491E-03),
+         _F(  CHAM_GD = VECASS4, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
            NOEUD = 'N6',       NOM_CMP = 'DRZ',    VALE = 1.2247448714E-01))
+
             )
 
 # -------------------------------------------------------------------

@@ -6,7 +6,7 @@
      &                  MAPREC,MEELEM,MEASSE,VEELEM,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,12 +52,30 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C                         
-C ----------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       LOGICAL      ISFONC,LMVIBR,LFLAMB
       LOGICAL      NDYNLO,LSTAT ,LIMPL
+      INTEGER      JARCH,IRET
       CHARACTER*8  OPTFLA
+      CHARACTER*24 TPSDIA,PASCAL
 C      
 C ----------------------------------------------------------------------
 C
@@ -72,43 +90,54 @@ C
 C            
 C -- CALCUL DE FLAMBEMENT EN STATIQUE ET DYNAMIQUE
 C
-      IF (LFLAMB) THEN
-        IF (LSTAT) THEN
-          OPTFLA = 'FLAMBSTA'
-        ELSE IF (LIMPL) THEN
-          OPTFLA = 'FLAMBDYN'
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-        CALL NMIMPR('TITR','POST','FLAMBEMENT        ',0.D0,0)        
-        CALL NMFLAM(MODELE,NUMEDD,CARELE,COMPOR,SOLVEU,
+      TPSDIA = SDDISC(1:19)//'.DIAL'
+      CALL JEVEUO(TPSDIA,'E',JARCH )
+C
+      IF (LFLAMB ) THEN
+        CALL GETVID('CRIT_FLAMB','INST_CALCUL',1,1,1,PASCAL  ,IRET)
+        IF (((PASCAL(1:15).EQ.'LISTE_ARCHIVAGE').AND.ZL(JARCH+NUMINS))
+     &  .OR. (PASCAL(1:8).EQ.'TOUT_PAS')) THEN
+          IF (LSTAT) THEN
+            OPTFLA = 'FLAMBSTA'
+          ELSE IF (LIMPL) THEN
+            OPTFLA = 'FLAMBDYN'
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+          CALL NMIMPR('TITR','POST','FLAMBEMENT        ',0.D0,0)
+          CALL NMFLAM(MODELE,NUMEDD,CARELE,COMPOR,SOLVEU,
      &              NUMINS,RESULT,MATE  ,COMREF,LISCHA,
      &              DEFICO,RESOCO,METHOD,PARMET,FONACT,
      &              CARCRI,ITERAT,SDDISC,PREMIE,LICCVG,
      &              OPTFLA,VALMOI,VALPLU,DEPALG,POUGD ,
      &              MATASS,MAPREC,MEELEM,MEASSE,VEELEM,
      &              SDDYNA)
+        ENDIF
       ENDIF
 
 C
 C --- CALCUL DE MODES VIBRATOIRES EN DYNAMIQUE
 C
-      IF (LMVIBR) THEN
-        IF (LSTAT) THEN
-          CALL ASSERT(.FALSE.)
-        ELSE IF (LIMPL) THEN
-          OPTFLA = 'VIBRDYNA'
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-        CALL NMIMPR('TITR','POST','MODES VIBRATOIRES ',0.D0,0)         
-        CALL NMFLAM(MODELE,NUMEDD,CARELE,COMPOR,SOLVEU,
+      IF (LMVIBR .AND. ZL(JARCH+NUMINS) ) THEN
+        CALL GETVID('MODE_VIBR','INST_CALCUL',1,1,1,PASCAL  ,IRET)
+        IF (((PASCAL(1:15).EQ.'LISTE_ARCHIVAGE').AND.ZL(JARCH+NUMINS))
+     &  .OR. (PASCAL(1:8).EQ.'TOUT_PAS')) THEN
+          IF (LSTAT) THEN
+            CALL ASSERT(.FALSE.)
+          ELSE IF (LIMPL) THEN
+            OPTFLA = 'VIBRDYNA'
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+          CALL NMIMPR('TITR','POST','MODES VIBRATOIRES ',0.D0,0)
+          CALL NMFLAM(MODELE,NUMEDD,CARELE,COMPOR,SOLVEU,
      &              NUMINS,RESULT,MATE  ,COMREF,LISCHA,
      &              DEFICO,RESOCO,METHOD,PARMET,FONACT,
      &              CARCRI,ITERAT,SDDISC,PREMIE,LICCVG,
      &              OPTFLA,VALMOI,VALPLU,DEPALG,POUGD ,
      &              MATASS,MAPREC,MEELEM,MEASSE,VEELEM,
      &              SDDYNA)
+        ENDIF
       ENDIF
 C
       CALL JEDEMA()      

@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,6 @@ C ======================================================================
 C TOLE CRP_20
 C RESPONSABLE JMBHH01 J.M.PROIX
 C.======================================================================
-C      IMPLICIT REAL*8 (A-H,O-Z)
       IMPLICIT NONE
 C
 C      NMCHAB   -- REALISE L'INTEGRATION DE LA LOI DE COMPORTEMENT
@@ -149,7 +148,7 @@ C -----  VARIABLES LOCALES
            REAL*8      CM,MU,AINF,CP,HP,SEQ,DGAM2P,DC2P,DM2P,E2P,B2P
            REAL*8      PDEV(6,6),DSIDE(6,6),ALFA2M(6),ALFA2(6),DALFA2(6)
            REAL*8      DT,ETA,VALDEN,CORR,VP,DVP,UNSETA
-           INTEGER     NDIMSI,I,J,L
+           INTEGER     NDIMSI,I,J,L,NITER,VISC
            CHARACTER*2 BL2, FB2, CODRET(10)
            CHARACTER*8 NOMRES(10)
            LOGICAL     PLASTI
@@ -167,6 +166,13 @@ C
          NBVAR=1
       ELSEIF ( COMPOR(1)(6:14) .EQ. 'CIN2_CHAB' ) THEN
          NBVAR=2
+      ELSE
+         CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
+      ENDIF
+      IF ( COMPOR(1)(1:4) .EQ. 'VMIS' ) THEN
+         VISC=0
+      ELSEIF ( COMPOR(1)(1:4) .EQ. 'VISC' ) THEN
+         VISC=1
       ELSE
          CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
@@ -192,7 +198,7 @@ C
 C
       PM    = VIM(1)
       PLAST = VIM(2)
-
+      NITER=0
 
       CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,COEF,IRET1)
 C
@@ -270,33 +276,41 @@ C
       IF (NBVAR.EQ.2) THEN
        MAT(9) = C2INF
        MAT(10) = GAMM20
+      ELSE
+       MAT(9) = ZERO
+       MAT(10) = ZERO
       ENDIF
 C
       RPM    = RINF + (R0-RINF)*EXP(-B*PM)
       CM     = CINF * (UN + (K-UN)*EXP(-W*PM))
       C2M = C2INF * (UN + (K-UN)*EXP(-W*PM))
+      
+      IF (VISC.EQ.1) THEN
 C
-C --- RECUPERATION DES CARACTERISTIQUES VISQUEUSES :
-C     ============================================
-      NOMRES(1) = 'N'
-      NOMRES(2) = 'UN_SUR_K'
-      NOMRES(3) = 'UN_SUR_M'
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','LEMAITRE',0,' ',0.D0,3
-     &             ,NOMRES,VALRES,CODRET,BL2)
+C ---    RECUPERATION DES CARACTERISTIQUES VISQUEUSES :
+C        ============================================
+         NOMRES(1) = 'N'
+         NOMRES(2) = 'UN_SUR_K'
+         NOMRES(3) = 'UN_SUR_M'
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','LEMAITRE',0,' ',0.D0,3
+     &                ,NOMRES,VALRES,CODRET,BL2)
 C
-      IF (CODRET(1).EQ.'OK') THEN
-        VALDEN = VALRES(1)
-        UNSETA = VALRES(2)
-        IF (VALDEN.LE.ZERO) THEN
-          CALL U2MESS('F','ALGORITH6_67')
-        ENDIF
-        IF (UNSETA.EQ.ZERO) THEN
-          CALL U2MESS('F','ALGORITH6_68')
-        ENDIF
-        ETA = UN/UNSETA
-        IF (VALRES(3).NE.ZERO) THEN
-          CALL U2MESS('F','ALGORITH6_69')
-        ENDIF
+         IF (CODRET(1).EQ.'OK') THEN
+           VALDEN = VALRES(1)
+           UNSETA = VALRES(2)
+           IF (VALDEN.LE.ZERO) THEN
+             CALL U2MESS('F','ALGORITH6_67')
+           ENDIF
+           IF (UNSETA.EQ.ZERO) THEN
+             CALL U2MESS('F','ALGORITH6_68')
+           ENDIF
+           ETA = UN/UNSETA
+           IF (VALRES(3).NE.ZERO) THEN
+             CALL U2MESS('F','ALGORITH6_69')
+           ENDIF
+         ELSE
+           CALL U2MESS('F','COMPOR1_32')
+         ENDIF
       ELSE
         VALDEN = UN
         ETA = ZERO
@@ -409,7 +423,7 @@ C ---   QUI EST LA SOLUTION D'UNE EQUATION NON LINEAIRE EN UTILISANT
 C ---   UNE METHODE DE SECANTES :
 C       =======================
             CALL NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,DEUXMU,
-     &                  CRIT,SEUIL,ETA,DT,VALDEN,DP,IRET)
+     &                  CRIT,SEUIL,VISC,ETA,DT,VALDEN,DP,IRET,NITER)
             PLAST = UN
          ENDIF
 C
@@ -431,19 +445,9 @@ C       --------------------------------------
      &                          -DEUX/TROIS*C2P*ALFA2M(I)
  100     CONTINUE
 C
-C ---   DETERMINATION DE L'INCREMENT DE ALFA :
-C       ------------------------------------
-C         DO 110 I = 1, NDIMSI
-C           DALFA(I) =  MP/(DENOMI*CP)*(TROIS/DEUX*DP*SIGEL(I)
-C     +                             + MP*GAMMAP*DP*DP*ALFAM(I))
-C     +               - MP/CP*GAMMAP*DP*ALFAM(I)
-C  110    CONTINUE
-C
 C ---   DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES :
 C       --------------------------------------------------------
          DO 120 I = 1, NDIMSI
-C           DEPSP(I) =  UN/DENOMI*(  TROIS/DEUX*DP*SIGEL(I)
-C     +                            + MP*GAMMAP*DP*DP*ALFAM(I))
            DEPSP(I) =  UN/DENOMI*(  TROIS/DEUX*DP*SIGEDV(I)
      &                   - MP*DP*ALFAM(I)- M2P*DP*ALFA2M(I))
   120    CONTINUE
@@ -472,7 +476,6 @@ C ---                    2*MU*(DEV DELTA_EPS - DELTA_EPS_PLAST)
 C ---     SIGP =  SIGPDV + 1/3*TR(SIG- + 3K*DELTA_EPS) :
 C         --------------------------------------------
          DO 130 I = 1,NDIMSI
-C            SIGEDV(I) = SIGMDV(I) + DEUXMU * DEPSDV(I)
             ALFA(I)   = ALFAM(I)  + DALFA(I)
             IF (NBVAR.EQ.2) THEN
                ALFA2(I)   = ALFA2M(I)  + DALFA2(I)
@@ -657,7 +660,8 @@ C     ========================================
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA')     THEN
          VIP(1)=PP
-         VIP(2)=PLAST
+C         VIP(2)=PLAST
+         VIP(2)=MAX(NITER,NINT(VIP(2)))
          DO 280 I = 1, 3
            VIP(I+2) = ALFA(I)
   280    CONTINUE

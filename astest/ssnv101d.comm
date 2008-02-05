@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN DEFORMATIONS PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,11 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#       COMPARAISON DU MODELE DE CHABOCHE A 2 CENTRES (RELATION DE
-#       COMPORTEMENT 'VISC_CIN1_CHAB') AVEC LE MODELE DE CHABOCHE A UN
-#       CENTRE (RELATION DE COMPORTEMENT 'VISC_CINE_CHAB') POUR LE 2D
-#       ET CELUI A DEUX CENTRES VISC_CIN2_CHAB DECLINE EN TROIS CAS :
-#       -
+#       MODELE DE CHABOCHE A 2 CENTRES (COMPORTEMENT 'VMIS_CIN2_CHAB')
 #----------------------------------------------------------------------
 #    CAS TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT PROPORTIONNEL
 #                   ESSAI AVEC CHARGE EN RAMPE A 100 N
@@ -170,7 +166,7 @@ SOLNL2=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,
                                            FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                           COMP_INCR=_F(  RELATION = 'VISC_CIN1_CHAB',
+                           COMP_INCR=_F(  RELATION = 'VMIS_CIN1_CHAB',
                                            ITER_INTE_MAXI = 20,
                                            DEFORMATION = 'PETIT',
                                            TOUT = 'OUI',                ),
@@ -229,7 +225,7 @@ SOLNL3=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,
                                            FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',
+                               COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
                                            RESI_INTE_RELA = 1.E-8,
                                            ITER_INTE_MAXI = 30,
                                            DEFORMATION = 'PETIT',
@@ -294,7 +290,7 @@ SOLNL4=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,
                                            FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',
+                               COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
                                            RESI_INTE_RELA = 1.E-8,
                                            ITER_INTE_MAXI = 30,
                                            DEFORMATION = 'PETIT',
@@ -359,7 +355,7 @@ SOLNL5=STAT_NON_LINE(
                                    EXCIT=_F(  CHARGE = TR_CS,
                                            FONC_MULT = COEF,
                                            TYPE_CHARGE = 'FIXE_CSTE',     ),
-                               COMP_INCR=_F(  RELATION = 'VISC_CIN2_CHAB',
+                               COMP_INCR=_F(  RELATION = 'VMIS_CIN2_CHAB',
                                            RESI_INTE_RELA = 1.E-8,
                                            ITER_INTE_MAXI = 30,
                                            DEFORMATION = 'PETIT',

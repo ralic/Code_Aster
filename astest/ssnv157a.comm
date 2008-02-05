@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,6 +102,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                               MATRICE='TANGENTE',
                               REAC_INCR=1,),
                     PILOTAGE=_F(TYPE='PRED_ELAS',
+                                COEF_MULT=3.,
                                 SELECTION = 'RESIDU',
                                 GROUP_MA = ('GMA34',),
                                 ETA_PILO_R_MIN = 0.,
@@ -111,19 +112,19 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
 TEST_RESU(RESU=(  _F(
                RESULTAT = EVOL1,
                REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 38,
+               NUME_ORDRE = 31,
                NOEUD = 'N2',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DX',
-               VALE = 6.66251E-03), _F(
+               VALE = 6.66E-03), _F(
                RESULTAT = EVOL1,
                REFERENCE = 'NON_REGRESSION',
-               NUME_ORDRE = 38,
+               NUME_ORDRE = 31,
                MAILLE = 'M169',
                POINT = 2,
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V1',
-               VALE = 9.89289E-01))
+               VALE = 9.893E-01))
             )
 
 

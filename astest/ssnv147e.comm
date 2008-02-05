@@ -1,5 +1,5 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
-# TITRE TRACTION D'UN BARREAU FRAGILE - PRED_ELAS - ENDO_ISOT_BETON
+# MODIF  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
+# TITRE TRACTION D UN BARREAU FRAGILE - PRED_ELAS - ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,13 +24,20 @@ DEBUT(CODE=_F(NOM='SSNV147E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
+
 MA=LIRE_MAILLAGE()
+
 
 MA=DEFI_GROUP( reuse=MA,
                MAILLAGE=MA,
                CREA_GROUP_NO=_F(
                 TOUT_GROUP_MA = 'OUI')
               )
+
+
+#IMPR_RESU(RESU=_F(MAILLAGE=MA));
+
+#FIN();
 
 MO=AFFE_MODELE(
                 MAILLAGE=MA,
@@ -46,7 +53,7 @@ CALCAIRE=DEFI_MATERIAU(
                 NU = 0.),
                BETON_ECRO_LINE=_F(
                 SYT = 6.,
-                D_SIGM_EPSI = -10000.)
+                D_SIGM_EPSI = -10000.),
                )
 
 CAL_FAIB=DEFI_MATERIAU(
@@ -55,7 +62,7 @@ CAL_FAIB=DEFI_MATERIAU(
                 NU = 0.),
                BETON_ECRO_LINE=_F(
                 SYT = 5.,
-                D_SIGM_EPSI = -10000.)
+                D_SIGM_EPSI = -10000.),
                )
 
 CHMAT=AFFE_MATERIAU(
@@ -71,12 +78,11 @@ L_INST=DEFI_LIST_REEL(
                DEBUT=0.0,INTERVALLE=(
 
                 _F(  JUSQU_A = 1.,       NOMBRE = 1),
-                _F(  JUSQU_A = 100.,     NOMBRE = 2000))
+                _F(  JUSQU_A = 100.,     NOMBRE = 990))
               )
 
 LIAISON=AFFE_CHAR_MECA(
                MODELE=MO,
-
                 FACE_IMPO=_F( GROUP_MA = 'FIXE',  DX = 0., DY = 0., DZ = 0.)
               )
 
@@ -111,34 +117,6 @@ REPONSE=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 50)
              )
 
-REPONSE=STAT_NON_LINE( reuse=REPONSE,
-                  ETAT_INIT=_F(
-                EVOL_NOLI = REPONSE),
-                     MODELE=MO,
-                 CHAM_MATER=CHMAT,EXCIT=(
-
-                _F( CHARGE = LIAISON),
-                _F( CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')),
-                  COMP_INCR=_F(
-                RELATION = 'ENDO_ISOT_BETON'),
-
-                INCREMENT=_F(
-                LIST_INST = L_INST,
-                INST_FIN = 1.594,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                SUBD_PAS_MINI = 1.E-6),
-               PILOTAGE=_F(
-                TYPE = 'PRED_ELAS',
-                ETA_PILO_MIN = 0.50,
-                ETA_PILO_R_MIN = 0.,
-                ETA_PILO_MAX = 10.),
-                     NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 10)
-             )
 
 REPONSE=STAT_NON_LINE( reuse=REPONSE,
                   ETAT_INIT=_F(
@@ -154,46 +132,57 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 INCREMENT=_F(
                 LIST_INST = L_INST,
                 SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                SUBD_PAS_MINI = 1.E-6),
+                SUBD_PAS_MINI = 1.E-6
+                 ),
                PILOTAGE=_F(
                 TYPE = 'PRED_ELAS',
+                COEF_MULT=2.,
                 ETA_PILO_R_MIN = 0.,
                 ETA_PILO_MIN = 0.50,
-                ETA_PILO_MAX = 10.),
+                ETA_PILO_MAX = 10.,
+                SELECTION='RESIDU',
+                ),
                      NEWTON=_F(
                 MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
+                REAC_ITER = 1,
+                REAC_ITER_ELAS=1,
+                ),
                 CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
-                ITER_GLOB_MAXI = 10)
+                ITER_GLOB_MAXI = 10,
+                ),
+            AFFICHAGE=(_F(NOM_COLONNE=('STANDARD'),),
+             _F(NOM_COLONNE=('RELA_NOEU'),),
+             ),
              )
+
 
 TABLE = RECU_TABLE(CO=REPONSE, NOM_PARA='ETA_PILOTAGE')
 
 TEST_RESU(RESU=(  _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
+               NUME_ORDRE = 19,
                GROUP_NO = 'E',
                REFERENCE = 'NON_REGRESSION',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DZ',
-               VALE = 1.91008E-04), _F(
+               VALE = 9.25E-05), _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
+               NUME_ORDRE = 19,
                MAILLE = 'M1',
                POINT = 1,
                REFERENCE = 'NON_REGRESSION',
                NOM_CHAM = 'SIEF_ELGA',
                NOM_CMP = 'SIZZ',
-               VALE = 3.31452), _F(
+               VALE = 0.5), _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 41,
+               NUME_ORDRE = 19,
                MAILLE = 'M1',
                POINT = 1,
                REFERENCE = 'NON_REGRESSION',
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V1',
-               VALE = 3.37097E-01))
+               VALE = 9.E-01))
              )
 
 FIN()

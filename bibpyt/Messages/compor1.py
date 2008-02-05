@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 13/11/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+#@ MODIF compor1 Messages  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,5 +180,10 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 31: _("""
  lkcaln :: division par zéro - entrée rapide en plasticité avec un déviateur nul. 
  réduire le pas de temps.
+"""),
+
+32: _("""
+ VISC_CINx_CHAB :: pour la viscosité, renseigner le mot-clé LEMAITRE dans DEFI_MATERIAU. 
+ Si vous voulez seulement de l'élastoplasticité, il faut utiliser VMIS_CINx_CHAB.
 """),
 }

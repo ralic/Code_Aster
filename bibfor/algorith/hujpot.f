@@ -2,7 +2,7 @@
      &                     ETATF, RDCTPS, IRET, AREDEC)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,6 +46,7 @@ C   ------------------------------------------------------------------
         REAL*8        HOOKNL(6,6), DFDS(6), DEPSH(6), DSIG(6)
         REAL*8        ACTIF, DPSIDS(6,6), N, DEUX, SEUIL 
         REAL*8        EPSVP, PCO, D, BETA, RATIO, DEPS(6)
+        REAL*8        R8PREM
         LOGICAL       DEBUG, PROX, RDCTPS, AREDEC 
         CHARACTER*7   ETATF
         CHARACTER*8   MOD
@@ -69,7 +70,7 @@ C       WRITE(6,'(A,32(1X,E16.9))')'---> VIND =',(VIND(I),I=1,32)
 C --- MISE A ZERO POUR CORRIGER ZERO NUMERIQUE
         DO 10 I = 1, NDT
           DEPS(I) = DEPSH(I)
-          IF(ABS(DEPS(I)).LT.1.D-15)DEPS(I)=ZERO
+          IF(ABS(DEPS(I)).LT.R8PREM())DEPS(I)=ZERO
   10    CONTINUE        
         ELAS = 0
         RDCTPS = .FALSE.
@@ -211,7 +212,7 @@ C            WRITE(6,'(A,E16.9)')'CHARGE =',CHARGE
 C ====================================================================
 C --------------------- CRITERE MONOTONE ACTIF ? ---------------------
 C ====================================================================
-           IF(CHARGE.GE.ZERO)THEN
+           IF(CHARGE.GE.(-R8PREM()))THEN
              IF(INDI(I).NE.8)THEN
 C               CALL HUJCRD(INDI(I)-4, MATER, SIGE, VIND, SEUIL)
 C              IF(INDI(I).EQ.7)WRITE(6,*)'SEUIL =',SEUIL
@@ -270,7 +271,7 @@ C **************************
 C --- CRITERES MONOTONES ---
 C **************************
              IF(HIST(I,2).EQ.1)THEN
-               IF(ACTIF.GE.ZERO)THEN
+               IF(ACTIF.GE.(-R8PREM()))THEN
                  VIND(23+INDI(I)) = UN
                ELSE
                  VIND(23+INDI(I)) = - UN
@@ -291,7 +292,7 @@ C **************************
                  ENDIF  
                ENDIF
              ELSE
-               IF(ACTIF.GE.ZERO)THEN
+               IF(ACTIF.GE.(-R8PREM()))THEN
                  IF(INDI(I).LT.4)THEN
                    CALL HUJCRD(I, MATER, SIGE, VIND, SEUIL)
                  ELSE
@@ -314,7 +315,7 @@ C **************************
 C --- CRITERES CYCLIQUES ---
 C **************************
              IF(HIST(I,2).EQ.1)THEN
-               IF(ACTIF.GE.ZERO)THEN
+               IF(ACTIF.GE.(-R8PREM()))THEN
                  VIND(23+INDI(I)) = UN
                ELSE
                  IF(INDI(I).LT.8)THEN
@@ -334,7 +335,7 @@ C **************************
                  ENDIF  
                ENDIF
              ELSE
-               IF(ACTIF.GE.ZERO)THEN
+               IF(ACTIF.GE.(-R8PREM()))THEN
                  IF((INDI(I).GT.4).AND.(INDI(I).LT.8))THEN
                    CALL HUJCDC(INDI(I)-4, MATER, SIGE, VIND, SEUIL)
                    IF(SEUIL.GT.TOLE)THEN

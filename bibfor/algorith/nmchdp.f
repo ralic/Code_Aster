@@ -1,7 +1,7 @@
       SUBROUTINE NMCHDP(MAT,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,DEUXMU,
-     &                  CRIT,SEUIL,ETA,DT,VALDEN,DP,IRET)
+     &                  CRIT,SEUIL,VISC,ETA,DT,VALDEN,DP,IRET,ITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C                                 CRIT(1) : NOMBRE D'ITERATIONS
 C                                 MAXIMUM A LA CONVERGENCE ...
 C    SEUIL          IN    R       CRITERE DE PLASTICITE
 C                                 SEUIL = F - RP
+C    VISC           IN    I       INDICATEUR DE VISCOSITE
 C    ETA            IN    R       PARAMETRE ETA DE VISCOSITE
 C    DT             IN    R       VALEUR DE L'INCREMENT DE TEMPS DELTAT
 C    VALDEN         IN    R       PARAMETRE N DE VISCOSITE
@@ -66,7 +67,7 @@ C                              IRET=1 => ABSENCE DE CONVERGENCE DANS
 C                                        LORS DE L'INTEGRATION DE LA
 C                                        LOI
 C -----  ARGUMENTS
-          INTEGER             NDIMSI,NBVAR
+          INTEGER             NDIMSI,NBVAR,VISC
            REAL*8             MAT(*),PM,SIGEDV(6),ALFAM(*),DEUXMU
            REAL*8             CRIT(*),SEUIL,ALFA2M(*)
            REAL*8             DP,ETA,DT,VALDEN
@@ -74,7 +75,11 @@ C -----  VARIABLES LOCALES
            INTEGER     NITER,I,ITER,IFM,NIV,NBP, IRET
            REAL*8      X(4),Y(4),MU,Z,ZZ
            REAL*8      ZERO,DEUX,TROIS,DIX
-           REAL*8      PREC,F0,DPE,DPMAX,FMAX,DDP
+           REAL*8      PREC,F0,DPE,DPMAX,FMAX,DDP,SEQ,DENOMI
+           CHARACTER*8 NOMVAR(12)
+           DATA NOMVAR/'R0','RINF','B','CINF','K','W','GAMMA0',
+     &                 'AINF','C2INF','GAMM20','ETA','N'/
+
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -94,7 +99,7 @@ C --- CALCUL DE LA VALEUR F0 DE LA FONCTION DONT ON CHERCHE LA RACINE
 C --- POUR DP = 0 :
 C     -----------
       CALL NMCHCR(MAT,DPE,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,DEUXMU,
-     &            ETA,DT,VALDEN,F0)
+     &            VISC,ETA,DT,VALDEN,F0,SEQ,DENOMI)
 C
 C --- NOMBRE D'ITERATIONS DONT ON DISPOSE POUR CONVERGER ET TOLERANCE
 C --- SUR LA VALEUR CONVERGEE :
@@ -114,13 +119,13 @@ C ---   EXAMEN DE LA SOLUTION DP = SEUIL/(3*MU) :
 C       =======================================
         DPMAX = SEUIL/(TROIS*MU)
 C
-        DO 10 I = 1, 5
+        DO 10 I = 1, NITER
 C
 C ---    CALCUL DE LA VALEUR FMAX DE LA FONCTION DONT ON CHERCHE LA
 C ---    RACINE POUR DP = SEUIL/(3*MU) :
 C        -----------------------------
          CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
-     &               DEUXMU,ETA,DT,VALDEN,FMAX)
+     &               DEUXMU,VISC,ETA,DT,VALDEN,FMAX,SEQ,DENOMI)
 C
            IF (FMAX.GE.ZERO) THEN
              X(2) = DPMAX
@@ -145,14 +150,33 @@ C ---   EXAMEN DE LA SOLUTION DP = SEUIL/(3*MU) :
 C       =======================================
         DPMAX = SEUIL/(TROIS*MU)
 C
-        DO 30 I = 1, 5
-C
+C       VERIFICATION QUE DPMAX N'EST PAS TROP GRAND. BRACKETTING
+        
+        CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
+     &               DEUXMU,VISC,ETA,DT,VALDEN,FMAX,SEQ,DENOMI)
+        IF (FMAX.LT.ZERO) THEN
+           DO 31 I = 1, NITER
+C             F(DPMAX) ENCORE POSITIF. ON DIVISE PAR 10          
+              DPMAX = DPMAX/DIX
+              CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
+     &               DEUXMU,VISC,ETA,DT,VALDEN,FMAX,SEQ,DENOMI)
+              IF (FMAX.GT.ZERO) THEN
+                 DPMAX = DPMAX*DIX
+                 CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,
+     &           ALFAM,ALFA2M,DEUXMU,VISC,ETA,DT,VALDEN,FMAX,SEQ,DENOMI)
+             X(1) = DPMAX
+                 Y(1) = FMAX
+                 GOTO 20
+              ENDIF
+  31       CONTINUE
+        ENDIF
+        
+        DO 30 I = 1, NITER
 C ---    CALCUL DE LA VALEUR FMAX DE LA FONCTION DONT ON CHERCHE LA
 C ---    RACINE POUR DP = SEUIL/(3*MU) :
 C        -----------------------------
          CALL NMCHCR(MAT,DPMAX,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
-     &               DEUXMU,ETA,DT,VALDEN,FMAX)
-C
+     &               DEUXMU,VISC,ETA,DT,VALDEN,FMAX,SEQ,DENOMI)
            IF (FMAX.LE.ZERO) THEN
              X(1) = DPMAX
              Y(1) = FMAX
@@ -162,10 +186,8 @@ C
            ENDIF
 C
   30    CONTINUE
-C
         CALL U2MESS('A','ALGORITH6_79')
         GOTO 20
-C
       ENDIF
 C
    20 CONTINUE
@@ -177,31 +199,41 @@ C     ===========================================
       X(4) = X(2)
       Y(4) = Y(2)
 C
+      IF (ABS(Y(4)).LT.PREC) GOTO 50
       DO 40 ITER = 1, NITER
-C
-        IF (ABS(Y(4)).LT.PREC) GOTO 50
         CALL ZEROCO(X,Y)
         DP = X(4)
         CALL NMCHCR(MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
-     &               DEUXMU,ETA,DT,VALDEN,Y(4))
-C
+     &               DEUXMU,VISC,ETA,DT,VALDEN,Y(4),SEQ,DENOMI)
+        IF (ABS(Y(4)).LT.PREC) GOTO 50
   40  CONTINUE
 C
       CALL INFNIV(IFM,NIV)
-       WRITE (IFM,*) 'MODELE CINX_CHAB : ATTENTION'
-       WRITE (IFM,*) 'PAS DE CONVERGENCE  A LA PRECISION DEMANDEE',PREC
-       WRITE (IFM,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE',NITER
-       WRITE (IFM,*) 'VALEURS DE DP ET F ACTUELLES',DP,Y(4)
-       WRITE (IFM,*) 'AUGMENTER ITER_INTE_MAXI'
-       Z = 0.D0
-C
-       NBP = 1000
-       DDP = DPMAX/NBP
-       DO 60 I = 1,NBP
-        CALL NMCHCR(MAT,Z,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
-     &               DEUXMU,ETA,DT,VALDEN,ZZ)
-        Z = Z + DDP
-  60   CONTINUE
+      IF (NIV.EQ.2) THEN
+         WRITE (IFM,*) 'MODELE CINX_CHAB : ATTENTION'
+         WRITE (IFM,*) 'PAS DE CONVERGENCE A LA PRECISION DEMANDEE',PREC
+         WRITE (IFM,*) 'AU BOUT DU NOMBRE D ITERATION DEMANDE',NITER
+         WRITE (IFM,*) 'VALEURS DE DP ET F ACTUELLES',DP,Y(4)
+         WRITE (IFM,*) 'AUGMENTER ITER_INTE_MAXI'
+         WRITE (IFM,*) 'PARAMETRES :'
+         DO 61 I=1,10
+             WRITE (IFM,*) NOMVAR(I),MAT(I)
+  61     CONTINUE
+         WRITE (IFM,*) NOMVAR(11),ETA
+         WRITE (IFM,*) NOMVAR(12),VALDEN
+         WRITE (IFM,*) 'F0',F0,'DPMAX',DPMAX
+         WRITE (IFM,*) 'SEQ',SEQ,'DENOMI',DENOMI
+         NBP = 100
+         DDP = DPMAX/NBP
+         WRITE (IFM,*) 'DP     -     F(DP)'
+         Z=ZERO
+         DO 60 I = 1,NBP
+            CALL NMCHCR(MAT,Z,PM,NDIMSI,SIGEDV,NBVAR,ALFAM,ALFA2M,
+     &                 DEUXMU,VISC,ETA,DT,VALDEN,ZZ,SEQ,DENOMI)
+            WRITE (IFM,*) Z,ZZ
+            Z = Z + DDP
+  60     CONTINUE
+      ENDIF
       IRET = 1
 C
   50  CONTINUE

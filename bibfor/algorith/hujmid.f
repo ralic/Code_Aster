@@ -3,7 +3,7 @@
      &  NEGMUL, NITER, EPSCON, IRET, SUBD, LOOP, NDEC0 )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,6 +45,7 @@ C      SUBD     =.TRUE. SUBDIVISION DU A (DR/R) < CRIT
 C      NDEC0   :  NOMBRE D'INCREMENTS DE SUBDIVISION LIE A SUBD
 C      IRET    :  CODE RETOUR
 C   -------------------------------------------------------------------
+C TOLE CRP_20
         INTEGER   NDT, NDI, NVI, NR, NMOD, NITER, IRET
         INTEGER   I, J, K, KK, ITER, INDI(4), NDEC0, NDEC
         INTEGER   NITIMP, NBMECA
@@ -67,12 +68,13 @@ C   -------------------------------------------------------------------
         REAL*8    R(NMOD), DRDY(NMOD,NMOD)
         REAL*8    DDY(NMOD), DY(NMOD), YD(NMOD), YF(NMOD)
         REAL*8    ERR, ERR1, ERR2, SIGNE(4), DSIG(6)
-        REAL*8    DET, ZERO, UN, RATIO
+        REAL*8    DET, ZERO, UN, RATIO, MAXI
         REAL*8    EVOL, KSI, ACYC, AMON, AD
         REAL*8    RDEC, PCO, BETA, CMON, CCYC
         
         REAL*8    RELAX(ESSMAX+1), ROTAGD(ESSMAX+1), NOR1(7), NOR2(7)
-        REAL*8    ERIMP(NITIMP,4), YOUNG, PREF
+        REAL*8    ERIMP(NITIMP,4)
+        REAL*8    R8PREM
        
         CHARACTER*8 MOD
 
@@ -80,10 +82,6 @@ C   -------------------------------------------------------------------
 
 C ====================================================================
 
-        PREF   = MATER(8,2)
-        YOUNG  = MATER(1,1) 
-        
-        
 C ---> DIMENSION DU PROBLEME:
 C      NR = NDT(SIG)+ 1(EVP)+ NBMECA(R)+ NBMEC(DLAMB)
         UMESS  = IUNIFI('MESSAGE')
@@ -259,13 +257,22 @@ C ----  NON CONVERVENCE: ITERATION MAXI ATTEINTE  ----
  
 
 C ---- VERIFICATION DES MULTIPLICATEURS PLASTIQUES
+        MAXI = ZERO
+        DO 205 K = 1, NBMECA
+          IF(YF(NDT+1+NBMECA+K).GT.MAXI) 
+     &      MAXI = YF(NDT+1+NBMECA+K)
+ 205    CONTINUE
         DO 210 K = 1, NBMECA
 C          WRITE(6,'(A,15(1X,E12.5))')'YF =',(YF(I),I=1,15)
-          RATIO = YF(NDT+1+NBMECA+K)/ABS(PREF/YOUNG)
-          IF (RATIO .LT. ZERO) 
-     &    NEGMUL(INDI(K)) = .TRUE.
+          IF(MAXI.NE.ZERO)THEN 
+            RATIO = YF(NDT+1+NBMECA+K)/MAXI
+          ELSE
+            RATIO = - UN
+          ENDIF
+          IF ((RATIO .LT. (-CRIT(3))).AND.(MAXI.GE.CRIT(3)))THEN 
+            NEGMUL(INDI(K)) = .TRUE.
+          ENDIF
  210    CONTINUE    
-        
         NITER  = ITER
         EPSCON = ERR
         
@@ -317,7 +324,6 @@ C     SI DR/R > TOLE ---> SUBD = .TRUE.
               ELSEIF(INDI(K).EQ.4)THEN
                 CMON   = MATER(12,2)
                 BETA   = MATER(2,2)
-                PREF   = MATER(8,2)
                 PCO    = MATER(7,2)
                 CMON   = CMON*PCO*EXP(-BETA*YF(NDT+1))
                 RDEC   = ((UN-YF(NDT+1+K))**2)/CMON/YF(NDT+1+K)/EVOL*
@@ -329,7 +335,6 @@ C     SI DR/R > TOLE ---> SUBD = .TRUE.
               ELSE
                 CCYC   = DEUX*MATER(11,2)
                 BETA   = MATER(2,2)
-                PREF   = MATER(8,2)
                 PCO    = MATER(7,2)
                 CCYC   = CCYC*PCO*EXP(-BETA*YF(NDT+1))
                 RDEC   = ((UN-YF(NDT+1+K))**2)/CCYC/YF(NDT+1+K)/EVOL*

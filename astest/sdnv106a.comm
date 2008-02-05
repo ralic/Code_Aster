@@ -1,4 +1,4 @@
-# MODIF  DATE 14/01/2008   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 04/02/2008   AUTEUR GREFFET N.GREFFET 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,11 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,AFFE=
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
                 _F(  JUSQU_A = 1.,     NOMBRE = 10),
                 _F(  JUSQU_A = 2.,     NOMBRE = 1000),),);
-
+#
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                _F(  JUSQU_A = 1.,     NOMBRE = 5),
+                _F(  JUSQU_A = 1.1,     NOMBRE = 100),
+                _F(  JUSQU_A = 2.,     NOMBRE = 90),),);
 # 
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(
@@ -124,8 +128,8 @@ REPONSE=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                ITER_GLOB_MAXI = 50),
-                ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),
-                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),),
+                ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST=L_ARCH,),
+                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),INST_CALCUL='TOUT_PAS',),
              );
 #
 REPONSE=DYNA_NON_LINE( reuse=REPONSE,
@@ -144,6 +148,7 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                                 ITER_GLOB_MAXI = 10),
                 CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),),
                 MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='TANGENTE',),
+                ARCHIVAGE = _F(LIST_INST=L_ARCH,),
              );
 #
 REPONSE=DYNA_NON_LINE( reuse=REPONSE,
@@ -257,5 +262,108 @@ TEST_RESU(RESU=(_F(RESULTAT=REPONSE,
                    VALE=chcrit1,
                    REFERENCE='AUTRE_ASTER',
                    PRECISION=(1.E-3,1.E-5,),),),);
+#
+#
+#  Validation de l'option secante de MODE_VIBR : 
+#  on definit un materiau endommageant.
+#  Pour le reste le calcul est tres proche de ce que l'on fait avant.
+#
+#
+MATE_BET=DEFI_MATERIAU(ELAS=_F( 
+                E = 20000.,
+                RHO=7900.0,
+                NU = 0.49999),
+                BETON_ECRO_LINE=_F( SYT = 0.50E2,
+                                    D_SIGM_EPSI = -100.,
+                                    SYC = 11.225E2)
+                );
+#
+CHMAT4=AFFE_MATERIAU(MAILLAGE=MA,AFFE=
+                    _F(GROUP_MA = 'BLOC',MATER = MATE_BET),);
+#
+L_INST2=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                _F(  JUSQU_A = 1.,     NOMBRE = 1000),
+                _F(  JUSQU_A = 2.,     NOMBRE = 1000),),);
+#
+L_ARCH2=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                _F(  JUSQU_A = 1.,     NOMBRE = 10),
+                _F(  JUSQU_A = 2.,     NOMBRE = 20),),);
+#
+TRACTIO2=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_FACE=_F( GROUP_MA = 'TRAC', FZ = 100.),);
+#
+RAMPE2=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0., 0., 1., 1., 2., 1.1,),);
+#
+REPONSE2=DYNA_NON_LINE( 
+                MODELE=MO,
+               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='DEPLACEMENT',),
+                CHAM_MATER=CHMAT4,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                    _F( CHARGE = TRACTIO2, FONC_MULT = RAMPE2)),
+                COMP_INCR=_F(RELATION = 'ENDO_ISOT_BETON'),
+                INCREMENT=_F(LIST_INST = L_INST2,INST_FIN = 1.),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 10),
+                MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='SECANTE',),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH2,ARCH_ETAT_INIT='OUI',),
+             );
+REPONSE2=DYNA_NON_LINE( reuse=REPONSE2,
+                 ETAT_INIT=_F(EVOL_NOLI = REPONSE2),
+               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='DEPLACEMENT',),
+                MODELE=MO,
+                CHAM_MATER=CHMAT4,EXCIT=(
+                    _F( CHARGE = LIAISON),
+                    _F( CHARGE = TRACTIO2, FONC_MULT = RAMPE2)),
+                COMP_INCR=_F(RELATION = 'ENDO_ISOT_BETON'),
+                INCREMENT=_F(LIST_INST = L_INST2,INST_FIN = 1.2),
+                NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
+                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5,
+                                ITER_GLOB_MAXI = 50),
+                MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='SECANTE',),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH2,),
+             );
+#
+#  Tests avec option secante
+#
+TEST_RESU(RESU=(
+                _F(RESULTAT=REPONSE2,
+                   INST=0.1,
+                   PARA='FREQ',
+                   VALE=freqel,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE2,
+                   INST=0.6,
+                   PARA='FREQ',
+                   VALE=freqel,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE2,
+                   INST=1.1,
+                   PARA='FREQ',
+                   VALE=3.0658613595650E-01,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                _F(RESULTAT=REPONSE2,
+                   INST=1.15,
+                   PARA='FREQ',
+                   VALE=2.9774010650207E-01,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+                   ),
+                 _F(RESULTAT=REPONSE2,
+                   INST=1.2,
+                   PARA='FREQ',
+                   VALE=2.9002142739605E-01,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=(1.E-3,1.E-5,),
+             ),),);
 #
 FIN();

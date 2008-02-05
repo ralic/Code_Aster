@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 05/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,16 +99,19 @@ C
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,HYDRM,HYDRP
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM
       REAL*8      EM,NUM,TROIKM,DEUMUM,RBID,SIGMP(6),SIGEL(6),A,RBID2
-      REAL*8      SECHM,SECHP,SREF,TREF,TP
+      REAL*8      SECHM,SECHP,SREF,TREF,TP,DEFAM(6),DEFAP(6)
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
       INTEGER     IMATE2,JPROLP,JVALEP,NBVALP,K,L,NITER
-      INTEGER     IRET1, IRET2, IRET3, IRET4, IRET0
+      INTEGER     IRET1, IRET2, IRET3, IRET4, IRET0,IRET5
       CHARACTER*2 BL2, FB2, CODRET(3)
+      CHARACTER*6       EPSA(6)
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3),TYPE
       REAL*8      VALPAM(3),VALPAP(3),RESU
-      REAL*8      BENDOM,BENDOP,KDESSM,KDESSP
+      REAL*8      BENDOM,BENDOP,KDESSM,KDESSP,RAC2
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
+     &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
 C
 C     -- 1 INITIALISATIONS :
@@ -123,6 +126,7 @@ C     ----------------------
       ENDIF
       NDIMSI = 2*NDIM
       IMATE2 = IMATE
+      RAC2 = SQRT(2.D0)
 C
       BL2 = '  '
       FB2 = 'F '
@@ -155,6 +159,21 @@ C
       CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET2)
       IF (IRET2.NE.0) SREF=0.D0
 C
+      DO 20 K=1,NDIMSI
+        CALL RCVARC(' ',EPSA(K),'-',FAMI,KPG,KSP,DEFAM(K),IRET5)
+        IF (IRET5.EQ.1) DEFAM(K)=0.D0
+
+        CALL RCVARC(' ',EPSA(K),'+',FAMI,KPG,KSP,DEFAP(K),IRET5)
+        IF (IRET5.EQ.1) DEFAP(K)=0.D0
+ 20   CONTINUE
+C
+C MISE AU FORMAT DES TERMES NON DIAGONAUX
+C
+      DO 105 K=4,NDIMSI
+         DEFAM(K) = DEFAM(K)*RAC2
+         DEFAP(K) = DEFAP(K)*RAC2
+ 105  CONTINUE
+
       IF (COMPOR(1)(1:14) .EQ. 'VMIS_ISOT_TRAC' ) THEN
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
@@ -249,6 +268,7 @@ C     ---------------------------------------
           NOMPAR(3)='HYDR'
           VALPAM(3)=HYDRM
           CALL RCTYPE(IMATE,3,NOMPAR,VALPAM,RESU,TYPE)
+          
           IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1)) 
      &        CALL U2MESS('F','CALCULEL_31')
           CALL RCTRAC(IMATE,'TRACTION','SIGM',TM,JPROLM,JVALEM,
@@ -300,7 +320,8 @@ C     --------------------------------
       DEPSMO = 0.D0
       DO 110 K=1,3
         DEPSTH(K)   = DEPS(K) -COEF
-        DEPSTH(K+3) = DEPS(K+3)
+     &                -(DEFAP(K)-DEFAM(K))
+        DEPSTH(K+3) = DEPS(K+3)-(DEFAP(K)-DEFAM(K))
         DEPSMO = DEPSMO + DEPSTH(K)
  110  CONTINUE
       DEPSMO = DEPSMO/3.D0
@@ -342,6 +363,7 @@ C     -------------------------------------
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
 C
+
         IF (COMPOR(1)(1:4) .EQ. 'ELAS') THEN
           DO 145 K = 1,NDIMSI
             SIGP(K) = SIGMP(K)+DEUXMU*DEPSDV(K)+CO*TROISK*DEPSMO*KRON(K)
@@ -502,6 +524,7 @@ C       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
  136      CONTINUE
         ENDIF
       ENDIF
+      
 C
  9999 CONTINUE
 C FIN ------------------------------------------------------------------

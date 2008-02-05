@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 # TITRE ETUDE:  ESSAI DE CISAILLEMENT CYCLIQUE DRAINE (MECA PUR)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,6 +61,13 @@ TEMPS1=DEFI_LIST_REEL(DEBUT=0,
                                      NOMBRE=40,),
                                   _F (JUSQU_A=50,
                                      NOMBRE=40,),),);
+TEMPS2=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=(_F(JUSQU_A=10,
+                                     NOMBRE=50,),
+                                  _F(JUSQU_A=30,
+                                     NOMBRE=100,),
+                                  _F (JUSQU_A=50,
+                                     NOMBRE=100,),),);
 
 ################################################################
 #ESSAI DE CISAILLEMENT CYCLIQUE A 0.2% DE DEFORMATIONS IMPOSEES#
@@ -159,7 +166,7 @@ COEF5=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
 U3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
                               ITER_INTE_PAS = -10),
                   MATER=MATE,
-                  INCREMENT=_F(LIST_INST=TEMPS1,
+                  INCREMENT=_F(LIST_INST=TEMPS2,
                                NUME_INST_INIT=0,
                                INST_FIN=50.,
                                SUBD_METHODE='UNIFORME',
@@ -170,7 +177,7 @@ U3=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='HUJEUX',ITER_INTE_MAXI=10,
 #                 RECH_LINEAIRE = _F(ITER_LINE_MAXI = 3),                           
                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                  ITER_GLOB_MAXI = 10),
-                  ARCHIVAGE=_F(LIST_INST=TEMPS1,),
+                  ARCHIVAGE=_F(LIST_INST=TEMPS2,),
                   SIGM_IMPOSE=_F(SIXX=COEF2,
                                  SIYY=COEF2,
                                  SIZZ=COEF2,),

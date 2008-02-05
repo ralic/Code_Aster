@@ -2,7 +2,7 @@
      &                      VEC, MAT, IRET)
          IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,7 +62,7 @@ C      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       REAL*8        D12, D13, UN, ZERO, DEUX
       REAL*8        TOLE, DEGR, AEXP, EXPTOL, R8MAEM
       REAL*8        XK(2), TH(2), SIGDC(6), QC
-      REAL*8        VIN(*), VH, D14
+      REAL*8        VIN(*), VH, D14, D40
       REAL*8        DSDDS(6,6), SXS(6,6), SXP(6,6), PXP(6,6)
       REAL*8        VP(6), PROD, SCXP(6,6), PS, PXH(6,6)
       REAL*8        VHIST(6), SXH, SCXH, FAC
@@ -78,6 +78,7 @@ C =====================================================================
       PARAMETER     ( DEUX  = 2.D0   )
       PARAMETER     ( TOLE  = 1.D-6  )
       PARAMETER     ( DEGR  = 0.0174532925199D0 )
+      PARAMETER     ( D40   = 40.0D0 )
 C =====================================================================
       COMMON /TDIM/   NDT, NDI
       COMMON /MESHUJ/ DEBUG
@@ -97,7 +98,6 @@ C =====================================================================
 C =====================================================================
 C --- PREMIER INVARIANT ET AUTRES GRANDEURS UTILES --------------------
 C =====================================================================
-
         NBMECA = 0
         DO 4 I = 1, 4
           IF ( IND(I) .GT. 0 ) NBMECA = NBMECA+1
@@ -110,15 +110,18 @@ C =====================================================================
         EPSVPD = YF(NDT+1)
         
         EXPTOL = LOG(R8MAEM())
-        EXPTOL = MIN(EXPTOL, 40.D0)
+        EXPTOL = MIN(EXPTOL, D40)
         AEXP   = -BETA*EPSVPD
         
         IF (AEXP .GE. EXPTOL) THEN
           IRET = 1
           GOTO 999
         ENDIF
-        
         PC = PCO*EXP(-BETA*EPSVPD)
+        IF(ABS(PC/PREF).LT.TOLE)THEN
+          IRET = 1
+          GOTO 999
+        ENDIF
 
         DO 25 I = 1, NDT
           SIGF(I) = YF(I)
@@ -197,7 +200,7 @@ C --- CALCUL DE SIGDC ET QC POUR MECANISME DEVIATOIRE CYCLIQUE -------
 C ====================================================================
         IF (TRACT) THEN
           GOTO 100
-        ENDIF   
+        ENDIF  
         IF ((K .GT. 4) .AND. (K .LT. 8)) THEN
           DO 29 I=1,NDT
             SIGDC(I)=ZERO
@@ -221,7 +224,6 @@ C ====================================================================
      &    SIGDC(3)**2+SIGDC(4)**2+SIGDC(5)**2+SIGDC(6)**2))
           CONSOL = (-QC/PREF) . LE. TOLE
         ENDIF
-        
  100    CONTINUE        
 C ====================================================================
 C --- CALCUL DE PCK POUR MECANISME SPHERIQUE CYCLIQUE ----------------
@@ -230,14 +232,13 @@ C ====================================================================
         IF (K .EQ. 8) THEN  
           
           EXPTOL  = LOG(R8MAEM())
-          EXPTOL  = MIN(EXPTOL, 40.D0)
+          EXPTOL  = MIN(EXPTOL, D40)
           AEXP    = -BETA*EPSVPD
           
           IF (AEXP .GE. EXPTOL) CALL U2MESS('F', 'COMPOR1_7')
           
           P       = (SIGF(1)+SIGF(2)+SIGF(3))*D13
         ENDIF
-
 Caf 09/05/07 Fin
         
 C =====================================================================
@@ -375,7 +376,6 @@ C     &                   -PXP(I,J)*PS/(2.*QC*P**2)))
         
         ENDIF
  600    CONTINUE
- 
 Caf 15/05/07 Fin
 
 C =====================================================================
@@ -474,7 +474,6 @@ Caf 09/05/07 Fin
  
         ENDIF
         
-
 C =====================================================================
 C --- CARAC = 'PSI' :                                     ---------
 C --- CALCUL DE PSI (6X1) POUR LE MECANISME DEVIATOIRE K  ---------
@@ -574,6 +573,5 @@ C     &                           ,' --- SIGD(1) =',SIGD(1)
         ENDIF
                 
       ENDIF
-      
  999  CONTINUE
       END

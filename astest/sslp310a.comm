@@ -1,4 +1,4 @@
-# MODIF  DATE 17/12/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -544,144 +544,168 @@ G_COS53=CALC_G(              RESULTAT=RESU,
 TEST_TABLE(       TABLE=G_UNI0,
                        NOM_PARA='G',
                            VALE=3.14158E-3,
-                      PRECISION=0.033    )
+                      PRECISION=0.033 ,
+            REFERENCE='ANALYTIQUE'       )
 
 TEST_TABLE(       TABLE=G_UNI0,
                        NOM_PARA='K1',
                            VALE=1.77245,
-                      PRECISION=0.07    )
+                      PRECISION=0.07,
+            REFERENCE='ANALYTIQUE'        )
 
 TEST_TABLE(       TABLE=G_UNI0,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'       )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP10,
                        NOM_PARA='G',
                            VALE=1.05349E-2,
-                      PRECISION=0.04    )
+                      PRECISION=0.04 ,
+            REFERENCE='ANALYTIQUE'       )
 
 TEST_TABLE(       TABLE=G_EXP10,
                        NOM_PARA='K1',
                            VALE=3.24576,
-                      PRECISION=0.07    )
+                      PRECISION=0.07 ,
+            REFERENCE='ANALYTIQUE'       )
 
 TEST_TABLE(       TABLE=G_EXP10,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01,
+            REFERENCE='ANALYTIQUE'        )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP50,
                        NOM_PARA='G',
                            VALE=8.356742,
-                      PRECISION=0.055    )
+                      PRECISION=0.055 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_EXP50,
                        NOM_PARA='K1',
                            VALE=91.41522,
-                      PRECISION=0.07    )
+                      PRECISION=0.07  ,
+            REFERENCE='ANALYTIQUE'    )
 
 TEST_TABLE(       TABLE=G_EXP50,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'    )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH10,
                        NOM_PARA='G',
                            VALE=1.00344E-3,
-                      PRECISION=0.045    )
+                      PRECISION=0.045 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_SINH10,
                        NOM_PARA='K1',
                            VALE=1.00172,
-                      PRECISION=0.07    )
+                      PRECISION=0.07 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_SINH10,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'    )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH50,
                        NOM_PARA='G',
                            VALE=1.86052,
-                      PRECISION=0.055    )
+                      PRECISION=0.055 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_SINH50,
                        NOM_PARA='K1',
                            VALE=43.13380,
-                      PRECISION=0.065    )
+                      PRECISION=0.065  ,
+            REFERENCE='ANALYTIQUE'    )
 
 TEST_TABLE(       TABLE=G_SINH50,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.065    )
+                      PRECISION=0.065  ,
+            REFERENCE='ANALYTIQUE'    )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH10,
                        NOM_PARA='G',
                            VALE=5.03571E-3,
-                      PRECISION=0.035    )
+                      PRECISION=0.035 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_COSH10,
                        NOM_PARA='K1',
                            VALE=2.24404,
-                      PRECISION=0.07    )
+                      PRECISION=0.07 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_COSH10,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'    )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH50,
                        NOM_PARA='G',
                            VALE=2.331095,
-                      PRECISION=0.055    )
+                      PRECISION=0.055 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_COSH50,
                        NOM_PARA='K1',
                            VALE=48.28142,
-                      PRECISION=0.07    )
+                      PRECISION=0.07 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_COSH50,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.07    )
+                      PRECISION=0.07  ,
+            REFERENCE='ANALYTIQUE'    )
 
 #
 
 TEST_TABLE(       TABLE=G_COS10,
                        NOM_PARA='G',
                            VALE=.00183948,
-                      PRECISION=0.03    )
+                      PRECISION=0.03  ,
+            REFERENCE='ANALYTIQUE'    )
 
 TEST_TABLE(       TABLE=G_COS10,
                        NOM_PARA='K1',
                            VALE=1.356277,
-                      PRECISION=0.07    )
+                      PRECISION=0.07 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_COS10,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.07    )
+                      PRECISION=0.07  ,
+            REFERENCE='ANALYTIQUE'    )
 
 #
 
@@ -689,13 +713,15 @@ TEST_TABLE(       TABLE=G_COS50,
                        NOM_PARA='G',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.00001 )
+                      PRECISION=0.00001 ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COS50,
                        NOM_PARA='K1',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.003 )
+                      PRECISION=0.003,
+            REFERENCE='ANALYTIQUE'   )
 
 # IMPRESSION DES RESULTATS COURONNE 1 (QUADRANGLES)  ;
 # -------------------------------------------------
@@ -704,144 +730,168 @@ TEST_TABLE(       TABLE=G_COS50,
 TEST_TABLE(       TABLE=G_UNI1,
                        NOM_PARA='G',
                            VALE=3.14158E-3,
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'    )
 
 TEST_TABLE(       TABLE=G_UNI1,
                        NOM_PARA='K1',
                            VALE=1.77245,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'    )
 
 TEST_TABLE(       TABLE=G_UNI1,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'     )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP11,
                        NOM_PARA='G',
                            VALE=1.05349E-2,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'    )
 
 TEST_TABLE(       TABLE=G_EXP11,
                        NOM_PARA='K1',
                            VALE=3.24576,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'     )
 
 TEST_TABLE(       TABLE=G_EXP11,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'     )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP51,
                        NOM_PARA='G',
                            VALE=8.356742,
-                      PRECISION=0.015   )
+                      PRECISION=0.015  ,
+            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(       TABLE=G_EXP51,
                        NOM_PARA='K1',
                            VALE=91.41522,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_EXP51,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH11,
                        NOM_PARA='G',
                            VALE=1.00344E-3,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH11,
                        NOM_PARA='K1',
                            VALE=1.00172,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH11,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH51,
                        NOM_PARA='G',
                            VALE=1.86052,
-                      PRECISION=0.015    )
+                      PRECISION=0.015  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_SINH51,
                        NOM_PARA='K1',
                            VALE=43.13380,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH51,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH11,
                        NOM_PARA='G',
                            VALE=5.03571E-3,
-                      PRECISION=0.01    )
+                      PRECISION=0.01   ,
+            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(       TABLE=G_COSH11,
                        NOM_PARA='K1',
                            VALE=2.24404,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COSH11,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH51,
                        NOM_PARA='G',
                            VALE=2.331095,
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_COSH51,
                        NOM_PARA='K1',
                            VALE=48.28142,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COSH51,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_COS11,
                        NOM_PARA='G',
                            VALE=.00183948,
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_COS11,
                        NOM_PARA='K1',
                            VALE=1.356277,
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COS11,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
@@ -849,19 +899,22 @@ TEST_TABLE(       TABLE=G_COS51,
                        NOM_PARA='G',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.00001 )
+                      PRECISION=0.00001 ,
+            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(       TABLE=G_COS51,
                        NOM_PARA='K1',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.005 )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(       TABLE=G_COS51,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.00001 )
+                      PRECISION=0.00001 ,
+            REFERENCE='ANALYTIQUE')
 
 # IMPRESSION DES RESULTATS COURONNE 2 (QUADRANGLES)  ;
 # -------------------------------------------------
@@ -870,144 +923,168 @@ TEST_TABLE(       TABLE=G_COS51,
 TEST_TABLE(       TABLE=G_UNI2,
                        NOM_PARA='G',
                            VALE=3.14158E-3,
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_UNI2,
                        NOM_PARA='K1',
                            VALE=1.77245,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_UNI2,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.015    )
+                      PRECISION=0.015  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP12,
                        NOM_PARA='G',
                            VALE=1.05349E-2,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_EXP12,
                        NOM_PARA='K1',
                            VALE=3.24576,
-                      PRECISION=0.005    )
+                      PRECISION=0.005,
+            REFERENCE='ANALYTIQUE'    )
 
 TEST_TABLE(       TABLE=G_EXP12,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP52,
                        NOM_PARA='G',
                            VALE=8.356742,
-                      PRECISION=0.015    )
+                      PRECISION=0.015  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_EXP52,
                        NOM_PARA='K1',
                            VALE=91.41522,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_EXP52,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH12,
                        NOM_PARA='G',
                            VALE=1.00344E-3,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH12,
                        NOM_PARA='K1',
                            VALE=1.00172,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH12,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH52,
                        NOM_PARA='G',
                            VALE=1.86052,
-                      PRECISION=0.015    )
+                      PRECISION=0.015  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_SINH52,
                        NOM_PARA='K1',
                            VALE=43.13380,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH52,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH12,
                        NOM_PARA='G',
                            VALE=5.03571E-3,
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COSH12,
                        NOM_PARA='K1',
                            VALE=2.24404,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COSH12,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01   ,
+            REFERENCE='ANALYTIQUE' )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH52,
                        NOM_PARA='G',
                            VALE=2.331095,
-                      PRECISION=0.015    )
+                      PRECISION=0.015   ,
+            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(       TABLE=G_COSH52,
                        NOM_PARA='K1',
                            VALE=48.28142,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COSH52,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_COS12,
                        NOM_PARA='G',
                            VALE=.00183948,
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_COS12,
                        NOM_PARA='K1',
                            VALE=1.356277,
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_COS12,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
@@ -1015,19 +1092,22 @@ TEST_TABLE(       TABLE=G_COS52,
                        NOM_PARA='G',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.00001 )
+                      PRECISION=0.00001 ,
+            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(       TABLE=G_COS52,
                        NOM_PARA='K1',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.005 )
+                      PRECISION=0.005,
+            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(       TABLE=G_COS52,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.00001 )
+                      PRECISION=0.00001,
+            REFERENCE='ANALYTIQUE' )
 
 # IMPRESSION DES RESULTATS COURONNE 3 (QUADRANGLES)  ;
 # -------------------------------------------------
@@ -1036,115 +1116,134 @@ TEST_TABLE(       TABLE=G_COS52,
 TEST_TABLE(       TABLE=G_UNI3,
                        NOM_PARA='G',
                            VALE=3.14158E-3,
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_UNI3,
                        NOM_PARA='K1',
                            VALE=1.77245,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_UNI3,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP13,
                        NOM_PARA='G',
                            VALE=1.05349E-2,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_EXP13,
                        NOM_PARA='K1',
                            VALE=3.24576,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_EXP13,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_EXP53,
                        NOM_PARA='G',
                            VALE=8.356742,
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_EXP53,
                        NOM_PARA='K1',
                            VALE=91.41522,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_EXP53,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH13,
                        NOM_PARA='G',
                            VALE=1.00344E-3,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH13,
                        NOM_PARA='K1',
                            VALE=1.00172,
-                      PRECISION=0.005    )
+                      PRECISION=0.005  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_SINH13,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_SINH53,
                        NOM_PARA='G',
                            VALE=1.86052,
-                      PRECISION=0.015    )
+                      PRECISION=0.015 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH53,
                        NOM_PARA='K1',
                            VALE=43.13380,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_SINH53,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH13,
                        NOM_PARA='G',
                            VALE=5.03571E-3,
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_COSH13,
                        NOM_PARA='K1',
                            VALE=2.24404,
-                      PRECISION=0.005    )
+                      PRECISION=0.005 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_COSH13,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01  ,
+            REFERENCE='ANALYTIQUE'  )
 
 #
 
 TEST_TABLE(       TABLE=G_COSH53,
                        NOM_PARA='G',
                            VALE=2.331095,
-                      PRECISION=0.015    )
+                      PRECISION=0.015  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COSH53,
                        NOM_PARA='K1',
@@ -1155,25 +1254,29 @@ TEST_TABLE(       TABLE=G_COSH53,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
 TEST_TABLE(       TABLE=G_COS13,
                        NOM_PARA='G',
                            VALE=.00183948,
-                      PRECISION=0.015    )
+                      PRECISION=0.015  ,
+            REFERENCE='ANALYTIQUE'  )
 
 TEST_TABLE(       TABLE=G_COS13,
                        NOM_PARA='K1',
                            VALE=1.356277,
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 TEST_TABLE(       TABLE=G_COS13,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.01    )
+                      PRECISION=0.01 ,
+            REFERENCE='ANALYTIQUE'   )
 
 #
 
@@ -1181,20 +1284,54 @@ TEST_TABLE(       TABLE=G_COS53,
                        NOM_PARA='G',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.00001 )
+                      PRECISION=0.00001,
+            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(       TABLE=G_COS53,
                        NOM_PARA='K1',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.005 )
+                      PRECISION=0.005,
+            REFERENCE='ANALYTIQUE' )
 
 TEST_TABLE(       TABLE=G_COS53,
                        NOM_PARA='K2',
                            VALE=0.,
                         CRITERE='ABSOLU',
-                      PRECISION=0.00001 )
+                      PRECISION=0.00001 ,
+            REFERENCE='ANALYTIQUE')
 
- 
+# VALIDATION INFORMATION CALC_G
+# PRISE EN COMPTE DES COMBINAISONS DE CHARGEMENT
+# -----------------------------
+LI1 = DEFI_LIST_REEL (DEBUT = -1., INTERVALLE=_F(JUSQU_A=1., PAS=0.01),)
+
+CO1 = CALC_FONC_INTERP (FONCTION= COS1, LIST_PARA = LI1,
+            INTERPOL='LIN', TITRE='FONCTION COS1' )
+
+CH_COS1F=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                             'LEV_INF' ), 
+                                 PRES = CO1)
+                                  )
+RE_TMP=MECA_STATIQUE(   MODELE=MO,   
+                        CHAM_MATER=CHMAT,
+                        EXCIT=( _F( CHARGE = CH_UNI), 
+                                _F( CHARGE = CH_COS1F),
+                                _F( CHARGE = CL))
+                         )
+
+G_TMP=CALC_G(              RESULTAT=RE_TMP,
+                           THETA=_F(THETA = THETA0,
+                                     FOND_FISS=FOND),
+                           SYME_CHAR='SANS',
+                           OPTION='CALC_K_G'
+                          )
+TEST_TABLE(       TABLE=G_TMP,
+                       NOM_PARA='K1',
+                           VALE=2.92349E+00,
+                        CRITERE='RELATIF',
+                      PRECISION=1.e-5,
+                      REFERENCE='NON_REGRESSION'  )                                              
 FIN( )
 #

@@ -1,30 +1,36 @@
       SUBROUTINE PIPEDS(NDIM, TYPMOD, TAU,IMATE, SIGM, VIM,EPSM,
      &                  EPSPC, EPSDC, ETAMIN,ETAMAX,A0, A1,A2,A3,ETAS)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C (AT YOUR OPTION) ANY LATER VERSION.
-C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+
+C TOLE CRP_20
+
       IMPLICIT NONE
       CHARACTER*8        TYPMOD(2)
       INTEGER            NDIM, IMATE
-      REAL*8             EPSM(6),EPSPC(6), EPSDC(6),ETAMIN,ETAMAX,TAU
-      REAL*8             VIM(2), SIGM(6), A0, A1,A2,A3,ETAS
+      REAL*8             EPSM(6),EPSPC(6), EPSDC(6),ETAMIN
+      REAL*8             ETAMAX,TAU,SIGM(6)
+      REAL*8             VIM(2),A0, A1,A2,A3,ETAS
 C ----------------------------------------------------------------------
-C     LOI DE COMPORTEMENT ELASTIQUE FRAGILE (EN DELOCALISE)
+C     PILOTAGE LOI DE COMPORTEMENT ENDO_ISOT_BETON EN NON LOCAL
+C     GRAD_VARI
 C
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
@@ -43,42 +49,57 @@ C OUT A3      : IDEM A1 POUR LA SECONDE SOLUTION EVENTUELLE;R8VIDE SINON
 C OUT ETAS    : SI PAS DE SOLUTION : LE MINIMUM ; R8VIDE SINON
 C ----------------------------------------------------------------------
 
-      LOGICAL     CPLAN,MINI,FINI,RECHBG,RECHBD
-      INTEGER     NDIMSI, K, NRAC,NSOL,ITER,NITMAX
+      LOGICAL     CPLAN,MINI,FINI,MODIF
+      INTEGER     NDIMSI, K, NRAC,ITER,NITMAX
       INTEGER     NCAS
       REAL*8      TREPSD, COPLAN, SIGELP(6), SIGELD(6)
-      REAL*8      EPS1(6), EPS2(6), D1, D2,CRIT,RTEMP
-      REAL*8      TR(6),EDP(6),VECP(3,3),RAC2,CRITP
-      REAL*8      FPD, D, P0, P1, P2, ETA, RAC(2), IND(4),EPM(3)
+      REAL*8      CRIT,RTEMP,DMAX
+      REAL*8      TR(6),VECP(3,3),RAC2,CRITP
+      REAL*8      FPD, DM, D, P0, P1, P2, ETA, RAC(2), IND(4),EPM(3)
       REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SEUIL, SEUREL,TREPSM
-      REAL*8      K0,K1,SICR
+      REAL*8      K0,K1,SICR,R
       REAL*8      R8NRM2,EPSP(6), EPSD(6),X(4),Y(4),Z(4)
       REAL*8      RMINI,EPSTOL
-      REAL*8      TREPS,SIGEL(3),ETA1,ETA2,ETAC,CRIT1,CRIT2,CRITC,CRITP3
-      REAL*8      RTEMP1,RTEMP2,R8VIDE,SEUILA,CRITP1,CRITP2,CRIT3,RPAS
-      REAL*8      CRITR1,CRITR2,LAMBDD,DEUMUD,FD,RIGMIN,ETA0,ETA3,C,R
+      REAL*8      TREPS,SIGEL(3),ETA1,ETA2,ETAC,CRIT1,CRIT2
+      REAL*8      RTEMP1,RTEMP2,R8VIDE,CRITP1,CRITP2
       REAL*8      EPSVP
       CHARACTER*2 CODRET(3)
       CHARACTER*8 NOMRES(3)
       REAL*8      VALRES(3)
       REAL*8      R8DOT
+      REAL*8      DDOT
 
-      NITMAX=50
-      EPSTOL=1.D-1
-      R=0.61803399D0
-      C=1.D0-R
-      NSOL=0
+      REAL*8      EPSMAX,ETASUP,ETAINF,EPSNOR
+      REAL*8      TREINF,TRESUP
+      REAL*8      LINTER,EPSTO2
+      REAL*8      XS,YS,ZS
+      REAL*8      X1,Y1,Z1
+      REAL*8      X2,Y2,Z2
+
+      REAL*8      KRON(6)
+      DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+
+
+
+      NITMAX=100
+      EPSTOL=1.D-6
       EPSVP = 1.D-6/ABS(ETAMAX-ETAMIN)
+      EPSTO2=1.D-2
+
+      ETAS = R8VIDE()
+
+
 
 C -- OPTION ET MODELISATION
       CPLAN = (TYPMOD(1).EQ.'C_PLAN  ')
       NDIMSI = 2*NDIM
       RAC2=SQRT(2.D0)
 
-C -- CAS DE L'ENDOMMAGEMENT SATURE
-      IF (NINT(VIM(2)) .EQ. 2) THEN
+C -- CAS DE L'ENDOMMAGEMENT SATURE, on ne pilote pas
+      IF ((NINT(VIM(2)) .EQ. 2)) THEN
         GOTO 666
       END IF
+
 
 C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
       NOMRES(1) = 'E'
@@ -96,7 +117,9 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(3) = 'SYC'
       CALL RCVALA(IMATE,' ','BETON_ECRO_LINE',0,' ',0.D0,3,
      &            NOMRES,VALRES,CODRET,' ')
-      GAMMA  = - E/VALRES(1)
+      GAMMA  = -E/VALRES(1)
+
+
       K0=VALRES(2)**2 *(1.D0+GAMMA)/(2.D0*E)
      &               *(1.D0+NU-2.D0*NU**2)/(1.D0+NU)
       IF (NU.EQ.0) THEN
@@ -126,17 +149,19 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
           ENDIF
         ENDIF
       ENDIF
-      SEUILA = SEUIL
 
-C ======================================================================
-C                CALCUL DES DEFORMATIONS POUR LINEARISATION
-C ======================================================================
+
+
+
+
 
 C    ETAT MECANIQUE EN T-
-      D   = VIM(1)
+
+      DM   = VIM(1)
+      DMAX=1.D0
+      D = MIN(DMAX,DM+TAU)
       FPD = (1+GAMMA) / (1+GAMMA*D)**2
-      SEUREL = SEUIL * (1+GAMMA*D)**2 / (1+GAMMA)
-      SEUIL=SEUIL+SEUREL*TAU
+
 
 C -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES
 
@@ -145,344 +170,368 @@ C -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES
         EPSPC(3)  = COPLAN * (EPSPC(1)+EPSPC(2))
         EPSDC(3)  = COPLAN * (EPSDC(1)+EPSDC(2))
       END IF
+
+
       DO 44 K=1,3
         EPSP(K) = EPSPC(K)
         EPSD(K) = EPSDC(K)
 44    CONTINUE
+
+
        DO 45 K=4,NDIMSI
-        EPSP(K) = EPSPC(K)/RAC2
-        EPSD(K) = EPSDC(K)/RAC2
+        EPSP(K) = EPSPC(K)
+        EPSD(K) = EPSDC(K)
 45    CONTINUE
+
       IF (NDIMSI.LT.6) THEN
         DO 46 K=NDIMSI+1,6
           EPSP(K)=0.D0
           EPSD(K)=0.D0
 46      CONTINUE
       ENDIF
-C -- QUEL PB A RESOUDRE ?
-C      SI EPSD N'A QUE DES VP POSITIVES :F(+INFINI)=+INFINI
-C                                        F(-INFINI)=-SEUIL    NSOL=1
-C                             NEGATIVES :F(-INFINI)=+INFINI
-C                                        F(+INFINI)=-SEUIL    NSOL=-1
-C      SINON : F(+INFINI)=+INFINI ET F(-INFINI)=+INFINI       NSOL=2
+
+
+
+
+C Calcul du nombre de solutions sur un intervalle raisonnable
 
 C - ON COMMENCE DONC PAR REGARDER LES VP DE EPSD
-      RECHBG=.FALSE.
-      RECHBD=.FALSE.
       TR(1) = EPSD(1)
-      TR(2) = EPSD(4)
-      TR(3) = EPSD(5)
+      TR(2) = EPSD(4)/RAC2
+      TR(3) = EPSD(5)/RAC2
       TR(4) = EPSD(2)
-      TR(5) = EPSD(6)
+      TR(5) = EPSD(6)/RAC2
       TR(6) = EPSD(3)
+
+
+
 C -- DIAGONALISATION AVEC TRI EN VAL RELATIVE CROISSANT
       CALL DIAGP3(TR,VECP,EPM)
-      NSOL=2
-      IF (EPM(1).GT.EPSVP) THEN
-        NSOL=1
-      ELSE IF (ABS(EPM(1)).LT.EPSVP) THEN
-        RPAS=(ETAMAX-ETAMIN)
-        ETA=ETAMIN
-        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,CRIT1,CRITP1)
-301     CONTINUE
-        RPAS=RPAS*2
-        IF (.NOT.((CRIT1.GT.0.D0).AND.(CRITP1.LT.0.D0))) THEN
-          IF (CRIT1.LT.0.D0) THEN
-            NSOL=1
-          ELSE
-            ETA=ETA-RPAS
-            CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,CRIT1,
-     &                  CRITP1)
-            GOTO 301
-          ENDIF
-        ENDIF
+
+
+C On prend la valeur absolue max des valeurs propres de EPSD
+        EPSMAX=MAX(ABS(EPM(1)),ABS(EPM(3)))
+
+C Si les valeurs propres sont trop petites, on ne pilote pas ce point
+      IF (EPSMAX.LT.EPSVP) GOTO 666
+
+
+
+C on "normalise" les deformations pilotees
+
+      TREPSD = EPSD(1)+EPSD(2)+EPSD(3)
+      DO 60 K=1,NDIMSI
+        SIGELD(K) = LAMBDA*TREPSD*KRON(K) + DEUXMU*EPSD(K)
+ 60   CONTINUE
+
+      EPSNOR = 1.D0/SQRT(0.5D0 * DDOT(NDIMSI,EPSD,1,SIGELD,1))
+
+      DO 678 K=1,6
+        EPSD(K)=EPSD(K)*EPSNOR
+678   CONTINUE
+
+
+
+
+C CALIBRAGE DE L'INTERVALLE DE RECHERCHE POUR EVITER LES DIVERGENCES
+C DE L'ALGORITHME DE RECHERCHE
+
+C On repercute la normalisation sur les bornes de ETA pour
+C definir l'intervalle de recherche
+
+      ETASUP=ETAMAX/EPSNOR
+      ETAINF=-ETAMAX/EPSNOR
+
+
+C Test sur la valeur de la trace de la deformee pour eta=etainf 
+C pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
+      TREINF=EPSP(1)+EPSP(2)+EPSP(3)+ETAINF*(EPSD(1)+EPSD(2)+EPSD(3))
+      IF (ABS(TREINF).GT.1.D0) THEN
+C        WRITE(6,*) 'Modification de etainf  :',ETAINF
+        ETAINF=(TREINF/ABS(TREINF)-(EPSP(1)+EPSP(2)+EPSP(3)))
+     &          /(EPSD(1)+EPSD(2)+EPSD(3))
+C        WRITE(6,*) 'devient  :',ETAINF
       ENDIF
 
-      IF (EPM(3).LT.-EPSVP) THEN
-        NSOL=-1
-      ELSE IF (ABS(EPM(3)).LT.EPSVP) THEN
-        RPAS=(ETAMAX-ETAMIN)
-        ETA=ETAMAX
-        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,CRIT1,CRITP1)
-302     CONTINUE
-        RPAS=RPAS*2
-        IF (.NOT.((CRIT1.GT.0.D0).AND.(CRITP1.GT.0.D0))) THEN
-          IF (CRIT1.LT.0.D0) THEN
-            IF (NSOL.EQ.1) THEN
-              GOTO 666
-            ELSE
-              NSOL=-1
-            ENDIF
-          ELSE
-            ETA=ETA+RPAS
-            CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,CRIT1,
-     &                  CRITP1)
-            GOTO 302
-          ENDIF
-        ENDIF
+      ETA=ETAINF
+      CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
+     &              CRIT1,CRITP1)
+
+
+C Test sur la valeur de la trace de la deformee pour eta=etasup 
+C pour s'assurer qu'elle ne diverge pas. On fixe une borne tr(eps)<1
+
+      TRESUP=EPSP(1)+EPSP(2)+EPSP(3)+ETASUP*(EPSD(1)+EPSD(2)+EPSD(3))
+      IF (ABS(TRESUP).GT.1.D0) THEN
+C        WRITE(6,*) 'Modification de etasup  :',ETASUP
+        ETASUP=(TRESUP/ABS(TRESUP)-(EPSP(1)+EPSP(2)+EPSP(3)))
+     &          /(EPSD(1)+EPSD(2)+EPSD(3))
+C        WRITE(6,*) 'devient  :',ETASUP
       ENDIF
 
-C -- RECHBG : VRAI -> IL FAUT TROUVER ETA SUFFISAMMENT PETIT POUR
-C                     AVOIR F(ETA)>0 ET F'(ETA)<0
-C             FAUX -> IL FAUT TROUVER ETA SUFFISAMMENT PETIT POUR
-C                     AVOIR F(ETA)<0
-C    RECHBD : IDEM A DROITE
-      IF (ABS(NSOL).GT.0) THEN
-        IF ((NSOL.EQ.2).OR.(NSOL.EQ.-1)) RECHBG=.TRUE.
-        IF ((NSOL.EQ.2).OR.(NSOL.EQ.1))  RECHBD=.TRUE.
+      ETA=ETASUP
+      CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
+     &              CRIT2,CRITP2)
 
-        ETA=ETAMIN
-        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
-     &             CRIT1,CRITP1)
 
-        ITER=0
-        RPAS=(ETAMAX-ETAMIN)
-        IF (RECHBG) THEN
-20        CONTINUE
-          ITER=ITER+1
-          RPAS=RPAS*2
-          IF ((CRIT1.LT.0.D0).OR.(CRITP1.GE.0.D0)) THEN
-            ETA=ETA-RPAS
-            CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
-     &             CRIT1,CRITP1)
-            GOTO 20
-          ENDIF
-C          write (6,*) 'ITER-1 = ',ITER
-        ELSE
-30        CONTINUE
-          ITER=ITER+1
-          RPAS=RPAS*2
-          IF (CRIT1.GE.0.D0) THEN
-            ETA=ETA-RPAS
-            CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
-     &             CRIT1,CRITP1)
-            GOTO 30
-          ENDIF
-C          write (6,*) 'ITER-1b = ',ITER
-        ENDIF
-        ETA1=ETA
 
-        ETA=ETAMAX
-        RPAS=(ETAMAX-ETAMIN)
-        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
-     &             CRIT2,CRITP2)
-        ITER=0
-        IF (RECHBD) THEN
-40        CONTINUE
-            ITER=ITER+1
-            RPAS=RPAS*2
-            IF ((CRIT2.LT.0.D0).OR.(CRITP2.LE.0.D0)) THEN
-              ETA=ETA+RPAS
-              CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
-     &             CRIT2,CRITP2)
-            GOTO 40
-          ENDIF
-C          write (6,*) 'ITER-2 = ',ITER
-        ELSE
-50        CONTINUE
-          ITER=ITER+1
-          RPAS=RPAS*2
-          IF (CRIT2.GE.0.D0) THEN
-            ETA=ETA+RPAS
-            CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
-     &             CRIT2,CRITP2)
-            GOTO 50
-          ENDIF
-C          write (6,*) 'ITER-2b = ',ITER
-        ENDIF
-        ETA2=ETA
+C Longueur de l'intervalle
+      LINTER=ABS(ETASUP-ETAINF)
+
+
+
+C###############################################################
+C RECHERCHE DES SOLUTIONS SUR L'INTERVALLE [-ETASUP,ETASUP]
+C###############################################################
+
+
+C CAS A 0 SOLUTION
+
+C on reste en dessous du seuil sur l'intervalle
+      IF ((CRIT1.LT.0.D0).AND.(CRIT2.LT.0.D0)) THEN
+C        WRITE(6,*) 'cas 1'
+        GOTO 666
       ENDIF
 
-C -- CAS A UNE SOLUTION
-      IF (ABS(NSOL).EQ.1) THEN
-        IF (NSOL.EQ.1) THEN
-          X(1)=ETA1
-          Y(1)=CRIT1
-          Z(1)=CRITP1
-          X(2)=ETA2
-          Y(2)=CRIT2
-          Z(2)=CRITP2
-        ELSE
-          X(1)=ETA2
-          Y(1)=CRIT2
-          Z(1)=CRITP2
-          X(2)=ETA1
-          Y(2)=CRIT1
-          Z(2)=CRITP1
-        ENDIF
+C on reste au dessus du seuil sur l'intervalle, 
+C        on utilise la convexite pour le voir
+
+      IF (((CRIT1.GT.0.D0).AND.(CRITP1.GT.(-CRIT1/LINTER))).OR.
+     &    ((CRIT2.GT.0.D0).AND.(CRITP2.LT.(CRIT2/LINTER)))) THEN
+C        WRITE(6,*) 'cas 2'
+        GOTO 666
+      ENDIF
+
+
+C CAS A 1 SOLUTION
+
+      IF ((CRIT1.LT.0.D0).AND.(CRIT2.GT.0.D0)) THEN
+C        WRITE(6,*) 'cas 3'
+        X(1)=ETAINF
+        Y(1)=CRIT1
+        Z(1)=CRITP1
+        X(2)=ETASUP
+        Y(2)=CRIT2
+        Z(2)=CRITP2
+
         X(3)=X(1)
         Y(3)=Y(1)
         Z(3)=Z(1)
+
         DO 200 ITER = 1, NITMAX
-          IF (ABS(Y(3)) .LE. EPSTOL*SEUREL*TAU) GOTO 201
-          IF (MOD(ITER,3) .NE. 0) THEN
-            CALL ZEROG2(X,Y,Z,ITER)
-          ELSE
+
+          IF (ABS(Y(3)) .LE. EPSTOL*SEUIL) GOTO 201
+            IF (ABS(Z(1)-Z(2)).LT.EPSTO2*ABS(Z(2))) THEN
+              X(3)=(-Y(3)+Z(3)*X(3))/Z(3)
+              GOTO 555
+            ENDIF
             CALL ZEROD2(X,Y,Z)
-          END IF
+555       CONTINUE
+
           CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
      &             Y(3),Z(3))
+
 200     CONTINUE
-        GOTO 666
+          CALL U2MESS('F','ALGORITH9_87')
 201     CONTINUE
-C        write (6,*) 'ITER-3 = ',ITER
-        ETA=X(3)
-        NSOL=1
-      ENDIF
 
-C -- CAS A MINIMUM (ZERO OU DEUX SOLUTIONS)
-      IF (NSOL.EQ.2) THEN
-        ETAMIN=ETA1
-        ETAMAX=ETA2
-        ITER=0
-C -- ON CHERCHE LE MINIMUM : ON SE DEPLACE SUR LE SEGMENT [ETA1,ETA2]
-C    ET ON RACCOURCIT L'INTERVALLE EN UTILISANT LA DERIVEE
-250     CONTINUE
-C     TEST D'ARRET POUR UN MINIMUM AU-DESSUS DE 0
-          ITER=ITER+1
-          IF (ITER.GT.NITMAX) THEN
-            GOTO 666
-          ENDIF
-          IF ((ABS(CRITP1*(ETA2-ETA1)).LT.EPSTOL*SEUREL*TAU).AND.
-     &            (ABS(CRITP2*(ETA2-ETA1)).LT.EPSTOL*SEUREL*TAU)) THEN
-            IF ((CRIT1+CRITP1*(ETA2-ETA1)).GT.0.D0) THEN
-              IF ((CRIT2+CRITP2*(ETA1-ETA2)).GT.0.D0) THEN
-                GOTO 260
-              ENDIF
+        A1 =Z(3)/EPSNOR
+        A0 = TAU-X(3)*A1*EPSNOR
+        A2=R8VIDE()
+        A3=R8VIDE()
+
+        GOTO 9999
+
+      ENDIF
+        
+      IF ((CRIT1.GT.0.D0).AND.(CRIT2.LT.0.D0)) THEN
+C        WRITE(6,*) 'cas 4'
+        X(2)=ETAINF
+        Y(2)=CRIT1
+        Z(2)=CRITP1
+        X(1)=ETASUP
+        Y(1)=CRIT2
+        Z(1)=CRITP2
+
+        X(3)=X(1)
+        Y(3)=Y(1)
+        Z(3)=Z(1)
+        DO 202 ITER = 1, NITMAX
+          IF (ABS(Y(3)) .LE. EPSTOL*SEUIL) GOTO 203
+
+            IF (ABS(Z(1)-Z(2)).LT.EPSTO2*ABS(Z(2))) THEN
+              X(3)=(-Y(3)+Z(3)*X(3))/Z(3)
+              GOTO 556
             ENDIF
-          ENDIF
-          IF (CRIT1.LT.CRIT2) THEN
-            ETAC=C*ETA1+R*ETA2
-          ELSE
-            ETAC=C*ETA2+R*ETA1
-          ENDIF
-          CALL CRITET(EPSP,EPSD,ETAC,LAMBDA,DEUXMU,FPD,SEUIL,
-     &               CRITC,CRITP)
-C     TEST D'ARRET SI ON PASSE EN DESSOUS DE 0 (-> 2 SOLUTIONS)
-          IF (CRITC.LT.0.D0) THEN
-            GOTO 260
-          ENDIF
-          IF (CRITP.GT.0.D0) THEN
-            ETA2=ETAC
-            CRIT2=CRITC
-            CRITP2=CRITP
-          ELSE
-            ETA1=ETAC
-            CRIT1=CRITC
-            CRITP1=CRITP
-          ENDIF
-C     TEST D'ARRET DE PRECISION NUMERIQUE
-          IF (ETA2.EQ.ETA1)
-     &      CALL U2MESS('F','ALGORITH9_84')
-        GOTO 250
+            CALL ZEROD2(X,Y,Z)
+556       CONTINUE
 
-C -- SI MINIMUM SOUS 0 : 2 SOLUTIONS, SINON : 0 SOLUTION
-
-260     CONTINUE
-C       write (6,*) 'ITER-4 = ',ITER
-        IF (CRITC.LT.0.D0) THEN
-          NSOL=2
-          ETA3=ETAC
-          CRIT3=CRITC
-          CRITP3=CRITP
-
-          X(1)=ETAC
-          Y(1)=CRITC
-          Z(1)=CRITP
-          X(2)=ETAMAX
-          CALL CRITET(EPSP,EPSD,X(2),LAMBDA,DEUXMU,FPD,SEUIL,
-     &               Y(2),Z(2))
-          X(3)=X(2)
-          Y(3)=Y(2)
-          Z(3)=Z(2)
-          DO 400 ITER = 1, NITMAX
-            IF (ABS(Y(3)) .LE. EPSTOL*SEUREL*TAU) GOTO 401
-            IF (MOD(ITER,3) .NE. 0) THEN
-              CALL ZEROG2(X,Y,Z,ITER)
-            ELSE
-              CALL ZEROD2(X,Y,Z)
-            END IF
-            CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
+          CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
      &             Y(3),Z(3))
-400       CONTINUE
-          GOTO 666
-401       CONTINUE
-C          write (6,*) 'ITER-5 = ',ITER
-          ETA1=X(3)
+202     CONTINUE
+          CALL U2MESS('F','ALGORITH9_87')
+203     CONTINUE
 
-          X(1)=ETA3
-          Y(1)=CRIT3
-          Z(1)=CRITP3
-          X(2)=ETAMIN
-          CALL CRITET(EPSP,EPSD,X(2),LAMBDA,DEUXMU,FPD,SEUIL,
-     &               Y(2),Z(2))
-          X(3)=X(2)
-          Y(3)=Y(2)
-          Z(3)=Z(2)
-          DO 500 ITER = 1, NITMAX
-            IF (ABS(Y(3)) .LE. EPSTOL*SEUREL*TAU) GOTO 501
-            IF (MOD(ITER,3) .NE. 0) THEN
-              CALL ZEROG2(X,Y,Z,ITER)
-            ELSE
-              CALL ZEROD2(X,Y,Z)
-            END IF
-            CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
-     &             Y(3),Z(3))
-500       CONTINUE
-          GOTO 666
-501       CONTINUE
-C          write (6,*) 'ITER-5b = ',ITER
-          ETA2=X(3)
-        ELSE
-          ETA=ETAC
-          NSOL=0
-        ENDIF
+        A1 =Z(3)/EPSNOR
+        A0 = TAU-X(3)*A1*EPSNOR
+        A2=R8VIDE()
+        A3=R8VIDE()
+
+        GOTO 9999
+
       ENDIF
 
-      IF (NSOL.EQ.0) THEN
-        ETAS=1.D0
-C        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUILA,
-C     &             CRIT1,CRITP)
-C        A0=CRIT1/SEUREL
-      ELSE
-        SEUIL=SEUILA
-        ETAS=R8VIDE()
-        IF (NSOL.EQ.2) THEN
-          ETA=ETA1
-        ENDIF
-        CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUILA,
-     &             CRIT1,CRITP)
 
-C ======================================================================
-C                        LINEARISATION DU CRITERE
-C ======================================================================
-        SEUREL = SEUIL * (1+GAMMA*D)**2 / (1+GAMMA)
-        A0 = (CRIT1 - ETA*CRITP ) /SEUREL
-        A1 =CRITP/ SEUREL
 
-        IF (NSOL.EQ.2) THEN
-          ETA=ETA2
+C CAS A 2 OU 0 SOLUTIONS
 
-          CALL CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUILA,
-     &             CRIT1,CRITP)
-C ======================================================================
-C                        LINEARISATION DU CRITERE
-C ======================================================================
-          A2 = (CRIT1 - ETA*CRITP ) /SEUREL
-          A3 =CRITP/ SEUREL
-        ELSE
-          A2=R8VIDE()
-          A3=R8VIDE()
-        ENDIF
+      IF (((CRIT1.GT.0.D0).AND.(CRITP1.LT.(-CRIT1/LINTER))).AND.
+     &    ((CRIT2.GT.0.D0).AND.(CRITP2.GT.(CRIT2/LINTER)))) THEN
+
+C        WRITE(6,*) 'cas 5'
+
+
+C il faut chercher s'il y a une valeur dans l'intervalle qui donne une
+C valeur du critere negative
+C s'il y en a une, il y a 2 solutions, sinon 0 solution
+C
+C On utilise les tangentes pour aller vers le "minimum"
+C on s'arrete quand le critere est negatif, on se fiche 
+C de trouver exactement le minimum
+
+         X1=ETAINF
+         Y1=CRIT1
+         Z1=CRITP1
+         X2=ETASUP
+         Y2=CRIT2
+         Z2=CRITP2
+
+         YS=Y1
+
+         ITER=0
+
+750      CONTINUE
+
+         IF (ITER.LT.NITMAX) THEN
+           XS=(Y2-Y1+Z1*X1-Z2*X2)/(Z1-Z2)
+           CALL CRITET(EPSP,EPSD,XS,LAMBDA,DEUXMU,FPD,SEUIL,
+     &              YS,ZS)
+           IF (YS.LT.0.D0) GOTO 751
+
+           IF (ZS.GT.0.D0) THEN
+             X2=XS
+             Y2=YS
+             Z2=ZS
+             LINTER=X2-X1
+             IF ((Z1.GT.(-Y1/LINTER)).OR.
+     &           (Z2.LT.(Y2/LINTER))) THEN
+               GOTO 666
+             ENDIF
+             GOTO 750
+           ELSE
+             X1=XS
+             Y1=YS
+             Z1=ZS
+             LINTER=X2-X1
+             IF ((Z1.GT.(-Y1/LINTER)).OR.
+     &           (Z2.LT.(Y2/LINTER))) THEN
+               GOTO 666
+             ENDIF
+             GOTO 750
+           ENDIF
+         ELSE
+           GOTO 666
+         ENDIF
+
+751      CONTINUE
+
+
+C il y a une solution sur [ETAINF,XS] et une sur [XS,ETASUP]
+
+
+C Calcul de la solution sur [XS,ETASUP]
+        X(1)=XS
+        Y(1)=YS
+        Z(1)=ZS
+        X(2)=ETASUP
+        Y(2)=CRIT2
+        Z(2)=CRITP2
+
+        X(3)=X(1)
+        Y(3)=Y(1)
+        Z(3)=Z(1)
+
+        DO 204 ITER = 1, NITMAX
+          IF (ABS(Y(3)) .LE. EPSTOL*SEUIL) GOTO 205
+
+            IF (ABS(Z(1)-Z(2)).LT.EPSTO2*ABS(Z(2))) THEN
+              X(3)=(-Y(3)+Z(3)*X(3))/Z(3)
+              GOTO 557
+            ENDIF
+            CALL ZEROD2(X,Y,Z)
+557       CONTINUE
+
+          CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
+     &             Y(3),Z(3))
+
+204     CONTINUE
+          CALL U2MESS('F','ALGORITH9_87')
+205     CONTINUE
+
+        A1 =Z(3)/EPSNOR
+        A0 = TAU-X(3)*A1*EPSNOR
+
+
+
+C Calcul de la solution sur [-ETASUP,XS]
+        X(1)=XS
+        Y(1)=YS
+        Z(1)=ZS
+        X(2)=ETAINF
+        Y(2)=CRIT1
+        Z(2)=CRITP1
+
+        X(3)=X(1)
+        Y(3)=Y(1)
+        Z(3)=Z(1)
+
+        DO 206 ITER = 1, NITMAX
+          IF (ABS(Y(3)) .LE. EPSTOL*SEUIL) GOTO 207
+            IF (ABS(Z(1)-Z(2)).LT.EPSTO2*ABS(Z(2))) THEN
+              X(3)=(-Y(3)+Z(3)*X(3))/Z(3)
+              GOTO 558
+            ENDIF
+            CALL ZEROD2(X,Y,Z)
+558       CONTINUE
+
+          CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
+     &             Y(3),Z(3))
+
+206     CONTINUE
+          CALL U2MESS('F','ALGORITH9_87')
+207     CONTINUE
+
+        A3 =Z(3)/EPSNOR
+        A2 = TAU-X(3)*A3*EPSNOR
+
+        GOTO 9999
+
+
       ENDIF
-      GOTO 9999
 
- 666  CONTINUE
-      A0 = 0.D0
-      A1 = 0.D0
-      A2 = R8VIDE()
-      A3 = R8VIDE()
-      ETAS = R8VIDE()
+666    CONTINUE
+        A0 = 0.D0
+        A1 = 0.D0
+        A2 = R8VIDE()
+        A3 = R8VIDE()
 
- 9999 CONTINUE
+
+9999   CONTINUE
+
+C on "redonne" le vrai EPSD
+      DO 679 K=1,6
+        EPSD(K)=EPSD(K)/EPSNOR
+679   CONTINUE
+
+
       END

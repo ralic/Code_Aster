@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -644,7 +644,7 @@ TEST_TABLE(TABLE=DOMLE,
            NOM_PARA='DOM_LEM',
            VALE=1.90334E-01,
            CRITERE='ABSOLU',
-           PRECISION=1.E-5,
+           PRECISION=2.E-5,
            REFERENCE='NON_REGRESSION',
            VERSION='7.2.12',);
 TEST_TABLE(TABLE=DOMLE,
@@ -690,7 +690,7 @@ TEST_TABLE(TABLE=DOMLE,
            NOM_PARA='D_CUMULE',
            VALE=4.22226E+00,
            CRITERE='ABSOLU',
-           PRECISION=1.E-5,
+           PRECISION=2.E-5,
            REFERENCE='NON_REGRESSION',
            VERSION='7.2.12',);
 

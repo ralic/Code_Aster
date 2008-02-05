@@ -2,7 +2,7 @@
      &                   VIM, OPTION, SIG, VIP,  DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C ----------------------------------------------------------------------
 
 
 
-      LOGICAL     CPLAN, TANG, ELAS, FULL, RAPH, NONLIN
+      LOGICAL     CPLAN, RIGI, RESI,SECANT,NONLIN
       INTEGER     NDIMSI, K, L, ETAT
 
       REAL*8      EPS(6), TREPS, COPLAN, SIGEL(6)
@@ -78,10 +78,9 @@ C ======================================================================
 
 C -- OPTION ET MODELISATION
 
-      FULL = OPTION .EQ. 'FULL_MECA'
-      RAPH = OPTION .EQ. 'RAPH_MECA'
-      ELAS = OPTION .EQ. 'RIGI_MECA_ELAS'
-      TANG = OPTION .EQ. 'RIGI_MECA_TANG'
+      RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
+      RESI  = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
+      SECANT = OPTION(11:14).EQ.'ELAS'
       CPLAN = (TYPMOD(1).EQ.'C_PLAN  ')
       NDIMSI = 2*NDIM
 
@@ -112,7 +111,7 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
 C -- DEFORMATIONS
 
       CALL DCOPY(NDIMSI, EPSM,1, EPS,1)
-      IF (RAPH .OR. FULL) CALL DAXPY(NDIMSI, 1.D0, DEPS,1, EPS,1)
+      IF (RESI) CALL DAXPY(NDIMSI, 1.D0, DEPS,1, EPS,1)
 
 
 
@@ -142,7 +141,7 @@ C ======================================================================
 C                 INTEGRATION DE LA LOI DE COMPORTEMENT
 C ======================================================================
 
-      IF (RAPH .OR. FULL) THEN
+      IF (RESI) THEN
 
         DM   = VIM(1)
         ETAT = NINT(VIM(2))
@@ -193,22 +192,13 @@ C                            MATRICE TANGENTE
 C ======================================================================
 
 
-      IF (FULL .OR. TANG .OR. ELAS) THEN
+      IF (RIGI) THEN
 
 
-C -- RIGI_MECA_ELAS : MATRICE ELASTIQUE IMPOSEE
-
-        IF (ELAS) NONLIN = .FALSE.
-
-
-C -- RIGI_MECA_TANG : MATRICE ELASTIQUE FONCTION DU PAS PRECEDENT
-
-        IF (TANG) NONLIN = ETAT.EQ.1
+        NONLIN=.FALSE.
+        IF (RESI.AND.(.NOT.SECANT)) NONLIN = ETAT.EQ.1
 
 
-C -- FULL_MECA : MATRICE ELASTIQUE FONCTION DU COMPORTEMENT
-
-        IF (FULL) NONLIN = ETAT.EQ.1
 
 
 C -- CONTRIBUTION ELASTIQUE

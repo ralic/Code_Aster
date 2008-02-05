@@ -4,7 +4,7 @@
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,11 +57,19 @@ C
       REAL*8 B1,B2,B3,U(3),S,ALP,D,UM,AN1,AN2,AN3,AN4
       REAL*8 V1,V2,V3,V(3),W(3),WM,PF1,PF2
       REAL*8 RAD,ANG,ANGARC,ANGS2,XFL
+      REAL*8 FORCE(12)
+      INTEGER IPT
       ZERO = 0.D0
       DEUX = 2.D0
 C     ------------------------------------------------------------------
 C
 C
+C     --- INITIALISATION
+C
+      DO 40 I=1,12
+         FORCE(I) = ZERO
+40    CONTINUE
+
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       CALL JEVECH ('PGEOMER','L',LX)
       LX = LX - 1
@@ -97,8 +105,8 @@ CC    BARRES INFINIES PARALLELES MULTIPLES (CAS VIBRAPORTIC)
        IF (WM.LT.1.D-3) THEN
 CCDIR$ IVDEP
         DO 10 J = 1,3
-         ZR(IVECT-1+J)=ZR(IVECT-1+J)+XL*ZR(IFORC-1+J)/DEUX
-         ZR(IVECT-1+J+6)=ZR(IVECT-1+J+6)+XL*ZR(IFORC-1+J)/DEUX
+         FORCE(J)=FORCE(J)+XL*ZR(IFORC-1+J)/DEUX
+         FORCE(J+6)=FORCE(J+6)+XL*ZR(IFORC-1+J)/DEUX
    10   CONTINUE
         GO TO 1000
        END IF
@@ -111,10 +119,10 @@ CCDIR$ IVDEP
        PF1=ZR(IFORC)*U(1)+ZR(IFORC+1)*U(2)+ZR(IFORC+2)*U(3)
        PF2=ZR(IFORC)*V(1)+ZR(IFORC+1)*V(2)+ZR(IFORC+2)*V(3)
        DO 20 J = 1,3
-        ZR(IVECT-1+J)=ZR(IVECT-1+J)+XL*(PF1*U(J)+PF2*V(J))/2.D0
-        ZR(IVECT-1+J+3)=ZR(IVECT-1+J+3)+PF2*W(J)*XL**2/12.D0
-        ZR(IVECT-1+J+6)=ZR(IVECT-1+J+6)+XL*(PF1*U(J)+PF2*V(J))/2.D0
-        ZR(IVECT-1+J+9)=ZR(IVECT-1+J+9)-PF2*W(J)*XL**2/12.D0
+        FORCE(J)=FORCE(J)+XL*(PF1*U(J)+PF2*V(J))/2.D0
+        FORCE(J+3)=FORCE(J+3)+PF2*W(J)*XL**2/12.D0
+        FORCE(J+6)=FORCE(J+6)+XL*(PF1*U(J)+PF2*V(J))/2.D0
+        FORCE(J+9)=FORCE(J+9)-PF2*W(J)*XL**2/12.D0
    20  CONTINUE
 C
        GO TO 1000
@@ -150,10 +158,10 @@ CC    2 BARRES INFINIES PARALLELES DEFINIES PAR UNE TRANSLATION
          W(2)=E3*V1-E1*V3
          W(3)=E1*V2-E2*V1
          DO 11 J = 1,3
-         ZR(IVECT-1+J)=ZR(IVECT-1+J)+XL*U(J)/D/DEUX
-         ZR(IVECT-1+J+3)=ZR(IVECT-1+J+3)+XL**2*W(J)/D/12.D0
-         ZR(IVECT-1+J+6)=ZR(IVECT-1+J+6)+XL*U(J)/D/DEUX
-         ZR(IVECT-1+J+9)=ZR(IVECT-1+J+9)-XL**2*W(J)/D/12.D0
+         FORCE(J)=FORCE(J)+XL*U(J)/D/DEUX
+         FORCE(J+3)=FORCE(J+3)+XL**2*W(J)/D/12.D0
+         FORCE(J+6)=FORCE(J+6)+XL*U(J)/D/DEUX
+         FORCE(J+9)=FORCE(J+9)-XL**2*W(J)/D/12.D0
    11    CONTINUE
          GO TO 1000
       END IF
@@ -180,10 +188,10 @@ CC    2 BARRES INFINIES PARALLELES DEFINIES PAR UNE DISTANCE ET 1 POINT
          W(2)=E3*V1-E1*V3
          W(3)=E1*V2-E2*V1
          DO 12 J = 1,3
-         ZR(IVECT-1+J)=ZR(IVECT-1+J)+XL*U(J)/D/DEUX
-         ZR(IVECT-1+J+3)=ZR(IVECT-1+J+3)+XL**2*W(J)/D/12.D0
-         ZR(IVECT-1+J+6)=ZR(IVECT-1+J+6)+XL*U(J)/D/DEUX
-         ZR(IVECT-1+J+9)=ZR(IVECT-1+J+9)-XL**2*W(J)/D/12.D0
+         FORCE(J)=FORCE(J)+XL*U(J)/D/DEUX
+         FORCE(J+3)=FORCE(J+3)+XL**2*W(J)/D/12.D0
+         FORCE(J+6)=FORCE(J+6)+XL*U(J)/D/DEUX
+         FORCE(J+9)=FORCE(J+9)-XL**2*W(J)/D/12.D0
    12    CONTINUE
          GO TO 1000
       END IF
@@ -243,14 +251,25 @@ CC    2 BARRES EN POSITION QUELCONQUE FINIES
                S=S*5.D-3*XL/D
             END IF
             DO 2 J = 1,3
-            ZR(IVECT-1+J)=ZR(IVECT-1+J)+S*U(J)*AN1
-            ZR(IVECT-1+J+3)=ZR(IVECT-1+J+3)+S*W(J)*AN2
-            ZR(IVECT-1+J+6)=ZR(IVECT-1+J+6)+S*U(J)*AN3
-            ZR(IVECT-1+J+9)=ZR(IVECT-1+J+9)+S*W(J)*AN4
+            FORCE(J)=FORCE(J)+S*U(J)*AN1
+            FORCE(J+3)=FORCE(J+3)+S*W(J)*AN2
+            FORCE(J+6)=FORCE(J+6)+S*U(J)*AN3
+            FORCE(J+9)=FORCE(J+9)+S*W(J)*AN4
     2       CONTINUE
    30    CONTINUE
       END IF
 C
  1000 CONTINUE
 C
+C   --- STOCKAGE
+C
+      IPT = 6 
+      IF(NOMTE.EQ.'MECA_POU_D_EM' .OR.
+     &   NOMTE.EQ.'MECA_POU_D_TG' .OR.
+     &   NOMTE.EQ.'MECA_POU_D_TGM'     ) IPT=7
+
+      DO 50 I=1,6
+          ZR(IVECT-1+I)  = FORCE(I)
+          ZR(IVECT-1+I+IPT)= FORCE(I+6)
+ 50   CONTINUE
       END

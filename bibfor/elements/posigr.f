@@ -5,7 +5,7 @@
       REAL*8 EFGE(12)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,9 @@ C     --- SECTION FINALE ---
       RY2 = ZR(LSECT2+9)
       RZ2 = ZR(LSECT2+10)
       RT2 = ZR(LSECT2+11)
+
+C
+      IF(NOMTE.EQ.'MECA_POU_D_TG') A2=A
 
       IF (NOMTE.EQ.'MECA_POU_D_E') THEN
         ALFAY = ZERO

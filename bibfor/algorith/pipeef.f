@@ -1,7 +1,8 @@
       SUBROUTINE PIPEEF(NDIM, TYPMOD, TAU, IMATE, SIGM, VIM,
      &                  EPSP, EPSD, A0, A1, A2, A3, ETAS)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,11 +46,11 @@ C ----------------------------------------------------------------------
       LOGICAL     CPLAN
       INTEGER     NDIMSI, K, NRAC
       REAL*8      TREPSP, TREPSD, COPLAN, SIGELP(6), SIGELD(6)
-      REAL*8      EPS1(6), EPS2(6), D1, D2
       REAL*8      KRON(6)
       REAL*8      D, P0, P1, P2, ETA, RAC(2)
       REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SY, WY, WREL
-      REAL*8      DNRM2,R8VIDE
+      REAL*8      DM,DTAU,GM,GTAU,S
+      REAL*8      R8VIDE
 
       CHARACTER*2 CODRET(2)
       CHARACTER*8 NOMRES(2)
@@ -118,8 +119,17 @@ C                CALCUL DES DEFORMATIONS POUR LINEARISATION
 C ======================================================================
 
 C    ETAT MECANIQUE EN T-
-      D   = VIM(1)
-      WREL = WY * ((1+GAMMA)/(1+GAMMA-D))**2
+
+
+      DM   = VIM(1)
+      DTAU = MIN(1+GAMMA/2, DM+TAU)
+      GM   = WY * ((1+GAMMA)/(1+GAMMA-DM))**2
+      GTAU = WY * ((1+GAMMA)/(1+GAMMA-DTAU))**2      
+      WREL = (GTAU - GM)/TAU
+      S    = GM / WREL
+
+
+
 
 C    COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
       TREPSP = EPSP(1)+EPSP(2)+EPSP(3)
@@ -129,35 +139,31 @@ C    COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
         SIGELD(K) = LAMBDA*TREPSD*KRON(K) + DEUXMU*EPSD(K)
  60   CONTINUE
       P0 = 0.5D0 * DDOT(NDIMSI,EPSP,1,SIGELP,1) / WREL
-      P1 = 0.5D0 * DDOT(NDIMSI,EPSP,1,SIGELD,1) / WREL
+      P1 = 1.0D0 * DDOT(NDIMSI,EPSP,1,SIGELD,1) / WREL
       P2 = 0.5D0 * DDOT(NDIMSI,EPSD,1,SIGELD,1) / WREL
 
   
 C    RECHERCHE DES INTERSECTIONS ELLIPSE / DROITE
-      CALL ZEROP2(2*P1/P2, (P0-1-TAU)/P2, RAC, NRAC)
+      CALL ZEROP2(P1/P2, (P0-S-TAU)/P2, RAC, NRAC)
 
 C    PAS DE SOLUTION : POINT LE PLUS PROCHE
       IF (NRAC .EQ. 0) THEN
-        ETAS = - P1/P2
-        A0 = P0 - 1 + 2*P1*ETAS + P2*ETAS**2
+        ETAS = 0.D0
 
 C    UNE OU DEUX SOLUTIONS : ON LINEARISE AUTOUR DES DEUX
       ELSE IF (NRAC.EQ.1) THEN
-        ETAS=R8VIDE()
         ETA=RAC(1)
-        A0 = P0 - 1 - P2*ETA**2
-        A1 = 2*(ETA*P2+P1)
-        A2 = R8VIDE()
-        A3 = R8VIDE()
+        A1 = 2*P2*ETA+P1
+        A0 = TAU - A1*ETA
       ELSE
-        ETAS=R8VIDE()
         ETA=RAC(1)
-        A0 = P0 - 1 - P2*ETA**2
-        A1 = 2*(ETA*P2+P1)
+        A1 = 2*P2*ETA+P1
+        A0 = TAU - A1*ETA
         ETA=RAC(2)
-        A2 = P0 - 1 - P2*ETA**2
-        A3 = 2*(ETA*P2+P1)
-      ENDIF  
+        A3 = 2*P2*ETA+P1
+        A2 = TAU - A3*ETA
+      ENDIF
+
 
  9999 CONTINUE
       END

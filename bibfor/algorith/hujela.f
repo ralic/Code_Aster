@@ -2,7 +2,7 @@
      &                     EPSD, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,6 +37,7 @@ C       ---------------------------------------------------------------
         REAL*8        DEPS(6), DSIG(6), SIGD(6), SIGF(6)
         REAL*8        HOOK(6,6), MATERF(22,2), CRIT(*), EPSD(6)
         REAL*8        ZERO, UN, DEUX, LA, EPSV, I1E
+        REAL*8        R8PREM
         CHARACTER*8   MOD
         LOGICAL       TRACT
 
@@ -49,19 +50,24 @@ C       ---------------------------------------------------------------
 C       ---------------------------------------------------------------
         PREF = MATERF(8,2)
         N = MATERF(1,2)
-
+        I1E  = (SIGD(1) + SIGD(2) + SIGD(3))/3
+        EPSV  = DEPS(1) + DEPS(2) + DEPS(3)
+        
+        IF (ABS(N).LT.R8PREM())THEN
+          I1 = I1E+MATERF(1,1)/(3.D0*(UN-DEUX*MATERF(2,1)))*EPSV
+          IF(I1.GT.R8PREM())THEN
+            TRACT=.TRUE.
+            GOTO 5
+          ENDIF
+          GOTO 30  
+        ENDIF
 
 C--->  CALCUL DE I1=TR(SIG) A T+DT PAR METHODE DE LA SECANTE
 C      OU EXPLICITEMENT SI NIVEAU HUJEUX
         CALL HUJCI1 (CRIT, MATERF, DEPS, SIGD, I1, TRACT, IRET)
 
-        I1E  = (SIGD(1) + SIGD(2) + SIGD(3))/3
-        EPSV  = DEPS(1) + DEPS(2) + DEPS(3)
         I1E  = MATERF(1,1)/(3.D0*(UN-DEUX*MATERF(2,1)))*EPSV*
      &            (I1E/PREF)**N+I1E
-C        WRITE(6,'(A,6(1X,E12.5))')'DEPS =',(DEPS(I),I=1,6)
-C       WRITE(6,*)'I1E =',I1E
-C       WRITE(6,*)'I1 =',I1
         IF(I1E .GT. ZERO) I1E = I1
         IF (IRET.EQ.1) GOTO 9999
 
@@ -71,6 +77,7 @@ C      ( EGALES A PA/100.0 SOIT -1 KPA )
 C
 
 CKH A REVOIR....
+  5     CONTINUE
         IF (TRACT) THEN
            DO 10 I = 1, NDI
              SIGF(I) = PREF/100.D0
@@ -83,6 +90,7 @@ CKH A REVOIR....
 
         I1 = (I1 + I1E)/2
 
+ 30     CONTINUE
 C---> CALCUL DU COEF  (-----------)**N ET MODULE_YOUNG A T+DT
         COEF = (I1/PREF)**N
         E    = MATERF(1,1)*COEF

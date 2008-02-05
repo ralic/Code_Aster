@@ -1,0 +1,125 @@
+# MODIF  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ----------------------------------------------------------------------
+# POUTRE ENCASTREE-LIBRE SOUMIS A UN SEISME
+# CORRECTION STATIQUE DE L'EFFET DES MODES PROPRES D'ORDRE ELEVE
+#                                                  REF: SFM.VPCS SDLL23
+# ----------------------------------------------------------------------
+
+
+DEBUT( CODE=_F(  NOM = 'SDLL23B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
+                           CREA_GROUP_MA=_F(  NOM = 'MAILLAGE',
+                                           MAILLE = ( 'E01', 'E02', ))
+                        )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E+11,  NU = 0.3,  RHO = 0.) )
+
+CH_MATE=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                            AFFE=_F(  GROUP_MA = 'M_POUT',  MATER = MAT) )
+
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+                        _F(  GROUP_MA = 'M_POUT', PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'POU_D_TG'),
+                             _F(  GROUP_NO = 'MASSE',  PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DIS_T')) )
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
+                POUTRE=_F(  GROUP_MA = 'M_POUT',  SECTION = 'GENERALE',
+                         CARA = (   'A',     'IY',      'IZ',      'JX',  'AY', 'AZ' ),
+                         VALE = ( 78.1E-4, 5696.E-8, 2003.E-8, 7699.E-8,0.8333,0.8333)),DISCRET=(
+                _F(  NOEUD = 'B',  CARA = 'M_T_D_N', VALE = 50000.),
+                        _F(  NOEUD = 'C',  CARA = 'M_T_D_N', VALE = 5000.)) )
+
+COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,
+                  DDL_IMPO=_F(  NOEUD = 'A',   DX = 0.,  DY = 0.,  DZ = 0.,
+                                         DRX = 0., DRY = 0., DRZ = 0.) )
+
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='RIGI_MECA',
+                              CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LIM                        )
+
+MASS_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='MASS_MECA',
+                              CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LIM                        )
+
+NUME1=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUME1      )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME1      )
+
+TABL_MAS=POST_ELEM(  MODELE=MODELE,
+                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                        MASS_INER=_F( TOUT = 'OUI')
+                      )
+
+IMPR_TABLE(   TABLE=TABL_MAS )
+
+# Verification des resultats de POST_ELEM
+TEST_TABLE(
+  TABLE = TABL_MAS ,
+  NOM_PARA='MASSE',     VALE= 55000, PRECISION =  1.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'LIEU', VALE_K = 'MAILLAGE'),
+  REFERENCE = 'ANALYTIQUE',
+)
+TEST_TABLE(
+  TABLE = TABL_MAS ,
+  NOM_PARA='CDG_X',     VALE= 1.363636, PRECISION =  1.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'LIEU', VALE_K = 'MAILLAGE'),
+  REFERENCE = 'ANALYTIQUE',
+)
+TEST_TABLE(
+  TABLE = TABL_MAS ,
+  NOM_PARA='CDG_Y',     VALE= 0.0, PRECISION =  1.0E-10 , CRITERE = 'ABSOLU',
+  FILTRE = _F(  NOM_PARA = 'LIEU', VALE_K = 'MAILLAGE'),
+  REFERENCE = 'ANALYTIQUE',
+)
+TEST_TABLE(
+  TABLE = TABL_MAS ,
+  NOM_PARA='CDG_Z',     VALE= 0.0, PRECISION =  1.0E-10 , CRITERE = 'ABSOLU',
+  FILTRE = _F(  NOM_PARA = 'LIEU', VALE_K = 'MAILLAGE'),
+  REFERENCE = 'ANALYTIQUE',
+)
+TEST_TABLE(
+  TABLE = TABL_MAS ,
+  NOM_PARA='IX_G', VALE= 0., PRECISION =  1.E-10 , CRITERE = 'ABSOLU',
+  FILTRE = _F(  NOM_PARA = 'LIEU', VALE_K = 'MAILLAGE'),
+  REFERENCE = 'ANALYTIQUE',
+)
+TEST_TABLE(
+  TABLE = TABL_MAS ,
+  NOM_PARA='IY_G', VALE= 410227.273, PRECISION =  1.E-8 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'LIEU', VALE_K = 'MAILLAGE'),
+  REFERENCE = 'ANALYTIQUE',
+)
+TEST_TABLE(
+  TABLE = TABL_MAS ,
+  NOM_PARA='IZ_G', VALE= 410227.273, PRECISION =  1.E-8, CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'LIEU', VALE_K = 'MAILLAGE'),
+  REFERENCE = 'AUTRE_ASTER',
+)
+
+FIN()

@@ -7,7 +7,7 @@
      &                  SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/2008   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,6 +133,9 @@ C
         ELSE IF ( MRIG(1:4) .EQ. 'TANG' ) THEN
           SAUVMT    = METHOD(5)
           METHOD(5) = 'TANGENTE'
+        ELSE IF ( MRIG(1:4) .EQ. 'SECA' ) THEN
+          SAUVMT    = METHOD(5)
+          METHOD(5) = 'SECANTE'
         ELSE
           CALL ASSERT(.FALSE.)  
         ENDIF
@@ -178,7 +181,8 @@ C
         ZK16(JTSCH+1-1) = SAUVDY
       ENDIF
 C
-      IF ( (MRIG(1:4) .EQ. 'ELAS') .OR. (MRIG(1:4) .EQ. 'TANG')) THEN
+      IF ( (MRIG(1:4) .EQ. 'ELAS') .OR. (MRIG(1:4) .EQ. 'TANG')
+     &  .OR. (MRIG(1:4) .EQ. 'SECA')  ) THEN
         METHOD(5) = SAUVMT
       ENDIF
 C 

@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -526,56 +526,129 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #Recuperation des coordonnees des points du fond de fissure (x,y,z,absc_curv)
      Listfo = FISSURE.FONDFISS.get()
      Nbfond = len(Listfo)/4
-# Calcul des normales a chaque point du fond
-     v1 =  array(VECT_K1)
-     v1  = v1/sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
-     v1x = aster.getvectjev(string.ljust(FISSURE.nom,8)+'.GRLNNO    .VALE        ')[0:3]
-     v1x = array(v1x)
-     verif = dot(transpose(v1),v1x) 
-     if verif < 0 : v1 = -v1
-     if abs(verif) < 0.9 :
-      UTMESS('A','RUPTURE0_32',valk=FISSURE.nom,valr=[v1x[0],v1x[1],v1x[2]])
-      v1 = v1x
+# Calcul de la direction de propagation en chaque point du fond
+     VP = [None]*Nbfond
      VN = [None]*Nbfond
      absfon = [0,]
-     i = 0
-     if MODELISATION=='3D' :
-       if DTAN_ORIG != None :
-         VN[i] = array(DTAN_ORIG)
-       else :
-         Pfon2 = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
-         Pfon3 = array([Listfo[4*(i+1)],Listfo[4*(i+1)+1],Listfo[4*(i+1)+2]])
-         VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-         VN[0] = array(cross_product(VT,v1))
-       for i in range(1,Nbfond-1):
+     Vpropa = FISSURE.BASEFOND.get()
+# Cas fissure non necessairement plane     
+     if VECT_K1 == None :
+       i = 0
+       if MODELISATION=='3D' :
+         if DTAN_ORIG != None :
+           VP[0] = array(DTAN_ORIG)
+           VP[0] = VP[0]/sqrt(VP[0][0]**2+VP[0][1]**2+VP[0][2]**2)
+           VN[0] = array([Vpropa[0],Vpropa[1],Vpropa[2]])
+           verif = dot(transpose(VP[0]),VN[0]) 
+           if abs(verif) > 0.01:
+             UTMESS('A','RUPTURE1_33',valr=[VN[0][0],VN[0][1],VN[0][2]])
+         else :
+           VN[0] = array([Vpropa[0],Vpropa[1],Vpropa[2]])
+           VP[0] = array([Vpropa[3+0],Vpropa[3+1],Vpropa[3+2]])
+         for i in range(1,Nbfond-1):
+           Pfon1 = array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
+           Pfon2 = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
+           absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
+           absfon.append(absf)
+           VN[i] = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           VP[i] = array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
+           verif = dot(transpose(VN[i]),VN[i-1]) 
+           if abs(verif) < 0.98:
+             UTMESS('A','RUPTURE1_35',vali=[i-1,i])
+         i = Nbfond-1
          Pfon1 = array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
          Pfon2 = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
-         Pfon3 = array([Listfo[4*(i+1)],Listfo[4*(i+1)+1],Listfo[4*(i+1)+2]])
          absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
          absfon.append(absf)
-         VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
-         VT = VT+(Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-         VN[i] = array(cross_product(VT,v1)) 
-         VN[i] = VN[i]/sqrt(dot(transpose(VN[i]),VN[i]))
-       i = Nbfond-1
-       Pfon1 = array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
-       Pfon2 = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
-       absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
-       absfon.append(absf)
-       if DTAN_EXTR != None :
-         VN[i] = array(DTAN_EXTR)
-       else :
-         VT = (Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
-         VN[i] = array(cross_product(VT,v1))
-     else :  
+         if DTAN_EXTR != None :
+           VP[i] = array(DTAN_EXTR)
+           VN[i] = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           verif = dot(transpose(VP[i]),VN[0]) 
+           if abs(verif) > 0.01:
+             UTMESS('A','RUPTURE1_34',valr=[VN[i][0],VN[i][1],VN[i][2]])
+         else :
+           VN[i] = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           VP[i] = array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
+       else : 
+         VP[i] = array([Vpropa[2],Vpropa[3],0.])
+         VN[i] = array([Vpropa[0],Vpropa[1],0.])
+# Cas fissure plane (VECT_K1 donne)
+     if VECT_K1 != None :
+       v1 =  array(VECT_K1)
+       v1  = v1/sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
+       v1 =  array(VECT_K1)
+       i = 0
+       if MODELISATION=='3D' :
+# Sens du vecteur VECT_K1       
+         v1x =array([Vpropa[0],Vpropa[1],Vpropa[2]])
+         verif = dot(transpose(v1),v1x) 
+         if verif < 0 : v1 = -v1
+         VN = [v1]*Nbfond
+         if DTAN_ORIG != None :
+           VP[i] = array(DTAN_ORIG)
+           VP[i] = VP[i]/sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
+           verif = dot(transpose(VP[i]),VN[0]) 
+           if abs(verif) > 0.01:
+             UTMESS('A','RUPTURE1_36')
+         else :
+           Pfon2 = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
+           Pfon3 = array([Listfo[4*(i+1)],Listfo[4*(i+1)+1],Listfo[4*(i+1)+2]])
+           VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+           VP[0] = array(cross_product(VT,v1))
+           VNi = array([Vpropa[3],Vpropa[4],Vpropa[5]])
+           verif = dot(transpose(VP[i]),VNi) 
+           if abs(verif) < 0.99:
+             vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
+             UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
+         for i in range(1,Nbfond-1):
+           Pfon1 = array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
+           Pfon2 = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
+           Pfon3 = array([Listfo[4*(i+1)],Listfo[4*(i+1)+1],Listfo[4*(i+1)+2]])
+           absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
+           absfon.append(absf)
+           VT = (Pfon3 - Pfon2)/sqrt(dot(transpose(Pfon3-Pfon2),Pfon3-Pfon2))
+           VT = VT+(Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+           VP[i] = array(cross_product(VT,v1)) 
+           VP[i] = VP[i]/sqrt(dot(transpose(VP[i]),VP[i]))
+           VNi = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           verif = dot(transpose(VN[i]),VNi) 
+           if abs(verif) < 0.99:
+             vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
+             UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
+         i = Nbfond-1
+         Pfon1 = array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
+         Pfon2 = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
+         absf = sqrt(dot(transpose(Pfon1-Pfon2),Pfon1-Pfon2)) + absfon[i-1]
+         absfon.append(absf)
+         if DTAN_EXTR != None :
+           VP[i] = array(DTAN_EXTR)
+           VP[i] = VP[i]/sqrt(VP[i][0]**2+VP[i][1]**2+VP[i][2]**2)
+           verif = dot(transpose(VP[i]),VN[i]) 
+           if abs(verif) > 0.01:
+             UTMESS('A','RUPTURE1_37')
+         else :
+           VT = (Pfon2 - Pfon1)/sqrt(dot(transpose(Pfon2-Pfon1),Pfon2-Pfon1))
+           VP[i] = array(cross_product(VT,v1))
+           VNi = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
+           verif = dot(transpose(VN[i]),VNi) 
+           if abs(verif) < 0.99 :
+             vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
+             UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
+       else :  
          VT = array([0.,0.,1.])
-         VN[i] = array(cross_product(v1,VT))   
+         VP[i] = array(cross_product(v1,VT))  
+         VN[i] = v1
+         VNi = array([Vpropa[0],Vpropa[1],0.])
+         verif = dot(transpose(VN[i]),VNi) 
+         if abs(verif) < 0.99 :
+           vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
+           UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
 #Sens de la tangente   
      if MODELISATION=='3D' : i = Nbfond/2
      else : i = 0
      Po =  array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
-     Porig = Po + ABSC_CURV_MAXI*VN[i]
-     Pextr = Po - ABSC_CURV_MAXI*VN[i]
+     Porig = Po + ABSC_CURV_MAXI*VP[i]
+     Pextr = Po - ABSC_CURV_MAXI*VP[i]
      __Tabg = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
                    LIGN_COUPE=_F(NB_POINTS=3,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
                                   TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
@@ -592,13 +665,13 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
      TSaut = [None]*Nbfond    
      NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
      if NB_NOEUD_COUPE < 3 : 
-       UTMESS('A','RUPTURE0_17')
+       UTMESS('A','RUPTURE0_34')
        NB_NOEUD_COUPE = 5
      for i in range(Nbfond):
         Porig = array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
-        if i==0 and DTAN_ORIG!=None : Pextr = Porig - ABSC_CURV_MAXI*VN[i]
-        elif i==(Nbfond-1) and DTAN_EXTR!=None : Pextr = Porig - ABSC_CURV_MAXI*VN[i]
-        else : Pextr = Porig + ABSC_CURV_MAXI*VN[i]*sens
+        if i==0 and DTAN_ORIG!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
+        elif i==(Nbfond-1) and DTAN_EXTR!=None : Pextr = Porig - ABSC_CURV_MAXI*VP[i]
+        else : Pextr = Porig + ABSC_CURV_MAXI*VP[i]*sens
         TSaut[i] = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
                          LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
                                         TYPE='SEGMENT',COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),),);
@@ -608,10 +681,22 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
        DETRUIRE(CONCEPT=_F(NOM=__MODLINE),INFO=1) 
        DETRUIRE(CONCEPT=_F(NOM=__RESX),INFO=1) 
    
+     if INFO==2 :
+        mcfact=[]
+        mcfact.append(_F(PARA='PT_FOND',LISTE_I=range(Nbfond)))
+        mcfact.append(_F(PARA='VN_X'        ,LISTE_R=[VN[i][0] for i in range(Nbfond)]))
+        mcfact.append(_F(PARA='VN_Y'        ,LISTE_R=[VN[i][1] for i in range(Nbfond)]))
+        mcfact.append(_F(PARA='VN_Z'        ,LISTE_R=[VN[i][2] for i in range(Nbfond)]))
+        mcfact.append(_F(PARA='VP_X'        ,LISTE_R=[VP[i][0] for i in range(Nbfond)]))
+        mcfact.append(_F(PARA='VP_Y'        ,LISTE_R=[VP[i][1] for i in range(Nbfond)]))
+        mcfact.append(_F(PARA='VP_Z'        ,LISTE_R=[VP[i][2] for i in range(Nbfond)]))
+        __resu2=CREA_TABLE(LISTE=mcfact,TITRE='             VECTEUR NORMAL A LA FISSURE    -    DIRECTION DE PROPAGATION')
+        aster.affiche('MESSAGE',__resu2.EXTR_TABLE().__repr__())
+        DETRUIRE(CONCEPT=_F(NOM=__resu2),INFO=1)
    
    else :
-     Nbnofo = 1
- 
+     Nbnofo = 1 
+     
 #   ----------Recuperation de la temperature au fond -------------  
    if Tempe3D :
       Rth = self.jdc.sds_dict[resuth]
@@ -915,7 +1000,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 #       3 : VECTEUR TANGENT AU FOND DE FISSURE EN M
 #
         if FISSURE :
-           v2 = VN[ino]
+           v2 = VP[ino]
+           v1 = VN[ino]
         elif SYME_CHAR=='SANS' :
            vo =  array([( coxs[-1]+coxi[-1] )/2.,( coys[-1]+coyi[-1] )/2.,( cozs[-1]+cozi[-1] )/2.])
            ve =  array([( coxs[0 ]+coxi[0 ] )/2.,( coys[0 ]+coyi[0 ] )/2.,( cozs[0 ]+cozi[0 ] )/2.])

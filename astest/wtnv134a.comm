@@ -1,4 +1,4 @@
-# MODIF  DATE 26/11/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -287,7 +287,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                  NEWTON=_F(MATRICE   = 'TANGENTE',
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
-                                ITER_GLOB_MAXI = 20),
+                                ITER_GLOB_MAXI = 10),
                  ARCHIVAGE=_F(LIST_INST    = TEMPS1,),
                  INCREMENT=_F(LIST_INST    = TEMPS1,
                               SUBD_METHODE = 'UNIFORME',

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 04/02/2008   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -349,6 +349,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),
            CHAR_CRIT       =SIMP(statut='f',typ='R',min=2,max=2,defaut=(-10.0,10),
                             fr="Valeur des deux charges critiques délimitant la bande de recherche en HPP"),
+           INST_CALCUL       =SIMP(statut='f',typ='TXM',defaut="LISTE_ARCHIVAGE",into=("LISTE_ARCHIVAGE","TOUT_PAS",) ),
          ),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité",

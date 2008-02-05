@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1153,6 +1153,31 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                fr="Coefficient C autour de la direction locale Ry de l'élément."),
             COEF_RZ =SIMP(statut='f',typ='R',val_min = 0.0,
                fr="Coefficient C autour de la direction locale Rz de l'élément."),
+         ),
+         DIS_BILI_ELAS  =FACT(statut='f',
+            fr="Loi bi-linéaire pour les discrets.",
+            regles=(PRESENT_PRESENT('KDEB_DX','KFIN_DX','FPRE_DX',),
+                    PRESENT_PRESENT('KDEB_DY','KFIN_DY','FPRE_DY',),
+                    PRESENT_PRESENT('KDEB_DZ','KFIN_DZ','FPRE_DZ',),),
+            KDEB_DX =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),
+               fr="Raideur début suivant l'axe local x de l'élément."),
+            KDEB_DY =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),
+               fr="Raideur début suivant l'axe local y de l'élément."),
+            KDEB_DZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),
+               fr="Raideur début  suivant l'axe local z de l'élément."),
+            KFIN_DX =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),
+               fr="Raideur fin l'axe local x de l'élément."),
+            KFIN_DY =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),
+               fr="Raideur fin l'axe local y de l'élément."),
+            KFIN_DZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),
+               fr="Raideur fin l'axe local z de l'élément."),
+            FPRE_DX =SIMP(statut='f',typ='R',
+               fr="Effort de préserrage suivant l'axe local x de l'élément."),
+            FPRE_DY =SIMP(statut='f',typ='R',
+               fr="Effort de préserrage suivant l'axe local y de l'élément."),
+            FPRE_DZ =SIMP(statut='f',typ='R',
+               fr="Effort de préserrage suivant l'axe local z de l'élément."),
+            VERI_P  =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",)),
          ),
 # Discrets non-linéaires : fin
 #

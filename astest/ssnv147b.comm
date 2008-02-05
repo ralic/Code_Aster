@@ -1,5 +1,5 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
-# TITRE TRACTION D'UN BARREAU FRAGILE
+# MODIF  DATE 04/02/2008   AUTEUR GODARD V.GODARD 
+# TITRE TRACTION D UN BARREAU FRAGILE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,8 +70,8 @@ CHMAT=AFFE_MATERIAU(
 L_INST=DEFI_LIST_REEL(
                DEBUT=0.0,INTERVALLE=(
 
-                _F(  JUSQU_A = 1.,       NOMBRE = 1),
-                _F(  JUSQU_A = 100.,     NOMBRE = 2000))
+                _F(  JUSQU_A = 100.,       NOMBRE = 100),
+                )
               )
 
 LIAISON=AFFE_CHAR_MECA(
@@ -128,7 +128,7 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
                 SUBD_PAS_MINI = 1.E-6),
                PILOTAGE=_F(
                 TYPE = 'PRED_ELAS',
-                COEF_MULT = 1.,
+                COEF_MULT = 10.,
                 ETA_PILO_R_MIN = 0.,
                 ETA_PILO_MIN = 0.50),
                      NEWTON=_F(
@@ -141,20 +141,20 @@ REPONSE=STAT_NON_LINE( reuse=REPONSE,
 
 TEST_RESU(RESU=(  _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 44,
+               NUME_ORDRE = 11,
                GROUP_NO = 'PB',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DY',
                VALE = 9.25E-5), _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 44,
+               NUME_ORDRE = 11,
                MAILLE = 'M1',
                POINT = 1,
                NOM_CHAM = 'SIEF_ELGA',
                NOM_CMP = 'SIYY',
                VALE = 5.E-1), _F(
                RESULTAT = REPONSE,
-               NUME_ORDRE = 44,
+               NUME_ORDRE = 11,
                MAILLE = 'M1',
                POINT = 1,
                NOM_CHAM = 'VARI_ELGA',

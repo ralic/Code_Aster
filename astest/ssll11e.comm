@@ -1,0 +1,362 @@
+# MODIF  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# SSLL11/E                    COMMANDES                          7/12/07
+# TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
+# FY = -98100 N
+#                                                   REF: SFM.VPCS SSLL11
+#=======================================================================
+
+
+DEBUT(CODE=_F(NOM='SSLL11E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE(  )
+
+# lecture du maillage de la premiere section de type couronne 
+# Epaisseur, Rayon
+E2=0.006
+R2=(2.E-04 + pi*E2*E2) / (2.*pi*E2)
+
+PRE_GMSH(UNITE_GMSH=18, UNITE_MAILLAGE=21,)
+MASEC1=LIRE_MAILLAGE(UNITE=21,)
+
+# lecture du maillage de la deuxieme section de type couronne 
+# Epaisseur, Rayon
+E1=0.005
+R1=(1.E-04 + pi*E1*E1) / (2.*pi*E1)
+
+PRE_GMSH(UNITE_GMSH=19, UNITE_MAILLAGE=22,)
+MASEC2=LIRE_MAILLAGE(UNITE=22,)
+
+MOD=AFFE_MODELE(   MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'POU_D_EM')  )
+
+GFF=DEFI_GEOM_FIBRE(SECTION=(
+                             _F(MAILLAGE_SECT = MASEC1 , TOUT_SECT = 'OUI',
+                                GROUP_FIBRE = 'ACIER1',
+                                COOR_AXE_POUTRE = (0.,0.,)),
+                             _F(MAILLAGE_SECT = MASEC2 , TOUT_SECT = 'OUI',
+                                GROUP_FIBRE = 'ACIER2',
+                                COOR_AXE_POUTRE = (0.,0.,)),                  ))
+
+MATER=DEFI_MATERIAU( ELAS=_F(  RHO = 1.E04,  E = 1.962E11, NU = 0.3,
+                                 AMOR_ALPHA = 0.1,  AMOR_BETA = 0.1)  )
+
+
+MATFF=DEFI_COMPOR(GEOM_FIBRE=GFF,MATER_SECT=MATER,
+                 MULTIFIBRE=(_F(GROUP_FIBRE='ACIER1',MATER=MATER,RELATION='ELAS'),
+                             _F(GROUP_FIBRE='ACIER2',MATER=MATER,RELATION='ELAS')))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER),
+                   AFFE_COMPOR=_F(GROUP_MA=('ACBC','CDBD'),COMPOR=MATFF)
+                   )
+
+
+E1=0.005
+
+R1=(1.E-04 + pi*E1*E1) / (2.*pi*E1)
+
+E2=0.006
+
+R2=(2.E-04 + pi*E2*E2) / (2.*pi*E2)
+
+CAREL=AFFE_CARA_ELEM(  MODELE=MOD,
+                POUTRE=(_F( GROUP_MA = 'ACBC',  SECTION = 'CERCLE',
+                            VARI_SECT = 'HOMOTHETIQUE',
+                            CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
+                            VALE = (  R2,   R2,   E2,   E2,  ),),
+                        _F( GROUP_MA = 'CDBD', SECTION = 'CERCLE',
+                            VARI_SECT = 'HOMOTHETIQUE',
+                            CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
+                            VALE = (  R1,   R1,   E1,   E1,  ),
+                    ),),
+           MULTIFIBRE = (_F ( GROUP_MA = ('ACBC'),
+                              GROUP_FIBRE= ('ACIER1'),),
+                          _F ( GROUP_MA = ('CDBD'),
+                              GROUP_FIBRE= ('ACIER2'),),),
+
+           GEOM_FIBRE = GFF ,
+                             )
+
+CHADEP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
+                   MAILLAGE=MA,
+     AFFE=_F(   NOEUD = ('A1','B2',), NOM_CMP = ( 'DY',), VALE = ( 1.,))
+                       )
+
+CH=AFFE_CHAR_MECA(    MODELE=MOD,
+           FORCE_NODALE=_F( NOEUD = 'D3',     FY = -9810.),DDL_IMPO=(
+           _F( TOUT = 'OUI', DZ = 0., DRX = 0., DRY = 0.),
+          _F( NOEUD = ('A1', 'B2',    ),  DX = 0.),
+          _F( NOEUD = (        'B4',),         DY = 0.)),LIAISON_DDL=(
+          _F(  NOEUD = ('A1','B4',),
+                        DDL = ('DX','DX',),
+                        COEF_MULT = (1.,-1.,),
+                        COEF_IMPO = 0.),
+          _F(  NOEUD = ('A1','B2',),
+                        DDL = ('DY','DY',),
+                        COEF_MULT = (1.,-1.,),
+                        COEF_IMPO = 0.),
+# D3,D4
+          _F( NOEUD = ('D3','D4',),
+                       DDL = ('DX','DX',),
+                       COEF_MULT = (1.,-1.,),
+                       COEF_IMPO = 0.),
+          _F( NOEUD = ('D3','D4',),
+                       DDL = ('DY','DY',),
+                       COEF_MULT = (1.,-1.,),
+                       COEF_IMPO = 0.),
+# C3,C2
+          _F( NOEUD = ('C3','C2',),
+                       DDL = ('DX','DX',),
+                       COEF_MULT = (1.,-1.,),
+                       COEF_IMPO = 0.),
+          _F( NOEUD = ('C3','C2',),
+                       DDL = ('DY','DY',),
+                       COEF_MULT = (1.,-1.,),
+                       COEF_IMPO = 0.),
+# C3,C1
+          _F( NOEUD = ('C3','C1',),
+                       DDL = ('DX','DX',),
+                       COEF_MULT = (1.,-1.,),
+                       COEF_IMPO = 0.),
+          _F( NOEUD = ('C3','C1',),
+                       DDL = ('DY','DY',),
+                       COEF_MULT = (1.,-1.,),
+                       COEF_IMPO = 0.)),
+           LIAISON_CHAMNO=_F( CHAM_NO = CHADEP,  # NUME_LAGR = 'APRES',
+                           COEF_IMPO = 0.)               )
+
+#
+# CALCUL ELEMENTS FINIS RESOLUTION
+#
+
+U=MECA_STATIQUE( MODELE=MOD,  CHAM_MATER=CHMAT,  CARA_ELEM=CAREL,
+                      EXCIT=_F( CHARGE = CH))
+
+U1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=U, NOM_CHAM='DEPL', NUME_ORDRE=1)
+
+#---------------------------------------------------------------------
+
+TEST_RESU(CHAM_NO=(
+            _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
+              NOEUD = 'C3',       NOM_CMP = 'DX',            VALE = 2.6517E-4),
+            _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
+              NOEUD = 'C3',       NOM_CMP = 'DY',            VALE = 0.8839E-4),
+            _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
+              NOEUD = 'D3',       NOM_CMP = 'DX',            VALE = 3.47902E-3),
+            _F(  CHAM_GD = U1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
+              NOEUD = 'D4',       NOM_CMP = 'DY',            VALE = -5.60084E-3))
+            )
+
+#---------------------------------------------------------------------
+
+#---POUR TESTER D'AUTRES MOT CLEF DE MECA_STATIQUE : -----------------
+
+F1=DEFI_FONCTION(   NOM_PARA='INST',
+                 VALE=(0.,0., 10.,10.,))
+
+LT=DEFI_LIST_REEL(  DEBUT=0.5, INTERVALLE=_F(  JUSQU_A = 1.5, PAS = 0.5))
+
+V=MECA_STATIQUE( MODELE=MOD,   CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
+                      LIST_INST=LT,
+                      EXCIT=_F( CHARGE = CH, FONC_MULT = F1))
+
+V1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=V, NOM_CHAM='DEPL', NUME_ORDRE=2)
+
+TEST_RESU(CHAM_NO=(
+            _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
+              NOEUD = 'C3',       NOM_CMP = 'DX',            VALE = 2.6517E-4),
+            _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 3.E-3,
+              NOEUD = 'C3',       NOM_CMP = 'DY',            VALE = 0.8839E-4),
+            _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
+              NOEUD = 'D3',       NOM_CMP = 'DX',            VALE = 3.47902E-3),
+            _F(  CHAM_GD = V1,       CRITERE = 'RELATIF',   PRECISION = 6.E-3,
+              NOEUD = 'D4',       NOM_CMP = 'DY',            VALE = -5.60084E-3))
+            )
+
+#======================================================================
+#                 CHARGE  REELLE : NOTRE REFERENCE
+#======================================================================
+
+
+CHARGE1=AFFE_CHAR_MECA(    MODELE=MOD,DDL_IMPO=(
+
+            _F(  TOUT = 'OUI', DZ = 0.,  DRX = 0.,  DRY = 0.),
+            _F(  NOEUD = ( 'A1', 'B2', 'B4', ),  DX = 0.,    DY = 0.)),LIAISON_DDL=(
+
+            _F(  NOEUD = ('D3','D4',),   DDL = ('DX','DX',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.),
+            _F(  NOEUD = ('D3','D4',),  DDL = ('DY','DY',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.),
+            _F(  NOEUD = ('C3','C2',),  DDL = ('DX','DX',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.),
+            _F(  NOEUD = ('C3','C2',),  DDL = ('DY','DY',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.),
+            _F(  NOEUD = ('C3','C1',),  DDL = ('DX','DX',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.),
+            _F(  NOEUD = ('C3','C1',),  DDL = ('DY','DY',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.))
+                    )
+
+CHARGER=AFFE_CHAR_MECA(    MODELE=MOD,
+                             FORCE_POUTRE=_F(  MAILLE = 'CD',   FY = -9810.)
+                           )
+
+MATELER=CALC_MATR_ELEM(  MODELE=MOD,           OPTION='RIGI_MECA',
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             CHARGE=( CHARGE1, CHARGER, )       )
+
+MATELEM=CALC_MATR_ELEM(  MODELE=MOD,           OPTION='MASS_MECA',
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             CHARGE=( CHARGE1, CHARGER, )       )
+
+MATELEC=CALC_MATR_ELEM(  MODELE=MOD,           OPTION='AMOR_MECA',
+                             RIGI_MECA=MATELER,    MASS_MECA=MATELEM,
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             CHARGE=( CHARGE1, CHARGER, )       )
+
+VECTELE=CALC_VECT_ELEM(  CHARGE=CHARGER,        OPTION='CHAR_MECA',
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT )
+
+NUM=NUME_DDL(  MATR_RIGI=MATELER  )
+
+MATASSR=ASSE_MATRICE(  MATR_ELEM=MATELER,    NUME_DDL=NUM  )
+
+MATASSM=ASSE_MATRICE(  MATR_ELEM=MATELEM,    NUME_DDL=NUM  )
+
+MATASSC=ASSE_MATRICE(  MATR_ELEM=MATELEC,    NUME_DDL=NUM  )
+
+VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELE,    NUME_DDL=NUM  )
+
+DYNHAR0=DYNA_LINE_HARM(  MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
+                             MATR_AMOR=MATASSC,   FREQ=100.,
+                              TOUT_CHAM='OUI',
+                             EXCIT=_F(  COEF_MULT = 1.,
+                                     VECT_ASSE = VECTASS)   )
+
+TEST_RESU(RESU=(
+     _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DX',
+       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j,PRECISION = 3.5E-2,),
+     _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DY',
+       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j,PRECISION = 3.E-2,),
+
+     _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DX',
+       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j,PRECISION = 3.5E-2,),
+     _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DY',
+       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j,PRECISION = 3.E-2,),
+
+     _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DX',
+       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j,PRECISION = 3.5E-2,),
+     _F(  RESULTAT = DYNHAR0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DY',
+       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j,PRECISION = 3.E-2,))
+           ),
+
+#======================================================================
+#                  VALIDATION  CHARGE  COMPLEXE
+#======================================================================
+
+# 1/ CHARGE COMPLEXE REELLE PURE:
+#    ----------------------------
+
+CHARGEC=AFFE_CHAR_MECA_C(    MODELE=MOD,
+
+            FORCE_POUTRE=_F(  MAILLE = 'CD',    FY = -9810.+0.j),DDL_IMPO=(
+
+            _F(  TOUT = 'OUI', DZ = 0.+0.j,  DRX = 0.+0.j,
+                                    DRY = 0.+0.j),
+            _F(  NOEUD = ( 'A1', 'B2', 'B4', ),  DX = 0.+0.j,
+                                               DY = 0.+0.j)),LIAISON_DDL=(
+
+            _F(  NOEUD = ('D3','D4',),   DDL = ('DX','DX',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.+0.j),
+            _F(  NOEUD = ('D3','D4',),  DDL = ('DY','DY',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.+0.j),
+            _F(  NOEUD = ('C3','C2',),  DDL = ('DX','DX',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.+0.j),
+            _F(  NOEUD = ('C3','C2',),  DDL = ('DY','DY',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.+0.j),
+            _F(  NOEUD = ('C3','C1',),  DDL = ('DX','DX',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.+0.j),
+            _F(  NOEUD = ('C3','C1',),  DDL = ('DY','DY',),
+                          COEF_MULT = (1.,-1.,),
+                          COEF_IMPO = 0.+0.j))
+                    )
+
+MATELCR=CALC_MATR_ELEM(  MODELE=MOD,           OPTION='RIGI_MECA',
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             CHARGE=CHARGEC        )
+
+MATELCM=CALC_MATR_ELEM(  MODELE=MOD,           OPTION='MASS_MECA',
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             CHARGE=CHARGEC        )
+
+MATELCC=CALC_MATR_ELEM(  MODELE=MOD,           OPTION='AMOR_MECA',
+                             RIGI_MECA=MATELCR,    MASS_MECA=MATELCM,
+                             CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             CHARGE=CHARGEC        )
+
+NUMC=NUME_DDL(  MATR_RIGI=MATELCR  )
+
+MATASCR=ASSE_MATRICE(  MATR_ELEM=MATELCR,    NUME_DDL=NUMC  )
+
+MATASCM=ASSE_MATRICE(  MATR_ELEM=MATELCM,    NUME_DDL=NUMC  )
+
+MATASCC=ASSE_MATRICE(  MATR_ELEM=MATELCC,    NUME_DDL=NUMC  )
+
+DYNHAC0=DYNA_LINE_HARM(  MATR_MASS=MATASCM, MATR_RIGI=MATASCR,
+                             MATR_AMOR=MATASCC,   FREQ=100.,
+                              TOUT_CHAM='OUI',
+                              MODELE=MOD,
+                              CARA_ELEM=CAREL,      CHAM_MATER=CHMAT,
+                             EXCIT=_F(  COEF_MULT_C = 1.+0.j,
+                                     CHARGE = CHARGEC)   )
+
+TEST_RESU(RESU=(
+     _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DX',
+       FREQ = 100.,      VALE_C = -1.65073E-05-9.22424E-06j,PRECISION = 3.5E-2,),
+     _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'DEPL',  NOEUD = 'D4',  NOM_CMP = 'DY',
+       FREQ = 100.,      VALE_C = 2.52829E-05+1.80184E-05j,PRECISION = 3.E-2,),
+
+     _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DX',
+       FREQ = 100.,      VALE_C = 5.79576E-03-1.03719E-02j,PRECISION = 3.5E-2,),
+     _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'VITE',  NOEUD = 'D4',  NOM_CMP = 'DY',
+       FREQ = 100.,      VALE_C = -1.13213E-02+1.58857E-02j,PRECISION = 3.E-2,),
+
+     _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DX',
+       FREQ = 100.,      VALE_C = 6.51684E+00+3.64158E+00j,PRECISION = 3.5E-2,),
+     _F(  RESULTAT = DYNHAC0,   NOM_CHAM = 'ACCE',  NOEUD = 'D4',  NOM_CMP = 'DY',
+       FREQ = 100.,      VALE_C = -9.98130E+00-7.11336E+00j,PRECISION = 3.E-2,))
+           )
+FIN();
+

@@ -1,5 +1,5 @@
       SUBROUTINE XPTFON(NOMA,NMAFON,CNSLT,CNSLN,JMAFON,NXPTFF,JFON,NFON,
-     &                                          JBORD,NPTBOR,ARMIN,FISS)
+     &                                    JBAS,JBORD,NPTBOR,ARMIN,FISS)
       IMPLICIT NONE
 
       INTEGER       NMAFON,JMAFON,JFON,NFON,NXPTFF,JBORD,NPTBOR
@@ -8,7 +8,7 @@
       CHARACTER*19  CNSLT,CNSLN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C     FISS         :   SD FISS_XFEM (POUR RECUP DES GRADIENTS)
 C
 C  SORTIES :
 C     JFON         :   ADRESSE DES POINTS DU FOND DE FISSURE
+C     JBAS         :   ADRESSE DES DIRECTIONS DE PROPAGATION
 C     NFON         :   NOMBRE DE POINTS DU FOND DE FISSURE
 C     JBORD        :   ADRESSE DE L'ATTRIBUT LOGIQUE 'POINT DE BORD'
 C     NPTBOR       :   NOMBRE DE POINTS 'DE BORD' DU FOND DE FISSURE
@@ -66,14 +67,15 @@ C
       INTEGER         IN,IMA,IFT,I,J,IBID,IRET,ITYPMA,IBID2(6,4),NDIM
       INTEGER         NMAABS,FT(12,3),NBFT,NA,NB,NC,NUNOA,NUNOB,NUNOC
       INTEGER         JCONX1,JCONX2,JCOOR,JLTSV,JLNSV,JMA,IPT,ADDIM
-      INTEGER         JGT
+      INTEGER         JGT,JBAS,JGN,K
       REAL*8          LSTA,LSNA,LSTB,LSNB,LSTC,LSNC,L(2,2),DETL,LL(2,2)
       REAL*8          R8PREM,EPS1,EPS2,A(3),B(3),C(3),M(3),P(3),PADIST
       REAL*8          R8B,EPS3
-      REAL*8          G1A,G1B,G1C,G2A,G2B,G2C,DIRX(2),DIRY(2)
+      REAL*8          G1A,G1B,G1C,G2A,G2B,G2C
+      REAL*8          DIRT(3*NXPTFF),DIRN(3*NXPTFF)
       COMPLEX*16      C16B
       CHARACTER*8     K8BID,TYPMA
-      CHARACTER*19    NOMT19,MAI,CNXINV,GRLT,CHGRS
+      CHARACTER*19    NOMT19,MAI,CNXINV,GRLT,CHGRT,GRLN,CHGRN
       CHARACTER*24    PARA
       CHARACTER*32    JEXATR
       LOGICAL         DEJA,FABORD
@@ -91,9 +93,15 @@ C ----------------------------------------------------------------------
 
 C     GRADIENT LST
       GRLT = FISS//'.GRLTNO'
-      CHGRS = '&&XPTFON.GRLT'
-      CALL CNOCNS(GRLT,'V',CHGRS)
-      CALL JEVEUO(CHGRS//'.CNSV','L',JGT)
+      CHGRT = '&&XPTFON.GRLN'
+      CALL CNOCNS(GRLT,'V',CHGRT)
+      CALL JEVEUO(CHGRT//'.CNSV','L',JGT)
+
+C     GRADIENT LSN
+      GRLN = FISS//'.GRLNNO'
+      CHGRN = '&&XPTFON.GRLT'
+      CALL CNOCNS(GRLN,'V',CHGRN)
+      CALL JEVEUO(CHGRN//'.CNSV','L',JGN)
 
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
@@ -187,17 +195,17 @@ C               AUGMENTER NXPTFF
                 ZR(JFON-1+4*(IN-1)+2)=M(2)
                 ZR(JFON-1+4*(IN-1)+3)=M(3)
 
-C               SPECIAL 2d : DIRECTION DE PROPA
-                IF (NDIM.EQ.2) THEN
-                  G1A = ZR(JGT-1+NDIM*(NUNOA-1)+1)
-                  G1B = ZR(JGT-1+NDIM*(NUNOB-1)+1)
-                  G1C = ZR(JGT-1+NDIM*(NUNOC-1)+1)
-                  G2A = ZR(JGT-1+NDIM*(NUNOA-1)+2)
-                  G2B = ZR(JGT-1+NDIM*(NUNOB-1)+2)
-                  G2C = ZR(JGT-1+NDIM*(NUNOC-1)+2)
-                  DIRX(IN)=G1A+EPS1*(G1B-G1A)+EPS2*(G1C-G1A)
-                  DIRY(IN)=G2A+EPS1*(G2B-G2A)+EPS2*(G2C-G2A)
-                ENDIF
+C          DIRECTION DE PROPA
+                DO 425 K=1,NDIM
+                  G1A = ZR(JGT-1+NDIM*(NUNOA-1)+K)
+                  G1B = ZR(JGT-1+NDIM*(NUNOB-1)+K)
+                  G1C = ZR(JGT-1+NDIM*(NUNOC-1)+K)
+                  DIRT((IN-1)*NDIM+K)=G1A+EPS1*(G1B-G1A)+EPS2*(G1C-G1A)
+                  G2A = ZR(JGN-1+NDIM*(NUNOA-1)+K)
+                  G2B = ZR(JGN-1+NDIM*(NUNOB-1)+K)
+                  G2C = ZR(JGN-1+NDIM*(NUNOC-1)+K)
+                  DIRN((IN-1)*NDIM+K)=G2A+EPS1*(G2B-G2A)+EPS2*(G2C-G2A)
+ 425            CONTINUE
 
               ENDIF
 
@@ -218,14 +226,15 @@ C             CELA N'A DE SENS QU'EN 3D
 
       NFON=IN
 
-C     SPECIAL 2d : ON STOCKE EN POSITION 3 ET 4 LA DIRECTION DE PROPA
-      IF (NDIM.EQ.2) THEN
-        DO 444 I=1,NFON
-          ZR(JFON-1+4*(I-1)+3)=DIRX(I)
-          ZR(JFON-1+4*(I-1)+4)=DIRY(I)
- 444    CONTINUE
-      ENDIF
-
+C     STOCKAGE DE LA DIRECTION DE PROPA
+      DO 555 I=1,NFON
+        DO 556 K=1,NDIM
+          ZR(JBAS-1+2*NDIM*(I-1)+K)=DIRN((I-1)*NDIM+K)
+          ZR(JBAS-1+2*NDIM*(I-1)+K+NDIM)=DIRT((I-1)*NDIM+K)
+ 556    CONTINUE
+ 555  CONTINUE
+     
+      
       CALL JEDETR(CNXINV)
       CALL JEDEMA()
       END

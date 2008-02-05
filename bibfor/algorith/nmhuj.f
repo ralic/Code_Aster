@@ -3,7 +3,7 @@
      &   DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 04/02/2008   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -97,7 +97,7 @@ C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
         INTEGER       IMAT, NDT, NDI, NVI, IRET
-        INTEGER       NITER, I, J, K, INC
+        INTEGER       NITER, I, J, K, INC, NDTT
         REAL*8        CRIT(*), VIND(*), VINF(*)
         REAL*8        INSTAM, INSTAP, TEMPM, TEMPF, TREF
         REAL*8        EPSD(6), DEPS(6), EPSF(6), DEPS0(6)
@@ -113,7 +113,7 @@ C       ----------------------------------------------------------------
         REAL*8        DEPSTH(6), EPSDTH(6), ALPHAF, ALPHAM
         REAL*8        EPSTHE,EPSTHM
         REAL*8        MATERF(22,2), I1D, D13, ZERO, UN
-        REAL*8        R8PREM
+        REAL*8        R8PREM, SUM, SUMT
         INTEGER       UMESS, IUNIFI, IISNAN
         LOGICAL       DEBUG, CONV
        
@@ -137,12 +137,18 @@ C        UMESS = IUNIFI('MESSAGE')
 C        WRITE(6,*)'R8PREM =',R8PREM()
 C        WRITE(6,'(A)')'***********************************'
 C        WRITE(6,'(A,32(1X,E16.9))')'VIND =',(VIND(I),I=1,32)
-C        WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPS(I),I=1,6)
+C        WRITE(6,'(A,6(1X,E16.9))')'DEPS_IN =',(DEPS(I),I=1,6)
+C        WRITE(6,*)'SIGD =',(SIGD(I),I=1,6)
 C ---> RECUPERATION COEF DE LA LOI HUJEUX
 C      (INDEPENDANTS DE LA TEMPERATURE)
 C      NB DE CMP DIRECTES/CISAILLEMENT
 C      NB VARIABLES INTERNES
         CALL HUJMAT (MOD, IMAT, TEMPF, MATERF, NDT, NDI, NVI)
+        NDTT = 6
+        IF(NDT.LT.6)THEN
+          NDTT = 4
+          NDT  = 6          
+        ENDIF        
 
 C ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
         ALPHAF = MATERF(3,1)
@@ -155,7 +161,6 @@ C ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
         DO 10 I = 1, NDI
           I1D = I1D + D13*SIGD(I)
    10     CONTINUE
-
 
 C       CALCUL DE DEPSTH ET EPSDTH
 C       --------------------------
@@ -179,16 +184,16 @@ C       --------------------------
           EPSDTH(I) = EPSD(I)
   21      CONTINUE
   
-        IF (NDT .LT. 6) THEN
-          DO 22 I = NDT+1, 6
+        IF (NDTT .LT. 6) THEN
+          DO 22 I = NDTT+1, 6
             DEPSTH(I) = ZERO
             EPSDTH(I) = ZERO
+            SIGD(I)   = ZERO
   22        CONTINUE
         ENDIF
 
-
 C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
-       DO 30 I = 1, 3
+       DO 30 I = 1, NDI
          IF (VIND(I) .EQ. ZERO) THEN
             IF (MATERF(13, 2) .EQ. ZERO) THEN
               VIND(I) = 1.D-3
@@ -224,27 +229,15 @@ C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
        ENDIF
 Caf 14/05/07 Debut
 C ---> INITIALISATION SEUIL CYCLIQUE SI NUL
-       IF (VIND(5) .EQ. ZERO) THEN
-          IF (MATERF(18, 2) .EQ. ZERO) THEN
-            VIND(5) = 1.D-3
-          ELSE
-            VIND(5) = MATERF(18,2)
-          ENDIF
-       ENDIF
-       IF (VIND(6) .EQ. ZERO) THEN
-          IF (MATERF(18, 2) .EQ. ZERO) THEN
-            VIND(6) = 1.D-3
-          ELSE
-            VIND(6) = MATERF(18,2)
-          ENDIF
-       ENDIF
-       IF (VIND(7) .EQ. ZERO) THEN
-          IF (MATERF(18, 2) .EQ. ZERO) THEN
-            VIND(7) = 1.D-3
-          ELSE
-            VIND(7) = MATERF(18,2)
-          ENDIF
-       ENDIF
+       DO 40 I = 1, NDI
+         IF (VIND(4+I) .EQ. ZERO) THEN
+           IF (MATERF(18, 2) .EQ. ZERO) THEN
+             VIND(4+I) = 1.D-3
+           ELSE
+             VIND(4+I) = MATERF(18,2)
+           ENDIF
+         ENDIF
+ 40    CONTINUE
        IF (VIND(8) .EQ. ZERO) THEN
           IF (MATERF(19, 2) .EQ. ZERO) THEN
             VIND(8) = 1.D-3
@@ -283,7 +276,6 @@ C       -------------------------------------------------------------
 C       OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
 C       -------------------------------------------------------------
         IF (OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA') THEN
-
 C ---> INTEGRATION ELASTIQUE SUR DT
           DO 45 I = 1, NDT
             DEPSQ(I) = ZERO 
@@ -295,6 +287,11 @@ C - ENREGISTREMENT DE L'ETAT DE CONTRAINTES A T
           CALL LCEQVE(SIGD,SIGD0)
 C - ENREGISTREMENT DE L'INCREMENT TOTAL DEPS0     
           CALL LCEQVE(DEPSTH,DEPS0)
+C - SAUVEGARDE DU SOUS INCREMENT MINI ACCEPTE     
+          SUMT = ZERO
+          DO 46 I = 1, NDT
+            SUMT = SUMT + ABS(DEPS0(I))/1.D1
+  46      CONTINUE
 C - INITIALISATION DES DEFORMATIONS RESTANTES
           CALL LCEQVE(DEPSTH,DEPSR)
 C -----------------------------------------------------
@@ -302,6 +299,10 @@ C ---> PREDICTION VIA TENSEUR ELASTIQUE DES CONTRAINTES
 C -----------------------------------------------------
 C          INC = 0        
  100      CONTINUE
+C	 WRITE(6,'(A,10(1X,E16.9))')'VIND0 =',(VIND(I),I=1,31)
+C	 WRITE(6,'(A,6(1X,E16.9))')'SIGD =',(SIGD(I),I=1,6)
+C	WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPSTH(I),I=1,6)
+C	WRITE(6,'(A,6(1X,E16.9))')'EPSD =',(EPSDTH(I),I=1,6)    
 C        WRITE(6,*)'#####################################'
 C         INC = INC + 1
 C         IF(INC.GT.100)THEN
@@ -317,6 +318,15 @@ C ----------------------------------------------------
 C ---> CONTROLE DE L EVOLUTION DE LA PRESSION ISOTROPE
 C ----------------------------------------------------     
           CALL HUJDP(MOD, DEPSR, SIGD, SIGF, MATERF, VIND)
+          SUM = ZERO
+          DO 47 I = 1, NDT
+            SUM = SUM + ABS(DEPSR(I))
+ 47       CONTINUE
+          IF(SUM.LT.SUMT)THEN
+            DO 48 I = 1, NDT
+              DEPSR(I)=DEPS0(I)/1.D1
+ 48         CONTINUE
+          ENDIF
           IF(IRET.EQ.1) GOTO 9999       
 C ----------------------------------------
 C ---> DEFORMATION CUMULEE DEPUIS L'ENTREE
@@ -327,15 +337,15 @@ C ----------------------------------------
 C ---------------------------------------------
 C CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 C ---------------------------------------------
-C          WRITE(6,'(A,10(1X,E16.9))')'VIND0 =',(VIND(I),I=1,31)
-C          WRITE(6,'(A,6(1X,E16.9))')'SIGD =',(SIGD(I),I=1,6)
-C         WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPSR(I),I=1,6)         
+C	  WRITE(6,'(A,10(1X,E16.9))')'VIND0 =',(VIND(I),I=1,31)
+C	  WRITE(6,'(A,6(1X,E16.9))')'SIGD =',(SIGD(I),I=1,6)
+C	 WRITE(6,'(A,6(1X,E16.9))')'DEPS =',(DEPSR(I),I=1,6)	     
           CALL HUJRES(MOD, CRIT, MATERF, NVI, EPSDTH, DEPSR,
      &               SIGD, VIND, SIGF, VINF, NITER, 
      &               EPSCON, IRET, ETATF)
-C         WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
-C         WRITE(6,'(A,10(1X,E16.9))')'VINF =',(VINF(I),I=1,31)
-C         WRITE(6,*)'R4 =',VINF(4)
+C	 WRITE(6,'(A,6(1X,E16.9))')'SIGF =',(SIGF(I),I=1,6)
+C	 WRITE(6,'(A,10(1X,E16.9))')'VINF =',(VINF(I),I=1,31)
+C	 WRITE(6,*)'R4 =',VINF(4)
           IF (IRET.EQ.1) GOTO 9999
 C -------------------------
 C ---> DEFORMATION RESTANTE
@@ -363,7 +373,6 @@ C --- CALCUL DU CRITERE DE HILL: DSIG*DEPS
  57       CONTINUE 
           VINF(32) = HILL
         ENDIF
-        
 Caf 07/05/07 FIN
 
 C       ----------------------------------------------------------------
@@ -373,7 +382,6 @@ C       CALCUL ELASTIQUE ET EVALUATION DE DSDE A (T)
 C       POUR 'RIGI_MECA_TANG' ET POUR 'FULL_MECA'
 C       ----------------------------------------------------------------
         IF (OPT .EQ. 'RIGI_MECA_TANG') THEN
-
           CALL LCINMA (ZERO, DSDE)
 
 C REMARQUE: CALCUL DE DSDE A T AVEC MATERF CAR PARAMETRES HUJEUX
@@ -384,13 +392,11 @@ C ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
            CALL HUJTEL (MOD, MATERF, SIGD, DSDE)
           ENDIF
 
-
 C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
           IF (ETATD .EQ. 'PLASTIC') THEN
            CALL HUJTID (MOD, MATERF, SIGD, VIND, DSDE, DEPSTH, IRET)
            IF(IRET.EQ.1)GOTO 9999
           ENDIF
-
         ELSEIF (OPT .EQ. 'FULL_MECA') THEN
 
           CALL LCINMA (ZERO, DSDE)
@@ -400,7 +406,6 @@ C ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
           IF (ETATF .EQ. 'ELASTIC')  THEN
            CALL HUJTEL (MOD, MATERF, SIGF, DSDE)
           ENDIF
-
 
 C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
           IF (ETATF .EQ. 'PLASTIC') THEN
@@ -412,7 +417,6 @@ C         WRITE(6,'(A,32(1X,E12.5))')'VINF - TID =',(VINF(I),I=1,32)
 
         ENDIF
 
-
 C ---- VARIABLES INTERNES POUR SORTIES
 C         IF ( (OPT .EQ. 'FULL_MECA') .OR.
 C      &       (OPT .EQ. 'RAPH_MECA') ) THEN
@@ -423,6 +427,14 @@ C         ENDIF
         
 9999    CONTINUE
 C        IF(IRET .EQ. 1)WRITE(6,'(A,I3,A)')'**** IRET =',IRET,' ****'   
-C        WRITE(6,'(A,10(1X,E16.9))')'VINF =',(VINF(I),I=1,32)
-C        WRITE(6,'(A,2(1X,E16.9))')'VINF =',(VINF(I),I=21,22)
+C        WRITE(6,*)'SIGF =',(SIGF(I),I=1,6)
+C        WRITE(6,'(A,8(1X,E16.9))')'VINF =',(VINF(I),I=24,31)
+C        WRITE(6,'(A,8(1X,E16.9))')'VINF =',(VINF(I),I=17,24)
+C        WRITE(6,'(A,8(1X,E16.9))')'VINF =',(VINF(I),I=9,16)
+C        WRITE(6,'(A,8(1X,E16.9))')'VINF =',(VINF(I),I=1,8)
+C        WRITE(6,*)
+C         WRITE(6,*)'DSDE ='
+C         DO I = 1,6
+C           WRITE(6,*)(DSDE(I,J),J=1,6)
+C         ENDDO
         END

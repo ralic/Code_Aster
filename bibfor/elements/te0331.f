@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -170,7 +170,7 @@ C VOLUME PLASTIQUE ACTIF
             ELSE
               PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
             END IF
-            IF (PPT.EQ.(1.0D0)) THEN
+            IF (PPT.GE.(1.0D0)) THEN
                DVOL=POIDS
                VOLACT=VOLACT+DVOL
             ENDIF
@@ -229,7 +229,7 @@ C=================================================================
           END IF
 C
             SIGNEW = 0.D0
-            IF (PPT.EQ.(1.D0)) THEN
+            IF (PPT.GE.(1.D0)) THEN
 C
 C              ------CALCUL DE SIGI ET EPSI---------
 C
@@ -299,7 +299,7 @@ C VOL PLASTIQUE ACTIF
           ELSE
              PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
           END IF
-            IF (PPT.EQ.(1.0D0)) THEN
+            IF (PPT.GE.(1.0D0)) THEN
                DVOL=POIDS
                VOLACT=VOLACT+DVOL
             ENDIF
@@ -363,7 +363,7 @@ C
           ELSE
              PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
           END IF
-            IF (PPT.EQ.(1.D0)) THEN
+            IF (PPT.GE.(1.D0)) THEN
 C CALCUL DE SIGI
                CALL VPRI2D(CONG,SIGI)
                CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
