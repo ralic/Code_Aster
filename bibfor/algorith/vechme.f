@@ -3,7 +3,7 @@
      &                  NOPASZ,TYPESE,STYPSE,VECELZ)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,9 +156,7 @@ C DEB ------------------------------------------------------------------
         LPAIN(II) = ' '
    10 CONTINUE
 
-      IF (TYPCAL.NE.'MECA' .AND. TYPCAL.NE.'DLAG') THEN
-        CALL U2MESK('F','ALGORITH11_20',1,TYPCAL)
-      END IF
+      CALL ASSERT (TYPCAL.EQ.'MECA' .OR. TYPCAL.EQ.'DLAG')
 
 
       MODELE = MODELZ

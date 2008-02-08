@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai8 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,21 +61,21 @@ cata_msg={
    Numéro d'ordre :  %(i1)d             inst :  %(r1)g
 """),
 
-10: _("""
 
-"""),
 
-11: _("""
- Erreur de programmation
-"""),
 
-12: _("""
- Erreur de programmation
-"""),
 
-13: _("""
- Trop grande valeur pour i2
-"""),
+
+
+
+
+
+
+
+
+
+
+
 
 14: _("""
  Champ  inexistant  %(k1)s

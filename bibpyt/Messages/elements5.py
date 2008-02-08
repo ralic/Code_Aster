@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF elements5 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,6 @@ def _(x) : return x
 
 cata_msg={
 
-
-
-
-
-
-
 2: _("""
  tuyau : le nombre de couches est limite a  %(i1)d 
 """),
@@ -35,34 +29,6 @@ cata_msg={
 3: _("""
  tuyau : le nombre de secteurs est limite a  %(i1)d 
 """),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 8: _("""
  Vous voulez utiliser l'indicateur de convergence RESI_REFE_RELA mais vous n'avez pas
@@ -77,8 +43,12 @@ cata_msg={
  La modélisation GRAD_VARI n'est plus disponible en grandes déformations. Pour Rousselier
  version SIMO_MIEHE, vous pouvez faire du non-local en utilisant la modélisation XX_INCO_GD
  et en définissant C_GONF<>0 sous l'opérande NON_LOCAL de DEFI_MATERIAU
-"""), 
+"""),
 
+11: _("""
+ Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement etre supérieur au rayon R_INF 
+ (resp. R_INF_FO).
+"""),
 
 12: _("""
  Le noeud %(k1)s du fond de fissure n est rattaché à aucune maille surfacique 
@@ -142,13 +112,6 @@ cata_msg={
 25: _("""
   le sous-domaine n %(i1)d n'est pas renseigné ou vide dans DEFI_PART_OPS
 """),
-
-
-
-
-
-
-
 
 28: _("""
   le modele comporte %(i1)d mailles de plus que l'ensemble des sous-domaines 

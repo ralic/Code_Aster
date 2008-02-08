@@ -1,7 +1,7 @@
       SUBROUTINE HBRMAT(MOD, IMAT, NBMAT, TEMPD, MATERD, MATERF, MATCST,
      &   NDT, NDI, NR, NVI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,7 +131,7 @@ C =================================================================
       ENDIF
       COHERE  = AP*GRES**2+DP*GRES+CP
       IF (ABS(COHERE-BRES).GT.EPS) THEN
-         CALL U2MESS('F','ALGORITH3_91')
+         CALL U2MESS('F','ALGORITH3_90')
       ENDIF
       SIGBD  = ((MRUP) +SQRT((MRUP)**2 +
      &    4.0D0*((UN-ALPHA)**2)*SRUP)) /

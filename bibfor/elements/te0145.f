@@ -4,7 +4,7 @@
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
+      CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       CHARACTER*24 MOMINI
       CHARACTER*32 JEXNUM,JEXNOM
@@ -59,6 +60,7 @@ C
       REAL*8 RAD,ANG,ANGARC,ANGS2,XFL
       REAL*8 FORCE(12)
       INTEGER IPT
+      INTEGER IADZI,IAZK24
       ZERO = 0.D0
       DEUX = 2.D0
 C     ------------------------------------------------------------------
@@ -76,8 +78,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
      &  + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
       IF( XL .EQ. ZERO ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
       IF (NOMTE.EQ.'MECA_POU_C_T') THEN
          CALL U2MESS('F','ELEMENTS3_29')

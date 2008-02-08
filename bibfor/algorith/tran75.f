@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -533,7 +533,7 @@ C
      &                 NCMP, ZK8(INOCMP), ZI(INOECP), 'G', CHAMNO )
                ENDIF
              ELSE
-                CALL U2MESS('F','ALGORITH13_36')
+                CALL ASSERT(.FALSE.)
              ENDIF
              CHAMNO(20:24) = '.VALE'
              IF (INTERP(1:3).EQ.'NON') THEN

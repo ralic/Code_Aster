@@ -1,7 +1,7 @@
       SUBROUTINE UTNBNV(TYPMAV,NBSV,NBNV)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,56 +54,52 @@ C DETERMINATION DE NBNV ET NBSV (EN 2D)
 C TRIANGLE
       IF ((FORMV.EQ.'TR').OR.(FORMV.EQ.'TL')) THEN
         NBSV = 3
+        CALL ASSERT(NOEUV.EQ.'3'.OR.NOEUV.EQ.'6')
         IF ( NOEUV.EQ.'3') THEN
           NBNV = 3
         ELSE IF ( NOEUV.EQ.'6') THEN
           NBNV = 6
-        ELSE
-          CALL U2MESS('F','CALCULEL5_16')
         ENDIF
 C QUADRANGLE
       ELSE IF ((FORMV.EQ.'QU').OR.(FORMV.EQ.'QL')) THEN
         NBSV = 4
+        CALL ASSERT(NOEUV.EQ.'4'.OR.NOEUV.EQ.'8'.OR.NOEUV.EQ.'9')
         IF ( NOEUV.EQ.'4') THEN
           NBNV = 4
         ELSE IF ( NOEUV.EQ.'8') THEN
           NBNV = 8
         ELSE IF (NOEUV.EQ.'9') THEN
           NBNV = 9
-        ELSE
-          CALL U2MESS('F','CALCULEL5_16')
         ENDIF
 C HEXAEDRE
       ELSE IF ( FORMV.EQ.'HE') THEN
+        CALL ASSERT(TYPMAV(5:5).EQ.'8'.OR.TYPMAV(5:6).EQ.'20'.
+     &              OR.TYPMAV(5:6).EQ.'27')
         IF (TYPMAV(5:5).EQ.'8') THEN
           NBNV = 8
         ELSE IF (TYPMAV(5:6).EQ.'20') THEN
           NBNV = 20
         ELSE IF (TYPMAV(5:6).EQ.'27') THEN
           NBNV = 27
-        ELSE
-          CALL U2MESS('F','CALCULEL5_16')
         ENDIF
 C PENTAEDRE
       ELSE IF ( FORMV.EQ.'PE') THEN
+        CALL ASSERT(TYPMAV(6:6).EQ.'6'.OR.TYPMAV(6:7).EQ.'15')
         IF (TYPMAV(6:6).EQ.'6') THEN
           NBNV = 6
         ELSE IF (TYPMAV(6:7).EQ.'15') THEN
           NBNV = 15
-        ELSE
-          CALL U2MESS('F','CALCULEL5_16')
         ENDIF
 C TETRAEDRE
       ELSE IF ( FORMV.EQ.'TE') THEN
+        CALL ASSERT(TYPMAV(6:6).EQ.'4'.OR.TYPMAV(6:7).EQ.'10')
         IF (TYPMAV(6:6).EQ.'4') THEN
           NBNV = 4
         ELSE IF (TYPMAV(6:7).EQ.'10') THEN
           NBNV = 10
-        ELSE
-          CALL U2MESS('F','CALCULEL5_16')
         ENDIF
       ELSE
-        CALL U2MESS('F','CALCULEL5_16')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       END

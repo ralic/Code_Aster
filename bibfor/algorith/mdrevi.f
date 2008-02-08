@@ -7,7 +7,7 @@
       CHARACTER*14  NUMDDL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,13 +111,13 @@ C ----- CALCUL PAR SOUS-STRUCTURATION
 C
         IF (NUDDL.EQ.0) THEN
           VALK = NOEU
-          CALL U2MESG('E+','ALGORITH15_21',1,VALK,0,0,0,0.D0)
+          CALL U2MESG('E+','ALGORITH15_16',1,VALK,0,0,0,0.D0)
           IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
             VALK = SST
-            CALL U2MESG('E+','ALGORITH15_22',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('E+','ALGORITH15_17',1,VALK,0,0,0,0.D0)
           ENDIF
           VALK = COMP
-          CALL U2MESG('E','ALGORITH15_23',1,VALK,0,0,0,0.D0)
+          CALL U2MESG('E','ALGORITH15_18',1,VALK,0,0,0,0.D0)
           IER = IER + 1
           GOTO 10
         ENDIF

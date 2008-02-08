@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -259,7 +259,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
                   VALK (2) = ZK80(JVAL-1+IVAL)
                   CALL U2MESG('A+','UTILITAI8_41',1,VALK,0,0,0,0.D0)
                 END IF
-                CALL U2MESG('A','UTILITAI8_55',0,' ',0,0,0,0.D0)
+                CALL U2MESG('A','VIDE_1',0,' ',0,0,0,0.D0)
                 IER = IER + 10
               ELSE IF (NBTROU.LT.0) THEN
                 CALL U2MESS('F','DVP_1')

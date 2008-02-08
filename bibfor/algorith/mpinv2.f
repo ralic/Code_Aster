@@ -4,7 +4,7 @@
      &                    LFONCT , 
      &                    RETA   , RETAP  , RETA2P )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -286,7 +286,7 @@ C
           IF ( IERR . NE. 0 ) THEN
           VALI = IABS
           VALR = XABS ( IABS )
-          CALL U2MESG('F','ALGORITH15_29',0,' ',1,VALI,1,VALR)
+          CALL U2MESG('F','ALGORITH15_27',0,' ',1,VALI,1,VALR)
           END IF
 C
         ELSE
@@ -297,7 +297,7 @@ C
           IF ( IERR . NE. 0 ) THEN
           VALI = IABS
           VALR = XABS ( IABS )
-          CALL U2MESG('F','ALGORITH15_30',0,' ',1,VALI,1,VALR)
+          CALL U2MESG('F','ALGORITH15_28',0,' ',1,VALI,1,VALR)
           END IF
         END IF
 C

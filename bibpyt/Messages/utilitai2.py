@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF utilitai2 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,6 +154,13 @@ cata_msg = {
  type base inconnu : %(k1)s 
 """),
 
+50 : _("""
+ nombre de bornes erroné : on doit en avoir autant que de numeros d'ordre
+"""),
+
+51 : _("""
+ mot-clef SIGNES obligatoire avec option CALC_K_MAX !
+"""),
 
 52 : _("""
  ajout de l'option "sief_elga_depl", les charges sont-elles correctes ?
@@ -318,8 +325,12 @@ cata_msg = {
  element non prevu  %(k1)s 
 """),
 
+92 : _("""
+ le mot clé NOM_CHM_MED (mot clé facteur FORMAT_MED) doit être renseigné
+"""),
+
 93 : _("""
- evol_ther - champ temp uniqmt
+ evol_ther - champ temp uniquement
 """),
 
 94 : _("""

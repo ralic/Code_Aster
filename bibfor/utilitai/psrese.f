@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - RESULTAT - SENSIBILITE
 C     *          *           **         **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,6 +89,7 @@ C    REMARQUE : SI NBPASE EST NON NUL, PSNOCO ALLOUERA ET REMPLIRA
 C               LA STRUCTURE NORECG
 C====
 C
+      CALL ASSERT(( TYPRES.EQ.1 ).OR.( TYPRES.EQ.2) )
       IF ( TYPRES.EQ.1 ) THEN
 C
         CALL PSNOCO ( MOTFAC, IOCC, RESULT, TYPERR,
@@ -97,14 +98,6 @@ C
       ELSEIF ( TYPRES.EQ.2 ) THEN
         NBPASE = 0
         CODRET = 0
-C
-      ELSE
-C
-        VALI (1) = 1
-        VALI (2) = 2
-        VALI (3) = TYPRES
-        CALL U2MESG('A', 'SENSIBILITE_84',1,'TYPRES',3,VALI,0,0.D0)
-        CALL U2MESS('F','MODELISA_67')
 C
       ENDIF
 C

@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +81,7 @@ C ======================================================================
          ELSEIF ( ELREFE.EQ.'QU8') THEN
             ELREF2 = 'QU4'
          ELSE
-           CALL U2MESK('F','ALGORITH4_46',1,ELREFE)
+           CALL U2MESK('F','DVP_4',1,ELREFE)
          ENDIF
 
 C FONCTIONS DE FORMES QUADRATIQUES

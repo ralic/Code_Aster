@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - TYPE DE SENSIBILITE - RECUPERATION
 C     *          *           ***                   *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,10 +119,7 @@ C
 C
    12 CONTINUE
 C
-      VALK(1) = NOMPRO
-      VALK(2) = NOPASE
-      CALL U2MESK('A','SENSIBILITE_98', 2, VALK)
-      CALL U2MESS('F','MODELISA_67')
+      CALL ASSERT(.FALSE.)
 C
 C====
 C 2. RECUPERATION
@@ -177,17 +174,11 @@ C
 C
 C 2.3.1.1. ==> VERIFICATION DE LA TAILLE DE LA CHAINE
 C
-        IF ( KAUX.LT.JAUX ) THEN
-          VALK (1) = 'TYPEPS'
-          VALK (2) = 'ZK24(ADRAUX+2)'
-          VALI (1) = KAUX
-          VALI (2) = JAUX
-          CALL U2MESG('A', 'SENSIBILITE_85', 2, VALK, 2, VALI, 0, 0.D0 )
-          CALL U2MESS('F','MODELISA_67')
+        CALL ASSERT(KAUX.GE.JAUX )
 C
 C 2.3.1.2. ==> A LA PREMIERE CONTRIBUTION, ON ARCHIVE
 C
-        ELSEIF ( IAUX.EQ.1 ) THEN
+        IF ( IAUX.EQ.1 ) THEN
           LGTYPS = JAUX
           TYPEPS(1:LGTYPS) = ZK80(ADTSKK)(1:LGTYPS)
 C

@@ -1,6 +1,6 @@
       SUBROUTINE TE0537(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,9 +58,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 ZERO,UN,DEUX,SIX
       PARAMETER (ZERO=0.0D+0,UN=1.0D+0,DEUX=2.D+0,SIX=6.D+0)
       REAL*8 B(4),GG,XI,WI,VALRES(2)
-      INTEGER IN,IP,IPOS,NBGFMX
+      INTEGER IN,IP,IPOS,NBGFMX,IADZI,IAZK24
       INTEGER IPOS1,IPOS2,NBFIG,NBGF,IG,NUGF,IFB,ICP,ISDCOM,ICOMPO
-      CHARACTER*8 MATERI,NOMRES(2)
+      CHARACTER*8 MATERI,NOMRES(2),NOMAIL
       CHARACTER*2 CODRES(2)
 C     ------------------------------------------------------------------
 C ----------------------------------------------------------------------
@@ -96,8 +96,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
      &           (ZR(LX+5)-ZR(LX+2))**2 +
      &           (ZR(LX+6)-ZR(LX+3))**2 )
       IF (XL.EQ.ZERO) THEN
-        CH16 = ' ?????????'
-        CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       END IF
 
 C     --- RECUPERATION DES ORIENTATIONS ---

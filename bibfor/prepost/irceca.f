@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C
           LMODE = .TRUE.
           CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',MODE),'L',JMOD)
           NEC = NBEC (ZI(JMOD-1+2))
-          IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
+          CALL ASSERT ( NEC .LE. 10 )
           CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
           IF ( NBCPUT .NE. 0 ) THEN
             DO 18 ICM = 1,NBCPUT

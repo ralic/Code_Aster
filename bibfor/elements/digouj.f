@@ -8,7 +8,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16      OPTION, COMPOR(*),NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       DUT = DUL(2+NC)-DUL(2)
 
       IF((COMPOR(1)(1:10).NE.'DIS_GOUJ2E'))THEN
-         CALL U2MESS('F','ELEMENTS_32')
+         CALL U2MESK('F','ELEMENTS_32',1,COMPOR(1))
       END IF
 C
       CALL RCTYPE(ICODMA,0,NOMPAR,VALPAP,RESU,TYPE)

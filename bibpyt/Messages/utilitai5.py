@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai5 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,9 +170,10 @@ cata_msg = {
  determination de la localisation des points de gauss
 """),
 
-40 : _("""
- type de donnees inconnu :  %(k1)s
-"""),
+
+
+
+
 
 41 : _("""
  xous :  %(k1)s  non prevu.

@@ -3,7 +3,7 @@
      &                  NOMOPT, CXSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -342,13 +342,10 @@ C 12. AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
                DO 170 ICMP=1, 24
                   CALL CESEXI('C',JCERD,JCERL,IMAP,IPG,1,ICMP,JAD)
 
-                  IF (JAD .EQ. 0) THEN
-                     CALL U2MESS('F','PREPOST_3')
-                  ELSE
-                     JAD = ABS(JAD)
-                     ZL(JCERL - 1 + JAD) = .TRUE.
-                     ZR(JCERV - 1 + JAD) = VRESU(ICMP)
-                  ENDIF
+                  CALL ASSERT (JAD .NE. 0)
+                  JAD = ABS(JAD)
+                  ZL(JCERL - 1 + JAD) = .TRUE.
+                  ZR(JCERV - 1 + JAD) = VRESU(ICMP)
 
  170           CONTINUE
 

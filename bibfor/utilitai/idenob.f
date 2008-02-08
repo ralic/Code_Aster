@@ -3,7 +3,7 @@
       CHARACTER*(*) OBJ1,OBJ2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,6 +134,7 @@ C     -------------------------------------
 C     3.1 : CAS DES OBJETS SIMPLES :
 C     ------------------------------
       IF (XOUS.EQ.'S') THEN
+        CALL ASSERT((GENR.EQ.'V').OR.(GENR.EQ.'N'))
         IF (GENR.EQ.'V') THEN
 
           CALL JELIRA(OB1,'LONMAX',L1,KBID)
@@ -228,8 +229,6 @@ C       ------------------------------
 
 
 
-        ELSE
-          CALL U2MESS('F','UTILITAI2_29')
         END IF
 
 
@@ -322,7 +321,7 @@ C     ------------------------------
   200     CONTINUE
 
         ELSE
-          CALL U2MESS('F','UTILITAI2_30')
+          CALL ASSERT(.FALSE.)
         END IF
       END IF
 

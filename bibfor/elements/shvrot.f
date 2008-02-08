@@ -1,6 +1,6 @@
       SUBROUTINE SHVROT(RR,X,NN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,9 @@ C-------------------------------------------------------
 C ---   VARIABLES LOCALES
       REAL *8 AA(24),R(3,3)
       INTEGER I,J
+      
+      
+      CALL ASSERT((NN.EQ.1).OR.(NN.EQ.2))
       IF(NN.EQ.2) THEN
         DO 10 I=1,3
            DO 20 J=1,3
@@ -39,8 +42,6 @@ C ---   VARIABLES LOCALES
               R(I,J)= RR(I,J)
 40          CONTINUE
 30        CONTINUE
-      ELSE
-        CALL U2MESS('F','ELEMENTS2_26')
       ENDIF
 
       AA(1) = R(1,1)*X(1) + R(1,2)*X(2) + R(1,3)*X(3)

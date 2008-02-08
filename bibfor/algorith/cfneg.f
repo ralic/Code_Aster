@@ -3,7 +3,7 @@
      &                 LLF,LLF1,LLF2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,7 +190,7 @@ C ======================================================================
 C --- CAS IMPOSSIBLE
 C ======================================================================
  1000                      CONTINUE
-                           CALL U2MESS('F','ALGORITH_92')
+                           CALL ASSERT(.FALSE.)
 C ======================================================================
 C --- CAS DU FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS EN 3D
 C --- OU CAS GENERAL EN 2D

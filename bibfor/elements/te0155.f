@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,8 +61,8 @@ C
       REAL*8       R8MIN,S,S2,S3,S4,S5,XXX,R8BID,VECT(6),TREF
       INTEGER      NNO,NC,LX,LORIEN,IDEPLA,IDEPLP,I,LVECT,LSECT
       INTEGER      LMATER,LPESA,LFORC,ITEMPS,NBPAR,IRET
-      INTEGER      IFCX
-      CHARACTER*8  NOMPAV(1)
+      INTEGER      IFCX,IADZI,IAZK24
+      CHARACTER*8  NOMPAV(1),NOMAIL
       REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANG1(3),U(3),V(3),INSTAN
       LOGICAL      NORMAL,GLOBAL,OKVENT
 
@@ -129,8 +129,9 @@ C          ------------------------------
       ENDIF
       XL = SQRT(S)
       IF( XL .EQ. 0.D0 ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
 C     --- INITIALISATION DE FL ---

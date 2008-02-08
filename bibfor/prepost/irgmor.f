@@ -8,7 +8,7 @@ C
       INTEGER                          VERS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C --- REMPLISSAGE QUI POURRAIT VARIER SELON LA VERSION
 
 C     VERIFICATION EMMELAGE DE PINCEAUX DU PROGRAMMEUR...
  999  CONTINUE
-      CALL U2MESS('F','MODELISA_67')
+      CALL ASSERT(.FALSE.)
 C     ------------------------------------------------------------------
 C
 9000  CONTINUE

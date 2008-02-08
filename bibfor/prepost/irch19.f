@@ -6,7 +6,7 @@
      &                    LRESU,FORMR,NIVE )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,8 +167,6 @@ C
      &      NOMSYM,NUMORD,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,
      &      NOMCMP,LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU, FORMR,
      &      NCMP,NUMCMP,NIVE )
-      ELSE IF (TYCH(1:4).NE.'NOEU'.AND.TYCH(1:2).NE.'EL') THEN
-         CALL U2MESK('A','PREPOST_89',1,TYCH(1:4))
       ENDIF
 C
  9999 CONTINUE

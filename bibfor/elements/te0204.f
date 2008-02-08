@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -640,6 +640,7 @@ C
      &                         +TERM6
             IF(DERIVF) DPSIDE = TERM2 + TERM4 + TERM5
            ELSE
+             CALL ASSERT(DP.OR.CP)
              IF(DP) THEN
               COE1 = (1.D0-NU)*E/(2.D0*(1.D0+NU)*(1.D0-2.D0*NU))
               COE2 = NU*E/((1.D0+NU)*(1.D0-2.D0*NU))
@@ -648,8 +649,6 @@ C
               COE1 = E/(2.D0*(1.D0+NU)*(1.D0-NU))
               COE2 = NU*E/((1.D0+NU)*(1.D0-NU))
               COE3 = E/(1.D0+NU)
-             ELSE
-              CALL U2MESS('F','MODELISA_67')
              ENDIF
              IF (IRET.EQ.0) THEN
                DPSIDE=COE2*(EPS(1)*DEPSDE(2)+EPS(2)*DEPSDE(1))
@@ -705,6 +704,7 @@ C
      &                      +TERMT1+ TERMT2
           IF(DERIVF) DDPSI = TERM2 + TERM4 + TERMT1 + TERMT2
         ELSE
+          CALL ASSERT(DP.OR.CP)
           IF(DP) THEN
             COEF = NU12*NU1M*NU1M
             COE1 = (2.D0-NU)*NU/COEF
@@ -721,8 +721,6 @@ C
             COE4 = (NU*NU+1.D0)/COEF
             COE5 = NU/((1.D0+NU)*(1.D0-NU))
             COE6 = E*COE4
-          ELSE
-            CALL U2MESS('F','MODELISA_67')
           ENDIF
           TERM1 = (EPS(1)*EPS(1)+EPS(2)*EPS(2))*COE1*DNU
           TERM2 = 2.D0*(EPS(1)*DEPSDE(1)+EPS(2)*DEPSDE(2))

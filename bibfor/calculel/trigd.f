@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C    -------------------------------------------------------------------
       DATA DG2OLD/NEC2*0/
       DATA NECOLD/0/
 
-      IF (NEC.GT.NEC2) CALL U2MESS('F','CALCULEL5_5')
+      CALL ASSERT(NEC.LE.NEC2)
 
 
 C     -- ON REGARDE S'IL FAUT REMPLIR POSCMP OU SI ON PEUT UTILISER
@@ -159,10 +159,6 @@ C     --------------------------------------------
             ELSE IF (TYPEGD.EQ.'C') THEN
               ZC(IACHLO-1+DEB2-1+CMP) = ZC(IACHLO-1+DEB2-1+CMP) +
      &                                  ZC(IACHIN-1+IEQ)
-            ELSE IF (TYPEGD.EQ.'I') THEN
-              CALL U2MESS('F','CALCULEL5_6')
-            ELSE IF (TYPEGD(1:1).EQ.'K') THEN
-              CALL U2MESS('F','CALCULEL5_7')
             ELSE
               CALL ASSERT(.FALSE.)
             END IF

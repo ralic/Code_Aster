@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF algorith14 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,12 +124,12 @@ cata_msg={
 """),
 
 32: _("""
- sd resultat  resultle champ n'existe pas  %(k1)s 
+ sd resultat  %(k1)s, le champ %(k2)s n'existe pas   
  pour le nume_ordre  %(i1)d 
 """),
 
 33: _("""
- sd resultat  nomresle champ n'a pas ete duplique  %(k1)s 
+ sd resultat  %(k1)s, le champ %(k2)s n'a pas ete duplique   
  pour le nume_ordre  %(i1)d 
 """),
 
@@ -306,9 +306,10 @@ cata_msg={
   dimension max du problème :  %(i1)d 
 """),
 
-90: _("""
- étude 2D avec angle nautique unique :  %(r1)f 
-"""),
+
+
+
+
 
 91: _("""
  noeud sur l'axe_z

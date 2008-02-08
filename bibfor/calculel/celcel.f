@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TRANSF,CEL1,BASE,CEL2
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,7 +142,7 @@ C     ---------------------------------------------
               DO 20,ICMP = 1,NCMP2
                 CALL CESEXI('C',JCESD1,JCESL1,IMA,IPT,ISPT,ICMP,IAD1)
                 CALL CESEXI('C',JCESD2,JCESL2,IMA,IPT,ISPT,ICMP,IAD2)
-                IF (IAD2.GE.0) CALL U2MESS('F','ALGORITH_19')
+                CALL ASSERT(IAD2.LT.0)
                 ZL(JCESL2-1-IAD2) = .TRUE.
                 IF (IAD1.GT.0) THEN
                   ZR(JCESV2-1-IAD2) = ZR(JCESV1-1+IAD1)

@@ -3,7 +3,7 @@
       CHARACTER*8 NOMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C      CRITERE DE SELECTION
             CALL U2MESK('E','ELEMENTS_62',1,NOMGMA)
           END IF
    20   CONTINUE
-        IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_63')
+        CALL ASSERT(IER.EQ.0)
       END IF
       IF (NBGMA.EQ.0) GO TO 60
 

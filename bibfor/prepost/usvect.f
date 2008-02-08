@@ -4,7 +4,7 @@
       REAL*8              COEF,VECT(*), ALPHAD, ALPHAM, ALPHAF, PROF
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C
             GOTO 12
          ENDIF
  10   CONTINUE
-      CALL U2MESS('F','PREPOST_58')
+      CALL ASSERT(.FALSE.)
  12   CONTINUE
 C
       AI1 = PROF / ( ALPHAM - ALPHAD )

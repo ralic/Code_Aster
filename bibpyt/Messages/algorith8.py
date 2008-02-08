@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 19/11/2007   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF algorith8 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,17 +30,17 @@ cata_msg = {
  caractéristique fluage incomplet
 """),
 
-6 : _("""
- message d'erreur inconnu (dvlp)
-"""),
 
-7 : _("""
- incoherence de taille (dvlp)
-"""),
 
-8 : _("""
- format de colonne inconnu (dvlp)
-"""),
+
+
+
+
+
+
+
+
+
 
 12 : _("""
  F reste toujours négative
@@ -62,13 +62,12 @@ cata_msg = {
  F=0 : pas converge
 """),
 
-17 : _("""
- dvp : non cohérent
-"""),
 
-18 : _("""
- phase inconnue (dvlp)
-"""),
+
+
+
+
+
 
 19 : _("""
  trop d'amortissements modaux
@@ -111,25 +110,24 @@ cata_msg = {
  ITER_LINE_MAXI doit etre inférieur à 1000
 """),
 
-30 : _("""
- mauvaise estimation de f
-"""),
+
+
 
 31 : _("""
  borne superieure PMAX incorrecte
 """),
 
 32 : _("""
- viscosité N égale à zéro
+ la viscosité N doit être différente de zéro
 """),
 
 33 : _("""
- viscosité UN_SUR_K égale à zéro
+ la viscosité UN_SUR_K doit être différente de zéro
 """),
 
-34 : _("""
- g=0 : pas convergé
-"""),
+
+
+
 
 35 : _("""
  incompatibilité entre la loi de couplage  %(k1)s  et la modélisation choisie  %(k2)s
@@ -220,12 +218,12 @@ cata_msg = {
 """),
 
 58 : _("""
- Méthode non implantée
+ Méthode de condition unilatéral non implantée
 """),
 
-59 : _("""
- Champ 'IN' inexistant
-"""),
+
+
+
 
 61 : _("""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
@@ -244,49 +242,37 @@ cata_msg = {
   endommagement maximal atteint au cours des resolutions internes
 """),
 
-68 : _("""
-  erreur récupération paramètres matériau
-"""),
 
-69 : _("""
-  type de matrice demandé non disponible
-"""),
 
-70 : _("""
-  erreur dans nmvecd
-"""),
 
-71 : _("""
- valo >0
-"""),
 
-72 : _("""
- dr negatif
-"""),
 
-73 : _("""
- pb2 seq
-"""),
 
-74 : _("""
- pb4 seq
-"""),
 
-75 : _("""
- pb1 seq
-"""),
 
-76 : _("""
- pb3 seq
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 77 : _("""
  le nombre de composantes dans le champ de vent est incorrect. on doit avoir : DX, DY, DZ
 """),
 
-78 : _("""
- F(0)=0
-"""),
+
+
+
 
 80 : _("""
 Pour le comportement %(k3)s, matériau %(k4)s. Incohérence dans les données matériau.

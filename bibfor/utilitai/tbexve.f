@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMTA, PARA, NOMOBJ, BASOBJ, TYPVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,9 +63,7 @@ C
 C
 C     --- VERIFICATION DE LA BASE ---
 C
-      IF ( BASE.NE.'V' .AND. BASE.NE.'G' ) THEN
-         CALL U2MESK('F','UTILITAI2_48',1,BASE)
-      ENDIF
+      CALL ASSERT ( BASE.EQ.'V' .OR. BASE.EQ.'G' )
 C
 C     --- VERIFICATION DE LA TABLE ---
 C

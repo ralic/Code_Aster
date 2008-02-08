@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline4 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,10 +64,6 @@ cata_msg={
  erreur données GROUP_NO déjà existant :  %(k1)s
 """),
 
-17: _("""
-  INIGPC %(i1)d
-"""),
-
 19: _("""
  Matrice masse non définie, il faudrait essayer l'autre algorithme de résolution.
 """),
@@ -76,10 +72,6 @@ cata_msg={
  manque de place memoire longueur de bloc insuffisante:  %(i1)d
  le super-noeud  %(i2)d
   neccessite un bloc de  %(i3)d
-"""),
-
-23: _("""
- par nueq n'est pas l'identite.indice %(i1)d nueq  %(i2)d
 """),
 
 24: _("""
@@ -192,11 +184,6 @@ cata_msg={
 
 66: _("""
  la valeur propre est :   %(r1)f
-"""),
-
-68: _("""
- la valeur propre est :   %(r1)f
-### idem algeline4_66
 """),
 
 74: _("""

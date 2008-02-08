@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -366,10 +366,10 @@ C           -------------------------
 
           CALL UTCH19(CH1,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,TYPE,
      &                VALR1,VALC1,IRET)
-          IF (IRET.NE.0) CALL U2MESS('F','UTILITAI2_2')
+          CALL ASSERT (IRET.EQ.0)
           CALL UTCH19(CH2,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,TYPE,
      &                VALR2,VALC2,IRET)
-          IF (IRET.NE.0) CALL U2MESS('F','UTILITAI2_3')
+          CALL ASSERT (IRET.EQ.0)
 
           ZR(LVAR+IORDR) = RVAL
           IF (TYPE.EQ.'R') THEN

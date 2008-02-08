@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,8 +59,9 @@ C
       PARAMETER   (        NBRES = 3 )
       CHARACTER*2   CODRES(NBRES)
       CHARACTER*4  FAMI
+      CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
-      INTEGER      LSECT2, IPOS, IN
+      INTEGER      LSECT2, IPOS, IN, IADZI, IAZK24
       REAL*8       B(4),GG,XI,WI
       REAL*8       UL(14), PGL(3,3), D1B(6,12), DEGE(3,7),D1BTG(7,14)
       REAL*8       DEGEM(6)
@@ -90,8 +91,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
      &  + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
       IF( XL .EQ. ZERO ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3)(1:8)
+         CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
 C     --- RECUPERATION DES ORIENTATIONS ---

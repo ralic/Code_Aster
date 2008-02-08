@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,7 +186,7 @@ C     ----- RECUPERATION TYPE DE RESULTAT ---
                CALL VTCREM(CHAMNO,MATRM,'G','R')
               ENDIF
             ELSE
-               CALL U2MESS('F','ALGORITH13_36')
+               CALL ASSERT(.FALSE.)
             ENDIF
             IDRESR = ITRESR(ICH)
             CHAMNO(20:24) = '.VALE'

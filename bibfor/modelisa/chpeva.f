@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,6 +100,7 @@ C ------------------------------------------------------------
 
 C 3.  -- ON APPELLE LA ROUTINE D'EVAL APPROPRIEE :
 C ------------------------------------------------------------
+      CALL ASSERT((TYP1.EQ.'NOEU').OR.(TYP1(1:2).EQ.'EL'))
       IF (TYP1.EQ.'NOEU') THEN
         CALL CNOCNS(CHIN,'V',CHINS)
         CALL CNSEVA(CHINS,NPARA,ZK24(JPARA2),CHS2)
@@ -115,8 +116,6 @@ C ------------------------------------------------------------
         CALL DETRSD('CHAM_ELEM_S',CHINS)
         CALL DETRSD('CHAM_ELEM_S',CHS2)
 
-      ELSE
-        CALL U2MESS('F','MODELISA4_15')
       ENDIF
 
 

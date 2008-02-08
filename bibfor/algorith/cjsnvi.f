@@ -3,7 +3,7 @@
 
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,11 @@ C - D_PLAN AXIS
 
 C - C_PLAN
             ELSE IF (MOD(1:6).EQ.'C_PLAN') THEN
-            CALL U2MESS('F','ALGORITH2_19')
+            CALL U2MESS('F','ALGORITH2_15')
 
 C - 1D
             ELSE IF (MOD(1:2).EQ.'1D') THEN
-            CALL U2MESS('F','ALGORITH2_19')
+            CALL U2MESS('F','ALGORITH2_15')
 C - 1D
             ELSE
              CALL U2MESS('F','ALGORITH2_20')

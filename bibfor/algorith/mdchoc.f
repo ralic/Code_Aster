@@ -13,7 +13,7 @@
       LOGICAL            LAMOR, LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -254,12 +254,12 @@ C
             CALL U2MESG('I+','ALGORITH16_5',1,VALK,0,0,0,0.D0)
             IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
               VALK = NOECHO(I,6)
-              CALL U2MESG('I+','ALGORITH16_6',1,VALK,0,0,0,0.D0)
+              CALL U2MESG('I+','ALGORITH16_3',1,VALK,0,0,0,0.D0)
             ENDIF
             VALR (1) = PARCHO(I,10)
             VALR (2) = PARCHO(I,11)
             VALR (3) = PARCHO(I,12)
-            CALL U2MESG('I+','ALGORITH16_7',0,' ',0,0,3,VALR)
+            CALL U2MESG('I+','ALGORITH16_4',0,' ',0,0,3,VALR)
           ENDIF
           VALR (1) = CTANG
           VALR (2) = PARCHO(I,13)
@@ -284,7 +284,7 @@ C
              VALR (1) = XJEU
              CALL U2MESG('I+','ALGORITH16_9',0,' ',0,0,1,VALR)
           ENDIF
-          CALL U2MESG('I','ALGORITH16_10',0,' ',0,0,0,0.D0)
+          CALL U2MESG('I','VIDE_1',0,' ',0,0,0,0.D0)
         ENDIF
 C
 C       POSITION INITIALE DU NOEUD 1 DANS LE REPERE GLOBAL

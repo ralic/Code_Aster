@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 20/11/2007   AUTEUR SALMONA L.SALMONA 
+#@ MODIF algorith9 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,9 +42,9 @@ cata_msg = {
  la charge  %(k1)s  n'est pas thermique
 """),
 
-6 : _("""
- la charge cinématique  %(k1)s  n'a pas de .DEFI
-"""),
+
+
+
 
 7 : _("""
  la charge  %(k1)s  n'est pas compatible avec FONC_MULT
@@ -226,9 +226,9 @@ cata_msg = {
  champ :  %(k2)s 
 """),
 
-73 : _("""
- erreur : ITRAN = 0 ou 1
-"""),
+
+
+
 
 74 : _("""
  attention, mode sur-amorti
@@ -247,9 +247,9 @@ cata_msg = {
  le vecteur directeur est nul.
 """),
 
-82 : _("""
- erreur dvp
-"""),
+
+
+
 
 83 : _("""
  nombre maximum d'itérations atteint

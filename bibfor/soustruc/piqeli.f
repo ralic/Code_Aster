@@ -3,7 +3,7 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,9 +151,7 @@ C
                   DO 402 I = 1 , NBNOR
                      IF(ZI(JGRNR+I-1).EQ.ZI(JVI2+INO1-1)) THEN
                         INC = INC + 1
-                        IF(INC.GT.10) THEN
-                          CALL U2MESS('F','MODELISA_67')
-                        ENDIF
+                        CALL ASSERT(INC.LE.10)
                         NUMNO(INC) = ZI(JVI2+INO1-1)
                      ENDIF
  402              CONTINUE

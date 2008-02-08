@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,9 +48,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*2         CODRES
+      CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       REAL*8       E, NU, G, RHO, PGL(3,3), MAT(21),MATR(21)
       REAL*8       A, XL, XRIG, XMAS
+      INTEGER      IADZI,IAZK24
 C     ------------------------------------------------------------------
 C
 CC     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
@@ -71,8 +73,9 @@ C
       ENDIF
 C
       IF( XL .EQ. 0.D0 ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
 C     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---

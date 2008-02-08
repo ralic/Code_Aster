@@ -4,7 +4,7 @@
       CHARACTER*8         MATREL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,9 +121,7 @@ C          NCMPEL = NCMPEL * ICOEF
           NEL    = NBELEM(LIGREL,IGREL)
           M = ( NINT ( SQRT( DBLE(1 + 8*NCMPEL) ) ) - 1 ) / 2
           IVERI = M * ( M + 1 ) / 2
-          IF ( NCMPEL .NE. IVERI ) THEN
-            CALL U2MESS('F','UTILITAI2_44')
-          ENDIF
+          CALL ASSERT( NCMPEL .EQ. IVERI )
           M2 = M * M
           INBM = 1
 C
@@ -148,9 +146,8 @@ C
                ENDIF
             ENDIF
 C
-            IF (SCAL(1:1).EQ.'I') THEN
-              CALL U2MESS('F','UTILITAI2_46')
-            ELSE IF (SCAL(1:1).EQ.'R') THEN
+            CALL ASSERT (SCAL(1:1).EQ.'R')
+            IF (SCAL(1:1).EQ.'R') THEN
               IJ = 0
               DO 110 I1 = 0 , M-1
                 DO 112 I2 = 0 , M-1
@@ -167,10 +164,6 @@ C
                 WRITE (IFC,'(2I10)') IMAT, M
                 WRITE (IFC ,'(1P,4D20.12)')( ZR(ADDMC+I) , I=0,M2-1  )
               ENDIF
-            ELSE IF (SCAL(1:1).EQ.'C') THEN
-              CALL U2MESS('F','UTILITAI2_46')
-            ELSE IF (SCAL(1:1).EQ.'K') THEN
-              CALL U2MESS('F','UTILITAI2_46')
             ENDIF
  22       CONTINUE
           CALL JEDETR('MC')

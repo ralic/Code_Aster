@@ -1,4 +1,4 @@
-#@ MODIF algorith15 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith15 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,9 +44,7 @@ cata_msg = {
   nom du noeud -->  %(k2)s 
 """),
 
-5 : _("""
-  erreur  de répétitivité cyclique
-"""),
+
 
 6 : _("""
   il manque un DDL sur un noeud droite
@@ -62,8 +60,8 @@ cata_msg = {
  la composante : %(k1)s  est une composante indefinie
 """),
 
-9 : _("""
-"""),
+
+
 
 10 : _("""
  arret sur type de DDL non défini
@@ -118,17 +116,11 @@ cata_msg = {
  abscisse :  %(r1)f 
 """),
 
-21 : _("""
- on n'a pas trouve le DDL pour le noeud :  %(k1)s 
-"""),
 
-22 : _("""
-    de la sous-structure :  %(k1)s 
-"""),
 
-23 : _("""
-    et sa composante :  %(k1)s 
-"""),
+
+
+
 
 24 : _("""
  au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
@@ -155,88 +147,26 @@ cata_msg = {
   abscisse =    %(r1)f 
 """),
 
-29 : _("""
-  problème calcul valeurs singulières
-  pas      =   %(i1)d
-  abscisse =    %(r1)f 
-"""),
 
-30 : _("""
-  matrice (PHI)T*PHI + ALPHA  n'est pas inversible
-  pas      =   %(i1)d 
-  abscisse =    %(r1)f 
-"""),
 
-31 : _("""
- au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
-"""),
 
-32 : _("""
- ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
- risque de matrice singulière
-"""),
 
-33 : _("""
- calcul moindre norme 
-"""),
 
-34 : _("""
- problème calcul valeurs singulières
- pas      =   %(i1)d
- abscisse =    %(r1)f 
-"""),
 
-35 : _("""
-  matrice (PHI)T*PHI + ALPHA n est pas inversible
-  pas      =   %(i1)d 
-  abscisse =    %(r1)f 
-"""),
 
-36 : _("""
- problème calcul valeurs singulières
-  pas =   %(i1)d
-  abscisse =    %(r1)f 
-"""),
 
-37 : _("""
-  matrice (PHI)T*PHI + ALPHA  n'est pas inversible
-  pas =   %(i1)d 
-  abscisse =    %(r1)f 
-"""),
 
-38 : _("""
- au moins un terme de ALPHA est négatif à l'abscisse :  %(i1)d 
-"""),
 
-39 : _("""
- ALPHA est nul et le nombre de mesures est strictement inférieur au nombre de modes
- risque de matrice singuliere
-"""),
 
-40 : _("""
- calcul moindre norme 
-"""),
 
-41 : _("""
- problème calcul valeurs singulières
- pas =   %(i1)d
- abscisse =    %(r1)f 
-"""),
 
-42 : _("""
-  matrice (phi)t*phi + alpha n est pas inversible  pas =   %(i1)d 
-  abscisse =    %(r1)f 
-"""),
 
-43 : _("""
-  pb calcul valeurs singulieres pas =   %(i1)d  abscisse =    %(r1)f 
-"""),
 
-44 : _("""
-  la matrice (PHI)T*PHI + ALPHA  n'est pas inversible
-  pas      =   %(i1)d 
-  abscisse =    %(r1)f 
-"""),
+
+
+
+
+
 
 45 : _("""
   on ne trouve pas DPMAX 
@@ -281,8 +211,8 @@ cata_msg = {
   F(DP)  =  %(r2)f 
 """),
 
-54 : _("""
-"""),
+
+
 
 55 : _("""
   incohérence détectée 
@@ -293,17 +223,17 @@ cata_msg = {
   n'appartient pas la sous-structure:  %(k3)s 
 """),
 
-57 : _("""
-  incohérence detectée 
-"""),
+
+
+
 
 58 : _("""
   le noeud :  %(k1)s  de l interface dynamique :  %(k2)s 
   n'est pas correctement référencé dans le squelette :  %(k3)s 
 """),
 
-59 : _("""
-  incohérence détectée 
+59: _("""
+  Le nombre de secteur doit etre supérieur ou égal à 2 (mot clé NB_SECTEUR)
 """),
 
 60 : _("""
@@ -311,9 +241,8 @@ cata_msg = {
   n'appartient pas la sous-structure:  %(k3)s 
 """),
 
-61 : _("""
-  incohérence détectée 
-"""),
+
+
 
 62 : _("""
   le noeud :  %(k1)s  de l'interface dynamique :  %(k2)s 

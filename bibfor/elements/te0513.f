@@ -1,7 +1,7 @@
       SUBROUTINE TE0513(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 
-      INTEGER NC,NNO
+      INTEGER NC,NNO,IADZI,IAZK24
       PARAMETER ( NC = 7 , NNO = 2 )
       REAL*8 ZERO
       PARAMETER( ZERO = 0.D0 )
@@ -60,6 +60,7 @@ C
       REAL*8 XL, MAT(105), PGL(3,3) , B(2*NC)
       INTEGER NCOMP,NBFIB,I,LSECT,LX,IAEFF,KP,LORIEN,LMAT,ADR
       REAL*8 KSI1,D1B3(2,3)
+      CHARACTER*8 NOMAIL
 C     ------------------------------------------------------------------
 C
 
@@ -85,8 +86,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       XL = SQRT((ZR(LX+4)-ZR(LX+1))**2+ (ZR(LX+5)-ZR(LX+2))**2+
      &     (ZR(LX+6)-ZR(LX+3))**2)
       IF (XL.EQ.ZERO) THEN
-          CH16 = ' ?????????'
-          CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 
 C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES

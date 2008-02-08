@@ -2,7 +2,7 @@
      &                    PHI,CMESU,COEF,XABS, 
      &                    LFONCT,CETA,CETAP,CETA2P )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -178,7 +178,7 @@ C
 C         -> ON VERIFIE QUE ALPHA > 0, SINON ARRET
           IF (ALPHA .LT. 0.D0) THEN
               VALI = IABS
-              CALL U2MESG('F','ALGORITH15_31',0,' ',1,VALI,0,0.D0)
+              CALL U2MESG('F','ALGORITH15_24',0,' ',1,VALI,0,0.D0)
             ELSE IF (ALPHA .GT. R8PREM()) THEN
               NUL=.FALSE.
           ENDIF
@@ -228,11 +228,11 @@ C MATSYS(IABS) * ETA(IABS) = SCDMB(IABS)
 C **************************************
 C       -> ALARME SI ALPHA NUL ET NBMESU<NBMODE : MOINDRE NORME
         IF ((NBMESU .LT. NBMODE) .AND. (NUL)) THEN
-          CALL U2MESG('A','ALGORITH15_32',0,' ',0,0,0,0.D0)
+          CALL U2MESG('A','ALGORITH15_25',0,' ',0,0,0,0.D0)
 
           IF (REGUL .EQ. 'NON') THEN
 C CALCUL MOINDRE NORME
-            CALL U2MESG('A','ALGORITH15_33',0,' ',0,0,0,0.D0)
+            CALL U2MESG('A','ALGORITH15_26',0,' ',0,0,0,0.D0)
             DO 71 IMES = 1,NBMESU
               CVAL = CMESU(IMES,IABS)
 C TRAITEMENT PARTIE REELLE / PARTIE IMAGINAIRE
@@ -258,7 +258,7 @@ C
               IF ( IERR . NE. 0 ) THEN
               VALI = IABS
               VALR = XABS ( IABS )
-              CALL U2MESG('F','ALGORITH15_34',0,' ',1,VALI,1,VALR)
+              CALL U2MESG('F','ALGORITH15_27',0,' ',1,VALI,1,VALR)
               END IF
 C
             ELSE
@@ -268,7 +268,7 @@ C METHODE DE CROUT
               IF ( IERR . NE. 0 ) THEN
               VALI = IABS
               VALR = XABS ( IABS )
-              CALL U2MESG('F','ALGORITH15_35',0,' ',1,VALI,1,VALR)
+              CALL U2MESG('F','ALGORITH15_28',0,' ',1,VALI,1,VALR)
               END IF
             END IF
 C
@@ -304,7 +304,7 @@ C
           IF ( IERR . NE. 0 ) THEN
           VALI = IABS
           VALR = XABS ( IABS )
-          CALL U2MESG('F','ALGORITH15_36',0,' ',1,VALI,1,VALR)
+          CALL U2MESG('F','ALGORITH15_27',0,' ',1,VALI,1,VALR)
           END IF
 C
         ELSE
@@ -314,7 +314,7 @@ C METHODE DE CROUT
           IF ( IERR . NE. 0 ) THEN
           VALI = IABS
           VALR = XABS ( IABS )
-          CALL U2MESG('F','ALGORITH15_37',0,' ',1,VALI,1,VALR)
+          CALL U2MESG('F','ALGORITH15_28',0,' ',1,VALI,1,VALR)
           END IF
         END IF
 C

@@ -3,7 +3,7 @@
      &                  IDFDX,IDFDX2,IDFDY,IDFDY2,NPGF,NPGF2,LLUMPE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,15 +93,16 @@ C DECLARATION VARIABLES LOCALES
 C CAS 2D
         FORM = TYPMAC(1:2)
 C CALCUL NBRE ARETES
+        CALL ASSERT(FORM.EQ.'TR'.OR.FORM.EQ.'QU')
         IF (FORM.EQ.'TR') THEN
           NARET = 3
         ELSE IF (FORM.EQ.'QU') THEN
           NARET = 4
-        ELSE
-          CALL U2MESS('F','CALCULEL5_25')
         ENDIF
         NOEU = TYPMAC(5:5)
 C CALCUL NBRE SOMMETS ARETES ET POIDS DE NEWTON-COTES DE L'ARETE
+        CALL ASSERT(NOEU.EQ.'6' .OR. NOEU.EQ.'8' .OR. NOEU.EQ.'9'.OR.
+     &              NOEU.EQ.'3' .OR. NOEU.EQ.'4')
         IF (NOEU.EQ.'6' .OR. NOEU.EQ.'8' .OR. NOEU.EQ.'9') THEN
           NSOMM = 3
           NDEGRE = 2
@@ -115,8 +116,6 @@ C INIT. POIDS DE NEWTON-COTES (POINTS EXTREMES 1/POINT CENTRAL 2)
           ELREFE = 'SEG2'
           POINC1 = 1.D0
           POINC2 = 0.D0
-        ELSE
-          CALL U2MESS('F','CALCULEL5_26')
         ENDIF
 
       ELSE
@@ -226,17 +225,17 @@ C TETRADRE --> FACE3 OU FACE6
    44      CONTINUE
           ENDIF
         ELSE
-          CALL U2MESS('F','CALCULEL5_31')
+          CALL ASSERT(.FALSE.)
         ENDIF
 
         IF (L2D) THEN
           CHVAL = '&INEL.'//ELREFE//'.FFORMES'
           CALL JEEXIN(CHVAL,IRET)
-          IF (IRET.LE.0) CALL U2MESS('F','CALCULEL5_32')
+          CALL ASSERT(IRET.GT.0)
           IF (NARET.EQ.5) THEN
             CHVAL2 = '&INEL.'//ELREF2//'.FFORMES'
             CALL JEEXIN(CHVAL2,IRET)
-            IF (IRET.LE.0) CALL U2MESS('F','CALCULEL5_33')
+            CALL ASSERT(IRET.GT.0)
           ENDIF
           NPGF = NSOMM
           CALL JEVEUO(CHVAL,'L',IFFBUF)

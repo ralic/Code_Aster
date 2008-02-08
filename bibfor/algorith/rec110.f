@@ -1,7 +1,7 @@
       SUBROUTINE REC110(NOMRES,NOMSQU,MODGEN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C         DE RECO_GLOBAL
                CALL U2MESG('E','ALGORITH15_56',3,VALK,0,0,0,0.D0)
             ENDIF
             IF (ZI(LSK2-1+NUMERO+INCR).NE.NUMERO) THEN
-               CALL U2MESG('E+','ALGORITH15_57',0,' ',0,0,0,0.D0)
+               CALL U2MESG('E+','ALGORITH15_55',0,' ',0,0,0,0.D0)
                CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
                VALK (1) = K8BID
                VALK (2) = LINTF
@@ -158,7 +158,7 @@ C        ---
             DO 30 JN = 1,NBNJ
                NUMERO = ZI(LJNTD-1+JN)
                IF (ZI(LSK-1+NUMERO+JNCR).NE.JSTAC) THEN
-                CALL U2MESG('E+','ALGORITH15_59',0,' ',0,0,0,0.D0)
+                CALL U2MESG('E+','ALGORITH15_55',0,' ',0,0,0,0.D0)
                 CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
                 VALK (1) = K8BID
                 VALK (2) = LJNTF
@@ -166,7 +166,7 @@ C        ---
                 CALL U2MESG('E','ALGORITH15_60',3,VALK,0,0,0,0.D0)
                ENDIF
                IF (ZI(LSK2-1+NUMERO+JNCR).NE.NUMERO) THEN
-                CALL U2MESG('E+','ALGORITH15_61',0,' ',0,0,0,0.D0)
+                CALL U2MESG('E+','ALGORITH15_55',0,' ',0,0,0,0.D0)
                 CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
                 VALK (1) = K8BID
                 VALK (2) = LJNTF

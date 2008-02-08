@@ -3,7 +3,7 @@
      &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,12 +192,7 @@ C VIA LAPACK
           CALL DSPTRS('L',DIMGI4,1,ZR(JGITGI),ZI4(IPIV),ZR(JGITVI),
      &                DIMGI4,INFOLA)
           INFOL8=INFOLA
-          IF (INFOL8.NE.0) THEN
-            VALI (1) = I
-            VALI (2) = INFOL8
-            CALL U2MESG('F', 'ALGORITH13_15',0,' ',2,VALI,0,0.D0)
-          ENDIF
-
+          CALL ASSERT(INFOL8.EQ.0)
           IF (OPTION.EQ.1) THEN
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=VI-GI*((GI)T*GI)-1*(GI)T*VI (OPTION=1)

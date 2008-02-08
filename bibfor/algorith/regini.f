@@ -3,7 +3,7 @@
      +                  TYPMOD,DIMUEL,NNO,NNOM,NNOS,REGULA,AXI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,7 +74,7 @@ C ======================================================================
          ELRF1 = 'H20'
          ELRF2 = 'HE8'
       ELSE
-         CALL U2MESK('F','ALGORITH4_46',1,ELREFE)
+         CALL U2MESK('F','DVP_4',1,ELREFE)
       ENDIF
 C ======================================================================
 C --- FONCTIONS DE FORME P2 --------------------------------------------

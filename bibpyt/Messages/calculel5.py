@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,20 +30,19 @@ cata_msg = {
  !! probleme creation cham_elem nul dans alchml !!
 """),
 
-5 : _("""
- nb_ec trop grand
-"""),
 
-6 : _("""
- cumul impossible avec i
-"""),
 
-7 : _("""
- cumul impossible avec kn
-"""),
+
+
+
+
+
+
+
+
 
 8 : _("""
- il faut donner "maille"
+ il faut renseigner le mot clé MAILLE
 """),
 
 10 : _("""
@@ -55,7 +54,7 @@ cata_msg = {
 """),
 
 12 : _("""
- "type_test" inconnu
+ TYPE_TEST inconnu
 """),
 
 13 : _("""
@@ -66,41 +65,35 @@ cata_msg = {
  le champ  %(k1)s  est de type inconnu.
 """),
 
-16 : _("""
- ! nbnv: typelem inconnu !
-"""),
 
-17 : _("""
- ! jac(ipg): div par zero !
-"""),
+
+
+
+
+
+
+
 
 20 : _("""
- le group_no  %(k1)s  contient  %(k2)s  noeuds
+ le GROUP_NO  %(k1)s  contient  %(k2)s  noeuds
 """),
 
 21 : _("""
- le group_ma  %(k1)s  contient  %(k2)s  mailles
+ le GROUP_MA  %(k1)s  contient  %(k2)s  mailles
 """),
 
-22 : _("""
- ! jac(1): div par zero !
-"""),
 
-23 : _("""
- ! jac(2): div par zero !
-"""),
 
-24 : _("""
- ! hf: div par zero !
-"""),
 
-25 : _("""
- ! calcul naret 2d: typelem inconnu !
-"""),
 
-26 : _("""
- ! calcul nsomm 2d: typelem inconnu !
-"""),
+
+
+
+
+
+
+
+
 
 27 : _("""
  ! pas de lumpe en 3d p2: hexa20_d --> face8_d !
@@ -118,25 +111,25 @@ cata_msg = {
  ! pas de lumpe en 3d p2: tetra10_d --> face6_d !
 """),
 
-31 : _("""
- ! calcul naret/nsomm 3d: typelem inconnu !
-"""),
 
-32 : _("""
- ! l'objet chval des segments est inexistant !
-"""),
 
-33 : _("""
- ! l'objet chval2 des segments est inexistant !
-"""),
+
+
+
+
+
+
+
+
 
 34 : _("""
  ! p2 obligeatoire avec terme source non nul !
 """),
 
-37 : _("""
- programme  %(k1)s
-"""),
+
+
+
+
 
 38 : _("""
   il faut definir un champ de vitesse
@@ -158,9 +151,9 @@ cata_msg = {
  comportements incompatibles :  %(k1)s  et  %(k2)s  pour la maille  %(k3)s
 """),
 
-43 : _("""
- erreur pgmeur dans zechlo : type_scalaire: %(k1)s  non autorise(r ou c),
-"""),
+
+
+
 
 44 : _("""
  ! le champ doit etre un cham_elem !
@@ -267,13 +260,13 @@ cata_msg = {
 """),
 
 67 : _("""
- erreurs donneesle group_ma  %(k1)s
-  n'a pas le meme nombre de mailles  que le group_ma  %(k2)s
+ erreurs donneesle GROUP_MA  %(k1)s
+  n'a pas le meme nombre de mailles  que le GROUP_MA  %(k2)s
 """),
 
 68 : _("""
- erreurs donneesle group_ma  %(k1)s
-  n'a pas les memes types de maille  que le group_ma  %(k2)s
+ erreurs donneesle GROUP_MA  %(k1)s
+  n'a pas les memes types de maille  que le GROUP_MA  %(k2)s
 """),
 
 69 : _("""

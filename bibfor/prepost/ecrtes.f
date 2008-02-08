@@ -9,7 +9,7 @@ C
       LOGICAL           LCMP
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/10/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,6 @@ C     ------------------------------------------------------------------
       INTEGER       IMODE,ITYPE,MODTYP,ANATYP,DATCAR,NUTYPE
       INTEGER       NBTITR
       REAL*8        FREQ,MASGEN,AMOR1,AMOR2,RVIDE
-      CHARACTER*4   FTYP
       CHARACTER*8   K8BID
       CHARACTER*16  TYPESD, TYPINC
       CHARACTER*24  NOMST
@@ -78,7 +77,6 @@ C     ------------------------------------------------------------------
       COMPLEX*16    CBID
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      FTYP = FITYPE
       ITYPE = ITYP
       RVIDE = R8VIDE()
 C
@@ -103,7 +101,7 @@ C ---CHOIX DU NUMERO DE DATASET--------------
       ELSE IF (FITYPE.EQ.'ELNO') THEN
          ENTETE(2) = '    57   %VALEURS AUX NOEUDS DES ELEMENTS'
       ELSE
-         CALL U2MESK('F','PREPOST_35',1,FTYP)
+         CALL ASSERT(.FALSE.)
       END IF
 C
 C   --- CHOIX DU TYPE DE MODELE--------

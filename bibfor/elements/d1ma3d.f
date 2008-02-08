@@ -1,7 +1,7 @@
       SUBROUTINE  D1MA3D(FAMI,MATER,INSTAN,POUM,KPG,KSP,
      &                   REPERE,XYZGAU,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,6 +172,7 @@ C ----    D1_GLOB = PASSAG_T * D1_ORTH * PASSAG
 C ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 C ----     DE PASSAGE N'EST PAS L'IDENTITE)
 C        ----------------------------------
+          CALL ASSERT((IREP.EQ.1).OR.(IREP.EQ.0))
           IF (IREP.EQ.1) THEN
               CALL UTBTAB('ZERO',6,6,D1ORTH,PASSAG,WORK,D1)
           ELSEIF (IREP.EQ.0) THEN
@@ -179,8 +180,6 @@ C        ----------------------------------
               DO 20 J = 1, 6
                  D1(I,J) = D1ORTH(I,J)
  20           CONTINUE
-          ELSE
-             CALL U2MESS('F','ELEMENTS_22')
           ENDIF
 C
 C      -----------------------
@@ -230,6 +229,7 @@ C ----    D_GLOB = PASSAG_T * D_ORTH * PASSAG
 C ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 C ----     DE PASSAGE N'EST PAS L'IDENTITE)
 C        ----------------------------------
+          CALL ASSERT((IREP.EQ.1).OR.(IREP.EQ.0))
           IF (IREP.EQ.1) THEN
               CALL UTBTAB('ZERO',6,6,D1ORTH,PASSAG,WORK,D1)
           ELSEIF (IREP.EQ.0) THEN
@@ -237,8 +237,6 @@ C        ----------------------------------
               DO 30 J = 1, 6
                  D1(I,J) = D1ORTH(I,J)
  30           CONTINUE
-          ELSE
-             CALL U2MESS('F','ELEMENTS_22')
           ENDIF
 C
       ELSE

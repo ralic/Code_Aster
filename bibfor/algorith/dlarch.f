@@ -5,7 +5,7 @@
      &                    DEPL, VITE, ACCE )
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,7 +137,7 @@ C
           ELSE IF ( IAUX.EQ.100 ) THEN
             CALL VTCREM(CHAMNO,MASSE,'G','R')
           ELSE
-            CALL U2MESS('F','ALGORITH13_36')
+            CALL ASSERT(.FALSE.)
           ENDIF
 
           CHAMNO(20:24)  = '.VALE'

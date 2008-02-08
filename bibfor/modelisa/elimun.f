@@ -5,7 +5,7 @@
      &                  NBTOT,NBNOE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -222,9 +222,7 @@ C
         DO 51 J=1,NBNO
           NUMNO1 = ZI(JNL-2+JDEBUT+J)
           IF (NUMNO1.NE.0) THEN
-            IF (JDECAL.GT.NBNOE) THEN
-              CALL U2MESS('F','MODELISA4_49')
-            ENDIF
+            CALL ASSERT (JDECAL.LE.NBNOE)
             ZI(JNOE+JDECAL) = NUMNO1
             JDECAL = JDECAL +1
           ENDIF

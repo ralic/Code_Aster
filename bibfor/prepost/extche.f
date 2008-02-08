@@ -9,7 +9,7 @@
       CHARACTER*19  NCHMEL, NCHMEN, NSSCHE, NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -256,14 +256,13 @@ C   --------------------------------------------------------
       END IF
 
       CALL JELIRA(NVALE,'TYPE',IBID,TYPE)
+      CALL ASSERT((TYPE(1:1).EQ.'R').OR.(TYPE(1:1).EQ.'C'))
       IF (TYPE(1:1).EQ.'R') THEN
         CALL JEVEUO(NVALE,'L',AVALE)
-      ELSE IF (TYPE(1:1).EQ.'C') THEN
+      ELSE
         NOMVEC = 'EXTCHE.VECTEUR'
         CALL RVRECU( MCF, IOCC, NCHMEL, NCHMEN, SENSOP, NOMVEC )
         CALL JEVEUO(NOMVEC,'L',AVALE)
-      ELSE
-        CALL U2MESS('F','PREPOST_37')
       END IF
       CALL JEVEUO(NDESC,'L',JCELD)
       CALL JEVEUO(NCELK,'L',ACELK)

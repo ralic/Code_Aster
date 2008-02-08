@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,30 +84,6 @@ C
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
           CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','NADAI_B',0,' ',
      &                0.D0, 7,NOMC(6),MATERD(1,2),  CERR(6), FB2 )
-          IF ( MATERD(1,2) .LT. 0.D0 )  THEN
-           CALL U2MESS('S','ALGORITH4_36')
-          ENDIF
-          IF ( MATERD(2,2) .LT. 0.D0 )  THEN
-           CALL U2MESS('S','ALGORITH4_37')
-          ENDIF
-          IF ( MATERD(3,2) .GT. 1.D0) THEN
-            CALL U2MESS('S','ALGORITH4_38')
-          ENDIF
-          IF ( MATERD(3,2) .LT. 0.D0) THEN
-           CALL U2MESS('S','ALGORITH4_39')
-          ENDIF
-          IF ( MATERD(4,2) .LT. 0.D0) THEN
-           CALL U2MESS('S','ALGORITH4_40')
-          ENDIF
-          IF ( MATERD(5,2) .LT. 0.D0) THEN
-           CALL U2MESS('S','ALGORITH4_41')
-          ENDIF
-          IF ( MATERD(6,2) .LT. 0.D0) THEN
-           CALL U2MESS('S','ALGORITH4_42')
-          ENDIF
-          IF (MATERD(7,2).LT.0.D0.OR.MATERD(7,2).GT.1.D0) THEN
-           CALL U2MESS('S','ALGORITH4_43')
-          ENDIF
 C
 C -     RECUPERATION MATERIAU A (T+DT)
 C

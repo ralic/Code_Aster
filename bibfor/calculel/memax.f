@@ -6,7 +6,7 @@
       REAL*8 VR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,10 +55,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER NBGREL,NBELEM,DIGDEL,IRET,IBID,IACELK,JCELD,NBGR
-      INTEGER ICOEF,I,IAVALE,NEL,idecgr,k,jligr,im,inum,iel
+      INTEGER ICOEF,I,IAVALE,NEL,IDECGR,K,JLIGR,IM,INUM,IEL
       CHARACTER*8 SCALAI
       INTEGER LONGT,NCMPEL,MODE,J,IGD
-      REAL*8 VALR,r8miem,r8maem
+      REAL*8 VALR,R8MIEM,R8MAEM
       CHARACTER*8 SCAL
       CHARACTER*19 CHAMP2,LIGREL
       LOGICAL FIRST
@@ -110,9 +110,7 @@ C     ----------------------------
 
         FIRST = .FALSE.
    10 CONTINUE
-      IF (LONGT.GT.LONG) THEN
-        CALL U2MESS('F','CALCULEL3_55')
-      END IF
+      CALL ASSERT(LONGT.LE.LONG)
 
       IF (NCP.GT.LONGT) THEN
         CALL U2MESS('F','CALCULEL3_56')

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -59,11 +59,12 @@ C
       REAL*8       UGR(6),ULR(6),FLR(6),EPS(6)
       CHARACTER*2  CODRES
       CHARACTER*4  FAMI
+      CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       LOGICAL      LTEIMP
       REAL*8       A,EPSTH,E,R8BID,RHO,XFL1,XFL4,XL,XMAS,XRIG,TREF
       INTEGER      I,IF,ITYPE,J,JDEPL,JEFFO,JENDE,JFREQ,JDEFO,KANL
-      INTEGER      LMATER,LORIEN,LSECT,LTEMP,IRET,LX,NC,NNO
+      INTEGER      LMATER,LORIEN,LSECT,LTEMP,IRET,LX,NC,NNO,IADZI,IAZK24
 C     ------------------------------------------------------------------
 
       LTEIMP = .FALSE.
@@ -101,8 +102,9 @@ C
       ENDIF
 C
       IF( XL .EQ. 0.D0 ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

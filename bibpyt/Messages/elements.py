@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF elements Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,8 +97,8 @@ cata_msg = {
  noeuds confondus pour un élément
 """),
 
-18 : _("""
- NNO invalide
+18: _("""
+ le nombre de noeuds d'un tuyau est différent de 3 ou 4
 """),
 
 19 : _("""
@@ -156,11 +156,15 @@ cata_msg = {
 """),
 
 32 : _("""
- comportement inattendu
+ le comportement %(k1)s est inattendu
 """),
 
 33 : _("""
- nombre d'itérations > 1000 .
+ la convergence locale de la loi GLRC_DM n'est pas atteinte en 1000 itérations :
+ XM1 vaut %(r1)f
+ XM2 vaut %(r2)f
+ YM1 vaut %(r3)f
+ YM2 vaut %(r4)f
 """),
 
 34 : _("""
@@ -184,7 +188,7 @@ cata_msg = {
 """),
 
 38 : _("""
- problème PHESEN.NE.PHENOM
+ Le phénomène sensible %(k1)s choisi ne correspond pas au phénomène %(k2)s dont il est issu 
 """),
 
 39 : _("""
@@ -220,7 +224,8 @@ cata_msg = {
 """),
 
 45 : _("""
- N < 0
+ L'un des coefficients materiaux N_VP et M_VP de la loi de comportement VENDO_CHAB 
+  est négatif. Or ce n'est physiquement pas possible.
 """),
 
 46 : _("""
@@ -331,11 +336,11 @@ cata_msg = {
 """),
 
 72 : _("""
- group_no orienté : noeud origine =  %(k1)s
+ GROUP_NO orienté : noeud origine =  %(k1)s
 """),
 
 73 : _("""
- le group_ma :  %(k1)s n'existe pas.
+ le GROUP_MA :  %(k1)s n'existe pas.
 """),
 
 74 : _("""
@@ -358,7 +363,18 @@ cata_msg = {
  GROUP_NO orienté : noeud extremité =  %(k1)s
 """),
 
+79 : _("""
+ il y a à la fois des éléments volumiques de degré 1 et de degré 2 dans le modèle
+ on a besoin de savoir si on est en lineaire ou en quadratique pour choisir la methode de lissage.
+"""),
 
+80 : _("""
+ le concept FOND_FISS est mal créé
+"""),
+
+82 : _("""
+ l'option de lissage 'LAGRANG2' n'a pas ete développée lorsque le nombre de noeuds d'un fond de fissure fermé est pair.
+"""),
 
 83 : _("""
  le type des mailles des lèvres doit etre quadrangle ou triangle
@@ -380,6 +396,14 @@ cata_msg = {
  bad definition of MP1 and MP2
 """),
 
+88 : _("""
+ le fond de fissure ne doit etre défini que par un noeud
+ ( revoir le GROUP_NO )
+"""),
+
+89 : _("""
+ le fond de fissure ne doit etre défini que par un noeud
+"""),
 
 90 : _("""
 Erreur de programmation :
@@ -388,7 +412,18 @@ Solution :
    Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
 """),
 
+91 : _("""
+ mot clé FOND_FISS obligatoire
+"""),
 
+92 : _("""
+ le fond de fissure ne doit etre défini que par un noeud
+ ( revoir FOND_FISS )
+"""),
+
+93 : _("""
+  %(k1)s  n'est pas un GROUP_NO ou un GROUP_MA
+"""),
 
 94 : _("""
  arret sur erreur(s) utilisateur.
@@ -413,5 +448,8 @@ Solution :
  revoir les données
 """),
 
+99 : _("""
+ problème dans le calcul de la normale à la fissure
+"""),
 
 }

@@ -6,7 +6,7 @@ C     SENSIBILITE - GESTION DES INFORMATIONS POUR UNE COMMANDE
 C     **            *           *                     **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,6 +129,7 @@ C====
 C 0. PREALABLE
 C====
 C
+      CALL ASSERT(( CHOIX.EQ.1 ).OR.( CHOIX.EQ.2 ).OR.( CHOIX.EQ.3 ))
       IAUX = LXLGUT(INPSCO)
       NOMSTR = BLAN24
       NOMSTR(1:IAUX+5) = INPSCO(1:IAUX)//'.MEMO'
@@ -307,12 +308,6 @@ C
 C====
 C 4. MAUVAIS CHOIX
 C====
-C
-      ELSE
-C
-        VALI = CHOIX
-        CALL U2MESI('A', 'SENSIBILITE_89',1,VALI)
-        CALL U2MESS('F','MODELISA_67')
 C
       ENDIF
 C

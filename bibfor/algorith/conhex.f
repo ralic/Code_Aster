@@ -1,7 +1,7 @@
       SUBROUTINE CONHEX(MACOR,NBCOR,MACOC,NBCOC,
      &                  LFACE,LOMODI,LOCORR,LOREOR,MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C     -------------------------------------------------------------
             CALL CONPER(MACOC,11,15,19,16)
           ENDIF
         ELSE
-          CALL U2MESS('E','ALGORITH2_25')
+          CALL ASSERT(.FALSE.)
         ENDIF
         IF (LFACE) THEN
           I1=1

@@ -4,7 +4,7 @@
       CHARACTER*(*) MATR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,9 +58,7 @@ C     ------------------------------------------------------------------
       CALL MTDSCR(MATR)
       CALL DISMOI('F','NOM_NUME_DDL',MATR,'MATR_ASSE',IBID,NUME,IE)
       CALL JEVEUO(MATR(1:8)//'           .&INT','E',LMAT)
-      IF (LMAT.EQ.0) THEN
-        CALL U2MESS('F','UTILITAI2_40')
-      END IF
+      CALL ASSERT(LMAT.NE.0)
 
       NEQ = ZI(LMAT+2)
       TYPVAR = ZI(LMAT+3)
@@ -98,7 +96,7 @@ C     --- MATRICE SYMETRIQUE REELLE ---
       ELSE IF (OPTION.EQ.'AMOR_MECA') THEN
         IMAT = 7
       ELSE
-        CALL U2MESS('F','UTILITAI2_43')
+        CALL ASSERT(.FALSE.)
       END IF
 
       M2 = NBDDL*NBDDL

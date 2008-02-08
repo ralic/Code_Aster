@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF algorith Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,6 +68,9 @@ cata_msg = {
  le noeud  %(k1)s  n'appartient pas au maillage :  %(k2)s
 """),
 
+22 : _("""
+ le groupe  %(k1)s  n'appartient pas au maillage :  %(k2)s
+"""),
 
 25 : _("""
  données incompatibles.
@@ -178,7 +181,25 @@ cata_msg = {
  le cas des contraintes planes n'est pas traité pour ce modèle.
 """),
 
+52 : _("""
+ le résultat n'est pas un EVOL_NOLI
+"""),
 
+53 : _("""
+ champ SIEF_ELGA non trouvé
+"""),
+
+54 : _("""
+ champ EPSP_ELNO non trouvé
+"""),
+
+55 : _("""
+ champ VARI_ELNO_ELGA non trouvé
+"""),
+
+56 : _("""
+ aucun champ initial trouvé
+"""),
 
 57 : _("""
  le matériau dépend de la température 
@@ -186,6 +207,10 @@ cata_msg = {
  le calcul est impossible
 """),
 
+59 : _("""
+ Il est impossible d'avoir un lissage de THETA de type Lagrange
+ et un lissage de G de type Legendre
+"""),
 
 60 : _("""
  certains coefficients de masse ajoutée sont négatifs.
@@ -233,7 +258,7 @@ cata_msg = {
 """),
 
 70 : _("""
- NBSYS=0
+ Le nombre de système de glissement est égal à 0
 """),
 
 71 : _("""

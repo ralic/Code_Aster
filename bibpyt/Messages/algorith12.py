@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith12 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -292,7 +292,10 @@ cata_msg={
  pour le NUME_ORDRE  %(i1)d
 """),
 
-
+75: _("""
+  composante inexistante sur le noeud:  %(k1)s
+  composante:  %(k2)s
+"""),
 
 76: _("""
   problème de récuperation CHAMNO
@@ -311,7 +314,7 @@ cata_msg={
 """),
 
 79: _("""
- &les deux interfaces ont pas meme nombre de noeuds
+ les deux interfaces n'ont pas le meme nombre de noeuds
  nombre noeuds interface droite -->  %(i1)d
  nombre noeuds interface gauche -->  %(i2)d
 """),
@@ -389,5 +392,8 @@ cata_msg={
  plusieurs instants de calcul pour l'instant d'archivage:  %(r1)f
 """),
 
+99: _("""
+ le champ %(k1)s est incompatible avec la commande  %(k2)s
+"""),
 
 }

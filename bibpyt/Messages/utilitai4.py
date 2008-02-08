@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai4 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -349,9 +349,10 @@ cata_msg={
   concept  %(k1)s non existant 
 """),
 
-95: _("""
- l'objet de nom " %(k1)s " est inconnu.
-"""),
+
+
+
+
 
 96: _("""
   expression incorrecte 

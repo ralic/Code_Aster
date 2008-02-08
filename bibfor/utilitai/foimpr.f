@@ -4,7 +4,7 @@
       INTEGER                IMPR,IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,11 +162,8 @@ C
          CALL FOEC1N(IUL,NOMFON,ZK16(LPROL),NBFONC,'RIEN')
          IF (IMPR.GE.2) THEN
             CALL JEVEUO(PARA,'L',LVAL)
-            IF (IND.NE.0) THEN
-               CALL U2MESS('E','UTILITAI2_9')
-            ELSE
-               CALL FOEC2N(IUL,ZK16(LPROL),ZR(LVAL),VALE,NBFONC,IMPR)
-            ENDIF
+            CALL ASSERT(IND.EQ.0)
+            CALL FOEC2N(IUL,ZK16(LPROL),ZR(LVAL),VALE,NBFONC,IMPR)
          ENDIF
 C
       ELSEIF (ZK16(LPROL).EQ.'FONCT_C ' ) THEN

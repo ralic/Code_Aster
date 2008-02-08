@@ -1,6 +1,6 @@
       SUBROUTINE RLOSHB(XCOQ,XCENT,PPP,XL,XV24,XV13,XJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,14 +82,11 @@ C
       SS(2) = XV24(3)*XV13(1) - XV24(1)*XV13(3)
       SS(3) = XV24(1)*XV13(2) - XV24(2)*XV13(1)
       XJ = SQRT (SS(1)*SS(1)+SS(2)*SS(2)+SS(3)*SS(3))
-      IF(XJ.GT.0) THEN
-        AUX=1/XJ
-        PPP(1,3) = SS(1) * AUX
-        PPP(2,3) = SS(2) * AUX
-        PPP(3,3) = SS(3) * AUX
-      ELSE
-        CALL U2MESS('F','ELEMENTS2_59')
-      ENDIF
+      CALL ASSERT(XJ.GT.0)
+      AUX=1/XJ
+      PPP(1,3) = SS(1) * AUX
+      PPP(2,3) = SS(2) * AUX
+      PPP(3,3) = SS(3) * AUX
 C
 C LE VECTEUR UNITAIRE  E2 = E3 ^ E1
 C

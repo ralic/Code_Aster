@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,7 +210,7 @@ C           V(1+3(I-1)+3) : NUMERO DE LA MAILLE MERE DU IEME SEG2
      &        .OR.(ITYPM.EQ.NUTM(3)) ) THEN
           ICO=ICO+1
         ELSE
-          CALL U2MESS('F','ALGORITH_19')
+          CALL ASSERT(.FALSE.)
       IF (ICO.EQ.0)
      &  CALL U2MESS('F','CALCULEL4_55')
         END IF

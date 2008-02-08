@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,10 +49,7 @@ C
       NBIGNO=0
       NOM='INDEFINI'
 C
-      IF (INOM.NE.0.AND.INOM.NE.1) THEN
-      CALL CODENT(INOM,'G',W)
-      CALL U2MESK('F','MODELISA4_95',1,W)
-      END IF
+      CALL ASSERT (INOM.EQ.0.OR.INOM.EQ.1)
 C
       IF (INOM.EQ.0) THEN
     1 CONTINUE
@@ -66,9 +63,9 @@ C -     IL Y A UNE ENTETE
             IF (CV(1:6).EQ.'NBLIGE') THEN
             CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
                 IF (ICL.EQ.1) THEN
-                NBIGNO=IV
+                  NBIGNO=IV
                 ELSE
-                CALL U2MESS('F','MODELISA4_96')
+                  CALL ASSERT(.FALSE.)
                 ENDIF
             GOTO 9
             ELSE
@@ -113,9 +110,9 @@ C -       L'ITEM LU EST UN IDENTIFICATEUR
              RV=0.D0
              CALL LIRITM(IFL,ICL,IV,RV,CV(1:8),CNL,DEBLIG,ILEC)
                 IF (ICL.EQ.1) THEN
-                NBIGNO=IV
+                  NBIGNO=IV
                 ELSE
-                CALL U2MESS('F','MODELISA4_96')
+                  CALL ASSERT(.FALSE.)
                 END IF
              LENT=.TRUE.
              ELSE
@@ -133,15 +130,12 @@ C -       L'ITEM LU N'EST PAS UN IDENTIFICATEUR
           ENDIF
        ELSE
           IF (LENT) THEN
-             IF (LNOM) THEN
-             CALL U2MESS('F','MODELISA4_99')
-             ELSE
-             NBIGNO = NBIGNO - 1
-             GOTO 9
-             ENDIF
+            CALL ASSERT(.NOT.LNOM)
+            NBIGNO = NBIGNO - 1
+            GOTO 9
           ELSE
 C -       PAS D'ENTETE
-          GOTO 9
+            GOTO 9
           ENDIF
         END IF
       END IF

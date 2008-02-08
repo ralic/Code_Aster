@@ -1,7 +1,7 @@
       SUBROUTINE ECLPGM ()
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,11 +155,8 @@ C
               CALL U2MESK('F','CALCULEL2_33', 2 ,VALK)
            ENDIF
            CALL JEEXIN ( NOMOBJ, IRET1 )
-           IF (IRET1.GT.0) THEN
-              CALL JEVEUO ( NOMOBJ, 'L', JOBJ )
-           ELSE
-              CALL U2MESS('F','PREPOST_58')
-           ENDIF
+           CALL ASSERT(IRET1.GT.0)
+           CALL JEVEUO ( NOMOBJ, 'L', JOBJ )
 30       CONTINUE
       ENDIF
 

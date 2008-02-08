@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF algorith11 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,14 +95,6 @@ cata_msg = {
  "maillage_final" est obligatoire
 """),
 
-19 : _("""
- 3 valeurs pour "TRAN"
-"""),
-
-20 : _("""
- TYPCAL invalide :  %(k1)s 
-"""),
-
 24 : _("""
  absence de potentiel permanent
 """),
@@ -120,9 +112,8 @@ cata_msg = {
  seules les modelisations PLAN ou 3D ou AXIS sont utilisées
 """),
 
-28 : _("""
- on ne trouve pas de champ de température CHTN
-"""),
+
+
 
 29 : _("""
  le nombre d'amortissement modaux est différent du nombre de modes dynamiques
@@ -162,7 +153,7 @@ cata_msg = {
 """),
 
 73 : _("""
- taille limite D10 non définie
+ le parametre materiau taille limite d10 n'est pas defini
 """),
 
 74 : _("""
@@ -174,15 +165,11 @@ cata_msg = {
 """),
 
 76 : _("""
- F(XMIN) non négative
+ La valeur de F(XMIN) doit être négative.
 """),
 
 77 : _("""
  f=0 : augmenter ITER_INTE_MAXI
-"""),
-
-78 : _("""
- polynome non résolu
 """),
 
 79 : _("""

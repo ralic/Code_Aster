@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -583,9 +583,7 @@ C VERIFICATION QU ON EST DANS LE BON INTERVALLE
      &                       HMOY,DEUXMU,ETA,UNSURN,DP,IRET)
                 IF(IRET.EQ.1) GOTO 9999
   105         CONTINUE
-              IF((TEST.EQ.'NO').AND.(J.EQ.MAXVAL))THEN
-                CALL U2MESS('F','ALGORITH_94')
-              ENDIF
+              CALL ASSERT((TEST.NE.'NO').OR.(J.NE.MAXVAL))
   600         CONTINUE
             ENDIF
           ENDIF

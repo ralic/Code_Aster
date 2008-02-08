@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF elements2 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,21 +26,28 @@ cata_msg = {
  le mot cle normale doit comporter 3 composantes
 """),
 
+3 : _("""
+ le degre du polynome doit etre au plus egal a 7 
+"""),
+
+4 : _("""
+ probleme dans rinf et rsup 
+"""),
 
 5 : _("""
- le mot cle dtan_orig doit comporter 3 composantes
+ le mot cle DTAN_ORIG doit comporter 3 composantes
 """),
 
 6 : _("""
- le mot cle dtan_extr doit comporter 3 composantes
+ le mot cle DTAN_EXTR doit comporter 3 composantes
 """),
 
 7 : _("""
- le mot cle vect_grno_orig doit comporter 2 groupes de points
+ le mot cle VECT_GRNO_ORIG doit comporter 2 groupes de points
 """),
 
 8 : _("""
- le mot cle vect_grno_extr doit comporter 2 groupes de points
+ le mot cle VECT_GRNO_EXTR doit comporter 2 groupes de points
 """),
 
 9 : _("""
@@ -52,7 +59,7 @@ cata_msg = {
 """),
 
 11 : _("""
- arret sur erreur utilisateur: deux group_no consecutifs incoherents
+ arret sur erreur utilisateur: deux GROUP_NO consecutifs incoherents
 """),
 
 12 : _("""
@@ -60,19 +67,19 @@ cata_msg = {
 """),
 
 13 : _("""
- melang2 seg2 et seg3 : les mailles du fond de fissure doivent etre du meme type
+ mélange seg2 et seg3 : les mailles du fond de fissure doivent être du même type
 """),
 
 14 : _("""
- arret sur erreur utilisateur: deux mailles dufond de fissure sont non consecutives dans la numerotation des noeuds 
+ arrêt sur erreur utilisateur: deux mailles du fond de fissure sont non consécutives dans la numérotation des noeuds 
 """),
 
 15 : _("""
- arret sur erreur utilisateur: 2 group_ma du fond de fissure sontnon consecutifs dans la numerotation des noeuds
+ arrêt sur erreur utilisateur: 2 GROUP_MA du fond de fissure sont non consécutifs dans la numérotation des noeuds
 """),
 
 16 : _("""
- les mailles des levres doivent etre du type quadrangle ou triangle
+ les mailles des lèvres doivent être du type quadrangle ou triangle
 """),
 
 17 : _("""
@@ -87,27 +94,32 @@ cata_msg = {
  melang4 seg2 et seg3 : les mailles du fond de fissure doivent etre du meme type
 """),
 
-
 21 : _("""
  erreur : le fond de fissure possede un noeud repete 2 fois : noeud  %(k1)s . revoir les donnees
 """),
 
 22 : _("""
- les mailles du fond_inf                           et du fond_sup sont de type different
+ les mailles du fond_inf et du fond_sup sont de type different
 """),
 
+24 : _("""
+ le noeud  %(k1)s  n'appartient pas au fond de fissure 
+"""),
 
+25 : _("""
+ le fond de fissure n'est pas complet
+"""),
 
 26 : _("""
  pb prgm
 """),
 
 27 : _("""
- no intersection found
+ pas d'intersection trouvé
 """),
 
 28 : _("""
- indc = 1 (complet   : translation et rotation) ou                 indc = 0 (incomplet : translation seulement  )                    obligatoirement.
+ indc = 1 (complet : translation et rotation) ou indc = 0 (incomplet : translation seulement  )                    obligatoirement.
 """),
 
 29 : _("""
@@ -165,7 +177,7 @@ cata_msg = {
 """),
 
 43 : _("""
- noeuds confondus pour un element:  %(k1)s 
+ noeuds confondus pour la maille:  %(k1)s 
 """),
 
 44 : _("""
@@ -173,7 +185,7 @@ cata_msg = {
 """),
 
 45 : _("""
- on n'a pas trouver de variable interne correspondante a la deformation plastiqueequivalente cumulee 
+ on n'a pas trouvé de variable interne correspondante a la déformation plastique équivalente cumulée 
 """),
 
 46 : _("""
@@ -189,27 +201,27 @@ cata_msg = {
 """),
 
 49 : _("""
- charge repartie variable non admise sur un element courbe.
+ charge répartie variable non admise sur un élément courbe.
 """),
 
 50 : _("""
- charge repartie variable non admise sur un element variable.
+ charge répartie variable non admise sur un élément variable.
 """),
 
 51 : _("""
- on ne peut pas imposer de charges reparties suiveuses de type vitesse de vent sur les poutres courbes.
+ on ne peut pas imposer de charges réparties suiveuses de type vitesse de vent sur les poutres courbes.
 """),
 
 52 : _("""
- on ne peut pas imposer de charges reparties suiveuses sur les poutres courbes.
+ on ne peut pas imposer de charges réparties suiveuses sur les poutres courbes.
 """),
 
 53 : _("""
- un champ de vitesse de vent est impose sans donner un cx dependant de la vitesse sur une des poutres.
+ un champ de vitesse de vent est imposé sans donner un cx dépendant de la vitesse sur une des poutres.
 """),
 
 54 : _("""
- g est nul mais pas e
+ le module de cisaillement G est nul mais pas le module d'Young E
 """),
 
 55 : _("""
@@ -257,13 +269,16 @@ cata_msg = {
 """),
 
 66 : _("""
- ! r axi: div par zero !
+ la matrice gyroscopique n'est pas disponible pour l'élément %(k1)s
 """),
 
 67 : _("""
  option non traitee
 """),
 
+68 : _("""
+ une déformation initiale est présente dans la charge : incompatible avec la contrainte initiale SIGMA_INIT
+"""),
 
 69 : _("""
  relation de comportement non traite
@@ -295,7 +310,7 @@ cata_msg = {
 """),
 
 75 : _("""
- option "sief_elno_elga" non implantee pour la deformation "green_gr"
+ option "SIEF_ELNO_ELGA" non implantée pour la déformation "GREEN_GR"
 """),
 
 76 : _("""
@@ -307,15 +322,15 @@ cata_msg = {
 """),
 
 80 : _("""
- elements de poutre noeuds confondus pour un element:  %(k1)s 
+ éléments de poutre noeuds confondus pour un élément:  %(k1)s 
 """),
 
 81 : _("""
- elements de poutre section variable affine :seul rectangle plein disponible.
+ éléments de poutre section variable affine :seul une section rectangle plein est disponible.
 """),
 
 82 : _("""
- elements de poutre section variable homothetique : l'aire initiale est nulle.
+ éléments de poutre section variable homothétique : l'aire initiale est nulle.
 """),
 
 83 : _("""
@@ -347,7 +362,7 @@ cata_msg = {
 """),
 
 90 : _("""
- comp_elas non valide
+ COMP_ELAS non valide
 """),
 
 91 : _("""
@@ -355,7 +370,7 @@ cata_msg = {
 """),
 
 92 : _("""
- la loi dis_gricra doit etre utilisee avec deselements du type meca_dis_tr_l: element seg2 + modelisation dis_tr
+ la loi DIS_GRICRA doit etre utilisée avec des éléments du type MECA_DIS_TR_L : élément SEG2 + modelisation DIS_TR
 """),
 
 93 : _("""

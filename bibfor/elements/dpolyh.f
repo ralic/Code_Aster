@@ -4,7 +4,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C ======================================================================
       ELSEIF(N.EQ.0) THEN
          DPOLYH = A(1)
       ELSE
-         CALL U2MESS('A','ELEMENTS_45')
+         CALL U2MESS('A','ELEMENTS_90')
       ENDIF
 
       END

@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - NOM DES STRUCTURES - LECTURE
 C     *          *           *       *            **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,9 @@ C
 C
 C 1.2. ==> TRANSFERT
 C
+
+
+      CALL ASSERT(TYPEST.GE.0 .AND. TYPEST.LE.NBPSCO )
       IF ( TYPEST.GE.0 .AND. TYPEST.LE.NBPSCO ) THEN
 C
         SAUX24 = ZK24 ( ADPSCO + (NBPSCO+1)*NRPASE + TYPEST )
@@ -98,32 +101,12 @@ C
         LGNOST = LXLGUT(SAUX24)
         IAUX = LEN(NOMSTR)
 C
-        IF ( LGNOST.GT.IAUX ) THEN
-C
-          VALK (1) = 'NOMSTR'
-          VALK (2) = 'SAUX24'
-          VALI (1) = IAUX
-          VALI (2) = LGNOST
-          CALL U2MESG('A', 'SENSIBILITE_85', 2, VALK, 2, VALI, 0, 0.D0 )
-          CALL U2MESS('F','MODELISA_67')
-C
-        ENDIF
+        CALL ASSERT(LGNOST.LE.IAUX )
 C
         NOMSTR(1:LGNOST) = SAUX24(1:LGNOST)
         DO 12 , IAUX = LGNOST+1 , IAUX
           NOMSTR(IAUX:IAUX) = ' '
    12   CONTINUE
-C
-C 1.3. ==> PROBLEME
-C
-      ELSE
-C
-        VALI (1) = 0
-        VALI (2) = NBPSCO
-        VALI (3) = TYPEST
-        CALL U2MESG('A', 'SENSIBILITE_84',1,'TYPEST',3,VALI,0,0.D0)
-        CALL U2MESS('F','MODELISA_67')
-C
       ENDIF
 C
       END

@@ -4,7 +4,7 @@
       CHARACTER*8 MODELE,CARA,SIGG,MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,9 +63,7 @@ C     ------------------------------------------------------------------
      &            ICODE)
 
       CALL MESIGG(SIGG,EXISIG,CHSIGG)
-      IF (.NOT.EXISIG) THEN
-        CALL U2MESK('F','CALCULEL3_67',1,OPTION)
-      END IF
+      CALL ASSERT(EXISIG)
       CALL MEMARE('G',MATEL,MODELE,' ',CARA,OPTION)
       CALL WKVECT(MATEL//'.LISTE_RESU','G V K24',1,JLIRES)
 

@@ -4,7 +4,7 @@
       CHARACTER*24              NOMVE1, NOMVE2, NOMVE3
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,8 +110,7 @@ C
      &                    NUMN4, NUMN1, NBMAIL, NBNOEU )
 C
          ELSE
-            CALL U2MESS('A','ALGORITH10_75')
-            CALL U2MESS('F','PREPOST_37')
+            CALL U2MESS('F','ALGORITH10_75')
          ENDIF
  10   CONTINUE
 C

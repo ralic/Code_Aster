@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa4 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,13 +26,15 @@ cata_msg = {
  arret sur erreurs
 """),
 
-2 : _("""
- type inconnu verifier le call a charci
-"""),
 
-3 : _("""
- ddl inconnu
-"""),
+
+
+
+
+
+
+
+
 
 4 : _("""
   -> Le modèle contient un mélange de modélisations planes et volumiques
@@ -80,9 +82,10 @@ cata_msg = {
  - chckma phase de verification du maillage - mailles degenerees
 """),
 
-12 : _("""
- type de chgt de repere non prevu.
-"""),
+
+
+
+
 
 13 : _("""
  seule la grandeur neut_f est traitee actuellement.
@@ -92,9 +95,10 @@ cata_msg = {
  les champs de cham_f et cham_para n'ont pas la meme discretisation noeu/cart/elga/elno/elem. 
 """),
 
-15 : _("""
- eval. carte: pas encore
-"""),
+
+
+
+
 
 16 : _("""
  avec "noeud_cmp", il faut donner un nom et une composante.
@@ -177,16 +181,16 @@ cata_msg = {
 """),
 
 36 : _("""
- scal nul
+ La normale de la maille %(k1)s est nulle
 """),
 
 37 : _("""
  on essaie de creer ou d'agrandir le ligrel de charge avec un nombre de termes negatif ou nul
 """),
 
-38 : _("""
- depassement tableau (dvlp)
-"""),
+
+
+
 
 39 : _("""
  probleme rencontre lors de l interpolation d une des deformees modales
@@ -217,33 +221,32 @@ cata_msg = {
  incoherence car aucun noeud n'a de ddl derotation drx et dry et drz et la routine traite le cas 3d ou il y a au-moins un noeud ayant ces 3 ddls
 """),
 
-45 : _("""
- erreur sur nmaco
-"""),
 
-46 : _("""
- erreur sur nnoco
-"""),
 
-47 : _("""
- erreur sur nnoqua
-"""),
+
+
+
+
+
 
 48 : _("""
  aucun noeud n est affecte par liaison_unilaterale
 """),
 
-49 : _("""
- depassement capacite (dvlp)
-"""),
+
+
+
+
+
 
 50 : _("""
  la maille :  %(k1)s  n'est pas affectee par un element fini.
 """),
 
-51 : _("""
- incoherence .flii pour ligrel  %(k1)s 
-"""),
+
+
+
+
 
 53 : _("""
  le noeud d application de l excitation n est pas un noeud du maillage.
@@ -325,13 +328,10 @@ cata_msg = {
  maille degeneree
 """),
 
-73 : _("""
- .nommai du maillage inexistant :  %(k1)s 
-"""),
 
-74 : _("""
- .groupema du maillage inexistant :  %(k1)s 
-"""),
+
+
+
 
 75 : _("""
   le determinant de la matrice a inverser est nul
@@ -365,25 +365,21 @@ cata_msg = {
   %(k1)s  mot cle " %(k2)s " ignore
 """),
 
-83 : _("""
- le ligret  %(k1)s  n"existe pas.
-"""),
 
-87 : _("""
- mauvaise sortie de palima
-"""),
 
-88 : _("""
- pb lecture courbe de wohler
-"""),
+
+
+
+
+
+
 
 89 : _("""
  mot cle wohler non trouve
 """),
 
-90 : _("""
- pb lecture courbe de manson_coffin
-"""),
+
+
 
 91 : _("""
  mot cle manson_coffin non trouve
@@ -410,13 +406,15 @@ cata_msg = {
   que cette valeur par défaut correspond au type "mail" dans ASTK
 """),
 
-95 : _("""
- inom a une valeur inattendue :  %(k1)s 
-"""),
 
-96 : _("""
- "nblige=" nb lignes entete
-"""),
+
+
+
+
+
+
+
+
 
 97 : _("""
  le nom du groupe  %(k1)s  est tronque a 8 caracteres
@@ -426,8 +424,7 @@ cata_msg = {
  il faut un nom apres "nom="
 """),
 
-99 : _("""
- lirtet: sortie anormale
-"""),
+
+
 
 }

@@ -9,7 +9,7 @@
       CHARACTER*8  ELREFE,ELREF2
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C ======================================================================
       ELSEIF ( ELREFE.EQ.'T10') THEN
          ELREF2 = 'TE4'
       ELSE
-         CALL U2MESK('F','ALGORITH4_46',1,ELREFE)
+         CALL U2MESK('F','DVP_4',1,ELREFE)
       ENDIF
 C ======================================================================
 C --- FONCTIONS DE FORME P2 POUR L'INTEGRATION MECANIQUE ---------------

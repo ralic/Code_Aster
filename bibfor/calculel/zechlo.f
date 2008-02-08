@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,6 +106,7 @@ C     -- LE CHAMP LOCAL EST-IL ETENDU ?
 
 C       2- MISE A ZERO :
 C       --------------------------------------------------
+        CALL ASSERT(TYPSCA.EQ.'R'.OR.TYPSCA.EQ.'C'.OR.TYPSCA.EQ.'I')
         IF (TYPSCA.EQ.'R') THEN
           DO 10 I = 1,LGGREL
             ZR(IACHLO-1+I) = 0.0D0
@@ -118,8 +119,6 @@ C       --------------------------------------------------
           DO 30 I = 1,LGGREL
             ZI(IACHLO-1+I) = 0
    30     CONTINUE
-        ELSE
-          CALL U2MESK('F','CALCULEL5_43',1,TYPSCA)
         END IF
    40 CONTINUE
 

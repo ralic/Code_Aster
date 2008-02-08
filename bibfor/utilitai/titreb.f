@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -473,7 +473,7 @@ C        --- Y A T IL ASSEZ DE PLACE ---
 C     ------------------------------------------------------------------
  9001 CONTINUE
       ILG = LXLGUT(PARA(1))
-      CALL U2MESK('A','UTILITAI4_95',1,PARA(1)(1:ILG))
+      CALL U2MESK('A','UTILITAI_99',1,PARA(1)(1:ILG))
  9999 CONTINUE
       CALL JEDEMA()
       END

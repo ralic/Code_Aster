@@ -3,7 +3,7 @@
      &                  IREX,IFM,SDFETI,NBPROC,RANG,K24LAI,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -215,22 +215,14 @@ C FACTORISATION/DESCENTE-REMONTEE SYMETRIQUE INDEFINIE (STOCKEE PAR
 C PAQUET) VIA LAPACK. A NE FAIRE Qu'AU PREMIER PAS DE TEMPS         
             CALL DSPTRF('L',DIMGI4,ZR(JGITGI),ZI4(IPIV),INFOLA)
             INFOL8=INFOLA
-            IF (INFOL8.NE.0) THEN
-            VALI (1) = I
-            VALI (2) = INFOL8
-              CALL U2MESG('F', 'ALGORITH13_14',0,' ',2,VALI,0,0.D0)
-            ENDIF
+            CALL ASSERT(INFOL8.EQ.0)
           ENDIF
           INFOL8=0
           INFOLA=0        
           CALL DSPTRS('L',DIMGI4,1,ZR(JGITGI),ZI4(IPIV),ZR(JVE),DIMGI4,
      &                INFOLA)
           INFOL8=INFOLA          
-          IF (INFOL8.NE.0) THEN
-            VALI (1) = I
-            VALI (2) = INFOL8
-            CALL U2MESG('F', 'ALGORITH13_15',0,' ',2,VALI,0,0.D0)
-          ENDIF     
+          CALL ASSERT(INFOL8.EQ.0)
 C MONITORING
           IF (INFOFE(1:1).EQ.'T')
      &      WRITE(IFM,*)'<FETI/FETINL', RANG,'> INVERSION (GITGI)-1*E'

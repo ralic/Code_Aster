@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,13 +105,12 @@ C     CE CAS ITYPLO=3 N EST PREVU : DEVELOPPEMENT A FAIRE ...
 
 C     2-  CAS: CHNO -> ASSE :
 C     -----------------------
-      IF (ITYPLO.GE.4) THEN
-        CALL U2MESS('F','ALGORITH_15')
+      CALL ASSERT (ITYPLO.LT.4)
 
 C     3-  CAS: CHNO -> ELNO :
 C         CAS: CHNO -> ELEM (MOYENNE)
 C     --------------------------------
-      ELSE IF ((ITYPLO.EQ.2).OR.(ITYPLO.EQ.1)) THEN
+      IF ((ITYPLO.EQ.2).OR.(ITYPLO.EQ.1)) THEN
         IF (ITYPLO.EQ.2) THEN
           MOYENN=.FALSE.
         ELSE

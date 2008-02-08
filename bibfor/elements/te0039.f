@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ C     ------------------------------------------------------------------
       PARAMETER (NBRES=4)
 
       CHARACTER*2  BL2,CODRES(NBRES)
-      CHARACTER*8  NOMRES(NBRES),NOMPAR,MATERI
+      CHARACTER*8  NOMRES(NBRES),NOMPAR,MATERI,NOMAIL
       CHARACTER*16 CH16
 
       REAL*8   VALRES(NBRES),MATK(78),ALFAY,ALFAZ,XNU,XL,XIZ,XIY2,XIY
@@ -81,7 +81,7 @@ C     ------------------------------------------------------------------
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
-      INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN
+      INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN,IADZI,IAZK24
       INTEGER  NEQ1
       INTEGER  INBF,JACF,IPOS,ICP,NBFIG,NBGF,NCARFI,IG,NUGF
       INTEGER  ISDCOM,ICOMPO
@@ -401,8 +401,9 @@ C              --- COORDONNEES DES NOEUDS ---
      &                    (ZR(LX+5)-ZR(LX+2))**2 +
      &                    (ZR(LX+6)-ZR(LX+3))**2 )
                IF (XL.EQ.ZERO) THEN
-                  CH16 = ' ?????????'
-                  CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+                 CALL TECAEL(IADZI,IAZK24)
+                 NOMAIL = ZK24(IAZK24-1+3)(1:8)
+                 CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
                END IF
                CALL JEVECH('PCAARPO','L',LRCOU)
                RAD = ZR(LRCOU)

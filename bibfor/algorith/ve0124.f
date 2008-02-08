@@ -1,6 +1,6 @@
       SUBROUTINE VE0124 ( )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,12 +108,6 @@ C
          IF ( N1 .EQ. 0 ) THEN
             CALL U2MESS('E','ALGORITH11_18')
          ENDIF
-         DO 706 K = 1,IOCC
-            CALL GETVR8 ( 'PERM_CHAM', 'TRAN' , K,1,0, R8BID, N1 )
-            IF ( N1 .NE. -3 ) THEN
-               CALL U2MESS('E','ALGORITH11_19')
-            ENDIF
- 706     CONTINUE
       ENDIF
 C
       END

@@ -1,6 +1,6 @@
       SUBROUTINE TPSVIL(TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC,NITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,9 +64,7 @@ C
 
 C----CALCUL DE F1,FP1-------------------------------------------
 
-        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN
-         CALL U2MESS('F','ALGORITH3_73')
-        ENDIF
+        CALL ASSERT((1+(CTPS*TPS*FLUPHI)).GT.0.D0)
 
         F1 = LOG(1+CTPS*TPS*FLUPHI)
         FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)
@@ -108,9 +106,7 @@ C
 C
 C----CALCUL DE F1,FP1-------------------------------------------
 C
-        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN
-           CALL U2MESS('F','ALGORITH3_73')
-        ENDIF
+        CALL ASSERT ((1+(CTPS*TPS*FLUPHI)).GT.0.D0)
 
         F1 = LOG(1+CTPS*TPS*FLUPHI)
         FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)

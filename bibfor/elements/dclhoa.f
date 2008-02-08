@@ -5,7 +5,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,9 +83,7 @@ C ======================================================================
           IRB=IR+1
           IF(IR-IA .GT. IB-IR) THEN
             IF(IA.LT.IRA) THEN
-              IF(KOPF .GE. LGPILE ) THEN
-                CALL U2MESS('F','ELEMENTS_23')
-              ENDIF
+              CALL ASSERT(KOPF .LT. LGPILE )
               KOPF=KOPF+1
               IPIL1(KOPF)=IA
               IPIL2(KOPF)=IRA
@@ -93,9 +91,7 @@ C ======================================================================
             IA=IRB
           ELSE
             IF(IRB.LT.IB) THEN
-              IF(KOPF .GE. LGPILE ) THEN
-                CALL U2MESS('F','ELEMENTS_23')
-              ENDIF
+              CALL ASSERT(KOPF .LT. LGPILE )
               KOPF=KOPF+1
               IPIL1(KOPF)=IRB
               IPIL2(KOPF)=IB

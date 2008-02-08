@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF algorith7 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,7 +191,7 @@ cata_msg = {
 """),
 
 43 : _("""
-  reac_iter negatif
+  REAC_ITER négatif
 """),
 
 44 : _("""
@@ -316,9 +316,13 @@ cata_msg = {
  elements isoparamétriques 3D non disponibles en grandes rotations
 """),
 
+72 : _("""
+ seule une loi de comportement élastique isotrope est valide pour
+ le calcul de DG
+"""),
 
 73 : _("""
- le tenseur EPSEQ=0 on a donc une derivée DEPSEQ très grande !
+ le tenseur EPSEQ vaut  0 on a donc une derivée lagrangienne DEPSEQ très grande !
 """),
 
 74 : _("""
@@ -333,20 +337,24 @@ cata_msg = {
  développement non implanté
 """),
 
-79 : _("""
- N doit etre > 0
+78 : _("""
+ FETI et frottement incompatibles !
 """),
 
-80 : _("""
- PHI_ZERO < ou = à zéro
+79: _("""
+ loi de comportement avec irradiation, le paramètre N doit etre supérieur à 0
 """),
 
-81 : _("""
- 1/k et l doivent etre >=0
+80: _("""
+ loi de comportement avec irradiation, le paramètre PHI_ZERO doit etre supérieur à 0
 """),
 
-82 : _("""
- PHI/KPHI0+L=0 et BETA<0
+81: _("""
+ loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit etre supérieur ou égal à 0
+"""),
+
+82: _("""
+ loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramètre BETA doit être positif ou nul
 """),
 
 83 : _("""
@@ -363,6 +371,34 @@ cata_msg = {
 
 86 : _("""
  fonctionnalite modifiée (dvlp)
+"""),
+
+89 : _("""
+ contact et recherche linéaire peuvent poser des problèmes de convergence
+"""),
+
+90 : _("""
+ la combinaison: contact-frottement et solveur GCPC n'est pas disponible.
+"""),
+
+91 : _("""
+ contact méthode continue et recherche linéaire sont incompatibles
+"""),
+
+92 : _("""
+ contact méthode continue et pilotage sont incompatibles
+"""),
+
+93 : _("""
+ la combinaison: méthode continue en contact et solveur GCPC n'est pas disponible.
+"""),
+
+94 : _("""
+ LIAISON_UNILATER et PILOTAGE sont des fonctionnalités incompatibles
+"""),
+
+95 : _("""
+ LIAISON_UNILATER et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
 96 : _("""

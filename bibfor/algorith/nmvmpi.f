@@ -2,7 +2,7 @@
      &                  OPTION,MATRIC,CARCRI,SIGP,VIP,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,51 +119,46 @@ C
          DP0 = 0.D0
 C        EXAMEN DE LA SOLUTION X = 0
          F0 = NMCRI7(DP0)
+         CALL ASSERT((ABS(F0).GT.R8MIEM()).AND.(F0.LE.0.D0))
 
-         IF (ABS(F0).LE.R8MIEM())THEN
-            CALL U2MESS('F','ALGORITH8_78')
-         ELSEIF (F0.GT.0.D0) THEN
-            CALL U2MESS('F','ALGORITH8_78')
-         ELSE
 
-            PREC=CARCRI(3)
-            NITER=CARCRI(1)
-            NITMAX = INT ( NITER)
+         PREC=CARCRI(3)
+         NITER=CARCRI(1)
+         NITMAX = INT ( NITER)
 
-            DP1 = SEUIL/EA
+         DP1 = SEUIL/EA
 
-            CALL ZEROFC(NMCRI7,DP0,DP1,NITMAX,PREC,DP,IRET,NIT)
-            IF (IRET.NE.0) THEN
-               CALL NMMESS('F',DP0,DP1,DP,NMCRI7,NIT,NITMAX,IRET)
-            ENDIF
-
-            NX=NE*RP/(RP+EA*DP)
-            MY=MYE*RP/(RP+EIY*DP*NP*NP*AY)
-            MZ=MZE*RP/(RP+EIZ*DP*NP*NP*AZ)
-            MX=MXE*RP/(RP+GJX*DP*NP*NP*AX)
-            DNX = NX-SIGM(1)
-            DMY = MY-SIGM(2)
-            DMZ = MZ-SIGM(3)
-            DMX = MX-SIGM(4)
-            DEPSXP=DEPS(1)-DNX/EA
-            DQSIYP=DEPS(2)-DMY/EIY
-            DQSIZP=DEPS(3)-DMZ/EIZ
-            DQSIXP=DEPS(4)-DMX/GJX
-
-            SIGP(1)=NX
-            SIGP(2)=MY
-            SIGP(3)=MZ
-            SIGP(4)=MX
-
-           VIP(1) = DEPSXP+VIM(1)
-           VIP(2) = DQSIYP+VIM(2)
-           VIP(3) = DQSIZP+VIM(3)
-           VIP(4) = DQSIXP+VIM(4)
-           VIP(5) = DP+VIM(5)
-           VIP(6) = ABS(DQSIYP)+VIM(6)
-           VIP(7) = ABS(DQSIZP)+VIM(7)
-
+         CALL ZEROFC(NMCRI7,DP0,DP1,NITMAX,PREC,DP,IRET,NIT)
+         IF (IRET.NE.0) THEN
+           CALL NMMESS('F',DP0,DP1,DP,NMCRI7,NIT,NITMAX,IRET)
          ENDIF
+
+         NX=NE*RP/(RP+EA*DP)
+         MY=MYE*RP/(RP+EIY*DP*NP*NP*AY)
+         MZ=MZE*RP/(RP+EIZ*DP*NP*NP*AZ)
+         MX=MXE*RP/(RP+GJX*DP*NP*NP*AX)
+         DNX = NX-SIGM(1)
+         DMY = MY-SIGM(2)
+         DMZ = MZ-SIGM(3)
+         DMX = MX-SIGM(4)
+         DEPSXP=DEPS(1)-DNX/EA
+         DQSIYP=DEPS(2)-DMY/EIY
+         DQSIZP=DEPS(3)-DMZ/EIZ
+         DQSIXP=DEPS(4)-DMX/GJX
+
+         SIGP(1)=NX
+         SIGP(2)=MY
+         SIGP(3)=MZ
+         SIGP(4)=MX
+
+         VIP(1) = DEPSXP+VIM(1)
+         VIP(2) = DQSIYP+VIM(2)
+         VIP(3) = DQSIZP+VIM(3)
+         VIP(4) = DQSIXP+VIM(4)
+         VIP(5) = DP+VIM(5)
+         VIP(6) = ABS(DQSIYP)+VIM(6)
+         VIP(7) = ABS(DQSIZP)+VIM(7)
+
       ENDIF
 
 C     CALCUL DE LA MATRICE TANGENTE ELEMENTAIRE :

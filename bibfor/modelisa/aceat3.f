@@ -9,7 +9,7 @@
       REAL*8  ANGL1(3),ANGL2(3),ANGL3(3),EPSI,ANGL4(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -233,7 +233,8 @@ C              MODI_METRIQUE
                ELSEIF (NMMT(NUMMAI).EQ.1) THEN
                   ICOUD2=ICOUDE
                ELSE
-                  CALL U2MESS('F','MODELISA_26')
+                  CALL JENUNO(JEXNUM(MLGNMA,NUMMAI),NOMMAI)
+                  CALL U2MESK('F','MODELISA_26',1,NOMMAI)
                ENDIF
 
                ZR(JDVLVO-1+ICMP+1) = ICOUD2

@@ -4,7 +4,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,19 +126,6 @@ C
      &               NOMPAR,VALPAF,1,NOMC(14),MATERF(9,2),CERR(14),BL2)
         IF ( CERR(14).NE. 'OK' ) MATERF(9,2) = -1.D0
 C
-C -     VERIFICATION DU COEFFICIENT DE LIMITE D'ELASTICITE
-C
-        IF ( MATERD(6,2).LE.0.D0.OR.MATERD(6,2).GE.100.D0 ) THEN
-           CALL U2MESS('F','ALGORITH_49')
-        ENDIF
-C
-C -     VERIFICATION DE LA LONGUEUR CARACTERISTIQUE
-C
-        IF ( CERR(14).EQ. 'OK' ) THEN
-           IF ( MATERD(9,2).LE.0.D0 ) THEN
-              CALL U2MESS('F','ALGORITH_50')
-           ENDIF
-        ENDIF
 C
         MATERD(6,2) = MATERD(6,2) * 0.01D0
         MATERF(6,2) = MATERF(6,2) * 0.01D0

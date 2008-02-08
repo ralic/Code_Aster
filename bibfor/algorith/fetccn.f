@@ -1,7 +1,7 @@
       SUBROUTINE FETCCN(CHAMN1,CHAMN2,CHAMN3,CHAMN4,TYPCUM,CHAMNR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,9 +168,7 @@ C----------------------------------------------------------------------
               ZR(JR+K) = ZR(J1+K) + ZR(J2+K) + ZR(J3+K) + ZR(J4+K)
     6       CONTINUE
           ELSE
-            VALI = TYPCUM
-            CALL U2MESG('A', 'ALGORITH12_96',0,' ',1,VALI,0,0.D0)
-            CALL U2MESS('F','MODELISA_67')
+            CALL ASSERT(.FALSE.)
           ENDIF
 C MONITORING
           IF ((INFOFE(1:1).EQ.'T').AND.(NBSD.GT.0)) THEN

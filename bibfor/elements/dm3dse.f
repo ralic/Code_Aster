@@ -1,7 +1,7 @@
       SUBROUTINE DM3DSE(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,REPERE,XYZGAU,
      &                  D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C -----  VARIABLES LOCALES
 
       CHARACTER*2 CODRET(NBRES)
       CHARACTER*8 NOMRES(NBRES),NOMPAR
-      CHARACTER*16 PHENOM,PHESEN
+      CHARACTER*16 PHENOM,PHESEN,VALK(2)
 
       REAL*8 VALRES(NBRES),VALPAR
       REAL*8 PASSAG(6,6),DORTH(6,6),WORK(6,6)
@@ -108,8 +108,11 @@ C ---- RECUPERATION DU MATERIAU DERIVE SI SENSIBILITE
 C      ----------------------------------------------
       CALL JEVECH('PMATSEN','L',IMATSE)
       CALL RCCOMA(ZI(IMATSE),'ELAS',PHESEN,CODRET)
-      IF (PHESEN.NE.PHENOM) CALL U2MESS('F','ELEMENTS_38')
-
+      IF (PHESEN.NE.PHENOM) THEN
+        VALK(1)=PHESEN
+        VALK(2)=PHENOM      
+        CALL U2MESK('F','ELEMENTS_38',2,VALK)
+      ENDIF
 C      ------------
 C ---- CAS ISOTROPE
 C      ------------
@@ -495,6 +498,7 @@ C ----    D_GLOB = PASSAG_T * D_ORTH * PASSAG
 C ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 C ----     DE PASSAGE N'EST PAS L'IDENTITE)
 C        ----------------------------------
+        CALL ASSERT((IREP.EQ.1).OR.(IREP.EQ.0))
         IF (IREP.EQ.1) THEN
           CALL UTBTAB('ZERO',6,6,DORTH,PASSAG,WORK,D)
         ELSE IF (IREP.EQ.0) THEN
@@ -503,8 +507,6 @@ C        ----------------------------------
               D(I,J) = DORTH(I,J)
    30       CONTINUE
    40     CONTINUE
-        ELSE
-          CALL U2MESS('F','ELEMENTS_22')
         END IF
 
 C      -----------------------
@@ -687,6 +689,7 @@ C ----    D_GLOB = PASSAG_T * D_ORTH * PASSAG
 C ----    (ON NE FAIT REELLEMENT LE PRODUIT QUE SI LA MATRICE
 C ----     DE PASSAGE N'EST PAS L'IDENTITE)
 C        ----------------------------------
+        CALL ASSERT((IREP.EQ.1).OR.(IREP.EQ.0))
         IF (IREP.EQ.1) THEN
           CALL UTBTAB('ZERO',6,6,DORTH,PASSAG,WORK,D)
         ELSE IF (IREP.EQ.0) THEN
@@ -695,8 +698,6 @@ C        ----------------------------------
               D(I,J) = DORTH(I,J)
    50       CONTINUE
    60     CONTINUE
-        ELSE
-          CALL U2MESS('F','ELEMENTS_22')
         END IF
 
       ELSE

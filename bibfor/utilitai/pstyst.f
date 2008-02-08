@@ -6,7 +6,7 @@ C     PARAMETRE SENSIBLE - TYPE DE SENSIBILITE - SOUS-TYPE
 C     *         *          **                    *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,9 +167,8 @@ C
 C
 C       SI ON ARRIVE ICI, IL Y A ERREUR : AUCUN TYPE N'A PU ETRE TROUVE
 C
-        CALL JEVEUO ( LIVALE, 'L', ADVALE )
-        CALL U2MESK('A','SENSIBILITE_99',1,ZK80(ADVALE+IAUX-1))
-        CALL U2MESS('F','MODELISA_67')
+
+        CALL ASSERT(.FALSE.)
 C
    11 CONTINUE
 C

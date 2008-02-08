@@ -2,7 +2,7 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,11 +63,9 @@ C =====================================================================
      &         OPTION     .EQ.'RAPH_MECA'
       RIGI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
      &         OPTION(1:9).EQ.'RIGI_MECA'
-      IF ( (OPTION(1:9).NE.'RIGI_MECA') .AND.
-     &     (OPTION(1:9).NE.'FULL_MECA') .AND.
-     &     (OPTION     .NE.'RAPH_MECA') )  THEN
-         CALL U2MESS('F','ALGORITH4_47')
-      ENDIF
+      CALL ASSERT ( (OPTION(1:9).EQ.'RIGI_MECA') .OR.
+     &     (OPTION(1:9).EQ.'FULL_MECA') .OR.
+     &     (OPTION     .EQ.'RAPH_MECA') ) 
 C =====================================================================
 C --- AFFECTATION DES VARIABLES ---------------------------------------
 C =====================================================================

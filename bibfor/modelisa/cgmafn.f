@@ -1,6 +1,6 @@
       SUBROUTINE CGMAFN (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,9 +134,9 @@ C     ---------------------------
            VALI (1) = IOCC
            CALL U2MESG('F+','MODELISA9_36',1,VALK,1,VALI,0,0.D0)
            IF ( NDIM .EQ. 2 ) THEN
-             CALL U2MESG('F+','MODELISA9_37',0,' ',0,0,0,0.D0)
+             CALL U2MESG('F+','MODELISA9_24',0,' ',0,0,0,0.D0)
            ELSE
-             CALL U2MESG('F+','MODELISA9_38',0,' ',0,0,0,0.D0)
+             CALL U2MESG('F+','MODELISA9_25',0,' ',0,0,0,0.D0)
            ENDIF
            VALI (1) = ABS(NV)
            VALI (2) = NDIM
@@ -154,9 +154,9 @@ C     ---------------------------
            VALI (1) = IOCC
            CALL U2MESG('F+','MODELISA9_40',1,VALK,1,VALI,0,0.D0)
            IF ( NDIM .EQ. 2 ) THEN
-             CALL U2MESG('F+','MODELISA9_41',0,' ',0,0,0,0.D0)
+             CALL U2MESG('F+','MODELISA9_24',0,' ',0,0,0,0.D0)
            ELSE
-             CALL U2MESG('F+','MODELISA9_42',0,' ',0,0,0,0.D0)
+             CALL U2MESG('F+','MODELISA9_25',0,' ',0,0,0,0.D0)
            ENDIF
            VALI (1) = ABS(NV)
            VALI (2) = NDIM1

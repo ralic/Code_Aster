@@ -4,7 +4,7 @@
       INTEGER             NUNOE, NUDDL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C
       CALL JEVEUO ( PRNO//'.NUEQ', 'L', JNUEQ )
 C
       NEC = NBEC( GD )
-      IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
+      CALL ASSERT ( NEC .LE. 10 )
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
       CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K8B)
       DO 10 IEC = 1 , NEC

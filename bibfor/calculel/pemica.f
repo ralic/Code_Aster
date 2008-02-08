@@ -5,7 +5,7 @@
       REAL*8                       VR(*),           ORIG(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,9 +99,7 @@ C           --- NOMBRE D'ELEMENTS DANS LE MODE LOCAL ---
             FIRST = .FALSE.
          ENDIF
  10   CONTINUE
-      IF (LONGT.GT.LONG) THEN
-         CALL U2MESS('F','CALCULEL3_55')
-      ENDIF
+      CALL ASSERT(LONGT.LE.LONG)
 C
 C     -- ON MET A ZERO LE VECTEUR "VSCAL":
       IF (SCAL(1:1).EQ.'R') THEN

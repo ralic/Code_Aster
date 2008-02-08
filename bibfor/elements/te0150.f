@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       VALPAR(3),VALRES(NBRES)
       CHARACTER*2  CODRES(NBRES)
       CHARACTER*4  FAMI
-      CHARACTER*8  NOMPAR(3),NOMRES(NBRES),MATERI
+      CHARACTER*8  NOMPAR(3),NOMRES(NBRES),MATERI,NOMAIL
       CHARACTER*16 CH16
       REAL*8       E   ,  NU  , G
       REAL*8       A   ,  XIY ,  XIZ ,  ALFAY ,  ALFAZ ,  XJX ,  EZ,  EY
@@ -81,7 +81,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       KENDOG,KDESSI,SECH,HYDR,INSTAN,SECHG(3),HYDRG(3),SREF
       INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS
       INTEGER      IVF,IDFDX,JGANO
-      INTEGER      ICOMPO,ISDCOM,NBGFMX
+      INTEGER      ICOMPO,ISDCOM,NBGFMX,IADZI,IAZK24
 C
       DATA NOMRES / 'E', 'NU' /
 C     ------------------------------------------------------------------
@@ -168,8 +168,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
      &           (ZR(LX+5)-ZR(LX+2))**2 +
      &           (ZR(LX+6)-ZR(LX+3))**2 )
       IF( XL .EQ. ZERO ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
 C     --- RECUPERATION DES ORIENTATIONS ---

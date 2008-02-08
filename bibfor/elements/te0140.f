@@ -1,6 +1,6 @@
       SUBROUTINE TE0140(OPTION,NOMTE)
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER LVECT,LVAPR,NDDL,NL
+      INTEGER LVECT,LVAPR,NDDL,NL,IADZI,IAZK24
       INTEGER I, IMATE, J, LMAT, LORIEN, LRCOU
       INTEGER LX, NBPAR, NBRES, NC, NNO, LSECT,IRET
       PARAMETER (NDDL=12,NL=NDDL*(NDDL+1)/2)
@@ -68,7 +68,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 R8PREM
       CHARACTER*2 CODRES(NBRES),DERIVE
       CHARACTER*4 FAMI
-      CHARACTER*8 NOMPAR,NOMRES(NBRES)
+      CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMAIL
       CHARACTER*16 OPTI, CH16
       REAL*8 PGL(3,3),PGL1(3,3),PGL2(3,3),KLV(78),KGV(NL),WK(NDDL,NDDL)
       REAL*8       A,XIY,XIZ,ALFAY,ALFAZ,XJX,XJG,EZ,EY,MAT(105)
@@ -234,8 +234,9 @@ C     --- COORDONNEES DES NOEUDS ---
      &              (ZR(LX+5)-ZR(LX+2))**2 +
      &              (ZR(LX+6)-ZR(LX+3))**2 )
          IF (XL.EQ.ZERO) THEN
-            CH16 = ' ?????????'
-            CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3)(1:8)
+           CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
          ENDIF
          DO 20 I = 1 , 105
             MAT(I) = 0.D0

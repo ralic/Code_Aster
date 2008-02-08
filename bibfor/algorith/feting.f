@@ -2,7 +2,7 @@
      &                  RANG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -154,15 +154,9 @@ C NUMERO D'EQUATION CORRESPONDANTE
                   ENDIF
 
 C TESTS DE VALIDITE POUR VERIFIER QUE LES COMPOSANTES SONT PAR ORDRE
-C CROISSANT (RENUMEROTATION MD, MDA ET METIS)         
-                  IF (IAUX3.LT.ICMP) THEN
-                    VALI (1) = IAUX2
-                    VALI (2) = IDD
-      CALL U2MESG('F', 'ALGORITH13_13',0,' ',2,VALI,0,0.D0)
-                  ELSE IF (IAUX3.GT.ICMP) THEN
-                    ICMP=IAUX3                            
-                  ENDIF
-              
+C CROISSANT (RENUMEROTATION MD, MDA ET METIS)
+                  CALL ASSERT(IAUX3.GE.ICMP)     
+                  ICMP=IAUX3                            
                   NBCMP=NBCMP+1
                 ENDIF
               ENDIF

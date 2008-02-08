@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C-----------------------------------------------------------------------
      &               TYPMA, HSR,MATM,
      &               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
      &               TOLER, NDT, NDI, NRV, NVI, VIND ,TOUTMS)
-      IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
+      CALL ASSERT(NDT.EQ.NB.OR.NVI.EQ.NI.OR.NRV.EQ.NR)
       IF ((IRET2+IRET3).EQ.0) THEN
         EPSTHP = MATE(3,1)*(TP-TREF)
         EPSTHM = MATM(3,1)*(TM-TREF)
@@ -245,9 +245,7 @@ C REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
        IF (.NOT.CPLAN) THEN
          CALL NMVEND(FAMI,KPG,KSP,MATM,MATE,NMAT,DT,EPSM,DEPS,SIGM,VIM,
      &               NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,IER)
-         IF (IER.GT.0) THEN
-         CALL U2MESS('A','ALGORITH8_65')
-         ENDIF
+         IF (IER.GT.0) GOTO 801
        ENDIF
       ENDIF
       ENDIF
@@ -267,7 +265,7 @@ C
      &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
      &                  RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
 
-         IF (IER.NE.0) GOTO 803
+         IF (IER.NE.0) GOTO 801
 C
 C-- 2.1. RESOLUTION DU SYSTEME
 C               DRBDB(NB,NB) DRBDP(NB,NP)   DB(NB)    -RB(NB)
@@ -363,7 +361,7 @@ C         IF (OPTION(1:9).EQ.'FULL_MECA') THEN
      &                    DRBDE, DRPDE, DSGDE, DSGDB, DSGDP,
      &                    NP, NB, NR, DSIDEP)
             ELSE
-              GOTO 802
+              CALL ASSERT(.FALSE.)
             ENDIF
           ENDIF
 C         ENDIF
@@ -373,7 +371,7 @@ C-- RIGIDITE TANGENTE (RIGI_MECA_TANG) -> MATRICE ELASTIQUE
           IF (TYPMA.EQ.'COHERENT') THEN
              CALL LCEQMN(NB, HOOK, DSIDEP)
           ELSE
-             GOTO 802
+             CALL ASSERT(.FALSE.)
           ENDIF
 C        ENDIF
 
@@ -408,18 +406,7 @@ C
 C
 C-- ERREURS
 C
- 800  CONTINUE
-            CALL U2MESS('F','ALGORITH8_68')
-      GOTO 900
  801  CONTINUE
       IRET = 1
-      GOTO 900
- 802  CONTINUE
-            CALL U2MESS('F','ALGORITH8_69')
-      GOTO 900
- 803  CONTINUE
-      CALL U2MESS('A','ALGORITH8_70')
-      IRET = 1
-      GOTO 900
  900  CONTINUE
       END

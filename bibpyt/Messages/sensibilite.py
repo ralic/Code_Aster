@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF sensibilite Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,18 +194,20 @@ cata_msg = {
  la structure nosimp est introuvable dans la memorisation inpsco
 """),
 
-84 : _("""
- mauvaise valeur pour %(k1)s : il faut entre %(i1)d et %(i2)d mais on a donné %(i3)d 
-"""),
 
-85 : _("""
- probleme de declaration : la chaine %(k1)s est de longueur  %(i1)d 
- on veut y mettre %(k2)s de longueur  %(i2)d 
-"""),
 
-89 : _("""
- Mauvaise valeur pour choix ; il faut 1,2 ou 3, mais pas  %(i1)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 90 : _("""
  La dérivée de %(k1)s par rapport à %(k2)s est déja nommée.
@@ -239,12 +241,10 @@ Mémorisation des données de la sensibilité :
    Les listes des mots-clés, des valeurs et mots-clés facteurs doivent etre de meme longueur.
 """),
 
-98 : _("""
- Dans le programme %(k1)s, le paramètre de sensibilité %(k2)s est introuvable.   
-"""),
 
-99 : _("""
- Impossible de trouver un sous-type de sensibilité pour l'influence de %(k1)s 
-"""),
+
+
+
+
 
 }

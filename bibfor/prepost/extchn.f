@@ -9,7 +9,7 @@
       CHARACTER*(*)       MCF
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -189,14 +189,13 @@ C
       EPSI = 1.0D-6
 C
       CALL JELIRA ( NVALCH, 'TYPE', IBID, TYPE )
+      CALL ASSERT((TYPE(1:1).EQ.'R').OR.(TYPE(1:1).EQ.'C'))
       IF ( TYPE(1:1) .EQ. 'R' ) THEN
          CALL JEVEUO(NVALCH,'L',AVALCH)
       ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
          NOMVEC = 'EXTCHN.VECTEUR'
          CALL RVRECU ( MCF, IOCC, NCHMNO, NCHMNN, SENSOP, NOMVEC )
          CALL JEVEUO(NOMVEC,'L',AVALCH)
-      ELSE
-         CALL U2MESS('F','PREPOST_37')
       ENDIF
       CALL JEVEUO(NDESCH,'L',ADESCH)
       CALL JEVEUO(NREFCH,'L',AREFCH)

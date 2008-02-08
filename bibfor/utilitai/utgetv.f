@@ -1,7 +1,7 @@
       SUBROUTINE UTGETV ( MOTFAC, MOTCLE, IOCC, NOMVEC, NBVAL, TYPE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,8 +174,7 @@ C     ------------------------------
 
       ELSE
 C     ------------------------------
-        CALL U2MESK('A','UTILITAI5_40',1,TYPE2)
-        CALL U2MESS('F','MODELISA_67')
+        CALL ASSERT(.FALSE.)
       ENDIF
 C
 C====

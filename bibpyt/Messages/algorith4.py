@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith4 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,9 @@ def _(x) : return x
 
 cata_msg = {
 
-
+28 : _("""
+ marquage interdit pour des colonnes de type texte
+"""),
 
 35 : _("""
  rang superieur a dimension vecteur
@@ -61,23 +63,19 @@ cata_msg = {
 """),
 
 45 : _("""
- la modelisation 1d n est pas autorisee
-"""),
-
-46 : _("""
- element: %(k1)s non implante
+ la modelisation 1d n'est pas autorisée
 """),
 
 47 : _("""
- probleme sur le type d option
+ problème sur le type d'option
 """),
 
 48 : _("""
- matrice h non inversible
+ élément à discontinuité avec une loi CZM_EXP : la matrice H est non inversible
 """),
 
 49 : _("""
- modelisation  %(k1)s imcompatible avec la loi beton_double_dp .
+ modélisation  %(k1)s imcompatible avec la loi BETON_DOUBLE_DP.
 """),
 
 50 : _("""
@@ -85,20 +83,20 @@ cata_msg = {
 """),
 
 51 : _("""
-  syt et d_sigm_epsi doivent                        etre specifies sous l operande beton_ecro_line                    dans defi_materiau pour utiliser                                  la loi endo_isot_beton
+  SYT et D_SIGM_EPSI doivent être specifiés sous l'operande BETON_ECRO_LINE dans DEFI_MATERIAU pour utiliser la loi ENDO_ISOT_BETON
 """),
 
 52 : _("""
-  syc ne doit pas etre                valorise pour nu nul dans defi_materiau
+  SYC ne doit pas être valorisé pour NU nul dans DEFI_MATERIAU
 """),
 
 53 : _("""
-  syc doit etre supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT 
+  SYC doit etre supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT 
   dans DEFI_MATERIAU pour prendre en compte le confinement
 """),
 
 54 : _("""
- KSI non inversible
+ loi ENDO_ORTH_BETON : le paramètre KSI n'est pas inversible
 """),
 
 55 : _("""
@@ -135,10 +133,6 @@ cata_msg = {
 
 65 : _("""
   %(k1)s  impossible actuellement
-"""),
-
-66 : _("""
- augmenter NMAT
 """),
 
 68 : _("""

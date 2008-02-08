@@ -3,7 +3,7 @@
       REAL*8    T0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
                CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
      &                                         PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.NE.1) THEN
-                CALL U2MESS('F','ALGORITH3_35')
+                CALL U2MESS('F','ALGORITH3_24')
                ENDIF
             ELSE
                CALL GETVR8('ETAT_INIT','PRECISION',1,1,1,PREC ,NP)

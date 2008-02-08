@@ -1,6 +1,6 @@
       SUBROUTINE CTETAX(BASMOD,NUMA,NBSEC,TETA,NBTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,10 +165,10 @@ C
             NOER=ZI(LLDESC+INOA-1)
             CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',NOER),NOMNOE)
             TYD=TYPDDL(J)
-            CALL U2MESG('E','ALGORITH14_98',0,' ',0,0,0,0.D0)
+            CALL U2MESG('E','ALGORITH14_94',0,' ',0,0,0,0.D0)
             VALK (1) = TYD
             VALK (2) = NOMNOE
-            CALL U2MESG('E','ALGORITH14_97',2,VALK,0,0,0,0.D0)
+            CALL U2MESG('E','ALGORITH14_95',2,VALK,0,0,0,0.D0)
             NOOK=.TRUE.
           ENDIF
 C
@@ -176,17 +176,17 @@ C
             NOER=ZI(LLDESC+INOA-1)
             CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',NOER),NOMNOE)
             TYD=TYPDDL(J)
-            CALL U2MESG('E','ALGORITH14_98',0,' ',0,0,0,0.D0)
+            CALL U2MESG('E','ALGORITH14_94',0,' ',0,0,0,0.D0)
             VALK (1) = TYD
             VALK (2) = NOMNOE
-            CALL U2MESG('E','ALGORITH14_97',2,VALK,0,0,0,0.D0)
+            CALL U2MESG('E','ALGORITH14_95',2,VALK,0,0,0,0.D0)
             NOOK=.TRUE.
           ENDIF
 C
  50     CONTINUE
 C
         IF(NOOK) THEN
-          CALL U2MESG('F','ALGORITH14_98',0,' ',0,0,0,0.D0)
+          CALL U2MESG('F','ALGORITH14_94',0,' ',0,0,0,0.D0)
         ENDIF
 C
         NBDCOU=0

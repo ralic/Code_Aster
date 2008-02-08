@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C
               CALL RSEXCH ( RESU, NSYMB, IAN, NOMCH, IRET )
             ELSEIF ( IRET .EQ. 100 ) THEN
             ELSE
-              CALL U2MESS('F','PREPOST_37')
+              CALL ASSERT(.FALSE.)
             ENDIF
             ANGLE = ZR(JANGL+IAN-1) * R8DGRD()
             CALL REFODE ( K, ANGLE, ZK24(JNCH), ZI(JNHA), ZK8(JTCH),

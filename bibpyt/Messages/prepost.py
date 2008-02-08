@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,9 @@ cata_msg = {
  GROUP_NO :  %(k1)s  inconnu dans le maillage
 """),
 
-3 : _("""
- hors bornes définies dans CESCRE.
-"""),
+
+
+
 
 4 : _("""
  méthode  %(k1)s  illicite
@@ -64,22 +64,15 @@ cata_msg = {
  pas d'intersection trouvée
 """),
 
-22 : _("""
- DELTA négatif
- problème lors de la recherche d'intersection
-"""),
 
-23 : _("""
- pb N2+N3
-"""),
 
-25 : _("""
- problème en dehors des 2 points
-"""),
 
-26 : _("""
- problème N2+N3
-"""),
+
+
+
+
+
+
 
 27 : _("""
  volume négatif
@@ -89,13 +82,12 @@ cata_msg = {
  volume supérieur à 1.d6
 """),
 
-29 : _("""
- TBELZO dépassement
-"""),
 
-30 : _("""
- TBNOZO dépassement
-"""),
+
+
+
+
+
 
 31 : _("""
  structure de données RESULTAT inconnue  %(k1)s 
@@ -118,21 +110,19 @@ cata_msg = {
  pour l'impression du CONCEPT  %(k2)s 
 """),
 
-35 : _("""
- code  %(k1)s  inconnu
-"""),
+
 
 36 : _("""
  le champ de:  %(k1)s  a des éléments ayant des sous-points.
  ces éléments ne seront pas traités.
 """),
 
-37 : _("""
- vraiment desolé
-"""),
+
+
+
 
 38 : _("""
- le vecteur est "AXE_Z" nul.
+ le vecteur défini sous le mot clé ACTION/AXE_Z a une norme nulle.
 """),
 
 46 : _("""
@@ -166,16 +156,16 @@ cata_msg = {
 """),
 
 56 : _("""
- type de maille :  %(k1)s  inconnu de pre_gibi.
+ type de maille :  %(k1)s  inconnu de la commande PRE_GIBI.
 """),
 
 57 : _("""
  nombre d'objets supérieur au maximum autorisé : 99999.
 """),
 
-58 : _("""
- bug !!!
-"""),
+
+
+
 
 59 : _("""
  le maillage GIBI est peut etre erroné :
@@ -250,12 +240,11 @@ cata_msg = {
   incompatibilité entre les GREL
 """),
 
-78 : _("""
- NEC trop grand
-"""),
+
+
 
 79 : _("""
-  nombre de couches > 1 
+  le nombre de couches est supérieur à 1 
 """),
 
 80 : _("""
@@ -285,9 +274,11 @@ cata_msg = {
   il faut imprimer des champs aux noeuds à ce format.
 """),
 
-89 : _("""
- 1  %(k1)s 
-"""),
+
+
+
+
+
 
 90 : _("""
  on ne sait pas imprimer le champ  %(k1)s  au format  %(k2)s 

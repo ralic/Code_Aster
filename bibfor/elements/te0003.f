@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -297,23 +297,20 @@ C------------------------------------------------------------------
 
 C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
       CALL RCCOMA(ZI(IMATE),'THER',PHENOM,CODRET)
-      IF (CODRET.EQ.'OK') THEN
-        IF (PHENOM.EQ.'THER') THEN
-          LNONLI = .FALSE.
-          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',INST,1,'RHO_CP',
-     &               RHOCP, CODRET,'FM')
-          IF (CODRET.NE.'OK') CALL U2MESS('F','ELEMENTS2_62')
-        ELSE IF (PHENOM.EQ.'THER_NL') THEN
-          LNONLI = .TRUE.
-          CALL NTFCMA(ZI(IMATE),IFON)
-          VALI (1) = I
-          VALI (2) = I
-          CALL U2MESG('A', 'ELEMENTS4_91',0,' ',2,VALI,0,0.D0)
-        ELSE
-          CALL U2MESS('F','ELEMENTS2_63')
-        END IF
+      CALL ASSERT(CODRET.EQ.'OK')
+      IF (PHENOM.EQ.'THER') THEN
+        LNONLI = .FALSE.
+        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',INST,1,'RHO_CP',
+     &             RHOCP, CODRET,'FM')
+        IF (CODRET.NE.'OK') CALL U2MESS('F','ELEMENTS2_62')
+      ELSE IF (PHENOM.EQ.'THER_NL') THEN
+        LNONLI = .TRUE.
+        CALL NTFCMA(ZI(IMATE),IFON)
+        VALI (1) = I
+        VALI (2) = I
+        CALL U2MESG('A', 'ELEMENTS4_91',0,' ',2,VALI,0,0.D0)
       ELSE
-        CALL U2MESS('F','ELEMENTS2_64')
+        CALL U2MESS('F','ELEMENTS2_63')
       END IF
       IF (TABNIV(4).EQ.2) THEN
         WRITE (IFM,*) 'PHENOM ',PHENOM
@@ -410,11 +407,8 @@ C TEMPM/P T-/+ AU POINT DE GAUSS
             TEMPP = TEMPP + ZR(ITEMP+I1)*FFORME
    30     CONTINUE
           DELTAT = INST - INSOLD
-          IF (ABS(DELTAT).GT.OVFL) THEN
-            UNSURD = 1.D0/DELTAT
-          ELSE
-            CALL U2MESS('F','ELEMENTS2_65')
-          END IF
+          CALL ASSERT(DELTAT.GT.OVFL)
+          UNSURD = 1.D0/DELTAT
           IF (LNONLI) THEN
 C CAS NON LINEAIRE
 C INTERPOLATION DERIVEE CHAMP D'ENTHALPIE IFON(1) A T- ET T+
@@ -469,11 +463,8 @@ C TRAITEMENT PARTICULIER DU A L'AXI (PART II)
 
 C TRAITEMENT PARTICULIER DU A L'AXI (PART III)
         IF (LAXI) THEN
-          IF (ABS(R).GT.OVFL) THEN
-            UNSURR = 1.D0/R
-          ELSE
-            CALL U2MESS('F','ELEMENTS2_66')
-          END IF
+          CALL ASSERT(ABS(R).GT.OVFL)
+          UNSURR = 1.D0/R
           POIDS = POIDS*R
         END IF
         IF (L2D) THEN

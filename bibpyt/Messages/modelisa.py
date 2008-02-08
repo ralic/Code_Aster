@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,7 +63,7 @@ cata_msg = {
 """),
 
 10 : _("""
- AXE_Z nul
+ la norme de l'axe définie sous le mot clé facteur GRILLE/AXE est nul.
 """),
 
 11 : _("""
@@ -87,7 +87,8 @@ cata_msg = {
 """),
 
 16 : _("""
- si 2 caractéristiques 1 AMOR et 1 RIGI obligatoires
+ vous fournissez deux caractéristiques élémentaires. Il est obligatoire de fournir une caractéristique
+ relative à l'amortissement et une caractéristique relative à la rigidité
 """),
 
 17 : _("""
@@ -110,13 +111,13 @@ cata_msg = {
  le noeud  %(k1)s  éxtremité d'un des discrets n'existe pas dans la surface donnée par GROUP_MA.
 """),
 
-22 : _("""
- NBEXT1.NE.NBEXT2
-"""),
 
-23 : _("""
- NBEXT1.NE.NBPART
-"""),
+
+
+
+
+
+
 
 24 : _("""
   GENE_TUYAU : préciser un seul noeud par tuyau
@@ -128,7 +129,7 @@ cata_msg = {
 """),
 
 26 : _("""
-  PB NMMT 
+  Il y a un probleme lors de l'affectation du mot clé MODI_METRIQUE sur la maille %(k1)s 
 """),
 
 27 : _("""
@@ -151,7 +152,7 @@ cata_msg = {
 """),
 
 31 : _("""
- vous ne pouvez affectee des valeurs de type "DISCRET" au modèle  %(k1)s
+ vous ne pouvez affecter des valeurs de type "DISCRET" au modèle  %(k1)s
  qui ne contient pas un seul élément discret
 """),
 
@@ -181,7 +182,7 @@ cata_msg = {
 """),
 
 37 : _("""
- impossible d"affecter des caractéristiques à des noeuds de ce modèle
+ impossible d'affecter des caractéristiques à des noeuds de ce modèle
  car aucun noeud ne supporte un élément
 """),
 
@@ -343,13 +344,11 @@ cata_msg = {
  section "cercle", vari_sect "constant" la caracteristique "r" est obligatoire
 """),
 
-67 : _("""
- erreur de programmation
-"""),
 
-68 : _("""
- mauvais calcul de nbgrel
-"""),
+
+
+
+
 
 69 : _("""
  occurence  %(k1)s de "barre" (maille  %(k2)s ) ecrasement d un type de geometrie de section par un autre

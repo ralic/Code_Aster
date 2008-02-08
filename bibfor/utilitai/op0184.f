@@ -3,7 +3,7 @@
       INTEGER IER
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -399,7 +399,7 @@ C  ==> LES TE SAVENT CE QU4ILS ONT A FAIRE
         VALR = ZR(JINST)
         CALL U2MESG('I+','UTILITAI8_9',0,' ',1,VALI,1,VALR)
   170 CONTINUE
-      CALL U2MESG('I','UTILITAI8_10',0,' ',0,0,0,0.D0)
+      CALL U2MESG('I','VIDE_1',0,' ',0,0,0,0.D0)
 
       CALL TITRE
 

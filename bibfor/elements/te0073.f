@@ -1,6 +1,6 @@
       SUBROUTINE TE0073(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -235,22 +235,22 @@ C====
           IF (LTEXT) THEN
 
             CALL FOINTE('FM',ZK8(ICOEFH),3,NOMPAR,VALPAR,COENP1,ICODE)
-            IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS3_8')
+            CALL ASSERT (ICODE.EQ.0)
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(ICOEFH),3,NOMPAR,VALPAR,COEN,ICODE)
-              IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS3_9')
+              CALL ASSERT (ICODE.EQ.0)
             ELSE
               COEN = 0.D0
             END IF
 
             VALPAR(3) = ZR(ITEMPS)
             CALL FOINTE('FM',ZK8(ITEX),3,NOMPAR,VALPAR,TEXNP1,ICODE)
-            IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS2_96')
+            CALL ASSERT (ICODE.EQ.0)
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(ITEX),3,NOMPAR,VALPAR,TEXN,ICODE)
-              IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS2_97')
+              CALL ASSERT (ICODE.EQ.0)
             ELSE
               TEXN = 0.D0
             END IF
@@ -284,33 +284,33 @@ C                         ===> DONNEES DU RAYONNEMENT INITIAL
 C SENSIBILITE / UNE DES CARACTERISTIQUES DU RAYONNEMENT
 C                         ===> DONNEES DU RAYONNEMENT DERIVE
             CALL FOINTE('FM',ZK8(IRAY),3,NOMPAR,VALPAR,SIGM1,IER)
-            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_1')
+            CALL ASSERT (IER.EQ.0)
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(IRAY),3,NOMPAR,VALPAR,SIGMN,IER)
-              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_2')
+              CALL ASSERT (IER.EQ.0)
             ELSE
               SIGMN = 0.D0
             END IF
 
             VALPAR(3) = ZR(ITEMPS)
             CALL FOINTE('FM',ZK8(IRAY+1),3,NOMPAR,VALPAR,EPS1,IER)
-            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_3')
+            CALL ASSERT (IER.EQ.0)
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(IRAY+1),3,NOMPAR,VALPAR,EPSN,IER)
-              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_4')
+              CALL ASSERT (IER.EQ.0)
             ELSE
               EPSN = 0.D0
             END IF
 
             VALPAR(3) = ZR(ITEMPS)
             CALL FOINTE('FM',ZK8(IRAY+2),3,NOMPAR,VALPAR,TPF1,IER)
-            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_5')
+            CALL ASSERT (IER.EQ.0)
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(IRAY+2),3,NOMPAR,VALPAR,TPFN,IER)
-              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_6')
+              CALL ASSERT (IER.EQ.0)
             ELSE
               TPFN = 0.D0
             END IF
@@ -320,33 +320,33 @@ C SENSIBILITE / UNE DES CARACTERISTIQUES DU RAYONNEMENT
 C                         ===> DONNEES DU RAYONNEMENT INITIAL
             IF (LSENS .AND. (IRAYS.NE.0)) THEN
               CALL FOINTE('FM',ZK8(IRAYS),3,NOMPAR,VALPAR,SIGM1S,IER)
-              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_1')
+              CALL ASSERT (IER.EQ.0)
               IF (THETA.NE.1.0D0) THEN
                 VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
                 CALL FOINTE('FM',ZK8(IRAYS),3,NOMPAR,VALPAR,SIGMNS,IER)
-                IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_2')
+                CALL ASSERT (IER.EQ.0)
               ELSE
                 SIGMNS = 0.D0
               END IF
 
               VALPAR(3) = ZR(ITEMPS)
               CALL FOINTE('FM',ZK8(IRAYS+1),3,NOMPAR,VALPAR,EPS1S,IER)
-              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_3')
+              CALL ASSERT (IER.EQ.0)
               IF (THETA.NE.1.0D0) THEN
                 VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
                 CALL FOINTE('FM',ZK8(IRAYS+1),3,NOMPAR,VALPAR,EPSNS,IER)
-                IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_4')
+                CALL ASSERT (IER.EQ.0)
               ELSE
                 EPSNS = 0.D0
               END IF
 
               VALPAR(3) = ZR(ITEMPS)
               CALL FOINTE('FM',ZK8(IRAYS+2),3,NOMPAR,VALPAR,TPF1S,IER)
-              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_5')
+              CALL ASSERT (IER.EQ.0)
               IF (THETA.NE.1.0D0) THEN
                 VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
                 CALL FOINTE('FM',ZK8(IRAYS+2),3,NOMPAR,VALPAR,TPFNS,IER)
-                IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_6')
+                CALL ASSERT (IER.EQ.0)
               ELSE
                 TPFNS = 0.D0
               END IF

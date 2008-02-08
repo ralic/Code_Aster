@@ -4,7 +4,7 @@ C     VERIFICATION DE LA SENSIBILITE POUR CALC_NO
 C     **                 **               *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/01/2008   AUTEUR DEBONNIERES P.DE-BONNIERES 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,6 @@ C
 C
 C 0.2. ==> COMMUNS
 C
-C 0.3. ==> VARIABLES LOCALES
-C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'VESECN' )
-C
 C====
 C 1. ON PASSE EN REVUE TOUTES LES OPTIONS
 C====
@@ -84,7 +79,6 @@ C
 C
 C    ------------------------------------------------------------------
       ELSE
-        CALL U2MESK('A','CALCULEL5_37',1,NOMPRO)
         CALL U2MESK('F','CALCULEL3_22',1,OPTION)
       ENDIF
 C

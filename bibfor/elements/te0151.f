@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -55,10 +55,11 @@ C
       REAL*8              VALRES(NBRES)
       CHARACTER*2    CODRES(NBRES)
       CHARACTER*4  FAMI
-      CHARACTER*8  NOMPAR,NOMRES(NBRES)
+      CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL
       CHARACTER*16 CH16
       REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
       REAL*8       PGL1(3,3), PGL2(3,3), EPSTHE
+      INTEGER      IADZI,IAZK24
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E' , 'NU' , 'RHO' /
 C     ------------------------------------------------------------------
@@ -127,8 +128,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
      &  + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
       IF( XL .EQ. ZERO ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
       IF     ( NOMTE .EQ. 'MECA_POU_D_E' )  THEN

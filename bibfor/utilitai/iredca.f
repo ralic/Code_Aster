@@ -3,7 +3,7 @@
       CHARACTER*8         MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
      &               (ABS(ANGL(3)-PI) .LT. TOL)
      &             )
      &           )
-     &   ) CALL U2MESS('F','UTILITAI2_34')
+     &   ) CALL ASSERT(.FALSE.)
 C
         CAS = 0
 C
@@ -191,7 +191,7 @@ C
          DO 22 NUME1 = 1 , NBNOEU
             IF ( INO .EQ. ZI(JNOEU+NUME1-1) ) GOTO 24
  22      CONTINUE
-         CALL U2MESS('F','UTILITAI2_35')
+         CALL ASSERT(.FALSE.)
  24      CONTINUE
          INO = ZI(JNOE2+IMA-1)
          DO 26 NUME2 = 1 , NBNOEU
@@ -219,7 +219,7 @@ C
             CALL U2MESG('E', 'UTILITAI6_39',2,VALK,0,0,0,0.D0)
          ENDIF
  100  CONTINUE
-      IF ( IER .NE. 0 ) CALL U2MESS('F','PREPOST_37')
+      CALL ASSERT ( IER .EQ. 0 )
       CALL JEVEUO ( BAMO//'.TYPE' , 'L' , JTYPE )
       CALL JELIRA ( BAMO//'.TYPE' , 'LONMAX' , NBM , K8B )
       NBMODE = 0
@@ -253,7 +253,7 @@ C
             ENDIF
  106     CONTINUE
  104  CONTINUE
-      IF ( IER .NE. 0 ) CALL U2MESS('F','PREPOST_37')
+      CALL ASSERT ( IER .EQ. 0 )
 C
 C              --- IMPRESSION DES MODES STATIQUES ---
 C
@@ -315,7 +315,7 @@ CCC         ENDIF
          ENDIF
 C --- FIN MOFIF 2
  110  CONTINUE
-      IF ( IER .NE. 0 ) CALL U2MESS('F','PREPOST_37')
+      CALL ASSERT ( IER .EQ. 0 )
 C
 CCC      OPEN(UNIT=IFMS,ACCESS='DIRECT',RECL=4096)
       IF (BINAIR) THEN

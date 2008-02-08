@@ -1,6 +1,6 @@
       SUBROUTINE ASCOVA(DETR,VACHAR,FOMULZ,NPARA,VPARA,TYPRES,CNCHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,16 +120,14 @@ C     ----------------------------------------------------
 C         CALL UTIMS2('ASCOVA 1',K,CHAMNO,1,' ')
           CALL CORICH('L',CHAMNO,IBID,ICHA)
 
-          IF (ICHA.EQ.0) THEN
-            CALL U2MESK('F','ALGORITH_14',1,CHAMNO)
-          ELSE IF (ICHA.LT.-2) THEN
-            CALL U2MESS('F','ALGORITH_15')
-          ELSE IF (ICHA.EQ.-1) THEN
+          CALL ASSERT((ICHA.NE.0).AND.(ICHA.GE.-2))
+
+          IF (ICHA.EQ.-1) THEN
             VALRES = 1.D0
           ELSE IF (ICHA.EQ.-2) THEN
             VALRES = 0.D0
           ELSE
-            IF (ICHA.GT.NCHAR) CALL U2MESS('F','ALGORITH_19')
+            CALL ASSERT(ICHA.LE.NCHAR)
             VALRES = 1.D0
             IF (FCT) CALL FOINTE('F ',ZK24(JFONCT+ICHA-1) (1:8),1,NPARA,
      &                           VPARA,VALRES,IER)
@@ -158,11 +156,9 @@ C     ----------------------------------------------------
           CHAMNO = ZK24(JVEC+K-1) (1:19)
           CALL CORICH('L',CHAMNO,IBID,ICHA)
 
-          IF (ICHA.EQ.0) THEN
-            CALL U2MESK('F','ALGORITH_14',1,CHAMNO)
-          ELSE IF (ICHA.LT.-2) THEN
-            CALL U2MESS('F','ALGORITH_15')
-          ELSE IF (ICHA.EQ.-1) THEN
+          CALL ASSERT((ICHA.NE.0).AND.(ICHA.GE.-2))
+
+          IF (ICHA.EQ.-1) THEN
             VALRE = 1.D0
             VALIM = 0.D0
           ELSE IF (ICHA.EQ.-2) THEN

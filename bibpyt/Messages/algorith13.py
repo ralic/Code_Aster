@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith13 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,16 +22,42 @@ def _(x) : return x
 
 cata_msg = {
 
+2 : _("""
+ erreur dans les données  d'observation
+ le noeud  %(k1)s n'existe pas dans  %(k2)s 
+"""),
 
+3 : _("""
+ erreur dans les données d'observation
+ le GROUP_NO  %(k1)s n'existe pas dans  %(k2)s 
+"""),
 
+4 : _("""
+ erreur dans les données d'observation
+ la maille  %(k1)s n'existe pas dans  %(k2)s 
+"""),
 
+5 : _("""
+ erreur dans les données d'observation
+ le GROUP_MA  %(k1)s n'existe pas dans  %(k2)s 
+"""),
+
+6 : _("""
+ erreur dans les données d'observation
+ pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s 
+"""),
+
+7 : _("""
+ erreur dans les données d'observation
+ pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s et  %(k3)s 
+"""),
 
 8 : _("""
  arret sur maillage non squelette
 """),
 
 10 : _("""
- problème de duplication de matrice :  %(k1)s 
+ problème de duplication de la matrice :  %(k1)s 
 """),
 
 11 : _("""
@@ -80,7 +106,7 @@ cata_msg = {
 """),
 
 28 : _("""
- aucun axe défini
+ aucun axe de rotation défini
 """),
 
 29 : _("""

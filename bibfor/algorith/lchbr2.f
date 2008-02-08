@@ -2,7 +2,7 @@
      &     TR,DEPSM,VIM,VIP,DSPDP1,DSPDP2,SIPM,SIPP,
      &     SIGP,DSIDEP,DSIDP1,DSIDP2,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,11 +132,9 @@ C =====================================================================
      &         OPTION(1:9).EQ.'RAPH_MECA'
       RIGI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
      &         OPTION(1:9).EQ.'RIGI_MECA'
-      IF ( (OPTION(1:9).NE.'RIGI_MECA') .AND.
-     &     (OPTION(1:9).NE.'FULL_MECA') .AND.
-     &     (OPTION(1:9).NE.'RAPH_MECA') )  THEN
-        CALL U2MESS('F','ALGORITH4_47')
-      ENDIF
+      CALL ASSERT ( (OPTION(1:9).EQ.'RIGI_MECA') .OR.
+     &     (OPTION(1:9).EQ.'FULL_MECA') .OR.
+     &     (OPTION(1:9).EQ.'RAPH_MECA') )  
 C =====================================================================
 C --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 C =====================================================================

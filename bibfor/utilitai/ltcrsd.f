@@ -3,7 +3,7 @@
       CHARACTER*(*)       LITAB , BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,9 +38,7 @@ C     ------------------------------------------------------------------
 C DEB------------------------------------------------------------------
 C
       BASELT = BASE(1:1)
-      IF (BASELT.NE.'V' .AND. BASELT.NE.'G') THEN
-         CALL U2MESK('F','UTILITAI2_48',1,BASELT)
-      ENDIF
+      CALL ASSERT ( BASELT.EQ.'V' .OR. BASELT.EQ.'G' )
 C
       LISTAB = LITAB
 C

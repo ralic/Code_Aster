@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF xfem2 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,6 +185,13 @@ cata_msg = {
   -> La norme du vecteur VECT_ORIE est nulle.
   -> Risque & Conseil :
      Veuillez redéfinir VECT_ORIE.
+"""),
+
+39 : _("""
+  -> Deux points du fond de fissure sont très proches ou coincident.
+  -> Risque & Conseil :
+     Vérifier les définitions des level sets et la liste des points du fond
+     de fissure trouvés. Si c'est normal, contactez votre correspondant.
 """),
 
 51 : _("""

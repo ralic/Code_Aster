@@ -4,7 +4,7 @@
      &              IFIV,NBPROC,RANG,K24IRR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -428,17 +428,13 @@ C SI NECESSAIRE
               CALL JEEXIN(JEXNOM(KFLIN,NOMSD),IRETN)
               CALL JEEXIN(JEXNOM(KFCFL,NOMSD),IRETL)
               IF (NBLILI.LE.2) THEN
-                IF ((IRETN.NE.0).OR.(IRETL.NE.0))
-     &            CALL U2MESS('F','ALGORITH3_68')
+                CALL ASSERT((IRETN.EQ.0).AND.(IRETL.EQ.0))
               ELSE
-                IF ((IRETN.EQ.0).AND.(IRETL.EQ.0)) THEN
-                  CALL U2MESS('F','ALGORITH3_69')
-                ELSE
-                  IF (IRETN.NE.0) THEN
-                    CALL JEVEUO(JEXNOM(KFLIN,NOMSD),'L',IKFLIN)
-                    IKFLIN=IKFLIN-1
-                  CALL JELIRA(JEXNOM(KFLIN,NOMSD),'LONMAX',NBCHA,K8BID)
-                  ENDIF
+                CALL ASSERT((IRETN.NE.0).OR.(IRETL.NE.0))
+                IF (IRETN.NE.0) THEN
+                  CALL JEVEUO(JEXNOM(KFLIN,NOMSD),'L',IKFLIN)
+                  IKFLIN=IKFLIN-1
+                CALL JELIRA(JEXNOM(KFLIN,NOMSD),'LONMAX',NBCHA,K8BID)
                 ENDIF
               ENDIF
               DO 90 ILIL=3,NBLILI
@@ -489,7 +485,7 @@ C LIGRL LIGREL TARDIF DUPLIQUE DE PERE LIGR2
                         ENDIF
                       ENDIF
    50               CONTINUE
-                    CALL U2MESS('F','ALGORITH3_70')
+                    CALL ASSERT(.FALSE.)
    55               CONTINUE
 
 C SI LIGREL DUPLIQUE, IL FAUT RETROUVER SON INDICE DANS LE  PRNO GLOBAL
@@ -525,7 +521,7 @@ C VOICI SON NUMERO LOCAL CONCERNANT LE SD
    56                     CONTINUE
                         ENDIF
    60                 CONTINUE
-                      CALL U2MESS('F','ALGORITH3_71')
+                      CALL ASSERT(.FALSE.)
    65                 CONTINUE
                     ELSE
                       KSOL=INO

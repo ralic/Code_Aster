@@ -2,7 +2,7 @@
      &                  INFOFE,NBPROC,LIGRCF)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -651,11 +651,8 @@ C CONSTITUTION OBJET STOCKAGE.FEL1
             CALL JERAZO(K24CF1,NBSD,1)
           ELSE
 C INCOHERENCE QUE POUR LE SEQUENTIEL, CF BOUCLE 150 CI-DESSOUS
-            IF (NBPROC.EQ.1) THEN
-              CALL U2MESK('F','MODELISA4_51',1,K24CF1(1:19))
-            ELSE
-              CALL JEVEUO(K24CF1,'E',IFEL1)
-            ENDIF
+            CALL ASSERT (NBPROC.NE.1)
+            CALL JEVEUO(K24CF1,'E',IFEL1)
           ENDIF
           ZK24(IFEL1+NUMSD-1)=K24CF1(1:19)
 

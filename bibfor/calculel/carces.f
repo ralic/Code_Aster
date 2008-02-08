@@ -1,6 +1,6 @@
       SUBROUTINE CARCES(CARTZ,TYPCES,CESMOZ,BASE,CESZ,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,7 +208,7 @@ C     ------------------------------------------
           DO 100,IPT = 1,NBPT
             DO 90,ISP = 1,NBSP
               CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,CMP2,IAD)
-              IF (IAD.GT.0) CALL U2MESS('F','ALGORITH_19')
+              CALL ASSERT(IAD.LE.0)
               IF (IAD.EQ.0) GO TO 110
 
 

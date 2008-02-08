@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai6 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ cata_msg = {
 
 1 : _("""
 
- la grandeur introduite en operande  ne figure pas dans le catalogue des grandeurs
+ la grandeur introduite en opérande  ne figure pas dans le catalogue des grandeurs
  grandeur %(k1)s
 """),
 
@@ -36,12 +36,12 @@ cata_msg = {
 
 3 : _("""
 
- la liste de composantes et la liste  des valeurs n''ont pas la meme dimension
+ la liste de composantes et la liste  des valeurs n'ont pas la même dimension
  occurence de affe numero  %(i1)d
 """),
 
 4 : _("""
- une composante n''appartient pas a la grandeur
+ une composante n'appartient pas à la grandeur
  occurence de affe numero  %(i1)d
  grandeur   :  %(k1)s
  composante :  %(k2)s
@@ -49,7 +49,7 @@ cata_msg = {
 
 5 : _("""
 
- le nume_ddl en entree ne s''appuie  pas sur la meme grandeur que celle de la commande
+ le nume_ddl en entree ne s'appuie  pas sur la même grandeur que celle de la commande
  grandeur associee au nume_ddl %(k1)s
  grandeur de la commande :  %(k2)s
 """),
@@ -64,13 +64,14 @@ cata_msg = {
 
 8 : _("""
 
- on cherche a affecter sur un noeud une  composante qui n''est pas dans le profil  noeud d''entree
+ on cherche a affecter sur un noeud une  composante qui n'est pas dans le profil  noeud d'entree
  noeud : %(k1)s
  composante : %(k2)s
 """),
 
 11 : _("""
- une composante n''appartient pas a la grandeurgrandeur   :  %(k1)s
+ une composante n'appartient pas à la grandeur
+ grandeur   :  %(k1)s
  composante :  %(k2)s
 """),
 
@@ -91,8 +92,8 @@ cata_msg = {
 """),
 
 15 : _("""
- il faut donner :   - une maille ou un group_ma %(k1)s
-    - un noeud ou un group_no ou un point. %(k2)s
+ il faut donner :   - une maille ou un GROUP_MA %(k1)s
+    - un noeud ou un GROUP_NO ou un point. %(k2)s
 """),
 
 16 : _("""
@@ -124,9 +125,9 @@ cata_msg = {
  il sera tronque:  %(k1)s
 """),
 
-36 : _("""
- erreur de programmationtype de fonction inconnu  %(k1)s
-"""),
+
+
+
 
 37 : _("""
  erreur  la fonction  %(k1)s  a  %(i1)d
@@ -139,21 +140,21 @@ cata_msg = {
 """),
 
 39 : _("""
- erreur dans les donnees   interface de type :  %(k1)s  non valable %(k2)s
+ erreur dans les données   interface de type :  %(k1)s  non valable %(k2)s
 """),
 
 40 : _("""
- erreur dans les donneeson ne retrouve pas le noeud  %(k1)s
+ erreur dans les données, on ne retrouve pas le noeud  %(k1)s
   dans la numerotation %(k2)s
 """),
 
 41 : _("""
- erreur dans les donnees   le noeud :  %(k1)s
+ erreur dans les données   le noeud :  %(k1)s
   n''appartient pas au maillage  %(k2)s
 """),
 
 44 : _("""
- trop d''amortissements modaux   nombre d''amortissements :  %(i1)d
+ trop d'amortissements modaux   nombre d'amortissements :  %(i1)d
     nombre de modes :  %(i2)d
 """),
 
@@ -163,7 +164,7 @@ cata_msg = {
 """),
 
 48 : _("""
- methode de newtonexposant de la loi   = %(r1)f
+ methode de newton exposant de la loi   = %(r1)f
  nombre d''iterations = %(i1)d
  residu fonction = %(r2)f
  residu f/df = %(r3)f
@@ -171,19 +172,20 @@ cata_msg = {
 """),
 
 51 : _("""
- pas de champ correspondant  a l''instant demande.resultat  %(k1)s
- , acces "inst_init" : %(r1)f
+ pas de champ correspondant  à l'instant demandé.
+ resultat  %(k1)s , acces "INST_INIT" : %(r1)f
 """),
 
 52 : _("""
- plusieurs champs correspondant  a l''instant demande.resultat  %(k1)s
- , acces "inst_init" : %(r1)f
- , nombre : %(i1)d
+ plusieurs champs correspondant  a l'instant demande.
+ resultat  %(k1)s
+ acces "INST_INIT" : %(r1)f
+ nombre : %(i1)d
 """),
 
 53 : _("""
 
- le premier instant de rupture  n''est pas dans la liste des instants de calcul
+ le premier instant de rupture  n'est pas dans la liste des instants de calcul
  premier instant de rupture =  %(r1)f
  premier instant de calcul =  %(r2)f
 """),
@@ -196,13 +198,14 @@ cata_msg = {
 """),
 
 55 : _("""
- parametres initiaux de weibullexposant de la loi      = %(r1)f
+ parametres initiaux de weibull
+ exposant de la loi      = %(r1)f
  volume de reference     = %(r2)f
  contrainte de reference = %(r3)f
 """),
 
 56 : _("""
- statistiques recalage :nombre d''iterations = %(i1)d
+ statistiques recalage :nombre d'iterations = %(i1)d
  convergence atteinte = %(r1)f
 """),
 
@@ -219,36 +222,37 @@ cata_msg = {
 """),
 
 60 : _("""
- homogeneite du champ de materiaux pour weibull
+ homogénéité du champ de matériaux pour weibull
  nombre de rc weibull trouvees =  %(i1)d
  les calculs sont valables pour  un seul comportement weibull %(k1)s
  on choisit la premiere relation du type weibull %(k2)s
 """),
 
 61 : _("""
- parametres de la rc weibull_foexposant de la loi      = %(r1)f
+ paramètres de la rc weibull_fo
+ exposant de la loi      = %(r1)f
  volume de reference     = %(r2)f
- &contrainte de reference conventionnelle
-      &= %(r3)f
+ contrainte de référence conventionnelle = %(r3)f
 """),
 
 62 : _("""
- parametres de la rc weibullexposant de la loi      = %(r1)f
+ parametres de la rc weibull
+ exposant de la loi      = %(r1)f
  volume de reference     = %(r2)f
  contrainte de reference = %(r3)f
 """),
 
 68 : _("""
- type de numerotation non connue numerotation: %(k1)s
+ type de numérotation non connue numérotation: %(k1)s
 """),
 
 71 : _("""
- il faut donner :   - une maille ou un group_ma %(k1)s
-    - un noeud ou un group_noou un point %(k2)s
+ il faut donner :   - une maille ou un GROUP_MA %(k1)s
+    - un noeud, un GROUP_NO ou un point %(k2)s
 """),
 
 72 : _("""
- trop de mailles dans le group_ma  maille utilisee:  %(k1)s
+ trop de mailles dans le GROUP_MA  maille utilisée:  %(k1)s
 """),
 
 77 : _("""
@@ -281,25 +285,26 @@ Concept résultat %(k1)s : la variable %(k2)s est inconnue pour le type %(k3)s.
 """),
 
 84 : _("""
- le "nom_para_resu"  %(k1)s n''est pas un parametre du resultat  %(k2)s
+ le "NOM_PARA_RESU"  %(k1)s n'est pas un paramètre du résultat  %(k2)s
 """),
 
 89 : _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
+ erreur dans les données, le paramètre  %(k1)s n'existe pas
 """),
 
 90 : _("""
- erreur dans les donneesparametre non trouve:  %(k1)s
+ erreur dans les donnees, le paramètre %(k1)s n'est pas trouvé 
 """),
 
 93 : _("""
- le parametre  %(k1)s n''existe pas dans la table %(k2)s
+ le paramètre  %(k1)s n'existe pas dans la table %(k2)s
  .il est necessaire. %(k3)s
  veuillez consulter la documentaion  de la commande. %(k4)s
 """),
 
 99 : _("""
- erreur dans les donneesparametre :  %(k1)s   plusieurs valeurs trouvees %(k2)s
+ erreur dans les données
+ parametre :  %(k1)s   plusieurs valeurs trouvees %(k2)s
  pour le parametre  %(k3)s
  et le parametre  %(k4)s
 """),

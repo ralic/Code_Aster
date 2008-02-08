@@ -1,6 +1,6 @@
       SUBROUTINE TE0340(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,11 @@ C
       PARAMETER                 (NBRES=2)
       REAL*8       VALPAR,VALRES(NBRES)
       CHARACTER*2         CODRES(NBRES)
-      CHARACTER*8  NOMPAR,NOMRES(NBRES)
+      CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL
       CHARACTER*16 CH16
       REAL*8       ZERO,UN,DEUX,E,NU,G, PGL(3,3), MAT(105)
       REAL*8       A,XIY,XIZ,ALFAY,ALFAZ,XJX,XJG,EZ,EY,XL
+      INTEGER      IADZI,IAZK24
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU'/
 C     ------------------------------------------------------------------
@@ -101,8 +102,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       XL = SQRT((ZR(LX+4)-ZR(LX+1))**2+ (ZR(LX+5)-ZR(LX+2))**2+
      &     (ZR(LX+6)-ZR(LX+3))**2)
       IF (XL.EQ.ZERO) THEN
-          CH16 = ' ?????????'
-          CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
       DO 20 I = 1 , 105

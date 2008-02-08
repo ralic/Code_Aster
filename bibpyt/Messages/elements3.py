@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF elements3 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,6 +72,9 @@ cata_msg={
  e, nu, alpha dependent de la temperature,                         tgu differente de tgv
 """),
 
+13: _("""
+ le calcul de dg n'a pas ete etendu a la plasticite !
+"""),
 
 16: _("""
  comportement: %(k1)s non implante
@@ -237,6 +240,10 @@ cata_msg={
  erreur dans le calcul de coeh_f
 """),
 
+65: _("""
+ chargements non nuls sur l'axe
+"""),
+
 66: _("""
  option  %(k1)s  inattendue
 """),
@@ -245,7 +252,14 @@ cata_msg={
  element degenere:revoir le maillage
 """),
 
+68: _("""
+ L'option CALC_K_G est incompatible avec les comportements incrémentaux, avec les comportement non
+ linéaires et avec la deformation GREEN.
+"""),
 
+70: _("""
+ il faut affecter les elements de  bord (e et nu) pour le calcul des fic
+"""),
 
 73: _("""
  option de calcul non valide
@@ -309,6 +323,9 @@ cata_msg={
  rcvala ne trouve pas rho, qui est necessaire en dynamique
 """),
 
+88: _("""
+ la masse volumique rho n'a pas ete definie
+"""),
 
 89: _("""
  developpement non realise
@@ -346,11 +363,9 @@ cata_msg={
   nume_couche incorrect
 """),
 
-
-
-
-
-
+96: _("""
+ l'option est incompatible avec les comportements incrementaux ainsi que la deformation green
+"""),
 
 98: _("""
  comportement coeur homogeneise inexistant

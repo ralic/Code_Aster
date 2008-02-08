@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF modelisa9 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,11 +144,11 @@ Conseil :
 28 : _("""
  erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
  pour le mot cle  %(k2)s 
-  le group_no n'existe pas  %(k3)s 
+  le GROUP_NO n'existe pas  %(k3)s 
 """),
 
 29 : _("""
- trop de noeuds dans le group_no mot cle facteur  %(k1)s  occurence  %(i1)d 
+ trop de noeuds dans le GROUP_NO mot cle facteur  %(k1)s  occurence  %(i1)d 
    noeud utilise:  %(k2)s 
 """),
 
@@ -300,15 +300,29 @@ Conseil :
 """),
 
 66 : _("""
+ erreur lors de la definition de la courbe RELA_MZ
+ le premier point de la courbe RELA_MZ %(k1)s a pour abscisse:  %(r1)f 
+ 
 """),
 
 67 : _("""
+ erreur lors de la definition de la courbe RELA_MZ
+ le premier point de la courbe RELA_MZ %(k1)s a pour ordonnee:  %(r1)f 
+ 
 """),
 
 68 : _("""
+ erreur lors de la definition de la courbe RELA_MZ pente initiale :  %(r1)f 
+ pente courante:  %(r2)f 
+ pour l'abscisse:  %(r3)f 
+ 
 """),
 
 69 : _("""
+ Courbe RELA_MZ points presque alignés. Risque de PB dans STAT_NON_LINE, en particulier 
+ en C_PLAN pente initiale :  %(r1)f pente courante:  %(r2)f 
+ precision relative:  %(r3)f pour l'abscisse:  %(r4)f 
+ 
 """),
 
 70 : _("""

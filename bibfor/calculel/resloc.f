@@ -7,7 +7,7 @@
      &                    CHELEM)
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,16 +183,12 @@ C
           CARTE1 = LCHAR(I)//'.CHME.F1D2D'
           CALL DISMOI('F','NOM_GD',CARTE1,'CARTE',IBID,NOMGD1,IER)
           CALL ETENCA(CARTE1,LIGREL,IRET)
-          IF (IRET.NE.0) THEN
-            CALL U2MESS('F','UTILITAI2_62')
-          END IF
+          CALL ASSERT (IRET.EQ.0)
         ELSE IF (IRET2.NE.0) THEN
           CARTE1 = LCHAR(I)//'.CHME.F2D3D'
           CALL DISMOI('F','NOM_GD',CARTE1,'CARTE',IBID,NOMGD1,IER)
           CALL ETENCA(CARTE1,LIGREL,IRET)
-          IF (IRET.NE.0) THEN
-            CALL U2MESS('F','UTILITAI2_62')
-          END IF
+          CALL ASSERT (IRET.EQ.0)
         END IF
 C
 C 2.2. ==> PRESSIONS MECANIQUES
@@ -202,9 +198,7 @@ C
           CARTE2 = LCHAR(I)//'.CHME.PRESS'
           CALL DISMOI('F','NOM_GD',CARTE2,'CARTE',IBID,NOMGD2,IER)
           CALL ETENCA(CARTE2,LIGREL,IRET)
-          IF (IRET.NE.0) THEN
-            CALL U2MESS('F','UTILITAI2_62')
-          END IF
+          CALL ASSERT (IRET.EQ.0)
         END IF
 C
 C 2.3. ==> EN THM, CONDITIONS DE NEUMANN HYDRAULIQUES
@@ -215,9 +209,7 @@ C
             CARTE3 = LCHAR(I)//'.CHME.FLUX'
             CALL DISMOI('F','NOM_GD',CARTE3,'CARTE',IBID,NOMGD3,IER)
             CALL ETENCA(CARTE3,LIGREL,IRET)
-            IF (IRET.NE.0) THEN
-              CALL U2MESS('F','UTILITAI2_62')
-            ENDIF
+            CALL ASSERT (IRET.EQ.0)
           ENDIF
         ENDIF
 C

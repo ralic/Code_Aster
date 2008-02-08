@@ -6,7 +6,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,9 +96,7 @@ C---------------------------------------------
       CALL DDMPFN(NMNBN,NMPLAS,NMDPLA,NMDDPL
      &                 ,NMZEF,NMZEG,NMIEF,NMPROX )
 
-      IF(NMIEF  .GT.  0) THEN
-         CALL U2MESS('F','ELEMENTS_85')
-      ENDIF
+      CALL ASSERT(NMIEF.LE.0)
 
       NDICHO=0
       DO 30, J = 1,6
@@ -177,9 +175,7 @@ C-----------------------------------------------------------------------
           NEWZEF = NEWZFG(1)
           NEWZEG = NEWZFG(2)
 
-          IF (NDICHO  .GT.  10000) THEN
-            CALL U2MESS('F','ELEMENTS_86')
-          ENDIF
+          CALL ASSERT(NDICHO.LE.10000)
           IF(IER .GT. 0) THEN
             DO 110, J = 1,6
               DEPSTE(J) = DEPST2(J)

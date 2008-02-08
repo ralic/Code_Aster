@@ -3,7 +3,7 @@
       INTEGER           IATP2,IREEL,IDHCOL,IDADIA,ILI,JCO
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,9 +58,7 @@ C     -- IREEL COMPTE LES REELS TRAITES:
             GOTO 20
          END IF
 10    CONTINUE
-      IF (ICOEFL.EQ.0 ) THEN
-         CALL U2MESS('F','MODELISA_67')
-      END IF
+      CALL ASSERT (ICOEFL.NE.0 )
 20    CONTINUE
       IREEL = IREEL + 1
       ZI(IATP2-1+(IREEL-1)*2+2) = ICOEFC+ICOEFL

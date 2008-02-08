@@ -3,7 +3,7 @@
       REAL*8   ALPHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,10 +37,7 @@ C DEB ------------------------------------------------------------------
 C
       PI = R8PI()
       UN = 1.D0
-
-      IF (ALPHA .LE. 1.D0) THEN
-         CALL U2MESS('F','ALGORITH3_74')
-      ENDIF
+      CALL ASSERT(ALPHA.GT.1.D0)
 
       GAMMA2 = ALPHA-1.D0
       GAMM1  = 1D0/GAMMA2
@@ -57,7 +54,7 @@ C
          CALL GETRAN ( U )
          Y = BETA*TAN(PI*(U*C1+C2))+GAMMA2
          CALL GETRAN ( UNIF )
-         IF (UNIF.LT.0)  CALL U2MESS('F','ALGORITH3_75')
+         CALL ASSERT (UNIF.GT.0.D0)
          V = -LOG(UNIF)
          VREF = LOG(1+BETA2*((Y-GAMMA2)**2))+GAMMA2*LOG(Y*GAMM1)-Y
      &                                      +GAMMA2

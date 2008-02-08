@@ -1,7 +1,7 @@
       SUBROUTINE NMMABU(NDIM,NNO,AXI,GRAND,DFDI,B)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,8 @@ C ----------------------------------------------------------------------
       CALL R8INIR(18*NNO,0.D0,B,1)
       R2 = SQRT(2.D0)/2.D0
 
+      CALL ASSERT((NDIM.EQ.2).OR.(NDIM.EQ.3))
+
       IF (NDIM.EQ.2) THEN
         DO 10 N = 1,NNO
           B(1,1,N) = DFDI(N,1)
@@ -68,8 +70,6 @@ C ----------------------------------------------------------------------
           B(6,3,N) = R2*DFDI(N,2)
  20     CONTINUE
 
-      ELSE
-        CALL U2MESS('F','ALGORITH8_17')
       END IF
 
       END

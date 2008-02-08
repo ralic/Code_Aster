@@ -1,4 +1,4 @@
-#@ MODIF algorith16 Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith16 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,15 +49,13 @@ cata_msg = {
  noeud de choc  : %(k1)s
 """),
 
-6 : _("""
- sous-structure : %(k1)s
-"""),
 
-7 : _("""
- coordonnees    : x : %(r1)f
-                  y : %(r2)f
-                  z : %(r3)f
-"""),
+
+
+
+
+
+
 
 8 : _("""
  amortissement tangent utilise :  %(r1)f
@@ -150,7 +148,7 @@ cata_msg = {
 """),
 
 20 : _("""
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!mode dynamique           :  %(i1)d
+ mode dynamique           :  %(i1)d
  amortissement trop grand :  %(r1)f
  amortissement critique   :  %(r2)f
  problemes de convergence possibles %(k1)s
@@ -225,8 +223,8 @@ cata_msg = {
  ! le nb de pas d'archive est     :  %(i1)d
 """),
 
-43 : _("""
-"""),
+
+
 
 44 : _("""
  les interfaces de la liaison n'ont pas la meme longueur

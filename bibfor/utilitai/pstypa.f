@@ -4,7 +4,7 @@ C     PARAMETRES SENSIBLES - TYPE DE SENSIBILITE - ARCHIVAGE
 C     *          *           ***                   *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/05/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,10 +127,7 @@ C
 C
    12 CONTINUE
 C
-      VALK(1) = NOMPRO
-      VALK(2) = NOPASE
-      CALL U2MESK('A','SENSIBILITE_98', 2, VALK)
-      CALL U2MESS('F','MODELISA_67')
+      CALL ASSERT(.FALSE.)
 C
 C====
 C 2. ARCHIVAGE

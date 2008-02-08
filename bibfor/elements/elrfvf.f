@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -424,9 +424,7 @@ C     ------------------------------------------------------------------
         CALL ASSERT(.FALSE.)
       END IF
 
+      CALL ASSERT(DIMF.GE.NNO)
 
-      IF (DIMF.LT.NNO) THEN
-        CALL U2MESS('F','ELEMENTS_57')
-      END IF
 
       END

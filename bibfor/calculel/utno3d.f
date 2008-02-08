@@ -2,7 +2,7 @@
      &                  IDFDX,IDFDY,HF,POIDS3,NPGF,NOE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,14 +118,11 @@ C   JACOBIEN
         JAC(IPG) = AUX*POIDS3(IPG)
 
 C NORMALISATION A L'UNITE DES COMPOSANTES DE LA NORMALE
-        IF (ABS(AUX).GT.OVFL) THEN
-          AUX = -1.D0/AUX
-          XN(IPG) = XN(IPG)*AUX
-          YN(IPG) = YN(IPG)*AUX
-          ZN(IPG) = ZN(IPG)*AUX
-        ELSE
-          CALL U2MESS('F','CALCULEL5_17')
-        ENDIF
+        CALL ASSERT(ABS(AUX).GT.OVFL)
+        AUX = -1.D0/AUX
+        XN(IPG) = XN(IPG)*AUX
+        YN(IPG) = YN(IPG)*AUX
+        ZN(IPG) = ZN(IPG)*AUX
   100 CONTINUE
 
 C DIAMETRE DE LA FACE

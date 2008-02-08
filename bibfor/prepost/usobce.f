@@ -6,7 +6,7 @@
       CHARACTER*19        NOMT19
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,11 +99,8 @@ C
          AF = ALPHAF
          IF ( AM .GT. ALPHAF )  AF = ALPHAF + 360.D0
 C
-         IF ( AD.LT.AM .AND. AM.LT.AF ) THEN
-            CALL USVECT ( 1.D0, AD, AM, AF, PROF, DIMOBS, OBSUSE )
-         ELSE
-            CALL U2MESS('F','PREPOST_58')
-         ENDIF
+         CALL ASSERT ( AD.LT.AM .AND. AM.LT.AF )
+         CALL USVECT ( 1.D0, AD, AM, AF, PROF, DIMOBS, OBSUSE )
 C
  150  CONTINUE
 C

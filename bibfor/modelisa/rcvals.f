@@ -4,7 +4,7 @@
       CHARACTER*(*)      STOP, CODRET(*),     NOMRES(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
                  VALK = NOMAIL
                  CALL U2MESG('E+','MODELISA9_78',1,VALK,0,0,0,0.D0)
               ENDIF
-              CALL U2MESG('E','MODELISA9_79',0,' ',0,0,0,0.D0)
+              CALL U2MESS('E','VIDE_1')
            ENDIF
  200     CONTINUE
          IF ( IER .NE. 0 ) THEN

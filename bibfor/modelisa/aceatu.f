@@ -5,7 +5,7 @@
       CHARACTER*8         NOMA, NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,11 +190,8 @@ C
             NBEXT2=NBEXT2+1
          ENDIF
  40   CONTINUE
-      IF (NBEXT1.NE.NBEXT2) THEN
-         CALL U2MESS('F','MODELISA_22')
-      ELSE
-         NBPART=NBEXT1
-      ENDIF
+      CALL ASSERT (NBEXT1.EQ.NBEXT2)
+      NBPART=NBEXT1
       IF (IVR(3).EQ.1) THEN
          WRITE(IFM,*) 'NOMBRE DE PARTIES CONNEXES DE TUYAU : ',NBPART
       ENDIF

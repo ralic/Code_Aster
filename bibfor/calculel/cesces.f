@@ -1,6 +1,6 @@
       SUBROUTINE CESCES(CESA,TYPCES,CESMOZ,MNOGAZ,CELFPZ,BASE,CESB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,7 +174,7 @@ C       TEST ARGUMENT CESMOD OBLIGATOIRE
    30   CONTINUE
 
       ELSE
-        CALL U2MESS('F','ALGORITH_15')
+        CALL ASSERT(.FALSE.)
       END IF
 
 
@@ -247,7 +247,7 @@ C             - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
    50             CONTINUE
 
                   CALL CESEXI('C',JCESD,JCESL,IMA,IPG,ISP,ICMP,IAD1)
-                  IF (IAD1.GE.0) CALL U2MESS('F','ALGORITH_19')
+                  CALL ASSERT(IAD1.LT.0)
                   ZL(JCESL-1-IAD1) = .TRUE.
                   ZR(JCESV-1-IAD1) = VR
    60           CONTINUE
@@ -262,7 +262,7 @@ C             - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
    51             CONTINUE
 
                   CALL CESEXI('C',JCESD,JCESL,IMA,IPG,ISP,ICMP,IAD1)
-                  IF (IAD1.GE.0) CALL U2MESS('F','ALGORITH_19')
+                  CALL ASSERT(IAD1.LT.0)
                   ZL(JCESL-1-IAD1) = .TRUE.
                   ZC(JCESV-1-IAD1) = VC
    61           CONTINUE
@@ -286,7 +286,7 @@ C     ------------------------------------------------------
 
               DO 100,IPT = 1,NBPT
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
-                IF (IAD.GE.0) CALL U2MESS('F','ALGORITH_19')
+                CALL ASSERT(IAD.LT.0)
                 ZL(JCESL-1-IAD) = .TRUE.
                 IF (TSCA.EQ.'R') THEN
                   ZR(JCESV-1-IAD) = ZR(JCES1V-1+IAD1)
@@ -326,7 +326,7 @@ C     ------------------------------------------------------
   140         CONTINUE
               IF (NBV.GT.0) THEN
                 CALL CESEXI('C',JCESD,JCESL,IMA,1,ISP,ICMP,IAD)
-                IF (IAD.GE.0) CALL U2MESS('F','ALGORITH_19')
+                CALL ASSERT(IAD.LT.0)
                 ZL(JCESL-1-IAD) = .TRUE.
                 IF (TSCA.EQ.'R') THEN
                   ZR(JCESV-1-IAD) = VR/DBLE(NBV)

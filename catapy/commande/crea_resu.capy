@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,7 +119,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            PERM_CHAM       =FACT(statut='o',max='**',
               GROUP_MA_FINAL =SIMP(statut='o',typ=grma),
               GROUP_MA_INIT  =SIMP(statut='o',typ=grma),
-              TRAN           =SIMP(statut='o',typ='R',max='**'),
+              TRAN           =SIMP(statut='o',typ='R',min=3,max=3),
               PRECISION      =SIMP(statut='f',typ='R',defaut=1.0E-3),
            ),
          ),

@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,6 +121,7 @@ C --- NOM DE TABLEAUX DE TRAVAIL :
       MOTCLE(3) = 'GROUP_NO'
       MOTCLE(4) = 'NOEUD'
       MOTCLE(5) = 'TOUT'
+      CALL ASSERT((TYPE.EQ.'F').OR.(TYPE.EQ.'R').OR.(TYPE.EQ.'C'))
 
       IF (TYPE.EQ.'F') THEN
          TYP   = 'K8'
@@ -132,8 +133,6 @@ C --- NOM DE TABLEAUX DE TRAVAIL :
       ELSE IF (TYPE.EQ.'C') THEN
          TYP = TYPE
          GDCNS = NOMGD
-      ELSE
-          CALL U2MESS('F','MODELISA4_2')
       ENDIF
 C
 C --- CREATION D'UN CHAM_NO_S
@@ -176,7 +175,7 @@ C
 C
 C ------- VERIFICATION QUE LA COMPOSANTE EXISTE DANS LA GRANDEUR
           ICMP = INDIK8( ZK8(JCMP), K16B(1:8), 1, NBCMP )
-          IF ( ICMP .EQ. 0 ) CALL U2MESS('F','MODELISA4_3')
+          CALL ASSERT( ICMP .NE. 0 )
 C
           IF (TYPE.EQ.'R')
      &             CALL GETVR8(MFAC,K16B,IOC,1,1, ZR(IDVDDL+NBDDL),ILA)

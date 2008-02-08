@@ -2,7 +2,7 @@
      & ( INDN , INDC , NB1 , NB2 , XR        , EPAIS , KSI3S2 , INTSX ,
      &                                            VECNPH , JM1 , J1DN2 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,6 +94,8 @@ C
       I3 = L1 + INTSX2
       I4 = L2 + INTSX2
       I5 = L3 + INTSX2
+      
+      CALL ASSERT ((INDC.EQ.1).OR.(INDC.EQ.0))
 C
       IF      ( INDC . EQ . 1 ) THEN
 C
@@ -281,10 +283,6 @@ C
  200    CONTINUE
 C
 C
-C
-       ELSE
-C
-        CALL U2MESS('F','ELEMENTS2_28')
 C
        ENDIF
 C

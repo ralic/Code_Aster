@@ -1,6 +1,6 @@
       FUNCTION HOUXGB (XX,N)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C-------------------------------------------------------
       INTEGER  N
       REAL *8  HOUXGB
 
+      CALL ASSERT((N.EQ.1).OR.(N.EQ.2).OR.(N.EQ.3).OR.(N.EQ.4))
 
       IF(N.EQ.1) THEN
                HOUXGB =   XX(1)  +  XX(4)  -  XX(7)  -   XX(10)
@@ -38,8 +39,6 @@ C-------------------------------------------------------
        ELSEIF(N.EQ.4) THEN
                HOUXGB = - XX(1)  +  XX(4)  -  XX(7)  +   XX(10)
      &                 +  XX(13) -  XX(16) +  XX(19) -   XX(22)
-       ELSE
-               CALL U2MESS('F','ELEMENTS2_26')
-      ENDIF
+       ENDIF
 
       END

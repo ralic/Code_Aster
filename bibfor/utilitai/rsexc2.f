@@ -17,7 +17,7 @@
       INTEGER VALI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,15 +65,9 @@ C ----------------------------------------------------------------------
          IPREC=0
          IRETG=10000
       ENDIF
-      IF (IPREC.NE.0.AND.NB.NE.I2) THEN
-         CALL U2MESG('F','UTILITAI8_11',0,' ',0,0,0,0.D0)
-      ENDIF
-      IF (IPREC+1.NE.I1) THEN
-         CALL U2MESG('F','UTILITAI8_12',0,' ',0,0,0,0.D0)
-      ENDIF
-      IF (I2.GT.NMAX) THEN
-         CALL U2MESG('F','UTILITAI8_13',0,' ',0,0,0,0.D0)
-      ENDIF
+      
+      CALL ASSERT((IPREC.EQ.0.OR.NB.EQ.I2).AND.(IPREC+1.EQ.I1))
+      CALL ASSERT (I2.LE.NMAX)
       IPREC=I1
       IF (IRETG.LE.0) GOTO 20
       NOMS(I1)=NOMSY

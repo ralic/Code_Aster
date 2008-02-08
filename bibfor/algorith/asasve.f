@@ -4,7 +4,7 @@
       CHARACTER*24 VACHAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,11 +140,7 @@ C     --------------------------------------------------------
 C       CALL UTIMS2('ASASVE 1',I,RESUEL,1,' ')
 
         CALL CORICH('L',RESUEL,IBID,ICHA)
-        IF (ICHA.EQ.0) THEN
-          CALL U2MESK('F','ALGORITH_14',1,RESUEL)
-        ELSE IF (ICHA.LT.-2) THEN
-          CALL U2MESS('F','ALGORITH_15')
-        END IF
+        CALL ASSERT((ICHA.NE.0).AND.(ICHA.GE.-2))
 
         CALL GCNCO2(NEWNOM)
         CHAMNO(10:16) = NEWNOM(2:8)

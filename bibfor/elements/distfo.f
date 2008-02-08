@@ -4,7 +4,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C ======================================================================
       INTEGER      IFONC,I,ITMAX,IER
       REAL*8       XX,YY,NORMX,NORMY,FX,X0,Y0,DY
       REAL*8       XI,YI,XM1,RES,YM1,RP,DYM1,TOL,RPX
-      REAL*8       XM2,YM2,DYI
+      REAL*8       XM2,YM2,DYI,VALR(4)
 
       TOL = 1.0D-3
       X0 = XX / NORMX
@@ -71,7 +71,11 @@ C        XI  =  RP*(Y0 - YM1 + DYM1*XM1 + X0/DYM1)
         DYI  = DYI * NORMX / NORMY
 
  20   CONTINUE
-      CALL U2MESS('A','ELEMENTS_33')
+      VALR(1)=XM1
+      VALR(2)=XM2
+      VALR(1)=YM1
+      VALR(2)=YM2
+      CALL U2MESR('A','ELEMENTS_33',4,VALR)
  30   CONTINUE
       RP = (XM1 - X0)*(XM1 - X0)
       RP = RP + (YM1 - Y0)*(YM1 - Y0)

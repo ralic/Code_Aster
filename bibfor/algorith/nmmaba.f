@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  E,ALPHA,DSDE,SIGY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
      &                     .AND.(COMPOR.NE.'GRILLE_CINE_LINE')
      &                     .AND.(COMPOR.NE.'GRILLE_ISOT_LINE')
      &                     .AND.(COMPOR.NE.'GRILLE_PINTO_MEN')) THEN
-         CALL U2MESS('F','ELEMENTS_32')
+         CALL U2MESK('F','ELEMENTS_32',1,COMPOR)
       END IF
 C
 C --- INITIALISATIONS

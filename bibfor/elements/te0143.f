@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/05/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
+      CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       REAL*8       A  , XIY , XIZ , ALFAY , ALFAZ , XJX , EZ, EY
       REAL*8       A2 , XIY2, XIZ2, ALFAY2, ALFAZ2, XJX2, XL
@@ -63,7 +64,7 @@ C
       REAL*8       ITYPE, IYR2, IZR2, XFL, B(14),KSI1, D1B3(2,3)
       REAL*8       ZERO,TRIGOM
       INTEGER      LSECT,LSECT2,LORIEN,NNO,NC,I,LMAT,NCOMP,NBFIB
-      INTEGER      LRCOU,LDEP,KP,ADR,LX
+      INTEGER      LRCOU,LDEP,KP,ADR,LX,IADZI,IAZK24
 C     ------------------------------------------------------------------
 C
       ZERO = 0.0D0
@@ -107,8 +108,9 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
      &  + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
       IF( XL .EQ. 0.D0 ) THEN
-         CH16 = ' ?????????'
-         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
+        CALL TECAEL(IADZI,IAZK24)
+        NOMAIL = ZK24(IAZK24-1+3)(1:8)
+        CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       ENDIF
 C
       IF     ( NOMTE .EQ. 'MECA_POU_D_E' )  THEN

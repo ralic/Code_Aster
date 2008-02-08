@@ -1,6 +1,6 @@
       SUBROUTINE ADALIG(LIGRZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,16 +146,13 @@ C --- MISE A JOUR DES NOUVEAUX GRELS
               IF (NELEM.EQ.NBMAX) THEN
                 ZI(IDLI+NELEM) = ITYPE
                 NTOTR = NTOTR - NBMAX
-                IF (NTOTR.LE.0) THEN
-                  CALL U2MESS('F','MODELISA_67')
-                ELSE
-                  LON = MIN(NTOTR , NBMAX) + 1
-                  IGREL = IGREL + 1
-                  CALL JECROC(JEXNUM(LIEL,IGREL))
-                  CALL JEECRA(JEXNUM(LIEL,IGREL),'LONMAX',LON,KBID)
-                  CALL JEVEUO(JEXNUM(LIEL,IGREL),'E',IDLI)
-                  NELEM = 0
-                ENDIF
+                CALL ASSERT (NTOTR.GT.0)
+                LON = MIN(NTOTR , NBMAX) + 1
+                IGREL = IGREL + 1
+                CALL JECROC(JEXNUM(LIEL,IGREL))
+                CALL JEECRA(JEXNUM(LIEL,IGREL),'LONMAX',LON,KBID)
+                CALL JEVEUO(JEXNUM(LIEL,IGREL),'E',IDLI)
+                NELEM = 0
               ENDIF
               NELEM = NELEM + 1
               ZI(IDLI-1+NELEM) = ZI(IDTLI-1+IADT+K-1)
@@ -165,7 +162,7 @@ C --- MISE A JOUR DES NOUVEAUX GRELS
  5      CONTINUE
         ZI(IDLI+NELEM) = ITYPE
  4    CONTINUE
-      IF (IGREL.NE.NBGREL) CALL U2MESS('F','MODELISA_68')
+      CALL ASSERT (IGREL.EQ.NBGREL)
 C
 C --- DESTRUCTION DES OBJETS DE TRAVAIL
       CALL JEDETR(TLIEL)

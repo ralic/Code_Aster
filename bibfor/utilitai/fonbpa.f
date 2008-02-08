@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMF, VEC(*), TYPFON, NOMPF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,8 +85,7 @@ C
    12    CONTINUE
 C
       ELSE
-         VALK = VEC(1)
-         CALL U2MESG('F', 'UTILITAI6_36',1,VALK,0,0,0,0.D0)
+         CALL ASSERT(.FALSE.)
       ENDIF
 C
       IF ( NBPF .GT. MXPF ) THEN

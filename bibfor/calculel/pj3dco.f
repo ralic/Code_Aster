@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -234,7 +234,7 @@ C       -- PYRA :
         ELSE IF ((ITYPM.EQ.NUTM(8)).OR.(ITYPM.EQ.NUTM(9))) THEN
           ICO=ICO+2
         ELSE
-          CALL U2MESS('F','ALGORITH_19')
+          CALL ASSERT(.FALSE.)
         END IF
 51    CONTINUE
       CALL WKVECT('&&PJXXCO.TETR4','V V I',1+6*ICO,IATR3)

@@ -1,7 +1,7 @@
       SUBROUTINE CONQUA(MACOR,NBCOR,MACOC,NBCOC,
      &                  LFACE,LOMODI,LOCORR,LOREOR,MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
           CALL CONPER(MACOC,1,2,3,4)
           IF (QUADRA) CALL CONPER(MACOC,5,6,7,8)
         ELSE
-          CALL U2MESS('E','ALGORITH2_25')
+          CALL ASSERT(.FALSE.)
         ENDIF
         IF (LFACE) THEN
           I1=1

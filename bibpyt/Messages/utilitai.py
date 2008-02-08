@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,9 +99,10 @@ cata_msg = {
  on ne traite que des "CHAM_NO" ou des "CHAM_ELEM".
 """),
 
-22 : _("""
- unknown parameter (dvlp)
-"""),
+
+
+
+
 
 23 : _("""
  on ne trouve aucun champ.

@@ -4,7 +4,7 @@
       INTEGER                    NBTOUT(10),LONLIG,LONEMA,NBGREL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C
         CALL PALIMA(NOMA,'ECHANGE_PAROI','GROUP_MA_1','MAILLE_1',
      &              IOCC,LISTE)
         CALL JEEXIN(LISTE,IRET)
-        IF (IRET.EQ.0) CALL U2MESS('F','MODELISA4_87')
+        CALL ASSERT (IRET.NE.0)
         CALL JEVEUO(LISTE,'L',ILISTE)
         NBMA = ZI(ILISTE)
         NBTOUT(3) =NBTOUT(3) +NBMA

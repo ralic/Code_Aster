@@ -2,7 +2,7 @@
      &                   R,NORM,NINT,NHOP,NPIR,COORD,NBI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -174,9 +174,7 @@ C SE TROUVE ENTRE 01 ET 02
               IF ( ABS(1.D0-N2).LE.1.0D-6 ) N2 = 1.0D0
               IF ( ABS(1.D0-N3).LE.1.0D-6 ) N3 = 1.0D0
               IF ( ABS(1.D0-N4).LE.1.0D-6 ) N4 = 1.0D0
-              IF ( N4.NE.1.0D0 ) THEN
-                CALL U2MESS('F','PREPOST_23')
-              ENDIF
+              CALL ASSERT ( N4.EQ.1.0D0 )
               IF ( N2.GT.1.0D0 .OR. N3.GT.1.0D0 ) THEN
                 LINTCY = .FALSE.
               ENDIF
@@ -250,13 +248,10 @@ C IL FAUT CHERCHER DE QUEL COTE DU CYLINDRE EST LE POINT A
               ELSE IF ( ABS(LAMBDA).LE.1.0D-10 ) THEN
                 LAMBDA = 0.0D0
               ENDIF
-              IF ( LAMBDA.GE.0.D0 .AND. LAMBDA.LE.1.D0 ) THEN
-                COORD(1,L) = LAMBDA*XAB + COORD(1,IA)
-                COORD(2,L) = LAMBDA*YAB + COORD(2,IA)
-                COORD(3,L) = LAMBDA*ZAB + COORD(3,IA)
-              ELSE
-                CALL U2MESS('F','PREPOST_25')
-              ENDIF
+              CALL ASSERT ( LAMBDA.GE.0.D0 .AND. LAMBDA.LE.1.D0 )
+              COORD(1,L) = LAMBDA*XAB + COORD(1,IA)
+              COORD(2,L) = LAMBDA*YAB + COORD(2,IA)
+              COORD(3,L) = LAMBDA*ZAB + COORD(3,IA)
             ENDIF
           ENDIF
  30     CONTINUE

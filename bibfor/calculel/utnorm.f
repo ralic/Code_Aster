@@ -3,7 +3,7 @@
      &                  LAXI,JACOB,IFM,NIV)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,13 +114,10 @@ C CALCUL NORMALE, TANGENTE ET JACOBIEN PREMIER POINT D'INTEGRATION
       X(1) =  0.5D0*(ZRJNO1 + 3.D0*ZRINO1 - 4.D0*Y3 )
       Y(1) = -0.5D0*(ZRJNO2 + 3.D0*ZRINO2 - 4.D0*X3 )
       AUX = SQRT(Y(1)**2 + X(1)**2)
-      IF (AUX.GT.OVFL) THEN
-        JAC(1) = AUX*POINC1
-        IF (LAXI) JAC(1) = JAC(1)*ZRINO2
-        AUX = 1.D0/AUX
-      ELSE
-        CALL U2MESS('F','CALCULEL5_22')
-      ENDIF
+      CALL ASSERT(AUX.GT.OVFL)
+      JAC(1) = AUX*POINC1
+      IF (LAXI) JAC(1) = JAC(1)*ZRINO2
+      AUX = 1.D0/AUX
       XN(1) = X(1) * AUX * JACOB1
       YN(1) = Y(1) * AUX * JACOB1
 
@@ -128,24 +125,18 @@ C CALCUL NORMALE, TANGENTE ET JACOBIEN DEUXIEME POINT D'INTEGRATION
       X(2) = -0.5D0*(3.D0*ZRJNO1 + ZRINO1 - 4.D0*Y3)
       Y(2) =  0.5D0*(3.D0*ZRJNO2 + ZRINO2 - 4.D0*X3)
       AUX = SQRT(Y(2)**2 + X(2)**2)
-      IF (AUX.GT.OVFL) THEN
-        JAC(2) = AUX*POINC1
-        IF (LAXI) JAC(2) = JAC(2)*ZRJNO2
-        AUX = 1.D0/AUX
-      ELSE
-        CALL U2MESS('F','CALCULEL5_23')
-      ENDIF
+      CALL ASSERT(AUX.GT.OVFL)
+      JAC(2) = AUX*POINC1
+      IF (LAXI) JAC(2) = JAC(2)*ZRJNO2
+      AUX = 1.D0/AUX
       XN(2) = X(2) * AUX * JACOB1
       YN(2) = Y(2) * AUX * JACOB1
 
       IF (NSOMM.EQ.3) THEN
 
 C CALCUL NORMALE, TANGENTE ET JACOBIEN TROISIEME POINT D'INTEGRATION
-        IF (HF.GT.OVFL) THEN
-          AUX = 1.D0/HF
-        ELSE
-          CALL U2MESS('F','CALCULEL5_24')
-        ENDIF
+        CALL ASSERT (HF.GT.OVFL)
+        AUX = 1.D0/HF
         XN(3) = (ZRINO1 - ZRJNO1) * AUX * JACOB1
         YN(3) = (ZRJNO2 - ZRINO2) * AUX * JACOB1
         JAC(3) = HF*0.5D0*POINC2

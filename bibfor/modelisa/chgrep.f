@@ -4,7 +4,7 @@
       REAL*8                    PGL1(3,3), PGL2(3,3), MATL(*), MATG(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C     (MA) = (R) (ML) (R)   OU  (ML) = (R) (MA) (R)  CAR (R)  = (R)
 C     ------------------------------------------------------------------
       REAL*8     ML12(12,12), MR12(12,12), MTR12(12,12), MV12(12,12)
 C
+      CALL ASSERT(( TYPE .EQ. 'LG' ).OR.( TYPE .EQ. 'GL' ))
       IF ( TYPE .EQ. 'LG' ) THEN
          DO 10 I = 1 , 3
             DO 12 J = 1 , 3
@@ -80,8 +81,6 @@ C
  20      CONTINUE
          CALL TMAT  ( 12, MTR12, MR12 )
 C
-      ELSE
-         CALL U2MESS('F','MODELISA4_12')
       ENDIF
       CALL VECMA ( MATL, 78, ML12, 12)
       CALL PMAT  ( 12, MTR12, ML12, MV12)
