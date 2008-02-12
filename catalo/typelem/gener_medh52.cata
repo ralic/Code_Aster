@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -123,10 +123,22 @@ OPTION__
                               OUT__  ZVARCPG  PVARCPR
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_MECA_FR2D2D    600   IN__   EFORCER  PFR2D2D  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PESA_R    600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
+    ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX        
+    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    EPOT_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     EPSI_ELGA_DEPL      600   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFOPG  PDEFORR
                                      EDEFOPC  PDEFORC
@@ -154,8 +166,14 @@ OPTION__
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX     
     INDI_LOCA_ELGA      30    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  CMATERC  PMATERC  ZVARIPG  PVARIPR
                               OUT__  EGINDLO  PINDLOC
+    MASS_INER           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
@@ -171,6 +189,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
+    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     RIGI_MECA_ELAS      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
@@ -193,4 +213,5 @@ OPTION__
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
     VARI_ELNO_ELGA      600   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-
+    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX

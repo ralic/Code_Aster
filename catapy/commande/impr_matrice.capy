@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,55 +17,29 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 IMPR_MATRICE=PROC(nom="IMPR_MATRICE",op= 159,
-                  fr="Imprimer sur un fichier au format IDEAS ou RESULTAT des matrices élémentaires et assemblées",
+                  fr="Imprimer sur un fichier au format IDEAS des matrices élémentaires et assemblées",
                   UIinfo={"groupes":("Impression",)},
                   regles=(AU_MOINS_UN('MATR_ELEM','MATR_ASSE'),),
 # ======================================================================
    MATR_ELEM       =FACT(statut='f',max='**',
 #
            MATRICE     =SIMP(statut='o',typ=(matr_elem, vect_elem)),
-           FORMAT      =SIMP(statut='f',typ='TXM',defaut="IDEAS",
-                                 into=("IDEAS","RESULTAT") ),
+           FORMAT      =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS",) ),
 #
          b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="unité logique d'impression et version IDEAS",
-           UNITE       =SIMP(statut='f',typ='I',defaut=30),  
+           UNITE       =SIMP(statut='f',typ='I',defaut=30),
            VERSION     =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,), ),  ),
-#
-         b_format_resultat  =BLOC(condition="FORMAT=='RESULTAT'",fr="unité logique d'impression au format RESULTAT",
-                             regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
-           UNITE       =SIMP(statut='f',typ='I',defaut=8),
-           TOUT        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NOEUD       =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-           GROUP_NO    =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-           MAILLE      =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-           GROUP_MA    =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-           NOM_CMP     =SIMP(statut='f',typ='TXM',max='**'),
-           GRAIN       =SIMP(statut='f',typ='TXM',defaut="VALEUR",into=("VALEUR","NOEUD","MAILLE") ),
-           NB_CHIFFRE  =SIMP(statut='f',typ='I',defaut= 4 ),  ),
          ),
 # ======================================================================
    MATR_ASSE       =FACT(statut='f',max='**',
 #
            MATRICE     =SIMP(statut='o',typ=matr_asse_gd),
-           FORMAT      =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS","RESULTAT") ),
-# 
+           FORMAT      =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS",) ),
+#
          b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="unité logique d'impression et version IDEAS",
-           UNITE       =SIMP(statut='f',typ='I',defaut=30),  
+           UNITE       =SIMP(statut='f',typ='I',defaut=30),
            VERSION     =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,), ),  ),
-# 
-         b_format_resultat  =BLOC(condition="FORMAT=='RESULTAT'",fr="unité logique d'impression au format RESULTAT",
-                             regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
-           UNITE       =SIMP(statut='f',typ='I',defaut=8),
-           TOUT        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NOEUD       =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-           GROUP_NO    =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-           MAILLE      =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-           GROUP_MA    =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-           OPTION      =SIMP(statut='f',typ='TXM',defaut="SOUS_MATRICE",into=("SOUS_MATRICE","LIGNE","COLONNE") ),
-           NOM_CMP     =SIMP(statut='f',typ='TXM',max='**'),
-           GRAIN       =SIMP(statut='f',typ='TXM',defaut="VALEUR",into=("VALEUR","NOEUD") ),
-           NB_CHIFFRE  =SIMP(statut='f',typ='I',defaut= 4 ),
-           VALE_ZERO   =SIMP(statut='f',typ='R',defaut= 0.E+0 ),  ),
+#
          ),
 # ======================================================================
 )  ;

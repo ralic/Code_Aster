@@ -1,0 +1,199 @@
+      SUBROUTINE ECHMCO(NOMMAI,TYPEMA,DIME  ,NECH  ,
+     &                  NSOM  ,NARE  ,NPAN  ,NOEARE,NOEPAN, 
+     &                  OFFSOM,OFFSEG,OFFFAC,OFFARE,                
+     &                  PFS   ,PAS   ,PAF   ,
+     &                  TRAVI ,NSEG  ,NFAC)
+C     
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*8 NOMMAI,TYPEMA       
+      INTEGER     DIME 
+      INTEGER     NSOM,NARE,NPAN
+      INTEGER     NOEARE(48),NOEPAN(*)
+      INTEGER     NECH    
+      INTEGER     TRAVI(*)
+      INTEGER     OFFSOM,OFFSEG,OFFFAC,OFFARE
+      INTEGER     PFS,PAS,PAF        
+      INTEGER     NSEG,NFAC 
+C      
+C ----------------------------------------------------------------------
+C
+C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
+C BOITES ENGLOBANTES + ARBRE BSP
+C
+C CONNECTIVITE DE L'ECHANTILLONNAGE PRODUIT PAR LA ROUTINE ECHMAP 
+C
+C ----------------------------------------------------------------------
+C      
+C
+C EN 2D, LES ARETES SONT COUPEES EN <NDEC> SEGMENTS
+C EN 3D, LES ARETES SONT COUPEES EN <NDEC> FACETTES
+C
+C IN  NOMMAI : NOM DE LA MAILLE
+C IN  TYPEMA : TYPE DE LA MAILLE
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  NECH   : NOMBRE DE POINTS D'ECHANTILLONNAGE 
+C
+C IN  NSOM   : NOMBRE DE SOMMETS (SANS LES POINTS D'ECHANTILLONNAGE)
+C I/O NARE   : NOMBRE D'ARETES (SANS LES POINTS D'ECHANTILLONNAGE)
+C               OUT: EN 3D, LE NOMBRE D'ARETES EST MODIFIE
+C OUT NPAN   : NOMBRE DE PANS (SANS LES POINTS D'ECHANTILLONNAGE)
+C OUT NOEARE : ARETES LINEAIRES ASSOCIEES AUX FACES
+C              VOIR ARLPAN
+C                ( NB ARETES FACE.1, FACE.1.ARETE.1, FACE.1.ARETE.2,
+C                  NB ARETES FACE.2, FACE.2.ARETE.1, ... )
+C               FACE.*  INDEX SUIVANT PANNO
+C               ARETE.* INDEX SUIVANT NOARE
+C                      SI ARETE.* > 0 : MEME SENS QUE DANS NOARET
+C                      SI ARETE.* < 0 : SENS OPPOSE
+C IN  NOEPAN : NOEUDS DEFINISSANT LES PANS DE LA MAILLE
+C              VOIR NOPAN/NBPAN
+C                   ( NOMBRE NOEUDS PAN       1, N1, N2, ...
+C                     NOMBRE NOEUDS PAN       2, N1, N2, ...)
+C                     EN 3D, NB NOEUDS < 0 : TRIANGLE
+C                            NB NOEUDS > 0 : QUADRANGLE
+C              INDICE DES NOEUDS: ORDRE DU NOEUD DANS LA MAILLE 
+C                                 (EX: POUR HEXA8 NOEUDS 1 A 8)
+C OUT TRAVI  : TABLEAU DE TRAVAIL STOCKANT LES CONNECTIVITES
+C NB: L'INDICE DES NOEUDS SE REFERE AU TABLEAU NOH DANS ECHMAP
+C
+C EN 2D - PAR ECHMC2
+C  -> TRAVI(PFS->PFS+2*(NSEG1+NSEG2)) - TABLEAU FS
+C     *** NOEUDS DEFINISSANT LES SEGMENTS
+C                (SEG1.ND1,SEG1.ND2,
+C                 SEG2.ND1,SEG2.ND2,...)
+C EN 3D - PAR ECHMC3 ET ARETE3
+C  -> TRAVI(PFS->PFS+3*(NFAC1+NFAC2)) - TABLEAU FS
+C     *** NOEUDS DEFINISSANT LES FACETTES TRIANGULAIRES 
+C                                        (INDEX DANS ECHMAP/NOH)
+C                (FACE1.ND1,FACE1.ND2,FACE1.ND3,
+C                 FACE2.ND1,FACE2.ND2,FACE2.ND3,...)
+C  -> TRAVI(PAS->PAS+2*NARE )     - TABLEAU AS        
+C     *** NOEUDS DEFINISSANT LES ARETES  (INDEX DANS ECHMAP/NOH)
+C                (ARETE1.ND1,ARETE1.ND2,
+C                 ARETE2.ND1,ARETE2.ND2...) 
+C  -> TRAVI(PAF->PAF+2*NARE )     - TABLEAU AF      
+C     *** FACETTES ADJACENTES AUX ARETES (INDEX DANS FS)
+C                (ARETE1.FACE1,ARETE1.FACE2,
+C                 ARETE2.FACE1,ARETE2.FACE2...) 
+C
+C IN  PFS    : DEBUT DU TABLEAU <FS> DANS TRAVI
+C IN  PAS    : DEBUT DU TABLEAU <AS> DANS TRAVI
+C IN  PAF    : DEBUT DU TABLEAU <AF> DANS TRAVI
+
+C IN  OFFSOM : DECALAGE INDICE POUR LES SOMMETS
+C              INDICE DU PREMIER SOMMET DE CETTE MAILLE
+C              DANS LE TABLEAU NOEARE
+C IN  OFFSEG : DECALAGE INDICE POUR LES SEGMENTS
+C              INDICE DU PREMIER SEGMENT (ND1,ND2) DE CETTE MAILLE
+C              DANS LE TABLEAU TRAVI
+C IN  OFFFAC : DECALAGE INDICE POUR LES FACETTES
+C              INDICE DE LA PREMIERE FACETTE DE CETTE MAILLE
+C              DANS LE TABLEAU TRAVI
+C IN  OFFARE : DECALAGE INDICE POUR LES ARETES
+C              INDICE DE LA PREMIERE ARETE DE CETTE MAILLE
+C              DANS LE TABLEAU TRAVI
+C OUT NSEG   : NOMBRE DE SEGMENTS PROVENANT DU DECOUPAGE DES ARETES
+C OUT NFAC   : NOMBRE DE FACETTES PROVENANT DU DECOUPAGE DES FACES
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER     IFM,NIV,ISEG,IFAC
+C
+C ----------------------------------------------------------------------
+C
+      CALL INFDBG('ARLEQUIN',IFM,NIV)
+C
+C --- INITIALISATIONS
+C      
+      NFAC  = 0
+      NSEG  = 0
+C 
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE(IFM,*) '<ARLEQUIN><ECH> *** CONNECTIVITES '//
+     &                'DE LA FRONTIERE DE LA MAILLE ',NOMMAI    
+      ENDIF  
+C
+C --- CALCUL DES CONNECTIVITES
+C            
+      IF (DIME.EQ.2) THEN    
+C        
+C --- CHAQUE ARETE EST DECOUPEE EN NSEG SEGMENTS 
+C         
+        CALL ECHMC2(NSOM               ,NOEARE,NARE   ,NECH ,OFFSOM,
+     &              TRAVI(PFS+2*OFFSEG),NSEG) 
+C     
+        IF (NIV.GE.2) THEN
+          WRITE(IFM,*) '<ARLEQUIN><ECH> ... ON A DECOUPE EN ',NSEG,
+     &                 ' SEGMENTS'    
+          WRITE(IFM,*) '<ARLEQUIN><ECH> ... LISTE DES SEGMENTS '  
+          DO 300 ISEG = 1, NSEG
+            WRITE(IFM,*) '<ARLEQUIN><ECH> ...... SEGMENT  <',
+     &        ISEG,' > : ',
+     &        TRAVI(PFS+2*(ISEG-1) + 1),
+     &        TRAVI(PFS+2*(ISEG-1) + 2)                  
+ 300      CONTINUE             
+          WRITE(IFM,*) '<ARLEQUIN><ECH> *** FIN ECHANTILLONNAGE '       
+        ENDIF                  
+C             
+      ELSEIF (DIME.EQ.3) THEN
+      
+        CALL ARLPAN(TYPEMA,NOEARE,NARE,NPAN)
+C        
+C --- CHAQUE FACE(PAN) EST DECOUPEE EN NFAC FACETTES FS  
+C    
+        CALL ECHMC3(NSOM  ,NOEARE,NARE         ,NOEPAN,NPAN  ,
+     &              NECH  ,OFFSOM,TRAVI(PFS+3*OFFFAC) ,NFAC)
+        IF (NIV.GE.2) THEN
+          WRITE(IFM,*) '<ARLEQUIN><ECH> ... ON A DECOUPE EN ',NFAC,
+     &                 ' FACETTES'   
+          WRITE(IFM,*) '<ARLEQUIN><ECH> ... LISTE DES FACETTES '  
+          DO 301 IFAC = 1, NFAC
+            WRITE(IFM,*) '<ARLEQUIN><ECH> ...... FACETTE  <',IFAC,
+     &        ' > : ',
+     &        TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 1),
+     &        TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 2),
+     &        TRAVI(PFS+3*OFFFAC+3*(IFAC-1) + 3)
+                       
+ 301      CONTINUE  
+        ENDIF     
+C        
+C --- CONNECTIVITES INVERSES AS ET AF DES FACETTES FS  
+C           
+        CALL ARETE3(TRAVI(PFS),OFFFAC  ,NFAC,
+     &              TRAVI(PAS+2*OFFARE),
+     &              TRAVI(PAF+2*OFFARE),NARE)       
+C          
+        IF (NIV.GE.2) THEN      
+          WRITE(IFM,*) '<ARLEQUIN><ECH> *** FIN CONNECTIVITES '    
+        ENDIF              
+C            
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+      
+C      
+      
+      END

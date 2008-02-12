@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,8 @@ C               'VARI_COM'        'TABLE'
 C               'RESULTAT'        'NUME_DDL'
 C               'MAILLAGE'        'LIGREL'
 C               'MATR_ASSE_GENE'  'MATR_ASSE'
-C               'PROF_CHNO'
+C               'PROF_CHNO'       'MATR_ELEM'
+C               'VECT_ELEM'
 C     BASE     : 'G' , 'V' , ... : BASE DE CREATION DE SD2
 C     SD1 (K*) : NOM DE LA SD A DUPPLIQUER
 C     SD2 (K*) : NOM DE LA SD A CREER
@@ -64,7 +65,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER       IRET, IRES, I, NBTU, JLTN1, JLTN2
       CHARACTER*1   BAS2
-      CHARACTER*8   K8B, MAIL1, MAIL2
+      CHARACTER*8   K8B, MAIL1, MAIL2, K81, K82
       CHARACTER*14  COM1, COM2, NU1, NU2
       CHARACTER*16  TYP2SD, CORR1, CORR2
       CHARACTER*19  CH1, CH2, SDR1, K191, K192
@@ -312,6 +313,19 @@ C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
 
         CALL JEDUP1(MAIL1//'           .TITR',BAS2,
      &              MAIL2//'           .TITR')
+C ----------------------------------------------------------------------
+      ELSE IF (TYPESD.EQ.'MATR_ELEM' .OR. TYPESD.EQ.'VECT_ELEM') THEN
+C     ---------------------------------------------------------------
+        K81 = SD1
+        K82 = SD2
+        CALL JEDUP1(K81//'.LISTE_RESU',BAS2,K82//'.LISTE_RESU')
+        CALL JEDUP1(K81//'.REFE_RESU',BAS2,K82//'.REFE_RESU')
+        IF(TYPESD.EQ.'VECT_ELEM')THEN
+           CALL JEEXIN(K81//'.LISTE_CHAR',IRET)
+           IF(IRET.NE.0)THEN
+             CALL JEDUP1(K81//'.LISTE_CHAR',BAS2,K82//'.LISTE_CHAR')
+           ENDIF
+        ENDIF
 
 C ----------------------------------------------------------------------
       ELSE

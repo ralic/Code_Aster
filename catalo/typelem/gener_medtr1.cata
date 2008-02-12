@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,6 +114,10 @@ OPTION__
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA           41    IN__   CCADISA  PCADISA  CCAORIE  PCAORIE  CMATERC  PMATERC  MMATUUR  PRIGIEL
                               OUT__  MMATUUR  PMATUUR
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_MECA_PESA_R    43    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -2    IN__   XXXXXX   XXXXXX
@@ -129,6 +133,10 @@ OPTION__
     EFGE_ELNO_DEPL      42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                               OUT__  EEFGENO  PEFFORR
                                      EEFGENC  PEFFORC
+    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_DEPL      44    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                               OUT__  EENERDR  PENERDR
     FORC_NODA           39    IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR
@@ -147,6 +155,10 @@ OPTION__
                                      ZVARIPG  PVARIMR  DDL_MECA PVITENT  DDL_MECA PVITPLU  CINSTPR  PINSTMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
+    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX     
     MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE
                               OUT__  MMATUUR  PMATUUR
     MASS_INER           45    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  NGEOMER  PGEOMER
@@ -177,6 +189,8 @@ OPTION__
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
+    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX           
     RIGI_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISK  PCADISK  CCAORIE  PCAORIE
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA           41    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE
@@ -217,4 +231,5 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     VARI_ELNO_ELGA      159   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-
+    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      

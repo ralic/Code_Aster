@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C          'NUME_DDL'     'PROF_CHNO'    'MLTF'
 C          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
 C          'MATR_ELEM'    'VECT_ELEM'
 C          'VARI_COM'     'FONCTION' (POUR LES FONCTIONS OU NAPPES)
-C          'TABLE'        'DEFI_CONT'    'RESO_CONT'
+C          'TABLE_SDASTER' 'TABLE_CONTAINER' 'DEFI_CONT'    'RESO_CONT'
 C          'SOLVEUR'      'CORRESP_2_MAILLA'
 C          'CHAM_NO_S'    'CHAM_ELEM_S'
 C          'CHAM_NO'      'CHAM_ELEM'  'CARTE'
@@ -66,14 +66,14 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID,NBSD,IFETS,ILIMPI,IDD,
-     &        IFETM,IFETN,IFETC
+     &        IFETM,IFETN,IFETC,ITYOBJ,INOMSD,NBLG,NBPA,NBLP
       CHARACTER*1 K1BID
       CHARACTER*8 MATEL,MAILLA,MUMPS,K8BID
       CHARACTER*14 NU,RESOCO,COM
       CHARACTER*16 DEFICO,TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
       CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19B
-      CHARACTER*24 K24B
+      CHARACTER*24 K24B,TYPOBJ,KNOMSD
       LOGICAL LFETI
 
 C -DEB------------------------------------------------------------------
@@ -219,7 +219,48 @@ C     ----------------------------------
         CALL JEDETR(NUAGE//'.NUAL')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'TABLE') THEN
+      ELSE IF (TYP2SD.EQ.'TABLE_CONTAINER') THEN
+C     -----------------------------------
+        TABLE = NOMSD
+        CALL JEEXIN(TABLE//'.TBLP',IRET)
+        IF (IRET.NE.0) THEN
+          CALL JEVEUO(TABLE//'.TBNP','L',IAD)
+          NBLG=ZI(IAD+1)
+          NBPA=ZI(IAD)
+          CALL ASSERT(NBPA.EQ.3)
+          CALL JEVEUO(TABLE//'.TBLP','L',IAD)
+          CALL JELIRA(TABLE//'.TBLP','LONMAX',LONG,K1BID)
+          NBLP=LONG/NBPA
+          DO 25,I = 1,NBPA
+            IF(ZK24(IAD+NBLP*(I-1))(1:10).EQ.'TYPE_OBJET')THEN
+               TYPOBJ=ZK24(IAD+NBLP*(I-1)+3-1)
+            ELSEIF(ZK24(IAD+NBLP*(I-1))(1:6).EQ.'NOM_SD')THEN
+               KNOMSD=ZK24(IAD+NBLP*(I-1)+3-1)
+            ENDIF
+  25      CONTINUE
+          CALL JEVEUO(TYPOBJ,'L',ITYOBJ)
+          CALL JEVEUO(KNOMSD,'L',INOMSD)
+          DO 26,I = 1,NBLG
+            IF( ZK16(ITYOBJ+I-1)(1:9).EQ.'MATR_ELEM')THEN
+               CALL DETRS2('MATR_ELEM',ZK24(INOMSD+I-1))
+            ELSEIF( ZK16(ITYOBJ+I-1)(1:9).EQ.'VECT_ELEM')THEN
+               CALL DETRS2('VECT_ELEM',ZK24(INOMSD+I-1))
+            ELSEIF( ZK16(ITYOBJ+I-1)(1:9).EQ.'CHAM_ELEM')THEN
+               CALL DETRS2('CHAM_ELEM',ZK24(INOMSD+I-1))
+            ENDIF
+   26     CONTINUE
+          DO 27,I = 1,LONG
+            CALL JEDETR(ZK24(IAD-1+I))
+   27     CONTINUE
+          CALL JEDETR(TABLE//'.TBLP')
+          CALL JEDETR(TABLE//'.TBNP')
+          CALL JEDETR(TABLE//'.TBBA')
+        ENDIF
+        CALL JEDETR(TABLE//'.TITR')
+       
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD(1:5).EQ.'TABLE') THEN
 C     --------------------------------
         TABLE = NOMSD
         CALL JEEXIN(TABLE//'.TBLP',IRET)
@@ -233,9 +274,7 @@ C     --------------------------------
           CALL JEDETR(TABLE//'.TBNP')
           CALL JEDETR(TABLE//'.TBBA')
         END IF
-
-        CALL JEEXIN(TABLE//'.TITR',IRET)
-        IF (IRET.NE.0) CALL JEDETR(TABLE//'.TITR')
+        CALL JEDETR(TABLE//'.TITR')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MATR_ASSE_GENE' .OR.
@@ -296,7 +335,7 @@ C FETI OR NOT ?
         END IF
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'CHAM_NO') THEN
+      ELSE IF (TYP2SD(1:7).EQ.'CHAM_NO') THEN
 C     ----------------------------------
         CNO = NOMSD
 
@@ -358,7 +397,7 @@ C     ------------------------------------
         CALL JEDETR(CNO//'.REFN')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'CHAM_ELEM') THEN
+      ELSE IF (TYP2SD(1:9).EQ.'CHAM_ELEM') THEN
 C     ------------------------------------
         CEL = NOMSD
         CALL JEDETR(CEL//'.CELD')
@@ -495,8 +534,8 @@ C       POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
         CALL ASSDE1(CHAMP)
 
 C     ------------------------------------------------------------------
-      ELSE IF ((TYP2SD.EQ.'MATR_ELEM') .OR.
-     &         (TYP2SD.EQ.'VECT_ELEM')) THEN
+      ELSE IF ((TYP2SD(1:9).EQ.'MATR_ELEM') .OR.
+     &         (TYP2SD(1:9).EQ.'VECT_ELEM')) THEN
 C     ---------------------------------------
         MATEL = NOMSD
         CALL JEDETR(MATEL//'.REFE_RESU')
@@ -508,6 +547,7 @@ C     ---------------------------------------
           CALL ASSDE1(ZK24(ILIRES-1+I) (1:19))
    60   CONTINUE
         CALL JEDETR(MATEL//'.LISTE_RESU')
+        CALL JEDETR(MATEL//'.LISTE_CHAR')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'DEFI_CONT') THEN

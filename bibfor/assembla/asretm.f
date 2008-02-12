@@ -1,9 +1,10 @@
-      SUBROUTINE ASRETM(IATP2,IREEL,IDHCOL,IDADIA,ILI,JCO)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           IATP2,IREEL,IDHCOL,IDADIA,ILI,JCO
+      SUBROUTINE ASRETM(LMASYM,JTMP2,ITERM,JSMHC,JSMDI,I1,I2)
+      IMPLICIT NONE
+      LOGICAL LMASYM
+      INTEGER           JTMP2,ITERM,JSMHC,JSMDI,I1,I2
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,46 +22,49 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ROUTINE SERVANT A RETENIR OU S'ACCUMULENT LES TERMES ELEMENTAIRES:
-C     DANS LE CAS D'UN STOCKAGE MORSE
+C     DANS LE CAS D'UN STOCKAGE MORSE SYMETRIQUE
 C -----------------------------------------------------------------
-C OUT I IATP2   : ADRESSE JEVEUX DE L'OBJET ".TEMPOR" MODIFIE.
-C IN  I IATP2   : ADRESSE JEVEUX DE L'OBJET ".TEMPOR".
-C IN  I IREEL   : INDICE DU REEL A RETENIR (DANS UNE MATR_ELEM).
-C IN  I IDHCOL  : ADRESSE DE ".HCOL".
-C IN  I IDADIA  : ADRESSE DE ".ADIA".
-C IN  I ILI     : NUMERO GLOBAL DE LA LIGNE.
-C IN  I JCO     : NUMERO GLOBAL DE LA COLONNE.
-C -----------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C -----------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C -----------------------------------------------------------------
-C     COMMUNS   JEVEUX
+C IN/OUT I JTMP2   : ADRESSE JEVEUX DE L'OBJET ".TMP2"
+C IN     I JSMHC   : ADRESSE DE ".SMHC".
+C IN     I JSMDI   : ADRESSE DE ".SMDI".
+C IN     I I1,I2   : NUMEROS GLOBAUX (LIGNE ET COLONNE)
+C IN/OUT I ITERM   : INDICE DU TERME (R/C) A RECOPIER
+C                     (ISSU DE LA MATRICE ELEMENTAIRE)
 C -----------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-C
-C---- DEBUT ---------------
+      INTEGER ILI,JCO,ICOEFC,ICOEFL,I,NCOEFC,NUBLOC
+C -----------------------------------------------------------------
+      IF (I1.LE.I2) THEN
+        ILI=I1
+        JCO=I2
+        NUBLOC=1
+      ELSE
+        ILI=I2
+        JCO=I1
+        NUBLOC=2
+      ENDIF
+      IF (LMASYM) NUBLOC=1
+
       IF (JCO.EQ. 1) THEN
          ICOEFC = 0
       ELSE
-         ICOEFC = ZI(IDADIA+JCO-2)
+         ICOEFC = ZI(JSMDI+JCO-2)
       END IF
-      NCOEFC = ZI(IDADIA+JCO-1) - ICOEFC
-C
-C     -- IREEL COMPTE LES REELS TRAITES:
+      NCOEFC = ZI(JSMDI+JCO-1) - ICOEFC
+
       ICOEFL = 0
       DO 10 I = 1,NCOEFC
-         IF ( ZI(IDHCOL-1+ICOEFC+I).EQ.ILI) THEN
+         IF (ZI(JSMHC-1+ICOEFC+I).EQ.ILI) THEN
             ICOEFL = I
             GOTO 20
          END IF
 10    CONTINUE
-      CALL ASSERT (ICOEFL.NE.0 )
+      IF (ICOEFL.EQ.0 )  CALL U2MESS('F','MODELISA_67')
 20    CONTINUE
-      IREEL = IREEL + 1
-      ZI(IATP2-1+(IREEL-1)*2+2) = ICOEFC+ICOEFL
-      ZI(IATP2-1+(IREEL-1)*2+1) = 1
+
+C     -- ITERM COMPTE LES REELS TRAITES:
+      ITERM = ITERM + 1
+      ZI(JTMP2-1+(ITERM-1)*2+1) = NUBLOC
+      ZI(JTMP2-1+(ITERM-1)*2+2) = ICOEFC+ICOEFL
       END

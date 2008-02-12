@@ -2,7 +2,7 @@
      &                  TYPMAI,NOMC  ,ISMED ,QUADRA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,8 @@ C IN  TYPMAI : SD CONTENANT NOM DES TYPES ELEMENTS (&&CATA.NOMTM)
 C I/O NOMC   : NOM DE LA SD POUR LE COLLAGE 
 C IN  ISMED  : VAUT .TRUE. SI ZONE DE COLLAGE EST LA ZONE MEDIATRICE
 C I/O NAPP   : NOMBRE DE COUPLES D'APPARIEMENT
+C               IN  : D'APRES LE GRAPHE TOTAL
+C               OUT : APRES EXCLUSION DES MAILLES HORS ZONE DE COLLAGE
 C OUT QUADRA : SD DES QUADRATURES A CALCULER
 C
 C
@@ -57,6 +59,14 @@ C   CHACUNE DES FAMILLES CORRESPOND A UN TYPE DE MAILLE SUR LEQUEL
 C   SE FAIT L'INTEGRATION ET AU NUMERO DE LA FORMULE D'INTEGRATION
 C   A UTILISER.
 C
+C QUAD.DIME     : INFORMATIONS SUR QUELQUES DIMENSIONS
+C                  DIME(1) = NFAM    - NOMBRE DE FAMILLES
+C                  DIME(2) = NAPP    - NOMBRE TOTAL DE COUPLES
+C                  DIME(3) = NMAIN1  - NBRE. MA. INTEG. SUR MAILLE 1
+C                  DIME(4) = NMAIN2  - NBRE. MA. INTEG. SUR MAILLE 2
+C                  DIME(5) = NMASS   - NBRE. MA .INTEG. PAR SOUS-MAILLES
+C                  DIME(6) = NNOIN1  - NBRE. ND. INTEG. SUR MAILLE 1
+C                  DIME(7) = NNOIN2  - NBRE. ND. INTEG. SUR MAILLE 2
 C QUAD.TYPEMA   : VECTEUR (K8) DES TYPES DE MAILLE ASSOCIES AUX FAMILLES
 C                 (TMA FAM.1, TMA FAM.2, ...)
 C QUAD.NUMERO   : VECTEUR DES NUMERO DE FORMULE D'INTEGRATION (NFI)
@@ -65,10 +75,11 @@ C QUAD.MAMA     : LISTE DES COUPLES DE MAILLES A INTEGRER
 C                 (MA1.1, MA1.2, MA2.1, MA2.2, MA3.1, MA3.2, ... ) 
 C                    SI MA*.1 > 0, INTEGRATION SUR MA*.1
 C                    SI MA*.1 < 0, INTEGRATION SUR MA*.2
-C                    SI MA*.2 > 0, INTEGRATION STANDARD (INCLUSION)
+C                    SI MA*.2 > 0, INTEGRATION PAR INCLUSION
 C                    SI MA*.2 < 0, INTEGRATION PAR SOUS-MAILLES 
 C                       MA*.1 INDEX DANS .GROUPEMA ASSOCIE AUX MULTIPLIC
 C                       MA*.2 INDEX DANS L'AUTRE .GROUPEMA 
+C QUAD.MAFA     : LISTE DES COUPLES: NUMERO DE LA FAMILLE ASSOCIEE
 C QUAD.LIMAMA   : LISTES COUPLES DE MAILLE ASSOCIEES AUX FAMILLES
 C                 (XC V I NUMERO VARIABLE)
 C                 [FAM. 1] (COUPLE1.1, COUPLE1.2, ...)
@@ -98,204 +109,290 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*16  NOMBO1,NOMBO2
-      CHARACTER*8   TMS,TM1,TM2,K8BID
+      CHARACTER*8   TMS,TMSC,TM1,TM2,K8BID
       CHARACTER*24  NOMAPP
       CHARACTER*19  NGRMA1,NGRMA2
-      INTEGER       DIME,NMA,NFAM,M1,M2,I,J,LCOQUE
-      INTEGER       A0,A1,A2,B0,B1,B2,B3,B4,B5,P0,P1
-      INTEGER       C0,C1,C2,C3,C4,C5,D0,D1,D2,D3,D4,D5
+      INTEGER       DIME,NMA,NFAM,NBNO1,NBNO2
+      INTEGER       IMA1,IMA2,J,ICPL,IFAM
+      INTEGER       JGRAPH,JCUMU ,JDEBUT,JFIN 
+      INTEGER       JTRTY ,JTRNU ,JTRNM 
+      INTEGER       JDIME1,JDIME2,JMNMX1,JMNMX2,JBPAN1,JBPAN2
+      INTEGER       JBSOM1,JBSOM2
       REAL*8        H1,H2
       REAL*8        ARLGER,PREC
-      LOGICAL       LINCLU,MINCLU
-      INTEGER       JTYPMM,JCOLM      
+      LOGICAL       MINCLU
+      LOGICAL       LINC21,LINC12,LSSMAI,LINCL1,LINCL2
+      INTEGER       JTYP  ,JMCUMU,JCOLM 
+      INTEGER       JQDIME,JQNUME,JQTYPM,JQLIMA,JQMAMA,JQCUMU,JQMAFA
+      INTEGER       JGRMA1,JGRMA2  
+      INTEGER       NUMMA1,NUMMA2 
+      INTEGER       NMAIN1,NMAIN2,NMASS
+      INTEGER       NNOIN1,NNOIN2    
 C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C --- INITIALISATIONS
+C --- PRECISION POUR DETECTER INCLUSION
 C
       PREC = ARLGER(NOMARL,'PRECBO')
-      CALL JEVEUO(TYPMAI,'L',JTYPMM)
-      CALL JEVEUO(NOMC(1:10)//'.MAILLE','E',JCOLM)
+C
+C --- INITIALISATIONS
+C  
+      NMAIN1 = 0
+      NMAIN2 = 0
+      NMASS  = 0
+      NNOIN1 = 0
+      NNOIN2 = 0     
+C
+C --- LECTURE ZONE DE COLLAGE
+C           
+      CALL JEVEUO(NOMC(1:10)//'.MAILLE','L',JCOLM)
 C
 C --- LECTURE DONNEES MAILLAGE
 C
-      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',A0)
+      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',JTYP)
+      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',JMCUMU)
 C
 C --- LECTURE GRAPHE APPARIEMENT
 C   
       NOMAPP = NOMARL(1:8)//'.GRAPH'
-      CALL JEVEUO(NOMAPP,'L',A1)
+      CALL JEVEUO(NOMAPP,'L',JGRAPH)
       CALL JELIRA(NOMAPP,'NMAXOC',NMA,K8BID)
-      CALL JEVEUO(JEXATR(NOMAPP,'LONCUM'),'L',A2)      
+      CALL JEVEUO(JEXATR(NOMAPP,'LONCUM'),'L',JCUMU)      
 C
 C --- LECTURE DONNEES GROUPE DE MAILLES
 C         
       NGRMA1 = NOM1(1:10)//'.GROUPEMA'
       NGRMA2 = NOM2(1:10)//'.GROUPEMA'      
-      CALL JEVEUO(NGRMA1(1:19),'L',B0)
-      CALL JEVEUO(NGRMA2(1:19),'L',C0)       
+      CALL JEVEUO(NGRMA1(1:19),'L',JGRMA1)
+      CALL JEVEUO(NGRMA2(1:19),'L',JGRMA2)       
 C
 C --- LECTURE DONNEES BOITES APPARIEMENT
 C        
       NOMBO1 = NOM1(1:10)//'.BOITE'
-      CALL JEVEUO(NOMBO1(1:16)//'.DIME','L',B1)
-      CALL JEVEUO(NOMBO1(1:16)//'.MINMAX','L',B2)
-      CALL JEVEUO(NOMBO1(1:16)//'.PAN','L',B3)
-      CALL JEVEUO(NOMBO1(1:16)//'.SOMMET','L',B4)
-      CALL JEVEUO(NOMBO1(1:16)//'.H','L',B5)
+      CALL JEVEUO(NOMBO1(1:16)//'.DIME'  ,'L',JDIME1)
+      CALL JEVEUO(NOMBO1(1:16)//'.MINMAX','L',JMNMX1)
+      CALL JEVEUO(NOMBO1(1:16)//'.PAN'   ,'L',JBPAN1)
+      CALL JEVEUO(NOMBO1(1:16)//'.SOMMET','L',JBSOM1)
 C
       NOMBO2 = NOM2(1:10)//'.BOITE'
-      CALL JEVEUO(NOMBO2(1:16)//'.DIME','L',C1)
-      CALL JEVEUO(NOMBO2(1:16)//'.MINMAX','L',C2)
-      CALL JEVEUO(NOMBO2(1:16)//'.PAN','L',C3)
-      CALL JEVEUO(NOMBO2(1:16)//'.SOMMET','L',C4)
-      CALL JEVEUO(NOMBO2(1:16)//'.H','L',C5)
-      DIME = ZI(C1)
+      CALL JEVEUO(NOMBO2(1:16)//'.DIME'  ,'L',JDIME2)
+      CALL JEVEUO(NOMBO2(1:16)//'.MINMAX','L',JMNMX2)
+      CALL JEVEUO(NOMBO2(1:16)//'.PAN'   ,'L',JBPAN2)
+      CALL JEVEUO(NOMBO2(1:16)//'.SOMMET','L',JBSOM2)
+C
+C --- DIMENSION DE L'ESPACE
+C     
+      CALL ASSERT(ZI(JDIME1).EQ.ZI(JDIME2))
+      DIME = ZI(JDIME2)
+C
+C --- TYPE DE MAILLE SUPPORT SI INTERSECTION DES DEUX MAILLES
 C
       IF (DIME.EQ.2) THEN
-        TMS = 'TRIA3'
+        TMSC = 'TRIA3'
       ELSEIF (DIME.EQ.3) THEN
-        TMS = 'TETRA4'
+        TMSC = 'TETRA4'
       ELSE
         CALL ASSERT(.FALSE.)  
       ENDIF
 C
 C --- ALLOCATIONS OBJETS TEMPORAIRES
 C
-      CALL WKVECT('&&ARLFAM.TYPEMA' ,'V V K8',NAPP  ,D0)
-      CALL WKVECT('&&ARLFAM.NUMERO' ,'V V I' ,NAPP  ,D1)
-      CALL WKVECT('&&ARLFAM.NMAMA'  ,'V V I' ,NAPP  ,D2)
-      CALL WKVECT('&&ARLFAM.FAMILLE','V V I' ,NAPP  ,D3)
-      CALL WKVECT(QUADRA(1:10)//'.MAMA','V V I',2*NAPP,D4)
+      CALL WKVECT('&&ARLFAM.TYPEMA' ,'V V K8',NAPP  ,JTRTY)
+      CALL WKVECT('&&ARLFAM.NUMERO' ,'V V I' ,NAPP  ,JTRNU)
+      CALL WKVECT('&&ARLFAM.NMAMA'  ,'V V I' ,NAPP  ,JTRNM)     
 C
-      D5 = D3
+C --- CREATION OBJET .MAMA
+C      
+      CALL WKVECT(QUADRA(1:10)//'.MAMA','V V I',2*NAPP,JQMAMA)
+C
+C --- CREATION OBJET .MAFA
+C      
+      CALL WKVECT(QUADRA(1:10)//'.MAFA','V V I',NAPP,JQMAFA)
+C      
+
       NFAM = 0
-      NAPP = 0
+      ICPL = 1
 C
 C --- ECRITURE QUADRATURE.MAMA ET FAMILLES TEMPORAIRES
 C
-      P1 = ZI(A2)
-
-      DO 20 M1 = 1, NMA
-         
-        P0 = P1
-        A2 = A2 + 1
-        P1 = ZI(A2)
-
-        IF (.NOT.ZL(JCOLM+M1-1)) GOTO 20
-
-        TM1 = ZK8(JTYPMM+ZI(A0-1+ZI(B0-1+M1))-1)
-        CALL TMACOQ(TM1,DIME,LCOQUE)
-        H1 = ZR(B5-1+M1)
-
-        DO 30 J = P0, P1-1
-
-          M2  = ZI(A1-1+J)
-          TM2 = ZK8(JTYPMM+ZI(A0-1+ZI(C0-1+M2))-1)
-          CALL TMACOQ(TM2,DIME,LCOQUE)
-
-C ------- M2 INCLUSE DANS M1 ?
-
-          LINCLU = MINCLU(DIME  ,PREC  ,M2     ,ZI(C1) ,ZR(C2) ,
-     &                    ZR(C4),M1    ,ZI(B1) ,ZR(B3) )
-          IF (LINCLU) THEN
-            IF (ISMED) THEN
-              ZI(D4  ) = -M1
-              ZI(D4+1) = M2
-            ELSE
-              ZI(D4  ) = M2
-              ZI(D4+1) = M1
-            ENDIF
+      DO 20 IMA1 = 1, NMA
+C        
+        JDEBUT = ZI(JCUMU+IMA1-1)
+        JFIN   = ZI(JCUMU+IMA1)
+C
+        IF (.NOT.ZL(JCOLM+IMA1-1)) GOTO 20
+C
+C --- INFOS SUR LA MAILLE M1
+C        
+        CALL ARLGRI(MAIL  ,TYPMAI,NOM1  ,DIME  ,IMA1 ,
+     &              NUMMA1,TM1   ,H1)        
+        NBNO1 = ZI(JMCUMU+NUMMA1) - ZI(JMCUMU+NUMMA1-1)
+C        
+        DO 30 J = JDEBUT, JFIN-1
+C
+C --- NUMERO ORDRE DANS LA LISTE DES GROUPES DE MAILLE 
+C        
+          IMA2 = ZI(JGRAPH+J-1)     
+C
+C --- INFOS SUR LA MAILLE M2
+C        
+          CALL ARLGRI(MAIL  ,TYPMAI,NOM2  ,DIME  ,IMA2 ,
+     &                NUMMA2,TM2   ,H2)
+          NBNO2 = ZI(JMCUMU+NUMMA2) - ZI(JMCUMU+NUMMA2-1)
+C        
+          LINC21 = .FALSE.
+          LINC12 = .FALSE.
+          LSSMAI = .FALSE.
+C
+C --- M2 INCLUSE DANS M1 ?
+C
+          LINC21 = MINCLU(DIME  ,PREC  ,
+     &                    IMA2  ,ZI(JDIME2) ,ZR(JMNMX2) ,ZR(JBSOM2),
+     &                    IMA1  ,ZI(JDIME1) ,ZR(JBPAN1) )
+          IF (LINC21) THEN 
+C OUI ! 
+C ON VA INTEGRER IMA1 SUR IMA2 (IMA2 EST LA MAILLE SUPPORT) 
+            IF (ISMED) THEN           
+              NMAIN2 = NMAIN2 + 1
+              NNOIN2 = NNOIN2 + NBNO2
+              ZI(JQMAMA+2*(ICPL-1))   = -IMA1
+              ZI(JQMAMA+2*(ICPL-1)+1) = IMA2          
+            ELSE             
+              NMAIN1 = NMAIN1 + 1
+              NNOIN1 = NNOIN1 + NBNO1
+              ZI(JQMAMA+2*(ICPL-1))   = IMA2
+              ZI(JQMAMA+2*(ICPL-1)+1) = IMA1
+            ENDIF 
+            LINCL2 = .TRUE. 
+            LINCL1 = .FALSE.            
             GOTO 40
           ENDIF
-
-C ------- M1 INCLUSE DANS M2 ?
-
-          LINCLU = MINCLU(DIME  ,PREC  ,M1     ,ZI(B1) ,ZR(B2) ,
-     &                    ZR(B4),M2    ,ZI(C1) ,ZR(C3) )
-          IF (LINCLU) THEN
+C
+C --- M1 INCLUSE DANS M2 ?
+C
+          LINC12 = MINCLU(DIME  ,PREC  ,
+     &                    IMA1  ,ZI(JDIME1) ,ZR(JMNMX1) ,ZR(JBSOM1),
+     &                    IMA2  ,ZI(JDIME2) ,ZR(JBPAN2) )
+          IF (LINC12) THEN
+C ON VA INTEGRER IMA2 SUR IMA1 (IMA1 EST LA MAILLE SUPPORT)           
             IF (ISMED) THEN
-              ZI(D4  ) = M1
-              ZI(D4+1) = M2
+              NMAIN1 = NMAIN1 + 1
+              NNOIN1 = NNOIN1 + NBNO1
+              ZI(JQMAMA+2*(ICPL-1))   = IMA1
+              ZI(JQMAMA+2*(ICPL-1)+1) = IMA2
             ELSE
-              ZI(D4  ) = -M2
-              ZI(D4+1) = M1
-            ENDIF
+              NMAIN2 = NMAIN2 + 1
+              NNOIN2 = NNOIN2 + NBNO2
+              ZI(JQMAMA+2*(ICPL-1))   = -IMA2
+              ZI(JQMAMA+2*(ICPL-1)+1) = IMA1
+            ENDIF 
+            LINCL1 = .TRUE. 
+            LINCL2 = .FALSE.         
             GOTO 40
           ENDIF
-
-C ------- INTEGRATION SPECIALE SUR LA MAILLE LA PLUS PETITE
-
-          H2 = ZR(C5-1+M2)
-
+C
+C --- INTERSECTION DE M1 ET M2 : 
+C --- INTEGRATION SPECIALE SUR LA MAILLE LA PLUS PETITE
+C
           IF (ISMED) THEN
             IF (H1.LE.H2) THEN
-              ZI(D4) = M1
+C ON VA INTEGRER IMA2 SUR IMA1 (LA MAILLE SUPPORT EST INTERMEDIAIRE)
+              ZI(JQMAMA+2*(ICPL-1)) = IMA1
             ELSE
-              ZI(D4) = -M1
+C ON VA INTEGRER IMA1 SUR IMA2 (LA MAILLE SUPPORT EST INTERMEDIAIRE)
+              ZI(JQMAMA+2*(ICPL-1)) = -IMA1
             ENDIF
-            ZI(D4+1) = -M2
+            ZI(JQMAMA+2*(ICPL-1)+1) = -IMA2
+            NMASS  = NMASS + 1
+            LSSMAI = .TRUE.           
           ELSE
             IF (H2.LE.H1) THEN
-              ZI(D4) = M2
+C ON VA INTEGRER IMA1 SUR IMA2 (LA MAILLE SUPPORT EST INTERMEDIAIRE) 
+              ZI(JQMAMA+2*(ICPL-1)) = IMA2
             ELSE
-              ZI(D4) = -M2
+C ON VA INTEGRER IMA2 SUR IMA1 (LA MAILLE SUPPORT EST INTERMEDIAIRE) 
+              ZI(JQMAMA+2*(ICPL-1)) = -IMA2
             ENDIF
-            ZI(D4+1) = -M1
+            ZI(JQMAMA+2*(ICPL-1)+1) = -IMA1
+            NMASS  = NMASS + 1
+            LSSMAI = .TRUE.
+            GOTO 40
           ENDIF
-
-C ------- FORMULE D'INTEGRATION ET CONSTRUCTION FAMILLES
 
  40       CONTINUE
-
-          IF (ZI(D4+1).LT.0) THEN
-            CALL ARLDEG(TMS   ,TM1   ,TM2   ,ZK8(D0),ZI(D1) ,
-     &                  ZI(D2),NFAM  ,ZI(D5))
-          ELSEIF ((ZI(D4).GT.0).EQV.ISMED) THEN
-            CALL ARLDEG(TM1   ,TM1   ,TM2   ,ZK8(D0),ZI(D1) ,
-     &                  ZI(D2),NFAM  ,ZI(D5))
+C
+C --- TYPE DE MAILLE SUPPORT D'INTEGRATION
+C         
+          IF (LSSMAI) THEN
+            TMS = TMSC
+          ELSEIF (LINCL1) THEN
+            TMS = TM1
+          ELSEIF (LINCL2) THEN
+            TMS = TM2
           ELSE
-            CALL ARLDEG(TM2   ,TM1   ,TM2   ,ZK8(D0),ZI(D1) ,
-     &                  ZI(D2),NFAM  ,ZI(D5)) 
+            CALL ASSERT(.FALSE.) 
           ENDIF
 C
-          D4   = D4 + 2
-          D5   = D5 + 1
-          NAPP = NAPP + 1
+C --- SELECTION DE LA FAMILLE DE QUADRATURE
+C 
+          CALL ARLDEG(TMS   ,TM1   ,TM2   ,ZK8(JTRTY),ZI(JTRNU) ,
+     &                ZI(JTRNM),NFAM  ,ZI(JQMAFA+ICPL-1))    
 C
+C --- NOUVELLE PAIRE D'APPARIEMENT
+C     
+          ICPL    = ICPL + 1          
  30     CONTINUE
  20   CONTINUE
 C
-C --- ECRITURE QUADRATURE.TYPEMA, .NUMERO ET .LIMAMA
+      NAPP = ICPL - 1
 C
-      CALL WKVECT(QUADRA(1:10)//'.TYPEMA','V V K8',NFAM,C0)
-      CALL WKVECT(QUADRA(1:10)//'.NUMERO','V V I',NFAM,C1)
-      CALL JECREC(QUADRA(1:10)//'.LIMAMA','V V I','NU',
+C --- CREATION OBJET .DIME
+C      
+      CALL WKVECT(QUADRA(1:10)//'.DIME','V V I',7,JQDIME)
+      ZI(JQDIME + 1 - 1 ) = NFAM
+      ZI(JQDIME + 2 - 1 ) = NAPP     
+      ZI(JQDIME + 3 - 1 ) = NMAIN1
+      ZI(JQDIME + 4 - 1 ) = NMAIN2
+      ZI(JQDIME + 5 - 1 ) = NMASS
+      ZI(JQDIME + 6 - 1 ) = NNOIN1
+      ZI(JQDIME + 7 - 1 ) = NNOIN2      
+C      
+C --- RECOPIE INFOS TRAVAIL DANS SD ECRITURE
+C
+      CALL WKVECT(QUADRA(1:10)//'.TYPEMA','V V K8',NFAM,JQTYPM)
+      CALL WKVECT(QUADRA(1:10)//'.NUMERO','V V I' ,NFAM,JQNUME)
+C
+C --- CREATION DE L'OBJET LIMAMA
+C      
+      CALL JECREC(QUADRA(1:10)//'.LIMAMA','V V I' ,'NU',
      &            'CONTIG','VARIABLE',NFAM)
-      CALL JEECRA(QUADRA(1:10)//'.LIMAMA','LONT',NAPP,' ')
+      CALL JEECRA(QUADRA(1:10)//'.LIMAMA','LONT'  ,NAPP,' ')
 C
-      DO 50 I = 1, NFAM
-        CALL JECROC(JEXNUM(QUADRA(1:10)//'.LIMAMA',I))
-        CALL JEECRA(JEXNUM(QUADRA(1:10)//'.LIMAMA',I),'LONMAX',
-     &               ZI(D2-1+I),' ')
-        ZK8(C0-1+I) = ZK8(D0-1+I)
-        ZI(C1-1+I) = ZI(D1-1+I)
+      DO 50 IFAM = 1, NFAM
+        CALL JECROC(JEXNUM(QUADRA(1:10)//'.LIMAMA',IFAM))
+        CALL JEECRA(JEXNUM(QUADRA(1:10)//'.LIMAMA',IFAM),'LONMAX',
+     &               ZI(JTRNM-1+IFAM),' ')
+        ZK8(JQTYPM-1+IFAM) = ZK8(JTRTY-1+IFAM)
+        ZI(JQNUME-1+IFAM)  = ZI(JTRNU-1+IFAM)
  50   CONTINUE
 C
-      CALL JEVEUO(QUADRA(1:10)//'.LIMAMA','E',C3)
-      CALL JEVEUO(JEXATR(QUADRA(1:10)//'.LIMAMA','LONCUM'),'L',C2)
+      CALL JEVEUO(QUADRA(1:10)//'.LIMAMA','E',JQLIMA)
+      CALL JEVEUO(JEXATR(QUADRA(1:10)//'.LIMAMA','LONCUM'),'L',JQCUMU)
 C
-      DO 60 I = 1, NFAM
-        ZI(D2-1+I) = ZI(C2-1+I) - 1
+C --- NOMBRE DE COUPLES DE MAILLES ASSOCIEES A CHAQUE FAMILLE
+C
+      DO 60 IFAM = 1, NFAM
+        ZI(JTRNM+IFAM-1) = ZI(JQCUMU+IFAM-1) - 1
  60   CONTINUE
 C
-      DO 70 I = 1, NAPP
-        D5 = D2-1+ZI(D3)
-        D3 = D3 + 1
-        ZI(C3+ZI(D5)) = I
-        ZI(D5) = ZI(D5) + 1
+C --- LISTES COUPLES DE MAILLE ASSOCIEES AUX FAMILLES
+C
+      DO 70 ICPL = 1, NAPP       
+        IFAM = ZI(JQMAFA + ICPL - 1)     
+        ZI(JQLIMA + ZI(JTRNM + IFAM - 1)) = ICPL    
+        ZI(JTRNM + IFAM - 1) = ZI(JTRNM + IFAM - 1) + 1
  70   CONTINUE 
 C
 C --- DESALLOCATIONS
@@ -303,7 +400,6 @@ C
       CALL JEDETR('&&ARLFAM.TYPEMA')
       CALL JEDETR('&&ARLFAM.NUMERO')
       CALL JEDETR('&&ARLFAM.NMAMA')
-      CALL JEDETR('&&ARLFAM.FAMILLE')
       CALL JEDETR('&&ARLFAM.QUADRA')     
 
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -321,10 +321,14 @@ OPTION__
                                      CROTATR  PROTATR  ECONTNO  PSIGINR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCRR   DDL_MECA PTHETAR
                               OUT__  EKTHETA  PGTHETA
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX            
     CFL_XFEM            118   IN__   NGEOMER  PGEOMER  N1NEUT_R PVTNO
                               OUT__  E1NEUTR  PCFLVT   E1NEUTR  PLONCAR
     CHAR_ALPH_ZAC       567   IN__   EDEFOPG  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
+    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_MECA_EPSA_R    426   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                                      ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
@@ -365,7 +369,7 @@ OPTION__
                               OUT__  ZVARINO  PVARIMO
     ECIN_ELEM_DEPL      12    IN__   DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENECNO  PENERCR      
     ENDO_ELGA           512   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCMR  ETRIAPG  PTRIAGM  ZVARIPG  PVARIMR
                                      ZVARIPG  PVARIPR
@@ -386,7 +390,7 @@ OPTION__
     ENER_TOTALE         491   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM
                                      DDL_MECA PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1
+                              OUT__  EENEDNO  PENERD1      
     EPFD_ELGA           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR
                               OUT__  EDEFOPG  PDEFORR
     EPFD_ELNO           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR
@@ -412,7 +416,7 @@ OPTION__
                               OUT__  EDEFONO  PDEFORR
     EPOT_ELEM_DEPL      218   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENEDNO  PENERDR      
     EPSG_ELGA_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFORR
@@ -517,7 +521,7 @@ OPTION__
                               OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
     INDIC_SEUIL         491   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
+                              OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2      
     INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
@@ -666,4 +670,5 @@ OPTION__
                               OUT__  E1NEUTR  PMEAST   E3NEUT_R PNIELNO
     XFEM_SMPLX_CALC     118   IN__   N1NEUT_R PLSNO    E3NEUT_R PGRLS    E1NEUTR  PGRANDF  E3NEUT_R PNIELNO
                               OUT__  E1NEUTR  PDPHI    N1NEUT_R PALPHA
+
 

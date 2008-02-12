@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DSQ -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,7 @@ EP=AFFE_CARA_ELEM(MODELE=MO,
                             INER_ROTA='OUI',),),);
 
 EP1=AFFE_CARA_ELEM(MODELE=MO1,
-                   COQUE=_F(GROUP_MA='TOUT',
+                   COQUE=_F(GROUP_MA='TOUT',COQUE_NCOU=2,
                             EPAIS=0.59999999999999998,
                             ANGL_REP=(0.0,0.0),
                             INER_ROTA='OUI',),);

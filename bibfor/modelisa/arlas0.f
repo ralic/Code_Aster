@@ -3,7 +3,7 @@
      &                  IJ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C
       NR1 = CNXC(NUM1+1) - P
       Q0  = CNXC(NUM2)
       NR2 = CNXC(NUM2+1) - Q0
+      
 
       DO 10 I = 1, NR1
 
@@ -73,18 +74,20 @@ C
         F = NI + 1
         N1 = CNX(P)
         P = P + 1
-
+        
 C ----- RECHERCHE PAR DICHOTOMIE
 
  20     CONTINUE
         M = (D + F)/2
         NT = INO1(M)
+
         IF (N1.NE.NT) THEN
           IF (N1.LT.NT) THEN
             F = M
           ELSE
             D = M
           ENDIF
+          
           GOTO 20
         ENDIF
 
@@ -98,12 +101,13 @@ C ----- RECHERCHE PAR DICHOTOMIE
           F = F0
           N2 = CNX(Q)
           Q = Q + 1
-
+          
 C ------- RECHERCHE PAR DICHOTOMIE
 
  30       CONTINUE
           M = (D + F)/2
           NT = INO2(M)
+          
           IF (N2.NE.NT) THEN
             IF (N2.LT.NT) THEN
               F = M

@@ -4,7 +4,7 @@
      &                  NAPP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -105,7 +105,7 @@ C
 C      
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER*8   TYPEMA
+      CHARACTER*8   TYPEMA,NOMMAI
       INTEGER       A0,A1,A2,A3,B0,B1,B2,B3
       INTEGER       C0,C1,C2,C3,C4,C5,C6,C7,C8
       INTEGER       Z0,Z1,E0(2),E1,E2,E3,E4
@@ -120,12 +120,13 @@ C
       LOGICAL       LINTER,MINTER
       INTEGER       JTYPMM,JCOLM
       REAL*8        DDOT
-      INTEGER       NBSOM,NBARE
-      INTEGER       NBPAN
+      INTEGER       NBSOM,NBARE,NBPAN
+      INTEGER       IFM,NIV
 C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFDBG('ARLEQUIN',IFM,NIV)
 C
 C --- INITIALISATIONS
 C 
@@ -210,6 +211,7 @@ C
         
 C --- CARACTERISTIQUES DE LA MAILLE
         NUMA   = ZI(B0-1+M1)
+        CALL JENUNO(JEXNUM(MAIL(1:8)//'.NOMMAI',NUMA),NOMMAI)
         TYPEMA = ZK8(JTYPMM+ZI(A3-1+NUMA)-1)
         
 C --- EXTENSION EVENTUELLE DES COQUES 
@@ -243,8 +245,9 @@ C --- COORDONNEES DES NOEUDS DEFINISSANT LES PANS DE LA MAILLE
         ENDIF  
         
 C --- ECHANTILLONNAGE DE LA FRONTIERE DE LA MAILLE
-        CALL ECHMAP(DIME  ,CNOEUD,NSOM  ,NOEARE,NARE  ,
-     &              NOEPAN,NPAN  ,NHAPP ,ZR(Z0),NNOH)
+        CALL ECHMAP(NOMMAI,TYPEMA,DIME  ,CNOEUD,NSOM  ,
+     &              NOEARE,NARE  ,NOEPAN,NPAN  ,NHAPP ,
+     &              ZR(Z0),NNOH)
 
 C       
 C --- APPARIEMENT PONCTUEL ?

@@ -1,21 +1,21 @@
-# MODIF  DATE 21/01/2008   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE    = _F(NOM='SSNV185N',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
@@ -24,7 +24,7 @@ DEBUT(CODE    = _F(NOM='SSNV185N',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
                      TYPE_ALLOCATION = 4,
                      TAILLE = 500000,
                      PARTITION = 0.7,),)
-                     
+
 #----------------------------------------------
 #                MAILLAGE : hexa_5_31_51.mgib
 #----------------------------------------------
@@ -92,9 +92,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                       AFFE=_F(TOUT = 'OUI',
-                                MATER=ACIER,
-                                TEMP_REF=0.0,),
+                       AFFE=_F(TOUT = 'OUI', MATER=ACIER ),
                              );
 
 #----------------------------------------------
@@ -279,11 +277,11 @@ IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE( TABLE=PK,
             NOM_PARA='K1_MAX',
-            FILTRE=(_F( NOM_PARA = 'PT_FOND',  
+            FILTRE=(_F( NOM_PARA = 'PT_FOND',
                         VALE_I = 1,  ),
-                    _F( NOM_PARA = 'INST',  
+                    _F( NOM_PARA = 'INST',
                         VALE = 1.,  ),
-                    _F( NOM_PARA = 'METHODE',  
+                    _F( NOM_PARA = 'METHODE',
                         VALE_I = 3,  ),),
             VALE=K1REF,
             PRECISION=0.035,
@@ -347,7 +345,7 @@ TEST_TABLE(TABLE=TABDEP,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG2,
                         MAILLAGE_FISS = MA_XFEM,

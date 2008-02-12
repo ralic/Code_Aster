@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,6 +125,8 @@ MATRICE__
     MMATTSR = MTNS_R DDL_THER DDL_THER
 
 OPTION__
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     CARA_CISA           509   IN__   NGEOMER  PGEOMER  DDL_THER PTEMPE1  DDL_THER PTEMPE2
                               OUT__  ECASECT  PCASECT
     CARA_GAUCHI         509   IN__   NGEOMER  PGEOMER  DDL_THER PTEMPER
@@ -141,6 +143,8 @@ OPTION__
                               OUT__  MVECTTR  PVECTTR
     CHAR_DLAG_SOUR_R    599   IN__   NGEOMER  PGEOMER  ESOURCR  PSOURCR  NDEPLAR  PVECTTH
                               OUT__  MVECTTR  PVECTTR
+    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_SENS_EVOL      78    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PVAPRIN  DDL_THER PVAPRMO
                               OUT__  MVECTTR  PVECTTR
@@ -173,6 +177,14 @@ OPTION__
                               OUT__  DDL_THER PDLAGTE
     DURT_ELNO_META      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
+    ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX        
+    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    EPOT_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_TEMP      220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
     ERRE_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
@@ -197,8 +209,14 @@ OPTION__
     FLUX_ELNO_TEMP      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  EFLUXNO  PFLUX_R
+    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
    INIT_MAIL_VOIS      99     IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
+    MASS_INER           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     MASS_THER           77    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
     META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
@@ -215,6 +233,8 @@ OPTION__
                                      DDL_THER PTEMPEI  DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTMPCHF
                                      DDL_THER PTMPCHI
                               OUT__  EHYDRNO  PHYDRPP  MVECTTR  PRESIDU
+    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     RIGI_THER           76    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
     RIGI_THER_CONV_T    502   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  DDL_THER PTEMPEI
@@ -231,4 +251,5 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
                                      EPHASNO_ PVARI_R
-
+    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX

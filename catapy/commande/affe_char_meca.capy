@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -833,6 +833,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
            POIDS_1        =SIMP(statut='f',typ='R'),
            POIDS_2        =SIMP(statut='f',typ='R'),
            POIDS_GROSSIER =SIMP(statut='f',typ='R'),
+           UNITE_GMSH     =SIMP(statut='f',typ='I',defaut=0,max=1),
            POIDS_FIN      =SIMP(statut='f',typ='R'),),
 
         FORCE_POUTRE    =FACT(statut='f',max='**',

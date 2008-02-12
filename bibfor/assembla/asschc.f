@@ -1,11 +1,11 @@
       SUBROUTINE ASSCHC(MATAS,NBCHC,LCHCI,NOMNU,CUMUL)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*) MATAS,LCHCI(*),NOMNU
       CHARACTER*1 BASE
       INTEGER NBCHC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,17 +32,12 @@ C
 C-----------------------------------------------------------------------
 C VAR  MATAS   K*19    : NOM DE LA MATR_ASSE
 C IN   NBCHC   I       : NOMBRE DE CHARGE CINEMATIQUES
-C IN   LCHCI   K*19    : LISTE DES NOMS DES CHARGES CINEMATIQUES
+C IN   LCHCI   K*      : LISTE DES NOMS DES CHARGES CINEMATIQUES
 C                        L'EFFET DE CES CHARGES EST CUMULE DANS MATAS
 C IN   NOMNU   K*14    : NOM DE LA NUMEROTATION
 C IN   CUMUL   K4      : 'ZERO' / 'CUMU'
 C-----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
-C-----------------------------------------------------------------------
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -56,15 +51,15 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      CHARACTER*2 TYPSTO
       CHARACTER*4 CUMUL
-      CHARACTER*8 KBID,GD
+      CHARACTER*8 GD
       CHARACTER*14 NU
       CHARACTER*19 MAT,NOMCH
+      INTEGER JREFA,JNEQU,NEQ,IBID,IERD,NUMGD,IDDES,NEC,JCCID,IDPRNO
+      INTEGER NELIM,JAFCI,NIMP,IMP,INO,IDDL,IEQ,ICH
 C----------------------------------------------------------------------
-C                DEBUT DES INSTRUCTIONS
+
       CALL JEMARQ()
-C----------------------------------------------------------------------
       MAT = MATAS
       CALL JEVEUO(MAT//'.REFA','E',JREFA)
       NU = NOMNU

@@ -2,7 +2,7 @@
      &                  CINE2 ,NOMC  ,NOMARL )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,10 @@ C
       CHARACTER*24  NOMAPP      
       CHARACTER*8   K8BID
       INTEGER       DIM1,DIM2,NNO,NN1,NN2,NNC,NM2,N1,N2,M1,M2
-      INTEGER       A0,A1,B0,B1,B2,B3,B4,C0,D0,D1,D2,D3,D4,E0,E1,E2
+      INTEGER       JCONX,JCUMU,JNGRM1
+      INTEGER       JCNCI,JCNCUM,JNAPP,JAPCUM,JNGRM2
+      INTEGER       JFILN1,JCOMT1,JCOMT2,JFILMA,JFILN2
+      INTEGER       JCINO,JMINO1,JMINO2
       INTEGER       I,J,K,P0,P1,P2,P3,P4,P5,JCOLM,IBID
       LOGICAL       IR
 C      
@@ -99,61 +102,41 @@ C
 C
 C --- DIMENSION DES MATRICES NODALES ARLEQUIN
 C
-      IF (CINE1(1:6).EQ.'SOLIDE') THEN
-          DIM1 = 5*DIME-6
-        IF (CINE2(1:6).EQ.'SOLIDE') THEN
-          DIM2 = DIM1
-        ELSEIF (CINE2(1:5).EQ.'COQUE') THEN
-          DIM2 = 12*DIME-18
-        ELSE
-          CALL ASSERT(.FALSE.)  
-        ENDIF
-      ELSEIF (CINE1(1:5).EQ.'COQUE') THEN
-          DIM1 = 21*DIME-33
-        IF (CINE2(1:6).EQ.'SOLIDE') THEN
-          DIM2 = 9*DIME-12
-        ELSEIF (CINE2(1:5).EQ.'COQUE') THEN
-          DIM2 = DIM1
-        ELSE
-          CALL ASSERT(.FALSE.)  
-        ENDIF
-      ELSE
-        CALL ASSERT(.FALSE.)  
-      ENDIF
+      CALL ARLMDI(DIME  ,CINE1 ,CINE2 ,DIM1  ,DIM2  )
 C
 C --- LECTURE DONNEES MAILLAGE
 C
-      CALL JEVEUO(MAIL(1:8)//'.CONNEX','L',A0)
-      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',A1)
+      CALL JEVEUO(MAIL(1:8)//'.CONNEX','L',JCONX)
+      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',JCUMU)
 C
 C --- LECTURE DONNEES GROUPE DE MAILLES
 C   
-      CALL JEVEUO(NOM1(1:10)//'.GROUPEMA','L',B0)
-      CALL JEVEUO(NOM2(1:10)//'.GROUPEMA','L',C0)
+      CALL JEVEUO(NOM1(1:10)//'.GROUPEMA','L',JNGRM1)
+      CALL JEVEUO(NOM2(1:10)//'.GROUPEMA','L',JNGRM2)
       CALL JELIRA(NOM2(1:10)//'.GROUPEMA','LONMAX',NM2,K8BID)
 C
 C --- LECTURE CONNECTIVITES INVERSES
 C       
-      CALL JEVEUO(NOM1(1:10)//'.CNCINV','L',B1)
+      CALL JEVEUO(NOM1(1:10)//'.CNCINV','L',JCNCI)
       CALL JELIRA(NOM1(1:10)//'.CNCINV','NMAXOC',NNO,K8BID)
-      CALL JEVEUO(JEXATR(NOM1(1:10)//'.CNCINV','LONCUM'),'L',B2)
+      CALL JEVEUO(JEXATR(NOM1(1:10)//'.CNCINV','LONCUM'),'L',JCNCUM)
 C
 C --- LECTURE GRAPHE APPARIEMENT
 C       
       NOMAPP = NOMARL(1:8)//'.GRAPH'      
-      CALL JEVEUO(NOMAPP,'L',B3)
-      CALL JEVEUO(JEXATR(NOMAPP,'LONCUM'),'L',B4)
+      CALL JEVEUO(NOMAPP,'L',JNAPP)
+      CALL JEVEUO(JEXATR(NOMAPP,'LONCUM'),'L',JAPCUM)
 C
 C --- ALLOCATION OBJETS TEMPORAIRES
 C
-      CALL WKVECT('&&ARLFC1.FILTRE.N1','V V L',NNO,D0)
-      CALL WKVECT('&&ARLFC1.COMPTEUR1','V V I',NNO,D1)
-      CALL WKVECT('&&ARLFC1.COMPTEUR2','V V I',NNO,D2)
-      CALL WKVECT('&&ARLFC1.FILTRE.MA','V V L',NM2,D3)
-      CALL WKVECT('&&ARLFC1.FILTRE.N2','V V L',NNO,D4)
+      CALL WKVECT('&&ARLFC1.COMPTEUR1','V V I',NNO,JCOMT1)
+      CALL WKVECT('&&ARLFC1.COMPTEUR2','V V I',NNO,JCOMT2)
+      CALL WKVECT('&&ARLFC1.FILTRE.N1','V V L',NNO,JFILN1)
+      CALL WKVECT('&&ARLFC1.FILTRE.N2','V V L',NNO,JFILN2)
+      CALL WKVECT('&&ARLFC1.FILTRE.MA','V V L',NM2,JFILMA)
 
       DO 10 I = 1, NNO
-        ZL(D4-1+I) = .FALSE.
+        ZL(JFILN2-1+I) = .FALSE.
  10   CONTINUE
 
       NN1 = 0
@@ -162,73 +145,73 @@ C
 C
 C --- DIMENSIONS DES MATRICES
 C
-      P1 = ZI(B2)
+      P1 = ZI(JCNCUM)
       IR = .TRUE.
 
       DO 20 N1 = 1, NNO
 
         P0 = P1
-        P1 = ZI(B2+N1)
-        IF (ZI(B1-1+P0).EQ.0) GOTO 20
+        P1 = ZI(JCNCUM+N1)
+        IF (ZI(JCNCI-1+P0).EQ.0) GOTO 20
 
         IF (IR) THEN
 
           IR = .FALSE.
 
           DO 30 M2 = 1, NM2
-            ZL(D3-1+M2) = .FALSE.
+            ZL(JFILMA-1+M2) = .FALSE.
  30       CONTINUE
 
           DO 40 N2 = 1, NNO
-            ZL(D0-1+N2) = .FALSE.
+            ZL(JFILN1-1+N2) = .FALSE.
  40       CONTINUE
 
         ENDIF
 
         DO 50 I = P0, P1-1
 
-          M1 = ZI(B1-1+I)
+          M1 = ZI(JCNCI-1+I)
           IF (.NOT.ZL(JCOLM+M1-1)) GOTO 50
 
-          J = ZI(B0-1+M1)
-          P2 = ZI(A1-1+J)
-          P3 = ZI(A1+J)
+          J = ZI(JNGRM1-1+M1)
+          P2 = ZI(JCUMU-1+J)
+          P3 = ZI(JCUMU+J)
 
           DO 60 J = P2, P3-1
 
-            N2 = ZI(A0-1+J)
-            IF (ZL(D0-1+N2)) GOTO 60
-            ZL(D0-1+N2) = .TRUE.
-            ZL(D4-1+N2) = .TRUE.
-            ZI(D1-1+N1) = ZI(D1-1+N1) + 1
+            N2 = ZI(JCONX-1+J)
+            IF (ZL(JFILN1-1+N2)) GOTO 60
+            ZL(JFILN1-1+N2) = .TRUE.
+            ZL(JFILN2-1+N2) = .TRUE.
+            ZI(JCOMT1-1+N1) = ZI(JCOMT1-1+N1) + 1
             NN1 = NN1 + 1
 
  60       CONTINUE
 
-          P2 = ZI(B4-1+M1)
-          P3 = ZI(B4+M1)
+          P2 = ZI(JAPCUM-1+M1)
+          P3 = ZI(JAPCUM+M1)
 
           DO 70 J = P2, P3-1
 
-            M2 = ZI(B3-1+J)
-            IF (ZL(D3-1+M2)) GOTO 70
-            ZL(D3-1+M2) = .TRUE.
-            K = ZI(C0-1+M2)
-            P4 = ZI(A1-1+K)
-            P5 = ZI(A1+K)
+            M2 = ZI(JNAPP-1+J)
+            IF (ZL(JFILMA-1+M2)) GOTO 70
+            ZL(JFILMA-1+M2) = .TRUE.
+            K = ZI(JNGRM2-1+M2)
+            P4 = ZI(JCUMU-1+K)
+            P5 = ZI(JCUMU+K)
 
             DO 80 K = P4, P5-1
 
-              N2 = ZI(A0-1+K)
-              IF (ZL(D0-1+N2)) GOTO 80
-              ZL(D0-1+N2) = .TRUE.
+              N2 = ZI(JCONX-1+K)
+              IF (ZL(JFILN1-1+N2)) GOTO 80
+              ZL(JFILN1-1+N2) = .TRUE.
 
-              IF (ZL(D4-1+N2)) THEN
+              IF (ZL(JFILN2-1+N2)) THEN
                 WRITE(6,*) 'NOEUD REDONDANT : ',N2
                 CALL ASSERT(.FALSE.)
               ENDIF
 
-              ZI(D2-1+N1) = ZI(D2-1+N1) + 1
+              ZI(JCOMT2-1+N1) = ZI(JCOMT2-1+N1) + 1
               NN2 = NN2 + 1
               IR = .TRUE.
 
@@ -246,42 +229,42 @@ C --- ALLOCATION OBJET MORSES
 C
       CALL ARLCMO(NOMMO1,'V',NN1,NNC,DIM1)
       CALL ARLCMO(NOMMO2,'V',NN2,NNC,DIM2)      
-      CALL JEVEUO(NOMMO1(1:16)//'.INO','E',E1)
-      CALL JEVEUO(NOMMO2(1:16)//'.INO','E',E2)
+      CALL JEVEUO(NOMMO1(1:16)//'.INO','E',JMINO1)
+      CALL JEVEUO(NOMMO2(1:16)//'.INO','E',JMINO2)
 C
 C --- ALLOCATION OBJET INO
 C
-      CALL WKVECT(NOMC(1:10)//'.INO','V V I',NNC,E0)
+      CALL WKVECT(NOMC(1:10)//'.INO','V V I',NNC,JCINO)
 C      
       NNC = 0
       DO 90 N1 = 1, NNO
-        IF (ZI(D2-1+N1).EQ.0) GOTO 90
-        ZI(E0+NNC) = N1
+        IF (ZI(JCOMT2-1+N1).EQ.0) GOTO 90
+        ZI(JCINO+NNC) = N1
         NNC = NNC + 1        
         CALL JECROC(JEXNUM(NOMMO1(1:16)//'.INO',NNC))
         CALL JEECRA(JEXNUM(NOMMO1(1:16)//'.INO',NNC),'LONMAX',
-     &              ZI(D1-1+N1),' ')     
+     &              ZI(JCOMT1-1+N1),' ')     
         CALL JECROC(JEXNUM(NOMMO2(1:16)//'.INO',NNC))
         CALL JEECRA(JEXNUM(NOMMO2(1:16)//'.INO',NNC),'LONMAX',
-     &              ZI(D2-1+N1),' ')
+     &              ZI(JCOMT2-1+N1),' ')
  90   CONTINUE
 C
 C --- ECRITURE DU PROFIL DES MATRICES
 C
-      P1 = ZI(B2)
+      P1 = ZI(JCNCUM)
 
       DO 100 N1 = 1, NNO
         
         P0 = P1
-        P1 = ZI(B2+N1)
-        IF (ZI(D2-1+N1).EQ.0) GOTO 100
+        P1 = ZI(JCNCUM+N1)
+        IF (ZI(JCOMT2-1+N1).EQ.0) GOTO 100
 
         DO 110 M2 = 1, NM2
-          ZL(D3-1+M2) = .FALSE.
+          ZL(JFILMA-1+M2) = .FALSE.
  110    CONTINUE
 
         DO 120 N2 = 1, NNO
-          ZL(D0-1+N2) = .FALSE.
+          ZL(JFILN1-1+N2) = .FALSE.
  120    CONTINUE
 
         NN1 = 0
@@ -289,40 +272,40 @@ C
 
         DO 130 I = P0, P1-1
 
-          M1 = ZI(B1-1+I)
+          M1 = ZI(JCNCI-1+I)
           IF (.NOT.ZL(JCOLM+M1-1)) GOTO 130
-          J = ZI(B0-1+M1)
-          P2 = ZI(A1-1+J)
-          P3 = ZI(A1+J)
+          J = ZI(JNGRM1-1+M1)
+          P2 = ZI(JCUMU-1+J)
+          P3 = ZI(JCUMU+J)
 
           DO 140 J = P2, P3-1
             
-            N2 = ZI(A0-1+J)
-            IF (ZL(D0-1+N2)) GOTO 140
-            ZL(D0-1+N2) = .TRUE.
-            ZI(E1+NN1) = N2
+            N2 = ZI(JCONX-1+J)
+            IF (ZL(JFILN1-1+N2)) GOTO 140
+            ZL(JFILN1-1+N2) = .TRUE.
+            ZI(JMINO1+NN1) = N2
             NN1 = NN1 + 1
 
  140      CONTINUE
 
-          P2 = ZI(B4-1+M1)
-          P3 = ZI(B4+M1)
+          P2 = ZI(JAPCUM-1+M1)
+          P3 = ZI(JAPCUM+M1)
 
           DO 150 J = P2, P3-1
 
-            M2 = ZI(B3-1+J)
-            IF (ZL(D3-1+M2)) GOTO 150
-            ZL(D3-1+M2) = .TRUE.
-            K = ZI(C0-1+M2)
-            P4 = ZI(A1-1+K)
-            P5 = ZI(A1+K)
+            M2 = ZI(JNAPP-1+J)
+            IF (ZL(JFILMA-1+M2)) GOTO 150
+            ZL(JFILMA-1+M2) = .TRUE.
+            K = ZI(JNGRM2-1+M2)
+            P4 = ZI(JCUMU-1+K)
+            P5 = ZI(JCUMU+K)
 
             DO 160 K = P4, P5-1
 
-              N2 = ZI(A0-1+K)
-              IF (ZL(D0-1+N2)) GOTO 160
-              ZL(D0-1+N2) = .TRUE.
-              ZI(E2+NN2) = N2
+              N2 = ZI(JCONX-1+K)
+              IF (ZL(JFILN1-1+N2)) GOTO 160
+              ZL(JFILN1-1+N2) = .TRUE.
+              ZI(JMINO2+NN2) = N2
               NN2 = NN2 + 1
 
  160        CONTINUE
@@ -331,10 +314,10 @@ C
 
  130    CONTINUE
 
-        CALL TRI(ZI(E1),IBID,0,NN1)
-        CALL TRI(ZI(E2),IBID,0,NN2)
-        E1 = E1 + NN1
-        E2 = E2 + NN2
+        CALL TRI(ZI(JMINO1),IBID,0,NN1)
+        CALL TRI(ZI(JMINO2),IBID,0,NN2)
+        JMINO1 = JMINO1 + NN1
+        JMINO2 = JMINO2 + NN2
 
  100  CONTINUE
 C

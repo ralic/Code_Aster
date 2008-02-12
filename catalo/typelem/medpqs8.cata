@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -189,11 +189,15 @@ OPTION__
                               OUT__  EKTHETA  PGTHETA
     CALC_NOEU_BORD      290   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_ALPH_ZAC       563   IN__   EDEFOPG  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     CHAR_DLAG_MECAST    577   IN__   ECONTPG  PCONTRR  DDL_MECA PDEPLAR  ZVARCPG  PVARCMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  DDL_MECA PVECTTH
                               OUT__  MVECTUR  PVECTUR
+    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_MECA_EPLG_F    296   IN__   CALPHAR  PALPHAR  CEPSINF  PEPSINF  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR
                               OUT__  MVECTUR  PVECTUR
@@ -296,7 +300,7 @@ OPTION__
                               OUT__  EDEFONO  PDEFORR
     EPOT_ELEM_DEPL      286   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EENEDNO  PENERDR
+                              OUT__  EENEDNO  PENERDR      
     EPSG_ELGA_DEPL      87    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFORR
@@ -399,7 +403,7 @@ OPTION__
     INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
                               OUT__  EVOISIN  PVOISIN
     MASS_INER           285   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
-                              OUT__  EMASSINE PMASSINE
+                              OUT__  EMASSINE PMASSINE      
     MASS_MECA           82    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX OUT__  XXXXXX   XXXXXX
@@ -537,4 +541,3 @@ OPTION__
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CSOUSOP  PSOUSOP  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIPG
                               OUT__  EDOMGGA  PSIGISG  EWEIBUL  PWEIBUL
-

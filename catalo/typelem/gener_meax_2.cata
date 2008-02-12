@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -243,11 +243,15 @@ OPTION__
                               OUT__  EKTHETA  PGTHETA
     CALC_NOEU_BORD      290   IN__   NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_ALPH_ZAC       563   IN__   EDEFOPG  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     CHAR_DLAG_MECAST    577   IN__   ECONTPG  PCONTRR  DDL_MECA PDEPLAR  ZVARCPG  PVARCMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  DDL_MECA PVECTTH
                               OUT__  MVECTUR  PVECTUR
+    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     CHAR_MECA_EPLG_F    296   IN__   CALPHAR  PALPHAR  CEPSINF  PEPSINF  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR
                               OUT__  MVECTUR  PVECTUR
@@ -303,7 +307,7 @@ OPTION__
                               OUT__  ECONTNO  PDLSINO
     ECIN_ELEM_DEPL      82    IN__   DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
-                              OUT__  EENECNO  PENERCR
+                              OUT__  EENECNO  PENERCR            
     ENDO_ELGA           512   IN__   ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCMR  ETRIAPG  PTRIAGM  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR
                                      CCOMPOR  PCOMPOR
@@ -324,7 +328,7 @@ OPTION__
     ENER_TOTALE         490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM
                                      DDL_MECA PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
-                              OUT__  EENEDNO  PENERD1
+                              OUT__  EENEDNO  PENERD1      
     EPFD_ELGA           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR
                               OUT__  EDEFOPG  PDEFORR
     EPFD_ELNO           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR
@@ -369,7 +373,7 @@ OPTION__
                                      CMATERC  PMATERC  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                                      CCAMASS  PCAMASS
                               OUT__  EDEFONO  PDEFORR
-                                     EDEFONC  PDEFORC
+                                     EDEFONC  PDEFORC     
     EPSP_ELGA           334   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC  
                                      CTEMPSR  PTEMPSR  ZVARIPG  PVARIGR
@@ -505,7 +509,7 @@ OPTION__
                                      CPESANR  PPESANRP CPESANR  PPESANRD CREFERI  PPRESSP  CREFERI  PPRESSD
                                      CROTATR  PROTATRP CROTATR  PROTATRD CTEMPSR  PTEMPSR  EVOISIN  PVOISIN
                                      CCONSTR  PCONSTR
-                              OUT__  EERREUR  PERREUR
+                              OUT__  EERREUR  PERREUR      
     QIRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
     RADI_ELGA_SIGM      489   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  CSOUSOP  PNEUK24  ZVARIPG  PVARIMR
@@ -598,4 +602,3 @@ OPTION__
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CSOUSOP  PSOUSOP  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIPG
                               OUT__  EDOMGGA  PSIGISG  EWEIBUL  PWEIBUL
-

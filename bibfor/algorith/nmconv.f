@@ -8,7 +8,7 @@
      &                  MAXREL,MATE  ,COMREF)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C
       INTEGER      JCRR
       INTEGER      IBID,IRET
       INTEGER      TYPALC
-      REAL*8       R8VIDE,R8BID,VCMAX
+      REAL*8       R8VIDE,R8BID,VCMAX,R8PREM
       REAL*8       INSTAM,INSTAP,DIINST,PASMIN
       CHARACTER*16 GEONOE
       REAL*8       GEOVAL
@@ -445,7 +445,8 @@ C
            IF (NUMINS.GT.1) THEN
              CALL IMPSDM(SDIMPR(1:14),'RESI_RELA',' ')
              CALL IMPSDM(SDIMPR(1:14),'RESI_MAXI','X')
-             IF (VRESI .LT. ZR(JCRR+6)) THEN
+             IF ((VRESI .LT. ZR(JCRR+6)).OR. 
+     &           (VRESI .LT. R8PREM())) THEN             
                CALL IMPSDM(SDIMPR(1:14),'RESI_RELA',' ')
                CALL IMPSDM(SDIMPR(1:14),'RESI_MAXI',' ')
                CONVER = .TRUE.

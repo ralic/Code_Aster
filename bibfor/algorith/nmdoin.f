@@ -1,7 +1,7 @@
        SUBROUTINE NMDOIN(EVOL  ,EVONOL,INST  ,NUME  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (INITIALISATION)
 C
-C DONNE INSTANT ET NUME_ORDRE INITIAL DANS ETAT INITIAL
+C INSTANT ET NUME_ORDRE INITIAL 
 C      
 C ----------------------------------------------------------------------
 C
@@ -108,7 +108,7 @@ C
      &                C16BID,R8BID    ,K8BID ,NUME  ,1    ,
      &                N2)
           IF (N2.EQ.0) THEN
-            CALL U2MESK('F','ALGORITH6_37',1,EVOL)
+            CALL U2MESK('F','MECANONLINE4_37',1,EVOL)
           ENDIF  
         END IF
 C

@@ -1,9 +1,9 @@
-      SUBROUTINE ARLTE(DIME  ,NG    ,PG    ,
+      SUBROUTINE ARLTE(NDIM  ,NG    ,PG    ,
      &                 F1    ,DF1   ,NN1   ,L1,
      &                 F2    ,DF2   ,NN2   ,L2)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,14 +23,14 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER DIME
+      INTEGER NDIM
       INTEGER NG
       REAL*8  PG(NG)
       INTEGER NN1
-      REAL*8  F1(NN1,*),DF1(DIME,NN1,*)
+      REAL*8  F1(NN1,*),DF1(NDIM,NN1,*)
       REAL*8  L1(*)
       INTEGER NN2
-      REAL*8  F2(NN2,*),DF2(DIME,NN2,*)
+      REAL*8  F2(NN2,*),DF2(NDIM,NN2,*)
       REAL*8  L2(*)    
 C      
 C ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ C
 C
 C MAILLE 1 : SUPPORT DES MULTIPLICATEURS
 C
-C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  NN1    : NOMBRE DE NOEUDS MAILLE 1
 C IN  NN2    : NOMBRE DE NOEUDS MAILLE 2
 C IN  NG     : NOMBRE DE POINTS D'INTEGRATION
@@ -54,9 +54,9 @@ C IN  DF1    : DERIVEES FNCTS FORME ASSOCIEES
 C IN  F2     : FNCTS FORME PTS D'INTEGRATION MAILLE 2
 C IN  DF2    : DERIVEES FNCT FORME ASSOCIEES
 C I/O L1     : MATRICES ELEMENTAIRES MAILLE 1
-C               DIM: ((1+DIME*DIME)*NN1*NN1)
+C               DIM: ((1+NDIM*NDIM)*NN1*NN1)
 C I/O L2     : MATRICES ELEMENTAIRES MAILLE 2
-C               DIM: ((1+DIME*DIME)*NN1*NN2)
+C               DIM: ((1+NDIM*NDIM)*NN1*NN2)
 C
 C STRUCTURE DE L* :
 C ( W1.1*W2.1  , W1.1*W2.2  , ..., W1.2*W2.1, W1.2*W2.2, ...,
@@ -76,7 +76,8 @@ C
 C
 C --- FORMULE D'INTEGRATION
 C
-      DO 10 I = 1, NG
+
+      DO 99 I = 1, NG
 
         R0 = PG(I)
 
@@ -94,28 +95,50 @@ C
             L1(P1) = L1(P1) + R1 * F1(K,I)
             P1 = P1 + 1
             
-            DO 20 L = 1, DIME
+            DO 21 L = 1, NDIM
               R2 = R0 * DF1(L,K,I)
 
-              DO 20 M = 1, DIME
-                P3 = P3 + 1
-                L1(P3) = L1(P3) + R2*DF1(M,J,I)
+
                 
-  20      CONTINUE
+
+              DO 22 M = 1, NDIM
+
+                P3 = P3 + 1
+                L1(P3) = L1(P3) + R2*DF1(M,J,I)            
+                              
+  22          CONTINUE
+
+  21        CONTINUE
+
+  20      CONTINUE               
 C  
 C --- INTEGRATION MATRICES L2
 C
-          DO 10 K = 1, NN2
+          DO 30 K = 1, NN2
+            
             L2(P2) = L2(P2) + R1 * F2(K,I)
             P2 = P2 + 1 
             
-            DO 10 L = 1, DIME
+            DO 31 L = 1, NDIM
+
               R2 = R0 * DF2(L,K,I)
 
-              DO 10 M = 1, DIME
+              DO 32 M = 1, NDIM
                 P4 = P4 + 1
                 L2(P4) = L2(P4) + R2*DF1(M,J,I) 
                 
- 10   CONTINUE
+ 32           CONTINUE
+
+ 31         CONTINUE
+
+ 30       CONTINUE
+
+
+ 10    CONTINUE
+
+
+ 99   CONTINUE
+
+ 
 
       END

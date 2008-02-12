@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF arlequin Messages  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,6 +90,9 @@ cata_msg={
  - Erreur avancée: contacter le support
 """),
 
+14: _("""
+ La zone de superposition des modèles dans Arlequin ne contient aucune maille !
+"""),
 
 
 
@@ -103,7 +106,16 @@ cata_msg={
 """),
 
 25: _("""
- Polyèdre non etoilé au centre de gravité
+ L'intersection de la maille <%(k1)s> avec la maille <%(k2)s> a donné un polyedre
+ non étoilé dont la tétraédrisation a été difficile. Il y a une erreur sur le volume obtenu après tetraédrisation.
+  Volume initial du polyedre de l'intersection: <%(r1)s>
+  Volume après découpe en tétraèdres du polyedre de l'intersection: <%(r2)s>
+  Soit un écart de <%(r3)s> %%
+--> Risques & conseils :
+Si cet écart est trop important sur trop de mailles de l'intersection, les termes de couplage Arlequin seront faux et
+pourront entrainer un résultat faux.
+Vous pouvez réduire ce risque en raffinant le maillage ou en utilisant des mailles plus simples (tétraèdres)
+
 """),
 
 }

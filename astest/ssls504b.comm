@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 13/11/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -48,6 +48,7 @@ CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                        COQUE=(
                        _F(GROUP_MA='TOUT_ELT',
              EPAIS=0.1,
+             COQUE_NCOU=3,
              ANGL_REP=(0.0,0.0),),
              _F(GROUP_MA='COTE_AB',EPAIS=0.1,),
              _F(GROUP_MA='COTE_BC',EPAIS=0.1,),

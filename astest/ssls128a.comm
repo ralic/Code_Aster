@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  : VALIDATION DE  CRIT_ELNO_RUPT DE CALC_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,6 +66,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MOD,
 #                    COQUE=_F(GROUP_MA='GM170',
                    COQUE=_F(GROUP_MA='TOUT',
                              EPAIS=4.48,
+                             COQUE_NCOU=16,
                              ANGL_REP=(0.0,0.0,),),);
 
 COMPO=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.28,

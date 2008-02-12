@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith6 Messages  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,47 +124,10 @@ cata_msg = {
  incompatibilité NOM_PARA et données mesurées 
 """),
 
-34 : _("""
- erreur
-"""),
-
-35 : _("""
- surcharge d'un résultat sans définir d'état initial :
- on prend un état initial nul
-"""),
-
 37 : _("""
  pas de numéro d'ordre pour le concept  %(k1)s 
 """),
 
-41 : _("""
- le champ de DEPL_R (ou derivé) n'est pas trouvé dans le concept  %(k1)s 
-"""),
-
-42 : _("""
- le champ de SIEF_R (ou derivé) n'est pas trouvé dans le concept  %(k1)s 
-"""),
-
-43 : _("""
- le champ de VITE n'est pas trouvé dans le concept  %(k1)s
- on crée un champ de vitesses nulles
-"""),
-
-44 : _("""
- le champ d'ACCE n'est pas trouvé dans le concept  %(k1)s
- on calcule un champ d'accélérations
- ce qui est possible puisque les vitesses sont nulles
-"""),
-
-45 : _("""
- le champ d'ACCE n'est pas trouvé dans le concept  %(k1)s
- on ne peut pas, pour l'instant, calculer le champ des accélérations
- car les vitesses ne sont pas nulles
-"""),
-
-46 : _("""
- le champ de VARI_R (ou derivé) n'est pas trouvé dans le concept  %(k1)s 
-"""),
 
 52 : _("""
  itérations cycliques :
@@ -229,9 +192,6 @@ cata_msg = {
  a la pression initiale PA 
 """),
 
-65 : _("""
- type de sélection inconnue
-"""),
 
 66 : _("""
  pour l'instant, on ne traite pas le cas des contraintes planes
@@ -250,14 +210,6 @@ cata_msg = {
  loi VISC_CINX_CHAB
  on doit obligatoirement avoir UN_SUR_M = zéro
 """),
-
-
-
-74 : _("""
- forces explicites et FETI incompatibles
-"""),
-
-
 
 76 : _("""
  mode  %(k1)s  non reconnu (dvlp)

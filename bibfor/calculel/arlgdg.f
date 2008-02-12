@@ -1,7 +1,7 @@
       SUBROUTINE ARLGDG(MAIL  ,NOM1  ,NOM2  ,DIMVAR,DEGRE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -111,7 +111,7 @@ C
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> GROUP_MA_1 - GRAPHE '//
      &                 'MAILLE/MAILLE' 
-          CALL GRMAIM(IFM,NGRMA1,DEGMAX(1))     
+          CALL GRMAIM(IFM,NOM1,DEGMAX(1))     
         ENDIF              
       ENDIF                   
 C
@@ -133,7 +133,7 @@ C
         IF (NIV.GE.2) THEN
           WRITE(IFM,*) '<ARLEQUIN> GROUP_MA_2 - GRAPHE '//
      &                 'MAILLE/MAILLE' 
-          CALL GRMAIM(IFM,NGRMA2,DEGMAX(2))     
+          CALL GRMAIM(IFM,NOM2,DEGMAX(2))     
         ENDIF         
       ENDIF     
 C

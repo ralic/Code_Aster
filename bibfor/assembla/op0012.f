@@ -1,7 +1,7 @@
       SUBROUTINE OP0012(IER)
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,25 +18,19 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      INTEGER IER
 C
 C                       OPERATEUR ASSE_MATRICE
 C======================================================================
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      CHARACTER*8 NU,MATAS,MATPRO
+      CHARACTER*8 NU,MATAS
       CHARACTER*16 TYPM,OPER
-      CHARACTER*24 K24B
+      CHARACTER*24 LCHCI,LMATEL
       CHARACTER*72 KBIDON
-      INTEGER TYPE
-      CHARACTER*1 NOMTYP,TYPMAT
-C-----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
+      INTEGER ITYSCA,NBCHC,NBMAT,JLIMAT,JLCHCI,IBID
 C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -49,8 +43,6 @@ C-----------------------------------------------------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C----------------------------------------------------------------------
-C                DEBUT DES INSTRUCTIONS
-C----------------------------------------------------------------------
       CALL JEMARQ()
 C
 C
@@ -60,49 +52,37 @@ C---- ARGUMENT IMPR
 
 C---- RECUPERATION DES ARGUMENTS ET DU CONCEPT
       CALL GETRES(MATAS,TYPM,OPER)
-      IF (TYPM(16:16).EQ.'R') TYPE = 1
-      IF (TYPM(16:16).EQ.'C') TYPE = 2
+      IF (TYPM(16:16).EQ.'R') ITYSCA = 1
+      IF (TYPM(16:16).EQ.'C') ITYSCA = 2
+
 
 C---- RECUPERATION DES MATRICES ELEMENTAIRES ---
       CALL GETVID(' ','MATR_ELEM',0,1,0,KBIDON,NBMAT)
       NBMAT = -NBMAT
+      LMATEL='&&OP0012.LMATEL'
+      CALL WKVECT(LMATEL,'V V K8',NBMAT,JLIMAT)
+      CALL GETVID(' ','MATR_ELEM',0,1,NBMAT,ZK8(JLIMAT),IBID)
 
 C---- RECUPERATION DES CHARGES CINEMATIQUES ---
       CALL GETVID(' ','CHAR_CINE',0,1,0,KBIDON,NBCHC)
       NBCHC = -NBCHC
+      LCHCI='&&OP0012.LCHARCINE'
+      IF (NBCHC.GT.0) THEN
+        CALL WKVECT(LCHCI,'V V K8',NBCHC,JLCHCI)
+        CALL GETVID(' ','CHAR_CINE',0,1,NBCHC,ZK8(JLCHCI),IBID)
+      END IF
 
 
 C---- MOT CLE : NUME_DDL
       CALL GETVID(' ','NUME_DDL',0,1,1,NU,IBID)
 
-
-C---- MOTS CLE : MATR_ELEM ET LICOEF :
-      CALL WKVECT(MATAS//'.LI2MATEL','V V K8',NBMAT,ILIMA2)
-      CALL GETVID(' ','MATR_ELEM',0,1,NBMAT,ZK8(ILIMA2),L)
-      CALL WKVECT(MATAS//'.LICOEF','V V R',NBMAT,ILICOE)
-      DO 10 I = 1,NBMAT
-        ZR(ILICOE-1+I) = 1.0D0
-   10 CONTINUE
-
-
 C---- ASSEMBLAGE PROPREMENT DIT
-      NOMTYP = TYPMAT(NBMAT,ZK8(ILIMA2))
-      IF (NOMTYP.EQ.'S') THEN
-        CALL ASSMAM('G',MATAS,NBMAT,ZK8(ILIMA2),ZR(ILICOE),NU,'ZERO',
-     &              TYPE)
+      CALL ASMATR(NBMAT,ZK8(JLIMAT),' ',NU,' ',
+     &            LCHCI,'ZERO','G',ITYSCA,MATAS)
 
-      ELSE
-        CALL ASSMMN('G',MATAS,NBMAT,ZK8(ILIMA2),ZR(ILICOE),NU,'ZERO',
-     &              TYPE)
-      END IF
-
-
-C---- PRISE EN COMPTE DES CHARGES CINEMATIQUES SI IL Y EN A
-      IF (NBCHC.NE.0) THEN
-        CALL WKVECT('OP0012.&&LCHARCINE','V V K8',NBCHC,ILCHCI)
-        CALL GETVID(' ','CHAR_CINE',0,1,NBCHC,ZK8(ILCHCI),IBID)
-        CALL ASSCHC(MATAS,NBCHC,ZK8(ILCHCI),NU,'ZERO')
-      END IF
+C     -- MENAGE :
+      CALL JEDETR(LCHCI)
+      CALL JEDETR(LMATEL)
 
       CALL JEDEMA()
       END

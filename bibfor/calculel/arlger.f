@@ -1,7 +1,7 @@
       FUNCTION ARLGER(NOMARL,NOMDAT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,38 +57,46 @@ C
 C      
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER      JARLIR   
+      CHARACTER*24 INFOR
+      INTEGER      JARLIR,IRET   
 C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      CALL JEVEUO(NOMARL(1:8)//'.INFOR','L',JARLIR )
-      IF (NOMDAT(1:6).EQ.'GAMMA0') THEN
-        ARLGER = ZR(JARLIR   ) 
-      ELSE IF (NOMDAT(1:6).EQ.'GAMMA1') THEN
-        ARLGER = ZR(JARLIR+1 )  
-      ELSE IF (NOMDAT(1:6).EQ.'PRECAR') THEN
-        ARLGER = ZR(JARLIR+2 )  
-      ELSE IF (NOMDAT(1:6).EQ.'PRECBO') THEN
-        ARLGER = ZR(JARLIR+3 )    
-      ELSE IF (NOMDAT(1:6).EQ.'PRECCP') THEN
-        ARLGER = ZR(JARLIR+4 )  
-      ELSE IF (NOMDAT(1:6).EQ.'PRECTR') THEN
-        ARLGER = ZR(JARLIR+5 ) 
-      ELSE IF (NOMDAT(1:6).EQ.'PRECIT') THEN
-        ARLGER = ZR(JARLIR+6 ) 
-      ELSE IF (NOMDAT(1:6).EQ.'PRECVM') THEN
-        ARLGER = ZR(JARLIR+7 )     
-      ELSE IF (NOMDAT(1:6).EQ.'PRECFR') THEN
-        ARLGER = ZR(JARLIR+8 ) 
-      ELSE IF (NOMDAT(1:6).EQ.'PRECVV') THEN
-        ARLGER = ZR(JARLIR+9 ) 
-      ELSE IF (NOMDAT(1:6).EQ.'PRECBB') THEN
-        ARLGER = ZR(JARLIR+10)
+      INFOR = NOMARL(1:8)//'.INFOR'
+C
+      CALL JEEXIN(INFOR,IRET)
+      IF (IRET.EQ.0) THEN
+        CALL U2MESK('F','ARLEQUIN_40',1,INFOR)      
       ELSE
-        WRITE(6,*) 'ARLGER: ',NOMARL(1:8)//'.INFOR',NOMDAT
-        CALL ASSERT(.FALSE.)
+        CALL JEVEUO(INFOR,'L',JARLIR )
+      ENDIF
+C        
+      IF (NOMDAT(1:6).EQ.'GAMMA0') THEN
+        ARLGER = ZR(JARLIR+1-1) 
+      ELSE IF (NOMDAT(1:6).EQ.'GAMMA1') THEN
+        ARLGER = ZR(JARLIR+2-1)  
+      ELSE IF (NOMDAT(1:6).EQ.'PRECAR') THEN
+        ARLGER = ZR(JARLIR+3-1)  
+      ELSE IF (NOMDAT(1:6).EQ.'PRECBO') THEN
+        ARLGER = ZR(JARLIR+4-1)    
+      ELSE IF (NOMDAT(1:6).EQ.'PRECCP') THEN
+        ARLGER = ZR(JARLIR+5-1)  
+      ELSE IF (NOMDAT(1:6).EQ.'PRECTR') THEN
+        ARLGER = ZR(JARLIR+6-1) 
+      ELSE IF (NOMDAT(1:6).EQ.'PRECIT') THEN
+        ARLGER = ZR(JARLIR+7-1) 
+      ELSE IF (NOMDAT(1:6).EQ.'PRECVM') THEN
+        ARLGER = ZR(JARLIR+8-1)     
+      ELSE IF (NOMDAT(1:6).EQ.'PRECFR') THEN
+        ARLGER = ZR(JARLIR+9-1) 
+      ELSE IF (NOMDAT(1:6).EQ.'PRECVV') THEN
+        ARLGER = ZR(JARLIR+10-1) 
+      ELSE IF (NOMDAT(1:6).EQ.'PRECBB') THEN
+        ARLGER = ZR(JARLIR+11-1)
+      ELSE
+        CALL U2MESK('F','ARLEQUIN_15',1,NOMDAT)
       ENDIF     
 C
       CALL JEDEMA()

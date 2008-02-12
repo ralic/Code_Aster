@@ -2,7 +2,7 @@
      &                  BASE  ,NOM)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,9 @@ C
       CHARACTER*8   TYPEMA,TYPEML
       INTEGER       INT1(4),INT2(4),NOEPAN(30),CNXMA(27),NBPAN
       INTEGER       NMA,NUMA,NPAN,NINT,NN1,NN2,IINT,INO,I,J,K
-      INTEGER       A0,A1,A2,A3,B0,B1,B2,B3,B4,B5,P0,P1,P2,P3
+      INTEGER       JNDIM,JTYPM,JCONX,JCUMU,JCOOR
+      INTEGER       JBLIST,JBIPAN,JBNNO,JBCONX,JBRESV,JBMAIL
+      INTEGER       P0,P1,P2,P3
 C
       INTEGER PANCOQ(9)
       DATA PANCOQ / 4,2, 3,4,5, 1,4,6,2 /
@@ -93,21 +95,21 @@ C
 C
 C --- LECTURE DONNEES MAILLAGE
 C
-      CALL JEVEUO(MAIL(1:8)//'.DIME','L',A0)
-      NN1 = ZI(A0)
-      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',A0)
-      CALL JEVEUO(MAIL(1:8)//'.CONNEX','L',A1)
-      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',A2)
-      CALL JEVEUO(MAIL(1:8)//'.COORDO    .VALE','L',A3)
+      CALL JEVEUO(MAIL(1:8)//'.DIME','L',JNDIM)
+      NN1 = ZI(JNDIM)
+      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',JTYPM)
+      CALL JEVEUO(MAIL(1:8)//'.CONNEX','L',JCONX)
+      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',JCUMU)
+      CALL JEVEUO(MAIL(1:8)//'.COORDO    .VALE','L',JCOOR)
 C
 C --- ALLOCATIONS OBJETS TEMPORAIRES
 C
-      CALL WKVECT('&&ELBORD.LISTE','V V I',NN1,B0)
-      CALL WKVECT('&&ELBORD.IPAN','V V I',2*NINT,B1)
-      CALL WKVECT('&&ELBORD.NNOEUD','V V I',NINT,B2)
-      CALL WKVECT('&&ELBORD.CONNEX','V V I',4*NINT,B3)
-      CALL WKVECT('&&ELBORD.RESERVE','V V I',2*NINT,B4)
-      CALL WKVECT('&&ELBORD.MAILLE','V V L',NLIMA,B5)
+      CALL WKVECT('&&ELBORD.LISTE','V V I',NN1,JBLIST)
+      CALL WKVECT('&&ELBORD.IPAN','V V I',2*NINT,JBIPAN)
+      CALL WKVECT('&&ELBORD.NNOEUD','V V I',NINT,JBNNO)
+      CALL WKVECT('&&ELBORD.CONNEX','V V I',4*NINT,JBCONX)
+      CALL WKVECT('&&ELBORD.RESERVE','V V I',2*NINT,JBRESV)
+      CALL WKVECT('&&ELBORD.MAILLE','V V L',NLIMA,JBMAIL)
       NINT = 0
 C
 C --- BOUCLE SUR LES MAILLES DE LA LISTE
@@ -115,18 +117,18 @@ C
       DO 20 I = 1, NLIMA
 
         NUMA   = LIMA(I)
-        TYPEMA = NTM(ZI(A0-1+NUMA))
+        TYPEMA = NTM(ZI(JTYPM-1+NUMA))
 C
 C --- REORIENTATION DES MAILLES SOLIDES
 C
         IF (CINE.EQ.'SOLIDE') THEN
-          CALL ORIEM3(NUMA  ,TYPEMA,ZR(A3)  ,ZI(A1)  ,ZI(A2)  ,
+          CALL ORIEM3(NUMA  ,TYPEMA,ZR(JCOOR)  ,ZI(JCONX)  ,ZI(JCUMU)  ,
      &                CNXMA)
         ELSE
-          P0  = ZI(A2-1+NUMA)
-          NN1 = ZI(A2+NUMA) - P0
+          P0  = ZI(JCUMU-1+NUMA)
+          NN1 = ZI(JCUMU+NUMA) - P0
           DO 30 J = 1, NN1
-            CNXMA(J) = ZI(A1-1+P0)
+            CNXMA(J) = ZI(JCONX-1+P0)
             P0 = P0 + 1
  30       CONTINUE
         ENDIF
@@ -183,7 +185,7 @@ C ------- CONSTRUCTION INTERFACE TRIEE
 C
 C --- EXISTE-T-ELLE DEJA DANS LA LISTE ?
 C
-          P1 = B0-2+INO
+          P1 = JBLIST-2+INO
 
  60       CONTINUE
 
@@ -192,39 +194,39 @@ C
 
           IF (P1.NE.0) THEN
             IINT = ZI(P1)
-            NN2 = ZI(B2-1+IINT)
+            NN2 = ZI(JBNNO-1+IINT)
             IF (NN1.NE.NN2) GOTO 60
 
-            P3 = B3 + 4*(IINT-1) + NN1
+            P3 = JBCONX + 4*(IINT-1) + NN1
             DO 70 K = 2, NN1
               P3 = P3 - 1
               IF (ZI(P3).NE.INT2(K)) GOTO 60
  70         CONTINUE
-            ZI(B2-1+IINT) = 0
+            ZI(JBNNO-1+IINT) = 0
             ZI(P2) = ZI(P1+1)
             GOTO 20
           ENDIF
 C
 C --- STOCKAGE INTERFACE
 C
-          ZI(B1+2*NINT) = I
-          ZI(B1+2*NINT+1) = J
+          ZI(JBIPAN+2*NINT) = I
+          ZI(JBIPAN+2*NINT+1) = J
 
-          ZI(B2+NINT) = NN1
+          ZI(JBNNO+NINT) = NN1
 
-          P2 = B3 + 4*NINT
+          P2 = JBCONX + 4*NINT
           DO 80 K = 1, NN1
             ZI(P2) = INT2(K)
             P2 = P2 + 1
  80       CONTINUE
 
           NINT = NINT + 1
-          P1 = B0-1+INO
+          P1 = JBLIST-1+INO
 
-          ZI(B4) = NINT
-          ZI(B4+1) = ZI(P1)
-          ZI(P1) = B4
-          B4 = B4 + 2
+          ZI(JBRESV) = NINT
+          ZI(JBRESV+1) = ZI(P1)
+          ZI(P1) = JBRESV
+          JBRESV = JBRESV + 2
 
  20   CONTINUE
 C
@@ -237,7 +239,7 @@ C ----- SELECTION DES INTERFACES
         NPAN = 2*NLIMA
 
         DO 90 I = 1, NINT
-          IF (ZI(B2-1+I).NE.0) NPAN = NPAN + 1
+          IF (ZI(JBNNO-1+I).NE.0) NPAN = NPAN + 1
  90     CONTINUE
 
 C ----- STRUCTURE .BORD
@@ -252,14 +254,14 @@ C ----- STRUCTURE .IPAN
 
         CALL WKVECT(NOM(1:19)//'.IPAN',BASE//' V I',2*NPAN+1,P0)
 
-        J = ZI(B1)
+        J = ZI(JBIPAN)
 
         DO 110 I = 1, NLIMA
 
           ZI(P0) = I
           ZI(P0+2) = I
 
-          TYPEMA = NTM(ZI(A0-1+LIMA(I)))
+          TYPEMA = NTM(ZI(JTYPM-1+LIMA(I)))
           IF (TYPEMA(1:3).EQ.'SEG') THEN
             ZI(P0+1) = 1
             ZI(P0+3) = 3
@@ -279,15 +281,15 @@ C ----- STRUCTURE .IPAN
  120      CONTINUE
           IF (I.NE.J) GOTO 110
 
-          IF (ZI(B2).NE.0) THEN
+          IF (ZI(JBNNO).NE.0) THEN
             ZI(P0) = J
-            ZI(P0+1) = PANCOQ(P1+ZI(B1+1))
+            ZI(P0+1) = PANCOQ(P1+ZI(JBIPAN+1))
             P0 = P0 + 2
           ENDIF
 
-          B1 = B1 + 2
-          B2 = B2 + 1
-          J = ZI(B1)
+          JBIPAN = JBIPAN + 2
+          JBNNO = JBNNO + 1
+          J = ZI(JBIPAN)
           GOTO 120
 
  110    CONTINUE
@@ -301,17 +303,17 @@ C --- CAS DES SOLIDES
 C ----- NOEUDS SUR LE BORD
 
         NPAN = 0
-        P0 = B3 - 5
+        P0 = JBCONX - 5
 
         DO 130 I = 1, NINT
 
           P0 = P0 + 4
-          NN1 = ZI(B2-1+I)
+          NN1 = ZI(JBNNO-1+I)
 
           IF (NN1.NE.0) NPAN = NPAN + 1
 
           DO 130 J = 1, NN1
-            ZI(B0-1+ZI(P0+J)) = -1
+            ZI(JBLIST-1+ZI(P0+J)) = -1
  130    CONTINUE
 
 C ----- SELECTION DES MAILLES DE BORD
@@ -320,20 +322,20 @@ C ----- SELECTION DES MAILLES DE BORD
         DO 140 I = 1, NLIMA
 
           NUMA = LIMA(I)
-          P0 = ZI(A2-1+NUMA)
-          P1 = ZI(A2+NUMA)-1
+          P0 = ZI(JCUMU-1+NUMA)
+          P1 = ZI(JCUMU+NUMA)-1
 
           DO 150 J = P0, P1
 
-            IF (ZI(B0-1+ZI(A1-1+J)).LT.0) THEN
-              ZL(B5-1+I) = .TRUE.
+            IF (ZI(JBLIST-1+ZI(JCONX-1+J)).LT.0) THEN
+              ZL(JBMAIL-1+I) = .TRUE.
               NMA = NMA + 1
               GOTO 140
             ENDIF
 
  150      CONTINUE
 
-          ZL(B5-1+I) = .FALSE.
+          ZL(JBMAIL-1+I) = .FALSE.
 
  140    CONTINUE
 C
@@ -342,7 +344,7 @@ C
         CALL WKVECT(NOM(1:19)//'.BORD',BASE//' V I',NMA,P0)
 
         DO 160 I = 1, NLIMA
-          IF (.NOT.ZL(B5-1+I)) GOTO 160
+          IF (.NOT.ZL(JBMAIL-1+I)) GOTO 160
           ZI(P0) = I
           P0 = P0 + 1
  160    CONTINUE
@@ -351,12 +353,12 @@ C --- STRUCTURE .IPAN
 C
         CALL WKVECT(NOM(1:19)//'.IPAN',BASE//' V I',2*NPAN+1,P0)
 
-        B1 = B1 - 2
+        JBIPAN = JBIPAN - 2
         DO 170 I = 1, NINT
-          B1 = B1 + 2
-          IF (ZI(B2-1+I).EQ.0) GOTO 170
-          ZI(P0) = ZI(B1)
-          ZI(P0+1) = ZI(B1+1)
+          JBIPAN = JBIPAN + 2
+          IF (ZI(JBNNO-1+I).EQ.0) GOTO 170
+          ZI(P0) = ZI(JBIPAN)
+          ZI(P0+1) = ZI(JBIPAN+1)
           P0 = P0 + 2
  170    CONTINUE
 

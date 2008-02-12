@@ -1,6 +1,6 @@
-      SUBROUTINE SSVALM(STATUT,OPTION,MO,MA,ISMA,IDRESL,LONG)
+      SUBROUTINE SSVALM(STATUT,OPTION,MO,MA,ISMA,JRESL,NBVEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,13 +18,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT REAL*8(A-H,O-Z)
 C
 C     ARGUMENTS:
 C     ----------
       CHARACTER*8 MO,MA
       CHARACTER*(*) OPTION,STATUT
-      INTEGER ISMA,IDRESL
+      INTEGER ISMA,JRESL
 C ----------------------------------------------------------------------
 C     BUT:
 C
@@ -51,134 +51,131 @@ C            MO(K8) : NOM DU MODELE
 C            MA(K8) : NOM DU MAILLAGE
 C            ISMA   : NUMERO DE LA (SUPER)MAILLE
 C
-C     OUT:   IDRESL : ADRESSE DE LA MATRICE CONDENSEE.
-C     ----   LONG   : NOMBRE DE VALEURS DE CETTE MATRICE.
+C     OUT:   JRESL : ADRESSE DE LA MATRICE CONDENSEE.
+C     ----   NBVEL   : NOMBRE DE VALEURS DE CETTE MATRICE.
 C
 C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER IBID
       CHARACTER*8 ROTA
       CHARACTER*16 OPTIO2
       CHARACTER*8 KBID,NOMACR
+      REAL*8 LAMBDA(6,6),ANGL(3),PGL(3,3)
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
       COMMON /LVARJE/ZL(1)
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       INTEGER ZI
-      REAL*8 ZR,ALPHA,BETA,GAMMA,LAMBDA(6,6),ANGL(3), PGL(3,3)
+      REAL*8 ZR
       COMPLEX*16 ZC
-      LOGICAL ZL,EXILAG
+      LOGICAL ZL
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
-      CHARACTER*24 ZK24 ,NOMOB,NOMOC
+      CHARACTER*24 ZK24,NOMOB
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-C
-C
-      OPTIO2= OPTION
+      OPTIO2=OPTION
 C
 C     -- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
 C     ----------------------------------------------------
-      IF (STATUT(1:5).EQ.'DEBUT')THEN
+      IF (STATUT(1:5).EQ.'DEBUT') THEN
         CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
         CALL DISMOI('F','NB_SS_ACTI',MO,'MODELE',NBSSA,KBID,IERD)
         IF (NBSSA.GT.0) THEN
           CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
           CALL JEVEUO(MA//'.NOMACR','L',IANMCR)
           NMXVAL=0
-          DO 1, JSMA= 1, NBSMA
+          DO 10,JSMA=1,NBSMA
             IF (ZI(IASSSA-1+JSMA).EQ.1) THEN
-              NOMACR= ZK8(IANMCR-1+JSMA)
+              NOMACR=ZK8(IANMCR-1+JSMA)
               CALL JEVEUO(NOMACR//'.DESM','L',IADESM)
-              NDDLE = ZI(IADESM-1+4)
+              NDDLE=ZI(IADESM-1+4)
 C             --LA DIMENSION DES MATRICES CONDENSEES EST DONNEE PAR
 C               LA RIGIDITE:
-              NDIM= NDDLE*(NDDLE+1)/2
-              NMXVAL= MAX(NMXVAL,NDIM)
-            END IF
- 1        CONTINUE
+              NDIM=NDDLE*(NDDLE+1)/2
+              NMXVAL=MAX(NMXVAL,NDIM)
+            ENDIF
+   10     CONTINUE
           IF (NMXVAL.GT.0) THEN
-            CALL WKVECT('&&SSVALM.VALEURS','V V R',NMXVAL,IDRESL)
-          END IF
-        END IF
-      END IF
+            CALL WKVECT('&&SSVALM.VALEURS','V V R',NMXVAL,JRESL)
+          ENDIF
+        ENDIF
+      ENDIF
 C
 C
 C     -- SI APPEL FINAL : ON DETRUIT LES OBJETS DE TRAVAIL :
 C     ------------------------------------------------------
-      IF (STATUT(1:3).EQ.'FIN')THEN
+      IF (STATUT(1:3).EQ.'FIN') THEN
         CALL JEDETR('&&SSVALM.VALEURS')
         CALL JEEXIN('&&SSVARO.IINO',IRET)
         IF (IRET.GT.0) CALL JEDETR('&&SSVARO.IINO')
-      END IF
+      ENDIF
 C
 C
 C     -- SI APPEL COURANT : ON RECOPIE OU ON TOURNE :
 C     -----------------------------------------------
-      IF (STATUT(1:1).EQ.' ')THEN
+      IF (STATUT(1:1).EQ.' ') THEN
         CALL JEVEUO(MA//'.NOMACR','L',IANMCR)
-        NOMACR= ZK8(IANMCR-1+ISMA)
+        NOMACR=ZK8(IANMCR-1+ISMA)
         CALL JEVEUO(NOMACR//'.DESM','L',IADESM)
-        NDDLE = ZI(IADESM-1+4)
+        NDDLE=ZI(IADESM-1+4)
 C
         IF (OPTIO2(1:4).EQ.'RIGI') THEN
 C          NOMOB=NOMACR//'.KP_EE'
           NOMOB=NOMACR//'.MAEL_RAID_VALE'
-        ELSE IF (OPTIO2(1:4).EQ.'MASS') THEN
+        ELSEIF (OPTIO2(1:4).EQ.'MASS') THEN
 C          NOMOB=NOMACR//'.MP_EE'
           NOMOB=NOMACR//'.MAEL_MASS_VALE'
-        ELSE IF (OPTIO2(1:4).EQ.'AMOR') THEN
+        ELSEIF (OPTIO2(1:4).EQ.'AMOR') THEN
 C          NOMOB=NOMACR//'.AP_EE'
           NOMOB=NOMACR//'.MAEL_AMOR_VALE'
         ELSE
           CALL ASSERT(.FALSE.)
-        END IF
+        ENDIF
 C
         CALL JEVEUO(NOMOB,'L',IAVMAT)
-        LONG= NDDLE*(NDDLE+1)/2
+        NBVEL=NDDLE*(NDDLE+1)/2
 C
 C
 C       -- RECOPIE (OU ROTATION):
 C       -------------------------
-        CALL JEVEUO('&&SSVALM.VALEURS','E',IDRESL)
+        CALL JEVEUO('&&SSVALM.VALEURS','E',JRESL)
         CALL SSRONE(MA,ISMA,ROTA)
 C
         IF (ROTA(1:3).EQ.'NON') THEN
 C         RECOPIE:
-          DO 2, I=1,LONG
-            ZR(IDRESL-1+I)= ZR(IAVMAT-1+I)
- 2        CONTINUE
-        ELSE  IF (ROTA(1:3).EQ.'OUI') THEN
+          DO 20,I=1,NBVEL
+            ZR(JRESL-1+I)=ZR(IAVMAT-1+I)
+   20     CONTINUE
+        ELSEIF (ROTA(1:3).EQ.'OUI') THEN
 C         ROTATION:
           CALL JEVEUO(MA//'.PARA_R','L',IAPARR)
-          ANGL(1) = ZR(IAPARR-1+14*(ISMA-1)+4)
-          ANGL(2) = ZR(IAPARR-1+14*(ISMA-1)+5)
-          ANGL(3) = ZR(IAPARR-1+14*(ISMA-1)+6)
-          CALL MATROT ( ANGL , PGL )
-          DO 710 I = 1,3
-            DO 712 J = 1,3
-              LAMBDA(I,J) = PGL(I,J)
-              LAMBDA(I,J+3) = 0.D0
-              LAMBDA(I+3,J) = 0.D0
-              LAMBDA(I+3,J+3) = PGL(I,J)
- 712        CONTINUE
- 710      CONTINUE
-          CALL SSVARO(LAMBDA,'LG',.TRUE.,'EXTE',NOMACR,IAVMAT,IDRESL)
+          ANGL(1)=ZR(IAPARR-1+14*(ISMA-1)+4)
+          ANGL(2)=ZR(IAPARR-1+14*(ISMA-1)+5)
+          ANGL(3)=ZR(IAPARR-1+14*(ISMA-1)+6)
+          CALL MATROT(ANGL,PGL)
+          DO 40 I=1,3
+            DO 30 J=1,3
+              LAMBDA(I,J)=PGL(I,J)
+              LAMBDA(I,J+3)=0.D0
+              LAMBDA(I+3,J)=0.D0
+              LAMBDA(I+3,J+3)=PGL(I,J)
+   30       CONTINUE
+   40     CONTINUE
+          CALL SSVARO(LAMBDA,'LG',.TRUE.,'EXTE',NOMACR,IAVMAT,JRESL)
         ELSE
-           CALL ASSERT(.FALSE.)
-        END IF
+          CALL ASSERT(.FALSE.)
+        ENDIF
 C
         CALL JELIBE(NOMOB)
-      END IF
+      ENDIF
 C
 C
 C
- 9999 CONTINUE
+   50 CONTINUE
 C
       END

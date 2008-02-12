@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKQ - B/A = 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,9 +77,11 @@ MO1=AFFE_MODELE(MAILLAGE=MA,
 
 EP=AFFE_CARA_ELEM(MODELE=MO,
                   COQUE=(_F(GROUP_MA='TOUT',
+                            COQUE_NCOU=2,  
                             EPAIS=0.20000000000000001,),
                          _F(GROUP_MA='PLAQ1',
                             EPAIS=0.20000000000000001,
+                            COQUE_NCOU=2,  
                             ANGL_REP=(0.0,0.0),
                             EXCENTREMENT=0.10000000000000001,
                             INER_ROTA='OUI',),
@@ -87,11 +89,13 @@ EP=AFFE_CARA_ELEM(MODELE=MO,
                             EPAIS=0.20000000000000001,
                             ANGL_REP=(0.0,0.0),
                             EXCENTREMENT=-0.10000000000000001,
+                            COQUE_NCOU=2,  
                             INER_ROTA='OUI',),),);
 
 EP1=AFFE_CARA_ELEM(MODELE=MO1,
                    COQUE=_F(GROUP_MA='TOUT',
                             EPAIS=0.40000000000000002,
+                            COQUE_NCOU=4,
                             ANGL_REP=(0.0,0.0),),);
 
 MAT1A=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=2.E10,

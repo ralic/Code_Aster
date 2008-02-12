@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,14 +56,6 @@ MACRO_MATR_ASSE(
 VECTELEM=CALC_VECT_ELEM(   OPTION='CHAR_ACOU',  CHAM_MATER=CHAMPMAT,
                                 CHARGE=CHARACOU )
 
-#
-# IMPRESSION DU VECT_ELEM COMPLEXE VECTELEM SELON LE GRAIN MAILLE
-#
-
-IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = VECTELEM,
-                               FORMAT = 'RESULTAT',
-                               UNITE = 8,
-                               GRAIN = 'MAILLE'))
 
 VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECTELEM,   NUME_DDL=NUM )
 
@@ -124,25 +116,6 @@ MATRES=COMB_MATR_ASSE( COMB_C=(   _F( MATR_ASSE = MATASK,
                                         COEF_C = ('RI',0.,3141.5926,)))
                             )
 
-#
-# IMPRESSION DE LA MATRICE COMPLEXE MATRES SELON LE GRAIN NOEUD
-#
-
-IMPR_MATRICE(   MATR_ASSE=_F(  MATRICE = MATRES,
-                               FORMAT = 'RESULTAT',
-                               UNITE = 8,
-                               GRAIN = 'NOEUD',
-                               OPTION = 'LIGNE'))
-
-#
-# IMPRESSION DE LA MATRICE COMPLEXE MATRES SELON LE GRAIN VALEUR
-#
-
-IMPR_MATRICE(   MATR_ASSE=_F(  MATRICE = MATRES,
-                               FORMAT = 'RESULTAT',
-                               UNITE = 8,
-                               GRAIN = 'VALEUR',
-                               OPTION = 'LIGNE'))
 
 
 VECRES=CREA_CHAMP(OPERATION='ASSE',TYPE_CHAM='NOEU_PRES_C',MODELE=GUIDE,NUME_DDL=NUM ,

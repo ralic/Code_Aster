@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF ENTETE  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,6 +213,7 @@ from SD.co_matr_elem import matr_elem, \
 # table :
 from SD.co_table import table_sdaster, table_jeveux
 from SD.co_table_fonction import table_fonction
+from SD.co_table_container import table_container
 
 # -----------------------------------------------------------------------------
 # vect_asse_gene :

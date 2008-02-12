@@ -1,10 +1,7 @@
-      SUBROUTINE XJACOB(NNO,DFF,IGEOM,INVJAC,NDIM,NBNOMX)
-      IMPLICIT NONE
-      INTEGER    NNO,IGEOM,NDIM,NBNOMX
-      REAL*8     DFF(3,NBNOMX),INVJAC(NDIM,NDIM)
-
+      SUBROUTINE XJACOB(NNO   ,NDIM  ,DFF   ,COOR  ,INVJAC)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,68 +19,59 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
-C ----------------------------------------------------------------------
-C FONCTION REALISEE:  CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE
-C                        
-C    ENTREE:
-C        NNO    :  NOMBRE DE NOEUDS DE L'ELEMENT
-C        DFF    :  DÉRIVÉES DES FONCTION DES FORMES AU POINT XE
-C        IGEOM  :  COORDONNÉES DES NOEUDS DE L'ÉLÉMENT
-C    SORTIE:
-C        INVJAC : INVERSE DE LA JACONIENNE AU POINT XE
-C.......................................................................
 C
+      IMPLICIT   NONE
+      INTEGER    NNO,NDIM
+      REAL*8     COOR(NDIM*NNO)      
+      REAL*8     DFF(3,NNO),INVJAC(NDIM,NDIM)
+C
+C ----------------------------------------------------------------------
+C
+C CALCUL DE L'INVERSE DE LA JACOBIENNE EN XE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NNO    : NOMBRE DE NOEUDS DE L'ELT 
+C IN  COOR   : COORDONNEES DES NOEUDS DE L'ÉLÉMENT
+C IN  DFF    : DÉRIVÉES DES FONCTION DES FORMES AU POINT XE
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C OUT INVJAC : INVERSE DE LA JACONIENNE AU POINT XE
+C      
+C ----------------------------------------------------------------------
+C      
       INTEGER       I,J,K
       REAL*8        JACOBI(3,3),TEMP(3,3)
-
-C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      COMMON /IVARJE/ZI(1)
-      COMMON /RVARJE/ZR(1)
-      COMMON /CVARJE/ZC(1)
-      COMMON /LVARJE/ZL(1)
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      INTEGER ZI
-      REAL*8 ZR
-      COMPLEX*16 ZC
-      LOGICAL ZL
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-
-      CALL JEMARQ()
-
-C     JACOBIENNE EN XE
+C      
+C ----------------------------------------------------------------------
+C
+C
+C --- JACOBIENNE EN XE
+C
       CALL MATINI(3,3,0.D0,JACOBI)
       DO 100 I=1,NDIM
         DO 110 J=1,NDIM
           DO 120 K=1,NNO
-       JACOBI(I,J) = JACOBI(I,J) + DFF(J,K) * ZR(IGEOM-1+NDIM*(K-1)+I) 
+            JACOBI(I,J) = JACOBI(I,J) + 
+     &                    DFF(J,K) * COOR(NDIM*(K-1)+I) 
  120      CONTINUE
-
  110    CONTINUE
  100  CONTINUE
-   
+C   
       IF (NDIM .EQ. 2) THEN
-         JACOBI(3,3)=1.D0
+         JACOBI(3,3) = 1.D0
       ELSEIF (NDIM .EQ. 1) THEN
-         JACOBI(3,3)=1.D0
-         JACOBI(2,2)=1.D0
-      ENDIF
-     
-
-C     INVERSE DE LA JACOBIENNE
-      
-      CALL MATINV(3,JACOBI,TEMP) 
-
-           
+         JACOBI(3,3) = 1.D0
+         JACOBI(2,2) = 1.D0
+      ENDIF    
+C
+C --- INVERSE DE LA JACOBIENNE
+C      
+      CALL MATINV(3,JACOBI,TEMP)      
       DO 200 I=1,NDIM
-         DO 210 J=1, NDIM
-            INVJAC(I,J)=TEMP(I,J)
- 210     CONTINUE
+        DO 210 J=1, NDIM
+           INVJAC(I,J)=TEMP(I,J)
+ 210    CONTINUE
  200  CONTINUE
-
-      CALL JEDEMA()
+C
       END

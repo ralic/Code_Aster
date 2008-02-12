@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF elements3 Messages  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,6 +182,18 @@ cata_msg={
 
 50: _("""
  nombre de couches limite a 30 pour les coques 1d
+"""),
+
+51: _("""
+ Le nombre de couches défini dans DEFI_COQU_MULT et dans AFFE_CARA_ELEM dans n'est pas cohérent.
+ Nombre de couches dans DEFI_COQU_MULT: %(i1)d
+ Nombre de couches dans AFFE_CARA_ELEM: %(i2)d
+"""),
+
+52: _("""
+ L'épaisseur totale des couches definie dans DEFI_COQU_MULT et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
+ Epaisseur totale des couches dans DEFI_COQU_MULT: %(r1)f
+ Epaisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
 

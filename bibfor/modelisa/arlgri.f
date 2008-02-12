@@ -1,0 +1,113 @@
+      SUBROUTINE ARLGRI(MAIL  ,TYPMAI,NOM   ,DIME  ,IMA  ,
+     &                  NUMMAI,TM    ,H)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C 
+      IMPLICIT NONE
+      CHARACTER*10 NOM  
+      CHARACTER*8  MAIL,TM
+      CHARACTER*16 TYPMAI
+      INTEGER      IMA,NUMMAI,DIME
+      REAL*8       H
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C DONNE DES INFOS SUR UNE MAILLE D'UN GROUPE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NOMGRP : NOM DU GROUPE DE MAILLES ARLEQUIN
+C IN  MAIL   : NOM DU MAILLAGE
+C IN  TYPMAI : SD CONTENANT NOM DES TYPES ELEMENTS (&&CATA.NOMTM)
+C IN  NOM    : NOM DE LA SD DE STOCKAGE DES MAILLES ARLEQUIN GROUP_MA_*
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  IMA    : NUMERO D'ORDRE DE LA MAILLE DANS LE GROUPE ARLEQUIN
+C                /!\ PEUT ETRE NEGATIF (VIENT DE SD QUADRA)
+C OUT NUMMAI : NUMERO ABSOLU DE LA MAILLE DANS LE MAILLAGE
+C OUT TM     : TYPE GEOMETRIQUE DE LA MAILLE 
+C OUT H      : DIMENSION CARACTERISTIQUE DE LA BOITE AUTOUR DE LA MAILLE
+C
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C      
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER      JGRMA,JTYP,JTYPMM,JBOIH,AIMA    
+      CHARACTER*19 NGRMA 
+      INTEGER      NMA
+      CHARACTER*8  K8BID
+      CHARACTER*16 NOMBOI
+C      
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      CALL JEVEUO(TYPMAI,'L',JTYPMM)
+      CALL ASSERT((DIME.GT.0).AND.(DIME.LE.3))
+      AIMA = ABS(IMA)
+C
+C --- LECTURE DONNEES MAILLAGE
+C
+      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',JTYP)      
+C
+C --- LECTURE DONNEES GROUPE DE MAILLES
+C         
+      NGRMA = NOM(1:10)//'.GROUPEMA'  
+      CALL JELIRA(NGRMA(1:19),'LONMAX',NMA,K8BID)   
+      CALL JEVEUO(NGRMA(1:19),'L',JGRMA)  
+      IF (AIMA.GT.NMA) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+C --- LECTURE DONNEES BOITES APPARIEMENT
+C        
+      NOMBOI = NOM(1:10)//'.BOITE'
+      CALL JEVEUO(NOMBOI(1:16)//'.H'     ,'L',JBOIH)         
+C
+C --- NUMERO ABSOLU DE LA MAILLE        
+C
+      NUMMAI = ZI(JGRMA-1+AIMA)
+      TM     = ZK8(JTYPMM+ZI(JTYP-1+NUMMAI)-1)
+      H      = ZR(JBOIH-1+AIMA)
+C   
+      CALL JEDEMA()
+
+      END

@@ -3,7 +3,7 @@
      &                  CINE1 ,CINE2 )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,7 +61,7 @@ C
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*32       JEXATR
+      CHARACTER*32       JEXATR,JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -80,14 +80,20 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       REAL*8        INTMAD,ARLGER
-      CHARACTER*8   K8BID,TYPEMA
+      CHARACTER*8   K8BID,TYPEMA,NOMMAI
       INTEGER       ARLGEI
       REAL*8        PRECBO,PRECFR
       INTEGER       NM1,NM2,NMS1,NMS2,NINT,NNT,NNO,NNI,NHINT
       INTEGER       IRET,LCOQUE
-      INTEGER       NFACE,NARE,M1,IM1,M2,IM2,P0,P1,P2,Q0,Q1,Q2,I,J,K,N
-      INTEGER       A0,A1,A2,A3,B0,B1,B2,B3,B4,B5,B6,B7,E0,E1,E2
-      INTEGER       C0,C1,C2,C3,C4,C5,C6,C7,D0,D1,D2,D3,D4,D5
+      INTEGER       NFACE,NARE,NUMMA1,IMA1,NUMMA2,IMA2
+      INTEGER       P0,P1,P2,Q0,JTMP1,JTMP2,I,J,K,N
+      INTEGER       JCOOR,JCONX,JCUMU,JTYPM
+      INTEGER       JGRMA1,JNOMAP,JNAPCU,JDIMB1,JPANB1
+      INTEGER       JREC1,JREBD1,JREIP1
+      INTEGER       JVPZR,JVPZI,JVPZL
+      INTEGER       JGRMA2,JMAMI,JMAMCU,JDIMB2,JPANB2
+      INTEGER       JREC2,JREBD2,JREIP2
+      INTEGER       JDICO,JVPINT,JVPFS,JVPNO,JVPAS,JVPFA
       INTEGER       JDIME,JNORM,JCOLM,JPP,JPOIM,JTYPMM
       REAL*8        NO(81),R
       INTEGER       IFM,NIV
@@ -97,7 +103,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('ARLEQUIN',IFM,NIV)
 C
 C --- INITIALISATIONS ET PARAMETRES
 C
@@ -116,10 +122,10 @@ C
 C
 C --- LECTURE DONNEES MAILLAGE
 C
-      CALL JEVEUO(MAIL(1:8)//'.COORDO    .VALE','L', A0)
-      CALL JEVEUO(MAIL(1:8)//'.CONNEX','L',A1)
-      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',A2)
-      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',A3)
+      CALL JEVEUO(MAIL(1:8)//'.COORDO    .VALE','L', JCOOR)
+      CALL JEVEUO(MAIL(1:8)//'.CONNEX','L',JCONX)
+      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',JCUMU)
+      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',JTYPM)
       CALL JEVEUO(MAIL(1:8)//'.DIME','L',JDIME)
       NNT = ZI(JDIME)
 C
@@ -129,15 +135,15 @@ C
       IF (IRET.NE.0) THEN
         CALL JEVEUO(NORM,'L',JNORM)
       ELSE
-        JNORM = A0
+        JNORM = JCOOR
       ENDIF
 C
 C --- LECTURE DONNEES GROUPE DE MAILLES
 C
       NGRMA1 = NOM1(1:10)//'.GROUPEMA'
       NGRMA2 = NOM2(1:10)//'.GROUPEMA'
-      CALL JEVEUO(NGRMA1,'L',B0)
-      CALL JEVEUO(NGRMA2,'L',C0) 
+      CALL JEVEUO(NGRMA1,'L',JGRMA1)
+      CALL JEVEUO(NGRMA2,'L',JGRMA2) 
       CALL JELIRA(NGRMA1,'LONMAX',NM1,K8BID)
       CALL JELIRA(NGRMA2,'LONMAX',NM2,K8BID)      
 C
@@ -145,16 +151,16 @@ C --- LECTURE DONNEES BOITES APPARIEMENT
 C      
       NOMBO1 = NOM1(1:10)//'.BOITE'
       NOMBO2 = NOM2(1:10)//'.BOITE'         
-      CALL JEVEUO(NOMBO1(1:16)//'.DIME','L',B3)
-      CALL JEVEUO(NOMBO1(1:16)//'.PAN','L',B4)
-      CALL JEVEUO(NOMBO2(1:16)//'.DIME','L',C3)
-      CALL JEVEUO(NOMBO2(1:16)//'.PAN','L',C4)      
+      CALL JEVEUO(NOMBO1(1:16)//'.DIME','L',JDIMB1)
+      CALL JEVEUO(NOMBO1(1:16)//'.PAN','L',JPANB1)
+      CALL JEVEUO(NOMBO2(1:16)//'.DIME','L',JDIMB2)
+      CALL JEVEUO(NOMBO2(1:16)//'.PAN','L',JPANB2)      
 C
 C --- LECTURE GRAPHE APPARIEMENT
 C   
       NOMAPP = NOMARL(1:8)//'.GRAPH'
-      CALL JEVEUO(JEXATR(NOMAPP,'LONCUM'),'L',B2)
-      CALL JEVEUO(NOMAPP,'L',B1)
+      CALL JEVEUO(JEXATR(NOMAPP,'LONCUM'),'L',JNAPCU)
+      CALL JEVEUO(NOMAPP,'L',JNOMAP)
       CALL JELIRA(NOMAPP,'LONT',N,K8BID)
 C
 C --- LECTURE VECTEUR PONDERATION MAILLES
@@ -165,46 +171,47 @@ C
 C
 C --- VECTEURS DE TRAVAIL
 C
-      CALL WKVECT('&&ARLPND.MAMINV','V V I',N,C1)
-      CALL WKVECT('&&ARLPND.MAMINV.LONCUM','V V I',NM2+1,C2)
-      CALL WKVECT('&&ARLPND.TMP1','V V I',NM1+1,Q1)
-      CALL WKVECT('&&ARLPND.TMP2','V V I',NM2+1,Q2)
-      CALL WKVECT('&&ARLPND.DICO','V V I',NNT,D0)
+      CALL WKVECT('&&ARLPND.MAMINV','V V I',N,JMAMI)
+      CALL WKVECT('&&ARLPND.MAMINV.LONCUM','V V I',NM2+1,JMAMCU)
+      CALL WKVECT('&&ARLPND.TMP1','V V I',NM1+1,JTMP1)
+      CALL WKVECT('&&ARLPND.TMP2','V V I',NM2+1,JTMP2)
+      CALL WKVECT('&&ARLPND.DICO','V V I',NNT,JDICO)
+
 C
 C --- 1.1 POINTEURS DU GRAPHE D'APPARIEMENT INVERSE
 C
-      P1 = ZI(B2)
-      DO 20 M1 = 1, NM1
+      P1 = ZI(JNAPCU)
+      DO 20 NUMMA1 = 1, NM1
         P0 = P1
-        P1 = ZI(B2+M1)
+        P1 = ZI(JNAPCU+NUMMA1)
         DO 21 I = P0, P1-1
-          M2 = ZI(B1-1+I)
-          IF (M2.NE.0) ZI(C2+M2) = ZI(C2+M2) + 1
+          NUMMA2 = ZI(JNOMAP-1+I)
+          IF (NUMMA2.NE.0) ZI(JMAMCU+NUMMA2) = ZI(JMAMCU+NUMMA2) + 1
  21     CONTINUE
  20   CONTINUE
 C
       P2 = 1
-      ZI(C2) = 1
-      ZI(Q2) = 1
+      ZI(JMAMCU) = 1
+      ZI(JTMP2) = 1
 
-      DO 30 M2 = 1, NM2
-        P2 = P2 + ZI(C2+M2)
-        ZI(C2+M2) = P2
-        ZI(Q2+M2) = P2
+      DO 30 NUMMA2 = 1, NM2
+        P2 = P2 + ZI(JMAMCU+NUMMA2)
+        ZI(JMAMCU+NUMMA2) = P2
+        ZI(JTMP2+NUMMA2) = P2
  30   CONTINUE
 C
 C --- 1.2. SOMMETS DU GRAPHE DU GRAPHE D'APPARIEMENT INVERSE
 C
-      P1 = ZI(B2)
-      DO 40 M1 = 1, NM1
+      P1 = ZI(JNAPCU)
+      DO 40 NUMMA1 = 1, NM1
         P0 = P1
-        P1 = ZI(B2+M1)
+        P1 = ZI(JNAPCU+NUMMA1)
         DO 41 I = P0, P1-1
-          M2 = ZI(B1-1+I)
-          IF (M2.EQ.0) GOTO 40
-          P2 = ZI(Q2-1+M2)
-          ZI(C1-1+P2) = M1
-          ZI(Q2-1+M2) = P2 + 1
+          NUMMA2 = ZI(JNOMAP-1+I)
+          IF (NUMMA2.EQ.0) GOTO 40
+          P2 = ZI(JTMP2-1+NUMMA2)
+          ZI(JMAMI-1+P2) = NUMMA1
+          ZI(JTMP2-1+NUMMA2) = P2 + 1
  41     CONTINUE
  40   CONTINUE
 C
@@ -219,35 +226,39 @@ C
       NMS2 = 0
 
       DO 60 I = 1, NM1
-        IF (ZL(JCOLM-1+ZI(B0-1+I))) NMS1 = NMS1 + 1 
+        IF (ZL(JCOLM-1+ZI(JGRMA1-1+I))) NMS1 = NMS1 + 1 
  60   CONTINUE
       
       DO 70 I = 1, NM2
-        IF (ZL(JCOLM-1+ZI(C0-1+I))) NMS2 = NMS2 + 1
+        IF (ZL(JCOLM-1+ZI(JGRMA2-1+I))) NMS2 = NMS2 + 1
  70   CONTINUE
 
-      CALL WKVECT('&&ARLPND.RECOUVRE.1','V V I',NMS1,B5)
-      CALL WKVECT('&&ARLPND.RECOUVRE.2','V V I',NMS2,C5)
+      IF ((NMS1.EQ.0).OR.(NMS2.EQ.0)) THEN
+        CALL U2MESS('F','ARLEQUIN_14')
+      ENDIF
+
+      CALL WKVECT('&&ARLPND.RECOUVRE.1','V V I',NMS1,JREC1)
+      CALL WKVECT('&&ARLPND.RECOUVRE.2','V V I',NMS2,JREC2)
 C
-      P0 = Q1
-      Q0 = B5
+      P0 = JTMP1
+      Q0 = JREC1
       DO 80 I = 1, NM1
-        IM1 = ZI(B0-1+I)
-        IF (.NOT.ZL(JCOLM-1+IM1)) GOTO 80
-        ZR(JPOIM+IM1-1) = POND
-        ZI(P0) = IM1
+        IMA1 = ZI(JGRMA1-1+I)
+        IF (.NOT.ZL(JCOLM-1+IMA1)) GOTO 80
+        ZR(JPOIM+IMA1-1) = POND
+        ZI(P0) = IMA1
         ZI(Q0) = I
         P0 = P0 + 1
         Q0 = Q0 + 1
  80   CONTINUE
 C
-      P0 = Q2
-      Q0 = C5
+      P0 = JTMP2
+      Q0 = JREC2
       DO 90 I = 1, NM2
-        IM2 = ZI(C0-1+I)
-        IF (.NOT.ZL(JCOLM-1+IM2)) GOTO 90
-        ZR(JPOIM+IM2-1) = 1.D0 - POND
-        ZI(P0) = IM2
+        IMA2 = ZI(JGRMA2-1+I)
+        IF (.NOT.ZL(JCOLM-1+IMA2)) GOTO 90
+        ZR(JPOIM+IMA2-1) = 1.D0 - POND
+        ZI(P0) = IMA2
         ZI(Q0) = I
         P0 = P0 + 1
         Q0 = Q0 + 1
@@ -255,65 +266,65 @@ C
 C
 C --- 2.3. ELEMENTS BORDANT LA ZONE DE SUPERPOSITION
 C
-      CALL ELBORD(MAIL  ,CINE1 ,ZI(Q1),NMS1,ZK8(JTYPMM),
+      CALL ELBORD(MAIL  ,CINE1 ,ZI(JTMP1),NMS1,ZK8(JTYPMM),
      &            'V','&&ARLPND.RECOUVRE.1')
-      CALL ELBORD(MAIL  ,CINE2 ,ZI(Q2),NMS2,ZK8(JTYPMM),
+      CALL ELBORD(MAIL  ,CINE2 ,ZI(JTMP2),NMS2,ZK8(JTYPMM),
      &            'V','&&ARLPND.RECOUVRE.2')
  
-      CALL JEVEUO('&&ARLPND.RECOUVRE.1.BORD','L',B6)
+      CALL JEVEUO('&&ARLPND.RECOUVRE.1.BORD','L',JREBD1)
       CALL JELIRA('&&ARLPND.RECOUVRE.1.BORD','LONMAX',NMS1,K8BID)
-      CALL JEVEUO('&&ARLPND.RECOUVRE.1.IPAN','L',B7)
-      CALL JEVEUO('&&ARLPND.RECOUVRE.2.BORD','L',C6)
+      CALL JEVEUO('&&ARLPND.RECOUVRE.1.IPAN','L',JREIP1)
+      CALL JEVEUO('&&ARLPND.RECOUVRE.2.BORD','L',JREBD2)
       CALL JELIRA('&&ARLPND.RECOUVRE.2.BORD','LONMAX',NMS2,K8BID)
-      CALL JEVEUO('&&ARLPND.RECOUVRE.2.IPAN','L',C7)
+      CALL JEVEUO('&&ARLPND.RECOUVRE.2.IPAN','L',JREIP2)
 C      
 C --- 2.4.1. POINTEURS DANS STRUCTURE .1.IPAN
 C
       Q0 = 1
-      P0 = B7
-      ZI(Q1) = 1
-      M1 = ZI(B5-1+ZI(P0)) 
-      ZI(P0) = M1
-
+      P0 = JREIP1
+      ZI(JTMP1) = 1
+      NUMMA1 = ZI(JREC1-1+ZI(P0)) 
+      ZI(P0) = NUMMA1
+      
       DO 100 I = 1, NM1
 
  110    CONTINUE
-        IF (M1.EQ.I) THEN
+        IF (NUMMA1.EQ.I) THEN
           Q0 = Q0 + 1
           P0 = P0 + 2
-          M1 = ZI(P0)
-          IF (M1.EQ.0) GOTO 110
-          M1 = ZI(B5-1+M1)
-          ZI(P0) = M1
+          NUMMA1 = ZI(P0)
+          IF (NUMMA1.EQ.0) GOTO 110
+          NUMMA1 = ZI(JREC1-1+NUMMA1)
+          ZI(P0) = NUMMA1
           GOTO 110
         ENDIF
 
-        ZI(Q1+I) = Q0
+        ZI(JTMP1+I) = Q0
 
  100  CONTINUE
 
 C --- 2.4.2. POINTEURS DANS STRUCTURE .2.IPAN
 
       Q0 = 1
-      P0 = C7
-      ZI(Q2) = 1
-      M2 = ZI(C5-1+ZI(P0))
-      ZI(P0) = M2
+      P0 = JREIP2
+      ZI(JTMP2) = 1
+      NUMMA2 = ZI(JREC2-1+ZI(P0))
+      ZI(P0) = NUMMA2
 
       DO 120 I = 1, NM2
 
  130    CONTINUE
-        IF (M2.EQ.I) THEN
+        IF (NUMMA2.EQ.I) THEN
           Q0 = Q0 + 1
           P0 = P0 + 2
-          M2 = ZI(P0)
-          IF (M2.EQ.0) GOTO 130
-          M2 = ZI(C5-1+M2)
-          ZI(P0) = M2
+          NUMMA2 = ZI(P0)
+          IF (NUMMA2.EQ.0) GOTO 130
+          NUMMA2 = ZI(JREC2-1+NUMMA2)
+          ZI(P0) = NUMMA2
           GOTO 130
         ENDIF
 
-        ZI(Q2+I) = Q0
+        ZI(JTMP2+I) = Q0
 
  120  CONTINUE
 
@@ -326,14 +337,14 @@ C --- 3.1.1. DIMENSIONNEMENT POUR MAILLE 1 / DOMAINE 2
       DO 140 I = 1, NMS1
         
         N = 0
-        M1 = ZI(B5-1+ZI(B6-1+I))
-
-        P0 = ZI(B2-1+M1)
-        P1 = ZI(B2+M1)-1
+        NUMMA1 = ZI(JREC1-1+ZI(JREBD1-1+I))
+        
+        P0 = ZI(JNAPCU-1+NUMMA1)
+        P1 = ZI(JNAPCU+NUMMA1)-1
 
         DO 150 J = P0, P1
-          M2 = ZI(B1-1+J)
-          IF (M2.NE.0) N = N + ZI(Q2+M2) - ZI(Q2-1+M2)
+          NUMMA2 = ZI(JNOMAP-1+J)
+          IF (NUMMA2.NE.0) N = N + ZI(JTMP2+NUMMA2)-ZI(JTMP2-1+NUMMA2)
  150    CONTINUE
 
         IF (N.GT.NINT) NINT = N
@@ -345,14 +356,14 @@ C --- 3.1.2 DIMENSIONNEMENT POUR MAILLE 2 / DOMAINE 1
       DO 160 I = 1, NMS2
         
         N = 0
-        M2 = ZI(C5-1+ZI(C6-1+I))
+        NUMMA2 = ZI(JREC2-1+ZI(JREBD2-1+I))
 
-        P0 = ZI(C2-1+M2)
-        P1 = ZI(C2+M2)-1
+        P0 = ZI(JMAMCU-1+NUMMA2)
+        P1 = ZI(JMAMCU+NUMMA2)-1
 
         DO 170 J = P0, P1
-          M1 = ZI(C1-1+J)
-          N = N + ZI(Q1+M1) - ZI(Q1-1+M1) 
+          NUMMA1 = ZI(JMAMI-1+J)
+          N = N + ZI(JTMP1+NUMMA1) - ZI(JTMP1-1+NUMMA1) 
  170    CONTINUE
 
         IF (N.GT.NINT) NINT = N
@@ -366,45 +377,45 @@ C --- 3.2 ALLOCATIONS
       I    = NINT + 6
       J    = NHINT + 1
 
-      CALL WKVECT('&&ARLPND.INT','V V I',2*NINT,D1)
-      CALL WKVECT('&&ARLPND.FS','V V I',10*NINT,D2)
-      CALL WKVECT('&&ARLPND.NO','V V R',18*NINT+9,D3)
-      CALL WKVECT('&&ARLPND.AS','V V I',28*NINT+12,D4)
-      CALL WKVECT('&&ARLPND.FA','V V I',5*NINT,D5)
+      CALL WKVECT('&&ARLPND.INT','V V I',2*NINT,JVPINT)
+      CALL WKVECT('&&ARLPND.FS','V V I',10*NINT,JVPFS)
+      CALL WKVECT('&&ARLPND.NO','V V R',18*NINT+9,JVPNO)
+      CALL WKVECT('&&ARLPND.AS','V V I',28*NINT+12,JVPAS)
+      CALL WKVECT('&&ARLPND.FA','V V I',5*NINT,JVPFA)
 
-      CALL WKVECT('&&ARLPND.ZR','V V R',35*NINT*N+66*N+18*J,E0)
-      CALL WKVECT('&&ARLPND.ZI','V V I',I*(50*N+22*J)+162*NINT*N,E1)
-      CALL WKVECT('&&ARLPND.ZL','V V L',2*I*N,E2)
+      CALL WKVECT('&&ARLPND.ZR','V V R',35*NINT*N+66*N+18*J,JVPZR)
+      CALL WKVECT('&&ARLPND.ZI','V V I',I*(50*N+22*J)+162*NINT*N,JVPZI)
+      CALL WKVECT('&&ARLPND.ZL','V V L',2*I*N,JVPZL)
 
 C --- 4.1. INTERSECTION MAILLES 1 / DOMAINE 2
 
       DO 180 I = 1, NMS1
 
-        M1     = ZI(B5-1+ZI(B6-1+I))        
-        IM1    = ZI(B0-1+M1)
-        TYPEMA = ZK8(JTYPMM-1+ZI(A3-1+IM1))
+        NUMMA1 = ZI(JREC1-1+ZI(JREBD1-1+I))        
+        IMA1   = ZI(JGRMA1-1+NUMMA1)
+        TYPEMA = ZK8(JTYPMM-1+ZI(JTYPM-1+IMA1))
+        CALL JENUNO(JEXNUM(MAIL(1:8)//'.NOMMAI',IMA1),NOMMAI)
         CALL TMACOQ(TYPEMA,DIME,LCOQUE)
-        CALL CONOEU(IM1,ZI(A1),ZI(A2),ZR(A0),ZR(JNORM),
+        CALL CONOEU(IMA1,ZI(JCONX),ZI(JCUMU),ZR(JCOOR),ZR(JNORM),
      &              DIME,LCOQUE,NO,NNO)
-
 
 C ----- 4.1.1. LISTE DES FACES BORDANT DOMAINE 2
 
         NFACE = 0
-        Q0 = D1
-        P0 = ZI(B2-1+M1)
-        P1 = ZI(B2+M1)-1
+        Q0 = JVPINT
+        P0 = ZI(JNAPCU-1+NUMMA1)
+        P1 = ZI(JNAPCU+NUMMA1)-1
 
         DO 190 J = P0, P1
 
-          M2 = ZI(B1-1+J)
-          IF (M2.EQ.0) GOTO 180
+          NUMMA2 = ZI(JNOMAP-1+J)
+          IF (NUMMA2.EQ.0) GOTO 180
 
-          P2 = ZI(Q2-1+M2)
-          N = ZI(Q2+M2) - P2
+          P2 = ZI(JTMP2-1+NUMMA2)
+          N = ZI(JTMP2+NUMMA2) - P2
           NFACE = NFACE + N
 
-          P2 = C7 + 2*(P2-1)
+          P2 = JREIP2 + 2*(P2-1)
 
           DO 190 K = 1, N
             
@@ -420,21 +431,23 @@ C ----- 4.1.1. LISTE DES FACES BORDANT DOMAINE 2
 C ----- 4.1.2. NOEUDS, ARETES ET FACES DE LA FRONTIERE DU DOMAINE 2
 
         DO 200 J = 1, NNT
-          ZI(D0-1+J) = 0
+          ZI(JDICO-1+J) = 0
  200    CONTINUE
 
         IF (DIME.EQ.2) THEN
-          CALL NAFINT(ZI(D1),NFACE ,ZI(C0)     ,ZI(C3),ZR(C4)   ,
-     &                DIME  ,CINE2 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
-     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3)   ,
-     &                PRECFR,NNI   ,ZI(D4))
+          CALL NAFINT(ZI(JVPINT),NFACE,ZI(JGRMA2),ZI(JDIMB2),ZR(JPANB2),
+     &                DIME  ,CINE2 ,ZI(JTYPM)  ,ZR(JCOOR),ZR(JNORM),
+     &                ZI(JCONX),ZI(JCUMU),ZK8(JTYPMM),
+     &                ZI(JDICO),ZR(JVPNO),
+     &                PRECFR,NNI   ,ZI(JVPAS))
           NARE = NFACE
         ELSE
-          CALL NAFINT(ZI(D1),NFACE ,ZI(C0)     ,ZI(C3),ZR(C4)   ,
-     &                DIME  ,CINE2 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
-     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3)   ,
-     &                PRECFR,NNI   ,ZI(D2))
-          CALL ARFACE(ZI(D2),NFACE,ZI(D4),ZI(D5),NARE)
+          CALL NAFINT(ZI(JVPINT),NFACE,ZI(JGRMA2),ZI(JDIMB2),ZR(JPANB2),
+     &                DIME  ,CINE2 ,ZI(JTYPM)  ,ZR(JCOOR),ZR(JNORM),
+     &                ZI(JCONX),ZI(JCUMU),ZK8(JTYPMM),
+     &                ZI(JDICO),ZR(JVPNO),
+     &                PRECFR,NNI   ,ZI(JVPFS))
+          CALL ARFACE(ZI(JVPFS),NFACE,ZI(JVPAS),ZI(JVPFA),NARE)
         ENDIF
 
 C ----- 4.1.3 RATIO VOLUME DANS ZONE DE RECOUVREMENT / VOLUME MAILLE
@@ -443,12 +456,12 @@ C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
         IF (DIME.EQ.2) THEN
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
   
-          P0 = B4+(DIME+2)*(ZI(B3+2*M1)-1)
+          P0 = JPANB1+(DIME+2)*(ZI(JDIMB1+2*NUMMA1)-1)
           R  = INTMAD(DIME  ,NOMARL,
-     &                TYPEMA,NO    ,NNO   ,ZR(P0),
-     &                ZR(D3),NNI   ,ZI(D4),NARE  ,ZI(D2),   
-     &                ZI(D5),NFACE ,ZR(E0),ZI(E1),ZL(E2))
-          ZR(JPOIM+IM1-1) = 1.D0 - (1.D0 - POND)*R
+     &                NOMMAI,TYPEMA,NO    ,NNO   ,ZR(P0),
+     &                ZR(JVPNO),NNI   ,ZI(JVPAS),NARE  ,ZI(JVPFS),   
+     &                ZI(JVPFA),NFACE ,ZR(JVPZR),ZI(JVPZI),ZL(JVPZL))
+          ZR(JPOIM+IMA1-1) = 1.D0 - (1.D0 - POND)*R
 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
         ENDIF
@@ -460,26 +473,27 @@ C --- 4.2. INTERSECTION MAILLES 2 / DOMAINE 1
 
       DO 210 I = 1, NMS2
 
-        M2     = ZI(C5-1+ZI(C6-1+I))
-        IM2    = ZI(C0-1+M2)      
-        TYPEMA = ZK8(JTYPMM-1+ZI(A3-1+IM2))
+        NUMMA2 = ZI(JREC2-1+ZI(JREBD2-1+I))
+        IMA2   = ZI(JGRMA2-1+NUMMA2)      
+        TYPEMA = ZK8(JTYPMM-1+ZI(JTYPM-1+IMA2))
+        CALL JENUNO(JEXNUM(MAIL(1:8)//'.NOMMAI',IMA2),NOMMAI)
         CALL TMACOQ(TYPEMA,DIME,LCOQUE)
-        CALL CONOEU(IM2,ZI(A1),ZI(A2),ZR(A0),ZR(JNORM),
+        CALL CONOEU(IMA2,ZI(JCONX),ZI(JCUMU),ZR(JCOOR),ZR(JNORM),
      &              DIME,LCOQUE,NO,NNO)
      
 C ----- 4.2.1. LISTE DES FACES BORDANT DOMAINE 1
 
         NFACE = 0
-        Q0 = D1
-        P0 = ZI(C2-1+M2)
-        P1 = ZI(C2+M2)-1
+        Q0 = JVPINT
+        P0 = ZI(JMAMCU-1+NUMMA2)
+        P1 = ZI(JMAMCU+NUMMA2)-1
 
         DO 220 J = P0, P1
-          M1 = ZI(C1-1+J)
-          P2 = ZI(Q1-1+M1)
-          N = ZI(Q1+M1) - P2
+          NUMMA1 = ZI(JMAMI-1+J)
+          P2 = ZI(JTMP1-1+NUMMA1)
+          N = ZI(JTMP1+NUMMA1) - P2
           NFACE = NFACE + N
-          P2 = B7 + 2*(P2-1)
+          P2 = JREIP1 + 2*(P2-1)
           DO 221 K = 1, N
             ZI(Q0) = ZI(P2)
             ZI(Q0+1) = ZI(P2+1)
@@ -493,21 +507,23 @@ C ----- 4.2.1. LISTE DES FACES BORDANT DOMAINE 1
 C ----- 4.2.2. NOEUDS, ARETES ET FACES DE LA FRONTIERE DU DOMAINE 1
 
         DO 230 J = 1, NNT
-          ZI(D0-1+J) = 0
+          ZI(JDICO-1+J) = 0
  230    CONTINUE
 
         IF (DIME.EQ.2) THEN
-          CALL NAFINT(ZI(D1),NFACE ,ZI(B0)     ,ZI(B3),ZR(B4),
-     &                DIME  ,CINE1 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
-     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3),
-     &                PRECFR,NNI   ,ZI(D4))
+          CALL NAFINT(ZI(JVPINT),NFACE,ZI(JGRMA1),ZI(JDIMB1),ZR(JPANB1),
+     &                DIME  ,CINE1 ,ZI(JTYPM)  ,ZR(JCOOR),ZR(JNORM),
+     &                ZI(JCONX),ZI(JCUMU),ZK8(JTYPMM),
+     &                ZI(JDICO),ZR(JVPNO),
+     &                PRECFR,NNI   ,ZI(JVPAS))
           NARE = NFACE 
         ELSE
-          CALL NAFINT(ZI(D1),NFACE ,ZI(B0)     ,ZI(B3),ZR(B4),
-     &                DIME  ,CINE1 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
-     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3),
-     &                PRECFR,NNI   ,ZI(D2))
-          CALL ARFACE(ZI(D2),NFACE,ZI(D4),ZI(D5),NARE)
+          CALL NAFINT(ZI(JVPINT),NFACE,ZI(JGRMA1),ZI(JDIMB1),ZR(JPANB1),
+     &                DIME  ,CINE1 ,ZI(JTYPM)  ,ZR(JCOOR),ZR(JNORM),
+     &                ZI(JCONX),ZI(JCUMU),ZK8(JTYPMM),
+     &                ZI(JDICO),ZR(JVPNO),
+     &                PRECFR,NNI   ,ZI(JVPFS))
+          CALL ARFACE(ZI(JVPFS),NFACE,ZI(JVPAS),ZI(JVPFA),NARE)
         ENDIF
 
 C ----- 4.2.3 RATIO VOLUME DANS ZONE DE RECOUVREMENT / VOLUME MAILLE
@@ -516,12 +532,12 @@ C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
         IF (DIME.EQ.2) THEN 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
 
-          P0 = C4+(DIME+2)*(ZI(C3+2*M2)-1)
+          P0 = JPANB2+(DIME+2)*(ZI(JDIMB2+2*NUMMA2)-1)
           R  = INTMAD(DIME  ,NOMARL,
-     &                TYPEMA,NO    ,NNO   ,ZR(P0),
-     &                ZR(D3),NNI   ,ZI(D4),NARE  ,ZI(D2),
-     &                ZI(D5),NFACE ,ZR(E0),ZI(E1),ZL(E2))
-          ZR(JPOIM+IM2-1) = 1.D0 - POND*R
+     &                NOMMAI,TYPEMA,NO    ,NNO   ,ZR(P0),
+     &                ZR(JVPNO),NNI   ,ZI(JVPAS),NARE  ,ZI(JVPFS),
+     &                ZI(JVPFA),NFACE ,ZR(JVPZR),ZI(JVPZI),ZL(JVPZL))
+          ZR(JPOIM+IMA2-1) = 1.D0 - POND*R
 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
         ENDIF

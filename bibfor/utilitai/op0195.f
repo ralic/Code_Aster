@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,9 +26,9 @@ C     -----------------------------------------------------------------
       INTEGER N1,IB,IFM,NIV,IRET,I11,I12,TEST,IBID
       CHARACTER*3 PROL0
       CHARACTER*4 TYCHR
-      CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,CHIN,NOMGD2,NOMPAR,MA2,NOPAR2,TA
+      CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,NOMGD2,NOMPAR,MA2,NOPAR2,TA
       CHARACTER*16 TYCHR1,OPERA,OPTIO2,TYPCO,OPTION
-      CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1,PRCHN2
+      CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1,PRCHN2,CHIN
       CHARACTER*8 NU1
 C     -----------------------------------------------------------------
 C---- COMMUNS NORMALISES  JEVEUX
@@ -108,10 +108,13 @@ C         -- CALCUL D'UN CHAM_ELEM "MODELE" : CELMOD
 C         ---------------------------------------------------
           IF (OPTION.EQ.' ') THEN
             OPTIO2 = 'TOU_INI_'//TYCHR
+C           -- SI OPERATION 'ASSE', IL Y A PEUT-ETRE UNE MEILLEURE
+C              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
             IF (OPERA.EQ.'ASSE') THEN
               CALL GETVID('ASSE','CHAM_GD',1,1,1,CHIN,IB)
-              CALL JEEXIN(CHIN//'           .CELK',IRET)
-              IF (IRET.NE.0) THEN
+              CALL JEEXIN(CHIN//'.CELK',IRET)
+              CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD2,IB)
+              IF (IRET.NE.0.AND.NOMGD.EQ.NOMGD2) THEN
                 CALL DISMOI('F','NOM_OPTION',CHIN,'CHAM_ELEM',IB,OPTIO2,
      &                      IB)
               ENDIF

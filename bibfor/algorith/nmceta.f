@@ -7,7 +7,7 @@
      &                  ETAF  ,LICCVG,RESIDU)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -374,7 +374,7 @@ C
           ENDIF
           TESTFI = .FALSE.              
         ELSE
-          CALL U2MESS('F','ALGORITH6_65')
+          CALL ASSERT(.FALSE.)
         END IF
       ELSEIF (NBEFFE.EQ.1) THEN
         ETAF      = ETA(1)

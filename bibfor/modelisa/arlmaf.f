@@ -1,0 +1,137 @@
+      SUBROUTINE ARLMAF(MAIL  ,MAILAR,DIME  ,NGRMA  ,IMA   ,
+     &                  CONNEX,LONCUM,IMAIL ,NUMMAI ,CXCUMU)
+C     
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE   
+      CHARACTER*8  MAIL,MAILAR      
+      INTEGER      DIME
+      INTEGER      CONNEX(*),LONCUM(*)  
+      CHARACTER*19 NGRMA 
+      INTEGER      IMAIL  
+      INTEGER      IMA,NUMMAI,CXCUMU
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C CREATION DU MAILLAGE INTERNE ARLEQUIN 
+C RECOPIE MAILLE SUR LAQUELLE ON INCLUS
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  MAIL   : NOM DU MAILLAGE
+C IN  MAILAR : NOM DU PSEUDO-MAILLAGE ARLEQUIN
+C IN  DIME   : DIMENSION DU PROBLEME
+C IN  NGRMA  : NOM DU GROUPE ARLEQUIN DE LA MAILLE
+C IN  IMA    : INDEX MAILLE COURANTE DANS NGRMA
+C IN  CONNEX : CONNEXITE DES MAILLES
+C IN  LONCUM : LONGUEUR CUMULEE DE CONNEX
+C OUT NUMMAI : NUMERO ABSOLU DE LA MAILLE DANS LE MAILLAGE
+C IN  IMAIL  : NUMERO MAILLE COURANTE DANS PSEUDO-MAILLAGE
+C I/O CXCUMU : LONGUEUR CUMULEE DE LA CONNEXITE
+C
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
+      CHARACTER*32       JEXNUM,JEXNOM
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C      
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER      IFM,NIV
+      INTEGER      ITYPMA,IRET
+      INTEGER      CXNO(27),NBNO,INO,CXMAX
+      INTEGER      JGCNX,JTYPM
+      INTEGER      LCOQUE
+      CHARACTER*8  NOMEL ,NOMMAI,K8BID
+      CHARACTER*24 MNOMM ,MCONN ,MTYPM     
+C      
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFDBG('ARLEQUIN',IFM,NIV)
+C
+C --- NOMS POUR ACCES AU PSEUDO MAILLAGE
+C
+      MNOMM = MAILAR(1:8)//'.NOMMAI         '     
+      MCONN = MAILAR(1:8)//'.CONNEX         '  
+      MTYPM = MAILAR(1:8)//'.TYPMAIL        '          
+C
+C --- GENERATION NOM DE LA MAILLE
+C      
+      IF (IMAIL.GT.99999) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      NOMEL(1:8) = 'M       '
+      CALL CODENT(IMAIL,'D0',NOMEL(2:8))
+C             
+C --- RECUP INFOS
+C
+      CALL ARLGRM(MAIL  ,NGRMA ,DIME  ,IMA ,
+     &            CONNEX,LONCUM,  
+     &            NUMMAI,NOMMAI,ITYPMA,LCOQUE,NBNO ,
+     &            CXNO) 
+C                    
+C --- RECOPIE DU TYPE
+C
+      CALL JEVEUO(MTYPM,'E',JTYPM)
+      ZI(JTYPM+IMAIL-1)  = ITYPMA
+C      
+C --- CREATION DU NOM DE LA MAILLE
+C
+      CALL JEEXIN(JEXNOM(MNOMM,NOMEL),IRET)
+      IF (IRET.EQ.0) THEN
+        CALL JECROC(JEXNOM(MNOMM,NOMEL))
+      ELSE
+        CALL U2MESK('F','MODELISA7_10',1,NOMEL)
+      ENDIF
+C      
+C --- RECOPIE DE LA CONNECTIVITE  
+C
+      CXCUMU = CXCUMU + NBNO
+      CALL JELIRA(MCONN,'LONT',CXMAX,K8BID)
+      IF (CXCUMU.GT.CXMAX) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      CALL JEECRA(JEXNUM(MCONN,IMAIL),'LONMAX',NBNO,' ')      
+      CALL JEVEUO(JEXNUM(MCONN,IMAIL),'E',JGCNX)
+      DO 51 INO = 1,NBNO
+        ZI(JGCNX+INO-1) = CXNO(INO)
+ 51   CONTINUE 
+C
+      CALL JEDEMA()
+
+      END

@@ -1,4 +1,4 @@
-#@ MODIF sd_resuelem SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_resuelem SD  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,12 +24,16 @@ from SD.sd_ligrel import sd_ligrel
 
 class sd_resuelem(AsBase):
     nomj = SDNom(fin=19)
-    NOLI = AsVK24(SDNom(debut=19), lonmax=2, )
-    RESL = AsColl(SDNom(debut=19), acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), )
-    DESC = AsVI(SDNom(debut=19), docu='RESL', )
+    NOLI = AsVK24(lonmax=2, )
+    RESL = AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R'))
+    DESC = AsVI(docu='RESL', )
 
+    def exists(self):
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        return self.NOLI.exists
 
     def check_1(self, checker):
+        if not self.exists() : return
         noli = self.NOLI.get_stripped()
         sd2=sd_ligrel(noli[0]) ; sd2.check(checker)
         assert noli[1] != '' , noli

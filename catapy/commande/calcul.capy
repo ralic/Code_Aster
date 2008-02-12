@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 #& RESPONSABLE 
 
 
-CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_sdaster,reentrant='n',
+CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,reentrant='n',
             UIinfo={"groupes":("Résolution",)},
             fr="Calculer des objets élémentaires comme une matrice tangente, intégrer une loi de comportement, etc...",
      OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="COMPORTEMENT",

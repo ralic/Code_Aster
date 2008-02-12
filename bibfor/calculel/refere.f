@@ -1,8 +1,8 @@
-      SUBROUTINE REFERE(M,NO,DIME,TYPEMA,PREC,ITEMAX,IFORM,
-     &                  M0,IRET,F1)
+      SUBROUTINE REFERE(M     ,NO    ,DIME  ,TYPEMA,PREC  ,
+     &                  ITEMAX,IFORM ,M0    ,IRET  ,F1)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,14 +27,13 @@ C
       REAL*8       M(*),NO(DIME,*),M0(*),F1(*)
       REAL*8       PREC
       LOGICAL      IRET,IFORM
-
 C      
 C ----------------------------------------------------------------------
 C
-C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
-C BOITES ENGLOBANTES + ARBRE BSP
+C ROUTINE ARLEQUIN
 C
-C COORDONNEES D'UN POINT DANS LA MAILLE DE REFERENCE
+C COORDONNEES PARAMETRIQUES D'UN POINT DANS LA MAILLE DE REFERENCE
+C A PARTIR DE SES COORDONNES REELLES
 C
 C
 C ----------------------------------------------------------------------
@@ -94,16 +93,18 @@ C
 
 C ----- RESIDU ET NORME DU RESIDU
 
+C --- FONCTIONS DE FORME AU POINT M0 DANS LA MAILLE
         CALL FORME0(M1,TYPEMA,F0,NNO)
-        CALL MMPROD(NO,DIME,0,DIME,0,NNO,F0,NNO,0,0,1,F)
+        CALL MMPROD(NO    ,DIME,0,DIME,0,NNO,
+     &              F0    ,NNO ,0,0   ,1,
+     &              F)
 
         ITER = ITER + 1
         R    = 0.D0
 
         DO 20 IDIME = 1, DIME
-          D         = M(IDIME) - F(IDIME)
-          DM(IDIME) = D
-          D         = ABS(D)
+          DM(IDIME) = M(IDIME) - F(IDIME)
+          D         = ABS(DM(IDIME))
           IF (D .GT. R) R = D
  20     CONTINUE
 

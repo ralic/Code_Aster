@@ -2,7 +2,7 @@
      &                  CINE1 ,CINE2 ,NOMC  ,NOMARL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,6 +66,6 @@ C
       ELSE
         CALL ARLFC2(MAIL  ,DIME  ,NOMGR1,CINE1 ,NOMGR2,
      &              CINE2 ,NOMC  ,NOMARL )
-      ENDIF 
+      ENDIF             
 C
       END

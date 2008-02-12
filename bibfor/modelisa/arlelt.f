@@ -1,7 +1,7 @@
       FUNCTION ARLELT(NOMTE,MOD,CIN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -115,6 +115,14 @@ C
         MOD    = '3D'
         CIN    = 'COQUE'
         ARLELT = .TRUE.
+      ELSEIF (NOMTE(1:4).EQ.'MIPL') THEN
+        MOD    = 'DPLANIN'
+        CIN    = 'SOLIDEMI'
+        IF ((NOMTE(5:6).EQ.'TR').OR.(NOMTE(5:6).EQ.'QU')) THEN
+          ARLELT = .TRUE.
+        ELSE
+          ARLELT = .FALSE.          
+        ENDIF  
       ELSE
         ARLELT = .FALSE.
       ENDIF

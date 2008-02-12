@@ -1,9 +1,8 @@
-      SUBROUTINE ASRETN(IATP2,IREEL,IDHCOL,IDADIA,ILI,JCO,NUBLOC)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           IATP2,IREEL,IDHCOL,IDADIA,ILI,JCO,NUBLOC
+      SUBROUTINE ASRETN()
+      IMPLICIT NONE
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,52 +19,5 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     ROUTINE SERVANT A RETENIR OU S'ACCUMULENT LES TERMES ELEMENTAIRES:
-C     DANS LE CAS D'UN STOCKAGE MORSE NON-SYMETRIQUE
-C -----------------------------------------------------------------
-C OUT I IATP2   : ADRESSE JEVEUX DE L'OBJET ".TEMPOR" MODIFIE.
-C IN  I IATP2   : ADRESSE JEVEUX DE L'OBJET ".TEMPOR".
-C IN  I IREEL   : INDICE DU REEL A RETENIR (DANS UNE MATR_ELEM).
-C IN  I IDHCOL  : ADRESSE DE ".HCOL".
-C IN  I IDADIA  : ADRESSE DE ".ADIA".
-C IN  I ILI     : NUMERO GLOBAL DE LA LIGNE.
-C IN  I JCO     : NUMERO GLOBAL DE LA COLONNE.
-C IN  I NUBLOC  : NUMERO DU BLOC OU L'ON ASSEMBLE LE TERME COURANT
-C                 D'INDICE IREEL.
-C                 PAR CONVENTION, ON A PRIS :
-C                   NUBLOC = 1 POUR LE BLOC SUPERIEUR
-C                   NUBLOC = 2 POUR LE BLOC INFERIEUR
-C -----------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C -----------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C -----------------------------------------------------------------
-C     COMMUNS   JEVEUX
-C -----------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-C
-C---- DEBUT ---------------
-      IF (JCO.EQ. 1) THEN
-         ICOEFC = 0
-      ELSE
-         ICOEFC = ZI(IDADIA+JCO-2)
-      END IF
-      NCOEFC = ZI(IDADIA+JCO-1) - ICOEFC
-C
-C     -- IREEL COMPTE LES REELS TRAITES:
-      ICOEFL = 0
-      DO 10 I = 1,NCOEFC
-         IF ( ZI(IDHCOL-1+ICOEFC+I).EQ.ILI) THEN
-            ICOEFL = I
-            GOTO 20
-         END IF
-10    CONTINUE
-      CALL ASSERT (ICOEFL.NE.0 )
-20    CONTINUE
-      IREEL = IREEL + 1
-      ZI(IATP2-1+(IREEL-1)*2+2) = ICOEFC+ICOEFL
-      ZI(IATP2-1+(IREEL-1)*2+1) = NUBLOC
+      CALL ASSERT(.FALSE.)
       END

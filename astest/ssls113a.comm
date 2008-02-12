@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 EP=AFFE_CARA_ELEM(MODELE=MO,
                   COQUE=_F(GROUP_MA='TOUT',
-                           EPAIS=0.0,
+                           EPAIS=0.002,COQUE_NCOU=2,
                            ANGL_REP=(0.0,0.0,),),);
 
 EP2=AFFE_CARA_ELEM(MODELE=MO,

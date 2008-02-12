@@ -1,13 +1,13 @@
-      SUBROUTINE ASCOPR(IATMP1,IATMP2,NRMAX,IDRESL,
-     &   NBLC,KVALE,COEF,NBMEM,LIADD)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           IATMP1,IATMP2,NRMAX,IDRESL,NBLC
-      INTEGER           NBMEM,LIADD(NBMEM)
-      CHARACTER*24                                    KVALE
-      REAL*8                                                COEF
+      SUBROUTINE ASCOPR(LMASYM,LMESYM,TT,JTMP2,NRMAX,JRESL,RCOEF,JVALM)
+      IMPLICIT NONE
+      CHARACTER*2 TT
+      INTEGER JTMP2,NRMAX,JRESL
+      INTEGER JVALM(2)
+      LOGICAL LMASYM,LMESYM
+      REAL*8 RCOEF
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,53 +27,86 @@ C ======================================================================
 C     ROUTINE QUI ACCUMULE LES TERMES ELEMENTAIRES DANS LES BLOCS DE LA
 C     MATRICE ASSEMBLEE POUR UNE MATRICE REELLE
 C-----------------------------------------------------------------------
-C IN  I   IATMP1 : ADRESSE JEVEUX DE L'OBJET ".TMP1".
-C IN  I   IATMP2 : ADRESSE JEVEUX DE L'OBJET ".TMP2".
+C IN  K2  TT    : /'RR' : COPIE R->R
+C                 /'CC' : COPIE C->C
+C                 /'RC' : COPIE R->C
+C IN  I   JTMP2 : ADRESSE JEVEUX DE L'OBJET ".TMP2"
 C IN  I   NRMAX  : NOMBRE DE REELS A CHARGER.
-C IN  I   IDRESL : ADRESSE JEVEUX DE L'OBJET ".VALE(IEL)".
-C IN  I   NBLC   : NOMBRE DE BLOCS DE LA MATRICE.
-C IN  K24 KVALE  : NOM DE L'OBJET ".VALE".
-C IN  R   COEF   : COEFFICIENT REEL MULTIPLICATEUR.
-C IN  I   NBMEM  : NOMBRE DES 0,1,2 1ER BLOCS DE .VALE DEJA EN MEMOIRE
-C IN  I   LIADD  : LISTE DES ADRESSES DES BLOCS 0,1,2 DE .VALE
-C-----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
+C IN  I   JRESL : ADRESSE JEVEUX DE L'OBJET ".RESL(IEL)".
+C IN  L   LMASYM   : .TRUE. => LA MATR_ASSE EST SYMETRIQUE (2 BLOCS)
+C IN  L   LMESYM   : .TRUE. => LA MATRICE ELEMANTAIRE EST SYMETRIQUE
+C IN  R   RCOEF   : COEFFICIENT REEL MULTIPLICATEUR.
+C IN  I   JVALM  : LISTE DES ADRESSES DES BLOCS DE .VALM
 C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+C-----------------------------------------------------------------------
+      INTEGER IBLOC,IADLOC,J,JVALB,KFOIS,NBFOIS,PERMBL(2)
 C-----------------------------------------------------------------------
 
+C     -- SI ON ASSEMBLE UNE MATRICE ELEMENTAIRE SYMETRIQUE DANS
+C        UNE MATRICE ASSEMBLEE NON SYMETRIQUE, IL FAUT COPIER 2 FOIS
+      NBFOIS=1
+      IF (LMASYM) THEN
+        CALL ASSERT(LMESYM)
+      ELSE
+        IF (LMESYM) NBFOIS=2
+      ENDIF
 
-C---- BOUCLE SUR LES BLOCS DE LA MATRICE:
-      DO 1,I = 1,NBLC
-         NBVAL = ZI(IATMP1-1+I)
-         IF (NBVAL.EQ.0) GO TO 1
 
-         IF (I.GT.NBMEM) THEN
-            CALL JEVEUO(JEXNUM(KVALE,I),'E',IADVAL)
-         ELSE
-            IADVAL=LIADD(I)
-         END IF
+      DO 1, KFOIS=1,NBFOIS
 
+        IF (KFOIS.EQ.1) THEN
+          PERMBL(1)=1
+          PERMBL(2)=2
+        ELSE
+          PERMBL(1)=2
+          PERMBL(2)=1
+        ENDIF
+
+
+        IF (TT.EQ.'RR') THEN
+C       ---------------------------
 CCDIR$   IVDEP
-         DO 2,J = 1,NRMAX
-            IF (ZI(IATMP2-1+2* (J-1)+1).EQ.I) THEN
-               IADLOC = ZI(IATMP2-1+2* (J-1)+2)
-               ZR(IADVAL+IADLOC-1) = ZR(IADVAL+IADLOC-1) +
-     +                               COEF*ZR(IDRESL-1+J)
-            END IF
-    2    CONTINUE
+          DO 10,J=1,NRMAX
+            IBLOC=ZI(JTMP2-1+2*(J-1)+1)
+            JVALB=JVALM(PERMBL(IBLOC))
+            IADLOC=ZI(JTMP2-1+2*(J-1)+2)
+            ZR(JVALB+IADLOC-1)=ZR(JVALB+IADLOC-1)+RCOEF*ZR(JRESL-1+J)
+   10     CONTINUE
 
-         IF (I.GT.NBMEM)  CALL JELIBE(JEXNUM(KVALE,I))
 
-C        -- ON REMET NBVAL A ZERO POUR LE PROCHAIN COUP:
-         ZI(IATMP1-1+I) = 0
-    1 CONTINUE
- 9999 CONTINUE
+        ELSEIF (TT.EQ.'CC') THEN
+C       ---------------------------
+CCDIR$   IVDEP
+          DO 11,J=1,NRMAX
+            IBLOC=ZI(JTMP2-1+2*(J-1)+1)
+            JVALB=JVALM(PERMBL(IBLOC))
+            IADLOC=ZI(JTMP2-1+2*(J-1)+2)
+            ZC(JVALB+IADLOC-1)=ZC(JVALB+IADLOC-1)+RCOEF*ZC(JRESL-1+J)
+   11     CONTINUE
+
+
+        ELSEIF (TT.EQ.'RC') THEN
+C       ---------------------------
+CCDIR$   IVDEP
+          DO 12,J=1,NRMAX
+            IBLOC=ZI(JTMP2-1+2*(J-1)+1)
+            JVALB=JVALM(PERMBL(IBLOC))
+            IADLOC=ZI(JTMP2-1+2*(J-1)+2)
+            ZC(JVALB+IADLOC-1)=ZC(JVALB+IADLOC-1)+
+     &                         DCMPLX(RCOEF*ZR(JRESL-1+J),0.D0)
+   12     CONTINUE
+
+
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+
+1     CONTINUE
+
       END

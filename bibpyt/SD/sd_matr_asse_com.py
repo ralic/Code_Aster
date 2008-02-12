@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_asse_com SD  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_matr_asse_com SD  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 from SD import *
 from SD.sd_titre import sd_titre
 
+from SD.sd_maillage import sd_maillage
 from SD.sd_nume_ddl import sd_nume_ddl
 from SD.sd_matr_cine import sd_matr_cine
 
@@ -29,14 +30,39 @@ class sd_matr_asse_com(sd_titre):
 #-----------------------------
     nomj = SDNom(fin=19)
 
-    REFA = AsVK24(SDNom(debut=19), lonmax=10, )
-    VALM = AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), )
-    UALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), ))
-    VALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), ))
-    WALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R'), ltyp=Parmi(16, 8), ))
+    REFA = AsVK24(lonmax=10,)
+    VALM = AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R'))
+    UALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R')))
+    VALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R')))
+    WALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R')))
     CONL = Facultatif(OJBVect(type=Parmi('C', 'R')))
     DIGS = Facultatif(OJBVect(type=Parmi('C', 'R'))) # seulement si solveurs LDLT et MULT_FRONT
-    LIME = Facultatif(AsVK8(lonmax=1, ))
+    LIME = Facultatif(AsVK8())
     cine = Facultatif(sd_matr_cine(SDNom(nomj='')))
+
+    def exists(self):
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        return self.REFA.exists
+
+    def check_REFA(self, checker):
+        if not self.exists() : return
+        refa=self.REFA.get_stripped()
+        assert refa[9] in ('NOEU','GENE') , refa
+        lgene = refa[9] == 'GENE'
+        # pour les matrices generalisees, on ne sait pas ce qui est stocké dans refa[0]='' :
+        if not lgene :
+            sd2=sd_maillage(refa[0]) ; sd2.check(checker)
+            sd2=sd_nume_ddl(refa[1]) ; sd2.check(checker)
+        assert refa[2] in ('ELIMF','ELIML','') , refa
+        assert refa[4] in ('FETI','') , refa
+        # pour les matrices generalisees, refa[7] n'est pas toujours rempli :
+        if not lgene :
+            # glute à résorber : j'ajoute '' à la liste permise pour le test yyyy108e :
+            assert refa[7] in ('ASSE','DECT','DECP','') , refa
+        assert refa[8] in ('MS','MR') , refa
+        if refa[8]=='MS' :
+            assert self.VALM.nmaxoc == 1
+        elif refa[8]=='MR' :
+            assert self.VALM.nmaxoc == 2
 
 

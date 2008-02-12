@@ -1,8 +1,8 @@
-      SUBROUTINE ECHMC2(NSOM  ,NOEARE,NARE  ,NH    ,OS    ,
+      SUBROUTINE ECHMC2(NSOM  ,NOEARE,NARE  ,NECH  ,OFFSOM,
      &                  SEG   ,NSEG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,8 +25,8 @@ C
       INTEGER     NSOM
       INTEGER     NOEARE(*)    
       INTEGER     NARE   
-      INTEGER     NH  
-      INTEGER     OS 
+      INTEGER     NECH  
+      INTEGER     OFFSOM 
       INTEGER     SEG(2,*)
       INTEGER     NSEG         
 C      
@@ -38,30 +38,39 @@ C
 C CONNECTIVITE DE L'ECHANTILLONNAGE PRODUIT PAR LA ROUTINE ECHMAP (2D)
 C
 C ----------------------------------------------------------------------
-C      
 C
-C IN  NSOM   : NOMBRE DE SOMMETS
-C IN  NOEARE : CONNECTIVITE DES ARETES (CF NOARET)
+C CHAQUE ARETE EST DECOUPEE EN SEGMENTS      
+C
+C IN  NSOM   : NOMBRE DE SOMMETS SANS LES POINTS D'ECHANTILLONNAGE
+C IN  NOEARE : NOEUDS DEFINISSANT LES ARETES DE LA MAILLE 
+C              VOIR NOARE/NBARE
+C                           ( NOMBRE DE NOEUDS ARETES 1, N1, N2, ...
+C                             NOMBRE DE NOEUDS ARETES 2, ... )
+C              INDICE DES NOEUDS: ORDRE DU NOEUD DANS LA MAILLE 
+C                                 (EX: POUR HEXA8 NOEUDS 1 A 8)
 C IN  NARE   : NOMBRE D'ARETES
-C IN  NH     : NOMBRE DE POINT D'ECHANTILLONNAGE 
-C IN  OS     : OFFSET SOMMET
-C OUT SEG    : CONNECTIVITE DES SEGMENTS
-C OUT NSEG   : NOMBRE DE SEGMENTS NSEG = NARE*NH  
+C IN  NECH   : NOMBRE DE POINTS D'ECHANTILLONNAGE 
+C IN  OFFSOM : DECALAGE INDICE DANS LE TABLEAU DES SOMMETS
+C OUT NSEG   : NOMBRE DE SEGMENTS NSEG = NARE*NECH  
+C OUT SEG    : NOEUDS DEFINISSANT LES SEGMENTS
+C                (SEG1.ND1,SEG1.ND2,
+C                 SEG2.ND1,SEG2.ND2,...)
+C              INDICE DES NOEUDS: SE REFERE AU TABLEAU NOH DANS ECHMAP
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER NNP,N0,N1,I,J,P0
+      INTEGER NNP,N0,N1,IARE,J,P0
 C
 C ----------------------------------------------------------------------
 C
       P0   = 1
       NSEG = 0
-      N0   = NSOM + OS
+      N0   = NSOM + OFFSOM
 C   
-      DO 10 I = 1, NARE                  
+      DO 10 IARE = 1, NARE                  
         NNP = NOEARE(P0)
-        N1  = NOEARE(P0+1) + OS
-        DO 20 J = 2, NH  
+        N1  = NOEARE(P0+1) + OFFSOM
+        DO 20 J = 2, NECH  
           N0          = N0 + 1
           NSEG        = NSEG + 1
           SEG(1,NSEG) = N1
@@ -70,7 +79,7 @@ C
  20     CONTINUE
         NSEG        = NSEG + 1
         SEG(1,NSEG) = N1
-        SEG(2,NSEG) = NOEARE(P0+2) + OS
+        SEG(2,NSEG) = NOEARE(P0+2) + OFFSOM
         P0          = P0 + NNP + 1
  10   CONTINUE
       END

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C     CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE
+C     CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE 
 C          -----------------------------------------------------------
 C                                              TRIANGLE  QUADRANGLE
 C        LINEAIRE          KIRCHOFF  (MINCE)        DKT       DST
@@ -64,13 +64,17 @@ C
       INTEGER      ICHG,ICHN,NCMP,K,JCRET,JFREQ,IACCE
       INTEGER      JMATE,JGEOM,JMATR,JENER,I,JCARA
       INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP, N1, NI, N2
+      INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2)
       LOGICAL      GRILLE, LCOELA
-      CHARACTER*2  CODRE2(33)
+      CHARACTER*2  CODRE2(33),CODRE1,VAL
+      CHARACTER*3  NUM
+      CHARACTER*8  NOMRES
       CHARACTER*10 PHENOM
 C
       REAL*8        PGL(3,3), XYZL(3,4), BSIGMA(24), EFFGT(32)
       REAL*8        VECLOC(24), ENER(3), MATP(24,24), MATV(300)
       REAL*8        T2EV(4), T2VE(4), T1VE(9)
+      REAL*8        EPI,EPTOT,R8BID,R8PREM, VALR(2)
 C
 C     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -90,12 +94,57 @@ C
       LCOELA = .FALSE.
       IF ( OPTION.EQ.'FULL_MECA'      .OR.
      &     OPTION.EQ.'RAPH_MECA'      .OR.
-     &     OPTION(1:10).EQ.'RIGI_MECA_' ) THEN
+     &     OPTION(1:9).EQ.'RIGI_MECA' ) THEN
+
         CALL JEVECH('PMATERC','L',JMATE)
-        CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
-        IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
+
+        IF ( OPTION.EQ.'FULL_MECA'      .OR.
+     &     OPTION.EQ.'RAPH_MECA'      .OR.
+     &     OPTION.EQ.'RIGI_MECA_TANG') THEN
+          CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
+          IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
+        ENDIF
+
+C
+C ---   VERIFICATION DE LA COHERENCE DES INFORMATIONS 
+C ---   PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
+C       ----------------------------------
+        JNBSPI = 0
+        CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET1)
+        IF (IRET1.EQ.0) THEN
+          NBCOU = ZI(JNBSPI)
+          ICOU = 0
+          EPTOT = 0.D0
+          EPI = 0.D0
+          CALL JEVECH('PCACOQU','L',JCARA)
+          EPAIS  = ZR(JCARA)
+  5       CONTINUE
+          ICOU=ICOU+1
+          CALL CODENT(ICOU,'G',NUM)
+          CALL CODENT(1,'G',VAL)
+          NOMRES = 'C'//NUM//'_V'//VAL
+          CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,
+     &         1,NOMRES,EPI,CODRE1,' ')
+          IF (CODRE1.EQ.'OK') THEN
+            EPTOT=EPTOT+EPI
+            GOTO 5
+          ENDIF
+          IF (EPTOT.NE.0.D0) THEN
+            IF ((ICOU-1).NE.NBCOU) THEN
+              VALI(1) = ICOU-1
+              VALI(2) = NBCOU
+              CALL U2MESG('F','ELEMENTS3_51',0,' ',2,VALI,0,0.D0)
+            ENDIF
+            IF (ABS(EPAIS-EPTOT)/EPAIS.GT.1.D-2) THEN
+              VALR(1) = EPTOT
+              VALR(2) = EPAIS
+              CALL U2MESG('F','ELEMENTS3_52',0,' ',0,0,2,VALR)
+            ENDIF
+          ENDIF
+        ENDIF
       ENDIF
 C
+
       GRILLE = .FALSE.
       IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
 C

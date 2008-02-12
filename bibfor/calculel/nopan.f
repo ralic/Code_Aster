@@ -1,7 +1,7 @@
       SUBROUTINE NOPAN(TYPEMA,NOEPAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,22 +31,21 @@ C ----------------------------------------------------------------------
 C
 C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
 C
-C NOEUDS DEFINISSANT LES PANS 
+C INDICES DES NOEUDS DEFINISSANT LES PANS D'UNE MAILLE 
 C
 C ----------------------------------------------------------------------
 C
 C
 C IN  TYPEMA : TYPE DE MAILLE
-C OUT NOEPAN : NOEUDS DEFINISSANT LES PANS
-C                   ( NOMBRE NOEUDS NOEPAN 1, N1, N2, ...
-C                     NOMBRE NOEUDS NOEPAN 2, N1, N2, ...)
+C OUT NOEPAN : NOEUDS DEFINISSANT LES PANS DE LA MAILLE
+C                   ( NOMBRE NOEUDS PAN    1, N1, N2, ...
+C                     NOMBRE NOEUDS PAN    2, N1, N2, ...)
 C                     EN 3D, NB NOEUDS < 0 : TRIANGLE
 C                            NB NOEUDS > 0 : QUADRANGLE
 C
-C NB: 
-C   EN 2D, UN PAN EST UNE ARETE
-C   EN 3D, UN PAN EST UNE FACE
-C
+C INDICE: ORDRE DU NOEUD DANS LA MAILLE 
+C    EX: POUR HEXA8 NOEUDS 1 A 8
+C 
 C ROUTINE SOEUR : NBPAN
 C
 C ----------------------------------------------------------------------

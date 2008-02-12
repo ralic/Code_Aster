@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -695,17 +695,7 @@ C----LOI D'ACIER CORRODE
 C -- COMPORTEMENT VIDE
           ELSEIF ( COMPOR(1)(1:4) .EQ. 'SANS' ) THEN
              CALL LCSANS (NDIM,OPTION,SIGP,DSIDEP)
-C
-          ELSEIF ( COMPOR(1)(1:10) .EQ. 'BAZANT_FD' ) THEN
-            IF ( INT(CRIT(6)) .NE. 0 )  THEN
-                CALL U2MESS('F','ALGORITH6_82')
-            ELSE IF (TYPMOD(1).EQ.'C_PLAN') THEN
-             CALL U2MESS('F','ALGORITH6_94')
-              ELSE
-                CALL  NMGDES (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,
-     &                     COMPOR,CRIT,INSTAM,INSTAP,
-     &                     DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
-            ENDIF
+
           ELSEIF ( COMPOR(1)(1:7) .EQ. 'KIT_DDI' ) THEN
             IF ( INT(CRIT(6)) .NE. 0 )  THEN
                 CALL U2MESS('F','ALGORITH6_82')

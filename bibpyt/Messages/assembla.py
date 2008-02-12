@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 12/11/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF assembla Messages  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,13 +23,16 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
-  le type  :  %(k1)s   de la matrice est incorrect.
-  on attend : "S" pour une résolution par methode itérative
+  Erreur d'utilisation :
+    Pour les méthodes itératives GCPC et FETI, on ne peut pas encore utiliser
+    de matrice non-symétrique.
+
+  Conseil : Changer de solveur
 """),
 
-2 : _("""
- matrice non symétrique pour l'instant proscrite avec FETI
-"""),
+
+
+
 
 3 : _("""
   le parametre :  %(k1)s  est incorrect.
@@ -111,8 +114,8 @@ cata_msg = {
 """),
 
 22 : _("""
- les valeurs de la matrice  %(k1)s  doivent etre réelles
- on ne traite pas encore les matrices non-symétriques complexes.
+ Les valeurs de la matrice  %(k1)s  doivent etre réelles
+ On ne traite pas encore les matrices non-symétriques complexes.
 """),
 
 23 : _("""
@@ -292,5 +295,6 @@ Risques & conseils :
  Problème dans NUMERO.F avec FETI: Incohérence entre la SD_FETI et le paramètrage
  de l'opérateur. Nombre d'incohérences= %(i1)d
 """),
+
 
 }

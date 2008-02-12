@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,13 +59,17 @@ C
       INTEGER JMATE,  LZI,     NNO,    JGEOM, JMATR
       INTEGER JENER,  I,      JFREQ,   IACCE
       INTEGER IVECT,  NDDL,    NVEC,   NDIM,  IRET, N1, NI, N2
+      INTEGER ICOU, JNBSPI, JCARA, IRET1, VALI(2)
       LOGICAL LCOELA
-      CHARACTER*2  CODRE2(33)
+      CHARACTER*2  CODRE2(33),CODRE1,VAL
+      CHARACTER*8 NOMRES
+      CHARACTER*3  NUM
       CHARACTER*10 PHENOM
 C
       REAL*8 PGL(3,3)  ,XYZL(3,4),BSIGMA(24), EFFGT(32)
       REAL*8 VECLOC(24),ENER(3),  MATP(24,24),MATV(300)
       REAL*8 T2EV(4), T2VE(4), T1VE(9)
+      REAL*8 EPI, EPTOT, R8BID, R8PREM, ITAB(1), VALR(2)
 C
 C     ---> POUR DKT MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -85,18 +89,62 @@ C
 C
       LCOELA = .FALSE.
 C
-      IF ((OPTION.EQ.'FULL_MECA').OR.
-     &    (OPTION.EQ.'RAPH_MECA').OR.
-     &    (OPTION.EQ.'RIGI_MECA_TANG')) THEN
+      IF ( OPTION.EQ.'FULL_MECA'      .OR.
+     &     OPTION.EQ.'RAPH_MECA'      .OR.
+     &     OPTION(1:9).EQ.'RIGI_MECA' ) THEN
+     
 C
 C ---   RECUPERATION DU MATERIAU :
 C       ------------------------
         CALL JEVECH('PMATERC','L',JMATE)
-        CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
+
+        IF ( OPTION.EQ.'FULL_MECA'      .OR.
+     &     OPTION.EQ.'RAPH_MECA'      .OR.
+     &     OPTION.EQ.'RIGI_MECA_TANG') THEN
+          CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
 C
 C --    DETECTION D'UN MATERIAU ELAS_COQUE :
 C       ----------------------------------
-        IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
+          IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
+        ENDIF
+C
+C ---   VERIFICATION DE LA COHERENCE DES INFORMATIONS 
+C ---   PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
+C       ----------------------------------
+        JNBSPI = 0
+        CALL TECACH('NNN','PNBSP_I',1,JNBSPI,IRET1)
+        IF (IRET1.EQ.0) THEN
+          NBCOU = ZI(JNBSPI)
+          ICOU = 0
+          EPTOT = 0.D0
+          EPI = 0.D0
+          CALL JEVECH('PCACOQU','L',JCARA)
+          EPAIS  = ZR(JCARA)
+   5      CONTINUE
+          ICOU=ICOU+1
+          CALL CODENT(ICOU,'G',NUM)
+          CALL CODENT(1,'G',VAL)
+          NOMRES = 'C'//NUM//'_V'//VAL
+          CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,
+     &         1,NOMRES,EPI,CODRE1,' ')
+          IF (CODRE1.EQ.'OK') THEN
+                EPTOT=EPTOT+EPI
+                GOTO 5
+          ENDIF
+          IF (EPTOT.NE.0.D0) THEN
+              IF ((ICOU-1).NE.NBCOU) THEN
+                VALI(1) = ICOU-1
+                VALI(2) = NBCOU
+                CALL U2MESG('F','ELEMENTS3_51',0,' ',2,VALI,0,0.D0)
+              ENDIF
+            IF (ABS(EPAIS-EPTOT)/EPAIS.GT.1.D-2) THEN
+              VALR(1) = EPTOT
+              VALR(2) = EPAIS
+              CALL U2MESG('F','ELEMENTS3_52',0,' ',0,0,2,VALR)
+            ENDIF
+          ENDIF
+        ENDIF
+
       ENDIF
 C
       IF ((OPTION.NE.'SIEF_ELNO_ELGA') .AND.

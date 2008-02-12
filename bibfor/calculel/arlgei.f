@@ -1,7 +1,7 @@
       INTEGER FUNCTION ARLGEI(NOMARL,NOMDAT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,8 +35,6 @@ C
 C
 C IN  NOMARL : NOM DE LA SD PRINCIPALE ARLEQUIN
 C IN  NOMDAT : QUESTION
-C                NHAPP
-C                NHINT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
@@ -57,31 +55,46 @@ C
 C      
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER      JARLII   
+      CHARACTER*24 INFOI
+      INTEGER      JARLII,IRET   
 C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      CALL JEVEUO(NOMARL(1:8)//'.INFOI','L',JARLII )
-      IF (NOMDAT(1:5).EQ.'NHAPP') THEN
-        ARLGEI = ZI(JARLII ) 
-      ELSE IF (NOMDAT(1:5).EQ.'NHINT') THEN
-        ARLGEI = ZI(JARLII+1) 
-      ELSE IF (NOMDAT(1:2).EQ.'NH') THEN
-        ARLGEI = ZI(JARLII+2)
-      ELSE IF (NOMDAT(1:4).EQ.'IMAX') THEN
-        ARLGEI = ZI(JARLII+3) 
-      ELSE IF (NOMDAT(1:4).EQ.'NMIN') THEN
-        ARLGEI = ZI(JARLII+4)                   
-      ELSE IF (NOMDAT(1:5).EQ.'NHQUA') THEN
-        ARLGEI = ZI(JARLII+5)       
-      ELSE IF (NOMDAT(1:6).EQ.'ITEMCP') THEN
-        ARLGEI = ZI(JARLII+6)
-      ELSE IF (NOMDAT(1:5).EQ.'NCMAX') THEN
-        ARLGEI = ZI(JARLII+7)                           
+      INFOI = NOMARL(1:8)//'.INFOI'
+C
+      CALL JEEXIN(INFOI,IRET)
+      IF (IRET.EQ.0) THEN
+        CALL U2MESK('F','ARLEQUIN_40',1,INFOI)      
       ELSE
-        CALL ASSERT(.FALSE.)
+        CALL JEVEUO(INFOI,'L',JARLII )
+      ENDIF
+C      
+      IF (NOMDAT(1:5).EQ.'NHAPP') THEN
+        ARLGEI = ZI(JARLII+1-1) 
+      ELSE IF (NOMDAT(1:5).EQ.'NHINT') THEN
+        ARLGEI = ZI(JARLII+2-1) 
+      ELSE IF (NOMDAT(1:2).EQ.'NH') THEN
+        ARLGEI = ZI(JARLII+3-1)
+      ELSE IF (NOMDAT(1:4).EQ.'IMAX') THEN
+        ARLGEI = ZI(JARLII+4-1) 
+      ELSE IF (NOMDAT(1:4).EQ.'NMIN') THEN
+        ARLGEI = ZI(JARLII+5-1)                   
+      ELSE IF (NOMDAT(1:5).EQ.'NHQUA') THEN
+        ARLGEI = ZI(JARLII+6-1)       
+      ELSE IF (NOMDAT(1:6).EQ.'ITEMCP') THEN
+        ARLGEI = ZI(JARLII+7-1)
+      ELSE IF (NOMDAT(1:5).EQ.'NCMAX') THEN
+        ARLGEI = ZI(JARLII+8-1) 
+      ELSE IF (NOMDAT(1:5).EQ.'NTMAX') THEN
+        ARLGEI = ZI(JARLII+9-1) 
+      ELSE IF (NOMDAT(1:6).EQ.'ULPMAI') THEN
+        ARLGEI = ZI(JARLII+10-1)
+      ELSE IF (NOMDAT(1:6).EQ.'METHOD') THEN
+        ARLGEI = ZI(JARLII+11-1)        
+      ELSE
+        CALL U2MESK('F','ARLEQUIN_15',1,NOMDAT)
       ENDIF     
 C
       CALL JEDEMA()

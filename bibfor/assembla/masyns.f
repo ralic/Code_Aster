@@ -1,6 +1,8 @@
       SUBROUTINE  MASYNS(MATAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C RESPONSABLE PELLET J.PELLET
+      IMPLICIT NONE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,28 +19,20 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
 C
-C      MASYNS :   LA MATRICE ASSEMBLEE MATAS, SYMETRIQUE ET
-C                 STOCKEE EN LIGNE DE CIEL EST TRANSFORMEE
-C                 EN MATRICE NON-SYMETRIQUE
+C  BUT :
+C   TRANSFORMER UNE MATR_ASSE SYMETRIQUE EN UNE MATR_ASSE NON-SYMETRIQUE
+C   POUR CELA, ON DUPPLIQUE LES VALEURS DE LA MOITIE SUPERIEURE
 C
-C   ARGUMENT        E/S  TYPE         ROLE
-C    MATAS          VAR    K*       MATRICE ASSEMBLEE, EN LIGNE DE CIEL
-C                                   SYMETRIQUE     EN ENTREE
-C                                   NON-SYMETRIQUE EN SORTIE
-C                                   (I.E. LE NOMBRE DE BLOCS EST
-C                                    DOUBLE ET LES VALEURS DES TERMES
-C                                    RESTENT LES MEMES)
+C  ARGUMENT :
+C    MATAS K19  JXVAR : MATR_ASSE A RENDRE NON-SYMETRIQUE
 C
-C.========================= DEBUT DES DECLARATIONS ====================
-C -----  ARGUMENTS
-           CHARACTER*(*)  MATAS
-C -----  VARIABLES LOCALES
-           CHARACTER*1    BASE
-           CHARACTER*8    K8BID
-           CHARACTER*19   MAWORK, MATA19
+C ========================= DEBUT DES DECLARATIONS ====================
+      CHARACTER*(*)  MATAS
+      CHARACTER*1    BASE,KTYP,KBID
+      CHARACTER*19   MAT19
+      INTEGER JREFA,I,NBLOC,IBID,LGBLOC,IDBLOI,IDBLOS
+
 C -----  COMMUNS NORMALISES  JEVEUX
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -54,98 +48,40 @@ C -----  COMMUNS NORMALISES  JEVEUX
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32, JEXNUM
       CHARACTER*80 ZK80
-C -----  FIN COMMUNS NORMALISES  JEVEUX
-C
-C.========================= DEBUT DU CODE EXECUTABLE ==================
-C
+C---------------------------------------------------------------------
       CALL JEMARQ()
-C
-      MAWORK = '&&MASYNS.VALE'
-      MATA19 = MATAS(1:19)
-C
-C ----  RECUPERATION DE LA BASE SUR-LAQUELLE SE TROUVE LA MATRICE :
-C       ---------------------------------------------------------
-      CALL JELIRA(MATAS(1:19)//'.VALE','CLAS',IBID,BASE)
-C
-C ----  CONSTRUCTION DU DESCRIPTEUR DE LA MATRICE :
-C       -----------------------------------------
-      CALL MTDSCR(MATAS)
-C
-C ----  RECUPERATION DU DESCRIPTEUR DE LA MATRICE :
-C       -----------------------------------------
-      CALL JEVEUO(MATAS(1:19)//'.&INT','L',LMAT)
-C
-C ----  ON VERIFIE QUE LES VALEURS DE LA MATRICE SONT REELLES :
-C       -----------------------------------------------------
-      IF (ZI(LMAT+3).NE.1) THEN
-          CALL U2MESK('F','ASSEMBLA_22',1,MATA19)
+
+      MAT19 = MATAS(1:19)
+      CALL JELIRA(MAT19//'.VALM','CLAS',IBID,BASE)
+      CALL JELIRA(MAT19//'.VALM','TYPE',IBID,KTYP)
+      CALL ASSERT(KTYP.EQ.'R'.OR.KTYP.EQ.'C')
+      CALL JEVEUO(MAT19//'.REFA','E',JREFA)
+      CALL ASSERT(ZK24(JREFA-1+9).EQ.'MS')
+      ZK24(JREFA-1+9)='MR'
+
+      CALL JELIRA(MAT19//'.VALM','NMAXOC',NBLOC,KBID)
+      CALL ASSERT(NBLOC.EQ.1)
+      CALL JELIRA(JEXNUM(MAT19//'.VALM',1),'LONMAX',LGBLOC,KBID)
+
+
+      CALL JEDUPO(MAT19//'.VALM','V','&&MASYNS.VALM',.FALSE.)
+      CALL JEDETR(MAT19//'.VALM')
+      CALL COCOPG('&&MASYNS.VALM',MAT19//'.VALM',2,0,BASE)
+      CALL JEDETR('&&MASYNS.VALM')
+
+
+      CALL JEVEUO(JEXNUM(MAT19//'.VALM',1),'L',IDBLOS)
+      CALL JEVEUO(JEXNUM(MAT19//'.VALM',2),'E',IDBLOI)
+      IF (KTYP.EQ.'R') THEN
+        DO 20 I = 1, LGBLOC
+         ZR(IDBLOI+I-1) = ZR(IDBLOS+I-1)
+ 20     CONTINUE
+      ELSE
+        DO 21 I = 1, LGBLOC
+         ZC(IDBLOI+I-1) = ZC(IDBLOS+I-1)
+ 21     CONTINUE
       ENDIF
-C
-C ----  ON VERIFIE QUE LA MATRICE EST SYMETRIQUE :
-C       ----------------------------------------
-      IF (ZI(LMAT+4).NE.1) THEN
-          CALL U2MESK('F','ASSEMBLA_23',1,MATA19)
-      ENDIF
-C
-C ----  RECUPERATION DU NOMBRE DE BLOCS DE LA MATRICE SYMETRIQUE :
-C       --------------------------------------------------------
-      NBLOC = ZI(LMAT+13)
-      LONG  = 2*NBLOC
-C
-C ----  RECUPERATION DE LA LONGUEUR D'UN BLOC :
-C       -------------------------------------
-      LGBLOC = ZI(LMAT+14)
-C
-C ----  COPIE DES VALEURS DE LA MATRICE SUR LA COLLECTION DE
-C ----  TRAVAIL MAWORK  :
-C       --------------
-      CALL JEDUPO(MATAS(1:19)//'.VALE','V',MAWORK,.FALSE.)
-C
-      CALL JEDETR(MATAS(1:19)//'.VALE')
-C
-C ----  RECREATION DE LA COLLECTION DES BLOCS DE LA MATRICE EN
-C ----  MULTIPLIANT CE NOMBRE DE BLOCS PAR 2  :
-C       ------------------------------------
-      CALL COCOPG(MAWORK,MATAS(1:19)//'.VALE',LONG,LONG,BASE)
-C
-C ----  DESTRUCTION DE LA MATRICE DE TRAVAIL :
-C       ------------------------------------
-       CALL JEDETR('&&MASYNS.VALE')
-C
-C ----  AFFECTATION DE L'ATTRIBUT NON-SYMETRIQUE A LA MATRICE :
-C       -----------------------------------------------------
-      CALL JEECRA(MATAS(1:19)//'.VALE','DOCU',IBID,'MR')
-C
-C ----  AFFECTATION DES VALEURS DE LA TRIANGULAIRE INFERIEURE
-C ----  DE LA MATRICE A LA TRIANGULAIRE SUPERIEURE :
-C       ------------------------------------------
-      DO 10 IBLOC = 1, NBLOC
-C
-C ----     RECUPERATION DU BLOC SUPERIEUR COURANT :
-C          --------------------------------------
-           CALL JEVEUO(JEXNUM(MATAS(1:19)//'.VALE',IBLOC),'L',IDBLOS)
-C
-C ----     RECUPERATION DU BLOC INFERIEUR CORRESPONDANT :
-C          --------------------------------------------
-           CALL JEVEUO(JEXNUM(MATAS(1:19)//'.VALE',IBLOC+NBLOC),'E',
-     &                 IDBLOI)
-C
-C ----     AFFECTATION DES VALEURS DU BLOC SUP AU BLOC INF :
-C          -----------------------------------------------
-           DO 20 I = 1, LGBLOC
-              ZR(IDBLOI+I-1) = ZR(IDBLOS+I-1)
- 20        CONTINUE
-C
-           CALL JELIBE(JEXNUM(MATAS(1:19)//'.VALE',IBLOC))
-           CALL JELIBE(JEXNUM(MATAS(1:19)//'.VALE',IBLOC+NBLOC))
-C
- 10   CONTINUE
-C
-C ----  DESTRUCTION DU DESCRIPTEUR DE LA MATRICE :
-C       ----------------------------------------
-      CALL JEDETR(MATAS(1:19)//'.&INT')
-      CALL JEDETR(MATAS(1:19)//'.&IN2')
-C
+
+
       CALL JEDEMA()
-C.============================ FIN DE LA ROUTINE ======================
       END

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ cata_msg = {
 
 77 : _("""
  Vous faites une reprise de calcul avec PILOTAGE en longueur d'arc et avec l'option ANGL_INCR_DEPL mais il n'y pas assez d'informations dans
- la structure de donnees resultats. Il vous faut en effet au moins les deux derniers champs deplacements solutions.
+ la structure de donnees resultats. Il vous faut en effet au moins les deux derniers champs déplacements solutions.
  Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la SD resultat (modifiez vos options d'ARCHIVAGE).
 """),
 

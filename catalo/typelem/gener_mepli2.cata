@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -104,6 +104,8 @@ MATRICE__
 OPTION__ 
     INIT_VARC           99    IN__   NGEOMER  PGEOMER
                               OUT__  ZVARCPG  PVARCPR
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         482   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  
                                      CTEMPSR  PTEMPSR  
                               OUT__  ECHALIM  PECHLI   
@@ -116,7 +118,15 @@ OPTION__
     CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
     CHAR_MECA_TEMP_R    -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
+                              OUT__  XXXXXX   XXXXXX
+    ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX        
+    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    EPOT_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX              
     EPSI_ELGA_DEPL      447   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  
                               OUT__  EDEFOPG  PDEFORR  
                                      EDEFOPC  PDEFORC  
@@ -145,9 +155,13 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR   
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR  
-                                     MVECTUR  PVECTUR  
+                                     MVECTUR  PVECTUR 
+    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER  
-                              OUT__  EVOISIN  PVOISIN  
+                              OUT__  EVOISIN  PVOISIN      
     MASS_INER           -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX   
@@ -172,7 +186,9 @@ OPTION__
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX   
-                              OUT__  XXXXXX   XXXXXX   
+                              OUT__  XXXXXX   XXXXXX
+    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX       
     RIGI_MECA           -1    IN__   XXXXXX   XXXXXX   
                               OUT__  XXXXXX   XXXXXX   
     RIGI_MECA_ELAS      -1    IN__   XXXXXX   XXXXXX   
@@ -201,4 +217,5 @@ OPTION__
                               OUT__  ECONTNO  PSIEF_R  
     VARI_ELNO_ELGA      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR  
                               OUT__  ZVARINO  PVARINR  
-
+    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX

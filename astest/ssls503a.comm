@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 02/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -47,6 +47,7 @@ MO=AFFE_MODELE(   MAILLAGE=MA,
 CAR_ELE=AFFE_CARA_ELEM(   MODELE=MO,
                           COQUE=_F( GROUP_MA = 'TOUT_ELT',
                                     EPAIS = 0.012,
+                                    COQUE_NCOU=3,
                                     ANGL_REP = (0., -48.5,),
                                       ),
                           )

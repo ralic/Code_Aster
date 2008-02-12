@@ -1,8 +1,8 @@
-      SUBROUTINE PLTRI2(DIME  ,SC    ,NORM  ,IS    ,NSOM  ,
+      SUBROUTINE PLTRI2(DIME  ,SC    ,NORM  ,IS    ,NBNO  ,
      &                  PRECTR,TRI   ,NTRI)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       INTEGER DIME
-      INTEGER NSOM
+      INTEGER NBNO
       REAL*8  SC(DIME,*)
       REAL*8  NORM(*)
       REAL*8  PRECTR
@@ -45,12 +45,17 @@ C
 C
 C IN  DIME   : DIMENSION DE L'ESPACE
 C IN  SC     : COORDONNEES DES SOMMETS
-C IN  NSOM   : NOMBRE DE SOMMETS
+C IN  NBNO   : NOMBRE DE SOMMETS 
 C IN  NORM   : (EN 3D) NORMALE SORTANTE DU POLYGONE
-C I/O IS     : INDEX DANS SC DES SOMMETS DU POLYGONE
+C I/O IS     : CONNECTIVITE DE LA COMPOSANTE CONNEXE
+C                (NOMBRE SOMMETS COMPOSANTE, SOMMET.1, SOMMET.2,...)
+C              L'INDEX DU SOMMET SE REFERE A SC
 C IN  PRECTR : PRECISION POUR TRIANGULATION
 C OUT NTRI   : NOMBRE DE TRIANGLES OBTENUS
-C OUT TRI    : CONNECTIVITE TRIANGULATION (INDEX DANS SC)
+C OUT TRI    : CONNECTIVITE TRIANGULATION (UNE LIGNE PAR TRIANGLE)
+C                (SOMMET.1.1,SOMMET.1.2,SOMMET.1.3,
+C                (SOMMET.2.1,SOMMET.2.2,SOMMET.2.3,...)
+C              L'INDEX DU SOMMET SE REFERE A SC
 C
 C ----------------------------------------------------------------------
 C
@@ -60,7 +65,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      N0   = NSOM
+      N0   = NBNO
       NTRI = 0
 
       IF (N0.LT.3) GOTO 80
@@ -70,9 +75,9 @@ C --- VERIFICATION ORIENTATION
       IF (DIME.EQ.3) THEN
 
         R0 = 0.D0
-        B  = IS(NSOM)
+        B  = IS(NBNO)
 
-        DO 10 I = 1, NSOM
+        DO 10 I = 1, NBNO
           A  = B
           B  = IS(I)
           R0 = R0 + NORM(1)*SC(2,A)*SC(3,B) - NORM(2)*SC(1,A)*SC(3,B)
@@ -82,9 +87,9 @@ C --- VERIFICATION ORIENTATION
 
         IF (R0.LT.0.D0) THEN
 
-          DO 20 I = 1, NSOM/2
-            A = IS(NSOM+1-I)
-            IS(NSOM+1-I) = IS(I)
+          DO 20 I = 1, NBNO/2
+            A = IS(NBNO+1-I)
+            IS(NBNO+1-I) = IS(I)
             IS(I) = A
  20       CONTINUE
             
@@ -93,7 +98,7 @@ C --- VERIFICATION ORIENTATION
       ENDIF
 C --- SURFACE DU POLYGONE
 
-      SM = PRECTR*PLVOL2(DIME  ,SC    ,NORM  ,IS    ,NSOM  )
+      SM = PRECTR*PLVOL2(DIME  ,SC    ,NORM  ,IS    ,NBNO  )
 
 C --- TRIANGULATION
 

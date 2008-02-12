@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,17 +86,7 @@ MATRR=CALC_MATR_ELEM(    MODELE=MOD,
                               CARA_ELEM=CELEM,
                                   OPTION='RIGI_MECA' )
 
-#
-# IMPRESSION DES MATRICES ELEMENTAIRES DES MAILLES M2, M26 ET M47
-# POUR LA COMPOSANTE DX
-#
 
-IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = MATRR,
-                              FORMAT = 'RESULTAT',
-                              NB_CHIFFRE = 3,
-                              GRAIN = 'MAILLE',
-                              NOM_CMP = 'DX',
-                              MAILLE = ('M2','M26','M47',)))
 
 MATRM=CALC_MATR_ELEM(    MODELE=MOD,
                               CHARGE=CH,
@@ -111,58 +101,12 @@ VEL=CALC_VECT_ELEM(    CHARGE=CH,
 # IMPRESSION DES VECTEURS ELEMENTAIRES DU VECT_ELEM VEL
 #
 
-IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = VEL,
-                              FORMAT = 'RESULTAT',
-                              NB_CHIFFRE = 3,
-                              GRAIN = 'MAILLE'))
 
 NU=NUME_DDL(  MATR_RIGI=MATRR,  METHODE='LDLT',  RENUM='RCMK')
 
 MATASS=ASSE_MATRICE(    MATR_ELEM=MATRR,
                               NUME_DDL=NU   )
 
-IMPR_MATRICE(MATR_ASSE=(
-#
-# IMPRESSION DU TERME DRXXDRX DU NOEUD N1 DE LA MATRICE
-# DE RIGIDITE
-#
-                      _F(  MATRICE = MATASS,
-                               FORMAT = 'RESULTAT',
-                               GRAIN = 'VALEUR',
-                               NOEUD = 'N1',
-                               NOM_CMP = 'DRX'),
-#
-# IMPRESSION DE LA LIGNE DRX DU NOEUD N1 DE LA MATRICE
-# DE RIGIDITE
-#
-                      _F(  MATRICE = MATASS,
-                               FORMAT = 'RESULTAT',
-                               OPTION = 'LIGNE',
-                               GRAIN = 'VALEUR',
-                               NOEUD = 'N1',
-                               NOM_CMP = 'DRX'),
-
-#
-# IMPRESSION DU TERME DRXXDRX DU NOEUD N1 DE LA MATRICE
-# DE RIGIDITE SELON LE GRAIN NOEUD
-#
-                     _F(  MATRICE = MATASS,
-                               FORMAT = 'RESULTAT',
-                               GRAIN = 'NOEUD',
-                               NOEUD = 'N1',
-                               NOM_CMP = 'DRX'),
-#
-# IMPRESSION DE LA COLONNE DRX DU NOEUD N1 DE LA MATRICE
-# DE RIGIDITE SELON LE GRAIN NOEUD
-#
-                      _F(  MATRICE = MATASS,
-                               FORMAT = 'RESULTAT',
-                               OPTION = 'COLONNE',
-                               GRAIN = 'NOEUD',
-                               NOEUD = 'N1',
-                               NOM_CMP = 'DRX'))
-
-                              )
 
 MATASM=ASSE_MATRICE(    MATR_ELEM=MATRM,
                               NUME_DDL=NU   )

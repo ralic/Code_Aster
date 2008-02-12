@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 08/01/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 11/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -997,6 +997,7 @@ def _func_test_rela(v, VALE, PRECISION):
    """Retourne True si v est parmi VALE à PRECISION près en relatif
    """
    for x in VALE: 
-      if v != None and (x*(1.-PRECISION) <= v <= x*(1.+PRECISION)):
+      sign = float(x > 0.) or -1.
+      if v != None and (sign*x*(1.-PRECISION) <= sign*v <= sign*x*(1.+PRECISION)):
          return True
    return False

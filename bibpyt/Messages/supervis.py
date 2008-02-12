@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 14/01/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ cata_msg={
  L'utilisation du mot-clé PAR_LOT='NON' permet d'accéder en lecture et en écriture
  au contenu des concepts Aster. De ce fait, votre étude est exclue du périmètre
  qualifié de Code_Aster puisque toutes ses étapes ne peuvent être certifiées.
- 
+
  Conseils :
    - Il n'y a pas particulièrement de risque de résultat faux... sauf si votre
      programmation l'introduit.
@@ -73,7 +73,23 @@ cata_msg={
 """),
 
 11: _("""
- Impossible d'allouer la mémoire JEVEUX demandée
+ Impossible d'allouer la mémoire JEVEUX demandée : %(i1)d Moctets.
+
+ En général, cette erreur se produit car la mémoire utilisée hors du fortran
+ (jeveux) est importante.
+
+ Causes possibles :
+   - le calcul produit de gros objets Python dans une macro-commande ou
+     dans le jeu de commande lui-même,
+   - le calcul appelle un solveur (MUMPS par exemple) ou un outil externe
+     qui a besoin de mémoire hors jeveux,
+   - utilisation de jeveux dynamique,
+   - ...
+
+ Solution :
+   - distinguer la mémoire limite du calcul (case "Mémoire totale" de astk)
+     de la mémoire réservée à jeveux (case "dont Aster"), le reste étant
+     disponible pour les allocations dynamiques.
 """),
 
 12: _("""
@@ -215,16 +231,16 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 
 50: _("""
  la commande a un numéro non appelable dans cette version.
- le numero erroné est  %(i1)d 
+ le numero erroné est  %(i1)d
 """),
 
 52: _("""
- fin de lecture (durée  %(r1)f  s.) %(k1)s 
+ fin de lecture (durée  %(r1)f  s.) %(k1)s
 """),
 
 53: _("""
- vous ne pouvez utiliser plus de  %(i1)d 
- niveaux de profondeur pour des appels par la procédure %(k1)s 
+ vous ne pouvez utiliser plus de  %(i1)d
+ niveaux de profondeur pour des appels par la procédure %(k1)s
 """),
 
 55: _("""
@@ -239,21 +255,21 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
    Impossible d'importer '%(k1)s' dans Messages.
    Le fichier %(k1)s.py n'existe pas dans le répertoire 'Messages'
    ou bien la syntaxe du fichier est incorrecte.
-   
+
    Merci de signaler cette anomalie.
-   
+
    Traceback :
    %(k2)s
 """),
 
 60: _("""
  la procédure a un numéro non appelable dans cette version.
- le numero errone est  %(i1)d 
+ le numero errone est  %(i1)d
 """),
 
 61: _("""
   La commande a un numéro non appelable dans cette version
-  Le numéro erroné est : %(i1)d 
+  Le numéro erroné est : %(i1)d
 """),
 
 62: _("""
@@ -268,105 +284,105 @@ Le message d'alarme '%(k1)s' a été émis %(i1)d fois, il ne sera plus affiché.
 """),
 
 64: _("""
-  Valeur initiale du temps CPU maximum =   %(i1)d secondes 
-  Valeur du temps CPU maximum passé aux commandes =   %(i2)d secondes 
+  Valeur initiale du temps CPU maximum =   %(i1)d secondes
+  Valeur du temps CPU maximum passé aux commandes =   %(i2)d secondes
   Réserve CPU prévue = %(i3)d secondes
 """),
 
 65: _("""
    %(k1)s   %(k2)s   %(k3)s   %(k4)s
 """),
- 
+
 66: _("""
    %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
 """),
- 
+
 67: _("""
  Passage numéro %(i1)d
 """),
- 
+
 68: _("""
  information sur les concepts devant etre créés.
 """),
- 
+
 69: _("""
    %(k1)s   %(k2)s   %(k3)s   %(k4)s
 """),
- 
+
 70: _("""
    %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
 """),
- 
+
 71: _("""
  rappel sur les executions précédentes
    - il a ete executé %(i1)d procédures et opérateurs.
 """),
- 
+
 72: _("""
    - l'execution précédente s'est terminée correctement.
 """),
- 
+
 73: _("""
- 
+
    - l'execution précédente s'est terminée en erreur dans la procédure %(k1)s.
 """),
- 
+
 74: _("""
- 
+
    - l'execution précédente s'est terminée en erreur dans l'opérateur %(k1)s.
 """),
- 
+
 75: _("""
      le concept %(k1)s de type %(k2)s  est peut-etre errone.
 """),
- 
+
 76: _("""
    - l'execution precedente s'est terminee prematurement dans l'operateur %(k1)s.
 """),
- 
+
 77: _("""
      le concept %(k1)s de type %(k2)s  a ete néanmoims validé par l'opérateur
 """),
- 
+
 78: _("""
      Message attache au concept  %(k1)s
 """),
- 
+
 79: _("""
      Pas de message attache au concept %(k1)s
 """),
- 
+
 80: _("""
- 
+
 """),
- 
+
 81: _("""
  %(k1)s nom symbolique inconnu
   - nombre de valeurs attendues %(i1)d
   - valeurs attendues : %(k1)s, %(k2)s,...
 """),
- 
+
 82: _("""
  L'argument du mot cle "CAS"  est errone.
  Valeur lue %(k1)s
  nombre de valeurs attendues %(i1)d
  valeurs attendues : %(k1)s,%(k2)s, ...
 """),
- 
+
 83: _("""
- 
+
  le nombre d'enregistrements (nmax_enre) et leurs longueurs (long_enre) conduisent a un
 fichier
  dont la taille maximale en octets (%(i1)d) est superieure a limite autorisee :  %(i2)d
- 
+
 """),
- 
+
 84: _("""
  Nom symbolique errone pour un fichier de sortie
  Valeur lue %(k1)s
  - nombre de valeurs attendues %(i2)d
  - valeurs attendues           %(k2)s, %(k3)s
- 
+
 """),
 
 85: _("""

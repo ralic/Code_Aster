@@ -1,7 +1,7 @@
       SUBROUTINE OP0026(IER   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF CALCULEL  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,15 +52,15 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER         NBPAR
-      PARAMETER       (NBPAR=5)
+      PARAMETER       (NBPAR=3)
       CHARACTER*19    NOMPAR(NBPAR),TYPPAR(NBPAR)
       CHARACTER*24    VK(NBPAR)   
 C
       INTEGER         ZFON  
       PARAMETER      (ZFON    = 19 )        
 C-----------------------------------------------------------------------
-      INTEGER         N1,NIV,IFM,NBOPT,ITERAT,NUMEOR,I
-      INTEGER         IRET,KNINDI,IBID,NUORD,NBPASE,VI(1),JLINST
+      INTEGER         N1,NIV,IFM,NBOPT,ITERAT,NUMEOR,I,NNCP
+      INTEGER         IRET,KNINDI,IBID,NUORD,NBPASE,JLINST
       REAL*8          RBID,INSTAM,INSTAP,CONST(2)
       COMPLEX*16      CBID
       CHARACTER*1     TYPCST(2),TYPECH(2),TYPRES
@@ -68,11 +68,11 @@ C-----------------------------------------------------------------------
       CHARACTER*14    NUMMOI,NUMDEL
       CHARACTER*16    LOPT(3),OPTION
       CHARACTER*19    LISCHA,K19BLA
-      CHARACTER*19    LINST
-      CHARACTER*8     MEDIRI,MERIGI,VEFINT
+      CHARACTER*19    LINST,CHTMP,LIGREL,CATMP
+      CHARACTER*8     MEDIRI,MERIGI,VEFINT,KBID
       CHARACTER*24    DEPDEL,MATE,CARELE,COMPOR,CARCRI,INPSCO
       CHARACTER*24    DEPPLU,SIGPLU,VARPLU,COMMOI,MODELE,DEPMOI
-      CHARACTER*24    COMPLU
+      CHARACTER*24    COMPLU, CODERE
       CHARACTER*24    VALMOI(8),VALPLU(8),DEPALG(8)
       CHARACTER*24    SIGMOI,VARMOI,NOMCH(2),CHPRES,DEPMO1
       CHARACTER*24    K24BLA,K24BID
@@ -85,14 +85,10 @@ C-----------------------------------------------------------------------
       DATA DEPPLU     /'&&OP0026.DEPPLU'/
       DATA DEPMO1     /'&&OP0026.DEPMO1'/
       DATA VARMOI     /'&&OP0026.VARMOI'/
-      DATA VARPLU     /'&&OP0026.VARPLU'/
       DATA SIGMOI     /'&&OP0026.SIGMOI'/
-      DATA SIGPLU     /'&&OP0026.SIGPLU'/
       DATA COMMOI     /'&&OP0026.COMMOI'/
       DATA COMPLU     /'&&OP0026.COMPLU'/
       DATA MEDIRI     /'&&MEDIRI'/
-      DATA MERIGI     /'&&MERIGI'/
-      DATA VEFINT     /'&&VEFINT'/      
 C      
 C ----------------------------------------------------------------------
 C      
@@ -110,6 +106,13 @@ C     RECUPERATION DU NOM DE LA TABLE PRODUITE
 C     ----------------------------------------
       CALL GETRES(TABLE,K24BID,K24BID)
 
+C     DEFINITION DES NOMS DES SD
+C     --------------------------
+      CALL GCNCON('_',SIGPLU)
+      CALL GCNCON('_',VARPLU)
+      CALL GCNCON('_',MERIGI)
+      CALL GCNCON('_',VEFINT)
+      CALL GCNCON('_',CODERE)
 
 C     RECUPERATION DES OPTIONS DEMANDEES
 C     ----------------------------------
@@ -149,7 +152,7 @@ C     DANS LA NUMEROTATION DE DEPDEL
       CALL DISMOI('F','NOM_NUME_DDL',DEPMOI,'CHAM_NO',IBID,NUMMOI,IBID)
       CALL DISMOI('F','NOM_NUME_DDL',DEPDEL,'CHAM_NO',IBID,NUMDEL,IBID)
       IF (NUMMOI.NE.NUMDEL) THEN
-        CALL COPISD('CHAMP_GD','G',DEPDEL,DEPMO1)
+        CALL COPISD('CHAMP_GD','V',DEPDEL,DEPMO1)
         CALL VTCOPY(DEPMOI,DEPMO1,IER)
       ELSE
         DEPMO1=DEPMOI
@@ -220,7 +223,7 @@ C
       CALL MERIMO('G'   ,MODELE,CARELE,MATE  ,K24BID,
      &            COMPOR,LISCHA,CARCRI,ITERAT,FONACT,
      &            K19BLA,VALMOI,VALPLU,K24BID,DEPALG,
-     &            MEELEM,VEELEM,OPTION,TABRET)
+     &            MEELEM,VEELEM,OPTION,TABRET,CODERE)
 
 
 C     CALCUL DE LA CONTRIBUTION DES "LAGRANGE"
@@ -232,29 +235,39 @@ C ======================================================================
 C --- ECRITURE DES RESULTATS DANS UNE TABLE
 C ======================================================================
 
-      CALL DETRSD('TABLE',TABLE)
+      CALL DETRSD('TABLE_CONTAINER',TABLE)
       CALL TBCRSD(TABLE,'G')
-      NOMPAR(1)='MATR_ELEM'
-      TYPPAR(1)='K24'
-      NOMPAR(2)='SIEF_ELGA'
-      TYPPAR(2)='K24'
-      NOMPAR(3)='VARI_ELGA'
+
+      NOMPAR(1)='NOM_OBJET'
+      TYPPAR(1)='K16'
+
+      NOMPAR(2)='TYPE_OBJET'
+      TYPPAR(2)='K16'
+
+      NOMPAR(3)='NOM_SD'
       TYPPAR(3)='K24'
-      NOMPAR(4)='VECT_ELEM'
-      TYPPAR(4)='K24'
-      NOMPAR(5)='CODRET'
-      TYPPAR(5)='I'
+
       CALL TBAJPA(TABLE,NBPAR,NOMPAR,TYPPAR)
-      VK(1)=MERIGI
-      VK(2)=SIGPLU
+      VK(1)='MATR_ELEM'
+      VK(2)='MATR_ELEM_DEPL_R'
+      VK(3)=MERIGI
+      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
+      VK(1)='SIEF_ELGA'
+      VK(2)='CHAM_ELEM'
+      VK(3)=SIGPLU
+      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
+      VK(1)='VARI_ELGA'
+      VK(2)='CHAM_ELEM'
       VK(3)=VARPLU
-      VK(4)=VEFINT
-      IF (TABRET(0)) THEN
-        VI(1)=1
-      ELSE
-        VI(1)=0
-      ENDIF
-      CALL TBAJLI(TABLE,NBPAR,NOMPAR,VI,RBID,CBID,VK,0)
+      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
+      VK(1)='VECT_ELEM'
+      VK(2)='VECT_ELEM_DEPL_R'
+      VK(3)=VEFINT
+      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
+      VK(1)='CODE_RETOUR'
+      VK(2)='CHAM_ELEM'
+      VK(3)=CODERE
+      CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,RBID,CBID,VK,0)
 
 
 C ======================================================================

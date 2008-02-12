@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,12 +39,12 @@ C   -------------------------------------------------------------------
 
       CHARACTER*8 ELREFA,FAPG,NOFPG(NBFAMX)
       CHARACTER*24 VALK(2)
-      INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ,N,NPG,J,CPT
+      INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ
       INTEGER NNO,NNOS,NBFPG,NBPG1(NBFAMX),INO,IFAM,INDIK8
       REAL*8 XPG(NBPGMX),YPG(NBPGMX),ZPG(NBPGMX),HPG(NBPGMX),A(4),H(4)
       REAL*8 ATY(7),ATZ(7),HT(7),U,T
       REAL*8 AA,BB,CC,HH,H1,H2,H3,RAC5,RAC15,A1,B1,B6,C1,C8,D1,D12
-      REAL*8 P1,P2,P3,P4,P5,XXG5(5),PXG5(5),XA,XB,XC,XD
+      REAL*8 P1,P2,P3,P4,P5,XXG5(5),PXG5(5),XA,XB
       REAL*8 ZERO,UNQUAR,UNDEMI,UN,DEUX,XNO(3*27),VOL,A2,B2
 C -----  FONCTIONS FORMULES
       T(U) = 2.0D0*U - 1.0D0
@@ -1114,6 +1114,40 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.GE.2) YPG(INO+4) = XNO(NDIM* (INO-1)+2)
              IF (NDIM.EQ.3) ZPG(INO+4) = XNO(NDIM* (INO-1)+3)
  200      CONTINUE
+ 
+        ELSEIF (FAPG.EQ.'ARLQ8') THEN
+          CALL ASSERT(NBPG.EQ.NNO)
+          DO 201,INO = 1,NNO
+            HPG(INO) = VOL/NNO
+            IF (NDIM.GE.1) XPG(INO) = XNO(NDIM* (INO-1)+1)
+            IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
+            IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
+  201     CONTINUE        
+          HPG(1) = - 0.333333333333333D0
+          HPG(2) = - 0.333333333333333D0
+          HPG(3) = - 0.333333333333333D0
+          HPG(4) = - 0.333333333333333D0
+          HPG(5) =   1.333333333333333D0
+          HPG(6) =   1.333333333333333D0
+          HPG(7) =   1.333333333333333D0
+          HPG(8) =   1.333333333333333D0
+        ELSEIF (FAPG.EQ.'ARLQ9') THEN
+          CALL ASSERT(NBPG.EQ.NNO)
+          DO 202,INO = 1,NNO
+            HPG(INO) = VOL/NNO
+            IF (NDIM.GE.1) XPG(INO) = XNO(NDIM* (INO-1)+1)
+            IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
+            IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
+  202     CONTINUE        
+          HPG(1) =   0.111111111111111D0
+          HPG(2) =   0.111111111111111D0
+          HPG(3) =   0.111111111111111D0
+          HPG(4) =   0.111111111111111D0
+          HPG(5) =   0.444444444444444D0
+          HPG(6) =   0.444444444444444D0
+          HPG(7) =   0.444444444444444D0
+          HPG(8) =   0.444444444444444D0    
+          HPG(8) =   1.777777777777777D0        
         ELSE
         VALK (1) = ELREFA
         VALK (2) = FAPG

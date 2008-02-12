@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,7 +60,7 @@ MODI_MAILLAGE( reuse =MA,
 CAR_ELE = AFFE_CARA_ELEM( MODELE=MO,
                           COQUE=_F(
                           GROUP_MA =( 'TOUT_ELT','COTE_AB','COTE_CD','COTE_DA','COTE_BC',),
-                          EPAIS = 1.,
+                          EPAIS = 1.,COQUE_NCOU=3,
                           ANGL_REP = (0.,-48.5,))
                         )
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,7 +109,6 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                                         "GRANGER_FP",
                                         "GRANGER_FP_INDT",
                                         "GRANGER_FP_V",
-                                        "BAZANT_FD",
                                         "BETON_UMLV_FP",
                                         "BETON_DOUBLE_DP",
                                         "KIT_DDI",
@@ -161,7 +160,6 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
           GRANGER_FP      =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
           GRANGER_FP_INDT =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
           GRANGER_FP_V    =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
-          BAZANT_FD       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           BETON_DOUBLE_DP =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           BETON_UMLV_FP   =SIMP(statut='c',typ='I',defaut=21,into=(21,)),
           GRAN_IRRA_LOG   =SIMP(statut='c',typ='I',defaut=4,into=(4,)),

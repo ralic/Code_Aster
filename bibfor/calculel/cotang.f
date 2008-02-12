@@ -1,7 +1,7 @@
       SUBROUTINE COTANG(NBNO,DIME,TYPTAN,TANMAX,COETAN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C
           COETAN(4) = -1.D0
           COETAN(5) =  0.D0
           COETAN(6) =  1.D0
-          TYPTAN    = 'VARIABLE'
+          TYPTAN    = 'CONSTANT'
         ELSEIF (NBNO.EQ.6) THEN
           COETAN(1)  = -3.D0
           COETAN(2)  = -1.D0

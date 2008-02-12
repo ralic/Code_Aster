@@ -1,5 +1,5 @@
 
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  PLAQUE CARREE COMPOSITE SOUS PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,7 @@ MA=MODI_MAILLAGE(reuse =MA,
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
                        COQUE=_F(GROUP_MA='MAIL',
                                 EPAIS=0.1,
+                                COQUE_NCOU=3,
                                 ANGL_REP=(20.0,-30.0,),),);
 
 MAT1=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=3.4156,

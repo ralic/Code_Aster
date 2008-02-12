@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
 # TITRE INTEGRATION DU COMPORTEMENT VMIS_ISOT_LINE PAR LA COMMANDE CALCUL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 
 
-DEBUT(CODE=_F(NOM='PYNL01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NOM='PYNL01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #=========================================================
 #          DEFINITION DE L'ETUDE
@@ -165,28 +165,42 @@ CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
             SIGM=SIGP,
             VARI=VARIP,
             COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
-            INFO=1,);
+            INFO=2,);
+
 
 MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                  TABLE=CONT,
-                 NOM_PARA='MATR_ELEM')
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='MATR_ELEM'),)
+
 
 SIGM=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CONT,
-                 NOM_PARA='SIEF_ELGA')
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='SIEF_ELGA'),)
 
 VARI=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CONT,
-                 NOM_PARA='VARI_ELGA')
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='VARI_ELGA'),)
+                
 
 F_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT,
-                 NOM_PARA='VECT_ELEM')
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='VECT_ELEM'),)
 
-CODE=EXTR_TABLE(TYPE_RESU='ENTIER',
+
+CODE=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  TABLE=CONT,
-                 NOM_PARA='CODRET')
-
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='CODE_RETOUR'),)
+                
 
 
 #=========================================================

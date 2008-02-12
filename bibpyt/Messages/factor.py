@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF factor Messages  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,14 +139,11 @@ Remarque : on a le droit de dépasser la valeur 100.
 #-----------------------------------------------------------------------------------------------
 54: _("""
 Solveur MUMPS :
-  Mumps manque de mémoire lors de la factorisation de la matrice.
+  Le solveur Mumps manque de mémoire lors de la factorisation de la matrice.
+
 Solution :
-  Il faut augmenter la mémoire donnée à Mumps.
-  Pour cela, il faut diminuer le pourcentage de mémoire donné à JEVEUX.
-  C'est à dire diminuer la valeur du paramètre "mem_aster" du menu "Options" d'ASTK.
-Remarque :
-  On peut par exemple choisir mem_aster=50 ce qui correspond à un partage
-  équitable (50/50) de la mémoire entre JEVEUX et Mumps.
+  Il faut augmenter la mémoire accessible à Mumps (et autres programmes hors fortran d'Aster).
+  Pour cela, il faut diminuer la mémoire donnée à JEVEUX (ASTK : case "dont Aster (Mo)").
 """),
 
 #-----------------------------------------------------------------------------------------------

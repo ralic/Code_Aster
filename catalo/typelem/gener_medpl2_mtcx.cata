@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,24 +77,40 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-
-
+    CARA_GEOM           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
+    CHAR_LIMITE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    ECIN_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
+    ENER_ELAS           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    ENER_TOTALE         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    EPOT_ELEM_DEPL      -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX            
+    INDIC_ENER          -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    INDIC_SEUIL         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
+    MASS_INER           -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    RICE_TRACEY         -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX      
     RIGI_CONT           366   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
                                      CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF
                               OUT__  MMATUUR  PMATUUR
-
     RIGI_FROT           366   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
                                      CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF     
                               OUT__  MMATUUR  PMATUUR
-
     CHAR_MECA_CONT      367   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
                                      CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF
                               OUT__  MVECTUR  PVECTUR
- 
     CHAR_MECA_FROT      367   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
                                      CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF
                               OUT__  MVECTUR  PVECTUR
-
+    WEIBULL             -2    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     XCVBCA              363   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  CCONPT   PCAR_PT
                                      CCONPI   PCAR_PI  CCONAI   PCAR_AI  CCONCF   PCAR_CF
                               OUT__  I1NEUT_I PINCOCA  CCONIN   PINDCOT  I1NEUT_I PINDMEM

@@ -1,7 +1,7 @@
       FUNCTION PLVOL2(DIME  ,SC    ,NORM  ,IS    ,NSOM  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,31 +51,29 @@ C
       REAL*8  DDOT
       INTEGER A,B,I
       REAL*8  V,T(3)
-      LOGICAL IR
+      LOGICAL LORDRE
 C
 C ----------------------------------------------------------------------
 C
-      IR = IS(1).EQ.0
+      LORDRE = IS(1).EQ.0
 C
 C --- SURFACE DU POLYGONE
 C
-      IF (IR) THEN
+      IF (LORDRE) THEN
         B = NSOM
       ELSE
         B = IS(NSOM)
       ENDIF
-
       V = 0.D0
 C
 C --- CAS 2D
 C
       IF (DIME.EQ.2) THEN
-
         DO 10 I = 1, NSOM
-         
+        
           A = B
 
-          IF (IR) THEN
+          IF (LORDRE) THEN
             B = I
           ELSE
             B = IS(I)
@@ -84,16 +82,16 @@ C
           V = V + SC(1,A)*SC(2,B) - SC(2,A)*SC(1,B)
         
  10     CONTINUE
-
+C
 C --- CAS 3D
-
+C
       ELSEIF (DIME.EQ.3) THEN
 
         DO 20 I = 1, NSOM
          
           A = B
 
-          IF (IR) THEN
+          IF (LORDRE) THEN
             B = I
           ELSE
             B = IS(I)

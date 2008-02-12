@@ -1,0 +1,75 @@
+      SUBROUTINE ARLTII(IMA1  ,IMA2,
+     &                  LINCL1,LINCL2,LINCLU,LSSMAI)
+C     
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      INTEGER  IMA1,IMA2
+      LOGICAL  LINCL1,LINCL2,LINCLU,LSSMAI 
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C TYPE D'INTEGRATION  
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  IMA1   : NUMERO DANS LE GROUPE DE MAILLE ARLEQUIN DE LA MAILLE 1
+C IN  IMA2   : NUMERO DANS LE GROUPE DE MAILLE ARLEQUIN DE LA MAILLE 2
+C OUT LINCL1 : INCLUSION DANS LA MAILLE 1
+C OUT LINCL2 : INCLUSION DANS LA MAILLE 2
+C OUT LINCLU : INCLUSION
+C OUT LSSMAI : DECOUPAGE PAR SOUS-MAILLES 
+C      
+C ----------------------------------------------------------------------
+C
+     
+C
+C --- INITIALISATIONS
+C
+      LINCL1 = .FALSE.
+      LINCL2 = .FALSE.
+      LINCLU = .FALSE.
+      LSSMAI = .FALSE.
+C
+      IF ((IMA1.EQ.0).OR.(IMA2.EQ.0)) THEN
+        CALL U2MESK('F','ARLEQUIN_99',1,'ARLTII_1')
+      ENDIF
+C
+C --- TYPE D'INTEGRATION
+C
+      LSSMAI = IMA2.LT.0
+      LINCLU = IMA2.GT.0
+      IF (LINCLU) THEN
+        LINCL1 = IMA1.GT.0
+        LINCL2 = IMA1.LT.0           
+      ELSE
+        LINCL1 = .FALSE.
+        LINCL2 = .FALSE.           
+      ENDIF
+C
+      IF (LSSMAI.AND.LINCLU) THEN
+        CALL U2MESK('F','ARLEQUIN_99',1,'ARLTII_2')
+      ENDIF
+C
+      END

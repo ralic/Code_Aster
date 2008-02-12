@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,CUMUL,
-     &                  BASE,TYPE,MATAZ)
-C MODIF ASSEMBLA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+     &                  BASE,ITYSCA,MATAZ)
+C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -21,23 +21,20 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) BASE,MATAZ,TLIMAT(*),LICOEF,NU
-      INTEGER       NBMAT,TYPE
+      INTEGER       NBMAT,ITYSCA
       CHARACTER*(*) SOLVEU,INFCHA
       CHARACTER*4   CUMUL
-
-
 C-----------------------------------------------------------------------
-
-C --- DESCRIPTION DES PARAMETRES
-
-C IN  I   NBMAT2  : NOMBRE DE MATR_ELEM DE LA LISTE TLIMAT
+C IN  I   NBMAT  : NOMBRE DE MATR_ELEM DE LA LISTE TLIMAT
 C IN  K8  TLIMAT : LISTE DES MATR_ELEM
 C IN  K24 LICOEF : NOM DU VECTEUR CONTENANT LES COEF. MULT.
 C                  DES MATR_ELEM
 C                  SI LICOEF=' ' ON PREND 1.D0 COMME COEF.
 C IN  K14 NU     : NOM DU NUME_DDL
-C IN  K19 SOLVEU : NOM DU SOLVEUR
-C IN  K19 INFCHA : NOM DE L'OBJET INFCHA
+C IN  K19 SOLVEU : NOM DU SOLVEUR (OU ' ')
+C IN  K19 INFCHA : / SD_INFCHA (K19)
+C                  / NOM D'UN OBJET JEVEUX (K24) CONTENANT
+C                    LES NOMS DES CHARGES CINEMATIQUES (K8)
 C                  (POUR LES CHARGES CINEMATIQUES)
 C IN  K4 CUMUL : 'ZERO' OU 'CUMU'
 C                 'ZERO':SI UN OBJET DE NOM MATAS ET DE TYPE
@@ -45,20 +42,10 @@ C                        MATR_ASSE EXISTE ON ECRASE SON CONTENU.
 C                 'CUMU':SI UN OBJET DE NOM MATAS ET DE TYPE
 C                        MATR_ASSE EXISTE ON CUMULE DANS .VALM
 C IN  K1  BASE   : BASE SUR LAQUELLE ON CREE L'OBJET MATAZ
-C IN  I   TYPE  : TYPE DES MATRICES ELEMENTAIRES A ASSEMBLER
+C IN  I   ITYSCA  : TYPE DES MATRICES ELEMENTAIRES A ASSEMBLER
 C                          1 --> REELLES
 C                          2 --> COMPLEXES
-C OUT K19  MATAZ : L'OBJET MATAZ DE TYPE MATR_ASSE EST CREE ET REMPLI
-C IN  K19  MATAZ : NOM DE L'OBJET DE TYPE MATR_ASSE A CREER
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       05/12/03 (OB): AJOUT POUR SOLVEUR FETI.
-C----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C-----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
+C IN/OUT K19 MATAZ : L'OBJET MATAZ DE TYPE MATR_ASSE EST CREE ET REMPLI
 C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -73,38 +60,40 @@ C-----------------------------------------------------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
-      CHARACTER*1 TYPSYM,TYPMAT
-      CHARACTER*2 TYMASY
+      CHARACTER*1 MATSYM,TYPMAT
       CHARACTER*3 SYME
       CHARACTER*7 SYMEL
-      CHARACTER*8 MATEL,K8BID
+      CHARACTER*8 MATEL
       CHARACTER*24 METRES,LICOE2
-      INTEGER NBMAT2,K
+      INTEGER K
       CHARACTER*8   TLIMA2(150)
-      CHARACTER*19 SOLVE2,INFCH2,MATAS
-      INTEGER ILICOE,I,ISLVK,INDSYM,IRET,IBID,IDBGAV,ILIMAT,IER
-      INTEGER IDLRE2,NBRESU,IRESU,JREFA
+      CHARACTER*19 SOLVE2,MATAS
+      INTEGER ILICOE,I,JSLVK,IRET,IBID,IDBGAV,ILIMAT,IER
+      INTEGER JREFA
 CDEB-------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
 
-      SOLVE2 = SOLVEU
-      INFCH2 = INFCHA
-      LICOE2 = LICOEF
       MATAS  = MATAZ
-      NBMAT2 = NBMAT
+      LICOE2 = LICOEF
+      SOLVE2 = SOLVEU
+      IF (SOLVE2.EQ.' ') THEN
+        CALL DISMOI('F','SOLVEUR',NU,'NUME_DDL',IBID,SOLVE2,IER)
+      ENDIF
 
+      CALL ASSERT(CUMUL.EQ.'ZERO'.OR.CUMUL.EQ.'CUMU')
       IF (CUMUL.EQ.'ZERO') CALL DETRSD('MATR_ASSE',MATAS)
-      IF (NBMAT2.GT.150) CALL ASSERT(.FALSE.)
-      DO 10,K = 1,NBMAT2
+      IF (NBMAT.GT.150) CALL ASSERT(.FALSE.)
+      DO 10,K = 1,NBMAT
         TLIMA2(K) = TLIMAT(K)
    10 CONTINUE
 
 
 C     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
+C     ---------------------------------------------------------------
       IF (LICOE2.EQ.' ') THEN
-        CALL WKVECT('&&ASMATR.LICOEF','V V R',NBMAT2,ILICOE)
-        DO 20 I = 1,NBMAT2
+        CALL WKVECT('&&ASMATR.LICOEF','V V R',NBMAT,ILICOE)
+        DO 20 I = 1,NBMAT
           ZR(ILICOE+I-1) = 1.D0
    20   CONTINUE
       ELSE
@@ -112,118 +101,82 @@ C     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
       END IF
 
 
-      CALL WKVECT('&&ASMATR.LMATEL','V V K8',NBMAT2,ILIMAT)
 
-C PREPARATION DE LA LISTE DE MATR_ELEM RESYMETRISES SI NECESSAIRES
-      INDSYM = 0
-      TYPSYM = TYPMAT(NBMAT2,TLIMA2)
+C     -- PREPARATION DE LA LISTE DE MATR_ELEM POUR QU'ILS SOIENT
+C        DU MEME TYPE (SYMETRIQUE OU NON) QUE LA MATR_ASSE :
+C     ---------------------------------------------------------------
+      CALL WKVECT('&&ASMATR.LMATEL','V V K8',NBMAT,ILIMAT)
+      MATSYM = TYPMAT(NBMAT,TLIMA2)
 
-      CALL JEVEUO(SOLVE2//'.SLVK','L',ISLVK)
-      SYME = ZK24(ISLVK+5-1)
+      CALL JEVEUO(SOLVE2//'.SLVK','L',JSLVK)
+      SYME = ZK24(JSLVK+5-1)
       IF (SYME.EQ.'OUI') THEN
-        DO 30 I = 1,NBMAT2
+        DO 30 I = 1,NBMAT
           CALL DISMOI('F','TYPE_MATRICE',TLIMA2(I),'MATR_ELEM',IBID,
      &                SYMEL,IER)
           IF (SYMEL.EQ.'NON_SYM') THEN
             CALL GCNCON('.',MATEL)
             ZK8(ILIMAT+I-1) = MATEL
-            CALL RESYME(TLIMA2(I),BASE,MATEL)
+            CALL RESYME(TLIMA2(I),'V',MATEL)
           ELSE
             ZK8(ILIMAT+I-1) = TLIMA2(I)
           END IF
    30   CONTINUE
-        TYPSYM = 'S'
+        MATSYM = 'S'
       ELSE
-        DO 40 I = 1,NBMAT2
+        DO 40 I = 1,NBMAT
           ZK8(ILIMAT+I-1) = TLIMA2(I)
    40   CONTINUE
       END IF
 
 
-C REMPLISSAGE DE LA MATR_ASSE MATAS
 
-      METRES = ZK24(ISLVK)
-
-
-
-      IF (METRES.EQ.'GCPC') THEN
-C     ================================
-        IF (TYPSYM.EQ.'S') THEN
-          CALL ASSMAM(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
-     &              CUMUL,  TYPE)
-        ELSE IF (TYPSYM.EQ.'N') THEN
-          CALL U2MESK('F','ASSEMBLA_1',1,TYPSYM)
-        END IF
+C     -- VERIFICATIONS :
+C     ------------------
+      METRES = ZK24(JSLVK)
+      IF ((METRES.EQ.'GCPC'.OR.METRES.EQ.'FETI').AND.(MATSYM.EQ.'N'))
+     &    CALL U2MESK('F','ASSEMBLA_1',1,MATSYM)
 
 
-      ELSE
-C     ====
+
+C     -- SI MATRICE EXISTE DEJA ET QU'ELLE DOIT ETRE NON-SYMETRIQUE,
+C        ON LA DE-SYMETRISE :
+C     ---------------------------------------------------------------
+      IF (CUMUL.EQ.'CUMU') THEN
         CALL JEEXIN(MATAS//'.REFA',IRET)
-        IF (IRET.GT.0) THEN
-          CALL JEVEUO(MATAS//'.REFA','L',JREFA)
-          TYMASY=ZK24(JREFA-1+9)
-          IF (TYMASY.EQ.'MR') THEN
-            INDSYM = 1
-          END IF
-        END IF
-
-        IF (TYPSYM.EQ.'S' .AND. INDSYM.EQ.0) THEN
-          CALL ASSMAM(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
-     &              CUMUL,  TYPE)
-        ELSE IF (TYPSYM.EQ.'N' .OR. INDSYM.EQ.1) THEN
-          IF (METRES.EQ.'FETI')
-     &      CALL U2MESS('F','ASSEMBLA_2')
-          CALL JEEXIN(MATAS//'.REFA',IRET)
-          IF (IRET.NE.0) THEN
-            CALL JEVEUO(MATAS//'.REFA','L',JREFA)
-            TYMASY=ZK24(JREFA-1+9)
-            IF (TYMASY.EQ.'MS') THEN
-              CALL MASYNS(MATAS)
-            END IF
-          END IF
-          CALL ASSMMN(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
-     &               CUMUL, TYPE)
-        END IF
-
+        CALL ASSERT(IRET.GT.0)
+        CALL JEVEUO(MATAS//'.REFA','L',JREFA)
+        IF (MATSYM.EQ.'N'.AND.ZK24(JREFA-1+9).EQ.'MS')CALL MASYNS(MATAS)
       END IF
 
 
+C     -- ASSEMBLAGE PROPREMENT DIT :
+C     -------------------------------
+      CALL ASSMAM(BASE,MATAS,NBMAT,ZK8(ILIMAT),ZR(ILICOE),NU,
+     &             CUMUL,ITYSCA)
 
-C- TRAITEMENT DES CHARGES CINEMATIQUES :
-C  ======================================
+
+C     -- TRAITEMENT DES CHARGES CINEMATIQUES :
+C     ----------------------------------------
       CALL JEVEUO(MATAS//'.REFA','L',JREFA)
       CALL ASSERT(ZK24(JREFA-1+3).NE.'ELIMF')
-      CALL ASCIMA(INFCH2//'.LCHA',INFCH2//'.INFC',NU,MATAS,CUMUL)
-      CALL JEDETR('&&ASMATR.LICOEF')
+      CALL ASCIMA(INFCHA,NU,MATAS,CUMUL)
 
 
 C     -- MENAGE :
-C     -------------------
+C     -----------
+      CALL JEDETR('&&ASMATR.LICOEF')
       IF (SYME.EQ.'OUI') THEN
-        DO 60 I = 1,NBMAT2
+        DO 60 I = 1,NBMAT
           CALL DISMOI('F','TYPE_MATRICE',TLIMA2(I),'MATR_ELEM',IBID,
      &                SYMEL,IER)
-          IF (SYMEL.EQ.'NON_SYM') THEN
-            CALL JEVEUO(ZK8(ILIMAT+I-1)//'.LISTE_RESU','E',IDLRE2)
-            CALL JELIRA(ZK8(ILIMAT+I-1)//'.LISTE_RESU','LONUTI',NBRESU,
-     &                  K8BID)
-            DO 50 IRESU = 1,NBRESU
-              CALL JEDETR(ZK24(IDLRE2+IRESU-1) (1:8)//
-     &                    '           .DESC')
-              CALL JEDETR(ZK24(IDLRE2+IRESU-1) (1:8)//
-     &                    '           .NOLI')
-              CALL JEDETR(ZK24(IDLRE2+IRESU-1) (1:8)//
-     &                    '           .RESL')
-   50       CONTINUE
-            CALL JEDETR(ZK8(ILIMAT+I-1)//'.LISTE_RESU')
-            CALL JEDETR(ZK8(ILIMAT+I-1)//'.REFE_RESU')
-          END IF
+          IF (SYMEL.EQ.'SYMETRI') GOTO 60
+          CALL DETRSD('MATR_ELEM', ZK8(ILIMAT+I-1))
    60   CONTINUE
       END IF
 
 
 
-C     CALL CHEKSD('sd_matr_asse',MATAS,IRET)
       CALL JEDETR('&&ASMATR.LMATEL')
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()

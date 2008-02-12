@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/08/2007   AUTEUR TARDIEU N.TARDIEU 
+C MODIF CALCULEL  DATE 12/02/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,8 +23,23 @@ C ======================================================================
 C
 C     COMMANDE:  EXTR_TABLE
 C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C ----------------------------------------------------------------------
-      INTEGER       IBID, N1, IRET, NPARFI, VALI
+      INTEGER       IBID, N1, IRET, NPARFI, VALI, JLR, NRELM,I
       REAL*8        R8B, VALR
       COMPLEX*16    CBID, VALC
       CHARACTER*8   K8B, NOMRES, CTYPE, TABLE
@@ -72,11 +87,11 @@ C          ------------------------------
 C
       ELSEIF ( TYPESD .EQ. 'MATR_ELEM_DEPL_R' ) THEN
 C          ------------------------------
-         CALL COPISD ( ' ', 'G', VALK(1:8), NOMRES )
+         CALL COPISD ( 'MATR_ELEM', 'G', VALK(1:8), NOMRES )
 C
       ELSEIF ( TYPESD .EQ. 'VECT_ELEM_DEPL_R' ) THEN
 C          ------------------------------
-         CALL COPISD ( ' ', 'G', VALK(1:8), NOMRES )
+         CALL COPISD ( 'VECT_ELEM', 'G', VALK(1:8), NOMRES )
 C
       ELSEIF ( TYPESD .EQ. 'CHAM_GD_SDASTER' ) THEN
 C          ------------------------------

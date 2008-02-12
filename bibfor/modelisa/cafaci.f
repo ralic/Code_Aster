@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/09/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,10 +54,10 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
       INTEGER I,J,K,N,JLISTI
       INTEGER NBNOEU,JVAL,NDDLA,JDIREC,NBNO
-      INTEGER IDIM,IN,JNORM,JTANG,JNUNOE,JNONO,NFACI
+      INTEGER IDIM,IN,JNORM,JTANG,JNONO,NFACI
       INTEGER IBID,JNOMA,IER,NDIM,NBMA2,JCOMPT
-      INTEGER IRET,N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
-      INTEGER NCMP,NBTYP,IE,NBMA,NBCMP,INOM,JLINU3
+      INTEGER N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
+      INTEGER IE,NBMA,NBCMP,INOM
       INTEGER JLIST2,JLIST3,JLIST1,NBMA3,NBNO1,NBNO3
       INTEGER DDLIMP(NMOCL),NBNO2,JLINO2,JLINO1,JLINO,JLINU
       REAL*8 VALIMR(NMOCL),COEF(3),DIRECT(3)
@@ -67,7 +67,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*3 TYMOCL(NMOCL)
       CHARACTER*3 CDIM
       CHARACTER*4 TYPCOE
-      CHARACTER*8 K8B,NOMA,MOD,LITYP(10),NOMG
+      CHARACTER*8 K8B,NOMA,MOD,NOMG
       CHARACTER*8 VALIMF(NMOCL),NOMNOE,DDL(3)
       CHARACTER*16 MOTFAC,MOTCLE(NMOCL),NOMCMD,TYPMCL(2),MOCLM(2)
       CHARACTER*16 MOCLM2(2),MOCLM3(2),TYPMC3(2)
@@ -158,31 +158,7 @@ C     --------------------------------------------------------
         NDIM = 3
       END IF
 
-      IF (NDIM.EQ.2) THEN
-        NBTYP = 3
-        LITYP(1) = 'SEG2'
-        LITYP(2) = 'SEG3'
-        LITYP(3) = 'SEG4'
-      ELSE IF (NDIM.EQ.3) THEN
-        NBTYP = 10
-        LITYP(1) = 'TRIA3'
-        LITYP(2) = 'TRIA6'
-        LITYP(3) = 'TRIA9'
-        LITYP(4) = 'QUAD4'
-        LITYP(5) = 'QUAD8'
-        LITYP(6) = 'QUAD9'
-        LITYP(7) = 'QUAD12'
-        LITYP(8) = 'SEG2'
-        LITYP(9) = 'SEG3'
-        LITYP(10) = 'SEG4'
-      END IF
-
-C      ***************************************
-C      TRAITEMENT DES COMPOSANTES DNOR ET DTAN
-C      ***************************************
-
       DO 210 I = 1,NFACI
-        NCMP = 0
         ICMP = 0
         INOR = 0
         NBMA2= 0
@@ -216,7 +192,6 @@ C ---------------------------------------------------
         CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
         NDDLA = 0
         DO 50 J = 1,NMCL
-C         MEME TEST DANS DDLFAC, ET A COPIER PLUS BAS
           IF ( MOTCLE(J).NE.'MAILLE' .AND.
      &         MOTCLE(J).NE.'GROUP_MA' .AND.
      &         MOTCLE(J).NE.'SANS_MAILLE' .AND.
@@ -256,12 +231,13 @@ C         MEME TEST DANS DDLFAC, ET A COPIER PLUS BAS
             CALL U2MESS('F','MODELISA2_63')
           END IF
         END IF
-        NCMP = NCMP + ICMP
+
+C      ***************************************
+C      TRAITEMENT DES COMPOSANTES DNOR ET DTAN
+C      ***************************************
 C    -------------------------------------
 C    RECUPERATION DES NOEUDS (A CONSERVER)
 C    -------------------------------------
-        IF (INOR.NE.0 .AND. ICMP.EQ.0) THEN
-
           IF ((NBMA2.NE.0) .OR. (NBNO3.NE.0)) THEN
 
 C           LISTE DES NOMS DES NOEUDS
@@ -338,7 +314,6 @@ C   -------------------------------------------
 C   CALCUL DES NORMALES ET TANGENTES AUX NOEUDS
 C   -------------------------------------------
           IF (DDLIMP(NDDLA+1).NE.0) THEN
-
             CALL CANORT(NOMA,NBMA,ZI(JLISTI),K8B,NDIM,NBNO,
      &                                       ZI(JLINU),1)
             CALL JEVEUO('&&CANORT.NORMALE','L',JNORM)
@@ -375,45 +350,12 @@ C   ----------------------
      &                    LISREL)
             END IF
   120     CONTINUE
-        END IF
 
 C      ***************************************************
 C      TRAITEMENT DES COMPOSANTES DX DY DZ DRX DRY DRZ ...
 C      ***************************************************
 
-        IF (NCMP.EQ.0) GO TO 200
-
-C     RECUPERATION DES DONNEES DU MOT-CLE FACTEUR ET PRISE EN COMPTE
-C     DE LA SURCHARGE
-
-C ---------------------------------------------------
-C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
-C     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
-C     NDDLA     : NOMBRE DE MOTS CLES DU TYPE DDL
-C ---------------------------------------------------
-        CALL GETMJM('FACE_IMPO',I,0,MOTCLE,TYMOCL,N)
-        NMCL = -N
-        IF (NMCL.GT.NMOCL) THEN
-          VALI (1) = NMOCL
-          VALI (2) = NMCL
-          CALL U2MESG('F', 'MODELISA8_31',0,' ',2,VALI,0,0.D0)
-        END IF
-        CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
-        NDDLA = 0
-        DO 130 J = 1,NMCL
-C         MEME TEST DANS DDLFAC, ET A COPIER PLUS HAUT
-          IF ( MOTCLE(J).NE.'MAILLE' .AND.
-     &         MOTCLE(J).NE.'GROUP_MA' .AND.
-     &         MOTCLE(J).NE.'SANS_MAILLE' .AND.
-     &         MOTCLE(J).NE.'SANS_GROUP_MA' .AND.
-     &         MOTCLE(J).NE.'SANS_NOEUD' .AND.
-     &         MOTCLE(J).NE.'SANS_GROUP_NO' .AND.
-     &         MOTCLE(J).NE.'DNOR' .AND.
-     &         MOTCLE(J).NE.'DTAN') THEN
-            NDDLA = NDDLA + 1
-            MOTCLE(NDDLA) = MOTCLE(J)
-          END IF
-  130   CONTINUE
+        IF (ICMP.EQ.0) GO TO 200
 
         CALL JELIRA(NOMA//'.NOMNOE','NOMMAX',NBNOEU,K1BID)
 
@@ -435,44 +377,9 @@ C                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
 
         CALL WKVECT('&&CAFACI.DIRECT','V V R',3*NBNOEU,JDIREC)
 
-        MOTCLE(NDDLA+1) = 'DNOR'
-        MOTCLE(NDDLA+2) = 'DTAN'
-        ICMP = 0
-        INOR = 0
-        IF (FONREE.EQ.'REEL') THEN
-          DO 140 J = 1,NDDLA + 2
-            CALL GETVR8('FACE_IMPO',MOTCLE(J),I,1,1,VALIMR(J),DDLIMP(J))
-            IF (NDIM.EQ.3 .AND. DDLIMP(NDDLA+2).NE.0) THEN
-              CALL U2MESS('F','MODELISA2_63')
-            END IF
-            IF (J.LE.NDDLA) THEN
-              ICMP = ICMP + DDLIMP(J)
-            ELSE
-              INOR = INOR + DDLIMP(J)
-            END IF
-  140     CONTINUE
-        ELSE
-          DO 150 J = 1,NDDLA + 2
-            CALL GETVID('FACE_IMPO',MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
-            IF (NDIM.EQ.3 .AND. DDLIMP(NDDLA+2).NE.0) THEN
-              CALL U2MESS('F','MODELISA2_63')
-            END IF
-            IF (J.LE.NDDLA) THEN
-              ICMP = ICMP + DDLIMP(J)
-            ELSE
-              INOR = INOR + DDLIMP(J)
-            END IF
-  150     CONTINUE
-        END IF
-C
-        IF (INOR.EQ.0) THEN
-          CALL NBNLMA(NOMA,NBMA,ZI(JLISTI),NBTYP,LITYP,NBNO)
-          CALL JEVEUO('&&NBNLMA.LN','L',JNUNOE)
-
           CALL WKVECT('&&CAFACI.ICOMPT','V V I',NDDLA,JCOMPT)
-          IRET = 0
           DO 180 INO = 1,NBNO
-            IN = ZI(JNUNOE-1+INO)
+            IN = ZI(JLINU-1+INO)
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
             ZK8(JNONO-1+IN) = NOMNOE
             CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
@@ -487,14 +394,9 @@ C
   181     CONTINUE
           CALL JEDETR('&&CAFACI.ICOMPT')
 
-        END IF
-        CALL JEEXIN('&&CAFACI.NOMS_NOEUDS',IRET)
-        IF (IRET.NE.0) CALL JEDETR('&&CAFACI.NOMS_NOEUDS')
-        CALL JEEXIN('&&CAFACI.VALDDL',IRET)
-        IF (IRET.NE.0) CALL JEDETR('&&CAFACI.VALDDL')
-        CALL JEEXIN('&&NBNLMA.LN',IRET)
-        CALL JEEXIN('&&CAFACI.DIRECT',IRET)
-        IF (IRET.NE.0) CALL JEDETR('&&CAFACI.DIRECT')
+        CALL JEDETR('&&CAFACI.NOMS_NOEUDS')
+        CALL JEDETR('&&CAFACI.VALDDL')
+        CALL JEDETR('&&CAFACI.DIRECT')
 
   200   CONTINUE
 
@@ -510,14 +412,10 @@ C        -------------------------------------
       CALL AFLRCH(LISREL,CHAR)
 
   220 CONTINUE
-      CALL JEEXIN('&&NBNLMA.LN',IRET)
-      IF (IRET.NE.0) CALL JEDETR('&&NBNLMA.LN')
-      CALL JEEXIN('&&NBNLMA.NBN',IRET)
-      IF (IRET.NE.0) CALL JEDETR('&&NBNLMA.NBN')
-      CALL JEEXIN('&&CANORT.NORMALE',IRET)
-      IF (IRET.NE.0) CALL JEDETR('&&CANORT.NORMALE')
-      CALL JEEXIN('&&CANORT.TANGENT',IRET)
-      IF (IRET.NE.0) CALL JEDETR('&&CANORT.TANGENT')
+      CALL JEDETR('&&NBNLMA.LN')
+      CALL JEDETR('&&NBNLMA.NBN')
+      CALL JEDETR('&&CANORT.NORMALE')
+      CALL JEDETR('&&CANORT.TANGENT')
 
       CALL JEDEMA()
       END

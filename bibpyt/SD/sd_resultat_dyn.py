@@ -1,4 +1,4 @@
-#@ MODIF sd_resultat_dyn SD  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_resultat_dyn SD  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ from SD.sd_proj_mesu import sd_proj_mesu
 class sd_resultat_dyn(sd_resultat):
 #--------------------------------------------------
     nomj = SDNom(fin=8)
-    PROFC_NUME_REFN = Facultatif(AsVK24(SDNom(nomj='.PROFC.NUME.REFN'), lonmax=2, ))
+    PROFC_NUME_REFN = Facultatif(AsVK24(SDNom(nomj='.PROFC.NUME.REFN'), lonmax=4, ))
     REFD = Facultatif(AsVK24(SDNom(debut=19), lonmax=6, )) # n'existe pas dans sdll23a
 
     # si utilisation de PROJ_MESU_MODAL :
