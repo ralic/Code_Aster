@@ -4,7 +4,7 @@
       CHARACTER*(*)          NOMF,VEC(*),    VERIF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C     ------------------------------------------------------------------
       DATA TPROL/'CONSTANT','LINEAIRE','EXCLU'/
 C
       NOMFON = NOMF
-      NOMPAF = VEC(6)
+      NOMPAF = VEC(7)
       NOMPAN = VEC(3)
       NOMRES = VEC(4)
       WRITE(IUNI,*) ' NAPPE ',NOMFON,' : ',

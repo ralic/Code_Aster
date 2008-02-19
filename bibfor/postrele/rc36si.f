@@ -4,7 +4,7 @@
       CHARACTER*8         NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,8 +52,10 @@ C
      &             JNBOCC, JNUMGR, JPRESA, JPRESB,NBCHAR,JCHAR1,JCHAR2,
      &             JNSITU, JCOMBI, JPASSA, JNBGR, IG, NUMPAS(2), NSCY,
      &             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR,JCHTH,
-     &             NBM
-      LOGICAL      LSEISM
+     &             NBM, NBP12, NBP23, NBP13, JSP12, JSP23, JSP13,
+     &             NBSG1, NBSG2, NBSG3, JSIGR, VALI(3), NBGRT, NUMG1,
+     &             NUMG2,JSPAS 
+      LOGICAL      YAPASS, YASEIS
       CHARACTER*8  K8B, OUINON
       CHARACTER*16 MOTCLF
       CHARACTER*24 CHMOME
@@ -64,6 +66,7 @@ C
       CALL GETFAC ( MOTCLF, NBSITU )
 C
       CALL WKVECT('&&RC36SI.NUME_GROUP', 'V V I' , NBSITU, JNBGR )
+      CALL WKVECT('&&RC32SI.SITU_GROUP', 'V V I',2*NBSITU, JSIGR )
 C
       CALL WKVECT('&&RC3600.SITU_NUMERO'    , 'V V I'  ,NBSITU, JNSITU)
       CALL WKVECT('&&RC3600.SITU_NB_OCCUR'  , 'V V I',2*NBSITU, JNBOCC)
@@ -77,21 +80,15 @@ C
      &                               'DISPERSE', 'VARIABLE', NBSITU )
       CALL WKVECT('&&RC3600.CHAM_THER', 'V V K24', NBSITU, JCHTH )
 C
+      CALL WKVECT ('&&RC32SI.PASSAGE_1_2', 'V V I', NBSITU, JSP12 )
+      CALL WKVECT ('&&RC32SI.PASSAGE_2_3', 'V V I', NBSITU, JSP23 )
+      CALL WKVECT ('&&RC32SI.PASSAGE_1_3', 'V V I', NBSITU, JSP13 )
+      CALL JEECRA ('&&RC32SI.PASSAGE_1_2','LONUTI', 0, ' ')
+      CALL JEECRA ('&&RC32SI.PASSAGE_2_3','LONUTI', 0, ' ')
+      CALL JEECRA ('&&RC32SI.PASSAGE_1_3','LONUTI', 0, ' ')
+C
       NBGR = 0
-C
-C --- ON VERIFIE UN SEUL SEISME
-C
-      LSEISM = .FALSE.
-      DO 40, IOCC = 1, NBSITU, 1
-         CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME', IOCC,1,1, NSCY, N1)
-         IF ( N1 .NE. 0 ) THEN
-            IF ( LSEISM ) THEN
-               CALL U2MESS('F','POSTRCCM_11')
-            ELSE
-               LSEISM = .TRUE.
-            ENDIF
-         ENDIF
- 40   CONTINUE
+      YAPASS = .FALSE.
 C
       DO 10, IOCC = 1, NBSITU, 1
 C
@@ -121,28 +118,42 @@ C
          CALL GETVR8 ( MOTCLF,'PRES_B', IOCC,1,1, ZR(JPRESB+IOCC-1),N1)
 C
 C
-C ------ LE NUMERO DE GROUPE:
-C        --------------------
+C ------ LES NUMEROS DE GROUPE:
+C        ----------------------
 C
-         CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, NUMGR, N1)
-C
-         IF ( NUMGR .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
-C
-         DO 20 IG = 1 , NBGR
-            IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 22
- 20      CONTINUE
-         NBGR = NBGR + 1
-         ZI(JNBGR+NBGR-1) = NUMGR
- 22      CONTINUE
-C
-C
-C ------ LES NUMEROS DE PASSAGE:
-C        -----------------------
-C
-        CALL GETVIS ( MOTCLF, 'NUME_PASSAGE', IOCC,1,2, NUMPAS, N1 )
-        IF ( N1 .NE. 0 ) THEN
-           ZI(JPASSA+2*IOCC-2) = MIN ( NUMPAS(1), NUMPAS(2) )
-           ZI(JPASSA+2*IOCC-1) = MAX ( NUMPAS(1), NUMPAS(2) )
+        CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,0, NUMPAS, N1 )
+        IF ( N1 .EQ. -1 ) THEN
+           CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, NUMGR, N1)
+           IF ( NUMGR .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
+           DO 20 IG = 1 , NBGR
+              IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 21
+ 20        CONTINUE
+           NBGR = NBGR + 1
+           ZI(JNBGR+NBGR-1) = NUMGR
+ 21        CONTINUE
+           ZI(JSIGR+2*IOCC-2) = NUMGR
+           ZI(JSIGR+2*IOCC-1) = NUMGR
+        ELSEIF ( N1 .EQ. -2 ) THEN
+           CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,2, NUMPAS, N1 )
+           IF ( NUMPAS(1) .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
+           IF ( NUMPAS(2) .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
+           YAPASS = .TRUE.
+           ZI(JSIGR+2*IOCC-2) = MIN ( NUMPAS(1), NUMPAS(2) )
+           ZI(JSIGR+2*IOCC-1) = MAX ( NUMPAS(1), NUMPAS(2) )
+           NUMGR = NUMPAS(1)
+           DO 22 IG = 1 , NBGR
+              IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 23
+ 22        CONTINUE
+           NBGR = NBGR + 1
+           ZI(JNBGR+NBGR-1) = NUMGR
+ 23        CONTINUE
+           NUMGR = NUMPAS(2)
+           DO 24 IG = 1 , NBGR
+              IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 25
+ 24        CONTINUE
+           NBGR = NBGR + 1
+           ZI(JNBGR+NBGR-1) = NUMGR
+ 25        CONTINUE
         ENDIF
 C
 C
@@ -218,6 +229,13 @@ C
 C
       CALL ORDIS ( ZI(JNBGR) , NBGR )
 C
+      IF ( NBGR.GT.3 .AND. YAPASS ) CALL U2MESS('F','POSTRCCM_34')
+C
+C     ------------------------------------------------------------------
+C --- ON AJOUTE 1 GROUPE POUR LES SITUATIONS DE PASSAGE
+C
+      IF ( YAPASS ) NBGR = NBGR + 1
+C
 C     ------------------------------------------------------------------
 C --- DEFINITION DES GROUPES
 C
@@ -226,7 +244,12 @@ C
       CALL JECREC('&&RC3600.LES_GROUPES', 'V V I', 'NU',
      &                               'DISPERSE', 'VARIABLE', NBGR )
 C
-      DO 30 IG = 1, NBGR, 1
+      IF ( YAPASS ) THEN
+         NBGRT = NBGR - 1
+      ELSE
+         NBGRT = NBGR
+      ENDIF
+      DO 30 IG = 1, NBGRT, 1
 C
          NUMGR = ZI(JNBGR+IG-1)
 C
@@ -236,8 +259,15 @@ C ------ ON COMPTE LES SITUATIONS DU GROUPE
 C
          NBSIGR = 0
          DO 32, IOCC = 1, NBSITU, 1
-            CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
-            IF ( INSG .EQ. NUMGR )  NBSIGR = NBSIGR + 1
+            CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,0,NUMPAS,N1)
+            IF ( N1 .EQ. -1 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
+              IF ( INSG .EQ. NUMGR )  NBSIGR = NBSIGR + 1
+            ELSEIF ( N1 .EQ. -2 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,2,NUMPAS,N1)
+              IF ( NUMPAS(1) .EQ. NUMGR )  NBSIGR = NBSIGR + 1
+              IF ( NUMPAS(2) .EQ. NUMGR )  NBSIGR = NBSIGR + 1
+           ENDIF
  32      CONTINUE
 C
 C ------ ON STOCKE LE NUMERO DE L'OCCURRENCE
@@ -248,18 +278,147 @@ C
          CALL JEVEUO (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),'E',JNSG)
          II = 0
          DO 34, IOCC = 1, NBSITU, 1
-            CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
-            IF ( INSG .EQ. NUMGR ) THEN
-               II = II + 1
-               ZI(JNSG+II-1) = IOCC
-            ENDIF
-            CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME', IOCC,1,1, NSCY, N1)
-            IF ( N1 .NE. 0 ) THEN
-               ZI(JSEIGR+IG-1) = IOCC
+            CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,0,NUMPAS,N1)
+            IF ( N1 .EQ. -1 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
+              IF ( INSG .EQ. NUMGR ) THEN
+                II = II + 1
+                ZI(JNSG+II-1) = IOCC
+C
+C ------------ A-T-ON UN SEISME DANS CE GROUPE ?
+               CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME',IOCC,1,1,NSCY,N1)
+                IF ( N1 .NE. 0 ) THEN
+                  IF ( ZI(JSEIGR+IG-1) .NE. 0 ) THEN
+                     VALI(1) = NUMGR
+                     VALI(2) = IOCC
+                     VALI(3) = ZI(JSEIGR+IG-1)
+                     CALL U2MESI('F','POSTRCCM_26',3,VALI)
+                  ENDIF
+                  ZI(JSEIGR+IG-1) = IOCC
+                ENDIF
+              ENDIF
+            ELSEIF ( N1 .EQ. -2 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,2,NUMPAS,N1)
+              IF ( NUMPAS(1) .EQ. NUMGR )  THEN
+                 II = II + 1
+                 ZI(JNSG+II-1) = IOCC
+              ENDIF
+              IF ( NUMPAS(2) .EQ. NUMGR )  THEN
+                 II = II + 1
+                 ZI(JNSG+II-1) = IOCC
+              ENDIF
             ENDIF
  34      CONTINUE
 C
  30   CONTINUE
+C     ------------------------------------------------------------------
+C --- TRAITEMENT DES SITUATIONS DE PASSAGE
+C
+      IF ( YAPASS ) THEN
+C
+         CALL WKVECT ('&&RC32SI.PASSAGE_SIT', 'V V I', 3, JSPAS )
+C
+         NBSG1 = 0
+         NBSG2 = 0
+         NBSG3 = 0
+         NBP12 = 0
+         NBP23 = 0
+         NBP13 = 0
+         YASEIS = .FALSE.
+         DO 40, IOCC = 1, NBSITU, 1
+            NUMG1 = ZI(JSIGR+2*IOCC-2)
+            NUMG2 = ZI(JSIGR+2*IOCC-1)
+            IF ( NUMG1.EQ.1 .AND. NUMG2.EQ.1 ) THEN
+               NBSG1 = NBSG1 + 1
+            ELSEIF ( NUMG1.EQ.1 .AND. NUMG2.EQ.2 ) THEN
+               NBSG1 = NBSG1 + 1
+               NBP12 = NBP12 + 1
+               ZI(JSP12+NBP12-1) = IOCC
+            ELSEIF ( NUMG1.EQ.2 .AND. NUMG2.EQ.2 ) THEN
+               NBSG2 = NBSG2 + 1
+            ELSEIF ( NUMG1.EQ.2 .AND. NUMG2.EQ.3 ) THEN
+               NBSG2 = NBSG2 + 1
+               NBP23 = NBP23 + 1
+               ZI(JSP23+NBP23-1) = IOCC
+            ELSEIF ( NUMG1.EQ.3 .AND. NUMG2.EQ.3 ) THEN
+               NBSG3 = NBSG3 + 1
+            ELSEIF ( NUMG1.EQ.1 .AND. NUMG2.EQ.3 ) THEN
+               NBSG3 = NBSG3 + 1
+               NBP13 = NBP13 + 1
+               ZI(JSP13+NBP13-1) = IOCC
+            ENDIF
+            CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME',IOCC,1,1,NSCY,N1)
+            IF ( N1 .NE. 0 ) THEN
+               ZI(JSEIGR+NBGR-1) = IOCC
+               IF ( YASEIS ) CALL U2MESS('F','POSTRCCM_35')
+               YASEIS = .TRUE.
+            ENDIF
+ 40      CONTINUE
+         CALL JEECRA ('&&RC32SI.PASSAGE_1_2','LONUTI', NBP12, ' ')
+         CALL JEECRA ('&&RC32SI.PASSAGE_2_3','LONUTI', NBP23, ' ')
+         CALL JEECRA ('&&RC32SI.PASSAGE_1_3','LONUTI', NBP13, ' ')
+         ZI(JSPAS  ) = NBSG1
+         ZI(JSPAS+1) = NBSG2
+         ZI(JSPAS+2) = NBSG3
+C
+         ZI(JNUMGR+NBGR-1) = -NBGR
+         CALL JECROC (JEXNUM('&&RC3600.LES_GROUPES',NBGR))
+         CALL JEECRA (JEXNUM('&&RC3600.LES_GROUPES',NBGR),'LONMAX',
+     &                                                   NBSITU,' ')
+         CALL JEVEUO (JEXNUM('&&RC3600.LES_GROUPES',NBGR),'E',JNSG)
+C
+         II = 0
+         DO 42, IOCC = 1, NBSITU, 1
+            NUMG1 = ZI(JSIGR+2*IOCC-2)
+            NUMG2 = ZI(JSIGR+2*IOCC-1)
+            IF ( NUMG1.EQ.1 .AND. NUMG2.EQ.1 ) THEN
+               II = II + 1
+               ZI(JNSG+II-1) = IOCC
+            ENDIF
+ 42      CONTINUE
+         DO 44, IOCC = 1, NBSITU, 1
+            NUMG1 = ZI(JSIGR+2*IOCC-2)
+            NUMG2 = ZI(JSIGR+2*IOCC-1)
+            IF ( NUMG1.EQ.1 .AND. NUMG2.EQ.2 ) THEN
+               II = II + 1
+               ZI(JNSG+II-1) = IOCC
+            ENDIF
+ 44      CONTINUE
+         DO 46, IOCC = 1, NBSITU, 1
+            NUMG1 = ZI(JSIGR+2*IOCC-2)
+            NUMG2 = ZI(JSIGR+2*IOCC-1)
+            IF ( NUMG1.EQ.2 .AND. NUMG2.EQ.2 ) THEN
+               II = II + 1
+               ZI(JNSG+II-1) = IOCC
+            ENDIF
+ 46      CONTINUE
+         DO 48, IOCC = 1, NBSITU, 1
+            NUMG1 = ZI(JSIGR+2*IOCC-2)
+            NUMG2 = ZI(JSIGR+2*IOCC-1)
+            IF ( NUMG1.EQ.2 .AND. NUMG2.EQ.3 ) THEN
+               II = II + 1
+               ZI(JNSG+II-1) = IOCC
+            ENDIF
+ 48      CONTINUE
+         DO 50, IOCC = 1, NBSITU, 1
+            NUMG1 = ZI(JSIGR+2*IOCC-2)
+            NUMG2 = ZI(JSIGR+2*IOCC-1)
+            IF ( NUMG1.EQ.3 .AND. NUMG2.EQ.3 ) THEN
+               II = II + 1
+               ZI(JNSG+II-1) = IOCC
+            ENDIF
+ 50      CONTINUE
+         DO 52, IOCC = 1, NBSITU, 1
+            NUMG1 = ZI(JSIGR+2*IOCC-2)
+            NUMG2 = ZI(JSIGR+2*IOCC-1)
+            IF ( NUMG1.EQ.1 .AND. NUMG2.EQ.3 ) THEN
+               II = II + 1
+               ZI(JNSG+II-1) = IOCC
+            ENDIF
+ 52      CONTINUE
+         CALL JEECRA (JEXNUM('&&RC3600.LES_GROUPES',NBGR),'LONUTI',
+     &                                                   II,' ')
+      ENDIF
 C
       CALL JEDETR ( '&&RC36SI.NUME_GROUP' )
 C

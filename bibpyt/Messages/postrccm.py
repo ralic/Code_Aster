@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF postrccm Messages  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,7 +189,7 @@ cata_msg={
 """),
 
 34: _("""
- avec une ou des situations de passage, il faut définir au plus 2 groupes
+ avec une ou des situations de passage, il faut définir au plus 3 groupes
 """),
 
 35: _("""

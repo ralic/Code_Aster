@@ -5,7 +5,7 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     ------------------------------------------------------------------
       REAL*8       SVRESU
       CHARACTER*1  SVTYPF
       CHARACTER*2  SVPRGD
-      CHARACTER*16 SVINTE
+      CHARACTER*24 SVINTE
       CHARACTER*16 SVNOMP
       CHARACTER*19 SVNOMF
       COMMON /IFOSAV/ MXSAVE, MXPARA, SVNBPA(4) , SVPAR(10,4) ,
@@ -123,9 +123,8 @@ C
       CHPROL = NOMFON//'.PROL'
       CHVALE = NOMFON//'.VALE'
       CHPARA = NOMFON//'.PARA'
-
       CALL JEVEUT(CHPROL,'L',LPROL)
-      IF (ZK16(LPROL).EQ.'INTERPRE') THEN
+      IF (ZK24(LPROL).EQ.'INTERPRE') THEN
 C     ------------------------ CAS DES FORMULES ------------------------
          CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
          GOTO 9999
@@ -169,9 +168,9 @@ C     -- SI L'OBJET .VALE EST UN OBJET SIMPLE, ON STOCKE 'LONUTI'
       IAPARA(ISAVE) = LPARA
       LUPARA(ISAVE) = NBVN
 
-      SVTYPF(ISAVE) = ZK16(LPROL)
-      SVINTE(ISAVE) = ZK16(LPROL+1)
-      SVPRGD(ISAVE) = ZK16(LPROL+4)
+      SVTYPF(ISAVE) = ZK24(LPROL)(1:1)
+      SVINTE(ISAVE) = ZK24(LPROL+1)
+      SVPRGD(ISAVE) = ZK24(LPROL+4)(1:2)
 C
    11 CONTINUE
 C
@@ -204,7 +203,7 @@ C           --- SI SUCCES ALORS ON SAUTE LES VERIFICATIONS ----
 C
 C     --- SI ECHEC PRECEDENT ALORS ON VERIFIE ---
    19 CONTINUE
-      CALL FONBPA(NOMFON,ZK16(LPROL),CBID,MXPARA,
+      CALL FONBPA(NOMFON,ZK24(LPROL),CBID,MXPARA,
      &                                   SVNBPA(ISAVE),SVNOMP(1,ISAVE))
       IF (NBPU.LT.SVNBPA(ISAVE)) THEN
          IER = 160

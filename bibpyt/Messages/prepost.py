@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF prepost Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,10 +25,6 @@ cata_msg = {
 1 : _("""
  GROUP_NO :  %(k1)s  inconnu dans le maillage
 """),
-
-
-
-
 
 4 : _("""
  méthode  %(k1)s  illicite
@@ -64,16 +60,6 @@ cata_msg = {
  pas d'intersection trouvée
 """),
 
-
-
-
-
-
-
-
-
-
-
 27 : _("""
  volume négatif
 """),
@@ -81,13 +67,6 @@ cata_msg = {
 28 : _("""
  volume supérieur à 1.d6
 """),
-
-
-
-
-
-
-
 
 31 : _("""
  structure de données RESULTAT inconnue  %(k1)s 
@@ -110,16 +89,10 @@ cata_msg = {
  pour l'impression du CONCEPT  %(k2)s 
 """),
 
-
-
 36 : _("""
  le champ de:  %(k1)s  a des éléments ayant des sous-points.
  ces éléments ne seront pas traités.
 """),
-
-
-
-
 
 38 : _("""
  le vecteur défini sous le mot clé ACTION/AXE_Z a une norme nulle.
@@ -163,10 +136,6 @@ cata_msg = {
  nombre d'objets supérieur au maximum autorisé : 99999.
 """),
 
-
-
-
-
 59 : _("""
  le maillage GIBI est peut etre erroné :
  il est écrit : "NIVEAU RREUR N_ERR"  avec N_ERR est >0 .
@@ -175,51 +144,6 @@ cata_msg = {
 
 60 : _("""
  arret sur erreur(s)
-"""),
-
-61 : _("""
- erreur dans la récupération du NUME.PRNO
-"""),
-
-62 : _("""
- problème dans la récupération du numéro de bloc auquel appartient la ligne courante.
-"""),
-
-63 : _("""
- les seuls types de valeurs acceptés pour les RESU_ELEM sont les réels et les complexes
- le descripteur de type  %(k1)s  est inadéquat.
-"""),
-
-64 : _("""
- les seuls types de structures de données autorisés sont :
- MATR_ASSE , MATR_ELEM , VECT_ELEM , RESU_ELEM
- le type donné  %(k1)s  n'est pas reconnu .
-"""),
-
-65 : _("""
- la valeur du grain d'impression est  %(k1)s  alors que
- les seules valeurs possibles sont "NOEUD" ou "VALEUR" ou "MAILLE".
-"""),
-
-66 : _("""
- la valeur du grain d'impression est  %(k1)s  alors que
- les seules valeurs possibles sont "NOEUD" et "VALEUR".
-"""),
-
-67 : _("""
- probleme dans le descripteur de la matrice :
- l'indicateur de symétrie ne correspond ni à une matrice symétrique,
- ni à une matrice non-symétrique . 
-"""),
-
-68 : _("""
- problème dans le descripteur de la matrice :
- l'indicateur type de valeur de la matrice ne correspond ni à une matrice réelle,
- ni à une matrice complexe . 
-"""),
-
-69 : _("""
- problème à l'ouverture du fichier
 """),
 
 74 : _("""
@@ -239,9 +163,6 @@ cata_msg = {
 77 : _("""
   incompatibilité entre les GREL
 """),
-
-
-
 
 79 : _("""
   le nombre de couches est supérieur à 1 
@@ -273,12 +194,6 @@ cata_msg = {
   correspondant à la grandeur : %(k2)s
   il faut imprimer des champs aux noeuds à ce format.
 """),
-
-
-
-
-
-
 
 90 : _("""
  on ne sait pas imprimer le champ  %(k1)s  au format  %(k2)s 

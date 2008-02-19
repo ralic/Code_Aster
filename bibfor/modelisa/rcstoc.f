@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C
       CHARACTER*24       PROL1,PROL2,VALKK(2)
       CHARACTER*16       TYPECO
       COMPLEX*16         VALC8
-      INTEGER            NBPAR,JTYPO,JNOMO,JPARA,IBK,NBMAX,VALI
+      INTEGER            NBPAR,JTYPO,JNOMO,JPARA,IBK,NBMAX,VALI,LXLGUT
       INTEGER            I,J,K,II,JFCT,JPRO,JRPV,JVALE,NBCOUP,N,NF
       INTEGER            IRET,NBFCT,NBPTS,JPROL,NBPTM,IEXIST,LPRO1,LPRO2
       LOGICAL            EXIST,GETEXM
@@ -78,7 +78,7 @@ C
       CALL JEMARQ()
       CALL WKVECT ( '&&RCSTOC.TYPOBJ', 'V V K8' , NBOBJ, JTYPO )
       CALL WKVECT ( '&&RCSTOC.NOMOBJ', 'V V K16', NBOBJ, JNOMO )
-      CALL WKVECT ( '&&RCSTOC.PARAME', 'V V K8' , NBOBJ, JPARA )
+      CALL WKVECT ( '&&RCSTOC.PARAME', 'V V K8' , 12, JPARA )
       CALL GETMJM ( NOMRC,1,NBOBJ,ZK16(JNOMO),ZK8(JTYPO),N)
 
 C     ON VERIFIE QUE 2 MOTS CLES DIFFERENTS N'ONT PAS LES MEMES
@@ -111,9 +111,8 @@ C
       EXIST = GETEXM(NOMRC,'VERI_P')
       NBPAR = 0
       IF (EXIST) THEN
-        CALL GETVTX(NOMRC,'VERI_P',1,1,0,K8BID,N)
-        N = -N
-        CALL GETVTX(NOMRC,'VERI_P',1,1,N,ZK8(JPARA+NBPAR),N)
+        CALL GETVTX(NOMRC,'VERI_P',1,1,10,ZK8(JPARA+NBPAR),N)
+        CALL ASSERT ( N .GE. 0 )
         NBPAR = NBPAR + N
       ENDIF
 C
@@ -219,7 +218,7 @@ C
                IF ( TYPECO(1:8) .EQ. 'FONCTION' ) THEN
                   CH19 = VALCH
                   CALL JEVEUO ( CH19//'.PROL', 'L', JPRO )
-                  CALL FONBPA ( CH19,ZK16(JPRO),TYPFON,10,NF,NOMPF)
+                  CALL FONBPA ( CH19,ZK24(JPRO),TYPFON,10,NF,NOMPF)
                   DO 130 J = 1 , NF
                     DO 140 K = 1 , NBPAR
                      IF ( NOMPF(J) .EQ. ZK8(JPARA+K-1) ) GOTO 130
@@ -272,7 +271,7 @@ C
  151    CONTINUE
 
         CALL JEVEUO(NOMFCT//'.PROL','L',JFCT)
-        IF (ZK16(JFCT)(1:1) .EQ. 'F' ) THEN
+        IF (ZK24(JFCT)(1:1) .EQ. 'F' ) THEN
          CALL JELIRA(NOMFCT//'.VALE','LONMAX',NBPTM,K8BID)
         IF ( NOMRC(1:8)  .EQ. 'TRACTION') THEN
           IF ( NBPTM .LT. 4 ) THEN
@@ -307,7 +306,7 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
          E1 = ZR(JRPV+NBCOUP) / ZR(JRPV)
          PRECMA = 1.D-10
 
-        DO 200 I = 1 , NBCOUP-1
+         DO 200 I = 1 , NBCOUP-1
           EI = ( ZR(JRPV+NBCOUP+I) - ZR(JRPV+NBCOUP+I-1) ) /
      &         ( ZR(JRPV+I)        - ZR(JRPV+I-1)        )
           IF ( EI .GT. E1 ) THEN
@@ -330,7 +329,7 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
           CALL U2MESS('F','MODELISA6_73')
          ENDIF
 
-        ELSE IF ( ZK16(JFCT)(1:1) .EQ. 'N' ) THEN
+        ELSE IF ( ZK24(JFCT)(1:1) .EQ. 'N' ) THEN
          CALL JELIRA(NOMFCT//'.VALE','NUTIOC',NBFCT,K8BID)
          NBPTM = 0
          DO 160 K=1,NBFCT
@@ -390,11 +389,11 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
  149   CONTINUE
 
        RDEP = NOMMAT//'.&&RDEP'
-       CALL WKVECT (RDEP//'.PROL','G V K16',6,JPROL)
-       ZK16(JPROL  ) = 'FONCTION'
-       ZK16(JPROL+1) = 'LIN LIN '
-       ZK16(JPROL+2) = 'EPSI    '
-       ZK16(JPROL+3) = ZK16(JFCT+3)
+       CALL WKVECT (RDEP//'.PROL','G V K24',6,JPROL)
+       ZK24(JPROL  ) = 'FONCTION'
+       ZK24(JPROL+1) = 'LIN LIN '
+       ZK24(JPROL+2) = 'EPSI    '
+       ZK24(JPROL+3) = ZK24(JFCT+3)
        CALL WKVECT (RDEP//'.VALE','G V R',2*NBMAX,JVALE)
       ENDIF
 C
@@ -427,9 +426,10 @@ C
         PROL1 = NOMFCT//'.PROL'
         CALL JEVEUO(PROL1,'L',LPRO1)
         PROL2 = NOMINT//'.PROL'
+        CALL ASSERT(LXLGUT(NOMINT).LE.24)
         CALL JEVEUO(PROL2,'E',LPRO2)
-        IF (ZK16(LPRO1+4)(1:1).EQ.'C') ZK16(LPRO2+4)(1:1)='L'
-        IF (ZK16(LPRO1+4)(2:2).EQ.'C') ZK16(LPRO2+4)(2:2)='L'
+        IF (ZK24(LPRO1+4)(1:1).EQ.'C') ZK24(LPRO2+4)(1:1)='L'
+        IF (ZK24(LPRO1+4)(2:2).EQ.'C') ZK24(LPRO2+4)(2:2)='L'
 C
         DO 670 I=NBK,1,-1
           VALK(NBR+NBC+NBK+I+1) = VALK(NBR+NBC+NBK+I)

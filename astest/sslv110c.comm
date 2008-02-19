@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -224,77 +224,77 @@ DGF2=CALC_G(
 #----------------------------------------------------------------------
 
 
-TEST_TABLE(       TABLE=G0,
-                       NOM_PARA='G',
-                      REFERENCE='ANALYTIQUE',
-                           VALE=1.44E-3,
-                      PRECISION=1.E-2   )
+TEST_TABLE(TABLE=G0,
+           NOM_PARA='G',
+           REFERENCE='ANALYTIQUE',
+           VALE=1.44E-3,
+           PRECISION=1.E-2   )
 
-TEST_TABLE(       TABLE=G1,
-                       NOM_PARA='G',
-                      REFERENCE='ANALYTIQUE',
-                           VALE=1.44E-3,
-                      PRECISION=3.E-2   )
+TEST_TABLE(TABLE=G1,
+           NOM_PARA='G',
+           REFERENCE='ANALYTIQUE',
+           VALE=1.44E-3,
+           PRECISION=3.E-2   )
 
-TEST_TABLE(       TABLE=G2,
-                       NOM_PARA='G',
-                      REFERENCE='ANALYTIQUE',
-                           VALE=1.44E-3,
-                      PRECISION=1.E-2   )
+TEST_TABLE(TABLE=G2,
+           NOM_PARA='G',
+           REFERENCE='ANALYTIQUE',
+           VALE=1.44E-3,
+           PRECISION=1.E-2   )
 
 #----------------------------------------------------------------------
 #              TEST DE DG/DE ET DG/DF SUR LA 1-ERE COURONNE
 #----------------------------------------------------------------------
 
-TEST_TABLE(       TABLE=DGE,
-              SENSIBILITE = (YOUNG,),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='DG/DE',
-                           VALE=-6.857E-09,
-                      PRECISION=5.E-2   )
+TEST_TABLE(TABLE=DGE,
+           SENSIBILITE = (YOUNG,),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DG/DE',
+           VALE=-6.857E-09,
+           PRECISION=5.E-2   )
 
-TEST_TABLE(       TABLE=DGF,
-              SENSIBILITE = (FZ,),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='DG/DF',
-                           VALE=3.599E+00,
-                      PRECISION=5.E-2   )
+TEST_TABLE(TABLE=DGF,
+           SENSIBILITE = (FZ,),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DG/DF',
+           VALE=3.599E+00,
+           PRECISION=5.E-2   )
 
 #----------------------------------------------------------------------
 #              TEST DE DG/DE ET DG/DF SUR LA 2-EME COURONNE
 #----------------------------------------------------------------------
 
-TEST_TABLE(       TABLE=DGE1,
-              SENSIBILITE = (YOUNG,),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='DG/DE',
-                           VALE=-6.857E-09,
-                      PRECISION=5.E-2   )
+TEST_TABLE(TABLE=DGE1,
+           SENSIBILITE = (YOUNG,),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DG/DE',
+           VALE=-6.857E-09,
+           PRECISION=5.E-2   )
 
-TEST_TABLE(       TABLE=DGF1,
-              SENSIBILITE = (FZ,),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='DG/DF',
-                           VALE=3.599E+00,
-                      PRECISION=5.E-2   )
+TEST_TABLE(TABLE=DGF1,
+           SENSIBILITE = (FZ,),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DG/DF',
+           VALE=3.599E+00,
+           PRECISION=5.E-2   )
 
 #----------------------------------------------------------------------
 #              TEST DE DG/DE ET DG/DF SUR LA 3-EME COURONNE
 #----------------------------------------------------------------------
 
-TEST_TABLE(       TABLE=DGE2,
-              SENSIBILITE = (YOUNG,),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='DG/DE',
-                           VALE=-6.857E-09,
-                      PRECISION=5.E-2   )
+TEST_TABLE(TABLE=DGE2,
+           SENSIBILITE = (YOUNG,),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DG/DE',
+           VALE=-6.857E-09,
+           PRECISION=5.E-2   )
 
-TEST_TABLE(       TABLE=DGF2,
-              SENSIBILITE = (FZ,),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='DG/DF',
-                           VALE=3.599E+00,
-                      PRECISION=5.E-2   )
+TEST_TABLE(TABLE=DGF2,
+           SENSIBILITE = (FZ,),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DG/DF',
+           VALE=3.599E+00,
+           PRECISION=5.E-2   )
 
 #----------------------------------------------------------------------
 #              TEST DE G(A) SUR LES 3 COURONNES

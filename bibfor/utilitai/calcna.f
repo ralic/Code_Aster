@@ -3,10 +3,10 @@
       IMPLICIT   NONE
       INTEGER             NBVALP, NBVALF
       REAL*8              VALEP(*), VALEF(*)
-      CHARACTER*16        NOPARP, NOPARF
       CHARACTER*19        NOMFIN, NOMFON
+      CHARACTER*24        NOPARP, NOPARF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,6 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       LONT, I, IVAL, LVAL, LFON, LPROL, LPARA, IER
+      INTEGER       LXLGUT
       REAL*8        VALE(2)
       CHARACTER*16  NOPARA(2)
       CHARACTER*32  JEXNUM
@@ -78,17 +79,19 @@ C
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 C
-       CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 6+2*NBVALP, LPROL )
+       CALL ASSERT(LXLGUT(NOMFON).LE.24)
+       CALL WKVECT ( NOMFON//'.PROL', 'G V K24', 7+2*NBVALP, LPROL )
 
-       ZK16(LPROL)   = 'NAPPE           '
-       ZK16(LPROL+1) = 'LIN LIN         '
-       ZK16(LPROL+2) = NOPARP
-       ZK16(LPROL+3) = 'TOUTRESU        '
-       ZK16(LPROL+4) = 'EE              '
-       ZK16(LPROL+5) = NOPARF
+       ZK24(LPROL)   = 'NAPPE           '
+       ZK24(LPROL+1) = 'LIN LIN         '
+       ZK24(LPROL+2) = NOPARP
+       ZK24(LPROL+3) = 'TOUTRESU        '
+       ZK24(LPROL+4) = 'EE              '
+       ZK24(LPROL+5) = NOMFON
+       ZK24(LPROL+6) = NOPARF
        DO 30 IVAL = 1, NBVALP
-          ZK16(LPROL+5+(2*IVAL-1)) = 'LIN LIN         '
-          ZK16(LPROL+5+(2*IVAL  )) = 'EE              '
+          ZK24(LPROL+6+(2*IVAL-1)) = 'LIN LIN         '
+          ZK24(LPROL+6+(2*IVAL  )) = 'EE              '
  30    CONTINUE
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---

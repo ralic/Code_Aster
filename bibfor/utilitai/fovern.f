@@ -4,7 +4,7 @@
       CHARACTER*(*)     VECNOM(NBFONC),    VECPRO(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,11 +61,11 @@ C     ------------------------------------------------------------------
       DO 1 I=1,NBFONC
          CHNOM(1:19) = VECNOM(I)
          CALL JEVEUO(CHNOM,'L',JPROF)
-         CALL FOPRO1(ZK16(JPROF),0,PROLGD,INTERP)
-         CALL FONBPA(CHNOM(1:19),ZK16(JPROF),TYPFON,10,NBPF,NOMPF)
+         CALL FOPRO1(ZK24(JPROF),0,PROLGD,INTERP)
+         CALL FONBPA(CHNOM(1:19),ZK24(JPROF),TYPFON,10,NBPF,NOMPF)
          CALL JELIBE(CHNOM)
          IF (NOMPF(1).NE.'TOUTPARA') THEN
-            VECPRO(6)=NOMPF(1)
+            VECPRO(7)=NOMPF(1)
             GO TO 2
          END IF
     1 CONTINUE
@@ -76,18 +76,18 @@ C     ------------------------------------------------------------------
       DO 3 I=1,NBFONC
          CHNOM(1:19) = VECNOM(I)
          CALL JEVEUO(CHNOM,'L',JPROF)
-         CALL FOPRO1(ZK16(JPROF),0,PROLGD,INTERP)
-         CALL FONBPA(CHNOM(1:19),ZK16(JPROF),TYPFON,10,NBPF,NOMPF)
+         CALL FOPRO1(ZK24(JPROF),0,PROLGD,INTERP)
+         CALL FONBPA(CHNOM(1:19),ZK24(JPROF),TYPFON,10,NBPF,NOMPF)
          CALL JELIBE(CHNOM)
-         IF (NOMPF(1).NE.VECPRO(6).AND.NOMPF(1).NE.'TOUTPARA') THEN
+         IF (NOMPF(1).NE.VECPRO(7).AND.NOMPF(1).NE.'TOUTPARA') THEN
             VALK (1) = VECNOM(I)
             VALK (2) = NOMPF(1)
-            VALK (3) = VECPRO(6)
+            VALK (3) = VECPRO(7)
             CALL U2MESG('E','UTILITAI8_2',3,VALK,0,0,0,0.D0)
             IER=IER+1
          END IF
-         VECPRO(6+2*I-1) = INTERP
-         VECPRO(6+2*I  ) = PROLGD
+         VECPRO(7+2*I-1) = INTERP
+         VECPRO(7+2*I  ) = PROLGD
     3 CONTINUE
       CALL JEDEMA()
       END

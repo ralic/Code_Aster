@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -181,8 +181,8 @@ C
      +                 NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
       ENDIF
 C
-C --- ON NE TRAITE QUE DU 1_2         
-      CALL RC32F6 ( '1_2', NBP12, NBP23, NBP13, NBSIGR, NBSG1,
+C --- ON VERIFIE SI LA COMBINAISON A ANNULEE DES CHEMINS DE PASSAGE
+      CALL RC32F6 ( NBP12, NBP23, NBP13, NBSIGR, NBSG1,
      +              NBSG2, NBSG3, SIGR, NOCC, SALTIJ )
 C
       IF ( NIV .GE. 2 ) THEN

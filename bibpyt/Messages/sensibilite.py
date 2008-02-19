@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF sensibilite Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,10 +79,6 @@ cata_msg = {
  On ne peut pas dériver avec une charge complexe en entrée de dyna_line_harm.
 """),
 
-14 : _("""
- La sensibilité en mécanique ne fonctionne pas encore avec un chargement thermique
-"""),
-
 15 : _("""
  Le comportement %(k1)s n'est pas autorisé en sensibilité
 """),
@@ -156,28 +152,6 @@ cata_msg = {
  Le calcul de derivée n'a pas été étendu à la plasticité.
 """),
 
-57 : _("""
- Valeur incorrecte pour le nom du concept ou du paramètre sensible.
- Ils doivent etre de type chaines de caractères de moins de 8 caractères.
-                 Nom du concept : '%(k1)s'
-      Nom du paramètre sensible : '%(k2)s'
-"""),
-
-58 : _("""
-                 Nom du concept : '%(k1)s'
-      Nom du paramètre sensible : '%(k2)s'
-                    
-           Nom composé (dérivé) : '%(k3)s'
-
-"""),
-
-59 : _("""
-            Liste des mots-clés : %(k1)s
-              Liste des valeurs : %(k2)s
-   Liste des mots-clés facteurs : %(k3)s
-
-"""),
-
 71 : _("""
  Dérivation par rapport au paramètre sensible : %(k1)s 
 """),
@@ -192,25 +166,6 @@ cata_msg = {
 
 81 : _("""
  la structure nosimp est introuvable dans la memorisation inpsco
-"""),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-90 : _("""
- La dérivée de %(k1)s par rapport à %(k2)s est déja nommée.
 """),
 
 91 : _("""
@@ -234,17 +189,5 @@ cata_msg = {
  Les sous-types de sensibilité pour l'influence de %(k1)s sont %(k2)s et %(k3)s
  C'est incohérent.
 """),
-
-97 : _("""
-Mémorisation des données de la sensibilité :
-   
-   Les listes des mots-clés, des valeurs et mots-clés facteurs doivent etre de meme longueur.
-"""),
-
-
-
-
-
-
 
 }

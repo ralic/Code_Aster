@@ -1,6 +1,6 @@
-      SUBROUTINE JXVERI ( CUNIT , CMESS )
+      SUBROUTINE JXVERI (CUNIT , CMESS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,8 @@ C ----------------------------------------------------------------------
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
+      INTEGER          NRHCOD    , NREMAX    , NREUTI
+      COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
 C ----------------------------------------------------------------------
       CHARACTER*32     NOM32
       INTEGER          ICL
@@ -53,18 +55,27 @@ C DEB ------------------------------------------------------------------
       NOM32  = '??'
       DO 100 IZ=1,2
         ID = IDINIT(IZ)
+        CALL ASSERT( (ID.GE.0) .AND. (ID.LE.LISZON) )
         IF (ID .EQ. 0) GOTO 100
  10     CONTINUE
         IS = ISZON ( JISZON + ID )
         IF ( IS .NE. 0 ) THEN
+          CALL ASSERT( (IS.GT.ID+8) .AND. (IS.LE.LISZON) )
           ISD  = ISZON(JISZON + ID + 3)
-          IDOS = ISZON(JISZON + ID + 2)
-          ISF  = ISZON(JISZON + IS - 4)
+          CALL ASSERT( ISD.EQ.ISTAT(1) .OR. ISD.EQ.ISTAT(2) )
           ICL  = ISZON(JISZON + IS - 2)
+          CALL ASSERT( ICL.GE.0 .AND. ICL.LE.N )
+          IDOS = ISZON(JISZON + ID + 2)
+          CALL ASSERT( IDOS.GE.0 )
+          ISF  = ISZON(JISZON + IS - 4)
+          CALL ASSERT( ISF.EQ.ISTAT(3) .OR. ISF.EQ.ISTAT(4)
+     &                                 .OR. ISF.EQ.ISTAT(1) )
           IDCO = ISZON(JISZON + IS - 3)
+          CALL ASSERT( IDCO.GE.0 .AND. IDCO.LE. NREMAX(ICL))
           NOM32 = ' '
           IF ( ISF .NE. ISTAT(1) .AND. IDOS .NE. 0 ) THEN
              IF ( IDCO .EQ. 0 ) THEN
+                CALL ASSERT( IDOS.GT.0 .AND. IDOS.LE. NREMAX(ICL))
                 NOM32 = RNOM(JRNOM(ICL)+IDOS)
              ELSE
                 NOM32(1:24) = RNOM(JRNOM(ICL)+IDCO)
@@ -84,7 +95,7 @@ C DEB ------------------------------------------------------------------
           GO TO 10
         ELSE
           ISD = ISZON(JISZON + ID + 3)
-          IF (ISD.NE.ISSTAT) THEN
+          IF (ISD.NE.ISSTAT) THEN   
             CALL U2MESK('F','JEVEUX_17',1,NOM32)
           END IF
           IF ( IZ .EQ. 1 ) THEN

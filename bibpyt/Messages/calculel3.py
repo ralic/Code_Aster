@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF calculel3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,10 +128,6 @@ cata_msg = {
  type de champ inconnu
 """),
 
-29 : _("""
- erreur jacot 1
-"""),
-
 30 : _("""
  il faut un modèle ou des charges.
 """),
@@ -194,22 +190,6 @@ cata_msg = {
  données incorrectes.
 """),
 
-46 : _("""
- CALC_K_G : champ initial impossible
-"""),
-
-47 : _("""
- le fond de fissure doit contenir un noeud et un seul
-"""),
-
-48 : _("""
- il faut définir la normale au fond de fissure
-"""),
-
-49 : _("""
- on ne trouve pas le .nomo pour: %(k1)s 
-"""),
-
 50 : _("""
   il faut un modèle
 """),
@@ -228,10 +208,6 @@ cata_msg = {
 
 54 : _("""
  longueurs des modes locaux imcompatibles entre eux.
-"""),
-
-55 : _("""
- la longueur:long est trop petite.
 """),
 
 56 : _("""
@@ -278,10 +254,6 @@ cata_msg = {
   le concept evol_noli :  %(k1)s  ne contient aucun champ de déformations anélastiques.
 """),
 
-67 : _("""
- pour calculer l'option  %(k1)s  les parametres suivants sont obligatoires: "pgeomer" et "pcontrr".
-"""),
-
 71 : _("""
  il faut 1 chargement de rotation et un seul. 
 """),
@@ -296,22 +268,6 @@ cata_msg = {
 
 74 : _("""
  type scalaire interdit : %(k1)s 
-"""),
-
-75 : _("""
-  on n'accepte un instant arbitraire que si le concept temperature n'a qu'1 champ.
-"""),
-
-76 : _("""
-  le concept evol_ther :  %(k1)s  ne contient aucun champ de temperature.
-"""),
-
-77 : _("""
- le champ de temperature utilise est independant du temps.
-"""),
-
-78 : _("""
- temperature de reference a probleme.
 """),
 
 79 : _("""
@@ -332,14 +288,6 @@ cata_msg = {
 
 85 : _("""
  il y a plusieurs parametres  %(k1)s  associes a la grandeur: %(k2)s  dans l option: %(k3)s 
-"""),
-
-86 : _("""
-  %(k1)s  non prévu
-"""),
-
-87 : _("""
- ELREFE inconnu  %(k1)s 
 """),
 
 89 : _("""
@@ -375,18 +323,6 @@ cata_msg = {
   pour prendre en compte les termes d'inertie,
   il est préférable d'utiliser la commande "CALC_ELEM".
   le mot cle "ACCE" n'est pas traité et les résultats risquent d'être faux.
-"""),
-
-97 : _("""
- le champ de nom symbolique THETA existe deja dans la SD RESULTAT  %(k1)s 
-"""),
-
-98 : _("""
- le champ de nom symbolique GRAD_NOEU_THETA existe deja dans la SD RESULTAT  %(k1)s 
-"""),
-
-99 : _("""
- il faut donner 3 composantes de la direction
 """),
 
 }

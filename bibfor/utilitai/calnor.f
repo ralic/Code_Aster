@@ -1,10 +1,9 @@
-      SUBROUTINE CALNOR ( DIM, INO, NNO, NPG, NBS, NBNA, NOE,
-     &                    IGEOM, IDFDE,
-     &                    IFA, ITYP, ORIEN, HF,
-     &                    JAC, NX, NY, NZ, TX, TY )
+      SUBROUTINE CALNOR ( DIM  , INO  , NNO  , NPG , NBS  , NBNA, NOE,
+     &                    IGEOM, IDFDE, IFA  , ITYP, ORIEN,
+     &                    HF   , JAC  , NX   , NY  , NZ   , TX  , TY )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/04/2007   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,10 +45,10 @@ C IN   ITYPE  : TYPE DE LA FACE (POUR DU 3D)
 C IN   ORIEN  : ORIENTATION DE LA MAILLE PAR RAPPORT A ELREF
 C                1 SI IDEM ELEMENT DE REFERENCE
 C               -1 SI DIFFERENT
-C IN   HF     : LONGUEUR DE L'ARETE
 C
 C      SORTIE :
 C-------------
+C OUT  HF     : LONGUEUR DE L'ARETE
 C OUT  JAC    : VECTEUR DES JACOBIENS DE LA TRANSFORMATION AUX NOEUDS
 C OUT  NX     : VECTEUR DES ABSCISSES DES NORMALES
 C                   * EN 2D : AUX NOEUDS
@@ -116,7 +115,7 @@ C       EST CALCULE DE MANIERE IMPLICITE.
 C       EN 3D LE PRODUIT VECTORIEL EST CALCULE EXPLICITEMENT ET LA
 C       DERIVEE DES FONCTIONS DE FORME EST RECUPERE DANS LA ROUTINE
 C       CHAPEAU.
-C       LES ELEMENTS DE BARSOUM SUBISSENT UN TRAITÉMENT CAR LE JACOBIEN
+C       LES ELEMENTS DE BARSOUM SUBISSENT UN TRAITEMENT CAR LE JACOBIEN
 C       EST NUL EN POINTE DE FISSURE.
 C
 C              X1          X3          X2
@@ -135,99 +134,109 @@ C
 C
 C 1.1. ==> PREALABLE
 C
-      IF ( LTEATT(' ','AXIS','OUI') ) THEN
-        LAXI = .TRUE.
-      ELSE
-        LAXI = .FALSE.
-      ENDIF
+C --- CALCUL DE LA LONGUEUR DE L'ARETE
+C
+        IF (INO.EQ.NBS) THEN
+          JNO = 1
+        ELSE
+          JNO = INO+1
+        ENDIF
+        HF=SQRT((ZR(IGEOM-1+2*(INO-1)+1)-ZR(IGEOM-1+2*(JNO-1)+1))**2
+     &         +(ZR(IGEOM-1+2*(INO-1)+2)-ZR(IGEOM-1+2*(JNO-1)+2))**2)
+C
+        IF ( LTEATT(' ','AXIS','OUI') ) THEN
+          LAXI = .TRUE.
+        ELSE
+          LAXI = .FALSE.
+        ENDIF
 C
 C 1.2. ==> COORDONNEES DES 3 NOEUDS
 C
-      IF ( INO.EQ.NBS ) THEN
-        JNO=1
-      ELSE
-        JNO=INO+1
-      ENDIF
+        IF ( INO.EQ.NBS ) THEN
+          JNO=1
+        ELSE
+          JNO=INO+1
+        ENDIF
 C
-      X1=ZR(IGEOM-1+2*(INO-1)+1)
-      Y1=ZR(IGEOM-1+2*(INO-1)+2)
-      X2=ZR(IGEOM-1+2*(JNO-1)+1)
-      Y2=ZR(IGEOM-1+2*(JNO-1)+2)
+        X1=ZR(IGEOM-1+2*(INO-1)+1)
+        Y1=ZR(IGEOM-1+2*(INO-1)+2)
+        X2=ZR(IGEOM-1+2*(JNO-1)+1)
+        Y2=ZR(IGEOM-1+2*(JNO-1)+2)
 C
-      IF ( NBNA.EQ.3 ) THEN
-        MNO = NBS + INO
-        X3 = ZR(IGEOM+2*MNO-2)
-        Y3 = ZR(IGEOM+2*MNO-1)
+        IF ( NBNA.EQ.3 ) THEN
+          MNO = NBS + INO
+          X3 = ZR(IGEOM+2*MNO-2)
+          Y3 = ZR(IGEOM+2*MNO-1)
 C
 C
 C 1.2.1. ==> TRAITEMENT ELEMENTS DE BARSOUM
 C
 C ----- LA NORMALE EST CALCULEE EN UTILISANT LE POINT MILIEU
-        NORME=SQRT((X3-X1)**2+(Y3-Y1)**2)/SQRT((X2-X1)**2+(Y2-Y1)**2)
+          NORME=SQRT((X3-X1)**2+(Y3-Y1)**2)/SQRT((X2-X1)**2+(Y2-Y1)**2)
 C
-        IF ( (NORME.LT.0.4D0) .OR. (NORME.GT.0.6D0) ) THEN
+          IF ( (NORME.LT.0.4D0) .OR. (NORME.GT.0.6D0) ) THEN
 C
-          X3 = (X1+X2)*0.5D0
-          Y3 = (Y1+Y2)*0.5D0
+            X3 = (X1+X2)*0.5D0
+            Y3 = (Y1+Y2)*0.5D0
 C
-        ENDIF
+          ENDIF
 C
 C 1.2.2. ==> TRAITEMENT AUTRES ELEMENTS
 C
-      ELSE
-        X3 = (X1+X2)*0.5D0
-        Y3 = (Y1+Y2)*0.5D0
-      ENDIF
+        ELSE
+          X3 = (X1+X2)*0.5D0
+          Y3 = (Y1+Y2)*0.5D0
+        ENDIF
 C
 C 1.3. ==> CALCUL NORMALE SORTANTE, TANGENTE ET JACOBIEN PREMIER POINT
 C
-      X(1) = -( (Y2-Y1)*0.5D0 - (Y1+Y2-2.D0*Y3) )
-      Y(1) =    (X2-X1)*0.5D0 - (X1+X2-2.D0*X3)
+        X(1) = -( (Y2-Y1)*0.5D0 - (Y1+Y2-2.D0*Y3) )
+        Y(1) =    (X2-X1)*0.5D0 - (X1+X2-2.D0*X3)
 C
-      JAC(1) = SQRT(X(1)**2+Y(1)**2)
+        JAC(1) = SQRT(X(1)**2+Y(1)**2)
 C
-      IF ( LAXI ) THEN
-        JAC(1)=JAC(1)*X1
-      ENDIF
+        IF ( LAXI ) THEN
+          JAC(1)=JAC(1)*X1
+        ENDIF
 C
-      NX(1) = -(X(1)*ORIEN)/(SQRT(X(1)**2+Y(1)**2))
-      NY(1) = -(Y(1)*ORIEN)/(SQRT(X(1)**2+Y(1)**2))
+        NX(1) = -(X(1)*ORIEN)/(SQRT(X(1)**2+Y(1)**2))
+        NY(1) = -(Y(1)*ORIEN)/(SQRT(X(1)**2+Y(1)**2))
 C
 C 1.4. ==> CALCUL NORMALE SORTANTE, TANGENTE ET JACOBIEN DEUXIEME POINT
 C
-      X(2) = -( (Y2-Y1)*0.5D0 + (Y1+Y2-2.D0*Y3) )
-      Y(2) =    (X2-X1)*0.5D0 + (X1+X2-2.D0*X3)
+        X(2) = -( (Y2-Y1)*0.5D0 + (Y1+Y2-2.D0*Y3) )
+        Y(2) =    (X2-X1)*0.5D0 + (X1+X2-2.D0*X3)
 C
-      JAC(2) = SQRT(X(2)**2+Y(2)**2)
+        JAC(2) = SQRT(X(2)**2+Y(2)**2)
 C
-      IF ( LAXI ) THEN
-        JAC(2) = JAC(2)*X2
-      ENDIF
+        IF ( LAXI ) THEN
+          JAC(2) = JAC(2)*X2
+        ENDIF
 C
-      NX(2) = -(X(2)*ORIEN)/(SQRT(X(2)**2+Y(2)**2))
-      NY(2) = -(Y(2)*ORIEN)/(SQRT(X(2)**2+Y(2)**2))
+        NX(2) = -(X(2)*ORIEN)/(SQRT(X(2)**2+Y(2)**2))
+        NY(2) = -(Y(2)*ORIEN)/(SQRT(X(2)**2+Y(2)**2))
 C
 C 1.5. ==> CALCUL NORMALE SORTANTE, TANGENTE ET JACOBIEN TROISIEME POINT
 C
-      IF (NBNA.EQ.3) THEN
+        IF (NBNA.EQ.3) THEN
 C
-        JAC(3) = HF*0.5D0
+          JAC(3) = HF*0.5D0
 C
-        IF ( LAXI ) THEN
-          JAC(3) = JAC(3)*(X2+X1)*0.5D0
+          IF ( LAXI ) THEN
+            JAC(3) = JAC(3)*(X2+X1)*0.5D0
+          ENDIF
+C
+          NX(3) = -ORIEN*(Y1-Y2)/HF
+          NY(3) = -ORIEN*(X2-X1)/HF
+C
         ENDIF
-C
-        NX(3) = -ORIEN*(Y1-Y2)/HF
-        NY(3) = -ORIEN*(X2-X1)/HF
-C
-      ENDIF
 C
 C 1.6. ==> CALCUL DES TANGENTES
 C
-      DO 16 , I = 1 , NBNA
-        TX(I) =  NY(I)
-        TY(I) = -NX(I)
-   16 CONTINUE
+        DO 16 , I = 1 , NBNA
+          TX(I) =  NY(I)
+          TY(I) = -NX(I)
+   16   CONTINUE
 C
 C====
 C 2. -- CAS DU 3D ------------------------------------------------------

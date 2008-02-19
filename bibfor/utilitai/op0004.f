@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     ----------- FIN COMMUNS NORMALISES JEVEUX ------------------------
       CHARACTER*16 NOMCMD,TYPFON,VERIF
       CHARACTER*19 NOMFON
       LOGICAL      DEFONC
-      INTEGER      IRET,IRET2
+      INTEGER      IRET,IRET2, LXLGUT
       INTEGER VALI(2)
 C     ------------------------------------------------------------------
 C
@@ -119,16 +119,18 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
-      NPROL = 6 + 2*NBFONC
-      CALL WKVECT(NOMFON//'.PROL','G V K16',NPROL,LPRO)
-      ZK16(LPRO  ) = 'NAPPE   '
+      NPROL = 7 + 2*NBFONC
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT(NOMFON//'.PROL','G V K24',NPROL,LPRO)
+      ZK24(LPRO  ) = 'NAPPE   '
       CALL GETVTX(' ','INTERPOL'   ,0,1,2,INTERP,L1)
       IF ( L1 .EQ. 1 ) INTERP(2) = INTERP(1)
-      ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-      CALL GETVTX(' ','NOM_PARA'   ,0,1,1,ZK16(LPRO+2),L)
-      CALL GETVTX(' ','NOM_RESU'   ,0,1,1,ZK16(LPRO+3),L)
-      CALL GETVTX(' ','PROL_GAUCHE',0,1,1,ZK16(LPRO+4)(1:1),L)
-      CALL GETVTX(' ','PROL_DROITE',0,1,1,ZK16(LPRO+4)(2:2),L)
+      ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+      CALL GETVTX(' ','NOM_PARA'   ,0,1,1,ZK24(LPRO+2),L)
+      CALL GETVTX(' ','NOM_RESU'   ,0,1,1,ZK24(LPRO+3),L)
+      CALL GETVTX(' ','PROL_GAUCHE',0,1,1,ZK24(LPRO+4)(1:1),L)
+      CALL GETVTX(' ','PROL_DROITE',0,1,1,ZK24(LPRO+4)(2:2),L)
+      ZK24(LPRO+5) = NOMFON
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
       CALL WKVECT(NOMFON//'.PARA','G V R',NBPARA,LPAR)
@@ -136,7 +138,7 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PARA ---
 C
       CALL WKVECT('&&OP0004.NOM.FONCTIONS','V V K24',NBFONC,LNOMF)
       IF ( DEFONC ) THEN
-         CALL GETVTX(' ','NOM_PARA_FONC',0,1,1,ZK16(LPRO+5),L)
+         CALL GETVTX(' ','NOM_PARA_FONC',0,1,1,ZK24(LPRO+6),L)
          MXVA = 0
          DO  20 IFONC = 1, NBFONC
             CALL GETVR8('DEFI_FONCTION','VALE',IFONC,1,0,RBID,NBVAL)
@@ -179,15 +181,15 @@ C
             CALL GETVTX('DEFI_FONCTION','INTERPOL'   ,IFONC,1,2,
      &                                                INTERP,L1)
             IF ( L1 .EQ. 1 ) INTERP(2) = INTERP(1)
-            ZK16(LPRO+5+2*IFONC-1) = INTERP(1)//INTERP(2)
+            ZK24(LPRO+6+2*IFONC-1) = INTERP(1)//INTERP(2)
             CALL GETVTX('DEFI_FONCTION','PROL_GAUCHE',IFONC,1,1,
-     &                                   ZK16(LPRO+5+2*IFONC)(1:1),L)
+     &                                   ZK24(LPRO+6+2*IFONC)(1:1),L)
             CALL GETVTX('DEFI_FONCTION','PROL_DROITE',IFONC,1,1,
-     &                                   ZK16(LPRO+5+2*IFONC)(2:2),L)
+     &                                   ZK24(LPRO+6+2*IFONC)(2:2),L)
  30      CONTINUE
       ELSE
          CALL GETVID(' ','FONCTION',0,1,NBFONC,ZK24(LNOMF),N)
-         CALL FOVERN(ZK24(LNOMF),NBFONC,ZK16(LPRO),IRET)
+         CALL FOVERN(ZK24(LNOMF),NBFONC,ZK24(LPRO),IRET)
       ENDIF
 C
 C     --- ON ORDONNE LA NAPPE SUIVANT LES PARAMETRES CROISSANTS ---

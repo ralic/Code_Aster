@@ -1,4 +1,4 @@
-# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE DMT94.132 EPROUVETTE CT BIMETALLIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -499,27 +499,32 @@ G220_4=CALC_G(THETA=_F(THETA=THETA4),
 TEST_TABLE(TABLE=G20_0,
            NOM_PARA='G',
            VALE=5.8244,
-           PRECISION=0.04,);
+           PRECISION=0.04,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G40_0,
            NOM_PARA='G',
            VALE=22.6,
-           PRECISION=0.03,);
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G100_0,
            NOM_PARA='G',
            VALE=47.24,
-           PRECISION=0.03,);
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G160_0,
            NOM_PARA='G',
            VALE=74.704,
-           PRECISION=0.06,);
+           PRECISION=0.06,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G220_0,
            NOM_PARA='G',
            VALE=103.74,
-           PRECISION=0.08,);
+           PRECISION=0.08,
+           REFERENCE='ANALYTIQUE',)
 #
 # TESTS DES RESULTATS COURONNE 1
 # -----------------------------------
@@ -527,27 +532,32 @@ TEST_TABLE(TABLE=G220_0,
 TEST_TABLE(TABLE=G20_1,
            NOM_PARA='G',
            VALE=5.8244,
-           PRECISION=0.05,);
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G40_1,
            NOM_PARA='G',
            VALE=22.6,
-           PRECISION=0.03,);
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G100_1,
            NOM_PARA='G',
            VALE=47.24,
-           PRECISION=0.02,);
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G160_1,
            NOM_PARA='G',
            VALE=74.704,
-           PRECISION=0.03,);
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G220_1,
            NOM_PARA='G',
            VALE=103.74,
-           PRECISION=0.04,);
+           PRECISION=0.04,
+           REFERENCE='ANALYTIQUE',)
 #
 # TESTS DES RESULTATS COURONNE 2
 # -----------------------------------
@@ -555,27 +565,32 @@ TEST_TABLE(TABLE=G220_1,
 TEST_TABLE(TABLE=G20_2,
            NOM_PARA='G',
            VALE=5.8244,
-           PRECISION=0.05,);
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G40_2,
            NOM_PARA='G',
            VALE=22.6,
-           PRECISION=0.04,);
+           PRECISION=0.04,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G100_2,
            NOM_PARA='G',
            VALE=47.24,
-           PRECISION=0.02,);
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G160_2,
            NOM_PARA='G',
            VALE=74.704,
-           PRECISION=0.01,);
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G220_2,
            NOM_PARA='G',
            VALE=103.74,
-           PRECISION=0.01,);
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',)
 #
 # TESTS DES RESULTATS COURONNE 3
 # -----------------------------------
@@ -583,27 +598,32 @@ TEST_TABLE(TABLE=G220_2,
 TEST_TABLE(TABLE=G20_3,
            NOM_PARA='G',
            VALE=5.8244,
-           PRECISION=0.05,);
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G40_3,
            NOM_PARA='G',
            VALE=22.6,
-           PRECISION=0.04,);
+           PRECISION=0.04,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G100_3,
            NOM_PARA='G',
            VALE=47.24,
-           PRECISION=0.03,);
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G160_3,
            NOM_PARA='G',
            VALE=74.704,
-           PRECISION=0.02,);
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G220_3,
            NOM_PARA='G',
            VALE=103.74,
-           PRECISION=0.01,);
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',)
 #
 # TESTS DES RESULTATS COURONNE 4
 # -----------------------------------
@@ -611,27 +631,32 @@ TEST_TABLE(TABLE=G220_3,
 TEST_TABLE(TABLE=G20_4,
            NOM_PARA='G',
            VALE=5.8244,
-           PRECISION=0.05,);
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G40_4,
            NOM_PARA='G',
            VALE=22.6,
-           PRECISION=0.04,);
+           PRECISION=0.04,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G100_4,
            NOM_PARA='G',
            VALE=47.24,
-           PRECISION=0.03,);
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G160_4,
            NOM_PARA='G',
            VALE=74.704,
-           PRECISION=0.02,);
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',)
 
 TEST_TABLE(TABLE=G220_4,
            NOM_PARA='G',
            VALE=103.74,
-           PRECISION=0.01,);
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',)
 #
 
 FIN();

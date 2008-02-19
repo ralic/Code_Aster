@@ -4,7 +4,7 @@
       REAL*8                      TEMP, F, DF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,12 +82,12 @@ C
       CHPRO = CH19//'.PROL'
       CHVAL = CH19//'.VALE'
       CALL JEVEUT(CHPRO,'L',JPRO)
-      IF (ZK16(JPRO)(1:1).EQ.'I') THEN
+      IF (ZK24(JPRO)(1:1).EQ.'I') THEN
 C
 C --- FONCTION INTERPRETEE NON-UTILISABLE
 C
         CALL U2MESS('F','MODELISA4_61')
-      ELSE IF (ZK16(JPRO)(1:1).EQ.'N') THEN
+      ELSE IF (ZK24(JPRO)(1:1).EQ.'N') THEN
 C
 C --- NAPPE - IMPOSSIBLE
 C
@@ -104,7 +104,7 @@ C
       IAVALE(ISAVE) = JVALF
       LUVALE(ISAVE) = NBVF
       SVNOMF(ISAVE) = NOMFON(1:8)
-      SVPRGD(ISAVE) = ZK16(JPRO+4)(1:2)
+      SVPRGD(ISAVE) = ZK24(JPRO+4)(1:2)
 
  101  CONTINUE
 C

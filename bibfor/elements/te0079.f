@@ -1,6 +1,6 @@
       SUBROUTINE TE0079 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
+      CHARACTER*8        ELREFE
       REAL*8             DFDX(9),DFDY(9),POIDS,R
       REAL*8             COORSE(18),VECTT(9)
       INTEGER            NDIM,NNO,NNOS,KP,NPG,I,K,IVECTT,ISOUR
@@ -51,14 +52,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-
-
-C      CALL TECAEL(IADZI,IAZK24)
-C      write(6,*) '--->>> OPTION ', OPTION
-C      write(6,1000) NOMTE, ZK24(IAZK24-1+3)(1:8), NPG, NNO
-C 1000 FORMAT(1P,'-->> maille ',A16,' ',A8, ' NPG ', I2, ' NNO = ',I2 )
-
+      CALL ELREF1(ELREFE)
+      IF (NOMTE(5:7).EQ.'QL9') ELREFE='QU4'
+      IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
+C
+      CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     &            JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PSOURCR','L',ISOUR)

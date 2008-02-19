@@ -1,6 +1,6 @@
       SUBROUTINE CBONDP(CHAR,NOMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C
       CHARACTER*24 ONDP(6),SIGNAL
       CHARACTER*8 CHAR,NOMA
       CHARACTER*2 TYPE
-      INTEGER NONDP
+      INTEGER NONDP, LXLGUT
 
       CALL JEMARQ()
       CALL GETFAC ( 'ONDE_PLANE', NONDP )
@@ -70,12 +70,14 @@ C --- CREATION DES FONCTIONS NECESSAIRES
 
       DO 10 I = 1,6
          IF (I.NE.5) THEN
-            CALL WKVECT(ONDP(I)(1:19)//'.PROL','G V K16',5,JPRO)
-            ZK16(JPRO)   = 'CONSTANT'
-            ZK16(JPRO+1) = 'LIN LIN '
-            ZK16(JPRO+2) = 'TOUTPARA'
-            ZK16(JPRO+3) = 'TOUTRESU'
-            ZK16(JPRO+4) = 'CC      '
+            CALL ASSERT(LXLGUT(ONDP(I)).LE.24)
+            CALL WKVECT(ONDP(I)(1:19)//'.PROL','G V K24',6,JPRO)
+            ZK24(JPRO)   = 'CONSTANT'
+            ZK24(JPRO+1) = 'LIN LIN '
+            ZK24(JPRO+2) = 'TOUTPARA'
+            ZK24(JPRO+3) = 'TOUTRESU'
+            ZK24(JPRO+4) = 'CC      '
+            ZK24(JPRO+5) = ONDP(I)
          ENDIF
 10    CONTINUE
 

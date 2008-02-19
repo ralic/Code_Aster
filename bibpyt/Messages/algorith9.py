@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith9 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,10 +30,6 @@ cata_msg = {
  CHAM_NO invalide
 """),
 
-3 : _("""
- le mot cle "NUME_INIT" est obligatoire dans ce cas.
-"""),
-
 4 : _("""
  valeur de THETA illicite
 """),
@@ -42,16 +38,8 @@ cata_msg = {
  la charge  %(k1)s  n'est pas thermique
 """),
 
-
-
-
-
 7 : _("""
  la charge  %(k1)s  n'est pas compatible avec FONC_MULT
-"""),
-8 : _("""
- La SD evol_ther fournie comme état initial (via THER_NON_LINE / ETAT_INIT / EVOL_THER ) contient un champ HYDR_NOEU_ELGA mais pas de champ HYDR_ELNO_ELGA. 
- L'état hydrique initial sera pris "vierge" (0.).
 """),
 
 9 : _("""
@@ -226,10 +214,6 @@ cata_msg = {
  champ :  %(k2)s 
 """),
 
-
-
-
-
 74 : _("""
  attention, mode sur-amorti
 """),
@@ -246,10 +230,6 @@ cata_msg = {
 81 : _("""
  le vecteur directeur est nul.
 """),
-
-
-
-
 
 83 : _("""
  nombre maximum d'itérations atteint

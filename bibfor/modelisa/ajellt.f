@@ -2,7 +2,7 @@
      +                   MODELZ, NBNO, LINOZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,13 +200,15 @@ C ---   NOMBRE DE MAILLES DISPONIBLES :
 C       -----------------------------
         NBMADI = LOLIMX - LOLIMA
 C
-C ---   REAJUSTEMENT EVENTUEL DU VECTEUR LIMA :
-C       -------------------------------------
+C ---   REAJUSTEMENT EVENTUEL DES VECTEURS LIMA ET LITY :
+C       -----------------------------------------------
         IF (NBMA.GT.NBMADI) THEN
           NLOLIM = NBMA - NBMADI
-          NBMAX  = MAX(NLOLIM,2*NBMAIL)
+          NBMAX  = LOLIMX+MAX(NLOLIM,NBMAIL)
           CALL JUVECA(LIGRET//'.LIMA',NBMAX)
           CALL JEVEUO(LIGRET//'.LIMA','E',IDLIMA)
+          CALL JUVECA(LIGRET//'.LITY',NBMAX)
+          CALL JEVEUO(LIGRET//'.LITY','E',IDLITY)
         ENDIF
 C
 C ---   VERIFICATION DE L'ADEQUATION DE LA TAILLE DU VECTEUR
@@ -251,7 +253,7 @@ C ---   REAJUSTEMENT EVENTUEL DU VECTEUR LINO :
 C       -------------------------------------
         IF (NBNO.GT.NBNODI) THEN
           NLOLIN = NBNO - NBNODI
-          NBNOX  = MAX(NLOLIN,2*NBMAIL)
+          NBNOX  = LOLINX+MAX(NLOLIN,NBMAIL)
           CALL JUVECA(LIGRET//'.LINO',NBNOX)
           CALL JEVEUO(LIGRET//'.LINO','E',IDLINO)
         ENDIF

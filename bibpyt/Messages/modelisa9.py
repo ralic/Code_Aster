@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF modelisa9 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,14 +168,6 @@ Conseil :
  erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
 """),
 
-33 : _("""
- le maillage est "plan" ou "z_cst"
-"""),
-
-34 : _("""
- le maillage est "3d"
-"""),
-
 35 : _("""
  il y a  %(i1)d  valeurs pour le mot cle  ANGL_NAUT il en faut  %(i2)d 
 """),
@@ -184,28 +176,12 @@ Conseil :
  erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
 """),
 
-37 : _("""
- le maillage est "plan" ou "z_cst"
-"""),
-
-38 : _("""
- le maillage est "3d"
-"""),
-
 39 : _("""
  il y a  %(i1)d  valeurs pour le mot cle  %(k1)s il en faut  %(i2)d 
 """),
 
 40 : _("""
  erreur dans les donnees mot cle facteur  %(k1)s  occurence  %(i1)d 
-"""),
-
-41 : _("""
- le maillage est "plan" ou "z_cst"
-"""),
-
-42 : _("""
- le maillage est "3d"
 """),
 
 43 : _("""
@@ -230,10 +206,6 @@ Conseil :
 
 56 : _("""
  pour la maille  %(k1)s 
-"""),
-
-57 : _("""
- 
 """),
 
 58 : _("""
@@ -299,55 +271,6 @@ Conseil :
  
 """),
 
-66 : _("""
- erreur lors de la definition de la courbe RELA_MZ
- le premier point de la courbe RELA_MZ %(k1)s a pour abscisse:  %(r1)f 
- 
-"""),
-
-67 : _("""
- erreur lors de la definition de la courbe RELA_MZ
- le premier point de la courbe RELA_MZ %(k1)s a pour ordonnee:  %(r1)f 
- 
-"""),
-
-68 : _("""
- erreur lors de la definition de la courbe RELA_MZ pente initiale :  %(r1)f 
- pente courante:  %(r2)f 
- pour l'abscisse:  %(r3)f 
- 
-"""),
-
-69 : _("""
- Courbe RELA_MZ points presque alignés. Risque de PB dans STAT_NON_LINE, en particulier 
- en C_PLAN pente initiale :  %(r1)f pente courante:  %(r2)f 
- precision relative:  %(r3)f pour l'abscisse:  %(r4)f 
- 
-"""),
-
-70 : _("""
- erreur lors de la definition de la courbe de traction
- le premier point de la fonction indicee par :  %(i1)d 
-  de la nappe  %(k1)s 
-  a pour abscisse:  %(r1)f 
- 
-"""),
-
-71 : _("""
- erreur lors de la definition de la courbe de traction
- le premier point de la fonction indicee par :  %(i1)d 
-  de la nappe  %(k1)s 
-  a pour ordonnee:  %(r1)f 
- 
-"""),
-
-72 : _("""
- erreur lors de la definition de la courbe de traction pente initiale :  %(r1)f 
- pente courante:  %(r2)f 
-  pour l'abscisse:  %(r3)f 
- 
-"""),
-
 73 : _("""
  erreur de programmation type de fonction non valide %(k1)s 
 """),
@@ -366,10 +289,6 @@ Conseil :
 
 78 : _("""
  pour la maille  %(k1)s 
-"""),
-
-79 : _("""
- 
 """),
 
 80 : _("""
@@ -471,7 +390,7 @@ Conseil :
  ... 
 """),
 
-94: _("""
+94 : _("""
      On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D
 """),
 

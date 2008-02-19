@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,7 @@ C     'EFGE_ELNO_CART'
 C     'FORC_NODA'
 C     'SIGM_ELNO_CART'
 C     'CHAR_MECA_EPSI_R'
+C     'PMPB_ELGA_SIEF'
 C IN NOMTE     : K16 : NOM DU TYPE ELEMENT
 C     'MECA_DIS_T_N'    : DISCRET
 C     'MECA_DIS_T_L'    : DISCRET
@@ -67,32 +68,31 @@ C     ------------------------------------------------------------------
       PARAMETER (NBRES=4)
 
       CHARACTER*2  BL2,CODRES(NBRES)
-      CHARACTER*8  NOMRES(NBRES),NOMPAR,MATERI,NOMAIL
+      CHARACTER*8  NOMRES(NBRES),NOMPAR,NOMAIL
       CHARACTER*16 CH16
 
       REAL*8   VALRES(NBRES),MATK(78),ALFAY,ALFAZ,XNU,XL,XIZ,XIY2,XIY
-      REAL*8   XFLZ,XFLY,XFL,UN,ZERO,DEUX,XJX,A,A2,XIZ2,PM1,PMPB1,PMPB2
-      REAL*8   PM2,R1,R2,VALPAR,E,G,EPX,XKY,XKZ,ANG,TRIGOM,ALONG
+      REAL*8   XFLZ,XFLY,XFL,UN,ZERO,DEUX,XJX,A,A2,XIZ2
+      REAL*8   R1,R2,VALPAR,E,G,EPX,XKY,XKZ,ANG,TRIGOM,ALONG
       REAL*8   PGL(3,3),PGL1(3,3),PGL2(3,3)
-      REAL*8   BSM(12,12),DE(12),FS(14),N1,N2,MX1,MX2,MY1,MY2,MZ1,MZ2
-      REAL*8   FSS(14)
+      REAL*8   BSM(12,12),DE(12),FS(14)
+      REAL*8   FSS(14),PM(3),PMPB(3),NORM(3),MY(3),MZ(3),R12XIY,A12
       REAL*8   RAD,ANGARC,ANGS2
-      REAL*8   CARSEC(6), R8BID, ALPHA
+      REAL*8   CARSEC(6), R8BID
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
       INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN,IADZI,IAZK24
-      INTEGER  NEQ1
-      INTEGER  INBF,JACF,IPOS,ICP,NBFIG,NBGF,NCARFI,IG,NUGF
-      INTEGER  ISDCOM,ICOMPO
-      CALL JEMARQ()
+      INTEGER  NEQ1,IPLOUF,NPG
+      LOGICAL  AUNOEU
 
+      PARAMETER (ZERO=0.0D0, DEUX=2.0D0, UN=1.0D0)
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
       BL2 = '  '
       IELEM = 0
       IREPE = 0
-      ZERO  = 0.0D0
-      UN    = 1.0D0
-      DEUX  = 2.0D0
       IF (NOMTE.EQ.'MECA_POU_D_T') THEN
          IELEM = 1
          NNO   = 2
@@ -172,6 +172,10 @@ C     ------------------------------------------------------------------
          CALL U2MESK('F','ELEMENTS2_42',1,CH16)
       END IF
 
+C     NOMBRE DE POINTS DE GAUSS DE L'ELEMENT
+      CALL ELREF4(' ','RIGI',IPLOUF,IPLOUF,IPLOUF,
+     &            NPG,IPLOUF,IPLOUF,IPLOUF,IPLOUF)
+
       IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
          CALL JEVECH('PCONTRR','L',ICONTG)
          CALL JEVECH('PSIEFNOR','E',IVECTU)
@@ -188,11 +192,34 @@ C     ------------------------------------------------------------------
 
       ELSE IF ((OPTION.EQ.'PMPB_ELNO_SIEF') .OR.
      &         (OPTION.EQ.'PMPB_ELGA_SIEF')) THEN
-
+C        VERIF DU NOMBRE DE POINT DE GAUUS
+         CALL ASSERT( (NPG.EQ.2).OR.(NPG.EQ.3) )
+C        N1 N2      : EFFORT NORMAUX NOEUDS 1 ET 2
+C        N1 N2 N3   : EFFORT NORMAUX GAUSS 1 , 2 ET 3
+C        MX, MY, MZ : MOMENTS DE TORSION ET FLEXION
+         AUNOEU = .TRUE.
          IF (OPTION.EQ.'PMPB_ELNO_SIEF') THEN
             CALL JEVECH('PSIEFNOR','L',ICONTG)
+            NORM(1) = ZR(ICONTG)
+            NORM(2) = ZR(ICONTG+6)
+            MY(1)   = ZR(ICONTG+4)
+            MY(2)   = ZR(ICONTG+10)
+            MZ(1)   = ZR(ICONTG+5)
+            MZ(2)   = ZR(ICONTG+11)
          ELSE
             CALL JEVECH('PCONTRR','L',ICONTG)
+            NORM(1) = ZR(ICONTG)
+            NORM(2) = ZR(ICONTG+6)
+            MY(1)   = ZR(ICONTG+4)
+            MY(2)   = ZR(ICONTG+10)
+            MZ(1)   = ZR(ICONTG+5)
+            MZ(2)   = ZR(ICONTG+11)
+            IF ( NPG .EQ. 3 ) THEN
+               AUNOEU = .FALSE.
+               NORM(3) = ZR(ICONTG+12)
+               MY(3)   = ZR(ICONTG+16)
+               MZ(3)   = ZR(ICONTG+17)
+            ENDIF
          END IF
          CALL JEVECH('PCONTEQ','E',IVECTU)
          CALL JEVECH('PCAGNPO','L',LSECT)
@@ -204,31 +231,18 @@ C        --- SECTION INITIALE ---
          A     = ZR(LSECT+1)
          XIY   = ZR(LSECT+2)
          XIZ   = ZR(LSECT+3)
-         ALFAY = ZR(LSECT+4)
-         ALFAZ = ZR(LSECT+5)
-         XJX   = ZR(LSECT+8)
 C        --- SECTION FINALE ---
          LSECT2 = LSECT + 11
          A2     = ZR(LSECT2+1)
          XIY2   = ZR(LSECT2+2)
          XIZ2   = ZR(LSECT2+3)
-C        N1 N2 EFFORT NORMAUX NOEUDS 1 ET 2
-C        MX1, MY1, MZ1 MOMENTS DE TORSION ET FLEXION NOEUDS 1
-         N1  = ZR(ICONTG)
-         N2  = ZR(ICONTG+6)
-         MY1 = ZR(ICONTG+4)
-         MZ1 = ZR(ICONTG+5)
-         MY2 = ZR(ICONTG+10)
-         MZ2 = ZR(ICONTG+11)
 
          LSECR = LSECR - 1
          ITSEC = NINT(ZR(LSECR+13))
          IF (ITSEC.EQ.1) THEN
             CALL U2MESS('A','ELEMENTS2_85')
-            PM1   = 0.D0
-            PMPB1 = 0.D0
-            PMPB2 = 0.D0
-            PM2   = 0.D0
+            CALL R8INIR(3, ZERO,  PM  , 1)
+            CALL R8INIR(3, ZERO,  PMPB, 1)
          ELSE IF (ITSEC.EQ.2) THEN
 C        --- SECTION CIRCULAIRE SECTIONS INITIALE ET FINALE
             R1 = ZR(LSECR+9)
@@ -245,22 +259,42 @@ C                      PB NEGLIGEABLE
 C           ICI ON CHOISIT LE
 C           G3000 :  PM = ABS(N/S)
 C                    PMPB = ABS(N/S) + SQRT(MY**2+MZ**2)*R/I
-            PM1   = ABS(N1/A)
-            PMPB1 = ABS(N1/A) + (R1/XIY)*SQRT(MY1**2+MZ1**2)
-            PM2   = ABS(N2/A2)
-            PMPB2 = ABS(N2/A2) + (R2/XIY2)*SQRT(MY2**2+MZ2**2)
+C           POUR LE NOEUD MILIEU ON APPLIQUE LA FORMULE AVEC LA MOYENNE
+C           DES CARACTERISTIQUES MECANIQUE
+            PM(1)   = ABS(NORM(1)/A)
+            PMPB(1) = ABS(NORM(1)/A) + (R1/XIY)*SQRT(MY(1)**2+MZ(1)**2)
+            IF ( AUNOEU ) THEN
+               PM(2)   = ABS(NORM(2)/A2)
+               PMPB(2) = ABS(NORM(2)/A2) +
+     &                      (R2/XIY2)*SQRT(MY(2)**2+MZ(2)**2)
+            ELSE
+               A12 = (A+A2)/DEUX
+               R12XIY = ( (R2/XIY2) + (R1/XIY) )/DEUX
+               PM(2)   = ABS(NORM(2)/A12)
+               PMPB(2) = ABS(NORM(2)/A12) +
+     &                      (R12XIY)*SQRT(MY(2)**2+MZ(2)**2)
+               PM(3)   = ABS(NORM(3)/A2)
+               PMPB(3) = ABS(NORM(3)/A2) +
+     &                      (R2/XIY2)*SQRT(MY(3)**2+MZ(3)**2)
+            ENDIF
          ELSE
             CALL U2MESS('A','ELEMENTS2_86')
-            PM1   = 0.D0
-            PM2   = 0.D0
-            PMPB1 = 0.D0
-            PMPB2 = 0.D0
+            CALL R8INIR(3, ZERO,  PM  , 1)
+            CALL R8INIR(3, ZERO,  PMPB, 1)
          END IF
-         ZR(IVECTU) = PM1
-         ZR(IVECTU+1) = PMPB1
-         ZR(IVECTU+2) = PM2
-         ZR(IVECTU+3) = PMPB2
-
+         IF ( AUNOEU ) THEN
+            ZR(IVECTU)   = PM(1)
+            ZR(IVECTU+1) = PMPB(1)
+            ZR(IVECTU+2) = PM(2)
+            ZR(IVECTU+3) = PMPB(2)
+         ELSE
+            ZR(IVECTU)   = PM(1)
+            ZR(IVECTU+1) = PMPB(1)
+            ZR(IVECTU+2) = PM(2)
+            ZR(IVECTU+3) = PMPB(2)
+            ZR(IVECTU+4) = PM(3)
+            ZR(IVECTU+5) = PMPB(3)
+         ENDIF
       ELSE
 
          IF (OPTION.EQ.'SIGM_ELNO_CART') THEN
@@ -272,13 +306,14 @@ C                    PMPB = ABS(N/S) + SQRT(MY**2+MZ**2)*R/I
                FS(IN) = ZR(ICONTG+IN-1)
 30          CONTINUE
 
-        ELSE IF (OPTION.EQ.'EFGE_ELNO_CART') THEN
+         ELSE IF (OPTION.EQ.'EFGE_ELNO_CART') THEN
             CALL JEVECH('PCONTRR','L',ICONTG)
             CALL JEVECH('PEFFORR','E',IVECTU)
             DO 40 IN = 1,NEQ
                FS(IN) = ZR(ICONTG+IN-1)
 40          CONTINUE
             CALL TECACH('NNN','PCAORIR',1,IREPE,IRET)
+
          ELSE IF (OPTION.EQ.'FORC_NODA') THEN
             CALL JEVECH('PCONTMR','L',ICONTG)
             CALL JEVECH('PVECTUR','E',IVECTU)
@@ -287,10 +322,20 @@ C                    PMPB = ABS(N/S) + SQRT(MY**2+MZ**2)*R/I
                   FS(IN) = ZR(ICONTG+IN-1)
 50             CONTINUE
             ELSE
-               DO 60 IN = 1,NC
-                  FS(IN)    = -ZR(ICONTG+IN-1)
-                  FS(IN+NC) = ZR(ICONTG+IN+NC-1)
-60             CONTINUE
+C              VERIF DU NOMBRE DE POINT DE GAUUS
+               CALL ASSERT( (NPG.EQ.2).OR.(NPG.EQ.3) )
+               IF ( NPG .EQ. 2 ) THEN
+                  DO 60 IN = 1,NC
+                     FS(IN)    = -ZR(ICONTG+IN-1)
+                     FS(IN+NC) =  ZR(ICONTG+IN+NC-1)
+60                CONTINUE
+               ELSE
+C                 3 POINTS DE GAUSS : C'EST LE 1 ET LE 3
+                  DO 65 IN = 1,NC
+                     FS(IN)    = -ZR(ICONTG+IN-1)
+                     FS(IN+NC) =  ZR(ICONTG+IN+NC+NC-1)
+65                CONTINUE
+               ENDIF
             END IF
          ELSE IF (OPTION.EQ.'CHAR_MECA_EPSI_R') THEN
 
@@ -490,35 +535,35 @@ C           --- COORDONNEES DES NOEUDS
          ELSE
             CALL MATROT(ZR(LORIEN),PGL)
             IF (NDIM.EQ.3) THEN
-               IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND. 
-     &              OPTION.EQ.'EFGE_ELNO_CART') THEN     
+               IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND.
+     &              OPTION.EQ.'EFGE_ELNO_CART') THEN
                         CALL UTPVLG(NNO,NC,PGL,FS,FSS)
                      IF (IREPE.NE.0) THEN
                         CALL MATROT(ZR(IREPE),PGL)
                         CALL UTPVLG(NNO,NC,PGL,FSS,FSS)
                      END IF
                      DO 120 IN=1,6
-                        ZR(IVECTU-1+IN)   = FSS(IN) 
-                        ZR(IVECTU-1+IN+6) = FSS(IN+7) 
+                        ZR(IVECTU-1+IN)   = FSS(IN)
+                        ZR(IVECTU-1+IN+6) = FSS(IN+7)
 120                  CONTINUE
-               ELSE IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND. 
-     &              OPTION.EQ.'SIGM_ELNO_CART') THEN     
+               ELSE IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND.
+     &              OPTION.EQ.'SIGM_ELNO_CART') THEN
                         CALL UTPVLG(NNO,6,PGL,FS,FSS)
                      IF (IREPE.NE.0) THEN
                         CALL MATROT(ZR(IREPE),PGL)
                         CALL UTPVLG(NNO,6,PGL,FSS,FSS)
                      END IF
                      DO 130 IN=1,6
-                        ZR(IVECTU-1+IN)   = FSS(IN) 
-                        ZR(IVECTU-1+IN+6) = FSS(IN+6) 
+                        ZR(IVECTU-1+IN)   = FSS(IN)
+                        ZR(IVECTU-1+IN+6) = FSS(IN+6)
 130                  CONTINUE
-              ELSE      
+              ELSE
                  CALL UTPVLG(NNO,NC,PGL,FS,ZR(IVECTU))
                  IF (IREPE.NE.0) THEN
                     CALL MATROT(ZR(IREPE),PGL)
                     CALL UTPVLG(NNO,NC,PGL,ZR(IVECTU),ZR(IVECTU))
                  END IF
-              ENDIF  
+              ENDIF
             ELSE IF (NDIM.EQ.2) THEN
                CALL UT2VLG(NNO,NC,PGL,FS,ZR(IVECTU))
                IF (IREPE.NE.0) THEN

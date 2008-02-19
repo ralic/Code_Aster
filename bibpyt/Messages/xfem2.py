@@ -1,4 +1,4 @@
-#@ MODIF xfem2 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF xfem2 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,16 +30,6 @@ cata_msg = {
   -> Seules les modélisations C_PLAN/D_PLAN sont disponibles pour XFEM.
   -> Risques et conseils:
      Veuillez considérer l'une des deux modélisations dans AFFE_MODELE.
-"""),
-
-3 : _("""
-  -> Pour le traitement du contact avec X-FEM, le solveur mumps est vivement
-     recommandé.
-  -> Risque & Conseil:
-     Pour XFEM, la matrice produite est parfois non définie positive. 
-     Seul un solveur qui pivote peut alors résoudre le problème.
-     Il est donc préférable d'utiliser MUMPS (mot-clef SOLVEUR) pour ne pas finir
-     en erreur du type "PIVOT NUL" avec le solveur MULT_FRONT ou LDLT.
 """),
 
 4 : _("""
@@ -78,14 +68,6 @@ cata_msg = {
      XFEM avec contact.
   -> Risque & Conseil:
      Veuillez activer CONTACT='OUI' dans MODI_MODELE_XFEM.
-"""),
-
-10 : _("""
-  -> Le modèle %(k1)s transmis dans MECA_NON_LINE n'est pas un modèle
-     XFEM. 
-  -> Risque & Conseil:
-     Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à 
-     MECA_NON_LINE un modèle XFEM.
 """),
 
 11 : _("""
@@ -133,14 +115,6 @@ cata_msg = {
      Veuillez revoir la définition des level sets.
 """),
 
-18 : _("""
-  -> Lors de l'enregistrement du champ d'archivage du contact, il s'est avéré
-     que les valeurs de contact au noeud %(k1)s différents selon la maille sur
-     laquelle se trouve ce noeud.
-  -> Risque & Conseil :
-     Ce message est normal si le contact est activé sur la fissure.
-"""),
-
 19 : _("""
   -> Lors de l'orientation des points du fond de fissure, le point du fond de
      fissure initial (PFON_INI) est trop loin du fond de fissure.
@@ -185,13 +159,6 @@ cata_msg = {
   -> La norme du vecteur VECT_ORIE est nulle.
   -> Risque & Conseil :
      Veuillez redéfinir VECT_ORIE.
-"""),
-
-39 : _("""
-  -> Deux points du fond de fissure sont très proches ou coincident.
-  -> Risque & Conseil :
-     Vérifier les définitions des level sets et la liste des points du fond
-     de fissure trouvés. Si c'est normal, contactez votre correspondant.
 """),
 
 51 : _("""

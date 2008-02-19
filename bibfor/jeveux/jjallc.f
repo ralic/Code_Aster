@@ -1,6 +1,6 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 12/11/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,14 +84,14 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
         IADML = 0
         IF ( IADDI(1) .EQ. 0 ) THEN
           IF ( CEL .EQ. 'E' ) THEN
-            CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     &                   COL , JCOL , IADML, IADYN)
+            CALL JJALLS (LONOI, IC, GENRI, TYPEI, LTYPI, 'INIT',
+     &                   COL, JCOL, IADML, IADYN)
           ELSE
             CALL U2MESK('F','JEVEUX_18',1,RNOM(JRNOM(IC)+ID))
           ENDIF
         ELSE
-          CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT' ,
-     &                 COL , JCOL , IADML ,IADYN)
+          CALL JJALLS (LONOI, IC, GENRI, TYPEI, LTYPI, 'NOINIT',
+     &                 COL, JCOL, IADML, IADYN )
           CALL JXLIRO ( IC , IADML , IADDI , LONOI )
         ENDIF
         IADMI = IADML
@@ -136,14 +136,14 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE
             IADML = 0
             IF ( IADDI(1) .EQ. 0 ) THEN
               IF ( CEL .EQ. 'E' ) THEN
-                CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT',
-     &                       COL , JCOL , IADML ,IADYN)
+                CALL JJALLS (LONOI, IC, GENRI, TYPEI, LTYPI, 'INIT',
+     &                       COL, JCOL, IADML, IADYN)
               ELSE
                 CALL U2MESK('F','JEVEUX_18',1,RNOM(JRNOM(IC)+IX))
               ENDIF
             ELSE
-              CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT',
-     &                     COL , JCOL , IADML ,IADYN)
+              CALL JJALLS (LONOI, IC, GENRI, TYPEI, LTYPI, 'NOINIT',
+     &                     COL, JCOL, IADML, IADYN)
               CALL JXLIRO ( IC , IADML , IADDI , LONOI )
             ENDIF
             IADMI = IADML
@@ -151,8 +151,8 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE
             IADM(JIADM(IC)+2*IX  ) = IADYN
           ELSE
 C --------- MISE EN MEMOIRE SANS LECTURE DISQUE
-            CALL JJALLS  ( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     &                     ITAB , JCTAB , IADMI ,IADYN)
+            CALL JJALLS (LONOI, IC, GENRI, TYPEI, LTYPI, 'INIT',
+     &                   ITAB, JCTAB, IADMI, IADYN)
             IADM(JIADM(IC)+2*IX-1) = IADMI
             IADM(JIADM(IC)+2*IX  ) = IADYN
           ENDIF

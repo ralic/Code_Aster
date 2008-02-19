@@ -1,4 +1,4 @@
-# MODIF  DATE 21/01/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/02/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DU CONTACT EN GEOMETRIE INITIALE AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -61,6 +61,11 @@ CONT=AFFE_CHAR_MECA(MODELE=MO,
                                GROUP_MA_ESCL='ContTrou',
                                REAC_GEOM='AUTOMATIQUE',),);
 
+CONT2=AFFE_CHAR_MECA(MODELE=MO,
+                     CONTACT=_F(GROUP_MA_MAIT='ContVis',
+                                GROUP_MA_ESCL='ContTrou',
+                                METHODE='VERIF',),);
+
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
                           1,1,
                           2,2,
@@ -122,5 +127,51 @@ IMPR_RESU(MODELE=MO,
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESU,
                   TOUT_CHAM='OUI',),);
+
+RESU2=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=ENCAST,),
+                           _F(CHARGE=ENCAST2,),
+                           _F(CHARGE=Dimpo,
+                              FONC_MULT=RAMPE,),
+                           _F(CHARGE=CONT2,),),
+                    COMP_INCR=_F(RELATION='ELAS',
+                                 DEFORMATION='PETIT',),
+                    INCREMENT=_F(LIST_INST=TPS,),
+                    NEWTON=_F(REAC_INCR=1,
+                              MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    SOLVEUR=_F(SYME='OUI',
+                               METHODE='MUMPS',),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
+                                   ITER_GLOB_MAXI=10,),);
+
+
+TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
+                               INTITULE='JEU METHODE VERIF',
+                               RESULTAT=RESU2,
+                               NOM_CHAM='VALE_CONT',
+                               GROUP_NO='ContTrou',
+                               NOM_CMP=('CONT','JEU',),),);
+
+IMPR_TABLE(TABLE=TAB_VC);
+
+TEST_TABLE(TABLE=TAB_VC,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MINIMUM',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,),),
+           NOM_PARA='JEU',
+           VALE=-2.0,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_VC,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MAXIMUM',),
+                   _F(NOM_PARA='INST',
+                      VALE=3.0,),),
+           NOM_PARA='JEU',
+           VALE=-2.0,
+           REFERENCE='ANALYTIQUE',);
 
 FIN();

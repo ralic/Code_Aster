@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ CC
 C         CAS D'UNE FONC_MULT
           NOMFON(I) = FONCT
           CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-          NOMFON(I+NBEXCI) = ZK16(LPROL)
+          NOMFON(I+NBEXCI) = ZK24(LPROL)
           IF (L1.NE.0) THEN
 C           CAS D'UN VECT_GENE
             CALL JEVEUT(CHANNO//'.VALE','L',JVALE)
@@ -149,8 +149,8 @@ C         CAS D'UN ACCELEROGRAMME
           NOMFON(I) = FACCE
           FONACC(I) = FACCE
           CALL JEVEUO(FACCE//'.PROL','L',LPROL)
-          NOMFON(I+NBEXCI) = ZK16(LPROL)
-          FONACC(I+NBEXCI) = ZK16(LPROL)
+          NOMFON(I+NBEXCI) = ZK24(LPROL)
+          FONACC(I+NBEXCI) = ZK24(LPROL)
           IF (L1.NE.0) THEN
 C           CAS D'UN VECT_GENE
             CALL JEVEUT(CHANNO//'.VALE','L',JVALE)
@@ -174,11 +174,11 @@ C           CAS D'UN NUME_ORDRE
            CALL GETVID('EXCIT','VITE',I,1,1,FONVIT(I),N3)
            FONCT = FONVIT(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONVIT(I+NBEXCI) = ZK16(LPROL)
+           FONVIT(I+NBEXCI) = ZK24(LPROL)
            CALL GETVID('EXCIT','DEPL',I,1,1,FONDEP(I),N4)
            FONCT = FONDEP(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONDEP(I+NBEXCI) = ZK16(LPROL)
+           FONDEP(I+NBEXCI) = ZK24(LPROL)
         ENDIF
         IF (MONMOT(2)(1:3).EQ.'OUI') THEN
            CALL GETVID(' ','MODE_CORR',1,1,1,MODCOR,NBV)
@@ -190,11 +190,11 @@ C           CAS D'UN NUME_ORDRE
            CALL GETVID('EXCIT','D_FONC_DT',I,1,1,FONVIT(I),N3)
            FONCT = FONVIT(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONVIT(I+NBEXCI) = ZK16(LPROL)
+           FONVIT(I+NBEXCI) = ZK24(LPROL)
            CALL GETVID('EXCIT','D_FONC_DT2',I,1,1,FONACC(I),N4)
            FONCT = FONACC(I)
            CALL JEVEUO(FONCT//'.PROL','L',LPROL)
-           FONACC(I+NBEXCI) = ZK16(LPROL)
+           FONACC(I+NBEXCI) = ZK24(LPROL)
            FONDEP(I) = NOMFON(I)
            FONDEP(I+NBEXCI) = NOMFON(I+NBEXCI) 
 C

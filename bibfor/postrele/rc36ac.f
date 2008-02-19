@@ -6,7 +6,7 @@
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,14 +85,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR, 
-     +             JCOMBI, JPRESA, JPRESB, JMOMEA, JMOMEB, JNBOCC,
-     +             NBTH1, JTH1, NBTH2, NBCRS, NBCIN, NBCCA,
+      INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR,
+     +             JCOMBI, JPRESA, JPRESB, JMOMEA, JMOMEB, JNBOCC, I1,
+     +             NBTH1, JTH1, NBTH2, NBCRS, NBCIN, NBCCA, JNSITU,
      +             JCHMAT, JMAT, JCESD, JCESV, JCESL, JCINV, JCIND,
      +             JCCAV, JCCAD, IM, IMA, NBPT, DECRS, DECIN, DECCA,
-     +             IPT, INO, ADRM, NBM, ICMP, IAD, JCONX1, JCONX2, 
-     +             JNUMGR, JPASSA, NPASS, NUM1, NUM2, IFM, NIV,
-     +             IOCS, JSEIGR, IOC2, JCINL, JCCAL
+     +             IPT, INO, ADRM, NBM, ICMP, JCONX1, JCONX2,JFACT,
+     +             JNUMGR, JPASSA, NPASS, NUM1, NUM2, IFM, NIV, IOCS,
+     +             IAD, JSEIGR, IOC2, JCINL, JCCAL, NBP12, NBP23, NBP13
       REAL*8       R8B, PPI, PPJ, SNMAX, SAMAX, UTOT, SALTIJ, UG, NADM,
      +             MPI(3), MPJ(3), SM, SN, SP, C(3), K(3), CARA(3),
      +             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM, VALE(2)
@@ -113,6 +113,7 @@ C
       CALL JEVEUO ( CONNEX, 'L', JCONX1 )
       CALL JEVEUO ( JEXATR(CONNEX,'LONCUM'), 'L', JCONX2 )
 C
+      CALL JEVEUO ( '&&RC3600.SITU_NUMERO'    , 'L', JNSITU )
       CALL JELIRA ( '&&RC3600.SITU_NUME_GROUP', 'LONMAX', NBGR, K8B )
       CALL JEVEUO ( '&&RC3600.SITU_NUME_GROUP', 'L', JNUMGR )
       CALL JEVEUO ( '&&RC3600.SITU_SEISME'    , 'L', JSEIGR )
@@ -124,6 +125,10 @@ C
       CALL JEVEUO ( '&&RC3600.SITU_MOMENT_B'  , 'L', JMOMEB )
       CALL JEVEUO ( '&&RC3600.SITU_NB_OCCUR'  , 'L', JNBOCC )
       CALL JEVEUO ( '&&RC3600.SITU_PASSAGE'   , 'L', JPASSA )
+C
+      CALL JELIRA ('&&RC32SI.PASSAGE_1_2','LONUTI', NBP12, K8B )
+      CALL JELIRA ('&&RC32SI.PASSAGE_2_3','LONUTI', NBP23, K8B )
+      CALL JELIRA ('&&RC32SI.PASSAGE_1_3','LONUTI', NBP13, K8B )
 C
       CALL JEVEUO ( '&&RC3600.MATERIAU'       , 'L', JCHMAT )
       CALL JEVEUO ( '&&RC3600.NOM_MATERIAU'   , 'L', JMAT   )
@@ -148,6 +153,8 @@ C
       CALL JEVEUO ( CHCARA(1:19)//'.CESD', 'L', JCCAD )
       CALL JEVEUO ( CHCARA(1:19)//'.CESL', 'L', JCCAL )
       NBCCA = ZI(JCCAD-1+2)
+C
+      CALL WKVECT ('&&RC36AC_TRAVAIL', 'V V R', 4*50, JFACT )
 C
 C --- IL FAUT CALCULER LE FACTEUR D'USAGE EN CHAQUE NOEUD DE CHAQUE
 C     MAILLE 
@@ -236,10 +243,19 @@ C
           DO 100 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
+            IF ( NUMGR .LT. 0 ) GOTO 100
             IOCS  = ZI(JSEIGR+IG-1)
 C
             NPASS = 0
             SEISME = .FALSE.
+C
+            IF ( IG .EQ. 1 ) THEN
+               IF ( NBP12.NE.0 .OR. NBP13.NE.0 ) GOTO 100
+            ELSEIF ( IG .EQ. 2 ) THEN
+               IF ( NBP12.NE.0 .OR. NBP23.NE.0 ) GOTO 100
+            ELSEIF ( IG .EQ. 3 ) THEN
+               IF ( NBP13.NE.0 .OR. NBP23.NE.0 ) GOTO 100
+            ENDIF
 C
 C --------- PASSAGE 1 : PRISE EN COMPTE DU SEISME, 
 C                       CALCUL DU FACTEUR D'USAGE -> UTOT
@@ -249,7 +265,8 @@ C
               SAB = 0.D0
               SEISME = .TRUE.
               CALL RC3601 ( NUMGR, IOCS, SEISME, NPASS, IMA, IPT, NBM,
-     +                 ZI(ADRM),C, K, CARA, NOMMAT, SNB, SAB, UTOT, SM )
+     &                      ZI(ADRM),C, K, CARA, NOMMAT, SNB, SAB,
+     &                      UTOT, SM, ZR(JFACT) )
               SEISME = .FALSE.
             ENDIF
 C
@@ -259,7 +276,8 @@ C                       CALCUL SU SALT_MAX
 C                       CALCUL DU FACTEUR D'USAGE -> UTOT
 C
             CALL RC3601 ( NUMGR, IOCS, SEISME, NPASS, IMA, IPT, NBM,
-     +            ZI(ADRM), C, K, CARA, NOMMAT, SNMAX, SAMAX, UTOT, SM )
+     &                    ZI(ADRM), C, K, CARA, NOMMAT, SNMAX, SAMAX,
+     &                    UTOT, SM, ZR(JFACT) )
 C
  100      CONTINUE
 C
@@ -277,6 +295,7 @@ C
           DO 200 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
+            IF ( NUMGR .LT. 0 ) GOTO 200
 C
             CALL JELIRA (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),
      +                                             'LONMAX',NBSIGR,K8B)
@@ -373,25 +392,28 @@ C
           DO 310 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
+            IF ( NUMGR .GE. 0 ) GOTO 310
+            NUMGR = -NUMGR
+            IOCS  = ZI(JSEIGR+IG-1)
+            IF ( IOCS .EQ. 0 ) THEN
+               SEISME = .FALSE.
+            ELSE
+               SEISME = .TRUE.
+            ENDIF
 C
             CALL JELIRA (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),
      +                                             'LONMAX',NBSIGR,K8B)
             CALL JEVEUO (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),'L',JNSG)
+            IF (NIV.GE.2) THEN
+               WRITE (IFM,3004)
+               WRITE (IFM,3002) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
+            END IF
 C
-            DO 320 IS = 1 , NBSIGR
-              IOC1 = ZI(JNSG+IS-1)
-              IF ( ZI(JPASSA+2*IOC1-2).EQ.0 .AND.
-     +             ZI(JPASSA+2*IOC1-1).EQ.0 )  GOTO 320
+            NPASS = 7
 C
-              NUM1 = ZI(JPASSA+2*IOC1-2)
-              NUM2 = ZI(JPASSA+2*IOC1-2)
-C
-              NPASS = ZI(JNBOCC+2*IOC1-2)
-C
-              CALL RC3603 ( NUM1, NUM2, NPASS, IMA, IPT, NBM, ZI(ADRM),
-     +                      C, K, CARA, NOMMAT, SNMAX, SAMAX, UTOT, SM )
-C
- 320        CONTINUE
+            CALL RC3601 ( NUMGR, IOCS, SEISME, NPASS, IMA, IPT, NBM,
+     &                    ZI(ADRM), C, K, CARA, NOMMAT, SNMAX, SAMAX,
+     &                    UTOT, SM, ZR(JFACT) )
 C
  310      CONTINUE
 C
@@ -436,6 +458,8 @@ C
  1032 FORMAT(1P,'                 I J ',' SP =',E12.5)
  1033 FORMAT(1P,'                 J J ',' SP =',E12.5)
  1034 FORMAT(1P,'                 J I ',' SP =',E12.5)
+ 3002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
+ 3004 FORMAT (/,'=> SITUATION DE PASSAGE')
 C
       CALL JEDEMA( )
       END

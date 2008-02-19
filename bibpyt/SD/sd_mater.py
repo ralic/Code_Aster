@@ -1,4 +1,4 @@
-#@ MODIF sd_mater SD  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_mater SD  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ class sd_mater_XDEP(AsBase):
 #---------------------------
     # on dirait une fonction, mais c'est plutot la concaténation de plusieurs fonctions
     nomj = SDNom(fin=19)
-    PROL = AsVK16()
+    PROL = AsVK24()
     VALE = AsVR()
 
 

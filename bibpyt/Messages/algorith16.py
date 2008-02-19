@@ -1,21 +1,21 @@
-#@ MODIF algorith16 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith16 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
 def _(x) : return x
@@ -49,14 +49,6 @@ cata_msg = {
  noeud de choc  : %(k1)s
 """),
 
-
-
-
-
-
-
-
-
 8 : _("""
  amortissement tangent utilise :  %(r1)f
 
@@ -75,9 +67,6 @@ cata_msg = {
 
 9 : _("""
  jeu initial :  %(r1)f
-"""),
-
-10 : _("""
 """),
 
 11 : _("""
@@ -223,9 +212,6 @@ cata_msg = {
  ! le nb de pas d'archive est     :  %(i1)d
 """),
 
-
-
-
 44 : _("""
  les interfaces de la liaison n'ont pas la meme longueur
   sous-structure 1 -->  %(k1)s
@@ -346,7 +332,6 @@ cata_msg = {
   - Incrément de déformation cumulée négative = %(r1)f,
   - Changer la taille d'incrément.
 """),
-
 
 64 : _("""
     NADAI_B, erreur d'intégration
@@ -483,14 +468,6 @@ cata_msg = {
  Le nombre de RELA_EFFO_VITE est : %(i1)d
   """),
 
-85 : _("""
- Nature de l'excitation : %(k1)s
-  """),
-
-86 : _("""
- Règles de combinaison des réponses directionnelles : %(k1)s
-  """),
-
 87 : _("""
    Arret par manque de temps CPU
      - Instant courant :              %(r1)f
@@ -529,27 +506,25 @@ cata_msg = {
   Van_Genuchten non autorisé pour ce modèle de couplage
  """),
 
-96: _("""
+96 : _("""
  le solveur linéaire MUMPS en mode parallèle distribué 'DISTSD' requiert un concept
  produit de type SD_FETI en entrée du mot-clé PARTITION. Voir les commandes
   DEFI_PART_FETI et DEFI_PART_OPS.
  """),
 
-97: _("""
+97 : _("""
  Attention, vous utilisez le solveur linéaire MUMPS en mode parallèle distribué,
  mais vous n'avez alloué qu'un processeur MPI. Vous aurez bien les résultats
  attendus mais sans doute pas les performances. Il s'agit sans doute d'un run
  de test !
  """),
 
-
-
-
-99: _("""
+99 : _("""
  Valeur du parametre SOLVEUR/DIST_PROC0 incorrecte, routine CRESOL.
  Si le solveur est MUMPS distribue DISTSD, cette valeur doit laisser au moins
  un SD par processeur restant (hors proc 0) !
  Si le solveur est MUMPS distribue DISTMC, cette valeur doit laisser au moins
  une maille physique du modele par processeur restant (hors proc 0)!
 """),
+
 }

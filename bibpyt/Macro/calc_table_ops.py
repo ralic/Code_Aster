@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 11/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,6 +138,15 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             vectval = getattr(tab, occ['NOM_PARA']).values()
             aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' % (occ['NOM_PARA']+repr(vectval))+'\n')
 
+      #----------------------------------------------
+      # 6. Traitement de AJOUT
+      if occ['OPERATION'] == 'AJOUT':
+         if len(occ['NOM_PARA']) != len(occ['VALE']):
+            UTMESS('F', 'TABLE0_14')
+         dnew = dict(zip(occ['NOM_PARA'], occ['VALE']))
+         # ajout de la ligne avec vérification des types
+         tab.append(dnew)
+   
    #----------------------------------------------
    # 99. Création de la table_sdaster résultat
    # cas réentrant : il faut détruire l'ancienne table_sdaster
@@ -166,3 +175,4 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                        **dprod)
    
    return ier
+

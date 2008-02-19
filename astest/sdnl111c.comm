@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/02/2008   AUTEUR GREFFET N.GREFFET 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,9 @@ MAIL=MODI_MAILLAGE(reuse=MAIL,
                                   ),)          
              
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=7800.,),);
+MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,NU=0.3,RHO=7800.,
+                       AMOR_ALPHA=1.E-7, AMOR_BETA=1.E-3,  
+                     ),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(

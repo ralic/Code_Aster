@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,22 +147,23 @@ THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                  )
 
 G1=CALC_G(  RESULTAT=RESU,NUME_ORDRE=1, SYME_CHAR='SYME',
-                       OPTION='CALC_G_GLOB',
-                     COMP_ELAS=_F( RELATION = 'ELAS',
-                                DEFORMATION = 'PETIT'),
-                    THETA=_F(THETA=THETA1),   EXCIT=_F(CHARGE=CHFONC),  )
+            OPTION='CALC_G_GLOB',
+            COMP_ELAS=_F( RELATION = 'ELAS',
+                          DEFORMATION = 'PETIT'),
+            THETA=_F(THETA=THETA1),
+            EXCIT=_F(CHARGE=CHFONC),  )
 
 GLOC1=CALC_G(  RESULTAT=RESU,NUME_ORDRE=1,
-                       THETA=_F(FOND_FISS=FISS1,
-                                R_SUP_FO=RSUP1,
-                                R_INF_FO=RINF1,),
-                       SYME_CHAR='SYME',
-                       LISSAGE=_F(DEGRE=4,
-                                  LISSAGE_THETA='LAGRANGE',
-                                  LISSAGE_G='LEGENDRE',),
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                      EXCIT=_F(CHARGE=CHFONC),  )
+               THETA=_F(FOND_FISS=FISS1,
+                        R_SUP_FO=RSUP1,
+                        R_INF_FO=RINF1,),
+               SYME_CHAR='SYME',
+               LISSAGE=_F(DEGRE=4,
+                          LISSAGE_THETA='LAGRANGE',
+                          LISSAGE_G='LEGENDRE',),
+               COMP_ELAS=_F( RELATION = 'ELAS',
+                             DEFORMATION = 'PETIT'),
+               EXCIT=_F(CHARGE=CHFONC),  )
 
 #----------------------------------------------------------------------
 #                           COURONNE 3
@@ -199,17 +200,20 @@ GLOC2=CALC_G( RESULTAT=RESU,NUME_ORDRE=1,
 TEST_TABLE(       TABLE=G0,
                        NOM_PARA='G',
                            VALE=1.44E-3,
-                      PRECISION=2.1E-2   )
+                      PRECISION=2.1E-2,
+                      REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(       TABLE=G1,
                        NOM_PARA='G',
                            VALE=1.44E-3,
-                      PRECISION=3.E-2   )
+                      PRECISION=3.E-2,
+                      REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(       TABLE=G2,
                        NOM_PARA='G',
                            VALE=1.44E-3,
-                      PRECISION=1.2E-2   )
+                      PRECISION=1.2E-2,
+                      REFERENCE='ANALYTIQUE'      )
 
 #----------------------------------------------------------------------
 #              TEST DE G(A) SUR LES 3 COURONNES
@@ -217,25 +221,28 @@ TEST_TABLE(       TABLE=G2,
 
 
 TEST_TABLE(      TABLE=GLOC0,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1099'),
                  NOM_PARA='G_LOCAL',
-                      VALE=7.171E-5,
-                 PRECISION=1.E-2      )
+                 VALE=7.171E-5,
+                 PRECISION=1.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1099'),
                  NOM_PARA='G_LOCAL',
-                      VALE=7.171E-5,
-                 PRECISION=5.E-2      )
+                 VALE=7.171E-5,
+                 PRECISION=5.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC2,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1099'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1099'),
                  NOM_PARA='G_LOCAL',
-                      VALE=7.171E-5,
-                 PRECISION=4.E-2      )
+                 VALE=7.171E-5,
+                 PRECISION=4.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 #----------------------------------------------------------------------
 #              TEST DE G(B) SUR LES 3 COURONNES
@@ -243,25 +250,28 @@ TEST_TABLE(      TABLE=GLOC2,
 
 
 TEST_TABLE(      TABLE=GLOC0,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1259'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1259'),
                  NOM_PARA='G_LOCAL',
-                      VALE=1.721E-5,
-                 PRECISION=7.E-2      )
+                 VALE=1.721E-5,
+                 PRECISION=7.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1259'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1259'),
                  NOM_PARA='G_LOCAL',
-                      VALE=1.721E-5,
-                 PRECISION=4.E-2      )
+                 VALE=1.721E-5,
+                 PRECISION=4.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC2,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1259'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1259'),
                  NOM_PARA='G_LOCAL',
-                      VALE=1.721E-5,
-                 PRECISION=1.E-2       )
+                 VALE=1.721E-5,
+                 PRECISION=1.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 #----------------------------------------------------------------------
 #              TEST DE G(C) SUR LES 3 COURONNES
@@ -269,25 +279,28 @@ TEST_TABLE(      TABLE=GLOC2,
 
 
 TEST_TABLE(      TABLE=GLOC0,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1179'),
                  NOM_PARA='G_LOCAL',
-                      VALE=5.215E-5,
-                 PRECISION=5.E-2      )
+                 VALE=5.215E-5,
+                 PRECISION=5.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC1,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1179'),
                  NOM_PARA='G_LOCAL',
-                      VALE=5.215E-5,
-                 PRECISION=3.E-2      )
+                 VALE=5.215E-5,
+                 PRECISION=3.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=GLOC2,
-                   FILTRE=_F(  NOM_PARA = 'NOEUD',
-                            VALE_K = 'NO1179'),
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'NO1179'),
                  NOM_PARA='G_LOCAL',
-                      VALE=5.215E-5,
-                 PRECISION=4.E-2      )
+                 VALE=5.215E-5,
+                 PRECISION=4.E-2,
+                 REFERENCE='ANALYTIQUE'      )
 
 FIN()
 #

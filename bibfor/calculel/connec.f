@@ -1,6 +1,6 @@
       SUBROUTINE CONNEC(NOMTE,NSE,NNOP2,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,10 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 
       CHARACTER*16 NOMTE
-      INTEGER NSE,NNOP2,C(6,9)
+      INTEGER NSEMAX, NNOMAX
+      PARAMETER (NSEMAX = 6)
+      PARAMETER (NNOMAX = 9)
+      INTEGER NSE,NNOP2,C(NSEMAX, NNOMAX)
 
 C ......................................................................
 C    - FONCTION REALISEE:  INITIALISATION DES ELEMENTS ISO-P2
@@ -55,12 +58,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL TECAEL(IADZI,IAZK24)
       NNO = ZI(IADZI-1+2)
 
-C INITIALISATION
+C INITIALISATION DU TABLEAU COMPLET
 
       NSE = 1
       NNOP2 = NNO
-      DO 20 I = 1,NSE
-        DO 10 J = 1,NNO
+      DO 20 I = 1,NSEMAX
+        DO 10 J = 1,NNOMAX
           C(I,J) = J
    10   CONTINUE
    20 CONTINUE

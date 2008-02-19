@@ -1,7 +1,7 @@
        SUBROUTINE  LCEGEO(NNO,NPG,IPOIDS,IVF,IDFDE,GEOM,TYPMOD,
      &                    OPTION,IMATE,COMPOR,LGPG,ELGEOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER KPG, K, I
+      INTEGER KPG, K, I, NDIM
       REAL*8  RAC2, LC, DFDX(27), DFDY(27), DFDZ(27), POIDS, R
       REAL*8  VOLUME, SURFAC
       LOGICAL AXI
@@ -123,4 +123,31 @@ C
  50      CONTINUE
       ENDIF
 C
+      IF(COMPOR(1)(1:13) .EQ. 'META_LEMA_ANI') THEN
+        IF (TYPMOD(1)(1:4).NE.'AXIS') THEN
+          IF (TYPMOD(1)(1:2).EQ.'3D') THEN
+            NDIM=3
+          ELSE
+            NDIM=2
+          ENDIF
+          DO 100 KPG=1,NPG
+            ELGEOM(1,KPG)=0.D0
+            ELGEOM(2,KPG)=0.D0
+            ELGEOM(3,KPG)=0.D0            
+            DO 110 I=1,NDIM
+              DO 120 K=1,NNO
+                ELGEOM(I,KPG)=ELGEOM(I,KPG)
+     &        +GEOM(I,K)*ZR(IVF-1+NNO*(KPG-1)+K)
+ 120          CONTINUE
+ 110        CONTINUE
+ 100      CONTINUE
+        ELSE
+          DO 130 KPG=1,NPG
+            ELGEOM(1,KPG)=0.D0
+            ELGEOM(2,KPG)=0.D0
+            ELGEOM(3,KPG)=0.D0
+ 130      CONTINUE
+        ENDIF
+      ENDIF
+      
       END

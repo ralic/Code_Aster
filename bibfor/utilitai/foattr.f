@@ -4,7 +4,7 @@
       CHARACTER*(*)      MOTCLE,       NOMFON
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,73 +49,79 @@ C     ----------------------------------------------------------------
 C
       CALL JEMARQ()
       TEMP = NOMFON
+      CALL ASSERT(LXLGUT(TEMP).LE.24)
       PROL = TEMP//'.PROL'
       CALL JEVEUO(PROL,'E',LPRO)
       CALL JELIRA(PROL,'LONUTI',NBPROL,K1BID)
 C
-      IF (ZK16(LPRO).EQ.'NAPPE   ') THEN
-         NBFONC = ( NBPROL - 6 ) / 2
+      IF (ZK24(LPRO).EQ.'NAPPE   ') THEN
+         NBFONC = ( NBPROL - 7 ) / 2
 C
          CALL GETVTX(MOTCLE,'INTERPOL',IOCC,1,2,INTERP,L1)
-         IF ( L1 .EQ. 1 ) ZK16(LPRO+1) = INTERP(1)//INTERP(1)
-         IF ( L1 .EQ. 2 ) ZK16(LPRO+1) = INTERP(1)//INTERP(2)
+         IF ( L1 .EQ. 1 ) ZK24(LPRO+1) = INTERP(1)//INTERP(1)
+         IF ( L1 .EQ. 2 ) ZK24(LPRO+1) = INTERP(1)//INTERP(2)
 C
          CALL GETVTX(MOTCLE,'NOM_PARA',IOCC,1,1,NPARA,L2)
-         IF (L2.NE.0) ZK16(LPRO+2) = NPARA
+         IF (L2.NE.0) ZK24(LPRO+2) = NPARA
 C
          CALL GETVTX(MOTCLE,'NOM_RESU',IOCC,1,1,NRESU,L3)
-         IF (L3.NE.0) ZK16(LPRO+3) = NRESU
+         IF (L3.NE.0) ZK24(LPRO+3) = NRESU
 C
          CALL GETVTX(MOTCLE,'PROL_GAUCHE',IOCC,1,1,PROLG,L4)
-         IF (L4.NE.0) ZK16(LPRO+4)(1:1) = PROLG(1:1)
+         IF (L4.NE.0) ZK24(LPRO+4)(1:1) = PROLG(1:1)
 C
          CALL GETVTX(MOTCLE,'PROL_DROITE',IOCC,1,1,PROLD,L5)
-         IF (L5.NE.0) ZK16(LPRO+4)(2:2) = PROLD(1:1)
+         IF (L5.NE.0) ZK24(LPRO+4)(2:2) = PROLD(1:1)
+C
+         ZK24(LPRO+5) = TEMP
 C
          CALL GETVTX(MOTCLE,'NOM_PARA_FONC',IOCC,1,1,NPARA,L6)
-         IF (L6.NE.0) ZK16(LPRO+5) = NPARA
+         IF (L6.NE.0) ZK24(LPRO+6) = NPARA
 C
          CALL GETVTX(MOTCLE,'INTERPOL_FONC',IOCC,1,2,INTERP,L7)
          IF (L7.NE.0) THEN
             DO 10 IF = 1,NBFONC
-            IF (L7 .EQ. 1) ZK16(LPRO+6+2*(IF-1)) = INTERP(1)//INTERP(1)
-            IF (L7 .EQ. 2) ZK16(LPRO+6+2*(IF-1)) = INTERP(1)//INTERP(2)
+            IF (L7 .EQ. 1) ZK24(LPRO+7+2*(IF-1)) = INTERP(1)//INTERP(1)
+            IF (L7 .EQ. 2) ZK24(LPRO+7+2*(IF-1)) = INTERP(1)//INTERP(2)
  10         CONTINUE
          ENDIF
 C
          CALL GETVTX(MOTCLE,'PROL_GAUCHE_FONC',IOCC,1,1,PROLG,L8)
          IF (L8.NE.0) THEN
             DO 12 IF = 1,NBFONC
-               ZK16(LPRO+7+2*(IF-1))(1:1) = PROLG(1:1)
+               ZK24(LPRO+8+2*(IF-1))(1:1) = PROLG(1:1)
  12         CONTINUE
          ENDIF
 C
          CALL GETVTX(MOTCLE,'PROL_DROITE_FONC',IOCC,1,1,PROLD,L9)
          IF (L9.NE.0) THEN
             DO 14 IF = 1,NBFONC
-              ZK16(LPRO+7+2*(IF-1))(2:2) = PROLD(1:1)
+              ZK24(LPRO+8+2*(IF-1))(2:2) = PROLD(1:1)
  14         CONTINUE
          ENDIF
+
 C
       ELSE
 C
          CALL GETVTX(MOTCLE,'INTERPOL',IOCC,1,2,INTERP,L1)
          IF (L1.NE.0) THEN
-            IF ( L1 .EQ. 1 ) ZK16(LPRO+1) = INTERP(1)//INTERP(1)
-            IF ( L1 .EQ. 2 ) ZK16(LPRO+1) = INTERP(1)//INTERP(2)
+            IF ( L1 .EQ. 1 ) ZK24(LPRO+1) = INTERP(1)//INTERP(1)
+            IF ( L1 .EQ. 2 ) ZK24(LPRO+1) = INTERP(1)//INTERP(2)
          ENDIF
 C
          CALL GETVTX(MOTCLE,'NOM_PARA',IOCC,1,1,NPARA,L2)
-         IF (L2.NE.0)  ZK16(LPRO+2) = NPARA
+         IF (L2.NE.0)  ZK24(LPRO+2) = NPARA
 C
          CALL GETVTX(MOTCLE,'NOM_RESU',IOCC,1,1,NRESU,L3)
-         IF (L3.NE.0)  ZK16(LPRO+3) = NRESU
+         IF (L3.NE.0)  ZK24(LPRO+3) = NRESU
 C
          CALL GETVTX(MOTCLE,'PROL_GAUCHE',IOCC,1,1,PROLG,L4)
-         IF (L4.NE.0)  ZK16(LPRO+4)(1:1) = PROLG(1:1)
+         IF (L4.NE.0)  ZK24(LPRO+4)(1:1) = PROLG(1:1)
 C
          CALL GETVTX(MOTCLE,'PROL_DROITE',IOCC,1,1,PROLD,L5)
-         IF (L5.NE.0)  ZK16(LPRO+4)(2:2) = PROLD(1:1)
+         IF (L5.NE.0)  ZK24(LPRO+4)(2:2) = PROLD(1:1)
+C
+         ZK24(LPRO+5) = TEMP
 C
       ENDIF
 C

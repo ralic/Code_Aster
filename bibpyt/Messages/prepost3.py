@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,10 +99,6 @@ cata_msg = {
 
 41 : _("""
  le champ de type ELGA n'est pas supporté
-"""),
-
-49 : _("""
- probleme a la fermeture
 """),
 
 63 : _("""

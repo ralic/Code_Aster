@@ -1,4 +1,4 @@
-#@ MODIF co_fonction SD  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF co_fonction SD  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,15 +300,15 @@ class nappe_sdaster(fonction_class, sd_fonction_aster):
          'NOM_RESU'      : prol[3][0:16].strip(),
          'PROL_DROITE'   : TypeProl[prol[4][1]],
          'PROL_GAUCHE'   : TypeProl[prol[4][0]],
-         'NOM_PARA_FONC' : prol[5][0:4].strip(),
+         'NOM_PARA_FONC' : prol[6][0:4].strip(),
       }
       lparf=[]
-      nbf=(len(prol)-6)/2
+      nbf=(len(prol)-7)/2
       for i in range(nbf):
          dicf={
-            'INTERPOL_FONC'    : [prol[6+i*2][0:3],prol[6+i*2][4:7]],
-            'PROL_DROITE_FONC' : TypeProl[prol[7+i*2][1]],
-            'PROL_GAUCHE_FONC' : TypeProl[prol[7+i*2][0]],
+            'INTERPOL_FONC'    : [prol[7+i*2][0:3],prol[7+i*2][4:7]],
+            'PROL_DROITE_FONC' : TypeProl[prol[8+i*2][1]],
+            'PROL_GAUCHE_FONC' : TypeProl[prol[8+i*2][0]],
          }
          lparf.append(dicf)
       return [dico,lparf]

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       PARAMETER   ( NBPAR = 8 , NB = 1024 )
-      INTEGER       DIM, IVAL(3)
+      INTEGER       DIM, IVAL(3), LXLGUT
       REAL*8        R8B
       COMPLEX*16    C16B
       LOGICAL       CASINT
@@ -220,6 +220,7 @@ C
 C --- 2.3.CALCUL DES VITESSES MOYENNES DE CHAQUE ZONE D EXCITATION ---
 C ---     ET DE LA VITESSE MOYENNE DE L ENSEMBLE DES ZONES         ---
 C
+
          VMOYTO = 0.D0
          ALONTO = 0.D0
 C ---    BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
@@ -329,7 +330,7 @@ C
           DO 210 IM1 = IDEB,IM2
 C
             IVAL(2) = ZI(INUMO+IM1-1)
-C
+
             WRITE (NOMFON,'(A8,A2,3I3.3)') NOMU,'.S',IV,ZI(INUMO+IM1-1),
      &                                     ZI(INUMO+IM2-1)
 C
@@ -339,13 +340,14 @@ C
             VALE = NOMFON(1:19)//'.VALE'
             PROL = NOMFON(1:19)//'.PROL'
             CALL WKVECT(VALE,'G V R ',3*NBPF,LVALE)
-            CALL WKVECT(PROL,'G V K16',5,LPROL)
+            CALL WKVECT(PROL,'G V K24',6,LPROL)
 C
-            ZK16(LPROL  ) = 'FONCT_C '
-            ZK16(LPROL+1) = 'LIN LIN '
-            ZK16(LPROL+2) = 'FREQ    '
-            ZK16(LPROL+3) = 'DSP     '
-            ZK16(LPROL+4) = 'LL      '
+            ZK24(LPROL  ) = 'FONCT_C '
+            ZK24(LPROL+1) = 'LIN LIN '
+            ZK24(LPROL+2) = 'FREQ    '
+            ZK24(LPROL+3) = 'DSP     '
+            ZK24(LPROL+4) = 'LL      '
+            ZK24(LPROL+5) = NOMFON
 C
             DO 200 IPF = 1,NBPF
               ZR(LVALE+IPF-1) = ZR(LPASF+IPF-1)

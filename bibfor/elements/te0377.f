@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NPG,IPG,NNO,NNOS,TYP,TYPV,IPOIDS,IVF,IDFDE
       INTEGER IGEOM,IBID,IAD,IFOR,IERR,IPES,IROT,IMATE,IVOIS
-      INTEGER NBS,NBNA,JNO,NBCMP,ITAB(7),NDIM,JGANO,IRET
+      INTEGER NBS,NBNA,NBCMP,ITAB(7),NDIM,JGANO,IRET
       INTEGER JTIME,NIV,IP,IR,IREF1,IREF2
-      INTEGER IATYMA,INO
+      INTEGER IATYMA,INO,IAUX
 
       REAL*8 DFDX(9),DFDY(9),HE,HF,POIDS,FORX,FORY,FPX,FPY
       REAL*8 FRX(9),FRY(9),RHO,NOR,NORSIG,R8BID
@@ -219,22 +219,13 @@ C
           TYPMAV=ZK8(IATYMA-1+TYPV)      
           FORMV=TYPMAV(1:2)
 C
-C ----- CALCUL DU DIAMETRE HF DU CERCLE CIRCONSCRIT À L'ARETE ----------
-C
-          IF (INO.EQ.NBS) THEN
-            JNO = 1
-            ELSE
-            JNO = INO+1
-          ENDIF
-          HF=SQRT((ZR(IGEOM-1+2*(INO-1)+1)-ZR(IGEOM-1+2*(JNO-1)+1))**2
-     &           +(ZR(IGEOM-1+2*(INO-1)+2)-ZR(IGEOM-1+2*(JNO-1)+2))**2)
-C
 C ----- CALCUL DE NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 C
-          CALL CALNOR('2D',INO,IBID,IBID,NBS,NBNA,IBID,
-     &                IGEOM,IBID,
-     &                IBID,IBID,ORIEN,HF,
-     &                JAC,NX,NY,R8BID,TX,TY)
+          IAUX = INO
+C
+          CALL CALNOR( '2D' , IAUX, IBID , IBID, NBS  , NBNA, IBID,
+     &                 IGEOM, IBID, IBID , IBID, ORIEN,
+     &                 HF   , JAC , NX   , NY  , R8BID, TX  , TY   )
 C
 C ----------------------------------------------------------------------
 C --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------

@@ -5,7 +5,7 @@
       INTEGER            INDMAT,NBMAT,IMATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -279,20 +279,20 @@ C ---   DES FONCTIONS SONT CREEES SUR LA VOLATILE (ROUTINE ALFINT) ---
                CALL JEVEUT ( CH19//'.PROL', 'L', ZI(IPIF+1) )
                ZI(IPIF+7) = 1
                ZI(IPIF+8) = 1
-               IF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'C' .OR.
-     &             ZK16(ZI(IPIF+1))(1:1) .EQ. 'F' ) THEN
+               IF ( ZK24(ZI(IPIF+1))(1:1) .EQ. 'C' .OR.
+     &             ZK24(ZI(IPIF+1))(1:1) .EQ. 'F' ) THEN
                   CALL JEVEUT ( CH19//'.VALE', 'L', ZI(IPIF+2) )
                   CALL JELIRA ( CH19//'.VALE', 'LONMAX', NBPTS, K8B )
                   ZI(IPIF) = NBPTS/2
-               ELSEIF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'N' ) THEN
+               ELSEIF ( ZK24(ZI(IPIF+1))(1:1) .EQ. 'N' ) THEN
                   CALL JEVEUT ( CH19//'.VALE', 'L', ZI(IPIF+2) )
                   CALL JEVEUT ( JEXATR(CH19//'.VALE','LONCUM'), 'L',
      &                                                     ZI(IPIF+3))
                   CALL JEVEUT ( CH19//'.PARA', 'L', ZI(IPIF+4) )
                   CALL JELIRA ( CH19//'.PARA', 'LONUTI',ZI(IPIF+5),K8B)
-               ELSEIF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'I' ) THEN
+               ELSEIF ( ZK24(ZI(IPIF+1))(1:1) .EQ. 'I' ) THEN
                ELSE
-                  CALL U2MESK('F','MODELISA6_64',1,ZK16(ZI(IPIF+1)))
+                  CALL U2MESK('F','MODELISA6_64',1,ZK24(ZI(IPIF+1)))
                ENDIF
             ELSE IF ( IRETT .EQ. 1 ) THEN
               LISTR = '&&'//CH19(1:8)//'_LR8'

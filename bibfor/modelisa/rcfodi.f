@@ -1,6 +1,6 @@
       SUBROUTINE RCFODI(IFON,BETA,F,DF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,13 +64,13 @@ C DEB ------------------------------------------------------------------
       NBVF = ZI(IFON)
       JPRO  = ZI(IFON+1)
       JVALF = ZI(IFON+2)
-      IF (ZK16(JPRO)(1:1).EQ.'C') THEN
+      IF (ZK24(JPRO)(1:1).EQ.'C') THEN
         F  = ZR(JVALF+NBVF+1)
         DF = 0.D0
         GOTO 101
       ENDIF
       ISAVE = ZI(IFON+INDFCT)
-      IF (ZK16(JPRO)(1:1).EQ.'N') THEN
+      IF (ZK24(JPRO)(1:1).EQ.'N') THEN
 C
 C---- NAPPE - IMPOSSIBLE
 C
@@ -127,26 +127,26 @@ C
       ELSE IF (TESINF) THEN
         JV = JVALF+NBVF
         JP = JVALF
-        IF (ZK16(JPRO+4)(2:2).EQ.'C') THEN
+        IF (ZK24(JPRO+4)(2:2).EQ.'C') THEN
           DF = 0.0D0
            F = ZR(JP)
-        ELSE IF (ZK16(JPRO+4)(1:1).EQ.'L') THEN
+        ELSE IF (ZK24(JPRO+4)(1:1).EQ.'L') THEN
           DF = (ZR(JP+1)-ZR(JP))/(ZR(JV+1)-ZR(JV))
            F = DF*(BETA-ZR(JV))+ZR(JP)
-        ELSE IF (ZK16(JPRO+4)(1:1).EQ.'E') THEN
+        ELSE IF (ZK24(JPRO+4)(1:1).EQ.'E') THEN
           CALL U2MESS('F','MODELISA4_63')
         END IF
         ISAVE = 1
       ELSE IF (TESSUP) THEN
         JV = JVALF + 2*NBVF - 1
         JP = JVALF + NBVF - 1
-        IF (ZK16(JPRO+4)(2:2).EQ.'C') THEN
+        IF (ZK24(JPRO+4)(2:2).EQ.'C') THEN
           DF = 0.0D0
            F = ZR(JP)
-        ELSE IF (ZK16(JPRO+4)(2:2).EQ.'L') THEN
+        ELSE IF (ZK24(JPRO+4)(2:2).EQ.'L') THEN
           DF = (ZR(JP)-ZR(JP-1))/(ZR(JV)-ZR(JV-1))
            F = DF*(BETA-ZR(JV-1))+ZR(JP-1)
-        ELSE IF (ZK16(JPRO+4)(2:2).EQ.'E') THEN
+        ELSE IF (ZK24(JPRO+4)(2:2).EQ.'E') THEN
           CALL U2MESS('F','MODELISA4_65')
         END IF
         ISAVE = NBVF - 1

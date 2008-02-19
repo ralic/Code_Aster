@@ -1,21 +1,21 @@
-#@ MODIF algorith8 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith8 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
 def _(x) : return x
@@ -29,18 +29,6 @@ cata_msg = {
 2 : _("""
  caractéristique fluage incomplet
 """),
-
-
-
-
-
-
-
-
-
-
-
-
 
 12 : _("""
  F reste toujours négative
@@ -61,13 +49,6 @@ cata_msg = {
 16 : _("""
  F=0 : pas converge
 """),
-
-
-
-
-
-
-
 
 19 : _("""
  trop d'amortissements modaux
@@ -98,10 +79,6 @@ cata_msg = {
  mode non defini
 """),
 
-27 : _("""
- lecture du champ DEPL_CALCULE impossible
-"""),
-
 28 : _("""
  prédiction par extrapolation impossible : pas de temps nul
 """),
@@ -109,9 +86,6 @@ cata_msg = {
 29 : _("""
  ITER_LINE_MAXI doit etre inférieur à 1000
 """),
-
-
-
 
 31 : _("""
  borne superieure PMAX incorrecte
@@ -124,10 +98,6 @@ cata_msg = {
 33 : _("""
  la viscosité UN_SUR_K doit être différente de zéro
 """),
-
-
-
-
 
 35 : _("""
  incompatibilité entre la loi de couplage  %(k1)s  et la modélisation choisie  %(k2)s
@@ -221,10 +191,6 @@ cata_msg = {
  Méthode de condition unilatéral non implantée
 """),
 
-
-
-
-
 61 : _("""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
 """),
@@ -242,37 +208,9 @@ cata_msg = {
   endommagement maximal atteint au cours des resolutions internes
 """),
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 77 : _("""
  le nombre de composantes dans le champ de vent est incorrect. on doit avoir : DX, DY, DZ
 """),
-
-
-
-
 
 80 : _("""
 Pour le comportement %(k3)s, matériau %(k4)s. Incohérence dans les données matériau.
@@ -287,18 +225,6 @@ Les combinaisons possibles sont :
    comportement %(k1)s et matériau %(k2)s et %(k5)s
    comportement %(k3)s et matériau %(k4)s et %(k5)s
 """),
-
-
-
-
-
-
-
-
-
-
-
-
 
 84 : _("""
  comportement de fluage sous irradiation inconnu
@@ -335,10 +261,6 @@ Les combinaisons possibles sont :
 92 : _("""
  la maille doit etre de type TETRA10,PENTA15,HEXA20,QUAD8 ou TRIA6.
  or la maille est de type :  %(k1)s .
-"""),
-
-93 : _("""
- une maille maitre est de longueur nulle
 """),
 
 94 : _("""

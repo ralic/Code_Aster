@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+#& MODIF COMMANDE  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +45,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
    ACTION = FACT(statut='o', max='**',
                     fr = "Suite des opérations à effectuer sur la table",
       OPERATION = SIMP(statut='o', typ='TXM',
-                  into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'OPER',)),
+                  into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'AJOUT', 'OPER',)),
       
       b_filtre = BLOC(condition="OPERATION == 'FILTRE'",
                       fr="Sélectionne les lignes de la table vérifiant un critère",
@@ -95,6 +95,13 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
          NOM_PARA = SIMP(statut='f',typ='TXM',max='**',
                          fr="Noms des paramètres dont les valeurs doivent etre identiques dans les deux tables "\
                             "pour que les colonnes soient combinées"),
+      ),
+      
+      b_append = BLOC(condition="OPERATION == 'AJOUT'",
+                    fr="Ajoute une ligne à la table initiale",
+         NOM_PARA = SIMP(statut='o',typ='TXM',max='**',
+                         fr="Noms des paramètres dont les valeurs sont fournies sous VALE"),
+         VALE     = SIMP(statut='o',typ=assd,max='**', fr='Valeurs des paramètres'),
       ),
       
       b_oper = BLOC(condition="OPERATION == 'OPER'",

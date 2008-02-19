@@ -3,7 +3,7 @@
       CHARACTER*(*)       BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IFM,NIV
+      INTEGER      IFM,NIV, LXLGUT
       CHARACTER*4  INTERP(2)
       CHARACTER*8  K8B, BASEFL, PARAY, TTORDR
       CHARACTER*16 NOMCMD, TYPCON
@@ -69,12 +69,14 @@ C
 C
 C     --- REMPLISSAGE DU .PROL ---
 C
-      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
-      ZK16(LPRO)   = 'FONCTION'
-      ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-      ZK16(LPRO+2) = 'VITE_FLU'
-      ZK16(LPRO+3) = PARAY(1:4)
-      ZK16(LPRO+4) = 'EE      '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT(NOMFON//'.PROL','G V K24',6,LPRO)
+      ZK24(LPRO)   = 'FONCTION'
+      ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+      ZK24(LPRO+2) = 'VITE_FLU'
+      ZK24(LPRO+3) = PARAY(1:4)
+      ZK24(LPRO+4) = 'EE      '
+      ZK24(LPRO+5) = NOMFON
 C
 C     --- RECUPERATION DES OJB ---
       VITE = BASEFL//'           .VITE'

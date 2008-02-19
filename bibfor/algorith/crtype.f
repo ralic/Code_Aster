@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -371,7 +371,7 @@ C           ----------------------------------
               NOMF = ZK8(JNOMF+L-1)
               IF (NOMF.EQ.' ') GOTO 60
               CALL JEVEUO(NOMF//'           .PROL','L',LPROL)
-              CALL FONBPA(NOMF,ZK16(LPROL),K16B,MXPARA,NBPF,NOMP)
+              CALL FONBPA(NOMF,ZK24(LPROL),K16B,MXPARA,NBPF,NOMP)
               INO = ZI(JDEEQ+2* (L-1))
               IF (INO.EQ.0) GOTO 60
               DO 50 IP = 1,NBPF

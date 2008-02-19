@@ -6,7 +6,7 @@
       CHARACTER*19        RESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/06/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       REAL*8        PAS, PAS1, PAS2, PAS3, THET, TETDEG, ESPACE
       REAL*8        ANG2BI, RHO2BI, XA, XABIS, YA, YABIS, A1, B1, GAME
       REAL*8        RAD, R8DGRD, DEG, R8RDDG, PI, R8PI, R8PREM
-      INTEGER       NBVAL
+      INTEGER       NBVAL, LXLGUT
       CHARACTER*8   K8B
       CHARACTER*16  NOPARA(2)
       CHARACTER*19  NOMFON
@@ -73,7 +73,7 @@ C
       CALL WKVECT ( '&&CALFIG.TUB'   , 'V V R', 2*NDIM, ITUB  )
       CALL WKVECT ( '&&CALFIG.OBS'   , 'V V R', 2*NDIM, IOBS  )
 C
-      NOMF = RESU(1:8)//'   _INITIAL'
+      NOMF = RESU(1:8)//'_INITIAL'
       CALL JEVEUO(NOMF(1:19)//'.VALE', 'L', IDTHE)
       CALL JELIRA(NOMF(1:19)//'.VALE','LONMAX',NBVAL,K8B)
       NO = NBVAL/2
@@ -318,12 +318,14 @@ C
       CALL GCNCON ( '_' , K8B )
       NOMFON = RESU(1:8)//K8B
 C
-      CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5, LPRO )
-      ZK16(LPRO)   = 'FONCTION'
-      ZK16(LPRO+1) = 'LIN LIN '
-      ZK16(LPRO+2) = 'THETA   '
-      ZK16(LPRO+3) = 'R       '
-      ZK16(LPRO+4) = 'EE      '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT ( NOMFON//'.PROL', 'G V K24', 6, LPRO )
+      ZK24(LPRO)   = 'FONCTION'
+      ZK24(LPRO+1) = 'LIN LIN '
+      ZK24(LPRO+2) = 'THETA   '
+      ZK24(LPRO+3) = 'R       '
+      ZK24(LPRO+4) = 'EE      '
+      ZK24(LPRO+5) = NOMFON
 C
       CALL WKVECT ( NOMFON//'.VALE', 'G V R8', 2*NV, LVAL )
 C

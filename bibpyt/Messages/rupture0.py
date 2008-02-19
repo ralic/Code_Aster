@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF rupture0 Messages  DATE 18/02/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -516,17 +516,21 @@ Le champ theta est obligatoire avec l'option %(k1)s.
 Veuillez utiliser le mot-clé THETA_LAGR pour renseigner un champ theta.
 """), 
 
-89: _("""
-Le fond de fissure est obligatoire avec l'option CALC_K_G.
--> Risque et Conseil :
-Veuillez renseigner le mot-clé FOND_FISS.
-"""), 
-
 90: _("""
 L'usage des polynomes de Legendre dans le cas d'un fond de fissure clos
 est interdit.
 -> Risque et Conseil :
 Veuillez redéfinir le mot-clé LISSAGE_THETA.
+"""), 
+
+91: _("""
+Aucune direction de propagation n'est fournie par l'utilisateur, la direction est
+calculée à partir de la normale au fond de fissure.
+-> Risque et Conseil :
+Il n'y a aucun moyen de vérifier que la direction de propagation est dans le bon sens, ce
+qui peut inverser le signe du G calculé. Il est préférable de préciser la direction de
+propagation sous le mot clé DIRECTION ou de définir la fissure à partir des mailles de ses
+lèvres.
 """), 
 
 92: _("""
@@ -535,6 +539,17 @@ Le mot-clef BORNES est obligatoire avec l'option  %(k1)s  !
 
 93: _("""
 Accès impossible au champ : %(k1)s pour le numéro d'ordre : %(i1)d
+"""), 
+
+94: _("""
+La direction de propagation de la fissure et la normale au fond de fissure
+ne sont pas orthogonales.
+-> Risque et Conseil :
+Si la fissure est plane, la normale et la direction de propagation sont
+nécessairement orthogonales, sinon les résultats sont faux: vérifier la
+mise en données dans DEFI_FOND_FISS et CALC_G.
+Si la fissure n'est pas plane, on ne peut pas utiliser le mot-clé NORMALE
+dans DEFI_FOND_FISS: définissez la fissure à partir des mailles de ses lèvres.
 """), 
 
 95: _("""

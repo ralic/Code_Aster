@@ -1,7 +1,7 @@
-      SUBROUTINE ZEVOLU (LREFR,Z,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+      SUBROUTINE ZEVOLU (LREFR,ZBETA,TEMP,TDC,TDR,A,QSR,M,TEQ,AR,BR,DZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,41 +20,52 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
-      REAL*8      Z,T,A,QSR,TEQ,ZPOINT,TDR,TDC,TABS,R8T0,EPS,EPS2
-      REAL*8      AR,BR,TK,M
-
-
+      REAL*8      ZBETA,TEMP,TEQ
+      REAL*8      TDC,TDR,A,QSR,M,AR,BR
+      REAL*8      DZ
       LOGICAL     LREFR
+
+C............................................
+C CALCUL PHASE METALLURGIQUE POUR EDGAR 
+C............................................
+C IN   LREFR : SENS DE L EVOLUTION
+C               VRAI : CINETIQUE AU REFROIDISSEMENT
+C               FAUX : CINETIQUE AU CHAUFFAGE
+C IN   ZBETA : PROPORTION DE PHASE BETA
+C IN   TEMP  : TEMPERATURE
+C IN   TDC   : TEMPERATURE DE DEBUT DE TRANSFORMATION AU CHAUFFAGE
+C IN   TDR   : TEMPERATURE DE DEBUT DE TRANSFORMATION AU REFROIDISSEMENT
+C IN   A     : PARAMETRE MATERIAU
+C IN   QSR   : PARAMETRE MATERIAU
+C IN   M     : PARAMETRE MATERIAU
+C IN   TEQ   : TEMPERATURE EQUIVALENTE 
+C IN   AR    : PARAMETRE MATERIAU
+C IN   BR    : PARAMETRE MATERIAU
+C OUT  DZ    : LOI D EVOLUTION DE LA PROPORTION DE LA PHASE BETA
+
+      REAL*8  EPS,EPS2,TABS,R8T0,TK
 
       EPS= 1.D-9
       EPS2 = 1.D-6
-      IF (LREFR) THEN
-         IF (T .GT. TDR) THEN
-            ZPOINT=0.D0
-         ELSE
-           IF (Z .LT. EPS2) THEN
-              ZPOINT = 0.D0
-           ELSE
-               ZPOINT=AR+BR*ABS(T-TEQ)
-               ZPOINT=EXP(ZPOINT)
-               ZPOINT=(T-TEQ)*ZPOINT
-               IF (Z .LT. EPS2) Z=EPS2
-               ZPOINT=ZPOINT*Z*(1-Z)
-            ENDIF
-          ENDIF
+      IF (LREFR) THEN        
+        IF (ZBETA .LT. EPS2) THEN
+          DZ = 0.D0
+        ELSE
+          DZ=AR+BR*ABS(TEMP-TEQ)
+          DZ=EXP(DZ)
+          DZ=(TEMP-TEQ)*DZ
+          DZ=DZ*ZBETA*(1.D0-ZBETA)
+        ENDIF        
       ELSE
-         IF (T .LT. TDC) THEN
-            ZPOINT=0.D0
-         ELSE
-            IF ((1-Z) .LT. EPS2 ) THEN
-               ZPOINT=0.D0
-            ELSE
-               TABS=R8T0()
-               TK=T+TABS
-               ZPOINT=A*EXP(-QSR/TK)*((ABS(T-TEQ))**M)
-               IF ((T-TEQ) .LT. 0.D0) ZPOINT=-ZPOINT
-            ENDIF
-         ENDIF
+        IF ((1.D0-ZBETA) .LT. EPS2 ) THEN
+          DZ=0.D0
+        ELSE
+          TABS=R8T0()
+          TK=TEMP+TABS
+          DZ=A*EXP(-QSR/TK)*((ABS(TEMP-TEQ))**M)
+        ENDIF   
       ENDIF
-      IF (ABS(ZPOINT) .LT. EPS) ZPOINT = 0.D0
+      
+      IF (ABS(DZ) .LT. EPS) DZ = 0.D0
+      
       END

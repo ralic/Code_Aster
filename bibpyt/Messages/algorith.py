@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@ def _(x) : return x
 
 cata_msg = {
 
-1: _("""
+1 : _("""
  La modélisation C_PLAN n'est pas compatible avec la loi de comportement ELAS_VMIS_PUIS.
 """),
 
@@ -43,61 +43,16 @@ cata_msg = {
  le VECT_ELEM n'existe pas :  %(k1)s
 """),
 
-14 : _("""
- champ non renseigné.
- il faut avoir utilisé CORICH('E',...) sur:  %(k1)s
-"""),
-
-15 : _("""
- impossible
-"""),
-
 16 : _("""
  les charges cinématiques sont pour l'instant proscrites avec FETI
-"""),
-
-19 : _("""
- stop 3
-"""),
-
-20 : _("""
- on n'a pas pu extraire le premier champ des modes mécaniques.
 """),
 
 21 : _("""
  le noeud  %(k1)s  n'appartient pas au maillage :  %(k2)s
 """),
 
-22 : _("""
- le groupe  %(k1)s  n'appartient pas au maillage :  %(k2)s
-"""),
-
 25 : _("""
  données incompatibles.
-"""),
-
-26 : _("""
- le vecteur directeur du spectre est nul.
-"""),
-
-27 : _("""
- cas du MONO_APPUI : vous avez déjà donné un spectre pour cette direction.
-"""),
-
-28 : _("""
-  erreur(s) rencontrée(s) lors de la lecture des supports.
-"""),
-
-29 : _("""
-  vous avez déjà donné un spectre pour le support  %(k1)s
-"""),
-
-30 : _("""
- on ne peut pas traiter du mono-appui et du multi-appui simultanément.
-"""),
-
-31 : _("""
- le noeud  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
 32 : _("""
@@ -166,50 +121,15 @@ cata_msg = {
   -> Risque & Conseil :
 """),
 
-49 : _("""
- pour la loi BETON_DOUBLE_DP :
- le paramètre COEF_ELAS_COMP doit etre compris entre 0. et 100.
-"""),
-
-50 : _("""
- pour la loi BETON_DOUBLE_DP :
- le parametre LONG_CARA doit etre strictement positif
-"""),
-
 51 : _("""
  BETON_DOUBLE_DP:
  le cas des contraintes planes n'est pas traité pour ce modèle.
-"""),
-
-52 : _("""
- le résultat n'est pas un EVOL_NOLI
-"""),
-
-53 : _("""
- champ SIEF_ELGA non trouvé
-"""),
-
-54 : _("""
- champ EPSP_ELNO non trouvé
-"""),
-
-55 : _("""
- champ VARI_ELNO_ELGA non trouvé
-"""),
-
-56 : _("""
- aucun champ initial trouvé
 """),
 
 57 : _("""
  le matériau dépend de la température 
  il n'y a pas de champ de température
  le calcul est impossible
-"""),
-
-59 : _("""
- Il est impossible d'avoir un lissage de THETA de type Lagrange
- et un lissage de G de type Legendre
 """),
 
 60 : _("""
@@ -287,30 +207,6 @@ cata_msg = {
 
 81 : _("""
  erreur contact - trop de réactualisations géométriques
-"""),
-
-82 : _("""
- erreur de programmation
-"""),
-
-89 : _("""
- vecteur diagnostic absent (dvlp)
-"""),
-
-90 : _("""
- opération inconnue sur le vecteur diagnostic (dvlp)
-"""),
-
-91 : _("""
- accès incorrect au vecteur diagnostic (dvlp)
-"""),
-
-92 : _("""
- cas impossible
-"""),
-
-94 : _("""
- pas possible
 """),
 
 96 : _("""

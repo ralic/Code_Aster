@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -421,6 +421,11 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
               ELSE
                   CALL U2MESS('F','ALGORITH6_89')
               ENDIF
+          ELSE IF (COMPOR(1)(1:13).EQ.'META_LEMA_ANI') THEN
+            CALL LCEDGA (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
+     &                   TYPMOD,INSTAM,INSTAP,TAMPON,EPSM,
+     &                   DEPS,SIGM,VIM,OPTION,SIGP,
+     &                   VIP,DSIDEP,CODRET)
           ELSE IF (COMPOR(1).EQ.'META_P_CL       '.OR.
      &             COMPOR(1).EQ. 'META_P_CL_PT    '.OR.
      &             COMPOR(1).EQ. 'META_P_CL_RE    '.OR.
@@ -541,8 +546,6 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ELSEIF ( COMPOR(1)(1:13) .EQ. 'LEMAITRE_IRRA' .OR.
      &             COMPOR(1)(1:10) .EQ. 'LEMA_SEUIL' .OR.
      &             COMPOR(1)(1:10) .EQ. 'GRAN_IRRA_' .OR.
-     &             COMPOR(1)(1:10) .EQ. 'ZIRC_CYRA2' .OR.
-     &             COMPOR(1)(1:9)  .EQ. 'ZIRC_EPRI'  .OR.
      &             COMPOR(1)(1:10) .EQ. 'VISC_IRRA_' ) THEN
             IF ( INT(CRIT(6)) .EQ. 0 ) THEN
               CALL NMVPIR (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,

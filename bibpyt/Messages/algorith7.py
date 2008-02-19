@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith7 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,28 +74,12 @@ cata_msg = {
  nombre total de variables internes incohérent <--> erreur de programmation. 
 """),
 
-13 : _("""
- f(0)=  %(k1)s  > 0 
-"""),
-
 15 : _("""
   le concept EVOL_CHAR :  %(k1)s  n'en est pas un !
 """),
 
 16 : _("""
   le concept EVOL_CHAR :  %(k1)s  ne contient aucun champ de type EVOL_CHAR.
-"""),
-
-17 : _("""
-  on ne trouve pas le résultat derivé associé à  %(k1)s  et  %(k2)s 
-"""),
-
-18 : _("""
-  le concept EVOL_THER :  %(k1)s  ne contient aucun champ.
-"""),
-
-19 : _("""
- erreur de type sur la charge thermique  %(k1)s 
 """),
 
 20 : _("""
@@ -275,10 +259,6 @@ cata_msg = {
  option  %(k1)s  non traitee
 """),
 
-62 : _("""
- matrice non inversible
-"""),
-
 63 : _("""
  pas existence de solution pour le saut
 """),
@@ -316,11 +296,6 @@ cata_msg = {
  elements isoparamétriques 3D non disponibles en grandes rotations
 """),
 
-72 : _("""
- seule une loi de comportement élastique isotrope est valide pour
- le calcul de DG
-"""),
-
 73 : _("""
  le tenseur EPSEQ vaut  0 on a donc une derivée lagrangienne DEPSEQ très grande !
 """),
@@ -337,85 +312,29 @@ cata_msg = {
  développement non implanté
 """),
 
-78 : _("""
- FETI et frottement incompatibles !
-"""),
-
-79: _("""
+79 : _("""
  loi de comportement avec irradiation, le paramètre N doit etre supérieur à 0
 """),
 
-80: _("""
+80 : _("""
  loi de comportement avec irradiation, le paramètre PHI_ZERO doit etre supérieur à 0
 """),
 
-81: _("""
+81 : _("""
  loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit etre supérieur ou égal à 0
 """),
 
-82: _("""
+82 : _("""
  loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramètre BETA doit être positif ou nul
-"""),
-
-83 : _("""
- F(0) > 0 : erreur de conception
-"""),
-
-84 : _("""
- calcul flambement non linéaire HPP
-"""),
-
-85 : _("""
- flambement non linéaire GREEN
-"""),
-
-86 : _("""
- fonctionnalite modifiée (dvlp)
-"""),
-
-89 : _("""
- contact et recherche linéaire peuvent poser des problèmes de convergence
-"""),
-
-90 : _("""
- la combinaison: contact-frottement et solveur GCPC n'est pas disponible.
-"""),
-
-91 : _("""
- contact méthode continue et recherche linéaire sont incompatibles
-"""),
-
-92 : _("""
- contact méthode continue et pilotage sont incompatibles
-"""),
-
-93 : _("""
- la combinaison: méthode continue en contact et solveur GCPC n'est pas disponible.
-"""),
-
-94 : _("""
- LIAISON_UNILATER et PILOTAGE sont des fonctionnalités incompatibles
-"""),
-
-95 : _("""
- LIAISON_UNILATER et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
 96 : _("""
  comportement ZMAT obligatoire
 """),
 
-97 : _("""
- il faut declarer lam_visc                           pour le fluage de dessication intrinseque
-"""),
-
 98 : _("""
  il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessication
  intrinseque avec SECH comme paramètre
-"""),
-
-99 : _("""
- mauvais dimensionnement de GEOMM et GEOMP
 """),
 
 }

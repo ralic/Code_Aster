@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-
 
 10 : _("""
  Le concept dans ETAT_INIT n'est pas du type EVOL_NOLI
@@ -61,10 +59,6 @@ cata_msg = {
 
  Conseils :
    Avez-vous bien affecté une masse sur tous les éléments ?
-"""),
-
-76 : _("""
- L'etat initial n'appartient pas a un EVOL_NOLI : on suppose qu'on part d'un etat a deplacements nuls
 """),
 
 77 : _("""

@@ -1,21 +1,21 @@
       SUBROUTINE JEIMPM ( CUNIT , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -73,7 +73,7 @@ C ----------------------------------------------------------------------
       CHARACTER*1      CLA,CGENR
       INTEGER          ICL , K
 C DEB ------------------------------------------------------------------
-C 
+C
       JULIST = IUNIFI ( CUNIT )
       IF ( JULIST .EQ. 0 ) GOTO 9999
       WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
@@ -94,9 +94,12 @@ C
         IS = ISZON ( JISZON + ID )
         IF ( IS .NE. 0 ) THEN
           ISD  = ISZON(JISZON + ID + 3 ) / ISSTAT
+          CALL ASSERT( (ISD.GT.0) .AND. (ISD.LT.5) )
           IDOS = ISZON(JISZON + ID + 2 )
           ISF  = ISZON(JISZON + IS - 4 ) / ISSTAT
+          CALL ASSERT( (ISF.GT.0) .AND. (ISF.LT.5) )
           ICL  = ISZON(JISZON + IS - 2 )
+          CALL ASSERT( ICL.LE.5 )
           IDCO = ISZON(JISZON + IS - 3 )
           CLA = ' '
           IF ( ICL .GT. 0 ) CLA = CLASSE(ICL:ICL)
@@ -133,7 +136,7 @@ C
  100  CONTINUE
 C
 C     ON LISTE MAINTENANT LES OBJETS ALLOUES DYNAMIQUEMENT
-C 
+C
       WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
       WRITE (JULIST,'(A)') 'OBJETS ALLOUES DYNAMIQUEMENT '
       WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
@@ -143,7 +146,7 @@ C
       NCLA1 = 1
       NCLA2 = INDEX ( CLASSE , '$' ) - 1
       IF (NCLA2 .LT. 0) NCLA2 = N
-      DO 200  IC = NCLA1 , NCLA2 
+      DO 200  IC = NCLA1 , NCLA2
         CLA = CLASSE(IC:IC)
         DO 205 J = 1 , NREMAX(IC)
           IDCO = 0
@@ -152,11 +155,13 @@ C
           CGENR = GENR(JGENR(IC)+J)
           NOM32 = RNOM(JRNOM(IC)+J)
           IF (IADYN .NE. 0) THEN
-            IDM   = IADMI - 4 
+            IDM   = IADMI - 4
             IM = IMARQ(JMARQ(IC)+2*J-1)
-            IL = ISZON(JISZON+IDM) - 8 - IDM 
+            IL = ISZON(JISZON+IDM) - 8 - IDM
             ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
+            CALL ASSERT( (ISD.GT.0) .AND. (ISD.LT.5) )
             ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
+            CALL ASSERT( (ISF.GT.0) .AND. (ISF.LT.5) )
             WRITE(JULIST,
      +        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
      +        'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
@@ -175,9 +180,9 @@ C
                 IADMOC = ISZON(JISZON + IBIADM - 1 +2*K-1)
                 IADYOC = ISZON(JISZON + IBIADM - 1 +2*K  )
                 IF (IADYOC .NE. 0) THEN
-                   IDM   = IADMOC - 4 
+                   IDM   = IADMOC - 4
                    IM = ISZON(JISZON + IBMARQ - 1 + 2*K)
-                   IL = ISZON(JISZON+IDM) - 8 - IDM 
+                   IL = ISZON(JISZON+IDM) - 8 - IDM
                    ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
                    ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
                    WRITE(JULIST,
@@ -185,13 +190,14 @@ C
      +              'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
      +              CLA,J,K,IM,IADYOC,KSTAT(ISD:ISD),IL,
      +              KSTAT(ISF:ISF),NOM32
-                ENDIF  
- 210          CONTINUE                  
+                ENDIF
+ 210          CONTINUE
             ENDIF
             CALL JJLIDE ('JEIMPO' , NOM32(1:24) , 2)
-          ENDIF 
+          ENDIF
  205    CONTINUE
  200  CONTINUE
+      CALL JXVERI(CUNIT , CMESS)  
  9999 CONTINUE
 C FIN ------------------------------------------------------------------
       END

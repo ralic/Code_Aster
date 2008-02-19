@@ -2,7 +2,7 @@
 C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,13 +158,14 @@ C
      &             ZI(LNUOR-1+KF), R8B, C16B, NOMFON, 0 )
 C
          CALL WKVECT ( NOMFON//'.VALE', 'G V R', LN4*2, LFO   )
-         CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5 , LPROF )
+         CALL WKVECT ( NOMFON//'.PROL', 'G V K24', 6 , LPROF )
          ZI(LY+KF-1)  = LFO
-         ZK16(LPROF  ) = 'FONCTION'
-         ZK16(LPROF+1) = 'LIN LIN '
-         ZK16(LPROF+2) = 'INST    '
-         ZK16(LPROF+3) = 'TOUTRESU'
-         ZK16(LPROF+4) = 'EC      '
+         ZK24(LPROF  ) = 'FONCTION'
+         ZK24(LPROF+1) = 'LIN LIN '
+         ZK24(LPROF+2) = 'INST    '
+         ZK24(LPROF+3) = 'TOUTRESU'
+         ZK24(LPROF+4) = 'EC      '
+         ZK24(LPROF+5) = NOMFON
    60 CONTINUE
 C
       DO 80 IF = 1,DIM

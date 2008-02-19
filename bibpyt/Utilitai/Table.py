@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 11/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -972,6 +972,12 @@ def _typaster(obj, prev=None, strict=False):
       typobj=dtyp[type(obj)]
       if prev in [None, typobj]:
          return typobj
+      elif prev[0] == typobj[0] == 'K':
+         if len(obj) <= int(prev[1:]):
+            return prev
+         else:
+            raise TypeError, "La longueur de la chaine %s est incompatible avec le type %s" \
+               % (repr(obj),repr(prev))
       elif strict:   # prev != None et typobj != prev et strict
          raise TypeError, "La valeur %s n'est pas de type %s" % (repr(obj),repr(prev))
       elif prev in ('I','R') and typobj in ('I','R'):
@@ -1001,3 +1007,5 @@ def _func_test_rela(v, VALE, PRECISION):
       if v != None and (sign*x*(1.-PRECISION) <= sign*v <= sign*x*(1.+PRECISION)):
          return True
    return False
+
+

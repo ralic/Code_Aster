@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/02/2008   AUTEUR GREFFET N.GREFFET 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,6 +73,7 @@ MAT=DEFI_MATERIAU(
                              E    =  EY,
                              NU   =  NU,
                              RHO  = RHO,
+                         AMOR_ALPHA=0.0000001, AMOR_BETA=0.0001,  
                            ),
                  );
 
@@ -160,24 +161,33 @@ VIT_INI = CREA_CHAMP(MAILLAGE=MAIL,
                           )
                      )
 
-
+DTARC=10.*DT
+LARCH = DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(
+                          _F(JUSQU_A = TMAX,PAS = DTARC),
+                      ),);
+# Calcul explicite
 RESU1 = DYNA_NON_LINE(
                        MODELE=MOD1,
                        CHAM_MATER= CHMAT,
                        CARA_ELEM = CELE1,
                        MASS_DIAG='NON',
                        COMP_INCR=_F(
-                                    RELATION ='ELAS',                                   ),
+                                    RELATION ='ELAS',     ),
                        INCREMENT=_F( LIST_INST = INST1,
                                      PRECISION =1.E-1),
                        EXCIT=(   _F( CHARGE = COND_L1,
                                      FONC_MULT = chf1,),
                              ),
                        SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
-                                       FORMULATION='ACCELERATION',),
+                                      FORMULATION='ACCELERATION',),
                        ETAT_INIT = _F(
                                        VITE = VIT_INI,
                                       ),
+                       ARCHIVAGE=_F(LIST_INST=LARCH,),
+                       OBSERVATION=(_F(NOM_CHAM='DEPL',
+                                       NOM_CMP='DX',
+                                       LIST_INST= LARCH,
+                                       NOEUD='N1',SUIVI_DDL='NON'),),
                      );
 
 
@@ -195,17 +205,109 @@ IMPR_RESU(MODELE = MOD1,
                                  'ACCE',
                                 ) ,
            ),),);
+# Calcul implicite HHT complet faiblement amorti
+# On veut retrouver le resultat precedent
+# On interdit les iterations pour bien valider HHT complet et Rayleigh
+RESU2 = DYNA_NON_LINE(
+                       MODELE=MOD1,
+                       CHAM_MATER= CHMAT,
+                       CARA_ELEM = CELE1,
+                       MASS_DIAG='NON',
+                       COMP_INCR=_F(
+                                    RELATION ='ELAS',     ),
+                       INCREMENT=_F( LIST_INST = INST1,
+                                     PRECISION =1.E-1),
+                       EXCIT=(   _F( CHARGE = COND_L1,
+                                     FONC_MULT = chf1,),
+                             ),
+                        SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                        MODI_EQUI='OUI',
+                                        ALPHA=-0.02,
+                                        FORMULATION='DEPLACEMENT',),
+                       ETAT_INIT = _F(
+                                       VITE = VIT_INI,
+                                      ),
+                       ARCHIVAGE=_F(LIST_INST=LARCH,),
+                       OBSERVATION=( _F(NOM_CHAM='DEPL',
+                                        NOM_CMP='DX',
+                                        LIST_INST= LARCH,
+                                        NOEUD='N1',SUIVI_DDL='NON'),),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=0,),
+                     );
+
+# Calcul implicite HHT complet fortement amorti
+# Non regression
+# On interdit les iterations pour bien valider HHT complet et Rayleigh
+MAT2=DEFI_MATERIAU(
+                  ELAS = _F(
+                             E    =  EY,
+                             NU   =  NU,
+                             RHO  = RHO,
+                         AMOR_ALPHA=0.0001, AMOR_BETA=0.1,  
+                           ),
+                 );
+
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(TOUT='OUI',MATER=MAT2,),),
+                    );
+
+RESU3 = DYNA_NON_LINE(
+                       MODELE=MOD1,
+                       CHAM_MATER= CHMAT2,
+                       CARA_ELEM = CELE1,
+                       MASS_DIAG='NON',
+                       COMP_INCR=_F(
+                                    RELATION ='ELAS',     ),
+                       INCREMENT=_F( LIST_INST = INST1,
+                                     PRECISION =1.E-1),
+                       EXCIT=(   _F( CHARGE = COND_L1,
+                                     FONC_MULT = chf1,),
+                             ),
+                        SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                        MODI_EQUI='OUI',
+                                        ALPHA=-0.3,
+                                        FORMULATION='DEPLACEMENT',),
+                       ETAT_INIT = _F(
+                                       VITE = VIT_INI,
+                                      ),
+                       ARCHIVAGE=_F(LIST_INST=LARCH,),
+                       OBSERVATION=( _F(NOM_CHAM='DEPL',
+                                        NOM_CMP='DX',
+                                        LIST_INST= LARCH,
+                                        NOEUD='N1',SUIVI_DDL='NON'),),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=0,),
+                     );
 
 
 UXRES = Q0*sin(K*LONG)*sin(FREQ*TMAX)
-TEST_RESU(RESU=_F(RESULTAT=RESU1,
+TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                   NOEUD='N2',
                   INST=1.2E-3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   VALE = UXRES,
-                  PRECISION = 1.E-4,
+                  PRECISION = 5.E-4,
                   REFERENCE='ANALYTIQUE',
+                  ),
+               _F(RESULTAT=RESU2,
+                  NOEUD='N2',
+                  INST=1.2E-3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE = UXRES,
+                  PRECISION = 5.E-4,
+                  REFERENCE='ANALYTIQUE',
+                  ),
+               _F(RESULTAT=RESU3,
+                  NOEUD='N2',
+                  INST=1.2E-3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  VALE = 4.5610687297459E-05,
+                  PRECISION = 5.E-4,
+                  REFERENCE='NON_REGRESSION',
+                  ),
                   ),);
 
 FIN();

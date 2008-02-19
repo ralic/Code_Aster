@@ -3,10 +3,10 @@
       INTEGER             NBVAL
       REAL*8              VALE(*)
       LOGICAL             COMPL
-      CHARACTER*16        NOPARA
+      CHARACTER*24        NOPARA
       CHARACTER*19        NOMFIN, NOMFON
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      IER, NBVAL2, LVALE, LFON, IVAL, LPROL
+      INTEGER      IER, NBVAL2, LVALE, LFON, IVAL, LPROL, LXLGUT
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -71,16 +71,18 @@ C
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 C
-      CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5, LPROL )
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT ( NOMFON//'.PROL', 'G V K24', 6, LPROL )
       IF ( COMPL ) THEN
-         ZK16(LPROL)   = 'FONCT_C         '
+         ZK24(LPROL)   = 'FONCT_C         '
       ELSE
-         ZK16(LPROL)   = 'FONCTION        '
+         ZK24(LPROL)   = 'FONCTION        '
       ENDIF
-      ZK16(LPROL+1) = 'LIN LIN         '
-      ZK16(LPROL+2) = NOPARA
-      ZK16(LPROL+3) = 'TOUTRESU        '
-      ZK16(LPROL+4) = 'EE              '
+      ZK24(LPROL+1) = 'LIN LIN         '
+      ZK24(LPROL+2) = NOPARA
+      ZK24(LPROL+3) = 'TOUTRESU        '
+      ZK24(LPROL+4) = 'EE              '
+      ZK24(LPROL+5) = NOMFON
 C
       CALL JEDEMA()
       END

@@ -1,6 +1,6 @@
-      SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS)
+      SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,6 +99,9 @@ C     ------------------------------------------------------------------
           IADLOC = (IADDI+NBLENT)-(NUMEXT*NBENRG(IC))
           CALL CODENT(NUMEXT+1,'G',NOM(6:7))
           JIECR = (JK1ZON+IADMO-1+LSO-LGBL)/LOIS+1
+          IF ( LSO .LT. LGBL ) THEN
+            JIECR = (JK1ZON+IADMO-1)/LOIS+1 
+          ENDIF       
           CALL WRITDR ( NOM , ISZON(JIECR) ,
      +                  LGBL/LOUA , IADLOC ,-1, IB , IERR )
           IF ( IERR .NE. 0 ) THEN

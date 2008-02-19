@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF sdveri Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,10 +28,6 @@ cata_msg = {
 
 2 : _("""
  Objet %(k1)s inexistant.
-"""),
-
-3 : _("""
- Attention, vous allez écraser des concepts existants.
 """),
 
 4 : _("""

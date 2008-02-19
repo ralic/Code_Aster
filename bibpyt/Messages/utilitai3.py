@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 10/12/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF utilitai3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,10 +21,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-1 : _("""
- erreur dans la donnee de la s.d.  %(k1)s  a imprimer, il ne s'agit ni d'un matr_elem, ni d'un vect_elem.
-"""),
 
 2 : _("""
  l utilisation de cette commande n est legitime que si la configuration etudiee est du type "faisceau_trans"
@@ -386,7 +382,7 @@ cata_msg = {
  seuls les types "reel" et "complexe" sont autorises.
 """),
 
-94: _("""
+94 : _("""
  MINMAX est toujours calculé sur TOUT le modèle pour les champs aux noeuds.
 """),
 

@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IBID, LREFE1, LREFE2
-      INTEGER      IFM,NIV
+      INTEGER      IFM,NIV, LXLGUT
       CHARACTER*1  TYPE,COLI,K1BID
       CHARACTER*24 VALK(2)
       CHARACTER*4  INTERP(2), INTRES
@@ -118,12 +118,14 @@ C
 C
 C     --- REMPLISSAGE DU .PROL ---
 C
-      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
-      ZK16(LPRO)   = 'FONCTION'
-      ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-      ZK16(LPRO+2) = NOMACC(1:8)
-      ZK16(LPRO+3) = NOMCHA(1:4)
-      ZK16(LPRO+4) = 'EE      '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT(NOMFON//'.PROL','G V K24',6,LPRO)
+      ZK24(LPRO)   = 'FONCTION'
+      ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+      ZK24(LPRO+2) = NOMACC(1:8)
+      ZK24(LPRO+3) = NOMCHA(1:4)
+      ZK24(LPRO+4) = 'EE      '
+      ZK24(LPRO+5) = NOMFON
 C
 C----------------------------------------------------------------------
 C                            P T E M
@@ -222,7 +224,7 @@ C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
             CALL U2MESS('F','UTILITAI4_26')
                GOTO 9999
             ENDIF
-            ZK16(LPRO+3)(5:8) = '_ABS'
+            ZK24(LPRO+3)(5:8) = '_ABS'
          ENDIF
 C        --------------------------------------------------------------
          CALL WKVECT(NOMFON//'.VALE','G V R',2*NBORDR,LVAR)

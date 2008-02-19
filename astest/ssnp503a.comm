@@ -1,4 +1,4 @@
-# MODIF  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 19/02/2008   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('SURF','LIGINF',),
                                 MATER=ACIER,
-                                TEMP_REF=0.0,),);
+                                ),);
 
 DEPX=2.00
 DEPY=1.E-3

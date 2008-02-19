@@ -1,6 +1,6 @@
       SUBROUTINE NMDOMC (MODELE,MATE,CARELE,FOMULT,INFCHA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER            N1,N11,JNOMA,NCHAR,IALICH,IBID,IERD,NFCTS
+      INTEGER            LXLGUT
       CHARACTER*4        KNUM
       CHARACTER*8        CARA,MODE,K8BID,AFFCHA,PARCHA,TYPCHA, MATERI
       CHARACTER*19       CH19
@@ -222,26 +223,29 @@ C
         IF ((N1.EQ.0).AND.(N11.EQ.0)) THEN
            CALL CODENT( ICH , 'D0' , KNUM  )
            NOMFCT = '&&NC'//KNUM
+           CALL ASSERT(LXLGUT(NOMFCT).LE.24)
            CALL GETVC8('EXCIT','COEF_MULT_C',ICH,1,1,CCOEF,N2)
            IF ( N2 .EQ. 0 ) THEN
               CALL GETVR8('EXCIT','COEF_MULT',ICH,1,1,COEF,N3)
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
-              ZK16(JPRO)   = 'CONSTANT'
-              ZK16(JPRO+1) = 'LIN LIN '
-              ZK16(JPRO+2) = 'TOUTPARA'
-              ZK16(JPRO+3) = 'TOUTRESU'
-              ZK16(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K24',6,JPRO)
+              ZK24(JPRO)   = 'CONSTANT'
+              ZK24(JPRO+1) = 'LIN LIN '
+              ZK24(JPRO+2) = 'TOUTPARA'
+              ZK24(JPRO+3) = 'TOUTRESU'
+              ZK24(JPRO+4) = 'CC      '
+              ZK24(JPRO+5) = NOMFCT
               CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
               ZR(JVAL)   = 1.0D0
               ZR(JVAL+1) = COEF
               ZR(JVAL+2) = 0.D0
            ELSE
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
-              ZK16(JPRO)   = 'CONSTANT'
-              ZK16(JPRO+1) = 'LIN LIN '
-              ZK16(JPRO+2) = 'TOUTPARA'
-              ZK16(JPRO+3) = 'TOUTRESU'
-              ZK16(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K24',6,JPRO)
+              ZK24(JPRO)   = 'CONSTANT'
+              ZK24(JPRO+1) = 'LIN LIN '
+              ZK24(JPRO+2) = 'TOUTPARA'
+              ZK24(JPRO+3) = 'TOUTRESU'
+              ZK24(JPRO+4) = 'CC      '
+              ZK24(JPRO+5) = NOMFCT
               CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
               ZR(JVAL)   = 1.0D0
               ZR(JVAL+1) = DBLE( CCOEF )

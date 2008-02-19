@@ -1,21 +1,21 @@
-#@ MODIF assembla Messages  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF assembla Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
 def _(x) : return x
@@ -28,15 +28,6 @@ cata_msg = {
     de matrice non-symétrique.
 
   Conseil : Changer de solveur
-"""),
-
-
-
-
-
-3 : _("""
-  le parametre :  %(k1)s  est incorrect.
-  on attend : "CUMU" ou "ZERO"
 """),
 
 4 : _("""
@@ -93,10 +84,6 @@ cata_msg = {
  action : E/L/S
 """),
 
-
-
-
-
 18 : _("""
  incohérence des MATR_ELEM
 """),
@@ -111,15 +98,6 @@ cata_msg = {
 
 21 : _("""
  modèles différents
-"""),
-
-22 : _("""
- Les valeurs de la matrice  %(k1)s  doivent etre réelles
- On ne traite pas encore les matrices non-symétriques complexes.
-"""),
-
-23 : _("""
- la matrice %(k1)s à transformer en matrice non-symétrique doit etre symétrique.
 """),
 
 24 : _("""
@@ -250,18 +228,6 @@ Risques & conseils :
  --- a une adresse : %(i2)d   > NEQUA : %(i3)d
 """),
 
-50 : _("""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
-"""),
-
-52 : _("""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
-"""),
-
-53 : _("""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
-"""),
-
 63 : _("""
  erreur sur le premier lagrange d'une LIAISON_DDL
  on a mis 2 fois le premier  lagrange :  %(i1)d
@@ -295,6 +261,5 @@ Risques & conseils :
  Problème dans NUMERO.F avec FETI: Incohérence entre la SD_FETI et le paramètrage
  de l'opérateur. Nombre d'incohérences= %(i1)d
 """),
-
 
 }

@@ -1,9 +1,9 @@
       SUBROUTINE TE0144 ( OPTION , NOMTE )
-      IMPLICIT  REAL*8  (A-H,O-Z)
+      IMPLICIT  NONE
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,19 +50,26 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      PARAMETER                 (NBRES=2)
-      REAL*8              VALRES(NBRES)
-      CHARACTER*2    BL2, CODRES(NBRES)
-      CHARACTER*8  NOMPAR,NOMRES(NBRES)
+      REAL*8      ZERO,DEUX
+      PARAMETER  (ZERO = 0.D0,DEUX = 2.D0)
+
+      INTEGER      NBRES,IPLOUF,NPG,NNO,NC,NNOC,NCC,JEFFO,LMATER,IRET
+      INTEGER      IRET1,LSECT,ITYPE,LX,LRCOU,LORIEN,JDEPL,I,J
+      PARAMETER    (NBRES=2)
+      REAL*8       VALRES(NBRES)
+      CHARACTER*2  CODRES(NBRES)
+      CHARACTER*8  NOMRES(NBRES)
       CHARACTER*16 CH16
-      REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
-      REAL*8       FL(12), FE(12), PGL1(3,3), PGL2(3,3)
-      REAL*8       XFLY, XFLZ, XSIY, XSIZ,TRIGOM,X,R8VIDE
+
+      REAL*8  UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
+      REAL*8  FL(12), PGL1(3,3), PGL2(3,3), EPSITH
+      REAL*8  TRIGOM, X, TEMP
+      REAL*8  E,XNU,XL,RAD,ANGARC,ANGS2,ALONG
+
+C
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E', 'NU'/
 C     ------------------------------------------------------------------
-      ZERO = 0.D0
-      DEUX = 2.D0
       NNO  = 2
       NC   = 6
       NNOC = 1
@@ -76,25 +83,22 @@ C
          CALL U2MESK('F','ELEMENTS3_27',1,CH16)
       ENDIF
 C
-C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+C --- POINT DE GAUSS DE L'ELEMENT
+      CALL ELREF4(' ','RIGI',IPLOUF,IPLOUF,IPLOUF,
+     &            NPG,IPLOUF,IPLOUF,IPLOUF,IPLOUF)
+      CALL ASSERT( (NPG.EQ.2).OR.(NPG.EQ.3) )
 C
+C --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       CALL JEVECH ( 'PMATERC', 'L', LMATER )
 C
 C --- RECUPERATION DE LA TEMPERATURE :
-C     -----------------------------------------------
-      IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
-        NPG = 2
-      ELSE
-        NPG = 3
-      ENDIF
-      CALL VERIFM('RIGI',NPG,1,'+',ZI(LMATER),'ELAS',1,F,IRET)
+      CALL VERIFM('RIGI',NPG,1,'+',ZI(LMATER),'ELAS',1,EPSITH,IRET)
       CALL MOYTEM('RIGI',NPG,1,'+',TEMP,IRET1)
 
       CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
-     &             1,'TEMP',TEMP,
-     &                                2,NOMRES,VALRES,CODRES,'FM')
-      E      = VALRES(1)
-      XNU    = VALRES(2)
+     &             1,'TEMP',TEMP,2,NOMRES,VALRES,CODRES,'FM')
+      E   = VALRES(1)
+      XNU = VALRES(2)
 C
 C     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
 C
@@ -115,7 +119,7 @@ C
       CALL JEVECH ('PGEOMER', 'L',LX)
       LX = LX - 1
       XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2
-     &           + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
+     &         + (ZR(LX+5)-ZR(LX+2))**2 + (ZR(LX+6)-ZR(LX+3))**2 )
       IF  ( ITYPE .EQ. 10 ) THEN
          CALL JEVECH ('PCAARPO', 'L',LRCOU)
          RAD    = ZR(LRCOU)
@@ -151,36 +155,49 @@ C     --- VECTEUR EFFORT       LOCAL  FL = KLC * UL
       CALL PMAVEC('ZERO',12,KLC,UL,FL)
 C
 C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
-      IF ( F .NE. ZERO ) THEN
-          DO 40 I = 1 , 12
-             UG(I) = ZERO
- 40       CONTINUE
+      IF ( EPSITH .NE. ZERO ) THEN
+         DO 40 I = 1 , 12
+            UG(I) = ZERO
+ 40      CONTINUE
 C
-               IF ( ITYPE .NE. 10 ) THEN
-                  UG(1) = -F * XL
-                  UG(7) = -UG(1)
-               ELSE
-                  ALONG = 2.D0 * RAD * F * SIN(ANGS2)
-                  UG(1) = -ALONG * COS(ANGS2)
-                  UG(2) =  ALONG * SIN(ANGS2)
-                  UG(7) = -UG(1)
-                  UG(8) =  UG(2)
-               ENDIF
+         IF ( ITYPE .NE. 10 ) THEN
+            UG(1) = -EPSITH * XL
+            UG(7) = -UG(1)
+         ELSE
+            ALONG = 2.D0 * RAD * EPSITH * SIN(ANGS2)
+            UG(1) = -ALONG * COS(ANGS2)
+            UG(2) =  ALONG * SIN(ANGS2)
+            UG(7) = -UG(1)
+            UG(8) =  UG(2)
+         ENDIF
 C
 C              --- CALCUL DES FORCES INDUITES ---
-               DO 20 I = 1 , 6
-                  DO 22 J = 1 , 6
-                     FL(I)   = FL(I)   - KLC(I,J)     * UG(J)
-                     FL(I+6) = FL(I+6) - KLC(I+6,J+6) * UG(J+6)
- 22               CONTINUE
- 20            CONTINUE
- 21            CONTINUE
+         DO 20 I = 1 , 6
+            DO 22 J = 1 , 6
+               FL(I)   = FL(I)   - KLC(I,J)     * UG(J)
+               FL(I+6) = FL(I+6) - KLC(I+6,J+6) * UG(J+6)
+ 22         CONTINUE
+ 20      CONTINUE
       ENDIF
 C
-C     --- ARCHIVAGE ---
-      DO 702 I = 1 , 6
-         ZR(JEFFO+I-1)   = -FL(I)
-         ZR(JEFFO+I+6-1) =  FL(I+6)
- 702  CONTINUE
+C --- ARCHIVAGE ---
+      IF ( NPG .EQ. 2 ) THEN
+         DO 702 I = 1 , 6
+            ZR(JEFFO+I-1)   = -FL(I)
+            ZR(JEFFO+I+6-1) =  FL(I+6)
+702      CONTINUE
+      ELSE
+C        DANS LE CAS 3 POINTS DE GAUSS
+C        IL NE FAUT PAS METTRE 0 SUR UN DES POINTS DE GAUSS
+C        CF DOC ASTER POUR LA NUMEROTATION OU ELREGA
+C              NOEUD        N1       N2       N3
+C              POSITION   (-0.7777 , 0.0000 , 0.7777)
+C        C'EST LINEAIRE : (N2) = ( (N1) + (N3) )/2
+         DO 705 I = 1 , 6
+            ZR(JEFFO+I-1)    =  -FL(I)
+            ZR(JEFFO+I+6-1)  = (-FL(I) + FL(I+6))*0.5D0
+            ZR(JEFFO+I+12-1) =   FL(I+6)
+705      CONTINUE
+      ENDIF
 C
       END

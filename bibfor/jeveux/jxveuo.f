@@ -1,6 +1,6 @@
       SUBROUTINE JXVEUO (CEL , ITAB , INAT , JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,12 +165,12 @@ C
         IADDI(2)  = IADD  ( JIADD(IC) + 2*IXDESO   )
         IF ( IADMI .EQ. 0 ) THEN
           IF ( IADDI(1) .NE. 0 ) THEN
-            CALL JJALLS ( LONOI , GENRI , TYPEI , LTYPI ,
-     &                   'NOINIT' , ITAB , JITAB , IADMI , IADYN)
+            CALL JJALLS ( LONOI, IC, GENRI, TYPEI, LTYPI,
+     &                   'NOINIT', ITAB, JITAB, IADMI, IADYN)
             CALL JXLIRO ( IC , IADMI , IADDI , LONOI )
           ELSE
-            CALL JJALLS ( LONOI , GENRI , TYPEI , LTYPI ,
-     &                   'INIT  ' , ITAB , JITAB , IADMI , IADYN)
+            CALL JJALLS ( LONOI, IC, GENRI, TYPEI, LTYPI,
+     &                   'INIT  ', ITAB, JITAB, IADMI, IADYN)
           ENDIF
           IADM( JIADM(IC) + 2*IXDESO-1 ) = IADMI
           IADM( JIADM(IC) + 2*IXDESO   ) = IADYN
@@ -218,8 +218,8 @@ C
 C ------- PAS D'IMAGE DISQUE
 C
           IF ( CEL .EQ. 'E' ) THEN
-            CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     &                   ITAB , JITAB , IADMI , IADYN)
+            CALL JJALLS( LONOI, IC, GENRI, TYPEI, LTYPI, 'INIT',
+     &                   ITAB, JITAB, IADMI, IADYN)
           ELSE
             CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
@@ -228,8 +228,8 @@ C
 C
 C ------- AVEC  IMAGE DISQUE
 C
-          CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT' ,
-     &                 ITAB , JITAB , IADMI , IADYN)
+          CALL JJALLS( LONOI, IC, GENRI, TYPEI, LTYPI, 'NOINIT',
+     &                 ITAB, JITAB, IADMI, IADYN)
           CALL JXLIRO ( IC , IADMI , IADDI , LONOI )
         ENDIF
       ELSE

@@ -1,6 +1,6 @@
       SUBROUTINE RCFODE(IFON,TEMP,F,DF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,13 +59,13 @@ C
 C DEB ------------------------------------------------------------------
       JPRO  = ZI(IFON+1)
       JVALF = ZI(IFON+2)
-      IF (ZK16(JPRO)(1:1).EQ.'C') THEN
+      IF (ZK24(JPRO)(1:1).EQ.'C') THEN
         F  = ZR(JVALF+1)
         DF = 0.D0
         GOTO 101
       ENDIF
       ISAVE = ZI(IFON+INDFCT)
-      IF (ZK16(JPRO)(1:1).EQ.'N') THEN
+      IF (ZK24(JPRO)(1:1).EQ.'N') THEN
 C
 C---- NAPPE - IMPOSSIBLE
 C
@@ -122,13 +122,13 @@ C
       ELSE IF (TESINF) THEN
         JV = JVALF+NBVF
         JP = JVALF
-        IF (ZK16(JPRO+4)(2:2).EQ.'C') THEN
+        IF (ZK24(JPRO+4)(2:2).EQ.'C') THEN
           DF = 0.0D0
            F = ZR(JV)
-        ELSE IF (ZK16(JPRO+4)(1:1).EQ.'L') THEN
+        ELSE IF (ZK24(JPRO+4)(1:1).EQ.'L') THEN
           DF = (ZR(JV+1)-ZR(JV))/(ZR(JP+1)-ZR(JP))
            F = DF*(TEMP-ZR(JP))+ZR(JV)
-        ELSE IF (ZK16(JPRO+4)(1:1).EQ.'E') THEN
+        ELSE IF (ZK24(JPRO+4)(1:1).EQ.'E') THEN
           VALR = TEMP
           CALL U2MESG('F', 'MODELISA8_93',0,' ',0,0,1,VALR)
         END IF
@@ -136,13 +136,13 @@ C
       ELSE IF (TESSUP) THEN
         JV = JVALF + 2*NBVF - 1
         JP = JVALF + NBVF - 1
-        IF (ZK16(JPRO+4)(2:2).EQ.'C') THEN
+        IF (ZK24(JPRO+4)(2:2).EQ.'C') THEN
           DF = 0.0D0
            F = ZR(JV)
-        ELSE IF (ZK16(JPRO+4)(2:2).EQ.'L') THEN
+        ELSE IF (ZK24(JPRO+4)(2:2).EQ.'L') THEN
           DF = (ZR(JV)-ZR(JV-1))/(ZR(JP)-ZR(JP-1))
            F = DF*(TEMP-ZR(JP-1))+ZR(JV-1)
-        ELSE IF (ZK16(JPRO+4)(2:2).EQ.'E') THEN
+        ELSE IF (ZK24(JPRO+4)(2:2).EQ.'E') THEN
           VALR = TEMP
           CALL U2MESG('F', 'MODELISA8_94',0,' ',0,0,1,VALR)
         END IF

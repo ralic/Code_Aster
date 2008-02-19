@@ -5,7 +5,7 @@
       CHARACTER*(*)       OBSTAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER        I, LPRO, LVAL
+      INTEGER        I, LPRO, LVAL, LXLGUT
       CHARACTER*19   NOMFON, RESU
 C     ------------------------------------------------------------------
 C
@@ -51,12 +51,14 @@ C
 C
 C     --- REMPLISSAGE DU .PROL ---
 C
-      CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5, LPRO )
-      ZK16(LPRO)   = 'FONCTION'
-      ZK16(LPRO+1) = 'LIN LIN '
-      ZK16(LPRO+2) = 'THETA   '
-      ZK16(LPRO+3) = 'R       '
-      ZK16(LPRO+4) = 'EE      '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT ( NOMFON//'.PROL', 'G V K24', 6, LPRO )
+      ZK24(LPRO)   = 'FONCTION'
+      ZK24(LPRO+1) = 'LIN LIN '
+      ZK24(LPRO+2) = 'THETA   '
+      ZK24(LPRO+3) = 'R       '
+      ZK24(LPRO+4) = 'EE      '
+      ZK24(LPRO+5) = NOMFON
 C
 C     --- REMPLISSAGE DU .VALE ---
 C

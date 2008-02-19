@@ -5,7 +5,7 @@
      &                  CONTP, FL, KLV)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/11/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,16 +77,21 @@ C
       REAL*8 RC,RP,SEUIL,SY,CRIT,EPSX,VALRES(2)
 
 C     POUR LA THERMIQUE
-      REAL*8 TEMM,EM,NUM,F,DF,TREF,TPP,TPM
+      REAL*8 TEMM,EM,NUM,F,DF
 C
 C     ICORES : CORRESPONDANCE ENTRE LES 6 OU 7 DDLS DE CONTRAINTES
 C              ET LES 4 DDLS UTILISES DANS LE CRITERE :
 C              N,MY,MZ,MX
       DATA ICORES/1,5,6,4/
 C
-      CO(1) = 5.D0/9.D0
-      CO(2) = 8.D0/9.D0
-      CO(3) = 5.D0/9.D0
+      IF ( NPG .EQ. 3 ) THEN
+         CO(1) = 5.D0/9.D0
+         CO(2) = 8.D0/9.D0
+         CO(3) = 5.D0/9.D0
+      ELSE
+         CO(1) = 1.D0
+         CO(2) = 1.D0
+      ENDIF
       XLS2  = XL / 2.D0
       DIMKLV = 2*NC*(2*NC+1)/2
 C
@@ -183,7 +188,7 @@ C
 
 C
 C     BOUCLE SUR LES POINTS DE GAUSS
-      DO 101 KP = 1,3
+      DO 101 KP = 1,NPG
 C        CALCUL DE D1B ( EPSI = D1B * U ) :
          IF (NOMTE.EQ.'MECA_POU_D_TG') THEN
             CALL JSD1FF(KP,XL,PHIY,PHIZ,D1B)

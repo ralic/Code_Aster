@@ -3,7 +3,7 @@
       CHARACTER*(*)       MODGEN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      N1, NCMP, IRET, JORDR, LPRO, LVAR, LFON, NBORDR, IM,
      &             IORD, IAD, JVALE, JREFE, JDEEQ, JNUME, NBMODE, I,
-     &             ISTRU, IBID
+     &             ISTRU, IBID, LXLGUT
       REAL*8       EPSI
       CHARACTER*4  INTERP(2)
       CHARACTER*8  K8B, CRIT, MODE
@@ -73,18 +73,20 @@ C
 C
 C     --- CREATION DE LA FONCTION ---
 C
-      CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5, LPRO )
-      ZK16(LPRO)   = 'FONCTION        '
-      ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-      ZK16(LPRO+2) = 'FREQ            '
-      ZK16(LPRO+4) = 'EE              '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT ( NOMFON//'.PROL', 'G V K24', 6, LPRO )
+      ZK24(LPRO)   = 'FONCTION        '
+      ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+      ZK24(LPRO+2) = 'FREQ            '
+      ZK24(LPRO+4) = 'EE              '
+      ZK24(LPRO+5) = NOMFON
 C
       CALL WKVECT ( NOMFON//'.VALE', 'G V R', 2*NBORDR, LVAR )
       LFON = LVAR + NBORDR - 1
 C
       CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,1,1, NPARA , N1 )
       IF ( N1 .NE. 0 ) THEN
-         ZK16(LPRO+3) = NPARA
+         ZK24(LPRO+3) = NPARA
          DO 200 IORD = 1 , NBORDR
             CALL RSADPA(MODGEN,'L',1,'FREQ',ZI(JORDR+IORD-1),0,IAD,K8B)
             ZR(LVAR-1+IORD) = ZR(IAD)
@@ -97,7 +99,7 @@ C
       CALL GETVTX ( ' ', 'NOM_CHAM'     , 1,1,1, NOMCHA, N1 )
       CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, NCMP  , N1 )
 C
-      ZK16(LPRO+3) = NOMCHA
+      ZK24(LPRO+3) = NOMCHA
 C
       DO 100 IORD = 1 , NBORDR
 C

@@ -1,0 +1,862 @@
+# MODIF  DATE 19/02/2008   AUTEUR CANO V.CANO 
+# RESPONSABLE CANO V.CANO
+# TITRE TREMPE D'UN BARREAU CYLINDRIQUE EN 16MND5
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# TEST V4.61.103
+# MAILLAGE : QUAD8
+
+DEBUT(CODE=_F(NOM='MTLP103A',NIV_PUB_WEB='INTERNET',),);
+
+###################################################
+# SIMULATION DE LA TREMPE D'UN BARREAU CYLINDRIQUE
+# EN 16MND5
+# DANS l'AIR PENDANT 14 Sec PUIS TREMPE DANS L'EAU
+###################################################
+
+###################################################
+# MAILLAGE  ET MODELE
+###################################################
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE();
+                            
+MAIL = DEFI_GROUP(reuse=MAIL,
+         MAILLAGE=MAIL,
+         CREA_GROUP_NO =(_F(GROUP_MA= 'ECHANGES',),),);
+
+MOTH = AFFE_MODELE (MAILLAGE = MAIL,
+                    AFFE     =_F(TOUT         = 'OUI',
+                                 PHENOMENE   = 'THERMIQUE',
+                                 MODELISATION = 'AXIS',),);
+
+#################################################################
+# DEFINITION ET AFFECTATION DES CARACTERISTIQUES THERMOPHYSIQUES
+# ET METALLURGIQUES 
+#################################################################
+# CONDUCTIVITE DU 16MND5 LA MEME POUR TOUTES LES PHASES
+# IL S'AGIT DE LA CONDUCTIVITE ISSUE DU RECUEIL BIBLIO DUPAS/WAECKEL
+
+LAMB =DEFI_FONCTION(NOM_PARA='TEMP',
+                     VALE=(20.,  37.7,
+                         50.,  38.6,
+                         100.,  39.9,
+                         121.,  40.2,
+                         150.,  40.5,
+                         200.,  40.5,
+                         226.,  40.3,
+                         250.,  40.2,
+                         300.,  39.5,
+                         327.,  39.,
+                         350.,  38.7,
+                         400.,  37.7,
+                         427.,  37.,
+                         450.,  36.6,
+                         500.,  35.5,
+                         527.,  34.9,
+                         550.,  34.3,
+                         600.,  32.5,
+                         650.,  31.0,
+                         700.,  29.4,
+                         750.,  27.8,
+                         800.,  26.2,
+                         850.,  24.7,
+                         900.,  25.4,
+                         1000.,  26.9,),   
+                  PROL_GAUCHE='LINEAIRE',
+                  PROL_DROITE='LINEAIRE',);
+
+# ENTHALPIE DU 16MND5 LA MEME POUR TOUTES LES PHASES
+
+# INTEGRALE DU RHOCP SUR LATEMPERATURE
+# ISSUE DU RECUEIL DUPAS/WAECKEL
+# (REMARQUE : INTEGRATION DU POINT DE CURIE CORRESPONDANT
+# A LA TRANSFORMATION AUSTENITIQUE AU CHAUFFAGE (= CHALEUR LATENTE)) 
+# ATTENTION CETTE CHALEUR LATENTE SE RETROUVE LORS DU REFROIDISSEMENT,
+# SUR LA MEME PLAGE DE TEMPERATURE
+#
+
+BETA =DEFI_FONCTION(NOM_PARA='TEMP',
+                     VALE=(0.,     0.,
+                             20.,    69.8E6,
+                             50.,   175.9E6,
+                            100.,   360.1E6,
+                            150.,   552.6E6,
+                            200.,   753.0E6,
+                            250.,   961.9E6,
+                            300.,  1179.2E6,
+                            350.,  1404.8E6,
+                            400.,  1639.8E6,
+                            450.,  1885.7E6,
+                            500.,  2145.6E6,
+                            550.,  2421.6E6,
+                            600.,  2716.3E6,
+                            650.,  2981.8E6,
+                            700.,  3208.3E6,
+                            800.,  3664.8E6,
+                            900.,  4129.8E6,
+                           1000.,  4603.3E6,),
+                     PROL_GAUCHE='LINEAIRE',
+                     PROL_DROITE='LINEAIRE',);
+
+# DEFINITION DES CARACTERISTIQUES METALLURGIQUES 
+# DEFINITION TRC
+# TRC DU 16MND5
+
+TRC1=DEFI_TRC(HIST_EXP=(
+ _F(VALE = (
+ -5.000E-02,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.585E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
+  7.900E-01,  0.000E+00,  0.000E+00,  6.200E+02,
+  8.000E-01,  0.000E+00,  0.000E+00,  6.165E+02,
+  8.000E-01,  0.000E+00,  0.000E+00,  5.100E+02,
+  8.000E-01,  0.000E+00,  1.000E-02,  4.950E+02,
+  8.000E-01,  0.000E+00,  1.900E-01,  3.600E+02,
+  8.000E-01,  0.000E+00,  2.000E-01,  3.450E+02,),),
+ _F(VALE = (
+ -1.000E-01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.591E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
+  6.700E-01,  0.000E+00,  0.000E+00,  6.200E+02,
+  6.800E-01,  0.000E+00,  0.000E+00,  6.159E+02,
+  6.800E-01,  0.000E+00,  0.000E+00,  5.247E+02,
+  6.800E-01,  0.000E+00,  1.000E-02,  5.150E+02,
+  6.800E-01,  0.000E+00,  3.100E-01,  3.700E+02,
+  6.800E-01,  0.000E+00,  3.200E-01,  3.603E+02,),),
+ _F(VALE = (
+ -1.500E-01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.595E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
+  6.100E-01,  0.000E+00,  0.000E+00,  6.200E+02,
+  6.200E-01,  0.000E+00,  0.000E+00,  6.155E+02,
+  6.200E-01,  0.000E+00,  0.000E+00,  5.386E+02,
+  6.200E-01,  0.000E+00,  1.000E-02,  5.300E+02,
+  6.200E-01,  0.000E+00,  3.700E-01,  3.750E+02,
+  6.200E-01,  0.000E+00,  3.800E-01,  3.664E+02,),),
+ _F(VALE = (
+ -2.000E-01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.599E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
+  5.600E-01,  0.000E+00,  0.000E+00,  6.200E+02,
+  5.700E-01,  0.000E+00,  0.000E+00,  6.151E+02,
+  5.700E-01,  0.000E+00,  0.000E+00,  5.478E+02,
+  5.700E-01,  0.000E+00,  1.000E-02,  5.400E+02,
+  5.700E-01,  0.000E+00,  4.200E-01,  3.800E+02,
+  5.700E-01,  0.000E+00,  4.300E-01,  3.722E+02,),),
+ _F(VALE = (
+ -3.000E-01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.606E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
+  4.900E-01,  0.000E+00,  0.000E+00,  6.200E+02,
+  5.000E-01,  0.000E+00,  0.000E+00,  6.144E+02,
+  5.000E-01,  0.000E+00,  0.000E+00,  5.569E+02,
+  5.000E-01,  0.000E+00,  1.000E-02,  5.500E+02,
+  5.000E-01,  0.000E+00,  4.900E-01,  3.850E+02,
+  5.000E-01,  0.000E+00,  5.000E-01,  3.781E+02,),),
+_F(VALE = (
+ -5.000E-01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.618E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.550E+02,
+  4.100E-01,  0.000E+00,  0.000E+00,  6.200E+02,
+  4.200E-01,  0.000E+00,  0.000E+00,  6.132E+02,
+  4.200E-01,  0.000E+00,  0.000E+00,  5.712E+02,
+  4.200E-01,  0.000E+00,  1.000E-02,  5.650E+02,
+  4.200E-01,  0.000E+00,  5.700E-01,  3.900E+02,
+  4.200E-01,  0.000E+00,  5.800E-01,  3.838E+02,),),
+_F(VALE = (
+ -1.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.586E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.500E+02,
+  2.900E-01,  0.000E+00,  0.000E+00,  6.300E+02,
+  3.000E-01,  0.000E+00,  0.000E+00,  6.214E+02,
+  3.000E-01,  0.000E+00,  0.000E+00,  5.853E+02,
+  3.000E-01,  0.000E+00,  1.000E-02,  5.800E+02,
+  3.000E-01,  0.000E+00,  6.900E-01,  4.000E+02,
+  3.000E-01,  0.000E+00,  7.000E-01,  3.947E+02,),),
+ _F(VALE = (
+ -1.500E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.550E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.450E+02,
+  2.200E-01,  0.000E+00,  0.000E+00,  6.400E+02,
+  2.300E-01,  0.000E+00,  0.000E+00,  6.300E+02,
+  2.300E-01,  0.000E+00,  0.000E+00,  5.951E+02,
+  2.300E-01,  0.000E+00,  1.000E-02,  5.900E+02,
+  2.300E-01,  0.000E+00,  7.600E-01,  4.000E+02,
+  2.300E-01,  0.000E+00,  7.700E-01,  3.949E+02,),),
+ _F(VALE = (
+ -2.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.456E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.350E+02,
+  1.700E-01,  0.000E+00,  0.000E+00,  6.500E+02,
+  1.800E-01,  0.000E+00,  0.000E+00,  6.394E+02,
+  1.800E-01,  0.000E+00,  0.000E+00,  5.999E+02,
+  1.800E-01,  0.000E+00,  1.000E-02,  5.950E+02,
+  1.800E-01,  0.000E+00,  8.100E-01,  4.000E+02,
+  1.800E-01,  0.000E+00,  8.200E-01,  3.951E+02,),),
+ _F(VALE = (
+ -3.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.300E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.200E+02,
+  1.100E-01,  0.000E+00,  0.000E+00,  6.700E+02,
+  1.200E-01,  0.000E+00,  0.000E+00,  6.600E+02,
+  1.200E-01,  0.000E+00,  0.000E+00,  6.047E+02,
+  1.200E-01,  0.000E+00,  1.000E-02,  6.000E+02,
+  1.200E-01,  0.000E+00,  8.700E-01,  4.000E+02,
+  1.200E-01,  0.000E+00,  8.800E-01,  3.953E+02,),),
+ _F(VALE = (
+ -4.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.220E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.100E+02,
+  6.000E-02,  0.000E+00,  0.000E+00,  6.800E+02,
+  7.000E-02,  0.000E+00,  0.000E+00,  6.680E+02,
+  7.000E-02,  0.000E+00,  0.000E+00,  6.044E+02,
+  7.000E-02,  0.000E+00,  1.000E-02,  6.000E+02,
+  7.000E-02,  0.000E+00,  9.200E-01,  4.000E+02,
+  7.000E-02,  0.000E+00,  9.300E-01,  3.956E+02,),),
+ _F(VALE = (
+ -5.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  7.200E+02,
+  1.000E-02,  0.000E+00,  0.000E+00,  7.000E+02,
+  2.000E-02,  0.000E+00,  0.000E+00,  6.900E+02,
+  3.000E-02,  0.000E+00,  0.000E+00,  6.700E+02,
+  3.000E-02,  0.000E+00,  0.000E+00,  6.042E+02,
+  3.000E-02,  0.000E+00,  1.000E-02,  6.000E+02,
+  3.000E-02,  0.000E+00,  9.600E-01,  4.000E+02,
+  3.000E-02,  0.000E+00,  9.700E-01,  3.958E+02,),),
+ _F(VALE = (
+ -6.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  6.041E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  6.000E+02,
+  0.000E+00,  0.000E+00,  9.900E-01,  4.000E+02,
+  0.000E+00,  0.000E+00,  1.000E+00,  3.959E+02,),),
+ _F(VALE = (
+ -7.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  6.041E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  6.000E+02,
+  0.000E+00,  0.000E+00,  9.900E-01,  4.000E+02,
+  0.000E+00,  0.000E+00,  1.000E+00,  3.959E+02,),),
+ _F(VALE = (
+ -8.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  6.041E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  6.000E+02,
+  0.000E+00,  0.000E+00,  9.900E-01,  4.000E+02,
+  0.000E+00,  0.000E+00,  1.000E+00,  3.959E+02,),),
+ _F(VALE = (
+ -9.000E+00,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  6.043E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  6.000E+02,
+  0.000E+00,  0.000E+00,  9.400E-01,  4.000E+02,
+  0.000E+00,  0.000E+00,  9.500E-01,  3.957E+02,),),
+ _F(VALE = (
+ -1.000E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.994E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.950E+02,
+  0.000E+00,  0.000E+00,  9.000E-01,  4.000E+02,
+  0.000E+00,  0.000E+00,  9.100E-01,  3.956E+02,),),
+ _F(VALE = (
+ -1.200E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.946E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.900E+02,
+  0.000E+00,  0.000E+00,  8.300E-01,  4.000E+02,
+  0.000E+00,  0.000E+00,  8.400E-01,  3.954E+02,),),
+ _F(VALE = (
+ -1.500E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.849E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.800E+02,
+  0.000E+00,  0.000E+00,  7.400E-01,  4.000E+02,
+  0.000E+00,  0.000E+00,  7.500E-01,  3.951E+02,),),
+ _F(VALE = (
+ -1.800E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.802E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.750E+02,
+  0.000E+00,  0.000E+00,  6.700E-01,  4.040E+02,
+  0.000E+00,  0.000E+00,  6.800E-01,  3.988E+02,),),
+ _F(VALE = (
+ -2.000E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.753E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.700E+02,
+  0.000E+00,  0.000E+00,  6.300E-01,  4.060E+02,
+  0.000E+00,  0.000E+00,  6.400E-01,  4.007E+02,),),
+ _F(VALE = (
+ -2.500E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.657E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.600E+02,
+  0.000E+00,  0.000E+00,  5.400E-01,  4.100E+02,
+  0.000E+00,  0.000E+00,  5.500E-01,  4.043E+02,),),
+ _F(VALE = (
+ -3.000E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.559E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.500E+02,
+  0.000E+00,  0.000E+00,  4.700E-01,  4.150E+02,
+  0.000E+00,  0.000E+00,  4.800E-01,  4.091E+02,),),
+ _F(VALE = (
+ -4.000E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.368E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.300E+02,
+  0.000E+00,  0.000E+00,  3.500E-01,  4.150E+02,
+  0.000E+00,  0.000E+00,  3.600E-01,  4.082E+02,),),
+ _F(VALE = (
+ -5.000E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.230E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.150E+02,
+  0.000E+00,  0.000E+00,  2.600E-01,  4.150E+02,
+  0.000E+00,  0.000E+00,  2.700E-01,  4.070E+02,),),
+ _F(VALE = (
+ -6.000E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  5.094E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  5.000E+02,
+  0.000E+00,  0.000E+00,  1.900E-01,  4.150E+02,
+  0.000E+00,  0.000E+00,  2.000E-01,  4.056E+02,),),
+ _F(VALE = (
+ -8.000E+01,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,
+  0.000E+00,  0.000E+00,  0.000E+00,  4.921E+02,
+  0.000E+00,  0.000E+00,  1.000E-02,  4.750E+02,
+  0.000E+00,  0.000E+00,  8.000E-02,  4.150E+02,
+  0.000E+00,  0.000E+00,  9.000E-02,  3.979E+02,),),
+ _F(VALE = (
+ -1.000E+02,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,),),
+ _F(VALE = (
+ -4.000E+02,  1.100E+01,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  0.000E+00,
+  0.000E+00,  0.000E+00,  0.000E+00,  8.300E+02,),),),
+ TEMP_MS=_F(SEUIL=0.38,
+             AKM=-30.791,
+             BKM=11.698,
+             TPLM=-1.,),
+  GRAIN_AUST=_F(DREF = 11.0,),) ;
+
+# DEFINITION DU MATERIAU 
+
+ACIER   = DEFI_MATERIAU (
+            THER_NL = _F(BETA    = BETA,
+                         LAMBDA = LAMB),
+            META_ACIER =_F(TRC   =TRC1,
+              AR3   =830.0,
+              ALPHA =-0.0249,
+              MS0   =415.0,
+              AC1   =724.0,
+              AC3   =846.0,
+              TAUX_1=0.34,
+              TAUX_3=0.34,),
+            DURT_META =_F(F1_DURT = 184.,
+              F2_DURT = 184.,
+              F3_DURT = 309.,
+              F4_DURT = 450.,
+              C_DURT = 100., ));
+
+# AFFECTATION DU MATERIAU SUR LE MAILLAGE
+
+MAT  = AFFE_MATERIAU (MAILLAGE = MAIL,
+                      AFFE    =_F(TOUT  = 'OUI',
+                                  MATER = ACIER ),);
+
+################################################################
+# CONDITIONS AUX LIMITES ET CHARGEMENT
+# ##############################################################
+# COEFFICIENT D'ECHANGE FONCTION DU TEMPS PENDANT 14sec
+# FLUX FONCTION DE LA TEMPERATURE ENSUITE
+################################################################
+
+# COEF D'ECHANGE
+H = DEFI_FONCTION(NOM_PARA='INST',
+                  VALE=(0.0, 100.,
+                        13.0,  100.,
+                        14.0, 10000.,),
+                  PROL_GAUCHE='CONSTANT',
+                  PROL_DROITE='CONSTANT',);
+
+# FLUX FONCTION DE T
+FLUX = DEFI_FONCTION(NOM_PARA='TEMP',
+                     VALE= (25.,0.E+6,
+                            50.,      -0.03E+6,
+                            100.,     -0.08E+6,
+                            150.,     -0.16E+6,
+                            200.,     -0.71E+6,
+                            250.,     -1.51E+6,
+                            300.,     -1.99E+6,
+                            350.,     -2.53E+6,
+                            400.,     -3.34E+6,
+                            450.,     -3.78E+6,
+                            500.,     -6.00E+6,
+                            550.,     -7.00E+6,
+                            600.,     -7.9E+6,),
+                  PROL_GAUCHE='LINEAIRE',
+                  PROL_DROITE='LINEAIRE',);
+
+# TEMPERATURE EXTERIEURE
+T_EXT    = DEFI_CONSTANTE ( VALE = 25. );
+
+# TEMPERATURE INITIALE
+T_INI    = DEFI_CONSTANTE ( VALE = 906. );
+
+# AFFECTATION DES CHARGEMENTS THERMIQUES CORRESPONDANTS
+CH1 = AFFE_CHAR_THER_F (
+        MODELE   = MOTH,
+        ECHANGE = (_F(GROUP_MA = 'ECHANGES',
+                      COEF_H= H,
+                      TEMP_EXT = T_EXT,),),);
+
+CH2 = AFFE_CHAR_THER_F (
+        MODELE   = MOTH,
+        FLUX_NL = (_F(GROUP_MA = 'ECHANGES',FLUN = FLUX,),),);
+
+###################################################################
+# DEFINITION DE LA LISTE D'INSTANT POUR LE CALCUL THERMIQUE 
+###################################################################
+
+LIST = DEFI_LIST_REEL (DEBUT =  0.,
+         INTERVALLE = (_F(JUSQU_A=   60.,  NOMBRE=  60, ),
+                       _F(JUSQU_A=   240., NOMBRE=  45, ),),);
+
+###################################################################
+# RESOLUTION THERMIQUE 
+###################################################################
+# PENDANT LES 14 PREMIERES SECONDES (DANS L'AIR)
+
+TEMPE = THER_NON_LINE(
+          MODELE     = MOTH,
+          CHAM_MATER = MAT,
+          EXCIT      =_F( CHARGE   = CH1, ),
+          INCREMENT  =_F( LIST_INST = LIST,
+                          NUME_INST_FIN  = 14,),
+          ETAT_INIT  = _F(VALE = 906., ),
+          NEWTON = _F(ITER_LINE_MAXI = 3,),
+          CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                           ITER_GLOB_MAXI = 30,),);
+
+# LORS DE LA TREMPE DANS L'EAU
+
+TEMPE = THER_NON_LINE(reuse=TEMPE,
+          MODELE     = MOTH,
+          CHAM_MATER = MAT,
+          EXCIT      =_F( CHARGE    = CH2, ),
+          INCREMENT  =_F( LIST_INST = LIST,
+                          NUME_INST_INIT = 14,
+                          NUME_INST_FIN  = 105, ),
+          ETAT_INIT  = _F(EVOL_THER = TEMPE,
+                          NUME_ORDRE =   14, ),
+          NEWTON = _F(ITER_LINE_MAXI = 3,),
+          CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                           ITER_GLOB_MAXI = 30,), );
+
+###########################################################################
+#  CALCUL METALLURGIQUE 
+####################################################################
+# ETAT METALLURGIQUE DE DEPART   
+# INITIALEMENT LE BARREAU EST 100% AUSTENITISE
+
+PHASINIT=CREA_CHAMP(TYPE_CHAM='CART_VAR2_R',
+                    OPERATION='AFFE',
+                    MAILLAGE=MAIL,
+                    AFFE=(_F(TOUT='OUI',
+                             NOM_CMP=('V1','V2','V3','V4','V5',),
+                              VALE=(0.0,0.0,0.0,0.0,11.0,),),),);
+
+# RESOLUTION METALLURGIQUE
+
+TEMPE=CALC_META(reuse =TEMPE,
+        MODELE=MOTH,
+        CHAM_MATER=MAT,
+        RESULTAT=TEMPE,
+        ETAT_INIT=_F(META_INIT_ELNO=PHASINIT,),
+        COMP_INCR=_F(RELATION='ACIER',),
+        OPTION='META_ELNO_TEMP',);
+
+TEMPE=CALC_NO(reuse =TEMPE,
+        NUME_ORDRE=(1,10,14,20,25,30,40,50,100,105,),
+        RESULTAT=TEMPE,
+        OPTION='META_NOEU_TEMP',);
+
+###########################################################################
+#  CALCUL DE LA DURETE
+####################################################################
+
+TEMPE=CALC_ELEM(reuse =TEMPE,
+      MODELE=MOTH,
+      CHAM_MATER=MAT,
+      NUME_ORDRE=(1,10,14,20,25,30,40,50,100,105,),
+      RESULTAT=TEMPE,
+      OPTION='DURT_ELNO_META',);
+
+#################################################################
+# TESTS DES RESULTATS
+#################################################################
+# VALEUR DE REFERENCE POUR LA NON REGRESSION
+#################################################################
+
+TEST_RESU(RESU=( 
+
+# GROUP_NO TC0 A 13S VALEUR DE TEMPERATURE
+         _F(RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+            NUME_ORDRE = 13,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            REFERENCE = 'NON_REGRESSION',
+            GROUP_NO = 'TC0', 
+            NOM_CMP = 'TEMP',
+            VALE = 871.348),
+
+# GROUP_NO TC0 A 20S VALEUR DE TEMPERATURE
+         _F(RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+            NUME_ORDRE = 20,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            REFERENCE = 'NON_REGRESSION',
+            GROUP_NO = 'TC0', 
+            NOM_CMP = 'TEMP',VALE = 291.800),
+
+# GROUP_NO TC0 A 30S VALEUR DE TEMPERATURE
+         _F(RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+            NUME_ORDRE = 30,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+            REFERENCE = 'NON_REGRESSION',
+            GROUP_NO = 'TC0', 
+            NOM_CMP = 'TEMP',   VALE = 226.905),
+
+# GROUP_NO TC9 A 13S VALEUR DE TEMPERATURE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+           NUME_ORDRE = 13,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           GROUP_NO = 'TC9', 
+           NOM_CMP = 'TEMP',   VALE = 890.128),
+
+# GROUP_NO TC9 A 20S VALEUR DE TEMPERATURE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+           NUME_ORDRE = 20,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           GROUP_NO = 'TC9', 
+           NOM_CMP = 'TEMP',   VALE = 608.298),
+
+# GROUP_NO TC9 A 30S VALEUR DE TEMPERATURE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+           NUME_ORDRE = 30,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           GROUP_NO = 'TC9',
+           NOM_CMP = 'TEMP',   VALE = 432.164),
+
+# GROUP_NO TC10 A 13S VALEUR DE TEMPERATURE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+           NUME_ORDRE = 13,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           GROUP_NO = 'TC10',
+           NOM_CMP = 'TEMP',   VALE = 895.338),
+
+# GROUP_NO TC10 A 20S VALEUR DE TEMPERATURE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+           NUME_ORDRE = 20,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           GROUP_NO = 'TC10',
+           NOM_CMP = 'TEMP',   VALE = 717.098),
+
+# GROUP_NO TC10 A 30S VALEUR DE TEMPERATURE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',
+           NUME_ORDRE = 30,  CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           GROUP_NO = 'TC10',
+           NOM_CMP = 'TEMP',   VALE = 520.166),),);
+
+TEST_RESU(RESU=( 
+
+# NOEUD N94 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N94', MAILLE='M101', NOM_CMP = 'HV',   VALE = 361.145),
+
+# NOEUD N103 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N103', MAILLE='M120', NOM_CMP = 'HV',   VALE = 365.324),
+
+# NOEUD N112 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD='N112', MAILLE='M137', NOM_CMP ='HV', VALE = 371.928),
+
+# NOEUD N187 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N187', MAILLE='M341', NOM_CMP = 'HV',   VALE = 408.118),
+
+# NOEUD N193 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N193', MAILLE='M353', NOM_CMP = 'HV',   VALE = 432.139),
+
+# NOEUD N231 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N231', MAILLE='M421', NOM_CMP = 'HV',   VALE = 374.327),
+
+# NOEUD N193 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N237', MAILLE='M433', NOM_CMP = 'HV',   VALE = 400.680),
+
+# NOEUD N275 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N275', MAILLE='M501', NOM_CMP = 'HV',   VALE = 359.687),
+
+# NOEUD N281 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N281', MAILLE='M513', NOM_CMP = 'HV',   VALE = 392.703),
+
+# NOEUD N319 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N319', MAILLE='M581', NOM_CMP = 'HV',   VALE = 346.007),
+
+# NOEUD N325 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N325', MAILLE='M593', NOM_CMP = 'HV',   VALE = 391.844),
+
+# NOEUD N363 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N363', MAILLE='M661', NOM_CMP = 'HV',   VALE = 344.908),
+
+# NOEUD N369 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N369', MAILLE='M673', NOM_CMP = 'HV',VALE = 391.770),
+
+# NOEUD N407 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N407', MAILLE='M741', NOM_CMP = 'HV',   VALE = 345.728),
+
+# NOEUD N413 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N413', MAILLE='M753', NOM_CMP = 'HV',   VALE = 391.836),
+
+# NOEUD N451 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N451', MAILLE='M821', NOM_CMP = 'HV',   VALE = 346.752),
+
+# NOEUD N457 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N457', MAILLE='M833', NOM_CMP = 'HV',   VALE = 391.863),
+
+# NOEUD N3148 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N3148', MAILLE='M901', NOM_CMP = 'HV',   VALE = 346.871),
+
+# NOEUD N3154 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 5.E-2,
+           REFERENCE = 'NON_REGRESSION',
+           NOEUD = 'N3154', MAILLE='M913', NOM_CMP = 'HV',   VALE = 391.842),),);
+
+#################################################################
+# COMPARAISON AVEC LES MESURES
+#################################################################
+
+TEST_RESU(RESU=( 
+
+# NOEUD N94 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N94', MAILLE='M101', NOM_CMP = 'HV',VALE = 398.),
+
+# NOEUD N103 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N103', MAILLE='M120', NOM_CMP = 'HV',   VALE = 404.),
+
+# NOEUD N112 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N112', MAILLE='M137', NOM_CMP = 'HV',VALE = 408.),
+
+# NOEUD N187 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N187', MAILLE='M341', NOM_CMP = 'HV',   VALE = 413.),
+
+# NOEUD N193 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N193', MAILLE='M353', NOM_CMP = 'HV',   VALE = 427.),
+
+# NOEUD N231 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N231', MAILLE='M421', NOM_CMP = 'HV',   VALE = 381.),
+
+# NOEUD N193 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N237', MAILLE='M433', NOM_CMP = 'HV',   VALE = 401.),
+
+# NOEUD N275 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N275', MAILLE='M501', NOM_CMP = 'HV',   VALE = 355.),
+
+# NOEUD N281 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N281', MAILLE='M513', NOM_CMP = 'HV',   VALE = 396.),
+
+# NOEUD N319 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N319', MAILLE='M581', NOM_CMP = 'HV',   VALE = 345.),
+
+# NOEUD N325 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N325', MAILLE='M593', NOM_CMP = 'HV',   VALE = 425.),
+
+# NOEUD N363 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N363', MAILLE='M661', NOM_CMP = 'HV',   VALE = 335.),
+
+# NOEUD N369 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N369', MAILLE='M673', NOM_CMP = 'HV',   VALE = 425.),
+
+# NOEUD N407 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N407', MAILLE='M741', NOM_CMP = 'HV',   VALE = 370.),
+
+# NOEUD N413 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N413', MAILLE='M753', NOM_CMP = 'HV',   VALE = 430.),
+
+# NOEUD N451 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N451', MAILLE='M821', NOM_CMP = 'HV',   VALE = 350.),
+
+# NOEUD N457 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N457', MAILLE='M833', NOM_CMP = 'HV',   VALE = 410.),
+
+# NOEUD N3148 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N3148', MAILLE='M901', NOM_CMP = 'HV',   VALE = 330.),
+
+# NOEUD N3154 A 240S VALEUR DE DURETE
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+           NUME_ORDRE = 105,  CRITERE = 'RELATIF',   PRECISION = 10.E-2,
+           REFERENCE = 'SOURCE_EXTERNE',
+           NOEUD = 'N3154', MAILLE='M913', NOM_CMP = 'HV',   VALE = 425.),),);
+
+FIN();

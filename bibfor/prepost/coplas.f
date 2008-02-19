@@ -7,7 +7,7 @@ C
       CHARACTER*8   MATREV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C ======================================================================
                       CALL JELIRA(VAENOM,'LONUTI',LDIM,K1BID)
                       LDIM = LDIM / 2
                       IF (TEMPA.LT.ZR(INEUT3)) THEN
-                         PROLG = ZK16(INEUT4+4)
+                         PROLG = ZK24(INEUT4+4)
                          IF (PROLG(1:1).EQ.'E') THEN
                             CALL U2MESS('F','PREPOST_8')
                          ELSE IF (PROLG(1:1).EQ.'C') THEN
@@ -126,7 +126,7 @@ C ======================================================================
                             SIGMA = PENT*TEMPA + REST
                          ENDIF
                       ELSE IF (TEMPA.GT.ZR(INEUT3+LDIM-1)) THEN
-                         PROLG = ZK16(INEUT4+4)
+                         PROLG = ZK24(INEUT4+4)
                          IF (PROLG(2:2).EQ.'E') THEN
                             CALL U2MESS('F','PREPOST_9')
                          ELSE IF (PROLG(2:2).EQ.'C') THEN
@@ -167,7 +167,7 @@ C ======================================================================
             CALL JEVEUO(PARNOM,'L',INEUT5)
             PRONOM = TRANOM//'.PROL'
             CALL JEVEUO(PRONOM,'L',INEUT8)
-            PROLN = ZK16(INEUT8+4)
+            PROLN = ZK24(INEUT8+4)
             NATNOM = TRANOM//'.VALE'
             CALL JELIRA(NATNOM,'NUTIOC',NVALE,K1BID)
             VALP = 0

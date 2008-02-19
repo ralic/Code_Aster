@@ -1,9 +1,9 @@
-      SUBROUTINE RESLGN(LIGREL,OPTION,ERREG,ERREN)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*) LIGREL,ERREG,ERREN
+      SUBROUTINE RESLGN(LIGREL,OPTION,ERREE,ERREN)
+      IMPLICIT NONE
+      CHARACTER*(*) LIGREL,ERREE,ERREN
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C     BUT:   CALCUL DE L'OPTION : 'ERRE_ELNO_ELEM' ET 'QIRE_ELNO_ELEM'
 C     ----
 
 C IN  : LIGREL : NOM DU LIGREL
-C IN  : ERREG  : NOM DU CHAM_ELEM ERREUR AUX POINTS DE GAUSS
+C IN  : ERREE  : NOM DU CHAM_ELEM ERREUR PAR ELEMENT
 C OUT : ERREN  : NOM DU CHAM_ELEM_ERREUR PRODUIT AUX NOEUDS
 
 C ......................................................................
@@ -35,7 +35,7 @@ C ......................................................................
       CHARACTER*24 LCHIN(1),LCHOUT(1)
 
       LPAIN(1) = 'PERREUR'
-      LCHIN(1) = ERREG
+      LCHIN(1) = ERREE
 
       LPAOUT(1) = 'PERRENO'
       LCHOUT(1) = ERREN

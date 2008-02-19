@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMF, VEC(*), TYPFON, NOMPF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
       ELSE IF (VEC(1)(1:5).EQ.'NAPPE') THEN
          NBPF = 2
          NOMPF(1) = VEC(3)
-         NOMPF(2) = VEC(6)
+         NOMPF(2) = VEC(7)
 C
       ELSE IF (VEC(1)(1:8).EQ.'INTERPRE') THEN
          NOMFON = NOMF

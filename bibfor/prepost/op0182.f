@@ -3,7 +3,7 @@
       INTEGER IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
      +              IDRAY, IDTOB, IDROB, IDTHE, IRETT,
      +              JTUBUS, JOBSUS, N1, NIS, NC, NCO, NCR,
      +              NPU, NR, NIV, NPO, IREUSE, IRET2,
-     +              NBPARA, LPRO
+     +              NBPARA, LPRO, LXLGUT
       PARAMETER   ( NBPARA = 10 )
       REAL*8        ARETE, ARETE2, SECT(20), VOLTUB(20), TABR(NBPARA),
      +              VOLOBS(20), RTUBE, ROBST, JEUI, VUST(20), VUSO(20),
@@ -80,7 +80,7 @@ C
       CALL JEMARQ()
 C
       CALL GETRES ( RESU, CONCEP, NOMCMD )
-      NOMFON = RESU(1:8)//'   _INITIAL'
+      NOMFON = RESU(1:8)//'_INITIAL'
 C
       PI  = R8PI( )
       RAD = R8DGRD()
@@ -113,12 +113,14 @@ C     SI REENTRANT ON CONSERVE LA DESCRIPTION ET LE TYPE DE L'OBSTACLE
       ELSE
 C     SI PAS REENTRANT : TYPE DISCRET, INITIALISATION DE NOMFON
          TYPINI = 'DISCRET'
-         CALL WKVECT(NOMFON(1:19)//'.PROL','G V K16',5,LPRO)
-         ZK16(LPRO) = 'FONCTION'
-         ZK16(LPRO+1) = 'LINLIN'
-         ZK16(LPRO+2) = 'THETA'
-         ZK16(LPRO+3) = 'R'
-         ZK16(LPRO+4) = 'EE'
+         CALL ASSERT(LXLGUT(NOMFON).LE.24)
+         CALL WKVECT(NOMFON(1:19)//'.PROL','G V K24',6,LPRO)
+         ZK24(LPRO) = 'FONCTION'
+         ZK24(LPRO+1) = 'LINLIN'
+         ZK24(LPRO+2) = 'THETA'
+         ZK24(LPRO+3) = 'R'
+         ZK24(LPRO+4) = 'EE'
+         ZK24(LPRO+5) = NOMFON
          NPO = 721
          CALL WKVECT(NOMFON(1:19)//'.VALE','G V R',NPO*2,IDTOB)
          IDROB = IDTOB + NPO

@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*16 NOMPF(2)
       CHARACTER*19 NOMF
 C     ------------------------------------------------------------------
-      INTEGER      IPAR(10), MXPARA, NBPF, I1
+      INTEGER      IPAR(10), MXPARA, I1, JJDIM, IADZI, IAZK24
       CHARACTER*1  CBID
       CHARACTER*16 NOMP(10)
       CHARACTER*24 VALK(4)
@@ -88,7 +88,7 @@ C
 C
 C --- FONCTION "CONSTANT"
 C
-      IF (ZK16(JPRO).EQ.'CONSTANT') THEN
+      IF (ZK24(JPRO).EQ.'CONSTANT') THEN
 C         ------------------------
         RESU = ZR(JPAR+1)
         GOTO 9999
@@ -96,25 +96,27 @@ C         ------------------------
 C
 C --- FONCTION "INTERPRE"
 C
-      ELSEIF (ZK16(JPRO).EQ.'INTERPRE') THEN
+      ELSEIF (ZK24(JPRO).EQ.'INTERPRE') THEN
 C             ------------------------
-         NOMF = ZK16(JPRO+5)
+         NOMF = ZK24(JPRO+5)
          CALL FIINTF(NOMF,NBPU,NOMPU,VALPU,RESU)
          GOTO 9999
 C
 C --- AUTRES TYPES DE FONCTION
 C
-      ELSEIF (ZK16(JPRO).EQ.'FONCTION') THEN
+      ELSEIF (ZK24(JPRO).EQ.'FONCTION') THEN
         NBPARA = 1
-        NOMPF(1) = ZK16(JPRO+2)
+        NOMPF(1) = ZK24(JPRO+2)
+        NOMF = ZK24(JPRO+5)
 
-      ELSE IF (ZK16(JPRO).EQ.'NAPPE') THEN
+      ELSE IF (ZK24(JPRO).EQ.'NAPPE') THEN
         NBPARA = 2
-        NOMPF(1) = ZK16(JPRO+2)
-        NOMPF(2) = ZK16(JPRO+5)
+        NOMPF(1) = ZK24(JPRO+2)
+        NOMPF(2) = ZK24(JPRO+6)
+        NOMF = ZK24(JPRO+5) 
 
       ELSE
-        CALL U2MESK('F','CALCULEL6_61',1,ZK16(JPRO))
+        CALL U2MESK('F','CALCULEL6_61',1,ZK24(JPRO))
       ENDIF
 C
       DO 20 I=1,NBPARA
@@ -128,7 +130,9 @@ C              ON PREND LE DERNIER (VOIR RCVALB)
         IF (NPAR(I).EQ.0) THEN
           VALK(1)=NOMF
           VALK(2)=NOMPF(I)
-          CALL U2MESK('F','CALCULEL6_62',2,VALK)
+          CALL TECAEL(IADZI,IAZK24)
+          VALK(3) = ZK24(IAZK24-1+3)
+          CALL U2MESK('F','CALCULEL6_62',3,VALK)
         ENDIF
    20 CONTINUE
 C
@@ -136,14 +140,14 @@ C =====================================================================
 C                          F O N C T I O N
 C =====================================================================
 C
-      IF ( ZK16(JPRO) .EQ. 'FONCTION') THEN
+      IF ( ZK24(JPRO) .EQ. 'FONCTION') THEN
         NBPT = ZI(IPIF)
         JVAL = JPAR + NBPT
         RVAR = VALPU(NPAR(1))
-        CALL FOLOCX ( ZR(JPAR), NBPT, RVAR, ZK16(JPRO+4),
+        CALL FOLOCX ( ZR(JPAR), NBPT, RVAR, ZK24(JPRO+4),
      &                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
         IF ( IER .NE. 0 ) GOTO 9999
-        CALL FOCOLI ( ZI(IPIF+INDFCT),COLI,ZK16(JPRO+1),ZR(JPAR),
+        CALL FOCOLI ( ZI(IPIF+INDFCT),COLI,ZK24(JPRO+1),ZR(JPAR),
      &                                ZR(JVAL), RVAR, RESU , IER  )
         IF ( IER .NE. 0 ) GOTO 9999
 C
@@ -151,12 +155,12 @@ C =====================================================================
 C                            N A P P E
 C =====================================================================
 C
-      ELSE IF ( ZK16(JPRO) .EQ. 'NAPPE   ') THEN
+      ELSE IF ( ZK24(JPRO) .EQ. 'NAPPE   ') THEN
         RPAR   = VALPU(NPAR(1))
         RVAR   = VALPU(NPAR(2))
         LPARA = ZI(IPIF+4)
         NBVN  = ZI(IPIF+5)
-        CALL FOLOCX ( ZR(LPARA), NBVN, RPAR, ZK16(JPRO+4),
+        CALL FOLOCX ( ZR(LPARA), NBVN, RPAR, ZK24(JPRO+4),
      &                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
         IF ( IER .NE. 0 ) GOTO 9999
         INUME = ZI(IPIF+INDFCT)
@@ -166,7 +170,7 @@ C
           IF ( IER .NE. 0 ) GOTO 9999
 C
         ELSE IF (COLI.EQ.'I') THEN
-          IF (ZK16(JPRO+1)(1:3).EQ.'NON') THEN
+          IF (ZK24(JPRO+1)(1:3).EQ.'NON') THEN
             CALL U2MESS('F','UTILITAI2_12')
           ENDIF
           CALL FOINTN ( IPIF, NOMF, RVAR, INUME, EPSI, TAB(3), IER )
@@ -178,13 +182,13 @@ C ------- INTERPOLATION FINALE SUR LES PARAMETRES
 C
           TAB(1) = ZR(LPARA+INUME-1)
           TAB(2) = ZR(LPARA+INUME  )
-          IF (ZK16(JPRO+1).EQ.'LIN LIN ') THEN
+          IF (ZK24(JPRO+1).EQ.'LIN LIN ') THEN
             RESU = LINLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
-          ELSE IF (ZK16(JPRO+1).EQ.'LIN LOG ') THEN
+          ELSE IF (ZK24(JPRO+1).EQ.'LIN LOG ') THEN
             RESU = LINLOG(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
-          ELSE IF (ZK16(JPRO+1).EQ.'LOG LOG ') THEN
+          ELSE IF (ZK24(JPRO+1).EQ.'LOG LOG ') THEN
             RESU = LOGLOG(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
-          ELSE IF (ZK16(JPRO+1).EQ.'LOG LIN ') THEN
+          ELSE IF (ZK24(JPRO+1).EQ.'LOG LIN ') THEN
             RESU = LOGLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
           ENDIF
 C
@@ -202,7 +206,7 @@ C
         ENDIF
 C
       ELSE
-        CALL U2MESK('F','UTILITAI2_14',1,ZK16(JPRO))
+        CALL U2MESK('F','UTILITAI2_14',1,ZK24(JPRO))
       ENDIF
 C
  9999 CONTINUE

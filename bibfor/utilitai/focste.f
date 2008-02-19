@@ -5,7 +5,7 @@
       REAL*8                          RVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,12 +60,14 @@ C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
       CALL JEEXIN(CHPRO,IRET)
       IF (IRET.EQ.0) THEN
 C
-         CALL WKVECT(CHPRO,BASE//' V K16',5,JPRO)
-         ZK16(JPRO)   = 'CONSTANT'
-         ZK16(JPRO+1) = 'LIN LIN '
-         ZK16(JPRO+2) = 'TOUTPARA'
-         ZK16(JPRO+3) = NOMRES
-         ZK16(JPRO+4) = 'CC      '
+         CALL ASSERT(LXLGUT(NOMF).LE.24)
+         CALL WKVECT(CHPRO,BASE//' V K24',6,JPRO)
+         ZK24(JPRO)   = 'CONSTANT'
+         ZK24(JPRO+1) = 'LIN LIN '
+         ZK24(JPRO+2) = 'TOUTPARA'
+         ZK24(JPRO+3) = NOMRES
+         ZK24(JPRO+4) = 'CC      '
+         ZK24(JPRO+5) = NOMF
 C
 C        --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.VALE ---
          CHVAL(1:19)  = NOMF

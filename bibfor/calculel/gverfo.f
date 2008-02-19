@@ -3,7 +3,7 @@
       CHARACTER*19      CHARG
       INTEGER                 IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,7 @@ C ----------------------------------------------------------------------
      &       ZK8(IVAL+IN-1)(1:6).NE.'GLOBAL' )THEN
             NCH19=ZK8(IVAL+IN-1)
             CALL JEVEUO(NCH19//'.PROL','L',IPROL)
-            IF(ZK16(IPROL)(1:8).EQ.'INTERPRE')THEN 
+            IF(ZK24(IPROL)(1:8).EQ.'INTERPRE')THEN 
                IER=1
                GOTO 9999
             ENDIF

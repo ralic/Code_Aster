@@ -1,6 +1,6 @@
       SUBROUTINE LIMEND( NOMMAZ,SALT,NOMRES,LIMIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,8 +96,8 @@ C         VALEURS DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
 C         PROLONGEMENT DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
                CALL JEVEUO(NOMFON//'           .PROL','L',IPROL)
 C         PROLONGEMENT A GAUCHE DE LA COURBE DE WOHLER EXCLU OU CONSTANT
-               IF ( (ZK16(IPROL-1+5)(1:1).EQ.'E') .OR.
-     &              (ZK16(IPROL-1+5)(1:1).EQ.'C') ) THEN
+               IF ( (ZK24(IPROL-1+5)(1:1).EQ.'E') .OR.
+     &              (ZK24(IPROL-1+5)(1:1).EQ.'C') ) THEN
                   VALLIM=ZR(IVALF)
                   IF (SALT.LT.VALLIM) THEN
                      LIMIT=.TRUE.
@@ -139,8 +139,8 @@ C        MANSON_COFFIN
                CALL JEVEUO(NOMFON//'           .PROL','L',IPROL)
 C        PROLONGEMENT A GAUCHE DE LA COURBE DE MANSON_COFFIN EXCLU OU
 C        CONSTANT
-               IF ( (ZK16(IPROL-1+5)(1:1).EQ.'E') .OR.
-     &              (ZK16(IPROL-1+5)(1:1).EQ.'C') ) THEN
+               IF ( (ZK24(IPROL-1+5)(1:1).EQ.'E') .OR.
+     &              (ZK24(IPROL-1+5)(1:1).EQ.'C') ) THEN
                   VALLIM=ZR(IVALF)
                   IF (SALT.LT.VALLIM) THEN
                      LIMIT=.TRUE.

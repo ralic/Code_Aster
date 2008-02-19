@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith4 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,52 +22,12 @@ def _(x) : return x
 
 cata_msg = {
 
-28 : _("""
- marquage interdit pour des colonnes de type texte
-"""),
-
 35 : _("""
  rang superieur a dimension vecteur
 """),
 
-36 : _("""
- erreurresistance f_c < 0  ou = 0 !
-"""),
-
-37 : _("""
- erreurf_t < 0 !
-"""),
-
-38 : _("""
- erreur - valeur de crit_e_c superieure  a  1
-"""),
-
-39 : _("""
- erreur - valeur de crit_e_c negative !!!!
-"""),
-
-40 : _("""
- erreur - valeur de epsp_p_c negative !!!!
-"""),
-
-41 : _("""
- erreur - valeur de epsp_r_c negative !!!!
-"""),
-
-42 : _("""
- erreur - valeur de epsi_r_t negative !!!!
-"""),
-
-43 : _("""
- erreur - valeur de fac_t_c negative ou > 1   !!!!
-"""),
-
 45 : _("""
  la modelisation 1d n'est pas autorisée
-"""),
-
-47 : _("""
- problème sur le type d'option
 """),
 
 48 : _("""
@@ -97,10 +57,6 @@ cata_msg = {
 
 54 : _("""
  loi ENDO_ORTH_BETON : le paramètre KSI n'est pas inversible
-"""),
-
-55 : _("""
- CV approche 0 impossible
 """),
 
 57 : _("""
@@ -262,14 +218,6 @@ cata_msg = {
 
 94 : _("""
  il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage propre                                avec sech comme parametre
-"""),
-
-95 : _("""
- division par zéro dans LCUMFS
-"""),
-
-96 : _("""
- erreur dans LCUMME : pb de dimension
 """),
 
 97 : _("""

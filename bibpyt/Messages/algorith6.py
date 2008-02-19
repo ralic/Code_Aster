@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith6 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,15 +26,8 @@ cata_msg = {
  erreur point intégration (dvlp)
 """),
 
-
-
 13 : _("""
  dimension du problème inconnu
-"""),
-
-14 : _("""
- erreur dans la programmation
- cette routine ne doit etre appelée que dans le cas de la méthode continue du contact
 """),
 
 16 : _("""
@@ -128,7 +121,6 @@ cata_msg = {
  pas de numéro d'ordre pour le concept  %(k1)s 
 """),
 
-
 52 : _("""
  itérations cycliques :
  changement de configuration ou variation trop importante
@@ -192,7 +184,6 @@ cata_msg = {
  a la pression initiale PA 
 """),
 
-
 66 : _("""
  pour l'instant, on ne traite pas le cas des contraintes planes
  dans le modele de CHABOCHE à une variable cinématique.
@@ -209,14 +200,6 @@ cata_msg = {
 69 : _("""
  loi VISC_CINX_CHAB
  on doit obligatoirement avoir UN_SUR_M = zéro
-"""),
-
-76 : _("""
- mode  %(k1)s  non reconnu (dvlp)
-"""),
-
-77 : _("""
- coefficients VIC_CIN1_CHAB tous nuls ?
 """),
 
 78 : _("""
@@ -279,10 +262,6 @@ cata_msg = {
 
 93 : _("""
  integration du comportement POLY_CFC uniquement explicite
-"""),
-
-94 : _("""
- pas de C_PLAN pour BAZANT_FD  utiliser C_PLAN_DEBORST
 """),
 
 95 : _("""

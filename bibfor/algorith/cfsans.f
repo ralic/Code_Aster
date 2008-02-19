@@ -2,7 +2,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,15 +128,15 @@ C
 C --- VALEUR DU JEU
 C
         JEU = ZR(JCNSVR-1+ (NUMESC-1)*ZRESU+2 )
-        IF (NIV.GE.2) THEN
-          WRITE (IFM,2001) ' DU  NOEUD <',NOMESC,'> AVEC <',NOMMAI,
+        IF (JEU.GE.JEUREF .AND. NIV.GE.2) THEN
+          WRITE (IFM,2000) ' DU  NOEUD <',NOMESC,'> AVEC <',NOMMAI,
      &                     '> * JEU:',JEU
         ENDIF
         IF (JEU.LT.JEUREF) THEN
           INTERP = INTERP+1
           WRITE (IFM,2001) ' DU  NOEUD <',NOMESC,'> AVEC <',NOMMAI,
      &                     '> * JEU:',JEU
-
+          ZR(JCNSVR-1+ (NUMESC-1)*ZRESU +1) = 1.0D0
         ENDIF
 
  120  CONTINUE

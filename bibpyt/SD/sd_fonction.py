@@ -1,4 +1,4 @@
-#@ MODIF sd_fonction SD  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_fonction SD  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,14 +35,14 @@ from SD.sd_util import *
 class sd_formule(AsBase):
 #--------------------------------------
     nomj = SDNom(fin=19)
-    PROL = AsVK16(lonmax=6, )
+    PROL = AsVK24(lonmax=6, )
     NOVA = AsVK8()
 
 
 class sd_fonction_aster(sd_titre):
 #--------------------------------------
     nomj = SDNom(fin=19)
-    PROL = AsVK16()
+    PROL = AsVK24()
     VALE = AsObject(acces='NU', sd_stockage='CONTIG', modelong='VARIABLE', type='R', xous=Parmi('S', 'X'), genr='V', ltyp=8, )
     PARA = Facultatif(AsVR())
 
@@ -59,14 +59,14 @@ class sd_fonction_aster(sd_titre):
         assert prol , self
         typfon= prol[0].strip()
         assert typfon in ('CONSTANT', 'FONCTION', 'FONCT_C', 'NAPPE', 'INTERPRE')  ,prol
-
        #ltabul = True : la fonction est tabulée (et non interpretée)
         ltabul = typfon != 'INTERPRE'
 
         if typfon == 'NAPPE' :
-            assert len(prol) > 6  , (prol,self)
+            assert len(prol) > 7  , (prol,self)
         else :
-            assert len(prol) == 5  , (prol,self)
+            # tester que le prol[5] est bien le nom de la fonction 
+            assert len(prol) == 6  , (prol,self)
 
         if ltabul :  # type d'interpolation
             interp= prol[1].strip()
@@ -86,14 +86,14 @@ class sd_fonction_aster(sd_titre):
             assert prolgd[1] in ('E', 'C', 'L', 'I'), prol
 
         if typfon == 'NAPPE' :
-            nf= (len(prol) - 6)/2
-            assert len(prol)==6+2*nf, prol
+            nf= (len(prol) - 7)/2
+            assert len(prol)==7+2*nf, prol
             # 1er paramètre de la nappe
-            assert prol[5].strip() != ''  , prol
+            assert prol[6].strip() != ''  , prol
 
             for kf in range(nf):
-                interp= prol[5+2*kf+1].strip()
-                prolgd= prol[5+2*kf+2].strip()
+                interp= prol[6+2*kf+1].strip()
+                prolgd= prol[6+2*kf+2].strip()
                 assert interp[:3] in ('NON', 'LIN', 'LOG') , prol
                 assert interp[4:] in ('NON', 'LIN', 'LOG') , prol
                 assert prolgd[0] in ('E', 'C', 'L', 'I'), prol
@@ -152,7 +152,7 @@ class sd_fonction_aster(sd_titre):
 class sd_fonction(sd_titre):
 #---------------------------
     nomj = SDNom(fin=19)
-    PROL = AsVK16()
+    PROL = AsVK24()
     NOVA = Facultatif(AsVK8())
     VALE = Facultatif(AsObject())
     PARA = Facultatif(AsVR())

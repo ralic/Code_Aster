@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,13 +187,14 @@ C
             VALE = NOMCOD(1:19)//'.VALE'
             PROL = NOMCOD(1:19)//'.PROL'
             CALL WKVECT(VALE,'G V R ',3*NBPF,LVALE)
-            CALL WKVECT(PROL,'G V K16',5,LPROL)
+            CALL WKVECT(PROL,'G V K24',6,LPROL)
 C
-            ZK16(LPROL  ) = 'FONCT_C '
-            ZK16(LPROL+1) = 'LIN LIN '
-            ZK16(LPROL+2) = 'FREQ    '
-            ZK16(LPROL+3) = 'DSP     '
-            ZK16(LPROL+4) = 'LL      '
+            ZK24(LPROL  ) = 'FONCT_C '
+            ZK24(LPROL+1) = 'LIN LIN '
+            ZK24(LPROL+2) = 'FREQ    '
+            ZK24(LPROL+3) = 'DSP     '
+            ZK24(LPROL+4) = 'LL      '
+            ZK24(LPROL+5) = NOMCOD
 C
             DO 80 IL = 1,NBPF
               ZR(LVALE+IL-1) = DISC(IL)

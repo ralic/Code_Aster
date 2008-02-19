@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,9 +51,9 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER       LPROL, LVAR, NBPT, JPRO, NBPCUM, I, IPT, LFON
       CHARACTER*1   K1BID, COLI
-      CHARACTER*16  INTERP, PROLGD
+      CHARACTER*16  PROLGD
       CHARACTER*19  NOMFON
-      CHARACTER*24  CHPROL, CHVALE
+      CHARACTER*24  INTERP, CHPROL, CHVALE
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       NOMFON = NOMF
@@ -61,13 +61,13 @@ C     ------------------------------------------------------------------
          CHVALE = NOMFON//'.VALE'
          CHPROL = NOMFON//'.PROL'
          CALL JEVEUO(CHPROL,'L',LPROL)
-         CALL FOPRO1(ZK16(LPROL),INUME,PROLGD,INTERP)
+         CALL FOPRO1(ZK24(LPROL),INUME,PROLGD,INTERP)
          CALL JEVEUO(JEXNUM(CHVALE,INUME),'L',LVAR)
          CALL JELIRA(JEXNUM(CHVALE,INUME),'LONMAX',NBPT,K1BID)
       ELSE
          JPRO   = ZI(IPIF+1)
-         PROLGD = ZK16(JPRO+5+ (2*INUME))
-         INTERP = ZK16(JPRO+5+ (2*INUME-1))
+         PROLGD = ZK24(JPRO+6+ (2*INUME))
+         INTERP = ZK24(JPRO+6+ (2*INUME-1))
          NBPCUM = 0
          DO 10 I = 1,INUME - 1
             NBPCUM = NBPCUM + ZI(ZI(IPIF+3)+I) - ZI(ZI(IPIF+3)+I-1)

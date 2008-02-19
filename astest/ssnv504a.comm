@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/10/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 19/02/2008   AUTEUR DESOZA T.DESOZA 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,7 +56,9 @@ MAILL1=DEFI_GROUP(reuse =MAILL1,
                                  _F(GROUP_MA='LMN',
                                     NOM='LMN',),
                                  _F(GROUP_MA='LNK',
-                                    NOM='LNK',),),);
+                                    NOM='LNK',),
+                                 _F(GROUP_MA='SESC1',
+                                    NOM='SESC1',),),);
 #_____________________________________________________________________
 #
 #                    DEFINITION DU MODELE
@@ -272,6 +274,15 @@ U2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
 
+TAB_VC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='JEU METHODE VERIF',
+                               RESULTAT=U2,
+                               NOM_CHAM='VALE_CONT',
+                               GROUP_NO='SESC1',
+                               NOM_CMP=('CONT','JEU',),),);
+
+IMPR_TABLE(TABLE=TAB_VC);
+
 TEST_RESU(RESU=(
                 _F(RESULTAT=U2,
                    NUME_ORDRE=31,
@@ -283,6 +294,24 @@ TEST_RESU(RESU=(
                    VERSION = '8.0.6',
                    REFERENCE='NON_REGRESSION',),
 ),);
+
+TEST_TABLE(TABLE=TAB_VC,
+           FILTRE=(_F(NOM_PARA='ABSC_CURV',
+                      VALE=65.0,),
+                   _F(NOM_PARA='INST',
+                      VALE=100.0,),),
+           NOM_PARA='JEU',
+           VALE=-5.0,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_VC,
+           FILTRE=(_F(NOM_PARA='ABSC_CURV',
+                      VALE=65.0,),
+                   _F(NOM_PARA='INST',
+                      VALE=155.0,),),
+           NOM_PARA='JEU',
+           VALE=-2.0,
+           REFERENCE='ANALYTIQUE',);
 
 FIN();
 #

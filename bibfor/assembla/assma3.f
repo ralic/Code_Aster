@@ -7,7 +7,7 @@
      &    NOMLI,NOMLID,INFOFE,
      &    JTMP2,JVALM,ILINU,IDD,ELLAGR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,6 +25,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE PELLET J.PELLET
+C TOLE CRP_21
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C BUT : ASSEMBLER UN ELEMENT FINI ORDINAIRE
@@ -65,7 +66,7 @@ C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
 C-----------------------------------------------------------------------
       INTEGER ZZCONX,ZZLIEL
-      INTEGER ZZNEMA,ZZPRNO,POSDDL,NUMLOC
+      INTEGER ZZNEMA,ZZPRNO,POSDD2,NUMLOC
       INTEGER IMAIL,J,ILI,IGREL,NUNOEL,L,KNO,KDDL,K
 
       ZZCONX(IMAIL,J)=ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
@@ -76,7 +77,7 @@ C-----------------------------------------------------------------------
       ZZPRNO(ILI,NUNOEL,L)=ZI(JPRN1-1+ZI(JPRN2+ILI-1)+
      &                     (NUNOEL-1)*(NEC+2)+L-1)
       NUMLOC(KNO,K)=ZI(JNULOC-1+2*(KNO-1)+K)
-      POSDDL(KNO,KDDL)=ZI(JPOSDL-1+NMXCMP*(KNO-1)+KDDL)
+      POSDD2(KNO,KDDL)=ZI(JPOSDL-1+NMXCMP*(KNO-1)+KDDL)
 C----------------------------------------------------------------------
 
       ITERM=0
@@ -306,8 +307,8 @@ C     -----------------------------------------------------------
             NDDL2=NUMLOC(K2,2)
             IF (LMESYM.AND.(K2.EQ.K1)) NDDL2=I1
             DO 10 I2=1,NDDL2
-              IAD11=ZI(JNUEQ-1+IAD1+POSDDL(K1,I1)-1)
-              IAD21=ZI(JNUEQ-1+IAD2+POSDDL(K2,I2)-1)
+              IAD11=ZI(JNUEQ-1+IAD1+POSDD2(K1,I1)-1)
+              IAD21=ZI(JNUEQ-1+IAD2+POSDD2(K2,I2)-1)
               CALL ASRETM(LMASYM,JTMP2,ITERM,JSMHC,JSMDI,IAD11,IAD21)
    10       CONTINUE
    20     CONTINUE

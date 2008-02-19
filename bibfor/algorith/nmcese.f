@@ -1,0 +1,195 @@
+      SUBROUTINE NMCESE(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &                  COMPOR,LISCHA,CNFEXT,CARCRI,FONACT,
+     &                  SDDYNA,ITERAT,INDRO ,POUGD ,RESOCO,
+     &                  VALMOI,VALPLU,SECMBR,DEPALG,VEELEM,
+     &                  MEELEM,MEASSE,IRECLI,OFFSET,RHO   ,
+     &                  TYPSEL,ETA   ,LDCCVG,F     ,TESTFI)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C TOLE CRP_21
+C 
+      IMPLICIT NONE
+      LOGICAL       FONACT(*),IRECLI
+      INTEGER       ITERAT,INDRO
+      REAL*8        RHO, OFFSET,ETA(2)
+      CHARACTER*19  LISCHA,SDDYNA
+      CHARACTER*19  CNFEXT
+      CHARACTER*24  MODELE,NUMEDD,MATE  ,CARELE,COMREF,COMPOR
+      CHARACTER*24  CARCRI,RESOCO
+      CHARACTER*24  VALMOI(8),POUGD (8),VALPLU(8),DEPALG(8),SECMBR(8) 
+      CHARACTER*8   MEELEM(8),VEELEM(30)
+      CHARACTER*19  MEASSE(8)
+      CHARACTER*24  TYPSEL
+      INTEGER       LDCCVG(2)
+      REAL*8        F(2)      
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
+C
+C CHOIX DU ETA DE PILOTAGE ENTRE LES DEUX SOLUTIONS
+C       
+C ----------------------------------------------------------------------
+C
+C
+C IN  MODELE : MODELE
+C IN  NUMEDD : NUME_DDL
+C IN  MATE   : CHAMP MATERIAU
+C IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
+C IN  COMREF : VARI_COM DE REFERENCE
+C IN  COMPOR : COMPORTEMENT
+C IN  LISCHA : L_CHARGES
+C IN  IRECLI : VRAI SI RECH LIN (ON VEUT LE RESIDU)
+C IN  CNFEXT : FORCES EXTERNES
+C IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
+C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
+C IN  SDDYNA : SD DYNAMIQUE
+C IN  ITERAT : NUMERO D'ITERATION DE NEWTON
+C IN  INDRO  : ADRESSES DDL GRANDES ROTATIONS
+C IN  POUGD  : INFOS POUTRES EN GRANDES ROTATIONS
+C IN  RESOCO : SD CONTACT
+C IN  VALMOI : ETAT EN T-
+C IN  VALPLU : ETAT EN T+ 
+C IN  SECMBR : SECONDS MEMBRES
+C IN  DEPALG : VARIABLE CHAPEAU POUR DEPLACEMENTS 
+C IN  VEELEM : VECTEURS ELEMENTAIRES
+C IN  MEELEM : MATRICES ELEMENTAIRES
+C IN  MEASSE : MATRICES ASSEMBLEES
+C IN  OFFSET : DECALGE
+C IN  RHO    : VALEUR RECHERCHE LINEAIRE
+C IN  TYPSEL : TYPE DE SELECTION PILOTAGE
+C                'ANGL_INCR_DEPL'
+C                'NORM_INCR_DEPL'
+C                'RESIDU'
+C OUT LDCCVG : VALEUR CONVERGENCE LDC
+C OUT F      : VALEURS FONCTIONS POUR PILOTAGE
+C OUT TESTFI : .TRUE. SI RESIDU A RE-CALCULER
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      I, NEQ, IBID,IER,IRET
+      INTEGER      IDEEQ,JDU,JDU0, JDU1, JUR
+      REAL*8       SCA1, SCA2, NODUP1, NODUP2
+      CHARACTER*8  K8BID
+      CHARACTER*19 PROFCH
+      CHARACTER*24 K24BID
+      CHARACTER*24 DDEPLA,DEPOLD,DEPDEL,DEPPRE(2)
+      LOGICAL      TESTFI
+      INTEGER      IFM,NIV
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFDBG('PILOTAGE',IFM,NIV)     
+C
+C --- INITIALISATIONS
+C
+      F(1)      = 0.D0
+      F(2)      = 0.D0   
+      LDCCVG(1) = 0
+      LDCCVG(2) = 0  
+      TESTFI    = IRECLI                   
+      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
+C
+C --- DECOMPACTION VARIABLES CHAPEAUX
+C      
+      CALL DESAGG(DEPALG,DDEPLA,DEPDEL,DEPOLD,DEPPRE(1),
+     &            DEPPRE(2),K24BID,K24BID,K24BID)            
+C
+C --- ACCES AUX VECTEURS SOLUTIONS
+C      
+      CALL JEVEUO(DEPDEL(1:19)//'.VALE'   ,'L',JDU)
+      CALL JEVEUO(DEPPRE(1)(1:19)//'.VALE','L',JDU0)
+      CALL JEVEUO(DEPPRE(2)(1:19)//'.VALE','L',JDU1)
+      CALL JEVEUO(DEPOLD(1:19)//'.VALE'   ,'L',JUR)   
+      CALL DISMOI('F','PROF_CHNO',DEPDEL,'CHAM_NO',IBID, PROFCH,IER)
+      CALL JEVEUO(PROFCH(1:19)//'.DEEQ'   ,'L',IDEEQ)
+C
+C --- CHOIX DE ETA SI NECESSAIRE (I.E. SI NBEFFE > 1)
+C
+      IF (TYPSEL.EQ.'ANGL_INCR_DEPL') THEN
+        SCA1   = 0.D0
+        SCA2   = 0.D0
+        NODUP1 = 0.D0
+        NODUP2 = 0.D0
+        DO 25 I = 1,NEQ
+         SCA1   = SCA1   + ZR(JUR+I-1)*(ZR(JDU+I-1)
+     &                   + RHO*ZR(JDU0+I-1)
+     &                   + ETA(1)*ZR(JDU1+I-1))
+         SCA2   = SCA2   + ZR(JUR+I-1)*(ZR(JDU+I-1)
+     &                   + RHO*ZR(JDU0+I-1)
+     &                   + ETA(2)*ZR(JDU1+I-1))
+         NODUP1 = NODUP1 + (ZR(JDU+I-1)
+     &                   + RHO*ZR(JDU0+I-1)
+     &                   + ETA(1)*ZR(JDU1+I-1))**2
+         NODUP2 = NODUP2 + (ZR(JDU+I-1)
+     &                   + RHO*ZR(JDU0+I-1)
+     &                   + ETA(2)*ZR(JDU1+I-1))**2
+ 25     CONTINUE
+        F(1)   = SCA1 / SQRT(NODUP1)
+        F(2)   = SCA2 / SQRT(NODUP2)
+C          
+C --- TRANSFO MAX EN MIN        
+C
+        F(1)   = -F(1)
+        F(2)   = -F(2)
+      ELSE IF (TYPSEL.EQ.'NORM_INCR_DEPL') THEN
+        DO 30 I = 0, NEQ-1
+          IF (ZI(IDEEQ-1 + 2*I + 2).GT.0) THEN
+            F(1)   = F(1)+
+     &               (ZR(JDU+I)+RHO*ZR(JDU0+I)+ETA(1)*ZR(JDU1+I))**2
+            F(2)   = F(2)+
+     &               (ZR(JDU+I)+RHO*ZR(JDU0+I)+ETA(2)*ZR(JDU1+I))**2
+          END IF
+ 30     CONTINUE
+      ELSE IF (TYPSEL.EQ.'RESIDU') THEN 
+        DO 60 I = 1,2      
+          CALL NMCERE(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &                COMPOR,LISCHA,CNFEXT,CARCRI,FONACT,
+     &                SDDYNA,ITERAT,INDRO ,POUGD ,RESOCO,
+     &                VALMOI,VALPLU,SECMBR,DEPALG,VEELEM,
+     &                MEELEM,MEASSE,OFFSET,RHO   ,ETA(I) ,
+     &                F(I)  ,LDCCVG(I))
+  60    CONTINUE
+        TESTFI = .FALSE.
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+      CALL JEDEMA()
+      END

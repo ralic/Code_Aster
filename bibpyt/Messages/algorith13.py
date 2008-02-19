@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith13 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,36 +22,6 @@ def _(x) : return x
 
 cata_msg = {
 
-2 : _("""
- erreur dans les données  d'observation
- le noeud  %(k1)s n'existe pas dans  %(k2)s 
-"""),
-
-3 : _("""
- erreur dans les données d'observation
- le GROUP_NO  %(k1)s n'existe pas dans  %(k2)s 
-"""),
-
-4 : _("""
- erreur dans les données d'observation
- la maille  %(k1)s n'existe pas dans  %(k2)s 
-"""),
-
-5 : _("""
- erreur dans les données d'observation
- le GROUP_MA  %(k1)s n'existe pas dans  %(k2)s 
-"""),
-
-6 : _("""
- erreur dans les données d'observation
- pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s 
-"""),
-
-7 : _("""
- erreur dans les données d'observation
- pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s et  %(k3)s 
-"""),
-
 8 : _("""
  arret sur maillage non squelette
 """),
@@ -63,22 +33,6 @@ cata_msg = {
 11 : _("""
   arret problème de factorisation
   présence de modes de corps rigide
-"""),
-
-13 : _("""
- ICMP dans le désordre
- noeud        =  %(i1)d
- sous-domaine =  %(i2)d 
-"""),
-
-14 : _("""
- système (GI)T*GI probablement non inversible:
- %(i1)d pb LAPACK DGETRF:  %(i2)d 
-"""),
-
-15 : _("""
- système (GI)T*GI probablement non inversible:
- %(i1)d pb LAPACK DGETRS:  %(i2)d 
 """),
 
 17 : _("""
@@ -138,10 +92,6 @@ cata_msg = {
 35 : _("""
  numéro de mode de votre liste inexistant dans les modes utilisés:
  numéro ds votre liste : %(i1)d 
-"""),
-
-36 : _("""
- appel erroné
 """),
 
 39 : _("""
@@ -246,13 +196,6 @@ cata_msg = {
  contacter le support %(k2)s 
 """),
 
-64 : _("""
- interpolation température:
- evol_ther: %(k1)s
- instant  : %(r1)f
- icoret   : %(i1)d 
-"""),
-
 68 : _("""
  problème interpolation vitesse:
  evol_char  : %(k1)s
@@ -262,14 +205,6 @@ cata_msg = {
 
 69 : _("""
  le noeud: %(k1)s  ne peut pas etre TYPL et TYPB
-"""),
-
-70 : _("""
- impossible de coder le nombre :  %(i1)d  sur :  %(k1)s 
-"""),
-
-71 : _("""
- choix impossible pour INITPR :  %(i1)d 
 """),
 
 74 : _("""
@@ -312,20 +247,11 @@ cata_msg = {
  pour l'intervalle  %(i1)d 
 """),
 
-84 : _("""
- modèle amont non défini
-"""),
-
 85 : _("""
  champ inexistant
  résultat   : %(k1)s 
  nom_cham   : %(k2)s 
  nume_ordre : %(i1)d 
-"""),
-
-86 : _("""
- type de matrice inconnue
- type: %(k1)s 
 """),
 
 91 : _("""

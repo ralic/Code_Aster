@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C     ----------- FIN COMMUNS NORMALISES  JEVEUX -----------------------
 
-      INTEGER NBVAL, LVAL, JPRO
+      INTEGER NBVAL, LVAL, JPRO, LXLGUT
       CHARACTER*8 TYPFON
       CHARACTER*16 CONSTA
       CHARACTER*19 NOMFON
@@ -58,13 +58,15 @@ C     ------------------------------------------------------------------
 C     CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL
       CALL GETRES(NOMFON,TYPFON,CONSTA)
       CHPRO = NOMFON//'.PROL'
-      CALL WKVECT(CHPRO,'G V K16',5,JPRO)
-      ZK16(JPRO) = 'CONSTANT'
-      ZK16(JPRO+1) = 'LIN LIN '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT(CHPRO,'G V K24',6,JPRO)
+      ZK24(JPRO) = 'CONSTANT'
+      ZK24(JPRO+1) = 'LIN LIN '
       CALL GETVTX(' ','NOM_RESU',0,1,1,NOMRES,NBVAL)
-      ZK16(JPRO+2) = 'TOUTPARA'
-      ZK16(JPRO+3) = NOMRES(1:8)
-      ZK16(JPRO+4) = 'CC      '
+      ZK24(JPRO+2) = 'TOUTPARA'
+      ZK24(JPRO+3) = NOMRES(1:8)
+      ZK24(JPRO+4) = 'CC      '
+      ZK24(JPRO+5) = NOMFON(1:19)
 
 C     CREATION ET REMPLISSAGE DE L'OBJET NOMFON.VALE
 

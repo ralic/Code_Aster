@@ -1,6 +1,7 @@
-      SUBROUTINE JJALLS(LONOI,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,IADYN)
+      SUBROUTINE JJALLS(LONOI,IC,GENRI,TYPEI,LTY,CI,ITAB,JITAB,IADMI,
+     &                  IADYN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 23/10/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508 CRS_512 CRS_505
+C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508 CRS_512 CRS_505 CRP_20
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            LONOI,LTY,ITAB(*),JITAB,IADMI,IADYN
       CHARACTER*(*)            GENRI,TYPEI     ,CI
@@ -25,6 +26,7 @@ C ----------------------------------------------------------------------
 C ALLOUE UN SEGMENT DE VALEUR EN MEMOIRE
 C
 C IN  LONOI  : LONGUEUR EN OCTETS DU SEGMENT DE VALEUR
+C IN  IC     : CLASSE DE L'OBJET
 C IN  GENRI  : GENRE DE L'OBJET JEVEUX
 C IN  TYPEI  : TYPE DE L'OBJET JEVEUX
 C IN  LTY    : LONGUEUR DU TYPE DE L'OBJET JEVEUX
@@ -46,6 +48,12 @@ C ----------------------------------------------------------------------
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+      INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
+      COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C ----------------------------------------------------------------------
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
@@ -65,10 +73,14 @@ C ----------------------------------------------------------------------
      &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          INIT,IADDI(2),IBLANC,ID(2),IDEC(2),VALLOC,LSIC
-      INTEGER          IVAL(3)
+      INTEGER          IC,IVAL(3)
       LOGICAL          LEXACT,LEPS,LINIT,LDEPS,LAMOV,LXA,LXD,RETRO
       CHARACTER *8     CBLANC
       EQUIVALENCE    ( CBLANC,IBLANC )
+      PARAMETER      ( NDE = 6)
+C ----------------------------------------------------------------------
+C REMARQUE : LE PARAMETER NDE EST AUSSI DEFINI DANS JXLIRO JXECRO
+C ----------------------------------------------------------------------
       DATA CBLANC     /'        '/
 C DEB ------------------------------------------------------------------
       LXA = .NOT. ( IDXAXD(1) .EQ. IDINIT(1) )
@@ -80,9 +92,27 @@ C DEB ------------------------------------------------------------------
       IDEC(2) = 4
       LINIT = ( CI(1:4) .EQ. 'INIT' )
       LSO = LONOI
+C     
+C     LA TAILLE DU SEGMENT DE VALEURS EST AJUSTEE POUR S'ALLIGNER 
+C     SUIVANT LA LONGUEUR DU TYPE (SI SUPERIEUR A L'ENTIER)
+C     
+
       IF ( LTY .NE. LOIS ) THEN
         LSO = LSO + LTY
         IF ( MOD(LSO,LOIS) .NE. 0 ) LSO = (1 + LSO/LOIS) * LOIS
+      ENDIF
+C     
+C     LA TAILLE DU SEGMENT DE VALEURS EST AJUSTEE A LA LONGUEUR DE BLOC
+C     SI ON EST COMPRIS ENTRE LGBL-(NDE*LOIS) ET LGBL POUR DISPOSER DE
+C     LA PLACE MINIMUM NECESSAIRE POUR LES GROS OBJETS
+C     
+      IF ( IC .NE. 0 ) THEN
+        IF ( LONGBL(IC) .GT. 1 ) THEN
+          LGBL = 1024*LONGBL(IC)*LOIS 
+          IF (LSO .GE. LGBL-NDE*LOIS .AND. LSO .LT. LGBL) THEN
+            LSO = LGBL
+          ENDIF
+        ENDIF
       ENDIF
       LSI = LSO / LOIS
 C
@@ -453,7 +483,7 @@ C --- DECHARGEMENT OU DESTRUCTION DES SEGMENTS DE VALEURS LIBERES
          ENDIF
          CALL JEPRSG ( 'MESSAGE', 0.1D0 , 1 )
          CALL JEIMPM ( 'MESSAGE',' MEMOIRE INSUFFISANTE ')
-         CALL U2MESI ( 'S','JEVEUX_32' , 1 , LSI)
+      CALL U2MESI ( 'F','JEVEUX_32' , 1 , LSI)
       ENDIF
 C
       IF (.NOT.RETRO) THEN

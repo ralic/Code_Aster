@@ -5,9 +5,9 @@
      &                  SECMBR,DEPALG,NBEFFE,VEELEM,MEELEM,
      &                  MEASSE,IRECLI,PROETA,OFFSET,RHO   ,
      &                  ETAF  ,LICCVG,RESIDU)
-
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,8 +24,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_21
-
+C
       IMPLICIT NONE
       LOGICAL       FONACT(*),IRECLI
       INTEGER       ITERAT, LICCVG(2), INDRO, NBEFFE
@@ -106,25 +107,13 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       LOGICAL      BORMIN, BORMAX
-      LOGICAL      ISFONC,REAROT,TESTFI
-      INTEGER      JPLTK,JPLIR, J, I, JDU, JDU0, JDU1, NEQ, IBID, IER
-      INTEGER      IDEEQ,JUR, JDDEPL, JDEPPL,IRET
-      INTEGER      JDEPPT, JDEPDT, LDCCVG(2),LICITE(2)
-      REAL*8       R8VIDE, R8MAEM
-      REAL*8       ETAMIN, ETAMAX, INFINI, CONMIN, CONMAX
-      REAL*8       ETA(2), SCA1, SCA2, NODUP1, NODUP2, CO1, CO2, NRM1
-      REAL*8       NRM2, F(2)
-      CHARACTER*8  K8BID
-      CHARACTER*19 PROFCH, CNFINS(2), CNDIRS(2)
-      CHARACTER*24 PROJBO, TYPSEL
-      CHARACTER*24 K24BID,K24BLA
-      CHARACTER*24 VALPLT(8),DEPALT(8)
-      CHARACTER*24 DEPPLT,DEPDET,DDEP
-      CHARACTER*24 DDEPLA,DEPOLD,DEPDEL,DEPPRE(2)
-      CHARACTER*24 DEPPLU,SIGPLU,VARPLU,COMPLU
-      CHARACTER*8  VEFINT,VEDIRI
-      CHARACTER*8  MERIGI,MESSTR
-      CHARACTER*19 SSTRU
+      LOGICAL      TESTFI
+      INTEGER      JPLTK,JPLIR, J, I
+      INTEGER      LDCCVG(2),LICITE(2)
+      REAL*8       R8VIDE,R8MAEM,INFINI
+      REAL*8       ETAMIN,ETAMAX,CONMIN,CONMAX
+      REAL*8       ETA(2),F(2)
+      CHARACTER*24 PROJBO,TYPSEL
       INTEGER      IFM,NIV
 C
 C ----------------------------------------------------------------------
@@ -142,29 +131,8 @@ C --- INITIALISATIONS
 C
       LICITE(1) = 0
       LICITE(2) = 0
-      K24BLA    = ' '
-      REAROT    = ISFONC(FONACT,'REAROT')
-      TESTFI    = IRECLI         
-      DDEP      = '&&CNCETA.CHP0'
-      DEPDET    = '&&CNCETA.CHP1'
-      DEPPLT    = '&&CNCETA.CHP2'
-      CNFINS(1) = '&&CNCETA.FIN1'
-      CNFINS(2) = '&&CNCETA.FIN2'
-      CNDIRS(1) = '&&CNCETA.DIR1'
-      CNDIRS(2) = '&&CNCETA.DIR2'  
-      CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
-C
-C --- DECOMPACTION VARIABLES CHAPEAUX
-C      
-      CALL DESAGG(DEPALG,DDEPLA,DEPDEL,DEPOLD,DEPPRE(1),
-     &            DEPPRE(2),K24BID,K24BID,K24BID)
-      CALL DESAGG(VALPLU,DEPPLU,SIGPLU,VARPLU,COMPLU,
-     &            K24BID,K24BID,K24BID,K24BID)  
-      VEFINT = VEELEM(1)   
-      VEDIRI = VEELEM(2) 
-      MERIGI = MEELEM(1)
-      MESSTR = MEELEM(6)
-      SSTRU  = MEASSE(6)              
+      INFINI    = R8MAEM()
+      TESTFI    = IRECLI                 
 C
 C --- LECTURE DONNEES PILOTAGE
 C
@@ -188,8 +156,7 @@ C
         ETAMIN = R8VIDE()
         BORMIN = .FALSE.
       END IF
-C
-      INFINI = R8MAEM()
+C 
       IF (ZR(JPLIR+3) .NE. R8VIDE()) THEN
         CONMAX = ZR(JPLIR+3)
       ELSE
@@ -201,17 +168,9 @@ C
       ELSE
         CONMIN = -INFINI
       END IF
-
-C ----------------------------------------------------------------------
-C                          REDUCTION DES SOLUTIONS
-C ----------------------------------------------------------------------
-
-
 C
-C --- INTERSECTION AVEC L'INTERVALLE DE CONTROLE
-C     LA STRATEGIE : ON NE GARDE QUE LES ETA DANS L'INTERVALLE DE
-C                   CONTROLE S'IL Y EN A
-C                   SINON : ARRET DU PAS DE TEMPS
+C --- INTERSECTION AVEC L'INTERVALLE DE CONTROLE ETA_PILO_R_*
+C
       J=0
       DO 20 I = 1, NBEFFE
         IF (PROETA(I).GE.CONMIN .AND. PROETA(I).LE.CONMAX) THEN
@@ -227,10 +186,11 @@ C                   SINON : ARRET DU PAS DE TEMPS
         GOTO 9999
       END IF
 C
-C --- TEST PAR RAPPORT AUX BORNES D'UTILISATION
-C     STRATEGIE : SI LE ETA CHOISI EST EN DEHORS DES BORNES
-C                 D'UTILISATION ON ARRETE LE CALCUL A CONVERGENCE
-C                DE + SI 'PROJ_BORNE' ON RAMENE LES ETA SUR LES BORNES
+C --- TEST PAR RAPPORT AUX BORNES D'UTILISATION ETA_PILO_*
+C --- STRATEGIE : SI LE ETA CHOISI EST EN DEHORS DES BORNES
+C ---             D'UTILISATION ON ARRETE LE CALCUL A CONVERGENCE
+C ---             DE + SI 'PROJ_BORNE' ON RAMENE LES ETA SUR LES BORNES
+C
       DO 50 I = 1, NBEFFE
         IF (BORMAX) THEN
           IF (ETA(I) .GT. ETAMAX) THEN
@@ -249,190 +209,48 @@ C
 C --- CHOIX DE ETA SI NECESSAIRE (I.E. SI NBEFFE > 1)
 C
       IF (NBEFFE.EQ.2) THEN
-        CALL JEVEUO(DEPDEL(1:19)//'.VALE','E',JDU)
-        CALL JEVEUO(DEPPRE(1)(1:19)//'.VALE','E',JDU0)
-        CALL JEVEUO(DEPPRE(2)(1:19)//'.VALE','E',JDU1)
-        CALL JELIRA(DEPPRE(1)(1:19)//'.VALE','LONMAX', NEQ, K8BID)
-        CALL DISMOI('F','PROF_CHNO',DEPDEL,'CHAM_NO',IBID, PROFCH,IER)
-        CALL JEVEUO(PROFCH // '.DEEQ','L',IDEEQ)
-
-C      CHOIX PAR MAX COS(DUREF,DU+DU0+DETA*DU1)
-        IF (TYPSEL.EQ.'ANGL_INCR_DEPL') THEN
-          CALL JEVEUO(DEPOLD(1:19)//'.VALE','L',JUR)
-          SCA1   = 0.D0
-          SCA2   = 0.D0
-          NODUP1 = 0.D0
-          NODUP2 = 0.D0
-          DO 25 I = 0,NEQ-1
-            SCA1   = SCA1   + ZR(JUR+I)*(ZR(JDU+I)
-     &                        +RHO*ZR(JDU0+I)+ETA(1)*ZR(JDU1+I))
-            SCA2   = SCA2   + ZR(JUR+I)*(ZR(JDU+I)
-     &                        +RHO*ZR(JDU0+I)+ETA(2)*ZR(JDU1+I))
-            NODUP1 = NODUP1 + (ZR(JDU+I)
-     &                        +RHO*ZR(JDU0+I)+ETA(1)*ZR(JDU1+I))**2
-            NODUP2 = NODUP2 + (ZR(JDU+I)
-     &                        +RHO*ZR(JDU0+I)+ETA(2)*ZR(JDU1+I))**2
- 25       CONTINUE
-
-          CO1 = SCA1 / SQRT(NODUP1)
-          CO2 = SCA2 / SQRT(NODUP2)
-
-          IF (CO1.GE.CO2) THEN
-            ETAF = ETA(1)
-            LICCVG(1) = LICITE(1)
-          ELSE
-            ETAF = ETA(2)
-            LICCVG(1) = LICITE(2)
-          END IF
-
-
-C      CHOIX DU MINIMUM D(UN,U(ETA))
-        ELSE IF (TYPSEL.EQ.'NORM_INCR_DEPL') THEN
-
-          NRM1 = 0.D0
-          NRM2 = 0.D0
-
-
-          DO 30 I = 0, NEQ-1
-            IF (ZI(IDEEQ-1 + 2*I + 2).GT.0) THEN
-              NRM1=NRM1+(ZR(JDU+I)+RHO*ZR(JDU0+I)+ETA(1)*ZR(JDU1+I))**2
-              NRM2=NRM2+(ZR(JDU+I)+RHO*ZR(JDU0+I)+ETA(2)*ZR(JDU1+I))**2
-            END IF
- 30       CONTINUE
-
-          IF (NRM1 .LE. NRM2) THEN
-            ETAF = ETA(1)
-            LICCVG(1) = LICITE(1)
-          ELSE
-            ETAF = ETA(2)
-            LICCVG(1) = LICITE(2)
-          END IF
-
-
-C      CHOIX DU MINIMUM DU RESIDU
-C      A FINIR (CF. NMREPL POUR INSPIRATION)
-C      IL FAUDRAIT PREVOIR UN BOOLEEN POUR EVITER UN NOUVEAU CALCUL
-C      DES FORCES INTERIEURES : DANS CE CAS
-C      ON AURA DEJA FAIT LE CALCUL DES FORCES INTERIEURES...
-        ELSE IF (TYPSEL.EQ.'RESIDU') THEN
-          
-          CALL JEVEUO(DDEP(1:19)  //'.VALE','E',JDDEPL)
-          CALL JEVEUO(DEPPLT(1:19)//'.VALE','E',JDEPPT)
-          CALL JEVEUO(DEPDET(1:19)//'.VALE','E',JDEPDT)
-          CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPPL)
-C
-C --- RECONSTRUCTION DES VARIABLES CHAPEAUX
-C
-          CALL AGGLOM(DEPPLT,SIGPLU,VARPLU,COMPLU,K24BLA,
-     &                K24BLA,K24BLA,K24BLA, 4, VALPLT)
-          CALL AGGLOM(DDEPLA,DEPDET,DEPOLD,DEPPRE(1),DEPPRE(2),
-     &                K24BLA,K24BLA,K24BLA, 5, DEPALT) 
-     
-          DO 60 I = 1,2
-            CALL R8INIR(NEQ,0.D0,ZR(JDDEPL),1)
-            CALL DAXPY(NEQ, RHO,    ZR(JDU0),1, ZR(JDDEPL),1)
-            CALL DAXPY(NEQ, ETA(I)-OFFSET, ZR(JDU1),1, ZR(JDDEPL),1)
-
-            CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDU),ZR(JDDEPL),
-     &             1.D0,ZR(JDEPDT))
-            CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDEPPL),ZR(JDDEPL),
-     &             1.D0,ZR(JDEPPT))
-C
-C --- REACTUALISATION DES EFFORTS EXTERIEURS (AVEC ETA)
-C
-            CALL NMFEXT(NUMEDD,ETA(I),SECMBR,FONACT,RESOCO,
-     &                  CNFEXT)
-C
-C --- CALCUL DES FORCES INTERIEURES ET DES REACTIONS D'APPUI
-C
-            CALL NMFINT('RAPH_MECA',
-     &                  MODELE,NUMEDD,MATE     ,CARELE,COMREF,
-     &                  COMPOR,LISCHA,CARCRI   ,FONACT,RESOCO,
-     &                  ITERAT,SDDYNA,LDCCVG(I),VALMOI,VALPLT,
-     &                  POUGD ,DEPALT,MERIGI   ,MESSTR,VEDIRI,
-     &                  VEFINT,SSTRU ,CNFINS(I),CNDIRS(I))
-C
-C --- CALCUL DU RESIDU
-C
-            IF (LDCCVG(I) .EQ. 0) THEN 
-              CALL NMPILR(NEQ   ,CNFINS(I),CNDIRS(I),CNFEXT,F(I))  
-            ELSE
-              GOTO 60
-            ENDIF
-  60      CONTINUE
-          IF (F(1).LT.F(2)) THEN
-            ETAF=ETA(1)
-            LICCVG(1) = LICITE(1)
-            LICCVG(2) = LDCCVG(1)
-          ELSE
-            ETAF      = ETA(2)
-            LICCVG(1) = LICITE(2)
-            LICCVG(2) = LDCCVG(2)
-          ENDIF
-          IF (IRECLI) THEN
-            RESIDU    = MIN(F(1),F(2))
-          ENDIF
-          TESTFI = .FALSE.              
+        CALL NMCESE(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &              COMPOR,LISCHA,CNFEXT,CARCRI,FONACT,
+     &              SDDYNA,ITERAT,INDRO ,POUGD ,RESOCO,
+     &              VALMOI,VALPLU,SECMBR,DEPALG,VEELEM,
+     &              MEELEM,MEASSE,IRECLI,OFFSET,RHO   ,
+     &              TYPSEL,ETA   ,LDCCVG,F     ,TESTFI)
+        IF (F(1).LE.F(2)) THEN
+          ETAF      = ETA(1)
+          LICCVG(1) = LICITE(1)
+          LICCVG(2) = LDCCVG(1)
         ELSE
-          CALL ASSERT(.FALSE.)
-        END IF
+          ETAF      = ETA(2)
+          LICCVG(1) = LICITE(2)
+          LICCVG(2) = LDCCVG(2)
+        ENDIF
       ELSEIF (NBEFFE.EQ.1) THEN
         ETAF      = ETA(1)
         LICCVG(1) = LICITE(1)
       ELSE
         CALL ASSERT(.FALSE.)  
       ENDIF
+      
+C
+C --- VALEUR DU RESIDU
+C      
+      IF (TYPSEL.EQ.'RESIDU') THEN 
+        IF (IRECLI) THEN
+          RESIDU    = MIN(F(1),F(2))
+        ENDIF
+        TESTFI = .FALSE.      
+      ENDIF
 C
 C --- CALCUL DU RESIDU
 C      
       IF (TESTFI) THEN
-        CALL JEVEUO(DEPDEL(1:19)   //'.VALE','E',JDU)
-        CALL JEVEUO(DEPPRE(1)(1:19)//'.VALE','E',JDU0)
-        CALL JEVEUO(DEPPRE(2)(1:19)//'.VALE','E',JDU1)
-        CALL JEVEUO(DEPPLU(1:19)   //'.VALE','L',JDEPPL)
-        CALL JEVEUO(DDEP(1:19)     //'.VALE','E',JDDEPL)
-        CALL JEVEUO(DEPPLT(1:19)   //'.VALE','E',JDEPPT)
-        CALL JEVEUO(DEPDET(1:19)   //'.VALE','E',JDEPDT)
-
-        CALL R8INIR(NEQ,0.D0,ZR(JDDEPL),1)
-        CALL DAXPY(NEQ, RHO,  ZR(JDU0),1, ZR(JDDEPL),1)
-        CALL DAXPY(NEQ, ETAF-OFFSET, ZR(JDU1),1, ZR(JDDEPL),1)      
-C       
-        CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDU),ZR(JDDEPL),
-     &             1.D0,ZR(JDEPDT))
-        CALL MAJOUR (NEQ,REAROT,ZI(INDRO),ZR(JDEPPL),ZR(JDDEPL),
-     &             1.D0,ZR(JDEPPT))       
-C
-C --- RECONSTRUCTION DES VARIABLES CHAPEAUX
-C
-        CALL AGGLOM(DEPPLT,SIGPLU,VARPLU,COMPLU,K24BLA,
-     &              K24BLA,K24BLA,K24BLA, 4, VALPLT)
-        CALL AGGLOM(DDEPLA,DEPDET,DEPOLD,DEPPRE(1),DEPPRE(2),
-     &              K24BLA,K24BLA,K24BLA, 5, DEPALT)      
-C
-C --- REACTUALISATION DES EFFORTS EXTERIEURS (AVEC ETA)
-C
-        CALL NMFEXT(NUMEDD,ETAF  ,SECMBR,FONACT,RESOCO,
-     &              CNFEXT)
-C
-C --- CALCUL DES FORCES INTERIEURES ET DES REACTIONS D'APPUI
-C
-        CALL NMFINT('RAPH_MECA',
-     &              MODELE,NUMEDD,MATE     ,CARELE,COMREF,
-     &              COMPOR,LISCHA,CARCRI   ,FONACT,RESOCO,
-     &              ITERAT,SDDYNA,LDCCVG(1),VALMOI,VALPLT,
-     &              POUGD ,DEPALT,MERIGI   ,MESSTR,VEDIRI,
-     &              VEFINT,SSTRU ,CNFINT   ,CNDIRI)
-C
-C --- CALCUL DU RESIDU
-C
-        IF (LDCCVG(1) .EQ. 0) THEN
-          CALL NMPILR(NEQ   ,CNFINT,CNDIRI,CNFEXT,RESIDU)
-        ELSE
-          LICCVG(2) = LDCCVG(1)
-          GOTO 600
-        ENDIF
- 600    CONTINUE
+        CALL NMCERE(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &              COMPOR,LISCHA,CNFEXT,CARCRI,FONACT,
+     &              SDDYNA,ITERAT,INDRO ,POUGD ,RESOCO,
+     &              VALMOI,VALPLU,SECMBR,DEPALG,VEELEM,
+     &              MEELEM,MEASSE,OFFSET,RHO   ,ETAF  ,
+     &              RESIDU,LDCCVG)
+        LICCVG(2) = LDCCVG(1)
       ENDIF
 C
 C --- AFFICHAGE

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,30 +110,42 @@ C
          CALL GETVR8 ( MOTCLF,'PRES_A', IOCC,1,1, ZR(JPRESA+IOCC-1),N1)
          CALL GETVR8 ( MOTCLF,'PRES_B', IOCC,1,1, ZR(JPRESB+IOCC-1),N1)
 C
-C ------ LE NUMERO DE GROUPE:
-C        --------------------
+C ------ LES NUMEROS DE GROUPE:
+C        ----------------------
 C
-         CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, NUMGR, N1)
-C
-         IF ( NUMGR .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
-         DO 20 IG = 1 , NBGR
-            IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 22
- 20      CONTINUE
-         NBGR = NBGR + 1
-         ZI(JNBGR+NBGR-1) = NUMGR
- 22      CONTINUE
-C
-C ------ LES NUMEROS DE PASSAGE:
-C        -----------------------
-C
-        CALL GETVIS ( MOTCLF, 'NUME_PASSAGE', IOCC,1,2, NUMPAS, N1 )
-        IF ( N1 .NE. 0 ) THEN
-           YAPASS = .TRUE.
-           ZI(JSIGR+2*IOCC-2)  = MIN ( NUMPAS(1), NUMPAS(2) )
-           ZI(JSIGR+2*IOCC-1)  = MAX ( NUMPAS(1), NUMPAS(2) )
-        ELSE
+        CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,0, NUMPAS, N1 )
+        IF ( N1 .EQ. -1 ) THEN
+           CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, NUMGR, N1)
+           IF ( NUMGR .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
+           DO 20 IG = 1 , NBGR
+              IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 21
+ 20        CONTINUE
+           NBGR = NBGR + 1
+           ZI(JNBGR+NBGR-1) = NUMGR
+ 21        CONTINUE
            ZI(JSIGR+2*IOCC-2) = NUMGR
            ZI(JSIGR+2*IOCC-1) = NUMGR
+        ELSEIF ( N1 .EQ. -2 ) THEN
+           CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,2, NUMPAS, N1 )
+           IF ( NUMPAS(1) .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
+           IF ( NUMPAS(2) .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
+           YAPASS = .TRUE.
+           ZI(JSIGR+2*IOCC-2) = MIN ( NUMPAS(1), NUMPAS(2) )
+           ZI(JSIGR+2*IOCC-1) = MAX ( NUMPAS(1), NUMPAS(2) )
+           NUMGR = NUMPAS(1)
+           DO 22 IG = 1 , NBGR
+              IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 23
+ 22        CONTINUE
+           NBGR = NBGR + 1
+           ZI(JNBGR+NBGR-1) = NUMGR
+ 23        CONTINUE
+           NUMGR = NUMPAS(2)
+           DO 24 IG = 1 , NBGR
+              IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 25
+ 24        CONTINUE
+           NBGR = NBGR + 1
+           ZI(JNBGR+NBGR-1) = NUMGR
+ 25        CONTINUE
         ENDIF
 C
 C ------ COMBINABLE DANS SON GROUPE:
@@ -198,7 +210,7 @@ C
 C
       CALL ORDIS ( ZI(JNBGR) , NBGR )
 C
-      IF ( NBGR.GT.2 .AND. YAPASS ) CALL U2MESS('F','POSTRCCM_34')
+      IF ( NBGR.GT.3 .AND. YAPASS ) CALL U2MESS('F','POSTRCCM_34')
 C
 C     ------------------------------------------------------------------
 C --- ON AJOUTE 1 GROUPE POUR LES SITUATIONS DE PASSAGE
@@ -228,16 +240,15 @@ C ------ ON COMPTE LES SITUATIONS DU GROUPE
 C
          NBSIGR = 0
          DO 32, IOCC = 1, NBSITU, 1
-            CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
-            IF ( INSG .EQ. NUMGR )  THEN
-               NBSIGR = NBSIGR + 1
-            ELSE
-               CALL GETVIS ( MOTCLF, 'NUME_PASSAGE',IOCC,1,2,NUMPAS,N1)
-               IF ( N1 .NE. 0 ) THEN
-                  IF ( NUMPAS(1) .EQ. NUMGR )  NBSIGR = NBSIGR + 1
-                  IF ( NUMPAS(2) .EQ. NUMGR )  NBSIGR = NBSIGR + 1
-              ENDIF
-           ENDIF
+            CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,0,NUMPAS,N1)
+            IF ( N1 .EQ. -1 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
+              IF ( INSG .EQ. NUMGR )  NBSIGR = NBSIGR + 1
+            ELSEIF ( N1 .EQ. -2 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,2,NUMPAS,N1)
+              IF ( NUMPAS(1) .EQ. NUMGR )  NBSIGR = NBSIGR + 1
+              IF ( NUMPAS(2) .EQ. NUMGR )  NBSIGR = NBSIGR + 1
+            ENDIF
  32      CONTINUE
 C
 C ------ ON STOCKE LE NUMERO DE L'OCCURRENCE
@@ -250,14 +261,16 @@ C
          CALL JEVEUO (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'E',JNSG)
          II = 0
          DO 34, IOCC = 1, NBSITU, 1
-            CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
-            IF ( INSG .EQ. NUMGR ) THEN
-               II = II + 1
-               ZI(JNSG+II-1) = IOCC
+            CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,0,NUMPAS,N1)
+            IF ( N1 .EQ. -1 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, INSG, N1 )
+              IF ( INSG .EQ. NUMGR ) THEN
+                II = II + 1
+                ZI(JNSG+II-1) = IOCC
 C
 C ------------ A-T-ON UN SEISME DANS CE GROUPE ?
                CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME',IOCC,1,1,NSCY,N1)
-               IF ( N1 .NE. 0 ) THEN
+                IF ( N1 .NE. 0 ) THEN
                   IF ( ZI(JSEIGR+IG-1) .NE. 0 ) THEN
                      VALI(1) = NUMGR
                      VALI(2) = IOCC
@@ -265,18 +278,17 @@ C ------------ A-T-ON UN SEISME DANS CE GROUPE ?
                      CALL U2MESI('F','POSTRCCM_26',3,VALI)
                   ENDIF
                   ZI(JSEIGR+IG-1) = IOCC
-               ENDIF
-            ELSE
-               CALL GETVIS ( MOTCLF, 'NUME_PASSAGE',IOCC,1,2,NUMPAS,N1)
-               IF ( N1 .NE. 0 ) THEN
-                  IF ( NUMPAS(1) .EQ. NUMGR )  THEN
-                     II = II + 1
-                     ZI(JNSG+II-1) = IOCC
-                  ENDIF
-                  IF ( NUMPAS(2) .EQ. NUMGR )  THEN
-                     II = II + 1
-                     ZI(JNSG+II-1) = IOCC
-                  ENDIF
+                ENDIF
+              ENDIF
+            ELSEIF ( N1 .EQ. -2 ) THEN
+              CALL GETVIS ( MOTCLF, 'NUME_GROUPE',IOCC,1,2,NUMPAS,N1)
+              IF ( NUMPAS(1) .EQ. NUMGR )  THEN
+                 II = II + 1
+                 ZI(JNSG+II-1) = IOCC
+              ENDIF
+              IF ( NUMPAS(2) .EQ. NUMGR )  THEN
+                 II = II + 1
+                 ZI(JNSG+II-1) = IOCC
               ENDIF
             ENDIF
  34      CONTINUE

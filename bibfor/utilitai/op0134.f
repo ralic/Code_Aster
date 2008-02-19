@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       RVAL
       LOGICAL      COMPL
       CHARACTER*8  K8B
-      CHARACTER*16 NOMCMD, TYPRES, NOPARP, NOPARF
+      CHARACTER*16 NOMCMD, TYPRES
       CHARACTER*19 NOMFON, NOMFIN, LISTP, LISTF, TYPCO
+      CHARACTER*24 NOPARP, NOPARF
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -89,19 +90,19 @@ C
          IF (TYPCO(1:10).EQ.'FONCTION_C')  COMPL = .TRUE.
          NBNOVA = 1
          CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
-         NOPARP = ZK16(LPROL+2)
+         NOPARP = ZK24(LPROL+2)
 C
       ELSEIF (TYPCO(1:5).EQ.'NAPPE') THEN
          NBNOVA = 2
          CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
-         NOPARP = ZK16(LPROL+2)
-         NOPARF = ZK16(LPROL+5)
+         NOPARP = ZK24(LPROL+2)
+         NOPARF = ZK24(LPROL+6)
 C
       ELSEIF (TYPCO(1:10).EQ.'PARA_SENSI') THEN
          NBNOVA = 1
          CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
-         NOPARP = ZK16(LPROL+2)
-         NOPARF = ZK16(LPROL+5)
+         NOPARP = ZK24(LPROL+2)
+         NOPARF = ZK24(LPROL+6)
 C
       ENDIF
 C
@@ -124,8 +125,12 @@ C ------------------------------------------------------------------
      &                                               ZR(LVALF), N1 )
          ELSE
             CALL GETVID ( ' ', 'LIST_PARA_FONC', 1,1,1, LISTF, N1 )
-            CALL JEVEUO ( LISTF//'.VALE', 'L', LVALF)
-            CALL JELIRA ( LISTF//'.VALE', 'LONUTI', NBVALF, K8B )
+            IF (N1 .NE. 0) THEN
+               CALL JEVEUO ( LISTF//'.VALE', 'L', LVALF)
+               CALL JELIRA ( LISTF//'.VALE', 'LONUTI', NBVALF, K8B )
+            ELSE
+               CALL U2MESS('F','FONCT0_49')
+            ENDIF
          ENDIF
 C
          CALL  CALCNA ( NOMFIN, NOMFON, NBVALP, ZR(LVALP), NOPARP,
@@ -133,7 +138,7 @@ C
 C
       ELSE
 C
-         CALL U2MESS('F','UTILITAI2_82')
+         CALL U2MESS('F','FONCT0_48')
 C
       ENDIF
 C

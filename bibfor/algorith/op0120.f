@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/2007   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,12 +175,13 @@ C           --- CREATION DE L'OBJET NOMCOD//'.PROL' ---
           CHVALE = NOMCOD//'.VALE'
           CALL WKVECT ( CHVALE, 'G V R', NBPTS3, LCOD )
           CHPROL = NOMCOD//'.PROL'
-          CALL WKVECT ( CHPROL, 'G V K16', 5, LPROL )
-          ZK16(LPROL  ) = 'FONCT_C '
-          ZK16(LPROL+1) = 'LIN LIN '
-          ZK16(LPROL+2) = 'FREQ    '
-          ZK16(LPROL+3) = 'DSP     '
-          ZK16(LPROL+4) = 'EE      '
+          CALL WKVECT ( CHPROL, 'G V K24', 6, LPROL )
+          ZK24(LPROL  ) = 'FONCT_C '
+          ZK24(LPROL+1) = 'LIN LIN '
+          ZK24(LPROL+2) = 'FREQ    '
+          ZK24(LPROL+3) = 'DSP     '
+          ZK24(LPROL+4) = 'EE      '
+          ZK24(LPROL+5) = NOMCOD
 C
           DO 150 K = 1,NBPTS2
             L1 = LCOD + NBPTS2 + (K-1)*2

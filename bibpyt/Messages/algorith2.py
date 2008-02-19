@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith2 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,10 +72,6 @@ cata_msg = {
      s'arrete en erreur fatale.
 """),
 
-14 : _("""
- charge non traitée:  %(k1)s
-"""),
-
 15 : _("""
  les modélisations autorisées sont 3D et D_PLAN et AXIS
 """),
@@ -84,24 +80,16 @@ cata_msg = {
  le choix des paramètres ne correspond pas à l'un des modèles CJS
 """),
 
-17: _("""
+17 : _("""
  la loi CJS ne converge pas
 """),
 
-18: _("""
+18 : _("""
  la loi CJS ne converge pas avec le nombre maximal d'itérations (intégration locale)
-"""),
-
-19 : _("""
- les modélisations autorisées sont 3D et D_PLAN et AXIS
 """),
 
 20 : _("""
  modélisation inconnue
-"""),
-
-21 : _("""
-  NVI > NVIMAX
 """),
 
 22 : _("""
@@ -117,10 +105,6 @@ cata_msg = {
  la maille doit etre de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 ou HEXA20.
  ou TRIA3-6 ou QUAD4-8
  or la maille est de type :  %(k1)s .
-"""),
-
-25 : _("""
- mauvaise face
 """),
 
 26 : _("""
@@ -219,18 +203,6 @@ cata_msg = {
  CMP non traitée
 """),
 
-51 : _("""
- il y a plusieurs charges contenant des liaisons unilatérales
-"""),
-
-52 : _("""
- débordement tableau (dvlp)
-"""),
-
-53 : _("""
- erreur code dans affichage (dvlp)
-"""),
-
 54 : _("""
   increment de déformation cumulée (dp) = - %(k1)s
 """),
@@ -301,69 +273,6 @@ cata_msg = {
 
 79 : _("""
  pas de valeurs propres trouvées
-"""),
-
-86 : _("""
- il n'y a aucun instant de calcul ('LIST_INST')
-"""),
-
-87 : _("""
- liste d'instants non croissante
-"""),
-
-88 : _("""
- accès par instant sans évolution ordonnée interdit (INCREMENT)
-"""),
-
-89 : _("""
- instant initial introuvable dans la liste d'instants (LIST_INST)
-"""),
-
-90 : _("""
- instant final introuvable dans la liste d'instants (LIST_INST)
-"""),
-
-91 : _("""
- NUME_INST_INIT plus petit que NUME_INST_FIN avec EVOLUTION: 'RETROGRADE'
-"""),
-
-92 : _("""
- NUME_INST_INIT plus grand que NUME_INST_FIN
-"""),
-
-93: _("""
- NUME_INST_INIT n'appartient pas a la liste d'instants
-"""),
-
-94 : _("""
-  -> Le numéro d'ordre correspondant à l'instant final de calcul NUME_INST_FIN
-     n'appartient pas à la liste des numéros d'ordre.
-     Dans ce cas, Aster considère pour numéro d'ordre final, le dernier de
-     la liste fournie.
-  -> Risque & Conseil :
-     Afin d'éviter des pertes de résultats, assurez-vous que le numéro d'ordre
-     associé à l'instant NUME_INST_FIN appartienne bien à la liste des numéros
-     d'ordre.
-"""),
-
-95 : _("""
- accès par instant sans évolution ordonnée interdit (ARCHIVAGE)
-"""),
-
-96 : _("""
- impossible d'archiver l'état initial : le concept est réentrant (ARCHIVAGE)
-"""),
-
-97 : _("""
- l'archivage va écraser des instants déjà calculés (ARCHIVAGE)
-"""),
-
-98 : _("""
- l'archivage va laisser des trous dans la sd EVOL_NOLI (ARCHIVAGE, NUME_INIT)
-"""),
-
-99 : _("""
- le nombre de niveau de subdivisions doit etre plus grand que 1 (SUBD_NIVEAU)
 """),
 
 }

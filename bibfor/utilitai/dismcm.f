@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,13 +182,13 @@ C
                DO 22,IF=1,NF
                  NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
                  CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+                 IF (ZK24(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                   IF (ZK16(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
-                   IF (ZK16(IAPROL-1+6).EQ.'TEMP') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
+                   IF (ZK24(IAPROL-1+7).EQ.'TEMP') REPK='OUI'
                  ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                   IF (ZK16(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'TEMP') REPK='OUI'
                  END IF
  22            CONTINUE
  21          CONTINUE
@@ -229,13 +229,13 @@ C
                DO 32,IF=1,NF
                  NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
                  CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+                 IF (ZK24(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                   IF (ZK16(IAPROL-1+3).EQ.'INST') REPK='OUI'
-                   IF (ZK16(IAPROL-1+6).EQ.'INST') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'INST') REPK='OUI'
+                   IF (ZK24(IAPROL-1+7).EQ.'INST') REPK='OUI'
                  ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                   IF (ZK16(IAPROL-1+3).EQ.'INST') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'INST') REPK='OUI'
                  END IF
  32            CONTINUE
  31          CONTINUE
@@ -276,13 +276,13 @@ C
                DO 42,IF=1,NF
                  NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
                  CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+                 IF (ZK24(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                   IF (ZK16(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
-                   IF (ZK16(IAPROL-1+6).EQ.'HYDR') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
+                   IF (ZK24(IAPROL-1+7).EQ.'HYDR') REPK='OUI'
                  ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                   IF (ZK16(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'HYDR') REPK='OUI'
                  END IF
  42            CONTINUE
  41          CONTINUE
@@ -323,13 +323,13 @@ C
                DO 52,IF=1,NF
                  NOMF=ZK8(IAVALK-1+NR+NC+NF+IF)
                  CALL JEVEUO(NOMF//'           .PROL','L',IAPROL)
-                 IF (ZK16(IAPROL-1+1).EQ.'NAPPE') THEN
+                 IF (ZK24(IAPROL-1+1).EQ.'NAPPE') THEN
 C              -- CAS D'UNE FONCTION A 2 VARIABLES :
-                   IF (ZK16(IAPROL-1+3).EQ.'SECH') REPK='OUI'
-                   IF (ZK16(IAPROL-1+6).EQ.'SECH') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'SECH') REPK='OUI'
+                   IF (ZK24(IAPROL-1+7).EQ.'SECH') REPK='OUI'
                  ELSE
 C              -- CAS D'UNE FONCTION A 1 VARIABLE :
-                   IF (ZK16(IAPROL-1+3).EQ.'SECH') REPK='OUI'
+                   IF (ZK24(IAPROL-1+3).EQ.'SECH') REPK='OUI'
                  END IF
  52            CONTINUE
  51          CONTINUE

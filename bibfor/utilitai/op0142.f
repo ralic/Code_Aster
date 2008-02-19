@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                 ZK80
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
-      INTEGER      PNOE , PTCH
+      INTEGER      PNOE , PTCH, LXLGUT
       CHARACTER*2  PROLGD
       CHARACTER*4  INTERP(2)
       CHARACTER*8  NOMMAI,  K8BID, NOD, NOF
@@ -100,13 +100,15 @@ C
 C
 C     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON//'.PROL'
 C
-      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT(NOMFON//'.PROL','G V K24',6,LPRO)
 C
-      ZK16(LPRO) = 'FONCTION'
-      ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-      ZK16(LPRO+2) = 'ABSC '
-      ZK16(LPRO+3) = 'VITE'
-      ZK16(LPRO+4) = PROLGD
+      ZK24(LPRO) = 'FONCTION'
+      ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+      ZK24(LPRO+2) = 'ABSC '
+      ZK24(LPRO+3) = 'VITE'
+      ZK24(LPRO+4) = PROLGD
+      ZK24(LPRO+5) = NOMFON
 C
 C     --- LECTURE DES CARACTERISTIQUES DU GROUPE DE MAILLES : ADRESSE
 C                   ET NOMBRE DE MAILLES

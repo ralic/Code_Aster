@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF elements Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,14 +28,6 @@ cata_msg = {
 
 2 : _("""
  ABS(RAYON2-RAYON1).GT.EPSI
-"""),
-
-3 : _("""
- ABS(THETA2-THETA1).GT.EPSI
-"""),
-
-4 : _("""
- ABS(OMEGA2-OMEGA1).GT.EPSI
 """),
 
 5 : _("""
@@ -97,12 +89,8 @@ cata_msg = {
  noeuds confondus pour un élément
 """),
 
-18: _("""
+18 : _("""
  le nombre de noeuds d'un tuyau est différent de 3 ou 4
-"""),
-
-19 : _("""
- PB1
 """),
 
 20 : _("""
@@ -111,14 +99,6 @@ cata_msg = {
 
 21 : _("""
  prédicteur ELAS hors champs
-"""),
-
-22 : _("""
- IREP (indicateur de changement de repère) doit etre égal à 0 ou 1
-"""),
-
-23 : _("""
- piles satur&es
 """),
 
 24 : _("""
@@ -219,10 +199,6 @@ cata_msg = {
  vous avez un materiau de type "ELAS_COQUE" et le determinant de la sous-matrice de Hooke relative au cisaillement est nul.
 """),
 
-44 : _("""
- unknown option demanded
-"""),
-
 45 : _("""
  L'un des coefficients materiaux N_VP et M_VP de la loi de comportement VENDO_CHAB 
   est négatif. Or ce n'est physiquement pas possible.
@@ -260,46 +236,20 @@ cata_msg = {
      ou SIGM_ELNO_COQU (contraintes en un point de l'épaisseur).
 """),
 
-52 : _("""
- lorsqu'il y a variation de température dans l'épaisseur, utiliser "STAT_NON_LINE"
-"""),
-
 53 : _("""
  problème: temperature sur la maille: %(k1)s : il manque la composante "TEMP"
-"""),
-
-54 : _("""
- élément non prévu
 """),
 
 55 : _("""
  ELREFA inconnu:  %(k1)s
 """),
 
-56 : _("""
-  erreur programmeur
-  ecrasement de dff, dimf est inférieur au nombre de noeuds * nombre de composantes
-"""),
-
-57 : _("""
-  erreur programmeur
-  écrasement de FF, DIMF est inférieur au nombre de noeuds
-"""),
-
 58 : _("""
  la nature du matériau  %(k1)s  nécessite la définition du coefficient  B_ENDOGE dans DEFI_MATERIAU.
 """),
 
-61 : _("""
- AXI : R=0
-"""),
-
 62 : _("""
  GROUP_MA :  %(k1)s  inconnu dans le maillage
-"""),
-
-63 : _("""
- erreurs GROUP_MA
 """),
 
 64 : _("""
@@ -363,19 +313,6 @@ cata_msg = {
  GROUP_NO orienté : noeud extremité =  %(k1)s
 """),
 
-79 : _("""
- il y a à la fois des éléments volumiques de degré 1 et de degré 2 dans le modèle
- on a besoin de savoir si on est en lineaire ou en quadratique pour choisir la methode de lissage.
-"""),
-
-80 : _("""
- le concept FOND_FISS est mal créé
-"""),
-
-82 : _("""
- l'option de lissage 'LAGRANG2' n'a pas ete développée lorsque le nombre de noeuds d'un fond de fissure fermé est pair.
-"""),
-
 83 : _("""
  le type des mailles des lèvres doit etre quadrangle ou triangle
 """),
@@ -384,25 +321,8 @@ cata_msg = {
   %(k1)s CHAM_NO inexistant
 """),
 
-85 : _("""
- initial point NM out of domain
-"""),
-
-86 : _("""
- NDICHO  .GT.  10000
-"""),
-
 87 : _("""
  bad definition of MP1 and MP2
-"""),
-
-88 : _("""
- le fond de fissure ne doit etre défini que par un noeud
- ( revoir le GROUP_NO )
-"""),
-
-89 : _("""
- le fond de fissure ne doit etre défini que par un noeud
 """),
 
 90 : _("""
@@ -412,44 +332,8 @@ Solution :
    Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
 """),
 
-91 : _("""
- mot clé FOND_FISS obligatoire
-"""),
-
-92 : _("""
- le fond de fissure ne doit etre défini que par un noeud
- ( revoir FOND_FISS )
-"""),
-
-93 : _("""
-  %(k1)s  n'est pas un GROUP_NO ou un GROUP_MA
-"""),
-
 94 : _("""
  arret sur erreur(s) utilisateur.
-"""),
-
-95 : _("""
- les mailles des lèvres doivent etre linéiques
-"""),
-
-96 : _("""
- erreur : la levre superieure possede une maille répétée 2 fois : maille  %(k1)s
- revoir les données
-"""),
-
-97 : _("""
- erreur : la lèvre inférieure possède une maille répétée 2 fois : maille  %(k1)s
- revoir les données
-"""),
-
-98 : _("""
- erreur : la lèvre inférieure et la lèvre superieure ont une maille surfacique en commun
- revoir les données
-"""),
-
-99 : _("""
- problème dans le calcul de la normale à la fissure
 """),
 
 }

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,14 +57,14 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
-      REAL*8       A  , XIY , XIZ , ALFAY , ALFAZ , XJX , EZ, EY
-      REAL*8       A2 , XIY2, XIZ2, ALFAY2, ALFAZ2, XJX2, XL
+      REAL*8       A  , XIY , XIZ , EZ, EY
+      REAL*8       A2 , XIY2, XIZ2, XL
       REAL*8       RAD, ANG, ANGARC, ANGS2, XFLY, XFLZ
       REAL*8       PGL(3,3), PGL1(3,3), PGL2(3,3), MAT(105)
       REAL*8       ITYPE, IYR2, IZR2, XFL, B(14),KSI1, D1B3(2,3)
-      REAL*8       ZERO,TRIGOM
+      REAL*8       ZERO,TRIGOM,SIGMA(14)
       INTEGER      LSECT,LSECT2,LORIEN,NNO,NC,I,LMAT,NCOMP,NBFIB
-      INTEGER      LRCOU,LDEP,KP,ADR,LX,IADZI,IAZK24
+      INTEGER      LRCOU,LDEP,KP,ADR,LX,IADZI,IAZK24,NPG,IPLOUF
 C     ------------------------------------------------------------------
 C
       ZERO = 0.0D0
@@ -124,6 +124,8 @@ C        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
          NC  = 6
          CALL MATROT ( ZR(LORIEN) , PGL )
       ELSEIF ( NOMTE .EQ. 'MECA_POU_C_T' )  THEN
+         NNO = 2
+         NC  = 6
 C        --- POUTRE COURBE DE TIMOSHENKO A 6 DDL ---
          CALL U2MESS('F','ELEMENTS3_28')
          CALL JEVECH ('PCAARPO', 'L',LRCOU)
@@ -133,8 +135,8 @@ C        --- POUTRE COURBE DE TIMOSHENKO A 6 DDL ---
          XFLY   = XFL
          XFLZ   = XFL
          IF (XFL.EQ.ZERO) THEN
-             XFLY   = ZR(LRCOU+4)
-             XFLZ   = ZR(LRCOU+6)
+            XFLY   = ZR(LRCOU+4)
+            XFLZ   = ZR(LRCOU+6)
          ENDIF
          ANGS2  = TRIGOM('ASIN', XL / ( 2.D0 * RAD ) )
          ANG    = ANGS2 * 2.D0
@@ -165,12 +167,26 @@ C
 C        --- CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE ---
          CALL JEVECH('PEFFORR','L',LDEP)
          CALL JEVECH('PMATUUR','E',LMAT)
-
          IF(NOMTE.EQ.'MECA_POU_D_T' .OR.
      &      NOMTE.EQ.'MECA_POU_D_E' .OR.
      &      NOMTE.EQ.'MECA_POU_C_T'  ) THEN
+C           NOMBRE DE POINTS DE GAUSS
+            CALL ELREF4(' ','RIGI',IPLOUF,IPLOUF,IPLOUF,
+     &            NPG,IPLOUF,IPLOUF,IPLOUF,IPLOUF)
+            CALL ASSERT( (NPG.EQ.2).OR.(NPG.EQ.3) )
+            IF ( NPG .EQ. 2 ) THEN
+               DO 15 I=1,NC
+                  SIGMA(I)    = ZR(LDEP+I-1)
+                  SIGMA(I+NC) = ZR(LDEP+NC+I-1)
+15             CONTINUE
+            ELSE
+               DO 17 I=1,NC
+                  SIGMA(I)    = ZR(LDEP+I-1)
+                  SIGMA(I+NC) = ZR(LDEP+NC+NC+I-1)
+17             CONTINUE
+            ENDIF
             IF ( ITYPE.NE.10 )  THEN
-               CALL PTKG00(ZR(LDEP),A,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,MAT)
+               CALL PTKG00(SIGMA,A,A2,XIZ,XIZ2,XIY,XIY2,XL,EY,EZ,MAT)
             ELSE
                CALL U2MESS('A','ELEMENTS3_28')
             ENDIF

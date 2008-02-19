@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+#@ MODIF modelisa6 Messages  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,11 +231,8 @@ cata_msg = {
 """),
 
 60 : _("""
-  prolongement a droite exclu pour la fonction r(p)
-"""),
-
-61 : _("""
- on deborde a droite redefinissez vos nappes alpha - moment
+  Le prolongement à droite étant exclu pour la fonction %(k1)s, 
+  il n'est pas possible d'extrapoler la fonction R(p) en p = %(r1)f.
 """),
 
 62 : _("""
@@ -248,18 +245,6 @@ cata_msg = {
 
 64 : _("""
  type sd non traite:  %(k1)s 
-"""),
-
-66 : _("""
- fonction constante interdite pour la courbe mz=f(drz)
-"""),
-
-67 : _("""
- fonction nappe interdite pour la courbe mz=f(drz)
-"""),
-
-68 : _("""
- concept de type :  %(k1)s  interdit pour la courbe de traction
 """),
 
 69 : _("""
@@ -292,17 +277,6 @@ cata_msg = {
 
 76 : _("""
   erreur lors de la definition dela courbe de traction: fonction ou nappe ! 
-"""),
-
-77 : _(""" 
-"""),
-
-78 : _("""
- abscisses non croissants.
-"""),
-
-79 : _("""
-  erreur lors de la definition dela courbe rela_mz: fonction ! 
 """),
 
 80 : _("""

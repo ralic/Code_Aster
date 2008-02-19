@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,13 +40,6 @@ Solution :
 
 
 
-9: _("""
-  Erreur d'utilisation :
-  Vous avez utilisé le mot clé AFFE_MATERIAU/AFFE/TEMP_REF
-  alors que la température de référence doit etre fournie avec le mot clé :
-  AFFE_MATERIAU/AFFE_VARC/VALE_REF= ...     (NOM_VARC='TEMP')
-"""),
-
 10: _("""
   Option inconnue %(k1)s
 """),
@@ -61,14 +54,6 @@ Solution :
 15: _("""
   l'element diagonal u( %(i1)d , %(i2)d ) de la factorisation est nul. %(k1)s
   la solution et les estimations d' erreurs ne peuvent etre calculees. %(k2)s
-"""),
-
-16: _("""
- interpolation temperature:
- evol_ther: %(k1)s
- nom symbolique: %(k2)s
- instant: %(r1)f
- icoret: %(i1)d
 """),
 
 17: _("""
@@ -101,15 +86,6 @@ Solution :
  recherche nbre d entiers codes grandeur %(i1)d a un code inconnu:  %(i2)d
 """),
 
-
-34: _("""
- famille non disponible    type de maille  %(k1)s
-    famille d'integration  %(i1)d
-"""),
-
-41: _("""
- famille non disponible    type de maille  %(k1)s
-"""),
 
 42: _("""
  La prise en compte de l'erreur sur une condition aux limites
@@ -220,9 +196,10 @@ Solution :
 
 62: _("""
  Erreur de programmation (fointa) :
-    Pour l'interpolation de la fonction %(k1)s,
+    Pour l'interpolation de la fonction %(k1)s sur la maille %(k3)s,
     il manque le paramètre %(k2)s
 """),
+
 
 63: _("""
  Erreur lors de l'interpolation (fointa) de la fonction %(k1)s :

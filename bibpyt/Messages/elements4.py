@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,18 +68,6 @@ cata_msg = {
 
 17 : _("""
  seuls comportements autorises :"elas" et "vmis_isot_trac"
-"""),
-
-20 : _("""
- pour l'élément de poutre " %(k1)s " l'option " %(k2)s " est invalide
-"""),
-
-21 : _("""
- pour un élément de poutre noeuds confondus :  %(k1)s 
-"""),
-
-22 : _("""
- les poutres à section variable ne sont pas traitées.
 """),
 
 23 : _("""
@@ -266,11 +254,6 @@ cata_msg = {
 
 81 : _("""
  manque le paramètre  %(k1)s pour la maille  %(k2)s 
-"""),
-
-83 : _("""
- utiliser "stat_non_line"  température inf:  %(r1)f   température moy:  %(r2)f 
- température sup:  %(r3)f 
 """),
 
 84 : _("""

@@ -5,7 +5,7 @@
       CHARACTER*(*)          VECPRO(*),    CHVAL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C     ------------------------------------------------------------------
       DATA TPROL/'CONSTANT','LINEAIRE','EXCLU'/
 C
       CALL JEMARQ()
-      NOMPAF = VECPRO(6)
+      NOMPAF = VECPRO(7)
       NOMPAN = VECPRO(3)
       NOMRES = VECPRO(4)
       N1     = MIN( 1,NBFONC)

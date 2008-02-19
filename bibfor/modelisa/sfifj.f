@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -258,13 +258,14 @@ C
      &                            IVAL, 0.D0, C16B, NOMFON, 0 )
 C
             CALL WKVECT ( NOMFON(1:19)//'.VALE','G V R ',3*NBPOIN,LVALE)
-            CALL WKVECT ( NOMFON(1:19)//'.PROL','G V K16',5      ,LPROL)
+            CALL WKVECT ( NOMFON(1:19)//'.PROL','G V K24',6      ,LPROL)
 C
-            ZK16(LPROL  ) = 'FONCT_C '
-            ZK16(LPROL+1) = 'LIN LIN '
-            ZK16(LPROL+2) = 'FREQ    '
-            ZK16(LPROL+3) = 'DSP     '
-            ZK16(LPROL+4) = 'LL      '
+            ZK24(LPROL  ) = 'FONCT_C '
+            ZK24(LPROL+1) = 'LIN LIN '
+            ZK24(LPROL+2) = 'FREQ    '
+            ZK24(LPROL+3) = 'DSP     '
+            ZK24(LPROL+4) = 'LL      '
+            ZK24(LPROL+5) = NOMFON
 C
 C BOUCLE SUR LES FREQUENCES ET REMPLISSAGE DU .VALE
 C IE VALEURS DES INTERSPECTRS

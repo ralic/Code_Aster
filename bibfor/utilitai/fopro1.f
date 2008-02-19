@@ -4,7 +4,7 @@
       CHARACTER*(*)     VEC(*),PROLGD,INTERP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/01/95   AUTEUR J2BHHMB C.MASSERET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C     ------------------------------------------------------------------
          INTERP = VEC(2)
          PROLGD = VEC(5)
       ELSE
-         INTERP = VEC(6+(2*I-1))
-         PROLGD = VEC(6+(2*I  ))
+         INTERP = VEC(7+(2*I-1))
+         PROLGD = VEC(7+(2*I  ))
       END IF
       END

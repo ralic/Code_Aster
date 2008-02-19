@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      LXLGUT     
       CHARACTER*1  TYPE,COLI,K1BID
       CHARACTER*4  INTERP(2)
       CHARACTER*8  K8B, CRIT, NOEUD, CMP, NOMA, NOMMOT, BASEMO
@@ -88,12 +89,14 @@ C
 C
 C     --- CREATION DE LA FONCTION ---
 C
-      CALL WKVECT ( NOMFON//'.PROL', 'G V K16', 5, LPRO )
-      ZK16(LPRO)   = 'FONCT_C         '
-      ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-      ZK16(LPRO+2) = 'FREQ            '
-      ZK16(LPRO+3) = NOMCHA
-      ZK16(LPRO+4) = 'EE              '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT ( NOMFON//'.PROL', 'G V K24', 6, LPRO )
+      ZK24(LPRO)   = 'FONCT_C         '
+      ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+      ZK24(LPRO+2) = 'FREQ            '
+      ZK24(LPRO+3) = NOMCHA
+      ZK24(LPRO+4) = 'EE              '
+      ZK24(LPRO+5) = NOMFON(1:19)
 C
       CALL WKVECT ( NOMFON//'.VALE', 'G V R', 3*NBORDR, LVAR )
       LFON = LVAR + NBORDR

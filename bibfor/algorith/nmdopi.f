@@ -1,7 +1,7 @@
       SUBROUTINE NMDOPI(MODELZ,NUMEDD,SDPILO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER       NOCC, NBG,JVALE,NBNO,NUMNOE, NUMEQU, NDDL, I, N
-      INTEGER       JGRO, JLICMP, JDDL, JEQU, JINFO, JTYPE
+      INTEGER       JGRO, JLICMP, JDDL, JEQU, JPLIR, JPLTK
       INTEGER       IBID, IER, N1, N2, NEQ
       REAL*8        COEF, MX, MI, R8VIDE, R8BID, LM(2), R8GAEM
       COMPLEX*16    CBID
@@ -106,44 +106,44 @@ C -- PAS DE PILOTAGE
 
 C -- LECTURE DU TYPE ET DE LA ZONE
 
-      CALL WKVECT (SDPILO // '.PLTK','V V K24',6,JTYPE)
+      CALL WKVECT (SDPILO // '.PLTK','V V K24',6,JPLTK)
       CALL GETVTX('PILOTAGE','TYPE',1,1,1,TYPE,N1)
-      ZK24(JTYPE) = TYPE
+      ZK24(JPLTK) = TYPE
       CALL GETVTX('PILOTAGE','PROJ_BORNES',1,1,1,PROJ,N1)
-      ZK24(JTYPE+4) = PROJ
+      ZK24(JPLTK+4) = PROJ
       CALL GETVTX('PILOTAGE','SELECTION',1,1,1,PROJ,N1)
-      ZK24(JTYPE+5) = PROJ
+      ZK24(JPLTK+5) = PROJ
 
 
 C -- PARAMETRES COEF_MULT ET ETA_PILO_MAX
 
-      CALL WKVECT(SDPILO // '.PLIR','V V R8',5,JINFO)
+      CALL WKVECT(SDPILO // '.PLIR','V V R8',5,JPLIR)
       CALL GETVR8 ('PILOTAGE','COEF_MULT',1,1,1,COEF  , N1)
-      ZR(JINFO) = COEF
+      ZR(JPLIR) = COEF
 
       CALL GETVR8('PILOTAGE','ETA_PILO_R_MAX',1,1,1,MX,N1)
       IF (N1.NE.1)  MX = R8GAEM()
-      ZR(JINFO+3) = MX
+      ZR(JPLIR+3) = MX
 
       CALL GETVR8('PILOTAGE','ETA_PILO_R_MIN',1,1,1,MI,N2)
       IF (N2.NE.1)  MI = -R8GAEM()
-      ZR(JINFO+4) = MI
+      ZR(JPLIR+4) = MI
 
       CALL GETVR8('PILOTAGE','ETA_PILO_MAX',1,1,1,MX,N1)
       IF (N1.NE.1)  THEN
         MX = R8VIDE()
       ELSE
-        IF (MX.GT.ZR(JINFO+3)) CALL U2MESS('F','ALGORITH7_48')
+        IF (MX.GT.ZR(JPLIR+3)) CALL U2MESS('F','ALGORITH7_48')
       END IF
-      ZR(JINFO+1) = MX
+      ZR(JPLIR+1) = MX
 
       CALL GETVR8('PILOTAGE','ETA_PILO_MIN',1,1,1,MI,N2)
       IF (N2.NE.1) THEN
         MI = R8VIDE()
       ELSE
-        IF (MI.LT.ZR(JINFO+4)) CALL U2MESS('F','ALGORITH7_49')
+        IF (MI.LT.ZR(JPLIR+4)) CALL U2MESS('F','ALGORITH7_49')
       END IF
-      ZR(JINFO+2) = MI
+      ZR(JPLIR+2) = MI
 
 
 C ======================================================================
@@ -154,13 +154,13 @@ C ======================================================================
      &    TYPE .EQ. 'DEFORMATION') THEN
 
         CALL EXLIMA('PILOTAGE','V',MODELE,'&&LIGRPI',LIGREL)
-        ZK24(JTYPE+1) = LIGREL
+        ZK24(JPLTK+1) = LIGREL
 
         CARTE  = '&&NMDOPI.TYPEPILO'
         LIGRMO = MODELE // '.MODELE'
         CALL MECACT('V', CARTE, 'MODELE', LIGRMO, 'PILO_K', 1, 'TYPE',
      &              IBID, R8BID, CBID, TYPE)
-        ZK24(JTYPE+2) = CARTE
+        ZK24(JPLTK+2) = CARTE
 
         LM(1)=MX
         LM(2)=MI
@@ -169,7 +169,7 @@ C ======================================================================
         LBORN(2)='A1'
         CALL MECACT('V',CARTE2,'MODELE',LIGRMO,'PILO_R', 2, LBORN,
      &                  IBID, LM, CBID, K8BID)
-        ZK24(JTYPE+3) = CARTE2
+        ZK24(JPLTK+3) = CARTE2
 
         GOTO 9999
 

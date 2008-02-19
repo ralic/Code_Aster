@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,16 +118,18 @@ C     ------------------------------------------------------------------
       END IF
 
 C     --- REMPLISSAGE DU .PROL ---
-      CALL WKVECT(NOMFON//'.PROL',BASE//' V K16',5,LPRO)
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT(NOMFON//'.PROL',BASE//' V K24',6,LPRO)
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
-        ZK16(LPRO) = 'FONCT_C'
+        ZK24(LPRO) = 'FONCT_C'
       ELSE
-        ZK16(LPRO) = 'FONCTION'
+        ZK24(LPRO) = 'FONCTION'
       END IF
-      ZK16(LPRO+1) = 'NON     '
-      ZK16(LPRO+2) = NOMACC
-      ZK16(LPRO+3) = CMP
-      ZK16(LPRO+4) = 'EE      '
+      ZK24(LPRO+1) = 'NON     '
+      ZK24(LPRO+2) = NOMACC
+      ZK24(LPRO+3) = CMP
+      ZK24(LPRO+4) = 'EE      '
+      ZK24(LPRO+5) = NOMFON
 
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
         CALL WKVECT(NOMFON//'.VALE',BASE//' V R',3*NBINST,LVAR)

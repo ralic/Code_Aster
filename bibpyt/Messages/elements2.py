@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF elements2 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,104 +22,8 @@ def _(x) : return x
 
 cata_msg = {
 
-2 : _("""
- le mot cle normale doit comporter 3 composantes
-"""),
-
-3 : _("""
- le degre du polynome doit etre au plus egal a 7 
-"""),
-
-4 : _("""
- probleme dans rinf et rsup 
-"""),
-
-5 : _("""
- le mot cle DTAN_ORIG doit comporter 3 composantes
-"""),
-
-6 : _("""
- le mot cle DTAN_EXTR doit comporter 3 composantes
-"""),
-
-7 : _("""
- le mot cle VECT_GRNO_ORIG doit comporter 2 groupes de points
-"""),
-
-8 : _("""
- le mot cle VECT_GRNO_EXTR doit comporter 2 groupes de points
-"""),
-
-9 : _("""
- melang1 seg2 et seg3 : les mailles du fond de fissure doivent etre du meme type
-"""),
-
-10 : _("""
- le groupe de noeuds  %(k1)s  definissant la fissure n'est pas ordonne
-"""),
-
-11 : _("""
- arret sur erreur utilisateur: deux GROUP_NO consecutifs incoherents
-"""),
-
-12 : _("""
- les mailles du fond de fissure doivent etre du type segment
-"""),
-
-13 : _("""
- mélange seg2 et seg3 : les mailles du fond de fissure doivent être du même type
-"""),
-
-14 : _("""
- arrêt sur erreur utilisateur: deux mailles du fond de fissure sont non consécutives dans la numérotation des noeuds 
-"""),
-
-15 : _("""
- arrêt sur erreur utilisateur: 2 GROUP_MA du fond de fissure sont non consécutifs dans la numérotation des noeuds
-"""),
-
-16 : _("""
- les mailles des lèvres doivent être du type quadrangle ou triangle
-"""),
-
-17 : _("""
- melang3 seg2 et seg3 : les mailles du fond de fissure doivent etre du meme type
-"""),
-
-18 : _("""
- la liste de noeuds definissant la fissure n'est pas ordonnee
-"""),
-
-19 : _("""
- melang4 seg2 et seg3 : les mailles du fond de fissure doivent etre du meme type
-"""),
-
-21 : _("""
- erreur : le fond de fissure possede un noeud repete 2 fois : noeud  %(k1)s . revoir les donnees
-"""),
-
-22 : _("""
- les mailles du fond_inf et du fond_sup sont de type different
-"""),
-
-24 : _("""
- le noeud  %(k1)s  n'appartient pas au fond de fissure 
-"""),
-
-25 : _("""
- le fond de fissure n'est pas complet
-"""),
-
-26 : _("""
- pb prgm
-"""),
-
 27 : _("""
  pas d'intersection trouvé
-"""),
-
-28 : _("""
- indc = 1 (complet : translation et rotation) ou indc = 0 (incomplet : translation seulement  )                    obligatoirement.
 """),
 
 29 : _("""
@@ -140,10 +44,6 @@ cata_msg = {
 
 34 : _("""
  les vecteurs sont au nombre de 1 ou 2
-"""),
-
-36 : _("""
- le type d'element :  %(k1)s n'est pas traite.
 """),
 
 37 : _("""
@@ -240,10 +140,6 @@ cata_msg = {
  echec de convergence dans l'inversion du systeme par newton-raphson.
 """),
 
-59 : _("""
- pb
-"""),
-
 60 : _("""
  mauvaise orientation de l element !
 """),
@@ -260,24 +156,12 @@ cata_msg = {
  ! comportement non trouve !
 """),
 
-64 : _("""
- ! pb rccoma rhocp !
-"""),
-
-65 : _("""
- ! deltat: div par zero !
-"""),
-
 66 : _("""
  la matrice gyroscopique n'est pas disponible pour l'élément %(k1)s
 """),
 
 67 : _("""
  option non traitee
-"""),
-
-68 : _("""
- une déformation initiale est présente dans la charge : incompatible avec la contrainte initiale SIGMA_INIT
 """),
 
 69 : _("""
@@ -373,32 +257,8 @@ cata_msg = {
  la loi DIS_GRICRA doit etre utilisée avec des éléments du type MECA_DIS_TR_L : élément SEG2 + modelisation DIS_TR
 """),
 
-93 : _("""
- longueurs diff. pour rigi et amor
-"""),
-
-94 : _("""
- longueurs diff. pour mass et amor
-"""),
-
 95 : _("""
  option de calcul invalide
-"""),
-
-96 : _("""
- erreur calcul de texnp1
-"""),
-
-97 : _("""
- erreur calcul de texn
-"""),
-
-98 : _("""
- erreur calcul de echnp1
-"""),
-
-99 : _("""
- erreur calcul de echn
 """),
 
 }

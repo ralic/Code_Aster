@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,11 +192,11 @@ C
           DO 120 I = 1,NBDDL
             NPROL(1:8) = ZK8(IDVDDL-1+I)
             CALL JEVEUO(NPROL,'L',IDPROL)
-            IF ( ZK16(IDPROL+2).EQ.'INST') THEN
+            IF ( ZK24(IDPROL+2).EQ.'INST') THEN
               ZK8(JAFCK)(5:7) = '_FT'
               GOTO 122
-            ELSE IF (( ZK16(IDPROL).EQ.'NAPPE').AND.
-     &               ( ZK16(IDPROL+5).EQ.'INST')) THEN
+            ELSE IF (( ZK24(IDPROL).EQ.'NAPPE').AND.
+     &               ( ZK24(IDPROL+6).EQ.'INST')) THEN
               ZK8(JAFCK)(5:7) = '_FT'
               GOTO 122
             ENDIF

@@ -1,7 +1,7 @@
-      SUBROUTINE TEMPEQ(Z, TDEQ, K, N,TEQ)
+      SUBROUTINE TEMPEQ(Z,TDEQ,K,N,TEQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,26 +20,29 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
+      REAL*8   Z,TDEQ,K,N,TEQ
 
-      REAL*8      Z, TDEQ,K,N,TEQ,EPS, EPS2
+C CALCUL DE LA TEMPERTURE EQUIVALENTE
+C IN   Z    : PROPORTION DE PHASE BETA
+C IN   TDEQ : TEMPERATURE QUASISTATIQUE DE DEBUT DE TRANSFORMATION
+C IN   K    : PARAMETRE MATERIAU
+C IN   N    : PARAMETRE MATERIAU
+C OUT TEQ   : TEMPERATURE EQUIVALENTE
 
+      REAL*8 EPS
+      
       EPS=1.D-9
-      EPS2=-(1.D-3)
-      IF (Z .LT. EPS2) THEN
-         CALL U2MESS('F','ALGORITH10_89')
+      IF (Z .LT. 0.D0) THEN
+        TEQ=TDEQ
       ELSEIF (Z .GT. (1.D0-EPS))  THEN
-      TEQ = LOG(1/(EPS))
-         TEQ=TEQ**(1/N)
-         TEQ=TEQ/K
-         TEQ=TEQ+TDEQ
-      ELSEIF (ABS(Z) .LT. EPS2)  THEN
-      TEQ = LOG(1/(EPS))
-
-         TEQ=TDEQ
+        TEQ = LOG(1.D0/EPS)
+        TEQ=TEQ**(1.D0/N)
+        TEQ=TEQ/K
+        TEQ=TEQ+TDEQ
       ELSE
-         TEQ = LOG(1/MAX(EPS,(1-Z)))
-         TEQ=TEQ**(1/N)
-         TEQ=TEQ/K
-         TEQ=TEQ+TDEQ
+        TEQ = LOG(1.D0/(1.D0-Z))
+        TEQ=TEQ**(1.D0/N)
+        TEQ=TEQ/K
+        TEQ=TEQ+TDEQ
       ENDIF
       END

@@ -5,7 +5,7 @@
       REAL*8                              CSTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C
 C     --- AFFECTATION DU .PROL ---
       PROL = NOMFI//'.PROL'
       CALL JEVEUO(PROL,'L',LPRO)
-      NOMRES = ZK16(LPRO+3)
+      NOMRES = ZK24(LPRO+3)
       IF ( NOMRES(1:4) .EQ. 'ACCE' ) THEN
          NOMRES = 'VITE'
       ELSEIF ( NOMRES(1:4) .EQ. 'VITE' ) THEN
@@ -119,20 +119,22 @@ C     --- AFFECTATION DU .PROL ---
          NOMRES      = 'TOUTRESU'
       ENDIF
       PROL = NOMFS//'.PROL'
-      CALL WKVECT(PROL,'G V K16',5,LPROS)
-      ZK16(LPROS  ) = 'FONCTION'
-      IF (ZK16(LPRO+1)(1:3).EQ.'INT') THEN
-         ZK16(LPROS+1) = 'LIN LIN '
+      CALL ASSERT(LXLGUT(NOMFS).LE.24)
+      CALL WKVECT(PROL,'G V K24',6,LPROS)
+      ZK24(LPROS  ) = 'FONCTION'
+      IF (ZK24(LPRO+1)(1:3).EQ.'INT') THEN
+         ZK24(LPROS+1) = 'LIN LIN '
       ELSE
-         ZK16(LPROS+1) = ZK16(LPRO+1)
+         ZK24(LPROS+1) = ZK24(LPRO+1)
       ENDIF
-      ZK16(LPROS+2) = ZK16(LPRO+2)
-      ZK16(LPROS+3) = NOMRES
-      IF (ZK16(LPRO+4)(1:1).EQ.'I' .OR. ZK16(LPRO+4)(2:2).EQ.'I') THEN
-         ZK16(LPROS+4) = 'EE      '
+      ZK24(LPROS+2) = ZK24(LPRO+2)
+      ZK24(LPROS+3) = NOMRES
+      IF (ZK24(LPRO+4)(1:1).EQ.'I' .OR. ZK24(LPRO+4)(2:2).EQ.'I') THEN
+         ZK24(LPROS+4) = 'EE      '
       ELSE
-         ZK16(LPROS+4) = ZK16(LPRO+4)
+         ZK24(LPROS+4) = ZK24(LPRO+4)
       ENDIF
 C
+      ZK24(LPROS+5) = NOMFS
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+#& MODIF COMMANDE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -153,8 +153,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
               NUME_SITU        =SIMP(statut='o',typ='I',fr="numéro de la situation" ),
               NOM_SITU         =SIMP(statut='f',typ='TXM',fr="nom de la situation" ),
               COMBINABLE       =SIMP(statut='f',typ='TXM',defaut= "OUI",into=("OUI","NON"),fr="non = sous-cycle" ),
-              NUME_GROUPE      =SIMP(statut='o',typ='I',fr="numéro du groupe de la situation" ),
-              NUME_PASSAGE     =SIMP(statut='f',typ='I',max=2,fr="numéro des deux groupes en relation" ),
+              NUME_GROUPE      =SIMP(statut='f',typ='I',max=2,
+                 fr="numéro du groupe de la situation,si 2 numéros cette situation est une situation de passage" ),
               NUME_RESU_THER   =SIMP(statut='f',typ='I',max='**',fr="numeros de transitoires thermiques" ),
               CHAR_ETAT_A      =SIMP(statut='o',typ='I',max='**',fr="numeros de chargements etat A" ),
               CHAR_ETAT_B      =SIMP(statut='o',typ='I',max='**',fr="numeros de chargements etat B" ),
@@ -241,8 +241,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
               NUME_SITU        =SIMP(statut='o',typ='I',fr="numéro de la situation" ),
               NOM_SITU         =SIMP(statut='f',typ='TXM',fr="nom de la situation" ),
               COMBINABLE       =SIMP(statut='f',typ='TXM',defaut= "OUI",into=("OUI","NON"),fr="non = sous-cycle" ),
-              NUME_GROUPE      =SIMP(statut='o',typ='I',fr="numéro du groupe de la situation" ),
-#              NUME_PASSAGE     =SIMP(statut='f',typ='I',max=2,fr="numéro des deux groupes en relation" ),
+              NUME_GROUPE      =SIMP(statut='f',typ='I',max=2,
+                 fr="numéro du groupe de la situation,si 2 numéros cette situation est une situation de passage" ),
               NUME_RESU_THER   =SIMP(statut='f',typ='I',max='**',fr="numeros de transitoires thermiques" ),
               CHAR_ETAT_A      =SIMP(statut='o',typ='I',max='**',fr="numeros de chargements etat A" ),
               CHAR_ETAT_B      =SIMP(statut='o',typ='I',max='**',fr="numeros de chargements etat B" ),

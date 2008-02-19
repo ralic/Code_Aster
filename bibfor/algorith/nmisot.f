@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -316,12 +316,14 @@ C     --------------------------------
      &     - BENDOP*HYDRP        + BENDOM*HYDRM
      &     - KDESSP*(SREF-SECHP) + KDESSM*(SREF-SECHM)
       IF (CPLAN) DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
-     +                +(1.D0+NU)/(1.D0-NU)*COEF
+     &                +(1.D0+NU)/(1.D0-NU)*COEF
+     & + NU*(DEFAP(1)-DEFAM(1)+DEFAP(2)-DEFAM(2))/(1.D0-NU)
+     & + DEFAP(3)-DEFAM(3)
       DEPSMO = 0.D0
       DO 110 K=1,3
         DEPSTH(K)   = DEPS(K) -COEF
      &                -(DEFAP(K)-DEFAM(K))
-        DEPSTH(K+3) = DEPS(K+3)-(DEFAP(K)-DEFAM(K))
+        DEPSTH(K+3) = DEPS(K+3)-(DEFAP(K+3)-DEFAM(K+3))
         DEPSMO = DEPSMO + DEPSTH(K)
  110  CONTINUE
       DEPSMO = DEPSMO/3.D0

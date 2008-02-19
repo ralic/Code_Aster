@@ -6,7 +6,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,10 +39,8 @@ C     POUR LES ELEMENTS
 C     ISOPARAMETRIQUES EN PETITES DEFORMATIONS
 C
 C 1/ LEMAITRE MODIFIEE
-C 2/ ZIRC_CYRA2 (PROJET CYRANO - 1994)
-C 3/ ZIRC_EPRI
-C 4/ VISC_IRRA_LOG (PROJET PACHYDERME - 2004)
-C 5/ LEMA_SEUIL
+C 2/ VISC_IRRA_LOG (PROJET PACHYDERME - 2004)
+C 3/ LEMA_SEUIL
 C
 C
 C IN  KPG  : NUMERO DU POINT DE GAUSS
@@ -76,17 +74,11 @@ C     COMMON POUR LES PARAMETRES DES LOIS VISCOPLASTIQUES
       COMMON / NMPAVP / DPC,SIELEQ,DEUXMU,DELTAT,TSCHEM,PREC,THETA,NITER
       REAL*8            DPC,SIELEQ,DEUXMU,DELTAT,TSCHEM,PREC,THETA,NITER
 C     COMMON POUR LES PARAMETRES DES LOIS DE FLUAGE SOUS IRRADIATION
-C     ZIRC_EPRI    : FLUPHI VALDRP TTAMAX
-C     ZIRC_CYRA2   : FLUPHI EPSFAB TPREC
 C     VISC_IRRA_LOG: FLUPHI A      B      CTPS    ENER
 C -------------------------------------------------------------
       COMMON / NMPAIR / FLUPHI,
-     &                  EPSFAB,TPREC,
-     &                  VALDRP,TTAMAX,
      &                  A,B,CTPS,ENER
       REAL*8            FLUPHI,TM,TP
-      REAL*8            VALDRP,TTAMAX
-      REAL*8            EPSFAB,TPREC
       REAL*8            A,B,CTPS,ENER
 C     COMMON POUR LES PARAMETRES DE LA LOI DE LEMAITRE (NON IRRADIEE)
       COMMON / NMPALE / UNSURK,UNSURM,VALDEN
@@ -128,8 +120,8 @@ C
       REAL*8            SIGMP(6),DELTKL,DELTP2
       REAL*8            A0,XAP,X,FG,FDGDST,FDGDEV
       REAL*8            COEF1,DELTEV,COEF2
-      REAL*8            VPALEM,VPACYR,VPAEPR,VPAVIL
-      EXTERNAL          VPALEM,VPACYR,VPAEPR,VPAVIL
+      REAL*8            VPALEM
+      EXTERNAL          VPALEM
       REAL*8            KRON(6)
       CHARACTER*6       EPSA(6)
       DATA              KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -334,24 +326,7 @@ C        PARAMETRES DE LA LOI DE FLUAGE
          IF (UNSURK.LT.0.D0) THEN
             CALL U2MESS('F','ALGORITH8_89')
          ENDIF
-C ------------------------- ZIRC_CYRA2 ---------------------------------
-C       LOI DE COMPORTEMENT ZIRC_CYRA2
-C ----------------------------------------------------------------------
-      ELSE IF (COMPOR(1)(1:10).EQ.'ZIRC_CYRA2')THEN
-         CALL NMVPCA(IMATE,COMPOR(1),'T ',INSTAP,R8VIDE(),'F ',
-     &              COEVIL,COECYR,COEEPR)
-         EPSFAB = COECYR(1)
-         TPREC  = COECYR(2)
-         FLUPHI = COECYR(3)
-C ------------------------- ZIRC_EPRI ---------------------------------
-C       LOI DE COMPORTEMENT ZIRC_EPRI
-C ---------------------------------------------------------------------
-      ELSE IF (COMPOR(1)(1:9).EQ.'ZIRC_EPRI')THEN
-         CALL NMVPCA(IMATE,COMPOR(1),' T',R8VIDE(),TSCHEM,'F ',
-     &              COEVIL,COECYR,COEEPR)
-         FLUPHI = COEEPR(1)
-         VALDRP = COEEPR(2)
-         TTAMAX = COEEPR(3)
+
       ELSE IF (COMPOR(1)(1:10).EQ.'LMARC_IRRA') THEN
          CALL U2MESS('F','ALGORITH8_90')
 
@@ -498,28 +473,6 @@ C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
 
          ENDIF
 
-      ELSE IF (COMPOR(1)(1:10).EQ.'ZIRC_CYRA2')THEN
-         XAP = 0.99D0 * SIELEQ
-         IF (ABS(A0).LE.PREC) THEN
-            X = 0.D0
-         ELSE
-            CALL ZEROF2(VPACYR,A0,XAP,PREC,INT(NITER),X,IRET)
-            IF(IRET.EQ.1) GOTO 9999
-         ENDIF
-         CALL GGPCYR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     &     EPSFAB,TPREC,FLUPHI,THETA,DEUMUP,PREC,INT(NITER),FG,FDGDST,
-     &     FDGDEV)
-      ELSE IF (COMPOR(1)(1:9).EQ.'ZIRC_EPRI')THEN
-         XAP = 0.99D0 * SIELEQ
-         IF (ABS(A0).LE.PREC) THEN
-            X = 0.D0
-         ELSE
-            CALL ZEROF2(VPAEPR,A0,XAP,PREC,INT(NITER),X,IRET)
-            IF(IRET.EQ.1) GOTO 9999
-         ENDIF
-         CALL GGPEPR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     &        FLUPHI,VALDRP,TTAMAX,THETA,DEUMUP,PREC,INT(NITER),
-     &        FG,FDGDST,FDGDEV)
       ENDIF
 C
       IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN

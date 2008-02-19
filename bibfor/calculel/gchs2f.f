@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*19    CHAR1,CHAR2,CHAR3
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C ----------------------------------------------------------------------
       INTEGER JDES1,JDES2,JDES3,NCMP1,NCMP2,NCMP3,I,JVAL1,JVAL3,K,IZO,
      &        JFPRO,JFVAL,KK,INDIK8,IEC,RESTE,CODE,JNCMP1,JNCMP2,J,
-     &        NEC,NBEC,IOR
+     &        NEC,NBEC,IOR, LXLGUT
       REAL*8 EPSI,R8PREM
       CHARACTER*8  K8B,NOCMP1,NOMFON
       CHARACTER*19 NOMF19
@@ -102,12 +102,14 @@ C     VALE
                  KK=KK+1
                  CALL CODENT(KK,'D0',NOMFON(7:8))
                  NOMF19=NOMFON
-                 CALL WKVECT(NOMF19//'.PROL','V V K16',5,JFPRO)
-                 ZK16(JFPRO  )='CONSTANT'
-                 ZK16(JFPRO+1)='LIN LIN'
-                 ZK16(JFPRO+2)='TOUTPARA'
-                 ZK16(JFPRO+3)='TOUTRESU'
-                 ZK16(JFPRO+4)='CC'
+                 CALL ASSERT(LXLGUT(NOMF19).LE.24)
+                 CALL WKVECT(NOMF19//'.PROL','V V K24',6,JFPRO)
+                 ZK24(JFPRO  )='CONSTANT'
+                 ZK24(JFPRO+1)='LIN LIN'
+                 ZK24(JFPRO+2)='TOUTPARA'
+                 ZK24(JFPRO+3)='TOUTRESU'
+                 ZK24(JFPRO+4)='CC'
+                 ZK24(JFPRO+5)=NOMF19
                  CALL WKVECT(NOMF19//'.VALE','V V R',2,JFVAL)
                  ZR(JFVAL)=1.D0
                  ZR(JFVAL+1)=ZR(JVAL1+(IZO-1)*NCMP1+I-1)

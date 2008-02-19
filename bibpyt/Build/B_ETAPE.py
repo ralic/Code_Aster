@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF B_ETAPE Build  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -533,7 +533,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          valeur=B_utils.Typast(AsType(objet_sd))
          valeur=valeur.upper()
       except :
-         raise AsException("Probleme dans gettco: %s, %s ; Objet introuvable!" % (self.nom,nom_concept))
+         #raise AsException("Probleme dans gettco: %s, %s ; Objet introuvable!" % (self.nom,nom_concept))
+         # objet inexistant : l'appelant doit décoder le ' '
          valeur=' '
 
       return valeur

@@ -1,13 +1,12 @@
-      SUBROUTINE RC32F6 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
+      SUBROUTINE RC32F6 ( NBP12, NBP23, NBP13, NBSIGR, NBSG1,
      +                    NBSG2, NBSG3, SIGR, NOCC, SALTIJ )
       IMPLICIT   NONE        
       INTEGER             NBP12, NBP23, NBP13, NBSIGR, NOCC(*),
      +                    NBSG1, NBSG2, NBSG3, SIGR(*)
       REAL*8              SALTIJ(*)
-      CHARACTER*3         TYPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 19/02/2008   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,14 +48,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       INTEGER      NBSIPS, JNPASS, I, K, IOC1, NSITUP
+      CHARACTER*3  TYPASS
       CHARACTER*8  K8B
 C     ------------------------------------------------------------------
 C
+      TYPASS = '1_2'
       IF ( NBP12 .EQ. 0 ) GOTO 9999
-C
       CALL JELIRA('&&RC32SI.PASSAGE_'//TYPASS,'LONUTI',NBSIPS,K8B)
       CALL JEVEUO('&&RC32SI.PASSAGE_'//TYPASS,'L',JNPASS)
-C
       DO 10 I = 1 , NBSIPS
          NSITUP = ZI(JNPASS+I-1)
          DO 12 K = 1 , NBSIGR
@@ -69,19 +68,55 @@ C
  14      CONTINUE
          IF ( NOCC(2*(IOC1-1)+1).NE.0 .OR.
      +        NOCC(2*(IOC1-1)+2).NE.0 ) GOTO 9999
-10    CONTINUE
-C
-      IF ( TYPASS .EQ. '1_2' ) THEN
-         NBP12 = 0
-      ELSEIF ( TYPASS .EQ. '2_3' ) THEN
-         NBP23 = 0
-      ELSEIF ( TYPASS .EQ. '1_3' ) THEN
-         NBP13 = 0
-      ENDIF
-C
+ 10   CONTINUE
+      NBP12 = 0
       CALL RC32F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
      +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
 C
  9999 CONTINUE
+      TYPASS = '2_3'
+      IF ( NBP23 .EQ. 0 ) GOTO 9997
+      CALL JELIRA('&&RC32SI.PASSAGE_'//TYPASS,'LONUTI',NBSIPS,K8B)
+      CALL JEVEUO('&&RC32SI.PASSAGE_'//TYPASS,'L',JNPASS)
+      DO 20 I = 1 , NBSIPS
+         NSITUP = ZI(JNPASS+I-1)
+         DO 22 K = 1 , NBSIGR
+           IF (SIGR(K).EQ.NSITUP) THEN
+              IOC1 = K
+              GOTO 24
+           ENDIF
+ 22      CONTINUE
+         CALL U2MESS('F','POSTRCCM_36')
+ 24      CONTINUE
+         IF ( NOCC(2*(IOC1-1)+1).NE.0 .OR.
+     +        NOCC(2*(IOC1-1)+2).NE.0 ) GOTO 9997
+ 20   CONTINUE
+      NBP23 = 0
+      CALL RC32F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
+     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+C
+ 9997 CONTINUE
+      TYPASS = '1_3'
+      IF ( NBP13 .EQ. 0 ) GOTO 9995
+      CALL JELIRA('&&RC32SI.PASSAGE_'//TYPASS,'LONUTI',NBSIPS,K8B)
+      CALL JEVEUO('&&RC32SI.PASSAGE_'//TYPASS,'L',JNPASS)
+      DO 30 I = 1 , NBSIPS
+         NSITUP = ZI(JNPASS+I-1)
+         DO 32 K = 1 , NBSIGR
+           IF (SIGR(K).EQ.NSITUP) THEN
+              IOC1 = K
+              GOTO 34
+           ENDIF
+ 32      CONTINUE
+         CALL U2MESS('F','POSTRCCM_36')
+ 34      CONTINUE
+         IF ( NOCC(2*(IOC1-1)+1).NE.0 .OR.
+     +        NOCC(2*(IOC1-1)+2).NE.0 ) GOTO 9995
+ 30   CONTINUE
+      NBP13 = 0
+      CALL RC32F4 ( TYPASS, NBP12, NBP23, NBP13, NBSIGR, NBSG1,
+     +                      NBSG2, NBSG3, NOCC, SALTIJ, NSITUP )
+C
+ 9995 CONTINUE
 C
       END

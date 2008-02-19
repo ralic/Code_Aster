@@ -6,7 +6,7 @@
       CHARACTER*19        NOMFON, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      NBORDR, IRET, KORDR, NP, NC,  LPRO, LFON, LVAR,
+      INTEGER      NBORDR, IRET, KORDR, NP, NC, LPRO, LFON, LVAR,
      &             IORDR, LACCE, ILON, LXLGUT, NBACC, NBPAR, IAD1, IAD2
       REAL*8       EPSI
       CHARACTER*8  K8B, CRIT, TYPE
@@ -87,12 +87,14 @@ C
 C     --- CREATION DE LA FONCTION SORTIE ---
 C
 C     --- REMPLISSAGE DU .PROL ---
-      CALL WKVECT ( NOMFON//'.PROL', BASE//' V K16', 5, LPRO )
-      ZK16(LPRO  ) = 'FONCTION'
-      ZK16(LPRO+1) = 'NON NON '
-      ZK16(LPRO+2) = NOMACC(1:8)
-      ZK16(LPRO+3) = NOPARA(1:8)
-      ZK16(LPRO+4) = 'EE      '
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT ( NOMFON//'.PROL', BASE//' V K24', 6, LPRO )
+      ZK24(LPRO  ) = 'FONCTION'
+      ZK24(LPRO+1) = 'NON NON '
+      ZK24(LPRO+2) = NOMACC(1:8)
+      ZK24(LPRO+3) = NOPARA(1:8)
+      ZK24(LPRO+4) = 'EE      '
+      ZK24(LPRO+5) = NOMFON
 C
 C     --- REMPLISSAGE DU .VALE ---
       CALL WKVECT ( NOMFON//'.VALE', BASE//' V R', 2*NBORDR, LVAR )

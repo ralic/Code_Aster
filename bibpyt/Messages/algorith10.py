@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith10 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -246,10 +246,6 @@ cata_msg = {
  élément dégénéré
 """),
 
-79 : _("""
- DDL inconnu sur le noeud ou la maille specifiée pour le suivi
-"""),
-
 82 : _("""
  pas de suivi attaché à la demande d'affichage
 """),
@@ -260,14 +256,6 @@ cata_msg = {
 
 84 : _("""
  erreur dvt dans le type d'extrema
-"""),
-
-85 : _("""
- le nombre de suivi DDL est limité à 4
-"""),
-
-86 : _("""
- melange de champs de nature différente dans le meme mot-clé facteur SUIVI
 """),
 
 87 : _("""

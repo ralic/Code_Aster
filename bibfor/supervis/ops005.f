@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,13 +52,13 @@ C
       IF (ICOND.EQ.0) THEN 
         NOMPAR = '  '
         NOMRES = 'TOUTRESU'
-        CALL WKVECT(NOMFON//'.PROL','G V K16',6,LPROL)
-        ZK16(LPROL)   = 'INTERPRE'
-        ZK16(LPROL+1) = 'INTERPRE'
-        ZK16(LPROL+2) =  NOMPAR
-        ZK16(LPROL+3) =  NOMRES
-        ZK16(LPROL+4) = 'II      '
-        ZK16(LPROL+5) = NOMFON
+        CALL WKVECT(NOMFON//'.PROL','G V K24',6,LPROL)
+        ZK24(LPROL)   = 'INTERPRE'
+        ZK24(LPROL+1) = 'INTERPRE'
+        ZK24(LPROL+2) =  NOMPAR
+        ZK24(LPROL+3) =  NOMRES
+        ZK24(LPROL+4) = 'II      '
+        ZK24(LPROL+5) = NOMFON
         CALL GETVTX(' ','NOM_PARA',1,1,1,KBID,NK)
         IF (NK.NE.1) NK=-NK
         CALL WKVECT(NOMFON//'.NOVA','G V K8',NK,LNOVA)

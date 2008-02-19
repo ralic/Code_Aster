@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/08/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C
                 LUTI ( JLUTI(IC) + ID ) = 0
                 IF ( IADM(JIADM(IC)+2*ID-1) .EQ. 0 ) THEN
                   NBL = LONOK*LTYPI
-                  CALL JJALLS(NBL,GENRI,TYPEI,LTYPI,'INIT',
+                  CALL JJALLS(NBL,IC,GENRI,TYPEI,LTYPI,'INIT',
      &                        ITAB,JTAB,IADMI,IADYN)
                   IADM(JIADM(IC)+2*ID-1) = IADMI
                   IADM(JIADM(IC)+2*ID  ) = IADYN

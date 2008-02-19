@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER      I, IER, IRET, IBID, IVAL, JVAL, JFON, IFM
       INTEGER      JPAR, LPARA, LPAR2, L, LPRO, N1, N2, N3, N4, N5, NIV
       INTEGER      JNOE, N, NBVAL, LVAL, LFON
-      INTEGER      NBCOUP, NBCOU2
+      INTEGER      NBCOUP, NBCOU2, LXLGUT
       INTEGER      NBLR, NBLV, NBRMA, NBLN, NBVC, NBVR ,NBLA, NBLO
       REAL*8       MIN1, MIN2, MIN3, R8BID, R8MAEM
       CHARACTER*2  PROLGD
@@ -143,23 +143,26 @@ C
       CALL GETVTX(' ','PROL_DROITE',0,1,1,PROLGD(2:2),N5)
 
 C
-      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
+      CALL ASSERT(LXLGUT(NOMFON).LE.24)
+      CALL WKVECT(NOMFON//'.PROL','G V K24',6,LPRO)
       IF ( NBLN .NE. 0) THEN
-         ZK16(LPRO) = 'FONCTION'
-         ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-         ZK16(LPRO+2) = NOMPAR
-         ZK16(LPRO+3) = NOMRES
-         ZK16(LPRO+4) = PROLGD
+         ZK24(LPRO) = 'FONCTION'
+         ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+         ZK24(LPRO+2) = NOMPAR
+         ZK24(LPRO+3) = NOMRES
+         ZK24(LPRO+4) = PROLGD
+         ZK24(LPRO+5) = NOMFON
       ELSE
         IF ( NBVC.NE.0 ) THEN
-         ZK16(LPRO) = 'FONCT_C '
+         ZK24(LPRO) = 'FONCT_C '
         ELSE
-         ZK16(LPRO) = 'FONCTION'
+         ZK24(LPRO) = 'FONCTION'
         ENDIF
-        ZK16(LPRO+1) = INTERP(1)//INTERP(2)
-        ZK16(LPRO+2) = NOMPAR
-        ZK16(LPRO+3) = NOMRES
-        ZK16(LPRO+4) = PROLGD
+        ZK24(LPRO+1) = INTERP(1)//INTERP(2)
+        ZK24(LPRO+2) = NOMPAR
+        ZK24(LPRO+3) = NOMRES
+        ZK24(LPRO+4) = PROLGD
+        ZK24(LPRO+5) = NOMFON
       ENDIF
 C
 C     MINI DES ABSCISSES

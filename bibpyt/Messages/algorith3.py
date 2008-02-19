@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF algorith3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,29 +21,6 @@
 def _(x) : return x
 
 cata_msg = {
-
-1 : _("""
- certains pas de temps de la liste (LISTE_INST) sont plus petits
- que le pas de temps minimal renseigné (SUBD_PAS_MINI)
-"""),
-
-2 : _("""
- il faut donner SUBD_NIVEAU et/ou SUBD_PAS_MINI
-"""),
-
-3 : _("""
- le nombre de subdivisions du pas de temps doit etre plus grand que 1 (SUBD_PAS)
-"""),
-
-6 : _("""
- valeur de SUBD_ITER_IGNO incoherent avec ITER_GLOB_MAXI.
- augmentez ITER_GLOB_MAXI
-"""),
-
-7 : _("""
- valeur de SUBD_ITER_FIN incoherent avec ITER_GLOB_MAXI.
- augmentez ITER_GLOB_MAXI
-"""),
 
 8 : _("""
  élément non traité
@@ -157,10 +134,6 @@ Nombre d'itérations     : %(i2)d
  fonc_inst: temps de reprise supérieur à la fonction.
 """),
 
-35 : _("""
- on n'a pas pu trouver le dernier instant sauvé.
-"""),
-
 36 : _("""
  NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s 
 """),
@@ -179,24 +152,6 @@ Nombre d'itérations     : %(i2)d
 
 42 : _("""
  critère inconnu :  %(k1)s 
-"""),
-
-45 : _("""
- le champ absolu n'est accessible qu'en présence de modes statiques
-"""),
-
-48 : _("""
- absence de LIST_INST dans INCREMENT
-"""),
-
-49 : _("""
- il faut definir "LIST_ARCH" ou "LIST_INST" ou "INST" ou "PAS_OBSE"
- au premier mot cle facteur "OBSERVATION"
-"""),
-
-50 : _("""
- seule la valeur de "LIST_ARCH" ou "LIST_INST" ou "INST" ou "PAS_OBSE"
- du premier mot cle facteur "OBSERVATION" est prise en compte
 """),
 
 55 : _("""
@@ -251,44 +206,12 @@ Nombre d'itérations     : %(i2)d
  pb division par zéro dans la construction du BETA
 """),
 
-68 : _("""
- incoherence 1 .lili et .flin
-"""),
-
-69 : _("""
- incoherence 2 .lili et .flin
-"""),
-
-70 : _("""
- incoherence 3 .lili et .flin
-"""),
-
-71 : _("""
- incoherence .lili et .fel3
-"""),
-
 72 : _("""
  donnée erronnée, multiplicité nulle
 """),
 
-73 : _("""
- erreur logarithme négatif ou nul
-"""),
-
-74 : _("""
- ERREUR_GAMDEV : ALPHA < 1
-"""),
-
-75 : _("""
-  UNIF < 0 
-"""),
-
 76 : _("""
  le type de concept: TABLE_SDASTER doit etre associé au mot clé NUME_VITE_FLUI
-"""),
-
-77 : _("""
- y a un bug 4
 """),
 
 78 : _("""
@@ -317,10 +240,6 @@ Nombre d'itérations     : %(i2)d
  le pas tend vers 0 ...
 """),
 
-84 : _("""
- erreur dans la récuperation du NUME.PRNO .
-"""),
-
 86 : _("""
  pas d'interpolation possible pour les fréquences.
 """),
@@ -340,10 +259,6 @@ Nombre d'itérations     : %(i2)d
 
 90 : _("""
  coefficients paraboliques pas compatibles
-"""),
-
-91 : _("""
- coefficients paraboliques pas compatibles 2
 """),
 
 92 : _("""

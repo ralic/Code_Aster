@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF utilitai2 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,14 +22,6 @@ def _(x) : return x
 
 cata_msg = {
 
-2 : _("""
- erreur 2
-"""),
-
-3 : _("""
- erreur 3
-"""),
-
 4 : _("""
  probleme pour recuperer les variables d'acces
 """),
@@ -48,10 +40,6 @@ cata_msg = {
 
 8 : _("""
  fonction a une seule variable admis
-"""),
-
-9 : _("""
- developpement non implante.
 """),
 
 10 : _("""
@@ -82,20 +70,8 @@ cata_msg = {
  on ne connait pas ce type d'interpolation:  %(k1)s 
 """),
 
-29 : _("""
- a faire 1 ...
-"""),
-
-30 : _("""
- a faire 2 ...
-"""),
-
 31 : _("""
  on ne trouve pas l'equation  %(k1)s  dans le "prof_chno"
-"""),
-
-34 : _("""
- il y a un bug angles nautiques
 """),
 
 35 : _("""
@@ -118,10 +94,6 @@ cata_msg = {
  group_ma_sol_sol: un element n'est ni tria3 ni tria6 ni quad4 ni quad8
 """),
 
-40 : _("""
- erreur : lmat est nul.
-"""),
-
 41 : _("""
  on ne traite que les matrices symetriques.
 """),
@@ -130,36 +102,12 @@ cata_msg = {
  on ne traite que les matrices reelles.
 """),
 
-43 : _("""
- option inconnue.
-"""),
-
-44 : _("""
- il y un bug.
-"""),
-
 45 : _("""
  manque une maille tardive
 """),
 
-46 : _("""
- developpement non realise.
-"""),
-
 47 : _("""
  le fichier " %(k1)s " n'est relie a aucune unite logique.
-"""),
-
-48 : _("""
- type base inconnu : %(k1)s 
-"""),
-
-50 : _("""
- nombre de bornes erroné : on doit en avoir autant que de numeros d'ordre
-"""),
-
-51 : _("""
- mot-clef SIGNES obligatoire avec option CALC_K_MAX !
 """),
 
 52 : _("""
@@ -325,10 +273,6 @@ cata_msg = {
  element non prevu  %(k1)s 
 """),
 
-92 : _("""
- le mot clé NOM_CHM_MED (mot clé facteur FORMAT_MED) doit être renseigné
-"""),
-
 93 : _("""
  evol_ther - champ temp uniquement
 """),
@@ -347,10 +291,6 @@ cata_msg = {
 
 98 : _("""
  on n'a pas lu tous les champs.
-"""),
-
-99 : _("""
- erreur dans la donnee de la s.d.  %(k1)s  a imprimer, il ne s'agit ni d'un matr_elem, ni d'un vect_elem car le .liste_resu n'existe pas.
 """),
 
 }

@@ -1,7 +1,7 @@
       SUBROUTINE NMDOME(MODELE,MATE,CARELE,LISCHA,NBPASE,INPSCO,
      &                  RESULT, NUORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER JINF,IALIFC,INFMAX,INDIC,ICH,IRET,K,INFC,J,N2,JPRO,JVAL
       INTEGER NRPASE,ADCHSE,IAUX,JAUX,JOPT
       INTEGER JLCHA,JFCHA,JINFC
-      INTEGER JLCHA1,IFCHA1,JINFC1,NCHAR1,INCHA1
+      INTEGER JLCHA1,IFCHA1,JINFC1,NCHAR1,INCHA1, LXLGUT
 
       INTEGER N3,NBOPT
       CHARACTER*4  KNUM
@@ -671,25 +671,28 @@ C ---- FONCTIONS MULTIPLICATIVES DES CHARGES
             CALL CODENT( ICH , 'D0' , KNUM  )
             NOMFCT = '&&NC'//KNUM
             CALL GETVC8('EXCIT','COEF_MULT_C',ICH,1,1,CCOEF,N2)
+            CALL ASSERT(LXLGUT(NOMFCT).LE.24)
             IF ( N2 .EQ. 0 ) THEN
               CALL GETVR8('EXCIT','COEF_MULT',ICH,1,1,COEF,N3)
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
-              ZK16(JPRO)   = 'CONSTANT'
-              ZK16(JPRO+1) = 'LIN LIN '
-              ZK16(JPRO+2) = 'TOUTPARA'
-              ZK16(JPRO+3) = 'TOUTRESU'
-              ZK16(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K24',6,JPRO)
+              ZK24(JPRO)   = 'CONSTANT'
+              ZK24(JPRO+1) = 'LIN LIN '
+              ZK24(JPRO+2) = 'TOUTPARA'
+              ZK24(JPRO+3) = 'TOUTRESU'
+              ZK24(JPRO+4) = 'CC      '
+              ZK24(JPRO+5) = NOMFCT
               CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
               ZR(JVAL)   = 1.0D0
               ZR(JVAL+1) = COEF
               ZR(JVAL+2) = 0.D0
             ELSE
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
-              ZK16(JPRO)   = 'CONSTANT'
-              ZK16(JPRO+1) = 'LIN LIN '
-              ZK16(JPRO+2) = 'TOUTPARA'
-              ZK16(JPRO+3) = 'TOUTRESU'
-              ZK16(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K24',6,JPRO)
+              ZK24(JPRO)   = 'CONSTANT'
+              ZK24(JPRO+1) = 'LIN LIN '
+              ZK24(JPRO+2) = 'TOUTPARA'
+              ZK24(JPRO+3) = 'TOUTRESU'
+              ZK24(JPRO+4) = 'CC      '
+              ZK24(JPRO+5) = NOMFCT
               CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
               ZR(JVAL)   = 1.0D0
               ZR(JVAL+1) = DBLE( CCOEF )
@@ -726,12 +729,14 @@ C      PAS DE FONCTIONS MULTIPLICATRICES -> CREATION FCT CSTE = 1
             NOMFCT = '&&NMDOME'
             CALL JEEXIN(NOMFCT(1:19)//'.PROL',IRET)
             IF (IRET.EQ.0) THEN
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
-              ZK16(JPRO) = 'CONSTANT'
-              ZK16(JPRO+1) = 'LIN LIN '
-              ZK16(JPRO+2) = 'TOUTPARA'
-              ZK16(JPRO+3) = 'TOUTRESU'
-              ZK16(JPRO+4) = 'CC      '
+              CALL ASSERT(LXLGUT(NOMFCT).LE.24)
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K24',6,JPRO)
+              ZK24(JPRO) = 'CONSTANT'
+              ZK24(JPRO+1) = 'LIN LIN '
+              ZK24(JPRO+2) = 'TOUTPARA'
+              ZK24(JPRO+3) = 'TOUTRESU'
+              ZK24(JPRO+4) = 'CC      '
+              ZK24(JPRO+5) = NOMFCT
               CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',2,JVAL)
               ZR(JVAL) = 1.0D0
               ZR(JVAL+1) = 1.0D0

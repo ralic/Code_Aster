@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 18/02/2008   AUTEUR REZETTE C.REZETTE 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -105,6 +105,11 @@ FF=DEFI_FOND_FISS( MAILLAGE=MAIL,
                    LEVRE_SUP=_F(GROUP_MA='SP1P2',),
                   )
 
+FF2=DEFI_FOND_FISS( MAILLAGE=MAIL,
+                   FOND_FISS=_F( GROUP_NO='LP2P7',),
+                   NORMALE=(0.,1.,0.),
+                  )
+
 THETA1=CALC_THETA( MODELE=MODELE,
                    FOND_FISS=FF,
                    DIRECTION=(1.,0.,0.,),
@@ -150,6 +155,17 @@ GL1=CALC_G(         THETA=_F(FOND_FISS=FF,
                     LISSAGE=_F(LISSAGE_THETA='LAGRANGE'),
                   )
 
+GL11=CALC_G(         THETA=_F( DIRECTION=(1.,0.,0.,),
+                               FOND_FISS=FF2,
+                               R_INF = 3.,
+                               R_SUP = 10.),
+                    RESULTAT=evol,
+                    NUME_ORDRE=50,
+                    EXCIT=_F(CHARGE=CH_P,),
+                    SYME_CHAR='SYME',
+                    LISSAGE=_F(LISSAGE_THETA='LAGRANGE'),
+                  )
+
 G2=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
@@ -169,6 +185,8 @@ G3=CALC_G(          RESULTAT=evol,
 IMPR_TABLE ( TABLE   = G1  );
 
 IMPR_TABLE ( TABLE   = GL1 );
+
+IMPR_TABLE ( TABLE   = GL11 );
 
 IMPR_TABLE ( TABLE   = G2  );
 
@@ -227,6 +245,15 @@ TEST_TABLE(TABLE=G2,
            VALE=1.703E7,
            PRECISION=1.4E-2,
            REFERENCE='ANALYTIQUE',
+          );
+
+TEST_TABLE(TABLE=GL11,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=5.0,),
+           NOM_PARA='G_LOCAL',
+           VALE=4.0345E6,
+           PRECISION=1.4E-2,
+           REFERENCE='NON_REGRESSION',
           );
 
 FIN();

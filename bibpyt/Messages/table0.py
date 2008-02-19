@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 09/10/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,6 +68,10 @@ On attend %(i1)d paramètres.
 
 13 : _("""
 On a lu %(i1)d champs dans le fichier.
+"""),
+
+14 : ("""
+Les listes NOM_PARA et VALE doivent avoir le meme cardinal.
 """),
 
 }
