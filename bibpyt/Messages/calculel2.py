@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF calculel2 Messages  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -246,14 +246,6 @@ cata_msg={
  on n'a pas pu extraire toutes les cmps voulues du champ associé au paramètre: %(k1)s
  - option: %(k2)s
  - type_element: %(k3)s )
-"""),
-
-79: _("""
- ce chargement n'est pas prévu en lagrange
-"""),
-
-80: _("""
- le calcul lagrangien avec les températures n'est pas encore disponible
 """),
 
 81: _("""

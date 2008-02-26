@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/02/2008   AUTEUR BOYERE E.BOYERE 
 # TITRE SENSIBILITE EFGE_ELNO_DEPL / SIPO_ELNO_DEPL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -195,11 +195,11 @@ TEST_RESU(RESU=(
                    NOM_CMP='MFY',SENSIBILITE=PS_0,
                    VALE_C =(-7.14E-09+0.0j),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
-                _F(RESULTAT=DYH,NUME_ORDRE=20,
-                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD='NO6',MAILLE='EL6',
-                   CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='MFY',SENSIBILITE=PS_1,
-                   VALE_C =(0.0+0.0j),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
+#                _F(RESULTAT=DYH,NUME_ORDRE=20,
+#                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD='NO6',MAILLE='EL6',
+#                   CRITERE='ABSOLU',PRECISION=1.E-10,
+#                   NOM_CMP='MFY',SENSIBILITE=PS_1,
+#                   VALE_C =(0.0+0.0j),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYH,NUME_ORDRE=20,
                    NOM_CHAM='SIPO_ELNO_DEPL',NOEUD='NO6',MAILLE='EL6',
@@ -213,11 +213,11 @@ TEST_RESU(RESU=(
                    NOM_CMP='SMFY',SENSIBILITE=PS_0,
                    VALE_C =(1.14E-03+0.0j),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
-                _F(RESULTAT=DYH,NUME_ORDRE=20,
-                   NOM_CHAM='SIPO_ELNO_DEPL',NOEUD='NO6',MAILLE='EL6',
-                   CRITERE='ABSOLU',PRECISION=1.E-10,
-                   NOM_CMP='SMFY',SENSIBILITE=PS_1,
-                   VALE_C =(0.0+0.0j),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
+#                _F(RESULTAT=DYH,NUME_ORDRE=20,
+#                   NOM_CHAM='SIPO_ELNO_DEPL',NOEUD='NO6',MAILLE='EL6',
+#                   CRITERE='ABSOLU',PRECISION=1.E-10,
+#                   NOM_CMP='SMFY',SENSIBILITE=PS_1,
+#                   VALE_C =(0.0+0.0j),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 ),)
 

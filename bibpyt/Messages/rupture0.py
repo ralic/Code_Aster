@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 18/02/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF rupture0 Messages  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -313,10 +313,6 @@ mots-clés FOND_FISS, R_SUP, R_INF, MODULE, et DIRECTION pour la détermination
 automatique du champ theta.
 """),
 
-58 : _("""
-Pour l'option  %(k1)s (3d local), utiliser le mot-clé THETA_LAGR.
-"""),
-
 59 : _("""
 Le champ de THETA est inexistant dans la structure de données  %(k1)s
 de type THETA_GEOM.
@@ -474,13 +470,6 @@ La direction par défaut n'existe plus.
 Veuillez renseigner le mot-clé DIRECTION.
 """), 
 
-82: _("""
-Le mot-clé PROPAGATION est utilisé seulement pour le calcul de G avec
-propagation lagrangienne.
--> Risque et Conseil :
-Veuillez renseigner l'option G_LAGR ou G_LAGR_GLOB.
-"""), 
-
 83: _("""
 Cette combinaison de lissage n'est pas programmée pour l'option : %(k1)s.
 -> Risque et Conseil :
@@ -501,20 +490,10 @@ est de type LEGENDRE.
 Veuillez redéfinir le mot-clé LISSAGE_G.
 """), 
 
-86: _("""
-L'option %(k1)s n'est pas permise avec le lissage LAGRANGE_REGU.
-"""), 
-
 87: _("""
 Si la méthode LAGRANGE_REGU est utilisée pour le lissage, 
 alors le lissage de G et de theta doivent etre de type LAGRANGE_REGU.
 """),
-
-88: _("""
-Le champ theta est obligatoire avec l'option %(k1)s.
--> Risque et Conseil :
-Veuillez utiliser le mot-clé THETA_LAGR pour renseigner un champ theta.
-"""), 
 
 90: _("""
 L'usage des polynomes de Legendre dans le cas d'un fond de fissure clos

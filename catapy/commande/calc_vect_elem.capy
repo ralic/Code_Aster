@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,6 @@
 # RESPONSABLE VABHHTS J.PELLET
 def calc_vect_elem_prod(OPTION,**args):
   if OPTION == "CHAR_MECA" :      return vect_elem_depl_r
-  if OPTION == "CHAR_MECA_LAGR" : return vect_elem_depl_r
   if OPTION == "CHAR_THER" :      return vect_elem_temp_r
   if OPTION == "CHAR_ACOU" :      return vect_elem_pres_c
   if OPTION == "FORC_NODA" :      return vect_elem_depl_r
@@ -29,7 +28,7 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentr
             UIinfo={"groupes":("Matrices/vecteurs",)},
                     fr="Calcul des seconds membres élémentaires",
          OPTION          =SIMP(statut='o',typ='TXM',into=("CHAR_MECA","CHAR_THER","CHAR_ACOU",
-                                                           "FORC_NODA","CHAR_MECA_LAGR") ),
+                                                           "FORC_NODA") ),
          b_char_meca     =BLOC(condition = "OPTION=='CHAR_MECA'",
            regles=(AU_MOINS_UN('CHARGE','MODELE'),),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
@@ -64,13 +63,5 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentr
            SIEF_ELGA         =SIMP(statut='o',typ=cham_elem),
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem),
            MODELE            =SIMP(statut='f',typ=modele_sdaster),
-         ),
-         
-         b_meca_lagr     =BLOC(condition = "OPTION=='CHAR_MECA_LAGR'",
-           CHAM_MATER        =SIMP(statut='o',typ=cham_mater),
-           THETA             =SIMP(statut='o',typ=theta_geom),
-           PROPAGATION       =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-           CHARGE            =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
-           INST              =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
-         ),
+         ),       
 ) ;

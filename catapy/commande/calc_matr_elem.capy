@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
+#& MODIF COMMANDE  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,6 @@
 def calc_matr_elem_prod(OPTION,**args):
   if OPTION == "RIGI_MECA"        : return matr_elem_depl_r
   if OPTION == "RIGI_FLUI_STRU"   : return matr_elem_depl_r
-  if OPTION == "RIGI_MECA_LAGR"   : return matr_elem_depl_r
   if OPTION == "MASS_ID_MDEP_R"   : return matr_elem_depl_r
   if OPTION == "MASS_ID_MDNS_R"   : return matr_elem_depl_r
   if OPTION == "MASS_ID_MTEM_R"   : return matr_elem_temp_r
@@ -53,8 +52,7 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
                                      "ONDE_FLUI","AMOR_MECA_ABSO","MASS_FLUI_STRU","RIGI_FLUI_STRU",
                                      "RIGI_ROTA","MECA_GYRO","MASS_MECA_DIAG","RIGI_ACOU",
                                      "MASS_ID_MDEP_R","MASS_ID_MDNS_R","MASS_ID_MTEM_R","MASS_ID_MTNS_R",
-                                     "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST",
-                                     "RIGI_MECA_LAGR") ),
+                                     "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST") ),
 
          # mots clés facultatifs que l'on a du mal à mettre dans les blocs
          # sans gener MACRO_MATR_ASSE :
@@ -71,14 +69,6 @@ CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
              MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**' ),
-         ),
-
-         b_rigi_meca_lagr  =BLOC(condition = "OPTION=='RIGI_MECA_LAGR'",
-           MODELE            =SIMP(statut='o',typ=modele_sdaster ),
-           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
-           CHARGE            =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'  ),
-           THETA           =SIMP(statut='o',typ=theta_geom ),
-           PROPAGATION     =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
 
          b_mass_meca       =BLOC(condition = "(OPTION=='MASS_MECA') or (OPTION=='MASS_MECA_DIAG')",

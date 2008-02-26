@@ -1,7 +1,7 @@
       SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,LMELAS,TROIDL,NBPRUP,
      &                  NOPRUP,TYPRUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/12/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,10 +44,8 @@ C
       CALL JEMARQ()
 C
       IF((  (OPTIO1.EQ.'CALC_G'.OR.
-     &       OPTIO1.EQ.'CALC_DG'.OR.
-     &       OPTIO1.EQ.'G_LAGR') .AND. DIME.EQ.2)
-     &  .OR. (OPTIO1.EQ.'CALC_G_GLOB' .OR.
-     &        OPTIO1.EQ.'G_LAGR_GLOB' )) THEN
+     &       OPTIO1.EQ.'CALC_DG') .AND. DIME.EQ.2)
+     &  .OR. (OPTIO1.EQ.'CALC_G_GLOB')) THEN
           NBPRUP = 3
           IF(LMELAS)THEN
             NOPRUP(1) = 'NUME_CAS'
@@ -62,8 +60,7 @@ C
           ENDIF
           NOPRUP(3) = 'G'
           TYPRUP(3) = 'R'
-      ELSEIF((OPTIO1.EQ.'CALC_G'.OR.OPTIO1.EQ.'G_LAGR')
-     &       .AND. TROIDL)THEN
+      ELSEIF((OPTIO1.EQ.'CALC_G').AND. TROIDL)THEN
           NBPRUP = 5
           IF(LMELAS)THEN
             NOPRUP(1) = 'NUME_CAS'

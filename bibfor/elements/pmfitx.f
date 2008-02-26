@@ -2,7 +2,7 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,11 +54,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NBGF,INBF,ICOMPO,ISDCOM,I,IPOS,ICP,NUGF,IG,NBFIG,NBGFMX
       INTEGER LCAGE,LABSC
       REAL*8  RHO,RHOS, RHOFI, RHOFE, CM, PHIE, PHII
-      REAL*8 VAL,E,NU,VALRES(4),ABSMOY
-      CHARACTER*8 MATERI,NOMRE(4)
-      CHARACTER*2 CODRES,NOMRES(2)
+      REAL*8      VAL,E,NU,VALRES(4),ABSMOY
+      CHARACTER*8 MATERI,NOMRE4(4)
+      CHARACTER*2 CODRES(4),NOMRES(2)
 C     ------------------------------------------------------------------
-      DATA NOMRE/'RHO','RHO_F_IN','RHO_F_EX','CM'/
+      DATA NOMRE4/'RHO','RHO_F_IN','RHO_F_EX','CM'/
 C     ------------------------------------------------------------------
 
 C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
@@ -72,76 +72,72 @@ C --- RECUPERATION DES DIFFERENTS MATERIAUX DANS SDCOMP DANS COMPOR
       CALL JEVEUO(ZK16(ICOMPO-1+6),'L',ISDCOM)
 
       DO 10 I = 1,6
-        CASECT(I) = ZERO
-   10 CONTINUE
+         CASECT(I) = ZERO
+10    CONTINUE
 C --- BOUCLE SUR LES GROUPES DE FIBRE
       IPOS=JACF
       DO 100 IG=1,NBGF
-        NUGF=ZI(INBF+1+IG)
-        ICP=ISDCOM-1+(NUGF-1)*6
-        READ(ZK16(ICP+6),'(I16)')NBFIG
-        MATERI=ZK16(ICP+2)(1:8)
-C ---   CALCUL DES CARACTERISTIQUES DU GROUPE ---
-        CALL PMFITG(NBFIG,NCARFI,ZR(IPOS),CASEC1)
-C ---   ON MULTIPLIE PAR RHO OU E (CONSTANT SUR LE GROUPE)
-        IF(ISW.EQ.1)THEN
-          CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS',
-     +               0,' ',ZERO,1,
-     +              'E',VAL,CODRES,'  ')
-          IF(CODRES.EQ.'NO') THEN
-            CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS_FLUI',
-     +                 0,' ',ZERO,1,
-     +                'E',VAL,CODRES,'FM')
-          ENDIF
-        ELSEIF(ISW.EQ.2)THEN
-          CALL RCVALA(ICDMAT,MATERI,'ELAS',0,' ',ZERO,1,
-     +              'RHO',VAL,CODRES,'  ')
-          IF(CODRES.EQ.'NO') THEN
-            CALL JEVECH('PCAGEPO','L',LCAGE)
-            CALL JEVECH('PABSCUR','L',LABSC)
-            ABSMOY = (ZR(LABSC-1+1)+ZR(LABSC-1+2))/DEUX
-            CALL RCVALA(ICDMAT,MATERI,'ELAS_FLUI',1,'ABSC',ABSMOY,4,
-     &                  NOMRE,VALRES,CODRES,'FM')
-            RHOS  = VALRES(1)
-            RHOFI = VALRES(2)
-            RHOFE = VALRES(3)
-            CM    = VALRES(4)
-            PHIE = ZR(LCAGE-1+1)*DEUX
-            IF (PHIE.EQ.0.D0) THEN
-               CALL U2MESS('F','ELEMENTS3_26')
-            END IF
-            PHII = (PHIE-DEUX*ZR(LCAGE-1+2))
-            CALL RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
-            VAL = RHO
-          ENDIF
-        ELSEIF(ISW.EQ.3)THEN
-          CALL RCVALA(ICDMAT,MATERI,'ELAS',0,' ',ZERO,1,
-     +              'RHO',VAL,CODRES,'  ')
-          IF (CODRES.NE.'OK' ) VAL = ZERO
-        ENDIF
-        DO 20 I = 1,6
-          CASECT(I) = CASECT(I) + VAL*CASEC1(I)
-   20   CONTINUE
-        IPOS=IPOS+NBFIG*NCARFI
- 100  CONTINUE
+         NUGF=ZI(INBF+1+IG)
+         ICP=ISDCOM-1+(NUGF-1)*6
+         READ(ZK16(ICP+6),'(I16)')NBFIG
+         MATERI=ZK16(ICP+2)(1:8)
+C ---    CALCUL DES CARACTERISTIQUES DU GROUPE ---
+         CALL PMFITG(NBFIG,NCARFI,ZR(IPOS),CASEC1)
+C ---    ON MULTIPLIE PAR RHO OU E (CONSTANT SUR LE GROUPE)
+         IF(ISW.EQ.1)THEN
+            CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS',
+     &                  0,' ',ZERO,1,'E',VAL,CODRES,'  ')
+            IF(CODRES(1).EQ.'NO') THEN
+               CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS_FLUI',
+     &                     0,' ',ZERO,1,'E',VAL,CODRES,'FM')
+            ENDIF
+         ELSEIF(ISW.EQ.2)THEN
+            CALL RCVALA(ICDMAT,MATERI,'ELAS',0,' ',ZERO,1,
+     &                  'RHO',VAL,CODRES,'  ')
+            IF(CODRES(1).EQ.'NO') THEN
+               CALL JEVECH('PCAGEPO','L',LCAGE)
+               CALL JEVECH('PABSCUR','L',LABSC)
+               ABSMOY = (ZR(LABSC-1+1)+ZR(LABSC-1+2))/DEUX
+               CALL RCVALA(ICDMAT,MATERI,'ELAS_FLUI',1,'ABSC',ABSMOY,4,
+     &                     NOMRE4,VALRES,CODRES,'FM')
+               RHOS  = VALRES(1)
+               RHOFI = VALRES(2)
+               RHOFE = VALRES(3)
+               CM    = VALRES(4)
+               PHIE = ZR(LCAGE-1+1)*DEUX
+               IF (PHIE.EQ.0.D0) THEN
+                  CALL U2MESS('F','ELEMENTS3_26')
+               END IF
+               PHII = (PHIE-DEUX*ZR(LCAGE-1+2))
+               CALL RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
+               VAL = RHO
+            ENDIF
+         ELSEIF(ISW.EQ.3)THEN
+            CALL RCVALA(ICDMAT,MATERI,'ELAS',0,' ',ZERO,1,
+     &                  'RHO',VAL,CODRES,'  ')
+            IF (CODRES(1).NE.'OK' ) VAL = ZERO
+         ENDIF
+         DO 20 I = 1,6
+            CASECT(I) = CASECT(I) + VAL*CASEC1(I)
+20       CONTINUE
+         IPOS=IPOS+NBFIG*NCARFI
+100   CONTINUE
 
 C ---  SI ITO=1 ON RECUPERE LE MATERIAU DE TORSION
-      IF(ISW.EQ.1)THEN
-        READ(ZK16(ICOMPO-1+7),'(I16)')NBGFMX
-        MATERI=ZK16(ISDCOM-1+NBGFMX*6+1)
-        NOMRES(1) = 'E'
-        NOMRES(2) = 'NU'
-        CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS',
-     +              0,' ',0.D0,2,
-     +              NOMRES, VALRES, CODRES, '  ' )
+      IF (ISW.EQ.1) THEN
+         READ(ZK16(ICOMPO-1+7),'(I16)')NBGFMX
+         MATERI=ZK16(ISDCOM-1+NBGFMX*6+1)
+         NOMRES(1) = 'E'
+         NOMRES(2) = 'NU'
+         CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS',
+     &               0,' ',ZERO,2,NOMRES,VALRES,CODRES, '  ')
 
-        IF(CODRES.EQ.'NO') THEN
-          CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS_FLUI',
-     +               0,' ',ZERO,1,
-     +              'E',VAL,CODRES,'FM')
-        ENDIF
-        E = VALRES(1)
-        NU = VALRES(2)
-        GTO = E/ (DEUX* (UN+NU))
+         IF (CODRES(1).EQ.'NO') THEN
+            CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS_FLUI',
+     &                  0,' ',ZERO,2,NOMRES,VALRES,CODRES,'FM')
+         ENDIF
+         E = VALRES(1)
+         NU = VALRES(2)
+         GTO = E/ (DEUX* (UN+NU))
       ENDIF
       END

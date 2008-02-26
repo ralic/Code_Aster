@@ -1,0 +1,215 @@
+# MODIF  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# TITRE VALEUR DE REFERENCE POUR LES ELEMENTS DISCRETS 3D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='ZZZZ234D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# Fonction de calcul de l'erreur
+CoefRef = 1.0E-05
+CERREUR = FORMULE(NOM_PARA=('RESI_REFE','RESI_GLOB'),
+                  VALE='(RESI_REFE - 1.0E+05*RESI_GLOB)')
+
+
+MA = LIRE_MAILLAGE(INFO=2);
+
+MATE = DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3),)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE = _F(TOUT='OUI',MATER=MATE,),)
+
+LIS_INST =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),),)
+
+#-------------------------------------------------------------------------------------
+# 1 --> DIS_T : T_L (SEG2)
+# --------------------------
+MO_DISTL = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='DIS_T'),)
+
+CA_DISTL = AFFE_CARA_ELEM(   MODELE=MO_DISTL,
+                           DISCRET=_F(  GROUP_MA = 'TOUT',
+                                     CARA = 'K_T_D_L',
+     # K = EA/L
+                                     VALE = ( 2.6389E8, 2.6389E8, 2.6389E8, )))
+
+CL_DISTL = AFFE_CHAR_MECA(MODELE=MO_DISTL,
+                   DDL_IMPO=_F(GROUP_NO='A',
+                    DX=0., DY=0., DZ=0.,))
+
+CH_DISTL = AFFE_CHAR_MECA(MODELE=MO_DISTL,
+                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),)
+
+RE_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_DISTL,
+                     EXCIT      = (_F(CHARGE = CL_DISTL),
+                                   _F(CHARGE = CH_DISTL),),
+                     COMP_INCR=_F(RELATION='ELAS',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+   );
+
+TB_DISTL = RECU_TABLE(CO=RE_DISTL,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+
+TB_DISTL = CALC_TABLE(reuse=TB_DISTL, TABLE=TB_DISTL,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_DISTL)
+TEST_TABLE(TABLE=TB_DISTL, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_DISTL))
+
+#----------------------------------------------------------------------
+# 2 --> DIST_T : T_N (NOEUD)
+# ----------------------------
+
+MA_POI=CREA_MAILLAGE(MAILLAGE=MA,INFO=2,
+                      CREA_POI1=_F(GROUP_NO='A', NOM_GROUP_MA='POI_A'),
+                      )
+
+CHMAT_D = AFFE_MATERIAU(MAILLAGE=MA_POI,
+                      AFFE        = _F(TOUT='OUI',MATER=MATE,),)
+
+
+MO_DISTN = AFFE_MODELE(MAILLAGE=MA_POI,
+                     AFFE=(_F(GROUP_MA = 'POI_A',PHENOMENE='MECANIQUE',MODELISATION='DIS_T'),
+                           _F(GROUP_MA = 'TOUT', PHENOMENE='MECANIQUE',MODELISATION='POU_D_T'),),
+                     )
+
+CA_DISTN = AFFE_CARA_ELEM(   MODELE=MO_DISTN,
+                           DISCRET=_F(  GROUP_MA = 'POI_A',
+                                     CARA = 'K_T_D_N',
+                 # K = EA/L
+                                     VALE = ( 2.6389E8, 2.6389E8, 2.6389E8, )),
+                           POUTRE=_F( GROUP_MA='TOUT',
+                                     SECTION='CERCLE',CARA= 'R',VALE=0.02,),)
+
+
+CH_DISTN = AFFE_CHAR_MECA(MODELE=MO_DISTN,
+                        DDL_IMPO=_F(NOEUD='N1',DRX=0.,DRY=0.,DRZ=0.),
+                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),)
+
+RE_DISTN=STAT_NON_LINE(MODELE  = MO_DISTN,
+                     CHAM_MATER = CHMAT_D,
+                     CARA_ELEM  = CA_DISTN,
+                     EXCIT      = (_F(CHARGE = CH_DISTN),),
+                     COMP_INCR=_F(RELATION='ELAS',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+   );
+
+TB_DISTN = RECU_TABLE(CO=RE_DISTN,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+
+TB_DISTN = CALC_TABLE(reuse=TB_DISTN, TABLE=TB_DISTN,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_DISTN)
+TEST_TABLE(TABLE=TB_DISTN, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_DISTN))
+
+#-------------------------------------------------------------------------------------
+# 3 --> DIS_TR : TR_L (SEG2)
+# ----------------------------
+
+MO_DITRL = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'),)
+
+CA_DITRL = AFFE_CARA_ELEM(   MODELE=MO_DITRL,
+                           DISCRET=_F(  GROUP_MA = 'TOUT',
+                                     CARA = 'K_TR_D_L',
+     # K = EA/L
+                                     VALE = ( 2.6389E8, 2.6389E8, 2.6389E8,
+     # K = 12EI/L**3
+
+              2.6389E4, 2.6389E4, 2.6389E4,)))
+
+CL_DITRL = AFFE_CHAR_MECA(MODELE=MO_DITRL,
+                   DDL_IMPO=_F(GROUP_NO='A',
+                    DX=0.,  DY=0. , DZ=0.,
+    DRX=0., DRY=0., DRZ=0.,))
+
+CH_DITRL = AFFE_CHAR_MECA(MODELE=MO_DITRL,
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=1000.,FY=1100.,FZ=1200.,MX=1300.,MY=1400.,MZ=1500.,),)
+
+RE_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_DITRL,
+                     EXCIT      = (_F(CHARGE = CL_DITRL),
+                                   _F(CHARGE = CH_DITRL),),
+                     COMP_INCR=_F(RELATION='ELAS',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+   );
+
+TB_DITRL = RECU_TABLE(CO=RE_DITRL,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+
+TB_DITRL = CALC_TABLE(reuse=TB_DITRL, TABLE=TB_DITRL,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_DITRL)
+TEST_TABLE(TABLE=TB_DITRL, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_DITRL))
+
+#-------------------------------------------------------------------------------------
+# 4 --> DIS_TR : TR_N (POI)
+# ---------------------------
+
+MO_DITRN = AFFE_MODELE(MAILLAGE=MA_POI,
+                     AFFE=(_F(GROUP_MA = 'POI_A',PHENOMENE='MECANIQUE',MODELISATION='DIS_TR'),
+                           _F(GROUP_MA = 'TOUT', PHENOMENE='MECANIQUE',MODELISATION='POU_D_T'),),
+                     )
+
+CA_DITRN = AFFE_CARA_ELEM(   MODELE=MO_DITRN,
+                           DISCRET=_F(  GROUP_MA = 'POI_A',
+                                     CARA = 'K_TR_D_N',
+                                     # K = EA/L
+                                     VALE = ( 2.6389E8, 2.6389E8, 2.6389E8,
+                                              2.6389E4, 2.6389E4, 2.6389E4,),),
+                           POUTRE=_F( GROUP_MA='TOUT',
+                                     SECTION='CERCLE',CARA= 'R',VALE=0.02,),),
+
+
+CH_DITRN = AFFE_CHAR_MECA(MODELE=MO_DITRN,
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=1000.,FY=1100.,FZ=1200.,MX=1300.,MY=1400.,MZ=1500.),)
+
+RE_DITRN=STAT_NON_LINE(MODELE  = MO_DITRN,
+                     CHAM_MATER = CHMAT_D,
+                     CARA_ELEM  = CA_DITRN,
+                     EXCIT      = (_F(CHARGE = CH_DITRN),),
+                     COMP_INCR=_F(RELATION='ELAS',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.0,FORC_REFE =(CoefRef,CoefRef),),
+   );
+
+TB_DITRN = RECU_TABLE(CO=RE_DITRN,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+
+TB_DITRN = CALC_TABLE(reuse=TB_DITRN, TABLE=TB_DITRN,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_DITRN)
+TEST_TABLE(TABLE=TB_DITRN, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_DITRN))
+
+
+
+FIN()
+

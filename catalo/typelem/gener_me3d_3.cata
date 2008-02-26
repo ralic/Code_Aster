@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/02/2008   AUTEUR CNGUYEN C.NGUYEN 
+%& MODIF TYPELEM  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -501,21 +501,6 @@ OPTION__
                                      CTEMPSR  UTEMPSR  CEPSINF  VEPSINF  CPESANR  VPESANR  CFORCEF  VPFFVOL
                                      CROTATR  VROTATR  CTEMPSR  VTEMPSR
                               OUT__  EGTHETA  PGTHETA
-    G_LAGR              383   IN__   CALPHAR  PALPHAR  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     DDL_MECA PTHETA1  DDL_MECA PTHETAR
-                              OUT__  EGTHETA  PGTHETA
-    G_LAGR_F            383   IN__   CALPHAR  PALPHAR  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  CFORCEF  PFFVOLU
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
-                                     ZVARCPG  PVARCRR   DDL_MECA PTHETA1  DDL_MECA PTHETAR
-                              OUT__  EGTHETA  PGTHETA
-    G_LAGR_GLOB         382   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   DDL_MECA PTHETAR
-                              OUT__  EGTHETA  PGTHETA
-    G_LAGR_GLOB_F       382   IN__   CALPHAR  PALPHAR  DDL_MECA PDEPLAR  CFORCEF  PFFVOLU  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                                     DDL_MECA PTHETAR
-                              OUT__  EGTHETA  PGTHETA
     INDIC_ENER          491   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
                               OUT__  EENEDNO  PENERD1  EENEDNO  PENERD2
@@ -610,9 +595,6 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
-    RIGI_MECA_LAGR      381   IN__   CALPHAR  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
-                                     DDL_MECA PTHETAR
-                              OUT__  MMATUUR  PMATUUR
     RIGI_MECA_RO        21    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_SENSI     11    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN

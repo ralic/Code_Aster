@@ -1,4 +1,4 @@
-# MODIF  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/02/2008   AUTEUR ASSIRE A.ASSIRE 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT SCOTCH ET CALCUL FETI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,7 @@
 # CUBE 3D
 # ======================================================================
 
-DEBUT(CODE=_F(NOM ='FETI007A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM ='FETI007A',NIV_PUB_WEB='INTERNET'),)
 
 MAIL1= LIRE_MAILLAGE()
 

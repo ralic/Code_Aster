@@ -2,7 +2,7 @@
      &                  VALMOI,PARCON,CNVFRE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT NONE
-      REAL*8       PARCON(6)
+      REAL*8       PARCON(8)
       CHARACTER*19 CNVFRE
       CHARACTER*24 MODELE
       CHARACTER*24 COMPOR
@@ -53,6 +53,8 @@ C                     3 : FLUX_THER_REFE
 C                     4 : FLUX_HYD1_REFE
 C                     5 : FLUX_HYD2_REFE
 C                     6 : VARI_REFE
+C                     7 : EFFORT (FORC_REFE)
+C                     8 : MOMENT (FORC_REFE)
 C OUT CNVFRE : FORCE DE REFERENCE POUR CONVERGENCE EN REFERENCE
 C
 C
@@ -81,7 +83,7 @@ C
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 C
       INTEGER      NBSIG
-      PARAMETER    (NBSIG=6)
+      PARAMETER    (NBSIG=8)
       CHARACTER*8  SIGERE(NBSIG)      
 C
       LOGICAL      LBID
@@ -96,8 +98,8 @@ C
       INTEGER      IFMDBG,NIVDBG       
       CHARACTER*16 OPTION
 C      
-      DATA  SIGERE / 'SIGM','EPSI','FTHERM','FHYDR1','FHYDR2','VARI'/
-C
+      DATA  SIGERE / 'SIGM','EPSI','FTHERM','FHYDR1','FHYDR2','VARI',
+     &               'EFFORT','MOMENT' /
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()

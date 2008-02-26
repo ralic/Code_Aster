@@ -3,7 +3,7 @@
      &                  PARCON,CARCRI,SDDYNA,SDSENS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,6 +91,8 @@ C                3 : FLUX_THER_REFE
 C                4 : FLUX_HYD1_REFE
 C                5 : FLUX_HYD2_REFE
 C                6 : VARI_REFE
+C                7 : EFFORT
+C                8 : MOMENT
 C IN  SDSENS : SD SENSIBILITE
 C IN  SDDYNA : SD DYNAMIQUE
 C

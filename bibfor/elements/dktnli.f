@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 26/02/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,7 +68,7 @@ CCC      PARAMETER (NNO=4)  POUR LES DKQ
       INTEGER    NNO
       PARAMETER (NNO=4)
 C            NNO:    NOMBRE DE NOEUDS DE L'ELEMENT
-      REAL*8   DISTN, POIDS2, ROT(9), DH(9), ANGMAS(3)
+      REAL*8   DISTN, DISTN2, POIDS2, ROT(9), DH(9), ANGMAS(3)
 C
 C --------- VARIABLES LOCALES :
 C  -- GENERALITES :
@@ -147,7 +147,7 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
      &          ITEMP, IVARIM, IVARIP, IVARIX,
      &          IVPG, J, K, NBCON, NBSP, NBVAR, NDIMV
       REAL*8     DEUX, RAC2, QSI, ETA, CARA(25), JACOB(5)
-      REAL*8    CTOR
+      REAL*8    CTOR,COEHSD
       REAL*8    LC,JACGAU,BMAT(6,18)
       REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
       LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ,LTEATT
@@ -210,14 +210,8 @@ C       -- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP :
 C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
       H = ZR(ICACOQ)
-      DISTN = 0.D0
       IF (.NOT.GRILLE) THEN
          DISTN = ZR(ICACOQ+4)
-         IF (DISTN.NE.0.D0) THEN
-            CALL TECAEL(IADZI, IAZK24)
-            NOMELE=ZK24(IAZK24-1+3)
-            CALL U2MESK('F','ELEMENTS_35',1,NOMELE)
-         ENDIF
       ENDIF
       IF ( GRILLE ) THEN
          DISTN = ZR(ICACOQ+3)
@@ -410,9 +404,10 @@ C           COD=3 : C_PLAN DEBORST SIGZZ NON NUL
 C         -- CALCUL DES EFFORTS RESULTANTS DANS L'EPAISSEUR (N ET M) :
 C         ------------------------------------------------------------
             IF (VECTEU) THEN
-              N(1) = N(1) + COEF*HIC/DEUX*ZR(ICONTP+ICPG-1+1)
-              N(2) = N(2) + COEF*HIC/DEUX*ZR(ICONTP+ICPG-1+2)
-              N(3) = N(3) + COEF*HIC/DEUX*ZR(ICONTP+ICPG-1+4)
+              COEHSD = COEF*HIC/DEUX
+              N(1) = N(1) + COEHSD*ZR(ICONTP+ICPG-1+1)
+              N(2) = N(2) + COEHSD*ZR(ICONTP+ICPG-1+2)
+              N(3) = N(3) + COEHSD*ZR(ICONTP+ICPG-1+4)
             IF (GRILLE) THEN
 C             LES SEULS MOMENTS SONT DUS A L'EXCENTREMENT
 C             PAS DE RIGIDITE DE FLEXION PROPRE
@@ -420,9 +415,9 @@ C             PAS DE RIGIDITE DE FLEXION PROPRE
               M(2) = M(2) + ZIC*HIC*ZR(ICONTP+ICPG-1+2)
               M(3) = M(3) + ZIC*HIC*ZR(ICONTP+ICPG-1+4)
             ELSE
-              M(1) = M(1) + COEF*HIC/DEUX*ZIC*ZR(ICONTP+ICPG-1+1)
-              M(2) = M(2) + COEF*HIC/DEUX*ZIC*ZR(ICONTP+ICPG-1+2)
-              M(3) = M(3) + COEF*HIC/DEUX*ZIC*ZR(ICONTP+ICPG-1+4)
+              M(1) = M(1) + COEHSD*ZIC*ZR(ICONTP+ICPG-1+1) 
+              M(2) = M(2) + COEHSD*ZIC*ZR(ICONTP+ICPG-1+2) 
+              M(3) = M(3) + COEHSD*ZIC*ZR(ICONTP+ICPG-1+4) 
             END IF
             END IF
 
@@ -455,7 +450,7 @@ C                 SANS EXCENTREMENT, PAS DE FLEXION PROPRE
             END IF
    70     CONTINUE
    80   CONTINUE
-
+C
 C       -- CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
 C       ----------------------------------------------------------
 C       BTSIG = BTSIG + BFT*M + BMT*N

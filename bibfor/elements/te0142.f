@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,6 +62,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EFGE(12)
       CHARACTER*24 SUROPT
       INTEGER ICOMPO,ISDCOM,IRET
+C
+      REAL *8 RLOC(12), DRLOC(12), DALOC(12)
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU','RHO'/
       DATA NOMREF/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
@@ -158,10 +160,11 @@ C     --- CALCUL DE LA MATRICE DE RIGIDITE SENSIBLE LOCALE ---
 C
         CALL JEVECH('PMATSEN','L',IMATE)
         CALL RCVALB('NOEU',1,1,'+',ZI(IMATE),' ','ELAS',
-     &            NBPAR,NOMPAR,VALPAR,2,
-     &            NOMRES,VALRES,CODRES,'FM')
+     &           NBPAR,NOMPAR,VALPAR,2,
+     &           NOMRES,VALRES,CODRES,'FM')
         E   = VALRES(1)
         XNU = VALRES(2)
+        
 C
 C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
 C   SI : DERIVATION PAR RAPPORT A E ALORS : E = 1 ET XNU = 0
@@ -178,16 +181,16 @@ C
         ELSE IF(ABS(E).LT.R8PREM()) THEN
           DERIVE = 'NU'
           E   = VALRES(1)
-          XNU = VALRES(2)
+C          XNU = VALRES(2)
         END IF
         CALL PORIGI(NOMTE,E,XNU,KLV)
 C
         IF(DERIVE(1:2).EQ.'NU') THEN
 C VALEUR NULLE SAUF POUR LES DDL DE TORSION
             VALTOR = -KLV(10)/(1.D0 + XNU)
-            DO 300 I = 1,NL
-              KLV(I) = 0.D0
-300         CONTINUE
+C            DO 300 I = 1,NL
+C              KLV(I) = 0.D0
+C300         CONTINUE
             KLV(10) =  VALTOR
             KLV(49) = -VALTOR
             KLV(55) =  VALTOR
@@ -203,25 +206,34 @@ C
            CALL JEVECH('PCONTPO','E',JEFFO)
         ENDIF
 C
-          DO 100 I = 1,NDDL
+C       CALCUL DANS LE REPERE LOCAL DE LA POUTRE 
+C           - DU DEPLACEMENT 
+C           - DE LA DERIVEE DU DEPLACEMENT 
+C           - DE LA DERIVEE DE L'ACCELERATION
+C
+        CALL DELOGL(IDEPL,RLOC)
+        CALL DELOGL(IDEPSE,DRLOC)
+        CALL DELOGL(IACCSE,DALOC)
+C
+        DO 100 I = 1,NDDL
             EFGE(I) = 0.D0
             DO 110 J = 1,NDDL
               EFGE(I) = EFGE(I)
-     &                        + KLC(I,J) * ZR(IDEPL-1+J)
-     &                        + KLCS(I,J)* ZR(IDEPSE-1+J)
-     &                        + MLC(I,J) * ZR(IACCSE-1+J)
+     &             + KLC(I,J) * RLOC(J)
+     &             + KLCS(I,J)* DRLOC(J)
+     &             + MLC(I,J) * DALOC(J)
 110         CONTINUE
-100       CONTINUE
-          IF ( OPTION.EQ.'EFGE_ELNO_SENS'  ) THEN
-             DO 130 I = 1,NDDL
-                 ZR(JEFFO-1+I) = EFGE(I)
-130          CONTINUE
-          ELSE
-             CALL POSIPR(NOMTE,EFGE,ZR(JEFFO))
-          ENDIF
+100     CONTINUE
+        IF ( OPTION.EQ.'EFGE_ELNO_SENS'  ) THEN
+           DO 130 I = 1,NDDL
+              ZR(JEFFO-1+I) = EFGE(I)
+130        CONTINUE
+        ELSE
+           CALL POSIPR(NOMTE,EFGE,ZR(JEFFO))
+        ENDIF
       ELSE
-        CH16 = OPTION
-        CALL U2MESK('F','ELEMENTS3_27',1,CH16)
+         CH16 = OPTION
+         CALL U2MESK('F','ELEMENTS3_27',1,CH16)
       END IF
 
       END

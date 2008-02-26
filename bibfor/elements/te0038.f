@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/10/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,35 +120,35 @@ C     --- ORIENTATION DE LA POUTRE ---
 10       CONTINUE
 
          IF( NOMTE.EQ.'MECA_POU_D_EM') THEN
-C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
+C           RECUPERATION DES CARACTERISTIQUES DES FIBRES :
             CALL JEVECH('PNBSP_I','L',INBF)
             NBGF=ZI(INBF+1)
             CALL JEVECH('PFIBRES','L',JACF)
             NCARFI = 3
-C --- RECUPERATION DES DIFFERENTS MATERIAUX DANS SDCOMP DANS COMPOR
+C           RECUPERATION DES MATERIAUX DANS SDCOMP DANS COMPOR
             CALL JEVECH('PCOMPOR','L',ICOMPO)
             CALL JEVEUO(ZK16(ICOMPO-1+6),'L',ISDCOM)
          ENDIF
 
          IF ((NOMTE.NE.'MET3SEG3') .AND. (NOMTE.NE.'MET6SEG3') .AND.
      &       (NOMTE.NE.'MET3SEG4')) THEN
-C        --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
+C           RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
             CALL JEVECH('PCAGNPO','L',LSECT)
             LSECT = LSECT - 1
             LSECT2 = LSECT + 11
             ITYPE = NINT(ZR(LSECT+23))
-C        --- SECTION INITIALE ---
+C           SECTION INITIALE
             A1 = ZR(LSECT+1)
             IY1 = ZR(LSECT+2)
             IZ1 = ZR(LSECT+3)
             RY1 = ZR(LSECT+9)
             RZ1 = ZR(LSECT+10)
-C        --- SECTION FINALE ---
+C           SECTION FINALE
             A2 = ZR(LSECT2+1)
             RY2 = ZR(LSECT2+9)
             RZ2 = ZR(LSECT2+10)
          ELSE
-C        --- RECUPERATION DES CARACTERISTIQUES  DES TUYAUX
+C           RECUPERATION DES CARACTERISTIQUES  DES TUYAUX
             ITYPE = -999
             CALL JEVECH('PCAGEPO','L',LSECT)
             REXT = ZR(LSECT)
@@ -280,23 +280,27 @@ C           -------- MASSE
                DO 15 I = 1,6
                   CASECT(I) = ZERO
    15          CONTINUE
-C --- BOUCLE SUR LES GROUPES DE FIBRE
+C              BOUCLE SUR LES GROUPES DE FIBRE
                IPOS=JACF
                DO 100 IG=1,NBGF
-                 NUGF=ZI(INBF+1+IG)
-                 ICP=ISDCOM-1+(NUGF-1)*6
-                 READ(ZK16(ICP+6),'(I16)')NBFIG
-                 MATERI=ZK16(ICP+2)(1:8)
-C ---   CALCUL DES CARACTERISTIQUES DU GROUPE ---
-                 CALL PMFITG(NBFIG,NCARFI,ZR(IPOS),CASEC1)
-C ---   ON MULTIPLIE PAR RHO (CONSTANT SUR LE GROUPE)
-                 CALL RCVALA(ZI(LMATER),MATERI,'ELAS',0,' ',ZERO,1,
-     +              'RHO',VAL,CODRES,'FM')
-                 DO 25 I = 1,6
-                    CASECT(I) = CASECT(I) + VAL*CASEC1(I)
-  25             CONTINUE
-                 IPOS=IPOS+NBFIG*NCARFI
- 100           CONTINUE
+                  NUGF=ZI(INBF+1+IG)
+                  ICP=ISDCOM-1+(NUGF-1)*6
+                  READ(ZK16(ICP+6),'(I16)')NBFIG
+                  MATERI=ZK16(ICP+2)(1:8)
+C                 CALCUL DES CARACTERISTIQUES DU GROUPE ---
+                  CALL PMFITG(NBFIG,NCARFI,ZR(IPOS),CASEC1)
+C                 ON MULTIPLIE PAR RHO (CONSTANT SUR LE GROUPE)
+                  CALL RCVALA(ZI(LMATER),MATERI,'ELAS',0,' ',
+     &                     ZERO,1,'RHO',VAL,CODRES,'  ')
+                  IF ( CODRES .EQ. 'NO' ) THEN
+                     CALL RCVALA(ZI(LMATER),MATERI,'ELAS_FLUI',0,' ',
+     &                        ZERO,1,'RHO',VAL,CODRES,'FM')
+                  ENDIF
+                  DO 25 I = 1,6
+                     CASECT(I) = CASECT(I) + VAL*CASEC1(I)
+25                CONTINUE
+                  IPOS=IPOS+NBFIG*NCARFI
+100            CONTINUE
 
                ZR(LCASTR) = CASECT(1)*XL
 C           -------- CDG

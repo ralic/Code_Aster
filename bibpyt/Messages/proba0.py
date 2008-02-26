@@ -1,4 +1,4 @@
-#@ MODIF proba0 Messages  DATE 11/09/2007   AUTEUR DURAND C.DURAND 
+#@ MODIF proba0 Messages  DATE 25/02/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,5 +68,11 @@ cata_msg={
 10: _("""
   Il faut autant de composantes que de noeuds.
 """),
+
+11: _("""
+  Nombre de tirages superieur a la taille de l'echantilon.
+"""),
+
+
 
 }

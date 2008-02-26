@@ -5,7 +5,7 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 26/02/2008   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  NBCON, NBCOU, NPGH, K, INO, IPG, ICOU, IGAUH, ICPG,
      &         ICACOQ, JNBSPI, JDEPL, IMATE, IADZI, IAZK24
-      REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN,
+      REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN, COEHSD,
      &         CDF, KHI(3), N(3), M(3), BF(3,9), MG(3), DH(9), DMF(9),
      &         UF(3,3), UL(6,3), ROT(9)
       REAL*8   QSI, ETA, CARAT3(21)
@@ -105,13 +105,7 @@ C     ---------------------------
       ELSE
          NPGH = 3
          DISTN = ZR(ICACOQ+4)
-         IF (DISTN.NE.0.D0) THEN
-            CALL TECAEL(IADZI, IAZK24)
-            NOMELE=ZK24(IAZK24-1+3)
-            CALL U2MESK('F','ELEMENTS_47',1,NOMELE)
-         ENDIF
-         DISTN = ZERO
-         ZMIN = -H/DEUX
+         ZMIN = -H/DEUX + DISTN
       END IF
 
       CALL R8INIR ( 32, ZERO, EFFINT, 1 )
@@ -151,9 +145,10 @@ C     -------------------------------------------------
 C
 C         -- CALCUL DES EFFORTS RESULTANTS DANS L'EPAISSEUR (N ET M) :
 C         ------------------------------------------------------------
-               N(1) = N(1) + COEF*HIC/2.D0*CONT(ICPG+1)
-               N(2) = N(2) + COEF*HIC/2.D0*CONT(ICPG+2)
-               N(3) = N(3) + COEF*HIC/2.D0*CONT(ICPG+4)
+               COEHSD = COEF*HIC/2.D0
+               N(1) = N(1) + COEHSD*CONT(ICPG+1)
+               N(2) = N(2) + COEHSD*CONT(ICPG+2)
+               N(3) = N(3) + COEHSD*CONT(ICPG+4)
                IF (GRILLE) THEN
 C                LES SEULS MOMENTS SONT DUS A L'EXCENTREMENT
 C                PAS DE RIGIDITE DE FLEXION PROPRE
@@ -161,9 +156,9 @@ C                PAS DE RIGIDITE DE FLEXION PROPRE
                  M(2) = M(2) + ZIC*HIC*CONT(ICPG+2)
                  M(3) = M(3) + ZIC*HIC*CONT(ICPG+4)
                ELSE
-                 M(1) = M(1) + COEF*HIC/2.D0*ZIC*CONT(ICPG+1)
-                 M(2) = M(2) + COEF*HIC/2.D0*ZIC*CONT(ICPG+2)
-                 M(3) = M(3) + COEF*HIC/2.D0*ZIC*CONT(ICPG+4)
+                 M(1) = M(1) + COEHSD*ZIC*CONT(ICPG+1) 
+                 M(2) = M(2) + COEHSD*ZIC*CONT(ICPG+2) 
+                 M(3) = M(3) + COEHSD*ZIC*CONT(ICPG+4) 
                END IF
  120        CONTINUE
  110     CONTINUE

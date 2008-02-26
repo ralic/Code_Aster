@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 26/02/2008   AUTEUR DESROCHES X.DESROCHES 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,6 +191,51 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU_DEPL',NUME_ORDRE=1,
                   VALE=5000.0,NOM_CMP='MXX',
                   PRECISION=0.003,
                   REFERENCE='ANALYTIQUE',),);
+
+
+L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
+                        INTERVALLE=_F(  JUSQU_A = 1.,
+                                        NOMBRE  = 1  )
+                         )
+RESU2B=STAT_NON_LINE(  MODELE     = MO2,
+                       CHAM_MATER = CHMAT2,
+                       CARA_ELEM  = EP2,
+                       EXCIT=(_F(CHARGE=CL2),
+                              _F(CHARGE=CHME2A),),
+                       COMP_INCR  =_F( RELATION = 'ELAS',),
+                       INCREMENT  =_F( LIST_INST = L_INST),
+                    )
+
+
+
+RESU2B=CALC_ELEM(reuse=RESU2B,
+                RESULTAT=RESU2B,
+                OPTION='SIEF_ELNO_ELGA',
+                      )
+
+
+
+RESU2B=CALC_NO(reuse=RESU2B,
+                RESULTAT=RESU2B,
+                OPTION='SIEF_NOEU_ELGA',
+                      )
+
+
+# Test
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2B,NOM_CHAM='DEPL',NUME_ORDRE=1,
+                  GROUP_NO='A3',PRECISION=0.005,
+                  VALE=u_l,NOM_CMP='DZ',
+                  REFERENCE='ANALYTIQUE',),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2B,NOM_CHAM='SIEF_NOEU_ELGA',NUME_ORDRE=1,
+                  GROUP_NO='A1',
+                  VALE=5000.0,NOM_CMP='MXX',
+                  PRECISION=0.003,
+                  REFERENCE='ANALYTIQUE',),);
+
+
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE2,
                    NUME_ORDRE=1,

@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_dyna_alea_ops Macro  DATE 25/02/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,8 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
-                       NOEUD_I,OPTION,MOMENT,TITRE,INFO,**args):
+def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
    import aster
    from types import ListType, TupleType
    EnumTypes = (ListType, TupleType)
@@ -27,9 +26,10 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
    from Utilitai.Utmess     import  UTMESS
    from Utilitai.t_fonction import t_fonction
    from Utilitai.Table      import Table
+   
    import Numeric
-   import math
-   from math import pi,sqrt
+   import random
+   from math import pi,sqrt,log,exp
    
    commande='POST_DYNA_ALEA'
 
@@ -47,202 +47,374 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
    IMPR_TABLE    = self.get_cmd('IMPR_TABLE')
    RECU_FONCTION = self.get_cmd('RECU_FONCTION')
    IMPR_FONCTION = self.get_cmd('IMPR_FONCTION')
+   DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
+   DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
+   CALC_FONCTION  = self.get_cmd('CALC_FONCTION')
 
-   intespec=INTE_SPEC.EXTR_TABLE()
 
 #  ------------------------------------------------------------------
-#  Liste des moments spectraux
-#  repérer le type de l'interspectre et son nom
-#                1- concept interspectre
-#                2- table de table d interspectre
+#---------algorithme d'optimisation pour le  maximum de vraisemblance
+   def vrais(x):  
+      am=x[0]
+      assert am >0.0, 'optimize.py: am negatif'
+      beta=x[1] 
+      assert am >0.0, 'optimize.py: beta negatif'
+      res=1.0
+      for k in range(Nbval):
+         ai=liste_indic[k]
+         xi=liste_def[k]
+         val=log(ai/am)       
+         pfa=normcdf(val/beta,0.,1.)
+         f0=pfa**xi*(1-pfa)**(1-xi)
+         res=res*f0
+      return -res
 
-   if 'NUME_VITE_FLUI' in intespec.para :
-      if TOUT_ORDRE!=None :
-         jnuor=intespec['NUME_VITE_FLUI'].values()['NUME_VITE_FLUI']
-         jvite=dict([(i,0) for i in jnuor]).keys()
+   def boot_vrais(x):  
+      am=x[0]
+      beta=x[1] 
+      res=1.0 
+      for k in range(Nbval):
+         ai=liste_indic[list_rand[k]]
+         xi=liste_def[list_rand[k]]
+         val=log(ai/am)       
+         pfa=normcdf(val/beta,0.,1.)
+         f0=pfa**xi*(1-pfa)**(1-xi)
+         res=res*f0
+      return -res
+
+#  ------------------------------------------------------------------
+#  OPTION FRAGILITE
+# ------------------------------------------------------------------
+   if FRAGILITE !=None :
+      from Utilitai.optimize   import fmin
+      from Utilitai.stats   import normcdf
+
+      if FRAGILITE['LIST_PARA'] != None :
+         liste_a = FRAGILITE['LIST_PARA'].VALE.get()
+      elif FRAGILITE['VALE'] != None :
+         liste_a =FRAGILITE['VALE']
+
+
+      Nba=len(liste_a)
+      lpfa=[]
+      tab2 = FRAGILITE['TABL_RESU'].EXTR_TABLE() 
+      dicta = tab2.values()
+
+      if dicta.has_key('DEFA') :
+         liste_def = dicta['DEFA']
+      else:
+         UTMESS('F','TABLE0_1',valk=('DEFA'))
+      if dicta.has_key('PARA_NOCI') :
+        liste_indic = dicta['PARA_NOCI']
+      else:
+        UTMESS('F','TABLE0_1',valk=('PARA_NOCI'))
+
+      Nbval=len(liste_indic)
+#      print liste_indic, Nbval, liste_def, len(liste_def)
+
+      test1 = Numeric.equal(None,liste_indic)
+      test2 = Numeric.equal(None,liste_def)      
+      if test1 >=1 or test2 >=1:
+         UTMESS('F','TABLE0_15') 
+
+      # estimation paramètres
+      x0 = [FRAGILITE['AM_INI'],FRAGILITE['BETA_INI']] 
+      xopt = fmin(vrais,x0)
+      
+      texte='PARAMETRES Am, beta ESTIMES : '+str(xopt)+'\n'
+      aster.affiche('MESSAGE',texte)      #print 'parametres Am, beta estimes: ', xopt
+
+      #courbe de fragilité
+      vec_a=Numeric.array(liste_a)
+      vecval=(Numeric.log(vec_a/xopt[0]))/xopt[1]
+      for m in range(Nba):
+         lpfa.append(normcdf(vecval[m],0.,1.))
+
+      # table sortie
+
+      mcfact=[] 
+      if  TITRE !=None :   
+           mcfact.append(_F(PARA= 'TITRE' , LISTE_K= TITRE  ))
+      
+      mcfact.append(_F(PARA= 'AM' ,LISTE_R=xopt[0] ))
+      mcfact.append(_F(PARA= 'BETA' ,LISTE_R=xopt[1] ))
+      mcfact.append(_F(PARA= 'PARA_NOCI' ,LISTE_R =liste_a  ))
+      mcfact.append(_F(PARA= 'PFA' ,LISTE_R = lpfa ))
+
+   #print 'fractiles a calculer par bootstrap : ', FRAGILITE['FRACTILE']
+
+
+      # si calcul de fractiles (intervalles de confiance) par bootstrap
+
+      if FRAGILITE['FRACTILE']!= None : 
+         if INFO==2 :
+            texte='FRACTILES A CALCULER PAR BOOTSTRAP '+ str(FRAGILITE['FRACTILE']) +'\n'
+            aster.affiche('MESSAGE',texte)      
+         if FRAGILITE['NB_TIRAGE']!= None :
+            Nboot = FRAGILITE['NB_TIRAGE']
+            if Nboot >= Nbval :
+               UTMESS('F','PROBA0_11')     #assert Nboot <= Nbval , 'ERREUR: nombre de tirages demandes trop grand'
+         else:
+            Nboot = Nbval
+
+         list_fonc = []
+         lfract =FRAGILITE['FRACTILE']
+         __F1=[None]*Nbval
+         __ABS=[None]*Nbval
+         __ORDO=[None]*Nbval         
+
+         for kb in range(Nboot) : #in range(Nbval)
+
+            lpfa = []
+            list_rand = []
+
+            for kb2 in range(Nbval) :
+               list_rand.append(random.randint(0,Nbval-1))            
+            xopt = fmin(boot_vrais,x0)    
+            if INFO==2 :    
+               texte1='BOOTSTRAP TIRAGE '+ str(kb+1)
+               texte2='  PARAMETRES Am, beta ESTIMES : '+str(xopt)+'\n'
+               aster.affiche('MESSAGE',texte1) #print 'bootstrap tirage', kb+1, ', -  parametres Am, beta estimes: ', xopt 
+               aster.affiche('MESSAGE',texte2) 
+            vecval=(Numeric.log(vec_a/xopt[0]))/xopt[1]
+            for m in range(Nba):
+               lpfa.append(normcdf(vecval[m],0.,1.))
+
+            __ABS[kb]=DEFI_LIST_REEL( VALE = liste_a  );
+            __ORDO[kb]=DEFI_LIST_REEL( VALE = lpfa ); 
+
+            __F1[kb]=DEFI_FONCTION(  NOM_PARA='PGAZ',
+                                     NOM_RESU = 'PFA',
+                                     VALE_PARA = __ABS[kb],
+                                     VALE_FONC = __ORDO[kb],);
+            list_fonc.append(__F1[kb],)
+
+
+         #__FRACTILE = [None]*len(lfract)
+         liste = [None]*len(lfract)
+         for kb in range(len(lfract)):
+            __FRACTILE=CALC_FONCTION(FRACTILE=_F(FONCTION=(list_fonc),
+                             FRACT=lfract[kb]), ); 
+            liste[kb]= __FRACTILE.Ordo()                                            
+            mcfact.append(_F(PARA= str(lfract[kb]) ,LISTE_R =liste[kb]  ))
+
+
+      #   fin FRAGILITE
+      tabout = CREA_TABLE(LISTE=mcfact,TITRE = 'POST_DYNA_ALEA concept : '+self.sd.nom)
+      
+#  ------------------------------------------------------------------      
+
+
+#  ------------------------------------------------------------------
+#  OPTION INTESPEC
+# ------------------------------------------------------------------
+   if INTE_SPEC !=None :
+
+      TOUT_ORDRE = args['TOUT_ORDRE']
+      NUME_VITE_FLUI=args['NUME_VITE_FLUI']
+
+      NUME_ORDRE_I=args['NUME_ORDRE_I']       
+      NOEUD_I=args['NOEUD_I']
+      OPTION=args['OPTION']
+
+      MOMENT=args['MOMENT']
+ 
+
+      intespec=INTE_SPEC.EXTR_TABLE()
+
+#     ------------------------------------------------------------------
+#     Liste des moments spectraux
+#     repérer le type de l'interspectre et son nom
+#                   1- concept interspectre
+#                   2- table de table d interspectre
+
+      if 'NUME_VITE_FLUI' in intespec.para :
+         if TOUT_ORDRE!=None :
+            jnuor=intespec['NUME_VITE_FLUI'].values()['NUME_VITE_FLUI']
+            jvite=dict([(i,0) for i in jnuor]).keys()
+         else :
+           jvite=[NUME_VITE_FLUI,]
       else :
-        jvite=[NUME_VITE_FLUI,]
-   else :
-      jvite  =[None]
+         jvite  =[None]
 
-#  ------------------------------------------------------------------
-#  Repérer les couples d'indices selectionnés
-#  vérification de l'égalité du nombre d indices en i et j
+#     ------------------------------------------------------------------
+#     Repérer les couples d'indices selectionnés
+#     vérification de l'égalité du nombre d indices en i et j
 
-   if NUME_ORDRE_I!=None :
-     l_ind_i=NUME_ORDRE_I
-     l_ind_j=args['NUME_ORDRE_J']
-     if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
-     if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
-     if len(l_ind_i)!=len(l_ind_j) :
-        UTMESS('F','PROBA0_8')
-     listpara=['NUME_ORDRE_I','NUME_ORDRE_J']
-     listtype=['I','I']
-     dicotabl={'NUME_ORDRE_I'  : l_ind_i  ,\
-               'NUME_ORDRE_J'  : l_ind_j  , }
-   elif NOEUD_I!=None :
-     l_ind_i=NOEUD_I
-     l_ind_j=args['NOEUD_J']
-     l_cmp_i=args['NOM_CMP_I']
-     l_cmp_j=args['NOM_CMP_J']
-     if type(l_cmp_i) not in EnumTypes : l_cmp_i=[l_cmp_i]
-     if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
-     if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
-     if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
-     if len(l_ind_i)!=len(l_ind_j) :
-        UTMESS('F','PROBA0_8')
-     if len(l_cmp_i)!=len(l_cmp_j) :
-        UTMESS('F','PROBA0_9')
-     if len(l_ind_i)!=len(l_cmp_i) :
-        UTMESS('F','PROBA0_10')
-     listpara=['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J']
-     listtype=['K8','K8','K8','K8',]
-     dicotabl={'NOEUD_I'  : l_ind_i,\
-               'NOEUD_J'  : l_ind_j,\
-               'NOM_CMP_I': l_cmp_i,\
-               'NOM_CMP_J': l_cmp_j }
-#  ------------------------------------------------------------------
-#  Cas de tous les indices centraux
+      if NUME_ORDRE_I!=None :
+        l_ind_i=NUME_ORDRE_I
+        l_ind_j=args['NUME_ORDRE_J']
+        if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
+        if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
+        if len(l_ind_i)!=len(l_ind_j) :
+           UTMESS('F','PROBA0_8')
+        listpara=['NUME_ORDRE_I','NUME_ORDRE_J']
+        listtype=['I','I']
+        dicotabl={'NUME_ORDRE_I'  : l_ind_i  ,\
+                  'NUME_ORDRE_J'  : l_ind_j  , }
+      elif NOEUD_I!=None :
+        l_ind_i=NOEUD_I
+        l_ind_j=args['NOEUD_J']
+        l_cmp_i=args['NOM_CMP_I']
+        l_cmp_j=args['NOM_CMP_J']
+        if type(l_cmp_i) not in EnumTypes : l_cmp_i=[l_cmp_i]
+        if type(l_cmp_j) not in EnumTypes : l_cmp_j=[l_cmp_j]
+        if type(l_ind_i) not in EnumTypes : l_ind_i=[l_ind_i]
+        if type(l_ind_j) not in EnumTypes : l_ind_j=[l_ind_j]
+        if len(l_ind_i)!=len(l_ind_j) :
+           UTMESS('F','PROBA0_8')
+        if len(l_cmp_i)!=len(l_cmp_j) :
+           UTMESS('F','PROBA0_9')
+        if len(l_ind_i)!=len(l_cmp_i) :
+           UTMESS('F','PROBA0_10')
+        listpara=['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J']
+        listtype=['K8','K8','K8','K8',]
+        dicotabl={'NOEUD_I'  : l_ind_i,\
+                  'NOEUD_J'  : l_ind_j,\
+                  'NOM_CMP_I': l_cmp_i,\
+                  'NOM_CMP_J': l_cmp_j }
+#     ------------------------------------------------------------------
+#     Cas de tous les indices centraux
 
-   elif OPTION!=None :
-      if 'NUME_ORDRE_I' in intespec.para :
-         inuor=intespec['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
-         imode=dict([(i,0) for i in inuor]).keys()
-         l_ind_i=imode
-         l_ind_j=imode
-         listpara=['NUME_ORDRE_I','NUME_ORDRE_J']
-         listtype=['I','I']
-         dicotabl={'NUME_ORDRE_I'  : l_ind_i  ,\
-                   'NUME_ORDRE_J'  : l_ind_j  , }
-      else :
-         if 'NUME_VITE_FLUI' in intespec.para :
-            intespec=intespec.NUME_VITE_FLUI==jvite[0]
-         l_ind_i=intespec['NOEUD_I'].values()['NOEUD_I']
-         l_ind_j=intespec['NOEUD_J'].values()['NOEUD_J']
-         if len(l_ind_i)!=len(l_ind_j) :
-            UTMESS('F','PROBA0_8')
-         l_cmp_i=intespec['NOM_CMP_I'].values()['NOM_CMP_I']
-         l_cmp_j=intespec['NOM_CMP_J'].values()['NOM_CMP_J']
-         if (len(l_ind_i)!=len(l_cmp_i) or len(l_ind_j)!=len(l_cmp_j)) :
-            UTMESS('F','PROBA0_10')
-         l_l=zip(zip(l_ind_i,l_cmp_i),zip(l_ind_j,l_cmp_j))
-         l_ind_i=[]
-         l_ind_j=[]
-         l_cmp_i=[]
-         l_cmp_j=[]
-         for ai,aj in l_l :
-             if ai==aj :
-                l_ind_i.append(ai[0])
-                l_ind_j.append(aj[0])
-                l_cmp_i.append(ai[1])
-                l_cmp_j.append(aj[1])
-         listpara=['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J']
-         listtype=['K8','K8','K8','K8',]
-         dicotabl={'NOEUD_I'  : l_ind_i*len(jvite)  ,\
-                   'NOEUD_J'  : l_ind_j*len(jvite)  ,\
-                   'NOM_CMP_I': l_cmp_i*len(jvite)  ,\
-                   'NOM_CMP_J': l_cmp_j*len(jvite) }
+      elif OPTION!=None :
+         if 'NUME_ORDRE_I' in intespec.para :
+            inuor=intespec['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
+            imode=dict([(i,0) for i in inuor]).keys()
+            l_ind_i=imode
+            l_ind_j=imode
+            listpara=['NUME_ORDRE_I','NUME_ORDRE_J']
+            listtype=['I','I']
+            dicotabl={'NUME_ORDRE_I'  : l_ind_i  ,\
+                      'NUME_ORDRE_J'  : l_ind_j  , }
+         else :
+            if 'NUME_VITE_FLUI' in intespec.para :
+               intespec=intespec.NUME_VITE_FLUI==jvite[0]
+            l_ind_i=intespec['NOEUD_I'].values()['NOEUD_I']
+            l_ind_j=intespec['NOEUD_J'].values()['NOEUD_J']
+            if len(l_ind_i)!=len(l_ind_j) :
+               UTMESS('F','PROBA0_8')
+            l_cmp_i=intespec['NOM_CMP_I'].values()['NOM_CMP_I']
+            l_cmp_j=intespec['NOM_CMP_J'].values()['NOM_CMP_J']
+            if (len(l_ind_i)!=len(l_cmp_i) or len(l_ind_j)!=len(l_cmp_j)) :
+               UTMESS('F','PROBA0_10')
+            l_l=zip(zip(l_ind_i,l_cmp_i),zip(l_ind_j,l_cmp_j))
+            l_ind_i=[]
+            l_ind_j=[]
+            l_cmp_i=[]
+            l_cmp_j=[]
+            for ai,aj in l_l :
+                if ai==aj :
+                   l_ind_i.append(ai[0])
+                   l_ind_j.append(aj[0])
+                   l_cmp_i.append(ai[1])
+                   l_cmp_j.append(aj[1])
+            listpara=['NOEUD_I','NOEUD_J','NOM_CMP_I','NOM_CMP_J']
+            listtype=['K8','K8','K8','K8',]
+            dicotabl={'NOEUD_I'  : l_ind_i*len(jvite)  ,\
+                      'NOEUD_J'  : l_ind_j*len(jvite)  ,\
+                      'NOM_CMP_I': l_cmp_i*len(jvite)  ,\
+                      'NOM_CMP_J': l_cmp_j*len(jvite) }
 
-   if jvite[0]!=None :
-      listpara.append('NUME_VITE_FLUI')
-      listtype.append('I')
-      dicotabl['NUME_VITE_FLUI']=[]
-#  ------------------------------------------------------------------
-#  Liste des moments spectraux
+      if jvite[0]!=None :
+         listpara.append('NUME_VITE_FLUI')
+         listtype.append('I')
+         dicotabl['NUME_VITE_FLUI']=[]
+#     ------------------------------------------------------------------
+#     Liste des moments spectraux
 
-   l_moments=[0,1,2,3,4]
-   if MOMENT!=None :
-      l_moments=l_moments+list(MOMENT)
-      l_moments=dict([(i,0) for i in l_moments]).keys()
+      l_moments=[0,1,2,3,4]
+      if MOMENT!=None :
+         l_moments=l_moments+list(MOMENT)
+         l_moments=dict([(i,0) for i in l_moments]).keys()
 
-#  ------------------------------------------------------------------
-#  Boucle sur les tables
+#     ------------------------------------------------------------------
+#     Boucle sur les tables
 
-   l_ind=zip(l_ind_i,l_ind_j)
-   for vite in jvite :
-     if INFO==2 :
-        texte='POUR LA MATRICE INTERSPECTRALE '+INTE_SPEC.nom+'\n'
-        aster.affiche('MESSAGE',texte)
-     for ind in l_ind :
-        mcfact=[]
-        if vite!=None : 
-          dicotabl['NUME_VITE_FLUI'].append(vite)
-          mcfact.append(_F(NOM_PARA='NUME_VITE_FLUI',VALE_I=vite))
-        if 'NOEUD_I' in listpara :
-          mcfact.append(_F(NOM_PARA='NOEUD_I',VALE_K=ind[0]))
-          mcfact.append(_F(NOM_PARA='NOEUD_I',VALE_K=ind[1]))
-          if INFO==2 :
-             aster.affiche('MESSAGE','INDICES :'+ind[0]+' - '+ind[1]+'\n')
-        else :
-          mcfact.append(_F(NOM_PARA='NUME_ORDRE_I',VALE_I=ind[0]))
-          mcfact.append(_F(NOM_PARA='NUME_ORDRE_J',VALE_I=ind[1]))
+      l_ind=zip(l_ind_i,l_ind_j)
+      for vite in jvite :
         if INFO==2 :
-             aster.affiche('MESSAGE','INDICES :'+str(ind[0])+' - '\
-                                                +str(ind[1])+'\n')
-        __fon1=RECU_FONCTION(TABLE        = INTE_SPEC,
-                             NOM_PARA_TABL= 'FONCTION_C',
-                             FILTRE       = mcfact, )
-        val  = __fon1.Valeurs()
-        fvalx= Numeric.array(val[0])
-        fvaly= Numeric.array(val[1])
-        frez = fvalx[0]
+           texte='POUR LA MATRICE INTERSPECTRALE '+INTE_SPEC.nom+'\n'
+           aster.affiche('MESSAGE',texte)
+        for ind in l_ind :
+           mcfact=[]
+           if vite!=None : 
+             dicotabl['NUME_VITE_FLUI'].append(vite)
+             mcfact.append(_F(NOM_PARA='NUME_VITE_FLUI',VALE_I=vite))
+           if 'NOEUD_I' in listpara :
+             mcfact.append(_F(NOM_PARA='NOEUD_I',VALE_K=ind[0]))
+             mcfact.append(_F(NOM_PARA='NOEUD_I',VALE_K=ind[1]))
+             if INFO==2 :
+                aster.affiche('MESSAGE','INDICES :'+ind[0]+' - '+ind[1]+'\n')
+           else :
+             mcfact.append(_F(NOM_PARA='NUME_ORDRE_I',VALE_I=ind[0]))
+             mcfact.append(_F(NOM_PARA='NUME_ORDRE_J',VALE_I=ind[1]))
+           if INFO==2 :
+                aster.affiche('MESSAGE','INDICES :'+str(ind[0])+' - '\
+                                                   +str(ind[1])+'\n')
+           __fon1=RECU_FONCTION(TABLE        = INTE_SPEC,
+                                NOM_PARA_TABL= 'FONCTION_C',
+                                FILTRE       = mcfact, )
+           val  = __fon1.Valeurs()
+           fvalx= Numeric.array(val[0])
+           fvaly= Numeric.array(val[1])
+           frez = fvalx[0]
 
-#--- moments spectraux
+#    -- moments spectraux
 
-        val_mom={}
-        for i_mom in l_moments :
-            trapz     = Numeric.zeros(len(fvaly),Numeric.Float)
-            trapz[0]  = 0.
-            valy      = fvaly*(2*pi*fvalx)**i_mom
-            trapz[1:] = (valy[1:]+valy[:-1])/2*(fvalx[1:]-fvalx[:-1])
-            prim_y    = Numeric.cumsum(trapz)
-            val_mom[i_mom] = prim_y[-1]
-        for i_mom in l_moments :
-          chmo='LAMBDA_'+str(i_mom).zfill(2)
-          if dicotabl.has_key(chmo) : dicotabl[chmo].append(val_mom[i_mom])
-          else :
-                 dicotabl[chmo]=[val_mom[i_mom],]
-                 listpara.append(chmo)
-                 listtype.append('R')
+           val_mom={}
+           for i_mom in l_moments :
+               trapz     = Numeric.zeros(len(fvaly),Numeric.Float)
+               trapz[0]  = 0.
+               valy      = fvaly*(2*pi*fvalx)**i_mom
+               trapz[1:] = (valy[1:]+valy[:-1])/2*(fvalx[1:]-fvalx[:-1])
+               prim_y    = Numeric.cumsum(trapz)
+               val_mom[i_mom] = prim_y[-1]
+           for i_mom in l_moments :
+             chmo='LAMBDA_'+str(i_mom).zfill(2)
+             if dicotabl.has_key(chmo) : dicotabl[chmo].append(val_mom[i_mom])
+             else :
+                    dicotabl[chmo]=[val_mom[i_mom],]
+                    listpara.append(chmo)
+                    listtype.append('R')
 
-#--- fonctions statistiques
+#    -- fonctions statistiques
 
-        pstat  = {'ECART'           :0.,\
-                  'NB_PASS_ZERO_P_S':0.,\
-                  'NB_EXTREMA_P_S'  :0.,\
-                  'FACT_IRRE'       :0.,\
-                  'FREQ_APPAR'      :0.,}
-        if (NUME_VITE_FLUI or frez>=0.) :
-#--- cas NUME_VITE_FLUI, seule la partie positive du spectre est utilisée
-#--- Il faut donc doubler lambda  pour calculer le bon écart type
-            pstat['ECART'] = sqrt(val_mom[0]*2.)
-        else :
-            pstat['ECART'] = sqrt(val_mom[0])
-        if abs(val_mom[2])>=1e-20 :
-              pstat['NB_EXTREMA_P_S'] = 1./pi*sqrt(val_mom[4]/val_mom[2])
-        if abs(val_mom[0])>=1e-20 :
-           pstat['NB_PASS_ZERO_P_S'] = 1./pi*sqrt(val_mom[2]/val_mom[0])
-           pstat['FREQ_APPAR'] = 0.5*pstat['NB_PASS_ZERO_P_S']
-           if abs(val_mom[4])>=1e-20 :
-              pstat['FACT_IRRE'] = sqrt( val_mom[2]*val_mom[2]/val_mom[0]/val_mom[4])
+           pstat  = {'ECART'           :0.,\
+                     'NB_PASS_ZERO_P_S':0.,\
+                     'NB_EXTREMA_P_S'  :0.,\
+                     'FACT_IRRE'       :0.,\
+                     'FREQ_APPAR'      :0.,}
+           if (NUME_VITE_FLUI or frez>=0.) :
+#    -- cas NUME_VITE_FLUI, seule la partie positive du spectre est utilisée
+#    -- Il faut donc doubler lambda  pour calculer le bon écart type
+               pstat['ECART'] = sqrt(val_mom[0]*2.)
+           else :
+               pstat['ECART'] = sqrt(val_mom[0])
+           if abs(val_mom[2])>=1e-20 :
+                 pstat['NB_EXTREMA_P_S'] = 1./pi*sqrt(val_mom[4]/val_mom[2])
+           if abs(val_mom[0])>=1e-20 :
+              pstat['NB_PASS_ZERO_P_S'] = 1./pi*sqrt(val_mom[2]/val_mom[0])
+              pstat['FREQ_APPAR'] = 0.5*pstat['NB_PASS_ZERO_P_S']
+              if abs(val_mom[4])>=1e-20 :
+                 pstat['FACT_IRRE'] = sqrt( val_mom[2]*val_mom[2]/val_mom[0]/val_mom[4])
 
-        for key in pstat.keys(): 
-          if dicotabl.has_key(key) : dicotabl[key].append(pstat[key])
-          else :
-                 dicotabl[key]=[pstat[key],]
-                 listpara.append(key)
-                 listtype.append('R')
+           for key in pstat.keys(): 
+             if dicotabl.has_key(key) : dicotabl[key].append(pstat[key])
+             else :
+                    dicotabl[key]=[pstat[key],]
+                    listpara.append(key)
+                    listtype.append('R')
 
 #--- construction de la table produite
 
-   mcfact=[]
-   for i in range(len(listpara)) :
-      if listtype[i]=='R':
-         mcfact.append(_F(PARA=listpara[i] ,LISTE_R=dicotabl[listpara[i]] ))
-      if listtype[i]=='K8':
-         mcfact.append(_F(PARA=listpara[i] ,LISTE_K=dicotabl[listpara[i]] ))
-      if listtype[i]=='I':
-         mcfact.append(_F(PARA=listpara[i] ,LISTE_I=dicotabl[listpara[i]] ))
-   tabout = CREA_TABLE(LISTE=mcfact,TITRE = 'POST_DYNA_ALEA concept : '+self.sd.nom)
+      mcfact=[]
+      for i in range(len(listpara)) :
+         if listtype[i]=='R':
+            mcfact.append(_F(PARA=listpara[i] ,LISTE_R=dicotabl[listpara[i]] ))
+         if listtype[i]=='K8':
+            mcfact.append(_F(PARA=listpara[i] ,LISTE_K=dicotabl[listpara[i]] ))
+         if listtype[i]=='I':
+            mcfact.append(_F(PARA=listpara[i] ,LISTE_I=dicotabl[listpara[i]] ))
+      tabout = CREA_TABLE(LISTE=mcfact,TITRE = 'POST_DYNA_ALEA concept : '+self.sd.nom)
 
    return ier

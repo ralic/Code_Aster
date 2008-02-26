@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 25/02/2008   AUTEUR ZENTNER I.ZENTNER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,27 +17,41 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 from Macro.post_dyna_alea_ops import post_dyna_alea_ops
-
+# RESPONSABLE ZENTNER I.ZENTNER
 POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",op= post_dyna_alea_ops,sd_prod=table_sdaster,
                     fr="Traitements statistiques de résultats de type interspectre et impression sur fichiers",
                     reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
-         regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I','OPTION'),),
-         INTE_SPEC       =SIMP(statut='o',typ=table_fonction),
-         NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),  
-         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**' ),
-         NOEUD_I         =SIMP(statut='f',typ=no,max='**'),         
-         OPTION          =SIMP(statut='f',typ='TXM',into=("DIAG",) ),
-         b_nume_ordre_i =BLOC(condition = "NUME_ORDRE_I != None",
-           NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**' ),   
-         ),  
-         b_noeud_i      =BLOC(condition = "NOEUD_I != None",
-           NOEUD_J         =SIMP(statut='o',typ=no,max='**'),
-           NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**' ),  
-           NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**' ),     
-         ),  
-         MOMENT          =SIMP(statut='f',typ='I',max='**',fr="Moments spectraux en complément des cinq premiers" ),  
+         regles=(UN_PARMI('FRAGILITE','INTE_SPEC'),),
+         FRAGILITE  =FACT(statut='f',fr="donnees pour courbe de fragilite",max='**', 
+                    TABL_RESU  =SIMP(statut='o',typ=table_sdaster),
+                    regles=(UN_PARMI('VALE','LIST_PARA'),),
+                    VALE       = SIMP(statut='f',typ='R', min=1,validators=NoRepeat(),max='**' ), 
+                    LIST_PARA  = SIMP(statut='f',typ=listr8_sdaster), 
+                    AM_INI     =  SIMP(statut='f',typ='R',defaut= 0.4 ), 
+                    BETA_INI   = SIMP(statut='f',typ='R',defaut= 0.3 ), 
+                    FRACTILE   = SIMP(statut='f',typ='R', min=1,validators=NoRepeat(),max='**'),
+                    b_inte_spec_f  = BLOC(condition="""FRACTILE !=None""",
+                        NB_TIRAGE =SIMP(statut='f',typ='I' ),),                   
+                 ),
+         INTE_SPEC       =SIMP(statut='f',typ=table_fonction),
+         b_inte_spec_f      =BLOC(condition="""INTE_SPEC !=None""",
+            regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I','OPTION'),),
+            NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),  
+            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+            NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**' ),
+            NOEUD_I         =SIMP(statut='f',typ=no,max='**'),         
+            OPTION          =SIMP(statut='f',typ='TXM',into=("DIAG",) ),
+            b_nume_ordre_i =BLOC(condition = "NUME_ORDRE_I != None",
+               NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**' ),   
+                                ),  
+            b_noeud_i      =BLOC(condition = "NOEUD_I != None",
+               NOEUD_J         =SIMP(statut='o',typ=no,max='**'),
+               NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**' ),  
+               NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**' ),     
+                                ), 
+            MOMENT          =SIMP(statut='f',typ='I',max='**',fr="Moments spectraux en complément des cinq premiers" ), 
+            ),  
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 )  ;

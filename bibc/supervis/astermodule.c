@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 06/11/2007   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 22/02/2008   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2156,7 +2156,7 @@ static PyObject* aster_getcolljev(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        char *nomsd, *nom;
+        char *nomsd, *nom, nomsd32[33];
         char nomob[8];
         double *f;
         INTEGER *l;
@@ -2171,6 +2171,8 @@ PyObject *args;
         void *malloc(size_t size);
 
         if (!PyArg_ParseTuple(args, "s:getcolljev",&nomsd)) return NULL;
+        nomsd32[32] = '\0';
+        CSTRING_FCPY(nomsd32, 32, nomsd);
 
 /* Taille de la collection */
         nbval = 1;
@@ -2178,7 +2180,7 @@ PyObject *args;
         nom = (char *)malloc(24*sizeof(char));
         strcpy(nom, "LIST_COLLECTION");
         CALL_JEMARQ();
-        CALL_TAILSD(nom, nomsd, val, &nbval);
+        CALL_TAILSD(nom, nomsd32, val, &nbval);
         iob=val[0];
 
         dico = PyDict_New();
@@ -2186,7 +2188,7 @@ PyObject *args;
           for(j=1;j<iob+1;j++){
           ishf=0 ;
           ilng=0 ;
-          CALL_GETCON(nomsd,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
+          CALL_GETCON(nomsd32,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
           if(nomob[0] == ' '){
              key=PyInt_FromLong(j);
           }
@@ -2307,7 +2309,7 @@ PyObject *args;
         PyObject *tupi  = (PyObject*)0 ;
         PyObject *tupr  = (PyObject*)0 ;
         PyObject *tupc  = (PyObject*)0 ;
-        char *nomsd;
+        char *nomsd, nomsd32[33];
         double *valr;
         double *valc;
         INTEGER *ind;
@@ -2320,6 +2322,8 @@ PyObject *args;
 	
         ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
         if (!ok)MYABORT("erreur dans la partie Python");
+        nomsd32[32] = '\0';
+        CSTRING_FCPY(nomsd32, 32, nomsd);
 
         nind = (unsigned int)(nbind);
 
@@ -2334,7 +2338,7 @@ PyObject *args;
         }
         try(1){
           CALL_JEMARQ();
-          CALL_PUTCON(nomsd,&nbind,ind,valr,valc,&num,&iret);
+          CALL_PUTCON(nomsd32,&nbind,ind,valr,valc,&num,&iret);
           CALL_JEDEMA();
 
           if(iret == 0){
@@ -2371,7 +2375,7 @@ PyObject *args;
         PyObject *tupi  = (PyObject*)0 ;
         PyObject *tupr  = (PyObject*)0 ;
         PyObject *tupc  = (PyObject*)0 ;
-        char *nomsd;
+        char *nomsd, nomsd32[33];
         double *valr;
         double *valc;
         INTEGER *ind;
@@ -2384,6 +2388,8 @@ PyObject *args;
 
         ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
         if (!ok)MYABORT("erreur dans la partie Python");
+        nomsd32[32] = '\0';
+        CSTRING_FCPY(nomsd32, 32, nomsd);
 
         nind = (unsigned int)(nbind);
 
@@ -2398,7 +2404,7 @@ PyObject *args;
         }
 
         CALL_JEMARQ();
-        CALL_PUTCON(nomsd,&nbind,ind,valr,valc,&num,&iret);
+        CALL_PUTCON(nomsd32,&nbind,ind,valr,valc,&num,&iret);
         CALL_JEDEMA();
 
         if(iret == 0){
@@ -2472,13 +2478,15 @@ PyObject *args;
    INTEGER *liord, *ival;
    INTEGER *val, nbval ;
    double *rval;
-   char *nomsd, *mode, *liscmp, *nom ;
+   char *nomsd, *mode, *liscmp, *nom, nomsd32[33] ;
    char nomch[16], ctype, nomva[16];
    int i, lo;
    PyObject *dico, *liste, *key;
    void *malloc(size_t size);
 
    if (!PyArg_ParseTuple(args, "ss",&nomsd, &mode)) return NULL;
+   nomsd32[32] = '\0';
+   CSTRING_FCPY(nomsd32, 32, nomsd);
 
 /* Identifiant de la SD resultat */
    nbval = 1;
@@ -2488,7 +2496,7 @@ PyObject *args;
 
 /* Taille de la SD resultat : nbr champs, nbr paras, nbr numeros d'ordre */
    CALL_JEMARQ();
-   CALL_TAILSD(nom, nomsd, val, &nbval);
+   CALL_TAILSD(nom, nomsd32, val, &nbval);
    nbchmx = val[0];
    nbpamx = val[1];
    nbord  = val[2];

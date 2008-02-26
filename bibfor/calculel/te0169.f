@@ -1,6 +1,6 @@
       SUBROUTINE TE0169 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,19 +18,15 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C SUPPRESSION D'INSTRUCTIONS INUTILES
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES FORCES NODALES DE MEPOULI
-C
+C                          REFE_FORC_NODA
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
-C
-      REAL*8             W(9),L1(3),L2(3)
-      REAL*8             NORML1,NORML2
-      INTEGER            JEFINT,LSIGMA,IGEOM,IDEPLA,IDEPLP
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXATR
@@ -49,50 +45,62 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      REAL*8   W(9),L1(3),L2(3)
+      REAL*8   NORML1,NORML2,DDOT,COEF1,COEF2
+      INTEGER  JEFINT,LSIGMA,IGEOM,IDEPLA,IDEPLP,IREFCO,IVECTU,NNO,NC
+      INTEGER  INO,I,KC,IRET
+C ----------------------------------------------------------------------
 C
+      IF(OPTION.EQ.'REFE_FORC_NODA')THEN
+         NNO = 3
+         NC  = 3
+         CALL JEVECH('PREFCO', 'L',IREFCO)
+         CALL JEVECH('PVECTUR','E',IVECTU)
+         DO 101 INO=1,NNO
+            DO 102  I=1,NC
+               ZR(IVECTU+(INO-1)*NC+I-1)=ZR(IREFCO)
+102         CONTINUE
+101      CONTINUE
+
+      ELSEIF(OPTION.EQ.'FORC_NODA')THEN
+
+C        PARAMETRES EN ENTREE
+         CALL JEVECH('PGEOMER','L',IGEOM)
 C
+         CALL JEVECH('PDEPLMR','L',IDEPLA)
+         CALL TECACH('ONN','PDEPLPR',1,IDEPLP,IRET)
+         CALL JEVECH('PCONTMR','L',LSIGMA)
+C        PARAMETRES EN SORTIE
+         CALL JEVECH('PVECTUR','E',JEFINT)
 C
-C      RECHERCHE D'ERREUR
-C      FIN RECHERCHE D'ERREUR
+         IF (IDEPLP.EQ.0) THEN
+            DO 10 I=1,9
+               W(I)=ZR(IDEPLA-1+I)
+10          CONTINUE
+         ELSE
+            DO 11 I=1,9
+               W(I)=ZR(IDEPLA-1+I)+ZR(IDEPLP-1+I)
+11          CONTINUE
+         END IF
 C
+         DO 21 KC=1,3
+            L1(KC) = W(KC  )+ZR(IGEOM-1+KC)-W(6+KC)-ZR(IGEOM+5+KC)
+21       CONTINUE
+         DO 22 KC=1,3
+            L2(KC) = W(3+KC)+ZR(IGEOM+2+KC)-W(6+KC)-ZR(IGEOM+5+KC)
+22       CONTINUE
+         NORML1=DDOT(3,L1,1,L1,1)
+         NORML2=DDOT(3,L2,1,L2,1)
+         NORML1 = SQRT (NORML1)
+         NORML2 = SQRT (NORML2)
 C
-C PARAMETRES EN ENTREE
-      CALL JEVECH('PGEOMER','L',IGEOM)
+         COEF1 = ZR(LSIGMA) / NORML1
+         COEF2 = ZR(LSIGMA) / NORML2
 C
-      CALL JEVECH('PDEPLMR','L',IDEPLA)
-      CALL TECACH('ONN','PDEPLPR',1,IDEPLP,IRET)
-      CALL JEVECH('PCONTMR','L',LSIGMA)
-C PARAMETRES EN SORTIE
-      CALL JEVECH('PVECTUR','E',JEFINT)
-C
-      IF (IDEPLP.EQ.0) THEN
-        DO 10 I=1,9
-          W(I)=ZR(IDEPLA-1+I)
-10      CONTINUE
-      ELSE
-        DO 11 I=1,9
-          W(I)=ZR(IDEPLA-1+I)+ZR(IDEPLP-1+I)
-11      CONTINUE
-      END IF
-C
-      DO 21 KC=1,3
-        L1(KC)  = W(KC  ) + ZR(IGEOM-1+KC) - W(6+KC) - ZR(IGEOM+5+KC)
-21    CONTINUE
-      DO 22 KC=1,3
-        L2(KC)  = W(3+KC) + ZR(IGEOM+2+KC) - W(6+KC) - ZR(IGEOM+5+KC)
-22    CONTINUE
-      NORML1=DDOT(3,L1,1,L1,1)
-      NORML2=DDOT(3,L2,1,L2,1)
-      NORML1 = SQRT (NORML1)
-      NORML2 = SQRT (NORML2)
-C
-      COEF1 = ZR(LSIGMA) / NORML1
-      COEF2 = ZR(LSIGMA) / NORML2
-C
-      DO 15 I=1,3
-        ZR(JEFINT+I-1)   = COEF1 * L1(I)
-        ZR(JEFINT+I+2) = COEF2 * L2(I)
-        ZR(JEFINT+I+5) = -ZR(JEFINT+I-1) - ZR(JEFINT+I+2)
-   15 CONTINUE
-C
+         DO 15 I=1,3
+            ZR(JEFINT+I-1)   = COEF1 * L1(I)
+            ZR(JEFINT+I+2) = COEF2 * L2(I)
+            ZR(JEFINT+I+5) = -ZR(JEFINT+I-1) - ZR(JEFINT+I+2)
+15       CONTINUE
+      ENDIF
       END

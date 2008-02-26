@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,7 @@ C     'EQUI_ELNO_SIGM'
 C     'EQUI_ELGA_SIGM'
 C     'EFGE_ELNO_CART'
 C     'FORC_NODA'
+C     'REFE_FORC_NODA'
 C     'SIGM_ELNO_CART'
 C     'CHAR_MECA_EPSI_R'
 C     'PMPB_ELGA_SIEF'
@@ -82,7 +83,7 @@ C     ------------------------------------------------------------------
 
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
-      INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN,IADZI,IAZK24
+      INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN,IADZI,IAZK24,IREFCO
       INTEGER  NEQ1,IPLOUF,NPG
       LOGICAL  AUNOEU
 
@@ -176,7 +177,40 @@ C     NOMBRE DE POINTS DE GAUSS DE L'ELEMENT
       CALL ELREF4(' ','RIGI',IPLOUF,IPLOUF,IPLOUF,
      &            NPG,IPLOUF,IPLOUF,IPLOUF,IPLOUF)
 
-      IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+
+      IF ( OPTION(1:14) .EQ. 'REFE_FORC_NODA' ) THEN
+         CALL JEVECH('PREFCO', 'L',IREFCO)
+         CALL JEVECH('PVECTUR','E',IVECTU)
+         IF(      NOMTE.EQ.'MECA_POU_C_T' .OR.
+     &      NOMTE(1:11).EQ.'MECA_DIS_TR')THEN
+            DO 200 IN=1,NNO
+               DO 203  I=1,3
+                  ZR(IVECTU+(IN-1)*NC+I-1)=ZR(IREFCO)
+203            CONTINUE
+               DO 202 I=4,NC
+                  ZR(IVECTU+(IN-1)*NC+I-1)=ZR(IREFCO+1)
+202            CONTINUE
+200         CONTINUE
+         ELSEIF(NOMTE(1:14).EQ.'MECA_2D_DIS_T_')THEN
+            DO 204 IN=1,NNO
+               ZR(IVECTU+(IN-1)*NC)=ZR(IREFCO)
+               ZR(IVECTU+(IN-1)*NC+1)=ZR(IREFCO)
+204         CONTINUE
+         ELSEIF(NOMTE(1:14).EQ.'MECA_2D_DIS_TR')THEN
+            DO 205 IN=1,NNO
+               ZR(IVECTU+(IN-1)*NC)=ZR(IREFCO)
+               ZR(IVECTU+(IN-1)*NC+1)=ZR(IREFCO)
+               ZR(IVECTU+(IN-1)*NC+2)=ZR(IREFCO+1)
+205         CONTINUE
+         ELSEIF(NOMTE(1:11).EQ.'MECA_DIS_T_')THEN
+            DO 206 IN=1,NNO
+               ZR(IVECTU+(IN-1)*NC)=ZR(IREFCO)
+               ZR(IVECTU+(IN-1)*NC+1)=ZR(IREFCO)
+               ZR(IVECTU+(IN-1)*NC+2)=ZR(IREFCO)
+206         CONTINUE
+         ENDIF
+
+      ELSEIF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
          CALL JEVECH('PCONTRR','L',ICONTG)
          CALL JEVECH('PSIEFNOR','E',IVECTU)
          DO 10 I = 1,NEQ
@@ -537,33 +571,33 @@ C           --- COORDONNEES DES NOEUDS
             IF (NDIM.EQ.3) THEN
                IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND.
      &              OPTION.EQ.'EFGE_ELNO_CART') THEN
-                        CALL UTPVLG(NNO,NC,PGL,FS,FSS)
-                     IF (IREPE.NE.0) THEN
-                        CALL MATROT(ZR(IREPE),PGL)
-                        CALL UTPVLG(NNO,NC,PGL,FSS,FSS)
-                     END IF
-                     DO 120 IN=1,6
-                        ZR(IVECTU-1+IN)   = FSS(IN)
-                        ZR(IVECTU-1+IN+6) = FSS(IN+7)
-120                  CONTINUE
+                  CALL UTPVLG(NNO,NC,PGL,FS,FSS)
+                  IF (IREPE.NE.0) THEN
+                     CALL MATROT(ZR(IREPE),PGL)
+                     CALL UTPVLG(NNO,NC,PGL,FSS,FSS)
+                  END IF
+                  DO 120 IN=1,6
+                     ZR(IVECTU-1+IN)   = FSS(IN)
+                     ZR(IVECTU-1+IN+6) = FSS(IN+7)
+120               CONTINUE
                ELSE IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND.
      &              OPTION.EQ.'SIGM_ELNO_CART') THEN
-                        CALL UTPVLG(NNO,6,PGL,FS,FSS)
-                     IF (IREPE.NE.0) THEN
-                        CALL MATROT(ZR(IREPE),PGL)
-                        CALL UTPVLG(NNO,6,PGL,FSS,FSS)
-                     END IF
-                     DO 130 IN=1,6
-                        ZR(IVECTU-1+IN)   = FSS(IN)
-                        ZR(IVECTU-1+IN+6) = FSS(IN+6)
-130                  CONTINUE
-              ELSE
+                  CALL UTPVLG(NNO,6,PGL,FS,FSS)
+                  IF (IREPE.NE.0) THEN
+                     CALL MATROT(ZR(IREPE),PGL)
+                     CALL UTPVLG(NNO,6,PGL,FSS,FSS)
+                  END IF
+                  DO 130 IN=1,6
+                     ZR(IVECTU-1+IN)   = FSS(IN)
+                     ZR(IVECTU-1+IN+6) = FSS(IN+6)
+130               CONTINUE
+               ELSE
                  CALL UTPVLG(NNO,NC,PGL,FS,ZR(IVECTU))
                  IF (IREPE.NE.0) THEN
                     CALL MATROT(ZR(IREPE),PGL)
                     CALL UTPVLG(NNO,NC,PGL,ZR(IVECTU),ZR(IVECTU))
                  END IF
-              ENDIF
+               ENDIF
             ELSE IF (NDIM.EQ.2) THEN
                CALL UT2VLG(NNO,NC,PGL,FS,ZR(IVECTU))
                IF (IREPE.NE.0) THEN

@@ -1,4 +1,4 @@
-#@ MODIF table0 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF table0 Messages  DATE 25/02/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,6 +72,10 @@ On a lu %(i1)d champs dans le fichier.
 
 14 : ("""
 Les listes NOM_PARA et VALE doivent avoir le meme cardinal.
+"""),
+
+15 : ("""
+Les listes DEFA et PARA_NOCI doivent avoir le meme cardinal.
 """),
 
 }

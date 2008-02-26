@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/02/2008   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,7 +162,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
          ),
          RECH_LINEAIRE   =FACT(statut='f',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="CORDE",into=("CORDE","MIXTE") ),         
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="CORDE",into=("CORDE","MIXTE") ),
            RESI_LINE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-1 ),
            ITER_LINE_MAXI  =SIMP(statut='f',typ='I',defaut= 3),
            ITER_LINE_CRIT  =SIMP(statut='f',typ='I',defaut= 20),
@@ -191,18 +191,20 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
          CONVERGENCE     =FACT(statut='d',
            regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA'),),
            b_refe_rela    =BLOC(condition = "RESI_REFE_RELA != None",
-             regles=(AU_MOINS_UN('SIGM_REFE','EPSI_REFE','FLUX_THER_REFE',
+             regles=(AU_MOINS_UN('SIGM_REFE','EPSI_REFE','FLUX_THER_REFE','FORC_REFE',
                                   'FLUX_HYD1_REFE','FLUX_HYD2_REFE','VARI_REFE'),),
+             FORC_REFE       =SIMP(statut='f',typ='R',min=2,max=2,
+                fr="Force et Moment de référence pour les éléments de structure."),
              SIGM_REFE       =SIMP(statut='f',typ='R'),
              EPSI_REFE       =SIMP(statut='f',typ='R'),
              FLUX_THER_REFE  =SIMP(statut='f',typ='R'),
              FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
              FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
-             VARI_REFE       =SIMP(statut='f',typ='R'),                     
+             VARI_REFE       =SIMP(statut='f',typ='R'),
            ),
-           
-           
-           
+
+
+
            RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
            RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
            RESI_GLOB_RELA  =SIMP(statut='f',typ='R'),

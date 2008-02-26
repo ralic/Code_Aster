@@ -1,0 +1,82 @@
+# MODIF  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# TITRE VALEUR DE REFERENCE POUR LES ELEMENTS CABLES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ234C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# Fonction de calcul de l'erreur
+CoefRef = 1.0E-05
+CERREUR = FORMULE(NOM_PARA=('RESI_REFE','RESI_GLOB'),
+                  VALE='(RESI_REFE - 1.0E+05*RESI_GLOB)')
+
+
+MA = LIRE_MAILLAGE(INFO=2);
+
+MATE = DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3),
+                      CABLE=_F(EC_SUR_E = 0.E0),)
+
+CHMAT = AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE        = _F(TOUT='OUI',MATER=MATE,),)
+
+LIS_INST =DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),),)
+
+
+#-------------------------------------------------------------------------------------
+# --> CABLE
+# ----------
+
+MO_CAB = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',
+                             MODELISATION='CABLE'),)
+
+RAYON = 0.02
+
+CA_CAB = AFFE_CARA_ELEM(  CABLE=_F( GROUP_MA='TOUT',
+                                  SECTION=RAYON*RAYON*3.14159),
+                                  MODELE=MO_CAB)
+
+CL_CAB = AFFE_CHAR_MECA(MODELE=MO_CAB,
+                   DDL_IMPO=_F(GROUP_NO='A',
+                    DX=0., DY=0., DZ=0.,))
+
+CH_CAB = AFFE_CHAR_MECA(MODELE=MO_CAB,
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=1000.,),)
+
+RE_CAB=STAT_NON_LINE(MODELE     = MO_CAB,
+                     CHAM_MATER = CHMAT,
+                     CARA_ELEM  = CA_CAB,
+                     EXCIT      = (_F(CHARGE = CL_CAB),
+                                   _F(CHARGE = CH_CAB),),
+                     COMP_ELAS=_F(DEFORMATION='GREEN',
+                  RELATION='CABLE',),
+                     INCREMENT = _F(LIST_INST = LIS_INST,),
+                     CONVERGENCE = _F(RESI_REFE_RELA=1.E-7,FORC_REFE =(CoefRef,CoefRef),),
+   );
+
+TB_CAB = RECU_TABLE(CO=RE_CAB,NOM_PARA=('RESI_REFE','RESI_GLOB_RELA','RESI_GLOB'),)
+
+TB_CAB = CALC_TABLE(reuse=TB_CAB, TABLE=TB_CAB,
+   ACTION=( _F(OPERATION='OPER',FORMULE=CERREUR,NOM_PARA='ERREUR'), ),
+)
+IMPR_TABLE(TABLE=TB_CAB)
+TEST_TABLE(TABLE=TB_CAB, NOM_PARA='ERREUR', VALE=0.0,
+           CRITERE='ABSOLU', PRECISION=1.0E-10, REFERENCE='ANALYTIQUE',);
+#IMPR_RESU(RESU=_F(RESULTAT=RE_CAB))
+
+FIN()

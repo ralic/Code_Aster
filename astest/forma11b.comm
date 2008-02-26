@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/02/2008   AUTEUR BOYERE E.BOYERE 
 # TITRE TP ANALYSE MODALE TPAM2
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,7 @@ MODE_SOB=MODE_ITER_SIMULT(MATR_A=K_ASSE,
                           MATR_B=M_ASSE,
                           METHODE='SORENSEN',
                           CALC_FREQ=_F(OPTION='BANDE',
-                                       FREQ=(0.0,2800.0,),),
+                                       FREQ=(0.0,2700.0,),),
                           TITRE='1/ METHODE DE SORENSEN',);
 
 # IMPRESSIONS DES PARAMETRES EN SUS DANS .RESU   

@@ -1,0 +1,631 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE Aimery          DATE 26/02/2008 - 09:16:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011632 DU 2008-01-14 07:49:08
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.2.4, le cas-test feti007a s'arrete en ERREUR_<F> sur Bull.
+FONCTIONNALITE
+   Le cas-test feti007a manque de memoire sur Calibre et Rocks. On pousse un peu la mémoire
+   sans autre investigation pour reintegrer le test dans la liste.
+   Il reste la fiche 10953 pour continuer à travailler sur les differences de comportement en
+   fonction de la mémoire allouée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   feti007a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 25/02/2008 - 17:16:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011466 DU 2007-11-15 09:37:23
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   Anomalie dans le calcul de la dxc3xa9rivxc3xa9e de la contrainte normale par rapport a un parametre materiau et pour un element POU_D_E
+FONCTIONNALITE
+   Franck Delcoigne a décelé que le calcul des dérivées pour les contraintes de poutre
+   (EFGE_ELNO_DEPL et SIPO_ELNO_DEPL) dans les élements POU_D_E pouvait être faux.
+   En effet, les contraintes de poutre sont normalement calculées dans le repère local à la
+   poutre.
+   Or on utilisait la dérivée du déplacement et de l'accélération dans le repère absolu, ce
+   qui était incohérent : on multipliait une matrice de rigidité locale par un déplacement
+   absolu.
+   Je corrige en reprenant les modifications suggérées par Franck pour tout ramener dans le
+   repère local.
+   
+   Les résultats faux ne concernent que l'actuelle NEW9, dans le calcul des dérivées des
+   contraintes de poutre (POU_D_E) en linéaire (CALC_ELEM : EFGE_ELNO_DEPL et SIPO_ELNO_DEPL).
+   
+   routine concernée : TE0142
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.24
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude + SENSD09c
+NB_JOURS_TRAV  : 8.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011558 DU 2007-12-14 15:24:03
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   En NEW9.2.1, le cas-test forma11b s'arrete en EREEUR_<F> sur Bull
+FONCTIONNALITE
+   Après analyse avec Olivier Boiteau du test FORMA11b, on a trouvé que le problème de calcul
+   modal mis en évidence par le changement de compilo est lié aux modes de corps rigide.
+   Le solveur SORENSEN et le solveur LANCZOS (sans OPTION='MODE_RIGIDE') ratent le premier
+   mode rigide et donc décalent la recherche des modes dans le spectre. D'où l'incohérence
+   entre la bande de fréquence recherchée et le spectre de fréquence trouvé.
+   
+   J'applique pour le momment la solution paliative : jouer sur la bande de fréquence, ce qui
+   décale le shift et recadre les fréquences trouvées dans la bande recherchée.
+   
+   Solution à moyen/long terme : ajouter l'OPTION='MODE_RIGIDE' à SORENSEN => EL à suivre
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   FORMA11b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 22/02/2008 - 18:27:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011800 DU 2008-02-22 15:43:03
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Pb de passage de chaine python/C/fortran sur x86_64
+FONCTIONNALITE
+   Beaucoup de tests plantent grace à un ASSERT dans GETCON sur des machines x86_64 (cas de
+   claut606 et sans doute aussi renut2ae).
+   
+   En fait, il y a un problème lors du passage d'une chaine de caractères du python au C puis
+   au fortran.
+   
+   En python, on fait :
+   nocmp = aster.getcolljev('&CATA.GD.NOMCMP')
+   
+   En C :
+   char *nomsd;
+   PyArg_ParseTuple(args, "ss",&nomsd, ...)
+   
+   CALL_GETCON(nomsd, ...)
+   
+   En fortran:
+   CHARACTER*(*) NOMSD
+   CHARACTER*32 NOML32
+   NOML32 = ' 32 espaces '
+   NOML32=NOMRES
+   
+   Dans le debugger, dans le C, nomsd est correct. Dans le fortran, on n'arrive pas à
+   afficher nomres (hmmm...), la copie dans NOML32 ne met pas des blancs à la fin (alors
+   qu'il semble que le \0 soit présent bon endroit).
+   
+   La solution (de contournement car je n'ai pas l'impression qu'il y a un bug clair)
+   consiste à faire dans le C :
+   
+   
+   char *nomsd, nomsd32[33];
+   PyArg_ParseTuple(args, "ss",&nomsd, ...)
+   nomsd32[32] = '\0';
+   CSTRING_FCPY(nomsd32, 32, nomsd);    # utilitaire pour compléter par des blancs : copie
+   chaine C vers chaine fortran
+   
+   CALL_GETCON(nomsd32, ...)
+   
+   Là, tout passe bien.
+   Je répercute aussi cette modif dans putvectjev et putcolljev.
+   
+   
+   
+   Pour le report en version 8 : penser qu'il faut le faire à 4 endroits : getvectjev,
+   getcolljev, putvectjev, putcolljev.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssls100a sur claut606
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 26/02/2008 - 14:24:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011626 DU 2008-01-10 15:38:12
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   coque excentrxc3xa9es en transitoire non linxc3xa9aire
+FONCTIONNALITE
+   Développement de l'excentrement en non linéaire sur 
+   les DKT.
+   Validation : cas-test ssls111b : comparaison de la 
+   solution en linéaire et sous COMP_INCR RELATION = ELAS.
+   On obtient des résultats identiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssls111b
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 25/02/2008 - 13:16:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011730 DU 2008-02-08 17:29:13
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW9.2.8, le cas-test yyyy103d est NOOK sur Rocks.
+FONCTIONNALITE
+   faite avec des POU_D_TG, il peut donc y avoir des petites différences dans les résultats.
+   Pour les POU_D_TG il faut renseigner des caractéristiques géométriques supplémentaires
+   (notamment en cisaillement).
+   
+   ==> j'augmente légèrement la tolérance :
+   |  FONCTION: G1, passage à 2%
+   |  FONCTION: G3, passage à 1%
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du cas test sur Rocks
+NB_JOURS_TRAV  : 0.07
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011705 DU 2008-02-04 15:15:45
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   NORM_MODE : cas test sdll110d a finaliser
+FONCTIONNALITE
+   C'est une suite de bug :
+   
+   Pour l'option MASS_INER, avec des poutres multifibres, il faut passer les pointeurs
+   'PFIBRES' et 'PCOMPOR'. Ce n'était pas fait donc ça plantait. Impacts : vpmain
+   
+   La te0038 qui gère l'option MASS_INER, pour une POU_D_EM, allait chercher les
+   caractéristiques ELAS dans tous les cas, or c'est les caractéristiques ELAS_FLUI qu'il
+   fallait prendre. Ce n'était pas fait donc ça plantait. Impacts : te0038
+   
+   Lorsque l'on a une POU_D_EM, il faut tenir compte des caractéristiques  mécaniques des
+   groupes de fibres, c'est le rôle de PMFITX. On faisait un RCVALB sur 2 paramètres avec un
+   CODRES dimensionné à 1. Au final on ne s'apercevait pas que la lecture de E et Nu c'était
+   mal passé et G était nul. Dans un calcul de vibration (c'est le test) on obtient donc une
+   infinité de mode de vibration. Impact : PMFITX.
+   
+   Le vieil adage est donc encore vérifié "fonctionnalité non testée, fonctionnalité buggée"
+   
+   Le cas test est une copie d'un existant, seul le modèle de la poutre est modifié. C'est un
+   cas test de non régression.
+   Compléter la doc V2.02.110, pour y ajouter la nouvelle modélisation.
+   
+   Pas de résultats faux, un arrêt sur l'option MASS_INER.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.02.110
+VALIDATION
+   Passage du cas test
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011306 DU 2007-10-01 15:18:16
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   STAT_NON_LINE/CONVERGENCE + VALEURS REFERENCES
+FONCTIONNALITE
+   Dans STAT_NON_LINE sous le mot clef facteur CONVERGENCE, on trouve le nouveau mot clef
+   simple :
+   FORC_REFE =SIMP(statut='f',typ='R',min=2,max=2,
+     fr="Force et Moment de référence pour les éléments de structure.")
+   
+   Cela concerne les éléments suivant :
+    - discrets 2D : 4 modélisations : T_N, TR_N, T_L, TR_L
+    - discrets 3D : 4 modélisations : T_N, TR_N, T_L, TR_L
+    - câbles      : 1 modélisation
+    - barres      : 1 modélisation
+    - poutres     : 7 modélisations : C_T, D_T, D_E, D_EM, D_TG, D_TGM, D_TGD
+   
+   Il y a 5 cas tests, un par type d'élément. Et tous les types d'éléments sont testés :
+   ZZZZ234[a,b,c,d,e]
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+   Passage cas tests
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 25/02/2008 - 11:31:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011760 DU 2008-02-15 09:17:12
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   En NEW9.2.10, le cas-test sslp108b s'arrete en NOOK sur Bull, Calibre et Rocks.
+FONCTIONNALITE
+   Les tests défaillants sont corrigés ci-dessous. Tous les tests sont en valeurs relatives.
+   
+   TABLE DEPL_H NOM_PARA DY
+   FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=2.30000E-03)
+   => passage de PRECISION de 1E-9 à 1.3E-8
+   
+   TABLE SIYY_LIG NOM_PARA SIYY                    
+   FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00)
+   => passage de PRECISION de 1E-9 à 2.5E-8
+   
+   TABLE SIYY_LIG NOM_PARA SIYY
+   FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=4.00000E-04)
+   => passage de PRECISION de 1E-9 à 1.5E-7
+   
+   TABLE SIYY_LIG NOM_PARA SIYY
+   FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=8.00000E-04)
+   => passage de PRECISION de 1E-8 à 8E-7
+   
+   TABLE GK01 NOM_PARA G
+   => passage de PRECISION de 1E-10 à 4E-8
+   
+   TABLE GK02 NOM_PARA G
+   => passage de PRECISION de 1E-10 à 4E-8
+   
+   TABLE GK02 NOM_PARA K1
+   => passage de PRECISION de 1E-10 à 3E-8
+   
+   TABLE GK02 NOM_PARA K2
+   => passage de PRECISION de 1E-10 à 8E-8
+   
+   TABLE GK02 NOM_PARA G_IRWIN
+   => passage de PRECISION de 1E-10 à 4E-8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test sur bull, calibre et rocks
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 25/02/2008 - 12:08:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011688 DU 2008-01-29 09:23:24
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   CALC_G : rxc3xa9sorption de l'option G_LAGR
+FONCTIONNALITE
+   Objectifs
+   =========
+   - resorber l'option RIGI_MECA_LAGR des operateurs CALC_MATR_ELEM et CALC_VECT_ELEM,
+   - resorber les options G_LAGR et G_LAGR_GLOB de l'operateur CALC_G
+   
+   Developpement
+   =============
+   
+   1) Operateur CALC_G
+   --------------------
+   => suppression du mot-cle PROPAGATION :engendre la suppression de la variable ALPHA
+   => suppression du mot-cle THETA_LAGR: engendre la suppression de la variable THETLG
+   => suppression du mot-cle DIRE_THETA_LAGR.
+   
+   a) bibfor
+   On supprime les variables ALPHA et THETLG, on modifie les appels aux routines utilisant
+   ces variables,
+   on supprime les blocs relatifs a la propagation, on supprime les routines elementaires
+   dediees aux options G_LAGR_*.
+   Impact: 
+   - modification de: op0100.f, cakg3d, mmaxkl, mecagl, mealph, gmeth1, gmeth2, cgcrtb.
+   - suppression de : mlagrg, te0383, te0288, te0382, te0289.
+   
+   b) bibpyt
+   suppression de rupture0_58, rupture0_86, rupture0_88
+   
+   c) catapy : calc_g.capy
+   suppression des mots-cles PROPAGATION, THETA_LAGR et DIRE_THETA_LAGR,
+   suppression des options G_LAGR et G_LAGR_GLOB.
+   
+   d) catalo
+   - options : suppression des options g_lagr, g_lagr_f, g_lagr_glob, g_lagr_glob_f, g_lagr_epsi.
+   - typele : suppression de ces options dans les catalogues d'elements suivants:
+   gener_me3d_3,gener_meax_2,gener_meaxs2,gener_mecpl2,
+   gener_medpl2,gener_meshb3,mecpqs4,medpqs4,medpqs8.
+   
+   e) astest
+   - suppression de sslp101d, sslv112a et sslp102a.
+   
+   f) documentation
+   - doc U4.82.03 (operateur CALC_G):
+   suppression des options G_LAGR et G_LAGR_GLOB et de la description des mots-cles associes.
+   
+   g)validation
+   liste restreinte a la commande CALC_G
+   
+   2) Operateurs CALC_MATR_ELEM, CALC_VECT_ELEM
+   --------------------------------------------
+   a) bibfor:
+   on supprime les instructions relatives a l'option RIGI_MECA_LAGR.
+   Impact: 
+   - modification de op0008.f et op0009.f
+   - suppression de me2mla.f et merila.f
+   
+   b) bibpyt: calculel2.py
+   suppression des messages CALCULEL2_79 et CALCULEL2_80
+   
+   c)catapy: calc_matr_elem.capy, calc_vect_elem.capy
+   suppression des mots-cles PROPAGATION,THETA et de l'option RIGI_MECA_LAGR.
+   
+   d)catalo:
+   - options: suppression de rigi_meca_lagr.cata 
+   - typelem: suppression de l'option RIGI_MECA_LAGR dans les catalogues d'elements suivants:
+   gener_me2dg_1,gener_me2dg_2,gener_me3d_3,gener_me3dg_1,
+   gener_me3dg_3,gener_meax_2,gener_meaxs2,gener_mecpg2,
+   gener_mecpl2,gener_medpg2,medpqs4,medpqs8.
+   
+   e) astest
+   idem 1)e)
+   
+   f) documentation
+   - doc U4.61.01 (operateur CALC_MATR_ELEM) et doc U4.61.02 (operateur CALC_VECT_ELEM):
+   suppression de l'option RIGI_MECA_LAGR et de la description des mots-cles associes.
+   
+   g)validation
+   liste restreinte aux commandes CALC_VECT_ELEM et CALC_MATR_ELEM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03,U4.61.01,U4.61.02,R7.02.04
+VALIDATION
+   cas test CALC_G, CALC_*_ELEM
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 25/02/2008 - 11:44:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011655 DU 2008-01-18 15:29:30
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Calcul de courbes de fragilites dans POST_DYNA_ALEA
+FONCTIONNALITE
+   Rajout à POST_DYNA_ALEA d?une deuxième fonctionnalité. 
+   En plus du post-traitement spectral (mot-clé INTE_SPEC), 
+   on peut calculer des courbes de fragilité ainsi que des 
+   fractiles par rééchantillonnage (méthode dite du « 
+   bootstrap ») à l?aide du nouveau mot-clé : 
+   
+   FRAGILITE  =FACT(statut='f',fr="donnees pour courbe de 
+   fragilite",max='**', 
+                       TABL_RESU  =SIMP
+   (statut='o',typ=table_sdaster),
+                       regles=(UN_PARMI
+   ('VALE', 'LIST_PARA'),),
+                       VALE       = SIMP
+   (statut='f',typ='R', min=1,validators=NoRepeat
+   (),max='**' ), 
+                       LIST_PARA  = SIMP
+   (statut='f',typ=listr8_sdaster), 
+                       AM_INI     =  SIMP
+   (statut='f',typ='R',defaut= 0.4 ), 
+                       BETA_INI   = SIMP
+   (statut='f',typ='R',defaut= 0.3 ), 
+                       FRACTILE   = SIMP
+   (statut='f',typ='R', min=1,validators=NoRepeat
+   (),max='**'),
+                       b_inte_spec_f  = BLOC
+   (condition="""FRACTILE !=None""",
+                           NB_TIRAGE =SIMP
+   (statut='f',typ='I' ),),    
+   
+   L?utilisateur doit donner un tableau contenant les 
+   résultats des calculs (Monte Carlo)  effectués au 
+   préalable. Ce tableau doit contenir les paramètres DEFA 
+   (prenant les valeurs 1 ou 0 : défaillance ou non) et 
+   PARA_NOCI (valeur du paramètre de nocivité choisi - 
+   calculable par INFO_FONCTION). A partir de ces données, 
+   on peut recaler la courbe de fragilité par maximum de 
+   vraisemblance (l?algorithme d?optimisation  fmin  est 
+   issue de optimize.py), les deux paramètres qui 
+   caractérisent la courbe étant Am et beta. On peut par 
+   ailleurs obtenir des fractiles de cette courbe en tirant 
+   de nouveaux échantillon (avec remise) à partir de 
+   l?échantillon original (bootstrap).
+   La démarche est décrite dans la doc [U2.08.05] 
+   (Modélisation des incertitudes en mécanique par 
+   simulation de Monte Carlo).
+   On restitue en même temps l'utilitaire python pour le 
+   calcul de valeurs de la fonction de répartition de la 
+   loi normale et de son inverse - stats.py - voir fiche 
+   11649.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.84.04, U2.08.05
+VALIDATION
+   zzzz233a
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT zzzz233a                      zentner I.ZENTNER          100    100      0
+ CASTEST AJOUT zzzz234a                       flejou J-L.FLEJOU         417    417      0
+ CASTEST AJOUT zzzz234b                       flejou J-L.FLEJOU          81     81      0
+ CASTEST AJOUT zzzz234c                       flejou J-L.FLEJOU          82     82      0
+ CASTEST AJOUT zzzz234d                       flejou J-L.FLEJOU         215    215      0
+ CASTEST AJOUT zzzz234e                       flejou J-L.FLEJOU         225    225      0
+ CASTEST MODIF feti007a                       assire A.ASSIRE           172      2      2
+ CASTEST MODIF forma11b                       boyere E.BOYERE           142      2      2
+ CASTEST MODIF sdll110d                       flejou J-L.FLEJOU         514    337     28
+ CASTEST MODIF sensd09c                       boyere E.BOYERE           380     31     30
+ CASTEST MODIF sensd09d                       boyere E.BOYERE           226     11     11
+ CASTEST MODIF sslp108b                      meunier S.MEUNIER          286     11     11
+ CASTEST MODIF ssls111b                    desroches X.DESROCHES        275     46      1
+ CASTEST MODIF yyyy103d                       flejou J-L.FLEJOU         288      4      4
+ CASTEST SUPPR sslp101d.comm                 rezette C.REZETTE          268      0    268
+ CASTEST SUPPR sslp102a.comm                 rezette C.REZETTE          321      0    321
+ CASTEST SUPPR sslv112a.comm                 rezette C.REZETTE          444      0    444
+CATALOGU MODIF compelem/grandeur_simple__     flejou J-L.FLEJOU         710      2      1
+CATALOGU MODIF typelem/gener_me2db1           flejou J-L.FLEJOU         227      4      3
+CATALOGU MODIF typelem/gener_me2dg_1         rezette C.REZETTE          364      1      3
+CATALOGU MODIF typelem/gener_me2dg_2         rezette C.REZETTE          378      1      3
+CATALOGU MODIF typelem/gener_me2dt0           flejou J-L.FLEJOU         165      4      3
+CATALOGU MODIF typelem/gener_me2dt1           flejou J-L.FLEJOU         183      4      3
+CATALOGU MODIF typelem/gener_me2tr0           flejou J-L.FLEJOU         168      4      3
+CATALOGU MODIF typelem/gener_me2tr1           flejou J-L.FLEJOU         186      4      3
+CATALOGU MODIF typelem/gener_me3d_3          rezette C.REZETTE          656      1     19
+CATALOGU MODIF typelem/gener_me3dg_1         rezette C.REZETTE          330      1      3
+CATALOGU MODIF typelem/gener_me3dg_3         rezette C.REZETTE          359      1      3
+CATALOGU MODIF typelem/gener_meax_2          rezette C.REZETTE          586      1     19
+CATALOGU MODIF typelem/gener_meaxs2          rezette C.REZETTE          520      1     19
+CATALOGU MODIF typelem/gener_mebar1           flejou J-L.FLEJOU         227      4      3
+CATALOGU MODIF typelem/gener_mecab1           flejou J-L.FLEJOU         171      4      3
+CATALOGU MODIF typelem/gener_mecap1           flejou J-L.FLEJOU         161      4      3
+CATALOGU MODIF typelem/gener_mecpg2          rezette C.REZETTE          350      1      3
+CATALOGU MODIF typelem/gener_mecpl2          rezette C.REZETTE          597      1     19
+CATALOGU MODIF typelem/gener_medit0           flejou J-L.FLEJOU         176      4      3
+CATALOGU MODIF typelem/gener_medit1           flejou J-L.FLEJOU         188      4      3
+CATALOGU MODIF typelem/gener_medpg2          rezette C.REZETTE          350      1      3
+CATALOGU MODIF typelem/gener_medpl2          rezette C.REZETTE          601      1     19
+CATALOGU MODIF typelem/gener_medtr0           flejou J-L.FLEJOU         187      4      3
+CATALOGU MODIF typelem/gener_medtr1           flejou J-L.FLEJOU         236      4      3
+CATALOGU MODIF typelem/gener_mepct1           flejou J-L.FLEJOU         242      4      1
+CATALOGU MODIF typelem/gener_mepde1           flejou J-L.FLEJOU         307      4      3
+CATALOGU MODIF typelem/gener_mepdg1           flejou J-L.FLEJOU         280      4      3
+CATALOGU MODIF typelem/gener_mepdt1           flejou J-L.FLEJOU         292      4      3
+CATALOGU MODIF typelem/gener_mepgd1           flejou J-L.FLEJOU         210      4      3
+CATALOGU MODIF typelem/gener_mepmf1           flejou J-L.FLEJOU         270      4      3
+CATALOGU MODIF typelem/gener_mepmf2           flejou J-L.FLEJOU         270      4      3
+CATALOGU MODIF typelem/gener_meshb3          rezette C.REZETTE          321      1     11
+CATALOGU MODIF typelem/gener_mv3d_3          rezette C.REZETTE          322      1      2
+CATALOGU MODIF typelem/meca_hexs8            rezette C.REZETTE          566      1      4
+CATALOGU MODIF typelem/mecpqs4               rezette C.REZETTE          514      1     19
+CATALOGU MODIF typelem/medpqs4               rezette C.REZETTE          523      1     19
+CATALOGU MODIF typelem/medpqs8               rezette C.REZETTE          525      1     19
+CATALOGU SUPPR options/g_lagr_epsi_f         rezette C.REZETTE           36      0     36
+CATALOGU SUPPR options/g_lagr_epsi_r         rezette C.REZETTE           35      0     35
+CATALOGU SUPPR options/g_lagr_f              rezette C.REZETTE           37      0     37
+CATALOGU SUPPR options/g_lagr_glob_f         rezette C.REZETTE           35      0     35
+CATALOGU SUPPR options/g_lagr_glob           rezette C.REZETTE           34      0     34
+CATALOGU SUPPR options/g_lagr                rezette C.REZETTE           36      0     36
+CATALOPY MODIF commande/calc_g               rezette C.REZETTE          146      2      5
+CATALOPY MODIF commande/calc_matr_elem       rezette C.REZETTE          189      2     12
+CATALOPY MODIF commande/calc_vect_elem       rezette C.REZETTE           67      2     11
+CATALOPY MODIF commande/post_dyna_alea       zentner I.ZENTNER           57     17      3
+CATALOPY MODIF commande/stat_non_line         flejou J-L.FLEJOU         362      4      2
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3917     18     10
+ FORTRAN AJOUT elements/delogl                boyere E.BOYERE           114    114      0
+ FORTRAN MODIF algeline/vpmain                flejou J-L.FLEJOU         130     13     14
+ FORTRAN MODIF algorith/cakg3d               rezette C.REZETTE          427      6     15
+ FORTRAN MODIF algorith/nmdata                flejou J-L.FLEJOU         174      3      1
+ FORTRAN MODIF algorith/nmdocn                flejou J-L.FLEJOU         151      8      1
+ FORTRAN MODIF algorith/nminit                flejou J-L.FLEJOU         371      4      2
+ FORTRAN MODIF algorith/nmrefe                flejou J-L.FLEJOU         213      7      5
+ FORTRAN MODIF algorith/op0070                flejou J-L.FLEJOU         611      2      2
+ FORTRAN MODIF calculel/cgcrtb               rezette C.REZETTE          301      4      7
+ FORTRAN MODIF calculel/mbilgl               rezette C.REZETTE          378      4     12
+ FORTRAN MODIF calculel/mecagl               rezette C.REZETTE          376     12     25
+ FORTRAN MODIF calculel/op0008               rezette C.REZETTE          222      1     16
+ FORTRAN MODIF calculel/op0009               rezette C.REZETTE          185      1     18
+ FORTRAN MODIF calculel/op0100               rezette C.REZETTE         1036      9     52
+ FORTRAN MODIF calculel/te0164                flejou J-L.FLEJOU          99     29     17
+ FORTRAN MODIF calculel/te0169                flejou J-L.FLEJOU         106     26     18
+ FORTRAN MODIF elements/dktnli             desroches X.DESROCHES        513     11     16
+ FORTRAN MODIF elements/dxeffi             desroches X.DESROCHES        173     10     15
+ FORTRAN MODIF elements/gcour2               rezette C.REZETTE          617      4     32
+ FORTRAN MODIF elements/gmeth1               rezette C.REZETTE          106      5     14
+ FORTRAN MODIF elements/gmeth2               rezette C.REZETTE          229      4     13
+ FORTRAN MODIF elements/pmfitx                flejou J-L.FLEJOU         143     19     23
+ FORTRAN MODIF elements/te0038                flejou J-L.FLEJOU         439     18     14
+ FORTRAN MODIF elements/te0039                flejou J-L.FLEJOU         611     37      3
+ FORTRAN MODIF elements/te0142                boyere E.BOYERE           239     20      8
+ FORTRAN MODIF elements/te0156                flejou J-L.FLEJOU         110     26     11
+ FORTRAN MODIF elements/te0347                flejou J-L.FLEJOU         352     16      3
+ FORTRAN MODIF elements/te0393                flejou J-L.FLEJOU         181     52     34
+ FORTRAN MODIF elements/te0517                flejou J-L.FLEJOU         353     25      5
+ FORTRAN MODIF utilitai/mmaxkl               rezette C.REZETTE          308      5      6
+ FORTRAN SUPPR calculel/me2mla               rezette C.REZETTE          542      0    542
+ FORTRAN SUPPR calculel/mealph               rezette C.REZETTE           30      0     30
+ FORTRAN SUPPR calculel/merila               rezette C.REZETTE          238      0    238
+ FORTRAN SUPPR calculel/mlagrg               rezette C.REZETTE          219      0    219
+ FORTRAN SUPPR elements/te0288               rezette C.REZETTE          306      0    306
+ FORTRAN SUPPR elements/te0289               rezette C.REZETTE          523      0    523
+ FORTRAN SUPPR elements/te0382               rezette C.REZETTE          300      0    300
+ FORTRAN SUPPR elements/te0383               rezette C.REZETTE          284      0    284
+  PYTHON AJOUT Utilitai/stats                zentner I.ZENTNER           79     79      0
+  PYTHON MODIF Macro/post_dyna_alea_ops      zentner I.ZENTNER          420    181      9
+  PYTHON MODIF Messages/calculel2            rezette C.REZETTE          296      1      9
+  PYTHON MODIF Messages/proba0               zentner I.ZENTNER           78      7      1
+  PYTHON MODIF Messages/rupture0             rezette C.REZETTE          549      1     22
+  PYTHON MODIF Messages/table0               zentner I.ZENTNER           81      5      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        1313      1313             +1313
+ MODIF :   85       30317      1160     819      +341
+ SUPPR :   17        3688              3688     -3688
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  110       35318      2473    4507     -2034 
