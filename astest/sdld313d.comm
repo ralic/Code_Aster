@@ -1,5 +1,5 @@
 
-# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE SUR BASE MODALE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,6 +172,7 @@ LISFREQ=DEFI_LIST_REEL(VALE=L_REEL,);
 
 REPHARM=DYNA_LINE_HARM(MATR_MASS=MATRMASS,
                        MATR_RIGI=MATRRIGI,
+                       SOLVEUR=_F( METHODE='LDLT', ),
                        LIST_FREQ=LISFREQ1,
                        EXCIT=_F(VECT_ASSE=VECTASC,
                                 COEF_MULT=1.0,
@@ -181,6 +182,7 @@ REPHARM=DYNA_LINE_HARM(reuse=REPHARM,
                        RESULTAT=REPHARM,
                        MATR_MASS=MATRMASS,
                        MATR_RIGI=MATRRIGI,
+                       SOLVEUR=_F( METHODE='LDLT', ),
                        LIST_FREQ=LISFREQ2,
                        EXCIT=_F(VECT_ASSE=VECTASC,
                                 COEF_MULT=1.0,
@@ -212,6 +214,7 @@ FGEN=PROJ_VECT_BASE(BASE=MODES,
 
 REPHARMG=DYNA_LINE_HARM(MATR_MASS=MGEN,
                        MATR_RIGI=KGEN,
+                       SOLVEUR=_F( METHODE='LDLT', ),
                        LIST_FREQ=LISFREQ1,
                        EXCIT=_F(VECT_ASSE=FGEN,
                                 COEF_MULT=1.0,
@@ -221,6 +224,7 @@ REPHARMG=DYNA_LINE_HARM(reuse=REPHARMG,
                        RESULTAT=REPHARMG,
                        MATR_MASS=MGEN,
                        MATR_RIGI=KGEN,
+                       SOLVEUR=_F( METHODE='LDLT', ),
                        LIST_FREQ=LISFREQ2,
                        EXCIT=_F(VECT_ASSE=FGEN,
                                 COEF_MULT=1.0,

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE : MODE PROPRE D'UNE PLAQUE CARREE CALCULES SUR BASE REDUITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,6 +180,7 @@ LIFREQ=DEFI_LIST_REEL(DEBUT=3,
 DYNGEN=DYNA_LINE_HARM(MATR_MASS=MGEN,
                       MATR_RIGI=KGEN,
                       MATR_AMOR=CGEN,
+                      SOLVEUR=_F( METHODE='LDLT', ),
                       LIST_FREQ=LIFREQ,
                       EXCIT=_F(VECT_ASSE=FGEN,
                                COEF_MULT=1.0,),);
@@ -190,6 +191,7 @@ KGENC=COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=KGEN,
 DYNGENC=DYNA_LINE_HARM(MATR_MASS=MGEN,
                       MATR_RIGI=KGENC,
                       AMOR_REDUIT=(0.01,),
+                      SOLVEUR=_F( METHODE='LDLT', ),
                       LIST_FREQ=LIFREQ,
                       EXCIT=_F(VECT_ASSE=FGEN,
                                COEF_MULT=1.0,),);

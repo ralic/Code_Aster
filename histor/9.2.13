@@ -1,0 +1,289 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR andriam      ANDRIAMBOLOLONA Hari   DATE 21/02/2008 - 15:08:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011589 DU 2008-01-02 15:53:16
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   DYNA_LINE_HARM : message erronxc3xa9 ?
+FONCTIONNALITE
+   Contexte :
+   Lors d'un calcul de réponse harmonique, un message 
+   d'information erroné est affiché si la matrice du système 
+   est presque singulière à une fréquence donnée.
+   
+   On réajuste le message en question.
+   
+   Message rajouté dans dynamique.py :
+   La matrice est presque singulière a la fréquence : %(r1)f
+   Cette fréquence est probablement une fréquence propre du 
+   système.
+   
+   Le message affiché est correct avec la version 
+   d'exploitation : pas de report en V8.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011587 DU 2007-12-21 16:04:05
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   SV08 - DYNA_LINE_HARM et solveur MUMPS
+FONCTIONNALITE
+   Cette EL consiste à permettre à l'utilisateur de choisir 
+   le solveur pour le calcul de réponse harmonique avec 
+   DYNA_LINE_HARM.
+   
+   Les méthodes disponibles sont : LDLT, MULT_FRONT et MUMPS. 
+   Par défaut, on choisit la méthode MULT_FRONT qui est aussi 
+   la méthode par défaut de NUME_DDL.
+   
+   Un objet .DELG est ajouté à la structure de données 
+   prof_vgen (numérotation des ddl généralisés) afin de 
+   pouvoir traiter les matrices généralisées par 
+   PRERES/RESOUD. Cet objet est initialisé à zéro.
+   Pour l'instant, on doit choisir la méthode LDLT ou MUMPS 
+   pour la résolution des calculs avec des matrices 
+   généralisées. Les fichiers de commande des cas tests 
+   concernés sont modifiés en précisant explicitement la 
+   méthode LDLT.
+   
+   Si la taille du système est grande, la résolution avec 
+   MUMPS permet de gagner en temps cpu. Le fait d'utiliser le 
+   solveur MUMPS pour le cas test miss09a permet de faire 
+   baisser le temps cpu de 590s à 420s. On modifie par 
+   conséquent ce cas test.
+   
+   Cas test pour la validation de la résolution avec MUMPS :
+   sdld21d : nouveau cas test, modèle identique à sdld21a 
+   mais résolution avec MUMPS, avec le même message d'alarme 
+   à la lecture des dataset 55.
+   
+   Je modifie également la partition mémoire des cas tests 
+   suivants :
+   miss02a : mem_aster 50
+   miss07b : mem_aster 70
+   miss09a : mem_aster 20
+   
+   Le temps cpu consommé par le cas test shll101f dépend de 
+   la charge de la machine. Je le fais passer de 120 s à 180 
+   s.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.01.021, U4.53.11, D4.07.05
+VALIDATION
+   sdld21d, miss09a
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008981 DU 2005-09-09 00:00:00
+TYPE evolution concernant Documentation (VERSION 8.1)
+TITRE
+   docv sensibilite en dynamique
+FONCTIONNALITE
+   Il s'agit probablement d'une fiche dont on a oublié son 
+   existence.
+   Doc V sensd10* diffusée (V1.01.214).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   document diffusxc3xa9
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008985 DU 2005-09-09 00:00:00
+TYPE evolution concernant Documentation (VERSION 8.1)
+TITRE
+   docv sensibilite en dynamique
+FONCTIONNALITE
+   Doc V sensd07* diffusée (V1.01.184).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   document diffusxc3xa9
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 03/03/2008 - 13:49:46
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011367 DU 2007-10-16 16:17:10
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Crxc3xa9ation de maillage restreint xc3xa0 des GROUP_MA, GROUP_NO
+FONCTIONNALITE
+   L'objectif est de pouvoir créer dans Aster un maillage "ma2" qui est la restriction de
+   "ma1" à une liste de GROUP_MA et/ou de GROUP_NO
+   
+   Syntaxe :
+   ---------
+   |MA2 = CREA_MAILLAGE(
+   |  o  MAILLAGE  = ma,
+   |  f  RESTREINT = _F(
+   |     o   GROUP_MA = lgma,
+   |     f   GROUP_NO = lgno,
+   |     f  | TOUT_GROUP_MA = / 'OUI',
+   |                          / 'NON' [defaut]
+   |        | TOUT_GROUP_NO = / 'OUI',
+   |                          / 'NON' [defaut]
+   |          )
+   
+   a) si GROUP_MA est renseigné et pas GROUP_NO. Le maillage MA2 a:
+   - pour mailles: les mailles contenues dans les groupes de mailles lgma.
+   - pour noeuds : les noeuds des mailles de MA2
+   - pour groupes de mailles :
+       . si TOUT_GROUP_MA='NON': les groupes de mailles lgma
+       . si TOUT_GROUP_MA='OUI': les groupes de mailles de MA1, non vides, restreints aux
+   mailles de MA2
+   - pour groupes de noeuds :
+       .  si TOUT_GROUP_NO='NON': aucun
+       .  si TOUT_GROUP_NO='OUI': les groupes de noeuds de MA1, non vides, restreints aux
+   noeuds de MA2.
+   
+   
+   b) si GROUP_MA et GROUP_NO sont renseignés, le maillage MA2 a:
+   - pour mailles: les mailles contenues dans les groupes de mailles lgma.
+   - pour noeuds : les noeuds des mailles de MA2 + les noeuds contenus dans lgno(si ceux-ci
+   font partie des connectivités des mailles contenues dans lgma).
+   - pour groupes de mailles:
+       . si TOUT_GROUP_MA='NON':  les groupes de mailles lgma
+       . si TOUT_GROUP_MA='OUI':  les groupes de mailles de MA1, non vides,restreints aux
+   mailles de MA2.
+   - pour groupes de noeuds:
+       .  si TOUT_GROUP_NO='NON': les groupes de noeuds lgno
+       .  si TOUT_GROUP_NO='OUI': les groupes de noeuds de MA1, non vides, restreints aux
+   noeuds de MA2.
+   
+   Cas test de validation : zzzz236a
+   cas test de performance sur cas perso, maillage de 37Mo, restriction à 180 groupes de
+   mailles, TCPU < 1.0sec
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.23.02
+VALIDATION
+   Passage cas test
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011807 DU 2008-02-26 11:55:22
+TYPE express concernant Code_Aster (VERSION 9.2)
+TITRE
+   Cas test yyyy103d
+FONCTIONNALITE
+   Suite à la résolution de la fiche, 11730, qui a consisté à augmenter les tolérances des
+   tests_resu (pour Rocks), Thomas a passé un valgrind sur ce test sur Rocks, et à constaté
+   des accès en lecture non licite.
+   
+   J'ai examiné le valgrind et corrigé quelques petites choses, mais cela n'a en rien changé
+   la valeur des résultats et des tolérances que l'on doit mettre pour faire passer le test.
+   
+   Lorsque l'on passe le test, sur Rocks, en nodebug ou debug, on obtient les résultats
+   suivants :
+   En nodebug : -----------------------------------------------
+   ---- FONCTION: F1 
+    OK  INST         RELA  1.98E-06 % VALE:-1.9928650395533D+02
+         1.00000E-01 TOLE     0.100 % REFE:-1.9928650000000D+02
+   ---- FONCTION: G1
+    OK  INST         RELA    -1.217 % VALE: 3.4396336200100D+04
+         1.81000E+00 TOLE     2.000 % REFE: 3.4820000000000D+04
+   ---- FONCTION: G2
+    OK  INST         RELA     0.003 % VALE:-2.7320753911520D+00
+         5.30000E-01 TOLE     0.100 % REFE:-2.7320000000000D+00
+   ---- FONCTION: G3
+    OK  INST         RELA    -0.622 % VALE: 2.5997211907019D+00
+         1.04000E+00 TOLE     1.000 % REFE: 2.6160000000000D+00
+   
+   En debug : -------------------------------------------------
+   ---- FONCTION: F1
+    OK  INST         RELA  1.98E-06 % VALE:-1.9928650395534D+02
+         1.00000E-01 TOLE     0.100 % REFE:-1.9928650000000D+02
+   ---- FONCTION: G1
+    OK  INST         RELA    -0.211 % VALE: 3.4746555807856D+04
+         1.81000E+00 TOLE     2.000 % REFE: 3.4820000000000D+04
+   ---- FONCTION: G2
+    OK  INST         RELA     0.016 % VALE:-2.7324434450529D+00
+         5.30000E-01 TOLE     0.100 % REFE:-2.7320000000000D+00
+   ---- FONCTION: G3
+    OK  INST         RELA     0.015 % VALE: 2.6164020387485D+00
+         1.04000E+00 TOLE     1.000 % REFE: 2.6160000000000D+00
+   
+   
+   Impacts : nmvmpo. Dans le cas élastique, on allait chercher des valeurs non initialisées,
+   que l'on utilisait pas. Maintenant, si on est dans le cas élastique on ne va plus chercher
+   les valeurs.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage du cas test
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdld21d                       andriam H.ANDRIAMBOLOLONA   1015   1015      0
+ CASTEST AJOUT zzzz236a                       flejou J-L.FLEJOU          79     79      0
+ CASTEST MODIF miss02a                       andriam H.ANDRIAMBOLOLONA    529      5      1
+ CASTEST MODIF miss07a                       andriam H.ANDRIAMBOLOLONA    359      3      1
+ CASTEST MODIF miss07b                       andriam H.ANDRIAMBOLOLONA    416      3      1
+ CASTEST MODIF miss09a                       andriam H.ANDRIAMBOLOLONA    849      5      3
+ CASTEST MODIF sdld313d                      andriam H.ANDRIAMBOLOLONA    324      5      1
+ CASTEST MODIF sdls08a                       andriam H.ANDRIAMBOLOLONA    284      3      1
+ CASTEST MODIF sdlv124a                      andriam H.ANDRIAMBOLOLONA    556      2      1
+ CASTEST MODIF shll100a                      andriam H.ANDRIAMBOLOLONA    698      4      1
+ CASTEST MODIF shll100b                      andriam H.ANDRIAMBOLOLONA    648      4      1
+ CASTEST MODIF shll100c                      andriam H.ANDRIAMBOLOLONA    586      3      1
+ CASTEST MODIF shls200a                      andriam H.ANDRIAMBOLOLONA    561      2      1
+ CASTEST MODIF shlv301a                      andriam H.ANDRIAMBOLOLONA    491      2      1
+ CASTEST MODIF zzzz108a                      andriam H.ANDRIAMBOLOLONA   1147      9      1
+ CASTEST MODIF zzzz208a                      andriam H.ANDRIAMBOLOLONA    484      4      1
+CATALOPY MODIF commande/crea_maillage         flejou J-L.FLEJOU         169      7      1
+CATALOPY MODIF commande/dyna_line_harm       andriam H.ANDRIAMBOLOLONA    105     32      1
+ FORTRAN AJOUT algeline/cmrest                flejou J-L.FLEJOU         391    391      0
+ FORTRAN MODIF algeline/op0167                flejou J-L.FLEJOU         931     16      2
+ FORTRAN MODIF algorith/nmvmpo                flejou J-L.FLEJOU         352     23     15
+ FORTRAN MODIF algorith/numgcy               andriam H.ANDRIAMBOLOLONA    188      4      2
+ FORTRAN MODIF algorith/numgen               andriam H.ANDRIAMBOLOLONA    327      4      1
+ FORTRAN MODIF algorith/nummo1               andriam H.ANDRIAMBOLOLONA    145      4      2
+ FORTRAN MODIF algorith/op0060               andriam H.ANDRIAMBOLOLONA    667     53     20
+  PYTHON MODIF Messages/dynamique            andriam H.ANDRIAMBOLOLONA    110      6      1
+  PYTHON MODIF SD/sd_prof_vgen               andriam H.ANDRIAMBOLOLONA     31      2      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3        1485      1485             +1485
+ MODIF :   24       10957       205      62      +143
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   27       12442      1690      62     +1628 

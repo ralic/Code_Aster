@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -387,6 +387,7 @@ for k in range(1,ns+1):
    HARM=DYNA_LINE_HARM(MATR_MASS=M_GENE,
                             MATR_RIGI=K_GENE,
                             MATR_AMOR=A_GENE,
+                            SOLVEUR=_F( METHODE='LDLT', ),
                             LIST_FREQ=LFREQ,
                             EXCIT=_F( VECT_ASSE = EFFO1,
                             COEF_MULT = 1.,

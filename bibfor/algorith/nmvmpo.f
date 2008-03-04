@@ -5,7 +5,7 @@
      &                  CONTP, FL, KLV)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 03/03/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,13 +119,16 @@ C
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
 
+C     THERMIQUE À T+
       CALL MOYTEM(FAMI,NPG,1,'+',TEMP,IRET)
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ELAS',1,'TEMP',TEMP,2,
      &            NOMRES, VALRES, CODRES, 'FM' )
       E = VALRES(1)
       NU = VALRES(2)
+      G = E / (2.D0*(1.D0+NU))
       CALL NMVMPM(COMPOR,ICODMA,ITEMP,TEMP,E,NU,L346P)
 
+C     THERMIQUE À T-
       CALL MOYTEM(FAMI,NPG,1,'-',TEMM,IRET)
       CALL RCVALB(FAMI,1,1,'-',ICODMA,' ','ELAS',1,'TEMP',TEMM,2,
      &            NOMRES, VALRES, CODRES, 'FM' )
@@ -133,11 +136,6 @@ C
       NUM = VALRES(2)
       CALL NMVMPM(COMPOR,ICODMA,ITEMP,TEMM,EM,NUM,LOI346)
 
-      LOI346(22)=L346P(12)-LOI346(12)
-      LOI346(23)=L346P(14)-LOI346(14)
-      G = E / (2.D0*(1.D0+NU))
-      LOI346(24)=ITEMP
-      L346P(24)=ITEMP
 C
 C     CARACTERISTIQUES DE LA SECTION :
 C
@@ -149,14 +147,21 @@ C
       XJX   = SECT(8)
       XJG   = SECT(12)
 C
-      LOI346(1+15 ) = AA
-      LOI346(1+16 ) = XIY
-      LOI346(1+17 ) = XIZ
-      LOI346(1+18 ) = XJX
-      L346P(1+15 )  = AA
-      L346P(1+16 )  = XIY
-      L346P(1+17 )  = XIZ
-      L346P(1+18 )  = XJX
+      IF ( COMPOR(1) .NE. 'ELAS' ) THEN
+         LOI346(22)=L346P(12)-LOI346(12)
+         LOI346(23)=L346P(14)-LOI346(14)
+         LOI346(24)=ITEMP
+         L346P(24)=ITEMP
+C
+         LOI346(1+15 ) = AA
+         LOI346(1+16 ) = XIY
+         LOI346(1+17 ) = XIZ
+         LOI346(1+18 ) = XJX
+         L346P(1+15 )  = AA
+         L346P(1+16 )  = XIY
+         L346P(1+17 )  = XIZ
+         L346P(1+18 )  = XJX
+      ENDIF
 C
 C     MATERIAU INTEGRE SUR LA SECTION
 C
@@ -185,7 +190,7 @@ C
          CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
          LGPG = MAX(JTAB(6),1)*JTAB(7)
       ENDIF
-
+      CALL ASSERT( LGPG.LE.9 )
 C
 C     BOUCLE SUR LES POINTS DE GAUSS
       DO 101 KP = 1,NPG
@@ -214,9 +219,6 @@ C
             EPS(1) = EPS(1)- F
             DEPS(1)=DEPS(1)-DF
          ENDIF
-         DO 565 I=1,9
-            VIM(I)  = VARIM(LGPG*(KP-1)+I)
-565      CONTINUE
 
 C        QUELQUE SOIT LE COMPORTEMENT, IL FAUT :
 C            HOTA : MATRICE DE COMPORTEMENT TANGENT
@@ -237,10 +239,16 @@ C        CAS ELASTIQUE
 810         CONTINUE
             CALL R8INIR(9,0.D0,VIP,1)
          ELSE
-C        IMPLICITE OU EXPLICITE ? SI CARCRI(6)=1 ==> EXPLICITE
+C           IMPLICITE OU EXPLICITE ? SI CARCRI(6)=1 ==> EXPLICITE
+C           VARIABLES INTERNES A T-
+            DO 565 I=1,LGPG
+               VIM(I)  = VARIM(LGPG*(KP-1)+I)
+565         CONTINUE
+
             IF ( INT(CARCRI(6)).GT.0.5D0) THEN
-               CALL NMVMPK(NC,EPS,DEPS,VIM,SIGM,LOI346,HOEL,
-     &                     VECTEU,MATRIC,CARCRI,SIGP,VIP,HOTA)
+               CALL NMVMPK(NC,EPS,DEPS,VIM,SIGM,
+     &                     LOI346,HOEL,VECTEU,MATRIC,CARCRI,
+     &                     SIGP,VIP,HOTA)
             ELSE
 C              IMPLICITE
                DO 57 I=1,4
@@ -264,8 +272,8 @@ C              IMPLICITE
                VIM7(6)=VIM(8)
                VIM7(7)=VIM(9)
 
-               CALL NMVMPI(DEPS4,VIM7,SIGM4,L346P,
-     &                     OPTION,MATRIC,CARCRI,SIGP4,VIP7,DSIDEP)
+               CALL NMVMPI(DEPS4,VIM7,SIGM4,L346P,OPTION,
+     &                     MATRIC,CARCRI,SIGP4,VIP7,DSIDEP)
 
                CALL POUCRI(L346P,SIGP4,VIP7,RC,RP,SEUIL)
                DO 552 I = 1, 5
@@ -320,7 +328,7 @@ C        ON STOCKE   LES  VARIABLES INTERNES "+"
 C                    LES CONTRAINTES "+" ET LE FL :
          IF (VECTEU) THEN
             IF ( COMPOR(1) .NE. 'ELAS' ) THEN
-               DO 58 I=1,9
+               DO 58 I=1,LGPG
                   VARIP(LGPG*(KP-1)+I) = VIP(I)
 58             CONTINUE
             ENDIF

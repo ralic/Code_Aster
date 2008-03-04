@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,6 +137,7 @@ FD=100.
 
 DYNPROD=DYNA_LINE_HARM(  MATR_MASS=MASPROD,
                             MATR_RIGI=RIGPRCO,
+                            SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=FD,
                             TOUT_CHAM='OUI',
                             EXCIT=_F( VECT_ASSE = VECPROD,
@@ -470,6 +471,7 @@ EFFO1 = ASSE_VECT_GENE(NUME_DDL_GENE= NUMEGE,
 
 DYNGEN=DYNA_LINE_HARM(  MATR_RIGI=RIGGEN,
                             MATR_MASS=MASGEN,
+                            SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=FD,
                            TOUT_CHAM='OUI',
                             EXCIT=_F( VECT_ASSE = EFFO1,

@@ -1,4 +1,4 @@
-#@ MODIF properties Accas DATE 27/02/2008 AUTEUR aster M.ADMINISTRATEUR
+#@ MODIF properties Accas DATE 05/03/2008 AUTEUR aster M.ADMINISTRATEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE D6BHHHH J-P.LEFEBVRE
 # ======================================================================
@@ -20,6 +20,6 @@
 #     IDENTIFICATION DU GESTIONNAIRE DE COMMANDE ACCAS A PARTIR
 #     DE LA VERSION DU CODE_ASTER ASSOCIE
 #----------------------------------------------------------------------
-version = "9.2.12"
-date = "27/02/2008"
+version = "9.2.13"
+date = "05/03/2008"
 exploit = False

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,6 +176,7 @@ FD=100.
 DYNPROD=DYNA_LINE_HARM(  MATR_MASS=MASPROD,
                             MATR_RIGI=RIGPROD,
                             MATR_AMOR=AMOPROD,
+                            SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=FD,
                            TOUT_CHAM='OUI',
 #           FREQ:F,NOM_CHAM:'DEPL',
@@ -489,6 +490,7 @@ F=100.
 DYNGEN=DYNA_LINE_HARM(  MATR_MASS=MASGEN,
                             MATR_RIGI=RIGGEN,
                             MATR_AMOR=AMOGEN,
+                            SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=F,
                            TOUT_CHAM='OUI',
 #           FREQ:F,NOM_CHAM:'DEPL',
@@ -500,6 +502,7 @@ DYNGEN=DYNA_LINE_HARM(  MATR_MASS=MASGEN,
 DYNPRO=DYNA_LINE_HARM(  MATR_MASS=MASPRO,
                             MATR_RIGI=RIGPRO,
                             MATR_AMOR=AMOPRO,
+                            SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=F,
                            TOUT_CHAM='OUI',
 #           FREQ:F,NOM_CHAM:'DEPL',

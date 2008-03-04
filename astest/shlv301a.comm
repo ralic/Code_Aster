@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE REPONSE HARMONIQUE : POUTRE BI-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -420,6 +420,7 @@ F=1000.
 DYNGEN=DYNA_LINE_HARM(  MATR_MASS=MASGEN,
                             MATR_RIGI=RIGGEN,
                             MATR_AMOR=AMOGEN,
+                            SOLVEUR=_F( METHODE='LDLT', ),
                             FREQ=F,
                            TOUT_CHAM='OUI',
 

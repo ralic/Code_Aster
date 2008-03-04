@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 03/03/2008   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER     I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NBMA,NBMST,IQTR,
-     &            NBVOLU,N1,NUMMA,NBJOIN
+     &            NBVOLU,N1,NUMMA,NBJOIN,NBREST
       PARAMETER   (NBMC=5)
       REAL*8      EPAIS
       CHARACTER*1 K1B
@@ -256,6 +256,20 @@ C
      &                 PRFMA, NUMMA, EPAIS, PLAN, TRANS )
 C
 C
+         GOTO 300
+      END IF
+
+C ----------------------------------------------------------------------
+C                 TRAITEMENT DU MOT CLE "RESTREINT"
+C ----------------------------------------------------------------------
+      CALL GETFAC ( 'RESTREINT', NBREST )
+      IF ( NBREST .NE. 0 ) THEN
+         IF(NN1.EQ.0) THEN
+            CALL U2MESS('F','ALGELINE2_98')
+         ENDIF
+         CALL CMREST(NOMAIN,NOMAOU)
+C ---    VERIFICATIONS DU MAILLAGE
+         CALL CHCKMA(NOMAOU,NOMCMD,1.0D-03)
          GOTO 300
       END IF
 

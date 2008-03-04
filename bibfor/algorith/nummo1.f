@@ -7,7 +7,7 @@
       CHARACTER*19 PRGENE,STOMOR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER IBID,JREFN,JDESC,LDNEQU,LDORS,LDPRS,LDORL,LDPRL,LDDEEQ,
-     &        LDNUEQ,J
+     &        LDNUEQ,J,LDDELG
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -124,6 +124,7 @@ C
 C
 C-----ALLOCATIONS DIVERSES
 C
+      CALL WKVECT(PRGENE//'.DELG','G V I',NBMODE,LDDELG)
       CALL WKVECT(PRGENE//'.DEEQ','G V I',NBMODE*2,LDDEEQ)
       CALL WKVECT(PRGENE//'.NUEQ','G V I',NBMODE,LDNUEQ)
 C
@@ -131,6 +132,7 @@ C     REMPLISSAGE DU .DEEQ ET DU .NUEQ
 C
       DO 10 J=1,NBMODE
         ZI(LDNUEQ+J-1)=J
+        ZI(LDDELG+J-1)=0
         ZI(LDDEEQ+2*J-1)=1
         ZI(LDDEEQ+2*J-2)=J
    10 CONTINUE

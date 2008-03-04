@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -246,6 +246,7 @@ DYNHASS=CALC_ELEM(reuse =DYNHASS,
 DYNHGEN=DYNA_LINE_HARM(MATR_MASS=MDIAG,
                     MATR_RIGI=KDIAG,
                     MATR_AMOR=CDIAG,
+                    SOLVEUR=_F( METHODE='LDLT', ),
                     FREQ=freq,
                     EXCIT=_F(VECT_ASSE=FDIAG,
                              COEF_MULT=1.,),

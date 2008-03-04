@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/07/2007   AUTEUR SALMONA L.SALMONA 
+#& MODIF COMMANDE  DATE 03/03/2008   AUTEUR FLEJOU J-L.FLEJOU 
 # RESPONSABLE MCOURTOI M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,6 +77,12 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            NB_MAILLE       =SIMP(statut='f',typ='I',defaut= 0,
                                  fr="Nombre minimal de mailles que doit contenir le groupe pour etre détruit",  ),
+         ),
+         RESTREINT   =FACT(statut='f',fr="Restreindre un maillage à des groupes de mailles",max=1,
+           GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
+           TOUT_GROUP_MA   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
+           GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           TOUT_GROUP_NO   =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON'),),
          ),
          COQU_VOLU   =FACT(statut='f',
                            fr="Creation de mailles volumiques à partir de mailles surfaciques",

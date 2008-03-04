@@ -1,4 +1,4 @@
-#@ MODIF dynamique Messages  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dynamique Messages  DATE 21/02/2008   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,6 +100,11 @@ cata_msg={
       - Temps cpu restant             : %(r2)f
    
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arret.
+"""),
+
+14: _("""
+   La matrice est presque singulière à la fréquence : %(r1)f
+   Cette fréquence est probablement une fréquence propre du système.
 """),
 
 }
