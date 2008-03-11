@@ -2,7 +2,7 @@
      +                                            SE, SEQ, PLAS, DSDE )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
       IMPLICIT      NONE
-      REAL*8        MATER(4,2), DP, DPDENO, SE(6), SEQ, DSDE(6,6)
+      REAL*8        MATER(5,2), DP, DPDENO, SE(6), SEQ, DSDE(6,6)
       REAL*8        PLAS, ALPHA, PPLUS
       CHARACTER*8   MOD
 C =====================================================================
@@ -31,7 +31,7 @@ C =====================================================================
       REAL*8     UN, DEUX, TROIS, YOUNG, NU, TROISK, DEUXMU, DSEDE(6,6)
       REAL*8     BIDON(6,6), PMAT1(6,6), PMAT2(6,6), PMAT3(6,6), PARAM1
       REAL*8     PMAT4(6,6), VUNITE(6), VECT1(6), VECT2(6), VECT3(6)
-      REAL*8     PULT, QUATRE, NEUF, MATER2(4,2)
+      REAL*8     PULT, QUATRE, NEUF, MATER2(5,2)
       PARAMETER ( NEUF   =  9.0D0 )
       PARAMETER ( QUATRE =  4.0D0 )
       PARAMETER ( TROIS  =  3.0D0 )

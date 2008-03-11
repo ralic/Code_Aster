@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/12/2007   AUTEUR GALENNE E.GALENNE 
+%& MODIF TYPELEM  DATE 10/03/2008   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,12 +136,6 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R      88  IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
-    DEPL_POST_XFEM       515  IN__   E18NEUI  PCNSETO  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO
-                                     E8NEUTI  PLONCHA  E9NEUTR  PPINTTO  N9NEUT_R PBASLOR  N1NEUT_R  PLSN
-                                     N1NEUT_R  PLST
-                              OUT__  E30NEUTR PDEXFEM
-    TOPOSE               514  IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E9NEUTR  PPINTTO  E18NEUI  PCNSETO   E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
     CHAR_MECA_PRSU_F     572  IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR

@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 10/03/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,6 @@ C
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-
       CALL ELREF4(' ','RIGI',NDIME,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 
       CALL TECAEL(IADZI,IAZK24)
@@ -170,9 +169,17 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             CNSE(3,2)=CONNEC(IT,B)
             CNSE(3,3)=CONNEC(IT,C)
           ENDIF
+        ELSEIF (NINTER .EQ. 3) THEN
+C         L'INTERFACE COINCIDE AVEC LE TRIA
+          CALL ASSERT (NPTS.EQ.NINTER)
+C         1 SEUL ELEMENT
+          NSE=1
+          DO 92 IN=1,3
+            CNSE(1,IN)=CONNEC(IT,IN)
+ 92       CONTINUE
         ELSE
 C         TROP DE POINTS D'INTERSECTION
-          CALL ASSERT(NINTER.LE.2)
+          CALL ASSERT(NINTER.LE.3)
         ENDIF
         
       ELSEIF (NDIME .EQ. 1) THEN
@@ -207,9 +214,17 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             CNSE(2,1)=101
             CNSE(2,2)=CONNEC(IT,B)
           ENDIF
+        ELSEIF (NINTER .EQ. 2) THEN
+C         L'INTERFACE COINCIDE AVEC LE SEG
+          CALL ASSERT (NPTS.EQ.NINTER)
+C         1 SEUL ELEMENT
+          NSE=1
+          DO 97 IN=1,2
+            CNSE(1,IN)=CONNEC(IT,IN)
+ 97       CONTINUE
         ELSE
 C         TROP DE POINTS D'INTERSECTION
-          CALL ASSERT(NINTER.LE.1)
+          CALL ASSERT(NINTER.LE.2)
         ENDIF   
 
 
@@ -432,6 +447,20 @@ C-----------------------------------------------------------------------
  310    CONTINUE
 
  300  CONTINUE
+
+C     REMARQUE IMPORTANTE :
+C     IN ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
+C     (NDIME = NDIM - 1 ET NPTS = NINTER > 0) ALORS ON NE PEUT PAS
+C     DÉTERMINER DE QUEL COTÉ DE L'INTERFACE ON SE TROUVE, CAR ON
+C     EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE ZR(JHEAV-1+ISE)
+C     EST DONC FAUSSE DANS CE CAS : on met 99.
+C     UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION
+C     DES NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
+      IF (NDIME.EQ.NDIM-1.AND.NPTS.EQ.NINTER.AND.NINTER.GT.0) THEN
+        CALL ASSERT(NSE.EQ.1)
+         ZR(JHEAV-1+1)=99.D0
+      ENDIF
+      
 
       CALL JEDEMA()
       END

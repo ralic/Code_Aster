@@ -1,11 +1,7 @@
-      SUBROUTINE MECHTI(NOMA,TIME,CHTIME)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8 TIME
-      CHARACTER*(*) NOMA
-      CHARACTER*24 CHTIME
+      SUBROUTINE MECHTI ( NOMA, INST, DELTAT, THETA, CHTIME )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,21 +22,37 @@ C     CREE UNE CARTE D'INSTANT
 C     ------------------------------------------------------------------
 C IN  : NOMA   : NOM DU MAILLAGE
 C IN  : TIME   : INSTANT DE CALCUL
+C IN  : DELTAT : PAS DE TEMPS PRECEDENT L'INSTANT COURANT
+C IN  : THETA  : COEFFICIENT DE LA THETA-METHODE EN THM
 C OUT : CHTIME : NOM DE LA CARTE CREEE
 C     ------------------------------------------------------------------
-      REAL*8 TPS(6),RUNDF
+
+      IMPLICIT NONE
+C
+C     --- ARGUMENTS ---
+      REAL*8        INST, DELTAT, THETA
+      CHARACTER*(*) NOMA
+      CHARACTER*24  CHTIME
+C
+C     --- VARIABLES LOCALES ---
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='MECHTI')
+
+      INTEGER IBID(6)
+      REAL*8 TPS(6),RUNDF,R8NNEM
       CHARACTER*8 K8B,NOMCMP(6)
       COMPLEX*16 C16B
+C
       DATA NOMCMP/'INST    ','DELTAT  ','THETA   ','KHI     ',
      &     'R       ','RHO     '/
 C DEB-------------------------------------------------------------------
 
-      CHTIME = '&&MECHTI.CH_INST_R'
-      TPS(1) = TIME
+      CHTIME = '&&'//NOMPRO//'.CH_INST_R'
+      TPS(1) = INST
+      TPS(2) = DELTAT
+      TPS(3) = THETA
 
-      RUNDF = R8NNEM()
-      TPS(2) = RUNDF
-      TPS(3) = RUNDF
+      RUNDF  = R8NNEM()
       TPS(4) = RUNDF
       TPS(5) = RUNDF
       TPS(6) = RUNDF

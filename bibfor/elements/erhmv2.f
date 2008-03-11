@@ -1,34 +1,32 @@
-      SUBROUTINE ERHMV2 (AXI   , HK    ,
-     &                   DIMDEP, DIMDEF, NMEC  , NP1   , NP2 ,
-     &                   NDIM  , NNO   , NNOS  , NNOM  , NPI , NPG   ,
-     &                   NDDLS , NDDLM , DIMUEL,
-     &                   IPOIDS, IVF   , IDFDE , IPOID2, IVF2, IDFDE2,
-     &                   GEOM  , TABFOR,
-     &                   DEPLP ,
-     &                   SIELNP, NBCMP ,
-     &                   BIOT  ,
-     &                   FPX   , FPY   , FRX   , FRY,
-     &                   YAMEC , ADDEME, YAP1  , ADDEP1, YAP2, ADDEP2,
-     &                   YATE  , ADDETE,
-     &                   TERVOM)
+      SUBROUTINE ERHMV2 (AXI   , PERMAN, DELTAT, DIMDEP,
+     &                   DIMDEF, NMEC  , NP1   , NP2   , NDIM  ,
+     &                   NNO   , NNOS  , NNOM  , NPI   ,
+     &                   NPG   , NDDLS , NDDLM , DIMUEL,
+     &                   IPOIDS, IVF   , IDFDE , IPOID2, IVF2  ,
+     &                   IDFDE2, GEOM  , TABFOR,
+     &                   DEPLP , DEPLM ,
+     &                   SIELNP, SIELNM, NBCMP , BIOT  , UNSURM,
+     &                   FPX   , FPY   , FRX   , FRY   ,
+     &                   YAMEC , ADDEME, YAP1  , ADDEP1,
+     &                   YAP2  , ADDEP2, YATE  , ADDETE, TM2H1V )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C =====================================================================
@@ -36,14 +34,15 @@ C  ERREUR EN HYDRO-MECANIQUE - TERME VOLUMIQUE - DIMENSION 2
 C  **        *     *                 *                     *
 C =====================================================================
 C    - FONCTION REALISEE:  CALCUL DES TERMES VOLUMIQUES MECANIQUE ET
-C      HYDRAULIQUE DE L'ESTIMATEUR D'ERREUR EN RESIDU POUR LA
-C      MODELISATION HM PERMANENTE
+C      HYDRAULIQUE DE L'ESTIMATEUR D'ERREUR EN RESIDU POUR LES
+C      MODELISATIONS HM SATUREES
 C
 C ENTREE :
 C -------
 C
 C IN AXI     : AXISYMETRIQUE OU NON ?
-C IN HK      : DIAMETRE DE L'ELEMENT
+C IN PERMAN  : PERMANENT OU NON ?
+C IN DELTAT  : PAS DE TEMPS (SI INSTATIONNAIRE)
 C IN DIMDEP  : DIMENSION DES DEPLACEMENTS
 C IN DIMDEF  : DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 C IN NMEC    : = NDIM SI YAMEC, 0 SINON
@@ -58,14 +57,14 @@ C IN NPG     : NB DE POINTS DE GAUSS    POUR CLASSIQUE(=NPI)
 C                    SOMMETS            POUR LUMPEE   (=NPI=NNOS)
 C                    POINTS DE GAUSS    POUR REDUITE  (<NPI)
 C IN NDDLS   : NOMBRE DE DDLS SUR LES SOMMETS
-C IN NDDLM   : NOMBRE DE DDLS SUR LES POINTS MILIEUX 
+C IN NDDLM   : NOMBRE DE DDLS SUR LES POINTS MILIEUX
 C IN DIMUEL  : NOMBRE DE DDLS TOTAL DE L'ELEMENT
 C IN IPOIDS  : ADRESSE DANS ZR DU TABLEAU POIDS(IPG)
 C              POUR LES FONCTIONS DE FORME P2
 C IN IVF     : ADRESSE JEVEUX DES FONCTIONS DE FORME QUADRATIQUES
 C IN IDFDE   : ADRESSE DANS ZR DU TABLEAU DFF(IDIM,INO,IPG)
 C              POUR LES FONCTIONS DE FORME P2
-C IN IPOID2  : ADRESSE DANS ZR DU TABLEAU POIDS(IPG) 
+C IN IPOID2  : ADRESSE DANS ZR DU TABLEAU POIDS(IPG)
 C              POUR LES FONCTIONS DE FORME P1
 C IN IVF2    : ADRESSE JEVEUX DES FONCTIONS DE FORME LINEAIRES
 C IN IDFDE2  : ADRESSE DANS ZR DU TABLEAU DFF(IDIM,INO,IPG)
@@ -73,8 +72,11 @@ C              POUR LES FONCTIONS DE FORME P1
 C IN GEOM    : TABLEAU DES COORDONNEES
 C IN TABFOR  : TABLEAU DES FORCES VOLUMIQUES
 C IN DEPLP   : TABLEAU DES DEPLACEMENTS GENERALISES A L'INSTANT ACTUEL
+C IN DEPLM   : TABLEAU DES DEPLACEMENTS GENERALISES A L'INSTANT
+C              PRECEDENT
 C IN SIELNP  : CONTRAINTES AUX NOEUDS PAR ELEMENT A L'INSTANT ACTUEL
-C IN NBCMP   : NOMBRE DE CONTRAINTES GENERALISEES PAR NOEUD 
+C IN SIELNM  : CONTRAINTES AUX NOEUDS PAR ELEMENT A L'INSTANT PRECEDENT
+C IN NBCMP   : NOMBRE DE CONTRAINTES GENERALISEES PAR NOEUD
 C IN BIOT    : VALEUR DU COEFFICIENT DE BIOT
 C IN FPX     : VALEUR DE LA FORCE DE PESANTEUR SELON X
 C IN FPY     : VALEUR DE LA FORCE DE PESANTEUR SELON Y
@@ -84,60 +86,71 @@ C
 C SORTIE :
 C -------
 C
-C OUT TERVOM : TERME VOLUMIQUE DE LA MECANIQUE DE L'INDICATEUR HM
-C
+C OUT TM2H1V : TABLEAU CONTENANT LES TERMES VOLUMIQUES
+C              (2 POUR LA MECANIQUE, 1 POUR L'HYDRAULIQUE)
+C  1. TSIVOM : RESIDU DE LA MECANIQUE
+C  2. TDEVOM : RESIDU DE LA DERIVEE TEMPORELLE DE LA MECA
+C  3. TSIVOH : RESIDU DE L'HYDRAULIQUE
 C
 C   -------------------------------------------------------------------
 C     SUBROUTINE APPELLEE :
-C       ELEMENTS FINIS : CABTHM
-C     FONCTION INTRINSEQUE :
-C       SQRT.
+C       ELEMENTS FINIS     : CABTHM
 C   -------------------------------------------------------------------
       IMPLICIT NONE
 C
 C DECLARATION PARAMETRES D'APPELS
 C
-      LOGICAL AXI
+      LOGICAL AXI,PERMAN
       INTEGER DIMUEL
       INTEGER NDIM,NNO,NNOS,NNOM,DIMDEP,DIMDEF,NMEC,NP1,NP2
       INTEGER NBCMP,NPG,NPI,NDDLS,NDDLM,IPOIDS,IVF,IDFDE
       INTEGER IPOID2,IVF2,IDFDE2
       INTEGER YAMEC,ADDEME,YATE,ADDETE,YAP1,ADDEP1,YAP2,ADDEP2
-      REAL*8  BIOT,HK
-      REAL*8  DEPLP(NNO*DIMDEP)
+      REAL*8  DELTAT,BIOT,UNSURM
+      REAL*8  DEPLP(NNO*DIMDEP),DEPLM(NNO*DIMDEP)
       REAL*8  TABFOR(18)
       REAL*8  GEOM(NDIM,NNO)
       REAL*8  FPX,FPY
       REAL*8  FRX(9),FRY(9)
-      REAL*8  SIELNP(81)
+      REAL*8  SIELNP(90),SIELNM(90)
       REAL*8  DFDI(NNO,3),DFDI2(NNOS,3)
       REAL*8  B(DIMDEF,DIMUEL)
 C
-C DECLARATION SORTIES 
+C DECLARATION SORTIES
 C
-      REAL*8 TERVOM
+      REAL*8 TM2H1V(3)
 C
 C DECLARATION VARIABLES LOCALES
 C
-      REAL*8  GRADPX,GRADPY,DSX,DSY,FORX,FORY
-      REAL*8  POIDS,POIDS2
-      REAL*8  SIGXX,SIGXY,SIGYY,DSXXDX,DSXYDY,DSXYDX,DSYYDY
-      INTEGER IPI,KPI,N,I,IAUX,JAUX
+      REAL*8  GRAPXP,GRAPYP,DSXP,DSYP,DSXM,DSYM,FORX,FORY
+      REAL*8  GRAPXM,GRAPYM,PRESSP,PRESSM
+      REAL*8  POIDS,POIDS2,OVFL,R8MIEM
+      REAL*8  SIGXXP,SIGXYP,SIGYYP,SIGXXM,SIGXYM,SIGYYM
+      REAL*8  DSXXXP,DSXYYP,DSXYXP,DSYYYP,DSXXXM,DSXYYM,DSXYXM,DSYYYM
+      REAL*8  DIVUXP,DIVUYP,DIVUXM,DIVUYM
+      REAL*8  DIVUP,DIVUM,TER11,TER12
+      INTEGER IPI,KPI,NN,II,IAUX,JAUX
 C
 C =====================================================================
 C 1. INITIALISATION
 C =====================================================================
 C
-      TERVOM = 0.D0
+      OVFL = R8MIEM()
+C
+      DO 10, II = 1 , 3
+C
+        TM2H1V(II) = 0.D0
+C
+ 10   CONTINUE
 C
 C =====================================================================
 C 2. ------ BOUCLE SUR LES POINTS DE GAUSS ---------------------------
 C =====================================================================
 C
-      DO 10 , IPI = 1,NPG
+      DO 20 , IPI = 1,NPG
 C
         KPI = IPI
-C       
+C
 C =====================================================================
 C 2.1. --- CALCUL DE LA MATRICE B AU POINT D'INTEGRATION --------------
 C =====================================================================
@@ -164,28 +177,38 @@ C LES TERMES DANS LA MATRICE B SE TROUVENT A L'ADRESSE DITE DES
 C DEFORMATIONS GENERALISEES, ADDEP1,AUGMENTEE DE LA DIMENSION EN COURS.
 C
 C EXEMPLE POUR DU THM EN TRIA6 :
-C DEPLA : 
+C DEPLA :
 C  UX1 UY1 P11 T1 UX2 UY2 P12 T2 UX3 UY3 P13 T3 UX4 UY4 UX5 UY5 UX6 UY6
 C    1   2   3  4   5   6   7  8   9  10  11 12  13  14  15  16  17  18
-C         ON A DIMDEP =  4 = 2 + 1 + 1 (UX, UY, P1, T)
-C              IAUX   =  3 = 2 + 1 (NDIM + 1)
-C              JAUX   = 12 = 3*4 (NNOS*DIMDEP)
-C    LA BOUCLE 22 N = IAUX, JAUX, DIMDEP, EXPLORE DONC LES
+C         ON A DIMDEP =  4 = 2 + 1 + 1 ( UX, UY, P1, T )
+C              IAUX   =  3 = 2 + 1     ( NDIM + 1      )
+C              JAUX   = 12 = 3*4       ( NNOS*DIMDEP   )
+C    LA BOUCLE 22 NN = IAUX, JAUX, DIMDEP, EXPLORE DONC LES
 C    POSITIONS 3, 7 ET 11 (P11, P12 ET P13). CQFD.
 C =====================================================================
 C
-        GRADPX = 0.D0
-        GRADPY = 0.D0
+        GRAPXP = 0.D0
+        GRAPYP = 0.D0
+C
+        GRAPXM = 0.D0
+        GRAPYM = 0.D0
 C
         IAUX = NDIM + 1
         JAUX = NNOS*DIMDEP
 C
-        DO 20 , N = IAUX, JAUX, DIMDEP
+        DO 30 , NN = IAUX, JAUX, DIMDEP
 C
-          GRADPX = GRADPX + B(ADDEP1+1,N)*DEPLP(N)
-          GRADPY = GRADPY + B(ADDEP1+2,N)*DEPLP(N)
+          GRAPXP = GRAPXP + B(ADDEP1+1,NN)*DEPLP(NN)
+          GRAPYP = GRAPYP + B(ADDEP1+2,NN)*DEPLP(NN)
 C
- 20     CONTINUE
+          IF ( .NOT. PERMAN ) THEN
+C
+            GRAPXM = GRAPXM + B(ADDEP1+1,NN)*DEPLM(NN)
+            GRAPYM = GRAPYM + B(ADDEP1+2,NN)*DEPLM(NN)
+C
+          ENDIF
+C
+ 30     CONTINUE
 C
 C =====================================================================
 C 2.3. --------- CALCUL DE LA DIVERGENCE DES CONTRAINTES MECANIQUES ---
@@ -195,30 +218,56 @@ C                  SOMME(VAL-NOEUD_I*WI)
 C    LES VALEURS AUX NOEUDS SONT DANS SIELNP
 C =====================================================================
 C
-        DSXXDX = 0.D0
-        DSXYDY = 0.D0
-        DSXYDX = 0.D0
-        DSYYDY = 0.D0
+        DSXXXP = 0.D0
+        DSXYYP = 0.D0
+        DSXYXP = 0.D0
+        DSYYYP = 0.D0
 C
-        DO 30 , I=1,NNO
+        DSXXXM = 0.D0
+        DSXYYM = 0.D0
+        DSXYXM = 0.D0
+        DSYYYM = 0.D0
 C
-          IAUX  = NBCMP*(I-1)
-          SIGXX = SIELNP(IAUX+1)
-          SIGYY = SIELNP(IAUX+2)
-          SIGXY = SIELNP(IAUX+4)
+        DO 40 , II = 1 , NNO
 C
-          DSXXDX = DSXXDX+SIGXX*DFDI(I,1)
-          DSXYDY = DSXYDY+SIGXY*DFDI(I,2)
-          DSYYDY = DSYYDY+SIGYY*DFDI(I,2)
-          DSXYDX = DSXYDX+SIGXY*DFDI(I,1)
+          IAUX  = NBCMP*(II-1)
 C
- 30     CONTINUE
+          SIGXXP = SIELNP(IAUX+1)
+          SIGYYP = SIELNP(IAUX+2)
+          SIGXYP = SIELNP(IAUX+4)
+C
+          DSXXXP = DSXXXP + SIGXXP * DFDI(II,1)
+          DSXYYP = DSXYYP + SIGXYP * DFDI(II,2)
+          DSYYYP = DSYYYP + SIGYYP * DFDI(II,2)
+          DSXYXP = DSXYXP + SIGXYP * DFDI(II,1)
+C
+          IF ( .NOT. PERMAN ) THEN
+C
+            SIGXXM = SIELNM(IAUX+1)
+            SIGYYM = SIELNM(IAUX+2)
+            SIGXYM = SIELNM(IAUX+4)
+C
+            DSXXXM = DSXXXM + SIGXXM * DFDI(II,1)
+            DSXYYM = DSXYYM + SIGXYM * DFDI(II,2)
+            DSYYYM = DSYYYM + SIGYYM * DFDI(II,2)
+            DSXYXM = DSXYXM + SIGXYM * DFDI(II,1)
+C
+          ENDIF
+C
+ 40     CONTINUE
 C
 C LA DIVERGENCE DU TENSEUR DES CONTRAINTES EST UN VECTEUR
 C DE COMPOSANTES :
 C
-        DSX = DSXXDX+DSXYDY
-        DSY = DSXYDX+DSYYDY
+        DSXP = DSXXXP + DSXYYP
+        DSYP = DSXYXP + DSYYYP
+C
+        IF ( .NOT. PERMAN ) THEN
+C
+          DSXM = DSXXXM + DSXYYM
+          DSYM = DSXYXM + DSYYYM
+C
+        ENDIF
 C
 C =====================================================================
 C 2.4. ------ ASSEMBLAGE DES 3 TERMES : -------------------------------
@@ -230,30 +279,89 @@ C
         FORX = TABFOR(2*KPI-1) + FPX + FRX(KPI)
         FORY = TABFOR(2*KPI)   + FPY + FRY(KPI)
 C
-        TERVOM = TERVOM + POIDS*
-     &         ( (FORX+DSX-BIOT*GRADPX)**2 + (FORY+DSY-BIOT*GRADPY)**2 )
+        TM2H1V(1) = TM2H1V(1) + POIDS*
+     &         (   ( FORX + DSXP - BIOT * GRAPXP )**2
+     &           + ( FORY + DSYP - BIOT * GRAPYP )**2  )
+C
+        IF ( .NOT. PERMAN ) THEN
+C
+          TM2H1V(2) = TM2H1V(2) + POIDS*
+     &             ( ( DSXP - DSXM - BIOT * ( GRAPXP - GRAPXM ))**2
+     &           +   ( DSYP - DSYM - BIOT * ( GRAPYP - GRAPYM ))**2  )
+C
+        ENDIF
 C
 C =====================================================================
 C 2.5. TERME VOLUMIQUE DE L'HYDRAULIQUE (CF DOC R)
 C
 C ====================================================================
 C 2.5.1. EN PERMANENT
-C      
+C
 C        TOUS CES TERMES (DIVERGENCE DU FLUX HYDRAULIQUE) SONT DES
 C        DERIVEES SECONDES DE TERMES DISCRETISES EN DEGRE 1,
 C        DONC SONT STRUCTURELLEMENT NULS.
 C        ON POURRAIT LES CALCULER QUAND MEME ET RETROUVER CES VALEURS
 C        NULLES MAIS ON NE CALCULERA RIEN DU TOUT.
-
+C =====================================================================
+C 2.5.2. EN INSTATIONNAIRE
 C
-   10 CONTINUE
+C        COMME POUR LE PERMANENT, LES TERMES DE DIVERGENCE DU FLUX
+C        HYDRAULIQUE NE SONT PAS CALCULES.
+C =====================================================================
+C
+        IF ( .NOT. PERMAN ) THEN
+C
+          DIVUXP = 0.D0
+          DIVUYP = 0.D0
+          DIVUXM = 0.D0
+          DIVUYM = 0.D0
+C
+          DO 50 , II = 1 , NNO
+C
+            IF ( II .LE. NNOS ) THEN
+              IAUX = DIMDEP*(II-1)
+            ELSE
+              IAUX = (DIMDEP-1)*II + NNOS - 2
+            ENDIF
+C
+            DIVUXP = DIVUXP + DEPLP(IAUX+1) * DFDI(II,1)
+            DIVUYP = DIVUYP + DEPLP(IAUX+2) * DFDI(II,2)
+            DIVUXM = DIVUXM + DEPLM(IAUX+1) * DFDI(II,1)
+            DIVUYM = DIVUYM + DEPLM(IAUX+2) * DFDI(II,2)
+C
+ 50       CONTINUE
+C
+          DIVUP  = DIVUXP + DIVUYP
+          DIVUM  = DIVUXM + DIVUYM
+C
+          PRESSP = 0.D0
+          PRESSM = 0.D0
+C
+          IAUX = NDIM + 1
+          JAUX = NNOS*DIMDEP
+C
+          DO 60 , NN = IAUX, JAUX, DIMDEP
+C
+            PRESSP = PRESSP + B(ADDEP1,NN) * DEPLP(NN)
+            PRESSM = PRESSM + B(ADDEP1,NN) * DEPLM(NN)
+C
+ 60       CONTINUE
+C
+          IF (DELTAT.GT.OVFL) THEN
+C
+            TER11 = BIOT * ( DIVUP - DIVUM )/DELTAT
+            TER12 = UNSURM * ( PRESSP - PRESSM )/DELTAT
+C
+            TM2H1V(3) = TM2H1V(3) + POIDS2 * ( TER11 + TER12 )**2
+          ELSE
+            CALL U2MESS('F','INDICATEUR_31')
+          ENDIF
+C
+        ENDIF
+C
+C
+   20 CONTINUE
 C
 C FIN BOUCLE SUR LES POINTS DE GAUSS
-C
-C =====================================================================
-C 3. PRISE EN COMPTE DU DIAMETRE DE L'ELEMENT
-C =====================================================================
-C
-      TERVOM = HK*SQRT(TERVOM)
 C
       END

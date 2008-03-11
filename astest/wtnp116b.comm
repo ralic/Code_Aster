@@ -1,5 +1,5 @@
 
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,6 +144,8 @@ MAIL_00=DEFI_GROUP(reuse =MAIL_00,
 # 3.1. Application du modele et orientation des mailles de bord
 
 MODE_00=AFFE_MODELE(MAILLAGE=MAIL_00,
+                    GRANDEUR_CARA=_F(LONGUEUR=5.,
+                                     PRESSION=100000,),
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='D_PLAN_HM_P',),);
@@ -226,10 +228,7 @@ RESU_00=CALC_ELEM(reuse =RESU_00,
 RESU_00=CALC_ELEM(reuse =RESU_00,
                   RESULTAT=RESU_00,
                   INST=400000.0,
-                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
-                  ERRE_THM='OUI',
-                  LONGUEUR=5.,
-                  PRESSION=100000.,);
+                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 #
 # 3.5.3. Transfert sur les noeuds
 
@@ -272,13 +271,23 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_00,
                 _F(RESULTAT=RESU_00,
                    NUME_ORDRE=2,
                    NOM_CHAM='ERRE_NOEU_ELEM',
-                   NOM_CMP='ERREST',
+                   NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
-                   VALE=4.7145514163059E-07,
+                   VALE=4.4117418837166E-13,
                    CRITERE='ABSOLU',
                    PRECISION=1e-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.00.19',),),);
+                   VERSION='9.02.13',),
+                _F(RESULTAT=RESU_00,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CMP='ESTERG2',
+                   GROUP_NO='POURTEST',
+                   VALE=4.8866803833028E-15,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-13,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.02.13',),),);
 #
 # 5. Post-traitement : graphique de la pression et des deplacements
 # 5.1. Un chemin egal au bord GM3
@@ -353,6 +362,8 @@ MAIL_01=DEFI_GROUP(reuse =MAIL_01,
 # 7.1. Application du modele
 
 MODE_01=AFFE_MODELE(MAILLAGE=MAIL_01,
+                    GRANDEUR_CARA=_F(LONGUEUR=5.,
+                                     PRESSION=100000,),
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='D_PLAN_HM_P',),);
@@ -436,10 +447,7 @@ RESU_01=CALC_ELEM(reuse =RESU_01,
 RESU_01=CALC_ELEM(reuse =RESU_01,
                   RESULTAT=RESU_01,
                   INST=400000.0,
-                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
-                  ERRE_THM='OUI',
-                  LONGUEUR=5.,
-                  PRESSION=100000.,);
+                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
 #
 # 7.5.3. Transfert sur les noeuds
 
@@ -481,13 +489,23 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_01,
                 _F(RESULTAT=RESU_01,
                    NUME_ORDRE=2,
                    NOM_CHAM='ERRE_NOEU_ELEM',
-                   NOM_CMP='ERREST',
+                   NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
-                   VALE=1.1528501819815E-07,
+                   VALE=2.7344710789516E-14,
                    CRITERE='ABSOLU',
                    PRECISION=1E-13,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.00.19',),),);
+                   VERSION='9.02.13',),
+                _F(RESULTAT=RESU_01,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CMP='ESTERG2',
+                   GROUP_NO='POURTEST',
+                   VALE=7.5409218288034E-17,
+                   CRITERE='ABSOLU',
+                   PRECISION=1E-13,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.02.13',),),);
 #
 # 9. Post-traitement : graphique de la pression et des deplacements
 # 9.1. Un chemin egal au bord GM3

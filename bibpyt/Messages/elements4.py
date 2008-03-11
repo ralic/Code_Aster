@@ -1,21 +1,21 @@
-#@ MODIF elements4 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF elements4 Messages  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -23,7 +23,7 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
-  erreur dans le calcul de pres_f 
+  erreur dans le calcul de pres_f
 """),
 
 2 : _("""
@@ -35,7 +35,7 @@ cata_msg = {
 """),
 
 6 : _("""
- le type du champ de contraintes est incompatible avec l'option :  %(k1)s 
+ le type du champ de contraintes est incompatible avec l'option :  %(k1)s
 """),
 
 7 : _("""
@@ -103,7 +103,7 @@ cata_msg = {
 """),
 
 38 : _("""
- option  %(k1)s  non active pour un élément de type  %(k2)s 
+ option  %(k1)s  non active pour un élément de type  %(k2)s
 """),
 
 39 : _("""
@@ -167,7 +167,7 @@ cata_msg = {
 """),
 
 56 : _("""
- famille inexistante  %(k1)s 
+ famille inexistante  %(k1)s
 """),
 
 57 : _("""
@@ -187,7 +187,7 @@ cata_msg = {
 """),
 
 63 : _("""
-  l'option %(k1)s n'est pas disponible pour le comportement %(k2)s 
+  l'option %(k1)s n'est pas disponible pour le comportement %(k2)s
 """),
 
 64 : _("""
@@ -204,6 +204,7 @@ cata_msg = {
   La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
 """),
 
+
 68 : _("""
  Nombre d'itérations internes insuffisant.
 """),
@@ -212,30 +213,38 @@ cata_msg = {
  ! pb récuperation donnée matériau dans thm_liqu %(k1)s !
 """),
 
+70 : _("""
+ ! pb récupération donnée matériau dans thm_init %(k1)s !
+"""),
+
+71 : _("""
+ ! pb récupération données matériau dans elas %(k1)s !
+"""),
+
 72 : _("""
-   rcvala ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8  
+   rcvala ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8
 """),
 
 73 : _("""
-   élément MECA_HEXS8:COMP_ELAS non implanté, utiliser COMP_INCR RELATION='ELAS'  
+   élément MECA_HEXS8:COMP_ELAS non implanté, utiliser COMP_INCR RELATION='ELAS'
 """),
 
 74 : _("""
   Attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélépipèdes.
-  Sur les elements quelconques on peut obtenir des résultats faux.   
+  Sur les elements quelconques on peut obtenir des résultats faux.
 """),
 
 75 : _("""
- la maille de numero:  %(i1)d appartient à plusieurs sous-domaines! %(i2)d 
+ la maille de numero:  %(i1)d appartient à plusieurs sous-domaines! %(i2)d
 """),
 
 76 : _("""
- la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine ! %(i2)d 
+ la maille du modèle de numéro:  %(i1)d n appartient à aucun sous-domaine ! %(i2)d
 """),
 
 77 : _("""
- numero de couche  %(i1)d 
-  trop grand par rapport au nombre de couches autorisé pour la maille  %(k1)s 
+ numero de couche  %(i1)d
+  trop grand par rapport au nombre de couches autorisé pour la maille  %(k1)s
 """),
 
 78 : _("""
@@ -243,44 +252,44 @@ cata_msg = {
 """),
 
 79 : _("""
- la loi de comportement n'existe pas pour la modélisation dktg :  %(k1)s 
+ la loi de comportement n'existe pas pour la modélisation dktg :  %(k1)s
 """),
 
 80 : _("""
- 
- attention : l élément de plaque quad4 défini sur la maille : %(k1)s n est pas plan et peut conduire a des résultats faux. 
-  distance au plan :  %(r1)f 
+
+ attention : l élément de plaque quad4 défini sur la maille : %(k1)s n est pas plan et peut conduire a des résultats faux.
+  distance au plan :  %(r1)f
 """),
 
 81 : _("""
- manque le paramètre  %(k1)s pour la maille  %(k2)s 
+ manque le paramètre  %(k1)s pour la maille  %(k2)s
 """),
 
 84 : _("""
- famille non disponible élément de référence  %(k1)s 
- famille  %(k2)s 
+ famille non disponible élément de référence  %(k1)s
+ famille  %(k2)s
 """),
 
 88 : _("""
- elrefe non disponible élément de référence  %(k1)s 
+ elrefe non disponible élément de référence  %(k1)s
 """),
 
 90 : _("""
- elrefe mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d 
- nb noeuds pour le gano  %(i2)d 
+ elrefe mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d
+ nb noeuds pour le gano  %(i2)d
 """),
 
 91 : _("""
- ! le calcul de cet estimateur !! ne tient pas compte d'éventuelles ! %(i1)d 
- ! conditions limites non linéaires   ! %(i2)d 
+ ! le calcul de cet estimateur !! ne tient pas compte d'éventuelles ! %(i1)d
+ ! conditions limites non linéaires   ! %(i2)d
 """),
 
 92 : _("""
- la pression doit etre nulle pour la maille  %(k1)s 
+ la pression doit etre nulle pour la maille  %(k1)s
 """),
 
 98 : _("""
- la contrainte equivalente est nulle pour la maille  %(k1)s 
+ la contrainte equivalente est nulle pour la maille  %(k1)s
 """),
 
 }

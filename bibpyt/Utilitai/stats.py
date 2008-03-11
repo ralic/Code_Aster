@@ -1,4 +1,4 @@
-#@ MODIF stats Utilitai  DATE 25/02/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF stats Utilitai  DATE 10/03/2008   AUTEUR ZENTNER I.ZENTNER 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,40 +19,22 @@
 # ======================================================================
 # extract from pystat module
 #
-# Author: Michael Bommarito 
-#
-from math import pi,sqrt,log,exp
+from math import pi,sqrt,log,exp,pow
+from Numeric import absolute
 # CDF
-# Based on Chokri Dridi's algorithm
-# http://econwpa.wustl.edu:8089/eps/comp/papers/0212/0212001.pdf
-# normcdf(x, m, s)
-# x: float
-# m: float, mean
-# float, standard deviation
-def normcdf(x, m, s):
-   if x >= 0.:
-      return (1.+glquad(0, x/sqrt(2.)))/2.
-   else:
-      return (1.-glquad(0, -x/sqrt(2.)))/2.
+#
+# -------------------------------------------------------------------
+def normcdf(X):
+    # Cumulative normal distribution
 
-# Composite fifth-order Gauss-Legendre quadrature estimation
-def glquad(a, b):
-   y = [0, 0, 0, 0, 0]
-   x = [-sqrt(245.+14.*sqrt(70.))/21, -sqrt(245.-14.*sqrt(70.))/21, 0, sqrt(245.-14.*sqrt(70.))/21., sqrt(245.+14.*sqrt(70.))/21]
-   w = [(322.-13.*sqrt(70.))/900., (322.+13.*sqrt(70.))/900., 128./225., (322.+13.*sqrt(70.))/900, (322.-13.*sqrt(70.))/900.]
-   n = 4800
-   s = 0
-   h = (b-a)/n
-
-   for i in range(0, n, 1):
-      y[0] = h * x[0]/2.+(h+2.*(a+i*h))/2.
-      y[1] = h * x[1]/2.+(h+2.*(a+i*h))/2.
-      y[2] = h * x[2]/2.+(h+2.*(a+i*h))/2.
-      y[3] = h * x[3]/2.+(h+2.*(a+i*h))/2.
-      y[4] = h * x[4]/2.+(h+2.*(a+i*h))/2.
-      f = lambda r: (2./sqrt(pi))*exp(-r**2.)
-      s = s+h*(w[0]*f(y[0])+w[1]*f(y[1])+w[2]*f(y[2])+w[3]*f(y[3])+w[4]*f(y[4]))/2.
-   return s
+    (a1,a2,a3,a4,a5) = (0.31938153, -0.356563782, 1.781477937, -1.821255978, 1.330274429)
+    L = absolute(X)
+    K = 1.0 / (1.0 + 0.2316419 * L)
+    w = 1.0 - 1.0 / sqrt(2*pi)*exp(-L*L/2.) * (a1*K + a2*K*K + a3*pow(K,3) +
+    a4*pow(K,4) + a5*pow(K,5))
+    if X<0:
+        w = 1.0-w
+    return w
 
 # Inverse CDF
 def normicdf(v):

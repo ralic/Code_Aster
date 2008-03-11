@@ -1,11 +1,10 @@
-      SUBROUTINE XMOLIG(LIEL1,K8CONT,TRAV)
+      SUBROUTINE XMOLIG(LIEL1,TRAV)
       IMPLICIT NONE
 
-      CHARACTER*8  K8CONT
       CHARACTER*24 LIEL1,TRAV
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,12 +34,12 @@ C ----------------------------------------------------------------------
 C
 C
 C IN      LIEL1  : LIGREL DU MODELE SAIN
-C IN      K8CONT : PRISE EN COMPTE DU CONTACT ('OUI' OU 'NON')
 C IN/OUT  TRAV   : TABLEAU DE TRAVAIL  CONTEANT LES TYPES
 C                  D'ENRICHISSEMENT ET LE TYPE DES NOUVEAUX ELEMENTS
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
+
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -76,7 +75,7 @@ C
 
       INTEGER       NGR1,IGR1,J1,N1,NBELT,ITYPEL,IEL,IMA,JJ,JTAB
       CHARACTER*8   K8BID
-      CHARACTER*16  NOTYPE,NOBID
+      CHARACTER*16  NOTYPE
 
 C ----------------------------------------------------------------------
 C
@@ -220,6 +219,7 @@ C     RECUPERATION DE L'ADRESSE DU TABLEAU DE TRAVAIL
 
 C     REMPLISSAGE DE LA 5EME COLONNE DU TABLEAU AVEC LE TYPE D'ELEMENT
       CALL JELIRA(LIEL1,'NMAXOC',NGR1,K8BID)
+      
       DO 200 IGR1=1,NGR1
         CALL JEVEUO(JEXNUM(LIEL1,IGR1),'L',J1)
         CALL JELIRA(JEXNUM(LIEL1,IGR1),'LONMAX',N1,K8BID)
@@ -231,8 +231,7 @@ C     REMPLISSAGE DE LA 5EME COLONNE DU TABLEAU AVEC LE TYPE D'ELEMENT
           IMA=ZI(J1-1+IEL)
           JJ=JTAB-1+5*(IMA-1)
 
-          IF (K8CONT .EQ. 'NON') THEN
-
+C
 C           SI LE CONTACT N'EST PAS PRIS EN COMPTE
 C           --------------------------------------
 
@@ -273,19 +272,14 @@ C           --------------------------------------
             ELSEIF (NOTYPE.EQ.'MECA_FACE6') THEN
               CALL XMOAJO(JJ,IF6,ITYPEL,NF6)
             ELSEIF (NOTYPE.EQ.'MEPLSE2') THEN
-              CALL XMOAJO(JJ,IPF2,ITYPEL,NPF2)
+              CALL XMOAJO(JJ,IPF2,ITYPEL,NPF2)   
             ELSEIF (NOTYPE.EQ.'MEPLSE3') THEN
               CALL XMOAJO(JJ,IPF3,ITYPEL,NPF3)
-            ELSE
-              ZI(JJ+5)=ITYPEL
-            ENDIF
 
-          ELSEIF (K8CONT .EQ. 'OUI') THEN
+C         ELEMENTS X-FEM OU LE CONTACT EST PRIS EN COMPTE
+C         -----------------------------------------------
 
-C           SI LE CONTACT EST PRIS EN COMPTE
-C           --------------------------------
-
-            IF (NOTYPE.EQ.'MECA_X_HEXA20') THEN
+            ELSEIF (NOTYPE.EQ.'MECA_X_HEXA20') THEN
               CALL XMOAJO(JJ,ICH8,ITYPEL,NCH8)
             ELSEIF (NOTYPE.EQ.'MECA_X_PENTA15') THEN
               CALL XMOAJO(JJ,ICP6,ITYPEL,NCP6)
@@ -305,16 +299,17 @@ C           --------------------------------
               CALL XMOAJO(JJ,IF3,ITYPEL,NF3)
             ELSEIF (NOTYPE.EQ.'MEPLSE3_X') THEN
               CALL XMOAJO(JJ,IPF3,ITYPEL,NPF2)
+
+C         ELEMENTS NON X-FEM
+C         ------------------
+
             ELSE
               ZI(JJ+5)=ITYPEL
             ENDIF
 
-          ENDIF
-
-        CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ZI(JJ+5)),NOBID)
-
  210    CONTINUE
  200  CONTINUE
+ 
 
 C     IMPRESSIONS
       CALL XMOIMP(NH8,NH20,NP6,NP15,NT4,NT10,NCPQ4,NCPQ8,NCPT3,NCPT6,

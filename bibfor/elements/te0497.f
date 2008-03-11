@@ -1,6 +1,6 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,10 +29,10 @@ C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES :
 C       MESSAGE           : U2MESS,U2MESK.
 C       JEVEUX            : JEMARQ,JEDEMA.
-C       CHAMPS LOCAUX     : JEVECH,TECACH,TECAEL.
+C       CHAMPS LOCAUX     : JEVECH,TECACH.
 C       ENVIMA            : R8MIEM.
-C       MATERIAUX/CHARGES : RCVALA,RCCOMA.
-C       DEDIEES A TE0497  : CAETHM,UTHK,ERHMTE,ERHMV2,CALNOR,ERHMS2,
+C       MATERIAUX/CHARGES : RCVALA.
+C       DEDIEES A TE0497  : CAETHM,UTHK,ERHMV2,CALNOR,ERHMS2,
 C                           ERHMB2,RESROT,UTJAC
 C     FONCTIONS INTRINSEQUES :
 C       SQRT.
@@ -69,14 +69,14 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
 C
-      INTEGER INO,NNO,NPG,NDIM,IGEOM,JGANO,
-     &        IMATE,IVOIS,IERRE,NBS,IRET,NIV,
-     &        ISIENP,IDEPLP,JKP,NBNA,
-     &        ITAB(7),IFOR,IBID,IAGD,IATYMA,TYP,TYPV,IACMP,
-     &        IREF1,IREF2,NBCMP
+      INTEGER INO    ,NNO   ,NPG   ,NDIM  ,IGEOM ,JGANO,
+     &        IMATE  ,IVOIS ,IERRE ,IERRM ,NBS   ,IRET  ,NIV  ,
+     &        ISIENP ,ISIENM,IDEPLP,IDEPLM,JKP   ,NBNA ,
+     &        ITAB(7),IFOR  ,IBID  ,IAGD  ,IATYMA,TYP  ,
+     &        TYPV   ,IACMP ,IREF1 ,IREF2 ,NBCMP
       INTEGER IADE2,IAVA2,IAPTM2,IGD2,NCMPM2
       INTEGER IADE3,IAVA3,IAPTM3,IGD3,NCMPM3
-      INTEGER IAUX, IGRDCA
+      INTEGER IAUX,IGRDCA
       INTEGER DIMDEP,DIMDEF,DIMCON
       INTEGER IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2
       INTEGER NMEC,NPI,NP1,NP2,NNOS,NNOM,NDDLS,NDDLM
@@ -85,22 +85,22 @@ C
       INTEGER YAMEC,ADDEME,ADCOME,YATE,ADDETE
       INTEGER YAP1,ADDEP1,ADCP11
       INTEGER YAP2,ADDEP2
-      INTEGER IADZI,IAZK24
+      INTEGER II
 C
-      REAL*8 R8MIEM,OVFL
-      REAL*8 R8BID
+      REAL*8 R8MIEM,OVFL,R8BID
       REAL*8 VALPAR(1)
       REAL*8 ORIEN,NX(3),NY(3),NZ(3),TX(3),TY(3)
       REAL*8 FPX,FPY,FRX(9),FRY(9)
-      REAL*8 INSTP
-      REAL*8 BIOT,RHOLIQ,UNSURK,JAC(27)
-      REAL*8 HK,HF
-      REAL*8 RHOHOM,PERMIN,VISCLI
-      REAL*8 TERVOM,TERSAM,TERSAH,TERCLM,TERCLH
-      REAL*8 LONGC,PRESC,ADVOM,ADSAM,ADSAH,ADCLM,ADCLH
-      REAL*8 ERREST
+      REAL*8 INSTPM(2)
+      REAL*8 BIOT,RHOLIQ,UNSURK,UNSURM,JAC(27)
+      REAL*8 HT,DELTAT,THETA
+      REAL*8 CYOUNG,RHOHOM,PERMIN,VISCLI,POROSI,POISSO
+      REAL*8 TM2H1V(3),TM2H1B(3),TM2H1S(3)
+      REAL*8 TSIVOM,TDEVOM,TSIVOH,TSIBOM,TDEBOM,TSIBSH,TSIBBH,
+     &       TSISAM,TDESAM,TSISSH,TSISBH,DENOMI
+      REAL*8 LONGC,PRESC,ADMEC,ADHY0,ADHY1,ADV1H,ADHYMD
 C
-      LOGICAL     LAXI,PERMAN
+      LOGICAL      LAXI,PERMAN
 C
       CHARACTER*2  FORMV,FORM,NOEU
       CHARACTER*3  MODINT
@@ -108,21 +108,24 @@ C
       CHARACTER*8  TYPEMA,TYPMAV
       CHARACTER*8  TYPMOD(2)
 C
-      INTEGER     NBRE1,NBRE2
-      PARAMETER ( NBRE1 = 3 , NBRE2 = 2 )
+      INTEGER     NBRE1     , NBRE2    , NBRE3     , NBRE4
+      PARAMETER ( NBRE1 = 3 , NBRE2 = 2, NBRE3 = 1 , NBRE4 = 2 )
 C
-      REAL*8       VALRE1(NBRE1),VALRE2(NBRE2)
+      REAL*8       VALRE1(NBRE1),VALRE2(NBRE2),
+     &             VALRE3(NBRE3),VALRE4(NBRE4)
 C
-      CHARACTER*2  CODME1(NBRE1),CODME2(NBRE2)
-      CHARACTER*8  NOMRE1(NBRE1),NOMRE2(NBRE2)
+      CHARACTER*2  CODME1(NBRE1),CODME2(NBRE2),
+     &             CODME3(NBRE3),CODME4(NBRE4)
+      CHARACTER*8  NOMRE1(NBRE1),NOMRE2(NBRE2),
+     &             NOMRE3(NBRE3),NOMRE4(NBRE4)
       CHARACTER*8 VALK
 C
       DATA NOMRE1 / 'RHO','BIOT_COE','PERM_IN' /
       DATA NOMRE2 / 'RHO','VISC' /
+      DATA NOMRE3 / 'PORO'       /
+      DATA NOMRE4 / 'E', 'NU'    /
 C
 C ------------------------------------------------------------------
-C
-      CALL TECAEL(IADZI,IAZK24)
 C
       CALL JEMARQ()
       OVFL = R8MIEM()
@@ -136,7 +139,6 @@ C =====================================================================
      &            NNOS  ,NNOM  ,NPI   ,NPG   ,NDDLS ,NDDLM ,DIMUEL,
      &            IPOIDS,IVF   ,IDFDE ,IPOID2,IVF2  ,IDFDE2,JGANO)
 C
-        R8BID = DBLE(NDIM)/2.D0
 C =====================================================================
 C B. --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU ----------
 C =====================================================================
@@ -160,42 +162,58 @@ C 1. EVENTUELS PARAMETRES TEMPORELS
 C--------------------------------------------------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITAB,IRET)
       IF ( IRET.EQ.0 ) THEN
-        INSTP = ZR(ITAB(1))
+        INSTPM(1) = ZR(ITAB(1))
+        IF ( .NOT.PERMAN ) THEN
+          DELTAT     = ZR(ITAB(1)+1)
+          THETA      = ZR(ITAB(1)+2)
+          INSTPM(2)  = INSTPM(1)-DELTAT
+        ENDIF
       ELSE
         CALL U2MESS('F','INDICATEUR_11')
       ENDIF
 C--------------------------------------------------------------------
-C 2. INITIALISATIONS/RECUPERATION DE LA GEOMETRIE ET DES CHAMPS LOCAUX
+C 2. RECUPERATION DE LA GEOMETRIE, DU MATERIAU ET DES CHAMPS LOCAUX
 C--------------------------------------------------------------------
 C
 C 2.1. GEOMETRIE (IGEOM), MATERIAU (IMATE) :
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
-C
       CALL JEVECH('PMATERC','L',IMATE)
 C
-C 2.2. LES DEPLACEMENTS A L'INSTANT COURANT --> IDEPLP
+C 2.2. LES DEPLACEMENTS A L'INSTANT COURANT
+C      1. TOUJOURS A L'INSTANT COURANT --> IDEPLP
+C      2. SI TRANSITOIRE, A L'INSTANT PRECEDENT --> IDEPLM
 C
       CALL JEVECH('PDEPLAR','L',IDEPLP)
 C
-C 2.3. CONTRAINTES AUX NOEUDS PAR ELEMENTS A L'INSTANT ACTUEL --> ISIENP
+      IF ( .NOT. PERMAN ) THEN
+        CALL JEVECH('PDEPLMR','L',IDEPLM)
+      ENDIF
+C
+C 2.3. CONTRAINTES AUX NOEUDS PAR ELEMENTS A L'INSTANT ACTUEL
+C      1. TOUJOURS A L'INSTANT ACTUEL --> ISIENP
+C      2. SI TRANSITOIRE, A L'INSTANT PRECEDENT --> ISIENM
 C
       CALL TECACH('ONN','PCONTNO',3,ITAB,IRET)
       ISIENP = ITAB(1)
       NBCMP  = ITAB(2)/NNO
+      IF ( .NOT. PERMAN ) THEN
+        CALL TECACH('ONN','PCONTNM',3,ITAB,IRET)
+        ISIENM   = ITAB(1)
+      ENDIF
 C
 C 2.4. LES FORCES VOLUMIQUES :
 C
       CALL JEVECH('PFRVOLU','L', IFOR)
 C--------------------------------------------------------------------
 C 3. RECHERCHE DES VALEURS NECESSAIRES AU CALCUL DE L'INDICATEUR
-C     . COEFFICIENT DE BIOT 
+C     . COEFFICIENT DE BIOT
 C     . MASSE VOLUMIQUE HOMOGENEISEE RHOHOM
 C     . MASSE VOLUMIQUE DU LIQUIDE RHOLIQ
 C     . CONDUCTIVITE HYDRAULIQUE
-C-------------------------------------------------------------------- 
+C--------------------------------------------------------------------
       NOMPAR(1) = 'INST'
-      VALPAR(1) = INSTP
+      VALPAR(1) = INSTPM(1)
 C
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALPAR,
      &              NBRE1, NOMRE1, VALRE1, CODME1, 'FM' )
@@ -212,7 +230,7 @@ C
 C
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_LIQU', 1, NOMPAR, VALPAR,
      &              NBRE2, NOMRE2, VALRE2, CODME2, 'FM' )
-C      
+C
       IF ( ( CODME2(1).EQ.'OK' ) .AND. ( CODME2(2).EQ.'OK' ) ) THEN
         RHOLIQ = VALRE2(1)
         VISCLI = VALRE2(2)
@@ -220,16 +238,58 @@ C
         CALL U2MESK('F','ELEMENTS4_69',1,NOMRE2(1)//NOMRE2(2))
       ENDIF
 C
-      IF ( PERMIN.GT.OVFL ) THEN
+      IF ( PERMIN .GT. OVFL ) THEN
         UNSURK = VISCLI/PERMIN
       ELSE
         CALL U2MESS('F','INDICATEUR_20')
       ENDIF
+C
+C--------------------------------------------------------------------
+C 4. SI INSTATIONNAIRE, ON RECUPERE DES COEFFICIENTS SUPPLEMENTAIRES
+C     . MODULE DE BIOT
+C     . MODULE DE YOUNG
+C--------------------------------------------------------------------
+C
+      IF ( .NOT. PERMAN ) THEN
+C
+C 4.1. RECHERCHE DE LA POROSITE INITIALE
+C
+        CALL RCVALA ( ZI(IMATE), ' ', 'THM_INIT', 1, NOMPAR, VALPAR,
+     &                NBRE3, NOMRE3, VALRE3, CODME3, 'FM' )
+C
+        IF ( CODME3(1).EQ.'OK' ) THEN
+          POROSI = VALRE3(1)
+        ELSE
+          CALL U2MESK('F','ELEMENTS4_70',1,NOMRE3(1))
+        ENDIF
+C
+C 4.2. RECHERCHE DU COEFFICIENT DE POISSON ET DU MODULE DE YOUNG
+C
+        CALL RCVALA ( ZI(IMATE), ' ', 'ELAS', 1, NOMPAR, VALPAR,
+     &                NBRE4, NOMRE4, VALRE4, CODME4, 'FM' )
+C
+        IF (( CODME4(1).EQ.'OK' ).AND. ( CODME4(2).EQ.'OK' )) THEN
+          CYOUNG = VALRE4(1)
+          POISSO = VALRE4(2)
+        ELSE
+          CALL U2MESK('F','ELEMENTS4_71',1,NOMRE4(1)//NOMRE4(2))
+        ENDIF
+C
+C 4.4. ON CALCULE L'INVERSE DU MODULE DE BIOT
+C
+        IF ( CYOUNG .GT. OVFL ) THEN
+          UNSURM = 3.D0*(BIOT-POROSI)*(1.D0-BIOT)*(1.D0-2*POISSO)/CYOUNG
+
+        ELSE
+          CALL U2MESS('F','ELEMENTS4_67')
+        ENDIF
+C
+      ENDIF
 
 C--------------------------------------------------------------------
-C 4. INITIALISATION DES FORCES
+C 5. INITIALISATION DES FORCES
 C--------------------------------------------------------------------
-C 4.1. FORCES DE PESANTEUR :
+C 5.1. FORCES DE PESANTEUR :
 C . SOIT A PARTIR D'UNE CARTE
 C . SOIT A ZERO
 C
@@ -243,14 +303,14 @@ C
         FPY = 0.D0
       ENDIF
 C
-C 4.2. FORCES DE ROTATION
+C 5.2. FORCES DE ROTATION
 C . SOIT A PARTIR D'UNE CARTE
 C . SOIT A ZERO
 C CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS
-C REMARQUE : LE TABLEAU EST DIMENSIONNE A 9 CASES CAR 
+C REMARQUE : LE TABLEAU EST DIMENSIONNE A 9 CASES CAR
 C C'EST LE MAX DE POINTS DE GAUSS POSSIBLE EN 2D
 C
-      CALL TECACH('ONN','PROTATR',1,ITAB,IRET)   
+      CALL TECACH('ONN','PROTATR',1,ITAB,IRET)
 C
       IF ( ITAB(1).NE.0 ) THEN
         CALL RESROT (ZR(ITAB(1)),ZR(IGEOM),ZR(IVF),RHOHOM,NNO,NPG,
@@ -264,7 +324,7 @@ C
 C
       ENDIF
 C--------------------------------------------------------------------
-C 5. RECUPERATION DES GRANDEURS CARACTERISTIQUES
+C 6. RECUPERATION DES GRANDEURS CARACTERISTIQUES
 C--------------------------------------------------------------------
       CALL JEVECH('PGRDCA','L',IGRDCA)
       LONGC = ZR(IGRDCA)
@@ -291,29 +351,36 @@ C------------------------------------------------------------------
 C 1. CALCUL DES TERMES VOLUMIQUES
 C------------------------------------------------------------------
 C
-C CALCUL DU DIAMETRE HK DE L'ELEMENT K
+C CALCUL DU DIAMETRE HT DE L'ELEMENT T
 C
       NIV = 1
-      CALL UTHK(NOMTE,IGEOM,HK,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
+      CALL UTHK(NOMTE,IGEOM,HT,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
 C
-      CALL ERHMV2(LAXI      , HK    ,
-     &            DIMDEP    , DIMDEF    , NMEC  , NP1    , NP2 ,
-     &            NDIM      , NNO       , NNOS  , NNOM   , NPI , NPG   ,
-     &            NDDLS     , NDDLM     , DIMUEL,
-     &            IPOIDS    , IVF       , IDFDE , IPOID2 , IVF2, IDFDE2,
-     &            ZR(IGEOM) , ZR(IFOR)  ,
-     &            ZR(IDEPLP),
-     &            ZR(ISIENP), NBCMP     ,
-     &            BIOT      ,
-     &            FPX       , FPY       , FRX   , FRY    ,
-     &            YAMEC     , ADDEME    , YAP1  , ADDEP1 , YAP2, ADDEP2,
-     &            YATE      , ADDETE    ,
-     &            TERVOM)
+      CALL ERHMV2(LAXI      , PERMAN    , DELTAT  , DIMDEP,
+     &            DIMDEF    , NMEC      , NP1     , NP2   , NDIM  ,
+     &            NNO       , NNOS      , NNOM    , NPI   ,
+     &            NPG       , NDDLS     , NDDLM   , DIMUEL,
+     &            IPOIDS    , IVF       , IDFDE   , IPOID2, IVF2  ,
+     &            IDFDE2    , ZR(IGEOM) , ZR(IFOR),
+     &            ZR(IDEPLP), ZR(IDEPLM),
+     &            ZR(ISIENP), ZR(ISIENM), NBCMP   , BIOT  , UNSURM,
+     &            FPX       , FPY       , FRX     , FRY   ,
+     &            YAMEC     , ADDEME    , YAP1    , ADDEP1,
+     &            YAP2      , ADDEP2    , YATE    , ADDETE, TM2H1V )
 
 C ON ADIMENSIONNE LES INDICATEURS VOLUMIQUES
 C
-      ADVOM  = 1.D0/(PRESC*LONGC**R8BID)
-      TERVOM = ADVOM*TERVOM
+      ADMEC = 1.D0/(PRESC**2*LONGC**NDIM)
+      TSIVOM =  HT**2 * ADMEC * TM2H1V(1)
+C
+      IF ( .NOT. PERMAN ) THEN
+C
+        TDEVOM = HT**2 * ADMEC * TM2H1V(2)
+C
+        ADV1H     = CYOUNG*UNSURK*ADMEC
+        TSIVOH = DELTAT * HT**2 * ADV1H * TM2H1V(3)
+C
+      ENDIF
 C
 C------------------------------------------------------------------
 C 2. CALCUL DES TERMES SURFACIQUES
@@ -322,11 +389,12 @@ C 2.1. PHASE DE PREPARATION : ON RECUPERE LES ADRESSES NECESSAIRES
 C                             AUX CALCULS
 C -----------------------------------------------------------------
 C
-C ON RECUPERE L'ADRESSE DES VOISINS
+C ON RECUPERE LES ADRESSES
+C    1. VOISINS
+C    2. CHARGEMENTS DE TYPE FORCE_FACE
+C    3. CHARGEMENTS DE TYPE PRES_REP
       CALL JEVECH('PVOISIN','L',IVOIS)
-C ON RECUPERE L'ADRESSE DES CHARGEMENTS DE TYPE FORCE_FACE
       CALL JEVECH('PFORCE','L',IREF1)
-C ON RECUPERE L'ADRESSE DES CHARGEMENTS DE TYPE PRES_REP
       CALL JEVECH('PPRESS','L',IREF2)
 C
 C RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES SEGMENTS
@@ -393,10 +461,12 @@ C------------------------------------------------------------------
 C ON INITIALISE LES TERMES DE SAUT ET LES TERMES PROVENANT DES
 C CONDITIONS AUX LIMITES (HYDRAULIQUE + MECANIQUE)
 C
-      TERSAM = 0.D0
-      TERSAH = 0.D0
-      TERCLM = 0.D0
-      TERCLH = 0.D0
+      DO 11 , II = 1 , 3
+C
+        TM2H1B(II) = 0.D0
+        TM2H1S(II) = 0.D0
+C
+ 11   CONTINUE
 C
 C BOUCLE SUR LES ARETES : IMPLICITEMENT, ON NUMEROTE LOCALEMENT LES
 C                         ARETES COMME LES NOEUDS SOMMETS
@@ -411,10 +481,10 @@ C
 C --- CALCUL DES NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 C
         IAUX = INO
-        CALL CALNOR ( '2D' , IAUX, NNO  , IBID, NBS, NBNA, ITAB,
+        CALL CALNOR ( '2D' , IAUX, NNO  , IBID , NBS, NBNA, ITAB,
      &                IGEOM, IBID,
-     &                IBID , IBID, ORIEN, HF  ,
-     &                JAC  , NX  , NY   , NZ  , TX , TY          )
+     &                IBID , IBID, ORIEN,
+     &                R8BID, JAC , NX   , NY   , NZ , TX  , TY  )
 C
 C TEST DU TYPE DE VOISIN : TYPV VAUT 0 POUR UN BORD LIBRE ==> ON NE SAIT
 C PAS FAIRE AUJOURD'HUI
@@ -430,26 +500,24 @@ C ---------------------------------------------------------------
 C 2.4. CALCUL DES TERMES DE VERIFICATION DES CONDITIONS DE BORD
 C ---------------------------------------------------------------
 
-            CALL ERHMB2( INO        ,NBS       ,NBNA   ,HF,
-     &                   NDIM       ,JAC       ,NX     ,NY,
-     &                   TX         ,TY        ,NBCMP  ,ZR(IGEOM),
-     &                   IVOIS      ,
-     &                   ZR(ISIENP) ,ADSIP     ,
-     &                   IAGD       ,ZI(IREF2) ,IADE2  ,IAVA2    ,
-     &                   NCMPM2     ,IAPTM2    ,
-     &                   IADE3      ,IAVA3     ,NCMPM3 ,IAPTM3   ,
-     &                   TERCLM     ,TERCLH)
+            CALL ERHMB2( PERMAN    , INO       , NBS   , NBNA  ,
+     &                   NDIM      , THETA     , INSTPM, JAC   , NX,
+     &                   NY        , TX        , TY    , NBCMP ,
+     &                   ZR(IGEOM) , IVOIS     ,
+     &                   ZR(ISIENP), ZR(ISIENM), ADSIP , IAGD  ,
+     &                   ZI(IREF2) , IADE2     , IAVA2 , NCMPM2, IAPTM2,
+     &                   IADE3     , IAVA3     , NCMPM3, IAPTM3, TM2H1B)
 C
           ELSE IF (FORMV.EQ.'TR'.OR.FORMV.EQ.'QU') THEN
 C ----------------------------------------------------------------
 C 2.5. CALCUL DES TERMES DE SAUT A TRAVERS LES FACES INTERIEURES
 C DE LA MAILLE
 C ----------------------------------------------------------------
-            CALL ERHMS2( INO       ,NBS              ,NBNA     ,HF   ,
-     &                   JAC       ,NX    ,NY        ,
-     &                   ZR(ISIENP),ADSIP ,
-     &                   NBCMP     ,TYPMAV,ZI(IREF1) ,IVOIS,
-     &                   TERSAM    ,TERSAH)
+            CALL ERHMS2( PERMAN    , INO      , NBS       , NBNA ,
+     &                   THETA     , JAC      , NX        , NY   ,
+     &                   ZR(ISIENP), ADSIP    , ZR(ISIENM), NBCMP,
+     &                   TYPMAV    , ZI(IREF1), ZI(IREF2) , IVOIS,
+     &                   TM2H1S                                   )
 C
           ENDIF
 C
@@ -463,36 +531,60 @@ C =====================================================================
 C
 C ON ADIMENSIONNE LES INDICATEURS
 C
-      ADCLM = 1.D0/(PRESC*LONGC**R8BID)
-      ADCLH = UNSURK*LONGC**(1.D0-R8BID)/(PRESC*RHOLIQ)
+      DENOMI = PRESC**2*LONGC**(NDIM-2)*RHOLIQ**2
+      ADHY0  = UNSURK**2/DENOMI
+      ADHY1  = ADHY0/(LONGC**2)
 C
-      ADSAM = 1.D0/(PRESC*LONGC**R8BID)
-      ADSAH = UNSURK*LONGC**(1.D0-R8BID)/(PRESC*RHOLIQ)
+      TSISAM = HT * ADMEC * TM2H1S(1)
+      TSIBOM = HT * ADMEC * TM2H1B(1)
 C
-      TERCLM = ADCLM*TERCLM
-      TERCLH = ADCLH*TERCLH
+      IF (PERMAN) THEN
 C
-      TERSAM = ADSAM*TERSAM
-      TERSAH = ADSAH*TERSAH
+        TSIBSH = HT * ADHY0 * TM2H1B(3)
+        TSIBBH = HT**3 * ADHY1 * TM2H1B(3)
+C
+        TSISSH = HT * ADHY0 * TM2H1S(3)
+        TSISBH = HT**3 * ADHY1 * TM2H1S(3)
+C
+      ELSE
+C
+        CALL JEVECH('PERREM','L',IERRM)
+C
+        TDEBOM = HT * ADMEC * TM2H1B(2)
+        TDESAM = HT * ADMEC * TM2H1S(2)
+C
+        ADHYMD = DELTAT * HT * CYOUNG * PERMIN/VISCLI * ADHY1
+        TSIBSH = ADHYMD * TM2H1B(3)
+        TSISSH = ADHYMD * TM2H1S(3)
+C
+      ENDIF
 C
 C ON STOCKE LES INDICATEURS
 C
       CALL JEVECH('PERREUR','E',IERRE)
 C
-      ERREST = TERVOM + TERSAM + TERSAH + TERCLM + TERCLH
+      IF ( PERMAN ) THEN
 C
-      ZR(IERRE  ) = ERREST
-      ZR(IERRE+1) = 0.D0
-      ZR(IERRE+2) = 0.D0
+        ZR(IERRE  ) =   SQRT(TSIVOM + TSIBOM + TSISAM)
+     &                + SQRT(TSIBSH + TSISSH)
+        ZR(IERRE+1) =   SQRT(TSIVOM + TSIBOM + TSISAM)
+     &                + SQRT(TSIBBH + TSISBH)
+        ZR(IERRE+2) = TSIVOM + TSIBOM + TSISAM
+        ZR(IERRE+3) = TSIBSH + TSISSH
+        ZR(IERRE+4) = TSIBBH + TSISBH
 C
-      ZR(IERRE+3) = TERVOM
-      ZR(IERRE+4) = 0.D0
+      ELSE
 C
-      ZR(IERRE+5) = TERCLM + TERCLH
-      ZR(IERRE+6) = 0.D0
+        ZR(IERRE+1) = TSIVOM + TSISAM + TSIBOM
+        ZR(IERRE+2) = TDEVOM + TDEBOM + TDESAM
+        ZR(IERRE+3) = TSIVOH + TSIBSH + TSISSH
 C
-      ZR(IERRE+7) = TERSAM + TERSAH
-      ZR(IERRE+8) = 0.D0
+        ZR(IERRE+4) = MAX(ZR(IERRM+4),SQRT(ZR(IERRE+1)))
+        ZR(IERRE+5) = ZR(IERRM+5) + SQRT(ZR(IERRE+2))
+        ZR(IERRE+6) = SQRT(ZR(IERRM+6)**2+ZR(IERRE+3))
+        ZR(IERRE)   = ZR(IERRE+4)+ZR(IERRE+5)+ZR(IERRE+6)
+C
+      ENDIF
 C
       CALL JEDEMA()
 C

@@ -1,0 +1,125 @@
+# AJOUT
+# TITRE CONSOLIDATION TERZAGHI 2D Q8
+##################################
+# TEST DES INDICATEURS D'ERREUR HM
+##################################
+#
+# LE CALCUL EST REALISE EN 2 PASSES.
+# INTERET : VALIDATION DU CALCUL D'INDICATEUR EN POURSUITE
+#
+# ON NE FAIT PAS D'ADAPTATION DE MAILLAGE CAR ASTER NE POURRAIT
+# PAS REDEMARRER LE CALCUL SUR UN NOUVEAU MAILLAGE
+#
+# 2eme PASSE
+#
+
+POURSUITE(CODE=_F(NOM='WTNL100E',),
+          DEBUG=_F(SDVERI='OUI',),);
+
+RESU[nbadap]=STAT_NON_LINE(reuse =RESU[nbadap],
+                           MODELE=MODE[nbadap],
+                           CHAM_MATER=CHMAT[nbadap],
+                           EXCIT=_F(CHARGE=CHAR[nbadap],),
+                           COMP_INCR=_F(RELATION='KIT_HM',
+                                        RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                        PARM_THETA=0.56999999999999995,),
+                           ETAT_INIT=_F(EVOL_NOLI=RESU[nbadap],),
+                           INCREMENT=_F(LIST_INST=LI,
+                                        INST_INIT = T1_FIN,
+                                        INST_FIN = T2_FIN, 
+                                        ERRE_TEMPS='OUI',),
+                           NEWTON=_F(MATRICE='TANGENTE',
+                                     REAC_ITER=10,),
+                           CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                           SOLVEUR=_F(METHODE='LDLT',),);
+
+RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
+                       MODELE=MODE[nbadap],
+                       CHAM_MATER=CHMAT[nbadap],
+                       RESULTAT=RESU[nbadap],
+                       LIST_INST=LI2_BIS,
+                       OPTION='SIEF_ELNO_ELGA',);
+
+RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
+                       RESULTAT=RESU[nbadap],
+                       LIST_INST=LI2_BIS,
+                       TYPE_OPTION='INDI_ERREUR',
+                       OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+
+RESU[nbadap]=CALC_NO(reuse =RESU[nbadap],
+                     RESULTAT=RESU[nbadap],
+                     INST=T2_FIN,
+                     OPTION='ERRE_NOEU_ELEM',);
+
+TEST_RESU( RESU = (
+           _F(  RESULTAT = RESU[nbadap],  INST=T2_FIN,
+                NOM_CHAM = 'ERRE_NOEU_ELEM',   NOM_CMP = 'ESTERG1',
+                CRITERE = 'RELATIF',  PRECISION = 1.E-6,
+                GROUP_NO = 'NO_TEST',      VALE = 6.8723106927078E-03,
+                REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
+           _F(  RESULTAT = RESU[nbadap],  INST=T2_FIN,
+                PARA = 'ERRE_TPS_GLOB',
+                CRITERE = 'RELATIF',  PRECISION = 1.E-6,
+                VALE = 9.7220198405059E-02,
+                REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
+                  ),
+          )
+
+#  le meme calcul en 1 seul coup
+
+RESU_TOT=STAT_NON_LINE(MODELE=MODE[nbadap],
+                       CHAM_MATER=CHMAT[nbadap],
+                       EXCIT=_F(CHARGE=CHAR[nbadap],),
+                       COMP_INCR=_F(RELATION='KIT_HM',
+                                    RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                    PARM_THETA=0.56999999999999995,),
+                       INCREMENT=_F(LIST_INST=LI,
+                                    INST_INIT = 0.0,
+                                    INST_FIN = T2_FIN, 
+                                    ERRE_TEMPS='OUI',),
+                       NEWTON=_F(MATRICE='TANGENTE',
+                                 REAC_ITER=10,),
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                       SOLVEUR=_F(METHODE='LDLT',),
+                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+
+####dico = RESU_TOT.LIST_PARA()
+
+####print dico['ERRE_TPS_LOC']
+
+####print dico['ERRE_TPS_GLOB']
+####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
+
+RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
+                  MODELE=MODE[nbadap],
+                  CHAM_MATER=CHMAT[nbadap],
+                  RESULTAT=RESU_TOT,
+                  LIST_INST=LI,
+                  OPTION='SIEF_ELNO_ELGA',);
+
+RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
+                  RESULTAT=RESU_TOT,
+                  LIST_INST=LI_BIS,
+                  TYPE_OPTION='INDI_ERREUR',
+                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+
+RESU_TOT=CALC_NO(reuse =RESU_TOT,
+                  RESULTAT=RESU_TOT,
+                  INST=T2_FIN,
+                  OPTION='ERRE_NOEU_ELEM',);
+
+TEST_RESU( RESU = (
+        _F(  RESULTAT = RESU_TOT,  INST=T2_FIN,
+            NOM_CHAM = 'ERRE_NOEU_ELEM',   NOM_CMP = 'ESTERG1',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
+            GROUP_NO = 'NO_TEST',      VALE = 6.8723106927078E-03,
+            REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
+        _F(  RESULTAT = RESU_TOT,  INST=T2_FIN,
+            PARA = 'ERRE_TPS_GLOB',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
+            VALE = 9.7220198405059E-02,
+            REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
+                  )
+          )
+
+FIN();

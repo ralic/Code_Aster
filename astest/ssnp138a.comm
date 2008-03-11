@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/03/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP138A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNP138A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),)
 
 
 #*********************************************************
@@ -39,27 +39,41 @@ NX = 100. ;
 # NOMBRE D ELEMENTS SELON Y
 NY = 100. ;
 #
+# precision
+eps = sqrt((W/NX)**2+(H/NY)**2)
+
 #*********************************************************
 
 # LONGUEUR DE LA FISSURE
 A = 0.04 ;
 
-# ANGLE D INCLINAISON DE LA FISSURE
-alpha = 45.*pi/180. ;
-
 # PRESSION APPLIQUEE SUR LES FACES INFERIEURE ET SUPERIEURE
 PRES=-1.e6
 
+# DEFINITION DU MATERIAU
+E   = 210E9;
+nu  = 0.3;
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),);
+
+#*********************************************************
+
+# ANGLES D INCLINAISON DE LA FISSURE (EN DEGRES)
+alphaf = [0., 15., 30., 45., 60.] ;
+#alphaf = [15.] ;
+
+# DEFINITION DES COURONNES POUR LE CALCUL DES SIF
+RI=[0.1*A,   eps]
+RS=[0.3*A, 3*eps]
+
 #----------------------------------------------
-#                MAILLAGE
+#                MAILLAGE, MODELE INITIAL
 #----------------------------------------------
 
 PRE_GIBI();
 
 MAILLAGE=LIRE_MAILLAGE(INFO=1,);
 
-# precision
-eps = sqrt((W/NX)**2+(H/NY)**2)
+
 
 MAILLAGE=DEFI_GROUP( reuse =MAILLAGE,
                      MAILLAGE=MAILLAGE,
@@ -69,11 +83,6 @@ MAILLAGE=DEFI_GROUP( reuse =MAILLAGE,
                                     _F(NOM='ND',OPTION='ENV_SPHERE',POINT=(0.,+H/2.),PRECISION=eps/4.,RAYON=eps/4.),
                                     ),
                       INFO=2 );
-
-#----------------------------------------------
-#                   MODELE ET FISSURE
-#----------------------------------------------
-
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE= _F(GROUP_MA=('SURF','LIG1','LIG3'),
                               PHENOMENE='MECANIQUE',
@@ -84,67 +93,72 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
                        ORIE_PEAU_2D=_F(GROUP_MA=('LIG1','LIG3',),),
                        );
 
-# definition de la level set tangente
-def LEVSETTAN(x,y) :
-   if ( x * cos(alpha) + y * sin(alpha) ) >= 0. : return   (x * cos(alpha) + y * sin(alpha)) -  A/2.
-   else :  return   (-x * cos(alpha) - y * sin(alpha)) -  A/2.
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
-LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y*cos(alpha)-X*sin(alpha)');
-LT=FORMULE(NOM_PARA=('X','Y'),VALE='LEVSETTAN(X,Y)');
+def LEVSETTAN(x,y,beta) :
+     if ( x * cos(beta) + y * sin(beta) ) >= 0. : return   (x * cos(beta) + y * sin(beta)) -  A/2.
+     else :  return   (-x * cos(beta) - y * sin(beta)) -  A/2.
+     
+#----------------------------------------------
+#         DEBUT DE LA BOUCLE SUR LES ANGLES
+#----------------------------------------------
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+nbcalc = len(alphaf)
+alpha = [None]*nbcalc
+LN = [None]*nbcalc
+LT = [None]*nbcalc
+FISS = [None]*nbcalc
+MODELK = [None]*nbcalc
+CHMA = [None]*nbcalc
+CH = [None]*nbcalc
+UTOT1 = [None]*nbcalc
+PK = [None]*nbcalc
+
+nbc=len(RI)
+SIF_1 = [None]*(nbc*nbcalc)
+SIF_2 = [None]*(nbc*nbcalc)
+
+for i in range(nbcalc) :
+#
+# DEFINITION DES LEVEL SET
+#
+# on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
+  alpha = str(eval('alphaf[i]*pi/180.'))
+
+  LN[i]=FORMULE(NOM_PARA=('X','Y'),VALE='Y*cos('+alpha+')-X*sin('+alpha+')');
+  LT[i]=FORMULE(NOM_PARA=('X','Y'),VALE='LEVSETTAN(X,Y,'+alpha+')');
+
+  FISS[i]=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                    DEFI_FISS=_F(FONC_LT=LT[i],FONC_LN=LN[i],),
                     GROUP_MA_ENRI='SURF',
                     RAYON_ENRI=A/10.,
                     INFO=1);
 
-CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',OPERATION='EXTR',NOM_CHAM='LNNO',FISSURE=FISS,);
-CHLT=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',OPERATION='EXTR',NOM_CHAM='LTNO',FISSURE=FISS,);
+  MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i],INFO=1,);
 
-IMPR_RESU(FORMAT='GMSH',UNITE=83,RESU=_F(CHAM_GD=CHLT))
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
-
-#----------------------------------------------
-#                   MATERIAU
-#----------------------------------------------
-
-E   = 210E9;
-nu  = 0.3;
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),);
-
-CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                       MODELE=MODELEK,
+  CHMA[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       MODELE=MODELK[i],
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
                              );
+#
+# CHARGEMENTS
+#
+  CH[i]=AFFE_CHAR_MECA(MODELE=MODELK[i],
+                       LIAISON_XFEM='OUI',
+                       DDL_IMPO=(_F(GROUP_NO=('NA','NB',),DY=0.),
+                                _F(GROUP_NO=('NC','ND',),DX=0.),),
+                       PRES_REP=_F(GROUP_MA=('LIG1','LIG3',),PRES=PRES,),
+                       INFO=1,);
 
-#----------------------------------------------
-#                   CHARGEMENTS
-#----------------------------------------------
-
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
-
-CHB=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   DDL_IMPO=(_F(GROUP_NO=('NA','NB',),DY=0.),
-                             _F(GROUP_NO=('NC','ND',),DX=0.),),
-                   );
-
-CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
-                   PRES_REP=_F(GROUP_MA=('LIG1','LIG3',),PRES=PRES,),);
-
-#----------------------------------------------
-#                   RESOLUTION
-#----------------------------------------------
-
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
-
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMA1,
-                   EXCIT=(_F(CHARGE=CHXFEM,),
-                          _F(CHARGE=CHB,),
-                          _F(CHARGE=CH1,),),
+#
+# RESOLUTION
+#
+  UTOT1[i]=STAT_NON_LINE(MODELE=MODELK[i],
+                   CHAM_MATER=CHMA[i],
+                   EXCIT=_F(CHARGE=CH[i],),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='SURF',),
                    INCREMENT=_F(LIST_INST=L_INS1,
@@ -153,12 +167,135 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
+#
+# POST-TRAITEMENT : CALCUL DES SIFS 
+#
+
+# SOLUTION ANALYTIQUE (handbook tada p42)
+  fab=1.0+0.128*(A/W)-0.288*(A/W)**2+1.525*(A/W)**3
+  K1REF=-PRES*sqrt(pi*A/2.)*fab*cos(eval(alpha))**2
+  K2REF=-PRES*sqrt(pi*A/2.)*fab*cos(eval(alpha))*sin(eval(alpha))
+
+  for j in range(0,nbc) :
+    k = i*nbc + j
+    SIF_1[k]=CALC_G(RESULTAT=UTOT1[i],
+                   SYME_CHAR='SANS',
+                   OPTION='CALC_K_G',
+                   THETA=_F(FISSURE=FISS[i],
+                            NUME_FOND=1,
+                            R_INF=RI[j],
+                            R_SUP=RS[j],),
+                   INFO=2);
+
+    SIF_2[k]=CALC_G(RESULTAT=UTOT1[i],
+                   SYME_CHAR='SANS',
+                   OPTION='CALC_K_G',
+                   THETA=_F(FISSURE=FISS[i],
+                            NUME_FOND=2,
+                            R_INF=RI[j],
+                            R_SUP=RS[j],),
+                   INFO=2);
+
+    IMPR_TABLE(TABLE=SIF_1[k],);
+    IMPR_TABLE(TABLE=SIF_2[k],);
+
+    TEST_TABLE(TABLE=SIF_1[k],
+              NOM_PARA='K1',
+              VALE=K1REF,
+              CRITERE='RELATIF',
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE',);
+              
+    TEST_TABLE(TABLE=SIF_2[k],
+              NOM_PARA='K1',
+              VALE=K1REF,
+              CRITERE='RELATIF',
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE',);
+
+    if K2REF != 0. :
+      TEST_TABLE(TABLE=SIF_1[k],
+              NOM_PARA='K2',
+              VALE=K2REF,
+              CRITERE='RELATIF',
+              PRECISION=0.03,
+              REFERENCE='ANALYTIQUE',);
+
+      TEST_TABLE(TABLE=SIF_2[k],
+              NOM_PARA='K2',
+              VALE=K2REF,
+              CRITERE='RELATIF',
+              PRECISION=0.03,
+              REFERENCE='ANALYTIQUE',);
+    else :
+      TEST_TABLE(TABLE=SIF_1[k],
+              NOM_PARA='K2',
+              VALE=K2REF,
+              CRITERE='ABSOLU',
+              PRECISION=K1REF/1000.,
+              REFERENCE='ANALYTIQUE',);
+
+      TEST_TABLE(TABLE=SIF_2[k],
+              NOM_PARA='K2',
+              VALE=K2REF,
+              CRITERE='ABSOLU',
+              PRECISION=K1REF/1000.,
+              REFERENCE='ANALYTIQUE',);
+
+  PK[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
+                     MAILLAGE=MAILLAGE,
+                     MATER=ACIER,
+                     FISSURE = FISS[i],
+                     INFO =2,
+                    ABSC_CURV_MAXI = RS[0],
+                     RESULTAT  = UTOT1[i],
+                    )
+
+  IMPR_TABLE(TABLE = PK[i])
+  
+  TEST_TABLE(TABLE=PK[i],
+              NOM_PARA='K1_MAX',
+              VALE=K1REF,
+              CRITERE='RELATIF',
+              PRECISION=0.15,
+              REFERENCE='ANALYTIQUE',
+              FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
+                            VALE_I = 2,      ),
+                       _F(  NOM_PARA = 'METHODE',  
+                            VALE_I = 3,      ),     ),);
+  if K2REF != 0. :
+    TEST_TABLE(TABLE=PK[i],
+              NOM_PARA='K2_MAX',
+              VALE=K2REF,
+              CRITERE='RELATIF',
+              PRECISION=0.16,
+              REFERENCE='ANALYTIQUE',
+              FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
+                            VALE_I = 2,      ),
+                       _F(  NOM_PARA = 'METHODE',  
+                            VALE_I = 3,      ),     ),);
+  
+  else :
+    TEST_TABLE(TABLE=PK[i],
+              NOM_PARA='K2_MAX',
+              VALE=K2REF,
+              CRITERE='ABSOLU',
+              PRECISION=K1REF/1000.,
+              REFERENCE='ANALYTIQUE',
+              FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
+                            VALE_I = 2,      ),
+                       _F(  NOM_PARA = 'METHODE',  
+                            VALE_I = 3,      ),     ),);
+  
+ 
+
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : MAILLAGE FISSURE et DEPLACEMENTS POUR LE MAILLAGE FISSURE
 #------------------------------------------------------------------------
+i =0
 
 MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAGE,
-                       MODELE        = MODELEK,
+                       MODELE        = MODELK[i],
                        INFO          = 2)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -168,9 +305,9 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAGE,
                         MAILLAGE_FISS = MA_XFEM,
-                        MODELE        = MODELEK,
+                        MODELE        = MODELK[i],
                         MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,
+                        RESULTAT      = UTOT1[i],
                         NOM_CHAM      = ('DEPL','SIEF_ELGA'),
                         INFO          = 2)
 
@@ -182,96 +319,9 @@ RES_XFEM=CALC_NO(reuse =RES_XFEM,
                  RESULTAT=RES_XFEM,
                  OPTION=('EQUI_NOEU_SIGM'));
 
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')),
+#IMPR_RESU(FORMAT='IDEAS',RESU=(_F(MAILLAGE=MA_XFEM,RESULTAT=RES_XFEM,NOM_CHAM='DEPL',NOM_CMP=('DX','DY')),
 #                              _F(RESULTAT=RES_XFEM,NOM_CHAM='EQUI_NOEU_SIGM',NOM_CMP='VMIS'),
 #                               ),  );
 
-#----------------------------------------------------------------------
-# POST-TRAITEMENT : CALCUL DES SIFS AVEC POST_K1_K2_K3
-#------------------------------------------------------------------------
-
-# PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
-#                  MAILLAGE=MAILLAGE,
-#                  MATER=ACIER,
-#                  FISSURE = FISS,
-#                  RESULTAT  = UTOT1,
-#                  ABSC_CURV_MAXI = 0.05,
-# #                 NB_NOEUD_COUPE = 6,
-#                  VECT_K1  = ( -sin(alpha), cos(alpha),0. ),
-#                  )
-#
-# IMPR_TABLE(TABLE = PK)
-
-
-#------------------------------------------------------------------------
-# POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
-#------------------------------------------------------------------------
-
-# TEST AVEC PLUSIEURS COURONNES
-RI=[0.1*A,   eps]
-RS=[0.3*A, 3*eps]
-
-nbc=len(RI)
-SIF_1 = [None]*(nbc)
-SIF_2 = [None]*(nbc)
-
-
-# SOLUTION ANALYTIQUE (handbook tada p42)
-
-fab=1.0+0.128*(A/W)-0.288*(A/W)**2+1.525*(A/W)**3
-#print ' ',-PRES*sqrt(pi*A/2.)*fab
-K1REF=-PRES*sqrt(pi*A/2.)*fab*cos(alpha)**2
-K2REF=-PRES*sqrt(pi*A/2.)*fab*cos(alpha)*sin(alpha)
-
-for i in range(0,nbc) :
-
-   SIF_1[i]=CALC_G(RESULTAT=UTOT1,
-                   SYME_CHAR='SANS',
-                   OPTION='CALC_K_G',
-                   THETA=_F(FISSURE=FISS,
-                            NUME_FOND=1,
-                            R_INF=RI[i],
-                            R_SUP=RS[i],),
-                   INFO=1);
-
-   SIF_2[i]=CALC_G(RESULTAT=UTOT1,
-                   SYME_CHAR='SANS',
-                   OPTION='CALC_K_G',
-                   THETA=_F(FISSURE=FISS,
-                            NUME_FOND=2,
-                            R_INF=RI[i],
-                            R_SUP=RS[i],),
-                   INFO=1);
-
-   IMPR_TABLE(TABLE=SIF_1[i],);
-   IMPR_TABLE(TABLE=SIF_2[i],);
-
-   TEST_TABLE(TABLE=SIF_1[i],
-              NOM_PARA='K1',
-              VALE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.01,
-              REFERENCE='ANALYTIQUE',);
-
-   TEST_TABLE(TABLE=SIF_1[i],
-              NOM_PARA='K2',
-              VALE=K2REF,
-              CRITERE='RELATIF',
-              PRECISION=0.015,
-              REFERENCE='ANALYTIQUE',);
-
-   TEST_TABLE(TABLE=SIF_2[i],
-              NOM_PARA='K1',
-              VALE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.01,
-              REFERENCE='ANALYTIQUE',);
-
-   TEST_TABLE(TABLE=SIF_2[i],
-              NOM_PARA='K2',
-              VALE=K2REF,
-              CRITERE='RELATIF',
-              PRECISION=0.015,
-              REFERENCE='ANALYTIQUE',);
 
 FIN();

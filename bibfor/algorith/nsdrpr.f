@@ -1,7 +1,7 @@
       SUBROUTINE NSDRPR(OPTION,TYPMOD,COMPOR,NDIM,IMATE,IMATSE,DEPS,
      &    DEDT,SIGMS,VARMS,VARM,SIGM,VARP,SIPAS,SIGP,SIGPS,VARPS,STYPSE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C ----------------------------------------------------------------------
          ES = VALRES(1)
          NUS = VALRES(2)
 
-         IF (COMPOR(1)(1:14).EQ.'DRUCKER_PRAGER') THEN
+         IF (COMPOR(1)(1:14).EQ.'DRUCK_PRAGER') THEN
           NOMRES(1) = 'ALPHA'
           NOMRES(2) = 'SY'
           NOMRES(3) = 'P_ULTM'
@@ -125,7 +125,7 @@ C ----------------------------------------------------------------------
      &          ((1.D0-2.D0*NU)*(1.D0-2.D0*NU))
          DDEUMU = (ES*(1.D0+NU)-E*NUS)/((1.D0+NU)*(1.D0+NU))
 
-         IF (COMPOR(1)(1:14).EQ.'DRUCKER_PRAGER') THEN
+         IF (COMPOR(1)(1:14).EQ.'DRUCK_PRAGER') THEN
           DALPHA = ALPHAS
           DSY    = SIGYS
           DPULTM = PULTMS
@@ -152,7 +152,7 @@ C ----------------------------------------------------------------------
          ES = VALRES(1)
          NUS = VALRES(2)
 
-         IF (COMPOR(1)(1:14).EQ.'DRUCKER_PRAGER') THEN
+         IF (COMPOR(1)(1:14).EQ.'DRUCK_PRAGER') THEN
           NOMRES(1) = 'ALPHA'
           NOMRES(2) = 'SY'
           NOMRES(3) = 'P_ULTM'
@@ -169,7 +169,7 @@ C ----------------------------------------------------------------------
      &          ((1.D0-2.D0*NU)*(1.D0-2.D0*NU))
          DDEUMU = (ES*(1.D0+NU)-E*NUS)/((1.D0+NU)*(1.D0+NU))
 
-         IF (COMPOR(1)(1:14).EQ.'DRUCKER_PRAGER') THEN
+         IF (COMPOR(1)(1:14).EQ.'DRUCK_PRAGER') THEN
           DALPHA = ALPHAS
           DSY    = SIGYS
           DPULTM = PULTMS

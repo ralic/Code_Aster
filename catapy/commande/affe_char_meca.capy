@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -440,7 +440,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              FISS_ESCL      = SIMP(statut='f',typ=fiss_xfem,max=1),
              SIGN_MAIT      = SIMP(statut='f',typ='TXM',into=("+","-",) ),
              SIGN_ESCL      = SIMP(statut='f',typ='TXM',into=("+","-",) ),
-             INTEGRATION    = SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG4","FPG6","FPG7",) ),
+             INTEGRATION    = SIMP(statut='f',typ='TXM',defaut="FPG4",into=("GAUSS","FPG2","FPG3","FPG4","FPG6","FPG7","NOEUD",) ),
              COEF_REGU_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
              ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut=30),
              ITER_GEOM_MAXI  =SIMP(statut='f',typ='I',defaut=0),

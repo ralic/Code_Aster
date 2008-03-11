@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +114,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 LIGREL,CHEPSA,K24B
       CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3
       CHARACTER*24 CHSIG1,CHSIG2,CHVAR1,CHVAR2,NORME,NOMPAR
-      CHARACTER*24 MODEL2,MATE2,CARA2,CHARGE,INFOCH,LESOPT
+      CHARACTER*24 MODEL2,MATE2,CARA2,LESOPT
       CHARACTER*24 CHTETA,CHTESE,CHSIGM,DLAGSI,CHDESE,CHSIC
       CHARACTER*24 CHVARI,CHDEPM
       CHARACTER*24 NORECG,NOCRRS,NOMS(2)
@@ -128,9 +128,10 @@ C     --- VARIABLES LOCALES ---
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME,R8B
       REAL*8 ALPHA,PREC,PHASE,FREQ,OMEGA
-      REAL*8 R8DEPI,R8DGRD
+      REAL*8 R8DEPI,R8DGRD,RUNDF,R8VIDE
       REAL*8 RBID
       REAL*8 TIME1,TIME2
+      REAL*8 TBGRCA(3)
 
       COMPLEX*16 CALPHA,CCOEF,CBID
 
@@ -182,6 +183,7 @@ C               12   345678   9012345678901234
       COEF = UN
       SAVCAR(1) = '????????'
       SAVCAR(2) = '????????'
+      RUNDF = R8VIDE()
 
 C     COMPTEUR DE PASSAGES DANS LA COMMANDE (POUR MEDOM2.F)
       NPASS = 0
@@ -293,6 +295,11 @@ C=======================================================================
       CHNUMC = '&&'//NOMPRO//'.NUMC'
       CHFREQ = '&&'//NOMPRO//'.FREQ'
       CALL MECHN2 ( NOMA, CHNUMC, CHFREQ )
+C=======================================================================
+C
+C -- GRANDEURS CARACTERISTIQUES DE L'ETUDE
+C
+      CALL CETULE ( MODELE, TBGRCA, IRET )
 C=======================================================================
 
 C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
@@ -647,7 +654,7 @@ C=======================================================================
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
+                CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
               ELSE
                 CHTIME = ' '
                 TIME = ZERO
@@ -805,7 +812,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
+                CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
               ELSE
                 CHTIME = ' '
                 TIME = ZERO
@@ -914,7 +921,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
+                CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
               ELSE
                 CHTIME = ' '
                 TIME = ZERO
@@ -1156,12 +1163,10 @@ C ---- VERIF SENSIBILITE
             CALL MECHC2(CHGEOM,CHMASS)
 C ---- VERIF SENSIBILITE FIN
             DO 185,IAUX = 1,NBORDR
-C              CALL JEMARQ()
               CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR,NBORDR,NPASS,LIGREL)
-C              CALL JEVEUO(KCHA,'L',JCHA)
               CALL MECARA(CARA,EXICAR,CHCARA)
               CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
               CALL RSEXC2(1,2,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
@@ -1182,7 +1187,6 @@ C              CALL JEVEUO(KCHA,'L',JCHA)
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
               CALL DETRSD('CHAM_ELEM',CHSIGF)
   187         CONTINUE
-C              CALL JEDEMA()
   185       CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS DES INDICATEURS D'ERREURS
@@ -1196,12 +1200,11 @@ C    ------------------------------------------------------------------
      &              OPTION.EQ.'QIZ1_ELEM_SIGM' .OR.
      &              OPTION.EQ.'QIZ2_ELEM_SIGM' ) THEN
 C
-            CALL MECA01 ( OPTION, NBORDR, JORDR,
-     &                    NCHAR, JCHA, KCHA, CTYP,
-     &                    RESUCO, RESUC1, LERES1,
-     &                    NOMA, MODELE, LIGRMO, MATE, CARA,
-     &                    TYPESE,
-     &                    IRET )
+            CALL MECA01 ( OPTION, NBORDR, JORDR ,
+     &                    NCHAR , JCHA  , KCHA  , CTYP  ,
+     &                    TBGRCA, RESUCO, RESUC1, LERES1,
+     &                    NOMA  , MODELE, LIGRMO, MATE  , CARA,
+     &                    TYPESE, IRET )
 C
             IF ( IRET.EQ.1 ) THEN
               GOTO 900
@@ -1458,7 +1461,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
+                CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
               ELSE
                 CHTIME = ' '
                 TIME = ZERO
@@ -1792,8 +1795,8 @@ C --- A3/ RECUPERATION DU TEMPS CORRESPONDANT AUX ORDRES #IORDR[1,2]
      &                           IORDR2,0,IINST2,K8B)
                      TIME1 = ZR(IINST1)
                      TIME2 = ZR(IINST2)
-                     CALL MECHTI(NOMA,TIME1,CHTIM1)
-                     CALL MECHTI(NOMA,TIME2,CHTIM2)
+                     CALL MECHTI(NOMA,TIME1,RUNDF,RUNDF,CHTIM1)
+                     CALL MECHTI(NOMA,TIME2,RUNDF,RUNDF,CHTIM2)
                   ELSE
                      CHTIM1 = ' '
                      CHTIM2 = ' '
@@ -2191,7 +2194,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (EXITIM) THEN
                 CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
                 TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
+                CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
               ELSE
                 CHTIME = ' '
                 TIME = ZERO
@@ -2351,12 +2354,12 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   482         CONTINUE
               CALL JEDEMA()
-  480      CONTINUE
+  480       CONTINUE
 C      -----------------------------------------------------------------
 
-         ELSE
+          ELSE
             CALL U2MESK('A','CALCULEL3_22',1,OPTION)
-         ENDIF
+          ENDIF
 
 C     ------------------------------------------------------------------
 C     -- ERREUR SENSIBILITE

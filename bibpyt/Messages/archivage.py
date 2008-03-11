@@ -1,4 +1,4 @@
-#@ MODIF archivage Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF archivage Messages  DATE 11/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,10 +24,6 @@ cata_msg = {
 
 95 : _("""
 Accès par instant sans évolution ordonnée interdit (ARCHIVAGE)
-"""),
-
-96 : _("""
-Impossible d'archiver l'état initial : le concept est réentrant (ARCHIVAGE)
 """),
 
 97 : _("""

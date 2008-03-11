@@ -1,8 +1,9 @@
-      SUBROUTINE LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,OPTION,IMATE,SIGM,
-     &                  EPSM,DEPS,VIM,VIP,SIG,DSIDEP,PROJ,IRET)
+      SUBROUTINE LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,
+     & OPTION,COMPOR,IMATE,SIGM,EPSM,DEPS,VIM,
+     & VIP,SIG,DSIDEP,PROJ,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,15 +19,17 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-C ======================================================================
 C =====================================================================
+C =====================================================================
+C TOLE CRP_20
+C TOLE CRP_21
       IMPLICIT      NONE
       INTEGER       NDIM, IMATE,IRET,KSP,KPG,IRET2
       REAL*8        SIGM(6),DEPS(6,2),VIM(*),VIP(*),SIG(6),PROJ(6,6)
       REAL*8        DSIDEP(6,6,2),EPSM(6,2)
       CHARACTER*(*) FAMI
       CHARACTER*8   TYPMOD(*)
-      CHARACTER*16  OPTION
+      CHARACTER*16  OPTION,COMPOR(*)
 C =====================================================================
 C --- APPLICATION DE LA LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER ----
 C --- LINEAIRE AVEC PRISE EN COMPTE DES PHENOMENES DE NON LOCALISATION
@@ -53,7 +56,7 @@ C =====================================================================
       REAL*8       DEUXMU,LAMBDA,DSDP1B(6,6),DSDP2B(6,6),YOUNG,NU
       CHARACTER*2  CODRET(2)
       CHARACTER*8  NOMRES(2)
-C ======================================================================
+C =====================================================================
       COMMON /TDIM/   NDT, NDI
 C =====================================================================
       DATA KRON   /1.D0, 1.D0, 1.D0, 0.D0, 0.D0, 0.D0/
@@ -83,7 +86,7 @@ C RAISON: CETTE ROUTINE EST APPELEE POUR LE CALCUL THERMIQUE (CALCME)
       CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
       CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
       CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
-      CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
+      CALL LCDRPR(TYPMOD,OPTION,IMATE,COMPOR,SIGM,TM,TP,TREF,
      &                        DEPS(1,2),VIM,VIP,SIG,DSDP2,IRET)
 C =====================================================================
 C --- PROJECTEUR DE COUPURE POUR LA REGULARISATION : DEFAUT------------

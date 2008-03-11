@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,7 +156,7 @@ C =====================================================================
 C --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
 C --- (FONCTION DE LA RELATION DE COMPORTEMENT) -----------------------
 C =====================================================================
-            IF (RELCOM.EQ.'DRUCKER_PRAGER') THEN
+            IF (RELCOM.EQ.'DRUCK_PRAGER') THEN
 C =====================================================================
 C --- LOI DE TYPE DRUCKER_PRAGER --------------------------------------
 C =====================================================================

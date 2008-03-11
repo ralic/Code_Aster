@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 08/01/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact Messages  DATE 10/03/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,6 +138,9 @@ Contact. Ne pas utiliser REAC_INCR=0 avec le frottement.
 93 : _("""
 Contact methode VERIF.
  -> Interpénétrations des surfaces.
+ 
+    Attention : si les mailles en contact sont quadratiques, le jeu aux noeuds milieux risque d'etre imprécis (oscillations entre noeuds sommets et milieux).
+
  -> Risque & Conseil :
     Vérifier si le niveau d'interpénétration des surfaces est acceptable dans
     votre problème.

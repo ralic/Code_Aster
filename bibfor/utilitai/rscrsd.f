@@ -1,10 +1,10 @@
       SUBROUTINE RSCRSD ( NOMSD, TYPESD, NBORDR )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*) NOMSD,TYPESD
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/01/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,11 @@ C IN  NOMSD  : NOM DE LA STRUCTURE "RESULTAT" A CREER.
 C IN  TYPESD : TYPE DE LA STRUCTURE "RESULTAT" A CREER.
 C IN  NBORDR : NOMBRE MAX DE NUM. D'ORDRE.
 C ----------------------------------------------------------------------
+      INTEGER I,K,IBID,IRET
+      INTEGER NAEVEL,NAEVNO,NAEVTH,NAFLAM,NAMOME,NBCHAM,NBNOVA,NCACOU
+      INTEGER NCMEC1,NCMEC2,NCMEC3,NCMECA,NCTHER,NCTHET,NCVARC,NPACHA
+      INTEGER NPDYHA,NPDYTR,NPEVEL,NPEVNO,NPEVTH,NPFLAM,NPMOME,NPMUEL
+      INTEGER NPVARC
       CHARACTER*1 KBID
       CHARACTER*16 TYPES2
       CHARACTER*19 NOMS2
@@ -74,7 +79,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVNO=33,NAEVNO=9)
+      PARAMETER (NPEVNO=45,NAEVNO=9)
       CHARACTER*16 PAEVNO(NPEVNO)
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
@@ -130,15 +135,22 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      DATA PAEVNO/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
-     &     'ITER_GLOB','ITER_LINE','ITER_DASHPOT','GFITER',
-     &     'RESI_GLOB_RELA','RESI_GLOB','RESI_REFE',
-     &     'CHAR_MINI','ETA_PILOTAGE','RESI_GLOB_MOINS',
-     &     'CHAR_CRIT','GFUM','GFUA','GFUML','GFUI','GFVAG','GFVFD',
-     &     'GFVAD','FREQ','ERREUR_ABSOLUE','ERREUR_RELATIVE',
-     &     'NORME_SIGMA','TERME_VOLU_ABSO','TERME_VOLU_RELA',
-     &     'TERME_SAUT_ABSO','TERME_SAUT_RELA','TERME_NORM_ABSO',
-     &     'TERME_NORM_RELA'/
+      DATA PAEVNO/
+     & 'INST',            'MODELE',           'CHAMPMAT',
+     & 'CARAELEM',        'EXCIT',            'ITER_GLOB',
+     & 'ITER_LINE',       'ITER_DASHPOT',     'GFITER',
+     & 'RESI_GLOB_RELA',  'RESI_GLOB',        'RESI_REFE',
+     & 'CHAR_MINI',       'ETA_PILOTAGE',     'RESI_GLOB_MOINS',
+     & 'CHAR_CRIT',       'GFUM',             'GFUA',
+     & 'GFUML',           'GFUI',             'GFVAG',
+     & 'GFVFD',           'GFVAD',            'FREQ',
+     & 'ERREUR_ABSOLUE',  'ERREUR_RELATIVE',  'NORME_SIGMA',
+     & 'TERME_VOLU_ABSO', 'TERME_VOLU_RELA',  'TERME_SAUT_ABSO',
+     & 'TERME_SAUT_RELA', 'TERME_NORM_ABSO',  'TERME_NORM_RELA',
+     & 'PARM_THETA',      'ERRE_TPS_LOC',     'ERRE_TPS_GLOB',
+     & 'ERRE_MEC_LOC',    'ERRE_MEC_LOC_D',   'ERRE_HYD_LOC',
+     & 'ERRE_MEC_GLOB',   'ERRE_MEC_GLOB_D',  'ERRE_HYD_GLOB',
+     & 'ERRE_MEC',        'ERRE_HYD_S',       'ERRE_HYD_D'      /
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
 C     ------------------------------------------------------------------
@@ -202,6 +214,7 @@ C     ------------------------------------------------------------------
      &     'EPSP_NOEU_ZAC','ALPH0_ELGA_EPSP','ALPHP_ELGA_ALPH0',
      &     'VARI_NON_LOCAL','LANL_ELGA',
      &     'ARCO_ELNO_SIGM','ARCO_NOEU_SIGM'/
+
       DATA CHMEC2/'DEGE_ELNO_DEPL','DEGE_NOEU_DEPL','EPOT_ELEM_DEPL',
      &     'ECIN_ELEM_DEPL','FORC_NODA','REAC_NODA',
      &     'ERRE_ELEM_SIGM','ERRE_ELNO_ELEM','ERRE_NOEU_ELEM',

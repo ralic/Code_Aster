@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 25/02/2008   AUTEUR ZENTNER I.ZENTNER 
+#@ MODIF post_dyna_alea_ops Macro  DATE 10/03/2008   AUTEUR ZENTNER I.ZENTNER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,16 +56,16 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 #---------algorithme d'optimisation pour le  maximum de vraisemblance
    def vrais(x):  
       am=x[0]
-      assert am >0.0, 'optimize.py: am negatif'
+      assert am >0.000, 'optimize.py: am negatif'
       beta=x[1] 
-      assert am >0.0, 'optimize.py: beta negatif'
+      assert am >0.000, 'optimize.py: beta negatif'
       res=1.0
       for k in range(Nbval):
          ai=liste_indic[k]
-         xi=liste_def[k]
+         xi=float(liste_def[k])
          val=log(ai/am)       
-         pfa=normcdf(val/beta,0.,1.)
-         f0=pfa**xi*(1-pfa)**(1-xi)
+         pfa=normcdf(val/beta)
+         f0=pfa**xi*(1.-pfa)**(1-xi)
          res=res*f0
       return -res
 
@@ -75,10 +75,10 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       res=1.0 
       for k in range(Nbval):
          ai=liste_indic[list_rand[k]]
-         xi=liste_def[list_rand[k]]
+         xi=float(liste_def[list_rand[k]])
          val=log(ai/am)       
-         pfa=normcdf(val/beta,0.,1.)
-         f0=pfa**xi*(1-pfa)**(1-xi)
+         pfa=normcdf(val/beta)
+         f0=pfa**xi*(1.-pfa)**(1-xi)
          res=res*f0
       return -res
 
@@ -128,7 +128,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
       vec_a=Numeric.array(liste_a)
       vecval=(Numeric.log(vec_a/xopt[0]))/xopt[1]
       for m in range(Nba):
-         lpfa.append(normcdf(vecval[m],0.,1.))
+         lpfa.append(normcdf(vecval[m]))
 
       # table sortie
 
@@ -152,7 +152,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
             aster.affiche('MESSAGE',texte)      
          if FRAGILITE['NB_TIRAGE']!= None :
             Nboot = FRAGILITE['NB_TIRAGE']
-            if Nboot >= Nbval :
+            if Nboot > Nbval :
                UTMESS('F','PROBA0_11')     #assert Nboot <= Nbval , 'ERREUR: nombre de tirages demandes trop grand'
          else:
             Nboot = Nbval
@@ -170,6 +170,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
 
             for kb2 in range(Nbval) :
                list_rand.append(random.randint(0,Nbval-1))            
+
             xopt = fmin(boot_vrais,x0)    
             if INFO==2 :    
                texte1='BOOTSTRAP TIRAGE '+ str(kb+1)
@@ -178,7 +179,7 @@ def post_dyna_alea_ops(self,INTE_SPEC, FRAGILITE,TITRE,INFO,**args):
                aster.affiche('MESSAGE',texte2) 
             vecval=(Numeric.log(vec_a/xopt[0]))/xopt[1]
             for m in range(Nba):
-               lpfa.append(normcdf(vecval[m],0.,1.))
+               lpfa.append(normcdf(vecval[m]))
 
             __ABS[kb]=DEFI_LIST_REEL( VALE = liste_a  );
             __ORDO[kb]=DEFI_LIST_REEL( VALE = lpfa ); 

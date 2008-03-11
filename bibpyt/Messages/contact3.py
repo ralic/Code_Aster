@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 10/03/2008   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,12 +161,6 @@ Contact méthode continue.
      Il y a des risques que le problème soit un peu moins bien traité.
      Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
      S'il y des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
-"""),
-
-94 : _("""
-Contact méthode discrète. 
- Le jeu entre les noeuds milieux au niveau des lèvres risque
- d'etre imprécis si les mailles en contact sont quadratiques.
 """),
 
 }

@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith4 Messages  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,10 @@ cata_msg = {
 
 35 : _("""
  rang superieur a dimension vecteur
+"""),
+
+36 : _("""
+ <LCDPPA> il faut redecouper
 """),
 
 45 : _("""

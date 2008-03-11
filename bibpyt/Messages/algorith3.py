@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith3 Messages  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,6 +152,10 @@ Nombre d'itérations     : %(i2)d
 
 42 : _("""
  critère inconnu :  %(k1)s 
+"""),
+
+43 :_("""
+ <DPMAT2> PLAS=2
 """),
 
 55 : _("""

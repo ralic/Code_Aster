@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,6 +109,9 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            INST_INIT       =SIMP(statut='f',typ='R'),
            NUME_INST_FIN   =SIMP(statut='f',typ='I'),
            INST_FIN        =SIMP(statut='f',typ='R'),
+           ERRE_TEMPS      =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
+                                 fr="Adaptation temporelle pour les modélisations HM instationnaires",
+                                 ang="Time adaptation for unstationary HM models"),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
            # DEBUT DE BLOC POUR LA SUBDIVISION DES PAS DE TEMPS
            SUBD_METHODE    =SIMP( statut='f',typ='TXM',
@@ -221,7 +224,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
            ),
            b_ldlt_mult    =BLOC(condition = "METHODE == 'LDLT' or METHODE == 'MULT_FRONT' or METHODE == 'FETI'",
-                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
              NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","DECOUPE") ),
            ),

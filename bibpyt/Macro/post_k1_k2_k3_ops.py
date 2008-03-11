@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 10/03/2008   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,7 +97,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    AFFE_MODELE      = self.get_cmd('AFFE_MODELE')
    PROJ_CHAMP      = self.get_cmd('PROJ_CHAMP')
-   
+      
 #   ------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #   ------------------------------------------------------------------
@@ -570,8 +570,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
            VN[i] = array([Vpropa[6*i],Vpropa[6*i+1],Vpropa[6*i+2]])
            VP[i] = array([Vpropa[3+6*i],Vpropa[3+6*i+1],Vpropa[3+6*i+2]])
        else : 
-         VP[i] = array([Vpropa[2],Vpropa[3],0.])
-         VN[i] = array([Vpropa[0],Vpropa[1],0.])
+         for i in range(0,Nbfond):
+           VP[i] = array([Vpropa[2+4*i],Vpropa[3+4*i],0.])
+           VN[i] = array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
 # Cas fissure plane (VECT_K1 donne)
      if VECT_K1 != None :
        v1 =  array(VECT_K1)
@@ -636,17 +637,18 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
              UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
        else :  
          VT = array([0.,0.,1.])
-         VP[i] = array(cross_product(v1,VT))  
-         VN[i] = v1
-         VNi = array([Vpropa[0],Vpropa[1],0.])
-         verif = dot(transpose(VN[i]),VNi) 
-         if abs(verif) < 0.99 :
-           vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
-           UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
+         for i in range(0,Nbfond):
+           VP[i] = array(cross_product(v1,VT))  
+           VN[i] = v1
+           VNi = array([Vpropa[0+4*i],Vpropa[1+4*i],0.])
+           verif = dot(transpose(VN[i]),VNi) 
+           if abs(verif) < 0.99 :
+             vv =[VNi[0],VNi[1],VNi[2],VN[i][0],VN[i][1],VN[i][2],]
+             UTMESS('A','RUPTURE0_32',vali=[i],valr=vv)
 #Sens de la tangente   
      if MODELISATION=='3D' : i = Nbfond/2
      else : i = 0
-     Po =  array([Listfo[4*(i-1)],Listfo[4*(i-1)+1],Listfo[4*(i-1)+2]])
+     Po =  array([Listfo[4*i],Listfo[4*i+1],Listfo[4*i+2]])
      Porig = Po + ABSC_CURV_MAXI*VP[i]
      Pextr = Po - ABSC_CURV_MAXI*VP[i]
      __Tabg = MACR_LIGN_COUPE(RESULTAT=__RESX,NOM_CHAM='DEPL',
@@ -1149,6 +1151,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
         if FISSURE and MODELISATION=='3D': 
           mcfact.append(_F(PARA='PT_FOND',LISTE_I=[ino+1,]*3))
           mcfact.append(_F(PARA='ABSC_CURV',LISTE_R=[absfon[ino],]*3))
+        if FISSURE  and MODELISATION!='3D' and Nbfond!=1 :
+          mcfact.append(_F(PARA='PT_FOND',LISTE_I=[ino+1,]*3))
         mcfact.append(_F(PARA='METHODE',LISTE_I=(1,2,3)))
         mcfact.append(_F(PARA='K1_MAX' ,LISTE_R=kg[0].tolist() ))
         mcfact.append(_F(PARA='K1_MIN' ,LISTE_R=kg[1].tolist() ))

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/09/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,25 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster) ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
          VERIF           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,into=("MAILLE","NOEUD") ),
+#
+#====
+# Définition des grandeurs caractéristiques
+#====
+#
+         GRANDEUR_CARA =FACT(statut='f',max=1,
+         fr="Grandeurs caractéristiques pour l'adimensionnement des indicateurs d'erreur HM",
+         ang="Characteristic data for HM error estimators adimensionalisation",
+#
+            LONGUEUR      =SIMP(statut='f',typ='R',val_min=0,
+                                fr ="Longueur caractéristique",
+                                ang="Characteristic length",),
+            PRESSION      =SIMP(statut='f',typ='R',val_min=0,
+                                fr ="Pression caractéristique",
+                                ang="Characteristic pressure",),
+            TEMPERATURE   =SIMP(statut='f',typ='R',val_min=0,
+                                fr ="Température caractéristique",
+                                ang="Characteristic temperature",),),
+#
          AFFE_SOUS_STRUC =FACT(statut='f',
            regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -127,7 +146,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "D_PLAN_THVD",
                                                                       "D_PLAN_THH2MD",
                                                                       "D_PLAN_THHMD",
-                                                                      "D_PLAN_THMD", 
+                                                                      "D_PLAN_THMD",
                                                                       "D_PLAN_HHMS",
                                                                       "D_PLAN_HH2MS",
                                                                       "D_PLAN_HMS",
@@ -136,7 +155,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "D_PLAN_THVS",
                                                                       "D_PLAN_THH2MS",
                                                                       "D_PLAN_THHMS",
-                                                                      "D_PLAN_THMS", 
+                                                                      "D_PLAN_THMS",
                                                                       "D_PLAN_HM_P",
                                                                       "D_PLAN_HHD",
                                                                       "D_PLAN_HHS",

@@ -1,4 +1,4 @@
-#@ MODIF sd_modele SD  DATE 15/10/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF sd_modele SD  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,7 @@ from SD.sd_ligrel    import sd_ligrel
 from SD.sd_prof_chno import sd_prof_chno
 from SD.sd_carte     import sd_carte
 from SD.sd_xfem      import sd_modele_xfem
+from SD.sd_l_table   import sd_l_table
 
 
 
@@ -34,6 +35,9 @@ class sd_modele(AsBase):
     MODELE = sd_ligrel()
     NOEUD = Facultatif(AsVI())
     MAILLE = Facultatif(AsVI())
+
+    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractéristiques de l'étude :
+    lt = Facultatif(sd_l_table(SDNom(nomj='')))
 
     # Si le modèle vient de MODI_MODELE_XFEM :
     xfem = Facultatif(sd_modele_xfem(SDNom(nomj='')))

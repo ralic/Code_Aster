@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,14 +49,13 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32      JEXNUM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-C
-      INTEGER IBID,IALIEL,IAMACO,IANOMA,IASSSA,ICO,IGREL
-      INTEGER ILMACO,INO,IRET,ITYPEL,N1,NBGREL,NEL
+      INTEGER IAUX,IBID,IALIEL,IANOMA,ICO,ICP,IGREL
+      INTEGER IRET,ITYPEL,NBGREL,NEL,LXLGUT
 C
       CHARACTER*1   K1BID
-      CHARACTER*4   PHEN4, TYTM
-      CHARACTER*8   KBID, MA, NOMOB
-      CHARACTER*16  NOPHEN, NOMTE, NOMODL, NOMOD2
+      CHARACTER*4   TYTM
+      CHARACTER*8   MA, NOMOB
+      CHARACTER*16  NOMTE, NOMODL, NOMOD2
       CHARACTER*19  NOLIG
       CHARACTER*32  REPK, K32BID
 C DEB ------------------------------------------------------------------
@@ -87,7 +86,6 @@ C     -----------------------------------
      &        (QUESTI.EQ.'PHENOMENE'   ) ) THEN
 C     -----------------------------------
          CALL DISMLG(CODMES,QUESTI,NOLIG,REPI,REPK,IERD)
-
 C     -----------------------------------------
       ELSE IF (QUESTI.EQ.'ELEM_VOLU_QUAD') THEN
 C     -----------------------------------------
@@ -106,9 +104,13 @@ C     ------------------------------------------
          CALL DISMMA(CODMES,QUESTI,MA,REPI,REPK,IERD)
 C
 C     -------------------------------------------
-      ELSE IF (  (QUESTI.EQ.'MODELISATION') .OR.
+      ELSE IF ( (QUESTI.EQ.'MODELISATION') .OR.
      &          (QUESTI.EQ.'MODELISATION_THM') ) THEN
 C     -------------------------------------------
+C
+        IF  ( (QUESTI.EQ.'MODELISATION')       .OR.
+     &        (QUESTI.EQ.'MODELISATION_THM') ) THEN
+C            ------------------------
 C
           IF  ( QUESTI.EQ.'MODELISATION' ) THEN
             K32BID = ' '
@@ -121,6 +123,7 @@ C
           CALL JELIRA(NOLIG//'.LIEL','NUTIOC',NBGREL,K1BID)
           IF (NBGREL.LE.0) GO TO 41
           ICO  = 0
+          ICP = 0
           NOMODL=' '
 
           DO 4,IGREL=1,NBGREL
@@ -159,6 +162,10 @@ C
      &               NOMOD2(IBID:IBID+2).EQ.'HMD'   .OR.
      &               NOMOD2(IBID:IBID+2).EQ.'HMS' ) THEN
                   ICO = ICO + 1
+                  IAUX = LXLGUT(NOMOD2)
+                  IF ( NOMOD2(IAUX-1:IAUX).EQ.'_P' ) THEN
+                    ICP = ICP + 1
+                  ENDIF
                 ENDIF
               ELSEIF ( NOMOD2(IBID:IBID).EQ.'T' ) THEN
                 IF ( NOMOD2(IBID:IBID+2).EQ.'THH'    .OR.
@@ -177,6 +184,10 @@ C
      &               NOMOD2(IBID:IBID+3).EQ.'THVD'   .OR.
      &               NOMOD2(IBID:IBID+3).EQ.'THVS' ) THEN
                   ICO = ICO + 1
+                  IAUX = LXLGUT(NOMOD2)
+                  IF ( NOMOD2(IAUX-1:IAUX).EQ.'_P' ) THEN
+                    ICP = ICP + 1
+                  ENDIF
                 ENDIF
               ENDIF
             ENDIF
@@ -188,10 +199,15 @@ C
             ENDIF
           ELSE
             IF (ICO.GT.0) THEN
-              REPK='OUI'
+              IF (ICP.GT.0) THEN
+                REPK='OUI_P'
+              ELSE
+                REPK='OUI'
+              ENDIF
             ENDIF
           ENDIF
  41       CONTINUE
+        END IF
 C
 C     ------------------------------------
       ELSE IF  (QUESTI.EQ.'EXI_ELEM') THEN

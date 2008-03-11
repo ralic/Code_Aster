@@ -1,7 +1,7 @@
       SUBROUTINE OP0113(IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/10/2007   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -214,7 +214,7 @@ C ---------------------------------------------------------------------
 C       2)  MODIFICATION DE TAB EN FONCTION DE L'ENRICHISSEMENT
 C ---------------------------------------------------------------------
 C
-      CALL XMOLIG(LIEL1,K8CONT,TRAV)
+      CALL XMOLIG(LIEL1,TRAV)
 C      
 C --- ON COMPTE LE NB DE MAILLES DU LIGREL1 (= NB DE GREL DE LIEL2)
 C

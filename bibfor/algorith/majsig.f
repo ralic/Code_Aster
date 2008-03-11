@@ -1,7 +1,7 @@
       SUBROUTINE MAJSIG( MATERF, SE, SEQ, I1E, ALPHA, DP, SIG)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2003   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
       IMPLICIT      NONE
-      REAL*8        MATERF(4,2),DP,SE(*),SEQ,I1E,ALPHA,SIG(6)
+      REAL*8        MATERF(5,2),DP,SE(*),SEQ,I1E,ALPHA,SIG(6)
 C =====================================================================
 C --- MISE A JOUR DES CONTRAINTES -------------------------------------
 C =====================================================================

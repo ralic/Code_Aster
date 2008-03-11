@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 19/02/2008   AUTEUR CANO V.CANO 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -215,15 +215,24 @@ C -- RUPTURE BETON
             GOTO 9000
           ENDIF
 
-C -- DRUCKER - PRAGER
+C -- DRUCKER- PRAGER
 
-          IF (COMPOR(1) .EQ. 'DRUCKER_PRAGER') THEN
-            CALL LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,OPTION,IMATE,SIGM,
-     &                  EPSM,DEPS,VIM,VIP,SIGP,DSIDEP,TAMPON,
-     &                  CODRET)
+          IF (COMPOR(1) .EQ. 'DRUCK_PRAGER') THEN
+            CALL LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,OPTION,COMPOR,
+     &                  IMATE,SIGM,EPSM,DEPS,VIM,VIP,SIGP,
+     &                  DSIDEP,TAMPON,CODRET)
             GOTO 9000
           END IF
+          
+C -- DRUCKER- PRAGER -NoN Associee
 
+          IF (COMPOR(1) .EQ. 'DRUCK_PRAG_N_A') THEN
+            CALL LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,OPTION,COMPOR,
+     &                  IMATE,SIGM,EPSM,DEPS,VIM,VIP,SIGP,
+     &                  DSIDEP,TAMPON,CODRET)
+            GOTO 9000
+          END IF
+          
 C -- MAZARS
 
           IF (COMPOR(1) .EQ. 'MAZARS') THEN
@@ -384,13 +393,14 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
                 CALL LCLBR1(FAMI,KPG,KSP,NDIM, TYPMOD, IMATE, COMPOR,
      &                     EPSM,DEPS,VIM,OPTION, SIGP, VIP,  DSIDEP)
               ENDIF
-          ELSE IF ( COMPOR(1) .EQ. 'DRUCKER_PRAGER' ) THEN
+          ELSE IF ( COMPOR(1) .EQ. 'DRUCK_PRAGER' .OR. 
+     &    COMPOR(1) .EQ. 'DRUCK_PRAG_N_A') THEN
 C APPEL DE RCVARC POUR LA RECUPERATION DE LA TEMPERATURE
 C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
             CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET)
             CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET)
             CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
-            CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
+            CALL LCDRPR(TYPMOD,OPTION,IMATE,COMPOR,SIGM,TM,TP,TREF,
      &                              DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
           ELSE IF (COMPOR(1).EQ. 'META_P_IL       '.OR.
      &             COMPOR(1).EQ. 'META_P_IL_PT    '.OR.
@@ -422,7 +432,7 @@ C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
                   CALL U2MESS('F','ALGORITH6_89')
               ENDIF
           ELSE IF (COMPOR(1)(1:13).EQ.'META_LEMA_ANI') THEN
-            CALL LCEDGA (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
+              CALL LCEDGA (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
      &                   TYPMOD,INSTAM,INSTAP,TAMPON,EPSM,
      &                   DEPS,SIGM,VIM,OPTION,SIGP,
      &                   VIP,DSIDEP,CODRET)

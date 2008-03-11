@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 11/03/2008   AUTEUR MAZET S.MAZET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,9 +59,9 @@ ABSCISSE et ORDONNEE n'ont pas la meme taille.
 Format inconnu : %(k1)s
 """),
 
-9 : _("""{'message': "
+9 : _("""
 Erreur lors de l'interpolation de la fonction '%(k1)s'.
-", 'context': {'CONCEPT': 'k1'}}"""),
+"""),
 
 10 : _("""
  sur la maille '%(k1)s'

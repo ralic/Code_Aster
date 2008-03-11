@@ -1,8 +1,8 @@
-      SUBROUTINE LCDPPA(MOD,NVI,OPTION,MATERF,SIGM,
+      SUBROUTINE LCDPPA(MOD,NVI,OPTION,MATERF,COMPOR,SIGM,
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,9 @@ C =====================================================================
       IMPLICIT      NONE
       INTEGER       IRET,NVI
       REAL*8        DEPS(6),VIM(NVI),VIP(NVI),SIG(6),DDOT
-      REAL*8        SIGM(6),MATERF(4,2),DSIDEP(6,6)
+      REAL*8        SIGM(6),MATERF(5,2),DSIDEP(6,6)
       CHARACTER*8   MOD
-      CHARACTER*16  OPTION
+      CHARACTER*16  OPTION,COMPOR(*)
 C =====================================================================
 C --- LOI DE COMPORTEMENT DRUCKER PRAGER ------------------------------
 C --- ELASTICITE ISOTROPE ---------------------------------------------
@@ -47,9 +47,10 @@ C OUT IRET    CODE RETOUR (0 = OK)
 C =====================================================================
       LOGICAL     RIGI,RESI
       INTEGER     NDT,NDI,II,JJ
-      REAL*8      DP,DPDENO,ALPHA,PMOINS,PHI,DEUX,TROIS,PPLUS
-      REAL*8      HOOKF(6,6),DKOOH(6,6),PLAS,ALPHA2,DPPATG
+      REAL*8      DP,DPDENO,ALPHA,PMOINS,PHI,DEUX,TROIS,PPLUS,BETA,PULT
+      REAL*8      HOOKF(6,6),DKOOH(6,6),PLAS,ALPHA2,DPPATG,PSI,BETAPS
       REAL*8      EPSP(6),EPSM2(6),SIGE(6),SE(6),SIIE,SEQ,I1E,TRACE
+      REAL*8      DPPAT2,CALAL
 C =====================================================================
       PARAMETER  ( DEUX  = 2.0D0 )
       PARAMETER  ( TROIS = 3.0D0 )
@@ -60,17 +61,26 @@ C =====================================================================
       PMOINS = VIM(1)
       IRET   = 0
       RESI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
-     &         OPTION     .EQ.'RAPH_MECA'
+     &         OPTION(1:9).EQ.'RAPH_MECA'
       RIGI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
      &         OPTION(1:9).EQ.'RIGI_MECA'
+      IF ( (OPTION(1:9).NE.'RIGI_MECA') .AND.
+     &     (OPTION(1:9).NE.'FULL_MECA') .AND.
+     &     (OPTION(1:9).NE.'RAPH_MECA') )  THEN
+         CALL U2MESS('F','ALGORITH4_47')
+      ENDIF
       CALL ASSERT ( (OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &     (OPTION(1:9).EQ.'FULL_MECA') .OR.
-     &     (OPTION     .EQ.'RAPH_MECA') ) 
+     &     (OPTION (1:9).EQ.'RAPH_MECA') )
+
 C =====================================================================
 C --- AFFECTATION DES VARIABLES ---------------------------------------
 C =====================================================================
       PHI    = MATERF(2,2)
+      PSI    = MATERF(5,2)
       ALPHA  = DEUX * SIN(PHI) / (TROIS - SIN(PHI))
+      BETA   = DEUX * SIN(PSI) / (TROIS - SIN(PSI))
+      PULT   = MATERF(4,2)
 C =====================================================================
 C --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 C =====================================================================
@@ -93,31 +103,55 @@ C =====================================================================
 C =====================================================================
 C --- RESOLUTION DU SYSTEME -------------------------------------------
 C =====================================================================
-         CALL RESDP2( MATERF, SEQ, I1E, PMOINS, DP, PLAS)
+         IF (COMPOR(1) .EQ. 'DRUCK_PRAGER') THEN
+            CALAL  = ALPHA
+            CALL RESDP2( MATERF, SEQ, I1E, PMOINS, DP, PLAS)
+         ELSE
+            CALAL  = BETAPS (BETA, PMOINS, PULT)
+            CALL REDPNA( MATERF, SEQ, I1E, PMOINS, DP, PLAS, IRET)
+            IF (IRET.NE.0) THEN
+               CALL U2MESS('A','ALGORITH4_36')
+               GOTO 999
+            ENDIF
+         ENDIF
          IF (PLAS.EQ.0.0D0) THEN
             DO 10 II=1,NDT
                SIG(II) = SIGE(II)
  10         CONTINUE
             VIP(2) = 0.0D0
          ELSE
-            CALL MAJSIG ( MATERF, SE, SEQ, I1E, ALPHA, DP, SIG)
+            IF (COMPOR(1) .EQ. 'DRUCK_PRAGER') THEN
+               CALAL = ALPHA
+            ELSE
+               PPLUS = VIM(1) + DP
+               CALAL = BETAPS (BETA, PPLUS, PULT)
+            ENDIF
+            CALL MAJSIG ( MATERF, SE, SEQ, I1E, CALAL, DP, SIG)
          ENDIF
 C =====================================================================
 C --- STOCKAGE DES VARIABLES INTERNES ---------------------------------
 C =====================================================================
          VIP(1)   = VIM(1) + DP
-         VIP(2)   = VIM(2) + TROIS*ALPHA*DP
+         VIP(2)   = VIM(2) + TROIS*CALAL*DP
          VIP(NVI) = PLAS
 C =====================================================================
 C --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
 C =====================================================================
-         DPDENO = DPPATG( MATERF, VIP(1), PLAS )
+         IF (COMPOR(1) .EQ. 'DRUCK_PRAGER') THEN
+            DPDENO = DPPATG( MATERF, VIP(1), PLAS )
+         ELSE
+            DPDENO = DPPAT2( MATERF, VIM(1), VIP(1), PLAS )
+         ENDIF
          PPLUS  = VIP(1)
       ELSE
          PLAS   = VIM(NVI)
          DP     = 0.0D0
          PPLUS  = 0.0D0
+         IF (COMPOR(1) .EQ. 'DRUCK_PRAGER') THEN
          DPDENO = DPPATG( MATERF, PMOINS, PLAS )
+         ELSE
+         DPDENO = DPPAT2( MATERF, PMOINS, PMOINS, PLAS )
+         ENDIF
       ENDIF
 C =====================================================================
 C --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
@@ -126,9 +160,15 @@ C =====================================================================
          IF (OPTION(10:14).EQ.'_ELAS') THEN
             CALL LCEQMA(HOOKF, DSIDEP)
          ELSE
-            CALL DPMATA( MOD, MATERF, ALPHA, DP, DPDENO, PPLUS,
+         IF (COMPOR(1) .EQ. 'DRUCK_PRAGER') THEN
+               CALL DPMATA( MOD, MATERF, ALPHA, DP, DPDENO, PPLUS,
      &                                           SE, SEQ, PLAS, DSIDEP)
+            ELSE
+               CALL DPMAT2( MOD, MATERF, ALPHA, BETA, DP, DPDENO,PPLUS,
+     &                                           SE, SEQ, PLAS, DSIDEP)
+            ENDIF
          ENDIF
       ENDIF
+ 999  CONTINUE
 C =====================================================================
       END

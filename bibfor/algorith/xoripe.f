@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 10/03/2008   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
 C        ORIENTER LES SOUS-ELEMENTS DE PEAU DES ELEMENTS X-FEM
+C      (ET CALCUL DE HEAV SUR LES BORDS COINCIDANT AVEC INTERACE)
 C
 C  IN         MODELE    : NOM DE L'OBJET MODELE
 C  IN/OUT     FISS      : NOM DE LA SD FISS_XFEM
@@ -47,20 +48,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      REAL*8        R8B,ARMIN,PREC,G1(3),GBO(3),GPR(3),NEXT(3),NORME
+      REAL*8        R8B,ARMIN,PREC,G1(3),GBO(3),GPR(3),NEXT(3),NORME,LSN
       REAL*8        CO(3,3),AB(3),AC(3),N2D(3),DDOT,A(3),B(3),C(3)
       COMPLEX*16    CBID
       INTEGER       IMA,NBMA,J,IER,KK,I
       INTEGER       JMAIL,CPT,NBMAIL,IRET,NBPAR,JCOOR,JM3D,IBID,JVECNO
       INTEGER       NUMAPR,NUMAB,NUMA1D,NBNOPR,NBNOBO,NBNOM1
       INTEGER       JCONX1,JCONX2,INO,NUNO,NORIEG,NTRAIT,JTYPMA,JTMDIM
-      INTEGER       ICH,JCESD(3),JCESV(3),JCESL(3),IAD,NIT,IT,NSE,ISE,IN
+      INTEGER       ICH,JCESD(4),JCESV(4),JCESL(4),IAD,NIT,IT,NSE,ISE,IN
       INTEGER       NDIME,ICMP,NDIM,ID(3),INTEMP,NSEORI,IFM,NIV,NNCP
-      INTEGER       JDIM,S1,S2,JGRP,NMAENR,JINDIC,ZERO
+      INTEGER       JDIM,S1,S2,JGRP,NMAENR,JINDIC,ZERO,JLSN
+      INTEGER       NSIGNP,NSIGNM,NSIGNZ,IHE,NSEMAX(3),HE
       CHARACTER*8   NOMA,K8BID,K8B
       CHARACTER*2   KDIM
-      CHARACTER*19  LIGREL,NOMT19,CHS(3),PINTTO,CNSETO,LONCHA
+      CHARACTER*19  LIGREL,NOMT19,CHS(4),PINTTO,CNSETO,LONCHA,HEAV,CHLSN
       CHARACTER*24  MAMOD,GRMAPE,NOMOB,PARA,VECNOR,GRP(3),XINDIC
+      DATA          NSEMAX / 2 , 3 , 6 /
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -101,6 +104,9 @@ C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
          CALL U2MESS('F','MODELISA3_18')
       ENDIF
 
+      CHLSN = '&&XORIPE.CHLSN'
+      CALL CNOCNS(FISS(1:8)//'.LNNO','V',CHLSN)
+      CALL JEVEUO(CHLSN//'.CNSV','L',JLSN)
 
 C     ------------------------------------------------------------------
 C     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
@@ -211,16 +217,19 @@ C     ------------------------------------------------------------------
       CHS(1)  = '&&XORIPE.PINTTO'
       CHS(2)  = '&&XORIPE.CNSETO'
       CHS(3)  = '&&XORIPE.LONCHA'
+      CHS(4)  = '&&XORIPE.HEAV'
 
       PINTTO = FISS(1:8)//'.TOPOSE.PIN'
       CNSETO = FISS(1:8)//'.TOPOSE.CNS'
       LONCHA = FISS(1:8)//'.TOPOSE.LON'
+      HEAV   = FISS(1:8)//'.TOPOSE.HEA'
 
       CALL CELCES(PINTTO,'V',CHS(1))
       CALL CELCES(CNSETO,'V',CHS(2))
       CALL CELCES(LONCHA,'V',CHS(3))
+      CALL CELCES(HEAV  ,'V',CHS(4))
 
-      DO 40 ICH=1,3
+      DO 40 ICH=1,4
         CALL JEVEUO(CHS(ICH)//'.CESD','L',JCESD(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESV','E',JCESV(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESL','L',JCESL(ICH))
@@ -232,8 +241,12 @@ C     ------------------------------------------------------------------
           NEXT(J)=ZR(JVECNO-1+NDIM*(IMA-1)+J)
  401    CONTINUE
 
-        NUMAB=ZI(JMAIL-1+IMA)
+        NUMAB =ZI(JMAIL-1+IMA)
         NDIME= ZI(JTMDIM-1+ZI(JTYPMA-1+NUMAB))
+
+        NUMAPR=ZI(JM3D-1+IMA)
+        NBNOPR=ZI(JCONX2+NUMAPR) - ZI(JCONX2+NUMAPR-1)
+
 
 C       RECUPERATION DE LA SUBDIVISION LA MAILLE DE PEAU EN NIT
 C       SOUS-ELEMENTS
@@ -313,16 +326,46 @@ C              ON INVERSE 2 ET 3 EN 3D)
               ZI(JCESV(2)-1+ID(S2))=INTEMP
             ENDIF
 
+
+C           ON MODIF HEAVISIDE SI BORD COINCIDANT AVEC INTERFACE
+C           RECUPERATION DE LA VALEUR DE LA FONCTION HEAVISIDE
+            IHE = NSEMAX(NDIME)*(IT-1)+ISE
+            CALL CESEXI('S',JCESD(4),JCESL(4),NUMAB,1,1,IHE,IAD)
+            HE=ZI(JCESV(4)-1+IAD)
+            CALL ASSERT(HE.EQ.-1.OR.HE.EQ.1.OR.HE.EQ.99)
+            IF (HE.EQ.99) THEN
+C             VERIF QUE C'EST NORMAL          
+              CALL ASSERT(NSE.EQ.1)
+C             SIGNE LEVEL SET SUR LA MAILLE PRINCIPALE
+              NSIGNP=0
+              NSIGNM=0
+              NSIGNZ=0
+              DO 440 INO=1,NBNOPR
+                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
+                LSN = ZR(JLSN-1+NUNO)
+                IF (LSN.GT.0.D0) NSIGNP = NSIGNP +1
+                IF (LSN.EQ.0.D0) NSIGNZ = NSIGNZ +1
+                IF (LSN.LT.0.D0) NSIGNM = NSIGNM +1
+ 440          CONTINUE
+              CALL ASSERT(NSIGNZ.NE.0)
+              CALL ASSERT(NSIGNP+NSIGNM.NE.0)
+              CALL ASSERT(NSIGNP*NSIGNM.EQ.0)
+C             ON ECRIT HE
+              IF (NSIGNP.GT.0) ZI(JCESV(4)-1+IAD)= 1
+              IF (NSIGNM.GT.0) ZI(JCESV(4)-1+IAD)=-1
+            ENDIF
+
  420      CONTINUE
 
  410    CONTINUE
 
  400  CONTINUE
 
-C     ON SAUVE LE NOUVEAU CHAM_ELEM MODIFIE A LA PLACE DE L'ANCIEN
+C     ON SAUVE LES NOUVEAUX CHAM_ELEM MODIFIES A LA PLACE DES ANCIENS
       CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',NNCP,'V',
      &            CNSETO,'F',IBID)
-
+      CALL CESCEL(CHS(4),LIGREL,'TOPOSE','PHEAVTO','OUI',NNCP,'V',
+     &            HEAV,'F',IBID)
 C     ------------------------------------------------------------------
 C     FIN
 C     ------------------------------------------------------------------

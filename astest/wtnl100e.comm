@@ -1,0 +1,230 @@
+# MODIF  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+# TITRE CONSOLIDATION TERZAGHI 2D Q8
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+##################################
+# TEST DES INDICATEURS D'ERREUR HM
+##################################
+#
+# LE CALCUL EST REALISE EN 2 PASSES.
+# INTERET : VALIDATION DU CALCUL D'INDICATEUR EN POURSUITE.
+#
+# POUR LA PREMIERE PASSE, ON EFFECTUE nbadap ADAPTATIONS DE MAILLAGE.
+#
+
+DEBUT(CODE=_F(NOM='WTNL100E',NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+
+###################
+# 1. Initialisation
+###################
+
+nbadap = 2
+
+MAIL   = [None]*(nbadap+1)
+MODE   = [None]*(nbadap+1)
+CHMAT  = [None]*(nbadap+1)
+CHAR   = [None]*(nbadap+1)
+RESU   = [None]*(nbadap+1)
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+KINT=DEFI_CONSTANTE(VALE=1e-08,);
+
+########################################
+# 2. Definition des parametres temporels
+########################################
+
+T1_FIN = 250.
+T2_FIN = 500.
+
+LI1=DEFI_LIST_REEL(DEBUT=0.0,
+                   INTERVALLE=_F(JUSQU_A= T1_FIN,
+                                 NOMBRE=25,),);
+
+LI1_BIS=DEFI_LIST_REEL(DEBUT=10.0,
+                       INTERVALLE=_F(JUSQU_A= T1_FIN,
+                                     NOMBRE=24,),);
+
+LI2=DEFI_LIST_REEL(DEBUT= T1_FIN,
+                   INTERVALLE=_F(JUSQU_A= T2_FIN,
+                                 NOMBRE=10,),);
+
+LI2_BIS=DEFI_LIST_REEL(DEBUT= 275,
+                       INTERVALLE=_F(JUSQU_A= T2_FIN,
+                                     NOMBRE=9,),);
+
+
+LI=DEFI_LIST_REEL(DEBUT=0.0,
+                  INTERVALLE=(_F(JUSQU_A=T1_FIN,
+                                 NOMBRE=25,),
+                              _F(JUSQU_A=T2_FIN,
+                                 NOMBRE=10,),),);
+
+LI_BIS=DEFI_LIST_REEL(DEBUT=10,
+                      INTERVALLE=(_F(JUSQU_A=T1_FIN,
+                                     NOMBRE=24,),
+                                  _F(JUSQU_A=T2_FIN,
+                                     NOMBRE=10,),),);
+
+###########################
+# 3. Definition du materiau
+###########################
+
+MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
+                               NU=0.0,
+                               RHO=2800.0,
+                               ALPHA=1e-05,),
+                       COMP_THM='LIQU_SATU',
+                       THM_INIT=_F(PRE1=1000000.0,
+                                   PORO=0.5,),
+                       THM_DIFFU=_F(RHO=2800.0,
+                                    BIOT_COEF=1.0,
+                                    PESA_X=0.0,
+                                    PESA_Y=0.0,
+                                    PESA_Z=0.0,
+                                    PERM_IN=KINT,
+                                    PERM_LIQU=UN,),
+                       THM_LIQU=_F(RHO=1000.0,
+                                   UN_SUR_K=0.0,
+                                   VISC=UN,
+                                   D_VISC_TEMP=ZERO,
+                                   ALPHA=0.0001,),);
+
+########################
+# 4. Lecture du maillage
+########################
+
+MAIL[1]=LIRE_MAILLAGE(UNITE=20,
+                      FORMAT='MED',);
+
+MAIL[1]=MODI_MAILLAGE(reuse =MAIL[1],
+                      MAILLAGE=MAIL[1],
+                      ORIE_PEAU_2D=_F(GROUP_MA=('HAUT','BAS','GAUCHE','DROIT',),),);
+
+####################################################
+# BOUCLE CALCUL /INDICATEUR / ADAPTATION MAILLAGE  #
+####################################################
+
+for k in range(1,nbadap+1):
+
+  MODE[k]=AFFE_MODELE(MAILLAGE=MAIL[k],
+                      GRANDEUR_CARA=_F(LONGUEUR=10.,
+                                       PRESSION=1.,),
+                      AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='D_PLAN_HMS',),);
+
+  CHMAT[k]=AFFE_MATERIAU(MAILLAGE=MAIL[k],
+                         AFFE=_F(TOUT='OUI',
+                                 MATER=MATERIAU,),);
+
+####################################################################
+# Rappel : pour le calcul des indicateurs d'erreur, on est oblige de
+# declarer TOUTES les conditions aux limites
+####################################################################
+
+  CHAR[k]=AFFE_CHAR_MECA_F(MODELE=MODE[k],
+                           FACE_IMPO=(_F(GROUP_MA='HAUT',
+                                         PRE1=ZERO,),
+                                      _F(GROUP_MA='BAS',
+                                         DX=ZERO,
+                                         DY=ZERO,),
+                                      _F(GROUP_MA='GAUCHE',
+                                         DX=ZERO,),
+                                      _F(GROUP_MA='DROIT',
+                                         DX=ZERO,),),
+                           PRES_REP=_F(GROUP_MA='HAUT',
+                                       PRES=UN,),
+                           FLUX_THM_REP=_F(GROUP_MA=('GAUCHE','DROIT','BAS',),
+                                           FLUN_HYDR1=ZERO,),);
+
+  RESU[k]=STAT_NON_LINE(MODELE=MODE[k],
+                        CHAM_MATER=CHMAT[k],
+                        EXCIT=_F(CHARGE=CHAR[k],),
+                        COMP_INCR=_F(RELATION='KIT_HM',
+                                     RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
+                                     PARM_THETA=0.56999999999999995,),
+                        INCREMENT=_F(LIST_INST=LI,
+                                     INST_INIT = 0.0,
+                                     INST_FIN = T1_FIN, 
+                                     ERRE_TEMPS='OUI',),
+                        NEWTON=_F(MATRICE='TANGENTE',
+                                  REAC_ITER=10,),
+                        CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                        SOLVEUR=_F(METHODE='LDLT',),
+                        ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+
+####dico = RESU_00.LIST_PARA()
+
+####print dico['ERRE_TPS_LOC']
+
+####print dico['ERRE_TPS_GLOB']
+####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
+
+  RESU[k]=CALC_ELEM(reuse =RESU[k],
+                    MODELE=MODE[k],
+                    CHAM_MATER=CHMAT[k],
+                    RESULTAT=RESU[k],
+                    LIST_INST=LI1,
+                    OPTION='SIEF_ELNO_ELGA',);
+
+  RESU[k]=CALC_ELEM(reuse =RESU[k],
+                    RESULTAT=RESU[k],
+                    LIST_INST=LI1_BIS,
+                    TYPE_OPTION='INDI_ERREUR',
+                    OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+
+  RESU[k]=CALC_NO(reuse =RESU[k],
+                    RESULTAT=RESU[k],
+                    INST=T1_FIN,
+                    OPTION='ERRE_NOEU_ELEM',);
+
+  if ( k == 1 ) :
+    TEST_RESU( RESU = (
+            _F(  RESULTAT = RESU[k],  INST=T1_FIN,
+                 NOM_CHAM = 'ERRE_NOEU_ELEM',   NOM_CMP = 'ESTERG1',
+                 CRITERE = 'RELATIF',  PRECISION = 1.E-10,
+                 GROUP_NO = 'NO_TEST',      VALE = 5.1838946544447E-03,
+                 REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
+            ),)
+    TEST_RESU( RESU = (
+        _F(  RESULTAT = RESU[k],  INST=T1_FIN,
+            PARA = 'ERRE_TPS_GLOB',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-6,
+            VALE = 9.0252679509186E-02,
+            REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
+            ),)
+
+
+  if ( k < nbadap ) :
+
+    MAIL[k+1]=CO('MAIL_%d' % (k+1))
+
+    MACR_ADAP_MAIL(MAILLAGE_N=MAIL[k],
+                   MAILLAGE_NP1=MAIL[k+1],
+                   ADAPTATION='RAFFINEMENT',
+                   RESULTAT_N=RESU[k],
+                   INDICATEUR='ERRE_ELEM_SIGM',
+                   NOM_CMP_INDICA='ESTERG1',
+                   NUME_ORDRE=25,
+                   CRIT_RAFF_PE=0.05,);
+
+FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/12/2007   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 10/03/2008   AUTEUR GALENNE E.GALENNE 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,7 +202,22 @@ TEST_TABLE(TABLE=PK,
            PRECISION=0.035,
            REFERENCE='AUTRE_ASTER');                      
 
+# CALCUL AVEC CALC_G
+SIF=CALC_G(RESULTAT=UTOT,
+           OPTION='CALC_K_G',
+           THETA=_F(FISSURE=FISS,
+                    R_INF=0.01,
+                    R_SUP=0.05,),
+           INFO=2,);
 
+IMPR_TABLE(TABLE=SIF,);
 
+# REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES - CALCUL AVEC CALC_G)
+TEST_TABLE(TABLE=SIF,
+           NOM_PARA='K1',
+           VALE= 9.00331E+06,
+           CRITERE='RELATIF',
+           PRECISION=0.01,
+           REFERENCE='AUTRE_ASTER');                      
 
 FIN();

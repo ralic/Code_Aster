@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -37,31 +37,34 @@ C                     5 : RESO_INTE (0: EULER_1, 1: RK_2, 2: RK_4)
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
+      CHARACTER*32     JEXNUM, JEXNOM
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='NMDORC')
+
       INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP
-      INTEGER JNOMA,JVALV,K,N1,NBMA,NBMO1,NBVARI,NC1,NC2
-      INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
+      INTEGER JNOMA,JVALV,K,N1,NBMA,NBMO1,NBVARI
+      INTEGER NBMAT,JMAIL,NCOMEL,JMESM,IMA,IM,IRET,ICPRI,NBSYST
       INTEGER INV,DIMANV,NBMONO,NUNIT,ITEINT,ITEPAS,NUMGD,JACMP,NBCRIT
       INTEGER JCRIT,JVALC,IMPEXP,TYPTGT,ITDEBO
       REAL*8 RBID,RESI,THETA,R8VIDE,PERT,RESID,TSEUIL,TSAMPL,TSRETU
       COMPLEX*16 CBID
-      LOGICAL      BUG, NIVO,TSEC
+      LOGICAL      BUG, NIVO
       CHARACTER*1  K1BID
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
@@ -110,13 +113,13 @@ C                           1234567890123
 
       IF (NOMCMD(1:13).NE.'THER_LINEAIRE') THEN
 
-        COMPOR = '&&NMDORC.COMPOR'
+        COMPOR = '&&'//NOMPRO//'.COMPOR'
         MODELE = MODELZ
 
         IF (NOMCMD(1:13).EQ.'THER_NON_LINE') THEN
           NBMO1 = 1
           MOCLEF(1) = 'COMP_THER_NL'
-        ELSE IF (NOMCMD(1:9).EQ.'CALC_META' .OR. 
+        ELSE IF (NOMCMD(1:9).EQ.'CALC_META' .OR.
      &           NOMCMD(1:9).EQ.'LIRE_RESU') THEN
           NBMO1 = 1
           MOCLEF(1) = 'COMP_INCR'
@@ -134,7 +137,7 @@ C                           1234567890123
         MOCLES(2) = 'MAILLE'
         TYPMCL(1) = 'GROUP_MA'
         TYPMCL(2) = 'MAILLE'
-        MESMAI = '&&NMDORC.MES_MAILLES'
+        MESMAI = '&&'//NOMPRO//'.MES_MAILLES'
 
         LIGRMO = MODELE(1:8)//'.MODELE'
         CALL JEVEUO(LIGRMO(1:19)//'.LGRF','L',JNOMA)
@@ -177,6 +180,7 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
         CHAIN1 = ' MAILLE:     COMPORTEMENT:        RELATION:'
         CHAIN2 = ' '
         CHAIN2(13:28) = MOCLEF(1)
+
         DO 80 I = 1,NBMO1
           CALL GETFAC(MOCLEF(I),NBOCC)
           DO 70 K = 1,NBOCC
@@ -228,15 +232,15 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
                       CHAIN2(2:9) = K8B
                       CHAIN2(32:47) = ZK16(JMAIL+IMA-1)
                       IF (.NOT.BUG) THEN
-                          CALL U2MESS('E','ALGORITH_25')
+                        CALL U2MESS('E','ALGORITH_25')
                       END IF
                       IF (.NOT.NIVO) THEN
                         NIVO = .TRUE.
-                      VALK(1)=MOCLEF(I)
-                      VALK(2)=COMP
-                      VALK(3)=CHAIN1
-                      VALK(4)=CHAIN2
-                      CALL U2MESK ('E', 'ALGORITH11_85', 4, VALK)
+                        VALK(1)=MOCLEF(I)
+                        VALK(2)=COMP
+                        VALK(3)=CHAIN1
+                        VALK(4)=CHAIN2
+                        CALL U2MESK ('E', 'ALGORITH11_85', 4, VALK)
                       END IF
                       BUG = .TRUE.
                     END IF
@@ -255,14 +259,14 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
                       CHAIN2(2:9) = K8B
                       CHAIN2(32:47) = ZK16(JMAIL+IMA-1)
                       IF (.NOT.BUG) THEN
-                         CALL U2MESS('E','ALGORITH_25')
+                        CALL U2MESS('E','ALGORITH_25')
                       END IF
                       IF (.NOT.NIVO) THEN
                         NIVO = .TRUE.
-                      VALK(1)=MOCLEF(I)
-                      VALK(2)=COMP
-                      VALK(3)=CHAIN1
-                      VALK(4)=CHAIN2
+                        VALK(1)=MOCLEF(I)
+                        VALK(2)=COMP
+                        VALK(3)=CHAIN1
+                        VALK(4)=CHAIN2
                       CALL U2MESK ('E', 'ALGORITH11_85', 4, VALK)
                       END IF
                       BUG = .TRUE.
@@ -286,7 +290,7 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
    90   CONTINUE
 
         IF (CRILOC) THEN
-C CARTE DES CRITERES DE CONVERGENCES LOCAUX
+C CARTE DES CRITERES DE CONVERGENCE LOCAUX
           CALL ALCART('V',CARCRI,NOMA,'CARCRI')
           CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JCRIT)
           CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALC)
@@ -444,7 +448,7 @@ C ET META_XXX_INL
 
 C           CPLAN DEBORST  ET COMP1D DEBORST
 C           DEBORST SEULEMENT EN COMP_INCR
-            IF ((I.EQ.1) .AND. (CRILOC)) THEN
+            IF ((I.EQ.1) .AND. CRILOC) THEN
               EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
               EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
               IF (EXICP) THEN
@@ -469,7 +473,7 @@ C           MATRICE EVOLUTIVE TANGENTE/SECANTE
               EXITS = GETEXM(MOCLEF(I),'TYPE_MATR_TANG')
               IF (EXITS) THEN
                  CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,TXTS,N1)
-                 IF (TXTS(1:16).EQ.'TANGENTE_SECANTE') THEN 
+                 IF (TXTS(1:16).EQ.'TANGENTE_SECANTE') THEN
                    NBVARI = NBVARI + 1
                    CALL GETVR8(MOCLEF(I),'SEUIL',
      &                           K,1,1,TSEUIL,IRET)
@@ -478,12 +482,12 @@ C           MATRICE EVOLUTIVE TANGENTE/SECANTE
                    CALL GETVR8(MOCLEF(I),'TAUX_RETOUR',
      &                           K,1,1,TSRETU,IRET)
                  ENDIF
-              END IF            
+              END IF
             ENDIF
-            
-            
-            
-            
+
+
+
+
             EXIST = GETEXM(MOCLEF(I),'DEFORMATION')
             IF (EXIST) THEN
               CALL GETVTX(MOCLEF(I),'DEFORMATION',K,1,1,DEFO,N1)
@@ -603,8 +607,7 @@ C ------- PAR DEFAUT C'EST TOUT='OUI'
                 ZR(JVALC+11) = TSRETU
                 CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
               ENDIF
-
-            ENDIF
+            END IF
 
   150     CONTINUE
 
@@ -613,11 +616,7 @@ C ------- PAR DEFAUT C'EST TOUT='OUI'
 
         CALL JEDETR(COMPOR//'.NCMP')
         CALL JEDETR(COMPOR//'.VALV')
-        IF (CRILOC) THEN
-          CALL JEDETR(CARCRI(1:19)//'.NCMP')
-          CALL JEDETR(CARCRI(1:19)//'.VALV')
-        ENDIF
-
+C
 C SI PRESENCE DE MULTIFIBRE, ON FUSIONNE LES CARTES
 C   S'IL EXISTE UNE FOIS MULTIFIBRE LA CARTE A ETE CREEE DANS RCCOMP
 C   DE AFFE_MATERIAU / AFFE_COMPOR
@@ -625,9 +624,9 @@ C   DE AFFE_MATERIAU / AFFE_COMPOR
           IF(EXIFIB)THEN
 C ON RECUPERE LA CARTE ET ON EN FAIT UN CHAM_ELEM_S
             CALL GETVID(' ','CHAM_MATER',1,1,1,CHMAT,N1)
-            CHS(1)='&&NMDORC.CHS1'
-            CHS(2)='&&NMDORC.CHS2'
-            CHS3='&&NMDORC.CHS3'
+            CHS(1)='&&'//NOMPRO//'.CHS1'
+            CHS(2)='&&'//NOMPRO//'.CHS2'
+            CHS3  ='&&'//NOMPRO//'.CHS3'
             CALL CARCES(COMPOR,'ELEM',' ','V',CHS(1),IBID)
             CALL CARCES(CHMAT//'.COMPOR','ELEM',' ','V',CHS(2),IBID)
             CALL DETRSD('CARTE',COMPOR)

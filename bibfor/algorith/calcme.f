@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -225,10 +225,10 @@ C ======================================================================
      &              CONGEM(ADCOME),VINTM,OPTION,R8BID,ANGMAS,
      &              CONGEP(ADCOME),VINTP,DSDEME,RETCOM)
       ENDIF
-      IF (MECA.EQ.'DRUCKER_PRAGER') THEN
+      IF (MECA.EQ.'DRUCK_PRAGER' .OR. MECA.EQ.'DRUCK_PRAG_N_A' ) THEN
          MECTRU = .TRUE.
          TINI = T - DT
-         CALL LCDRPR(TYPMOD,OPTION,IMATE,CONGEM(ADCOME),
+         CALL LCDRPR(TYPMOD,OPTION,IMATE,COMPOR,CONGEM(ADCOME),
      &               TINI,T,TREF,DEPS,VINTM,VINTP,
      &               CONGEP(ADCOME),DSDEME,RETCOM)
       ENDIF

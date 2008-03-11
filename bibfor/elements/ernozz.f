@@ -7,7 +7,7 @@
       CHARACTER*(*) CHAMP,RESUCO
       CHARACTER*19 RESUC1
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,27 +46,18 @@ C IN   LIGREL :  NOM D'UN LIGREL SUR LEQUEL ON FERA LE CALCUL
 C IN   IORDR  :  NUMERO D'ORDRE
 C IN   TIME   :  INSTANT DE CALCUL
 C IN   RESUCO :  NOM DE CONCEPT ENTRANT
-C IN   RESUC1 :  NOM DE CONCEPT RESULTAT DE LA COMMANDE CALC_ERREUR
+C IN   RESUC1 :  NOM DE CONCEPT RESULTAT
 C
 C      SORTIE :
 C-------------
 C OUT  CHAMP  :  CONTRAINTES AUX NOEUDS
 C
-C ......................................................................
-
-C ----------------------------------------------------------------------
-
-      INTEGER       IBID
-
-      CHARACTER*8   K8B
-
-      COMPLEX*16    CBID
-
-C ----------------------------------------------------------------------
-
+C ======================================================================
+C
 C    CALCUL DE L'ESTIMATEUR D'ERREUR
 C
       CALL ZZLOCA(MODELE,LIGREL,CHMAT,SIGMA,SIGNO,CHAMP)
-      CALL ZZGLOB(CHAMP,OPTION,IORDR,TIME,RESUCO,RESUC1)
+      CALL ERGLOB(CHAMP,.FALSE.,.FALSE.,OPTION,IORDR,
+     &            TIME ,RESUCO ,RESUC1)
 C
       END

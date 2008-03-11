@@ -1,0 +1,768 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 11/03/2008 - 10:46:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011765 DU 2008-02-15 12:53:36
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TMA : CS
+TITRE
+   Concept r?trant dans STAT_NON_LINE et archivage
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Lorsque l'on surcharge un concept STAT_NON_LINE avec reuse et que l'on a laissé le mot clé
+   facteur (à cause d'un copier-coller par exemple) :
+   
+   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
+   
+   On est arrêté au moment de l'exécution de cette commande par :
+   
+      !------------------------------------------------------------------------------!
+      ! <F> <ALGORITH2_96>                                                           !
+      !                                                                              !
+      !                                                                              !
+      !  impossible d'archiver l'état initial : le concept est réentrant (ARCHIVAGE) !
+      !                                                                              !
+      !                                                                              !
+      !                                                                              !
+      ! Cette erreur est fatale. Le code s'arrete.                                   !
+      !------------------------------------------------------------------------------!
+   
+   Solution :
+   ----------
+   Dans archivage.py appelé par le fortran nmcrar, on supprime carrément le messgae
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   n?t
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 10/03/2008 - 13:23:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011802 DU 2008-02-22 16:56:22
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MN10 - Suppression des messages d'alarme contact_1 et contact3_94 en mxc3xa9thode VERIF
+FONCTIONNALITE
+   Objet
+   =====
+   
+   Suite à la correction de l'AL 11260, la méthode 'VERIF' va être implantée dans
+   MACR_ASCOUF_CALC pour détecter d'éventuelles interpénétrations.
+   Suite à une discussion avec E. Galenne, on voit que la méthode 'VERIF' produit deux
+   alarmes qui émises aux milieu de MACR_ASCOUF_CALC nuisent à la lisibilité de cet outil
+   industriel.
+   
+   
+   Messages
+   ========
+   
+   - CONTACT_1 : message qui n'a pas lieu d'être avec la méthode 'VERIF' (avertissement sur
+   la symétrie de la matrice, inutile ici car on ne fait pas de contact à proprement parler)
+   ==> intervention dans exfonc.f
+   
+   - CONTACT3_94 : introduit suite à la première vague de correction de la méthode 'VERIF'
+   (Fiche 9973). Il précise qu'avec cette méthode lorsque l'on utilise des éléments
+   quadratiques QUAD8 (ou QUAD9), le jeu risque d'être imprécis sur les noeuds milieux.
+   Des tests de validation sur ascou01a et ascou08a montrent en effet une oscillation du jeu
+   lorsque les éléments quadratiques sont élancés (cf image jointe).
+   Cela se produit car on ne liaisonne pas les noeuds milieux avec les noeuds sommets et
+   parce que la projection n'est pas encore quadratique (objet fiche 9896).
+   ==> intervention dans exnocp.f, nbnoco.f, nbnocp.f, nbnoel.f, nbsuco.f
+   
+   On propose de déplacer cette alarme dans le message CONTACT_93 affiché lorsqu'il y a
+   détection d'une interpénétration en attendant la projection quadratique et de le signaler
+    dans la documentation d'AFFE_CHAR_MECA/CONTACT.
+   
+   
+   NEW8
+   ====
+   
+   Message plus clair lors de la détection de l'interpénétration et ajout de l'avertissement
+   quant à la précision du jeu (il s'appelle algorith_93).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 10/03/2008 - 16:27:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011813 DU 2008-02-29 09:10:30
+TYPE anomalie concernant Code_Aster (VERSION 9.3)
+TITRE
+   En NEW9.2.12, le cas-test zzzz234a s'arrete en erreur_<S> sur Calibre.
+FONCTIONNALITE
+   Pour ce calcul on demandait de converger avec :
+   |  RESI_REFE_RELA=1.0E-07,  FORC_REFE=(1.0E-05,1.0E-05,)
+   Cela revient à demander de converger avec un RESI_GLOB_MAXI=1.0E-12 ou un
+   RESI_GLOB_RELA=3.0E-16.
+   
+   Des valeurs plus raisonnables sont :
+   |     RESI_REFE_RELA=1.E+00, FORC_REFE=(1.0E-05,1.0E-05,)
+   | ou  RESI_REFE_RELA=1.E-05, FORC_REFE=(1.0E+00,1.0E+00,)
+   
+   Avec RESI_REFE_RELA=1.E+00, FORC_REFE=(1.0E-05,1.0E-05,)
+   -------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     RESIDU
+   |     NEWTON     |     RELATIF    |     ABSOLU     |  PAR REFERENCE
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |  CONTRAINTES
+   -------------------------------------------------------------------
+   |     0        X | 4.92622E-06    | 1.28082E-02    | 1.28082E+03  X
+   |     1          | 4.85353E-11    | 1.26192E-07    | 1.26192E-02
+   -------------------------------------------------------------------
+   
+   Il n'y a pas d'impact documentaire, la doc V1.01.234a est OK.
+   
+   
+   
+   Avant avec RESI_REFE_RELA=1.0E-07,  FORC_REFE=(1.0E-05,1.0E-05,)
+   -------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     RESIDU
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |  CONTRAINTES
+   -------------------------------------------------------------------
+   |     0        X | 4.92622E-06    | 1.28082E-02    | 1.28082E+03  X
+   |     1        X | 4.85353E-11    | 1.26192E-07    | 1.26192E-02  X
+   |     2        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X
+   |     3        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X
+   |     4        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X
+   |     5        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X 
+   |     6        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X 
+   |     7        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X 
+   |     8        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X 
+   |     9        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X 
+   |    10        X | 6.12160E-16    | 1.59162E-12    | 1.59162E-07  X 
+   -------------------------------------------------------------------
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage du cas test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE Erwan          DATE 10/03/2008 - 13:40:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011819 DU 2008-03-05 15:10:40
+TYPE express concernant Code_Aster (VERSION 9.2)
+TITRE
+   CALC_G : rxc3xa9sultats faux avec CALC_K_G en 2D X-FEM
+FONCTIONNALITE
+   Problème : lors de la restitution de la fiche 11645 en 9.2.8 (fissure non plane dans
+   POST_K1_K2_K3), une erreur a été introduite dans une des routines de CALC_G (meficg:
+   récupération de la direction normale).
+   Cette erreur induit un résultat faux sur le calcul de K1 et K2 avec l'option CALC_K_G de
+   CALC_G en 2D.
+   
+   Correction : on corrige meficg en conséquence (inversion de la direction x et y dans le
+   vecteur normal).
+   On corrige également un petit bug dans POST_K1_K2_K3 dans le cas 2D - fond de fissure
+   double (plantage brutal jusqu'à présent).
+   
+   Validation : ce problème montre un défaut de validation sur l'option CALC_K_G de
+   CALC_G : un seul cas test existait, avec une fissure inclinée à 45° pour laquelle
+   justement le bug n'avait pas d'influence.
+   
+   On modifie donc deux cas test existants :
+   - ssnp138a : ajout d'une boucle pour faire varier la direction de la fissure de 0 à 60° ;
+   (comparaison du résultat de CALC et POST_K1_K2_K3 avec une solution analytique).
+   - hsnv132b : ajout de CALC_G (écart de moins de 0,5% avec la modélisation a - fissure
+   maillée)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.2.8
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.03.138
+VALIDATION
+   ssnp138a,hsnv132b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 10/03/2008 - 17:16:13
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011747 DU 2008-02-13 10:13:32
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   Bug X-FEM : fissure dans le prolongement d'un angle
+FONCTIONNALITE
+   Problème : 
+   ----------
+   
+   Lors de deux récentes études (Affaire UTO et étude DNCS), on souhaitait positionner une
+   fissure (axi-symétrique) dans le prolongement d'un angle.
+   Les tentatves ont échoué, provoquant des pivots nuls.
+   
+   La solution de contournement alors utilisée, a été de décaler légèrement la fissure.
+   
+   Norlament, on devrait pouvoir mettre la fissure exactement dans le prolongement d'un angle.
+   
+   
+   Solution :
+   ----------
+   
+   La problème vient des éléments de bord qui sont dans l'alignement de la fissure.
+   Plusieures modifications ont été nécessaires :
+   - la procédure de découpage des éléments de bord enrichis a été modifiée afin de prendre
+   en compte le cas où l'élément de bord coincide avec l'interface (élément de bord 1D ou 2D)
+   - la détermination du signe de la level set sur ces éléments est impossible car sur tous
+   les noeuds de cet élément, la level set est nulle. on ne peut donc aps savoir de quel coté
+   on se trouve, ce qui est problèmatique pour la suite. Lors ce la construction des champs
+   liés au sous-découpage, et au signe de LSN  : HEAV, on ne fait donc rien, et on met 99
+   pour la valeur de HE.
+   - dans la routine xoripe, qui réoriente les sous-éléments de bord enrichis, on en profite
+   pour modifier HE si HE=99 : on regarde la maille principale associée, et on détermine
+   alors de quel coté on se trouve grace au signe de la level set sur la maille principale.
+   On modifie alors HE avec +1 ou -1.
+   
+   la validation est réalisée sur un cas test perso ainsi que sur l'étude UTO.
+   
+   impact : 
+   xdecou.f, xdecov.f, xoripe.f, 
+   gener_medpl1.cata, gener_me_xh_2.cata, gener_me_xht_2.cata, gener_me_xt_2.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests perso + xc3xa9tudes proposxc3xa9es
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011784 DU 2008-02-20 09:43:45
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   routines X-FEM a suprrimer
+FONCTIONNALITE
+   Suite au code-coverage de Thomas, on s'est aperçu que 3 routines X-FEM n'étaient plus
+   appelables (suite à des modifs de SD ou des renommages) :
+   xcobid.f 
+   xcordo.f
+   xkin2d.f 
+   
+   
+   On supprime ces routines.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   neant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 11/03/2008 - 19:06:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011643 DU 2008-01-15 13:57:17
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   Ajout loi de comportement Drucker-Prager en non-associee
+FONCTIONNALITE
+   Drucker-Prager non-associé :
+   ----------------------------
+   
+   Le choix du comportement de type Drucker-Prager ( associée ou non associé ) se fait sous
+   COMP_INCR, par les mots clés :
+    o DRUCK_PRAGER pour un comportement associé, 
+    o DRUCK_PRAG_N_A pour un comportement non associé. 
+   
+   Dans DEFI_MATERIAU, sous DRUCK_PRAGER, le nouveau paramètre matériau DILAT représente
+   l?angle de dilatance (par défaut égal à zéro).
+   
+   Validation : ajout de deux tests :
+   
+   - dans SSND104A, on teste les comportements ASSOCIE et NON ASSOCIE en prenant des
+   paramètres matériaux simulant un cas de plasticité parfaite (en fait il suffit de prendre
+   le paramètre P_ULTM très grand). On compare les résultats des contraintes et des variables
+   internes de DRUCKER PRAGER ASSOCIE et NON ASSOCIE.
+   
+   - dans SSND104B on compare DRUCKER PRAGER ASSOCIE et NON ASSOCIE en prenant P_ULTM petit.
+   
+   · Détails sur le fortran  :
+   o Les fichiers suivants ont été modifiés : 
+   § nmtstm.f, calcme.f, nmcomp.f  pour prendre en compte le comportement DRUCKER
+   PRAGER NON ASSOCIE.
+   § lcdpnl.f , lcdrpr.f, lcdppa, pour prendre en compte l?option de choix du
+   comportement.
+   o Les fichiers suivants ont été ajoutés : betaps.f, dpmat2.f, dppat2.f, redpna.f
+   o nettoyage de la programmation, dimension des variables internes dans dpmate.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.16, U4.51.11, U4.43.01, V6.08.104
+VALIDATION
+   ssnd104a, ssnd104b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mazet        MAZET Sylvain          DATE 11/03/2008 - 16:10:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011757 DU 2008-02-14 16:16:41
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Restitution cas-tests X-FEM contact frottant
+FONCTIONNALITE
+   On restitue les cas-tests suivants modélisant une configuration contact avec frottement
+   glissant et adhérent.
+   
+   Ces tests valident la correction de bug effectuée dans la fiche 11728, restituée
+   simultanément.
+   
+   ssnv209a : solution de référence 2D méthode continue
+   ssnv209b : quad x-fem avec discontinuité à l'interface
+   ssnv209c : quad x-fem avec discontinuité au milieu des éléments
+   ssnv209d : tri x-fem avec discontinuité à l'interface
+   ssnv209e : tri x-fem avec discontinuité au milieu des éléments
+   ssnv209f : solution de référence 3D méthode continue
+   ssnv209g : hexa x-fem avec discontinuité à l'interface
+   ssnv209h : hexa x-fem avec discontinuité au milieu des éléments
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.209
+VALIDATION
+   tests fournis
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011728 DU 2008-02-08 17:10:58
+TYPE anomalie concernant Code_Aster (VERSION 9.2)
+TITRE
+   Bug dans la routine xmolig
+FONCTIONNALITE
+   Le cas-test est ssnv209 (de A à F) sert de validation à cette 
+   correction d'AL. On a suivi les conseils de Samuel sur
+   xmolig. Du coup l'indicateur K8CONT ne sert plus à rien
+   dans cette routine. On l'enlève donc des arguments d'entrée
+   et on fait la modif dans l'appel à xmolig dans l'op0113.
+   Par ailleurs lors de ce même cas-test on se rend compte
+   qu'il faut utiliser des schémas d'inétgration aux noeuds
+   sur les surfaces de contact si l'on veut éviter des 
+   oscillations numériques de la solution (qui n'ont rien à 
+   voir avec la satisfaction de la condition LBB). On 
+   autorise donc l'intégration au noeud sur la surface de 
+   contact X-FEM dans le catapy affe_char_meca.capy
+   On autorise donc désormais ce schéma d'inétgration pour le 
+   contact frottement avec x-fem et on fait les modifications 
+   nécessaires dans les te0532, te0533, te0534 et te0548.Dans 
+   tous ces te on remplace le bloc:    
+        IF (NDIM .EQ. 3) THEN
+           IF (INTEG.EQ.1) FPG='XCON'
+           IF (INTEG.EQ.4) FPG='FPG4'
+           IF (INTEG.EQ.6) FPG='FPG6'
+           IF (INTEG.EQ.7) FPG='FPG7'
+           ELC='TR3'
+         ELSEIF (NDIM.EQ.2) THEN
+           FPG='MASS' ou MASS était un schéma FPG3
+           ELC='SE2'
+         ENDIF
+   par:
+         IF (NDIM .EQ. 3) THEN
+           IF (INTEG.EQ.1) FPG='XCON'
+           IF (INTEG.EQ.4) FPG='FPG4'
+           IF (INTEG.EQ.6) FPG='FPG6'
+           IF (INTEG.EQ.7) FPG='FPG7'
+           IF (INTEG.EQ.9) FPG='NOEU'
+           ELC='TR3'
+         ELSEIF (NDIM.EQ.2) THEN
+           IF (INTEG.EQ.1) FPG='GAUSS'
+           IF (INTEG.EQ.2) FPG='FPG2'
+           IF (INTEG.EQ.3) FPG='FPG3'
+           IF (INTEG.EQ.4) FPG='FPG4'
+           IF (INTEG.EQ.9) FPG='NOEU'
+           ELC='SE2'
+         ENDIF
+   
+   On rajoute en outre la possibilité d'un schéma 
+   d'intégration au noeud pour le contact dans la routine
+   cazocx.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   ssnv209
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011808 DU 2008-02-27 12:28:30
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   message FONCT0_9
+FONCTIONNALITE
+   Mise au propre du message fonct0_9
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011815 DU 2008-02-29 09:32:45
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+   En NEW9.2.12, le cas-test forma12d s'arrete par manque de temps CPU sur Bull.
+FONCTIONNALITE
+   le temps job dans forma12d.para passe de 300 à 350s
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma12d lui mm
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien      DATE 11/03/2008 - 10:09:00
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011416 DU 2007-10-31 13:32:56
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   Indicateurs d'erreur HM instationnaire
+FONCTIONNALITE
+   Présentation :
+   --------------
+   
+   On restitue une famille d'indicateurs d'erreur pour la modelisation HM instationnaire en
+   2D avec comportement mecanique elastique lineaire et hydraulique sature.
+   
+   La famille d'indicateurs d'erreur est composee d'indicateurs spatiaux, calcules dans
+   CALC_ELEM pour l'adaptation de maillage, et d'un indicateur temporel, calcule dans
+   STAT_NON_LINE, pour faciliter plus tard l'adaptation de la discretisation temporelle.
+   
+   Le calcul des indicateurs temporels est declenche par le mot-cle ERRE_TEMPS='OUI' dans
+   STAT_NON_LINE. Le calcul des indicateurs en temps est fait par la routine nmetca.f dans
+   op0070.f. On stocke les valeurs locales et globales des indicateurs respectivement en tant
+   que parametres ERRE_TPS_LOC et ERRE_TPS_GLOB de la SD résultat.
+   
+   Le calcul des indicateurs spatiaux est effectue comme d'habitude dans CALC_ELEM. La
+   famille est composee de 3 indicateurs : les residus de l'equation de mecanique, de
+   l'equation de mecanique derivee et de l'equation hydraulique. L'adaptation se fait sur
+   l'indicateur somme des 3 indicateurs precedents.
+   
+   On a introduit également des nouveaux noms pour les (trop ?) nombreuses composantes
+   locales et globales des indicateurs :
+   ERHMME_L, ERHMMEDL, ERHMHY_L, ERHMME_G, ERHMMEDG, ERHMHY_G
+   
+   Validation :
+   -----------
+   
+   On restitue une nouvelle version du cas test wtnl100 (cas de consolidation d'un sol).
+   On coupe le transitoire en 2 passes pour valider le calcul des indicateurs en poursuite.
+   Dans la première passe, on effectue dans une boucle python 2 calculs d'indicateurs.
+   Dans la seconde, on effectue un seul calcul d'indicateurs. On effectue également le calcul
+   total en 1 seule passe et on compare par rapport au calcul en 2 passes.
+   On teste la non regression de l'indicateur spatial somme et de l'indicateur en temps aux
+   instants finaux des 2 passes.
+   
+   Documentation :
+   -------------
+   
+   Doc R (thèse ?)
+   
+   Routines impactées :
+   -------------------
+   erglhm.f  erhms2.f  meca01.f  nmdorc.f  nmnoli.f  op0046.f  rscrsd.f
+   calnor.f  erglme.f  erhmv2.f  mecalm.f  nmetca.f  nmsens.f  op0070.f  te0497.f
+   cetucr.f  erglob.f  ernozz.f  mechti.f  nmetdo.f  ntoptc.f  peecin.f  te0500.f
+   cetule.f  erglth.f  exithm.f  nmarch.f  nmlect.f  op0018.f  peepot.f  thaclm.f
+   dismmo.f  erhmb2.f  meacmv.f  nmdata.f  nmleop.f  op0038.f  resloc.f
+   
+   Catalogues impactés :
+   --------------------
+   affe_modele.capy     erre_temps.cata    grandeur_simple__.cata
+   calc_elem.capy       gener_medh22.cata  qire_elno_elem.cata
+   erre_elem_sigm.cata  gener_medhb2.cata  stat_non_line.capy
+   
+   Pythons impactés :
+   ------------------
+   elements4.py  indicateur.py  sd_modele.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : D4.06.02-C,U4.51.03-I1
+VALIDATION
+   wtnl100e
+NB_JOURS_TRAV  : 100.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011415 DU 2007-10-31 10:37:23
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Indicateurs d'erreur HM stationnaire : adimensionnement et mise xc3xa0 jour
+FONCTIONNALITE
+   Pour l'adimensionnement des indicateurs d'erreur en THM, on deplace la declaration des
+   grandeurs caracteristiques de CALC_ELEM vers AFFE_MODELE. On introduit un mot-clef facteur
+   GRANDEUR_CARA qui accepte 3 mots-clefs simples : LONGUEUR, PRESSION et TEMPERATURE. Ces
+   parametres ne sont utiles que pour le calcul d'indicateurs d'erreur en THM.
+   
+   On attache alors au modele une liste de tables contenant l'unique table CARA_ETUDE
+   contenant les grandeurs caracteristiques. Cette table peut ensuite etre lue dans
+   STAT_NON_LINE pour le calcul des indicateurs temporels et dans CALC_ELEM pour le calcul
+   des indicateurs spatiaux.
+   
+   L'expression des indicateurs stationnaires est egalement modifiee pour etre en accord avec
+   les resultats de ma these. On archive les indicateurs globaux en tant que parametres
+   ERRE_MEC, ERRE_HYD_S (méthode par stabilité) et ERRE_HYD_D (methode par dualite) dans la
+   SD resultat. Les TEST_RESU de non regression des cas tests wtnp116a et wtnp116b sont donc
+   modifies.
+   
+   Le stockage des indicateurs globaux est actuellement realise dans zzglob.f. On renomme
+   cette routine erglob.f et on la scinde en 2 : erglhm.f (pour la THM) et erglme.f (pour la
+   mecanique). On enleve les impressions des indicateurs dans une table pour erglhm. On
+   pourrait envisager à
+   terme de fusionner ces 2 nouvelles routines.
+   
+   Impact doc : U4.41.01-I, D4.06.02-C, V7.32.116a, doc R stationnaire
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.41.01-I, V7.32.116a
+VALIDATION
+   wtnp116a, wtnp116b
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR zentner      ZENTNER Irmela         DATE 10/03/2008 - 18:13:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011818 DU 2008-03-04 10:51:34
+TYPE express concernant Code_Aster (VERSION 9.2)
+TITRE
+   remplacement de l'algorithme normcdf de stats.py
+FONCTIONNALITE
+   L'algorithme normcdf de stats.py (utilitaire python) 
+   pour le calcul de 
+   valeurs d'une fonction de répartition d'une loi 
+   normale est très lent. On le remplace par un 
+   algorithme plus efficace. Cet algorithme ne prend 
+   qu'un seul argument (auparavant, on pouvait donner 
+   l'espérance et la variance) car il s'agit toujours de 
+   valeurs d'une loi normale centree réduite.
+   On fait les modifications correspondantes dans 
+   POST_DYNA_ALEA. J'ai egalement modifié le cas test car, 
+   dû au gain en temps de calcul, on peut passer l'ensemble 
+   des tirages bootstrap (mot-clé NB_TIRAGE)pour le calcul 
+   des fractiles.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz233a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnd104a                      mahfouz D.MAHFOUZ          404    404      0
+ CASTEST AJOUT ssnd104b                      mahfouz D.MAHFOUZ          423    423      0
+ CASTEST AJOUT ssnv209a                        mazet S.MAZET            234    234      0
+ CASTEST AJOUT ssnv209b                        mazet S.MAZET            512    512      0
+ CASTEST AJOUT ssnv209c                        mazet S.MAZET            512    512      0
+ CASTEST AJOUT ssnv209d                        mazet S.MAZET            516    516      0
+ CASTEST AJOUT ssnv209e                        mazet S.MAZET            512    512      0
+ CASTEST AJOUT ssnv209f                        mazet S.MAZET            254    254      0
+ CASTEST AJOUT ssnv209g                        mazet S.MAZET            523    523      0
+ CASTEST AJOUT ssnv209h                        mazet S.MAZET            448    448      0
+ CASTEST AJOUT wtnl100e                      meunier S.MEUNIER          230    230      0
+ CASTEST MODIF forma12d                        mazet S.MAZET            226      0      0
+ CASTEST MODIF hsnv132b                      galenne E.GALENNE          223      0      0
+ CASTEST MODIF sensm12a                      mahfouz D.MAHFOUZ          340      0      0
+ CASTEST MODIF ssnp138a                      galenne E.GALENNE          327      0      0
+ CASTEST MODIF wtnp116a                      meunier S.MEUNIER          490      0      0
+ CASTEST MODIF wtnp116b                      meunier S.MEUNIER          550      0      0
+ CASTEST MODIF zzzz233a                      zentner I.ZENTNER           99      0      0
+ CASTEST MODIF zzzz234a                       flejou J-L.FLEJOU         417      0      0
+CATALOGU AJOUT options/erre_temps            meunier S.MEUNIER           36     36      0
+CATALOGU MODIF compelem/grandeur_simple__    meunier S.MEUNIER          741      0      0
+CATALOGU MODIF options/erre_elem_sigm        meunier S.MEUNIER           54      0      0
+CATALOGU MODIF options/qire_elno_elem        meunier S.MEUNIER           27      0      0
+CATALOGU MODIF typelem/gener_mecpl2_xhc        mazet S.MAZET            243      0      0
+CATALOGU MODIF typelem/gener_mecpl2_xhtc       mazet S.MAZET            249      0      0
+CATALOGU MODIF typelem/gener_mecpl2_xtc        mazet S.MAZET            216      0      0
+CATALOGU MODIF typelem/gener_medh22          meunier S.MEUNIER          240      2      0
+CATALOGU MODIF typelem/gener_medhb2          meunier S.MEUNIER          205      1      1
+CATALOGU MODIF typelem/gener_medpl1          geniaut S.GENIAUT          151      0      0
+CATALOGU MODIF typelem/gener_medpl1_xht      geniaut S.GENIAUT           84      0      0
+CATALOGU MODIF typelem/gener_medpl1_xt       geniaut S.GENIAUT           85      0      0
+CATALOGU MODIF typelem/gener_medpl2_xhc        mazet S.MAZET            247      0      0
+CATALOGU MODIF typelem/gener_medpl2_xhtc       mazet S.MAZET            246      0      0
+CATALOGU MODIF typelem/gener_medpl2_xtc        mazet S.MAZET            215      0      0
+CATALOGU MODIF typelem/gener_me_xh_2         geniaut S.GENIAUT           93      0      0
+CATALOPY MODIF commande/affe_char_meca         mazet S.MAZET           1097      0      0
+CATALOPY MODIF commande/affe_modele          meunier S.MEUNIER          246      0      0
+CATALOPY MODIF commande/calc_elem            meunier S.MEUNIER          495      0      0
+CATALOPY MODIF commande/defi_compor          mahfouz D.MAHFOUZ          188      0      0
+CATALOPY MODIF commande/defi_materiau        mahfouz D.MAHFOUZ         2879      0      0
+CATALOPY MODIF commande/stat_non_line        meunier S.MEUNIER          365      0      0
+CATALOPY MODIF commun/c_comp_incr            mahfouz D.MAHFOUZ          364      0      0
+ FORTRAN AJOUT algorith/betaps               mahfouz D.MAHFOUZ           31     31      0
+ FORTRAN AJOUT algorith/dpmat2               mahfouz D.MAHFOUZ          167    167      0
+ FORTRAN AJOUT algorith/dppat2               mahfouz D.MAHFOUZ           71     71      0
+ FORTRAN AJOUT algorith/nmetca               meunier S.MEUNIER          223    223      0
+ FORTRAN AJOUT algorith/nmetdo               meunier S.MEUNIER          153    153      0
+ FORTRAN AJOUT algorith/redpna               mahfouz D.MAHFOUZ          129    129      0
+ FORTRAN AJOUT calculel/erglhm               meunier S.MEUNIER          176    176      0
+ FORTRAN AJOUT calculel/erglme               meunier S.MEUNIER          253    253      0
+ FORTRAN AJOUT calculel/erglob               meunier S.MEUNIER          146    146      0
+ FORTRAN AJOUT calculel/erglth               meunier S.MEUNIER          213    213      0
+ FORTRAN AJOUT elements/te0500               meunier S.MEUNIER          280    280      0
+ FORTRAN AJOUT utilitai/cetucr               meunier S.MEUNIER          104    104      0
+ FORTRAN AJOUT utilitai/cetule               meunier S.MEUNIER          124    124      0
+ FORTRAN MODIF algorith/calcme               mahfouz D.MAHFOUZ          462      0      0
+ FORTRAN MODIF algorith/dpmata               mahfouz D.MAHFOUZ          155      0      0
+ FORTRAN MODIF algorith/dpmate               mahfouz D.MAHFOUZ          140      0      0
+ FORTRAN MODIF algorith/dppatg               mahfouz D.MAHFOUZ           65      0      0
+ FORTRAN MODIF algorith/lcdpnl               mahfouz D.MAHFOUZ          133      0      0
+ FORTRAN MODIF algorith/lcdppa               mahfouz D.MAHFOUZ          174      0      0
+ FORTRAN MODIF algorith/lcdrpr               mahfouz D.MAHFOUZ           79      0      0
+ FORTRAN MODIF algorith/majsig               mahfouz D.MAHFOUZ           62      0      0
+ FORTRAN MODIF algorith/meacmv               meunier S.MEUNIER          465      0      0
+ FORTRAN MODIF algorith/nmarch               meunier S.MEUNIER          414      0      0
+ FORTRAN MODIF algorith/nmcomp               mahfouz D.MAHFOUZ          792      0      0
+ FORTRAN MODIF algorith/nmcrar               cnguyen C.NGUYEN           272      0      0
+ FORTRAN MODIF algorith/nmdata               meunier S.MEUNIER          165      0      0
+ FORTRAN MODIF algorith/nmdorc               meunier S.MEUNIER          647      0      0
+ FORTRAN MODIF algorith/nminit               meunier S.MEUNIER          356      0      0
+ FORTRAN MODIF algorith/nmlect               meunier S.MEUNIER          108      0      0
+ FORTRAN MODIF algorith/nmleop               meunier S.MEUNIER          118      0      0
+ FORTRAN MODIF algorith/nmnoli               meunier S.MEUNIER          178      0      0
+ FORTRAN MODIF algorith/nmsens               meunier S.MEUNIER          248      0      0
+ FORTRAN MODIF algorith/nmthmc               mahfouz D.MAHFOUZ          457      0      0
+ FORTRAN MODIF algorith/nmtstm               mahfouz D.MAHFOUZ           78      0      0
+ FORTRAN MODIF algorith/nscomp               mahfouz D.MAHFOUZ           82      0      0
+ FORTRAN MODIF algorith/nsdrpr               mahfouz D.MAHFOUZ          593      0      0
+ FORTRAN MODIF algorith/ntoptc               meunier S.MEUNIER          142      0      0
+ FORTRAN MODIF algorith/op0046               meunier S.MEUNIER          263      0      0
+ FORTRAN MODIF algorith/op0070               meunier S.MEUNIER          623      0      0
+ FORTRAN MODIF algorith/op0113                 mazet S.MAZET            353      0      0
+ FORTRAN MODIF algorith/posvar               mahfouz D.MAHFOUZ          422      0      0
+ FORTRAN MODIF algorith/resdp2               mahfouz D.MAHFOUZ          105      0      0
+ FORTRAN MODIF algorith/xdecou               geniaut S.GENIAUT          190      0      0
+ FORTRAN MODIF algorith/xdecov               geniaut S.GENIAUT          466      0      0
+ FORTRAN MODIF algorith/xoripe               geniaut S.GENIAUT          383      0      0
+ FORTRAN MODIF calculel/meca01               meunier S.MEUNIER          707      0      0
+ FORTRAN MODIF calculel/mecalm               meunier S.MEUNIER         2426      0      0
+ FORTRAN MODIF calculel/mechti               meunier S.MEUNIER           63      0      0
+ FORTRAN MODIF calculel/meficg               galenne E.GALENNE          428      0      0
+ FORTRAN MODIF calculel/op0038               meunier S.MEUNIER          160      0      0
+ FORTRAN MODIF calculel/resloc               meunier S.MEUNIER          479      0      0
+ FORTRAN MODIF calculel/thaclm               meunier S.MEUNIER          868      0      0
+ FORTRAN MODIF elements/erhmb2               meunier S.MEUNIER          557      0      0
+ FORTRAN MODIF elements/erhms2               meunier S.MEUNIER          476      0      0
+ FORTRAN MODIF elements/erhmv2               meunier S.MEUNIER          367      0      0
+ FORTRAN MODIF elements/ernozz               meunier S.MEUNIER           63      0      0
+ FORTRAN MODIF elements/te0030               mahfouz D.MAHFOUZ          186      0      0
+ FORTRAN MODIF elements/te0497               meunier S.MEUNIER          591      0      0
+ FORTRAN MODIF elements/te0532                 mazet S.MAZET            267      0      0
+ FORTRAN MODIF elements/te0533                 mazet S.MAZET            619      0      0
+ FORTRAN MODIF elements/te0534                 mazet S.MAZET            502      0      0
+ FORTRAN MODIF elements/te0548                 mazet S.MAZET            143      0      0
+ FORTRAN MODIF modelisa/cazocx                 mazet S.MAZET            229      0      0
+ FORTRAN MODIF modelisa/op0018               meunier S.MEUNIER          638      0      0
+ FORTRAN MODIF modelisa/xmolig                 mazet S.MAZET            320      0      0
+ FORTRAN MODIF utilitai/calnor               meunier S.MEUNIER          343      0      0
+ FORTRAN MODIF utilitai/dismmo               meunier S.MEUNIER          300      0      0
+ FORTRAN MODIF utilitai/exithm               meunier S.MEUNIER           80      0      0
+ FORTRAN MODIF utilitai/peecin               meunier S.MEUNIER          379      0      0
+ FORTRAN MODIF utilitai/peepot               meunier S.MEUNIER          331      0      0
+ FORTRAN MODIF utilitai/rscrsd               meunier S.MEUNIER          815      0      0
+ FORTRAN SUPPR calculel/zzglo1               meunier S.MEUNIER            0      0      0
+ FORTRAN SUPPR calculel/zzglob               meunier S.MEUNIER            0      0      0
+  PYTHON MODIF Macro/post_dyna_alea_ops      zentner I.ZENTNER          421      0      0
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       galenne E.GALENNE         1186      0      0
+  PYTHON MODIF Messages/algorith10           mahfouz D.MAHFOUZ          315      0      0
+  PYTHON MODIF Messages/algorith3            mahfouz D.MAHFOUZ          296      0      0
+  PYTHON MODIF Messages/algorith4            mahfouz D.MAHFOUZ          240      0      0
+  PYTHON MODIF Messages/archivage            cnguyen C.NGUYEN            37      0      0
+  PYTHON MODIF Messages/contact3              desoza T.DESOZA           166      0      0
+  PYTHON MODIF Messages/contact               desoza T.DESOZA           157      0      0
+  PYTHON MODIF Messages/elements4            meunier S.MEUNIER          295      0      0
+  PYTHON MODIF Messages/fonct0                 mazet S.MAZET            318      0      0
+  PYTHON MODIF Messages/indicateur           meunier S.MEUNIER          134      0      0
+  PYTHON MODIF SD/sd_modele                  meunier S.MEUNIER           55      0      0
+  PYTHON MODIF Utilitai/stats                zentner I.ZENTNER           61      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   25        6674      6674             +6674
+ MODIF :  101       36610         3       1        +2
+ SUPPR :    2           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  128       43284      6677       1     +6676 

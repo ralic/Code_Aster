@@ -2,7 +2,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C =====================================================================
      &              'HOEK_BROWN_TOT'  ,
      &              'MAZARS'          ,
      &              'ENDO_ISOT_BETON' ,
-     &              'DRUCKER_PRAGER'  /
+     &              'DRUCK_PRAGER'  /
 C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************

@@ -1,0 +1,104 @@
+      SUBROUTINE CETUCR ( MOTFAC, MODEL0 )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C GRANDEURS CARACTERISTIQUES DE L'ETUDE - CREATION
+C           *                     ***     **
+C     ------------------------------------------------------------------
+C      CREATION D'UNE TABLE CONTENANT LES GRANDEURS CARACTERISTIQUES
+C      CONTENUES DANS LE MODELE
+C      REMARQUE : LES GRANDEURS SONT LUES PAR LE SP
+C
+C IN  : MOTFAC  : MOT-CLE FACTEUR
+C IN  : MODEL0  : NOM DE LA SD MODELE
+C     ------------------------------------------------------------------
+      IMPLICIT   NONE
+C
+C DECLARATION PARAMETRES D'APPELS
+C -------------------------------
+      CHARACTER*(*) MOTFAC, MODEL0
+C     ------------------------------------------------------------------
+C
+C
+C DECLARATION VARIABLES LOCALES
+C
+      INTEGER      NBPAR
+      PARAMETER  ( NBPAR = 2 )
+      INTEGER      NBMCLE
+      PARAMETER  ( NBMCLE = 3 )
+C     ------------------------------------------------------------------
+      INTEGER      N1,IBID, IAUX
+      REAL*8       VR
+      COMPLEX*16   CBID
+      CHARACTER*2  TYPPAR(NBPAR)
+      CHARACTER*8  NOMPAR(NBPAR)
+      CHARACTER*8  MODELE, VK
+      CHARACTER*8  NOMGRD(NBMCLE)
+      CHARACTER*16 MOTCLE(NBMCLE)
+      CHARACTER*19 TABLE
+C     ------------------------------------------------------------------
+      DATA MOTCLE / 'LONGUEUR', 'PRESSION', 'TEMPERATURE' /
+      DATA NOMGRD / 'LONGUEUR', 'PRESSION', 'TEMP' /
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ ( )
+C
+      MODELE = MODEL0
+C
+C====
+C 1. ACCROCHAGE D'UNE LISTE DE TABLE A LA STRUCTURE 'MODELE'
+C====
+C
+C 1.1 ==> CREATION D'UNE LISTE DE TABLE
+C         REMARQUE : LA LISTE NE CONTIENT QU'UNE SEULE TABLE !
+C
+      CALL LTCRSD ( MODELE , 'G' )
+C
+C 1.2 ==> RECUPERATION DU NOM DE LA TABLE DANS LA LISTE
+C
+      CALL LTNOTB ( MODELE , 'CARA_ETUDE' , TABLE )
+C
+C====
+C 2. REMPLISSAGE DE LA TABLE
+C====
+C
+C 2.1. ==> CREATION D'UNE TABLE CONTENANT LES GRANDEURS CARACTERISTIQUES
+C
+      CALL TBCRSD(TABLE,'G')
+C
+      NOMPAR(1)='GRANDEUR'
+      TYPPAR(1)='K8'
+      NOMPAR(2)='VALE'
+      TYPPAR(2)='R'
+      CALL TBAJPA (TABLE, NBPAR, NOMPAR, TYPPAR )
+C
+C 2.2. ==> LECTURE ET STOCKAGE DES VALEURS PRESENTES
+C
+      DO 10 , IAUX = 1 , NBMCLE
+C
+        CALL GETVR8(MOTFAC,MOTCLE(IAUX), 1,1,1,VR,N1)
+        IF (N1.GT.0) THEN
+          VK = NOMGRD(IAUX)
+          CALL TBAJLI(TABLE,NBPAR,NOMPAR,IBID,VR,CBID,VK,0)
+        ENDIF
+C
+ 10   CONTINUE
+C
+      CALL JEDEMA( )
+C
+      END

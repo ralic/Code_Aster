@@ -1,7 +1,7 @@
-      SUBROUTINE EXITHM ( MODELE, YATHM )
+      SUBROUTINE EXITHM ( MODELE, YATHM, PERMAN )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,10 +33,13 @@ C     ----------
 C IN   MODELE : MODELE DU CALCUL
 C OUT  YATHM  : VRAI, SI LA MODELISATION EST UNE MODELISATION THM
 C               FAUX, SINON
+C OUT  PERMAN : SI LA MODELISATION EST UNE MODELISATION THM :
+C               VRAI, SI CALCUL PERMANENT, FAUX, SINON
 C ......................................................................
 C
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES :
+C       MESSAGE     : U2MESK
 C       UTILITAIRES : DISMOI
 C   -------------------------------------------------------------------
       IMPLICIT NONE
@@ -45,15 +48,14 @@ C 0.1. ==> ARGUMENTS
 C
       CHARACTER*8  MODELE
 C
-      LOGICAL YATHM
+      LOGICAL YATHM, PERMAN
 C
 C 0.2. ==> COMMUNS
 C 0.3. ==> VARIABLES LOCALES
 C
-C
       INTEGER IBID, IER
 C
-      CHARACTER*3 REPONS
+      CHARACTER*5 REPONS
 C
 C====
 C 1. A-T-ON DE LA THM DANS L'UNE DES MODELISATIONS ASSOCIEES AU MODELE ?
@@ -65,10 +67,14 @@ C
 C
       IF ( REPONS.EQ.'OUI' ) THEN
         YATHM = .TRUE.
+        PERMAN = .FALSE.
+      ELSEIF ( REPONS.EQ.'OUI_P' ) THEN
+        YATHM = .TRUE.
+        PERMAN = .TRUE.
       ELSEIF ( REPONS.EQ.'NON' ) THEN
         YATHM = .FALSE.
       ELSE
-         CALL U2MESK('F','UTILITAI_75',1,REPONS)
+        CALL U2MESK('F','UTILITAI_75',1,REPONS)
       ENDIF
 C
       END

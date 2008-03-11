@@ -1,8 +1,8 @@
-      SUBROUTINE LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TD,TF,TR,
+      SUBROUTINE LCDRPR(TYPMOD,OPTION,IMATE,COMPOR,SIGM,TD,TF,TR,
      &                                   DEPSM,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2003   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C =====================================================================
       REAL*8        DEPSM(6),VIM(*),VIP(*),SIG(6),DSIDEP(6,6)
       REAL*8        SIGM(6),TD,TF,TR
       CHARACTER*8   TYPMOD(*)
-      CHARACTER*16  OPTION
+      CHARACTER*16  OPTION,COMPOR(*)
 C ======================================================================
 C --- LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER -----------------------
 C --- ELASTICITE ISOTROPE ----------------------------------------------
@@ -47,7 +47,7 @@ C OUT DSIDEP  MATRICE TANGENTE
 C OUT IRET    CODE RETOUR (0 = OK)
 C ======================================================================
       INTEGER      TYPEDP,NDT,NDI,NVI
-      REAL*8       MATERF(4,2),DEPS(6)
+      REAL*8       MATERF(5,2),DEPS(6)
       CHARACTER*2  CODRET
       CHARACTER*8  MOD
 C ======================================================================
@@ -72,7 +72,7 @@ C ======================================================================
 C ======================================================================
 C --- CAS PARABOLIQUE --------------------------------------------------
 C ======================================================================
-         CALL LCDPPA(MOD,NVI,OPTION,MATERF,SIGM,
+         CALL LCDPPA(MOD,NVI,OPTION,MATERF,COMPOR,SIGM,
      &                                     DEPS,VIM,VIP,SIG,DSIDEP,IRET)
       ENDIF
 C ======================================================================

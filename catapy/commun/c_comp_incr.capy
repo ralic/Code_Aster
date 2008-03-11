@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 19/02/2008   AUTEUR CANO V.CANO 
+#& MODIF COMMUN  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -68,7 +68,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "META_V_CL_PT",
                                         "META_V_CL_RE",
                                         "META_V_CL_PT_RE",
-                                        "META_LEMA_ANI",
+                                        "META_LEMA_ANI",                                        
                                         "VMIS_CINE_LINE",
                                         "VISC_TAHERI",
                                         "VISCOCHAB",
@@ -108,7 +108,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "BARCELONE",
                                         "LAIGLE",
                                         "LETK",
-                                        "DRUCKER_PRAGER",
+                                        "DRUCK_PRAGER",
+                                        "DRUCK_PRAG_N_A",
                                         "HOEK_BROWN",
                                         "HOEK_BROWN_EFF",
                                         "HOEK_BROWN_TOT",
@@ -187,7 +188,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           META_V_CL_PT       =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           META_V_CL_RE       =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           META_V_CL_PT_RE    =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
-          META_LEMA_ANI      =SIMP(statut='c',typ='I',defaut=2,into=(2,)),          
+          META_LEMA_ANI   =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VMIS_CINE_LINE  =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           VISCOCHAB       =SIMP(statut='c',typ='I',defaut=28,into=(28,)),
           VMIS_CIN1_CHAB  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
@@ -227,7 +228,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           BARCELONE       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           LETK            =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
-          DRUCKER_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          DRUCK_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          DRUCK_PRAG_N_A  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           HOEK_BROWN      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           HOEK_BROWN_EFF  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           HOEK_BROWN_TOT  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
@@ -273,7 +275,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "BARCELONE",
                                        "LAIGLE",
                                        "LETK",
-                                       "DRUCKER_PRAGER",
+                                       "DRUCK_PRAGER",
+                                       "DRUCK_PRAG_N_A",
                                        "HOEK_BROWN_EFF",
                                        "HOEK_BROWN_TOT",
                                        "MAZARS",

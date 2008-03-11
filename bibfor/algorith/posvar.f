@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,7 +150,7 @@ C----- TEMPERATURE MAXIMALE AU POINT DE GAUSS
 
 C-----LA LOI MECANIQUE EST DRUCKER-PRAGER
 
-      ELSE IF (MECA(1:14).EQ.'DRUCKER_PRAGER') THEN
+      ELSE IF (MECA(1:14).EQ.'DRUCK_PRAGER') THEN
 C----- DEFORMATION DEVIATOIRE PLASTIQUE CUMULEE
          IF (VARI(1:4).EQ.'GAMP') THEN
             NUME=ADVIME

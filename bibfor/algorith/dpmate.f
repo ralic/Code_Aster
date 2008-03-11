@@ -1,7 +1,7 @@
         SUBROUTINE DPMATE ( MOD, IMAT, MATERF, NDT, NDI, NVI, TYPEDP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C ======================================================================
         IMPLICIT     NONE
         INTEGER      NDT, NDI, NVI, IMAT, TYPEDP
-        REAL*8       MATERF(4,2)
+        REAL*8       MATERF(5,2)
         CHARACTER*8  MOD
 C ======================================================================
 C --- RECUPERATION DES DONNEES MATERIAU POUR LA LOI DE DRUCKER PRAGER --
@@ -34,9 +34,9 @@ C           NDT    :  NB TOTAL DE COMPOSANTES TENSEURS
 C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C ======================================================================
         REAL*8       TROIS, DEUX, UN, SIX, ALPHA, SY, SYULT, C , A, PHI
-        REAL*8       TYPED,R8VIDE,TABTMP(4),COE
-        CHARACTER*2  CODRET(7)
-        CHARACTER*8  NOMC(7)
+        REAL*8       TYPED,R8VIDE,TABTMP(4),COE,DILAT,PSI
+        CHARACTER*2  CODRET(8)
+        CHARACTER*8  NOMC(8)
 C ======================================================================
         PARAMETER ( SIX    =  6.0D0 )
         PARAMETER ( TROIS  =  3.0D0 )
@@ -114,6 +114,12 @@ C           PHI   = ASIN ( TROIS * ALPHA / ( DEUX + ALPHA ) )
            MATERF(2,2) = PHI
            MATERF(3,2) = C
            MATERF(4,2) = TABTMP(3)
+           NOMC(8) = 'DILAT'
+           CALL RCVALA(IMAT,' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
+     &                            1, NOMC(8), DILAT, CODRET, 'FM')
+           PSI   = ATAN2 (( TROIS*DILAT / DEUX /
+     &                SQRT(( DEUX*DILAT + 1.0D0 )*(1.0D0-DILAT))),1.0D0)
+           MATERF(5,2) = PSI
         ENDIF
 C ======================================================================
 C --- NOMBRE DE COMPOSANTES --------------------------------------------

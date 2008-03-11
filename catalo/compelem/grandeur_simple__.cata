@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF COMPELEM  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -151,12 +151,12 @@ GRANDEUR_SIMPLE__
        THETA = PARAMETRE DE LA THETA METHODE
        PERTURB = PERTURBATION POUR MATRICE TANGENTE PAR PERTURBATION
        TOLDEBO = TOLERANCE POUR LA VERIFCATION DE DEBORST
-       ITEDEBO = NB ITERATIONS MAXI POUR DEBORST (ITER_MAXI_DEBORST == ITEDEBO) 
-       TSSEUIL = SEUIL D ACTIVATION DE LA MATRICE EVOLUTIVE TANGENTE/SECANTE 
+       ITEDEBO = NB ITERATIONS MAXI POUR DEBORST (ITER_MAXI_DEBORST == ITEDEBO)
+       TSSEUIL = SEUIL D ACTIVATION DE LA MATRICE EVOLUTIVE TANGENTE/SECANTE
        (TANGSEC_SEUIL = TSSEUIL)
-       TSAMPL = AMPLITUDE LA PERTURBATION  DE LA MATRICE EVOLUTIVE 
+       TSAMPL = AMPLITUDE LA PERTURBATION  DE LA MATRICE EVOLUTIVE
        TANGENTE/SECANTE (TANGSEC_AMPL = TSAMPL)
-       TSRETOUR = TAUX DE RETOUR VERS LA MATRICE TANGENTE LORS DE LA 
+       TSRETOUR = TAUX DE RETOUR VERS LA MATRICE TANGENTE LORS DE LA
        MODIFICATION EVOLUTIVE TANGENTE/SECANTE (TANGSEC_RETOUR = TSRETOUR)
 >>
     CARCRI   = R    ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC PERTURB
@@ -271,8 +271,8 @@ GRANDEUR_SIMPLE__
        >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X 
-                    E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z 
+                    H1X      H1Y      H1Z      LAGR     E1X      E1Y      E1Z      E2X
+                    E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
                     LAGS_C   LAGS_F1  LAGS_F2  UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
@@ -329,15 +329,46 @@ GRANDEUR_SIMPLE__
        SIGCAL : norme du tenseur des contraintes
        TERMRE : erreur absolue du résidu de l'équation d'équilibre
        TERMR2 : erreur relative du résidu de l'équation d'équilibre
-       TERMSA : erreur absolue des sauts de contraintes sur chaque bord
-       TERMS2 : erreur relative des sauts de contraintes sur chaque bord
+       ERTABS : xx
+       ERTREL :
        TERMNO : erreur absolue des sauts entre les contraintes normales
                 et la force de Neumann
        TERMN2 : erreur relative des sauts entre les contraintes normales
-                et la force de Neumann >>
-    ERREUR   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2
-                    ERTABS   ERTREL   TERMNO   TERMN2   TERMVO   TERMV2   TERMV1   TERMSA
-                    TERMS2   TERMS1   TERMFL   TERMF2   TERMF1   TERMEC   TERME2   TERME1
+                et la force de Neumann
+       TERMVO : xx
+       TERMV2 : xx
+       TERMV1 : xx
+       TERMSA : erreur absolue des sauts de contraintes sur chaque bord
+       TERMS2 : erreur relative des sauts de contraintes sur chaque bord
+       TERMS1 : xx
+       TERMFL : xx
+       TERMF2 : xx
+       TERMF1 : xx
+       TERMEC : xx
+       TERME2 : xx
+       TERME1 : xx
+       ERHMME_L : Erreur en Résidu en espace pour le HM
+                  - équation MEcanique - Locale en temps
+       ERHMMEDL : Erreur en Résidu en espace pour le HM
+                  - équation MEcanique Dérivée - Locale en temps
+       ERHMHY_L : Erreur en Résidu en espace pour le HM
+                  - équation HYdraulique - Locale en temps
+                  Pour le stationnaire - indicateur non boosté
+       ERHMME_G : Erreur en Résidu en espace pour le HM
+                  - équation MEcanique - Globale en temps
+       ERHMMEDG : Erreur en Résidu en espace pour le HM
+                  - équation MEcanique Dérivée - Globale en temps
+       ERHMHY_G : Erreur en Résidu en espace pour le HM
+                  - équation HYdraulique - Globale en temps
+                  Pour le stationnaire - indicateur boosté
+       ERRETPS  : ERreur en REsidu en TemPS
+       ESTERG1  : 1ere ESTimation de l'ERreur Globale (stabilité)
+       ESTERG2  : 2eme ESTimation de l'ERreur Globale (dualité)
+>>
+    ERREUR   = R    ERREST   NUEST    SIGCAL   TERMRE   TERMR2   ERTABS   ERTREL   TERMNO
+                    TERMN2   TERMVO   TERMV2   TERMV1   TERMSA   TERMS2   TERMS1   TERMFL
+                    TERMF2   TERMF1   TERMEC   TERME2   TERME1   ERHMME_L ERHMMEDL ERHMHY_L
+                    ERHMME_G ERHMMEDG ERHMHY_G ERRETPS  ESTERG1  ESTERG2
 <<  FACY_R   : GRANDEUR LIEE A LA FATIGUE A GRAND NOMBRE DE CYCLES SOUS
                CHARGEMENT MULTIAXIAL
        DTAUM1  : PREMIERE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS
@@ -464,7 +495,7 @@ GRANDEUR_SIMPLE__
         I      : PERCUSSION POUR DYNA_NON_LINE
         IX     : COMPOSANTE X DE LA PERCUSSION
         IY     : COMPOSANTE Y DE LA PERCUSSION
-        IZ     : COMPOSANTE Z DE LA PERCUSSION 
+        IZ     : COMPOSANTE Z DE LA PERCUSSION
         PT_X   : COORDONNEE SUIANT X DU POINT DE CONTACT
         PT_Y   : COORDONNEE SUIANT Y DU POINT DE CONTACT
         PT_Z   : COORDONNEE SUIANT Z DU POINT DE CONTACT
@@ -675,7 +706,7 @@ GRANDEUR_SIMPLE__
                     V73      V74      V75      V76      V77      V78      V79      V80
                     V81      V82      V83      V84      V85      V86      V87      V88
                     V89      V90      V91      V92      V93      V94      V95      V96
-                    V97      V98      V99      V100    
+                    V97      V98      V99      V100
     VARI_R   = R    VARI
     VENTCX_F = K8   FCXP
     VNOR_C   = C    VNOR
@@ -689,8 +720,8 @@ GRANDEUR_SIMPLE__
        RHOTK  : COEF_REGU_FROT/DELTAT
                 OU DELTAT EST L INCREMENT DE TEMPS POUR
                 LA DISCRETISATION EULERIENNE DES VITESSES
-       INTEG  : SCHEMA D INTEGRATION (GAUSS OU NOEUD)   
-       COECH  : COEFFICIENT DE MISE A L'ECHELLE DES PRESSIONS DE CONTACT 
+       INTEG  : SCHEMA D INTEGRATION (GAUSS OU NOEUD)
+       COECH  : COEFFICIENT DE MISE A L'ECHELLE DES PRESSIONS DE CONTACT
 >>
     XCONTAC  = R    RHON     MU       RHOTK     INTEG    COECH
 GRANDEUR_ELEMENTAIRE__

@@ -1,9 +1,10 @@
-      SUBROUTINE CALNOR ( DIM  , INO  , NNO  , NPG , NBS  , NBNA, NOE,
-     &                    IGEOM, IDFDE, IFA  , ITYP, ORIEN,
-     &                    HF   , JAC  , NX   , NY  , NZ   , TX  , TY )
+      SUBROUTINE CALNOR ( DIM  , INO  , NNO  , NPG, NBS, NBNA, NOE,
+     &                    IGEOM, IDFDE,
+     &                    IFA  , ITYP , ORIEN,
+     &                    HF   , JAC  , NX   , NY , NZ , TX  , TY )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF UTILITAI  DATE 11/03/2008   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +33,7 @@ C
 C      ENTREE :
 C-------------
 C IN   DIM    : DIMENSION DE L'ESPACE : '2D' OU '3D'
-C IN   INO    : NUMERO DU PREMIER POINT DE L'ARETE ET DE L'ARETE
+C IN   INO    : NUMERO DU PREMIER POINT DE L'ARETE
 C IN   NNO    : NOMBRE DE NOEUDS DE L'ELEMENT
 C IN   NPG    : NOMBRE DE POINTS DE GAUSS DE L'ELEMENT (POUR DU 3D)
 C IN   NBS    : NOMBRE DE SOMMETS DE L'ELEMENT
@@ -105,9 +106,9 @@ C
 C ----------------------------------------------------------------------
 C
 C ----- METHODE :
-C       
+C
 C       M(U,V) SURFACE PARAMETREE
-C       NORMALE A LA SURFACE DONNE PAR 
+C       NORMALE A LA SURFACE DONNEE PAR
 C       N(U,V)=DM(U,V)/DU (VECTORIEL) DM(U,V)/DV
 C
 C       EN 2D LE PRODUIT VECTORIEL ET LA DERIVEE DES FONCTIONS DE FORME
@@ -134,16 +135,6 @@ C
 C
 C 1.1. ==> PREALABLE
 C
-C --- CALCUL DE LA LONGUEUR DE L'ARETE
-C
-        IF (INO.EQ.NBS) THEN
-          JNO = 1
-        ELSE
-          JNO = INO+1
-        ENDIF
-        HF=SQRT((ZR(IGEOM-1+2*(INO-1)+1)-ZR(IGEOM-1+2*(JNO-1)+1))**2
-     &         +(ZR(IGEOM-1+2*(INO-1)+2)-ZR(IGEOM-1+2*(JNO-1)+2))**2)
-C
         IF ( LTEATT(' ','AXIS','OUI') ) THEN
           LAXI = .TRUE.
         ELSE
@@ -158,10 +149,14 @@ C
           JNO=INO+1
         ENDIF
 C
-        X1=ZR(IGEOM-1+2*(INO-1)+1)
-        Y1=ZR(IGEOM-1+2*(INO-1)+2)
-        X2=ZR(IGEOM-1+2*(JNO-1)+1)
-        Y2=ZR(IGEOM-1+2*(JNO-1)+2)
+        X1=ZR(IGEOM+2*INO-2)
+        Y1=ZR(IGEOM+2*INO-1)
+        X2=ZR(IGEOM+2*JNO-2)
+        Y2=ZR(IGEOM+2*JNO-1)
+C
+C 1.3. ==> LONGUEUR DE L'ARETE
+C
+        HF=SQRT((X1-X2)**2+(Y1-Y2)**2)
 C
         IF ( NBNA.EQ.3 ) THEN
           MNO = NBS + INO
@@ -246,94 +241,94 @@ C
 C
 C 2.1. ==> PREALABLE
 C
-      CALL R8INIR(27,0.D0,NX,1)
-      CALL R8INIR(27,0.D0,NY,1)
-      CALL R8INIR(27,0.D0,NZ,1)
+        CALL R8INIR(27,0.D0,NX,1)
+        CALL R8INIR(27,0.D0,NY,1)
+        CALL R8INIR(27,0.D0,NZ,1)
 C
 C 2.2. ==> COORDONNEES DES NOEUDS
 C
-      DO 10 NUMNO=1,NNO
-        LENOEU=NOE(NUMNO,IFA,ITYP)
-        X(NUMNO)=ZR(IGEOM-1+3*(LENOEU-1)+1)
-        Y(NUMNO)=ZR(IGEOM-1+3*(LENOEU-1)+2)
-        Z(NUMNO)=ZR(IGEOM-1+3*(LENOEU-1)+3)
-  10  CONTINUE
+        DO 10 NUMNO=1,NNO
+          LENOEU=NOE(NUMNO,IFA,ITYP)
+          X(NUMNO)=ZR(IGEOM+3*LENOEU-3)
+          Y(NUMNO)=ZR(IGEOM+3*LENOEU-2)
+          Z(NUMNO)=ZR(IGEOM+3*LENOEU-1)
+  10    CONTINUE
 C
 C 2.3. ==> TRAITEMENT ELEMENTS DE BARSOUM
 C
 C ----- LA NORMALE EST CALCULEE EN UTILISANT LE POINT MILIEU
-      IF ((NNO.EQ.6).OR.(NNO.EQ.8)) THEN
+        IF ((NNO.EQ.6).OR.(NNO.EQ.8)) THEN
 C
-        NNOS2=NNO/2
+          NNOS2=NNO/2
 
-        DO 11 INO=1,NNOS2
+          DO 11 INO=1,NNOS2
 C
-          IF (INO.EQ.NNOS2) THEN
-            JNO=1
-          ELSE
-           JNO=INO+1
-          ENDIF
-          MNO=NNOS2+INO
-C         
-          NORME=SQRT( (X(MNO) - X(INO) )**2
-     &              + (Y(MNO) - Y(INO) )**2
-     &              + (Z(MNO) - Z(INO) )**2 )
-     &         /SQRT( (X(JNO) - X(INO) )**2
-     &              + (Y(JNO) - Y(INO) )**2
-     &              + (Z(JNO) - Z(INO) )**2 )
-C	  
-          IF ((NORME.LT.0.4D0).OR.(NORME.GT.0.6D0)) THEN
-            X(MNO)=(X(INO)+X(JNO))*0.5D0
-            Y(MNO)=(Y(INO)+Y(JNO))*0.5D0
-            Z(MNO)=(Z(INO)+Z(JNO))*0.5D0
-          ENDIF
+            IF (INO.EQ.NNOS2) THEN
+              JNO=1
+            ELSE
+             JNO=INO+1
+            ENDIF
+            MNO=NNOS2+INO
 C
-  11    CONTINUE
-      ENDIF
+            NORME=SQRT( (X(MNO) - X(INO) )**2
+     &                + (Y(MNO) - Y(INO) )**2
+     &                + (Z(MNO) - Z(INO) )**2 )
+     &           /SQRT( (X(JNO) - X(INO) )**2
+     &                + (Y(JNO) - Y(INO) )**2
+     &                + (Z(JNO) - Z(INO) )**2 )
+C
+            IF ((NORME.LT.0.4D0).OR.(NORME.GT.0.6D0)) THEN
+              X(MNO)=(X(INO)+X(JNO))*0.5D0
+              Y(MNO)=(Y(INO)+Y(JNO))*0.5D0
+              Z(MNO)=(Z(INO)+Z(JNO))*0.5D0
+            ENDIF
+C
+  11      CONTINUE
+        ENDIF
 C
 C 2.4. ==> CALCUL DU PRODUIT VECTORIEL OMI OMJ
 C
-      DO 20 IPG=1,NPG
+        DO 20 IPG=1,NPG
 C
-        DO 210 I=1,NNO
+          DO 210 I=1,NNO
 C
-          DO 220 J=1,NNO
+            DO 220 J=1,NNO
 C
-            SX(I,J)=Y(I)*Z(J)-Z(I)*Y(J)
-            SY(I,J)=Z(I)*X(J)-X(I)*Z(J)
-            SZ(I,J)=X(I)*Y(J)-Y(I)*X(J)
+              SX(I,J)=Y(I)*Z(J)-Z(I)*Y(J)
+              SY(I,J)=Z(I)*X(J)-X(I)*Z(J)
+              SZ(I,J)=X(I)*Y(J)-Y(I)*X(J)
 C
-  220     CONTINUE
+  220       CONTINUE
 C
-  210   CONTINUE
+  210     CONTINUE
 C
 C 2.5. ==> SOMMATION DES DERIVEES
 C
-        KDEC=2*(IPG-1)*NNO
+          KDEC=2*(IPG-1)*NNO
 C
-        DO 230 I=1,NNO
-          IDEC=2*(I-1)
+          DO 230 I=1,NNO
+            IDEC=2*(I-1)
 C
-          DO 240 J=1,NNO
-            JDEC=2*(J-1)
-            NX(IPG)=NX(IPG)-ZR(IDFDE-1+KDEC+IDEC+1)
-     &              *ZR(IDFDE-1+KDEC+JDEC+2)*SX(I,J)
-            NY(IPG)=NY(IPG)-ZR(IDFDE-1+KDEC+IDEC+1)
-     &              *ZR(IDFDE-1+KDEC+JDEC+2)*SY(I,J)
-            NZ(IPG)=NZ(IPG)-ZR(IDFDE-1+KDEC+IDEC+1)
-     &              *ZR(IDFDE-1+KDEC+JDEC+2)*SZ(I,J)
-  240     CONTINUE
+            DO 240 J=1,NNO
+              JDEC=2*(J-1)
+              NX(IPG)=NX(IPG)-ZR(IDFDE+KDEC+IDEC)
+     &                *ZR(IDFDE+KDEC+JDEC+1)*SX(I,J)
+              NY(IPG)=NY(IPG)-ZR(IDFDE+KDEC+IDEC)
+     &                *ZR(IDFDE+KDEC+JDEC+1)*SY(I,J)
+              NZ(IPG)=NZ(IPG)-ZR(IDFDE+KDEC+IDEC)
+     &                *ZR(IDFDE+KDEC+JDEC+1)*SZ(I,J)
+  240       CONTINUE
 C
-  230   CONTINUE
+  230     CONTINUE
 C
 C 2.5. ==> CALCUL DU JACOBIEN
 C
-        JAC(IPG)=SQRT(NX(IPG)**2+NY(IPG)**2+NZ(IPG)**2)
-        NX(IPG)=NX(IPG)/JAC(IPG)
-        NY(IPG)=NY(IPG)/JAC(IPG)
-        NZ(IPG)=NZ(IPG)/JAC(IPG)
+          JAC(IPG)=SQRT(NX(IPG)**2+NY(IPG)**2+NZ(IPG)**2)
+          NX(IPG)=NX(IPG)/JAC(IPG)
+          NY(IPG)=NY(IPG)/JAC(IPG)
+          NZ(IPG)=NZ(IPG)/JAC(IPG)
 C
-  20  CONTINUE
+  20    CONTINUE
 C
 C ----- PROBLEME -------------------------------------------------------
 C

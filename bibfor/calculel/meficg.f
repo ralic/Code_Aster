@@ -15,7 +15,7 @@
       LOGICAL EXTIM,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/02/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 10/03/2008   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -245,8 +245,8 @@ C DE FISSURE ET LA NORMALE A LA FISSURE
         RCMP(1) = ZR(JFOND-1+4*(NUMFON-1)+1)
         RCMP(2) = ZR(JFOND-1+4*(NUMFON-1)+2)
         CALL JEVEUO(FISS//'.BASEFOND','L',JNOR)
-        RCMP(3) =  -ZR(JNOR-1+4*(NUMFON-1)+3)
-        RCMP(4) =  ZR(JNOR-1+4*(NUMFON-1)+4)
+        RCMP(3) =  -ZR(JNOR-1+4*(NUMFON-1)+4)
+        RCMP(4) =  ZR(JNOR-1+4*(NUMFON-1)+3)
         WRITE(IFM,*)'   '
         WRITE(IFM,*)'    TRAITEMENT DU FOND DE FISSURE NUMERO ',NUMFON
         WRITE(IFM,*)'    NOMME ',NOEUD
