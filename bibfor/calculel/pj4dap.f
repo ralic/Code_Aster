@@ -1,15 +1,14 @@
-      SUBROUTINE PJ4DAP(INO2,GEOM2,MA2,GEOM1,TRIA3,
-     &                COBARY,ITR3,NBTROU,
-     &  BTDI, BTVR, BTNB, BTLC,BTCO,IFM,NIV,
-     &  LDMAX,DISTMA)
+      SUBROUTINE PJ4DAP(INO2,GEOM2,MA2,GEOM1,TRIA3,COBARY,ITR3,NBTROU,
+     &                  BTDI,BTVR,BTNB,BTLC,BTCO,IFM,NIV,LDMAX,DISTMA,
+     &                  LOIN,DMIN)
       IMPLICIT NONE
-      REAL*8  COBARY(3),GEOM1(*),GEOM2(*),BTVR(*)
+      REAL*8 COBARY(3),GEOM1(*),GEOM2(*),BTVR(*)
       INTEGER ITR3,NBTROU,BTDI(*),BTNB(*),BTLC(*),BTCO(*)
       INTEGER TRIA3(*),IFM,NIV
-      CHARACTER*8   MA2
+      CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,36 +44,40 @@ C  IN   NIV        I  : NIVEAU D'IMPRESSION POUR LES "INFO"
 C  OUT  NBTROU     I  : NOMBRE DE TRIA3 SOLUTIONS
 C  OUT  ITR3       I  : NUMERO D'UN TRIA3 SOLUTION
 C  OUT  COBARY(3)  R  : COORDONNEES BARYCENTRIQUES DE INO2 DANS ITR3
+C  OUT  DMIN       R  : DISTANCE DE INO2 AU BORD DE ITR3 SI INO2 EST
+C                       EXTERIEUR A ITR3. DMIN=0 SINON.
+C  OUT  LOIN       L  : .TRUE. SI DMIN > 10% DIAMETRE(ITR3)
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      REAL*8  COBAR2(3),DMIN,D2,R8MAEM,SURF,RTR3
+      REAL*8 COBAR2(3),DMIN,D2,R8MAEM,SURF,RTR3
       INTEGER P,Q,R,P1,Q1,P2,Q2,R1,R2,INO2,I,K,IPOSI,NX,NY,NTRBT,IBID
-      CHARACTER*8   NONO2,ALARME
-      CHARACTER*16 K16BID,NOMCMD
+      CHARACTER*8 NONO2,ALARME
 
       LOGICAL LDMAX,LOIN
-      REAL*8  DISTMA,VALR(2)
+      REAL*8 DISTMA,VALR(2)
 C DEB ------------------------------------------------------------------
 C     NTR3=TRIA3(1)
       NBTROU=0
+      LOIN=.FALSE.
+      DMIN=0.D0
 
       NX=BTDI(1)
       NY=BTDI(2)
@@ -82,66 +85,44 @@ C     NTR3=TRIA3(1)
 
 C     --  ON CHERCHE LE TRIA3 ITR3 LE PLUS PROCHE DE INO2 :
 C     ------------------------------------------------------
-        IF ( LDMAX ) THEN
-          DMIN = DISTMA
-        ELSE
-          DMIN = R8MAEM()
-        ENDIF
+      IF (LDMAX) THEN
+        DMIN=DISTMA
+      ELSE
+        DMIN=R8MAEM()
+      ENDIF
 
 C       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
-        CALL PJ3DGB(INO2,GEOM2,GEOM1,TRIA3,4,
-     &              BTDI, BTVR, BTNB, BTLC,BTCO,
-     &              P1,Q1,R1,P2,Q2,R2)
-        DO 21,P=P1,P2
-          DO 22,Q=Q1,Q2
-            DO 23,R=R1,R2
-              NTRBT=BTNB((R-1)*NX*NY+(Q-1)*NX+P)
-              IPOSI=BTLC((R-1)*NX*NY+(Q-1)*NX+P)
-              DO 2,K=1,NTRBT
-                 I=BTCO(IPOSI+K)
-                 CALL PJ4DA2(INO2,GEOM2,I,GEOM1,TRIA3,COBAR2,D2,SURF)
-                 IF (D2.LT.DMIN) THEN
-                   RTR3=SURF
-                   ITR3=I
-                   DMIN=D2
-                   NBTROU=1
-                   COBARY(1)=COBAR2(1)
-                   COBARY(2)=COBAR2(2)
-                   COBARY(3)=COBAR2(3)
-                 END IF
-2             CONTINUE
-23          CONTINUE
-22        CONTINUE
-21      CONTINUE
+      CALL PJ3DGB(INO2,GEOM2,GEOM1,TRIA3,4,BTDI,BTVR,BTNB,BTLC,BTCO,P1,
+     &            Q1,R1,P2,Q2,R2)
+      DO 40,P=P1,P2
+        DO 30,Q=Q1,Q2
+          DO 20,R=R1,R2
+            NTRBT=BTNB((R-1)*NX*NY+(Q-1)*NX+P)
+            IPOSI=BTLC((R-1)*NX*NY+(Q-1)*NX+P)
+            DO 10,K=1,NTRBT
+              I=BTCO(IPOSI+K)
+              CALL PJ4DA2(INO2,GEOM2,I,GEOM1,TRIA3,COBAR2,D2,SURF)
+              IF (SQRT(D2).LT.DMIN) THEN
+                RTR3=SURF
+                ITR3=I
+                DMIN=SQRT(D2)
+                NBTROU=1
+                COBARY(1)=COBAR2(1)
+                COBARY(2)=COBAR2(2)
+                COBARY(3)=COBAR2(3)
+              ENDIF
+   10       CONTINUE
+   20     CONTINUE
+   30   CONTINUE
+   40 CONTINUE
 
-
-C       S'IL N'Y A PAS DE DISTANCE MINIMALE IMPOSEE, LE NOEUD EST
-C          OBLIGATOIREMENT PROJETE
-C       SI LE NOEUD EST PROJETE SUR UNE MAILLE LOINTAINE, ON INFORME :
-C       --------------------------------------------------------------
-        IF ((NIV.GT.0).AND.(.NOT.LDMAX)) THEN
-          ALARME='OUI'
-          CALL GETRES(K16BID,K16BID,NOMCMD)
-          IF (NOMCMD.EQ.'PROJ_CHAMP') THEN
-             CALL GETVTX(' ','ALARME',1,0,1,ALARME,IBID)
-          ENDIF
-
-          IF (ALARME.EQ.'OUI') THEN
-            LOIN=.FALSE.
-            IF (RTR3.EQ.0) THEN
-              LOIN=.TRUE.
-            ELSE
-              IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
-            END IF
-
-            IF (LOIN) THEN
-              CALL JENUNO(JEXNUM(MA2//'.NOMNOE',INO2),NONO2)
-              VALR(1)=DMIN
-              VALR(2)=RTR3
-              CALL U2MESG ('A','CALCULEL5_48',1,NONO2,0,0,2,VALR)
-            END IF
-          END IF
-        END IF
+      IF (RTR3.EQ.0) THEN
+        LOIN=.TRUE.
+      ELSE
+        RTR3 = RTR3** (1.D0/2.D0)
+        IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
+      END IF
+      
 
 
       END

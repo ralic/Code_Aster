@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU SOLVEUR MUMPS POUR UN MODELE DPLAN_INCO
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 #########################################################################
 # CE TEST MET EN DEFAUT LE SOLVEUR MULT_FRONT (MODELISATION D_PLAN_INCO)
 # VALIDATION DU SOLVEUR MUMPS EN MODULANT:
-#     - POUR LE PARALLELISME (CENTRALISE ET DISTRIBUE_MAILLE/SD)
+#     - POUR LE PARALLELISME (CENTRALISE ET DISTRIBUE_MD/MC/SD)
 # WARNING: MUMPS DISTRIBUE IGNORE LES COMPOSANTES NULLES DE LA MATRICE.
 #          POUR CE TEST IL FAUT PREVOIR UNE TAILLE D'ESPACE MEMOIRE POUR
 #          LE PIVOTAGE PLUS GRANDE QU'EN CENTRALISE (MOT-CLE PCENT_PIVOT).
@@ -45,7 +45,7 @@ SYMETRI2=AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO= _F(TOUT='OUI', DX=1.0 , DY=2.0,), )
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=1,),);
 RAMPE=DEFI_FONCTION(NOM_PARA='INST', VALE=(0.0,  0.0, 1.0,  1.0,),);
 
-#  1 : MUMPS (centralise) 
+#  1 : MUMPS (centralise)
 # -------------------------
 RESU1=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
                    RESI_RELA=3.e-5,PARALLELISME='CENTRALISE'),
@@ -63,10 +63,10 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU1, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    GROUP_NO   = 'C',  NOM_CMP    = 'DY', VALE       = 2.0,
                    PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',)
                    ));
-#  2 : MUMPS (distribue par mailles) 
+#  2 : MUMPS (distribue par mailles)
 # ------------------------------------
 RESU2=STAT_NON_LINE(MODELE=MO,     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',
-                   RESI_RELA=3.e-5,PARALLELISME='DISTRIBUE_MAILLE',PCENT_PIVOT=200,),
+                   RESI_RELA=3.e-5,PARALLELISME='DISTRIBUE_MD',PCENT_PIVOT=200,),
                    CHAM_MATER=CH_MATER, INFO=1,
                    EXCIT=(  _F(CHARGE=SYMETRI2,),),
                    COMP_INCR=_F(RELATION='ELAS',),
@@ -82,7 +82,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = RESU2, INST       = 1.0,  NOM_CHAM   = 'DEPL',
                    PRECISION  = 1.E-6, REFERENCE  = 'ANALYTIQUE',)
                    ));
 
-#  3 : MUMPS (distribue par sous-domaines) 
+#  3 : MUMPS (distribue par sous-domaines)
 # ------------------------------------------
 SDFETI = DEFI_PART_FETI(
                 MODELE=MO,

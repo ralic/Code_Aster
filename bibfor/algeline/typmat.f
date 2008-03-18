@@ -1,6 +1,6 @@
       FUNCTION TYPMAT(NBMAT,TLIMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,28 +33,22 @@ C --- DESCRIPTION DES PARAMETRES
 C IN  I  NBMAT  : NOMBRE DE MATR_ELEM DE LA LISTE TLIMAT
 C IN  K* TLIMAT : LISTE DES MATR_ELEM
 C ----------------------------------------------------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      REAL*8 RBID
+      COMPLEX*16 CBID
 C----------------------------------------------------------------------
+      INTEGER CADIST
+      COMMON /CAII18/CADIST
       CHARACTER*7 SYM
       CHARACTER*8 MATEL
-      INTEGER I
+      INTEGER I,ITYMAT
       INTEGER IBID, IERD
       INTEGER IRET
 C----------------------------------------------------------------------
+C     ITYMAT =  0 -> SYMETRIQUE
+C            =  1 -> NON-SYMETRIQUE
 C
 C     --  PAR DEFAUT LE TYPE DE MATRICE EST SYMETRIQUE
-      TYPMAT = 'S'
+      ITYMAT = 0
 
       DO 10 I =1, NBMAT
         MATEL = TLIMAT(I)
@@ -62,6 +56,21 @@ C     --  PAR DEFAUT LE TYPE DE MATRICE EST SYMETRIQUE
         IF (IRET.EQ.0) GOTO 10
         CALL DISMOI('F','TYPE_MATRICE',MATEL,'MATR_ELEM',IBID,
      &              SYM,IERD)
-        IF (SYM.EQ.'NON_SYM') TYPMAT = 'N'
+        IF (SYM.EQ.'NON_SYM') THEN
+          ITYMAT = 1
+          GOTO 11
+        ENDIF
    10 CONTINUE
+   11 CONTINUE
+      CALL ASSERT(ITYMAT.GE.0)
+
+C     -- SI EXECUTION PARALLELE, IL FAUT COMMUNIQUER :
+      CALL ASSERT(CADIST.GE.-1.AND.CADIST.LE.1)
+      IF (CADIST.EQ.1) CALL MPICM1('MPI_MAX','I',1,ITYMAT,RBID)
+
+      IF (ITYMAT.EQ.0) THEN
+         TYPMAT='S'
+      ELSE
+         TYPMAT='N'
+      ENDIF
       END

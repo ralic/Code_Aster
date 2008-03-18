@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 14/01/2008   AUTEUR DESOZA T.DESOZA 
+#@ MODIF macro_matr_asse_ops Macro  DATE 18/03/2008   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

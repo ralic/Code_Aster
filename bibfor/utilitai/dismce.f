@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,15 +51,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       IBID, IRET, GD, JCELD, IACELK, L, LXLGUT
+      INTEGER       IBID, IRET, GD, JCELD, JCELK, L, LXLGUT
       CHARACTER*8   K8BID, NOGD,DOCU
       CHARACTER*19  NOMOB
-      CHARACTER*24 QUESTL
+      CHARACTER*24 QUESTL,K24
       CHARACTER*32  REPK
 C DEB-------------------------------------------------------------------
-C
+
       CALL JEMARQ()
-C
+
       IERD   = 0
       NOMOB  = NOMOBZ
       REPK   = REPKZ
@@ -70,62 +70,72 @@ C
           IERD = 1
           GOTO 9999
       END IF
-C
+
       CALL JEVEUO ( NOMOB//'.CELD', 'L', JCELD )
       CALL JELIRA ( NOMOB//'.CELD', 'DOCU', IBID, DOCU)
       CALL ASSERT( DOCU.EQ. 'CHML' )
       GD = ZI(JCELD)
       CALL JENUNO ( JEXNUM('&CATA.GD.NOMGD',GD), NOGD )
-C
+
       IF ( QUESTI .EQ. 'TYPE_CHAMP' ) THEN
-         CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
-         REPK = ZK24(IACELK-1+3)(1:4)
-C
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', JCELK )
+         REPK = ZK24(JCELK-1+3)(1:4)
+
       ELSEIF ( QUESTI .EQ. 'TYPE_SUPERVIS' ) THEN
          REPK = 'CHAM_ELEM_'//NOGD
-C
+
       ELSEIF ( QUESTI .EQ. 'NOM_OPTION' ) THEN
-         CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
-         REPK = ZK24(IACELK-1+2)(1:16)
-C
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', JCELK )
+         REPK = ZK24(JCELK-1+2)(1:16)
+
       ELSEIF ( QUESTI .EQ. 'NOM_PARAM' ) THEN
-         CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
-         REPK = ZK24(IACELK-1+6)(1:8)
-C
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', JCELK )
+         REPK = ZK24(JCELK-1+6)(1:8)
+
       ELSEIF ( QUESTI .EQ. 'NOM_MAILLA') THEN
-         CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(IACELK), REPI, REPK, IERD )
-C
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', JCELK )
+         CALL DISMLG ( CODMES, QUESTI, ZK24(JCELK), REPI, REPK, IERD )
+
       ELSEIF ( QUESTL(1:6) .EQ. 'NUM_GD' ) THEN
          REPI = GD
-C
+
       ELSEIF ( QUESTL(1:6) .EQ. 'NOM_GD' ) THEN
          REPK = NOGD
-C
+
       ELSEIF ( QUESTI .EQ. 'NOM_LIGREL' ) THEN
-         CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
-         REPK = ZK24(IACELK)
-C
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', JCELK )
+         REPK = ZK24(JCELK)
+
+      ELSEIF ( QUESTI .EQ. 'MPI_COMPLET' ) THEN
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', JCELK )
+         K24 = ZK24(JCELK-1+7)
+         CALL ASSERT(K24.EQ.'MPI_COMPLET'.OR.K24.EQ.'MPI_INCOMPLET')
+         IF (K24.EQ.'MPI_COMPLET')THEN
+            REPK='OUI'
+         ELSE
+            REPK='NON'
+         ENDIF
+
       ELSEIF ( QUESTI .EQ. 'NOM_MODELE' ) THEN
-         CALL JEVEUO ( NOMOB//'.CELK','L', IACELK )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(IACELK), REPI, REPK, IERD )
-C
+         CALL JEVEUO ( NOMOB//'.CELK','L', JCELK )
+         CALL DISMLG ( CODMES, QUESTI, ZK24(JCELK), REPI, REPK, IERD )
+
       ELSEIF ( QUESTI .EQ. 'MXVARI' ) THEN
         REPI=MAX(1,ZI(JCELD-1+4))
-C
+
       ELSEIF ( QUESTI .EQ. 'TYPE_SCA' ) THEN
           L    = LXLGUT(NOGD)
           REPK = NOGD(L:L)
-C
+
       ELSE
          REPK = QUESTI
          CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD = 1
          GOTO 9999
       ENDIF
-C
+
  9999 CONTINUE
       REPKZ = REPK
-C
+
       CALL JEDEMA()
       END

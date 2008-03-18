@@ -1,7 +1,7 @@
       SUBROUTINE ALCHML(LIGREZ,OPTIOZ,NOMPAZ,BASZ,CELZ,IRET,DCELZ)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -306,7 +306,7 @@ C     ------------------------
 C         ETENDU A 5 K24  LIGREL / OPTION / ELNO-ELGA /
 C                         NUME_COUCHE (0 TOUS I IEME COUCHE)
 C                         NIVE_COUCHE (INF MOY SUP)
-      CALL WKVECT(CEL//'.CELK',BASE//' V K24',6,JCELK)
+      CALL WKVECT(CEL//'.CELK',BASE//' V K24',7,JCELK)
       ZK24(JCELK-1+1) = LIGREL
       ZK24(JCELK-1+2) = OPTION
       ZK24(JCELK-1+6) = NOMPAR
@@ -321,6 +321,7 @@ C                         NIVE_COUCHE (INF MOY SUP)
       END IF
       ZK24(JCELK-1+4) = ' '
       ZK24(JCELK-1+5) = ' '
+      ZK24(JCELK-1+7) = 'MPI_COMPLET'
 
       GO TO 60
 

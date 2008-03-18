@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,8 @@ C        CAS NUME_DDL_GENE  PRESENT
 C
       CALL JEMARQ()
 
-      CALL WKVECT(NOMRES//'           .REFA','G V K24',10,JREFA)
+      CALL WKVECT(NOMRES//'           .REFA','G V K24',11,JREFA)
+      ZK24(JREFA-1+11)='MPI_COMPLET'
       NOMSTO=NUGENE//'.SLCS'
 
       IF ((N9.GT.0)) THEN

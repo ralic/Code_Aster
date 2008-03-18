@@ -1,4 +1,4 @@
-#@ MODIF sd_matr_asse_com SD  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_matr_asse_com SD  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ class sd_matr_asse_com(sd_titre):
 #-----------------------------
     nomj = SDNom(fin=19)
 
-    REFA = AsVK24(lonmax=10,)
+    REFA = AsVK24(lonmax=11,)
     VALM = AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R'))
     UALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type=Parmi('C', 'R')))
     VALF = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type=Parmi('C', 'R')))
@@ -61,8 +61,9 @@ class sd_matr_asse_com(sd_titre):
             assert refa[7] in ('ASSE','DECT','DECP','') , refa
         assert refa[8] in ('MS','MR') , refa
         if refa[8]=='MS' :
-            assert self.VALM.nmaxoc == 1
+            assert self.VALM.nmaxoc == 1 , (refa,self.VALM.nmaxoc)
         elif refa[8]=='MR' :
-            assert self.VALM.nmaxoc == 2
+            assert self.VALM.nmaxoc == 2 , (refa,self.VALM.nmaxoc)
+        assert refa[10] in ('MPI_COMPLET','MPI_INCOMPLET') , refa
 
 

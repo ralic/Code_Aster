@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline4 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,6 +173,10 @@ cata_msg = {
 """),
 
 66 : _("""
+ la valeur propre est :   %(r1)f
+"""),
+
+68: _("""
  la valeur propre est :   %(r1)f
 """),
 

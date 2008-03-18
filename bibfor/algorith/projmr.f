@@ -6,7 +6,7 @@
       CHARACTER*19        NOMSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,6 @@ C
 C
       RESU = NOMRES
       MATR = MATRAS
-C     CALL CHEKSD('sd_matr_asse',MATR,IRET)
       CALL GETTCO(BASEMO,TYPBAS)
       CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )
 C
@@ -82,7 +81,8 @@ C
          ZR(IACONL+I-1) = 1.0D0
  10   CONTINUE
 C
-      CALL WKVECT (RESU//'.REFA', 'G V K24', 10,JREFA )
+      CALL WKVECT (RESU//'.REFA', 'G V K24',11,JREFA )
+      ZK24(JREFA-1+11)='MPI_COMPLET'
       ZK24(JREFA-1+1)   = BASEMO
       ZK24(JREFA-1+2) = NUGENE
       ZK24(JREFA-1+9) = 'MS'
@@ -154,7 +154,6 @@ C
       CALL JEDETR('&&PROJMR.BASEMO')
 
       CALL UALFVA(RESU,'G')
-C     CALL CHEKSD('sd_matr_asse',RESU,IRET)
 C
       CALL JEDEMA()
       END

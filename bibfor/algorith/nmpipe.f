@@ -1,9 +1,9 @@
-      SUBROUTINE NMPIPE(MODELE,LIGRPI,CARTYP,CARETA,MATE  , 
-     &                  COMPOR,VALMOI,DEPDEL,DDEPL0,DDEPL1, 
+      SUBROUTINE NMPIPE(MODELE,LIGRPI,CARTYP,CARETA,MATE  ,
+     &                  COMPOR,VALMOI,DEPDEL,DDEPL0,DDEPL1,
      &                  TAU   ,NBEFFE,ETA   ,PILCVG,TYPILO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,13 +28,13 @@ C
       CHARACTER*16 TYPILO
       CHARACTER*19 DDEPL0, DDEPL1, LIGRPI, CARTYP, CARETA
       CHARACTER*24 MODELE, MATE, COMPOR, VALMOI, DEPDEL
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 C
 C PILOTAGE PAR PREDICTION ELASTIQUE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -98,29 +98,29 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()  
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)   
+      CALL JEMARQ()
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
-C     
+C
       IF (TYPILO.EQ.'PRED_ELAS') THEN
         OPTION = 'PILO_PRED_ELAS'
       ELSEIF (TYPILO.EQ.'DEFORMATION') THEN
         OPTION = 'PILO_PRED_DEFO'
       ELSE
-        CALL ASSERT(.FALSE.)  
+        CALL ASSERT(.FALSE.)
       ENDIF
-      PILCVG = 0 
+      PILCVG = 0
       IF (NIVDBG.GE.2) THEN
         DEBUG  = .TRUE.
       ELSE
         DEBUG  = .FALSE.
-      ENDIF       
+      ENDIF
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT)          
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- DECOMPACTION VARIABLES CHAPEAUX
 C
@@ -129,10 +129,10 @@ C
 C
 C --- CHAMP DE GEOMETRIE
 C
-      CALL MEGEOM(MODELE,' ',LBID  ,CHGEOM)      
+      CALL MEGEOM(MODELE,' ',LBID  ,CHGEOM)
 C
-C --- ALLOCATION DE LA CARTE RESULTAT 
-C 
+C --- ALLOCATION DE LA CARTE RESULTAT
+C
       CALL DETRSD('CARTE',CTAU)
       CPAR  = 'A0'
       CALL MECACT('V',CTAU,'LIGREL',LIGRPI,'PILO_R', 1, CPAR,
@@ -149,8 +149,10 @@ C
       LPAIN(4) = 'PDEPLMR'
       LCHIN(4) =  DEPMOI
       LPAIN(5) = 'PCONTMR'
+      CALL SDMPIC('CHAM_ELEM',SIGMOI)
       LCHIN(5) =  SIGMOI
       LPAIN(6) = 'PVARIMR'
+      CALL SDMPIC('CHAM_ELEM',VARMOI)
       LCHIN(6) =  VARMOI
       LPAIN(7) = 'PDDEPLR'
       LCHIN(7) =  DEPDEL
@@ -165,13 +167,13 @@ C
       LPAIN(12)= 'PCDTAU'
       LCHIN(12)=  CTAU
 C
-C --- REMPLISSAGE DU CHAMP DE SORTIE 
+C --- REMPLISSAGE DU CHAMP DE SORTIE
 C
       LPAOUT(1) = 'PCOPILO'
       LCHOUT(1) =  COPILO
 C
-C --- CALCUL DE L'OPTION 
-C           
+C --- CALCUL DE L'OPTION
+C
       CALL CALCUL('S',OPTION,LIGRPI,NBIN ,LCHIN ,LPAIN ,
      &                              NBOUT,LCHOUT,LPAOUT,'V')
 C
@@ -179,7 +181,7 @@ C
         CALL DBGCAL(OPTION,IFMDBG,
      &              NBIN  ,LPAIN ,LCHIN ,
      &              NBOUT ,LPAOUT,LCHOUT)
-      ENDIF 
+      ENDIF
 C
 
 
@@ -189,6 +191,9 @@ C ======================================================================
 
 
 C -- TRANSFORMATION EN CHAM_ELEM_S
+
+C     -- EN ATTENDANT DE FAIRE MIEUX, POUR PERMETTRE MUMPS/DISTRIBUE :
+      CALL SDMPIC('CHAM_ELEM',COPILO)
 
       CALL CELCES(COPILO,'V',COPILS)
       CALL JEVEUO(COPILS // '.CESD','L',JCESD)
@@ -264,7 +269,7 @@ C -- RESOLUTION DE L'EQUATION P(U(ETA)) = TAU
         PILCVG = 1
         GOTO 9999
       END IF
-        
+
  9999 CONTINUE
       CALL JEDEMA()
       END

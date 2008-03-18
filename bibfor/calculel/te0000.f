@@ -1,9 +1,9 @@
       SUBROUTINE TE0000(NUMC,OPT,TE)
 C TOLE CRS_505
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,12 +47,11 @@ C ----------------------------------------------------------------------
 
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER      IRET,IFETI
-      LOGICAL      LFETI
+      INTEGER      IRET,JPARAL,NUMAIL,NUMC2,NUMC3
+      LOGICAL      LPARAL
       CHARACTER*16 NOMTE,NOMOPT
       CHARACTER*8 K8BID
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -74,15 +73,14 @@ C     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
       NUMAIL(IGR,IEL) = ZI(IALIEL-1+ZI(ILLIEL-1+IGR)-1+IEL)
 C DEB-------------------------------------------------------------------
 C
-C     FETI PARALLELE OR NOT ?
+C     PARALLELE OR NOT ?
 C     --------------------
       CALL JEEXIN('&CALCUL.PARALLELE',IRET)
       IF (IRET.NE.0) THEN
-        LFETI=.TRUE.
-        CALL JEVEUO('&CALCUL.PARALLELE','L',IFETI)
-        IFETI=IFETI-1
+        LPARAL =.TRUE.
+        CALL JEVEUO('&CALCUL.PARALLELE','L',JPARAL)
       ELSE
-        LFETI=.FALSE.
+        LPARAL =.FALSE.
       ENDIF
 
       NOMTE = ZK16(IANOTE-1+TE)
@@ -100,9 +98,8 @@ C     -- TE0001 --> TE0100
 C     --------------------
  9991 CONTINUE
       DO 1, IEL=1,NBELGR
-C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
-         IF (LFETI) THEN
-           IF (.NOT.ZL(IFETI+IEL)) GOTO 1
+         IF (LPARAL ) THEN
+           IF (.NOT.ZL(JPARAL-1+IEL)) GOTO 1
          ENDIF
          CAPOIZ=0
          GO TO (101,102,103,104,105,106,107,108,109,110,111,112,113,114,
@@ -421,9 +418,8 @@ C     -- TE0101 --> TE0200
 C     --------------------
  9992 CONTINUE
       DO 2, IEL=1,NBELGR
-C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
-         IF (LFETI) THEN
-           IF (.NOT.ZL(IFETI+IEL)) GOTO 2
+         IF (LPARAL ) THEN
+           IF (.NOT.ZL(JPARAL-1+IEL)) GOTO 2
          ENDIF
          CAPOIZ=0
          GO TO (201,202,203,204,205,206,207,208,209,210,211,212,213,214,
@@ -741,9 +737,8 @@ C     -- TE0201 --> TE0300
 C     --------------------
  9993 CONTINUE
       DO 3, IEL=1,NBELGR
-C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
-         IF (LFETI) THEN
-           IF (.NOT.ZL(IFETI+IEL)) GOTO 3
+         IF (LPARAL ) THEN
+           IF (.NOT.ZL(JPARAL-1+IEL)) GOTO 3
          ENDIF
          CAPOIZ=0
          GO TO (301,302,303,304,305,306,307,308,309,310,311,312,313,314,
@@ -1061,9 +1056,8 @@ C     -- TE0301 --> TE0400
 C     --------------------
  9994 CONTINUE
       DO 4, IEL=1,NBELGR
-C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
-         IF (LFETI) THEN
-           IF (.NOT.ZL(IFETI+IEL)) GOTO 4
+         IF (LPARAL ) THEN
+           IF (.NOT.ZL(JPARAL-1+IEL)) GOTO 4
          ENDIF
          CAPOIZ=0
          GO TO (401,402,403,404,405,406,407,408,409,410,411,412,413,414,
@@ -1382,9 +1376,8 @@ C     -- TE0401 --> TE0500
 C     --------------------
  9995 CONTINUE
       DO 5, IEL=1,NBELGR
-C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
-         IF (LFETI) THEN
-           IF (.NOT.ZL(IFETI+IEL)) GOTO 5
+         IF (LPARAL ) THEN
+           IF (.NOT.ZL(JPARAL-1+IEL)) GOTO 5
          ENDIF
          CAPOIZ=0
          GO TO (501,502,503,504,505,506,507,508,509,510,511,512,513,514,
@@ -1703,9 +1696,8 @@ C     -- TE0501 --> TE0600
 C     --------------------
  9996 CONTINUE
       DO 6, IEL=1,NBELGR
-C     -- SI FETI, LA MAILLE IIEL EST ELLE CONCERNEE PAR LE PROC COURANT
-         IF (LFETI) THEN
-           IF (.NOT.ZL(IFETI+IEL)) GOTO 6
+         IF (LPARAL ) THEN
+           IF (.NOT.ZL(JPARAL-1+IEL)) GOTO 6
          ENDIF
          CAPOIZ=0
          GO TO (601,602,603,604,605,606,607,608,609,610,611,612,613,614,

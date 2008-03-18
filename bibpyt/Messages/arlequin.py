@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 12/02/2008   AUTEUR ABBAS M.ABBAS 
+#@ MODIF arlequin Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,6 +94,10 @@ cata_msg={
  La zone de superposition des modèles dans Arlequin ne contient aucune maille !
 """),
 
+15: _("""
+ La question %(k1)s n'existe pas dans la méthode Arlequin
+"""),
+
 
 
 
@@ -116,6 +120,28 @@ Si cet écart est trop important sur trop de mailles de l'intersection, les terme
 pourront entrainer un résultat faux.
 Vous pouvez réduire ce risque en raffinant le maillage ou en utilisant des mailles plus simples (tétraèdres)
 
+"""),
+
+
+
+
+34: _("""
+ La famille d'intégration %(i1)d n'existe pas pour les mailles de type %(k1)s.
+"""),
+
+
+
+
+40: _("""
+ La carte d'information %(k1)s de la charge Arlequin courante n'existe pas.
+"""),
+
+41: _("""
+ On ne sait pas traiter les mailles de type %(k1)s avec la méthode Arlequin.
+"""),
+
+99 : _("""
+   Le calcul de l'option %(k1)s n'est pas prévue avec Arlequin.
 """),
 
 }

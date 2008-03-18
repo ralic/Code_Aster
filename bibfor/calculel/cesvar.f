@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) CARELE,COMPOR,LIGREL,DCEL
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +64,7 @@ C-----------------------------------------------------------------------
       CALL CALCUL('S','NSPG_NBVA',LIGREL,NBCH,LCHIN,LPAIN,1,
      &            '&&CESVAR.DCEL','PDCEL_I','V')
 
+      CALL SDMPIC('CHAM_ELEM','&&CESVAR.DCEL')
       CALL CELCES('&&CESVAR.DCEL','V',DCEL)
       CALL DETRSD('CHAM_ELEM','&&CESVAR.DCEL')
 

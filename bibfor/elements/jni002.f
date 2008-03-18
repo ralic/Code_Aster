@@ -3,7 +3,7 @@
       CHARACTER*8 ELREFA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,9 @@ C --------- FIN DECLARATIONS NORMALISEES  JEVEUX ---------------------
       REAL*8 FF(NBNOMX),DFF(3,NBNOMX),DFF2(3,3,NBNOMX)
       CHARACTER*24 LIOBJ(NMAXOB)
       CHARACTER*8 NOFPG(NBFAMX)
+      
+C     NBPGMX, NBNOMX, NBFAMX SE REFERER A ELRACA
+      
 C DEB ------------------------------------------------------------------
 
 

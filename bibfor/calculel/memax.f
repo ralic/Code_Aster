@@ -6,7 +6,7 @@
       REAL*8 VR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,11 +54,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
+      INTEGER CADIST
+      COMMON /CAII18/CADIST
       INTEGER NBGREL,NBELEM,DIGDEL,IRET,IBID,IACELK,JCELD,NBGR
       INTEGER ICOEF,I,IAVALE,NEL,IDECGR,K,JLIGR,IM,INUM,IEL
       CHARACTER*8 SCALAI
       INTEGER LONGT,NCMPEL,MODE,J,IGD
       REAL*8 VALR,R8MIEM,R8MAEM
+      COMPLEX*16 CBID
       CHARACTER*8 SCAL
       CHARACTER*19 CHAMP2,LIGREL
       LOGICAL FIRST
@@ -197,6 +200,17 @@ C     -------------------------------
   100     CONTINUE
   110   CONTINUE
       END IF
-C
+
+C     -- IL FAUT COMMUNIQUER LE RESULTAT ENTRE LES PROCS :
+      CALL ASSERT(CADIST.GE.-1.AND.CADIST.LE.1)
+      IF (CADIST.EQ.1) THEN
+        IF (TYPMX.EQ.'MIN') THEN
+          CALL MPICM1('MPI_MIN','R',LONGT,IBID,VR)
+        ELSEIF (TYPMX.EQ.'MAX') THEN
+          CALL MPICM1('MPI_MAX','R',LONGT,IBID,VR)
+        ENDIF
+      ENDIF
+
+
       CALL JEDEMA()
       END

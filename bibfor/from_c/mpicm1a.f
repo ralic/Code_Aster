@@ -1,0 +1,118 @@
+      SUBROUTINE MPICM1A(OPTMPI,TYPSCA,NBV,VI,VR)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF FROM_C  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C----------------------------------------------------------------------
+C BUT:  ECHANGER (MPI_ALLREDUCE) DES VECTEURS D'ENTIERS OU DE REELS
+C       ENTRE TOUS LES PROCESSEURS MPI
+C
+C ARGUMENTS D'APPELS
+C IN OPTMPI   : /'MPI_MAX' /'MPI_MIN' /'MPI_SUM'
+C
+C IN   TYPSCA: /'I' /'R' /'C'
+C IN   NBV   : LONGUEUR DU VECTEUR VI, VR
+C IN   VI(*) : VECTEUR D'ENTIERS A ECHANGER (SI TYPSCA='I')
+C IN   VR(*) : VECTEUR DE REELS A ECHANGER (SI TYPSCA='R')
+C----------------------------------------------------------------------
+C RESPONSABLE PELLET J.PELLET
+C TOLE CRS_200
+C TOLE CRS_505
+C TOLE CRS_506
+C TOLE CRS_507
+
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+
+      CHARACTER*(*) OPTMPI
+      CHARACTER*1 TYPSCA
+      INTEGER      NBV,VI(*),VI2(NBV)
+      REAL*8   VR(*),VR2(NBV)
+
+C DECLARATION VARIABLES LOCALES
+      INTEGER      IBID ,LOISEM,K
+      INTEGER*4    IERMPI,LR8,LINT,LMPI,NBV4,LC8,LOPMPI,NBPRO4
+      LOGICAL      FIRST
+      SAVE         LR8,LINT,FIRST,LC8
+      DATA         FIRST /.TRUE./
+
+C ---------------------------------------------------------------------
+
+C     -- S'IL N'Y A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
+      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NBPRO4,IERMPI)
+      IF (NBPRO4.EQ.1) GOTO 9999
+
+
+C     -- INITIALISATIONS :
+C     --------------------
+      IF (FIRST) THEN
+C       -- POUR LA GESTION DES ERREURS :
+        CALL MPI_ERRHANDLER_SET(MPI_COMM_WORLD,MPI_ERRORS_RETURN,IERMPI)
+        IF (LOISEM().EQ.8) THEN
+          LINT=MPI_INTEGER8
+        ELSE
+          LINT=MPI_INTEGER
+        ENDIF
+        LR8 = MPI_DOUBLE_PRECISION
+        LC8 = MPI_DOUBLE_COMPLEX
+        FIRST= .FALSE.
+      ENDIF
+
+
+
+C     -- ACTION :
+C     ---------------------------
+      NBV4=NBV
+
+
+      IF (OPTMPI.EQ.'MPI_MAX') THEN
+        LOPMPI=MPI_MAX
+      ELSE IF (OPTMPI.EQ.'MPI_MIN') THEN
+        LOPMPI=MPI_MIN
+      ELSE IF (OPTMPI.EQ.'MPI_SUM') THEN
+        LOPMPI=MPI_SUM
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+      IF (TYPSCA.EQ.'I') THEN
+        LMPI=LINT
+        DO 1, K=1,NBV4
+          VI2(K)=VI(K)
+ 1      CONTINUE
+        CALL MPI_ALLREDUCE(VI2,VI,NBV4,LMPI,LOPMPI,
+     &                    MPI_COMM_WORLD,IERMPI)
+
+      ELSEIF (TYPSCA.EQ.'R') THEN
+        LMPI=LR8
+        CALL DCOPY(NBV4,VR,1,VR2,1)
+        CALL MPI_ALLREDUCE(VR2,VR,NBV4,LMPI,LOPMPI,
+     &                    MPI_COMM_WORLD,IERMPI)
+
+      ELSEIF (TYPSCA.EQ.'C') THEN
+        LMPI=LC8
+        CALL ASSERT(.FALSE.)
+C       CALL DCOPY(NBV4,VR,1,VR2,1)
+C       CALL MPI_ALLREDUCE(VR2,VR,NBV4,LMPI,LOPMPI,
+C    &                    MPI_COMM_WORLD,IERMPI)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+
+ 9999 CONTINUE
+      END

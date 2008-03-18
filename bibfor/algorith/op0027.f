@@ -2,7 +2,7 @@
 C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,8 @@ C
             ZR(IACONL+I-1) = 1.0D0
  10       CONTINUE
 C
-          CALL WKVECT(NOMRES//'           .REFA','G V K24',10,JREFA2)
+          CALL WKVECT(NOMRES//'           .REFA','G V K24',11,JREFA2)
+          ZK24(JREFA2-1+11)='MPI_COMPLET'
           ZK24(JREFA2-1+1) = ZK24(JREFA1-1+1)
           ZK24(JREFA2-1+2) = ZK24(JREFA1-1+2)
           ZK24(JREFA2-1+9) = ZK24(JREFA1-1+9)
@@ -130,8 +131,6 @@ C
         CALL WKVECT ( '&&OP0027.VECTTRA2', 'V V R', M, IADR2 )
 
         CALL GEMATG (N, DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2))
-C       CALL CHEKSD('sd_matr_asse',NOMMAT,IRET)
-C       CALL CHEKSD('sd_matr_asse',NOMRES,IRET)
 
 
       ELSE

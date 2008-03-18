@@ -4,7 +4,7 @@
       INTEGER INO2,I,TRIA3(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C DEB ------------------------------------------------------------------
       V3(2)=Y2-Y1
 
       SURF=ABS(V2(1)*V3(2)-V2(2)*V3(1))
+      SURF=SURF/2.D0
       D2=R8MAEM()
 
 C     COTE 1 (2->3):

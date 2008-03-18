@@ -1,7 +1,7 @@
       SUBROUTINE NMIRET ( CODRET , TABRET )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,13 +23,13 @@ C
       IMPLICIT NONE
       LOGICAL       TABRET(0:10)
       CHARACTER*19  CODRET
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C RESUME LES CODES RETOURS DES TE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -74,6 +74,10 @@ C
 C --- ON TRANSFORME LE "CHAM_ELEM" EN UN "CHAM_ELEM_S"
 C
       CHAMNS = '&&NMIRET.CHAMNS'
+
+C     -- EN ATTENDANT DE FAIRE MIEUX, POUR PERMETTRE MUMPS/DISTRIBUE :
+      CALL SDMPIC('CHAM_ELEM',CODRET)
+
       CALL CELCES ( CODRET , 'V' , CHAMNS )
 C
 C --- ACCES AU CHAM_ELEM_S
@@ -91,13 +95,13 @@ C     CHAM_ELEM/ELGA MAIS EN FAIT : 1 POINT ET 1 SOUS_POINT PAR ELEMENT
       NOMGD = ZK8(JCESK-1+2)
       IF ( NOMGD .NE. 'CODE_I' ) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF  
+      ENDIF
 C
       NBMAIL = ZI(JCESD-1+1)
       ICMP   = ZI(JCESD-1+2)
       IF ( ICMP .NE. 1 ) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF  
+      ENDIF
 C
       DO 20 IMA = 1 , NBMAIL
 

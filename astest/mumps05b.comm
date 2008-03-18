@@ -1,36 +1,36 @@
-# MODIF  DATE 05/02/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 #########################################################################
-#                                                                       
-#   MODELISATION B : CUBE HEXA8 / 688391 DDLs / 27057822 NNZ            
-#   ON TESTE DIFFERENTES VARIANTES DE MUMPS (CENTRALISEE/DISTRIBUEE 
-#   PAR MAILLE).                                                       
-#   PARALLELE: VALEUR CONSEILLEE 32 PROCS                                                                       
+#
+#   MODELISATION B : CUBE HEXA8 / 688391 DDLs / 27057822 NNZ
+#   ON TESTE DIFFERENTES VARIANTES DE MUMPS (CENTRALISEE/DISTRIBUEE
+#   PAR MAILLE).
+#   PARALLELE: VALEUR CONSEILLEE 32 PROCS
 #########################################################################
 #
 # Choix du solveur
 solveur = 'MUMPS';
 #
 # Pourcentage de memoire supplementaire que peut s'allouer MUMPS
-# Rappel : 
+# Rappel :
 # --------------------------------------------------------------#
 #                                                               #
 #         JEVEUX          'DISPO'==>UTILISABLE PAR MUMPS        #
@@ -53,7 +53,7 @@ meth_renum = 'METIS';
 niv_info = 2
 #
 DEBUT(CODE=_F( NOM = 'MUMPS05B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-      MEMOIRE=_F( DYNAMIQUE=100,),      
+      MEMOIRE=_F( DYNAMIQUE=100,),
       )
 
 PRE_GIBI();
@@ -144,7 +144,7 @@ MECAD1=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 RESI_RELA=-1.0,
                                 PCENT_PIVOT=mem_pivot,
-                                PARALLELISME='DISTRIBUE_MAILLE',
+                                PARALLELISME='DISTRIBUE_MD',
                                 ),);
 
 TEST_RESU(RESU=_F(RESULTAT=MECAD1,
@@ -164,5 +164,5 @@ TEST_RESU(RESU=_F(RESULTAT=MECAD1,
                   CRITERE='ABSOLU',
                   PRECISION=1e-08,
                   REFERENCE='ANALYTIQUE',),);
-                  
+
 FIN();

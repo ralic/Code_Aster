@@ -1,6 +1,6 @@
       SUBROUTINE ATASMO(AZ,NUMEDZ,ATAZ,BASEZ,NBLIG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -217,12 +217,13 @@ C     ----------------------------------------------------
 C     6. OBJETS: MATR_ASSE.REFA ET MATR_ASSE.CONL:
 C     --------------------------------------------------
       KREFA = ATA//'.REFA'
-      CALL WKVECT(KREFA,BASE//' V K24',10,JREFA)
+      CALL WKVECT(KREFA,BASE//' V K24',11,JREFA)
       CALL DISMOI('F','NOM_MAILLA',NUMEDD,'NUME_DDL',IBID,MA,IER)
       ZK24(JREFA-1+1) = MA
       ZK24(JREFA-1+2) = NUMDDL
       ZK24(JREFA-1+9) = 'MS'
       ZK24(JREFA-1+10) = 'NOEU'
+      ZK24(JREFA-1+11) = 'MPI_COMPLET'
       KCONL = ATA//'.CONL'
       CALL WKVECT(KCONL,BASE//' V R',NEQ,JCONL)
       DO 90 I = 1,NEQ
@@ -282,5 +283,4 @@ C     ------------
       CALL JEDETR('&&ATASMO.LMBID')
 
       CALL JEDEMA()
-C      CALL CHEKSD('sd_matr_asse',ATA,IRET)
       END

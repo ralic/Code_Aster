@@ -1,5 +1,5 @@
 
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -269,7 +269,7 @@ COEF_TR=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             3000000.,1.,
                             ),);
 
-SOLNL=STAT_NON_LINE(MODELE=EPD3,
+SOLNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD'),MODELE=EPD3,
                     CHAM_MATER=MAT,
                     EXCIT=_F(CHARGE=COND_LIM,
                              FONC_MULT=COEF_TR,),

@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,10 +51,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       IBID, IRET, GD, IADESC, IANOLI, L, LXLGUT
+      INTEGER       IBID, IRET, GD, IADESC, JNOLI, L, LXLGUT
       CHARACTER*8   K8BID, NOGD
       CHARACTER*19  NOMOB
-      CHARACTER*24 QUESTL
+      CHARACTER*24 QUESTL,K24
       CHARACTER*32  REPK
 C DEB-------------------------------------------------------------------
 C
@@ -89,12 +89,12 @@ C
          CALL DISMGD ( CODMES, QUESTI, NOGD, REPI, REPK, IERD )
 C
       ELSEIF ( QUESTI .EQ. 'NOM_OPTION' ) THEN
-         CALL JEVEUO ( NOMOB//'.NOLI', 'L', IANOLI )
-         REPK = ZK24(IANOLI-1+2)(1:16)
+         CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
+         REPK = ZK24(JNOLI-1+2)(1:16)
 C
       ELSEIF ( QUESTI .EQ. 'NOM_MAILLA') THEN
-         CALL JEVEUO ( NOMOB//'.NOLI', 'L', IANOLI )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(IANOLI), REPI, REPK, IERD )
+         CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
+         CALL DISMLG ( CODMES, QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
 C
       ELSEIF ( QUESTL(1:6) .EQ. 'NUM_GD' ) THEN
          REPI = GD
@@ -103,17 +103,26 @@ C
          REPK = NOGD
 C
       ELSEIF ( QUESTI .EQ. 'NOM_LIGREL' ) THEN
-         CALL JEVEUO ( NOMOB//'.NOLI', 'L', IANOLI )
-         REPK = ZK24(IANOLI)
+         CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
+         REPK = ZK24(JNOLI)
 C
       ELSEIF ( QUESTI .EQ. 'NOM_MODELE' ) THEN
-         CALL JEVEUO ( NOMOB//'.NOLI','L', IANOLI )
-         CALL DISMLG ( CODMES, QUESTI, ZK24(IANOLI), REPI, REPK, IERD )
+         CALL JEVEUO ( NOMOB//'.NOLI','L', JNOLI )
+         CALL DISMLG ( CODMES, QUESTI, ZK24(JNOLI), REPI, REPK, IERD )
 C
       ELSEIF ( QUESTI .EQ. 'TYPE_SCA' ) THEN
           L    = LXLGUT(NOGD)
           REPK = NOGD(L:L)
 C
+      ELSEIF ( QUESTI .EQ. 'MPI_COMPLET' ) THEN
+         CALL JEVEUO ( NOMOB//'.NOLI', 'L', JNOLI )
+         K24 = ZK24(JNOLI-1+3)
+         CALL ASSERT(K24.EQ.'MPI_COMPLET'.OR.K24.EQ.'MPI_INCOMPLET')
+         IF (K24.EQ.'MPI_COMPLET')THEN
+            REPK='OUI'
+         ELSE
+            REPK='NON'
+         ENDIF
       ELSE
          REPK = QUESTI
          CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 19/12/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline2 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,10 @@ cata_msg = {
  La convergence de la condition des contraintes planes peut être améliorée en 
  augmentant ITER_MAXI_DEBORST (=1 par défaut), sous le mot clef facteur COMP_INCR. 
 
+"""),
+
+27 : _("""
+ Lecture du champ DEPL_CALCULE impossible.
 """),
 
 36 : _("""

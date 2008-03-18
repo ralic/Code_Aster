@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 17/01/2008   AUTEUR ZENTNER I.ZENTNER 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -141,7 +141,7 @@ C-----------------------------------------------------------------------
       IDIM1 = NBMODE + NAPEXC
       CALL TBLIVA(TABLE,0,K8B,IBID,R8B,C16B,K8B,K8B,R8B,'DIMENSION',K8B,
      &            IDIM0,R8B,C16B,K8B,IRET)
-      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_88')
+      IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
       IF (IDIM1.NE.IDIM0) THEN
         CALL U2MESS('F','ALGORITH10_63')
       END IF

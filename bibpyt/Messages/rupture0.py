@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 25/02/2008   AUTEUR REZETTE C.REZETTE 
+#@ MODIF rupture0 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,6 +210,10 @@ Il y a plusieurs causes possibles :
   pas "sortir" de la matière.
 """),
 
+34: _("""
+ Le nombre de noeuds NB_NOEUD_COUPE doit etre supérieur à 3 : 
+ on prend la valeur par défaut.
+"""),
 
 35: _("""
 Les mots-clés TABL_DEPL_SUP et TABL_DEPL_INF sont obligatoires

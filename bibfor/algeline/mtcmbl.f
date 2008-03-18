@@ -9,7 +9,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2007   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,7 +86,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----------------------------------------------------------------
       CHARACTER*1 BASE,BAS2,TYPRES
-      CHARACTER*8 KBID,TYPMAT
+      CHARACTER*8 KBID,TYPMAT,KMPIC
       CHARACTER*19 MATEMP,MAT1,MATRES,MATI
       CHARACTER*24 VALM, VALK(2)
 C     -----------------------------------------------------------------
@@ -119,7 +119,6 @@ C     -----------------------------------------------------------------
       DO 10 I = 1,NBCOMB
         CALL ASSERT(TYPCST(I).EQ.'R'.OR.TYPCST(I).EQ.'C')
         MATI=LIMAT(I)
-C       CALL CHEKSD('sd_matr_asse',MATI,IRET)
         CALL JEVEUO(MATI//'.REFA','L',JREFAI)
         IF (ZK24(JREFAI-1+3).EQ.'ELIMF') CALL MTMCHC(MATI,'ELIML')
         CALL MTDSCR(MATI)
@@ -132,7 +131,6 @@ C       CALL CHEKSD('sd_matr_asse',MATI,IRET)
         IF (SYMI) CALL ASSERT(NBLOC.EQ.1)
 C        IF ((.NOT.SYMI).AND.SYMR) CHGSYM=.TRUE.
         IF (MATI.EQ.MATRES) REUTIL=.TRUE.
-C       CALL CHEKSD('sd_matr_asse',MATI,IRET)
    10 CONTINUE
 
 
@@ -154,6 +152,8 @@ C     ------------------------------------------------------------------
       IER1 = 0
       DO 20 I = 2,NBCOMB
         MATI=LIMAT(I)
+        CALL DISMOI('F','MPI_COMPLET',MATI,'MATR_ASSE',IBID,KMPIC,IBID)
+        IF (KMPIC.NE.'OUI') CALL U2MESS('F','CALCULEL6_54')
         CALL JEVEUO(MATI//'.REFA','L',JREFAI)
         IF (ZK24(JREFA1-1+2).NE.ZK24(JREFAI-1+2)) IER1 = 1
         IF (ZK24(JREFA1-1+2).NE.ZK24(JREFAI-1+2)) IER1 = 1
@@ -228,5 +228,4 @@ C     =========================================================
       CALL JEDETR('&&MTCMBL.LISPOINT')
 
       CALL JEDEMA()
-C     CALL CHEKSD('sd_matr_asse',MATRES,IRET)
       END

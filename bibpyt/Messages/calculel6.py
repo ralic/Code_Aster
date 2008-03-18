@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF calculel6 Messages  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,6 +133,20 @@ Solution :
  variables internes initiales :  pas le nombre de composantes voulu par le comportement  pour la maille  nomail
   attendu par le comportement :  %(i1)d
   trouve sur la maille :  %(i2)d
+"""),
+
+54: _("""
+ Problème d'utilisation du parallélisme :
+   Les fonctionnalités de parallélisme utilisées ici (calculs distribués) conduisent à créer
+   des structures de données "incomplètes" (i.e. partiellement calculées sur chaque processeur).
+
+   Malheureusement, dans la suite des traitements, le code a besoin que les structures de données soient
+   "complètes". On est donc obligé d'arreter le calcul.
+
+ Conseils pour l'utilisateur :
+   1) Il faut émettre une demande d'évolution du code pour que le calcul demandé aille à son terme.
+   2) En attendant, il ne faut pas utiliser la "distribution" des structures de donnée.
+      Aujourd'hui, cela veut dire : "ne pas utiliser le solveur MUMPS distribué".
 """),
 
 
@@ -297,10 +311,10 @@ Solution :
 
 --> Risques & conseils :
 On doit généralement utiliser la meme loi de comportement entre le calcul et le
-post-traitement. On peut utiliser deux comportements différents, mais alors 
+post-traitement. On peut utiliser deux comportements différents, mais alors
 l'utilisateur doit etre vigilant sur l'interprétation des résultats(cf.U2.05.01).
-Si plusieurs comportements sont définis sur la structure, le comportement à 
-indiquer dans CALC_G est celui du matériau dans lequel la fissure se développe. 
+Si plusieurs comportements sont définis sur la structure, le comportement à
+indiquer dans CALC_G est celui du matériau dans lequel la fissure se développe.
 Dans ce cas, ce message d'alarme est quand meme émis mais le résultat est bien cohérent.
 """),
 

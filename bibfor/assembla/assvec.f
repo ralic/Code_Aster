@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 19/11/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C ---------------------------------------------------------------------
      &             ADMODL,LCMODL,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
      &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,ILIMPB,
      &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,IAUX4,COMPT,
-     &             NIVMPI,RANG,NBLOG,IMUMPS,NBPROC
+     &             NIVMPI,RANG,NBLOG,JMUMPS,NBPROC
       REAL*8       TEMPS(6),RBID
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -262,8 +262,7 @@ C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE MUMPS DISTRIBUE
         CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
         CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
         LMUMPS=.TRUE.
-        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',IMUMPS)
-        IMUMPS=IMUMPS-1
+        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',JNUMSD)
       ENDIF
 
       CALL DISMOI('F','NOM_MODELE',NUDEV,'NUME_DDL',IBID,MO,IERD)
@@ -425,13 +424,13 @@ C --- ALLOCATION .VALE EN R OU C SUIVANT TYPE
           CALL U2MESS('F','ASSEMBLA_11')
         ENDIF
         CALL JEECRA(KVALE,'LONMAX',NEQUA,' ')
-        CALL JEVEUO(KVALE,'E',IADVAL)
+        CALL JEVEUO(KVALE,'E',JVALE)
 
 C PREPARATION DE DONNEES AUXILIAIRES POUR TEST
         LGOTO=.FALSE.
         K24B(1:14)=NUDEV
         CALL FETTSD(INFOFE,IDD,NEQUA,IBID,SDFETI(1:19),K24B,IFETN,
-     &              IADVAL,IBID,IFM,LBID,IBID,IBID,IBID,K19B,4,LGOTO)
+     &              JVALE,IBID,IFM,LBID,IBID,IBID,IBID,K19B,4,LGOTO)
         IF (LGOTO) GOTO 9999
 
 C --- REMPLISSAGE DE .VALE
@@ -496,15 +495,15 @@ C             -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
                   IF (TYPE.EQ.1) THEN
                     DO 50 I1 = 1,NDDL1
                       IL = IL + 1
-                      ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
+                      ZR(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                1)) = ZR(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
      &                I1)-1)) + ZR(IDRESL+IL-1)*RCOEF
    50               CONTINUE
                   ELSE IF (TYPE.EQ.2) THEN
                     DO 60 I1 = 1,NDDL1
                       IL = IL + 1
-                      ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
+                      ZC(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                1)) = ZC(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
      &                I1)-1)) + ZC(IDRESL+IL-1)*RCOEF
    60               CONTINUE
                   END IF
@@ -532,29 +531,29 @@ C==========================
 C NOM DU LIGREL GLOBAL
               NOMLI = ZK24(IAD)
               NOMOPT = ZK24(IAD+1)
-              
+
 C --- TEST EXISTENCE &&POIDS_MAILLE (ARLEQUIN)
               CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
               IF (EPDMS.GT.0) THEN
                 IF ( (NOMOPT(1:9).EQ.'FULL_MECA').OR.
-     &               (NOMOPT(1:9).EQ.'RAPH_MECA').OR.     
+     &               (NOMOPT(1:9).EQ.'RAPH_MECA').OR.
      &               (NOMOPT(1:9).EQ.'FORC_NODA')) THEN
                   CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
                   LARLQ = .TRUE.
                 ELSEIF ( (NOMOPT(1:9 ).EQ.'CHAR_MECA') .OR.
-     &                   (NOMOPT(1:10).EQ.'MECA_DDLI_').OR.     
+     &                   (NOMOPT(1:10).EQ.'MECA_DDLI_').OR.
      &                   (NOMOPT(1:8) .EQ.'MECA_BU_')  .OR.
      &                   (NOMOPT(1:10).EQ.'MECA_BTLA_')) THEN
-                  LARLQ = .FALSE. 
-                ELSEIF ( (NOMOPT(1:9 ).EQ.'CHAR_MECA').OR. 
+                  LARLQ = .FALSE.
+                ELSEIF ( (NOMOPT(1:9 ).EQ.'CHAR_MECA').OR.
      &                   (NOMOPT(1:8) .EQ.'MECA_BU_') .OR.
      &                   (NOMOPT(1:10).EQ.'MECA_BTLA_')) THEN
-                  LARLQ = .FALSE.                                 
+                  LARLQ = .FALSE.
                 ELSE
                   CALL U2MESK('F','DVP_99',1,NOMOPT)
                 ENDIF
               ELSE
-                LARLQ = .FALSE.      
+                LARLQ = .FALSE.
               ENDIF
 
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
@@ -708,18 +707,12 @@ C                     SD QUI LUI SONT ATTRIBUES
 C SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
                     IF (LMUMPS) THEN
                       IF (NUMA.GT.0) THEN
-                        IF (ZI(IMUMPS+NUMA).LT.0) THEN
-C                         WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
-                          GOTO 160
-                        ENDIF
+                        IF (ZI(JNUMSD-1+NUMA).NE.RANG) GOTO 160
                        ELSE
-                        IF (RANG.NE.0) THEN
-C                         WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
-                          GOTO 160
-                        ENDIF
+                        IF (RANG.NE.0)  GOTO 160
                       ENDIF
                     ENDIF
-                      
+
 C---- LIGREL DE MODELE:
 C--------------------
                     IF (NUMA.GT.0) THEN
@@ -758,8 +751,8 @@ C--------------------
                         IF (TYPE.EQ.1) THEN
                           DO 100 I1 = 1,NDDL1
                             IL = IL + 1
-                          ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+
+                          ZR(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                      1)) = ZR(JVALE-1+ZI(IANUEQ-1+IAD1+
      &                            ZI(IAPSDL-1+I1)-1)) +
      &                            ZR(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
   100                     CONTINUE
@@ -767,8 +760,8 @@ C--------------------
                         ELSE
                           DO 110 I1 = 1,NDDL1
                             IL = IL + 1
-                          ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+
+                          ZC(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                      1)) = ZC(JVALE-1+ZI(IANUEQ-1+IAD1+
      &                            ZI(IAPSDL-1+I1)-1)) +
      &                            ZC(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
   110                     CONTINUE
@@ -925,16 +918,16 @@ C NOEUD PHYSIQUE
                         IF (TYPE.EQ.1) THEN
                           DO 130 I1 = 1,NDDL1
                             IL = IL + 1
-                          ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+
+                          ZR(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                      1)) = ZR(JVALE-1+ZI(IANUEQ-1+IAD1+
      &                            ZI(IAPSDL-1+I1)-1)) +
      &                            ZR(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
   130                     CONTINUE
                         ELSE
                           DO 140 I1 = 1,NDDL1
                             IL = IL + 1
-                          ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+
+                          ZC(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                      1)) = ZC(JVALE-1+ZI(IANUEQ-1+IAD1+
      &                            ZI(IAPSDL-1+I1)-1)) +
      &                            ZC(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
   140                     CONTINUE
@@ -1009,36 +1002,11 @@ C      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,VECAS(1:19),1,' ')
 C        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
       IF (LMUMPS)
      &  CALL MUMMPI(5,IFM,NIV,KVALE,NEQUA,IBID)
-               
+
       CALL JEDETR(VECAS//'.LILI')
       CALL JEDETR(VECAS//'.LIVE')
       CALL JEDETR(VECAS//'.ADNE')
       CALL JEDETR(VECAS//'.ADLI')
-C      IF (NIV.EQ.2) THEN
-C        WRITE (IFM,*) ' --- '
-C        WRITE (IFM,*) ' --- VECTEUR ASSEMBLE '
-C        WRITE (IFM,*) ' --- '
-C        IF (TYPE.EQ.1) THEN
-C          DO 1000 IEQUA = 1,NEQUA
-C            WRITE (IFM,*) ' -   CHAM_NO( ',IEQUA,' ) = ',
-C     +        ZR(IADVAL+IEQUA-1)
-C 1000     CONTINUE
-C        ELSE
-C          DO 1001 IEQUA = 1,NEQUA
-C            WRITE (IFM,*) ' -   CHAM_NO( ',IEQUA,' ) = ',
-C     +        ZC(IADVAL+IEQUA-1)
-C 1001     CONTINUE
-C        END IF
-C        WRITE (IFM,*) ' --------------------------- '
-C      END IF
-C      IF (NIV.EQ.2) THEN
-C        WRITE (IFM,*) ' --- '
-C        WRITE (IFM,*) ' --- REFE DU VECTEUR    CREE '
-C        WRITE (IFM,*) ' --- '
-C        WRITE (IFM,*) ' -   REFE(1) = MAILLAGE        ',ZK24(IDVERF)
-C        WRITE (IFM,*) ' -   REFE(2) = NUMEROTATION    ',ZK24(IDVERF+1)
-C        WRITE (IFM,*) ' --------------------------- '
-C      END IF
       CALL JEDETR('&&ASSVEC.POSDDL')
       CALL JEDETR('&&ASSVEC.NUMLOC')
       CALL JEDEMA()

@@ -6,7 +6,7 @@
       COMPLEX*16 VALC
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP,TYPRES
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,9 +59,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER IBID,IDDL,IAVALE
-      REAL*8 R8VIDE
+      REAL*8 R8VIDE,R1,R2
       CHARACTER*1 TYPREZ
-      CHARACTER*4 TYPE
+      CHARACTER*4 TYPE ,KMPIC
       CHARACTER*19 CHM19Z
 C     ------------------------------------------------------------------
 
@@ -73,6 +73,8 @@ C     ------------------------------------------------------------------
       CALL JELIRA(CHM19Z//'.CELV','TYPE',IBID,TYPE)
 
       CALL ASSERT(TYPE.EQ.TYPREZ)
+      CALL DISMOI('F','MPI_COMPLET',CHAM19,'CHAM_ELEM',IBID,KMPIC,IBID)
+      CALL ASSERT(KMPIC.EQ.'OUI'.OR.KMPIC.EQ.'NON')
 
       IF (TYPE.NE.'R' .AND. TYPE.NE.'C')
      &  CALL U2MESK('E','UTILITAI5_29',1,TYPE)
@@ -93,6 +95,20 @@ C     SI TEST_RESU, IDDL PEUT ETRE = 0 :
       ELSE IF (TYPREZ.EQ.'C') THEN
         VALC = ZC(IAVALE-1+IDDL)
       END IF
+
+C     -- SI LE CHAMP N'EST PAS MPI_COMPLET, IL FAUT COMMUNIQUER
+C        LA VALEUR EXTRAITE :
+      IF (KMPIC.EQ.'NON') THEN
+        IF (TYPREZ.EQ.'R') THEN
+          CALL MPICM1('MPI_SUM','R',1,IBID,VALR)
+        ELSE IF (TYPREZ.EQ.'C') THEN
+          R1=DBLE(VALC)
+          R2=DIMAG(VALC)
+          CALL MPICM1('MPI_SUM','R',1,IBID,R1)
+          CALL MPICM1('MPI_SUM','R',1,IBID,R2)
+          VALC=DCMPLX(R1,R2)
+        ENDIF
+      ENDIF
 
    10 CONTINUE
       CALL JEDEMA()

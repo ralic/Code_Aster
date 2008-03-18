@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,8 @@ C CREATION DE LA NUMEROTATION GENERALISE SUPPORT
       CALL  CRNSLV(NUGENE,'LDLT','SANS','G')
 
 C CREATION DE LA MATRICE GENERALISE SUPPORT
-      CALL WKVECT(MATGEN//'           .REFA','V V K24',10,JREFA)
+      CALL WKVECT(MATGEN//'           .REFA','V V K24',11,JREFA)
+      ZK24(JREFA-1+11)='MPI_COMPLET'
       ZK24(JREFA-1+1)=BASEMO
       ZK24(JREFA-1+2)=NUGENE
       ZK24(JREFA-1+9) = 'MS'
@@ -128,8 +129,6 @@ C        --- VECTEUR PROPRE ---
  100  CONTINUE
 
       CALL VPCREA(0,RESU2,' ',' ',' ',' ',IER)
-C     CALL CHEKSD('sd_nume_ddl',NUGENE,IRET)
-C     CALL CHEKSD('sd_matr_asse',MATGEN,IRET)
       CALL JEDETC (' ',MATGEN,1)
 
       CALL JEDEMA()

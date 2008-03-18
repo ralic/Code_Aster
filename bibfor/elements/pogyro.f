@@ -4,7 +4,7 @@
       REAL*8 E, RHO, XNU,KLV(*)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER LSECT,LSECT2, LX, LRCOU, ISTRUC, ITYPE,IADZI,IAZK24
       REAL*8 ZERO, UN, DEUX, TRIGOM
       REAL*8 G, EY, EZ, XL, RAD, ANG, ANGS2, XFL, XFLY, XFLZ
-      REAL*8 A, XIY, XIZ, XJX, ALFAY, ALFAZ
+      REAL*8 A, XIY, XIZ, XJX, ALFAY, ALFAZ, ALFINV
 C     ------------------------------------------------------------------
 
       ZERO = 0.D0
@@ -91,11 +91,11 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
 C        --- POUTRE DROITE D'EULER A 6 DDL ---
         ISTRUC = 1
-        ALFAY = ZERO
-        ALFAZ = ZERO
+        ALFINV = ZERO
       ELSE IF (NOMTE(1:12).EQ.'MECA_POU_D_T') THEN
 C        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         ISTRUC = 1
+        ALFINV = DEUX/(ALFAY+ALFAZ)
       ELSE IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
 C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
         ISTRUC = 1
@@ -122,8 +122,8 @@ C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
       IF (ITYPE.EQ.0) THEN
 C        --- POUTRE DROITE A SECTION CONSTANTE ---
 C RAJOUT NL POUR APPEL A PTGY01
-        CALL PTGY01(KLV,NL,E,RHO,A,XL,XIY,XIZ,XJX,G,ALFAY,
-     &                     ALFAZ,EY,EZ,ISTRUC)
+        CALL PTGY01(KLV,NL,E,RHO,A,XL,XIY,XIZ,XJX,G,ALFINV,
+     &                     EY,EZ,ISTRUC)
 
       ELSE
 C        --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---

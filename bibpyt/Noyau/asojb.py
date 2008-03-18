@@ -1,4 +1,4 @@
-#@ MODIF asojb Noyau  DATE 28/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF asojb Noyau  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ class AsBase(Type):
         if checker.checkedAsBase(self):
             return checker
         checker.visitAsBase( self )
-        
+
         # vérifie les enfants :
         optional = checker.optional
         checker.optional = checker.optional or self.optional
@@ -75,7 +75,7 @@ class AsBase(Type):
                     try :
                         v( checker )
                     except :
-                        UTMESS("E", 'SDVERI_45')
+                        UTMESS("E", 'SDVERI_45')  # AJACOT NON
                         print 40*'-'
                         traceback.print_exc(file=sys.stdout)
                         print self

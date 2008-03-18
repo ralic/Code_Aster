@@ -6,7 +6,7 @@ C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2007   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32   JEXNUM, JEXNOM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER, 
+      INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER,
      +             IADRIF, LLREFE, NEQ, LLNEQU, JSCDE, ULISOP
       REAL*8       RBID, PARTR, PARTI
       COMPLEX*16   CBID
@@ -184,7 +184,8 @@ C
          ZC(IACONL+I-1) = DCMPLX(1.0D0,0.0D0)
  10   CONTINUE
 C
-      CALL WKVECT ( RESU//'.REFA', 'G V K24', 10, JREFA )
+      CALL WKVECT ( RESU//'.REFA', 'G V K24',11, JREFA )
+      ZK24(JREFA-1+11)='MPI_COMPLET'
       ZK24(JREFA-1+1)   = BASEMO
       ZK24(JREFA-1+2) = NUGENE
       ZK24(JREFA-1+9) = 'MR'
@@ -248,7 +249,6 @@ C
       CALL JELIBE ( JEXNUM(RESU//'.VALM', 2) )
       CALL JEDETR(TABRIG)
       CALL JEDETR(TABFRQ)
-C     CALL CHEKSD('sd_matr_asse',RESU,IRET)
 C
       CALL JEDEMA()
       END

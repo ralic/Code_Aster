@@ -1,10 +1,9 @@
       SUBROUTINE ASSMIV(BASE,VEC,NBVEC,TLIVEC,LICOEF,NU,VECPRO,MOTCLE,
      &                  TYPE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT REAL*8(A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 19/11/2007   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +76,7 @@ C ----------------------------------------------------------------------
 C ---------------------------------------------------------------------
 C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
-      PARAMETER (NBECMX=10)
+      PARAMETER(NBECMX=10)
       INTEGER ICODLA(NBECMX),ICODGE(NBECMX),RANG,NBPROC,IRET,IFM,NIV,
      &        IBID,IMUMPS
       CHARACTER*1 BAS
@@ -87,9 +86,9 @@ C ---------------------------------------------------------------------
       CHARACTER*19 VECAS,VPROF
       CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
      &             KNEQUA,KVALE,NOMOPT,K24B
-      CHARACTER*1  K1BID
-      INTEGER      ADMODL, LCMODL, NBEC, EPDMS, JPDMS
-      LOGICAL      LMUMPS
+      CHARACTER*1 K1BID
+      INTEGER ADMODL,LCMODL,NBEC,EPDMS,JPDMS
+      LOGICAL LMUMPS
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -97,12 +96,12 @@ C ----------------------------------------------------------------------
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,ZZNELS
       INTEGER ZZNEMA,ZZPRNO,IZZPRN
       INTEGER VALI(4)
-      REAL*8  R8MAEM
+      REAL*8 R8MAEM
 
-      ZZCONX(IMAIL,J) = ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
+      ZZCONX(IMAIL,J)=ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
 
 C --- NBRE DE NOEUDS DE LA MAILLE IMAIL DU MAILLAGE
-      ZZNBNE(IMAIL) = ZI(ICONX2+IMAIL) - ZI(ICONX2+IMAIL-1)
+      ZZNBNE(IMAIL)=ZI(ICONX2+IMAIL)-ZI(ICONX2+IMAIL-1)
 
 C --- FONCTION D ACCES AUX ELEMENTS DES CHAMPS LIEL DES S.D. LIGREL
 C     REPERTORIEES DANS LE REPERTOIRE TEMPORAIRE .MATAS.LILI
@@ -110,26 +109,26 @@ C     ZZLIEL(ILI,IGREL,J) =
 C      SI LA JIEME MAILLE DU LIEL IGREL DU LIGREL ILI EST:
 C          -UNE MAILLE DU MAILLAGE : SON NUMERO DANS LE MAILLAGE
 C          -UNE MAILLE TARDIVE : -POINTEUR DANS LE CHAMP .NEMA
-      ZZLIEL(ILI,IGREL,J) = ZI(ZI(IADLIE+3* (ILI-1)+1)-1+
-     &                      ZI(ZI(IADLIE+3* (ILI-1)+2)+IGREL-1)+J-1)
+      ZZLIEL(ILI,IGREL,J)=ZI(ZI(IADLIE+3*(ILI-1)+1)-1+
+     &                    ZI(ZI(IADLIE+3*(ILI-1)+2)+IGREL-1)+J-1)
 
 C --- NBRE DE GROUPES D'ELEMENTS (DE LIEL) DU LIGREL ILI
-      ZZNGEL(ILI) = ZI(IADLIE+3* (ILI-1))
+      ZZNGEL(ILI)=ZI(IADLIE+3*(ILI-1))
 
 C --- NBRE DE NOEUDS DE LA MAILLE TARDIVE IEL ( .NEMA(IEL))
 C     DU LIGREL ILI REPERTOIRE .LILI
 C     (DIM DU VECTEUR D'ENTIERS .LILI(ILI).NEMA(IEL) )
-      ZZNSUP(ILI,IEL) = ZI(ZI(IADNEM+3* (ILI-1)+2)+IEL) -
-     &                  ZI(ZI(IADNEM+3* (ILI-1)+2)+IEL-1) - 1
+      ZZNSUP(ILI,IEL)=ZI(ZI(IADNEM+3*(ILI-1)+2)+IEL)-
+     &                ZI(ZI(IADNEM+3*(ILI-1)+2)+IEL-1)-1
 
 C --- NBRE D ELEMENTS DU LIEL IGREL DU LIGREL ILI DU REPERTOIRE TEMP.
 C     .MATAS.LILI(DIM DU VECTEUR D'ENTIERS .LILI(ILI).LIEL(IGREL) )
-      ZZNELG(ILI,IGREL) = ZI(ZI(IADLIE+3* (ILI-1)+2)+IGREL) -
-     &                    ZI(ZI(IADLIE+3* (ILI-1)+2)+IGREL-1) - 1
+      ZZNELG(ILI,IGREL)=ZI(ZI(IADLIE+3*(ILI-1)+2)+IGREL)-
+     &                  ZI(ZI(IADLIE+3*(ILI-1)+2)+IGREL-1)-1
 
 C --- NBRE D ELEMENTS SUPPLEMENTAIRE (.NEMA) DU LIGREL ILI DU
 C     REPERTOIRE TEMPORAIRE .MATAS.LILI
-      ZZNELS(ILI) = ZI(IADNEM+3* (ILI-1))
+      ZZNELS(ILI)=ZI(IADNEM+3*(ILI-1))
 
 C --- FONCTION D ACCES AUX ELEMENTS DES CHAMPS NEMA DES S.D. LIGREL
 C     REPERTORIEES DANS LE REPERTOIRE TEMPO. .MATAS.LILI
@@ -140,8 +139,8 @@ C          -UN NOEUD TARDIF : -SON NUMERO DANS LA NUMEROTATION LOCALE
 C                              AU LIGREL ILI
 C     ZZNEMA(ILI,IEL,ZZNELS(ILI)+1)=NUMERO DU TYPE_MAILLE DE LA MAILLE
 C                                   IEL DU LIGREL ILI
-      ZZNEMA(ILI,IEL,J) = ZI(ZI(IADNEM+3* (ILI-1)+1)-1+
-     &                    ZI(ZI(IADNEM+3* (ILI-1)+2)+IEL-1)+J-1)
+      ZZNEMA(ILI,IEL,J)=ZI(ZI(IADNEM+3*(ILI-1)+1)-1+
+     &                  ZI(ZI(IADNEM+3*(ILI-1)+2)+IEL-1)+J-1)
 
 C --- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL
 C     REPERTORIEES DANS NU.LILI DE LA S.D. NUME_DDL ET A LEURS ADRESSES
@@ -151,10 +150,10 @@ C                            AU LIGREL ILI DE .LILI
 C     ZZPRNO(ILI,NUNOEL,2) = NOMBRE DE DDL PORTES PAR LE NOEUD NUNOEL
 C     ZZPRNO(ILI,NUNOEL,2+1) = 1ER CODE
 C     ZZPRNO(ILI,NUNOEL,2+NEC) = NEC IEME CODE
-      IZZPRN(ILI,NUNOEL,L) = (IDPRN1-1+ZI(IDPRN2+ILI-1)+
-     &                       (NUNOEL-1)* (NEC+2)+L-1)
-      ZZPRNO(ILI,NUNOEL,L) = ZI(IDPRN1-1+ZI(IDPRN2+ILI-1)+
-     &                       (NUNOEL-1)* (NEC+2)+L-1)
+      IZZPRN(ILI,NUNOEL,L)=(IDPRN1-1+ZI(IDPRN2+ILI-1)+
+     &                     (NUNOEL-1)*(NEC+2)+L-1)
+      ZZPRNO(ILI,NUNOEL,L)=ZI(IDPRN1-1+ZI(IDPRN2+ILI-1)+
+     &                     (NUNOEL-1)*(NEC+2)+L-1)
 
 C --- DEBUT ------------------------------------------------------------
       CALL JEMARQ()
@@ -169,44 +168,43 @@ C----------------------------------------------------------------------
 C --- VERIF DE MOTCLE:
       IF (MOTCLE(1:4).EQ.'ZERO') THEN
 
-      ELSE IF (MOTCLE(1:4).EQ.'CUMU') THEN
+      ELSEIF (MOTCLE(1:4).EQ.'CUMU') THEN
 
       ELSE
         CALL U2MESK('F','ASSEMBLA_8',1,MOTCLE)
-      END IF
+      ENDIF
 C
       CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
       CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 
-      VECAS = VEC
-      BAS = BASE
+      VECAS=VEC
+      BAS=BASE
 
 C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE MUMPS DISTRIBUE
       LMUMPS=.FALSE.
       RANG=0
       NBPROC=1
       CALL JEEXIN('&MUMPS.MAILLE.NUMSD',IRET)
-      IF (IRET.NE.0) THEN
+      IF (IRET.GT.0) THEN
         CALL MUMMPI(2,IFM,NIV,K24B,RANG,IBID)
         CALL MUMMPI(3,IFM,NIV,K24B,NBPROC,IBID)
         LMUMPS=.TRUE.
-        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',IMUMPS)
-        IMUMPS=IMUMPS-1
+        CALL JEVEUO('&MUMPS.MAILLE.NUMSD','L',JNUMSD)
       ENDIF
-      
+
 C --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
       CALL DETRSD('CHAMP_GD',VECAS)
       CALL WKVECT(VECAS//'.LIVE',BAS//' V K8 ',NBVEC,ILIVEC)
-      DO 10 I = 1,NBVEC
-        ZK8(ILIVEC-1+I) = TLIVEC(I)
+      DO 10 I=1,NBVEC
+        ZK8(ILIVEC-1+I)=TLIVEC(I)
    10 CONTINUE
 
 C --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A VECAS
-      KMAILA = '&MAILLA                 '
-      KVELIL = VECAS//'.LILI'
-      KVEREF = VECAS//'.REFE'
-      KVALE = VECAS//'.VALE'
-      KVEDSC = VECAS//'.DESC'
+      KMAILA='&MAILLA                 '
+      KVELIL=VECAS//'.LILI'
+      KVEREF=VECAS//'.REFE'
+      KVALE=VECAS//'.VALE'
+      KVEDSC=VECAS//'.DESC'
 
 C --- CREATION DE REFE ET DESC
       CALL JECREO(KVEREF,BAS//' V K24')
@@ -227,25 +225,25 @@ C --- CREATION D'UN VECAS(1:19).ADNE ET VECAS(1:19).ADLI SUR 'V'
       IF (IRET.GT.0) THEN
         CALL JEVEUO(MA(1:8)//'.CONNEX','L',ICONX1)
         CALL JEVEUO(JEXATR(MA(1:8)//'.CONNEX','LONCUM'),'L',ICONX2)
-      END IF
+      ENDIF
 
 C --- ON SUPPOSE QUE LE LE LIGREL DE &MAILLA EST LE PREMIER DE LILINU
-      ILIMNU = 1
+      ILIMNU=1
 
 C --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A NU
 C --- IL FAUT ESPERER QUE LE CHAM_NO EST EN INDIRECTION AVEC UN
 C     PROF_CHNO APPARTENANT A UNE NUMEROTATION SINON CA VA PLANTER
 C     DANS LE JEVEUO SUR KNEQUA
-      NUDEV = NU
+      NUDEV=NU
       IF (NUDEV(1:1).EQ.' ') THEN
-        VPROF = VECPRO
+        VPROF=VECPRO
         CALL JEVEUO(VPROF//'.REFE','L',IDVREF)
-        NUDEV = ZK24(IDVREF-1+2) (1:14)
-      END IF
+        NUDEV=ZK24(IDVREF-1+2)(1:14)
+      ENDIF
 
-      KNEQUA = NUDEV//'.NUME.NEQU'
-      K24PRN = NUDEV//'.NUME.PRNO'
-      KNULIL = NUDEV//'.NUME.LILI'
+      KNEQUA=NUDEV//'.NUME.NEQU'
+      K24PRN=NUDEV//'.NUME.PRNO'
+      KNULIL=NUDEV//'.NUME.LILI'
       CALL JEVEUO(NUDEV//'.NUME.NUEQ','L',IANUEQ)
 
       CALL DISMOI('F','NOM_MODELE',NUDEV,'NUME_DDL',IBID,MO,IERD)
@@ -253,7 +251,7 @@ C     DANS LE JEVEUO SUR KNEQUA
       CALL DISMOI('F','NB_NO_SS_MAX',MA,'MAILLAGE',NBNOSS,KBID,IERD)
 
 C     100 EST SUPPOSE ETRE LA + GDE DIMENSION D'UNE MAILLE STANDARD:
-      NBNOSS = MAX(NBNOSS,100)
+      NBNOSS=MAX(NBNOSS,100)
 C     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
       CALL WKVECT('&&ASSVEC.NUMLOC','V V I',3*NBNOSS,IANULO)
 
@@ -261,35 +259,14 @@ C     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
       CALL DISMOI('F','NOM_GD_SI',NOGDCO,'GRANDEUR',IBID,NOGDSI,IERD)
       CALL DISMOI('F','NB_CMP_MAX',NOGDSI,'GRANDEUR',NMXCMP,KBID,IERD)
       CALL DISMOI('F','NUM_GD_SI',NOGDSI,'GRANDEUR',NUGD,KBID,IERD)
-      NEC = NBEC(NUGD)
-      NCMP = NMXCMP
+      NEC=NBEC(NUGD)
+      NCMP=NMXCMP
 
-      DO 20 I = 1,NBECMX
-        ICODLA(I) = 0
-        ICODGE(I) = 0
-   20 CONTINUE
 
 C     -- POSDDL(ICMP) (ICMP=1,NMXCMP(GD_SI))
       CALL WKVECT('&&ASSVEC.POSDDL','V V I',NMXCMP,IAPSDL)
 
-C     -- ON PREPARE L'ASSEMBLAGE DES SOUS-STRUCTURES:
-C     -----------------------------------------------
       CALL DISMOI('F','NB_NO_MAILLA',MO,'MODELE',NM,KBID,IER)
-
-      CALL JEEXIN(MA//'.NOMACR',IRET)
-      IF (IRET.GT.0) THEN
-        CALL JEVEUO(MA//'.NOMACR','L',IANMCR)
-        CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOGDSI),'L',IANCMP)
-        CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOGDSI),'LONMAX',LGNCMP,
-     &              KBID)
-        ICMP = INDIK8(ZK8(IANCMP),'LAGR',1,LGNCMP)
-        IF (ICMP.EQ.0) CALL U2MESS('F','ASSEMBLA_9')
-        IF (ICMP.GT.30) CALL U2MESS('F','ASSEMBLA_10')
-C       -- ICODLA EST L'ENTIER CODE CORRESPONDANT A LA CMP "LAGR"
-        JEC = (ICMP-1)/30 + 1
-        ICODLA(JEC) = 2**ICMP
-C        ICODLA = 2**ICMP
-      END IF
 
 
 C ---  RECUPERATION DE PRNO
@@ -298,377 +275,139 @@ C ---  RECUPERATION DE PRNO
 
 C ---  RECUPERATION DE NEQUA
       CALL JEVEUO(KNEQUA,'L',IDNEQU)
-      NEQUA = ZI(IDNEQU)
+      NEQUA=ZI(IDNEQU)
 
 C ---  REMPLISSAGE DE REFE ET DESC
-      ZK24(IDVERF) = MA
-      ZK24(IDVERF+1) = K24PRN(1:14)//'.NUME'
-      ZI(IDVEDS) = GD
-      ZI(IDVEDS+1) = 1
+      ZK24(IDVERF)=MA
+      ZK24(IDVERF+1)=K24PRN(1:14)//'.NUME'
+      ZI(IDVEDS)=GD
+      ZI(IDVEDS+1)=1
 
 
-C --- ALLOCATION VALE EN R OU C SUIVANT TYPE
-      IF (TYPE.EQ.1) THEN
-        CALL JECREO(KVALE,BAS//' V R8')
+C --- ALLOCATION VALE
+      CALL ASSERT(TYPE.EQ.1)
+      CALL WKVECT(KVALE,BAS//' V R8',NEQUA,JVALE)
 
-      ELSE IF (TYPE.EQ.2) THEN
-        CALL JECREO(KVALE,BAS//' V C16')
-
-      ELSE
-        CALL U2MESS('F','ASSEMBLA_11')
-      END IF
-
-      CALL JEECRA(KVALE,'LONMAX',NEQUA,' ')
-      CALL JEVEUO(KVALE,'E',IADVAL)
-
-      DO 666 I=1,NEQUA
-        ZR(IADVAL+I-1)=R8MAEM()
- 666   CONTINUE
+      DO 20 I=1,NEQUA
+        ZR(JVALE+I-1)=R8MAEM()
+   20 CONTINUE
 
 
-C --- REMPLISSAGE DE .VALE
-C ------------------------
-      DO 190 IMAT = 1,NBVEC
-        RCOEF = LICOEF(IMAT)
-        VECEL = ZK8(ILIVEC+IMAT-1)
+C     -- REMPLISSAGE DE .VALE
+C     ------------------------
+      DO 90 IMAT=1,NBVEC
+        RCOEF=LICOEF(IMAT)
+        VECEL=ZK8(ILIVEC+IMAT-1)
 
         CALL DISMOI('F','NOM_MODELE',VECEL,'VECT_ELEM',IBID,MO2,IERD)
         IF (MO2.NE.MO) CALL U2MESS('F','ASSEMBLA_5')
 
-
-C       -- TRAITEMENT DES SOUS-STRUCTURES (JUSQU A FIN BOUCLE 738)
-C       ----------------------------------------------------------
-        CALL DISMOI('F','EXI_ELEM',MO,'MODELE',IBID,EXIELE,IERD)
-        CALL DISMOI('F','NB_SS_ACTI',VECEL,'VECT_ELEM',NBSSA,KBID,IERD)
-
-        IF (NBSSA.GT.0) THEN
-          NOMCAS = ' '
-          CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
-          CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IERD)
-          CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
-          CALL SSVALV('DEBUT',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
-          CALL JELIRA(VECEL//'.LISTE_CHAR','NUTIOC',NBCHAR,KBID)
-
-          DO 90 ICHAR = 1,NBCHAR
-            CALL JENUNO(JEXNUM(VECEL//'.LISTE_CHAR',ICHAR),NOMCAS)
-            CALL JEVEUO(JEXNUM(VECEL//'.LISTE_CHAR',ICHAR),'L',IALCHA)
-
-            DO 80 IMA = 1,NBSMA
-C             -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
-              IF (ZI(IASSSA-1+IMA).EQ.0) GO TO 80
-              IF (ZI(IALCHA-1+IMA).EQ.0) GO TO 80
-              CALL JEVEUO(JEXNUM(MA//'.SUPMAIL',IMA),'L',IAMAIL)
-              CALL JELIRA(JEXNUM(MA//'.SUPMAIL',IMA),'LONMAX',NNOE,KBID)
-              CALL SSVALV(' ',NOMCAS,MO,MA,IMA,IDRESL,NCMPEL)
-
-              NOMACR = ZK8(IANMCR-1+IMA)
-              CALL DISMOI('F','NOM_NUME_DDL',NOMACR,'MACR_ELEM_STAT',
-     &                    IBID,NUM2,IERD)
-              CALL JEVEUO(NOMACR//'.CONX','L',IACONX)
-              CALL JEVEUO(JEXNUM(NUM2//'.NUME.PRNO',1),'L',IAPROL)
-
-              IL = 0
-              DO 70 K1 = 1,NNOE
-                N1 = ZI(IAMAIL-1+K1)
-                IF (N1.GT.NM) THEN
-                  DO 30 IEC = 1,NBECMX
-                    ICODGE(IEC) = ICODLA(IEC)
-   30             CONTINUE
-                ELSE
-                  INOLD = ZI(IACONX-1+3* (K1-1)+2)
-                  DO 40 IEC = 1,NEC
-                    ICODGE(IEC) = ZI(IAPROL-1+ (NEC+2)* (INOLD-1)+2+IEC)
-   40             CONTINUE
-                END IF
-
-                IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+ (N1-1)* (NEC+2))
-                CALL CORDD2(IDPRN1,IDPRN2,ILIMNU,ICODGE,NEC,NCMP,N1,
-     &                      NDDL1,ZI(IAPSDL))
-
-                IF (TYPE.EQ.1) THEN
-                  DO 50 I1 = 1,NDDL1
-                    IL = IL + 1
-                    ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
-     &                I1)-1)) + ZR(IDRESL+IL-1)*RCOEF
-   50             CONTINUE
-
-                ELSE IF (TYPE.EQ.2) THEN
-                  DO 60 I1 = 1,NDDL1
-                    IL = IL + 1
-                    ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
-     &                I1)-1)) + ZC(IDRESL+IL-1)*RCOEF
-   60             CONTINUE
-                END IF
-
-   70         CONTINUE
-   80       CONTINUE
-   90     CONTINUE
-          CALL SSVALV('FIN',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
-        END IF
-
-
-C         -- TRAITEMENT DES ELEMENTS FINIS CLASSIQUES (FIN BOUCLE 510)
-C         -----------------------------------------------------------
         CALL JEEXIN(VECEL//'.LISTE_RESU',IRET)
-        IF (IRET.GT.0) THEN
+        IF (IRET.EQ.0) GOTO 90
 
-
-C---- BOUCLE SUR LES VECT_ELEM:
-C------------------------------
           CALL JEVEUO(VECEL//'.LISTE_RESU','L',IDLRES)
           CALL JELIRA(VECEL//'.LISTE_RESU','LONUTI ',NBRESU,K1BID)
-          DO 180 IRESU = 1,NBRESU
-            RESU = ZK24(IDLRES+IRESU-1)
+          DO 80 IRESU=1,NBRESU
+            RESU=ZK24(IDLRES+IRESU-1)
             CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
-            NOMLI = ZK24(IAD)
-            NOMOPT = ZK24(IAD+1)
+            NOMLI=ZK24(IAD)
+            NOMOPT=ZK24(IAD+1)
 
-C---- TEST EXISTENCE &&POIDS_MAILLE
-C------------------------------
-            IF ( NOMOPT(1:9).EQ.'FULL_MECA'.OR.
-     &           NOMOPT(1:9).EQ.'RAPH_MECA'     ) THEN
+            IF (NOMOPT(1:9).EQ.'FULL_MECA' .OR.
+     &          NOMOPT(1:9).EQ.'RAPH_MECA') THEN
               CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
               IF (EPDMS.GT.0) CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
             ELSE
-              EPDMS = 0
+              EPDMS=0
             ENDIF
 
             CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
             CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
-            DO 170 IGR = 1,ZI(IADLIE+3* (ILIVE-1))
+            DO 70 IGR=1,ZI(IADLIE+3*(ILIVE-1))
               CALL JEVEUO(RESU(1:19)//'.DESC','L',IDDESC)
-              MODE = ZI(IDDESC+IGR+1)
+              MODE=ZI(IDDESC+IGR+1)
               IF (MODE.GT.0) THEN
-                NNOE = NBNO(MODE)
-                NEL = ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR) -
-     &                ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1) - 1
+                NNOE=NBNO(MODE)
+                NEL=ZI(ZI(IADLIE+3*(ILIVE-1)+2)+IGR)-
+     &              ZI(ZI(IADLIE+3*(ILIVE-1)+2)+IGR-1)-1
                 CALL JEVEUO(JEXNUM(RESU(1:19)//'.RESL',IGR),'L',IDRESL)
-                NCMPEL = DIGDEL(MODE)
-                DO 160 IEL = 1,NEL
-                  NUMA = ZI(ZI(IADLIE+3* (ILIVE-1)+1)-1+
-     &                   ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1)+IEL-1)
-                  R = RCOEF
-                  
-C SI ON EST DANS UN CALCUL MUMPS DISTRIBUE, ON SE POSE LA QUESTION DE
-C L'APPARTENANCE DE LA MAILLE NUMA AUX DONNEES ATTRIBUEES AU PROC
-C SI MAILLE PHYSIQUE: CHAQUE PROC NE TRAITE QUE CELLES ASSOCIEES AUX
-C                     SD QUI LUI SONT ATTRIBUES
-C SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
+                NCMPEL=DIGDEL(MODE)
+
+                DO 60 IEL=1,NEL
+                  NUMA=ZI(ZI(IADLIE+3*(ILIVE-1)+1)-1+
+     &                 ZI(ZI(IADLIE+3*(ILIVE-1)+2)+IGR-1)+IEL-1)
+                  R=RCOEF
+
                   IF (LMUMPS) THEN
                     IF (NUMA.GT.0) THEN
-                      IF (ZI(IMUMPS+NUMA).LT.0) THEN
-C                         WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
-                        GOTO 160
-                      ENDIF
-                    ELSE
-                      IF (RANG.NE.0) THEN
-C                        WRITE(IFM,*)'ASSVEC, SAUTE LA MAILLE ',NUMA
-                        GOTO 160
-                      ENDIF
+                      IF (ZI(JNUMSD-1+NUMA).NE.RANG) GOTO 60
                     ENDIF
                   ENDIF
-                  
+
                   IF (NUMA.GT.0) THEN
-                    IF (EPDMS.GT.0) R=R*ZR(JPDMS-1+NUMA)
-                    IL = 0
-                    DO 120 K1 = 1,NNOE
-                      N1 = ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)
-                      IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
-     &                       (N1-1)* (NEC+2)+1-1)
+                    IF (EPDMS.GT.0)R=R*ZR(JPDMS-1+NUMA)
+                    IL=0
+                    DO 50 K1=1,NNOE
+                      N1=ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)
+                      IAD1=ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
+     &                     (N1-1)*(NEC+2)+1-1)
                       CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
      &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
-                      IF (NDDL1.EQ.0) GO TO 120
+                      IF (NDDL1.EQ.0)GOTO 50
                       IF (IAD1.EQ.0) THEN
-                        VALI (1) = N1
-                        VALK (1) = RESU
-                        VALK (2) = VECEL
-                        VALK (3) = NUDEV
-      CALL U2MESG('F', 'ASSEMBLA_41',3,VALK,1,VALI,0,0.D0)
-                      END IF
+                        VALI(1)=N1
+                        VALK(1)=RESU
+                        VALK(2)=VECEL
+                        VALK(3)=NUDEV
+                        CALL U2MESG('F','ASSEMBLA_41',3,VALK,1,VALI,0,
+     &                              0.D0)
+                      ENDIF
 
                       IF (IAD1.GT.NEQUA) THEN
-                        VALI (1) = N1
-                        VALI (2) = IAD1
-                        VALI (3) = NEQUA
-                        VALK (1) = RESU
-                        VALK (2) = VECEL
-      CALL U2MESG('F', 'ASSEMBLA_42',2,VALK,3,VALI,0,0.D0)
-                      END IF
+                        VALI(1)=N1
+                        VALI(2)=IAD1
+                        VALI(3)=NEQUA
+                        VALK(1)=RESU
+                        VALK(2)=VECEL
+                        CALL U2MESG('F','ASSEMBLA_42',2,VALK,3,VALI,0,
+     &                              0.D0)
+                      ENDIF
 
                       IF (NDDL1.GT.100) THEN
-                        VALI (1) = NDDL1
-                        VALI (2) = 100
-      CALL U2MESG('F', 'ASSEMBLA_43',0,' ',2,VALI,0,0.D0)
-                      END IF
+                        VALI(1)=NDDL1
+                        VALI(2)=100
+                        CALL U2MESG('F','ASSEMBLA_43',0,' ',2,VALI,0,
+     &                              0.D0)
+                      ENDIF
 
                       IF (TYPE.EQ.1) THEN
-CCDIR$ IVDEP
-                        DO 100 I1 = 1,NDDL1
-                          IL = IL + 1
-                          ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = MIN(ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+
-     &                            ZI(IAPSDL-1+I1)-1)),
-     &                            ZR(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R)
-  100                   CONTINUE
-
-                      ELSE
-CCDIR$ IVDEP
-                        DO 110 I1 = 1,NDDL1
-                          IL = IL + 1
-                          ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+
-     &                            ZI(IAPSDL-1+I1)-1)) +
-     &                            ZC(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
-  110                   CONTINUE
-                      END IF
-
-  120               CONTINUE
-
-                  ELSE
-                    NUMA = -NUMA
-                    N1 = ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA) -
-     &                   ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA-1) - 1
-                    IF (NNOE.NE.N1) THEN
-                        VALK (1) = VECEL
-                        VALK (2) = RESU
-                        VALK (3) = NOMLI
-                        VALI (1) = IGR
-                        VALI (2) = NUMA
-                        VALI (3) = N1
-                        VALI (4) = NNOE
-      CALL U2MESG('F', 'ASSEMBLA_44',3,VALK,4,VALI,0,0.D0)
-                    END IF
-
-                    IL = 0
-                    DO 150 K1 = 1,NNOE
-                      N1 = ZI(ZI(IADNEM+3* (ILIVE-1)+1)-1+
-     &                     ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA-1)+K1-1)
-                      IF (N1.LT.0) THEN
-                        N1 = -N1
-                        IF (ILINU.EQ.0) THEN
-                        VALK (1) = NOMLI
-                        VALK (2) = RESU
-                        VALK (3) = VECEL
-                        VALK (4) = NUDEV
-                        VALK (5) = NOMLI(1:8)
-                        VALI (1) = N1
-                        VALI (2) = NUMA
-      CALL U2MESG('F', 'ASSEMBLA_45',5,VALK,2,VALI,0,0.D0)
-                        END IF
-
-                        IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILINU-1)+
-     &                         (N1-1)* (NEC+2)+1-1)
-                        CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
-     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
-                        IF (NDDL1.GT.100) THEN
-                        VALI (1) = NDDL1
-                        VALI (2) = 100
-      CALL U2MESG('F', 'ASSEMBLA_46',0,' ',2,VALI,0,0.D0)
-                        END IF
-
-                      ELSE
-                        IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
-     &                         (N1-1)* (NEC+2)+1-1)
-                        CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
-     &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
-                        IF (NDDL1.GT.100) THEN
-                        VALI (1) = NDDL1
-                        VALI (2) = 100
-      CALL U2MESG('F', 'ASSEMBLA_47',0,' ',2,VALI,0,0.D0)
-                        END IF
-
-                      END IF
-
-                      IF (IAD1.EQ.0) THEN
-                        VALI (1) = N1
-                        VALK (1) = RESU
-                        VALK (2) = VECEL
-                        VALK (3) = NUDEV
-      CALL U2MESG('F', 'ASSEMBLA_48',3,VALK,1,VALI,0,0.D0)
-                      END IF
-
-                      IF (IAD1.GT.NEQUA) THEN
-                        VALI (1) = N1
-                        VALI (2) = IAD1
-                        VALI (3) = NEQUA
-                        VALK (1) = RESU
-                        VALK (2) = VECEL
-      CALL U2MESG('F', 'ASSEMBLA_49',2,VALK,3,VALI,0,0.D0)
-                      END IF
-
-                      IF (TYPE.EQ.1) THEN
-CCDIR$ IVDEP
-                        DO 130 I1 = 1,NDDL1
-                          IL = IL + 1
-                          ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = MIN(ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+
-     &                            ZI(IAPSDL-1+I1)-1)),
-     &                            ZR(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R)
-  130                   CONTINUE
-
-                      ELSE
-CCDIR$ IVDEP
-                        DO 140 I1 = 1,NDDL1
-                          IL = IL + 1
-                          ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+
-     &                            ZI(IAPSDL-1+I1)-1)) +
-     &                            ZC(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
-  140                   CONTINUE
-                      END IF
-
-  150               CONTINUE
-                  END IF
-
-  160           CONTINUE
+                        DO 30 I1=1,NDDL1
+                          IL=IL+1
+                          ZR(JVALE-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                      1))=MIN(ZR(JVALE-1+ZI(IANUEQ-1+IAD1+
+     &                          ZI(IAPSDL-1+I1)-1)),
+     &                          ZR(IDRESL+(IEL-1)*NCMPEL+IL-1)*R)
+   30                   CONTINUE
+                      ENDIF
+   50               CONTINUE
+                  ENDIF
+   60           CONTINUE
                 CALL JELIBE(JEXNUM(RESU(1:19)//'.RESL',IGR))
-              END IF
+              ENDIF
+   70       CONTINUE
+   80     CONTINUE
 
-  170       CONTINUE
-  180     CONTINUE
-        END IF
-
-  190 CONTINUE
+   90 CONTINUE
       CALL JEDETR(VECAS//'.LILI')
       CALL JEDETR(VECAS//'.LIVE')
       CALL JEDETR(VECAS//'.ADNE')
       CALL JEDETR(VECAS//'.ADLI')
-C      IF (NIV.EQ.2) THEN
-C        WRITE (IFM,*) ' --- '
-C        WRITE (IFM,*) ' --- VECTEUR ASSEMBLE '
-
-C        WRITE (IFM,*) ' --- '
-C        IF (TYPE.EQ.1) THEN
-C          DO 1000 IEQUA = 1,NEQUA
-C            WRITE (IFM,*) ' -   CHAM_NO( ',IEQUA,' ) = ',
-C     +        ZR(IADVAL+IEQUA-1)
-C 1000     CONTINUE
-
-C        ELSE
-C          DO 1001 IEQUA = 1,NEQUA
-C            WRITE (IFM,*) ' -   CHAM_NO( ',IEQUA,' ) = ',
-C     +        ZC(IADVAL+IEQUA-1)
-C 1001     CONTINUE
-C        END IF
-
-C        WRITE (IFM,*) ' --------------------------- '
-C      END IF
-
-C      IF (NIV.EQ.2) THEN
-C        WRITE (IFM,*) ' --- '
-C        WRITE (IFM,*) ' --- REFE DU VECTEUR    CREE '
-C        WRITE (IFM,*) ' --- '
-C        WRITE (IFM,*) ' -   REFE(1) = MAILLAGE        ',ZK24(IDVERF)
-C        WRITE (IFM,*) ' -   REFE(2) = NUMEROTATION    ',ZK24(IDVERF+1)
-C        WRITE (IFM,*) ' --------------------------- '
-C      END IF
       CALL JEDETR('&&ASSVEC.POSDDL')
       CALL JEDETR('&&ASSVEC.NUMLOC')
 
 C        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
-      IF (LMUMPS)
-     &  CALL MUMMPI(5,IFM,NIV,KVALE,NEQUA,IBID)
+      IF (LMUMPS) CALL MPICM1('MPI_MIN','R',NEQUA,IBID,ZR(JVALE))
+
+
       CALL JEDEMA()
       END

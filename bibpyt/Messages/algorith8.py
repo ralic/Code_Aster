@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith8 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,10 @@ cata_msg = {
 
 2 : _("""
  caractéristique fluage incomplet
+"""),
+
+8 : _("""
+ format de colonne inconnu (dvlp)
 """),
 
 12 : _("""

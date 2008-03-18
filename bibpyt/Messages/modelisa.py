@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF modelisa Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,11 +344,9 @@ cata_msg = {
  section "cercle", vari_sect "constant" la caracteristique "r" est obligatoire
 """),
 
-
-
-
-
-
+67 : _("""
+ erreur de programmation
+"""),
 
 69 : _("""
  occurence  %(k1)s de "barre" (maille  %(k2)s ) ecrasement d un type de geometrie de section par un autre

@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 17/12/2007   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 from Intranet.macro_bascule_schema_ops import macro_bascule_schema_ops
@@ -48,7 +48,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
          EXCIT_GENE      =FACT(statut='f',max='**',
            FONC_MULT       =SIMP(statut='f',typ=fonction_sdaster,max='**' ),
            VECT_GENE       =SIMP(statut='f',typ=vect_asse_gene,max='**' ),
-         ),         
+         ),
          SOUS_STRUC      =FACT(statut='f',min=01,max='**',
                 regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
                 CAS_CHARGE  =SIMP(statut='o',typ='TXM' ),
@@ -71,7 +71,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
            MASS_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
            RIGI_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
            AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
-         ),         
+         ),
 #-------------------------------------------------------------------
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
          INIT       =FACT(statut='o',
@@ -146,10 +146,10 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
              PARALLELISME    =SIMP(statut='f',typ='TXM',defaut="CENTRALISE",
-                                   into=("CENTRALISE","DISTRIBUE_MAILLE","DISTRIBUE_SD")),
+                                   into=("CENTRALISE","DISTRIBUE_MC","DISTRIBUE_MD","DISTRIBUE_SD")),
              PARTITION       =SIMP(statut='f',typ=sd_feti_sdaster),
-             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=0,min=0),
-             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),       
+             CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,min=0,max=100),
+             CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,min=0),
              ),
            b_gcpc          =BLOC(condition="METHODE == 'GCPC'",fr="Paramètres de la méthode du gradient conjugué",
              PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
@@ -171,7 +171,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
              FLUX_THER_REFE  =SIMP(statut='f',typ='R'),
              FLUX_HYD1_REFE  =SIMP(statut='f',typ='R'),
              FLUX_HYD2_REFE  =SIMP(statut='f',typ='R'),
-             VARI_REFE       =SIMP(statut='f',typ='R'),                     
+             VARI_REFE       =SIMP(statut='f',typ='R'),
            ),
            RESI_REFE_RELA  =SIMP(statut='f',typ='R'),
            RESI_GLOB_MAXI  =SIMP(statut='f',typ='R'),
@@ -276,7 +276,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité",
                                ang="List of sensitivity parameters"),
-#                     
+#
 #  Specificite bascules
 #
                      INCR_I       =FACT(statut='o',
@@ -332,7 +332,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                        NOM_CMP         =SIMP(statut='f',typ='TXM',),
                        VALE            =SIMP(statut='f',typ='R'),
                      ),
-#                     
+#
                      INCR_E       =FACT(statut='o',
                        regles=(EXCLUS('NUME_INST_INIT','INST_INIT'),
                                EXCLUS('NUME_INST_FIN','INST_FIN'),),
@@ -385,7 +385,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                        NOM_CHAM        =SIMP(statut='f',typ='TXM',),
                        NOM_CMP         =SIMP(statut='f',typ='TXM',),
                        VALE            =SIMP(statut='f',typ='R'),
-                     ),                     
+                     ),
 #
                      SCH_TEMPS_I     =FACT(statut='o',
                         SCHEMA          =SIMP(statut='o',min=1,max=1,typ='TXM',
@@ -401,7 +401,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                         b_implicit= BLOC(condition="SCHEMA!='TCHAMWA'and SCHEMA!='DIFF_CENT'",
                           FORMULATION  =SIMP(statut='o',max=1,typ='TXM',into=("DEPLACEMENT","VITESSE",),),),
                      ),
-#                           
+#
                      SCH_TEMPS_E     =FACT(statut='o',
                         SCHEMA          =SIMP(statut='o',min=1,max=1,typ='TXM',
                                               into=("DIFF_CENT","TCHAMWA",),),
@@ -410,7 +410,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                         b_explicit= BLOC(condition="SCHEMA=='TCHAMWA'or SCHEMA=='DIFF_CENT'",
                           STOP_CFL     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),
                           FORMULATION  =SIMP(statut='o',typ='TXM',into=("ACCELERATION",),),),
-                     ),    
+                     ),
 #
                      SCH_TEMPS_EQ     =FACT(statut='f',
                         SCHEMA          =SIMP(statut='o',min=1,max=1,typ='TXM',
@@ -420,11 +420,11 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
                         b_explicit= BLOC(condition="SCHEMA=='TCHAMWA'or SCHEMA=='DIFF_CENT'",
                           STOP_CFL     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),
                           FORMULATION  =SIMP(statut='o',typ='TXM',into=("ACCELERATION",),),),
-                     ),                                   
+                     ),
 #
                      C_INCR_I       =C_COMP_INCR(),
                      C_INCR_E       =C_COMP_INCR(),
-#                   
+#
                      TP_BAS          =SIMP(statut='o',typ=listr8_sdaster),
                      SCH_INI         =SIMP(statut='o',typ='TXM',into=("IMPLICITE","EXPLICITE")),
                      EQUILIBRAGE     =FACT(statut='o',
@@ -436,5 +436,5 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
 #-------------------------------------------------------------------
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
-                        DT_EXP           =SIMP(statut='o',typ='R'),),                                         
+                        DT_EXP           =SIMP(statut='o',typ='R'),),
 );

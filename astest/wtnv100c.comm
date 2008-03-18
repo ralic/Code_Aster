@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,7 +158,7 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
                             INTERVALLE=_F(  JUSQU_A = 1.,     NOMBRE = 1,  )
                          )
 
-U1=STAT_NON_LINE(
+U1=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD',PCENT_PIVOT=100),
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F(
@@ -213,7 +213,7 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 
 
-U2=STAT_NON_LINE(
+U2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD',PCENT_PIVOT=100),
                             MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F(

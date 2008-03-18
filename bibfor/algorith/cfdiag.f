@@ -1,7 +1,7 @@
       SUBROUTINE CFDIAG(LMAT,XMAX)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,8 +49,9 @@ C
 C
 C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
-      INTEGER      JSMDI,JVALM,IEQ,IADIA,NEQ
+      INTEGER      JSMDI,JVALM,IEQ,IADIA,NEQ,IBID
       CHARACTER*19 MAT
+      CHARACTER*4 KMPIC
 C ----------------------------------------------------------------------
 
 
@@ -58,6 +59,8 @@ C ----------------------------------------------------------------------
       XMAX = 0.D0
       MAT  = ZK24(ZI(LMAT+1))
       CALL MTDSC2 ( MAT, 'SMDI', 'L', JSMDI )
+      CALL DISMOI('F','MPI_COMPLET',MAT,'MATR_ASSE',IBID,KMPIC,IBID)
+      IF (KMPIC.NE.'OUI') CALL U2MESS('F','CALCULEL6_54')
       CALL JEVEUO ( JEXNUM(MAT//'.VALM',1), 'L', JVALM )
 
       NEQ=ZI(LMAT+2)

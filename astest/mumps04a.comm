@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2007   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE MUMPS AVEC UNE MATRICE NON-SYMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 # (MULT_FRONT ET MUMPS CENTRALISE ET DISTRIBUE MAILLE/SD).
 # POUR VALIDER LEUR INTEROPERABILITE, ON LES PANACHE ENTRE PAS DE TEMPS.
 # ON VERIFIE QUE LES 4 SOLUTIONS SONT LES MEMES.
-# 
+#
 # POUR OBTENIR UN PROBLEME NON SYMETRIQUE, ON UTILISE LA MODELISATION
 # D_PLAN_GRAD_EPSI.
 # LE PROBLEME MECANIQUE RESOLU EST CELUI DU TEST SSNV131B
@@ -70,7 +70,7 @@ EVOL1=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MULT_FRONT',),
                          INCREMENT=_F(
                 LIST_INST = INSTANTS,
                 NUME_INST_FIN = 2),
-                MODELE=MO_MECA,EXCIT=(_F(CHARGE = LIAISON), 
+                MODELE=MO_MECA,EXCIT=(_F(CHARGE = LIAISON),
                 _F(CHARGE = TRACTION,FONC_MULT = RAMPE)),
                          COMP_INCR=_F(
                 RELATION = 'ENDO_FRAGILE',
@@ -181,7 +181,7 @@ MAILLE='M1',POINT=1,NOM_CMP='SIYY',PRECISION=1.E-3, VALE= 9.9999999999994E+02 ))
 #---------------------------------------------------------------------------------------------
 # CALCUL 3 : SOLVEUR MUMPS DISTRIBUE PAR MAILLES
 #-------------------------------
-EVOL3=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MAILLE',
+EVOL3=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD',
                        PCENT_PIVOT=100,),
                         CHAM_MATER=MAT,
                          INCREMENT=_F(
@@ -205,7 +205,7 @@ EVOL3=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MAILL
                 ARRET = 'OUI'),
               )
 
-EVOL3=STAT_NON_LINE( reuse=EVOL3, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MAILLE',
+EVOL3=STAT_NON_LINE( reuse=EVOL3, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MC',
                                  PCENT_PIVOT=100,),
                         CHAM_MATER=MAT,
                          INCREMENT=_F(
@@ -247,7 +247,7 @@ EVOL4=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MULT_FRONT'),
                 LIST_INST = INSTANTS,
                 NUME_INST_FIN = 2),
                 MODELE=MO_MECA,EXCIT=(
-                 _F(CHARGE = LIAISON), 
+                 _F(CHARGE = LIAISON),
                  _F(CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
                          COMP_INCR=_F(
@@ -263,7 +263,7 @@ EVOL4=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MULT_FRONT'),
                 ARRET = 'OUI'),
               )
 
-EVOL4=STAT_NON_LINE( reuse=EVOL4, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MAILLE',
+EVOL4=STAT_NON_LINE( reuse=EVOL4, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD',
                                   PCENT_PIVOT=100,),
                         CHAM_MATER=MAT,
                          INCREMENT=_F(
@@ -307,7 +307,7 @@ EVOL5=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='CENTRALISE',
                 LIST_INST = INSTANTS,
                 NUME_INST_FIN = 2),
                 MODELE=MO_MECA,EXCIT=(
-                 _F(CHARGE = LIAISON), 
+                 _F(CHARGE = LIAISON),
                  _F(CHARGE = TRACTION,
                 FONC_MULT = RAMPE)),
                          COMP_INCR=_F(
@@ -323,7 +323,7 @@ EVOL5=STAT_NON_LINE(    SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='CENTRALISE',
                 ARRET = 'OUI'),
               )
 
-EVOL5=STAT_NON_LINE( reuse=EVOL5, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MAILLE',
+EVOL5=STAT_NON_LINE( reuse=EVOL5, SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MC',
                                   PCENT_PIVOT=100,),
                         CHAM_MATER=MAT,
                          INCREMENT=_F(

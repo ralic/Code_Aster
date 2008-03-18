@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF calculel5 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,10 +168,11 @@ cata_msg = {
 """),
 
 48 : _("""
- PROJ_CHAMP (ou LAISON_MAIL) :
- Le noeud : %(k1)s  est projeté sur une maille un peu distante.
-    distance à la maille  =   %(r1)g
-    diamètre de la maille =   %(r2)g
+ PROJ_CHAMP (ou LIAISON_MAIL) :
+ Certains noeuds ont été projetés sur des mailles un peu distantes
+ (la distance à la maille est supérieure à 1/10ième du diamètre de la maille) 
+ Le noeud projeté le plus loin est le noeud: %(k1)s
+ Il a été projeté à la distance %(r1)f
 """),
 
 49 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,7 +68,8 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,1.0,1.0,),
                     PROL_DROITE='CONSTANT',);
 
-EVOL=STAT_NON_LINE(MODELE=MO,
+EVOL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PARALLELISME='DISTRIBUE_MD',PCENT_PIVOT=300),
+                   MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=(_F(CHARGE=CLIM,),
                           _F(CHARGE=CH,
@@ -77,7 +78,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                 DEFORMATION='SIMO_MIEHE',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   SOLVEUR=_F(METHODE='MUMPS'),
+
                    CONVERGENCE=_F(RESI_REFE_RELA=1.E-3,
                             SIGM_REFE = 60 ,
                             EPSI_REFE = 3.E-4), );

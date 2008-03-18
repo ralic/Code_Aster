@@ -8,7 +8,7 @@
       CHARACTER*19        NOMNUM, NOMSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,8 @@ C
          ZR(IACONL+I-1) = 1.0D0
  10   CONTINUE
 C
-      CALL WKVECT ( MATRGE//'.REFA', 'G V K24', 10, JREFA )
+      CALL WKVECT ( MATRGE//'.REFA', 'G V K24',11, JREFA )
+      ZK24(JREFA-1+11)='MPI_COMPLET'
       ZK24(JREFA-1+1)   = BASE
       ZK24(JREFA-1+2) = NOMNUM
       ZK24(JREFA-1+9) = 'MS'
@@ -92,7 +93,6 @@ C
 
       CALL UALFVA(MATRGE,'G')
 
-C     CALL CHEKSD('sd_matr_asse',MATRGE,IRET)
 
       CALL JEDEMA()
 C

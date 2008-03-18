@@ -1,4 +1,4 @@
-# MODIF  DATE 24/09/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 18/03/2008   AUTEUR PELLET J.PELLET 
 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,7 +114,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', SYME='OUI',PARALLELISME='DISTRIBUE_MD',),
                    MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CAREL,
@@ -173,7 +173,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    CRITERE='RELATIF',
                    PRECISION=2.e-07,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.3.19',),
+                   ),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_NOEU_COQU',
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    CRITERE='RELATIF',
                    PRECISION=2.e-07,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.3.19',),
+                   ),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_NOEU_COQU',
@@ -191,9 +191,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='B1',
                    VALE=3.2916909693770E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1.2e-07,
+                   PRECISION=1.5e-07,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.3.19',),
+                   ),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_NOEU_COQU',
@@ -201,8 +201,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='B3',
                    VALE=3.2916909693770E+09,
                    CRITERE='RELATIF',
-                   PRECISION=1.2e-07,
+                   PRECISION=1.5e-07,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.3.19',),),);
+                   ),),);
 
 FIN();

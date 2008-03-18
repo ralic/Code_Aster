@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith14 Messages  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -315,6 +315,15 @@ cata_msg = {
  arrêt sur dimension matrice TETA incorrecte
  dimension effective   :  %(i1)d 
  dimension en argument :  %(i2)d 
+"""),
+
+94: _("""
+ erreur  de repetitivite cyclique
+"""),
+
+95: _("""
+ il manque un ddl sur un noeud  axe type du ddl -->  %(k1)s 
+ nom du noeud -->  %(k2)s 
 """),
 
 99 : _("""
