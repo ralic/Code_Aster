@@ -1,0 +1,44 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 27/03/2008 - 09:52:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011882 DU 2008-03-27 08:40:33
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+   Import mal plac?ans macro_visu_meidee
+FONCTIONNALITE
+   Un import mal placé dans macro_visu_meidee impose la présence de Tkinter et imposerait
+   d'avoir tout bibpyt pour utiliser le catalogue (gênerait eficas).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   compilation du catalogue de commandes
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+  PYTHON MODIF Macro/macro_visu_meidee_ops   courtois M.COURTOIS         249      3      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    1         249         3       4        -1
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    1         249         3       4        -1 

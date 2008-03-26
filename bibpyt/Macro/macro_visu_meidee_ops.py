@@ -1,4 +1,4 @@
-#@ MODIF macro_visu_meidee_ops Macro  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF macro_visu_meidee_ops Macro  DATE 27/03/2008   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,6 @@
 # on utilise aussi une librairie de support
 # pour la gestion de l'interface graphique dans meidee_iface
 
-from Meidee.meidee_cata import MeideeObjects
-
-
 
 def macro_visu_meidee_ops( self,
                            INTERACTIF         = None,
@@ -45,6 +42,7 @@ def macro_visu_meidee_ops( self,
                            RESU_MODIFSTRU     = None,
                            **args):
     import aster
+    from Meidee.meidee_cata import MeideeObjects
     ier = 0
     
     prev = aster.onFatalError()
@@ -208,6 +206,7 @@ def create_interactive_window(macro,
     les 4 domaines de Meidee."""
     from Tkinter import Tk
     
+    from Meidee.meidee_cata import MeideeObjects
     from Meidee.meidee_correlation import InterfaceCorrelation
     from Meidee.meidee_modifstruct import InterfaceModifStruct
     from Meidee.meidee_fludela import InterfaceFludela
